@@ -204,12 +204,10 @@ export function generateNetlist(document: CircuitDocument, requestedMode?: Analy
 
   if (pot && (mode === "tran" || mode === "ac")) {
     const nodes = componentNodes[pot.id] ?? [];
-    const t = potWiper(pot);
-    const high = 5 * t;
     if (mode === "tran") {
-      addLine(lines, lineMap, `VDRIVE ${nodes[1]} 0 PULSE(0 ${spiceValue(high, 2.5)} 1m 10u 10u 4m 10m)`, { stage: "analysis", componentId: pot.id });
+      addLine(lines, lineMap, `VDRIVE ${nodes[1]} 0 PULSE(0 5 1m 10u 10u 4m 10m)`, { stage: "analysis", componentId: pot.id });
     } else {
-      addLine(lines, lineMap, `VDRIVE ${nodes[1]} 0 DC ${spiceValue(high, 2.5)} AC 1`, { stage: "analysis", componentId: pot.id });
+      addLine(lines, lineMap, `VDRIVE ${nodes[1]} 0 DC 2.5 AC 1`, { stage: "analysis", componentId: pot.id });
     }
   }
 

@@ -22,6 +22,7 @@ interface SpiceFileSystem {
 
 interface SpiceModule {
   FS: SpiceFileSystem;
+  HEAPU8?: Uint8Array;
 }
 
 function post(response: SimulationResponse, transfer: Transferable[] = []): void {
@@ -77,6 +78,7 @@ async function run(request: SimulationRequest): Promise<void> {
 
     const module = simulator.__getSpiceModuleForTests() as SpiceModule | null;
     if (!module?.FS) throw new Error("Engine rawfile filesystem is unavailable");
+    if ((module.HEAPU8?.buffer.byteLength ?? 0) > 256 * 1024 * 1024) throw new Error("WASM memory exceeds 256 MiB limit");
     const raw = module.FS.readFile("out.raw");
     const parsed = parseBinaryRawfile(raw, {
       ...(request.limits?.maxRawfileBytes ? { maxRawfileBytes: request.limits.maxRawfileBytes } : {}),
