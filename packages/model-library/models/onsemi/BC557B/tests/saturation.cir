@@ -1,0 +1,18 @@
+OpenCircuit factory test: BC557B saturation
+* OpenCircuit Model Factory v0.1.0
+* Original work generated from public factual specifications.
+* This model is not a copy of, or adaptation from, any vendor SPICE model.
+* Source: https://www.onsemi.com/pub/Collateral/BC556B-D.PDF
+* Revision: Rev. 3, March 2007
+* Fit: native ngspice-46 in scipy.optimize.least_squares, diff_step=1e-4
+.model OC_ONSEMI_BC557B PNP(IS=8.2795543286e-14 NF=1.0000000000e0 BF=1.9999999986e3 IKF=8.5369997995e-3 ISE=4.2059216751e-13 NE=1.5644774880e0 VAF=1.0000000000e2 BR=4.0000000000e0 RB=3.9259797496e1 RE=1.0000005986e-4 RC=1.3427918311e0 CJE=1.1836139835e-11 VJE=7.5000000000e-1 MJE=3.3000000000e-1 CJC=7.2229703317e-12 VJC=7.5000000000e-1 MJC=3.3000000000e-1 XCJC=1.0000000000e0 TF=4.3869175971e-10 TR=0 FC=0.5 EG=1.11 XTI=3 TNOM=27)
+
+.temp 25
+ICS1 0 cs1 DC -1.0000000000e-2
+IBS1 0 bs1 DC -5.0000000000e-4
+QS1 cs1 bs1 0 OC_ONSEMI_BC557B
+ICS2 0 cs2 DC -1.0000000000e-1
+IBS2 0 bs2 DC -5.0000000000e-3
+QS2 cs2 bs2 0 OC_ONSEMI_BC557B
+.op
+.end
