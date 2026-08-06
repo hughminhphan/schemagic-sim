@@ -1,0 +1,162 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "dc_gain.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "hfe_at_0.00001_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg1),28999999.999999996)"
+          },
+          "expected_value": 290,
+          "unit": "1",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 1
+          },
+          "datasheet_citation": "p. 4 table 8",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_at_0.002_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg2),145000)"
+          },
+          "expected_value": 290,
+          "unit": "1",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.5
+          },
+          "datasheet_citation": "p. 4 table 8",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "saturation.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "vce_sat_1",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(cs1))"
+          },
+          "expected_value": 0.09,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.15
+          },
+          "datasheet_citation": "p. 4 table 8",
+          "placeholder": false
+        },
+        {
+          "name": "vbe_sat_1",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(bs1))"
+          },
+          "expected_value": 0.76,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.15
+          },
+          "datasheet_citation": "p. 4 table 8",
+          "placeholder": false
+        },
+        {
+          "name": "vce_sat_2",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(cs2))"
+          },
+          "expected_value": 0.2,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 1
+          },
+          "datasheet_citation": "p. 4 table 8",
+          "placeholder": false
+        },
+        {
+          "name": "vbe_sat_2",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(bs2))"
+          },
+          "expected_value": 0.9,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.15
+          },
+          "datasheet_citation": "p. 4 table 8",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "ft_bench.cir",
+      "analysis_type": "ac_small_signal",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "current_gain_bandwidth",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "frequency_at_magnitude(i(vcc),1)"
+          },
+          "unit": "Hz",
+          "datasheet_citation": "p. 4 table 8",
+          "placeholder": false,
+          "minimum": 100000000,
+          "inclusive": true
+        }
+      ]
+    },
+    {
+      "test_netlist": "capacitance.cir",
+      "analysis_type": "ac_small_signal",
+      "scalar_checks": [
+        {
+          "name": "cobo",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "imag_cap:last(i(vcb),1000000)"
+          },
+          "expected_value": 3e-12,
+          "unit": "F",
+          "tolerance": {
+            "absolute": 5e-13,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 4 table 8",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "output_curve.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "boundary_region.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": []
+    }
+  ]
+}

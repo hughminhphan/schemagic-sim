@@ -1,0 +1,14 @@
+OpenCircuit boundary-region bench: BC846B
+* OpenCircuit Model Factory v0.1.0
+* Original work generated from public factual specifications.
+* This model is not a copy of, or adaptation from, any vendor SPICE model.
+* Source: https://assets.nexperia.com/documents/data-sheet/BC846_SER.pdf
+* Revision: Rev. 9, 25 September 2012
+* Fit: native ngspice-46 in scipy.optimize.least_squares, diff_step=1e-4
+.model OC_NEXPERIA_BC846B NPN(IS=2.0666495739e-14 NF=1.0000000000e0 BF=4.7644306076e2 IKF=1.9795330576e-2 ISE=3.6733820394e-13 NE=1.5175522187e0 VAF=1.0000000000e2 BR=4.0000000000e0 RB=5.6174624140e0 RE=1.0000000856e-4 RC=2.7191520669e0 CJE=9.4689118679e-12 VJE=7.5000000000e-1 MJE=3.3000000000e-1 CJC=7.8339385963e-12 VJC=7.5000000000e-1 MJC=3.3000000000e-1 XCJC=1.0000000000e0 TF=4.6475853780e-10 TR=0 FC=0.5 EG=1.11 XTI=3 TNOM=27)
+.temp 25
+VC c 0 DC 1
+IB 0 b DC 0.01
+Q1 c b 0 OC_NEXPERIA_BC846B
+.op
+.end
