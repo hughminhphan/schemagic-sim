@@ -1,0 +1,68 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "zener_knee.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "zener_voltage_at_knee_current",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(cathode))"
+          },
+          "expected_value": 3.188041981686917,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.05,
+            "relative": 0.05
+          },
+          "datasheet_citation": "official product page, zener voltage table, zener voltage and differential resistance table",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "zener_test_current.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "zener_voltage_at_test_current",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(cathode))"
+          },
+          "expected_value": 3.3,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.05,
+            "relative": 0.03
+          },
+          "datasheet_citation": "official product page, zener voltage table, zener voltage row at IZT = 76 mA",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "reverse_leakage.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "reverse_leakage_maximum",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vreverse))"
+          },
+          "maximum": 0.0001,
+          "unit": "A",
+          "inclusive": true,
+          "datasheet_citation": "official product page, reverse leakage table, reverse current row at VR = 1 V",
+          "placeholder": false
+        }
+      ]
+    }
+  ]
+}

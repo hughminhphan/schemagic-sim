@@ -1,0 +1,54 @@
+{
+  "schema_version": "1.0.0",
+  "validation_date": "2026-08-06",
+  "native_wasm_all_pass": true,
+  "expectations_all_pass": true,
+  "expectation_pass_count": 3,
+  "expectation_fail_count": 0,
+  "worst_native_wasm_relative_delta": 1.34568054934275e-16,
+  "worst_native_wasm_absolute_delta": 4.440892098500626e-16,
+  "benches": [
+    {
+      "test_netlist": "zener_knee.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "zener_voltage_at_knee_current",
+          "pass": true,
+          "value": 3.188833532710499,
+          "error": 0.0007915510235818601,
+          "allowed": 0.15940209908434588
+        }
+      ]
+    },
+    {
+      "test_netlist": "zener_test_current.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "zener_voltage_at_test_current",
+          "pass": true,
+          "value": 3.300108707575228,
+          "error": 0.00010870757522818408,
+          "allowed": 0.09899999999999999
+        }
+      ]
+    },
+    {
+      "test_netlist": "reverse_leakage.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "reverse_leakage_maximum",
+          "pass": true,
+          "value": 1.0082485132738925e-12,
+          "minimum": null,
+          "maximum": 0.0001
+        }
+      ]
+    }
+  ]
+}
