@@ -108,42 +108,94 @@
           },
           "datasheet_citation": "p. 16 electrical characteristics",
           "placeholder": false
-        },
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "output_swing.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
         {
-          "name": "positive_swing",
+          "name": "positive_swing_typical_25c",
           "expression_source": {
             "kind": "raw_variable",
-            "expression": "max(v(out))"
+            "expression": "last(v(outp))"
           },
-          "expected_value": 10,
+          "expected_value": 13.5,
           "unit": "V",
           "tolerance": {
             "absolute": 0.1,
-            "relative": 0.07
+            "relative": 0.05
           },
-          "datasheet_citation": "p. 15 electrical characteristics",
+          "datasheet_citation": "p. 15 electrical characteristics, TYP column",
+          "placeholder": false
+        },
+        {
+          "name": "negative_swing_typical_25c",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(outn))"
+          },
+          "expected_value": -13.5,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.1,
+            "relative": 0.05
+          },
+          "datasheet_citation": "p. 15 electrical characteristics, TYP column",
           "placeholder": false
         }
       ],
       "hard_bounds_checks": []
     },
     {
-      "test_netlist": "negative_swing.cir",
-      "analysis_type": "transient",
+      "test_netlist": "minimum_supply_follower.cir",
+      "analysis_type": "operating_point",
       "scalar_checks": [
         {
-          "name": "negative_swing",
+          "name": "minimum_supply_follow_negative",
           "expression_source": {
             "kind": "raw_variable",
-            "expression": "min(v(out))"
+            "expression": "last(v(outn))"
           },
-          "expected_value": -10,
+          "expected_value": -0.247,
           "unit": "V",
           "tolerance": {
-            "absolute": 0.1,
-            "relative": 0.07
+            "absolute": 0.01,
+            "relative": 0.02
           },
-          "datasheet_citation": "p. 15 electrical characteristics",
+          "datasheet_citation": "p. 11 recommended operating conditions, MIN column; p. 15 electrical characteristics",
+          "placeholder": false
+        },
+        {
+          "name": "minimum_supply_follow_zero",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(outz))"
+          },
+          "expected_value": 0.003,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.01,
+            "relative": 0.02
+          },
+          "datasheet_citation": "p. 11 recommended operating conditions, MIN column; p. 15 electrical characteristics",
+          "placeholder": false
+        },
+        {
+          "name": "minimum_supply_follow_positive",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(outp))"
+          },
+          "expected_value": 0.253,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.01,
+            "relative": 0.02
+          },
+          "datasheet_citation": "p. 11 recommended operating conditions, MIN column; p. 15 electrical characteristics",
           "placeholder": false
         }
       ],

@@ -13,7 +13,7 @@
 - Datasheet: https://www.ti.com/lit/ds/symlink/tl072.pdf
 - Revision: SLOS080W, September 1978, revised July 2025
 - Accessed: 2026-08-06
-- Referenced pages: p. 15, p. 16, p. 21, p. 23
+- Referenced pages: p. 11, p. 15, p. 16, p. 21, p. 23
 - SHA-256: `3d22c5cf1cfafae082763406bba57521f6ba0fc362a8ba90d1c6c88eef776f03`
 - Basis: original model generated from public factual specifications
 - Vendor SPICE models used: none
@@ -29,26 +29,37 @@
 | thermal | none |
 | digital | none |
 
-## Fitted parameters
+## Model parameters
 
-| Parameter | Value |
-| --- | ---: |
-| AOL | 2.00000000e+5 |
-| GBW | 7.94052779e+6 |
-| SR | 2.19928870e+7 |
-| IBIAS | 6.50000000e-11 |
-| IOS | 5.00000000e-12 |
-| VOS | 3.00000000e-3 |
-| ROUT | 1.25000000e+2 |
-| ILIM | 4.00000000e-2 |
-| VDRP_H | 5.00000000e+0 |
-| VDRP_L | 5.00000000e+0 |
-| FP2 | 5.35595362e+6 |
-| CMRR | 1.00000000e+5 |
-| PSRR | 1.00000000e+5 |
-| VSUP_NOM | 3.00000000e+1 |
-| IQ | 1.40000000e-3 |
-| EN | 3.70000000e-8 |
+| Parameter | Value | Status |
+| --- | ---: | --- |
+| AOL | 2.00000000e+5 | direct typical transcription |
+| GBW | 7.94052779e+6 | native calibrated |
+| SR | 2.19928870e+7 | native calibrated |
+| IBIAS | 6.50000000e-11 | direct typical transcription |
+| IOS | 5.00000000e-12 | direct typical transcription |
+| VOS | 3.00000000e-3 | direct typical transcription |
+| ROUT | 1.25000000e+2 | direct typical transcription |
+| ILIM | 4.00000000e-2 | direct digitized typical transcription |
+| VDRP_H | 1.33118593e+0 | native fitted to 25 degC typical output swing |
+| VDRP_L | 1.33118591e+0 | native fitted to 25 degC typical output swing |
+| FP2 | 5.35595362e+6 | derived from phase margin and calibrated GBW |
+| CMRR | 1.00000000e+5 | derived from direct typical dB value |
+| PSRR | 1.00000000e+5 | derived from direct typical dB value |
+| VSUP_NOM | 3.00000000e+1 | derived from datasheet test supply |
+| IQ | 1.40000000e-3 | direct typical transcription |
+| EN | 3.70000000e-8 | direct typical transcription |
+
+## Held defaults
+
+| Parameter | Value | Unit | Status |
+| --- | ---: | --- | --- |
+| CC | 3.00000000e-11 | F | held at default internal archetype scale |
+| CDIF | 1.00000000e-12 | F | held at default input-capacitance placeholder |
+| RE | 1.00000000e+6 | ohm | held at default internal DC path |
+| CP2 | 1.00000000e-12 | F | held at default second-pole scale |
+| RQ | 1.00000000e+6 | ohm | held at default clamp-node DC path |
+| noise_reference_temperature | 3.00150000e+2 | K | held at default archetype noise normalization |
 
 ## Fitted versus datasheet
 
@@ -57,21 +68,23 @@
 | open-loop gain | 2.000000e+5 | 1.882362e+5 | V/V | 5.882% | p. 15 electrical characteristics |
 | unity-gain bandwidth | 5.250000e+6 | 5.250000e+6 | Hz | 0.000% | p. 15 electrical characteristics |
 | slew rate | 2.000000e+7 | 2.000000e+7 | V/s | 0.000% | p. 16 electrical characteristics |
-| positive output swing | 1.000000e+1 | 9.428171e+0 | V | 5.718% | p. 15 electrical characteristics |
-| negative output swing | -1.000000e+1 | -9.428171e+0 | V | 5.718% | p. 15 electrical characteristics |
+| positive output swing | 1.350000e+1 | 1.350000e+1 | V | 0.000% | p. 15 electrical characteristics, TYP column |
+| negative output swing | -1.350000e+1 | -1.350000e+1 | V | 0.000% | p. 15 electrical characteristics, TYP column |
 
 Worst fitting error: 5.882% for open-loop gain.
 
-Native and WASM agreement: all 6 benches passed. Worst reported relative delta was 5.198e-12 and worst absolute delta was 2.530e-10.
+Native and WASM agreement: all 7 benches passed. Worst reported relative delta was 4.370e-11 and worst absolute delta was 3.044e-8.
 
 ## Known omissions
 
 - Output distortion, crossover distortion, input common-mode failure, input protection, and overload recovery are not fitted.
 - PSRR and CMRR are frequency-independent constants.
-- The frequency response is a two-pole approximation above the unity-gain frequency.
+- The frequency response is a two-pole approximation above the unity-gain frequency. FP2 is derived from the 56 degree typical phase margin but closed-loop overshoot is not independently fitted.
 - Only broadband input voltage noise is modelled; flicker and current noise are omitted.
 - No self-heating or temperature coefficients are modelled.
 - Input offset uses the datasheet typical and does not represent production spread.
+- Output rail drop is fitted to the 25 degC typical swing at RL = 10 kohm. The datasheet publishes only minimum swing, not a typical value, at RL >= 2 kohm.
+- CC = 30 pF, CDIF = 1 pF, RE = 1 Mohm, CP2 = 1 pF, RQ = 1 Mohm, and the 300.15 K noise normalization are held at default internal archetype values.
 
 ## Licence
 

@@ -145,10 +145,12 @@
   "known_omissions": [
     "Output distortion, crossover distortion, input common-mode failure, input protection, and overload recovery are not fitted.",
     "PSRR and CMRR are frequency-independent constants.",
-    "The frequency response is a two-pole approximation above the unity-gain frequency.",
+    "The frequency response is a two-pole approximation above the unity-gain frequency. FP2 is derived from the 56 degree typical phase margin but closed-loop overshoot is not independently fitted.",
     "Only broadband input voltage noise is modelled; flicker and current noise are omitted.",
     "No self-heating or temperature coefficients are modelled.",
-    "Input offset uses the datasheet typical and does not represent production spread."
+    "Input offset uses the datasheet typical and does not represent production spread.",
+    "Output rail drop is fitted to the 25 degC typical swing at RL = 10 kohm. The datasheet publishes only minimum swing, not a typical value, at RL >= 2 kohm.",
+    "CC = 30 pF, CDIF = 1 pF, RE = 1 Mohm, CP2 = 1 pF, RQ = 1 Mohm, and the 300.15 K noise normalization are held at default internal archetype values."
   ],
   "licence": {
     "spdx_id": "MIT",
@@ -164,9 +166,9 @@
   },
   "test_results": {
     "status": "complete",
-    "pass_count": 10,
+    "pass_count": 13,
     "fail_count": 0,
-    "total_count": 10,
+    "total_count": 13,
     "worst_observed_relative_fitting_error": {
       "value": 0.05881885544153236,
       "quantity": "open-loop gain"

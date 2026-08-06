@@ -320,7 +320,7 @@ export const PARTS = {
     source: {
       url: "https://www.ti.com/lit/ds/symlink/tl072.pdf",
       revision: "SLOS080W, September 1978, revised July 2025",
-      pages: ["p. 15", "p. 16", "p. 21", "p. 23"]
+      pages: ["p. 11", "p. 15", "p. 16", "p. 21", "p. 23"]
     },
     facts: {
       schema_version: "1.0.0",
@@ -334,7 +334,17 @@ export const PARTS = {
         vos_max: quantity(10e-3, "V", "TL07xC, TA = 25 degC", "p. 15 electrical characteristics", "maximum"),
         ibias: quantity(65e-12, "A", "VO = 0, TA = 25 degC", "p. 15 electrical characteristics", "typical"),
         ios: quantity(5e-12, "A", "VO = 0, TA = 25 degC", "p. 15 electrical characteristics", "typical"),
-        output_swing: quantity(10, "V", "RL >= 2 kohm, VS = +/-15 V", "p. 15 electrical characteristics", "minimum"),
+        output_swing: {
+          column_semantics: {
+            minimum: { column: "MIN", published: true, applies_to: "minimum_25c" },
+            typical: { column: "TYP", published: true, applies_to: "typical_25c" },
+            maximum: { column: "MAX", published: false, conditions: "No maximum output-swing value is published", page_reference: "p. 15 electrical characteristics", source_kind: "not_published" }
+          },
+          minimum_25c: quantity(12, "V", "RL = 10 kohm, VS = +/-15 V, TA = 25 degC", "p. 15 electrical characteristics, MIN column", "minimum"),
+          typical_25c: quantity(13.5, "V", "RL = 10 kohm, VS = +/-15 V, TA = 25 degC", "p. 15 electrical characteristics, TYP column", "typical"),
+          minimum_full_temperature_rl10k: quantity(12, "V", "RL >= 10 kohm, VS = +/-15 V, TA = full range", "p. 15 electrical characteristics, MIN column", "minimum"),
+          minimum_full_temperature_rl2k: quantity(10, "V", "RL >= 2 kohm, VS = +/-15 V, TA = full range", "p. 15 electrical characteristics, MIN column", "minimum")
+        },
         ilim: quantity(40e-3, "A", "Short-circuit current at 25 degC, digitized classic-device curve", "p. 23 fig. 5-34", "digitized_typical_curve"),
         cmrr_db: quantity(100, "dB", "VIC = VICR(min), VO = 0", "p. 15 electrical characteristics", "typical"),
         psrr_db: quantity(100, "dB", "VS = +/-9 V to +/-18 V, VO = 0", "p. 15 electrical characteristics", "typical"),
@@ -343,7 +353,11 @@ export const PARTS = {
         phase_margin: quantity(56, "deg", "G = +1, RL = 10 kohm, CL = 20 pF", "p. 16 electrical characteristics", "typical"),
         rout: quantity(125, "ohm", "f = 1 MHz, IO = 0", "p. 16 electrical characteristics", "typical"),
         supply_positive: quantity(15, "V", "Electrical characteristics test supply", "p. 15 section 5.8 heading"),
-        supply_negative: quantity(-15, "V", "Electrical characteristics test supply", "p. 15 section 5.8 heading")
+        supply_negative: quantity(-15, "V", "Electrical characteristics test supply", "p. 15 section 5.8 heading"),
+        supply_voltage_total: {
+          minimum: quantity(4.5, "V", "All packages except NS and PS and all devices except TL07xM", "p. 11 recommended operating conditions, MIN column", "minimum"),
+          maximum: quantity(40, "V", "All packages except NS and PS and all devices except TL07xM", "p. 11 recommended operating conditions, MAX column", "maximum")
+        }
       }
     },
     component: {
@@ -359,10 +373,12 @@ export const PARTS = {
       omissions: [
         "Output distortion, crossover distortion, input common-mode failure, input protection, and overload recovery are not fitted.",
         "PSRR and CMRR are frequency-independent constants.",
-        "The frequency response is a two-pole approximation above the unity-gain frequency.",
+        "The frequency response is a two-pole approximation above the unity-gain frequency. FP2 is derived from the 56 degree typical phase margin but closed-loop overshoot is not independently fitted.",
         "Only broadband input voltage noise is modelled; flicker and current noise are omitted.",
         "No self-heating or temperature coefficients are modelled.",
-        "Input offset uses the datasheet typical and does not represent production spread."
+        "Input offset uses the datasheet typical and does not represent production spread.",
+        "Output rail drop is fitted to the 25 degC typical swing at RL = 10 kohm. The datasheet publishes only minimum swing, not a typical value, at RL >= 2 kohm.",
+        "CC = 30 pF, CDIF = 1 pF, RE = 1 Mohm, CP2 = 1 pF, RQ = 1 Mohm, and the 300.15 K noise normalization are held at default internal archetype values."
       ]
     }
   }

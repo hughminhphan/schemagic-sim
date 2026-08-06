@@ -197,7 +197,7 @@ function modelText(ctx, fitted) {
     return `${header}* Fit: native ngspice-46 in scipy.optimize.least_squares, diff_step=1e-4\n.model ${ctx.part.component.modelName} VDMOS(${names.map((name) => `${name}=${formatSpice(p[name])}`).join(" ")} RDS=1e9 VJ=0.8 M=0.5 FC=0.5 NBV=1 TNOM=27)\n`;
   }
   if (ctx.part.pipeline === "opamp") {
-    return `${header}* Fit: exactly three native ngspice-46 fixed-point calibration iterations\n* Node order: INP INN VCC VEE OUT\n.subckt ${ctx.part.component.modelName} INP INN VCC VEE OUT\n.param AOL=${formatSpice(p.AOL)} GBW=${formatSpice(p.GBW)} SR=${formatSpice(p.SR)} IBIAS=${formatSpice(p.IBIAS)} IOS=${formatSpice(p.IOS)} VOS=${formatSpice(p.VOS)}\n.param ROUT=${formatSpice(p.ROUT)} ILIM=${formatSpice(p.ILIM)} VDRP_H=${formatSpice(p.VDRP_H)} VDRP_L=${formatSpice(p.VDRP_L)} CC=30p FP2=${formatSpice(p.FP2)}\n.param CMRR=${formatSpice(p.CMRR)} PSRR=${formatSpice(p.PSRR)} VSUP_NOM=${formatSpice(p.VSUP_NOM)} IQ=${formatSpice(p.IQ)} EN=${formatSpice(p.EN)}\nIBP 0 INP DC {IBIAS+IOS/2}\nIBN 0 INN DC {IBIAS-IOS/2}\nCDIF INP INN 1p\nBERR e 0 V = v(INP,INN) + VOS + v(nz) + 0.5*(v(INP)+v(INN))/CMRR + (v(VCC,VEE)-VSUP_NOM)/PSRR\nRE e 0 1meg\nRNZ nz 0 {EN*EN/(4*1.380649e-23*300.15)}\nBGM 0 p I = {SR*CC}*tanh({6.283185307*GBW/SR}*v(e))\nCP p 0 {CC}\nRP p 0 {AOL/(6.283185307*GBW*CC)}\nRP2 p p2 {1/(6.283185307*FP2*1p)}\nCP2 p2 0 1p\nBCLMP q 0 V = min(max(v(p2), v(VEE)+VDRP_L), v(VCC)-VDRP_H)\nRQ q 0 1meg\nBOUT 0 OUT I = ILIM*tanh((v(q)-v(OUT))/(ROUT*ILIM))\nIQVCC VCC VEE DC {IQ}\n.ends ${ctx.part.component.modelName}\n`;
+    return `${header}* Fit: exactly three native ngspice-46 fixed-point calibration iterations\n* Node order: INP INN VCC VEE OUT\n.subckt ${ctx.part.component.modelName} INP INN VCC VEE OUT\n.param AOL=${formatSpice(p.AOL)} GBW=${formatSpice(p.GBW)} SR=${formatSpice(p.SR)} IBIAS=${formatSpice(p.IBIAS)} IOS=${formatSpice(p.IOS)} VOS=${formatSpice(p.VOS)}\n.param ROUT=${formatSpice(p.ROUT)} ILIM=${formatSpice(p.ILIM)} VDRP_H=${formatSpice(p.VDRP_H)} VDRP_L=${formatSpice(p.VDRP_L)} CC=30p FP2=${formatSpice(p.FP2)}\n.param CMRR=${formatSpice(p.CMRR)} PSRR=${formatSpice(p.PSRR)} VSUP_NOM=${formatSpice(p.VSUP_NOM)} IQ=${formatSpice(p.IQ)} EN=${formatSpice(p.EN)}\nIBP 0 INP DC {IBIAS+IOS/2}\nIBN 0 INN DC {IBIAS-IOS/2}\nCDIF INP INN 1p\nBERR e 0 V = v(INP,INN) + VOS + v(nz) + 0.5*(v(INP)+v(INN))/CMRR + (v(VCC,VEE)-VSUP_NOM)/PSRR\nRE e 0 1meg\nRNZ nz 0 {EN*EN/(4*1.380649e-23*300.15)}\nBGM 0 p I = {SR*CC}*tanh({6.283185307*GBW/SR}*v(e))\nCP p 0 {CC}\nRP p 0 {AOL/(6.283185307*GBW*CC)}\nRP2 p p2 {1/(6.283185307*FP2*1p)}\nCP2 p2 0 1p\nBCLMP q 0 V = min(max(v(p2), v(VEE)+min(VDRP_L,0.49*v(VCC,VEE))), v(VCC)-min(VDRP_H,0.49*v(VCC,VEE)))\nRQ q 0 1meg\nBOUT 0 OUT I = ILIM*tanh((v(q)-v(OUT))/(ROUT*ILIM))\nIQVCC VCC VEE DC {IQ}\n.ends ${ctx.part.component.modelName}\n`;
   }
   const optional = [];
   if (p.CJO > 0) optional.push(`CJO=${formatSpice(p.CJO)}`);
@@ -406,34 +406,48 @@ function vdmosTestgen(ctx, model, facts) {
 
 function opampTestgen(ctx, model, facts) {
   const p = facts.parameters;
+  const swing = p.output_swing.typical_25c;
+  const minimumSupply = p.supply_voltage_total.minimum;
+  const minimumRail = minimumSupply.value / 2;
   const tests = [];
-  writeBench(ctx, "open_loop_gain.cir", `OpenCircuit factory test: ${ctx.part.slug} open-loop DC-servo\n${model}\nVCC vcc 0 DC 15\nVEE vee 0 DC -15\nVIN sig 0 DC 0 AC 1\nX1 sig inn vcc vee out ${ctx.part.component.modelName}\nLSERVO out inn 1G\nCSERVO inn 0 1G\nRL out 0 2k\n.ac dec 40 0.01 300Meg\n.end\n`);
+  fs.rmSync(path.join(ctx.packageDir, "tests", "negative_swing.cir"), { force: true });
+
+  writeBench(ctx, "open_loop_gain.cir", `OpenCircuit factory test: ${ctx.part.slug} open-loop DC-servo\n${model}\n.temp 25\nVCC vcc 0 DC 15\nVEE vee 0 DC -15\nVIN sig 0 DC 0 AC 1\nX1 sig inn vcc vee out ${ctx.part.component.modelName}\nLSERVO out inn 1G\nCSERVO inn 0 1G\nRL out 0 2k\n.ac dec 40 0.01 300Meg\n.end\n`);
   tests.push(testRecord("open_loop_gain.cir", "ac_small_signal", [
     expectation("open_loop_gain_db", "db:first(v(out))", 20 * Math.log10(p.aol.value), "dB", 0.6, 0, p.aol.page_reference),
     expectation("unity_gain_bandwidth", "frequency_at_magnitude(v(out),1)", p.gbw.value, "Hz", 0, 0.20, p.gbw.page_reference)
   ]));
 
-  writeBench(ctx, "offset_and_bias.cir", `OpenCircuit factory test: ${ctx.part.slug} offset and bias\n${model}\nVCC vcc 0 DC 15\nVEE vee 0 DC -15\nX1 p1 n1 vcc vee out1 ${ctx.part.component.modelName}\nVP1 p1 0 DC 0\nVN1 n1 0 DC 0\nRL1 out1 0 2k\nX2 sig2 inn2 vcc vee out2 ${ctx.part.component.modelName}\nVS2 sig2 0 DC 0\nRF2 out2 inn2 9k\nRG2 inn2 0 1k\nRL2 out2 0 2k\n.op\n.end\n`);
+  writeBench(ctx, "offset_and_bias.cir", `OpenCircuit factory test: ${ctx.part.slug} offset and bias\n${model}\n.temp 25\nVCC vcc 0 DC 15\nVEE vee 0 DC -15\nX1 p1 n1 vcc vee out1 ${ctx.part.component.modelName}\nVP1 p1 0 DC 0\nVN1 n1 0 DC 0\nRL1 out1 0 2k\nX2 sig2 inn2 vcc vee out2 ${ctx.part.component.modelName}\nVS2 sig2 0 DC 0\nRF2 out2 inn2 9k\nRG2 inn2 0 1k\nRL2 out2 0 2k\n.op\n.end\n`);
   tests.push(testRecord("offset_and_bias.cir", "operating_point", [
     expectation("input_offset", "scale:last(v(out2),0.1)", p.vos.value, "V", 1e-4, 0.05, p.vos.page_reference),
     expectation("input_bias_positive", "abs:last(i(vp1))", p.ibias.value + p.ios.value / 2, "A", 1e-13, 0.05, p.ibias.page_reference),
     expectation("input_bias_negative", "abs:last(i(vn1))", p.ibias.value - p.ios.value / 2, "A", 1e-13, 0.05, p.ibias.page_reference)
   ]));
 
-  writeBench(ctx, "slew_and_swing.cir", `OpenCircuit factory test: ${ctx.part.slug} positive slew and swing\n${model}\nVCC vcc 0 DC 15\nVEE vee 0 DC -15\nVIN sig 0 PULSE(0 14 1u 1n 1n 1u 4u)\nX1 sig out vcc vee out ${ctx.part.component.modelName}\nRL out 0 2k\n.tran 2n 3u\n.end\n`);
+  writeBench(ctx, "slew_and_swing.cir", `OpenCircuit factory test: ${ctx.part.slug} positive slew\n${model}\n.temp 25\nVCC vcc 0 DC 15\nVEE vee 0 DC -15\nVIN sig 0 PULSE(0 14 1u 1n 1n 1u 4u)\nX1 sig out vcc vee out ${ctx.part.component.modelName}\nRL out 0 2k\n.tran 2n 3u\n.end\n`);
   tests.push(testRecord("slew_and_swing.cir", "transient", [
-    expectation("rising_slew", "slew(v(out),2,7,rising)", p.sr.value, "V/s", 0, 0.15, p.sr.page_reference),
-    expectation("positive_swing", "max(v(out))", p.output_swing.value, "V", 0.1, 0.07, p.output_swing.page_reference)
-  ]));
-  writeBench(ctx, "negative_swing.cir", `OpenCircuit factory test: ${ctx.part.slug} negative swing\n${model}\nVCC vcc 0 DC 15\nVEE vee 0 DC -15\nVIN sig 0 PULSE(0 -14 1u 1n 1n 1u 4u)\nX1 sig out vcc vee out ${ctx.part.component.modelName}\nRL out 0 2k\n.tran 2n 3u\n.end\n`);
-  tests.push(testRecord("negative_swing.cir", "transient", [
-    expectation("negative_swing", "min(v(out))", -p.output_swing.value, "V", 0.1, 0.07, p.output_swing.page_reference)
+    expectation("rising_slew", "slew(v(out),2,7,rising)", p.sr.value, "V/s", 0, 0.15, p.sr.page_reference)
   ]));
 
-  writeBench(ctx, "short_circuit.cir", `OpenCircuit factory test: ${ctx.part.slug} short circuit\n${model}\nVCC vcc 0 DC 15\nVEE vee 0 DC -15\nVIN sig 0 DC 7.5\nX1 sig inn vcc vee out ${ctx.part.component.modelName}\nRF out inn 1Meg\nVSHORT out 0 DC 0\n.op\n.end\n`);
+  writeBench(ctx, "output_swing.cir", `OpenCircuit factory test: ${ctx.part.slug} 25 degC typical output swing\n${model}\n.temp 25\nVCC vcc 0 DC 15\nVEE vee 0 DC -15\nVPOS pos 0 DC 14\nXPOS pos outp vcc vee outp ${ctx.part.component.modelName}\nRLP outp 0 10k\nVNEG neg 0 DC -14\nXNEG neg outn vcc vee outn ${ctx.part.component.modelName}\nRLN outn 0 10k\n.op\n.end\n`);
+  tests.push(testRecord("output_swing.cir", "operating_point", [
+    expectation("positive_swing_typical_25c", "last(v(outp))", swing.value, "V", 0.1, 0.05, swing.page_reference),
+    expectation("negative_swing_typical_25c", "last(v(outn))", -swing.value, "V", 0.1, 0.05, swing.page_reference)
+  ]));
+
+  writeBench(ctx, "minimum_supply_follower.cir", `OpenCircuit factory test: ${ctx.part.slug} minimum rated supply follower\n${model}\n.temp 25\nVCC vcc 0 DC ${formatSpice(minimumRail)}\nVEE vee 0 DC ${formatSpice(-minimumRail)}\nVINN inn_sig 0 DC -0.25\nXN inn_sig outn vcc vee outn ${ctx.part.component.modelName}\nRLN outn 0 10k\nVINZ zero_sig 0 DC 0\nXZ zero_sig outz vcc vee outz ${ctx.part.component.modelName}\nRLZ outz 0 10k\nVINP inp_sig 0 DC 0.25\nXP inp_sig outp vcc vee outp ${ctx.part.component.modelName}\nRLP outp 0 10k\n.op\n.end\n`);
+  const boundaryCitation = `${minimumSupply.page_reference}; ${p.vos.page_reference}`;
+  tests.push(testRecord("minimum_supply_follower.cir", "operating_point", [
+    expectation("minimum_supply_follow_negative", "last(v(outn))", -0.25 + p.vos.value, "V", 0.01, 0.02, boundaryCitation),
+    expectation("minimum_supply_follow_zero", "last(v(outz))", p.vos.value, "V", 0.01, 0.02, boundaryCitation),
+    expectation("minimum_supply_follow_positive", "last(v(outp))", 0.25 + p.vos.value, "V", 0.01, 0.02, boundaryCitation)
+  ]));
+
+  writeBench(ctx, "short_circuit.cir", `OpenCircuit factory test: ${ctx.part.slug} short circuit\n${model}\n.temp 25\nVCC vcc 0 DC 15\nVEE vee 0 DC -15\nVIN sig 0 DC 7.5\nX1 sig inn vcc vee out ${ctx.part.component.modelName}\nRF out inn 1Meg\nVSHORT out 0 DC 0\n.op\n.end\n`);
   tests.push(testRecord("short_circuit.cir", "operating_point", [expectation("short_circuit_current", "abs:last(i(vshort))", p.ilim.value, "A", 0, 0.10, p.ilim.page_reference)]));
 
-  writeBench(ctx, "cmrr.cir", `OpenCircuit factory test: ${ctx.part.slug} CMRR\n${model}\nVCC vcc 0 DC 15\nVEE vee 0 DC -15\nVCM sig 0 DC 0 AC 1\nX1 sig inn vcc vee out ${ctx.part.component.modelName}\nLSERVO out inn 1G\nCSERVO inn sig 1G\nRL out 0 2k\n.ac lin 1 0.01 0.01\n.end\n`);
+  writeBench(ctx, "cmrr.cir", `OpenCircuit factory test: ${ctx.part.slug} CMRR\n${model}\n.temp 25\nVCC vcc 0 DC 15\nVEE vee 0 DC -15\nVCM sig 0 DC 0 AC 1\nX1 sig inn vcc vee out ${ctx.part.component.modelName}\nLSERVO out inn 1G\nCSERVO inn sig 1G\nRL out 0 2k\n.ac lin 1 0.01 0.01\n.end\n`);
   tests.push(testRecord("cmrr.cir", "ac_small_signal", [expectation("common_mode_gain", "magnitude:last(v(out))", p.aol.value / (10 ** (p.cmrr_db.value / 20)), "V/V", 0, 0.30, p.cmrr_db.page_reference)]));
   return tests;
 }
@@ -728,9 +742,11 @@ function stageCard(ctx) {
     if (Object.hasOwn(row, "current_a")) return `| forward voltage at ${row.current_a.toExponential(3)} A | ${row.datasheet_voltage_v.toExponential(6)} | ${row.fitted_voltage_v.toExponential(6)} | V | ${(100 * row.relative_error).toFixed(3)}% | ${row.citation} |`;
     return `| ${row.quantity} | ${Number(row.datasheet_value).toExponential(6)} | ${Number(row.fitted_value).toExponential(6)} | ${row.unit} | ${(100 * row.relative_error).toFixed(3)}% | ${row.citation} |`;
   }).join("\n");
-  const parameterRows = Object.entries(fitted.parameters).map(([name, value]) => `| ${name} | ${Number(value).toExponential(8)} |`).join("\n");
+  const parameterRows = Object.entries(fitted.parameters).map(([name, value]) => `| ${name} | ${Number(value).toExponential(8)} | ${fitted.parameter_metadata?.[name]?.status ?? "fitted or derived"} |`).join("\n");
+  const heldDefaults = (fitted.held_defaults ?? []).map((item) => `| ${item.parameter} | ${Number(item.value).toExponential(8)} | ${item.unit} | ${item.reason} |`).join("\n");
+  const heldDefaultsSection = heldDefaults ? `\n## Held defaults\n\n| Parameter | Value | Unit | Status |\n| --- | ---: | --- | --- |\n${heldDefaults}\n` : "";
   const omissions = ctx.part.component.omissions.map((item) => `- ${item}`).join("\n");
-  const card = `# ${ctx.part.identity.canonical_mpn} model card\n\n## Identity\n\n- Manufacturer: ${ctx.part.identity.manufacturer}\n- Description: ${ctx.part.identity.description}\n- Electrical family: ${ctx.part.identity.electrical_family}\n- Fidelity tier: F2, datasheet-fitted\n- Independent reviewer: pending-review\n\n## Provenance\n\n- Datasheet: ${source.url}\n- Revision: ${source.revision}\n- Accessed: ${source.accessed_date}\n- Referenced pages: ${source.pages_referenced.join(", ")}\n- SHA-256: \`${source.sha256}\`\n- Basis: original model generated from public factual specifications\n- Vendor SPICE models used: none\n\n## Domain coverage\n\n| Domain | Coverage |\n| --- | --- |\n${coverageTable(ctx.part.component.domain_coverage)}\n\n## Fitted parameters\n\n| Parameter | Value |\n| --- | ---: |\n${parameterRows}\n\n## Fitted versus datasheet\n\n| Quantity | Datasheet | Fitted | Unit | Relative error | Citation |\n| --- | ---: | ---: | --- | ---: | --- |\n${rows}\n\nWorst fitting error: ${(100 * fitted.worst_relative_error.value).toFixed(3)}% for ${fitted.worst_relative_error.quantity}.\n\nNative and WASM agreement: all ${validation.benches.length} benches passed. Worst reported relative delta was ${validation.worst_native_wasm_relative_delta.toExponential(3)} and worst absolute delta was ${validation.worst_native_wasm_absolute_delta.toExponential(3)}.\n\n## Known omissions\n\n${omissions}\n\n## Licence\n\nMIT. See \`LICENSE\`. The model is original work generated from public factual specifications and is not copied or adapted from a vendor SPICE model.\n`;
+  const card = `# ${ctx.part.identity.canonical_mpn} model card\n\n## Identity\n\n- Manufacturer: ${ctx.part.identity.manufacturer}\n- Description: ${ctx.part.identity.description}\n- Electrical family: ${ctx.part.identity.electrical_family}\n- Fidelity tier: F2, datasheet-fitted\n- Independent reviewer: pending-review\n\n## Provenance\n\n- Datasheet: ${source.url}\n- Revision: ${source.revision}\n- Accessed: ${source.accessed_date}\n- Referenced pages: ${source.pages_referenced.join(", ")}\n- SHA-256: \`${source.sha256}\`\n- Basis: original model generated from public factual specifications\n- Vendor SPICE models used: none\n\n## Domain coverage\n\n| Domain | Coverage |\n| --- | --- |\n${coverageTable(ctx.part.component.domain_coverage)}\n\n## Model parameters\n\n| Parameter | Value | Status |\n| --- | ---: | --- |\n${parameterRows}\n${heldDefaultsSection}\n## Fitted versus datasheet\n\n| Quantity | Datasheet | Fitted | Unit | Relative error | Citation |\n| --- | ---: | ---: | --- | ---: | --- |\n${rows}\n\nWorst fitting error: ${(100 * fitted.worst_relative_error.value).toFixed(3)}% for ${fitted.worst_relative_error.quantity}.\n\nNative and WASM agreement: all ${validation.benches.length} benches passed. Worst reported relative delta was ${validation.worst_native_wasm_relative_delta.toExponential(3)} and worst absolute delta was ${validation.worst_native_wasm_absolute_delta.toExponential(3)}.\n\n## Known omissions\n\n${omissions}\n\n## Licence\n\nMIT. See \`LICENSE\`. The model is original work generated from public factual specifications and is not copied or adapted from a vendor SPICE model.\n`;
   fs.writeFileSync(path.join(ctx.packageDir, "MODEL_CARD.md"), card);
   run("node", [packageValidator, ctx.packageDir]);
   console.log(`card ${ctx.part.slug}: MODEL_CARD.md`);

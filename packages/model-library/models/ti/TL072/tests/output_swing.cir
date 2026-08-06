@@ -1,4 +1,4 @@
-OpenCircuit factory test: TL072 offset and bias
+OpenCircuit factory test: TL072 25 degC typical output swing
 * OpenCircuit Model Factory v0.1.0
 * Original work generated from public factual specifications.
 * This model is not a copy of, or adaptation from, any vendor SPICE model.
@@ -30,14 +30,11 @@ IQVCC VCC VEE DC {IQ}
 .temp 25
 VCC vcc 0 DC 15
 VEE vee 0 DC -15
-X1 p1 n1 vcc vee out1 OC_TI_TL072
-VP1 p1 0 DC 0
-VN1 n1 0 DC 0
-RL1 out1 0 2k
-X2 sig2 inn2 vcc vee out2 OC_TI_TL072
-VS2 sig2 0 DC 0
-RF2 out2 inn2 9k
-RG2 inn2 0 1k
-RL2 out2 0 2k
+VPOS pos 0 DC 14
+XPOS pos outp vcc vee outp OC_TI_TL072
+RLP outp 0 10k
+VNEG neg 0 DC -14
+XNEG neg outn vcc vee outn OC_TI_TL072
+RLN outn 0 10k
 .op
 .end

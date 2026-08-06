@@ -3,10 +3,10 @@
   "validation_date": "2026-08-06",
   "native_wasm_all_pass": true,
   "expectations_all_pass": true,
-  "expectation_pass_count": 10,
+  "expectation_pass_count": 13,
   "expectation_fail_count": 0,
-  "worst_native_wasm_relative_delta": 5.197866577923973e-12,
-  "worst_native_wasm_absolute_delta": 2.5295321393059567e-10,
+  "worst_native_wasm_relative_delta": 4.369877172085214e-11,
+  "worst_native_wasm_absolute_delta": 3.0442606657743454e-8,
   "benches": [
     {
       "test_netlist": "open_loop_gain.cir",
@@ -68,27 +68,55 @@
           "value": 19999472.499679074,
           "error": 527.5003209263086,
           "allowed": 3000000
-        },
-        {
-          "name": "positive_swing",
-          "pass": true,
-          "value": 9.428171113684197,
-          "error": 0.571828886315803,
-          "allowed": 0.7000000000000001
         }
       ]
     },
     {
-      "test_netlist": "negative_swing.cir",
-      "analysis": "tran",
+      "test_netlist": "output_swing.cir",
+      "analysis": "op",
       "native_wasm_pass": true,
       "checks": [
         {
-          "name": "negative_swing",
+          "name": "positive_swing_typical_25c",
           "pass": true,
-          "value": -9.428171098827727,
-          "error": 0.5718289011722728,
-          "allowed": 0.7000000000000001
+          "value": 13.499999964574064,
+          "error": 3.542593596250754e-8,
+          "allowed": 0.675
+        },
+        {
+          "name": "negative_swing_typical_25c",
+          "pass": true,
+          "value": -13.499999964531778,
+          "error": 3.546822213706946e-8,
+          "allowed": 0.675
+        }
+      ]
+    },
+    {
+      "test_netlist": "minimum_supply_follower.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "minimum_supply_follow_negative",
+          "pass": true,
+          "value": -0.24725623454644435,
+          "error": 0.00025623454644435606,
+          "allowed": 0.01
+        },
+        {
+          "name": "minimum_supply_follow_zero",
+          "pass": true,
+          "value": 0.002744999828476573,
+          "error": 0.000255000171523427,
+          "allowed": 0.01
+        },
+        {
+          "name": "minimum_supply_follow_positive",
+          "pass": true,
+          "value": 0.2527462342033973,
+          "error": 0.0002537657966026896,
+          "allowed": 0.01
         }
       ]
     },
@@ -100,8 +128,8 @@
         {
           "name": "short_circuit_current",
           "pass": true,
-          "value": 0.03856110326553268,
-          "error": 0.0014388967344673223,
+          "value": 0.03966368664824575,
+          "error": 0.00033631335175424854,
           "allowed": 0.004
         }
       ]
