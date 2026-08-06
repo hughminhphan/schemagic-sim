@@ -1,0 +1,14 @@
+OpenCircuit factory test: FQP30N06L body diode
+* OpenCircuit Model Factory v0.1.0
+* Original work generated from public factual specifications.
+* This model is not a copy of, or adaptation from, any vendor SPICE model.
+* Source: https://www.onsemi.cn/download/data-sheet/pdf/fqp30n06l-d.pdf
+* Revision: FQP30N06L Rev. C1, November 2013
+* Fit: native ngspice-46 in scipy.optimize.least_squares, diff_step=1e-4
+.model OC_ONSEMI_FQP30N06L VDMOS(VTO=1 KP=17.4039567754 THETA=0 LAMBDA=.003 RD=0.01485 RS=0.0054 RG=0.0001 RDS=1e9 CGS=7.500000000000e-10 CGDMAX=9.500000000000e-10 CGDMIN=2.000000000000e-11 A=0.440658282321 CJO=1.249359836076e-09 VJ=.8 M=.5 FC=.5 IS=4.168538765080e-09 N=1.5 RB=0.0054 TT=0 BV=60 IBV=2.500000000000e-04 NBV=1 RTHJC=1.9 RTHCA=60.6 TNOM=27)
+.temp 25
+M1 d g 0 OC_ONSEMI_FQP30N06L
+ISD d 0 DC 32
+VG g 0 DC 0
+.op
+.end

@@ -1,0 +1,407 @@
+{
+  "schema_version": "1.0.0",
+  "extraction_method": "official datasheet inspection plus manual structuring and curve digitization",
+  "column_semantics": {
+    "minimum": "MIN column or guaranteed lower bound",
+    "typical": "TYP column or 25 degC typical curve",
+    "maximum": "MAX column or guaranteed upper bound",
+    "digitized_typical_curve": "25 degC typical figure read"
+  },
+  "fit_conditions": {
+    "temperature": {
+      "value": 25,
+      "unit": "degC",
+      "conditions": "TJ/TC = 25 degC unless stated",
+      "page_reference": "p. 2 Electrical Characteristics heading",
+      "source_kind": "typical"
+    }
+  },
+  "threshold": {
+    "minimum": {
+      "value": 1.0,
+      "unit": "V",
+      "conditions": "VDS = VGS, ID = 250 uA",
+      "page_reference": "p. 2 Electrical Characteristics, VGS(th), MIN column",
+      "source_kind": "minimum"
+    },
+    "typical": {
+      "value": null,
+      "unit": "V",
+      "conditions": "No TYP value is published; fitter uses the arithmetic midpoint only as a seed or fixed F1 default",
+      "page_reference": "p. 2 Electrical Characteristics, VGS(th), TYP column blank",
+      "source_kind": "not_published"
+    },
+    "maximum": {
+      "value": 2.5,
+      "unit": "V",
+      "conditions": "VDS = VGS, ID = 250 uA",
+      "page_reference": "p. 2 Electrical Characteristics, VGS(th), MAX column",
+      "source_kind": "maximum"
+    }
+  },
+  "rdson_points": [
+    {
+      "vgs": {
+        "value": 10,
+        "unit": "V",
+        "conditions": "ID magnitude = 16 A",
+        "page_reference": "p. 2 Electrical Characteristics, RDS(on), TYP and MAX columns",
+        "source_kind": "typical"
+      },
+      "current": {
+        "value": 16,
+        "unit": "A",
+        "conditions": "VGS magnitude = 10 V",
+        "page_reference": "p. 2 Electrical Characteristics, RDS(on), TYP and MAX columns",
+        "source_kind": "typical"
+      },
+      "resistance": {
+        "value": 0.027,
+        "unit": "ohm",
+        "conditions": "VGS magnitude = 10 V, ID magnitude = 16 A, 25 degC",
+        "page_reference": "p. 2 Electrical Characteristics, RDS(on), TYP and MAX columns",
+        "source_kind": "typical"
+      },
+      "maximum_resistance": {
+        "value": 0.035,
+        "unit": "ohm",
+        "conditions": "VGS magnitude = 10 V, ID magnitude = 16 A",
+        "page_reference": "p. 2 Electrical Characteristics, RDS(on), TYP and MAX columns",
+        "source_kind": "maximum"
+      }
+    },
+    {
+      "vgs": {
+        "value": 5,
+        "unit": "V",
+        "conditions": "ID magnitude = 16 A",
+        "page_reference": "p. 2 Electrical Characteristics, RDS(on), TYP and MAX columns",
+        "source_kind": "typical"
+      },
+      "current": {
+        "value": 16,
+        "unit": "A",
+        "conditions": "VGS magnitude = 5 V",
+        "page_reference": "p. 2 Electrical Characteristics, RDS(on), TYP and MAX columns",
+        "source_kind": "typical"
+      },
+      "resistance": {
+        "value": 0.035,
+        "unit": "ohm",
+        "conditions": "VGS magnitude = 5 V, ID magnitude = 16 A, 25 degC",
+        "page_reference": "p. 2 Electrical Characteristics, RDS(on), TYP and MAX columns",
+        "source_kind": "typical"
+      },
+      "maximum_resistance": {
+        "value": 0.045,
+        "unit": "ohm",
+        "conditions": "VGS magnitude = 5 V, ID magnitude = 16 A",
+        "page_reference": "p. 2 Electrical Characteristics, RDS(on), TYP and MAX columns",
+        "source_kind": "maximum"
+      }
+    }
+  ],
+  "capacitances": {
+    "ciss": {
+      "value": 8e-10,
+      "unit": "F",
+      "conditions": "VGS = 0, VDS magnitude = 25 V, f = 1 MHz",
+      "page_reference": "p. 2 Electrical Characteristics, capacitance TYP columns",
+      "source_kind": "typical"
+    },
+    "coss": {
+      "value": 2.7e-10,
+      "unit": "F",
+      "conditions": "VGS = 0, VDS magnitude = 25 V, f = 1 MHz",
+      "page_reference": "p. 2 Electrical Characteristics, capacitance TYP columns",
+      "source_kind": "typical"
+    },
+    "crss": {
+      "value": 5e-11,
+      "unit": "F",
+      "conditions": "VGS = 0, VDS magnitude = 25 V, f = 1 MHz",
+      "page_reference": "p. 2 Electrical Characteristics, capacitance TYP columns",
+      "source_kind": "typical"
+    },
+    "vds_test": {
+      "value": 25,
+      "unit": "V",
+      "conditions": "capacitance table bias magnitude",
+      "page_reference": "p. 2 Electrical Characteristics, capacitance TYP columns",
+      "source_kind": "typical"
+    },
+    "crss_curve": [
+      {
+        "vds": {
+          "value": 0.1,
+          "unit": "V",
+          "conditions": "VGS = 0, f = 1 MHz",
+          "page_reference": "p. 3 Fig. 5",
+          "source_kind": "typical"
+        },
+        "crss": {
+          "value": 9.5e-10,
+          "unit": "F",
+          "conditions": "VDS magnitude = 0.1 V, VGS = 0, f = 1 MHz",
+          "page_reference": "p. 3 Fig. 5, Crss trace, digitized",
+          "source_kind": "digitized_typical_curve"
+        }
+      },
+      {
+        "vds": {
+          "value": 0.2,
+          "unit": "V",
+          "conditions": "VGS = 0, f = 1 MHz",
+          "page_reference": "p. 3 Fig. 5",
+          "source_kind": "typical"
+        },
+        "crss": {
+          "value": 8.2e-10,
+          "unit": "F",
+          "conditions": "VDS magnitude = 0.2 V, VGS = 0, f = 1 MHz",
+          "page_reference": "p. 3 Fig. 5, Crss trace, digitized",
+          "source_kind": "digitized_typical_curve"
+        }
+      },
+      {
+        "vds": {
+          "value": 0.5,
+          "unit": "V",
+          "conditions": "VGS = 0, f = 1 MHz",
+          "page_reference": "p. 3 Fig. 5",
+          "source_kind": "typical"
+        },
+        "crss": {
+          "value": 6.5e-10,
+          "unit": "F",
+          "conditions": "VDS magnitude = 0.5 V, VGS = 0, f = 1 MHz",
+          "page_reference": "p. 3 Fig. 5, Crss trace, digitized",
+          "source_kind": "digitized_typical_curve"
+        }
+      },
+      {
+        "vds": {
+          "value": 1,
+          "unit": "V",
+          "conditions": "VGS = 0, f = 1 MHz",
+          "page_reference": "p. 3 Fig. 5",
+          "source_kind": "typical"
+        },
+        "crss": {
+          "value": 5.2e-10,
+          "unit": "F",
+          "conditions": "VDS magnitude = 1 V, VGS = 0, f = 1 MHz",
+          "page_reference": "p. 3 Fig. 5, Crss trace, digitized",
+          "source_kind": "digitized_typical_curve"
+        }
+      },
+      {
+        "vds": {
+          "value": 2,
+          "unit": "V",
+          "conditions": "VGS = 0, f = 1 MHz",
+          "page_reference": "p. 3 Fig. 5",
+          "source_kind": "typical"
+        },
+        "crss": {
+          "value": 4e-10,
+          "unit": "F",
+          "conditions": "VDS magnitude = 2 V, VGS = 0, f = 1 MHz",
+          "page_reference": "p. 3 Fig. 5, Crss trace, digitized",
+          "source_kind": "digitized_typical_curve"
+        }
+      },
+      {
+        "vds": {
+          "value": 5,
+          "unit": "V",
+          "conditions": "VGS = 0, f = 1 MHz",
+          "page_reference": "p. 3 Fig. 5",
+          "source_kind": "typical"
+        },
+        "crss": {
+          "value": 2.5e-10,
+          "unit": "F",
+          "conditions": "VDS magnitude = 5 V, VGS = 0, f = 1 MHz",
+          "page_reference": "p. 3 Fig. 5, Crss trace, digitized",
+          "source_kind": "digitized_typical_curve"
+        }
+      },
+      {
+        "vds": {
+          "value": 10,
+          "unit": "V",
+          "conditions": "VGS = 0, f = 1 MHz",
+          "page_reference": "p. 3 Fig. 5",
+          "source_kind": "typical"
+        },
+        "crss": {
+          "value": 1.5e-10,
+          "unit": "F",
+          "conditions": "VDS magnitude = 10 V, VGS = 0, f = 1 MHz",
+          "page_reference": "p. 3 Fig. 5, Crss trace, digitized",
+          "source_kind": "digitized_typical_curve"
+        }
+      },
+      {
+        "vds": {
+          "value": 25,
+          "unit": "V",
+          "conditions": "VGS = 0, f = 1 MHz",
+          "page_reference": "p. 3 Fig. 5",
+          "source_kind": "typical"
+        },
+        "crss": {
+          "value": 5e-11,
+          "unit": "F",
+          "conditions": "VDS magnitude = 25 V, VGS = 0, f = 1 MHz",
+          "page_reference": "p. 3 Fig. 5, Crss trace, digitized",
+          "source_kind": "digitized_typical_curve"
+        }
+      },
+      {
+        "vds": {
+          "value": 60,
+          "unit": "V",
+          "conditions": "VGS = 0, f = 1 MHz",
+          "page_reference": "p. 3 Fig. 5",
+          "source_kind": "typical"
+        },
+        "crss": {
+          "value": 2e-11,
+          "unit": "F",
+          "conditions": "VDS magnitude = 60 V, VGS = 0, f = 1 MHz",
+          "page_reference": "p. 3 Fig. 5, Crss trace, digitized",
+          "source_kind": "digitized_typical_curve"
+        }
+      }
+    ]
+  },
+  "body_diode": {
+    "typical_vsd": {
+      "value": 1.05,
+      "unit": "V",
+      "conditions": "IS magnitude = 32 A, VGS = 0, 25 degC",
+      "page_reference": "p. 3 Fig. 4, 25 degC curve, digitized",
+      "source_kind": "digitized_typical_curve"
+    },
+    "maximum_vsd": {
+      "value": 1.5,
+      "unit": "V",
+      "conditions": "IS magnitude = 32 A, VGS = 0, 25 degC",
+      "page_reference": "p. 2 Drain-Source Diode table, VSD MAX column",
+      "source_kind": "maximum"
+    },
+    "current": {
+      "value": 32,
+      "unit": "A",
+      "conditions": "body-diode forward current magnitude",
+      "page_reference": "p. 2 Drain-Source Diode table, VSD MAX column",
+      "source_kind": "typical"
+    },
+    "trr": {
+      "value": 6e-08,
+      "unit": "s",
+      "conditions": "IF magnitude = 32 A at published di/dt",
+      "page_reference": "p. 2 Drain-Source Diode table, trr TYP column",
+      "source_kind": "typical"
+    }
+  },
+  "breakdown": {
+    "voltage": {
+      "value": 60,
+      "unit": "V",
+      "conditions": "VGS = 0, ID magnitude = 250 uA",
+      "page_reference": "p. 2 Electrical Characteristics, breakdown MIN column",
+      "source_kind": "minimum"
+    },
+    "current": {
+      "value": 0.00025,
+      "unit": "A",
+      "conditions": "breakdown definition current magnitude",
+      "page_reference": "p. 2 Electrical Characteristics, breakdown condition",
+      "source_kind": "typical"
+    }
+  },
+  "thermal": {
+    "rthjc": {
+      "value": 1.9,
+      "unit": "K/W",
+      "conditions": "junction to case",
+      "page_reference": "p. 1 Thermal Characteristics, MAX column",
+      "source_kind": "maximum"
+    },
+    "rthja": {
+      "value": 62.5,
+      "unit": "K/W",
+      "conditions": "junction to ambient",
+      "page_reference": "p. 1 Thermal Characteristics, MAX column",
+      "source_kind": "maximum"
+    }
+  },
+  "off_state": {
+    "vds": {
+      "value": 60,
+      "unit": "V",
+      "conditions": "VGS = 0, 25 degC",
+      "page_reference": "p. 2 Electrical Characteristics, IDSS condition",
+      "source_kind": "typical"
+    },
+    "maximum_current": {
+      "value": 1e-06,
+      "unit": "A",
+      "conditions": "VDS magnitude = 60 V, VGS = 0, 25 degC",
+      "page_reference": "p. 2 Electrical Characteristics, IDSS MAX column",
+      "source_kind": "maximum"
+    }
+  },
+  "gate_charge": {
+    "charge": {
+      "value": 1.5e-08,
+      "unit": "C",
+      "conditions": "ID magnitude = 32 A, VDS magnitude = 48 V, VGS magnitude = 5 V",
+      "page_reference": "p. 2 Switching Characteristics, Qg TYP column",
+      "source_kind": "typical"
+    },
+    "vgs": {
+      "value": 5,
+      "unit": "V",
+      "conditions": "gate-charge endpoint magnitude",
+      "page_reference": "p. 2 Switching Characteristics, Qg TYP column",
+      "source_kind": "typical"
+    },
+    "vds": {
+      "value": 48,
+      "unit": "V",
+      "conditions": "gate-charge drain-bias magnitude",
+      "page_reference": "p. 2 Switching Characteristics, Qg TYP column",
+      "source_kind": "typical"
+    },
+    "current": {
+      "value": 32,
+      "unit": "A",
+      "conditions": "gate-charge load-current magnitude",
+      "page_reference": "p. 2 Switching Characteristics, Qg TYP column",
+      "source_kind": "typical"
+    }
+  },
+  "identity": {
+    "canonical_mpn": "FQP30N06L",
+    "manufacturer": "onsemi",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://www.onsemi.cn/download/data-sheet/pdf/fqp30n06l-d.pdf",
+    "revision": "FQP30N06L Rev. C1, November 2013",
+    "sha256": "f9e48dc14d2ac5dcaa550bee8f663e421cafbf3a17d8f9565d66d7f66592f21d",
+    "accessed_date": "2026-08-07",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "placeholder": false
+  }
+}

@@ -1,0 +1,110 @@
+{
+  "schema_version": "1.0.0",
+  "validation_date": "2026-08-07",
+  "native_wasm_all_pass": true,
+  "expectations_all_pass": true,
+  "expectation_pass_count": 10,
+  "expectation_fail_count": 0,
+  "worst_native_wasm_relative_delta": 4.6711464581808055e-15,
+  "worst_native_wasm_absolute_delta": 8.881784197001252e-16,
+  "benches": [
+    {
+      "test_netlist": "rdson.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "rdson_typical_1",
+          "pass": true,
+          "value": 0.02666679543513929,
+          "error": 0.00033320456486071043,
+          "allowed": 0.00405
+        },
+        {
+          "name": "rdson_typical_2",
+          "pass": true,
+          "value": 0.03523366187087926,
+          "error": 0.00023366187087925372,
+          "allowed": 0.00525
+        },
+        {
+          "name": "rdson_guaranteed_max_1",
+          "pass": true,
+          "value": 0.02666679543513929,
+          "minimum": 0,
+          "maximum": 0.035
+        },
+        {
+          "name": "rdson_guaranteed_max_2",
+          "pass": true,
+          "value": 0.03523366187087926,
+          "minimum": 0,
+          "maximum": 0.045
+        }
+      ]
+    },
+    {
+      "test_netlist": "capacitance.cir",
+      "analysis": "ac",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "coss",
+          "pass": true,
+          "value": 2.72645131067976e-10,
+          "error": 2.6451310679759957e-12,
+          "allowed": 5.4e-11
+        },
+        {
+          "name": "crss",
+          "pass": true,
+          "value": 5.2747996698055204e-11,
+          "error": 2.747996698055202e-12,
+          "allowed": 1.0000000000000001e-11
+        }
+      ]
+    },
+    {
+      "test_netlist": "body_diode.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "body_diode_typical",
+          "pass": true,
+          "value": 1.057319726361404,
+          "error": 0.007319726361403989,
+          "allowed": 0.10500000000000001
+        },
+        {
+          "name": "body_diode_maximum",
+          "pass": true,
+          "value": 1.057319726361404,
+          "minimum": 0,
+          "maximum": 1.5
+        }
+      ]
+    },
+    {
+      "test_netlist": "supported_boundary.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "supported_boundary_rdson",
+          "pass": true,
+          "value": 0.03523366187087926,
+          "error": 0.00023366187087925372,
+          "allowed": 0.00525
+        },
+        {
+          "name": "supported_boundary_guaranteed_max",
+          "pass": true,
+          "value": 0.03523366187087926,
+          "minimum": 0,
+          "maximum": 0.045
+        }
+      ]
+    }
+  ]
+}

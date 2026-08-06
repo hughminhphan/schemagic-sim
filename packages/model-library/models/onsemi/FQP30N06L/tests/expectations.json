@@ -1,0 +1,178 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "rdson.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "rdson_typical_1",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d1),0.0625)"
+          },
+          "expected_value": 0.027,
+          "unit": "ohm",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.15
+          },
+          "datasheet_citation": "p. 2 Electrical Characteristics, RDS(on), TYP and MAX columns",
+          "placeholder": false
+        },
+        {
+          "name": "rdson_typical_2",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d2),0.0625)"
+          },
+          "expected_value": 0.035,
+          "unit": "ohm",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.15
+          },
+          "datasheet_citation": "p. 2 Electrical Characteristics, RDS(on), TYP and MAX columns",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": [
+        {
+          "name": "rdson_guaranteed_max_1",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d1),0.0625)"
+          },
+          "minimum": 0,
+          "maximum": 0.035,
+          "unit": "ohm",
+          "inclusive": true,
+          "datasheet_citation": "p. 2 Electrical Characteristics, RDS(on), TYP and MAX columns",
+          "placeholder": false
+        },
+        {
+          "name": "rdson_guaranteed_max_2",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d2),0.0625)"
+          },
+          "minimum": 0,
+          "maximum": 0.045,
+          "unit": "ohm",
+          "inclusive": true,
+          "datasheet_citation": "p. 2 Electrical Characteristics, RDS(on), TYP and MAX columns",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "capacitance.cir",
+      "analysis_type": "ac_small_signal",
+      "scalar_checks": [
+        {
+          "name": "coss",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "imag_cap:last(i(vd),1000000)"
+          },
+          "expected_value": 2.7e-10,
+          "unit": "F",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 2 Electrical Characteristics, capacitance TYP columns",
+          "placeholder": false
+        },
+        {
+          "name": "crss",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "imag_cap:last(i(vg),1000000)"
+          },
+          "expected_value": 5e-11,
+          "unit": "F",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 2 Electrical Characteristics, capacitance TYP columns",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "body_diode.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "body_diode_typical",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(d))"
+          },
+          "expected_value": 1.05,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.05,
+            "relative": 0.1
+          },
+          "datasheet_citation": "p. 3 Fig. 4, 25 degC curve, digitized",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": [
+        {
+          "name": "body_diode_maximum",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(d))"
+          },
+          "minimum": 0,
+          "maximum": 1.5,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 2 Drain-Source Diode table, VSD MAX column",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "supported_boundary.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "supported_boundary_rdson",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d),0.0625)"
+          },
+          "expected_value": 0.035,
+          "unit": "ohm",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.15
+          },
+          "datasheet_citation": "p. 2 Electrical Characteristics, RDS(on) at VGS = 5 V, ID = 16 A",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": [
+        {
+          "name": "supported_boundary_guaranteed_max",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d),0.0625)"
+          },
+          "minimum": 0,
+          "maximum": 0.045,
+          "unit": "ohm",
+          "inclusive": true,
+          "datasheet_citation": "p. 2 Electrical Characteristics, RDS(on) at VGS = 5 V, ID = 16 A",
+          "placeholder": false
+        }
+      ]
+    }
+  ]
+}
