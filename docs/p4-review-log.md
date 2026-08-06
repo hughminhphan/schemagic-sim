@@ -59,3 +59,42 @@ The cited 2N3906 PDF was independently fetched. Its SHA-256 exactly matches `103
 Independent operating points outside the authored benches were numerically sane and produced no additional blocker: 2N3906 at 4.7251836 mA gave hFE 189.007 and VBE 0.690922 V; PN2222A at 47.514492 mA gave hFE 95.028 and VBE 0.731137 V; BC547B at 56.307724 mA gave hFE 225.231 and VBE 0.748523 V; BC557B at 56.083342 mA gave hFE 224.333 and VBE 0.757864 V; BC337-40 and BC327-40 at 203.590138 mA each gave hFE 339.317 and VBE 0.757193 V.
 
 All reviewer fields remain `pending-review`; no component validation date was changed.
+
+## 2026-08-07: batch B3-bjt-power
+
+Reviewer: `sol independent reviewer (batch B3-bjt-power)`
+
+All four parts fail review because the author lane produced no package artifacts. The factory resolution claim reproduces exactly: each MPN returns `Unsupported MPN`, and the registry lists only `1N4148, WP7113ID, 2N3904, IRLZ44N, TL072` as supported.
+
+| MPN | Verdict | Package files | Benches | Validator result | Decisive evidence |
+| --- | --- | ---: | ---: | --- | --- |
+| TIP31C | FAIL | 0 | 0 | FAIL, 7 missing-package errors | No `component.json`, model, source record, validation result, or supported region exists. |
+| TIP32C | FAIL | 0 | 0 | FAIL, 7 missing-package errors | No `component.json`, model, source record, validation result, or supported region exists. |
+| TIP120 | FAIL | 0 | 0 | FAIL, 7 missing-package errors | No `component.json`, model, source record, validation result, or supported region exists. |
+| TIP125 | FAIL | 0 | 0 | FAIL, 7 missing-package errors | No `component.json`, model, source record, validation result, or supported region exists. |
+
+`validate-package.mjs` was run independently for every target. Each run reports the same seven blockers: missing `component.json`, `model.cir`, `sources.json`, `MODEL_CARD.md`, `LICENSE`, `tests/expectations.json`, and `tests/` directory. Required-file inventory is 0 of 8 for every part, including 0 `validation-results.json` files, so there are no recorded numbers to reproduce.
+
+Native ngspice-46 is installed. The model library contains 0 target benches for every part. Independent `compare.mjs` attempts against `dc_gain.cir` and `saturation.cir` for each part terminate with `ENOENT` before simulation, so 0 of the required 2 benches per part can run. There is also no model or declared supported operating region, so 0 operating-point probes can be constructed inside a claimed region.
+
+Provenance cannot pass: every target has 0 `sources.json` records and 0 factual page references, leaving no cited source to fetch and no material facts to confirm. The target package scan finds 0 PDFs and 0 vendor SPICE files, but that vacuous result does not compensate for the absent packages. Fidelity cannot be assessed or labeled F2 because there are 0 expectations, 0 fit metrics, 0 known-omission records, and 0 archetype-threshold results.
+
+No reviewer field or validation date was changed because no target has a `component.json`; all failures remain unstamped.
+
+## 2026-08-07: batch M1-mosfet-small
+
+Reviewer: `luna independent reviewer (batch M1-mosfet-small)`
+
+All five F1 packages pass independent review. `validate-package.mjs` passed before stamping and passed again after reviewer fields were updated. The selected native ngspice benches passed native/WASM comparison for every part, and every selected expectation value reproduced exactly from a fresh native run.
+
+| MPN | Verdict | Independent bench reproduction | Out-of-bench in-region probe | Fidelity and provenance |
+| --- | --- | --- | --- | --- |
+| 2N7000 | PASS | `rdson.cir`: 4.415238028752658 ohm and 5.7701576880814835 ohm; `boundary.cir`: 5.7701576880814835 ohm. All exact; native/WASM compare PASS. | 0.1 A at VGS = 7 V produced VDS = 0.47497191943742406 V. | Honest F1 guaranteed-bound-only model; worst fitting error 0. Datasheet source record has full metadata and no embedded PDF or vendor model file. |
+| BS250P | PASS | `rdson.cir`: 11.903167682221948 ohm; `boundary.cir`: 11.903167682221948 ohm. Both exact; native/WASM compare PASS. | 1 A at VGS = -10 V produced VDS = -13.24460447585196 V. | Honest F1 table-only model; worst fitting error 0. Datasheet source record has full metadata and no embedded PDF or vendor model file. |
+| AO3400A | PASS | `rdson.cir`: 0.01779207094117625, 0.01930737716713231, and 0.023879210526790793 ohm; `boundary.cir`: 0.0238792104596203 ohm. All exact; native/WASM compare PASS. | 2 A at VGS = 3.3 V produced VDS = 0.041603776390179543 V. | Honest F1 typical-RDS(on)-table fit; worst fitting error 1.617774563754667%, and parser disagreement plus unclaimed curve-family scope are disclosed in `known_omissions`. |
+| AO3401A | PASS | `rdson.cir`: 0.0410000011494544, 0.046999998198177476, and 0.060000000670682764 ohm; `boundary.cir`: 0.060000000670682764 ohm. All exact; native/WASM compare PASS. | 1.5 A at VGS = -3.3 V produced VDS = -0.0776536926141915 V. | Honest F1 typical-RDS(on)-table fit; worst fitting error 0.000003833325884849025%. Curve-family and approximate capacitance limitations are disclosed. |
+| SI2302 | PASS | `rdson.cir`: 0.03875000117058375 and 0.0559999985714801 ohm; `boundary.cir`: 0.0559999985714801 ohm. All exact; native/WASM compare PASS. | 1.5 A at VGS = 3.3 V produced VDS = 0.06790318846823837 V. | Honest F1 typical-RDS(on)-table fit; worst fitting error 0.0000033955849397680914%. Curve-family and capacitance limitations are disclosed. |
+
+The onsemi 2N7000 PDF was independently fetched from its cited URL. SHA-256 reproduced as `b9cfecc7be11b19ac817e3160d6c862494f28cae0bdc3e826ab83ab15749c228`. Extracted p. 1 identifies the part as 60 V and shows the 5 ohm RDS(on) headline; p. 2 lists IDSS and Ciss = 60 pF maximum. Every batch `sources.json` record contains URL, revision, SHA-256, access date, and page references. A package scan found no PDF, `.sp`, `.lib`, or `.mod` vendor model files.
+
+All reviewer fields were stamped with the batch reviewer identity and validation date. No model, test, fact, source, or stored validation result was edited.
