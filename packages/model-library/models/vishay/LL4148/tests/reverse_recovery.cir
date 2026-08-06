@@ -1,0 +1,14 @@
+* LL4148 first-order reverse recovery check using published test envelope
+.temp 25
+* OpenCircuit Model Factory v0.1.0
+* Original work generated from public factual specifications.
+* This model is not a copy of, or adaptation from, any vendor SPICE model.
+* Source: https://www.vishay.com/docs/81857/1n4148.pdf
+* Revision: Rev. 1.6, 07-Nov-2024
+* Fit: scipy.optimize.least_squares at 25 degC; no vendor SPICE model used
+.model OC_VISHAY_LL4148 D(IS=7.5053928107e-10 N=1.6304821113e+00 RS=7.7032274400e-01 CJO=4.0e-12 TT=4.0e-9)
+Vdrive src 0 PULSE(1.7 -6 20n 0.1n 0.1n 20n 50n)
+Rload src anode 100
+Ddut anode 0 OC_VISHAY_LL4148
+.tran 0.05n 50n
+.end

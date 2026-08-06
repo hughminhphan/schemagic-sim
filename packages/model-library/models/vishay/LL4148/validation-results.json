@@ -1,0 +1,138 @@
+{
+  "schema_version": "1.0.0",
+  "validation_date": "2026-08-07",
+  "native_wasm_all_pass": true,
+  "expectations_all_pass": true,
+  "expectation_pass_count": 9,
+  "expectation_fail_count": 0,
+  "worst_native_wasm_relative_delta": 7.332598479983289e-14,
+  "worst_native_wasm_absolute_delta": 3.0109248427834245e-13,
+  "benches": [
+    {
+      "test_netlist": "forward_01.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "vf_at_1e-05_a",
+          "pass": true,
+          "value": 0.40577671259618736,
+          "error": 0.005776712596187339,
+          "allowed": 0.02
+        }
+      ]
+    },
+    {
+      "test_netlist": "forward_02.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "vf_at_0.0001_a",
+          "pass": true,
+          "value": 0.5023013479369861,
+          "error": 0.012301347936986118,
+          "allowed": 0.02
+        }
+      ]
+    },
+    {
+      "test_netlist": "forward_03.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "vf_at_0.001_a",
+          "pass": true,
+          "value": 0.5994525953046962,
+          "error": 0.00945259530469622,
+          "allowed": 0.0236
+        }
+      ]
+    },
+    {
+      "test_netlist": "forward_04.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "vf_at_0.01_a",
+          "pass": true,
+          "value": 0.7028438904730958,
+          "error": 0.002843890473095856,
+          "allowed": 0.027999999999999997
+        }
+      ]
+    },
+    {
+      "test_netlist": "forward_05.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "vf_at_0.1_a",
+          "pass": true,
+          "value": 0.8686309783449415,
+          "error": 0.008630978344941531,
+          "allowed": 0.0344
+        }
+      ]
+    },
+    {
+      "test_netlist": "reverse_leakage.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "reverse_leakage_maximum",
+          "pass": true,
+          "value": 6.413728415275349e-10,
+          "minimum": 0,
+          "maximum": 2.5e-08
+        }
+      ]
+    },
+    {
+      "test_netlist": "junction_capacitance.cir",
+      "analysis": "ac",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "zero_bias_capacitance",
+          "pass": true,
+          "value": 3.994827868893207e-12,
+          "error": 5.172131106792625e-15,
+          "allowed": 2e-08
+        }
+      ]
+    },
+    {
+      "test_netlist": "boundary_forward.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "boundary_vf_at_100ma",
+          "pass": true,
+          "value": 0.8686309783449415,
+          "error": 0.008630978344941531,
+          "allowed": 0.0344
+        }
+      ]
+    },
+    {
+      "test_netlist": "reverse_recovery.cir",
+      "analysis": "tran",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "reverse_recovery_time_maximum",
+          "pass": true,
+          "value": 1.4250000000000111e-09,
+          "minimum": 0,
+          "maximum": 4e-09
+        }
+      ]
+    }
+  ]
+}

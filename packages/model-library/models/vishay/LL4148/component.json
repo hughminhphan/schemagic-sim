@@ -1,0 +1,141 @@
+{
+  "schema_version": "1.0.0",
+  "canonical_mpn": "LL4148",
+  "manufacturer": "Vishay Intertechnology",
+  "description": "Small-signal fast switching silicon diode in SOD-80 package; electrical die source is official Vishay 1N4148 family data",
+  "electrical_family": "diode",
+  "symbol_pins": [
+    {
+      "name": "A",
+      "number": "1",
+      "role": "anode"
+    },
+    {
+      "name": "K",
+      "number": "2",
+      "role": "cathode"
+    }
+  ],
+  "spice_pin_mapping": [
+    {
+      "symbol_pin_number": "1",
+      "subckt_node": "anode",
+      "order": 1
+    },
+    {
+      "symbol_pin_number": "2",
+      "subckt_node": "cathode",
+      "order": 2
+    }
+  ],
+  "package_variants": [
+    {
+      "name": "SOD-80",
+      "standard": "JEDEC DO-213AA",
+      "pin_count": 2,
+      "pin_map": [
+        {
+          "package_pin": "1",
+          "symbol_pin_number": "1"
+        },
+        {
+          "package_pin": "2",
+          "symbol_pin_number": "2"
+        }
+      ]
+    }
+  ],
+  "ordering_code_aliases": [
+    "1N4148"
+  ],
+  "datasheet": {
+    "url": "https://www.vishay.com/docs/81857/1n4148.pdf",
+    "revision": "Rev. 1.6, 07-Nov-2024"
+  },
+  "model_type": "dot_model",
+  "fidelity_tier": "F1",
+  "domain_coverage": {
+    "dc": "fitted",
+    "ac": "fitted",
+    "transient": "approx",
+    "noise": "none",
+    "thermal": "none",
+    "digital": "none"
+  },
+  "supported_analyses": [
+    "operating_point",
+    "dc_sweep",
+    "ac_small_signal",
+    "transient"
+  ],
+  "supported_operating_region": {
+    "summary": "Fitted typical forward behavior at 25 degC from 10 uA to 100 mA using the official Vishay 1N4148 family curve. Reverse operation is bounded to the published 20 V leakage test condition.",
+    "numeric_bounds": [
+      {
+        "quantity": "forward_current",
+        "minimum": 1e-05,
+        "maximum": 0.1,
+        "unit": "A",
+        "conditions": "Vishay 1N4148 family typical curve at 25 degC; LL4148 package alias",
+        "placeholder": false
+      },
+      {
+        "quantity": "reverse_voltage",
+        "minimum": 0.0,
+        "maximum": 20.0,
+        "unit": "V",
+        "conditions": "Published reverse-leakage test condition; avalanche omitted",
+        "placeholder": false
+      },
+      {
+        "quantity": "ambient_temperature",
+        "minimum": 25.0,
+        "maximum": 25.0,
+        "unit": "degC",
+        "conditions": "Fit reference temperature",
+        "placeholder": false
+      }
+    ]
+  },
+  "known_omissions": [
+    "LL4148 package-specific source was unavailable; the official Vishay 1N4148 family datasheet is used as the electrical die source and fidelity is capped at F1.",
+    "SMD package parasitics are not modeled.",
+    "ISR held at ngspice diode default because the independent reverse-leakage target is a maximum and forward-fit parameters were consumed.",
+    "NR held at ngspice diode default because the independent reverse-leakage target is a maximum and forward-fit parameters were consumed.",
+    "IKF held at ngspice diode default: no high-injection roll-off target was available.",
+    "VJ held at physical default 1.0 V because only one capacitance point is published.",
+    "M held at physical default 0.5 because only one capacitance point is published.",
+    "FC held at physical default 0.5.",
+    "TNOM held at ngspice diode default 27 degC; only 25 degC data was fitted.",
+    "EG held at ngspice diode default; no temperature sweep was fitted.",
+    "XTI held at ngspice diode default; no temperature sweep was fitted.",
+    "BV, IBV, and NBV held at ngspice diode defaults; reverse breakdown is not modeled.",
+    "TT is a first-order charge-storage approximation derived from one published maximum trr.",
+    "No self-heating: junction temperature is fixed at TNOM.",
+    "Package lead inductance and package capacitance are not modeled.",
+    "Flicker noise is not modeled: KF and AF are at defaults (no noise data published)."
+  ],
+  "licence": {
+    "spdx_id": "MIT",
+    "provenance_basis": "original_from_facts"
+  },
+  "generator": {
+    "tool_or_agent": "opencircuit-model-factory-v0.1.0",
+    "date": "2026-08-07"
+  },
+  "reviewer": {
+    "tool_or_agent": "pending-review",
+    "date": "2026-08-07"
+  },
+  "test_results": {
+    "status": "complete",
+    "pass_count": 9,
+    "fail_count": 0,
+    "total_count": 9,
+    "worst_observed_relative_fitting_error": {
+      "value": 0.008959012489455156,
+      "quantity": "forward voltage at 0.0001 A"
+    }
+  },
+  "validation_date": "2026-08-07"
+}
