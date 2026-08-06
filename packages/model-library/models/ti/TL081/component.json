@@ -1,0 +1,184 @@
+{
+  "schema_version": "1.0.0",
+  "canonical_mpn": "TL081",
+  "manufacturer": "Texas Instruments",
+  "description": "Quadruple low-noise JFET-input operational amplifier",
+  "electrical_family": "opamp",
+  "symbol_pins": [
+    {
+      "name": "IN+",
+      "number": "3",
+      "role": "noninverting_input"
+    },
+    {
+      "name": "IN-",
+      "number": "2",
+      "role": "inverting_input"
+    },
+    {
+      "name": "VCC",
+      "number": "7",
+      "role": "positive_supply"
+    },
+    {
+      "name": "VEE",
+      "number": "4",
+      "role": "negative_supply"
+    },
+    {
+      "name": "OUT",
+      "number": "6",
+      "role": "output"
+    }
+  ],
+  "spice_pin_mapping": [
+    {
+      "symbol_pin_number": "3",
+      "subckt_node": "inp",
+      "order": 1
+    },
+    {
+      "symbol_pin_number": "2",
+      "subckt_node": "inn",
+      "order": 2
+    },
+    {
+      "symbol_pin_number": "7",
+      "subckt_node": "vcc",
+      "order": 3
+    },
+    {
+      "symbol_pin_number": "4",
+      "subckt_node": "vee",
+      "order": 4
+    },
+    {
+      "symbol_pin_number": "6",
+      "subckt_node": "out",
+      "order": 5
+    }
+  ],
+  "package_variants": [
+    {
+      "name": "PDIP-8",
+      "standard": "TI P package",
+      "pin_count": 5,
+      "pin_map": [
+        {
+          "package_pin": "3",
+          "symbol_pin_number": "3"
+        },
+        {
+          "package_pin": "2",
+          "symbol_pin_number": "2"
+        },
+        {
+          "package_pin": "7",
+          "symbol_pin_number": "7"
+        },
+        {
+          "package_pin": "4",
+          "symbol_pin_number": "4"
+        },
+        {
+          "package_pin": "6",
+          "symbol_pin_number": "6"
+        }
+      ]
+    }
+  ],
+  "ordering_code_aliases": [
+    "TL081C",
+    "TL081CP",
+    "TL081CD"
+  ],
+  "datasheet": {
+    "url": "https://www.ti.com/lit/ds/symlink/tl081.pdf",
+    "revision": "SLOS081O, February 1977, revised September 2025"
+  },
+  "model_type": "subckt",
+  "fidelity_tier": "F1",
+  "domain_coverage": {
+    "dc": "fitted",
+    "ac": "fitted",
+    "transient": "fitted",
+    "noise": "fitted",
+    "thermal": "none",
+    "digital": "none"
+  },
+  "supported_analyses": [
+    "operating_point",
+    "dc_sweep",
+    "ac_small_signal",
+    "transient",
+    "noise"
+  ],
+  "supported_operating_region": {
+    "summary": "Fitted for the classic TL08xC electrical tables at +/-15 V and 25 degC. One representative amplifier channel is modelled.",
+    "numeric_bounds": [
+      {
+        "quantity": "supply_voltage_total",
+        "minimum": 4.5,
+        "maximum": 40,
+        "unit": "V",
+        "conditions": "Recommended supply envelope",
+        "placeholder": false
+      },
+      {
+        "quantity": "input_offset_voltage",
+        "minimum": -0.01,
+        "maximum": 0.01,
+        "unit": "V",
+        "conditions": "Published production maximum magnitude",
+        "placeholder": false
+      },
+      {
+        "quantity": "common_mode_input",
+        "minimum": -11,
+        "maximum": 11,
+        "unit": "V",
+        "conditions": "Typical at +/-15 V",
+        "placeholder": false
+      }
+    ]
+  },
+  "known_omissions": [
+    "Output-stage distortion is not modelled. THD, crossover distortion and slew-induced distortion do not appear; a sine through this model comes out a sine.",
+    "Input common-mode range is not enforced. The model does not phase-invert, latch, or lose gain when an input is driven outside VICR. VICR is recorded in supported_operating_region as metadata only.",
+    "PSRR is a single frequency-independent constant taken from the datasheet's DC row. Real supply rejection degrades with frequency; this model's does not.",
+    "CMRR is a single frequency-independent constant. Real common-mode rejection degrades with frequency; this model's does not.",
+    "The frequency response is a two-pole approximation (dominant pole plus one pole placed from the phase margin). Higher-order poles and zeros are not modelled, so gain and phase above the unity-gain frequency are not trustworthy.",
+    "Only broadband input voltage noise is modelled. Flicker (1/f) noise and input current noise are not.",
+    "No self-heating and no temperature coefficients: offset drift, bias-current doubling with temperature, and thermal feedback are not modelled.",
+    "Quiescent current is a constant. It does not vary with supply, temperature, or output loading.",
+    "Input offset voltage is set to the datasheet typical. A real part may sit anywhere inside the published maximum, and the sign is arbitrary.",
+    "Input protection diodes and ESD structures are not modelled. Inputs driven beyond the supplies do not clamp.",
+    "Settling time and overload recovery are consequences of the two-pole model, not fitted quantities.",
+    "CC = 30 pF, CDIF = 1 pF, RE = 1 Mohm, CP2 = 1 pF, RQ = 1 Mohm, and the 300.15 K noise normalization are held at default internal archetype values.",
+    "Output rail drop is fitted to the 25 degC typical swing at RL = 10 kohm; guaranteed minimum rows are retained as limits and are not used as typical targets.",
+    "Fidelity is intentionally capped at F1 for this batch target; the model remains datasheet-anchored but is not claimed as an F2 characterization of every channel in the TL081 package."
+  ],
+  "licence": {
+    "spdx_id": "MIT",
+    "provenance_basis": "original_from_facts"
+  },
+  "generator": {
+    "tool_or_agent": "opencircuit-model-factory-v0.1.0",
+    "date": "2026-08-06"
+  },
+  "reviewer": {
+    "tool_or_agent": "pending-review",
+    "date": "2026-08-06"
+  },
+  "test_results": {
+    "status": "complete",
+    "pass_count": 13,
+    "fail_count": 0,
+    "total_count": 13,
+    "worst_observed_relative_fitting_error": {
+      "value": 0.05881885544153236,
+      "quantity": "open-loop gain"
+    }
+  },
+  "validation_date": "2026-08-06"
+}
