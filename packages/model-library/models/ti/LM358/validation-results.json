@@ -1,0 +1,180 @@
+{
+  "schema_version": "1.0.0",
+  "validation_date": "2026-08-06",
+  "native_wasm_all_pass": true,
+  "expectations_all_pass": true,
+  "expectation_pass_count": 15,
+  "expectation_fail_count": 0,
+  "worst_native_wasm_relative_delta": 3.1485406735315365e-11,
+  "worst_native_wasm_absolute_delta": 7.012204150669277e-10,
+  "benches": [
+    {
+      "test_netlist": "open_loop_gain.cir",
+      "analysis": "ac",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "open_loop_gain_db",
+          "pass": true,
+          "value": 99.78405744400341,
+          "error": 0.21594255599659107,
+          "allowed": 0.6
+        }
+      ]
+    },
+    {
+      "test_netlist": "gain_bandwidth.cir",
+      "analysis": "ac",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "unity_gain_bandwidth",
+          "pass": true,
+          "value": 716108.3149906984,
+          "error": 16108.31499069836,
+          "allowed": 140000
+        }
+      ]
+    },
+    {
+      "test_netlist": "offset_and_bias.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "input_offset",
+          "pass": true,
+          "value": 0.0029827427705825605,
+          "error": 0.000017257229417439596,
+          "allowed": 0.00015000000000000001
+        },
+        {
+          "name": "input_bias_positive",
+          "pass": true,
+          "value": 2.1e-8,
+          "error": 0,
+          "allowed": 1.05e-9
+        },
+        {
+          "name": "input_bias_negative",
+          "pass": true,
+          "value": 1.8999999999999998e-8,
+          "error": 3.308722450212111e-24,
+          "allowed": 9.5e-10
+        },
+        {
+          "name": "quiescent_current_per_amplifier",
+          "pass": true,
+          "value": 0.00035,
+          "error": 0,
+          "allowed": 0.000035000000000000004
+        }
+      ]
+    },
+    {
+      "test_netlist": "slew_and_swing.cir",
+      "analysis": "tran",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "rising_slew",
+          "pass": true,
+          "value": 307633.6008619337,
+          "error": 7633.600861933723,
+          "allowed": 45000
+        }
+      ]
+    },
+    {
+      "test_netlist": "falling_slew.cir",
+      "analysis": "tran",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "falling_slew",
+          "pass": true,
+          "value": 307796.9079789374,
+          "error": 7796.907978937379,
+          "allowed": 45000
+        }
+      ]
+    },
+    {
+      "test_netlist": "output_swing.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "high_output_typical_25c",
+          "pass": true,
+          "value": 27.925169552249358,
+          "error": 0.07483044775064229,
+          "allowed": 1.4000000000000001
+        },
+        {
+          "name": "low_output_typical_25c",
+          "pass": true,
+          "value": 0.009951194029841109,
+          "error": 0.004951194029841109,
+          "allowed": 0.1
+        }
+      ]
+    },
+    {
+      "test_netlist": "minimum_supply_follower.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "minimum_supply_follow_025",
+          "pass": true,
+          "value": 0.2530026074636652,
+          "error": 0.0000026074636652051453,
+          "allowed": 0.01
+        },
+        {
+          "name": "minimum_supply_follow_050",
+          "pass": true,
+          "value": 0.5030250958620565,
+          "error": 0.000025095862056456752,
+          "allowed": 0.01006
+        },
+        {
+          "name": "minimum_supply_follow_075",
+          "pass": true,
+          "value": 0.7530475842604131,
+          "error": 0.0000475842604130694,
+          "allowed": 0.01506
+        }
+      ]
+    },
+    {
+      "test_netlist": "short_circuit.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "short_circuit_current",
+          "pass": true,
+          "value": 0.039974879365362606,
+          "error": 0.000025120634637394723,
+          "allowed": 0.004
+        }
+      ]
+    },
+    {
+      "test_netlist": "cmrr.cir",
+      "analysis": "ac",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "common_mode_gain",
+          "pass": true,
+          "value": 9.7558541857056,
+          "error": 0.2441458142944004,
+          "allowed": 3
+        }
+      ]
+    }
+  ]
+}

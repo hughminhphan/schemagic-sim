@@ -1,0 +1,41 @@
+OpenCircuit factory test: LM358 open_loop_gain.cir
+* OpenCircuit Model Factory v0.1.0
+* Original work generated from public factual specifications.
+* This model is not a copy of, or adaptation from, any vendor SPICE model.
+* Source: https://www.ti.com/lit/ds/symlink/lm358.pdf
+* Revision: SLOS068AB, June 1976, revised October 2024
+* Fit: exactly three native ngspice-46 fixed-point calibration iterations
+* Node order: INP INN VCC VEE OUT
+.subckt OC_TI_LM358 INP INN VCC VEE OUT
+.param AOL=1.0000000000e5 GBW=7.7217594851e5 SR=3.1800102481e5 IBIAS=2.0000000000e-8 IOS=2.0000000000e-9 VOS=3.0000000000e-3
+.param ROUT=5.0000000000e1 ILIM=4.0000000000e-2 VDRP_H=1.9349780511e0 VDRP_L=1.0000000000e-2 CC=30p FP2=2.3165278455e6
+.param CMRR=1.0000000000e4 PSRR=1.0000000000e5 VSUP_NOM=5.0000000000e0 IQ=3.5000000000e-4 EN=4.0000000000e-8
+IBP 0 INP DC {IBIAS+IOS/2}
+IBN 0 INN DC {IBIAS-IOS/2}
+CDIF INP INN 1p
+BERR e 0 V = v(INP,INN) + VOS + v(nz) + 0.5*(v(INP)+v(INN))/CMRR + (v(VCC,VEE)-VSUP_NOM)/PSRR
+RE e 0 1meg
+RNZ nz 0 {EN*EN/(4*1.380649e-23*300.15)}
+BGM 0 p I = {SR*CC}*tanh({6.283185307*GBW/SR}*v(e))
+CP p 0 {CC}
+RP p 0 {AOL/(6.283185307*GBW*CC)}
+RP2 p p2 {1/(6.283185307*FP2*1p)}
+CP2 p2 0 1p
+BCLMP q 0 V = min(max(v(p2), v(VEE)+min(VDRP_L,0.49*v(VCC,VEE))), v(VCC)-min(VDRP_H,0.49*v(VCC,VEE)))
+RQ q 0 1meg
+BOUT 0 OUT I = ILIM*tanh((v(q)-v(OUT))/(ROUT*ILIM))
+IQVCC VCC VEE DC {IQ}
+.ends OC_TI_LM358
+
+.temp 25
+VCC vcc 0 DC 15
+VEE vee 0 DC 0
+VIN sig 0 DC 0 AC 1
+X1 sig inn vcc vee out OC_TI_LM358
+LSERVO out serv 1G
+VSHIFT serv inn DC 7.5
+CSERVO inn 0 1G
+RLEAK serv 0 1G
+RL out 0 2k
+.ac dec 40 0.01 300Meg
+.end
