@@ -1,0 +1,149 @@
+{
+  "schema_version": "1.0.0",
+  "extraction_method": "pdftotext -layout plus manual table transcription; plots used only where explicitly stated",
+  "fit_conditions": {
+    "temperature": {
+      "value": 25,
+      "unit": "degC",
+      "conditions": "Electrical characteristics unless stated",
+      "page_reference": "p. 2 electrical-characteristics heading",
+      "source_kind": "typical"
+    }
+  },
+  "threshold": {
+    "minimum": {
+      "value": 0.8,
+      "unit": "V",
+      "conditions": "VDS = VGS, ID = 1 mA",
+      "page_reference": "p. 2 ON characteristics, MIN column",
+      "source_kind": "minimum"
+    },
+    "typical": {
+      "published": false,
+      "page_reference": "p. 2 ON characteristics",
+      "source_kind": "not_published"
+    },
+    "maximum": {
+      "value": 3.0,
+      "unit": "V",
+      "conditions": "VDS = VGS, ID = 1 mA",
+      "page_reference": "p. 2 ON characteristics, MAX column",
+      "source_kind": "maximum"
+    }
+  },
+  "rdson_points": [
+    {
+      "vgs": {
+        "value": 10,
+        "unit": "V",
+        "conditions": "ID = 0.5 A",
+        "page_reference": "p. 2 ON characteristics",
+        "source_kind": "typical"
+      },
+      "current": {
+        "value": 0.5,
+        "unit": "A",
+        "conditions": "VGS = 10 V",
+        "page_reference": "p. 2 ON characteristics",
+        "source_kind": "typical"
+      },
+      "resistance": {
+        "value": 5,
+        "unit": "ohm",
+        "conditions": "VGS = 10 V, ID = 0.5 A",
+        "page_reference": "p. 2 ON characteristics, MAX column",
+        "source_kind": "maximum"
+      }
+    },
+    {
+      "vgs": {
+        "value": 4.5,
+        "unit": "V",
+        "conditions": "ID = 75 mA",
+        "page_reference": "p. 2 ON characteristics",
+        "source_kind": "typical"
+      },
+      "current": {
+        "value": 0.075,
+        "unit": "A",
+        "conditions": "VGS = 4.5 V",
+        "page_reference": "p. 2 ON characteristics",
+        "source_kind": "typical"
+      },
+      "resistance": {
+        "value": 6,
+        "unit": "ohm",
+        "conditions": "VGS = 4.5 V, ID = 75 mA",
+        "page_reference": "p. 2 ON characteristics, MAX column",
+        "source_kind": "maximum"
+      }
+    }
+  ],
+  "capacitances": {
+    "ciss": {
+      "value": 6e-11,
+      "unit": "F",
+      "conditions": "VDS = 25 V, VGS = 0, f = 1 MHz",
+      "page_reference": "p. 2 DYNAMIC characteristics, MAX column",
+      "source_kind": "maximum"
+    },
+    "coss": {
+      "value": 2.5e-11,
+      "unit": "F",
+      "conditions": "VDS = 25 V, VGS = 0, f = 1 MHz",
+      "page_reference": "p. 2 DYNAMIC characteristics, MAX column",
+      "source_kind": "maximum"
+    },
+    "crss": {
+      "value": 5e-12,
+      "unit": "F",
+      "conditions": "VDS = 25 V, VGS = 0, f = 1 MHz",
+      "page_reference": "p. 2 DYNAMIC characteristics, MAX column",
+      "source_kind": "maximum"
+    }
+  },
+  "breakdown": {
+    "voltage": {
+      "value": 60,
+      "unit": "V",
+      "conditions": "VGS = 0, ID = 10 mA",
+      "page_reference": "p. 2 OFF characteristics, MIN column",
+      "source_kind": "minimum"
+    },
+    "current": {
+      "value": 0.01,
+      "unit": "A",
+      "conditions": "V(BR)DSS definition",
+      "page_reference": "p. 2 OFF characteristics",
+      "source_kind": "typical"
+    }
+  },
+  "off_leakage": {
+    "value": 0.001,
+    "unit": "A",
+    "conditions": "VDS = 48 V, VGS = 0, TC = 25 degC",
+    "page_reference": "p. 2 OFF characteristics, MAX column",
+    "source_kind": "maximum"
+  },
+  "identity": {
+    "canonical_mpn": "2N7000",
+    "manufacturer": "onsemi",
+    "aliases": [
+      "2N7000G",
+      "2N7000RLRAG"
+    ]
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://www.onsemi.cn/download/data-sheet/pdf/2n7000-d.pdf",
+    "revision": "Rev. 8, April 2011",
+    "sha256": "b9cfecc7be11b19ac817e3160d6c862494f28cae0bdc3e826ab83ab15749c228",
+    "accessed_date": "2026-08-07",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ],
+    "placeholder": false
+  }
+}

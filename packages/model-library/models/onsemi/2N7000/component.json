@@ -1,0 +1,151 @@
+{
+  "schema_version": "1.0.0",
+  "canonical_mpn": "2N7000",
+  "manufacturer": "onsemi",
+  "description": "60 V N-channel small-signal MOSFET",
+  "electrical_family": "nmos",
+  "symbol_pins": [
+    {
+      "name": "S",
+      "number": "1",
+      "role": "source"
+    },
+    {
+      "name": "G",
+      "number": "2",
+      "role": "gate"
+    },
+    {
+      "name": "D",
+      "number": "3",
+      "role": "drain"
+    }
+  ],
+  "spice_pin_mapping": [
+    {
+      "symbol_pin_number": "3",
+      "subckt_node": "drain",
+      "order": 1
+    },
+    {
+      "symbol_pin_number": "2",
+      "subckt_node": "gate",
+      "order": 2
+    },
+    {
+      "symbol_pin_number": "1",
+      "subckt_node": "source",
+      "order": 3
+    }
+  ],
+  "package_variants": [
+    {
+      "name": "TO-92",
+      "standard": "CASE 29 STYLE 22",
+      "pin_count": 3,
+      "pin_map": [
+        {
+          "package_pin": "1",
+          "symbol_pin_number": "1"
+        },
+        {
+          "package_pin": "2",
+          "symbol_pin_number": "2"
+        },
+        {
+          "package_pin": "3",
+          "symbol_pin_number": "3"
+        }
+      ]
+    }
+  ],
+  "ordering_code_aliases": [
+    "2N7000G",
+    "2N7000RLRAG"
+  ],
+  "datasheet": {
+    "url": "https://www.onsemi.cn/download/data-sheet/pdf/2n7000-d.pdf",
+    "revision": "Rev. 8, April 2011"
+  },
+  "model_type": "dot_model",
+  "fidelity_tier": "F1",
+  "domain_coverage": {
+    "dc": "approx",
+    "ac": "approx",
+    "transient": "none",
+    "noise": "none",
+    "thermal": "none",
+    "digital": "none"
+  },
+  "supported_analyses": [
+    "operating_point",
+    "dc_sweep",
+    "ac_small_signal"
+  ],
+  "supported_operating_region": {
+    "summary": "25 degC F1 model within the cited tabulated conditions; absolute maxima are not enforced.",
+    "numeric_bounds": [
+      {
+        "quantity": "characterized_gate_drive",
+        "minimum": 4.5,
+        "maximum": 10,
+        "unit": "V",
+        "conditions": "Published RDS(on) rows at 25 degC",
+        "placeholder": false
+      },
+      {
+        "quantity": "validated_off_state_voltage",
+        "minimum": 0,
+        "maximum": 48,
+        "unit": "V",
+        "conditions": "Published IDSS condition at 25 degC",
+        "placeholder": false
+      }
+    ]
+  },
+  "known_omissions": [
+    "Avalanche and unclamped inductive switching (UIS/EAS) are not modelled. The model conducts through BV as an ordinary diode breakdown; it does not fail.",
+    "Safe operating area is not enforced. Absolute maximum ratings are metadata; the model will happily dissipate excessive power.",
+    "No self-heating in the default three-terminal instance: junction temperature is fixed at TNOM. RDS(on) does not rise with dissipation.",
+    "Package and lead inductance are not modelled, so measured switching ringing will not reproduce.",
+    "Threshold-voltage spread is not modelled.",
+    "Gate oxide breakdown beyond the rated VGS maximum is not modelled.",
+    "RDS is held at default 1e9 ohm as the off-state shunt.",
+    "MU, TEXP0, and TCVTH are held at default; only 25 degC behavior is fitted.",
+    "CTHJ is held at default because junction thermal capacitance is unpublished; electrothermal transients are not claimed.",
+    "Flicker noise is not modelled: KF and AF are held at default.",
+    "F1: the datasheet publishes typical transfer and output plots, but no typical RDS(on) row, body-diode row, or gate-charge data. An F2 archetype fit cannot be completed without treating guaranteed limits as typical targets.",
+    "VTO is held at default 1.9 V, the midpoint of the published 0.8 V minimum and 3.0 V maximum threshold window.",
+    "KP is held at default 0.2 A/V^2; it is selected conservatively so both published maximum RDS(on) limits pass, not fitted to a typical table value.",
+    "THETA is held at default 0 and LAMBDA is held at default 0.003 because a full typical DC curve-family fit is not claimed.",
+    "RD = 2.75 ohm and RS = 1 ohm are held at default from the archetype 55/20 split of the strongest published RDS(on) maximum; this does not convert that maximum into a typical target.",
+    "RG is held at default 1e-4 ohm because gate resistance is unpublished.",
+    "CGDMAX = CGDMIN = 5 pF and A = 1 are held at default because no capacitance-versus-VDS curve is published; terminal capacitances use the published maxima.",
+    "VJ = 0.8, M = 0.5, FC = 0.5, N = 1.5, NBV = 1, TNOM = 27 degC, IS = 1e-14 A, and RB = 1 ohm are held at default; no body-diode forward row is published.",
+    "TT is held at default 0 because body-diode reverse recovery is unpublished.",
+    "RTHCA = 357 K/W is transcribed from RthetaJA; RTHJC is held at default 0 because junction-to-case resistance is unpublished and electrothermal operation is not claimed."
+  ],
+  "licence": {
+    "spdx_id": "MIT",
+    "provenance_basis": "original_from_facts"
+  },
+  "generator": {
+    "tool_or_agent": "opencircuit-model-factory-v0.1.0",
+    "date": "2026-08-07"
+  },
+  "reviewer": {
+    "tool_or_agent": "pending-review",
+    "date": "2026-08-07"
+  },
+  "test_results": {
+    "status": "complete",
+    "pass_count": 6,
+    "fail_count": 0,
+    "total_count": 6,
+    "worst_observed_relative_fitting_error": {
+      "value": 0,
+      "quantity": "guaranteed-bound-only model"
+    }
+  },
+  "validation_date": "2026-08-07"
+}

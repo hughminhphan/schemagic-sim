@@ -1,0 +1,18 @@
+OpenCircuit factory test: 2N7000 RDS(on)
+* OpenCircuit Model Factory v0.1.0
+* Original work generated from public factual specifications.
+* This model is not a copy of, or adaptation from, any vendor SPICE model.
+* Source: https://www.onsemi.cn/download/data-sheet/pdf/2n7000-d.pdf
+* Revision: Rev. 8, April 2011
+* Node order: drain gate source
+.model OC_2N7000 VDMOS(VTO=1.9000000000e+00 KP=2.0000000000e-01 THETA=0.0000000000e+00 LAMBDA=3.0000000000e-03 RD=2.7500000000e+00 RS=1.0000000000e+00 RG=1.0000000000e-04 CGS=5.5000000000e-11 CGDMAX=5.0000000000e-12 CGDMIN=5.0000000000e-12 A=1.0000000000e+00 CJO=1.1337000000e-10 IS=1.0000000000e-14 N=1.5000000000e+00 RB=1.0000000000e+00 TT=0.0000000000e+00 BV=6.0000000000e+01 IBV=1.0000000000e-02 RTHJC=0.0000000000e+00 RTHCA=3.5700000000e+02 RDS=1e9 VJ=0.8 M=0.5 FC=0.5 NBV=1 TNOM=27)
+
+.temp 25
+M1 d1 g1 0 OC_2N7000
+I1 0 d1 0.5
+VG1 g1 0 10
+M2 d2 g2 0 OC_2N7000
+I2 0 d2 0.075
+VG2 g2 0 4.5
+.op
+.end
