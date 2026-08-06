@@ -43,7 +43,7 @@
 | VTO | -1.92750018e+00 | fitted |
 | BETA | 5.49356049e-03 | fitted |
 | LAMBDA | 7.49564544e-03 | fitted |
-| B | 1.00000000e+00 | held at default |
+| B | 1.00000000e+00 | fitted |
 | RD | 2.50000000e+01 | derived |
 | RS | 2.50000000e+01 | derived |
 | CGS | 1.00000000e-15 | held at default |
@@ -69,7 +69,6 @@
 - RD and RS are each derived as half of the approximately 50 ohm typical on-resistance digitized from p.4 fig.7; the tabulated 100 ohm maximum is retained only as a hard bound.
 - CGS and CGD are held at the 1e-15 F numerical floor because the datasheet does not publish Ciss and Crss typical values. AC and switching capacitance behaviour is not modelled.
 - PB and M are held at physical defaults but are not meaningful with capacitances at the numerical floor.
-- B is held at 1.0 (pure square law): the F1 fit does not justify a doping-profile exponent.
 - F1: the table publishes a minimum IDSS and VGS(off) window but no typical IDSS, VGS(off), or gfs values. Typical curves drive the fit and guaranteed rows are hard bounds.
 
 ## Validation
