@@ -1,0 +1,86 @@
+{
+  "schema_version": "1.0.0",
+  "fitter": "three fixed-point native ngspice-46 calibration iterations",
+  "deterministic": true,
+  "parameters": {
+    "AOL": 200000,
+    "GBW": 7940527.787665268,
+    "SR": 21992886.98190082,
+    "IBIAS": 6.5e-11,
+    "IOS": 5e-12,
+    "VOS": 0.003,
+    "ROUT": 125,
+    "ILIM": 0.04,
+    "VDRP_H": 5,
+    "VDRP_L": 5,
+    "FP2": 5355953.621004176,
+    "CMRR": 100000.0,
+    "PSRR": 100000.0,
+    "VSUP_NOM": 30,
+    "IQ": 0.0014,
+    "EN": 3.7e-08
+  },
+  "calibration_iterations": [
+    {
+      "iteration": 1,
+      "gbw_measured": 3471457.3514738563,
+      "sr_measured": 18124359.137491267
+    },
+    {
+      "iteration": 2,
+      "gbw_measured": 5249492.722363246,
+      "sr_measured": 20069562.38958784
+    },
+    {
+      "iteration": 3,
+      "gbw_measured": 5249992.36301108,
+      "sr_measured": 20000330.763500355
+    }
+  ],
+  "residuals": [
+    {
+      "quantity": "open-loop gain",
+      "datasheet_value": 200000,
+      "fitted_value": 188236.22891169353,
+      "unit": "V/V",
+      "relative_error": 0.05881885544153236,
+      "citation": "p. 15 electrical characteristics"
+    },
+    {
+      "quantity": "unity-gain bandwidth",
+      "datasheet_value": 5250000,
+      "fitted_value": 5249999.884619233,
+      "unit": "Hz",
+      "relative_error": 2.19772889145783e-08,
+      "citation": "p. 15 electrical characteristics"
+    },
+    {
+      "quantity": "slew rate",
+      "datasheet_value": 20000000,
+      "fitted_value": 20000001.699118495,
+      "unit": "V/s",
+      "relative_error": 8.495592474937439e-08,
+      "citation": "p. 16 electrical characteristics"
+    },
+    {
+      "quantity": "positive output swing",
+      "datasheet_value": 10,
+      "fitted_value": 9.42817111441494,
+      "unit": "V",
+      "relative_error": 0.05718288855850595,
+      "citation": "p. 15 electrical characteristics"
+    },
+    {
+      "quantity": "negative output swing",
+      "datasheet_value": -10,
+      "fitted_value": -9.42817111441494,
+      "unit": "V",
+      "relative_error": 0.05718288855850595,
+      "citation": "p. 15 electrical characteristics"
+    }
+  ],
+  "worst_relative_error": {
+    "value": 0.05881885544153236,
+    "quantity": "open-loop gain"
+  }
+}

@@ -86,7 +86,8 @@ def crossing_frequency(frequencies, values, target=1.0):
     magnitudes = [abs(value) for value in values]
     for index in range(1, len(magnitudes)):
         if magnitudes[index - 1] >= target and magnitudes[index] <= target:
-            f1, f2 = frequencies[index - 1], frequencies[index]
+            f1 = float(frequencies[index - 1].real if isinstance(frequencies[index - 1], complex) else frequencies[index - 1])
+            f2 = float(frequencies[index].real if isinstance(frequencies[index], complex) else frequencies[index])
             m1, m2 = magnitudes[index - 1], magnitudes[index]
             if m1 == m2:
                 return float(f2)

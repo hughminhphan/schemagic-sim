@@ -61,14 +61,45 @@ def residual(parameters, fixed, facts):
     try:
         measured = evaluate(parameters, fixed, facts)
     except Exception:
-        return np.full(len(facts["gain_points"]) * 2 + len(facts["saturation_points"]) * 2, 1e3)
+        count = len(facts["gain_points"]) + sum("vbe" in point for point in facts["gain_points"]) + len(facts["saturation_points"])
+        return np.full(count, 1e3)
     output = []
     for target, actual in zip(facts["gain_points"], measured["gain"]):
         output.append(math.log(max(actual["hfe"], 1e-12)) - math.log(target["hfe"]["value"]))
-        output.append((actual["vbe"] - target["vbe"]["value"]) / 0.010)
+        if "vbe" in target:
+            output.append((actual["vbe"] - target["vbe"]["value"]) / 0.010)
     for target, actual in zip(facts["saturation_points"], measured["saturation"]):
         output.append((actual["vce"] - target["vce_sat"]["value"]) / 0.020)
-        output.append((actual["vbe"] - target["vbe_sat"]["value"]) / 0.020)
+    return np.asarray(output)
+
+
+def gain_seed_residual(parameters, fixed, facts, log_is, re, rc, rb):
+    bf, log_ikf, log_ise, ne = parameters
+    expanded = np.array([log_is, bf, log_ikf, log_ise, ne, re, rc, rb])
+    try:
+        measured = evaluate(expanded, fixed, facts)
+    except Exception:
+        return np.full(len(facts["gain_points"]), 1e3)
+    return np.asarray([
+        math.log(max(actual["hfe"], 1e-12)) - math.log(target["hfe"]["value"])
+        for target, actual in zip(facts["gain_points"], measured["gain"])
+    ])
+
+
+def voltage_residual(parameters, fixed, facts, gain_parameters):
+    log_is, re, rc, rb = parameters
+    bf, log_ikf, log_ise, ne = gain_parameters
+    expanded = np.array([log_is, bf, log_ikf, log_ise, ne, re, rc, rb])
+    try:
+        measured = evaluate(expanded, fixed, facts)
+    except Exception:
+        return np.full(sum("vbe" in point for point in facts["gain_points"]) + len(facts["saturation_points"]), 1e3)
+    output = []
+    for target, actual in zip(facts["gain_points"], measured["gain"]):
+        if "vbe" in target:
+            output.append((actual["vbe"] - target["vbe"]["value"]) / 0.010)
+    for target, actual in zip(facts["saturation_points"], measured["saturation"]):
+        output.append((actual["vce"] - target["vce_sat"]["value"]) / 0.020)
     return np.asarray(output)
 
 
@@ -93,14 +124,12 @@ def main():
     vbe_seed = min(facts["gain_points"], key=lambda item: abs(item["collector_current"]["value"] - 0.01))
     is0 = vbe_seed["collector_current"]["value"] * math.exp(-(vbe_seed["vbe"]["value"] - vbe_seed["collector_current"]["value"] * re0) / VT)
     fixed = {"CJE": max(cje, 1e-15), "CJC": max(cjc, 1e-15), "VAF": 100.0}
-    x0 = np.array([math.log10(is0), bf0, math.log10(ikf0), -13.0, 1.5, re0, rc0, rb0])
-    lower = np.array([-18, 1, -4, -18, 1.2, 1e-4, 1e-4, 1e-4])
-    upper = np.array([-10, 2000, 2, -9, 4.0, 20, 100, 1000])
-    fit = least_squares(
-        residual,
-        x0=np.minimum(np.maximum(x0, lower), upper),
-        bounds=(lower, upper),
-        args=(fixed, facts),
+    log_is0 = math.log10(is0)
+    seed_fit = least_squares(
+        gain_seed_residual,
+        x0=np.array([max(bf0 * 2, 250), math.log10(ikf0), -12.5, 1.5]),
+        bounds=(np.array([1, -4, -18, 1.2]), np.array([2000, 2, -6, 4.0])),
+        args=(fixed, facts, log_is0, re0, rc0, rb0),
         method="trf",
         x_scale="jac",
         diff_step=1e-4,
@@ -108,10 +137,24 @@ def main():
         xtol=1e-10,
         max_nfev=5000,
     )
-    if fit.status <= 0:
-        raise SystemExit(f"BJT fit failed: {fit.message}")
-    measured = evaluate(fit.x, fixed, facts)
-    log_is, bf, log_ikf, log_ise, ne, re, rc, rb = [float(value) for value in fit.x]
+    voltage_fit = least_squares(
+        voltage_residual,
+        x0=np.array([log_is0, re0, rc0, rb0]),
+        bounds=(np.array([-18, 1e-4, 1e-4, 1e-4]), np.array([-10, 20, 100, 1000])),
+        args=(fixed, facts, seed_fit.x),
+        method="trf",
+        x_scale="jac",
+        diff_step=1e-4,
+        ftol=1e-10,
+        xtol=1e-10,
+        max_nfev=5000,
+    )
+    if seed_fit.status <= 0 or voltage_fit.status <= 0:
+        raise SystemExit("BJT staged native fit failed")
+    bf, log_ikf, log_ise, ne = [float(value) for value in seed_fit.x]
+    log_is, re, rc, rb = [float(value) for value in voltage_fit.x]
+    fitted_vector = np.array([log_is, bf, log_ikf, log_ise, ne, re, rc, rb])
+    measured = evaluate(fitted_vector, fixed, facts)
     ft = facts["frequency_response"]["ft"]["value"]
     ic_ft = facts["frequency_response"]["ic"]["value"]
     tau = 1 / (2 * math.pi * ft)
@@ -121,7 +164,10 @@ def main():
     tr = storage["value"] / math.log(2) if storage else 0.0
     rows = []
     for target, actual in zip(facts["gain_points"], measured["gain"]):
-        for quantity_name, target_key, unit in [("hFE", "hfe", "1"), ("VBE", "vbe", "V")]:
+        quantities = [("hFE", "hfe", "1")]
+        if "vbe" in target:
+            quantities.append(("VBE", "vbe", "V"))
+        for quantity_name, target_key, unit in quantities:
             target_value = target[target_key]["value"]
             actual_value = actual[target_key]
             rows.append({
@@ -156,7 +202,7 @@ def main():
             "MJE": 0.33, "CJC": cjc, "VJC": 0.75, "MJC": 0.33,
             "XCJC": 1.0, "TF": tf, "TR": tr,
         },
-        "optimizer": {"status": int(fit.status), "nfev": int(fit.nfev), "cost": float(fit.cost), "diff_step": 1e-4},
+        "optimizer": {"status": int(voltage_fit.status), "gain_nfev": int(seed_fit.nfev), "voltage_nfev": int(voltage_fit.nfev), "cost": float(seed_fit.cost + voltage_fit.cost), "diff_step": 1e-4},
         "residuals": rows,
         "worst_relative_error": {"value": worst["relative_error"], "quantity": worst["quantity"]},
     }

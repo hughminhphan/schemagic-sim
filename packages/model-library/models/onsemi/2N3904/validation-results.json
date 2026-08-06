@@ -1,0 +1,123 @@
+{
+  "schema_version": "1.0.0",
+  "validation_date": "2026-08-06",
+  "native_wasm_all_pass": true,
+  "expectations_all_pass": true,
+  "expectation_pass_count": 11,
+  "expectation_fail_count": 0,
+  "worst_native_wasm_relative_delta": 2.2046788817061536e-12,
+  "worst_native_wasm_absolute_delta": 2.7137048164149746e-10,
+  "benches": [
+    {
+      "test_netlist": "dc_gain.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "hfe_at_0.0001_a",
+          "pass": true,
+          "value": 91.77825662162603,
+          "error": 1.7782566216260278,
+          "allowed": 27
+        },
+        {
+          "name": "hfe_at_0.001_a",
+          "pass": true,
+          "value": 161.49047789397443,
+          "error": 21.49047789397443,
+          "allowed": 42
+        },
+        {
+          "name": "hfe_at_0.01_a",
+          "pass": true,
+          "value": 182.28489099249526,
+          "error": 17.715109007504736,
+          "allowed": 60
+        },
+        {
+          "name": "hfe_at_0.05_a",
+          "pass": true,
+          "value": 104.6915845218047,
+          "error": 5.3084154781953,
+          "allowed": 33
+        },
+        {
+          "name": "hfe_at_0.1_a",
+          "pass": true,
+          "value": 59.886364328760976,
+          "error": 5.886364328760976,
+          "allowed": 16.2
+        }
+      ]
+    },
+    {
+      "test_netlist": "saturation.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "vce_sat_1",
+          "pass": true,
+          "value": 0.07339432897204108,
+          "error": 0.016605671027958915,
+          "allowed": 0.02
+        },
+        {
+          "name": "vbe_sat_1",
+          "pass": true,
+          "value": 0.7219407414079798,
+          "error": 0.038059258592020195,
+          "allowed": 0.11399999999999999
+        },
+        {
+          "name": "vce_sat_2",
+          "pass": true,
+          "value": 0.20332113347724062,
+          "error": 0.003321133477240612,
+          "allowed": 0.03
+        },
+        {
+          "name": "vbe_sat_2",
+          "pass": true,
+          "value": 0.8057209776052914,
+          "error": 0.0442790223947086,
+          "allowed": 0.1275
+        }
+      ]
+    },
+    {
+      "test_netlist": "ft_bench.cir",
+      "analysis": "ac",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "current_gain_bandwidth",
+          "pass": true,
+          "value": 301679592.9857208,
+          "error": 1679592.9857208133,
+          "allowed": 60000000
+        }
+      ]
+    },
+    {
+      "test_netlist": "capacitance.cir",
+      "analysis": "ac",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "cobo",
+          "pass": true,
+          "value": 3.999999635603766e-12,
+          "error": 3.6439623381145725e-19,
+          "allowed": 8e-13
+        }
+      ]
+    },
+    {
+      "test_netlist": "output_curve.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": []
+    }
+  ]
+}

@@ -19,8 +19,8 @@ test("promoted validator rejects the historical broken fixture", () => {
   assert.ok(validateComponentFiles(broken).errors.length > 0);
 });
 
-test("validate-package accepts both generated F2 gold packages", () => {
-  for (const relative of ["vishay/1N4148", "kingbright/WP7113ID"]) {
+test("validate-package accepts all generated F2 gold packages", () => {
+  for (const relative of ["vishay/1N4148", "kingbright/WP7113ID", "onsemi/2N3904", "infineon/IRLZ44N", "ti/TL072"]) {
     const directory = path.join(repoRoot, "packages/model-library/models", relative);
     assert.deepEqual(validatePackage(directory).errors, []);
   }

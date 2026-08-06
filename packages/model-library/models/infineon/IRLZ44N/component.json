@@ -1,0 +1,137 @@
+{
+  "schema_version": "1.0.0",
+  "canonical_mpn": "IRLZ44N",
+  "manufacturer": "Infineon Technologies",
+  "description": "55 V logic-level N-channel power MOSFET",
+  "electrical_family": "nmos",
+  "symbol_pins": [
+    {
+      "name": "G",
+      "number": "1",
+      "role": "gate"
+    },
+    {
+      "name": "D",
+      "number": "2",
+      "role": "drain"
+    },
+    {
+      "name": "S",
+      "number": "3",
+      "role": "source"
+    }
+  ],
+  "spice_pin_mapping": [
+    {
+      "symbol_pin_number": "2",
+      "subckt_node": "drain",
+      "order": 1
+    },
+    {
+      "symbol_pin_number": "1",
+      "subckt_node": "gate",
+      "order": 2
+    },
+    {
+      "symbol_pin_number": "3",
+      "subckt_node": "source",
+      "order": 3
+    }
+  ],
+  "package_variants": [
+    {
+      "name": "TO-220AB",
+      "standard": "JEDEC TO-220AB",
+      "pin_count": 3,
+      "pin_map": [
+        {
+          "package_pin": "1",
+          "symbol_pin_number": "1"
+        },
+        {
+          "package_pin": "2",
+          "symbol_pin_number": "2"
+        },
+        {
+          "package_pin": "3",
+          "symbol_pin_number": "3"
+        }
+      ]
+    }
+  ],
+  "ordering_code_aliases": [
+    "IRLZ44NPbF"
+  ],
+  "datasheet": {
+    "url": "https://www.infineon.com/assets/row/public/documents/24/49/infineon-irlz44n-datasheet-en.pdf",
+    "revision": "PD-94831, 11-Nov-2003; public asset modified 29-Apr-2021"
+  },
+  "model_type": "dot_model",
+  "fidelity_tier": "F2",
+  "domain_coverage": {
+    "dc": "fitted",
+    "ac": "fitted",
+    "transient": "fitted",
+    "noise": "none",
+    "thermal": "approx",
+    "digital": "none"
+  },
+  "supported_analyses": [
+    "operating_point",
+    "dc_sweep",
+    "ac_small_signal",
+    "transient"
+  ],
+  "supported_operating_region": {
+    "summary": "Fitted at 25 degC across logic-level transfer, output, RDS(on), and capacitance data. Default use is the three-terminal non-self-heating instance.",
+    "numeric_bounds": [
+      {
+        "quantity": "drain_source_voltage",
+        "minimum": 0,
+        "maximum": 55,
+        "unit": "V",
+        "conditions": "Rated VDSS",
+        "placeholder": false
+      },
+      {
+        "quantity": "gate_source_voltage",
+        "minimum": -16,
+        "maximum": 16,
+        "unit": "V",
+        "conditions": "Absolute maximum",
+        "placeholder": false
+      }
+    ]
+  },
+  "known_omissions": [
+    "Avalanche, UIS, safe operating area, and device failure are not modelled.",
+    "No self-heating in the default three-terminal instance. Thermal resistances are transcribed but not validated.",
+    "Package and lead inductance, gate oxide breakdown, threshold spread, and flicker noise are not modelled.",
+    "RG is set to 1e-4 ohm because the datasheet does not publish gate resistance.",
+    "Temperature coefficients are at defaults; only 25 degC data was fitted.",
+    "The tabulated 48 nC total gate charge is inconsistent with the typical gate-charge curve at VGS = 5 V; the independent check uses the cited 28 nC curve read."
+  ],
+  "licence": {
+    "spdx_id": "MIT",
+    "provenance_basis": "original_from_facts"
+  },
+  "generator": {
+    "tool_or_agent": "opencircuit-model-factory-v0.1.0",
+    "date": "2026-08-06"
+  },
+  "reviewer": {
+    "tool_or_agent": "pending-review",
+    "date": "2026-08-06"
+  },
+  "test_results": {
+    "status": "complete",
+    "pass_count": 13,
+    "fail_count": 0,
+    "total_count": 13,
+    "worst_observed_relative_fitting_error": {
+      "value": 0.39436011474235677,
+      "quantity": "Crss at 1 V"
+    }
+  },
+  "validation_date": "2026-08-06"
+}

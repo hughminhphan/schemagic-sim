@@ -1,0 +1,134 @@
+{
+  "schema_version": "1.0.0",
+  "canonical_mpn": "2N3904",
+  "manufacturer": "onsemi",
+  "description": "General-purpose NPN silicon transistor",
+  "electrical_family": "bjt_npn",
+  "symbol_pins": [
+    {
+      "name": "E",
+      "number": "1",
+      "role": "emitter"
+    },
+    {
+      "name": "B",
+      "number": "2",
+      "role": "base"
+    },
+    {
+      "name": "C",
+      "number": "3",
+      "role": "collector"
+    }
+  ],
+  "spice_pin_mapping": [
+    {
+      "symbol_pin_number": "3",
+      "subckt_node": "collector",
+      "order": 1
+    },
+    {
+      "symbol_pin_number": "2",
+      "subckt_node": "base",
+      "order": 2
+    },
+    {
+      "symbol_pin_number": "1",
+      "subckt_node": "emitter",
+      "order": 3
+    }
+  ],
+  "package_variants": [
+    {
+      "name": "TO-92",
+      "standard": "CASE 29 STYLE 1",
+      "pin_count": 3,
+      "pin_map": [
+        {
+          "package_pin": "1",
+          "symbol_pin_number": "1"
+        },
+        {
+          "package_pin": "2",
+          "symbol_pin_number": "2"
+        },
+        {
+          "package_pin": "3",
+          "symbol_pin_number": "3"
+        }
+      ]
+    }
+  ],
+  "ordering_code_aliases": [],
+  "datasheet": {
+    "url": "https://www.onsemi.com/pdf/datasheet/2n3903-d.pdf",
+    "revision": "Rev. 9, August 2021"
+  },
+  "model_type": "dot_model",
+  "fidelity_tier": "F2",
+  "domain_coverage": {
+    "dc": "fitted",
+    "ac": "fitted",
+    "transient": "fitted",
+    "noise": "none",
+    "thermal": "none",
+    "digital": "none"
+  },
+  "supported_analyses": [
+    "operating_point",
+    "dc_sweep",
+    "ac_small_signal",
+    "transient"
+  ],
+  "supported_operating_region": {
+    "summary": "Fitted at 25 degC from 0.1 mA to 100 mA collector current. Absolute maximum ratings remain metadata only.",
+    "numeric_bounds": [
+      {
+        "quantity": "collector_current",
+        "minimum": 0.0001,
+        "maximum": 0.1,
+        "unit": "A",
+        "conditions": "Fitted DC range at 25 degC",
+        "placeholder": false
+      },
+      {
+        "quantity": "collector_emitter_voltage",
+        "minimum": 0,
+        "maximum": 40,
+        "unit": "V",
+        "conditions": "Rated VCEO",
+        "placeholder": false
+      }
+    ]
+  },
+  "known_omissions": [
+    "VAF held at a family-typical default: no usable output characteristics family was available, so the Early effect is not fitted.",
+    "CJE and CJC are derived from single tabulated points with VJ and MJ held at physical defaults.",
+    "Reverse operation, base-resistance modulation, transit-time bias dependence, self-heating, package parasitics, and noise are not fitted.",
+    "Absolute maximum ratings are metadata only and are not enforced by the model.",
+    "hFE production spread and temperature coefficients are not modelled."
+  ],
+  "licence": {
+    "spdx_id": "MIT",
+    "provenance_basis": "original_from_facts"
+  },
+  "generator": {
+    "tool_or_agent": "opencircuit-model-factory-v0.1.0",
+    "date": "2026-08-06"
+  },
+  "reviewer": {
+    "tool_or_agent": "pending-review",
+    "date": "2026-08-06"
+  },
+  "test_results": {
+    "status": "complete",
+    "pass_count": 11,
+    "fail_count": 0,
+    "total_count": 11,
+    "worst_observed_relative_fitting_error": {
+      "value": 0.18450745586209588,
+      "quantity": "VCE(sat) at IC=0.01 A"
+    }
+  },
+  "validation_date": "2026-08-06"
+}
