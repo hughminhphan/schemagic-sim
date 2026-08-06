@@ -1,0 +1,29 @@
+74HC14 minimum supply boundary
+* OpenCircuit Model Factory v0.1.0
+* Original work generated from public factual specifications.
+* This model is not a copy of, or adaptation from, any vendor SPICE model.
+* Source: https://assets.nexperia.com/documents/data-sheet/74HC_HCT14.pdf
+* Revision: Rev. 10, 29 February 2024
+* Archetype: archetype-logic74hc.md
+* Fit run: H1-74hc-74HC14-2026-08-07
+* Node order: A Y VCC GND
+.subckt OC_NEXPERIA_74HC14_GATE A Y VCC GND
++ PARAMS: KVTC=14 RINT=1k CINT=1.45570668371e-11 ROH=45 ROL=37.5 KSW=12 VHYST=0.98 VCTR=1.89 VNOM=4.5
+RIN A GND 1e11
+BVTC vi GND V = 0.5*v(VCC,GND)*(1-tanh(KVTC*((v(A,GND)-(VCTR/VNOM)*v(VCC,GND)-(VHYST/VNOM)*v(VCC,GND)*(v(vd)/v(VCC,GND)-0.5)*2)/v(VCC,GND))))
+RD vi vd {RINT}
+CD vd GND {CINT}
+BDRV yd GND V = min(max(v(vd),0),v(VCC,GND))
+RDRV yd Y R={ROL+(ROH-ROL)*0.5*(1+tanh(KSW*(v(vd)/v(VCC,GND)-0.5)))}
+.ends OC_NEXPERIA_74HC14_GATE
+
+.temp 25
+VCC vcc 0 2.0
+VA a 0 PULSE(0 2.0 0.5u 6n 6n 1u 3u)
+Xy a y vcc 0 OC_NEXPERIA_74HC14_GATE
+CL y 0 15p
+.save v(a) v(y)
+.tran 0.2n 4u
+.measure tran vmax MAX v(y) FROM=0.7u TO=3.8u
+.measure tran vmin MIN v(y) FROM=0.7u TO=3.8u
+.end

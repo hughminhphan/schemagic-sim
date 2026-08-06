@@ -1,0 +1,277 @@
+{
+  "schema_version": "1.0.0",
+  "validation_date": "2026-08-07",
+  "native_wasm_all_pass": true,
+  "expectations_all_pass": true,
+  "expectation_pass_count": 25,
+  "expectation_fail_count": 0,
+  "worst_native_wasm_relative_delta": 2.0816681711721685e-08,
+  "worst_native_wasm_absolute_delta": 7.815970093361102e-14,
+  "benches": [
+    {
+      "test_netlist": "truth_table.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "truth_0_high",
+          "pass": true,
+          "value": 4.4999999209906925,
+          "minimum": 4.4,
+          "maximum": null,
+          "datasheet_citation": "Nexperia 74HC14 Rev. 10, 29 February 2024, p. 3, function table, Hex inverting Schmitt trigger; Nexperia 74HC14 Rev. 10, 29 February 2024, p. 4, Table 6 static characteristics, VOH/VOL guarantees at VCC = 4.5 V"
+        },
+        {
+          "name": "truth_1_low",
+          "pass": true,
+          "value": 8.954449681741751e-10,
+          "minimum": null,
+          "maximum": 0.1,
+          "datasheet_citation": "Nexperia 74HC14 Rev. 10, 29 February 2024, p. 3, function table, Hex inverting Schmitt trigger; Nexperia 74HC14 Rev. 10, 29 February 2024, p. 4, Table 6 static characteristics, VOH/VOL guarantees at VCC = 4.5 V"
+        }
+      ]
+    },
+    {
+      "test_netlist": "vtc.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "voh_at_logic_input_limit",
+          "pass": true,
+          "value": 4.499648499997203,
+          "minimum": 4.4,
+          "maximum": null,
+          "datasheet_citation": "Nexperia 74HC14 Rev. 10, 29 February 2024, p. 4, Table 6 static characteristics, VOH/VOL guarantees at VCC = 4.5 V"
+        },
+        {
+          "name": "vol_at_logic_input_limit",
+          "pass": true,
+          "value": 3.980175209942973e-06,
+          "minimum": null,
+          "maximum": 0.1,
+          "datasheet_citation": "Nexperia 74HC14 Rev. 10, 29 February 2024, p. 4, Table 6 static characteristics, VOH/VOL guarantees at VCC = 4.5 V"
+        }
+      ]
+    },
+    {
+      "test_netlist": "output_drive.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "voh_loaded_typ",
+          "pass": true,
+          "value": 4.320000105316008,
+          "error": 1.0531600747043512e-07,
+          "allowed": 0.1296,
+          "expected_value": 4.32,
+          "datasheet_citation": "Nexperia 74HC14 Rev. 10, 29 February 2024, p. 4, Table 6 static characteristics, 25 degC TYP loaded VOH = 4.32 V and VOL = 0.15 V at 4 mA"
+        },
+        {
+          "name": "vol_loaded_typ",
+          "pass": true,
+          "value": 0.1500001852206839,
+          "error": 1.8522068390147695e-07,
+          "allowed": 0.0225,
+          "expected_value": 0.15,
+          "datasheet_citation": "Nexperia 74HC14 Rev. 10, 29 February 2024, p. 4, Table 6 static characteristics, 25 degC TYP loaded VOH = 4.32 V and VOL = 0.15 V at 4 mA"
+        },
+        {
+          "name": "voh_loaded_guarantee",
+          "pass": true,
+          "value": 4.320000105316008,
+          "minimum": 3.98,
+          "maximum": null,
+          "datasheet_citation": "Nexperia 74HC14 Rev. 10, 29 February 2024, p. 4, Table 6 static characteristics, VOH/VOL guarantees at VCC = 4.5 V"
+        },
+        {
+          "name": "vol_loaded_guarantee",
+          "pass": true,
+          "value": 0.1500001852206839,
+          "minimum": null,
+          "maximum": 0.26,
+          "datasheet_citation": "Nexperia 74HC14 Rev. 10, 29 February 2024, p. 4, Table 6 static characteristics, VOH/VOL guarantees at VCC = 4.5 V"
+        }
+      ]
+    },
+    {
+      "test_netlist": "propagation_delay_15p.cir",
+      "analysis": "tran",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "tphl_15p",
+          "pass": true,
+          "value": 1.15189e-08,
+          "error": 4.810999999999999e-10,
+          "allowed": 1.8e-09,
+          "expected_value": 1.2e-08,
+          "datasheet_citation": "Nexperia 74HC14 Rev. 10, 29 February 2024, p. 5, Table 7 dynamic characteristics, 25 degC TYP tpd = 12 ns, VCC = 5 V, CL = 15 pF; p. 6 tr = tf = 6 ns"
+        },
+        {
+          "name": "tplh_15p",
+          "pass": true,
+          "value": 1.24807e-08,
+          "error": 4.806999999999998e-10,
+          "allowed": 1.8e-09,
+          "expected_value": 1.2e-08,
+          "datasheet_citation": "Nexperia 74HC14 Rev. 10, 29 February 2024, p. 5, Table 7 dynamic characteristics, 25 degC TYP tpd = 12 ns, VCC = 5 V, CL = 15 pF; p. 6 tr = tf = 6 ns"
+        },
+        {
+          "name": "no_overshoot_15p",
+          "pass": true,
+          "value": 5.0,
+          "minimum": null,
+          "maximum": 5.0,
+          "datasheet_citation": "Nexperia 74HC14 Rev. 10, 29 February 2024, p. 3, recommended operating conditions, output voltage range is GND to VCC"
+        },
+        {
+          "name": "no_undershoot_15p",
+          "pass": true,
+          "value": 9.94939e-10,
+          "minimum": 0,
+          "maximum": null,
+          "datasheet_citation": "Nexperia 74HC14 Rev. 10, 29 February 2024, p. 3, recommended operating conditions, output voltage range is GND to VCC"
+        }
+      ]
+    },
+    {
+      "test_netlist": "propagation_delay_50p.cir",
+      "analysis": "tran",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "tphl_50p",
+          "pass": true,
+          "value": 1.30831e-08,
+          "error": 1.9168999999999994e-09,
+          "allowed": 2.25e-09,
+          "expected_value": 1.5e-08,
+          "datasheet_citation": "Nexperia 74HC14 Rev. 10, 29 February 2024, p. 5, Table 7 dynamic characteristics, 25 degC TYP tpd = 15 ns, VCC = 4.5 V, CL = 50 pF; p. 6 tr = tf = 6 ns"
+        },
+        {
+          "name": "tplh_50p",
+          "pass": true,
+          "value": 1.40703e-08,
+          "error": 9.296999999999994e-10,
+          "allowed": 2.25e-09,
+          "expected_value": 1.5e-08,
+          "datasheet_citation": "Nexperia 74HC14 Rev. 10, 29 February 2024, p. 5, Table 7 dynamic characteristics, 25 degC TYP tpd = 15 ns, VCC = 4.5 V, CL = 50 pF; p. 6 tr = tf = 6 ns"
+        },
+        {
+          "name": "no_overshoot_50p",
+          "pass": true,
+          "value": 4.5,
+          "minimum": null,
+          "maximum": 4.5,
+          "datasheet_citation": "Nexperia 74HC14 Rev. 10, 29 February 2024, p. 3, recommended operating conditions, output voltage range is GND to VCC"
+        },
+        {
+          "name": "no_undershoot_50p",
+          "pass": true,
+          "value": 8.95445e-10,
+          "minimum": 0,
+          "maximum": null,
+          "datasheet_citation": "Nexperia 74HC14 Rev. 10, 29 February 2024, p. 3, recommended operating conditions, output voltage range is GND to VCC"
+        }
+      ]
+    },
+    {
+      "test_netlist": "minimum_supply_boundary.cir",
+      "analysis": "tran",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "minimum_supply_high",
+          "pass": true,
+          "value": 2.0,
+          "minimum": 1.9,
+          "maximum": null,
+          "datasheet_citation": "Nexperia 74HC14 Rev. 10, 29 February 2024, p. 3, recommended operating conditions, VCC MIN = 2.0 V; Nexperia 74HC14 Rev. 10, 29 February 2024, p. 3, function table, Hex inverting Schmitt trigger; Nexperia 74HC14 Rev. 10, 29 February 2024, p. 4, Table 6 static characteristics, VOH MIN = 1.9 V and VOL MAX = 0.1 V at VCC = 2.0 V, IO = 20 uA"
+        },
+        {
+          "name": "minimum_supply_low",
+          "pass": true,
+          "value": 3.97976e-10,
+          "minimum": null,
+          "maximum": 0.1,
+          "datasheet_citation": "Nexperia 74HC14 Rev. 10, 29 February 2024, p. 3, recommended operating conditions, VCC MIN = 2.0 V; Nexperia 74HC14 Rev. 10, 29 February 2024, p. 3, function table, Hex inverting Schmitt trigger; Nexperia 74HC14 Rev. 10, 29 February 2024, p. 4, Table 6 static characteristics, VOH MIN = 1.9 V and VOL MAX = 0.1 V at VCC = 2.0 V, IO = 20 uA"
+        }
+      ]
+    },
+    {
+      "test_netlist": "quiescent_current.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "quiescent_current_upper_bound",
+          "pass": true,
+          "value": 0.0,
+          "minimum": null,
+          "maximum": 4e-05,
+          "datasheet_citation": "Nexperia 74HC14 Rev. 10, 29 February 2024, p. 4, Table 6 static characteristics, ICC MAX = 40 uA at VCC = 6.0 V, inputs at rails, IO = 0 A, -40 degC to +125 degC"
+        }
+      ]
+    },
+    {
+      "test_netlist": "hysteresis.cir",
+      "analysis": "tran",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "vt_plus_typ",
+          "pass": true,
+          "value": 2.32384,
+          "error": 0.056159999999999766,
+          "allowed": 0.119,
+          "expected_value": 2.38,
+          "datasheet_citation": "Nexperia 74HC14 Rev. 10, 29 February 2024, p. 7, Table 10 transfer characteristics, VCC = 4.5 V, 25 degC TYP VT+ = 2.38 V, VT- = 1.40 V, VH = 0.98 V"
+        },
+        {
+          "name": "vt_minus_typ",
+          "pass": true,
+          "value": 1.45616,
+          "error": 0.05615999999999999,
+          "allowed": 0.06999999999999999,
+          "expected_value": 1.4,
+          "datasheet_citation": "Nexperia 74HC14 Rev. 10, 29 February 2024, p. 7, Table 10 transfer characteristics, VCC = 4.5 V, 25 degC TYP VT+ = 2.38 V, VT- = 1.40 V, VH = 0.98 V"
+        },
+        {
+          "name": "hysteresis_typ",
+          "pass": true,
+          "value": 0.867674,
+          "error": 0.11232600000000004,
+          "allowed": 0.196,
+          "expected_value": 0.98,
+          "datasheet_citation": "Nexperia 74HC14 Rev. 10, 29 February 2024, p. 7, Table 10 transfer characteristics, VCC = 4.5 V, 25 degC TYP VT+ = 2.38 V, VT- = 1.40 V, VH = 0.98 V"
+        },
+        {
+          "name": "vt_plus_range",
+          "pass": true,
+          "value": 2.32384,
+          "minimum": 1.7,
+          "maximum": 3.15,
+          "datasheet_citation": "Nexperia 74HC14 Rev. 10, 29 February 2024, p. 7, Table 10 transfer characteristics, VCC = 4.5 V, 25 degC TYP VT+ = 2.38 V, VT- = 1.40 V, VH = 0.98 V"
+        },
+        {
+          "name": "vt_minus_range",
+          "pass": true,
+          "value": 1.45616,
+          "minimum": 0.9,
+          "maximum": 2.0,
+          "datasheet_citation": "Nexperia 74HC14 Rev. 10, 29 February 2024, p. 7, Table 10 transfer characteristics, VCC = 4.5 V, 25 degC TYP VT+ = 2.38 V, VT- = 1.40 V, VH = 0.98 V"
+        },
+        {
+          "name": "hysteresis_range",
+          "pass": true,
+          "value": 0.867674,
+          "minimum": 0.4,
+          "maximum": 1.4,
+          "datasheet_citation": "Nexperia 74HC14 Rev. 10, 29 February 2024, p. 7, Table 10 transfer characteristics, VCC = 4.5 V, 25 degC TYP VT+ = 2.38 V, VT- = 1.40 V, VH = 0.98 V"
+        }
+      ]
+    }
+  ]
+}

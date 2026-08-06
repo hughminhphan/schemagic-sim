@@ -1,0 +1,150 @@
+{
+  "schema_version": "1.0.0",
+  "fit_method": "Closed-form single-input DC parameters or deterministic two-input corner solve with a 1 mV numerical guard, plus exactly three native ngspice-46 fixed-point CINT calibration iterations; 74HC14 KVTC is calibrated against the cited 25 degC typical thresholds; no vendor SPICE model used",
+  "temperature_c": 25.0,
+  "parameters": {
+    "KVTC": 14.0,
+    "RINT": 1000.0,
+    "CINT": 1.45570668371e-11,
+    "ROH": 45.0,
+    "ROL": 37.5,
+    "KSW": 12.0,
+    "VHYST": 0.98,
+    "VCTR": 1.89,
+    "VNOM": 4.5
+  },
+  "parameter_metadata": {
+    "KVTC": {
+      "status": "fitted"
+    },
+    "RINT": {
+      "status": "held_default"
+    },
+    "CINT": {
+      "status": "fitted"
+    },
+    "ROH": {
+      "status": "derived_from_typical"
+    },
+    "ROL": {
+      "status": "derived_from_typical"
+    },
+    "KSW": {
+      "status": "held_default"
+    },
+    "VHYST": {
+      "status": "derived_from_typical"
+    },
+    "VCTR": {
+      "status": "derived_from_typical"
+    },
+    "VNOM": {
+      "status": "held_default_fit_voltage"
+    }
+  },
+  "held_defaults": [
+    {
+      "parameter": "RINT",
+      "value": 1000,
+      "unit": "ohm",
+      "reason": "held at default, fixed archetype internal delay resistance"
+    },
+    {
+      "parameter": "KSW",
+      "value": 12,
+      "unit": "1",
+      "reason": "held at default, fixed archetype output-driver blend constant"
+    },
+    {
+      "parameter": "RIN",
+      "value": 100000000000.0,
+      "unit": "ohm",
+      "reason": "held at default, mandatory input leakage path"
+    },
+    {
+      "parameter": "VNOM",
+      "value": 4.5,
+      "unit": "V",
+      "reason": "held at default fit voltage selected by the archetype"
+    }
+  ],
+  "residuals": [
+    {
+      "quantity": "voh_loaded_typ",
+      "datasheet_value": 4.32,
+      "fitted_value": 4.320000105316008,
+      "unit": "V",
+      "relative_error": 2.4378705432971093e-08,
+      "citation": "Nexperia 74HC14 Rev. 10, 29 February 2024, p. 4, Table 6 static characteristics, 25 degC TYP loaded VOH = 4.32 V and VOL = 0.15 V at 4 mA"
+    },
+    {
+      "quantity": "vol_loaded_typ",
+      "datasheet_value": 0.15,
+      "fitted_value": 0.1500001852206839,
+      "unit": "V",
+      "relative_error": 1.2348045593431798e-06,
+      "citation": "Nexperia 74HC14 Rev. 10, 29 February 2024, p. 4, Table 6 static characteristics, 25 degC TYP loaded VOH = 4.32 V and VOL = 0.15 V at 4 mA"
+    },
+    {
+      "quantity": "tphl_15p",
+      "datasheet_value": 1.2e-08,
+      "fitted_value": 1.15189e-08,
+      "unit": "s",
+      "relative_error": 0.04009166666666666,
+      "citation": "Nexperia 74HC14 Rev. 10, 29 February 2024, p. 5, Table 7 dynamic characteristics, 25 degC TYP tpd = 12 ns, VCC = 5 V, CL = 15 pF; p. 6 tr = tf = 6 ns"
+    },
+    {
+      "quantity": "tplh_15p",
+      "datasheet_value": 1.2e-08,
+      "fitted_value": 1.24807e-08,
+      "unit": "s",
+      "relative_error": 0.040058333333333314,
+      "citation": "Nexperia 74HC14 Rev. 10, 29 February 2024, p. 5, Table 7 dynamic characteristics, 25 degC TYP tpd = 12 ns, VCC = 5 V, CL = 15 pF; p. 6 tr = tf = 6 ns"
+    },
+    {
+      "quantity": "tphl_50p",
+      "datasheet_value": 1.5e-08,
+      "fitted_value": 1.30831e-08,
+      "unit": "s",
+      "relative_error": 0.12779333333333331,
+      "citation": "Nexperia 74HC14 Rev. 10, 29 February 2024, p. 5, Table 7 dynamic characteristics, 25 degC TYP tpd = 15 ns, VCC = 4.5 V, CL = 50 pF; p. 6 tr = tf = 6 ns"
+    },
+    {
+      "quantity": "tplh_50p",
+      "datasheet_value": 1.5e-08,
+      "fitted_value": 1.40703e-08,
+      "unit": "s",
+      "relative_error": 0.061979999999999966,
+      "citation": "Nexperia 74HC14 Rev. 10, 29 February 2024, p. 5, Table 7 dynamic characteristics, 25 degC TYP tpd = 15 ns, VCC = 4.5 V, CL = 50 pF; p. 6 tr = tf = 6 ns"
+    },
+    {
+      "quantity": "vt_plus_typ",
+      "datasheet_value": 2.38,
+      "fitted_value": 2.32384,
+      "unit": "V",
+      "relative_error": 0.023596638655462087,
+      "citation": "Nexperia 74HC14 Rev. 10, 29 February 2024, p. 7, Table 10 transfer characteristics, VCC = 4.5 V, 25 degC TYP VT+ = 2.38 V, VT- = 1.40 V, VH = 0.98 V"
+    },
+    {
+      "quantity": "vt_minus_typ",
+      "datasheet_value": 1.4,
+      "fitted_value": 1.45616,
+      "unit": "V",
+      "relative_error": 0.040114285714285706,
+      "citation": "Nexperia 74HC14 Rev. 10, 29 February 2024, p. 7, Table 10 transfer characteristics, VCC = 4.5 V, 25 degC TYP VT+ = 2.38 V, VT- = 1.40 V, VH = 0.98 V"
+    },
+    {
+      "quantity": "hysteresis_typ",
+      "datasheet_value": 0.98,
+      "fitted_value": 0.867674,
+      "unit": "V",
+      "relative_error": 0.11461836734693881,
+      "citation": "Nexperia 74HC14 Rev. 10, 29 February 2024, p. 7, Table 10 transfer characteristics, VCC = 4.5 V, 25 degC TYP VT+ = 2.38 V, VT- = 1.40 V, VH = 0.98 V"
+    }
+  ],
+  "worst_relative_error": {
+    "value": 0.12779333333333331,
+    "quantity": "tphl_50p"
+  },
+  "calibration_iterations": 3
+}
