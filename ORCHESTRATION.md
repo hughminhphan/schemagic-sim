@@ -13,7 +13,8 @@ Local repo: ~/Documents/opencircuit. Public repo + live deploy authorized; launc
 - [x] P-1 Lane verification (sol + luna wire-verified in splitter log)
 - [x] P0 Recon (all 5 spike reports in spikes/, committed)
 - [x] P0 gate PASSED 2026-08-06: WASM/native agreement verified by orchestrator rerun; licence path in spikes/engine/REPORT.md; docs/CONTRACTS.md FROZEN v1.0 (browser Worker proof rolls into P1 gate)
-- [x] P1 Vertical slice GATE PASSED 2026-08-06: orchestrator reran tests+build, reviewed screenshots; browser WASM proof (worker, 0 long tasks, warm op 1.3 ms, init 403 ms, no COI needed). Punch list -> P2: rebrand scheMAGIC Simulator, fidelity chip only on MPN parts, wiper % formatting.
+- [x] P1 Vertical slice GATE PASSED 2026-08-06: orchestrator reran tests+build, reviewed screenshots; browser WASM proof (worker, 0 long tasks, warm op 1.3 ms, init 403 ms, no COI needed). Punch list -> P2: rebrand scheMAGIC Simulator, fidelity chip only on MPN parts, wiper % formatting. P5 sweep: rebrand "OpenCircuit" strings in model-factory generator + model.cir headers + package names decision.
+P3 progress: golds 1N4148 + WP7113ID at F2 VERIFIED (worst fit 0.896% / 0.758%, native-WASM deltas ~1e-13); reviewer=pending-review, independent review lane due after all 5 golds.
 - [ ] P2+P3 wave — IN PROGRESS. Ownership: E1 editor (apps/web + circuit-schema + schematic-editor + sim-engine) · E2 waveform-viewer · E3 model-import · E4 tools/ngspice-wasm-build (+ engine flag in native-reference) · A1 docs/model-archetypes (opus) · F1 model factory (tools/model-factory + component-schema + model-library golds)
 - [ ] P2 Editor + analyses (package fan-out)
 - [ ] P3 Model factory + 5 gold components
