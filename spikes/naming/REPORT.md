@@ -34,7 +34,7 @@ npm/PyPI/crates "opencircuit"/"opencircuits" are free (404s), but the ecosystem 
 
 Trademark caveat: web-level search only. Formal USPTO (uspto.gov/trademarks/search) and EUIPO clearance still required before committing publicly.
 
-## Status: RESOLVED 2026-08-06: Hugh chose scheMAGIC (his existing brand) "for now", served at sim.schemagic.design. Candidate research retained below in case the name revisits before launch.
+## Status: RESOLVED 2026-08-06: Hugh chose scheMAGIC Simulator (short: scheMAGIC Sim), his existing brand, served at sim.schemagic.design. Candidate research retained below in case the name revisits before launch.
 
 ## Superseded: was OPEN, Hugh decides
 
