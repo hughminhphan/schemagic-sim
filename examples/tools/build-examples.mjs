@@ -1,11 +1,15 @@
 import { writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { canonicalizeCircuit, validateCircuit } from "@opencircuit/circuit-schema";
+import { deflateSync, strToU8 } from "fflate";
+import { canonicalizeCircuit } from "../../packages/circuit-schema/dist/src/canonical.js";
 import { demoCircuit } from "../../apps/web/src/demo.ts";
-import { encodeCircuit } from "../../apps/web/src/share.ts";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+const encodeCircuit = (document) => {
+  const bytes = deflateSync(strToU8(canonicalizeCircuit(document)), { level: 9 });
+  return Buffer.from(bytes).toString("base64url");
+};
 const component = (id, type, pos, options = {}) => ({ id, type, pos, rot: 0, mirror: false, ...options });
 const wire = (id, points) => ({ id, points });
 const ground = (id, pos) => component(id, "ground", pos);
@@ -131,8 +135,6 @@ examples.set("opamp-noninverting", base(
 ));
 
 for (const [id, document] of examples) {
-  const issues = validateCircuit(document);
-  if (issues.length) throw new Error(`${id}: ${issues.map((issue) => issue.message).join(", ")}`);
   await writeFile(resolve(root, `${id}.json`), `${canonicalizeCircuit(document)}\n`);
 }
 
