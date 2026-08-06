@@ -22,7 +22,7 @@
 
 - Run: jfet-MMBF5457-20260807-01
 - Solver: scipy.optimize.least_squares with native ngspice-46 in the loop, method trf, x_scale jac, diff_step 1e-4
-- Worst fitted typical-point relative error: 0.656% (digitized transfer point at VGS=-1.0 V)
+- Worst fitted typical-point relative error: 0.034% (digitized transfer point at VGS=-0.5 V)
 - Square-law consistency report: The tabulated VGS(off) and gfs rows publish only limits, not typical values. Fitting therefore used the p.3 figure 1 25 C typical curve plus the tabulated 3.0 mA IDSS and 10 uS gos typical values; guaranteed limits were used only as hard bounds.
 
 ## Domain coverage
@@ -40,10 +40,10 @@
 
 | Parameter | Value | Status |
 | --- | ---: | --- |
-| VTO | -1.79347788e+00 | fitted |
-| BETA | 8.80621672e-04 | fitted |
-| LAMBDA | 3.53037003e-03 | fitted |
-| B | 1.00000000e+00 | held at default |
+| VTO | -1.79750116e+00 | fitted |
+| BETA | 8.97921547e-04 | fitted |
+| LAMBDA | 3.50819654e-03 | fitted |
+| B | 9.51090850e-01 | fitted |
 | RD | 1.00000000e-04 | held at default |
 | RS | 1.00000000e-04 | held at default |
 | CGS | 3.00000000e-12 | derived |
@@ -68,11 +68,10 @@
 - N is held at default 1.0, FC at default 0.5, PB at default 1.0 V, and M at default 0.5.
 - Channel series resistance is not fitted: RD and RS are held at the 1e-4 ohm numerical floor because no rDS(on) row is published.
 - CGS and CGD are derived from single tabulated Ciss and Crss points with PB and M held at physical defaults.
-- B is held at 1.0 after the digitized transfer points showed no justified improvement from releasing it.
 
 ## Validation
 
-Package schema validation passed. All 6 benches passed native ngspice/WASM comparison and all 12 datasheet checks passed. Worst engine relative delta: 3.231174e-18; worst absolute delta: 3.231174e-27. Detailed measured values are recorded in `validation-results.json`.
+Package schema validation passed. All 6 benches passed native ngspice/WASM comparison and all 12 datasheet checks passed. Worst engine relative delta: 1.878299e-08; worst absolute delta: 2.910383e-11. Detailed measured values are recorded in `validation-results.json`.
 
 ## Licence
 
