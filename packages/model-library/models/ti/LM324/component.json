@@ -1,0 +1,186 @@
+{
+  "schema_version": "1.0.0",
+  "canonical_mpn": "LM324",
+  "manufacturer": "Texas Instruments",
+  "description": "Quadruple industry-standard operational amplifier",
+  "electrical_family": "opamp",
+  "symbol_pins": [
+    {
+      "name": "IN+",
+      "number": "3",
+      "role": "noninverting_input"
+    },
+    {
+      "name": "IN-",
+      "number": "2",
+      "role": "inverting_input"
+    },
+    {
+      "name": "VCC",
+      "number": "4",
+      "role": "positive_supply"
+    },
+    {
+      "name": "VEE",
+      "number": "11",
+      "role": "negative_supply"
+    },
+    {
+      "name": "OUT",
+      "number": "1",
+      "role": "output"
+    }
+  ],
+  "spice_pin_mapping": [
+    {
+      "symbol_pin_number": "3",
+      "subckt_node": "inp",
+      "order": 1
+    },
+    {
+      "symbol_pin_number": "2",
+      "subckt_node": "inn",
+      "order": 2
+    },
+    {
+      "symbol_pin_number": "4",
+      "subckt_node": "vcc",
+      "order": 3
+    },
+    {
+      "symbol_pin_number": "11",
+      "subckt_node": "vee",
+      "order": 4
+    },
+    {
+      "symbol_pin_number": "1",
+      "subckt_node": "out",
+      "order": 5
+    }
+  ],
+  "package_variants": [
+    {
+      "name": "PDIP-14",
+      "standard": "TI N package",
+      "pin_count": 5,
+      "pin_map": [
+        {
+          "package_pin": "3",
+          "symbol_pin_number": "3"
+        },
+        {
+          "package_pin": "2",
+          "symbol_pin_number": "2"
+        },
+        {
+          "package_pin": "4",
+          "symbol_pin_number": "4"
+        },
+        {
+          "package_pin": "11",
+          "symbol_pin_number": "11"
+        },
+        {
+          "package_pin": "1",
+          "symbol_pin_number": "1"
+        }
+      ]
+    }
+  ],
+  "ordering_code_aliases": [
+    "LM324N",
+    "LM324D"
+  ],
+  "datasheet": {
+    "url": "https://www.ti.com/lit/ds/symlink/lm324.pdf",
+    "revision": "SLOS066AE, August 1975, revised September 2025"
+  },
+  "model_type": "subckt",
+  "fidelity_tier": "F2",
+  "domain_coverage": {
+    "dc": "fitted",
+    "ac": "fitted",
+    "transient": "fitted",
+    "noise": "fitted",
+    "thermal": "none",
+    "digital": "none"
+  },
+  "supported_analyses": [
+    "operating_point",
+    "dc_sweep",
+    "ac_small_signal",
+    "transient",
+    "noise"
+  ],
+  "supported_operating_region": {
+    "summary": "Fitted at 25 degC for the legacy LM324 tables. The model supports 3 V to 30 V total supply and represents one amplifier channel.",
+    "numeric_bounds": [
+      {
+        "quantity": "supply_voltage_total",
+        "minimum": 3,
+        "maximum": 30,
+        "unit": "V",
+        "conditions": "Recommended supply envelope",
+        "placeholder": false
+      },
+      {
+        "quantity": "input_offset_voltage",
+        "minimum": -0.007,
+        "maximum": 0.007,
+        "unit": "V",
+        "conditions": "25 degC production maximum magnitude",
+        "placeholder": false
+      },
+      {
+        "quantity": "common_mode_input",
+        "minimum": 0,
+        "maximum": 28.5,
+        "unit": "V",
+        "conditions": "At VCC = 30 V, 25 degC",
+        "placeholder": false
+      }
+    ]
+  },
+  "known_omissions": [
+    "Output-stage distortion is not modelled. THD, crossover distortion and slew-induced distortion do not appear; a sine through this model comes out a sine.",
+    "Input common-mode range is not enforced. The model does not phase-invert, latch, or lose gain when an input is driven outside VICR. VICR is recorded in supported_operating_region as metadata only.",
+    "PSRR is a single frequency-independent constant taken from the datasheet's DC row. Real supply rejection degrades with frequency; this model's does not.",
+    "CMRR is a single frequency-independent constant. Real common-mode rejection degrades with frequency; this model's does not.",
+    "The frequency response is a two-pole approximation (dominant pole plus one pole placed from the phase margin). Higher-order poles and zeros are not modelled, so gain and phase above the unity-gain frequency are not trustworthy.",
+    "Only broadband input voltage noise is modelled. Flicker (1/f) noise and input current noise are not.",
+    "No self-heating and no temperature coefficients: offset drift, bias-current doubling with temperature, and thermal feedback are not modelled.",
+    "Quiescent current is a constant. It does not vary with supply, temperature, or output loading.",
+    "Input offset voltage is set to the datasheet typical. A real part may sit anywhere inside the published maximum, and the sign is arbitrary.",
+    "Input protection diodes and ESD structures are not modelled. Inputs driven beyond the supplies do not clamp.",
+    "Settling time and overload recovery are consequences of the two-pole model, not fitted quantities.",
+    "CC = 30 pF, CDIF = 1 pF, RE = 1 Mohm, CP2 = 1 pF, RQ = 1 Mohm, and the 300.15 K noise normalization are held at default internal archetype values.",
+    "The second pole is placed at three times the gain-bandwidth product: the datasheet publishes no phase margin. Stability with capacitive loads is indicative only.",
+    "ROUT derived from the output swing and short-circuit current rows: the datasheet publishes no open-loop output impedance.",
+    "Input common-mode range includes the negative supply on this part. The model does not reproduce the gain loss or offset shift that occurs as an input approaches either supply.",
+    "High-side rail drop is fitted to the 30 V, RL >= 10 kohm TYP row; low-side rail drop uses the 5 mV TYP row with the archetype 10 mV numerical floor.",
+    "FP2 is held at the archetype default placement of three times GBW because phase margin is not published."
+  ],
+  "licence": {
+    "spdx_id": "MIT",
+    "provenance_basis": "original_from_facts"
+  },
+  "generator": {
+    "tool_or_agent": "opencircuit-model-factory-v0.1.0",
+    "date": "2026-08-06"
+  },
+  "reviewer": {
+    "tool_or_agent": "pending-review",
+    "date": "2026-08-06"
+  },
+  "test_results": {
+    "status": "complete",
+    "pass_count": 15,
+    "fail_count": 0,
+    "total_count": 15,
+    "worst_observed_relative_fitting_error": {
+      "value": 1.0,
+      "quantity": "low output voltage (5 mV absolute error, inside the archetype 0.1 V swing tolerance)"
+    }
+  },
+  "validation_date": "2026-08-07"
+}

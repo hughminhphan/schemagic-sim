@@ -1,0 +1,214 @@
+{
+  "schema_version": "1.0.0",
+  "extraction_method": "pdftotext -layout plus manual table transcription with explicit MIN/TYP/MAX semantics",
+  "fit_conditions": {
+    "temperature": {
+      "value": 25,
+      "unit": "degC",
+      "conditions": "VS = 5 V unless stated",
+      "page_reference": "p. 11 electrical characteristics heading",
+      "source_kind": "typical",
+      "column_semantics": "TYP"
+    }
+  },
+  "parameters": {
+    "aol": {
+      "value": 100000,
+      "unit": "V/V",
+      "conditions": "VS = 15 V, VO = 1 V to 11 V, RL >= 2 kohm",
+      "page_reference": "p. 11 electrical characteristics, TYP column",
+      "source_kind": "typical",
+      "column_semantics": "TYP"
+    },
+    "gbw": {
+      "value": 1200000,
+      "unit": "Hz",
+      "conditions": "RL = 1 Mohm, CL = 20 pF, VCC = +/-15 V",
+      "page_reference": "p. 13 operating conditions, TYP column",
+      "source_kind": "typical",
+      "column_semantics": "TYP"
+    },
+    "sr": {
+      "value": 500000,
+      "unit": "V/s",
+      "conditions": "RL = 1 Mohm, CL = 30 pF, VI = +/-10 V, VCC = +/-15 V",
+      "page_reference": "p. 13 operating conditions, TYP column",
+      "source_kind": "typical",
+      "column_semantics": "TYP"
+    },
+    "vos": {
+      "value": 0.003,
+      "unit": "V",
+      "conditions": "VS = 5 V, VCM = 0 V, VO = 1.4 V",
+      "page_reference": "p. 11 electrical characteristics, TYP column",
+      "source_kind": "typical",
+      "column_semantics": "TYP"
+    },
+    "vos_max": {
+      "value": 0.007,
+      "unit": "V",
+      "conditions": "TA = 25 degC",
+      "page_reference": "p. 11 electrical characteristics, MAX column",
+      "source_kind": "maximum",
+      "column_semantics": "MAX"
+    },
+    "ibias": {
+      "value": 2e-8,
+      "unit": "A",
+      "conditions": "VO = 1.4 V, TA = 25 degC",
+      "page_reference": "p. 11 electrical characteristics, TYP column",
+      "source_kind": "typical",
+      "column_semantics": "TYP"
+    },
+    "ios": {
+      "value": 2e-9,
+      "unit": "A",
+      "conditions": "VO = 1.4 V, TA = 25 degC",
+      "page_reference": "p. 11 electrical characteristics, TYP column",
+      "source_kind": "typical",
+      "column_semantics": "TYP"
+    },
+    "output_swing": {
+      "column_semantics": {
+        "high": "TYP at 30 V",
+        "low": "TYP at 5 V",
+        "fit_translation": "derived from TYP"
+      },
+      "typical_25c": {
+        "value": 13,
+        "unit": "V",
+        "conditions": "Derived centered translation of VOH = 28 V at VCC = 30 V, RL >= 10 kohm",
+        "page_reference": "derived from p. 11 electrical characteristics TYP column",
+        "source_kind": "derived_model_input",
+        "column_semantics": "DERIVED FROM TYP"
+      },
+      "high_absolute": {
+        "value": 28,
+        "unit": "V",
+        "conditions": "VCC = 30 V, RL >= 10 kohm",
+        "page_reference": "p. 11 electrical characteristics, TYP column",
+        "source_kind": "typical",
+        "column_semantics": "TYP"
+      },
+      "low_absolute": {
+        "value": 0.005,
+        "unit": "V",
+        "conditions": "VCC = 5 V, RL <= 10 kohm",
+        "page_reference": "p. 11 electrical characteristics, TYP column",
+        "source_kind": "typical",
+        "column_semantics": "TYP"
+      }
+    },
+    "ilim": {
+      "value": 0.04,
+      "unit": "A",
+      "conditions": "VCC at 5 V, VCC- at -5 V, VO = 0 V",
+      "page_reference": "p. 11 electrical characteristics, TYP column",
+      "source_kind": "typical",
+      "column_semantics": "TYP"
+    },
+    "cmrr_db": {
+      "value": 80,
+      "unit": "dB",
+      "conditions": "VIC = VICRmin",
+      "page_reference": "p. 11 electrical characteristics, TYP column",
+      "source_kind": "typical",
+      "column_semantics": "TYP"
+    },
+    "psrr_db": {
+      "value": 100,
+      "unit": "dB",
+      "conditions": "TA = 25 degC",
+      "page_reference": "p. 11 electrical characteristics, TYP column",
+      "source_kind": "typical",
+      "column_semantics": "TYP"
+    },
+    "iq": {
+      "value": 0.000175,
+      "unit": "A",
+      "conditions": "per amplifier, divided from 0.7 mA typical package total at VCC = 5 V",
+      "page_reference": "p. 11 electrical characteristics, TYP column",
+      "source_kind": "derived_from_typical",
+      "column_semantics": "DERIVED FROM TYP"
+    },
+    "en": {
+      "value": 3.5e-8,
+      "unit": "V/sqrt(Hz)",
+      "conditions": "f = 1 kHz",
+      "page_reference": "p. 13 operating conditions, TYP column",
+      "source_kind": "typical",
+      "column_semantics": "TYP"
+    },
+    "phase_margin": {
+      "value": 18.43494882292201,
+      "unit": "deg",
+      "conditions": "No phase margin is published; encoded solely to place FP2 at 3 times GBW",
+      "page_reference": "archetype-opamp.md section 3.4",
+      "source_kind": "held_default",
+      "column_semantics": "HELD AT DEFAULT"
+    },
+    "rout": {
+      "value": 50,
+      "unit": "ohm",
+      "conditions": "Derived as 2 V high-side rail drop divided by 40 mA short-circuit current; no open-loop output impedance is published",
+      "page_reference": "p. 11 electrical characteristics output swing and short-circuit rows",
+      "source_kind": "derived_model_input",
+      "column_semantics": "DERIVED FROM TYP"
+    },
+    "supply_positive": {
+      "value": 15,
+      "unit": "V",
+      "conditions": "Equivalent split-supply coordinate used only for deterministic rail calibration of the 30 V table",
+      "page_reference": "derived from p. 11 electrical characteristics VOH condition",
+      "source_kind": "derived_model_input",
+      "column_semantics": "DERIVED CONDITION"
+    },
+    "supply_negative": {
+      "value": -15,
+      "unit": "V",
+      "conditions": "Equivalent split-supply coordinate used only for deterministic rail calibration of the 30 V table",
+      "page_reference": "derived from p. 11 electrical characteristics VOH condition",
+      "source_kind": "derived_model_input",
+      "column_semantics": "DERIVED CONDITION"
+    },
+    "supply_voltage_total": {
+      "minimum": {
+        "value": 3,
+        "unit": "V",
+        "conditions": "Recommended supply envelope",
+        "page_reference": "p. 6 recommended operating conditions, MIN column",
+        "source_kind": "minimum",
+        "column_semantics": "MIN"
+      },
+      "maximum": {
+        "value": 30,
+        "unit": "V",
+        "conditions": "Recommended supply envelope for legacy LM324",
+        "page_reference": "p. 6 recommended operating conditions, MAX column",
+        "source_kind": "maximum",
+        "column_semantics": "MAX"
+      }
+    }
+  },
+  "identity": {
+    "canonical_mpn": "LM324",
+    "manufacturer": "Texas Instruments",
+    "aliases": [
+      "LM324N",
+      "LM324D"
+    ]
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://www.ti.com/lit/ds/symlink/lm324.pdf",
+    "revision": "SLOS066AE, August 1975, revised September 2025",
+    "sha256": "561b0abc1cdb4e7c716e1511df508f43eaeddb6b030bee6560ca9173a93cc48c",
+    "accessed_date": "2026-08-06",
+    "pages_referenced": [
+      "p. 6",
+      "p. 11",
+      "p. 13"
+    ],
+    "placeholder": false
+  }
+}

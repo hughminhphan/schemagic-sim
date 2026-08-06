@@ -1,0 +1,195 @@
+{
+  "schema_version": "1.0.0",
+  "fitter": "native ngspice-46 rail-drop least squares plus three fixed-point GBW and slow-slew calibration iterations",
+  "deterministic": true,
+  "parameters": {
+    "AOL": 100000,
+    "GBW": 1323945.3707969927,
+    "SR": 530012.420523343,
+    "IBIAS": 2e-08,
+    "IOS": 2e-09,
+    "VOS": 0.003,
+    "ROUT": 50.0,
+    "ILIM": 0.04,
+    "VDRP_H": 1.9349780510886194,
+    "VDRP_L": 0.01,
+    "FP2": 3971836.1123909783,
+    "CMRR": 10000.0,
+    "PSRR": 100000.0,
+    "VSUP_NOM": 5.0,
+    "IQ": 0.000175,
+    "EN": 3.5e-08
+  },
+  "parameter_metadata": {
+    "AOL": {
+      "status": "direct or derived datasheet transcription"
+    },
+    "GBW": {
+      "status": "native calibrated"
+    },
+    "SR": {
+      "status": "native calibrated"
+    },
+    "IBIAS": {
+      "status": "direct or derived datasheet transcription"
+    },
+    "IOS": {
+      "status": "direct or derived datasheet transcription"
+    },
+    "VOS": {
+      "status": "direct or derived datasheet transcription"
+    },
+    "ROUT": {
+      "status": "derived from TYP high-side rail drop divided by TYP short-circuit current"
+    },
+    "ILIM": {
+      "status": "direct or derived datasheet transcription"
+    },
+    "VDRP_H": {
+      "status": "native fitted to the 30 V, 10 kohm TYP high-output row"
+    },
+    "VDRP_L": {
+      "status": "held at archetype 10 mV numerical floor; datasheet TYP is 5 mV"
+    },
+    "FP2": {
+      "status": "held at default placement of three times calibrated GBW; phase margin not published"
+    },
+    "CMRR": {
+      "status": "direct or derived datasheet transcription"
+    },
+    "PSRR": {
+      "status": "direct or derived datasheet transcription"
+    },
+    "VSUP_NOM": {
+      "status": "direct datasheet default test supply"
+    },
+    "IQ": {
+      "status": "direct or derived datasheet transcription"
+    },
+    "EN": {
+      "status": "direct or derived datasheet transcription"
+    }
+  },
+  "held_defaults": [
+    {
+      "parameter": "CC",
+      "value": 3e-11,
+      "unit": "F",
+      "reason": "held at default internal archetype scale"
+    },
+    {
+      "parameter": "CDIF",
+      "value": 1e-12,
+      "unit": "F",
+      "reason": "held at default input-capacitance placeholder"
+    },
+    {
+      "parameter": "RE",
+      "value": 1000000.0,
+      "unit": "ohm",
+      "reason": "held at default internal DC path"
+    },
+    {
+      "parameter": "CP2",
+      "value": 1e-12,
+      "unit": "F",
+      "reason": "held at default second-pole scale"
+    },
+    {
+      "parameter": "RQ",
+      "value": 1000000.0,
+      "unit": "ohm",
+      "reason": "held at default clamp-node DC path"
+    },
+    {
+      "parameter": "noise_reference_temperature",
+      "value": 300.15,
+      "unit": "K",
+      "reason": "held at default archetype noise normalization"
+    },
+    {
+      "parameter": "FP2 placement",
+      "value": 3.0,
+      "unit": "times GBW",
+      "reason": "held at default because phase margin is not published"
+    },
+    {
+      "parameter": "VDRP_L floor",
+      "value": 0.01,
+      "unit": "V",
+      "reason": "held at default numerical floor; datasheet TYP is 0.005 V"
+    }
+  ],
+  "rail_drop_fit": {
+    "method": "scipy.optimize.least_squares with native ngspice in every residual",
+    "diff_step": 0.0001,
+    "target": 13,
+    "unit": "V",
+    "conditions": "Derived centered translation of VOH = 28 V at VCC = 30 V, RL >= 10 kohm",
+    "nfev": 4,
+    "cost": 3.631142990732022e-25
+  },
+  "calibration_iterations": [
+    {
+      "iteration": 1,
+      "gbw_measured": 1087911.2214756696,
+      "sr_measured": 471700.4733074625
+    },
+    {
+      "iteration": 2,
+      "gbw_measured": 1199714.6026642483,
+      "sr_measured": 499985.8581554873
+    },
+    {
+      "iteration": 3,
+      "gbw_measured": 1200006.2758424697,
+      "sr_measured": 499999.9230073076
+    }
+  ],
+  "residuals": [
+    {
+      "quantity": "open-loop gain",
+      "datasheet_value": 100000,
+      "fitted_value": 97565.82394032062,
+      "unit": "V/V",
+      "relative_error": 0.024341760596793757,
+      "citation": "p. 11 electrical characteristics, TYP column"
+    },
+    {
+      "quantity": "unity-gain bandwidth",
+      "datasheet_value": 1200000,
+      "fitted_value": 1199999.8627150918,
+      "unit": "Hz",
+      "relative_error": 1.1440409017571559e-07,
+      "citation": "p. 13 operating conditions, TYP column"
+    },
+    {
+      "quantity": "slew rate",
+      "datasheet_value": 500000,
+      "fitted_value": 500000.00194686046,
+      "unit": "V/s",
+      "relative_error": 3.893720917403698e-09,
+      "citation": "p. 13 operating conditions, TYP column"
+    },
+    {
+      "quantity": "high output voltage",
+      "datasheet_value": 28,
+      "fitted_value": 28,
+      "unit": "V",
+      "relative_error": 0.0,
+      "citation": "p. 11 electrical characteristics, TYP column"
+    },
+    {
+      "quantity": "low output voltage",
+      "datasheet_value": 0.005,
+      "fitted_value": 0.01,
+      "unit": "V",
+      "relative_error": 1.0,
+      "citation": "p. 11 electrical characteristics, TYP column"
+    }
+  ],
+  "worst_relative_error": {
+    "value": 1.0,
+    "quantity": "low output voltage (5 mV absolute error, inside the archetype 0.1 V swing tolerance)"
+  }
+}
