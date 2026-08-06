@@ -30,7 +30,7 @@ export const demoCircuit: CircuitDocument = {
     { id: "w9", points: [[58, 21], [52, 21], [52, 18], [46, 18]] },
   ],
   probes: [
-    { id: "p1", kind: "voltage", target: { componentPin: ["c4", 0] }, color: "phosphor" },
+    { id: "p1", kind: "voltage", target: { componentPin: ["c4", 0] }, color: "#3987e5" },
   ],
   sim: {
     mode: "live",
