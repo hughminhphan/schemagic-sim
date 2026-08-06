@@ -10,7 +10,7 @@ import {
   type PinMappingSpec,
   type SuggestedSymbol,
 } from "@opencircuit/model-import";
-import { generateNetlist, type AnalysisMode, type CircuitComponent, type CircuitDocument, type ComponentType, type GeneratedNetlist, type NetlistLine } from "@opencircuit/circuit-schema";
+import { generateNetlist, partByType, type AnalysisMode, type CircuitComponent, type CircuitDocument, type ComponentType, type GeneratedNetlist, type NetlistLine } from "@opencircuit/circuit-schema";
 
 export interface ImportedPartDefinition {
   id: string;
@@ -64,6 +64,10 @@ function baseType(symbol: SuggestedSymbol, source?: ImportedModel): ComponentTyp
 function symbolPreview(symbol: SuggestedSymbol): string {
   const label = symbol === "opamp" ? "OP" : symbol === "mosfet" ? "MOS" : symbol === "bjt" ? "BJT" : symbol === "diode" ? "D" : symbol === "regulator" ? "REG" : "SUB";
   return `<svg class="import-symbol-preview" viewBox="0 0 80 48" role="img" aria-label="Suggested ${esc(symbol)} symbol"><rect x="8" y="8" width="64" height="32"/><path d="M0 24h8m64 0h8"/><text x="40" y="28" text-anchor="middle">${label}</text></svg>`;
+}
+
+function supportsPlacement(symbol: SuggestedSymbol, pinCount: number): boolean {
+  return partByType(baseType(symbol)).pins.length === pinCount;
 }
 
 function resolveEmittedName(values: Record<string, string>, original: string): string {
@@ -239,13 +243,17 @@ export class ModelImportDialog {
 
   private modelCard(model: ImportedModel, index: number): string {
     const suggested = modelSymbol(model);
-    return `<article class="import-definition" data-model-index="${index}">${symbolPreview(suggested)}<div><strong>${esc(model.name)}</strong><span>.model ${esc(model.type)}</span><p>No subcircuit pin mapping is required.</p></div><button class="primary-button" data-import-model="${index}">Add imported part</button></article>`;
+    const supported = suggested !== "generic";
+    const status = supported ? "No subcircuit pin mapping is required." : "This model type has no compatible schematic symbol yet.";
+    return `<article class="import-definition" data-model-index="${index}">${symbolPreview(suggested)}<div><strong>${esc(model.name)}</strong><span>.model ${esc(model.type)}</span><p>${status}</p></div><button class="primary-button" data-import-model="${index}" ${supported ? "" : "disabled"}>Add imported part</button></article>`;
   }
 
   private subcktCard(subckt: ImportedSubckt, index: number): string {
     const spec = derivePinMappingSpec(subckt);
+    const supported = supportsPlacement(spec.suggestedSymbol, subckt.pins.length);
     const selects = Object.entries(spec.userMapping).map(([symbolPin, selected]) => `<label>${esc(symbolPin)}<select data-map-pin="${esc(symbolPin)}">${subckt.pins.map((pin, nodeIndex) => `<option value="${nodeIndex}" ${nodeIndex === selected ? "selected" : ""}>${esc(pin)}</option>`).join("")}</select></label>`).join("");
-    return `<article class="import-definition subckt-definition" data-subckt-index="${index}">${symbolPreview(spec.suggestedSymbol)}<div><strong>${esc(subckt.name)}</strong><span>${esc(spec.suggestedSymbol)} suggestion</span><div class="pin-map-grid">${selects}</div><p class="mapping-status" data-mapping-status>Mapping is complete and bijective.</p></div><button class="primary-button" data-import-subckt="${index}">Add imported part</button></article>`;
+    const status = supported ? "Mapping is complete and bijective." : `No placeable ${subckt.pins.length}-pin symbol is available yet.`;
+    return `<article class="import-definition subckt-definition" data-subckt-index="${index}">${symbolPreview(spec.suggestedSymbol)}<div><strong>${esc(subckt.name)}</strong><span>${esc(spec.suggestedSymbol)} suggestion</span><div class="pin-map-grid">${selects}</div><p class="mapping-status${supported ? "" : " invalid"}" data-mapping-status>${status}</p></div><button class="primary-button" data-import-subckt="${index}" ${supported ? "" : "disabled"}>Add imported part</button></article>`;
   }
 
   private bindDefinitionActions(sourceText: string): void {
@@ -265,12 +273,14 @@ export class ModelImportDialog {
       const validate = () => {
         card.querySelectorAll<HTMLSelectElement>("[data-map-pin]").forEach((select) => { spec.userMapping[select.dataset.mapPin!] = Number(select.value); });
         const validation = validatePinMapping(spec);
+        const supported = supportsPlacement(spec.suggestedSymbol, subckt.pins.length);
+        const valid = validation.valid && supported;
         const status = card.querySelector<HTMLElement>("[data-mapping-status]")!;
-        status.textContent = validation.valid ? "Mapping is complete and bijective." : validation.errors.join(" ");
-        status.classList.toggle("invalid", !validation.valid);
+        status.textContent = !supported ? `No placeable ${subckt.pins.length}-pin symbol is available yet.` : validation.valid ? "Mapping is complete and bijective." : validation.errors.join(" ");
+        status.classList.toggle("invalid", !valid);
         const button = card.querySelector<HTMLButtonElement>("[data-import-subckt]")!;
-        button.disabled = !validation.valid;
-        return validation.valid;
+        button.disabled = !valid;
+        return valid;
       };
       card.querySelectorAll("select").forEach((select) => select.addEventListener("change", validate));
       card.querySelector<HTMLButtonElement>("[data-import-subckt]")?.addEventListener("click", (event) => {
