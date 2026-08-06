@@ -1,0 +1,133 @@
+{
+  "schema_version": "1.0.0",
+  "canonical_mpn": "1N4001",
+  "manufacturer": "onsemi",
+  "description": "1 A general-purpose silicon rectifier diode",
+  "electrical_family": "diode",
+  "symbol_pins": [
+    {
+      "name": "A",
+      "number": "1",
+      "role": "anode"
+    },
+    {
+      "name": "K",
+      "number": "2",
+      "role": "cathode"
+    }
+  ],
+  "spice_pin_mapping": [
+    {
+      "symbol_pin_number": "1",
+      "subckt_node": "anode",
+      "order": 1
+    },
+    {
+      "symbol_pin_number": "2",
+      "subckt_node": "cathode",
+      "order": 2
+    }
+  ],
+  "package_variants": [
+    {
+      "name": "DO-41",
+      "standard": "JEDEC DO-41",
+      "pin_count": 2,
+      "pin_map": [
+        {
+          "package_pin": "1",
+          "symbol_pin_number": "1"
+        },
+        {
+          "package_pin": "2",
+          "symbol_pin_number": "2"
+        }
+      ]
+    }
+  ],
+  "ordering_code_aliases": [],
+  "datasheet": {
+    "url": "https://www.onsemi.com/products/discrete-power-modules/rectifiers/1N4001",
+    "revision": "official product specification fallback; PDF and product page access blocked"
+  },
+  "model_type": "dot_model",
+  "fidelity_tier": "F1",
+  "domain_coverage": {
+    "dc": "approx",
+    "ac": "none",
+    "transient": "approx",
+    "noise": "none",
+    "thermal": "none",
+    "digital": "none"
+  },
+  "supported_analyses": [
+    "operating_point",
+    "dc_sweep",
+    "transient"
+  ],
+  "supported_operating_region": {
+    "summary": "F1 one-sided-bound model at 25 degC; claimed forward envelope is 0 to 1.0 A and reverse leakage is checked only at the published 50 V condition.",
+    "numeric_bounds": [
+      {
+        "quantity": "forward_current",
+        "minimum": 0,
+        "maximum": 1.0,
+        "unit": "A",
+        "conditions": "Published rated continuous current at 25 degC",
+        "placeholder": false
+      },
+      {
+        "quantity": "reverse_voltage",
+        "minimum": 0,
+        "maximum": 50,
+        "unit": "V",
+        "conditions": "Published rated reverse-voltage envelope; avalanche omitted",
+        "placeholder": false
+      },
+      {
+        "quantity": "ambient_temperature",
+        "minimum": 25,
+        "maximum": 25,
+        "unit": "degC",
+        "conditions": "Fit reference temperature",
+        "placeholder": false
+      }
+    ]
+  },
+  "known_omissions": [
+    "Official manufacturer PDF and HTML product page were unreachable after repeated HTTPS attempts; this is a manufacturer spec-page fallback and is capped at F1.",
+    "IS, N, and RS are held at conservative physical/default-fit values to remain below the published forward-voltage maximum; no typical forward-IV curve was fitted.",
+    "ISR and NR are held at default; the reverse-leakage row is a maximum bound, not a typical target.",
+    "IKF is held at default; high-injection roll-off is not modelled.",
+    "CJO, VJ, and M are held at default because no verifiable capacitance curve was available.",
+    "TT is held at default 0 s; reverse recovery is not modelled because no verified trr input was available.",
+    "BV, IBV, and NBV are held at defaults; reverse breakdown is not modelled.",
+    "EG, XTI, and TNOM are held at physical defaults; only 25 degC behavior is claimed.",
+    "No self-heating: junction temperature is fixed at TNOM. Thermal derating is not modelled.",
+    "Package parasitics (lead inductance and package capacitance) are not modelled.",
+    "Flicker noise is not modelled: KF and AF are held at defaults."
+  ],
+  "licence": {
+    "spdx_id": "MIT",
+    "provenance_basis": "original_from_facts"
+  },
+  "generator": {
+    "tool_or_agent": "opencircuit-model-factory-v0.1.0 manual diode fallback",
+    "date": "2026-08-07"
+  },
+  "reviewer": {
+    "tool_or_agent": "pending-review",
+    "date": "2026-08-07"
+  },
+  "test_results": {
+    "status": "complete",
+    "pass_count": 4,
+    "fail_count": 0,
+    "total_count": 4,
+    "worst_observed_relative_fitting_error": {
+      "value": 0.0,
+      "quantity": "one-sided-bound-only model"
+    }
+  },
+  "validation_date": "2026-08-07"
+}

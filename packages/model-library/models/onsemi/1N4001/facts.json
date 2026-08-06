@@ -1,0 +1,65 @@
+{
+  "schema_version": "1.0.0",
+  "extraction_method": "manual structuring from manufacturer product-page fallback; official PDF and HTML access blocked, no vendor SPICE model used",
+  "fit_conditions": {
+    "temperature": {
+      "value": 25,
+      "unit": "degC",
+      "conditions": "TA = 25 degC unless otherwise specified",
+      "page_reference": "official product page, electrical characteristics",
+      "source_kind": "typical",
+      "column_semantics": "published TYP column when available; no typical forward curve used"
+    }
+  },
+  "electrical_limits": {
+    "reverse_voltage": {
+      "value": 50,
+      "unit": "V",
+      "conditions": "TA = 25 degC",
+      "page_reference": "official product page, absolute maximum ratings",
+      "source_kind": "maximum",
+      "column_semantics": "published MAX column; used only as operating-region bound"
+    },
+    "forward_continuous_current": {
+      "value": 1.0,
+      "unit": "A",
+      "conditions": "TA = 25 degC",
+      "page_reference": "official product page, absolute maximum ratings",
+      "source_kind": "maximum",
+      "column_semantics": "published MAX column; used only as operating-region bound"
+    },
+    "forward_voltage_maximum": {
+      "value": 1.1,
+      "unit": "V",
+      "conditions": "IF = 1.0 A, TA = 25 degC",
+      "page_reference": "official product page, electrical characteristics",
+      "source_kind": "maximum",
+      "column_semantics": "published MAX column; used only as one-sided forward-voltage bound"
+    },
+    "reverse_current_maximum": {
+      "value": 5e-06,
+      "unit": "A",
+      "conditions": "VR = 50 V, TA = 25 degC",
+      "page_reference": "official product page, electrical characteristics",
+      "source_kind": "maximum",
+      "column_semantics": "published MAX column; used only as one-sided leakage bound"
+    }
+  },
+  "identity": {
+    "canonical_mpn": "1N4001",
+    "manufacturer": "onsemi",
+    "aliases": []
+  },
+  "source": {
+    "kind": "spec_page",
+    "url": "https://www.onsemi.com/products/discrete-power-modules/rectifiers/1N4001",
+    "revision": "official product specification fallback; PDF and product page access blocked",
+    "sha256": "a60a63b2756b9265e542dab437514c941064a11904be327d6b268740db8f2ad9",
+    "accessed_date": "2026-08-07",
+    "pages_referenced": [
+      "official product page, absolute maximum ratings",
+      "official product page, electrical characteristics"
+    ],
+    "placeholder": false
+  }
+}
