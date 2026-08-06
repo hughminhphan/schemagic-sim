@@ -7,6 +7,8 @@ export { snapCursorIndex } from "./cursor";
 export { columnsToCSV, type CSVColumn } from "./csv";
 export type {
   AnalysisKind,
+  AnnotationPoint,
+  AnnotationStyle,
   AxisRange,
   CursorSnapshot,
   CursorState,
@@ -14,6 +16,7 @@ export type {
   TraceDefinition,
   VectorCollection,
   ViewerOptions,
+  WaveformAnnotation,
   WaveformData,
   WaveformViewer,
 } from "./types";

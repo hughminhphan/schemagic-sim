@@ -3,19 +3,22 @@ import { columnsToCSV, type CSVColumn } from "./csv";
 import { snapCursorIndex } from "./cursor";
 import { decimateMinMax } from "./decimate";
 import { formatValue } from "./format";
-import { linearTicks, logTicks } from "./ticks";
 import type {
+  AnnotationPoint,
+  AnnotationStyle,
   AxisRange,
   CursorSnapshot,
   CursorState,
   TraceDefinition,
   VectorCollection,
   ViewerOptions,
+  WaveformAnnotation,
   WaveformData,
   WaveformViewer,
 } from "./types";
 
-const DEFAULT_COLORS = ["#3FD983", "#5FB0E8", "#E8A244", "#A9AEB3", "#F1EEE8", "#6E7378"];
+const DEFAULT_COLORS = ["#3FD983", "#E8A244", "#5FB0E8", "#F1EEE8", "#3FD983", "#E8A244"];
+const DEFAULT_DASHES: ReadonlyArray<readonly number[]> = [[], [], [], [], [6, 3], [2, 3]];
 const LEFT = 66;
 const RIGHT = 18;
 const TOP = 20;
@@ -24,6 +27,14 @@ const PANEL_GAP = 28;
 
 interface InternalTrace extends Required<Pick<TraceDefinition, "source" | "label" | "unit" | "axisGroup" | "visible">> {
   color: string;
+  dash: number[];
+}
+
+interface InternalAnnotation {
+  id: string;
+  label: string;
+  points: Array<AnnotationPoint | null>;
+  style: Required<AnnotationStyle>;
 }
 
 interface PlotSeries {
@@ -48,7 +59,7 @@ function inferUnit(name: string, kind: WaveformData["kind"]): string {
   return kind === "op-sweep" ? "" : "V";
 }
 
-function rangeOf(values: Float64Array): AxisRange {
+export function paddedRange(values: Iterable<number>): AxisRange {
   let min = Infinity;
   let max = -Infinity;
   for (const value of values) {
@@ -57,12 +68,43 @@ function rangeOf(values: Float64Array): AxisRange {
     max = Math.max(max, value);
   }
   if (!Number.isFinite(min) || !Number.isFinite(max)) return { min: -1, max: 1 };
-  if (min === max) {
-    const padding = Math.max(Math.abs(min) * 0.1, 1e-9);
-    return { min: min - padding, max: max + padding };
+  const centre = (min + max) / 2;
+  const span = max - min;
+  if (span <= Math.max(Math.abs(centre) * 1e-3, 1e-12)) {
+    const padding = Math.max(Math.abs(centre) * 0.05, 1e-9);
+    return { min: centre - padding, max: centre + padding };
   }
-  const padding = (max - min) * 0.06;
+  const padding = span * 0.06;
   return { min: min - padding, max: max + padding };
+}
+
+export function resolveTraceDash(index: number, traceDash?: readonly number[], optionDashes?: ReadonlyArray<readonly number[]>): number[] {
+  return [...(traceDash ?? optionDashes?.[index] ?? DEFAULT_DASHES[index] ?? [])]
+    .filter((value) => Number.isFinite(value) && value >= 0);
+}
+
+function normalizedAnnotation(annotation: WaveformAnnotation): InternalAnnotation {
+  if (!annotation.id.trim()) throw new Error("Annotation id must not be empty");
+  if (!annotation.label.trim()) throw new Error("Annotation label must not be empty");
+  const style = annotation.style ?? {};
+  return {
+    id: annotation.id,
+    label: annotation.label,
+    points: annotation.points.map(([x, y]) => Number.isFinite(x) && Number.isFinite(y) ? [x, y] : null),
+    style: {
+      color: style.color ?? "#3FD983",
+      dash: resolveTraceDash(0, style.dash, []),
+      lineWidth: Math.max(0.5, style.lineWidth ?? 1.5),
+      opacity: Math.max(0, Math.min(1, style.opacity ?? 0.4)),
+      axisGroup: style.axisGroup ?? "",
+      unit: style.unit ?? "",
+      xMode: style.xMode ?? "data",
+    },
+  };
+}
+
+function finiteAnnotationValues(points: Array<AnnotationPoint | null>, coordinate: 0 | 1): number[] {
+  return points.flatMap((point) => point ? [point[coordinate]] : []);
 }
 
 function unionRange(a: AxisRange | undefined, b: AxisRange): AxisRange {
@@ -89,6 +131,7 @@ class CanvasWaveformViewer implements WaveformViewer {
   private readonly options: ViewerOptions;
   private vectors = new Map<string, Float64Array>();
   private traces: InternalTrace[] = [];
+  private readonly annotations = new Map<string, InternalAnnotation>();
   private data: WaveformData | null = null;
   private xValues: Float64Array = new Float64Array();
   private xName = "x";
@@ -139,6 +182,8 @@ class CanvasWaveformViewer implements WaveformViewer {
     this.resizeObserver = new ResizeObserver(() => this.resize());
     this.resizeObserver.observe(this.canvasWrap);
     this.bindInteractions();
+    this.renderLegend();
+    this.updateReadout();
     this.resize();
   }
 
@@ -175,6 +220,43 @@ class CanvasWaveformViewer implements WaveformViewer {
     for (const listener of this.visibilityListeners) listener(source, visible);
   }
 
+  addAnnotation(annotation: WaveformAnnotation): void {
+    this.annotations.set(annotation.id, normalizedAnnotation(annotation));
+    if (this.xValues.length === 0) {
+      this.cursorA = -1;
+      this.cursorB = -1;
+      this.resetXRange();
+    }
+    this.renderLegend();
+    this.computeAutoscale(true);
+    this.updateReadout();
+  }
+
+  removeAnnotation(id: string): void {
+    if (!this.annotations.delete(id)) return;
+    if (this.xValues.length === 0) {
+      this.cursorA = -1;
+      this.cursorB = -1;
+      this.resetXRange();
+    }
+    this.renderLegend();
+    this.computeAutoscale(true);
+    this.updateReadout();
+  }
+
+  clearAnnotations(): void {
+    if (this.annotations.size === 0) return;
+    this.annotations.clear();
+    if (this.xValues.length === 0) {
+      this.cursorA = -1;
+      this.cursorB = -1;
+      this.resetXRange();
+    }
+    this.renderLegend();
+    this.computeAutoscale(true);
+    this.updateReadout();
+  }
+
   setYRange(axisGroup: string, range: AxisRange | null): void {
     if (range === null) {
       this.manualYRanges.delete(axisGroup);
@@ -203,7 +285,13 @@ class CanvasWaveformViewer implements WaveformViewer {
 
   private computeAutoscale(preserveManual: boolean): void {
     const next = new Map<string, AxisRange>();
-    for (const series of this.getSeries()) next.set(series.group, unionRange(next.get(series.group), rangeOf(series.values)));
+    for (const series of this.getSeries()) next.set(series.group, unionRange(next.get(series.group), paddedRange(series.values)));
+    for (const annotation of this.annotations.values()) {
+      const values = finiteAnnotationValues(annotation.points, 1);
+      if (values.length === 0) continue;
+      const group = this.annotationGroup(annotation);
+      next.set(group, unionRange(next.get(group), paddedRange(values)));
+    }
     for (const group of [...this.yRanges.keys()]) {
       if (!next.has(group) && (!preserveManual || !this.manualYRanges.has(group))) this.yRanges.delete(group);
     }
@@ -260,6 +348,7 @@ class CanvasWaveformViewer implements WaveformViewer {
     this.resizeObserver.disconnect();
     this.cursorListeners.clear();
     this.visibilityListeners.clear();
+    this.annotations.clear();
     this.root.remove();
   }
 
@@ -299,7 +388,7 @@ class CanvasWaveformViewer implements WaveformViewer {
     if (uncoloredCount > colors.length) throw new Error(`Trace token list needs at least ${uncoloredCount} colours`);
     this.bodeCache.clear();
     let colorIndex = 0;
-    this.traces = sources.map((source) => {
+    this.traces = sources.map((source, sourceIndex) => {
       const definition = configured?.find((trace) => trace.source === source);
       const unit = definition?.unit ?? inferUnit(source, this.data?.kind ?? "tran");
       const color = definition?.color ?? colors[colorIndex++] ?? "#3FD983";
@@ -308,6 +397,7 @@ class CanvasWaveformViewer implements WaveformViewer {
         label: definition?.label ?? source,
         unit,
         color,
+        dash: resolveTraceDash(sourceIndex, definition?.dash, this.options.dashes),
         axisGroup: definition?.axisGroup ?? (unit || "value"),
         visible: definition?.visible ?? true,
       };
@@ -342,6 +432,21 @@ class CanvasWaveformViewer implements WaveformViewer {
     return series;
   }
 
+  private annotationGroup(annotation: InternalAnnotation): string {
+    return annotation.style.axisGroup || this.getSeries()[0]?.group || "amplitude";
+  }
+
+  private panelGroups(): string[] {
+    const groups = this.data?.kind === "ac"
+      ? ["magnitude", "phase"]
+      : [...new Set(this.getSeries().map((series) => series.group))];
+    for (const annotation of this.annotations.values()) {
+      const group = this.annotationGroup(annotation);
+      if (!groups.includes(group)) groups.push(group);
+    }
+    return groups.length > 0 ? groups : ["amplitude"];
+  }
+
   private resetXRange(): void {
     let min = Infinity;
     let max = -Infinity;
@@ -351,7 +456,13 @@ class CanvasWaveformViewer implements WaveformViewer {
       max = Math.max(max, value);
     }
     if (!Number.isFinite(min) || !Number.isFinite(max)) {
-      this.xRange = { min: this.xScale === "log" ? 1 : 0, max: 10 };
+      const normalized = [...this.annotations.values()].some((annotation) => annotation.style.xMode === "normalized");
+      const annotationX = [...this.annotations.values()].flatMap((annotation) => finiteAnnotationValues(annotation.points, 0));
+      if (normalized || annotationX.length === 0) {
+        this.xRange = { min: this.xScale === "log" ? 1 : 0, max: this.xScale === "log" ? 10 : 1 };
+      } else {
+        this.xRange = paddedRange(annotationX);
+      }
       return;
     }
     this.xRange = max > min ? { min, max } : { min, max: min + Math.max(Math.abs(min) * 0.1, 1) };
@@ -365,14 +476,29 @@ class CanvasWaveformViewer implements WaveformViewer {
       button.className = "oc-waveform-viewer__trace";
       button.setAttribute("aria-pressed", String(trace.visible));
       button.addEventListener("click", () => this.setTraceVisible(trace.source, !trace.visible));
-      const swatch = document.createElement("span");
-      swatch.className = "oc-waveform-viewer__swatch";
-      swatch.style.setProperty("--trace-color", trace.color);
-      const label = document.createElement("span");
-      label.textContent = trace.label;
-      button.append(swatch, label);
+      button.append(this.makeSwatch(trace.color, trace.dash), this.makeLegendLabel(trace.label));
       this.legend.append(button);
     }
+    for (const annotation of this.annotations.values()) {
+      const item = document.createElement("span");
+      item.className = "oc-waveform-viewer__trace oc-waveform-viewer__annotation";
+      item.append(this.makeSwatch(annotation.style.color, annotation.style.dash), this.makeLegendLabel(annotation.label));
+      this.legend.append(item);
+    }
+  }
+
+  private makeSwatch(color: string, dash: readonly number[]): HTMLSpanElement {
+    const swatch = document.createElement("span");
+    swatch.className = "oc-waveform-viewer__swatch";
+    swatch.style.setProperty("--trace-color", color);
+    swatch.dataset.dashed = String(dash.length > 0);
+    return swatch;
+  }
+
+  private makeLegendLabel(text: string): HTMLSpanElement {
+    const label = document.createElement("span");
+    label.textContent = text;
+    return label;
   }
 
   private resize(): void {
@@ -403,78 +529,84 @@ class CanvasWaveformViewer implements WaveformViewer {
     context.clearRect(0, 0, width, height);
     context.fillStyle = "#15181B";
     context.fillRect(0, 0, width, height);
-    if (!this.data || this.xValues.length === 0) {
-      context.fillStyle = "#A9AEB3";
-      context.font = '11px "IBM Plex Sans", sans-serif';
-      context.fillText("No waveform data", LEFT, TOP + 20);
-      return;
-    }
 
-    const series = this.getSeries();
-    const panels = Math.max(1, ...series.map((item) => item.panel + 1));
+    const groups = this.panelGroups();
+    const panels = groups.length;
     const usableHeight = height - TOP - BOTTOM - (panels - 1) * PANEL_GAP;
     const panelHeight = Math.max(20, usableHeight / panels);
     for (let panel = 0; panel < panels; panel += 1) {
       const top = TOP + panel * (panelHeight + PANEL_GAP);
-      this.drawPanel(panel, top, panelHeight, width, panel === panels - 1);
+      this.drawPanel(panel, groups[panel]!, top, panelHeight, width, panel === panels - 1);
     }
     this.drawCursors(width, height);
   }
 
-  private drawPanel(panel: number, top: number, height: number, width: number, isLastPanel: boolean): void {
+  private drawPanel(panel: number, group: string, top: number, height: number, width: number, isLastPanel: boolean): void {
     const context = this.context;
     const plotWidth = Math.max(1, width - LEFT - RIGHT);
-    const series = this.getSeries().filter((candidate) => candidate.panel === panel);
-    const primaryGroup = series[0]?.group;
-    const primaryRange = primaryGroup ? this.yRanges.get(primaryGroup) : undefined;
+    const series = this.getSeries().filter((candidate) => candidate.group === group || candidate.panel === panel && this.data?.kind === "ac");
+    const annotations = [...this.annotations.values()].filter((annotation) => this.annotationGroup(annotation) === group);
+    const primaryRange = this.yRanges.get(group) ?? { min: -1, max: 1 };
+    const unit = this.data?.kind === "ac" && group === "magnitude"
+      ? "dB"
+      : this.data?.kind === "ac" && group === "phase"
+        ? "°"
+        : series[0]?.unit ?? annotations[0]?.style.unit ?? "";
 
     context.save();
     context.strokeStyle = "rgba(169,174,179,0.18)";
     context.fillStyle = "#A9AEB3";
     context.lineWidth = 1;
+    context.setLineDash([]);
     context.font = '10px "IBM Plex Mono", monospace';
     context.textBaseline = "middle";
 
-    const xTicks = this.xScale === "log" ? logTicks(this.xRange.min, this.xRange.max) : linearTicks(this.xRange.min, this.xRange.max, 8);
-    for (const tick of xTicks) {
-      const x = this.xToPixel(tick.value, plotWidth);
+    for (let division = 0; division <= 10; division += 1) {
+      const ratio = division / 10;
+      const x = LEFT + ratio * plotWidth;
       context.beginPath();
       context.moveTo(Math.round(x) + 0.5, top);
       context.lineTo(Math.round(x) + 0.5, top + height);
-      context.globalAlpha = tick.major ? 1 : 0.45;
       context.stroke();
-      if (isLastPanel && tick.major) {
-        context.globalAlpha = 1;
+      if (isLastPanel && division % 2 === 0) {
+        const value = this.xScale === "log"
+          ? 10 ** (Math.log10(this.xRange.min) + ratio * (Math.log10(this.xRange.max) - Math.log10(this.xRange.min)))
+          : this.xRange.min + ratio * (this.xRange.max - this.xRange.min);
         context.textAlign = "center";
-        context.fillText(formatValue(tick.value, { unit: this.xUnit, reserveSign: false }), x, top + height + 16);
+        context.fillText(formatValue(value, { unit: this.xUnit, reserveSign: false }), x, top + height + 16);
       }
     }
-    context.globalAlpha = 1;
 
-    if (primaryRange) {
-      for (const tick of linearTicks(primaryRange.min, primaryRange.max, 5)) {
-        const y = this.yToPixel(tick.value, primaryRange, top, height);
-        context.beginPath();
-        context.moveTo(LEFT, Math.round(y) + 0.5);
-        context.lineTo(width - RIGHT, Math.round(y) + 0.5);
-        context.stroke();
+    for (let division = 0; division <= 8; division += 1) {
+      const ratio = division / 8;
+      const y = top + ratio * height;
+      context.beginPath();
+      context.moveTo(LEFT, Math.round(y) + 0.5);
+      context.lineTo(width - RIGHT, Math.round(y) + 0.5);
+      context.stroke();
+      if (division % 2 === 0) {
+        const value = primaryRange.max - ratio * (primaryRange.max - primaryRange.min);
         context.textAlign = "right";
-        const unit = this.data?.kind === "ac" ? (panel === 0 ? "dB" : "°") : (series[0]?.unit ?? "");
-        context.fillText(formatValue(tick.value, { unit, reserveSign: false }), LEFT - 7, y);
+        context.fillText(formatValue(value, { unit, reserveSign: false }), LEFT - 7, y);
       }
     }
 
     context.strokeStyle = "#6E7378";
+    context.beginPath();
+    context.moveTo(LEFT, Math.round(top + height / 2) + 0.5);
+    context.lineTo(width - RIGHT, Math.round(top + height / 2) + 0.5);
+    context.stroke();
     context.strokeRect(LEFT + 0.5, top + 0.5, plotWidth - 1, height - 1);
     context.fillStyle = "#F1EEE8";
     context.textAlign = "left";
-    context.fillText(this.data?.kind === "ac" ? (panel === 0 ? "MAGNITUDE" : "PHASE") : (primaryGroup?.toUpperCase() ?? "AMPLITUDE"), LEFT + 7, top + 10);
+    context.fillText(group.toUpperCase(), LEFT + 7, top + 10);
 
     context.beginPath();
     context.rect(LEFT, top, plotWidth, height);
     context.clip();
+    for (const annotation of annotations) this.drawAnnotation(annotation, primaryRange, top, height, plotWidth);
     for (const item of series) {
-      const range = this.yRanges.get(item.group) ?? rangeOf(item.values);
+      const range = this.yRanges.get(item.group) ?? paddedRange(item.values);
       const points = decimateMinMax(this.xValues, item.values, this.xRange.min, this.xRange.max, Math.ceil(plotWidth), this.xScale === "log");
       context.beginPath();
       let started = false;
@@ -487,9 +619,42 @@ class CanvasWaveformViewer implements WaveformViewer {
       context.strokeStyle = item.trace.color;
       context.lineWidth = 1.5;
       context.globalAlpha = 0.95;
+      context.setLineDash(item.trace.dash);
       context.stroke();
     }
+    context.setLineDash([]);
+    context.globalAlpha = 1;
     context.restore();
+  }
+
+  private drawAnnotation(annotation: InternalAnnotation, range: AxisRange, top: number, height: number, plotWidth: number): void {
+    const context = this.context;
+    context.beginPath();
+    let started = false;
+    let segments = 0;
+    for (const point of annotation.points) {
+      if (!point) {
+        started = false;
+        continue;
+      }
+      const x = annotation.style.xMode === "normalized"
+        ? LEFT + point[0] * plotWidth
+        : this.xToPixel(point[0], plotWidth);
+      const y = this.yToPixel(point[1], range, top, height);
+      if (!started) {
+        context.moveTo(x, y);
+        started = true;
+      } else {
+        context.lineTo(x, y);
+        segments += 1;
+      }
+    }
+    if (segments === 0) return;
+    context.strokeStyle = annotation.style.color;
+    context.lineWidth = annotation.style.lineWidth;
+    context.globalAlpha = annotation.style.opacity;
+    context.setLineDash([...annotation.style.dash]);
+    context.stroke();
   }
 
   private drawCursors(width: number, height: number): void {
@@ -503,9 +668,10 @@ class CanvasWaveformViewer implements WaveformViewer {
     context.font = '600 10px "IBM Plex Mono", monospace';
     context.textAlign = "center";
     context.textBaseline = "top";
+    const domain = this.cursorDomainValues();
     for (const [index, label, color] of cursorData) {
-      if (index < 0 || index >= this.xValues.length) continue;
-      const x = this.xToPixel(this.xValues[index] ?? 0, plotWidth);
+      if (index < 0 || index >= domain.length) continue;
+      const x = this.xToPixel(domain[index] ?? 0, plotWidth);
       context.strokeStyle = color;
       context.lineWidth = 1;
       context.setLineDash(label === "B" ? [4, 3] : []);
@@ -544,15 +710,47 @@ class CanvasWaveformViewer implements WaveformViewer {
     return top + (1 - (value - range.min) / (range.max - range.min)) * height;
   }
 
+  private cursorDomainValues(): Float64Array {
+    if (this.xValues.length > 0) return this.xValues;
+    const values = [...this.annotations.values()]
+      .flatMap((annotation) => finiteAnnotationValues(annotation.points, 0))
+      .sort((a, b) => a - b)
+      .filter((value, index, all) => index === 0 || value !== all[index - 1]);
+    return Float64Array.from(values);
+  }
+
+  private annotationValueAt(annotation: InternalAnnotation, cursorX: number): number {
+    const target = annotation.style.xMode === "normalized"
+      ? (cursorX - this.xRange.min) / (this.xRange.max - this.xRange.min)
+      : cursorX;
+    let nearest = Number.NaN;
+    let distance = Infinity;
+    for (const point of annotation.points) {
+      if (!point) continue;
+      const nextDistance = Math.abs(point[0] - target);
+      if (nextDistance < distance) {
+        distance = nextDistance;
+        nearest = point[1];
+      }
+    }
+    return nearest;
+  }
+
   private cursorSnapshot(index: number): CursorSnapshot | null {
-    if (index < 0 || index >= this.xValues.length) return null;
+    const domain = this.cursorDomainValues();
+    if (index < 0 || index >= domain.length) return null;
+    const x = domain[index] ?? Number.NaN;
     const values: Record<string, number> = {};
-    for (const series of this.getSeries()) values[series.key] = series.values[index] ?? Number.NaN;
-    return { index, x: this.xValues[index] ?? Number.NaN, values };
+    if (this.xValues.length > 0) {
+      for (const series of this.getSeries()) values[series.key] = series.values[index] ?? Number.NaN;
+    }
+    for (const annotation of this.annotations.values()) values[annotation.label] = this.annotationValueAt(annotation, x);
+    return { index, x, values };
   }
 
   private setCursor(which: "a" | "b", pixelX: number): void {
-    const index = snapCursorIndex(this.xValues, this.pixelToX(pixelX), this.xScale === "log");
+    const domain = this.cursorDomainValues();
+    const index = snapCursorIndex(domain, this.pixelToX(pixelX), this.xScale === "log");
     if (which === "a") this.cursorA = index;
     else this.cursorB = index;
     this.updateReadout();
@@ -574,10 +772,13 @@ class CanvasWaveformViewer implements WaveformViewer {
     add("Cursor B", state.b ? formatValue(state.b.x, { unit: this.xUnit }) : "off");
     add("Δ", state.deltaX === null ? "off" : formatValue(state.deltaX, { unit: this.xUnit }));
     if (state.reciprocalDeltaX !== null && this.xUnit === "s") add("1/Δ", formatValue(state.reciprocalDeltaX, { unit: "Hz" }));
-    const series = this.getSeries();
+    const measurements = [
+      ...this.getSeries().map((series) => ({ key: series.key, unit: series.unit })),
+      ...[...this.annotations.values()].map((annotation) => ({ key: annotation.label, unit: annotation.style.unit })),
+    ];
     for (const cursor of [["A", state.a], ["B", state.b]] as const) {
       if (!cursor[1]) continue;
-      for (const item of series) {
+      for (const item of measurements) {
         add(`${cursor[0]}:${item.key}`, formatValue(cursor[1].values[item.key] ?? Number.NaN, { unit: item.unit }));
       }
     }

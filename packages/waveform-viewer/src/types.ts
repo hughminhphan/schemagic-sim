@@ -14,8 +14,28 @@ export interface TraceDefinition {
   label?: string;
   unit?: string;
   color?: string;
+  dash?: readonly number[];
   axisGroup?: string;
   visible?: boolean;
+}
+
+export type AnnotationPoint = readonly [x: number, y: number];
+
+export interface AnnotationStyle {
+  color?: string;
+  dash?: readonly number[];
+  lineWidth?: number;
+  opacity?: number;
+  axisGroup?: string;
+  unit?: string;
+  xMode?: "data" | "normalized";
+}
+
+export interface WaveformAnnotation {
+  id: string;
+  label: string;
+  points: readonly AnnotationPoint[];
+  style?: AnnotationStyle;
 }
 
 export interface AxisRange {
@@ -39,6 +59,7 @@ export interface CursorState {
 export interface ViewerOptions {
   traces?: TraceDefinition[];
   colors?: string[];
+  dashes?: ReadonlyArray<readonly number[]>;
   xScale?: "linear" | "log";
   xVector?: string;
   yRanges?: Readonly<Record<string, AxisRange>>;
@@ -54,6 +75,9 @@ export interface SetDataOptions {
 export interface WaveformViewer {
   setData(data: WaveformData, options?: SetDataOptions): void;
   setTraceVisible(source: string, visible: boolean): void;
+  addAnnotation(annotation: WaveformAnnotation): void;
+  removeAnnotation(id: string): void;
+  clearAnnotations(): void;
   setYRange(axisGroup: string, range: AxisRange | null): void;
   setXScale(scale: "linear" | "log"): void;
   autoscale(): void;
