@@ -400,3 +400,9 @@ The living schematic, as specified in §4 with the Pass Two fixes: hue encodes v
 - Verify Plex Mono `0` versus `O` at 11 px in the target rendering before P1 sign-off; enable `zero` or `ss02`, or ship a slashed-zero build.
 - Confirm the Archivo Expanded subset lands under 8 KB, else cut to Plex Sans per D3.
 - Measure the continuation solve against the 8 ms budget on the vertical-slice circuit; if it misses, the fix is decoupling the hue interpolator from the solver tick, not lengthening the drag tau.
+
+
+## Amendment 2026-08-07 (orchestrator, from docs/design-critique.md)
+
+1. Voltage ramp: Cmax raised to 0.140 (amber, hue 62) and 0.152 (blue, hue 245); perceptual gamma cut from 1.6 to 1.25. L 0.62 and hues unchanged. Verified: every stop 3.10 to 3.29:1 on Vellum and 4.68 to 4.97:1 on Graphite 900; stroke-pattern sign redundancy unchanged.
+2. Pulse core lightness signs by surface, not a fixed offset: L 0.44 on the Vellum canvas, L 0.80 on Graphite scope surfaces. The original "L +0.18" spec measured 1.60 to 1.66:1 on Vellum and is void.
