@@ -1,0 +1,81 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "forward_01.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "forward_voltage_maximum_rated_current",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "maximum": 0.6,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "official product page, electrical characteristics, Forward Voltage MAX column",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "forward_02.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "forward_voltage_maximum_operating_point",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "maximum": 0.6,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "official product page, electrical characteristics, Forward Voltage MAX column",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "reverse_leakage.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "reverse_leakage_maximum",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vreverse))"
+          },
+          "maximum": 0.001,
+          "unit": "A",
+          "inclusive": true,
+          "datasheet_citation": "official product page, electrical characteristics, Reverse Current MAX column",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "boundary_forward.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "boundary_forward_voltage_maximum",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "maximum": 0.6,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "official product page, electrical characteristics, Forward Voltage MAX column",
+          "placeholder": false
+        }
+      ]
+    }
+  ]
+}
