@@ -182,6 +182,8 @@ export class ModelImportDialog {
   private readonly overlay: HTMLDivElement;
   private readonly source: HTMLTextAreaElement;
   private readonly fileInput: HTMLInputElement;
+  private readonly fileTrigger: HTMLButtonElement;
+  private readonly fileName: HTMLSpanElement;
   private readonly results: HTMLDivElement;
   private library: ImportedLibrary | undefined;
   private sourceName = "pasted-model.lib";
@@ -190,13 +192,22 @@ export class ModelImportDialog {
     this.overlay = document.createElement("div");
     this.overlay.className = "overlay";
     this.overlay.hidden = true;
-    this.overlay.innerHTML = `<section class="import-sheet" role="dialog" aria-modal="true" aria-label="Import models"><header><strong>IMPORT MODELS</strong><button data-close-import>Close</button></header><div class="import-source"><label class="field-label" for="model-files">Model files</label><input id="model-files" type="file" multiple accept=".model,.subckt,.lib,.cir,text/plain"/><label class="field-label" for="model-text">Or paste SPICE model text</label><textarea id="model-text" placeholder=".subckt ... or .model ..."></textarea><button class="primary-button" data-parse-models>Parse and review</button></div><div class="import-results" data-import-results><p>Choose files or paste model text. Imported content stays in this browser workspace.</p></div></section>`;
+    this.overlay.innerHTML = `<style>
+      .import-sheet .import-source input.model-file-input { display: none }
+      .import-sheet .file-picker { display: flex; align-items: center; min-width: 0; gap: 8px; margin-bottom: 12px }
+      .import-sheet .file-trigger { flex: none; padding: 6px 9px; border: 1px solid var(--graphite-500); border-radius: 0; color: var(--graphite-900); background: var(--vellum); font: inherit }
+      .import-sheet .file-trigger:focus-visible, .import-sheet textarea:focus-visible, .import-sheet select:focus-visible { outline: 2px solid var(--graphite-900); outline-offset: -2px }
+      .import-sheet .file-name { min-width: 0; overflow: hidden; color: var(--graphite-500); font: 10px/1.3 "IBM Plex Mono", monospace; text-overflow: ellipsis; white-space: nowrap }
+    </style><section class="import-sheet" role="dialog" aria-modal="true" aria-label="Import models"><header><strong>IMPORT MODELS</strong><button data-close-import>Close</button></header><div class="import-source"><label class="field-label" for="model-files">Model files</label><div class="file-picker"><input class="model-file-input" id="model-files" type="file" multiple accept=".model,.subckt,.lib,.cir,text/plain"/><button class="file-trigger" type="button" aria-controls="model-files">Choose files</button><span class="file-name" aria-live="polite">No files selected</span></div><label class="field-label" for="model-text">Or paste SPICE model text</label><textarea id="model-text" placeholder=".subckt ... or .model ..."></textarea><button class="primary-button" data-parse-models>Parse and review</button></div><div class="import-results" data-import-results><p>Choose files or paste model text. Imported content stays in this browser workspace.</p></div></section>`;
     document.body.append(this.overlay);
     this.source = this.overlay.querySelector<HTMLTextAreaElement>("#model-text")!;
     this.fileInput = this.overlay.querySelector<HTMLInputElement>("#model-files")!;
+    this.fileTrigger = this.overlay.querySelector<HTMLButtonElement>(".file-trigger")!;
+    this.fileName = this.overlay.querySelector<HTMLSpanElement>(".file-name")!;
     this.results = this.overlay.querySelector<HTMLDivElement>("[data-import-results]")!;
     this.overlay.querySelector("[data-close-import]")?.addEventListener("click", () => this.close());
     this.overlay.querySelector("[data-parse-models]")?.addEventListener("click", () => void this.parse());
+    this.fileTrigger.addEventListener("click", () => this.fileInput.click());
     this.fileInput.addEventListener("change", () => void this.loadFiles());
   }
 
@@ -211,8 +222,13 @@ export class ModelImportDialog {
 
   private async loadFiles(): Promise<void> {
     const files = [...(this.fileInput.files ?? [])];
-    if (files.length === 0) return;
+    if (files.length === 0) {
+      this.fileName.textContent = "No files selected";
+      return;
+    }
     this.sourceName = files.map((file) => file.name).join(", ");
+    this.fileName.textContent = this.sourceName;
+    this.fileName.title = this.sourceName;
     this.source.value = (await Promise.all(files.map(async (file) => `* source: ${file.name}\n${await file.text()}`))).join("\n\n");
   }
 
