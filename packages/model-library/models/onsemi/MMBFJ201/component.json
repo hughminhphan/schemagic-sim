@@ -1,0 +1,150 @@
+{
+  "schema_version": "1.0.0",
+  "canonical_mpn": "MMBFJ201",
+  "manufacturer": "onsemi",
+  "description": "N-channel low-current general-purpose amplifier JFET",
+  "electrical_family": "jfet_n",
+  "symbol_pins": [
+    {
+      "name": "D",
+      "number": "1",
+      "role": "drain"
+    },
+    {
+      "name": "S",
+      "number": "2",
+      "role": "source"
+    },
+    {
+      "name": "G",
+      "number": "3",
+      "role": "gate"
+    }
+  ],
+  "spice_pin_mapping": [
+    {
+      "symbol_pin_number": "1",
+      "subckt_node": "drain",
+      "order": 1
+    },
+    {
+      "symbol_pin_number": "3",
+      "subckt_node": "gate",
+      "order": 2
+    },
+    {
+      "symbol_pin_number": "2",
+      "subckt_node": "source",
+      "order": 3
+    }
+  ],
+  "package_variants": [
+    {
+      "name": "SOT-23",
+      "standard": "CASE 318-08",
+      "pin_count": 3,
+      "pin_map": [
+        {
+          "package_pin": "1",
+          "symbol_pin_number": "1"
+        },
+        {
+          "package_pin": "2",
+          "symbol_pin_number": "2"
+        },
+        {
+          "package_pin": "3",
+          "symbol_pin_number": "3"
+        }
+      ]
+    }
+  ],
+  "ordering_code_aliases": [],
+  "datasheet": {
+    "url": "https://www.onsemi.cn/pdf/datasheet/mmbfj202-d.pdf",
+    "revision": "Rev. 5, April 2026"
+  },
+  "model_type": "dot_model",
+  "fidelity_tier": "F1",
+  "domain_coverage": {
+    "dc": "approx",
+    "ac": "approx",
+    "transient": "approx",
+    "noise": "none",
+    "thermal": "none",
+    "digital": "none"
+  },
+  "supported_analyses": [
+    "operating_point",
+    "dc_sweep",
+    "ac_small_signal",
+    "transient"
+  ],
+  "supported_operating_region": {
+    "summary": "F1 fit at 25 C for VDS from 0 to 20 V and reverse gate bias from 0 to -0.8 V using typical curves; table limits remain hard bounds.",
+    "numeric_bounds": [
+      {
+        "quantity": "drain_source_voltage",
+        "minimum": 0,
+        "maximum": 20,
+        "unit": "V",
+        "conditions": "Typical-characteristic fit envelope at 25 C",
+        "placeholder": false
+      },
+      {
+        "quantity": "gate_source_voltage",
+        "minimum": -0.8,
+        "maximum": 0,
+        "unit": "V",
+        "conditions": "Typical-characteristic fit envelope; never forward bias gate",
+        "placeholder": false
+      },
+      {
+        "quantity": "ambient_temperature",
+        "minimum": 25,
+        "maximum": 25,
+        "unit": "degC",
+        "conditions": "Fit reference temperature",
+        "placeholder": false
+      }
+    ]
+  },
+  "known_omissions": [
+    "No self-heating: junction temperature is fixed at TNOM.",
+    "IDSS and VGS(off) bin spread is not modelled. The fit targets one bin's published typical curve; a real part may sit anywhere inside the published limits.",
+    "Gate leakage is set from the tabulated IGSS maximum, not fitted.",
+    "Flicker and thermal noise are not modelled: KF and AF are held at default. Published single-frequency noise data cannot determine a noise corner.",
+    "Temperature coefficients VTOTC, BETATCE, and XTI are held at default; only 25 C data was fitted.",
+    "Gate-junction forward conduction is a simple diode with IS set from IGSS; forward gate drive is not characterised.",
+    "Package parasitics are not modelled.",
+    "Breakdown V(BR)GSS is not modelled; the model does not break down.",
+    "N is held at default 1.0, FC at default 0.5, PB at default 1.0 V, and M at default 0.5.",
+    "Channel series resistance is not fitted: RD and RS are held at the 1e-4 ohm numerical floor because no rDS(on) row is published.",
+    "CGS and CGD are derived from single digitized Ciss and Coss curve points with PB and M held at physical defaults; capacitance versus bias is approximate.",
+    "B is held at 1.0 (pure square law): releasing it did not produce an identifiable improvement at F1.",
+    "F1: the electrical table publishes only IDSS and VGS(off) windows and a minimum yFS, so guaranteed limits are hard bounds rather than typical fit targets."
+  ],
+  "licence": {
+    "spdx_id": "MIT",
+    "provenance_basis": "original_from_facts"
+  },
+  "generator": {
+    "tool_or_agent": "opencircuit-model-factory-jfet-manual-v0.1.0",
+    "date": "2026-08-07"
+  },
+  "reviewer": {
+    "tool_or_agent": "pending-review",
+    "date": "2026-08-07"
+  },
+  "test_results": {
+    "status": "complete",
+    "pass_count": 11,
+    "fail_count": 0,
+    "total_count": 11,
+    "worst_observed_relative_fitting_error": {
+      "value": 0.182146,
+      "quantity": "digitized transfer point at VGS=-0.4 V"
+    }
+  },
+  "validation_date": "2026-08-07"
+}

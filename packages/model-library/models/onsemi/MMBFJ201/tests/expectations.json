@@ -1,0 +1,205 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "idss.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "idss_bin",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vd))"
+          },
+          "unit": "A",
+          "inclusive": true,
+          "datasheet_citation": "onsemi MMBFJ201/MMBFJ202 Rev. 5, April 2026 p.2 electrical characteristics, MMBFJ201 IDSS MIN/MAX columns at VDS=20 V, IGS=0",
+          "placeholder": false,
+          "minimum": 0.0002,
+          "maximum": 0.001
+        },
+        {
+          "name": "yfs_minimum",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(@j1[gm])"
+          },
+          "unit": "S",
+          "inclusive": true,
+          "datasheet_citation": "onsemi MMBFJ201/MMBFJ202 Rev. 5, April 2026 p.2 electrical characteristics, MMBFJ201 yFS MIN column at VDS=20 V, f=1 kHz",
+          "placeholder": false,
+          "minimum": 0.0005
+        }
+      ]
+    },
+    {
+      "test_netlist": "transfer_curve.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "transfer_vgs_0",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vd0))"
+          },
+          "expected_value": 0.00042,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.25
+          },
+          "datasheet_citation": "onsemi MMBFJ201/MMBFJ202 Rev. 5, April 2026 p.3 fig.5, TA=25 C curve, digitized",
+          "placeholder": false
+        },
+        {
+          "name": "transfer_vgs_minus_0p2",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vd1))"
+          },
+          "expected_value": 0.0003,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.25
+          },
+          "datasheet_citation": "onsemi MMBFJ201/MMBFJ202 Rev. 5, April 2026 p.3 fig.5, TA=25 C curve, digitized",
+          "placeholder": false
+        },
+        {
+          "name": "transfer_vgs_minus_0p4",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vd2))"
+          },
+          "expected_value": 0.00015,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.25
+          },
+          "datasheet_citation": "onsemi MMBFJ201/MMBFJ202 Rev. 5, April 2026 p.3 fig.5, TA=25 C curve, digitized",
+          "placeholder": false
+        },
+        {
+          "name": "transfer_vgs_minus_0p6",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vd3))"
+          },
+          "expected_value": 3e-05,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 5e-06,
+            "relative": 0.25
+          },
+          "datasheet_citation": "onsemi MMBFJ201/MMBFJ202 Rev. 5, April 2026 p.3 fig.5, TA=25 C curve, digitized",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "cutoff.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "typical_curve_cutoff_current",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vd))"
+          },
+          "unit": "A",
+          "inclusive": true,
+          "datasheet_citation": "onsemi MMBFJ201/MMBFJ202 Rev. 5, April 2026 p.3 fig.5, TA=25 C typical curve cutoff near -0.8 V; p.2 cutoff row defines 10 nA",
+          "placeholder": false,
+          "minimum": 0,
+          "maximum": 2e-08
+        }
+      ]
+    },
+    {
+      "test_netlist": "output_conductance.cir",
+      "analysis_type": "ac_small_signal",
+      "scalar_checks": [
+        {
+          "name": "output_conductance_digitized",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "magnitude:last(i(vd))"
+          },
+          "expected_value": 5e-06,
+          "unit": "S",
+          "tolerance": {
+            "absolute": 2e-06,
+            "relative": 0.3
+          },
+          "datasheet_citation": "onsemi MMBFJ201/MMBFJ202 Rev. 5, April 2026 p.3 fig.1, VGS=-0.1 V saturation-region slope near VDS=3 V, digitized",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "capacitance.cir",
+      "analysis_type": "ac_small_signal",
+      "scalar_checks": [
+        {
+          "name": "ciss_digitized",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "imag_cap:last(i(vgin),1000000)"
+          },
+          "expected_value": 4.8e-12,
+          "unit": "F",
+          "tolerance": {
+            "absolute": 7e-13,
+            "relative": 0.25
+          },
+          "datasheet_citation": "onsemi MMBFJ201/MMBFJ202 Rev. 5, April 2026 p.3 fig.3, Ciss at VDS=20 V, VGS=0, digitized",
+          "placeholder": false
+        },
+        {
+          "name": "coss_digitized",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "imag_cap:last(i(vdout),1000000)"
+          },
+          "expected_value": 5.5e-13,
+          "unit": "F",
+          "tolerance": {
+            "absolute": 2e-13,
+            "relative": 0.25
+          },
+          "datasheet_citation": "onsemi MMBFJ201/MMBFJ202 Rev. 5, April 2026 p.3 fig.3, Coss at VDS=20 V, VGS=0, digitized",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "boundary_vds20.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "supported_boundary_vds20",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vd))"
+          },
+          "expected_value": 0.00015,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.25
+          },
+          "datasheet_citation": "onsemi MMBFJ201/MMBFJ202 Rev. 5, April 2026 p.3 fig.5, VDS=20 V boundary, VGS=-0.4 V, TA=25 C, digitized",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    }
+  ]
+}

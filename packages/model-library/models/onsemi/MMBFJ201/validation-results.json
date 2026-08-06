@@ -1,0 +1,131 @@
+{
+  "schema_version": "1.0.0",
+  "validation_date": "2026-08-07",
+  "native_wasm_all_pass": true,
+  "expectations_all_pass": true,
+  "expectation_pass_count": 11,
+  "expectation_fail_count": 0,
+  "worst_native_wasm_relative_delta": 1.0661917422170135e-7,
+  "worst_native_wasm_absolute_delta": 2.9103830456733704e-11,
+  "benches": [
+    {
+      "test_netlist": "idss.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "idss_bin",
+          "pass": true,
+          "value": 0.00048257512389682233,
+          "minimum": 0.0002,
+          "maximum": 0.001
+        },
+        {
+          "name": "yfs_minimum",
+          "pass": true,
+          "value": 0.001196309071583018,
+          "minimum": 0.0005,
+          "maximum": null
+        }
+      ]
+    },
+    {
+      "test_netlist": "transfer_curve.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "transfer_vgs_0",
+          "pass": true,
+          "value": 0.00048257512389682233,
+          "error": 0.00006257512389682232,
+          "allowed": 0.000105
+        },
+        {
+          "name": "transfer_vgs_minus_0p2",
+          "pass": true,
+          "value": 0.0002729699481278658,
+          "error": 0.000027030051872134182,
+          "allowed": 0.000075
+        },
+        {
+          "name": "transfer_vgs_minus_0p4",
+          "pass": true,
+          "value": 0.00012267808779142797,
+          "error": 0.000027321912208572017,
+          "allowed": 0.0000375
+        },
+        {
+          "name": "transfer_vgs_minus_0p6",
+          "pass": true,
+          "value": 0.000031699397368356586,
+          "error": 0.0000016993973683565847,
+          "allowed": 0.0000075
+        }
+      ]
+    },
+    {
+      "test_netlist": "cutoff.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "typical_curve_cutoff_current",
+          "pass": true,
+          "value": 2.9103830456733704e-11,
+          "minimum": 0,
+          "maximum": 2e-8
+        }
+      ]
+    },
+    {
+      "test_netlist": "output_conductance.cir",
+      "analysis": "ac",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "output_conductance_digitized",
+          "pass": true,
+          "value": 0.0000050007699574321255,
+          "error": 7.699574321251102e-10,
+          "allowed": 0.000002
+        }
+      ]
+    },
+    {
+      "test_netlist": "capacitance.cir",
+      "analysis": "ac",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "ciss_digitized",
+          "pass": true,
+          "value": 4.794196476263085e-12,
+          "error": 5.803523736914845e-15,
+          "allowed": 1.2e-12
+        },
+        {
+          "name": "coss_digitized",
+          "pass": true,
+          "value": 5.497553549372456e-13,
+          "error": 2.4464506275437475e-16,
+          "allowed": 2e-13
+        }
+      ]
+    },
+    {
+      "test_netlist": "boundary_vds20.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "supported_boundary_vds20",
+          "pass": true,
+          "value": 0.00012267808779142797,
+          "error": 0.000027321912208572017,
+          "allowed": 0.0000375
+        }
+      ]
+    }
+  ]
+}
