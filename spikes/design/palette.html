@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OpenCircuit palette and type specimen</title>
+
+<!-- SPECIMEN ONLY. The application MUST self-host subset woff2 files.
+     No CDN font link is permitted in the shipped app. See DIRECTION.md hard ban 8. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@125,600&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --vellum:#F1EEE8;
+  --graphite-900:#15181B;
+  --graphite-700:#2A2F34;
+  --graphite-500:#6E7378;
+  --graphite-300:#A9AEB3;
+  --graphite-100:#D9D6CF;
+  --probe-blue:#2E86C8;
+  --rail-amber:#BE7318;
+  --phosphor:#1B9350;
+  --fault:#C44A32;
+  --probe-blue-hot:#5FB0E8;
+  --rail-amber-hot:#E8A244;
+  --phosphor-hot:#3FD983;
+  --fault-hot:#E8735A;
+  --ui:"IBM Plex Sans",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,monospace;
+  --display:"Archivo",var(--ui);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:var(--vellum);color:var(--graphite-900);
+  font-family:var(--ui);font-size:13px;line-height:1.45;
+  font-feature-settings:"tnum" 1;
+  padding:0 0 96px;
+}
+.chrome{
+  background:var(--graphite-900);color:var(--vellum);
+  height:32px;display:flex;align-items:center;gap:20px;padding:0 16px;
+}
+.wordmark{
+  font-family:var(--display);font-variation-settings:"wdth" 125,"wght" 600;
+  font-size:14px;letter-spacing:.06em;text-transform:uppercase;
+}
+.chrome .v{font-family:var(--mono);font-size:11px;color:var(--graphite-300)}
+.chrome .spec{margin-left:auto;font-size:11px;color:var(--graphite-300);letter-spacing:.02em}
+
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+section{padding:36px 0;border-bottom:1px solid var(--graphite-100)}
+h2{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--graphite-700);margin-bottom:4px}
+.sub{font-size:12px;color:var(--graphite-700);margin-bottom:20px;max-width:62ch}
+
+/* swatches: flat rectangles, zero radius, hairline rule only */
+.sw-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(196px,1fr));gap:1px;background:var(--graphite-100)}
+.sw{background:var(--vellum);padding:0}
+.sw .chip{height:64px;border-bottom:1px solid var(--graphite-100)}
+.sw .meta{padding:8px 10px 10px}
+.sw .nm{font-weight:600;font-size:12px}
+.sw .hx{font-family:var(--mono);font-size:11px;color:var(--graphite-700);letter-spacing:.01em}
+.sw .cr{font-family:var(--mono);font-size:10px;color:var(--graphite-500);margin-top:4px}
+
+/* voltage ramp */
+.ramp{
+  height:56px;
+  background:linear-gradient(to right in oklch,
+    oklch(.62 .121 245) 0%,
+    oklch(.62 .040 245) 25%,
+    oklch(.62 .006 245) 50%,
+    oklch(.62 .039 62) 75%,
+    oklch(.62 .117 62) 100%);
+}
+.ramp-scale{display:grid;grid-template-columns:repeat(5,1fr);margin-top:6px}
+.ramp-scale div{font-family:var(--mono);font-size:11px;color:var(--graphite-700);text-align:center}
+.ramp-scale div:first-child{text-align:left}
+.ramp-scale div:last-child{text-align:right}
+.ramp-note{font-size:11px;color:var(--graphite-700);margin-top:10px}
+
+.canvases{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--graphite-100);margin-top:24px}
+.canvas{padding:18px}
+.canvas.light{background:var(--vellum)}
+.canvas.dark{background:var(--graphite-900)}
+.canvas h3{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-bottom:12px;color:var(--graphite-500)}
+.canvas.dark h3{color:var(--graphite-300)}
+svg{display:block;width:100%;height:auto;overflow:visible}
+.lbl{font-family:var(--mono);font-size:10px;fill:var(--graphite-700)}
+.canvas.dark .lbl{fill:var(--graphite-300)}
+
+/* type specimens */
+.spec-row{display:grid;grid-template-columns:120px 1fr;gap:20px;padding:16px 0;border-top:1px solid var(--graphite-100)}
+.spec-row:first-of-type{border-top:0}
+.spec-key{font-size:11px;font-weight:500;letter-spacing:.02em;color:var(--graphite-700)}
+.spec-key i{display:block;font-style:normal;font-family:var(--mono);font-size:10px;color:var(--graphite-500);margin-top:2px}
+
+.readout{display:flex;align-items:baseline;gap:.15em}
+.readout .val{font-family:var(--mono);font-weight:500;font-variant-numeric:tabular-nums}
+.readout .unit{font-family:var(--ui);font-weight:500;font-size:.68em;letter-spacing:.02em;color:var(--graphite-700)}
+.r-lg .val{font-size:34px}
+.r-md .val{font-size:20px}
+.r-sm .val{font-size:13px}
+
+table{border-collapse:collapse;font-variant-numeric:tabular-nums}
+table td{padding:3px 0}
+td.k{font-size:11px;font-weight:500;color:var(--graphite-700);letter-spacing:.02em;padding-right:20px}
+td.v{font-family:var(--mono);font-size:13px;text-align:right;padding-right:.4em;font-variant-numeric:tabular-nums}
+td.u{font-size:11px;font-weight:500;color:var(--graphite-700);width:44px}
+
+.stack{font-family:var(--mono);font-size:13px;line-height:1.7;font-variant-numeric:tabular-nums}
+.glyphs{font-family:var(--mono);font-size:22px;letter-spacing:.08em}
+.para{max-width:64ch;font-size:13px}
+.para.sm{font-size:11px;color:var(--graphite-700);letter-spacing:.02em}
+
+.bans{max-width:70ch;font-size:12px}
+.bans li{margin:0 0 6px 18px}
+.warn{background:var(--graphite-900);color:var(--vellum);padding:14px 16px;font-size:12px;max-width:74ch}
+.warn b{font-weight:600}
+</style>
+</head>
+<body>
+
+<div class="chrome">
+  <span class="wordmark">Opencircuit</span>
+  <span class="v">0.1.0</span>
+  <span class="spec">palette and type specimen</span>
+</div>
+
+<div class="wrap">
+
+<section>
+  <h2>Named colours</h2>
+  <p class="sub">Six named colours plus a five step Graphite neutral ramp. Every semantic hue sits at CIE L* 48 to 58, which clears 3:1 against both canvases at once. Contrast figures below are against Vellum then Graphite 900.</p>
+  <div class="sw-grid">
+    <div class="sw"><div class="chip" style="background:#F1EEE8"></div><div class="meta"><div class="nm">Vellum</div><div class="hx">#F1EEE8</div><div class="cr">canvas / paper &middot; 15.4:1 ink</div></div></div>
+    <div class="sw"><div class="chip" style="background:#15181B"></div><div class="meta"><div class="nm">Graphite 900</div><div class="hx">#15181B</div><div class="cr">ink + instrument fill &middot; 15.4:1</div></div></div>
+    <div class="sw"><div class="chip" style="background:#2E86C8"></div><div class="meta"><div class="nm">Probe Blue</div><div class="hx">#2E86C8</div><div class="cr">negative pole &middot; 3.37 / 4.57</div></div></div>
+    <div class="sw"><div class="chip" style="background:#BE7318"></div><div class="meta"><div class="nm">Rail Amber</div><div class="hx">#BE7318</div><div class="cr">positive pole &middot; 3.26 / 4.72</div></div></div>
+    <div class="sw"><div class="chip" style="background:#1B9350"></div><div class="meta"><div class="nm">Phosphor Green</div><div class="hx">#1B9350</div><div class="cr">instrument, not a voltage &middot; 3.40 / 4.53</div></div></div>
+    <div class="sw"><div class="chip" style="background:#C44A32"></div><div class="meta"><div class="nm">Fault Red</div><div class="hx">#C44A32</div><div class="cr">hatch + glyph only &middot; 4.20 / 3.67</div></div></div>
+  </div>
+
+  <div class="sw-grid" style="margin-top:1px">
+    <div class="sw"><div class="chip" style="background:#2A2F34"></div><div class="meta"><div class="nm">Graphite 700</div><div class="hx">#2A2F34</div><div class="cr">secondary text on Vellum &middot; 11.5:1</div></div></div>
+    <div class="sw"><div class="chip" style="background:#6E7378"></div><div class="meta"><div class="nm">Graphite 500</div><div class="hx">#6E7378</div><div class="cr">0 V wire, strokes &middot; 4.07 / 3.79</div></div></div>
+    <div class="sw"><div class="chip" style="background:#A9AEB3"></div><div class="meta"><div class="nm">Graphite 300</div><div class="hx">#A9AEB3</div><div class="cr">tertiary on dark, grid on dark</div></div></div>
+    <div class="sw"><div class="chip" style="background:#D9D6CF"></div><div class="meta"><div class="nm">Graphite 100</div><div class="hx">#D9D6CF</div><div class="cr">hairline rules on Vellum</div></div></div>
+  </div>
+
+  <div class="sw-grid" style="margin-top:1px">
+    <div class="sw"><div class="chip" style="background:#5FB0E8"></div><div class="meta"><div class="nm">Probe Blue Hot</div><div class="hx">#5FB0E8</div><div class="cr">Graphite surfaces only</div></div></div>
+    <div class="sw"><div class="chip" style="background:#E8A244"></div><div class="meta"><div class="nm">Rail Amber Hot</div><div class="hx">#E8A244</div><div class="cr">Graphite surfaces only</div></div></div>
+    <div class="sw"><div class="chip" style="background:#3FD983"></div><div class="meta"><div class="nm">Phosphor Hot</div><div class="hx">#3FD983</div><div class="cr">scope traces</div></div></div>
+    <div class="sw"><div class="chip" style="background:#E8735A"></div><div class="meta"><div class="nm">Fault Hot</div><div class="hx">#E8735A</div><div class="cr">scope limit markers</div></div></div>
+  </div>
+</section>
+
+<section>
+  <h2>Voltage ramp</h2>
+  <p class="sub">Isoluminant diverging ramp, OKLCH L fixed at 0.62. Hue carries sign (245 negative, 62 positive), chroma carries magnitude with gamma 1.6 so mid voltages stay muted and only the rails carry real colour. Interpolated in OKLCH, never in sRGB. Clamps at the rails.</p>
+  <div class="ramp"></div>
+  <div class="ramp-scale">
+    <div>-5.00 V</div><div>-2.50 V</div><div>0.00 V</div><div>+2.50 V</div><div>+5.00 V</div>
+  </div>
+  <p class="ramp-note">sRGB approximations: <span style="font-family:var(--mono)">#2E86C8 &nbsp; #4E7DA0 &nbsp; #6E7378 &nbsp; #9B7750 &nbsp; #BE7318</span>. Vref is the larger of |Vmin| and |Vmax| snapped up to 1-2-5 and shown in the canvas legend.</p>
+
+  <div class="canvases">
+    <div class="canvas light">
+      <h3>Schematic canvas (Vellum)</h3>
+      <svg viewBox="0 0 460 200" role="img" aria-label="Voltage ramp on wires with secondary stroke encoding">
+        <!-- +5V solid -->
+        <line x1="70" y1="20" x2="440" y2="20" stroke="#BE7318" stroke-width="2.4"/>
+        <text class="lbl" x="0" y="24">+5.00 V</text>
+        <!-- +2.5V solid -->
+        <line x1="70" y1="55" x2="440" y2="55" stroke="#9B7750" stroke-width="2"/>
+        <text class="lbl" x="0" y="59">+2.50 V</text>
+        <!-- 0V hairline + ground -->
+        <line x1="70" y1="90" x2="440" y2="90" stroke="#6E7378" stroke-width="1"/>
+        <g stroke="#6E7378" stroke-width="1.4">
+          <line x1="255" y1="90" x2="255" y2="98"/><line x1="247" y1="98" x2="263" y2="98"/>
+          <line x1="250" y1="102" x2="260" y2="102"/><line x1="253" y1="106" x2="257" y2="106"/>
+        </g>
+        <text class="lbl" x="0" y="94">0.00 V</text>
+        <!-- -2.5V dashed -->
+        <line x1="70" y1="130" x2="440" y2="130" stroke="#4E7DA0" stroke-width="2" stroke-dasharray="8 4"/>
+        <text class="lbl" x="0" y="134">-2.50 V</text>
+        <!-- -5V dashed -->
+        <line x1="70" y1="165" x2="440" y2="165" stroke="#2E86C8" stroke-width="2.4" stroke-dasharray="8 4"/>
+        <text class="lbl" x="0" y="169">-5.00 V</text>
+      </svg>
+      <p class="para sm" style="margin-top:12px">Solid is positive, dashed 8-4 is negative, hairline plus ground glyph is within 50 mV of ground. Always on, never toggleable, survives full achromatopsia.</p>
+    </div>
+    <div class="canvas dark">
+      <h3>Scope well (Graphite 900)</h3>
+      <svg viewBox="0 0 460 200" role="img" aria-label="Same encoding on the dark instrument surface">
+        <g stroke="#2A2F34" stroke-width="1">
+          <line x1="70" y1="10" x2="70" y2="190"/><line x1="163" y1="10" x2="163" y2="190"/>
+          <line x1="256" y1="10" x2="256" y2="190"/><line x1="349" y1="10" x2="349" y2="190"/>
+          <line x1="442" y1="10" x2="442" y2="190"/>
+          <line x1="70" y1="40" x2="442" y2="40"/><line x1="70" y1="80" x2="442" y2="80"/>
+          <line x1="70" y1="120" x2="442" y2="120"/><line x1="70" y1="160" x2="442" y2="160"/>
+        </g>
+        <path d="M70 150 L120 150 L140 55 L200 55 L220 150 L280 150 L300 55 L360 55 L380 150 L442 150"
+              fill="none" stroke="#3FD983" stroke-width="1.8"/>
+        <path d="M70 128 C110 128 120 96 160 96 C200 96 210 128 250 128 C290 128 300 96 340 96 C380 96 390 128 442 128"
+              fill="none" stroke="#5FB0E8" stroke-width="1.6"/>
+        <text class="lbl" x="0" y="59">Ch1</text>
+        <text class="lbl" x="0" y="100">Ch2</text>
+        <text class="lbl" x="70" y="14" style="fill:#A9AEB3">2.00 V/div</text>
+        <text class="lbl" x="360" y="14" style="fill:#A9AEB3">1.00 ms/div</text>
+      </svg>
+      <p class="para sm" style="margin-top:12px;color:#A9AEB3">Hot variants are permitted only here: scope traces and pulse cores on a Graphite surface. Never on Vellum, never in UI.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Current encoding</h2>
+  <p class="sub">Current is never given a hue. Hue is spent on voltage; current is motion, which makes it colourblind safe by construction. Under prefers-reduced-motion the same information moves to stroke width and static chevrons, and that static form is byte for byte the SVG export encoding.</p>
+  <div class="canvases">
+    <div class="canvas light">
+      <h3>Animated: pulse density and speed</h3>
+      <svg viewBox="0 0 460 150" role="img" aria-label="Pulse density increasing with current">
+        <g class="lbl">
+          <text x="0" y="26">1 &micro;A</text><text x="0" y="66">100 &micro;A</text>
+          <text x="0" y="106">1 mA</text><text x="0" y="146">10 mA</text>
+        </g>
+        <line x1="70" y1="22" x2="440" y2="22" stroke="#BE7318" stroke-width="2"/>
+        <line x1="70" y1="62" x2="440" y2="62" stroke="#BE7318" stroke-width="2"/>
+        <g fill="#E8A244">
+          <rect x="90" y="59" width="6" height="6" opacity=".4"/><rect x="180" y="59" width="6" height="6" opacity=".4"/>
+          <rect x="270" y="59" width="6" height="6" opacity=".4"/><rect x="360" y="59" width="6" height="6" opacity=".4"/>
+        </g>
+        <line x1="70" y1="102" x2="440" y2="102" stroke="#BE7318" stroke-width="2"/>
+        <g fill="#E8A244">
+          <rect x="85" y="99" width="6" height="6" opacity=".55"/><rect x="140" y="99" width="6" height="6" opacity=".55"/>
+          <rect x="195" y="99" width="6" height="6" opacity=".55"/><rect x="250" y="99" width="6" height="6" opacity=".55"/>
+          <rect x="305" y="99" width="6" height="6" opacity=".55"/><rect x="360" y="99" width="6" height="6" opacity=".55"/>
+          <rect x="415" y="99" width="6" height="6" opacity=".55"/>
+        </g>
+        <line x1="70" y1="142" x2="440" y2="142" stroke="#BE7318" stroke-width="2"/>
+        <g fill="#E8A244">
+          <rect x="80" y="139" width="6" height="6" opacity=".7"/><rect x="108" y="139" width="6" height="6" opacity=".7"/>
+          <rect x="136" y="139" width="6" height="6" opacity=".7"/><rect x="164" y="139" width="6" height="6" opacity=".7"/>
+          <rect x="192" y="139" width="6" height="6" opacity=".7"/><rect x="220" y="139" width="6" height="6" opacity=".7"/>
+          <rect x="248" y="139" width="6" height="6" opacity=".7"/><rect x="276" y="139" width="6" height="6" opacity=".7"/>
+          <rect x="304" y="139" width="6" height="6" opacity=".7"/><rect x="332" y="139" width="6" height="6" opacity=".7"/>
+          <rect x="360" y="139" width="6" height="6" opacity=".7"/><rect x="388" y="139" width="6" height="6" opacity=".7"/>
+          <rect x="416" y="139" width="6" height="6" opacity=".7"/>
+        </g>
+      </svg>
+      <p class="para sm" style="margin-top:12px">Top wire is at the 1 &micro;A floor: nothing moves. The absence of motion means the net is not conducting, and that is load bearing.</p>
+    </div>
+    <div class="canvas light" style="background:var(--vellum)">
+      <h3>Reduced motion and export</h3>
+      <svg viewBox="0 0 460 150" role="img" aria-label="Static stroke width ladder with chevrons">
+        <g class="lbl">
+          <text x="0" y="26">1 &micro;A</text><text x="0" y="66">100 &micro;A</text>
+          <text x="0" y="106">1 mA</text><text x="0" y="146">10 mA</text>
+        </g>
+        <line x1="70" y1="22" x2="440" y2="22" stroke="#BE7318" stroke-width="0.9"/>
+        <line x1="70" y1="62" x2="440" y2="62" stroke="#BE7318" stroke-width="1.4"/>
+        <g stroke="#BE7318" stroke-width="1.2" fill="none" stroke-linecap="square">
+          <path d="M100 57 l5 5 l-5 5"/><path d="M190 57 l5 5 l-5 5"/>
+          <path d="M280 57 l5 5 l-5 5"/><path d="M370 57 l5 5 l-5 5"/>
+        </g>
+        <line x1="70" y1="102" x2="440" y2="102" stroke="#BE7318" stroke-width="2"/>
+        <g stroke="#BE7318" stroke-width="1.3" fill="none" stroke-linecap="square">
+          <path d="M95 97 l5 5 l-5 5"/><path d="M150 97 l5 5 l-5 5"/><path d="M205 97 l5 5 l-5 5"/>
+          <path d="M260 97 l5 5 l-5 5"/><path d="M315 97 l5 5 l-5 5"/><path d="M370 97 l5 5 l-5 5"/>
+        </g>
+        <line x1="70" y1="142" x2="440" y2="142" stroke="#BE7318" stroke-width="2.8"/>
+        <g stroke="#BE7318" stroke-width="1.4" fill="none" stroke-linecap="square">
+          <path d="M90 137 l5 5 l-5 5"/><path d="M118 137 l5 5 l-5 5"/><path d="M146 137 l5 5 l-5 5"/>
+          <path d="M174 137 l5 5 l-5 5"/><path d="M202 137 l5 5 l-5 5"/><path d="M230 137 l5 5 l-5 5"/>
+          <path d="M258 137 l5 5 l-5 5"/><path d="M286 137 l5 5 l-5 5"/><path d="M314 137 l5 5 l-5 5"/>
+          <path d="M342 137 l5 5 l-5 5"/><path d="M370 137 l5 5 l-5 5"/><path d="M398 137 l5 5 l-5 5"/>
+        </g>
+      </svg>
+      <p class="para sm" style="margin-top:12px">Stroke width ladder 0.9 / 1.4 / 2.0 / 2.8 px carries magnitude, chevron direction carries current direction, chevron spacing repeats the pulse period. No animation, same information.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Type specimens</h2>
+  <p class="sub">Three families. Archivo Expanded 600 for the wordmark only, IBM Plex Sans for UI, IBM Plex Mono for every measured value. All three self hosted as subset woff2 in the application.</p>
+
+  <div class="spec-row">
+    <div class="spec-key">Display<i>Archivo Expanded 600</i></div>
+    <div>
+      <div class="wordmark" style="font-size:34px;letter-spacing:.05em">Opencircuit</div>
+      <div class="wordmark" style="font-size:14px;letter-spacing:.06em;margin-top:10px">Opencircuit</div>
+      <p class="para sm" style="margin-top:10px">Wordmark and version string only. Wide, evenly weighted, low contrast: the lettering of front panel silkscreen and PCB legend layers.</p>
+    </div>
+  </div>
+
+  <div class="spec-row">
+    <div class="spec-key">UI<i>IBM Plex Sans 400 / 500 / 600</i></div>
+    <div>
+      <p style="font-weight:600;font-size:13px">Operating point</p>
+      <p class="para" style="margin-top:4px">2N3904 NPN small signal transistor in TO-92. Model fidelity F2: Gummel Poon parameters fitted to the manufacturer datasheet curves at 25 &deg;C. Beta and saturation voltage are trustworthy; switching times are not characterised.</p>
+      <p style="font-size:11px;font-weight:500;letter-spacing:.02em;color:var(--graphite-700);margin-top:10px">COLLECTOR CURRENT &nbsp;&middot;&nbsp; BASE VOLTAGE &nbsp;&middot;&nbsp; JUNCTION TEMPERATURE</p>
+    </div>
+  </div>
+
+  <div class="spec-row">
+    <div class="spec-key">Readout<i>Plex Mono 500 + Plex Sans 500 unit</i></div>
+    <div>
+      <div class="readout r-lg"><span class="val">4.98</span><span class="unit">V</span></div>
+      <div class="readout r-md" style="margin-top:8px"><span class="val">4.31</span><span class="unit">mA</span></div>
+      <div class="readout r-sm" style="margin-top:8px"><span class="val">21.5</span><span class="unit">mW</span></div>
+      <p class="para sm" style="margin-top:10px">Value at 1em, unit at 0.68em with 0.02em tracking in Graphite 700, baseline aligned, 0.15em gap. Never italic, never the same size as the value.</p>
+    </div>
+  </div>
+
+  <div class="spec-row">
+    <div class="spec-key">Inspector table<i>tabular figures, decimal column</i></div>
+    <div>
+      <table>
+        <tr><td class="k">V(led_a)</td><td class="v">&nbsp;4.98</td><td class="u">V</td></tr>
+        <tr><td class="k">V(base)</td><td class="v">&nbsp;0.72</td><td class="u">V</td></tr>
+        <tr><td class="k">V(emit)</td><td class="v">-1.05</td><td class="u">V</td></tr>
+        <tr><td class="k">I(R1)</td><td class="v">&nbsp;4.31</td><td class="u">mA</td></tr>
+        <tr><td class="k">I(base)</td><td class="v">21.4</td><td class="u">&micro;A</td></tr>
+        <tr><td class="k">R1</td><td class="v">1.00</td><td class="u">k&Omega;</td></tr>
+        <tr><td class="k">P(LED1)</td><td class="v">&nbsp;8.62</td><td class="u">mW</td></tr>
+      </table>
+      <p class="para sm" style="margin-top:10px">Engineering notation in steps of three. A sign column is reserved so a value does not shift when it crosses zero. Real glyphs: &micro; not u, &Omega; not ohm.</p>
+    </div>
+  </div>
+
+  <div class="spec-row">
+    <div class="spec-key">Numeral audit<i>verify at 11 px before P1</i></div>
+    <div>
+      <div class="glyphs">0 O o 1 l I 5 S 8 B 2 Z 6 G 9 q</div>
+      <div class="stack" style="margin-top:8px">
+        0123456789 &nbsp; -0.047 &nbsp; +12.0 &nbsp; 1.00 k&Omega; &nbsp; 4.70 &micro;F &nbsp; 2.50 Vrms
+      </div>
+      <div style="font-family:var(--mono);font-size:11px;margin-top:6px">0 O 1 l I 5 S 8 B &nbsp; -0.047 &nbsp; 21.4 &micro;A &nbsp; 1.00 k&Omega;</div>
+      <p class="para sm" style="margin-top:10px">Open item: confirm 0 versus O and 1 versus l are unambiguous at 11 px in the shipped Plex Mono cut. If not, enable the zero or ss02 feature, or ship a slashed zero build. No seven segment or LCD mimic face, ever.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Self hosting requirement</h2>
+  <div class="warn">
+    <b>This specimen loads fonts from Google Fonts. The application must not.</b> Ship subset woff2 files in repo, served from the same origin, with an explicit font-display policy. Archivo Expanded is subset to the wordmark glyph set only and must land under 8 KB, otherwise it is cut and the wordmark falls back to IBM Plex Sans 600 at 0.08em tracking. A CDN font link in the shipped app is a hard ban.
+  </div>
+</section>
+
+<section style="border-bottom:0">
+  <h2>Hard bans, short form</h2>
+  <ul class="bans">
+    <li>No glow, gradient, shadow or blur that is not data. Only three gradients exist: the voltage ramp, the LED photometric falloff, scope trace persistence. Zero elevation anywhere.</li>
+    <li>No pills, chips, cards or rounded rectangles. Radius 0 everywhere except 2 px on text inputs and the pot knob.</li>
+    <li>No semantic hue as text colour. Text is the Graphite ramp on Vellum, or Vellum on Graphite.</li>
+    <li>No purple. No hero, no onboarding modal, no entrance animation. No blueprint grid, texture, grain or noise.</li>
+    <li>No generic icon where an IEC 60617 symbol exists. No rounded caps or joins. No seven segment typeface. No CDN fonts.</li>
+    <li>No dashboard vocabulary. Instrument words only. No fabricated values on non convergence. No em dashes in any copy.</li>
+  </ul>
+  <p class="para sm" style="margin-top:16px">Full contract in DIRECTION.md, FINAL DIRECTION section.</p>
+</section>
+
+</div>
+</body>
+</html>
