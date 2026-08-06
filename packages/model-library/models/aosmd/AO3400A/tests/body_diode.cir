@@ -1,0 +1,14 @@
+OpenCircuit factory test: AO3400A body diode
+* OpenCircuit Model Factory v0.1.0
+* Original work generated from public factual specifications.
+* This model is not a copy of, or adaptation from, any vendor SPICE model.
+* Source: https://www.aosmd.com/sites/default/files/res/data_sheets/AO3400A.pdf
+* Revision: Rev. 3.1, July 2023
+* Node order: drain gate source
+.model OC_AO3400A VDMOS(VTO=1.4500000000e+00 KP=1.4106964528e+02 THETA=5.3513585804e-01 LAMBDA=3.0000000000e-03 RD=9.6070523200e-03 RS=3.6000000000e-03 RG=3.0000000000e+00 CGS=5.8000000000e-10 CGDMAX=1.4000000000e-10 CGDMIN=3.6000000000e-11 A=1.7331316386e-01 CJO=1.1110243022e-10 IS=1.4199365192e-08 N=1.5000000000e+00 RB=3.6000000000e-03 TT=1.2262907848e-08 BV=3.0000000000e+01 IBV=2.5000000000e-04 RTHJC=6.3000000000e+01 RTHCA=3.7000000000e+01 RDS=1e9 VJ=0.8 M=0.5 FC=0.5 NBV=1 TNOM=27)
+.temp 25
+M1 d g 0 OC_AO3400A
+IB d 0 1
+VG g 0 0
+.op
+.end

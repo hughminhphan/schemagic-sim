@@ -1,0 +1,138 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "rdson.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "rdson_typical_1",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale:last(v(d1),0.17543859649122806)"
+          },
+          "expected_value": 0.018,
+          "unit": "ohm",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.15
+          },
+          "datasheet_citation": "p. 2 static parameters, TYP column",
+          "placeholder": false
+        },
+        {
+          "name": "rdson_typical_2",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale:last(v(d2),0.2)"
+          },
+          "expected_value": 0.019,
+          "unit": "ohm",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.15
+          },
+          "datasheet_citation": "p. 2 static parameters, TYP column",
+          "placeholder": false
+        },
+        {
+          "name": "rdson_typical_3",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale:last(v(d3),0.3333333333333333)"
+          },
+          "expected_value": 0.024,
+          "unit": "ohm",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.15
+          },
+          "datasheet_citation": "p. 2 static parameters, TYP column",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "boundary.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "minimum_characterized_gate_drive_boundary",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale:last(v(d),0.3333333333333333)"
+          },
+          "expected_value": 0.024,
+          "unit": "ohm",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.15
+          },
+          "datasheet_citation": "p. 2 static parameters, TYP column",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "capacitance.cir",
+      "analysis_type": "ac_small_signal",
+      "scalar_checks": [
+        {
+          "name": "ciss",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "imag_cap:last(i(vgi),1000000)"
+          },
+          "expected_value": 6.3e-10,
+          "unit": "F",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 2 dynamic parameters, TYP column",
+          "placeholder": false
+        },
+        {
+          "name": "coss",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "imag_cap:last(i(vdo),1000000)"
+          },
+          "expected_value": 7.5e-11,
+          "unit": "F",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 2 dynamic parameters, TYP column",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "body_diode.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "body_diode_forward_voltage",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(d))"
+          },
+          "expected_value": 0.7,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.05,
+            "relative": 0.1
+          },
+          "datasheet_citation": "p. 2 static parameters, TYP column",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    }
+  ]
+}
