@@ -1,4 +1,4 @@
-import { canonicalizeCircuit, type CircuitDocument } from "@opencircuit/sim-engine";
+import { canonicalizeCircuit, migrateCircuit, type CircuitDocument } from "@opencircuit/circuit-schema";
 import { deflateSync, inflateSync, strFromU8, strToU8 } from "fflate";
 
 function base64Url(bytes: Uint8Array): string {
@@ -24,7 +24,7 @@ export function decodeCircuit(payload: string): CircuitDocument {
   if (parsed.format !== "opencircuit-circuit" || parsed.version !== 1 || !Array.isArray(parsed.components) || !Array.isArray(parsed.wires)) {
     throw new Error("Share URL does not contain a supported circuit document");
   }
-  return parsed as CircuitDocument;
+  return migrateCircuit(parsed);
 }
 
 export function circuitFromLocation(hash: string): CircuitDocument | undefined {

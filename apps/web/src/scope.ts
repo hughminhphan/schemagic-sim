@@ -32,8 +32,8 @@ export class ScopePlot {
     new ResizeObserver(() => this.draw()).observe(canvas);
   }
 
-  setData(mode: AnalysisMode, result: SimulationResult | undefined, generated: GeneratedNetlist, hold: HoldPoint[] = []): void {
-    const collectorNode = generated.componentNodes.c4?.[0];
+  setData(mode: AnalysisMode, result: SimulationResult | undefined, generated: GeneratedNetlist, hold: HoldPoint[] = [], componentId = "c4"): void {
+    const collectorNode = generated.componentNodes[componentId]?.[0] ?? Object.values(generated.componentNodes).flat().find((node) => node !== "0");
     if ((mode === "live" || mode === "op") && hold.length > 1) {
       this.points = hold.map((point) => ({ x: point.t, y: point.collector }));
       this.xUnit = "";

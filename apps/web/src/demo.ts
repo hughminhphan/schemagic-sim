@@ -1,4 +1,4 @@
-import type { CircuitDocument } from "@opencircuit/sim-engine";
+import type { CircuitDocument } from "@opencircuit/circuit-schema";
 
 export const demoCircuit: CircuitDocument = {
   format: "opencircuit-circuit",

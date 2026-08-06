@@ -1,463 +1,60 @@
 import "./style.css";
-import {
-  SimulationClient,
-  SimulationFailure,
-  generateNetlist,
-  type AnalysisMode,
-  type CircuitComponent,
-  type CircuitDocument,
-  type GeneratedNetlist,
-  type SimulationDiagnostic,
-  type SimulationResult,
-} from "@opencircuit/sim-engine";
+import { PARTS, canonicalizeCircuit, generateNetlist, migrateCircuit, parseEngineering, partByType, validateCircuit, type AnalysisMode, type CircuitComponent, type CircuitDocument, type GeneratedNetlist } from "@opencircuit/circuit-schema";
+import { SchematicEditor } from "@opencircuit/schematic-editor";
+import { SimulationClient, SimulationFailure, type SimulationDiagnostic, type SimulationResult } from "@opencircuit/sim-engine";
 import { demoCircuit } from "./demo";
 import { formatEngineering, readingMarkup } from "./format";
+import { activeWorkspaceId, deleteWorkspace, listWorkspaces, loadWorkspace, makeWorkspace, saveWorkspace, type Workspace } from "./persistence";
 import { circuitFromLocation, shareUrl } from "./share";
-import { PulseRenderer, VIEW_HEIGHT, canvasPoint, scalar, schematicMarkup, updateSchematicVisuals } from "./schematic";
-import { ScopePlot, type HoldPoint } from "./scope";
+import { ScopePlot } from "./scope";
 
-declare global {
-  interface Window {
-    __ocMetrics: {
-      engineInitMs: number;
-      warmOpMs: number[];
-      wasmTransferSize: number;
-      rawfileBytes: number;
-      longTasks: number;
-      resetLongTasks: () => void;
-    };
-  }
-}
+declare global { interface Window { __ocMetrics:{engineInitMs:number;warmOpMs:number[];wasmTransferSize:number;rawfileBytes:number;longTasks:number;resetLongTasks:()=>void} } }
+const app=document.querySelector<HTMLDivElement>("#app");if(!app)throw new Error("Application root is missing");
+const esc=(value:string)=>value.replace(/[&<>"']/g,char=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[char]!));
+const modeLabels:Record<AnalysisMode,string>={live:"LIVE",op:"DC",tran:"TRAN",ac:"AC"};
+const scalar=(result:SimulationResult|undefined,name:string,index=0)=>result?.data.get(name.toLowerCase())?.[index];
+const voltageColor=(voltage:number,vref:number)=>{if(Math.abs(voltage)<.05)return"#6E7378";const t=Math.max(-1,Math.min(1,voltage/Math.max(vref,1e-12))),c=(t < 0 ? .121 : .117)*Math.abs(t)**1.6;return`oklch(62% ${c.toFixed(5)} ${t<0?245:62})`;};
+const snapReference=(values:number[])=>{const maximum=Math.max(1e-12,...values.map(Math.abs)),exponent=Math.floor(Math.log10(maximum)),scaled=maximum/10**exponent;return(scaled<=1?1:scaled<=2?2:scaled<=5?5:10)*10**exponent;};
+const download=(name:string,content:string,type:string)=>{const url=URL.createObjectURL(new Blob([content],{type})),anchor=document.createElement("a");anchor.href=url;anchor.download=name;anchor.click();URL.revokeObjectURL(url);};
 
-const app = document.querySelector<HTMLDivElement>("#app");
-if (!app) throw new Error("Application root is missing");
+let loadDiagnostic:SimulationDiagnostic|undefined;let circuit:CircuitDocument;let workspace:Workspace|undefined;
+try{circuit=circuitFromLocation(location.hash)??structuredClone(demoCircuit);}catch(error){circuit=structuredClone(demoCircuit);loadDiagnostic={stage:"parse",message:error instanceof Error?error.message:String(error)};}
+if(!location.hash){const active=activeWorkspaceId();if(active){const saved=await loadWorkspace(active);if(saved){workspace=saved;circuit=saved.document;}}}
+workspace??=makeWorkspace(circuit,circuit.meta.title);
 
-let loadDiagnostic: SimulationDiagnostic | undefined;
-let circuit: CircuitDocument;
-try {
-  circuit = circuitFromLocation(location.hash) ?? structuredClone(demoCircuit);
-} catch (caught) {
-  circuit = structuredClone(demoCircuit);
-  loadDiagnostic = { stage: "parse", message: caught instanceof Error ? caught.message : String(caught) };
-}
+app.innerHTML=`<main class="app-shell${innerHeight<760?" scope-collapsed":""}"><header class="chrome"><div class="brand-line"><span class="wordmark">scheMAGIC Simulator</span><span class="version">0.2 MVP</span><button class="document-name" id="workspace-button">${esc(workspace.name)}</button></div><nav class="analysis-tabs" aria-label="Analysis mode">${(["live","op","tran","ac"] as AnalysisMode[]).map(mode=>`<button class="analysis-tab" data-mode="${mode}" aria-selected="${circuit.sim.mode===mode}">${modeLabels[mode]}</button>`).join("")}</nav><div class="chrome-actions"><button class="chrome-action" id="copy-link">Share URL</button><button class="chrome-action" id="export-spice">Netlist</button><button class="chrome-action" id="export-json">Download JSON</button><button class="chrome-action" id="import-json">Load JSON</button><button class="chrome-action" id="help-button" aria-label="Keyboard shortcuts">?</button></div></header>
+<section class="workbench"><aside class="symbol-rail" aria-label="Parts palette"><div class="rail-title">PARTS</div><button class="symbol-tool select-tool active" data-tool="select" aria-label="Select tool"><span class="tool-glyph">↖</span><span class="rail-flyout"><strong>Select</strong>Move, box-select and inspect</span></button><button class="symbol-tool wire-tool" data-tool="wire" aria-label="Wire tool"><svg viewBox="0 0 32 24"><path d="M3 19V7h16v10h10"/><circle cx="3" cy="19" r="2"/><circle cx="29" cy="17" r="2"/></svg><span class="rail-flyout"><strong>Wire</strong>Draw orthogonal connections</span></button>${PARTS.map(part=>`<button class="symbol-tool" data-tool="${part.type}" aria-label="Place ${part.name}"><span class="part-abbr">${esc(part.prefix)}</span><span class="rail-flyout"><strong>${esc(part.name)}</strong>${esc(part.note??"Generic parametric device")}</span></button>`).join("")}<div class="rail-footer">/</div></aside>
+<section class="canvas-wrap" id="canvas-wrap"><div id="editor-host" class="editor-host"></div><div class="canvas-status" id="engine-banner" data-testid="engine-banner"><span class="run-indicator busy"></span><span id="engine-status">Warming ngspice WebAssembly</span></div><div class="vref-legend"><span id="vref-negative">−5 V</span><span class="voltage-ramp"></span><span id="vref-positive">+5 V</span></div><div id="toast-stack" class="toast-stack"></div></section>
+<aside class="inspector" aria-label="Property inspector"><div class="inspector-head">INSPECTOR</div><div id="inspector-content"></div><footer class="about-line">runs on ngspice (WebAssembly)</footer></aside></section>
+<section class="scope-dock"><div class="scope-toolbar"><button class="scope-toggle" id="scope-toggle">${innerHeight<760?"Open scope":"Close scope"}</button><span class="scope-title" id="scope-title">OPERATING POINT</span><span id="scope-scale">Selected net</span><span class="scope-run-state"><span class="run-indicator"></span>RUN</span></div><div class="scope-well"><canvas class="scope-canvas" id="scope-canvas"></canvas><div class="scope-empty" id="scope-empty">Run TRAN or AC to view a trace.</div></div><div class="scope-cursors"><span id="scope-cursor">Cursor A  --</span><span>Cursor B  --</span><span>Δ  --</span><span class="guidance">Edit the circuit.</span></div></section>
+<input class="file-input" id="json-file" type="file" accept="application/json,.json"/>
+<div class="overlay" id="shortcut-overlay" hidden><section class="shortcut-sheet" role="dialog" aria-modal="true" aria-label="Keyboard shortcuts"><header><strong>SHORTCUTS</strong><button data-close-overlay>Close</button></header><dl><dt>R</dt><dd>Rotate selection</dd><dt>X</dt><dd>Mirror selection</dd><dt>F</dt><dd>Fit circuit</dd><dt>Delete</dt><dd>Delete selection</dd><dt>Ctrl or Cmd Z</dt><dd>Undo</dd><dt>Ctrl or Cmd Shift Z</dt><dd>Redo</dd><dt>Ctrl or Cmd C / V</dt><dd>Copy / paste with offset</dd><dt>Space drag</dt><dd>Pan</dd><dt>Wheel</dt><dd>Zoom to cursor</dd><dt>?</dt><dd>Open this reference</dd></dl></section></div>
+<div class="overlay" id="workspace-overlay" hidden><section class="workspace-sheet"><header><strong>WORKSPACES</strong><button data-close-workspaces>Close</button></header><div class="workspace-actions"><button id="new-workspace">New</button><button id="rename-workspace">Rename</button><button id="duplicate-workspace">Duplicate</button><button id="delete-workspace">Delete</button></div><div id="workspace-list"></div></section></div></main>`;
 
-const modeLabels: Record<AnalysisMode, string> = { live: "LIVE", op: "DC", tran: "TRAN", ac: "AC" };
-const analysisModes: AnalysisMode[] = ["live", "op", "tran", "ac"];
-const initialCollapsed = innerHeight < 760;
-
-app.innerHTML = `<main class="app-shell${initialCollapsed ? " scope-collapsed" : ""}">
-  <header class="chrome">
-    <div class="brand-line"><span class="wordmark">OPENCIRCUIT</span><span class="version">0.1 P1</span><span class="document-name" id="document-name"></span></div>
-    <nav class="analysis-tabs" aria-label="Analysis mode">${analysisModes.map((mode) => `<button class="analysis-tab" data-mode="${mode}" aria-selected="${circuit.sim.mode === mode}">${modeLabels[mode]}</button>`).join("")}</nav>
-    <div class="chrome-actions"><button class="chrome-action" id="copy-link">Copy share link</button><button class="chrome-action" id="export-spice">SPICE</button><button class="chrome-action" id="export-svg">SVG</button><button class="chrome-action" id="export-json">Export JSON</button><button class="chrome-action" id="import-json">Load JSON</button></div>
-  </header>
-  <section class="workbench">
-    <aside class="symbol-rail" aria-label="Symbol rail">
-      <div class="rail-title">PARTS</div>
-      <button class="symbol-tool" aria-label="Voltage source"><svg viewBox="0 0 32 24"><path d="M16 1v4m0 14v4M16 5a7 7 0 1 0 0 14 7 7 0 0 0 0-14Zm-3 4h6m-3-3v6m-3 3h6"/></svg><span class="rail-flyout"><strong>DC source</strong>Generic voltage source · F3 primitive</span></button>
-      <button class="symbol-tool" aria-label="Resistor"><svg viewBox="0 0 32 24"><path d="M1 12h5l3-5 5 10 5-10 5 10 3-5h4"/></svg><span class="rail-flyout"><strong>Resistor</strong>Generic resistor · F3 primitive</span></button>
-      <button class="symbol-tool" aria-label="NPN transistor"><svg viewBox="0 0 32 24"><path d="M7 5v14m0-7h6m0-5 10-6m-10 16 10 6m-4-2 4 2-1-4"/></svg><span class="rail-flyout"><strong>2N3904</strong>Small-signal NPN · F1 approximation</span></button>
-      <button class="symbol-tool" aria-label="LED"><svg viewBox="0 0 32 24"><path d="M3 12h6m14 0h6M9 6v12l14-6-14-6Zm14 0v12m1-13 5-5m-2 9 5-5"/></svg><span class="rail-flyout"><strong>Red LED</strong>Functional diode model · F1 approximation</span></button>
-      <div class="rail-footer" title="Command insert arrives with free editing">/</div>
-    </aside>
-    <section class="canvas-wrap" id="canvas-wrap">
-      ${schematicMarkup(circuit)}
-      <div class="canvas-status" id="engine-banner" data-testid="engine-banner"><span class="run-indicator busy"></span><span id="engine-status">Warming worker-hosted WASM engine</span></div>
-      <div class="vref-legend"><span id="vref-negative">−5 V</span><span class="voltage-ramp"></span><span id="vref-positive">+5 V</span></div>
-      <div class="hover-readout" id="hover-readout"></div>
-    </section>
-    <aside class="inspector" aria-label="Property inspector"><div class="inspector-head">INSPECTOR</div><div id="inspector-content"></div></aside>
-  </section>
-  <section class="scope-dock" aria-label="Scope panel">
-    <div class="scope-resizer" id="scope-resizer" role="separator" aria-orientation="horizontal" aria-label="Resize scope"></div>
-    <div class="scope-toolbar"><button class="scope-toggle" id="scope-toggle">${initialCollapsed ? "Open scope" : "Close scope"}</button><span class="scope-title" id="scope-title">OPERATING POINT</span><span>Ch1 V(collector)</span><span id="scope-scale">2.00 V/div · 1.00 ms/div</span><button id="keep-hold" class="scope-toggle" hidden>Keep hold</button><span class="scope-run-state"><span class="run-indicator"></span>RUN</span></div>
-    <div class="scope-well"><canvas class="scope-canvas" id="scope-canvas"></canvas><div class="scope-empty" id="scope-empty">Run TRAN or drag the pot to draw a trace.</div></div>
-    <div class="scope-cursors"><span id="scope-cursor">Cursor A  --</span><span>Cursor B  --</span><span>Δ  --</span><span class="guidance">Drag the pot.</span></div>
-  </section>
-  <input class="file-input" id="json-file" type="file" accept="application/json,.json" />
-</main>`;
-
-const shell = must<HTMLDivElement>(".app-shell");
-const statusText = must<HTMLElement>("#engine-status");
-const statusIndicator = must<HTMLElement>("#engine-banner .run-indicator");
-const hoverReadout = must<HTMLElement>("#hover-readout");
-const inspectorContent = must<HTMLElement>("#inspector-content");
-const scopeCanvas = must<HTMLCanvasElement>("#scope-canvas");
-const scopeCursor = must<HTMLElement>("#scope-cursor");
-const scopeEmpty = must<HTMLElement>("#scope-empty");
-const scopePlot = new ScopePlot(scopeCanvas, scopeCursor);
-const pulseRenderer = new PulseRenderer(must<HTMLCanvasElement>("#pulse-layer"));
-const client = new SimulationClient();
-
-let generated: GeneratedNetlist = generateNetlist(circuit, "op");
-let visualResult: SimulationResult | undefined;
-let scopeResult: SimulationResult | undefined;
-let selectedId = "c6";
-let hoveredNode: string | undefined;
-let diagnostics: SimulationDiagnostic[] = loadDiagnostic ? [loadDiagnostic] : [];
-let busy = true;
-let solveGeneration = 0;
-let resimTimer: ReturnType<typeof setTimeout> | undefined;
-let resimQueued = false;
-let draggingPot = false;
-let traceHold: HoldPoint[] = [];
-let holdCommitted = false;
-let holdOffer = false;
-let firstOp = true;
-let engineLabel = "ngspice WASM";
-
-window.__ocMetrics = {
-  engineInitMs: 0,
-  warmOpMs: [],
-  wasmTransferSize: 0,
-  rawfileBytes: 0,
-  longTasks: 0,
-  resetLongTasks() { this.longTasks = 0; },
-};
-
-if (typeof PerformanceObserver !== "undefined" && PerformanceObserver.supportedEntryTypes.includes("longtask")) {
-  const observer = new PerformanceObserver((list) => { window.__ocMetrics.longTasks += list.getEntries().length; });
-  observer.observe({ type: "longtask", buffered: true });
-}
-
-function must<T extends Element>(selector: string): T {
-  const element = document.querySelector<T>(selector);
-  if (!element) throw new Error(`Missing element ${selector}`);
-  return element;
-}
-
-function selectedComponent(): CircuitComponent {
-  return circuit.components.find((component) => component.id === selectedId) ?? circuit.components[0]!;
-}
-
-function componentCurrent(component: CircuitComponent): number | undefined {
-  const suffix = component.id.replace(/\D/g, "");
-  const name = component.type === "led" ? `i(@d${suffix}[id])`
-    : component.type === "bjt_npn" ? `i(@q${suffix}[ic])`
-      : component.type === "resistor" ? `i(@r${suffix}[i])`
-        : component.type === "vsource" ? `i(v${suffix})`
-          : undefined;
-  return name ? scalar(visualResult, name) : undefined;
-}
-
-function pinVoltage(componentId: string, pin: number): number | undefined {
-  const node = generated.componentNodes[componentId]?.[pin];
-  return node === "0" ? 0 : node ? scalar(visualResult, `v(${node})`) : undefined;
-}
-
-function collectorVoltage(): number | undefined {
-  return pinVoltage("c4", 0);
-}
-
-function ledVoltage(): number | undefined {
-  return pinVoltage("c6", 0);
-}
-
-function partDetails(component: CircuitComponent): { ref: string; name: string; identity: string; fidelity: string; note?: string } {
-  const ref = component.label?.text ?? component.id.toUpperCase();
-  switch (component.type) {
-    case "bjt_npn": return { ref, name: "NPN transistor", identity: "2N3904", fidelity: "F1", note: "F1 functional approximation, pending model factory. Model source pending Phase 3." };
-    case "led": return { ref, name: "Red light-emitting diode", identity: "OC_LED_RED", fidelity: "F1", note: "F1 functional approximation, pending model factory. Model source pending Phase 3." };
-    case "potentiometer": return { ref, name: "Linear potentiometer", identity: "10 kΩ generic", fidelity: "F3" };
-    case "resistor": return { ref, name: "Resistor", identity: "Generic ideal", fidelity: "F3" };
-    case "vsource": return { ref, name: "DC voltage source", identity: "Generic ideal", fidelity: "F3" };
-    case "ground": return { ref: "GND", name: "Reference node", identity: "Node 0", fidelity: "F3" };
-    default: return { ref, name: component.type, identity: "Generic", fidelity: "F0" };
-  }
-}
-
-function renderInspector(): void {
-  const component = selectedComponent();
-  const details = partDetails(component);
-  const current = componentCurrent(component);
-  const power = component.type === "resistor" && current !== undefined ? current ** 2 * Number(component.value ?? 0) : undefined;
-  const valueEditor = component.type === "resistor" || component.type === "potentiometer" || component.type === "vsource"
-    ? `<div class="inspector-section"><label class="field-label" for="component-value">${component.type === "vsource" ? "DC value (V)" : "Value (Ω)"}</label><input class="value-input" id="component-value" type="number" min="${component.type === "vsource" ? "0" : "0.001"}" step="${component.type === "vsource" ? "0.1" : "1"}" value="${Number(component.value ?? 0)}"/>${component.type === "potentiometer" ? `<label class="field-label" for="wiper-value" style="margin-top:10px">Wiper t</label><input class="value-input" id="wiper-value" type="range" min="0.005" max="0.995" step="0.001" value="${Number(component.params?.t ?? 0.5)}"/><div style="margin-top:5px">${readingMarkup(Number(component.params?.t ?? 0.5) * 100, "%")}</div>` : ""}</div>`
-    : `<div class="inspector-section"><span class="field-label">Value</span><div>${details.identity}</div></div>`;
-  const pinRows = (generated.componentNodes[component.id] ?? []).map((_, pin) => `<div class="measure-row"><span class="measure-label">Pin ${pin + 1} V</span>${readingMarkup(pinVoltage(component.id, pin), "V")}</div>`).join("");
-  inspectorContent.innerHTML = `<section class="inspector-section"><div class="part-heading"><span class="part-ref">${details.ref}</span><span class="fidelity">${details.fidelity}</span></div><div class="part-name">${details.name}<br>${details.identity}</div>${details.note ? `<p class="honesty-note">${details.note}</p>` : ""}</section>
-    ${valueEditor}
-    <section class="inspector-section"><span class="field-label">LIVE MEASUREMENTS</span>${pinRows}<div class="measure-row"><span class="measure-label">Branch I</span>${readingMarkup(current, "A")}</div><div class="measure-row"><span class="measure-label">Power</span>${readingMarkup(power, "W")}</div></section>
-    <section class="inspector-section"><span class="field-label">CIRCUIT READOUTS</span><div class="measure-row"><span class="measure-label">LED node</span>${readingMarkup(ledVoltage(), "V", "led-voltage")}</div><div class="measure-row"><span class="measure-label">Collector</span>${readingMarkup(collectorVoltage(), "V", "collector-voltage")}</div><div class="measure-row"><span class="measure-label">LED current</span>${readingMarkup(Math.abs(scalar(visualResult, "i(@d6[id])") ?? 0), "A", "led-current")}</div></section>
-    ${diagnostics.length > 0 ? `<section class="inspector-section"><span class="field-label">MESSAGES</span><ul class="error-list">${diagnostics.map((entry) => `<li class="error-item"><span class="fault-glyph"></span><button data-diagnostic-component="${entry.componentId ?? ""}">${entry.message}</button></li>`).join("")}</ul></section>` : ""}`;
-  inspectorContent.querySelector<HTMLInputElement>("#component-value")?.addEventListener("input", onValueInput);
-  document.querySelector<HTMLInputElement>("#wiper-value")?.addEventListener("input", (event) => updatePot(Number((event.target as HTMLInputElement).value)));
-  inspectorContent.querySelectorAll<HTMLButtonElement>("[data-diagnostic-component]").forEach((button) => button.addEventListener("click", () => {
-    const id = button.dataset.diagnosticComponent;
-    if (id) selectComponent(id);
-  }));
-}
-
-function onValueInput(event: Event): void {
-  const value = Number((event.target as HTMLInputElement).value);
-  if (!Number.isFinite(value) || value <= 0) return;
-  selectedComponent().value = value;
-  scheduleSimulation();
-}
-
-function updatePot(t: number): void {
-  const pot = circuit.components.find((component) => component.id === "c2");
-  if (!pot) return;
-  const clamped = Math.min(0.995, Math.max(0.005, t));
-  pot.params = { ...(pot.params ?? {}), t: clamped };
-  updatePotGraphic(clamped);
-  if (selectedId === "c2") renderInspector();
-  scheduleSimulation();
-}
-
-function updatePotGraphic(t: number): void {
-  const [x, y] = canvasPoint([18, 22]);
-  const targetY = y + (0.5 - t) * 80;
-  must<SVGPathElement>("#pot-wiper").setAttribute("d", `M${x + 32} ${targetY}L${x + 7} ${targetY}`);
-  const knob = must<SVGRectElement>("#pot-knob");
-  knob.setAttribute("y", String(targetY - 5));
-}
-
-function selectComponent(id: string): void {
-  selectedId = id;
-  document.querySelectorAll(".component").forEach((element) => element.classList.toggle("selected", (element as HTMLElement).dataset.componentId === id));
-  renderInspector();
-}
-
-function setStatus(text: string, state: "ready" | "busy" | "error"): void {
-  statusText.textContent = text;
-  statusIndicator.className = `run-indicator${state === "ready" ? "" : ` ${state}`}`;
-  const banner = must<HTMLElement>("#engine-banner");
-  if (state === "ready") banner.dataset.testid = "engine-ready";
-  else banner.dataset.testid = "engine-banner";
-}
-
-function updateDisplay(): void {
-  must<HTMLElement>("#document-name").textContent = circuit.meta.title;
-  const visual = updateSchematicVisuals(circuit, generated, visualResult, hoveredNode);
-  pulseRenderer.update(visual.wires, visualResult, visual.vref, visual.branchCurrents);
-  const reference = formatEngineering(visual.vref, "V");
-  must<HTMLElement>("#vref-negative").textContent = `−${reference.value.replace(/^[+− ]/, "")} ${reference.unit}`;
-  must<HTMLElement>("#vref-positive").textContent = `+${reference.value.replace(/^[+− ]/, "")} ${reference.unit}`;
-  renderInspector();
-  const mode = circuit.sim.mode;
-  scopePlot.setData(mode, mode === "tran" || mode === "ac" ? scopeResult : visualResult, generated, traceHold);
-  scopeEmpty.hidden = (mode === "tran" || mode === "ac") ? (scopeResult?.vectors.length ?? 0) > 0 : traceHold.length > 1;
-  must<HTMLElement>("#scope-title").textContent = mode === "tran" ? "TRANSIENT" : mode === "ac" ? "AC RESPONSE" : "OPERATING POINT";
-  must<HTMLElement>("#scope-scale").textContent = mode === "ac" ? "20.0 dB/div · decade · driven base" : mode === "tran" ? "2.00 V/div · 1.00 ms/div · driven wiper step" : "Wiper · collector voltage";
-  const keep = must<HTMLButtonElement>("#keep-hold");
-  keep.hidden = !holdOffer;
-  keep.textContent = holdCommitted ? "Hold kept" : `Keep hold (${traceHold.length})`;
-}
-
-function collectHoldPoint(): void {
-  if (!draggingPot || visualResult === undefined) return;
-  traceHold.push({ t: Number(circuit.components.find((component) => component.id === "c2")?.params?.t ?? 0.5), collector: collectorVoltage() ?? 0 });
-  if (traceHold.length > 400) traceHold.shift();
-}
-
-async function simulate(): Promise<void> {
-  const generation = ++solveGeneration;
-  busy = true;
-  setStatus("Running worker-hosted WASM solve", "busy");
-  diagnostics = loadDiagnostic ? [loadDiagnostic] : [];
-  try {
-    generated = generateNetlist(circuit, "op");
-    const opResult = await client.runOpPoint(generated.netlist);
-    if (generation !== solveGeneration) return;
-    visualResult = opResult;
-    window.__ocMetrics.rawfileBytes = opResult.rawfileBytes;
-    if (!firstOp) window.__ocMetrics.warmOpMs.push(opResult.elapsedMs);
-    firstOp = false;
-    collectHoldPoint();
-    if (circuit.sim.mode === "tran" || circuit.sim.mode === "ac") {
-      generated = generateNetlist(circuit, circuit.sim.mode);
-      scopeResult = circuit.sim.mode === "tran" ? await client.runTransient(generated.netlist) : await client.runAC(generated.netlist);
-      if (generation !== solveGeneration) return;
-      window.__ocMetrics.rawfileBytes = Math.max(window.__ocMetrics.rawfileBytes, scopeResult.rawfileBytes);
-    } else {
-      scopeResult = undefined;
-    }
-    busy = false;
-    setStatus(`ENGINE READY · ${engineLabel} · ${formatEngineering(opResult.elapsedMs / 1000, "s").value.trim()} ${formatEngineering(opResult.elapsedMs / 1000, "s").unit} solve`, "ready");
-    updateDisplay();
-  } catch (caught) {
-    if (generation !== solveGeneration) return;
-    busy = false;
-    const failure = caught instanceof SimulationFailure ? caught : undefined;
-    if (failure?.detail.code === "CANCELLED") return;
-    diagnostics = failure?.detail.diagnostics.length ? failure.detail.diagnostics : [{ stage: "engine", message: caught instanceof Error ? caught.message : String(caught) }];
-    setStatus(diagnostics.at(-1)?.message ?? "Simulation failed", "error");
-    updateDisplay();
-  }
-  if (resimQueued && !busy) scheduleSimulation();
-}
-
-function scheduleSimulation(): void {
-  resimQueued = true;
-  if (resimTimer || busy) return;
-  resimTimer = setTimeout(() => {
-    resimTimer = undefined;
-    if (!resimQueued) return;
-    resimQueued = false;
-    void simulate().finally(() => { if (resimQueued) scheduleSimulation(); });
-  }, 30);
-}
-
-function pointerToPot(event: PointerEvent): number {
-  const rect = must<SVGSVGElement>("#schematic").getBoundingClientRect();
-  const y = (event.clientY - rect.top) / rect.height * VIEW_HEIGHT;
-  const center = canvasPoint([18, 22])[1];
-  return Math.min(0.995, Math.max(0.005, 0.5 - (y - center) / 80));
-}
-
-function downloadText(filename: string, content: string, type: string): void {
-  const blob = new Blob([content], { type });
-  const anchor = document.createElement("a");
-  anchor.href = URL.createObjectURL(blob);
-  anchor.download = filename;
-  anchor.click();
-  URL.revokeObjectURL(anchor.href);
-}
-
-function bindInteractions(): void {
-  document.querySelectorAll<SVGGElement>("[data-component-id]").forEach((element) => {
-    element.addEventListener("click", () => selectComponent(element.dataset.componentId ?? "c6"));
-    element.addEventListener("keydown", (event) => { if (event.key === "Enter" || event.key === " ") selectComponent(element.dataset.componentId ?? "c6"); });
-  });
-  const potHit = must<SVGPathElement>("#pot-hit");
-  potHit.addEventListener("pointerdown", (event) => {
-    draggingPot = true;
-    if (!holdCommitted) traceHold = [];
-    holdCommitted = false;
-    holdOffer = false;
-    potHit.setPointerCapture(event.pointerId);
-    updatePot(pointerToPot(event));
-  });
-  potHit.addEventListener("pointermove", (event) => { if (draggingPot) updatePot(pointerToPot(event)); });
-  const finishDrag = (event: PointerEvent) => {
-    if (!draggingPot) return;
-    draggingPot = false;
-    if (potHit.hasPointerCapture(event.pointerId)) potHit.releasePointerCapture(event.pointerId);
-    if (traceHold.length > 200) traceHold = traceHold.filter((_, index) => index % Math.ceil(traceHold.length / 200) === 0).slice(0, 200);
-    holdOffer = traceHold.length > 1;
-    updateDisplay();
-  };
-  potHit.addEventListener("pointerup", finishDrag);
-  potHit.addEventListener("pointercancel", finishDrag);
-
-  document.querySelectorAll<SVGPathElement>("[data-wire-hit]").forEach((element) => {
-    element.addEventListener("pointerenter", (event) => {
-      const wire = element.dataset.wireHit ?? "";
-      hoveredNode = generated.wireNodes[wire];
-      const voltage = hoveredNode === "0" ? 0 : scalar(visualResult, `v(${hoveredNode})`);
-      showHover(event, `Net ${hoveredNode ?? "?"} · ${formatEngineering(voltage, "V", 5).value} ${formatEngineering(voltage, "V", 5).unit}`);
-      updateDisplay();
-    });
-    element.addEventListener("pointermove", (event) => moveHover(event));
-    element.addEventListener("pointerleave", () => { hoveredNode = undefined; hoverReadout.classList.remove("visible"); updateDisplay(); });
-  });
-  document.querySelectorAll<SVGCircleElement>("[data-component-pin]").forEach((element) => {
-    element.addEventListener("pointerenter", (event) => {
-      const [id = "", pinText = "0"] = (element.dataset.componentPin ?? "").split(":");
-      const component = circuit.components.find((entry) => entry.id === id);
-      const voltage = pinVoltage(id, Number(pinText));
-      const current = component ? componentCurrent(component) : undefined;
-      showHover(event, `Pin ${Number(pinText) + 1} · V ${formatEngineering(voltage, "V", 5).value} ${formatEngineering(voltage, "V", 5).unit} · I ${formatEngineering(current, "A", 5).value} ${formatEngineering(current, "A", 5).unit}`);
-    });
-    element.addEventListener("pointermove", moveHover);
-    element.addEventListener("pointerleave", () => hoverReadout.classList.remove("visible"));
-  });
-
-  document.querySelectorAll<HTMLButtonElement>("[data-mode]").forEach((button) => button.addEventListener("click", () => {
-    const mode = button.dataset.mode as AnalysisMode;
-    circuit.sim.mode = mode;
-    document.querySelectorAll<HTMLButtonElement>("[data-mode]").forEach((entry) => entry.setAttribute("aria-selected", String(entry === button)));
-    void simulate();
-  }));
-  must<HTMLButtonElement>("#scope-toggle").addEventListener("click", () => {
-    shell.classList.toggle("scope-collapsed");
-    const collapsed = shell.classList.contains("scope-collapsed");
-    shell.style.gridTemplateRows = collapsed ? "32px minmax(0,1fr) 24px" : "32px minmax(0,1fr) min(240px, 32vh)";
-    must<HTMLButtonElement>("#scope-toggle").textContent = collapsed ? "Open scope" : "Close scope";
-  });
-  const scopeResizer = must<HTMLElement>("#scope-resizer");
-  scopeResizer.addEventListener("pointerdown", (event) => {
-    const startY = event.clientY;
-    const startHeight = must<HTMLElement>(".scope-dock").getBoundingClientRect().height;
-    shell.classList.remove("scope-collapsed");
-    scopeResizer.setPointerCapture(event.pointerId);
-    const move = (moveEvent: PointerEvent) => {
-      const height = Math.max(24, Math.min(480, startHeight + startY - moveEvent.clientY));
-      shell.style.gridTemplateRows = `32px minmax(0,1fr) ${height}px`;
-    };
-    const finish = (finishEvent: PointerEvent) => {
-      scopeResizer.removeEventListener("pointermove", move);
-      scopeResizer.removeEventListener("pointerup", finish);
-      if (scopeResizer.hasPointerCapture(finishEvent.pointerId)) scopeResizer.releasePointerCapture(finishEvent.pointerId);
-    };
-    scopeResizer.addEventListener("pointermove", move);
-    scopeResizer.addEventListener("pointerup", finish);
-  });
-  must<HTMLButtonElement>("#keep-hold").addEventListener("click", () => { holdCommitted = true; holdOffer = false; updateDisplay(); });
-  must<HTMLButtonElement>("#copy-link").addEventListener("click", async () => {
-    const url = shareUrl(circuit);
-    if (url.length > 8000) setStatus("Share URL is long. JSON export is recommended.", "error");
-    try { await navigator.clipboard.writeText(url); setStatus("Share link copied", "ready"); }
-    catch { history.replaceState(null, "", url); setStatus("Share link placed in the address bar", "ready"); }
-  });
-  must<HTMLButtonElement>("#export-spice").addEventListener("click", () => {
-    const mode = circuit.sim.mode === "live" ? "op" : circuit.sim.mode;
-    downloadText("npn-led-bench.cir", generateNetlist(circuit, mode).netlist, "text/plain");
-  });
-  must<HTMLButtonElement>("#export-svg").addEventListener("click", () => {
-    downloadText("npn-led-bench.svg", pulseRenderer.exportStaticSvg(must<SVGSVGElement>("#schematic")), "image/svg+xml");
-  });
-  must<HTMLButtonElement>("#export-json").addEventListener("click", () => {
-    downloadText("npn-led-bench.json", JSON.stringify(circuit, null, 2), "application/json");
-  });
-  must<HTMLButtonElement>("#import-json").addEventListener("click", () => must<HTMLInputElement>("#json-file").click());
-  must<HTMLInputElement>("#json-file").addEventListener("change", async (event) => {
-    const file = (event.target as HTMLInputElement).files?.[0];
-    if (!file) return;
-    try {
-      const loaded = JSON.parse(await file.text()) as CircuitDocument;
-      if (loaded.format !== "opencircuit-circuit" || loaded.version !== 1) throw new Error("Unsupported project JSON");
-      circuit = loaded; location.href = shareUrl(circuit); location.reload();
-    } catch (caught) {
-      diagnostics = [{ stage: "parse", message: caught instanceof Error ? caught.message : String(caught) }]; updateDisplay();
-    }
-  });
-}
-
-function showHover(event: PointerEvent, text: string): void {
-  hoverReadout.textContent = text;
-  hoverReadout.classList.add("visible");
-  moveHover(event);
-}
-
-function moveHover(event: PointerEvent): void {
-  const wrap = must<HTMLElement>("#canvas-wrap").getBoundingClientRect();
-  hoverReadout.style.left = `${Math.min(wrap.width - 260, event.clientX - wrap.left + 12)}px`;
-  hoverReadout.style.top = `${Math.max(6, event.clientY - wrap.top - 28)}px`;
-}
-
-async function boot(): Promise<void> {
-  bindInteractions();
-  updatePotGraphic(Number(circuit.components.find((component) => component.id === "c2")?.params?.t ?? 0.5));
-  renderInspector();
-  try {
-    const ready = await client.ready;
-    window.__ocMetrics.engineInitMs = ready.initMs;
-    engineLabel = ready.engine;
-    setTimeout(() => {
-      const resources = performance.getEntriesByType("resource") as PerformanceResourceTiming[];
-      const engineResource = resources.filter((entry) => /worker|sim-engine|eecircuit/i.test(entry.name)).sort((a, b) => b.encodedBodySize - a.encodedBodySize)[0];
-      window.__ocMetrics.wasmTransferSize = engineResource?.transferSize || engineResource?.encodedBodySize || 0;
-    }, 0);
-    await simulate();
-  } catch (caught) {
-    diagnostics = [{ stage: "engine", message: caught instanceof Error ? caught.message : String(caught) }];
-    setStatus(diagnostics[0]!.message, "error");
-    updateDisplay();
-  }
-  if ("serviceWorker" in navigator) void navigator.serviceWorker.register("/sw.js");
-}
-
-void boot();
-window.addEventListener("beforeunload", () => { pulseRenderer.dispose(); client.dispose(); });
+const must=<T extends Element>(selector:string)=>{const element=document.querySelector<T>(selector);if(!element)throw new Error(`Missing ${selector}`);return element;};
+const shell=must<HTMLElement>(".app-shell"),statusText=must<HTMLElement>("#engine-status"),statusIndicator=must<HTMLElement>("#engine-banner .run-indicator"),inspector=must<HTMLElement>("#inspector-content"),scopeEmpty=must<HTMLElement>("#scope-empty");
+let selectedId=circuit.components.find(c=>c.id==="c6")?.id??circuit.components[0]?.id;let diagnostics:SimulationDiagnostic[]=loadDiagnostic?[loadDiagnostic]:[];let generated:GeneratedNetlist|undefined;let visualResult:SimulationResult|undefined;let scopeResult:SimulationResult|undefined;let solve=0,timer:ReturnType<typeof setTimeout>|undefined,saveTimer:ReturnType<typeof setTimeout>|undefined,engineLabel="ngspice WASM";
+const client=new SimulationClient();const scopePlot=new ScopePlot(must<HTMLCanvasElement>("#scope-canvas"),must<HTMLElement>("#scope-cursor"));
+const editor=new SchematicEditor(must<HTMLElement>("#editor-host"),{document:circuit,onChange:change=>{circuit=change.document;workspace!.document=circuit;workspace!.name=circuit.meta.title;scheduleSave();if(change.reason!=="view")scheduleSimulation();renderInspector();},onSelection:components=>{if(components[0])selectedId=components[0];renderInspector();},onMidWire:active=>document.body.classList.toggle("mid-wire",active)});
+window.__ocMetrics={engineInitMs:0,warmOpMs:[],wasmTransferSize:0,rawfileBytes:0,longTasks:0,resetLongTasks(){this.longTasks=0;}};
+if(typeof PerformanceObserver!=="undefined"&&PerformanceObserver.supportedEntryTypes.includes("longtask")){new PerformanceObserver(list=>window.__ocMetrics.longTasks+=list.getEntries().length).observe({type:"longtask",buffered:true});}
+function selected():CircuitComponent|undefined{return circuit.components.find(c=>c.id===selectedId)}
+function pinVoltage(id:string,pin:number):number|undefined{const node=generated?.componentNodes[id]?.[pin];return node==="0"?0:node?scalar(visualResult,`v(${node})`):undefined}
+function componentCurrent(component:CircuitComponent):number|undefined{const name=generated?.componentCurrents[component.id];return name?scalar(visualResult,name):undefined}
+function setStatus(text:string,state:"ready"|"busy"|"error"){statusText.textContent=text;statusIndicator.className=`run-indicator${state==="ready"?"":` ${state}`}`;must<HTMLElement>("#engine-banner").dataset.testid=state==="ready"?"engine-ready":"engine-banner";}
+function detail(component:CircuitComponent){const part=partByType(component.type);return{ref:component.label?.text??component.id.toUpperCase(),name:part.name,identity:component.mpn??"generic",note:part.note};}
+function valueLabel(component:CircuitComponent){if(component.type.startsWith("vsource"))return"Voltage";if(component.type==="isource")return"Current";if(component.type==="capacitor")return"Capacitance";if(component.type==="inductor")return"Inductance";return"Value";}
+function renderInspector(){const component=selected();if(!component){inspector.innerHTML=`<section class="inspector-section"><span class="field-label">NO SELECTION</span><p>Select a part to edit its properties.</p></section>${simConfigMarkup()}`;bindInspector();return;}const info=detail(component),current=componentCurrent(component),value=component.value??"";const editable=component.type!=="ground"&&component.type!=="opamp_ideal"&&component.type!=="bjt_npn"&&component.type!=="bjt_pnp"&&component.type!=="nmos"&&component.type!=="pmos";const pins=(generated?.componentNodes[component.id]??componentPinCount(component)).map((_,index)=>`<div class="measure-row"><span class="measure-label">Pin ${index+1} V</span>${readingMarkup(pinVoltage(component.id,index),"V")}</div>`).join("");inspector.innerHTML=`<section class="inspector-section"><div class="part-heading"><span class="part-ref">${esc(info.ref)}</span>${component.mpn?`<span class="fidelity">F1</span>`:`<span class="generic-tag">generic</span>`}</div><div class="part-name">${esc(info.name)}<br>${esc(info.identity)}</div>${info.note?`<p class="honesty-note">${esc(info.note)}</p>`:""}</section>${editable?`<section class="inspector-section"><label class="field-label" for="component-value">${valueLabel(component)}</label><input class="value-input" id="component-value" value="${esc(String(value))}" inputmode="decimal"/><p class="honesty-note">Engineering suffixes accepted: 10k, 4.7u, 2m.</p>${component.type==="potentiometer"?`<label class="field-label wiper-label" for="wiper-value">Wiper position</label><input class="value-input" id="wiper-value" type="range" min="0.005" max="0.995" step="0.001" value="${Number(component.params?.t??.5)}"/><output id="wiper-percent">${Math.round(Number(component.params?.t??.5)*100)} %</output>`:""}${component.type==="switch_spst"?`<label class="switch-row"><input id="switch-state" type="checkbox" ${component.params?.closed?"checked":""}/> Closed</label>`:""}</section>`:""}<section class="inspector-section"><span class="field-label">LIVE MEASUREMENTS</span>${pins}<div class="measure-row"><span class="measure-label">Branch I</span>${readingMarkup(current,"A")}</div></section>${simConfigMarkup()}`;bindInspector();}
+function componentPinCount(component:CircuitComponent):string[]{return Array.from({length:partByType(component.type).pins.length},()=>"")}
+function simConfigMarkup(){const tran=circuit.sim.tran??{tstop:.01,tstep:.00002},ac=circuit.sim.ac??{fstart:10,fstop:1e6,pointsPerDecade:30,sweep:"dec" as const};return`<section class="inspector-section"><span class="field-label">SIMULATION</span><label class="field-label">TRAN tstop</label><input class="value-input sim-field" data-sim="tstop" value="${tran.tstop}"/><label class="field-label sim-label">TRAN tstep</label><input class="value-input sim-field" data-sim="tstep" value="${tran.tstep??""}"/><label class="field-label sim-label">AC start</label><input class="value-input sim-field" data-sim="fstart" value="${ac.fstart}"/><label class="field-label sim-label">AC stop</label><input class="value-input sim-field" data-sim="fstop" value="${ac.fstop}"/><label class="field-label sim-label">Points / decade</label><input class="value-input sim-field" data-sim="points" value="${ac.pointsPerDecade}"/></section>`;}
+function bindInspector(){const value=document.querySelector<HTMLInputElement>("#component-value");value?.addEventListener("change",()=>{if(!selectedId)return;const raw=value.value.trim();if(!Number.isFinite(parseEngineering(raw,NaN)))return;editor.edit(doc=>{const c=doc.components.find(item=>item.id===selectedId);if(c)c.value=raw;});});const wiper=document.querySelector<HTMLInputElement>("#wiper-value");wiper?.addEventListener("input",()=>{const t=Number(wiper.value);must<HTMLOutputElement>("#wiper-percent").textContent=`${Math.round(t*100)} %`;editor.edit(doc=>{const c=doc.components.find(item=>item.id===selectedId);if(c)c.params={...(c.params??{}),t};});});document.querySelector<HTMLInputElement>("#switch-state")?.addEventListener("change",event=>editor.edit(doc=>{const c=doc.components.find(item=>item.id===selectedId);if(c)c.params={...(c.params??{}),closed:(event.target as HTMLInputElement).checked};}));document.querySelectorAll<HTMLInputElement>(".sim-field").forEach(input=>input.addEventListener("change",()=>{const number=parseEngineering(input.value,NaN);if(!Number.isFinite(number)||number<=0)return;editor.edit(doc=>{doc.sim.tran??={tstop:.01,tstep:.00002,maxstep:.00005};doc.sim.ac??={fstart:10,fstop:1e6,pointsPerDecade:30,sweep:"dec"};switch(input.dataset.sim){case"tstop":doc.sim.tran.tstop=number;break;case"tstep":doc.sim.tran.tstep=number;break;case"fstart":doc.sim.ac.fstart=number;break;case"fstop":doc.sim.ac.fstop=number;break;case"points":doc.sim.ac.pointsPerDecade=Math.round(number);break;}});}));}
+function scheduleSave(){clearTimeout(saveTimer);saveTimer=setTimeout(()=>{workspace!.document=circuit;workspace!.updatedAt=Date.now();void saveWorkspace(workspace!);must<HTMLElement>("#workspace-button").textContent=workspace!.name;},250);}
+function scheduleSimulation(){clearTimeout(timer);timer=setTimeout(()=>void simulate(),30)}
+function renderDiagnostics(){const stack=must<HTMLElement>("#toast-stack");stack.innerHTML=diagnostics.map((entry,index)=>`<button class="error-toast" data-error="${index}"><span class="fault-glyph"></span>${esc(entry.message)}</button>`).join("");stack.querySelectorAll<HTMLButtonElement>("[data-error]").forEach(button=>button.addEventListener("click",()=>{const entry=diagnostics[Number(button.dataset.error)];if(entry?.componentId){selectedId=entry.componentId;renderInspector();}}));}
+function updateVisuals(){if(!generated)return;const voltages=new Map<string,number>();for(const node of new Set(Object.values(generated.wireNodes)))voltages.set(node,node==="0"?0:scalar(visualResult,`v(${node})`)??0);const vref=snapReference([...voltages.values()]);for(const wire of circuit.wires){const node=generated.wireNodes[wire.id]??"0",voltage=voltages.get(node)??0;editor.setWireStyle(wire.id,{stroke:voltageColor(voltage,vref),dash:voltage<-.05?"8 4":"none",width:Math.abs(voltage)<=.05?.9:1.8});let current=0;for(const component of circuit.components){if(generated.componentNodes[component.id]?.includes(node)){const name=generated.componentCurrents[component.id];if(name){current=scalar(visualResult,name)??0;break;}}}editor.setWireCurrent(wire.id,current);}for(const component of circuit.components.filter(c=>c.type==="led")){const current=Math.abs(componentCurrent(component)??0),visible=Math.max(0,Math.min(1,(current-200e-6)/(20e-3-200e-6)));editor.setLedBrightness(component.id,visible**.65);}const reference=formatEngineering(vref,"V");must<HTMLElement>("#vref-negative").textContent=`−${reference.value.replace(/^[+− ]/,"")} ${reference.unit}`;must<HTMLElement>("#vref-positive").textContent=`+${reference.value.replace(/^[+− ]/,"")} ${reference.unit}`;scopePlot.setData(circuit.sim.mode,circuit.sim.mode==="tran"||circuit.sim.mode==="ac"?scopeResult:visualResult,generated,[],selectedId);scopeEmpty.hidden=(scopeResult?.vectors.length??0)>0;renderInspector();renderDiagnostics();}
+async function simulate(){const generation=++solve;setStatus("Running ngspice WebAssembly solve","busy");diagnostics=loadDiagnostic?[loadDiagnostic]:[];const validation=validateCircuit(circuit);if(validation.length){diagnostics.push(...validation.map(issue=>({stage:"parse" as const,message:issue.message,...(issue.componentId?{componentId:issue.componentId}:{})})));setStatus(validation[0]!.message,"error");renderDiagnostics();return;}try{generated=generateNetlist(circuit,"op");const op=await client.runOpPoint(generated.netlist);if(generation!==solve)return;visualResult=op;window.__ocMetrics.rawfileBytes=op.rawfileBytes;window.__ocMetrics.warmOpMs.push(op.elapsedMs);if(circuit.sim.mode==="tran"||circuit.sim.mode==="ac"){generated=generateNetlist(circuit,circuit.sim.mode);scopeResult=circuit.sim.mode==="tran"?await client.runTransient(generated.netlist):await client.runAC(generated.netlist);if(generation!==solve)return;window.__ocMetrics.rawfileBytes=Math.max(op.rawfileBytes,scopeResult.rawfileBytes);}else scopeResult=undefined;setStatus(`ENGINE READY · ${engineLabel} · ${op.elapsedMs.toFixed(1)} ms solve`,"ready");updateVisuals();}catch(error){if(generation!==solve)return;const failure=error instanceof SimulationFailure?error:undefined;diagnostics=failure?.detail.diagnostics.length?failure.detail.diagnostics:[{stage:"engine",message:error instanceof Error?error.message:String(error)}];setStatus(diagnostics[0]?.message??"Simulation failed","error");renderDiagnostics();}finally{}}
+function bind(){document.querySelectorAll<HTMLButtonElement>("[data-tool]").forEach(button=>button.addEventListener("click",()=>{editor.setTool(button.dataset.tool as Parameters<typeof editor.setTool>[0]);document.querySelectorAll("[data-tool]").forEach(item=>item.classList.toggle("active",item===button));}));document.querySelectorAll<HTMLButtonElement>("[data-mode]").forEach(button=>button.addEventListener("click",()=>{const mode=button.dataset.mode as AnalysisMode;editor.edit(doc=>{doc.sim.mode=mode});document.querySelectorAll<HTMLButtonElement>("[data-mode]").forEach(item=>item.setAttribute("aria-selected",String(item===button)));must<HTMLElement>("#scope-title").textContent=mode==="tran"?"TRANSIENT":mode==="ac"?"AC RESPONSE":"OPERATING POINT";}));must<HTMLButtonElement>("#scope-toggle").addEventListener("click",()=>{shell.classList.toggle("scope-collapsed");must<HTMLButtonElement>("#scope-toggle").textContent=shell.classList.contains("scope-collapsed")?"Open scope":"Close scope";});must<HTMLButtonElement>("#copy-link").addEventListener("click",async()=>{const url=shareUrl(circuit);if(url.length>8000)setStatus("Share URL is long. Download JSON is recommended.","error");try{await navigator.clipboard.writeText(url);setStatus("Share URL copied","ready");}catch{history.replaceState(null,"",url);setStatus("Share URL placed in the address bar","ready");}});must<HTMLButtonElement>("#export-spice").addEventListener("click",()=>{try{download(`${workspace!.name}.cir`,generateNetlist(circuit,circuit.sim.mode==="live"?"op":circuit.sim.mode).netlist,"text/plain");}catch(error){setStatus(error instanceof Error?error.message:String(error),"error");}});must<HTMLButtonElement>("#export-json").addEventListener("click",()=>download(`${workspace!.name}.json`,canonicalizeCircuit(circuit),"application/json"));must<HTMLButtonElement>("#import-json").addEventListener("click",()=>must<HTMLInputElement>("#json-file").click());must<HTMLInputElement>("#json-file").addEventListener("change",async event=>{const file=(event.target as HTMLInputElement).files?.[0];if(!file)return;try{const loaded=migrateCircuit(JSON.parse(await file.text()));workspace=makeWorkspace(loaded);circuit=loaded;editor.setDocument(loaded);await saveWorkspace(workspace);scheduleSimulation();}catch(error){diagnostics=[{stage:"parse",message:error instanceof Error?error.message:String(error)}];renderDiagnostics();}});const shortcut=must<HTMLElement>("#shortcut-overlay");must<HTMLButtonElement>("#help-button").addEventListener("click",()=>shortcut.hidden=false);shortcut.querySelector("[data-close-overlay]")?.addEventListener("click",()=>shortcut.hidden=true);window.addEventListener("keydown",event=>{if(event.key==="?"&&!(event.target instanceof HTMLInputElement)){shortcut.hidden=false;}if(event.key==="Escape")shortcut.hidden=true;});bindWorkspaces();}
+function bindWorkspaces(){const overlay=must<HTMLElement>("#workspace-overlay"),button=must<HTMLButtonElement>("#workspace-button");button.addEventListener("click",()=>{overlay.hidden=false;void renderWorkspaceList();});overlay.querySelector("[data-close-workspaces]")?.addEventListener("click",()=>overlay.hidden=true);must<HTMLButtonElement>("#new-workspace").addEventListener("click",async()=>{workspace=makeWorkspace(structuredClone(demoCircuit),"Untitled circuit");workspace.document.meta.title=workspace.name;editor.setDocument(workspace.document);circuit=workspace.document;await saveWorkspace(workspace);button.textContent=workspace.name;overlay.hidden=true;scheduleSimulation();});must<HTMLButtonElement>("#rename-workspace").addEventListener("click",async()=>{const name=prompt("Workspace name",workspace!.name)?.trim();if(!name)return;workspace!.name=name;editor.edit(doc=>doc.meta.title=name);workspace!.updatedAt=Date.now();await saveWorkspace(workspace!);button.textContent=name;void renderWorkspaceList();});must<HTMLButtonElement>("#duplicate-workspace").addEventListener("click",async()=>{workspace=makeWorkspace(circuit,`${workspace!.name} copy`);workspace.document.meta.title=workspace.name;editor.setDocument(workspace.document);circuit=workspace.document;await saveWorkspace(workspace);button.textContent=workspace.name;void renderWorkspaceList();});must<HTMLButtonElement>("#delete-workspace").addEventListener("click",async()=>{await deleteWorkspace(workspace!.id);workspace=makeWorkspace(structuredClone(demoCircuit));circuit=workspace.document;editor.setDocument(circuit);await saveWorkspace(workspace);button.textContent=workspace.name;overlay.hidden=true;scheduleSimulation();});}
+async function renderWorkspaceList(){const rows=await listWorkspaces();must<HTMLElement>("#workspace-list").innerHTML=rows.map(row=>`<button class="workspace-row" data-workspace="${row.id}"><strong>${esc(row.name)}</strong><span>${new Date(row.updatedAt).toLocaleString()}</span></button>`).join("");document.querySelectorAll<HTMLButtonElement>("[data-workspace]").forEach(row=>row.addEventListener("click",async()=>{const loaded=await loadWorkspace(row.dataset.workspace!);if(!loaded)return;workspace=loaded;circuit=loaded.document;editor.setDocument(circuit);must<HTMLElement>("#workspace-button").textContent=workspace.name;must<HTMLElement>("#workspace-overlay").hidden=true;scheduleSimulation();}));}
+async function boot(){bind();renderInspector();await saveWorkspace(workspace!);try{const ready=await client.ready;window.__ocMetrics.engineInitMs=ready.initMs;engineLabel=ready.engine;await simulate();}catch(error){diagnostics=[{stage:"engine",message:error instanceof Error?error.message:String(error)}];setStatus(diagnostics[0]!.message,"error");renderDiagnostics();}if("serviceWorker"in navigator)void navigator.serviceWorker.register("/sw.js");}
+void boot();window.addEventListener("beforeunload",()=>client.dispose());
