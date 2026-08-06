@@ -1,0 +1,7 @@
+* 1N4148-style PLACEHOLDER forward drop test
+.include ../model.cir
+IDRIVE 0 anode DC 0
+D1 anode 0 OC_1N4148
+.dc IDRIVE 1u 100m 100u
+.print dc v(anode) i(IDRIVE)
+.end

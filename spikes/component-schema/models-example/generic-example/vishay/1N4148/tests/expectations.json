@@ -1,0 +1,77 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "forward_drop.cir",
+      "analysis_type": "dc_sweep",
+      "scalar_checks": [
+        {
+          "name": "forward_voltage_at_10mA",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "v(anode) at i(idrive)=0.01"
+          },
+          "expected_value": 0.72,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.1,
+            "relative": 0.14
+          },
+          "datasheet_citation": "PLACEHOLDER: DS Rev. 1.8 p. 3 fig. 3 forward characteristics",
+          "placeholder": true
+        }
+      ],
+      "hard_bounds_checks": [
+        {
+          "name": "forward_voltage_window",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "v(anode)"
+          },
+          "minimum": 0,
+          "maximum": 1.5,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "PLACEHOLDER: DS Rev. 1.8 p. 2 electrical characteristics",
+          "placeholder": true
+        }
+      ]
+    },
+    {
+      "test_netlist": "reverse_leakage.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "reverse_leakage_at_20V",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs(i(vreverse))"
+          },
+          "expected_value": 2.5e-8,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 1e-7,
+            "relative": 4
+          },
+          "datasheet_citation": "PLACEHOLDER: DS Rev. 1.8 p. 2 reverse current row",
+          "placeholder": true
+        }
+      ],
+      "hard_bounds_checks": [
+        {
+          "name": "reverse_leakage_upper_bound",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs(i(vreverse))"
+          },
+          "minimum": 0,
+          "maximum": 5e-6,
+          "unit": "A",
+          "inclusive": true,
+          "datasheet_citation": "PLACEHOLDER: DS Rev. 1.8 p. 2 reverse current row",
+          "placeholder": true
+        }
+      ]
+    }
+  ]
+}

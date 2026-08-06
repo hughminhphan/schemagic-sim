@@ -1,0 +1,156 @@
+{
+  "schema_version": "1.0.0",
+  "canonical_mpn": "2N3904",
+  "manufacturer": "onsemi",
+  "description": "NPN general-purpose transistor example. All numeric model and expectation values marked placeholder await Phase 3 fitting.",
+  "electrical_family": "bjt_npn",
+  "symbol_pins": [
+    {
+      "name": "C",
+      "number": "1",
+      "role": "collector"
+    },
+    {
+      "name": "B",
+      "number": "2",
+      "role": "base"
+    },
+    {
+      "name": "E",
+      "number": "3",
+      "role": "emitter"
+    }
+  ],
+  "spice_pin_mapping": [
+    {
+      "symbol_pin_number": "1",
+      "subckt_node": "collector",
+      "order": 1
+    },
+    {
+      "symbol_pin_number": "2",
+      "subckt_node": "base",
+      "order": 2
+    },
+    {
+      "symbol_pin_number": "3",
+      "subckt_node": "emitter",
+      "order": 3
+    }
+  ],
+  "package_variants": [
+    {
+      "name": "TO-92",
+      "standard": "CASE 29",
+      "pin_count": 3,
+      "pin_map": [
+        {
+          "package_pin": "1",
+          "symbol_pin_number": "3"
+        },
+        {
+          "package_pin": "2",
+          "symbol_pin_number": "2"
+        },
+        {
+          "package_pin": "3",
+          "symbol_pin_number": "1"
+        }
+      ]
+    },
+    {
+      "name": "SOT-23",
+      "standard": "CASE 318",
+      "pin_count": 3,
+      "pin_map": [
+        {
+          "package_pin": "1",
+          "symbol_pin_number": "2"
+        },
+        {
+          "package_pin": "2",
+          "symbol_pin_number": "3"
+        },
+        {
+          "package_pin": "3",
+          "symbol_pin_number": "1"
+        }
+      ]
+    }
+  ],
+  "ordering_code_aliases": [
+    "2N3904BU",
+    "2N3904TA",
+    "MMBT3904LT1G"
+  ],
+  "datasheet": {
+    "url": "https://www.onsemi.com/pdf/datasheet/2n3903-d.pdf",
+    "revision": "Rev. 6"
+  },
+  "model_type": "dot_model",
+  "fidelity_tier": "F2",
+  "domain_coverage": {
+    "dc": "fitted",
+    "ac": "approx",
+    "transient": "approx",
+    "noise": "none",
+    "thermal": "none",
+    "digital": "none"
+  },
+  "supported_analyses": [
+    "operating_point",
+    "dc_sweep",
+    "ac_small_signal",
+    "transient"
+  ],
+  "supported_operating_region": {
+    "summary": "PLACEHOLDER region for schema exercise only. Final limits and conditions must be reconciled to the cited datasheet in Phase 3.",
+    "numeric_bounds": [
+      {
+        "quantity": "collector_emitter_voltage",
+        "minimum": 0,
+        "maximum": 40,
+        "unit": "V",
+        "conditions": "PLACEHOLDER forward-active and cutoff envelope",
+        "placeholder": true
+      },
+      {
+        "quantity": "collector_current",
+        "minimum": 0,
+        "maximum": 0.2,
+        "unit": "A",
+        "conditions": "PLACEHOLDER absolute envelope, not an SOA guarantee",
+        "placeholder": true
+      },
+      {
+        "quantity": "junction_temperature",
+        "minimum": -55,
+        "maximum": 150,
+        "unit": "degC",
+        "conditions": "PLACEHOLDER metadata bound; self-heating is omitted",
+        "placeholder": true
+      }
+    ]
+  },
+  "known_omissions": [],
+  "licence": {
+    "spdx_id": "MIT",
+    "provenance_basis": "original_from_facts"
+  },
+  "generator": {
+    "tool_or_agent": "component-schema-spike-agent",
+    "date": "2026-08-06"
+  },
+  "reviewer": {
+    "tool_or_agent": "component-schema-spike-agent",
+    "date": "2026-08-06"
+  },
+  "test_results": {
+    "status": "pending",
+    "pass_count": 0,
+    "fail_count": 0,
+    "total_count": 0,
+    "worst_observed_relative_fitting_error": null
+  },
+  "validation_date": null
+}

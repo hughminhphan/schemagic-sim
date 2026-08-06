@@ -1,15 +1,14 @@
 {
   "name": "component-schema",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "OpenCircuit component package schema spike",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node validate.mjs models-example/onsemi/2N3904/component.json && node validate.mjs models-example/generic-example/vishay/1N4148/component.json && ! node validate.mjs fixtures/broken-component.json"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
-  "type": "commonjs",
+  "license": "MIT",
+  "type": "module",
   "dependencies": {
     "ajv": "^8.20.0",
     "ajv-formats": "^3.0.1"

@@ -1,0 +1,77 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "dc_gain.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "forward_current_gain",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "abs(@q1[ic] / @q1[ib])"
+          },
+          "expected_value": 100,
+          "unit": "1",
+          "tolerance": {
+            "absolute": 20,
+            "relative": 0.2
+          },
+          "datasheet_citation": "PLACEHOLDER: DS Rev. 6 p. 2 electrical characteristics, hFE row",
+          "placeholder": true
+        }
+      ],
+      "hard_bounds_checks": [
+        {
+          "name": "base_emitter_voltage_window",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "v(base)"
+          },
+          "minimum": 0.5,
+          "maximum": 0.95,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "PLACEHOLDER: DS Rev. 6 p. 2 electrical characteristics, VBE rows",
+          "placeholder": true
+        }
+      ]
+    },
+    {
+      "test_netlist": "output_curve.cir",
+      "analysis_type": "dc_sweep",
+      "scalar_checks": [
+        {
+          "name": "collector_current_at_bias_point",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs(i(vce)) at v(sweep)=1"
+          },
+          "expected_value": 0.01,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 0.003,
+            "relative": 0.3
+          },
+          "datasheet_citation": "PLACEHOLDER: DS Rev. 6 p. 3 typical characteristics, current gain figure",
+          "placeholder": true
+        }
+      ],
+      "hard_bounds_checks": [
+        {
+          "name": "collector_current_nonnegative",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "abs(i(vce))"
+          },
+          "minimum": 0,
+          "maximum": 0.2,
+          "unit": "A",
+          "inclusive": true,
+          "datasheet_citation": "PLACEHOLDER: DS Rev. 6 p. 1 maximum ratings",
+          "placeholder": true
+        }
+      ]
+    }
+  ]
+}

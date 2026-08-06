@@ -1,0 +1,8 @@
+* 2N3904 PLACEHOLDER DC gain test
+.include ../model.cir
+VCE collector 0 1
+IB base 0 DC 100u
+Q1 collector base 0 OC_2N3904
+.op
+.print op @q1[ic] @q1[ib] v(base)
+.end

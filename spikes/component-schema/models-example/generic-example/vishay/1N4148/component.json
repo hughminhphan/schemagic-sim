@@ -1,0 +1,97 @@
+{
+  "schema_version": "1.0.0",
+  "canonical_mpn": "1N4148",
+  "manufacturer": "Vishay Intertechnology",
+  "description": "Vishay-style small-signal switching diode example. All numeric model and expectation values marked placeholder await Phase 3 fitting.",
+  "electrical_family": "diode",
+  "symbol_pins": [
+    { "name": "A", "number": "1", "role": "anode" },
+    { "name": "K", "number": "2", "role": "cathode" }
+  ],
+  "spice_pin_mapping": [
+    { "symbol_pin_number": "1", "subckt_node": "anode", "order": 1 },
+    { "symbol_pin_number": "2", "subckt_node": "cathode", "order": 2 }
+  ],
+  "package_variants": [
+    {
+      "name": "DO-35",
+      "standard": "DO-204AH",
+      "pin_count": 2,
+      "pin_map": [
+        { "package_pin": "1", "symbol_pin_number": "1" },
+        { "package_pin": "2", "symbol_pin_number": "2" }
+      ]
+    }
+  ],
+  "ordering_code_aliases": ["1N4148-TAP", "1N4148-TR"],
+  "datasheet": {
+    "url": "https://www.vishay.com/docs/81857/1n4148.pdf",
+    "revision": "Rev. 1.8"
+  },
+  "model_type": "dot_model",
+  "fidelity_tier": "F1",
+  "domain_coverage": {
+    "dc": "approx",
+    "ac": "approx",
+    "transient": "approx",
+    "noise": "none",
+    "thermal": "none",
+    "digital": "none"
+  },
+  "supported_analyses": ["operating_point", "dc_sweep", "ac_small_signal", "transient"],
+  "supported_operating_region": {
+    "summary": "PLACEHOLDER small-signal region for schema exercise only. Final bounds must be checked against the cited revision in Phase 3.",
+    "numeric_bounds": [
+      {
+        "quantity": "reverse_voltage",
+        "minimum": 0,
+        "maximum": 75,
+        "unit": "V",
+        "conditions": "PLACEHOLDER repetitive reverse-voltage envelope",
+        "placeholder": true
+      },
+      {
+        "quantity": "forward_current",
+        "minimum": 0,
+        "maximum": 0.15,
+        "unit": "A",
+        "conditions": "PLACEHOLDER continuous-current envelope without thermal validation",
+        "placeholder": true
+      },
+      {
+        "quantity": "junction_temperature",
+        "minimum": -65,
+        "maximum": 175,
+        "unit": "degC",
+        "conditions": "PLACEHOLDER metadata bound; self-heating is omitted",
+        "placeholder": true
+      }
+    ]
+  },
+  "known_omissions": [
+    "No package thermal impedance or self-heating.",
+    "Reverse-recovery behavior is only a first-order approximation.",
+    "Breakdown-region and noise behavior are not supported.",
+    "All current numeric parameters are PLACEHOLDER values pending Phase 3 fitting."
+  ],
+  "licence": {
+    "spdx_id": "MIT",
+    "provenance_basis": "original_from_facts"
+  },
+  "generator": {
+    "tool_or_agent": "component-schema-spike-agent",
+    "date": "2026-08-06"
+  },
+  "reviewer": {
+    "tool_or_agent": "independent-reviewer-placeholder",
+    "date": "2026-08-06"
+  },
+  "test_results": {
+    "status": "pending",
+    "pass_count": 0,
+    "fail_count": 0,
+    "total_count": 0,
+    "worst_observed_relative_fitting_error": null
+  },
+  "validation_date": null
+}

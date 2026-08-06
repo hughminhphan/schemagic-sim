@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://opencircuit.dev/schemas/sources.schema.json",
+  "title": "OpenCircuit Component Provenance Sources",
+  "type": "array",
+  "minItems": 1,
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "kind",
+      "url",
+      "revision",
+      "sha256",
+      "accessed_date",
+      "pages_referenced",
+      "placeholder"
+    ],
+    "properties": {
+      "kind": {
+        "enum": ["datasheet", "spec_page", "measurement", "licensed_model"]
+      },
+      "url": {
+        "type": "string",
+        "format": "uri",
+        "pattern": "^https?://"
+      },
+      "revision": { "type": "string", "minLength": 1 },
+      "sha256": {
+        "type": "string",
+        "pattern": "^[a-fA-F0-9]{64}$"
+      },
+      "accessed_date": { "type": "string", "format": "date" },
+      "pages_referenced": {
+        "type": "array",
+        "minItems": 1,
+        "items": { "type": "string", "minLength": 1 },
+        "uniqueItems": true
+      },
+      "placeholder": {
+        "type": "boolean",
+        "description": "True only for schema examples whose source fetch and hash are pending."
+      }
+    }
+  }
+}

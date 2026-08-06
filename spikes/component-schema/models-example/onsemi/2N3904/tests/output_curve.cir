@@ -1,0 +1,8 @@
+* 2N3904 PLACEHOLDER output curve test
+.include ../model.cir
+VCE collector 0 0
+IB base 0 DC 50u
+Q1 collector base 0 OC_2N3904
+.dc VCE 0 5 0.1
+.print dc i(VCE) v(base)
+.end
