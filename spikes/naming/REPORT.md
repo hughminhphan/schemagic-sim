@@ -1,0 +1,39 @@
+# Naming report (P0 spike)
+
+Evidence gathered by the luna research lane 2026-08-06; persisted and annotated by the orchestrator.
+
+## Verdict on "OpenCircuit": NOT USABLE
+
+Direct collisions, all live:
+- github.com/OpenCircuits/OpenCircuits (398 stars, 87 forks, browser digital logic designer, live at opencircuits.io)
+- github.com/il8677/OpenCircuit (transistor-level simulator)
+- opencircuits.net (digital/analog education simulator)
+- opencircuits.com (electronics wiki)
+- opencircuitdesign.com (open-source EDA suite, Tim Edwards' Magic et al)
+- opencircuit.shop (Dutch electronics retailer and house brand)
+- Apple App Store: unrelated OpenCircuit social/geocaching app (id6502294022)
+
+Also semantically wrong: an "open circuit" is a broken path with zero current. A product whose signature is visible flowing current should not be named after the no-current fault state.
+
+npm/PyPI/crates "opencircuit"/"opencircuits" are free (404s), but the ecosystem collisions above decide it.
+
+## Candidate evidence (all: npm/PyPI/crates 404, .dev/.app/.io DNS unanswered, GitHub exact-repo search 0 unless noted)
+
+| Candidate | Collisions found | Notes |
+|---|---|---|
+| Ohmtrace | similar OHM-root marks (e.g. OHM Racing) | Lane's top pick. ORCHESTRATOR FLAG: "Trace" is the name of one of Hugh's own clients; avoid the association. |
+| Electrowisp | ElectroWise (electrowisehsv.com), ELECTROWIRE mark | phonetic near-misses |
+| Voltweave | only a WoW item "Voltweave Fez" | clean but abstract |
+| Currentweave | Canadian CURRENTWARE software mark | near-miss |
+| Watttrace | WATTCORE owner marks | triple consonant, plus the Trace conflict above |
+| Voltwisp | none found | weak/whimsical |
+| Circuitwisp | Circuitwise (circuitwise.com.au) phonetic | |
+| Currentloom | none found | |
+| Wattloom | none found | |
+| Voltspindle | industrial spindle noise | |
+
+Trademark caveat: web-level search only. Formal USPTO (uspto.gov/trademarks/search) and EUIPO clearance still required before committing publicly.
+
+## Status: OPEN, Hugh decides
+
+The lane recommended Ohmtrace; the orchestrator vetoes the -trace family for the client-name conflict and finds the remaining candidates serviceable but not yet great. Action before Phase 5: a second, judgment-led naming round (orchestrator-generated candidates, luna verifies availability with the same evidence standard), then the shortlist goes to Hugh, who picks the final name. Local working codename remains "opencircuit" (directory name only, never public).
