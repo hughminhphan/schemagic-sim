@@ -22,7 +22,7 @@
 
 - Run: jfet-MMBFJ201-20260807-01
 - Solver: scipy.optimize.least_squares with native ngspice-46 in the loop, method trf, x_scale jac, diff_step 1e-4
-- Worst fitted typical-point relative error: 18.215% (digitized transfer point at VGS=-0.4 V)
+- Worst fitted typical-point relative error: 15.633% (digitized transfer point at VGS=-0.4 V)
 - Square-law consistency report: No table TYP values exist for IDSS, VGS(off), or yFS. The fit used only p.3 typical curves; the MIN/MAX table columns were retained solely as hard bounds.
 
 ## Domain coverage
@@ -40,10 +40,10 @@
 
 | Parameter | Value | Status |
 | --- | ---: | --- |
-| VTO | -8.06773330e-01 | fitted |
-| BETA | 5.41196598e-04 | fitted |
-| LAMBDA | 1.84978342e-02 | fitted |
-| B | 1.00000000e+00 | held at default |
+| VTO | -7.91110016e-01 | fitted |
+| BETA | 4.34695539e-04 | fitted |
+| LAMBDA | 1.84198947e-02 | fitted |
+| B | 1.49999998e+00 | fitted |
 | RD | 1.00000000e-04 | held at default |
 | RS | 1.00000000e-04 | held at default |
 | CGS | 4.25000000e-12 | derived |
@@ -68,12 +68,11 @@
 - N is held at default 1.0, FC at default 0.5, PB at default 1.0 V, and M at default 0.5.
 - Channel series resistance is not fitted: RD and RS are held at the 1e-4 ohm numerical floor because no rDS(on) row is published.
 - CGS and CGD are derived from single digitized Ciss and Coss curve points with PB and M held at physical defaults; capacitance versus bias is approximate.
-- B is held at 1.0 (pure square law): releasing it did not produce an identifiable improvement at F1.
 - F1: the electrical table publishes only IDSS and VGS(off) windows and a minimum yFS, so guaranteed limits are hard bounds rather than typical fit targets.
 
 ## Validation
 
-Package schema validation passed. All 6 benches passed native ngspice/WASM comparison and all 11 datasheet checks passed. Worst engine relative delta: 1.066192e-07; worst absolute delta: 2.910383e-11. Detailed measured values are recorded in `validation-results.json`.
+Package schema validation passed. All 6 benches passed native ngspice/WASM comparison and all 11 datasheet checks passed. Worst engine relative delta: 1.971323e-16; worst absolute delta: 2.168404e-19. Detailed measured values are recorded in `validation-results.json`.
 
 ## Licence
 
