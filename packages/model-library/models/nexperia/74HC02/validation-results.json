@@ -1,0 +1,235 @@
+{
+  "schema_version": "1.0.0",
+  "validation_date": "2026-08-07",
+  "native_wasm_all_pass": true,
+  "expectations_all_pass": true,
+  "expectation_pass_count": 21,
+  "expectation_fail_count": 0,
+  "worst_native_wasm_relative_delta": 1.0836783028047066e-09,
+  "worst_native_wasm_absolute_delta": 8.79296635503124e-14,
+  "benches": [
+    {
+      "test_netlist": "truth_table.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "truth_0_high",
+          "pass": true,
+          "value": 4.499322852307037,
+          "minimum": 4.4,
+          "maximum": null,
+          "datasheet_citation": "Nexperia 74HC02 Rev. 9, 15 February 2024, p. 3, function table, Quad 2-input NOR gate; Nexperia 74HC02 Rev. 9, 15 February 2024, p. 4, Table 6 static characteristics, VOH/VOL guarantees at VCC = 4.5 V"
+        },
+        {
+          "name": "truth_1_low",
+          "pass": true,
+          "value": 0.00033856110860767925,
+          "minimum": null,
+          "maximum": 0.1,
+          "datasheet_citation": "Nexperia 74HC02 Rev. 9, 15 February 2024, p. 3, function table, Quad 2-input NOR gate; Nexperia 74HC02 Rev. 9, 15 February 2024, p. 4, Table 6 static characteristics, VOH/VOL guarantees at VCC = 4.5 V"
+        },
+        {
+          "name": "truth_2_low",
+          "pass": true,
+          "value": 0.0003385611086080535,
+          "minimum": null,
+          "maximum": 0.1,
+          "datasheet_citation": "Nexperia 74HC02 Rev. 9, 15 February 2024, p. 3, function table, Quad 2-input NOR gate; Nexperia 74HC02 Rev. 9, 15 February 2024, p. 4, Table 6 static characteristics, VOH/VOL guarantees at VCC = 4.5 V"
+        },
+        {
+          "name": "truth_3_low",
+          "pass": true,
+          "value": 2.547575000957826e-08,
+          "minimum": null,
+          "maximum": 0.1,
+          "datasheet_citation": "Nexperia 74HC02 Rev. 9, 15 February 2024, p. 3, function table, Quad 2-input NOR gate; Nexperia 74HC02 Rev. 9, 15 February 2024, p. 4, Table 6 static characteristics, VOH/VOL guarantees at VCC = 4.5 V"
+        }
+      ]
+    },
+    {
+      "test_netlist": "vtc.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "voh_at_logic_input_limit",
+          "pass": true,
+          "value": 4.401020276237468,
+          "minimum": 4.4,
+          "maximum": null,
+          "datasheet_citation": "Nexperia 74HC02 Rev. 9, 15 February 2024, p. 4, Table 6 static characteristics, VOH/VOL guarantees at VCC = 4.5 V"
+        },
+        {
+          "name": "vol_at_logic_input_limit",
+          "pass": true,
+          "value": 0.09864061064201278,
+          "minimum": null,
+          "maximum": 0.1,
+          "datasheet_citation": "Nexperia 74HC02 Rev. 9, 15 February 2024, p. 4, Table 6 static characteristics, VOH/VOL guarantees at VCC = 4.5 V"
+        }
+      ]
+    },
+    {
+      "test_netlist": "output_drive.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "voh_loaded_typ",
+          "pass": true,
+          "value": 4.3193230372991565,
+          "error": 0.0006769627008438306,
+          "allowed": 0.1296,
+          "expected_value": 4.32,
+          "datasheet_citation": "Nexperia 74HC02 Rev. 9, 15 February 2024, p. 4, Table 6 static characteristics, 25 degC TYP loaded VOH = 4.32 V and VOL = 0.15 V at 4 mA"
+        },
+        {
+          "name": "vol_loaded_typ",
+          "pass": true,
+          "value": 0.15033874576697326,
+          "error": 0.0003387457669732641,
+          "allowed": 0.0225,
+          "expected_value": 0.15,
+          "datasheet_citation": "Nexperia 74HC02 Rev. 9, 15 February 2024, p. 4, Table 6 static characteristics, 25 degC TYP loaded VOH = 4.32 V and VOL = 0.15 V at 4 mA"
+        },
+        {
+          "name": "voh_loaded_guarantee",
+          "pass": true,
+          "value": 4.3193230372991565,
+          "minimum": 3.98,
+          "maximum": null,
+          "datasheet_citation": "Nexperia 74HC02 Rev. 9, 15 February 2024, p. 4, Table 6 static characteristics, VOH/VOL guarantees at VCC = 4.5 V"
+        },
+        {
+          "name": "vol_loaded_guarantee",
+          "pass": true,
+          "value": 0.15033874576697326,
+          "minimum": null,
+          "maximum": 0.26,
+          "datasheet_citation": "Nexperia 74HC02 Rev. 9, 15 February 2024, p. 4, Table 6 static characteristics, VOH/VOL guarantees at VCC = 4.5 V"
+        }
+      ]
+    },
+    {
+      "test_netlist": "propagation_delay_15p.cir",
+      "analysis": "tran",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "tphl_15p",
+          "pass": true,
+          "value": 6.99868e-09,
+          "error": 1.3199999999997432e-12,
+          "allowed": 1.0499999999999999e-09,
+          "expected_value": 7e-09,
+          "datasheet_citation": "Nexperia 74HC02 Rev. 9, 15 February 2024, p. 5, Table 7 dynamic characteristics, 25 degC TYP tpd = 7 ns, VCC = 5 V, CL = 15 pF; p. 7 tr = tf = 6 ns"
+        },
+        {
+          "name": "tplh_15p",
+          "pass": true,
+          "value": 7.00067e-09,
+          "error": 6.700000000001642e-13,
+          "allowed": 1.0499999999999999e-09,
+          "expected_value": 7e-09,
+          "datasheet_citation": "Nexperia 74HC02 Rev. 9, 15 February 2024, p. 5, Table 7 dynamic characteristics, 25 degC TYP tpd = 7 ns, VCC = 5 V, CL = 15 pF; p. 7 tr = tf = 6 ns"
+        },
+        {
+          "name": "no_overshoot_15p",
+          "pass": true,
+          "value": 5.0,
+          "minimum": null,
+          "maximum": 5.0,
+          "datasheet_citation": "Nexperia 74HC02 Rev. 9, 15 February 2024, p. 4, recommended operating conditions, output voltage range is GND to VCC"
+        },
+        {
+          "name": "no_undershoot_15p",
+          "pass": true,
+          "value": 0.000376179,
+          "minimum": 0,
+          "maximum": null,
+          "datasheet_citation": "Nexperia 74HC02 Rev. 9, 15 February 2024, p. 4, recommended operating conditions, output voltage range is GND to VCC"
+        }
+      ]
+    },
+    {
+      "test_netlist": "propagation_delay_50p.cir",
+      "analysis": "tran",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "tphl_50p",
+          "pass": true,
+          "value": 8.57254e-09,
+          "error": 4.2745999999999885e-10,
+          "allowed": 1.3499999999999999e-09,
+          "expected_value": 9e-09,
+          "datasheet_citation": "Nexperia 74HC02 Rev. 9, 15 February 2024, p. 5, Table 7 dynamic characteristics, 25 degC TYP tpd = 9 ns, VCC = 4.5 V, CL = 50 pF; p. 7 tr = tf = 6 ns"
+        },
+        {
+          "name": "tplh_50p",
+          "pass": true,
+          "value": 8.64227e-09,
+          "error": 3.5772999999999893e-10,
+          "allowed": 1.3499999999999999e-09,
+          "expected_value": 9e-09,
+          "datasheet_citation": "Nexperia 74HC02 Rev. 9, 15 February 2024, p. 5, Table 7 dynamic characteristics, 25 degC TYP tpd = 9 ns, VCC = 4.5 V, CL = 50 pF; p. 7 tr = tf = 6 ns"
+        },
+        {
+          "name": "no_overshoot_50p",
+          "pass": true,
+          "value": 4.5,
+          "minimum": null,
+          "maximum": 4.5,
+          "datasheet_citation": "Nexperia 74HC02 Rev. 9, 15 February 2024, p. 4, recommended operating conditions, output voltage range is GND to VCC"
+        },
+        {
+          "name": "no_undershoot_50p",
+          "pass": true,
+          "value": 0.000338561,
+          "minimum": 0,
+          "maximum": null,
+          "datasheet_citation": "Nexperia 74HC02 Rev. 9, 15 February 2024, p. 4, recommended operating conditions, output voltage range is GND to VCC"
+        }
+      ]
+    },
+    {
+      "test_netlist": "minimum_supply_boundary.cir",
+      "analysis": "tran",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "minimum_supply_high",
+          "pass": true,
+          "value": 1.9997,
+          "minimum": 1.9,
+          "maximum": null,
+          "datasheet_citation": "Nexperia 74HC02 Rev. 9, 15 February 2024, p. 4, recommended operating conditions, VCC MIN = 2.0 V; Nexperia 74HC02 Rev. 9, 15 February 2024, p. 3, function table, Quad 2-input NOR gate; Nexperia 74HC02 Rev. 9, 15 February 2024, p. 4, Table 6 static characteristics, VOH MIN = 1.9 V and VOL MAX = 0.1 V at VCC = 2.0 V, IO = 20 uA"
+        },
+        {
+          "name": "minimum_supply_low",
+          "pass": true,
+          "value": 0.000150472,
+          "minimum": null,
+          "maximum": 0.1,
+          "datasheet_citation": "Nexperia 74HC02 Rev. 9, 15 February 2024, p. 4, recommended operating conditions, VCC MIN = 2.0 V; Nexperia 74HC02 Rev. 9, 15 February 2024, p. 3, function table, Quad 2-input NOR gate; Nexperia 74HC02 Rev. 9, 15 February 2024, p. 4, Table 6 static characteristics, VOH MIN = 1.9 V and VOL MAX = 0.1 V at VCC = 2.0 V, IO = 20 uA"
+        }
+      ]
+    },
+    {
+      "test_netlist": "quiescent_current.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "quiescent_current_upper_bound",
+          "pass": true,
+          "value": 0.0,
+          "minimum": null,
+          "maximum": 4e-05,
+          "datasheet_citation": "Nexperia 74HC02 Rev. 9, 15 February 2024, p. 4, Table 6 static characteristics, ICC MAX = 40 uA at VCC = 6.0 V, inputs at rails, IO = 0 A, -40 degC to +125 degC"
+        }
+      ]
+    }
+  ]
+}
