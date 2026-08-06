@@ -1,0 +1,142 @@
+{
+  "schema_version": "1.0.0",
+  "canonical_mpn": "BC547B",
+  "manufacturer": "onsemi",
+  "description": "General-purpose NPN amplifier transistor, B gain bin",
+  "electrical_family": "bjt_npn",
+  "symbol_pins": [
+    {
+      "name": "C",
+      "number": "1",
+      "role": "collector"
+    },
+    {
+      "name": "B",
+      "number": "2",
+      "role": "base"
+    },
+    {
+      "name": "E",
+      "number": "3",
+      "role": "emitter"
+    }
+  ],
+  "spice_pin_mapping": [
+    {
+      "symbol_pin_number": "1",
+      "subckt_node": "collector",
+      "order": 1
+    },
+    {
+      "symbol_pin_number": "2",
+      "subckt_node": "base",
+      "order": 2
+    },
+    {
+      "symbol_pin_number": "3",
+      "subckt_node": "emitter",
+      "order": 3
+    }
+  ],
+  "package_variants": [
+    {
+      "name": "TO-92",
+      "standard": "CASE 29 STYLE 17",
+      "pin_count": 3,
+      "pin_map": [
+        {
+          "package_pin": "1",
+          "symbol_pin_number": "1"
+        },
+        {
+          "package_pin": "2",
+          "symbol_pin_number": "2"
+        },
+        {
+          "package_pin": "3",
+          "symbol_pin_number": "3"
+        }
+      ]
+    }
+  ],
+  "ordering_code_aliases": [],
+  "datasheet": {
+    "url": "https://www.onsemi.com/pub/Collateral/BC546-D.PDF",
+    "revision": "Rev. 8, August 2021"
+  },
+  "model_type": "dot_model",
+  "fidelity_tier": "F1",
+  "domain_coverage": {
+    "dc": "fitted",
+    "ac": "fitted",
+    "transient": "fitted",
+    "noise": "none",
+    "thermal": "none",
+    "digital": "none"
+  },
+  "supported_analyses": [
+    "operating_point",
+    "dc_sweep",
+    "ac_small_signal",
+    "transient"
+  ],
+  "supported_operating_region": {
+    "summary": "F1 model: the native fit could not honestly reproduce the published BC547B low-current gain-bin spread, so scalar fitted expectations are withheld.",
+    "numeric_bounds": [
+      {
+        "quantity": "collector_current",
+        "minimum": 0.0001,
+        "maximum": 0.1,
+        "unit": "A",
+        "conditions": "Fitted typical DC range at 25 degC",
+        "placeholder": false
+      },
+      {
+        "quantity": "collector_emitter_voltage",
+        "minimum": 0,
+        "maximum": 45,
+        "unit": "V",
+        "conditions": "Rated VCEO",
+        "placeholder": false
+      }
+    ]
+  },
+  "known_omissions": [
+    "No self-heating: junction temperature is fixed at TNOM. Safe-operating-area and thermal-runaway behaviour is not modelled.",
+    "Absolute maximum ratings are metadata only. The model does not model breakdown or failure at the rating boundary.",
+    "Package parasitics (lead inductance, package capacitance) are not modelled.",
+    "Reverse operation is not fitted: BR is a family-typical default and IKR, ISC, NC, VAR are at defaults.",
+    "Base resistance modulation is not fitted: IRB and RBM are held at physical defaults because no base-resistance-versus-current data is published.",
+    "Transit-time bias dependence is not fitted: XTF, VTF, and ITF are held at physical defaults because fT is published at a single bias.",
+    "Flicker and burst noise are not modelled: KF and AF are held at physical defaults.",
+    "hFE bin spread is not modelled. The fit targets the typical curve or stated bin; a real part may sit anywhere in the published band.",
+    "CJE and CJC are derived from single tabulated capacitance points with VJE, VJC, MJE, and MJC held at physical defaults.",
+    "Temperature coefficients XTB, EG, and XTI are held at physical defaults; only 25 degC data was fitted.",
+    "F2 was not claimed: the native fit could not meet the archetype gain threshold across the published low-current BC547B rows, so this package is honestly capped at F1.",
+    "NF, NR, IRB, RBM, XTF, VTF, ITF, XTB, EG, XTI, KF, AF, IKR, ISC, NC, and VAR are held at default because the datasheet does not characterise them.",
+    "TR is held at default because no storage-time row is published for this part."
+  ],
+  "licence": {
+    "spdx_id": "MIT",
+    "provenance_basis": "original_from_facts"
+  },
+  "generator": {
+    "tool_or_agent": "opencircuit-model-factory-v0.1.0",
+    "date": "2026-08-06"
+  },
+  "reviewer": {
+    "tool_or_agent": "pending-review",
+    "date": "2026-08-06"
+  },
+  "test_results": {
+    "status": "complete",
+    "pass_count": 1,
+    "fail_count": 0,
+    "total_count": 1,
+    "worst_observed_relative_fitting_error": {
+      "value": 4.10088694707697,
+      "quantity": "hFE at IC=0.0001 A"
+    }
+  },
+  "validation_date": "2026-08-06"
+}
