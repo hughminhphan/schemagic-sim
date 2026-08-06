@@ -231,6 +231,18 @@ export class PulseRenderer {
     cancelAnimationFrame(this.animationFrame);
   }
 
+  exportStaticSvg(svg: SVGSVGElement): string {
+    const clone = svg.cloneNode(true) as SVGSVGElement;
+    clone.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+    clone.querySelectorAll(".wire-hit,.pot-hit,.pin-node,.selection-outline").forEach((element) => element.remove());
+    const layer = clone.querySelector<SVGGElement>("#chevron-layer");
+    if (layer) layer.innerHTML = this.staticEncoding(clone);
+    const style = document.createElementNS("http://www.w3.org/2000/svg", "style");
+    style.textContent = `.component-label,.net-label{fill:#2A2F34;font-family:IBM Plex Sans,sans-serif;font-size:11px;font-weight:500;paint-order:stroke fill;stroke:#F1EEE8;stroke-width:3px}.net-label{font-family:IBM Plex Mono,monospace;font-size:12px}.symbol-stroke,.package-fill,.led-body,.led-ray,.pot-wiper,.ground-glyph{stroke:#15181B;fill:none;stroke-linecap:square;stroke-linejoin:miter}.package-fill,.led-body{fill:#F1EEE8}.grid-dot{fill:#6E7378;opacity:.22}.static-chevron{fill:none;stroke:#15181B;stroke-width:1;stroke-linecap:square;stroke-linejoin:miter}`;
+    clone.prepend(style);
+    return `<?xml version="1.0" encoding="UTF-8"?>\n${new XMLSerializer().serializeToString(clone)}`;
+  }
+
   private flow(current: number): { u: number; speed: number; spacing: number; alpha: number } | undefined {
     const magnitude = Math.abs(current);
     if (magnitude < 1e-6) return undefined;
@@ -285,19 +297,13 @@ export class PulseRenderer {
     this.animationFrame = requestAnimationFrame(this.animate);
   }
 
-  private renderStaticChevrons(): void {
-    const layer = document.querySelector<SVGGElement>("#chevron-layer");
-    if (!layer) return;
-    if (!this.reduced.matches) {
-      layer.replaceChildren();
-      return;
-    }
+  private staticEncoding(root: ParentNode): string {
     const fragments: string[] = [];
     for (const wire of this.wires) {
       if (!wire.currentVector) continue;
       const current = scalar(this.result, wire.currentVector) ?? 0;
       const flow = this.flow(current);
-      const path = document.querySelector<SVGPathElement>(`#wire-${wire.id}`);
+      const path = root.querySelector<SVGPathElement>(`#wire-${wire.id}`);
       if (!flow || !path) continue;
       path.style.strokeWidth = String([0.9, 1.4, 2, 2.8][Math.min(3, Math.floor(flow.u * 4))]);
       const length = polylineLength(wire.points);
@@ -307,6 +313,16 @@ export class PulseRenderer {
         fragments.push(`<path class="static-chevron" transform="translate(${point[0]} ${point[1]}) rotate(${degrees})" d="M-3 -3L1 0L-3 3"/>`);
       }
     }
-    layer.innerHTML = fragments.join("");
+    return fragments.join("");
+  }
+
+  private renderStaticChevrons(): void {
+    const layer = document.querySelector<SVGGElement>("#chevron-layer");
+    if (!layer) return;
+    if (!this.reduced.matches) {
+      layer.replaceChildren();
+      return;
+    }
+    layer.innerHTML = this.staticEncoding(document);
   }
 }

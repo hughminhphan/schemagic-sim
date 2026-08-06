@@ -3,8 +3,8 @@
 Measured in Playwright Chromium 140 at 1440 x 900 on 2026-08-06 using the production Vite build and preview server.
 
 - Worker-hosted engine: eecircuit-engine 1.7.0, ngspice 45.2+ WebAssembly
-- Engine initialization: 420.5 ms
-- Warm operating-point solves: median 1.60 ms, range 0.80 to 2.30 ms across 7 measured solves
+- Engine initialization: 403.2 ms
+- Warm operating-point solves: median 1.30 ms, range 0.70 to 1.50 ms across 8 measured solves
 - WASM proof bundle transfer: 5,746,871 bytes compressed over HTTP. The Vite worker asset is 20,267,840 bytes uncompressed and contains the embedded WebAssembly payload.
 - Largest rawfile observed in the tested op, transient, and AC sequence: 29,473 bytes
 - Main-thread long tasks during the measured live pot interaction: 0 where Chromium exposed PerformanceObserver `longtask` entries

@@ -49,7 +49,7 @@ app.innerHTML = `<main class="app-shell${initialCollapsed ? " scope-collapsed" :
   <header class="chrome">
     <div class="brand-line"><span class="wordmark">OPENCIRCUIT</span><span class="version">0.1 P1</span><span class="document-name" id="document-name"></span></div>
     <nav class="analysis-tabs" aria-label="Analysis mode">${analysisModes.map((mode) => `<button class="analysis-tab" data-mode="${mode}" aria-selected="${circuit.sim.mode === mode}">${modeLabels[mode]}</button>`).join("")}</nav>
-    <div class="chrome-actions"><button class="chrome-action" id="copy-link">Copy share link</button><button class="chrome-action" id="export-json">Export JSON</button><button class="chrome-action" id="import-json">Load JSON</button></div>
+    <div class="chrome-actions"><button class="chrome-action" id="copy-link">Copy share link</button><button class="chrome-action" id="export-spice">SPICE</button><button class="chrome-action" id="export-svg">SVG</button><button class="chrome-action" id="export-json">Export JSON</button><button class="chrome-action" id="import-json">Load JSON</button></div>
   </header>
   <section class="workbench">
     <aside class="symbol-rail" aria-label="Symbol rail">
@@ -69,6 +69,7 @@ app.innerHTML = `<main class="app-shell${initialCollapsed ? " scope-collapsed" :
     <aside class="inspector" aria-label="Property inspector"><div class="inspector-head">INSPECTOR</div><div id="inspector-content"></div></aside>
   </section>
   <section class="scope-dock" aria-label="Scope panel">
+    <div class="scope-resizer" id="scope-resizer" role="separator" aria-orientation="horizontal" aria-label="Resize scope"></div>
     <div class="scope-toolbar"><button class="scope-toggle" id="scope-toggle">${initialCollapsed ? "Open scope" : "Close scope"}</button><span class="scope-title" id="scope-title">OPERATING POINT</span><span>Ch1 V(collector)</span><span id="scope-scale">2.00 V/div · 1.00 ms/div</span><button id="keep-hold" class="scope-toggle" hidden>Keep hold</button><span class="scope-run-state"><span class="run-indicator"></span>RUN</span></div>
     <div class="scope-well"><canvas class="scope-canvas" id="scope-canvas"></canvas><div class="scope-empty" id="scope-empty">Run TRAN or drag the pot to draw a trace.</div></div>
     <div class="scope-cursors"><span id="scope-cursor">Cursor A  --</span><span>Cursor B  --</span><span>Δ  --</span><span class="guidance">Drag the pot.</span></div>
@@ -305,6 +306,15 @@ function pointerToPot(event: PointerEvent): number {
   return Math.min(0.995, Math.max(0.005, 0.5 - (y - center) / 80));
 }
 
+function downloadText(filename: string, content: string, type: string): void {
+  const blob = new Blob([content], { type });
+  const anchor = document.createElement("a");
+  anchor.href = URL.createObjectURL(blob);
+  anchor.download = filename;
+  anchor.click();
+  URL.revokeObjectURL(anchor.href);
+}
+
 function bindInteractions(): void {
   document.querySelectorAll<SVGGElement>("[data-component-id]").forEach((element) => {
     element.addEventListener("click", () => selectComponent(element.dataset.componentId ?? "c6"));
@@ -362,7 +372,27 @@ function bindInteractions(): void {
   }));
   must<HTMLButtonElement>("#scope-toggle").addEventListener("click", () => {
     shell.classList.toggle("scope-collapsed");
-    must<HTMLButtonElement>("#scope-toggle").textContent = shell.classList.contains("scope-collapsed") ? "Open scope" : "Close scope";
+    const collapsed = shell.classList.contains("scope-collapsed");
+    shell.style.gridTemplateRows = collapsed ? "32px minmax(0,1fr) 24px" : "32px minmax(0,1fr) min(240px, 32vh)";
+    must<HTMLButtonElement>("#scope-toggle").textContent = collapsed ? "Open scope" : "Close scope";
+  });
+  const scopeResizer = must<HTMLElement>("#scope-resizer");
+  scopeResizer.addEventListener("pointerdown", (event) => {
+    const startY = event.clientY;
+    const startHeight = must<HTMLElement>(".scope-dock").getBoundingClientRect().height;
+    shell.classList.remove("scope-collapsed");
+    scopeResizer.setPointerCapture(event.pointerId);
+    const move = (moveEvent: PointerEvent) => {
+      const height = Math.max(24, Math.min(480, startHeight + startY - moveEvent.clientY));
+      shell.style.gridTemplateRows = `32px minmax(0,1fr) ${height}px`;
+    };
+    const finish = (finishEvent: PointerEvent) => {
+      scopeResizer.removeEventListener("pointermove", move);
+      scopeResizer.removeEventListener("pointerup", finish);
+      if (scopeResizer.hasPointerCapture(finishEvent.pointerId)) scopeResizer.releasePointerCapture(finishEvent.pointerId);
+    };
+    scopeResizer.addEventListener("pointermove", move);
+    scopeResizer.addEventListener("pointerup", finish);
   });
   must<HTMLButtonElement>("#keep-hold").addEventListener("click", () => { holdCommitted = true; holdOffer = false; updateDisplay(); });
   must<HTMLButtonElement>("#copy-link").addEventListener("click", async () => {
@@ -371,10 +401,15 @@ function bindInteractions(): void {
     try { await navigator.clipboard.writeText(url); setStatus("Share link copied", "ready"); }
     catch { history.replaceState(null, "", url); setStatus("Share link placed in the address bar", "ready"); }
   });
+  must<HTMLButtonElement>("#export-spice").addEventListener("click", () => {
+    const mode = circuit.sim.mode === "live" ? "op" : circuit.sim.mode;
+    downloadText("npn-led-bench.cir", generateNetlist(circuit, mode).netlist, "text/plain");
+  });
+  must<HTMLButtonElement>("#export-svg").addEventListener("click", () => {
+    downloadText("npn-led-bench.svg", pulseRenderer.exportStaticSvg(must<SVGSVGElement>("#schematic")), "image/svg+xml");
+  });
   must<HTMLButtonElement>("#export-json").addEventListener("click", () => {
-    const blob = new Blob([JSON.stringify(circuit, null, 2)], { type: "application/json" });
-    const anchor = document.createElement("a");
-    anchor.href = URL.createObjectURL(blob); anchor.download = "npn-led-bench.json"; anchor.click(); URL.revokeObjectURL(anchor.href);
+    downloadText("npn-led-bench.json", JSON.stringify(circuit, null, 2), "application/json");
   });
   must<HTMLButtonElement>("#import-json").addEventListener("click", () => must<HTMLInputElement>("#json-file").click());
   must<HTMLInputElement>("#json-file").addEventListener("change", async (event) => {
