@@ -1,0 +1,150 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "rdson.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "rdson_typical_1",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d1),0.09090909090909091)"
+          },
+          "expected_value": 0.09,
+          "unit": "ohm",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.15
+          },
+          "datasheet_citation": "p. 3 Fig. 1, VGS = -10 V at ID = -11 A, digitized typical; p. 2 RDS(on) MAX column",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": [
+        {
+          "name": "rdson_guaranteed_max_1",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d1),0.09090909090909091)"
+          },
+          "minimum": 0,
+          "maximum": 0.117,
+          "unit": "ohm",
+          "inclusive": true,
+          "datasheet_citation": "p. 3 Fig. 1, VGS = -10 V at ID = -11 A, digitized typical; p. 2 RDS(on) MAX column",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "capacitance.cir",
+      "analysis_type": "ac_small_signal",
+      "scalar_checks": [
+        {
+          "name": "coss",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "imag_cap:last(i(vd),1000000)"
+          },
+          "expected_value": 4e-10,
+          "unit": "F",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 2 Electrical Characteristics, capacitance TYP columns",
+          "placeholder": false
+        },
+        {
+          "name": "crss",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "imag_cap:last(i(vg),1000000)"
+          },
+          "expected_value": 2.4e-10,
+          "unit": "F",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 2 Electrical Characteristics, capacitance TYP columns",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "body_diode.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "body_diode_typical",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(d))"
+          },
+          "expected_value": 0.9,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.05,
+            "relative": 0.1
+          },
+          "datasheet_citation": "p. 4 Fig. 7, 25 degC curve at IS = -11 A, digitized",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": [
+        {
+          "name": "body_diode_maximum",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(d))"
+          },
+          "minimum": 0,
+          "maximum": 1.6,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 2 Source-Drain Ratings, VSD MAX column",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "supported_boundary.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "supported_boundary_rdson",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d),0.09090909090909091)"
+          },
+          "expected_value": 0.09,
+          "unit": "ohm",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.15
+          },
+          "datasheet_citation": "p. 3 Fig. 1 and p. 2 RDS(on) row at VGS = -10 V, ID = -11 A",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": [
+        {
+          "name": "supported_boundary_guaranteed_max",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d),0.09090909090909091)"
+          },
+          "minimum": 0,
+          "maximum": 0.117,
+          "unit": "ohm",
+          "inclusive": true,
+          "datasheet_citation": "p. 3 Fig. 1 and p. 2 RDS(on) row at VGS = -10 V, ID = -11 A",
+          "placeholder": false
+        }
+      ]
+    }
+  ]
+}

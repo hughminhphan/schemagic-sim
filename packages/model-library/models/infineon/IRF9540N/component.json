@@ -1,0 +1,147 @@
+{
+  "schema_version": "1.0.0",
+  "canonical_mpn": "IRF9540N",
+  "manufacturer": "Infineon Technologies",
+  "description": "100 V P-channel HEXFET power MOSFET",
+  "electrical_family": "pmos",
+  "symbol_pins": [
+    {
+      "name": "G",
+      "number": "1",
+      "role": "gate"
+    },
+    {
+      "name": "D",
+      "number": "2",
+      "role": "drain"
+    },
+    {
+      "name": "S",
+      "number": "3",
+      "role": "source"
+    }
+  ],
+  "spice_pin_mapping": [
+    {
+      "symbol_pin_number": "2",
+      "subckt_node": "drain",
+      "order": 1
+    },
+    {
+      "symbol_pin_number": "1",
+      "subckt_node": "gate",
+      "order": 2
+    },
+    {
+      "symbol_pin_number": "3",
+      "subckt_node": "source",
+      "order": 3
+    }
+  ],
+  "package_variants": [
+    {
+      "name": "TO-220AB",
+      "standard": "JEDEC TO-220AB",
+      "pin_count": 3,
+      "pin_map": [
+        {
+          "package_pin": "1",
+          "symbol_pin_number": "1"
+        },
+        {
+          "package_pin": "2",
+          "symbol_pin_number": "2"
+        },
+        {
+          "package_pin": "3",
+          "symbol_pin_number": "3"
+        }
+      ]
+    }
+  ],
+  "ordering_code_aliases": [
+    "IRF9540NPbF"
+  ],
+  "datasheet": {
+    "url": "https://www.infineon.com/assets/row/public/documents/24/49/infineon-irf9540n-datasheet-en.pdf",
+    "revision": "PD-94790A, 23-Jan-2004"
+  },
+  "model_type": "dot_model",
+  "fidelity_tier": "F1",
+  "domain_coverage": {
+    "dc": "approx",
+    "ac": "fitted",
+    "transient": "approx",
+    "noise": "none",
+    "thermal": "approx",
+    "digital": "none"
+  },
+  "supported_analyses": [
+    "operating_point",
+    "dc_sweep",
+    "ac_small_signal",
+    "transient"
+  ],
+  "supported_operating_region": {
+    "summary": "F1 model fitted at 25 degC to the typical on-resistance read at the tabulated -10 V, -11 A condition, plus typical capacitance and body-diode data. Signs follow P-channel convention.",
+    "numeric_bounds": [
+      {
+        "quantity": "drain_current_magnitude",
+        "minimum": 0,
+        "maximum": 11,
+        "unit": "A",
+        "conditions": "Fitted on-state current magnitude at 25 degC",
+        "placeholder": false
+      },
+      {
+        "quantity": "gate_source_voltage",
+        "minimum": -10,
+        "maximum": -10,
+        "unit": "V",
+        "conditions": "Fitted on-state gate bias at 25 degC",
+        "placeholder": false
+      }
+    ]
+  },
+  "known_omissions": [
+    "Avalanche and unclamped inductive switching (UIS/EAS) are not modelled. The model conducts through BV as ordinary diode breakdown and does not fail.",
+    "Safe operating area is not enforced. Absolute maximum ratings are metadata and are not failure limits.",
+    "No self-heating in the default three-terminal instance; junction temperature is fixed at TNOM.",
+    "Package and lead inductance are not modelled, so measured switching ringing will not reproduce.",
+    "Threshold-voltage spread and gate oxide breakdown are not modelled.",
+    "RTHJC and RTHCA are transcribed from the thermal table, but the five-terminal electrothermal form is not validated against datasheet data.",
+    "F1 scope: DC channel fitting uses the tabulated RDS(on) conditions only. Transfer and output curve families are not fitted, so saturation-region current is approximate.",
+    "RDS is held at default as a 1 Gohm leakage shunt. The supported region is limited to the fitted on-state conditions rather than the full breakdown rating.",
+    "VJ = 0.8 V, M = 0.5, FC = 0.5, and NBV = 1 are held at default because the published data does not separate them.",
+    "Body-diode N = 1.5 is held at default because only one 25 degC curve point is used.",
+    "TT is held at default because the datasheet does not publish the reverse-current term required to map trr mechanically.",
+    "THETA = 0 and LAMBDA = 0.003 are held at default because transfer and output curve families are not fitted.",
+    "MU, TEXP0, and TCVTH are held at default; only 25 degC behavior is fitted.",
+    "CTHJ is held at default because transient thermal capacitance is not published.",
+    "KF and AF are held at default; flicker noise is not modelled.",
+    "VTO is held at the midpoint of the guaranteed VGS(th) MIN/MAX window because no typical threshold value is published."
+  ],
+  "licence": {
+    "spdx_id": "MIT",
+    "provenance_basis": "original_from_facts"
+  },
+  "generator": {
+    "tool_or_agent": "opencircuit-model-factory-v0.1.0",
+    "date": "2026-08-07"
+  },
+  "reviewer": {
+    "tool_or_agent": "pending-review",
+    "date": "2026-08-07"
+  },
+  "test_results": {
+    "status": "complete",
+    "pass_count": 8,
+    "fail_count": 0,
+    "total_count": 8,
+    "worst_observed_relative_fitting_error": {
+      "value": 0.4837555073377347,
+      "quantity": "Crss at 1 V"
+    }
+  },
+  "validation_date": "2026-08-07"
+}

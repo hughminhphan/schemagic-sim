@@ -1,0 +1,272 @@
+{
+  "schema_version": "1.0.0",
+  "fitter": "scipy.optimize.least_squares with native ngspice-46 evaluations",
+  "deterministic": true,
+  "parameters": {
+    "VTO": 3.0,
+    "KP": 3.4680113417397185,
+    "THETA": 0.0,
+    "LAMBDA": 0.003,
+    "RS": 0.018,
+    "RD": 0.0495,
+    "RG": 0.0001,
+    "CGS": 1.06e-09,
+    "CGDMAX": 1.5e-09,
+    "CGDMIN": 1.5e-10,
+    "A": 0.18628499989346156,
+    "CJO": 9.086253353280439e-10,
+    "IS": 4.903139201202383e-09,
+    "N": 1.5,
+    "RB": 0.018,
+    "TT": 0.0,
+    "BV": 100,
+    "IBV": 0.00025,
+    "RTHJC": 1.1,
+    "RTHCA": 60.9
+  },
+  "parameter_metadata": {
+    "VTO": {
+      "status": "held at default"
+    },
+    "KP": {
+      "status": "fitted"
+    },
+    "THETA": {
+      "status": "held at default"
+    },
+    "LAMBDA": {
+      "status": "held at default"
+    },
+    "RS": {
+      "status": "derived or transcribed"
+    },
+    "RD": {
+      "status": "derived or transcribed"
+    },
+    "RG": {
+      "status": "derived or transcribed"
+    },
+    "CGS": {
+      "status": "derived or transcribed"
+    },
+    "CGDMAX": {
+      "status": "derived or transcribed"
+    },
+    "CGDMIN": {
+      "status": "derived or transcribed"
+    },
+    "A": {
+      "status": "fitted"
+    },
+    "CJO": {
+      "status": "derived or transcribed"
+    },
+    "IS": {
+      "status": "fitted with N held at default"
+    },
+    "N": {
+      "status": "held at default"
+    },
+    "RB": {
+      "status": "derived or transcribed"
+    },
+    "TT": {
+      "status": "held at default"
+    },
+    "BV": {
+      "status": "derived or transcribed"
+    },
+    "IBV": {
+      "status": "derived or transcribed"
+    },
+    "RTHJC": {
+      "status": "derived or transcribed"
+    },
+    "RTHCA": {
+      "status": "derived or transcribed"
+    }
+  },
+  "held_defaults": [
+    {
+      "parameter": "RDS",
+      "value": 1000000000.0,
+      "unit": "ohm",
+      "reason": "held at default; supported off-state is not extended to breakdown"
+    },
+    {
+      "parameter": "VJ",
+      "value": 0.8,
+      "unit": "V",
+      "reason": "held at default; one capacitance condition cannot separate VJ and M"
+    },
+    {
+      "parameter": "M",
+      "value": 0.5,
+      "unit": "1",
+      "reason": "held at default; one capacitance condition cannot separate VJ and M"
+    },
+    {
+      "parameter": "FC",
+      "value": 0.5,
+      "unit": "1",
+      "reason": "held at default"
+    },
+    {
+      "parameter": "NBV",
+      "value": 1,
+      "unit": "1",
+      "reason": "held at default; one breakdown row cannot fit breakdown shape"
+    },
+    {
+      "parameter": "N",
+      "value": 1.5,
+      "unit": "1",
+      "reason": "held at default; only one 25 degC body-diode curve point is used"
+    },
+    {
+      "parameter": "TT",
+      "value": 0,
+      "unit": "s",
+      "reason": "held at default; trr is published without the reverse-current term required by the archetype mapping"
+    },
+    {
+      "parameter": "THETA",
+      "value": 0,
+      "unit": "1",
+      "reason": "held at default; F1 DC fit uses tabulated RDS(on) rows only"
+    },
+    {
+      "parameter": "LAMBDA",
+      "value": 0.003,
+      "unit": "1/V",
+      "reason": "held at default; output-curve slope is not fitted"
+    },
+    {
+      "parameter": "MU",
+      "value": 0,
+      "unit": "1",
+      "reason": "held at default; temperature behavior is not fitted"
+    },
+    {
+      "parameter": "TEXP0",
+      "value": 0,
+      "unit": "1",
+      "reason": "held at default; temperature behavior is not fitted"
+    },
+    {
+      "parameter": "TCVTH",
+      "value": 0,
+      "unit": "V/K",
+      "reason": "held at default; threshold temperature behavior is not fitted"
+    },
+    {
+      "parameter": "CTHJ",
+      "value": 0,
+      "unit": "J/K",
+      "reason": "held at default; transient thermal capacitance is not published"
+    },
+    {
+      "parameter": "KF",
+      "value": 0,
+      "unit": "1",
+      "reason": "held at default; flicker noise is not modelled"
+    },
+    {
+      "parameter": "AF",
+      "value": 1,
+      "unit": "1",
+      "reason": "held at default; flicker noise is not modelled"
+    },
+    {
+      "parameter": "VTO",
+      "value": 3.0,
+      "unit": "V",
+      "reason": "held at default midpoint of the published MIN/MAX threshold window; no TYP threshold is published"
+    }
+  ],
+  "optimizer": {
+    "status": 1,
+    "nfev": 4,
+    "capacitance_nfev": 18,
+    "diff_step": 0.0001,
+    "body_diode_nfev": 3
+  },
+  "residuals": [
+    {
+      "quantity": "RDS(on)",
+      "datasheet_value": 0.09,
+      "fitted_value": 0.08999999994723397,
+      "unit": "ohm",
+      "relative_error": 5.862891962039719e-10,
+      "citation": "p. 3 Fig. 1, VGS = -10 V at ID = -11 A, digitized typical; p. 2 RDS(on) MAX column"
+    },
+    {
+      "quantity": "Crss at 1 V",
+      "datasheet_value": 1.5e-09,
+      "fitted_value": 7.74366738993398e-10,
+      "unit": "F",
+      "relative_error": 0.4837555073377347,
+      "citation": "p. 4 Fig. 5, Crss trace, digitized"
+    },
+    {
+      "quantity": "Crss at 2 V",
+      "datasheet_value": 1.15e-09,
+      "fitted_value": 7.503845943025324e-10,
+      "unit": "F",
+      "relative_error": 0.34749165712823266,
+      "citation": "p. 4 Fig. 5, Crss trace, digitized"
+    },
+    {
+      "quantity": "Crss at 5 V",
+      "datasheet_value": 7.5e-10,
+      "fitted_value": 6.17880751864939e-10,
+      "unit": "F",
+      "relative_error": 0.1761589975134146,
+      "citation": "p. 4 Fig. 5, Crss trace, digitized"
+    },
+    {
+      "quantity": "Crss at 10 V",
+      "datasheet_value": 5e-10,
+      "fitted_value": 4.2424496257588364e-10,
+      "unit": "F",
+      "relative_error": 0.15151007484823276,
+      "citation": "p. 4 Fig. 5, Crss trace, digitized"
+    },
+    {
+      "quantity": "Crss at 20 V",
+      "datasheet_value": 3e-10,
+      "fitted_value": 2.9255890740645845e-10,
+      "unit": "F",
+      "relative_error": 0.024803641978471826,
+      "citation": "p. 4 Fig. 5, Crss trace, digitized"
+    },
+    {
+      "quantity": "Crss at 25 V",
+      "datasheet_value": 2.4e-10,
+      "fitted_value": 2.6437519172367575e-10,
+      "unit": "F",
+      "relative_error": 0.10156329884864898,
+      "citation": "p. 4 Fig. 5, Crss trace, digitized"
+    },
+    {
+      "quantity": "Crss at 50 V",
+      "datasheet_value": 1.5e-10,
+      "fitted_value": 2.0729099939310081e-10,
+      "unit": "F",
+      "relative_error": 0.3819399959540054,
+      "citation": "p. 4 Fig. 5, Crss trace, digitized"
+    },
+    {
+      "quantity": "body-diode forward voltage",
+      "datasheet_value": 0.9,
+      "fitted_value": 0.8999999949863188,
+      "unit": "V",
+      "relative_error": 5.570756942161223e-09,
+      "citation": "p. 4 Fig. 7, 25 degC curve at IS = -11 A, digitized"
+    }
+  ],
+  "worst_relative_error": {
+    "value": 0.4837555073377347,
+    "quantity": "Crss at 1 V"
+  }
+}

@@ -1,0 +1,96 @@
+{
+  "schema_version": "1.0.0",
+  "validation_date": "2026-08-07",
+  "native_wasm_all_pass": true,
+  "expectations_all_pass": true,
+  "expectation_pass_count": 8,
+  "expectation_fail_count": 0,
+  "worst_native_wasm_relative_delta": 9.062195244249414e-16,
+  "worst_native_wasm_absolute_delta": 2.220446049250313e-16,
+  "benches": [
+    {
+      "test_netlist": "rdson.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "rdson_typical_1",
+          "pass": true,
+          "value": 0.09000000081988961,
+          "error": 8.198896145339418e-10,
+          "allowed": 0.0135
+        },
+        {
+          "name": "rdson_guaranteed_max_1",
+          "pass": true,
+          "value": 0.09000000081988961,
+          "minimum": 0,
+          "maximum": 0.117
+        }
+      ]
+    },
+    {
+      "test_netlist": "capacitance.cir",
+      "analysis": "ac",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "coss",
+          "pass": true,
+          "value": 4.2355852792408996e-10,
+          "error": 2.3558527924089943e-11,
+          "allowed": 8.000000000000001e-11
+        },
+        {
+          "name": "crss",
+          "pass": true,
+          "value": 2.6437519172367575e-10,
+          "error": 2.4375191723675755e-11,
+          "allowed": 4.8e-11
+        }
+      ]
+    },
+    {
+      "test_netlist": "body_diode.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "body_diode_typical",
+          "pass": true,
+          "value": 0.8999999949863056,
+          "error": 5.013694459599094e-09,
+          "allowed": 0.09000000000000001
+        },
+        {
+          "name": "body_diode_maximum",
+          "pass": true,
+          "value": 0.8999999949863056,
+          "minimum": 0,
+          "maximum": 1.6
+        }
+      ]
+    },
+    {
+      "test_netlist": "supported_boundary.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "supported_boundary_rdson",
+          "pass": true,
+          "value": 0.09000000081988961,
+          "error": 8.198896145339418e-10,
+          "allowed": 0.0135
+        },
+        {
+          "name": "supported_boundary_guaranteed_max",
+          "pass": true,
+          "value": 0.09000000081988961,
+          "minimum": 0,
+          "maximum": 0.117
+        }
+      ]
+    }
+  ]
+}

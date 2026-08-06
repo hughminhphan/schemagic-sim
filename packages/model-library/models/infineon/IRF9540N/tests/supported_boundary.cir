@@ -1,0 +1,14 @@
+OpenCircuit factory test: IRF9540N supported-region boundary
+* OpenCircuit Model Factory v0.1.0
+* Original work generated from public factual specifications.
+* This model is not a copy of, or adaptation from, any vendor SPICE model.
+* Source: https://www.infineon.com/assets/row/public/documents/24/49/infineon-irf9540n-datasheet-en.pdf
+* Revision: PD-94790A, 23-Jan-2004
+* Fit: native ngspice-46 in scipy.optimize.least_squares, diff_step=1e-4
+.model OC_INFINEON_IRF9540N VDMOS(pchan VTO=3 KP=3.46801134174 THETA=0 LAMBDA=.003 RD=0.0495 RS=0.018 RG=0.0001 RDS=1e9 CGS=1.060000000000e-09 CGDMAX=1.500000000000e-09 CGDMIN=1.500000000000e-10 A=0.186284999893 CJO=9.086253353280e-10 VJ=.8 M=.5 FC=.5 IS=4.903139201202e-09 N=1.5 RB=0.018 TT=0 BV=100 IBV=2.500000000000e-04 NBV=1 RTHJC=1.1 RTHCA=60.9 TNOM=27)
+.temp 25
+M1 d g 0 OC_INFINEON_IRF9540N
+ID d 0 DC 11
+VG g 0 DC -10
+.op
+.end
