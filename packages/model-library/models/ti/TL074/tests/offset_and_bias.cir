@@ -1,0 +1,43 @@
+OpenCircuit factory test: TL074 offset and bias
+* OpenCircuit Model Factory v0.1.0
+* Original work generated from public factual specifications.
+* This model is not a copy of, or adaptation from, any vendor SPICE model.
+* Source: https://www.ti.com/lit/ds/symlink/tl074.pdf
+* Revision: SLOS080W, September 1978, revised July 2025
+* Fit: exactly three native ngspice-46 fixed-point calibration iterations
+* Node order: INP INN VCC VEE OUT
+.subckt OC_TI_TL074 INP INN VCC VEE OUT
+.param AOL=2.0000000000e5 GBW=7.9405277877e6 SR=2.1992886982e7 IBIAS=6.5000000000e-11 IOS=5.0000000000e-12 VOS=3.0000000000e-3
+.param ROUT=1.2500000000e2 ILIM=4.0000000000e-2 VDRP_H=1.3311859276e0 VDRP_L=1.3311859120e0 CC=30p FP2=5.3559536210e6
+.param CMRR=1.0000000000e5 PSRR=1.0000000000e5 VSUP_NOM=3.0000000000e1 IQ=1.4000000000e-3 EN=3.7000000000e-8
+IBP 0 INP DC {IBIAS+IOS/2}
+IBN 0 INN DC {IBIAS-IOS/2}
+CDIF INP INN 1p
+BERR e 0 V = v(INP,INN) + VOS + v(nz) + 0.5*(v(INP)+v(INN))/CMRR + (v(VCC,VEE)-VSUP_NOM)/PSRR
+RE e 0 1meg
+RNZ nz 0 {EN*EN/(4*1.380649e-23*300.15)}
+BGM 0 p I = {SR*CC}*tanh({6.283185307*GBW/SR}*v(e))
+CP p 0 {CC}
+RP p 0 {AOL/(6.283185307*GBW*CC)}
+RP2 p p2 {1/(6.283185307*FP2*1p)}
+CP2 p2 0 1p
+BCLMP q 0 V = min(max(v(p2), v(VEE)+min(VDRP_L,0.49*v(VCC,VEE))), v(VCC)-min(VDRP_H,0.49*v(VCC,VEE)))
+RQ q 0 1meg
+BOUT 0 OUT I = ILIM*tanh((v(q)-v(OUT))/(ROUT*ILIM))
+IQVCC VCC VEE DC {IQ}
+.ends OC_TI_TL074
+
+.temp 25
+VCC vcc 0 DC 15
+VEE vee 0 DC -15
+X1 p1 n1 vcc vee out1 OC_TI_TL074
+VP1 p1 0 DC 0
+VN1 n1 0 DC 0
+RL1 out1 0 2k
+X2 sig2 inn2 vcc vee out2 OC_TI_TL074
+VS2 sig2 0 DC 0
+RF2 out2 inn2 9k
+RG2 inn2 0 1k
+RL2 out2 0 2k
+.op
+.end
