@@ -1,0 +1,89 @@
+{
+  "schema_version": "1.0.0",
+  "validation_date": "2026-08-07",
+  "native_wasm_all_pass": true,
+  "expectations_all_pass": true,
+  "expectation_pass_count": 7,
+  "expectation_fail_count": 0,
+  "worst_native_wasm_relative_delta": 8.477138528824693e-16,
+  "worst_native_wasm_absolute_delta": 2.220446049250313e-16,
+  "benches": [
+    {
+      "test_netlist": "rdson.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "rdson_typical_1",
+          "pass": true,
+          "value": 0.0410000011494544,
+          "error": 1.1494543997181417e-9,
+          "allowed": 0.00615
+        },
+        {
+          "name": "rdson_typical_2",
+          "pass": true,
+          "value": 0.046999998198177476,
+          "error": 1.8018225245164388e-9,
+          "allowed": 0.00705
+        },
+        {
+          "name": "rdson_typical_3",
+          "pass": true,
+          "value": 0.060000000670682764,
+          "error": 6.706827662683601e-10,
+          "allowed": 0.009
+        }
+      ]
+    },
+    {
+      "test_netlist": "boundary.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "minimum_characterized_gate_drive_boundary",
+          "pass": true,
+          "value": 0.060000000670682764,
+          "error": 6.706827662683601e-10,
+          "allowed": 0.009
+        }
+      ]
+    },
+    {
+      "test_netlist": "capacitance.cir",
+      "analysis": "ac",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "ciss",
+          "pass": true,
+          "value": 6.431258286055592e-10,
+          "error": 1.874171394440894e-12,
+          "allowed": 1.2900000000000002e-10
+        },
+        {
+          "name": "coss",
+          "pass": true,
+          "value": 7.87500497974727e-11,
+          "error": 1.2499502025272945e-12,
+          "allowed": 1.6e-11
+        }
+      ]
+    },
+    {
+      "test_netlist": "body_diode.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "body_diode_forward_voltage",
+          "pass": true,
+          "value": 0.707755112667658,
+          "error": 0.007755112667658048,
+          "allowed": 0.06999999999999999
+        }
+      ]
+    }
+  ]
+}

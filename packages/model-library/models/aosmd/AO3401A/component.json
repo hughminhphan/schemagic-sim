@@ -1,0 +1,147 @@
+{
+  "schema_version": "1.0.0",
+  "canonical_mpn": "AO3401A",
+  "manufacturer": "Alpha and Omega Semiconductor",
+  "description": "30 V logic-level P-channel MOSFET",
+  "electrical_family": "pmos",
+  "symbol_pins": [
+    {
+      "name": "G",
+      "number": "1",
+      "role": "gate"
+    },
+    {
+      "name": "S",
+      "number": "2",
+      "role": "source"
+    },
+    {
+      "name": "D",
+      "number": "3",
+      "role": "drain"
+    }
+  ],
+  "spice_pin_mapping": [
+    {
+      "symbol_pin_number": "3",
+      "subckt_node": "drain",
+      "order": 1
+    },
+    {
+      "symbol_pin_number": "1",
+      "subckt_node": "gate",
+      "order": 2
+    },
+    {
+      "symbol_pin_number": "2",
+      "subckt_node": "source",
+      "order": 3
+    }
+  ],
+  "package_variants": [
+    {
+      "name": "SOT-23",
+      "standard": "SOT-23",
+      "pin_count": 3,
+      "pin_map": [
+        {
+          "package_pin": "1",
+          "symbol_pin_number": "1"
+        },
+        {
+          "package_pin": "2",
+          "symbol_pin_number": "2"
+        },
+        {
+          "package_pin": "3",
+          "symbol_pin_number": "3"
+        }
+      ]
+    }
+  ],
+  "ordering_code_aliases": [],
+  "datasheet": {
+    "url": "https://www.aosmd.com/sites/default/files/res/data_sheets/AO3401A.pdf",
+    "revision": "Rev. 3.1, December 2023"
+  },
+  "model_type": "dot_model",
+  "fidelity_tier": "F1",
+  "domain_coverage": {
+    "dc": "approx",
+    "ac": "approx",
+    "transient": "approx",
+    "noise": "none",
+    "thermal": "approx",
+    "digital": "none"
+  },
+  "supported_analyses": [
+    "operating_point",
+    "dc_sweep",
+    "ac_small_signal",
+    "transient"
+  ],
+  "supported_operating_region": {
+    "summary": "25 degC F1 model within the cited tabulated conditions; absolute maxima are not enforced.",
+    "numeric_bounds": [
+      {
+        "quantity": "characterized_gate_drive_magnitude",
+        "minimum": 2.5,
+        "maximum": 10,
+        "unit": "V",
+        "conditions": "Published typical RDS(on) rows",
+        "placeholder": false
+      },
+      {
+        "quantity": "drain_current_magnitude_at_minimum_gate_drive",
+        "minimum": 0,
+        "maximum": 2.5,
+        "unit": "A",
+        "conditions": "VGS = -2.5 V typical RDS(on) row",
+        "placeholder": false
+      }
+    ]
+  },
+  "known_omissions": [
+    "Avalanche and unclamped inductive switching (UIS/EAS) are not modelled. The model conducts through BV as an ordinary diode breakdown; it does not fail.",
+    "Safe operating area is not enforced. Absolute maximum ratings are metadata; the model will happily dissipate excessive power.",
+    "No self-heating in the default three-terminal instance: junction temperature is fixed at TNOM. RDS(on) does not rise with dissipation.",
+    "Package and lead inductance are not modelled, so measured switching ringing will not reproduce.",
+    "Threshold-voltage spread is not modelled.",
+    "Gate oxide breakdown beyond the rated VGS maximum is not modelled.",
+    "RDS is held at default 1e9 ohm as the off-state shunt.",
+    "MU, TEXP0, and TCVTH are held at default; only 25 degC behavior is fitted.",
+    "CTHJ is held at default because junction thermal capacitance is unpublished; electrothermal transients are not claimed.",
+    "Flicker noise is not modelled: KF and AF are held at default.",
+    "F1: DC behavior is fitted to tabulated 25 degC typical RDS(on) rows; transfer and output curve families are not fitted.",
+    "The signed ngspice p-channel VTO is fitted to -0.923 V, within the published 0.5 V to 1.3 V threshold-magnitude window; KP, RD, and THETA are fitted through the validated native reader.",
+    "THETA is held at default 0 after the table fit converged at its physical lower bound; LAMBDA is held at default 0.003 because output curves are not fitted.",
+    "RS = 8.2 mOhm is held at default from the archetype 20% split.",
+    "CGDMAX, CGDMIN, and A are approximate digitizations of Figure 8 rather than an F2 capacitance-curve fit.",
+    "VJ = 0.8, M = 0.5, FC = 0.5, N = 1.5, NBV = 1, and TNOM = 27 degC are held at default.",
+    "CJO is derived from one Coss row; body-diode IS uses one typical VSD row with N held at default.",
+    "Thermal resistances are transcribed/derived but electrothermal operation is not validated."
+  ],
+  "licence": {
+    "spdx_id": "MIT",
+    "provenance_basis": "original_from_facts"
+  },
+  "generator": {
+    "tool_or_agent": "opencircuit-model-factory-v0.1.0",
+    "date": "2026-08-07"
+  },
+  "reviewer": {
+    "tool_or_agent": "pending-review",
+    "date": "2026-08-07"
+  },
+  "test_results": {
+    "status": "complete",
+    "pass_count": 7,
+    "fail_count": 0,
+    "total_count": 7,
+    "worst_observed_relative_fitting_error": {
+      "value": 3.833325884849025e-8,
+      "quantity": "RDS(on)"
+    }
+  },
+  "validation_date": "2026-08-07"
+}
