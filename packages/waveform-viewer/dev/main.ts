@@ -11,12 +11,18 @@ const time = new Float64Array(sampleCount);
 const input = new Float64Array(sampleCount);
 const output = new Float64Array(sampleCount);
 const current = new Float64Array(sampleCount);
+const reference = new Float64Array(sampleCount);
+const sense = new Float64Array(sampleCount);
+const ripple = new Float64Array(sampleCount);
 for (let index = 0; index < sampleCount; index += 1) {
   const t = index / (sampleCount - 1) * 0.012;
   time[index] = t;
   input[index] = 2.5 + 2.2 * Math.sign(Math.sin(2 * Math.PI * 820 * t));
   output[index] = 2.5 + 1.8 * Math.sin(2 * Math.PI * 820 * t - 0.45) + 0.16 * Math.sin(2 * Math.PI * 4100 * t);
   current[index] = 0.006 + 0.004 * Math.sin(2 * Math.PI * 820 * t - 0.8);
+  reference[index] = 1.25 + 0.3 * Math.sin(2 * Math.PI * 410 * t);
+  sense[index] = 2.1 + 0.7 * Math.sin(2 * Math.PI * 820 * t + 0.6);
+  ripple[index] = 2.5 + 0.22 * Math.sin(2 * Math.PI * 4100 * t);
 }
 
 const acCount = 481;
@@ -48,13 +54,14 @@ function mathDivide(a: { re: number; im: number }, b: { re: number; im: number }
 const viewerElement = document.querySelector<HTMLElement>("#viewer");
 if (!viewerElement) throw new Error("Missing viewer element");
 const viewer = mount(viewerElement, {
-  colors: ["#3FD983", "#5FB0E8", "#E8A244", "#E8735A"],
+  colors: ["#3FD983", "#E8A244", "#5FB0E8", "#F1EEE8", "#3FD983", "#E8A244"],
+  dashes: [[], [], [], [], [6, 3], [2, 3]],
   unwrapPhase: true,
 });
 
 function showTran(): void {
   const start = performance.now();
-  viewer.setData({ kind: "tran", vectors: { time, "V(input)": input, "V(output)": output, "I(R1)": current } });
+  viewer.setData({ kind: "tran", vectors: { time, "V(input)": input, "V(output)": output, "I(R1)": current, "V(reference)": reference, "V(sense)": sense, "V(ripple)": ripple } });
   requestAnimationFrame(() => {
     const perf = document.querySelector("#perf");
     if (perf) perf.textContent = `${sampleCount.toLocaleString()} points/trace · first frame ${(performance.now() - start).toFixed(1)} ms`;
