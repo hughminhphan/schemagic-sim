@@ -1,0 +1,123 @@
+{
+  "schema_version": "1.0.0",
+  "extraction_method": "pdftotext plus manual structuring from official Vishay datasheet; input LED only",
+  "fit_conditions": {
+    "temperature": {
+      "value": 25,
+      "unit": "degC",
+      "conditions": "Tamb = 25 degC",
+      "page_reference": "p. 2 electrical characteristics heading",
+      "source_kind": "typical",
+      "column_semantics": {
+        "minimum": "not applicable",
+        "typical": "fit temperature",
+        "maximum": "not applicable"
+      }
+    }
+  },
+  "fit_points": [
+    {
+      "current": {
+        "value": 0.01,
+        "unit": "A",
+        "conditions": "IF = 10 mA, Tamb = 25 degC",
+        "page_reference": "p. 2 electrical characteristics, Forward voltage row",
+        "source_kind": "typical",
+        "column_semantics": {
+          "minimum": "not published for this row",
+          "typical": "published typical column",
+          "maximum": "published maximum column"
+        }
+      },
+      "voltage": {
+        "value": 1.3,
+        "unit": "V",
+        "conditions": "IF = 10 mA, Tamb = 25 degC",
+        "page_reference": "p. 2 electrical characteristics, Forward voltage row",
+        "source_kind": "typical",
+        "column_semantics": {
+          "minimum": "not published for this row",
+          "typical": "published typical column",
+          "maximum": "published maximum column"
+        }
+      }
+    }
+  ],
+  "electrical_limits": {
+    "reverse_voltage": {
+      "value": 6,
+      "unit": "V",
+      "conditions": "Tamb = 25 degC",
+      "page_reference": "p. 1 absolute maximum ratings",
+      "source_kind": "maximum",
+      "column_semantics": {
+        "minimum": "not published",
+        "typical": "not published",
+        "maximum": "absolute maximum rating"
+      }
+    },
+    "forward_current": {
+      "value": 0.05,
+      "unit": "A",
+      "conditions": "Tamb = 25 degC",
+      "page_reference": "p. 1 absolute maximum ratings",
+      "source_kind": "maximum",
+      "column_semantics": {
+        "minimum": "not published",
+        "typical": "not published",
+        "maximum": "absolute maximum rating"
+      }
+    },
+    "reverse_current_6v": {
+      "value": 1e-05,
+      "unit": "A",
+      "conditions": "VR = 6 V, Tamb = 25 degC",
+      "page_reference": "p. 2 electrical characteristics, Reverse current row",
+      "source_kind": "maximum",
+      "column_semantics": {
+        "minimum": "not published for this row",
+        "typical": "published typical column",
+        "maximum": "published maximum column"
+      }
+    }
+  },
+  "derived_model_inputs": {
+    "CJO": {
+      "value": 5e-11,
+      "unit": "F",
+      "conditions": "VR = 0 V, f = 1 MHz, Tamb = 25 degC",
+      "page_reference": "p. 2 electrical characteristics, Junction capacitance row",
+      "source_kind": "typical",
+      "column_semantics": {
+        "minimum": "not published for this row",
+        "typical": "published typical column",
+        "maximum": "published maximum column"
+      }
+    },
+    "TT": null
+  },
+  "identity": {
+    "canonical_mpn": "4N35",
+    "manufacturer": "Vishay Semiconductors",
+    "aliases": [
+      "4N35-X001"
+    ],
+    "manufacturer_slug": "vishay"
+  },
+  "source": [
+    {
+      "kind": "datasheet",
+      "url": "https://www.vishay.com/docs/81181/4n35.pdf",
+      "revision": "Rev. 1.2, 07-Jan-10",
+      "sha256": "36e7fc654f6098e7d1bd7a53880f62e58454cd2d1d6baeac05852ee379e46bb2",
+      "accessed_date": "2026-08-07",
+      "pages_referenced": [
+        "p. 1",
+        "p. 2",
+        "p. 3",
+        "p. 4"
+      ],
+      "placeholder": false
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+* 4N35 input LED reverse leakage at published condition
+.temp 25
+* OpenCircuit Model Factory v0.1.0
+* Original work generated from public factual specifications.
+* This model is not a copy of, or adaptation from, any vendor SPICE model.
+* Source: https://www.vishay.com/docs/81181/4n35.pdf
+* Revision: Rev. 1.2, 07-Jan-10
+* Fit: closed-form one-point calibration at 25 degC; no vendor SPICE model used
+.model OC_VISHAY_4N35 D(IS=1.8446211151e-16 N=1.6 RS=1e-4 CJO=5.0e-11)
+Vreverse cathode 0 DC 6
+Ddut 0 cathode OC_VISHAY_4N35
+.op
+.end
