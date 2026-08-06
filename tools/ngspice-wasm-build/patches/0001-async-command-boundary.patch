@@ -1,0 +1,36 @@
+--- a/src/frontend/control.c
++++ b/src/frontend/control.c
+@@ -4,6 +4,17 @@
+ **********/
+ 
+ /* The front-end command loop.  */
++
++#ifdef __EMSCRIPTEN__
++#include <emscripten.h>
++
++EM_ASYNC_JS(char *, opencircuit_next_command, (), {
++    const command = Module["opencircuitNextCommand"]
++        ? await Module["opencircuitNextCommand"]()
++        : "quit";
++    return Module["stringToNewUTF8"](command);
++});
++#endif
+ 
+ #include "ngspice/ngspice.h"
+ #include "ngspice/cpdefs.h"
+@@ -652,7 +663,14 @@
+     } while(0)
+ 
+     for (;;) {
+-        freewl = wlist = getcommand(string);
++#ifdef __EMSCRIPTEN__
++        if (string == NULL) {
++            char *command = opencircuit_next_command();
++            freewl = wlist = getcommand(command);
++            free(command);
++        } else
++#endif
++            freewl = wlist = getcommand(string);
+         if (wlist == NULL) { /* End of file or end of user input. */
+             if (cend[stackp] && cend[stackp]->co_parent && !string) {
+                 cp_resetcontrol(TRUE);
