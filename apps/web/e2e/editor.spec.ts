@@ -8,7 +8,7 @@ test("editor MVP workflow",async({page,context,browserName},testInfo)=>{
   await context.grantPermissions(["clipboard-read","clipboard-write"],{origin:"http://127.0.0.1:4173"}).catch(()=>undefined);
   if(testInfo.project.name==="chromium")await page.screenshot({path:resolve(shots,"default-bench.png"),fullPage:true});
   await expect(page.locator(".generic-tag")).toHaveText("generic");
-  await page.locator('[data-component-id="c4"] .editor-component-hit').click({force:true});await expect(page.locator(".fidelity")).toHaveText("F1");
+  await page.locator('[data-component-id="c4"] .editor-component-hit').click({force:true});await expect(page.locator(".inspector .fidelity")).toHaveText("F2");
   await page.locator('[data-component-id="c2"] .editor-component-hit').click({force:true});await expect(page.locator(".generic-tag")).toHaveText("generic");await expect(page.locator("#wiper-percent")).toHaveText("50 %");
   const host=page.locator("#editor-host"),box=await host.boundingBox();if(!box)throw new Error("Editor host is not visible");
   await page.locator('[data-tool="resistor"]').click();await page.mouse.click(box.x+400,box.y+240);await expect(page.locator(".editor-component.selected")).toHaveCount(1);
