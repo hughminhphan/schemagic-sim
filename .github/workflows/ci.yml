@@ -1,0 +1,115 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  hard-gates:
+    name: Tests, models, and build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      # Root tests run every workspace test script, including deterministic
+      # Vitest suites and component package validation.
+      - name: Run workspace tests
+        run: npm test
+
+      # Keep model-package schema and provenance validation visible as an
+      # explicit hard gate even though the model-library test script also runs it.
+      - name: Validate every component model package
+        shell: bash
+        run: |
+          while IFS= read -r -d '' model; do
+            node packages/component-schema/validate-package.mjs "$model"
+          done < <(find packages/model-library/models -mindepth 2 -maxdepth 2 -type d -print0 | sort -z)
+
+      - name: Build all workspaces
+        run: npm run build
+
+      - name: Upload web application
+        uses: actions/upload-artifact@v4
+        with:
+          name: schemagic-web-dist
+          path: apps/web/dist
+          if-no-files-found: error
+          retention-days: 14
+
+  native-comparison:
+    name: Native versus WASM comparison
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: tools/native-ngspice-reference/package-lock.json
+
+      - name: Install comparison harness dependencies
+        run: npm ci --prefix tools/native-ngspice-reference
+
+      - name: Install Ubuntu ngspice
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ngspice
+          sudo mkdir -p /opt/homebrew/bin
+          sudo ln -sf "$(command -v ngspice)" /opt/homebrew/bin/ngspice
+
+      - name: Detect native ngspice version
+        id: native-version
+        shell: bash
+        run: |
+          version_output="$(ngspice --version 2>&1)"
+          printf '%s\n' "$version_output"
+          major="$(printf '%s\n' "$version_output" | grep -Eo 'ngspice-[0-9]+' | head -1 | cut -d- -f2 || true)"
+          echo "major=$major" >> "$GITHUB_OUTPUT"
+          echo "text<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$version_output" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+
+      # ngspice 46 is the release reference. Ubuntu's apt repository may expose
+      # another major version. A non-46 comparison still provides useful drift
+      # information, but it must not replace the deterministic hard gates above.
+      - name: Run native and WASM comparison suite
+        id: comparison
+        continue-on-error: ${{ steps.native-version.outputs.major != '46' }}
+        working-directory: tools/native-ngspice-reference
+        env:
+          OPEN_CIRCUIT_NGSPICE_ENGINE_MODULE: ${{ github.workspace }}/tools/ngspice-wasm-build/dist-loader/index.mjs
+        run: node suite.mjs
+
+      - name: Record comparison authority
+        if: always()
+        shell: bash
+        run: |
+          if [ "${{ steps.native-version.outputs.major }}" = "46" ]; then
+            echo "### Native comparison" >> "$GITHUB_STEP_SUMMARY"
+            echo "The Ubuntu native package is ngspice 46, so comparison failures are a hard numerical gate." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "### Informational native comparison" >> "$GITHUB_STEP_SUMMARY"
+            echo "Ubuntu supplied ngspice major '${{ steps.native-version.outputs.major }}', not the pinned release reference 46." >> "$GITHUB_STEP_SUMMARY"
+            echo "The suite ran for drift visibility with soft-fail handling. Workspace tests, model validation, and the production build remain the hard gates." >> "$GITHUB_STEP_SUMMARY"
+            echo "::notice::Native ngspice is not version 46; comparison results are informational."
+          fi

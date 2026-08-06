@@ -1,0 +1,74 @@
+name: Bug report
+description: Report a reproducible problem in scheMAGIC Simulator
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for reporting a problem. Do not include private circuit data or security-sensitive details here. Use the private security advisory form for vulnerabilities.
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What went wrong?
+      placeholder: A concise description of the problem.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Provide the smallest reliable sequence of actions.
+      placeholder: |
+        1. Open ...
+        2. Place ...
+        3. Run ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: Include exact diagnostics when available.
+    validations:
+      required: true
+  - type: input
+    id: deployment
+    attributes:
+      label: Version or deployment URL
+      placeholder: Commit SHA, schemagic.pages.dev, or sim.schemagic.design
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Browser and operating system
+      placeholder: Firefox 141 on macOS 15.6
+    validations:
+      required: true
+  - type: textarea
+    id: circuit
+    attributes:
+      label: Minimal circuit or share link
+      description: Attach a non-sensitive JSON file, netlist, or share link if it is needed to reproduce the bug.
+      render: text
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context
+      description: Screenshots, logs, frequency of occurrence, and recent changes.
+  - type: checkboxes
+    id: conduct
+    attributes:
+      label: Code of Conduct
+      options:
+        - label: I agree to follow the project's Code of Conduct.
+          required: true

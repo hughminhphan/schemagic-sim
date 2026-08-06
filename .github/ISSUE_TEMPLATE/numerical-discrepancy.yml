@@ -1,0 +1,88 @@
+name: Numerical discrepancy
+description: Report a difference between expected, native ngspice, and WebAssembly results
+title: "[Numerics]: "
+labels:
+  - numerical-discrepancy
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Numerical reports need a minimal netlist and concrete numbers. Remove proprietary content before posting publicly.
+  - type: dropdown
+    id: analysis
+    attributes:
+      label: Analysis type
+      options:
+        - Operating point
+        - DC sweep
+        - Transient
+        - AC magnitude
+        - AC phase
+        - Noise
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: netlist
+    attributes:
+      label: Minimal netlist
+      description: Include a complete netlist that reproduces the discrepancy.
+      render: spice
+    validations:
+      required: true
+  - type: input
+    id: native-version
+    attributes:
+      label: Native ngspice version
+      placeholder: ngspice-46 with KLU
+    validations:
+      required: true
+  - type: input
+    id: wasm-version
+    attributes:
+      label: WebAssembly engine version
+      placeholder: ngspice-46-opencircuit-wasm1
+    validations:
+      required: true
+  - type: textarea
+    id: native-results
+    attributes:
+      label: Native result numbers
+      description: Include vector names, values, units, and the relevant time or frequency points.
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: wasm-results
+    attributes:
+      label: WebAssembly result numbers
+      description: Include the matching vector names, values, units, and points.
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: comparison
+    attributes:
+      label: Difference and tolerance
+      description: State absolute and relative differences, expected tolerance, and why that tolerance is meaningful.
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: expected-basis
+    attributes:
+      label: Expected-value basis
+      description: Link a datasheet page, measurement record, analytical result, or other source if the report is not only native-versus-WASM.
+  - type: textarea
+    id: commands
+    attributes:
+      label: Commands used
+      description: Include comparison command flags and any environment overrides.
+      render: shell
+  - type: checkboxes
+    id: conduct
+    attributes:
+      label: Code of Conduct
+      options:
+        - label: I agree to follow the project's Code of Conduct.
+          required: true

@@ -1,0 +1,59 @@
+name: Part request
+description: Request a component model by manufacturer part number
+title: "[Part]: "
+labels:
+  - part-request
+body:
+  - type: input
+    id: mpn
+    attributes:
+      label: Manufacturer part number
+      placeholder: TL072
+    validations:
+      required: true
+  - type: input
+    id: manufacturer
+    attributes:
+      label: Manufacturer
+      placeholder: Texas Instruments
+    validations:
+      required: true
+  - type: input
+    id: datasheet
+    attributes:
+      label: Official datasheet URL
+      description: Provide a public HTTPS URL from the manufacturer when possible.
+      placeholder: https://www.example.com/datasheet.pdf
+    validations:
+      required: true
+  - type: textarea
+    id: rationale
+    attributes:
+      label: Priority rationale
+      description: Explain why this part should be prioritized over other requests.
+      placeholder: Describe the circuit, audience, frequency of use, or blocked work.
+    validations:
+      required: true
+  - type: textarea
+    id: analyses
+    attributes:
+      label: Required behavior and analyses
+      description: List the operating region and DC, AC, transient, noise, temperature, or other behavior that matters.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Existing alternatives
+      description: List acceptable substitutes, generic models, or why they are insufficient.
+  - type: checkboxes
+    id: provenance
+    attributes:
+      label: Provenance acknowledgement
+      options:
+        - label: I am requesting an original model generated from public facts, not redistribution of a vendor SPICE model or datasheet PDF.
+          required: true
+        - label: I understand that manufacturer naming does not imply endorsement and that fidelity tiers are engineering estimates.
+          required: true
+        - label: I agree to follow the project's Code of Conduct.
+          required: true
