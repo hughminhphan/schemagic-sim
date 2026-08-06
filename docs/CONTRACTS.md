@@ -1,7 +1,14 @@
 # Shared architecture contracts (DRAFT until P0 gate; frozen after)
 
-Status: DRAFT v0.3 — sections marked [PENDING-SPIKE] finalize when spike reports land.
+Status: FROZEN v1.0 (P0 gate passed 2026-08-06). Changes require an orchestrator commit.
 Owner: orchestrator. Implementation agents adapt to this file; they do not edit it.
+
+## 0. Engine decision (from spikes/engine/REPORT.md, verified)
+
+- Engine: ngspice as WebAssembly, EEcircuit Asyncify+MEMFS integration pattern.
+- Interim dependency for Phase 1-2: `eecircuit-engine@1.7.0` (MIT wrapper around ngspice-45.2+). We ship our own THIRD_PARTY_NOTICES covering ngspice BSD, SPARSE, KLU/numparam LGPL, Emscripten, because the upstream tarball omits them.
+- Before v0.1.0: build our own pinned ngspice-46 artifact (configure/emcc profile in the spike report), excluding XSPICE, OSDI, CIDER, tclspice; include KLU + numparam with full LGPL corresponding-source and relink materials. Rerun the spike harness against it.
+- Measured baseline: op/tran/AC agree with native ngspice-46 to float noise; warm repeated op-point ~1 ms; proof bundle 5.75 MB gzip (custom build will slim this).
 
 ## 1. Repository layout
 
@@ -55,11 +62,13 @@ Top-level JSON, version-stamped:
 - Switch: ideal on = 1 mΩ resistor, off = 1 GΩ (documented honesty note in UI).
 - Every generated netlist ends with explicit analysis + output commands; no interactive .control loops in v1 [PENDING-SPIKE: exact output capture mechanism].
 
-## 4. Simulation worker protocol [PENDING-SPIKE: engine API]
+## 4. Simulation worker protocol (FROZEN, per engine spike)
 
-- sim-engine runs entirely in a dedicated Web Worker (module worker). Main thread posts { runId, netlist, analysis, limits }, worker replies streaming { runId, status } then { runId, result } with Float64Array transferables (vectors: time/freq + per-variable arrays).
-- Cancellation: bumping runId invalidates in-flight runs; if the engine cannot abort cooperatively within 250 ms the worker is terminated and re-instantiated (pre-warmed spare instance to hide latency).
-- Limits (hard): wall-clock 10 s per run (live mode 0.5 s), output points ≤ 200k per variable, WASM memory cap per instantiation. Exceeding => structured error, never a hung UI.
+- sim-engine runs entirely in a dedicated module Web Worker. One request at a time; a new request replaces any queued-not-started one. Engine initializes once and is reused; `destroy all` + rawfile cleanup between runs.
+- Request: { id, type: "runOpPoint"|"runTransient"|"runAC", netlist, limits? }. Response: { id, type:"ready"|"result"|"error" }; results carry VectorMeta[] + transferred ArrayBuffers (Float64; AC = interleaved re/im). Errors: code ∈ PARSE|CONVERGENCE|LIMIT|ENGINE|CANCELLED plus component-linked diagnostics.
+- Output transport: ngspice BINARY rawfile parsed in the worker (validate header counts and byte length before allocating). wrdata only for debugging.
+- Cancellation/timeout: terminate the Worker, reject as CANCELLED, spawn and warm a fresh Worker (pre-warmed spare hides latency).
+- Hard limits: netlist ≤ 1 MiB; rawfile ≤ 128 MiB; ≤ 1M total samples; WASM MAXIMUM_MEMORY 256 MiB; warm interactive op timeout 2 s; tran/AC default 10 s. Includes resolve only through a controlled virtual include map; no host or network file access. Exceeding => structured error, never a hung UI.
 - Errors: worker parses ngspice stderr into { stage, message, netLine?, componentId? } using the netlist line map emitted at generation time. Every user-visible sim error links to a component or the sim settings.
 - Untrusted model input: imported .model/.subckt/.lib/.cir are parsed and sanitized before inclusion; command cards (.control, .shell, .load, file I/O, .include of absolute paths) are stripped/rejected with a visible notice. The WASM sandbox has no host FS access beyond its MEMFS.
 
@@ -67,7 +76,8 @@ Top-level JSON, version-stamped:
 
 - Re-simulate on topology/value/control change (debounced ~30 ms), never per animation frame. Animation replays the latest result.
 - Live mode = repeated op-point solves on parameter drag (target ≤ 50 ms per solve for the vertical-slice circuit).
-- Wire colour = node voltage via the design-pass ramp [PENDING-SPIKE: exact ramp]; current pulses: density ∝ log-clamped |I|, direction = conventional current; below 1 µA no pulses, above clamp ceiling saturate speed, both thresholds visible in a legend. prefers-reduced-motion => static arrows + magnitude labels instead of motion.
+- Wire colour = node voltage via the FROZEN design ramp (spikes/design/DIRECTION.md): isoluminant OKLCH L 0.62, hue 245 (Probe Blue, negative) / 62 (Rail Amber, positive), chroma C = Cmax*|t|^1.6, Graphite 500 #6E7378 at 0 V; sign redundantly encoded by stroke pattern (solid positive, dashed 8-4 negative, hairline+glyph at 0), always on. Current has NO hue, only motion: log pulse law over 4 decades, velocity 12-108 px/s, spacing 34-18 px, alpha 0.25-0.70, nothing below 1 µA. prefers-reduced-motion => quantised stroke-width ladder + static chevrons (identical to SVG export encoding).
+- Palette/type tokens: Vellum #F1EEE8 canvas, Graphite 900 #15181B ink, Phosphor Green #1B9350 run-state only, Fault Red #C44A32 hatch/glyph only. Type: IBM Plex Sans (UI), IBM Plex Mono (all values, tabular), Archivo Expanded 600 (wordmark only), self-hosted. Hard bans: no non-data gradients/shadows/blur, no pills/cards (radius 0, 2 px on inputs only), semantic hues never used as text colour.
 - Precision honesty: displayed values round to 3 significant digits by default; hover shows more; never render more digits than the engine tolerance justifies.
 
 ## 6. Share URLs and persistence

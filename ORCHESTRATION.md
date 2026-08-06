@@ -11,9 +11,9 @@ Local repo: ~/Documents/opencircuit. Public repo + live deploy authorized; launc
 
 ## Phase status
 - [x] P-1 Lane verification (sol + luna wire-verified in splitter log)
-- [ ] P0 Recon — IN PROGRESS (5 parallel spikes below)
-- [ ] P0 gate: minimal netlist runs native AND browser-WASM; WASM licence path documented; contracts frozen
-- [ ] P1 Vertical slice (source + R + real LED + real BJT + pot + ground + scope, live editing)
+- [x] P0 Recon (all 5 spike reports in spikes/, committed)
+- [x] P0 gate PASSED 2026-08-06: WASM/native agreement verified by orchestrator rerun; licence path in spikes/engine/REPORT.md; docs/CONTRACTS.md FROZEN v1.0 (browser Worker proof rolls into P1 gate)
+- [ ] P1 Vertical slice — IN PROGRESS (source + R + real LED + real BJT + pot + ground + scope, live editing)
 - [ ] P2 Editor + analyses (package fan-out)
 - [ ] P3 Model factory + 5 gold components
 - [ ] P4 Component fan-out (≥100 MPNs, ≥25 F2+)
