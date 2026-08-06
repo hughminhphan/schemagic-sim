@@ -18,7 +18,10 @@ P3 progress: golds 1N4148 + WP7113ID at F2 VERIFIED (worst fit 0.896% / 0.758%, 
 - [x] P2+P3 wave lanes VERIFIED 2026-08-06 evening: E1 editor (rebrand + 17 part types + persistence; firefox/webkit e2e pending), E2 waveform-viewer (14 tests, Bode verified), E3 model-import (38 tests incl. hostile inputs; merged from branch), E4 pinned ngspice-46 WASM (6/6 vs native rerun by orchestrator; 1.3 MB brotli, 90 ms init; notices bundle complete), A1 archetype specs (10 files, all templates executed on ngspice-46; limit() broken in ngspice-46, min(max()) idiom mandated), F1 factory + golds 1-2 (1N4148, WP7113ID at F2).
 - [ ] INTEGRATION lane — IN PROGRESS (owns apps/web + sim-engine): ngspice-46 swap, waveform-viewer scope, model-import UI, fit-on-load + stroke-weight polish, cross-browser e2e, licences dialog.
 - [ ] F1 continued — IN PROGRESS: golds 3-5 (2N3904 bjt, IRLZ44N vdmos, TL072 opamp) per docs/model-archetypes.
-- [ ] NEXT: independent gold review lane (reviewer != author) -> P4 fan-out workflow (95+ remaining MPNs, family batches, authors+reviewers) -> P5 packaging -> P6 launch pack (Hugh gate) -> P7 deploy + v0.1.0.
+- [x] Gold adversarial review (Opus) 2026-08-06: 4/5 PASS under falsification (1N4148, WP7113ID, 2N3904, IRLZ44N signed). TL072 FAILED: VDRP hardcoded 5 V/rail from a min-vs-typical misread, dead below 20 V total supply inside claimed envelope. 7 systemic factory weaknesses recorded in docs/gold-review.md and folded into P4 briefs as rules R1-R7.
+- [ ] TL072 refit — IN PROGRESS (returned to factory author with evidence; re-review after).
+- [ ] P4 fan-out workflow READY (scratchpad/p4-fanout.workflow.js: 17 batches, 97 MPNs, 37 F2 targets, author/reviewer lane independence, R1-R7 embedded); launches when TL072 passes re-review.
+- [ ] THEN: P5 packaging -> P6 launch pack (Hugh gate) -> P7 deploy + v0.1.0.
 - [ ] P2 Editor + analyses (package fan-out)
 - [ ] P3 Model factory + 5 gold components
 - [ ] P4 Component fan-out (≥100 MPNs, ≥25 F2+)
