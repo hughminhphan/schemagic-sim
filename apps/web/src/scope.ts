@@ -3,6 +3,7 @@ import type { AnalysisMode, SimulationResult } from "@opencircuit/sim-engine";
 
 export const TRACE_COLORS = ["#3FD983", "#E8A244", "#5FB0E8", "#F1EEE8", "#3FD983", "#E8A244"] as const;
 export const TRACE_DASHES = [[], [], [], [], [6, 3], [2, 3]] as const;
+const LOCUS_ANNOTATION_ID = "pot-sweep";
 
 export interface ScopeProbe {
   node: string;
@@ -18,11 +19,9 @@ function realFrequency(values: Float64Array): Float64Array {
 }
 
 export class ScopePlot {
-  private readonly host: HTMLElement;
   private readonly viewerHost: HTMLDivElement;
   private readonly autoButton: HTMLButtonElement;
   private readonly manualButton: HTMLButtonElement;
-  private readonly locusSvg: SVGSVGElement;
   private readonly keepLocusButton: HTMLButtonElement;
   private viewer: WaveformViewer | undefined;
   private probes: ScopeProbe[] = [];
@@ -32,7 +31,6 @@ export class ScopePlot {
   private locusActive = false;
 
   constructor(host: HTMLElement) {
-    this.host = host;
     const controls = document.createElement("div");
     controls.className = "scope-scale-controls";
     this.autoButton = document.createElement("button");
@@ -48,15 +46,12 @@ export class ScopePlot {
     controls.append(this.autoButton, this.manualButton);
     this.viewerHost = document.createElement("div");
     this.viewerHost.className = "scope-viewer-host";
-    this.locusSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    this.locusSvg.classList.add("scope-locus");
-    this.locusSvg.setAttribute("aria-label", "Potentiometer sweep locus");
     this.keepLocusButton = document.createElement("button");
     this.keepLocusButton.type = "button";
     this.keepLocusButton.className = "keep-locus";
     this.keepLocusButton.textContent = "Keep locus";
     this.keepLocusButton.hidden = true;
-    this.host.replaceChildren(controls, this.viewerHost, this.locusSvg, this.keepLocusButton);
+    host.replaceChildren(controls, this.viewerHost, this.keepLocusButton);
     this.autoButton.addEventListener("click", () => {
       this.viewer?.autoscale();
       this.setScaleState(true);
@@ -64,18 +59,23 @@ export class ScopePlot {
     this.manualButton.addEventListener("click", () => this.promptManualRange());
     this.keepLocusButton.addEventListener("click", () => {
       this.keepLocusButton.hidden = true;
-      this.locusSvg.dataset.kept = "true";
+      this.renderLocus();
     });
-    new ResizeObserver(() => this.renderLocus()).observe(this.host);
     this.remount();
   }
 
   beginLocus(): void {
     this.locus = [];
     this.locusActive = true;
-    this.locusSvg.dataset.kept = "false";
     this.keepLocusButton.hidden = true;
     this.renderLocus();
+  }
+
+  clearLocus(): void {
+    this.locus = [];
+    this.locusActive = false;
+    this.keepLocusButton.hidden = true;
+    this.viewer?.removeAnnotation(LOCUS_ANNOTATION_ID);
   }
 
   addLocusPoint(wiper: number, voltage: number): void {
@@ -101,6 +101,7 @@ export class ScopePlot {
 
   setData(mode: AnalysisMode, result: SimulationResult | undefined): void {
     const modeChanged = this.mode !== mode;
+    if (modeChanged) this.clearLocus();
     this.mode = mode;
     this.result = result;
     if (modeChanged) this.remount();
@@ -134,6 +135,7 @@ export class ScopePlot {
       showControls: true,
       className: "schemagic-waveform-viewer",
     });
+    this.renderLocus();
   }
 
   private renderData(): void {
@@ -151,30 +153,24 @@ export class ScopePlot {
   }
 
   private renderLocus(): void {
-    const width = Math.max(1, this.host.clientWidth);
-    const height = Math.max(1, this.host.clientHeight);
-    this.locusSvg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+    if (!this.viewer) return;
     if (this.locus.length < 2) {
-      this.locusSvg.replaceChildren();
+      this.viewer.removeAnnotation(LOCUS_ANNOTATION_ID);
       return;
     }
-    const values = this.locus.map((point) => point[1]);
-    const minimum = Math.min(...values);
-    const maximum = Math.max(...values);
-    const span = Math.max(1e-9, maximum - minimum);
-    const left = 52;
-    const right = 14;
-    const top = 26;
-    const bottom = 24;
-    const points = this.locus.map(([wiper, voltage]) => {
-      const x = left + Math.max(0, Math.min(1, wiper)) * Math.max(1, width - left - right);
-      const y = top + (1 - (voltage - minimum) / span) * Math.max(1, height - top - bottom);
-      return `${x.toFixed(2)},${y.toFixed(2)}`;
-    }).join(" ");
-    const polyline = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
-    polyline.classList.add("scope-locus-line");
-    polyline.setAttribute("points", points);
-    this.locusSvg.replaceChildren(polyline);
+    this.viewer.addAnnotation({
+      id: LOCUS_ANNOTATION_ID,
+      label: "Pot sweep",
+      points: this.locus,
+      style: {
+        axisGroup: "voltage",
+        color: TRACE_COLORS[0],
+        lineWidth: 1.5,
+        opacity: 0.4,
+        unit: "V",
+        xMode: "normalized",
+      },
+    });
   }
 
   private setScaleState(auto: boolean): void {
