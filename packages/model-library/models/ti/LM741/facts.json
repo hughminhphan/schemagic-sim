@@ -1,0 +1,205 @@
+{
+  "schema_version": "1.0.0",
+  "extraction_method": "pdftotext -layout plus manual table transcription with explicit MIN/TYP/MAX semantics",
+  "fit_conditions": {
+    "temperature": {
+      "value": 25,
+      "unit": "degC",
+      "conditions": "VS = +/-15 V unless stated",
+      "page_reference": "p. 5 electrical characteristics footnote",
+      "source_kind": "typical",
+      "column_semantics": "TYP"
+    }
+  },
+  "parameters": {
+    "aol": {
+      "value": 200000,
+      "unit": "V/V",
+      "conditions": "VS = +/-15 V, VO = +/-10 V, RL >= 2 kohm, TA = 25 degC",
+      "page_reference": "p. 5 electrical characteristics, TYP column",
+      "source_kind": "typical",
+      "column_semantics": "TYP"
+    },
+    "gbw": {
+      "value": 1000000,
+      "unit": "Hz",
+      "conditions": "Datasheet publishes no LM741 bandwidth row; physical default used for a stable F1 model",
+      "page_reference": "archetype-opamp.md LM741 heritage rule",
+      "source_kind": "held_default",
+      "column_semantics": "HELD AT DEFAULT"
+    },
+    "sr": {
+      "value": 500000,
+      "unit": "V/s",
+      "conditions": "TA = 25 degC, unity gain",
+      "page_reference": "p. 5 electrical characteristics, TYP column",
+      "source_kind": "typical",
+      "column_semantics": "TYP"
+    },
+    "vos": {
+      "value": 0.001,
+      "unit": "V",
+      "conditions": "RS <= 10 kohm, TA = 25 degC",
+      "page_reference": "p. 5 electrical characteristics, TYP column",
+      "source_kind": "typical",
+      "column_semantics": "TYP"
+    },
+    "vos_max": {
+      "value": 0.005,
+      "unit": "V",
+      "conditions": "RS <= 10 kohm, TA = 25 degC",
+      "page_reference": "p. 5 electrical characteristics, MAX column",
+      "source_kind": "maximum",
+      "column_semantics": "MAX"
+    },
+    "ibias": {
+      "value": 8e-08,
+      "unit": "A",
+      "conditions": "TA = 25 degC",
+      "page_reference": "p. 5 electrical characteristics, TYP column",
+      "source_kind": "typical",
+      "column_semantics": "TYP"
+    },
+    "ios": {
+      "value": 2e-08,
+      "unit": "A",
+      "conditions": "TA = 25 degC",
+      "page_reference": "p. 5 electrical characteristics, TYP column",
+      "source_kind": "typical",
+      "column_semantics": "TYP"
+    },
+    "output_swing": {
+      "column_semantics": {
+        "minimum": "MIN",
+        "typical": "TYP",
+        "maximum": "not published"
+      },
+      "typical_25c": {
+        "value": 14,
+        "unit": "V",
+        "conditions": "VS = +/-15 V, RL >= 10 kohm",
+        "page_reference": "p. 5 electrical characteristics, TYP column",
+        "source_kind": "typical",
+        "column_semantics": "TYP"
+      },
+      "minimum_25c": {
+        "value": 12,
+        "unit": "V",
+        "conditions": "VS = +/-15 V, RL >= 10 kohm",
+        "page_reference": "p. 5 electrical characteristics, MIN column",
+        "source_kind": "minimum",
+        "column_semantics": "MIN"
+      }
+    },
+    "ilim": {
+      "value": 0.025,
+      "unit": "A",
+      "conditions": "TA = 25 degC",
+      "page_reference": "p. 5 electrical characteristics, TYP column",
+      "source_kind": "typical",
+      "column_semantics": "TYP"
+    },
+    "cmrr_db": {
+      "value": 95,
+      "unit": "dB",
+      "conditions": "RS <= 10 ohm, VCM = +/-12 V",
+      "page_reference": "p. 5 electrical characteristics, TYP column",
+      "source_kind": "typical",
+      "column_semantics": "TYP"
+    },
+    "psrr_db": {
+      "value": 96,
+      "unit": "dB",
+      "conditions": "VS = +/-20 V to +/-5 V, RS <= 10 ohm",
+      "page_reference": "p. 5 electrical characteristics, TYP column",
+      "source_kind": "typical",
+      "column_semantics": "TYP"
+    },
+    "iq": {
+      "value": 0.0017,
+      "unit": "A",
+      "conditions": "TA = 25 degC",
+      "page_reference": "p. 5 electrical characteristics, TYP column",
+      "source_kind": "typical",
+      "column_semantics": "TYP"
+    },
+    "en": {
+      "value": 1e-12,
+      "unit": "V/sqrt(Hz)",
+      "conditions": "Noise is not published; tiny nonzero pipeline placeholder removed from shipped model",
+      "page_reference": "archetype-opamp.md section 3.6",
+      "source_kind": "held_default",
+      "column_semantics": "HELD AT DEFAULT"
+    },
+    "phase_margin": {
+      "value": 18.43494882292201,
+      "unit": "deg",
+      "conditions": "No phase margin is published; encoded solely to place FP2 at 3 times GBW",
+      "page_reference": "archetype-opamp.md section 3.4",
+      "source_kind": "held_default",
+      "column_semantics": "HELD AT DEFAULT"
+    },
+    "rout": {
+      "value": 40,
+      "unit": "ohm",
+      "conditions": "Derived as 1 V initial rail drop divided by 25 mA short-circuit current; no open-loop output impedance is published",
+      "page_reference": "p. 5 electrical characteristics output swing and short-circuit rows",
+      "source_kind": "derived_model_input",
+      "column_semantics": "DERIVED FROM TYP"
+    },
+    "supply_positive": {
+      "value": 15,
+      "unit": "V",
+      "conditions": "Electrical characteristics nominal supply",
+      "page_reference": "p. 5 electrical characteristics footnote",
+      "source_kind": "test_condition",
+      "column_semantics": "CONDITION"
+    },
+    "supply_negative": {
+      "value": -15,
+      "unit": "V",
+      "conditions": "Electrical characteristics nominal supply",
+      "page_reference": "p. 5 electrical characteristics footnote",
+      "source_kind": "test_condition",
+      "column_semantics": "CONDITION"
+    },
+    "supply_voltage_total": {
+      "minimum": {
+        "value": 20,
+        "unit": "V",
+        "conditions": "LM741 recommended +/-10 V minimum",
+        "page_reference": "p. 4 recommended operating conditions, MIN column",
+        "source_kind": "minimum",
+        "column_semantics": "MIN"
+      },
+      "maximum": {
+        "value": 44,
+        "unit": "V",
+        "conditions": "LM741 recommended +/-22 V maximum",
+        "page_reference": "p. 4 recommended operating conditions, MAX column",
+        "source_kind": "maximum",
+        "column_semantics": "MAX"
+      }
+    }
+  },
+  "identity": {
+    "canonical_mpn": "LM741",
+    "manufacturer": "Texas Instruments",
+    "aliases": [
+      "LM741N",
+      "LM741J"
+    ]
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://www.ti.com/lit/ds/symlink/lm741.pdf",
+    "revision": "SNOSC25D, May 1998, revised October 2015",
+    "sha256": "e0d1e5a2f2ecf5ce318fadb27a088319fb55e4268c94a1aca4fbbb9caa1ede5e",
+    "accessed_date": "2026-08-07",
+    "pages_referenced": [
+      "p. 4",
+      "p. 5"
+    ],
+    "placeholder": false
+  }
+}

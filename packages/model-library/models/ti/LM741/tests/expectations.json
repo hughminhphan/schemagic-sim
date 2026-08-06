@@ -1,0 +1,249 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "open_loop_gain.cir",
+      "analysis_type": "ac_small_signal",
+      "scalar_checks": [
+        {
+          "name": "open_loop_gain_db",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "db:first(v(out))"
+          },
+          "expected_value": 106.02059991327963,
+          "unit": "dB",
+          "tolerance": {
+            "absolute": 0.6,
+            "relative": 0
+          },
+          "datasheet_citation": "p. 5 electrical characteristics, AVD row, TYP column, VS = +/-15 V, VO = +/-10 V, RL >= 2 kohm",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "offset_and_bias.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "input_offset",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale:last(v(out2),0.1)"
+          },
+          "expected_value": 0.001,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.0001,
+            "relative": 0.05
+          },
+          "datasheet_citation": "p. 5 electrical characteristics, input offset voltage row, TYP column, RS <= 10 kohm, TA = 25 degC",
+          "placeholder": false
+        },
+        {
+          "name": "input_bias_positive",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vp1))"
+          },
+          "expected_value": 9e-08,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 1e-10,
+            "relative": 0.05
+          },
+          "datasheet_citation": "p. 5 electrical characteristics, input bias and input offset current rows, TYP columns, TA = 25 degC",
+          "placeholder": false
+        },
+        {
+          "name": "input_bias_negative",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vn1))"
+          },
+          "expected_value": 7e-08,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 1e-10,
+            "relative": 0.05
+          },
+          "datasheet_citation": "p. 5 electrical characteristics, input bias and input offset current rows, TYP columns, TA = 25 degC",
+          "placeholder": false
+        },
+        {
+          "name": "quiescent_current_per_amplifier",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcc),0.5)"
+          },
+          "expected_value": 0.0017,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.1
+          },
+          "datasheet_citation": "p. 5 electrical characteristics, supply current row, TYP column, TA = 25 degC",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "slew_and_swing.cir",
+      "analysis_type": "transient",
+      "scalar_checks": [
+        {
+          "name": "rising_slew",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "slew(v(out),2,7,rising)"
+          },
+          "expected_value": 500000,
+          "unit": "V/s",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.15
+          },
+          "datasheet_citation": "p. 5 electrical characteristics, slew rate row, TYP column, TA = 25 degC, unity gain",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "output_swing.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "positive_swing_typical_25c",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(outp))"
+          },
+          "expected_value": 14,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.1,
+            "relative": 0.05
+          },
+          "datasheet_citation": "p. 5 electrical characteristics, output voltage swing row, RL >= 10 kohm, TYP column, VS = +/-15 V",
+          "placeholder": false
+        },
+        {
+          "name": "negative_swing_typical_25c",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(outn))"
+          },
+          "expected_value": -14,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.1,
+            "relative": 0.05
+          },
+          "datasheet_citation": "p. 5 electrical characteristics, output voltage swing row, RL >= 10 kohm, TYP column, VS = +/-15 V",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "minimum_supply_follower.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "minimum_supply_follow_negative",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(outn))"
+          },
+          "expected_value": -0.249,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.01,
+            "relative": 0.02
+          },
+          "datasheet_citation": "p. 4 recommended operating conditions, LM741 supply voltage MIN +/-10 V; p. 5 input offset voltage TYP column",
+          "placeholder": false
+        },
+        {
+          "name": "minimum_supply_follow_zero",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(outz))"
+          },
+          "expected_value": 0.001,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.01,
+            "relative": 0.02
+          },
+          "datasheet_citation": "p. 4 recommended operating conditions, LM741 supply voltage MIN +/-10 V; p. 5 input offset voltage TYP column",
+          "placeholder": false
+        },
+        {
+          "name": "minimum_supply_follow_positive",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(outp))"
+          },
+          "expected_value": 0.251,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.01,
+            "relative": 0.02
+          },
+          "datasheet_citation": "p. 4 recommended operating conditions, LM741 supply voltage MIN +/-10 V; p. 5 input offset voltage TYP column",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "short_circuit.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "short_circuit_current",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vshort))"
+          },
+          "expected_value": 0.025,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.1
+          },
+          "datasheet_citation": "p. 5 electrical characteristics, output short-circuit current row, TYP column, TA = 25 degC",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "cmrr.cir",
+      "analysis_type": "ac_small_signal",
+      "scalar_checks": [
+        {
+          "name": "common_mode_gain",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "magnitude:last(v(out))"
+          },
+          "expected_value": 3.5565588200778455,
+          "unit": "V/V",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.3
+          },
+          "datasheet_citation": "p. 5 electrical characteristics, CMRR row, TYP column, RS <= 10 ohm, VCM = +/-12 V",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    }
+  ]
+}
