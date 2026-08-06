@@ -1,0 +1,14 @@
+LTspice-style educational model test deck
+; top-level circuit lines are intentionally removed by the importer
+.param RLOAD=2k
+.subckt OCSW IN OUT CTRL PARAMS: RON=20m ROFF=100Meg VTH=2.5
+S1 IN OUT CTRL 0 OCSWITCH
+.model OCSWITCH SW(Ron={RON} Roff={ROFF} Vt={VTH} Vh=0.1)
+.ends OCSW
+
+V1 VIN 0 PULSE(0 5 0 1n 1n 5u 10u)
+XSW VIN VOUT VIN OCSW
+RLOAD VOUT 0 {RLOAD}
+.tran 0 100u 0 10n
+.backanno
+.end
