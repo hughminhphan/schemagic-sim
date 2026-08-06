@@ -1,0 +1,169 @@
+{
+  "schema_version": "1.0.0",
+  "fitter": "scipy.optimize.least_squares with native ngspice-46 evaluations where typical table values exist; deterministic physical defaults otherwise",
+  "deterministic": true,
+  "temperature_c": 25,
+  "parameters": {
+    "VTO": 0.8448923747531323,
+    "KP": 20.38143862558466,
+    "THETA": 0.0015415906565410492,
+    "LAMBDA": 0.003,
+    "RD": 0.016177173474173766,
+    "RS": 0.009,
+    "RG": 4,
+    "CGS": 3e-10,
+    "CGDMAX": 3.5e-11,
+    "CGDMIN": 1e-11,
+    "A": 0.25,
+    "CJO": 1.6e-10,
+    "IS": 1.69e-08,
+    "N": 1.5,
+    "RB": 0.009,
+    "TT": 1.22629e-08,
+    "BV": 20,
+    "IBV": 0.00025,
+    "RTHJC": 62,
+    "RTHCA": 78
+  },
+  "parameter_metadata": {
+    "VTO": {
+      "status": "fitted"
+    },
+    "KP": {
+      "status": "fitted"
+    },
+    "THETA": {
+      "status": "fitted"
+    },
+    "LAMBDA": {
+      "status": "derived or held"
+    },
+    "RD": {
+      "status": "fitted"
+    },
+    "RS": {
+      "status": "derived or held"
+    },
+    "RG": {
+      "status": "derived or held"
+    },
+    "CGS": {
+      "status": "derived or held"
+    },
+    "CGDMAX": {
+      "status": "derived or held"
+    },
+    "CGDMIN": {
+      "status": "derived or held"
+    },
+    "A": {
+      "status": "derived or held"
+    },
+    "CJO": {
+      "status": "derived or held"
+    },
+    "IS": {
+      "status": "derived or held"
+    },
+    "N": {
+      "status": "derived or held"
+    },
+    "RB": {
+      "status": "derived or held"
+    },
+    "TT": {
+      "status": "derived or held"
+    },
+    "BV": {
+      "status": "derived or held"
+    },
+    "IBV": {
+      "status": "derived or held"
+    },
+    "RTHJC": {
+      "status": "derived or held"
+    },
+    "RTHCA": {
+      "status": "derived or held"
+    }
+  },
+  "held_defaults": [
+    {
+      "parameter": "LAMBDA",
+      "value": 0.003,
+      "unit": "1",
+      "status": "held at default"
+    },
+    {
+      "parameter": "RS",
+      "value": 0.009,
+      "unit": "ohm",
+      "status": "held at default"
+    },
+    {
+      "parameter": "VJ",
+      "value": 0.8,
+      "unit": "V",
+      "status": "held at default"
+    },
+    {
+      "parameter": "M",
+      "value": 0.5,
+      "unit": "1",
+      "status": "held at default"
+    },
+    {
+      "parameter": "FC",
+      "value": 0.5,
+      "unit": "1",
+      "status": "held at default"
+    },
+    {
+      "parameter": "N",
+      "value": 1.5,
+      "unit": "1",
+      "status": "held at default"
+    },
+    {
+      "parameter": "NBV",
+      "value": 1,
+      "unit": "1",
+      "status": "held at default"
+    },
+    {
+      "parameter": "TNOM",
+      "value": 27,
+      "unit": "degC",
+      "status": "held at default"
+    }
+  ],
+  "optimizer": {
+    "status": 1,
+    "diff_step": 0.0001,
+    "note": "AO3400A/AO3401A/SI2302 table fits used least_squares with ngspice in the loop; guaranteed-limit-only parts use deterministic defaults."
+  },
+  "residuals": [
+    {
+      "quantity": "RDS(on)",
+      "datasheet_value": 0.045,
+      "fitted_value": 0.04500000152801322,
+      "unit": "ohm",
+      "relative_error": 3.3955849397680915e-08,
+      "citation": "p. 2 specifications, TYP column",
+      "column_semantics": "typical"
+    },
+    {
+      "quantity": "RDS(on)",
+      "datasheet_value": 0.056,
+      "fitted_value": 0.055999998771450794,
+      "unit": "ohm",
+      "relative_error": 2.193837869305223e-08,
+      "citation": "p. 2 specifications, TYP column",
+      "column_semantics": "typical"
+    }
+  ],
+  "worst_relative_error": {
+    "value": 3.3955849397680915e-08,
+    "quantity": "RDS(on)"
+  }
+}

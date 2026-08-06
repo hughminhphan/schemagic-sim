@@ -1,0 +1,148 @@
+{
+  "schema_version": "1.0.0",
+  "canonical_mpn": "SI2302",
+  "manufacturer": "Vishay Siliconix",
+  "description": "20 V logic-level N-channel MOSFET",
+  "electrical_family": "nmos",
+  "symbol_pins": [
+    {
+      "name": "G",
+      "number": "1",
+      "role": "gate"
+    },
+    {
+      "name": "S",
+      "number": "2",
+      "role": "source"
+    },
+    {
+      "name": "D",
+      "number": "3",
+      "role": "drain"
+    }
+  ],
+  "spice_pin_mapping": [
+    {
+      "symbol_pin_number": "3",
+      "subckt_node": "drain",
+      "order": 1
+    },
+    {
+      "symbol_pin_number": "1",
+      "subckt_node": "gate",
+      "order": 2
+    },
+    {
+      "symbol_pin_number": "2",
+      "subckt_node": "source",
+      "order": 3
+    }
+  ],
+  "package_variants": [
+    {
+      "name": "SOT-23",
+      "standard": "TO-236",
+      "pin_count": 3,
+      "pin_map": [
+        {
+          "package_pin": "1",
+          "symbol_pin_number": "1"
+        },
+        {
+          "package_pin": "2",
+          "symbol_pin_number": "2"
+        },
+        {
+          "package_pin": "3",
+          "symbol_pin_number": "3"
+        }
+      ]
+    }
+  ],
+  "ordering_code_aliases": [
+    "Si2302DDS",
+    "Si2302DDS-T1-GE3"
+  ],
+  "datasheet": {
+    "url": "https://www.vishay.com/docs/63653/si2302dds.pdf",
+    "revision": "S11-2528-Rev. A, 26-Dec-2011"
+  },
+  "model_type": "dot_model",
+  "fidelity_tier": "F1",
+  "domain_coverage": {
+    "dc": "approx",
+    "ac": "none",
+    "transient": "approx",
+    "noise": "none",
+    "thermal": "approx",
+    "digital": "none"
+  },
+  "supported_analyses": [
+    "operating_point",
+    "dc_sweep",
+    "transient"
+  ],
+  "supported_operating_region": {
+    "summary": "25 degC F1 model within the cited tabulated conditions; absolute maxima are not enforced.",
+    "numeric_bounds": [
+      {
+        "quantity": "characterized_gate_drive",
+        "minimum": 2.5,
+        "maximum": 4.5,
+        "unit": "V",
+        "conditions": "Published typical RDS(on) rows",
+        "placeholder": false
+      },
+      {
+        "quantity": "drain_current_at_minimum_gate_drive",
+        "minimum": 0,
+        "maximum": 3.1,
+        "unit": "A",
+        "conditions": "VGS = 2.5 V typical RDS(on) row",
+        "placeholder": false
+      }
+    ]
+  },
+  "known_omissions": [
+    "Avalanche and unclamped inductive switching (UIS/EAS) are not modelled. The model conducts through BV as an ordinary diode breakdown; it does not fail.",
+    "Safe operating area is not enforced. Absolute maximum ratings are metadata; the model will happily dissipate excessive power.",
+    "No self-heating in the default three-terminal instance: junction temperature is fixed at TNOM. RDS(on) does not rise with dissipation.",
+    "Package and lead inductance are not modelled, so measured switching ringing will not reproduce.",
+    "Threshold-voltage spread is not modelled.",
+    "Gate oxide breakdown beyond the rated VGS maximum is not modelled.",
+    "RDS is held at default 1e9 ohm as the off-state shunt.",
+    "MU, TEXP0, and TCVTH are held at default; only 25 degC behavior is fitted.",
+    "CTHJ is held at default because junction thermal capacitance is unpublished; electrothermal transients are not claimed.",
+    "Flicker noise is not modelled: KF and AF are held at default.",
+    "F1: DC behavior is fitted to the two tabulated 25 degC typical RDS(on) rows; transfer and output curve families are not fitted.",
+    "VTO, KP, THETA, and RD are fitted through native ngspice; LAMBDA is held at default 0.003 because output curves are not fitted.",
+    "RS = 9 mOhm is held at default from the archetype 20% split.",
+    "The datasheet has capacitance plots but no tabulated Ciss/Coss/Crss values. CGS, CGDMAX, CGDMIN, A, and CJO are held at approximate defaults and AC analysis is not claimed.",
+    "VJ = 0.8, M = 0.5, FC = 0.5, N = 1.5, NBV = 1, and TNOM = 27 degC are held at default.",
+    "Body-diode IS uses the single typical VSD row with N held at default; reverse recovery is first-order.",
+    "Thermal resistances are transcribed/derived but electrothermal operation is not validated."
+  ],
+  "licence": {
+    "spdx_id": "MIT",
+    "provenance_basis": "original_from_facts"
+  },
+  "generator": {
+    "tool_or_agent": "opencircuit-model-factory-v0.1.0",
+    "date": "2026-08-07"
+  },
+  "reviewer": {
+    "tool_or_agent": "pending-review",
+    "date": "2026-08-07"
+  },
+  "test_results": {
+    "status": "complete",
+    "pass_count": 4,
+    "fail_count": 0,
+    "total_count": 4,
+    "worst_observed_relative_fitting_error": {
+      "value": 3.3955849397680915e-8,
+      "quantity": "RDS(on)"
+    }
+  },
+  "validation_date": "2026-08-07"
+}
