@@ -1,0 +1,436 @@
+{
+  "schema_version": "1.0.0",
+  "extraction_method": "Official Nexperia PDF, pdftotext layout extraction, and visual table verification",
+  "identity": {
+    "canonical_mpn": "74HC32",
+    "manufacturer": "Nexperia B.V.",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://assets.nexperia.com/documents/data-sheet/74HC_HCT32.pdf",
+    "revision": "Rev. 10, 30 April 2025",
+    "sha256": "1233fedfbb9bda2901d0f7eb073e6d174bf610b63737834e636471052f57e5f6",
+    "accessed_date": "2026-08-07",
+    "pages_referenced": [
+      "p. 4",
+      "p. 5",
+      "p. 6",
+      "p. 8"
+    ],
+    "placeholder": false
+  },
+  "fit_conditions": {
+    "temperature": {
+      "value": 25,
+      "unit": "degC",
+      "conditions": "Typical columns at Tamb = 25 degC",
+      "page_reference": "p. 5, characteristics table heading",
+      "source_kind": "typical",
+      "column_semantics": {
+        "selected": "TYP",
+        "minimum": {
+          "published": false,
+          "value": null
+        },
+        "typical": {
+          "published": true,
+          "value": 25
+        },
+        "maximum": {
+          "published": false,
+          "value": null
+        }
+      }
+    },
+    "supply_voltage": {
+      "value": 4.5,
+      "unit": "V",
+      "conditions": "DC and CL = 50 pF timing fit column; the CL = 15 pF target is published at 5.0 V",
+      "page_reference": "p. 5 static and p. 6 dynamic characteristics",
+      "source_kind": "derived_from_datasheet",
+      "column_semantics": {
+        "selected": "DERIVED",
+        "minimum": {
+          "published": true,
+          "value": 2.0
+        },
+        "typical": {
+          "published": true,
+          "value": 5.0
+        },
+        "maximum": {
+          "published": true,
+          "value": 6.0
+        },
+        "notes": "4.5 V is the archetype fit supply"
+      }
+    }
+  },
+  "dc_characteristics": {
+    "vih_min": {
+      "value": 3.15,
+      "unit": "V",
+      "conditions": "VCC = 4.5 V",
+      "page_reference": "p. 5, Table 6, VIH row, MIN guarantee",
+      "source_kind": "minimum",
+      "column_semantics": {
+        "selected": "MIN",
+        "minimum": {
+          "published": true,
+          "value": 3.15
+        },
+        "typical": {
+          "published": true,
+          "value": 2.4
+        },
+        "maximum": {
+          "published": false,
+          "value": null
+        },
+        "notes": "25 degC MIN/MAX columns"
+      }
+    },
+    "vil_max": {
+      "value": 1.35,
+      "unit": "V",
+      "conditions": "VCC = 4.5 V",
+      "page_reference": "p. 5, Table 6, VIL row, MAX guarantee",
+      "source_kind": "maximum",
+      "column_semantics": {
+        "selected": "MAX",
+        "minimum": {
+          "published": false,
+          "value": null
+        },
+        "typical": {
+          "published": true,
+          "value": 2.1
+        },
+        "maximum": {
+          "published": true,
+          "value": 1.35
+        },
+        "notes": "25 degC MIN/MAX columns"
+      }
+    },
+    "voh_unloaded_min": {
+      "value": 4.4,
+      "unit": "V",
+      "conditions": "VCC = 4.5 V, IO = -20 uA",
+      "page_reference": "p. 5, Table 6, VOH row",
+      "source_kind": "minimum",
+      "column_semantics": {
+        "selected": "MIN",
+        "minimum": {
+          "published": true,
+          "value": 4.4
+        },
+        "typical": {
+          "published": true,
+          "value": 4.5
+        },
+        "maximum": {
+          "published": false,
+          "value": null
+        },
+        "notes": "25 degC MIN/MAX columns"
+      }
+    },
+    "vol_unloaded_max": {
+      "value": 0.1,
+      "unit": "V",
+      "conditions": "VCC = 4.5 V, IO = 20 uA",
+      "page_reference": "p. 5, Table 6, VOL row",
+      "source_kind": "maximum",
+      "column_semantics": {
+        "selected": "MAX",
+        "minimum": {
+          "published": false,
+          "value": null
+        },
+        "typical": {
+          "published": true,
+          "value": 0
+        },
+        "maximum": {
+          "published": true,
+          "value": 0.1
+        },
+        "notes": "25 degC MIN/MAX columns"
+      }
+    },
+    "voh_loaded_typ": {
+      "value": 4.32,
+      "unit": "V",
+      "conditions": "VCC = 4.5 V, IO = -4.0 mA, Tamb = 25 degC",
+      "page_reference": "p. 5, Table 6, VOH loaded row, TYP column",
+      "source_kind": "typical",
+      "column_semantics": {
+        "selected": "TYP",
+        "minimum": {
+          "published": true,
+          "value": 3.98
+        },
+        "typical": {
+          "published": true,
+          "value": 4.32
+        },
+        "maximum": {
+          "published": false,
+          "value": null
+        },
+        "notes": "25 degC MIN/MAX columns"
+      }
+    },
+    "vol_loaded_typ": {
+      "value": 0.15,
+      "unit": "V",
+      "conditions": "VCC = 4.5 V, IO = 4.0 mA, Tamb = 25 degC",
+      "page_reference": "p. 5, Table 6, VOL loaded row, TYP column",
+      "source_kind": "typical",
+      "column_semantics": {
+        "selected": "TYP",
+        "minimum": {
+          "published": false,
+          "value": null
+        },
+        "typical": {
+          "published": true,
+          "value": 0.15
+        },
+        "maximum": {
+          "published": true,
+          "value": 0.26
+        },
+        "notes": "25 degC MIN/MAX columns"
+      }
+    },
+    "voh_loaded_min": {
+      "value": 3.98,
+      "unit": "V",
+      "conditions": "VCC = 4.5 V, IO = -4.0 mA",
+      "page_reference": "p. 5, Table 6, VOH loaded row, selected MIN guarantee",
+      "source_kind": "minimum",
+      "column_semantics": {
+        "selected": "MIN",
+        "minimum": {
+          "published": true,
+          "value": 3.98
+        },
+        "typical": {
+          "published": true,
+          "value": 4.32
+        },
+        "maximum": {
+          "published": false,
+          "value": null
+        },
+        "notes": "25 degC MIN/MAX columns"
+      }
+    },
+    "vol_loaded_max": {
+      "value": 0.26,
+      "unit": "V",
+      "conditions": "VCC = 4.5 V, IO = 4.0 mA",
+      "page_reference": "p. 5, Table 6, VOL loaded row, selected MAX guarantee",
+      "source_kind": "maximum",
+      "column_semantics": {
+        "selected": "MAX",
+        "minimum": {
+          "published": false,
+          "value": null
+        },
+        "typical": {
+          "published": true,
+          "value": 0.15
+        },
+        "maximum": {
+          "published": true,
+          "value": 0.26
+        },
+        "notes": "25 degC MIN/MAX columns"
+      }
+    },
+    "input_leakage_max": {
+      "value": 1e-06,
+      "unit": "A",
+      "conditions": "VI = VCC or GND, VCC = 6.0 V, full temperature range",
+      "page_reference": "p. 5, Table 6, II row, MAX column",
+      "source_kind": "maximum",
+      "column_semantics": {
+        "selected": "MAX",
+        "minimum": {
+          "published": false,
+          "value": null
+        },
+        "typical": {
+          "published": false,
+          "value": null
+        },
+        "maximum": {
+          "published": true,
+          "value": 1e-06
+        }
+      }
+    },
+    "icc_max": {
+      "value": 4e-05,
+      "unit": "A",
+      "conditions": "VI = VCC or GND, IO = 0 A, VCC = 6.0 V, -40 degC to +125 degC",
+      "page_reference": "p. 5, Table 6, ICC row, MAX column",
+      "source_kind": "maximum",
+      "column_semantics": {
+        "selected": "MAX",
+        "minimum": {
+          "published": false,
+          "value": null
+        },
+        "typical": {
+          "published": false,
+          "value": null
+        },
+        "maximum": {
+          "published": true,
+          "value": 4e-05
+        }
+      }
+    },
+    "ci_typ": {
+      "value": 3.5e-12,
+      "unit": "F",
+      "conditions": "Input capacitance, Tamb = 25 degC",
+      "page_reference": "p. 5, Table 6, CI row, TYP column",
+      "source_kind": "typical",
+      "column_semantics": {
+        "selected": "TYP",
+        "minimum": {
+          "published": false,
+          "value": null
+        },
+        "typical": {
+          "published": true,
+          "value": 3.5e-12
+        },
+        "maximum": {
+          "published": false,
+          "value": null
+        }
+      }
+    }
+  },
+  "dynamic_characteristics": {
+    "tpd_cl15_typ": {
+      "value": 6e-09,
+      "unit": "s",
+      "conditions": "VCC = 5.0 V, CL = 15 pF, input tr = tf = 6 ns, Tamb = 25 degC",
+      "page_reference": "p. 6, Table 7, tpd row; p. 8, test data",
+      "source_kind": "typical",
+      "column_semantics": {
+        "selected": "TYP",
+        "minimum": {
+          "published": false,
+          "value": null
+        },
+        "typical": {
+          "published": true,
+          "value": 6e-09
+        },
+        "maximum": {
+          "published": false,
+          "value": null
+        }
+      }
+    },
+    "tpd_cl50_typ": {
+      "value": 8e-09,
+      "unit": "s",
+      "conditions": "VCC = 4.5 V, CL = 50 pF, input tr = tf = 6 ns, Tamb = 25 degC",
+      "page_reference": "p. 6, Table 7, tpd row; p. 8, test data",
+      "source_kind": "typical",
+      "column_semantics": {
+        "selected": "TYP",
+        "minimum": {
+          "published": false,
+          "value": null
+        },
+        "typical": {
+          "published": true,
+          "value": 8e-09
+        },
+        "maximum": {
+          "published": false,
+          "value": null
+        }
+      }
+    },
+    "tt_cl50_typ": {
+      "value": 7e-09,
+      "unit": "s",
+      "conditions": "VCC = 4.5 V, CL = 50 pF, Tamb = 25 degC",
+      "page_reference": "p. 6, Table 7, tt row, TYP column",
+      "source_kind": "typical",
+      "column_semantics": {
+        "selected": "TYP",
+        "minimum": {
+          "published": false,
+          "value": null
+        },
+        "typical": {
+          "published": true,
+          "value": 7e-09
+        },
+        "maximum": {
+          "published": false,
+          "value": null
+        }
+      }
+    }
+  },
+  "recommended_operating": {
+    "vcc_min": {
+      "value": 2.0,
+      "unit": "V",
+      "conditions": "74HC recommended operating range",
+      "page_reference": "p. 5, recommended operating conditions, VCC MIN",
+      "source_kind": "minimum",
+      "column_semantics": {
+        "selected": "MIN",
+        "minimum": {
+          "published": true,
+          "value": 2.0
+        },
+        "typical": {
+          "published": true,
+          "value": 5.0
+        },
+        "maximum": {
+          "published": true,
+          "value": 6.0
+        }
+      }
+    },
+    "vcc_max": {
+      "value": 6.0,
+      "unit": "V",
+      "conditions": "74HC recommended operating range",
+      "page_reference": "p. 5, recommended operating conditions, VCC MAX",
+      "source_kind": "maximum",
+      "column_semantics": {
+        "selected": "MAX",
+        "minimum": {
+          "published": true,
+          "value": 2.0
+        },
+        "typical": {
+          "published": true,
+          "value": 5.0
+        },
+        "maximum": {
+          "published": true,
+          "value": 6.0
+        }
+      }
+    }
+  }
+}
