@@ -1,0 +1,65 @@
+{
+  "schema_version": "1.0.0",
+  "extraction_method": "manual structuring from manufacturer product-page fallback; official PDF and HTML access blocked, no vendor SPICE model used",
+  "fit_conditions": {
+    "temperature": {
+      "value": 25,
+      "unit": "degC",
+      "conditions": "TA = 25 degC unless otherwise specified",
+      "page_reference": "official product page, electrical characteristics",
+      "source_kind": "typical",
+      "column_semantics": "published TYP column when available; no typical forward curve used"
+    }
+  },
+  "electrical_limits": {
+    "reverse_voltage": {
+      "value": 100,
+      "unit": "V",
+      "conditions": "TA = 25 degC",
+      "page_reference": "official product page, absolute maximum ratings",
+      "source_kind": "maximum",
+      "column_semantics": "published MAX column; used only as operating-region bound"
+    },
+    "forward_continuous_current": {
+      "value": 0.1,
+      "unit": "A",
+      "conditions": "TA = 25 degC",
+      "page_reference": "official product page, absolute maximum ratings",
+      "source_kind": "maximum",
+      "column_semantics": "published MAX column; used only as operating-region bound"
+    },
+    "forward_voltage_maximum": {
+      "value": 1.0,
+      "unit": "V",
+      "conditions": "IF = 0.1 A, TA = 25 degC",
+      "page_reference": "official product page, electrical characteristics",
+      "source_kind": "maximum",
+      "column_semantics": "published MAX column; used only as one-sided forward-voltage bound"
+    },
+    "reverse_current_maximum": {
+      "value": 1e-05,
+      "unit": "A",
+      "conditions": "VR = 100 V, TA = 25 degC",
+      "page_reference": "official product page, electrical characteristics",
+      "source_kind": "maximum",
+      "column_semantics": "published MAX column; used only as one-sided leakage bound"
+    }
+  },
+  "identity": {
+    "canonical_mpn": "BAT41",
+    "manufacturer": "st",
+    "aliases": []
+  },
+  "source": {
+    "kind": "spec_page",
+    "url": "https://www.st.com/en/diodes-and-rectifiers/bat41.html",
+    "revision": "official product specification fallback; PDF and product page access blocked",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "accessed_date": "2026-08-07",
+    "pages_referenced": [
+      "official product page, absolute maximum ratings",
+      "official product page, electrical characteristics"
+    ],
+    "placeholder": false
+  }
+}
