@@ -656,3 +656,164 @@ Ship in the same pass, because they are what the first screen is judged on: **F5
 What is genuinely good and should not be touched while fixing the above: the layout is Direction A hybridised exactly as specified; radius discipline is clean throughout, including the dialogs; there is no shadow, no gradient outside the three permitted, no card, no pill, no purple, no hero, no entrance animation, no CDN font; the 1280 x 720 collapse behaviour is right; the engine status line is the most credible thing in the product; and the honesty notes on the ideal switch and the generic devices are exactly the tone this tool should have. The instrument character is already there in the materials. It is the electricity that is missing.
 
 Re-review after the blockers land. The single test to apply is the one the product premise states: open the page cold, and inside five seconds, without touching anything, is it obvious that this thing is solving. Today the answer is no. After F1, F2, F5, F7 and F12 the answer should be yes, and the rest is finish.
+
+---
+
+# Re-review, 2026-08-07
+
+Owner: visual critique lane (re-critique pass). Scope of this section: `docs/design-critique.md` only. Everything else read-only.
+
+Verifying the ten fix commits `4b1b810`, `bf0339b`, `7cedc09`, `e64d3dd`, `20b1a55`, `57e7c7b`, `b3b3dbe`, `85bf180`, `8ac638c`, `69c1a6e` against the 23 findings above.
+
+## Verdict
+
+**GO for public launch visuals, conditional on one fix (R1, the parts rail).**
+
+All four blockers are verified fixed with fresh measurements, and they are fixed properly rather than papered over. The wire ramp paints, every branch current resolves, the pot sweeps continuously with a locus clipped inside the plot, and the reduced-motion static encoding exists and is produced by the same code path as the SVG export. The premise test the original critique set, open the page cold and inside five seconds know that the thing is solving, now passes: the rail is amber, the LED is lit with a photometric halo, pulses travel, and the inspector reads `+8.11 mA` instead of `--`.
+
+One new defect was introduced by the F10 fix and is visible on the first screen at all times. It is small and mechanical, and it is the only condition on this GO.
+
+## Method and evidence
+
+Built at `e4f300b` with `npm run build` (clean, all six packages), served with `npx vite preview --port 4632` from `apps/web`, driven in Playwright Chromium at 1440 x 900 and 1280 x 720, device scale factor 2, plus a `reducedMotion: "reduce"` context. Colour arithmetic in OKLab against a WCAG relative-luminance contrast function. Chroma read off the computed `stroke` of the painted element, not off an inline style.
+
+Evidence PNGs and raw measurement JSON:
+`/private/tmp/claude-501/-Users-hughp/20e0dd4c-4db1-4359-a82d-2955aeb10249/scratchpad/recritique/`
+
+Two measurement traps worth recording, because they will catch the next reviewer too. `partSymbolMarkup()` emits the full component symbol including `data-pot-hit` and `data-testid="pot-wiper"`, so those selectors now match twice in the document, once in the parts rail and once on the canvas, and the rail copy comes first in document order. Any pot assertion must be scoped to `.editor-world`. Separately, wire `w1` is an L shape, so the centre of its bounding box is not on the path; hover probes must use `getPointAtLength()`.
+
+## Verdict table
+
+| Finding | Severity | Grade | One-line evidence |
+| --- | --- | --- | --- |
+| F1 wire voltage colour | blocker | verified-fixed | Six distinct strokes across nine wires on `path.editor-wire`; rail at `oklch(0.62 0.14 62)` |
+| F2 branch currents | blocker | verified-fixed | `Branch I +8.11 mA`; pulse canvas paints 14,365 px; LED halo r 3 to 5.75 |
+| F4 pot sweep | blocker | verified-fixed | 11 strictly monotonic wiper-net chroma values across one drag; locus inside the plot |
+| F15 reduced motion and SVG export | blocker | verified-fixed | 100 static chevrons, pulse canvas 0 px, both exports carry the same ladder |
+| F3 wire to branch attribution | high | verified-fixed | Endpoint set plus pin-0 sign flip shipped in `updateVisuals()` |
+| F5 chroma and gamma | high | verified-fixed | Cmax 0.140 / 0.152 at gamma 1.25 painted and in the legend |
+| F6 pulse core colour | high | verified-fixed | `pulseColor()` signs the L offset by surface, L 0.44 on Vellum |
+| F7 pulse law | high | verified-fixed | CSS dash path deleted, instanced canvas `PulseRenderer` is the shipped path |
+| F8 ground labels | high | verified-fixed | Six labels, V1 P1 RB Q1 RL D1; no C7 C8 C9 |
+| F9 label and symbol weight | high | verified-fixed | `.editor-label` renders a constant 11.0 px; symbol stroke pinned at 1.5 px |
+| F10 symbol rail | high | **regressed** | Letters gone, but ink renders 1.4 to 6.8 px under a 2.2 px stroke. See R1 |
+| F11 trace palette | high | verified-fixed, one residual | Palette is the prescribed four; `demo.ts` still stores an off-palette probe hex |
+| F12 scope well | high | verified-fixed | Graticule at rest, single empty state, cursor row unclipped, V/div and s/div |
+| F13 net highlight | high | verified-fixed | Non-hovered nets drop to exactly 0.350 chroma, hovered net holds 0.140 |
+| F14 junction dots | high | verified-fixed | Zero false dots; degree filter is `count > 2` |
+| F16 legend | high | verified-fixed | `in oklch` gradient, five prescribed stops, five numeric labels |
+| F17 guidance line | high | verified-fixed | `Drag the pot.` with a dismiss control, persisted in `localStorage` |
+| F18 baseline alignment | polish | verified-fixed | `.reading { align-items: baseline }`, unit tracking `.02em` |
+| F19 missing values | polish | verified-fixed | En dash path in `format.ts` |
+| F20 chrome action row | polish | still-open, deferred | Nine actions, up from six. Does not block. See below |
+| F21 import sheet | polish | verified-fixed | Custom `.file-trigger`, focus ring covers textarea and select |
+| F22 wordmark and fonts | polish | verified-fixed, two open items | Tracking `.06em`, Plex Mono 600 loaded; case and slashed zero still open |
+| F23 dead `schematic.ts` | polish | verified-fixed | Now the live module, imported by `main.ts` |
+
+## Blocker measurements
+
+### F1, wire voltage colour on the real rendered path
+
+Measured on `getComputedStyle(path.editor-wire).stroke` for all nine wires of the default bench. The paint target is now the path, so the class rule no longer wins:
+
+| Wire | net | painted stroke | C | implied t | stroke width |
+| --- | --- | --- | --- | --- | --- |
+| w1, w2 | +5 V rail | `oklch(0.62 0.14 62)` | 0.1400 | 1.000 | 1.8 px |
+| w8 | LED anode | `oklch(0.62 0.05377 62)` | 0.0538 | 0.465 | 1.8 px |
+| w5 | wiper | `oklch(0.62 0.04848 62)` | 0.0485 | 0.428 | 1.8 px |
+| w6 | base | `oklch(0.62 0.01203 62)` | 0.0120 | 0.140 | 1.8 px |
+| w9 | collector | `oklch(0.62 0.0012 62)` | 0.0012 | 0.022 | 1.8 px |
+| w3, w4, w7 | ground | `rgb(110, 115, 120)` | 0 | 0 | 0.9 px |
+
+Six distinct stroke values across nine wires, against one uniform grey before. The amended constants are confirmed on the painted element: the rail sits at exactly the prescribed amber Cmax 0.140, and the amber gamut cap is respected.
+
+The gamma change is doing the work the critique predicted. The wiper net at t 0.428 now paints C 0.0485. Under the old `0.117 * |t|^1.6` it painted 0.0299. That is a 62 percent increase on the one net a bias network is read from, and it is the difference between a readable warm tan and grey.
+
+The blue half of the ramp is not exercised by this circuit, since every node is positive. It is verified instead on the legend swatch, whose computed gradient resolves to `rgb(16, 141, 219)` at the negative rail, that is `#108DDB`, which is `oklch(0.62 0.1520 245)`, the prescribed blue Cmax. Both ends of the amended ramp are therefore confirmed.
+
+### F2, branch currents, pulses and LED response
+
+`Branch I` reads `+8.11 mA` in the inspector, against `--` before. The `currentVector()` mapping shipped in `apps/web/src/schematic.ts` and is consumed by both call sites.
+
+The motion layer is now the instanced canvas renderer, as F7 prescribed, not the per-element CSS dash. Consequences measured: `canvas.pulse-layer` exists at 2168 x 1256 backing pixels and carries 14,365 non-transparent pixels at rest. The old `current-active` class and the `--pulse-*` custom properties are correctly absent, since that path was deleted rather than left dangling.
+
+LED brightness responds to real current, not to a boolean. At rest the halo sits at r 5.75 with computed opacity 0.429 against a base r of 3 and opacity 0. Sweeping the pot moves the halo radius continuously (5.7554, 5.7577, 5.7597, 5.7616, 5.7634, 5.7650, 5.7666, 5.7681, 5.7696, 5.7711), and driving the branch current down collapses it to r 3, opacity 0. The photometric response is live and monotonic.
+
+### F4, the pot drag
+
+The on-canvas knob exists. One `[data-pot-hit]` inside `.editor-world`, `data-pot-hit="c2"`, presenting a 209.8 px tall grab target at the default fit.
+
+Tracking is continuous through a single gesture. Ten pointer moves between pointerdown and pointerup, sampling the wiper net's painted chroma at each step:
+
+```
+0.04848  0.05241  0.05918  0.06506  0.07135  0.07821
+0.08564  0.09384  0.10301  0.11328  0.12488
+```
+
+Eleven distinct values, strictly monotonic, and the final value survives pointerup. Against the original instrumented run, where the wiper stayed at `0.526` for the entire gesture, this is the finding fully closed. The on-canvas wiper arm and knob re-render with the gesture as well: seven distinct `path.pot-wiper` d attributes and seven distinct `rect.pot-knob` y values across a six-step drag, while the parts rail copy correctly stays static.
+
+The trace-hold locus draws and is clipped inside the plot. After the sweep the scope canvas carries 3,416 phosphor-green pixels with a bounding box of x 1585 to 2666 and y 50 to 222 on a 2836 x 284 canvas. Nothing touches the frame on any edge, so the sweep locus is contained by the plot rect rather than painting over the axis furniture. The `Keep locus` affordance from section E5 is present in the dock.
+
+### F15, reduced motion and export equivalence
+
+Under `prefers-reduced-motion: reduce`: 100 elements of class `static-chevron` inside `#chevron-layer`, and the pulse canvas paints zero non-transparent pixels. Motion stops and the information moves into a static channel, which is exactly what the section requires.
+
+The stroke ladder engages. Two distinct wire widths on this circuit, 2.0 px and 2.8 px, which clears the "at least two distinct values" bar the critique asked the e2e gate to assert. Only two of the four rungs appear because the demo has only two current buckets; the ladder itself is `[0.9, 1.4, 2.0, 2.8]` in source.
+
+Export equivalence holds in substance. Both the normal-motion and reduced-motion exports are 25,164 bytes, both carry 100 `static-chevron` paths, and both carry the identical stroke-width set. The normal export carries the static encoding too, which is the structural point of the contract: the reduced-motion screen cannot rot, because every export exercises it. A diff shows the two files differ only in the declaration order inside the inline `style` attribute, `stroke; stroke-dasharray; stroke-width` against `stroke-width; stroke; stroke-dasharray`. That is semantically equivalent but not literally byte-identical as DIRECTION 4.4 words it. Serialise those three declarations in a fixed order, or amend the contract to say "equivalent". Not a launch condition.
+
+## New finding
+
+### R1. The parts rail symbols are illegible. The stroke is wider than the symbol.
+
+**Severity: high. Introduced by the F10 fix.** Evidence: `r18-rail-zoom.png`, measurements below.
+
+The letters are gone and real IEC 60617 geometry is in their place, so hard ban 7 is satisfied and the two `Q` entries and two `M` entries are no longer identical in principle. In practice nothing in the rail is readable. Every part below the wire tool renders as a small dark blob.
+
+The arithmetic explains it exactly. `partSymbolMarkup()` emits `viewBox="-5 -7 10 14"` into a box that `.symbol-tool svg` sizes at 30 x 22 px. Uniform scale is therefore `min(30/10, 22/14)` which is 1.571 px per user unit, set by the height. The same rule declares `stroke-width: 1.4` with no `vector-effect`, so the stroke is in user units and paints at `1.4 * 1.571 = 2.2 px`. Measured ink extents for the first five parts:
+
+| Part | ink, user units | ink, px | stroke, px |
+| --- | --- | --- | --- |
+| resistor | 4.00 x 1.40 | 6.3 x 2.2 | 2.2 |
+| capacitor | 4.00 x 2.40 | 6.3 x 3.8 | 2.2 |
+| inductor | 4.35 x 1.50 | 6.8 x 2.4 | 2.2 |
+| vsource | 0.90 x 4.00 | 1.4 x 6.3 | 2.2 |
+| vsource sine | 0.90 x 4.00 | 1.4 x 6.3 | 2.2 |
+
+The stroke is equal to or wider than the short axis of every symbol in the list. A resistor 2.2 px tall drawn with a 2.2 px pen is a filled bar, not a resistor. Two thirds of the viewBox is empty margin, which is what starves the scale.
+
+Contrast the canvas, where the same geometry is legible because `.editor-symbol *` carries `vector-effect: non-scaling-stroke` at world scale 17.48, giving a 1.5 px pen against features 17 px apart. The rail is the only place the geometry is drawn without that protection.
+
+**Fix.** Two changes, both in existing rules.
+
+1. Tighten the viewBox to the ink bounds rather than the pin extents. Roughly `viewBox="-2.5 -3.5 5 7"` raises the uniform scale to `min(30/5, 22/7) = 3.14 px` per unit, so the resistor body renders about 12.6 px wide instead of 6.3.
+2. Add `vector-effect: non-scaling-stroke` to the `.symbol-tool svg` rule so the 1.4 px UI weight is 1.4 px on screen at any box size, matching the specified stroke ladder instead of tripling it.
+
+Together those give roughly a 12 px symbol under a 1.4 px pen, which is the ratio the canvas already proves legible. Verify by eye at 1x, not by assertion; a count of `svg` elements passes today.
+
+## Residuals worth recording, none of them blocking
+
+- **F11 residual.** `TRACE_COLORS` and the `--oc-series-*` tokens are now the prescribed four with `TRACE_DASHES` of `[[], [], [], [], [6,3], [2,3]]`, and the rose is gone. But `apps/web/src/demo.ts` line 33 stores `color: "#3987e5"` on probe `p1`, and `probeColor()` honours any stored hex over the palette. So the one probe dot on the default first screen is still the old off-palette blue. One literal in the demo document.
+- **F12 nit.** The new readouts print `+1.25 V/div` and `+1.00 ms/div`. A per-division scale is a magnitude and should not carry a sign; strip it from these two readouts only, leaving the signed reserved column on actual measurements.
+- **F14 caveat.** The degree filter is correct and no false dots are drawn, but the demo circuit contains no three-way wire junction, so the positive case, that a real junction still gets its dot, is unproven on this bench. Worth one fixture.
+- **F22 open items.** Tracking and the Plex Mono 600 face are fixed. The wordmark is still mixed case `scheMAGIC Simulator` against a contract that says uppercase, which is presumably the brand decision the critique anticipated, and the contract line should be amended rather than left diverged. The slashed-zero check remains open.
+- **Dead CSS.** `apps/web/src/style.css` still styles `.import-source input[type="file"]` and its `::file-selector-button` although the dialog now renders a custom trigger. Harmless, but it is the kind of leftover that makes the next reviewer think the native control is still in play.
+- **Cross-browser e2e.** Chromium passes 8 of 8, including the `continuous pot drag` and `reduced-motion static encoding` gates. Firefox and WebKit fail `editor MVP workflow` on `navigator.clipboard.readText()` being unavailable in headless, which makes the assertion fall back to `page.url()` and miss `#c=`. This is a harness limitation on the Share URL path, not a visual defect, and it is outside this lane. It should be tracked separately.
+
+## The two deferred items
+
+**F20, the chrome action row. Still open, and does not individually block launch.** The row is now nine actions: `Examples`, `Catalog`, `Import models`, `Share URL`, `Netlist`, `SVG`, `Download JSON`, `Load JSON`, `?`. That is up from six, so it moved in the wrong direction, and `Download JSON` and `Load JSON` are still file-manager vocabulary against D14. Three things keep it off the blocking list. Nothing in the row is wrong, only verbose. Nothing is hidden by position at 1440 x 900, so the `nth-last-child` trick the critique objected to is not what is holding the row together. And the `SVG` entry that pushed the count up is there because F15 required it, which is a good reason. Collapsing to `Models`, `Export`, `?` remains the right destination and is a clean follow-up.
+
+**F21 and F22 partials. Both closed further than expected, neither blocks.** F21 is effectively done: a custom `.file-trigger` button, a hidden native input, a live filename span, and a focus ring that now covers `textarea` and `select` at radius 0. F22 has the tracking and the 600 weight; what remains is a contract wording amendment and one open type check. Neither is visible enough to hold a launch.
+
+## Conditions on the GO
+
+1. **R1, the parts rail, must land before public launch.** It is a viewBox and a `vector-effect` declaration. It is on the first screen, on the left edge, permanently, and a column of unreadable blobs undercuts the instrument claim that the rest of this pass just earned.
+
+Recommended in the same commit, none of them blocking: the `demo.ts` probe hex, the sign on the `V/div` and `s/div` readouts, and a fixed declaration order in the export so the byte-identity clause is literally true.
+
+## What changed about the answer
+
+The original re-review test was: open the page cold, and inside five seconds, without touching anything, is it obvious that this thing is solving. The answer is now yes. The rail is amber and pulsing, the LED carries a warm halo, the wiper net reads as a distinct tan against slate grounds, the scope shows a graticule and one empty state instead of a black void with two, and the inspector quotes a real milliamp figure next to a real engine time. Grab the knob and the hue slides continuously while a locus draws itself in the dock.
+
+The electricity reaches the screen. Fix the rail and ship it.
