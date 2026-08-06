@@ -1,0 +1,151 @@
+{
+  "schema_version": "1.0.0",
+  "canonical_mpn": "J113",
+  "manufacturer": "onsemi",
+  "description": "N-channel analog switch and chopper JFET",
+  "electrical_family": "jfet_n",
+  "symbol_pins": [
+    {
+      "name": "D",
+      "number": "1",
+      "role": "drain"
+    },
+    {
+      "name": "S",
+      "number": "2",
+      "role": "source"
+    },
+    {
+      "name": "G",
+      "number": "3",
+      "role": "gate"
+    }
+  ],
+  "spice_pin_mapping": [
+    {
+      "symbol_pin_number": "1",
+      "subckt_node": "drain",
+      "order": 1
+    },
+    {
+      "symbol_pin_number": "3",
+      "subckt_node": "gate",
+      "order": 2
+    },
+    {
+      "symbol_pin_number": "2",
+      "subckt_node": "source",
+      "order": 3
+    }
+  ],
+  "package_variants": [
+    {
+      "name": "TO-92",
+      "standard": "CASE 135AN",
+      "pin_count": 3,
+      "pin_map": [
+        {
+          "package_pin": "1",
+          "symbol_pin_number": "1"
+        },
+        {
+          "package_pin": "2",
+          "symbol_pin_number": "2"
+        },
+        {
+          "package_pin": "3",
+          "symbol_pin_number": "3"
+        }
+      ]
+    }
+  ],
+  "ordering_code_aliases": [],
+  "datasheet": {
+    "url": "https://www.onsemi.cn/pub/Collateral/MMBFJ113-D.PDF",
+    "revision": "Rev. 5, March 2023"
+  },
+  "model_type": "dot_model",
+  "fidelity_tier": "F1",
+  "domain_coverage": {
+    "dc": "approx",
+    "ac": "none",
+    "transient": "approx",
+    "noise": "none",
+    "thermal": "none",
+    "digital": "none"
+  },
+  "supported_analyses": [
+    "operating_point",
+    "dc_sweep",
+    "ac_small_signal",
+    "transient"
+  ],
+  "supported_operating_region": {
+    "summary": "F1 fit at 25 C for VDS from 0 to 15 V and reverse gate bias from 0 to -1.5 V using the J113 typical curves; breakdown and capacitances are excluded.",
+    "numeric_bounds": [
+      {
+        "quantity": "drain_source_voltage",
+        "minimum": 0,
+        "maximum": 15,
+        "unit": "V",
+        "conditions": "Typical-characteristic fit envelope at 25 C",
+        "placeholder": false
+      },
+      {
+        "quantity": "gate_source_voltage",
+        "minimum": -1.5,
+        "maximum": 0,
+        "unit": "V",
+        "conditions": "Typical-characteristic fit envelope; never forward bias gate",
+        "placeholder": false
+      },
+      {
+        "quantity": "ambient_temperature",
+        "minimum": 25,
+        "maximum": 25,
+        "unit": "degC",
+        "conditions": "Fit reference temperature",
+        "placeholder": false
+      }
+    ]
+  },
+  "known_omissions": [
+    "No self-heating: junction temperature is fixed at TNOM.",
+    "IDSS and VGS(off) bin spread is not modelled. The fit targets one bin's published typical curve; a real part may sit anywhere inside the published limits.",
+    "Gate leakage is set from the tabulated IGSS maximum, not fitted.",
+    "Flicker and thermal noise are not modelled: KF and AF are held at default. Published single-frequency noise data cannot determine a noise corner.",
+    "Temperature coefficients VTOTC, BETATCE, and XTI are held at default; only 25 C data was fitted.",
+    "Gate-junction forward conduction is a simple diode with IS set from IGSS; forward gate drive is not characterised.",
+    "Package parasitics are not modelled.",
+    "Breakdown V(BR)GSS is not modelled; the model does not break down.",
+    "N is held at default 1.0, FC at default 0.5, PB at default 1.0 V, and M at default 0.5.",
+    "RD and RS are each derived as half of the approximately 50 ohm typical on-resistance digitized from p.4 fig.7; the tabulated 100 ohm maximum is retained only as a hard bound.",
+    "CGS and CGD are held at the 1e-15 F numerical floor because the datasheet does not publish Ciss and Crss typical values. AC and switching capacitance behaviour is not modelled.",
+    "PB and M are held at physical defaults but are not meaningful with capacitances at the numerical floor.",
+    "B is held at 1.0 (pure square law): the F1 fit does not justify a doping-profile exponent.",
+    "F1: the table publishes a minimum IDSS and VGS(off) window but no typical IDSS, VGS(off), or gfs values. Typical curves drive the fit and guaranteed rows are hard bounds."
+  ],
+  "licence": {
+    "spdx_id": "MIT",
+    "provenance_basis": "original_from_facts"
+  },
+  "generator": {
+    "tool_or_agent": "opencircuit-model-factory-jfet-manual-v0.1.0",
+    "date": "2026-08-07"
+  },
+  "reviewer": {
+    "tool_or_agent": "pending-review",
+    "date": "2026-08-07"
+  },
+  "test_results": {
+    "status": "complete",
+    "pass_count": 10,
+    "fail_count": 0,
+    "total_count": 10,
+    "worst_observed_relative_fitting_error": {
+      "value": 0.0357165,
+      "quantity": "digitized transfer point at VGS=-1.0 V"
+    }
+  },
+  "validation_date": "2026-08-07"
+}

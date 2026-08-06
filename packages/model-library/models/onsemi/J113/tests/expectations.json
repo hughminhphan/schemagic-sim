@@ -1,0 +1,192 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "idss.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "idss_typical_curve",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vd))"
+          },
+          "expected_value": 0.015,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.25
+          },
+          "datasheet_citation": "onsemi J111/J112/J113/MMBFJ11x Rev. 5, March 2023 p.3 fig.1, TYP VGS(off)=-2.0 V common drain-source curve, digitized",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": [
+        {
+          "name": "idss_minimum",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vd))"
+          },
+          "unit": "A",
+          "inclusive": true,
+          "datasheet_citation": "onsemi J111/J112/J113/MMBFJ11x Rev. 5, March 2023 p.2 electrical characteristics, J113 IDSS MIN column at VDS=15 V, VGS=0",
+          "placeholder": false,
+          "minimum": 0.002
+        }
+      ]
+    },
+    {
+      "test_netlist": "transfer_curve.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "transfer_vgs_0",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vd0))"
+          },
+          "expected_value": 0.015,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.25
+          },
+          "datasheet_citation": "onsemi J111/J112/J113/MMBFJ11x Rev. 5, March 2023 p.3 fig.1, TYP VGS(off)=-2.0 V curve, digitized",
+          "placeholder": false
+        },
+        {
+          "name": "transfer_vgs_minus_0p5",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vd1))"
+          },
+          "expected_value": 0.009,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.25
+          },
+          "datasheet_citation": "onsemi J111/J112/J113/MMBFJ11x Rev. 5, March 2023 p.3 fig.1, TYP VGS(off)=-2.0 V curve, digitized",
+          "placeholder": false
+        },
+        {
+          "name": "transfer_vgs_minus_1p0",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vd2))"
+          },
+          "expected_value": 0.004,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.25
+          },
+          "datasheet_citation": "onsemi J111/J112/J113/MMBFJ11x Rev. 5, March 2023 p.3 fig.1, TYP VGS(off)=-2.0 V curve, digitized",
+          "placeholder": false
+        },
+        {
+          "name": "transfer_vgs_minus_1p5",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vd3))"
+          },
+          "expected_value": 0.001,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.25
+          },
+          "datasheet_citation": "onsemi J111/J112/J113/MMBFJ11x Rev. 5, March 2023 p.3 fig.1, TYP VGS(off)=-2.0 V curve, digitized",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "cutoff.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "cutoff_condition_current",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vd))"
+          },
+          "expected_value": 0.001,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.3
+          },
+          "datasheet_citation": "onsemi J111/J112/J113/MMBFJ11x Rev. 5, March 2023 p.2 electrical characteristics, J113 VGS(off) defined at VDS=5 V, ID=1 mA; p.3 fig.1 typical curve",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "rdson.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "rdson_maximum_via_current",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vd))"
+          },
+          "unit": "A",
+          "inclusive": true,
+          "datasheet_citation": "onsemi J111/J112/J113/MMBFJ11x Rev. 5, March 2023 p.2 electrical characteristics, J113 rDS(on) MAX 100 ohm at VDS<=0.1 V, VGS=0",
+          "placeholder": false,
+          "minimum": 0.001
+        }
+      ]
+    },
+    {
+      "test_netlist": "output_conductance.cir",
+      "analysis_type": "ac_small_signal",
+      "scalar_checks": [
+        {
+          "name": "output_conductance_digitized",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "magnitude:last(i(vd))"
+          },
+          "expected_value": 7e-05,
+          "unit": "S",
+          "tolerance": {
+            "absolute": 2e-05,
+            "relative": 0.3
+          },
+          "datasheet_citation": "onsemi J111/J112/J113/MMBFJ11x Rev. 5, March 2023 p.4 fig.10, output conductance near ID=15 mA, digitized",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "boundary_vds15.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "supported_boundary_vds15",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vd))"
+          },
+          "expected_value": 0.001,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.25
+          },
+          "datasheet_citation": "onsemi J111/J112/J113/MMBFJ11x Rev. 5, March 2023 p.3 fig.1, VDS=15 V boundary at VGS=-1.5 V, digitized",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    }
+  ]
+}

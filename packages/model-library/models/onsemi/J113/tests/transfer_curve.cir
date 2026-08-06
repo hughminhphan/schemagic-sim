@@ -1,0 +1,28 @@
+J113 typical transfer points
+* OpenCircuit Model Factory JFET manual path v0.1.0
+* Original work generated from public factual specifications.
+* This model is not a copy of, or adaptation from, any vendor SPICE model.
+* Source: https://www.onsemi.cn/pub/Collateral/MMBFJ113-D.PDF
+* Revision: Rev. 5, March 2023
+* Fit: native ngspice-46 in scipy.optimize.least_squares, diff_step=1e-4
+* Node order: J<ref> drain gate source OC_J113
+.model OC_J113 NJF (
++ VTO=-1.9275001829e+00 BETA=5.4935604876e-03 LAMBDA=7.4956454430e-03 B=1.0000000000e+00
++ RD=2.5000000000e+01 RS=2.5000000000e+01
++ CGS=1.0000000000e-15 CGD=1.0000000000e-15 PB=1.0 M=0.5 FC=0.5
++ IS=1.0000000000e-20 N=1.0 TNOM=27
++)
+.temp 25
+J0 d0 0 0 OC_J113
+VD0 d0 0 DC 15
+J1 d1 g1 0 OC_J113
+VD1 d1 0 DC 15
+VG1 g1 0 DC -0.5
+J2 d2 g2 0 OC_J113
+VD2 d2 0 DC 15
+VG2 g2 0 DC -1.0
+J3 d3 g3 0 OC_J113
+VD3 d3 0 DC 15
+VG3 g3 0 DC -1.5
+.op
+.end

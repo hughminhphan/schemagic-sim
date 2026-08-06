@@ -1,0 +1,188 @@
+{
+  "schema_version": "1.0.0",
+  "extraction_method": "pdftotext plus manual structuring and curve digitization",
+  "fit_conditions": {
+    "temperature": {
+      "value": 25,
+      "unit": "degC",
+      "conditions": "TJ=25 C electrical table and typical curves",
+      "page_reference": "p.2 heading; p.3 fig.1; p.4 figs.7,10",
+      "source_kind": "typical",
+      "column_semantics": {
+        "MIN": "not applicable",
+        "TYP": "25 C curve used",
+        "MAX": "not applicable"
+      }
+    }
+  },
+  "bin": "J113 (not J111 or J112)",
+  "electrical": {
+    "idss_minimum": {
+      "value": 0.002,
+      "unit": "A",
+      "conditions": "VDS=15 V, VGS=0",
+      "page_reference": "p.2 electrical characteristics, J113 MIN column",
+      "source_kind": "minimum",
+      "column_semantics": {
+        "MIN": "2.0 mA",
+        "TYP": "not published",
+        "MAX": "not published"
+      }
+    },
+    "vgsoff_minimum": {
+      "value": -0.5,
+      "unit": "V",
+      "conditions": "VDS=5 V, ID=1 mA",
+      "page_reference": "p.2 electrical characteristics, J113 MIN column",
+      "source_kind": "minimum",
+      "column_semantics": {
+        "MIN": "-0.5 V",
+        "TYP": "not published",
+        "MAX": "-3.0 V"
+      }
+    },
+    "vgsoff_maximum": {
+      "value": -3.0,
+      "unit": "V",
+      "conditions": "VDS=5 V, ID=1 mA",
+      "page_reference": "p.2 electrical characteristics, J113 MAX column",
+      "source_kind": "maximum",
+      "column_semantics": {
+        "MIN": "-0.5 V",
+        "TYP": "not published",
+        "MAX": "-3.0 V"
+      }
+    },
+    "rdson_maximum": {
+      "value": 100,
+      "unit": "ohm",
+      "conditions": "VDS<=0.1 V, VGS=0",
+      "page_reference": "p.2 electrical characteristics, J113 MAX column",
+      "source_kind": "maximum",
+      "column_semantics": {
+        "MIN": "not published",
+        "TYP": "not published",
+        "MAX": "100 ohm"
+      }
+    },
+    "igss_maximum": {
+      "value": 1e-09,
+      "unit": "A",
+      "conditions": "VGS=-15 V, VDS=0",
+      "page_reference": "p.2 electrical characteristics, MAX column",
+      "source_kind": "maximum",
+      "column_semantics": {
+        "MIN": "not published",
+        "TYP": "not published",
+        "MAX": "-1.0 nA"
+      }
+    },
+    "vbrgss_minimum": {
+      "value": -35,
+      "unit": "V",
+      "conditions": "IG=-1 mA, VDS=0",
+      "page_reference": "p.2 electrical characteristics, MIN column",
+      "source_kind": "minimum",
+      "column_semantics": {
+        "MIN": "-35 V",
+        "TYP": "not published",
+        "MAX": "not published"
+      }
+    },
+    "typical_rdson": {
+      "value": 50,
+      "unit": "ohm",
+      "conditions": "VGS=0, ID approximately 10-15 mA, TA=25 C",
+      "page_reference": "p.4 fig.7, digitized",
+      "source_kind": "digitized_typical_curve",
+      "column_semantics": {
+        "MIN": "not applicable",
+        "TYP": "typical curve",
+        "MAX": "not applicable"
+      }
+    },
+    "output_conductance": {
+      "value": 7e-05,
+      "unit": "S",
+      "conditions": "ID approximately 15 mA, TA=25 C",
+      "page_reference": "p.4 fig.10, digitized",
+      "source_kind": "digitized_typical_curve",
+      "column_semantics": {
+        "MIN": "not applicable",
+        "TYP": "typical curve",
+        "MAX": "not applicable"
+      }
+    }
+  },
+  "transfer_points": [
+    {
+      "value": 0.015,
+      "unit": "A",
+      "conditions": "VDS=15 V, VGS=0 V, TYP VGS(off)=-2.0 V",
+      "page_reference": "p.3 fig.1, digitized",
+      "source_kind": "digitized_typical_curve",
+      "column_semantics": {
+        "MIN": "not applicable",
+        "TYP": "typical curve",
+        "MAX": "not applicable"
+      }
+    },
+    {
+      "value": 0.009,
+      "unit": "A",
+      "conditions": "VDS=15 V, VGS=-0.5 V, TYP VGS(off)=-2.0 V",
+      "page_reference": "p.3 fig.1, digitized",
+      "source_kind": "digitized_typical_curve",
+      "column_semantics": {
+        "MIN": "not applicable",
+        "TYP": "typical curve",
+        "MAX": "not applicable"
+      }
+    },
+    {
+      "value": 0.004,
+      "unit": "A",
+      "conditions": "VDS=15 V, VGS=-1 V, TYP VGS(off)=-2.0 V",
+      "page_reference": "p.3 fig.1, digitized",
+      "source_kind": "digitized_typical_curve",
+      "column_semantics": {
+        "MIN": "not applicable",
+        "TYP": "typical curve",
+        "MAX": "not applicable"
+      }
+    },
+    {
+      "value": 0.001,
+      "unit": "A",
+      "conditions": "VDS=15 V, VGS=-1.5 V, TYP VGS(off)=-2.0 V",
+      "page_reference": "p.3 fig.1, digitized",
+      "source_kind": "digitized_typical_curve",
+      "column_semantics": {
+        "MIN": "not applicable",
+        "TYP": "typical curve",
+        "MAX": "not applicable"
+      }
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "J113",
+    "manufacturer": "onsemi",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://www.onsemi.cn/pub/Collateral/MMBFJ113-D.PDF",
+    "revision": "Rev. 5, March 2023",
+    "sha256": "2b60421ab965a832610f81bbde9be05b9c4fb4fd35fb16886655a336ad91ba49",
+    "accessed_date": "2026-08-07",
+    "pages_referenced": [
+      "p.1",
+      "p.2",
+      "p.3",
+      "p.4",
+      "p.5",
+      "p.6"
+    ],
+    "placeholder": false
+  }
+}
