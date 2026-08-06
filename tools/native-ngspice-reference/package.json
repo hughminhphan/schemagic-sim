@@ -1,0 +1,24 @@
+{
+  "name": "@opencircuit/native-ngspice-reference",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Native ngspice reference harness for OpenCircuit model validation",
+  "type": "module",
+  "exports": {
+    "./rawfile": "./lib/rawfile.mjs",
+    "./run-native": "./lib/run-native.mjs",
+    "./run-wasm": "./lib/run-wasm.mjs"
+  },
+  "bin": {
+    "opencircuit-compare-ngspice": "./compare.mjs"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.mjs && node suite.mjs"
+  },
+  "devDependencies": {
+    "eecircuit-engine": "1.7.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

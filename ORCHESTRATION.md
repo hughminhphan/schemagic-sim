@@ -1,6 +1,6 @@
 # Orchestration state (living doc — Fable orchestrator owns this file)
 
-Working codename: OpenCircuit (final name TBD after collision check — see spikes/naming/).
+Public name: scheMAGIC (Hugh's decision 2026-08-06, "for now"; his/Trace-associated brand, so collision checks moot). Deploy: Cloudflare Pages project `schemagic` (reserved; schemagic.pages.dev) -> custom domain sim.schemagic.design (Hugh adds CNAME at Namecheap; root stays on the Trace landing page). Public GitHub repo: `schemagic-sim` planned (bare `schemagic` is Hugh's existing private app-era repo). Local dir name stays opencircuit.
 Local repo: ~/Documents/opencircuit. Public repo + live deploy authorized; launch posts are NOT (Hugh approves the launch pack).
 
 ## Model lanes (verified 2026-08-06)

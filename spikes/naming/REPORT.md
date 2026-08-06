@@ -34,6 +34,8 @@ npm/PyPI/crates "opencircuit"/"opencircuits" are free (404s), but the ecosystem 
 
 Trademark caveat: web-level search only. Formal USPTO (uspto.gov/trademarks/search) and EUIPO clearance still required before committing publicly.
 
-## Status: OPEN, Hugh decides
+## Status: RESOLVED 2026-08-06: Hugh chose scheMAGIC (his existing brand) "for now", served at sim.schemagic.design. Candidate research retained below in case the name revisits before launch.
+
+## Superseded: was OPEN, Hugh decides
 
 The lane recommended Ohmtrace; the orchestrator vetoes the -trace family for the client-name conflict and finds the remaining candidates serviceable but not yet great. Action before Phase 5: a second, judgment-led naming round (orchestrator-generated candidates, luna verifies availability with the same evidence standard), then the shortlist goes to Hugh, who picks the final name. Local working codename remains "opencircuit" (directory name only, never public).
