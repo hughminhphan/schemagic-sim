@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { formatValue } from "../src/format";
 import { mount, paddedRange } from "../src/viewer";
 import type { AxisRange } from "../src/types";
 
@@ -141,6 +142,10 @@ describe("waveform viewer rendering", () => {
     const range = paddedRange(new Float64Array([0.0801, 0.0801, 0.0801]));
     expect((range.min + range.max) / 2).toBeCloseTo(0.0801, 12);
     expect(range.max - range.min).toBeGreaterThan(0.008);
+    const labels = [0, 0.25, 0.5, 0.75, 1].map((ratio) =>
+      formatValue(range.max - ratio * (range.max - range.min), { unit: "V", reserveSign: false }),
+    );
+    expect(new Set(labels).size).toBe(labels.length);
 
     const viewer = mount(new FakeElement() as unknown as HTMLElement);
     viewer.setData({
@@ -171,6 +176,28 @@ describe("waveform viewer rendering", () => {
     const traces = (viewer as unknown as { traces: Array<{ dash: number[] }> }).traces;
     expect(traces.map((trace) => trace.dash)).toEqual([[], [6, 3]]);
     expect(lastCanvas.context.dashCalls).toContainEqual([6, 3]);
+  });
+
+  it("uses distinct default dashes when channels reuse colours", () => {
+    const viewer = mount(new FakeElement() as unknown as HTMLElement);
+    viewer.setData({
+      kind: "tran",
+      vectors: {
+        time: new Float64Array([0, 1]),
+        "V(1)": new Float64Array([0, 1]),
+        "V(2)": new Float64Array([1, 0]),
+        "V(3)": new Float64Array([0, 1]),
+        "V(4)": new Float64Array([1, 0]),
+        "V(5)": new Float64Array([0, 1]),
+        "V(6)": new Float64Array([1, 0]),
+      },
+    });
+
+    const traces = (viewer as unknown as { traces: Array<{ color: string; dash: number[] }> }).traces;
+    expect(traces.map((trace) => trace.color)).toEqual([
+      "#3FD983", "#E8A244", "#5FB0E8", "#F1EEE8", "#3FD983", "#E8A244",
+    ]);
+    expect(traces.map((trace) => trace.dash)).toEqual([[], [], [], [], [6, 3], [2, 3]]);
   });
 
   it("upserts named annotations, clips them, and exposes a cursor value", () => {
