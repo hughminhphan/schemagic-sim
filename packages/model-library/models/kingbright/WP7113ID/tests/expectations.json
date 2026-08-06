@@ -1,0 +1,179 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "forward_01.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "forward_voltage_at_0.002_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "expected_value": 1.68,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.04
+          },
+          "datasheet_citation": "p. 3 forward current vs. forward voltage curve",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "forward_02.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "forward_voltage_at_0.004_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "expected_value": 1.75,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.04
+          },
+          "datasheet_citation": "p. 3 forward current vs. forward voltage curve",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "forward_03.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "forward_voltage_at_0.008_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "expected_value": 1.84,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.04
+          },
+          "datasheet_citation": "p. 3 forward current vs. forward voltage curve",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "forward_04.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "forward_voltage_at_0.01_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "expected_value": 1.9,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.04
+          },
+          "datasheet_citation": "p. 2 electrical characteristics",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "forward_05.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "forward_voltage_at_0.012_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "expected_value": 1.92,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.04
+          },
+          "datasheet_citation": "p. 3 forward current vs. forward voltage curve",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "forward_06.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "forward_voltage_at_0.016_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "expected_value": 1.97,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.04
+          },
+          "datasheet_citation": "p. 3 forward current vs. forward voltage curve",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "forward_07.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "forward_voltage_at_0.02_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "expected_value": 2,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.04
+          },
+          "datasheet_citation": "p. 3 forward current vs. forward voltage curve",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "reverse_leakage.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "reverse_leakage_maximum",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vreverse))"
+          },
+          "minimum": 0,
+          "maximum": 0.00001,
+          "unit": "A",
+          "inclusive": true,
+          "datasheet_citation": "p. 2 electrical characteristics",
+          "placeholder": false
+        }
+      ]
+    }
+  ]
+}

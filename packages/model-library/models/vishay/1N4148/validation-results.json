@@ -1,0 +1,124 @@
+{
+  "schema_version": "1.0.0",
+  "validation_date": "2026-08-06",
+  "native_wasm_all_pass": true,
+  "expectations_all_pass": true,
+  "expectation_pass_count": 8,
+  "expectation_fail_count": 0,
+  "worst_native_wasm_relative_delta": 3.5354992040276043e-13,
+  "worst_native_wasm_absolute_delta": 1.9761969838327786e-13,
+  "benches": [
+    {
+      "test_netlist": "forward_01.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "forward_voltage_at_0.00001_a",
+          "pass": true,
+          "value": 0.4005345175290077,
+          "error": 0.0005345175290076831,
+          "allowed": 0.02
+        }
+      ]
+    },
+    {
+      "test_netlist": "forward_02.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "forward_voltage_at_0.0001_a",
+          "pass": true,
+          "value": 0.4977056557495827,
+          "error": 0.007705655749582707,
+          "allowed": 0.02
+        }
+      ]
+    },
+    {
+      "test_netlist": "forward_03.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "forward_voltage_at_0.001_a",
+          "pass": true,
+          "value": 0.5955038946067863,
+          "error": 0.0055038946067863526,
+          "allowed": 0.0236
+        }
+      ]
+    },
+    {
+      "test_netlist": "forward_04.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "forward_voltage_at_0.01_a",
+          "pass": true,
+          "value": 0.6995422458030032,
+          "error": 0.00045775419699678466,
+          "allowed": 0.027999999999999997
+        }
+      ]
+    },
+    {
+      "test_netlist": "forward_05.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "forward_voltage_at_0.1_a",
+          "pass": true,
+          "value": 0.8659763679616239,
+          "error": 0.00597636796162393,
+          "allowed": 0.0344
+        }
+      ]
+    },
+    {
+      "test_netlist": "reverse_leakage.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "reverse_leakage_maximum",
+          "pass": true,
+          "value": 7.705392716104081e-10,
+          "minimum": 0,
+          "maximum": 2.5e-8
+        }
+      ]
+    },
+    {
+      "test_netlist": "zero_bias_capacitance.cir",
+      "analysis": "ac",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "zero_bias_capacitive_current",
+          "pass": true,
+          "value": 0.0000012566597246613485,
+          "error": 2.2663225431196222e-11,
+          "allowed": 6.283185307179586e-8
+        }
+      ]
+    },
+    {
+      "test_netlist": "reverse_recovery.cir",
+      "analysis": "tran",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "reverse_recovery_time_maximum",
+          "pass": true,
+          "value": 1.4250000000000111e-9,
+          "minimum": 0,
+          "maximum": 4e-9
+        }
+      ]
+    }
+  ]
+}

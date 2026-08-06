@@ -1,0 +1,132 @@
+{
+  "schema_version": "1.0.0",
+  "canonical_mpn": "1N4148",
+  "manufacturer": "Vishay Intertechnology",
+  "description": "Small-signal fast switching silicon diode",
+  "electrical_family": "diode",
+  "symbol_pins": [
+    {
+      "name": "A",
+      "number": "1",
+      "role": "anode"
+    },
+    {
+      "name": "K",
+      "number": "2",
+      "role": "cathode"
+    }
+  ],
+  "spice_pin_mapping": [
+    {
+      "symbol_pin_number": "1",
+      "subckt_node": "anode",
+      "order": 1
+    },
+    {
+      "symbol_pin_number": "2",
+      "subckt_node": "cathode",
+      "order": 2
+    }
+  ],
+  "package_variants": [
+    {
+      "name": "DO-35",
+      "standard": "DO-204AH",
+      "pin_count": 2,
+      "pin_map": [
+        {
+          "package_pin": "1",
+          "symbol_pin_number": "1"
+        },
+        {
+          "package_pin": "2",
+          "symbol_pin_number": "2"
+        }
+      ]
+    }
+  ],
+  "ordering_code_aliases": [
+    "1N4148-TAP",
+    "1N4148TR",
+    "1N914"
+  ],
+  "datasheet": {
+    "url": "https://www.vishay.com/docs/81857/1n4148.pdf",
+    "revision": "Rev. 1.6, 07-Nov-2024"
+  },
+  "model_type": "dot_model",
+  "fidelity_tier": "F2",
+  "domain_coverage": {
+    "dc": "fitted",
+    "ac": "fitted",
+    "transient": "approx",
+    "noise": "none",
+    "thermal": "none",
+    "digital": "none"
+  },
+  "supported_analyses": [
+    "operating_point",
+    "dc_sweep",
+    "ac_small_signal",
+    "transient"
+  ],
+  "supported_operating_region": {
+    "summary": "Fitted at 25 degC from 10 uA to 100 mA forward current. Reverse operation is bounded to 75 V without avalanche modeling.",
+    "numeric_bounds": [
+      {
+        "quantity": "forward_current",
+        "minimum": 0.00001,
+        "maximum": 0.1,
+        "unit": "A",
+        "conditions": "Fitted typical DC range at 25 degC",
+        "placeholder": false
+      },
+      {
+        "quantity": "reverse_voltage",
+        "minimum": 0,
+        "maximum": 75,
+        "unit": "V",
+        "conditions": "Rated reverse-voltage envelope; avalanche omitted",
+        "placeholder": false
+      },
+      {
+        "quantity": "ambient_temperature",
+        "minimum": 25,
+        "maximum": 25,
+        "unit": "degC",
+        "conditions": "Fit reference temperature",
+        "placeholder": false
+      }
+    ]
+  },
+  "known_omissions": [
+    "Breakdown and avalanche behavior are not modeled.",
+    "Temperature scaling was not fitted beyond the ngspice diode defaults.",
+    "TT is a first-order charge-storage approximation from one reverse-recovery specification.",
+    "CJO uses the datasheet maximum zero-bias capacitance, not a typical C-V curve.",
+    "Package self-heating, noise, process spread, and ageing are omitted."
+  ],
+  "licence": {
+    "spdx_id": "MIT",
+    "provenance_basis": "original_from_facts"
+  },
+  "generator": {
+    "tool_or_agent": "opencircuit-model-factory-v0.1.0",
+    "date": "2026-08-06"
+  },
+  "reviewer": {
+    "tool_or_agent": "pending-review",
+    "date": "2026-08-06"
+  },
+  "test_results": {
+    "status": "complete",
+    "pass_count": 8,
+    "fail_count": 0,
+    "total_count": 8,
+    "worst_observed_relative_fitting_error": {
+      "value": 0.008959012489455156,
+      "quantity": "forward voltage at 0.0001 A"
+    }
+  },
+  "validation_date": "2026-08-06"
+}

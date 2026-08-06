@@ -1,0 +1,126 @@
+{
+  "schema_version": "1.0.0",
+  "canonical_mpn": "WP7113ID",
+  "manufacturer": "Kingbright",
+  "description": "5 mm high-efficiency red through-hole LED",
+  "electrical_family": "led",
+  "symbol_pins": [
+    {
+      "name": "A",
+      "number": "1",
+      "role": "anode"
+    },
+    {
+      "name": "K",
+      "number": "2",
+      "role": "cathode"
+    }
+  ],
+  "spice_pin_mapping": [
+    {
+      "symbol_pin_number": "1",
+      "subckt_node": "anode",
+      "order": 1
+    },
+    {
+      "symbol_pin_number": "2",
+      "subckt_node": "cathode",
+      "order": 2
+    }
+  ],
+  "package_variants": [
+    {
+      "name": "T-1 3/4 5 mm",
+      "standard": "Kingbright through-hole lamp",
+      "pin_count": 2,
+      "pin_map": [
+        {
+          "package_pin": "1",
+          "symbol_pin_number": "1"
+        },
+        {
+          "package_pin": "2",
+          "symbol_pin_number": "2"
+        }
+      ]
+    }
+  ],
+  "ordering_code_aliases": [],
+  "datasheet": {
+    "url": "https://www.kingbrightusa.com/images/catalog/SPEC/WP7113ID.pdf",
+    "revision": "Spec DSAF0012 / 1101005042 Rev V.14A, 01/08/2026"
+  },
+  "model_type": "dot_model",
+  "fidelity_tier": "F2",
+  "domain_coverage": {
+    "dc": "fitted",
+    "ac": "none",
+    "transient": "none",
+    "noise": "none",
+    "thermal": "none",
+    "digital": "none"
+  },
+  "supported_analyses": [
+    "operating_point",
+    "dc_sweep"
+  ],
+  "supported_operating_region": {
+    "summary": "Fitted typical DC forward behavior at 25 degC from 2 mA to 20 mA. Reverse voltage is limited to 5 V.",
+    "numeric_bounds": [
+      {
+        "quantity": "forward_current",
+        "minimum": 0.002,
+        "maximum": 0.02,
+        "unit": "A",
+        "conditions": "Fitted typical DC range at 25 degC",
+        "placeholder": false
+      },
+      {
+        "quantity": "reverse_voltage",
+        "minimum": 0,
+        "maximum": 5,
+        "unit": "V",
+        "conditions": "Absolute maximum; breakdown behavior omitted",
+        "placeholder": false
+      },
+      {
+        "quantity": "ambient_temperature",
+        "minimum": 25,
+        "maximum": 25,
+        "unit": "degC",
+        "conditions": "Fit reference temperature",
+        "placeholder": false
+      }
+    ]
+  },
+  "known_omissions": [
+    "Optical output is not a SPICE output; the UI maps brightness from simulated forward current.",
+    "Wavelength, luminous intensity, viewing angle, bin spread, and optical ageing are metadata only.",
+    "Junction capacitance and switching behavior are omitted because the datasheet does not specify them.",
+    "Reverse breakdown is not modeled from the 5 V absolute maximum rating.",
+    "Temperature scaling, self-heating, process spread, and degradation are omitted."
+  ],
+  "licence": {
+    "spdx_id": "MIT",
+    "provenance_basis": "original_from_facts"
+  },
+  "generator": {
+    "tool_or_agent": "opencircuit-model-factory-v0.1.0",
+    "date": "2026-08-06"
+  },
+  "reviewer": {
+    "tool_or_agent": "pending-review",
+    "date": "2026-08-06"
+  },
+  "test_results": {
+    "status": "complete",
+    "pass_count": 8,
+    "fail_count": 0,
+    "total_count": 8,
+    "worst_observed_relative_fitting_error": {
+      "value": 0.007584737110022155,
+      "quantity": "forward voltage at 0.01 A"
+    }
+  },
+  "validation_date": "2026-08-06"
+}

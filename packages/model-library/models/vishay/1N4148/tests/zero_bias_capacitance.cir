@@ -1,0 +1,13 @@
+OpenCircuit factory test: zero-bias capacitance
+* OpenCircuit Model Factory v0.1.0
+* Original work generated from public factual specifications.
+* This model is not a copy of, or adaptation from, any vendor SPICE model.
+* Source: https://www.vishay.com/docs/81857/1n4148.pdf
+* Revision: Rev. 1.6, 07-Nov-2024
+* Fit: scipy.optimize.least_squares at 25 degC
+.model OC_VISHAY_1N4148 D(IS=7.5053928107e-10 N=1.6304821113e0 RS=7.7032274400e-1 CJO=4.0000000000e-12 TT=4.0000000000e-9)
+
+Vac anode 0 DC 0 AC 0.05
+Ddut anode 0 OC_VISHAY_1N4148
+.ac lin 1 1Meg 1Meg
+.end

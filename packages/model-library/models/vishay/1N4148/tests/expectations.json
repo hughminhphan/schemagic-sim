@@ -1,0 +1,177 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "forward_01.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "forward_voltage_at_0.00001_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "expected_value": 0.4,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.04
+          },
+          "datasheet_citation": "p. 2 fig. 2, 25 degC curve",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "forward_02.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "forward_voltage_at_0.0001_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "expected_value": 0.49,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.04
+          },
+          "datasheet_citation": "p. 2 fig. 2, 25 degC curve",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "forward_03.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "forward_voltage_at_0.001_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "expected_value": 0.59,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.04
+          },
+          "datasheet_citation": "p. 2 fig. 2, 25 degC curve",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "forward_04.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "forward_voltage_at_0.01_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "expected_value": 0.7,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.04
+          },
+          "datasheet_citation": "p. 2 fig. 2, 25 degC curve",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "forward_05.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "forward_voltage_at_0.1_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "expected_value": 0.86,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.04
+          },
+          "datasheet_citation": "p. 2 fig. 2, 25 degC curve",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "reverse_leakage.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "reverse_leakage_maximum",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vreverse))"
+          },
+          "minimum": 0,
+          "maximum": 2.5e-8,
+          "unit": "A",
+          "inclusive": true,
+          "datasheet_citation": "p. 2 electrical characteristics",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "zero_bias_capacitance.cir",
+      "analysis_type": "ac_small_signal",
+      "scalar_checks": [
+        {
+          "name": "zero_bias_capacitive_current",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "magnitude:last(i(vac))"
+          },
+          "expected_value": 0.0000012566370614359173,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 2e-8,
+            "relative": 0.05
+          },
+          "datasheet_citation": "p. 2 electrical characteristics",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "reverse_recovery.cir",
+      "analysis_type": "transient",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "reverse_recovery_time_maximum",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "recovery_time(i(vdrive),2e-8,1e-3)"
+          },
+          "minimum": 0,
+          "maximum": 4e-9,
+          "unit": "s",
+          "inclusive": true,
+          "datasheet_citation": "p. 2 electrical characteristics",
+          "placeholder": false
+        }
+      ]
+    }
+  ]
+}
