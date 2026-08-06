@@ -1,0 +1,15 @@
+* PC817 input IRED forward voltage at published condition
+.temp 25
+* OpenCircuit Model Factory v0.1.0
+* Original work generated from public factual specifications.
+* This model is not a copy of, or adaptation from, any vendor SPICE model.
+* Source: https://global.sharp/products/device/lineup/data/pdf/datasheet/PC8171xNSZ1B_e.pdf
+* Revision: Sheet No. OP18004EN, DATE Jan.15.2018
+* Fit: closed-form one-point calibration at 25 degC; no vendor SPICE model used
+.model OC_SHARP_PC817 D(IS=1.0503785849e-15 N=1.6 RS=1e-4 CJO=3.0e-11)
+Itest 0 anode DC 5m
+Vanchor anchor 0 DC 0
+Ranchor anchor 0 1G
+Ddut anode 0 OC_SHARP_PC817
+.op
+.end

@@ -1,0 +1,58 @@
+{
+  "schema_version": "1.0.0",
+  "fitter": "closed-form one-point calibration with physical defaults",
+  "deterministic": true,
+  "temperature_c": 25.0,
+  "parameters": {
+    "IS": 1.050378584858645e-15,
+    "N": 1.6,
+    "RS": 0.0001,
+    "CJO": 3e-11,
+    "TT": 0.0
+  },
+  "parameter_metadata": {
+    "IS": {
+      "status": "fitted to typical VF at IF = 5 mA"
+    },
+    "N": {
+      "status": "held at physical default"
+    },
+    "RS": {
+      "status": "held at physical default floor"
+    },
+    "CJO": {
+      "status": "typical table value"
+    },
+    "TT": {
+      "status": "absent"
+    }
+  },
+  "held_defaults": [
+    {
+      "parameter": "N",
+      "value": 1.6,
+      "unit": "1",
+      "reason": "one tabulated forward-voltage point does not identify ideality independently"
+    },
+    {
+      "parameter": "RS",
+      "value": 0.0001,
+      "unit": "ohm",
+      "reason": "one tabulated forward-voltage point does not identify series resistance independently"
+    }
+  ],
+  "residuals": [
+    {
+      "current_a": 0.005,
+      "datasheet_voltage_v": 1.2,
+      "fitted_voltage_v": 1.2,
+      "relative_error": 0.0,
+      "citation": "p. 4 electro-optical characteristics, Forward voltage row"
+    }
+  ],
+  "rms_relative_error": 0.0,
+  "worst_relative_error": {
+    "value": 0.0,
+    "quantity": "forward voltage at 0.005 A"
+  }
+}
