@@ -39,6 +39,14 @@ class FakeElement {
   remove(): void {}
 }
 
+interface StrokeCall {
+  strokeStyle: string;
+  dash: number[];
+  globalAlpha: number;
+  clipped: boolean;
+  segments: number;
+}
+
 class FakeContext {
   fillStyle = "";
   strokeStyle = "";
@@ -48,22 +56,39 @@ class FakeContext {
   lineWidth = 1;
   globalAlpha = 1;
   readonly dashCalls: number[][] = [];
+  readonly fillTextCalls: string[] = [];
+  readonly strokeCalls: StrokeCall[] = [];
   clipCount = 0;
+  private clipDepth = 0;
+  private readonly clipStack: number[] = [];
+  private currentDash: number[] = [];
+  private currentSegments = 0;
 
   setTransform(): void {}
   clearRect(): void {}
   fillRect(): void {}
-  beginPath(): void {}
+  beginPath(): void { this.currentSegments = 0; }
   moveTo(): void {}
-  lineTo(): void {}
-  stroke(): void {}
-  fillText(): void {}
+  lineTo(): void { this.currentSegments += 1; }
+  stroke(): void {
+    this.strokeCalls.push({
+      strokeStyle: this.strokeStyle,
+      dash: [...this.currentDash],
+      globalAlpha: this.globalAlpha,
+      clipped: this.clipDepth > 0,
+      segments: this.currentSegments,
+    });
+  }
+  fillText(text: string): void { this.fillTextCalls.push(text); }
   strokeRect(): void {}
-  save(): void {}
-  restore(): void {}
+  save(): void { this.clipStack.push(this.clipDepth); }
+  restore(): void { this.clipDepth = this.clipStack.pop() ?? 0; }
   rect(): void {}
-  clip(): void { this.clipCount += 1; }
-  setLineDash(dash: number[]): void { this.dashCalls.push([...dash]); }
+  clip(): void { this.clipCount += 1; this.clipDepth += 1; }
+  setLineDash(dash: number[]): void {
+    this.currentDash = [...dash];
+    this.dashCalls.push([...dash]);
+  }
 }
 
 class FakeCanvas extends FakeElement {
@@ -104,6 +129,14 @@ beforeEach(() => {
 });
 
 describe("waveform viewer rendering", () => {
+  it("renders the graticule without an internal empty-state message", () => {
+    mount(new FakeElement() as unknown as HTMLElement);
+
+    expect(lastCanvas.context.strokeCalls.length).toBeGreaterThanOrEqual(21);
+    expect(lastCanvas.context.fillTextCalls).toContain("AMPLITUDE");
+    expect(lastCanvas.context.fillTextCalls).not.toContain("No waveform data");
+  });
+
   it("centres a useful autoscale span around a flat trace", () => {
     const range = paddedRange(new Float64Array([0.0801, 0.0801, 0.0801]));
     expect((range.min + range.max) / 2).toBeCloseTo(0.0801, 12);
@@ -155,6 +188,12 @@ describe("waveform viewer rendering", () => {
     };
     expect(internal.annotations.get("pot-sweep")?.points[2]).toBeNull();
     expect(lastCanvas.context.clipCount).toBeGreaterThan(0);
+    const annotationStrokes = lastCanvas.context.strokeCalls.filter((call) =>
+      call.strokeStyle === "#3FD983" && call.globalAlpha === 0.4,
+    );
+    expect(annotationStrokes).not.toHaveLength(0);
+    expect(annotationStrokes.every((call) => call.clipped)).toBe(true);
+    expect(annotationStrokes.at(-1)?.segments).toBe(1);
 
     viewer.addAnnotation({
       id: "pot-sweep",
