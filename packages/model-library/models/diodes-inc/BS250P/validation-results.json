@@ -1,0 +1,68 @@
+{
+  "schema_version": "1.0.0",
+  "validation_date": "2026-08-07",
+  "native_wasm_all_pass": true,
+  "expectations_all_pass": true,
+  "expectation_pass_count": 4,
+  "expectation_fail_count": 0,
+  "worst_native_wasm_relative_delta": 6.654681304661538e-9,
+  "worst_native_wasm_absolute_delta": 1.6653345369377348e-16,
+  "benches": [
+    {
+      "test_netlist": "rdson.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "rdson_maximum_1",
+          "pass": true,
+          "value": 11.903167682221948,
+          "minimum": 0,
+          "maximum": 14
+        }
+      ]
+    },
+    {
+      "test_netlist": "boundary.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "minimum_characterized_gate_drive_maximum",
+          "pass": true,
+          "value": 11.903167682221948,
+          "minimum": 0,
+          "maximum": 14
+        }
+      ]
+    },
+    {
+      "test_netlist": "off_state_boundary.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "off_state_leakage_maximum",
+          "pass": true,
+          "value": 2.502500812129327e-8,
+          "minimum": 0,
+          "maximum": 5e-7
+        }
+      ]
+    },
+    {
+      "test_netlist": "capacitance.cir",
+      "analysis": "ac",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "ciss",
+          "pass": true,
+          "value": 5.999993642608927e-11,
+          "error": 6.357391073434475e-17,
+          "allowed": 1.2e-11
+        }
+      ]
+    }
+  ]
+}

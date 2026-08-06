@@ -1,0 +1,148 @@
+{
+  "schema_version": "1.0.0",
+  "canonical_mpn": "BS250P",
+  "manufacturer": "Diodes Incorporated",
+  "description": "45 V P-channel enhancement-mode vertical DMOS FET",
+  "electrical_family": "pmos",
+  "symbol_pins": [
+    {
+      "name": "S",
+      "number": "1",
+      "role": "source"
+    },
+    {
+      "name": "G",
+      "number": "2",
+      "role": "gate"
+    },
+    {
+      "name": "D",
+      "number": "3",
+      "role": "drain"
+    }
+  ],
+  "spice_pin_mapping": [
+    {
+      "symbol_pin_number": "3",
+      "subckt_node": "drain",
+      "order": 1
+    },
+    {
+      "symbol_pin_number": "2",
+      "subckt_node": "gate",
+      "order": 2
+    },
+    {
+      "symbol_pin_number": "1",
+      "subckt_node": "source",
+      "order": 3
+    }
+  ],
+  "package_variants": [
+    {
+      "name": "E-Line",
+      "standard": "Diodes E-Line through-hole",
+      "pin_count": 3,
+      "pin_map": [
+        {
+          "package_pin": "1",
+          "symbol_pin_number": "1"
+        },
+        {
+          "package_pin": "2",
+          "symbol_pin_number": "2"
+        },
+        {
+          "package_pin": "3",
+          "symbol_pin_number": "3"
+        }
+      ]
+    }
+  ],
+  "ordering_code_aliases": [],
+  "datasheet": {
+    "url": "https://www.diodes.com/datasheet/download/BS250P.pdf",
+    "revision": "DS33014 Rev. 3-2, October 2019"
+  },
+  "model_type": "dot_model",
+  "fidelity_tier": "F1",
+  "domain_coverage": {
+    "dc": "approx",
+    "ac": "approx",
+    "transient": "none",
+    "noise": "none",
+    "thermal": "none",
+    "digital": "none"
+  },
+  "supported_analyses": [
+    "operating_point",
+    "dc_sweep",
+    "ac_small_signal"
+  ],
+  "supported_operating_region": {
+    "summary": "25 degC F1 model within the cited tabulated conditions; absolute maxima are not enforced.",
+    "numeric_bounds": [
+      {
+        "quantity": "characterized_gate_drive_magnitude",
+        "minimum": 10,
+        "maximum": 10,
+        "unit": "V",
+        "conditions": "Only published RDS(on) condition",
+        "placeholder": false
+      },
+      {
+        "quantity": "validated_off_state_voltage_magnitude",
+        "minimum": 0,
+        "maximum": 25,
+        "unit": "V",
+        "conditions": "Published IDSS condition",
+        "placeholder": false
+      }
+    ]
+  },
+  "known_omissions": [
+    "Avalanche and unclamped inductive switching (UIS/EAS) are not modelled. The model conducts through BV as an ordinary diode breakdown; it does not fail.",
+    "Safe operating area is not enforced. Absolute maximum ratings are metadata; the model will happily dissipate excessive power.",
+    "No self-heating in the default three-terminal instance: junction temperature is fixed at TNOM. RDS(on) does not rise with dissipation.",
+    "Package and lead inductance are not modelled, so measured switching ringing will not reproduce.",
+    "Threshold-voltage spread is not modelled.",
+    "Gate oxide breakdown beyond the rated VGS maximum is not modelled.",
+    "RDS is held at default 1e9 ohm as the off-state shunt.",
+    "MU, TEXP0, and TCVTH are held at default; only 25 degC behavior is fitted.",
+    "CTHJ is held at default because junction thermal capacitance is unpublished; electrothermal transients are not claimed.",
+    "Flicker noise is not modelled: KF and AF are held at default.",
+    "F1: fitted from tabulated rows only. The BS250P sheet publishes no transfer, output, capacitance-versus-VDS, body-diode, gate-charge, or reverse-recovery curve family and refers readers to a different part for graphs.",
+    "VTO is held at default -2.25 V in the signed ngspice p-channel card, corresponding to the 2.25 V magnitude midpoint of the published threshold window.",
+    "KP is held at default 0.1 A/V^2; it is selected conservatively to stay below the published RDS(on) maximum, not fitted to that maximum as though it were typical.",
+    "THETA is held at default 0 and LAMBDA is held at default 0.003 because no typical transfer or output family is published.",
+    "RD = 7.7 ohm and RS = 2.8 ohm are held at default from the archetype 55/20 split of the RDS(on) maximum.",
+    "RG is held at default 1e-4 ohm because gate resistance is unpublished.",
+    "CGS = 60 pF uses the typical Ciss row; CGDMAX = CGDMIN = 1 pF, CJO = 1 pF, and A = 1 are held at default because Coss, Crss, and capacitance curves are unpublished.",
+    "VJ = 0.8, M = 0.5, FC = 0.5, IS = 1e-14 A, N = 1.5, RB = 2.8 ohm, NBV = 1, and TNOM = 27 degC are held at default because no body-diode forward data is published.",
+    "TT is held at default 0 because reverse recovery is unpublished.",
+    "RTHJC and RTHCA are held at default 0 because no thermal-resistance table is published."
+  ],
+  "licence": {
+    "spdx_id": "MIT",
+    "provenance_basis": "original_from_facts"
+  },
+  "generator": {
+    "tool_or_agent": "opencircuit-model-factory-v0.1.0",
+    "date": "2026-08-07"
+  },
+  "reviewer": {
+    "tool_or_agent": "pending-review",
+    "date": "2026-08-07"
+  },
+  "test_results": {
+    "status": "complete",
+    "pass_count": 4,
+    "fail_count": 0,
+    "total_count": 4,
+    "worst_observed_relative_fitting_error": {
+      "value": 0,
+      "quantity": "guaranteed-bound-only model"
+    }
+  },
+  "validation_date": "2026-08-07"
+}

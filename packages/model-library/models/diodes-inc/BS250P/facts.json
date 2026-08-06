@@ -1,0 +1,114 @@
+{
+  "schema_version": "1.0.0",
+  "extraction_method": "pdftotext -layout plus manual table transcription; plots used only where explicitly stated",
+  "fit_conditions": {
+    "temperature": {
+      "value": 25,
+      "unit": "degC",
+      "conditions": "Electrical characteristics unless stated",
+      "page_reference": "p. 1 electrical-characteristics heading",
+      "source_kind": "typical"
+    }
+  },
+  "threshold": {
+    "minimum": {
+      "value": 1,
+      "unit": "V",
+      "conditions": "ID = 1 mA, VDS = VGS; magnitude",
+      "page_reference": "p. 1 electrical characteristics, MIN column",
+      "source_kind": "minimum"
+    },
+    "typical": {
+      "published": false,
+      "page_reference": "p. 1 electrical characteristics",
+      "source_kind": "not_published"
+    },
+    "maximum": {
+      "value": 3.5,
+      "unit": "V",
+      "conditions": "ID = 1 mA, VDS = VGS; magnitude",
+      "page_reference": "p. 1 electrical characteristics, MAX column",
+      "source_kind": "maximum"
+    }
+  },
+  "rdson_points": [
+    {
+      "vgs": {
+        "value": 10,
+        "unit": "V",
+        "conditions": "ID = 200 mA; magnitudes",
+        "page_reference": "p. 1 electrical characteristics",
+        "source_kind": "typical"
+      },
+      "current": {
+        "value": 0.2,
+        "unit": "A",
+        "conditions": "VGS = -10 V",
+        "page_reference": "p. 1 electrical characteristics",
+        "source_kind": "typical"
+      },
+      "resistance": {
+        "value": 14,
+        "unit": "ohm",
+        "conditions": "VGS = -10 V, ID = -200 mA",
+        "page_reference": "p. 1 electrical characteristics, MAX column",
+        "source_kind": "maximum"
+      }
+    }
+  ],
+  "capacitances": {
+    "ciss": {
+      "value": 6e-11,
+      "unit": "F",
+      "conditions": "VGS = 0, VDS = -10 V, f = 1 MHz",
+      "page_reference": "p. 1 electrical characteristics, TYP column",
+      "source_kind": "typical"
+    }
+  },
+  "transconductance": {
+    "value": 0.15,
+    "unit": "S",
+    "conditions": "VDS = -10 V, ID = -200 mA",
+    "page_reference": "p. 1 electrical characteristics, TYP column",
+    "source_kind": "typical"
+  },
+  "breakdown": {
+    "voltage": {
+      "value": 45,
+      "unit": "V",
+      "conditions": "VGS = 0, ID = -100 uA; magnitude",
+      "page_reference": "p. 1 electrical characteristics, MIN column",
+      "source_kind": "minimum"
+    },
+    "current": {
+      "value": 0.0001,
+      "unit": "A",
+      "conditions": "BVDSS definition; magnitude",
+      "page_reference": "p. 1 electrical characteristics",
+      "source_kind": "typical"
+    }
+  },
+  "off_leakage": {
+    "value": 5e-07,
+    "unit": "A",
+    "conditions": "VGS = 0, VDS = -25 V",
+    "page_reference": "p. 1 electrical characteristics, MAX column",
+    "source_kind": "maximum"
+  },
+  "identity": {
+    "canonical_mpn": "BS250P",
+    "manufacturer": "Diodes Incorporated",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://www.diodes.com/datasheet/download/BS250P.pdf",
+    "revision": "DS33014 Rev. 3-2, October 2019",
+    "sha256": "a03a99a17a288c81961809446c5a84b7a5197d816421242dc7d5df63e5460a2f",
+    "accessed_date": "2026-08-07",
+    "pages_referenced": [
+      "p. 1"
+    ],
+    "placeholder": false
+  }
+}

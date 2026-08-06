@@ -1,0 +1,87 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "rdson.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "rdson_maximum_1",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale:last(v(d1),-5.0)"
+          },
+          "unit": "ohm",
+          "inclusive": true,
+          "datasheet_citation": "p. 1 electrical characteristics, MAX column",
+          "placeholder": false,
+          "minimum": 0,
+          "maximum": 14
+        }
+      ]
+    },
+    {
+      "test_netlist": "boundary.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "minimum_characterized_gate_drive_maximum",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale:last(v(d),-5.0)"
+          },
+          "unit": "ohm",
+          "inclusive": true,
+          "datasheet_citation": "p. 1 electrical characteristics, MAX column",
+          "placeholder": false,
+          "minimum": 0,
+          "maximum": 14
+        }
+      ]
+    },
+    {
+      "test_netlist": "off_state_boundary.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "off_state_leakage_maximum",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vd))"
+          },
+          "unit": "A",
+          "inclusive": true,
+          "datasheet_citation": "p. 1 electrical characteristics, MAX column",
+          "placeholder": false,
+          "minimum": 0,
+          "maximum": 5e-07
+        }
+      ]
+    },
+    {
+      "test_netlist": "capacitance.cir",
+      "analysis_type": "ac_small_signal",
+      "scalar_checks": [
+        {
+          "name": "ciss",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "imag_cap:last(i(vgi),1000000)"
+          },
+          "expected_value": 6e-11,
+          "unit": "F",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 1 electrical characteristics, TYP column",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    }
+  ]
+}
