@@ -64,20 +64,21 @@ All reviewer fields remain `pending-review`; no component validation date was ch
 
 Reviewer: `sol independent reviewer (batch B3-bjt-power)`
 
-All four parts fail review because the author lane produced no package artifacts. The factory resolution claim reproduces exactly: each MPN returns `Unsupported MPN`, and the registry lists only `1N4148, WP7113ID, 2N3904, IRLZ44N, TL072` as supported.
+All five parts fail review because the author lane produced no package artifacts. The factory resolution claim reproduces exactly: every MPN returns `Unsupported MPN`. The current registry lists `1N4148, WP7113ID, 2N3904, IRLZ44N, TL072, MPSA42, SS8050, BC846B, MMBT3906, MMBT3904` as supported, with none of the five review targets present.
 
-| MPN | Verdict | Package files | Benches | Validator result | Decisive evidence |
+| MPN | Verdict | Package files | Benches reproduced | Validator result | Decisive evidence |
 | --- | --- | ---: | ---: | --- | --- |
-| TIP31C | FAIL | 0 | 0 | FAIL, 7 missing-package errors | No `component.json`, model, source record, validation result, or supported region exists. |
-| TIP32C | FAIL | 0 | 0 | FAIL, 7 missing-package errors | No `component.json`, model, source record, validation result, or supported region exists. |
-| TIP120 | FAIL | 0 | 0 | FAIL, 7 missing-package errors | No `component.json`, model, source record, validation result, or supported region exists. |
-| TIP125 | FAIL | 0 | 0 | FAIL, 7 missing-package errors | No `component.json`, model, source record, validation result, or supported region exists. |
+| TIP31C | FAIL | 0 of 8 | 0 of 2 | FAIL, 7 missing-package errors | No `component.json`, model, source record, validation result, or supported region exists. |
+| TIP32C | FAIL | 0 of 8 | 0 of 2 | FAIL, 7 missing-package errors | No `component.json`, model, source record, validation result, or supported region exists. |
+| TIP120 | FAIL | 0 of 8 | 0 of 2 | FAIL, 7 missing-package errors | No `component.json`, model, source record, validation result, or supported region exists. |
+| TIP125 | FAIL | 0 of 8 | 0 of 2 | FAIL, 7 missing-package errors | No `component.json`, model, source record, validation result, or supported region exists. |
+| BF256B | FAIL | 0 of 8 | 0 of 2 | FAIL, 7 missing-package errors | No `component.json`, model, source record, validation result, or supported region exists. |
 
-`validate-package.mjs` was run independently for every target. Each run reports the same seven blockers: missing `component.json`, `model.cir`, `sources.json`, `MODEL_CARD.md`, `LICENSE`, `tests/expectations.json`, and `tests/` directory. Required-file inventory is 0 of 8 for every part, including 0 `validation-results.json` files, so there are no recorded numbers to reproduce.
+`validate-package.mjs` was run independently for every target. Each run reports the same seven blockers: missing `component.json`, `model.cir`, `sources.json`, `MODEL_CARD.md`, `LICENSE`, `tests/expectations.json`, and `tests/` directory. Required-file inventory is 0 of 8 for every part, including 0 `validation-results.json` files, so there are 0 stored validation numbers to reproduce.
 
-Native ngspice-46 is installed. The model library contains 0 target benches for every part. Independent `compare.mjs` attempts against `dc_gain.cir` and `saturation.cir` for each part terminate with `ENOENT` before simulation, so 0 of the required 2 benches per part can run. There is also no model or declared supported operating region, so 0 operating-point probes can be constructed inside a claimed region.
+Native comparison attempts were made twice per part. `dc_gain.cir` and `saturation.cir` were attempted for TIP31C, TIP32C, TIP120, and TIP125; `idss.cir` and `transfer_curve.cir` were attempted for BF256B. All 10 `compare.mjs` runs terminate with `ENOENT` before simulation because the bench files do not exist. Thus 0 of 2 required benches reproduce for each part. There is also no model or declared supported operating region, so 0 outside-bench operating-point probes can be constructed inside a claimed region.
 
-Provenance cannot pass: every target has 0 `sources.json` records and 0 factual page references, leaving no cited source to fetch and no material facts to confirm. The target package scan finds 0 PDFs and 0 vendor SPICE files, but that vacuous result does not compensate for the absent packages. Fidelity cannot be assessed or labeled F2 because there are 0 expectations, 0 fit metrics, 0 known-omission records, and 0 archetype-threshold results.
+Provenance cannot pass: every target has 0 `sources.json` records and 0 factual page references, leaving no cited source to fetch and 0 material facts to confirm. Fidelity cannot be assessed or labeled F2 because there are 0 expectations, 0 fit metrics, 0 known-omission records, and 0 archetype-threshold results.
 
 No reviewer field or validation date was changed because no target has a `component.json`; all failures remain unstamped.
 
