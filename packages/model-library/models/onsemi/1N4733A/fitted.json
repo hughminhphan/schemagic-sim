@@ -1,0 +1,149 @@
+{
+  "schema_version": "1.0.0",
+  "fitter": "archetype-diode zener closed-form fit using Vt=0.025852 V",
+  "deterministic": true,
+  "temperature_c": 25.0,
+  "parameters": {
+    "IS": 1e-14,
+    "N": 1.6,
+    "RS": 0.0001,
+    "BV": 5.1,
+    "IBV": 0.049,
+    "NBV": 1.0
+  },
+  "parameter_metadata": {
+    "IS": {
+      "status": "held at physical default"
+    },
+    "N": {
+      "status": "held at physical default"
+    },
+    "RS": {
+      "status": "derived from zener impedance with 1e-4 floor"
+    },
+    "BV": {
+      "status": "paired with IBV at IZT"
+    },
+    "IBV": {
+      "status": "paired with BV at IZT"
+    },
+    "NBV": {
+      "status": "held at physical default 1.0; no independent knee curve fit"
+    }
+  },
+  "held_defaults": [
+    {
+      "parameter": "IS",
+      "value": 1e-14,
+      "unit": "A",
+      "reason": "no verifiable typical forward-IV data"
+    },
+    {
+      "parameter": "N",
+      "value": 1.6,
+      "unit": "1",
+      "reason": "no verifiable typical forward-IV data"
+    },
+    {
+      "parameter": "RS",
+      "value": 0.0001,
+      "unit": "ohm",
+      "reason": "physical floor; zener impedance subtraction reached floor"
+    },
+    {
+      "parameter": "ISR",
+      "value": 1e-14,
+      "unit": "A",
+      "reason": "not fitted"
+    },
+    {
+      "parameter": "NR",
+      "value": 2.0,
+      "unit": "1",
+      "reason": "not fitted"
+    },
+    {
+      "parameter": "IKF",
+      "value": 0.0,
+      "unit": "A",
+      "reason": "not fitted"
+    },
+    {
+      "parameter": "CJO",
+      "value": 0.0,
+      "unit": "F",
+      "reason": "not fitted"
+    },
+    {
+      "parameter": "TT",
+      "value": 0.0,
+      "unit": "s",
+      "reason": "not fitted"
+    },
+    {
+      "parameter": "VJ",
+      "value": 1.0,
+      "unit": "V",
+      "reason": "not fitted"
+    },
+    {
+      "parameter": "M",
+      "value": 0.5,
+      "unit": "1",
+      "reason": "not fitted"
+    },
+    {
+      "parameter": "FC",
+      "value": 0.5,
+      "unit": "1",
+      "reason": "not fitted"
+    },
+    {
+      "parameter": "EG",
+      "value": 1.11,
+      "unit": "eV",
+      "reason": "not fitted"
+    },
+    {
+      "parameter": "XTI",
+      "value": 3.0,
+      "unit": "1",
+      "reason": "not fitted"
+    },
+    {
+      "parameter": "TNOM",
+      "value": 27.0,
+      "unit": "degC",
+      "reason": "ngspice physical default"
+    },
+    {
+      "parameter": "NBV",
+      "value": 1.0,
+      "unit": "1",
+      "reason": "no independent knee curve fit"
+    }
+  ],
+  "residuals": [
+    {
+      "quantity": "zener voltage at 0.001 A",
+      "datasheet_value": 4.999388761653244,
+      "fitted_value": 5.000009199065745,
+      "unit": "V",
+      "relative_error": 0.00012410265376028398,
+      "citation": "official product page, zener voltage table, zener voltage and differential resistance rows"
+    },
+    {
+      "quantity": "zener voltage at 0.049 A",
+      "datasheet_value": 5.1,
+      "fitted_value": 5.1000049,
+      "unit": "V",
+      "relative_error": 9.60784313807541e-07,
+      "citation": "official product page, zener voltage table, zener voltage row at IZT"
+    }
+  ],
+  "rms_relative_error": 8.775645781605643e-05,
+  "worst_relative_error": {
+    "value": 0.00012410265376028398,
+    "quantity": "zener voltage at 0.001 A"
+  }
+}
