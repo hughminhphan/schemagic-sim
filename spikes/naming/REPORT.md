@@ -39,3 +39,16 @@ Trademark caveat: web-level search only. Formal USPTO (uspto.gov/trademarks/sear
 ## Superseded: was OPEN, Hugh decides
 
 The lane recommended Ohmtrace; the orchestrator vetoes the -trace family for the client-name conflict and finds the remaining candidates serviceable but not yet great. Action before Phase 5: a second, judgment-led naming round (orchestrator-generated candidates, luna verifies availability with the same evidence standard), then the shortlist goes to Hugh, who picks the final name. Local working codename remains "opencircuit" (directory name only, never public).
+
+## Appendix: second-round candidate verification (2026-08-06, archived; name already resolved to scheMAGIC Simulator)
+
+| Candidate | GitHub collisions | npm | PyPI | crates | .dev/.app/.io DNS | Trademark risk | Grade |
+|---|---|---|---|---|---|---|---|
+| Voltweave | none | free | free | free | all unanswered | low, nothing exact or adjacent | A |
+| Biaspoint | minor (empty dormant BPSpice-Project/BiasPoint) | free | free | free | all unanswered | low; generic electronics phrase; biaspoint.de is a music act | B |
+| Milliamp | minor (user handle, no exact repo) | free | free | free | all unanswered | medium: cancelled MILLIAMP.COM repair mark; active Milliamp Technologies UK electronics firm | B |
+| Mho | minor (ef4/mho build tool 78 stars) | taken | free | free | .app resolves | medium: MHO Networks telecom, MHO+ALL mark; pronunciation trap | C |
+| Cathode | major (many exact repos; npm/PyPI/crates all taken) | taken | taken | taken | all resolve | medium | F |
+| Ohmic | major (exact electronics repos; Ohmic Labs battery SaaS live) | taken | taken | free | .app/.io resolve | high | F |
+
+If the name ever needs to go collision-free standalone: Voltweave first, Biaspoint second, Milliamp third (subject to formal USPTO/EUIPO clearance).
