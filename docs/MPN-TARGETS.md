@@ -39,4 +39,4 @@ Alias/package policy: SMD siblings (MMBT3904 vs 2N3904) are separate component.j
 - logic_74hc: per-gate analog behavioral subckt; validate VTC thresholds (VIH/VIL/VOH/VOL at rated VCC) and tpd into stated CL.
 - timer_555: internal-architecture subckt (comparators + latch + discharge switch); validate astable and monostable periods against datasheet formulas within stated tolerance.
 
-Every archetype gets a written spec in tools/model-factory/archetypes/ before fan-out (P3 exit requirement).
+Every archetype has a written spec in docs/model-archetypes/ (authored and ngspice-46-verified 2026-08-06; P3 exit requirement met).
