@@ -1,0 +1,14 @@
+OpenCircuit factory test: IRF540N body diode
+* OpenCircuit Model Factory v0.1.0
+* Original work generated from public factual specifications.
+* This model is not a copy of, or adaptation from, any vendor SPICE model.
+* Source: https://www.infineon.com/assets/row/public/documents/24/49/infineon-irf540n-datasheet-en.pdf
+* Revision: PD-94812, 03-Nov-2003; public asset modified 29-Apr-2021
+* Fit: native ngspice-46 in scipy.optimize.least_squares, diff_step=1e-4
+.model OC_INFINEON_IRF540N VDMOS( VTO=3.77508222892 KP=90.1991944578 THETA=1 LAMBDA=0.00270148170869 RD=0.0166129165881 RS=0.0074 RG=0.0001 CGS=1.92e-09 CGDMAX=7.5e-10 CGDMIN=1e-11 CJO=1.19257075262e-09 IS=6.80487597575e-09 N=1.5 RB=0.0074 TT=0 BV=100 IBV=0.00025 RTHJC=1.15 RTHCA=60.85 A=0.394475736209 RDS=1e9 VJ=0.8 M=0.5 FC=0.5 NBV=1 TNOM=27)
+.temp 25
+M1 d g 0 OC_INFINEON_IRF540N
+ISD d 0 DC 16
+VG g 0 DC 0
+.op
+.end
