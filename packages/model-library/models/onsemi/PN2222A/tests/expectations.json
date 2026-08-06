@@ -1,0 +1,57 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "dc_gain.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "saturation.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "ft_bench.cir",
+      "analysis_type": "ac_small_signal",
+      "scalar_checks": [],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "capacitance.cir",
+      "analysis_type": "ac_small_signal",
+      "scalar_checks": [],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "output_curve.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "boundary_envelope.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "boundary_collector_voltage",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(c))"
+          },
+          "expected_value": 5.0,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.1,
+            "relative": 0.1
+          },
+          "datasheet_citation": "p. 3 electrical characteristics",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    }
+  ]
+}

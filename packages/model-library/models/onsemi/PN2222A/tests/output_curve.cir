@@ -1,0 +1,18 @@
+OpenCircuit factory test: PN2222A output sanity
+* OpenCircuit Model Factory v0.1.0
+* Original work generated from public factual specifications.
+* This model is not a copy of, or adaptation from, any vendor SPICE model.
+* Source: https://www.onsemi.com/pub/Collateral/PN2222A-D.PDF
+* Revision: Rev. 1.1.0, July 2014
+* Fit: native ngspice-46 in scipy.optimize.least_squares, diff_step=1e-4
+.model OC_ONSEMI_PN2222A NPN(IS=2.8962197304e-14 NF=1.0000000000e0 BF=1.9999999999e3 IKF=6.8919904103e-1 ISE=3.5557082141e-14 NE=1.2072447758e0 VAF=1.0000000000e2 BR=4.0000000000e0 RB=1.2086550217e1 RE=1.2962957766e-4 RC=1.8830977867e0 CJE=2.9590349587e-11 VJE=7.5000000000e-1 MJE=3.3000000000e-1 CJC=1.9261254218e-11 VJC=7.5000000000e-1 MJC=3.3000000000e-1 XCJC=1.0000000000e0 TF=4.3148697016e-10 TR=0 FC=0.5 EG=1.11 XTI=3 TNOM=27)
+
+.temp 25
+VCE1 c1 0 DC 2
+IB1 0 b1 DC 0.00001
+Q1 c1 b1 0 OC_ONSEMI_PN2222A
+VCE2 c2 0 DC 10
+IB2 0 b2 DC 50u
+Q2 c2 b2 0 OC_ONSEMI_PN2222A
+.op
+.end
