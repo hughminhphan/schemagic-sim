@@ -1,0 +1,171 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "dc_gain.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "hfe_at_0.001_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg1),24999.999999999996)"
+          },
+          "unit": "1",
+          "datasheet_citation": "p. 2 electrical characteristics",
+          "placeholder": false,
+          "minimum": 25,
+          "inclusive": true
+        },
+        {
+          "name": "hfe_at_0.01_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg2),4000)"
+          },
+          "unit": "1",
+          "datasheet_citation": "p. 2 electrical characteristics",
+          "placeholder": false,
+          "minimum": 40,
+          "inclusive": true
+        },
+        {
+          "name": "hfe_at_0.03_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg3),1333.3333333333333)"
+          },
+          "unit": "1",
+          "datasheet_citation": "p. 2 electrical characteristics",
+          "placeholder": false,
+          "minimum": 40,
+          "inclusive": true
+        }
+      ]
+    },
+    {
+      "test_netlist": "saturation.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "vce_sat_1",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(cs1))"
+          },
+          "expected_value": 0.5,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.15
+          },
+          "datasheet_citation": "p. 2 electrical characteristics",
+          "placeholder": false
+        },
+        {
+          "name": "vbe_sat_1",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(bs1))"
+          },
+          "expected_value": 0.9,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.15
+          },
+          "datasheet_citation": "p. 2 electrical characteristics",
+          "placeholder": false
+        },
+        {
+          "name": "vce_sat_2",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(cs2))"
+          },
+          "expected_value": 0.5,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.15
+          },
+          "datasheet_citation": "p. 2 electrical characteristics",
+          "placeholder": false
+        },
+        {
+          "name": "vbe_sat_2",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(bs2))"
+          },
+          "expected_value": 0.9,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.15
+          },
+          "datasheet_citation": "p. 2 electrical characteristics",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "ft_bench.cir",
+      "analysis_type": "ac_small_signal",
+      "scalar_checks": [
+        {
+          "name": "current_gain_bandwidth",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "frequency_at_magnitude(i(vcc),1)"
+          },
+          "expected_value": 50000000,
+          "unit": "Hz",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 2 electrical characteristics",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "capacitance.cir",
+      "analysis_type": "ac_small_signal",
+      "scalar_checks": [
+        {
+          "name": "cobo",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "imag_cap:last(i(vcb),1000000)"
+          },
+          "expected_value": 3e-12,
+          "unit": "F",
+          "tolerance": {
+            "absolute": 5e-13,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 2 electrical characteristics",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "output_curve.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "boundary_region.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": []
+    }
+  ]
+}

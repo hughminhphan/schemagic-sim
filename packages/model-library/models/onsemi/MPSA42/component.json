@@ -1,0 +1,137 @@
+{
+  "schema_version": "1.0.0",
+  "canonical_mpn": "MPSA42",
+  "manufacturer": "onsemi",
+  "description": "300 V high-voltage NPN transistor",
+  "electrical_family": "bjt_npn",
+  "symbol_pins": [
+    {
+      "name": "E",
+      "number": "1",
+      "role": "emitter"
+    },
+    {
+      "name": "B",
+      "number": "2",
+      "role": "base"
+    },
+    {
+      "name": "C",
+      "number": "3",
+      "role": "collector"
+    }
+  ],
+  "spice_pin_mapping": [
+    {
+      "symbol_pin_number": "3",
+      "subckt_node": "collector",
+      "order": 1
+    },
+    {
+      "symbol_pin_number": "2",
+      "subckt_node": "base",
+      "order": 2
+    },
+    {
+      "symbol_pin_number": "1",
+      "subckt_node": "emitter",
+      "order": 3
+    }
+  ],
+  "package_variants": [
+    {
+      "name": "TO-92",
+      "standard": "TO-92",
+      "pin_count": 3,
+      "pin_map": [
+        {
+          "package_pin": "1",
+          "symbol_pin_number": "1"
+        },
+        {
+          "package_pin": "2",
+          "symbol_pin_number": "2"
+        },
+        {
+          "package_pin": "3",
+          "symbol_pin_number": "3"
+        }
+      ]
+    }
+  ],
+  "ordering_code_aliases": [],
+  "datasheet": {
+    "url": "https://www.onsemi.com/pdf/datasheet/mpsa42-d.pdf",
+    "revision": "February 2013 Rev. 8"
+  },
+  "model_type": "dot_model",
+  "fidelity_tier": "F2",
+  "domain_coverage": {
+    "dc": "fitted",
+    "ac": "fitted",
+    "transient": "approx",
+    "noise": "none",
+    "thermal": "none",
+    "digital": "none"
+  },
+  "supported_analyses": [
+    "operating_point",
+    "dc_sweep",
+    "ac_small_signal",
+    "transient"
+  ],
+  "supported_operating_region": {
+    "summary": "F1 table-constrained model at 25 degC; hFE targets are guaranteed minima, not typical values.",
+    "numeric_bounds": [
+      {
+        "quantity": "collector_current",
+        "minimum": 0.001,
+        "maximum": 0.03,
+        "unit": "A",
+        "conditions": "Datasheet hFE table range at 25 degC",
+        "placeholder": false
+      },
+      {
+        "quantity": "collector_emitter_voltage",
+        "minimum": 0,
+        "maximum": 300,
+        "unit": "V",
+        "conditions": "Rated VCEO",
+        "placeholder": false
+      }
+    ]
+  },
+  "known_omissions": [
+    "No self-heating: junction temperature is fixed at TNOM.",
+    "Absolute maximum ratings are metadata only; breakdown is not modelled.",
+    "Package parasitics are not modelled.",
+    "Guaranteed MIN/MAX rows are retained as source semantics; no typical hFE curve was published, so F1 targets use the stated minima as conservative table anchors.",
+    "Only one VCE(sat) condition is published; the duplicated bench point is not an independent characterization.",
+    "CJE is held at the numerical floor because Ceb is not published.",
+    "Reverse operation, base-resistance modulation, transit-time bias dependence, temperature coefficients, flicker noise, and hFE spread are not modelled.",
+    "Reviewer remains pending-review."
+  ],
+  "licence": {
+    "spdx_id": "MIT",
+    "provenance_basis": "original_from_facts"
+  },
+  "generator": {
+    "tool_or_agent": "opencircuit-model-factory-v0.1.0",
+    "date": "2026-08-06"
+  },
+  "reviewer": {
+    "tool_or_agent": "pending-review",
+    "date": "2026-08-06"
+  },
+  "test_results": {
+    "status": "complete",
+    "pass_count": 9,
+    "fail_count": 0,
+    "total_count": 9,
+    "worst_observed_relative_fitting_error": {
+      "value": 0.36767918032193364,
+      "quantity": "hFE at IC=0.001 A"
+    }
+  },
+  "validation_date": "2026-08-06"
+}

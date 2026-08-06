@@ -1,0 +1,16 @@
+OpenCircuit factory test: MPSA42 fT
+* OpenCircuit Model Factory v0.1.0
+* Original work generated from public factual specifications.
+* This model is not a copy of, or adaptation from, any vendor SPICE model.
+* Source: https://www.onsemi.com/pdf/datasheet/mpsa42-d.pdf
+* Revision: February 2013 Rev. 8
+* Fit: native ngspice-46 in scipy.optimize.least_squares, diff_step=1e-4
+.model OC_ONSEMI_MPSA42 NPN(IS=2.8292542430e-15 NF=1.0000000000e0 BF=6.0e1 IKF=9.9999954019e1 ISE=1.3748010721e-18 NE=3.7000261029e0 VAF=1.0000000000e2 BR=4.0000000000e0 RB=3.8077482921e1 RE=3.7346228204e0 RC=1.8672782047e1 CJE=1.1836139835e-15 VJE=7.5000000000e-1 MJE=3.3000000000e-1 CJC=8.9736062872e-12 VJC=7.5000000000e-1 MJC=3.3000000000e-1 XCJC=1.0000000000e0 TF=2.9589650827e-9 TR=0 FC=0.5 EG=1.11 XTI=3 TNOM=27)
+.temp 25
+
+VCC c 0 DC 2.0000000000e1
+IBDC 0 b DC 2.5000000000e-4
+IAC 0 b AC 1
+Q1 c b 0 OC_ONSEMI_MPSA42
+.ac dec 20 1Meg 10G
+.end
