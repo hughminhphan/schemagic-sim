@@ -1,0 +1,142 @@
+{
+  "schema_version": "1.0.0",
+  "canonical_mpn": "BZX79C5V1",
+  "manufacturer": "Nexperia",
+  "description": "5.1 V low-power silicon zener diode",
+  "electrical_family": "diode",
+  "symbol_pins": [
+    {
+      "name": "A",
+      "number": "1",
+      "role": "anode"
+    },
+    {
+      "name": "K",
+      "number": "2",
+      "role": "cathode"
+    }
+  ],
+  "spice_pin_mapping": [
+    {
+      "symbol_pin_number": "1",
+      "subckt_node": "anode",
+      "order": 1
+    },
+    {
+      "symbol_pin_number": "2",
+      "subckt_node": "cathode",
+      "order": 2
+    }
+  ],
+  "package_variants": [
+    {
+      "name": "SOD27",
+      "standard": "DO-35",
+      "pin_count": 2,
+      "pin_map": [
+        {
+          "package_pin": "1",
+          "symbol_pin_number": "1"
+        },
+        {
+          "package_pin": "2",
+          "symbol_pin_number": "2"
+        }
+      ]
+    }
+  ],
+  "ordering_code_aliases": [
+    "BZX79-C5V1"
+  ],
+  "datasheet": {
+    "url": "https://assets.nexperia.com/documents/data-sheet/BZX79.pdf",
+    "revision": "M3D176, 2002 Feb 27"
+  },
+  "model_type": "dot_model",
+  "fidelity_tier": "F1",
+  "domain_coverage": {
+    "dc": "fitted",
+    "ac": "approx",
+    "transient": "approx",
+    "noise": "none",
+    "thermal": "none",
+    "digital": "none"
+  },
+  "supported_analyses": [
+    "operating_point",
+    "dc_sweep",
+    "transient"
+  ],
+  "supported_operating_region": {
+    "summary": "F1 zener behavior at 25 degC from 1 mA to 5 mA; reverse leakage only at the published 2 V test point; avalanche not claimed.",
+    "numeric_bounds": [
+      {
+        "quantity": "zener_current",
+        "minimum": 0.001,
+        "maximum": 0.005,
+        "unit": "A",
+        "conditions": "Published zener test-current envelope at 25 degC",
+        "placeholder": false
+      },
+      {
+        "quantity": "reverse_voltage",
+        "minimum": 0,
+        "maximum": 2,
+        "unit": "V",
+        "conditions": "Published reverse-leakage test voltage; avalanche omitted",
+        "placeholder": false
+      },
+      {
+        "quantity": "ambient_temperature",
+        "minimum": 25,
+        "maximum": 25,
+        "unit": "degC",
+        "conditions": "Fit reference temperature",
+        "placeholder": false
+      }
+    ]
+  },
+  "known_omissions": [
+    "IS held at physical default 1e-14 A; no typical forward-IV data was available.",
+    "N held at physical default 1.6; no typical forward-IV data was available.",
+    "RS held at the physical floor 1e-4 ohm after the zener impedance subtraction.",
+    "ISR held at default; forward recombination was not fitted.",
+    "NR held at default; forward recombination was not fitted.",
+    "IKF held at default; high-injection roll-off was not fitted.",
+    "CJO held at default/omitted; no usable typical capacitance curve was fitted.",
+    "VJ held at default; no capacitance curve was fitted.",
+    "M held at default; no capacitance curve was fitted.",
+    "FC held at default 0.5.",
+    "TT held at default 0 s; reverse recovery is not modelled.",
+    "EG held at default; no temperature sweep was fitted.",
+    "XTI held at default; no temperature sweep was fitted.",
+    "TNOM held at ngspice default 27 degC; benches explicitly set .temp 25.",
+    "NBV held at physical default 1.0 because the published knee impedance and reverse-leakage bound could not be represented simultaneously by one ngspice breakdown branch.",
+    "No self-heating: junction temperature is fixed at TNOM. Thermal derating from the datasheet is not modelled.",
+    "Package parasitics (lead inductance, package capacitance) are not modelled.",
+    "Flicker noise is not modelled: KF and AF are at defaults (no noise data published)."
+  ],
+  "licence": {
+    "spdx_id": "MIT",
+    "provenance_basis": "original_from_facts"
+  },
+  "generator": {
+    "tool_or_agent": "opencircuit-model-factory-v0.1.0",
+    "date": "2026-08-07"
+  },
+  "reviewer": {
+    "tool_or_agent": "pending-review",
+    "date": "2026-08-07"
+  },
+  "test_results": {
+    "status": "complete",
+    "pass_count": 3,
+    "fail_count": 0,
+    "total_count": 3,
+    "worst_observed_relative_fitting_error": {
+      "value": 0.00005072322594712268,
+      "quantity": "zener voltage at 0.001 A"
+    }
+  },
+  "validation_date": "2026-08-06"
+}

@@ -1,0 +1,132 @@
+{
+  "schema_version": "1.0.0",
+  "extraction_method": "manual structuring from manufacturer-published electrical characteristics; no vendor SPICE model used",
+  "fit_conditions": {
+    "temperature": {
+      "value": 25,
+      "unit": "degC",
+      "conditions": "Tj = 25 degC unless otherwise specified",
+      "page_reference": "p. 2",
+      "source_kind": "typical",
+      "column_semantics": "published TYP column; used as the 25 degC fit target"
+    }
+  },
+  "fit_points": [
+    {
+      "current": {
+        "value": 0.01,
+        "unit": "A",
+        "conditions": "TA = 25 degC",
+        "page_reference": "p. 2",
+        "source_kind": "maximum",
+        "column_semantics": "published MAX column; used only for a one-sided bound"
+      },
+      "voltage": {
+        "value": 0.9,
+        "unit": "V",
+        "conditions": "IF = 10 mA, TA = 25 degC",
+        "page_reference": "p. 2",
+        "source_kind": "maximum",
+        "column_semantics": "published MAX column; used only for a one-sided bound"
+      }
+    }
+  ],
+  "zener": {
+    "variant": "Z",
+    "v_z_at_izt": {
+      "value": 5.1,
+      "unit": "V",
+      "conditions": "IZT = 0.005 A, Tj = 25 degC",
+      "page_reference": "p. 4",
+      "source_kind": "typical",
+      "column_semantics": "published TYP column; used as the 25 degC fit target"
+    },
+    "i_zt": {
+      "value": 0.005,
+      "unit": "A",
+      "conditions": "Zener voltage test current, Tj = 25 degC",
+      "page_reference": "p. 4",
+      "source_kind": "typical",
+      "column_semantics": "published TYP column; used as the 25 degC fit target"
+    },
+    "z_zt": {
+      "value": 40,
+      "unit": "ohm",
+      "conditions": "IZT = 0.005 A, Tj = 25 degC",
+      "page_reference": "p. 4",
+      "source_kind": "typical",
+      "column_semantics": "published TYP column; used as the 25 degC fit target"
+    },
+    "i_zk": {
+      "value": 0.001,
+      "unit": "A",
+      "conditions": "Zener knee test current, Tj = 25 degC",
+      "page_reference": "p. 4",
+      "source_kind": "typical",
+      "column_semantics": "published TYP column; used as the 25 degC fit target"
+    },
+    "z_zk": {
+      "value": 400,
+      "unit": "ohm",
+      "conditions": "IZK = 1 mA, Tj = 25 degC",
+      "page_reference": "p. 4",
+      "source_kind": "typical",
+      "column_semantics": "published TYP column; used as the 25 degC fit target"
+    },
+    "reverse_current": {
+      "value": 2e-06,
+      "unit": "A",
+      "conditions": "VR = 2 V, Tj = 25 degC",
+      "page_reference": "p. 3",
+      "source_kind": "maximum",
+      "column_semantics": "published MAX column; used only for a one-sided bound"
+    },
+    "reverse_voltage": {
+      "value": 2,
+      "unit": "V",
+      "conditions": "Reverse leakage test voltage, Tj = 25 degC",
+      "page_reference": "p. 3",
+      "source_kind": "typical",
+      "column_semantics": "published TYP column; used as the 25 degC fit target"
+    }
+  },
+  "electrical_limits": {
+    "reverse_voltage": {
+      "value": 2,
+      "unit": "V",
+      "conditions": "Rated reverse leakage test voltage",
+      "page_reference": "p. 3",
+      "source_kind": "maximum",
+      "column_semantics": "published MAX column; used only for a one-sided bound"
+    },
+    "forward_continuous_current": {
+      "value": 0.2,
+      "unit": "A",
+      "conditions": "Continuous forward current, Tj = 25 degC",
+      "page_reference": "p. 2",
+      "source_kind": "maximum",
+      "column_semantics": "published MAX column; used only for a one-sided bound"
+    }
+  },
+  "derived_model_inputs": {},
+  "identity": {
+    "canonical_mpn": "BZX79C5V1",
+    "manufacturer": "Nexperia",
+    "aliases": [
+      "BZX79-C5V1"
+    ]
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://assets.nexperia.com/documents/data-sheet/BZX79.pdf",
+    "revision": "M3D176, 2002 Feb 27",
+    "sha256": "23a41d5236b2cfb77d833e4950734c2edb3a26d716b1f2daa358f2615b91aee1",
+    "accessed_date": "2026-08-07",
+    "pages_referenced": [
+      "p. 2",
+      "p. 4",
+      "p. 3"
+    ],
+    "placeholder": false
+  }
+}
