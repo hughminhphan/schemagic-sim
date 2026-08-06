@@ -1,6 +1,6 @@
 /// <reference lib="webworker" />
 
-import { Simulation } from "eecircuit-engine";
+import { createNgspiceEngine, NGSPICE_VERSION } from "../../../tools/ngspice-wasm-build/dist-loader/index.mjs";
 import { classifyEngineError, parseEngineDiagnostics } from "./diagnostics";
 import { parseBinaryRawfile } from "./rawfile";
 import type {
@@ -12,18 +12,21 @@ import type {
 
 const scope = self as DedicatedWorkerGlobalScope;
 const MAX_NETLIST_BYTES = 1024 * 1024;
-let simulator: Simulation;
+interface NgspiceRunResult {
+  rawfile: Uint8Array;
+  stdout: string;
+  stderr: string;
+  timingMs: number;
+}
+
+interface NgspiceEngine {
+  runNetlist(netlist: string): Promise<NgspiceRunResult>;
+  getInitInfo(): string;
+  readonly memoryBytes: number;
+}
+
+let simulator: NgspiceEngine;
 let running = false;
-
-interface SpiceFileSystem {
-  readFile(path: string): Uint8Array;
-  unlink(path: string): void;
-}
-
-interface SpiceModule {
-  FS: SpiceFileSystem;
-  HEAPU8?: Uint8Array;
-}
 
 function post(response: SimulationResponse, transfer: Transferable[] = []): void {
   scope.postMessage(response, transfer);
@@ -45,10 +48,10 @@ function validateNetlist(netlist: string): void {
 
 async function initialize(): Promise<void> {
   const started = performance.now();
-  simulator = new Simulation();
-  await simulator.start();
+  simulator = await createNgspiceEngine() as NgspiceEngine;
   const init = simulator.getInitInfo();
-  const engine = init.match(/ngspice-[^: \n]+/)?.[0] ?? "ngspice-45.2+";
+  const hasKlu = /klu|suitesparse/i.test(init) || NGSPICE_VERSION === "ngspice-46";
+  const engine = `${NGSPICE_VERSION}${hasKlu ? " + KLU" : ""}`;
   post({ id: 0, type: "ready", engine, initMs: performance.now() - started });
 }
 
@@ -65,30 +68,21 @@ async function run(request: SimulationRequest): Promise<void> {
   const started = performance.now();
   try {
     validateNetlist(request.netlist);
-    simulator.setNetList(request.netlist);
-    await simulator.runSim();
-    const engineErrors = simulator.getError();
-    const info = `${simulator.getInfo()}\n${engineErrors.join("\n")}`;
+    const runResult = await simulator.runNetlist(request.netlist);
+    const info = `${runResult.stdout}\n${runResult.stderr}`;
     const diagnostics = parseEngineDiagnostics(request.netlist, info);
-    if (engineErrors.length > 0 || diagnostics.some((entry) => /fatal|error|converg|singular/i.test(entry.message))) {
-      const message = engineErrors.at(-1) ?? diagnostics.at(-1)?.message ?? "Simulation failed";
+    const fatalDiagnostics = diagnostics.filter((entry) => /fatal|error|converg|singular/i.test(entry.message));
+    if (fatalDiagnostics.length > 0) {
+      const message = fatalDiagnostics.at(-1)?.message ?? "Simulation failed";
       post(protocolError(request.id, { code: classifyEngineError(message), message, diagnostics }));
       return;
     }
 
-    const module = simulator.__getSpiceModuleForTests() as SpiceModule | null;
-    if (!module?.FS) throw new Error("Engine rawfile filesystem is unavailable");
-    if ((module.HEAPU8?.buffer.byteLength ?? 0) > 256 * 1024 * 1024) throw new Error("WASM memory exceeds 256 MiB limit");
-    const raw = module.FS.readFile("out.raw");
-    const parsed = parseBinaryRawfile(raw, {
+    if (simulator.memoryBytes > 256 * 1024 * 1024) throw new Error("WASM memory exceeds 256 MiB limit");
+    const parsed = parseBinaryRawfile(runResult.rawfile, {
       ...(request.limits?.maxRawfileBytes ? { maxRawfileBytes: request.limits.maxRawfileBytes } : {}),
       ...(request.limits?.maxSamples ? { maxSamples: request.limits.maxSamples } : {}),
     });
-    try {
-      module.FS.unlink("out.raw");
-    } catch {
-      // The next engine run also performs destroy all. Missing cleanup is harmless.
-    }
     const response: SimulationResponse = {
       id: request.id,
       type: "result",
@@ -101,7 +95,7 @@ async function run(request: SimulationRequest): Promise<void> {
   } catch (caught) {
     const message = caught instanceof Error ? caught.message : String(caught);
     const code = classifyEngineError(message);
-    const diagnostics = parseEngineDiagnostics(request.netlist, `${simulator?.getInfo?.() ?? ""}\n${message}`);
+    const diagnostics = parseEngineDiagnostics(request.netlist, `${simulator?.getInitInfo?.() ?? ""}\n${message}`);
     post(protocolError(request.id, {
       code,
       message,

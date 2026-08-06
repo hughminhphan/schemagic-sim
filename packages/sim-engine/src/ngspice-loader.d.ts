@@ -1,0 +1,15 @@
+declare module "*.mjs" {
+  export const NGSPICE_VERSION: "ngspice-46";
+  export interface NgspiceRunResult {
+    rawfile: Uint8Array;
+    stdout: string;
+    stderr: string;
+    timingMs: number;
+  }
+  export interface NgspiceEngine {
+    runNetlist(netlist: string): Promise<NgspiceRunResult>;
+    getInitInfo(): string;
+    readonly memoryBytes: number;
+  }
+  export function createNgspiceEngine(): Promise<NgspiceEngine>;
+}
