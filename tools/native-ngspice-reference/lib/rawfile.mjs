@@ -55,7 +55,7 @@ function parseHeader(headerText) {
   if (variablesLine < 0) throw new Error("ngspice rawfile is missing Variables:");
 
   const numVariables = parseIntegerField(fields, "No. Variables", { minimum: 1 });
-  const numPoints = parseIntegerField(fields, "No. Points");
+  const numPoints = parseIntegerField(fields, "No. Points", { minimum: 1 });
   const flags = fields.get("flags").toLowerCase().split(/\s+/).filter(Boolean);
   const hasReal = flags.includes("real");
   const hasComplex = flags.includes("complex");
@@ -97,14 +97,11 @@ export function parseRawfile(input) {
   if (markerAt < 0) throw new Error("ngspice rawfile has no Binary: marker");
   if (markerAt > MAX_HEADER_BYTES) throw new Error("ngspice rawfile header is unreasonably large");
 
-  const afterMarker = markerAt + BINARY_MARKER.length;
-  const nextByte = bytes[afterMarker];
-  if (nextByte !== undefined && ![9, 10, 13, 32].includes(nextByte)) {
-    throw new Error("ngspice rawfile Binary: marker is not followed by whitespace");
-  }
-
-  let dataOffset = afterMarker;
-  while (dataOffset < bytes.length && [9, 10, 13, 32].includes(bytes[dataOffset])) dataOffset += 1;
+  let dataOffset = markerAt + BINARY_MARKER.length;
+  while (dataOffset < bytes.length && [9, 32].includes(bytes[dataOffset])) dataOffset += 1;
+  if (bytes[dataOffset] === 13 && bytes[dataOffset + 1] === 10) dataOffset += 2;
+  else if (bytes[dataOffset] === 10) dataOffset += 1;
+  else throw new Error("ngspice rawfile Binary: marker is not followed by a line ending");
 
   const headerText = bytes.subarray(0, markerAt).toString("utf8");
   const header = parseHeader(headerText);

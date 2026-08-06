@@ -135,6 +135,20 @@ function alignedValues(nativeRawfile, wasmRawfile, nativeVector, wasmVector, ana
   return nativeAxis.values.map((value) => interpolate(wasmAxis.values, wasmVector.values, realPart(value)));
 }
 
+function validateAnalysis(rawfile, vectors, analysis, label) {
+  const expectedType = analysis === "ac" ? "complex" : "real";
+  if (rawfile.dataType !== expectedType) {
+    throw new Error(`${label} produced ${rawfile.dataType} data for ${analysis}, expected ${expectedType}`);
+  }
+  const requiredScale = analysis === "tran" ? "time" : analysis === "ac" ? "frequency" : null;
+  if (requiredScale && !vectors.has(requiredScale)) {
+    throw new Error(`${label} ${analysis} plot is missing ${requiredScale}`);
+  }
+  if (analysis === "op" && (vectors.has("time") || vectors.has("frequency"))) {
+    throw new Error(`${label} plot is not an operating point`);
+  }
+}
+
 export function compareRawfiles(nativeRawfile, wasmRawfile, options) {
   const { analysis } = options;
   if (!DEFAULT_TOLERANCES[analysis]) throw new Error(`Unsupported analysis: ${analysis}`);
@@ -145,6 +159,8 @@ export function compareRawfiles(nativeRawfile, wasmRawfile, options) {
 
   const nativeVectors = vectorMap(nativeRawfile);
   const wasmVectors = vectorMap(wasmRawfile);
+  validateAnalysis(nativeRawfile, nativeVectors, analysis, "Native ngspice");
+  validateAnalysis(wasmRawfile, wasmVectors, analysis, "WASM ngspice");
   const scaleName = analysis === "tran" ? "time" : analysis === "ac" ? "frequency" : null;
   const vectorNames = [...new Set([...nativeVectors.keys(), ...wasmVectors.keys()])]
     .filter((name) => name !== scaleName)
