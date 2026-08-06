@@ -1,7 +1,8 @@
 import { mount, type TraceDefinition, type WaveformViewer } from "@opencircuit/waveform-viewer";
 import type { AnalysisMode, SimulationResult } from "@opencircuit/sim-engine";
 
-export const TRACE_COLORS = ["#3987e5", "#d95926", "#199e70", "#c98500", "#d55181", "#008300"] as const;
+export const TRACE_COLORS = ["#3FD983", "#E8A244", "#5FB0E8", "#F1EEE8", "#3FD983", "#E8A244"] as const;
+export const TRACE_DASHES = [[], [], [], [], [6, 3], [2, 3]] as const;
 
 export interface ScopeProbe {
   node: string;
@@ -21,10 +22,14 @@ export class ScopePlot {
   private readonly viewerHost: HTMLDivElement;
   private readonly autoButton: HTMLButtonElement;
   private readonly manualButton: HTMLButtonElement;
+  private readonly locusSvg: SVGSVGElement;
+  private readonly keepLocusButton: HTMLButtonElement;
   private viewer: WaveformViewer | undefined;
   private probes: ScopeProbe[] = [];
   private mode: AnalysisMode = "op";
   private result: SimulationResult | undefined;
+  private locus: [number, number][] = [];
+  private locusActive = false;
 
   constructor(host: HTMLElement) {
     this.host = host;
@@ -37,19 +42,54 @@ export class ScopePlot {
     this.autoButton.setAttribute("aria-pressed", "true");
     this.manualButton = document.createElement("button");
     this.manualButton.type = "button";
-    this.manualButton.textContent = "Manual range";
+    this.manualButton.textContent = "Range";
     this.manualButton.className = "scope-scale-button";
     this.manualButton.setAttribute("aria-pressed", "false");
     controls.append(this.autoButton, this.manualButton);
     this.viewerHost = document.createElement("div");
     this.viewerHost.className = "scope-viewer-host";
-    this.host.replaceChildren(controls, this.viewerHost);
+    this.locusSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    this.locusSvg.classList.add("scope-locus");
+    this.locusSvg.setAttribute("aria-label", "Potentiometer sweep locus");
+    this.keepLocusButton = document.createElement("button");
+    this.keepLocusButton.type = "button";
+    this.keepLocusButton.className = "keep-locus";
+    this.keepLocusButton.textContent = "Keep locus";
+    this.keepLocusButton.hidden = true;
+    this.host.replaceChildren(controls, this.viewerHost, this.locusSvg, this.keepLocusButton);
     this.autoButton.addEventListener("click", () => {
       this.viewer?.autoscale();
       this.setScaleState(true);
     });
     this.manualButton.addEventListener("click", () => this.promptManualRange());
+    this.keepLocusButton.addEventListener("click", () => {
+      this.keepLocusButton.hidden = true;
+      this.locusSvg.dataset.kept = "true";
+    });
+    new ResizeObserver(() => this.renderLocus()).observe(this.host);
     this.remount();
+  }
+
+  beginLocus(): void {
+    this.locus = [];
+    this.locusActive = true;
+    this.locusSvg.dataset.kept = "false";
+    this.keepLocusButton.hidden = true;
+    this.renderLocus();
+  }
+
+  addLocusPoint(wiper: number, voltage: number): void {
+    if (!this.locusActive || !Number.isFinite(wiper) || !Number.isFinite(voltage)) return;
+    this.locus.push([wiper, voltage]);
+    if (this.locus.length > 400) this.locus.splice(0, this.locus.length - 400);
+    this.renderLocus();
+  }
+
+  endLocus(): void {
+    this.locusActive = false;
+    if (this.locus.length > 200) this.locus = this.locus.filter((_, index) => index % Math.ceil(this.locus.length / 200) === 0);
+    this.keepLocusButton.hidden = this.locus.length < 2;
+    this.renderLocus();
   }
 
   setProbes(probes: ScopeProbe[]): void {
@@ -108,6 +148,33 @@ export class ScopePlot {
       if (values) vectors.set(trace.source, values);
     }
     this.viewer.setData({ kind: this.mode, vectors });
+  }
+
+  private renderLocus(): void {
+    const width = Math.max(1, this.host.clientWidth);
+    const height = Math.max(1, this.host.clientHeight);
+    this.locusSvg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+    if (this.locus.length < 2) {
+      this.locusSvg.replaceChildren();
+      return;
+    }
+    const values = this.locus.map((point) => point[1]);
+    const minimum = Math.min(...values);
+    const maximum = Math.max(...values);
+    const span = Math.max(1e-9, maximum - minimum);
+    const left = 52;
+    const right = 14;
+    const top = 26;
+    const bottom = 24;
+    const points = this.locus.map(([wiper, voltage]) => {
+      const x = left + Math.max(0, Math.min(1, wiper)) * Math.max(1, width - left - right);
+      const y = top + (1 - (voltage - minimum) / span) * Math.max(1, height - top - bottom);
+      return `${x.toFixed(2)},${y.toFixed(2)}`;
+    }).join(" ");
+    const polyline = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
+    polyline.classList.add("scope-locus-line");
+    polyline.setAttribute("points", points);
+    this.locusSvg.replaceChildren(polyline);
   }
 
   private setScaleState(auto: boolean): void {

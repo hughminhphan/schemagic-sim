@@ -16,7 +16,7 @@ const PREFIXES: Record<number, string> = {
 };
 
 export function formatEngineering(input: number | undefined, unit: string, digits = 3): FormattedReading {
-  if (input === undefined || !Number.isFinite(input)) return { value: " --", unit, title: "No simulated value" };
+  if (input === undefined || !Number.isFinite(input)) return { value: "  –", unit: "", title: "No simulated value" };
   if (input === 0) return { value: " 0.00", unit, title: `0 ${unit}` };
   const exponent = Math.max(-12, Math.min(9, Math.floor(Math.log10(Math.abs(input)) / 3) * 3));
   const scaled = input / 10 ** exponent;
