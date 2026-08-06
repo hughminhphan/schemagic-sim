@@ -1,0 +1,130 @@
+{
+  "schema_version": "1.0.0",
+  "extraction_method": "manual structuring from manufacturer-published electrical characteristics; no vendor SPICE model used",
+  "fit_conditions": {
+    "temperature": {
+      "value": 25,
+      "unit": "degC",
+      "conditions": "Tj = 25 degC unless otherwise specified",
+      "page_reference": "official product page, electrical characteristics",
+      "source_kind": "typical",
+      "column_semantics": "published TYP column; used as the 25 degC fit target"
+    }
+  },
+  "fit_points": [
+    {
+      "current": {
+        "value": 0.01,
+        "unit": "A",
+        "conditions": "TA = 25 degC",
+        "page_reference": "official product page, electrical characteristics",
+        "source_kind": "maximum",
+        "column_semantics": "published MAX column; used only for a one-sided bound"
+      },
+      "voltage": {
+        "value": 0.9,
+        "unit": "V",
+        "conditions": "IF = 10 mA, TA = 25 degC",
+        "page_reference": "official product page, electrical characteristics",
+        "source_kind": "maximum",
+        "column_semantics": "published MAX column; used only for a one-sided bound"
+      }
+    }
+  ],
+  "zener": {
+    "variant": "Z",
+    "v_z_at_izt": {
+      "value": 12,
+      "unit": "V",
+      "conditions": "IZT = 0.021 A, Tj = 25 degC",
+      "page_reference": "official product page, zener voltage table",
+      "source_kind": "nominal",
+      "column_semantics": "published nominal value; used because no TYP column was published"
+    },
+    "i_zt": {
+      "value": 0.021,
+      "unit": "A",
+      "conditions": "Zener voltage test current, Tj = 25 degC",
+      "page_reference": "official product page, zener voltage table",
+      "source_kind": "typical",
+      "column_semantics": "published TYP column; used as the 25 degC fit target"
+    },
+    "z_zt": {
+      "value": 9,
+      "unit": "ohm",
+      "conditions": "IZT = 0.021 A, Tj = 25 degC",
+      "page_reference": "official product page, zener voltage table",
+      "source_kind": "typical",
+      "column_semantics": "published TYP column; used as the 25 degC fit target"
+    },
+    "i_zk": {
+      "value": 0.001,
+      "unit": "A",
+      "conditions": "Zener knee test current, Tj = 25 degC",
+      "page_reference": "official product page, zener voltage table",
+      "source_kind": "typical",
+      "column_semantics": "published TYP column; used as the 25 degC fit target"
+    },
+    "z_zk": {
+      "value": 15,
+      "unit": "ohm",
+      "conditions": "IZK = 1 mA, Tj = 25 degC",
+      "page_reference": "official product page, zener voltage table",
+      "source_kind": "typical",
+      "column_semantics": "published TYP column; used as the 25 degC fit target"
+    },
+    "reverse_current": {
+      "value": 5e-06,
+      "unit": "A",
+      "conditions": "VR = 9.1 V, Tj = 25 degC",
+      "page_reference": "official product page, reverse leakage table",
+      "source_kind": "maximum",
+      "column_semantics": "published MAX column; used only for a one-sided bound"
+    },
+    "reverse_voltage": {
+      "value": 9.1,
+      "unit": "V",
+      "conditions": "Reverse leakage test voltage, Tj = 25 degC",
+      "page_reference": "official product page, reverse leakage table",
+      "source_kind": "typical",
+      "column_semantics": "published TYP column; used as the 25 degC fit target"
+    }
+  },
+  "electrical_limits": {
+    "reverse_voltage": {
+      "value": 9.1,
+      "unit": "V",
+      "conditions": "Rated reverse leakage test voltage",
+      "page_reference": "official product page, reverse leakage table",
+      "source_kind": "maximum",
+      "column_semantics": "published MAX column; used only for a one-sided bound"
+    },
+    "forward_continuous_current": {
+      "value": 0.2,
+      "unit": "A",
+      "conditions": "Continuous forward current, Tj = 25 degC",
+      "page_reference": "official product page, electrical characteristics",
+      "source_kind": "maximum",
+      "column_semantics": "published MAX column; used only for a one-sided bound"
+    }
+  },
+  "derived_model_inputs": {},
+  "identity": {
+    "canonical_mpn": "1N4742A",
+    "manufacturer": "onsemi",
+    "aliases": []
+  },
+  "source": {
+    "kind": "spec_page",
+    "url": "https://www.onsemi.com/products/discrete-power-modules/zener-diodes/1N4742A",
+    "revision": "official product specification fallback; PDF and product page access blocked",
+    "sha256": "1596b9eb2fd0aed0b605e40e8cc25efa7ca68a2e3aa97c459c163585fae15f96",
+    "accessed_date": "2026-08-07",
+    "pages_referenced": [
+      "official product page, electrical characteristics",
+      "official product page, zener voltage table",
+      "official product page, reverse leakage table"
+    ],
+    "placeholder": false
+  }
+}
