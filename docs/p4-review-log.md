@@ -38,3 +38,24 @@ All three F1 packages pass independent review. `validate-package.mjs` passed bef
 The Sharp PC817 datasheet was independently fetched from the cited URL. Its SHA-256 reproduced as `7cfdb59e0f75bb9c92581f95e55cdb02a377aa6e4a33a45371ae4d3c71935c1f`. Page 4 confirms typical forward voltage 1.2 V at 5 mA and maximum reverse current 10 uA at 4 V; it also confirms typical terminal capacitance 30 pF at 0 V and 1 kHz. Every `sources.json` record in the batch contains URL, revision, SHA-256, access date, and page references. A package scan found no PDF, vendor SPICE card, or vendor SPICE source file in any reviewed package.
 
 Recorded fitting residuals are consistent with each `fitted.json`: 0 for the PC817 and 4N35 closed-form calibration points, and 0.008959012489455156 for LL4148. The nonzero PC817 and 4N35 validation deviations are reproduced and remain within their F1 expectation thresholds; their TNOM and temperature-scaling limitations are explicitly listed in `known_omissions`.
+
+## 2026-08-07: batch B1-bjt-small
+
+Reviewer: `sol independent reviewer (batch B1-bjt-small)`
+
+All six packages fail fidelity review. Package-schema validation passed for every package, and all 36 benches independently passed native ngspice versus WASM comparison. Recomputed expectation values and global engine deltas exactly reproduce every number in `validation-results.json`, but the recorded checks do not establish honest claimed-region fidelity for these packages.
+
+| MPN | Verdict | Decisive independent evidence |
+| --- | --- | --- |
+| 2N3906 | FAIL | Native hFE is 83.27322786937394 against 110 at 0.1 mA. Its log residual is 0.27835326240294256, above the BJT convergence limit of 0.223. The F2 gain citation says p. 7 fig. 13 and saturation says p. 8 fig. 2, but Figure 13 and the relevant on-voltage Figure 15 are on p. 6. PDF pages 7 and 8 are the TO-92 mechanical outline, and `sources.json` omits p. 6. |
+| PN2222A | FAIL | At the published 0.5 A, 50 mA base-current saturation point, native VBE(sat) is 1.418342187637947 V against the datasheet maximum 1.05 V, an excess of 0.368342187637947 V or 35.080208%. The only accepted scalar check is a tautological 5 V collector-source value, and `known_omissions` does not disclose the maximum-voltage violation. |
+| BC547B | FAIL | At the claimed 0.1 mA lower boundary, native hFE is 510.0681451176217 against the cited typical 100, a 410.068145% error. DC coverage remains labeled `fitted`, but all material gain and saturation checks were withheld and the only accepted scalar check is collector voltage. |
+| BC557B | FAIL | At the claimed 0.1 mA lower boundary, native hFE is 493.83691741385553 against the cited typical 100, a 393.836917% error. DC coverage remains labeled `fitted`, with no accepted material gain or saturation check and no omission disclosing this magnitude of low-current error. |
+| BC337-40 | FAIL | At 0.5 A and 50 mA base current, native VBE(sat) is 1.5531226951383639 V against 0.86 V, an 80.595662% error. `facts.json` also admits a complementary-family curve proxy, and the shipped NPN model has the same 20 numeric model parameters as BC327-40 apart from polarity, contrary to the no-borrowed-parameters contract. |
+| BC327-40 | FAIL | At 0.5 A and 50 mA base current, native VBE(sat) is 1.5531226951381565 V against 0.86 V, an 80.595662% error. This material supported-boundary saturation error is recorded in fit tables but not reflected in `known_omissions`; the only accepted scalar check is collector voltage. |
+
+The cited 2N3906 PDF was independently fetched. Its SHA-256 exactly matches `103dbe9825c9aac50352bbe2d3cde611f6b9ae76967ca55548fccd5c6afdfc39`; p. 2 confirms fT = 250 MHz and Cobo = 4.5 pF at the recorded conditions. Every batch source record has a URL, revision, SHA-256, and page reference. No PDF, vendor model file, or vendor SPICE text is present in any package.
+
+Independent operating points outside the authored benches were numerically sane and produced no additional blocker: 2N3906 at 4.7251836 mA gave hFE 189.007 and VBE 0.690922 V; PN2222A at 47.514492 mA gave hFE 95.028 and VBE 0.731137 V; BC547B at 56.307724 mA gave hFE 225.231 and VBE 0.748523 V; BC557B at 56.083342 mA gave hFE 224.333 and VBE 0.757864 V; BC337-40 and BC327-40 at 203.590138 mA each gave hFE 339.317 and VBE 0.757193 V.
+
+All reviewer fields remain `pending-review`; no component validation date was changed.
