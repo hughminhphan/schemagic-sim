@@ -1,0 +1,12 @@
+OpenCircuit factory test: IRLB8721PBF gate charge
+.include ../model.cir
+.temp 25
+.model DCL D(IS=1e-6 N=1 RS=1m)
+M1 d g 0 OC_INFINEON_IRLB8721PBF
+IG 0 g PULSE(0 0.001 1n .1n .1n 100u 200u)
+ILOAD 0 d DC 25
+VSUP vsup 0 DC 15
+DCLAMP d vsup DCL
+.ic v(g)=0
+.tran 1n 100u
+.end

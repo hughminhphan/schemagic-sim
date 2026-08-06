@@ -1,0 +1,14 @@
+OpenCircuit factory test: IRLB8721PBF body diode
+* OpenCircuit Model Factory v0.1.0
+* Original work generated from public factual specifications.
+* This model is not a copy of, or adaptation from, any vendor SPICE model.
+* Source: https://www.infineon.com/assets/row/public/documents/24/49/infineon-irlb8721-datasheet-en.pdf
+* Revision: PD-97390, 22-Apr-2009; public asset modified 29-Apr-2021
+* Fit: native ngspice-46 in scipy.optimize.least_squares, diff_step=1e-4
+.model OC_INFINEON_IRLB8721PBF VDMOS( VTO=2.34999999999 KP=54.3802454784 THETA=0.0922935292347 LAMBDA=2.16102994873e-13 RD=0.00107251935103 RS=0.0013 RG=2.3 CGS=9.67e-10 CGDMAX=1.8e-10 CGDMIN=9e-11 CJO=1.11102430216e-09 IS=1.53296814227e-08 N=1.5 RB=0.0013 TT=0 BV=30 IBV=0.00025 RTHJC=2.3 RTHCA=59.7 A=0.0859642017819 RDS=1e9 VJ=0.8 M=0.5 FC=0.5 NBV=1 TNOM=27)
+.temp 25
+M1 d g 0 OC_INFINEON_IRLB8721PBF
+ISD d 0 DC 25
+VG g 0 DC 0
+.op
+.end

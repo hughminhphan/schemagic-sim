@@ -1,0 +1,162 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "rdson.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "rdson_typical_1",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d1),0.03225806451612903)"
+          },
+          "expected_value": 0.0065,
+          "unit": "ohm",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.15
+          },
+          "datasheet_citation": "p. 2 Static table, RDS(on), TYP column",
+          "placeholder": false
+        },
+        {
+          "name": "rdson_typical_2",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d2),0.04)"
+          },
+          "expected_value": 0.0131,
+          "unit": "ohm",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.15
+          },
+          "datasheet_citation": "p. 2 Static table, RDS(on), TYP column",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": [
+        {
+          "name": "rdson_guaranteed_max_1",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d1),0.03225806451612903)"
+          },
+          "minimum": 0,
+          "maximum": 0.0087,
+          "unit": "ohm",
+          "inclusive": true,
+          "datasheet_citation": "p. 2 Static table, RDS(on), MAX column",
+          "placeholder": false
+        },
+        {
+          "name": "rdson_guaranteed_max_2",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d2),0.04)"
+          },
+          "minimum": 0,
+          "maximum": 0.016,
+          "unit": "ohm",
+          "inclusive": true,
+          "datasheet_citation": "p. 2 Static table, RDS(on), MAX column",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "capacitance.cir",
+      "analysis_type": "ac_small_signal",
+      "scalar_checks": [
+        {
+          "name": "coss",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "imag_cap:last(i(vd),1000000)"
+          },
+          "expected_value": 3.6e-10,
+          "unit": "F",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 2 Static table, Coss, TYP column",
+          "placeholder": false
+        },
+        {
+          "name": "crss",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "imag_cap:last(i(vg),1000000)"
+          },
+          "expected_value": 1.1e-10,
+          "unit": "F",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 2 Static table, Crss, TYP column",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "body_diode.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "body_diode_typical",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(d))"
+          },
+          "expected_value": 0.85,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.05,
+            "relative": 0.1
+          },
+          "datasheet_citation": "p. 4 Fig. 7, 25 degC curve, digitized",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": [
+        {
+          "name": "body_diode_maximum",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(d))"
+          },
+          "minimum": 0,
+          "maximum": 1.0,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 2 Diode table, VSD, MAX column",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "supported_boundary.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "off_state_leakage_at_supported_vds",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vd))"
+          },
+          "minimum": 0,
+          "maximum": 1e-06,
+          "unit": "A",
+          "inclusive": true,
+          "datasheet_citation": "p. 2 Static table, IDSS, MAX column",
+          "placeholder": false
+        }
+      ]
+    }
+  ]
+}

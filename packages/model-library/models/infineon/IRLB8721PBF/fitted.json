@@ -1,0 +1,349 @@
+{
+  "schema_version": "1.0.0",
+  "fitter": "scipy.optimize.least_squares with native ngspice-46 evaluations",
+  "deterministic": true,
+  "parameters": {
+    "VTO": 2.3499999999932344,
+    "KP": 54.38024547841191,
+    "THETA": 0.09229352923468649,
+    "LAMBDA": 2.1610299487334093e-13,
+    "RD": 0.001072519351033327,
+    "RS": 0.0013,
+    "RG": 2.3,
+    "CGS": 9.669999999999999e-10,
+    "CGDMAX": 1.8e-10,
+    "CGDMIN": 9e-11,
+    "A": 0.08596420178187285,
+    "CJO": 1.1110243021644486e-09,
+    "IS": 1.5329681422718598e-08,
+    "N": 1.5,
+    "RB": 0.0013,
+    "TT": 0.0,
+    "BV": 30,
+    "IBV": 0.00025,
+    "RTHJC": 2.3,
+    "RTHCA": 59.7
+  },
+  "parameter_metadata": {
+    "VTO": {
+      "status": "fitted"
+    },
+    "KP": {
+      "status": "fitted"
+    },
+    "THETA": {
+      "status": "fitted"
+    },
+    "LAMBDA": {
+      "status": "fitted"
+    },
+    "RD": {
+      "status": "fitted"
+    },
+    "A": {
+      "status": "fitted"
+    },
+    "RS": {
+      "status": "derived or transcribed"
+    },
+    "RG": {
+      "status": "derived or transcribed"
+    },
+    "CGS": {
+      "status": "derived or transcribed"
+    },
+    "CGDMAX": {
+      "status": "derived or transcribed"
+    },
+    "CGDMIN": {
+      "status": "derived or transcribed"
+    },
+    "CJO": {
+      "status": "derived or transcribed"
+    },
+    "IS": {
+      "status": "derived or transcribed"
+    },
+    "RB": {
+      "status": "derived or transcribed"
+    },
+    "BV": {
+      "status": "derived or transcribed"
+    },
+    "IBV": {
+      "status": "derived or transcribed"
+    },
+    "RTHJC": {
+      "status": "derived or transcribed"
+    },
+    "RTHCA": {
+      "status": "derived or transcribed"
+    },
+    "N": {
+      "status": "held at default"
+    },
+    "TT": {
+      "status": "held at default"
+    }
+  },
+  "held_defaults": [
+    {
+      "parameter": "RDS",
+      "value": 1000000000.0,
+      "unit": "ohm",
+      "reason": "held at default; leakage is checked against the datasheet IDSS maximum"
+    },
+    {
+      "parameter": "VJ",
+      "value": 0.8,
+      "unit": "V",
+      "reason": "held at default; one capacitance condition cannot separate VJ and M"
+    },
+    {
+      "parameter": "M",
+      "value": 0.5,
+      "unit": "1",
+      "reason": "held at default; one capacitance condition cannot separate VJ and M"
+    },
+    {
+      "parameter": "FC",
+      "value": 0.5,
+      "unit": "1",
+      "reason": "held at default"
+    },
+    {
+      "parameter": "NBV",
+      "value": 1,
+      "unit": "1",
+      "reason": "held at default; one breakdown row cannot fit breakdown shape"
+    },
+    {
+      "parameter": "N",
+      "value": 1.5,
+      "unit": "1",
+      "reason": "held at default; only one 25 degC body-diode curve point is used"
+    },
+    {
+      "parameter": "TT",
+      "value": 0,
+      "unit": "s",
+      "reason": "held at default; trr is published without the reverse-current term required by the archetype mapping"
+    },
+    {
+      "parameter": "MU",
+      "value": 0,
+      "unit": "1",
+      "reason": "held at default; RDS(on)-versus-temperature was not digitized"
+    },
+    {
+      "parameter": "TEXP0",
+      "value": 0,
+      "unit": "1",
+      "reason": "held at default; RDS(on)-versus-temperature was not digitized"
+    },
+    {
+      "parameter": "TCVTH",
+      "value": 0,
+      "unit": "V/K",
+      "reason": "held at default; threshold temperature behavior was not fitted"
+    },
+    {
+      "parameter": "CTHJ",
+      "value": 0,
+      "unit": "J/K",
+      "reason": "held at default; transient thermal capacitance is not published"
+    },
+    {
+      "parameter": "KF",
+      "value": 0,
+      "unit": "1",
+      "reason": "held at default; flicker noise is not modelled"
+    },
+    {
+      "parameter": "AF",
+      "value": 1,
+      "unit": "1",
+      "reason": "held at default; flicker noise is not modelled"
+    }
+  ],
+  "optimizer": {
+    "status": 3,
+    "nfev": 22,
+    "capacitance_nfev": 22,
+    "diff_step": 0.0001
+  },
+  "residuals": [
+    {
+      "quantity": "transfer current",
+      "datasheet_value": 4,
+      "fitted_value": 10.509721250392273,
+      "unit": "A",
+      "relative_error": 1.6274303125980683,
+      "citation": "p. 3 Fig. 3, 25 degC curve, digitized"
+    },
+    {
+      "quantity": "transfer current",
+      "datasheet_value": 11,
+      "fitted_value": 19.44484049242162,
+      "unit": "A",
+      "relative_error": 0.767712772038329,
+      "citation": "p. 3 Fig. 3, 25 degC curve, digitized"
+    },
+    {
+      "quantity": "transfer current",
+      "datasheet_value": 20,
+      "fitted_value": 30.69901630274905,
+      "unit": "A",
+      "relative_error": 0.5349508151374526,
+      "citation": "p. 3 Fig. 3, 25 degC curve, digitized"
+    },
+    {
+      "quantity": "transfer current",
+      "datasheet_value": 42,
+      "fitted_value": 59.33124669875999,
+      "unit": "A",
+      "relative_error": 0.4126487309228569,
+      "citation": "p. 3 Fig. 3, 25 degC curve, digitized"
+    },
+    {
+      "quantity": "transfer current",
+      "datasheet_value": 68,
+      "fitted_value": 95.0144256845618,
+      "unit": "A",
+      "relative_error": 0.3972709659494382,
+      "citation": "p. 3 Fig. 3, 25 degC curve, digitized"
+    },
+    {
+      "quantity": "transfer current",
+      "datasheet_value": 88,
+      "fitted_value": 136.6821917968473,
+      "unit": "A",
+      "relative_error": 0.5532067249641738,
+      "citation": "p. 3 Fig. 3, 25 degC curve, digitized"
+    },
+    {
+      "quantity": "transfer current",
+      "datasheet_value": 125,
+      "fitted_value": 234.7805790569656,
+      "unit": "A",
+      "relative_error": 0.8782446324557247,
+      "citation": "p. 3 Fig. 3, 25 degC curve, digitized"
+    },
+    {
+      "quantity": "transfer current",
+      "datasheet_value": 155,
+      "fitted_value": 348.6657146745098,
+      "unit": "A",
+      "relative_error": 1.2494562237065148,
+      "citation": "p. 3 Fig. 3, 25 degC curve, digitized"
+    },
+    {
+      "quantity": "RDS(on)",
+      "datasheet_value": 0.0065,
+      "fitted_value": 0.006479542171842719,
+      "unit": "ohm",
+      "relative_error": 0.0031473581780431335,
+      "citation": "p. 2 Static table, RDS(on), TYP column"
+    },
+    {
+      "quantity": "RDS(on)",
+      "datasheet_value": 0.0131,
+      "fitted_value": 0.013363551114826549,
+      "unit": "ohm",
+      "relative_error": 0.020118405711950255,
+      "citation": "p. 2 Static table, RDS(on), TYP column"
+    },
+    {
+      "quantity": "output current",
+      "datasheet_value": 4,
+      "fitted_value": 10.50972124537625,
+      "unit": "A",
+      "relative_error": 1.6274303113440625,
+      "citation": "p. 3 Fig. 1, digitized"
+    },
+    {
+      "quantity": "output current",
+      "datasheet_value": 17,
+      "fitted_value": 30.6990162977115,
+      "unit": "A",
+      "relative_error": 0.8058244881006764,
+      "citation": "p. 3 Fig. 1, digitized"
+    },
+    {
+      "quantity": "output current",
+      "datasheet_value": 43,
+      "fitted_value": 59.33124669369594,
+      "unit": "A",
+      "relative_error": 0.37979643473711483,
+      "citation": "p. 3 Fig. 1, digitized"
+    },
+    {
+      "quantity": "output current",
+      "datasheet_value": 70,
+      "fitted_value": 95.01442567946296,
+      "unit": "A",
+      "relative_error": 0.35734893827804226,
+      "citation": "p. 3 Fig. 1, digitized"
+    },
+    {
+      "quantity": "output current",
+      "datasheet_value": 130,
+      "fitted_value": 183.4953550689073,
+      "unit": "A",
+      "relative_error": 0.41150273129928683,
+      "citation": "p. 3 Fig. 1, digitized"
+    },
+    {
+      "quantity": "Crss at 1 V",
+      "datasheet_value": 1.8e-10,
+      "fitted_value": 1.4195280792903814e-10,
+      "unit": "F",
+      "relative_error": 0.2113732892831214,
+      "citation": "p. 4 Fig. 5 Crss trace, digitized"
+    },
+    {
+      "quantity": "Crss at 2 V",
+      "datasheet_value": 1.65e-10,
+      "fitted_value": 1.3899516631220728e-10,
+      "unit": "F",
+      "relative_error": 0.15760505265328922,
+      "citation": "p. 4 Fig. 5 Crss trace, digitized"
+    },
+    {
+      "quantity": "Crss at 5 V",
+      "datasheet_value": 1.45e-10,
+      "fitted_value": 1.307468308600091e-10,
+      "unit": "F",
+      "relative_error": 0.09829771820683379,
+      "citation": "p. 4 Fig. 5 Crss trace, digitized"
+    },
+    {
+      "quantity": "Crss at 10 V",
+      "datasheet_value": 1.25e-10,
+      "fitted_value": 1.2010333990032633e-10,
+      "unit": "F",
+      "relative_error": 0.0391732807973894,
+      "citation": "p. 4 Fig. 5 Crss trace, digitized"
+    },
+    {
+      "quantity": "Crss at 15 V",
+      "datasheet_value": 1.1e-10,
+      "fitted_value": 1.1306526349366872e-10,
+      "unit": "F",
+      "relative_error": 0.027866031760624778,
+      "citation": "p. 4 Fig. 5 Crss trace, digitized"
+    },
+    {
+      "quantity": "Crss at 30 V",
+      "datasheet_value": 9e-11,
+      "fitted_value": 1.0292537400415329e-10,
+      "unit": "F",
+      "relative_error": 0.14361526671281435,
+      "citation": "p. 4 Fig. 5 Crss trace, digitized"
+    }
+  ],
+  "worst_relative_error": {
+    "value": 1.6274303125980683,
+    "quantity": "transfer current"
+  }
+}
