@@ -116,3 +116,50 @@ Nothing in `known_omissions` discloses reduced output headroom.
    55.4 V instead of its stated 44 V. Decks must assert the operating point they claim to establish.
 7. **Page and figure citations are unverified.** The 2N3904 references are off by one page and point
    at a mechanical drawing.
+
+## Addendum 2026-08-06: ti/TL072 re-review
+
+Scope: `packages/model-library/models/ti/TL072/` only, after the author lane's refit in `a717e3b`.
+All numbers below were re-measured by the reviewer against the refitted package.
+
+**Verdict: PASS.** The reviewer field is now stamped.
+
+The blocker is fixed at the root. `VDRP_H`/`VDRP_L` are now fitted values (1.33119 V per rail)
+targeting the 25 degC typical, and the clamp is supply-aware:
+`min(max(v(p2), v(VEE)+min(VDRP_L, 0.49*v(VCC,VEE))), v(VCC)-min(VDRP_H, 0.49*v(VCC,VEE)))`.
+The 0.49 term makes the usable window at least 2% of the total supply, so the clamp can no longer
+collapse or invert at any supply.
+
+| Check | Before | Now |
+| --- | --- | --- |
+| Swing at +/-15 V, RL = 10 k (typ +/-13.5 V) | +/-9.877 V, -26.8% | **+/-13.500 V, 0.00%** |
+| Follower at +/-5 V rails, Vin -3 to +3 V | 7.7e-9 V for every input | tracks with a constant +2.8 mV offset |
+| Max output at 4.5 V total supply | -2.716 V, clamp inverted | +0.908 V, monotonic |
+| Worst recorded fitting error | 5.882%, masking a 30.2% swing miss | 5.882% open-loop gain, now genuinely worst |
+
+Supply sweep, follower, RL = 10 k, max output: 0.908 V at 4.5 V total, 1.648 at 6, 3.130 at 9,
+4.611 at 12, 7.574 at 18, 10.537 at 24, 13.500 at 30, 16.463 at 36. Monotonic throughout, and the
+18 V and 24 V points land where a real TL072 sits.
+
+All 7 benches and 13 of 13 checks reproduce: swing +/-13.500 V; minimum-supply follower -0.247256,
++0.002745, +0.252746 against targets -0.247, 0.003, 0.253; slew 20.00 V/us measured 2 V to 7 V;
+open-loop gain 105.494 dB inside the 0.6 dB window; short circuit 39.66 mA; common-mode gain 1.882.
+`validate-package` passes and 5 of 5 native-versus-WASM comparisons agree.
+
+Disclosures verified as added: the rail drop is documented as fitted to the 25 degC typical with an
+explicit note that the datasheet publishes only a minimum at RL >= 2 kOhm; `fitted.json` gained
+`held_defaults`, `parameter_metadata` and `rail_drop_fit`; expectations now name the MIN and TYP
+columns; `.temp 25` is set in every deck. The p. 11 citation was checked against the datasheet: for
+the P package the VS row reads 4.5 to 40 V under "All other devices", consistent with the same row
+selection used for GBW, SR and eN, so the claimed envelope and the new bench are both correct.
+
+Two non-blocking items remain for the author lane:
+
+1. Closed-loop overshoot is unchanged at 30.9% for a 100 mV follower step, implying roughly 37
+   degrees of phase margin against the published 56. This is now disclosed in `known_omissions`,
+   which is why it does not block, but fitting FP2 to the measured overshoot would close it.
+2. `minimum_supply_follower.cir` drives -0.25 to +0.25 V at +/-2.25 V rails. Page 11 gives the
+   recommended input voltage at that supply as (VCC-) + 4, which is +1.75 V, so those inputs sit
+   below a real part's usable common-mode window. The bench correctly proves the clamp no longer
+   collapses, but it is a clamp test rather than a physically realisable operating point, and it
+   passes only because common-mode limits are deliberately not modelled. Worth a note in the deck.
