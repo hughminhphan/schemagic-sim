@@ -1,0 +1,222 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "idss.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "idss_typical",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vd))"
+          },
+          "expected_value": 0.003,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "onsemi MMBF5457 Rev. 1, January 2023 p.2 electrical characteristics, IDSS TYP column at VDS=15 V, VGS=0",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": [
+        {
+          "name": "idss_bin",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vd))"
+          },
+          "unit": "A",
+          "inclusive": true,
+          "datasheet_citation": "onsemi MMBF5457 Rev. 1, January 2023 p.2 electrical characteristics, IDSS MIN/MAX columns",
+          "placeholder": false,
+          "minimum": 0.001,
+          "maximum": 0.005
+        },
+        {
+          "name": "gfs_limits",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(@j1[gm])"
+          },
+          "unit": "S",
+          "inclusive": true,
+          "datasheet_citation": "onsemi MMBF5457 Rev. 1, January 2023 p.2 electrical characteristics, gfs MIN/MAX columns at VDS=15 V, VGS=0, f=1 kHz",
+          "placeholder": false,
+          "minimum": 0.001,
+          "maximum": 0.005
+        }
+      ]
+    },
+    {
+      "test_netlist": "transfer_curve.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "transfer_vgs_0",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vd0))"
+          },
+          "expected_value": 0.003,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.25
+          },
+          "datasheet_citation": "onsemi MMBF5457 Rev. 1, January 2023 p.3 fig.1, TA=25 C VGS(off)=-1.8 V curve, digitized",
+          "placeholder": false
+        },
+        {
+          "name": "transfer_vgs_minus_0p5",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vd1))"
+          },
+          "expected_value": 0.00155,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.25
+          },
+          "datasheet_citation": "onsemi MMBF5457 Rev. 1, January 2023 p.3 fig.1, TA=25 C VGS(off)=-1.8 V curve, digitized",
+          "placeholder": false
+        },
+        {
+          "name": "transfer_vgs_minus_1p0",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vd2))"
+          },
+          "expected_value": 0.00058,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.25
+          },
+          "datasheet_citation": "onsemi MMBF5457 Rev. 1, January 2023 p.3 fig.1, TA=25 C VGS(off)=-1.8 V curve, digitized",
+          "placeholder": false
+        },
+        {
+          "name": "transfer_vgs_minus_1p5",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vd3))"
+          },
+          "expected_value": 8e-05,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 2e-05,
+            "relative": 0.25
+          },
+          "datasheet_citation": "onsemi MMBF5457 Rev. 1, January 2023 p.3 fig.1, TA=25 C VGS(off)=-1.8 V curve, digitized",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "cutoff.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "cutoff_current_at_typical_curve_vgsoff",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vd))"
+          },
+          "unit": "A",
+          "inclusive": true,
+          "datasheet_citation": "onsemi MMBF5457 Rev. 1, January 2023 p.3 fig.1 typical VGS(off)=-1.8 V annotation; p.2 cutoff defined at ID=10 nA",
+          "placeholder": false,
+          "minimum": 0,
+          "maximum": 2e-08
+        }
+      ]
+    },
+    {
+      "test_netlist": "output_conductance.cir",
+      "analysis_type": "ac_small_signal",
+      "scalar_checks": [
+        {
+          "name": "output_conductance",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "magnitude:last(i(vd))"
+          },
+          "expected_value": 1e-05,
+          "unit": "S",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "onsemi MMBF5457 Rev. 1, January 2023 p.2 electrical characteristics, gos TYP column at VDS=15 V, VGS=0, f=1 kHz",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "capacitance.cir",
+      "analysis_type": "ac_small_signal",
+      "scalar_checks": [
+        {
+          "name": "ciss",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "imag_cap:last(i(vgin),1000000)"
+          },
+          "expected_value": 4.5e-12,
+          "unit": "F",
+          "tolerance": {
+            "absolute": 5e-13,
+            "relative": 0.2
+          },
+          "datasheet_citation": "onsemi MMBF5457 Rev. 1, January 2023 p.2 electrical characteristics, Ciss TYP column at VDS=15 V, VGS=0, f=1 MHz",
+          "placeholder": false
+        },
+        {
+          "name": "crss",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "imag_cap:last(i(vdrev),1000000)"
+          },
+          "expected_value": 1.5e-12,
+          "unit": "F",
+          "tolerance": {
+            "absolute": 5e-13,
+            "relative": 0.2
+          },
+          "datasheet_citation": "onsemi MMBF5457 Rev. 1, January 2023 p.2 electrical characteristics, Crss TYP column at VDS=15 V, VGS=0, f=1 MHz",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "boundary_vds15.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "supported_boundary_vds15_vgs_minus_1p5",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vd))"
+          },
+          "expected_value": 8e-05,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 2e-05,
+            "relative": 0.25
+          },
+          "datasheet_citation": "onsemi MMBF5457 Rev. 1, January 2023 p.3 fig.1, VDS=15 V boundary, TA=25 C VGS(off)=-1.8 V curve, digitized",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    }
+  ]
+}

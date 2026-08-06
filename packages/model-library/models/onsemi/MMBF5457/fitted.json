@@ -1,0 +1,171 @@
+{
+  "schema_version": "1.0.0",
+  "fit_run_id": "jfet-MMBF5457-20260807-01",
+  "temperature_c": 25,
+  "solver": {
+    "name": "scipy.optimize.least_squares",
+    "method": "trf",
+    "x_scale": "jac",
+    "diff_step": 0.0001,
+    "ftol": 1e-12,
+    "xtol": 1e-12,
+    "max_nfev": 5000,
+    "native_engine": "ngspice-46"
+  },
+  "parameters": {
+    "VTO": -1.7934778803365263,
+    "BETA": 0.0008806216719954542,
+    "LAMBDA": 0.003530370027111769,
+    "B": 1.0,
+    "RD": 0.0001,
+    "RS": 0.0001,
+    "CGS": 3e-12,
+    "CGD": 6e-12,
+    "PB": 1.0,
+    "M": 0.5,
+    "IS": 1e-20,
+    "N": 1.0,
+    "FC": 0.5,
+    "TNOM": 27.0
+  },
+  "parameter_metadata": {
+    "VTO": {
+      "status": "fitted"
+    },
+    "BETA": {
+      "status": "fitted"
+    },
+    "LAMBDA": {
+      "status": "fitted"
+    },
+    "B": {
+      "status": "held at default"
+    },
+    "RD": {
+      "status": "held at default"
+    },
+    "RS": {
+      "status": "held at default"
+    },
+    "CGS": {
+      "status": "derived"
+    },
+    "CGD": {
+      "status": "derived"
+    },
+    "PB": {
+      "status": "held at default"
+    },
+    "M": {
+      "status": "held at default"
+    },
+    "IS": {
+      "status": "derived"
+    },
+    "N": {
+      "status": "held at default"
+    },
+    "FC": {
+      "status": "held at default"
+    },
+    "TNOM": {
+      "status": "held at default"
+    }
+  },
+  "held_defaults": [
+    {
+      "parameter": "B",
+      "value": 1.0,
+      "unit": "1",
+      "reason": "held at default"
+    },
+    {
+      "parameter": "PB",
+      "value": 1.0,
+      "unit": "V",
+      "reason": "held at default"
+    },
+    {
+      "parameter": "M",
+      "value": 0.5,
+      "unit": "1",
+      "reason": "held at default"
+    },
+    {
+      "parameter": "N",
+      "value": 1.0,
+      "unit": "1",
+      "reason": "held at default"
+    },
+    {
+      "parameter": "FC",
+      "value": 0.5,
+      "unit": "1",
+      "reason": "held at default"
+    },
+    {
+      "parameter": "TNOM",
+      "value": 27.0,
+      "unit": "degC",
+      "reason": "held at default"
+    },
+    {
+      "parameter": "RD",
+      "value": 0.0001,
+      "unit": "ohm",
+      "reason": "held at default numerical floor; rDS(on) unpublished"
+    },
+    {
+      "parameter": "RS",
+      "value": 0.0001,
+      "unit": "ohm",
+      "reason": "held at default numerical floor; rDS(on) unpublished"
+    }
+  ],
+  "residuals": [
+    {
+      "quantity": "ID at VGS=0 V",
+      "datasheet_value": 0.003,
+      "fitted_value": 0.002982575,
+      "unit": "A",
+      "relative_error": 0.005808333333333388,
+      "citation": "p.2 IDSS TYP column and p.3 fig.1"
+    },
+    {
+      "quantity": "ID at VGS=-0.5 V",
+      "datasheet_value": 0.00155,
+      "fitted_value": 0.001551377,
+      "unit": "A",
+      "relative_error": 0.0008883870967742617,
+      "citation": "p.3 fig.1 digitized"
+    },
+    {
+      "quantity": "ID at VGS=-1.0 V",
+      "datasheet_value": 0.00058,
+      "fitted_value": 0.0005838066,
+      "unit": "A",
+      "relative_error": 0.00656310344827579,
+      "citation": "p.3 fig.1 digitized"
+    },
+    {
+      "quantity": "ID at VGS=-1.5 V",
+      "datasheet_value": 8e-05,
+      "fitted_value": 7.986385e-05,
+      "unit": "A",
+      "relative_error": 0.0017018750000001317,
+      "citation": "p.3 fig.1 digitized"
+    },
+    {
+      "quantity": "gos at VGS=0 V",
+      "datasheet_value": 1e-05,
+      "fitted_value": 1.000003e-05,
+      "unit": "S",
+      "relative_error": 3e-06,
+      "citation": "p.2 gos TYP column"
+    }
+  ],
+  "worst_relative_error": {
+    "value": 0.00656310344827579,
+    "quantity": "digitized transfer point at VGS=-1.0 V"
+  }
+}
