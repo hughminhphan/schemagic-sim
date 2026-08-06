@@ -1,0 +1,27 @@
+OpenCircuit factory test: BC337-40 DC gain
+* OpenCircuit Model Factory v0.1.0
+* Original work generated from public factual specifications.
+* This model is not a copy of, or adaptation from, any vendor SPICE model.
+* Source: https://www.onsemi.com/products/discrete-semiconductors/bipolar-transistors/bc337
+* Revision: Manufacturer product specification page, accessed 2026-08-07
+* Fit: native ngspice-46 in scipy.optimize.least_squares, diff_step=1e-4
+.model OC_ONSEMI_BC337_40 NPN(IS=6.9633401177e-14 NF=1.0000000000e0 BF=5.3770531574e2 IKF=3.0124545975e-1 ISE=3.7004969383e-10 NE=3.9999999982e0 VAF=1.0000000000e2 BR=4.0000000000e0 RB=1.3754494134e1 RE=1.1496912215e-1 RC=3.5052598774e-1 CJE=1.4203367802e-11 VJE=7.5000000000e-1 MJE=3.3000000000e-1 CJC=2.8891881327e-11 VJC=7.5000000000e-1 MJC=3.3000000000e-1 XCJC=1.0000000000e0 TF=1.4673775916e-9 TR=0 FC=0.5 EG=1.11 XTI=3 TNOM=27)
+
+.temp 25
+VCG1 cg1 0 DC 1.0000000000e0
+IBG1 0 bg1 DC 2.0000000000e-6
+QG1 cg1 bg1 0 OC_ONSEMI_BC337_40
+VCG2 cg2 0 DC 1.0000000000e0
+IBG2 0 bg2 DC 1.9230769231e-5
+QG2 cg2 bg2 0 OC_ONSEMI_BC337_40
+VCG3 cg3 0 DC 1.0000000000e0
+IBG3 0 bg3 DC 2.5000000000e-4
+QG3 cg3 bg3 0 OC_ONSEMI_BC337_40
+VCG4 cg4 0 DC 1.0000000000e0
+IBG4 0 bg4 DC 1.1538461538e-3
+QG4 cg4 bg4 0 OC_ONSEMI_BC337_40
+VCG5 cg5 0 DC 1.0000000000e0
+IBG5 0 bg5 DC 2.3809523810e-3
+QG5 cg5 bg5 0 OC_ONSEMI_BC337_40
+.op
+.end
