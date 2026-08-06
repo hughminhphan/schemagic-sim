@@ -60,8 +60,10 @@ export class ScopePlot {
   }
 
   setData(mode: AnalysisMode, result: SimulationResult | undefined): void {
+    const modeChanged = this.mode !== mode;
     this.mode = mode;
     this.result = result;
+    if (modeChanged) this.remount();
     this.renderData();
   }
 
