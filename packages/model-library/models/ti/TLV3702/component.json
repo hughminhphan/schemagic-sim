@@ -1,0 +1,179 @@
+{
+  "schema_version": "1.0.0",
+  "canonical_mpn": "TLV3702",
+  "manufacturer": "Texas Instruments",
+  "description": "Dual nanopower comparator with push-pull outputs",
+  "electrical_family": "comparator",
+  "symbol_pins": [
+    {
+      "name": "IN+",
+      "number": "3",
+      "role": "noninverting_input"
+    },
+    {
+      "name": "IN-",
+      "number": "2",
+      "role": "inverting_input"
+    },
+    {
+      "name": "OUT",
+      "number": "1",
+      "role": "output"
+    },
+    {
+      "name": "VCC",
+      "number": "8",
+      "role": "positive_supply"
+    },
+    {
+      "name": "GND",
+      "number": "4",
+      "role": "ground"
+    }
+  ],
+  "spice_pin_mapping": [
+    {
+      "symbol_pin_number": "3",
+      "subckt_node": "inp",
+      "order": 1
+    },
+    {
+      "symbol_pin_number": "2",
+      "subckt_node": "inn",
+      "order": 2
+    },
+    {
+      "symbol_pin_number": "1",
+      "subckt_node": "out",
+      "order": 3
+    },
+    {
+      "symbol_pin_number": "8",
+      "subckt_node": "vcc",
+      "order": 4
+    },
+    {
+      "symbol_pin_number": "4",
+      "subckt_node": "gnd",
+      "order": 5
+    }
+  ],
+  "package_variants": [
+    {
+      "name": "PDIP-8",
+      "standard": "TI P package",
+      "pin_count": 5,
+      "pin_map": [
+        {
+          "package_pin": "3",
+          "symbol_pin_number": "3"
+        },
+        {
+          "package_pin": "2",
+          "symbol_pin_number": "2"
+        },
+        {
+          "package_pin": "1",
+          "symbol_pin_number": "1"
+        },
+        {
+          "package_pin": "8",
+          "symbol_pin_number": "8"
+        },
+        {
+          "package_pin": "4",
+          "symbol_pin_number": "4"
+        }
+      ]
+    }
+  ],
+  "ordering_code_aliases": [
+    "TLV3702CD",
+    "TLV3702CP",
+    "TLV3702IDGKR"
+  ],
+  "datasheet": {
+    "url": "https://www.ti.com/lit/ds/symlink/tlv3702.pdf",
+    "revision": "SLCS137E, November 2000, revised December 2025"
+  },
+  "model_type": "subckt",
+  "fidelity_tier": "F1",
+  "domain_coverage": {
+    "dc": "approx",
+    "ac": "approx",
+    "transient": "approx",
+    "noise": "none",
+    "thermal": "none",
+    "digital": "none"
+  },
+  "supported_analyses": [
+    "operating_point",
+    "dc_sweep",
+    "transient"
+  ],
+  "supported_operating_region": {
+    "summary": "25 degC comparator model over the published 2.5 V to 16 V recommended supply range. Common-mode limits are metadata only.",
+    "numeric_bounds": [
+      {
+        "quantity": "supply_voltage",
+        "minimum": 2.5,
+        "maximum": 16,
+        "unit": "V",
+        "conditions": "Recommended operating supply range",
+        "placeholder": false
+      },
+      {
+        "quantity": "ambient_temperature",
+        "minimum": 25,
+        "maximum": 25,
+        "unit": "degC",
+        "conditions": "Fit reference temperature",
+        "placeholder": false
+      },
+      {
+        "quantity": "common_mode_input_at_test_supply",
+        "minimum": -0.1,
+        "maximum": 10,
+        "unit": "V",
+        "conditions": "Published common-mode boundary at the cited test supply",
+        "placeholder": false
+      }
+    ]
+  },
+  "known_omissions": [
+    "Propagation delay is a single fitted constant taken at the largest published overdrive. The strong overdrive dependence that real comparators show is not modelled.",
+    "Input common-mode range is not enforced. The model does not phase-invert or lose gain when an input approaches a supply rail. VICR is metadata only.",
+    "No self-heating and no temperature coefficients: offset drift and delay drift are not modelled.",
+    "Quiescent current is a constant and does not vary with supply, temperature, or output state.",
+    "Input protection diodes and ESD structures are not modelled.",
+    "Noise is not modelled, so the model will not reproduce output chatter caused by input noise near the trip point.",
+    "Input offset voltage is set to the datasheet typical; a real part may sit anywhere inside the published maximum and the sign is arbitrary.",
+    "VCLAMP = 1 V is held at default as the internal bounded-gain scale.",
+    "KSW = 20 is held at default as the smoothing sharpness.",
+    "CD = 10 pF and CDIF = 1 pF are held at default as internal scale and convergence values.",
+    "RQ = 1 Mohm is held at default as the push-pull internal-node convergence resistance."
+  ],
+  "licence": {
+    "spdx_id": "MIT",
+    "provenance_basis": "original_from_facts"
+  },
+  "generator": {
+    "tool_or_agent": "opencircuit-model-factory-v0.1.0 comparator archetype execution",
+    "date": "2026-08-07"
+  },
+  "reviewer": {
+    "tool_or_agent": "luna independent reviewer (sweep-comp-reg)",
+    "date": "2026-08-07"
+  },
+  "test_results": {
+    "status": "complete",
+    "pass_count": 14,
+    "fail_count": 0,
+    "total_count": 14,
+    "worst_observed_relative_fitting_error": {
+      "value": 0.13143928571428576,
+      "quantity": "input_hysteresis_window"
+    }
+  },
+  "validation_date": "2026-08-07"
+}

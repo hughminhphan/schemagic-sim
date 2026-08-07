@@ -1,0 +1,185 @@
+{
+  "schema_version": "1.0.0",
+  "canonical_mpn": "LM311",
+  "manufacturer": "Texas Instruments",
+  "description": "Single high-speed differential comparator with open-collector output",
+  "electrical_family": "comparator",
+  "symbol_pins": [
+    {
+      "name": "IN+",
+      "number": "2",
+      "role": "noninverting_input"
+    },
+    {
+      "name": "IN-",
+      "number": "3",
+      "role": "inverting_input"
+    },
+    {
+      "name": "OUT",
+      "number": "7",
+      "role": "output"
+    },
+    {
+      "name": "VCC",
+      "number": "8",
+      "role": "positive_supply"
+    },
+    {
+      "name": "GND",
+      "number": "4",
+      "role": "ground"
+    }
+  ],
+  "spice_pin_mapping": [
+    {
+      "symbol_pin_number": "2",
+      "subckt_node": "inp",
+      "order": 1
+    },
+    {
+      "symbol_pin_number": "3",
+      "subckt_node": "inn",
+      "order": 2
+    },
+    {
+      "symbol_pin_number": "7",
+      "subckt_node": "out",
+      "order": 3
+    },
+    {
+      "symbol_pin_number": "8",
+      "subckt_node": "vcc",
+      "order": 4
+    },
+    {
+      "symbol_pin_number": "4",
+      "subckt_node": "gnd",
+      "order": 5
+    }
+  ],
+  "package_variants": [
+    {
+      "name": "PDIP-8",
+      "standard": "TI P package",
+      "pin_count": 5,
+      "pin_map": [
+        {
+          "package_pin": "2",
+          "symbol_pin_number": "2"
+        },
+        {
+          "package_pin": "3",
+          "symbol_pin_number": "3"
+        },
+        {
+          "package_pin": "7",
+          "symbol_pin_number": "7"
+        },
+        {
+          "package_pin": "8",
+          "symbol_pin_number": "8"
+        },
+        {
+          "package_pin": "4",
+          "symbol_pin_number": "4"
+        }
+      ]
+    }
+  ],
+  "ordering_code_aliases": [
+    "LM311D",
+    "LM311P",
+    "LM311PW"
+  ],
+  "datasheet": {
+    "url": "https://www.ti.com/lit/ds/symlink/lm311.pdf",
+    "revision": "SLCS007K, September 1973, revised March 2017"
+  },
+  "model_type": "subckt",
+  "fidelity_tier": "F1",
+  "domain_coverage": {
+    "dc": "approx",
+    "ac": "approx",
+    "transient": "approx",
+    "noise": "none",
+    "thermal": "none",
+    "digital": "none"
+  },
+  "supported_analyses": [
+    "operating_point",
+    "dc_sweep",
+    "transient"
+  ],
+  "supported_operating_region": {
+    "summary": "25 degC comparator model over the published 3.5 V to 30 V recommended supply range. Common-mode limits are metadata only.",
+    "numeric_bounds": [
+      {
+        "quantity": "supply_voltage",
+        "minimum": 3.5,
+        "maximum": 30,
+        "unit": "V",
+        "conditions": "Recommended operating supply range",
+        "placeholder": false
+      },
+      {
+        "quantity": "ambient_temperature",
+        "minimum": 25,
+        "maximum": 25,
+        "unit": "degC",
+        "conditions": "Fit reference temperature",
+        "placeholder": false
+      },
+      {
+        "quantity": "common_mode_input_at_test_supply",
+        "minimum": 0.5,
+        "maximum": 28.5,
+        "unit": "V",
+        "conditions": "Published common-mode boundary at the cited test supply",
+        "placeholder": false
+      }
+    ]
+  },
+  "known_omissions": [
+    "Propagation delay is a single fitted constant taken at the largest published overdrive. The strong overdrive dependence that real comparators show is not modelled.",
+    "Input common-mode range is not enforced. The model does not phase-invert or lose gain when an input approaches a supply rail. VICR is metadata only.",
+    "No self-heating and no temperature coefficients: offset drift and delay drift are not modelled.",
+    "Quiescent current is a constant and does not vary with supply, temperature, or output state.",
+    "Input protection diodes and ESD structures are not modelled.",
+    "Noise is not modelled, so the model will not reproduce output chatter caused by input noise near the trip point.",
+    "Input offset voltage is set to the datasheet typical; a real part may sit anywhere inside the published maximum and the sign is arbitrary.",
+    "VCLAMP = 1 V is held at default as the internal bounded-gain scale.",
+    "KSW = 20 is held at default as the smoothing sharpness.",
+    "CD = 10 pF and CDIF = 1 pF are held at default as internal scale and convergence values.",
+    "No input hysteresis: the datasheet specifies none. This model will chatter on a slow or noisy input where a real part's small unspecified hysteresis might not.",
+    "Open-collector output: this model can only sink. A circuit without an external pull-up will float the output node.",
+    "Output leakage in the off state is fixed at a numerically safe 1e9 ohm rather than the datasheet leakage maximum.",
+    "ROFF = 1e9 ohm is held at default for numerical safety.",
+    "The LM311 balance, strobe and separate emitter-ground pins are not modelled. Only the five-terminal core (INP, INN, OUT, VCC, GND) is provided; strobe and offset balancing are unavailable.",
+    "Fitted from a single-supply representation of the published split-supply table. Split-supply operation is untested.",
+    "The five-terminal core accounts only for the published positive-supply quiescent current; negative-supply current is omitted."
+  ],
+  "licence": {
+    "spdx_id": "MIT",
+    "provenance_basis": "original_from_facts"
+  },
+  "generator": {
+    "tool_or_agent": "opencircuit-model-factory-v0.1.0 comparator archetype execution",
+    "date": "2026-08-07"
+  },
+  "reviewer": {
+    "tool_or_agent": "luna independent reviewer (sweep-comp-reg)",
+    "date": "2026-08-07"
+  },
+  "test_results": {
+    "status": "complete",
+    "pass_count": 13,
+    "fail_count": 0,
+    "total_count": 13,
+    "worst_observed_relative_fitting_error": {
+      "value": 0.3305565217391304,
+      "quantity": "propagation_delay_low_to_high"
+    }
+  },
+  "validation_date": "2026-08-07"
+}
