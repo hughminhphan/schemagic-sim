@@ -1,0 +1,157 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "astable.cir",
+      "analysis_type": "transient",
+      "scalar_checks": [
+        {
+          "name": "astable_frequency",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "frequency_from_edges(v(out),1.7,rising,2,4)"
+          },
+          "expected_value": 4800.0,
+          "unit": "Hz",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.15
+          },
+          "datasheet_citation": "Renesas ICM7555 FN2867 Rev.10.01 p. 6 Eq. 2 and Eq. 3",
+          "placeholder": false
+        },
+        {
+          "name": "astable_output_high_duty_cycle",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "duty_cycle_from_edges(v(out),1.7,rising,2,falling,3,rising,3)"
+          },
+          "expected_value": 0.6666666666666666,
+          "unit": "1",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.1
+          },
+          "datasheet_citation": "Renesas ICM7555 FN2867 Rev.10.01 p. 6 Eq. 2 and Eq. 3",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "monostable.cir",
+      "analysis_type": "transient",
+      "scalar_checks": [
+        {
+          "name": "monostable_pulse_width",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "pulse_width(v(out),2.5,rising,1,falling,1)"
+          },
+          "expected_value": 0.00011,
+          "unit": "s",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.05
+          },
+          "datasheet_citation": "Renesas ICM7555 FN2867 Rev.10.01 p. 6 Figure 6 and monostable equation",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": [
+        {
+          "name": "monostable_initial_output_low",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "at(v(out),0)"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "Renesas ICM7555 FN2867 Rev.10.01 p. 6 Figure 6 and monostable equation",
+          "placeholder": false,
+          "minimum": 0,
+          "maximum": 0.1
+        }
+      ]
+    },
+    {
+      "test_netlist": "output_levels.cir",
+      "analysis_type": "transient",
+      "scalar_checks": [
+        {
+          "name": "loaded_output_high",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "last(v(outh))"
+          },
+          "expected_value": 4.3,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.1,
+            "relative": 0.15
+          },
+          "datasheet_citation": "Renesas Electronics ICM7555 FN2867 Rev.10.01 p. 4 electrical specifications, TYP column",
+          "placeholder": false
+        },
+        {
+          "name": "loaded_output_low",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "last(v(outl))"
+          },
+          "expected_value": 0.2,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.1,
+            "relative": 0.15
+          },
+          "datasheet_citation": "Renesas Electronics ICM7555 FN2867 Rev.10.01 p. 4 electrical specifications, TYP column",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "control_voltage.cir",
+      "analysis_type": "transient",
+      "scalar_checks": [
+        {
+          "name": "control_voltage_frequency",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "frequency_from_edges(v(out),1.7,rising,2,4)"
+          },
+          "expected_value": 6648.55,
+          "unit": "Hz",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.1
+          },
+          "datasheet_citation": "Renesas ICM7555 FN2867 Rev.10.01 p. 4 functional diagram and p. 6 CONTROL VOLTAGE section",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "reset.cir",
+      "analysis_type": "transient",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "reset_forces_output_low",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "max_after(v(out),0.55e-3)"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "Renesas ICM7555 FN2867 Rev.10.01 p. 3 VRST row and p. 6 RESET section",
+          "placeholder": false,
+          "minimum": 0,
+          "maximum": 0.1
+        }
+      ]
+    }
+  ]
+}

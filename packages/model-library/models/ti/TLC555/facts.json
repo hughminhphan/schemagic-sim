@@ -1,0 +1,199 @@
+{
+  "schema_version": "1.0.0",
+  "extraction_method": "pdftotext -layout plus manual structuring; every table column semantic verified against the cited page",
+  "fit_conditions": {
+    "temperature": {
+      "value": 25,
+      "unit": "degC",
+      "conditions": "All fitted table values use the 25 degC TYP column unless explicitly marked otherwise",
+      "page_reference": "p. 7 electrical characteristics, TYP column",
+      "source_kind": "typical",
+      "column_semantics": "typical"
+    }
+  },
+  "identity": {
+    "canonical_mpn": "TLC555",
+    "manufacturer": "Texas Instruments",
+    "aliases": [
+      "TLC555C",
+      "TLC555CP",
+      "TLC555CD"
+    ]
+  },
+  "timer_inputs": {
+    "threshold_voltage": {
+      "value": 3.3,
+      "unit": "V",
+      "conditions": "VDD = 5 V, TA = 25 degC",
+      "page_reference": "p. 7 electrical characteristics, TYP column",
+      "source_kind": "typical",
+      "column_semantics": "typical"
+    },
+    "trigger_voltage": {
+      "value": 1.66,
+      "unit": "V",
+      "conditions": "VDD = 5 V, TA = 25 degC",
+      "page_reference": "p. 7 electrical characteristics, TYP column",
+      "source_kind": "typical",
+      "column_semantics": "typical"
+    },
+    "threshold_current": {
+      "value": 1e-11,
+      "unit": "A",
+      "conditions": "VDD = 5 V, TA = 25 degC",
+      "page_reference": "p. 7 electrical characteristics, TYP column",
+      "source_kind": "typical",
+      "column_semantics": "typical"
+    },
+    "trigger_current": {
+      "value": 1e-11,
+      "unit": "A",
+      "conditions": "VDD = 5 V, TA = 25 degC",
+      "page_reference": "p. 7 electrical characteristics, TYP column",
+      "source_kind": "typical",
+      "column_semantics": "typical"
+    },
+    "reset_voltage": {
+      "value": 1.1,
+      "unit": "V",
+      "conditions": "VDD = 5 V, TA = 25 degC",
+      "page_reference": "p. 7 electrical characteristics, TYP column",
+      "source_kind": "typical",
+      "column_semantics": "typical"
+    },
+    "reset_current": {
+      "value": 1e-11,
+      "unit": "A",
+      "conditions": "VDD = 5 V, TA = 25 degC",
+      "page_reference": "p. 7 electrical characteristics, TYP column",
+      "source_kind": "typical",
+      "column_semantics": "typical"
+    },
+    "output_high_voltage": {
+      "value": 4.8,
+      "unit": "V",
+      "conditions": "VDD = 5 V, IOH = -1 mA, TA = 25 degC",
+      "page_reference": "p. 7 electrical characteristics, TYP column",
+      "source_kind": "typical",
+      "column_semantics": "typical"
+    },
+    "output_low_voltage": {
+      "value": 0.21,
+      "unit": "V",
+      "conditions": "VDD = 5 V, IOL = 8 mA, TA = 25 degC",
+      "page_reference": "p. 7 electrical characteristics, TYP column",
+      "source_kind": "typical",
+      "column_semantics": "typical"
+    },
+    "discharge_saturation_voltage": {
+      "value": 0.06,
+      "unit": "V",
+      "conditions": "VDD = 5 V, IOL = 10 mA, TA = 25 degC",
+      "page_reference": "p. 7 electrical characteristics, TYP column",
+      "source_kind": "typical",
+      "column_semantics": "typical"
+    },
+    "discharge_leakage": {
+      "value": 1.1e-08,
+      "unit": "A",
+      "conditions": "VDD = 5 V, TLC555C, TA = 25 degC",
+      "page_reference": "p. 7 electrical characteristics, MAX column",
+      "source_kind": "maximum",
+      "column_semantics": "maximum"
+    },
+    "supply_current": {
+      "value": 0.00018,
+      "unit": "A",
+      "conditions": "VDD = 5 V, expected timer configuration, TA = 25 degC",
+      "page_reference": "p. 8 electrical characteristics, TYP column",
+      "source_kind": "typical",
+      "column_semantics": "typical"
+    },
+    "output_rise_time": {
+      "value": 2e-08,
+      "unit": "s",
+      "conditions": "VDD = 5 V, RL = 10 Mohm, CL = 10 pF, TA = 25 degC",
+      "page_reference": "p. 10 timing characteristics, TYP column",
+      "source_kind": "typical",
+      "column_semantics": "typical"
+    },
+    "output_fall_time": {
+      "value": 1.5e-08,
+      "unit": "s",
+      "conditions": "VDD = 5 V, RL = 10 Mohm, CL = 10 pF, TA = 25 degC",
+      "page_reference": "p. 10 timing characteristics, TYP column",
+      "source_kind": "typical",
+      "column_semantics": "typical"
+    },
+    "timing_accuracy_or_stability": {
+      "value": 0.1,
+      "unit": "percent_per_v",
+      "conditions": "VDD = 5 V to 15 V, CT = 0.1 uF, RA = RB = 1 kohm to 100 kohm, TA = 25 degC",
+      "page_reference": "p. 10 timing characteristics, TYP column",
+      "source_kind": "typical",
+      "column_semantics": "typical"
+    }
+  },
+  "formula_facts": {
+    "monostable_pulse_width": {
+      "value": 1.1,
+      "unit": "coefficient",
+      "conditions": "T = 1.1 R C",
+      "page_reference": "p. 14 Section 6.3.1",
+      "source_kind": "published_formula",
+      "column_semantics": "published_formula"
+    },
+    "astable_frequency": {
+      "value": 1.44,
+      "unit": "coefficient",
+      "conditions": "f = 1.44 / ((RA + 2 RB) C)",
+      "page_reference": "p. 15 Eq. 4",
+      "source_kind": "published_formula",
+      "column_semantics": "published_formula"
+    },
+    "astable_output_high_duty": {
+      "value": 0.6666666667,
+      "unit": "1",
+      "conditions": "RA = RB = 10 kohm; (RA + RB) / (RA + 2 RB)",
+      "page_reference": "p. 15 Eq. 6",
+      "source_kind": "derived_from_published_formula",
+      "column_semantics": "derived_from_published_formula"
+    }
+  },
+  "operating_limits": {
+    "supply_minimum": {
+      "value": 2.0,
+      "unit": "V",
+      "conditions": "supported supply lower boundary",
+      "page_reference": "p. 4 recommended operating conditions",
+      "source_kind": "minimum",
+      "column_semantics": "minimum"
+    },
+    "supply_maximum": {
+      "value": 15.0,
+      "unit": "V",
+      "conditions": "supported supply upper boundary",
+      "page_reference": "p. 4 recommended operating conditions",
+      "source_kind": "maximum",
+      "column_semantics": "maximum"
+    }
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://www.ti.com/lit/ds/symlink/tlc555.pdf",
+    "revision": "SLFS043K, August 1983, revised January 2026",
+    "sha256": "6914398f4fd6b12a8c7436a95ea76c70ae6f0d74399be74841305f6aa6a5e53a",
+    "accessed_date": "2026-08-07",
+    "pages_referenced": [
+      "p. 4",
+      "p. 7",
+      "p. 8",
+      "p. 9",
+      "p. 10",
+      "p. 13",
+      "p. 14",
+      "p. 15"
+    ],
+    "placeholder": false
+  }
+}

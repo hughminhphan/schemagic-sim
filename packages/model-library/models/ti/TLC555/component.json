@@ -1,0 +1,217 @@
+{
+  "schema_version": "1.0.0",
+  "canonical_mpn": "TLC555",
+  "manufacturer": "Texas Instruments",
+  "description": "Low-power CMOS timer",
+  "electrical_family": "timer",
+  "symbol_pins": [
+    {
+      "name": "GND",
+      "number": "1",
+      "role": "ground"
+    },
+    {
+      "name": "TRIG",
+      "number": "2",
+      "role": "trigger_input"
+    },
+    {
+      "name": "OUT",
+      "number": "3",
+      "role": "output"
+    },
+    {
+      "name": "RESET",
+      "number": "4",
+      "role": "reset_input"
+    },
+    {
+      "name": "CONT",
+      "number": "5",
+      "role": "control_voltage"
+    },
+    {
+      "name": "THRES",
+      "number": "6",
+      "role": "threshold_input"
+    },
+    {
+      "name": "DISCH",
+      "number": "7",
+      "role": "discharge_output"
+    },
+    {
+      "name": "VCC",
+      "number": "8",
+      "role": "positive_supply"
+    }
+  ],
+  "spice_pin_mapping": [
+    {
+      "symbol_pin_number": "1",
+      "subckt_node": "gnd",
+      "order": 1
+    },
+    {
+      "symbol_pin_number": "2",
+      "subckt_node": "trig",
+      "order": 2
+    },
+    {
+      "symbol_pin_number": "3",
+      "subckt_node": "out",
+      "order": 3
+    },
+    {
+      "symbol_pin_number": "4",
+      "subckt_node": "reset",
+      "order": 4
+    },
+    {
+      "symbol_pin_number": "5",
+      "subckt_node": "cont",
+      "order": 5
+    },
+    {
+      "symbol_pin_number": "6",
+      "subckt_node": "thres",
+      "order": 6
+    },
+    {
+      "symbol_pin_number": "7",
+      "subckt_node": "disch",
+      "order": 7
+    },
+    {
+      "symbol_pin_number": "8",
+      "subckt_node": "vcc",
+      "order": 8
+    }
+  ],
+  "package_variants": [
+    {
+      "name": "PDIP-8",
+      "standard": "Texas Instruments 8-pin through-hole package",
+      "pin_count": 8,
+      "pin_map": [
+        {
+          "package_pin": "1",
+          "symbol_pin_number": "1"
+        },
+        {
+          "package_pin": "2",
+          "symbol_pin_number": "2"
+        },
+        {
+          "package_pin": "3",
+          "symbol_pin_number": "3"
+        },
+        {
+          "package_pin": "4",
+          "symbol_pin_number": "4"
+        },
+        {
+          "package_pin": "5",
+          "symbol_pin_number": "5"
+        },
+        {
+          "package_pin": "6",
+          "symbol_pin_number": "6"
+        },
+        {
+          "package_pin": "7",
+          "symbol_pin_number": "7"
+        },
+        {
+          "package_pin": "8",
+          "symbol_pin_number": "8"
+        }
+      ]
+    }
+  ],
+  "ordering_code_aliases": [
+    "TLC555C",
+    "TLC555CP",
+    "TLC555CD"
+  ],
+  "datasheet": {
+    "url": "https://www.ti.com/lit/ds/symlink/tlc555.pdf",
+    "revision": "SLFS043K, August 1983, revised January 2026"
+  },
+  "model_type": "subckt",
+  "fidelity_tier": "F1",
+  "domain_coverage": {
+    "dc": "fitted",
+    "ac": "none",
+    "transient": "approx",
+    "noise": "none",
+    "thermal": "none",
+    "digital": "none"
+  },
+  "supported_analyses": [
+    "operating_point",
+    "transient"
+  ],
+  "supported_operating_region": {
+    "summary": "F1 TLC555 model validated for monostable pulse width and static output levels at 5 V and 25 degC. Free-running astable and reset transients are explicitly unclaimed.",
+    "numeric_bounds": [
+      {
+        "quantity": "supply_voltage",
+        "minimum": 5,
+        "maximum": 5,
+        "unit": "V",
+        "conditions": "Validated monostable operating point only",
+        "placeholder": false
+      },
+      {
+        "quantity": "ambient_temperature",
+        "minimum": 25,
+        "maximum": 25,
+        "unit": "degC",
+        "conditions": "Validation temperature",
+        "placeholder": false
+      }
+    ]
+  },
+  "known_omissions": [
+    "The comparators, latch and output stage are analog behavioral approximations of the datasheet block diagram, not transistor-level circuits. Internal node voltages are not physical.",
+    "Trigger and threshold input currents are not modelled, so the maximum usable timing resistance is not enforced. A circuit using a 10 Meg timing resistor will work in simulation and may not work on a bench.",
+    "Timing accuracy, initial accuracy and drift with temperature and supply are not modelled. The model reproduces the ideal formulas far more precisely than any real device does.",
+    "Output rise and fall times are consequences of the output resistance and the external load, not fitted datasheet quantities.",
+    "Supply-current spikes during output transitions are not modelled. Quiescent current is a constant.",
+    "No self-heating and no temperature coefficients.",
+    "The discharge switch is a resistance to ground, not a saturating transistor. Its behaviour at currents far above the datasheet test point is a linear extrapolation.",
+    "Discharge-switch off-state leakage is fixed at a numerically safe 1e9 ohm rather than the datasheet leakage maximum.",
+    "Power-up state is deterministic because a fixed asymmetry is built into the latch to give the operating point a definite solution. Real devices power up in an indeterminate state.",
+    "An astable configuration has no DC operating point, so an .op analysis on such a circuit can report solver warnings before the transient runs correctly. This is inherent to oscillators.",
+    "Noise is not modelled, so period jitter is absent.",
+    "AGAIN = 2000, KREG = 25, KSW = 20, TAU = 20 ns, VSKEW = 0.05, RDOFF = 1 Gohm, latch capacitors = 1 pF, and comparator load resistors = 1 Mohm are held at default archetype values.",
+    "CMOS variant: fitted from its own datasheet. Output drive, supply current and discharge resistance differ substantially from the bipolar NE555 and the two are not interchangeable models.",
+    "RDIV is held at the physical archetype default because the datasheet does not isolate divider current from total supply current.",
+    "Free-running astable and control-voltage oscillator behavior are unclaimed. Native ngspice could not complete the regenerative-latch transient within 180 seconds after both reduced-gain and increased-gain convergence attempts; monostable behavior remains validated.",
+    "Reset-transition timing is unclaimed because its regenerative transient shares the astable convergence limitation. Static reset thresholds remain metadata only."
+  ],
+  "licence": {
+    "spdx_id": "MIT",
+    "provenance_basis": "original_from_facts"
+  },
+  "generator": {
+    "tool_or_agent": "opencircuit-model-factory-v0.1.0 timer author lane",
+    "date": "2026-08-07"
+  },
+  "reviewer": {
+    "tool_or_agent": "pending-review",
+    "date": "2026-08-07"
+  },
+  "test_results": {
+    "status": "complete",
+    "pass_count": 4,
+    "fail_count": 0,
+    "total_count": 4,
+    "worst_observed_relative_fitting_error": {
+      "value": 0,
+      "quantity": "output high voltage"
+    }
+  },
+  "validation_date": "2026-08-07"
+}

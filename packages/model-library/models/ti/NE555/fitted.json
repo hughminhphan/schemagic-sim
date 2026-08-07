@@ -1,0 +1,160 @@
+{
+  "schema_version": "1.0.0",
+  "fit_method": "deterministic timer-archetype extraction with loaded output points solved as a Thevenin stage; no calibration fudge",
+  "temperature_c": 25.0,
+  "parameters": {
+    "RDIV": 5000.0,
+    "VDRP_H": 0.0333333333,
+    "VDRP_L": 0.0166666667,
+    "RDIS": 18.75,
+    "ROUT": 16.6666667,
+    "IQ": 0.003,
+    "AGAIN": 2000,
+    "KREG": 25,
+    "TAU": 2e-08,
+    "RDOFF": 1000000000.0,
+    "KSW": 20,
+    "VSKEW": 0.05,
+    "VRESET": 0.7
+  },
+  "parameter_metadata": {
+    "RDIV": {
+      "status": "held at default"
+    },
+    "VDRP_H": {
+      "status": "fitted or datasheet-derived"
+    },
+    "VDRP_L": {
+      "status": "fitted or datasheet-derived"
+    },
+    "RDIS": {
+      "status": "fitted or datasheet-derived"
+    },
+    "ROUT": {
+      "status": "fitted or datasheet-derived"
+    },
+    "IQ": {
+      "status": "fitted or datasheet-derived"
+    },
+    "AGAIN": {
+      "status": "held at default"
+    },
+    "KREG": {
+      "status": "held at default"
+    },
+    "TAU": {
+      "status": "held at default"
+    },
+    "RDOFF": {
+      "status": "held at default"
+    },
+    "KSW": {
+      "status": "held at default"
+    },
+    "VSKEW": {
+      "status": "held at default"
+    },
+    "VRESET": {
+      "status": "direct typical transcription"
+    }
+  },
+  "held_defaults": [
+    {
+      "parameter": "AGAIN",
+      "value": 2000,
+      "unit": "1/V",
+      "reason": "held at default: mandatory archetype comparator gain"
+    },
+    {
+      "parameter": "KREG",
+      "value": 25,
+      "unit": "1",
+      "reason": "held at default: regenerative latch constant"
+    },
+    {
+      "parameter": "KSW",
+      "value": 20,
+      "unit": "1",
+      "reason": "held at default: discharge conductance switch steepness"
+    },
+    {
+      "parameter": "TAU",
+      "value": 2e-08,
+      "unit": "s",
+      "reason": "held at default: mandatory latch resolution time"
+    },
+    {
+      "parameter": "VSKEW",
+      "value": 0.05,
+      "unit": "V",
+      "reason": "held at default: deterministic power-up asymmetry"
+    },
+    {
+      "parameter": "RDOFF",
+      "value": 1000000000.0,
+      "unit": "ohm",
+      "reason": "held at default: numerically safe discharge off resistance"
+    },
+    {
+      "parameter": "CQA_CQB",
+      "value": 1e-12,
+      "unit": "F",
+      "reason": "held at default: latch capacitors"
+    },
+    {
+      "parameter": "RCU_RCL_RRS",
+      "value": 1000000.0,
+      "unit": "ohm",
+      "reason": "held at default: behavioral source loads"
+    },
+    {
+      "parameter": "RDIV",
+      "value": 5000.0,
+      "unit": "ohm",
+      "reason": "held at default: divider resistance not isolated by datasheet"
+    }
+  ],
+  "residuals": [
+    {
+      "quantity": "output high voltage",
+      "datasheet_value": 3.3,
+      "fitted_value": 3.3,
+      "unit": "V",
+      "relative_error": 0.0,
+      "citation": "p. 6 electrical characteristics, TYP column",
+      "column_semantics": "typical"
+    },
+    {
+      "quantity": "output low voltage",
+      "datasheet_value": 0.15,
+      "fitted_value": 0.15,
+      "unit": "V",
+      "relative_error": 0.0,
+      "citation": "p. 6 electrical characteristics, TYP column",
+      "column_semantics": "typical"
+    },
+    {
+      "quantity": "discharge on resistance",
+      "datasheet_value": 18.75,
+      "fitted_value": 18.75,
+      "unit": "ohm",
+      "relative_error": 0.0,
+      "citation": "p. 5 electrical characteristics, TYP column",
+      "column_semantics": "typical"
+    },
+    {
+      "quantity": "reset threshold voltage",
+      "datasheet_value": 0.7,
+      "fitted_value": 0.7,
+      "unit": "V",
+      "relative_error": 0.0,
+      "citation": "p. 5 electrical characteristics, TYP column",
+      "column_semantics": "typical"
+    }
+  ],
+  "worst_relative_error": {
+    "value": 0.0,
+    "quantity": "output high voltage"
+  },
+  "calibration_iterations": []
+}

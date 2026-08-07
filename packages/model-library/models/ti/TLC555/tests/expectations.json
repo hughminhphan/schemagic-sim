@@ -1,0 +1,78 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "monostable.cir",
+      "analysis_type": "transient",
+      "scalar_checks": [
+        {
+          "name": "monostable_pulse_width",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "pulse_width(v(out),2.5,rising,1,falling,1)"
+          },
+          "expected_value": 0.00011,
+          "unit": "s",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.05
+          },
+          "datasheet_citation": "TI TLC555 SLFS043K p. 14 Section 6.3.1 and Figure 6-2",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": [
+        {
+          "name": "monostable_initial_output_low",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "at(v(out),0)"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "TI TLC555 SLFS043K p. 14 Section 6.3.1 and Figure 6-2",
+          "placeholder": false,
+          "minimum": 0,
+          "maximum": 0.1
+        }
+      ]
+    },
+    {
+      "test_netlist": "output_levels.cir",
+      "analysis_type": "transient",
+      "scalar_checks": [
+        {
+          "name": "loaded_output_high",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "last(v(outh))"
+          },
+          "expected_value": 4.8,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.1,
+            "relative": 0.15
+          },
+          "datasheet_citation": "Texas Instruments TLC555 SLFS043K p. 7 electrical characteristics, TYP column",
+          "placeholder": false
+        },
+        {
+          "name": "loaded_output_low",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "last(v(outl))"
+          },
+          "expected_value": 0.21,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.1,
+            "relative": 0.15
+          },
+          "datasheet_citation": "Texas Instruments TLC555 SLFS043K p. 7 electrical characteristics, TYP column",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    }
+  ]
+}

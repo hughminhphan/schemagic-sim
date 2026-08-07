@@ -1,0 +1,197 @@
+{
+  "schema_version": "1.0.0",
+  "extraction_method": "pdftotext -layout plus manual structuring; every table column semantic verified against the cited page",
+  "fit_conditions": {
+    "temperature": {
+      "value": 25,
+      "unit": "degC",
+      "conditions": "All fitted table values use the 25 degC TYP column unless explicitly marked otherwise",
+      "page_reference": "p. 4 electrical specifications, TYP column",
+      "source_kind": "typical",
+      "column_semantics": "typical"
+    }
+  },
+  "identity": {
+    "canonical_mpn": "ICM7555",
+    "manufacturer": "Renesas Electronics",
+    "aliases": [
+      "ICM7555C",
+      "ICM7555IPAZ",
+      "ICM7555IBAZ"
+    ]
+  },
+  "timer_inputs": {
+    "threshold_voltage": {
+      "value": 0.67,
+      "unit": "V_per_V",
+      "conditions": "VDD = 15 V, TA = 25 degC",
+      "page_reference": "p. 3 electrical specifications, TYP column",
+      "source_kind": "typical",
+      "column_semantics": "typical"
+    },
+    "trigger_voltage": {
+      "value": 0.32,
+      "unit": "V_per_V",
+      "conditions": "VDD = 15 V, TA = 25 degC",
+      "page_reference": "p. 3 electrical specifications, TYP column",
+      "source_kind": "typical",
+      "column_semantics": "typical"
+    },
+    "threshold_current": {
+      "value": 1e-08,
+      "unit": "A",
+      "conditions": "VDD = 15 V, TA = 25 degC",
+      "page_reference": "p. 3 electrical specifications, MAX column",
+      "source_kind": "maximum",
+      "column_semantics": "maximum"
+    },
+    "trigger_current": {
+      "value": 1e-08,
+      "unit": "A",
+      "conditions": "VDD = 15 V, TA = 25 degC",
+      "page_reference": "p. 3 electrical specifications, MAX column",
+      "source_kind": "maximum",
+      "column_semantics": "maximum"
+    },
+    "reset_voltage": {
+      "value": 0.7,
+      "unit": "V",
+      "conditions": "VDD = 2 V to 15 V, TA = 25 degC; typical described as 0.6 V to 0.7 V",
+      "page_reference": "p. 6 reset description; p. 3 MIN/MAX row",
+      "source_kind": "typical",
+      "column_semantics": "typical"
+    },
+    "reset_current": {
+      "value": 1e-08,
+      "unit": "A",
+      "conditions": "VDD = 15 V, TA = 25 degC",
+      "page_reference": "p. 4 electrical specifications, MAX column",
+      "source_kind": "maximum",
+      "column_semantics": "maximum"
+    },
+    "output_high_voltage": {
+      "value": 4.3,
+      "unit": "V",
+      "conditions": "VDD = 5 V, ISOURCE = 0.8 mA, TA = 25 degC",
+      "page_reference": "p. 4 electrical specifications, TYP column",
+      "source_kind": "typical",
+      "column_semantics": "typical"
+    },
+    "output_low_voltage": {
+      "value": 0.2,
+      "unit": "V",
+      "conditions": "VDD = 5 V, ISINK = 3.2 mA, TA = 25 degC",
+      "page_reference": "p. 4 electrical specifications, TYP column",
+      "source_kind": "typical",
+      "column_semantics": "typical"
+    },
+    "discharge_saturation_voltage": {
+      "value": 0.2,
+      "unit": "V",
+      "conditions": "VDD = 5 V, ISINK = 15 mA, TA = 25 degC",
+      "page_reference": "p. 4 electrical specifications, TYP column",
+      "source_kind": "typical",
+      "column_semantics": "typical"
+    },
+    "discharge_leakage": {
+      "value": 1e-08,
+      "unit": "A",
+      "conditions": "VDD = 15 V, TA = 25 degC",
+      "page_reference": "p. 4 electrical specifications, MAX column",
+      "source_kind": "maximum",
+      "column_semantics": "maximum"
+    },
+    "supply_current": {
+      "value": 4e-05,
+      "unit": "A",
+      "conditions": "VDD = 5 V, ICM7555, TA = 25 degC",
+      "page_reference": "p. 3 electrical specifications, TYP column",
+      "source_kind": "typical",
+      "column_semantics": "typical"
+    },
+    "output_rise_time": {
+      "value": 7.5e-08,
+      "unit": "s",
+      "conditions": "VDD = 5 V, RL = 10 Mohm, CL = 10 pF, TA = 25 degC",
+      "page_reference": "p. 4 electrical specifications, TYP column",
+      "source_kind": "typical",
+      "column_semantics": "typical"
+    },
+    "output_fall_time": {
+      "value": 7.5e-08,
+      "unit": "s",
+      "conditions": "VDD = 5 V, RL = 10 Mohm, CL = 10 pF, TA = 25 degC",
+      "page_reference": "p. 4 electrical specifications, TYP column",
+      "source_kind": "typical",
+      "column_semantics": "typical"
+    },
+    "timing_accuracy_or_stability": {
+      "value": 2.0,
+      "unit": "percent",
+      "conditions": "RA = RB = 10 kohm, C = 0.1 uF, VDD = 5 V, TA = 25 degC",
+      "page_reference": "p. 3 electrical specifications, astable timing accuracy TYP column",
+      "source_kind": "typical",
+      "column_semantics": "typical"
+    }
+  },
+  "formula_facts": {
+    "monostable_pulse_width": {
+      "value": 1.1,
+      "unit": "coefficient",
+      "conditions": "T = 1.1 R C",
+      "page_reference": "p. 6 Equation and Figure 6",
+      "source_kind": "published_formula",
+      "column_semantics": "published_formula"
+    },
+    "astable_frequency": {
+      "value": 1.44,
+      "unit": "coefficient",
+      "conditions": "f = 1.44 / ((RA + 2 RB) C)",
+      "page_reference": "p. 6 Eq. 2",
+      "source_kind": "published_formula",
+      "column_semantics": "published_formula"
+    },
+    "astable_output_high_duty": {
+      "value": 0.6666666667,
+      "unit": "1",
+      "conditions": "RA = RB = 10 kohm; (RA + RB) / (RA + 2 RB)",
+      "page_reference": "p. 6 Eq. 3",
+      "source_kind": "derived_from_published_formula",
+      "column_semantics": "derived_from_published_formula"
+    }
+  },
+  "operating_limits": {
+    "supply_minimum": {
+      "value": 2.0,
+      "unit": "V",
+      "conditions": "supported supply lower boundary",
+      "page_reference": "p. 4 functional operation MIN column",
+      "source_kind": "minimum",
+      "column_semantics": "minimum"
+    },
+    "supply_maximum": {
+      "value": 18.0,
+      "unit": "V",
+      "conditions": "supported supply upper boundary",
+      "page_reference": "p. 4 functional operation MAX column",
+      "source_kind": "maximum",
+      "column_semantics": "maximum"
+    }
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://www.renesas.com/en/document/dst/icm7555-icm7556-datasheet",
+    "revision": "FN2867 Rev.10.01, March 5, 2020",
+    "sha256": "9f14724a227a474a44f1ea9069aa3313878851d044af364dc4bd4778f1f83024",
+    "accessed_date": "2026-08-07",
+    "pages_referenced": [
+      "p. 3",
+      "p. 4",
+      "p. 5",
+      "p. 6",
+      "p. 7",
+      "p. 8"
+    ],
+    "placeholder": false
+  }
+}
