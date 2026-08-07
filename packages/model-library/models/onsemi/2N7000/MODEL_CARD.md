@@ -103,3 +103,7 @@ Native and WASM agreement: all 4 benches passed engine comparison. Worst relativ
 ## Licence
 
 MIT. See `LICENSE`. The model is original work generated from public factual specifications and is not copied or adapted from a vendor SPICE model.
+
+## F2 upgrade assessment
+
+The official Rev. 8 datasheet was re-examined, including the typical output and transfer plots on page 3. Those plots do not complete the VDMOS archetype: all RDS(on), capacitance, switching, threshold, breakdown, and leakage table entries are guaranteed limits, and the datasheet omits a capacitance-versus-VDS curve, body-diode forward data, gate charge, and reverse recovery. Using those limits as typical fitting targets would violate the MIN/TYP/MAX rule. The package remains F1.
