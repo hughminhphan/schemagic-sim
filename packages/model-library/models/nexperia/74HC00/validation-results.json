@@ -2,11 +2,11 @@
   "schema_version": "1.0.0",
   "validation_date": "2026-08-07",
   "native_wasm_all_pass": true,
-  "expectations_all_pass": false,
-  "expectation_pass_count": 16,
-  "expectation_fail_count": 5,
-  "worst_native_wasm_relative_delta": 5.925086175479763e-9,
-  "worst_native_wasm_absolute_delta": 2.6645352591003757e-14,
+  "expectations_all_pass": true,
+  "expectation_pass_count": 21,
+  "expectation_fail_count": 0,
+  "worst_native_wasm_relative_delta": 6.913952628581324e-9,
+  "worst_native_wasm_absolute_delta": 5.684341886080802e-14,
   "benches": [
     {
       "test_netlist": "truth_table.cir",
@@ -16,29 +16,25 @@
         {
           "name": "truth_0_high",
           "pass": true,
-          "value": 4.499999972717666,
-          "minimum": 4.4,
-          "maximum": null
+          "value": 4.499999973188181,
+          "minimum": 4.4
         },
         {
           "name": "truth_1_high",
           "pass": true,
-          "value": 4.499649641072318,
-          "minimum": 4.4,
-          "maximum": null
+          "value": 4.499652675126559,
+          "minimum": 4.4
         },
         {
           "name": "truth_2_high",
           "pass": true,
-          "value": 4.499649641072318,
-          "minimum": 4.4,
-          "maximum": null
+          "value": 4.499652675126559,
+          "minimum": 4.4
         },
         {
           "name": "truth_3_low",
           "pass": true,
-          "value": 0.0007007451376970454,
-          "minimum": null,
+          "value": 0.0006946765587053495,
           "maximum": 0.1
         }
       ]
@@ -51,15 +47,13 @@
         {
           "name": "voh_at_logic_input_limit",
           "pass": true,
-          "value": 4.40002817056327,
-          "minimum": 4.4,
-          "maximum": null
+          "value": 4.400367708502265,
+          "minimum": 4.4
         },
         {
           "name": "vol_at_logic_input_limit",
-          "pass": false,
-          "value": 0.1003216889513868,
-          "minimum": null,
+          "pass": true,
+          "value": 0.0999791165242793,
           "maximum": 0.1
         }
       ]
@@ -72,29 +66,27 @@
         {
           "name": "voh_loaded_typ",
           "pass": true,
-          "value": 4.320000157042931,
-          "error": 1.5704293065965658e-7,
+          "value": 4.320000157513445,
+          "error": 1.5751344495384956e-7,
           "allowed": 0.1296
         },
         {
           "name": "vol_loaded_typ",
           "pass": true,
-          "value": 0.15070093015309982,
-          "error": 0.0007009301530998269,
+          "value": 0.15069486156812004,
+          "error": 0.0006948615681200421,
           "allowed": 0.0225
         },
         {
           "name": "voh_loaded_guarantee",
           "pass": true,
-          "value": 4.320000157042931,
-          "minimum": 3.84,
-          "maximum": null
+          "value": 4.320000157513445,
+          "minimum": 3.84
         },
         {
           "name": "vol_loaded_guarantee",
           "pass": true,
-          "value": 0.15070093015309982,
-          "minimum": null,
+          "value": 0.15069486156812004,
           "maximum": 0.33
         }
       ]
@@ -106,31 +98,29 @@
       "checks": [
         {
           "name": "tphl_15p",
-          "pass": false,
-          "value": -0.0000019929997958852303,
-          "error": 0.0000019999997958852304,
+          "pass": true,
+          "value": 7.00017e-9,
+          "error": 1.7000000000042438e-13,
           "allowed": 1.0499999999999999e-9
         },
         {
           "name": "tplh_15p",
-          "pass": false,
-          "value": -0.0000019929997958852303,
-          "error": 0.0000019999997958852304,
+          "pass": true,
+          "value": 6.99937e-9,
+          "error": 6.29999999999821e-13,
           "allowed": 1.0499999999999999e-9
         },
         {
           "name": "no_overshoot_15p",
           "pass": true,
-          "value": 4.999610712302574,
-          "minimum": null,
+          "value": 4.99961,
           "maximum": 5
         },
         {
           "name": "no_undershoot_15p",
           "pass": true,
-          "value": 0.0007786057085540854,
-          "minimum": 0,
-          "maximum": null
+          "value": 0.000771863,
+          "minimum": 0
         }
       ]
     },
@@ -141,31 +131,29 @@
       "checks": [
         {
           "name": "tphl_50p",
-          "pass": false,
-          "value": -0.0000019914258905469442,
-          "error": 0.000002000425890546944,
+          "pass": true,
+          "value": 8.57408e-9,
+          "error": 4.259199999999993e-10,
           "allowed": 1.3499999999999999e-9
         },
         {
           "name": "tplh_50p",
-          "pass": false,
-          "value": -0.0000019914258905469442,
-          "error": 0.000002000425890546944,
+          "pass": true,
+          "value": 8.64092e-9,
+          "error": 3.5907999999999914e-10,
           "allowed": 1.3499999999999999e-9
         },
         {
           "name": "no_overshoot_50p",
           "pass": true,
-          "value": 4.499649641072328,
-          "minimum": null,
+          "value": 4.49965,
           "maximum": 4.5
         },
         {
           "name": "no_undershoot_50p",
           "pass": true,
-          "value": 0.0007007451376970687,
-          "minimum": 0,
-          "maximum": null
+          "value": 0.000694677,
+          "minimum": 0
         }
       ]
     },
@@ -177,15 +165,13 @@
         {
           "name": "minimum_supply_high",
           "pass": true,
-          "value": 1.9998442849210298,
-          "minimum": 1.9,
-          "maximum": null
+          "value": 1.99985,
+          "minimum": 1.9
         },
         {
           "name": "minimum_supply_low",
           "pass": true,
-          "value": 0.0003114422834213581,
-          "minimum": null,
+          "value": 0.000308745,
           "maximum": 0.1
         }
       ]
@@ -199,7 +185,6 @@
           "name": "quiescent_current_upper_bound",
           "pass": true,
           "value": 0,
-          "minimum": null,
           "maximum": 0.00004
         }
       ]

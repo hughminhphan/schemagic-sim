@@ -1,18 +1,18 @@
 {
   "schema_version": "1.0.0",
   "fit_method": "Closed-form DC parameters plus exactly three native ngspice-46 fixed-point CINT calibration iterations; 74HC14 KVTC is calibrated against the cited 25 degC typical thresholds; no vendor SPICE model used",
-  "temperature_c": 25.0,
+  "temperature_c": 25,
   "parameters": {
-    "KVTC": 9.460474084795665,
-    "RINT": 1000.0,
+    "KVTC": 9.469172993591922,
+    "RINT": 1000,
     "CINT": 9.14811470501e-12,
-    "ROH": 45.0,
+    "ROH": 45,
     "ROL": 37.5,
-    "KSW": 12.0
+    "KSW": 12
   },
   "parameter_metadata": {
     "KVTC": {
-      "status": "derived_closed_form"
+      "status": "derived_closed_form_with_second_input_finite_gain"
     },
     "RINT": {
       "status": "held_default"
@@ -45,15 +45,56 @@
     },
     {
       "parameter": "RIN",
-      "value": 100000000000.0,
+      "value": 100000000000,
       "unit": "ohm",
       "reason": "held at default, mandatory input leakage path"
     }
   ],
-  "residuals": [],
+  "residuals": [
+    {
+      "quantity": "VOL at VIH minimum",
+      "datasheet_value": 0.1,
+      "fitted_value": 0.0999791165242793,
+      "unit": "V",
+      "relative_error": 0.0002088347572071214,
+      "citation": "Nexperia 74HC00 Rev. 11 p. 4, VOL max at VCC = 4.5 V and VIH = 3.15 V"
+    },
+    {
+      "quantity": "tPHL at CL = 15 pF",
+      "datasheet_value": 7e-9,
+      "fitted_value": 7.00017e-9,
+      "unit": "s",
+      "relative_error": 0.000024285714285774912,
+      "citation": "Nexperia 74HC00 Rev. 11 p. 5, tpd typical at VCC = 5 V and CL = 15 pF"
+    },
+    {
+      "quantity": "tPLH at CL = 15 pF",
+      "datasheet_value": 7e-9,
+      "fitted_value": 6.99937e-9,
+      "unit": "s",
+      "relative_error": 0.00008999999999997443,
+      "citation": "Nexperia 74HC00 Rev. 11 p. 5, tpd typical at VCC = 5 V and CL = 15 pF"
+    },
+    {
+      "quantity": "tPHL at CL = 50 pF",
+      "datasheet_value": 9e-9,
+      "fitted_value": 8.57408e-9,
+      "unit": "s",
+      "relative_error": 0.04732444444444437,
+      "citation": "Nexperia 74HC00 Rev. 11 p. 5, tpd typical at VCC = 4.5 V and CL = 50 pF"
+    },
+    {
+      "quantity": "tPLH at CL = 50 pF",
+      "datasheet_value": 9e-9,
+      "fitted_value": 8.64092e-9,
+      "unit": "s",
+      "relative_error": 0.039897777777777685,
+      "citation": "Nexperia 74HC00 Rev. 11 p. 5, tpd typical at VCC = 4.5 V and CL = 50 pF"
+    }
+  ],
   "worst_relative_error": {
-    "value": 0,
-    "quantity": "pending_validation"
+    "value": 0.04732444444444437,
+    "quantity": "tPHL at CL = 50 pF"
   },
   "calibration_iterations": 3
 }

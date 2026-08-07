@@ -33,7 +33,7 @@
 
 | Parameter | Value | Status |
 | --- | ---: | --- |
-| KVTC | 9.46047408e+0 | derived_closed_form |
+| KVTC | 9.46917299e+0 | derived_closed_form_with_second_input_finite_gain |
 | RINT | 1.00000000e+3 | held_default |
 | CINT | 9.14811471e-12 | fitted |
 | ROH | 4.50000000e+1 | derived_from_typical |
@@ -52,11 +52,15 @@
 
 | Quantity | Datasheet | Fitted | Unit | Relative error | Citation |
 | --- | ---: | ---: | --- | ---: | --- |
+| VOL at VIH minimum | 1.000000e-1 | 9.997912e-2 | V | 0.021% | Nexperia 74HC00 Rev. 11 p. 4, VOL max at VCC = 4.5 V and VIH = 3.15 V |
+| tPHL at CL = 15 pF | 7.000000e-9 | 7.000170e-9 | s | 0.002% | Nexperia 74HC00 Rev. 11 p. 5, tpd typical at VCC = 5 V and CL = 15 pF |
+| tPLH at CL = 15 pF | 7.000000e-9 | 6.999370e-9 | s | 0.009% | Nexperia 74HC00 Rev. 11 p. 5, tpd typical at VCC = 5 V and CL = 15 pF |
+| tPHL at CL = 50 pF | 9.000000e-9 | 8.574080e-9 | s | 4.733% | Nexperia 74HC00 Rev. 11 p. 5, tpd typical at VCC = 4.5 V and CL = 50 pF |
+| tPLH at CL = 50 pF | 9.000000e-9 | 8.640920e-9 | s | 3.990% | Nexperia 74HC00 Rev. 11 p. 5, tpd typical at VCC = 4.5 V and CL = 50 pF |
 
+Worst fitting error: 4.733% for tPHL at CL = 50 pF.
 
-Worst fitting error: 0.000% for pending_validation.
-
-Native and WASM agreement: all 7 benches passed. Worst reported relative delta was 5.925e-9 and worst absolute delta was 2.665e-14.
+Native and WASM agreement: all 7 benches passed. Worst reported relative delta was 6.914e-9 and worst absolute delta was 5.684e-14.
 
 ## Known omissions
 
