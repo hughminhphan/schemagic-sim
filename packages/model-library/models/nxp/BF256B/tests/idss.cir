@@ -1,0 +1,14 @@
+BF256B IDSS bin window
+* OpenCircuit Model Factory JFET manual path v0.1.0
+* Original work generated from public factual specifications.
+* This model is not a copy of, or adaptation from, any vendor SPICE model.
+* Source: https://www.nexperia.com/product/BF256B
+* Revision: Official Nexperia HTML product/specification table; accessed 2026-08-07
+* F1 bin-window model; no typical transfer curve fit is claimed
+* Node order: drain gate source
+.model OC_NEXPERIA_BF256B NJF( VTO=-4.0000000000e+00 BETA=5.7500000000e-04 LAMBDA=5.0000000000e-03 B=1.0000000000e+00 RD=1.0000000000e-04 RS=1.0000000000e-04 CGS=2.5500000000e-12 CGD=5.8094750193e-12 PB=1.0000000000e+00 M=5.0000000000e-01 IS=1.0000000000e-20 N=1.0000000000e+00 FC=5.0000000000e-01 TNOM=2.7000000000e+01 )
+.temp 25
+J1 d 0 0 OC_NEXPERIA_BF256B
+VD d 0 DC 15
+.op
+.end

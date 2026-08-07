@@ -1,0 +1,115 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "idss.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "idss_bin",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vd))"
+          },
+          "unit": "A",
+          "inclusive": true,
+          "datasheet_citation": "official HTML specification table IDSS MIN/MAX columns, VDS=15 V VGS=0",
+          "placeholder": false,
+          "minimum": 0.006,
+          "maximum": 0.015
+        }
+      ]
+    },
+    {
+      "test_netlist": "transfer_curve.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "idss_at_vgs_zero",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vd0))"
+          },
+          "unit": "A",
+          "inclusive": true,
+          "datasheet_citation": "official HTML specification table IDSS MIN/MAX columns",
+          "placeholder": false,
+          "minimum": 0.006,
+          "maximum": 0.015
+        },
+        {
+          "name": "cutoff_by_far_vgsoff_limit",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vd8))"
+          },
+          "unit": "A",
+          "inclusive": true,
+          "datasheet_citation": "official HTML specification table VGS(off) maximum-magnitude boundary at ID=10 uA",
+          "placeholder": false,
+          "minimum": 0,
+          "maximum": 1e-05
+        }
+      ]
+    },
+    {
+      "test_netlist": "capacitance.cir",
+      "analysis_type": "ac_small_signal",
+      "scalar_checks": [
+        {
+          "name": "ciss",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "imag_cap:last(i(vgin),1000000)"
+          },
+          "expected_value": 4e-12,
+          "unit": "F",
+          "tolerance": {
+            "absolute": 5e-13,
+            "relative": 0.2
+          },
+          "datasheet_citation": "official HTML specification table Ciss TYP at VDS=15 V VGS=0 f=1 MHz",
+          "placeholder": false
+        },
+        {
+          "name": "crss",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "imag_cap:last(i(vdrev),1000000)"
+          },
+          "expected_value": 1.5e-12,
+          "unit": "F",
+          "tolerance": {
+            "absolute": 5e-13,
+            "relative": 0.2
+          },
+          "datasheet_citation": "official HTML specification table Crss TYP at VDS=15 V VGS=0 f=1 MHz",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "boundary_vds15.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "boundary_cutoff_current",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vd))"
+          },
+          "unit": "A",
+          "inclusive": true,
+          "datasheet_citation": "official HTML specification table VGS(off) far boundary, VDS=15 V ID=10 uA",
+          "placeholder": false,
+          "minimum": 0,
+          "maximum": 1e-05
+        }
+      ]
+    }
+  ]
+}

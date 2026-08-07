@@ -1,0 +1,145 @@
+{
+  "schema_version": "1.0.0",
+  "canonical_mpn": "BF256B",
+  "manufacturer": "Nexperia",
+  "description": "N-channel low-noise JFET",
+  "electrical_family": "jfet_n",
+  "symbol_pins": [
+    {
+      "name": "D",
+      "number": "1",
+      "role": "drain"
+    },
+    {
+      "name": "S",
+      "number": "2",
+      "role": "source"
+    },
+    {
+      "name": "G",
+      "number": "3",
+      "role": "gate"
+    }
+  ],
+  "spice_pin_mapping": [
+    {
+      "symbol_pin_number": "1",
+      "subckt_node": "drain",
+      "order": 1
+    },
+    {
+      "symbol_pin_number": "3",
+      "subckt_node": "gate",
+      "order": 2
+    },
+    {
+      "symbol_pin_number": "2",
+      "subckt_node": "source",
+      "order": 3
+    }
+  ],
+  "package_variants": [
+    {
+      "name": "TO-92",
+      "standard": "SOT54",
+      "pin_count": 3,
+      "pin_map": [
+        {
+          "package_pin": "1",
+          "symbol_pin_number": "1"
+        },
+        {
+          "package_pin": "2",
+          "symbol_pin_number": "2"
+        },
+        {
+          "package_pin": "3",
+          "symbol_pin_number": "3"
+        }
+      ]
+    }
+  ],
+  "ordering_code_aliases": [],
+  "datasheet": {
+    "url": "https://www.nexperia.com/product/BF256B",
+    "revision": "Official Nexperia HTML product/specification table; accessed 2026-08-07"
+  },
+  "model_type": "dot_model",
+  "fidelity_tier": "F1",
+  "domain_coverage": {
+    "dc": "approx",
+    "ac": "approx",
+    "transient": "approx",
+    "noise": "none",
+    "thermal": "none",
+    "digital": "none"
+  },
+  "supported_analyses": [
+    "operating_point",
+    "dc_sweep",
+    "ac_small_signal",
+    "transient"
+  ],
+  "supported_operating_region": {
+    "summary": "F1 BF256B bin-window model at 25 degC for VDS 0 to 15 V and VGS -8 to 0 V.",
+    "numeric_bounds": [
+      {
+        "quantity": "drain_source_voltage",
+        "minimum": 0,
+        "maximum": 15,
+        "unit": "V",
+        "conditions": "Characterized IDSS and capacitance bias envelope",
+        "placeholder": false
+      },
+      {
+        "quantity": "gate_source_voltage",
+        "minimum": -8,
+        "maximum": 0,
+        "unit": "V",
+        "conditions": "Published cutoff window; never forward-bias gate",
+        "placeholder": false
+      },
+      {
+        "quantity": "ambient_temperature",
+        "minimum": 25,
+        "maximum": 25,
+        "unit": "degC",
+        "conditions": "Characterization temperature",
+        "placeholder": false
+      }
+    ]
+  },
+  "known_omissions": [
+    "Nexperia PDF and direct product page are challenge-gated; official HTML specification-table fallback is used and fidelity is capped at F1.",
+    "IDSS and VGS(off) are published as a bin window, not a typical target. The model is centered inside the window and does not represent production spread.",
+    "LAMBDA and B are held family defaults because no accessible output or transfer curve was available.",
+    "RD and RS are at the numerical floor because no on-resistance is published.",
+    "CGS and CGD are derived from single Ciss and Crss points with PB and M held defaults; capacitance versus bias is approximate.",
+    "Noise is not fitted from the single 1 kHz noise-voltage point; KF and AF remain defaults.",
+    "No self-heating, temperature coefficients, breakdown, or package parasitics are modelled.",
+    "Reviewer remains pending-review."
+  ],
+  "licence": {
+    "spdx_id": "MIT",
+    "provenance_basis": "original_from_facts"
+  },
+  "generator": {
+    "tool_or_agent": "opencircuit-model-factory-v0.1.0",
+    "date": "2026-08-07"
+  },
+  "reviewer": {
+    "tool_or_agent": "pending-review",
+    "date": "2026-08-07"
+  },
+  "test_results": {
+    "status": "complete",
+    "pass_count": 6,
+    "fail_count": 0,
+    "total_count": 6,
+    "worst_observed_relative_fitting_error": {
+      "value": 0,
+      "quantity": "bound-centered IDSS window"
+    }
+  },
+  "validation_date": "2026-08-07"
+}

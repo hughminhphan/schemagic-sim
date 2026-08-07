@@ -1,0 +1,82 @@
+{
+  "schema_version": "1.0.0",
+  "validation_date": "2026-08-07",
+  "native_wasm_all_pass": true,
+  "expectations_all_pass": true,
+  "expectation_pass_count": 6,
+  "expectation_fail_count": 0,
+  "worst_native_wasm_relative_delta": 0,
+  "worst_native_wasm_absolute_delta": 0,
+  "benches": [
+    {
+      "test_netlist": "idss.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "idss_bin",
+          "pass": true,
+          "value": 0.00988999503897503,
+          "minimum": 0.006,
+          "maximum": 0.015
+        }
+      ]
+    },
+    {
+      "test_netlist": "transfer_curve.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "idss_at_vgs_zero",
+          "pass": true,
+          "value": 0.00988999503897503,
+          "minimum": 0.006,
+          "maximum": 0.015
+        },
+        {
+          "name": "cutoff_by_far_vgsoff_limit",
+          "pass": true,
+          "value": 2.9103830456733704e-11,
+          "minimum": 0,
+          "maximum": 0.00001
+        }
+      ]
+    },
+    {
+      "test_netlist": "capacitance.cir",
+      "analysis": "ac",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "ciss",
+          "pass": true,
+          "value": 3.998366363270489e-12,
+          "error": 1.6336367295110909e-15,
+          "allowed": 8e-13
+        },
+        {
+          "name": "crss",
+          "pass": true,
+          "value": 1.4517031495130212e-12,
+          "error": 4.829685048697886e-14,
+          "allowed": 5e-13
+        }
+      ]
+    },
+    {
+      "test_netlist": "boundary_vds15.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "boundary_cutoff_current",
+          "pass": true,
+          "value": 2.9103830456733704e-11,
+          "minimum": 0,
+          "maximum": 0.00001
+        }
+      ]
+    }
+  ]
+}
