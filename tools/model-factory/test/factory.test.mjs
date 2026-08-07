@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { assertEmittedParametersMatchFitted, assertFiniteNumbers, expressionValue } from "../factory.mjs";
+import { assertCardParameterTable, assertEmittedParametersMatchFitted, assertFiniteNumbers, expressionValue, renderParameterTable } from "../factory.mjs";
 import { PARTS, getPart } from "../lib/parts.mjs";
 
 function assertQuantityReferences(value) {
@@ -57,6 +57,18 @@ test("generate postcondition rejects stale parameter cards", () => {
     ".model DUT NPN(IS=1e-14 BF=2000)\n",
     { parameters: { IS: 1e-14, BF: 217.6573191599617 } }
   ), /BF: emitted 2000, fitted 217\.6573191599617/);
+});
+
+test("card rendering includes every fitted parameter", () => {
+  const fitted = {
+    parameters: { IS: 1e-14, BF: 217.6573191599617 },
+    parameter_metadata: { IS: { status: "fitted" }, BF: { status: "fitted" } }
+  };
+  const table = renderParameterTable(fitted);
+  assert.match(table, /\| IS \|/);
+  assert.match(table, /\| BF \|/);
+  assert.doesNotThrow(() => assertCardParameterTable(`\n## Model parameters\n\n| Parameter | Value | Status |\n| --- | ---: | --- |\n${table}\n\n## Known omissions\n`, fitted));
+  assert.throws(() => assertCardParameterTable("\n## Known omissions\n", fitted), /missing the model-parameter table/);
 });
 
 test("JSON outputs reject non-finite validation numbers", () => {

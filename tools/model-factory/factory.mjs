@@ -889,6 +889,24 @@ function coverageTable(coverage) {
   return Object.entries(coverage).map(([domain, rating]) => `| ${domain} | ${rating} |`).join("\n");
 }
 
+export function renderParameterTable(fitted) {
+  const parameters = Object.entries(fitted.parameters ?? {});
+  if (parameters.length === 0) throw new Error("Card generation requires fitted model parameters");
+  return parameters.map(([name, value]) => `| ${name} | ${Number(value).toExponential(8)} | ${fitted.parameter_metadata?.[name]?.status ?? "fitted or derived"} |`).join("\n");
+}
+
+export function assertCardParameterTable(card, fitted) {
+  const start = card.indexOf("\n## Model parameters\n");
+  if (start < 0) throw new Error("Generated model card is missing the model-parameter table");
+  const end = card.indexOf("\n## ", start + 1);
+  const section = card.slice(start, end < 0 ? card.length : end);
+  for (const name of Object.keys(fitted.parameters ?? {})) {
+    if (!section.includes(`| ${name} |`)) {
+      throw new Error(`Generated model card is missing parameter ${name}`);
+    }
+  }
+}
+
 function stageCard(ctx) {
   const fitted = JSON.parse(fs.readFileSync(path.join(ctx.packageDir, "fitted.json"), "utf8"));
   const validation = JSON.parse(fs.readFileSync(path.join(ctx.packageDir, "validation-results.json"), "utf8"));
@@ -897,11 +915,12 @@ function stageCard(ctx) {
     if (Object.hasOwn(row, "current_a")) return `| forward voltage at ${row.current_a.toExponential(3)} A | ${row.datasheet_voltage_v.toExponential(6)} | ${row.fitted_voltage_v.toExponential(6)} | V | ${(100 * row.relative_error).toFixed(3)}% | ${row.citation} |`;
     return `| ${row.quantity} | ${Number(row.datasheet_value).toExponential(6)} | ${Number(row.fitted_value).toExponential(6)} | ${row.unit} | ${(100 * row.relative_error).toFixed(3)}% | ${row.citation} |`;
   }).join("\n");
-  const parameterRows = Object.entries(fitted.parameters).map(([name, value]) => `| ${name} | ${Number(value).toExponential(8)} | ${fitted.parameter_metadata?.[name]?.status ?? "fitted or derived"} |`).join("\n");
+  const parameterRows = renderParameterTable(fitted);
   const heldDefaults = (fitted.held_defaults ?? []).map((item) => `| ${item.parameter} | ${Number(item.value).toExponential(8)} | ${item.unit} | ${item.reason} |`).join("\n");
   const heldDefaultsSection = heldDefaults ? `\n## Held defaults\n\n| Parameter | Value | Unit | Status |\n| --- | ---: | --- | --- |\n${heldDefaults}\n` : "";
   const omissions = ctx.part.component.omissions.map((item) => `- ${item}`).join("\n");
   const card = `# ${ctx.part.identity.canonical_mpn} model card\n\n## Identity\n\n- Manufacturer: ${ctx.part.identity.manufacturer}\n- Description: ${ctx.part.identity.description}\n- Electrical family: ${ctx.part.identity.electrical_family}\n- Fidelity tier: ${ctx.part.component.fidelity_tier ?? "F2"}, datasheet-constrained\n- Independent reviewer: pending-review\n\n## Provenance\n\n- Datasheet: ${source.url}\n- Revision: ${source.revision}\n- Accessed: ${source.accessed_date}\n- Referenced pages: ${source.pages_referenced.join(", ")}\n- SHA-256: \`${source.sha256}\`\n- Basis: original model generated from public factual specifications\n- Vendor SPICE models used: none\n\n## Domain coverage\n\n| Domain | Coverage |\n| --- | --- |\n${coverageTable(ctx.part.component.domain_coverage)}\n\n## Model parameters\n\n| Parameter | Value | Status |\n| --- | ---: | --- |\n${parameterRows}\n${heldDefaultsSection}\n## Fitted versus datasheet\n\n| Quantity | Datasheet | Fitted | Unit | Relative error | Citation |\n| --- | ---: | ---: | --- | ---: | --- |\n${rows}\n\nWorst fitting error: ${(100 * fitted.worst_relative_error.value).toFixed(3)}% for ${fitted.worst_relative_error.quantity}.\n\nNative and WASM agreement: all ${validation.benches.length} benches passed. Worst reported relative delta was ${validation.worst_native_wasm_relative_delta.toExponential(3)} and worst absolute delta was ${validation.worst_native_wasm_absolute_delta.toExponential(3)}.\n\n## Known omissions\n\n${omissions}\n\n## Licence\n\nMIT. See \`LICENSE\`. The model is original work generated from public factual specifications and is not copied or adapted from a vendor SPICE model.\n`;
+  assertCardParameterTable(card, fitted);
   fs.writeFileSync(path.join(ctx.packageDir, "MODEL_CARD.md"), card);
   run("node", [packageValidator, ctx.packageDir]);
   console.log(`card ${ctx.part.slug}: MODEL_CARD.md`);
