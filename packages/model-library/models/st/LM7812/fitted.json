@@ -1,0 +1,161 @@
+{
+  "schema_version": "1.0.0",
+  "fit_method": "F1 direct product-page endpoint transcription with disclosed held defaults; no F2 calibration claimed",
+  "temperature_c": 25,
+  "parameters": {
+    "VREF": 12,
+    "VDROP": 2.0,
+    "ILIM": 3.0,
+    "LOADREG": 0.05,
+    "DILOAD": 1.5,
+    "LINEREG": 0.0,
+    "DVLINE": 1.0,
+    "VNOM": 17,
+    "IQ": 0.005,
+    "RNEG": 1.0,
+    "EPS": 1e-08
+  },
+  "parameter_metadata": {
+    "VREF": {
+      "status": "datasheet_typical_or_derived"
+    },
+    "VDROP": {
+      "status": "held_default"
+    },
+    "ILIM": {
+      "status": "held_default"
+    },
+    "LOADREG": {
+      "status": "held_default"
+    },
+    "DILOAD": {
+      "status": "held_default"
+    },
+    "LINEREG": {
+      "status": "held_default"
+    },
+    "DVLINE": {
+      "status": "held_default"
+    },
+    "VNOM": {
+      "status": "held_default"
+    },
+    "IQ": {
+      "status": "held_default"
+    },
+    "RNEG": {
+      "status": "held_default"
+    },
+    "EPS": {
+      "status": "held_default"
+    }
+  },
+  "held_defaults": [
+    {
+      "parameter": "VDROP",
+      "value": 2.0,
+      "unit": "V",
+      "reason": "2 V F1 family default; dropout is not published on the eStore page"
+    },
+    {
+      "parameter": "ILIM",
+      "value": 3.0,
+      "unit": "A",
+      "reason": "estimated at twice the official 1.5 A output-current capability because no peak/current-limit value is published"
+    },
+    {
+      "parameter": "LOADREG",
+      "value": 0.05,
+      "unit": "V",
+      "reason": "50 mV F1 family default; load-regulation range is not published"
+    },
+    {
+      "parameter": "DILOAD",
+      "value": 1.5,
+      "unit": "A",
+      "reason": "official 1.5 A output-current boundary used only as the default span"
+    },
+    {
+      "parameter": "LINEREG",
+      "value": 0.0,
+      "unit": "V",
+      "reason": "zero F1 default because no usable line-regulation range is published"
+    },
+    {
+      "parameter": "DVLINE",
+      "value": 1.0,
+      "unit": "V",
+      "reason": "1 V normalization held default"
+    },
+    {
+      "parameter": "VNOM",
+      "value": 17,
+      "unit": "V",
+      "reason": "bench bias held default; no electrical test bias is published"
+    },
+    {
+      "parameter": "IQ",
+      "value": 0.005,
+      "unit": "A",
+      "reason": "5 mA F1 family default; quiescent current is not published"
+    },
+    {
+      "parameter": "RNEG",
+      "value": 1.0,
+      "unit": "ohm",
+      "reason": "F1 held default because the eStore page omits the required detailed condition"
+    },
+    {
+      "parameter": "EPS",
+      "value": 1e-08,
+      "unit": "V^2",
+      "reason": "F1 held default because the eStore page omits the required detailed condition"
+    },
+    {
+      "parameter": "RNEG",
+      "value": 1,
+      "unit": "ohm",
+      "reason": "archetype fixed constant"
+    },
+    {
+      "parameter": "EPS",
+      "value": 1e-08,
+      "unit": "V^2",
+      "reason": "archetype fixed smoothing constant"
+    },
+    {
+      "parameter": "RSER",
+      "value": 10000000.0,
+      "unit": "ohm",
+      "reason": "archetype fixed output shunt"
+    },
+    {
+      "parameter": "RER",
+      "value": 1000000.0,
+      "unit": "ohm",
+      "reason": "archetype fixed error-node shunt"
+    }
+  ],
+  "residuals": [
+    {
+      "quantity": "nominal/reference endpoint",
+      "datasheet_value": 12,
+      "fitted_value": 11.999674123671317,
+      "unit": "V",
+      "relative_error": 2.715636072355328e-05,
+      "citation": "Official ST eStore active product heading and Key features"
+    },
+    {
+      "quantity": "output at 1.5 A boundary",
+      "datasheet_value": 12,
+      "fitted_value": 11.945069377155702,
+      "unit": "V",
+      "relative_error": 0.004577551903691468,
+      "citation": "Official ST eStore Key features output-current capability"
+    }
+  ],
+  "worst_relative_error": {
+    "value": 0.004577551903691468,
+    "quantity": "output at 1.5 A boundary"
+  }
+}

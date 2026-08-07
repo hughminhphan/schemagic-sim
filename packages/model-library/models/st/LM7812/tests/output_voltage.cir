@@ -1,0 +1,27 @@
+* LM7812 nominal output from official ST eStore member listing
+* OpenCircuit Model Factory v0.1.0
+* Original work generated from public factual specifications.
+* LM7812 (STMicroelectronics), official ST eStore fallback, generated 2026-08-07
+* Archetype: archetype-vreg.md, variant FIXED. Manual staged run: R1R-regulators-2026-08-07
+* Node order: IN OUT GND
+.subckt OC_ST_LM7812 IN OUT GND
++ PARAMS: VREF=12 VDROP=2.0 ILIM=3.0 LOADREG=0.05 DILOAD=1.5
++ LINEREG=0.0 DVLINE=1.0 VNOM=17 IQ=0.005 RNEG=1 EPS=1e-8
+BTGT tgt GND V = VREF + (LINEREG/DVLINE)*(v(IN,GND)-VNOM)
+BHDR hdr GND V = v(IN,GND) - VDROP
+BSEL sel GND V = 0.5*(v(tgt)+v(hdr)) - 0.5*sqrt((v(tgt)-v(hdr))*(v(tgt)-v(hdr))+EPS)
+BERR er GND V = 0.5*((v(sel)-v(OUT,GND)) + sqrt((v(sel)-v(OUT,GND))*(v(sel)-v(OUT,GND))+EPS))
+RER er GND 1meg
+BPASS IN OUT I = ILIM*tanh({DILOAD/LOADREG}/ILIM*v(er))
+RSER OUT GND 1e7
+DNEG GND OUT DCLAMP_ST_LM7812
+IQD IN GND DC {IQ}
+.model DCLAMP_ST_LM7812 D(IS=1e-12 N=1 RS={RNEG})
+.ends OC_ST_LM7812
+.temp 25
+VIN in 0 17
+X1 in out 0 OC_ST_LM7812
+ILOAD out 0 0.01
+.save v(out) v(in)
+.op
+.end

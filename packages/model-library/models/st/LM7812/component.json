@@ -1,0 +1,142 @@
+{
+  "schema_version": "1.0.0",
+  "canonical_mpn": "LM7812",
+  "manufacturer": "STMicroelectronics",
+  "description": "12 V positive linear voltage regulator",
+  "electrical_family": "vreg_linear",
+  "symbol_pins": [
+    {
+      "name": "IN",
+      "number": "1",
+      "role": "input"
+    },
+    {
+      "name": "GND",
+      "number": "2",
+      "role": "ground"
+    },
+    {
+      "name": "OUT",
+      "number": "3",
+      "role": "output"
+    }
+  ],
+  "spice_pin_mapping": [
+    {
+      "symbol_pin_number": "1",
+      "subckt_node": "in",
+      "order": 1
+    },
+    {
+      "symbol_pin_number": "3",
+      "subckt_node": "out",
+      "order": 2
+    },
+    {
+      "symbol_pin_number": "2",
+      "subckt_node": "gnd",
+      "order": 3
+    }
+  ],
+  "package_variants": [
+    {
+      "name": "TO-220",
+      "standard": "ST TO-220 eStore package listing",
+      "pin_count": 3,
+      "pin_map": [
+        {
+          "package_pin": "1",
+          "symbol_pin_number": "1"
+        },
+        {
+          "package_pin": "2",
+          "symbol_pin_number": "2"
+        },
+        {
+          "package_pin": "3",
+          "symbol_pin_number": "3"
+        }
+      ]
+    }
+  ],
+  "ordering_code_aliases": [
+    "L7812CV"
+  ],
+  "datasheet": {
+    "url": "https://estore.st.com/en/l7812cv-cpn.html",
+    "revision": "Live ST eStore product page snapshot, accessed 2026-08-07"
+  },
+  "model_type": "subckt",
+  "fidelity_tier": "F1",
+  "domain_coverage": {
+    "dc": "approx",
+    "ac": "none",
+    "transient": "approx",
+    "noise": "none",
+    "thermal": "none",
+    "digital": "none"
+  },
+  "supported_analyses": [
+    "operating_point",
+    "dc_sweep",
+    "transient"
+  ],
+  "supported_operating_region": {
+    "summary": "F1 product-page-based approximation at 25 degC, up to the official 1.5 A output-current boundary. Input bias, dropout and regulation parameters are disclosed held defaults.",
+    "numeric_bounds": [
+      {
+        "quantity": "output_current",
+        "minimum": 0,
+        "maximum": 1.5,
+        "unit": "A",
+        "conditions": "Official eStore key feature; model boundary bench at 25 degC",
+        "placeholder": false
+      },
+      {
+        "quantity": "ambient_temperature",
+        "minimum": 25,
+        "maximum": 25,
+        "unit": "degC",
+        "conditions": "F1 model reference temperature; no temperature coefficients",
+        "placeholder": false
+      }
+    ]
+  },
+  "known_omissions": [
+    "Thermal shutdown is not modelled. The regulator does not shut down or fold back when it overheats; it will dissipate arbitrary power indefinitely.",
+    "Safe-operating-area foldback is not modelled. The current limit is a constant, whereas a real regulator reduces it at high input-to-output differential.",
+    "No self-heating and no temperature coefficients. Output voltage drift, dropout increase, and quiescent-current change with temperature are not modelled.",
+    "Reverse current from OUT to IN is not modelled beyond a protective clamp. Discharging the output through the regulator does not reproduce the real part behavior.",
+    "AC behaviour is not modelled: there is no control-loop pole, no output impedance versus frequency, and no ripple rejection. PSRR and transient load-step response are absent.",
+    "Loop stability is not modelled. This model regulates with any output capacitor or none.",
+    "Start-up behaviour, soft-start and inrush are not modelled.",
+    "Noise is not modelled.",
+    "Output or reference voltage is set to the official product-page nominal endpoint; a real part has production spread.",
+    "The official ST datasheet PDF and main product pages were unreachable after repeated attempts. Provenance falls back to the official ST eStore specification page, so fidelity is capped at F1.",
+    "The eStore page does not publish dropout, quiescent or adjustment current, peak current limit, or line/load regulation measurement ranges. Those parameters are held defaults and are not claimed as fitted facts.",
+    "RNEG = 1 ohm, EPS = 1e-8 V^2, RSER = 1e7 ohm, and RER = 1 megohm are held archetype constants."
+  ],
+  "licence": {
+    "spdx_id": "MIT",
+    "provenance_basis": "original_from_facts"
+  },
+  "generator": {
+    "tool_or_agent": "opencircuit-model-factory-v0.1.0 manual vreg archetype lane",
+    "date": "2026-08-07"
+  },
+  "reviewer": {
+    "tool_or_agent": "pending-review",
+    "date": "2026-08-07"
+  },
+  "test_results": {
+    "status": "complete",
+    "pass_count": 3,
+    "fail_count": 0,
+    "total_count": 3,
+    "worst_observed_relative_fitting_error": {
+      "value": 0.004577551903691468,
+      "quantity": "output at 1.5 A boundary"
+    }
+  },
+  "validation_date": "2026-08-07"
+}
