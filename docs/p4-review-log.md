@@ -135,3 +135,22 @@ Independent in-region operating-point probes outside the authored benches were n
 The official onsemi MMBT3904 PDF was fetched once for the batch. Its SHA-256 reproduced exactly as `8c3a7966cfbd09066d906c4e0e3dfedb7e13abb9dc2cb34c600d1f05736bbdb4`. Page 2 confirms fT = 300 MHz minimum at IC = 10 mA, VCE = 20 V, f = 100 MHz, and Cobo = 4.0 pF maximum at VCB = 5 V, IE = 0, f = 1 MHz. Every batch source record contains URL, revision, SHA-256, access date, and page references. No PDF or vendor `.sp`, `.lib`, or `.mod` file is embedded in any reviewed package.
 
 Only SS8050 was stamped with the batch reviewer identity and date. Its now-false pending-review omission was removed. The other five reviewer fields remain `pending-review`. No model, test, fact, source, fitted evidence, or stored validation result was edited.
+
+## 2026-08-07: batch H1R-74hc
+
+Reviewer: `luna independent reviewer (batch H1R-74hc)`
+
+All six packages pass independent review. `validate-package.mjs` passed before stamping and passed again after reviewer fields were updated. Two selected benches per part passed native ngspice-46 versus WASM comparison, and all selected stored values reproduced from fresh native runs. The selected benches were `truth_table.cir` plus `propagation_delay_50p.cir` for 74HC02, 74HC04, 74HC08, 74HC32, and 74HC86; 74HC14 used `hysteresis.cir` plus `propagation_delay_50p.cir`.
+
+| MPN | Verdict | Reproduced native values | Independent in-region probe |
+| --- | --- | --- | --- |
+| 74HC02 | PASS | Truth outputs 4.499322852307037, 0.00033856110860767925, 0.0003385611086080535, 2.547575000957826e-8 V; 50 pF delays 8.57254e-9 and 8.64227e-9 s, extrema 4.5 and 0.000338561 V | VCC = 3.3 V, inputs = 1.234 V and 0.789 V, output = 3.002797814242983 V |
+| 74HC04 | PASS | Truth outputs 4.499649613789984 and 0.00035038621001476323 V; 50 pF delays 8.57355e-9 and 8.6415e-9 s, extrema 4.49965 and 0.000350386 V | VCC = 3.3 V, input = 1.234 V, output = 3.0217792409108566 V |
+| 74HC08 | PASS | Truth outputs 2.5475750023706115e-8, 0.0003385611086071796, 0.0003385611086071796, 4.499322852307035 V; 50 pF delays 8.57273e-9 and 8.6421e-9 s, extrema 4.49932 and 0.000338561 V | VCC = 3.3 V, inputs = 1.234 V and 0.789 V, output = 0.0019327656193751268 V |
+| 74HC14 | PASS | Hysteresis 2.32384, 1.45616, 0.867674 V; 50 pF delays 1.30831e-8 and 1.40703e-8 s, extrema 4.5 and 8.95445e-10 V | VCC = 3.3 V, input = 1.234 V, output = 0.029804866147701375 V |
+| 74HC32 | PASS | Truth outputs 0.0006771476929643828, 4.499661438891392, 4.499661438891392, 4.49999997452425 V; 50 pF delays 7.56292e-9 and 7.64957e-9 s, extrema 4.49966 and 0.000677148 V | VCC = 3.3 V, inputs = 1.234 V and 0.789 V, output = 0.2972021857570167 V |
+| 74HC86 | PASS | Truth outputs 0.000677251366143872, 4.499322748633856, 4.499322748633856, 0.0006772513661450376 V; 50 pF delays 1.25621e-8 and 1.25856e-8 s, extrema 4.49932 and 0.000677251 V | VCC = 3.3 V, inputs = 1.234 V and 0.789 V, output = 0.29528331577916334 V |
+
+The official Nexperia 74HC02 PDF was fetched once. Its SHA-256 reproduced as `2773ea732403ff2a427153b8a0980ab6c6d8091df1ad8825a8b9711c1cf6b559`. Page 4 confirms the 4.5 V static VOH minimum of 4.4 V at -20 uA, and page 5 confirms typical propagation delay of 7 ns at 5 V and 15 pF and 9 ns at 4.5 V and 50 pF. Every source record has URL, revision, SHA-256, access date, and page references. No PDF or vendor SPICE source file is embedded in the reviewed packages.
+
+The F2 labels on 74HC04, 74HC08, and 74HC14 have datasheet-cited expectations at the archetype thresholds. 74HC14 additionally cites VT+, VT-, and hysteresis typicals and ranges on page 7. All reviewer fields were stamped. No model, test, fact, source, fitted evidence, or stored validation result was edited.
