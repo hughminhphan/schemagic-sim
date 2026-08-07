@@ -1,0 +1,76 @@
+{
+  "schema_version": "1.0.0",
+  "extraction_method": "official manufacturer HTML specification table and product text; local HTML snapshot hashed; no vendor SPICE model used",
+  "fit_conditions": {
+    "temperature": {
+      "value": 25,
+      "unit": "degC",
+      "conditions": "F1 model reference temperature; eStore page publishes product operating range but no electrical test bias",
+      "page_reference": "Parameters and Key features",
+      "source_kind": "held_reference_condition",
+      "column_semantics": "not a published electrical-characteristics condition"
+    }
+  },
+  "parameters": {
+    "output_voltage_range_minimum": {
+      "value": -37,
+      "unit": "V",
+      "conditions": "official adjustable output range endpoint",
+      "page_reference": "Description and Key features",
+      "source_kind": "minimum",
+      "column_semantics": "published range endpoint"
+    },
+    "output_voltage_range_maximum": {
+      "value": -1.2,
+      "unit": "V",
+      "conditions": "official adjustable output range endpoint",
+      "page_reference": "Description and Key features",
+      "source_kind": "maximum",
+      "column_semantics": "published range endpoint"
+    },
+    "output_current": {
+      "value": 1.5,
+      "unit": "A",
+      "conditions": "LM337 page: guaranteed; LM317 page: in excess of 1.5 A",
+      "page_reference": "Key features",
+      "source_kind": "minimum_capability",
+      "column_semantics": "published output-current capability"
+    },
+    "operating_temperature_min": {
+      "value": 0,
+      "unit": "degC",
+      "conditions": "active product parameter",
+      "page_reference": "Parameters",
+      "source_kind": "minimum",
+      "column_semantics": "published parameter"
+    },
+    "operating_temperature_max": {
+      "value": 125,
+      "unit": "degC",
+      "conditions": "active product parameter",
+      "page_reference": "Parameters",
+      "source_kind": "maximum",
+      "column_semantics": "published parameter"
+    }
+  },
+  "identity": {
+    "canonical_mpn": "LM337",
+    "manufacturer": "STMicroelectronics",
+    "aliases": [
+      "LM337SP"
+    ]
+  },
+  "source": {
+    "kind": "spec_page",
+    "url": "https://estore.st.com/en/lm337sp-cpn.html",
+    "revision": "Live ST eStore product page snapshot, accessed 2026-08-07",
+    "sha256": "f92e16765ce8ecee605e4376fc02c618ff700cdc9082550ba50665c34b31c1b7",
+    "accessed_date": "2026-08-07",
+    "pages_referenced": [
+      "Parameters",
+      "Description",
+      "Key features"
+    ],
+    "placeholder": false
+  }
+}

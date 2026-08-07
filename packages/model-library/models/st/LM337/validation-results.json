@@ -1,0 +1,54 @@
+{
+  "schema_version": "1.0.0",
+  "validation_date": "2026-08-07",
+  "native_wasm_all_pass": true,
+  "expectations_all_pass": true,
+  "expectation_pass_count": 3,
+  "expectation_fail_count": 0,
+  "worst_native_wasm_relative_delta": 1.8709256281140386e-16,
+  "worst_native_wasm_absolute_delta": 2.220446049250313e-16,
+  "benches": [
+    {
+      "test_netlist": "reference_voltage.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "reference_endpoint",
+          "pass": true,
+          "value": -1.1999512354265305,
+          "error": 4.876457346947305e-05,
+          "allowed": 0.08
+        }
+      ]
+    },
+    {
+      "test_netlist": "output_current_boundary.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "output_at_1p5a_boundary",
+          "pass": true,
+          "value": -1.186816843964345,
+          "error": 0.013183156035655008,
+          "allowed": 0.15
+        }
+      ]
+    },
+    {
+      "test_netlist": "overload.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "overload_output_physical",
+          "pass": true,
+          "value": 5.256466955089389,
+          "minimum": -1.2,
+          "maximum": 10
+        }
+      ]
+    }
+  ]
+}

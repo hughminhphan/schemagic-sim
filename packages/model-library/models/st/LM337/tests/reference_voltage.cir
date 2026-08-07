@@ -1,0 +1,28 @@
+* LM337 reference endpoint from official ST eStore output range
+* OpenCircuit Model Factory v0.1.0
+* Original work generated from public factual specifications.
+* LM337 (STMicroelectronics), official ST eStore fallback, generated 2026-08-07
+* Archetype: archetype-vreg.md, variant ADJ negative mirrored sign. Manual staged run: R1R-regulators-2026-08-07
+* Node order: IN OUT ADJ
+.subckt OC_ST_LM337 IN OUT ADJ
++ PARAMS: VREF=-1.2 VDROP=3.0 ILIM=3.0 LOADREG=0.012 DILOAD=1.5
++ IADJ=-5e-05 RNEG=1 EPS=1e-8
+BTGT tgt ADJ V = VREF
+BHDR hdr ADJ V = v(IN,ADJ) + VDROP
+BSEL sel ADJ V = 0.5*(v(tgt,ADJ)+v(hdr,ADJ)) + 0.5*sqrt((v(tgt,ADJ)-v(hdr,ADJ))*(v(tgt,ADJ)-v(hdr,ADJ))+EPS)
+BERR er ADJ V = 0.5*((v(OUT,ADJ)-v(sel,ADJ)) + sqrt((v(OUT,ADJ)-v(sel,ADJ))*(v(OUT,ADJ)-v(sel,ADJ))+EPS))
+RER er ADJ 1meg
+BPASS OUT IN I = ILIM*tanh({DILOAD/LOADREG}/ILIM*v(er,ADJ))
+RSER OUT ADJ 1e7
+DNEG OUT ADJ DCLAMP_ST_LM337
+IADJD IN ADJ DC {IADJ}
+.model DCLAMP_ST_LM337 D(IS=1e-12 N=1 RS={RNEG})
+.ends OC_ST_LM337
+.temp 25
+VIN in 0 -10
+VADJ adj 0 0
+X1 in out adj OC_ST_LM337
+ILOAD 0 out 0.01
+.save v(out) v(in)
+.op
+.end

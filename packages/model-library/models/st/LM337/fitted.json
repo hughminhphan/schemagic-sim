@@ -1,0 +1,131 @@
+{
+  "schema_version": "1.0.0",
+  "fit_method": "F1 direct product-page endpoint transcription with disclosed held defaults; no F2 calibration claimed",
+  "temperature_c": 25,
+  "parameters": {
+    "VREF": -1.2,
+    "VDROP": 3.0,
+    "ILIM": 3.0,
+    "LOADREG": 0.012,
+    "DILOAD": 1.5,
+    "IADJ": -5e-05,
+    "RNEG": 1.0,
+    "EPS": 1e-08
+  },
+  "parameter_metadata": {
+    "VREF": {
+      "status": "datasheet_typical_or_derived"
+    },
+    "VDROP": {
+      "status": "held_default"
+    },
+    "ILIM": {
+      "status": "held_default"
+    },
+    "LOADREG": {
+      "status": "held_default"
+    },
+    "DILOAD": {
+      "status": "held_default"
+    },
+    "IADJ": {
+      "status": "held_default"
+    },
+    "RNEG": {
+      "status": "held_default"
+    },
+    "EPS": {
+      "status": "held_default"
+    }
+  },
+  "held_defaults": [
+    {
+      "parameter": "VDROP",
+      "value": 3.0,
+      "unit": "V",
+      "reason": "3 V F1 family default; dropout is not published on the eStore page"
+    },
+    {
+      "parameter": "ILIM",
+      "value": 3.0,
+      "unit": "A",
+      "reason": "estimated at twice 1.5 A because no peak/current-limit value is published"
+    },
+    {
+      "parameter": "LOADREG",
+      "value": 0.012,
+      "unit": "V",
+      "reason": "12 mV F1 held default; product page regulation percentage lacks the required current range"
+    },
+    {
+      "parameter": "DILOAD",
+      "value": 1.5,
+      "unit": "A",
+      "reason": "official 1.5 A output-current capability used as default span"
+    },
+    {
+      "parameter": "IADJ",
+      "value": -5e-05,
+      "unit": "A",
+      "reason": "50 uA magnitude F1 family default; adjustment current is not published"
+    },
+    {
+      "parameter": "RNEG",
+      "value": 1.0,
+      "unit": "ohm",
+      "reason": "F1 held default because the eStore page omits the required detailed condition"
+    },
+    {
+      "parameter": "EPS",
+      "value": 1e-08,
+      "unit": "V^2",
+      "reason": "F1 held default because the eStore page omits the required detailed condition"
+    },
+    {
+      "parameter": "RNEG",
+      "value": 1,
+      "unit": "ohm",
+      "reason": "archetype fixed constant"
+    },
+    {
+      "parameter": "EPS",
+      "value": 1e-08,
+      "unit": "V^2",
+      "reason": "archetype fixed smoothing constant"
+    },
+    {
+      "parameter": "RSER",
+      "value": 10000000.0,
+      "unit": "ohm",
+      "reason": "archetype fixed output shunt"
+    },
+    {
+      "parameter": "RER",
+      "value": 1000000.0,
+      "unit": "ohm",
+      "reason": "archetype fixed error-node shunt"
+    }
+  ],
+  "residuals": [
+    {
+      "quantity": "nominal/reference endpoint",
+      "datasheet_value": -1.2,
+      "fitted_value": -1.1999512354265305,
+      "unit": "V",
+      "relative_error": 4.063714455789421e-05,
+      "citation": "Official ST eStore active product heading and Key features"
+    },
+    {
+      "quantity": "output at 1.5 A boundary",
+      "datasheet_value": -1.2,
+      "fitted_value": -1.186816843964345,
+      "unit": "V",
+      "relative_error": 0.010985963363045841,
+      "citation": "Official ST eStore Key features output-current capability"
+    }
+  ],
+  "worst_relative_error": {
+    "value": 0.010985963363045841,
+    "quantity": "output at 1.5 A boundary"
+  }
+}
