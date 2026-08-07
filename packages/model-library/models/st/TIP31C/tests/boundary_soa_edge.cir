@@ -1,0 +1,15 @@
+TIP31C conservative SOA and voltage boundary
+* OpenCircuit Model Factory v0.1.0
+* Original work generated from public factual specifications.
+* This model is not a copy of, or adaptation from, any vendor SPICE model.
+* Source: https://www.st.com/en/power-transistors/tip31c.html
+* Revision: Rev. 1, April 2006
+* F1 table-constrained power BJT; TNOM=27, benches set .temp 25
+* Node order: collector base emitter
+.model OC_ST_TIP31C NPN(IS=2.0000000000e-12 NF=1.0000000000e+00 BF=8.5000000000e+01 IKF=1.2000000000e+00 ISE=2.0000000000e-10 NE=1.5000000000e+00 VAF=6.0000000000e+01 BR=2.0000000000e+00 RB=1.0000000000e+00 RE=2.0000000000e-02 RC=6.0000000000e-02 CJE=1.0000000000e-09 VJE=7.5000000000e-01 MJE=3.3000000000e-01 CJC=3.0000000000e-10 VJC=7.5000000000e-01 MJC=3.3000000000e-01 XCJC=1.0000000000e+00 TF=5.0000000000e-08 TR=5.0000000000e-07 FC=0.5 EG=1.11 XTI=3 TNOM=27)
+.temp 25
+VCE c 0 DC 40
+IB 0 b DC 0.002
+Q1 c b 0 OC_ST_TIP31C
+.op
+.end

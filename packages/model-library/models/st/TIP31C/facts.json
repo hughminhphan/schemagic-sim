@@ -1,0 +1,141 @@
+{
+  "schema_version": "1.0.0",
+  "extraction_method": "official ST specification content fallback; MIN/MAX semantics preserved",
+  "fit_conditions": {
+    "temperature": {
+      "value": 25,
+      "unit": "degC",
+      "conditions": "TC = 25 degC unless stated",
+      "page_reference": "official spec table",
+      "source_kind": "typical"
+    }
+  },
+  "gain_points": [
+    {
+      "collector_current": {
+        "value": 1,
+        "unit": "A",
+        "conditions": "VCE = 4 V, TC = 25 degC",
+        "page_reference": "official spec table",
+        "source_kind": "typical"
+      },
+      "vce": {
+        "value": 4,
+        "unit": "V",
+        "conditions": "IC = 1 A",
+        "page_reference": "official spec table",
+        "source_kind": "typical"
+      },
+      "hfe": {
+        "value": 25,
+        "unit": "1",
+        "conditions": "IC = 1 A, VCE = 4 V",
+        "page_reference": "official spec table MIN column",
+        "source_kind": "minimum"
+      }
+    },
+    {
+      "collector_current": {
+        "value": 3,
+        "unit": "A",
+        "conditions": "VCE = 4 V, TC = 25 degC",
+        "page_reference": "official spec table",
+        "source_kind": "typical"
+      },
+      "vce": {
+        "value": 4,
+        "unit": "V",
+        "conditions": "IC = 3 A",
+        "page_reference": "official spec table",
+        "source_kind": "typical"
+      },
+      "hfe": {
+        "value": 10,
+        "unit": "1",
+        "conditions": "IC = 3 A, VCE = 4 V",
+        "page_reference": "official spec table MIN column",
+        "source_kind": "minimum"
+      },
+      "vbe": {
+        "value": 1.8,
+        "unit": "V",
+        "conditions": "IC = 3 A, VCE = 4 V",
+        "page_reference": "official spec table MAX column",
+        "source_kind": "maximum"
+      }
+    }
+  ],
+  "saturation_points": [
+    {
+      "collector_current": {
+        "value": 3,
+        "unit": "A",
+        "conditions": "IB = 0.375 A",
+        "page_reference": "official spec table",
+        "source_kind": "typical"
+      },
+      "base_current": {
+        "value": 0.375,
+        "unit": "A",
+        "conditions": "IC = 3 A",
+        "page_reference": "official spec table",
+        "source_kind": "typical"
+      },
+      "vce_sat": {
+        "value": 1.2,
+        "unit": "V",
+        "conditions": "IC = 3 A, IB = 0.375 A",
+        "page_reference": "official spec table MAX column",
+        "source_kind": "maximum"
+      },
+      "vbe_sat": {
+        "value": 1.8,
+        "unit": "V",
+        "conditions": "conservative terminal bound from VBE(on) maximum",
+        "page_reference": "official spec table MAX column",
+        "source_kind": "maximum"
+      }
+    }
+  ],
+  "electrical_limits": {
+    "vceo": {
+      "value": 100,
+      "unit": "V",
+      "conditions": "IB = 0",
+      "page_reference": "official spec table",
+      "source_kind": "minimum"
+    },
+    "collector_current": {
+      "value": 3,
+      "unit": "A",
+      "conditions": "continuous",
+      "page_reference": "official spec table",
+      "source_kind": "maximum"
+    },
+    "power_dissipation": {
+      "value": 40,
+      "unit": "W",
+      "conditions": "TC = 25 degC",
+      "page_reference": "official spec table",
+      "source_kind": "maximum"
+    }
+  },
+  "identity": {
+    "canonical_mpn": "TIP31C",
+    "manufacturer": "STMicroelectronics",
+    "aliases": []
+  },
+  "source": {
+    "kind": "spec_page",
+    "url": "https://www.st.com/en/power-transistors/tip31c.html",
+    "revision": "Rev. 1, April 2006; official ST product/specification page fallback",
+    "sha256": "ccda9c837d4997baf57faa7ced2a159567a35d0950053e48d20ff0eeadaf81de",
+    "accessed_date": "2026-08-07",
+    "pages_referenced": [
+      "official spec table",
+      "safe operating area figure"
+    ],
+    "placeholder": false,
+    "note": "Direct ST PDF and HTML fetches timed out after browser-header retries. Official ST specification content was retained through the text extraction fallback; fidelity is capped at F1."
+  }
+}
