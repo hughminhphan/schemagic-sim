@@ -1,0 +1,136 @@
+{
+  "schema_version": "1.0.0",
+  "canonical_mpn": "MMBT3906",
+  "manufacturer": "onsemi",
+  "description": "General-purpose PNP silicon transistor",
+  "electrical_family": "bjt_pnp",
+  "symbol_pins": [
+    {
+      "name": "C",
+      "number": "1",
+      "role": "collector"
+    },
+    {
+      "name": "B",
+      "number": "2",
+      "role": "base"
+    },
+    {
+      "name": "E",
+      "number": "3",
+      "role": "emitter"
+    }
+  ],
+  "spice_pin_mapping": [
+    {
+      "symbol_pin_number": "1",
+      "subckt_node": "collector",
+      "order": 1
+    },
+    {
+      "symbol_pin_number": "2",
+      "subckt_node": "base",
+      "order": 2
+    },
+    {
+      "symbol_pin_number": "3",
+      "subckt_node": "emitter",
+      "order": 3
+    }
+  ],
+  "package_variants": [
+    {
+      "name": "SOT-23",
+      "standard": "TO-236AB",
+      "pin_count": 3,
+      "pin_map": [
+        {
+          "package_pin": "1",
+          "symbol_pin_number": "1"
+        },
+        {
+          "package_pin": "2",
+          "symbol_pin_number": "2"
+        },
+        {
+          "package_pin": "3",
+          "symbol_pin_number": "3"
+        }
+      ]
+    }
+  ],
+  "ordering_code_aliases": [],
+  "datasheet": {
+    "url": "https://www.onsemi.com/pdf/datasheet/mmbt3906lt1-d.pdf",
+    "revision": "October 2024 Rev. 14"
+  },
+  "model_type": "dot_model",
+  "fidelity_tier": "F1",
+  "domain_coverage": {
+    "dc": "fitted",
+    "ac": "fitted",
+    "transient": "approx",
+    "noise": "none",
+    "thermal": "none",
+    "digital": "none"
+  },
+  "supported_analyses": [
+    "operating_point",
+    "dc_sweep",
+    "ac_small_signal",
+    "transient"
+  ],
+  "supported_operating_region": {
+    "summary": "F1 magnitude model based on onsemi guaranteed PNP table anchors at 25 degC; signs are preserved in the final card.",
+    "numeric_bounds": [
+      {
+        "quantity": "collector_current_magnitude",
+        "minimum": 0.0001,
+        "maximum": 0.1,
+        "unit": "A",
+        "conditions": "Datasheet hFE table range at 25 degC",
+        "placeholder": false
+      },
+      {
+        "quantity": "collector_emitter_voltage_magnitude",
+        "minimum": 0,
+        "maximum": 40,
+        "unit": "V",
+        "conditions": "Rated VCEO magnitude",
+        "placeholder": false
+      }
+    ]
+  },
+  "known_omissions": [
+    "No self-heating: junction temperature is fixed at TNOM.",
+    "Absolute maximum ratings are metadata only; PNP signs are preserved but breakdown is not modelled.",
+    "Package parasitics are not modelled.",
+    "Guaranteed MIN/MAX rows are retained as source semantics; no complete typical multi-point curve was used.",
+    "Reverse operation, base-resistance modulation, transit-time bias dependence, temperature coefficients, flicker noise, and hFE spread are not modelled.",
+    "Reviewer remains pending-review.",
+    "Fidelity is capped at F1: the source provides guaranteed bounds rather than a complete typical multi-point PNP characterization."
+  ],
+  "licence": {
+    "spdx_id": "MIT",
+    "provenance_basis": "original_from_facts"
+  },
+  "generator": {
+    "tool_or_agent": "opencircuit-model-factory-v0.1.0",
+    "date": "2026-08-06"
+  },
+  "reviewer": {
+    "tool_or_agent": "pending-review",
+    "date": "2026-08-06"
+  },
+  "test_results": {
+    "status": "complete",
+    "pass_count": 11,
+    "fail_count": 0,
+    "total_count": 11,
+    "worst_observed_relative_fitting_error": {
+      "value": 2.3584335941267685,
+      "quantity": "VBE(sat) at IC=0.05 A"
+    }
+  },
+  "validation_date": "2026-08-07"
+}
