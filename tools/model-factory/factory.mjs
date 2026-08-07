@@ -185,12 +185,42 @@ function formatSpice(value) {
   return Number(value).toExponential(10).replace("e+", "e");
 }
 
+function emittedParameterValues(model) {
+  const values = new Map();
+  for (const match of model.matchAll(/\b([A-Z][A-Z0-9_]*)\s*=\s*([^\s(){}]+)/g)) {
+    const value = Number(match[2]);
+    if (Number.isFinite(value)) values.set(match[1], value);
+  }
+  return values;
+}
+
+export function assertEmittedParametersMatchFitted(model, fitted) {
+  const emitted = emittedParameterValues(model);
+  const mismatches = [];
+  for (const [name, expected] of Object.entries(fitted.parameters ?? {})) {
+    if (!Number.isFinite(Number(expected))) continue;
+    if (!emitted.has(name)) {
+      mismatches.push(`${name}: missing from emitted model`);
+      continue;
+    }
+    const actual = emitted.get(name);
+    const scale = Math.max(1, Math.abs(Number(expected)));
+    if (Math.abs(actual - Number(expected)) > 5e-10 * scale) {
+      mismatches.push(`${name}: emitted ${actual}, fitted ${expected}`);
+    }
+  }
+  if (mismatches.length) {
+    throw new Error(`Generated model parameters disagree with fitted.json:\n${mismatches.join("\n")}`);
+  }
+}
+
 function modelText(ctx, fitted) {
   const p = fitted.parameters;
   const header = `* OpenCircuit Model Factory v0.1.0\n* Original work generated from public factual specifications.\n* This model is not a copy of, or adaptation from, any vendor SPICE model.\n* Source: ${ctx.part.source.url}\n* Revision: ${ctx.part.source.revision}\n`;
   if (ctx.part.pipeline === "bjt") {
     const names = ["IS", "NF", "BF", "IKF", "ISE", "NE", "VAF", "BR", "RB", "RE", "RC", "CJE", "VJE", "MJE", "CJC", "VJC", "MJC", "XCJC", "TF", "TR"];
-    return `${header}* Fit: native ngspice-46 in scipy.optimize.least_squares, diff_step=1e-4\n.model ${ctx.part.component.modelName} NPN(${names.map((name) => `${name}=${formatSpice(p[name])}`).join(" ")} FC=0.5 EG=1.11 XTI=3 TNOM=27)\n`;
+    const polarity = ctx.part.identity.electrical_family === "bjt_pnp" ? "PNP" : "NPN";
+    return `${header}* Fit: native ngspice-46 in scipy.optimize.least_squares, diff_step=1e-4\n.model ${ctx.part.component.modelName} ${polarity}(${names.map((name) => `${name}=${formatSpice(p[name])}`).join(" ")} FC=0.5 EG=1.11 XTI=3 TNOM=27)\n`;
   }
   if (ctx.part.pipeline === "vdmos") {
     const names = ["VTO", "KP", "THETA", "LAMBDA", "RD", "RS", "RG", "CGS", "CGDMAX", "CGDMIN", "A", "CJO", "IS", "N", "RB", "TT", "BV", "IBV", "RTHJC", "RTHCA"];
@@ -263,7 +293,9 @@ function stageGenerate(ctx) {
   const fittedPath = path.join(ctx.packageDir, "fitted.json");
   requireFile(fittedPath, "generate");
   const fitted = JSON.parse(fs.readFileSync(fittedPath, "utf8"));
-  fs.writeFileSync(path.join(ctx.packageDir, "model.cir"), modelText(ctx, fitted));
+  const model = modelText(ctx, fitted);
+  assertEmittedParametersMatchFitted(model, fitted);
+  fs.writeFileSync(path.join(ctx.packageDir, "model.cir"), model);
   writeJson(path.join(ctx.packageDir, "component.json"), baseComponent(ctx, fitted));
   console.log(`generate ${ctx.part.slug}: ${ctx.part.component.modelName}`);
 }
@@ -775,7 +807,9 @@ async function main() {
   }
 }
 
-main().catch((error) => {
-  console.error(`ERROR: ${error.message}`);
-  process.exitCode = 1;
-});
+if (path.resolve(process.argv[1] ?? "") === fileURLToPath(import.meta.url)) {
+  main().catch((error) => {
+    console.error(`ERROR: ${error.message}`);
+    process.exitCode = 1;
+  });
+}

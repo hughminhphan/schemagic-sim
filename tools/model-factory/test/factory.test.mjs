@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { assertEmittedParametersMatchFitted } from "../factory.mjs";
 import { PARTS, getPart } from "../lib/parts.mjs";
 
 function assertQuantityReferences(value) {
@@ -39,4 +40,18 @@ test("registry contains only datasheet PDF acquisition URLs", () => {
     assert.match(url.pathname, /\.pdf$/i);
     assert.doesNotMatch(url.pathname, /\.(lib|cir)$/i);
   }
+});
+
+test("generate postcondition accepts emitted fitted parameters", () => {
+  assert.doesNotThrow(() => assertEmittedParametersMatchFitted(
+    ".model DUT NPN(IS=1.0000000000e-14 BF=2.1765731916e2 TF=5.3449580951e-10)\n",
+    { parameters: { IS: 1e-14, BF: 217.6573191599617, TF: 5.344958095051651e-10 } }
+  ));
+});
+
+test("generate postcondition rejects stale parameter cards", () => {
+  assert.throws(() => assertEmittedParametersMatchFitted(
+    ".model DUT NPN(IS=1e-14 BF=2000)\n",
+    { parameters: { IS: 1e-14, BF: 217.6573191599617 } }
+  ), /BF: emitted 2000, fitted 217\.6573191599617/);
 });
