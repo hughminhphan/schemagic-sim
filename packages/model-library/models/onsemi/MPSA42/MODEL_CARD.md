@@ -5,7 +5,7 @@
 - Manufacturer: onsemi
 - Description: 300 V high-voltage NPN transistor
 - Electrical family: bjt_npn
-- Fidelity tier: F2, datasheet-fitted
+- Fidelity tier: F1, datasheet-constrained
 - Independent reviewer: pending-review
 
 ## Provenance
