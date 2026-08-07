@@ -1,0 +1,40 @@
+OpenCircuit TLV9062 minimum rated supply follower
+* OpenCircuit Model Factory v0.1.0
+* Original work generated from public factual specifications.
+* This model is not a copy of, or adaptation from, any vendor SPICE model.
+* Node order: INP INN VCC VEE OUT
+.subckt OC_TI_TLV9062 INP INN VCC VEE OUT
+.param AOL=3.1622776602e+06 GBW=1.4829120204e+07 SR=7.0534414525e+06 IBIAS=5.0000000000e-13 IOS=5.0000000000e-14 VOS=3.0000000000e-04
+.param ROUT=1.0000000000e+02 ILIM=1.0934779275e-01 VDRP_H=1.0000000000e-01 VDRP_L=1.0000000000e-01 CC=30p FP2=1.0383461752e+07
+.param CMRR=1.4125375446e+05 PSRR=1.4285714286e+05 VSUP_NOM=5.5000000000e+00 IQ=5.3800000000e-04 EN=1.6000000000e-08
+IBP 0 INP DC {IBIAS+IOS/2}
+IBN 0 INN DC {IBIAS-IOS/2}
+CDIF INP INN 1p
+BERR e 0 V = v(INP,INN) + VOS + v(nz) + 0.5*(v(INP)+v(INN))/CMRR + (v(VCC,VEE)-VSUP_NOM)/PSRR
+RE e 0 1meg
+RNZ nz 0 {EN*EN/(4*1.380649e-23*300.15)}
+BGM 0 p I = {SR*CC}*tanh({6.283185307*GBW/SR}*v(e))
+CP p 0 {CC}
+RP p 0 {AOL/(6.283185307*GBW*CC)}
+RP2 p p2 {1/(6.283185307*FP2*1p)}
+CP2 p2 0 1p
+BCLMP q 0 V = min(max(v(p2), v(VEE)+min(VDRP_L,0.49*v(VCC,VEE))), v(VCC)-min(VDRP_H,0.49*v(VCC,VEE)))
+RQ q 0 1meg
+BOUT 0 OUT I = ILIM*tanh((v(q)-v(OUT))/(ROUT*ILIM))
+IQVCC VCC VEE DC {IQ}
+.ends OC_TI_TLV9062
+
+.temp 25
+VCC vcc 0 1.8
+VEE vee 0 0
+VN n 0 0.72
+XN n on vcc vee on OC_TI_TLV9062
+RLN on 0 10k
+VZ z 0 0.9
+XZ z oz vcc vee oz OC_TI_TLV9062
+RLZ oz 0 10k
+VP p 0 1.08
+XP p op vcc vee op OC_TI_TLV9062
+RLP op 0 10k
+.op
+.end
