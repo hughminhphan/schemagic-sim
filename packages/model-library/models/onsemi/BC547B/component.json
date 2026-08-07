@@ -67,9 +67,9 @@
   "model_type": "dot_model",
   "fidelity_tier": "F1",
   "domain_coverage": {
-    "dc": "fitted",
-    "ac": "fitted",
-    "transient": "fitted",
+    "dc": "approx",
+    "ac": "approx",
+    "transient": "approx",
     "noise": "none",
     "thermal": "none",
     "digital": "none"
@@ -81,14 +81,14 @@
     "transient"
   ],
   "supported_operating_region": {
-    "summary": "F1 model: the native fit could not honestly reproduce the published BC547B low-current gain-bin spread, so scalar fitted expectations are withheld.",
+    "summary": "F1 bounded approximation at 25 degC. DC gain is checked against the BC547B B-bin at 2 mA; behavior below 2 mA is not claimed.",
     "numeric_bounds": [
       {
         "quantity": "collector_current",
-        "minimum": 0.0001,
+        "minimum": 0.002,
         "maximum": 0.1,
         "unit": "A",
-        "conditions": "Fitted typical DC range at 25 degC",
+        "conditions": "Approximate DC region at 25 degC; low-current behavior below 2 mA omitted",
         "placeholder": false
       },
       {
@@ -109,12 +109,13 @@
     "Base resistance modulation is not fitted: IRB and RBM are held at physical defaults because no base-resistance-versus-current data is published.",
     "Transit-time bias dependence is not fitted: XTF, VTF, and ITF are held at physical defaults because fT is published at a single bias.",
     "Flicker and burst noise are not modelled: KF and AF are held at physical defaults.",
-    "hFE bin spread is not modelled. The fit targets the typical curve or stated bin; a real part may sit anywhere in the published band.",
     "CJE and CJC are derived from single tabulated capacitance points with VJE, VJC, MJE, and MJC held at physical defaults.",
     "Temperature coefficients XTB, EG, and XTI are held at physical defaults; only 25 degC data was fitted.",
-    "F2 was not claimed: the native fit could not meet the archetype gain threshold across the published low-current BC547B rows, so this package is honestly capped at F1.",
     "NF, NR, IRB, RBM, XTF, VTF, ITF, XTB, EG, XTI, KF, AF, IKR, ISC, NC, and VAR are held at default because the datasheet does not characterise them.",
-    "TR is held at default because no storage-time row is published for this part."
+    "TR is held at default because no storage-time row is published for this part.",
+    "Low-current gain below 2 mA is unclaimed because the single Gummel-Poon model cannot reproduce the published BC547B curve there without violating the 2 mA B-bin boundary.",
+    "DC behavior is approximate, not fitted coverage. The 2 mA hFE check enforces the published 200 to 450 B-bin range; intermediate typical gain is not guaranteed.",
+    "Saturation checks cover the published 100 mA forced-beta point. VBE(sat) and VCE(sat) away from that point are unclaimed."
   ],
   "licence": {
     "spdx_id": "MIT",
@@ -130,13 +131,13 @@
   },
   "test_results": {
     "status": "complete",
-    "pass_count": 1,
+    "pass_count": 4,
     "fail_count": 0,
-    "total_count": 1,
+    "total_count": 4,
     "worst_observed_relative_fitting_error": {
-      "value": 4.10088694707697,
-      "quantity": "hFE at IC=0.0001 A"
+      "value": 0.5232423242931664,
+      "quantity": "hFE at IC=0.01 A"
     }
   },
-  "validation_date": "2026-08-06"
+  "validation_date": "2026-08-07"
 }

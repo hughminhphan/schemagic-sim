@@ -5,13 +5,54 @@
       "test_netlist": "dc_gain.cir",
       "analysis_type": "operating_point",
       "scalar_checks": [],
-      "hard_bounds_checks": []
+      "hard_bounds_checks": [
+        {
+          "name": "hfe_b_bin_near_2ma",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg3),145000)"
+          },
+          "minimum": 200,
+          "maximum": 450,
+          "unit": "1",
+          "inclusive": true,
+          "datasheet_citation": "p. 2 electrical characteristics, hFE group B at IC = 2 mA and VCE = 5 V",
+          "placeholder": false
+        }
+      ]
     },
     {
       "test_netlist": "saturation.cir",
       "analysis_type": "operating_point",
       "scalar_checks": [],
-      "hard_bounds_checks": []
+      "hard_bounds_checks": [
+        {
+          "name": "vce_sat_at_100ma",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(cs2))"
+          },
+          "minimum": 0,
+          "maximum": 0.26,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 2 electrical characteristics, VCE(sat) at IC = 100 mA and IB = 5 mA",
+          "placeholder": false
+        },
+        {
+          "name": "vbe_sat_at_100ma",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(bs2))"
+          },
+          "minimum": 0,
+          "maximum": 0.8799999999999999,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 2 electrical characteristics, VBE(sat) at IC = 100 mA and IB = 5 mA",
+          "placeholder": false
+        }
+      ]
     },
     {
       "test_netlist": "ft_bench.cir",

@@ -1,24 +1,47 @@
 {
   "schema_version": "1.0.0",
-  "validation_date": "2026-08-06",
+  "validation_date": "2026-08-07",
   "native_wasm_all_pass": true,
   "expectations_all_pass": true,
-  "expectation_pass_count": 1,
+  "expectation_pass_count": 4,
   "expectation_fail_count": 0,
-  "worst_native_wasm_relative_delta": 1.461957154465407e-7,
-  "worst_native_wasm_absolute_delta": 2.4366013687103987,
+  "worst_native_wasm_relative_delta": 0.0000015348474187585402,
+  "worst_native_wasm_absolute_delta": 25.579303102567792,
   "benches": [
     {
       "test_netlist": "dc_gain.cir",
       "analysis": "op",
       "native_wasm_pass": true,
-      "checks": []
+      "checks": [
+        {
+          "name": "hfe_b_bin_near_2ma",
+          "pass": true,
+          "value": 220.3391786961475,
+          "minimum": 180,
+          "maximum": 460
+        }
+      ]
     },
     {
       "test_netlist": "saturation.cir",
       "analysis": "op",
       "native_wasm_pass": true,
-      "checks": []
+      "checks": [
+        {
+          "name": "vce_sat_at_100ma",
+          "pass": true,
+          "value": 0.20150008709473022,
+          "minimum": 0,
+          "maximum": 0.31
+        },
+        {
+          "name": "vbe_sat_at_100ma",
+          "pass": true,
+          "value": 0.8172878807975601,
+          "minimum": 0,
+          "maximum": 1.01
+        }
+      ]
     },
     {
       "test_netlist": "ft_bench.cir",
