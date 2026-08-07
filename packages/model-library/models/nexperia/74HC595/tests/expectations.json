@@ -1,0 +1,102 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "shift_latch_function.cir",
+      "analysis_type": "transient",
+      "scalar_checks": [
+        {
+          "name": "latched_one_at_q2",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "measure:q2_final"
+          },
+          "expected_value": 4.5,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.5,
+            "relative": 0
+          },
+          "datasheet_citation": "p. 5 Table 3 function table",
+          "placeholder": false
+        },
+        {
+          "name": "q3_low_after_three_shifts",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "measure:q3_final"
+          },
+          "expected_value": 0,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.5,
+            "relative": 0
+          },
+          "datasheet_citation": "p. 5 Table 3 function table",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "three_state.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "disabled_output_leakage_proxy",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "abs:last(i(vforce))"
+          },
+          "unit": "A",
+          "inclusive": true,
+          "datasheet_citation": "p. 8 Table 6 IOZ MAX = 5 uA at VCC = 6 V",
+          "placeholder": false,
+          "maximum": 5e-06
+        }
+      ]
+    },
+    {
+      "test_netlist": "minimum_supply_boundary.cir",
+      "analysis_type": "transient",
+      "scalar_checks": [
+        {
+          "name": "minimum_supply_shift_latch",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "measure:q0_final"
+          },
+          "expected_value": 2,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.35,
+            "relative": 0
+          },
+          "datasheet_citation": "Nexperia 74HC595 Rev. 12, 20 March 2024, recommended operating conditions VCC MIN = 2.0 V and cited function table",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "quiescent_current.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "quiescent_current_upper_bound",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "abs:last(i(vcc))"
+          },
+          "maximum": 8e-05,
+          "unit": "A",
+          "inclusive": true,
+          "datasheet_citation": "Nexperia 74HC595 Rev. 12, 20 March 2024, static characteristics ICC MAX row, inputs at rails and IO = 0 A",
+          "placeholder": false
+        }
+      ]
+    }
+  ]
+}

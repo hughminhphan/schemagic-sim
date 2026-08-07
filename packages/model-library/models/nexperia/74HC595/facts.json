@@ -1,0 +1,337 @@
+{
+  "schema_version": "1.0.0",
+  "extraction_method": "Official Nexperia PDF, pdftotext layout extraction, and visual table verification",
+  "identity": {
+    "canonical_mpn": "74HC595",
+    "manufacturer": "Nexperia B.V.",
+    "aliases": []
+  },
+  "fit_conditions": {
+    "temperature": {
+      "value": 25,
+      "unit": "degC",
+      "conditions": "Typical columns are specified at Tamb = 25 degC",
+      "page_reference": "static and dynamic characteristics table heading",
+      "source_kind": "typical",
+      "column_semantics": {
+        "selected": "TYP",
+        "minimum": {
+          "published": false,
+          "value": null
+        },
+        "typical": {
+          "published": true,
+          "value": 25
+        },
+        "maximum": {
+          "published": false,
+          "value": null
+        }
+      }
+    },
+    "supply_voltage": {
+      "value": 4.5,
+      "unit": "V",
+      "conditions": "74HC rows used for DC and dynamic fitting",
+      "page_reference": "recommended operating and characteristics tables",
+      "source_kind": "derived_from_datasheet",
+      "column_semantics": {
+        "selected": "DERIVED",
+        "minimum": {
+          "published": true,
+          "value": 2.0
+        },
+        "typical": {
+          "published": true,
+          "value": 5.0
+        },
+        "maximum": {
+          "published": true,
+          "value": 6.0
+        }
+      }
+    }
+  },
+  "dc_characteristics": {
+    "vih_min": {
+      "value": 3.15,
+      "unit": "V",
+      "conditions": "VCC = 4.5 V",
+      "page_reference": "static characteristics, VIH row, VCC = 4.5 V, MIN column",
+      "source_kind": "minimum",
+      "column_semantics": {
+        "selected": "MIN",
+        "minimum": {
+          "published": true,
+          "value": 3.15
+        },
+        "typical": {
+          "published": true,
+          "value": 2.4
+        },
+        "maximum": {
+          "published": false,
+          "value": null
+        }
+      }
+    },
+    "vil_max": {
+      "value": 1.35,
+      "unit": "V",
+      "conditions": "VCC = 4.5 V",
+      "page_reference": "static characteristics, VIL row, VCC = 4.5 V, MAX column",
+      "source_kind": "maximum",
+      "column_semantics": {
+        "selected": "MAX",
+        "minimum": {
+          "published": false,
+          "value": null
+        },
+        "typical": {
+          "published": true,
+          "value": 2.1
+        },
+        "maximum": {
+          "published": true,
+          "value": 1.35
+        }
+      }
+    },
+    "voh_loaded_typ": {
+      "value": 4.32,
+      "unit": "V",
+      "conditions": "VCC = 4.5 V, IO = -6 mA",
+      "page_reference": "static characteristics, VOH loaded row, TYP column",
+      "source_kind": "typical",
+      "column_semantics": {
+        "selected": "TYP",
+        "minimum": {
+          "published": true,
+          "value": 3.84
+        },
+        "typical": {
+          "published": true,
+          "value": 4.32
+        },
+        "maximum": {
+          "published": false,
+          "value": null
+        }
+      }
+    },
+    "vol_loaded_typ": {
+      "value": 0.15,
+      "unit": "V",
+      "conditions": "VCC = 4.5 V, IO = 6 mA",
+      "page_reference": "static characteristics, VOL loaded row, TYP column",
+      "source_kind": "typical",
+      "column_semantics": {
+        "selected": "TYP",
+        "minimum": {
+          "published": false,
+          "value": null
+        },
+        "typical": {
+          "published": true,
+          "value": 0.15
+        },
+        "maximum": {
+          "published": true,
+          "value": 0.33
+        }
+      }
+    },
+    "voh_loaded_min": {
+      "value": 3.84,
+      "unit": "V",
+      "conditions": "VCC = 4.5 V, IO = -6 mA",
+      "page_reference": "static characteristics, VOH loaded row, MIN column",
+      "source_kind": "minimum",
+      "column_semantics": {
+        "selected": "MIN",
+        "minimum": {
+          "published": true,
+          "value": 3.84
+        },
+        "typical": {
+          "published": true,
+          "value": 4.32
+        },
+        "maximum": {
+          "published": false,
+          "value": null
+        }
+      }
+    },
+    "vol_loaded_max": {
+      "value": 0.33,
+      "unit": "V",
+      "conditions": "VCC = 4.5 V, IO = 6 mA",
+      "page_reference": "static characteristics, VOL loaded row, MAX column",
+      "source_kind": "maximum",
+      "column_semantics": {
+        "selected": "MAX",
+        "minimum": {
+          "published": false,
+          "value": null
+        },
+        "typical": {
+          "published": true,
+          "value": 0.15
+        },
+        "maximum": {
+          "published": true,
+          "value": 0.33
+        }
+      }
+    },
+    "input_leakage_max": {
+      "value": 1e-06,
+      "unit": "A",
+      "conditions": "VI = VCC or GND, VCC = 6.0 V",
+      "page_reference": "static characteristics, II row, MAX column",
+      "source_kind": "maximum",
+      "column_semantics": {
+        "selected": "MAX",
+        "minimum": {
+          "published": false,
+          "value": null
+        },
+        "typical": {
+          "published": false,
+          "value": null
+        },
+        "maximum": {
+          "published": true,
+          "value": 1e-06
+        }
+      }
+    },
+    "icc_max": {
+      "value": 8e-05,
+      "unit": "A",
+      "conditions": "inputs at VCC or GND, IO = 0 A, VCC = 6.0 V",
+      "page_reference": "static characteristics, ICC row, MAX column",
+      "source_kind": "maximum",
+      "column_semantics": {
+        "selected": "MAX",
+        "minimum": {
+          "published": false,
+          "value": null
+        },
+        "typical": {
+          "published": false,
+          "value": null
+        },
+        "maximum": {
+          "published": true,
+          "value": 8e-05
+        }
+      }
+    },
+    "ci_typ": {
+      "value": 3.5e-12,
+      "unit": "F",
+      "conditions": "input capacitance",
+      "page_reference": "static characteristics, CI row, TYP column",
+      "source_kind": "typical",
+      "column_semantics": {
+        "selected": "TYP",
+        "minimum": {
+          "published": false,
+          "value": null
+        },
+        "typical": {
+          "published": true,
+          "value": 3.5e-12
+        },
+        "maximum": {
+          "published": false,
+          "value": null
+        }
+      }
+    }
+  },
+  "dynamic_characteristics": {
+    "tpd_cl50_typ": {
+      "value": 2e-08,
+      "unit": "s",
+      "conditions": "VCC = 4.5 V, CL = 50 pF, Tamb = 25 degC",
+      "page_reference": "dynamic characteristics, relevant propagation-delay row, TYP column",
+      "source_kind": "typical",
+      "column_semantics": {
+        "selected": "TYP",
+        "minimum": {
+          "published": false,
+          "value": null
+        },
+        "typical": {
+          "published": true,
+          "value": 2e-08
+        },
+        "maximum": {
+          "published": false,
+          "value": null
+        }
+      }
+    }
+  },
+  "recommended_operating": {
+    "vcc_min": {
+      "value": 2.0,
+      "unit": "V",
+      "conditions": "74HC recommended operating range",
+      "page_reference": "recommended operating conditions, VCC MIN column",
+      "source_kind": "minimum",
+      "column_semantics": {
+        "selected": "MIN",
+        "minimum": {
+          "published": true,
+          "value": 2.0
+        },
+        "typical": {
+          "published": true,
+          "value": 5.0
+        },
+        "maximum": {
+          "published": true,
+          "value": 6.0
+        }
+      }
+    },
+    "vcc_max": {
+      "value": 6.0,
+      "unit": "V",
+      "conditions": "74HC recommended operating range",
+      "page_reference": "recommended operating conditions, VCC MAX column",
+      "source_kind": "maximum",
+      "column_semantics": {
+        "selected": "MAX",
+        "minimum": {
+          "published": true,
+          "value": 2.0
+        },
+        "typical": {
+          "published": true,
+          "value": 5.0
+        },
+        "maximum": {
+          "published": true,
+          "value": 6.0
+        }
+      }
+    }
+  },
+  "f2_upgrade_assessment": {
+    "outcome": "remain_F1",
+    "reason": "The official dynamic-characteristics table publishes propagation delays only at CL = 50 pF. archetype-logic74hc requires both 15 pF and 50 pF rows to separate intrinsic delay from load-dependent delay and asserts both rows within 15 percent. With only one load point, TAU can support nominal function but cannot earn the DC/transient F2 ceiling.",
+    "datasheet_evidence": {
+      "pages": [
+        "p. 9",
+        "p. 10",
+        "p. 11"
+      ],
+      "revision": "Rev. 12, 20 March 2024"
+    }
+  }
+}
