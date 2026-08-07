@@ -14,7 +14,7 @@
 - Datasheet: https://www.ti.com/lit/ds/symlink/ne5532.pdf
 - Revision: SLOS075K, November 1979, revised December 2025
 - Accessed: 2026-08-07
-- Referenced pages: p. 3, p. 4
+- Referenced pages: p. 3, p. 4, p. 5
 - SHA-256: `a2f5071accc57bba5d1bdc7ba7833e50ddc2610f76350666b9068d88dc43d264`
 - Basis: original model generated from public factual specifications
 - Vendor SPICE models used: none
