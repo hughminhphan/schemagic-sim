@@ -17,7 +17,7 @@
             "absolute": 0,
             "relative": 0.3
           },
-          "datasheet_citation": "p. 7 fig. 15, digitized",
+          "datasheet_citation": "p. 5 fig. 15, digitized",
           "placeholder": false
         },
         {
@@ -32,7 +32,7 @@
             "absolute": 0,
             "relative": 0.3
           },
-          "datasheet_citation": "p. 7 fig. 15, digitized",
+          "datasheet_citation": "p. 5 fig. 15, digitized",
           "placeholder": false
         },
         {
@@ -47,7 +47,7 @@
             "absolute": 0,
             "relative": 0.3
           },
-          "datasheet_citation": "p. 7 fig. 15, digitized",
+          "datasheet_citation": "p. 5 fig. 15, digitized",
           "placeholder": false
         },
         {
@@ -62,7 +62,7 @@
             "absolute": 0,
             "relative": 0.3
           },
-          "datasheet_citation": "p. 7 fig. 15, digitized",
+          "datasheet_citation": "p. 5 fig. 15, digitized",
           "placeholder": false
         },
         {
@@ -77,7 +77,7 @@
             "absolute": 0,
             "relative": 0.3
           },
-          "datasheet_citation": "p. 7 fig. 15, digitized",
+          "datasheet_citation": "p. 5 fig. 15, digitized",
           "placeholder": false
         }
       ],
@@ -91,7 +91,7 @@
           "name": "vce_sat_1",
           "expression_source": {
             "kind": "raw_variable",
-            "expression": "last(v(cs1))"
+            "expression": "abs:last(v(cs1))"
           },
           "expected_value": 0.09,
           "unit": "V",
@@ -99,14 +99,14 @@
             "absolute": 0.02,
             "relative": 0.15
           },
-          "datasheet_citation": "p. 7 fig. 17, digitized",
+          "datasheet_citation": "p. 6 fig. 17, digitized",
           "placeholder": false
         },
         {
           "name": "vbe_sat_1",
           "expression_source": {
             "kind": "raw_variable",
-            "expression": "last(v(bs1))"
+            "expression": "abs:last(v(bs1))"
           },
           "expected_value": 0.76,
           "unit": "V",
@@ -114,14 +114,14 @@
             "absolute": 0.02,
             "relative": 0.15
           },
-          "datasheet_citation": "p. 7 fig. 17, digitized",
+          "datasheet_citation": "p. 6 fig. 17, digitized",
           "placeholder": false
         },
         {
           "name": "vce_sat_2",
           "expression_source": {
             "kind": "raw_variable",
-            "expression": "last(v(cs2))"
+            "expression": "abs:last(v(cs2))"
           },
           "expected_value": 0.2,
           "unit": "V",
@@ -129,14 +129,14 @@
             "absolute": 0.02,
             "relative": 0.15
           },
-          "datasheet_citation": "p. 7 fig. 17, digitized",
+          "datasheet_citation": "p. 6 fig. 17, digitized",
           "placeholder": false
         },
         {
           "name": "vbe_sat_2",
           "expression_source": {
             "kind": "raw_variable",
-            "expression": "last(v(bs2))"
+            "expression": "abs:last(v(bs2))"
           },
           "expected_value": 0.85,
           "unit": "V",
@@ -144,7 +144,7 @@
             "absolute": 0.02,
             "relative": 0.15
           },
-          "datasheet_citation": "p. 7 fig. 17, digitized",
+          "datasheet_citation": "p. 6 fig. 17, digitized",
           "placeholder": false
         }
       ],
@@ -204,7 +204,21 @@
       "test_netlist": "boundary_region.cir",
       "analysis_type": "operating_point",
       "scalar_checks": [],
-      "hard_bounds_checks": []
+      "hard_bounds_checks": [
+        {
+          "name": "upper_current_boundary_voltage",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(c))"
+          },
+          "minimum": 0,
+          "maximum": 40,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 5 fig. 15",
+          "placeholder": false
+        }
+      ]
     }
   ]
 }
