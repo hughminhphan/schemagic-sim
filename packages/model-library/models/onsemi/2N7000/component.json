@@ -2,7 +2,7 @@
   "schema_version": "1.0.0",
   "canonical_mpn": "2N7000",
   "manufacturer": "onsemi",
-  "description": "60 V N-channel small-signal MOSFET",
+  "description": "60 V N-channel small-signal MOSFET with 25 degC typical-curve fit",
   "electrical_family": "nmos",
   "symbol_pins": [
     {
@@ -68,11 +68,11 @@
     "revision": "Rev. 8, April 2011"
   },
   "model_type": "dot_model",
-  "fidelity_tier": "F1",
+  "fidelity_tier": "F2",
   "domain_coverage": {
-    "dc": "approx",
+    "dc": "fitted",
     "ac": "approx",
-    "transient": "none",
+    "transient": "approx",
     "noise": "none",
     "thermal": "none",
     "digital": "none"
@@ -80,50 +80,59 @@
   "supported_analyses": [
     "operating_point",
     "dc_sweep",
-    "ac_small_signal"
+    "ac_small_signal",
+    "transient"
   ],
   "supported_operating_region": {
-    "summary": "25 degC F1 model within the cited tabulated conditions; absolute maxima are not enforced.",
+    "summary": "F2 DC fit to onsemi 25 degC typical transfer and output curves from VGS 4 V to 10 V and VDS 1 V to 10 V; capacitance rows are conservative maxima, not typical fits.",
     "numeric_bounds": [
       {
-        "quantity": "characterized_gate_drive",
-        "minimum": 4.5,
+        "quantity": "gate_source_voltage",
+        "minimum": 0,
         "maximum": 10,
         "unit": "V",
-        "conditions": "Published RDS(on) rows at 25 degC",
+        "conditions": "Typical curve fit and published test conditions at 25 degC",
         "placeholder": false
       },
       {
-        "quantity": "validated_off_state_voltage",
+        "quantity": "drain_source_voltage",
         "minimum": 0,
         "maximum": 48,
         "unit": "V",
-        "conditions": "Published IDSS condition at 25 degC",
+        "conditions": "Typical curve fit through 10 V; off-state leakage bound checked at 48 V",
+        "placeholder": false
+      },
+      {
+        "quantity": "drain_current",
+        "minimum": 0,
+        "maximum": 1.48,
+        "unit": "A",
+        "conditions": "Highest digitized 25 degC output-curve target; pulse behavior only",
+        "placeholder": false
+      },
+      {
+        "quantity": "ambient_temperature",
+        "minimum": 25,
+        "maximum": 25,
+        "unit": "degC",
+        "conditions": "Fit reference temperature",
         "placeholder": false
       }
     ]
   },
   "known_omissions": [
-    "Avalanche and unclamped inductive switching (UIS/EAS) are not modelled. The model conducts through BV as an ordinary diode breakdown; it does not fail.",
-    "Safe operating area is not enforced. Absolute maximum ratings are metadata; the model will happily dissipate excessive power.",
-    "No self-heating in the default three-terminal instance: junction temperature is fixed at TNOM. RDS(on) does not rise with dissipation.",
-    "Package and lead inductance are not modelled, so measured switching ringing will not reproduce.",
-    "Threshold-voltage spread is not modelled.",
-    "Gate oxide breakdown beyond the rated VGS maximum is not modelled.",
-    "RDS is held at default 1e9 ohm as the off-state shunt.",
-    "MU, TEXP0, and TCVTH are held at default; only 25 degC behavior is fitted.",
-    "CTHJ is held at default because junction thermal capacitance is unpublished; electrothermal transients are not claimed.",
-    "Flicker noise is not modelled: KF and AF are held at default.",
-    "F1: the datasheet publishes typical transfer and output plots, but no typical RDS(on) row, body-diode row, or gate-charge data. An F2 archetype fit cannot be completed without treating guaranteed limits as typical targets.",
-    "VTO is held at default 1.9 V, the midpoint of the published 0.8 V minimum and 3.0 V maximum threshold window.",
-    "KP is held at default 0.2 A/V^2; it is selected conservatively so both published maximum RDS(on) limits pass, not fitted to a typical table value.",
-    "THETA is held at default 0 and LAMBDA is held at default 0.003 because a full typical DC curve-family fit is not claimed.",
-    "RD = 2.75 ohm and RS = 1 ohm are held at default from the archetype 55/20 split of the strongest published RDS(on) maximum; this does not convert that maximum into a typical target.",
-    "RG is held at default 1e-4 ohm because gate resistance is unpublished.",
-    "CGDMAX = CGDMIN = 5 pF and A = 1 are held at default because no capacitance-versus-VDS curve is published; terminal capacitances use the published maxima.",
-    "VJ = 0.8, M = 0.5, FC = 0.5, N = 1.5, NBV = 1, TNOM = 27 degC, IS = 1e-14 A, and RB = 1 ohm are held at default; no body-diode forward row is published.",
-    "TT is held at default 0 because body-diode reverse recovery is unpublished.",
-    "RTHCA = 357 K/W is transcribed from RthetaJA; RTHJC is held at default 0 because junction-to-case resistance is unpublished and electrothermal operation is not claimed."
+    "Avalanche and unclamped inductive switching are not modelled; BV is an ordinary breakdown branch and does not fail.",
+    "Safe operating area and power limits are metadata only.",
+    "No self-heating in the default three-terminal instance; junction temperature is fixed by .temp.",
+    "Package and lead inductance are not modelled.",
+    "Threshold-voltage production spread is not modelled; VTO is a typical-curve fit inside the 0.8 V to 3.0 V guaranteed window.",
+    "LAMBDA is held at 0.003 because the three-seed sweep showed it underdetermined by the nearly flat saturation curves.",
+    "Gate-drain capacitance is constant because no capacitance-versus-VDS figure is published; Ciss, Coss, and Crss are maximum table rows, so AC and switching results are approximate.",
+    "Body-diode forward voltage and reverse recovery are not fitted because the datasheet publishes neither VSD nor trr; IS, N, and TT remain defaults.",
+    "Gate charge is not validated because the datasheet publishes no Qg row.",
+    "Temperature coefficients are not fitted; only 25 degC curves were used.",
+    "RTHCA is transcribed from RthetaJA, but electrothermal operation is not validated or claimed.",
+    "Flicker noise is not modelled."
   ],
   "licence": {
     "spdx_id": "MIT",
@@ -134,17 +143,17 @@
     "date": "2026-08-07"
   },
   "reviewer": {
-    "tool_or_agent": "luna independent reviewer (sweep-fets)",
+    "tool_or_agent": "pending-review",
     "date": "2026-08-07"
   },
   "test_results": {
     "status": "complete",
-    "pass_count": 6,
+    "pass_count": 24,
     "fail_count": 0,
-    "total_count": 6,
+    "total_count": 24,
     "worst_observed_relative_fitting_error": {
-      "value": 0,
-      "quantity": "guaranteed-bound-only model"
+      "value": 0.3182843187577054,
+      "quantity": "transfer current at VGS=8 V, VDS=10 V"
     }
   },
   "validation_date": "2026-08-07"

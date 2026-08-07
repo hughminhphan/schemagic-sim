@@ -1,150 +1,381 @@
 {
   "schema_version": "1.0.0",
-  "fitter": "scipy.optimize.least_squares with native ngspice-46 evaluations where typical table values exist; deterministic physical defaults otherwise",
+  "fitter": "scipy.optimize.least_squares with native ngspice-46 evaluations; three-seed sweep",
   "deterministic": true,
-  "temperature_c": 25,
+  "temperature_c": 25.0,
   "parameters": {
-    "VTO": 1.9,
-    "KP": 0.2,
-    "THETA": 0,
+    "VTO": 2.0228743921866967,
+    "KP": 0.09261716530723516,
+    "THETA": 0.029259180178587304,
+    "RD": 0.4125199882939526,
     "LAMBDA": 0.003,
-    "RD": 2.75,
-    "RS": 1.0,
+    "RS": 0.5,
     "RG": 0.0001,
     "CGS": 5.5e-11,
     "CGDMAX": 5e-12,
     "CGDMIN": 5e-12,
-    "A": 1,
+    "A": 1.0,
     "CJO": 1.1337e-10,
     "IS": 1e-14,
     "N": 1.5,
-    "RB": 1.0,
-    "TT": 0,
-    "BV": 60,
-    "IBV": 0.01,
-    "RTHJC": 0,
-    "RTHCA": 357
+    "RB": 0.5,
+    "TT": 0.0,
+    "BV": 60.0,
+    "IBV": 1e-05,
+    "RTHJC": 0.0,
+    "RTHCA": 357.0
   },
   "parameter_metadata": {
     "VTO": {
-      "status": "derived or held"
+      "status": "native fitted to 25 degC typical curve family"
     },
     "KP": {
-      "status": "derived or held"
+      "status": "native fitted to 25 degC typical curve family, then projected +0.02% to satisfy the published 6 ohm maximum hard bound"
     },
     "THETA": {
-      "status": "derived or held"
-    },
-    "LAMBDA": {
-      "status": "derived or held"
+      "status": "native fitted to 25 degC typical curve family"
     },
     "RD": {
-      "status": "derived or held"
+      "status": "native fitted inside 0.3x to 1.5x archetype bounds from 1.375 ohm seed"
+    },
+    "LAMBDA": {
+      "status": "held at archetype default after seed sweep showed it underdetermined"
     },
     "RS": {
-      "status": "derived or held"
+      "status": "fixed archetype 20 percent share of 2.5 ohm digitized typical RDS(on)"
     },
     "RG": {
-      "status": "derived or held"
+      "status": "held or derived from cited tabulated data; not a DC fit target"
     },
     "CGS": {
-      "status": "derived or held"
+      "status": "derived from Ciss minus Crss maximum table rows"
     },
     "CGDMAX": {
-      "status": "derived or held"
+      "status": "held equal to CGDMIN from Crss maximum; no C-V curve published"
     },
     "CGDMIN": {
-      "status": "derived or held"
+      "status": "held equal to CGDMAX from Crss maximum; no C-V curve published"
     },
     "A": {
-      "status": "derived or held"
+      "status": "held or derived from cited tabulated data; not a DC fit target"
     },
     "CJO": {
-      "status": "derived or held"
+      "status": "derived from Coss minus Crss maximum at 25 V with VJ and M held"
     },
     "IS": {
-      "status": "derived or held"
+      "status": "held default; no body-diode forward row published"
     },
     "N": {
-      "status": "derived or held"
+      "status": "held default; no body-diode forward row published"
     },
     "RB": {
-      "status": "derived or held"
+      "status": "fixed to 20 percent share of digitized typical RDS(on)"
     },
     "TT": {
-      "status": "derived or held"
+      "status": "held zero; body-diode trr unpublished"
     },
     "BV": {
-      "status": "derived or held"
+      "status": "paired to minimum breakdown voltage and its 10 uA test current"
     },
     "IBV": {
-      "status": "derived or held"
+      "status": "paired to minimum breakdown voltage and its 10 uA test current"
     },
     "RTHJC": {
-      "status": "derived or held"
+      "status": "held zero; unpublished"
     },
     "RTHCA": {
-      "status": "derived or held"
+      "status": "transcribed from RthetaJA; electrothermal operation not claimed"
     }
+  },
+  "optimizer": {
+    "status": 2,
+    "nfev": 1110,
+    "cost": 0.1536683452477867,
+    "diff_step": 0.0001,
+    "seed_results": [
+      {
+        "status": 0,
+        "cost": 0.153951686488019,
+        "x": [
+          2.019686254014982,
+          0.09230568587872473,
+          0.028231560605225792,
+          0.41539982538822096
+        ]
+      },
+      {
+        "status": 2,
+        "cost": 0.15375262833119518,
+        "x": [
+          2.026800762658155,
+          0.09287731950130595,
+          0.029830519842091067,
+          0.4128369650710323
+        ]
+      },
+      {
+        "status": 2,
+        "cost": 0.1536683452477867,
+        "x": [
+          2.0228743921866967,
+          0.09259864557811953,
+          0.029259180178587304,
+          0.4125199882939526
+        ]
+      }
+    ],
+    "post_fit_bound_projection": {
+      "parameter": "KP",
+      "relative_adjustment": 0.0002,
+      "reason": "enforce RDS(on) <= 6 ohm at VGS=4.5 V, ID=75 mA without fitting the maximum as a typical target"
+    }
+  },
+  "residuals": [
+    {
+      "quantity": "transfer current at VGS=4 V, VDS=10 V",
+      "datasheet_value": 0.2,
+      "fitted_value": 0.16385120291775465,
+      "unit": "A",
+      "relative_error": 0.1807439854112268,
+      "citation": "p. 3 Figure 2, 25 degC curve, digitized"
+    },
+    {
+      "quantity": "transfer current at VGS=4.5 V, VDS=10 V",
+      "datasheet_value": 0.285,
+      "fitted_value": 0.24924696241521785,
+      "unit": "A",
+      "relative_error": 0.12544925468344606,
+      "citation": "p. 3 Figure 2, 25 degC curve, digitized"
+    },
+    {
+      "quantity": "transfer current at VGS=5 V, VDS=10 V",
+      "datasheet_value": 0.37,
+      "fitted_value": 0.3493160630872551,
+      "unit": "A",
+      "relative_error": 0.05590253219660782,
+      "citation": "p. 3 Figure 2, 25 degC curve, digitized"
+    },
+    {
+      "quantity": "transfer current at VGS=6 V, VDS=10 V",
+      "datasheet_value": 0.55,
+      "fitted_value": 0.5888173690232242,
+      "unit": "A",
+      "relative_error": 0.07057703458768035,
+      "citation": "p. 3 Figure 2, 25 degC curve, digitized"
+    },
+    {
+      "quantity": "transfer current at VGS=7 V, VDS=10 V",
+      "datasheet_value": 0.73,
+      "fitted_value": 0.8743618147296818,
+      "unit": "A",
+      "relative_error": 0.1977559105886052,
+      "citation": "p. 3 Figure 2, 25 degC curve, digitized"
+    },
+    {
+      "quantity": "transfer current at VGS=8 V, VDS=10 V",
+      "datasheet_value": 0.91,
+      "fitted_value": 1.199638730069512,
+      "unit": "A",
+      "relative_error": 0.3182843187577054,
+      "citation": "p. 3 Figure 2, 25 degC curve, digitized"
+    },
+    {
+      "quantity": "output current at VGS=4 V, VDS=1 V",
+      "datasheet_value": 0.1,
+      "fitted_value": 0.11678206881303295,
+      "unit": "A",
+      "relative_error": 0.16782068813032944,
+      "citation": "p. 3 Figure 1, TA=25 degC, digitized"
+    },
+    {
+      "quantity": "output current at VGS=4 V, VDS=2 V",
+      "datasheet_value": 0.14,
+      "fitted_value": 0.16024646775970755,
+      "unit": "A",
+      "relative_error": 0.14461762685505383,
+      "citation": "p. 3 Figure 1, TA=25 degC, digitized"
+    },
+    {
+      "quantity": "output current at VGS=4 V, VDS=5 V",
+      "datasheet_value": 0.15,
+      "fitted_value": 0.1616477777502233,
+      "unit": "A",
+      "relative_error": 0.07765185166815533,
+      "citation": "p. 3 Figure 1, TA=25 degC, digitized"
+    },
+    {
+      "quantity": "output current at VGS=5 V, VDS=1 V",
+      "datasheet_value": 0.19,
+      "fitted_value": 0.17868738335105483,
+      "unit": "A",
+      "relative_error": 0.05954008762602723,
+      "citation": "p. 3 Figure 1, TA=25 degC, digitized"
+    },
+    {
+      "quantity": "output current at VGS=5 V, VDS=2 V",
+      "datasheet_value": 0.3,
+      "fitted_value": 0.2951647735227759,
+      "unit": "A",
+      "relative_error": 0.016117421590746882,
+      "citation": "p. 3 Figure 1, TA=25 degC, digitized"
+    },
+    {
+      "quantity": "output current at VGS=5 V, VDS=3 V",
+      "datasheet_value": 0.36,
+      "fitted_value": 0.3423967600416604,
+      "unit": "A",
+      "relative_error": 0.04889788877316546,
+      "citation": "p. 3 Figure 1, TA=25 degC, digitized"
+    },
+    {
+      "quantity": "output current at VGS=5 V, VDS=5 V",
+      "datasheet_value": 0.38,
+      "fitted_value": 0.34476629871718256,
+      "unit": "A",
+      "relative_error": 0.09272026653373011,
+      "citation": "p. 3 Figure 1, TA=25 degC, digitized"
+    },
+    {
+      "quantity": "output current at VGS=6 V, VDS=1 V",
+      "datasheet_value": 0.24,
+      "fitted_value": 0.23059428002020238,
+      "unit": "A",
+      "relative_error": 0.03919049991582338,
+      "citation": "p. 3 Figure 1, TA=25 degC, digitized"
+    },
+    {
+      "quantity": "output current at VGS=6 V, VDS=2 V",
+      "datasheet_value": 0.42,
+      "fitted_value": 0.4077668989772717,
+      "unit": "A",
+      "relative_error": 0.029126431006495923,
+      "citation": "p. 3 Figure 1, TA=25 degC, digitized"
+    },
+    {
+      "quantity": "output current at VGS=6 V, VDS=3 V",
+      "datasheet_value": 0.52,
+      "fitted_value": 0.5257368848897913,
+      "unit": "A",
+      "relative_error": 0.011032470941906333,
+      "citation": "p. 3 Figure 1, TA=25 degC, digitized"
+    },
+    {
+      "quantity": "output current at VGS=6 V, VDS=5 V",
+      "datasheet_value": 0.56,
+      "fitted_value": 0.5813590506378903,
+      "unit": "A",
+      "relative_error": 0.03814116185337541,
+      "citation": "p. 3 Figure 1, TA=25 degC, digitized"
+    },
+    {
+      "quantity": "output current at VGS=8 V, VDS=1 V",
+      "datasheet_value": 0.32,
+      "fitted_value": 0.31271240498307784,
+      "unit": "A",
+      "relative_error": 0.02277373442788177,
+      "citation": "p. 3 Figure 1, TA=25 degC, digitized"
+    },
+    {
+      "quantity": "output current at VGS=8 V, VDS=2 V",
+      "datasheet_value": 0.65,
+      "fitted_value": 0.5848180161049883,
+      "unit": "A",
+      "relative_error": 0.10027997522309497,
+      "citation": "p. 3 Figure 1, TA=25 degC, digitized"
+    },
+    {
+      "quantity": "output current at VGS=8 V, VDS=3 V",
+      "datasheet_value": 0.88,
+      "fitted_value": 0.8123070919458449,
+      "unit": "A",
+      "relative_error": 0.07692375915244894,
+      "citation": "p. 3 Figure 1, TA=25 degC, digitized"
+    },
+    {
+      "quantity": "output current at VGS=8 V, VDS=5 V",
+      "datasheet_value": 1.04,
+      "fitted_value": 1.1153374606956237,
+      "unit": "A",
+      "relative_error": 0.07243986605348426,
+      "citation": "p. 3 Figure 1, TA=25 degC, digitized"
+    },
+    {
+      "quantity": "output current at VGS=10 V, VDS=1 V",
+      "datasheet_value": 0.39,
+      "fitted_value": 0.3747121717216521,
+      "unit": "A",
+      "relative_error": 0.039199559688071546,
+      "citation": "p. 3 Figure 1, TA=25 degC, digitized"
+    },
+    {
+      "quantity": "output current at VGS=10 V, VDS=2 V",
+      "datasheet_value": 0.78,
+      "fitted_value": 0.7175231083339583,
+      "unit": "A",
+      "relative_error": 0.08009857905902788,
+      "citation": "p. 3 Figure 1, TA=25 degC, digitized"
+    },
+    {
+      "quantity": "output current at VGS=10 V, VDS=3 V",
+      "datasheet_value": 1.12,
+      "fitted_value": 1.0255541901906724,
+      "unit": "A",
+      "relative_error": 0.08432661590118544,
+      "citation": "p. 3 Figure 1, TA=25 degC, digitized"
+    },
+    {
+      "quantity": "output current at VGS=10 V, VDS=5 V",
+      "datasheet_value": 1.48,
+      "fitted_value": 1.5243275064533737,
+      "unit": "A",
+      "relative_error": 0.029951017873901142,
+      "citation": "p. 3 Figure 1, TA=25 degC, digitized"
+    },
+    {
+      "quantity": "RDS(on) at VGS=10 V, ID=0.2 A",
+      "datasheet_value": 2.5,
+      "fitted_value": 2.617846073615785,
+      "unit": "ohm",
+      "relative_error": 0.04713842944631406,
+      "citation": "p. 3 Figure 1, TA=25 degC, digitized slope"
+    },
+    {
+      "quantity": "RDS(on) at VGS=5 V, ID=0.2 A",
+      "datasheet_value": 6.75,
+      "fitted_value": 5.739627557231311,
+      "unit": "ohm",
+      "relative_error": 0.149684806336102,
+      "citation": "p. 3 Figure 1, TA=25 degC, digitized slope"
+    }
+  ],
+  "worst_relative_error": {
+    "value": 0.3182843187577054,
+    "quantity": "transfer current at VGS=8 V, VDS=10 V"
   },
   "held_defaults": [
     {
       "parameter": "LAMBDA",
       "value": 0.003,
-      "unit": "1",
-      "status": "held at default"
+      "unit": "1/V",
+      "reason": "three-seed sweep showed LAMBDA underdetermined, so archetype default retained"
     },
     {
-      "parameter": "RS",
-      "value": 1.0,
+      "parameter": "RG",
+      "value": 0.0001,
       "unit": "ohm",
-      "status": "held at default"
+      "reason": "gate resistance unpublished"
     },
     {
-      "parameter": "VJ",
-      "value": 0.8,
-      "unit": "V",
-      "status": "held at default"
+      "parameter": "CGDMAX/CGDMIN",
+      "value": 5e-12,
+      "unit": "F",
+      "reason": "no capacitance-versus-VDS figure; Crss maximum used as a conservative constant bound"
     },
     {
-      "parameter": "M",
-      "value": 0.5,
-      "unit": "1",
-      "status": "held at default"
-    },
-    {
-      "parameter": "FC",
-      "value": 0.5,
-      "unit": "1",
-      "status": "held at default"
-    },
-    {
-      "parameter": "N",
-      "value": 1.5,
-      "unit": "1",
-      "status": "held at default"
-    },
-    {
-      "parameter": "NBV",
-      "value": 1,
-      "unit": "1",
-      "status": "held at default"
-    },
-    {
-      "parameter": "TNOM",
-      "value": 27,
-      "unit": "degC",
-      "status": "held at default"
+      "parameter": "body diode IS/N/TT",
+      "value": "1e-14 / 1.5 / 0",
+      "unit": "mixed",
+      "reason": "no body-diode forward-voltage or recovery data published"
     }
-  ],
-  "optimizer": {
-    "status": 0,
-    "diff_step": 0.0001,
-    "note": "AO3400A/AO3401A/SI2302 table fits used least_squares with ngspice in the loop; guaranteed-limit-only parts use deterministic defaults."
-  },
-  "residuals": [],
-  "worst_relative_error": {
-    "value": 0.0,
-    "quantity": "guaranteed-bound-only model"
-  }
+  ]
 }

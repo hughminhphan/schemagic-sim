@@ -1,12 +1,12 @@
 {
   "schema_version": "1.0.0",
-  "extraction_method": "pdftotext -layout plus manual table transcription; plots used only where explicitly stated",
+  "extraction_method": "pdftotext -layout plus manual digitization of official onsemi typical curves",
   "fit_conditions": {
     "temperature": {
       "value": 25,
       "unit": "degC",
-      "conditions": "Electrical characteristics unless stated",
-      "page_reference": "p. 2 electrical-characteristics heading",
+      "conditions": "TA = 25 degC typical curve family",
+      "page_reference": "p. 3 Figures 1 and 2",
       "source_kind": "typical"
     }
   },
@@ -14,71 +14,668 @@
     "minimum": {
       "value": 0.8,
       "unit": "V",
-      "conditions": "VDS = VGS, ID = 1 mA",
+      "conditions": "VDS = VGS, ID = 1 mA, TC = 25 degC",
       "page_reference": "p. 2 ON characteristics, MIN column",
       "source_kind": "minimum"
-    },
-    "typical": {
-      "published": false,
-      "page_reference": "p. 2 ON characteristics",
-      "source_kind": "not_published"
     },
     "maximum": {
       "value": 3.0,
       "unit": "V",
-      "conditions": "VDS = VGS, ID = 1 mA",
+      "conditions": "VDS = VGS, ID = 1 mA, TC = 25 degC",
       "page_reference": "p. 2 ON characteristics, MAX column",
       "source_kind": "maximum"
     }
   },
-  "rdson_points": [
+  "transfer_points": [
     {
       "vgs": {
+        "value": 4.0,
+        "unit": "V",
+        "conditions": "VDS = 10 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 2, 25 degC curve",
+        "source_kind": "digitized_typical_curve"
+      },
+      "vds": {
         "value": 10,
         "unit": "V",
-        "conditions": "ID = 0.5 A",
-        "page_reference": "p. 2 ON characteristics",
-        "source_kind": "typical"
+        "conditions": "VGS = 4 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 2, 25 degC curve",
+        "source_kind": "digitized_typical_curve"
       },
       "current": {
-        "value": 0.5,
+        "value": 0.2,
         "unit": "A",
-        "conditions": "VGS = 10 V",
-        "page_reference": "p. 2 ON characteristics",
-        "source_kind": "typical"
-      },
-      "resistance": {
-        "value": 5,
-        "unit": "ohm",
-        "conditions": "VGS = 10 V, ID = 0.5 A",
-        "page_reference": "p. 2 ON characteristics, MAX column",
-        "source_kind": "maximum"
+        "conditions": "VGS = 4 V, VDS = 10 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 2, 25 degC curve",
+        "source_kind": "digitized_typical_curve"
       }
     },
     {
       "vgs": {
         "value": 4.5,
         "unit": "V",
-        "conditions": "ID = 75 mA",
-        "page_reference": "p. 2 ON characteristics",
-        "source_kind": "typical"
+        "conditions": "VDS = 10 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 2, 25 degC curve",
+        "source_kind": "digitized_typical_curve"
+      },
+      "vds": {
+        "value": 10,
+        "unit": "V",
+        "conditions": "VGS = 4.5 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 2, 25 degC curve",
+        "source_kind": "digitized_typical_curve"
       },
       "current": {
-        "value": 0.075,
+        "value": 0.285,
         "unit": "A",
-        "conditions": "VGS = 4.5 V",
-        "page_reference": "p. 2 ON characteristics",
-        "source_kind": "typical"
+        "conditions": "VGS = 4.5 V, VDS = 10 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 2, 25 degC curve",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "vgs": {
+        "value": 5.0,
+        "unit": "V",
+        "conditions": "VDS = 10 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 2, 25 degC curve",
+        "source_kind": "digitized_typical_curve"
       },
-      "resistance": {
-        "value": 6,
-        "unit": "ohm",
-        "conditions": "VGS = 4.5 V, ID = 75 mA",
-        "page_reference": "p. 2 ON characteristics, MAX column",
-        "source_kind": "maximum"
+      "vds": {
+        "value": 10,
+        "unit": "V",
+        "conditions": "VGS = 5 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 2, 25 degC curve",
+        "source_kind": "digitized_typical_curve"
+      },
+      "current": {
+        "value": 0.37,
+        "unit": "A",
+        "conditions": "VGS = 5 V, VDS = 10 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 2, 25 degC curve",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "vgs": {
+        "value": 6.0,
+        "unit": "V",
+        "conditions": "VDS = 10 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 2, 25 degC curve",
+        "source_kind": "digitized_typical_curve"
+      },
+      "vds": {
+        "value": 10,
+        "unit": "V",
+        "conditions": "VGS = 6 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 2, 25 degC curve",
+        "source_kind": "digitized_typical_curve"
+      },
+      "current": {
+        "value": 0.55,
+        "unit": "A",
+        "conditions": "VGS = 6 V, VDS = 10 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 2, 25 degC curve",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "vgs": {
+        "value": 7.0,
+        "unit": "V",
+        "conditions": "VDS = 10 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 2, 25 degC curve",
+        "source_kind": "digitized_typical_curve"
+      },
+      "vds": {
+        "value": 10,
+        "unit": "V",
+        "conditions": "VGS = 7 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 2, 25 degC curve",
+        "source_kind": "digitized_typical_curve"
+      },
+      "current": {
+        "value": 0.73,
+        "unit": "A",
+        "conditions": "VGS = 7 V, VDS = 10 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 2, 25 degC curve",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "vgs": {
+        "value": 8.0,
+        "unit": "V",
+        "conditions": "VDS = 10 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 2, 25 degC curve",
+        "source_kind": "digitized_typical_curve"
+      },
+      "vds": {
+        "value": 10,
+        "unit": "V",
+        "conditions": "VGS = 8 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 2, 25 degC curve",
+        "source_kind": "digitized_typical_curve"
+      },
+      "current": {
+        "value": 0.91,
+        "unit": "A",
+        "conditions": "VGS = 8 V, VDS = 10 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 2, 25 degC curve",
+        "source_kind": "digitized_typical_curve"
       }
     }
   ],
+  "output_points": [
+    {
+      "vgs": {
+        "value": 4,
+        "unit": "V",
+        "conditions": "VDS = 1 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 1, TA = 25 degC",
+        "source_kind": "digitized_typical_curve"
+      },
+      "vds": {
+        "value": 1,
+        "unit": "V",
+        "conditions": "VGS = 4 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 1, TA = 25 degC",
+        "source_kind": "digitized_typical_curve"
+      },
+      "current": {
+        "value": 0.1,
+        "unit": "A",
+        "conditions": "VGS = 4 V, VDS = 1 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 1, TA = 25 degC",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "vgs": {
+        "value": 4,
+        "unit": "V",
+        "conditions": "VDS = 2 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 1, TA = 25 degC",
+        "source_kind": "digitized_typical_curve"
+      },
+      "vds": {
+        "value": 2,
+        "unit": "V",
+        "conditions": "VGS = 4 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 1, TA = 25 degC",
+        "source_kind": "digitized_typical_curve"
+      },
+      "current": {
+        "value": 0.14,
+        "unit": "A",
+        "conditions": "VGS = 4 V, VDS = 2 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 1, TA = 25 degC",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "vgs": {
+        "value": 4,
+        "unit": "V",
+        "conditions": "VDS = 5 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 1, TA = 25 degC",
+        "source_kind": "digitized_typical_curve"
+      },
+      "vds": {
+        "value": 5,
+        "unit": "V",
+        "conditions": "VGS = 4 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 1, TA = 25 degC",
+        "source_kind": "digitized_typical_curve"
+      },
+      "current": {
+        "value": 0.15,
+        "unit": "A",
+        "conditions": "VGS = 4 V, VDS = 5 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 1, TA = 25 degC",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "vgs": {
+        "value": 5,
+        "unit": "V",
+        "conditions": "VDS = 1 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 1, TA = 25 degC",
+        "source_kind": "digitized_typical_curve"
+      },
+      "vds": {
+        "value": 1,
+        "unit": "V",
+        "conditions": "VGS = 5 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 1, TA = 25 degC",
+        "source_kind": "digitized_typical_curve"
+      },
+      "current": {
+        "value": 0.19,
+        "unit": "A",
+        "conditions": "VGS = 5 V, VDS = 1 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 1, TA = 25 degC",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "vgs": {
+        "value": 5,
+        "unit": "V",
+        "conditions": "VDS = 2 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 1, TA = 25 degC",
+        "source_kind": "digitized_typical_curve"
+      },
+      "vds": {
+        "value": 2,
+        "unit": "V",
+        "conditions": "VGS = 5 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 1, TA = 25 degC",
+        "source_kind": "digitized_typical_curve"
+      },
+      "current": {
+        "value": 0.3,
+        "unit": "A",
+        "conditions": "VGS = 5 V, VDS = 2 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 1, TA = 25 degC",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "vgs": {
+        "value": 5,
+        "unit": "V",
+        "conditions": "VDS = 3 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 1, TA = 25 degC",
+        "source_kind": "digitized_typical_curve"
+      },
+      "vds": {
+        "value": 3,
+        "unit": "V",
+        "conditions": "VGS = 5 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 1, TA = 25 degC",
+        "source_kind": "digitized_typical_curve"
+      },
+      "current": {
+        "value": 0.36,
+        "unit": "A",
+        "conditions": "VGS = 5 V, VDS = 3 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 1, TA = 25 degC",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "vgs": {
+        "value": 5,
+        "unit": "V",
+        "conditions": "VDS = 5 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 1, TA = 25 degC",
+        "source_kind": "digitized_typical_curve"
+      },
+      "vds": {
+        "value": 5,
+        "unit": "V",
+        "conditions": "VGS = 5 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 1, TA = 25 degC",
+        "source_kind": "digitized_typical_curve"
+      },
+      "current": {
+        "value": 0.38,
+        "unit": "A",
+        "conditions": "VGS = 5 V, VDS = 5 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 1, TA = 25 degC",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "vgs": {
+        "value": 6,
+        "unit": "V",
+        "conditions": "VDS = 1 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 1, TA = 25 degC",
+        "source_kind": "digitized_typical_curve"
+      },
+      "vds": {
+        "value": 1,
+        "unit": "V",
+        "conditions": "VGS = 6 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 1, TA = 25 degC",
+        "source_kind": "digitized_typical_curve"
+      },
+      "current": {
+        "value": 0.24,
+        "unit": "A",
+        "conditions": "VGS = 6 V, VDS = 1 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 1, TA = 25 degC",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "vgs": {
+        "value": 6,
+        "unit": "V",
+        "conditions": "VDS = 2 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 1, TA = 25 degC",
+        "source_kind": "digitized_typical_curve"
+      },
+      "vds": {
+        "value": 2,
+        "unit": "V",
+        "conditions": "VGS = 6 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 1, TA = 25 degC",
+        "source_kind": "digitized_typical_curve"
+      },
+      "current": {
+        "value": 0.42,
+        "unit": "A",
+        "conditions": "VGS = 6 V, VDS = 2 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 1, TA = 25 degC",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "vgs": {
+        "value": 6,
+        "unit": "V",
+        "conditions": "VDS = 3 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 1, TA = 25 degC",
+        "source_kind": "digitized_typical_curve"
+      },
+      "vds": {
+        "value": 3,
+        "unit": "V",
+        "conditions": "VGS = 6 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 1, TA = 25 degC",
+        "source_kind": "digitized_typical_curve"
+      },
+      "current": {
+        "value": 0.52,
+        "unit": "A",
+        "conditions": "VGS = 6 V, VDS = 3 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 1, TA = 25 degC",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "vgs": {
+        "value": 6,
+        "unit": "V",
+        "conditions": "VDS = 5 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 1, TA = 25 degC",
+        "source_kind": "digitized_typical_curve"
+      },
+      "vds": {
+        "value": 5,
+        "unit": "V",
+        "conditions": "VGS = 6 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 1, TA = 25 degC",
+        "source_kind": "digitized_typical_curve"
+      },
+      "current": {
+        "value": 0.56,
+        "unit": "A",
+        "conditions": "VGS = 6 V, VDS = 5 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 1, TA = 25 degC",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "vgs": {
+        "value": 8,
+        "unit": "V",
+        "conditions": "VDS = 1 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 1, TA = 25 degC",
+        "source_kind": "digitized_typical_curve"
+      },
+      "vds": {
+        "value": 1,
+        "unit": "V",
+        "conditions": "VGS = 8 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 1, TA = 25 degC",
+        "source_kind": "digitized_typical_curve"
+      },
+      "current": {
+        "value": 0.32,
+        "unit": "A",
+        "conditions": "VGS = 8 V, VDS = 1 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 1, TA = 25 degC",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "vgs": {
+        "value": 8,
+        "unit": "V",
+        "conditions": "VDS = 2 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 1, TA = 25 degC",
+        "source_kind": "digitized_typical_curve"
+      },
+      "vds": {
+        "value": 2,
+        "unit": "V",
+        "conditions": "VGS = 8 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 1, TA = 25 degC",
+        "source_kind": "digitized_typical_curve"
+      },
+      "current": {
+        "value": 0.65,
+        "unit": "A",
+        "conditions": "VGS = 8 V, VDS = 2 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 1, TA = 25 degC",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "vgs": {
+        "value": 8,
+        "unit": "V",
+        "conditions": "VDS = 3 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 1, TA = 25 degC",
+        "source_kind": "digitized_typical_curve"
+      },
+      "vds": {
+        "value": 3,
+        "unit": "V",
+        "conditions": "VGS = 8 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 1, TA = 25 degC",
+        "source_kind": "digitized_typical_curve"
+      },
+      "current": {
+        "value": 0.88,
+        "unit": "A",
+        "conditions": "VGS = 8 V, VDS = 3 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 1, TA = 25 degC",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "vgs": {
+        "value": 8,
+        "unit": "V",
+        "conditions": "VDS = 5 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 1, TA = 25 degC",
+        "source_kind": "digitized_typical_curve"
+      },
+      "vds": {
+        "value": 5,
+        "unit": "V",
+        "conditions": "VGS = 8 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 1, TA = 25 degC",
+        "source_kind": "digitized_typical_curve"
+      },
+      "current": {
+        "value": 1.04,
+        "unit": "A",
+        "conditions": "VGS = 8 V, VDS = 5 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 1, TA = 25 degC",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "vgs": {
+        "value": 10,
+        "unit": "V",
+        "conditions": "VDS = 1 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 1, TA = 25 degC",
+        "source_kind": "digitized_typical_curve"
+      },
+      "vds": {
+        "value": 1,
+        "unit": "V",
+        "conditions": "VGS = 10 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 1, TA = 25 degC",
+        "source_kind": "digitized_typical_curve"
+      },
+      "current": {
+        "value": 0.39,
+        "unit": "A",
+        "conditions": "VGS = 10 V, VDS = 1 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 1, TA = 25 degC",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "vgs": {
+        "value": 10,
+        "unit": "V",
+        "conditions": "VDS = 2 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 1, TA = 25 degC",
+        "source_kind": "digitized_typical_curve"
+      },
+      "vds": {
+        "value": 2,
+        "unit": "V",
+        "conditions": "VGS = 10 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 1, TA = 25 degC",
+        "source_kind": "digitized_typical_curve"
+      },
+      "current": {
+        "value": 0.78,
+        "unit": "A",
+        "conditions": "VGS = 10 V, VDS = 2 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 1, TA = 25 degC",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "vgs": {
+        "value": 10,
+        "unit": "V",
+        "conditions": "VDS = 3 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 1, TA = 25 degC",
+        "source_kind": "digitized_typical_curve"
+      },
+      "vds": {
+        "value": 3,
+        "unit": "V",
+        "conditions": "VGS = 10 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 1, TA = 25 degC",
+        "source_kind": "digitized_typical_curve"
+      },
+      "current": {
+        "value": 1.12,
+        "unit": "A",
+        "conditions": "VGS = 10 V, VDS = 3 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 1, TA = 25 degC",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "vgs": {
+        "value": 10,
+        "unit": "V",
+        "conditions": "VDS = 5 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 1, TA = 25 degC",
+        "source_kind": "digitized_typical_curve"
+      },
+      "vds": {
+        "value": 5,
+        "unit": "V",
+        "conditions": "VGS = 10 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 1, TA = 25 degC",
+        "source_kind": "digitized_typical_curve"
+      },
+      "current": {
+        "value": 1.48,
+        "unit": "A",
+        "conditions": "VGS = 10 V, VDS = 5 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 1, TA = 25 degC",
+        "source_kind": "digitized_typical_curve"
+      }
+    }
+  ],
+  "rdson_points": [
+    {
+      "vgs": {
+        "value": 10,
+        "unit": "V",
+        "conditions": "ID = 0.2 A, TA = 25 degC",
+        "page_reference": "p. 3 Figure 1, digitized local slope",
+        "source_kind": "digitized_typical_curve"
+      },
+      "current": {
+        "value": 0.2,
+        "unit": "A",
+        "conditions": "VGS = 10 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 1, digitized local slope",
+        "source_kind": "digitized_typical_curve"
+      },
+      "resistance": {
+        "value": 2.5,
+        "unit": "ohm",
+        "conditions": "VGS = 10 V, ID = 0.2 A, TA = 25 degC",
+        "page_reference": "p. 3 Figure 1, digitized local slope",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "vgs": {
+        "value": 5,
+        "unit": "V",
+        "conditions": "ID = 0.2 A, TA = 25 degC",
+        "page_reference": "p. 3 Figure 1, digitized local slope",
+        "source_kind": "digitized_typical_curve"
+      },
+      "current": {
+        "value": 0.2,
+        "unit": "A",
+        "conditions": "VGS = 5 V, TA = 25 degC",
+        "page_reference": "p. 3 Figure 1, digitized local slope",
+        "source_kind": "digitized_typical_curve"
+      },
+      "resistance": {
+        "value": 6.75,
+        "unit": "ohm",
+        "conditions": "VGS = 5 V, ID = 0.2 A, TA = 25 degC",
+        "page_reference": "p. 3 Figure 1, digitized local slope",
+        "source_kind": "digitized_typical_curve"
+      }
+    }
+  ],
+  "tabulated_limits": {
+    "rdson_10v_max": {
+      "value": 5,
+      "unit": "ohm",
+      "conditions": "VGS = 10 V, ID = 0.5 A, TC = 25 degC",
+      "page_reference": "p. 2 ON characteristics, MAX column",
+      "source_kind": "maximum"
+    },
+    "rdson_4v5_max": {
+      "value": 6,
+      "unit": "ohm",
+      "conditions": "VGS = 4.5 V, ID = 75 mA, TC = 25 degC",
+      "page_reference": "p. 2 ON characteristics, MAX column",
+      "source_kind": "maximum"
+    },
+    "idss_48v_max": {
+      "value": 1e-06,
+      "unit": "A",
+      "conditions": "VDS = 48 V, VGS = 0, TC = 25 degC",
+      "page_reference": "p. 2 OFF characteristics, MAX column",
+      "source_kind": "maximum"
+    }
+  },
   "capacitances": {
     "ciss": {
       "value": 6e-11,
@@ -106,24 +703,26 @@
     "voltage": {
       "value": 60,
       "unit": "V",
-      "conditions": "VGS = 0, ID = 10 mA",
+      "conditions": "VGS = 0, ID = 10 uA, TC = 25 degC",
       "page_reference": "p. 2 OFF characteristics, MIN column",
       "source_kind": "minimum"
     },
     "current": {
-      "value": 0.01,
+      "value": 1e-05,
       "unit": "A",
-      "conditions": "V(BR)DSS definition",
-      "page_reference": "p. 2 OFF characteristics",
-      "source_kind": "typical"
+      "conditions": "VGS = 0, VDS = 60 V, TC = 25 degC",
+      "page_reference": "p. 2 OFF characteristics, breakdown test current",
+      "source_kind": "minimum"
     }
   },
-  "off_leakage": {
-    "value": 0.001,
-    "unit": "A",
-    "conditions": "VDS = 48 V, VGS = 0, TC = 25 degC",
-    "page_reference": "p. 2 OFF characteristics, MAX column",
-    "source_kind": "maximum"
+  "thermal": {
+    "rthja": {
+      "value": 357,
+      "unit": "K/W",
+      "conditions": "steady state in still air",
+      "page_reference": "p. 1 thermal resistance rating",
+      "source_kind": "maximum"
+    }
   },
   "identity": {
     "canonical_mpn": "2N7000",
@@ -145,16 +744,5 @@
       "p. 3"
     ],
     "placeholder": false
-  },
-  "f2_upgrade_assessment": {
-    "outcome": "remain_F1",
-    "reason": "Figures 1 and 2 provide typical output and transfer curves, but every RDS(on), capacitance, switching-time, threshold, breakdown, and leakage quantity in the table is a guaranteed minimum or maximum. The datasheet has no typical RDS(on), no capacitance-versus-VDS curve, no body-diode forward point, and no gate-charge or reverse-recovery data. The full archetype-vdmos F2 stages therefore cannot be anchored without fitting guaranteed limits as typicals.",
-    "datasheet_evidence": {
-      "pages": [
-        "p. 2",
-        "p. 3"
-      ],
-      "revision": "Rev. 8, April 2011"
-    }
   }
 }

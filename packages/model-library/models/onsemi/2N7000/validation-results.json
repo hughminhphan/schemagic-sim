@@ -3,27 +3,167 @@
   "validation_date": "2026-08-07",
   "native_wasm_all_pass": true,
   "expectations_all_pass": true,
-  "expectation_pass_count": 6,
+  "expectation_pass_count": 24,
   "expectation_fail_count": 0,
-  "worst_native_wasm_relative_delta": 3.6970455984361495e-8,
+  "worst_native_wasm_relative_delta": 4.2918086194124e-15,
   "worst_native_wasm_absolute_delta": 1.7763568394002505e-15,
   "benches": [
+    {
+      "test_netlist": "transfer_curve.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "transfer_vgs_4",
+          "pass": true,
+          "value": 0.16388141600785447,
+          "error": 0.03611858399214554,
+          "allowed": 0.066
+        },
+        {
+          "name": "transfer_vgs_4p5",
+          "pass": true,
+          "value": 0.2492921477194753,
+          "error": 0.03570785228052467,
+          "allowed": 0.09405
+        },
+        {
+          "name": "transfer_vgs_5",
+          "pass": true,
+          "value": 0.34937839221938644,
+          "error": 0.02062160778061356,
+          "allowed": 0.1221
+        },
+        {
+          "name": "transfer_vgs_6",
+          "pass": true,
+          "value": 0.5889194429468846,
+          "error": 0.03891944294688454,
+          "allowed": 0.18150000000000002
+        },
+        {
+          "name": "transfer_vgs_7",
+          "pass": true,
+          "value": 0.8745095526295226,
+          "error": 0.1445095526295226,
+          "allowed": 0.2409
+        },
+        {
+          "name": "transfer_vgs_8",
+          "pass": true,
+          "value": 1.199836826269868,
+          "error": 0.28983682626986795,
+          "allowed": 0.3003
+        }
+      ]
+    },
+    {
+      "test_netlist": "output_curve.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "output_vgs_4_vds_1",
+          "pass": true,
+          "value": 0.11680289537417379,
+          "error": 0.016802895374173787,
+          "allowed": 0.033
+        },
+        {
+          "name": "output_vgs_4_vds_5",
+          "pass": true,
+          "value": 0.16167761704288777,
+          "error": 0.011677617042887778,
+          "allowed": 0.0495
+        },
+        {
+          "name": "output_vgs_5_vds_1",
+          "pass": true,
+          "value": 0.17871726156945225,
+          "error": 0.01128273843054775,
+          "allowed": 0.0627
+        },
+        {
+          "name": "output_vgs_5_vds_5",
+          "pass": true,
+          "value": 0.3448279072862979,
+          "error": 0.035172092713702086,
+          "allowed": 0.1254
+        },
+        {
+          "name": "output_vgs_6_vds_2",
+          "pass": true,
+          "value": 0.40783318179927147,
+          "error": 0.012166818200728513,
+          "allowed": 0.1386
+        },
+        {
+          "name": "output_vgs_6_vds_5",
+          "pass": true,
+          "value": 0.5814600139220565,
+          "error": 0.02146001392205643,
+          "allowed": 0.18480000000000002
+        },
+        {
+          "name": "output_vgs_8_vds_2",
+          "pass": true,
+          "value": 0.584903802041925,
+          "error": 0.06509619795807497,
+          "allowed": 0.21450000000000002
+        },
+        {
+          "name": "output_vgs_8_vds_5",
+          "pass": true,
+          "value": 1.1155146682409698,
+          "error": 0.07551466824096975,
+          "allowed": 0.3432
+        },
+        {
+          "name": "output_vgs_10_vds_2",
+          "pass": true,
+          "value": 0.7176197636177479,
+          "error": 0.0623802363822521,
+          "allowed": 0.2574
+        },
+        {
+          "name": "output_vgs_10_vds_5",
+          "pass": true,
+          "value": 1.5245478594329052,
+          "error": 0.04454785943290518,
+          "allowed": 0.4884
+        }
+      ]
+    },
     {
       "test_netlist": "rdson.cir",
       "analysis": "op",
       "native_wasm_pass": true,
       "checks": [
         {
-          "name": "rdson_maximum_1",
+          "name": "rdson_typ_vgs10_id200ma",
           "pass": true,
-          "value": 4.415238028752658,
+          "value": 2.6174977258825716,
+          "error": 0.11749772588257157,
+          "allowed": 0.375
+        },
+        {
+          "name": "rdson_typ_vgs5_id200ma",
+          "pass": true,
+          "value": 5.738423037784537,
+          "error": 1.0115769622154627,
+          "allowed": 1.0125
+        },
+        {
+          "name": "rdson_max_vgs10",
+          "pass": true,
+          "value": 2.708436667028437,
           "minimum": 0,
           "maximum": 5
         },
         {
-          "name": "rdson_maximum_2",
+          "name": "rdson_max_vgs4p5",
           "pass": true,
-          "value": 5.7701576880814835,
+          "value": 5.9992103447082,
           "minimum": 0,
           "maximum": 6
         }
@@ -35,11 +175,11 @@
       "native_wasm_pass": true,
       "checks": [
         {
-          "name": "minimum_characterized_gate_drive_maximum",
+          "name": "boundary_rdson_vgs10_id500ma",
           "pass": true,
-          "value": 5.7701576880814835,
+          "value": 2.708436667028437,
           "minimum": 0,
-          "maximum": 6
+          "maximum": 5
         }
       ]
     },
@@ -49,11 +189,11 @@
       "native_wasm_pass": true,
       "checks": [
         {
-          "name": "off_state_leakage_maximum",
+          "name": "off_state_leakage_48v",
           "pass": true,
-          "value": 4.80480100151226e-8,
+          "value": 4.8048022449620476e-8,
           "minimum": 0,
-          "maximum": 0.001
+          "maximum": 0.000001
         }
       ]
     },
@@ -65,14 +205,14 @@
         {
           "name": "ciss_maximum",
           "pass": true,
-          "value": 5.99999933929939e-11,
+          "value": 5.999999835638333e-11,
           "minimum": 0,
           "maximum": 6.06e-11
         },
         {
           "name": "coss_maximum",
           "pass": true,
-          "value": 2.4954009218492973e-11,
+          "value": 2.4954009490230253e-11,
           "minimum": 0,
           "maximum": 2.525e-11
         }

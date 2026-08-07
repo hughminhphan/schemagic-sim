@@ -3,9 +3,8 @@
 ## Identity
 
 - Manufacturer: onsemi
-- Description: 60 V N-channel small-signal MOSFET
 - Electrical family: nmos
-- Fidelity tier: F1
+- Fidelity tier: F2, 25 degC typical-curve family
 - Independent reviewer: pending-review
 
 ## Provenance
@@ -18,92 +17,63 @@
 - Basis: original model generated from public factual specifications
 - Vendor SPICE models used: none
 
-## Domain coverage
+## Fit method
 
-| Domain | Coverage |
-| --- | --- |
-| dc | approx |
-| ac | approx |
-| transient | none |
-| noise | none |
-| thermal | none |
-| digital | none |
+VTO, KP, THETA, and RD were fitted with native ngspice-46 in the residual loop against the 25 degC transfer and output curve families plus two digitized local RDS(on) slopes. RD was constrained to the archetype range around the fixed 55 percent seed. Three seeds converged to the same vector. LAMBDA disagreed in the first seed sweep, so it was dropped and held at the archetype default 0.003. The worst transfer residual is 31.83%, inside the 33% curve-reading threshold.
 
-## Model parameters
-
-| Parameter | Value | Status |
-| --- | ---: | --- |
-| VTO | 1.90000000e+0 | derived or held |
-| KP | 2.00000000e-1 | derived or held |
-| THETA | 0.00000000e+0 | derived or held |
-| LAMBDA | 3.00000000e-3 | derived or held |
-| RD | 2.75000000e+0 | derived or held |
-| RS | 1.00000000e+0 | derived or held |
-| RG | 1.00000000e-4 | derived or held |
-| CGS | 5.50000000e-11 | derived or held |
-| CGDMAX | 5.00000000e-12 | derived or held |
-| CGDMIN | 5.00000000e-12 | derived or held |
-| A | 1.00000000e+0 | derived or held |
-| CJO | 1.13370000e-10 | derived or held |
-| IS | 1.00000000e-14 | derived or held |
-| N | 1.50000000e+0 | derived or held |
-| RB | 1.00000000e+0 | derived or held |
-| TT | 0.00000000e+0 | derived or held |
-| BV | 6.00000000e+1 | derived or held |
-| IBV | 1.00000000e-2 | derived or held |
-| RTHJC | 0.00000000e+0 | derived or held |
-| RTHCA | 3.57000000e+2 | derived or held |
-
-## Held defaults
-
-| Parameter | Value | Unit | Status |
-| --- | ---: | --- | --- |
-| LAMBDA | 3.00000000e-3 | 1 | held at default |
-| RS | 1.00000000e+0 | ohm | held at default |
-| VJ | 8.00000000e-1 | V | held at default |
-| M | 5.00000000e-1 | 1 | held at default |
-| FC | 5.00000000e-1 | 1 | held at default |
-| N | 1.50000000e+0 | 1 | held at default |
-| NBV | 1.00000000e+0 | 1 | held at default |
-| TNOM | 2.70000000e+1 | degC | held at default |
+Ciss, Coss, and Crss are published only as maxima. They are used as conservative AC bounds, not typical fit targets. No body-diode forward or recovery data and no gate-charge row are published, so those domains remain approximate.
 
 ## Fitted versus datasheet
 
 | Quantity | Datasheet | Fitted | Unit | Relative error | Citation |
 | --- | ---: | ---: | --- | ---: | --- |
-| Guaranteed-limit-only model | n/a | n/a | n/a | n/a | See held defaults and cited hard-bound benches |
+| transfer current at VGS=4 V, VDS=10 V | 0.2 | 0.163851 | A | 18.07% | p. 3 Figure 2, 25 degC curve, digitized |
+| transfer current at VGS=4.5 V, VDS=10 V | 0.285 | 0.249247 | A | 12.54% | p. 3 Figure 2, 25 degC curve, digitized |
+| transfer current at VGS=5 V, VDS=10 V | 0.37 | 0.349316 | A | 5.59% | p. 3 Figure 2, 25 degC curve, digitized |
+| transfer current at VGS=6 V, VDS=10 V | 0.55 | 0.588817 | A | 7.06% | p. 3 Figure 2, 25 degC curve, digitized |
+| transfer current at VGS=7 V, VDS=10 V | 0.73 | 0.874362 | A | 19.78% | p. 3 Figure 2, 25 degC curve, digitized |
+| transfer current at VGS=8 V, VDS=10 V | 0.91 | 1.19964 | A | 31.83% | p. 3 Figure 2, 25 degC curve, digitized |
+| output current at VGS=4 V, VDS=1 V | 0.1 | 0.116782 | A | 16.78% | p. 3 Figure 1, TA=25 degC, digitized |
+| output current at VGS=4 V, VDS=2 V | 0.14 | 0.160246 | A | 14.46% | p. 3 Figure 1, TA=25 degC, digitized |
+| output current at VGS=4 V, VDS=5 V | 0.15 | 0.161648 | A | 7.77% | p. 3 Figure 1, TA=25 degC, digitized |
+| output current at VGS=5 V, VDS=1 V | 0.19 | 0.178687 | A | 5.95% | p. 3 Figure 1, TA=25 degC, digitized |
+| output current at VGS=5 V, VDS=2 V | 0.3 | 0.295165 | A | 1.61% | p. 3 Figure 1, TA=25 degC, digitized |
+| output current at VGS=5 V, VDS=3 V | 0.36 | 0.342397 | A | 4.89% | p. 3 Figure 1, TA=25 degC, digitized |
+| output current at VGS=5 V, VDS=5 V | 0.38 | 0.344766 | A | 9.27% | p. 3 Figure 1, TA=25 degC, digitized |
+| output current at VGS=6 V, VDS=1 V | 0.24 | 0.230594 | A | 3.92% | p. 3 Figure 1, TA=25 degC, digitized |
+| output current at VGS=6 V, VDS=2 V | 0.42 | 0.407767 | A | 2.91% | p. 3 Figure 1, TA=25 degC, digitized |
+| output current at VGS=6 V, VDS=3 V | 0.52 | 0.525737 | A | 1.10% | p. 3 Figure 1, TA=25 degC, digitized |
+| output current at VGS=6 V, VDS=5 V | 0.56 | 0.581359 | A | 3.81% | p. 3 Figure 1, TA=25 degC, digitized |
+| output current at VGS=8 V, VDS=1 V | 0.32 | 0.312712 | A | 2.28% | p. 3 Figure 1, TA=25 degC, digitized |
+| output current at VGS=8 V, VDS=2 V | 0.65 | 0.584818 | A | 10.03% | p. 3 Figure 1, TA=25 degC, digitized |
+| output current at VGS=8 V, VDS=3 V | 0.88 | 0.812307 | A | 7.69% | p. 3 Figure 1, TA=25 degC, digitized |
+| output current at VGS=8 V, VDS=5 V | 1.04 | 1.11534 | A | 7.24% | p. 3 Figure 1, TA=25 degC, digitized |
+| output current at VGS=10 V, VDS=1 V | 0.39 | 0.374712 | A | 3.92% | p. 3 Figure 1, TA=25 degC, digitized |
+| output current at VGS=10 V, VDS=2 V | 0.78 | 0.717523 | A | 8.01% | p. 3 Figure 1, TA=25 degC, digitized |
+| output current at VGS=10 V, VDS=3 V | 1.12 | 1.02555 | A | 8.43% | p. 3 Figure 1, TA=25 degC, digitized |
+| output current at VGS=10 V, VDS=5 V | 1.48 | 1.52433 | A | 3.00% | p. 3 Figure 1, TA=25 degC, digitized |
+| RDS(on) at VGS=10 V, ID=0.2 A | 2.5 | 2.61785 | ohm | 4.71% | p. 3 Figure 1, TA=25 degC, digitized slope |
+| RDS(on) at VGS=5 V, ID=0.2 A | 6.75 | 5.73963 | ohm | 14.97% | p. 3 Figure 1, TA=25 degC, digitized slope |
 
-Worst recorded fitting error: 0.000% for guaranteed-bound-only model. Guaranteed minima and maxima are checked as bounds and are not reported as typical fit residuals.
+## Validation
 
-Native and WASM agreement: all 4 benches passed engine comparison. Worst relative delta 3.697e-8; worst absolute delta 1.776e-15. Datasheet expectations: 6/6 passed. Every bench sets .temp 25 explicitly.
+See `validation-results.json`. Every bench fixes `.temp 25`; `boundary.cir` checks the 500 mA, VGS=10 V edge and `off_state_boundary.cir` checks IDSS at 48 V.
 
 ## Known omissions
 
-- Avalanche and unclamped inductive switching (UIS/EAS) are not modelled. The model conducts through BV as an ordinary diode breakdown; it does not fail.
-- Safe operating area is not enforced. Absolute maximum ratings are metadata; the model will happily dissipate excessive power.
-- No self-heating in the default three-terminal instance: junction temperature is fixed at TNOM. RDS(on) does not rise with dissipation.
-- Package and lead inductance are not modelled, so measured switching ringing will not reproduce.
-- Threshold-voltage spread is not modelled.
-- Gate oxide breakdown beyond the rated VGS maximum is not modelled.
-- RDS is held at default 1e9 ohm as the off-state shunt.
-- MU, TEXP0, and TCVTH are held at default; only 25 degC behavior is fitted.
-- CTHJ is held at default because junction thermal capacitance is unpublished; electrothermal transients are not claimed.
-- Flicker noise is not modelled: KF and AF are held at default.
-- F1: the datasheet publishes typical transfer and output plots, but no typical RDS(on) row, body-diode row, or gate-charge data. An F2 archetype fit cannot be completed without treating guaranteed limits as typical targets.
-- VTO is held at default 1.9 V, the midpoint of the published 0.8 V minimum and 3.0 V maximum threshold window.
-- KP is held at default 0.2 A/V^2; it is selected conservatively so both published maximum RDS(on) limits pass, not fitted to a typical table value.
-- THETA is held at default 0 and LAMBDA is held at default 0.003 because a full typical DC curve-family fit is not claimed.
-- RD = 2.75 ohm and RS = 1 ohm are held at default from the archetype 55/20 split of the strongest published RDS(on) maximum; this does not convert that maximum into a typical target.
-- RG is held at default 1e-4 ohm because gate resistance is unpublished.
-- CGDMAX = CGDMIN = 5 pF and A = 1 are held at default because no capacitance-versus-VDS curve is published; terminal capacitances use the published maxima.
-- VJ = 0.8, M = 0.5, FC = 0.5, N = 1.5, NBV = 1, TNOM = 27 degC, IS = 1e-14 A, and RB = 1 ohm are held at default; no body-diode forward row is published.
-- TT is held at default 0 because body-diode reverse recovery is unpublished.
-- RTHCA = 357 K/W is transcribed from RthetaJA; RTHJC is held at default 0 because junction-to-case resistance is unpublished and electrothermal operation is not claimed.
+- Avalanche and unclamped inductive switching are not modelled; BV is an ordinary breakdown branch and does not fail.
+- Safe operating area and power limits are metadata only.
+- No self-heating in the default three-terminal instance; junction temperature is fixed by .temp.
+- Package and lead inductance are not modelled.
+- Threshold-voltage production spread is not modelled; VTO is a typical-curve fit inside the 0.8 V to 3.0 V guaranteed window.
+- LAMBDA is held at 0.003 because the three-seed sweep showed it underdetermined by the nearly flat saturation curves.
+- Gate-drain capacitance is constant because no capacitance-versus-VDS figure is published; Ciss, Coss, and Crss are maximum table rows, so AC and switching results are approximate.
+- Body-diode forward voltage and reverse recovery are not fitted because the datasheet publishes neither VSD nor trr; IS, N, and TT remain defaults.
+- Gate charge is not validated because the datasheet publishes no Qg row.
+- Temperature coefficients are not fitted; only 25 degC curves were used.
+- RTHCA is transcribed from RthetaJA, but electrothermal operation is not validated or claimed.
+- Flicker noise is not modelled.
 
 ## Licence
 
-MIT. See `LICENSE`. The model is original work generated from public factual specifications and is not copied or adapted from a vendor SPICE model.
-
-## F2 upgrade assessment
-
-The official Rev. 8 datasheet was re-examined, including the typical output and transfer plots on page 3. Those plots do not complete the VDMOS archetype: all RDS(on), capacitance, switching, threshold, breakdown, and leakage table entries are guaranteed limits, and the datasheet omits a capacitance-versus-VDS curve, body-diode forward data, gate charge, and reverse recovery. Using those limits as typical fitting targets would violate the MIN/TYP/MAX rule. The package remains F1.
+MIT. See `LICENSE`.

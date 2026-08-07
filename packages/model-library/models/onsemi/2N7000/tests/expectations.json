@@ -2,15 +2,300 @@
   "schema_version": "1.0.0",
   "tests": [
     {
-      "test_netlist": "rdson.cir",
+      "test_netlist": "transfer_curve.cir",
       "analysis_type": "operating_point",
-      "scalar_checks": [],
-      "hard_bounds_checks": [
+      "scalar_checks": [
         {
-          "name": "rdson_maximum_1",
+          "name": "transfer_vgs_4",
           "expression_source": {
             "kind": "raw_variable",
-            "expression": "scale:last(v(d1),2.0)"
+            "expression": "abs:last(i(vd1))"
+          },
+          "expected_value": 0.2,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.33
+          },
+          "datasheet_citation": "p. 3 Figure 2, VDS=10 V, 25 degC curve, digitized",
+          "placeholder": false
+        },
+        {
+          "name": "transfer_vgs_4p5",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vd2))"
+          },
+          "expected_value": 0.285,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.33
+          },
+          "datasheet_citation": "p. 3 Figure 2, VDS=10 V, 25 degC curve, digitized",
+          "placeholder": false
+        },
+        {
+          "name": "transfer_vgs_5",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vd3))"
+          },
+          "expected_value": 0.37,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.33
+          },
+          "datasheet_citation": "p. 3 Figure 2, VDS=10 V, 25 degC curve, digitized",
+          "placeholder": false
+        },
+        {
+          "name": "transfer_vgs_6",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vd4))"
+          },
+          "expected_value": 0.55,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.33
+          },
+          "datasheet_citation": "p. 3 Figure 2, VDS=10 V, 25 degC curve, digitized",
+          "placeholder": false
+        },
+        {
+          "name": "transfer_vgs_7",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vd5))"
+          },
+          "expected_value": 0.73,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.33
+          },
+          "datasheet_citation": "p. 3 Figure 2, VDS=10 V, 25 degC curve, digitized",
+          "placeholder": false
+        },
+        {
+          "name": "transfer_vgs_8",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vd6))"
+          },
+          "expected_value": 0.91,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.33
+          },
+          "datasheet_citation": "p. 3 Figure 2, VDS=10 V, 25 degC curve, digitized",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "output_curve.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "output_vgs_4_vds_1",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vd1))"
+          },
+          "expected_value": 0.1,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.33
+          },
+          "datasheet_citation": "p. 3 Figure 1, TA=25 degC, digitized",
+          "placeholder": false
+        },
+        {
+          "name": "output_vgs_4_vds_5",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vd2))"
+          },
+          "expected_value": 0.15,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.33
+          },
+          "datasheet_citation": "p. 3 Figure 1, TA=25 degC, digitized",
+          "placeholder": false
+        },
+        {
+          "name": "output_vgs_5_vds_1",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vd3))"
+          },
+          "expected_value": 0.19,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.33
+          },
+          "datasheet_citation": "p. 3 Figure 1, TA=25 degC, digitized",
+          "placeholder": false
+        },
+        {
+          "name": "output_vgs_5_vds_5",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vd4))"
+          },
+          "expected_value": 0.38,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.33
+          },
+          "datasheet_citation": "p. 3 Figure 1, TA=25 degC, digitized",
+          "placeholder": false
+        },
+        {
+          "name": "output_vgs_6_vds_2",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vd5))"
+          },
+          "expected_value": 0.42,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.33
+          },
+          "datasheet_citation": "p. 3 Figure 1, TA=25 degC, digitized",
+          "placeholder": false
+        },
+        {
+          "name": "output_vgs_6_vds_5",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vd6))"
+          },
+          "expected_value": 0.56,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.33
+          },
+          "datasheet_citation": "p. 3 Figure 1, TA=25 degC, digitized",
+          "placeholder": false
+        },
+        {
+          "name": "output_vgs_8_vds_2",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vd7))"
+          },
+          "expected_value": 0.65,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.33
+          },
+          "datasheet_citation": "p. 3 Figure 1, TA=25 degC, digitized",
+          "placeholder": false
+        },
+        {
+          "name": "output_vgs_8_vds_5",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vd8))"
+          },
+          "expected_value": 1.04,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.33
+          },
+          "datasheet_citation": "p. 3 Figure 1, TA=25 degC, digitized",
+          "placeholder": false
+        },
+        {
+          "name": "output_vgs_10_vds_2",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vd9))"
+          },
+          "expected_value": 0.78,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.33
+          },
+          "datasheet_citation": "p. 3 Figure 1, TA=25 degC, digitized",
+          "placeholder": false
+        },
+        {
+          "name": "output_vgs_10_vds_5",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vd10))"
+          },
+          "expected_value": 1.48,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.33
+          },
+          "datasheet_citation": "p. 3 Figure 1, TA=25 degC, digitized",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "rdson.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "rdson_typ_vgs10_id200ma",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale:last(v(d1),5)"
+          },
+          "expected_value": 2.5,
+          "unit": "ohm",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.15
+          },
+          "datasheet_citation": "p. 3 Figure 1, TA=25 degC, digitized local slope",
+          "placeholder": false
+        },
+        {
+          "name": "rdson_typ_vgs5_id200ma",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale:last(v(d2),5)"
+          },
+          "expected_value": 6.75,
+          "unit": "ohm",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.15
+          },
+          "datasheet_citation": "p. 3 Figure 1, TA=25 degC, digitized local slope",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": [
+        {
+          "name": "rdson_max_vgs10",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale:last(v(d3),2)"
           },
           "unit": "ohm",
           "inclusive": true,
@@ -20,10 +305,10 @@
           "maximum": 5
         },
         {
-          "name": "rdson_maximum_2",
+          "name": "rdson_max_vgs4p5",
           "expression_source": {
             "kind": "raw_variable",
-            "expression": "scale:last(v(d2),13.333333333333334)"
+            "expression": "scale:last(v(d4),13.333333333333334)"
           },
           "unit": "ohm",
           "inclusive": true,
@@ -40,17 +325,17 @@
       "scalar_checks": [],
       "hard_bounds_checks": [
         {
-          "name": "minimum_characterized_gate_drive_maximum",
+          "name": "boundary_rdson_vgs10_id500ma",
           "expression_source": {
             "kind": "raw_variable",
-            "expression": "scale:last(v(d),13.333333333333334)"
+            "expression": "scale:last(v(d),2)"
           },
           "unit": "ohm",
           "inclusive": true,
           "datasheet_citation": "p. 2 ON characteristics, MAX column",
           "placeholder": false,
           "minimum": 0,
-          "maximum": 6
+          "maximum": 5
         }
       ]
     },
@@ -60,17 +345,17 @@
       "scalar_checks": [],
       "hard_bounds_checks": [
         {
-          "name": "off_state_leakage_maximum",
+          "name": "off_state_leakage_48v",
           "expression_source": {
             "kind": "raw_variable",
             "expression": "abs:last(i(vd))"
           },
           "unit": "A",
           "inclusive": true,
-          "datasheet_citation": "p. 2 OFF characteristics, MAX column",
+          "datasheet_citation": "p. 2 OFF characteristics, IDSS at VDS=48 V, VGS=0, TC=25 degC, MAX column",
           "placeholder": false,
           "minimum": 0,
-          "maximum": 0.001
+          "maximum": 1e-06
         }
       ]
     },
@@ -87,7 +372,7 @@
           },
           "unit": "F",
           "inclusive": true,
-          "datasheet_citation": "p. 2 DYNAMIC characteristics, MAX column",
+          "datasheet_citation": "p. 2 DYNAMIC characteristics, Ciss MAX column",
           "placeholder": false,
           "minimum": 0,
           "maximum": 6.06e-11
@@ -100,7 +385,7 @@
           },
           "unit": "F",
           "inclusive": true,
-          "datasheet_citation": "p. 2 DYNAMIC characteristics, MAX column",
+          "datasheet_citation": "p. 2 DYNAMIC characteristics, Coss MAX column",
           "placeholder": false,
           "minimum": 0,
           "maximum": 2.525e-11
