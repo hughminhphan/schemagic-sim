@@ -1,0 +1,68 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "pulse_width.cir",
+      "analysis_type": "transient",
+      "scalar_checks": [
+        {
+          "name": "pulse_width_10k_100n",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "measure:pulse_width"
+          },
+          "expected_value": 0.00045,
+          "unit": "s",
+          "tolerance": {
+            "absolute": 2e-05,
+            "relative": 0.1
+          },
+          "datasheet_citation": "p. 8 tW row and p. 10 Fig. 5, REXT = 10 kohm, CEXT = 100 nF, VCC = 5 V",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "minimum_supply_boundary.cir",
+      "analysis_type": "transient",
+      "scalar_checks": [
+        {
+          "name": "minimum_supply_pulse_peak",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "measure:pulse_peak"
+          },
+          "expected_value": 2,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.35,
+            "relative": 0
+          },
+          "datasheet_citation": "Nexperia 74HC123 Rev. 13, 21 February 2024, recommended operating conditions VCC MIN = 2.0 V and cited function table",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "quiescent_current.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "quiescent_current_upper_bound",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "abs:last(i(vcc))"
+          },
+          "maximum": 8e-06,
+          "unit": "A",
+          "inclusive": true,
+          "datasheet_citation": "Nexperia 74HC123 Rev. 13, 21 February 2024, static characteristics ICC MAX row, inputs at rails and IO = 0 A",
+          "placeholder": false
+        }
+      ]
+    }
+  ]
+}

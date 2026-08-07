@@ -1,0 +1,150 @@
+{
+  "schema_version": "1.0.0",
+  "canonical_mpn": "LM1117-5.0",
+  "manufacturer": "Texas Instruments",
+  "description": "5 V, 800 mA low-dropout linear regulator",
+  "electrical_family": "vreg_linear",
+  "symbol_pins": [
+    {
+      "name": "GND",
+      "number": "1",
+      "role": "ground"
+    },
+    {
+      "name": "OUT",
+      "number": "2",
+      "role": "output"
+    },
+    {
+      "name": "IN",
+      "number": "3",
+      "role": "input"
+    }
+  ],
+  "spice_pin_mapping": [
+    {
+      "symbol_pin_number": "3",
+      "subckt_node": "in",
+      "order": 1
+    },
+    {
+      "symbol_pin_number": "2",
+      "subckt_node": "out",
+      "order": 2
+    },
+    {
+      "symbol_pin_number": "1",
+      "subckt_node": "gnd",
+      "order": 3
+    }
+  ],
+  "package_variants": [
+    {
+      "name": "SOT-223",
+      "standard": "TI DCY package",
+      "pin_count": 3,
+      "pin_map": [
+        {
+          "package_pin": "1",
+          "symbol_pin_number": "1"
+        },
+        {
+          "package_pin": "2",
+          "symbol_pin_number": "2"
+        },
+        {
+          "package_pin": "3",
+          "symbol_pin_number": "3"
+        }
+      ]
+    }
+  ],
+  "ordering_code_aliases": [],
+  "datasheet": {
+    "url": "https://www.ti.com/lit/ds/symlink/lm1117.pdf",
+    "revision": "SNOS412Q, February 2000, revised January 2023"
+  },
+  "model_type": "subckt",
+  "fidelity_tier": "F1",
+  "domain_coverage": {
+    "dc": "approx",
+    "ac": "none",
+    "transient": "approx",
+    "noise": "none",
+    "thermal": "none",
+    "digital": "none"
+  },
+  "supported_analyses": [
+    "operating_point",
+    "dc_sweep",
+    "transient"
+  ],
+  "supported_operating_region": {
+    "summary": "F1 DC approximation at 25 degC from 0 A to 0.8 A output current, 6.2 V to 15 V input; output-capacitor stability requirements are not simulated.",
+    "numeric_bounds": [
+      {
+        "quantity": "input_voltage",
+        "minimum": 6.2,
+        "maximum": 15,
+        "unit": "V",
+        "conditions": "Boundary uses 1.2 V typical dropout at 800 mA; absolute input maximum 15 V",
+        "placeholder": false
+      },
+      {
+        "quantity": "output_current",
+        "minimum": 0,
+        "maximum": 0.8,
+        "unit": "A",
+        "conditions": "Rated output current",
+        "placeholder": false
+      },
+      {
+        "quantity": "junction_temperature",
+        "minimum": 25,
+        "maximum": 25,
+        "unit": "degC",
+        "conditions": "Fitted test temperature",
+        "placeholder": false
+      }
+    ]
+  },
+  "known_omissions": [
+    "Thermal shutdown is not modelled. The regulator does not shut down or fold back when it overheats; it will dissipate arbitrary power indefinitely.",
+    "Safe-operating-area foldback is not modelled. The current limit is a constant, whereas a real regulator reduces it at high input-to-output differential.",
+    "No self-heating and no temperature coefficients. Output voltage drift, dropout increase, and quiescent-current change with temperature are not modelled.",
+    "Reverse current from OUT to IN is not modelled beyond a protective clamp. Discharging the output through the regulator does not reproduce the real part behavior.",
+    "AC behaviour is not modelled: there is no control-loop pole, no output impedance versus frequency, and no ripple rejection. PSRR and transient load-step response are absent.",
+    "Loop stability is not modelled. This model regulates with any output capacitor or none, whereas a real LDO oscillates outside its specified ESR window.",
+    "Start-up behaviour, soft-start and inrush are not modelled.",
+    "Noise is not modelled.",
+    "Output voltage is set to the datasheet nominal; a real part may sit anywhere inside the published tolerance band.",
+    "RNEG is held at default 1 ohm.",
+    "EPS is held at default 1e-8.",
+    "RSER is held at default 1e7 ohm.",
+    "RER is held at default 1 megohm.",
+    "Dropout is a single constant taken at the rated current. Real LDO dropout rises with load current; this model does not."
+  ],
+  "licence": {
+    "spdx_id": "MIT",
+    "provenance_basis": "original_from_facts"
+  },
+  "generator": {
+    "tool_or_agent": "opencircuit-model-factory-v0.1.0 manual vreg archetype lane",
+    "date": "2026-08-07"
+  },
+  "reviewer": {
+    "tool_or_agent": "pending-review",
+    "date": "2026-08-07"
+  },
+  "test_results": {
+    "status": "complete",
+    "pass_count": 8,
+    "fail_count": 0,
+    "total_count": 8,
+    "worst_observed_relative_fitting_error": {
+      "value": 0,
+      "quantity": "pending native measurement"
+    }
+  },
+  "validation_date": "2026-08-07"
+}

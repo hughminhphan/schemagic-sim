@@ -1,0 +1,153 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "output_voltage.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "output_voltage_10ma",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(out))"
+          },
+          "expected_value": 5,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.05,
+            "relative": 0.01
+          },
+          "datasheet_citation": "p. 5 Section 7.5, LM1117-5.0 Output voltage MIN/TYP/MAX row",
+          "placeholder": false
+        },
+        {
+          "name": "input_current_including_iq",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vin))"
+          },
+          "expected_value": 0.015,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 0.001,
+            "relative": 0.1
+          },
+          "datasheet_citation": "p. 5 Output voltage bias IOUT = 10 mA; p. 6 Quiescent current TYP = 5 mA",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "regulation_points.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "load_endpoint_zero",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(ol0))"
+          },
+          "expected_value": 5,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.01,
+            "relative": 0.01
+          },
+          "datasheet_citation": "p. 5 LM1117-5.0 Load regulation TYP = 1 mV over 0 to 800 mA at VIN = 6.5 V",
+          "placeholder": false
+        },
+        {
+          "name": "load_endpoint_800ma",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(ol8))"
+          },
+          "expected_value": 4.999,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.01,
+            "relative": 0.01
+          },
+          "datasheet_citation": "p. 5 LM1117-5.0 Load regulation TYP = 1 mV over 0 to 800 mA at VIN = 6.5 V",
+          "placeholder": false
+        },
+        {
+          "name": "line_endpoint_6p5v",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(olo))"
+          },
+          "expected_value": 5,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.01,
+            "relative": 0.01
+          },
+          "datasheet_citation": "p. 5 LM1117-5.0 Line regulation TYP = 1 mV over VIN = 6.5 V to 15 V at IOUT = 0",
+          "placeholder": false
+        },
+        {
+          "name": "line_endpoint_15v",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(ohi))"
+          },
+          "expected_value": 5.001,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.01,
+            "relative": 0.01
+          },
+          "datasheet_citation": "p. 5 LM1117-5.0 Line regulation TYP = 1 mV over VIN = 6.5 V to 15 V at IOUT = 0",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "dropout_boundary.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "dropout_boundary_output",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(out))"
+          },
+          "expected_value": 4.9,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.1,
+            "relative": 0.03
+          },
+          "datasheet_citation": "p. 6 Dropout voltage TYP = 1.2 V at IOUT = 800 mA; note 4 defines dropout at a 100 mV output reduction",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "current_limit.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "current_limit_typical",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vshort))"
+          },
+          "expected_value": 1.2,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 0.05,
+            "relative": 0.25
+          },
+          "datasheet_citation": "p. 6 ILIMIT row, MIN 0.8 A / TYP 1.2 A / MAX 1.5 A at VIN - VOUT = 5 V",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    }
+  ]
+}

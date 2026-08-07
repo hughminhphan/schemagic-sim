@@ -1,0 +1,88 @@
+74HC4017 quiescent supply current upper bound
+* OpenCircuit Model Factory v0.1.0
+* Original work generated from public factual specifications.
+* This model is not a copy of, or adaptation from, any vendor SPICE model.
+* Source: https://assets.nexperia.com/documents/data-sheet/74HC_HCT4017.pdf
+* Revision: Rev. 8, 27 March 2024
+* Archetype: archetype-logic74hc.md
+* Fitted at 25 degC from the VCC = 4.5 V table column.
+.subckt OC_NEXPERIA_74HC4017_OUT IN Y VCC GND
+BDRV yd GND V = min(max(v(IN)*v(VCC,GND),0),v(VCC,GND))
+RDRV yd Y R={37.5+(45.0-37.5)*0.5*(1+tanh(12*(v(IN)-0.5)))}
+.ends OC_NEXPERIA_74HC4017_OUT
+.subckt OC_NEXPERIA_74HC4017_DFF D CLK Q QB SETN CLRN VCC GND
++ PARAMS: KIN=20 KREG=25 TAU=1.0000000000e-08 VSKEW=0.05
+RID D GND 1e11
+RIC CLK GND 1e11
+RISET SETN GND 1e11
+RICLR CLRN GND 1e11
+BC c GND V = 0.5*(1+tanh(KIN*(v(CLK,GND)/v(VCC,GND)-0.5)))
+BD dd GND V = 0.5*(1+tanh(KIN*(v(D,GND)/v(VCC,GND)-0.5)))
+BSET st GND V = 0.5*(1+tanh(KIN*(v(SETN,GND)/v(VCC,GND)-0.5)))
+BCLR cl GND V = 0.5*(1+tanh(KIN*(v(CLRN,GND)/v(VCC,GND)-0.5)))
+BMA mad GND V = (v(cl)<0.5) ? ((v(st)<0.5) ? 1 : 0) : ((v(st)<0.5) ? 1 : ((v(c)<0.5) ? v(dd) : 0.5*(1-tanh(KREG*(v(mb)-0.5)))))
+RMA mad ma {TAU/1p}
+CMA ma GND 1p
+BMB mbd GND V = (v(cl)<0.5) ? 1 : ((v(st)<0.5) ? ((v(cl)<0.5) ? 1 : 0) : 0.5*(1-tanh(KREG*(v(ma)-0.5))) + VSKEW)
+RMB mbd mb {TAU/1p}
+CMB mb GND 1p
+BSA sad GND V = (v(cl)<0.5) ? ((v(st)<0.5) ? 1 : 0) : ((v(st)<0.5) ? 1 : ((v(c)>0.5) ? v(ma) : 0.5*(1-tanh(KREG*(v(sb)-0.5)))))
+RSA sad sa {TAU/1p}
+CSA sa GND 1p
+BSB sbd GND V = (v(cl)<0.5) ? 1 : ((v(st)<0.5) ? ((v(cl)<0.5) ? 1 : 0) : 0.5*(1-tanh(KREG*(v(sa)-0.5))) + VSKEW)
+RSB sbd sb {TAU/1p}
+CSB sb GND 1p
+XQ sa Q VCC GND OC_NEXPERIA_74HC4017_OUT
+XQB sb QB VCC GND OC_NEXPERIA_74HC4017_OUT
+.ends OC_NEXPERIA_74HC4017_DFF
+.subckt OC_NEXPERIA_74HC4017 CP0 CP1 MR Q0 Q1 Q2 Q3 Q4 Q5 Q6 Q7 Q8 Q9 Q5_9B VCC GND
+RIc0 CP0 GND 1e11
+BIc0 c0 GND V = 0.5*(1+tanh(20*(v(CP0,GND)/v(VCC,GND)-0.5)))
+RIc1 CP1 GND 1e11
+BIc1 c1 GND V = 0.5*(1+tanh(20*(v(CP1,GND)/v(VCC,GND)-0.5)))
+RImrn MR GND 1e11
+BImrn mrn GND V = 0.5*(1+tanh(20*(v(MR,GND)/v(VCC,GND)-0.5)))
+BCLK clkx GND V = v(VCC,GND)*v(c0)*(1-v(c1))
+BCLRN clrn GND V = v(VCC,GND)*(1-v(mrn))
+BIN0 d0 GND V = v(b4)
+XFF0 d0 clkx s0 b0 VCC clrn VCC GND OC_NEXPERIA_74HC4017_DFF
+XFF1 s0 clkx s1 b1 VCC clrn VCC GND OC_NEXPERIA_74HC4017_DFF
+XFF2 s1 clkx s2 b2 VCC clrn VCC GND OC_NEXPERIA_74HC4017_DFF
+XFF3 s2 clkx s3 b3 VCC clrn VCC GND OC_NEXPERIA_74HC4017_DFF
+XFF4 s3 clkx s4 b4 VCC clrn VCC GND OC_NEXPERIA_74HC4017_DFF
+BN0 n0 GND V = v(s0)/v(VCC,GND)
+BN1 n1 GND V = v(s1)/v(VCC,GND)
+BN2 n2 GND V = v(s2)/v(VCC,GND)
+BN3 n3 GND V = v(s3)/v(VCC,GND)
+BN4 n4 GND V = v(s4)/v(VCC,GND)
+BD0 o0 GND V = (1-v(n0))*(1-v(n1))*(1-v(n2))*(1-v(n3))*(1-v(n4))
+XO0 o0 Q0 VCC GND OC_NEXPERIA_74HC4017_OUT
+BD1 o1 GND V = v(n0)*(1-v(n1))*(1-v(n2))*(1-v(n3))*(1-v(n4))
+XO1 o1 Q1 VCC GND OC_NEXPERIA_74HC4017_OUT
+BD2 o2 GND V = v(n0)*v(n1)*(1-v(n2))*(1-v(n3))*(1-v(n4))
+XO2 o2 Q2 VCC GND OC_NEXPERIA_74HC4017_OUT
+BD3 o3 GND V = v(n0)*v(n1)*v(n2)*(1-v(n3))*(1-v(n4))
+XO3 o3 Q3 VCC GND OC_NEXPERIA_74HC4017_OUT
+BD4 o4 GND V = v(n0)*v(n1)*v(n2)*v(n3)*(1-v(n4))
+XO4 o4 Q4 VCC GND OC_NEXPERIA_74HC4017_OUT
+BD5 o5 GND V = v(n0)*v(n1)*v(n2)*v(n3)*v(n4)
+XO5 o5 Q5 VCC GND OC_NEXPERIA_74HC4017_OUT
+BD6 o6 GND V = (1-v(n0))*v(n1)*v(n2)*v(n3)*v(n4)
+XO6 o6 Q6 VCC GND OC_NEXPERIA_74HC4017_OUT
+BD7 o7 GND V = (1-v(n0))*(1-v(n1))*v(n2)*v(n3)*v(n4)
+XO7 o7 Q7 VCC GND OC_NEXPERIA_74HC4017_OUT
+BD8 o8 GND V = (1-v(n0))*(1-v(n1))*(1-v(n2))*v(n3)*v(n4)
+XO8 o8 Q8 VCC GND OC_NEXPERIA_74HC4017_OUT
+BD9 o9 GND V = (1-v(n0))*(1-v(n1))*(1-v(n2))*(1-v(n3))*v(n4)
+XO9 o9 Q9 VCC GND OC_NEXPERIA_74HC4017_OUT
+BCY cy GND V = v(o0)+v(o1)+v(o2)+v(o3)+v(o4)
+XCY cy Q5_9B VCC GND OC_NEXPERIA_74HC4017_OUT
+.ends OC_NEXPERIA_74HC4017
+.temp 25
+VCC vcc 0 4.5
+VCP0 cp0 0 0
+VCP1 cp1 0 0
+VMR mr 0 4.5
+X1 cp0 cp1 mr q0 q1 q2 q3 q4 q5 q6 q7 q8 q9 cy vcc 0 OC_NEXPERIA_74HC4017
+.op
+.end

@@ -1,0 +1,131 @@
+{
+  "schema_version": "1.0.0",
+  "canonical_mpn": "WP7113YD",
+  "manufacturer": "Kingbrightusa",
+  "description": "5 mm yellow diffused GaAsP/GaP through-hole LED",
+  "electrical_family": "led",
+  "symbol_pins": [
+    {
+      "name": "A",
+      "number": "1",
+      "role": "anode"
+    },
+    {
+      "name": "K",
+      "number": "2",
+      "role": "cathode"
+    }
+  ],
+  "spice_pin_mapping": [
+    {
+      "symbol_pin_number": "1",
+      "subckt_node": "anode",
+      "order": 1
+    },
+    {
+      "symbol_pin_number": "2",
+      "subckt_node": "cathode",
+      "order": 2
+    }
+  ],
+  "package_variants": [
+    {
+      "name": "5 mm through-hole LED",
+      "standard": "T-1 3/4",
+      "pin_count": 2,
+      "pin_map": [
+        {
+          "package_pin": "1",
+          "symbol_pin_number": "1"
+        },
+        {
+          "package_pin": "2",
+          "symbol_pin_number": "2"
+        }
+      ]
+    }
+  ],
+  "ordering_code_aliases": [],
+  "datasheet": {
+    "url": "https://www.kingbrightusa.com/images/catalog/SPEC/WP7113YD.pdf",
+    "revision": "Spec DSAF2448 / 1101005405 Rev V.11B, 01/08/2026"
+  },
+  "model_type": "dot_model",
+  "fidelity_tier": "F1",
+  "domain_coverage": {
+    "dc": "fitted",
+    "ac": "none",
+    "transient": "approx",
+    "noise": "none",
+    "thermal": "none",
+    "digital": "none"
+  },
+  "supported_analyses": [
+    "operating_point",
+    "dc_sweep",
+    "transient"
+  ],
+  "supported_operating_region": {
+    "summary": "LED diode model at 25 degC; forward-current envelope is limited to 0.03 A and reverse voltage to 5 V. Optical output is metadata only.",
+    "numeric_bounds": [
+      {
+        "quantity": "forward_current",
+        "minimum": 0,
+        "maximum": 0.03,
+        "unit": "A",
+        "conditions": "Published rated forward-current envelope at 25 degC",
+        "placeholder": false
+      },
+      {
+        "quantity": "reverse_voltage",
+        "minimum": 0,
+        "maximum": 5,
+        "unit": "V",
+        "conditions": "Published rated reverse-voltage envelope; breakdown omitted",
+        "placeholder": false
+      },
+      {
+        "quantity": "ambient_temperature",
+        "minimum": 25,
+        "maximum": 25,
+        "unit": "degC",
+        "conditions": "Fit reference temperature",
+        "placeholder": false
+      }
+    ]
+  },
+  "known_omissions": [
+    "Optical output is not simulated. Luminous intensity, wavelength, viewing angle, bin spread, and ageing are metadata only.",
+    "No self-heating: junction temperature is fixed at TNOM. Thermal derating from the datasheet is not modelled.",
+    "Package parasitics (lead inductance and package capacitance) are not modelled.",
+    "Flicker noise is not modelled: KF and AF are held at defaults.",
+    "Reverse recovery is not modelled: TT is absent, so switching transients recover instantaneously.",
+    "Reverse breakdown is not modelled: BV, IBV, and NBV are held at defaults.",
+    "Forward IV is fitted from one published typical table point only; the datasheet IV figure was not numerically tabulated.",
+    "IS, N, and RS are a one-point physical fit, not a multi-point curve fit.",
+    "XTI is held at the ngspice default; EG is derived from the datasheet peak wavelength, with no temperature sweep fitted."
+  ],
+  "licence": {
+    "spdx_id": "MIT",
+    "provenance_basis": "original_from_facts"
+  },
+  "generator": {
+    "tool_or_agent": "opencircuit-model-factory-v0.1.0 manual diode lane",
+    "date": "2026-08-07"
+  },
+  "reviewer": {
+    "tool_or_agent": "pending-review",
+    "date": "2026-08-07"
+  },
+  "test_results": {
+    "status": "complete",
+    "pass_count": 3,
+    "fail_count": 0,
+    "total_count": 3,
+    "worst_observed_relative_fitting_error": {
+      "value": 0,
+      "quantity": "forward voltage at 0.01 A"
+    }
+  },
+  "validation_date": "2026-08-07"
+}

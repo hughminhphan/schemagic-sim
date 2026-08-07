@@ -1,0 +1,93 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "reference_100ua.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "reference_voltage_100ua",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(k))"
+          },
+          "expected_value": 2.5,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.0025,
+            "relative": 0.001
+          },
+          "datasheet_citation": "p. 11 Section 5.8 A-grade Reverse Breakdown Voltage 2.5 V TYP and \u00b12.5 mV MAX tolerance at IR = 100 uA",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "minimum_current_boundary.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "minimum_current_boundary_voltage",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(k))"
+          },
+          "expected_value": 2.5,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.0033,
+            "relative": 0.0015
+          },
+          "datasheet_citation": "p. 11 Section 5.8 IRMIN MAX = 60 uA, A-grade \u00b12.5 mV tolerance, and low-current voltage change MAX = 0.8 mV",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "maximum_current_boundary.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "maximum_current_boundary_voltage",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(k))"
+          },
+          "expected_value": 2.5028,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.0093,
+            "relative": 0.004
+          },
+          "datasheet_citation": "p. 5 Section 5.3 maximum recommended IR = 15 mA; p. 11 Section 5.8 TYP voltage changes 0.3 mV and 2.5 mV with MAX values 0.8 mV and 6 mV",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "dynamic_impedance.cir",
+      "analysis_type": "ac_small_signal",
+      "scalar_checks": [
+        {
+          "name": "dynamic_impedance_voltage_for_100ua_ac",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "magnitude:last(v(k))"
+          },
+          "expected_value": 3e-05,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 5e-05,
+            "relative": 0.5
+          },
+          "datasheet_citation": "p. 11 Section 5.8 ZR TYP 0.3 ohm / MAX 0.8 ohm at IR = 1 mA, f = 120 Hz, IAC = 0.1 IR",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    }
+  ]
+}

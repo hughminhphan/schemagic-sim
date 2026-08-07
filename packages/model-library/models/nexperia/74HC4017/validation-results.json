@@ -1,0 +1,61 @@
+{
+  "schema_version": "1.0.0",
+  "validation_date": "2026-08-07",
+  "native_wasm_all_pass": true,
+  "expectations_all_pass": false,
+  "expectation_pass_count": 3,
+  "expectation_fail_count": 1,
+  "worst_native_wasm_relative_delta": 0.0007732616672099029,
+  "worst_native_wasm_absolute_delta": 1.0324630039804106e-10,
+  "benches": [
+    {
+      "test_netlist": "count_function.cir",
+      "analysis": "tran",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "third_count_q3_high",
+          "pass": false,
+          "value": 2.786350629491895e-9,
+          "error": 4.499999997213649,
+          "allowed": 0.5
+        },
+        {
+          "name": "third_count_q2_low",
+          "pass": true,
+          "value": 1.7252777330097587e-18,
+          "error": 1.7252777330097587e-18,
+          "allowed": 0.5
+        }
+      ]
+    },
+    {
+      "test_netlist": "minimum_supply_boundary.cir",
+      "analysis": "tran",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "minimum_supply_first_count",
+          "pass": true,
+          "value": 1.9999999987525021,
+          "error": 1.2474978827725636e-9,
+          "allowed": 0.35
+        }
+      ]
+    },
+    {
+      "test_netlist": "quiescent_current.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "quiescent_current_upper_bound",
+          "pass": true,
+          "value": 2.2499999999999997e-10,
+          "minimum": null,
+          "maximum": 0.000008
+        }
+      ]
+    }
+  ]
+}

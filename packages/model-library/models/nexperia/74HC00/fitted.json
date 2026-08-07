@@ -1,0 +1,59 @@
+{
+  "schema_version": "1.0.0",
+  "fit_method": "Closed-form DC parameters plus exactly three native ngspice-46 fixed-point CINT calibration iterations; 74HC14 KVTC is calibrated against the cited 25 degC typical thresholds; no vendor SPICE model used",
+  "temperature_c": 25.0,
+  "parameters": {
+    "KVTC": 9.460474084795665,
+    "RINT": 1000.0,
+    "CINT": 9.14811470501e-12,
+    "ROH": 45.0,
+    "ROL": 37.5,
+    "KSW": 12.0
+  },
+  "parameter_metadata": {
+    "KVTC": {
+      "status": "derived_closed_form"
+    },
+    "RINT": {
+      "status": "held_default"
+    },
+    "CINT": {
+      "status": "fitted"
+    },
+    "ROH": {
+      "status": "derived_from_typical"
+    },
+    "ROL": {
+      "status": "derived_from_typical"
+    },
+    "KSW": {
+      "status": "held_default"
+    }
+  },
+  "held_defaults": [
+    {
+      "parameter": "RINT",
+      "value": 1000,
+      "unit": "ohm",
+      "reason": "held at default, fixed archetype internal delay resistance"
+    },
+    {
+      "parameter": "KSW",
+      "value": 12,
+      "unit": "1",
+      "reason": "held at default, fixed archetype output-driver blend constant"
+    },
+    {
+      "parameter": "RIN",
+      "value": 100000000000.0,
+      "unit": "ohm",
+      "reason": "held at default, mandatory input leakage path"
+    }
+  ],
+  "residuals": [],
+  "worst_relative_error": {
+    "value": 0,
+    "quantity": "pending_validation"
+  },
+  "calibration_iterations": 3
+}

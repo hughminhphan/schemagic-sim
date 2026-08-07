@@ -1,0 +1,125 @@
+{
+  "schema_version": "1.0.0",
+  "canonical_mpn": "LM4040A25",
+  "manufacturer": "Texas Instruments",
+  "description": "A-grade 2.5 V precision shunt voltage reference",
+  "electrical_family": "vreg_linear",
+  "symbol_pins": [
+    {
+      "name": "K",
+      "number": "1",
+      "role": "cathode"
+    },
+    {
+      "name": "A",
+      "number": "2",
+      "role": "anode"
+    }
+  ],
+  "spice_pin_mapping": [
+    {
+      "symbol_pin_number": "1",
+      "subckt_node": "k",
+      "order": 1
+    },
+    {
+      "symbol_pin_number": "2",
+      "subckt_node": "a",
+      "order": 2
+    }
+  ],
+  "package_variants": [
+    {
+      "name": "SOT-23",
+      "standard": "TI DBZ package",
+      "pin_count": 2,
+      "pin_map": [
+        {
+          "package_pin": "1",
+          "symbol_pin_number": "1"
+        },
+        {
+          "package_pin": "2",
+          "symbol_pin_number": "2"
+        }
+      ]
+    }
+  ],
+  "ordering_code_aliases": [
+    "LM4040AIM3-2.5",
+    "LM4040AIZ-2.5"
+  ],
+  "datasheet": {
+    "url": "https://www.ti.com/lit/ds/symlink/lm4040-n.pdf",
+    "revision": "SNOS633N, December 1991, revised August 2025"
+  },
+  "model_type": "subckt",
+  "fidelity_tier": "F1",
+  "domain_coverage": {
+    "dc": "approx",
+    "ac": "none",
+    "transient": "approx",
+    "noise": "none",
+    "thermal": "none",
+    "digital": "none"
+  },
+  "supported_analyses": [
+    "operating_point",
+    "dc_sweep",
+    "transient"
+  ],
+  "supported_operating_region": {
+    "summary": "F1 DC shunt-reference approximation at 25 degC from 60 uA to 15 mA reverse current.",
+    "numeric_bounds": [
+      {
+        "quantity": "reverse_current",
+        "minimum": 0.00006,
+        "maximum": 0.015,
+        "unit": "A",
+        "conditions": "Recommended operating current range for the 2.5 V option",
+        "placeholder": false
+      },
+      {
+        "quantity": "junction_temperature",
+        "minimum": 25,
+        "maximum": 25,
+        "unit": "degC",
+        "conditions": "Fitted test temperature",
+        "placeholder": false
+      }
+    ]
+  },
+  "known_omissions": [
+    "Thermal shutdown and safe-operating-area behavior are not modelled.",
+    "No self-heating and no temperature coefficients are modelled.",
+    "AC behaviour is not modelled beyond the low-frequency dynamic-impedance scalar. Frequency dependence, noise, and transient response are absent.",
+    "Cathode dynamic impedance is a single constant taken from the datasheet stated current range; its variation with frequency and current is not modelled.",
+    "Start-up behavior is not modelled.",
+    "The 1e7-ohm K-to-A shunt is held at the archetype default.",
+    "The 1e-12 smoothing term is held at the archetype default.",
+    "The physical SOT-23 pin 3 must float or connect to anode and is not an electrical symbol pin in this two-terminal subcircuit."
+  ],
+  "licence": {
+    "spdx_id": "MIT",
+    "provenance_basis": "original_from_facts"
+  },
+  "generator": {
+    "tool_or_agent": "opencircuit-model-factory-v0.1.0 manual vreg archetype lane",
+    "date": "2026-08-07"
+  },
+  "reviewer": {
+    "tool_or_agent": "pending-review",
+    "date": "2026-08-07"
+  },
+  "test_results": {
+    "status": "complete",
+    "pass_count": 4,
+    "fail_count": 0,
+    "total_count": 4,
+    "worst_observed_relative_fitting_error": {
+      "value": 0,
+      "quantity": "pending native measurement"
+    }
+  },
+  "validation_date": "2026-08-07"
+}

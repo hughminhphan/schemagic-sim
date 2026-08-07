@@ -1,0 +1,44 @@
+74HC123 monostable pulse width
+* OpenCircuit Model Factory v0.1.0
+* Original work generated from public factual specifications.
+* This model is not a copy of, or adaptation from, any vendor SPICE model.
+* Source: https://assets.nexperia.com/documents/data-sheet/74HC_HCT123.pdf
+* Revision: Rev. 13, 21 February 2024
+* Archetype: archetype-logic74hc.md
+* Fitted at 25 degC from the VCC = 4.5 V table column.
+.subckt OC_NEXPERIA_74HC123_OUT IN Y VCC GND
+BDRV yd GND V = min(max(v(IN)*v(VCC,GND),0),v(VCC,GND))
+RDRV yd Y R={37.5+(45.0-37.5)*0.5*(1+tanh(12*(v(IN)-0.5)))}
+.ends OC_NEXPERIA_74HC123_OUT
+.subckt OC_NEXPERIA_74HC123 ABAR B RD Q QB CEXT REXT_CEXT VCC GND
++ PARAMS: KIN=20 KREG=25 TAU=1.2000000000e-08 VSKEW=0.05 VTH=0.362372
+RIan ABAR GND 1e11
+BIan an GND V = 0.5*(1+tanh(20*(v(ABAR,GND)/v(VCC,GND)-0.5)))
+RIbn B GND 1e11
+BIbn bn GND V = 0.5*(1+tanh(20*(v(B,GND)/v(VCC,GND)-0.5)))
+RIrn RD GND 1e11
+BIrn rn GND V = 0.5*(1+tanh(20*(v(RD,GND)/v(VCC,GND)-0.5)))
+BTRIG tr GND V = (1-v(an))*v(bn)*v(rn)
+BCMP rs GND V = 0.5*(1+tanh(30*(v(REXT_CEXT,GND)/v(VCC,GND)-VTH))) + (1-v(rn))
+BSA sad GND V = (v(rs)>0.5) ? 0 : ((v(tr)>0.5) ? 1 : 0.5*(1-tanh(KREG*(v(sb)-0.5))))
+RSA sad sa {TAU/1p}
+CSA sa GND 1p
+BSB sbd GND V = (v(rs)>0.5) ? 1 : ((v(tr)>0.5) ? 0 : 0.5*(1-tanh(KREG*(v(sa)-0.5))) + VSKEW)
+RSB sbd sb {TAU/1p}
+CSB sb GND 1p
+XQ sa Q VCC GND OC_NEXPERIA_74HC123_OUT
+XQB sb QB VCC GND OC_NEXPERIA_74HC123_OUT
+RICE CEXT GND 1e11
+RDIS REXT_CEXT GND R={1/(0.1*(1-v(sa))+1e-9*v(sa))}
+.ends OC_NEXPERIA_74HC123
+.temp 25
+VCC vcc 0 5
+VA a 0 PWL(0 5 1u 5 1.01u 0 1.1u 0 1.11u 5)
+VB b 0 5
+VRD rd 0 5
+REXT vcc rc 10k
+CEXT rc 0 100n
+X1 a b rd q qb rc rc vcc 0 OC_NEXPERIA_74HC123
+.tran 0.2u 800u
+.measure tran pulse_width TRIG v(q) VAL=2.5 RISE=1 TARG v(q) VAL=2.5 FALL=1
+.end

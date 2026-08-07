@@ -1,0 +1,147 @@
+{
+  "schema_version": "1.0.0",
+  "canonical_mpn": "TL431",
+  "manufacturer": "Texas Instruments",
+  "description": "A-grade precision programmable shunt reference",
+  "electrical_family": "vreg_linear",
+  "symbol_pins": [
+    {
+      "name": "K",
+      "number": "1",
+      "role": "cathode"
+    },
+    {
+      "name": "REF",
+      "number": "2",
+      "role": "reference"
+    },
+    {
+      "name": "A",
+      "number": "3",
+      "role": "anode"
+    }
+  ],
+  "spice_pin_mapping": [
+    {
+      "symbol_pin_number": "1",
+      "subckt_node": "k",
+      "order": 1
+    },
+    {
+      "symbol_pin_number": "3",
+      "subckt_node": "a",
+      "order": 2
+    },
+    {
+      "symbol_pin_number": "2",
+      "subckt_node": "ref",
+      "order": 3
+    }
+  ],
+  "package_variants": [
+    {
+      "name": "SOT-23-3",
+      "standard": "TI DBZ package",
+      "pin_count": 3,
+      "pin_map": [
+        {
+          "package_pin": "1",
+          "symbol_pin_number": "1"
+        },
+        {
+          "package_pin": "2",
+          "symbol_pin_number": "2"
+        },
+        {
+          "package_pin": "3",
+          "symbol_pin_number": "3"
+        }
+      ]
+    }
+  ],
+  "ordering_code_aliases": [
+    "TL431A",
+    "TL431AC"
+  ],
+  "datasheet": {
+    "url": "https://www.ti.com/lit/ds/symlink/tl431.pdf",
+    "revision": "SLVS543S, August 2004, revised May 2024"
+  },
+  "model_type": "subckt",
+  "fidelity_tier": "F1",
+  "domain_coverage": {
+    "dc": "approx",
+    "ac": "none",
+    "transient": "approx",
+    "noise": "none",
+    "thermal": "none",
+    "digital": "none"
+  },
+  "supported_analyses": [
+    "operating_point",
+    "dc_sweep",
+    "transient"
+  ],
+  "supported_operating_region": {
+    "summary": "F1 DC shunt-reference approximation at 25 degC, VKA = VREF, cathode current 0.6 mA to 50 mA. The full 100 mA range is not claimed.",
+    "numeric_bounds": [
+      {
+        "quantity": "cathode_current",
+        "minimum": 0.0006,
+        "maximum": 0.05,
+        "unit": "A",
+        "conditions": "Minimum is the A-grade published MAX current required for regulation; upper claim is reduced from the 100 mA recommended maximum",
+        "placeholder": false
+      },
+      {
+        "quantity": "cathode_voltage",
+        "minimum": 2.495,
+        "maximum": 36,
+        "unit": "V",
+        "conditions": "Recommended cathode-voltage range",
+        "placeholder": false
+      },
+      {
+        "quantity": "ambient_temperature",
+        "minimum": 25,
+        "maximum": 25,
+        "unit": "degC",
+        "conditions": "Fit reference temperature",
+        "placeholder": false
+      }
+    ]
+  },
+  "known_omissions": [
+    "Thermal shutdown and safe-operating-area behavior are not modelled.",
+    "No self-heating and no temperature coefficients are modelled.",
+    "AC behaviour is not modelled beyond the low-frequency dynamic-impedance scalar. Frequency dependence, noise, and transient response are absent.",
+    "Cathode dynamic impedance is a single constant taken from the datasheet stated current range; its variation with frequency and current is not modelled.",
+    "Start-up behavior is not modelled.",
+    "The 1e7-ohm K-to-A shunt is held at the archetype default.",
+    "The 1e-12 smoothing term is held at the archetype default.",
+    "The archetype tanh current limiter increases effective cathode impedance as current approaches its 150 mA asymptote. The model is therefore limited to 0.6 mA to 50 mA and is downgraded to F1 rather than claiming the full 1 mA to 100 mA datasheet dynamic-impedance range."
+  ],
+  "licence": {
+    "spdx_id": "MIT",
+    "provenance_basis": "original_from_facts"
+  },
+  "generator": {
+    "tool_or_agent": "opencircuit-model-factory-v0.1.0 manual vreg archetype lane",
+    "date": "2026-08-07"
+  },
+  "reviewer": {
+    "tool_or_agent": "pending-review",
+    "date": "2026-08-07"
+  },
+  "test_results": {
+    "status": "complete",
+    "pass_count": 5,
+    "fail_count": 0,
+    "total_count": 5,
+    "worst_observed_relative_fitting_error": {
+      "value": 0,
+      "quantity": "pending native measurement"
+    }
+  },
+  "validation_date": "2026-08-07"
+}

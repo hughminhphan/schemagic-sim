@@ -1,0 +1,108 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "reference_10ma.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "reference_voltage_10ma",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(k))"
+          },
+          "expected_value": 2.495,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.025,
+            "relative": 0.01
+          },
+          "datasheet_citation": "p. 9 Section 6.8 TL431AC Vref row, MIN 2.470 V / TYP 2.495 V / MAX 2.520 V at IKA = 10 mA",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "dynamic_impedance.cir",
+      "analysis_type": "ac_small_signal",
+      "scalar_checks": [
+        {
+          "name": "dynamic_impedance_voltage_for_100ua_ac",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "magnitude:last(v(k))"
+          },
+          "expected_value": 2e-05,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 3e-05,
+            "relative": 0.3
+          },
+          "datasheet_citation": "p. 9 Section 6.8 TL431AC |ZKA| TYP 0.2 ohm, MAX 0.5 ohm at IKA = 1 mA to 100 mA, f <= 1 kHz",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "minimum_current_boundary.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "minimum_current_boundary_voltage",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(k))"
+          },
+          "expected_value": 2.495,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.025,
+            "relative": 0.01
+          },
+          "datasheet_citation": "p. 9 Section 6.8 TL431AC Imin MAX = 0.6 mA and Vref tolerance row",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "high_current_boundary.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "high_current_boundary_voltage",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(k))"
+          },
+          "expected_value": 2.5048,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.025,
+            "relative": 0.02
+          },
+          "datasheet_citation": "p. 9 Section 6.8 Vref TYP 2.495 V and |ZKA| TYP 0.2 ohm over IKA = 1 mA to 100 mA; expected value derived at 50 mA",
+          "placeholder": false
+        },
+        {
+          "name": "high_current_boundary_bias",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vin))"
+          },
+          "expected_value": 0.05,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 0.001,
+            "relative": 0.03
+          },
+          "datasheet_citation": "p. 9 Section 6.8 |ZKA| condition spans IKA = 1 mA to 100 mA; bench asserts the chosen 50 mA in-range bias",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    }
+  ]
+}

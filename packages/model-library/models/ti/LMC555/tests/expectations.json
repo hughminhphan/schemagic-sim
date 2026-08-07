@@ -1,0 +1,179 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "astable.cir",
+      "analysis_type": "transient",
+      "scalar_checks": [
+        {
+          "name": "astable_frequency",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "frequency_from_edges(v(out),1.7,rising,2,4)"
+          },
+          "expected_value": 4800.0,
+          "unit": "Hz",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.05
+          },
+          "datasheet_citation": "TI LMC555 SNAS558N p. 11 Eq. 4 and Eq. 5",
+          "placeholder": false
+        },
+        {
+          "name": "astable_output_high_duty_cycle",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "duty_cycle_from_edges(v(out),1.7,rising,2,falling,2,rising,3)"
+          },
+          "expected_value": 0.6666666666666666,
+          "unit": "1",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.05
+          },
+          "datasheet_citation": "TI LMC555 SNAS558N p. 11 Eq. 4 and Eq. 5",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "monostable.cir",
+      "analysis_type": "transient",
+      "scalar_checks": [
+        {
+          "name": "monostable_pulse_width",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "pulse_width(v(out),2.5,rising,1,falling,1)"
+          },
+          "expected_value": 0.00011,
+          "unit": "s",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.05
+          },
+          "datasheet_citation": "TI LMC555 SNAS558N p. 9 Section 7.4.1 and Figure 7-2",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": [
+        {
+          "name": "monostable_initial_output_low",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "at(v(out),0)"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "TI LMC555 SNAS558N p. 9 Section 7.4.1 and Figure 7-2",
+          "placeholder": false,
+          "minimum": 0,
+          "maximum": 0.1
+        }
+      ]
+    },
+    {
+      "test_netlist": "output_levels.cir",
+      "analysis_type": "transient",
+      "scalar_checks": [
+        {
+          "name": "loaded_output_high",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "last(v(outh))"
+          },
+          "expected_value": 4.7,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.1,
+            "relative": 0.15
+          },
+          "datasheet_citation": "Texas Instruments LMC555 SNAS558N p. 5 electrical characteristics, TYP column",
+          "placeholder": false
+        },
+        {
+          "name": "loaded_output_low",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "last(v(outl))"
+          },
+          "expected_value": 0.3,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.1,
+            "relative": 0.15
+          },
+          "datasheet_citation": "Texas Instruments LMC555 SNAS558N p. 5 electrical characteristics, TYP column",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "control_voltage.cir",
+      "analysis_type": "transient",
+      "scalar_checks": [
+        {
+          "name": "control_voltage_frequency",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "frequency_from_edges(v(out),1.7,rising,2,4)"
+          },
+          "expected_value": 6648.55,
+          "unit": "Hz",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.1
+          },
+          "datasheet_citation": "TI LMC555 SNAS558N p. 7 Section 7.2 functional block diagram and p. 11 astable topology",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "reset.cir",
+      "analysis_type": "transient",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "reset_forces_output_low",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "max_after(v(out),0.55e-3)"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "TI LMC555 SNAS558N p. 5 VRES 25 degC TYP row and p. 9 reset behavior",
+          "placeholder": false,
+          "minimum": 0,
+          "maximum": 0.1
+        }
+      ]
+    },
+    {
+      "test_netlist": "minimum_supply_astable.cir",
+      "analysis_type": "transient",
+      "scalar_checks": [
+        {
+          "name": "minimum_supply_astable_frequency",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "frequency_from_edges(v(out),0.55,rising,2,4)"
+          },
+          "expected_value": 4800.0,
+          "unit": "Hz",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.05
+          },
+          "datasheet_citation": "TI LMC555 SNAS558N p. 5 electrical characteristics at VS = 1.5 V and p. 11 Eq. 4",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    }
+  ]
+}

@@ -1,0 +1,117 @@
+{
+  "schema_version": "1.0.0",
+  "validation_date": "2026-08-07",
+  "native_wasm_all_pass": true,
+  "expectations_all_pass": false,
+  "expectation_pass_count": 6,
+  "expectation_fail_count": 3,
+  "worst_native_wasm_relative_delta": 4.668265774116585e-13,
+  "worst_native_wasm_absolute_delta": 2.334132886971929e-12,
+  "benches": [
+    {
+      "test_netlist": "astable.cir",
+      "analysis": "tran",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "astable_frequency",
+          "pass": false,
+          "value": 5410.215862678853,
+          "error": 610.2158626788532,
+          "allowed": 240
+        },
+        {
+          "name": "astable_output_high_duty_cycle",
+          "pass": false,
+          "value": -0.3749116361547841,
+          "error": 1.0415783028214507,
+          "allowed": 0.03333333333333333
+        }
+      ]
+    },
+    {
+      "test_netlist": "monostable.cir",
+      "analysis": "tran",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "monostable_pulse_width",
+          "pass": true,
+          "value": 0.00010978938947366568,
+          "error": 2.106105263343218e-7,
+          "allowed": 0.000005500000000000001
+        },
+        {
+          "name": "monostable_initial_output_low",
+          "pass": true,
+          "value": 0.02000000000541489,
+          "minimum": 0,
+          "maximum": 0.1
+        }
+      ]
+    },
+    {
+      "test_netlist": "output_levels.cir",
+      "analysis": "tran",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "loaded_output_high",
+          "pass": true,
+          "value": 4.699999999196348,
+          "error": 8.036522558541037e-10,
+          "allowed": 0.705
+        },
+        {
+          "name": "loaded_output_low",
+          "pass": true,
+          "value": 0.30000000000000004,
+          "error": 5.551115123125783e-17,
+          "allowed": 0.1
+        }
+      ]
+    },
+    {
+      "test_netlist": "control_voltage.cir",
+      "analysis": "tran",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "control_voltage_frequency",
+          "pass": true,
+          "value": 6634.136905158878,
+          "error": 14.413094841122074,
+          "allowed": 664.855
+        }
+      ]
+    },
+    {
+      "test_netlist": "reset.cir",
+      "analysis": "tran",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "reset_forces_output_low",
+          "pass": true,
+          "value": 0.020000000002929303,
+          "minimum": 0,
+          "maximum": 0.1
+        }
+      ]
+    },
+    {
+      "test_netlist": "minimum_supply_astable.cir",
+      "analysis": "tran",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "minimum_supply_astable_frequency",
+          "pass": false,
+          "value": 5424.890777519924,
+          "error": 624.8907775199241,
+          "allowed": 240
+        }
+      ]
+    }
+  ]
+}

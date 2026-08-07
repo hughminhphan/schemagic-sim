@@ -1,0 +1,112 @@
+{
+  "schema_version": "1.0.0",
+  "fitter": "closed-form one-point physical fit",
+  "deterministic": true,
+  "temperature_c": 25.0,
+  "parameters": {
+    "IS": 3.3004167089137926e-19,
+    "N": 2.0,
+    "RS": 0.1,
+    "EG": 1.9617752056962026,
+    "TNOM": 25.0
+  },
+  "parameter_metadata": {
+    "IS": {
+      "status": "fitted"
+    },
+    "N": {
+      "status": "fitted"
+    },
+    "RS": {
+      "status": "fitted"
+    },
+    "EG": {
+      "status": "derived from datasheet wavelength"
+    },
+    "TNOM": {
+      "status": "fit reference temperature, explicit in model card"
+    }
+  },
+  "residuals": [
+    {
+      "current_a": 0.02,
+      "datasheet_voltage_v": 2.0,
+      "fitted_voltage_v": 2.0,
+      "relative_error": 0.0,
+      "citation": "official Lite-On source unavailable"
+    }
+  ],
+  "rms_relative_error": 0.0,
+  "worst_relative_error": {
+    "value": 0.0,
+    "quantity": "forward voltage at 0.02 A"
+  },
+  "held_defaults": [
+    {
+      "parameter": "ISR",
+      "value": 1e-14,
+      "unit": "A",
+      "reason": "held at physical default because no independent reverse leakage fit was permitted"
+    },
+    {
+      "parameter": "NR",
+      "value": 1.0,
+      "unit": "1",
+      "reason": "held at physical default because no independent reverse leakage fit was permitted"
+    },
+    {
+      "parameter": "IKF",
+      "value": 0.0,
+      "unit": "A",
+      "reason": "held at physical default because no high-injection roll-off was available"
+    },
+    {
+      "parameter": "VJ",
+      "value": 0.7,
+      "unit": "V",
+      "reason": "held at physical default because no C-V curve was available"
+    },
+    {
+      "parameter": "M",
+      "value": 0.5,
+      "unit": "1",
+      "reason": "held at physical default because no C-V curve was available"
+    },
+    {
+      "parameter": "TT",
+      "value": 0.0,
+      "unit": "s",
+      "reason": "held at physical default because no reverse-recovery specification was available"
+    },
+    {
+      "parameter": "BV",
+      "value": 0.0,
+      "unit": "V",
+      "reason": "held at physical default because reverse breakdown is not modelled"
+    },
+    {
+      "parameter": "IBV",
+      "value": 0.0,
+      "unit": "A",
+      "reason": "held at physical default because reverse breakdown is not modelled"
+    },
+    {
+      "parameter": "NBV",
+      "value": 1.0,
+      "unit": "1",
+      "reason": "held at physical default because reverse breakdown is not modelled"
+    },
+    {
+      "parameter": "XTI",
+      "value": 3.0,
+      "unit": "1",
+      "reason": "held at physical default because no temperature sweep was fitted"
+    },
+    {
+      "parameter": "TNOM",
+      "value": 25.0,
+      "unit": "degC",
+      "reason": "explicit fit reference temperature used by all .temp 25 benches"
+    }
+  ]
+}

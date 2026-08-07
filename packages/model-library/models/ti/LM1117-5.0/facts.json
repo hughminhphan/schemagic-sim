@@ -1,0 +1,134 @@
+{
+  "schema_version": "1.0.0",
+  "extraction_method": "pdftotext -layout plus manual structuring; no vendor SPICE model used",
+  "fit_conditions": {
+    "temperature": {
+      "value": 25,
+      "unit": "degC",
+      "conditions": "Electrical characteristics unless specified",
+      "page_reference": "p. 5 Section 7.5 heading",
+      "source_kind": "typical",
+      "column_semantics": "table applies at TJ = 25 degC"
+    }
+  },
+  "parameters": {
+    "output_voltage": {
+      "minimum": {
+        "value": 4.95,
+        "unit": "V",
+        "conditions": "IOUT = 10 mA, VIN = 7 V, TJ = 25 degC",
+        "page_reference": "p. 5 Section 7.5, LM1117-5.0 Output voltage row",
+        "source_kind": "minimum",
+        "column_semantics": "published MIN column; tolerance bound only"
+      },
+      "typical": {
+        "value": 5.0,
+        "unit": "V",
+        "conditions": "IOUT = 10 mA, VIN = 7 V, TJ = 25 degC",
+        "page_reference": "p. 5 Section 7.5, LM1117-5.0 Output voltage row",
+        "source_kind": "typical",
+        "column_semantics": "published TYP column; fitted target"
+      },
+      "maximum": {
+        "value": 5.05,
+        "unit": "V",
+        "conditions": "IOUT = 10 mA, VIN = 7 V, TJ = 25 degC",
+        "page_reference": "p. 5 Section 7.5, LM1117-5.0 Output voltage row",
+        "source_kind": "maximum",
+        "column_semantics": "published MAX column; tolerance bound only"
+      }
+    },
+    "line_regulation": {
+      "value": 0.001,
+      "unit": "V",
+      "conditions": "IOUT = 0 mA, VIN = 6.5 V to 15 V, TJ = 25 degC",
+      "page_reference": "p. 5 Section 7.5, LM1117-5.0 Line regulation row",
+      "source_kind": "typical",
+      "column_semantics": "published TYP column; fitted target"
+    },
+    "line_voltage_range": {
+      "value": 8.5,
+      "unit": "V",
+      "conditions": "VIN = 6.5 V to 15 V at IOUT = 0 mA",
+      "page_reference": "p. 5 Section 7.5, LM1117-5.0 Line regulation row",
+      "source_kind": "derived_from_typical_condition",
+      "column_semantics": "derived from published condition endpoints; paired with TYP line regulation"
+    },
+    "load_regulation": {
+      "value": 0.001,
+      "unit": "V",
+      "conditions": "VIN = 6.5 V, IOUT = 0 A to 0.8 A, TJ = 25 degC",
+      "page_reference": "p. 5 Section 7.5, LM1117-5.0 Load regulation row",
+      "source_kind": "typical",
+      "column_semantics": "published TYP column; fitted target"
+    },
+    "load_current_range": {
+      "value": 0.8,
+      "unit": "A",
+      "conditions": "IOUT = 0 A to 0.8 A at VIN = 6.5 V",
+      "page_reference": "p. 5 Section 7.5, LM1117-5.0 Load regulation row",
+      "source_kind": "derived_from_typical_condition",
+      "column_semantics": "derived from published condition endpoints; paired with TYP load regulation"
+    },
+    "dropout_voltage": {
+      "value": 1.2,
+      "unit": "V",
+      "conditions": "IOUT = 800 mA, TJ = 25 degC; output has dropped 100 mV from nominal",
+      "page_reference": "p. 6 Section 7.5, Dropout voltage row and note 4",
+      "source_kind": "typical",
+      "column_semantics": "published TYP column; fitted target"
+    },
+    "current_limit": {
+      "minimum": {
+        "value": 0.8,
+        "unit": "A",
+        "conditions": "VIN - VOUT = 5 V, TJ = 25 degC",
+        "page_reference": "p. 6 Section 7.5, ILIMIT row",
+        "source_kind": "minimum",
+        "column_semantics": "published MIN column; bound only"
+      },
+      "typical": {
+        "value": 1.2,
+        "unit": "A",
+        "conditions": "VIN - VOUT = 5 V, TJ = 25 degC",
+        "page_reference": "p. 6 Section 7.5, ILIMIT row",
+        "source_kind": "typical",
+        "column_semantics": "published TYP column; fitted target"
+      },
+      "maximum": {
+        "value": 1.5,
+        "unit": "A",
+        "conditions": "VIN - VOUT = 5 V, TJ = 25 degC",
+        "page_reference": "p. 6 Section 7.5, ILIMIT row",
+        "source_kind": "maximum",
+        "column_semantics": "published MAX column; bound only"
+      }
+    },
+    "quiescent_current": {
+      "value": 0.005,
+      "unit": "A",
+      "conditions": "LM1117-5.0, VIN <= 15 V, TJ = 25 degC",
+      "page_reference": "p. 6 Section 7.5, Quiescent current row",
+      "source_kind": "typical",
+      "column_semantics": "published TYP column; fitted target"
+    }
+  },
+  "identity": {
+    "canonical_mpn": "LM1117-5.0",
+    "manufacturer": "Texas Instruments",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://www.ti.com/lit/ds/symlink/lm1117.pdf",
+    "revision": "SNOS412Q, February 2000, revised January 2023",
+    "sha256": "957ae45275a5dfa76c1ac0d7a45116871cccb0d8e6726ddc203968f98cac3c2c",
+    "accessed_date": "2026-08-07",
+    "pages_referenced": [
+      "p. 3 Table 6-1",
+      "p. 5 Section 7.5",
+      "p. 6 Section 7.5"
+    ],
+    "placeholder": false
+  }
+}

@@ -1,0 +1,143 @@
+{
+  "schema_version": "1.0.0",
+  "extraction_method": "pdftotext -layout plus manual structuring; no vendor SPICE model used",
+  "fit_conditions": {
+    "temperature": {
+      "value": 25,
+      "unit": "degC",
+      "conditions": "2.5 V A/B-grade electrical table",
+      "page_reference": "p. 11 Section 5.8 heading",
+      "source_kind": "typical",
+      "column_semantics": "table applies at TA = TJ = 25 degC unless noted"
+    }
+  },
+  "parameters": {
+    "reverse_breakdown_voltage": {
+      "value": 2.5,
+      "unit": "V",
+      "conditions": "IR = 100 uA, TA = TJ = 25 degC",
+      "page_reference": "p. 11 Section 5.8 Reverse Breakdown Voltage row",
+      "source_kind": "typical",
+      "column_semantics": "published TYP column; fitted target"
+    },
+    "reverse_breakdown_tolerance": {
+      "value": 0.0025,
+      "unit": "V",
+      "conditions": "LM4040A, IR = 100 uA, TA = TJ = 25 degC",
+      "page_reference": "p. 11 Section 5.8 VR tolerance row",
+      "source_kind": "maximum",
+      "column_semantics": "published MAX magnitude \u00b12.5 mV; tolerance only"
+    },
+    "minimum_operating_current": {
+      "typical": {
+        "value": 4.5e-05,
+        "unit": "A",
+        "conditions": "TA = TJ = 25 degC",
+        "page_reference": "p. 11 Section 5.8 IRMIN row",
+        "source_kind": "typical",
+        "column_semantics": "published TYP column; model parameter"
+      },
+      "maximum": {
+        "value": 6e-05,
+        "unit": "A",
+        "conditions": "TA = TJ = 25 degC",
+        "page_reference": "p. 11 Section 5.8 IRMIN row",
+        "source_kind": "maximum",
+        "column_semantics": "published MAX column; supported-region boundary"
+      }
+    },
+    "voltage_change_low_current": {
+      "typical": {
+        "value": 0.0003,
+        "unit": "V",
+        "conditions": "IRMIN <= IR <= 1 mA, TA = TJ = 25 degC",
+        "page_reference": "p. 11 Section 5.8 Delta VR / Delta IR row",
+        "source_kind": "typical",
+        "column_semantics": "published TYP column; validation target"
+      },
+      "maximum": {
+        "value": 0.0008,
+        "unit": "V",
+        "conditions": "same condition",
+        "page_reference": "p. 11 Section 5.8 Delta VR / Delta IR row",
+        "source_kind": "maximum",
+        "column_semantics": "published MAX column; tolerance bound"
+      }
+    },
+    "voltage_change_high_current": {
+      "typical": {
+        "value": 0.0025,
+        "unit": "V",
+        "conditions": "1 mA <= IR <= 15 mA, TA = TJ = 25 degC",
+        "page_reference": "p. 11 Section 5.8 Delta VR / Delta IR row",
+        "source_kind": "typical",
+        "column_semantics": "published TYP column; validation target"
+      },
+      "maximum": {
+        "value": 0.006,
+        "unit": "V",
+        "conditions": "same condition",
+        "page_reference": "p. 11 Section 5.8 Delta VR / Delta IR row",
+        "source_kind": "maximum",
+        "column_semantics": "published MAX column; tolerance bound"
+      }
+    },
+    "dynamic_impedance": {
+      "typical": {
+        "value": 0.3,
+        "unit": "ohm",
+        "conditions": "IR = 1 mA, f = 120 Hz, IAC = 0.1 IR",
+        "page_reference": "p. 11 Section 5.8 ZR row",
+        "source_kind": "typical",
+        "column_semantics": "published TYP column; model parameter"
+      },
+      "maximum": {
+        "value": 0.8,
+        "unit": "ohm",
+        "conditions": "same condition",
+        "page_reference": "p. 11 Section 5.8 ZR row",
+        "source_kind": "maximum",
+        "column_semantics": "published MAX column; tolerance bound"
+      }
+    },
+    "recommended_reverse_current_maximum": {
+      "value": 0.015,
+      "unit": "A",
+      "conditions": "2.5 V option recommended operating range",
+      "page_reference": "p. 5 Section 5.3 Recommended Operating Conditions",
+      "source_kind": "maximum",
+      "column_semantics": "published MAX column; supported boundary"
+    },
+    "reverse_current_absolute_maximum": {
+      "value": 0.02,
+      "unit": "A",
+      "conditions": "reverse current",
+      "page_reference": "p. 5 Section 5.1 Absolute Maximum Ratings",
+      "source_kind": "maximum",
+      "column_semantics": "published MAX column; current-limiter asymptote"
+    }
+  },
+  "identity": {
+    "canonical_mpn": "LM4040A25",
+    "manufacturer": "Texas Instruments",
+    "aliases": [
+      "LM4040AIM3-2.5",
+      "LM4040AIZ-2.5"
+    ]
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://www.ti.com/lit/ds/symlink/lm4040-n.pdf",
+    "revision": "SNOS633N, December 1991, revised August 2025",
+    "sha256": "7c49c3d3c26fc75538a967bae38abaa08f6aee851e543c354185cc14e1efa29b",
+    "accessed_date": "2026-08-07",
+    "pages_referenced": [
+      "p. 3 Figure 4-1",
+      "p. 4 Table 4-1",
+      "p. 5 Sections 5.1 and 5.3",
+      "p. 11 Section 5.8",
+      "p. 12 Section 5.8"
+    ],
+    "placeholder": false
+  }
+}

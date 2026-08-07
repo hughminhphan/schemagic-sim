@@ -1,0 +1,96 @@
+{
+  "schema_version": "1.0.0",
+  "validation_date": "2026-08-07",
+  "native_wasm_all_pass": true,
+  "expectations_all_pass": true,
+  "expectation_pass_count": 8,
+  "expectation_fail_count": 0,
+  "worst_native_wasm_relative_delta": 9.055113031649541e-11,
+  "worst_native_wasm_absolute_delta": 4.5285020178198465e-10,
+  "benches": [
+    {
+      "test_netlist": "output_voltage.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "output_voltage_10ma",
+          "pass": true,
+          "value": 5.000153330394726,
+          "error": 0.00015333039472587018,
+          "allowed": 0.05
+        },
+        {
+          "name": "input_current_including_iq",
+          "pass": true,
+          "value": 0.015000500021037004,
+          "error": 5.000210370042363e-7,
+          "allowed": 0.0015
+        }
+      ]
+    },
+    {
+      "test_netlist": "regulation_points.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "load_endpoint_zero",
+          "pass": true,
+          "value": 5.000279094061915,
+          "error": 0.00027909406191461983,
+          "allowed": 0.05
+        },
+        {
+          "name": "load_endpoint_800ma",
+          "pass": true,
+          "value": 4.998736159694352,
+          "error": 0.0002638403056476335,
+          "allowed": 0.04999
+        },
+        {
+          "name": "line_endpoint_6p5v",
+          "pass": true,
+          "value": 5.000279094061915,
+          "error": 0.00027909406191461983,
+          "allowed": 0.05
+        },
+        {
+          "name": "line_endpoint_15v",
+          "pass": true,
+          "value": 5.001279088405063,
+          "error": 0.000279088405062744,
+          "allowed": 0.050010000000000006
+        }
+      ]
+    },
+    {
+      "test_netlist": "dropout_boundary.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "dropout_boundary_output",
+          "pass": true,
+          "value": 4.898794966551496,
+          "error": 0.0012050334485040892,
+          "allowed": 0.147
+        }
+      ]
+    },
+    {
+      "test_netlist": "current_limit.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "current_limit_typical",
+          "pass": true,
+          "value": 1.2000000000000002,
+          "error": 2.220446049250313e-16,
+          "allowed": 0.3
+        }
+      ]
+    }
+  ]
+}

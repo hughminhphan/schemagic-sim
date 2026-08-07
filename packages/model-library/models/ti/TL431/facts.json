@@ -1,0 +1,123 @@
+{
+  "schema_version": "1.0.0",
+  "extraction_method": "pdftotext -layout plus manual structuring; no vendor SPICE model used",
+  "fit_conditions": {
+    "temperature": {
+      "value": 25,
+      "unit": "degC",
+      "conditions": "TL431AC recommended operating conditions",
+      "page_reference": "p. 9 Section 6.8 heading",
+      "source_kind": "typical",
+      "column_semantics": "table applies at TA = 25 degC unless noted"
+    }
+  },
+  "parameters": {
+    "reference_voltage": {
+      "minimum": {
+        "value": 2.47,
+        "unit": "V",
+        "conditions": "VKA = VREF, IKA = 10 mA",
+        "page_reference": "p. 9 Section 6.8 TL431AC Vref row",
+        "source_kind": "minimum",
+        "column_semantics": "published MIN column; tolerance bound only"
+      },
+      "typical": {
+        "value": 2.495,
+        "unit": "V",
+        "conditions": "VKA = VREF, IKA = 10 mA",
+        "page_reference": "p. 9 Section 6.8 TL431AC Vref row",
+        "source_kind": "typical",
+        "column_semantics": "published TYP column; fitted target"
+      },
+      "maximum": {
+        "value": 2.52,
+        "unit": "V",
+        "conditions": "VKA = VREF, IKA = 10 mA",
+        "page_reference": "p. 9 Section 6.8 TL431AC Vref row",
+        "source_kind": "maximum",
+        "column_semantics": "published MAX column; tolerance bound only"
+      }
+    },
+    "minimum_cathode_current": {
+      "typical": {
+        "value": 0.0004,
+        "unit": "A",
+        "conditions": "VKA = VREF",
+        "page_reference": "p. 9 Section 6.8 TL431AC Imin row",
+        "source_kind": "typical",
+        "column_semantics": "published TYP column; model parameter"
+      },
+      "maximum": {
+        "value": 0.0006,
+        "unit": "A",
+        "conditions": "VKA = VREF",
+        "page_reference": "p. 9 Section 6.8 TL431AC Imin row",
+        "source_kind": "maximum",
+        "column_semantics": "published MAX column; supported-region boundary"
+      }
+    },
+    "dynamic_impedance": {
+      "typical": {
+        "value": 0.2,
+        "unit": "ohm",
+        "conditions": "VKA = VREF, f <= 1 kHz, IKA = 1 mA to 100 mA",
+        "page_reference": "p. 9 Section 6.8 TL431AC |ZKA| row",
+        "source_kind": "typical",
+        "column_semantics": "published TYP column; fitted target"
+      },
+      "maximum": {
+        "value": 0.5,
+        "unit": "ohm",
+        "conditions": "same condition",
+        "page_reference": "p. 9 Section 6.8 TL431AC |ZKA| row",
+        "source_kind": "maximum",
+        "column_semantics": "published MAX column; tolerance bound"
+      }
+    },
+    "cathode_current_absolute_maximum": {
+      "value": 0.15,
+      "unit": "A",
+      "conditions": "continuous cathode current",
+      "page_reference": "p. 5 Section 6.1 Absolute Maximum Ratings",
+      "source_kind": "maximum",
+      "column_semantics": "published MAX column; current-limiter asymptote"
+    },
+    "recommended_cathode_current_maximum": {
+      "value": 0.1,
+      "unit": "A",
+      "conditions": "continuous cathode current",
+      "page_reference": "p. 5 Section 6.4 Recommended Operating Conditions",
+      "source_kind": "maximum",
+      "column_semantics": "published MAX column; not fully claimed by this F1 model"
+    },
+    "recommended_cathode_voltage_maximum": {
+      "value": 36,
+      "unit": "V",
+      "conditions": "VKA from Vref to 36 V",
+      "page_reference": "p. 5 Section 6.4 Recommended Operating Conditions",
+      "source_kind": "maximum",
+      "column_semantics": "published MAX column; metadata only"
+    }
+  },
+  "identity": {
+    "canonical_mpn": "TL431",
+    "manufacturer": "Texas Instruments",
+    "aliases": [
+      "TL431A",
+      "TL431AC"
+    ]
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://www.ti.com/lit/ds/symlink/tl431.pdf",
+    "revision": "SLVS543S, August 2004, revised May 2024",
+    "sha256": "32d5c43016e8ecf5267c4e12d82a5bb5a7344e2f435b619525381b9321bb3cc8",
+    "accessed_date": "2026-08-07",
+    "pages_referenced": [
+      "p. 4 Table 5-1",
+      "p. 5 Sections 6.1 and 6.4",
+      "p. 9 Section 6.8"
+    ],
+    "placeholder": false
+  }
+}

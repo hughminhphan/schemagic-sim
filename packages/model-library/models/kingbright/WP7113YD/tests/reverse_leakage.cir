@@ -1,0 +1,14 @@
+* WP7113YD reverse leakage at rated 5 V
+* OpenCircuit Model Factory v0.1.0
+* Original work generated from public factual specifications.
+* This model is not a copy of, or adaptation from, any vendor SPICE model.
+* WP7113YD (kingbright), datasheet-fitted at 25 degC
+* Archetype: archetype-diode.md, variant L
+* Node order: D<ref> anode cathode OC_KINGBRIGHT_WP7113YD
+.model OC_KINGBRIGHT_WP7113YD D(IS=4.2571667668e-19 N=2.0000000000e+00 RS=1.0000000000e-01 EG=2.1014270000e+00)
+.temp 25
+Vreverse cathode 0 DC 5
+Ddut 0 cathode OC_KINGBRIGHT_WP7113YD
+.save i(Vreverse) @ddut[id]
+.op
+.end

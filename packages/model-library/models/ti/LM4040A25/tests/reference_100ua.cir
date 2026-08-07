@@ -1,0 +1,16 @@
+* LM4040A25 reverse breakdown voltage at the datasheet 100 uA test condition
+* OpenCircuit Model Factory v0.1.0
+* Original work generated from public factual specifications.
+* LM4040A25 (Texas Instruments), datasheet SNOS633N, December 1991, revised August 2025, fitted 2026-08-07
+* Archetype: archetype-vreg.md, variant SHUNT two-terminal. Manual run: R1-regulators-2026-08-07
+* Node order: K A
+.subckt OC_LM4040A25 K A
++ PARAMS: VREF=2.5 IKMIN=4.5e-05 IKMAX=0.02 ZKA=0.3
+BK K A I = IKMIN + (IKMAX-IKMIN)*tanh({1/(ZKA*(IKMAX-IKMIN))}*0.5*((v(K,A)-VREF)+sqrt((v(K,A)-VREF)*(v(K,A)-VREF)+1e-12)))
+RKA K A 1e7
+.ends OC_LM4040A25
+.temp 25
+IBIAS 0 k DC 0.0001
+X1 k 0 OC_LM4040A25
+.op
+.end

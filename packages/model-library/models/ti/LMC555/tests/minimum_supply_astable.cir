@@ -1,0 +1,41 @@
+* LMC555 supported-region boundary: astable at minimum claimed supply 1.5 V
+* OpenCircuit model factory generated model
+* Original work generated from public factual specifications only
+* No vendor SPICE model text was used
+* LMC555 (Texas Instruments), datasheet SNAS558N, January 2000, revised March 2024, fitted 2026-08-07
+* Archetype: archetype-timer555.md
+* Node order: GND TRIG OUT RESET CONT THRES DISCH VCC (DIP-8 pins 1 through 8)
+.subckt OC_LMC555 GND TRIG OUT RESET CONT THRES DISCH VCC
++ PARAMS: RDIV=100000 AGAIN=2e3 KREG=25 TAU=20n VDRP_H=0.23 VDRP_L=0.02
++ RDIS=15 RDOFF=1e9 KSW=20 ROUT=35 VSKEW=0.05 VRESET=0.7 IQ=0.00018
+RA VCC CONT {RDIV}
+RB CONT CTRG {RDIV}
+RC CTRG GND {RDIV}
+BCU cu GND V = 0.5*(1+tanh(AGAIN*(v(THRES,GND)-v(CONT,GND))))
+RCU cu GND 1meg
+BCL cl GND V = 0.5*(1+tanh(AGAIN*(v(CTRG,GND)-v(TRIG,GND))))
+RCL cl GND 1meg
+BRS rs GND V = 0.5*(1+tanh(20*(v(RESET,GND)-VRESET)))
+RRS rs GND 1meg
+BQA qad GND V = v(rs)*( (v(cu)>0.5) ? 0 : ( (v(cl)>0.5) ? 1 : 0.5*(1-tanh(KREG*(v(qb)-0.5))) ) )
+RQA qad qa {TAU/1p}
+CQA qa GND 1p
+BQB qbd GND V = 0.5*(1-tanh(KREG*(v(qa)-0.5))) + VSKEW
+RQB qbd qb {TAU/1p}
+CQB qb GND 1p
+BOUT od GND V = min(max(VDRP_L + (v(VCC,GND)-VDRP_H-VDRP_L)*v(qa), 0), v(VCC,GND))
+ROUT od OUT {ROUT}
+RDISCH DISCH GND R={1/((1/RDIS)*0.5*(1-tanh(KSW*(v(qa)-0.5))) + 1/RDOFF)}
+IQD VCC GND DC {IQ}
+.ends OC_LMC555
+
+.temp 25
+VCC vcc 0 DC 1.5
+X1 0 cap out vcc ctl cap dis vcc OC_LMC555
+R1 vcc dis 10k
+R2 dis cap 10k
+C1 cap 0 10n
+CCTL ctl 0 10n
+.save v(out) v(cap)
+.tran 200n 1m
+.end

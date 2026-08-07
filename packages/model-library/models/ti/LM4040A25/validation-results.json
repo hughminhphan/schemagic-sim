@@ -1,0 +1,68 @@
+{
+  "schema_version": "1.0.0",
+  "validation_date": "2026-08-07",
+  "native_wasm_all_pass": true,
+  "expectations_all_pass": true,
+  "expectation_pass_count": 4,
+  "expectation_fail_count": 0,
+  "worst_native_wasm_relative_delta": 1.419753566701768e-14,
+  "worst_native_wasm_absolute_delta": 4.2690460541616737e-19,
+  "benches": [
+    {
+      "test_netlist": "reference_100ua.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "reference_voltage_100ua",
+          "pass": true,
+          "value": 2.5000164128699818,
+          "error": 0.00001641286998177449,
+          "allowed": 0.0025
+        }
+      ]
+    },
+    {
+      "test_netlist": "minimum_current_boundary.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "minimum_current_boundary_voltage",
+          "pass": true,
+          "value": 2.5000043685035083,
+          "error": 0.000004368503508267452,
+          "allowed": 0.00375
+        }
+      ]
+    },
+    {
+      "test_netlist": "maximum_current_boundary.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "maximum_current_boundary_voltage",
+          "pass": true,
+          "value": 2.5049625562406677,
+          "error": 0.0021625562406675236,
+          "allowed": 0.010011200000000001
+        }
+      ]
+    },
+    {
+      "test_netlist": "dynamic_impedance.cir",
+      "analysis": "ac",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "dynamic_impedance_voltage_for_100ua_ac",
+          "pass": true,
+          "value": 0.000030068922905255325,
+          "error": 6.892290525532438e-8,
+          "allowed": 0.00005
+        }
+      ]
+    }
+  ]
+}
