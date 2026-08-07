@@ -1,0 +1,142 @@
+{
+  "schema_version": "1.0.0",
+  "canonical_mpn": "TIP32C",
+  "manufacturer": "STMicroelectronics",
+  "description": "Power transistor",
+  "electrical_family": "bjt_pnp",
+  "symbol_pins": [
+    {
+      "name": "B",
+      "number": "1",
+      "role": "base"
+    },
+    {
+      "name": "C",
+      "number": "2",
+      "role": "collector"
+    },
+    {
+      "name": "E",
+      "number": "3",
+      "role": "emitter"
+    }
+  ],
+  "spice_pin_mapping": [
+    {
+      "symbol_pin_number": "2",
+      "subckt_node": "collector",
+      "order": 1
+    },
+    {
+      "symbol_pin_number": "1",
+      "subckt_node": "base",
+      "order": 2
+    },
+    {
+      "symbol_pin_number": "3",
+      "subckt_node": "emitter",
+      "order": 3
+    }
+  ],
+  "package_variants": [
+    {
+      "name": "TO-220",
+      "standard": "ST TO-220",
+      "pin_count": 3,
+      "pin_map": [
+        {
+          "package_pin": "1",
+          "symbol_pin_number": "1"
+        },
+        {
+          "package_pin": "2",
+          "symbol_pin_number": "2"
+        },
+        {
+          "package_pin": "3",
+          "symbol_pin_number": "3"
+        }
+      ]
+    }
+  ],
+  "ordering_code_aliases": [],
+  "datasheet": {
+    "url": "https://www.st.com/en/power-transistors/tip32c.html",
+    "revision": "Rev. 2, November 2006; official ST product/specification page fallback"
+  },
+  "model_type": "dot_model",
+  "fidelity_tier": "F1",
+  "domain_coverage": {
+    "dc": "approx",
+    "ac": "none",
+    "transient": "approx",
+    "noise": "none",
+    "thermal": "none",
+    "digital": "none"
+  },
+  "supported_analyses": [
+    "operating_point",
+    "dc_sweep",
+    "ac_small_signal",
+    "transient"
+  ],
+  "supported_operating_region": {
+    "summary": "F1 table-constrained at 25 degC. ST fetch fallback limits characterization to guaranteed electrical rows.",
+    "numeric_bounds": [
+      {
+        "quantity": "collector_current",
+        "minimum": 0,
+        "maximum": 3,
+        "unit": "A",
+        "conditions": "Continuous rating; SOA and thermal limits not enforced",
+        "placeholder": false
+      },
+      {
+        "quantity": "collector_emitter_voltage",
+        "minimum": 0,
+        "maximum": 100,
+        "unit": "V",
+        "conditions": "Rated VCEO; breakdown omitted",
+        "placeholder": false
+      },
+      {
+        "quantity": "ambient_temperature",
+        "minimum": 25,
+        "maximum": 25,
+        "unit": "degC",
+        "conditions": "Characterization temperature",
+        "placeholder": false
+      }
+    ]
+  },
+  "known_omissions": [
+    "Official ST PDF and HTML fetches timed out after browser-header retries; official ST specification content fallback is used and fidelity is capped at F1.",
+    "Guaranteed MIN/MAX rows are hard bounds, not typical fit targets.",
+    "VAF, capacitances, transit times, reverse operation, temperature coefficients, package parasitics, noise, self-heating, safe-operating-area failure, thermal runaway, and breakdown are not fitted.",
+    "Absolute maximum ratings are metadata only and are not enforced by the model.",
+    "Reviewer remains pending-review."
+  ],
+  "licence": {
+    "spdx_id": "MIT",
+    "provenance_basis": "original_from_facts"
+  },
+  "generator": {
+    "tool_or_agent": "opencircuit-model-factory-v0.1.0",
+    "date": "2026-08-07"
+  },
+  "reviewer": {
+    "tool_or_agent": "pending-review",
+    "date": "2026-08-07"
+  },
+  "test_results": {
+    "status": "complete",
+    "pass_count": 6,
+    "fail_count": 0,
+    "total_count": 6,
+    "worst_observed_relative_fitting_error": {
+      "value": 0,
+      "quantity": "guaranteed hFE bounds"
+    }
+  },
+  "validation_date": "2026-08-07"
+}
