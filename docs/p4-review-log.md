@@ -171,3 +171,35 @@ All six author-passed packages pass independent review. `validate-package.mjs` p
 | MCP1700-3302E | F1 | `output_voltage.cir` v(out) = 3.3001279859461166 V; `dropout.cir` v(out) = 3.195568834413664 V. Both native/WASM comparisons PASS, and both stored values match exactly. | VIN = 5 V, IOUT = 0.125 A, 25 degC produced VOUT = 3.3002708442818336 V. | Honest F1 typical-table approximation. Worst fit error 21.590542464233597% at dropout is disclosed, with line/load direction and single-constant dropout limitations recorded. Official Microchip DS20001826F source metadata and page citations are present. |
 
 The author-supplied status for all six parts was pass, so there were no failed or skipped targets to verify. No model, test, fact, source, fitted evidence, or stored validation result was edited.
+
+## 2026-08-07: batch sweep-bjts
+
+Reviewer: `sol independent reviewer (sweep-bjts)`
+
+Five packages pass independent review and ten fail. All 11 existing packages passed schema validation before review. Two selected benches per existing package passed native ngspice-46 versus WASM comparison. Fresh native values reproduced every stored check in the selected benches with maximum absolute difference 0. The five passing packages passed schema validation again after reviewer stamping.
+
+| MPN | Verdict | Decisive independent evidence |
+| --- | --- | --- |
+| 2N3906 | FAIL | The fresh 0.1 mA gain value is 83.27322786937394 against the cited target 110. The absolute log residual is 0.27835326240294256, above the BJT archetype limit 0.223. The F2 expectations still cite gain as p. 7 fig. 13 and saturation as p. 8 fig. 2, while those PDF pages are mechanical-outline pages and `sources.json` omits the actual curve page. |
+| 2N5551 | PASS | Fresh native gain values 108.00193625618704 and 30.125025405868655 and four saturation bounds reproduced exactly. The F1 table-bound scope is explicit, and shipped, fitted, and model-card parameters agree. |
+| BC327-40 | FAIL | At the claimed 0.5 A boundary, fresh native VBE(sat) is 1.5531226951381565 V against 0.86 V, an 80.595662% error. The package still calls DC coverage fitted across 1 mA to 500 mA, while its only accepted numerical expectation is a tautological collector-voltage check. |
+| BC337-40 | FAIL | At 0.5 A, fresh native VBE(sat) is 1.5531226951383639 V against 0.86 V, an 80.595662% error. `facts.json` explicitly uses a complementary-family curve proxy, and all 20 shipped numeric parameters are identical to BC327-40 apart from polarity, contrary to the no-borrowed-parameters contract. |
+| BC547B | FAIL | At the claimed 0.1 mA lower boundary, fresh native hFE is 510.0681451176217 against the cited typical 100, a 410.068145% error. Material gain and saturation expectations remain withheld while DC coverage remains labeled fitted. |
+| BC557B | FAIL | At the claimed 0.1 mA lower boundary, fresh native hFE is 493.83691741385553 against the cited typical 100, a 393.836917% error. Material gain and saturation expectations remain withheld while DC coverage remains labeled fitted. |
+| MMBT3904 | PASS | Nine selected gain and saturation values reproduced exactly, including hFE 91.7745330232523, 161.48462221071117, and 182.27902774340973. Its corrected F2 citations point to Figure 15 on p. 5 and Figure 17 on p. 6, and shipped, fitted, and model-card parameters agree. |
+| MMBT3906 | PASS | Nine selected gain and saturation values reproduced exactly, including hFE minima 79.93289440970251, 118.33869956333088, and 125.01423063441264. The package honestly claims F1 guaranteed-bound scope, and all 20 parameters agree across artifacts. |
+| MPSA42 | PASS | Seven selected values reproduced exactly, including hFE minima 41.25000001337931, 66.00000001431933, and 66.00000000984728. The F1 card preserves minimum-bound semantics and discloses the duplicated saturation characterization. |
+| PN2222A | FAIL | At the published 0.5 A, 50 mA base-current point, fresh native VBE(sat) is 1.418342187637947 V against the 1.05 V maximum, an excess of 0.368342187637947 V or 35.080208%. No material expectation catches the maximum-voltage violation. |
+| BC846B | PASS | Six selected gain and saturation values reproduced exactly, including hFE 277.1288632175128 and 307.8876260337893. The source-limited F1 scope is explicit, and all 20 parameters agree across artifacts. |
+| TIP31C | FAIL | No package exists. Validation reports seven blockers: missing `component.json`, `model.cir`, `sources.json`, `MODEL_CARD.md`, `LICENSE`, `tests/expectations.json`, and `tests/`. There are 0 stored checks, 0 runnable benches, and no claimed operating region to probe. |
+| TIP32C | FAIL | No package exists. Validation reports the same seven missing-package blockers, with 0 stored checks, 0 runnable benches, and no claimed operating region. |
+| TIP120 | FAIL | No package exists. Validation reports the same seven missing-package blockers, with 0 stored checks, 0 runnable benches, and no claimed operating region. |
+| TIP125 | FAIL | No package exists. Validation reports the same seven missing-package blockers, with 0 stored checks, 0 runnable benches, and no claimed operating region. |
+
+A full parameter audit compared every one of the 20 recorded BJT parameters for each existing package. All 220 shipped `model.cir` values match the package's own `fitted.json`, and all 220 rendered model-card values match within their documented display precision. This confirms that the earlier shipped-card versus fitted-evidence mismatch class is fixed for the current batch.
+
+Independent probes outside the authored benches were inside each existing package's claimed region: 2N3906 produced IC 4.72518 mA, hFE 189.0072, VBE -0.691065 V; 2N5551 produced 15.53344 mA, 103.556198, 0.8075703 V; BC327-40 produced 178.368 mA, 356.736, -0.779947 V; BC337-40 produced 178.3685 mA, 356.736715, 0.7799471 V; BC547B produced 56.30772 mA, 225.23088, 0.7536211 V; BC557B produced 56.0833 mA, 224.3332, -0.767684 V; MMBT3904 produced 28.49512 mA, 142.4756, 0.7484493 V; MMBT3906 produced 23.3017 mA, 116.5085, -0.734119 V; MPSA42 produced 17.50148 mA, 87.5074, 0.6152624 V; PN2222A produced 47.51449 mA, 95.0282388, 0.7371864 V; BC846B produced 18.85394 mA, 94.2697, 0.7606106 V.
+
+Two cited PDFs were independently fetched. The onsemi MMBT3904 SHA-256 reproduced as `8c3a7966cfbd09066d906c4e0e3dfedb7e13abb9dc2cb34c600d1f05736bbdb4`; p. 2 confirms fT = 300 MHz minimum at IC = 10 mA, VCE = 20 V, f = 100 MHz and Cobo = 4.0 pF maximum at VCB = 5 V, IE = 0, f = 1 MHz. The Nexperia BC846 series SHA-256 reproduced as `045a6cc21de93ac634aad910567e882926bd6ef154cbd8c59d13201134642a97`; p. 4 confirms group-B typical hFE = 290 at both IC = 10 uA and IC = 2 mA, plus fT = 100 MHz minimum at VCE = 5 V and IC = 10 mA.
+
+Only 2N5551, MMBT3904, MMBT3906, MPSA42, and BC846B were stamped with `sol independent reviewer (sweep-bjts)` and validation date 2026-08-07. All failed packages remain pending or absent. No model, test, fact, source, fitted evidence, or stored validation result was edited.
