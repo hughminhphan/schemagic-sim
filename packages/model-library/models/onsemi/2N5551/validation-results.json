@@ -3,10 +3,10 @@
   "validation_date": "2026-08-07",
   "native_wasm_all_pass": true,
   "expectations_all_pass": true,
-  "expectation_pass_count": 8,
+  "expectation_pass_count": 9,
   "expectation_fail_count": 0,
-  "worst_native_wasm_relative_delta": 2.078047705665097e-12,
-  "worst_native_wasm_absolute_delta": 3.893774191965349e-12,
+  "worst_native_wasm_relative_delta": 8.255905904600374e-10,
+  "worst_native_wasm_absolute_delta": 5.658762347593438e-11,
   "benches": [
     {
       "test_netlist": "dc_gain.cir",
@@ -14,16 +14,16 @@
       "native_wasm_pass": true,
       "checks": [
         {
-          "name": "hfe_at_0.01_a",
+          "name": "hfe_minimum_at_0.01_a",
           "pass": true,
-          "value": 161.45585311244955,
+          "value": 108.00193625618704,
           "minimum": 80,
           "maximum": null
         },
         {
-          "name": "hfe_at_0.05_a",
+          "name": "hfe_minimum_at_0.05_a",
           "pass": true,
-          "value": 65.13628593296464,
+          "value": 30.125025405868655,
           "minimum": 30,
           "maximum": null
         }
@@ -35,32 +35,32 @@
       "native_wasm_pass": true,
       "checks": [
         {
-          "name": "vce_sat_1",
+          "name": "vce_sat_1_maximum",
           "pass": true,
-          "value": 0.07308749733932438,
-          "error": 0.07691250266067562,
-          "allowed": 0.15
+          "value": 0.1116820524509414,
+          "minimum": 0,
+          "maximum": 0.15
         },
         {
-          "name": "vbe_sat_1",
+          "name": "vbe_sat_1_maximum",
           "pass": true,
-          "value": 0.7250802142525508,
-          "error": 0.27491978574744924,
-          "allowed": 1
+          "value": 0.7997731011793231,
+          "minimum": 0,
+          "maximum": 1
         },
         {
-          "name": "vce_sat_2",
+          "name": "vce_sat_2_maximum",
           "pass": true,
-          "value": 0.20287369610775377,
-          "error": 0.04712630389224623,
-          "allowed": 0.25
+          "value": 0.20121742264519496,
+          "minimum": 0,
+          "maximum": 0.25
         },
         {
-          "name": "vbe_sat_2",
+          "name": "vbe_sat_2_maximum",
           "pass": true,
-          "value": 0.8084522174978355,
-          "error": 0.3915477825021645,
-          "allowed": 1.2
+          "value": 0.9597678618505076,
+          "minimum": 0,
+          "maximum": 1.2
         }
       ]
     },
@@ -72,9 +72,9 @@
         {
           "name": "current_gain_bandwidth",
           "pass": true,
-          "value": 313280320.69887084,
-          "minimum": 100000000,
-          "maximum": null
+          "value": 101923831.07350077,
+          "error": 1923831.0735007674,
+          "allowed": 20000000
         }
       ]
     },
@@ -86,9 +86,9 @@
         {
           "name": "cobo",
           "pass": true,
-          "value": 3.2525370755058114e-12,
-          "minimum": null,
-          "maximum": 6e-12
+          "value": 5.997743468980063e-12,
+          "error": 2.2565310199374128e-15,
+          "allowed": 1.2000000000000001e-12
         }
       ]
     },
@@ -102,7 +102,15 @@
       "test_netlist": "boundary_region.cir",
       "analysis": "op",
       "native_wasm_pass": true,
-      "checks": []
+      "checks": [
+        {
+          "name": "upper_current_boundary_finite",
+          "pass": true,
+          "value": 0.05020837567644776,
+          "minimum": 0,
+          "maximum": 0.07500000000000001
+        }
+      ]
     }
   ]
 }

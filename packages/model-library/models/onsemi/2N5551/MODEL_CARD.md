@@ -5,7 +5,7 @@
 - Manufacturer: onsemi
 - Description: High-voltage NPN epitaxial silicon transistor
 - Electrical family: bjt_npn
-- Fidelity tier: F1, manufacturer HTML-constrained
+- Fidelity tier: F1, datasheet-constrained
 - Independent reviewer: pending-review
 
 ## Provenance
@@ -33,17 +33,17 @@
 
 | Parameter | Value | Status |
 | --- | ---: | --- |
-| IS | 2.78280634e-16 | fitted or derived |
+| IS | 1.70280539e-14 | fitted or derived |
 | NF | 1.00000000e+0 | fitted or derived |
-| BF | 2.22168431e+2 | fitted or derived |
-| IKF | 8.19776688e-3 | fitted or derived |
-| ISE | 6.11934592e-13 | fitted or derived |
-| NE | 1.56247412e+0 | fitted or derived |
+| BF | 2.00000000e+3 | fitted or derived |
+| IKF | 7.08132236e-4 | fitted or derived |
+| ISE | 1.67238176e-18 | fitted or derived |
+| NE | 3.99999974e+0 | fitted or derived |
 | VAF | 1.00000000e+2 | fitted or derived |
 | BR | 4.00000000e+0 | fitted or derived |
-| RB | 1.24601755e+2 | fitted or derived |
-| RE | 5.38857847e-1 | fitted or derived |
-| RC | 1.82154613e+0 | fitted or derived |
+| RB | 1.00251651e+1 | fitted or derived |
+| RE | 9.26648854e-1 | fitted or derived |
+| RC | 1.03239264e-4 | fitted or derived |
 | CJE | 1.18361398e-15 | fitted or derived |
 | VJE | 7.50000000e-1 | fitted or derived |
 | MJE | 3.30000000e-1 | fitted or derived |
@@ -51,23 +51,23 @@
 | VJC | 7.50000000e-1 | fitted or derived |
 | MJC | 3.30000000e-1 | fitted or derived |
 | XCJC | 1.00000000e+0 | fitted or derived |
-| TF | 1.52033279e-9 | fitted or derived |
+| TF | 1.54104324e-9 | fitted or derived |
 | TR | 0.00000000e+0 | fitted or derived |
 
 ## Fitted versus datasheet
 
 | Quantity | Datasheet | Fitted | Unit | Relative error | Citation |
 | --- | ---: | ---: | --- | ---: | --- |
-| hFE at IC=0.01 A | 8.000000e+1 | 1.584067e+1 | 1 | 80.199% | spec page |
-| hFE at IC=0.05 A | 3.000000e+1 | 1.515358e+1 | 1 | 49.488% | spec page |
-| VCE(sat) at IC=0.01 A | 1.500000e-1 | 9.951177e-2 | V | 33.659% | spec page |
-| VBE(sat) at IC=0.01 A | 1.000000e+0 | 9.624224e-1 | V | 3.758% | spec page |
-| VCE(sat) at IC=0.05 A | 2.500000e-1 | 2.600886e-1 | V | 4.035% | spec page |
-| VBE(sat) at IC=0.05 A | 1.200000e+0 | 1.553275e+0 | V | 29.440% | spec page |
+| hFE at IC=0.01 A | 8.000000e+1 | 1.074802e+2 | 1 | 34.350% | spec page |
+| hFE at IC=0.05 A | 3.000000e+1 | 2.997667e+1 | 1 | 0.078% | spec page |
+| VCE(sat) at IC=0.01 A | 1.500000e-1 | 1.119329e-1 | V | 25.378% | spec page |
+| VBE(sat) at IC=0.01 A | 1.000000e+0 | 8.000003e-1 | V | 20.000% | spec page |
+| VCE(sat) at IC=0.05 A | 2.500000e-1 | 2.016116e-1 | V | 19.355% | spec page |
+| VBE(sat) at IC=0.05 A | 1.200000e+0 | 9.599999e-1 | V | 20.000% | spec page |
 
-Worst fitting error: 80.199% for hFE at IC=0.01 A.
+Worst fitting error: 34.350% for hFE at IC=0.01 A.
 
-Native and WASM agreement: all 6 benches passed. Worst reported relative delta was 2.078e-12 and worst absolute delta was 3.894e-12.
+Native and WASM agreement: all 6 benches passed. Worst reported relative delta was 8.256e-10 and worst absolute delta was 5.659e-11.
 
 ## Known omissions
 
@@ -77,6 +77,7 @@ Native and WASM agreement: all 6 benches passed. Worst reported relative delta w
 - Only one independent saturation characterization is available; high-current saturation is an anchored table point rather than a fitted curve.
 - CJE is held at the numerical floor because Cibo is not published.
 - Reviewer remains pending-review
+- Source sha256 is a locator sentinel because the official HTML page was unreachable and no content was acquired; do not treat it as a downloaded datasheet hash.
 
 ## Licence
 
