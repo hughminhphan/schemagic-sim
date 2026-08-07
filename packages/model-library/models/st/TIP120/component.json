@@ -1,0 +1,142 @@
+{
+  "schema_version": "1.0.0",
+  "canonical_mpn": "TIP120",
+  "manufacturer": "STMicroelectronics",
+  "description": "Darlington power transistor",
+  "electrical_family": "bjt_npn",
+  "symbol_pins": [
+    {
+      "name": "B",
+      "number": "1",
+      "role": "base"
+    },
+    {
+      "name": "C",
+      "number": "2",
+      "role": "collector"
+    },
+    {
+      "name": "E",
+      "number": "3",
+      "role": "emitter"
+    }
+  ],
+  "spice_pin_mapping": [
+    {
+      "symbol_pin_number": "2",
+      "subckt_node": "collector",
+      "order": 1
+    },
+    {
+      "symbol_pin_number": "1",
+      "subckt_node": "base",
+      "order": 2
+    },
+    {
+      "symbol_pin_number": "3",
+      "subckt_node": "emitter",
+      "order": 3
+    }
+  ],
+  "package_variants": [
+    {
+      "name": "TO-220",
+      "standard": "ST TO-220",
+      "pin_count": 3,
+      "pin_map": [
+        {
+          "package_pin": "1",
+          "symbol_pin_number": "1"
+        },
+        {
+          "package_pin": "2",
+          "symbol_pin_number": "2"
+        },
+        {
+          "package_pin": "3",
+          "symbol_pin_number": "3"
+        }
+      ]
+    }
+  ],
+  "ordering_code_aliases": [],
+  "datasheet": {
+    "url": "https://www.st.com/en/power-transistors/tip120.html",
+    "revision": "DS0854 Rev. 5, May 2021; official ST product/specification page fallback"
+  },
+  "model_type": "subckt",
+  "fidelity_tier": "F1",
+  "domain_coverage": {
+    "dc": "approx",
+    "ac": "none",
+    "transient": "approx",
+    "noise": "none",
+    "thermal": "none",
+    "digital": "none"
+  },
+  "supported_analyses": [
+    "operating_point",
+    "dc_sweep",
+    "ac_small_signal",
+    "transient"
+  ],
+  "supported_operating_region": {
+    "summary": "F1 composite terminal model at 25 degC, with datasheet internal resistors and freewheel diode.",
+    "numeric_bounds": [
+      {
+        "quantity": "collector_current",
+        "minimum": 0,
+        "maximum": 5,
+        "unit": "A",
+        "conditions": "Continuous rating; SOA and thermal limits not enforced",
+        "placeholder": false
+      },
+      {
+        "quantity": "collector_emitter_voltage",
+        "minimum": 0,
+        "maximum": 60,
+        "unit": "V",
+        "conditions": "Rated VCEO; breakdown omitted",
+        "placeholder": false
+      },
+      {
+        "quantity": "ambient_temperature",
+        "minimum": 25,
+        "maximum": 25,
+        "unit": "degC",
+        "conditions": "Characterization temperature",
+        "placeholder": false
+      }
+    ]
+  },
+  "known_omissions": [
+    "Official ST PDF and HTML fetches timed out after browser-header retries; official ST specification content fallback is used and fidelity is capped at F1.",
+    "Darlington modelled as two Gummel-Poon devices plus the datasheet internal bias resistors and freewheel diode. The two dies are not independently characterised; only composite terminal behaviour is constrained. Internal-node behaviour is F1.",
+    "Guaranteed MIN/MAX rows are hard bounds, not typical fit targets.",
+    "No self-heating, SOA failure, thermal runaway, breakdown, package parasitics, temperature spread, or noise is modelled.",
+    "Reviewer remains pending-review."
+  ],
+  "licence": {
+    "spdx_id": "MIT",
+    "provenance_basis": "original_from_facts"
+  },
+  "generator": {
+    "tool_or_agent": "opencircuit-model-factory-v0.1.0",
+    "date": "2026-08-07"
+  },
+  "reviewer": {
+    "tool_or_agent": "pending-review",
+    "date": "2026-08-07"
+  },
+  "test_results": {
+    "status": "complete",
+    "pass_count": 7,
+    "fail_count": 0,
+    "total_count": 7,
+    "worst_observed_relative_fitting_error": {
+      "value": 0,
+      "quantity": "guaranteed composite terminal bounds"
+    }
+  },
+  "validation_date": "2026-08-07"
+}

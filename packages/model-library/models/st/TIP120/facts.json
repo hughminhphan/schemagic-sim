@@ -1,0 +1,188 @@
+{
+  "schema_version": "1.0.0",
+  "extraction_method": "official ST specification content fallback; composite terminal MIN/MAX semantics preserved",
+  "fit_conditions": {
+    "temperature": {
+      "value": 25,
+      "unit": "degC",
+      "conditions": "TC = 25 degC unless stated",
+      "page_reference": "official spec table",
+      "source_kind": "typical"
+    }
+  },
+  "gain_points": [
+    {
+      "collector_current": {
+        "value": 0.5,
+        "unit": "A",
+        "conditions": "VCE=3 V",
+        "page_reference": "official spec table",
+        "source_kind": "typical"
+      },
+      "vce": {
+        "value": 3,
+        "unit": "V",
+        "conditions": "IC=.5 A",
+        "page_reference": "official spec table",
+        "source_kind": "typical"
+      },
+      "hfe": {
+        "value": 1000,
+        "unit": "1",
+        "conditions": "IC=.5 A VCE=3 V",
+        "page_reference": "official spec table MIN column",
+        "source_kind": "minimum"
+      }
+    },
+    {
+      "collector_current": {
+        "value": 3,
+        "unit": "A",
+        "conditions": "VCE=3 V",
+        "page_reference": "official spec table",
+        "source_kind": "typical"
+      },
+      "vce": {
+        "value": 3,
+        "unit": "V",
+        "conditions": "IC=3 A",
+        "page_reference": "official spec table",
+        "source_kind": "typical"
+      },
+      "hfe": {
+        "value": 1000,
+        "unit": "1",
+        "conditions": "IC=3 A VCE=3 V",
+        "page_reference": "official spec table MIN column",
+        "source_kind": "minimum"
+      },
+      "vbe": {
+        "value": 2.5,
+        "unit": "V",
+        "conditions": "IC=3 A VCE=3 V",
+        "page_reference": "official spec table MAX column",
+        "source_kind": "maximum"
+      }
+    }
+  ],
+  "saturation_points": [
+    {
+      "collector_current": {
+        "value": 3,
+        "unit": "A",
+        "conditions": "IB=.012 A",
+        "page_reference": "official spec table",
+        "source_kind": "typical"
+      },
+      "base_current": {
+        "value": 0.012,
+        "unit": "A",
+        "conditions": "IC=3 A",
+        "page_reference": "official spec table",
+        "source_kind": "typical"
+      },
+      "vce_sat": {
+        "value": 2,
+        "unit": "V",
+        "conditions": "IC=3 A IB=.012 A",
+        "page_reference": "official spec table MAX column",
+        "source_kind": "maximum"
+      },
+      "vbe_sat": {
+        "value": 2.5,
+        "unit": "V",
+        "conditions": "terminal bound from VBE(on)",
+        "page_reference": "official spec table MAX column",
+        "source_kind": "maximum"
+      }
+    },
+    {
+      "collector_current": {
+        "value": 5,
+        "unit": "A",
+        "conditions": "IB=.020 A",
+        "page_reference": "official spec table",
+        "source_kind": "typical"
+      },
+      "base_current": {
+        "value": 0.02,
+        "unit": "A",
+        "conditions": "IC=5 A",
+        "page_reference": "official spec table",
+        "source_kind": "typical"
+      },
+      "vce_sat": {
+        "value": 4,
+        "unit": "V",
+        "conditions": "IC=5 A IB=.020 A",
+        "page_reference": "official spec table MAX column",
+        "source_kind": "maximum"
+      },
+      "vbe_sat": {
+        "value": 2.5,
+        "unit": "V",
+        "conditions": "terminal bound from VBE(on)",
+        "page_reference": "official spec table MAX column",
+        "source_kind": "maximum"
+      }
+    }
+  ],
+  "internal_network": {
+    "r1": {
+      "value": 7000,
+      "unit": "ohm",
+      "conditions": "internal schematic",
+      "page_reference": "internal schematic",
+      "source_kind": "typical"
+    },
+    "r2": {
+      "value": 70,
+      "unit": "ohm",
+      "conditions": "internal schematic",
+      "page_reference": "internal schematic",
+      "source_kind": "typical"
+    }
+  },
+  "electrical_limits": {
+    "vceo": {
+      "value": 60,
+      "unit": "V",
+      "conditions": "IB=0",
+      "page_reference": "official spec table",
+      "source_kind": "minimum"
+    },
+    "collector_current": {
+      "value": 5,
+      "unit": "A",
+      "conditions": "continuous",
+      "page_reference": "official spec table",
+      "source_kind": "maximum"
+    },
+    "power_dissipation": {
+      "value": 65,
+      "unit": "W",
+      "conditions": "TC=25 degC",
+      "page_reference": "official spec table",
+      "source_kind": "maximum"
+    }
+  },
+  "identity": {
+    "canonical_mpn": "TIP120",
+    "manufacturer": "STMicroelectronics",
+    "aliases": []
+  },
+  "source": {
+    "kind": "spec_page",
+    "url": "https://www.st.com/en/power-transistors/tip120.html",
+    "revision": "DS0854 Rev. 5, May 2021; official ST product/specification page fallback",
+    "sha256": "f1dceea0c76699f145f648a31dfec09125d60e071ca5166f5e3697b8b8381780",
+    "accessed_date": "2026-08-07",
+    "pages_referenced": [
+      "official spec table",
+      "internal schematic",
+      "safe operating area figure"
+    ],
+    "placeholder": false,
+    "note": "Direct ST PDF and HTML fetches timed out after browser-header retries. Official ST specification content was retained through the text extraction fallback; fidelity is capped at F1."
+  }
+}

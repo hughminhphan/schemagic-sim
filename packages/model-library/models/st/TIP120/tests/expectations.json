@@ -1,0 +1,123 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "dc_gain.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "hfe_min_0p5a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vc1),2000)"
+          },
+          "unit": "1",
+          "inclusive": true,
+          "datasheet_citation": "official spec table MIN column, IC=.5 A VCE=3 V",
+          "placeholder": false,
+          "minimum": 1000,
+          "maximum": 10000
+        },
+        {
+          "name": "hfe_min_3a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vc2),333.3333333333333)"
+          },
+          "unit": "1",
+          "inclusive": true,
+          "datasheet_citation": "official spec table MIN column, IC=3 A VCE=3 V",
+          "placeholder": false,
+          "minimum": 1000,
+          "maximum": 10000
+        },
+        {
+          "name": "vbe_on_max",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(b2))"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "official spec table MAX column, IC=3 A VCE=3 V",
+          "placeholder": false,
+          "minimum": 0,
+          "maximum": 2.5
+        }
+      ]
+    },
+    {
+      "test_netlist": "saturation.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "vce_sat_3a_max",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(c1))"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "official spec table MAX column, IC=3 A IB=12 mA",
+          "placeholder": false,
+          "minimum": 0,
+          "maximum": 2
+        },
+        {
+          "name": "vce_sat_5a_max",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(c2))"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "official spec table MAX column, IC=5 A IB=20 mA",
+          "placeholder": false,
+          "minimum": 0,
+          "maximum": 4
+        },
+        {
+          "name": "vbe_terminal_max",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(b1))"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "official spec table VBE(on) MAX column",
+          "placeholder": false,
+          "minimum": 0,
+          "maximum": 2.5
+        }
+      ]
+    },
+    {
+      "test_netlist": "boundary_soa_edge.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "soa_edge_current_below_continuous_rating",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vce))"
+          },
+          "unit": "A",
+          "inclusive": true,
+          "datasheet_citation": "official spec table IC continuous maximum and safe operating area figure",
+          "placeholder": false,
+          "minimum": 0,
+          "maximum": 5
+        }
+      ]
+    },
+    {
+      "test_netlist": "freewheel_diode.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": []
+    }
+  ]
+}

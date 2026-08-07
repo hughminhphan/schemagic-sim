@@ -1,0 +1,27 @@
+TIP120 composite saturation
+* OpenCircuit Model Factory v0.1.0
+* Original work generated from public factual specifications.
+* This model is not a copy of, or adaptation from, any vendor SPICE model.
+* Source: https://www.st.com/en/power-transistors/tip120.html
+* Revision: DS0854 Rev. 5, May 2021; official ST product/specification page fallback
+* Darlington F2 composite ceiling; source-limited package tier F1; internal nodes F1
+* Node order: C B E
+.model OC_ST_TIP120_DRV NPN(IS=2e-13 NF=1 BF=100 IKF=1.0 ISE=1e-11 NE=1.5 VAF=60 BR=2 RB=5 RE=0.08 RC=0.12 CJE=2e-10 VJE=.75 MJE=.33 CJC=8e-11 VJC=.75 MJC=.33 XCJC=1 TF=2e-07 TR=5e-07 FC=.5 EG=1.11 XTI=3 TNOM=27)
+.model OC_ST_TIP120_OUT NPN(IS=2e-12 NF=1 BF=100 IKF=10.0 ISE=1e-10 NE=1.5 VAF=60 BR=2 RB=0.5 RE=0.008 RC=0.012 CJE=2e-09 VJE=.75 MJE=.33 CJC=8e-10 VJC=.75 MJC=.33 XCJC=1 TF=2e-07 TR=5e-07 FC=.5 EG=1.11 XTI=3 TNOM=27)
+.model OC_ST_TIP120_FWD D(IS=1e-12 N=1.5 RS=0.05)
+.subckt OC_ST_TIP120 C B E
+Q1 C B N1 OC_ST_TIP120_DRV
+Q2 C N1 E OC_ST_TIP120_OUT
+R1 B N1 7000
+R2 N1 E 70
+D1 E C OC_ST_TIP120_FWD
+.ends OC_ST_TIP120
+.temp 25
+IC1 0 c1 DC 3
+IB1 0 b1 DC 0.012
+X1 c1 b1 0 OC_ST_TIP120
+IC2 0 c2 DC 5
+IB2 0 b2 DC 0.02
+X2 c2 b2 0 OC_ST_TIP120
+.op
+.end
