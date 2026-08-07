@@ -5,7 +5,7 @@
 - Manufacturer: nexperia
 - Description: 65 V, 100 mA NPN general-purpose transistor
 - Electrical family: bjt_npn
-- Fidelity tier: F1, datasheet-constrained
+- Fidelity tier: F2, datasheet-fitted
 - Independent reviewer: pending-review
 
 ## Provenance
@@ -33,17 +33,17 @@
 
 | Parameter | Value | Status |
 | --- | ---: | --- |
-| IS | 9.97818317e-11 | fitted or derived |
+| IS | 2.82032786e-14 | fitted or derived |
 | NF | 1.00000000e+0 | fitted or derived |
-| BF | 5.34355034e+2 | fitted or derived |
-| IKF | 2.45517798e-3 | fitted or derived |
-| ISE | 1.17348827e-13 | fitted or derived |
-| NE | 1.71472915e+0 | fitted or derived |
+| BF | 1.12331797e+3 | fitted or derived |
+| IKF | 2.76996807e-3 | fitted or derived |
+| ISE | 2.12307452e-15 | fitted or derived |
+| NE | 1.20005607e+0 | fitted or derived |
 | VAF | 1.00000000e+2 | fitted or derived |
 | BR | 4.00000000e+0 | fitted or derived |
-| RB | 9.80530928e+2 | fitted or derived |
-| RE | 1.56028046e-4 | fitted or derived |
-| RC | 2.28755445e-4 | fitted or derived |
+| RB | 1.16504178e+1 | fitted or derived |
+| RE | 1.00000000e-4 | fitted or derived |
+| RC | 6.39393846e-4 | fitted or derived |
 | CJE | 1.30197538e-11 | fitted or derived |
 | VJE | 7.50000000e-1 | fitted or derived |
 | MJE | 3.30000000e-1 | fitted or derived |
@@ -51,24 +51,24 @@
 | VJC | 7.50000000e-1 | fitted or derived |
 | MJC | 3.30000000e-1 | fitted or derived |
 | XCJC | 1.00000000e+0 | fitted or derived |
-| TF | 1.53953787e-9 | fitted or derived |
+| TF | 1.53953531e-9 | fitted or derived |
 | TR | 0.00000000e+0 | fitted or derived |
 
 ## Fitted versus datasheet
 
 | Quantity | Datasheet | Fitted | Unit | Relative error | Citation |
 | --- | ---: | ---: | --- | ---: | --- |
-| hFE at IC=1e-05 A | 2.900000e+2 | 5.535291e+2 | 1 | 90.872% | p. 4 table 8 |
-| hFE at IC=0.002 A | 2.900000e+2 | 3.063191e+2 | 1 | 5.627% | p. 4 table 8 |
-| VBE at IC=0.002 A | 6.600000e-1 | 4.574373e-1 | V | 30.691% | p. 4 table 8 |
-| VCE(sat) at IC=0.01 A | 9.000000e-2 | 9.320945e-2 | V | 3.566% | p. 4 table 8 |
-| VBE(sat) at IC=0.01 A | 7.600000e-1 | 1.012067e+0 | V | 33.167% | p. 4 table 8 |
-| VCE(sat) at IC=0.1 A | 2.000000e-1 | 2.597765e+1 | V | 12888.825% | p. 4 table 8 |
-| VBE(sat) at IC=0.1 A | 9.000000e-1 | 5.523707e+0 | V | 513.745% | p. 4 table 8 |
+| hFE at IC=1e-05 A | 2.900000e+2 | 2.771289e+2 | 1 | 4.438% | p. 4 table 8 |
+| hFE at IC=0.002 A | 2.900000e+2 | 3.078876e+2 | 1 | 6.168% | p. 4 table 8 |
+| VBE at IC=0.002 A | 6.600000e-1 | 6.645140e-1 | V | 0.684% | p. 4 table 8 |
+| VCE(sat) at IC=0.01 A | 9.000000e-2 | 8.894244e-2 | V | 1.175% | p. 4 table 8 |
+| VBE(sat) at IC=0.01 A | 7.600000e-1 | 7.399167e-1 | V | 2.643% | p. 4 table 8 |
+| VCE(sat) at IC=0.1 A | 2.000000e-1 | 2.017377e-1 | V | 0.869% | p. 4 table 8 |
+| VBE(sat) at IC=0.1 A | 9.000000e-1 | 9.019835e-1 | V | 0.220% | p. 4 table 8 |
 
-Worst fitting error: 12888.825% for VCE(sat) at IC=0.1 A.
+Worst fitting error: 6.168% for hFE at IC=0.002 A.
 
-Native and WASM agreement: all 6 benches passed. Worst reported relative delta was 4.547e-11 and worst absolute delta was 2.119e-10.
+Native and WASM agreement: all 6 benches passed. Worst reported relative delta was 4.759e-8 and worst absolute delta was 8.811e-11.
 
 ## Known omissions
 
