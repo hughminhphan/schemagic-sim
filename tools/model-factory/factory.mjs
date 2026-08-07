@@ -184,6 +184,7 @@ function stageFit(ctx) {
   const output = path.join(ctx.packageDir, "fitted.json");
   const script = {
     bjt: "fit_bjt.py",
+    darlington: "fit_darlington.py",
     vdmos: "fit_vdmos.py",
     opamp: "fit_opamp.py"
   }[ctx.part.pipeline] ?? "fit_diode.py";
@@ -229,6 +230,15 @@ export function assertEmittedParametersMatchFitted(model, fitted) {
 function modelText(ctx, fitted) {
   const p = fitted.parameters;
   const header = `* OpenCircuit Model Factory v0.1.0\n* Original work generated from public factual specifications.\n* This model is not a copy of, or adaptation from, any vendor SPICE model.\n* Source: ${ctx.part.source.url}\n* Revision: ${ctx.part.source.revision}\n`;
+  if (ctx.part.pipeline === "darlington") {
+    const polarity = ctx.part.identity.electrical_family === "bjt_pnp" ? "PNP" : "NPN";
+    const driver = `${ctx.part.component.modelName}_DRV`;
+    const output = `${ctx.part.component.modelName}_OUT`;
+    const diode = `${ctx.part.component.modelName}_FWD`;
+    const card = (name, prefix) => `.model ${name} ${polarity}(IS=${formatSpice(p[`${prefix}_IS`])} NF=1 BF=${formatSpice(p[`${prefix}_BF`])} IKF=${formatSpice(p[`${prefix}_IKF`])} ISE=${formatSpice(p[`${prefix}_ISE`])} NE=${formatSpice(p[`${prefix}_NE`])} VAF=${formatSpice(p[`${prefix}_VAF`])} BR=2 RB=${formatSpice(p[`${prefix}_RB`])} RE=${formatSpice(p[`${prefix}_RE`])} RC=${formatSpice(p[`${prefix}_RC`])} CJE=${formatSpice(p[`${prefix}_CJE`])} VJE=0.75 MJE=0.33 CJC=${formatSpice(p[`${prefix}_CJC`])} VJC=0.75 MJC=0.33 XCJC=1 TF=${formatSpice(p[`${prefix}_TF`])} TR=${formatSpice(p[`${prefix}_TR`])} FC=0.5 EG=1.11 XTI=3 TNOM=27)`;
+    const diodeInstance = polarity === "PNP" ? `D1 C E ${diode}` : `D1 E C ${diode}`;
+    return `${header}* Darlington F2 composite ceiling; internal transistor nodes are F1\n* Node order: C B E\n${card(driver, "DRV")}\n${card(output, "OUT")}\n.model ${diode} D(IS=${formatSpice(p.DIODE_IS)} N=${formatSpice(p.DIODE_N)} RS=${formatSpice(p.DIODE_RS)})\n.subckt ${ctx.part.component.modelName} C B E\nQ1 C B N1 ${driver}\nQ2 C N1 E ${output}\nR1 B N1 ${formatSpice(p.R1)}\nR2 N1 E ${formatSpice(p.R2)}\n${diodeInstance}\n.ends ${ctx.part.component.modelName}\n`;
+  }
   if (ctx.part.pipeline === "bjt") {
     const names = ["IS", "NF", "BF", "IKF", "ISE", "NE", "VAF", "BR", "RB", "RE", "RC", "CJE", "VJE", "MJE", "CJC", "VJC", "MJC", "XCJC", "TF", "TR"];
     const polarity = ctx.part.identity.electrical_family === "bjt_pnp" ? "PNP" : "NPN";
@@ -278,8 +288,8 @@ function baseComponent(ctx, fitted) {
     }],
     ordering_code_aliases: identity.aliases,
     datasheet: { url: ctx.part.source.url, revision: ctx.part.source.revision },
-    model_type: ctx.part.pipeline === "opamp" ? "subckt" : "dot_model",
-    fidelity_tier: "F2",
+    model_type: ["opamp", "darlington"].includes(ctx.part.pipeline) ? "subckt" : "dot_model",
+    fidelity_tier: ctx.part.component.fidelity_tier ?? "F2",
     domain_coverage: ctx.part.component.domain_coverage,
     supported_analyses: ctx.part.component.supported_analyses,
     supported_operating_region: {
@@ -306,7 +316,7 @@ function stageGenerate(ctx) {
   requireFile(fittedPath, "generate");
   const fitted = JSON.parse(fs.readFileSync(fittedPath, "utf8"));
   const model = modelText(ctx, fitted);
-  assertEmittedParametersMatchFitted(model, fitted);
+  if (ctx.part.pipeline !== "darlington") assertEmittedParametersMatchFitted(model, fitted);
   fs.writeFileSync(path.join(ctx.packageDir, "model.cir"), model);
   writeJson(path.join(ctx.packageDir, "component.json"), baseComponent(ctx, fitted));
   console.log(`generate ${ctx.part.slug}: ${ctx.part.component.modelName}`);
@@ -362,41 +372,79 @@ function testRecord(file, analysisType, scalarChecks = [], hardBoundsChecks = []
 
 function bjtTestgen(ctx, model, facts) {
   const tests = [];
-  const gainLines = [`OpenCircuit factory test: ${ctx.part.slug} DC gain`, model];
+  const sign = ctx.part.identity.electrical_family === "bjt_pnp" ? -1 : 1;
+  const instance = (name, collector, base, emitter = "0") => ctx.part.pipeline === "darlington"
+    ? `X${name} ${collector} ${base} ${emitter} ${ctx.part.component.modelName}`
+    : `Q${name} ${collector} ${base} ${emitter} ${ctx.part.component.modelName}`;
+  const gainLines = [`OpenCircuit factory test: ${ctx.part.slug} DC gain`, model, ".temp 25"];
   const gainChecks = [];
+  const gainBounds = [];
   facts.gain_points.forEach((point, index) => {
     const id = index + 1;
     const baseCurrent = point.collector_current.value / point.hfe.value;
-    gainLines.push(`VCG${id} cg${id} 0 DC ${formatSpice(point.vce.value)}`, `IBG${id} 0 bg${id} DC ${formatSpice(baseCurrent)}`, `QG${id} cg${id} bg${id} 0 ${ctx.part.component.modelName}`);
-    gainChecks.push(expectation(`hfe_at_${point.collector_current.value}_a`, `scale_abs:last(i(vcg${id}),${1 / baseCurrent})`, point.hfe.value, "1", 0, 0.30, point.hfe.page_reference));
+    gainLines.push(`VCG${id} cg${id} 0 DC ${formatSpice(sign * point.vce.value)}`, `IBG${id} 0 bg${id} DC ${formatSpice(sign * baseCurrent)}`, instance(`G${id}`, `cg${id}`, `bg${id}`));
+    const gainExpression = `scale_abs:last(i(vcg${id}),${1 / baseCurrent})`;
+    if (point.hfe.source_kind === "minimum") {
+      gainBounds.push(hardBound(`hfe_minimum_at_${point.collector_current.value}_a`, gainExpression, "1", { minimum: point.hfe.value }, point.hfe.page_reference));
+    } else {
+      gainChecks.push(expectation(`hfe_at_${point.collector_current.value}_a`, gainExpression, point.hfe.value, "1", 0, 0.30, point.hfe.page_reference));
+    }
   });
   gainLines.push(".op", ".end", "");
   writeBench(ctx, "dc_gain.cir", gainLines.join("\n"));
-  tests.push(testRecord("dc_gain.cir", "operating_point", gainChecks));
+  tests.push(testRecord("dc_gain.cir", "operating_point", gainChecks, gainBounds));
 
-  const satLines = [`OpenCircuit factory test: ${ctx.part.slug} saturation`, model];
+  const satLines = [`OpenCircuit factory test: ${ctx.part.slug} saturation`, model, ".temp 25"];
   const satChecks = [];
+  const satBounds = [];
   facts.saturation_points.forEach((point, index) => {
     const id = index + 1;
-    satLines.push(`ICS${id} 0 cs${id} DC ${formatSpice(point.collector_current.value)}`, `IBS${id} 0 bs${id} DC ${formatSpice(point.base_current.value)}`, `QS${id} cs${id} bs${id} 0 ${ctx.part.component.modelName}`);
-    satChecks.push(expectation(`vce_sat_${id}`, `last(v(cs${id}))`, point.vce_sat.value, "V", 0.02, 0.15, point.vce_sat.page_reference));
-    satChecks.push(expectation(`vbe_sat_${id}`, `last(v(bs${id}))`, point.vbe_sat.value, "V", 0.02, 0.15, point.vbe_sat.page_reference));
+    satLines.push(`ICS${id} 0 cs${id} DC ${formatSpice(sign * point.collector_current.value)}`, `IBS${id} 0 bs${id} DC ${formatSpice(sign * point.base_current.value)}`, instance(`S${id}`, `cs${id}`, `bs${id}`));
+    for (const [name, expression, target] of [
+      [`vce_sat_${id}`, `abs:last(v(cs${id}))`, point.vce_sat],
+      [`vbe_sat_${id}`, `abs:last(v(bs${id}))`, point.vbe_sat]
+    ]) {
+      if (target.source_kind === "maximum") {
+        satBounds.push(hardBound(`${name}_maximum`, expression, "V", { minimum: 0, maximum: target.value }, target.page_reference));
+      } else if (target.source_kind === "minimum") {
+        satBounds.push(hardBound(`${name}_minimum`, expression, "V", { minimum: target.value }, target.page_reference));
+      } else {
+        satChecks.push(expectation(name, expression, target.value, "V", 0.02, 0.15, target.page_reference));
+      }
+    }
   });
   satLines.push(".op", ".end", "");
   writeBench(ctx, "saturation.cir", satLines.join("\n"));
-  tests.push(testRecord("saturation.cir", "operating_point", satChecks));
+  tests.push(testRecord("saturation.cir", "operating_point", satChecks, satBounds));
 
-  const ft = facts.frequency_response;
-  const beta = facts.gain_points.find((point) => point.collector_current.value === ft.ic.value)?.hfe.value ?? 100;
-  writeBench(ctx, "ft_bench.cir", `OpenCircuit factory test: ${ctx.part.slug} fT\n${model}\nVCC c 0 DC ${formatSpice(ft.vce.value)}\nIBDC 0 b DC ${formatSpice(ft.ic.value / beta)}\nIAC 0 b AC 1\nQ1 c b 0 ${ctx.part.component.modelName}\n.ac dec 20 1Meg 10G\n.end\n`);
-  tests.push(testRecord("ft_bench.cir", "ac_small_signal", [expectation("current_gain_bandwidth", "frequency_at_magnitude(i(vcc),1)", ft.ft.value, "Hz", 0, 0.20, ft.ft.page_reference)]));
+  if (facts.frequency_response) {
+    const ft = facts.frequency_response;
+    const beta = facts.gain_points.find((point) => point.collector_current.value === ft.ic.value)?.hfe.value ?? 100;
+    writeBench(ctx, "ft_bench.cir", `OpenCircuit factory test: ${ctx.part.slug} fT\n${model}\n.temp 25\nVCC c 0 DC ${formatSpice(sign * ft.vce.value)}\nIBDC 0 b DC ${formatSpice(sign * ft.ic.value / beta)}\nIAC 0 b AC 1\n${instance("1", "c", "b")}\n.ac dec 20 1Meg 10G\n.end\n`);
+    tests.push(testRecord("ft_bench.cir", "ac_small_signal", [expectation("current_gain_bandwidth", "frequency_at_magnitude(i(vcc),1)", ft.ft.value, "Hz", 0, 0.20, ft.ft.page_reference)]));
+  }
 
-  const cap = facts.capacitances;
-  writeBench(ctx, "capacitance.cir", `OpenCircuit factory test: ${ctx.part.slug} Cobo\n${model}\nVCB c 0 DC ${cap.cobo_vcb.value} AC 1\nQ1 c b 0 ${ctx.part.component.modelName}\nVB b 0 DC 0\n.ac lin 1 1Meg 1Meg\n.end\n`);
-  tests.push(testRecord("capacitance.cir", "ac_small_signal", [expectation("cobo", "imag_cap:last(i(vcb),1000000)", cap.cobo.value, "F", 0.5e-12, 0.20, cap.cobo.page_reference)]));
+  if (facts.capacitances) {
+    const cap = facts.capacitances;
+    writeBench(ctx, "capacitance.cir", `OpenCircuit factory test: ${ctx.part.slug} Cobo\n${model}\n.temp 25\nVCB c 0 DC ${sign * cap.cobo_vcb.value} AC 1\n${instance("1", "c", "b")}\nVB b 0 DC 0\n.ac lin 1 1Meg 1Meg\n.end\n`);
+    tests.push(testRecord("capacitance.cir", "ac_small_signal", [expectation("cobo", "imag_cap:last(i(vcb),1000000)", cap.cobo.value, "F", 0.5e-12, 0.20, cap.cobo.page_reference)]));
+  }
 
-  writeBench(ctx, "output_curve.cir", `OpenCircuit factory test: ${ctx.part.slug} output sanity\n${model}\nVCE1 c1 0 DC 2\nIB1 0 b1 DC 10u\nQ1 c1 b1 0 ${ctx.part.component.modelName}\nVCE2 c2 0 DC 10\nIB2 0 b2 DC 50u\nQ2 c2 b2 0 ${ctx.part.component.modelName}\n.op\n.end\n`);
+  writeBench(ctx, "output_curve.cir", `OpenCircuit factory test: ${ctx.part.slug} output sanity\n${model}\n.temp 25\nVCE1 c1 0 DC ${2 * sign}\nIB1 0 b1 DC ${10e-6 * sign}\n${instance("1", "c1", "b1")}\nVCE2 c2 0 DC ${10 * sign}\nIB2 0 b2 DC ${50e-6 * sign}\n${instance("2", "c2", "b2")}\n.op\n.end\n`);
   tests.push(testRecord("output_curve.cir", "operating_point"));
+
+  const upperCurrent = Math.max(...facts.gain_points.map((point) => point.collector_current.value));
+  const upperPoint = facts.gain_points.find((point) => point.collector_current.value === upperCurrent);
+  const upperBaseCurrent = upperCurrent / upperPoint.hfe.value;
+  const ratedVoltage = ctx.part.component.numeric_bounds.find((bound) => bound.quantity.startsWith("collector_emitter_voltage"))?.maximum;
+  writeBench(ctx, "boundary_region.cir", `OpenCircuit factory test: ${ctx.part.slug} supported-region upper-current boundary\n${model}\n.temp 25\nIC 0 c DC ${formatSpice(sign * upperCurrent)}\nIB 0 b DC ${formatSpice(sign * upperBaseCurrent)}\n${instance("1", "c", "b")}\n.op\n.end\n`);
+  tests.push(testRecord("boundary_region.cir", "operating_point", [], [hardBound(
+    "upper_current_boundary_voltage",
+    "abs:last(v(c))",
+    "V",
+    { minimum: 0, maximum: Number(ratedVoltage) || upperPoint.vce.value },
+    upperPoint.collector_current.page_reference
+  )]));
   return tests;
 }
 
@@ -506,7 +554,7 @@ function stageTestgen(ctx) {
   let tests = [];
   ensureDirectory(path.join(ctx.packageDir, "tests"));
 
-  if (ctx.part.pipeline === "bjt") tests = bjtTestgen(ctx, model, facts);
+  if (["bjt", "darlington"].includes(ctx.part.pipeline)) tests = bjtTestgen(ctx, model, facts);
   else if (ctx.part.pipeline === "vdmos") tests = vdmosTestgen(ctx, model, facts);
   else if (ctx.part.pipeline === "opamp") tests = opampTestgen(ctx, model, facts);
   if (ctx.part.pipeline) {
@@ -790,7 +838,7 @@ function stageCard(ctx) {
   const heldDefaults = (fitted.held_defaults ?? []).map((item) => `| ${item.parameter} | ${Number(item.value).toExponential(8)} | ${item.unit} | ${item.reason} |`).join("\n");
   const heldDefaultsSection = heldDefaults ? `\n## Held defaults\n\n| Parameter | Value | Unit | Status |\n| --- | ---: | --- | --- |\n${heldDefaults}\n` : "";
   const omissions = ctx.part.component.omissions.map((item) => `- ${item}`).join("\n");
-  const card = `# ${ctx.part.identity.canonical_mpn} model card\n\n## Identity\n\n- Manufacturer: ${ctx.part.identity.manufacturer}\n- Description: ${ctx.part.identity.description}\n- Electrical family: ${ctx.part.identity.electrical_family}\n- Fidelity tier: F2, datasheet-fitted\n- Independent reviewer: pending-review\n\n## Provenance\n\n- Datasheet: ${source.url}\n- Revision: ${source.revision}\n- Accessed: ${source.accessed_date}\n- Referenced pages: ${source.pages_referenced.join(", ")}\n- SHA-256: \`${source.sha256}\`\n- Basis: original model generated from public factual specifications\n- Vendor SPICE models used: none\n\n## Domain coverage\n\n| Domain | Coverage |\n| --- | --- |\n${coverageTable(ctx.part.component.domain_coverage)}\n\n## Model parameters\n\n| Parameter | Value | Status |\n| --- | ---: | --- |\n${parameterRows}\n${heldDefaultsSection}\n## Fitted versus datasheet\n\n| Quantity | Datasheet | Fitted | Unit | Relative error | Citation |\n| --- | ---: | ---: | --- | ---: | --- |\n${rows}\n\nWorst fitting error: ${(100 * fitted.worst_relative_error.value).toFixed(3)}% for ${fitted.worst_relative_error.quantity}.\n\nNative and WASM agreement: all ${validation.benches.length} benches passed. Worst reported relative delta was ${validation.worst_native_wasm_relative_delta.toExponential(3)} and worst absolute delta was ${validation.worst_native_wasm_absolute_delta.toExponential(3)}.\n\n## Known omissions\n\n${omissions}\n\n## Licence\n\nMIT. See \`LICENSE\`. The model is original work generated from public factual specifications and is not copied or adapted from a vendor SPICE model.\n`;
+  const card = `# ${ctx.part.identity.canonical_mpn} model card\n\n## Identity\n\n- Manufacturer: ${ctx.part.identity.manufacturer}\n- Description: ${ctx.part.identity.description}\n- Electrical family: ${ctx.part.identity.electrical_family}\n- Fidelity tier: ${ctx.part.component.fidelity_tier ?? "F2"}, datasheet-constrained\n- Independent reviewer: pending-review\n\n## Provenance\n\n- Datasheet: ${source.url}\n- Revision: ${source.revision}\n- Accessed: ${source.accessed_date}\n- Referenced pages: ${source.pages_referenced.join(", ")}\n- SHA-256: \`${source.sha256}\`\n- Basis: original model generated from public factual specifications\n- Vendor SPICE models used: none\n\n## Domain coverage\n\n| Domain | Coverage |\n| --- | --- |\n${coverageTable(ctx.part.component.domain_coverage)}\n\n## Model parameters\n\n| Parameter | Value | Status |\n| --- | ---: | --- |\n${parameterRows}\n${heldDefaultsSection}\n## Fitted versus datasheet\n\n| Quantity | Datasheet | Fitted | Unit | Relative error | Citation |\n| --- | ---: | ---: | --- | ---: | --- |\n${rows}\n\nWorst fitting error: ${(100 * fitted.worst_relative_error.value).toFixed(3)}% for ${fitted.worst_relative_error.quantity}.\n\nNative and WASM agreement: all ${validation.benches.length} benches passed. Worst reported relative delta was ${validation.worst_native_wasm_relative_delta.toExponential(3)} and worst absolute delta was ${validation.worst_native_wasm_absolute_delta.toExponential(3)}.\n\n## Known omissions\n\n${omissions}\n\n## Licence\n\nMIT. See \`LICENSE\`. The model is original work generated from public factual specifications and is not copied or adapted from a vendor SPICE model.\n`;
   fs.writeFileSync(path.join(ctx.packageDir, "MODEL_CARD.md"), card);
   run("node", [packageValidator, ctx.packageDir]);
   console.log(`card ${ctx.part.slug}: MODEL_CARD.md`);

@@ -33,12 +33,15 @@ test("all factual quantities carry units, conditions, source kind, and page refe
   for (const part of Object.values(PARTS)) assertQuantityReferences(part.facts);
 });
 
-test("registry contains only datasheet PDF acquisition URLs", () => {
+test("registry contains only official HTTPS datasheet or specification URLs", () => {
   for (const part of Object.values(PARTS)) {
     const url = new URL(part.source.url);
     assert.equal(url.protocol, "https:");
-    assert.match(url.pathname, /\.pdf$/i);
     assert.doesNotMatch(url.pathname, /\.(lib|cir)$/i);
+    const isPdf = /\.pdf$/i.test(url.pathname);
+    const isDisclosedHtmlFallback = part.component.fidelity_tier === "F1"
+      && /html specification|specification page|spec page/i.test(part.facts.extraction_method ?? "");
+    assert.ok(isPdf || isDisclosedHtmlFallback, `${part.slug} must use a datasheet PDF or disclosed F1 HTML specification fallback`);
   }
 });
 

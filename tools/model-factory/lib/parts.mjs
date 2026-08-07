@@ -381,8 +381,1905 @@ export const PARTS = {
         "CC = 30 pF, CDIF = 1 pF, RE = 1 Mohm, CP2 = 1 pF, RQ = 1 Mohm, and the 300.15 K noise normalization are held at default internal archetype values."
       ]
     }
+  },
+  "2N5551": {
+  "slug": "2N5551",
+  "manufacturerSlug": "onsemi",
+  "pipeline": "bjt",
+  "identity": {
+    "canonical_mpn": "2N5551",
+    "manufacturer": "onsemi",
+    "description": "High-voltage NPN epitaxial silicon transistor",
+    "electrical_family": "bjt_npn",
+    "aliases": [],
+    "package": {
+      "name": "TO-92",
+      "standard": "TO-92"
+    },
+    "pins": [
+      {
+        "name": "E",
+        "number": "1",
+        "role": "emitter",
+        "node": "emitter"
+      },
+      {
+        "name": "B",
+        "number": "2",
+        "role": "base",
+        "node": "base"
+      },
+      {
+        "name": "C",
+        "number": "3",
+        "role": "collector",
+        "node": "collector"
+      }
+    ],
+    "spice_order": [
+      "3",
+      "2",
+      "1"
+    ]
+  },
+  "source": {
+    "url": "https://www.onsemi.com/products/discrete-power-modules/bipolar-transistors/2N5551",
+    "revision": "Manufacturer HTML specification page; accessed 2026-08-07",
+    "pages": [
+      "spec page"
+    ]
+  },
+  "facts": {
+    "schema_version": "1.0.0",
+    "extraction_method": "official manufacturer HTML specification table; PDF unreachable",
+    "fit_conditions": {
+      "temperature": {
+        "value": 25,
+        "unit": "degC",
+        "conditions": "Electrical characteristics unless otherwise noted",
+        "page_reference": "spec page",
+        "source_kind": "typical"
+      }
+    },
+    "gain_points": [
+      {
+        "collector_current": {
+          "value": 0.01,
+          "unit": "A",
+          "conditions": "VCE = 5 V, TA = 25 degC",
+          "page_reference": "spec page",
+          "source_kind": "minimum"
+        },
+        "vce": {
+          "value": 5,
+          "unit": "V",
+          "conditions": "IC = 10 mA, TA = 25 degC",
+          "page_reference": "spec page",
+          "source_kind": "typical"
+        },
+        "hfe": {
+          "value": 80,
+          "unit": "1",
+          "conditions": "IC = 10 mA, VCE = 5 V, TA = 25 degC",
+          "page_reference": "spec page",
+          "source_kind": "minimum"
+        }
+      },
+      {
+        "collector_current": {
+          "value": 0.05,
+          "unit": "A",
+          "conditions": "VCE = 5 V, TA = 25 degC",
+          "page_reference": "spec page",
+          "source_kind": "minimum"
+        },
+        "vce": {
+          "value": 5,
+          "unit": "V",
+          "conditions": "IC = 50 mA, TA = 25 degC",
+          "page_reference": "spec page",
+          "source_kind": "typical"
+        },
+        "hfe": {
+          "value": 30,
+          "unit": "1",
+          "conditions": "IC = 50 mA, VCE = 5 V, TA = 25 degC",
+          "page_reference": "spec page",
+          "source_kind": "minimum"
+        }
+      }
+    ],
+    "saturation_points": [
+      {
+        "collector_current": {
+          "value": 0.01,
+          "unit": "A",
+          "conditions": "IB = 1 mA, TA = 25 degC",
+          "page_reference": "spec page",
+          "source_kind": "typical"
+        },
+        "base_current": {
+          "value": 0.001,
+          "unit": "A",
+          "conditions": "IC = 10 mA, TA = 25 degC",
+          "page_reference": "spec page",
+          "source_kind": "typical"
+        },
+        "vce_sat": {
+          "value": 0.15,
+          "unit": "V",
+          "conditions": "IC = 10 mA, IB = 1 mA, TA = 25 degC",
+          "page_reference": "spec page",
+          "source_kind": "maximum"
+        },
+        "vbe_sat": {
+          "value": 1,
+          "unit": "V",
+          "conditions": "IC = 10 mA, IB = 1 mA, TA = 25 degC",
+          "page_reference": "spec page",
+          "source_kind": "maximum"
+        }
+      },
+      {
+        "collector_current": {
+          "value": 0.05,
+          "unit": "A",
+          "conditions": "IB = 5 mA, TA = 25 degC",
+          "page_reference": "spec page",
+          "source_kind": "held_duplicate"
+        },
+        "base_current": {
+          "value": 0.005,
+          "unit": "A",
+          "conditions": "IC = 50 mA, TA = 25 degC",
+          "page_reference": "spec page",
+          "source_kind": "held_duplicate"
+        },
+        "vce_sat": {
+          "value": 0.25,
+          "unit": "V",
+          "conditions": "IC = 50 mA, IB = 5 mA, TA = 25 degC",
+          "page_reference": "spec page",
+          "source_kind": "maximum"
+        },
+        "vbe_sat": {
+          "value": 1.2,
+          "unit": "V",
+          "conditions": "IC = 50 mA, IB = 5 mA, TA = 25 degC",
+          "page_reference": "spec page",
+          "source_kind": "maximum"
+        }
+      }
+    ],
+    "capacitances": {
+      "cobo": {
+        "value": 6e-12,
+        "unit": "F",
+        "conditions": "VCB = 10 V, IE = 0, f = 1 MHz",
+        "page_reference": "spec page",
+        "source_kind": "maximum"
+      },
+      "cobo_vcb": {
+        "value": 10,
+        "unit": "V",
+        "conditions": "Cobo test bias",
+        "page_reference": "spec page",
+        "source_kind": "typical"
+      },
+      "cibo": {
+        "value": 1e-15,
+        "unit": "F",
+        "conditions": "Not published; held at numerical floor",
+        "page_reference": "spec page",
+        "source_kind": "not_published"
+      },
+      "cibo_veb": {
+        "value": 0.5,
+        "unit": "V",
+        "conditions": "Held because Cibo is not published",
+        "page_reference": "spec page",
+        "source_kind": "held_default"
+      }
+    },
+    "frequency_response": {
+      "ft": {
+        "value": 100000000,
+        "unit": "Hz",
+        "conditions": "IC = 10 mA, VCE = 10 V, f = 100 MHz",
+        "page_reference": "spec page",
+        "source_kind": "minimum"
+      },
+      "ic": {
+        "value": 0.01,
+        "unit": "A",
+        "conditions": "fT test collector current",
+        "page_reference": "spec page",
+        "source_kind": "typical"
+      },
+      "vce": {
+        "value": 10,
+        "unit": "V",
+        "conditions": "fT test collector-emitter voltage",
+        "page_reference": "spec page",
+        "source_kind": "typical"
+      }
+    },
+    "electrical_limits": {
+      "vceo": {
+        "value": 160,
+        "unit": "V",
+        "conditions": "IC = 1 mA, IB = 0",
+        "page_reference": "spec page",
+        "source_kind": "minimum"
+      },
+      "vcbo": {
+        "value": 180,
+        "unit": "V",
+        "conditions": "IC = 100 uA, IE = 0",
+        "page_reference": "spec page",
+        "source_kind": "minimum"
+      },
+      "vebo": {
+        "value": 6,
+        "unit": "V",
+        "conditions": "IE = 10 uA, IC = 0",
+        "page_reference": "spec page",
+        "source_kind": "minimum"
+      },
+      "collector_current": {
+        "value": 0.6,
+        "unit": "A",
+        "conditions": "Continuous",
+        "page_reference": "spec page",
+        "source_kind": "maximum"
+      }
+    },
+    "source": {
+      "kind": "spec_page",
+      "url": "https://www.onsemi.com/products/discrete-power-modules/bipolar-transistors/2N5551",
+      "revision": "Manufacturer HTML specification page; accessed 2026-08-07",
+      "sha256": "e0fe0839debfc936a993def8b18c0a728dea449026aaae0cdba33f40ef22a377",
+      "accessed_date": "2026-08-07",
+      "pages_referenced": [
+        "spec page"
+      ],
+      "placeholder": false,
+      "note": "Official manufacturer PDF was unreachable; manufacturer HTML specification page used, capped at F1."
+    }
+  },
+  "component": {
+    "modelName": "OC_ONSEMI_2N5551",
+    "fidelity_tier": "F1",
+    "domain_coverage": {
+      "dc": "fitted",
+      "ac": "approx",
+      "transient": "approx",
+      "noise": "none",
+      "thermal": "none",
+      "digital": "none"
+    },
+    "supported_analyses": [
+      "operating_point",
+      "dc_sweep",
+      "ac_small_signal",
+      "transient"
+    ],
+    "operating_summary": "F1 table-constrained model at 25 degC from official manufacturer HTML specifications; PDF was unreachable.",
+    "numeric_bounds": [
+      {
+        "quantity": "collector_current",
+        "minimum": 0.01,
+        "maximum": 0.05,
+        "unit": "A",
+        "conditions": "Datasheet table range at 25 degC",
+        "placeholder": false
+      },
+      {
+        "quantity": "collector_emitter_voltage",
+        "minimum": 0,
+        "maximum": 160,
+        "unit": "V",
+        "conditions": "Rated VCEO",
+        "placeholder": false
+      }
+    ],
+    "omissions": [
+      "Official manufacturer PDF was unreachable; facts are limited to the manufacturer HTML specification table and fidelity is capped at F1.",
+      "No self-heating, breakdown, package parasitics, reverse operation, base-resistance modulation, transit-time bias dependence, temperature coefficients, flicker noise, or hFE spread are modelled.",
+      "Guaranteed MIN/MAX rows are retained as source semantics; they are not typical targets.",
+      "Only one independent saturation characterization is available; high-current saturation is an anchored table point rather than a fitted curve.",
+      "CJE is held at the numerical floor because Cibo is not published.",
+      "Reviewer remains pending-review",
+      "Source sha256 is a locator sentinel because the official HTML page was unreachable and no content was acquired; do not treat it as a downloaded datasheet hash."
+    ]
   }
+},
+  "MPSA42": {
+  "slug": "MPSA42",
+  "manufacturerSlug": "onsemi",
+  "pipeline": "bjt",
+  "identity": {
+    "canonical_mpn": "MPSA42",
+    "manufacturer": "onsemi",
+    "description": "300 V high-voltage NPN transistor",
+    "electrical_family": "bjt_npn",
+    "aliases": [],
+    "package": {
+      "name": "TO-92",
+      "standard": "TO-92"
+    },
+    "pins": [
+      {
+        "name": "E",
+        "number": "1",
+        "role": "emitter",
+        "node": "emitter"
+      },
+      {
+        "name": "B",
+        "number": "2",
+        "role": "base",
+        "node": "base"
+      },
+      {
+        "name": "C",
+        "number": "3",
+        "role": "collector",
+        "node": "collector"
+      }
+    ],
+    "spice_order": [
+      "3",
+      "2",
+      "1"
+    ]
+  },
+  "source": {
+    "url": "https://www.onsemi.com/pdf/datasheet/mpsa42-d.pdf",
+    "revision": "February 2013 Rev. 8",
+    "pages": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ]
+  },
+  "facts": {
+    "schema_version": "1.0.0",
+    "extraction_method": "pdftotext plus manual structuring; table values retain MIN/TYP/MAX source semantics",
+    "fit_conditions": {
+      "temperature": {
+        "value": 25,
+        "unit": "degC",
+        "conditions": "Electrical characteristics unless otherwise noted",
+        "page_reference": "p. 1",
+        "source_kind": "typical"
+      }
+    },
+    "gain_points": [
+      {
+        "collector_current": {
+          "value": 0.001,
+          "unit": "A",
+          "conditions": "VCE = 10 V, TA = 25 degC",
+          "page_reference": "p. 2 electrical characteristics",
+          "source_kind": "minimum"
+        },
+        "vce": {
+          "value": 10,
+          "unit": "V",
+          "conditions": "IC = 0.001 A, TA = 25 degC",
+          "page_reference": "p. 2 electrical characteristics",
+          "source_kind": "typical"
+        },
+        "hfe": {
+          "value": 25,
+          "unit": "1",
+          "conditions": "IC = 0.001 A, VCE = 10 V, TA = 25 degC",
+          "page_reference": "p. 2 electrical characteristics",
+          "source_kind": "minimum"
+        }
+      },
+      {
+        "collector_current": {
+          "value": 0.01,
+          "unit": "A",
+          "conditions": "VCE = 10 V, TA = 25 degC",
+          "page_reference": "p. 2 electrical characteristics",
+          "source_kind": "minimum"
+        },
+        "vce": {
+          "value": 10,
+          "unit": "V",
+          "conditions": "IC = 0.01 A, TA = 25 degC",
+          "page_reference": "p. 2 electrical characteristics",
+          "source_kind": "typical"
+        },
+        "hfe": {
+          "value": 40,
+          "unit": "1",
+          "conditions": "IC = 0.01 A, VCE = 10 V, TA = 25 degC",
+          "page_reference": "p. 2 electrical characteristics",
+          "source_kind": "minimum"
+        }
+      },
+      {
+        "collector_current": {
+          "value": 0.03,
+          "unit": "A",
+          "conditions": "VCE = 10 V, TA = 25 degC",
+          "page_reference": "p. 2 electrical characteristics",
+          "source_kind": "minimum"
+        },
+        "vce": {
+          "value": 10,
+          "unit": "V",
+          "conditions": "IC = 0.03 A, TA = 25 degC",
+          "page_reference": "p. 2 electrical characteristics",
+          "source_kind": "typical"
+        },
+        "hfe": {
+          "value": 40,
+          "unit": "1",
+          "conditions": "IC = 0.03 A, VCE = 10 V, TA = 25 degC",
+          "page_reference": "p. 2 electrical characteristics",
+          "source_kind": "minimum"
+        }
+      }
+    ],
+    "saturation_points": [
+      {
+        "collector_current": {
+          "value": 0.02,
+          "unit": "A",
+          "conditions": "IB = 2 mA, TA = 25 degC",
+          "page_reference": "p. 2 electrical characteristics",
+          "source_kind": "typical"
+        },
+        "base_current": {
+          "value": 0.002,
+          "unit": "A",
+          "conditions": "IC = 20 mA, TA = 25 degC",
+          "page_reference": "p. 2 electrical characteristics",
+          "source_kind": "typical"
+        },
+        "vce_sat": {
+          "value": 0.5,
+          "unit": "V",
+          "conditions": "IC = 20 mA, IB = 2 mA, TA = 25 degC",
+          "page_reference": "p. 2 electrical characteristics",
+          "source_kind": "maximum"
+        },
+        "vbe_sat": {
+          "value": 0.9,
+          "unit": "V",
+          "conditions": "IC = 20 mA, IB = 2 mA, TA = 25 degC",
+          "page_reference": "p. 2 electrical characteristics",
+          "source_kind": "typical"
+        }
+      },
+      {
+        "collector_current": {
+          "value": 0.02,
+          "unit": "A",
+          "conditions": "IB = 2 mA, TA = 25 degC",
+          "page_reference": "p. 2 electrical characteristics",
+          "source_kind": "held_duplicate"
+        },
+        "base_current": {
+          "value": 0.002,
+          "unit": "A",
+          "conditions": "IC = 20 mA, TA = 25 degC",
+          "page_reference": "p. 2 electrical characteristics",
+          "source_kind": "held_duplicate"
+        },
+        "vce_sat": {
+          "value": 0.5,
+          "unit": "V",
+          "conditions": "IC = 20 mA, IB = 2 mA, TA = 25 degC",
+          "page_reference": "p. 2 electrical characteristics",
+          "source_kind": "maximum"
+        },
+        "vbe_sat": {
+          "value": 0.9,
+          "unit": "V",
+          "conditions": "IC = 20 mA, IB = 2 mA, TA = 25 degC",
+          "page_reference": "p. 2 electrical characteristics",
+          "source_kind": "typical"
+        }
+      }
+    ],
+    "capacitances": {
+      "cobo": {
+        "value": 3e-12,
+        "unit": "F",
+        "conditions": "VCB = 20 V, IE = 0, f = 1 MHz",
+        "page_reference": "p. 2 electrical characteristics",
+        "source_kind": "maximum"
+      },
+      "cobo_vcb": {
+        "value": 20,
+        "unit": "V",
+        "conditions": "Ccb test bias",
+        "page_reference": "p. 2 electrical characteristics",
+        "source_kind": "typical"
+      },
+      "cibo": {
+        "value": 1e-15,
+        "unit": "F",
+        "conditions": "Not published; held at numerical floor",
+        "page_reference": "p. 2 electrical characteristics",
+        "source_kind": "not_published"
+      },
+      "cibo_veb": {
+        "value": 0.5,
+        "unit": "V",
+        "conditions": "Held because Ceb is not published",
+        "page_reference": "p. 2 electrical characteristics",
+        "source_kind": "held_default"
+      }
+    },
+    "frequency_response": {
+      "ft": {
+        "value": 50000000,
+        "unit": "Hz",
+        "conditions": "IC = 10 mA, VCE = 20 V, f = 100 MHz",
+        "page_reference": "p. 2 electrical characteristics",
+        "source_kind": "minimum"
+      },
+      "ic": {
+        "value": 0.01,
+        "unit": "A",
+        "conditions": "fT test collector current",
+        "page_reference": "p. 2 electrical characteristics",
+        "source_kind": "typical"
+      },
+      "vce": {
+        "value": 20,
+        "unit": "V",
+        "conditions": "fT test collector-emitter voltage",
+        "page_reference": "p. 2 electrical characteristics",
+        "source_kind": "typical"
+      }
+    },
+    "electrical_limits": {
+      "vceo": {
+        "value": 300,
+        "unit": "V",
+        "conditions": "IC = 1 mA, IB = 0",
+        "page_reference": "p. 2 electrical characteristics",
+        "source_kind": "minimum"
+      },
+      "vcbo": {
+        "value": 300,
+        "unit": "V",
+        "conditions": "IC = 100 uA, IE = 0",
+        "page_reference": "p. 2 electrical characteristics",
+        "source_kind": "minimum"
+      },
+      "vebo": {
+        "value": 6,
+        "unit": "V",
+        "conditions": "IE = 100 uA, IC = 0",
+        "page_reference": "p. 2 electrical characteristics",
+        "source_kind": "minimum"
+      },
+      "collector_current": {
+        "value": 0.5,
+        "unit": "A",
+        "conditions": "Continuous",
+        "page_reference": "p. 1 maximum ratings",
+        "source_kind": "maximum"
+      }
+    },
+    "identity": {
+      "canonical_mpn": "MPSA42",
+      "manufacturer": "onsemi",
+      "aliases": []
+    },
+    "source": {
+      "kind": "datasheet",
+      "url": "https://www.onsemi.com/pdf/datasheet/mpsa42-d.pdf",
+      "revision": "February 2013 Rev. 8",
+      "sha256": "83c386f606d306060d0fd7399a83de1416961cebb17881d6d9efddfd94e35df2",
+      "accessed_date": "2026-08-06",
+      "pages_referenced": [
+        "p. 1",
+        "p. 2",
+        "p. 3"
+      ],
+      "placeholder": false
+    }
+  },
+  "component": {
+    "modelName": "OC_ONSEMI_MPSA42",
+    "fidelity_tier": "F1",
+    "domain_coverage": {
+      "dc": "fitted",
+      "ac": "fitted",
+      "transient": "approx",
+      "noise": "none",
+      "thermal": "none",
+      "digital": "none"
+    },
+    "supported_analyses": [
+      "operating_point",
+      "dc_sweep",
+      "ac_small_signal",
+      "transient"
+    ],
+    "operating_summary": "F1 table-constrained model at 25 degC; hFE targets are guaranteed minima, not typical values.",
+    "numeric_bounds": [
+      {
+        "quantity": "collector_current",
+        "minimum": 0.001,
+        "maximum": 0.03,
+        "unit": "A",
+        "conditions": "Datasheet hFE table range at 25 degC",
+        "placeholder": false
+      },
+      {
+        "quantity": "collector_emitter_voltage",
+        "minimum": 0,
+        "maximum": 300,
+        "unit": "V",
+        "conditions": "Rated VCEO",
+        "placeholder": false
+      }
+    ],
+    "omissions": [
+      "No self-heating: junction temperature is fixed at TNOM.",
+      "Absolute maximum ratings are metadata only; breakdown is not modelled.",
+      "Package parasitics are not modelled.",
+      "Guaranteed MIN/MAX rows are retained as source semantics; no typical hFE curve was published, so F1 targets use the stated minima as conservative table anchors.",
+      "Only one VCE(sat) condition is published; the duplicated bench point is not an independent characterization.",
+      "CJE is held at the numerical floor because Ceb is not published.",
+      "Reverse operation, base-resistance modulation, transit-time bias dependence, temperature coefficients, flicker noise, and hFE spread are not modelled.",
+      "Reviewer remains pending-review.",
+      "Fidelity is capped at F1 because the source provides incomplete typical multi-point characterization for the required BJT inputs."
+    ]
+  }
+},
+  "MMBT3904": {
+  "slug": "MMBT3904",
+  "manufacturerSlug": "onsemi",
+  "pipeline": "bjt",
+  "identity": {
+    "canonical_mpn": "MMBT3904",
+    "manufacturer": "onsemi",
+    "description": "General-purpose NPN silicon transistor",
+    "electrical_family": "bjt_npn",
+    "aliases": [],
+    "package": {
+      "name": "SOT-23",
+      "standard": "TO-236AB"
+    },
+    "pins": [
+      {
+        "name": "E",
+        "number": "1",
+        "role": "emitter",
+        "node": "emitter"
+      },
+      {
+        "name": "B",
+        "number": "2",
+        "role": "base",
+        "node": "base"
+      },
+      {
+        "name": "C",
+        "number": "3",
+        "role": "collector",
+        "node": "collector"
+      }
+    ],
+    "spice_order": [
+      "3",
+      "2",
+      "1"
+    ]
+  },
+  "source": {
+    "url": "https://www.onsemi.com/pdf/datasheet/mmbt3904lt1-d.pdf",
+    "revision": "August 2021 Rev. 14",
+    "pages": [
+      "p. 1",
+      "p. 2",
+      "p. 5",
+      "p. 6",
+      "p. 8"
+    ]
+  },
+  "facts": {
+    "schema_version": "1.0.0",
+    "extraction_method": "pdftotext plus manual structuring; table values retain MIN/TYP/MAX source semantics",
+    "fit_conditions": {
+      "temperature": {
+        "value": 25,
+        "unit": "degC",
+        "conditions": "Electrical characteristics unless otherwise noted",
+        "page_reference": "p. 1",
+        "source_kind": "typical"
+      }
+    },
+    "gain_points": [
+      {
+        "collector_current": {
+          "value": 0.0001,
+          "unit": "A",
+          "conditions": "VCE = 1 V, TA = 25 degC",
+          "page_reference": "p. 5 fig. 15, 25 degC curve",
+          "source_kind": "typical"
+        },
+        "vce": {
+          "value": 1,
+          "unit": "V",
+          "conditions": "IC = 0.1 mA, TA = 25 degC",
+          "page_reference": "p. 5 fig. 15",
+          "source_kind": "typical"
+        },
+        "hfe": {
+          "value": 90,
+          "unit": "1",
+          "conditions": "IC = 0.1 mA, VCE = 1 V, TA = 25 degC",
+          "page_reference": "p. 5 fig. 15, digitized",
+          "source_kind": "digitized_typical_curve"
+        }
+      },
+      {
+        "collector_current": {
+          "value": 0.001,
+          "unit": "A",
+          "conditions": "VCE = 1 V, TA = 25 degC",
+          "page_reference": "p. 5 fig. 15",
+          "source_kind": "typical"
+        },
+        "vce": {
+          "value": 1,
+          "unit": "V",
+          "conditions": "IC = 1 mA, TA = 25 degC",
+          "page_reference": "p. 5 fig. 15",
+          "source_kind": "typical"
+        },
+        "hfe": {
+          "value": 140,
+          "unit": "1",
+          "conditions": "IC = 1 mA, VCE = 1 V, TA = 25 degC",
+          "page_reference": "p. 5 fig. 15, digitized",
+          "source_kind": "digitized_typical_curve"
+        },
+        "vbe": {
+          "value": 0.66,
+          "unit": "V",
+          "conditions": "IC = 1 mA, VCE = 1 V, TA = 25 degC",
+          "page_reference": "p. 6 fig. 17, digitized",
+          "source_kind": "digitized_typical_curve"
+        }
+      },
+      {
+        "collector_current": {
+          "value": 0.01,
+          "unit": "A",
+          "conditions": "VCE = 1 V, TA = 25 degC",
+          "page_reference": "p. 5 fig. 15",
+          "source_kind": "typical"
+        },
+        "vce": {
+          "value": 1,
+          "unit": "V",
+          "conditions": "IC = 10 mA, TA = 25 degC",
+          "page_reference": "p. 5 fig. 15",
+          "source_kind": "typical"
+        },
+        "hfe": {
+          "value": 200,
+          "unit": "1",
+          "conditions": "IC = 10 mA, VCE = 1 V, TA = 25 degC",
+          "page_reference": "p. 5 fig. 15, digitized",
+          "source_kind": "digitized_typical_curve"
+        },
+        "vbe": {
+          "value": 0.7,
+          "unit": "V",
+          "conditions": "IC = 10 mA, VCE = 1 V, TA = 25 degC",
+          "page_reference": "p. 6 fig. 17, digitized",
+          "source_kind": "digitized_typical_curve"
+        }
+      },
+      {
+        "collector_current": {
+          "value": 0.05,
+          "unit": "A",
+          "conditions": "VCE = 1 V, TA = 25 degC",
+          "page_reference": "p. 5 fig. 15",
+          "source_kind": "typical"
+        },
+        "vce": {
+          "value": 1,
+          "unit": "V",
+          "conditions": "IC = 50 mA, TA = 25 degC",
+          "page_reference": "p. 5 fig. 15",
+          "source_kind": "typical"
+        },
+        "hfe": {
+          "value": 110,
+          "unit": "1",
+          "conditions": "IC = 50 mA, VCE = 1 V, TA = 25 degC",
+          "page_reference": "p. 5 fig. 15, digitized",
+          "source_kind": "digitized_typical_curve"
+        },
+        "vbe": {
+          "value": 0.76,
+          "unit": "V",
+          "conditions": "IC = 50 mA, VCE = 1 V, TA = 25 degC",
+          "page_reference": "p. 6 fig. 17, digitized",
+          "source_kind": "digitized_typical_curve"
+        }
+      },
+      {
+        "collector_current": {
+          "value": 0.1,
+          "unit": "A",
+          "conditions": "VCE = 1 V, TA = 25 degC",
+          "page_reference": "p. 5 fig. 15",
+          "source_kind": "typical"
+        },
+        "vce": {
+          "value": 1,
+          "unit": "V",
+          "conditions": "IC = 100 mA, TA = 25 degC",
+          "page_reference": "p. 5 fig. 15",
+          "source_kind": "typical"
+        },
+        "hfe": {
+          "value": 54,
+          "unit": "1",
+          "conditions": "IC = 100 mA, VCE = 1 V, TA = 25 degC",
+          "page_reference": "p. 5 fig. 15, digitized",
+          "source_kind": "digitized_typical_curve"
+        },
+        "vbe": {
+          "value": 0.82,
+          "unit": "V",
+          "conditions": "IC = 100 mA, VCE = 1 V, TA = 25 degC",
+          "page_reference": "p. 6 fig. 17, digitized",
+          "source_kind": "digitized_typical_curve"
+        }
+      }
+    ],
+    "saturation_points": [
+      {
+        "collector_current": {
+          "value": 0.01,
+          "unit": "A",
+          "conditions": "IB = 1 mA, TA = 25 degC",
+          "page_reference": "p. 6 fig. 17",
+          "source_kind": "typical"
+        },
+        "base_current": {
+          "value": 0.001,
+          "unit": "A",
+          "conditions": "IC = 10 mA, TA = 25 degC",
+          "page_reference": "p. 6 fig. 17",
+          "source_kind": "typical"
+        },
+        "vce_sat": {
+          "value": 0.09,
+          "unit": "V",
+          "conditions": "IC = 10 mA, IB = 1 mA, TA = 25 degC",
+          "page_reference": "p. 6 fig. 17, digitized",
+          "source_kind": "digitized_typical_curve"
+        },
+        "vbe_sat": {
+          "value": 0.76,
+          "unit": "V",
+          "conditions": "IC = 10 mA, IB = 1 mA, TA = 25 degC",
+          "page_reference": "p. 6 fig. 17, digitized",
+          "source_kind": "digitized_typical_curve"
+        }
+      },
+      {
+        "collector_current": {
+          "value": 0.05,
+          "unit": "A",
+          "conditions": "IB = 5 mA, TA = 25 degC",
+          "page_reference": "p. 6 fig. 17",
+          "source_kind": "typical"
+        },
+        "base_current": {
+          "value": 0.005,
+          "unit": "A",
+          "conditions": "IC = 50 mA, TA = 25 degC",
+          "page_reference": "p. 6 fig. 17",
+          "source_kind": "typical"
+        },
+        "vce_sat": {
+          "value": 0.2,
+          "unit": "V",
+          "conditions": "IC = 50 mA, IB = 5 mA, TA = 25 degC",
+          "page_reference": "p. 6 fig. 17, digitized",
+          "source_kind": "digitized_typical_curve"
+        },
+        "vbe_sat": {
+          "value": 0.85,
+          "unit": "V",
+          "conditions": "IC = 50 mA, IB = 5 mA, TA = 25 degC",
+          "page_reference": "p. 6 fig. 17, digitized",
+          "source_kind": "digitized_typical_curve"
+        }
+      }
+    ],
+    "capacitances": {
+      "cobo": {
+        "value": 4e-12,
+        "unit": "F",
+        "conditions": "VCB = 5 V, IE = 0, f = 1 MHz",
+        "page_reference": "p. 2 electrical characteristics",
+        "source_kind": "maximum"
+      },
+      "cobo_vcb": {
+        "value": 5,
+        "unit": "V",
+        "conditions": "Cobo test bias",
+        "page_reference": "p. 2 electrical characteristics",
+        "source_kind": "typical"
+      },
+      "cibo": {
+        "value": 8e-12,
+        "unit": "F",
+        "conditions": "VEB = 0.5 V, IC = 0, f = 1 MHz",
+        "page_reference": "p. 2 electrical characteristics",
+        "source_kind": "maximum"
+      },
+      "cibo_veb": {
+        "value": 0.5,
+        "unit": "V",
+        "conditions": "Cibo test bias",
+        "page_reference": "p. 2 electrical characteristics",
+        "source_kind": "typical"
+      }
+    },
+    "frequency_response": {
+      "ft": {
+        "value": 300000000,
+        "unit": "Hz",
+        "conditions": "IC = 10 mA, VCE = 20 V, f = 100 MHz",
+        "page_reference": "p. 2 electrical characteristics",
+        "source_kind": "minimum"
+      },
+      "ic": {
+        "value": 0.01,
+        "unit": "A",
+        "conditions": "fT test collector current",
+        "page_reference": "p. 2 electrical characteristics",
+        "source_kind": "typical"
+      },
+      "vce": {
+        "value": 20,
+        "unit": "V",
+        "conditions": "fT test collector-emitter voltage",
+        "page_reference": "p. 2 electrical characteristics",
+        "source_kind": "typical"
+      }
+    },
+    "electrical_limits": {
+      "vceo": {
+        "value": 40,
+        "unit": "V",
+        "conditions": "IC = 1 mA, IB = 0",
+        "page_reference": "p. 2 electrical characteristics",
+        "source_kind": "minimum"
+      },
+      "vcbo": {
+        "value": 60,
+        "unit": "V",
+        "conditions": "IC = 10 uA, IE = 0",
+        "page_reference": "p. 2 electrical characteristics",
+        "source_kind": "minimum"
+      },
+      "vebo": {
+        "value": 6,
+        "unit": "V",
+        "conditions": "IE = 10 uA, IC = 0",
+        "page_reference": "p. 2 electrical characteristics",
+        "source_kind": "minimum"
+      },
+      "collector_current": {
+        "value": 0.2,
+        "unit": "A",
+        "conditions": "Continuous",
+        "page_reference": "p. 1 maximum ratings",
+        "source_kind": "maximum"
+      }
+    },
+    "identity": {
+      "canonical_mpn": "MMBT3904",
+      "manufacturer": "onsemi",
+      "aliases": []
+    },
+    "source": {
+      "kind": "datasheet",
+      "url": "https://www.onsemi.com/pdf/datasheet/mmbt3904lt1-d.pdf",
+      "revision": "August 2021 Rev. 14",
+      "sha256": "8c3a7966cfbd09066d906c4e0e3dfedb7e13abb9dc2cb34c600d1f05736bbdb4",
+      "accessed_date": "2026-08-06",
+      "pages_referenced": [
+        "p. 1",
+        "p. 2",
+        "p. 5",
+        "p. 6",
+        "p. 8"
+      ],
+      "placeholder": false
+    },
+    "gain_curve_interpretation": "Figure 15 is normalized DC current gain. Absolute hFE targets use the datasheet table value at IC = 10 mA as the scale anchor, with the curve shape digitized from Figure 15."
+  },
+  "component": {
+    "modelName": "OC_ONSEMI_MMBT3904",
+    "domain_coverage": {
+      "dc": "fitted",
+      "ac": "fitted",
+      "transient": "approx",
+      "noise": "none",
+      "thermal": "none",
+      "digital": "none"
+    },
+    "supported_analyses": [
+      "operating_point",
+      "dc_sweep",
+      "ac_small_signal",
+      "transient"
+    ],
+    "operating_summary": "F2 datasheet-fitted model using typical 25 degC curve digitization and tabulated parasitics.",
+    "numeric_bounds": [
+      {
+        "quantity": "collector_current",
+        "minimum": 0.0001,
+        "maximum": 0.1,
+        "unit": "A",
+        "conditions": "Fitted typical DC range at 25 degC",
+        "placeholder": false
+      },
+      {
+        "quantity": "collector_emitter_voltage",
+        "minimum": 0,
+        "maximum": 40,
+        "unit": "V",
+        "conditions": "Rated VCEO",
+        "placeholder": false
+      }
+    ],
+    "omissions": [
+      "No self-heating: junction temperature is fixed at TNOM.",
+      "Absolute maximum ratings are metadata only; breakdown is not modelled.",
+      "Package parasitics are not modelled.",
+      "Reverse operation, base-resistance modulation, transit-time bias dependence, temperature coefficients, flicker noise, and hFE spread are not modelled.",
+      "CJE and CJC are derived from single tabulated points with physical defaults.",
+      "Reviewer remains pending-review."
+    ]
+  }
+},
+  "MMBT3906": {
+  "slug": "MMBT3906",
+  "manufacturerSlug": "onsemi",
+  "pipeline": "bjt",
+  "identity": {
+    "canonical_mpn": "MMBT3906",
+    "manufacturer": "onsemi",
+    "description": "General-purpose PNP silicon transistor",
+    "electrical_family": "bjt_pnp",
+    "aliases": [],
+    "package": {
+      "name": "SOT-23",
+      "standard": "TO-236AB"
+    },
+    "pins": [
+      {
+        "name": "C",
+        "number": "1",
+        "role": "collector",
+        "node": "collector"
+      },
+      {
+        "name": "B",
+        "number": "2",
+        "role": "base",
+        "node": "base"
+      },
+      {
+        "name": "E",
+        "number": "3",
+        "role": "emitter",
+        "node": "emitter"
+      }
+    ],
+    "spice_order": [
+      "1",
+      "2",
+      "3"
+    ]
+  },
+  "source": {
+    "url": "https://www.onsemi.com/pdf/datasheet/mmbt3906lt1-d.pdf",
+    "revision": "October 2024 Rev. 14",
+    "pages": [
+      "p. 1",
+      "p. 2",
+      "p. 7",
+      "p. 8"
+    ]
+  },
+  "facts": {
+    "schema_version": "1.0.0",
+    "extraction_method": "pdftotext plus manual structuring; table values retain MIN/TYP/MAX source semantics",
+    "fit_conditions": {
+      "temperature": {
+        "value": 25,
+        "unit": "degC",
+        "conditions": "Electrical characteristics unless otherwise noted",
+        "page_reference": "p. 1",
+        "source_kind": "typical"
+      }
+    },
+    "gain_points": [
+      {
+        "collector_current": {
+          "value": 0.0001,
+          "unit": "A",
+          "conditions": "VCE = -1 V, TA = 25 degC",
+          "page_reference": "p. 2 electrical characteristics",
+          "source_kind": "typical"
+        },
+        "vce": {
+          "value": 1,
+          "unit": "V",
+          "conditions": "IC = -0.1 mA, VCE = -1 V, TA = 25 degC",
+          "page_reference": "p. 2 electrical characteristics",
+          "source_kind": "typical"
+        },
+        "hfe": {
+          "value": 60,
+          "unit": "1",
+          "conditions": "IC = -0.1 mA, VCE = -1 V, TA = 25 degC",
+          "page_reference": "p. 2 electrical characteristics",
+          "source_kind": "minimum"
+        }
+      },
+      {
+        "collector_current": {
+          "value": 0.001,
+          "unit": "A",
+          "conditions": "VCE = -1 V, TA = 25 degC",
+          "page_reference": "p. 2 electrical characteristics",
+          "source_kind": "typical"
+        },
+        "vce": {
+          "value": 1,
+          "unit": "V",
+          "conditions": "IC = -1 mA, VCE = -1 V, TA = 25 degC",
+          "page_reference": "p. 2 electrical characteristics",
+          "source_kind": "typical"
+        },
+        "hfe": {
+          "value": 80,
+          "unit": "1",
+          "conditions": "IC = -1 mA, VCE = -1 V, TA = 25 degC",
+          "page_reference": "p. 2 electrical characteristics",
+          "source_kind": "minimum"
+        }
+      },
+      {
+        "collector_current": {
+          "value": 0.01,
+          "unit": "A",
+          "conditions": "VCE = -1 V, TA = 25 degC",
+          "page_reference": "p. 2 electrical characteristics",
+          "source_kind": "typical"
+        },
+        "vce": {
+          "value": 1,
+          "unit": "V",
+          "conditions": "IC = -10 mA, VCE = -1 V, TA = 25 degC",
+          "page_reference": "p. 2 electrical characteristics",
+          "source_kind": "typical"
+        },
+        "hfe": {
+          "value": 100,
+          "unit": "1",
+          "conditions": "IC = -10 mA, VCE = -1 V, TA = 25 degC",
+          "page_reference": "p. 2 electrical characteristics",
+          "source_kind": "minimum"
+        }
+      },
+      {
+        "collector_current": {
+          "value": 0.05,
+          "unit": "A",
+          "conditions": "VCE = -1 V, TA = 25 degC",
+          "page_reference": "p. 2 electrical characteristics",
+          "source_kind": "typical"
+        },
+        "vce": {
+          "value": 1,
+          "unit": "V",
+          "conditions": "IC = -50 mA, VCE = -1 V, TA = 25 degC",
+          "page_reference": "p. 2 electrical characteristics",
+          "source_kind": "typical"
+        },
+        "hfe": {
+          "value": 60,
+          "unit": "1",
+          "conditions": "IC = -50 mA, VCE = -1 V, TA = 25 degC",
+          "page_reference": "p. 2 electrical characteristics",
+          "source_kind": "minimum"
+        }
+      },
+      {
+        "collector_current": {
+          "value": 0.1,
+          "unit": "A",
+          "conditions": "VCE = -1 V, TA = 25 degC",
+          "page_reference": "p. 2 electrical characteristics",
+          "source_kind": "typical"
+        },
+        "vce": {
+          "value": 1,
+          "unit": "V",
+          "conditions": "IC = -100 mA, VCE = -1 V, TA = 25 degC",
+          "page_reference": "p. 2 electrical characteristics",
+          "source_kind": "typical"
+        },
+        "hfe": {
+          "value": 30,
+          "unit": "1",
+          "conditions": "IC = -100 mA, VCE = -1 V, TA = 25 degC",
+          "page_reference": "p. 2 electrical characteristics",
+          "source_kind": "minimum"
+        }
+      }
+    ],
+    "saturation_points": [
+      {
+        "collector_current": {
+          "value": 0.01,
+          "unit": "A",
+          "conditions": "IB = -1 mA, TA = 25 degC",
+          "page_reference": "p. 2 electrical characteristics",
+          "source_kind": "typical"
+        },
+        "base_current": {
+          "value": 0.001,
+          "unit": "A",
+          "conditions": "IC = -10 mA, IB = -1 mA, TA = 25 degC",
+          "page_reference": "p. 2 electrical characteristics",
+          "source_kind": "typical"
+        },
+        "vce_sat": {
+          "value": 0.25,
+          "unit": "V",
+          "conditions": "IC = -10 mA, IB = -1 mA, TA = 25 degC",
+          "page_reference": "p. 2 electrical characteristics",
+          "source_kind": "maximum"
+        },
+        "vbe_sat": {
+          "value": 0.65,
+          "unit": "V",
+          "conditions": "IC = -10 mA, IB = -1 mA, TA = 25 degC",
+          "page_reference": "p. 2 electrical characteristics",
+          "source_kind": "minimum"
+        }
+      },
+      {
+        "collector_current": {
+          "value": 0.05,
+          "unit": "A",
+          "conditions": "IB = -5 mA, TA = 25 degC",
+          "page_reference": "p. 2 electrical characteristics",
+          "source_kind": "typical"
+        },
+        "base_current": {
+          "value": 0.005,
+          "unit": "A",
+          "conditions": "IC = -50 mA, IB = -5 mA, TA = 25 degC",
+          "page_reference": "p. 2 electrical characteristics",
+          "source_kind": "typical"
+        },
+        "vce_sat": {
+          "value": 0.4,
+          "unit": "V",
+          "conditions": "IC = -50 mA, IB = -5 mA, TA = 25 degC",
+          "page_reference": "p. 2 electrical characteristics",
+          "source_kind": "maximum"
+        },
+        "vbe_sat": {
+          "value": 0.95,
+          "unit": "V",
+          "conditions": "IC = -50 mA, IB = -5 mA, TA = 25 degC",
+          "page_reference": "p. 2 electrical characteristics",
+          "source_kind": "maximum"
+        }
+      }
+    ],
+    "capacitances": {
+      "cobo": {
+        "value": 4.5e-12,
+        "unit": "F",
+        "conditions": "VCB = -5 V, IE = 0, f = 1 MHz",
+        "page_reference": "p. 2 electrical characteristics",
+        "source_kind": "maximum"
+      },
+      "cobo_vcb": {
+        "value": 5,
+        "unit": "V",
+        "conditions": "Cobo test bias magnitude",
+        "page_reference": "p. 2 electrical characteristics",
+        "source_kind": "typical"
+      },
+      "cibo": {
+        "value": 1e-11,
+        "unit": "F",
+        "conditions": "VEB = -0.5 V, IC = 0, f = 1 MHz",
+        "page_reference": "p. 2 electrical characteristics",
+        "source_kind": "maximum"
+      },
+      "cibo_veb": {
+        "value": 0.5,
+        "unit": "V",
+        "conditions": "Cibo test bias magnitude",
+        "page_reference": "p. 2 electrical characteristics",
+        "source_kind": "typical"
+      }
+    },
+    "frequency_response": {
+      "ft": {
+        "value": 250000000,
+        "unit": "Hz",
+        "conditions": "IC = -10 mA, VCE = -20 V, f = 100 MHz",
+        "page_reference": "p. 2 electrical characteristics",
+        "source_kind": "minimum"
+      },
+      "ic": {
+        "value": 0.01,
+        "unit": "A",
+        "conditions": "fT test collector current magnitude",
+        "page_reference": "p. 2 electrical characteristics",
+        "source_kind": "typical"
+      },
+      "vce": {
+        "value": 20,
+        "unit": "V",
+        "conditions": "fT test collector-emitter voltage magnitude",
+        "page_reference": "p. 2 electrical characteristics",
+        "source_kind": "typical"
+      }
+    },
+    "electrical_limits": {
+      "vceo": {
+        "value": 40,
+        "unit": "V",
+        "conditions": "IC = -1 mA, IB = 0",
+        "page_reference": "p. 2 electrical characteristics",
+        "source_kind": "minimum"
+      },
+      "vcbo": {
+        "value": 40,
+        "unit": "V",
+        "conditions": "IC = -10 mA, IE = 0",
+        "page_reference": "p. 2 electrical characteristics",
+        "source_kind": "minimum"
+      },
+      "vebo": {
+        "value": 5,
+        "unit": "V",
+        "conditions": "IE = -10 mA, IC = 0",
+        "page_reference": "p. 2 electrical characteristics",
+        "source_kind": "minimum"
+      },
+      "collector_current": {
+        "value": 0.2,
+        "unit": "A",
+        "conditions": "Continuous",
+        "page_reference": "p. 1 maximum ratings",
+        "source_kind": "maximum"
+      }
+    },
+    "identity": {
+      "canonical_mpn": "MMBT3906",
+      "manufacturer": "onsemi",
+      "aliases": []
+    },
+    "source": {
+      "kind": "datasheet",
+      "url": "https://www.onsemi.com/pdf/datasheet/mmbt3906lt1-d.pdf",
+      "revision": "October 2024 Rev. 14",
+      "sha256": "6882fc82278c99b62b9d4af1cd263a5f49431aa371f3a250737f6ba7cb038951",
+      "accessed_date": "2026-08-06",
+      "pages_referenced": [
+        "p. 1",
+        "p. 2",
+        "p. 7",
+        "p. 8"
+      ],
+      "placeholder": false
+    }
+  },
+  "component": {
+    "modelName": "OC_ONSEMI_MMBT3906",
+    "fidelity_tier": "F1",
+    "domain_coverage": {
+      "dc": "fitted",
+      "ac": "fitted",
+      "transient": "approx",
+      "noise": "none",
+      "thermal": "none",
+      "digital": "none"
+    },
+    "supported_analyses": [
+      "operating_point",
+      "dc_sweep",
+      "ac_small_signal",
+      "transient"
+    ],
+    "operating_summary": "F1 magnitude model based on onsemi guaranteed PNP table anchors at 25 degC; signs are preserved in the final card.",
+    "numeric_bounds": [
+      {
+        "quantity": "collector_current_magnitude",
+        "minimum": 0.0001,
+        "maximum": 0.1,
+        "unit": "A",
+        "conditions": "Datasheet hFE table range at 25 degC",
+        "placeholder": false
+      },
+      {
+        "quantity": "collector_emitter_voltage_magnitude",
+        "minimum": 0,
+        "maximum": 40,
+        "unit": "V",
+        "conditions": "Rated VCEO magnitude",
+        "placeholder": false
+      }
+    ],
+    "omissions": [
+      "No self-heating: junction temperature is fixed at TNOM.",
+      "Absolute maximum ratings are metadata only; PNP signs are preserved but breakdown is not modelled.",
+      "Package parasitics are not modelled.",
+      "Guaranteed MIN/MAX rows are retained as source semantics; no complete typical multi-point curve was used.",
+      "Reverse operation, base-resistance modulation, transit-time bias dependence, temperature coefficients, flicker noise, and hFE spread are not modelled.",
+      "Reviewer remains pending-review.",
+      "Fidelity is capped at F1: the source provides guaranteed bounds rather than a complete typical multi-point PNP characterization."
+    ]
+  }
+},
+  "BC846B": {
+  "slug": "BC846B",
+  "manufacturerSlug": "nexperia",
+  "pipeline": "bjt",
+  "identity": {
+    "canonical_mpn": "BC846B",
+    "manufacturer": "nexperia",
+    "description": "65 V, 100 mA NPN general-purpose transistor",
+    "electrical_family": "bjt_npn",
+    "aliases": [],
+    "package": {
+      "name": "SOT-23",
+      "standard": "TO-236AB"
+    },
+    "pins": [
+      {
+        "name": "E",
+        "number": "1",
+        "role": "emitter",
+        "node": "emitter"
+      },
+      {
+        "name": "B",
+        "number": "2",
+        "role": "base",
+        "node": "base"
+      },
+      {
+        "name": "C",
+        "number": "3",
+        "role": "collector",
+        "node": "collector"
+      }
+    ],
+    "spice_order": [
+      "3",
+      "2",
+      "1"
+    ]
+  },
+  "source": {
+    "url": "https://assets.nexperia.com/documents/data-sheet/BC846_SER.pdf",
+    "revision": "Rev. 9, 25 September 2012",
+    "pages": [
+      "p. 1",
+      "p. 3",
+      "p. 4",
+      "p. 5"
+    ]
+  },
+  "facts": {
+    "schema_version": "1.0.0",
+    "extraction_method": "pdftotext plus manual structuring; table values retain MIN/TYP/MAX source semantics",
+    "fit_conditions": {
+      "temperature": {
+        "value": 25,
+        "unit": "degC",
+        "conditions": "Electrical characteristics unless otherwise noted",
+        "page_reference": "p. 1",
+        "source_kind": "typical"
+      }
+    },
+    "gain_points": [
+      {
+        "collector_current": {
+          "value": 1e-05,
+          "unit": "A",
+          "conditions": "VCE = 5 V, Tamb = 25 degC",
+          "page_reference": "p. 4 table 8",
+          "source_kind": "typical"
+        },
+        "vce": {
+          "value": 5,
+          "unit": "V",
+          "conditions": "IC = 10 uA, VCE = 5 V, Tamb = 25 degC",
+          "page_reference": "p. 4 table 8",
+          "source_kind": "typical"
+        },
+        "hfe": {
+          "value": 290,
+          "unit": "1",
+          "conditions": "hFE group B, IC = 10 uA, VCE = 5 V, Tamb = 25 degC",
+          "page_reference": "p. 4 table 8",
+          "source_kind": "typical"
+        }
+      },
+      {
+        "collector_current": {
+          "value": 0.002,
+          "unit": "A",
+          "conditions": "VCE = 5 V, Tamb = 25 degC",
+          "page_reference": "p. 4 table 8",
+          "source_kind": "typical"
+        },
+        "vce": {
+          "value": 5,
+          "unit": "V",
+          "conditions": "IC = 2 mA, VCE = 5 V, Tamb = 25 degC",
+          "page_reference": "p. 4 table 8",
+          "source_kind": "typical"
+        },
+        "hfe": {
+          "value": 290,
+          "unit": "1",
+          "conditions": "hFE group B, IC = 2 mA, VCE = 5 V, Tamb = 25 degC",
+          "page_reference": "p. 4 table 8",
+          "source_kind": "typical"
+        },
+        "vbe": {
+          "value": 0.66,
+          "unit": "V",
+          "conditions": "IC = 2 mA, VCE = 5 V, Tamb = 25 degC",
+          "page_reference": "p. 4 table 8",
+          "source_kind": "typical"
+        }
+      }
+    ],
+    "saturation_points": [
+      {
+        "collector_current": {
+          "value": 0.01,
+          "unit": "A",
+          "conditions": "IB = 0.5 mA, Tamb = 25 degC",
+          "page_reference": "p. 4 table 8",
+          "source_kind": "typical"
+        },
+        "base_current": {
+          "value": 0.0005,
+          "unit": "A",
+          "conditions": "IC = 10 mA, IB = 0.5 mA, Tamb = 25 degC",
+          "page_reference": "p. 4 table 8",
+          "source_kind": "typical"
+        },
+        "vce_sat": {
+          "value": 0.09,
+          "unit": "V",
+          "conditions": "IC = 10 mA, IB = 0.5 mA, Tamb = 25 degC",
+          "page_reference": "p. 4 table 8",
+          "source_kind": "typical"
+        },
+        "vbe_sat": {
+          "value": 0.76,
+          "unit": "V",
+          "conditions": "IC = 10 mA, IB = 0.5 mA, Tamb = 25 degC",
+          "page_reference": "p. 4 table 8",
+          "source_kind": "typical"
+        }
+      },
+      {
+        "collector_current": {
+          "value": 0.1,
+          "unit": "A",
+          "conditions": "IB = 5 mA, Tamb = 25 degC",
+          "page_reference": "p. 4 table 8",
+          "source_kind": "typical"
+        },
+        "base_current": {
+          "value": 0.005,
+          "unit": "A",
+          "conditions": "IC = 100 mA, IB = 5 mA, Tamb = 25 degC",
+          "page_reference": "p. 4 table 8",
+          "source_kind": "typical"
+        },
+        "vce_sat": {
+          "value": 0.2,
+          "unit": "V",
+          "conditions": "IC = 100 mA, IB = 5 mA, Tamb = 25 degC",
+          "page_reference": "p. 4 table 8",
+          "source_kind": "typical"
+        },
+        "vbe_sat": {
+          "value": 0.9,
+          "unit": "V",
+          "conditions": "IC = 100 mA, IB = 5 mA, Tamb = 25 degC",
+          "page_reference": "p. 4 table 8",
+          "source_kind": "typical"
+        }
+      }
+    ],
+    "capacitances": {
+      "cobo": {
+        "value": 3e-12,
+        "unit": "F",
+        "conditions": "VCB = 10 V, IE = 0, f = 1 MHz",
+        "page_reference": "p. 4 table 8",
+        "source_kind": "maximum"
+      },
+      "cobo_vcb": {
+        "value": 10,
+        "unit": "V",
+        "conditions": "Cc test bias",
+        "page_reference": "p. 4 table 8",
+        "source_kind": "typical"
+      },
+      "cibo": {
+        "value": 1.1e-11,
+        "unit": "F",
+        "conditions": "VEB = 0.5 V, IC = 0, f = 1 MHz",
+        "page_reference": "p. 4 table 8",
+        "source_kind": "typical"
+      },
+      "cibo_veb": {
+        "value": 0.5,
+        "unit": "V",
+        "conditions": "Ce test bias",
+        "page_reference": "p. 4 table 8",
+        "source_kind": "typical"
+      }
+    },
+    "frequency_response": {
+      "ft": {
+        "value": 100000000,
+        "unit": "Hz",
+        "conditions": "VCE = 5 V, IC = 10 mA, f = 100 MHz",
+        "page_reference": "p. 4 table 8",
+        "source_kind": "minimum"
+      },
+      "ic": {
+        "value": 0.01,
+        "unit": "A",
+        "conditions": "fT test collector current",
+        "page_reference": "p. 4 table 8",
+        "source_kind": "typical"
+      },
+      "vce": {
+        "value": 5,
+        "unit": "V",
+        "conditions": "fT test collector-emitter voltage",
+        "page_reference": "p. 4 table 8",
+        "source_kind": "typical"
+      }
+    },
+    "electrical_limits": {
+      "vceo": {
+        "value": 65,
+        "unit": "V",
+        "conditions": "open base",
+        "page_reference": "p. 3 quick reference data",
+        "source_kind": "maximum"
+      },
+      "vcbo": {
+        "value": 80,
+        "unit": "V",
+        "conditions": "open emitter",
+        "page_reference": "p. 3 table 5",
+        "source_kind": "maximum"
+      },
+      "vebo": {
+        "value": 6,
+        "unit": "V",
+        "conditions": "IE = 100 uA, IC = 0",
+        "page_reference": "p. 3 table 5",
+        "source_kind": "maximum"
+      },
+      "collector_current": {
+        "value": 0.1,
+        "unit": "A",
+        "conditions": "Continuous",
+        "page_reference": "p. 3 quick reference data",
+        "source_kind": "maximum"
+      }
+    },
+    "identity": {
+      "canonical_mpn": "BC846B",
+      "manufacturer": "nexperia",
+      "aliases": []
+    },
+    "source": {
+      "kind": "datasheet",
+      "url": "https://assets.nexperia.com/documents/data-sheet/BC846_SER.pdf",
+      "revision": "Rev. 9, 25 September 2012",
+      "sha256": "045a6cc21de93ac634aad910567e882926bd6ef154cbd8c59d13201134642a97",
+      "accessed_date": "2026-08-06",
+      "pages_referenced": [
+        "p. 1",
+        "p. 3",
+        "p. 4",
+        "p. 5"
+      ],
+      "placeholder": false
+    }
+  },
+  "component": {
+    "modelName": "OC_NEXPERIA_BC846B",
+    "fidelity_tier": "F1",
+    "domain_coverage": {
+      "dc": "fitted",
+      "ac": "fitted",
+      "transient": "approx",
+      "noise": "none",
+      "thermal": "none",
+      "digital": "none"
+    },
+    "supported_analyses": [
+      "operating_point",
+      "dc_sweep",
+      "ac_small_signal",
+      "transient"
+    ],
+    "operating_summary": "F1 model using group-B typical table anchors at 25 degC; no complete typical multi-point characterization is available.",
+    "numeric_bounds": [
+      {
+        "quantity": "collector_current",
+        "minimum": 1e-05,
+        "maximum": 0.1,
+        "unit": "A",
+        "conditions": "Datasheet characterization range at 25 degC",
+        "placeholder": false
+      },
+      {
+        "quantity": "collector_emitter_voltage",
+        "minimum": 0,
+        "maximum": 65,
+        "unit": "V",
+        "conditions": "Rated VCEO",
+        "placeholder": false
+      }
+    ],
+    "omissions": [
+      "No self-heating: junction temperature is fixed at TNOM.",
+      "Absolute maximum ratings are metadata only; breakdown is not modelled.",
+      "Package parasitics are not modelled.",
+      "Reverse operation, base-resistance modulation, transit-time bias dependence, temperature coefficients, flicker noise, and hFE spread are not modelled.",
+      "CJE and CJC are derived from single tabulated points with physical defaults.",
+      "Fidelity is capped at F1 because the source revision lacks a complete typical multi-point characterization.",
+      "Reviewer remains pending-review."
+    ]
+  }
+}
 };
+
+const transistorPins = [
+  { name: "B", number: "1", role: "base", node: "base" },
+  { name: "C", number: "2", role: "collector", node: "collector" },
+  { name: "E", number: "3", role: "emitter", node: "emitter" }
+];
+const stHtmlSource = (mpn, revision, pages) => ({
+  url: `https://www.st.com/en/power-transistors/${mpn.toLowerCase()}.html`,
+  revision: `${revision}; official ST product/specification page fallback accessed 2026-08-07`,
+  pages
+});
+const powerBjt = ({ mpn, pnp = false, darlington = false, revision, gain, sat, vbeOn, voltage, r1, r2 }) => ({
+  slug: mpn,
+  manufacturerSlug: "st",
+  pipeline: darlington ? "darlington" : "bjt",
+  identity: {
+    canonical_mpn: mpn,
+    manufacturer: "STMicroelectronics",
+    description: `${pnp ? "PNP" : "NPN"} ${darlington ? "Darlington " : ""}power transistor`,
+    electrical_family: pnp ? "bjt_pnp" : "bjt_npn",
+    aliases: [],
+    package: { name: "TO-220", standard: "ST TO-220" },
+    pins: transistorPins,
+    spice_order: ["2", "1", "3"]
+  },
+  source: stHtmlSource(mpn, revision, darlington ? ["official spec table", "internal schematic"] : ["official spec table"]),
+  facts: {
+    schema_version: "1.0.0",
+    extraction_method: "official ST product/specification page fallback; PDF fetch timed out after browser-header retries; MIN/MAX semantics preserved",
+    model_polarity: pnp ? "PNP" : "NPN",
+    device_class: "power",
+    fit_conditions: { temperature: quantity(25, "degC", "TC = 25 degC unless otherwise specified", "official spec table", "typical") },
+    gain_points: gain.map(([ic, hfe]) => ({
+      collector_current: quantity(ic, "A", `VCE = ${darlington ? 3 : 4} V, TC = 25 degC`, "official spec table", "typical"),
+      vce: quantity(darlington ? 3 : 4, "V", `IC = ${ic} A, TC = 25 degC`, "official spec table", "typical"),
+      hfe: quantity(hfe, "1", `IC = ${ic} A, VCE = ${darlington ? 3 : 4} V`, "official spec table MIN column", "minimum"),
+      ...(vbeOn && ic === vbeOn[0] ? { vbe: quantity(vbeOn[1], "V", `IC = ${ic} A, VCE = ${darlington ? 3 : 4} V`, "official spec table MAX column", "maximum") } : {})
+    })),
+    saturation_points: sat.map(([ic, ib, vce]) => ({
+      collector_current: quantity(ic, "A", `IB = ${ib} A, TC = 25 degC`, "official spec table", "typical"),
+      base_current: quantity(ib, "A", `IC = ${ic} A, TC = 25 degC`, "official spec table", "typical"),
+      vce_sat: quantity(vce, "V", `IC = ${ic} A, IB = ${ib} A`, "official spec table MAX column", "maximum"),
+      vbe_sat: quantity(vbeOn?.[1] ?? (darlington ? 2.5 : 1.8), "V", "conservative bound from published VBE(on) maximum", "official spec table MAX column", "maximum")
+    })),
+    electrical_limits: {
+      vceo: quantity(voltage, "V", "IB = 0", "official spec table", "minimum"),
+      collector_current: quantity(darlington ? 5 : 3, "A", "continuous", "official spec table", "maximum")
+    },
+    ...(darlington ? { internal_network: { r1: quantity(r1, "ohm", "internal schematic", "internal schematic", "typical"), r2: quantity(r2, "ohm", "internal schematic", "internal schematic", "typical") } } : {}),
+    ...(darlington ? { composite_seed: {
+      DRV_IS: 2e-13, DRV_BF: 35, DRV_IKF: 0.35, DRV_ISE: 1e-11, DRV_NE: 1.5, DRV_VAF: 60, DRV_RB: 5, DRV_RE: 0.08, DRV_RC: 0.12, DRV_CJE: 2e-10, DRV_CJC: 8e-11, DRV_TF: 2e-7, DRV_TR: 5e-7,
+      OUT_IS: 2e-12, OUT_BF: 45, OUT_IKF: 3.5, OUT_ISE: 1e-10, OUT_NE: 1.5, OUT_VAF: 60, OUT_RB: 0.5, OUT_RE: 0.008, OUT_RC: 0.012, OUT_CJE: 2e-9, OUT_CJC: 8e-10, OUT_TF: 2e-7, OUT_TR: 5e-7,
+      R1: r1, R2: r2, DIODE_IS: 1e-12, DIODE_N: 1.5, DIODE_RS: 0.05
+    } } : {})
+  },
+  component: {
+    modelName: `OC_ST_${mpn}`,
+    fidelity_tier: "F1",
+    domain_coverage: { dc: "approx", ac: "none", transient: darlington ? "approx" : "none", noise: "none", thermal: "none", digital: "none" },
+    supported_analyses: ["operating_point", "dc_sweep", "transient"],
+    operating_summary: `F1 table-constrained terminal model at 25 degC; official HTML specification fallback used because ST PDF fetches timed out.`,
+    numeric_bounds: [
+      { quantity: "collector_current", minimum: 0, maximum: darlington ? 5 : 3, unit: "A", conditions: "Continuous current rating; SOA and thermal limits not enforced", placeholder: false },
+      { quantity: "collector_emitter_voltage", minimum: 0, maximum: voltage, unit: "V", conditions: "Rated VCEO; breakdown omitted", placeholder: false },
+      { quantity: "ambient_temperature", minimum: 25, maximum: 25, unit: "degC", conditions: "Characterization temperature", placeholder: false }
+    ],
+    omissions: [
+      "Official ST PDF fetch timed out after browser-header retries; the official ST HTML product/specification page is the source and fidelity is capped at F1.",
+      ...(darlington ? ["Darlington modelled as two Gummel-Poon devices plus the datasheet internal bias resistors and freewheel diode. The two dies are not independently characterised; only composite terminal behaviour is constrained. Internal-node behaviour is F1."] : []),
+      "Guaranteed MIN/MAX rows remain hard bounds and are not presented as typical targets.",
+      "No self-heating, safe-operating-area failure, thermal runaway, breakdown, package parasitics, temperature spread, or noise is modelled.",
+      "Reviewer remains pending-review."
+    ]
+  }
+});
+
+Object.assign(PARTS, {
+  TIP31C: powerBjt({ mpn: "TIP31C", revision: "Rev. 1, April 2006", gain: [[1, 25], [3, 10]], sat: [[3, 0.375, 1.2]], vbeOn: [3, 1.8], voltage: 100 }),
+  TIP32C: powerBjt({ mpn: "TIP32C", pnp: true, revision: "Rev. 2, November 2006", gain: [[1, 25], [3, 10]], sat: [[3, 0.375, 1.2]], vbeOn: [3, 1.8], voltage: 100 }),
+  TIP120: powerBjt({ mpn: "TIP120", darlington: true, revision: "DS0854 Rev. 5, May 2021", gain: [[0.5, 1000], [3, 1000]], sat: [[3, 0.012, 2], [5, 0.020, 4]], vbeOn: [3, 2.5], voltage: 60, r1: 7000, r2: 70 }),
+  TIP125: powerBjt({ mpn: "TIP125", pnp: true, darlington: true, revision: "DS0854 Rev. 5, May 2021", gain: [[0.5, 1000], [3, 1000]], sat: [[3, 0.012, 2], [5, 0.020, 4]], vbeOn: [3, 2.5], voltage: 60, r1: 16000, r2: 60 }),
+  BF256B: {
+    slug: "BF256B", manufacturerSlug: "nxp", pipeline: "njf",
+    identity: {
+      canonical_mpn: "BF256B", manufacturer: "Nexperia", description: "N-channel low-noise JFET", electrical_family: "jfet_n", aliases: [],
+      package: { name: "TO-92", standard: "SOT54" },
+      pins: [{ name: "D", number: "1", role: "drain", node: "drain" }, { name: "S", number: "2", role: "source", node: "source" }, { name: "G", number: "3", role: "gate", node: "gate" }], spice_order: ["1", "3", "2"]
+    },
+    source: { url: "https://www.nexperia.com/product/BF256B", revision: "Official Nexperia HTML product/specification table; accessed 2026-08-07", pages: ["spec table"] },
+    facts: { schema_version: "1.0.0", extraction_method: "official Nexperia HTML specification table fallback; PDF challenge-gated" },
+    component: {
+      modelName: "OC_NEXPERIA_BF256B", fidelity_tier: "F1",
+      domain_coverage: { dc: "approx", ac: "approx", transient: "approx", noise: "none", thermal: "none", digital: "none" },
+      supported_analyses: ["operating_point", "dc_sweep", "ac_small_signal", "transient"],
+      operating_summary: "F1 datasheet-window model at 25 degC from the official Nexperia HTML specification table.",
+      numeric_bounds: [{ quantity: "drain_source_voltage", minimum: 0, maximum: 15, unit: "V", conditions: "F1 characterized bench envelope", placeholder: false }, { quantity: "gate_source_voltage", minimum: -8, maximum: 0, unit: "V", conditions: "Published cutoff window; never forward-bias gate", placeholder: false }],
+      omissions: ["Nexperia PDF is challenge-gated; the official HTML specification table is used and fidelity is capped at F1.", "IDSS and VGS(off) production spread are represented by bounds, not a typical device.", "Noise is not fitted from a single-frequency figure.", "Reviewer remains pending-review."]
+    }
+  }
+});
 
 export function getPart(mpn) {
   const key = Object.keys(PARTS).find((candidate) => candidate.toLowerCase() === String(mpn).toLowerCase());
