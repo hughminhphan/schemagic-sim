@@ -1,0 +1,160 @@
+{
+  "schema_version": "1.0.0",
+  "fitter": "direct transcription, loaded-boundary calibration, and exactly three native ngspice-46 fixed-point delay iterations",
+  "deterministic": true,
+  "parameters": {
+    "AOL": 100000.0,
+    "VOS": 0.003,
+    "IBIAS": 1e-12,
+    "IOS": 1e-12,
+    "TPD": 3.8739918917326235e-08,
+    "ROUT": 70.0,
+    "ILIM": 0.03,
+    "VDRP_H": 0.1261291077736054,
+    "VDRP_L": 0.026129108313021197,
+    "VHYST": 0.0015,
+    "IQ": 0.0001
+  },
+  "parameter_metadata": {
+    "AOL": {
+      "status": "held behavioral default; not published"
+    },
+    "VOS": {
+      "status": "direct TYP magnitude; nominal sign arbitrary"
+    },
+    "IBIAS": {
+      "status": "direct TYP transcription"
+    },
+    "IOS": {
+      "status": "direct TYP transcription"
+    },
+    "TPD": {
+      "status": "native calibrated to average of the two 100 mV overdrive TYP edges at 5.5 V"
+    },
+    "ROUT": {
+      "status": "derived and calibrated against loaded output boundaries"
+    },
+    "ILIM": {
+      "status": "direct TYP short-circuit current"
+    },
+    "VDRP_H": {
+      "status": "native fitted to loaded guaranteed boundary; no TYP level published"
+    },
+    "VDRP_L": {
+      "status": "native fitted to loaded guaranteed boundary; no TYP level published"
+    },
+    "VHYST": {
+      "status": "half of held midpoint of published MIN/MAX window; no TYP published"
+    },
+    "IQ": {
+      "status": "direct TYP transcription"
+    }
+  },
+  "held_defaults": [
+    {
+      "parameter": "AOL",
+      "value": 100000.0,
+      "unit": "V/V",
+      "reason": "datasheet publishes no large-signal gain"
+    },
+    {
+      "parameter": "VHYST_total",
+      "value": 0.003,
+      "unit": "V",
+      "reason": "midpoint of 1 mV MIN and 5 mV MAX because no TYP is published"
+    },
+    {
+      "parameter": "VCLAMP",
+      "value": 1,
+      "unit": "V",
+      "reason": "held internal bounded-gain scale"
+    },
+    {
+      "parameter": "KSW",
+      "value": 20,
+      "unit": "1",
+      "reason": "held smoothing sharpness"
+    },
+    {
+      "parameter": "CD",
+      "value": 1e-11,
+      "unit": "F",
+      "reason": "held internal delay scale"
+    },
+    {
+      "parameter": "CDIF",
+      "value": 1e-12,
+      "unit": "F",
+      "reason": "held convergence capacitance"
+    },
+    {
+      "parameter": "RQ",
+      "value": 1000000.0,
+      "unit": "ohm",
+      "reason": "held internal-node DC path"
+    }
+  ],
+  "calibration_iterations": [
+    {
+      "iteration": 1,
+      "tplh_measured": 4.2227893193806705e-08,
+      "tphl_measured": 4.2288861550707935e-08,
+      "average_measured": 4.225837737225732e-08
+    },
+    {
+      "iteration": 2,
+      "tplh_measured": 4.0543046481730457e-08,
+      "tphl_measured": 4.0606959393659434e-08,
+      "average_measured": 4.0575002937694945e-08
+    },
+    {
+      "iteration": 3,
+      "tplh_measured": 4.0471221817636854e-08,
+      "tphl_measured": 4.0535303514116096e-08,
+      "average_measured": 4.0503262665876475e-08
+    }
+  ],
+  "output_boundary_fit": {
+    "nfev": 4,
+    "cost": 6.411402100588428e-21,
+    "target_kind": "published MIN/MAX loaded boundaries, not TYP"
+  },
+  "residuals": [
+    {
+      "quantity": "propagation delay low-to-high",
+      "datasheet_value": 4.7e-08,
+      "fitted_value": 4.046809157965837e-08,
+      "unit": "s",
+      "relative_error": 0.1389767749008857,
+      "citation": "p. 4 propagation delay row, TYP column"
+    },
+    {
+      "quantity": "propagation delay high-to-low",
+      "datasheet_value": 3.4e-08,
+      "fitted_value": 4.053219035279765e-08,
+      "unit": "s",
+      "relative_error": 0.1921232456705191,
+      "citation": "p. 4 propagation delay row, TYP column"
+    },
+    {
+      "quantity": "loaded high-level output boundary",
+      "datasheet_value": 4.8,
+      "fitted_value": 4.800000000543525,
+      "unit": "V",
+      "relative_error": 1.1323442183908128e-10,
+      "citation": "p. 3 high-level output voltage row, MIN column"
+    },
+    {
+      "quantity": "loaded low-level output boundary",
+      "datasheet_value": 0.6,
+      "fitted_value": 0.5999999999994735,
+      "unit": "V",
+      "relative_error": 8.774462637954155e-13,
+      "citation": "p. 3 low-level output voltage row, MAX column"
+    }
+  ],
+  "worst_relative_error": {
+    "value": 0.1921232456705191,
+    "quantity": "propagation delay high-to-low"
+  }
+}

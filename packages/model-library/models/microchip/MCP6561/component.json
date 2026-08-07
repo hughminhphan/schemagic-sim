@@ -1,0 +1,175 @@
+{
+  "schema_version": "1.0.0",
+  "canonical_mpn": "MCP6561",
+  "manufacturer": "Microchip Technology",
+  "description": "Single low-power 1.8 V push-pull output comparator with internal hysteresis",
+  "electrical_family": "comparator",
+  "symbol_pins": [
+    {
+      "name": "IN+",
+      "number": "3",
+      "role": "noninverting_input"
+    },
+    {
+      "name": "IN-",
+      "number": "4",
+      "role": "inverting_input"
+    },
+    {
+      "name": "OUT",
+      "number": "1",
+      "role": "output"
+    },
+    {
+      "name": "VDD",
+      "number": "5",
+      "role": "positive_supply"
+    },
+    {
+      "name": "VSS",
+      "number": "2",
+      "role": "ground"
+    }
+  ],
+  "spice_pin_mapping": [
+    {
+      "symbol_pin_number": "3",
+      "subckt_node": "inp",
+      "order": 1
+    },
+    {
+      "symbol_pin_number": "4",
+      "subckt_node": "inn",
+      "order": 2
+    },
+    {
+      "symbol_pin_number": "1",
+      "subckt_node": "out",
+      "order": 3
+    },
+    {
+      "symbol_pin_number": "5",
+      "subckt_node": "vcc",
+      "order": 4
+    },
+    {
+      "symbol_pin_number": "2",
+      "subckt_node": "gnd",
+      "order": 5
+    }
+  ],
+  "package_variants": [
+    {
+      "name": "SOT-23-5",
+      "standard": "Microchip 5-lead SOT-23",
+      "pin_count": 5,
+      "pin_map": [
+        {
+          "package_pin": "3",
+          "symbol_pin_number": "3"
+        },
+        {
+          "package_pin": "4",
+          "symbol_pin_number": "4"
+        },
+        {
+          "package_pin": "1",
+          "symbol_pin_number": "1"
+        },
+        {
+          "package_pin": "5",
+          "symbol_pin_number": "5"
+        },
+        {
+          "package_pin": "2",
+          "symbol_pin_number": "2"
+        }
+      ]
+    }
+  ],
+  "ordering_code_aliases": [
+    "MCP6561T-E/OT",
+    "MCP6561-E/LT"
+  ],
+  "datasheet": {
+    "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/22139C.pdf",
+    "revision": "DS22139C, 2013"
+  },
+  "model_type": "subckt",
+  "fidelity_tier": "F1",
+  "domain_coverage": {
+    "dc": "approx",
+    "ac": "none",
+    "transient": "approx",
+    "noise": "none",
+    "thermal": "none",
+    "digital": "none"
+  },
+  "supported_analyses": [
+    "operating_point",
+    "dc_sweep",
+    "transient"
+  ],
+  "supported_operating_region": {
+    "summary": "25 degC F1 push-pull comparator model over the published 1.8 V to 5.5 V supply range. Common-mode boundaries are metadata only.",
+    "numeric_bounds": [
+      {
+        "quantity": "supply_voltage",
+        "minimum": 1.8,
+        "maximum": 5.5,
+        "unit": "V",
+        "conditions": "Recommended operating range",
+        "placeholder": false
+      },
+      {
+        "quantity": "common_mode_input_at_5_5v",
+        "minimum": -0.3,
+        "maximum": 5.8,
+        "unit": "V",
+        "conditions": "Published common-mode range at VDD = 5.5 V",
+        "placeholder": false
+      },
+      {
+        "quantity": "ambient_temperature",
+        "minimum": 25,
+        "maximum": 25,
+        "unit": "degC",
+        "conditions": "Fit reference temperature",
+        "placeholder": false
+      }
+    ]
+  },
+  "known_omissions": [
+    "Propagation delay is one fitted constant taken from the 100 mV overdrive rows at 5.5 V. Delay variation with overdrive, supply, and edge direction is approximate.",
+    "The datasheet publishes no large-signal gain, so AOL is a disclosed held behavioral default.",
+    "The datasheet publishes only a 1 mV MIN and 5 mV MAX hysteresis window, so the nominal 3 mV window is a disclosed midpoint, not a TYP value.",
+    "Output high and low behavior is fitted conservatively to loaded guaranteed boundaries because no TYP output levels are published.",
+    "Input common-mode range is not enforced. VICR is metadata only.",
+    "No self-heating or temperature coefficients are modelled. All benches set .temp 25.",
+    "Quiescent current is constant and noise is not modelled.",
+    "Input protection diodes and ESD structures are not modelled."
+  ],
+  "licence": {
+    "spdx_id": "MIT",
+    "provenance_basis": "original_from_facts"
+  },
+  "generator": {
+    "tool_or_agent": "opencircuit-model-factory-v0.1.0 Microchip completion lane",
+    "date": "2026-08-07"
+  },
+  "reviewer": {
+    "tool_or_agent": "pending-review",
+    "date": "2026-08-07"
+  },
+  "test_results": {
+    "status": "complete",
+    "pass_count": 12,
+    "fail_count": 0,
+    "total_count": 12,
+    "worst_observed_relative_fitting_error": {
+      "value": 0.1921232456705191,
+      "quantity": "propagation delay high-to-low"
+    }
+  },
+  "validation_date": "2026-08-07"
+}

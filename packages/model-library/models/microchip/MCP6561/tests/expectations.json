@@ -1,0 +1,212 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "dc_levels.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "loaded_high_output_minimum",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "last:v(oh)"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 3 high-level output voltage row, MIN column",
+          "placeholder": false,
+          "minimum": 4.8,
+          "maximum": 5.5
+        },
+        {
+          "name": "loaded_low_output_maximum",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "last:v(ol)"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 3 low-level output voltage row, MAX column",
+          "placeholder": false,
+          "minimum": 0,
+          "maximum": 0.6
+        }
+      ]
+    },
+    {
+      "test_netlist": "offset_and_bias.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "positive_input_bias",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "abs_last:i(vp)"
+          },
+          "expected_value": 1.5e-12,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 1e-13,
+            "relative": 0.08
+          },
+          "datasheet_citation": "p. 3 input bias current row, TYP column",
+          "placeholder": false
+        },
+        {
+          "name": "negative_input_bias",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "abs_last:i(vn)"
+          },
+          "expected_value": 5e-13,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 1e-13,
+            "relative": 0.08
+          },
+          "datasheet_citation": "p. 3 input bias current row, TYP column",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "propagation_delay.cir",
+      "analysis_type": "transient",
+      "scalar_checks": [
+        {
+          "name": "propagation_delay_low_to_high",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "edge_delay:v(sig):v(out):2.75:rising"
+          },
+          "expected_value": 4.7e-08,
+          "unit": "s",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.25
+          },
+          "datasheet_citation": "p. 4 propagation delay row, TYP column",
+          "placeholder": false
+        },
+        {
+          "name": "propagation_delay_high_to_low",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "edge_delay:v(sig):v(out):2.75:falling"
+          },
+          "expected_value": 3.4e-08,
+          "unit": "s",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.25
+          },
+          "datasheet_citation": "p. 4 propagation delay row, TYP column",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": [
+        {
+          "name": "transient_output_minimum",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "min:v(out)"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 3 output voltage rows",
+          "placeholder": false,
+          "minimum": -0.05
+        },
+        {
+          "name": "transient_output_maximum",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "max:v(out)"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 3 output voltage rows",
+          "placeholder": false,
+          "maximum": 5.55
+        }
+      ]
+    },
+    {
+      "test_netlist": "hysteresis.cir",
+      "analysis_type": "transient",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "input_hysteresis_window",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "hysteresis:v(sig):v(out):2.75"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 3 hysteresis MIN/MAX columns",
+          "placeholder": false,
+          "minimum": 0.001,
+          "maximum": 0.005
+        }
+      ]
+    },
+    {
+      "test_netlist": "supply_current.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "quiescent_supply_current",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "abs_last:i(vcc)"
+          },
+          "expected_value": 0.0001,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.1
+          },
+          "datasheet_citation": "p. 3 quiescent current row, TYP column",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "minimum_supply_boundary.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "minimum_supply_low_state",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "last:v(ol)"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 3 supply voltage MIN column",
+          "placeholder": false,
+          "minimum": 0,
+          "maximum": 0.7
+        },
+        {
+          "name": "minimum_supply_high_state",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "last:v(oh)"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 3 supply voltage MIN column",
+          "placeholder": false,
+          "minimum": 1.1,
+          "maximum": 1.8
+        }
+      ]
+    }
+  ]
+}
