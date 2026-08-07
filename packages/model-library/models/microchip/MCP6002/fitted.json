@@ -1,0 +1,185 @@
+{
+  "schema_version": "1.0.0",
+  "fitter": "native ngspice-46 boundary fit plus exactly three fixed-point GBW and slew calibration iterations",
+  "deterministic": true,
+  "parameters": {
+    "AOL": 398107.1705534969,
+    "GBW": 1033408.7468738433,
+    "SR": 620109.648463614,
+    "IBIAS": 1e-12,
+    "IOS": 1e-12,
+    "VOS": 0.0,
+    "ROUT": 1.0869565217391306,
+    "ILIM": 0.023,
+    "VDRP_H": 0.02470379048823707,
+    "VDRP_L": 0.024703790486963167,
+    "FP2": 103340874.68738432,
+    "CMRR": 6309.57344480193,
+    "PSRR": 19952.62314968879,
+    "VSUP_NOM": 5.5,
+    "IQ": 0.0001,
+    "EN": 2.8e-08
+  },
+  "parameter_metadata": {
+    "AOL": {
+      "status": "direct TYP transcription"
+    },
+    "GBW": {
+      "status": "native calibrated to TYP"
+    },
+    "SR": {
+      "status": "native calibrated to TYP"
+    },
+    "IBIAS": {
+      "status": "direct TYP transcription"
+    },
+    "IOS": {
+      "status": "direct TYP transcription"
+    },
+    "VOS": {
+      "status": "held at zero because no TYP is published"
+    },
+    "ROUT": {
+      "status": "derived from published output boundary and TYP short-circuit current"
+    },
+    "ILIM": {
+      "status": "direct TYP transcription"
+    },
+    "VDRP_H": {
+      "status": "native fitted to guaranteed output boundary; no TYP published"
+    },
+    "VDRP_L": {
+      "status": "native fitted to guaranteed output boundary; no TYP published"
+    },
+    "FP2": {
+      "status": "held at 100 times calibrated GBW to represent the published 90 degree TYP phase margin without a zero-frequency pole"
+    },
+    "CMRR": {
+      "status": "derived from direct TYP dB value"
+    },
+    "PSRR": {
+      "status": "derived from direct TYP dB value"
+    },
+    "VSUP_NOM": {
+      "status": "datasheet test supply"
+    },
+    "IQ": {
+      "status": "direct TYP transcription"
+    },
+    "EN": {
+      "status": "direct TYP transcription"
+    }
+  },
+  "held_defaults": [
+    {
+      "parameter": "VOS",
+      "value": 0,
+      "unit": "V",
+      "reason": "no TYP offset is published; production limits are retained"
+    },
+    {
+      "parameter": "CC",
+      "value": 3e-11,
+      "unit": "F",
+      "reason": "held internal archetype scale"
+    },
+    {
+      "parameter": "CDIF",
+      "value": 1e-12,
+      "unit": "F",
+      "reason": "held floating-input convergence capacitance"
+    },
+    {
+      "parameter": "RE",
+      "value": 1000000.0,
+      "unit": "ohm",
+      "reason": "held internal DC path"
+    },
+    {
+      "parameter": "CP2",
+      "value": 1e-12,
+      "unit": "F",
+      "reason": "held second-pole scale"
+    },
+    {
+      "parameter": "RQ",
+      "value": 1000000.0,
+      "unit": "ohm",
+      "reason": "held clamp-node DC path"
+    },
+    {
+      "parameter": "phase_margin_pole_ratio",
+      "value": 100,
+      "unit": "1",
+      "reason": "finite numerical representation of the published 90 degree TYP phase margin"
+    }
+  ],
+  "calibration_iterations": [
+    {
+      "iteration": 1,
+      "gbw_measured": 968056.8688416585,
+      "sr_measured": 580542.129625478
+    },
+    {
+      "iteration": 2,
+      "gbw_measured": 999612.6836481579,
+      "sr_measured": 600000.3886400271
+    },
+    {
+      "iteration": 3,
+      "gbw_measured": 999989.0350604728,
+      "sr_measured": 599999.9848262601
+    }
+  ],
+  "rail_drop_fit": {
+    "nfev": 4,
+    "cost": 9.366275699304677e-25,
+    "target_kind": "published guaranteed boundary, not TYP"
+  },
+  "residuals": [
+    {
+      "quantity": "open-loop gain",
+      "datasheet_value": 398107.1705534969,
+      "fitted_value": 398089.7201702512,
+      "unit": "V/V",
+      "relative_error": 4.383338089954648e-05,
+      "citation": "p. 3 DC electrical specifications, TYP column"
+    },
+    {
+      "quantity": "unity-gain bandwidth",
+      "datasheet_value": 1000000.0,
+      "fitted_value": 999993.4146117031,
+      "unit": "Hz",
+      "relative_error": 6.585388296865858e-06,
+      "citation": "p. 4 AC electrical specifications, TYP column"
+    },
+    {
+      "quantity": "slew rate",
+      "datasheet_value": 600000.0,
+      "fitted_value": 599999.9993356575,
+      "unit": "V/s",
+      "relative_error": 1.1072375734026233e-09,
+      "citation": "p. 4 AC electrical specifications, TYP column"
+    },
+    {
+      "quantity": "high output boundary",
+      "datasheet_value": 5.475,
+      "fitted_value": 5.475000000000121,
+      "unit": "V",
+      "relative_error": 2.2224738538615007e-14,
+      "citation": "p. 3 maximum output voltage swing row, MAX boundary"
+    },
+    {
+      "quantity": "low output boundary",
+      "datasheet_value": 0.025,
+      "fitted_value": 0.02499999999996579,
+      "unit": "V",
+      "relative_error": 1.3684886557285836e-12,
+      "citation": "p. 3 maximum output voltage swing row, MIN boundary"
+    }
+  ],
+  "worst_relative_error": {
+    "value": 4.383338089954648e-05,
+    "quantity": "open-loop gain"
+  }
+}

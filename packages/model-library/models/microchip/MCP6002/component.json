@@ -1,0 +1,182 @@
+{
+  "schema_version": "1.0.0",
+  "canonical_mpn": "MCP6002",
+  "manufacturer": "Microchip Technology",
+  "description": "Dual rail-to-rail low-power 1 MHz CMOS operational amplifier",
+  "electrical_family": "opamp",
+  "symbol_pins": [
+    {
+      "name": "IN+",
+      "number": "3",
+      "role": "noninverting_input"
+    },
+    {
+      "name": "IN-",
+      "number": "2",
+      "role": "inverting_input"
+    },
+    {
+      "name": "VDD",
+      "number": "8",
+      "role": "positive_supply"
+    },
+    {
+      "name": "VSS",
+      "number": "4",
+      "role": "negative_supply"
+    },
+    {
+      "name": "OUT",
+      "number": "1",
+      "role": "output"
+    }
+  ],
+  "spice_pin_mapping": [
+    {
+      "symbol_pin_number": "3",
+      "subckt_node": "inp",
+      "order": 1
+    },
+    {
+      "symbol_pin_number": "2",
+      "subckt_node": "inn",
+      "order": 2
+    },
+    {
+      "symbol_pin_number": "8",
+      "subckt_node": "vcc",
+      "order": 3
+    },
+    {
+      "symbol_pin_number": "4",
+      "subckt_node": "vee",
+      "order": 4
+    },
+    {
+      "symbol_pin_number": "1",
+      "subckt_node": "out",
+      "order": 5
+    }
+  ],
+  "package_variants": [
+    {
+      "name": "PDIP-8",
+      "standard": "Microchip 8-lead PDIP",
+      "pin_count": 5,
+      "pin_map": [
+        {
+          "package_pin": "3",
+          "symbol_pin_number": "3"
+        },
+        {
+          "package_pin": "2",
+          "symbol_pin_number": "2"
+        },
+        {
+          "package_pin": "8",
+          "symbol_pin_number": "8"
+        },
+        {
+          "package_pin": "4",
+          "symbol_pin_number": "4"
+        },
+        {
+          "package_pin": "1",
+          "symbol_pin_number": "1"
+        }
+      ]
+    }
+  ],
+  "ordering_code_aliases": [
+    "MCP6002-I/P",
+    "MCP6002-I/SN",
+    "MCP6002T-I/MS"
+  ],
+  "datasheet": {
+    "url": "https://ww1.microchip.com/downloads/aemDocuments/documents/MSLD/ProductDocuments/DataSheets/MCP6001-1R-1U-2-4-Low-Power-1-MHz-Op-Amp-Family-Data-Sheet-DS20001733.pdf",
+    "revision": "DS20001733L, 2020"
+  },
+  "model_type": "subckt",
+  "fidelity_tier": "F2",
+  "domain_coverage": {
+    "dc": "fitted",
+    "ac": "fitted",
+    "transient": "fitted",
+    "noise": "fitted",
+    "thermal": "none",
+    "digital": "none"
+  },
+  "supported_analyses": [
+    "operating_point",
+    "dc_sweep",
+    "ac_small_signal",
+    "transient",
+    "noise"
+  ],
+  "supported_operating_region": {
+    "summary": "25 degC single-supply model across the published 1.8 V to 6.0 V supply range. One amplifier channel is exposed; the package contains 2 matched channels.",
+    "numeric_bounds": [
+      {
+        "quantity": "supply_voltage_total",
+        "minimum": 1.8,
+        "maximum": 6.0,
+        "unit": "V",
+        "conditions": "Recommended operating range",
+        "placeholder": false
+      },
+      {
+        "quantity": "input_offset_voltage",
+        "minimum": -0.0045,
+        "maximum": 0.0045,
+        "unit": "V",
+        "conditions": "Published production limits at 25 degC",
+        "placeholder": false
+      },
+      {
+        "quantity": "ambient_temperature",
+        "minimum": 25,
+        "maximum": 25,
+        "unit": "degC",
+        "conditions": "Fit reference temperature",
+        "placeholder": false
+      }
+    ]
+  },
+  "known_omissions": [
+    "Output-stage distortion, crossover distortion, slew-induced distortion, and overload recovery are not modelled.",
+    "Input common-mode range is not enforced. The rail-to-rail input boundary is metadata only.",
+    "PSRR and CMRR are frequency-independent constants.",
+    "The frequency response is a two-pole approximation. Higher-order poles and zeros are not modelled.",
+    "Only broadband input voltage noise is modelled. Flicker noise and input current noise are not.",
+    "No self-heating or temperature coefficients are modelled. All benches set .temp 25.",
+    "Quiescent current is constant and does not vary with supply, temperature, output loading, or channel activity.",
+    "No TYP input offset is published, so nominal VOS is held at zero while the +/-4.5 mV production limits remain metadata.",
+    "No TYP output swing is published. Rail drop is fitted conservatively to the guaranteed 25 mV boundary at 5.5 V and is pessimistic versus a typical device.",
+    "ROUT is derived from the output boundary and TYP short-circuit current because no open-loop output impedance is published.",
+    "The published 90 degree TYP phase margin is represented with FP2 at 100 times GBW to avoid an invalid zero-frequency pole.",
+    "Input protection diodes and ESD structures are not modelled."
+  ],
+  "licence": {
+    "spdx_id": "MIT",
+    "provenance_basis": "original_from_facts"
+  },
+  "generator": {
+    "tool_or_agent": "opencircuit-model-factory-v0.1.0 Microchip completion lane",
+    "date": "2026-08-07"
+  },
+  "reviewer": {
+    "tool_or_agent": "pending-review",
+    "date": "2026-08-07"
+  },
+  "test_results": {
+    "status": "complete",
+    "pass_count": 18,
+    "fail_count": 0,
+    "total_count": 18,
+    "worst_observed_relative_fitting_error": {
+      "value": 4.383338089954648e-05,
+      "quantity": "open-loop gain"
+    }
+  },
+  "validation_date": "2026-08-07"
+}

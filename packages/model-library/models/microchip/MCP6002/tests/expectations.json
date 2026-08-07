@@ -1,0 +1,317 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "open_loop_gain.cir",
+      "analysis_type": "ac_small_signal",
+      "scalar_checks": [
+        {
+          "name": "open_loop_gain_db",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "db_first:v(out)"
+          },
+          "expected_value": 112,
+          "unit": "dB",
+          "tolerance": {
+            "absolute": 0.7,
+            "relative": 0
+          },
+          "datasheet_citation": "p. 3 DC electrical specifications, TYP column",
+          "placeholder": false
+        },
+        {
+          "name": "unity_gain_bandwidth",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "frequency_cross:v(out):1"
+          },
+          "expected_value": 1000000.0,
+          "unit": "Hz",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 4 AC electrical specifications, TYP column",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "offset_and_bias.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "nominal_input_offset",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "offset_gain10:v(out2):2.75"
+          },
+          "expected_value": 0,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.0001,
+            "relative": 0
+          },
+          "datasheet_citation": "p. 3 input offset row, MIN -4.5 mV and MAX +4.5 mV",
+          "placeholder": false
+        },
+        {
+          "name": "input_bias_positive",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "abs_last:i(vp1)"
+          },
+          "expected_value": 1.5e-12,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 1e-13,
+            "relative": 0.08
+          },
+          "datasheet_citation": "p. 3 input bias current row, TYP column",
+          "placeholder": false
+        },
+        {
+          "name": "input_bias_negative",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "abs_last:i(vn1)"
+          },
+          "expected_value": 5e-13,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 1e-13,
+            "relative": 0.08
+          },
+          "datasheet_citation": "p. 3 input bias current row, TYP column",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "slew_and_swing.cir",
+      "analysis_type": "transient",
+      "scalar_checks": [
+        {
+          "name": "rising_slew",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "slew:v(out):1.5:4:rising"
+          },
+          "expected_value": 600000.0,
+          "unit": "V/s",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.15
+          },
+          "datasheet_citation": "p. 4 AC electrical specifications, TYP column",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": [
+        {
+          "name": "transient_output_low",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "min:v(out)"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 3 and p. 4 electrical specifications",
+          "placeholder": false,
+          "minimum": -0.05
+        },
+        {
+          "name": "transient_output_high",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "max:v(out)"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 3 and p. 4 electrical specifications",
+          "placeholder": false,
+          "maximum": 5.55
+        }
+      ]
+    },
+    {
+      "test_netlist": "output_swing.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "high_output_guaranteed_boundary",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "last:v(oh)"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 3 maximum output voltage swing row, MAX boundary",
+          "placeholder": false,
+          "minimum": 5.475,
+          "maximum": 5.5
+        },
+        {
+          "name": "low_output_guaranteed_boundary",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "last:v(ol)"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 3 maximum output voltage swing row, MIN boundary",
+          "placeholder": false,
+          "minimum": 0,
+          "maximum": 0.025
+        }
+      ]
+    },
+    {
+      "test_netlist": "short_circuit.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "short_circuit_current",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "abs_last:i(vshort)"
+          },
+          "expected_value": 0.023,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.1
+          },
+          "datasheet_citation": "p. 3 output short-circuit current row, TYP column",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "cmrr.cir",
+      "analysis_type": "ac_small_signal",
+      "scalar_checks": [
+        {
+          "name": "common_mode_gain",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "mag_last:v(out)"
+          },
+          "expected_value": 63.09573444801929,
+          "unit": "V/V",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.3
+          },
+          "datasheet_citation": "p. 3 CMRR row, TYP column",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "minimum_supply_boundary.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "minimum_supply_follow_low",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "last:v(ol)"
+          },
+          "expected_value": 0.25,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.03,
+            "relative": 0.05
+          },
+          "datasheet_citation": "p. 3 supply voltage MIN column",
+          "placeholder": false
+        },
+        {
+          "name": "minimum_supply_follow_mid",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "last:v(om)"
+          },
+          "expected_value": 0.9,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.03,
+            "relative": 0.05
+          },
+          "datasheet_citation": "p. 3 supply voltage MIN column",
+          "placeholder": false
+        },
+        {
+          "name": "minimum_supply_follow_high",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "last:v(oh)"
+          },
+          "expected_value": 1.55,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.03,
+            "relative": 0.05
+          },
+          "datasheet_citation": "p. 3 supply voltage MIN column",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": [
+        {
+          "name": "minimum_supply_output_floor",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "min3:v(ol):v(om):v(oh)"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 3 supply voltage MIN column",
+          "placeholder": false,
+          "minimum": 0
+        },
+        {
+          "name": "minimum_supply_output_ceiling",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "max3:v(ol):v(om):v(oh)"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 3 supply voltage MIN column",
+          "placeholder": false,
+          "maximum": 1.8
+        }
+      ]
+    },
+    {
+      "test_netlist": "noise.cir",
+      "analysis_type": "noise",
+      "scalar_checks": [
+        {
+          "name": "equivalent_input_noise_1khz",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "noise_input_1khz:10"
+          },
+          "expected_value": 2.8e-08,
+          "unit": "V/sqrt(Hz)",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.3
+          },
+          "datasheet_citation": "p. 4 input noise voltage density row, TYP column",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    }
+  ]
+}
