@@ -1,44 +1,44 @@
 {
   "schema_version": "1.0.0",
-  "canonical_mpn": "74HC595",
+  "canonical_mpn": "74HC138",
   "manufacturer": "Nexperia B.V.",
-  "description": "8-bit serial-in shift register with output latches and 3-state outputs",
+  "description": "3-to-8 line decoder and demultiplexer with active-low outputs",
   "electrical_family": "logic_74hc",
   "symbol_pins": [
     {
-      "name": "Q1",
+      "name": "A0",
       "number": "1",
-      "role": "parallel_output"
+      "role": "address_input"
     },
     {
-      "name": "Q2",
+      "name": "A1",
       "number": "2",
-      "role": "parallel_output"
+      "role": "address_input"
     },
     {
-      "name": "Q3",
+      "name": "A2",
       "number": "3",
-      "role": "parallel_output"
+      "role": "address_input"
     },
     {
-      "name": "Q4",
+      "name": "E1",
       "number": "4",
-      "role": "parallel_output"
+      "role": "enable_active_low"
     },
     {
-      "name": "Q5",
+      "name": "E2",
       "number": "5",
-      "role": "parallel_output"
+      "role": "enable_active_low"
     },
     {
-      "name": "Q6",
+      "name": "E3",
       "number": "6",
-      "role": "parallel_output"
+      "role": "enable_active_high"
     },
     {
-      "name": "Q7",
+      "name": "Y7",
       "number": "7",
-      "role": "parallel_output"
+      "role": "output_active_low"
     },
     {
       "name": "GND",
@@ -46,39 +46,39 @@
       "role": "ground"
     },
     {
-      "name": "Q7S",
+      "name": "Y6",
       "number": "9",
-      "role": "serial_output"
+      "role": "output_active_low"
     },
     {
-      "name": "MR",
+      "name": "Y5",
       "number": "10",
-      "role": "master_reset_active_low"
+      "role": "output_active_low"
     },
     {
-      "name": "SHCP",
+      "name": "Y4",
       "number": "11",
-      "role": "shift_clock"
+      "role": "output_active_low"
     },
     {
-      "name": "STCP",
+      "name": "Y3",
       "number": "12",
-      "role": "storage_clock"
+      "role": "output_active_low"
     },
     {
-      "name": "OE",
+      "name": "Y2",
       "number": "13",
-      "role": "output_enable_active_low"
+      "role": "output_active_low"
     },
     {
-      "name": "DS",
+      "name": "Y1",
       "number": "14",
-      "role": "serial_data_input"
+      "role": "output_active_low"
     },
     {
-      "name": "Q0",
+      "name": "Y0",
       "number": "15",
-      "role": "parallel_output"
+      "role": "output_active_low"
     },
     {
       "name": "VCC",
@@ -88,73 +88,73 @@
   ],
   "spice_pin_mapping": [
     {
-      "symbol_pin_number": "14",
-      "subckt_node": "ds",
+      "symbol_pin_number": "1",
+      "subckt_node": "a0",
       "order": 1
     },
     {
-      "symbol_pin_number": "11",
-      "subckt_node": "shcp",
+      "symbol_pin_number": "2",
+      "subckt_node": "a1",
       "order": 2
     },
     {
-      "symbol_pin_number": "12",
-      "subckt_node": "stcp",
+      "symbol_pin_number": "3",
+      "subckt_node": "a2",
       "order": 3
     },
     {
-      "symbol_pin_number": "10",
-      "subckt_node": "mr",
+      "symbol_pin_number": "4",
+      "subckt_node": "e1",
       "order": 4
     },
     {
-      "symbol_pin_number": "13",
-      "subckt_node": "oe",
+      "symbol_pin_number": "5",
+      "subckt_node": "e2",
       "order": 5
     },
     {
-      "symbol_pin_number": "15",
-      "subckt_node": "q0",
+      "symbol_pin_number": "6",
+      "subckt_node": "e3",
       "order": 6
     },
     {
-      "symbol_pin_number": "1",
-      "subckt_node": "q1",
+      "symbol_pin_number": "15",
+      "subckt_node": "y0",
       "order": 7
     },
     {
-      "symbol_pin_number": "2",
-      "subckt_node": "q2",
+      "symbol_pin_number": "14",
+      "subckt_node": "y1",
       "order": 8
     },
     {
-      "symbol_pin_number": "3",
-      "subckt_node": "q3",
+      "symbol_pin_number": "13",
+      "subckt_node": "y2",
       "order": 9
     },
     {
-      "symbol_pin_number": "4",
-      "subckt_node": "q4",
+      "symbol_pin_number": "12",
+      "subckt_node": "y3",
       "order": 10
     },
     {
-      "symbol_pin_number": "5",
-      "subckt_node": "q5",
+      "symbol_pin_number": "11",
+      "subckt_node": "y4",
       "order": 11
     },
     {
-      "symbol_pin_number": "6",
-      "subckt_node": "q6",
+      "symbol_pin_number": "10",
+      "subckt_node": "y5",
       "order": 12
     },
     {
-      "symbol_pin_number": "7",
-      "subckt_node": "q7",
+      "symbol_pin_number": "9",
+      "subckt_node": "y6",
       "order": 13
     },
     {
-      "symbol_pin_number": "9",
-      "subckt_node": "q7s",
+      "symbol_pin_number": "7",
+      "subckt_node": "y7",
       "order": 14
     },
     {
@@ -242,12 +242,12 @@
     }
   ],
   "ordering_code_aliases": [
-    "74HC595D",
-    "74HC595PW"
+    "74HC138D",
+    "74HC138PW"
   ],
   "datasheet": {
-    "url": "https://assets.nexperia.com/documents/data-sheet/74HC_HCT595.pdf",
-    "revision": "Rev. 12, 20 March 2024"
+    "url": "https://assets.nexperia.com/documents/data-sheet/74HC_HCT138.pdf",
+    "revision": "Rev. 10, 26 February 2024"
   },
   "model_type": "subckt",
   "fidelity_tier": "F1",
@@ -297,11 +297,8 @@
     "Latch-up is not modelled.",
     "No self-heating and no temperature coefficients.",
     "Fitted from the VCC = 4.5 V column of the DC and AC characteristics.",
-    "Power-up state is deterministic in this model because a fixed asymmetry is built into the latch to give the DC operating point a definite solution. Real devices power up in an indeterminate state.",
     "RINT = 1 kohm is held at default where an explicit combinational delay stage is used.",
-    "KIN = 20, KREG = 25, KSW = 12, VSKEW = 0.05, all 1 pF latch capacitors, and all 100 Gohm input leakage resistors are held at default.",
-    "The output-enable high-impedance state is modelled as a large resistance, not a true disconnection. Bus contention between two enabled drivers produces a resistive divider rather than a fault.",
-    "The Nexperia table does not publish a 15 pF propagation-delay row for 74HC595. Load dependence is therefore held to the output-resistance physical default and the package is capped at F1."
+    "KIN = 20, KREG = 25, KSW = 12, VSKEW = 0.05, all 1 pF latch capacitors, and all 100 Gohm input leakage resistors are held at default."
   ],
   "licence": {
     "spdx_id": "MIT",
@@ -317,12 +314,12 @@
   },
   "test_results": {
     "status": "complete",
-    "pass_count": 5,
+    "pass_count": 11,
     "fail_count": 0,
-    "total_count": 5,
+    "total_count": 11,
     "worst_observed_relative_fitting_error": {
-      "value": 0.0,
-      "quantity": "datasheet-anchored functional checks"
+      "value": 1.5998429416426894e-06,
+      "quantity": "vol_loaded_typ"
     }
   },
   "validation_date": "2026-08-07"
