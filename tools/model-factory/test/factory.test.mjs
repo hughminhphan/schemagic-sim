@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { assertEmittedParametersMatchFitted } from "../factory.mjs";
+import { assertEmittedParametersMatchFitted, assertFiniteNumbers } from "../factory.mjs";
 import { PARTS, getPart } from "../lib/parts.mjs";
 
 function assertQuantityReferences(value) {
@@ -54,4 +54,12 @@ test("generate postcondition rejects stale parameter cards", () => {
     ".model DUT NPN(IS=1e-14 BF=2000)\n",
     { parameters: { IS: 1e-14, BF: 217.6573191599617 } }
   ), /BF: emitted 2000, fitted 217\.6573191599617/);
+});
+
+test("JSON outputs reject non-finite validation numbers", () => {
+  assert.doesNotThrow(() => assertFiniteNumbers({ checks: [{ value: 1.2, minimum: null }] }));
+  assert.throws(
+    () => assertFiniteNumbers({ benches: [{ checks: [{ value: -Infinity }] }] }),
+    /Non-finite number at root\.benches\[0\]\.checks\[0\]\.value: -Infinity/
+  );
 });

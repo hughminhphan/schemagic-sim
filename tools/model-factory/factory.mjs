@@ -14,6 +14,17 @@ const packageValidator = path.join(repoRoot, "packages", "component-schema", "va
 const today = () => new Date().toISOString().slice(0, 10);
 const json = (value) => `${JSON.stringify(value, null, 2)}\n`;
 
+export function assertFiniteNumbers(value, trail = "root") {
+  if (typeof value === "number" && !Number.isFinite(value)) {
+    throw new Error(`Non-finite number at ${trail}: ${value}`);
+  }
+  if (Array.isArray(value)) {
+    value.forEach((item, index) => assertFiniteNumbers(item, `${trail}[${index}]`));
+  } else if (value && typeof value === "object") {
+    for (const [key, child] of Object.entries(value)) assertFiniteNumbers(child, `${trail}.${key}`);
+  }
+}
+
 function parseArgs(argv) {
   const [stage, ...rest] = argv;
   let mpn;
@@ -43,6 +54,7 @@ function ensureDirectory(directory) {
 }
 
 function writeJson(file, data) {
+  assertFiniteNumbers(data, path.basename(file));
   ensureDirectory(path.dirname(file));
   fs.writeFileSync(file, json(data));
 }
