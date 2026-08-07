@@ -1,0 +1,211 @@
+{
+  "schema_version": "1.0.0",
+  "validation_date": "2026-08-07",
+  "native_wasm_all_pass": true,
+  "native_wasm_compared_bench_count": 7,
+  "native_only_bench_count": 1,
+  "expectations_all_pass": true,
+  "expectation_pass_count": 18,
+  "expectation_fail_count": 0,
+  "worst_native_wasm_relative_delta": 0.07734785572028599,
+  "worst_native_wasm_absolute_delta": 2.570693990099244,
+  "worst_expectation_relative_error": {
+    "value": 6.908511555003826e+24,
+    "quantity": "nominal_input_offset",
+    "observed": -6.9085115550038266e-06,
+    "expected": 0
+  },
+  "benches": [
+    {
+      "test_netlist": "open_loop_gain.cir",
+      "analysis": "ac",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "open_loop_gain_db",
+          "pass": true,
+          "value": 111.99961925974641,
+          "expected": 112,
+          "error": 0.00038074025358980634,
+          "allowed": 0.7
+        },
+        {
+          "name": "unity_gain_bandwidth",
+          "pass": true,
+          "value": 999993.4146117031,
+          "expected": 1000000.0,
+          "error": 6.585388296865858,
+          "allowed": 200000.0
+        }
+      ]
+    },
+    {
+      "test_netlist": "offset_and_bias.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "nominal_input_offset",
+          "pass": true,
+          "value": -6.9085115550038266e-06,
+          "expected": 0,
+          "error": 6.9085115550038266e-06,
+          "allowed": 0.0001
+        },
+        {
+          "name": "input_bias_positive",
+          "pass": true,
+          "value": 1.5e-12,
+          "expected": 1.5e-12,
+          "error": 0.0,
+          "allowed": 1.2000000000000002e-13
+        },
+        {
+          "name": "input_bias_negative",
+          "pass": true,
+          "value": 5e-13,
+          "expected": 5e-13,
+          "error": 0.0,
+          "allowed": 1e-13
+        }
+      ]
+    },
+    {
+      "test_netlist": "slew_and_swing.cir",
+      "analysis": "tran",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "rising_slew",
+          "pass": true,
+          "value": 599999.9993356575,
+          "expected": 600000.0,
+          "error": 0.000664342544041574,
+          "allowed": 90000.0
+        },
+        {
+          "name": "transient_output_low",
+          "pass": true,
+          "value": 0.4996421162415042,
+          "minimum": -0.05
+        },
+        {
+          "name": "transient_output_high",
+          "pass": true,
+          "value": 5.0003440626733875,
+          "maximum": 5.55
+        }
+      ]
+    },
+    {
+      "test_netlist": "output_swing.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "high_output_guaranteed_boundary",
+          "pass": true,
+          "value": 5.475000000000121,
+          "minimum": 5.475,
+          "maximum": 5.5
+        },
+        {
+          "name": "low_output_guaranteed_boundary",
+          "pass": true,
+          "value": 0.02499999999996579,
+          "minimum": 0,
+          "maximum": 0.025
+        }
+      ]
+    },
+    {
+      "test_netlist": "short_circuit.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "short_circuit_current",
+          "pass": true,
+          "value": 0.023000000000500002,
+          "expected": 0.023,
+          "error": 5.000028169277471e-13,
+          "allowed": 0.0023
+        }
+      ]
+    },
+    {
+      "test_netlist": "cmrr.cir",
+      "analysis": "ac",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "common_mode_gain",
+          "pass": true,
+          "value": 63.09523424876096,
+          "expected": 63.09573444801929,
+          "error": 0.0005001992583331116,
+          "allowed": 18.92872033440579
+        }
+      ]
+    },
+    {
+      "test_netlist": "minimum_supply_boundary.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "minimum_supply_follow_low",
+          "pass": true,
+          "value": 0.24971089268798669,
+          "expected": 0.25,
+          "error": 0.00028910731201331474,
+          "allowed": 0.03
+        },
+        {
+          "name": "minimum_supply_follow_mid",
+          "pass": true,
+          "value": 0.8998122856219782,
+          "expected": 0.9,
+          "error": 0.00018771437802178603,
+          "allowed": 0.045000000000000005
+        },
+        {
+          "name": "minimum_supply_follow_high",
+          "pass": true,
+          "value": 1.5499136785559688,
+          "expected": 1.55,
+          "error": 8.632144403120101e-05,
+          "allowed": 0.07750000000000001
+        },
+        {
+          "name": "minimum_supply_output_floor",
+          "pass": true,
+          "value": 0.24971089268798669,
+          "minimum": 0
+        },
+        {
+          "name": "minimum_supply_output_ceiling",
+          "pass": true,
+          "value": 1.5499136785559688,
+          "maximum": 1.8
+        }
+      ]
+    },
+    {
+      "test_netlist": "noise.cir",
+      "analysis": "noise",
+      "native_wasm_pass": null,
+      "engine_note": "native expectation check only; repository compare CLI supports op, tran, and ac but not noise rawfiles",
+      "checks": [
+        {
+          "name": "equivalent_input_noise_1khz",
+          "pass": true,
+          "value": 2.8170895759827958e-08,
+          "expected": 2.8e-08,
+          "error": 1.7089575982795887e-10,
+          "allowed": 8.399999999999999e-09
+        }
+      ]
+    }
+  ]
+}

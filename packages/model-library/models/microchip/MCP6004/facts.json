@@ -1,0 +1,396 @@
+{
+  "schema_version": "1.0.0",
+  "extraction_method": "pdftotext -layout plus manual table structuring; MIN, TYP, and MAX semantics retained",
+  "fit_conditions": {
+    "temperature": {
+      "value": 25,
+      "unit": "degC",
+      "conditions": "Electrical characteristics unless otherwise stated",
+      "page_reference": "p. 3 and p. 4 headings",
+      "source_kind": "test_condition"
+    }
+  },
+  "parameters": {
+    "aol": {
+      "value": 398107.1705534969,
+      "unit": "V/V",
+      "conditions": "VOUT = 0.3 V to VDD - 0.3 V, VCM = VSS",
+      "page_reference": "p. 3 DC electrical specifications, TYP column",
+      "source_kind": "typical",
+      "column_semantics": {
+        "minimum": {
+          "column": "MIN",
+          "published": true
+        },
+        "typical": {
+          "column": "TYP",
+          "published": true
+        },
+        "maximum": {
+          "column": "MAX",
+          "published": false
+        }
+      }
+    },
+    "aol_min": {
+      "value": 25118.864315095823,
+      "unit": "V/V",
+      "conditions": "Same large-signal gain row",
+      "page_reference": "p. 3 DC electrical specifications, MIN column",
+      "source_kind": "minimum"
+    },
+    "gbw": {
+      "value": 1000000.0,
+      "unit": "Hz",
+      "conditions": "VDD = 1.8 V to 5.5 V, RL = 10 kohm to VL, CL = 60 pF",
+      "page_reference": "p. 4 AC electrical specifications, TYP column",
+      "source_kind": "typical",
+      "column_semantics": {
+        "minimum": {
+          "column": "MIN",
+          "published": false
+        },
+        "typical": {
+          "column": "TYP",
+          "published": true
+        },
+        "maximum": {
+          "column": "MAX",
+          "published": false
+        }
+      }
+    },
+    "sr": {
+      "value": 600000.0,
+      "unit": "V/s",
+      "conditions": "VDD = 1.8 V to 5.5 V, RL = 10 kohm to VL, CL = 60 pF",
+      "page_reference": "p. 4 AC electrical specifications, TYP column",
+      "source_kind": "typical",
+      "column_semantics": {
+        "minimum": {
+          "column": "MIN",
+          "published": false
+        },
+        "typical": {
+          "column": "TYP",
+          "published": true
+        },
+        "maximum": {
+          "column": "MAX",
+          "published": false
+        }
+      }
+    },
+    "vos": {
+      "value": 0.0,
+      "unit": "V",
+      "conditions": "No TYP value is published; the shipped nominal is held at zero while the production limits remain metadata",
+      "page_reference": "p. 3 input offset row, MIN -4.5 mV and MAX +4.5 mV",
+      "source_kind": "held_default",
+      "column_semantics": {
+        "minimum": {
+          "column": "MIN",
+          "published": true
+        },
+        "typical": {
+          "column": "TYP",
+          "published": false
+        },
+        "maximum": {
+          "column": "MAX",
+          "published": true
+        }
+      }
+    },
+    "vos_max": {
+      "value": 0.0045,
+      "unit": "V",
+      "conditions": "Magnitude of the published 25 degC production limit",
+      "page_reference": "p. 3 input offset row, MIN and MAX columns",
+      "source_kind": "maximum"
+    },
+    "ibias": {
+      "value": 1e-12,
+      "unit": "A",
+      "conditions": "TA = 25 degC",
+      "page_reference": "p. 3 input bias current row, TYP column",
+      "source_kind": "typical",
+      "column_semantics": {
+        "minimum": {
+          "column": "MIN",
+          "published": false
+        },
+        "typical": {
+          "column": "TYP",
+          "published": true
+        },
+        "maximum": {
+          "column": "MAX",
+          "published": false
+        }
+      }
+    },
+    "ios": {
+      "value": 1e-12,
+      "unit": "A",
+      "conditions": "TA = 25 degC",
+      "page_reference": "p. 3 input offset current row, TYP column",
+      "source_kind": "typical",
+      "column_semantics": {
+        "minimum": {
+          "column": "MIN",
+          "published": false
+        },
+        "typical": {
+          "column": "TYP",
+          "published": true
+        },
+        "maximum": {
+          "column": "MAX",
+          "published": false
+        }
+      }
+    },
+    "output_swing": {
+      "column_semantics": {
+        "minimum": {
+          "column": "MIN",
+          "published": true
+        },
+        "typical": {
+          "column": "TYP",
+          "published": false
+        },
+        "maximum": {
+          "column": "MAX",
+          "published": true
+        }
+      },
+      "low_maximum": {
+        "value": 0.025,
+        "unit": "V",
+        "conditions": "VDD = 5.5 V, 0.5 V input overdrive; VOL <= VSS + 25 mV",
+        "page_reference": "p. 3 maximum output voltage swing row, MIN boundary",
+        "source_kind": "maximum_boundary"
+      },
+      "high_minimum": {
+        "value": 5.475,
+        "unit": "V",
+        "conditions": "VDD = 5.5 V, 0.5 V input overdrive; VOH >= VDD - 25 mV",
+        "page_reference": "p. 3 maximum output voltage swing row, MAX boundary",
+        "source_kind": "minimum_boundary"
+      },
+      "typical_25c": {
+        "value": 5.475,
+        "unit": "V",
+        "conditions": "No TYP output-swing value is published. Fit conservatively targets the guaranteed 25 mV rail boundary at 5.5 V.",
+        "page_reference": "p. 3 maximum output voltage swing row, MIN/MAX boundaries",
+        "source_kind": "boundary_fit"
+      }
+    },
+    "ilim": {
+      "value": 0.023,
+      "unit": "A",
+      "conditions": "VDD = 5.5 V",
+      "page_reference": "p. 3 output short-circuit current row, TYP column",
+      "source_kind": "typical",
+      "column_semantics": {
+        "minimum": {
+          "column": "MIN",
+          "published": false
+        },
+        "typical": {
+          "column": "TYP",
+          "published": true
+        },
+        "maximum": {
+          "column": "MAX",
+          "published": false
+        }
+      }
+    },
+    "cmrr_db": {
+      "value": 76,
+      "unit": "dB",
+      "conditions": "VCM = -0.3 V to 5.3 V, VDD = 5 V",
+      "page_reference": "p. 3 CMRR row, TYP column",
+      "source_kind": "typical",
+      "column_semantics": {
+        "minimum": {
+          "column": "MIN",
+          "published": true
+        },
+        "typical": {
+          "column": "TYP",
+          "published": true
+        },
+        "maximum": {
+          "column": "MAX",
+          "published": false
+        }
+      }
+    },
+    "psrr_db": {
+      "value": 86,
+      "unit": "dB",
+      "conditions": "VCM = VSS",
+      "page_reference": "p. 3 PSRR row, TYP column",
+      "source_kind": "typical",
+      "column_semantics": {
+        "minimum": {
+          "column": "MIN",
+          "published": false
+        },
+        "typical": {
+          "column": "TYP",
+          "published": true
+        },
+        "maximum": {
+          "column": "MAX",
+          "published": false
+        }
+      }
+    },
+    "iq": {
+      "value": 0.0001,
+      "unit": "A",
+      "conditions": "Per amplifier, IO = 0, VDD = 5.5 V, VCM = 5 V",
+      "page_reference": "p. 3 quiescent current row, TYP column",
+      "source_kind": "typical",
+      "column_semantics": {
+        "minimum": {
+          "column": "MIN",
+          "published": true
+        },
+        "typical": {
+          "column": "TYP",
+          "published": true
+        },
+        "maximum": {
+          "column": "MAX",
+          "published": true
+        }
+      }
+    },
+    "en": {
+      "value": 2.8e-08,
+      "unit": "V/sqrt(Hz)",
+      "conditions": "f = 1 kHz",
+      "page_reference": "p. 4 input noise voltage density row, TYP column",
+      "source_kind": "typical",
+      "column_semantics": {
+        "minimum": {
+          "column": "MIN",
+          "published": false
+        },
+        "typical": {
+          "column": "TYP",
+          "published": true
+        },
+        "maximum": {
+          "column": "MAX",
+          "published": false
+        }
+      }
+    },
+    "phase_margin": {
+      "value": 90,
+      "unit": "deg",
+      "conditions": "G = +1 V/V",
+      "page_reference": "p. 4 phase margin row, TYP column",
+      "source_kind": "typical",
+      "column_semantics": {
+        "minimum": {
+          "column": "MIN",
+          "published": false
+        },
+        "typical": {
+          "column": "TYP",
+          "published": true
+        },
+        "maximum": {
+          "column": "MAX",
+          "published": false
+        }
+      }
+    },
+    "rout": {
+      "value": 1.0869565217391306,
+      "unit": "ohm",
+      "conditions": "Derived from the 25 mV output boundary and 23 mA typical short-circuit current because no open-loop output impedance is published",
+      "page_reference": "p. 3 output swing and short-circuit rows",
+      "source_kind": "derived_from_boundary"
+    },
+    "supply_positive": {
+      "value": 5.5,
+      "unit": "V",
+      "conditions": "Fit and output-swing test supply",
+      "page_reference": "p. 3 output rows",
+      "source_kind": "test_condition"
+    },
+    "supply_negative": {
+      "value": 0.0,
+      "unit": "V",
+      "conditions": "Single-supply ground",
+      "page_reference": "p. 3 heading",
+      "source_kind": "test_condition"
+    },
+    "supply_voltage_total": {
+      "minimum": {
+        "value": 1.8,
+        "unit": "V",
+        "conditions": "Recommended operating range",
+        "page_reference": "p. 3 supply voltage row, MIN column",
+        "source_kind": "minimum"
+      },
+      "maximum": {
+        "value": 6.0,
+        "unit": "V",
+        "conditions": "Recommended operating range; other min/max specifications measured at 1.8 V and 5.5 V",
+        "page_reference": "p. 3 supply voltage row, MAX column and Note 2",
+        "source_kind": "maximum"
+      }
+    },
+    "common_mode_input": {
+      "minimum": {
+        "value": -0.3,
+        "unit": "V",
+        "conditions": "Relative to VSS",
+        "page_reference": "p. 3 common-mode input range row, MIN column",
+        "source_kind": "minimum"
+      },
+      "maximum_at_5v": {
+        "value": 5.3,
+        "unit": "V",
+        "conditions": "VDD = 5 V",
+        "page_reference": "p. 3 common-mode input range row, MAX column",
+        "source_kind": "maximum"
+      }
+    }
+  },
+  "package_channel_count": 4,
+  "identity": {
+    "canonical_mpn": "MCP6004",
+    "manufacturer": "Microchip Technology",
+    "aliases": [
+      "MCP6004-I/P",
+      "MCP6004-I/SL",
+      "MCP6004-I/ST"
+    ]
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://ww1.microchip.com/downloads/aemDocuments/documents/MSLD/ProductDocuments/DataSheets/MCP6001-1R-1U-2-4-Low-Power-1-MHz-Op-Amp-Family-Data-Sheet-DS20001733.pdf",
+    "revision": "DS20001733L, 2020",
+    "sha256": "4f879ab31115ecfa149dfea62073c9efdbc4beccbdfc3a8d7e10281f3877f8fb",
+    "accessed_date": "2026-08-07",
+    "pages_referenced": [
+      "p. 1",
+      "p. 3",
+      "p. 4",
+      "p. 8",
+      "p. 9"
+    ],
+    "placeholder": false
+  }
+}

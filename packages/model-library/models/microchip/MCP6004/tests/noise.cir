@@ -1,0 +1,41 @@
+OpenCircuit factory test: MCP6004 noise.cir
+* Source: https://ww1.microchip.com/downloads/aemDocuments/documents/MSLD/ProductDocuments/DataSheets/MCP6001-1R-1U-2-4-Low-Power-1-MHz-Op-Amp-Family-Data-Sheet-DS20001733.pdf
+* Revision: DS20001733L, 2020
+* Fit date: 2026-08-07
+* OpenCircuit Model Factory v0.1.0
+* Original work generated from public factual specifications.
+* This model is not a copy of, or adaptation from, any vendor SPICE model.
+* Archetype: docs/model-archetypes/archetype-opamp.md
+* Node order: INP INN VCC VEE OUT
+.subckt OC_MICROCHIP_MCP6004 INP INN VCC VEE OUT
+.param AOL=3.9810717055e+05 GBW=1.0334087469e+06 SR=6.2010964846e+05 IBIAS=1.0000000000e-12 IOS=1.0000000000e-12 VOS=0
+.param ROUT=1.0869565217e+00 ILIM=2.3000000000e-02 VDRP_H=2.4703790488e-02 VDRP_L=2.4703790487e-02 CC=30p FP2=1.0334087469e+08
+.param CMRR=6.3095734448e+03 PSRR=1.9952623150e+04 VSUP_NOM=5.5000000000e+00 IQ=1.0000000000e-04 EN=2.8000000000e-08
+IBP 0 INP DC {IBIAS+IOS/2}
+IBN 0 INN DC {IBIAS-IOS/2}
+CDIF INP INN 1p
+BERR e 0 V = v(INP,INN) + VOS + v(nz) + (0.5*(v(INP)+v(INN))-0.5*(v(VCC)+v(VEE)))/CMRR + (v(VCC,VEE)-VSUP_NOM)/PSRR
+RE e 0 1meg
+RNZ nz 0 {EN*EN/(4*1.380649e-23*300.15)}
+BGM 0 p I = {SR*CC}*tanh({6.283185307*GBW/SR}*v(e))
+CP p 0 {CC}
+RP p 0 {AOL/(6.283185307*GBW*CC)}
+RP2 p p2 {1/(6.283185307*FP2*1p)}
+CP2 p2 0 1p
+BCLMP q 0 V = min(max(v(p2), v(VEE)+min(VDRP_L,0.49*v(VCC,VEE))), v(VCC)-min(VDRP_H,0.49*v(VCC,VEE)))
+RQ q 0 1meg
+BOUT 0 OUT I = ILIM*tanh((v(q)-v(OUT))/(ROUT*ILIM))
+IQVCC VCC VEE DC {IQ}
+.ends OC_MICROCHIP_MCP6004
+
+.temp 25
+VCC vcc 0 5.5
+VEE vee 0 0
+VREF ref 0 2.75
+VIN sig 0 DC 2.75 AC 1
+X1 sig inn vcc vee out OC_MICROCHIP_MCP6004
+RF out inn 9k
+RG inn ref 1k
+RL out ref 10k
+.noise v(out) VIN dec 10 100 100k
+.end
