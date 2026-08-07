@@ -6,14 +6,14 @@
 - Description: 4-pin phototrans coupler input IRED diode model; phototransistor output omitted
 - Electrical family: other
 - Fidelity tier: F1, one-point input-IRED calibration
-- Independent reviewer: pending-review
+- Independent reviewer: sol independent reviewer (batch X1-misc)
 
 ## Provenance
 
 - Datasheet: https://global.sharp/products/device/lineup/data/pdf/datasheet/PC8171xNSZ1B_e.pdf
 - Revision: Sheet No. OP18004EN, DATE Jan.15.2018
 - Accessed: 2026-08-07
-- Referenced pages: p. 1, p. 2, p. 4, p. 5
+- Referenced pages: p. 1, p. 2, p. 4, p. 5, p. 6, p. 7, p. 8
 - SHA-256: `7cfdb59e0f75bb9c92581f95e55cdb02a377aa6e4a33a45371ae4d3c71935c1f`
 - Basis: original model generated from public factual specifications
 - Vendor SPICE models used: none
@@ -49,3 +49,7 @@
 - No self-heating: junction temperature is fixed at the test temperature.
 - Package parasitics are not modeled.
 - Flicker noise is not modeled: KF and AF are at defaults (no noise data published).
+
+## F2 upgrade assessment
+
+The official datasheet was re-examined through page 8, including the 25 degC forward-current, CTR, and collector-output curve families. A native ngspice three-seed diode/BJT composite fit was attempted against digitized Figures 7 and 8. Its worst CTR residual was 43.3% at IF = 10 mA, VCE = 5 V, and its worst output-curve residual was 60.2% at IF = 0.5 mA, VCE = 0.2 V. Both exceed the 33% curve threshold. Adding reverse-gain and reverse-knee freedom still left those misses, so the composite is not sufficiently identified by this archetype without adding unsupported behavioral terms. The existing input-IRED model therefore remains F1.
