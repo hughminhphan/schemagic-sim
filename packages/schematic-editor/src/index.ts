@@ -77,7 +77,7 @@ function symbol(component: CircuitComponent): string {
 
 export function partSymbolMarkup(type: ComponentType): string {
   const component = { id: "x", type, pos: [0, 0], rot: 0, mirror: false } as CircuitComponent;
-  return `<svg viewBox="-5 -7 10 14" aria-hidden="true">${symbol(component)}</svg>`;
+  return `<svg viewBox="-2.5 -3.5 5 7" aria-hidden="true">${symbol(component)}</svg>`;
 }
 
 function transform(component: CircuitComponent): string {
