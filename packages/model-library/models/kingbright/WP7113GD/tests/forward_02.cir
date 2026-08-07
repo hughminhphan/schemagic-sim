@@ -1,0 +1,15 @@
+* WP7113GD forward test at 0.001 A
+* OpenCircuit Model Factory v0.1.0
+* Original work generated from public factual specifications.
+* This model is not a copy of, or adaptation from, any vendor SPICE model.
+* WP7113GD (kingbright), datasheet-fitted at 25 degC
+* Archetype: archetype-diode.md, variant L
+* Node order: D<ref> anode cathode OC_KINGBRIGHT_WP7113GD
+.model OC_KINGBRIGHT_WP7113GD D(IS=1.0000000000e-28 N=1.2256637408e+00 RS=1.3949044734e+01 CJO=1.5000000000e-11 EG=0.0000000000e+00 XTI=0.0000000000e+00 TNOM=2.5000000000e+01)
+.temp 25
+Itest 0 anode DC 1.0000000000e-03
+Vanchor anchor 0 DC 0
+Ranchor anchor 0 1G
+Ddut anode 0 OC_KINGBRIGHT_WP7113GD
+.op
+.end

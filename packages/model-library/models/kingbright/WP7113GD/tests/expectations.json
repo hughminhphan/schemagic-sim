@@ -1,0 +1,242 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "forward_01.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "forward_voltage_at_0.0005_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "expected_value": 1.79,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.04
+          },
+          "datasheet_citation": "p. 3 forward current vs. forward voltage curve",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "forward_02.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "forward_voltage_at_0.001_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "expected_value": 1.835,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.04
+          },
+          "datasheet_citation": "p. 3 forward current vs. forward voltage curve",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "forward_03.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "forward_voltage_at_0.002_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "expected_value": 1.872,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.04
+          },
+          "datasheet_citation": "p. 3 forward current vs. forward voltage curve",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "forward_04.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "forward_voltage_at_0.004_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "expected_value": 1.913,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.04
+          },
+          "datasheet_citation": "p. 3 forward current vs. forward voltage curve",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "forward_05.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "forward_voltage_at_0.008_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "expected_value": 1.992,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.04
+          },
+          "datasheet_citation": "p. 3 forward current vs. forward voltage curve",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "forward_06.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "forward_voltage_at_0.01_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "expected_value": 2.0,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.04
+          },
+          "datasheet_citation": "p. 2 electrical / optical characteristics",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "forward_07.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "forward_voltage_at_0.016_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "expected_value": 2.128,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.04
+          },
+          "datasheet_citation": "p. 3 forward current vs. forward voltage curve",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "forward_08.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "forward_voltage_at_0.02_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "expected_value": 2.194,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.04
+          },
+          "datasheet_citation": "p. 3 forward current vs. forward voltage curve",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "boundary_forward.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "boundary_forward_voltage_maximum",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "maximum": 2.4,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 2 electrical / optical characteristics electrical characteristics, MAX column at supported-region boundary",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "reverse_leakage.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "reverse_leakage_maximum",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vreverse))"
+          },
+          "minimum": 0,
+          "maximum": 1e-05,
+          "unit": "A",
+          "inclusive": true,
+          "datasheet_citation": "p. 2 electrical / optical characteristics electrical characteristics, Reverse Current MAX column",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "junction_capacitance.cir",
+      "analysis_type": "ac_small_signal",
+      "scalar_checks": [
+        {
+          "name": "junction_capacitance",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "imag_cap:last(i(vac),1000000)"
+          },
+          "expected_value": 1.5e-11,
+          "unit": "F",
+          "tolerance": {
+            "absolute": 5e-13,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 2 electrical / optical characteristics, capacitance C = 15 pF",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    }
+  ]
+}

@@ -1,0 +1,175 @@
+{
+  "schema_version": "1.0.0",
+  "fitter": "scipy.optimize.least_squares",
+  "deterministic": true,
+  "temperature_c": 25.0,
+  "parameters": {
+    "IS": 1e-28,
+    "N": 1.225663740768316,
+    "RS": 13.949044734146817,
+    "CJO": 1.5e-11,
+    "EG": 0.0,
+    "XTI": 0.0,
+    "TNOM": 25.0
+  },
+  "parameter_metadata": {
+    "IS": {
+      "status": "fitted at ngspice minimum accepted saturation current"
+    },
+    "N": {
+      "status": "fitted"
+    },
+    "RS": {
+      "status": "fitted"
+    },
+    "CJO": {
+      "status": "derived from single tabulated capacitance point"
+    },
+    "EG": {
+      "status": "held temperature-neutral because no temperature sweep was fitted"
+    },
+    "XTI": {
+      "status": "held temperature-neutral because no temperature sweep was fitted"
+    },
+    "TNOM": {
+      "status": "fit reference temperature"
+    }
+  },
+  "residuals": [
+    {
+      "current_a": 0.0005,
+      "datasheet_voltage_v": 1.79,
+      "fitted_voltage_v": 1.7978837428784664,
+      "relative_error": 0.004404325630428146,
+      "citation": "p. 3 forward current vs. forward voltage curve"
+    },
+    {
+      "current_a": 0.001,
+      "datasheet_voltage_v": 1.835,
+      "fitted_voltage_v": 1.8266857906358895,
+      "relative_error": 0.00453090428561876,
+      "citation": "p. 3 forward current vs. forward voltage curve"
+    },
+    {
+      "current_a": 0.002,
+      "datasheet_voltage_v": 1.872,
+      "fitted_voltage_v": 1.8624623607603858,
+      "relative_error": 0.005094892756204198,
+      "citation": "p. 3 forward current vs. forward voltage curve"
+    },
+    {
+      "current_a": 0.004,
+      "datasheet_voltage_v": 1.913,
+      "fitted_voltage_v": 1.912187975619029,
+      "relative_error": 0.0004244769372561708,
+      "citation": "p. 3 forward current vs. forward voltage curve"
+    },
+    {
+      "current_a": 0.008,
+      "datasheet_voltage_v": 1.992,
+      "fitted_voltage_v": 1.989811679945966,
+      "relative_error": 0.0010985542439929824,
+      "citation": "p. 3 forward current vs. forward voltage curve"
+    },
+    {
+      "current_a": 0.01,
+      "datasheet_voltage_v": 2.0,
+      "fitted_voltage_v": 2.0247366630792802,
+      "relative_error": 0.01236833153964012,
+      "citation": "p. 2 electrical / optical characteristics"
+    },
+    {
+      "current_a": 0.016,
+      "datasheet_voltage_v": 2.128,
+      "fitted_voltage_v": 2.1232315632094902,
+      "relative_error": 0.002240806762457644,
+      "citation": "p. 3 forward current vs. forward voltage curve"
+    },
+    {
+      "current_a": 0.02,
+      "datasheet_voltage_v": 2.194,
+      "fitted_voltage_v": 2.1860546358110984,
+      "relative_error": 0.0036214057378767418,
+      "citation": "p. 3 forward current vs. forward voltage curve"
+    }
+  ],
+  "rms_relative_error": 0.005458749075317338,
+  "worst_relative_error": {
+    "value": 0.01236833153964012,
+    "quantity": "forward voltage at 0.01 A"
+  },
+  "held_defaults": [
+    {
+      "parameter": "ISR",
+      "value": 1e-14,
+      "unit": "A",
+      "reason": "held at physical default because no independent reverse leakage fit was permitted"
+    },
+    {
+      "parameter": "NR",
+      "value": 1.0,
+      "unit": "1",
+      "reason": "held at physical default because no independent reverse leakage fit was permitted"
+    },
+    {
+      "parameter": "IKF",
+      "value": 0.0,
+      "unit": "A",
+      "reason": "held at physical default because no high-injection roll-off was available"
+    },
+    {
+      "parameter": "VJ",
+      "value": 0.7,
+      "unit": "V",
+      "reason": "held at physical default because no C-V curve was available"
+    },
+    {
+      "parameter": "M",
+      "value": 0.5,
+      "unit": "1",
+      "reason": "held at physical default because no C-V curve was available"
+    },
+    {
+      "parameter": "TT",
+      "value": 0.0,
+      "unit": "s",
+      "reason": "held at physical default because no reverse-recovery specification was available"
+    },
+    {
+      "parameter": "BV",
+      "value": 0.0,
+      "unit": "V",
+      "reason": "held at physical default because reverse breakdown is not modelled"
+    },
+    {
+      "parameter": "IBV",
+      "value": 0.0,
+      "unit": "A",
+      "reason": "held at physical default because reverse breakdown is not modelled"
+    },
+    {
+      "parameter": "NBV",
+      "value": 1.0,
+      "unit": "1",
+      "reason": "held at physical default because reverse breakdown is not modelled"
+    },
+    {
+      "parameter": "EG",
+      "value": 0.0,
+      "unit": "eV",
+      "reason": "held temperature-neutral because no temperature sweep was fitted"
+    },
+    {
+      "parameter": "XTI",
+      "value": 0.0,
+      "unit": "1",
+      "reason": "held temperature-neutral because no temperature sweep was fitted"
+    },
+    {
+      "parameter": "TNOM",
+      "value": 25.0,
+      "unit": "degC",
+      "reason": "fit reference temperature used by all .temp 25 benches"
+    }
+  ]
+}

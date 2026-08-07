@@ -1,0 +1,13 @@
+* WP7113GD zero-bias capacitance at 1 MHz
+* OpenCircuit Model Factory v0.1.0
+* Original work generated from public factual specifications.
+* This model is not a copy of, or adaptation from, any vendor SPICE model.
+* WP7113GD (kingbright), datasheet-fitted at 25 degC
+* Archetype: archetype-diode.md, variant L
+* Node order: D<ref> anode cathode OC_KINGBRIGHT_WP7113GD
+.model OC_KINGBRIGHT_WP7113GD D(IS=1.0000000000e-28 N=1.2256637408e+00 RS=1.3949044734e+01 CJO=1.5000000000e-11 EG=0.0000000000e+00 XTI=0.0000000000e+00 TNOM=2.5000000000e+01)
+.temp 25
+Vac anode 0 DC 0 AC 1
+Ddut anode 0 OC_KINGBRIGHT_WP7113GD
+.ac lin 1 1Meg 1Meg
+.end
