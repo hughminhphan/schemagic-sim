@@ -1,0 +1,227 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "open_loop_gain.cir",
+      "analysis_type": "ac_small_signal",
+      "scalar_checks": [
+        {
+          "name": "open_loop_gain_db",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "db:first(v(out))"
+          },
+          "expected_value": 100.0,
+          "unit": "dB",
+          "tolerance": {
+            "absolute": 0.7,
+            "relative": 0
+          },
+          "datasheet_citation": "p. 4, Section 5.5 Electrical Characteristics, AVD row, RL >= 2 kohm, TYP column",
+          "placeholder": false
+        },
+        {
+          "name": "unity_gain_bandwidth",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "frequency_at_magnitude(v(out),1)"
+          },
+          "expected_value": 12000000.0,
+          "unit": "Hz",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 4, Section 5.5 Electrical Characteristics, B1 row, TYP column",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "offset_bias_supply.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "input_offset",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(off))"
+          },
+          "expected_value": 0.0005,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.0001,
+            "relative": 0.08
+          },
+          "datasheet_citation": "p. 4, Section 5.5 Electrical Characteristics, VIO row, TYP column",
+          "placeholder": false
+        },
+        {
+          "name": "input_bias_positive",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vp))"
+          },
+          "expected_value": 2.05e-07,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 1e-13,
+            "relative": 0.08
+          },
+          "datasheet_citation": "p. 4, Section 5.5 Electrical Characteristics, IIB row, TYP column",
+          "placeholder": false
+        },
+        {
+          "name": "input_bias_negative",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vn))"
+          },
+          "expected_value": 1.9499999999999999e-07,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 1e-13,
+            "relative": 0.08
+          },
+          "datasheet_citation": "p. 4, Section 5.5 Electrical Characteristics, IIB row, TYP column",
+          "placeholder": false
+        },
+        {
+          "name": "quiescent_current_per_amplifier",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcc),0.5)"
+          },
+          "expected_value": 0.003,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 1e-08,
+            "relative": 0.1
+          },
+          "datasheet_citation": "p. 4, Section 5.5 Electrical Characteristics, ICC row, TYP column",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "slew.cir",
+      "analysis_type": "transient",
+      "scalar_checks": [
+        {
+          "name": "rising_slew",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "slew(v(out),-3.0,3.0,rising)"
+          },
+          "expected_value": 5000000.0,
+          "unit": "V/s",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.15
+          },
+          "datasheet_citation": "p. 4, Section 5.6 Operating Characteristics, SR row, TYP column",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "minimum_supply_follower.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "minimum_supply_follow_negative",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(on))"
+          },
+          "expected_value": -0.2495,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.01,
+            "relative": 0.03
+          },
+          "datasheet_citation": "p. 4, Section 5.5 Electrical Characteristics, VIO row, TYP column; p. 3, Section 5.3 Recommended Operating Conditions",
+          "placeholder": false
+        },
+        {
+          "name": "minimum_supply_follow_zero",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(oz))"
+          },
+          "expected_value": 0.0005,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.01,
+            "relative": 0.03
+          },
+          "datasheet_citation": "p. 4, Section 5.5 Electrical Characteristics, VIO row, TYP column; p. 3, Section 5.3 Recommended Operating Conditions",
+          "placeholder": false
+        },
+        {
+          "name": "minimum_supply_follow_positive",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(op))"
+          },
+          "expected_value": 0.2505,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.01,
+            "relative": 0.03
+          },
+          "datasheet_citation": "p. 4, Section 5.5 Electrical Characteristics, VIO row, TYP column; p. 3, Section 5.3 Recommended Operating Conditions",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "short_circuit.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "short_circuit_current",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vshort))"
+          },
+          "expected_value": 0.038,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.15
+          },
+          "datasheet_citation": "p. 4, Section 5.5 Electrical Characteristics, IOS row, TYP column",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "cmrr.cir",
+      "analysis_type": "ac_small_signal",
+      "scalar_checks": [
+        {
+          "name": "common_mode_gain",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "magnitude:last(v(out))"
+          },
+          "expected_value": 1.0,
+          "unit": "V/V",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.3
+          },
+          "datasheet_citation": "p. 4, Section 5.5 Electrical Characteristics, CMRR row, TYP column",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    }
+  ]
+}

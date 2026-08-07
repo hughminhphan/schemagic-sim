@@ -1,0 +1,183 @@
+{
+  "schema_version": "1.0.0",
+  "fitter": "native ngspice-46 rail-drop least squares where typical swing exists plus exactly three fixed-point GBW and slew calibration iterations",
+  "deterministic": true,
+  "parameters": {
+    "AOL": 100000,
+    "GBW": 13240033.707914447,
+    "SR": 5295900.651769262,
+    "IBIAS": 2e-07,
+    "IOS": 1e-08,
+    "VOS": 0.0005,
+    "ROUT": 50,
+    "ILIM": 0.038,
+    "VDRP_H": 2,
+    "VDRP_L": 2,
+    "CMRR": 100000.0,
+    "PSRR": 100000.0,
+    "VSUP_NOM": 30,
+    "IQ": 0.003,
+    "EN": 5e-09,
+    "FP2": 39720101.12374334
+  },
+  "parameter_metadata": {
+    "AOL": {
+      "status": "direct typical transcription"
+    },
+    "IBIAS": {
+      "status": "direct typical transcription"
+    },
+    "IOS": {
+      "status": "direct typical transcription"
+    },
+    "VOS": {
+      "status": "direct typical transcription"
+    },
+    "ILIM": {
+      "status": "direct typical transcription"
+    },
+    "ROUT": {
+      "status": "direct typical transcription"
+    },
+    "CMRR": {
+      "status": "direct typical transcription"
+    },
+    "PSRR": {
+      "status": "direct typical transcription"
+    },
+    "IQ": {
+      "status": "direct typical transcription"
+    },
+    "EN": {
+      "status": "direct typical transcription"
+    },
+    "GBW": {
+      "status": "native calibrated"
+    },
+    "SR": {
+      "status": "native calibrated"
+    },
+    "VDRP_H": {
+      "status": "held at default"
+    },
+    "VDRP_L": {
+      "status": "held at default"
+    },
+    "FP2": {
+      "status": "held at default three-times-GBW rule"
+    },
+    "VSUP_NOM": {
+      "status": "derived from datasheet test supply"
+    }
+  },
+  "held_defaults": [
+    {
+      "parameter": "CC",
+      "value": 3e-11,
+      "unit": "F",
+      "reason": "held at default internal archetype scale"
+    },
+    {
+      "parameter": "CDIF",
+      "value": 1e-12,
+      "unit": "F",
+      "reason": "held at default input-capacitance placeholder"
+    },
+    {
+      "parameter": "RE",
+      "value": 1000000.0,
+      "unit": "ohm",
+      "reason": "held at default internal DC path"
+    },
+    {
+      "parameter": "CP2",
+      "value": 1e-12,
+      "unit": "F",
+      "reason": "held at default second-pole scale"
+    },
+    {
+      "parameter": "RQ",
+      "value": 1000000.0,
+      "unit": "ohm",
+      "reason": "held at default clamp-node DC path"
+    },
+    {
+      "parameter": "noise_reference_temperature",
+      "value": 300.15,
+      "unit": "K",
+      "reason": "held at default archetype noise normalization"
+    },
+    {
+      "parameter": "VDRP_H",
+      "value": 2,
+      "unit": "V",
+      "reason": "held at default because revision K publishes no typical output swing"
+    },
+    {
+      "parameter": "VDRP_L",
+      "value": 2,
+      "unit": "V",
+      "reason": "held at default because revision K publishes no typical output swing"
+    },
+    {
+      "parameter": "ROUT",
+      "value": 50,
+      "unit": "ohm",
+      "reason": "held at default because no usable typical output impedance is published"
+    },
+    {
+      "parameter": "FP2_rule",
+      "value": 3,
+      "unit": "x GBW",
+      "reason": "held at default because no phase margin is published"
+    }
+  ],
+  "rail_drop_fit": null,
+  "calibration_iterations": [
+    {
+      "iteration": 1,
+      "gbw_measured": 10878649.32840992,
+      "sr_measured": 4720631.2160546
+    },
+    {
+      "iteration": 2,
+      "gbw_measured": 11997130.320651667,
+      "sr_measured": 5000001.213064961
+    },
+    {
+      "iteration": 3,
+      "gbw_measured": 12000063.367217535,
+      "sr_measured": 5000000.000162157
+    }
+  ],
+  "residuals": [
+    {
+      "quantity": "open-loop gain",
+      "datasheet_value": 100000,
+      "fitted_value": 97561.463120128,
+      "unit": "V/V",
+      "relative_error": 0.02438536879872001,
+      "citation": "p. 4, Section 5.5 Electrical Characteristics, AVD row, RL >= 2 kohm, TYP column"
+    },
+    {
+      "quantity": "unity-gain bandwidth",
+      "datasheet_value": 12000000.0,
+      "fitted_value": 11999998.608333552,
+      "unit": "Hz",
+      "relative_error": 1.159722039786478e-07,
+      "citation": "p. 4, Section 5.5 Electrical Characteristics, B1 row, TYP column"
+    },
+    {
+      "quantity": "slew rate",
+      "datasheet_value": 5000000.0,
+      "fitted_value": 5000000.000061763,
+      "unit": "V/s",
+      "relative_error": 1.2352690100669861e-11,
+      "citation": "p. 4, Section 5.6 Operating Characteristics, SR row, TYP column"
+    }
+  ],
+  "worst_relative_error": {
+    "value": 0.02438536879872001,
+    "quantity": "open-loop gain"
+  }
+}

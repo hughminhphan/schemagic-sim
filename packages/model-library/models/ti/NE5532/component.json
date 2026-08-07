@@ -1,0 +1,179 @@
+{
+  "schema_version": "1.0.0",
+  "canonical_mpn": "NE5532",
+  "manufacturer": "Texas Instruments",
+  "description": "Dual low-noise high-performance operational amplifier",
+  "electrical_family": "opamp",
+  "symbol_pins": [
+    {
+      "name": "IN+",
+      "number": "3",
+      "role": "noninverting_input"
+    },
+    {
+      "name": "IN-",
+      "number": "2",
+      "role": "inverting_input"
+    },
+    {
+      "name": "VCC",
+      "number": "8",
+      "role": "positive_supply"
+    },
+    {
+      "name": "VEE",
+      "number": "4",
+      "role": "negative_supply"
+    },
+    {
+      "name": "OUT",
+      "number": "1",
+      "role": "output"
+    }
+  ],
+  "spice_pin_mapping": [
+    {
+      "symbol_pin_number": "3",
+      "subckt_node": "inp",
+      "order": 1
+    },
+    {
+      "symbol_pin_number": "2",
+      "subckt_node": "inn",
+      "order": 2
+    },
+    {
+      "symbol_pin_number": "8",
+      "subckt_node": "vcc",
+      "order": 3
+    },
+    {
+      "symbol_pin_number": "4",
+      "subckt_node": "vee",
+      "order": 4
+    },
+    {
+      "symbol_pin_number": "1",
+      "subckt_node": "out",
+      "order": 5
+    }
+  ],
+  "package_variants": [
+    {
+      "name": "PDIP-8",
+      "standard": "TI P package",
+      "pin_count": 5,
+      "pin_map": [
+        {
+          "package_pin": "3",
+          "symbol_pin_number": "3"
+        },
+        {
+          "package_pin": "2",
+          "symbol_pin_number": "2"
+        },
+        {
+          "package_pin": "8",
+          "symbol_pin_number": "8"
+        },
+        {
+          "package_pin": "4",
+          "symbol_pin_number": "4"
+        },
+        {
+          "package_pin": "1",
+          "symbol_pin_number": "1"
+        }
+      ]
+    }
+  ],
+  "ordering_code_aliases": [
+    "NE5532A",
+    "SA5532",
+    "SA5532A"
+  ],
+  "datasheet": {
+    "url": "https://www.ti.com/lit/ds/symlink/ne5532.pdf",
+    "revision": "SLOS075K, November 1979, revised December 2025"
+  },
+  "model_type": "subckt",
+  "fidelity_tier": "F1",
+  "domain_coverage": {
+    "dc": "fitted",
+    "ac": "fitted",
+    "transient": "fitted",
+    "noise": "approx",
+    "thermal": "none",
+    "digital": "none"
+  },
+  "supported_analyses": [
+    "operating_point",
+    "dc_sweep",
+    "ac_small_signal",
+    "transient",
+    "noise"
+  ],
+  "supported_operating_region": {
+    "summary": "Fitted at 25 degC and 30 V total supply. Supported total supply range is 10 V to 30 V.",
+    "numeric_bounds": [
+      {
+        "quantity": "supply_voltage_total",
+        "minimum": 10,
+        "maximum": 30,
+        "unit": "V",
+        "conditions": "Recommended operating envelope",
+        "placeholder": false
+      },
+      {
+        "quantity": "input_offset_voltage",
+        "minimum": -0.004,
+        "maximum": 0.004,
+        "unit": "V",
+        "conditions": "Published production or temperature-row bound",
+        "placeholder": false
+      }
+    ]
+  },
+  "known_omissions": [
+    "Output-stage distortion is not modelled. THD, crossover distortion and slew-induced distortion do not appear; a sine through this model comes out a sine.",
+    "Input common-mode range is not enforced. The model does not phase-invert, latch, or lose gain when an input is driven outside VICR. VICR is recorded in supported_operating_region as metadata only.",
+    "PSRR is a single frequency-independent constant taken from the datasheet's DC row. Real supply rejection degrades with frequency; this model's does not.",
+    "CMRR is a single frequency-independent constant. Real common-mode rejection degrades with frequency; this model's does not.",
+    "The frequency response is a two-pole approximation (dominant pole plus one fitted or default pole). Higher-order poles and zeros are not modelled, so gain and phase above the unity-gain frequency are not trustworthy.",
+    "Only broadband input voltage noise is modelled. Flicker (1/f) noise and input current noise are not.",
+    "No self-heating and no temperature coefficients: offset drift, bias-current variation, and thermal feedback are not modelled.",
+    "Quiescent current is a constant. It does not vary with supply, temperature, or output loading.",
+    "Input offset voltage is set to the datasheet typical. A real part may sit anywhere inside the published maximum, and the sign is arbitrary.",
+    "Input protection diodes and ESD structures are not modelled. Inputs driven beyond the supplies do not clamp.",
+    "Settling time and overload recovery are consequences of the two-pole model, not fitted quantities.",
+    "The second pole is placed at three times the gain-bandwidth product: the datasheet publishes no numeric phase margin. Stability with capacitive loads is indicative only.",
+    "VDRP_H is held at default because revision K publishes no typical output swing; value 2 V.",
+    "VDRP_L is held at default because revision K publishes no typical output swing; value 2 V.",
+    "ROUT is held at default because no usable typical output impedance is published; value 50 ohm.",
+    "FP2_rule is held at default because no phase margin is published; value 3 x GBW.",
+    "CC = 30 pF, CDIF = 1 pF, RE = 1 Mohm, CP2 = 1 pF, RQ = 1 Mohm, and noise reference temperature = 300.15 K are each held at default archetype values."
+  ],
+  "licence": {
+    "spdx_id": "MIT",
+    "provenance_basis": "original_from_facts"
+  },
+  "generator": {
+    "tool_or_agent": "opencircuit-model-factory-v0.1.0 O2-opamps2 author lane",
+    "date": "2026-08-07"
+  },
+  "reviewer": {
+    "tool_or_agent": "pending-review",
+    "date": "2026-08-07"
+  },
+  "test_results": {
+    "status": "complete",
+    "pass_count": 12,
+    "fail_count": 0,
+    "total_count": 12,
+    "worst_observed_relative_fitting_error": {
+      "value": 0.02438536879872001,
+      "quantity": "open-loop gain"
+    }
+  },
+  "validation_date": "2026-08-07"
+}
