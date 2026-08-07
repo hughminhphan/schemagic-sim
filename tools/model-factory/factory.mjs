@@ -643,7 +643,7 @@ function canonical(name, type = "") {
   return compact;
 }
 
-function expressionValue(nativeResult, expression) {
+export function expressionValue(nativeResult, expression) {
   const findVector = (requested) => {
     const vector = nativeResult.vectors.find((candidate) => canonical(candidate.name, candidate.type) === requested.toLowerCase());
     if (!vector) throw new Error(`Expectation vector not found: ${requested}`);
@@ -656,8 +656,66 @@ function expressionValue(nativeResult, expression) {
     for (let index = 1; index < xValues.length; index += 1) if (Math.abs(real(xValues[index]) - target) < Math.abs(real(xValues[best]) - target)) best = index;
     return yValues[best];
   };
+  const linearAt = (xValues, yValues, target) => {
+    const xs = xValues.map(real);
+    const ys = yValues.map(real);
+    if (target <= xs[0]) return ys[0];
+    if (target >= xs.at(-1)) return ys.at(-1);
+    for (let index = 1; index < xs.length; index += 1) if (xs[index] >= target) {
+      const fraction = (target - xs[index - 1]) / (xs[index] - xs[index - 1]);
+      return ys[index - 1] + fraction * (ys[index] - ys[index - 1]);
+    }
+    throw new Error(`Interpolation target not found: ${target}`);
+  };
+  const edgeTimes = (vectorName, threshold, direction) => {
+    const samples = findVector(vectorName).values.map(real);
+    const times = findVector("time").values.map(real);
+    const crossings = [];
+    for (let index = 1; index < samples.length; index += 1) {
+      const crossed = direction === "rising"
+        ? samples[index - 1] < threshold && samples[index] >= threshold
+        : samples[index - 1] > threshold && samples[index] <= threshold;
+      if (!crossed) continue;
+      const fraction = (threshold - samples[index - 1]) / (samples[index] - samples[index - 1]);
+      crossings.push(times[index - 1] + fraction * (times[index] - times[index - 1]));
+    }
+    return crossings;
+  };
 
-  let match = /^recovery_time\((i\([^)]+\)),([^,]+),([^)]+)\)$/.exec(expression);
+  let match = /^frequency_from_edges\(([^,]+),([^,]+),(rising|falling),(\d+),(\d+)\)$/.exec(expression);
+  if (match) {
+    const edges = edgeTimes(match[1], Number(match[2]), match[3]);
+    const first = Number(match[4]);
+    const last = Number(match[5]);
+    if (![edges[first - 1], edges[last - 1]].every(Number.isFinite) || last <= first) throw new Error(`Requested frequency edges not found: ${expression}`);
+    return (last - first) / (edges[last - 1] - edges[first - 1]);
+  }
+  match = /^duty_cycle_from_edges\(([^,]+),([^,]+),(rising|falling),(\d+),(rising|falling),(\d+),(rising|falling),(\d+)\)$/.exec(expression);
+  if (match) {
+    const first = edgeTimes(match[1], Number(match[2]), match[3])[Number(match[4]) - 1];
+    const middle = edgeTimes(match[1], Number(match[2]), match[5])[Number(match[6]) - 1];
+    const last = edgeTimes(match[1], Number(match[2]), match[7])[Number(match[8]) - 1];
+    if (![first, middle, last].every(Number.isFinite) || !(first < middle && middle < last)) throw new Error(`Duty-cycle edge ordering is invalid: ${expression}`);
+    return (middle - first) / (last - first);
+  }
+  match = /^pulse_width\(([^,]+),([^,]+),(rising|falling),(\d+),(rising|falling),(\d+)\)$/.exec(expression);
+  if (match) {
+    const first = edgeTimes(match[1], Number(match[2]), match[3])[Number(match[4]) - 1];
+    const last = edgeTimes(match[1], Number(match[2]), match[5])[Number(match[6]) - 1];
+    if (![first, last].every(Number.isFinite) || last <= first) throw new Error(`Pulse-width edges not found: ${expression}`);
+    return last - first;
+  }
+  match = /^at\(([^,]+),([^\)]+)\)$/.exec(expression);
+  if (match) return linearAt(findVector("time").values, findVector(match[1]).values, Number(match[2]));
+  match = /^max_after\(([^,]+),([^\)]+)\)$/.exec(expression);
+  if (match) {
+    const values = findVector(match[1]).values.map(real);
+    const times = findVector("time").values.map(real);
+    const start = Number(match[2]);
+    return Math.max(...values.filter((_, index) => times[index] >= start));
+  }
+
+  match = /^recovery_time\((i\([^)]+\)),([^,]+),([^)]+)\)$/.exec(expression);
   if (match) {
     const samples = findVector(match[1]).values;
     const times = findVector("time").values;
@@ -748,7 +806,12 @@ function evaluateCheck(value, check) {
   }
   const lower = check.minimum ?? -Infinity;
   const upper = check.maximum ?? Infinity;
-  return { pass: value >= lower && value <= upper, value, minimum: lower, maximum: upper };
+  return {
+    pass: value >= lower && value <= upper,
+    value,
+    ...(Object.hasOwn(check, "minimum") ? { minimum: check.minimum } : {}),
+    ...(Object.hasOwn(check, "maximum") ? { maximum: check.maximum } : {})
+  };
 }
 
 function stageValidate(ctx) {

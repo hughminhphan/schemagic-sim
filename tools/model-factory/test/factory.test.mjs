@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { assertEmittedParametersMatchFitted, assertFiniteNumbers } from "../factory.mjs";
+import { assertEmittedParametersMatchFitted, assertFiniteNumbers, expressionValue } from "../factory.mjs";
 import { PARTS, getPart } from "../lib/parts.mjs";
 
 function assertQuantityReferences(value) {
@@ -65,4 +65,18 @@ test("JSON outputs reject non-finite validation numbers", () => {
     () => assertFiniteNumbers({ benches: [{ checks: [{ value: -Infinity }] }] }),
     /Non-finite number at root\.benches\[0\]\.checks\[0\]\.value: -Infinity/
   );
+});
+
+test("timer edge extraction computes frequency, duty cycle, and pulse width", () => {
+  const time = Array.from({ length: 17 }, (_, index) => index);
+  const output = time.map((value) => Math.floor(value / 2) % 2 === 0 ? 0 : 5);
+  const nativeResult = { vectors: [
+    { name: "time", type: "time", values: time },
+    { name: "v(out)", type: "voltage", values: output }
+  ] };
+  assert.equal(expressionValue(nativeResult, "frequency_from_edges(v(out),2.5,rising,1,4)"), 0.25);
+  assert.equal(expressionValue(nativeResult, "duty_cycle_from_edges(v(out),2.5,rising,1,falling,1,rising,2)"), 0.5);
+  assert.equal(expressionValue(nativeResult, "pulse_width(v(out),2.5,rising,1,falling,1)"), 2);
+  assert.equal(expressionValue(nativeResult, "at(v(out),0)"), 0);
+  assert.equal(expressionValue(nativeResult, "max_after(v(out),4)"), 5);
 });
