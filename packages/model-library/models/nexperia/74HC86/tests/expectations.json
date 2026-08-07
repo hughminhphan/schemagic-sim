@@ -1,0 +1,327 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "truth_table.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "truth_0_low",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "last(v(y0))"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "Nexperia 74HC86 Rev. 7, 2 April 2024, p. 3, function table, Quad 2-input EXCLUSIVE-OR gate; Nexperia 74HC86 Rev. 7, 2 April 2024, p. 4, Table 6 static characteristics, VOH/VOL guarantees at VCC = 4.5 V",
+          "placeholder": false,
+          "maximum": 0.1
+        },
+        {
+          "name": "truth_1_high",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "last(v(y1))"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "Nexperia 74HC86 Rev. 7, 2 April 2024, p. 3, function table, Quad 2-input EXCLUSIVE-OR gate; Nexperia 74HC86 Rev. 7, 2 April 2024, p. 4, Table 6 static characteristics, VOH/VOL guarantees at VCC = 4.5 V",
+          "placeholder": false,
+          "minimum": 4.4
+        },
+        {
+          "name": "truth_2_high",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "last(v(y2))"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "Nexperia 74HC86 Rev. 7, 2 April 2024, p. 3, function table, Quad 2-input EXCLUSIVE-OR gate; Nexperia 74HC86 Rev. 7, 2 April 2024, p. 4, Table 6 static characteristics, VOH/VOL guarantees at VCC = 4.5 V",
+          "placeholder": false,
+          "minimum": 4.4
+        },
+        {
+          "name": "truth_3_low",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "last(v(y3))"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "Nexperia 74HC86 Rev. 7, 2 April 2024, p. 3, function table, Quad 2-input EXCLUSIVE-OR gate; Nexperia 74HC86 Rev. 7, 2 April 2024, p. 4, Table 6 static characteristics, VOH/VOL guarantees at VCC = 4.5 V",
+          "placeholder": false,
+          "maximum": 0.1
+        }
+      ]
+    },
+    {
+      "test_netlist": "vtc.cir",
+      "analysis_type": "dc_sweep",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "voh_at_logic_input_limit",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "at(v(y),v(a),3.15)"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "Nexperia 74HC86 Rev. 7, 2 April 2024, p. 4, Table 6 static characteristics, VOH/VOL guarantees at VCC = 4.5 V",
+          "placeholder": false,
+          "minimum": 4.4
+        },
+        {
+          "name": "vol_at_logic_input_limit",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "at(v(y),v(a),1.35)"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "Nexperia 74HC86 Rev. 7, 2 April 2024, p. 4, Table 6 static characteristics, VOH/VOL guarantees at VCC = 4.5 V",
+          "placeholder": false,
+          "maximum": 0.1
+        }
+      ]
+    },
+    {
+      "test_netlist": "output_drive.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "voh_loaded_typ",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "last(v(yh))"
+          },
+          "expected_value": 4.32,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.05,
+            "relative": 0.03
+          },
+          "datasheet_citation": "Nexperia 74HC86 Rev. 7, 2 April 2024, p. 4, Table 6 static characteristics, 25 degC TYP loaded VOH = 4.32 V and VOL = 0.15 V at 4 mA",
+          "placeholder": false
+        },
+        {
+          "name": "vol_loaded_typ",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "last(v(yl))"
+          },
+          "expected_value": 0.15,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.15
+          },
+          "datasheet_citation": "Nexperia 74HC86 Rev. 7, 2 April 2024, p. 4, Table 6 static characteristics, 25 degC TYP loaded VOH = 4.32 V and VOL = 0.15 V at 4 mA",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": [
+        {
+          "name": "voh_loaded_guarantee",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "last(v(yh))"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "Nexperia 74HC86 Rev. 7, 2 April 2024, p. 4, Table 6 static characteristics, VOH/VOL guarantees at VCC = 4.5 V",
+          "placeholder": false,
+          "minimum": 3.98
+        },
+        {
+          "name": "vol_loaded_guarantee",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "last(v(yl))"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "Nexperia 74HC86 Rev. 7, 2 April 2024, p. 4, Table 6 static characteristics, VOH/VOL guarantees at VCC = 4.5 V",
+          "placeholder": false,
+          "maximum": 0.26
+        }
+      ]
+    },
+    {
+      "test_netlist": "propagation_delay_15p.cir",
+      "analysis_type": "transient",
+      "scalar_checks": [
+        {
+          "name": "tphl_15p",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "measure:tphl"
+          },
+          "expected_value": 1.1e-08,
+          "unit": "s",
+          "tolerance": {
+            "absolute": 1e-09,
+            "relative": 0.15
+          },
+          "datasheet_citation": "Nexperia 74HC86 Rev. 7, 2 April 2024, p. 5, Table 7 dynamic characteristics, 25 degC TYP tpd = 11 ns, VCC = 5 V, CL = 15 pF; p. 7 tr = tf = 6 ns",
+          "placeholder": false
+        },
+        {
+          "name": "tplh_15p",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "measure:tplh"
+          },
+          "expected_value": 1.1e-08,
+          "unit": "s",
+          "tolerance": {
+            "absolute": 1e-09,
+            "relative": 0.15
+          },
+          "datasheet_citation": "Nexperia 74HC86 Rev. 7, 2 April 2024, p. 5, Table 7 dynamic characteristics, 25 degC TYP tpd = 11 ns, VCC = 5 V, CL = 15 pF; p. 7 tr = tf = 6 ns",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": [
+        {
+          "name": "no_overshoot_15p",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "measure:vmax"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "Nexperia 74HC86 Rev. 7, 2 April 2024, p. 4, recommended operating conditions, output voltage range is GND to VCC",
+          "placeholder": false,
+          "maximum": 5.0
+        },
+        {
+          "name": "no_undershoot_15p",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "measure:vmin"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "Nexperia 74HC86 Rev. 7, 2 April 2024, p. 4, recommended operating conditions, output voltage range is GND to VCC",
+          "placeholder": false,
+          "minimum": 0
+        }
+      ]
+    },
+    {
+      "test_netlist": "propagation_delay_50p.cir",
+      "analysis_type": "transient",
+      "scalar_checks": [
+        {
+          "name": "tphl_50p",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "measure:tphl"
+          },
+          "expected_value": 1.4e-08,
+          "unit": "s",
+          "tolerance": {
+            "absolute": 1e-09,
+            "relative": 0.15
+          },
+          "datasheet_citation": "Nexperia 74HC86 Rev. 7, 2 April 2024, p. 5, Table 7 dynamic characteristics, 25 degC TYP tpd = 14 ns, VCC = 4.5 V, CL = 50 pF; p. 7 tr = tf = 6 ns",
+          "placeholder": false
+        },
+        {
+          "name": "tplh_50p",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "measure:tplh"
+          },
+          "expected_value": 1.4e-08,
+          "unit": "s",
+          "tolerance": {
+            "absolute": 1e-09,
+            "relative": 0.15
+          },
+          "datasheet_citation": "Nexperia 74HC86 Rev. 7, 2 April 2024, p. 5, Table 7 dynamic characteristics, 25 degC TYP tpd = 14 ns, VCC = 4.5 V, CL = 50 pF; p. 7 tr = tf = 6 ns",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": [
+        {
+          "name": "no_overshoot_50p",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "measure:vmax"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "Nexperia 74HC86 Rev. 7, 2 April 2024, p. 4, recommended operating conditions, output voltage range is GND to VCC",
+          "placeholder": false,
+          "maximum": 4.5
+        },
+        {
+          "name": "no_undershoot_50p",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "measure:vmin"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "Nexperia 74HC86 Rev. 7, 2 April 2024, p. 4, recommended operating conditions, output voltage range is GND to VCC",
+          "placeholder": false,
+          "minimum": 0
+        }
+      ]
+    },
+    {
+      "test_netlist": "minimum_supply_boundary.cir",
+      "analysis_type": "transient",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "minimum_supply_high",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "measure:vmax"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "Nexperia 74HC86 Rev. 7, 2 April 2024, p. 4, recommended operating conditions, VCC MIN = 2.0 V; Nexperia 74HC86 Rev. 7, 2 April 2024, p. 3, function table, Quad 2-input EXCLUSIVE-OR gate; Nexperia 74HC86 Rev. 7, 2 April 2024, p. 4, Table 6 static characteristics, VOH MIN = 1.9 V and VOL MAX = 0.1 V at VCC = 2.0 V, IO = 20 uA",
+          "placeholder": false,
+          "minimum": 1.9
+        },
+        {
+          "name": "minimum_supply_low",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "measure:vmin"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "Nexperia 74HC86 Rev. 7, 2 April 2024, p. 4, recommended operating conditions, VCC MIN = 2.0 V; Nexperia 74HC86 Rev. 7, 2 April 2024, p. 3, function table, Quad 2-input EXCLUSIVE-OR gate; Nexperia 74HC86 Rev. 7, 2 April 2024, p. 4, Table 6 static characteristics, VOH MIN = 1.9 V and VOL MAX = 0.1 V at VCC = 2.0 V, IO = 20 uA",
+          "placeholder": false,
+          "maximum": 0.1
+        }
+      ]
+    },
+    {
+      "test_netlist": "quiescent_current.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "quiescent_current_upper_bound",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "abs:last(i(vcc))"
+          },
+          "unit": "A",
+          "inclusive": true,
+          "datasheet_citation": "Nexperia 74HC86 Rev. 7, 2 April 2024, p. 4, Table 6 static characteristics, ICC MAX = 40 uA at VCC = 6.0 V, inputs at rails, IO = 0 A, -40 degC to +125 degC",
+          "placeholder": false,
+          "maximum": 4e-05
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+74HC86 propagation delay CL 15p
+* OpenCircuit Model Factory v0.1.0
+* Original work generated from public factual specifications.
+* This model is not a copy of, or adaptation from, any vendor SPICE model.
+* Source: https://assets.nexperia.com/documents/data-sheet/74HC_HCT86.pdf
+* Revision: Rev. 7, 2 April 2024
+* Archetype: archetype-logic74hc.md
+* Fit run: H1-74hc-74HC86-2026-08-07
+* Node order: A B Y VCC GND
+.subckt OC_NEXPERIA_74HC86_GATE A B Y VCC GND
++ PARAMS: KVTC=9.49454211985 RINT=1k CINT=1.4941882749e-11 ROH=45 ROL=37.5 KSW=12
+RIA A GND 1e11
+RIB B GND 1e11
+BAA aa GND V = 0.5*(1+tanh(KVTC*(v(A,GND)/v(VCC,GND)-0.5)))
+BBB bb GND V = 0.5*(1+tanh(KVTC*(v(B,GND)/v(VCC,GND)-0.5)))
+BVTC vi GND V = v(VCC,GND)*(v(aa)+v(bb)-2*v(aa)*v(bb))
+RD vi vd {RINT}
+CD vd GND {CINT}
+BDRV yd GND V = min(max(v(vd),0),v(VCC,GND))
+RDRV yd Y R={ROL+(ROH-ROL)*0.5*(1+tanh(KSW*(v(vd)/v(VCC,GND)-0.5)))}
+.ends OC_NEXPERIA_74HC86_GATE
+
+.temp 25
+VCC vcc 0 5.0
+VA a 0 PWL(0 0 1u 0 1.006u 5.0 3u 5.0 3.006u 0 6u 0)
+VB b 0 0
+Xy a b y vcc 0 OC_NEXPERIA_74HC86_GATE
+CL y 0 1.5e-11
+.save v(a) v(y)
+.tran 0.1n 6u
+.measure tran tplh TRIG v(a) VAL=2.5 RISE=1 TARG v(y) VAL=2.5 RISE=1
+.measure tran tphl TRIG v(a) VAL=2.5 FALL=1 TARG v(y) VAL=2.5 FALL=1
+.measure tran vmax MAX v(y)
+.measure tran vmin MIN v(y)
+.end

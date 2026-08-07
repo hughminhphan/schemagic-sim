@@ -1,0 +1,38 @@
+74HC86 truth table
+* OpenCircuit Model Factory v0.1.0
+* Original work generated from public factual specifications.
+* This model is not a copy of, or adaptation from, any vendor SPICE model.
+* Source: https://assets.nexperia.com/documents/data-sheet/74HC_HCT86.pdf
+* Revision: Rev. 7, 2 April 2024
+* Archetype: archetype-logic74hc.md
+* Fit run: H1-74hc-74HC86-2026-08-07
+* Node order: A B Y VCC GND
+.subckt OC_NEXPERIA_74HC86_GATE A B Y VCC GND
++ PARAMS: KVTC=9.49454211985 RINT=1k CINT=1.4941882749e-11 ROH=45 ROL=37.5 KSW=12
+RIA A GND 1e11
+RIB B GND 1e11
+BAA aa GND V = 0.5*(1+tanh(KVTC*(v(A,GND)/v(VCC,GND)-0.5)))
+BBB bb GND V = 0.5*(1+tanh(KVTC*(v(B,GND)/v(VCC,GND)-0.5)))
+BVTC vi GND V = v(VCC,GND)*(v(aa)+v(bb)-2*v(aa)*v(bb))
+RD vi vd {RINT}
+CD vd GND {CINT}
+BDRV yd GND V = min(max(v(vd),0),v(VCC,GND))
+RDRV yd Y R={ROL+(ROH-ROL)*0.5*(1+tanh(KSW*(v(vd)/v(VCC,GND)-0.5)))}
+.ends OC_NEXPERIA_74HC86_GATE
+
+.temp 25
+VCC vcc 0 4.5
+VA0 a0 0 0.0
+VB0 b0 0 0.0
+Xy0 a0 b0 y0 vcc 0 OC_NEXPERIA_74HC86_GATE
+VA1 a1 0 0.0
+VB1 b1 0 4.5
+Xy1 a1 b1 y1 vcc 0 OC_NEXPERIA_74HC86_GATE
+VA2 a2 0 4.5
+VB2 b2 0 0.0
+Xy2 a2 b2 y2 vcc 0 OC_NEXPERIA_74HC86_GATE
+VA3 a3 0 4.5
+VB3 b3 0 4.5
+Xy3 a3 b3 y3 vcc 0 OC_NEXPERIA_74HC86_GATE
+.op
+.end
