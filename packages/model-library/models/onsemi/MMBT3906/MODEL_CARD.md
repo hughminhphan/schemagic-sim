@@ -5,7 +5,7 @@
 - Manufacturer: onsemi
 - Description: General-purpose PNP silicon transistor
 - Electrical family: bjt_pnp
-- Fidelity tier: F1, datasheet-constrained
+- Fidelity tier: F2, datasheet-fitted
 - Independent reviewer: pending-review
 
 ## Provenance
@@ -33,17 +33,17 @@
 
 | Parameter | Value | Status |
 | --- | ---: | --- |
-| IS | 4.77730376e-16 | fitted or derived |
+| IS | 2.53358942e-14 | fitted or derived |
 | NF | 1.00000000e+0 | fitted or derived |
-| BF | 2.17657319e+2 | fitted or derived |
-| IKF | 2.58301197e-2 | fitted or derived |
-| ISE | 1.09117741e-13 | fitted or derived |
-| NE | 1.37070839e+0 | fitted or derived |
+| BF | 2.92399926e+2 | fitted or derived |
+| IKF | 3.45743541e-2 | fitted or derived |
+| ISE | 9.44505439e-14 | fitted or derived |
+| NE | 1.36756922e+0 | fitted or derived |
 | VAF | 1.00000000e+2 | fitted or derived |
 | BR | 4.00000000e+0 | fitted or derived |
-| RB | 4.52479710e+2 | fitted or derived |
-| RE | 1.17485004e+0 | fitted or derived |
-| RC | 4.39300708e+0 | fitted or derived |
+| RB | 1.02312825e+0 | fitted or derived |
+| RE | 2.74880510e-1 | fitted or derived |
+| RC | 5.53767769e+0 | fitted or derived |
 | CJE | 1.18361398e-11 | fitted or derived |
 | VJE | 7.50000000e-1 | fitted or derived |
 | MJE | 3.30000000e-1 | fitted or derived |
@@ -51,26 +51,26 @@
 | VJC | 7.50000000e-1 | fitted or derived |
 | MJC | 3.30000000e-1 | fitted or derived |
 | XCJC | 1.00000000e+0 | fitted or derived |
-| TF | 5.34495810e-10 | fitted or derived |
+| TF | 5.32339215e-10 | fitted or derived |
 | TR | 0.00000000e+0 | fitted or derived |
 
 ## Fitted versus datasheet
 
 | Quantity | Datasheet | Fitted | Unit | Relative error | Citation |
 | --- | ---: | ---: | --- | ---: | --- |
-| hFE at IC=0.0001 A | 6.000000e+1 | 1.998518e+0 | 1 | 96.669% | p. 2 electrical characteristics |
-| hFE at IC=0.001 A | 8.000000e+1 | 4.149599e+0 | 1 | 94.813% | p. 2 electrical characteristics |
-| hFE at IC=0.01 A | 1.000000e+2 | 8.444175e+0 | 1 | 91.556% | p. 2 electrical characteristics |
-| hFE at IC=0.05 A | 6.000000e+1 | 1.273616e+1 | 1 | 78.773% | p. 2 electrical characteristics |
-| hFE at IC=0.1 A | 3.000000e+1 | 1.133586e+1 | 1 | 62.214% | p. 2 electrical characteristics |
-| VCE(sat) at IC=0.01 A | 2.500000e-1 | 1.386280e-1 | V | 44.549% | p. 2 electrical characteristics |
-| VBE(sat) at IC=0.01 A | 6.500000e-1 | 1.269413e+0 | V | 95.294% | p. 2 electrical characteristics |
-| VCE(sat) at IC=0.05 A | 4.000000e-1 | 4.222395e-1 | V | 5.560% | p. 2 electrical characteristics |
-| VBE(sat) at IC=0.05 A | 9.500000e-1 | 3.190512e+0 | V | 235.843% | p. 2 electrical characteristics |
+| hFE at IC=0.0001 A | 6.000000e+1 | 7.993289e+1 | 1 | 33.221% | p. 2 electrical characteristics |
+| hFE at IC=0.001 A | 8.000000e+1 | 1.183387e+2 | 1 | 47.923% | p. 2 electrical characteristics |
+| hFE at IC=0.01 A | 1.000000e+2 | 1.250142e+2 | 1 | 25.014% | p. 2 electrical characteristics |
+| hFE at IC=0.05 A | 6.000000e+1 | 7.500384e+1 | 1 | 25.006% | p. 2 electrical characteristics |
+| hFE at IC=0.1 A | 3.000000e+1 | 4.239048e+1 | 1 | 41.302% | p. 2 electrical characteristics |
+| VCE(sat) at IC=0.01 A | 2.500000e-1 | 1.011617e-1 | V | 59.535% | p. 2 electrical characteristics |
+| VBE(sat) at IC=0.01 A | 6.500000e-1 | 7.142234e-1 | V | 9.881% | p. 2 electrical characteristics |
+| VCE(sat) at IC=0.05 A | 4.000000e-1 | 3.510174e-1 | V | 12.246% | p. 2 electrical characteristics |
+| VBE(sat) at IC=0.05 A | 9.500000e-1 | 7.865451e-1 | V | 17.206% | p. 2 electrical characteristics |
 
-Worst fitting error: 235.843% for VBE(sat) at IC=0.05 A.
+Worst fitting error: 59.535% for VCE(sat) at IC=0.01 A.
 
-Native and WASM agreement: all 6 benches passed. Worst reported relative delta was 1.462e-7 and worst absolute delta was 2.437e+0.
+Native and WASM agreement: all 6 benches passed. Worst reported relative delta was 3.224e-11 and worst absolute delta was 4.815e-11.
 
 ## Known omissions
 
@@ -80,6 +80,7 @@ Native and WASM agreement: all 6 benches passed. Worst reported relative delta w
 - Guaranteed MIN/MAX rows are retained as source semantics; no complete typical multi-point curve was used.
 - Reverse operation, base-resistance modulation, transit-time bias dependence, temperature coefficients, flicker noise, and hFE spread are not modelled.
 - Reviewer remains pending-review.
+- Fidelity is capped at F1: the source provides guaranteed bounds rather than a complete typical multi-point PNP characterization.
 
 ## Licence
 
