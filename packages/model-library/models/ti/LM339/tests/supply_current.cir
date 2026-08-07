@@ -1,0 +1,29 @@
+LM339 quiescent supply current
+* OpenCircuit Model Factory v0.1.0
+* Original work generated from public factual specifications.
+* This model is not a copy of, or adaptation from, any vendor SPICE model.
+* Source: https://www.ti.com/lit/ds/symlink/lm339.pdf
+* Revision: SLCS006Z, October 1979, revised May 2025
+* Archetype: archetype-comparator.md, variant OC
+* Fit: exactly three native ngspice-46 fixed-point calibration iterations
+* Node order: INP INN OUT VCC GND
+.subckt OC_LM339 INP INN OUT VCC GND
++ PARAMS: AOL=2.0000000000e05 VOS=-2.0000000000e-03 IBIAS=2.5000000000e-08 IOS=5.0000000000e-09 TPD=1.2737968966e-06
++ VCLAMP=1 KSW=20 VHYST=0.0000000000e00 IQ=2.0000000000e-04 CD=10p
+IBP GND INP DC {IBIAS+IOS/2}
+IBN GND INN DC {IBIAS-IOS/2}
+CDIF INP INN 1p
+BC c GND V = VCLAMP*tanh((AOL/VCLAMP)*(v(INP,INN)+VOS+VHYST*v(cd)/VCLAMP))
+RC c cd {TPD/0.693/CD}
+CC cd GND {CD}
+ROC OUT GND R={1/((1/3.7500000000e01)*0.5*(1-tanh(KSW*v(cd)/VCLAMP))+1/1e9)}
+IQD VCC GND DC {IQ}
+.ends OC_LM339
+.temp 25
+VCC vcc 0 5
+VREF ref 0 1.4
+VIN sig 0 1.2999999999999998
+X1 sig ref out vcc 0 OC_LM339
+.save i(VCC)
+.op
+.end

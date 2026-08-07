@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "extraction_method": "manual structuring from manufacturer product-page fallback; official PDF and HTML access blocked, no vendor SPICE model used",
+  "extraction_method": "pdftotext -layout plus manual table structuring from official onsemi family PDF",
   "fit_conditions": {
     "temperature": {
       "value": 25,
@@ -16,7 +16,7 @@
       "value": 1000,
       "unit": "V",
       "conditions": "TA = 25 degC",
-      "page_reference": "official product page, absolute maximum ratings",
+      "page_reference": "p. 2 electrical characteristics",
       "source_kind": "maximum",
       "column_semantics": "published MAX column; used only as operating-region bound"
     },
@@ -24,15 +24,15 @@
       "value": 3.0,
       "unit": "A",
       "conditions": "TA = 25 degC",
-      "page_reference": "official product page, absolute maximum ratings",
+      "page_reference": "p. 2 electrical characteristics",
       "source_kind": "maximum",
       "column_semantics": "published MAX column; used only as operating-region bound"
     },
     "forward_voltage_maximum": {
-      "value": 1.2,
+      "value": 1.0,
       "unit": "V",
       "conditions": "IF = 3.0 A, TA = 25 degC",
-      "page_reference": "official product page, electrical characteristics",
+      "page_reference": "p. 2 electrical characteristics, onsemi 1N5400/D Rev. 12",
       "source_kind": "maximum",
       "column_semantics": "published MAX column; used only as one-sided forward-voltage bound"
     },
@@ -40,7 +40,7 @@
       "value": 1e-05,
       "unit": "A",
       "conditions": "VR = 1000 V, TA = 25 degC",
-      "page_reference": "official product page, electrical characteristics",
+      "page_reference": "p. 2 electrical characteristics, onsemi 1N5400/D Rev. 12",
       "source_kind": "maximum",
       "column_semantics": "published MAX column; used only as one-sided leakage bound"
     }
@@ -51,14 +51,13 @@
     "aliases": []
   },
   "source": {
-    "kind": "spec_page",
-    "url": "https://www.onsemi.com/products/discrete-power-modules/rectifiers/1N5408",
-    "revision": "official product specification fallback; PDF and product page access blocked",
-    "sha256": "456d9591d83ef8906f3141a7e15d0a33d3e2e7687db0dee69c4ab65e3e9ed72a",
+    "kind": "datasheet",
+    "url": "https://www.onsemi.com/pdf/datasheet/1n5400-d.pdf",
+    "revision": "1N5400/D, August 2021, Rev. 12",
+    "sha256": "86eb52de8193bb0accae9f542d4e7bb481043c4586ac6a3bba7f4f67eaea048c",
     "accessed_date": "2026-08-07",
     "pages_referenced": [
-      "official product page, absolute maximum ratings",
-      "official product page, electrical characteristics"
+      "p. 2 electrical characteristics"
     ],
     "placeholder": false
   }

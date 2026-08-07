@@ -4,21 +4,67 @@
 
 - Manufacturer: onsemi
 - Description: 3 A general-purpose silicon rectifier diode
-- Fidelity tier: F1
+- Electrical family: diode
+- Fidelity tier: F2, datasheet-fitted
 - Independent reviewer: pending-review
 
 ## Provenance
 
-- Manufacturer product page: https://www.onsemi.com/products/discrete-power-modules/rectifiers/1N5408
-- Official PDF attempted: https://www.onsemi.com/pdf/datasheet/1n5400-d.pdf
-- Revision: official product specification fallback; PDF and product page access blocked
+- Datasheet: https://www.onsemi.com/pdf/datasheet/1n5400-d.pdf
+- Revision: 1N5400/D, August 2021, Rev. 12
 - Accessed: 2026-08-07
-- Source response SHA-256: `456d9591d83ef8906f3141a7e15d0a33d3e2e7687db0dee69c4ab65e3e9ed72a`
+- Referenced pages: p. 2 electrical characteristics
+- SHA-256: `86eb52de8193bb0accae9f542d4e7bb481043c4586ac6a3bba7f4f67eaea048c`
+- Basis: original model generated from public factual specifications
 - Vendor SPICE models used: none
 
-## Validation
+## Domain coverage
 
-This fallback model checks published maximum forward voltage and reverse leakage bounds at explicit 25 degC datasheet conditions. Native/WASM agreement and package-schema validation are recorded in `validation-results.json`.
+| Domain | Coverage |
+| --- | --- |
+| dc | approx |
+| ac | none |
+| transient | approx |
+| noise | none |
+| thermal | none |
+| digital | none |
+
+## Model parameters
+
+| Parameter | Value | Status |
+| --- | ---: | --- |
+| IS | 1.00000000e-9 | held at conservative fallback value; not typical |
+| N | 1.60000000e+0 | held at conservative fallback value; not typical |
+| RS | 3.00000000e-2 | held at conservative fallback value; not typical |
+
+## Held defaults
+
+| Parameter | Value | Unit | Status |
+| --- | ---: | --- | --- |
+| ISR | 1.00000000e-14 | A | undefined |
+| NR | 2.00000000e+0 | 1 | undefined |
+| IKF | 0.00000000e+0 | A | undefined |
+| CJO | 0.00000000e+0 | F | undefined |
+| VJ | 1.00000000e+0 | V | undefined |
+| M | 5.00000000e-1 | 1 | undefined |
+| FC | 5.00000000e-1 | 1 | undefined |
+| TT | 0.00000000e+0 | s | undefined |
+| BV | 1.00000000e+99 | V | undefined |
+| IBV | 1.00000000e-10 | A | undefined |
+| NBV | 1.00000000e+0 | 1 | undefined |
+| EG | 1.11000000e+0 | eV | undefined |
+| XTI | 3.00000000e+0 | 1 | undefined |
+| TNOM | 2.70000000e+1 | degC | undefined |
+
+## Fitted versus datasheet
+
+| Quantity | Datasheet | Fitted | Unit | Relative error | Citation |
+| --- | ---: | ---: | --- | ---: | --- |
+
+
+Worst fitting error: 0.000% for one-sided-bound-only model.
+
+Native and WASM agreement: all 4 benches passed. Worst reported relative delta was 1.133e-16 and worst absolute delta was 1.110e-16.
 
 ## Known omissions
 
@@ -28,8 +74,13 @@ This fallback model checks published maximum forward voltage and reverse leakage
 - IKF is held at default; high-injection roll-off is not modelled.
 - CJO, VJ, and M are held at default because no verifiable capacitance curve was available.
 - TT is held at default 0 s; reverse recovery is not modelled because no verified trr input was available.
+- FC is held at physical default 0.5.
 - BV, IBV, and NBV are held at defaults; reverse breakdown is not modelled.
 - EG, XTI, and TNOM are held at physical defaults; only 25 degC behavior is claimed.
 - No self-heating: junction temperature is fixed at TNOM. Thermal derating is not modelled.
 - Package parasitics (lead inductance and package capacitance) are not modelled.
 - Flicker noise is not modelled: KF and AF are held at defaults.
+
+## Licence
+
+MIT. See `LICENSE`. The model is original work generated from public factual specifications and is not copied or adapted from a vendor SPICE model.

@@ -1,0 +1,222 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "dc_levels.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "low_level_output_at_published_sink_current",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(outlo))"
+          },
+          "expected_value": 0.15,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 10 section 6.10 electrical characteristics",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": [
+        {
+          "name": "off_state_output_with_published_pullup",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(outhi))"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 10 section 6.10 electrical characteristics",
+          "placeholder": false,
+          "minimum": 4.999745,
+          "maximum": 5.01
+        }
+      ]
+    },
+    {
+      "test_netlist": "offset_and_bias.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "positive_input_bias",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vp))"
+          },
+          "expected_value": 2.7499999999999998e-08,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 5e-10,
+            "relative": 0.05
+          },
+          "datasheet_citation": "p. 10 section 6.10 electrical characteristics",
+          "placeholder": false
+        },
+        {
+          "name": "negative_input_bias",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vn))"
+          },
+          "expected_value": 2.25e-08,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 5e-10,
+            "relative": 0.05
+          },
+          "datasheet_citation": "p. 10 section 6.10 electrical characteristics",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": [
+        {
+          "name": "trip_below_published_offset_limit",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(outl))"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 10 section 6.10 electrical characteristics",
+          "placeholder": false,
+          "minimum": 0,
+          "maximum": 0.2
+        },
+        {
+          "name": "trip_above_published_offset_limit",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(outh))"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 10 section 6.10 electrical characteristics",
+          "placeholder": false,
+          "minimum": 4.99,
+          "maximum": 5.01
+        }
+      ]
+    },
+    {
+      "test_netlist": "propagation_delay.cir",
+      "analysis_type": "transient",
+      "scalar_checks": [
+        {
+          "name": "propagation_delay_low_to_high",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "measure:tplh"
+          },
+          "expected_value": 1.3e-06,
+          "unit": "s",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 12 section 6.14 switching characteristics",
+          "placeholder": false
+        },
+        {
+          "name": "propagation_delay_high_to_low",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "measure:tphl"
+          },
+          "expected_value": 1.3e-06,
+          "unit": "s",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 12 section 6.14 switching characteristics",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": [
+        {
+          "name": "output_transient_minimum",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "min(v(out))"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 10 section 6.10 electrical characteristics",
+          "placeholder": false,
+          "minimum": -0.05
+        },
+        {
+          "name": "output_transient_maximum",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "max(v(out))"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 10 section 6.10 electrical characteristics",
+          "placeholder": false,
+          "maximum": 5.05
+        }
+      ]
+    },
+    {
+      "test_netlist": "supply_current.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "quiescent_supply_current_per_comparator",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vcc))"
+          },
+          "expected_value": 0.0002,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 4.000000000000001e-06,
+            "relative": 0.1
+          },
+          "datasheet_citation": "p. 10 section 6.10 electrical characteristics",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "minimum_supply_boundary.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "minimum_supply_low_state_alive",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(outl))"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 6 section 6.5 recommended operating conditions; p. 10 section 6.10 electrical characteristics",
+          "placeholder": false,
+          "minimum": 0,
+          "maximum": 0.3
+        },
+        {
+          "name": "minimum_supply_high_state_alive",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(outh))"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 6 section 6.5 recommended operating conditions; p. 10 section 6.10 electrical characteristics",
+          "placeholder": false,
+          "minimum": 1.98,
+          "maximum": 2.02
+        }
+      ]
+    }
+  ]
+}
