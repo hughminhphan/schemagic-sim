@@ -1,0 +1,153 @@
+{
+  "schema_version": "1.0.0",
+  "canonical_mpn": "MCP1700-3302E",
+  "manufacturer": "Microchip Technology Inc.",
+  "description": "3.3 V, 250 mA low-quiescent-current low-dropout regulator",
+  "electrical_family": "vreg_linear",
+  "symbol_pins": [
+    {
+      "name": "GND",
+      "number": "1",
+      "role": "ground"
+    },
+    {
+      "name": "VOUT",
+      "number": "2",
+      "role": "output"
+    },
+    {
+      "name": "VIN",
+      "number": "3",
+      "role": "input"
+    }
+  ],
+  "spice_pin_mapping": [
+    {
+      "symbol_pin_number": "3",
+      "subckt_node": "in",
+      "order": 1
+    },
+    {
+      "symbol_pin_number": "2",
+      "subckt_node": "out",
+      "order": 2
+    },
+    {
+      "symbol_pin_number": "1",
+      "subckt_node": "gnd",
+      "order": 3
+    }
+  ],
+  "package_variants": [
+    {
+      "name": "SOT-23",
+      "standard": "Microchip TT package",
+      "pin_count": 3,
+      "pin_map": [
+        {
+          "package_pin": "1",
+          "symbol_pin_number": "1"
+        },
+        {
+          "package_pin": "2",
+          "symbol_pin_number": "2"
+        },
+        {
+          "package_pin": "3",
+          "symbol_pin_number": "3"
+        }
+      ]
+    }
+  ],
+  "ordering_code_aliases": [
+    "MCP1700T-3302E/TT",
+    "MCP1700T-3302E/MB",
+    "MCP1700-3302E/TO"
+  ],
+  "datasheet": {
+    "url": "https://ww1.microchip.com/downloads/aemDocuments/documents/APID/ProductDocuments/DataSheets/MCP1700-Data-Sheet-20001826F.pdf",
+    "revision": "DS20001826F, Revision F, December 2020"
+  },
+  "model_type": "subckt",
+  "fidelity_tier": "F1",
+  "domain_coverage": {
+    "dc": "approx",
+    "ac": "none",
+    "transient": "approx",
+    "noise": "none",
+    "thermal": "none",
+    "digital": "none"
+  },
+  "supported_analyses": [
+    "operating_point",
+    "dc_sweep",
+    "transient"
+  ],
+  "supported_operating_region": {
+    "summary": "F1 DC approximation at 25 degC from 3.577 V to 6 V input and 0.1 mA to 250 mA output current. Capacitor stability and temperature behavior are not simulated.",
+    "numeric_bounds": [
+      {
+        "quantity": "input_voltage",
+        "minimum": 3.577,
+        "maximum": 6,
+        "unit": "V",
+        "conditions": "At VR = 3.3 V and rated load, note 1 requires VIN >= (VR + 3%) + 178 mV typical dropout; 6 V is operating maximum",
+        "placeholder": false
+      },
+      {
+        "quantity": "output_current",
+        "minimum": 0.0001,
+        "maximum": 0.25,
+        "unit": "A",
+        "conditions": "Published load-regulation range for VR >= 2.5 V",
+        "placeholder": false
+      },
+      {
+        "quantity": "ambient_temperature",
+        "minimum": 25,
+        "maximum": 25,
+        "unit": "degC",
+        "conditions": "Fit reference temperature",
+        "placeholder": false
+      }
+    ]
+  },
+  "known_omissions": [
+    "Thermal shutdown is not modelled. The regulator does not shut down or fold back when it overheats; it will dissipate arbitrary power indefinitely.",
+    "Safe-operating-area foldback is not modelled. The current limit is a constant, whereas a real regulator reduces it at high input-to-output differential.",
+    "No self-heating and no temperature coefficients. Output voltage drift, dropout increase, and quiescent-current change with temperature are not modelled.",
+    "Reverse current from OUT to IN is not modelled beyond a protective clamp. Discharging the output through the regulator does not reproduce the real part behavior.",
+    "AC behaviour is not modelled: there is no control-loop pole, no output impedance versus frequency, and no ripple rejection. PSRR and transient load-step response are absent.",
+    "Loop stability is not modelled. This model regulates with any output capacitor or none, whereas a real LDO can oscillate outside its specified capacitor and ESR window.",
+    "Start-up behaviour, soft-start and inrush are not modelled.",
+    "Noise is not modelled.",
+    "Output voltage is set to the datasheet nominal; a real part may sit anywhere inside the published tolerance band.",
+    "RNEG = 1 ohm, EPS = 1e-8 V^2, RSER = 1e7 ohm, and RER = 1 megohm are held archetype defaults, not fitted facts.",
+    "Dropout is a single constant taken at rated current. Real LDO dropout rises with load current; this model does not.",
+    "Line regulation is represented as a positive linear slope using the published 0.75%/V typical magnitude; the datasheet does not specify direction.",
+    "Load regulation is represented as output droop using the published 1.0% typical magnitude; the datasheet does not specify direction."
+  ],
+  "licence": {
+    "spdx_id": "MIT",
+    "provenance_basis": "original_from_facts"
+  },
+  "generator": {
+    "tool_or_agent": "opencircuit-model-factory-v0.1.0 manual vreg archetype lane",
+    "date": "2026-08-07"
+  },
+  "reviewer": {
+    "tool_or_agent": "pending-review",
+    "date": "2026-08-07"
+  },
+  "test_results": {
+    "status": "complete",
+    "pass_count": 10,
+    "fail_count": 0,
+    "total_count": 10,
+    "worst_observed_relative_fitting_error": {
+      "value": 0.21590542464233597,
+      "quantity": "dropout voltage"
+    }
+  },
+  "validation_date": "2026-08-07"
+}

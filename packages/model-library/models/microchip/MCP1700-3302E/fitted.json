@@ -1,0 +1,126 @@
+{
+  "schema_version": "1.0.0",
+  "fit_method": "direct 25 degC TYP transcription and documented derivation; no F2 calibration claimed",
+  "temperature_c": 25,
+  "parameters": {
+    "VREF": 3.3,
+    "VDROP": 0.178,
+    "ILIM": 0.408,
+    "LOADREG": 0.033,
+    "DILOAD": 0.2499,
+    "LINEREG": 0.042075,
+    "DVLINE": 1.7,
+    "VNOM": 4.3,
+    "IQ": 1.6e-06,
+    "RNEG": 1.0,
+    "EPS": 1e-08
+  },
+  "parameter_metadata": {
+    "VREF": {
+      "status": "datasheet_typical_or_derived"
+    },
+    "VDROP": {
+      "status": "datasheet_typical_or_derived"
+    },
+    "ILIM": {
+      "status": "datasheet_typical_or_derived"
+    },
+    "LOADREG": {
+      "status": "datasheet_typical_or_derived"
+    },
+    "DILOAD": {
+      "status": "datasheet_typical_or_derived"
+    },
+    "LINEREG": {
+      "status": "datasheet_typical_or_derived"
+    },
+    "DVLINE": {
+      "status": "datasheet_typical_or_derived"
+    },
+    "VNOM": {
+      "status": "datasheet_typical_or_derived"
+    },
+    "IQ": {
+      "status": "datasheet_typical_or_derived"
+    },
+    "RNEG": {
+      "status": "held_default"
+    },
+    "EPS": {
+      "status": "held_default"
+    }
+  },
+  "held_defaults": [
+    {
+      "parameter": "RNEG",
+      "value": 1,
+      "unit": "ohm",
+      "reason": "archetype fixed constant"
+    },
+    {
+      "parameter": "EPS",
+      "value": 1e-08,
+      "unit": "V^2",
+      "reason": "archetype fixed smoothing constant"
+    },
+    {
+      "parameter": "RSER",
+      "value": 10000000.0,
+      "unit": "ohm",
+      "reason": "archetype fixed output shunt"
+    },
+    {
+      "parameter": "RER",
+      "value": 1000000.0,
+      "unit": "ohm",
+      "reason": "archetype fixed error-node shunt"
+    }
+  ],
+  "calibration_iterations": [],
+  "residuals": [
+    {
+      "quantity": "output voltage",
+      "datasheet_value": 3.3,
+      "fitted_value": 3.3001279859461166,
+      "unit": "V",
+      "relative_error": 3.8783620035375044e-05,
+      "citation": "p. 2 Output Voltage nominal VR = 3.3 V"
+    },
+    {
+      "quantity": "load regulation",
+      "datasheet_value": 0.033,
+      "fitted_value": 0.038559116690220385,
+      "unit": "V",
+      "relative_error": 0.1684580815218298,
+      "citation": "p. 2 Load Regulation TYP = 1.0%"
+    },
+    {
+      "quantity": "line regulation across 4.3 V to 6 V",
+      "datasheet_value": 0.042075,
+      "fitted_value": 0.04207503337602425,
+      "unit": "V",
+      "relative_error": 7.932507248938625e-07,
+      "citation": "p. 2 Line Regulation TYP = 0.75%/V"
+    },
+    {
+      "quantity": "dropout voltage",
+      "datasheet_value": 0.178,
+      "fitted_value": 0.2164311655863358,
+      "unit": "V",
+      "relative_error": 0.21590542464233597,
+      "citation": "p. 2 Dropout Voltage TYP column and note 5"
+    },
+    {
+      "quantity": "short circuit current",
+      "datasheet_value": 0.408,
+      "fitted_value": 0.408,
+      "unit": "A",
+      "relative_error": 0.0,
+      "citation": "p. 2 Output Short Circuit Current TYP column"
+    }
+  ],
+  "worst_relative_error": {
+    "value": 0.21590542464233597,
+    "quantity": "dropout voltage"
+  }
+}

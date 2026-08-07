@@ -1,0 +1,30 @@
+* MCP1700-3302E line-regulation endpoints at published 100 uA bias
+* OpenCircuit Model Factory v0.1.0
+* Original work generated from public factual specifications.
+* MCP1700-3302E (Microchip Technology Inc.), datasheet DS20001826F, Revision F, December 2020, fitted 2026-08-07
+* Archetype: archetype-vreg.md, variant FIXED. Manual staged run: R1R-regulators-2026-08-07
+* Node order: IN OUT GND
+.subckt OC_MCP1700_3302E IN OUT GND
++ PARAMS: VREF=3.3 VDROP=0.178 ILIM=0.408 LOADREG=0.033 DILOAD=0.2499
++ LINEREG=0.042075 DVLINE=1.7 VNOM=4.3 IQ=1.6e-06 RNEG=1 EPS=1e-8
+BTGT tgt GND V = VREF + (LINEREG/DVLINE)*(v(IN,GND)-VNOM)
+BHDR hdr GND V = v(IN,GND) - VDROP
+BSEL sel GND V = 0.5*(v(tgt)+v(hdr)) - 0.5*sqrt((v(tgt)-v(hdr))*(v(tgt)-v(hdr))+EPS)
+BERR er GND V = 0.5*((v(sel)-v(OUT,GND)) + sqrt((v(sel)-v(OUT,GND))*(v(sel)-v(OUT,GND))+EPS))
+RER er GND 1meg
+BPASS IN OUT I = ILIM*tanh({DILOAD/LOADREG}/ILIM*v(er))
+RSER OUT GND 1e7
+DNEG GND OUT DCLAMP_MCP1700_3302E
+IQD IN GND DC {IQ}
+.model DCLAMP_MCP1700_3302E D(IS=1e-12 N=1 RS={RNEG})
+.ends OC_MCP1700_3302E
+.temp 25
+VINLO inlo 0 DC 4.3
+XLO inlo outlo 0 OC_MCP1700_3302E
+ILLO outlo 0 DC 0.0001
+VINHI inhi 0 DC 6
+XHI inhi outhi 0 OC_MCP1700_3302E
+ILHI outhi 0 DC 0.0001
+.save v(outlo) v(outhi)
+.op
+.end

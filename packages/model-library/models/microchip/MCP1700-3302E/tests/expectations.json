@@ -1,0 +1,202 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "output_voltage.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "output_voltage_nominal",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(out))"
+          },
+          "expected_value": 3.3,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.066,
+            "relative": 0
+          },
+          "datasheet_citation": "p. 2 Output Voltage Regulation MIN/TYP/MAX row and note 2, VR = 3.3 V at VIN = 4.3 V and ILOAD = 100 uA",
+          "placeholder": false
+        },
+        {
+          "name": "input_current_including_iq",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vin))"
+          },
+          "expected_value": 0.0001016,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 5e-06,
+            "relative": 0.1
+          },
+          "datasheet_citation": "p. 2 table default ILOAD = 100 uA and Input Quiescent Current TYP = 1.6 uA",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "load_regulation.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "load_endpoint_0p1ma",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(outlo))"
+          },
+          "expected_value": 3.3,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.066,
+            "relative": 0
+          },
+          "datasheet_citation": "p. 2 Load Regulation TYP = 1.0% over 0.1 mA to 250 mA",
+          "placeholder": false
+        },
+        {
+          "name": "load_endpoint_250ma",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(outhi))"
+          },
+          "expected_value": 3.267,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.066,
+            "relative": 0
+          },
+          "datasheet_citation": "p. 2 Load Regulation TYP = 1.0% over 0.1 mA to 250 mA; endpoint direction is the model's disclosed droop convention",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "line_regulation.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "line_endpoint_4p3v",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(outlo))"
+          },
+          "expected_value": 3.3,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.066,
+            "relative": 0
+          },
+          "datasheet_citation": "p. 2 Line Regulation TYP = 0.75%/V from VIN = VR + 1 V to 6 V",
+          "placeholder": false
+        },
+        {
+          "name": "line_endpoint_6v",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(outhi))"
+          },
+          "expected_value": 3.342075,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.066,
+            "relative": 0
+          },
+          "datasheet_citation": "p. 2 Line Regulation TYP = 0.75%/V over the 1.7 V published input span",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "dropout.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "dropout_output_2pct_reduction",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(out))"
+          },
+          "expected_value": 3.234,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.1,
+            "relative": 0.03
+          },
+          "datasheet_citation": "p. 2 Dropout Voltage TYP = 178 mV at 250 mA; note 5 defines dropout at 2% output reduction",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "minimum_input_boundary.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "minimum_input_boundary_output",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(out))"
+          },
+          "expected_value": 3.267,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.1,
+            "relative": 0.03
+          },
+          "datasheet_citation": "p. 2 note 1: VIN >= (VR + 3.0%) + VDROPOUT = 3.577 V at rated load; load-regulation TYP = 1.0%",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "current_limit.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "short_circuit_current_typical",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vshort))"
+          },
+          "expected_value": 0.408,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 0.03,
+            "relative": 0.25
+          },
+          "datasheet_citation": "p. 2 Output Short Circuit Current TYP = 408 mA at VIN = VR + 1 V, VOUT = GND",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "overload.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "overload_output_physical",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(out))"
+          },
+          "minimum": -10,
+          "maximum": 3.3,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 2 absolute maximum ratings and internally limited peak output current",
+          "placeholder": false
+        }
+      ]
+    }
+  ]
+}
