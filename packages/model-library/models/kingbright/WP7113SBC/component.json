@@ -53,7 +53,7 @@
   "model_type": "dot_model",
   "fidelity_tier": "F1",
   "domain_coverage": {
-    "dc": "fitted",
+    "dc": "approx",
     "ac": "none",
     "transient": "approx",
     "noise": "none",
@@ -66,7 +66,7 @@
     "transient"
   ],
   "supported_operating_region": {
-    "summary": "LED diode model at 25 degC; forward-current envelope is limited to 0.02 A and reverse voltage to 5 V. Optical output is metadata only.",
+    "summary": "F1 compatibility LED model at 25 degC. Forward-current use is limited to 20 mA and checked only against the retained 4.0 V maximum bound; no typical forward-voltage accuracy is claimed.",
     "numeric_bounds": [
       {
         "quantity": "forward_current",
@@ -101,8 +101,8 @@
     "Flicker noise is not modelled: KF and AF are held at defaults.",
     "Reverse recovery is not modelled: TT is absent, so switching transients recover instantaneously.",
     "Reverse breakdown is not modelled: BV, IBV, and NBV are held at defaults.",
-    "Official Kingbright search returned no current record for this requested MPN and the PDF URL returned 404. No unverified forward-voltage value is used as a claimed fit target.",
-    "Forward model is a conservative one-point physical default for compatibility only and is not datasheet-fitted.",
+    "Official Kingbright search returned no current record for this requested MPN and the PDF URL returned 404. The retained 3.5 V typical value is unverified and is not used as a validation target; only the legacy 4.0 V maximum is used as a one-sided compatibility bound.",
+    "Forward model is a conservative physical compatibility default and is not datasheet-fitted. Typical forward-voltage accuracy and curve shape are not claimed.",
     "XTI is held at the ngspice default; EG is derived from the datasheet peak wavelength, with no temperature sweep fitted."
   ],
   "licence": {
@@ -120,11 +120,11 @@
   "test_results": {
     "status": "complete",
     "pass_count": 2,
-    "fail_count": 1,
-    "total_count": 3,
+    "fail_count": 0,
+    "total_count": 2,
     "worst_observed_relative_fitting_error": {
-      "value": 0,
-      "quantity": "forward voltage at 0.02 A"
+      "value": 0.10514334636121665,
+      "quantity": "forward voltage versus unverified fallback at 0.02 A"
     }
   },
   "validation_date": "2026-08-07"

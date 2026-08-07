@@ -1,24 +1,24 @@
 {
   "schema_version": "1.0.0",
-  "fitter": "closed-form one-point physical fit",
+  "fitter": "conservative physical compatibility default; no verified manufacturer curve available",
   "deterministic": true,
-  "temperature_c": 25.0,
+  "temperature_c": 25,
   "parameters": {
     "IS": 8.3008662816527e-32,
-    "N": 2.0,
+    "N": 2,
     "RS": 0.1,
     "EG": 2.6379615531914893,
-    "TNOM": 25.0
+    "TNOM": 25
   },
   "parameter_metadata": {
     "IS": {
-      "status": "fitted"
+      "status": "held compatibility default, not datasheet-fitted"
     },
     "N": {
-      "status": "fitted"
+      "status": "held compatibility default, not datasheet-fitted"
     },
     "RS": {
-      "status": "fitted"
+      "status": "held compatibility default, not datasheet-fitted"
     },
     "EG": {
       "status": "derived from datasheet wavelength"
@@ -31,15 +31,15 @@
     {
       "current_a": 0.02,
       "datasheet_voltage_v": 3.5,
-      "fitted_voltage_v": 3.5,
-      "relative_error": 0.0,
-      "citation": "official Kingbright source unavailable"
+      "fitted_voltage_v": 3.1319982877357417,
+      "relative_error": 0.10514334636121665,
+      "citation": "legacy fallback typical value; official Kingbright source unavailable and value is not a fit target"
     }
   ],
-  "rms_relative_error": 0.0,
+  "rms_relative_error": 0.10514334636121665,
   "worst_relative_error": {
-    "value": 0.0,
-    "quantity": "forward voltage at 0.02 A"
+    "value": 0.10514334636121665,
+    "quantity": "forward voltage versus unverified fallback at 0.02 A"
   },
   "held_defaults": [
     {
@@ -50,13 +50,13 @@
     },
     {
       "parameter": "NR",
-      "value": 1.0,
+      "value": 1,
       "unit": "1",
       "reason": "held at physical default because no independent reverse leakage fit was permitted"
     },
     {
       "parameter": "IKF",
-      "value": 0.0,
+      "value": 0,
       "unit": "A",
       "reason": "held at physical default because no high-injection roll-off was available"
     },
@@ -74,37 +74,37 @@
     },
     {
       "parameter": "TT",
-      "value": 0.0,
+      "value": 0,
       "unit": "s",
       "reason": "held at physical default because no reverse-recovery specification was available"
     },
     {
       "parameter": "BV",
-      "value": 0.0,
+      "value": 0,
       "unit": "V",
       "reason": "held at physical default because reverse breakdown is not modelled"
     },
     {
       "parameter": "IBV",
-      "value": 0.0,
+      "value": 0,
       "unit": "A",
       "reason": "held at physical default because reverse breakdown is not modelled"
     },
     {
       "parameter": "NBV",
-      "value": 1.0,
+      "value": 1,
       "unit": "1",
       "reason": "held at physical default because reverse breakdown is not modelled"
     },
     {
       "parameter": "XTI",
-      "value": 3.0,
+      "value": 3,
       "unit": "1",
       "reason": "held at physical default because no temperature sweep was fitted"
     },
     {
       "parameter": "TNOM",
-      "value": 25.0,
+      "value": 25,
       "unit": "degC",
       "reason": "explicit fit reference temperature used by all .temp 25 benches"
     }
