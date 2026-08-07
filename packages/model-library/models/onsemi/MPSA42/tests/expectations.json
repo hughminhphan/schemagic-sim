@@ -7,40 +7,40 @@
       "scalar_checks": [],
       "hard_bounds_checks": [
         {
-          "name": "hfe_at_0.001_a",
+          "name": "hfe_minimum_at_0.001_a",
           "expression_source": {
             "kind": "raw_variable",
             "expression": "scale_abs:last(i(vcg1),24999.999999999996)"
           },
-          "unit": "1",
-          "datasheet_citation": "p. 2 electrical characteristics",
-          "placeholder": false,
           "minimum": 25,
-          "inclusive": true
+          "unit": "1",
+          "inclusive": true,
+          "datasheet_citation": "p. 2 electrical characteristics",
+          "placeholder": false
         },
         {
-          "name": "hfe_at_0.01_a",
+          "name": "hfe_minimum_at_0.01_a",
           "expression_source": {
             "kind": "raw_variable",
             "expression": "scale_abs:last(i(vcg2),4000)"
           },
-          "unit": "1",
-          "datasheet_citation": "p. 2 electrical characteristics",
-          "placeholder": false,
           "minimum": 40,
-          "inclusive": true
+          "unit": "1",
+          "inclusive": true,
+          "datasheet_citation": "p. 2 electrical characteristics",
+          "placeholder": false
         },
         {
-          "name": "hfe_at_0.03_a",
+          "name": "hfe_minimum_at_0.03_a",
           "expression_source": {
             "kind": "raw_variable",
             "expression": "scale_abs:last(i(vcg3),1333.3333333333333)"
           },
-          "unit": "1",
-          "datasheet_citation": "p. 2 electrical characteristics",
-          "placeholder": false,
           "minimum": 40,
-          "inclusive": true
+          "unit": "1",
+          "inclusive": true,
+          "datasheet_citation": "p. 2 electrical characteristics",
+          "placeholder": false
         }
       ]
     },
@@ -49,42 +49,12 @@
       "analysis_type": "operating_point",
       "scalar_checks": [
         {
-          "name": "vce_sat_1",
-          "expression_source": {
-            "kind": "raw_variable",
-            "expression": "last(v(cs1))"
-          },
-          "expected_value": 0.5,
-          "unit": "V",
-          "tolerance": {
-            "absolute": 0.02,
-            "relative": 0.15
-          },
-          "datasheet_citation": "p. 2 electrical characteristics",
-          "placeholder": false
-        },
-        {
           "name": "vbe_sat_1",
           "expression_source": {
             "kind": "raw_variable",
-            "expression": "last(v(bs1))"
+            "expression": "abs:last(v(bs1))"
           },
           "expected_value": 0.9,
-          "unit": "V",
-          "tolerance": {
-            "absolute": 0.02,
-            "relative": 0.15
-          },
-          "datasheet_citation": "p. 2 electrical characteristics",
-          "placeholder": false
-        },
-        {
-          "name": "vce_sat_2",
-          "expression_source": {
-            "kind": "raw_variable",
-            "expression": "last(v(cs2))"
-          },
-          "expected_value": 0.5,
           "unit": "V",
           "tolerance": {
             "absolute": 0.02,
@@ -97,7 +67,7 @@
           "name": "vbe_sat_2",
           "expression_source": {
             "kind": "raw_variable",
-            "expression": "last(v(bs2))"
+            "expression": "abs:last(v(bs2))"
           },
           "expected_value": 0.9,
           "unit": "V",
@@ -109,7 +79,34 @@
           "placeholder": false
         }
       ],
-      "hard_bounds_checks": []
+      "hard_bounds_checks": [
+        {
+          "name": "vce_sat_1_maximum",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(cs1))"
+          },
+          "minimum": 0,
+          "maximum": 0.5,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 2 electrical characteristics",
+          "placeholder": false
+        },
+        {
+          "name": "vce_sat_2_maximum",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(cs2))"
+          },
+          "minimum": 0,
+          "maximum": 0.5,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 2 electrical characteristics",
+          "placeholder": false
+        }
+      ]
     },
     {
       "test_netlist": "ft_bench.cir",
@@ -165,7 +162,21 @@
       "test_netlist": "boundary_region.cir",
       "analysis_type": "operating_point",
       "scalar_checks": [],
-      "hard_bounds_checks": []
+      "hard_bounds_checks": [
+        {
+          "name": "upper_current_boundary_voltage",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(c))"
+          },
+          "minimum": 0,
+          "maximum": 300,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 2 electrical characteristics",
+          "placeholder": false
+        }
+      ]
     }
   ]
 }
