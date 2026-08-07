@@ -21,7 +21,7 @@ The BF256B IDSS and VGS(off) values are bin limits, not typical targets. VTO and
 
 ## Validation
 
-Pending factory validation. Benches cover IDSS bounds, cutoff-window boundary, capacitance, and the VDS=15 V supported-region edge.
+Factory validation passed: 4 benches, 6 of 6 checks, native/WASM agreement green. Worst engine relative delta: 0.000e+00. Worst datasheet typical-point error: 3.220% for Crss at 1 MHz.
 
 ## Known omissions
 

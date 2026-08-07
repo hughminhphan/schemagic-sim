@@ -21,7 +21,7 @@ The shipped subcircuit contains two Gummel-Poon transistors, R1=7000 ohm, R2=70 
 
 ## Validation
 
-Pending factory validation. Benches cover composite gain, forced-current saturation, freewheel-diode connectivity, and a conservative SOA/voltage boundary.
+Factory validation passed: 4 benches, 7 of 7 checks, native/WASM agreement green. Worst engine relative delta: 1.754e-11. No typical fit error is claimed because accessible electrical rows are guaranteed bounds.
 
 ## Known omissions
 

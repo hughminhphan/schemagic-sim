@@ -21,7 +21,7 @@ The model preserves the published hFE minima, VCE(sat) maximum, and VBE(on) maxi
 
 ## Validation
 
-Pending factory validation. Benches cover DC gain, forced-current saturation, and a conservative power-device voltage/SOA boundary.
+Factory validation passed: 3 benches, 6 of 6 checks, native/WASM agreement green. Worst engine relative delta: 1.423e-12. No typical fit error is claimed because accessible electrical rows are guaranteed bounds.
 
 ## Known omissions
 
