@@ -5,13 +5,53 @@
       "test_netlist": "dc_gain.cir",
       "analysis_type": "operating_point",
       "scalar_checks": [],
-      "hard_bounds_checks": []
+      "hard_bounds_checks": [
+        {
+          "name": "hfe_class40_at_100ma",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg3),4000)"
+          },
+          "minimum": 250,
+          "maximum": 630,
+          "unit": "1",
+          "inclusive": true,
+          "datasheet_citation": "manufacturer specification table, class-40 hFE at IC = 100 mA",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_class40_min_at_300ma",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg4),866.6666667)"
+          },
+          "minimum": 170,
+          "unit": "1",
+          "inclusive": true,
+          "datasheet_citation": "manufacturer specification table, class-40 minimum hFE at IC = 300 mA",
+          "placeholder": false
+        }
+      ]
     },
     {
       "test_netlist": "saturation.cir",
       "analysis_type": "operating_point",
       "scalar_checks": [],
-      "hard_bounds_checks": []
+      "hard_bounds_checks": [
+        {
+          "name": "vce_sat_max_at_500ma",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(cs2))"
+          },
+          "minimum": 0,
+          "maximum": 0.7,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "manufacturer specification table, VCE(sat) maximum at IC = 500 mA and IB = 50 mA",
+          "placeholder": false
+        }
+      ]
     },
     {
       "test_netlist": "ft_bench.cir",

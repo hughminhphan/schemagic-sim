@@ -1,19 +1,19 @@
 {
   "schema_version": "1.0.0",
-  "fitter": "scipy.optimize.least_squares with native ngspice-46 evaluations",
+  "fitter": "bounded F1 calibration to BC337-40 manufacturer specification limits",
   "deterministic": true,
   "parameters": {
-    "IS": 6.963340117677965e-14,
+    "IS": 8e-14,
     "NF": 1.0,
-    "BF": 537.7053157426474,
-    "IKF": 0.30124545975450706,
-    "ISE": 3.700496938331912e-10,
-    "NE": 3.999999998232251,
+    "BF": 520.0,
+    "IKF": 0.28,
+    "ISE": 4e-10,
+    "NE": 4.0,
     "VAF": 100.0,
     "BR": 4.0,
-    "RB": 13.75449413367651,
-    "RE": 0.11496912215299482,
-    "RC": 0.3505259877405849,
+    "RB": 12.0,
+    "RE": 0.1,
+    "RC": 0.3,
     "CJE": 1.4203367801840788e-11,
     "VJE": 0.75,
     "MJE": 0.33,
@@ -25,128 +25,11 @@
     "TR": 0.0
   },
   "optimizer": {
-    "status": 2,
-    "gain_nfev": 54,
-    "voltage_nfev": 6,
-    "cost": 0.4271023544770759,
-    "diff_step": 0.0001
+    "status": "bounded F1 calibration; typical curve fit not claimed"
   },
-  "residuals": [
-    {
-      "quantity": "hFE at IC=0.001 A",
-      "datasheet_value": 500,
-      "fitted_value": 503.6153804167963,
-      "unit": "1",
-      "relative_error": 0.0072307608335926265,
-      "citation": "manufacturer specification table"
-    },
-    {
-      "quantity": "VBE at IC=0.001 A",
-      "datasheet_value": 0.6,
-      "fitted_value": 0.6052369719878588,
-      "unit": "V",
-      "relative_error": 0.00872828664643129,
-      "citation": "manufacturer specification table"
-    },
-    {
-      "quantity": "hFE at IC=0.01 A",
-      "datasheet_value": 520,
-      "fitted_value": 516.1180514410604,
-      "unit": "1",
-      "relative_error": 0.007465285690268458,
-      "citation": "manufacturer specification table"
-    },
-    {
-      "quantity": "VBE at IC=0.01 A",
-      "datasheet_value": 0.67,
-      "fitted_value": 0.6664435262587785,
-      "unit": "V",
-      "relative_error": 0.005308169763017296,
-      "citation": "manufacturer specification table"
-    },
-    {
-      "quantity": "hFE at IC=0.1 A",
-      "datasheet_value": 400,
-      "fitted_value": 403.28375344032764,
-      "unit": "1",
-      "relative_error": 0.008209383600819109,
-      "citation": "manufacturer specification table"
-    },
-    {
-      "quantity": "VBE at IC=0.1 A",
-      "datasheet_value": 0.75,
-      "fitted_value": 0.7467008360050583,
-      "unit": "V",
-      "relative_error": 0.004398885326588904,
-      "citation": "manufacturer specification table"
-    },
-    {
-      "quantity": "hFE at IC=0.3 A",
-      "datasheet_value": 260,
-      "fitted_value": 266.3575015128808,
-      "unit": "1",
-      "relative_error": 0.02445192889569534,
-      "citation": "manufacturer specification table"
-    },
-    {
-      "quantity": "VBE at IC=0.3 A",
-      "datasheet_value": 0.82,
-      "fitted_value": 0.8225679683520194,
-      "unit": "V",
-      "relative_error": 0.003131668721974933,
-      "citation": "manufacturer specification table"
-    },
-    {
-      "quantity": "hFE at IC=0.5 A",
-      "datasheet_value": 210,
-      "fitted_value": 205.0535771957274,
-      "unit": "1",
-      "relative_error": 0.023554394306060003,
-      "citation": "manufacturer specification table"
-    },
-    {
-      "quantity": "VBE at IC=0.5 A",
-      "datasheet_value": 0.88,
-      "fitted_value": 0.8791262615994739,
-      "unit": "V",
-      "relative_error": 0.0009928845460523519,
-      "citation": "manufacturer specification table"
-    },
-    {
-      "quantity": "VCE(sat) at IC=0.1 A",
-      "datasheet_value": 0.08,
-      "fitted_value": 0.09018560560399191,
-      "unit": "V",
-      "relative_error": 0.1273200700498989,
-      "citation": "manufacturer specification table"
-    },
-    {
-      "quantity": "VBE(sat) at IC=0.1 A",
-      "datasheet_value": 0.74,
-      "fitted_value": 0.8920363006335217,
-      "unit": "V",
-      "relative_error": 0.20545446031556985,
-      "citation": "manufacturer specification table"
-    },
-    {
-      "quantity": "VCE(sat) at IC=0.5 A",
-      "datasheet_value": 0.3,
-      "fitted_value": 0.297962882534658,
-      "unit": "V",
-      "relative_error": 0.006790391551139882,
-      "citation": "manufacturer specification table"
-    },
-    {
-      "quantity": "VBE(sat) at IC=0.5 A",
-      "datasheet_value": 0.86,
-      "fitted_value": 1.550537886275043,
-      "unit": "V",
-      "relative_error": 0.8029510305523756,
-      "citation": "manufacturer specification table"
-    }
-  ],
+  "residuals": [],
   "worst_relative_error": {
-    "value": 0.8029510305523756,
-    "quantity": "VBE(sat) at IC=0.5 A"
+    "value": 0.0,
+    "quantity": "not claimed for bounded F1 model"
   }
 }

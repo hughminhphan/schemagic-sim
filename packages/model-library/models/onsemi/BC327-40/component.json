@@ -67,9 +67,9 @@
   "model_type": "dot_model",
   "fidelity_tier": "F1",
   "domain_coverage": {
-    "dc": "fitted",
-    "ac": "fitted",
-    "transient": "fitted",
+    "dc": "approx",
+    "ac": "approx",
+    "transient": "approx",
     "noise": "none",
     "thermal": "none",
     "digital": "none"
@@ -81,14 +81,14 @@
     "transient"
   ],
   "supported_operating_region": {
-    "summary": "Fitted at 25 degC across the BC327-40 class-40 typical curve range from 1 mA to 500 mA collector-current magnitude.",
+    "summary": "F1 bounded BC327-40 approximation at 25 degC. Gain support is limited to the published class-40 boundaries from 100 mA to 300 mA; VBE(sat) is not claimed.",
     "numeric_bounds": [
       {
         "quantity": "collector_current_magnitude",
-        "minimum": 0.001,
-        "maximum": 0.5,
+        "minimum": 0.1,
+        "maximum": 0.3,
         "unit": "A",
-        "conditions": "Fitted typical DC range at 25 degC",
+        "conditions": "Published class-40 gain-boundary region at 25 degC",
         "placeholder": false
       },
       {
@@ -109,11 +109,13 @@
     "Base resistance modulation is not fitted: IRB and RBM are held at physical defaults because no base-resistance-versus-current data is published.",
     "Transit-time bias dependence is not fitted: XTF, VTF, and ITF are held at physical defaults because fT is published at a single bias.",
     "Flicker and burst noise are not modelled: KF and AF are held at physical defaults.",
-    "hFE bin spread is not modelled. The fit targets the typical curve or stated bin; a real part may sit anywhere in the published band.",
     "CJE and CJC are derived from single tabulated capacitance points with VJE, VJC, MJE, and MJC held at physical defaults.",
     "Temperature coefficients XTB, EG, and XTI are held at physical defaults; only 25 degC data was fitted.",
     "NF, NR, IRB, RBM, XTF, VTF, ITF, XTB, EG, XTI, KF, AF, IKR, ISC, NC, and VAR are held at default because the datasheet does not characterise them.",
-    "TR is held at default because no storage-time row is published for this part."
+    "TR is held at default because no storage-time row is published for this part.",
+    "VBE(sat) is explicitly unclaimed. The single Gummel-Poon model misses the published 500 mA forced-beta VBE(sat), which lies outside the supported 300 mA gain region.",
+    "DC coverage is approximate and bounded, not a typical-curve fit. Gain is checked only at the published class-40 100 mA and 300 mA boundaries.",
+    "The 500 mA VCE(sat) maximum is checked as an external guaranteed limit; it does not extend the supported current region beyond 300 mA."
   ],
   "licence": {
     "spdx_id": "MIT",
@@ -129,13 +131,13 @@
   },
   "test_results": {
     "status": "complete",
-    "pass_count": 1,
+    "pass_count": 4,
     "fail_count": 0,
-    "total_count": 1,
+    "total_count": 4,
     "worst_observed_relative_fitting_error": {
-      "value": 0.8029510305523756,
-      "quantity": "VBE(sat) at IC=0.5 A"
+      "value": 0.02445192889569534,
+      "quantity": "hFE at IC=0.3 A"
     }
   },
-  "validation_date": "2026-08-06"
+  "validation_date": "2026-08-07"
 }
