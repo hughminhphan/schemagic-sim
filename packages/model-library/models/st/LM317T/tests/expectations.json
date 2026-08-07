@@ -1,0 +1,69 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "reference_voltage.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "reference_endpoint",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(out))"
+          },
+          "expected_value": 1.2,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.08,
+            "relative": 0.05
+          },
+          "datasheet_citation": "Official ST eStore LM317T-DG page, Description and Key features: output range 1.2 V to 37 V, 1.5 A output capability",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "output_current_boundary.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "output_at_1p5a_boundary",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(out))"
+          },
+          "expected_value": 1.2,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.15,
+            "relative": 0.12
+          },
+          "datasheet_citation": "Official ST eStore LM317T-DG page, Description and Key features: output range 1.2 V to 37 V, 1.5 A output capability",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "overload.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "overload_output_physical",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(out))"
+          },
+          "minimum": -10,
+          "maximum": 1.2,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "Official ST eStore LM317T-DG page, Description and Key features: output range 1.2 V to 37 V, 1.5 A output capability",
+          "placeholder": false
+        }
+      ]
+    }
+  ]
+}
