@@ -21,7 +21,9 @@ P3 progress: golds 1N4148 + WP7113ID at F2 VERIFIED (worst fit 0.896% / 0.758%, 
 - [x] Gold adversarial review (Opus) 2026-08-06: 4/5 PASS under falsification (1N4148, WP7113ID, 2N3904, IRLZ44N signed). TL072 FAILED: VDRP hardcoded 5 V/rail from a min-vs-typical misread, dead below 20 V total supply inside claimed envelope. 7 systemic factory weaknesses recorded in docs/gold-review.md and folded into P4 briefs as rules R1-R7.
 - [ ] TL072 refit — IN PROGRESS (returned to factory author with evidence; re-review after).
 - [ ] P4 fan-out workflow READY (scratchpad/p4-fanout.workflow.js: 17 batches, 97 MPNs, 37 F2 targets, author/reviewer lane independence, R1-R7 embedded); launches when TL072 passes re-review.
-- [ ] THEN: P5 packaging -> P6 launch pack (Hugh gate) -> P7 deploy + v0.1.0.
+- [x] P5 packaging DONE (Apache-2.0 + notices + CI + templates; dependency audit clean). P6 assets DONE except final README counts: examples verified, catalog live, launch pack drafted (launch/), demo.gif+mp4 recorded, social preview in flight. Visual critique: NO-GO found 4 blockers -> all fixed -> re-critique GO (rail fix landed 1977b97). Cross-browser: chromium 8/8, firefox 2/2, webkit 2/2 (rest chromium-only by design).
+- [ ] Final model push wf_18240261-daa IN FLIGHT: repair-stale (BJT regens landing), repair-absent (TIP Darlingtons + BF256B), upgrade-f2, then 6-batch review sweep of 61 pending. Target: >=100 pkgs, >=25 F2, zero pending-review.
+- [ ] ENDGAME (in order, after workflows quiet): final sweep tally -> README counts+URL -> history rewrite (strip Co-Authored-By, drop empty commits, delete stray branch review-B1-bjt-small) -> npm test -> gh repo create hughminhphan/schemagic-sim --public + push -> CI green -> wrangler pages deploy apps/web/dist --project-name=schemagic -> live verification checklist -> v0.1.0 tag + release -> final report + launch pack to Hugh. NEVER post to communities.
 - [ ] P2 Editor + analyses (package fan-out)
 - [ ] P3 Model factory + 5 gold components
 - [ ] P4 Component fan-out (≥100 MPNs, ≥25 F2+)
