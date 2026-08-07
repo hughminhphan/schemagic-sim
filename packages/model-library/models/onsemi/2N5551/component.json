@@ -1,0 +1,136 @@
+{
+  "schema_version": "1.0.0",
+  "canonical_mpn": "2N5551",
+  "manufacturer": "onsemi",
+  "description": "High-voltage NPN epitaxial silicon transistor",
+  "electrical_family": "bjt_npn",
+  "symbol_pins": [
+    {
+      "name": "E",
+      "number": "1",
+      "role": "emitter"
+    },
+    {
+      "name": "B",
+      "number": "2",
+      "role": "base"
+    },
+    {
+      "name": "C",
+      "number": "3",
+      "role": "collector"
+    }
+  ],
+  "spice_pin_mapping": [
+    {
+      "symbol_pin_number": "3",
+      "subckt_node": "collector",
+      "order": 1
+    },
+    {
+      "symbol_pin_number": "2",
+      "subckt_node": "base",
+      "order": 2
+    },
+    {
+      "symbol_pin_number": "1",
+      "subckt_node": "emitter",
+      "order": 3
+    }
+  ],
+  "package_variants": [
+    {
+      "name": "TO-92",
+      "standard": "TO-92",
+      "pin_count": 3,
+      "pin_map": [
+        {
+          "package_pin": "1",
+          "symbol_pin_number": "1"
+        },
+        {
+          "package_pin": "2",
+          "symbol_pin_number": "2"
+        },
+        {
+          "package_pin": "3",
+          "symbol_pin_number": "3"
+        }
+      ]
+    }
+  ],
+  "ordering_code_aliases": [],
+  "datasheet": {
+    "url": "https://www.onsemi.com/products/discrete-power-modules/bipolar-transistors/2N5551",
+    "revision": "Manufacturer HTML specification page; accessed 2026-08-07"
+  },
+  "model_type": "dot_model",
+  "fidelity_tier": "F1",
+  "domain_coverage": {
+    "dc": "fitted",
+    "ac": "approx",
+    "transient": "approx",
+    "noise": "none",
+    "thermal": "none",
+    "digital": "none"
+  },
+  "supported_analyses": [
+    "operating_point",
+    "dc_sweep",
+    "ac_small_signal",
+    "transient"
+  ],
+  "supported_operating_region": {
+    "summary": "F1 table-constrained model at 25 degC from official manufacturer HTML specifications; PDF was unreachable.",
+    "numeric_bounds": [
+      {
+        "quantity": "collector_current",
+        "minimum": 0.01,
+        "maximum": 0.05,
+        "unit": "A",
+        "conditions": "Datasheet table range at 25 degC",
+        "placeholder": false
+      },
+      {
+        "quantity": "collector_emitter_voltage",
+        "minimum": 0,
+        "maximum": 160,
+        "unit": "V",
+        "conditions": "Rated VCEO",
+        "placeholder": false
+      }
+    ]
+  },
+  "known_omissions": [
+    "Official manufacturer PDF was unreachable; facts are limited to the manufacturer HTML specification table and fidelity is capped at F1.",
+    "No self-heating, breakdown, package parasitics, reverse operation, base-resistance modulation, transit-time bias dependence, temperature coefficients, flicker noise, or hFE spread are modelled.",
+    "Guaranteed MIN/MAX rows are retained as source semantics; they are not typical targets.",
+    "Only one independent saturation characterization is available; high-current saturation is an anchored table point rather than a fitted curve.",
+    "CJE is held at the numerical floor because Cibo is not published.",
+    "Reviewer remains pending-review",
+    "Source sha256 is a locator sentinel because the official HTML page was unreachable and no content was acquired; do not treat it as a downloaded datasheet hash."
+  ],
+  "licence": {
+    "spdx_id": "MIT",
+    "provenance_basis": "original_from_facts"
+  },
+  "generator": {
+    "tool_or_agent": "opencircuit-model-factory-v0.1.0",
+    "date": "2026-08-07"
+  },
+  "reviewer": {
+    "tool_or_agent": "pending-review",
+    "date": "2026-08-07"
+  },
+  "test_results": {
+    "status": "complete",
+    "pass_count": 8,
+    "fail_count": 0,
+    "total_count": 8,
+    "worst_observed_relative_fitting_error": {
+      "value": 0.8019916758859067,
+      "quantity": "hFE at IC=0.01 A"
+    }
+  },
+  "validation_date": "2026-08-07"
+}

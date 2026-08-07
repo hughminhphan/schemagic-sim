@@ -1,0 +1,108 @@
+{
+  "schema_version": "1.0.0",
+  "validation_date": "2026-08-07",
+  "native_wasm_all_pass": true,
+  "expectations_all_pass": true,
+  "expectation_pass_count": 8,
+  "expectation_fail_count": 0,
+  "worst_native_wasm_relative_delta": 2.078047705665097e-12,
+  "worst_native_wasm_absolute_delta": 3.893774191965349e-12,
+  "benches": [
+    {
+      "test_netlist": "dc_gain.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "hfe_at_0.01_a",
+          "pass": true,
+          "value": 161.45585311244955,
+          "minimum": 80,
+          "maximum": null
+        },
+        {
+          "name": "hfe_at_0.05_a",
+          "pass": true,
+          "value": 65.13628593296464,
+          "minimum": 30,
+          "maximum": null
+        }
+      ]
+    },
+    {
+      "test_netlist": "saturation.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "vce_sat_1",
+          "pass": true,
+          "value": 0.07308749733932438,
+          "error": 0.07691250266067562,
+          "allowed": 0.15
+        },
+        {
+          "name": "vbe_sat_1",
+          "pass": true,
+          "value": 0.7250802142525508,
+          "error": 0.27491978574744924,
+          "allowed": 1
+        },
+        {
+          "name": "vce_sat_2",
+          "pass": true,
+          "value": 0.20287369610775377,
+          "error": 0.04712630389224623,
+          "allowed": 0.25
+        },
+        {
+          "name": "vbe_sat_2",
+          "pass": true,
+          "value": 0.8084522174978355,
+          "error": 0.3915477825021645,
+          "allowed": 1.2
+        }
+      ]
+    },
+    {
+      "test_netlist": "ft_bench.cir",
+      "analysis": "ac",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "current_gain_bandwidth",
+          "pass": true,
+          "value": 313280320.69887084,
+          "minimum": 100000000,
+          "maximum": null
+        }
+      ]
+    },
+    {
+      "test_netlist": "capacitance.cir",
+      "analysis": "ac",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "cobo",
+          "pass": true,
+          "value": 3.2525370755058114e-12,
+          "minimum": null,
+          "maximum": 6e-12
+        }
+      ]
+    },
+    {
+      "test_netlist": "output_curve.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": []
+    },
+    {
+      "test_netlist": "boundary_region.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": []
+    }
+  ]
+}
