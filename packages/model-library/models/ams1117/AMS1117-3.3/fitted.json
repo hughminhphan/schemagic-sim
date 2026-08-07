@@ -1,0 +1,154 @@
+{
+  "schema_version": "1.0.0",
+  "fit_method": "exactly three native ngspice-46 fixed-point calibration iterations for LOADREG and LINEREG; 25 degC typical targets",
+  "temperature_c": 25,
+  "parameters": {
+    "VREF": 3.3,
+    "VDROP": 1.1,
+    "ILIM": 1.1,
+    "LOADREG": 0.002116644448803257,
+    "DILOAD": 0.8,
+    "LINEREG": 0.0005000026664541055,
+    "DVLINE": 10.5,
+    "VNOM": 4.8,
+    "IQ": 0.005,
+    "RNEG": 1.0,
+    "EPS": 1e-08
+  },
+  "parameter_metadata": {
+    "VREF": {
+      "status": "datasheet_typical_or_derived"
+    },
+    "VDROP": {
+      "status": "datasheet_typical_or_derived"
+    },
+    "ILIM": {
+      "status": "datasheet_typical_or_derived"
+    },
+    "LOADREG": {
+      "status": "datasheet_typical_or_derived"
+    },
+    "DILOAD": {
+      "status": "datasheet_typical_or_derived"
+    },
+    "LINEREG": {
+      "status": "datasheet_typical_or_derived"
+    },
+    "DVLINE": {
+      "status": "datasheet_typical_or_derived"
+    },
+    "VNOM": {
+      "status": "datasheet_typical_or_derived"
+    },
+    "IQ": {
+      "status": "datasheet_typical_or_derived"
+    },
+    "RNEG": {
+      "status": "held_default"
+    },
+    "EPS": {
+      "status": "held_default"
+    }
+  },
+  "held_defaults": [
+    {
+      "parameter": "RNEG",
+      "value": 1,
+      "unit": "ohm",
+      "reason": "archetype fixed constant"
+    },
+    {
+      "parameter": "EPS",
+      "value": 1e-08,
+      "unit": "V^2",
+      "reason": "archetype fixed smoothing constant"
+    },
+    {
+      "parameter": "RSER",
+      "value": 10000000.0,
+      "unit": "ohm",
+      "reason": "archetype fixed output shunt"
+    },
+    {
+      "parameter": "RER",
+      "value": 1000000.0,
+      "unit": "ohm",
+      "reason": "archetype fixed error-node shunt"
+    }
+  ],
+  "calibration_iterations": [
+    {
+      "iteration": 1,
+      "LOADREG_in": 0.003,
+      "LINEREG_in": 0.0005,
+      "load_regulation_measured_v": 0.004101866660174203,
+      "line_regulation_measured_v_over_4p8_to_15v": 0.00048571361953175796,
+      "LOADREG_out": 0.0021941230043830283,
+      "LINEREG_out": 0.000500000685777072
+    },
+    {
+      "iteration": 2,
+      "LOADREG_in": 0.0021941230043830283,
+      "LINEREG_in": 0.000500000685777072,
+      "load_regulation_measured_v": 0.0030974768252804985,
+      "line_regulation_measured_v_over_4p8_to_15v": 0.00048571253467777353,
+      "LOADREG_out": 0.002125074499162074,
+      "LINEREG_out": 0.0005000024883236285
+    },
+    {
+      "iteration": 3,
+      "LOADREG_in": 0.002125074499162074,
+      "LINEREG_in": 0.0005000024883236285,
+      "load_regulation_measured_v": 0.003011948228286876,
+      "line_regulation_measured_v_over_4p8_to_15v": 0.00048571411267417375,
+      "LOADREG_out": 0.002116644448803257,
+      "LINEREG_out": 0.0005000026664541055
+    }
+  ],
+  "residuals": [
+    {
+      "quantity": "output voltage",
+      "datasheet_value": 3.3,
+      "fitted_value": 3.3001424007781788,
+      "unit": "V",
+      "relative_error": 4.3151750963319e-05,
+      "citation": "p. 2 Output Voltage TYP column"
+    },
+    {
+      "quantity": "load regulation",
+      "datasheet_value": 0.003,
+      "fitted_value": 0.0030015135520269354,
+      "unit": "V",
+      "relative_error": 0.0005045173423117699,
+      "citation": "p. 3 Load Regulation TYP column"
+    },
+    {
+      "quantity": "line regulation",
+      "datasheet_value": 0.0005,
+      "fitted_value": 0.0005000039748780188,
+      "unit": "V",
+      "relative_error": 7.949756037489708e-06,
+      "citation": "p. 2 Line Regulation TYP column"
+    },
+    {
+      "quantity": "dropout voltage",
+      "datasheet_value": 1.1,
+      "fitted_value": 1.1026851886615683,
+      "unit": "V",
+      "relative_error": 0.0024410806014256306,
+      "citation": "p. 3 Dropout Voltage TYP column and note 4"
+    },
+    {
+      "quantity": "current limit",
+      "datasheet_value": 1.1,
+      "fitted_value": 1.1,
+      "unit": "A",
+      "relative_error": 0.0,
+      "citation": "p. 3 Current Limit TYP column"
+    }
+  ],
+  "worst_relative_error": {
+    "value": 0.0024410806014256306,
+    "quantity": "dropout voltage"
+  }
+}

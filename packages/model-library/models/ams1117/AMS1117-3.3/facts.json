@@ -1,0 +1,145 @@
+{
+  "schema_version": "1.0.0",
+  "extraction_method": "official manufacturer PDF acquired over HTTP; pdftotext -layout plus manual structuring; no vendor SPICE model used",
+  "fit_conditions": {
+    "temperature": {
+      "value": 25,
+      "unit": "degC",
+      "conditions": "Electrical characteristics at IOUT = 0 mA and TJ = 25 degC unless otherwise specified",
+      "page_reference": "p. 2 Electrical Characteristics heading",
+      "source_kind": "typical",
+      "column_semantics": "table applies at 25 degC unless otherwise stated"
+    }
+  },
+  "parameters": {
+    "output_voltage": {
+      "minimum_25c": {
+        "value": 3.251,
+        "unit": "V",
+        "conditions": "VIN = 4.8 V, IOUT = 0 mA, TJ = 25 degC",
+        "page_reference": "p. 2 electrical characteristics, AMS1117-3.3 Output Voltage row, MIN column",
+        "source_kind": "minimum",
+        "column_semantics": "published MIN, tolerance bound"
+      },
+      "typical_25c": {
+        "value": 3.3,
+        "unit": "V",
+        "conditions": "VIN = 4.8 V, IOUT = 0 mA, TJ = 25 degC",
+        "page_reference": "p. 2 electrical characteristics, AMS1117-3.3 Output Voltage row, TYP column",
+        "source_kind": "typical",
+        "column_semantics": "published TYP, fitted target"
+      },
+      "maximum_25c": {
+        "value": 3.349,
+        "unit": "V",
+        "conditions": "VIN = 4.8 V, IOUT = 0 mA, TJ = 25 degC",
+        "page_reference": "p. 2 electrical characteristics, AMS1117-3.3 Output Voltage row, MAX column",
+        "source_kind": "maximum",
+        "column_semantics": "published MAX, tolerance bound"
+      }
+    },
+    "line_regulation": {
+      "value": 0.0005,
+      "unit": "V",
+      "conditions": "1.5 V <= VIN - VOUT <= 12 V, TJ = 25 degC",
+      "page_reference": "p. 2 electrical characteristics, AMS1117-3.3 Line Regulation row, TYP column",
+      "source_kind": "typical",
+      "column_semantics": "published TYP; fitted target"
+    },
+    "line_voltage_range": {
+      "value": 10.5,
+      "unit": "V",
+      "conditions": "VIN - VOUT differential from 1.5 V to 12 V",
+      "page_reference": "p. 2 electrical characteristics, AMS1117-3.3 Line Regulation row",
+      "source_kind": "derived_from_typical_condition",
+      "column_semantics": "difference of published condition endpoints"
+    },
+    "load_regulation": {
+      "value": 0.003,
+      "unit": "V",
+      "conditions": "VIN = 4.75 V, IOUT = 0 A to 0.8 A, TJ = 25 degC",
+      "page_reference": "p. 3 electrical characteristics, AMS1117-3.3 Load Regulation row, TYP column",
+      "source_kind": "typical",
+      "column_semantics": "published TYP; fitted target"
+    },
+    "load_current_range": {
+      "value": 0.8,
+      "unit": "A",
+      "conditions": "VIN = 4.75 V, IOUT = 0 A to 0.8 A",
+      "page_reference": "p. 3 electrical characteristics, AMS1117-3.3 Load Regulation row",
+      "source_kind": "derived_from_typical_condition",
+      "column_semantics": "difference of published current endpoints"
+    },
+    "dropout_voltage": {
+      "value": 1.1,
+      "unit": "V",
+      "conditions": "Delta VOUT = 1%, IOUT = 0.8 A, TJ = 25 degC",
+      "page_reference": "p. 3 electrical characteristics, Dropout Voltage row and note 4, TYP column",
+      "source_kind": "typical",
+      "column_semantics": "published TYP; fitted target"
+    },
+    "current_limit": {
+      "minimum": {
+        "value": 0.9,
+        "unit": "A",
+        "conditions": "VIN - VOUT = 1.5 V, TJ = 25 degC",
+        "page_reference": "p. 3 Current Limit row, MIN column",
+        "source_kind": "minimum",
+        "column_semantics": "published MIN, bound only"
+      },
+      "typical": {
+        "value": 1.1,
+        "unit": "A",
+        "conditions": "VIN - VOUT = 1.5 V, TJ = 25 degC",
+        "page_reference": "p. 3 Current Limit row, TYP column",
+        "source_kind": "typical",
+        "column_semantics": "published TYP, fitted target"
+      },
+      "maximum": {
+        "value": 1.5,
+        "unit": "A",
+        "conditions": "VIN - VOUT = 1.5 V, TJ = 25 degC",
+        "page_reference": "p. 3 Current Limit row, MAX column",
+        "source_kind": "maximum",
+        "column_semantics": "published MAX, bound only"
+      }
+    },
+    "quiescent_current": {
+      "value": 0.005,
+      "unit": "A",
+      "conditions": "fixed versions, VIN - VOUT = 1.5 V, TJ = 25 degC",
+      "page_reference": "p. 3 Quiescent Current row, TYP column",
+      "source_kind": "typical",
+      "column_semantics": "published TYP; fitted target"
+    },
+    "input_voltage_maximum": {
+      "value": 15,
+      "unit": "V",
+      "conditions": "absolute maximum rating",
+      "page_reference": "p. 2 Absolute Maximum Ratings",
+      "source_kind": "maximum",
+      "column_semantics": "published absolute maximum; operating boundary only"
+    }
+  },
+  "identity": {
+    "canonical_mpn": "AMS1117-3.3",
+    "manufacturer": "Advanced Monolithic Systems, Inc.",
+    "aliases": [
+      "AMS1117CD-3.3",
+      "AMS1117CS-3.3"
+    ]
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "http://www.advanced-monolithic.com/pdf/ds1117.pdf",
+    "revision": "Undated DS1117, PDF metadata created 2009-08-28",
+    "sha256": "189a2651878a87d590b768eaa9b44217a3fdf460352ce6ecaff127221282a3f0",
+    "accessed_date": "2026-08-07",
+    "pages_referenced": [
+      "p. 1 features, ordering and pin connections",
+      "p. 2 absolute maximum ratings and electrical characteristics",
+      "p. 3 electrical characteristics and notes"
+    ],
+    "placeholder": false
+  }
+}

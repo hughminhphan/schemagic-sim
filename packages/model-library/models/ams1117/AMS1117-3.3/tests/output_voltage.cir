@@ -1,0 +1,27 @@
+* AMS1117-3.3 output voltage at datasheet bias
+* OpenCircuit Model Factory v0.1.0
+* Original work generated from public factual specifications.
+* AMS1117-3.3 (Advanced Monolithic Systems, Inc.), datasheet Undated DS1117, PDF metadata created 2009-08-28, fitted 2026-08-07
+* Archetype: archetype-vreg.md, variant FIXED. Manual staged run: R1R-regulators-2026-08-07
+* Node order: IN OUT GND
+.subckt OC_AMS1117_3_3 IN OUT GND
++ PARAMS: VREF=3.3 VDROP=1.1 ILIM=1.1 LOADREG=0.0021166444488 DILOAD=0.8
++ LINEREG=0.000500002666454 DVLINE=10.5 VNOM=4.8 IQ=0.005 RNEG=1 EPS=1e-8
+BTGT tgt GND V = VREF + (LINEREG/DVLINE)*(v(IN,GND)-VNOM)
+BHDR hdr GND V = v(IN,GND) - VDROP
+BSEL sel GND V = 0.5*(v(tgt)+v(hdr)) - 0.5*sqrt((v(tgt)-v(hdr))*(v(tgt)-v(hdr))+EPS)
+BERR er GND V = 0.5*((v(sel)-v(OUT,GND)) + sqrt((v(sel)-v(OUT,GND))*(v(sel)-v(OUT,GND))+EPS))
+RER er GND 1meg
+BPASS IN OUT I = ILIM*tanh({DILOAD/LOADREG}/ILIM*v(er))
+RSER OUT GND 1e7
+DNEG GND OUT DCLAMP_AMS1117_3_3
+IQD IN GND DC {IQ}
+.model DCLAMP_AMS1117_3_3 D(IS=1e-12 N=1 RS={RNEG})
+.ends OC_AMS1117_3_3
+.temp 25
+VIN in 0 DC 4.8
+X1 in out 0 OC_AMS1117_3_3
+ILOAD out 0 DC 0
+.save v(out) i(VIN)
+.op
+.end

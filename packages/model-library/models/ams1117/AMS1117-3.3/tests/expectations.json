@@ -1,0 +1,202 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "output_voltage.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "output_voltage_typical_25c",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(out))"
+          },
+          "expected_value": 3.3,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.049,
+            "relative": 0
+          },
+          "datasheet_citation": "p. 2 AMS1117-3.3 Output Voltage MIN/TYP/MAX row at VIN = 4.8 V, IOUT = 0 mA",
+          "placeholder": false
+        },
+        {
+          "name": "input_current_quiescent",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vin))"
+          },
+          "expected_value": 0.005,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 0.001,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 3 Quiescent Current TYP = 5 mA at VIN - VOUT = 1.5 V",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "load_regulation.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "load_endpoint_0a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(out0))"
+          },
+          "expected_value": 3.3,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.01,
+            "relative": 0.01
+          },
+          "datasheet_citation": "p. 3 Load Regulation TYP = 3 mV over 0 A to 0.8 A at VIN = 4.75 V",
+          "placeholder": false
+        },
+        {
+          "name": "load_endpoint_0p8a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(out8))"
+          },
+          "expected_value": 3.297,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.01,
+            "relative": 0.01
+          },
+          "datasheet_citation": "p. 3 Load Regulation TYP = 3 mV over 0 A to 0.8 A at VIN = 4.75 V; endpoint direction is the model's disclosed droop convention",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "line_regulation.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "line_endpoint_4p8v",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(outlo))"
+          },
+          "expected_value": 3.3,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.003,
+            "relative": 0.01
+          },
+          "datasheet_citation": "p. 2 Line Regulation TYP = 0.5 mV over VIN - VOUT = 1.5 V to 12 V",
+          "placeholder": false
+        },
+        {
+          "name": "line_endpoint_15v",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(outhi))"
+          },
+          "expected_value": 3.3004857142857142,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.003,
+            "relative": 0.01
+          },
+          "datasheet_citation": "p. 2 Line Regulation TYP = 0.5 mV over a 10.5 V differential span; 15 V endpoint expectation is linearly scaled over 10.2 V",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "dropout_typical.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "dropout_output_1pct_reduction",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(out))"
+          },
+          "expected_value": 3.267,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.03,
+            "relative": 0.01
+          },
+          "datasheet_citation": "p. 3 Dropout Voltage TYP = 1.1 V at IOUT = 0.8 A, defined at 1% output reduction",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "minimum_input_boundary.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "minimum_input_boundary_output",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(out))"
+          },
+          "expected_value": 3.297,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.05,
+            "relative": 0.02
+          },
+          "datasheet_citation": "p. 3 Dropout Voltage TYP = 1.1 V at IOUT = 0.8 A; p. 2 15 V input absolute maximum defines the other supported boundary",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "current_limit.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "current_limit_typical",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vshort))"
+          },
+          "expected_value": 1.1,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 0.05,
+            "relative": 0.25
+          },
+          "datasheet_citation": "p. 3 Current Limit MIN/TYP/MAX row at VIN - VOUT = 1.5 V",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "overload.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "overload_output_physical",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(out))"
+          },
+          "minimum": -10,
+          "maximum": 3.3,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 2 absolute maximum ratings and p. 3 current-limit specification",
+          "placeholder": false
+        }
+      ]
+    }
+  ]
+}

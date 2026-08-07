@@ -1,0 +1,131 @@
+{
+  "schema_version": "1.0.0",
+  "validation_date": "2026-08-07",
+  "native_wasm_all_pass": true,
+  "expectations_all_pass": true,
+  "expectation_pass_count": 10,
+  "expectation_fail_count": 0,
+  "worst_native_wasm_relative_delta": 1.0838742134294151e-10,
+  "worst_native_wasm_absolute_delta": 3.577125262665959e-10,
+  "benches": [
+    {
+      "test_netlist": "output_voltage.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "output_voltage_typical_25c",
+          "pass": true,
+          "value": 3.3001424007781788,
+          "error": 0.0001424007781789527,
+          "allowed": 0.049
+        },
+        {
+          "name": "input_current_quiescent",
+          "pass": true,
+          "value": 0.005000330018224245,
+          "error": 3.3001822424480465e-07,
+          "allowed": 0.001
+        }
+      ]
+    },
+    {
+      "test_netlist": "load_regulation.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "load_endpoint_0a",
+          "pass": true,
+          "value": 3.3003140201553576,
+          "error": 0.00031402015535775263,
+          "allowed": 0.033
+        },
+        {
+          "name": "load_endpoint_0p8a",
+          "pass": true,
+          "value": 3.2973125066033306,
+          "error": 0.00031250660333048685,
+          "allowed": 0.03297
+        }
+      ]
+    },
+    {
+      "test_netlist": "line_regulation.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "line_endpoint_4p8v",
+          "pass": true,
+          "value": 3.3001424007781774,
+          "error": 0.00014240077817762042,
+          "allowed": 0.033
+        },
+        {
+          "name": "line_endpoint_15v",
+          "pass": true,
+          "value": 3.300628118925202,
+          "error": 0.00014240463948755888,
+          "allowed": 0.03300485714285714
+        }
+      ]
+    },
+    {
+      "test_netlist": "dropout_typical.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "dropout_output_1pct_reduction",
+          "pass": true,
+          "value": 3.267314811338432,
+          "error": 0.00031481133843191955,
+          "allowed": 0.03267
+        }
+      ]
+    },
+    {
+      "test_netlist": "minimum_input_boundary.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "minimum_input_boundary_output",
+          "pass": true,
+          "value": 3.297254471893038,
+          "error": 0.00025447189303795525,
+          "allowed": 0.06594
+        }
+      ]
+    },
+    {
+      "test_netlist": "current_limit.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "current_limit_typical",
+          "pass": true,
+          "value": 1.1,
+          "error": 0.0,
+          "allowed": 0.275
+        }
+      ]
+    },
+    {
+      "test_netlist": "overload.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "overload_output_physical",
+          "pass": true,
+          "value": -2.3808070552111285,
+          "minimum": -10,
+          "maximum": 3.3
+        }
+      ]
+    }
+  ]
+}
