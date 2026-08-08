@@ -5,7 +5,10 @@ import { basename, dirname, join, resolve } from "node:path";
 import { performance } from "node:perf_hooks";
 import { parseRawfile } from "./rawfile.mjs";
 
-export const DEFAULT_NGSPICE_PATH = "/opt/homebrew/bin/ngspice";
+import { existsSync } from "node:fs";
+export const DEFAULT_NGSPICE_PATH = process.env.NGSPICE_BIN
+  ?? ["/opt/homebrew/bin/ngspice", "/usr/bin/ngspice", "/usr/local/bin/ngspice"].find(p => existsSync(p))
+  ?? "ngspice";
 const MAX_CAPTURE_BYTES = 16 * 1024 * 1024;
 let versionCache;
 

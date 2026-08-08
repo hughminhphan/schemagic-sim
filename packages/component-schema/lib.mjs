@@ -110,7 +110,10 @@ function syntaxCheckModel(packageDir) {
     wrapperPath,
     `OpenCircuit model syntax check\n.include "${escaped}"\nVsyntax syntax_node 0 0\nRsyntax syntax_node 0 1G\n.op\n.end\n`
   );
-  const result = spawnSync("/opt/homebrew/bin/ngspice", ["-b", wrapperPath], {
+  const ngspiceBin = process.env.NGSPICE_BIN
+    ?? ["/opt/homebrew/bin/ngspice", "/usr/bin/ngspice", "/usr/local/bin/ngspice"].find(p => fs.existsSync(p))
+    ?? "ngspice";
+  const result = spawnSync(ngspiceBin, ["-b", wrapperPath], {
     cwd: scratch,
     encoding: "utf8",
     timeout: 30_000
