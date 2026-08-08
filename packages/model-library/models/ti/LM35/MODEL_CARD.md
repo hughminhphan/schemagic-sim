@@ -12,7 +12,7 @@
 
 - Datasheet: https://www.ti.com/lit/ds/symlink/lm35.pdf
 - Revision: SNIS159H, August 1999, revised December 2017
-- Accessed: 2026-08-08
+- Accessed: 2026-08-09
 - Referenced pages: p. 1, p. 4, p. 5
 - SHA-256: `beb5db9eea91a092c9315d5ac53ba6a7744ab518a76cc9cf53b424c74ed68625`
 - Basis: original model generated from public factual specifications

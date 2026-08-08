@@ -12,7 +12,7 @@
 
 - Datasheet: https://www.vishay.com/docs/29049/ntcle100.pdf
 - Revision: Document 29049, revision 07-May-2025
-- Accessed: 2026-08-08
+- Accessed: 2026-08-09
 - Referenced pages: p. 2, p. 10
 - SHA-256: `7a6b1228e4464d61dd4e2774db871c44cefb5b2353c1b1179330004c4562af69`
 - Basis: original model generated from public factual specifications

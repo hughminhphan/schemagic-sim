@@ -11,7 +11,12 @@ const repoRoot = path.resolve(here, "../..");
 const libraryRoot = path.join(repoRoot, "packages", "model-library", "models");
 const compareCli = path.join(repoRoot, "tools", "native-ngspice-reference", "compare.mjs");
 const packageValidator = path.join(repoRoot, "packages", "component-schema", "validate-package.mjs");
-const today = () => new Date().toISOString().slice(0, 10);
+const today = () => new Intl.DateTimeFormat("en-CA", {
+  timeZone: "Australia/Sydney",
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit"
+}).format(new Date());
 const json = (value) => `${JSON.stringify(value, null, 2)}\n`;
 
 export function assertFiniteNumbers(value, trail = "root") {
@@ -186,9 +191,18 @@ function stageExtract(ctx) {
 function stageFit(ctx) {
   const factsPath = path.join(ctx.packageDir, "facts.json");
   requireFile(factsPath, "fit");
+  const output = path.join(ctx.packageDir, "fitted.json");
+  if (ctx.part.pipeline === "sibling_alias") {
+    const siblingPath = path.join(libraryRoot, ctx.part.sibling.manufacturerSlug, ctx.part.sibling.slug, "fitted.json");
+    requireFile(siblingPath, "fit sibling alias");
+    const fitted = JSON.parse(fs.readFileSync(siblingPath, "utf8"));
+    fitted.inheritance = { kind: "documented_die_sibling", electrical_model_from: ctx.part.sibling.slug, policy: "separate package metadata and provenance; shared fitted die parameters" };
+    writeJson(output, fitted);
+    console.log(`fit ${ctx.part.slug}: inherited documented die fit from ${ctx.part.sibling.slug}`);
+    return;
+  }
   const python = path.join(here, ".venv", "bin", "python");
   requireFile(python, "fit");
-  const output = path.join(ctx.packageDir, "fitted.json");
   const script = {
     bjt: "fit_bjt.py",
     darlington: "fit_darlington.py",
@@ -246,6 +260,10 @@ function modelText(ctx, fitted) {
     const card = (name, prefix) => `.model ${name} ${polarity}(IS=${formatSpice(p[`${prefix}_IS`])} NF=1 BF=${formatSpice(p[`${prefix}_BF`])} IKF=${formatSpice(p[`${prefix}_IKF`])} ISE=${formatSpice(p[`${prefix}_ISE`])} NE=${formatSpice(p[`${prefix}_NE`])} VAF=${formatSpice(p[`${prefix}_VAF`])} BR=2 RB=${formatSpice(p[`${prefix}_RB`])} RE=${formatSpice(p[`${prefix}_RE`])} RC=${formatSpice(p[`${prefix}_RC`])} CJE=${formatSpice(p[`${prefix}_CJE`])} VJE=0.75 MJE=0.33 CJC=${formatSpice(p[`${prefix}_CJC`])} VJC=0.75 MJC=0.33 XCJC=1 TF=${formatSpice(p[`${prefix}_TF`])} TR=${formatSpice(p[`${prefix}_TR`])} FC=0.5 EG=1.11 XTI=3 TNOM=27)`;
     const diodeInstance = polarity === "PNP" ? `D1 C E ${diode}` : `D1 E C ${diode}`;
     return `${header}* Darlington F2 composite ceiling; internal transistor nodes are F1\n* Node order: C B E\n${card(driver, "DRV")}\n${card(output, "OUT")}\n.model ${diode} D(IS=${formatSpice(p.DIODE_IS)} N=${formatSpice(p.DIODE_N)} RS=${formatSpice(p.DIODE_RS)})\n.subckt ${ctx.part.component.modelName} C B E\nQ1 C B N1 ${driver}\nQ2 C N1 E ${output}\nR1 B N1 ${formatSpice(p.R1)}\nR2 N1 E ${formatSpice(p.R2)}\n${diodeInstance}\n.ends ${ctx.part.component.modelName}\n`;
+  }
+  if (ctx.part.pipeline === "sibling_alias") {
+    const names = ["IS", "NF", "BF", "IKF", "ISE", "NE", "VAF", "BR", "RB", "RE", "RC", "CJE", "VJE", "MJE", "CJC", "VJC", "MJC", "XCJC", "TF", "TR"];
+    return `${header}* Electrical die fit shared from ${ctx.part.sibling.slug} under the documented sibling/package policy\n* Package metadata and datasheet provenance remain specific to ${ctx.part.slug}\n.model ${ctx.part.component.modelName} NPN(${names.map((name) => `${name}=${formatSpice(p[name])}`).join(" ")} FC=0.5 EG=1.11 XTI=3 TNOM=27)\n`;
   }
   if (ctx.part.pipeline === "bjt") {
     const names = ["IS", "NF", "BF", "IKF", "ISE", "NE", "VAF", "BR", "RB", "RE", "RC", "CJE", "VJE", "MJE", "CJC", "VJC", "MJC", "XCJC", "TF", "TR"];
@@ -442,7 +460,11 @@ function bjtTestgen(ctx, model, facts) {
     const ft = facts.frequency_response;
     const beta = facts.gain_points.find((point) => point.collector_current.value === ft.ic.value)?.hfe.value ?? 100;
     writeBench(ctx, "ft_bench.cir", `OpenCircuit factory test: ${ctx.part.slug} fT\n${model}\n.temp 25\nVCC c 0 DC ${formatSpice(sign * ft.vce.value)}\nIBDC 0 b DC ${formatSpice(sign * ft.ic.value / beta)}\nIAC 0 b AC 1\n${instance("1", "c", "b")}\n.ac dec 20 1Meg 10G\n.end\n`);
-    tests.push(testRecord("ft_bench.cir", "ac_small_signal", [expectation("current_gain_bandwidth", "frequency_at_magnitude(i(vcc),1)", ft.ft.value, "Hz", 0, 0.20, ft.ft.page_reference)]));
+    if (ft.ft.source_kind === "minimum") {
+      tests.push(testRecord("ft_bench.cir", "ac_small_signal", [], [hardBound("current_gain_bandwidth_minimum", "frequency_at_magnitude(i(vcc),1)", "Hz", { minimum: ft.ft.value }, ft.ft.page_reference)]));
+    } else {
+      tests.push(testRecord("ft_bench.cir", "ac_small_signal", [expectation("current_gain_bandwidth", "frequency_at_magnitude(i(vcc),1)", ft.ft.value, "Hz", 0, 0.20, ft.ft.page_reference)]));
+    }
   }
 
   if (facts.capacitances) {
@@ -605,7 +627,7 @@ function stageTestgen(ctx) {
   let tests = [];
   ensureDirectory(path.join(ctx.packageDir, "tests"));
 
-  if (["bjt", "darlington"].includes(ctx.part.pipeline)) tests = bjtTestgen(ctx, model, facts);
+  if (["bjt", "darlington", "sibling_alias"].includes(ctx.part.pipeline)) tests = bjtTestgen(ctx, model, facts);
   else if (ctx.part.pipeline === "vdmos") tests = vdmosTestgen(ctx, model, facts);
   else if (ctx.part.pipeline === "opamp") tests = opampTestgen(ctx, model, facts);
   else if (ctx.part.pipeline === "sensor_behavioral") tests = sensorTestgen(ctx, model, facts);

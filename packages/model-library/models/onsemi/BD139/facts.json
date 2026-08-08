@@ -1,0 +1,158 @@
+{
+  "schema_version": "1.0.0",
+  "extraction_method": "manufacturer PDF table transcription with MIN/MAX semantics preserved",
+  "model_polarity": "NPN",
+  "device_class": "power",
+  "fit_conditions": {
+    "temperature": {
+      "value": 25,
+      "unit": "degC",
+      "conditions": "TC = 25 degC unless otherwise specified",
+      "page_reference": "official spec table",
+      "source_kind": "typical"
+    }
+  },
+  "gain_points": [
+    {
+      "collector_current": {
+        "value": 0.005,
+        "unit": "A",
+        "conditions": "VCE = 4 V, TC = 25 degC",
+        "page_reference": "official spec table",
+        "source_kind": "typical"
+      },
+      "vce": {
+        "value": 4,
+        "unit": "V",
+        "conditions": "IC = 0.005 A, TC = 25 degC",
+        "page_reference": "official spec table",
+        "source_kind": "typical"
+      },
+      "hfe": {
+        "value": 25,
+        "unit": "1",
+        "conditions": "IC = 0.005 A, VCE = 4 V",
+        "page_reference": "official spec table MIN column",
+        "source_kind": "minimum"
+      }
+    },
+    {
+      "collector_current": {
+        "value": 0.15,
+        "unit": "A",
+        "conditions": "VCE = 4 V, TC = 25 degC",
+        "page_reference": "official spec table",
+        "source_kind": "typical"
+      },
+      "vce": {
+        "value": 4,
+        "unit": "V",
+        "conditions": "IC = 0.15 A, TC = 25 degC",
+        "page_reference": "official spec table",
+        "source_kind": "typical"
+      },
+      "hfe": {
+        "value": 40,
+        "unit": "1",
+        "conditions": "IC = 0.15 A, VCE = 4 V",
+        "page_reference": "official spec table MIN column",
+        "source_kind": "minimum"
+      }
+    },
+    {
+      "collector_current": {
+        "value": 0.5,
+        "unit": "A",
+        "conditions": "VCE = 4 V, TC = 25 degC",
+        "page_reference": "official spec table",
+        "source_kind": "typical"
+      },
+      "vce": {
+        "value": 4,
+        "unit": "V",
+        "conditions": "IC = 0.5 A, TC = 25 degC",
+        "page_reference": "official spec table",
+        "source_kind": "typical"
+      },
+      "hfe": {
+        "value": 25,
+        "unit": "1",
+        "conditions": "IC = 0.5 A, VCE = 4 V",
+        "page_reference": "official spec table MIN column",
+        "source_kind": "minimum"
+      },
+      "vbe": {
+        "value": 1,
+        "unit": "V",
+        "conditions": "IC = 0.5 A, VCE = 4 V",
+        "page_reference": "official spec table MAX column",
+        "source_kind": "maximum"
+      }
+    }
+  ],
+  "saturation_points": [
+    {
+      "collector_current": {
+        "value": 0.5,
+        "unit": "A",
+        "conditions": "IB = 0.05 A, TC = 25 degC",
+        "page_reference": "official spec table",
+        "source_kind": "typical"
+      },
+      "base_current": {
+        "value": 0.05,
+        "unit": "A",
+        "conditions": "IC = 0.5 A, TC = 25 degC",
+        "page_reference": "official spec table",
+        "source_kind": "typical"
+      },
+      "vce_sat": {
+        "value": 0.5,
+        "unit": "V",
+        "conditions": "IC = 0.5 A, IB = 0.05 A",
+        "page_reference": "official spec table MAX column",
+        "source_kind": "maximum"
+      },
+      "vbe_sat": {
+        "value": 1,
+        "unit": "V",
+        "conditions": "conservative bound from published VBE(on) maximum",
+        "page_reference": "official spec table MAX column",
+        "source_kind": "maximum"
+      }
+    }
+  ],
+  "electrical_limits": {
+    "vceo": {
+      "value": 80,
+      "unit": "V",
+      "conditions": "IB = 0",
+      "page_reference": "official spec table",
+      "source_kind": "minimum"
+    },
+    "collector_current": {
+      "value": 1.5,
+      "unit": "A",
+      "conditions": "continuous",
+      "page_reference": "official spec table",
+      "source_kind": "maximum"
+    }
+  },
+  "identity": {
+    "canonical_mpn": "BD139",
+    "manufacturer": "onsemi",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://www.onsemi.com/pdf/datasheet/bd139-d.pdf",
+    "revision": "BD139/D Rev. 3, April 2026",
+    "sha256": "644c775c026b2c714a7a15ff1a458e9c380ce96ee7ca8dc7ce1cca958bcb2a6c",
+    "accessed_date": "2026-08-09",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2"
+    ],
+    "placeholder": false
+  }
+}

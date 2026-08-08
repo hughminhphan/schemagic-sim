@@ -1,0 +1,136 @@
+{
+  "schema_version": "1.0.0",
+  "canonical_mpn": "MMBT2222A",
+  "manufacturer": "onsemi",
+  "description": "SOT-23 general-purpose NPN transistor, documented PN2222A die sibling",
+  "electrical_family": "bjt_npn",
+  "symbol_pins": [
+    {
+      "name": "B",
+      "number": "1",
+      "role": "base"
+    },
+    {
+      "name": "E",
+      "number": "2",
+      "role": "emitter"
+    },
+    {
+      "name": "C",
+      "number": "3",
+      "role": "collector"
+    }
+  ],
+  "spice_pin_mapping": [
+    {
+      "symbol_pin_number": "3",
+      "subckt_node": "collector",
+      "order": 1
+    },
+    {
+      "symbol_pin_number": "1",
+      "subckt_node": "base",
+      "order": 2
+    },
+    {
+      "symbol_pin_number": "2",
+      "subckt_node": "emitter",
+      "order": 3
+    }
+  ],
+  "package_variants": [
+    {
+      "name": "SOT-23",
+      "standard": "onsemi CASE 318",
+      "pin_count": 3,
+      "pin_map": [
+        {
+          "package_pin": "1",
+          "symbol_pin_number": "1"
+        },
+        {
+          "package_pin": "2",
+          "symbol_pin_number": "2"
+        },
+        {
+          "package_pin": "3",
+          "symbol_pin_number": "3"
+        }
+      ]
+    }
+  ],
+  "ordering_code_aliases": [
+    "MMBT2222ALT1G"
+  ],
+  "datasheet": {
+    "url": "https://www.onsemi.com/pdf/datasheet/mmbt2222lt1-d.pdf",
+    "revision": "MMBT2222LT1/D Rev. 12, August 2021"
+  },
+  "model_type": "dot_model",
+  "fidelity_tier": "F1",
+  "domain_coverage": {
+    "dc": "fitted",
+    "ac": "fitted",
+    "transient": "fitted",
+    "noise": "none",
+    "thermal": "none",
+    "digital": "none"
+  },
+  "supported_analyses": [
+    "operating_point",
+    "dc_sweep",
+    "ac_small_signal",
+    "transient"
+  ],
+  "supported_operating_region": {
+    "summary": "F1 SOT-23 sibling package using the fitted PN2222A die parameters, checked against the MMBT2222A manufacturer specification bounds at 25 degC.",
+    "numeric_bounds": [
+      {
+        "quantity": "collector_current",
+        "minimum": 0.0001,
+        "maximum": 0.5,
+        "unit": "A",
+        "conditions": "MMBT2222A published characterization range at 25 degC",
+        "placeholder": false
+      },
+      {
+        "quantity": "collector_emitter_voltage",
+        "minimum": 0,
+        "maximum": 40,
+        "unit": "V",
+        "conditions": "MMBT2222A VCEO rating; breakdown omitted",
+        "placeholder": false
+      }
+    ]
+  },
+  "known_omissions": [
+    "The electrical parameter vector is intentionally inherited from the existing fitted PN2222A die model. The MMBT2222A retains separate manufacturer datasheet provenance, SOT-23 package metadata, aliases, pin mapping, tests, and validation artifacts.",
+    "The source publishes guaranteed MIN/MAX rows rather than a complete independent typical curve family, so this sibling package remains F1.",
+    "SOT-23 package parasitics and thermal impedance are metadata only; the shared die card does not model package-specific inductance, capacitance, or self-heating.",
+    "Breakdown, failure, statistical spread, temperature coefficients, reverse operation, and noise are not fitted.",
+    "Independent review remains pending-review."
+  ],
+  "licence": {
+    "spdx_id": "MIT",
+    "provenance_basis": "original_from_facts"
+  },
+  "generator": {
+    "tool_or_agent": "opencircuit-model-factory-v0.1.0",
+    "date": "2026-08-09"
+  },
+  "reviewer": {
+    "tool_or_agent": "pending-review",
+    "date": "2026-08-09"
+  },
+  "test_results": {
+    "status": "complete",
+    "pass_count": 12,
+    "fail_count": 0,
+    "total_count": 12,
+    "worst_observed_relative_fitting_error": {
+      "value": 0.12429357289883247,
+      "quantity": "VCE(sat) at IC=0.5 A"
+    }
+  },
+  "validation_date": "2026-08-09"
+}

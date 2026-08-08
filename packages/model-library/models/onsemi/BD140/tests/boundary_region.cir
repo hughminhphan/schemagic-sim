@@ -1,0 +1,15 @@
+OpenCircuit factory test: BD140 supported-region upper-current boundary
+* OpenCircuit Model Factory v0.1.0
+* Original work generated from public factual specifications.
+* This model is not a copy of, or adaptation from, any vendor SPICE model.
+* Source: https://www.onsemi.com/pdf/datasheet/bd139-d.pdf
+* Revision: BD139/D Rev. 3, April 2026
+* Fit: native ngspice-46 in scipy.optimize.least_squares, diff_step=1e-4
+.model OC_ONSEMI_BD140 PNP(IS=1.5053365174e-12 NF=1.0000000000e0 BF=2.3598883777e2 IKF=1.4545912196e-1 ISE=1.2505213719e-12 NE=1.6858183844e0 VAF=6.0000000000e1 BR=2.0000000000e0 RB=8.5698798705e-1 RE=4.3916188238e-2 RC=5.6853017195e-1 CJE=1.0000000000e-15 VJE=7.5000000000e-1 MJE=3.3000000000e-1 CJC=1.0000000000e-15 VJC=7.5000000000e-1 MJC=3.3000000000e-1 XCJC=1.0000000000e0 TF=1.0000000000e-12 TR=0 FC=0.5 EG=1.11 XTI=3 TNOM=27)
+
+.temp 25
+IC 0 c DC -5.0000000000e-1
+IB 0 b DC -2.0000000000e-2
+Q1 c b 0 OC_ONSEMI_BD140
+.op
+.end

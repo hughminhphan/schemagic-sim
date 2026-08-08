@@ -1,0 +1,17 @@
+OpenCircuit factory test: MMBT2222A fT
+* OpenCircuit Model Factory v0.1.0
+* Original work generated from public factual specifications.
+* This model is not a copy of, or adaptation from, any vendor SPICE model.
+* Source: https://www.onsemi.com/pdf/datasheet/mmbt2222lt1-d.pdf
+* Revision: MMBT2222LT1/D Rev. 12, August 2021
+* Electrical die fit shared from PN2222A under the documented sibling/package policy
+* Package metadata and datasheet provenance remain specific to MMBT2222A
+.model OC_ONSEMI_MMBT2222A NPN(IS=2.8962197304e-14 NF=1.0000000000e0 BF=1.9999999999e3 IKF=6.8919904103e-1 ISE=3.5557082141e-14 NE=1.2072447758e0 VAF=1.0000000000e2 BR=4.0000000000e0 RB=3.5000000000e0 RE=1.2962957766e-4 RC=1.6500000000e0 CJE=2.9590349587e-11 VJE=7.5000000000e-1 MJE=3.3000000000e-1 CJC=1.9261254218e-11 VJC=7.5000000000e-1 MJC=3.3000000000e-1 XCJC=1.0000000000e0 TF=4.3597672589e-10 TR=0 FC=0.5 EG=1.11 XTI=3 TNOM=27)
+
+.temp 25
+VCC c 0 DC 2.0000000000e1
+IBDC 0 b DC 2.0000000000e-4
+IAC 0 b AC 1
+Q1 c b 0 OC_ONSEMI_MMBT2222A
+.ac dec 20 1Meg 10G
+.end

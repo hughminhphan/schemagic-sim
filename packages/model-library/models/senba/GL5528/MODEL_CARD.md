@@ -12,7 +12,7 @@
 
 - Datasheet: https://cdn.sparkfun.com/datasheets/Sensors/LightImaging/SEN-09088.pdf
 - Revision: GL5528.xls source sheet, created 25-Apr-2007; reputable SparkFun mirror
-- Accessed: 2026-08-08
+- Accessed: 2026-08-09
 - Referenced pages: p. 1
 - SHA-256: `568ea23f647b2c7b14daee99984244c5134cbc0d0ed63f4f424615c96d90384d`
 - Basis: original model generated from public factual specifications

@@ -2191,24 +2191,24 @@ const stHtmlSource = (mpn, revision, pages) => ({
   revision: `${revision}; official ST product/specification page fallback accessed 2026-08-07`,
   pages
 });
-const powerBjt = ({ mpn, pnp = false, darlington = false, revision, gain, sat, vbeOn, voltage, r1, r2 }) => ({
+const powerBjt = ({ mpn, pnp = false, darlington = false, revision, gain, sat, vbeOn, voltage, r1, r2, packageName = "TO-220", packageStandard = "ST TO-220", currentMax = darlington ? 5 : 3, manufacturerSlug = "st", manufacturer = "STMicroelectronics", sourceUrl, sourcePages }) => ({
   slug: mpn,
-  manufacturerSlug: "st",
+  manufacturerSlug,
   pipeline: darlington ? "darlington" : "bjt",
   identity: {
     canonical_mpn: mpn,
-    manufacturer: "STMicroelectronics",
+    manufacturer,
     description: `${pnp ? "PNP" : "NPN"} ${darlington ? "Darlington " : ""}power transistor`,
     electrical_family: pnp ? "bjt_pnp" : "bjt_npn",
     aliases: [],
-    package: { name: "TO-220", standard: "ST TO-220" },
+    package: { name: packageName, standard: packageStandard },
     pins: transistorPins,
     spice_order: ["2", "1", "3"]
   },
-  source: stHtmlSource(mpn, revision, darlington ? ["official spec table", "internal schematic"] : ["official spec table"]),
+  source: sourceUrl ? { url: sourceUrl, revision, pages: sourcePages ?? ["p. 1", "p. 2"] } : stHtmlSource(mpn, revision, darlington ? ["official spec table", "internal schematic"] : ["official spec table"]),
   facts: {
     schema_version: "1.0.0",
-    extraction_method: "official ST product/specification page fallback; PDF fetch timed out after browser-header retries; MIN/MAX semantics preserved",
+    extraction_method: sourceUrl ? "manufacturer PDF table transcription with MIN/MAX semantics preserved" : "official ST product/specification page fallback; PDF fetch timed out after browser-header retries; MIN/MAX semantics preserved",
     model_polarity: pnp ? "PNP" : "NPN",
     device_class: "power",
     fit_conditions: { temperature: quantity(25, "degC", "TC = 25 degC unless otherwise specified", "official spec table", "typical") },
@@ -2226,7 +2226,7 @@ const powerBjt = ({ mpn, pnp = false, darlington = false, revision, gain, sat, v
     })),
     electrical_limits: {
       vceo: quantity(voltage, "V", "IB = 0", "official spec table", "minimum"),
-      collector_current: quantity(darlington ? 5 : 3, "A", "continuous", "official spec table", "maximum")
+      collector_current: quantity(currentMax, "A", "continuous", "official spec table", "maximum")
     },
     ...(darlington ? { internal_network: { r1: quantity(r1, "ohm", "internal schematic", "internal schematic", "typical"), r2: quantity(r2, "ohm", "internal schematic", "internal schematic", "typical") } } : {}),
     ...(darlington ? { composite_seed: {
@@ -2236,18 +2236,18 @@ const powerBjt = ({ mpn, pnp = false, darlington = false, revision, gain, sat, v
     } } : {})
   },
   component: {
-    modelName: `OC_ST_${mpn}`,
+    modelName: `OC_${manufacturerSlug.toUpperCase()}_${mpn}`,
     fidelity_tier: "F1",
     domain_coverage: { dc: "approx", ac: "none", transient: darlington ? "approx" : "none", noise: "none", thermal: "none", digital: "none" },
     supported_analyses: ["operating_point", "dc_sweep", "transient"],
-    operating_summary: `F1 table-constrained terminal model at 25 degC; official HTML specification fallback used because ST PDF fetches timed out.`,
+    operating_summary: sourceUrl ? "F1 table-constrained terminal model at 25 degC from a manufacturer PDF." : "F1 table-constrained terminal model at 25 degC; official HTML specification fallback used because ST PDF fetches timed out.",
     numeric_bounds: [
-      { quantity: "collector_current", minimum: 0, maximum: darlington ? 5 : 3, unit: "A", conditions: "Continuous current rating; SOA and thermal limits not enforced", placeholder: false },
+      { quantity: "collector_current", minimum: 0, maximum: currentMax, unit: "A", conditions: "Continuous current rating; SOA and thermal limits not enforced", placeholder: false },
       { quantity: "collector_emitter_voltage", minimum: 0, maximum: voltage, unit: "V", conditions: "Rated VCEO; breakdown omitted", placeholder: false },
       { quantity: "ambient_temperature", minimum: 25, maximum: 25, unit: "degC", conditions: "Characterization temperature", placeholder: false }
     ],
     omissions: [
-      "Official ST PDF fetch timed out after browser-header retries; the official ST HTML product/specification page is the source and fidelity is capped at F1.",
+      sourceUrl ? "The manufacturer source provides guaranteed MIN/MAX rows but not enough independent typical curves for F2; fidelity is capped at F1." : "Official ST PDF fetch timed out after browser-header retries; the official ST HTML product/specification page is the source and fidelity is capped at F1.",
       ...(darlington ? ["Darlington modelled as two Gummel-Poon devices plus the datasheet internal bias resistors and freewheel diode. The two dies are not independently characterised; only composite terminal behaviour is constrained. Internal-node behaviour is F1."] : []),
       "Guaranteed MIN/MAX rows remain hard bounds and are not presented as typical targets.",
       "No self-heating, safe-operating-area failure, thermal runaway, breakdown, package parasitics, temperature spread, or noise is modelled.",
@@ -2261,6 +2261,10 @@ Object.assign(PARTS, {
   TIP32C: powerBjt({ mpn: "TIP32C", pnp: true, revision: "Rev. 2, November 2006", gain: [[1, 25], [3, 10]], sat: [[3, 0.375, 1.2]], vbeOn: [3, 1.8], voltage: 100 }),
   TIP120: powerBjt({ mpn: "TIP120", darlington: true, revision: "DS0854 Rev. 5, May 2021", gain: [[0.5, 1000], [3, 1000]], sat: [[3, 0.012, 2], [5, 0.020, 4]], vbeOn: [3, 2.5], voltage: 60, r1: 7000, r2: 70 }),
   TIP125: powerBjt({ mpn: "TIP125", pnp: true, darlington: true, revision: "DS0854 Rev. 5, May 2021", gain: [[0.5, 1000], [3, 1000]], sat: [[3, 0.012, 2], [5, 0.020, 4]], vbeOn: [3, 2.5], voltage: 60, r1: 16000, r2: 60 }),
+  BD139: powerBjt({ mpn: "BD139", revision: "BD139/D Rev. 3, April 2026", gain: [[0.005, 25], [0.15, 40], [0.5, 25]], sat: [[0.5, 0.05, 0.5]], vbeOn: [0.5, 1.0], voltage: 80, currentMax: 1.5, packageName: "TO-126", packageStandard: "onsemi TO-126-3LD", manufacturerSlug: "onsemi", manufacturer: "onsemi", sourceUrl: "https://www.onsemi.com/pdf/datasheet/bd139-d.pdf", sourcePages: ["p. 1", "p. 2"] }),
+  BD140: powerBjt({ mpn: "BD140", pnp: true, revision: "BD139/D Rev. 3, April 2026", gain: [[0.005, 25], [0.15, 40], [0.5, 25]], sat: [[0.5, 0.05, 0.5]], vbeOn: [0.5, 1.0], voltage: 80, currentMax: 1.5, packageName: "TO-126", packageStandard: "onsemi TO-126-3LD", manufacturerSlug: "onsemi", manufacturer: "onsemi", sourceUrl: "https://www.onsemi.com/pdf/datasheet/bd139-d.pdf", sourcePages: ["p. 1", "p. 2"] }),
+  TIP41C: powerBjt({ mpn: "TIP41C", revision: "TIP41A/D Rev. 12, June 2024", gain: [[0.3, 30], [3, 15]], sat: [[6, 0.6, 1.5]], vbeOn: [6, 2.0], voltage: 100, currentMax: 6, manufacturerSlug: "onsemi", manufacturer: "onsemi", sourceUrl: "https://www.onsemi.com/pdf/datasheet/tip41a-d.pdf", sourcePages: ["p. 1", "p. 2", "p. 3"] }),
+  TIP42C: powerBjt({ mpn: "TIP42C", pnp: true, revision: "TIP41A/D Rev. 12, June 2024", gain: [[0.3, 30], [3, 15]], sat: [[6, 0.6, 1.5]], vbeOn: [6, 2.0], voltage: 100, currentMax: 6, manufacturerSlug: "onsemi", manufacturer: "onsemi", sourceUrl: "https://www.onsemi.com/pdf/datasheet/tip41a-d.pdf", sourcePages: ["p. 1", "p. 2", "p. 3"] }),
   BF256B: {
     slug: "BF256B", manufacturerSlug: "nxp", pipeline: "njf",
     identity: {
@@ -2291,7 +2295,64 @@ const sensorComponent = ({ modelName, fidelity, summary, bounds, omissions, dc =
   omissions: [...omissions, "Independent review remains pending-review."]
 });
 
+const pn2222SiblingFacts = {
+  schema_version: "1.0.0", extraction_method: "MMBT2222A manufacturer PDF table transcription; electrical parameters inherit the documented PN2222A die fit under the sibling/package policy", model_polarity: "NPN", device_class: "small_signal",
+  fit_conditions: { temperature: quantity(25, "degC", "TA = 25 degC unless stated", "p. 2 electrical characteristics heading", "typical") },
+  gain_points: [[0.0001, 35], [0.001, 50], [0.01, 75], [0.15, 100], [0.5, 40]].map(([ic, hfe]) => ({ collector_current: quantity(ic, "A", "VCE = 10 V, TA = 25 degC", "p. 2 DC current gain table", "typical"), vce: quantity(10, "V", `IC = ${ic} A`, "p. 2 DC current gain table", "typical"), hfe: quantity(hfe, "1", `IC = ${ic} A, VCE = 10 V`, "p. 2 hFE MIN column", "minimum") })),
+  saturation_points: [
+    { collector_current: quantity(0.15, "A", "IB = 15 mA", "p. 2 saturation table", "typical"), base_current: quantity(0.015, "A", "IC = 150 mA", "p. 2 saturation table", "typical"), vce_sat: quantity(0.3, "V", "IC = 150 mA, IB = 15 mA", "p. 2 VCE(sat) MAX column", "maximum"), vbe_sat: quantity(1.2, "V", "IC = 150 mA, IB = 15 mA", "p. 2 VBE(sat) MAX column", "maximum") },
+    { collector_current: quantity(0.5, "A", "IB = 50 mA", "p. 2 saturation table", "typical"), base_current: quantity(0.05, "A", "IC = 500 mA", "p. 2 saturation table", "typical"), vce_sat: quantity(1.0, "V", "IC = 500 mA, IB = 50 mA", "p. 2 VCE(sat) MAX column", "maximum"), vbe_sat: quantity(2.0, "V", "IC = 500 mA, IB = 50 mA", "p. 2 VBE(sat) MAX column", "maximum") }
+  ],
+  capacitances: { cobo: quantity(8e-12, "F", "VCB = 10 V, IE = 0, f = 1 MHz", "p. 2 Cobo MAX column", "maximum"), cobo_vcb: quantity(10, "V", "Cobo test bias", "p. 2 Cobo row", "typical"), cibo: quantity(25e-12, "F", "VEB = 0.5 V, IC = 0, f = 1 MHz", "p. 2 Cibo MAX column", "maximum"), cibo_veb: quantity(0.5, "V", "Cibo test bias", "p. 2 Cibo row", "typical") },
+  frequency_response: { ft: quantity(300e6, "Hz", "IC = 20 mA, VCE = 20 V, f = 100 MHz", "p. 2 fT MIN column", "minimum"), ic: quantity(0.02, "A", "fT test current", "p. 2 fT row", "typical"), vce: quantity(20, "V", "fT test voltage", "p. 2 fT row", "typical"), storage_time: quantity(225e-9, "s", "VCC = 30 V, IC = 150 mA, IB1 = 15 mA", "p. 3 storage time MAX column", "maximum") },
+  electrical_limits: { vceo: quantity(40, "V", "IC = 10 mA, IB = 0", "p. 2 OFF characteristics", "minimum"), collector_current: quantity(0.6, "A", "continuous rating", "p. 1 maximum ratings", "maximum") }
+};
+
 Object.assign(PARTS, {
+  MMBT2222A: {
+    slug: "MMBT2222A", manufacturerSlug: "onsemi", pipeline: "sibling_alias", sibling: { manufacturerSlug: "onsemi", slug: "PN2222A" },
+    identity: {
+      canonical_mpn: "MMBT2222A", manufacturer: "onsemi", description: "SOT-23 general-purpose NPN transistor, documented PN2222A die sibling", electrical_family: "bjt_npn", aliases: ["MMBT2222ALT1G"],
+      package: { name: "SOT-23", standard: "onsemi CASE 318" },
+      pins: [{ name: "B", number: "1", role: "base", node: "base" }, { name: "E", number: "2", role: "emitter", node: "emitter" }, { name: "C", number: "3", role: "collector", node: "collector" }], spice_order: ["3", "1", "2"]
+    },
+    source: { url: "https://www.onsemi.com/pdf/datasheet/mmbt2222lt1-d.pdf", revision: "MMBT2222LT1/D Rev. 12, August 2021", pages: ["p. 1", "p. 2", "p. 3"] },
+    facts: pn2222SiblingFacts,
+    component: {
+      modelName: "OC_ONSEMI_MMBT2222A", fidelity_tier: "F1", domain_coverage: { dc: "fitted", ac: "fitted", transient: "fitted", noise: "none", thermal: "none", digital: "none" }, supported_analyses: ["operating_point", "dc_sweep", "ac_small_signal", "transient"],
+      operating_summary: "F1 SOT-23 sibling package using the fitted PN2222A die parameters, checked against the MMBT2222A manufacturer specification bounds at 25 degC.",
+      numeric_bounds: [{ quantity: "collector_current", minimum: 0.0001, maximum: 0.5, unit: "A", conditions: "MMBT2222A published characterization range at 25 degC", placeholder: false }, { quantity: "collector_emitter_voltage", minimum: 0, maximum: 40, unit: "V", conditions: "MMBT2222A VCEO rating; breakdown omitted", placeholder: false }],
+      omissions: ["The electrical parameter vector is intentionally inherited from the existing fitted PN2222A die model. The MMBT2222A retains separate manufacturer datasheet provenance, SOT-23 package metadata, aliases, pin mapping, tests, and validation artifacts.", "The source publishes guaranteed MIN/MAX rows rather than a complete independent typical curve family, so this sibling package remains F1.", "SOT-23 package parasitics and thermal impedance are metadata only; the shared die card does not model package-specific inductance, capacitance, or self-heating.", "Breakdown, failure, statistical spread, temperature coefficients, reverse operation, and noise are not fitted.", "Independent review remains pending-review."]
+    }
+  },
+  "2N5088": {
+    slug: "2N5088", manufacturerSlug: "onsemi", pipeline: "bjt",
+    identity: {
+      canonical_mpn: "2N5088", manufacturer: "onsemi (Fairchild legacy)", description: "Low-noise high-gain NPN general-purpose amplifier transistor", electrical_family: "bjt_npn", aliases: [],
+      package: { name: "TO-92", standard: "Fairchild TO-92" },
+      pins: [{ name: "E", number: "1", role: "emitter", node: "emitter" }, { name: "B", number: "2", role: "base", node: "base" }, { name: "C", number: "3", role: "collector", node: "collector" }], spice_order: ["3", "2", "1"]
+    },
+    source: { url: "https://www.onsemi.com/pdf/datasheet/2n5088-d.pdf", revision: "2N5088/2N5089/MMBT5088/MMBT5089 Rev. A, 2001", pages: ["p. 1", "p. 2", "p. 3"] },
+    facts: {
+      schema_version: "1.0.0", extraction_method: "pdftotext -layout plus manual MIN/MAX table transcription", model_polarity: "NPN", device_class: "small_signal",
+      fit_conditions: { temperature: quantity(25, "degC", "TA = 25 degC unless stated", "p. 1 absolute ratings heading", "typical") },
+      gain_points: [
+        { collector_current: quantity(100e-6, "A", "VCE = 5 V", "p. 2 ON characteristics", "typical"), vce: quantity(5, "V", "IC = 100 uA", "p. 2 ON characteristics", "typical"), hfe: quantity(300, "1", "IC = 100 uA, VCE = 5 V", "p. 2 hFE MIN column", "minimum") },
+        { collector_current: quantity(1e-3, "A", "VCE = 5 V", "p. 2 ON characteristics", "typical"), vce: quantity(5, "V", "IC = 1 mA", "p. 2 ON characteristics", "typical"), hfe: quantity(350, "1", "IC = 1 mA, VCE = 5 V", "p. 2 hFE MIN column", "minimum") },
+        { collector_current: quantity(10e-3, "A", "VCE = 5 V, pulse test", "p. 2 ON characteristics", "typical"), vce: quantity(5, "V", "IC = 10 mA", "p. 2 ON characteristics", "typical"), hfe: quantity(300, "1", "IC = 10 mA, VCE = 5 V", "p. 2 hFE MIN column", "minimum"), vbe: quantity(0.8, "V", "IC = 10 mA, VCE = 5 V", "p. 2 VBE(on) MAX column", "maximum") }
+      ],
+      saturation_points: [{ collector_current: quantity(0.01, "A", "IB = 1 mA", "p. 2 ON characteristics", "typical"), base_current: quantity(0.001, "A", "IC = 10 mA", "p. 2 ON characteristics", "typical"), vce_sat: quantity(0.5, "V", "IC = 10 mA, IB = 1 mA", "p. 2 VCE(sat) MAX column", "maximum"), vbe_sat: quantity(0.8, "V", "conservative bound from VBE(on) at IC = 10 mA", "p. 2 VBE(on) MAX column", "maximum") }],
+      capacitances: { cobo: quantity(4e-12, "F", "VCB = 5 V, IE = 0, f = 100 kHz", "p. 2 Ccb MAX column", "maximum"), cobo_vcb: quantity(5, "V", "Ccb test bias", "p. 2 Ccb row", "typical"), cibo: quantity(10e-12, "F", "VBE = 0.5 V, IC = 0, f = 100 kHz", "p. 2 Ceb MAX column", "maximum"), cibo_veb: quantity(0.5, "V", "Ceb test bias", "p. 2 Ceb row", "typical") },
+      frequency_response: { ft: quantity(50e6, "Hz", "IC = 500 uA, VCE = 5 V, ftest = 20 MHz", "p. 2 fT MIN column", "minimum"), ic: quantity(500e-6, "A", "fT test current", "p. 2 fT row", "typical"), vce: quantity(5, "V", "fT test voltage", "p. 2 fT row", "typical") },
+      electrical_limits: { vceo: quantity(30, "V", "IB = 0", "p. 1 absolute maximum ratings", "maximum"), collector_current: quantity(0.1, "A", "continuous", "p. 1 absolute maximum ratings", "maximum") }
+    },
+    component: {
+      modelName: "OC_ONSEMI_2N5088", fidelity_tier: "F1", domain_coverage: { dc: "approx", ac: "approx", transient: "approx", noise: "none", thermal: "none", digital: "none" }, supported_analyses: ["operating_point", "dc_sweep", "ac_small_signal", "transient"],
+      operating_summary: "F1 guaranteed-bound model at 25 degC from 100 uA to 10 mA. Published hFE minima and voltage maxima are enforced as bounds.",
+      numeric_bounds: [{ quantity: "collector_current", minimum: 100e-6, maximum: 0.01, unit: "A", conditions: "Table-constrained fitted region", placeholder: false }, { quantity: "collector_emitter_voltage", minimum: 0, maximum: 30, unit: "V", conditions: "Rated VCEO; breakdown omitted", placeholder: false }],
+      omissions: ["The source provides guaranteed hFE minima and voltage maxima rather than a complete typical DC curve, so fidelity is capped at F1.", "The published noise figure is metadata only; flicker and broadband noise are not modelled.", "VAF, junction grading, reverse operation, temperature coefficients, process spread, self-heating, breakdown, and package parasitics are not fitted.", "VBE(on) is reused only as a conservative VBE(sat) upper bound at the same collector current; no typical saturation base voltage is claimed.", "Independent review remains pending-review."]
+    }
+  },
   LM35: {
     slug: "LM35", manufacturerSlug: "ti", pipeline: "sensor_behavioral",
     identity: {
