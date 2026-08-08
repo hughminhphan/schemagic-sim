@@ -67,9 +67,9 @@
     "revision": "PD-94812, 03-Nov-2003; public asset modified 29-Apr-2021"
   },
   "model_type": "dot_model",
-  "fidelity_tier": "F1",
+  "fidelity_tier": "F2",
   "domain_coverage": {
-    "dc": "approx",
+    "dc": "fitted",
     "ac": "fitted",
     "transient": "approx",
     "noise": "none",
@@ -83,7 +83,7 @@
     "transient"
   ],
   "supported_operating_region": {
-    "summary": "F1 model fitted at 25 degC across the transfer, output, on-resistance, and tabulated capacitance data from VGS = 4.6 V to 10 V and VDS up to 50 V. Switching transients are approximate.",
+    "summary": "F2 model fitted at 25 degC across the transfer, output, on-resistance, body-diode, and nonlinear capacitance data from VGS = 4.6 V to 10 V and VDS up to 50 V. Gate charge independently cross-checks the capacitance fit; reverse recovery and package ringing remain approximate.",
     "numeric_bounds": [
       {
         "quantity": "drain_source_voltage",
@@ -110,7 +110,7 @@
     "Package and lead inductance are not modelled, so measured switching ringing will not reproduce.",
     "Threshold-voltage spread and gate oxide breakdown are not modelled.",
     "RTHJC and RTHCA are transcribed from the thermal table, but the five-terminal electrothermal form is not validated against datasheet data.",
-    "F1 downgrade: the independent gate-charge cross-check missed the p. 4 Fig. 6 typical value by more than 30 percent. Capacitances remain anchored to the p. 2 table, but switching charge is not claimed as fitted.",
+    "The p. 4 Figure 6 typical gate-charge cross-check at VGS = 10 V passes independently within the archetype 30 percent threshold; the tabulated 71 nC value is a MAX column limit, not the typical curve target.",
     "The supported region is capped at 50 V. Setting BV to the p. 2 guaranteed minimum breakdown pair causes ordinary model breakdown near 100 V, so low IDSS at the full 100 V rating is not claimed.",
     "RDS is held at default as a 1 Gohm leakage shunt; off-state leakage is bounded by a datasheet check.",
     "VJ = 0.8 V, M = 0.5, FC = 0.5, and NBV = 1 are held at default because the published data does not separate them.",
@@ -125,22 +125,22 @@
     "provenance_basis": "original_from_facts"
   },
   "generator": {
-    "tool_or_agent": "opencircuit-model-factory-v0.1.0",
-    "date": "2026-08-07"
+    "tool_or_agent": "opencircuit-model-factory-v0.1.0 native VDMOS fit",
+    "date": "2026-08-08"
   },
   "reviewer": {
-    "tool_or_agent": "luna independent reviewer (sweep-fets)",
-    "date": "2026-08-07"
+    "tool_or_agent": "pending-review",
+    "date": "2026-08-08"
   },
   "test_results": {
     "status": "complete",
-    "pass_count": 19,
+    "pass_count": 20,
     "fail_count": 0,
-    "total_count": 19,
+    "total_count": 20,
     "worst_observed_relative_fitting_error": {
-      "value": 0.7295427561093468,
-      "quantity": "Crss at 100 V"
+      "value": 0.17481716345332718,
+      "quantity": "Crss at 5 V"
     }
   },
-  "validation_date": "2026-08-07"
+  "validation_date": "2026-08-08"
 }

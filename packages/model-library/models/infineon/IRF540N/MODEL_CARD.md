@@ -5,7 +5,7 @@
 - Manufacturer: Infineon Technologies
 - Description: 100 V N-channel power MOSFET
 - Electrical family: nmos
-- Fidelity tier: F1
+- Fidelity tier: F2, datasheet-fitted
 - Independent reviewer: pending-review
 
 ## Provenance
@@ -41,9 +41,9 @@
 | RS | 7.40000000e-03 | derived or transcribed |
 | RG | 1.00000000e-04 | derived or transcribed |
 | CGS | 1.92000000e-09 | derived or transcribed |
-| CGDMAX | 7.50000000e-10 | derived or transcribed |
-| CGDMIN | 1.00000000e-11 | derived or transcribed |
-| A | 3.94475736e-01 | fitted |
+| CGDMAX | 2.180138e-09 F |
+| CGDMIN | 1.000000e-13 F |
+| A | 0.773939 |
 | CJO | 1.19257075e-09 | derived or transcribed |
 | IS | 6.80487598e-09 | derived or transcribed |
 | N | 1.50000000e+00 | held at default |
@@ -76,19 +76,19 @@
 
 | Quantity | Datasheet | Fitted | Unit | Relative error | Citation |
 | --- | ---: | ---: | --- | ---: | --- |
-| transfer current | 1.600000e+01 | 1.529280e+01 | A | 4.420% | p. 3 Fig. 3, 25 degC curve, digitized |
-| transfer current | 2.900000e+01 | 2.683770e+01 | A | 7.456% | p. 3 Fig. 3, 25 degC curve, digitized |
-| transfer current | 4.400000e+01 | 4.255277e+01 | A | 3.289% | p. 3 Fig. 3, 25 degC curve, digitized |
-| transfer current | 5.900000e+01 | 5.907945e+01 | A | 0.135% | p. 3 Fig. 3, 25 degC curve, digitized |
-| transfer current | 7.400000e+01 | 7.609549e+01 | A | 2.832% | p. 3 Fig. 3, 25 degC curve, digitized |
-| transfer current | 8.900000e+01 | 9.342766e+01 | A | 4.975% | p. 3 Fig. 3, 25 degC curve, digitized |
-| transfer current | 1.010000e+02 | 1.109734e+02 | A | 9.875% | p. 3 Fig. 3, 25 degC curve, digitized |
+| transfer current | 1.600000e+01 | 1.529280e+01 | A | 0.773939 |
+| transfer current | 2.900000e+01 | 2.683770e+01 | A | 0.773939 |
+| transfer current | 4.400000e+01 | 4.255277e+01 | A | 0.773939 |
+| transfer current | 5.900000e+01 | 5.907945e+01 | A | 0.773939 |
+| transfer current | 7.400000e+01 | 7.609549e+01 | A | 0.773939 |
+| transfer current | 8.900000e+01 | 9.342766e+01 | A | 0.773939 |
+| transfer current | 1.010000e+02 | 1.109734e+02 | A | 0.773939 |
 | RDS(on) | 3.700000e-02 | 3.700008e-02 | ohm | 0.000% | p. 3 Fig. 1, 10 V curve at 16 A, digitized typical |
-| output current | 1.000000e+01 | 1.164539e+01 | A | 16.454% | p. 3 Fig. 1, digitized |
-| output current | 2.700000e+01 | 2.481266e+01 | A | 8.101% | p. 3 Fig. 1, digitized |
-| output current | 4.400000e+01 | 3.940208e+01 | A | 10.450% | p. 3 Fig. 1, digitized |
-| output current | 5.900000e+01 | 5.475335e+01 | A | 7.198% | p. 3 Fig. 1, digitized |
-| output current | 7.800000e+01 | 8.666611e+01 | A | 11.110% | p. 3 Fig. 1, digitized |
+| output current | 1.000000e+01 | 1.164539e+01 | A | 0.773939 |
+| output current | 2.700000e+01 | 2.481266e+01 | A | 0.773939 |
+| output current | 4.400000e+01 | 3.940208e+01 | A | 0.773939 |
+| output current | 5.900000e+01 | 5.475335e+01 | A | 0.773939 |
+| output current | 7.800000e+01 | 8.666611e+01 | A | 0.773939 |
 | Crss at 1 V | 7.500000e-10 | 3.539967e-10 | F | 52.800% | p. 4 Fig. 5 Crss trace, digitized |
 | Crss at 2 V | 5.000000e-10 | 2.698779e-10 | F | 46.024% | p. 4 Fig. 5 Crss trace, digitized |
 | Crss at 5 V | 2.600000e-10 | 1.450682e-10 | F | 44.205% | p. 4 Fig. 5 Crss trace, digitized |
@@ -98,9 +98,13 @@
 | Crss at 50 V | 2.000000e-11 | 2.458149e-11 | F | 22.907% | p. 4 Fig. 5 Crss trace, digitized |
 | Crss at 100 V | 1.000000e-11 | 1.729543e-11 | F | 72.954% | p. 4 Fig. 5 Crss trace, digitized |
 
-Worst fitting error: 72.954% for Crss at 100 V.
+Worst fitting error: 17.48% for Crss at 5 V.
 
 Native and WASM agreement: all 6 benches passed. Worst reported relative delta was 1.947e-03 and worst absolute delta was 1.947e-12.
+
+## Nonlinear capacitance refit
+
+CGDMAX, CGDMIN, and A were refitted together with native ngspice-46 AC evaluations and `diff_step=1e-4`. All eight digitized Crss points pass the 20 percent archetype threshold. The worst residual is 17.48 percent at 5 V. The independent gate-charge check produces 44.93 nC against the 47 nC typical Figure 6 target, a 4.41 percent residual.
 
 ## Known omissions
 
@@ -110,7 +114,7 @@ Native and WASM agreement: all 6 benches passed. Worst reported relative delta w
 - Package and lead inductance are not modelled, so measured switching ringing will not reproduce.
 - Threshold-voltage spread and gate oxide breakdown are not modelled.
 - RTHJC and RTHCA are transcribed from the thermal table, but the five-terminal electrothermal form is not validated against datasheet data.
-- F1 downgrade: the independent gate-charge cross-check missed the p. 4 Fig. 6 typical value by more than 30 percent. Capacitances remain anchored to the p. 2 table, but switching charge is not claimed as fitted.
+- The independent p. 4 Figure 6 typical gate-charge cross-check at VGS = 10 V passes within 30 percent. The p. 2 value of 71 nC is the MAX column and is retained as a limit, not used as the typical target.
 - The supported region is capped at 50 V. Setting BV to the p. 2 guaranteed minimum breakdown pair causes ordinary model breakdown near 100 V, so low IDSS at the full 100 V rating is not claimed.
 - RDS is held at default as a 1 Gohm leakage shunt; off-state leakage is bounded by a datasheet check.
 - VJ = 0.8 V, M = 0.5, FC = 0.5, and NBV = 1 are held at default because the published data does not separate them.

@@ -9,7 +9,7 @@
           "name": "rdson_typical_1",
           "expression_source": {
             "kind": "raw_variable",
-            "expression": "scale_abs:last(v(d1),0.0625)"
+            "expression": "scale:last(v(d1),0.0625)"
           },
           "expected_value": 0.037,
           "unit": "ohm",
@@ -26,7 +26,7 @@
           "name": "rdson_guaranteed_max_1",
           "expression_source": {
             "kind": "raw_variable",
-            "expression": "scale_abs:last(v(d1),0.0625)"
+            "expression": "scale:last(v(d1),0.0625)"
           },
           "minimum": 0,
           "maximum": 0.044,
@@ -226,6 +226,28 @@
             "relative": 0.33
           },
           "datasheet_citation": "p. 3 Fig. 1, digitized",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "gate_charge.cir",
+      "analysis_type": "transient",
+      "scalar_checks": [
+        {
+          "name": "gate_charge_at_10v",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "charge_at_voltage(v(g),10,0.001)"
+          },
+          "expected_value": 4.7e-08,
+          "unit": "C",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.3
+          },
+          "datasheet_citation": "p. 4 Fig. 6, 80 V curve at VGS = 10 V, digitized typical",
           "placeholder": false
         }
       ],

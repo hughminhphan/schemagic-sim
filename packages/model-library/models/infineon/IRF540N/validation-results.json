@@ -1,12 +1,12 @@
 {
   "schema_version": "1.0.0",
-  "validation_date": "2026-08-07",
+  "validation_date": "2026-08-08",
   "native_wasm_all_pass": true,
   "expectations_all_pass": true,
-  "expectation_pass_count": 19,
+  "expectation_pass_count": 20,
   "expectation_fail_count": 0,
   "worst_native_wasm_relative_delta": 0.0019468870959826743,
-  "worst_native_wasm_absolute_delta": 1.9468870959826745e-12,
+  "worst_native_wasm_absolute_delta": 9.795699327241891e-7,
   "benches": [
     {
       "test_netlist": "rdson.cir",
@@ -128,6 +128,20 @@
       ]
     },
     {
+      "test_netlist": "gate_charge.cir",
+      "analysis": "tran",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "gate_charge_at_10v",
+          "pass": true,
+          "value": 4.4926685280942404e-8,
+          "error": 2.0733147190575936e-9,
+          "allowed": 1.4099999999999999e-8
+        }
+      ]
+    },
+    {
       "test_netlist": "capacitance.cir",
       "analysis": "ac",
       "native_wasm_pass": true,
@@ -135,15 +149,15 @@
         {
           "name": "coss",
           "pass": true,
-          "value": 2.489903456180975e-10,
-          "error": 1.0096543819025152e-12,
+          "value": 2.5379064507880197e-10,
+          "error": 3.790645078801954e-12,
           "allowed": 5.000000000000001e-11
         },
         {
           "name": "crss",
           "pass": true,
-          "value": 3.9088535541874987e-11,
-          "error": 9.11464458125011e-13,
+          "value": 4.3888835002005037e-11,
+          "error": 3.888835002005039e-12,
           "allowed": 8e-12
         }
       ]

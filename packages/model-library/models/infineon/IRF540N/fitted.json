@@ -11,9 +11,9 @@
     "RS": 0.0074,
     "RG": 0.0001,
     "CGS": 1.92e-09,
-    "CGDMAX": 7.5e-10,
-    "CGDMIN": 1e-11,
-    "A": 0.3944757362090027,
+    "CGDMAX": 2.1801377226463593e-09,
+    "CGDMIN": 1.0000000000000041e-13,
+    "A": 0.7739389234388695,
     "CJO": 1.1925707526180576e-09,
     "IS": 6.804875975748778e-09,
     "N": 1.5,
@@ -169,8 +169,9 @@
   "optimizer": {
     "status": 2,
     "nfev": 12,
-    "capacitance_nfev": 16,
-    "diff_step": 0.0001
+    "capacitance_nfev": 9,
+    "diff_step": 0.0001,
+    "capacitance_fit": "native ngspice AC least_squares over CGDMAX, CGDMIN, and A; log-capacitance residuals; diff_step=1e-4"
   },
   "residuals": [
     {
@@ -280,70 +281,78 @@
     {
       "quantity": "Crss at 1 V",
       "datasheet_value": 7.5e-10,
-      "fitted_value": 3.539966638372695e-10,
+      "fitted_value": 7.736036466356784e-10,
       "unit": "F",
-      "relative_error": 0.528004448216974,
+      "relative_error": 0.031471528847571234,
       "citation": "p. 4 Fig. 5 Crss trace, digitized"
     },
     {
       "quantity": "Crss at 2 V",
       "datasheet_value": 5e-10,
-      "fitted_value": 2.6987793182707264e-10,
+      "fitted_value": 4.86505244465538e-10,
       "unit": "F",
-      "relative_error": 0.46024413634585476,
+      "relative_error": 0.026989511068924162,
       "citation": "p. 4 Fig. 5 Crss trace, digitized"
     },
     {
       "quantity": "Crss at 5 V",
       "datasheet_value": 2.6e-10,
-      "fitted_value": 1.450681925272477e-10,
+      "fitted_value": 2.1454753750213492e-10,
       "unit": "F",
-      "relative_error": 0.4420454133567396,
+      "relative_error": 0.17481716345332718,
       "citation": "p. 4 Fig. 5 Crss trace, digitized"
     },
     {
       "quantity": "Crss at 10 V",
       "datasheet_value": 1.2e-10,
-      "fitted_value": 8.146445161355645e-11,
+      "fitted_value": 1.0906577365467687e-10,
       "unit": "F",
-      "relative_error": 0.32112956988702956,
+      "relative_error": 0.09111855287769278,
       "citation": "p. 4 Fig. 5 Crss trace, digitized"
     },
     {
       "quantity": "Crss at 20 V",
       "datasheet_value": 5.5e-11,
-      "fitted_value": 4.629142694743898e-11,
+      "fitted_value": 5.480871707175127e-11,
       "unit": "F",
-      "relative_error": 0.1583376918647458,
+      "relative_error": 0.003477871422704191,
       "citation": "p. 4 Fig. 5 Crss trace, digitized"
     },
     {
       "quantity": "Crss at 25 V",
       "datasheet_value": 4e-11,
-      "fitted_value": 3.9088535541874987e-11,
+      "fitted_value": 4.388883500193942e-11,
       "unit": "F",
-      "relative_error": 0.02278661145312528,
+      "relative_error": 0.09722087504848552,
       "citation": "p. 4 Fig. 5 Crss trace, digitized"
     },
     {
       "quantity": "Crss at 50 V",
       "datasheet_value": 2e-11,
-      "fitted_value": 2.4581494673923895e-11,
+      "fitted_value": 2.2009022350064533e-11,
       "unit": "F",
-      "relative_error": 0.2290747336961948,
+      "relative_error": 0.1004511175032267,
       "citation": "p. 4 Fig. 5 Crss trace, digitized"
     },
     {
       "quantity": "Crss at 100 V",
       "datasheet_value": 1e-11,
-      "fitted_value": 1.7295427561093468e-11,
+      "fitted_value": 1.1056339522865523e-11,
       "unit": "F",
-      "relative_error": 0.7295427561093468,
+      "relative_error": 0.10563395228655235,
       "citation": "p. 4 Fig. 5 Crss trace, digitized"
+    },
+    {
+      "quantity": "gate charge at VGS = 10 V",
+      "datasheet_value": 4.7e-08,
+      "fitted_value": 4.492568528047946e-08,
+      "unit": "C",
+      "relative_error": 0.04413435573447953,
+      "citation": "p. 4 Fig. 6, 80 V curve at VGS = 10 V, digitized; independent verification target"
     }
   ],
   "worst_relative_error": {
-    "value": 0.7295427561093468,
-    "quantity": "Crss at 100 V"
+    "value": 0.17481716345332718,
+    "quantity": "Crss at 5 V"
   }
 }

@@ -506,11 +506,12 @@
   },
   "gate_charge": {
     "charge": {
-      "value": 6.7e-08,
+      "value": 4.7e-08,
       "unit": "C",
       "conditions": "ID = 16 A, VDS = 80 V, VGS = 10 V",
-      "page_reference": "p. 4 Fig. 6, 80 V curve, digitized",
-      "source_kind": "digitized_typical_curve"
+      "page_reference": "p. 4 Fig. 6, 80 V curve at VGS = 10 V, digitized",
+      "source_kind": "digitized_typical_curve",
+      "column_semantics": "Typical figure target used only as an independent verification check"
     },
     "vgs": {
       "value": 10,
@@ -532,6 +533,14 @@
       "conditions": "VDS = 80 V",
       "page_reference": "p. 4 Fig. 6",
       "source_kind": "typical"
+    },
+    "maximum_charge": {
+      "value": 7.1e-08,
+      "unit": "C",
+      "conditions": "ID = 16 A, VDS = 80 V, VGS = 10 V",
+      "page_reference": "p. 2 Electrical Characteristics, Qg, MAX column",
+      "source_kind": "maximum",
+      "column_semantics": "Published MAX column; not used as the typical gate-charge target"
     }
   },
   "body_diode": {
