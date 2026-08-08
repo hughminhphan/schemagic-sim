@@ -48,7 +48,7 @@ const steps: TourStep[] = [
     target: ".inspector",
     eyebrow: "INSPECT",
     title: "Select a part to edit and measure it.",
-    body: "The inspector is where you change values, see pin voltages and branch current, and set the TRAN or AC simulation range.",
+    body: "The inspector is where you change values, see pin voltages and branch current, and configure DC sweep, TRAN, AC or NOISE analysis.",
     tip: "Engineering suffixes work as expected: 10k, 4.7u, 2m.",
     placement: "left",
   },
@@ -56,14 +56,14 @@ const steps: TourStep[] = [
     target: ".analysis-tabs",
     eyebrow: "ANALYSE",
     title: "Choose the question you want to ask.",
-    body: "LIVE continuously solves the circuit. DC shows one operating point, DC SWEEP varies sources without netlist editing, TRAN shows change over time, and AC produces a Bode response.",
+    body: "LIVE continuously solves the circuit. DC shows one operating point, DC SWEEP varies sources, TRAN shows change over time, AC produces a Bode response, and NOISE shows output and input-referred spectral density.",
     placement: "bottom",
   },
   {
     target: ".scope-dock",
     eyebrow: "PROBE",
     title: "Click a wire to send it to the scope.",
-    body: "Add up to six voltage traces, then use DC SWEEP, TRAN or AC to inspect them. The scope includes scale controls, cursors and a live potentiometer locus.",
+    body: "Add up to six voltage traces, then use DC SWEEP, TRAN, AC or NOISE to inspect them. The scope includes scale controls, cursors, integrated noise totals and a live potentiometer locus.",
     tip: "Use Open scope if the plot is collapsed.",
     placement: "top",
     prepare: () => {
@@ -128,7 +128,7 @@ const guideMarkup = `
           </article>
 
           <article class="guide-section" id="guide-analysis">
-            <div class="guide-copy"><span class="guide-number">04</span><h2>Run an analysis</h2><p>Click a wire to add a voltage probe, then choose the analysis that matches your question.</p><dl><dt>DC</dt><dd>One operating point.</dd><dt>DC SWEEP</dt><dd>Probed values while one source changes, with an optional stepped source.</dd><dt>TRAN</dt><dd>Voltage over time.</dd><dt>AC</dt><dd>Gain and phase over frequency.</dd></dl><p>Set sweep, time and frequency ranges in the inspector. The scope supports six probes, stepped curve legends, scale controls and cursors.</p></div>
+            <div class="guide-copy"><span class="guide-number">04</span><h2>Run an analysis</h2><p>Click a wire to add a voltage probe, then choose the analysis that matches your question.</p><dl><dt>DC</dt><dd>One operating point.</dd><dt>DC SWEEP</dt><dd>Probed values while one source changes, with an optional stepped source.</dd><dt>TRAN</dt><dd>Voltage over time.</dd><dt>AC</dt><dd>Gain and phase over frequency.</dd><dt>NOISE</dt><dd>Output and input-referred noise density plus integrated totals.</dd></dl><p>Set sweep, time, frequency and noise assumptions in the inspector. The scope supports six probes, stepped curve legends, scale controls and cursors.</p></div>
             <figure class="guide-ui-visual guide-ui-scope" data-ui-clone=".scope-dock"><figcaption>LIVE UI · SCOPE</figcaption></figure>
           </article>
 

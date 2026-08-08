@@ -202,6 +202,29 @@ describe("waveform viewer rendering", () => {
     expect(lastCanvas.context.dashCalls).toContainEqual([6, 3]);
   });
 
+  it("renders noise spectral density on a logarithmic frequency axis with explicit units", () => {
+    const viewer = mount(new FakeElement() as unknown as HTMLElement, {
+      traces: [
+        { source: "onoise_spectrum", label: "Output noise", unit: "V/√Hz", axisGroup: "output noise" },
+        { source: "inoise_spectrum", label: "Input-referred noise", unit: "V/√Hz", axisGroup: "input noise" },
+      ],
+    });
+    viewer.setData({
+      kind: "noise",
+      vectors: {
+        frequency: new Float64Array([10, 100, 1000]),
+        onoise_spectrum: new Float64Array([2e-9, 2e-9, 2e-9]),
+        inoise_spectrum: new Float64Array([4e-9, 4e-9, 4e-9]),
+      },
+    });
+
+    const internal = viewer as unknown as { xScale: string; xUnit: string; traces: Array<{ unit: string }> };
+    expect(internal.xScale).toBe("log");
+    expect(internal.xUnit).toBe("Hz");
+    expect(internal.traces.map((trace) => trace.unit)).toEqual(["V/√Hz", "V/√Hz"]);
+    expect(() => viewer.setXScale("linear")).toThrow(/logarithmic frequency/i);
+  });
+
   it("uses distinct default dashes when channels reuse colours", () => {
     const viewer = mount(new FakeElement() as unknown as HTMLElement);
     viewer.setData({
