@@ -1,0 +1,126 @@
+{
+  "schema_version": "1.0.0",
+  "canonical_mpn": "SS14",
+  "manufacturer": "onsemi",
+  "description": "1 A, 40 V surface-mount Schottky rectifier",
+  "electrical_family": "diode",
+  "symbol_pins": [
+    {
+      "name": "A",
+      "number": "1",
+      "role": "anode"
+    },
+    {
+      "name": "K",
+      "number": "2",
+      "role": "cathode"
+    }
+  ],
+  "spice_pin_mapping": [
+    {
+      "symbol_pin_number": "1",
+      "subckt_node": "anode",
+      "order": 1
+    },
+    {
+      "symbol_pin_number": "2",
+      "subckt_node": "cathode",
+      "order": 2
+    }
+  ],
+  "package_variants": [
+    {
+      "name": "SMA",
+      "standard": "DO-214AC",
+      "pin_count": 2,
+      "pin_map": [
+        {
+          "package_pin": "1",
+          "symbol_pin_number": "1"
+        },
+        {
+          "package_pin": "2",
+          "symbol_pin_number": "2"
+        }
+      ]
+    }
+  ],
+  "ordering_code_aliases": [],
+  "datasheet": {
+    "url": "https://components101.com/sites/default/files/component_datasheet/SS14%20Schottky%20Diode.PDF",
+    "revision": "SS12/D Rev. 3, July 2005; archived onsemi PDF mirror"
+  },
+  "model_type": "dot_model",
+  "fidelity_tier": "F1",
+  "domain_coverage": {
+    "dc": "approx",
+    "ac": "approx",
+    "transient": "none",
+    "noise": "none",
+    "thermal": "none",
+    "digital": "none"
+  },
+  "supported_analyses": [
+    "operating_point",
+    "dc_sweep",
+    "ac_small_signal"
+  ],
+  "supported_operating_region": {
+    "summary": "F1 single-bound Schottky model at 25 degC. The guaranteed 1 A forward-voltage maximum is a hard bound, not a typical fit target.",
+    "numeric_bounds": [
+      {
+        "quantity": "forward_current",
+        "minimum": 0,
+        "maximum": 1,
+        "unit": "A",
+        "conditions": "Published characterization or continuous-current envelope at 25 degC",
+        "placeholder": false
+      },
+      {
+        "quantity": "reverse_voltage",
+        "minimum": 0,
+        "maximum": 40,
+        "unit": "V",
+        "conditions": "Published reverse-voltage envelope; failure is not simulated",
+        "placeholder": false
+      },
+      {
+        "quantity": "ambient_temperature",
+        "minimum": 25,
+        "maximum": 25,
+        "unit": "degC",
+        "conditions": "Model calibration temperature",
+        "placeholder": false
+      }
+    ]
+  },
+  "known_omissions": [
+    "The source supplies one forward-voltage maximum and no complete numeric typical curve table, so N and RS are held physical defaults and fidelity is capped at F1.",
+    "Reverse leakage and zero-bias capacitance are maximum or digitized values; reverse breakdown and temperature dependence are omitted.",
+    "Self-heating, process spread, package parasitics, ageing, and failure outside ratings are not modelled.",
+    "Independent review remains pending-review."
+  ],
+  "licence": {
+    "spdx_id": "MIT",
+    "provenance_basis": "original_from_facts"
+  },
+  "generator": {
+    "tool_or_agent": "opencircuit-model-factory-v0.1.0",
+    "date": "2026-08-09"
+  },
+  "reviewer": {
+    "tool_or_agent": "pending-review",
+    "date": "2026-08-09"
+  },
+  "test_results": {
+    "status": "complete",
+    "pass_count": 3,
+    "fail_count": 0,
+    "total_count": 3,
+    "worst_observed_relative_fitting_error": {
+      "value": 0,
+      "quantity": "forward voltage at 1 A"
+    }
+  },
+  "validation_date": "2026-08-09"
+}

@@ -1,0 +1,82 @@
+{
+  "schema_version": "1.0.0",
+  "validation_date": "2026-08-09",
+  "native_wasm_all_pass": true,
+  "expectations_all_pass": true,
+  "expectation_pass_count": 5,
+  "expectation_fail_count": 0,
+  "worst_native_wasm_relative_delta": 1.4811020509774272e-16,
+  "worst_native_wasm_absolute_delta": 1.1102230246251565e-16,
+  "benches": [
+    {
+      "test_netlist": "forward_01.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "forward_voltage_maximum_at_1_a",
+          "pass": true,
+          "value": 0.374796261976845,
+          "minimum": 0,
+          "maximum": 0.39
+        }
+      ]
+    },
+    {
+      "test_netlist": "forward_02.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "forward_voltage_maximum_at_3_a",
+          "pass": true,
+          "value": 0.5193314683939529,
+          "minimum": 0,
+          "maximum": 0.525
+        }
+      ]
+    },
+    {
+      "test_netlist": "forward_03.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "forward_voltage_maximum_at_9.4_a",
+          "pass": true,
+          "value": 0.9327325240763146,
+          "minimum": 0,
+          "maximum": 0.95
+        }
+      ]
+    },
+    {
+      "test_netlist": "reverse_leakage.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "reverse_leakage_maximum",
+          "pass": true,
+          "value": 2.5814224200198946e-7,
+          "minimum": 0,
+          "maximum": 0.002
+        }
+      ]
+    },
+    {
+      "test_netlist": "zero_bias_capacitance.cir",
+      "analysis": "ac",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "zero_bias_capacitive_current",
+          "pass": true,
+          "value": 0.0002202018920006103,
+          "error": 2.904062493248286e-7,
+          "allowed": 0.000010995574287564275
+        }
+      ]
+    }
+  ]
+}

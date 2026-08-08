@@ -1,0 +1,95 @@
+{
+  "schema_version": "1.0.0",
+  "extraction_method": "pdftotext -layout plus manual MAX table transcription from an archived onsemi datasheet mirror",
+  "fit_conditions": {
+    "temperature": {
+      "value": 25,
+      "unit": "degC",
+      "conditions": "TJ = 25 degC",
+      "page_reference": "p. 2 electrical characteristics",
+      "source_kind": "typical"
+    }
+  },
+  "fit_points": [
+    {
+      "current": {
+        "value": 1,
+        "unit": "A",
+        "conditions": "TJ = 25 degC, pulse width <= 250 us, duty cycle <= 2%",
+        "page_reference": "p. 2 electrical characteristics",
+        "source_kind": "typical"
+      },
+      "voltage": {
+        "value": 0.47,
+        "unit": "V",
+        "conditions": "IF = 1 A, TJ = 25 degC",
+        "page_reference": "p. 2 maximum instantaneous forward voltage",
+        "source_kind": "maximum"
+      }
+    }
+  ],
+  "electrical_limits": {
+    "reverse_voltage": {
+      "value": 40,
+      "unit": "V",
+      "conditions": "DC blocking voltage",
+      "page_reference": "p. 2 maximum ratings",
+      "source_kind": "maximum"
+    },
+    "forward_current": {
+      "value": 1,
+      "unit": "A",
+      "conditions": "TC = 120 degC",
+      "page_reference": "p. 2 maximum ratings",
+      "source_kind": "maximum"
+    },
+    "reverse_current_40v": {
+      "value": 0.0001,
+      "unit": "A",
+      "conditions": "VR = 40 V, TJ = 25 degC",
+      "page_reference": "p. 2 electrical characteristics",
+      "source_kind": "maximum"
+    }
+  },
+  "derived_model_inputs": {
+    "N": {
+      "value": 1.1,
+      "unit": "1",
+      "conditions": "Schottky single-bound numerical default",
+      "page_reference": "model-factory F1 single-bound policy",
+      "source_kind": "held_default"
+    },
+    "RS": {
+      "value": 0.03,
+      "unit": "ohm",
+      "conditions": "Schottky single-bound numerical default",
+      "page_reference": "model-factory F1 single-bound policy",
+      "source_kind": "held_default"
+    },
+    "CJO": {
+      "value": 1.8e-10,
+      "unit": "F",
+      "conditions": "VR = 0 V, TJ = 25 degC, digitized from capacitance curve",
+      "page_reference": "p. 3 fig. 7",
+      "source_kind": "digitized_typical_curve"
+    }
+  },
+  "identity": {
+    "canonical_mpn": "SS14",
+    "manufacturer": "onsemi",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://components101.com/sites/default/files/component_datasheet/SS14%20Schottky%20Diode.PDF",
+    "revision": "SS12/D Rev. 3, July 2005; archived onsemi PDF mirror",
+    "sha256": "80c2f252a4510960ed63b96167faa39257f6ead66cc5677f6d0712466b3122db",
+    "accessed_date": "2026-08-09",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ],
+    "placeholder": false
+  }
+}

@@ -293,7 +293,8 @@ function modelText(ctx, fitted) {
   const optional = [];
   if (p.CJO > 0) optional.push(`CJO=${formatSpice(p.CJO)}`);
   if (p.TT > 0) optional.push(`TT=${formatSpice(p.TT)}`);
-  return `${header}* Fit: scipy.optimize.least_squares at ${fitted.temperature_c} degC\n.model ${ctx.part.component.modelName} D(IS=${formatSpice(p.IS)} N=${formatSpice(p.N)} RS=${formatSpice(p.RS)} ${optional.join(" ")})\n`;
+  for (const name of ["BV", "IBV", "NBV"]) if (p[name] != null) optional.push(`${name}=${formatSpice(p[name])}`);
+  return `${header}* Fit: scipy.optimize.least_squares at ${fitted.temperature_c} degC\n.model ${ctx.part.component.modelName} D(IS=${formatSpice(p.IS)} N=${formatSpice(p.N)} RS=${formatSpice(p.RS)} ${optional.join(" ")} TNOM=${formatSpice(fitted.temperature_c)})\n`;
 }
 
 function baseComponent(ctx, fitted) {
@@ -319,7 +320,7 @@ function baseComponent(ctx, fitted) {
     package_variants: [{
       name: packageInfo.name,
       standard: packageInfo.standard,
-      pin_count: (identity.pins ?? [{}, {}]).length,
+      pin_count: packageInfo.pin_count ?? (identity.pins ?? [{}, {}]).length,
       pin_map: (identity.pins ?? [{ number: "1" }, { number: "2" }]).map((pin) => ({
         package_pin: pin.number,
         symbol_pin_number: pin.number
@@ -640,10 +641,12 @@ function stageTestgen(ctx) {
   facts.fit_points.forEach((point, index) => {
     const file = `forward_${String(index + 1).padStart(2, "0")}.cir`;
     fs.writeFileSync(path.join(ctx.packageDir, "tests", file), opBench(model, ctx.part.component.modelName, file, point.current.value));
+    const maximumBound = point.voltage.source_kind.includes("maximum");
+    const minimumBound = point.voltage.source_kind.includes("minimum");
     tests.push({
       test_netlist: file,
       analysis_type: "operating_point",
-      scalar_checks: [expectation(
+      scalar_checks: maximumBound || minimumBound ? [] : [expectation(
         `forward_voltage_at_${point.current.value}_a`,
         "last(v(anode))",
         point.voltage.value,
@@ -652,12 +655,18 @@ function stageTestgen(ctx) {
         0.04,
         point.voltage.page_reference
       )],
-      hard_bounds_checks: []
+      hard_bounds_checks: maximumBound
+        ? [hardBound(`forward_voltage_maximum_at_${point.current.value}_a`, "last(v(anode))", "V", { minimum: 0, maximum: point.voltage.value }, point.voltage.page_reference)]
+        : minimumBound
+          ? [hardBound(`forward_voltage_minimum_at_${point.current.value}_a`, "last(v(anode))", "V", { minimum: point.voltage.value }, point.voltage.page_reference)]
+          : []
     });
   });
 
-  const reverse = facts.electrical_limits.reverse_current_20v ?? facts.electrical_limits.reverse_current_5v;
-  const reverseVoltage = facts.electrical_limits.reverse_current_20v ? 20 : 5;
+  const reverseEntry = Object.entries(facts.electrical_limits).find(([name]) => /^reverse_current_[0-9.]+v$/i.test(name));
+  if (!reverseEntry) throw new Error(`${ctx.part.slug} requires a reverse_current_<voltage>v fact`);
+  const [reverseName, reverse] = reverseEntry;
+  const reverseVoltage = Number(reverseName.match(/_([0-9.]+)v$/i)[1]);
   fs.writeFileSync(path.join(ctx.packageDir, "tests", "reverse_leakage.cir"), reverseBench(model, ctx.part.component.modelName, reverseVoltage));
   tests.push({
     test_netlist: "reverse_leakage.cir",
@@ -665,6 +674,20 @@ function stageTestgen(ctx) {
     scalar_checks: [],
     hard_bounds_checks: [hardBound("reverse_leakage_maximum", "abs:last(i(vreverse))", "A", { minimum: 0, maximum: reverse.value }, reverse.page_reference)]
   });
+
+  if (facts.zener_points) {
+    for (const [index, point] of facts.zener_points.entries()) {
+      const file = `zener_${String(index + 1).padStart(2, "0")}.cir`;
+      writeBench(ctx, file, `OpenCircuit factory test: ${ctx.part.slug} reverse Zener voltage\n${model}\nIZ 0 cathode DC ${formatSpice(point.current.value)}\nDdut 0 cathode ${ctx.part.component.modelName}\nRALL all 0 1G\n.op\n.end\n`);
+      tests.push(testRecord(file, "operating_point", [], [hardBound(
+        `zener_voltage_at_${point.current.value}_a`,
+        "last(v(cathode))",
+        "V",
+        { minimum: point.voltage_minimum.value, maximum: point.voltage_maximum.value },
+        `${point.voltage_minimum.page_reference}; ${point.voltage_maximum.page_reference}`
+      )]));
+    }
+  }
 
   if (facts.derived_model_inputs?.CJO) {
     const cap = facts.derived_model_inputs.CJO;

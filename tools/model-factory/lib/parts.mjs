@@ -2446,6 +2446,81 @@ Object.assign(PARTS, {
   }
 });
 
+const p5DiodeComponent = ({ modelName, summary, currentMax, reverseVoltage, omissions, ac = "approx", transient = "none" }) => ({
+  modelName,
+  fidelity_tier: "F1",
+  domain_coverage: { dc: "approx", ac, transient, noise: "none", thermal: "none", digital: "none" },
+  supported_analyses: ["operating_point", "dc_sweep", ...(ac !== "none" ? ["ac_small_signal"] : []), ...(transient !== "none" ? ["transient"] : [])],
+  operating_summary: summary,
+  numeric_bounds: [
+    { quantity: "forward_current", minimum: 0, maximum: currentMax, unit: "A", conditions: "Published characterization or continuous-current envelope at 25 degC", placeholder: false },
+    { quantity: "reverse_voltage", minimum: 0, maximum: reverseVoltage, unit: "V", conditions: "Published reverse-voltage envelope; failure is not simulated", placeholder: false },
+    { quantity: "ambient_temperature", minimum: 25, maximum: 25, unit: "degC", conditions: "Model calibration temperature", placeholder: false }
+  ],
+  omissions: [...omissions, "Self-heating, process spread, package parasitics, ageing, and failure outside ratings are not modelled.", "Independent review remains pending-review."]
+});
+
+Object.assign(PARTS, {
+  SS14: {
+    slug: "SS14", manufacturerSlug: "onsemi",
+    identity: { canonical_mpn: "SS14", manufacturer: "onsemi", description: "1 A, 40 V surface-mount Schottky rectifier", electrical_family: "diode", aliases: [], package: { name: "SMA", standard: "DO-214AC" } },
+    source: { url: "https://components101.com/sites/default/files/component_datasheet/SS14%20Schottky%20Diode.PDF", revision: "SS12/D Rev. 3, July 2005; archived onsemi PDF mirror", pages: ["p. 1", "p. 2", "p. 3"] },
+    facts: {
+      schema_version: "1.0.0", extraction_method: "pdftotext -layout plus manual MAX table transcription from an archived onsemi datasheet mirror",
+      fit_conditions: { temperature: quantity(25, "degC", "TJ = 25 degC", "p. 2 electrical characteristics", "typical") },
+      fit_points: [{ current: quantity(1, "A", "TJ = 25 degC, pulse width <= 250 us, duty cycle <= 2%", "p. 2 electrical characteristics", "typical"), voltage: quantity(0.47, "V", "IF = 1 A, TJ = 25 degC", "p. 2 maximum instantaneous forward voltage", "maximum") }],
+      electrical_limits: { reverse_voltage: quantity(40, "V", "DC blocking voltage", "p. 2 maximum ratings", "maximum"), forward_current: quantity(1, "A", "TC = 120 degC", "p. 2 maximum ratings", "maximum"), reverse_current_40v: quantity(100e-6, "A", "VR = 40 V, TJ = 25 degC", "p. 2 electrical characteristics", "maximum") },
+      derived_model_inputs: { N: quantity(1.1, "1", "Schottky single-bound numerical default", "model-factory F1 single-bound policy", "held_default"), RS: quantity(0.03, "ohm", "Schottky single-bound numerical default", "model-factory F1 single-bound policy", "held_default"), CJO: quantity(180e-12, "F", "VR = 0 V, TJ = 25 degC, digitized from capacitance curve", "p. 3 fig. 7", "digitized_typical_curve") }
+    },
+    component: p5DiodeComponent({ modelName: "OC_ONSEMI_SS14", summary: "F1 single-bound Schottky model at 25 degC. The guaranteed 1 A forward-voltage maximum is a hard bound, not a typical fit target.", currentMax: 1, reverseVoltage: 40, omissions: ["The source supplies one forward-voltage maximum and no complete numeric typical curve table, so N and RS are held physical defaults and fidelity is capped at F1.", "Reverse leakage and zero-bias capacitance are maximum or digitized values; reverse breakdown and temperature dependence are omitted."], ac: "approx" })
+  },
+  "1N5822": {
+    slug: "1N5822", manufacturerSlug: "onsemi",
+    identity: { canonical_mpn: "1N5822", manufacturer: "onsemi", description: "3 A, 40 V axial Schottky rectifier", electrical_family: "diode", aliases: ["1N5822G", "1N5822RL", "1N5822RLG"], package: { name: "axial lead", standard: "CASE 267-05" } },
+    source: { url: "https://www.onsemi.com/download/data-sheet/pdf/1n5820-d.pdf", revision: "1N5820/D Rev. 11, November 2023", pages: ["p. 1", "p. 2", "p. 5", "p. 6"] },
+    facts: {
+      schema_version: "1.0.0", extraction_method: "pdftotext -layout plus manual MAX table transcription",
+      fit_conditions: { temperature: quantity(25, "degC", "TL = 25 degC unless stated", "p. 2 electrical characteristics heading", "typical") },
+      fit_points: [[1, 0.390], [3, 0.525], [9.4, 0.950]].map(([current, voltage]) => ({ current: quantity(current, "A", "TL = 25 degC, 300 us pulse, 2% duty cycle", "p. 2 electrical characteristics", "typical"), voltage: quantity(voltage, "V", `IF = ${current} A, TL = 25 degC`, "p. 2 maximum instantaneous forward voltage, 1N5822 column", "maximum") })),
+      electrical_limits: { reverse_voltage: quantity(40, "V", "DC blocking voltage", "p. 2 maximum ratings", "maximum"), forward_current: quantity(3, "A", "TL = 95 degC", "p. 2 maximum ratings", "maximum"), reverse_current_40v: quantity(2e-3, "A", "rated DC voltage, TL = 25 degC", "p. 2 electrical characteristics", "maximum") },
+      derived_model_inputs: { CJO: quantity(700e-12, "F", "VR = 0 V, TJ = 25 degC, digitized", "p. 6 fig. 10, 1N5822 curve", "digitized_typical_curve") }
+    },
+    component: p5DiodeComponent({ modelName: "OC_ONSEMI_1N5822", summary: "F1 bound-constrained Schottky model over 1 A to 9.4 A at 25 degC.", currentMax: 9.4, reverseVoltage: 40, omissions: ["The fitted forward points are guaranteed maxima rather than a typical curve, so validation treats them as upper bounds and fidelity is capped at F1.", "Reverse breakdown, leakage temperature scaling, surge heating, and distributed junction capacitance are omitted."], ac: "approx" })
+  },
+  BAT85: {
+    slug: "BAT85", manufacturerSlug: "vishay",
+    identity: { canonical_mpn: "BAT85", manufacturer: "Vishay Semiconductors", description: "Small-signal Schottky diode", electrical_family: "diode", aliases: ["BAT85-TR", "BAT85-TAP"], package: { name: "DO-35", standard: "DO-204AH" } },
+    source: { url: "https://datasheet.octopart.com/BAT85-Vishay-datasheet-28185.pdf", revision: "BAT85 Rev. 1.3, 31-Mar-2004; archived Vishay PDF mirror", pages: ["p. 1", "p. 2"] },
+    facts: {
+      schema_version: "1.0.0", extraction_method: "pdftotext -layout plus manual MIN/TYP/MAX table transcription from an archived Vishay datasheet mirror",
+      fit_conditions: { temperature: quantity(25, "degC", "Tamb = 25 degC", "p. 2 electrical characteristics heading", "typical") },
+      fit_points: [[0.0001, 0.24, "maximum"], [0.001, 0.32, "maximum"], [0.01, 0.40, "maximum"], [0.03, 0.50, "typical"], [0.1, 0.80, "maximum"]].map(([current, voltage, kind]) => ({ current: quantity(current, "A", "Tamb = 25 degC, pulse test", "p. 2 electrical characteristics", "typical"), voltage: quantity(voltage, "V", `IF = ${current} A`, "p. 2 forward-voltage table", kind) })),
+      electrical_limits: { reverse_voltage: quantity(30, "V", "IR = 10 uA pulsed", "p. 2 reverse breakdown voltage", "minimum"), forward_current: quantity(0.2, "A", "Tamb = 25 degC", "p. 1 absolute maximum ratings", "maximum"), reverse_current_25v: quantity(2e-6, "A", "VR = 25 V, Tamb = 25 degC", "p. 2 electrical characteristics", "maximum") },
+      derived_model_inputs: { CJO: quantity(10e-12, "F", "VR = 1 V, f = 1 MHz", "p. 2 diode capacitance maximum", "maximum") },
+      switching_metadata: { reverse_recovery_time: quantity(5e-9, "s", "IF = 10 mA, IR = 10 mA, Irr = 1 mA", "p. 2 reverse recovery maximum", "maximum") }
+    },
+    component: p5DiodeComponent({ modelName: "OC_VISHAY_BAT85", summary: "F1 mixed table model from 0.1 mA to 100 mA at 25 degC.", currentMax: 0.1, reverseVoltage: 30, omissions: ["Only the 30 mA forward-voltage row is typical; the other fitted rows are maxima and remain hard bounds, so fidelity is capped at F1.", "CJO uses a single maximum specification; C-V shape is not fitted. The 5 ns reverse-recovery maximum is retained as metadata but not mapped to TT because the generic charge-storage bench does not represent Schottky recovery.", "Reverse breakdown is not modelled from the 30 V minimum rating."], ac: "approx", transient: "none" })
+  },
+  BZX84C5V1: {
+    slug: "BZX84C5V1", manufacturerSlug: "onsemi",
+    identity: { canonical_mpn: "BZX84C5V1", manufacturer: "onsemi", description: "5.1 V, 250 mW surface-mount Zener diode", electrical_family: "diode", aliases: ["BZX84C5V1LT1G", "BZX84C5V1LT3G"], package: { name: "SOT-23", standard: "CASE 318", pin_count: 3 }, pins: [{ name: "A", number: "1", role: "anode", node: "anode" }, { name: "K", number: "3", role: "cathode", node: "cathode" }], spice_order: ["1", "3"] },
+    source: { url: "https://www.onsemi.com/pdf/datasheet/bzx84c2v4lt1-d.pdf", revision: "BZX84C2V4LT1/D Rev. 23, August 2021", pages: ["p. 1", "p. 2", "p. 5"] },
+    facts: {
+      schema_version: "1.0.0", extraction_method: "pdftotext -layout plus manual MIN/MAX table transcription and forward family-curve digitization",
+      fit_conditions: { temperature: quantity(25, "degC", "TA = 25 degC unless stated", "p. 2 electrical characteristics heading", "typical") },
+      fit_points: [[0.001, 0.68], [0.01, 0.75], [0.1, 0.84], [0.5, 0.95]].map(([current, voltage]) => ({ current: quantity(current, "A", "TA = 25 degC", "p. 5 fig. 4, 25 degC family curve", "typical"), voltage: quantity(voltage, "V", `IF = ${current} A, TA = 25 degC`, "p. 5 fig. 4, manually digitized 25 degC family curve", "digitized_typical_curve") })),
+      zener_points: [
+        { current: quantity(1e-3, "A", "reverse Zener test current", "p. 2 BZX84C5V1 row", "typical"), voltage_minimum: quantity(4.2, "V", "IZT2 = 1 mA", "p. 2 BZX84C5V1 VZ2 MIN", "minimum"), voltage_maximum: quantity(5.3, "V", "IZT2 = 1 mA", "p. 2 BZX84C5V1 VZ2 MAX", "maximum") },
+        { current: quantity(5e-3, "A", "reverse Zener test current", "p. 2 BZX84C5V1 row", "typical"), voltage_minimum: quantity(4.8, "V", "IZT1 = 5 mA", "p. 2 BZX84C5V1 VZ1 MIN", "minimum"), voltage_maximum: quantity(5.4, "V", "IZT1 = 5 mA", "p. 2 BZX84C5V1 VZ1 MAX", "maximum") },
+        { current: quantity(20e-3, "A", "reverse Zener test current", "p. 2 BZX84C5V1 row", "typical"), voltage_minimum: quantity(5.0, "V", "IZT3 = 20 mA", "p. 2 BZX84C5V1 VZ3 MIN", "minimum"), voltage_maximum: quantity(5.9, "V", "IZT3 = 20 mA", "p. 2 BZX84C5V1 VZ3 MAX", "maximum") }
+      ],
+      electrical_limits: { reverse_current_2v: quantity(2e-6, "A", "VR = 2 V", "p. 2 BZX84C5V1 maximum reverse leakage", "maximum"), forward_voltage_10ma: quantity(0.9, "V", "IF = 10 mA", "p. 2 series heading", "maximum") },
+      derived_model_inputs: { BV: quantity(5.1, "V", "nominal VZ at IZT = 5 mA", "p. 2 BZX84C5V1 VZ1 NOM", "typical"), IBV: quantity(5e-3, "A", "nominal Zener test current", "p. 2 BZX84C5V1 IZT1", "typical"), NBV: quantity(1, "1", "first-order avalanche-knee default; table bounds validated separately", "model-factory Zener F1 policy", "held_default"), CJO: quantity(225e-12, "F", "VR = 0 V, f = 1 MHz", "p. 2 BZX84C5V1 capacitance maximum", "maximum") }
+    },
+    component: p5DiodeComponent({ modelName: "OC_ONSEMI_BZX84C5V1", summary: "F1 Zener model with forward family-curve fit and reverse-voltage table bounds at 1 mA, 5 mA, and 20 mA.", currentMax: 0.5, reverseVoltage: 5.9, omissions: ["The forward curve is a family-level typical curve, not a device-specific BZX84C5V1 trace, and the reverse knee is constrained by MIN/MAX table windows, so fidelity is capped at F1.", "NBV is held at a first-order default. Dynamic impedance, temperature coefficient, surge behavior, noise, and statistical Zener-voltage tolerance are not continuously modelled.", "Package pin 2 is no-connect and is represented only by the three-pin package metadata; the electrical SPICE model has anode and cathode terminals."], ac: "approx" })
+  }
+});
+
 export function getPart(mpn) {
   const key = Object.keys(PARTS).find((candidate) => candidate.toLowerCase() === String(mpn).toLowerCase());
   if (!key) throw new Error(`Unsupported MPN: ${mpn}. Supported: ${Object.keys(PARTS).join(", ")}`);

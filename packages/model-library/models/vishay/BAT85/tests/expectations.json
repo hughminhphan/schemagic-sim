@@ -1,0 +1,149 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "forward_01.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "forward_voltage_maximum_at_0.0001_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "minimum": 0,
+          "maximum": 0.24,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 2 forward-voltage table",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "forward_02.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "forward_voltage_maximum_at_0.001_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "minimum": 0,
+          "maximum": 0.32,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 2 forward-voltage table",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "forward_03.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "forward_voltage_maximum_at_0.01_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "minimum": 0,
+          "maximum": 0.4,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 2 forward-voltage table",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "forward_04.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "forward_voltage_at_0.03_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "expected_value": 0.5,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.04
+          },
+          "datasheet_citation": "p. 2 forward-voltage table",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "forward_05.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "forward_voltage_maximum_at_0.1_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "minimum": 0,
+          "maximum": 0.8,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 2 forward-voltage table",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "reverse_leakage.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "reverse_leakage_maximum",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vreverse))"
+          },
+          "minimum": 0,
+          "maximum": 0.000002,
+          "unit": "A",
+          "inclusive": true,
+          "datasheet_citation": "p. 2 electrical characteristics",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "zero_bias_capacitance.cir",
+      "analysis_type": "ac_small_signal",
+      "scalar_checks": [
+        {
+          "name": "zero_bias_capacitive_current",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "magnitude:last(i(vac))"
+          },
+          "expected_value": 0.000003141592653589793,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 2e-8,
+            "relative": 0.05
+          },
+          "datasheet_citation": "p. 2 diode capacitance maximum",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    }
+  ]
+}

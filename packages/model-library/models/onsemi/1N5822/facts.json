@@ -1,0 +1,118 @@
+{
+  "schema_version": "1.0.0",
+  "extraction_method": "pdftotext -layout plus manual MAX table transcription",
+  "fit_conditions": {
+    "temperature": {
+      "value": 25,
+      "unit": "degC",
+      "conditions": "TL = 25 degC unless stated",
+      "page_reference": "p. 2 electrical characteristics heading",
+      "source_kind": "typical"
+    }
+  },
+  "fit_points": [
+    {
+      "current": {
+        "value": 1,
+        "unit": "A",
+        "conditions": "TL = 25 degC, 300 us pulse, 2% duty cycle",
+        "page_reference": "p. 2 electrical characteristics",
+        "source_kind": "typical"
+      },
+      "voltage": {
+        "value": 0.39,
+        "unit": "V",
+        "conditions": "IF = 1 A, TL = 25 degC",
+        "page_reference": "p. 2 maximum instantaneous forward voltage, 1N5822 column",
+        "source_kind": "maximum"
+      }
+    },
+    {
+      "current": {
+        "value": 3,
+        "unit": "A",
+        "conditions": "TL = 25 degC, 300 us pulse, 2% duty cycle",
+        "page_reference": "p. 2 electrical characteristics",
+        "source_kind": "typical"
+      },
+      "voltage": {
+        "value": 0.525,
+        "unit": "V",
+        "conditions": "IF = 3 A, TL = 25 degC",
+        "page_reference": "p. 2 maximum instantaneous forward voltage, 1N5822 column",
+        "source_kind": "maximum"
+      }
+    },
+    {
+      "current": {
+        "value": 9.4,
+        "unit": "A",
+        "conditions": "TL = 25 degC, 300 us pulse, 2% duty cycle",
+        "page_reference": "p. 2 electrical characteristics",
+        "source_kind": "typical"
+      },
+      "voltage": {
+        "value": 0.95,
+        "unit": "V",
+        "conditions": "IF = 9.4 A, TL = 25 degC",
+        "page_reference": "p. 2 maximum instantaneous forward voltage, 1N5822 column",
+        "source_kind": "maximum"
+      }
+    }
+  ],
+  "electrical_limits": {
+    "reverse_voltage": {
+      "value": 40,
+      "unit": "V",
+      "conditions": "DC blocking voltage",
+      "page_reference": "p. 2 maximum ratings",
+      "source_kind": "maximum"
+    },
+    "forward_current": {
+      "value": 3,
+      "unit": "A",
+      "conditions": "TL = 95 degC",
+      "page_reference": "p. 2 maximum ratings",
+      "source_kind": "maximum"
+    },
+    "reverse_current_40v": {
+      "value": 0.002,
+      "unit": "A",
+      "conditions": "rated DC voltage, TL = 25 degC",
+      "page_reference": "p. 2 electrical characteristics",
+      "source_kind": "maximum"
+    }
+  },
+  "derived_model_inputs": {
+    "CJO": {
+      "value": 7e-10,
+      "unit": "F",
+      "conditions": "VR = 0 V, TJ = 25 degC, digitized",
+      "page_reference": "p. 6 fig. 10, 1N5822 curve",
+      "source_kind": "digitized_typical_curve"
+    }
+  },
+  "identity": {
+    "canonical_mpn": "1N5822",
+    "manufacturer": "onsemi",
+    "aliases": [
+      "1N5822G",
+      "1N5822RL",
+      "1N5822RLG"
+    ]
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://www.onsemi.com/download/data-sheet/pdf/1n5820-d.pdf",
+    "revision": "1N5820/D Rev. 11, November 2023",
+    "sha256": "6868f7cafcc9eb4e3adb4e38dabc8b66b2cca4da5930f783b0a44e5e9910caa9",
+    "accessed_date": "2026-08-09",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 5",
+      "p. 6"
+    ],
+    "placeholder": false
+  }
+}
