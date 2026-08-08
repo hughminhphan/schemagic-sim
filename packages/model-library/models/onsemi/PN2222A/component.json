@@ -81,7 +81,7 @@
     "transient"
   ],
   "supported_operating_region": {
-    "summary": "Conservative F1 model fitted to the published PN2222A minimum and maximum electrical-characteristic rows because the source does not publish a typical DC gain table.",
+    "summary": "Conservative F1 model at 25 degC. Published hFE minima and both forced-beta saturation maximum-voltage rows are enforced as guaranteed bounds through 0.5 A.",
     "numeric_bounds": [
       {
         "quantity": "collector_current",
@@ -109,12 +109,13 @@
     "Base resistance modulation is not fitted: IRB and RBM are held at physical defaults because no base-resistance-versus-current data is published.",
     "Transit-time bias dependence is not fitted: XTF, VTF, and ITF are held at physical defaults because fT is published at a single bias.",
     "Flicker and burst noise are not modelled: KF and AF are held at physical defaults.",
-    "hFE bin spread is not modelled. The fit targets the typical curve or stated bin; a real part may sit anywhere in the published band.",
+    "hFE bin spread is not modelled. The published minima are enforced as guaranteed bounds; no typical gain distribution is claimed.",
     "CJE and CJC are derived from single tabulated capacitance points with VJE, VJC, MJE, and MJC held at physical defaults.",
     "Temperature coefficients XTB, EG, and XTI are held at physical defaults; only 25 degC data was fitted.",
-    "The source publishes minimum and maximum DC gain and saturation rows rather than typical values; those column semantics remain explicitly recorded in facts.json and the fidelity tier is capped at F1.",
+    "The source publishes minimum and maximum rows rather than typical values. Acceptance uses hard guaranteed bounds, and the fidelity tier remains capped at F1.",
     "NF, NR, IRB, RBM, XTF, VTF, ITF, XTB, EG, XTI, KF, AF, IKR, ISC, NC, and VAR are held at default because the datasheet does not characterise them.",
-    "TR is held at default because no storage-time row is published for this part."
+    "TR is held at default because no storage-time row is published for this part.",
+    "Saturation calibration is guaranteed-bound-only at IC = 150 mA, IB = 15 mA and IC = 500 mA, IB = 50 mA. No typical VBE(sat) or VCE(sat) curve is claimed between or beyond those points."
   ],
   "licence": {
     "spdx_id": "MIT",
@@ -130,13 +131,13 @@
   },
   "test_results": {
     "status": "complete",
-    "pass_count": 1,
+    "pass_count": 9,
     "fail_count": 0,
-    "total_count": 1,
+    "total_count": 9,
     "worst_observed_relative_fitting_error": {
-      "value": 0.3484158201866631,
-      "quantity": "VBE(sat) at IC=0.5 A"
+      "value": 0.12429357289883247,
+      "quantity": "VCE(sat) at IC=0.5 A"
     }
   },
-  "validation_date": "2026-08-06"
+  "validation_date": "2026-08-08"
 }

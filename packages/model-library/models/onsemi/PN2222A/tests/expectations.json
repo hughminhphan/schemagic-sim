@@ -5,13 +5,115 @@
       "test_netlist": "dc_gain.cir",
       "analysis_type": "operating_point",
       "scalar_checks": [],
-      "hard_bounds_checks": []
+      "hard_bounds_checks": [
+        {
+          "name": "hfe_min_at_0.0001_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg1),350000)"
+          },
+          "minimum": 35,
+          "unit": "1",
+          "inclusive": true,
+          "datasheet_citation": "p. 3 electrical characteristics, hFE minimum at IC = 0.1 mA and VCE = 10 V",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_min_at_0.001_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg2),50000)"
+          },
+          "minimum": 50,
+          "unit": "1",
+          "inclusive": true,
+          "datasheet_citation": "p. 3 electrical characteristics, hFE minimum at IC = 1 mA and VCE = 10 V",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_min_at_0.01_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg3),7500)"
+          },
+          "minimum": 75,
+          "unit": "1",
+          "inclusive": true,
+          "datasheet_citation": "p. 3 electrical characteristics, hFE minimum at IC = 10 mA and VCE = 10 V",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_min_at_0.15_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg4),666.6666666666666)"
+          },
+          "minimum": 100,
+          "unit": "1",
+          "inclusive": true,
+          "datasheet_citation": "p. 3 electrical characteristics, hFE minimum at IC = 150 mA and VCE = 10 V",
+          "placeholder": false
+        }
+      ]
     },
     {
       "test_netlist": "saturation.cir",
       "analysis_type": "operating_point",
       "scalar_checks": [],
-      "hard_bounds_checks": []
+      "hard_bounds_checks": [
+        {
+          "name": "vce_sat_max_at_0.15_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(cs1))"
+          },
+          "minimum": 0,
+          "maximum": 0.3,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 3 electrical characteristics, VCE(sat) maximum at IC = 150 mA and IB = 15 mA",
+          "placeholder": false
+        },
+        {
+          "name": "vbe_sat_max_at_0.15_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(bs1))"
+          },
+          "minimum": 0,
+          "maximum": 0.85,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 3 electrical characteristics, VBE(sat) maximum at IC = 150 mA and IB = 15 mA",
+          "placeholder": false
+        },
+        {
+          "name": "vce_sat_max_at_0.5_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(cs2))"
+          },
+          "minimum": 0,
+          "maximum": 1.0,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 3 electrical characteristics, VCE(sat) maximum at IC = 500 mA and IB = 50 mA",
+          "placeholder": false
+        },
+        {
+          "name": "vbe_sat_max_at_0.5_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(bs2))"
+          },
+          "minimum": 0,
+          "maximum": 1.05,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 3 electrical characteristics, VBE(sat) maximum at IC = 500 mA and IB = 50 mA",
+          "placeholder": false
+        }
+      ]
     },
     {
       "test_netlist": "ft_bench.cir",

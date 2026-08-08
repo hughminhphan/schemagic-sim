@@ -1,24 +1,78 @@
 {
   "schema_version": "1.0.0",
-  "validation_date": "2026-08-06",
+  "validation_date": "2026-08-08",
   "native_wasm_all_pass": true,
   "expectations_all_pass": true,
-  "expectation_pass_count": 1,
+  "expectation_pass_count": 9,
   "expectation_fail_count": 0,
-  "worst_native_wasm_relative_delta": 1.757296432634281e-12,
-  "worst_native_wasm_absolute_delta": 3.9960923459148034e-11,
+  "worst_native_wasm_relative_delta": 1.7381039286425454e-11,
+  "worst_native_wasm_absolute_delta": 8.668621376273222e-12,
   "benches": [
     {
       "test_netlist": "dc_gain.cir",
       "analysis": "op",
       "native_wasm_pass": true,
-      "checks": []
+      "checks": [
+        {
+          "name": "hfe_min_at_0.0001_a",
+          "pass": true,
+          "value": 37.93798437733857,
+          "minimum": 35
+        },
+        {
+          "name": "hfe_min_at_0.001_a",
+          "pass": true,
+          "value": 56.09371895536609,
+          "minimum": 50
+        },
+        {
+          "name": "hfe_min_at_0.01_a",
+          "pass": true,
+          "value": 80.80731553153213,
+          "minimum": 75
+        },
+        {
+          "name": "hfe_min_at_0.15_a",
+          "pass": true,
+          "value": 107.8790815537175,
+          "minimum": 100
+        }
+      ]
     },
     {
       "test_netlist": "saturation.cir",
       "analysis": "op",
       "native_wasm_pass": true,
-      "checks": []
+      "checks": [
+        {
+          "name": "vce_sat_max_at_0.15_a",
+          "pass": true,
+          "value": 0.28944160411420866,
+          "minimum": 0,
+          "maximum": 0.3
+        },
+        {
+          "name": "vbe_sat_max_at_0.15_a",
+          "pass": true,
+          "value": 0.8271696693377388,
+          "minimum": 0,
+          "maximum": 0.85
+        },
+        {
+          "name": "vce_sat_max_at_0.5_a",
+          "pass": true,
+          "value": 0.8757064271024013,
+          "minimum": 0,
+          "maximum": 1
+        },
+        {
+          "name": "vbe_sat_max_at_0.5_a",
+          "pass": true,
+          "value": 0.9890146767879473,
+          "minimum": 0,
+          "maximum": 1.05
+        }
+      ]
     },
     {
       "test_netlist": "ft_bench.cir",

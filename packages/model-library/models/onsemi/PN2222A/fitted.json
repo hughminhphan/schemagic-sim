@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "fitter": "scipy.optimize.least_squares with native ngspice-46 evaluations",
+  "fitter": "scipy.optimize.least_squares transport fit followed by a deterministic native-ngspice-46 RB/RC saturation-bound refit",
   "deterministic": true,
   "parameters": {
     "IS": 2.8962197304325914e-14,
@@ -11,9 +11,9 @@
     "NE": 1.2072447758195548,
     "VAF": 100.0,
     "BR": 4.0,
-    "RB": 12.08655021749043,
+    "RB": 3.5,
     "RE": 0.00012962957766445322,
-    "RC": 1.8830977867118628,
+    "RC": 1.65,
     "CJE": 2.959034958716831e-11,
     "VJE": 0.75,
     "MJE": 0.33,
@@ -21,7 +21,7 @@
     "VJC": 0.75,
     "MJC": 0.33,
     "XCJC": 1.0,
-    "TF": 4.314869701599922e-10,
+    "TF": 4.3597672588748205e-10,
     "TR": 0.0
   },
   "optimizer": {
@@ -29,108 +29,109 @@
     "gain_nfev": 50,
     "voltage_nfev": 233,
     "cost": 1.5869985206019996,
-    "diff_step": 0.0001
+    "diff_step": 0.0001,
+    "saturation_refit": "RB and RC constrained against both published forced-beta maximum-voltage rows; all transport parameters held"
   },
   "residuals": [
     {
       "quantity": "hFE at IC=0.0001 A",
       "datasheet_value": 35,
-      "fitted_value": 37.939407250377485,
+      "fitted_value": 37.93798454275507,
       "unit": "1",
-      "relative_error": 0.08398306429649957,
+      "relative_error": 0.08394241550728765,
       "citation": "p. 3 electrical characteristics"
     },
     {
       "quantity": "VBE at IC=0.0001 A",
       "datasheet_value": 0.58,
-      "fitted_value": 0.5678495899640376,
+      "fitted_value": 0.5719531301463521,
       "unit": "V",
-      "relative_error": 0.02094898282062483,
+      "relative_error": 0.013873913540772219,
       "citation": "p. 3 electrical characteristics"
     },
     {
       "quantity": "hFE at IC=0.001 A",
       "datasheet_value": 50,
-      "fitted_value": 56.09549540941138,
+      "fitted_value": 56.09371897883553,
       "unit": "1",
-      "relative_error": 0.12190990818822754,
+      "relative_error": 0.12187437957671066,
       "citation": "p. 3 electrical characteristics"
     },
     {
       "quantity": "VBE at IC=0.001 A",
       "datasheet_value": 0.63,
-      "fitted_value": 0.6285521035310928,
+      "fitted_value": 0.6321053462121748,
       "unit": "V",
-      "relative_error": 0.0022982483633447537,
+      "relative_error": 0.0033418193844045097,
       "citation": "p. 3 electrical characteristics"
     },
     {
       "quantity": "hFE at IC=0.01 A",
       "datasheet_value": 75,
-      "fitted_value": 80.80792272924313,
+      "fitted_value": 80.80731556940081,
       "unit": "1",
-      "relative_error": 0.07743896972324175,
+      "relative_error": 0.07743087425867752,
       "citation": "p. 3 electrical characteristics"
     },
     {
       "quantity": "VBE at IC=0.01 A",
       "datasheet_value": 0.69,
-      "fitted_value": 0.6887803356674167,
+      "fitted_value": 0.6909682510523947,
       "unit": "V",
-      "relative_error": 0.0017676294675119536,
+      "relative_error": 0.0014032623947749722,
       "citation": "p. 3 electrical characteristics"
     },
     {
       "quantity": "hFE at IC=0.15 A",
       "datasheet_value": 100,
-      "fitted_value": 107.84464116013163,
+      "fitted_value": 107.8790815972953,
       "unit": "1",
-      "relative_error": 0.0784464116013163,
+      "relative_error": 0.07879081597295297,
       "citation": "p. 3 electrical characteristics"
     },
     {
       "quantity": "VBE at IC=0.15 A",
       "datasheet_value": 0.78,
-      "fitted_value": 0.7801508477549349,
+      "fitted_value": 0.7701051840270295,
       "unit": "V",
-      "relative_error": 0.00019339455760884855,
+      "relative_error": 0.012685661503808312,
       "citation": "p. 3 electrical characteristics"
     },
     {
       "quantity": "VCE(sat) at IC=0.15 A",
       "datasheet_value": 0.3,
-      "fitted_value": 0.3246866554699424,
+      "fitted_value": 0.2894416041131245,
       "unit": "V",
-      "relative_error": 0.08228885156647474,
+      "relative_error": 0.035194652956251724,
       "citation": "p. 3 electrical characteristics"
     },
     {
       "quantity": "VBE(sat) at IC=0.15 A",
       "datasheet_value": 0.85,
-      "fitted_value": 0.9531988801427306,
+      "fitted_value": 0.8271696693379513,
       "unit": "V",
-      "relative_error": 0.12141044722674188,
+      "relative_error": 0.026859212543586645,
       "citation": "p. 3 electrical characteristics"
     },
     {
       "quantity": "VCE(sat) at IC=0.5 A",
       "datasheet_value": 1,
-      "fitted_value": 0.9925940080219805,
+      "fitted_value": 0.8757064271011675,
       "unit": "V",
-      "relative_error": 0.007405991978019499,
+      "relative_error": 0.12429357289883247,
       "citation": "p. 3 electrical characteristics"
     },
     {
       "quantity": "VBE(sat) at IC=0.5 A",
       "datasheet_value": 1.05,
-      "fitted_value": 1.4158366111959964,
+      "fitted_value": 0.9890146767882132,
       "unit": "V",
-      "relative_error": 0.3484158201866631,
+      "relative_error": 0.058081260201701755,
       "citation": "p. 3 electrical characteristics"
     }
   ],
   "worst_relative_error": {
-    "value": 0.3484158201866631,
-    "quantity": "VBE(sat) at IC=0.5 A"
+    "value": 0.12429357289883247,
+    "quantity": "VCE(sat) at IC=0.5 A"
   }
 }
