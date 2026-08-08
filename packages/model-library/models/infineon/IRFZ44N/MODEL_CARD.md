@@ -5,8 +5,8 @@
 - Manufacturer: Infineon Technologies (International Rectifier legacy)
 - Description: 55 V N-channel HEXFET power MOSFET
 - Electrical family: nmos
-- Fidelity tier: F2, datasheet-constrained
-- Independent reviewer: pending-review
+- Fidelity tier: F1, datasheet-constrained
+- Independent reviewer: gpt-5.6-sol independent reviewer (P5)
 
 ## Provenance
 
@@ -23,7 +23,7 @@
 | Domain | Coverage |
 | --- | --- |
 | dc | fitted |
-| ac | fitted |
+| ac | approx |
 | transient | approx |
 | noise | none |
 | thermal | approx |
@@ -86,7 +86,7 @@ Native and WASM agreement: all 6 benches passed. Worst reported relative delta w
 - Gate charge is not an optimizer residual. It is checked independently with a broad 75 percent tolerance because the compact VDMOS capacitance law does not reproduce the cited Miller plateau closely; transient coverage is approximate.
 - Avalanche, UIS, safe-operating-area failure, temperature-dependent transfer, self-heating in the default three-terminal instance, package inductance, gate-oxide failure, process spread, and noise are not modelled.
 - RG is held at the factory numerical floor because the datasheet does not publish intrinsic gate resistance.
-- Independent review remains pending-review.
+- P5 independent review demoted this package from F2 to F1: the 5 V gate-charge check is about 69.5 percent low against the archetype 30 percent limit, and cited Crss curve residuals reach 42.7 percent.
 
 ## Licence
 

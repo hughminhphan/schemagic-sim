@@ -6,7 +6,7 @@
 - Description: PNP power transistor
 - Electrical family: bjt_pnp
 - Fidelity tier: F1, datasheet-constrained
-- Independent reviewer: pending-review
+- Independent reviewer: gpt-5.6-sol independent reviewer (P5)
 
 ## Provenance
 
@@ -72,7 +72,8 @@ Native and WASM agreement: all 4 benches passed. Worst reported relative delta w
 - The manufacturer source provides guaranteed MIN/MAX rows but not enough independent typical curves for F2; fidelity is capped at F1.
 - Guaranteed MIN/MAX rows remain hard bounds and are not presented as typical targets.
 - No self-heating, safe-operating-area failure, thermal runaway, breakdown, package parasitics, temperature spread, or noise is modelled.
-- Reviewer remains pending-review.
+
+- P5 independent review passed F1: guaranteed gain and saturation bounds, an independent in-region gain probe, and all four native and WASM benches passed.
 
 ## Licence
 

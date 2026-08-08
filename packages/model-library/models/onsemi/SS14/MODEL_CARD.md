@@ -6,7 +6,7 @@
 - Description: 1 A, 40 V surface-mount Schottky rectifier
 - Electrical family: diode
 - Fidelity tier: F1, datasheet-constrained
-- Independent reviewer: pending-review
+- Independent reviewer: gpt-5.6-sol independent reviewer (P5)
 
 ## Provenance
 
@@ -60,7 +60,7 @@ Native and WASM agreement: all 3 benches passed. Worst reported relative delta w
 - The source supplies one forward-voltage maximum and no complete numeric typical curve table, so N and RS are held physical defaults and fidelity is capped at F1.
 - Reverse leakage and zero-bias capacitance are maximum or digitized values; reverse breakdown and temperature dependence are omitted.
 - Self-heating, process spread, package parasitics, ageing, and failure outside ratings are not modelled.
-- Independent review remains pending-review.
+- P5 independent review passed F1: the sole forward-voltage maximum, reverse limit, capacitance point, independent forward probe, and all three native and WASM benches were verified; the starred F1 omission is honest.
 
 ## Licence
 

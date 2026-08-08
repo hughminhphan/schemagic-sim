@@ -6,7 +6,7 @@
 - Description: Small-signal Schottky diode
 - Electrical family: diode
 - Fidelity tier: F1, datasheet-constrained
-- Independent reviewer: pending-review
+- Independent reviewer: gpt-5.6-sol independent reviewer (P5)
 
 ## Provenance
 
@@ -58,7 +58,7 @@ Native and WASM agreement: all 7 benches passed. Worst reported relative delta w
 - CJO uses a single maximum specification; C-V shape is not fitted. The 5 ns reverse-recovery maximum is retained as metadata but not mapped to TT because the generic charge-storage bench does not represent Schottky recovery.
 - Reverse breakdown is not modelled from the 30 V minimum rating.
 - Self-heating, process spread, package parasitics, ageing, and failure outside ratings are not modelled.
-- Independent review remains pending-review.
+- P5 independent review passed F1: mixed typical and maximum table data, an independent forward probe, and all seven native and WASM benches were verified.
 
 ## Licence
 

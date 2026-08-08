@@ -6,7 +6,7 @@
 - Description: GL55-series cadmium-sulfide light-dependent resistor
 - Electrical family: other
 - Fidelity tier: F1, datasheet-constrained
-- Independent reviewer: pending-review
+- Independent reviewer: gpt-5.6-sol independent reviewer (P5)
 
 ## Provenance
 
@@ -54,7 +54,7 @@ Native and WASM agreement: all 2 benches passed. Worst reported relative delta w
 - The published 8 kohm to 20 kohm range at 10 lux is a production bound, not a typical value. The model selects the 20 kohm maximum conservatively and claims no typical unit.
 - LUX is caller supplied. Optical geometry, source spectrum, spectral response, hysteresis, memory, rise/fall dynamics, temperature coefficient, and ageing are not modelled.
 - Dark resistance is a minimum bound and is not used as a continuous-curve target outside the published 10-to-100 lux gamma interval.
-- Independent review remains pending-review.
+- P5 independent review passed F1 after correcting LUX_FLOOR to the lowest cited supported illuminance of 10 lux; both native and WASM benches and an independent 30 lux probe passed, with no typical-unit claim.
 
 ## Licence
 
