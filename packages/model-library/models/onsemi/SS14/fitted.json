@@ -1,0 +1,57 @@
+{
+  "schema_version": "1.0.0",
+  "fitter": "analytic_single_bound_with_held_defaults",
+  "deterministic": true,
+  "temperature_c": 25.0,
+  "parameters": {
+    "IS": 1.7322099580544193e-07,
+    "N": 1.1,
+    "RS": 0.03,
+    "CJO": 1.8e-10
+  },
+  "parameter_metadata": {
+    "IS": {
+      "status": "derived_from_single_bound"
+    },
+    "N": {
+      "status": "held_default"
+    },
+    "RS": {
+      "status": "held_default"
+    },
+    "CJO": {
+      "status": "derived_or_held_default"
+    },
+    "TT": {
+      "status": "derived_or_held_default"
+    }
+  },
+  "held_defaults": [
+    {
+      "parameter": "N",
+      "value": 1.1,
+      "unit": "1",
+      "reason": "Held physical default because the source supplies only one forward-voltage bound."
+    },
+    {
+      "parameter": "RS",
+      "value": 0.03,
+      "unit": "ohm",
+      "reason": "Held physical default because the source supplies only one forward-voltage bound."
+    }
+  ],
+  "residuals": [
+    {
+      "current_a": 1,
+      "datasheet_voltage_v": 0.47,
+      "fitted_voltage_v": 0.47,
+      "relative_error": 0.0,
+      "citation": "p. 2 maximum instantaneous forward voltage"
+    }
+  ],
+  "rms_relative_error": 0.0,
+  "worst_relative_error": {
+    "value": 0.0,
+    "quantity": "forward voltage at 1 A"
+  }
+}

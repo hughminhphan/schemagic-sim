@@ -1,0 +1,198 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "dc_gain.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "hfe_minimum_at_0.0001_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg1),350000)"
+          },
+          "minimum": 35,
+          "unit": "1",
+          "inclusive": true,
+          "datasheet_citation": "p. 2 hFE MIN column",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_minimum_at_0.001_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg2),49999.99999999999)"
+          },
+          "minimum": 50,
+          "unit": "1",
+          "inclusive": true,
+          "datasheet_citation": "p. 2 hFE MIN column",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_minimum_at_0.01_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg3),7500)"
+          },
+          "minimum": 75,
+          "unit": "1",
+          "inclusive": true,
+          "datasheet_citation": "p. 2 hFE MIN column",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_minimum_at_0.15_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg4),666.6666666666666)"
+          },
+          "minimum": 100,
+          "unit": "1",
+          "inclusive": true,
+          "datasheet_citation": "p. 2 hFE MIN column",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_minimum_at_0.5_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg5),80)"
+          },
+          "minimum": 40,
+          "unit": "1",
+          "inclusive": true,
+          "datasheet_citation": "p. 2 hFE MIN column",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "saturation.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "vce_sat_1_maximum",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(cs1))"
+          },
+          "minimum": 0,
+          "maximum": 0.3,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 2 VCE(sat) MAX column",
+          "placeholder": false
+        },
+        {
+          "name": "vbe_sat_1_maximum",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(bs1))"
+          },
+          "minimum": 0,
+          "maximum": 1.2,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 2 VBE(sat) MAX column",
+          "placeholder": false
+        },
+        {
+          "name": "vce_sat_2_maximum",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(cs2))"
+          },
+          "minimum": 0,
+          "maximum": 1,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 2 VCE(sat) MAX column",
+          "placeholder": false
+        },
+        {
+          "name": "vbe_sat_2_maximum",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(bs2))"
+          },
+          "minimum": 0,
+          "maximum": 2,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 2 VBE(sat) MAX column",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "ft_bench.cir",
+      "analysis_type": "ac_small_signal",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "current_gain_bandwidth_minimum",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "frequency_at_magnitude(i(vcc),1)"
+          },
+          "minimum": 300000000,
+          "unit": "Hz",
+          "inclusive": true,
+          "datasheet_citation": "p. 2 fT MIN column",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "capacitance.cir",
+      "analysis_type": "ac_small_signal",
+      "scalar_checks": [
+        {
+          "name": "cobo",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "imag_cap:last(i(vcb),1000000)"
+          },
+          "expected_value": 8e-12,
+          "unit": "F",
+          "tolerance": {
+            "absolute": 5e-13,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 2 Cobo MAX column",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "output_curve.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "boundary_region.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "upper_current_boundary_voltage",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(c))"
+          },
+          "minimum": 0,
+          "maximum": 40,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 2 DC current gain table",
+          "placeholder": false
+        }
+      ]
+    }
+  ]
+}

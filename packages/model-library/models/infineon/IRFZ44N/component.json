@@ -1,0 +1,136 @@
+{
+  "schema_version": "1.0.0",
+  "canonical_mpn": "IRFZ44N",
+  "manufacturer": "Infineon Technologies (International Rectifier legacy)",
+  "description": "55 V N-channel HEXFET power MOSFET",
+  "electrical_family": "nmos",
+  "symbol_pins": [
+    {
+      "name": "G",
+      "number": "1",
+      "role": "gate"
+    },
+    {
+      "name": "D",
+      "number": "2",
+      "role": "drain"
+    },
+    {
+      "name": "S",
+      "number": "3",
+      "role": "source"
+    }
+  ],
+  "spice_pin_mapping": [
+    {
+      "symbol_pin_number": "2",
+      "subckt_node": "drain",
+      "order": 1
+    },
+    {
+      "symbol_pin_number": "1",
+      "subckt_node": "gate",
+      "order": 2
+    },
+    {
+      "symbol_pin_number": "3",
+      "subckt_node": "source",
+      "order": 3
+    }
+  ],
+  "package_variants": [
+    {
+      "name": "TO-220AB",
+      "standard": "JEDEC TO-220AB",
+      "pin_count": 3,
+      "pin_map": [
+        {
+          "package_pin": "1",
+          "symbol_pin_number": "1"
+        },
+        {
+          "package_pin": "2",
+          "symbol_pin_number": "2"
+        },
+        {
+          "package_pin": "3",
+          "symbol_pin_number": "3"
+        }
+      ]
+    }
+  ],
+  "ordering_code_aliases": [
+    "IRFZ44NPbF"
+  ],
+  "datasheet": {
+    "url": "https://www.infineon.com/assets/row/public/documents/24/49/infineon-irfz44n-datasheet-en.pdf",
+    "revision": "IRFZ44NPbF, 21-Sep-2010"
+  },
+  "model_type": "dot_model",
+  "fidelity_tier": "F2",
+  "domain_coverage": {
+    "dc": "fitted",
+    "ac": "fitted",
+    "transient": "approx",
+    "noise": "none",
+    "thermal": "approx",
+    "digital": "none"
+  },
+  "supported_analyses": [
+    "operating_point",
+    "dc_sweep",
+    "ac_small_signal",
+    "transient"
+  ],
+  "supported_operating_region": {
+    "summary": "F2 native-ngspice fit at 25 degC from cited transfer, output, and capacitance curves plus tabulated electrical constraints. Gate charge is an approximate independent check.",
+    "numeric_bounds": [
+      {
+        "quantity": "drain_source_voltage",
+        "minimum": 0,
+        "maximum": 55,
+        "unit": "V",
+        "conditions": "Rated VDSS",
+        "placeholder": false
+      },
+      {
+        "quantity": "gate_source_voltage",
+        "minimum": -20,
+        "maximum": 20,
+        "unit": "V",
+        "conditions": "Absolute maximum; gate failure not simulated",
+        "placeholder": false
+      }
+    ]
+  },
+  "known_omissions": [
+    "The RDS(on), body-diode voltage, and total gate-charge rows are guaranteed maxima; they are retained with source semantics and are not described as typical device values.",
+    "Gate charge is not an optimizer residual. It is checked independently with a broad 75 percent tolerance because the compact VDMOS capacitance law does not reproduce the cited Miller plateau closely; transient coverage is approximate.",
+    "Avalanche, UIS, safe-operating-area failure, temperature-dependent transfer, self-heating in the default three-terminal instance, package inductance, gate-oxide failure, process spread, and noise are not modelled.",
+    "RG is held at the factory numerical floor because the datasheet does not publish intrinsic gate resistance.",
+    "Independent review remains pending-review."
+  ],
+  "licence": {
+    "spdx_id": "MIT",
+    "provenance_basis": "original_from_facts"
+  },
+  "generator": {
+    "tool_or_agent": "opencircuit-model-factory-v0.1.0",
+    "date": "2026-08-09"
+  },
+  "reviewer": {
+    "tool_or_agent": "pending-review",
+    "date": "2026-08-09"
+  },
+  "test_results": {
+    "status": "complete",
+    "pass_count": 10,
+    "fail_count": 0,
+    "total_count": 10,
+    "worst_observed_relative_fitting_error": {
+      "value": 0.42668540510312847,
+      "quantity": "Crss at 1 V"
+    }
+  },
+  "validation_date": "2026-08-09"
+}

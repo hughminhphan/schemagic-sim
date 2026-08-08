@@ -1,0 +1,148 @@
+{
+  "schema_version": "1.0.0",
+  "fitter": "scipy.optimize.least_squares with native ngspice-46 AC and operating-point evaluations",
+  "deterministic": true,
+  "parameters": {
+    "GAIN_OPEN": 19.879183508149605,
+    "BW": 300325.45580387895,
+    "VDROP": 0.9148032947532637,
+    "ILIM": 0.517094209767784,
+    "ROUT": 0.5,
+    "IQ": 0.004,
+    "IBIAS": 2.5e-07,
+    "RIN": 50000,
+    "RBYP": 15000.0,
+    "RGAIN": 1500.0
+  },
+  "parameter_metadata": {
+    "GAIN_OPEN": {
+      "status": "native fitted to manually digitized Figure 6-4 typical curve"
+    },
+    "BW": {
+      "status": "native fitted to manually digitized Figure 6-4 typical curve"
+    },
+    "VDROP": {
+      "status": "native fitted to manually digitized Figure 6-3 typical curve"
+    },
+    "ILIM": {
+      "status": "native fitted to manually digitized Figure 6-3 typical curve"
+    },
+    "ROUT": {
+      "status": "held compact output-stage default"
+    },
+    "IQ": {
+      "status": "direct typical transcription"
+    },
+    "IBIAS": {
+      "status": "direct typical transcription"
+    },
+    "RIN": {
+      "status": "direct typical transcription"
+    },
+    "RBYP": {
+      "status": "derived from the published internal schematic"
+    },
+    "RGAIN": {
+      "status": "derived from the published 150 ohm plus 1.35 kohm gain path"
+    }
+  },
+  "held_defaults": [
+    {
+      "parameter": "ROUT",
+      "value": 0.5,
+      "unit": "ohm",
+      "reason": "held compact output-stage stabilization resistance"
+    }
+  ],
+  "optimizer": {
+    "status": 3,
+    "nfev": 5,
+    "diff_step": 0.0001
+  },
+  "residuals": [
+    {
+      "quantity": "closed-loop gain at 1000 Hz",
+      "datasheet_value": 20,
+      "fitted_value": 19.878079390933273,
+      "unit": "V/V",
+      "relative_error": 0.006096030453336354,
+      "citation": "p. 6 fig. 6-4"
+    },
+    {
+      "quantity": "closed-loop gain at 10000 Hz",
+      "datasheet_value": 20,
+      "fitted_value": 19.86717667080974,
+      "unit": "V/V",
+      "relative_error": 0.006641166459512959,
+      "citation": "p. 6 fig. 6-4"
+    },
+    {
+      "quantity": "closed-loop gain at 100000 Hz",
+      "datasheet_value": 18.5,
+      "fitted_value": 18.859871279310273,
+      "unit": "V/V",
+      "relative_error": 0.019452501584339067,
+      "citation": "p. 6 fig. 6-4"
+    },
+    {
+      "quantity": "closed-loop gain at 300000 Hz",
+      "datasheet_value": 14.2,
+      "fitted_value": 14.063517271997016,
+      "unit": "V/V",
+      "relative_error": 0.009611459718519946,
+      "citation": "p. 6 fig. 6-4"
+    },
+    {
+      "quantity": "closed-loop gain at 1000000 Hz",
+      "datasheet_value": 5.7,
+      "fitted_value": 5.718098996901894,
+      "unit": "V/V",
+      "relative_error": 0.003175262614367307,
+      "citation": "p. 6 fig. 6-4"
+    },
+    {
+      "quantity": "8 ohm output swing at 4 V supply",
+      "datasheet_value": 2,
+      "fitted_value": 2.040197828619677,
+      "unit": "Vpp",
+      "relative_error": 0.020098914309838456,
+      "citation": "p. 6 fig. 6-3"
+    },
+    {
+      "quantity": "8 ohm output swing at 6 V supply",
+      "datasheet_value": 4.1,
+      "fitted_value": 3.905294006783988,
+      "unit": "Vpp",
+      "relative_error": 0.04748926663805161,
+      "citation": "p. 6 fig. 6-3"
+    },
+    {
+      "quantity": "8 ohm output swing at 8 V supply",
+      "datasheet_value": 5.8,
+      "fitted_value": 5.729440324599494,
+      "unit": "Vpp",
+      "relative_error": 0.012165461275949235,
+      "citation": "p. 6 fig. 6-3"
+    },
+    {
+      "quantity": "8 ohm output swing at 10 V supply",
+      "datasheet_value": 7.2,
+      "fitted_value": 7.4181769037112915,
+      "unit": "Vpp",
+      "relative_error": 0.030302347737679345,
+      "citation": "p. 6 fig. 6-3"
+    },
+    {
+      "quantity": "8 ohm output swing at 12 V supply",
+      "datasheet_value": 8.3,
+      "fitted_value": 8.2631612959228,
+      "unit": "Vpp",
+      "relative_error": 0.004438398081590525,
+      "citation": "p. 6 fig. 6-3"
+    }
+  ],
+  "worst_relative_error": {
+    "value": 0.04748926663805161,
+    "quantity": "8 ohm output swing at 6 V supply"
+  }
+}

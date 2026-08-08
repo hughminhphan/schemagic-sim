@@ -1,0 +1,194 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "rdson.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "rdson_maximum_1",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale:last(v(d1),0.04)"
+          },
+          "minimum": 0,
+          "maximum": 0.0175,
+          "unit": "ohm",
+          "inclusive": true,
+          "datasheet_citation": "p. 2 RDS(on) MAX",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "transfer_curve.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "transfer_4.5_v",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vdt1))"
+          },
+          "expected_value": 7,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.33
+          },
+          "datasheet_citation": "p. 3 fig. 3, manually digitized 25 degC curve",
+          "placeholder": false
+        },
+        {
+          "name": "transfer_5_v",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vdt2))"
+          },
+          "expected_value": 20,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.33
+          },
+          "datasheet_citation": "p. 3 fig. 3, manually digitized 25 degC curve",
+          "placeholder": false
+        },
+        {
+          "name": "transfer_6_v",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vdt3))"
+          },
+          "expected_value": 55,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.33
+          },
+          "datasheet_citation": "p. 3 fig. 3, manually digitized 25 degC curve",
+          "placeholder": false
+        },
+        {
+          "name": "transfer_7_v",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vdt4))"
+          },
+          "expected_value": 85,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.33
+          },
+          "datasheet_citation": "p. 3 fig. 3, manually digitized 25 degC curve",
+          "placeholder": false
+        },
+        {
+          "name": "transfer_8_v",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vdt5))"
+          },
+          "expected_value": 110,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.33
+          },
+          "datasheet_citation": "p. 3 fig. 3, manually digitized 25 degC curve",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "output_curve.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "gate_charge.cir",
+      "analysis_type": "transient",
+      "scalar_checks": [
+        {
+          "name": "gate_charge_at_5v",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "charge_at_voltage(v(g),5,0.01)"
+          },
+          "expected_value": 2.4e-8,
+          "unit": "C",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.75
+          },
+          "datasheet_citation": "p. 4 fig. 6, manually digitized",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "capacitance.cir",
+      "analysis_type": "ac_small_signal",
+      "scalar_checks": [
+        {
+          "name": "coss",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "imag_cap:last(i(vd),1000000)"
+          },
+          "expected_value": 3.6e-10,
+          "unit": "F",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 2 electrical characteristics",
+          "placeholder": false
+        },
+        {
+          "name": "crss",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "imag_cap:last(i(vg),1000000)"
+          },
+          "expected_value": 8.8e-11,
+          "unit": "F",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.35
+          },
+          "datasheet_citation": "p. 2 electrical characteristics",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "body_diode.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "body_diode_forward_voltage",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(d))"
+          },
+          "expected_value": 1.3,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.05,
+            "relative": 0.1
+          },
+          "datasheet_citation": "p. 2 source-drain characteristics",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    }
+  ]
+}

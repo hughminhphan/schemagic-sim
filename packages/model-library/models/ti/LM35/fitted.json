@@ -1,0 +1,65 @@
+{
+  "schema_version": "1.0.0",
+  "fitter": "scipy.optimize.least_squares with native ngspice-46 evaluations",
+  "deterministic": true,
+  "parameters": {
+    "SCALE": 0.01,
+    "OFFSET": 0.0,
+    "ROUT": 0.5,
+    "IQ": 5.6e-05,
+    "VDROP": 2.5
+  },
+  "parameter_metadata": {
+    "SCALE": {
+      "status": "native fitted"
+    },
+    "OFFSET": {
+      "status": "native fitted"
+    },
+    "ROUT": {
+      "status": "derived from cited load regulation"
+    },
+    "IQ": {
+      "status": "direct typical transcription"
+    },
+    "VDROP": {
+      "status": "derived from cited minimum supply and maximum output"
+    }
+  },
+  "optimizer": {
+    "status": 1,
+    "nfev": 1,
+    "cost": 0.0,
+    "diff_step": 0.0001
+  },
+  "residuals": [
+    {
+      "quantity": "output voltage at 2 degC",
+      "datasheet_value": 0.02,
+      "fitted_value": 0.02,
+      "unit": "V",
+      "relative_error": 0.0,
+      "citation": "p. 1 linear 10-mV/degC scale factor; p. 5 sensor gain"
+    },
+    {
+      "quantity": "output voltage at 25 degC",
+      "datasheet_value": 0.25,
+      "fitted_value": 0.25,
+      "unit": "V",
+      "relative_error": 0.0,
+      "citation": "p. 1 linear 10-mV/degC scale factor; p. 5 sensor gain"
+    },
+    {
+      "quantity": "output voltage at 150 degC",
+      "datasheet_value": 1.5,
+      "fitted_value": 1.5,
+      "unit": "V",
+      "relative_error": 0.0,
+      "citation": "p. 1 linear 10-mV/degC scale factor; p. 5 sensor gain"
+    }
+  ],
+  "worst_relative_error": {
+    "value": 0.0,
+    "quantity": "output voltage at 2 degC"
+  }
+}

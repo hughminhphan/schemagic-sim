@@ -46,3 +46,32 @@ The feeder is limited to factual parametrics and datasheet PDFs. Vendor SPICE fi
 - timer_555: internal-architecture subckt (comparators + latch + discharge switch); validate astable and monostable periods against datasheet formulas within stated tolerance.
 
 Every archetype has a written spec in docs/model-archetypes/ (authored and ngspice-46-verified 2026-08-06; P3 exit requirement met).
+
+## P5 tranche (frozen 2026-08-09)
+
+P5 contains exactly these 20 manufacturer MPNs. F2 priority marks a review target, not a guaranteed fidelity outcome. A package may claim F2 only when its cited datasheet curves were actually fitted through native ngspice-46.
+
+| MPN | Family | P5 intent |
+|---|---|---|
+| LM386* | audio and analog IC | Audio power amplifier; F2 priority |
+| TL084 | audio and analog IC | Quad JFET-input op-amp |
+| NE5534 | audio and analog IC | Low-noise single op-amp |
+| LM833 | audio and analog IC | Dual low-noise op-amp |
+| LM13700* | audio and analog IC | Dual operational transconductance amplifier; F2 priority |
+| BD139* | BJT | NPN power transistor; F2 priority |
+| BD140 | BJT | PNP power transistor |
+| TIP41C | BJT | NPN power transistor |
+| TIP42C | BJT | PNP power transistor |
+| 2N5088 | BJT | Low-noise NPN transistor |
+| IRFZ44N* | MOSFET | N-channel VDMOS; F2 priority |
+| IRF3205 | MOSFET | N-channel VDMOS |
+| SS14* | diode | SMD Schottky rectifier; F2 priority |
+| 1N5822 | diode | 3 A Schottky rectifier |
+| BZX84C5V1 | diode | SMD 5.1 V zener |
+| BAT85 | diode | Small-signal Schottky diode |
+| MMBT2222A | SMD sibling | Separate package and provenance; may share the fitted PN2222A die model only under the alias/package policy |
+| LM35* | sensor | 10 mV/degC behavioral temperature sensor; F2 priority |
+| NTCLE100E3103JB0 | sensor | 10 kohm NTC using a B-parameter model |
+| GL5528 | sensor | Behavioral LDR using an illuminance parameter |
+
+P5 adds the `sensor_behavioral` archetype. It uses portable analog SPICE behavioral sources, controlled sources, behavioral resistors, and passive elements only. XSPICE remains unavailable and prohibited.

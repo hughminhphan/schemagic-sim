@@ -1,0 +1,34 @@
+OpenCircuit factory test: LM386 parameterized 200 gain mode
+* OpenCircuit Model Factory v0.1.0
+* Original work generated from public factual specifications.
+* This model is not a copy of, or adaptation from, any vendor SPICE model.
+* Source: https://www.ti.com/lit/ds/symlink/lm386.pdf
+* Revision: SNAS545D, May 2004, revised August 2023
+* Fit: native ngspice-46 least-squares fit to cited frequency-response and output-swing curves
+* Node order: GAIN1 INN INP GND OUT VS BYPASS GAIN8
+.subckt OC_TI_LM386 GAIN1 INN INP GND OUT VS BYPASS GAIN8 params: GAIN_CL=1.9879183508e1
+.param GAIN_OPEN=1.9879183508e1 BW=3.0032545580e5 VDROP=9.1480329475e-1 ILIM=5.1709420977e-1
+.param ROUT=5.0000000000e-1 IQ=4.0000000000e-3 IBIAS=2.5000000000e-7 RIN=5.0000000000e4 RBYP=1.5000000000e4 RGAIN=1.5000000000e3
+RINPUT INP INN {RIN}
+IBP GND INP DC {IBIAS}
+IBN GND INN DC {IBIAS}
+RBP1 VS BYPASS {RBYP}
+RBP2 BYPASS GND {RBYP}
+RG12 GAIN1 GAIN8 {RGAIN}
+RG1DC GAIN1 GND 1G
+RG8DC GAIN8 GND 1G
+BIDEAL pre GND V={v(GND)+0.5*v(VS,GND)+GAIN_CL*v(INP,INN)}
+RLP pre filt 1k
+CLP filt GND {1/(6.283185307*BW*1k)}
+BCLAMP q GND V={min(max(v(filt),v(GND)+VDROP),v(VS)-VDROP)}
+RQ q GND 1G
+BOUT GND OUT I={ILIM*tanh((v(q)-v(OUT))/(ROUT*ILIM))}
+IQDRAW VS GND DC {IQ}
+.ends OC_TI_LM386
+
+VS vs 0 DC 6
+VIN inp 0 DC 0 AC 1
+X1 g1 0 inp 0 out vs bypass g8 OC_TI_LM386 GAIN_CL=200
+RLOAD out 0 10k
+.ac lin 1 1000 1000
+.end

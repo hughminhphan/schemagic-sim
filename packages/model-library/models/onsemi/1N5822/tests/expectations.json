@@ -1,0 +1,107 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "forward_01.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "forward_voltage_maximum_at_1_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "minimum": 0,
+          "maximum": 0.39,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 2 maximum instantaneous forward voltage, 1N5822 column",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "forward_02.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "forward_voltage_maximum_at_3_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "minimum": 0,
+          "maximum": 0.525,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 2 maximum instantaneous forward voltage, 1N5822 column",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "forward_03.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "forward_voltage_maximum_at_9.4_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "minimum": 0,
+          "maximum": 0.95,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 2 maximum instantaneous forward voltage, 1N5822 column",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "reverse_leakage.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "reverse_leakage_maximum",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vreverse))"
+          },
+          "minimum": 0,
+          "maximum": 0.002,
+          "unit": "A",
+          "inclusive": true,
+          "datasheet_citation": "p. 2 electrical characteristics",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "zero_bias_capacitance.cir",
+      "analysis_type": "ac_small_signal",
+      "scalar_checks": [
+        {
+          "name": "zero_bias_capacitive_current",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "magnitude:last(i(vac))"
+          },
+          "expected_value": 0.00021991148575128548,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 2e-8,
+            "relative": 0.05
+          },
+          "datasheet_citation": "p. 6 fig. 10, 1N5822 curve",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    }
+  ]
+}

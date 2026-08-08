@@ -1,0 +1,28 @@
+OpenCircuit factory test: MMBT2222A DC gain
+* OpenCircuit Model Factory v0.1.0
+* Original work generated from public factual specifications.
+* This model is not a copy of, or adaptation from, any vendor SPICE model.
+* Source: https://www.onsemi.com/pdf/datasheet/mmbt2222lt1-d.pdf
+* Revision: MMBT2222LT1/D Rev. 12, August 2021
+* Electrical die fit shared from PN2222A under the documented sibling/package policy
+* Package metadata and datasheet provenance remain specific to MMBT2222A
+.model OC_ONSEMI_MMBT2222A NPN(IS=2.8962197304e-14 NF=1.0000000000e0 BF=1.9999999999e3 IKF=6.8919904103e-1 ISE=3.5557082141e-14 NE=1.2072447758e0 VAF=1.0000000000e2 BR=4.0000000000e0 RB=3.5000000000e0 RE=1.2962957766e-4 RC=1.6500000000e0 CJE=2.9590349587e-11 VJE=7.5000000000e-1 MJE=3.3000000000e-1 CJC=1.9261254218e-11 VJC=7.5000000000e-1 MJC=3.3000000000e-1 XCJC=1.0000000000e0 TF=4.3597672589e-10 TR=0 FC=0.5 EG=1.11 XTI=3 TNOM=27)
+
+.temp 25
+VCG1 cg1 0 DC 1.0000000000e1
+IBG1 0 bg1 DC 2.8571428571e-6
+QG1 cg1 bg1 0 OC_ONSEMI_MMBT2222A
+VCG2 cg2 0 DC 1.0000000000e1
+IBG2 0 bg2 DC 2.0000000000e-5
+QG2 cg2 bg2 0 OC_ONSEMI_MMBT2222A
+VCG3 cg3 0 DC 1.0000000000e1
+IBG3 0 bg3 DC 1.3333333333e-4
+QG3 cg3 bg3 0 OC_ONSEMI_MMBT2222A
+VCG4 cg4 0 DC 1.0000000000e1
+IBG4 0 bg4 DC 1.5000000000e-3
+QG4 cg4 bg4 0 OC_ONSEMI_MMBT2222A
+VCG5 cg5 0 DC 1.0000000000e1
+IBG5 0 bg5 DC 1.2500000000e-2
+QG5 cg5 bg5 0 OC_ONSEMI_MMBT2222A
+.op
+.end

@@ -1,0 +1,95 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "dc_gain.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "hfe_minimum_at_0.3_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg1),100)"
+          },
+          "minimum": 30,
+          "unit": "1",
+          "inclusive": true,
+          "datasheet_citation": "official spec table MIN column",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_minimum_at_3_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg2),5)"
+          },
+          "minimum": 15,
+          "unit": "1",
+          "inclusive": true,
+          "datasheet_citation": "official spec table MIN column",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "saturation.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "vce_sat_1_maximum",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(cs1))"
+          },
+          "minimum": 0,
+          "maximum": 1.5,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "official spec table MAX column",
+          "placeholder": false
+        },
+        {
+          "name": "vbe_sat_1_maximum",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(bs1))"
+          },
+          "minimum": 0,
+          "maximum": 2,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "official spec table MAX column",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "output_curve.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "boundary_region.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "upper_current_boundary_voltage",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(c))"
+          },
+          "minimum": 0,
+          "maximum": 100,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "official spec table",
+          "placeholder": false
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "schema_version": "1.0.0",
+  "fitter": "native ngspice-46 evaluation of published F1 bounds",
+  "deterministic": true,
+  "parameters": {
+    "R10": 20000,
+    "GAMMA": 0.7,
+    "LUX_FLOOR": 0.001
+  },
+  "parameter_metadata": {
+    "R10": {
+      "status": "published maximum selected as conservative F1 bound"
+    },
+    "GAMMA": {
+      "status": "direct typical transcription"
+    },
+    "LUX_FLOOR": {
+      "status": "supported-region floor"
+    }
+  },
+  "optimizer": null,
+  "residuals": [
+    {
+      "quantity": "conservative resistance at 10 lux",
+      "datasheet_value": 20000,
+      "fitted_value": 20000.0,
+      "unit": "ohm",
+      "relative_error": 0.0,
+      "citation": "p. 1 light resistance at 10 lux"
+    },
+    {
+      "quantity": "conservative resistance at 100 lux",
+      "datasheet_value": 3990.52462993776,
+      "fitted_value": 3990.52462993776,
+      "unit": "ohm",
+      "relative_error": 0.0,
+      "citation": "p. 1 gamma definition and 10 lux maximum"
+    }
+  ],
+  "worst_relative_error": {
+    "value": 0.0,
+    "quantity": "conservative resistance at 10 lux"
+  }
+}

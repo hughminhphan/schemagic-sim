@@ -1,0 +1,18 @@
+OpenCircuit factory test: GL5528 transfer at 100 lux
+* OpenCircuit Model Factory v0.1.0
+* Original work generated from public factual specifications.
+* This model is not a copy of, or adaptation from, any vendor SPICE model.
+* Source: https://cdn.sparkfun.com/datasheets/Sensors/LightImaging/SEN-09088.pdf
+* Revision: GL5528.xls source sheet, created 25-Apr-2007; reputable SparkFun mirror
+* Archetype: sensor_behavioral illuminance power law
+* Node order: P N
+.subckt OC_SENBA_GL5528 P N params: LUX=10
+.param R10=2.0000000000e4 GAMMA=7.0000000000e-1 LUX_FLOOR=1.0000000000e-3
+RLDR P N R={max(R10*pow(max(LUX,LUX_FLOOR)/10,-GAMMA),1e-4)}
+.ends OC_SENBA_GL5528
+
+ITEST 0 sense DC 1u
+X1 sense 0 OC_SENBA_GL5528 LUX=1.0000000000e2
+RALL all 0 1G
+.op
+.end

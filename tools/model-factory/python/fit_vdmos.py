@@ -56,7 +56,12 @@ def dc_residual(parameters, fixed, facts):
     for target, actual in zip(facts["transfer_points"], measured["transfer"]):
         output.append(math.log(max(actual, 1e-12)) - math.log(target["current"]["value"]))
     for target, actual in zip(facts["rdson_points"], measured["rdson"]):
-        output.append((actual - target["resistance"]["value"]) / target["resistance"]["value"])
+        desired = target["resistance"]["value"]
+        normalized = (actual - desired) / desired
+        if target["resistance"].get("source_kind") == "maximum":
+            output.append(20.0 * max(normalized, 0.0) + 0.05 * min(normalized, 0.0))
+        else:
+            output.append(normalized)
     for target, actual in zip(facts["output_points"], measured["output"]):
         output.append(math.log(max(actual, 1e-12)) - math.log(target["current"]["value"]))
     return np.asarray(output)
@@ -92,7 +97,7 @@ def main():
     facts = json.loads(Path(args.facts).read_text())
     caps = facts["capacitances"]
     rdson_seed = facts["rdson_points"][0]["resistance"]["value"]
-    rs = max(0.20 * rdson_seed, 1e-4)
+    rs = max(0.10 * rdson_seed, 1e-4)
     rd_seed = max(0.55 * rdson_seed, 1e-4)
     cgs = max(caps["ciss"]["value"] - caps["crss"]["value"], 1e-15)
     cds = max(caps["coss"]["value"] - caps["crss"]["value"], 1e-15)
@@ -112,11 +117,22 @@ def main():
     hi = facts["transfer_points"][-1]
     kp0 = 2 * hi["current"]["value"] / (hi["vgs"]["value"] - vto0) ** 2
     x0 = np.array([vto0, kp0, 0.05, 0.003, rd_seed])
-    lower = np.array([facts["threshold"]["minimum"]["value"], 1e-3, 0, 0, 0.3 * rd_seed])
+    lower = np.array([facts["threshold"]["minimum"]["value"], 1e-3, 0, 0, 1e-6])
     upper = np.array([facts["threshold"]["maximum"]["value"], 1e3, 1.0, 0.2, 1.5 * rd_seed])
     fit = least_squares(dc_residual, x0=x0, bounds=(lower, upper), args=(fixed, facts), method="trf", x_scale="jac", diff_step=1e-4, ftol=1e-10, xtol=1e-10, max_nfev=5000)
     if fit.status <= 0:
         raise SystemExit(f"VDMOS DC fit failed: {fit.message}")
+    for _ in range(10):
+        measured_bounds = evaluate_dc(fit.x, fixed, facts)["rdson"]
+        overshoots = [
+            actual - target["resistance"]["value"]
+            for target, actual in zip(facts["rdson_points"], measured_bounds)
+            if target["resistance"].get("source_kind") == "maximum"
+        ]
+        worst_overshoot = max(overshoots, default=0.0)
+        if worst_overshoot <= 0:
+            break
+        fit.x[4] = max(float(fit.x[4]) - 2.0 * worst_overshoot, 1e-6)
     cap_fit = least_squares(cap_residual, x0=np.array([1.0]), bounds=(np.array([0.01]), np.array([10.0])), args=(fit.x, fixed, facts), method="trf", x_scale="jac", diff_step=1e-4, ftol=1e-10, xtol=1e-10, max_nfev=5000)
     if cap_fit.status <= 0:
         raise SystemExit(f"VDMOS capacitance fit failed: {cap_fit.message}")

@@ -1,0 +1,71 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "transfer_01.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "transfer_1",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(out))"
+          },
+          "expected_value": 0.02,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.005,
+            "relative": 0.02
+          },
+          "datasheet_citation": "p. 1 linear 10-mV/degC scale factor; p. 5 sensor gain",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "transfer_02.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "transfer_2",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(out))"
+          },
+          "expected_value": 0.25,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.005,
+            "relative": 0.02
+          },
+          "datasheet_citation": "p. 1 linear 10-mV/degC scale factor; p. 5 sensor gain",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "transfer_03.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "transfer_3",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(out))"
+          },
+          "expected_value": 1.5,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.005,
+            "relative": 0.02
+          },
+          "datasheet_citation": "p. 1 linear 10-mV/degC scale factor; p. 5 sensor gain",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    }
+  ]
+}

@@ -142,9 +142,15 @@ def main():
     args = parser.parse_args()
     facts = json.loads(Path(args.facts).read_text())
 
-    cjc = facts["capacitances"]["cobo"]["value"] * (1 + facts["capacitances"]["cobo_vcb"]["value"] / 0.75) ** 0.33
-    cje = facts["capacitances"]["cibo"]["value"] * (1 + facts["capacitances"]["cibo_veb"]["value"] / 0.75) ** 0.33
-    sat1, sat2 = facts["saturation_points"][:2]
+    capacitances = facts.get("capacitances")
+    if capacitances:
+        cjc = capacitances["cobo"]["value"] * (1 + capacitances["cobo_vcb"]["value"] / 0.75) ** 0.33
+        cje = capacitances["cibo"]["value"] * (1 + capacitances["cibo_veb"]["value"] / 0.75) ** 0.33
+    else:
+        cjc = 1e-15
+        cje = 1e-15
+    sat1 = facts["saturation_points"][0]
+    sat2 = facts["saturation_points"][1] if len(facts["saturation_points"]) > 1 else sat1
     delta_ic = sat2["collector_current"]["value"] - sat1["collector_current"]["value"]
     if abs(delta_ic) > 1e-15:
         slope = (sat2["vce_sat"]["value"] - sat1["vce_sat"]["value"]) / delta_ic
@@ -220,13 +226,18 @@ def main():
     fitted_vector = joint_fit.x
     log_is, bf, log_ikf, log_ise, ne, re, rc, rb = [float(value) for value in fitted_vector]
     measured = evaluate(fitted_vector, fixed, facts)
-    ft = facts["frequency_response"]["ft"]["value"]
-    ic_ft = facts["frequency_response"]["ic"]["value"]
-    tau = 1 / (2 * math.pi * ft)
-    gm = ic_ft / VT
-    tf = max(tau - (cje + cjc) / gm - cjc * (rc + re), 1e-12)
-    storage = facts["frequency_response"].get("storage_time")
-    tr = storage["value"] / math.log(2) if storage else 0.0
+    frequency_response = facts.get("frequency_response")
+    if frequency_response:
+        ft = frequency_response["ft"]["value"]
+        ic_ft = frequency_response["ic"]["value"]
+        tau = 1 / (2 * math.pi * ft)
+        gm = ic_ft / VT
+        tf = max(tau - (cje + cjc) / gm - cjc * (rc + re), 1e-12)
+        storage = frequency_response.get("storage_time")
+        tr = storage["value"] / math.log(2) if storage else 0.0
+    else:
+        tf = 1e-12
+        tr = 0.0
     rows = []
     for target, actual in zip(facts["gain_points"], measured["gain"]):
         quantities = [("hFE", "hfe", "1")]
@@ -266,6 +277,18 @@ def main():
             "RB": rb, "RE": re, "RC": rc, "CJE": cje, "VJE": 0.75,
             "MJE": 0.33, "CJC": cjc, "VJC": 0.75, "MJC": 0.33,
             "XCJC": 1.0, "TF": tf, "TR": tr,
+        },
+        "parameter_metadata": {
+            "IS": {"status": "native fitted"}, "BF": {"status": "native fitted"}, "IKF": {"status": "native fitted"},
+            "ISE": {"status": "native fitted"}, "NE": {"status": "native fitted"}, "RB": {"status": "native fitted"},
+            "RE": {"status": "native fitted"}, "RC": {"status": "native fitted"},
+            "CJE": {"status": "derived from cited capacitance" if capacitances else "held at numerical floor; no cited input capacitance"},
+            "CJC": {"status": "derived from cited capacitance" if capacitances else "held at numerical floor; no cited output capacitance"},
+            "TF": {"status": "derived from cited fT" if frequency_response else "held at numerical floor; no cited fT"},
+            "TR": {"status": "derived from cited storage time" if frequency_response and frequency_response.get("storage_time") else "held at default; no cited storage time"},
+            "VAF": {"status": "held at archetype default; no fitted output-curve family"},
+            "NF": {"status": "held default"}, "BR": {"status": "held default"}, "VJE": {"status": "held default"},
+            "MJE": {"status": "held default"}, "VJC": {"status": "held default"}, "MJC": {"status": "held default"}, "XCJC": {"status": "held default"}
         },
         "optimizer": {"status": int(joint_fit.status), "gain_nfev": int(seed_fit.nfev), "voltage_nfev": int(voltage_fit.nfev), "joint_nfev": int(joint_fit.nfev), "cost": float(joint_fit.cost), "diff_step": 1e-4},
         "residuals": rows,

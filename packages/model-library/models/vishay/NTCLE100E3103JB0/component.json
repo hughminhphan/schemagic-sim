@@ -1,0 +1,117 @@
+{
+  "schema_version": "1.0.0",
+  "canonical_mpn": "NTCLE100E3103JB0",
+  "manufacturer": "Vishay BCcomponents",
+  "description": "10 kohm radial-leaded NTC thermistor, 5 percent R25 tolerance",
+  "electrical_family": "other",
+  "symbol_pins": [
+    {
+      "name": "1",
+      "number": "1",
+      "role": "terminal"
+    },
+    {
+      "name": "2",
+      "number": "2",
+      "role": "terminal"
+    }
+  ],
+  "spice_pin_mapping": [
+    {
+      "symbol_pin_number": "1",
+      "subckt_node": "positive",
+      "order": 1
+    },
+    {
+      "symbol_pin_number": "2",
+      "subckt_node": "negative",
+      "order": 2
+    }
+  ],
+  "package_variants": [
+    {
+      "name": "radial leaded bead",
+      "standard": "Vishay NTCLE100E3",
+      "pin_count": 2,
+      "pin_map": [
+        {
+          "package_pin": "1",
+          "symbol_pin_number": "1"
+        },
+        {
+          "package_pin": "2",
+          "symbol_pin_number": "2"
+        }
+      ]
+    }
+  ],
+  "ordering_code_aliases": [],
+  "datasheet": {
+    "url": "https://www.vishay.com/docs/29049/ntcle100.pdf",
+    "revision": "Document 29049, revision 07-May-2025"
+  },
+  "model_type": "subckt",
+  "fidelity_tier": "F1",
+  "domain_coverage": {
+    "dc": "fitted",
+    "ac": "none",
+    "transient": "none",
+    "noise": "none",
+    "thermal": "none",
+    "digital": "none"
+  },
+  "supported_analyses": [
+    "operating_point",
+    "dc_sweep"
+  ],
+  "supported_operating_region": {
+    "summary": "F1 native-fitted single-Beta resistance model from -40 degC to 85 degC, checked against the manufacturer resistance table.",
+    "numeric_bounds": [
+      {
+        "quantity": "temperature",
+        "minimum": -40,
+        "maximum": 85,
+        "unit": "degC",
+        "conditions": "B25/85 model validation interval",
+        "placeholder": false
+      },
+      {
+        "quantity": "dissipated_power",
+        "minimum": 0,
+        "maximum": 0.001,
+        "unit": "W",
+        "conditions": "Validation benches use 1 uA to keep self-heating negligible",
+        "placeholder": false
+      }
+    ]
+  },
+  "known_omissions": [
+    "TEMP_C is caller supplied and self-heating is not simulated.",
+    "A single B-parameter law does not reproduce the full manufacturer polynomial even within the -40 degC to 85 degC interval; the worst table residual is about 15 percent, so the package is capped at F1 and the resistance checks use a documented 16 percent tolerance.",
+    "R25 and B tolerance, dissipation factor, thermal time constant, lead conduction, ageing, and humidity effects are metadata only.",
+    "Independent review remains pending-review."
+  ],
+  "licence": {
+    "spdx_id": "MIT",
+    "provenance_basis": "original_from_facts"
+  },
+  "generator": {
+    "tool_or_agent": "opencircuit-model-factory-v0.1.0",
+    "date": "2026-08-09"
+  },
+  "reviewer": {
+    "tool_or_agent": "pending-review",
+    "date": "2026-08-09"
+  },
+  "test_results": {
+    "status": "complete",
+    "pass_count": 3,
+    "fail_count": 0,
+    "total_count": 3,
+    "worst_observed_relative_fitting_error": {
+      "value": 0.14653898271474636,
+      "quantity": "resistance at -40 degC"
+    }
+  },
+  "validation_date": "2026-08-09"
+}

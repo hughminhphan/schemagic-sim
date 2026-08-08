@@ -27,6 +27,7 @@ Every ngspice construct in this directory was verified by execution against the 
 | `logic_74hc` | [archetype-logic74hc.md](archetype-logic74hc.md) | `subckt` | **F1 digital, F2 dc/transient** | No XSPICE, so no true event semantics. |
 | `timer` (555) | [archetype-timer555.md](archetype-timer555.md) | `subckt` | **F2** | Internal architecture reproduces the datasheet timing laws. |
 | `oscillator` | [archetype-timer555.md](archetype-timer555.md) sec. 10 | `subckt` | **F1** | Free-running silicon oscillators lack published internals. |
+| `sensor_behavioral` | [archetype-sensor-behavioral.md](archetype-sensor-behavioral.md) | `subckt` | **F2** | Cited environmental transfer curves or equations can be fitted, but the physical environment remains caller supplied. |
 | `resistor`, `capacitor`, `inductor`, `potentiometer`, `switch`, `source` | not an archetype; primitive | `builtin_primitive` | **F1** | Ideal primitives with tolerance metadata only. |
 
 A ceiling is a **maximum**. A package claims the tier it actually earned. A package with no fitted parameters is F1 regardless of archetype.

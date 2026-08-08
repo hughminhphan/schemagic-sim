@@ -1,0 +1,197 @@
+{
+  "schema_version": "1.0.0",
+  "extraction_method": "pdftotext -layout plus manual MIN/TYP/MAX electrical-table transcription",
+  "fit_conditions": {
+    "temperature": {
+      "value": 25,
+      "unit": "degC",
+      "conditions": "VS = +/-15 V unless stated",
+      "page_reference": "p. 14 electrical characteristics heading",
+      "source_kind": "typical"
+    }
+  },
+  "parameters": {
+    "aol": {
+      "value": 200000,
+      "unit": "V/V",
+      "conditions": "VO in linear region, VS = +/-15 V",
+      "page_reference": "p. 14 open-loop gain TYP",
+      "source_kind": "typical"
+    },
+    "gbw": {
+      "value": 5250000,
+      "unit": "Hz",
+      "conditions": "25 degC",
+      "page_reference": "p. 16 AC characteristics",
+      "source_kind": "typical"
+    },
+    "sr": {
+      "value": 20000000,
+      "unit": "V/s",
+      "conditions": "unity-gain large-signal test",
+      "page_reference": "p. 16 slew-rate TYP",
+      "source_kind": "typical"
+    },
+    "vos": {
+      "value": 0.003,
+      "unit": "V",
+      "conditions": "VO = 0, 25 degC",
+      "page_reference": "p. 14 input offset TYP",
+      "source_kind": "typical"
+    },
+    "vos_max": {
+      "value": 0.006,
+      "unit": "V",
+      "conditions": "VO = 0, 25 degC",
+      "page_reference": "p. 14 input offset MAX",
+      "source_kind": "maximum"
+    },
+    "ibias": {
+      "value": 6.5e-11,
+      "unit": "A",
+      "conditions": "VO = 0, 25 degC",
+      "page_reference": "p. 14 input bias TYP",
+      "source_kind": "typical"
+    },
+    "ios": {
+      "value": 5e-12,
+      "unit": "A",
+      "conditions": "VO = 0, 25 degC",
+      "page_reference": "p. 14 input offset current TYP",
+      "source_kind": "typical"
+    },
+    "output_swing": {
+      "column_semantics": {
+        "minimum": {
+          "column": "MIN",
+          "published": true
+        },
+        "typical": {
+          "column": "TYP",
+          "published": true
+        },
+        "maximum": {
+          "column": "MAX",
+          "published": false,
+          "page_reference": "p. 14 output swing row",
+          "source_kind": "not_published"
+        }
+      },
+      "minimum_25c": {
+        "value": 12,
+        "unit": "V",
+        "conditions": "RL as cited, VS = +/-15 V",
+        "page_reference": "p. 14 output swing MIN",
+        "source_kind": "minimum"
+      },
+      "typical_25c": {
+        "value": 13.5,
+        "unit": "V",
+        "conditions": "RL as cited, VS = +/-15 V",
+        "page_reference": "p. 14 output swing TYP",
+        "source_kind": "typical"
+      }
+    },
+    "ilim": {
+      "value": 0.04,
+      "unit": "A",
+      "conditions": "output shorted to ground, 25 degC",
+      "page_reference": "p. 14 short-circuit current",
+      "source_kind": "typical"
+    },
+    "cmrr_db": {
+      "value": 100,
+      "unit": "dB",
+      "conditions": "25 degC",
+      "page_reference": "p. 14 CMRR TYP",
+      "source_kind": "typical"
+    },
+    "psrr_db": {
+      "value": 100,
+      "unit": "dB",
+      "conditions": "25 degC",
+      "page_reference": "p. 14 supply rejection TYP",
+      "source_kind": "typical"
+    },
+    "iq": {
+      "value": 0.0014,
+      "unit": "A",
+      "conditions": "per amplifier, VO = 0, no load",
+      "page_reference": "p. 14 supply current TYP",
+      "source_kind": "typical"
+    },
+    "en": {
+      "value": 3.7e-8,
+      "unit": "V/sqrt(Hz)",
+      "conditions": "f = 1 kHz",
+      "page_reference": "p. 16 voltage-noise density",
+      "source_kind": "typical"
+    },
+    "phase_margin": {
+      "value": 55,
+      "unit": "deg",
+      "conditions": "unity-gain or cited compensation",
+      "page_reference": "p. 16 phase margin",
+      "source_kind": "typical"
+    },
+    "rout": {
+      "value": 125,
+      "unit": "ohm",
+      "conditions": "published output impedance test frequency",
+      "page_reference": "p. 16 output impedance",
+      "source_kind": "typical"
+    },
+    "supply_positive": {
+      "value": 15,
+      "unit": "V",
+      "conditions": "electrical-characteristics test supply",
+      "page_reference": "p. 14 heading",
+      "source_kind": "typical"
+    },
+    "supply_negative": {
+      "value": -15,
+      "unit": "V",
+      "conditions": "electrical-characteristics test supply",
+      "page_reference": "p. 14 heading",
+      "source_kind": "typical"
+    },
+    "supply_voltage_total": {
+      "minimum": {
+        "value": 7,
+        "unit": "V",
+        "conditions": "recommended operating envelope",
+        "page_reference": "p. 8 recommended conditions",
+        "source_kind": "minimum"
+      },
+      "maximum": {
+        "value": 40,
+        "unit": "V",
+        "conditions": "recommended operating envelope",
+        "page_reference": "p. 8 recommended conditions",
+        "source_kind": "maximum"
+      }
+    }
+  },
+  "identity": {
+    "canonical_mpn": "TL084",
+    "manufacturer": "Texas Instruments",
+    "aliases": [
+      "TL084C",
+      "TL084CN",
+      "TL084CD"
+    ]
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://www.ti.com/lit/ds/symlink/tl084.pdf",
+    "revision": "SLOS081O, February 1977, revised September 2025",
+    "sha256": "c162e1f4da0f1f4d7cc258c43c385b8bc4fedaf4e70b549ebde80e48c79020f5",
+    "accessed_date": "2026-08-09",
+    "pages_referenced": [
+      "p. 14",
+      "p. 16",
+      "p. 8"
+    ],
+    "placeholder": false
+  }
+}

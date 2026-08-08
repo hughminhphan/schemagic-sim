@@ -1,0 +1,130 @@
+{
+  "schema_version": "1.0.0",
+  "canonical_mpn": "1N5822",
+  "manufacturer": "onsemi",
+  "description": "3 A, 40 V axial Schottky rectifier",
+  "electrical_family": "diode",
+  "symbol_pins": [
+    {
+      "name": "A",
+      "number": "1",
+      "role": "anode"
+    },
+    {
+      "name": "K",
+      "number": "2",
+      "role": "cathode"
+    }
+  ],
+  "spice_pin_mapping": [
+    {
+      "symbol_pin_number": "1",
+      "subckt_node": "anode",
+      "order": 1
+    },
+    {
+      "symbol_pin_number": "2",
+      "subckt_node": "cathode",
+      "order": 2
+    }
+  ],
+  "package_variants": [
+    {
+      "name": "axial lead",
+      "standard": "CASE 267-05",
+      "pin_count": 2,
+      "pin_map": [
+        {
+          "package_pin": "1",
+          "symbol_pin_number": "1"
+        },
+        {
+          "package_pin": "2",
+          "symbol_pin_number": "2"
+        }
+      ]
+    }
+  ],
+  "ordering_code_aliases": [
+    "1N5822G",
+    "1N5822RL",
+    "1N5822RLG"
+  ],
+  "datasheet": {
+    "url": "https://www.onsemi.com/download/data-sheet/pdf/1n5820-d.pdf",
+    "revision": "1N5820/D Rev. 11, November 2023"
+  },
+  "model_type": "dot_model",
+  "fidelity_tier": "F1",
+  "domain_coverage": {
+    "dc": "approx",
+    "ac": "approx",
+    "transient": "none",
+    "noise": "none",
+    "thermal": "none",
+    "digital": "none"
+  },
+  "supported_analyses": [
+    "operating_point",
+    "dc_sweep",
+    "ac_small_signal"
+  ],
+  "supported_operating_region": {
+    "summary": "F1 bound-constrained Schottky model over 1 A to 9.4 A at 25 degC.",
+    "numeric_bounds": [
+      {
+        "quantity": "forward_current",
+        "minimum": 0,
+        "maximum": 9.4,
+        "unit": "A",
+        "conditions": "Published characterization or continuous-current envelope at 25 degC",
+        "placeholder": false
+      },
+      {
+        "quantity": "reverse_voltage",
+        "minimum": 0,
+        "maximum": 40,
+        "unit": "V",
+        "conditions": "Published reverse-voltage envelope; failure is not simulated",
+        "placeholder": false
+      },
+      {
+        "quantity": "ambient_temperature",
+        "minimum": 25,
+        "maximum": 25,
+        "unit": "degC",
+        "conditions": "Model calibration temperature",
+        "placeholder": false
+      }
+    ]
+  },
+  "known_omissions": [
+    "The fitted forward points are guaranteed maxima rather than a typical curve, so validation treats them as upper bounds and fidelity is capped at F1.",
+    "Reverse breakdown, leakage temperature scaling, surge heating, and distributed junction capacitance are omitted.",
+    "Self-heating, process spread, package parasitics, ageing, and failure outside ratings are not modelled.",
+    "Independent review remains pending-review."
+  ],
+  "licence": {
+    "spdx_id": "MIT",
+    "provenance_basis": "original_from_facts"
+  },
+  "generator": {
+    "tool_or_agent": "opencircuit-model-factory-v0.1.0",
+    "date": "2026-08-09"
+  },
+  "reviewer": {
+    "tool_or_agent": "pending-review",
+    "date": "2026-08-09"
+  },
+  "test_results": {
+    "status": "complete",
+    "pass_count": 5,
+    "fail_count": 0,
+    "total_count": 5,
+    "worst_observed_relative_fitting_error": {
+      "value": 0.024060784835010195,
+      "quantity": "forward voltage at 1 A"
+    }
+  },
+  "validation_date": "2026-08-09"
+}

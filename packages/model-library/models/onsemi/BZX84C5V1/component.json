@@ -1,0 +1,130 @@
+{
+  "schema_version": "1.0.0",
+  "canonical_mpn": "BZX84C5V1",
+  "manufacturer": "onsemi",
+  "description": "5.1 V, 250 mW surface-mount Zener diode",
+  "electrical_family": "diode",
+  "symbol_pins": [
+    {
+      "name": "A",
+      "number": "1",
+      "role": "anode"
+    },
+    {
+      "name": "K",
+      "number": "3",
+      "role": "cathode"
+    }
+  ],
+  "spice_pin_mapping": [
+    {
+      "symbol_pin_number": "1",
+      "subckt_node": "anode",
+      "order": 1
+    },
+    {
+      "symbol_pin_number": "3",
+      "subckt_node": "cathode",
+      "order": 2
+    }
+  ],
+  "package_variants": [
+    {
+      "name": "SOT-23",
+      "standard": "CASE 318",
+      "pin_count": 3,
+      "pin_map": [
+        {
+          "package_pin": "1",
+          "symbol_pin_number": "1"
+        },
+        {
+          "package_pin": "3",
+          "symbol_pin_number": "3"
+        }
+      ]
+    }
+  ],
+  "ordering_code_aliases": [
+    "BZX84C5V1LT1G",
+    "BZX84C5V1LT3G"
+  ],
+  "datasheet": {
+    "url": "https://www.onsemi.com/pdf/datasheet/bzx84c2v4lt1-d.pdf",
+    "revision": "BZX84C2V4LT1/D Rev. 23, August 2021"
+  },
+  "model_type": "dot_model",
+  "fidelity_tier": "F1",
+  "domain_coverage": {
+    "dc": "approx",
+    "ac": "approx",
+    "transient": "none",
+    "noise": "none",
+    "thermal": "none",
+    "digital": "none"
+  },
+  "supported_analyses": [
+    "operating_point",
+    "dc_sweep",
+    "ac_small_signal"
+  ],
+  "supported_operating_region": {
+    "summary": "F1 Zener model with forward family-curve fit and reverse-voltage table bounds at 1 mA, 5 mA, and 20 mA.",
+    "numeric_bounds": [
+      {
+        "quantity": "forward_current",
+        "minimum": 0,
+        "maximum": 0.5,
+        "unit": "A",
+        "conditions": "Published characterization or continuous-current envelope at 25 degC",
+        "placeholder": false
+      },
+      {
+        "quantity": "reverse_voltage",
+        "minimum": 0,
+        "maximum": 5.9,
+        "unit": "V",
+        "conditions": "Published reverse-voltage envelope; failure is not simulated",
+        "placeholder": false
+      },
+      {
+        "quantity": "ambient_temperature",
+        "minimum": 25,
+        "maximum": 25,
+        "unit": "degC",
+        "conditions": "Model calibration temperature",
+        "placeholder": false
+      }
+    ]
+  },
+  "known_omissions": [
+    "The forward curve is a family-level typical curve, not a device-specific BZX84C5V1 trace, and the reverse knee is constrained by MIN/MAX table windows, so fidelity is capped at F1.",
+    "NBV is held at a first-order default. Dynamic impedance, temperature coefficient, surge behavior, noise, and statistical Zener-voltage tolerance are not continuously modelled.",
+    "Package pin 2 is no-connect and is represented only by the three-pin package metadata; the electrical SPICE model has anode and cathode terminals.",
+    "Self-heating, process spread, package parasitics, ageing, and failure outside ratings are not modelled.",
+    "Independent review remains pending-review."
+  ],
+  "licence": {
+    "spdx_id": "MIT",
+    "provenance_basis": "original_from_facts"
+  },
+  "generator": {
+    "tool_or_agent": "opencircuit-model-factory-v0.1.0",
+    "date": "2026-08-09"
+  },
+  "reviewer": {
+    "tool_or_agent": "pending-review",
+    "date": "2026-08-09"
+  },
+  "test_results": {
+    "status": "complete",
+    "pass_count": 9,
+    "fail_count": 0,
+    "total_count": 9,
+    "worst_observed_relative_fitting_error": {
+      "value": 0.0030981385546208586,
+      "quantity": "forward voltage at 0.01 A"
+    }
+  },
+  "validation_date": "2026-08-09"
+}

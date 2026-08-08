@@ -1,0 +1,212 @@
+{
+  "schema_version": "1.0.0",
+  "extraction_method": "pdftotext -layout plus manual MIN/MAX table transcription",
+  "model_polarity": "NPN",
+  "device_class": "small_signal",
+  "fit_conditions": {
+    "temperature": {
+      "value": 25,
+      "unit": "degC",
+      "conditions": "TA = 25 degC unless stated",
+      "page_reference": "p. 1 absolute ratings heading",
+      "source_kind": "typical"
+    }
+  },
+  "gain_points": [
+    {
+      "collector_current": {
+        "value": 0.0001,
+        "unit": "A",
+        "conditions": "VCE = 5 V",
+        "page_reference": "p. 2 ON characteristics",
+        "source_kind": "typical"
+      },
+      "vce": {
+        "value": 5,
+        "unit": "V",
+        "conditions": "IC = 100 uA",
+        "page_reference": "p. 2 ON characteristics",
+        "source_kind": "typical"
+      },
+      "hfe": {
+        "value": 300,
+        "unit": "1",
+        "conditions": "IC = 100 uA, VCE = 5 V",
+        "page_reference": "p. 2 hFE MIN column",
+        "source_kind": "minimum"
+      }
+    },
+    {
+      "collector_current": {
+        "value": 0.001,
+        "unit": "A",
+        "conditions": "VCE = 5 V",
+        "page_reference": "p. 2 ON characteristics",
+        "source_kind": "typical"
+      },
+      "vce": {
+        "value": 5,
+        "unit": "V",
+        "conditions": "IC = 1 mA",
+        "page_reference": "p. 2 ON characteristics",
+        "source_kind": "typical"
+      },
+      "hfe": {
+        "value": 350,
+        "unit": "1",
+        "conditions": "IC = 1 mA, VCE = 5 V",
+        "page_reference": "p. 2 hFE MIN column",
+        "source_kind": "minimum"
+      }
+    },
+    {
+      "collector_current": {
+        "value": 0.01,
+        "unit": "A",
+        "conditions": "VCE = 5 V, pulse test",
+        "page_reference": "p. 2 ON characteristics",
+        "source_kind": "typical"
+      },
+      "vce": {
+        "value": 5,
+        "unit": "V",
+        "conditions": "IC = 10 mA",
+        "page_reference": "p. 2 ON characteristics",
+        "source_kind": "typical"
+      },
+      "hfe": {
+        "value": 300,
+        "unit": "1",
+        "conditions": "IC = 10 mA, VCE = 5 V",
+        "page_reference": "p. 2 hFE MIN column",
+        "source_kind": "minimum"
+      },
+      "vbe": {
+        "value": 0.8,
+        "unit": "V",
+        "conditions": "IC = 10 mA, VCE = 5 V",
+        "page_reference": "p. 2 VBE(on) MAX column",
+        "source_kind": "maximum"
+      }
+    }
+  ],
+  "saturation_points": [
+    {
+      "collector_current": {
+        "value": 0.01,
+        "unit": "A",
+        "conditions": "IB = 1 mA",
+        "page_reference": "p. 2 ON characteristics",
+        "source_kind": "typical"
+      },
+      "base_current": {
+        "value": 0.001,
+        "unit": "A",
+        "conditions": "IC = 10 mA",
+        "page_reference": "p. 2 ON characteristics",
+        "source_kind": "typical"
+      },
+      "vce_sat": {
+        "value": 0.5,
+        "unit": "V",
+        "conditions": "IC = 10 mA, IB = 1 mA",
+        "page_reference": "p. 2 VCE(sat) MAX column",
+        "source_kind": "maximum"
+      },
+      "vbe_sat": {
+        "value": 0.8,
+        "unit": "V",
+        "conditions": "conservative bound from VBE(on) at IC = 10 mA",
+        "page_reference": "p. 2 VBE(on) MAX column",
+        "source_kind": "maximum"
+      }
+    }
+  ],
+  "capacitances": {
+    "cobo": {
+      "value": 4e-12,
+      "unit": "F",
+      "conditions": "VCB = 5 V, IE = 0, f = 100 kHz",
+      "page_reference": "p. 2 Ccb MAX column",
+      "source_kind": "maximum"
+    },
+    "cobo_vcb": {
+      "value": 5,
+      "unit": "V",
+      "conditions": "Ccb test bias",
+      "page_reference": "p. 2 Ccb row",
+      "source_kind": "typical"
+    },
+    "cibo": {
+      "value": 1e-11,
+      "unit": "F",
+      "conditions": "VBE = 0.5 V, IC = 0, f = 100 kHz",
+      "page_reference": "p. 2 Ceb MAX column",
+      "source_kind": "maximum"
+    },
+    "cibo_veb": {
+      "value": 0.5,
+      "unit": "V",
+      "conditions": "Ceb test bias",
+      "page_reference": "p. 2 Ceb row",
+      "source_kind": "typical"
+    }
+  },
+  "frequency_response": {
+    "ft": {
+      "value": 50000000,
+      "unit": "Hz",
+      "conditions": "IC = 500 uA, VCE = 5 V, ftest = 20 MHz",
+      "page_reference": "p. 2 fT MIN column",
+      "source_kind": "minimum"
+    },
+    "ic": {
+      "value": 0.0005,
+      "unit": "A",
+      "conditions": "fT test current",
+      "page_reference": "p. 2 fT row",
+      "source_kind": "typical"
+    },
+    "vce": {
+      "value": 5,
+      "unit": "V",
+      "conditions": "fT test voltage",
+      "page_reference": "p. 2 fT row",
+      "source_kind": "typical"
+    }
+  },
+  "electrical_limits": {
+    "vceo": {
+      "value": 30,
+      "unit": "V",
+      "conditions": "IB = 0",
+      "page_reference": "p. 1 absolute maximum ratings",
+      "source_kind": "maximum"
+    },
+    "collector_current": {
+      "value": 0.1,
+      "unit": "A",
+      "conditions": "continuous",
+      "page_reference": "p. 1 absolute maximum ratings",
+      "source_kind": "maximum"
+    }
+  },
+  "identity": {
+    "canonical_mpn": "2N5088",
+    "manufacturer": "onsemi (Fairchild legacy)",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://www.onsemi.com/pdf/datasheet/2n5088-d.pdf",
+    "revision": "2N5088/2N5089/MMBT5088/MMBT5089 Rev. A, 2001",
+    "sha256": "09f56fcc98024bef153eaf9c05b318e3ffc78fbb1b70e1f993a6d8ce8c4a28c7",
+    "accessed_date": "2026-08-09",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ],
+    "placeholder": false
+  }
+}
