@@ -1,0 +1,110 @@
+#!/usr/bin/env python3
+"""OpenCircuit bulk part feeder command line interface."""
+
+from __future__ import annotations
+
+import argparse
+import json
+import sys
+from pathlib import Path
+
+from feederlib import (
+    CANNED_QUERIES,
+    FeederError,
+    fetch_database,
+    json_dump,
+    query_manifest,
+    download_datasheets,
+)
+
+HERE = Path(__file__).resolve().parent
+REPO_ROOT = HERE.parent.parent
+DEFAULT_DATA = HERE / "data"
+DEFAULT_LIBRARY = REPO_ROOT / "packages" / "model-library" / "models"
+
+
+def parser() -> argparse.ArgumentParser:
+    command = argparse.ArgumentParser(prog="feeder", description="Feed local catalog facts and datasheets to the OpenCircuit model factory")
+    command.add_argument("--data-dir", type=Path, default=DEFAULT_DATA, help="gitignored local data directory")
+    subcommands = command.add_subparsers(dest="command", required=True)
+
+    fetch = subcommands.add_parser("fetch-db", help="download or refresh the jlcparts SQLite dump")
+    fetch.add_argument("--refresh", action="store_true", help="redownload even when the remote archive identity is unchanged")
+
+    query = subcommands.add_parser("query", help="write a SQL-selected tranche manifest")
+    query_source = query.add_mutually_exclusive_group(required=True)
+    query_source.add_argument("--canned", choices=sorted(CANNED_QUERIES))
+    query_source.add_argument("--sql", help="one read-only SELECT statement")
+    query_source.add_argument("--sql-file", type=Path, help="file containing one read-only SELECT statement")
+    query.add_argument("--output", type=Path, required=True, help="tranche manifest JSON path")
+    query.add_argument("--stock-min", type=int, default=1000)
+    query.add_argument("--category", default="")
+    query.add_argument("--package", default="")
+    query.add_argument("--limit", type=int)
+    query.add_argument("--include-reviewed", action="store_true", help="do not exclude existing reviewed library MPNs")
+    query.add_argument("--library-root", type=Path, default=DEFAULT_LIBRARY)
+
+    datasheets = subcommands.add_parser("datasheets", help="download a tranche's datasheet PDFs into staging")
+    datasheets.add_argument("manifest", type=Path)
+    datasheets.add_argument("--rate", type=float, default=0.5, help="requests per second, default one request every two seconds")
+    datasheets.add_argument("--retries", type=int, default=4)
+
+    return command
+
+
+def main(argv: list[str] | None = None) -> int:
+    args = parser().parse_args(argv)
+    try:
+        if args.command == "fetch-db":
+            state = fetch_database(args.data_dir, refresh=args.refresh)
+            print(json.dumps(state, indent=2, sort_keys=True))
+            return 0
+        if args.command == "query":
+            data_root = args.data_dir.resolve()
+            output = args.output.resolve()
+            if not output.is_relative_to(data_root):
+                raise FeederError("Tranche manifests must stay inside the gitignored data directory")
+            db_path = args.data_dir / "jlcparts.sqlite3"
+            state_path = args.data_dir / "dump.json"
+            if not db_path.exists() or not state_path.exists():
+                raise FeederError("No local dump. Run 'feeder fetch-db' first")
+            state = json.loads(state_path.read_text(encoding="utf-8"))
+            if args.canned:
+                sql = CANNED_QUERIES[args.canned]
+                query_name = args.canned
+            elif args.sql_file:
+                sql = args.sql_file.read_text(encoding="utf-8")
+                query_name = f"sql-file:{args.sql_file.name}"
+            else:
+                sql = args.sql
+                query_name = "sql-passthrough"
+            manifest = query_manifest(
+                db_path=db_path,
+                sql=sql,
+                parameters={"stock_min": args.stock_min, "category": args.category, "package": args.package},
+                source_state=state,
+                library_root=args.library_root,
+                query_name=query_name,
+                limit=args.limit,
+                exclude_reviewed=not args.include_reviewed,
+            )
+            json_dump(args.output, manifest)
+            print(f"wrote {manifest['part_count']} parts to {args.output}")
+            return 0
+        if args.command == "datasheets":
+            report = download_datasheets(
+                args.manifest,
+                args.data_dir,
+                requests_per_second=args.rate,
+                retries=args.retries,
+            )
+            print(json.dumps(report, indent=2, sort_keys=True))
+            return 0 if report["failed"] == 0 else 2
+    except (FeederError, OSError, json.JSONDecodeError) as error:
+        print(f"feeder: {error}", file=sys.stderr)
+        return 1
+    return 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
