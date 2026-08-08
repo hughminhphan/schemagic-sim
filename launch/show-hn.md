@@ -22,7 +22,7 @@ The other part of the project is the model library. I am building it from public
 
 That review process has already paid for itself. One of the five initial gold models, the TL072, originally clipped at about +/-9.9 V on +/-15 V rails and stopped behaving across much of its declared low-supply range. The factory had treated a guaranteed minimum output-swing figure as the typical fitting target and left a 5 V rail-drop constant unfitted. The independent review failed it, the model was refit to the correct 25 C typical, the clamp was made supply-aware, and the re-review passed. I would rather publish that correction trail than imply that a generated model is trustworthy because it has many parameters.
 
-The v0.1 model library is still being finalized. The launch count will be {{MPN_COUNT}} manufacturer part numbers, including {{F2_COUNT}} at F2 or above. F2 means multiple cited typical targets and applicable hard bounds are tested, with native and WebAssembly agreement for every included bench. It is still an engineering estimate, not a certification.
+The v0.1 model library is still being finalized. The launch count will be 102 manufacturer part numbers, including 25 at F2 or above. F2 means multiple cited typical targets and applicable hard bounds are tested, with native and WebAssembly agreement for every included bench. It is still an engineering estimate, not a certification.
 
 What is not modeled: PCB layout or parasitics, physical manufacturing variation beyond a model's stated coverage, full temperature and noise behavior unless a specific model says so, firmware execution, or detailed MCU peripherals. The first release supports operating point, transient, and AC analyses. Digital parts use behavioral-analog models.
 

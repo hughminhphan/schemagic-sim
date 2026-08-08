@@ -7,7 +7,7 @@ Draft release notes. Model counts remain placeholders until the release inventor
 - Real ngspice-46 compiled to WebAssembly and executed locally in a dedicated browser Worker.
 - Living schematic feedback with voltage-hued wires, animated current, and interactive potentiometer, switch, and LED behavior.
 - Operating-point, transient, and AC analysis with scope and Bode views.
-- Manufacturer-part library with {{MPN_COUNT}} MPNs, including {{F2_COUNT}} models at F2 or above.
+- Manufacturer-part library with 102 MPNs, including 25 models at F2 or above.
 - A provenance record, fidelity tier, model card, cited tests, known omissions, and independent review status for every shipped model package.
 - Native ngspice-46 versus WebAssembly comparison gates for included model benches.
 - Local browser workspaces, JSON import and export, SPICE netlist export, and share-by-URL circuits.

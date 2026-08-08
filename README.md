@@ -24,7 +24,7 @@ Keep the pointer visible, avoid cuts during the pot drag, and return the final G
 
 ## Open an example circuit
 
-[Open the interactive NPN LED bench]({{EXAMPLE_URL}}). The circuit is encoded in the URL and opens immediately without a database or account.
+[Open the interactive NPN LED bench](https://schemagic.pages.dev/#c=jVTBctowEP0Vj3o1Gcs2CXBrS26ZlHLohWEYYQRVa1seSUBShn_vW5ti0dhpc4iQ9fTe7tPunlimi0qXsnSWTRYnpjZswjLOQpaLtczZ5MT0dmulw-kgDaNlyJx8wY594-wcskIZow2bbEVuZcgqTTSjME4BNBq4CBdeK4kLB6v3JpOgPoh8jy_Dc_hHMO4WHPqCs05BYUQBzRMjrTtQXmLgCCJ-G0SlHXJVupBOmjYUHuGvDSfpDCcKB0kbzvxTb_5J3KltpFXWAd0nm3bK3pjwtcuEoipxFD8n44gomiDStDOI9Q-3KoFvVYedqjdvPX_qzXU4Cjm5UsuM30s2SbxU7_8tOu1P9cvn1dPjdDV_nF7TpTjGb9PN5cZL9QHwnopNSPmvyzuj96V_f9R3H9X2XwTjPoL0_l0CnGy1KQT5oitZZspke-UGl5VYpRPk5UbazKgKJU5GfQyaqghyfRxYtZEBfAs2Rh2kCTJdOqNzWBSsXwMR3PTGHTidcjlF8Tx7ru-tIfydHqUyei2bgZHpnJJhH5Lx6EFSLdWZVjRCfirEjsbXuRM7anwnzI4e2hs7M4U4F3XtR8szJWpVQQiR0f-txR3c4PAEv3V1aZoI-0orjK2ZNFOZiQ1VGD7ao5QAwYesLh9NByxHwqRvBNROrBAv1hEsuiOqIU78fVzvSQt7fgYN7LK1oxy_lTwSSUVcGAr0bL-0RtAcyKNC5bej9Eg-NIHiI01G9CQWzrGgauqVapcvl9cyOdI4bC8R7P4K92A0pm64CVVXogdqJoLHFY8arlsYvVwLi5sJtoCjWD0Y9W0LS5oZs0hruAejRmthKO46tKbIPRj1UwsjG4YXOx58GHXNDSyuXYPoZeWUEtixLs_L828). The circuit is encoded in the URL and opens immediately without a database or account.
 
 ## Comparison
 
@@ -46,7 +46,7 @@ Falstad is an established open-source teaching tool. CircuitSim provides a broad
 
 ## 30-second quickstart
 
-1. Open the [example circuit]({{EXAMPLE_URL}}) and wait for `ENGINE READY`.
+1. Open the [example circuit](https://schemagic.pages.dev/#c=jVTBctowEP0Vj3o1Gcs2CXBrS26ZlHLohWEYYQRVa1seSUBShn_vW5ti0dhpc4iQ9fTe7tPunlimi0qXsnSWTRYnpjZswjLOQpaLtczZ5MT0dmulw-kgDaNlyJx8wY594-wcskIZow2bbEVuZcgqTTSjME4BNBq4CBdeK4kLB6v3JpOgPoh8jy_Dc_hHMO4WHPqCs05BYUQBzRMjrTtQXmLgCCJ-G0SlHXJVupBOmjYUHuGvDSfpDCcKB0kbzvxTb_5J3KltpFXWAd0nm3bK3pjwtcuEoipxFD8n44gomiDStDOI9Q-3KoFvVYedqjdvPX_qzXU4Cjm5UsuM30s2SbxU7_8tOu1P9cvn1dPjdDV_nF7TpTjGb9PN5cZL9QHwnopNSPmvyzuj96V_f9R3H9X2XwTjPoL0_l0CnGy1KQT5oitZZspke-UGl5VYpRPk5UbazKgKJU5GfQyaqghyfRxYtZEBfAs2Rh2kCTJdOqNzWBSsXwMR3PTGHTidcjlF8Tx7ru-tIfydHqUyei2bgZHpnJJhH5Lx6EFSLdWZVjRCfirEjsbXuRM7anwnzI4e2hs7M4U4F3XtR8szJWpVQQiR0f-txR3c4PAEv3V1aZoI-0orjK2ZNFOZiQ1VGD7ao5QAwYesLh9NByxHwqRvBNROrBAv1hEsuiOqIU78fVzvSQt7fgYN7LK1oxy_lTwSSUVcGAr0bL-0RtAcyKNC5bej9Eg-NIHiI01G9CQWzrGgauqVapcvl9cyOdI4bC8R7P4K92A0pm64CVVXogdqJoLHFY8arlsYvVwLi5sJtoCjWD0Y9W0LS5oZs0hruAejRmthKO46tKbIPRj1UwsjG4YXOx58GHXNDSyuXYPoZeWUEtixLs_L828) and wait for `ENGINE READY`.
 2. Select `P1`, then drag **Wiper position** in the inspector.
 3. Watch the LED brightness, wire voltage colours, and current animation update with each solve.
 4. Click a wire to add a scope trace, then open the scope.

@@ -20,7 +20,7 @@ The part I wanted was a schematic that responds directly to the solve. Wires cha
 
 I have also been working on manufacturer-part models with source provenance, cited tests, fidelity labels, and independent review. One of the first five gold models failed review: the TL072 model clipped too early because a guaranteed minimum output-swing value had been treated as a typical fitting target. I refit it and the re-review passed. I am keeping that failure and correction visible because model limits matter more than a long parts list.
 
-The v0.1 library count is still being finalized: {{MPN_COUNT}} MPNs, with {{F2_COUNT}} at F2 or above. F2 means multiple cited typical targets and applicable hard bounds are tested, plus native and WebAssembly ngspice agree for each included bench. It is not a certification.
+The v0.1 library count is still being finalized: 102 MPNs, with 25 at F2 or above. F2 means multiple cited typical targets and applicable hard bounds are tested, plus native and WebAssembly ngspice agree for each included bench. It is not a certification.
 
 I would be interested in feedback on the interaction, circuits that expose bad visual assumptions, and parts that would be useful to validate next.
 
