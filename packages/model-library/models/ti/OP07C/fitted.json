@@ -1,0 +1,203 @@
+{
+  "schema_version": "1.0.0",
+  "fitter": "native ngspice-46 rail-drop least squares where typical swing exists plus exactly three fixed-point GBW and slew calibration iterations",
+  "deterministic": true,
+  "parameters": {
+    "AOL": 400000,
+    "GBW": 662031.2420602079,
+    "SR": 317764.59969303844,
+    "IBIAS": 1.8e-09,
+    "IOS": 8e-10,
+    "VOS": 6e-05,
+    "ROUT": 50,
+    "ILIM": 0.02,
+    "VDRP_H": 1.8683529698007637,
+    "VDRP_L": 1.8683528137981276,
+    "CMRR": 1000000.0,
+    "PSRR": 142857.14285714284,
+    "VSUP_NOM": 30,
+    "IQ": 0.0026666666666666666,
+    "EN": 9.8e-09,
+    "FP2": 1986093.7261806238
+  },
+  "parameter_metadata": {
+    "AOL": {
+      "status": "direct typical transcription"
+    },
+    "IBIAS": {
+      "status": "direct typical transcription"
+    },
+    "IOS": {
+      "status": "direct typical transcription"
+    },
+    "VOS": {
+      "status": "direct typical transcription"
+    },
+    "ILIM": {
+      "status": "direct typical transcription"
+    },
+    "ROUT": {
+      "status": "direct typical transcription"
+    },
+    "CMRR": {
+      "status": "direct typical transcription"
+    },
+    "PSRR": {
+      "status": "direct typical transcription"
+    },
+    "IQ": {
+      "status": "direct typical transcription"
+    },
+    "EN": {
+      "status": "direct typical transcription"
+    },
+    "GBW": {
+      "status": "native calibrated"
+    },
+    "SR": {
+      "status": "native calibrated"
+    },
+    "VDRP_H": {
+      "status": "native fitted to 25 degC typical output swing"
+    },
+    "VDRP_L": {
+      "status": "native fitted to 25 degC typical output swing"
+    },
+    "FP2": {
+      "status": "held at default three-times-GBW rule"
+    },
+    "VSUP_NOM": {
+      "status": "derived from datasheet test supply"
+    }
+  },
+  "held_defaults": [
+    {
+      "parameter": "CC",
+      "value": 3e-11,
+      "unit": "F",
+      "reason": "held at default internal archetype scale"
+    },
+    {
+      "parameter": "CDIF",
+      "value": 1e-12,
+      "unit": "F",
+      "reason": "held at default input-capacitance placeholder"
+    },
+    {
+      "parameter": "RE",
+      "value": 1000000.0,
+      "unit": "ohm",
+      "reason": "held at default internal DC path"
+    },
+    {
+      "parameter": "CP2",
+      "value": 1e-12,
+      "unit": "F",
+      "reason": "held at default second-pole scale"
+    },
+    {
+      "parameter": "RQ",
+      "value": 1000000.0,
+      "unit": "ohm",
+      "reason": "held at default clamp-node DC path"
+    },
+    {
+      "parameter": "noise_reference_temperature",
+      "value": 300.15,
+      "unit": "K",
+      "reason": "held at default archetype noise normalization"
+    },
+    {
+      "parameter": "ILIM",
+      "value": 0.02,
+      "unit": "A",
+      "reason": "held at conservative physical default because no numeric short-circuit current is published"
+    },
+    {
+      "parameter": "ROUT",
+      "value": 50,
+      "unit": "ohm",
+      "reason": "held at default because no output impedance is published"
+    },
+    {
+      "parameter": "FP2_rule",
+      "value": 3,
+      "unit": "x GBW",
+      "reason": "held at default because no numeric phase margin is published"
+    }
+  ],
+  "rail_drop_fit": {
+    "method": "scipy.optimize.least_squares with native ngspice in every residual",
+    "diff_step": 0.0001,
+    "targets": [
+      12.8,
+      -12.8
+    ],
+    "conditions": "datasheet output-swing bias condition",
+    "nfev": 5,
+    "cost": 6.129475065102641e-25
+  },
+  "calibration_iterations": [
+    {
+      "iteration": 1,
+      "gbw_measured": 543923.522833289,
+      "sr_measured": 283228.50143230305
+    },
+    {
+      "iteration": 2,
+      "gbw_measured": 599838.932000681,
+      "sr_measured": 300000.0289447088
+    },
+    {
+      "iteration": 3,
+      "gbw_measured": 600003.8345654799,
+      "sr_measured": 299999.99979097745
+    }
+  ],
+  "residuals": [
+    {
+      "quantity": "open-loop gain",
+      "datasheet_value": 400000,
+      "fitted_value": 390236.49192777014,
+      "unit": "V/V",
+      "relative_error": 0.02440877018057465,
+      "citation": "p. 5, Section 6.5 Electrical Characteristics, AOL row, TYP column"
+    },
+    {
+      "quantity": "unity-gain bandwidth",
+      "datasheet_value": 600000.0,
+      "fitted_value": 599999.9092102792,
+      "unit": "Hz",
+      "relative_error": 1.5131620127552499e-07,
+      "citation": "p. 6, Section 6.5 Electrical Characteristics, unity-gain-bandwidth row, TYP column"
+    },
+    {
+      "quantity": "slew rate",
+      "datasheet_value": 300000.0,
+      "fitted_value": 300000.0000037983,
+      "unit": "V/s",
+      "relative_error": 1.2660942350824674e-11,
+      "citation": "p. 6, Section 6.5 Electrical Characteristics, SR row, TYP column"
+    },
+    {
+      "quantity": "positive output swing",
+      "datasheet_value": 12.8,
+      "fitted_value": 12.8,
+      "unit": "V",
+      "relative_error": 0,
+      "citation": "p. 6, Section 6.5 Electrical Characteristics, voltage-output-swing row, TYP column"
+    },
+    {
+      "quantity": "negative output swing",
+      "datasheet_value": -12.8,
+      "fitted_value": -12.8,
+      "unit": "V",
+      "relative_error": 0,
+      "citation": "p. 6, Section 6.5 Electrical Characteristics, voltage-output-swing row, TYP column"
+    }
+  ],
+  "worst_relative_error": {
+    "value": 0.02440877018057465,
+    "quantity": "open-loop gain"
+  }
+}

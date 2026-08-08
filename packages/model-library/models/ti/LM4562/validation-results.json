@@ -1,0 +1,159 @@
+{
+  "schema_version": "1.0.0",
+  "validation_date": "2026-08-07",
+  "native_wasm_all_pass": true,
+  "expectations_all_pass": true,
+  "expectation_pass_count": 14,
+  "expectation_fail_count": 0,
+  "worst_native_wasm_relative_delta": 9.57725625152352e-10,
+  "worst_native_wasm_absolute_delta": 0.00004545773845165968,
+  "benches": [
+    {
+      "test_netlist": "open_loop_gain.cir",
+      "analysis": "ac",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "open_loop_gain_db",
+          "pass": true,
+          "value": 139.94371575017175,
+          "error": 0.056284249828252086,
+          "allowed": 0.7
+        },
+        {
+          "name": "unity_gain_bandwidth",
+          "pass": true,
+          "value": 55000000.05206321,
+          "error": 0.05206321179866791,
+          "allowed": 11000000
+        }
+      ]
+    },
+    {
+      "test_netlist": "offset_bias_supply.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "input_offset",
+          "pass": true,
+          "value": 0.00010000003999286597,
+          "error": 3.9992865966055786e-11,
+          "allowed": 0.0001
+        },
+        {
+          "name": "input_bias_positive",
+          "pass": true,
+          "value": 1.55e-8,
+          "error": 0,
+          "allowed": 1.24e-9
+        },
+        {
+          "name": "input_bias_negative",
+          "pass": true,
+          "value": 4.500000000000001e-9,
+          "error": 0,
+          "allowed": 3.6000000000000005e-10
+        },
+        {
+          "name": "quiescent_current_per_amplifier",
+          "pass": true,
+          "value": 0.005,
+          "error": 0,
+          "allowed": 0.0005
+        }
+      ]
+    },
+    {
+      "test_netlist": "slew.cir",
+      "analysis": "tran",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "rising_slew",
+          "pass": true,
+          "value": 19999191.494442757,
+          "error": 808.5055572427809,
+          "allowed": 3000000
+        }
+      ]
+    },
+    {
+      "test_netlist": "output_swing.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "positive_swing_typical_25c",
+          "pass": true,
+          "value": 13.999999995102415,
+          "error": 4.8975845601262336e-9,
+          "allowed": 0.7000000000000001
+        },
+        {
+          "name": "negative_swing_typical_25c",
+          "pass": true,
+          "value": -14.00000000268424,
+          "error": 2.6842403855198427e-9,
+          "allowed": 0.7000000000000001
+        }
+      ]
+    },
+    {
+      "test_netlist": "minimum_supply_follower.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "minimum_supply_follow_negative",
+          "pass": true,
+          "value": -0.2499252249375938,
+          "error": 0.000025224937593798513,
+          "allowed": 0.01
+        },
+        {
+          "name": "minimum_supply_follow_zero",
+          "pass": true,
+          "value": 0.00007500002999611199,
+          "error": 0.000024999970003888012,
+          "allowed": 0.01
+        },
+        {
+          "name": "minimum_supply_follow_positive",
+          "pass": true,
+          "value": 0.25007522499758605,
+          "error": 0.00002477500241393482,
+          "allowed": 0.01
+        }
+      ]
+    },
+    {
+      "test_netlist": "short_circuit.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "short_circuit_current",
+          "pass": true,
+          "value": 0.0420000045,
+          "error": 4.499999997631399e-9,
+          "allowed": 0.0063
+        }
+      ]
+    },
+    {
+      "test_netlist": "cmrr.cir",
+      "analysis": "ac",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "common_mode_gain",
+          "pass": true,
+          "value": 9.935404891009025,
+          "error": 0.06459510899097509,
+          "allowed": 3
+        }
+      ]
+    }
+  ]
+}

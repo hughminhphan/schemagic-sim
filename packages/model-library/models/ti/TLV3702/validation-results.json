@@ -1,0 +1,164 @@
+{
+  "schema_version": "1.0.0",
+  "validation_date": "2026-08-07",
+  "native_wasm_all_pass": false,
+  "expectations_all_pass": true,
+  "expectation_pass_count": 14,
+  "expectation_fail_count": 0,
+  "worst_native_wasm_relative_delta": 7.8708494103509e-14,
+  "worst_native_wasm_absolute_delta": 3.872457909892546e-13,
+  "worst_expectation_relative_error": {
+    "value": 0.13143928571428576,
+    "quantity": "input_hysteresis_window",
+    "observed": 0.00316803,
+    "expected": 0.0028
+  },
+  "benches": [
+    {
+      "test_netlist": "dc_levels.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "low_level_output_no_load",
+          "pass": true,
+          "value": 0.07999999999999999,
+          "expected": 0.08,
+          "error": 1.3877787807814457e-17,
+          "allowed": 0.016
+        },
+        {
+          "name": "high_level_output_no_load",
+          "pass": true,
+          "value": 4.919999999999999,
+          "expected": 4.92,
+          "error": 8.881784197001252e-16,
+          "allowed": 0.246
+        }
+      ]
+    },
+    {
+      "test_netlist": "offset_and_bias.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "positive_input_bias",
+          "pass": true,
+          "value": 9e-11,
+          "expected": 9e-11,
+          "error": 0.0,
+          "allowed": 4.500000000000001e-12
+        },
+        {
+          "name": "negative_input_bias",
+          "pass": true,
+          "value": 6.999999999999999e-11,
+          "expected": 6.999999999999999e-11,
+          "error": 0.0,
+          "allowed": 3.4999999999999996e-12
+        },
+        {
+          "name": "trip_below_published_offset_limit",
+          "pass": true,
+          "value": 0.07999999999999999,
+          "minimum": 0,
+          "maximum": 0.13
+        },
+        {
+          "name": "trip_above_published_offset_limit",
+          "pass": true,
+          "value": 4.919999999999999,
+          "minimum": 4.9,
+          "maximum": 5.01
+        }
+      ]
+    },
+    {
+      "test_netlist": "propagation_delay.cir",
+      "analysis": "tran",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "propagation_delay_low_to_high",
+          "pass": true,
+          "value": 1.63777e-05,
+          "expected": 1.6e-05,
+          "error": 3.777000000000015e-07,
+          "allowed": 4.8e-06
+        },
+        {
+          "name": "propagation_delay_high_to_low",
+          "pass": true,
+          "value": 1.56156e-05,
+          "expected": 1.6e-05,
+          "error": 3.8439999999999923e-07,
+          "allowed": 4.8e-06
+        },
+        {
+          "name": "output_transient_minimum",
+          "pass": true,
+          "value": 0.07999999999999997,
+          "minimum": -0.05
+        },
+        {
+          "name": "output_transient_maximum",
+          "pass": true,
+          "value": 4.919999999999877,
+          "maximum": 5.05
+        }
+      ]
+    },
+    {
+      "test_netlist": "supply_current.cir",
+      "analysis": "op",
+      "native_wasm_pass": false,
+      "checks": [
+        {
+          "name": "quiescent_supply_current_per_comparator",
+          "pass": true,
+          "value": 5.6e-07,
+          "expected": 5.6e-07,
+          "error": 0.0,
+          "allowed": 5.6000000000000005e-08
+        }
+      ]
+    },
+    {
+      "test_netlist": "minimum_supply_boundary.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "minimum_supply_low_state_alive",
+          "pass": true,
+          "value": 0.08,
+          "minimum": 0,
+          "maximum": 0.22999999999999998
+        },
+        {
+          "name": "minimum_supply_high_state_alive",
+          "pass": true,
+          "value": 2.4199999999999995,
+          "minimum": 2.3,
+          "maximum": 2.52
+        }
+      ]
+    },
+    {
+      "test_netlist": "hysteresis.cir",
+      "analysis": "tran",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "input_hysteresis_window",
+          "pass": true,
+          "value": 0.00316803,
+          "expected": 0.0028,
+          "error": 0.0003680300000000001,
+          "allowed": 0.0005600000000000001
+        }
+      ]
+    }
+  ]
+}

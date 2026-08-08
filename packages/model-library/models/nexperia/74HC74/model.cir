@@ -1,0 +1,39 @@
+* OpenCircuit Model Factory v0.1.0
+* Original work generated from public factual specifications.
+* This model is not a copy of, or adaptation from, any vendor SPICE model.
+* Source: https://assets.nexperia.com/documents/data-sheet/74HC_HCT74.pdf
+* Revision: Rev. 9, 2 April 2024
+* Archetype: archetype-logic74hc.md
+* Fitted at 25 degC from the VCC = 4.5 V table column.
+.subckt OC_NEXPERIA_74HC74_OUT IN Y VCC GND
+BDRV yd GND V = min(max(v(IN)*v(VCC,GND),0),v(VCC,GND))
+RDRV yd Y R={37.5+(45.0-37.5)*0.5*(1+tanh(12*(v(IN)-0.5)))}
+.ends OC_NEXPERIA_74HC74_OUT
+.subckt OC_NEXPERIA_74HC74_DFF D CLK Q QB SETN CLRN VCC GND
++ PARAMS: KIN=20 KREG=25 TAU=2.1400000000e-08 VSKEW=0.05
+RID D GND 1e11
+RIC CLK GND 1e11
+RISET SETN GND 1e11
+RICLR CLRN GND 1e11
+BC c GND V = 0.5*(1+tanh(KIN*(v(CLK,GND)/v(VCC,GND)-0.5)))
+BD dd GND V = 0.5*(1+tanh(KIN*(v(D,GND)/v(VCC,GND)-0.5)))
+BSET st GND V = 0.5*(1+tanh(KIN*(v(SETN,GND)/v(VCC,GND)-0.5)))
+BCLR cl GND V = 0.5*(1+tanh(KIN*(v(CLRN,GND)/v(VCC,GND)-0.5)))
+BMA mad GND V = (v(cl)<0.5) ? ((v(st)<0.5) ? 1 : 0) : ((v(st)<0.5) ? 1 : ((v(c)<0.5) ? v(dd) : 0.5*(1-tanh(KREG*(v(mb)-0.5)))))
+RMA mad ma {TAU/1p}
+CMA ma GND 1p
+BMB mbd GND V = (v(cl)<0.5) ? 1 : ((v(st)<0.5) ? ((v(cl)<0.5) ? 1 : 0) : 0.5*(1-tanh(KREG*(v(ma)-0.5))) + VSKEW)
+RMB mbd mb {TAU/1p}
+CMB mb GND 1p
+BSA sad GND V = (v(cl)<0.5) ? ((v(st)<0.5) ? 1 : 0) : ((v(st)<0.5) ? 1 : ((v(c)>0.5) ? v(ma) : 0.5*(1-tanh(KREG*(v(sb)-0.5)))))
+RSA sad sa {TAU/1p}
+CSA sa GND 1p
+BSB sbd GND V = (v(cl)<0.5) ? 1 : ((v(st)<0.5) ? ((v(cl)<0.5) ? 1 : 0) : 0.5*(1-tanh(KREG*(v(sa)-0.5))) + VSKEW)
+RSB sbd sb {TAU/1p}
+CSB sb GND 1p
+XQ sa Q VCC GND OC_NEXPERIA_74HC74_OUT
+XQB sb QB VCC GND OC_NEXPERIA_74HC74_OUT
+.ends OC_NEXPERIA_74HC74_DFF
+.subckt OC_NEXPERIA_74HC74 D CLK Q QB SD RD VCC GND
+XFF D CLK Q QB SD RD VCC GND OC_NEXPERIA_74HC74_DFF
+.ends OC_NEXPERIA_74HC74

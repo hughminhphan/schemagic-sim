@@ -1,0 +1,199 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "divide_by_two.cir",
+      "analysis_type": "transient",
+      "scalar_checks": [
+        {
+          "name": "divide_by_two_period",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "measure:q_period"
+          },
+          "expected_value": 2e-06,
+          "unit": "s",
+          "tolerance": {
+            "absolute": 2e-09,
+            "relative": 0.001
+          },
+          "datasheet_citation": "p. 4 Table 4 function table, one output transition per two clock periods",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "propagation_delay_15p.cir",
+      "analysis_type": "transient",
+      "scalar_checks": [
+        {
+          "name": "clk_q_delay_15p",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "measure:tpd"
+          },
+          "expected_value": 1.4e-08,
+          "unit": "s",
+          "tolerance": {
+            "absolute": 1e-09,
+            "relative": 0.15
+          },
+          "datasheet_citation": "Nexperia 74HC74 Rev. 9, 2 April 2024, dynamic characteristics, 25 degC TYP column",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": [
+        {
+          "name": "no_overshoot_15p",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "measure:vmax"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "Nexperia 74HC74 Rev. 9, 2 April 2024, dynamic characteristics, 25 degC TYP column",
+          "placeholder": false,
+          "maximum": 4.6
+        },
+        {
+          "name": "no_undershoot_15p",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "measure:vmin"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "Nexperia 74HC74 Rev. 9, 2 April 2024, dynamic characteristics, 25 degC TYP column",
+          "placeholder": false,
+          "minimum": -0.1
+        }
+      ]
+    },
+    {
+      "test_netlist": "propagation_delay_50p.cir",
+      "analysis_type": "transient",
+      "scalar_checks": [
+        {
+          "name": "clk_q_delay_50p",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "measure:tpd"
+          },
+          "expected_value": 1.7e-08,
+          "unit": "s",
+          "tolerance": {
+            "absolute": 1e-09,
+            "relative": 0.15
+          },
+          "datasheet_citation": "Nexperia 74HC74 Rev. 9, 2 April 2024, dynamic characteristics, 25 degC TYP column",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": [
+        {
+          "name": "no_overshoot_50p",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "measure:vmax"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "Nexperia 74HC74 Rev. 9, 2 April 2024, dynamic characteristics, 25 degC TYP column",
+          "placeholder": false,
+          "maximum": 4.6
+        },
+        {
+          "name": "no_undershoot_50p",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "measure:vmin"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "Nexperia 74HC74 Rev. 9, 2 April 2024, dynamic characteristics, 25 degC TYP column",
+          "placeholder": false,
+          "minimum": -0.1
+        }
+      ]
+    },
+    {
+      "test_netlist": "output_drive.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "voh_loaded_typ",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "last(v(qh))"
+          },
+          "expected_value": 4.32,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.05,
+            "relative": 0.03
+          },
+          "datasheet_citation": "Nexperia 74HC74 Rev. 9, 2 April 2024, static characteristics, loaded VOH/VOL rows at VCC = 4.5 V",
+          "placeholder": false
+        },
+        {
+          "name": "vol_loaded_typ",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "last(v(ql))"
+          },
+          "expected_value": 0.15,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.05,
+            "relative": 0.15
+          },
+          "datasheet_citation": "Nexperia 74HC74 Rev. 9, 2 April 2024, static characteristics, loaded VOH/VOL rows at VCC = 4.5 V",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "minimum_supply_boundary.cir",
+      "analysis_type": "transient",
+      "scalar_checks": [
+        {
+          "name": "minimum_supply_capture_high",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "measure:q_final"
+          },
+          "expected_value": 2,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.3,
+            "relative": 0
+          },
+          "datasheet_citation": "Nexperia 74HC74 Rev. 9, 2 April 2024, recommended operating conditions VCC MIN = 2.0 V and cited function table",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "quiescent_current.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "quiescent_current_upper_bound",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "abs:last(i(vcc))"
+          },
+          "maximum": 4e-05,
+          "unit": "A",
+          "inclusive": true,
+          "datasheet_citation": "Nexperia 74HC74 Rev. 9, 2 April 2024, static characteristics ICC MAX row, inputs at rails and IO = 0 A",
+          "placeholder": false
+        }
+      ]
+    }
+  ]
+}

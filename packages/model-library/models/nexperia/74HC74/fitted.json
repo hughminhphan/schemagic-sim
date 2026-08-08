@@ -1,0 +1,114 @@
+{
+  "schema_version": "1.0.0",
+  "fit_method": "Closed-form output resistance plus archetype timing calibration against native ngspice-46; no vendor SPICE model used",
+  "temperature_c": 25.0,
+  "parameters": {
+    "ROH": 45.0,
+    "ROL": 37.5,
+    "TAU": 2.14e-08
+  },
+  "parameter_metadata": {
+    "ROH": {
+      "status": "fitted"
+    },
+    "ROL": {
+      "status": "fitted"
+    },
+    "TAU": {
+      "status": "fitted"
+    }
+  },
+  "held_defaults": [
+    {
+      "parameter": "KIN",
+      "value": 20,
+      "unit": "1",
+      "reason": "held at default, fixed archetype input sigmoid constant"
+    },
+    {
+      "parameter": "KREG",
+      "value": 25,
+      "unit": "1",
+      "reason": "held at default, fixed archetype regenerative latch constant"
+    },
+    {
+      "parameter": "KSW",
+      "value": 12,
+      "unit": "1",
+      "reason": "held at default, fixed archetype output-driver blend constant"
+    },
+    {
+      "parameter": "VSKEW",
+      "value": 0.05,
+      "unit": "1",
+      "reason": "held at default, fixed archetype symmetry-breaking constant"
+    },
+    {
+      "parameter": "RIN",
+      "value": 100000000000.0,
+      "unit": "ohm",
+      "reason": "held at default, mandatory input leakage path"
+    },
+    {
+      "parameter": "CLATCH",
+      "value": 1e-12,
+      "unit": "F",
+      "reason": "held at default, fixed latch capacitance"
+    }
+  ],
+  "residuals": [
+    {
+      "quantity": "divide_by_two_period",
+      "datasheet_value": 2e-06,
+      "fitted_value": 2e-06,
+      "unit": "s",
+      "relative_error": 0.0,
+      "citation": "p. 4 Table 4 function table, one output transition per two clock periods"
+    },
+    {
+      "quantity": "clk_q_delay_15p",
+      "datasheet_value": 1.4e-08,
+      "fitted_value": 1.54612e-08,
+      "unit": "s",
+      "relative_error": 0.10437142857142856,
+      "citation": "Nexperia 74HC74 Rev. 9, 2 April 2024, dynamic characteristics, 25 degC TYP column"
+    },
+    {
+      "quantity": "clk_q_delay_50p",
+      "datasheet_value": 1.7e-08,
+      "fitted_value": 1.70039e-08,
+      "unit": "s",
+      "relative_error": 0.00022941176470583108,
+      "citation": "Nexperia 74HC74 Rev. 9, 2 April 2024, dynamic characteristics, 25 degC TYP column"
+    },
+    {
+      "quantity": "voh_loaded_typ",
+      "datasheet_value": 4.32,
+      "fitted_value": 4.320000184325238,
+      "unit": "V",
+      "relative_error": 4.266787910643819e-08,
+      "citation": "Nexperia 74HC74 Rev. 9, 2 April 2024, static characteristics, loaded VOH/VOL rows at VCC = 4.5 V"
+    },
+    {
+      "quantity": "vol_loaded_typ",
+      "datasheet_value": 0.15,
+      "fitted_value": 0.15000018432523807,
+      "unit": "V",
+      "relative_error": 1.2288349204858662e-06,
+      "citation": "Nexperia 74HC74 Rev. 9, 2 April 2024, static characteristics, loaded VOH/VOL rows at VCC = 4.5 V"
+    },
+    {
+      "quantity": "minimum_supply_capture_high",
+      "datasheet_value": 2,
+      "fitted_value": 2.0,
+      "unit": "V",
+      "relative_error": 0.0,
+      "citation": "Nexperia 74HC74 Rev. 9, 2 April 2024, recommended operating conditions VCC MIN = 2.0 V and cited function table"
+    }
+  ],
+  "worst_relative_error": {
+    "value": 0.10437142857142856,
+    "quantity": "clk_q_delay_15p"
+  },
+  "calibration_iterations": 3
+}

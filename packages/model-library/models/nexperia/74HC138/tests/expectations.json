@@ -1,0 +1,191 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "function.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "selected_y3_low",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "last(v(y3))"
+          },
+          "expected_value": 0,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.45,
+            "relative": 0
+          },
+          "datasheet_citation": "p. 4 Table 3 function table",
+          "placeholder": false
+        },
+        {
+          "name": "unselected_y2_high",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "last(v(y2))"
+          },
+          "expected_value": 4.5,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.45,
+            "relative": 0
+          },
+          "datasheet_citation": "p. 4 Table 3 function table",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "output_drive.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "voh_loaded_typ",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "last(v(yh0))"
+          },
+          "expected_value": 4.32,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.05,
+            "relative": 0.03
+          },
+          "datasheet_citation": "Nexperia 74HC138 Rev. 10, 26 February 2024, static characteristics, loaded VOH/VOL rows at VCC = 4.5 V",
+          "placeholder": false
+        },
+        {
+          "name": "vol_loaded_typ",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "last(v(yl0))"
+          },
+          "expected_value": 0.15,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.05,
+            "relative": 0.15
+          },
+          "datasheet_citation": "Nexperia 74HC138 Rev. 10, 26 February 2024, static characteristics, loaded VOH/VOL rows at VCC = 4.5 V",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": [
+        {
+          "name": "voh_loaded_min",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "last(v(yh0))"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "Nexperia 74HC138 Rev. 10, 26 February 2024, static characteristics, loaded VOH/VOL rows at VCC = 4.5 V",
+          "placeholder": false,
+          "minimum": 3.98
+        },
+        {
+          "name": "vol_loaded_max",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "last(v(yl0))"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "Nexperia 74HC138 Rev. 10, 26 February 2024, static characteristics, loaded VOH/VOL rows at VCC = 4.5 V",
+          "placeholder": false,
+          "maximum": 0.33
+        }
+      ]
+    },
+    {
+      "test_netlist": "thresholds.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "vil_recognized_low",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "last(v(lo0))"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 5 Table 6 VIH/VIL and VOL MAX columns",
+          "placeholder": false,
+          "maximum": 0.33
+        },
+        {
+          "name": "vih_recognized_high",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "last(v(hi0))"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 5 Table 6 VIH/VIL and VOH MIN columns",
+          "placeholder": false,
+          "minimum": 3.98
+        }
+      ]
+    },
+    {
+      "test_netlist": "minimum_supply_boundary.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "minimum_supply_selected_low",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "last(v(y0))"
+          },
+          "expected_value": 0,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.25,
+            "relative": 0
+          },
+          "datasheet_citation": "Nexperia 74HC138 Rev. 10, 26 February 2024, recommended operating conditions VCC MIN = 2.0 V and cited function table",
+          "placeholder": false
+        },
+        {
+          "name": "minimum_supply_unselected_high",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "last(v(y1))"
+          },
+          "expected_value": 2,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.25,
+            "relative": 0
+          },
+          "datasheet_citation": "Nexperia 74HC138 Rev. 10, 26 February 2024, recommended operating conditions VCC MIN = 2.0 V and cited function table",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "quiescent_current.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "quiescent_current_upper_bound",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "abs:last(i(vcc))"
+          },
+          "maximum": 8e-06,
+          "unit": "A",
+          "inclusive": true,
+          "datasheet_citation": "Nexperia 74HC138 Rev. 10, 26 February 2024, static characteristics ICC MAX row, inputs at rails and IO = 0 A",
+          "placeholder": false
+        }
+      ]
+    }
+  ]
+}

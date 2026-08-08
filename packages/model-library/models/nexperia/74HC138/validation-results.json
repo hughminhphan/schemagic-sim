@@ -1,0 +1,141 @@
+{
+  "schema_version": "1.0.0",
+  "validation_date": "2026-08-07",
+  "native_wasm_all_pass": true,
+  "expectations_all_pass": true,
+  "expectation_pass_count": 11,
+  "expectation_fail_count": 0,
+  "worst_native_wasm_relative_delta": 1.9672346030640262e-08,
+  "worst_native_wasm_absolute_delta": 1.094788701280199e-15,
+  "benches": [
+    {
+      "test_netlist": "function.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "selected_y3_low",
+          "pass": true,
+          "value": 5.565115109174235e-08,
+          "error": 5.565115109174235e-08,
+          "allowed": 0.45,
+          "expected_value": 0,
+          "datasheet_citation": "p. 4 Table 3 function table"
+        },
+        {
+          "name": "unselected_y2_high",
+          "pass": true,
+          "value": 4.499999990724808,
+          "error": 9.275192169866386e-09,
+          "allowed": 0.45,
+          "expected_value": 4.5,
+          "datasheet_citation": "p. 4 Table 3 function table"
+        }
+      ]
+    },
+    {
+      "test_netlist": "output_drive.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "voh_loaded_typ",
+          "pass": true,
+          "value": 4.320000184325238,
+          "error": 1.8432523773981302e-07,
+          "allowed": 0.1296,
+          "expected_value": 4.32,
+          "datasheet_citation": "Nexperia 74HC138 Rev. 10, 26 February 2024, static characteristics, loaded VOH/VOL rows at VCC = 4.5 V"
+        },
+        {
+          "name": "vol_loaded_typ",
+          "pass": true,
+          "value": 0.15000023997644124,
+          "error": 2.399764412464034e-07,
+          "allowed": 0.05,
+          "expected_value": 0.15,
+          "datasheet_citation": "Nexperia 74HC138 Rev. 10, 26 February 2024, static characteristics, loaded VOH/VOL rows at VCC = 4.5 V"
+        },
+        {
+          "name": "voh_loaded_min",
+          "pass": true,
+          "value": 4.320000184325238,
+          "minimum": 3.98,
+          "maximum": null,
+          "datasheet_citation": "Nexperia 74HC138 Rev. 10, 26 February 2024, static characteristics, loaded VOH/VOL rows at VCC = 4.5 V"
+        },
+        {
+          "name": "vol_loaded_max",
+          "pass": true,
+          "value": 0.15000023997644124,
+          "minimum": null,
+          "maximum": 0.33,
+          "datasheet_citation": "Nexperia 74HC138 Rev. 10, 26 February 2024, static characteristics, loaded VOH/VOL rows at VCC = 4.5 V"
+        }
+      ]
+    },
+    {
+      "test_netlist": "thresholds.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "vil_recognized_low",
+          "pass": true,
+          "value": 0.0015091219475041734,
+          "minimum": null,
+          "maximum": 0.33,
+          "datasheet_citation": "p. 5 Table 6 VIH/VIL and VOL MAX columns"
+        },
+        {
+          "name": "vih_recognized_high",
+          "pass": true,
+          "value": 4.498490924428452,
+          "minimum": 3.98,
+          "maximum": null,
+          "datasheet_citation": "p. 5 Table 6 VIH/VIL and VOH MIN columns"
+        }
+      ]
+    },
+    {
+      "test_netlist": "minimum_supply_boundary.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "minimum_supply_selected_low",
+          "pass": true,
+          "value": 2.4733843769025082e-08,
+          "error": 2.4733843769025082e-08,
+          "allowed": 0.25,
+          "expected_value": 0,
+          "datasheet_citation": "Nexperia 74HC138 Rev. 10, 26 February 2024, recommended operating conditions VCC MIN = 2.0 V and cited function table"
+        },
+        {
+          "name": "minimum_supply_unselected_high",
+          "pass": true,
+          "value": 1.9999999958776928,
+          "error": 4.122307162290895e-09,
+          "allowed": 0.25,
+          "expected_value": 2,
+          "datasheet_citation": "Nexperia 74HC138 Rev. 10, 26 February 2024, recommended operating conditions VCC MIN = 2.0 V and cited function table"
+        }
+      ]
+    },
+    {
+      "test_netlist": "quiescent_current.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "quiescent_current_upper_bound",
+          "pass": true,
+          "value": 0.0,
+          "minimum": null,
+          "maximum": 8e-06,
+          "datasheet_citation": "Nexperia 74HC138 Rev. 10, 26 February 2024, static characteristics ICC MAX row, inputs at rails and IO = 0 A"
+        }
+      ]
+    }
+  ]
+}

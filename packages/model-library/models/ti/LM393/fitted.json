@@ -1,0 +1,156 @@
+{
+  "schema_version": "1.0.0",
+  "fit_run_id": "lm393-comparator-20260807",
+  "temperature_c": 25,
+  "procedure": "Direct transcription plus exactly three native ngspice-46 fixed-point propagation-delay calibration iterations",
+  "parameters": {
+    "AOL": 200000,
+    "VOS": -0.002,
+    "IBIAS": 2.5e-08,
+    "IOS": 5e-09,
+    "TPD": 1.273119749801777e-06,
+    "VHYST": 0.0,
+    "IQ": 0.000225,
+    "VCLAMP": 1,
+    "KSW": 20,
+    "CD": 1e-11,
+    "CDIF": 1e-12,
+    "ROL": 32.5,
+    "ROFF": 1000000000.0
+  },
+  "parameter_metadata": {
+    "AOL": {
+      "status": "fitted or derived"
+    },
+    "VOS": {
+      "status": "fitted or derived"
+    },
+    "IBIAS": {
+      "status": "fitted or derived"
+    },
+    "IOS": {
+      "status": "fitted or derived"
+    },
+    "TPD": {
+      "status": "fitted or derived"
+    },
+    "VHYST": {
+      "status": "fitted or derived"
+    },
+    "IQ": {
+      "status": "fitted or derived"
+    },
+    "VCLAMP": {
+      "status": "held at default"
+    },
+    "KSW": {
+      "status": "held at default"
+    },
+    "CD": {
+      "status": "held at default"
+    },
+    "CDIF": {
+      "status": "held at default"
+    },
+    "ROL": {
+      "status": "fitted or derived"
+    },
+    "ROFF": {
+      "status": "held at default"
+    }
+  },
+  "held_defaults": [
+    {
+      "parameter": "VCLAMP",
+      "value": 1,
+      "unit": "V",
+      "reason": "held at default internal bounded-gain scale"
+    },
+    {
+      "parameter": "KSW",
+      "value": 20,
+      "unit": "1",
+      "reason": "held at default smoothing sharpness"
+    },
+    {
+      "parameter": "CD",
+      "value": 1e-11,
+      "unit": "F",
+      "reason": "held at default internal delay scale"
+    },
+    {
+      "parameter": "CDIF",
+      "value": 1e-12,
+      "unit": "F",
+      "reason": "held at default floating-input convergence capacitance"
+    },
+    {
+      "parameter": "ROFF",
+      "value": 1000000000.0,
+      "unit": "ohm",
+      "reason": "held at default numerically safe off-state resistance"
+    }
+  ],
+  "residuals": [
+    {
+      "quantity": "large-signal gain",
+      "datasheet_value": 200000,
+      "fitted_value": 200000,
+      "unit": "V/V",
+      "relative_error": 0,
+      "citation": "p. 8 section 5.8 electrical characteristics"
+    },
+    {
+      "quantity": "input offset magnitude",
+      "datasheet_value": 0.002,
+      "fitted_value": 0.002,
+      "unit": "V",
+      "relative_error": 0,
+      "citation": "p. 8 section 5.8 electrical characteristics"
+    },
+    {
+      "quantity": "input bias current",
+      "datasheet_value": 2.5e-08,
+      "fitted_value": 2.5e-08,
+      "unit": "A",
+      "relative_error": 0,
+      "citation": "p. 8 section 5.8 electrical characteristics"
+    },
+    {
+      "quantity": "input offset current",
+      "datasheet_value": 5e-09,
+      "fitted_value": 5e-09,
+      "unit": "A",
+      "relative_error": 0,
+      "citation": "p. 8 section 5.8 electrical characteristics"
+    },
+    {
+      "quantity": "supply current per comparator",
+      "datasheet_value": 0.000225,
+      "fitted_value": 0.000225,
+      "unit": "A",
+      "relative_error": 0,
+      "citation": "p. 8 section 5.8 electrical characteristics"
+    },
+    {
+      "quantity": "propagation delay average",
+      "datasheet_value": 1.3e-06,
+      "fitted_value": 1.300005e-06,
+      "unit": "s",
+      "relative_error": 3.8461538460971235e-06,
+      "citation": "p. 10 section 5.11 switching characteristics"
+    },
+    {
+      "quantity": "low-level output voltage at specified sink current",
+      "datasheet_value": 0.13,
+      "fitted_value": 0.13,
+      "unit": "V",
+      "relative_error": 0,
+      "citation": "p. 8 section 5.8 electrical characteristics"
+    }
+  ],
+  "worst_relative_error": {
+    "value": 0.1478384615384615,
+    "quantity": "propagation_delay_low_to_high"
+  }
+}

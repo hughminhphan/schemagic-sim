@@ -1,0 +1,29 @@
+LM311 quiescent supply current
+* OpenCircuit Model Factory v0.1.0
+* Original work generated from public factual specifications.
+* This model is not a copy of, or adaptation from, any vendor SPICE model.
+* Source: https://www.ti.com/lit/ds/symlink/lm311.pdf
+* Revision: SLCS007K, September 1973, revised March 2017
+* Archetype: archetype-comparator.md, variant OC
+* Fit: exactly three native ngspice-46 fixed-point calibration iterations
+* Node order: INP INN OUT VCC GND
+.subckt OC_LM311 INP INN OUT VCC GND
++ PARAMS: AOL=2.0000000000e05 VOS=-2.0000000000e-03 IBIAS=1.0000000000e-07 IOS=6.0000000000e-09 TPD=1.3937525628e-07
++ VCLAMP=1 KSW=20 VHYST=0.0000000000e00 IQ=5.1000000000e-03 CD=10p
+IBP GND INP DC {IBIAS+IOS/2}
+IBN GND INN DC {IBIAS-IOS/2}
+CDIF INP INN 1p
+BC c GND V = VCLAMP*tanh((AOL/VCLAMP)*(v(INP,INN)+VOS+VHYST*v(cd)/VCLAMP))
+RC c cd {TPD/0.693/CD}
+CC cd GND {CD}
+ROC OUT GND R={1/((1/1.5000000000e01)*0.5*(1-tanh(KSW*v(cd)/VCLAMP))+1/1e9)}
+IQD VCC GND DC {IQ}
+.ends OC_LM311
+.temp 25
+VCC vcc 0 30
+VREF ref 0 15
+VIN sig 0 14.9
+X1 sig ref out vcc 0 OC_LM311
+.save i(VCC)
+.op
+.end

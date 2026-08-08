@@ -1,0 +1,184 @@
+{
+  "schema_version": "1.0.0",
+  "fit_run_id": "tlv3702-comparator-20260807",
+  "temperature_c": 25,
+  "procedure": "Direct transcription plus exactly three native ngspice-46 fixed-point propagation-delay calibration iterations",
+  "parameters": {
+    "AOL": 1000000.0,
+    "VOS": -0.00025,
+    "IBIAS": 8e-11,
+    "IOS": 2e-11,
+    "TPD": 1.660765304414153e-05,
+    "VHYST": 0.0014,
+    "IQ": 5.6e-07,
+    "VCLAMP": 1,
+    "KSW": 20,
+    "CD": 1e-11,
+    "CDIF": 1e-12,
+    "ROUT": 40000,
+    "ILIM": 6e-05,
+    "VDRP_H": 0.08,
+    "VDRP_L": 0.08,
+    "RQ": 1000000.0
+  },
+  "parameter_metadata": {
+    "AOL": {
+      "status": "fitted or derived"
+    },
+    "VOS": {
+      "status": "fitted or derived"
+    },
+    "IBIAS": {
+      "status": "fitted or derived"
+    },
+    "IOS": {
+      "status": "fitted or derived"
+    },
+    "TPD": {
+      "status": "fitted or derived"
+    },
+    "VHYST": {
+      "status": "fitted or derived"
+    },
+    "IQ": {
+      "status": "fitted or derived"
+    },
+    "VCLAMP": {
+      "status": "held at default"
+    },
+    "KSW": {
+      "status": "held at default"
+    },
+    "CD": {
+      "status": "held at default"
+    },
+    "CDIF": {
+      "status": "held at default"
+    },
+    "ROUT": {
+      "status": "fitted or derived"
+    },
+    "ILIM": {
+      "status": "fitted or derived"
+    },
+    "VDRP_H": {
+      "status": "fitted or derived"
+    },
+    "VDRP_L": {
+      "status": "fitted or derived"
+    },
+    "RQ": {
+      "status": "held at default"
+    }
+  },
+  "held_defaults": [
+    {
+      "parameter": "VCLAMP",
+      "value": 1,
+      "unit": "V",
+      "reason": "held at default internal bounded-gain scale"
+    },
+    {
+      "parameter": "KSW",
+      "value": 20,
+      "unit": "1",
+      "reason": "held at default smoothing sharpness"
+    },
+    {
+      "parameter": "CD",
+      "value": 1e-11,
+      "unit": "F",
+      "reason": "held at default internal delay scale"
+    },
+    {
+      "parameter": "CDIF",
+      "value": 1e-12,
+      "unit": "F",
+      "reason": "held at default floating-input convergence capacitance"
+    },
+    {
+      "parameter": "RQ",
+      "value": 1000000.0,
+      "unit": "ohm",
+      "reason": "held at default internal-node convergence resistance"
+    }
+  ],
+  "residuals": [
+    {
+      "quantity": "large-signal gain",
+      "datasheet_value": 1000000.0,
+      "fitted_value": 1000000.0,
+      "unit": "V/V",
+      "relative_error": 0,
+      "citation": "p. 8 section 6.7 electrical characteristics"
+    },
+    {
+      "quantity": "input offset magnitude",
+      "datasheet_value": 0.00025,
+      "fitted_value": 0.00025,
+      "unit": "V",
+      "relative_error": 0,
+      "citation": "p. 8 section 6.7 electrical characteristics"
+    },
+    {
+      "quantity": "input bias current",
+      "datasheet_value": 8e-11,
+      "fitted_value": 8e-11,
+      "unit": "A",
+      "relative_error": 0,
+      "citation": "p. 8 section 6.7 electrical characteristics"
+    },
+    {
+      "quantity": "input offset current",
+      "datasheet_value": 2e-11,
+      "fitted_value": 2e-11,
+      "unit": "A",
+      "relative_error": 0,
+      "citation": "p. 8 section 6.7 electrical characteristics"
+    },
+    {
+      "quantity": "supply current per comparator",
+      "datasheet_value": 5.6e-07,
+      "fitted_value": 5.6e-07,
+      "unit": "A",
+      "relative_error": 0,
+      "citation": "p. 8 section 6.7 electrical characteristics"
+    },
+    {
+      "quantity": "propagation delay average",
+      "datasheet_value": 1.6e-05,
+      "fitted_value": 1.599665e-05,
+      "unit": "s",
+      "relative_error": 0.0002093750000000356,
+      "citation": "p. 9 section 6.8 switching characteristics"
+    },
+    {
+      "quantity": "high-level output drop, no-load target",
+      "datasheet_value": 0.08,
+      "fitted_value": 0.08,
+      "unit": "V",
+      "relative_error": 0,
+      "citation": "p. 8 section 6.7 electrical characteristics"
+    },
+    {
+      "quantity": "low-level output voltage, no-load target",
+      "datasheet_value": 0.08,
+      "fitted_value": 0.08,
+      "unit": "V",
+      "relative_error": 0,
+      "citation": "p. 8 section 6.7 electrical characteristics"
+    },
+    {
+      "quantity": "input hysteresis",
+      "datasheet_value": 0.0028,
+      "fitted_value": 0.0028,
+      "unit": "V",
+      "relative_error": 0,
+      "citation": "p. 8 section 6.7 electrical characteristics"
+    }
+  ],
+  "worst_relative_error": {
+    "value": 0.13143928571428576,
+    "quantity": "input_hysteresis_window"
+  }
+}

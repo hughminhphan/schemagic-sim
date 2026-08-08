@@ -1,0 +1,83 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "parallel_load.cir",
+      "analysis_type": "transient",
+      "scalar_checks": [
+        {
+          "name": "parallel_d7_loaded_high",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "measure:q7_loaded"
+          },
+          "expected_value": 4.5,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.5,
+            "relative": 0
+          },
+          "datasheet_citation": "p. 4 Table 3 function table",
+          "placeholder": false
+        },
+        {
+          "name": "parallel_d7_complement_low",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "measure:q7b_loaded"
+          },
+          "expected_value": 0,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.5,
+            "relative": 0
+          },
+          "datasheet_citation": "p. 4 Table 3 function table",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "minimum_supply_boundary.cir",
+      "analysis_type": "transient",
+      "scalar_checks": [
+        {
+          "name": "minimum_supply_parallel_load",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "measure:q7_loaded"
+          },
+          "expected_value": 2,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.35,
+            "relative": 0
+          },
+          "datasheet_citation": "Nexperia 74HC165 Rev. 8, 9 May 2025, recommended operating conditions VCC MIN = 2.0 V and cited function table",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "quiescent_current.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "quiescent_current_upper_bound",
+          "expression_source": {
+            "kind": "derived_expression",
+            "expression": "abs:last(i(vcc))"
+          },
+          "maximum": 8e-06,
+          "unit": "A",
+          "inclusive": true,
+          "datasheet_citation": "Nexperia 74HC165 Rev. 8, 9 May 2025, static characteristics ICC MAX row, inputs at rails and IO = 0 A",
+          "placeholder": false
+        }
+      ]
+    }
+  ]
+}

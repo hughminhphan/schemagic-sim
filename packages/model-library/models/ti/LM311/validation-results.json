@@ -1,0 +1,148 @@
+{
+  "schema_version": "1.0.0",
+  "validation_date": "2026-08-07",
+  "native_wasm_all_pass": false,
+  "expectations_all_pass": true,
+  "expectation_pass_count": 13,
+  "expectation_fail_count": 0,
+  "worst_native_wasm_relative_delta": 3.2063256982794986e-14,
+  "worst_native_wasm_absolute_delta": 1.603162047558726e-13,
+  "worst_expectation_relative_error": {
+    "value": 0.3305565217391304,
+    "quantity": "propagation_delay_low_to_high",
+    "observed": 1.53014e-07,
+    "expected": 1.15e-07
+  },
+  "benches": [
+    {
+      "test_netlist": "dc_levels.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "low_level_output_at_published_sink_current",
+          "pass": true,
+          "value": 0.7499999887500005,
+          "expected": 0.75,
+          "error": 1.1249999487539242e-08,
+          "allowed": 0.15000000000000002
+        },
+        {
+          "name": "off_state_output_with_published_pullup",
+          "pass": true,
+          "value": 29.999985000007502,
+          "minimum": 29.999975,
+          "maximum": 30.01
+        }
+      ]
+    },
+    {
+      "test_netlist": "offset_and_bias.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "positive_input_bias",
+          "pass": true,
+          "value": 1.0300000000000001e-07,
+          "expected": 1.03e-07,
+          "error": 1.3234889800848443e-23,
+          "allowed": 5.15e-09
+        },
+        {
+          "name": "negative_input_bias",
+          "pass": true,
+          "value": 9.7e-08,
+          "expected": 9.7e-08,
+          "error": 0.0,
+          "allowed": 4.8500000000000004e-09
+        },
+        {
+          "name": "trip_below_published_offset_limit",
+          "pass": true,
+          "value": 0.14563106584032434,
+          "minimum": 0,
+          "maximum": 0.8
+        },
+        {
+          "name": "trip_above_published_offset_limit",
+          "pass": true,
+          "value": 4.99999750000125,
+          "minimum": 4.99,
+          "maximum": 5.01
+        }
+      ]
+    },
+    {
+      "test_netlist": "propagation_delay.cir",
+      "analysis": "tran",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "propagation_delay_low_to_high",
+          "pass": true,
+          "value": 1.53014e-07,
+          "expected": 1.15e-07,
+          "error": 3.8014e-08,
+          "allowed": 4.025e-08
+        },
+        {
+          "name": "propagation_delay_high_to_low",
+          "pass": true,
+          "value": 1.26984e-07,
+          "expected": 1.65e-07,
+          "error": 3.8016000000000014e-08,
+          "allowed": 5.775e-08
+        },
+        {
+          "name": "output_transient_minimum",
+          "pass": true,
+          "value": 0.14526301299071662,
+          "minimum": -0.05
+        },
+        {
+          "name": "output_transient_maximum",
+          "pass": true,
+          "value": 4.9999975000012515,
+          "maximum": 30.05
+        }
+      ]
+    },
+    {
+      "test_netlist": "supply_current.cir",
+      "analysis": "op",
+      "native_wasm_pass": false,
+      "checks": [
+        {
+          "name": "quiescent_supply_current_per_comparator",
+          "pass": true,
+          "value": 0.0051,
+          "expected": 0.0051,
+          "error": 0.0,
+          "allowed": 0.00051
+        }
+      ]
+    },
+    {
+      "test_netlist": "minimum_supply_boundary.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "minimum_supply_low_state_alive",
+          "pass": true,
+          "value": 0.10194174608822704,
+          "minimum": 0,
+          "maximum": 0.9
+        },
+        {
+          "name": "minimum_supply_high_state_alive",
+          "pass": true,
+          "value": 3.4999982500008753,
+          "minimum": 3.48,
+          "maximum": 3.52
+        }
+      ]
+    }
+  ]
+}

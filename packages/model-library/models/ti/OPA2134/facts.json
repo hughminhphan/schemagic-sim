@@ -1,0 +1,207 @@
+{
+  "schema_version": "1.0.0",
+  "extraction_method": "pdftotext -layout plus manual table structuring; every extracted value records MIN/TYP/MAX semantics",
+  "fit_conditions": {
+    "temperature": {
+      "value": 25,
+      "unit": "degC",
+      "conditions": "datasheet electrical-characteristics conditions",
+      "page_reference": "p. 5; p. 7; p. 8",
+      "source_kind": "typical",
+      "column_semantics": {
+        "column": "TYP",
+        "meaning": "typical"
+      }
+    }
+  },
+  "parameters": {
+    "aol": {
+      "value": 1000000.0,
+      "unit": "V/V",
+      "conditions": "VS = +/-15 V, RL = 2 kohm, TA = 25 degC",
+      "page_reference": "p. 7, Section 5.7 Electrical Characteristics, AOL row, RL = 2 kohm, TYP column",
+      "source_kind": "typical",
+      "column_semantics": {
+        "column": "TYP",
+        "meaning": "typical"
+      }
+    },
+    "gbw": {
+      "value": 8000000.0,
+      "unit": "Hz",
+      "conditions": "VS = +/-15 V, TA = 25 degC",
+      "page_reference": "p. 7, Section 5.7 Electrical Characteristics, GBW row, TYP column",
+      "source_kind": "typical",
+      "column_semantics": {
+        "column": "TYP",
+        "meaning": "typical"
+      }
+    },
+    "sr": {
+      "value": 20000000.0,
+      "unit": "V/s",
+      "conditions": "VS = +/-15 V, TA = 25 degC",
+      "page_reference": "p. 7, Section 5.7 Electrical Characteristics, SR row, TYP column",
+      "source_kind": "typical",
+      "column_semantics": {
+        "column": "TYP",
+        "meaning": "typical"
+      }
+    },
+    "vos": {
+      "value": 0.001,
+      "unit": "V",
+      "conditions": "VS = +/-15 V, TA = 25 degC",
+      "page_reference": "p. 7, Section 5.7 Electrical Characteristics, VOS row, TYP column",
+      "source_kind": "typical",
+      "column_semantics": {
+        "column": "TYP",
+        "meaning": "typical"
+      }
+    },
+    "vos_max": {
+      "value": 0.0035,
+      "unit": "V",
+      "conditions": "VS = +/-15 V, TA = 25 degC",
+      "page_reference": "p. 7, Section 5.7 Electrical Characteristics, VOS row, MAX column",
+      "source_kind": "maximum",
+      "column_semantics": {
+        "column": "MAX",
+        "meaning": "maximum"
+      }
+    },
+    "ibias": {
+      "value": 5e-12,
+      "unit": "A",
+      "conditions": "VS = +/-15 V, TA = 25 degC",
+      "page_reference": "p. 7, Section 5.7 Electrical Characteristics, IB row, TYP column",
+      "source_kind": "typical",
+      "column_semantics": {
+        "column": "TYP",
+        "meaning": "typical"
+      }
+    },
+    "ios": {
+      "value": 2e-12,
+      "unit": "A",
+      "conditions": "VS = +/-15 V, TA = 25 degC",
+      "page_reference": "p. 7, Section 5.7 Electrical Characteristics, IOS row, TYP column",
+      "source_kind": "typical",
+      "column_semantics": {
+        "column": "TYP",
+        "meaning": "typical"
+      }
+    },
+    "ilim": {
+      "value": 0.03,
+      "unit": "A",
+      "conditions": "short-circuit sinking current, TA = 25 degC",
+      "page_reference": "p. 8, Section 5.7 Electrical Characteristics, ISC row, TYP column",
+      "source_kind": "typical",
+      "column_semantics": {
+        "column": "TYP",
+        "meaning": "typical"
+      }
+    },
+    "rout": {
+      "value": 10,
+      "unit": "ohm",
+      "conditions": "open-loop, f = 10 kHz",
+      "page_reference": "p. 8, Section 5.7 Electrical Characteristics, ZO row, TYP column",
+      "source_kind": "typical",
+      "column_semantics": {
+        "column": "TYP",
+        "meaning": "typical"
+      }
+    },
+    "phase": {
+      "published_typical": false,
+      "unit": "deg",
+      "conditions": "No numeric phase margin is published",
+      "page_reference": "p. 7, Section 5.7 Electrical Characteristics",
+      "source_kind": "not_published",
+      "column_semantics": {
+        "column": "NONE",
+        "meaning": "not published"
+      },
+      "held_default_rule": "FP2 = 3 x GBW"
+    },
+    "swing": {
+      "published_typical": false,
+      "unit": "V",
+      "conditions": "Only guaranteed output-headroom limits are tabulated; no TYP output swing is published",
+      "page_reference": "p. 8, Section 5.7 Electrical Characteristics, VO rows",
+      "source_kind": "not_published",
+      "column_semantics": {
+        "column": "NONE",
+        "meaning": "not published"
+      },
+      "held_default_value": 2
+    },
+    "cmrr": {
+      "value": 100,
+      "unit": "dB",
+      "conditions": "-12.5 V <= VCM <= 11.5 V",
+      "page_reference": "p. 7, Section 5.7 Electrical Characteristics, CMRR row, TYP column",
+      "source_kind": "typical",
+      "column_semantics": {
+        "column": "TYP",
+        "meaning": "typical"
+      }
+    },
+    "psrr": {
+      "value": 106,
+      "unit": "dB",
+      "conditions": "5 V <= VS <= 36 V",
+      "page_reference": "p. 7, Section 5.7 Electrical Characteristics, PSRR row, TYP column",
+      "source_kind": "typical",
+      "column_semantics": {
+        "column": "TYP",
+        "meaning": "typical"
+      }
+    },
+    "iq": {
+      "value": 0.004,
+      "unit": "A",
+      "conditions": "per amplifier, IO = 0 mA",
+      "page_reference": "p. 8, Section 5.7 Electrical Characteristics, IQ row, TYP column",
+      "source_kind": "typical",
+      "column_semantics": {
+        "column": "TYP",
+        "meaning": "typical"
+      }
+    },
+    "en": {
+      "value": 8e-09,
+      "unit": "V/sqrt(Hz)",
+      "conditions": "f = 1 kHz",
+      "page_reference": "p. 7, Section 5.7 Electrical Characteristics, en row, TYP column",
+      "source_kind": "typical",
+      "column_semantics": {
+        "column": "TYP",
+        "meaning": "typical"
+      }
+    }
+  },
+  "identity": {
+    "canonical_mpn": "OPA2134",
+    "manufacturer": "Texas Instruments",
+    "aliases": [
+      "OPA2134PA",
+      "OPA2134UA"
+    ]
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://www.ti.com/lit/ds/symlink/opa2134.pdf",
+    "revision": "SBOS058B, December 1997, revised November 2024",
+    "sha256": "30703874b3eff89b06201e23a7f77178c9dcacd94e3dcd1fc2b67e418bc3cdbd",
+    "accessed_date": "2026-08-07",
+    "pages_referenced": [
+      "p. 5",
+      "p. 7",
+      "p. 8"
+    ],
+    "placeholder": false
+  }
+}

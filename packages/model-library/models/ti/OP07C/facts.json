@@ -1,0 +1,210 @@
+{
+  "schema_version": "1.0.0",
+  "extraction_method": "pdftotext -layout plus manual table structuring; every extracted value records MIN/TYP/MAX semantics",
+  "fit_conditions": {
+    "temperature": {
+      "value": 25,
+      "unit": "degC",
+      "conditions": "datasheet electrical-characteristics conditions",
+      "page_reference": "p. 4; p. 5; p. 6",
+      "source_kind": "typical",
+      "column_semantics": {
+        "column": "TYP",
+        "meaning": "typical"
+      }
+    }
+  },
+  "parameters": {
+    "aol": {
+      "value": 400000,
+      "unit": "V/V",
+      "conditions": "VS = +/-15 V, VO = +/-10 V, RL = 2 kohm, TA = 25 degC",
+      "page_reference": "p. 5, Section 6.5 Electrical Characteristics, AOL row, TYP column",
+      "source_kind": "typical",
+      "column_semantics": {
+        "column": "TYP",
+        "meaning": "typical"
+      }
+    },
+    "gbw": {
+      "value": 600000.0,
+      "unit": "Hz",
+      "conditions": "VS = +/-15 V, TA = 25 degC",
+      "page_reference": "p. 6, Section 6.5 Electrical Characteristics, unity-gain-bandwidth row, TYP column",
+      "source_kind": "typical",
+      "column_semantics": {
+        "column": "TYP",
+        "meaning": "typical"
+      }
+    },
+    "sr": {
+      "value": 300000.0,
+      "unit": "V/s",
+      "conditions": "VS = 5 V, RL = 2 kohm, TA = 25 degC",
+      "page_reference": "p. 6, Section 6.5 Electrical Characteristics, SR row, TYP column",
+      "source_kind": "typical",
+      "column_semantics": {
+        "column": "TYP",
+        "meaning": "typical"
+      }
+    },
+    "vos": {
+      "value": 6e-05,
+      "unit": "V",
+      "conditions": "OP07C, TA = 25 degC",
+      "page_reference": "p. 5, Section 6.5 Electrical Characteristics, VOS OP07C row, TYP column",
+      "source_kind": "typical",
+      "column_semantics": {
+        "column": "TYP",
+        "meaning": "typical"
+      }
+    },
+    "vos_max": {
+      "value": 8.5e-05,
+      "unit": "V",
+      "conditions": "OP07C, TA = 0 degC to 70 degC",
+      "page_reference": "p. 5, Section 6.5 Electrical Characteristics, VOS OP07C temperature row, TYP column",
+      "source_kind": "typical",
+      "column_semantics": {
+        "column": "TYP",
+        "meaning": "typical"
+      }
+    },
+    "ibias": {
+      "value": 1.8e-09,
+      "unit": "A",
+      "conditions": "OP07C, TA = 25 degC",
+      "page_reference": "p. 5, Section 6.5 Electrical Characteristics, IB OP07C row, TYP column",
+      "source_kind": "typical",
+      "column_semantics": {
+        "column": "TYP",
+        "meaning": "typical"
+      }
+    },
+    "ios": {
+      "value": 8e-10,
+      "unit": "A",
+      "conditions": "OP07C, TA = 25 degC",
+      "page_reference": "p. 5, Section 6.5 Electrical Characteristics, IOS OP07C row, TYP column",
+      "source_kind": "typical",
+      "column_semantics": {
+        "column": "TYP",
+        "meaning": "typical"
+      }
+    },
+    "ilim": {
+      "published_typical": false,
+      "unit": "A",
+      "conditions": "No numeric short-circuit current is published",
+      "page_reference": "p. 4, Section 6.1 Absolute Maximum Ratings, output short-circuit row",
+      "source_kind": "not_published",
+      "column_semantics": {
+        "column": "NONE",
+        "meaning": "not published"
+      },
+      "held_default_value": 0.02
+    },
+    "rout": {
+      "published_typical": false,
+      "unit": "ohm",
+      "conditions": "No output impedance is published",
+      "page_reference": "p. 5 to p. 6, Section 6.5 Electrical Characteristics",
+      "source_kind": "not_published",
+      "column_semantics": {
+        "column": "NONE",
+        "meaning": "not published"
+      },
+      "held_default_value": 50
+    },
+    "phase": {
+      "published_typical": false,
+      "unit": "deg",
+      "conditions": "No numeric phase margin is published",
+      "page_reference": "p. 6, Section 6.5 Electrical Characteristics",
+      "source_kind": "not_published",
+      "column_semantics": {
+        "column": "NONE",
+        "meaning": "not published"
+      },
+      "held_default_rule": "FP2 = 3 x GBW"
+    },
+    "swing": {
+      "typical_25c": {
+        "value": 12.8,
+        "unit": "V",
+        "conditions": "VS = +/-15 V, RL = 2 kohm, TA = 25 degC",
+        "page_reference": "p. 6, Section 6.5 Electrical Characteristics, voltage-output-swing row, TYP column",
+        "source_kind": "typical",
+        "column_semantics": {
+          "column": "TYP",
+          "meaning": "typical"
+        }
+      }
+    },
+    "cmrr": {
+      "value": 120,
+      "unit": "dB",
+      "conditions": "OP07C, VCM = +/-13 V, TA = 25 degC",
+      "page_reference": "p. 5, Section 6.5 Electrical Characteristics, CMRR OP07C row, TYP column",
+      "source_kind": "typical",
+      "column_semantics": {
+        "column": "TYP",
+        "meaning": "typical"
+      }
+    },
+    "psrr": {
+      "value": 103.09803919971486,
+      "unit": "dB",
+      "conditions": "VS = +/-3 V to +/-18 V, TA = 25 degC",
+      "page_reference": "p. 5, Section 6.5 Electrical Characteristics, PSRR row, TYP column",
+      "source_kind": "typical",
+      "column_semantics": {
+        "column": "TYP",
+        "meaning": "typical"
+      }
+    },
+    "iq": {
+      "value": 0.0026666666666666666,
+      "unit": "A",
+      "conditions": "derived from typical 80 mW no-load power dissipation at total supply 30 V",
+      "page_reference": "p. 6, Section 6.5 Electrical Characteristics, PD no-load row, TYP column",
+      "source_kind": "derived",
+      "column_semantics": {
+        "column": "DERIVED",
+        "meaning": "derived"
+      }
+    },
+    "en": {
+      "value": 9.8e-09,
+      "unit": "V/sqrt(Hz)",
+      "conditions": "f = 1 kHz, TA = 25 degC",
+      "page_reference": "p. 5, Section 6.5 Electrical Characteristics, eN row, TYP column",
+      "source_kind": "typical",
+      "column_semantics": {
+        "column": "TYP",
+        "meaning": "typical"
+      }
+    }
+  },
+  "identity": {
+    "canonical_mpn": "OP07C",
+    "manufacturer": "Texas Instruments",
+    "aliases": [
+      "OP07CP",
+      "OP07CD"
+    ]
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://www.ti.com/lit/ds/symlink/op07c.pdf",
+    "revision": "SLOS099H, September 1983, revised March 2023",
+    "sha256": "882fe648876298f90e405589ffaf5c5d9142ee89b4bf988defcf112c1a7c8401",
+    "accessed_date": "2026-08-07",
+    "pages_referenced": [
+      "p. 4",
+      "p. 5",
+      "p. 6"
+    ],
+    "placeholder": false
+  }
+}

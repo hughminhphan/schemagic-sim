@@ -1,0 +1,59 @@
+* OpenCircuit Model Factory v0.1.0
+* Original work generated from public factual specifications.
+* This model is not a copy of, or adaptation from, any vendor SPICE model.
+* Source: https://assets.nexperia.com/documents/data-sheet/74HC_HCT138.pdf
+* Revision: Rev. 10, 26 February 2024
+* Archetype: archetype-logic74hc.md
+* Fitted at 25 degC from the VCC = 4.5 V table column.
+.subckt OC_NEXPERIA_74HC138_OUT IN Y VCC GND
+BDRV yd GND V = min(max(v(IN)*v(VCC,GND),0),v(VCC,GND))
+RDRV yd Y R={37.5+(45.0-37.5)*0.5*(1+tanh(12*(v(IN)-0.5)))}
+.ends OC_NEXPERIA_74HC138_OUT
+.subckt OC_NEXPERIA_74HC138 A0 A1 A2 E1 E2 E3 Y0 Y1 Y2 Y3 Y4 Y5 Y6 Y7 VCC GND
++ PARAMS: KVTC=20 RINT=1k CINT=1.8000000000e-11
+RIa0n A0 GND 1e11
+BIa0n a0n GND V = 0.5*(1+tanh(20*(v(A0,GND)/v(VCC,GND)-0.5)))
+RIa1n A1 GND 1e11
+BIa1n a1n GND V = 0.5*(1+tanh(20*(v(A1,GND)/v(VCC,GND)-0.5)))
+RIa2n A2 GND 1e11
+BIa2n a2n GND V = 0.5*(1+tanh(20*(v(A2,GND)/v(VCC,GND)-0.5)))
+RIe1n E1 GND 1e11
+BIe1n e1n GND V = 0.5*(1+tanh(20*(v(E1,GND)/v(VCC,GND)-0.5)))
+RIe2n E2 GND 1e11
+BIe2n e2n GND V = 0.5*(1+tanh(20*(v(E2,GND)/v(VCC,GND)-0.5)))
+RIe3n E3 GND 1e11
+BIe3n e3n GND V = 0.5*(1+tanh(20*(v(E3,GND)/v(VCC,GND)-0.5)))
+BEN en GND V = (1-v(e1n))*(1-v(e2n))*v(e3n)
+BC0 c0 GND V = 1-v(en)*(1-v(a0n))*(1-v(a1n))*(1-v(a2n))
+RD0 c0 d0 {RINT}
+CD0 d0 GND {CINT}
+XOUT0 d0 Y0 VCC GND OC_NEXPERIA_74HC138_OUT
+BC1 c1 GND V = 1-v(en)*v(a0n)*(1-v(a1n))*(1-v(a2n))
+RD1 c1 d1 {RINT}
+CD1 d1 GND {CINT}
+XOUT1 d1 Y1 VCC GND OC_NEXPERIA_74HC138_OUT
+BC2 c2 GND V = 1-v(en)*(1-v(a0n))*v(a1n)*(1-v(a2n))
+RD2 c2 d2 {RINT}
+CD2 d2 GND {CINT}
+XOUT2 d2 Y2 VCC GND OC_NEXPERIA_74HC138_OUT
+BC3 c3 GND V = 1-v(en)*v(a0n)*v(a1n)*(1-v(a2n))
+RD3 c3 d3 {RINT}
+CD3 d3 GND {CINT}
+XOUT3 d3 Y3 VCC GND OC_NEXPERIA_74HC138_OUT
+BC4 c4 GND V = 1-v(en)*(1-v(a0n))*(1-v(a1n))*v(a2n)
+RD4 c4 d4 {RINT}
+CD4 d4 GND {CINT}
+XOUT4 d4 Y4 VCC GND OC_NEXPERIA_74HC138_OUT
+BC5 c5 GND V = 1-v(en)*v(a0n)*(1-v(a1n))*v(a2n)
+RD5 c5 d5 {RINT}
+CD5 d5 GND {CINT}
+XOUT5 d5 Y5 VCC GND OC_NEXPERIA_74HC138_OUT
+BC6 c6 GND V = 1-v(en)*(1-v(a0n))*v(a1n)*v(a2n)
+RD6 c6 d6 {RINT}
+CD6 d6 GND {CINT}
+XOUT6 d6 Y6 VCC GND OC_NEXPERIA_74HC138_OUT
+BC7 c7 GND V = 1-v(en)*v(a0n)*v(a1n)*v(a2n)
+RD7 c7 d7 {RINT}
+CD7 d7 GND {CINT}
+XOUT7 d7 Y7 VCC GND OC_NEXPERIA_74HC138_OUT
+.ends OC_NEXPERIA_74HC138

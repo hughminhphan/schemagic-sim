@@ -1,0 +1,40 @@
+OpenCircuit OPA2134 minimum rated supply follower
+* OpenCircuit Model Factory v0.1.0
+* Original work generated from public factual specifications.
+* This model is not a copy of, or adaptation from, any vendor SPICE model.
+* Node order: INP INN VCC VEE OUT
+.subckt OC_TI_OPA2134 INP INN VCC VEE OUT
+.param AOL=1.0000000000e+06 GBW=8.6675893896e+06 SR=2.0751385180e+07 IBIAS=5.0000000000e-12 IOS=2.0000000000e-12 VOS=1.0000000000e-03
+.param ROUT=1.0000000000e+01 ILIM=3.0000000000e-02 VDRP_H=2.0000000000e+00 VDRP_L=2.0000000000e+00 CC=30p FP2=2.6002768169e+07
+.param CMRR=1.0000000000e+05 PSRR=1.9952623150e+05 VSUP_NOM=3.0000000000e+01 IQ=4.0000000000e-03 EN=8.0000000000e-09
+IBP 0 INP DC {IBIAS+IOS/2}
+IBN 0 INN DC {IBIAS-IOS/2}
+CDIF INP INN 1p
+BERR e 0 V = v(INP,INN) + VOS + v(nz) + 0.5*(v(INP)+v(INN))/CMRR + (v(VCC,VEE)-VSUP_NOM)/PSRR
+RE e 0 1meg
+RNZ nz 0 {EN*EN/(4*1.380649e-23*300.15)}
+BGM 0 p I = {SR*CC}*tanh({6.283185307*GBW/SR}*v(e))
+CP p 0 {CC}
+RP p 0 {AOL/(6.283185307*GBW*CC)}
+RP2 p p2 {1/(6.283185307*FP2*1p)}
+CP2 p2 0 1p
+BCLMP q 0 V = min(max(v(p2), v(VEE)+min(VDRP_L,0.49*v(VCC,VEE))), v(VCC)-min(VDRP_H,0.49*v(VCC,VEE)))
+RQ q 0 1meg
+BOUT 0 OUT I = ILIM*tanh((v(q)-v(OUT))/(ROUT*ILIM))
+IQVCC VCC VEE DC {IQ}
+.ends OC_TI_OPA2134
+
+.temp 25
+VCC vcc 0 2.5
+VEE vee 0 -2.5
+VN n 0 -0.25
+XN n on vcc vee on OC_TI_OPA2134
+RLN on 0 10k
+VZ z 0 0
+XZ z oz vcc vee oz OC_TI_OPA2134
+RLZ oz 0 10k
+VP p 0 0.25
+XP p op vcc vee op OC_TI_OPA2134
+RLP op 0 10k
+.op
+.end
