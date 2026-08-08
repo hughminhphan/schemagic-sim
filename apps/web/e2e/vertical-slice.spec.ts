@@ -3,6 +3,7 @@ import { expect, test } from "@playwright/test";
 test("ngspice worker and reduced-motion static encoding are available", async ({ browser }) => {
   const context = await browser.newContext({ viewport: { width: 1440, height: 900 }, reducedMotion: "reduce" });
   const page = await context.newPage();
+  await page.addInitScript(() => localStorage.setItem("schemagic.onboarding.v1.completed", "1"));
   await page.goto("http://127.0.0.1:4173/");
   await expect(page.getByTestId("engine-ready")).toBeVisible({ timeout: 45_000 });
   await expect(page.getByText("scheMAGIC Simulator", { exact: true })).toBeVisible();

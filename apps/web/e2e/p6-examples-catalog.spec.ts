@@ -17,6 +17,7 @@ test.beforeEach(async ({ page }, testInfo) => {
   await page.goto("/");
   await page.evaluate(async () => {
     localStorage.clear();
+    localStorage.setItem("schemagic.onboarding.v1.completed", "1");
     sessionStorage.clear();
     await new Promise<void>((done) => {
       const request = indexedDB.deleteDatabase("schemagic-simulator");
