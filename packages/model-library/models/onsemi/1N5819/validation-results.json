@@ -1,12 +1,12 @@
 {
   "schema_version": "1.0.0",
-  "validation_date": "2026-08-07",
+  "validation_date": "2026-08-08",
   "native_wasm_all_pass": true,
   "expectations_all_pass": true,
-  "expectation_pass_count": 4,
+  "expectation_pass_count": 16,
   "expectation_fail_count": 0,
-  "worst_native_wasm_relative_delta": 4.87955404117457e-16,
-  "worst_native_wasm_absolute_delta": 1.6653345369377348e-16,
+  "worst_native_wasm_relative_delta": 6.395700906262362e-15,
+  "worst_native_wasm_absolute_delta": 1.7208456881689926e-15,
   "benches": [
     {
       "test_netlist": "forward_01.cir",
@@ -14,11 +14,11 @@
       "native_wasm_pass": true,
       "checks": [
         {
-          "name": "forward_voltage_maximum_rated_current",
+          "name": "vf_at_0.02_a",
           "pass": true,
-          "value": 0.4783633322728549,
-          "minimum": null,
-          "maximum": 0.6
+          "value": 0.22774362292593903,
+          "error": 0.0022563770740609834,
+          "allowed": 0.02
         }
       ]
     },
@@ -28,11 +28,53 @@
       "native_wasm_pass": true,
       "checks": [
         {
-          "name": "forward_voltage_maximum_operating_point",
+          "name": "vf_at_0.05_a",
           "pass": true,
-          "value": 0.3412882658712942,
-          "minimum": null,
-          "maximum": 0.6
+          "value": 0.26906287729684536,
+          "error": 0.0009371227031546581,
+          "allowed": 0.02
+        }
+      ]
+    },
+    {
+      "test_netlist": "forward_03.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "vf_at_0.1_a",
+          "pass": true,
+          "value": 0.30040484692733704,
+          "error": 0.00040484692733705474,
+          "allowed": 0.02
+        }
+      ]
+    },
+    {
+      "test_netlist": "forward_04.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "vf_at_0.3_a",
+          "pass": true,
+          "value": 0.35302349974902836,
+          "error": 0.00302349974902838,
+          "allowed": 0.02
+        }
+      ]
+    },
+    {
+      "test_netlist": "forward_05.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "vf_at_1_a",
+          "pass": true,
+          "value": 0.4269030134587028,
+          "error": 0.0030969865412971975,
+          "allowed": 0.02
         }
       ]
     },
@@ -42,11 +84,74 @@
       "native_wasm_pass": true,
       "checks": [
         {
-          "name": "reverse_leakage_maximum",
+          "name": "reverse_leakage_typical_40v",
           "pass": true,
-          "value": 7.558691094874943e-07,
-          "minimum": null,
-          "maximum": 0.001
+          "value": 0.0001738113101316766,
+          "error": 0.000006188689868323399,
+          "allowed": 0.000045
+        },
+        {
+          "name": "reverse_leakage_maximum_40v",
+          "pass": true,
+          "value": 0.0001738113101316766,
+          "minimum": 0,
+          "maximum": 0.0005
+        }
+      ]
+    },
+    {
+      "test_netlist": "junction_capacitance.cir",
+      "analysis": "ac",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "capacitance_at_0.5v",
+          "pass": true,
+          "value": 1.3243296681340862e-10,
+          "error": 1.7432966813408615e-11,
+          "allowed": 2.3e-11
+        },
+        {
+          "name": "capacitance_at_1v",
+          "pass": true,
+          "value": 1.1521754490648937e-10,
+          "error": 5.217544906489371e-12,
+          "allowed": 2.2e-11
+        },
+        {
+          "name": "capacitance_at_2v",
+          "pass": true,
+          "value": 9.410853410776915e-11,
+          "error": 5.89146589223085e-12,
+          "allowed": 2.0000000000000002e-11
+        },
+        {
+          "name": "capacitance_at_4v",
+          "pass": true,
+          "value": 7.240131158659868e-11,
+          "error": 9.598688413401324e-12,
+          "allowed": 1.64e-11
+        },
+        {
+          "name": "capacitance_at_8v",
+          "pass": true,
+          "value": 5.3200698328515326e-11,
+          "error": 6.799301671484673e-12,
+          "allowed": 1.2e-11
+        },
+        {
+          "name": "capacitance_at_16v",
+          "pass": true,
+          "value": 3.794455981538671e-11,
+          "error": 1.055440184613289e-12,
+          "allowed": 7.8e-12
+        },
+        {
+          "name": "capacitance_at_32v",
+          "pass": true,
+          "value": 2.6600576666226284e-11,
+          "error": 3.6005766662262827e-12,
+          "allowed": 4.6000000000000006e-12
         }
       ]
     },
@@ -56,10 +161,17 @@
       "native_wasm_pass": true,
       "checks": [
         {
-          "name": "boundary_forward_voltage_maximum",
+          "name": "supported_boundary_vf_1a",
           "pass": true,
-          "value": 0.4783633322728549,
-          "minimum": null,
+          "value": 0.4269030134587028,
+          "error": 0.0030969865412971975,
+          "allowed": 0.02
+        },
+        {
+          "name": "forward_voltage_maximum_1a",
+          "pass": true,
+          "value": 0.4269030134587028,
+          "minimum": 0,
           "maximum": 0.6
         }
       ]

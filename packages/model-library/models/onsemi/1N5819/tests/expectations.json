@@ -4,75 +4,293 @@
     {
       "test_netlist": "forward_01.cir",
       "analysis_type": "operating_point",
-      "scalar_checks": [],
-      "hard_bounds_checks": [
+      "scalar_checks": [
         {
-          "name": "forward_voltage_maximum_rated_current",
+          "name": "vf_at_0.02_a",
           "expression_source": {
             "kind": "raw_variable",
             "expression": "last(v(anode))"
           },
-          "maximum": 0.6,
+          "expected_value": 0.23,
           "unit": "V",
-          "inclusive": true,
-          "datasheet_citation": "official product page, electrical characteristics, Forward Voltage MAX column",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.03
+          },
+          "datasheet_citation": "p. 5 Figure 7, 1N5819 25 degC curve, digitized",
           "placeholder": false
         }
-      ]
+      ],
+      "hard_bounds_checks": []
     },
     {
       "test_netlist": "forward_02.cir",
       "analysis_type": "operating_point",
-      "scalar_checks": [],
-      "hard_bounds_checks": [
+      "scalar_checks": [
         {
-          "name": "forward_voltage_maximum_operating_point",
+          "name": "vf_at_0.05_a",
           "expression_source": {
             "kind": "raw_variable",
             "expression": "last(v(anode))"
           },
-          "maximum": 0.6,
+          "expected_value": 0.27,
           "unit": "V",
-          "inclusive": true,
-          "datasheet_citation": "official product page, electrical characteristics, Forward Voltage MAX column",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.03
+          },
+          "datasheet_citation": "p. 5 Figure 7, 1N5819 25 degC curve, digitized",
           "placeholder": false
         }
-      ]
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "forward_03.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "vf_at_0.1_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "expected_value": 0.3,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.03
+          },
+          "datasheet_citation": "p. 5 Figure 7, 1N5819 25 degC curve, digitized",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "forward_04.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "vf_at_0.3_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "expected_value": 0.35,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.03
+          },
+          "datasheet_citation": "p. 5 Figure 7, 1N5819 25 degC curve, digitized",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "forward_05.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "vf_at_1_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "expected_value": 0.43,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.03
+          },
+          "datasheet_citation": "p. 5 Figure 7, 1N5819 25 degC curve, digitized",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
     },
     {
       "test_netlist": "reverse_leakage.cir",
       "analysis_type": "operating_point",
-      "scalar_checks": [],
-      "hard_bounds_checks": [
+      "scalar_checks": [
         {
-          "name": "reverse_leakage_maximum",
+          "name": "reverse_leakage_typical_40v",
           "expression_source": {
             "kind": "raw_variable",
             "expression": "abs:last(i(vreverse))"
           },
-          "maximum": 0.001,
+          "expected_value": 0.00018,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 1e-12,
+            "relative": 0.25
+          },
+          "datasheet_citation": "p. 5 Figure 9, 1N5819 25 degC curve, digitized",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": [
+        {
+          "name": "reverse_leakage_maximum_40v",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vreverse))"
+          },
+          "minimum": 0,
+          "maximum": 0.0005,
           "unit": "A",
           "inclusive": true,
-          "datasheet_citation": "official product page, electrical characteristics, Reverse Current MAX column",
+          "datasheet_citation": "p. 2 electrical characteristics, IR at rated VR, MAX row",
           "placeholder": false
         }
       ]
     },
     {
+      "test_netlist": "junction_capacitance.cir",
+      "analysis_type": "ac_small_signal",
+      "scalar_checks": [
+        {
+          "name": "capacitance_at_0.5v",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "imag_cap:last(i(v1),1000000)"
+          },
+          "expected_value": 1.15e-10,
+          "unit": "F",
+          "tolerance": {
+            "absolute": 5e-13,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 6 Figure 10, 1N5819 curve, digitized",
+          "placeholder": false
+        },
+        {
+          "name": "capacitance_at_1v",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "imag_cap:last(i(v2),1000000)"
+          },
+          "expected_value": 1.1e-10,
+          "unit": "F",
+          "tolerance": {
+            "absolute": 5e-13,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 6 Figure 10, 1N5819 curve, digitized",
+          "placeholder": false
+        },
+        {
+          "name": "capacitance_at_2v",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "imag_cap:last(i(v3),1000000)"
+          },
+          "expected_value": 1e-10,
+          "unit": "F",
+          "tolerance": {
+            "absolute": 5e-13,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 6 Figure 10, 1N5819 curve, digitized",
+          "placeholder": false
+        },
+        {
+          "name": "capacitance_at_4v",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "imag_cap:last(i(v4),1000000)"
+          },
+          "expected_value": 8.2e-11,
+          "unit": "F",
+          "tolerance": {
+            "absolute": 5e-13,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 6 Figure 10, 1N5819 curve, digitized",
+          "placeholder": false
+        },
+        {
+          "name": "capacitance_at_8v",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "imag_cap:last(i(v5),1000000)"
+          },
+          "expected_value": 6e-11,
+          "unit": "F",
+          "tolerance": {
+            "absolute": 5e-13,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 6 Figure 10, 1N5819 curve, digitized",
+          "placeholder": false
+        },
+        {
+          "name": "capacitance_at_16v",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "imag_cap:last(i(v6),1000000)"
+          },
+          "expected_value": 3.9e-11,
+          "unit": "F",
+          "tolerance": {
+            "absolute": 5e-13,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 6 Figure 10, 1N5819 curve, digitized",
+          "placeholder": false
+        },
+        {
+          "name": "capacitance_at_32v",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "imag_cap:last(i(v7),1000000)"
+          },
+          "expected_value": 2.3e-11,
+          "unit": "F",
+          "tolerance": {
+            "absolute": 5e-13,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 6 Figure 10, 1N5819 curve, digitized",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
       "test_netlist": "boundary_forward.cir",
       "analysis_type": "operating_point",
-      "scalar_checks": [],
-      "hard_bounds_checks": [
+      "scalar_checks": [
         {
-          "name": "boundary_forward_voltage_maximum",
+          "name": "supported_boundary_vf_1a",
           "expression_source": {
             "kind": "raw_variable",
             "expression": "last(v(anode))"
           },
+          "expected_value": 0.43,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.03
+          },
+          "datasheet_citation": "p. 5 Figure 7, 1N5819 25 degC curve at 1 A, digitized",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": [
+        {
+          "name": "forward_voltage_maximum_1a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "minimum": 0,
           "maximum": 0.6,
           "unit": "V",
           "inclusive": true,
-          "datasheet_citation": "official product page, electrical characteristics, Forward Voltage MAX column",
+          "datasheet_citation": "p. 2 electrical characteristics, VF at 1 A, 1N5819 MAX value",
           "placeholder": false
         }
       ]

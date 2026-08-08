@@ -4,32 +4,40 @@
 
 - Manufacturer: onsemi
 - Description: 1 A Schottky barrier rectifier diode
-- Fidelity tier: F1
+- Electrical family: diode, Schottky variant K
+- Fidelity tier: F2, datasheet-fitted
 - Independent reviewer: pending-review
 
 ## Provenance
 
-- Manufacturer product page: https://www.onsemi.com/products/discrete-power-modules/schottky-diodes/1N5819
-- Official PDF attempted: https://www.onsemi.com/pdf/datasheet/1n5817-d.pdf
-- Revision: official product specification fallback; PDF and product page access blocked
-- Accessed: 2026-08-07
-- Source response SHA-256: `7ba925be3f714ee319961e48d750ccdcb7cc5de876467e8d97bedb2bebce3eda`
+- Primary datasheet: https://www.onsemi.com/download/data-sheet/pdf/1n5817-d.pdf
+- Revision: August 2021, Rev. 11
+- Accessed: 2026-08-08
+- SHA-256: `b2ebdf63715a4ff42da7d257c8fa503b6fef0178b8942d166da37ac52acea0a5`
+- Legacy dedicated PDF cross-check: https://www.onsemi.com/download/data-sheet/pdf/1n5819-d.pdf, SHA-256 `16f59e39d50f9cd20b3bd074283b666514ab51c29be987a01f5861461d70dca5`
 - Vendor SPICE models used: none
 
-## Validation
+## Fit and validation
 
-This fallback model checks published maximum forward voltage and reverse leakage bounds at explicit 25 degC datasheet conditions. Native/WASM agreement and package-schema validation are recorded in `validation-results.json`.
+The reverse-dominated branch was fitted first, then frozen while IS, N, and RS were fitted to the 25 degC typical forward curve with native ngspice-46 in the optimization loop. CJO, VJ, and M were fitted to seven points from the 1 MHz typical capacitance curve. The deterministic solver used `diff_step=1e-4`. The worst forward absolute log-current residual is 0.097, below the 0.223 archetype threshold. The worst capacitance residual is 15.65 percent, below the 20 percent threshold.
+
+| IF (A) | Datasheet VF (V) | Model VF (V) | Absolute log-current residual |
+| ---: | ---: | ---: | ---: |
+| 0.02 | 0.230 | 0.2282 | 0.040 |
+| 0.05 | 0.270 | 0.2695 | 0.010 |
+| 0.1 | 0.300 | 0.3009 | 0.019 |
+| 0.3 | 0.350 | 0.3535 | 0.067 |
+| 1 | 0.430 | 0.4273 | 0.035 |
+| 3 | 0.560 | 0.5448 | 0.097 |
+| 10 | 0.820 | 0.8545 | 0.086 |
 
 ## Known omissions
 
-- Official manufacturer PDF and HTML product page were unreachable after repeated HTTPS attempts; this is a manufacturer spec-page fallback and is capped at F1.
-- IS, N, and RS are held at conservative physical/default-fit values to remain below the published forward-voltage maximum; no typical forward-IV curve was fitted.
-- ISR and NR are held at default; the reverse-leakage row is a maximum bound, not a typical target.
-- IKF is held at default; high-injection roll-off is not modelled.
-- CJO, VJ, and M are held at default because no verifiable capacitance curve was available.
-- TT is held at default 0 s; reverse recovery is not modelled because no verified trr input was available.
-- BV, IBV, and NBV are held at defaults; reverse breakdown is not modelled.
-- EG, XTI, and TNOM are held at physical defaults; only 25 degC behavior is claimed.
-- No self-heating: junction temperature is fixed at TNOM. Thermal derating is not modelled.
-- Package parasitics (lead inductance and package capacitance) are not modelled.
-- Flicker noise is not modelled: KF and AF are held at defaults.
+- Reverse breakdown is not modelled. BV is absent, so operation above the rated 40 V envelope is unsupported.
+- Schottky majority-carrier device: no minority-carrier storage, TT is zero by construction.
+- Temperature scaling beyond the 25 degC fit is not validated.
+- Package parasitics, self-heating, noise, process spread, and ageing are omitted.
+
+## Licence
+
+MIT. See `LICENSE`. The model is original work generated from public factual specifications and is not copied or adapted from a vendor SPICE model.

@@ -1,64 +1,304 @@
 {
   "schema_version": "1.0.0",
-  "extraction_method": "manual structuring from manufacturer product-page fallback; official PDF and HTML access blocked, no vendor SPICE model used",
+  "extraction_method": "pdftotext plus manual structuring and curve digitization from the official onsemi family datasheet; no vendor SPICE model used",
   "fit_conditions": {
     "temperature": {
       "value": 25,
       "unit": "degC",
-      "conditions": "TA = 25 degC unless otherwise specified",
-      "page_reference": "official product page, electrical characteristics",
+      "conditions": "TJ = 25 degC unless otherwise specified",
+      "page_reference": "pp. 5-6 typical-characteristics labels",
       "source_kind": "typical",
-      "column_semantics": "published TYP column when available; no typical forward curve used"
+      "column_semantics": "Typical curves are fitted. MAX table rows are used only as one-sided bounds."
     }
   },
+  "fit_points": [
+    {
+      "current": {
+        "value": 0.02,
+        "unit": "A",
+        "conditions": "TJ = 25 degC, pulse width = 300 us, 1 percent duty cycle",
+        "page_reference": "p. 5 Figure 7, 1N5819 25 degC curve",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 0.23,
+        "unit": "V",
+        "conditions": "IF = 0.02 A, TJ = 25 degC",
+        "page_reference": "p. 5 Figure 7, 1N5819 25 degC curve",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 0.05,
+        "unit": "A",
+        "conditions": "TJ = 25 degC, pulse width = 300 us, 1 percent duty cycle",
+        "page_reference": "p. 5 Figure 7, 1N5819 25 degC curve",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 0.27,
+        "unit": "V",
+        "conditions": "IF = 0.05 A, TJ = 25 degC",
+        "page_reference": "p. 5 Figure 7, 1N5819 25 degC curve",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 0.1,
+        "unit": "A",
+        "conditions": "TJ = 25 degC, pulse width = 300 us, 1 percent duty cycle",
+        "page_reference": "p. 5 Figure 7, 1N5819 25 degC curve",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 0.3,
+        "unit": "V",
+        "conditions": "IF = 0.1 A, TJ = 25 degC",
+        "page_reference": "p. 5 Figure 7, 1N5819 25 degC curve",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 0.3,
+        "unit": "A",
+        "conditions": "TJ = 25 degC, pulse width = 300 us, 1 percent duty cycle",
+        "page_reference": "p. 5 Figure 7, 1N5819 25 degC curve",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 0.35,
+        "unit": "V",
+        "conditions": "IF = 0.3 A, TJ = 25 degC",
+        "page_reference": "p. 5 Figure 7, 1N5819 25 degC curve",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 1.0,
+        "unit": "A",
+        "conditions": "TJ = 25 degC, pulse width = 300 us, 1 percent duty cycle",
+        "page_reference": "p. 5 Figure 7, 1N5819 25 degC curve",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 0.43,
+        "unit": "V",
+        "conditions": "IF = 1.0 A, TJ = 25 degC",
+        "page_reference": "p. 5 Figure 7, 1N5819 25 degC curve",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 3.0,
+        "unit": "A",
+        "conditions": "TJ = 25 degC, pulse width = 300 us, 1 percent duty cycle",
+        "page_reference": "p. 5 Figure 7, 1N5819 25 degC curve",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 0.56,
+        "unit": "V",
+        "conditions": "IF = 3.0 A, TJ = 25 degC",
+        "page_reference": "p. 5 Figure 7, 1N5819 25 degC curve",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 10.0,
+        "unit": "A",
+        "conditions": "TJ = 25 degC, pulse width = 300 us, 1 percent duty cycle",
+        "page_reference": "p. 5 Figure 7, 1N5819 25 degC curve",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 0.82,
+        "unit": "V",
+        "conditions": "IF = 10.0 A, TJ = 25 degC",
+        "page_reference": "p. 5 Figure 7, 1N5819 25 degC curve",
+        "source_kind": "digitized_typical_curve"
+      }
+    }
+  ],
+  "reverse_leakage": {
+    "typical_40v": {
+      "value": 0.00018,
+      "unit": "A",
+      "conditions": "VR = 40 V, TJ = 25 degC",
+      "page_reference": "p. 5 Figure 9, 1N5819 25 degC curve",
+      "source_kind": "digitized_typical_curve"
+    },
+    "maximum_40v": {
+      "value": 0.0005,
+      "unit": "A",
+      "conditions": "VR = 40 V, TC = 25 degC",
+      "page_reference": "p. 2 electrical characteristics, IR row",
+      "source_kind": "maximum",
+      "column_semantics": "Published MAX value; used as a one-sided hard bound"
+    }
+  },
+  "capacitance_curve": [
+    {
+      "reverse_voltage": {
+        "value": 0.5,
+        "unit": "V",
+        "conditions": "TJ = 25 degC, f = 1 MHz",
+        "page_reference": "p. 6 Figure 10, 1N5819 curve",
+        "source_kind": "digitized_typical_curve"
+      },
+      "capacitance": {
+        "value": 1.15e-10,
+        "unit": "F",
+        "conditions": "VR = 0.5 V, TJ = 25 degC, f = 1 MHz",
+        "page_reference": "p. 6 Figure 10, 1N5819 curve",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "reverse_voltage": {
+        "value": 1,
+        "unit": "V",
+        "conditions": "TJ = 25 degC, f = 1 MHz",
+        "page_reference": "p. 6 Figure 10, 1N5819 curve",
+        "source_kind": "digitized_typical_curve"
+      },
+      "capacitance": {
+        "value": 1.1e-10,
+        "unit": "F",
+        "conditions": "VR = 1 V, TJ = 25 degC, f = 1 MHz",
+        "page_reference": "p. 6 Figure 10, 1N5819 curve",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "reverse_voltage": {
+        "value": 2,
+        "unit": "V",
+        "conditions": "TJ = 25 degC, f = 1 MHz",
+        "page_reference": "p. 6 Figure 10, 1N5819 curve",
+        "source_kind": "digitized_typical_curve"
+      },
+      "capacitance": {
+        "value": 1e-10,
+        "unit": "F",
+        "conditions": "VR = 2 V, TJ = 25 degC, f = 1 MHz",
+        "page_reference": "p. 6 Figure 10, 1N5819 curve",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "reverse_voltage": {
+        "value": 4,
+        "unit": "V",
+        "conditions": "TJ = 25 degC, f = 1 MHz",
+        "page_reference": "p. 6 Figure 10, 1N5819 curve",
+        "source_kind": "digitized_typical_curve"
+      },
+      "capacitance": {
+        "value": 8.2e-11,
+        "unit": "F",
+        "conditions": "VR = 4 V, TJ = 25 degC, f = 1 MHz",
+        "page_reference": "p. 6 Figure 10, 1N5819 curve",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "reverse_voltage": {
+        "value": 8,
+        "unit": "V",
+        "conditions": "TJ = 25 degC, f = 1 MHz",
+        "page_reference": "p. 6 Figure 10, 1N5819 curve",
+        "source_kind": "digitized_typical_curve"
+      },
+      "capacitance": {
+        "value": 6e-11,
+        "unit": "F",
+        "conditions": "VR = 8 V, TJ = 25 degC, f = 1 MHz",
+        "page_reference": "p. 6 Figure 10, 1N5819 curve",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "reverse_voltage": {
+        "value": 16,
+        "unit": "V",
+        "conditions": "TJ = 25 degC, f = 1 MHz",
+        "page_reference": "p. 6 Figure 10, 1N5819 curve",
+        "source_kind": "digitized_typical_curve"
+      },
+      "capacitance": {
+        "value": 3.9e-11,
+        "unit": "F",
+        "conditions": "VR = 16 V, TJ = 25 degC, f = 1 MHz",
+        "page_reference": "p. 6 Figure 10, 1N5819 curve",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "reverse_voltage": {
+        "value": 32,
+        "unit": "V",
+        "conditions": "TJ = 25 degC, f = 1 MHz",
+        "page_reference": "p. 6 Figure 10, 1N5819 curve",
+        "source_kind": "digitized_typical_curve"
+      },
+      "capacitance": {
+        "value": 2.3e-11,
+        "unit": "F",
+        "conditions": "VR = 32 V, TJ = 25 degC, f = 1 MHz",
+        "page_reference": "p. 6 Figure 10, 1N5819 curve",
+        "source_kind": "digitized_typical_curve"
+      }
+    }
+  ],
   "electrical_limits": {
     "reverse_voltage": {
       "value": 40,
       "unit": "V",
-      "conditions": "TA = 25 degC",
-      "page_reference": "official product page, absolute maximum ratings",
-      "source_kind": "maximum",
-      "column_semantics": "published MAX column; used only as operating-region bound"
+      "conditions": "rated repetitive reverse voltage",
+      "page_reference": "p. 2 maximum ratings, VRRM row",
+      "source_kind": "maximum"
     },
-    "forward_continuous_current": {
-      "value": 1.0,
+    "average_forward_current": {
+      "value": 1,
       "unit": "A",
-      "conditions": "TA = 25 degC",
-      "page_reference": "official product page, absolute maximum ratings",
-      "source_kind": "maximum",
-      "column_semantics": "published MAX column; used only as operating-region bound"
+      "conditions": "lead length 3/8 inch, TL = 90 degC",
+      "page_reference": "p. 2 maximum ratings, IO row",
+      "source_kind": "maximum"
     },
-    "forward_voltage_maximum": {
+    "forward_voltage_maximum_1a": {
       "value": 0.6,
       "unit": "V",
-      "conditions": "IF = 1.0 A, TA = 25 degC",
-      "page_reference": "official product page, electrical characteristics",
+      "conditions": "IF = 1 A, pulse test",
+      "page_reference": "p. 2 electrical characteristics, VF row",
       "source_kind": "maximum",
-      "column_semantics": "published MAX column; used only as one-sided forward-voltage bound"
-    },
-    "reverse_current_maximum": {
-      "value": 0.001,
-      "unit": "A",
-      "conditions": "VR = 40 V, TA = 25 degC",
-      "page_reference": "official product page, electrical characteristics",
-      "source_kind": "maximum",
-      "column_semantics": "published MAX column; used only as one-sided leakage bound"
+      "column_semantics": "Published MAX value; used as a one-sided boundary bound"
     }
   },
   "identity": {
     "canonical_mpn": "1N5819",
     "manufacturer": "onsemi",
-    "aliases": []
+    "aliases": [
+      "1N5819G",
+      "1N5819RL",
+      "1N5819RLG"
+    ]
   },
   "source": {
-    "kind": "spec_page",
-    "url": "https://www.onsemi.com/products/discrete-power-modules/schottky-diodes/1N5819",
-    "revision": "official product specification fallback; PDF and product page access blocked",
-    "sha256": "7ba925be3f714ee319961e48d750ccdcb7cc5de876467e8d97bedb2bebce3eda",
-    "accessed_date": "2026-08-07",
+    "kind": "datasheet",
+    "url": "https://www.onsemi.com/download/data-sheet/pdf/1n5817-d.pdf",
+    "revision": "August 2021, Rev. 11",
+    "sha256": "b2ebdf63715a4ff42da7d257c8fa503b6fef0178b8942d166da37ac52acea0a5",
+    "accessed_date": "2026-08-08",
     "pages_referenced": [
-      "official product page, absolute maximum ratings",
-      "official product page, electrical characteristics"
+      "p. 2",
+      "p. 5",
+      "p. 6"
     ],
     "placeholder": false
   }

@@ -47,14 +47,14 @@
   ],
   "ordering_code_aliases": [],
   "datasheet": {
-    "url": "https://www.onsemi.com/products/discrete-power-modules/schottky-diodes/1N5819",
-    "revision": "official product specification fallback; PDF and product page access blocked"
+    "url": "https://www.onsemi.com/download/data-sheet/pdf/1n5817-d.pdf",
+    "revision": "August 2021, Rev. 11"
   },
   "model_type": "dot_model",
-  "fidelity_tier": "F1",
+  "fidelity_tier": "F2",
   "domain_coverage": {
-    "dc": "approx",
-    "ac": "none",
+    "dc": "fitted",
+    "ac": "fitted",
     "transient": "approx",
     "noise": "none",
     "thermal": "none",
@@ -63,17 +63,26 @@
   "supported_analyses": [
     "operating_point",
     "dc_sweep",
+    "ac_small_signal",
     "transient"
   ],
   "supported_operating_region": {
-    "summary": "F1 one-sided-bound model at 25 degC; claimed forward envelope is 0 to 1.0 A and reverse leakage is checked only at the published 40 V condition.",
+    "summary": "F2 model fitted at 25 degC to the typical forward curve from 20 mA through 10 A pulse current, typical reverse leakage at 40 V, and the typical capacitance curve. Continuous-current use is bounded to 1 A and reverse operation to 40 V; avalanche is omitted.",
     "numeric_bounds": [
       {
         "quantity": "forward_current",
-        "minimum": 0,
-        "maximum": 1.0,
+        "minimum": 0.02,
+        "maximum": 1,
         "unit": "A",
-        "conditions": "Published rated continuous current at 25 degC",
+        "conditions": "25 degC typical curve; continuous-current boundary",
+        "placeholder": false
+      },
+      {
+        "quantity": "forward_pulse_current",
+        "minimum": 0.02,
+        "maximum": 10,
+        "unit": "A",
+        "conditions": "25 degC, 300 us pulse, 1 percent duty cycle, Figure 7",
         "placeholder": false
       },
       {
@@ -81,7 +90,7 @@
         "minimum": 0,
         "maximum": 40,
         "unit": "V",
-        "conditions": "Published rated reverse-voltage envelope; avalanche omitted",
+        "conditions": "Rated reverse-voltage envelope; avalanche omitted",
         "placeholder": false
       },
       {
@@ -95,17 +104,13 @@
     ]
   },
   "known_omissions": [
-    "Official manufacturer PDF and HTML product page were unreachable after repeated HTTPS attempts; this is a manufacturer spec-page fallback and is capped at F1.",
-    "IS, N, and RS are held at conservative physical/default-fit values to remain below the published forward-voltage maximum; no typical forward-IV curve was fitted.",
-    "ISR and NR are held at default; the reverse-leakage row is a maximum bound, not a typical target.",
-    "IKF is held at default; high-injection roll-off is not modelled.",
-    "CJO, VJ, and M are held at default because no verifiable capacitance curve was available.",
-    "TT is held at default 0 s; reverse recovery is not modelled because no verified trr input was available.",
-    "FC is held at physical default 0.5.",
-    "BV, IBV, and NBV are held at defaults; reverse breakdown is not modelled.",
-    "EG, XTI, and TNOM are held at physical defaults; only 25 degC behavior is claimed.",
-    "No self-heating: junction temperature is fixed at TNOM. Thermal derating is not modelled.",
+    "Reverse breakdown is not modelled: BV is absent, so the model conducts only leakage above the rated VRRM.",
+    "Schottky majority-carrier device: no minority-carrier storage, TT is zero by construction.",
+    "Reverse leakage uses the 25 degC typical Figure 9 point plus the tabulated maximum bound; temperature scaling beyond 25 degC is not fitted.",
+    "High-injection roll-off IKF is held at default because the three-parameter forward fit already meets the archetype threshold.",
+    "FC is held at the physical default 0.5.",
     "Package parasitics (lead inductance and package capacitance) are not modelled.",
+    "No self-heating: junction temperature is fixed at TNOM. Thermal derating is not modelled.",
     "Flicker noise is not modelled: KF and AF are held at defaults."
   ],
   "licence": {
@@ -113,22 +118,22 @@
     "provenance_basis": "original_from_facts"
   },
   "generator": {
-    "tool_or_agent": "opencircuit-model-factory-v0.1.0 manual diode fallback",
-    "date": "2026-08-07"
+    "tool_or_agent": "opencircuit-model-factory-v0.1.0 native Schottky fit",
+    "date": "2026-08-08"
   },
   "reviewer": {
-    "tool_or_agent": "sol independent reviewer (sweep-diodes-leds)",
-    "date": "2026-08-07"
+    "tool_or_agent": "pending-review",
+    "date": "2026-08-08"
   },
   "test_results": {
     "status": "complete",
-    "pass_count": 4,
+    "pass_count": 16,
     "fail_count": 0,
-    "total_count": 4,
+    "total_count": 16,
     "worst_observed_relative_fitting_error": {
-      "value": 0.0,
-      "quantity": "one-sided-bound-only model"
+      "value": 0.15654681157505576,
+      "quantity": "junction capacitance at 32 V"
     }
   },
-  "validation_date": "2026-08-07"
+  "validation_date": "2026-08-08"
 }

@@ -1,151 +1,226 @@
 {
   "schema_version": "1.0.0",
-  "fitter": "archetype-diode conservative one-sided-bound fallback; no typical fit claimed",
+  "fitter": "scipy.optimize.least_squares with native ngspice-46 evaluations",
   "deterministic": true,
   "temperature_c": 25,
   "parameters": {
-    "IS": 1e-06,
-    "N": 1.1,
-    "RS": 0.08
+    "IS": 1.0076200432388981e-05,
+    "N": 1.3552182079723458,
+    "RS": 0.03788900343156668,
+    "ISR": 0.0001799,
+    "NR": 2.0,
+    "CJO": 1.5984358878446528e-10,
+    "VJ": 1.1999999999999997,
+    "M": 0.5401023083358135,
+    "TT": 0.0
   },
   "parameter_metadata": {
-    "IS": {
-      "status": "held at conservative fallback value; not typical"
-    },
-    "N": {
-      "status": "held at conservative fallback value; not typical"
-    },
-    "RS": {
-      "status": "held at conservative fallback value; not typical"
-    },
     "ISR": {
-      "status": "held at default"
+      "status": "fitted first to the reverse-dominated 25 degC branch, then frozen"
     },
     "NR": {
-      "status": "held at default"
+      "status": "held at physical default 2.0 after reverse fit"
     },
-    "IKF": {
-      "status": "held at default"
+    "IS": {
+      "status": "fitted to forward curve with reverse parameters frozen"
+    },
+    "N": {
+      "status": "fitted to forward curve with reverse parameters frozen"
+    },
+    "RS": {
+      "status": "fitted to forward curve with reverse parameters frozen"
     },
     "CJO": {
-      "status": "held at default"
+      "status": "fitted to seven-point capacitance curve"
+    },
+    "VJ": {
+      "status": "fitted to seven-point capacitance curve"
+    },
+    "M": {
+      "status": "fitted to seven-point capacitance curve"
     },
     "TT": {
-      "status": "held at default"
-    },
-    "BV": {
-      "status": "held at default"
-    },
-    "IBV": {
-      "status": "held at default"
-    },
-    "NBV": {
-      "status": "held at default"
-    },
-    "EG": {
-      "status": "held at default"
-    },
-    "XTI": {
-      "status": "held at default"
-    },
-    "TNOM": {
-      "status": "held at default"
+      "status": "zero by construction for Schottky majority-carrier behavior"
     }
   },
   "held_defaults": [
     {
-      "parameter": "ISR",
-      "value": 1e-14,
-      "unit": "A",
-      "status": "held at default"
-    },
-    {
-      "parameter": "NR",
-      "value": 2.0,
-      "unit": "1",
-      "status": "held at default"
-    },
-    {
       "parameter": "IKF",
-      "value": 0.0,
+      "value": 0,
       "unit": "A",
-      "status": "held at default"
-    },
-    {
-      "parameter": "CJO",
-      "value": 0.0,
-      "unit": "F",
-      "status": "held at default"
-    },
-    {
-      "parameter": "VJ",
-      "value": 1.0,
-      "unit": "V",
-      "status": "held at default"
-    },
-    {
-      "parameter": "M",
-      "value": 0.5,
-      "unit": "1",
-      "status": "held at default"
+      "status": "held at default; no extra roll-off parameter required"
     },
     {
       "parameter": "FC",
       "value": 0.5,
       "unit": "1",
-      "status": "held at default"
-    },
-    {
-      "parameter": "TT",
-      "value": 0.0,
-      "unit": "s",
-      "status": "held at default"
+      "status": "held at physical default"
     },
     {
       "parameter": "BV",
       "value": 1e+99,
       "unit": "V",
-      "status": "held at default"
-    },
-    {
-      "parameter": "IBV",
-      "value": 1e-10,
-      "unit": "A",
-      "status": "held at default"
-    },
-    {
-      "parameter": "NBV",
-      "value": 1.0,
-      "unit": "1",
-      "status": "held at default"
-    },
-    {
-      "parameter": "EG",
-      "value": 1.11,
-      "unit": "eV",
-      "status": "held at default"
-    },
-    {
-      "parameter": "XTI",
-      "value": 3.0,
-      "unit": "1",
-      "status": "held at default"
+      "status": "held at default; breakdown omitted"
     },
     {
       "parameter": "TNOM",
-      "value": 27.0,
+      "value": 25,
       "unit": "degC",
-      "status": "held at default"
+      "status": "fit reference"
     }
   ],
   "optimizer": {
-    "status": 0,
+    "status": 2,
+    "nfev": 16,
+    "cap_status": 1,
+    "cap_nfev": 8,
     "diff_step": 0.0001,
-    "note": "No typical curve fit was attempted because official source access failed; model is bounded by published MAX rows only."
+    "method": "trf",
+    "x_scale": "jac",
+    "ftol": 1e-12,
+    "xtol": 1e-12,
+    "max_nfev": 5000,
+    "fit_order": "reverse ISR first and frozen; forward IS/N/RS second; capacitance CJO/VJ/M third"
   },
-  "residuals": [],
+  "residuals": [
+    {
+      "quantity": "forward log-current at 0.23 V",
+      "datasheet_value": 0.02,
+      "fitted_value": 0.02081098725789788,
+      "unit": "A",
+      "absolute_log_residual": 0.03974880723983221,
+      "fitted_voltage_at_current_v": 0.2281966685895099,
+      "voltage_error_v": 0.0018033314104901055,
+      "citation": "p. 5 Figure 7, 1N5819 25 degC curve, digitized"
+    },
+    {
+      "quantity": "forward log-current at 0.27 V",
+      "datasheet_value": 0.05,
+      "fitted_value": 0.050522901446160846,
+      "unit": "A",
+      "absolute_log_residual": 0.010403722039232122,
+      "fitted_voltage_at_current_v": 0.26953205496547433,
+      "voltage_error_v": 0.00046794503452568526,
+      "citation": "p. 5 Figure 7, 1N5819 25 degC curve, digitized"
+    },
+    {
+      "quantity": "forward log-current at 0.3 V",
+      "datasheet_value": 0.1,
+      "fitted_value": 0.09811670616654926,
+      "unit": "A",
+      "absolute_log_residual": 0.019012536601248353,
+      "fitted_voltage_at_current_v": 0.30086774101159636,
+      "voltage_error_v": 0.000867741011596368,
+      "citation": "p. 5 Figure 7, 1N5819 25 degC curve, digitized"
+    },
+    {
+      "quantity": "forward log-current at 0.35 V",
+      "datasheet_value": 0.3,
+      "fitted_value": 0.28042650185347834,
+      "unit": "A",
+      "absolute_log_residual": 0.06747080950591888,
+      "fitted_voltage_at_current_v": 0.35345094150410244,
+      "voltage_error_v": 0.003450941504102467,
+      "citation": "p. 5 Figure 7, 1N5819 25 degC curve, digitized"
+    },
+    {
+      "quantity": "forward log-current at 0.43 V",
+      "datasheet_value": 1.0,
+      "fitted_value": 1.036009545309038,
+      "unit": "A",
+      "absolute_log_residual": 0.03537635741360884,
+      "fitted_voltage_at_current_v": 0.42727307994611996,
+      "voltage_error_v": 0.002726920053880033,
+      "citation": "p. 5 Figure 7, 1N5819 25 degC curve, digitized"
+    },
+    {
+      "quantity": "forward log-current at 0.56 V",
+      "datasheet_value": 3.0,
+      "fitted_value": 3.3061439236729027,
+      "unit": "A",
+      "absolute_log_residual": 0.0971702438644797,
+      "fitted_voltage_at_current_v": 0.5447649136070094,
+      "voltage_error_v": 0.015235086392990649,
+      "citation": "p. 5 Figure 7, 1N5819 25 degC curve, digitized"
+    },
+    {
+      "quantity": "forward log-current at 0.82 V",
+      "datasheet_value": 10.0,
+      "fitted_value": 9.172009239725126,
+      "unit": "A",
+      "absolute_log_residual": 0.08642872061499585,
+      "fitted_voltage_at_current_v": 0.8545371779377036,
+      "voltage_error_v": 0.03453717793770361,
+      "citation": "p. 5 Figure 7, 1N5819 25 degC curve, digitized"
+    },
+    {
+      "quantity": "junction capacitance at 0.5 V",
+      "datasheet_value": 1.15e-10,
+      "fitted_value": 1.3243296681340862e-10,
+      "unit": "F",
+      "relative_error": 0.15159101576877057,
+      "citation": "p. 6 Figure 10, 1N5819 curve, digitized"
+    },
+    {
+      "quantity": "junction capacitance at 1.0 V",
+      "datasheet_value": 1.1e-10,
+      "fitted_value": 1.1521754490648937e-10,
+      "unit": "F",
+      "relative_error": 0.04743222642263065,
+      "citation": "p. 6 Figure 10, 1N5819 curve, digitized"
+    },
+    {
+      "quantity": "junction capacitance at 2.0 V",
+      "datasheet_value": 1e-10,
+      "fitted_value": 9.410853410776915e-11,
+      "unit": "F",
+      "relative_error": 0.058914658922308495,
+      "citation": "p. 6 Figure 10, 1N5819 curve, digitized"
+    },
+    {
+      "quantity": "junction capacitance at 4.0 V",
+      "datasheet_value": 8.2e-11,
+      "fitted_value": 7.240131158659868e-11,
+      "unit": "F",
+      "relative_error": 0.11705717577318688,
+      "citation": "p. 6 Figure 10, 1N5819 curve, digitized"
+    },
+    {
+      "quantity": "junction capacitance at 8.0 V",
+      "datasheet_value": 6e-11,
+      "fitted_value": 5.3200698328515326e-11,
+      "unit": "F",
+      "relative_error": 0.11332169452474455,
+      "citation": "p. 6 Figure 10, 1N5819 curve, digitized"
+    },
+    {
+      "quantity": "junction capacitance at 16.0 V",
+      "datasheet_value": 3.9e-11,
+      "fitted_value": 3.794455981538671e-11,
+      "unit": "F",
+      "relative_error": 0.027062568836238178,
+      "citation": "p. 6 Figure 10, 1N5819 curve, digitized"
+    },
+    {
+      "quantity": "junction capacitance at 32.0 V",
+      "datasheet_value": 2.3e-11,
+      "fitted_value": 2.6600576666226284e-11,
+      "unit": "F",
+      "relative_error": 0.15654681157505576,
+      "citation": "p. 6 Figure 10, 1N5819 curve, digitized"
+    },
+    {
+      "quantity": "reverse leakage at 40 V",
+      "datasheet_value": 0.00018,
+      "fitted_value": 0.00017454640561049905,
+      "unit": "A",
+      "relative_error": 0.030297746608338668,
+      "citation": "p. 5 Figure 9, 1N5819 25 degC curve, digitized"
+    }
+  ],
+  "worst_forward_absolute_log_residual": 0.0971702438644797,
   "worst_relative_error": {
-    "value": 0.0,
-    "quantity": "one-sided-bound-only model"
+    "value": 0.15654681157505576,
+    "quantity": "junction capacitance at 32 V"
   }
 }

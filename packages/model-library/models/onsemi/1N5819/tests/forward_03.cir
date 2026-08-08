@@ -1,4 +1,4 @@
-OpenCircuit factory test: 1N5819 reverse leakage
+OpenCircuit factory test: 1N5819 forward at 0.1 A
 * OpenCircuit Model Factory v0.1.0
 * Original work generated from public factual specifications.
 * This model is not a copy of, or adaptation from, any vendor SPICE model.
@@ -8,7 +8,9 @@ OpenCircuit factory test: 1N5819 reverse leakage
 * Archetype: archetype-diode.md, variant K
 .model OC_ONSEMI_1N5819 D(IS=1.007620043239e-05 N=1.35521820797 RS=0.0378890034316 ISR=1.799000000000e-04 NR=2 CJO=1.598435887845e-10 VJ=1.2 M=0.540102308336 FC=0.5 TT=0 TNOM=25)
 .temp 25
-Vreverse cathode 0 DC 40
-Ddut 0 cathode OC_ONSEMI_1N5819
+Itest 0 anode DC 1.000000000000e-01
+Vanchor anchor 0 DC 0
+Ranchor anchor 0 1G
+Ddut anode 0 OC_ONSEMI_1N5819
 .op
 .end
