@@ -56,7 +56,7 @@ function inferUnit(name: string, kind: WaveformData["kind"]): string {
   if (lower === "frequency") return "Hz";
   if (lower.startsWith("v(") || lower.includes("voltage")) return "V";
   if (lower.startsWith("i(") || lower.includes("current")) return "A";
-  return kind === "op-sweep" ? "" : "V";
+  return kind === "op-sweep" || kind === "dc-sweep" ? "" : "V";
 }
 
 export function paddedRange(values: Iterable<number>): AxisRange {
@@ -192,7 +192,7 @@ class CanvasWaveformViewer implements WaveformViewer {
     this.vectors = toMap(data.vectors);
     this.xName = this.findXName(data.kind);
     this.xValues = this.vectors.get(this.xName) ?? new Float64Array();
-    this.xUnit = data.kind === "tran" ? "s" : data.kind === "ac" ? "Hz" : inferUnit(this.xName, data.kind);
+    this.xUnit = this.options.xUnit ?? (data.kind === "tran" ? "s" : data.kind === "ac" ? "Hz" : inferUnit(this.xName, data.kind));
     if (data.kind === "ac") this.xScale = "log";
     this.validateVectorLengths();
     this.buildTraces();
