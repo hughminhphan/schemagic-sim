@@ -1,0 +1,270 @@
+#!/usr/bin/env python3
+"""OpenCircuit model conveyor command line interface."""
+from __future__ import annotations
+
+import argparse
+import json
+import subprocess
+import sys
+from collections import Counter
+from pathlib import Path
+
+HERE = Path(__file__).resolve().parent
+REPO_ROOT = HERE.parent.parent
+FEEDER_ROOT = HERE.parent / "part-feeder"
+sys.path.insert(0, str(HERE))
+sys.path.insert(0, str(FEEDER_ROOT))
+
+from conveyorlib import (ConveyorError, StateStore, build_luna_prompt, choose_balanced, cross_check,
+                         json_dump, load_and_validate_extraction, safe_stem, top_failure_reasons,
+                         top_recorded_reasons)
+from feederlib import download_datasheets, query_manifest, reviewed_mpns, validate_manifest
+
+DEFAULT_DATA = HERE / "data"
+DEFAULT_CATALOG_DATA = Path("/Users/hughp/Documents/opencircuit/tools/part-feeder/data")
+DEFAULT_QUERY = HERE / "queries" / "proving-50.sql"
+FACTORY = HERE.parent / "model-factory" / "factory.mjs"
+
+
+def parser() -> argparse.ArgumentParser:
+    root = argparse.ArgumentParser(prog="conveyor", description="Bulk fit SQL-selected discrete tranches into unreviewed staging")
+    root.add_argument("--data-dir", type=Path, default=DEFAULT_DATA)
+    root.add_argument("--catalog-data", type=Path, default=DEFAULT_CATALOG_DATA, help="external jlcparts data opened read-only")
+    commands = root.add_subparsers(dest="command", required=True)
+    select = commands.add_parser("select", help="select a balanced high-stock tranche from read-only SQL")
+    select.add_argument("--name", default="proving-50")
+    select.add_argument("--sql-file", type=Path, default=DEFAULT_QUERY)
+    select.add_argument("--stock-min", type=int, default=10000)
+    fetch = commands.add_parser("fetch", help="rate-limited resumable datasheet acquisition")
+    fetch.add_argument("manifest", type=Path)
+    fetch.add_argument("--rate", type=float, default=0.5)
+    fetch.add_argument("--retries", type=int, default=4)
+    jobs = commands.add_parser("jobs", help="write one Luna extraction brief per fetched datasheet")
+    jobs.add_argument("manifest", type=Path)
+    ingest = commands.add_parser("ingest", help="validate and cross-check one Luna JSON response")
+    ingest.add_argument("manifest", type=Path)
+    ingest.add_argument("--lcsc-id", required=True)
+    ingest.add_argument("--response", type=Path, required=True)
+    fit = commands.add_parser("fit", help="run the factory bulk adapter and stage pending-review packages")
+    fit.add_argument("manifest", type=Path)
+    status = commands.add_parser("status", help="show state and fidelity counts")
+    status.add_argument("manifest", type=Path)
+    return root
+
+
+def tranche_name(manifest_path: Path) -> str:
+    return safe_stem(manifest_path.stem)
+
+
+def state_store(data_dir: Path) -> StateStore:
+    return StateStore(data_dir / "conveyor-state.sqlite3")
+
+
+def load_manifest(path: Path) -> dict:
+    manifest = json.loads(path.read_text(encoding="utf-8"))
+    validate_manifest(manifest)
+    return manifest
+
+
+def part_by_id(manifest: dict, lcsc_id: str) -> dict:
+    for part in manifest["parts"]:
+        if part["lcsc_id"].casefold() == lcsc_id.casefold():
+            return part
+    raise ConveyorError(f"No manifest part with LCSC ID {lcsc_id}")
+
+
+def select_command(args) -> int:
+    db = args.catalog_data / "jlcparts.sqlite3"
+    dump = args.catalog_data / "dump.json"
+    if not db.is_file() or not dump.is_file():
+        raise ConveyorError(f"External catalog data is incomplete: {args.catalog_data}")
+    sql = args.sql_file.read_text(encoding="utf-8")
+    source_state = json.loads(dump.read_text(encoding="utf-8"))
+    raw = query_manifest(db, sql, {"stock_min": args.stock_min}, source_state,
+                         REPO_ROOT / "packages" / "model-library" / "models",
+                         f"sql-file:{args.sql_file.name}", limit=None, exclude_reviewed=True)
+    balanced = choose_balanced(raw["parts"])
+    manifest = {**raw, "parts": balanced, "part_count": len(balanced)}
+    manifest["query"]["family_quotas"] = {"diode": 18, "bjt": 16, "mosfet": 16}
+    output = args.data_dir / "tranches" / f"{safe_stem(args.name)}.json"
+    json_dump(output, manifest)
+    store = state_store(args.data_dir)
+    try:
+        store.seed(tranche_name(output), balanced)
+    finally:
+        store.close()
+    print(json.dumps({"manifest": str(output), "part_count": len(balanced), "families": dict(Counter(part["conveyor_family"] for part in balanced))}, indent=2))
+    return 0
+
+
+def fetch_command(args) -> int:
+    manifest = load_manifest(args.manifest)
+    tranche = tranche_name(args.manifest)
+    store = state_store(args.data_dir)
+    store.seed(tranche, manifest["parts"])
+    report = download_datasheets(args.manifest, args.data_dir, requests_per_second=args.rate, retries=args.retries)
+    staged = json.loads((args.data_dir / "staging" / tranche / "manifest.json").read_text(encoding="utf-8"))
+    records = {(item["lcsc_id"], item["mpn"]): item for item in staged["datasheets"]}
+    try:
+        for part in manifest["parts"]:
+            row = store.get(tranche, part["lcsc_id"])
+            if row["state"] not in {"selected", "failed_datasheet_fetched"}:
+                continue
+            record = records[(part["lcsc_id"], part["mpn"])]
+            if record["status"] in {"downloaded", "cached"}:
+                store.transition(tranche, part["lcsc_id"], "datasheet_fetched", datasheet_path=record["path"])
+            else:
+                failure = next((item for item in report["failures"] if item["lcsc_id"] == part["lcsc_id"]), None)
+                store.transition(tranche, part["lcsc_id"], "failed_datasheet_fetched", reason=(failure or {}).get("error", "datasheet download failed"))
+    finally:
+        store.close()
+    print(json.dumps(report, indent=2))
+    return 0 if report["failed"] == 0 else 2
+
+
+def jobs_command(args) -> int:
+    manifest = load_manifest(args.manifest)
+    tranche = tranche_name(args.manifest)
+    staging = args.data_dir / "staging" / tranche
+    jobs = []
+    store = state_store(args.data_dir)
+    try:
+        for part in manifest["parts"]:
+            row = store.get(tranche, part["lcsc_id"])
+            if row["state"] not in {"datasheet_fetched", "failed_extracted"}:
+                continue
+            datasheet = staging / row["datasheet_path"]
+            pack = HERE / "context-packs" / f"{part['conveyor_family']}.json"
+            discrepancies = [row["reason"]] if row["state"] == "failed_extracted" and row["reason"] else []
+            prompt = build_luna_prompt(REPO_ROOT, pack, datasheet.resolve(), part, discrepancies)
+            jobs.append({"lcsc_id": part["lcsc_id"], "mpn": part["mpn"], "family": part["conveyor_family"], "datasheet_path": str(datasheet.resolve()), "response_path": str((staging / "extractions" / f"{safe_stem(part['lcsc_id'])}__{safe_stem(part['mpn'])}.json").resolve()), "prompt": prompt})
+    finally:
+        store.close()
+    output = staging / "extraction-jobs.json"
+    json_dump(output, {"schema_version": "1.0.0", "tranche": tranche, "job_count": len(jobs), "max_concurrency": 4, "jobs": jobs})
+    print(json.dumps({"jobs": str(output), "job_count": len(jobs), "max_concurrency": 4}, indent=2))
+    return 0
+
+
+def ingest_command(args) -> int:
+    manifest = load_manifest(args.manifest)
+    tranche = tranche_name(args.manifest)
+    part = part_by_id(manifest, args.lcsc_id)
+    staging = args.data_dir / "staging" / tranche
+    destination = staging / "extractions" / f"{safe_stem(part['lcsc_id'])}__{safe_stem(part['mpn'])}.json"
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    destination.write_bytes(args.response.read_bytes())
+    store = state_store(args.data_dir)
+    try:
+        row = store.get(tranche, part["lcsc_id"])
+        extraction_attempts = store.failure_attempts(tranche, part["lcsc_id"], "extracted")
+        payload = load_and_validate_extraction(destination, HERE / "schemas" / f"{part['conveyor_family']}.schema.json", {"mpn": part["mpn"], "manufacturer": part["manufacturer"], "family": part["conveyor_family"]})
+        discrepancies = cross_check(payload, part.get("seed_hints", []))
+        if discrepancies and extraction_attempts < 1:
+            reason = "; ".join(discrepancies)
+            store.transition(tranche, part["lcsc_id"], "failed_extracted", reason=reason, extraction_path=str(destination.relative_to(staging)))
+            print(json.dumps({"status": "retry", "lcsc_id": part["lcsc_id"], "discrepancies": discrepancies}, indent=2))
+            return 2
+        demotion = None
+        if discrepancies:
+            demotion = "cross-validation failed after one retry: " + "; ".join(discrepancies)
+        elif not payload["usable_curves"]:
+            demotion = payload.get("omission_reason") or "datasheet lacks usable curves"
+        store.transition(tranche, part["lcsc_id"], "extracted", reason=demotion, extraction_path=str(destination.relative_to(staging)), fidelity="F1" if demotion else None)
+        print(json.dumps({"status": "accepted", "lcsc_id": part["lcsc_id"], "f2_candidate": demotion is None, "demotion_reason": demotion}, indent=2))
+        return 0
+    except ConveyorError as error:
+        extraction_attempts = store.failure_attempts(tranche, part["lcsc_id"], "extracted")
+        store.transition(tranche, part["lcsc_id"], "failed_extracted", reason=str(error), extraction_path=str(destination.relative_to(staging)))
+        print(json.dumps({"status": "retry" if extraction_attempts < 1 else "failed", "error": str(error)}, indent=2))
+        return 2
+    finally:
+        store.close()
+
+
+def fit_command(args) -> int:
+    manifest = load_manifest(args.manifest)
+    tranche = tranche_name(args.manifest)
+    staging = args.data_dir / "staging" / tranche
+    batches = staging / "factory-batches"
+    packages_root = staging
+    parked_path = staging / "family-parked.json"
+    previous_parking = json.loads(parked_path.read_text(encoding="utf-8")) if parked_path.is_file() else {}
+    parked: dict[str, str] = dict(previous_parking.get("parked", {}))
+    f2_failures = Counter(previous_parking.get("f2_gate_failures", {}))
+    results_path = staging / "factory-results.json"
+    previous_results = json.loads(results_path.read_text(encoding="utf-8")) if results_path.is_file() else {}
+    manifest_id_by_mpn = {part["mpn"]: part["lcsc_id"] for part in manifest["parts"]}
+    results_by_id = {(item.get("lcsc_id") or manifest_id_by_mpn.get(item["mpn"])): item for item in previous_results.get("results", [])}
+    staged_this_run = 0
+    store = state_store(args.data_dir)
+    try:
+        for part in manifest["parts"]:
+            row = store.get(tranche, part["lcsc_id"])
+            if row["state"] in {"fitted", "staged"}:
+                continue
+            if row["state"] != "extracted":
+                continue
+            extraction_path = staging / row["extraction_path"] if row["extraction_path"] else None
+            f2_candidate = row["fidelity"] != "F1" and part["conveyor_family"] not in parked
+            demotion_reason = row["reason"]
+            if not f2_candidate and part["conveyor_family"] in parked:
+                parking_reason = parked[part["conveyor_family"]]
+                demotion_reason = "; ".join(reason for reason in (demotion_reason, parking_reason) if reason)
+            batch_part = {**part, "datasheet_path": str((staging / row["datasheet_path"]).resolve()), "extraction_path": str(extraction_path.resolve()) if extraction_path else None, "force_f1": not f2_candidate, "allow_f1_demotion": True, "demotion_reason": demotion_reason}
+            batch = {"schema_version": "1.0.0", "kind": "opencircuit-conveyor-batch", "parts": [batch_part]}
+            batch_path = batches / f"{safe_stem(part['lcsc_id'])}.json"
+            json_dump(batch_path, batch)
+            completed = subprocess.run(["node", str(FACTORY), "bulk", "--manifest", str(batch_path), "--staging-root", str(packages_root)], cwd=REPO_ROOT, text=True, capture_output=True, timeout=120)
+            if completed.returncode not in {0, 2}:
+                store.transition(tranche, part["lcsc_id"], "failed_fitted", reason=(completed.stderr or completed.stdout).strip())
+                continue
+            try:
+                one = json.loads(completed.stdout)[0]
+            except (json.JSONDecodeError, IndexError) as error:
+                store.transition(tranche, part["lcsc_id"], "failed_fitted", reason=f"factory returned invalid result: {error}")
+                continue
+            if one["status"] == "failed":
+                store.transition(tranche, part["lcsc_id"], "failed_fitted", reason=one.get("reason", "factory fit failed"))
+                continue
+            reason = one.get("demotion_reason") or demotion_reason
+            if f2_candidate and one["fidelity"] == "F1":
+                f2_failures[part["conveyor_family"]] += 1
+                if f2_failures[part["conveyor_family"]] >= 2:
+                    parked[part["conveyor_family"]] = f"family parked after two F2 fit-gate failures; later parts staged F1 ({reason})"
+            store.transition(tranche, part["lcsc_id"], "fitted", fidelity=one["fidelity"], reason=reason, package_path=str(Path(one["package_path"]).relative_to(staging)))
+            store.transition(tranche, part["lcsc_id"], "staged", fidelity=one["fidelity"], reason=reason, package_path=str(Path(one["package_path"]).relative_to(staging)))
+            results_by_id[part["lcsc_id"]] = one
+            staged_this_run += 1
+    finally:
+        rows = store.rows(tranche)
+        store.close()
+    results = [results_by_id[part["lcsc_id"]] for part in manifest["parts"] if part["lcsc_id"] in results_by_id]
+    json_dump(staging / "family-parked.json", {"schema_version": "1.0.0", "parked": parked, "f2_gate_failures": dict(f2_failures)})
+    json_dump(results_path, {"schema_version": "1.0.0", "results": results})
+    print(json.dumps({"staged": staged_this_run, "total_staged": len(results), "fidelity": dict(Counter(item.get("fidelity") for item in results)), "states": dict(Counter(row["state"] for row in rows)), "parked": parked}, indent=2))
+    return 0
+
+
+def status_command(args) -> int:
+    tranche = tranche_name(args.manifest)
+    store = state_store(args.data_dir)
+    try:
+        rows = store.rows(tranche)
+    finally:
+        store.close()
+    print(json.dumps({"tranche": tranche, "states": dict(Counter(row["state"] for row in rows)), "fidelity": dict(Counter(row["fidelity"] for row in rows if row["fidelity"])), "top_failure_reasons": top_failure_reasons(rows), "top_recorded_reasons": top_recorded_reasons(rows)}, indent=2))
+    return 0
+
+
+def main(argv=None) -> int:
+    args = parser().parse_args(argv)
+    try:
+        return {"select": select_command, "fetch": fetch_command, "jobs": jobs_command, "ingest": ingest_command, "fit": fit_command, "status": status_command}[args.command](args)
+    except (ConveyorError, OSError, json.JSONDecodeError, subprocess.SubprocessError) as error:
+        print(f"conveyor: {error}", file=sys.stderr)
+        return 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

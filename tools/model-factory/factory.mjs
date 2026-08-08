@@ -5,6 +5,7 @@ import path from "node:path";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { getPart } from "./lib/parts.mjs";
+import { runBulkManifest } from "./lib/bulk-adapter.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(here, "../..");
@@ -33,12 +34,20 @@ export function assertFiniteNumbers(value, trail = "root") {
 function parseArgs(argv) {
   const [stage, ...rest] = argv;
   let mpn;
+  let manifest;
+  let stagingRoot;
   for (let index = 0; index < rest.length; index += 1) {
     if (rest[index] === "--mpn") mpn = rest[++index];
+    else if (rest[index] === "--manifest") manifest = rest[++index];
+    else if (rest[index] === "--staging-root") stagingRoot = rest[++index];
     else throw new Error(`Unknown argument: ${rest[index]}`);
   }
-  const stages = ["resolve", "acquire", "extract", "fit", "generate", "testgen", "validate", "card", "all"];
+  const stages = ["resolve", "acquire", "extract", "fit", "generate", "testgen", "validate", "card", "all", "bulk"];
   if (!stages.includes(stage)) throw new Error(`Stage must be one of: ${stages.join(", ")}`);
+  if (stage === "bulk") {
+    if (!manifest || !stagingRoot) throw new Error("bulk requires --manifest and --staging-root");
+    return { stage, manifest, stagingRoot };
+  }
   if (!mpn) throw new Error("--mpn is required");
   return { stage, mpn };
 }
@@ -1137,7 +1146,14 @@ const stageFunctions = {
 };
 
 async function main() {
-  const { stage, mpn } = parseArgs(process.argv.slice(2));
+  const args = parseArgs(process.argv.slice(2));
+  if (args.stage === "bulk") {
+    const results = runBulkManifest(path.resolve(args.manifest), path.resolve(args.stagingRoot));
+    console.log(json(results));
+    if (results.some((result) => result.status === "failed")) process.exitCode = 2;
+    return;
+  }
+  const { stage, mpn } = args;
   const ctx = context(mpn);
   if (stage === "all") {
     for (const name of ["resolve", "acquire", "extract", "fit", "generate", "testgen", "validate", "card"]) {
