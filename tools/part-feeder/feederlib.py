@@ -145,7 +145,13 @@ def remote_archive_id(files: Sequence[RemoteFile]) -> str:
     return hashlib.sha256(material.encode()).hexdigest()
 
 
-def download_archive(files: Sequence[RemoteFile], directory: Path, client: HttpClient, retries: int = 4) -> None:
+def download_archive(
+    files: Sequence[RemoteFile],
+    directory: Path,
+    client: HttpClient,
+    retries: int = 4,
+    force: bool = False,
+) -> None:
     directory.mkdir(parents=True, exist_ok=True)
     expected = {item.name for item in files}
     for stale in directory.glob("cache.z*"):
@@ -153,7 +159,7 @@ def download_archive(files: Sequence[RemoteFile], directory: Path, client: HttpC
             stale.unlink()
     for item in files:
         destination = directory / item.name
-        if destination.exists() and destination.stat().st_size == item.size:
+        if not force and destination.exists() and destination.stat().st_size == item.size:
             continue
         retry(lambda item=item, destination=destination: client.download(item.url, destination), retries, 1.0)
         if destination.stat().st_size != item.size:
@@ -286,7 +292,9 @@ def fetch_database(data_dir: Path, refresh: bool = False, client: HttpClient | N
         return {**existing, "status": "current"}
 
     downloads = data_dir / "downloads"
-    download_archive(files, downloads, client)
+    # A new publication can retain the 50 MB size of every numbered segment.
+    # Redownload the complete set after an identity change to avoid mixing dumps.
+    download_archive(files, downloads, client, force=True)
     joined = downloads / "cache.full.zip"
     reassemble_split_zip(downloads / "cache.zip", joined)
     extract_database(joined, db_path)
