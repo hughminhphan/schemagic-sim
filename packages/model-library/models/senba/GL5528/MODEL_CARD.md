@@ -35,7 +35,7 @@
 | --- | ---: | --- |
 | R10 | 2.00000000e+4 | published maximum selected as conservative F1 bound |
 | GAMMA | 7.00000000e-1 | direct typical transcription |
-| LUX_FLOOR | 1.00000000e-3 | supported-region floor |
+| LUX_FLOOR | 1.00000000e+1 | lowest cited illuminance in supported region |
 
 ## Fitted versus datasheet
 
