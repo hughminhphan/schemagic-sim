@@ -416,3 +416,13 @@ Seventeen packages pass the final independent review and were stamped. `PN2222A`
 | 1N5819 | PASS | `forward_01.cir` and `forward_02.cir` compare PASS. All 16 stored F2 checks have datasheet citations at archetype thresholds, including p. 2 maximum rows and p. 5 to p. 6 curve checks. In-region forward probe is 0.22774362292593903 V at 20 mA. |
 
 No model, test, fact, source, fitted evidence, model card, or stored validation result was edited. Only reviewer and validation-date fields were stamped for the 17 passing packages. `PN2222A` fields were left pending. The 36 fresh comparison reports were written only under the session scratchpad.
+
+## 2026-08-08: PN2222A re-review
+
+Reviewer: `luna independent reviewer (FINAL-REVIEW)`
+
+`PN2222A` passes the re-review after refit commit `fb8cf74`. `validate-package.mjs` passed before stamping and was re-run after stamping. Fresh `dc_gain.cir` and `saturation.cir` both passed `compare.mjs` against native ngspice-46, with maximum native/WASM relative deltas of `1.7381039286425454e-11` and `2.6843900732338027e-16` respectively. Stored checks reproduce exactly: hFE values `37.93798437733857`, `56.09371895536609`, `80.80731553153213`, and `107.8790815537175`; saturation values `VCE(sat) = 0.28944160411420866 V` and `0.8757064271024013 V`, and `VBE(sat) = 0.8271696693377388 V` and `0.9890146767879473 V`. All 9 of 9 expectations pass.
+
+The 20 fitted parameters match the shipped `.model` within numeric formatting tolerance, and all 20 appear in `MODEL_CARD.md`. An independent native in-region probe at VCE = 5 V and IB = 100 uA produced IC = 0.007314478635455056 A and VBE = 0.6819949324615096 V, inside the declared 0.1 mA to 0.5 A and 0 V to 40 V region.
+
+Verdict: PASS. PN2222A reviewer metadata is stamped; no model, test, fact, source, fitted evidence, model card, or stored validation result was edited.
