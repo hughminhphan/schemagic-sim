@@ -544,10 +544,12 @@ class RateLimiter:
         self.next_allowed = now + self.interval
 
 
-def validate_pdf(path: Path, content_type: str = "") -> None:
-    if content_type and "pdf" not in content_type.casefold() and "octet-stream" not in content_type.casefold():
+def validate_pdf(path: Path, content_type: str | None = None) -> None:
+    if content_type is not None and (
+        not content_type or ("pdf" not in content_type.casefold() and "octet-stream" not in content_type.casefold())
+    ):
         path.unlink(missing_ok=True)
-        raise FeederError(f"Unexpected datasheet Content-Type: {content_type}")
+        raise FeederError(f"Unexpected datasheet Content-Type: {content_type or 'missing'}")
     with path.open("rb") as handle:
         signature = handle.read(5)
     if signature != b"%PDF-":

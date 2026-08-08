@@ -13,12 +13,14 @@ from pathlib import Path
 
 from feederlib import (
     CANNED_QUERIES,
+    FeederError,
     HttpClient,
     RateLimiter,
     download_datasheets,
     query_manifest,
     reassemble_split_zip,
     validate_manifest,
+    validate_pdf,
 )
 
 
@@ -108,6 +110,16 @@ class RateLimiterTest(unittest.TestCase):
         limiter.wait()
         limiter.wait()
         self.assertEqual(sleeps, [0.5, 0.5])
+
+
+class PdfValidationTest(unittest.TestCase):
+    def test_rejects_wrong_content_type_even_with_pdf_signature(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            path = Path(temporary) / "datasheet.pdf"
+            path.write_bytes(b"%PDF-1.7\nfixture")
+            with self.assertRaises(FeederError):
+                validate_pdf(path, "text/html")
+            self.assertFalse(path.exists())
 
 
 class FakePdfClient:
