@@ -1,8 +1,9 @@
 import { canonicalizeCircuit, fnv1a64 } from "./canonical";
 import { dcSweepSourceName, inspectDCSweepConfig } from "./dc-sweep";
+import { inspectNoiseConfig } from "./noise";
 import { componentPinPoints, parseEngineering } from "./parts";
 import { assertValidCircuit } from "./validation";
-import type { AnalysisMode, CircuitComponent, CircuitDocument, GeneratedNetlist, NetlistLine, Point } from "./types";
+import type { AnalysisMode, CircuitComponent, CircuitDocument, CircuitProbe, GeneratedNetlist, NetlistLine, Point } from "./types";
 
 const MODELS = {
   npn: ".model OC_GENERIC_NPN NPN(IS=1e-14 BF=100 VAF=100)",
@@ -21,6 +22,7 @@ const spice=(value:number|string|undefined,fallback:number|string):string=>typeo
 const param=(c:CircuitComponent,key:string,fallback:number|string):string=>spice(c.params?.[key] as number|string|undefined,fallback);
 const boolParam=(c:CircuitComponent,key:string,fallback=false):boolean=>typeof c.params?.[key]==="boolean"?c.params[key] as boolean:fallback;
 function add(lines:string[],map:NetlistLine[],text:string,entry:Omit<NetlistLine,"line">):void { for(const part of text.split("\n")){lines.push(entry.componentId?`${part} $ component:${entry.componentId}`:part);map.push({line:lines.length,...entry});} }
+function probeNode(probe:CircuitProbe,componentNodes:Record<string,string[]>,wireNodes:Record<string,string>):string|undefined { const pin=probe.target.componentPin;return probe.target.wire?wireNodes[probe.target.wire]:pin?componentNodes[pin[0]]?.[pin[1]]:probe.target.node; }
 
 export function generateNetlist(document:CircuitDocument,requestedMode?:AnalysisMode):GeneratedNetlist {
   assertValidCircuit(document);
@@ -38,16 +40,16 @@ export function generateNetlist(document:CircuitDocument,requestedMode?:Analysis
   const wireNodes=Object.fromEntries(wires.map((wire)=>[wire.id,nodeAt(wire.points[0]!) ]));
   const documentHash=fnv1a64(canonicalizeCircuit(document,false)); const lines:string[]=[];const lineMap:NetlistLine[]=[];const componentCurrents:Record<string,string>={};
   add(lines,lineMap,`scheMAGIC Simulator document ${documentHash}`,{stage:"header"});add(lines,lineMap,`* document-hash ${documentHash}`,{stage:"header"});
-  const mode=requestedMode??document.sim.mode;const used=new Set<string>();
-  for(const c of components){if(c.type==="ground")continue;const n=componentNodes[c.id]??[];const s=suffix(c.id);let line="";let current="";
+  const mode=requestedMode??document.sim.mode;const noiseInputId=mode==="noise"?document.sim.noise?.inputSourceId:undefined;const used=new Set<string>();
+  for(const c of components){if(c.type==="ground")continue;const n=componentNodes[c.id]??[];const s=suffix(c.id);let line="";let current="";const noiseReference=c.id===noiseInputId?" AC 1":"";
     switch(c.type){
       case "resistor": line=`R${s} ${n[0]} ${n[1]} ${spice(c.value,"1k")}`;current=`@r${s.toLowerCase()}[i]`;break;
       case "capacitor": line=`C${s} ${n[0]} ${n[1]} ${spice(c.value,"100n")}`;current=`@c${s.toLowerCase()}[i]`;break;
       case "inductor": line=`L${s} ${n[0]} ${n[1]} ${spice(c.value,"1m")}`;current=`@l${s.toLowerCase()}[i]`;break;
-      case "vsource": line=`V${s} ${n[0]} ${n[1]} DC ${spice(c.value,5)}${mode==="ac"?` AC ${param(c,"ac",1)}`:""}`;current=`v${s.toLowerCase()}#branch`;break;
-      case "vsource_pulse": line=`V${s} ${n[0]} ${n[1]} PULSE(${param(c,"v1",0)} ${param(c,"v2",c.value??5)} ${param(c,"delay","1m")} ${param(c,"rise","10u")} ${param(c,"fall","10u")} ${param(c,"width","4m")} ${param(c,"period","10m")})`;current=`v${s.toLowerCase()}#branch`;break;
-      case "vsource_sine": line=`V${s} ${n[0]} ${n[1]} SIN(${param(c,"offset",0)} ${spice(c.value,1)} ${param(c,"frequency","1k")})${mode==="ac"?` AC ${param(c,"ac",1)}`:""}`;current=`v${s.toLowerCase()}#branch`;break;
-      case "isource": line=`I${s} ${n[0]} ${n[1]} DC ${spice(c.value,"1m")}`;current=`@i${s.toLowerCase()}[i]`;break;
+      case "vsource": line=`V${s} ${n[0]} ${n[1]} DC ${spice(c.value,5)}${mode==="ac"?` AC ${param(c,"ac",1)}`:noiseReference}`;current=`v${s.toLowerCase()}#branch`;break;
+      case "vsource_pulse": line=`V${s} ${n[0]} ${n[1]} PULSE(${param(c,"v1",0)} ${param(c,"v2",c.value??5)} ${param(c,"delay","1m")} ${param(c,"rise","10u")} ${param(c,"fall","10u")} ${param(c,"width","4m")} ${param(c,"period","10m")})${noiseReference}`;current=`v${s.toLowerCase()}#branch`;break;
+      case "vsource_sine": line=`V${s} ${n[0]} ${n[1]} SIN(${param(c,"offset",0)} ${spice(c.value,1)} ${param(c,"frequency","1k")})${mode==="ac"?` AC ${param(c,"ac",1)}`:noiseReference}`;current=`v${s.toLowerCase()}#branch`;break;
+      case "isource": line=`I${s} ${n[0]} ${n[1]} DC ${spice(c.value,"1m")}${noiseReference}`;current=`@i${s.toLowerCase()}[i]`;break;
       case "switch_spst": line=`R${s} ${n[0]} ${n[1]} ${boolParam(c,"closed")?"1m":"1G"}`;current=`@r${s.toLowerCase()}[i]`;break;
       case "potentiometer": {const total=parseEngineering(c.value,10000);const t=Math.min(.995,Math.max(.005,Number(c.params?.t??.5)));add(lines,lineMap,`R${s}T ${n[0]} ${n[1]} ${Math.max(.001,total*(1-t)).toPrecision(12)}\nR${s}B ${n[1]} ${n[2]} ${Math.max(.001,total*t).toPrecision(12)}`,{stage:"component",componentId:c.id});componentCurrents[c.id]=`@r${s.toLowerCase()}t[i]`;continue;}
       case "diode": line=`D${s} ${n[0]} ${n[1]} OC_GENERIC_D`;current=`@d${s.toLowerCase()}[id]`;used.add("diode");break;
@@ -64,6 +66,11 @@ export function generateNetlist(document:CircuitDocument,requestedMode?:Analysis
   const currents=[...new Set(Object.values(componentCurrents))];add(lines,lineMap,`.save all ${currents.join(" ")}`,{stage:"analysis"});
   if(mode==="tran"){const t=document.sim.tran??{tstop:.01,tstep:.00002,maxstep:.00005};add(lines,lineMap,`.tran ${spice(t.tstep,.00002)} ${spice(t.tstop,.01)} 0 ${spice(t.maxstep,.00005)}`,{stage:"analysis"});}
   else if(mode==="ac"){const ac=document.sim.ac??{fstart:10,fstop:1e6,pointsPerDecade:30,sweep:"dec" as const};add(lines,lineMap,`.ac dec ${Math.max(1,Math.round(ac.pointsPerDecade))} ${spice(ac.fstart,10)} ${spice(ac.fstop,1e6)}`,{stage:"analysis"});}
+  else if(mode==="noise"){
+    const config=document.sim.noise;const inspected=inspectNoiseConfig(document,config);if(!config||!inspected.shape)throw new Error(inspected.issues[0]?.message??"Noise settings are invalid");
+    const outputProbe=document.probes.find(probe=>probe.id===config.outputProbeId)!;const outputNode=probeNode(outputProbe,componentNodes,wireNodes);if(!outputNode||outputNode==="0")throw new Error("Choose an output voltage probe that is not connected to ground");
+    const input=components.find(component=>component.id===config.inputSourceId)!;add(lines,lineMap,`.temp ${spice(config.temperatureC,27)}`,{stage:"analysis"});add(lines,lineMap,`.noise V(${outputNode}) ${dcSweepSourceName(input)} dec ${Math.max(1,Math.round(config.pointsPerDecade))} ${spice(config.fstart,10)} ${spice(config.fstop,1e6)}`,{stage:"analysis"});
+  }
   else if(mode==="dc-sweep"){
     const config=document.sim.dcSweep;const inspected=inspectDCSweepConfig(document,config);if(!config||!inspected.shape)throw new Error(inspected.issues[0]?.message??"DC sweep settings are invalid");
     const primary=components.find(component=>component.id===config.sourceId)!;let command=`.dc ${dcSweepSourceName(primary)} ${spice(config.start,0)} ${spice(config.stop,1)} ${spice(config.step,.1)}`;

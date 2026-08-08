@@ -30,8 +30,14 @@ for (const name of names) {
   if (!header.includes("Binary:")) throw new Error(`${name} rawfile is not binary`);
 }
 
+const noise = await engine.runNoiseNetlist(`noise smoke\nV1 in 0 DC 1 AC 1\nR1 in out 1k\nR2 out 0 1k\n.temp 27\n.noise V(out) V1 dec 10 10 100k\n.end\n`);
+for (const [label, rawfile] of [["noise density", noise.rawfile], ["integrated noise", noise.integratedRawfile]]) {
+  const header = Buffer.from(rawfile.subarray(0, Math.min(rawfile.byteLength, 4096))).toString("latin1");
+  if (!header.includes("Binary:")) throw new Error(`${label} rawfile is not binary`);
+}
+
 const op = await readFile(join(FIXTURES, names[0]), "utf8");
 await engine.runNetlist(op);
 await engine.reset();
 await engine.runNetlist(op);
-console.log(`smoke PASS: ngspice-46, KLU, 3 analyses, reset, repeated-run reuse, ${engine.memoryBytes} heap bytes`);
+console.log(`smoke PASS: ngspice-46, KLU, 4 analyses including dual-plot noise, reset, repeated-run reuse, ${engine.memoryBytes} heap bytes`);

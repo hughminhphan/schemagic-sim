@@ -1,5 +1,5 @@
 import { dcSweepRangePointCount } from "@opencircuit/circuit-schema";
-import type { DCSweepResultMetadata, DCSweepRunSpec, VectorMeta } from "./types";
+import type { DCSweepResultMetadata, DCSweepRunSpec, NoiseResultMetadata, NoiseRunSpec, VectorMeta } from "./types";
 
 const DEFAULT_MAX_RAWFILE_BYTES = 128 * 1024 * 1024;
 const DEFAULT_MAX_SAMPLES = 1_000_000;
@@ -38,6 +38,10 @@ function classifyVariable(type: string): VectorMeta["kind"] {
 
 export interface ParsedDCSweepRawfile extends ParsedRawfile {
   sweep: DCSweepResultMetadata;
+}
+
+export interface ParsedNoiseRawfile extends ParsedRawfile {
+  noise: NoiseResultMetadata;
 }
 
 export function parseBinaryRawfile(bytes: Uint8Array, limits: RawfileLimits = {}): ParsedRawfile {
@@ -112,6 +116,13 @@ export function parseBinaryRawfile(bytes: Uint8Array, limits: RawfileLimits = {}
   return { vectors, buffers, numPoints, complex, bytes: bytes.byteLength };
 }
 
+function vectorValues(parsed: ParsedRawfile, name: string): Float64Array {
+  const vector = parsed.vectors.find((candidate) => candidate.name === name);
+  const buffer = vector ? parsed.buffers[vector.bufferIndex] : undefined;
+  if (!vector || !buffer) throw new Error(`Noise rawfile is missing ${name}`);
+  return new Float64Array(buffer);
+}
+
 export function parseDCSweepRawfile(bytes: Uint8Array, sweep: DCSweepRunSpec, limits: RawfileLimits = {}): ParsedDCSweepRawfile {
   const parsed = parseBinaryRawfile(bytes, limits);
   if (parsed.complex) throw new Error("DC sweep rawfile must contain real vectors");
@@ -138,6 +149,61 @@ export function parseDCSweepRawfile(bytes: Uint8Array, sweep: DCSweepRunSpec, li
       primary: sweep.primary,
       ...(sweep.secondary ? { secondary: sweep.secondary } : {}),
       segments,
+    },
+  };
+}
+
+export function parseNoiseRawfiles(
+  densityBytes: Uint8Array,
+  integratedBytes: Uint8Array,
+  spec: NoiseRunSpec,
+  limits: RawfileLimits = {},
+): ParsedNoiseRawfile {
+  const density = parseBinaryRawfile(densityBytes, limits);
+  const integrated = parseBinaryRawfile(integratedBytes, limits);
+  if (density.complex || integrated.complex) throw new Error("Noise rawfiles must contain real vectors");
+  if (integrated.numPoints !== 1) throw new Error(`Integrated noise rawfile returned ${integrated.numPoints} points, expected 1`);
+  const frequency = vectorValues(density, "frequency");
+  const inputDensity = vectorValues(density, "inoise_spectrum");
+  const outputDensity = vectorValues(density, "onoise_spectrum");
+  if (frequency.some((value) => !Number.isFinite(value) || value <= 0)) throw new Error("Noise frequency vector must contain positive finite values");
+  if (inputDensity.some((value) => !Number.isFinite(value) || value < 0) || outputDensity.some((value) => !Number.isFinite(value) || value < 0)) {
+    throw new Error("Noise spectral density vectors must contain non-negative finite values");
+  }
+  const outputRms = vectorValues(integrated, "v(onoise_total)")[0];
+  const inputRms = vectorValues(integrated, "v(inoise_total)")[0];
+  if (!Number.isFinite(outputRms) || outputRms! < 0 || !Number.isFinite(inputRms) || inputRms! < 0) throw new Error("Integrated noise totals are invalid");
+  const vectors = density.vectors.map((vector) => vector.name === "onoise_spectrum"
+    ? { ...vector, kind: "output-noise-density" as const }
+    : vector.name === "inoise_spectrum"
+      ? { ...vector, kind: "input-noise-density" as const }
+      : vector);
+  const inputRmsUnit = spec.input.unit;
+  return {
+    ...density,
+    vectors,
+    bytes: density.bytes + integrated.bytes,
+    noise: {
+      frequencyVector: "frequency",
+      outputVector: "onoise_spectrum",
+      inputVector: "inoise_spectrum",
+      output: {
+        ...spec.output,
+        densityUnit: "V/√Hz",
+        total: { rms: outputRms!, meanSquare: outputRms! ** 2, rmsUnit: "V", meanSquareUnit: "V²" },
+      },
+      input: {
+        ...spec.input,
+        densityUnit: inputRmsUnit === "V" ? "V/√Hz" : "A/√Hz",
+        total: {
+          rms: inputRms!,
+          meanSquare: inputRms! ** 2,
+          rmsUnit: inputRmsUnit,
+          meanSquareUnit: inputRmsUnit === "V" ? "V²" : "A²",
+        },
+      },
+      frequency: spec.frequency,
+      temperatureC: spec.temperatureC,
     },
   };
 }

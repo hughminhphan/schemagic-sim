@@ -47,6 +47,29 @@ describe("generateNetlist", () => {
     expect(generateNetlist(swept).netlist).toContain(".dc V1 0 5 0.1");
   });
 
+  it("generates noise analysis with an explicit output, input reference and temperature", () => {
+    const noise: CircuitDocument = {
+      ...structuredClone(document),
+      probes: [{ id: "p1", kind: "voltage", target: { wire: "w1" } }],
+      sim: {
+        mode: "noise",
+        noise: {
+          outputProbeId: "p1",
+          inputSourceId: "c1",
+          fstart: 10,
+          fstop: 100_000,
+          pointsPerDecade: 20,
+          sweep: "dec",
+          temperatureC: 27,
+        },
+      },
+    };
+    const netlist = generateNetlist(noise).netlist;
+    expect(netlist).toContain("V1 n1 0 DC 5 AC 1");
+    expect(netlist).toContain(".temp 27");
+    expect(netlist).toContain(".noise V(n1) V1 dec 20 10 100000");
+  });
+
   it("generates a two-source stepped DC sweep", () => {
     const swept: CircuitDocument = {
       ...structuredClone(document),
