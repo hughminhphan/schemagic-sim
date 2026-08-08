@@ -109,6 +109,10 @@ Simulation stays inside a dedicated Worker so synchronous solver work does not b
 - Imported third-party SPICE models are sanitized and visibly marked unverified. Their electrical accuracy and redistribution rights remain the user's responsibility.
 - Simulation is not a substitute for prototyping, component qualification, or safety review.
 
+## Roadmap
+
+The feature roadmap lives in [docs/ROADMAP.md](docs/ROADMAP.md), and each item is tracked as a [`roadmap` issue](https://github.com/hughminhphan/schemagic-sim/issues?q=is%3Aissue+label%3Aroadmap). Near-term work is grouped under the [v0.2 milestone](https://github.com/hughminhphan/schemagic-sim/milestone/1). If a roadmap item matters to your work, comment on its issue with the circuit, use case, and evidence behind the request.
+
 ## Licence
 
 The repository has three licensing layers:
