@@ -6,7 +6,7 @@
 - Description: Low-voltage audio power amplifier
 - Electrical family: other
 - Fidelity tier: F2, datasheet-constrained
-- Independent reviewer: pending-review
+- Independent reviewer: gpt-5.6-sol independent reviewer (P5)
 
 ## Provenance
 
@@ -74,7 +74,7 @@ Native and WASM agreement: all 6 benches passed. Worst reported relative delta w
 - GAIN_CL is an explicit subcircuit parameter. Pins 1 and 8 retain the published 1.5-kohm internal path, but the model does not infer gain from an externally connected capacitor or resistor; callers select gain explicitly from 20 to 200.
 - The manually digitized Figure 6-3 and Figure 6-4 typical curves establish F2 only for closed-loop gain, bandwidth, output swing, and current limiting at 25 degC. Guaranteed output-power rows remain separately typed and are not treated as typical fit targets.
 - The bypass pin is a first-order divider node. PSRR versus bypass capacitance, distortion, crossover behavior, clipping harmonics, speaker back-EMF, thermal limiting, short-circuit heating, package parasitics, noise, temperature behavior, and production spread are omitted.
-- The output stage is a smooth compact current limiter with one dominant pole; it is not a transistor-level reproduction. Independent review remains pending-review.
+- The output stage is a smooth compact current limiter with one dominant pole; it is not a transistor-level reproduction. P5 independent review passed F2: all six native and WASM benches reproduced, cited gain-frequency and output-swing fits stayed within 4.75 percent, and the caller-selected GAIN_CL limitation is disclosed.
 
 ## Licence
 

@@ -6,7 +6,7 @@
 - Description: Dual operational transconductance amplifier with linearizing diodes and buffers
 - Electrical family: other
 - Fidelity tier: F2, datasheet-constrained
-- Independent reviewer: pending-review
+- Independent reviewer: gpt-5.6-sol independent reviewer (P5)
 
 ## Provenance
 
@@ -77,7 +77,7 @@ Native and WASM agreement: all 7 benches passed. Worst reported relative delta w
 - Both OTA channels, linearizing-diode pins, bias-current pins, and Darlington buffers are present. Channel matching, crosstalk, shared-supply modulation, package parasitics, and process spread are omitted.
 - The OTA uses the cited differential-pair equation with a fitted scale factor. Linearizing diodes are represented as junctions, but externally biased diode linearization, distortion reduction, and the full large-signal transistor transfer are not curve-fitted.
 - The amplifier-bias input uses a fitted compact voltage-plus-resistance law rather than an internal current mirror. Output resistance and buffer output resistance are held compact defaults; the buffer has a first-order Darlington drop and smooth 20 mA limit.
-- Slew rate, output noise, input capacitance, output capacitance, leakage, temperature curves, overload recovery, supply failure, self-heating, and production spread are omitted or metadata-only. Independent review remains pending-review.
+- Slew rate, output noise, input capacitance, output capacitance, leakage, temperature curves, overload recovery, supply failure, self-heating, and production spread are omitted or metadata-only. P5 independent review passed F2: seven native and WASM benches and an independent 50 uA bias probe passed; bias-pin checks were tightened to an 80 mV absolute tolerance so rail-referenced values cannot mask physical error.
 
 ## Licence
 

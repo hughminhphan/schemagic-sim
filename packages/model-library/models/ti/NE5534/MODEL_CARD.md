@@ -6,7 +6,7 @@
 - Description: Low-noise high-speed single operational amplifier
 - Electrical family: opamp
 - Fidelity tier: F1, datasheet-constrained
-- Independent reviewer: pending-review
+- Independent reviewer: gpt-5.6-sol independent reviewer (P5)
 
 ## Provenance
 
@@ -81,7 +81,7 @@ Native and WASM agreement: all 7 benches passed. Worst reported relative delta w
 - The package is represented as one reusable amplifier unit; inter-channel crosstalk, shared-supply interactions, unused channels, compensation/offset-null pins, and package parasitics are not modelled.
 - PSRR and CMRR are frequency-independent; distortion, overload recovery, common-mode failure, protection behavior, current-noise density, flicker noise, self-heating, temperature coefficients, and production spread are omitted.
 - The two-pole frequency response and slew limiter are compact approximations. Internal compensation capacitors and numerical resistors are held archetype defaults.
-- Independent review remains pending-review.
+- P5 independent review passed F1: table-constrained limits, intermediate-supply follower behavior, source facts, and all seven native and WASM benches were verified.
 
 ## Licence
 

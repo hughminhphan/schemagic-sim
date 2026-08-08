@@ -7,7 +7,7 @@ OpenCircuit factory test: GL5528 transfer at 100 lux
 * Archetype: sensor_behavioral illuminance power law
 * Node order: P N
 .subckt OC_SENBA_GL5528 P N params: LUX=10
-.param R10=2.0000000000e4 GAMMA=7.0000000000e-1 LUX_FLOOR=1.0000000000e-3
+.param R10=2.0000000000e4 GAMMA=7.0000000000e-1 LUX_FLOOR=1.0000000000e1
 RLDR P N R={max(R10*pow(max(LUX,LUX_FLOOR)/10,-GAMMA),1e-4)}
 .ends OC_SENBA_GL5528
 

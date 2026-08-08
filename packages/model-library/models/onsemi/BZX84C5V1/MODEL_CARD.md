@@ -6,7 +6,7 @@
 - Description: 5.1 V, 250 mW surface-mount Zener diode
 - Electrical family: diode
 - Fidelity tier: F1, datasheet-constrained
-- Independent reviewer: pending-review
+- Independent reviewer: gpt-5.6-sol independent reviewer (P5)
 
 ## Provenance
 
@@ -60,7 +60,7 @@ Native and WASM agreement: all 9 benches passed. Worst reported relative delta w
 - NBV is held at a first-order default. Dynamic impedance, temperature coefficient, surge behavior, noise, and statistical Zener-voltage tolerance are not continuously modelled.
 - Package pin 2 is no-connect and is represented only by the three-pin package metadata; the electrical SPICE model has anode and cathode terminals.
 - Self-heating, process spread, package parasitics, ageing, and failure outside ratings are not modelled.
-- Independent review remains pending-review.
+- P5 independent review passed F1: family forward data, part-specific Zener windows, an independent 10 mA reverse probe, and all nine native and WASM benches were verified.
 
 ## Licence
 

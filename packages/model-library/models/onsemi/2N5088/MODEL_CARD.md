@@ -6,7 +6,7 @@
 - Description: Low-noise high-gain NPN general-purpose amplifier transistor
 - Electrical family: bjt_npn
 - Fidelity tier: F1, datasheet-constrained
-- Independent reviewer: pending-review
+- Independent reviewer: gpt-5.6-sol independent reviewer (P5)
 
 ## Provenance
 
@@ -75,7 +75,7 @@ Native and WASM agreement: all 6 benches passed. Worst reported relative delta w
 - The published noise figure is metadata only; flicker and broadband noise are not modelled.
 - VAF, junction grading, reverse operation, temperature coefficients, process spread, self-heating, breakdown, and package parasitics are not fitted.
 - VBE(on) is reused only as a conservative VBE(sat) upper bound at the same collector current; no typical saturation base voltage is claimed.
-- Independent review remains pending-review.
+- P5 independent review passed F1: published minimum gain and frequency bounds, an independent in-region gain probe, and all six native and WASM benches passed.
 
 ## Licence
 

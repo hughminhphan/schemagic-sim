@@ -20,8 +20,9 @@ Use node order `VS OUT GND`. The core transfer law is:
 ```spice
 .param SCALE=10m OFFSET=0 TEMP_C=25 ROUT=0.1 IQ=60u VDROP=0.2
 BIDEAL nideal GND V={OFFSET+SCALE*TEMP_C}
-BOUT OUT GND V={min(max(v(nideal),v(GND)),v(VS)-VDROP)}
-ROUT OUT nideal {max(ROUT,1e-4)}
+BOUT ndrive GND V={min(max(v(nideal),v(GND)),v(VS)-VDROP)}
+ROUT ndrive OUT {max(ROUT,1e-4)}
+RDC nideal GND 1G
 IQ VS GND DC {IQ}
 ```
 
@@ -77,15 +78,17 @@ Record response time, self-heating coefficient, dissipation factor, tolerance, h
 
 ## 5. Required benches
 
-Each package has one analysis card per netlist and includes at least:
+Each package has one analysis card per netlist and covers, when independently evidenced:
 
-1. `transfer_low.cir`: low claimed environmental boundary.
-2. `transfer_nominal.cir`: nominal condition.
-3. `transfer_high.cir`: high claimed environmental boundary.
-4. `supply_or_bias.cir`: cited electrical bias or supply boundary that materially affects behavior.
-5. `dynamic.cir`: response-time check only when the model implements a cited time constant.
+1. A low claimed environmental boundary.
+2. A nominal condition.
+3. A high claimed environmental boundary.
+4. A cited electrical bias or supply boundary that materially affects behavior.
+5. A response-time check only when the model implements a cited time constant.
 
-The NTC and LDR benches excite the element with a low-power current or voltage that stays below the cited self-heating limit. LM35-family benches use the cited supply and load conditions. Expectations are independently derived from cited facts and never copied from the generated model output.
+Use descriptive names such as `transfer_low.cir`, `transfer_nominal.cir`, `transfer_high.cir`, `supply_or_bias.cir`, and `dynamic.cir`. F1 bounds-only packages may omit a nominal or third transfer bench when the source does not provide an independent value. They must not manufacture an expectation from the model expression merely to fill the bench set.
+
+The NTC and LDR benches excite the element with a low-power current or voltage that stays below the cited self-heating limit. LM35-family benches use cited supply and load conditions. Expectations are independently derived from cited facts and never copied from the generated model output.
 
 ## 6. Domain coverage defaults
 

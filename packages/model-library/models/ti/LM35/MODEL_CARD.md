@@ -6,7 +6,7 @@
 - Description: Precision centigrade temperature sensor with 10 mV/degC analog output
 - Electrical family: other
 - Fidelity tier: F1, datasheet-constrained
-- Independent reviewer: pending-review
+- Independent reviewer: gpt-5.6-sol independent reviewer (P5)
 
 ## Provenance
 
@@ -57,7 +57,7 @@ Native and WASM agreement: all 3 benches passed. Worst reported relative delta w
 - The 10 mV/degC nominal transfer is modelled, but the accuracy, nonlinearity, manufacturing spread, long-term drift, and temperature-dependent quiescent current are metadata only.
 - Response time and output capacitance stability are not modelled.
 - The basic positive-supply model is limited to 2 degC and above; the external resistor and negative supply required below 2 degC are not internalised.
-- Independent review remains pending-review.
+- P5 independent review passed F1: the nominal 10 mV/degC law, 4 V to 30 V supply disclosure, an independent 73 degC probe, and all three native and WASM benches passed; accuracy and dynamics remain honestly omitted.
 
 ## Licence
 

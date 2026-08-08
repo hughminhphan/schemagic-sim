@@ -6,7 +6,7 @@
 - Description: SOT-23 general-purpose NPN transistor, documented PN2222A die sibling
 - Electrical family: bjt_npn
 - Fidelity tier: F1, datasheet-constrained
-- Independent reviewer: pending-review
+- Independent reviewer: gpt-5.6-sol independent reviewer (P5)
 
 ## Provenance
 
@@ -81,7 +81,7 @@ Native and WASM agreement: all 6 benches passed. Worst reported relative delta w
 - The source publishes guaranteed MIN/MAX rows rather than a complete independent typical curve family, so this sibling package remains F1.
 - SOT-23 package parasitics and thermal impedance are metadata only; the shared die card does not model package-specific inductance, capacitance, or self-heating.
 - Breakdown, failure, statistical spread, temperature coefficients, reverse operation, and noise are not fitted.
-- Independent review remains pending-review.
+- P5 independent review passed F1: the electrical parameter vector exactly matches PN2222A while SOT-23 identity, pin mapping, alias, package metadata, and provenance remain distinct; all six native and WASM benches passed.
 
 ## Licence
 
