@@ -25,6 +25,11 @@ jobs:
           node-version: 22
           cache: npm
 
+      - name: Install Ubuntu ngspice
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ngspice
+
       - name: Install locked dependencies
         run: npm ci
 
