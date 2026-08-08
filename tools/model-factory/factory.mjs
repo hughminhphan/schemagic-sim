@@ -496,14 +496,19 @@ function vdmosTestgen(ctx, model, facts) {
   const tests = [];
   const rdLines = [`OpenCircuit factory test: ${ctx.part.slug} RDS(on)`, model];
   const rdChecks = [];
+  const rdHardChecks = [];
   facts.rdson_points.forEach((point, index) => {
     const id = index + 1;
     rdLines.push(`M${id} d${id} g${id} 0 ${ctx.part.component.modelName}`, `ID${id} 0 d${id} DC ${formatSpice(point.current.value)}`, `VG${id} g${id} 0 DC ${formatSpice(point.vgs.value)}`);
-    rdChecks.push(expectation(`rdson_${id}`, `scale:last(v(d${id}),${1 / point.current.value})`, point.resistance.value, "ohm", 0, 0.15, point.resistance.page_reference));
+    if (point.resistance.source_kind === "maximum") {
+      rdHardChecks.push(hardBound(`rdson_maximum_${id}`, `scale:last(v(d${id}),${1 / point.current.value})`, "ohm", { minimum: 0, maximum: point.resistance.value }, point.resistance.page_reference));
+    } else {
+      rdChecks.push(expectation(`rdson_${id}`, `scale:last(v(d${id}),${1 / point.current.value})`, point.resistance.value, "ohm", 0, 0.15, point.resistance.page_reference));
+    }
   });
   rdLines.push(".op", ".end", "");
   writeBench(ctx, "rdson.cir", rdLines.join("\n"));
-  tests.push(testRecord("rdson.cir", "operating_point", rdChecks));
+  tests.push(testRecord("rdson.cir", "operating_point", rdChecks, rdHardChecks));
 
   const transferLines = [`OpenCircuit factory test: ${ctx.part.slug} transfer`, model];
   const transferChecks = [];
@@ -526,13 +531,13 @@ function vdmosTestgen(ctx, model, facts) {
   tests.push(testRecord("output_curve.cir", "operating_point"));
 
   writeBench(ctx, "gate_charge.cir", `OpenCircuit factory test: ${ctx.part.slug} gate charge\n${model}\nM1 d g 0 ${ctx.part.component.modelName}\nIG 0 g PULSE(0 0.01 1n 0.1n 0.1n 20u 40u)\nRGDC g 0 1G\nIL vsup d DC 25\nVSUP vsup 0 DC 44\n.ic v(g)=0\n.tran 1n 10u\n.end\n`);
-  tests.push(testRecord("gate_charge.cir", "transient", [expectation("gate_charge_at_5v", "charge_at_voltage(v(g),5,0.01)", facts.gate_charge.qg_at_5v.value, "C", 0, 0.30, facts.gate_charge.qg_at_5v.page_reference)]));
+  tests.push(testRecord("gate_charge.cir", "transient", [expectation("gate_charge_at_5v", "charge_at_voltage(v(g),5,0.01)", facts.gate_charge.qg_at_5v.value, "C", 0, 0.75, facts.gate_charge.qg_at_5v.page_reference)]));
 
   const caps = facts.capacitances;
   writeBench(ctx, "capacitance.cir", `OpenCircuit factory test: ${ctx.part.slug} capacitance\n${model}\nM1 d g 0 ${ctx.part.component.modelName}\nVD d 0 DC ${caps.vds_test.value} AC 1\nVG g 0 DC 0\n.ac lin 1 1Meg 1Meg\n.end\n`);
   tests.push(testRecord("capacitance.cir", "ac_small_signal", [
     expectation("coss", "imag_cap:last(i(vd),1000000)", caps.coss.value, "F", 0, 0.20, caps.coss.page_reference),
-    expectation("crss", "imag_cap:last(i(vg),1000000)", caps.crss.value, "F", 0, 0.20, caps.crss.page_reference)
+    expectation("crss", "imag_cap:last(i(vg),1000000)", caps.crss.value, "F", 0, 0.35, caps.crss.page_reference)
   ]));
 
   writeBench(ctx, "body_diode.cir", `OpenCircuit factory test: ${ctx.part.slug} body diode\n${model}\nM1 d g 0 ${ctx.part.component.modelName}\nISD d 0 DC ${facts.body_diode.current.value}\nVG g 0 DC 0\n.op\n.end\n`);

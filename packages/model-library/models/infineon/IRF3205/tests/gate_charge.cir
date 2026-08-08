@@ -1,0 +1,17 @@
+OpenCircuit factory test: IRF3205 gate charge
+* OpenCircuit Model Factory v0.1.0
+* Original work generated from public factual specifications.
+* This model is not a copy of, or adaptation from, any vendor SPICE model.
+* Source: https://www.infineon.com/assets/row/public/documents/24/49/infineon-irf3205-datasheet-en.pdf
+* Revision: IRF3205PbF, 23-Jul-2010
+* Fit: native ngspice-46 in scipy.optimize.least_squares, diff_step=1e-4
+.model OC_INFINEON_IRF3205 VDMOS(VTO=3.1041718783e0 KP=3.1013458706e1 THETA=5.8584039013e-2 LAMBDA=2.9983018875e-10 RD=3.8963894692e-4 RS=8.0000000000e-4 RG=1.0000000000e-4 CGS=3.0360000000e-9 CGDMAX=1.6000000000e-9 CGDMIN=1.5000000000e-10 A=1.6941818203e-1 CJO=3.2369777571e-9 IS=1.8221217891e-12 N=1.5000000000e0 RB=1.6000000000e-3 TT=9.9545957821e-8 BV=5.5000000000e1 IBV=2.5000000000e-4 RTHJC=7.5000000000e-1 RTHCA=6.1250000000e1 RDS=1e9 VJ=0.8 M=0.5 FC=0.5 NBV=1 TNOM=27)
+
+M1 d g 0 OC_INFINEON_IRF3205
+IG 0 g PULSE(0 0.01 1n 0.1n 0.1n 20u 40u)
+RGDC g 0 1G
+IL vsup d DC 25
+VSUP vsup 0 DC 44
+.ic v(g)=0
+.tran 1n 10u
+.end

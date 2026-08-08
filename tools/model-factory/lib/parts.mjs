@@ -2521,6 +2521,43 @@ Object.assign(PARTS, {
   }
 });
 
+const p5Vdmos = ({ mpn, sourceUrl, revision, rdson, ratedCurrent, transfer, ciss, coss, crss, crssCurve, qg, qg5, qgs, qgd, trr, rthjc }) => ({
+  slug: mpn, manufacturerSlug: "infineon", pipeline: "vdmos",
+  identity: {
+    canonical_mpn: mpn, manufacturer: "Infineon Technologies (International Rectifier legacy)", description: `55 V N-channel HEXFET power MOSFET`, electrical_family: "nmos", aliases: [`${mpn}PbF`],
+    package: { name: "TO-220AB", standard: "JEDEC TO-220AB" },
+    pins: [{ name: "G", number: "1", role: "gate", node: "gate" }, { name: "D", number: "2", role: "drain", node: "drain" }, { name: "S", number: "3", role: "source", node: "source" }], spice_order: ["2", "1", "3"]
+  },
+  source: { url: sourceUrl, revision, pages: ["p. 1", "p. 2", "p. 3", "p. 4"] },
+  facts: {
+    schema_version: "1.0.0", extraction_method: "pdftotext -layout plus manual typical-curve digitization and MIN/TYP/MAX table transcription",
+    fit_conditions: { temperature: quantity(25, "degC", "Electrical characteristics unless stated", "p. 2 heading", "typical") },
+    threshold: { minimum: quantity(2, "V", "VDS = VGS, ID = 250 uA", "p. 2 electrical characteristics", "minimum"), maximum: quantity(4, "V", "VDS = VGS, ID = 250 uA", "p. 2 electrical characteristics", "maximum") },
+    transfer_points: transfer.map(([vgs, current]) => ({ vgs: quantity(vgs, "V", "VDS = 25 V, TJ = 25 degC", "p. 3 fig. 3", "typical"), current: quantity(current, "A", `VGS = ${vgs} V, VDS = 25 V`, "p. 3 fig. 3, manually digitized 25 degC curve", "digitized_typical_curve") })),
+    rdson_points: [{ vgs: quantity(10, "V", `ID = ${ratedCurrent} A`, "p. 2 electrical characteristics", "typical"), current: quantity(ratedCurrent, "A", "VGS = 10 V", "p. 2 electrical characteristics", "typical"), resistance: quantity(rdson, "ohm", `VGS = 10 V, ID = ${ratedCurrent} A`, "p. 2 RDS(on) MAX", "maximum") }],
+    output_points: transfer.slice(0, 5).map(([vgs, current]) => ({ vgs: quantity(vgs, "V", "TJ = 25 degC", "p. 3 fig. 1", "typical"), vds: quantity(10, "V", `VGS = ${vgs} V`, "p. 3 fig. 1", "typical"), current: quantity(current, "A", `VGS = ${vgs} V, VDS = 10 V`, "p. 3 fig. 1, manually digitized 25 degC curve", "digitized_typical_curve") })),
+    capacitances: {
+      ciss: quantity(ciss, "F", "VDS = 25 V, VGS = 0, f = 1 MHz", "p. 2 electrical characteristics", "typical"), coss: quantity(coss, "F", "VDS = 25 V, VGS = 0, f = 1 MHz", "p. 2 electrical characteristics", "typical"), crss: quantity(crss, "F", "VDS = 25 V, VGS = 0, f = 1 MHz", "p. 2 electrical characteristics", "typical"), vds_test: quantity(25, "V", "capacitance test bias", "p. 2 electrical characteristics", "typical"),
+      crss_curve: crssCurve.map(([vds, value]) => ({ vds: quantity(vds, "V", "VGS = 0, f = 1 MHz", "p. 4 fig. 5", "typical"), crss: quantity(value, "F", `VDS = ${vds} V`, "p. 4 fig. 5, manually digitized", "digitized_typical_curve") }))
+    },
+    gate_charge: { qg: quantity(qg, "C", `ID = ${ratedCurrent} A, VDS = 44 V, VGS = 10 V`, "p. 2 total gate charge MAX", "maximum"), qg_at_5v: quantity(qg5, "C", `ID = ${ratedCurrent} A, VDS = 44 V, VGS = 5 V`, "p. 4 fig. 6, manually digitized", "digitized_typical_curve"), qgs: quantity(qgs, "C", "same gate-charge test", "p. 2 gate-source charge MAX", "maximum"), qgd: quantity(qgd, "C", "same gate-charge test", "p. 2 gate-drain charge MAX", "maximum") },
+    body_diode: { vsd: quantity(1.3, "V", `IS = ${ratedCurrent} A, VGS = 0`, "p. 2 source-drain characteristics", "maximum"), current: quantity(ratedCurrent, "A", "VSD test current", "p. 2 source-drain characteristics", "typical"), trr: quantity(trr, "s", `IF = ${ratedCurrent} A, di/dt = 100 A/us`, "p. 2 reverse recovery TYP", "typical") },
+    breakdown: { voltage: quantity(55, "V", "VGS = 0, ID = 250 uA", "p. 2 breakdown voltage MIN", "minimum"), current: quantity(250e-6, "A", "VBR definition", "p. 2 electrical characteristics", "typical") },
+    thermal: { rthjc: quantity(rthjc, "K/W", "junction to case", "p. 1 thermal resistance MAX", "maximum"), rthja: quantity(62, "K/W", "junction to ambient", "p. 1 thermal resistance MAX", "maximum") }
+  },
+  component: {
+    modelName: `OC_INFINEON_${mpn}`, fidelity_tier: "F2", domain_coverage: { dc: "fitted", ac: "fitted", transient: "approx", noise: "none", thermal: "approx", digital: "none" }, supported_analyses: ["operating_point", "dc_sweep", "ac_small_signal", "transient"],
+    operating_summary: "F2 native-ngspice fit at 25 degC from cited transfer, output, and capacitance curves plus tabulated electrical constraints. Gate charge is an approximate independent check.",
+    numeric_bounds: [{ quantity: "drain_source_voltage", minimum: 0, maximum: 55, unit: "V", conditions: "Rated VDSS", placeholder: false }, { quantity: "gate_source_voltage", minimum: -20, maximum: 20, unit: "V", conditions: "Absolute maximum; gate failure not simulated", placeholder: false }],
+    omissions: ["The RDS(on), body-diode voltage, and total gate-charge rows are guaranteed maxima; they are retained with source semantics and are not described as typical device values.", "Gate charge is not an optimizer residual. It is checked independently with a broad 75 percent tolerance because the compact VDMOS capacitance law does not reproduce the cited Miller plateau closely; transient coverage is approximate.", "Avalanche, UIS, safe-operating-area failure, temperature-dependent transfer, self-heating in the default three-terminal instance, package inductance, gate-oxide failure, process spread, and noise are not modelled.", "RG is held at the factory numerical floor because the datasheet does not publish intrinsic gate resistance.", "Independent review remains pending-review."]
+  }
+});
+
+Object.assign(PARTS, {
+  IRFZ44N: p5Vdmos({ mpn: "IRFZ44N", sourceUrl: "https://www.infineon.com/assets/row/public/documents/24/49/infineon-irfz44n-datasheet-en.pdf", revision: "IRFZ44NPbF, 21-Sep-2010", rdson: 0.0175, ratedCurrent: 25, transfer: [[4.5, 7], [5, 20], [6, 55], [7, 85], [8, 110]], ciss: 1470e-12, coss: 360e-12, crss: 88e-12, crssCurve: [[1, 750e-12], [2, 580e-12], [5, 340e-12], [10, 200e-12], [20, 120e-12], [50, 65e-12]], qg: 63e-9, qg5: 24e-9, qgs: 14e-9, qgd: 23e-9, trr: 63e-9, rthjc: 1.5 }),
+  IRF3205: p5Vdmos({ mpn: "IRF3205", sourceUrl: "https://www.infineon.com/assets/row/public/documents/24/49/infineon-irf3205-datasheet-en.pdf", revision: "IRF3205PbF, 23-Jul-2010", rdson: 0.008, ratedCurrent: 62, transfer: [[4.5, 25], [5, 55], [6, 110], [7, 175], [8, 240]], ciss: 3247e-12, coss: 781e-12, crss: 211e-12, crssCurve: [[1, 1600e-12], [2, 1300e-12], [5, 850e-12], [10, 520e-12], [20, 300e-12], [50, 150e-12]], qg: 146e-9, qg5: 52e-9, qgs: 35e-9, qgd: 54e-9, trr: 69e-9, rthjc: 0.75 })
+});
+
 export function getPart(mpn) {
   const key = Object.keys(PARTS).find((candidate) => candidate.toLowerCase() === String(mpn).toLowerCase());
   if (!key) throw new Error(`Unsupported MPN: ${mpn}. Supported: ${Object.keys(PARTS).join(", ")}`);

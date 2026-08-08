@@ -1,0 +1,123 @@
+{
+  "schema_version": "1.0.0",
+  "validation_date": "2026-08-09",
+  "native_wasm_all_pass": true,
+  "expectations_all_pass": true,
+  "expectation_pass_count": 10,
+  "expectation_fail_count": 0,
+  "worst_native_wasm_relative_delta": 0.000006392897271027621,
+  "worst_native_wasm_absolute_delta": 0.00011747705291753618,
+  "benches": [
+    {
+      "test_netlist": "rdson.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "rdson_maximum_1",
+          "pass": true,
+          "value": 0.017499999915168703,
+          "minimum": 0,
+          "maximum": 0.0175
+        }
+      ]
+    },
+    {
+      "test_netlist": "transfer_curve.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "transfer_4.5_v",
+          "pass": true,
+          "value": 7.11383323619566,
+          "error": 0.11383323619565999,
+          "allowed": 2.31
+        },
+        {
+          "name": "transfer_5_v",
+          "pass": true,
+          "value": 19.760693373908452,
+          "error": 0.23930662609154751,
+          "allowed": 6.6000000000000005
+        },
+        {
+          "name": "transfer_6_v",
+          "pass": true,
+          "value": 50.722305265961495,
+          "error": 4.277694734038505,
+          "allowed": 18.150000000000002
+        },
+        {
+          "name": "transfer_7_v",
+          "pass": true,
+          "value": 84.56781594405084,
+          "error": 0.43218405594916476,
+          "allowed": 28.05
+        },
+        {
+          "name": "transfer_8_v",
+          "pass": true,
+          "value": 119.59559340118767,
+          "error": 9.59559340118767,
+          "allowed": 36.300000000000004
+        }
+      ]
+    },
+    {
+      "test_netlist": "output_curve.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": []
+    },
+    {
+      "test_netlist": "gate_charge.cir",
+      "analysis": "tran",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "gate_charge_at_5v",
+          "pass": true,
+          "value": 7.330024254990559e-9,
+          "error": 1.6669975745009442e-8,
+          "allowed": 1.8e-8
+        }
+      ]
+    },
+    {
+      "test_netlist": "capacitance.cir",
+      "analysis": "ac",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "coss",
+          "pass": true,
+          "value": 3.8865059306338005e-10,
+          "error": 2.865059306338005e-11,
+          "allowed": 7.200000000000001e-11
+        },
+        {
+          "name": "crss",
+          "pass": true,
+          "value": 1.1665059306398266e-10,
+          "error": 2.8650593063982652e-11,
+          "allowed": 3.08e-11
+        }
+      ]
+    },
+    {
+      "test_netlist": "body_diode.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "body_diode_forward_voltage",
+          "pass": true,
+          "value": 1.3081331098706521,
+          "error": 0.008133109870652078,
+          "allowed": 0.13
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+OpenCircuit factory test: IRFZ44N transfer
+* OpenCircuit Model Factory v0.1.0
+* Original work generated from public factual specifications.
+* This model is not a copy of, or adaptation from, any vendor SPICE model.
+* Source: https://www.infineon.com/assets/row/public/documents/24/49/infineon-irfz44n-datasheet-en.pdf
+* Revision: IRFZ44NPbF, 21-Sep-2010
+* Fit: native ngspice-46 in scipy.optimize.least_squares, diff_step=1e-4
+.model OC_INFINEON_IRFZ44N VDMOS(VTO=3.9636392376e0 KP=7.8747499038e1 THETA=1.0000000000e0 LAMBDA=4.2783467173e-5 RD=4.4365343517e-4 RS=1.7500000000e-3 RG=1.0000000000e-4 CGS=1.3820000000e-9 CGDMAX=7.5000000000e-10 CGDMIN=6.5000000000e-11 A=2.0376039125e-1 CJO=1.5446630701e-9 IS=5.4234848278e-13 N=1.5000000000e0 RB=3.5000000000e-3 TT=9.0889787576e-8 BV=5.5000000000e1 IBV=2.5000000000e-4 RTHJC=1.5000000000e0 RTHCA=6.0500000000e1 RDS=1e9 VJ=0.8 M=0.5 FC=0.5 NBV=1 TNOM=27)
+
+MT1 dt1 gt1 0 OC_INFINEON_IRFZ44N
+VDT1 dt1 0 DC 25
+VGT1 gt1 0 DC 4.5
+MT2 dt2 gt2 0 OC_INFINEON_IRFZ44N
+VDT2 dt2 0 DC 25
+VGT2 gt2 0 DC 5
+MT3 dt3 gt3 0 OC_INFINEON_IRFZ44N
+VDT3 dt3 0 DC 25
+VGT3 gt3 0 DC 6
+MT4 dt4 gt4 0 OC_INFINEON_IRFZ44N
+VDT4 dt4 0 DC 25
+VGT4 gt4 0 DC 7
+MT5 dt5 gt5 0 OC_INFINEON_IRFZ44N
+VDT5 dt5 0 DC 25
+VGT5 gt5 0 DC 8
+.op
+.end
