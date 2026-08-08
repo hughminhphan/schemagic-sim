@@ -1,4 +1,4 @@
-export type AnalysisKind = "tran" | "ac" | "dc-sweep" | "op-sweep";
+export type AnalysisKind = "tran" | "ac" | "noise" | "dc-sweep" | "op-sweep";
 
 export type VectorCollection =
   | ReadonlyMap<string, Float64Array>

@@ -192,8 +192,8 @@ class CanvasWaveformViewer implements WaveformViewer {
     this.vectors = toMap(data.vectors);
     this.xName = this.findXName(data.kind);
     this.xValues = this.vectors.get(this.xName) ?? new Float64Array();
-    this.xUnit = this.options.xUnit ?? (data.kind === "tran" ? "s" : data.kind === "ac" ? "Hz" : inferUnit(this.xName, data.kind));
-    if (data.kind === "ac") this.xScale = "log";
+    this.xUnit = this.options.xUnit ?? (data.kind === "tran" ? "s" : data.kind === "ac" || data.kind === "noise" ? "Hz" : inferUnit(this.xName, data.kind));
+    if (data.kind === "ac" || data.kind === "noise") this.xScale = "log";
     this.validateVectorLengths();
     this.buildTraces();
     if (!setOptions.preserveView) {
@@ -271,7 +271,7 @@ class CanvasWaveformViewer implements WaveformViewer {
   }
 
   setXScale(scale: "linear" | "log"): void {
-    if (this.data?.kind === "ac" && scale !== "log") throw new Error("AC plots require logarithmic frequency");
+    if ((this.data?.kind === "ac" || this.data?.kind === "noise") && scale !== "log") throw new Error("Frequency plots require logarithmic frequency");
     if (scale === "log" && this.xValues.some((value) => value <= 0)) throw new Error("Logarithmic X requires positive values");
     this.xScale = scale;
     this.resetXRange();
@@ -363,7 +363,7 @@ class CanvasWaveformViewer implements WaveformViewer {
 
   private findXName(kind: WaveformData["kind"]): string {
     if (this.options.xVector && this.vectors.has(this.options.xVector)) return this.options.xVector;
-    const candidates = kind === "tran" ? ["time"] : kind === "ac" ? ["frequency", "freq"] : ["sweep", "x"];
+    const candidates = kind === "tran" ? ["time"] : kind === "ac" || kind === "noise" ? ["frequency", "freq"] : ["sweep", "x"];
     for (const candidate of candidates) if (this.vectors.has(candidate)) return candidate;
     return this.vectors.keys().next().value ?? "x";
   }

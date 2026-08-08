@@ -1,8 +1,8 @@
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
-import { parseBinaryRawfile, parseDCSweepRawfile } from "../src/rawfile";
-import type { DCSweepRunSpec } from "../src/types";
+import { parseBinaryRawfile, parseDCSweepRawfile, parseNoiseRawfiles } from "../src/rawfile";
+import type { DCSweepRunSpec, NoiseRunSpec } from "../src/types";
 
 const fixturePath = fileURLToPath(new URL("./fixtures/simple-real.raw", import.meta.url));
 
@@ -11,6 +11,27 @@ function dcRawfile(rows: number[][]): Uint8Array {
   const header = new TextEncoder().encode([
     "Title: dc sweep fixture",
     "Plotname: DC transfer characteristic",
+    "Flags: real",
+    `No. Variables: ${variables.length}`,
+    `No. Points: ${rows.length}`,
+    "Variables:",
+    ...variables.map((variable, index) => `\t${index}\t${variable}`),
+    "Binary:\n",
+  ].join("\n"));
+  const data = new Uint8Array(rows.length * variables.length * 8);
+  const view = new DataView(data.buffer);
+  let offset = 0;
+  for (const row of rows) for (const value of row) { view.setFloat64(offset, value, true); offset += 8; }
+  const output = new Uint8Array(header.length + data.length);
+  output.set(header);
+  output.set(data, header.length);
+  return output;
+}
+
+function realRawfile(plotname: string, variables: string[], rows: number[][]): Uint8Array {
+  const header = new TextEncoder().encode([
+    "Title: noise fixture",
+    `Plotname: ${plotname}`,
     "Flags: real",
     `No. Variables: ${variables.length}`,
     `No. Points: ${rows.length}`,
@@ -52,6 +73,33 @@ describe("parseBinaryRawfile", () => {
     expect([...new Float64Array(parsed.buffers[0]!)]).toEqual([0, 1, 2]);
     expect([...new Float64Array(parsed.buffers[1]!)]).toEqual([0, 0.7, 0.75]);
     expect(parsed.sweep).toEqual({ axisVector: "sweep", primary, segments: [{ startIndex: 0, length: 3 }] });
+  });
+
+  it("parses noise density vectors and integrated RMS plus mean-square totals", () => {
+    const spec: NoiseRunSpec = {
+      output: { probeId: "p1", positiveNode: "n2", negativeNode: "0" },
+      input: { componentId: "c1", name: "V1", unit: "V" },
+      frequency: { sweep: "dec", pointsPerDecade: 10, fstart: 10, fstop: 1000 },
+      temperatureC: 27,
+    };
+    const density = realRawfile("Noise Spectral Density Curves", [
+      "frequency\tfrequency",
+      "inoise_spectrum\tvoltage-density",
+      "onoise_spectrum\tvoltage-density",
+    ], [[10, 4e-9, 2e-9], [100, 4e-9, 2e-9], [1000, 4e-9, 2e-9]]);
+    const integrated = realRawfile("Integrated Noise", [
+      "v(onoise_total)\tvoltage",
+      "v(inoise_total)\tvoltage",
+    ], [[6e-8, 1.2e-7]]);
+    const parsed = parseNoiseRawfiles(density, integrated, spec);
+    expect(parsed.vectors).toEqual(expect.arrayContaining([
+      expect.objectContaining({ name: "onoise_spectrum", kind: "output-noise-density" }),
+      expect.objectContaining({ name: "inoise_spectrum", kind: "input-noise-density" }),
+    ]));
+    expect(parsed.noise.output).toMatchObject({ densityUnit: "V/√Hz", total: { rms: 6e-8, rmsUnit: "V", meanSquareUnit: "V²" } });
+    expect(parsed.noise.output.total.meanSquare).toBeCloseTo(3.6e-15, 20);
+    expect(parsed.noise.input).toMatchObject({ densityUnit: "V/√Hz", total: { rms: 1.2e-7, rmsUnit: "V", meanSquareUnit: "V²" } });
+    expect(parsed.noise.input.total.meanSquare).toBeCloseTo(1.44e-14, 20);
   });
 
   it("parses a two-source DC sweep into stepped curve segments", () => {

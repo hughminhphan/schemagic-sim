@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { DC_SWEEP_MAX_POINTS, PARTS, canonicalizeCircuit, deserializeCircuit, generateNetlist, inspectDCSweepConfig, migrateCircuit, type CircuitComponent, type CircuitDocument } from "../src";
+import { DC_SWEEP_MAX_POINTS, PARTS, canonicalizeCircuit, deserializeCircuit, generateNetlist, inspectDCSweepConfig, inspectNoiseConfig, migrateCircuit, type CircuitComponent, type CircuitDocument } from "../src";
 
 const base: CircuitDocument = {
   format: "opencircuit-circuit",
@@ -41,6 +41,22 @@ describe("circuit schema", () => {
   it("defaults missing settings when loading a DC sweep workspace", () => {
     const migrated = migrateCircuit({ ...structuredClone(base), sim: { mode: "dc-sweep" } });
     expect(migrated.sim.dcSweep).toEqual({ sourceId: "c1", start: 0, stop: 5, step: 0.1 });
+  });
+
+  it("defaults and validates noise settings when loading an older noise workspace", () => {
+    const withProbe = { ...structuredClone(base), probes: [{ id: "p1", kind: "voltage" as const, target: { componentPin: ["c1", 0] as [string, number] } }] };
+    const migrated = migrateCircuit({ ...withProbe, sim: { mode: "noise" } });
+    expect(migrated.sim.noise).toEqual({
+      outputProbeId: "p1",
+      inputSourceId: "c1",
+      fstart: 10,
+      fstop: 1_000_000,
+      pointsPerDecade: 30,
+      sweep: "dec",
+      temperatureC: 27,
+    });
+    expect(inspectNoiseConfig(migrated, migrated.sim.noise).issues).toEqual([]);
+    expect(inspectNoiseConfig(migrated, { ...migrated.sim.noise!, fstart: 0 }).issues[0]?.message).toMatch(/greater than zero/i);
   });
 
   for (const part of PARTS.filter((entry) => entry.type !== "ground")) {

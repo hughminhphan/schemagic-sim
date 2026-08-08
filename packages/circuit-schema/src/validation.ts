@@ -1,4 +1,5 @@
 import { inspectDCSweepConfig } from "./dc-sweep";
+import { inspectNoiseConfig } from "./noise";
 import { componentPinPoints } from "./parts";
 import type { CircuitDocument, ValidationIssue } from "./types";
 
@@ -21,6 +22,7 @@ export function validateCircuit(document: CircuitDocument): ValidationIssue[] {
   }
   if (!document.components.some((component) => component.type === "ground")) issues.push({ path: "components", message: "Add a ground symbol before running the circuit" });
   if (document.sim.mode === "dc-sweep") issues.push(...inspectDCSweepConfig(document, document.sim.dcSweep).issues);
+  if (document.sim.mode === "noise") issues.push(...inspectNoiseConfig(document, document.sim.noise).issues);
   return issues;
 }
 export function assertValidCircuit(document: CircuitDocument): void {

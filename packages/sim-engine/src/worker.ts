@@ -2,7 +2,7 @@
 
 import { createNgspiceEngine, NGSPICE_VERSION } from "../../../tools/ngspice-wasm-build/dist-loader/index.mjs";
 import { classifyEngineError, parseEngineDiagnostics } from "./diagnostics";
-import { parseBinaryRawfile, parseDCSweepRawfile } from "./rawfile";
+import { parseBinaryRawfile, parseDCSweepRawfile, parseNoiseRawfiles } from "./rawfile";
 import type {
   SimulationProtocolError,
   SimulationRequest,
@@ -14,6 +14,7 @@ const scope = self as DedicatedWorkerGlobalScope;
 const MAX_NETLIST_BYTES = 1024 * 1024;
 interface NgspiceRunResult {
   rawfile: Uint8Array;
+  integratedRawfile?: Uint8Array;
   stdout: string;
   stderr: string;
   timingMs: number;
@@ -21,6 +22,7 @@ interface NgspiceRunResult {
 
 interface NgspiceEngine {
   runNetlist(netlist: string): Promise<NgspiceRunResult>;
+  runNoiseNetlist(netlist: string): Promise<NgspiceRunResult>;
   getInitInfo(): string;
   readonly memoryBytes: number;
 }
@@ -68,7 +70,9 @@ async function run(request: SimulationRequest): Promise<void> {
   const started = performance.now();
   try {
     validateNetlist(request.netlist);
-    const runResult = await simulator.runNetlist(request.netlist);
+    const runResult = request.type === "runNoise"
+      ? await simulator.runNoiseNetlist(request.netlist)
+      : await simulator.runNetlist(request.netlist);
     const info = `${runResult.stdout}\n${runResult.stderr}`;
     const diagnostics = parseEngineDiagnostics(request.netlist, info);
     const fatalDiagnostics = diagnostics.filter((entry) => /fatal|error|converg|singular/i.test(entry.message));
@@ -85,7 +89,9 @@ async function run(request: SimulationRequest): Promise<void> {
     };
     const parsed = request.type === "runDCSweep"
       ? parseDCSweepRawfile(runResult.rawfile, request.sweep, rawfileLimits)
-      : parseBinaryRawfile(runResult.rawfile, rawfileLimits);
+      : request.type === "runNoise"
+        ? parseNoiseRawfiles(runResult.rawfile, runResult.integratedRawfile ?? (() => { throw new Error("Noise analysis did not produce integrated totals"); })(), request.noise, rawfileLimits)
+        : parseBinaryRawfile(runResult.rawfile, rawfileLimits);
     const response: SimulationResponse = {
       id: request.id,
       type: "result",
@@ -94,6 +100,7 @@ async function run(request: SimulationRequest): Promise<void> {
       elapsedMs: performance.now() - started,
       rawfileBytes: parsed.bytes,
       ...(request.type === "runDCSweep" && "sweep" in parsed ? { sweep: parsed.sweep as import("./types").DCSweepResultMetadata } : {}),
+      ...(request.type === "runNoise" && "noise" in parsed ? { noise: parsed.noise as import("./types").NoiseResultMetadata } : {}),
     };
     post(response, parsed.buffers);
   } catch (caught) {

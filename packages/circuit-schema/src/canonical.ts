@@ -1,4 +1,5 @@
 import { defaultDCSweepConfig } from "./dc-sweep";
+import { defaultNoiseConfig } from "./noise";
 import type { CircuitDocument } from "./types";
 
 function roundNumber(value: number): number {
@@ -33,6 +34,10 @@ export function migrateCircuit(input: unknown): CircuitDocument {
     if (document.sim?.mode === "dc-sweep" && !document.sim.dcSweep) {
       const dcSweep = defaultDCSweepConfig(document);
       return { ...document, sim: { ...document.sim, ...(dcSweep ? { dcSweep } : {}) } };
+    }
+    if (document.sim?.mode === "noise" && !document.sim.noise) {
+      const noise = defaultNoiseConfig(document);
+      return { ...document, sim: { ...document.sim, ...(noise ? { noise } : {}) } };
     }
     return document;
   }

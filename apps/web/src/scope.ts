@@ -28,6 +28,7 @@ export class ScopePlot {
   private readonly autoButton: HTMLButtonElement;
   private readonly manualButton: HTMLButtonElement;
   private readonly keepLocusButton: HTMLButtonElement;
+  private readonly noiseTotals: HTMLDivElement;
   private viewer: WaveformViewer | undefined;
   private probes: ScopeProbe[] = [];
   private mode: AnalysisMode = "op";
@@ -56,7 +57,11 @@ export class ScopePlot {
     this.keepLocusButton.className = "keep-locus";
     this.keepLocusButton.textContent = "Keep locus";
     this.keepLocusButton.hidden = true;
-    host.replaceChildren(controls, this.viewerHost, this.keepLocusButton);
+    this.noiseTotals = document.createElement("div");
+    this.noiseTotals.className = "noise-totals";
+    this.noiseTotals.dataset.testid = "noise-totals";
+    this.noiseTotals.hidden = true;
+    host.replaceChildren(controls, this.viewerHost, this.noiseTotals, this.keepLocusButton);
     this.autoButton.addEventListener("click", () => {
       this.viewer?.autoscale();
       this.setScaleState(true);
@@ -123,7 +128,7 @@ export class ScopePlot {
   }
 
   private viewerSignature(): string {
-    return JSON.stringify({ traces: this.traceDefinitions(), xUnit: this.result?.sweep?.primary.unit });
+    return JSON.stringify({ traces: this.traceDefinitions(), xUnit: this.result?.sweep?.primary.unit, noise: this.result?.noise });
   }
 
   private dcSegments(): DCSweepSegment[] {
@@ -131,6 +136,25 @@ export class ScopePlot {
   }
 
   private traceDefinitions(): TraceDefinition[] {
+    if (this.mode === "noise" && this.result?.noise) {
+      const noise = this.result.noise;
+      return [
+        {
+          source: noise.outputVector,
+          label: `Output noise at V(${noise.output.positiveNode})`,
+          unit: noise.output.densityUnit,
+          axisGroup: "output noise",
+          color: TRACE_COLORS[0],
+        },
+        {
+          source: noise.inputVector,
+          label: `Input-referred to ${noise.input.name}`,
+          unit: noise.input.densityUnit,
+          axisGroup: "input-referred noise",
+          color: TRACE_COLORS[1],
+        },
+      ];
+    }
     if (this.mode === "dc-sweep" && this.result?.sweep) {
       const secondary = this.result.sweep.secondary;
       return this.probes.flatMap((probe, probeIndex) => this.dcSegments().map((segment, segmentIndex) => ({
@@ -158,8 +182,9 @@ export class ScopePlot {
     this.viewer = mount(this.viewerHost, {
       traces: this.traceDefinitions(),
       colors: [...TRACE_COLORS],
-      xScale: this.mode === "ac" ? "log" : "linear",
+      xScale: this.mode === "ac" || this.mode === "noise" ? "log" : "linear",
       ...(this.mode === "dc-sweep" ? { xVector: "sweep", xUnit: this.result?.sweep?.primary.unit ?? "" } : {}),
+      ...(this.mode === "noise" ? { xVector: "frequency", xUnit: "Hz" } : {}),
       showControls: true,
       className: "schemagic-waveform-viewer",
     });
@@ -167,8 +192,22 @@ export class ScopePlot {
   }
 
   private renderData(): void {
-    if (!this.viewer || !this.result || (this.mode !== "tran" && this.mode !== "ac" && this.mode !== "dc-sweep")) return;
+    this.renderNoiseTotals();
+    if (!this.viewer || !this.result || (this.mode !== "tran" && this.mode !== "ac" && this.mode !== "noise" && this.mode !== "dc-sweep")) return;
     const vectors = new Map<string, Float64Array>();
+    if (this.mode === "noise") {
+      const noise = this.result.noise;
+      if (!noise) return;
+      const frequency = this.result.data.get(noise.frequencyVector);
+      const output = this.result.data.get(noise.outputVector);
+      const input = this.result.data.get(noise.inputVector);
+      if (!frequency || !output || !input) return;
+      vectors.set(noise.frequencyVector, frequency);
+      vectors.set(noise.outputVector, output);
+      vectors.set(noise.inputVector, input);
+      this.viewer.setData({ kind: "noise", vectors });
+      return;
+    }
     if (this.mode === "dc-sweep") {
       const sweep = this.result.data.get("sweep");
       const first = this.dcSegments()[0];
@@ -193,6 +232,18 @@ export class ScopePlot {
       if (values) vectors.set(trace.source, values);
     }
     this.viewer.setData({ kind: this.mode, vectors });
+  }
+
+  private renderNoiseTotals(): void {
+    const noise = this.mode === "noise" ? this.result?.noise : undefined;
+    this.noiseTotals.hidden = !noise;
+    if (!noise) {
+      this.noiseTotals.replaceChildren();
+      return;
+    }
+    const output = noise.output.total;
+    const input = noise.input.total;
+    this.noiseTotals.innerHTML = `<span><strong>Integrated output</strong> ${formatValue(output.rms, { unit: output.rmsUnit, reserveSign: false })} RMS · ${formatValue(output.meanSquare, { unit: output.meanSquareUnit, reserveSign: false })}</span><span><strong>Integrated input-referred</strong> ${formatValue(input.rms, { unit: input.rmsUnit, reserveSign: false })} RMS · ${formatValue(input.meanSquare, { unit: input.meanSquareUnit, reserveSign: false })}</span><span>${formatValue(noise.frequency.fstart, { unit: "Hz", reserveSign: false })} to ${formatValue(noise.frequency.fstop, { unit: "Hz", reserveSign: false })} · ${noise.temperatureC} °C</span>`;
   }
 
   private renderLocus(): void {
@@ -225,11 +276,16 @@ export class ScopePlot {
 
   private promptManualRange(): void {
     if (!this.viewer) return;
-    const min = Number(prompt("Minimum voltage", "0"));
+    const min = Number(prompt(this.mode === "noise" ? "Minimum output noise density" : "Minimum voltage", "0"));
     if (!Number.isFinite(min)) return;
-    const max = Number(prompt("Maximum voltage", "5"));
+    const max = Number(prompt(this.mode === "noise" ? "Maximum output noise density" : "Maximum voltage", this.mode === "noise" ? "1e-6" : "5"));
     if (!Number.isFinite(max) || max <= min) return;
-    if (this.mode === "ac") {
+    if (this.mode === "noise") {
+      this.viewer.setYRange("output noise", { min, max });
+      const inputMin = Number(prompt("Minimum input-referred density", String(min)));
+      const inputMax = Number(prompt("Maximum input-referred density", String(max)));
+      if (Number.isFinite(inputMin) && Number.isFinite(inputMax) && inputMax > inputMin) this.viewer.setYRange("input-referred noise", { min: inputMin, max: inputMax });
+    } else if (this.mode === "ac") {
       this.viewer.setYRange("magnitude", { min, max });
       const phaseMin = Number(prompt("Minimum phase in degrees", "-180"));
       const phaseMax = Number(prompt("Maximum phase in degrees", "180"));

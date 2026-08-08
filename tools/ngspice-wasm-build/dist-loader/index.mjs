@@ -103,8 +103,10 @@ export class NgspiceEngine {
       this.#active = null;
       try {
         const rawfile = active.readRaw ? new Uint8Array(this.#module.FS.readFile("/out.raw")) : null;
+        const extraRawfiles = Object.fromEntries((active.extraRawPaths ?? []).map((path) => [path, new Uint8Array(this.#module.FS.readFile(path))]));
         active.resolve({
           rawfile,
+          extraRawfiles,
           stdout: this.#stdout.join("\n"),
           stderr: this.#stderr.join("\n"),
           timingMs: performance.now() - active.started,
@@ -138,7 +140,7 @@ export class NgspiceEngine {
     this.#commandWaiter?.resolve();
   }
 
-  async #execute(commands, { readRaw = false, prepare } = {}) {
+  async #execute(commands, { readRaw = false, extraRawPaths = [], prepare } = {}) {
     await this.init();
     if (this.#mainError) throw this.#mainError;
     if (this.#active) throw new Error("ngspice is already running");
@@ -147,7 +149,7 @@ export class NgspiceEngine {
     prepare?.();
     this.#commands = [...commands];
     const completion = deferred();
-    this.#active = { ...completion, readRaw, started: performance.now() };
+    this.#active = { ...completion, readRaw, extraRawPaths, started: performance.now() };
     this.#commandWaiter?.resolve();
     return completion.promise;
   }
@@ -175,6 +177,37 @@ export class NgspiceEngine {
     });
   }
 
+  async runNoiseNetlist(netlist) {
+    if (typeof netlist !== "string" || netlist.trim() === "") {
+      throw new TypeError("runNoiseNetlist requires a non-empty netlist string");
+    }
+    const integratedPath = "/noise-integrated.raw";
+    const result = await this.#execute([
+      "source /input.cir",
+      "destroy all",
+      "run",
+      "set filetype=binary",
+      "setplot noise1",
+      "write /out.raw",
+      "setplot noise2",
+      `write ${integratedPath}`,
+    ], {
+      readRaw: true,
+      extraRawPaths: [integratedPath],
+      prepare: () => {
+        for (const path of ["/out.raw", integratedPath]) {
+          try {
+            this.#module.FS.unlink(path);
+          } catch (error) {
+            if (error?.errno !== 44) throw error;
+          }
+        }
+        this.#module.FS.writeFile("/input.cir", netlist);
+      },
+    });
+    return { ...result, integratedRawfile: result.extraRawfiles[integratedPath] };
+  }
+
   run(netlist) {
     return this.runNetlist(netlist);
   }
@@ -182,7 +215,7 @@ export class NgspiceEngine {
   async reset() {
     if (!this.#module) return;
     await this.#execute(["destroy all", "reset"]);
-    for (const path of ["/input.cir", "/out.raw"]) {
+    for (const path of ["/input.cir", "/out.raw", "/noise-integrated.raw"]) {
       try {
         this.#module.FS.unlink(path);
       } catch (error) {
