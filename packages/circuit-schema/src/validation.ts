@@ -1,3 +1,4 @@
+import { inspectDCSweepConfig } from "./dc-sweep";
 import { componentPinPoints } from "./parts";
 import type { CircuitDocument, ValidationIssue } from "./types";
 
@@ -19,6 +20,7 @@ export function validateCircuit(document: CircuitDocument): ValidationIssue[] {
     wire.points.slice(1).forEach((point, index) => { const prior = wire.points[index]!; if (point[0] !== prior[0] && point[1] !== prior[1]) issues.push({ path: `wires.${wire.id}.points.${index+1}`, message: "Wire segments must be orthogonal" }); });
   }
   if (!document.components.some((component) => component.type === "ground")) issues.push({ path: "components", message: "Add a ground symbol before running the circuit" });
+  if (document.sim.mode === "dc-sweep") issues.push(...inspectDCSweepConfig(document, document.sim.dcSweep).issues);
   return issues;
 }
 export function assertValidCircuit(document: CircuitDocument): void {

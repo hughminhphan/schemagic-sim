@@ -178,6 +178,30 @@ describe("waveform viewer rendering", () => {
     expect(lastCanvas.context.dashCalls).toContainEqual([6, 3]);
   });
 
+  it("renders DC sweep families on a swept-value axis", () => {
+    const viewer = mount(new FakeElement() as unknown as HTMLElement, {
+      xVector: "sweep",
+      xUnit: "V",
+      traces: [
+        { source: "family-0", label: "V(out) · I2=0 A", unit: "V", color: "#3FD983" },
+        { source: "family-1", label: "V(out) · I2=1 mA", unit: "V", color: "#3FD983", dash: [6, 3] },
+      ],
+    });
+    viewer.setData({
+      kind: "dc-sweep",
+      vectors: {
+        sweep: new Float64Array([0, 1, 2]),
+        "family-0": new Float64Array([0, 0.7, 0.75]),
+        "family-1": new Float64Array([0.1, 0.72, 0.78]),
+      },
+    });
+
+    const internal = viewer as unknown as { xUnit: string; traces: Array<{ label: string }> };
+    expect(internal.xUnit).toBe("V");
+    expect(internal.traces.map((trace) => trace.label)).toEqual(["V(out) · I2=0 A", "V(out) · I2=1 mA"]);
+    expect(lastCanvas.context.dashCalls).toContainEqual([6, 3]);
+  });
+
   it("uses distinct default dashes when channels reuse colours", () => {
     const viewer = mount(new FakeElement() as unknown as HTMLElement);
     viewer.setData({

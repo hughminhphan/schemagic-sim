@@ -1,4 +1,5 @@
 import { canonicalizeCircuit, fnv1a64 } from "./canonical";
+import { dcSweepSourceName, inspectDCSweepConfig } from "./dc-sweep";
 import { componentPinPoints, parseEngineering } from "./parts";
 import { assertValidCircuit } from "./validation";
 import type { AnalysisMode, CircuitComponent, CircuitDocument, GeneratedNetlist, NetlistLine, Point } from "./types";
@@ -63,6 +64,12 @@ export function generateNetlist(document:CircuitDocument,requestedMode?:Analysis
   const currents=[...new Set(Object.values(componentCurrents))];add(lines,lineMap,`.save all ${currents.join(" ")}`,{stage:"analysis"});
   if(mode==="tran"){const t=document.sim.tran??{tstop:.01,tstep:.00002,maxstep:.00005};add(lines,lineMap,`.tran ${spice(t.tstep,.00002)} ${spice(t.tstop,.01)} 0 ${spice(t.maxstep,.00005)}`,{stage:"analysis"});}
   else if(mode==="ac"){const ac=document.sim.ac??{fstart:10,fstop:1e6,pointsPerDecade:30,sweep:"dec" as const};add(lines,lineMap,`.ac dec ${Math.max(1,Math.round(ac.pointsPerDecade))} ${spice(ac.fstart,10)} ${spice(ac.fstop,1e6)}`,{stage:"analysis"});}
+  else if(mode==="dc-sweep"){
+    const config=document.sim.dcSweep;const inspected=inspectDCSweepConfig(document,config);if(!config||!inspected.shape)throw new Error(inspected.issues[0]?.message??"DC sweep settings are invalid");
+    const primary=components.find(component=>component.id===config.sourceId)!;let command=`.dc ${dcSweepSourceName(primary)} ${spice(config.start,0)} ${spice(config.stop,1)} ${spice(config.step,.1)}`;
+    if(config.secondary){const secondary=components.find(component=>component.id===config.secondary!.sourceId)!;command+=` ${dcSweepSourceName(secondary)} ${spice(config.secondary.start,0)} ${spice(config.secondary.stop,1)} ${spice(config.secondary.step,.1)}`;}
+    add(lines,lineMap,command,{stage:"analysis"});
+  }
   else add(lines,lineMap,".op",{stage:"analysis"});add(lines,lineMap,".end",{stage:"analysis"});
   return {netlist:`${lines.join("\n")}\n`,lineMap,componentNodes,wireNodes,documentHash,componentCurrents};
 }

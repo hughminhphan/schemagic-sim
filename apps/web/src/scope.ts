@@ -1,8 +1,9 @@
-import { mount, type TraceDefinition, type WaveformViewer } from "@opencircuit/waveform-viewer";
-import type { AnalysisMode, SimulationResult } from "@opencircuit/sim-engine";
+import { formatValue, mount, type TraceDefinition, type WaveformViewer } from "@opencircuit/waveform-viewer";
+import type { AnalysisMode, DCSweepSegment, SimulationResult } from "@opencircuit/sim-engine";
 
 export const TRACE_COLORS = ["#3FD983", "#E8A244", "#5FB0E8", "#F1EEE8", "#3FD983", "#E8A244"] as const;
 export const TRACE_DASHES = [[], [], [], [], [6, 3], [2, 3]] as const;
+const FAMILY_DASHES = [[], [6, 3], [2, 3], [8, 3, 2, 3], [1, 3], [10, 3]] as const;
 const LOCUS_ANNOTATION_ID = "pot-sweep";
 
 export interface ScopeProbe {
@@ -16,6 +17,10 @@ function realFrequency(values: Float64Array): Float64Array {
   const output = new Float64Array(Math.ceil(values.length / 2));
   for (let index = 0; index < output.length; index += 1) output[index] = values[index * 2] ?? 0;
   return output;
+}
+
+function dcFamilySource(probeIndex: number, segmentIndex: number): string {
+  return `dc-family-${probeIndex}-${segmentIndex}`;
 }
 
 export class ScopePlot {
@@ -101,10 +106,11 @@ export class ScopePlot {
 
   setData(mode: AnalysisMode, result: SimulationResult | undefined): void {
     const modeChanged = this.mode !== mode;
+    const tracesBefore = this.viewerSignature();
     if (modeChanged) this.clearLocus();
     this.mode = mode;
     this.result = result;
-    if (modeChanged) this.remount();
+    if (modeChanged || tracesBefore !== this.viewerSignature()) this.remount();
     this.renderData();
   }
 
@@ -116,7 +122,28 @@ export class ScopePlot {
     this.viewer?.downloadPNG(filename);
   }
 
+  private viewerSignature(): string {
+    return JSON.stringify({ traces: this.traceDefinitions(), xUnit: this.result?.sweep?.primary.unit });
+  }
+
+  private dcSegments(): DCSweepSegment[] {
+    return this.result?.sweep?.segments ?? [];
+  }
+
   private traceDefinitions(): TraceDefinition[] {
+    if (this.mode === "dc-sweep" && this.result?.sweep) {
+      const secondary = this.result.sweep.secondary;
+      return this.probes.flatMap((probe, probeIndex) => this.dcSegments().map((segment, segmentIndex) => ({
+        source: dcFamilySource(probeIndex, segmentIndex),
+        label: secondary && segment.secondaryValue !== undefined
+          ? `${probe.label} · ${secondary.name}=${formatValue(segment.secondaryValue, { unit: secondary.unit, reserveSign: false })}`
+          : probe.label,
+        unit: "V",
+        axisGroup: "voltage",
+        color: TRACE_COLORS[(probeIndex + segmentIndex) % TRACE_COLORS.length] ?? probe.color,
+        dash: FAMILY_DASHES[segmentIndex % FAMILY_DASHES.length] ?? [],
+      })));
+    }
     return this.probes.map((probe) => ({
       source: `v(${probe.node})`.toLowerCase(),
       label: probe.label,
@@ -132,6 +159,7 @@ export class ScopePlot {
       traces: this.traceDefinitions(),
       colors: [...TRACE_COLORS],
       xScale: this.mode === "ac" ? "log" : "linear",
+      ...(this.mode === "dc-sweep" ? { xVector: "sweep", xUnit: this.result?.sweep?.primary.unit ?? "" } : {}),
       showControls: true,
       className: "schemagic-waveform-viewer",
     });
@@ -139,8 +167,23 @@ export class ScopePlot {
   }
 
   private renderData(): void {
-    if (!this.viewer || !this.result || (this.mode !== "tran" && this.mode !== "ac")) return;
+    if (!this.viewer || !this.result || (this.mode !== "tran" && this.mode !== "ac" && this.mode !== "dc-sweep")) return;
     const vectors = new Map<string, Float64Array>();
+    if (this.mode === "dc-sweep") {
+      const sweep = this.result.data.get("sweep");
+      const first = this.dcSegments()[0];
+      if (!sweep || !first) return;
+      vectors.set("sweep", sweep.subarray(first.startIndex, first.startIndex + first.length));
+      this.probes.forEach((probe, probeIndex) => {
+        const values = this.result?.data.get(`v(${probe.node})`.toLowerCase());
+        if (!values) return;
+        this.dcSegments().forEach((segment, segmentIndex) => {
+          vectors.set(dcFamilySource(probeIndex, segmentIndex), values.subarray(segment.startIndex, segment.startIndex + segment.length));
+        });
+      });
+      this.viewer.setData({ kind: "dc-sweep", vectors });
+      return;
+    }
     const xName = this.mode === "ac" ? "frequency" : "time";
     const xValues = this.result.data.get(xName);
     if (!xValues) return;

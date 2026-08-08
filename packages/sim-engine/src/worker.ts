@@ -2,7 +2,7 @@
 
 import { createNgspiceEngine, NGSPICE_VERSION } from "../../../tools/ngspice-wasm-build/dist-loader/index.mjs";
 import { classifyEngineError, parseEngineDiagnostics } from "./diagnostics";
-import { parseBinaryRawfile } from "./rawfile";
+import { parseBinaryRawfile, parseDCSweepRawfile } from "./rawfile";
 import type {
   SimulationProtocolError,
   SimulationRequest,
@@ -79,10 +79,13 @@ async function run(request: SimulationRequest): Promise<void> {
     }
 
     if (simulator.memoryBytes > 256 * 1024 * 1024) throw new Error("WASM memory exceeds 256 MiB limit");
-    const parsed = parseBinaryRawfile(runResult.rawfile, {
+    const rawfileLimits = {
       ...(request.limits?.maxRawfileBytes ? { maxRawfileBytes: request.limits.maxRawfileBytes } : {}),
       ...(request.limits?.maxSamples ? { maxSamples: request.limits.maxSamples } : {}),
-    });
+    };
+    const parsed = request.type === "runDCSweep"
+      ? parseDCSweepRawfile(runResult.rawfile, request.sweep, rawfileLimits)
+      : parseBinaryRawfile(runResult.rawfile, rawfileLimits);
     const response: SimulationResponse = {
       id: request.id,
       type: "result",
@@ -90,6 +93,7 @@ async function run(request: SimulationRequest): Promise<void> {
       buffers: parsed.buffers,
       elapsedMs: performance.now() - started,
       rawfileBytes: parsed.bytes,
+      ...(request.type === "runDCSweep" && "sweep" in parsed ? { sweep: parsed.sweep as import("./types").DCSweepResultMetadata } : {}),
     };
     post(response, parsed.buffers);
   } catch (caught) {

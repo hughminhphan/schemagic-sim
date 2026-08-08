@@ -22,6 +22,15 @@ Keep the pointer visible, avoid cuts during the pot drag, and return the final G
 | --- | --- |
 | Open [sim.schemagic.design](https://sim.schemagic.design). No account or installation is required. | `git clone https://github.com/hughminhphan/schemagic-sim.git`<br>`cd schemagic-sim`<br>`npm install`<br>`npm run dev` |
 
+## Features
+
+- Local ngspice-46 WebAssembly simulation in an isolated browser Worker.
+- Living schematic feedback for wire voltage, current direction, and interactive controls.
+- Operating point, source-based DC sweep, transient, and AC analyses without netlist editing.
+- Optional two-source DC sweeps rendered as stepped curve families with legends and cursors.
+- Wire probes, multi-trace scope views, CSV and PNG export, share URLs, and browser autosave.
+- Reviewed manufacturer models plus sanitized, visibly unverified SPICE model imports.
+
 ## Open an example circuit
 
 [Open the interactive NPN LED bench](https://schemagic.pages.dev/#c=jVTBctowEP0Vj3o1Gcs2CXBrS26ZlHLohWEYYQRVa1seSUBShn_vW5ti0dhpc4iQ9fTe7tPunlimi0qXsnSWTRYnpjZswjLOQpaLtczZ5MT0dmulw-kgDaNlyJx8wY594-wcskIZow2bbEVuZcgqTTSjME4BNBq4CBdeK4kLB6v3JpOgPoh8jy_Dc_hHMO4WHPqCs05BYUQBzRMjrTtQXmLgCCJ-G0SlHXJVupBOmjYUHuGvDSfpDCcKB0kbzvxTb_5J3KltpFXWAd0nm3bK3pjwtcuEoipxFD8n44gomiDStDOI9Q-3KoFvVYedqjdvPX_qzXU4Cjm5UsuM30s2SbxU7_8tOu1P9cvn1dPjdDV_nF7TpTjGb9PN5cZL9QHwnopNSPmvyzuj96V_f9R3H9X2XwTjPoL0_l0CnGy1KQT5oitZZspke-UGl5VYpRPk5UbazKgKJU5GfQyaqghyfRxYtZEBfAs2Rh2kCTJdOqNzWBSsXwMR3PTGHTidcjlF8Tx7ru-tIfydHqUyei2bgZHpnJJhH5Lx6EFSLdWZVjRCfirEjsbXuRM7anwnzI4e2hs7M4U4F3XtR8szJWpVQQiR0f-txR3c4PAEv3V1aZoI-0orjK2ZNFOZiQ1VGD7ao5QAwYesLh9NByxHwqRvBNROrBAv1hEsuiOqIU78fVzvSQt7fgYN7LK1oxy_lTwSSUVcGAr0bL-0RtAcyKNC5bej9Eg-NIHiI01G9CQWzrGgauqVapcvl9cyOdI4bC8R7P4K92A0pm64CVVXogdqJoLHFY8arlsYvVwLi5sJtoCjWD0Y9W0LS5oZs0hruAejRmthKO46tKbIPRj1UwsjG4YXOx58GHXNDSyuXYPoZeWUEtixLs_L828). The circuit is encoded in the URL and opens immediately without a database or account.
@@ -50,7 +59,7 @@ Falstad is an established open-source teaching tool. CircuitSim provides a broad
 2. Select `P1`, then drag **Wiper position** in the inspector.
 3. Watch the LED brightness, wire voltage colours, and current animation update with each solve.
 4. Click a wire to add a scope trace, then open the scope.
-5. Choose **TRAN** for a time-domain plot or **AC** for a Bode plot.
+5. Choose **DC SWEEP** to vary a source, **TRAN** for a time-domain plot, or **AC** for a Bode plot.
 6. Click **Share URL** to copy the circuit as a link.
 
 ## Add a component model
@@ -104,7 +113,7 @@ Simulation stays inside a dedicated Worker so synchronous solver work does not b
 
 - Fidelity tiers are engineering estimates of model coverage and validation depth. They are not certifications or guarantees that every physical unit will match a simulation.
 - There is no PCB layout, routing, manufacturing, or mechanical workflow.
-- v0.1 analyses are limited to operating point, transient, and AC.
+- Analyses currently cover operating point, linear one-source or two-source DC sweep, transient, and decade AC sweep.
 - Digital components are behavioral-analog approximations. scheMAGIC Sim does not execute firmware or model MCU peripherals.
 - Imported third-party SPICE models are sanitized and visibly marked unverified. Their electrical accuracy and redistribution rights remain the user's responsibility.
 - Simulation is not a substitute for prototyping, component qualification, or safety review.

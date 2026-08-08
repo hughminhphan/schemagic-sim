@@ -1,4 +1,4 @@
-export type AnalysisMode = "live" | "op" | "tran" | "ac";
+export type AnalysisMode = "live" | "op" | "dc-sweep" | "tran" | "ac";
 export type Rotation = 0 | 90 | 180 | 270;
 export type Point = [number, number];
 export type ComponentType =
@@ -17,10 +17,13 @@ export interface CircuitProbe {
   id: string; kind: "voltage" | "current" | "diff";
   target: { node?: string; componentPin?: [string, number]; wire?: string }; color?: string;
 }
+export interface DCSweepRange { sourceId: string; start: number; stop: number; step: number }
+export interface DCSweepConfig extends DCSweepRange { secondary?: DCSweepRange }
 export interface SimConfig {
   mode: AnalysisMode;
   tran?: { tstop: number; tstep?: number; maxstep?: number };
   ac?: { fstart: number; fstop: number; pointsPerDecade: number; sweep: "dec" };
+  dcSweep?: DCSweepConfig;
 }
 export interface CircuitDocument {
   format: "opencircuit-circuit"; version: 1; meta: CircuitMeta;

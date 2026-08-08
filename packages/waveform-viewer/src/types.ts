@@ -1,4 +1,4 @@
-export type AnalysisKind = "tran" | "ac" | "op-sweep";
+export type AnalysisKind = "tran" | "ac" | "dc-sweep" | "op-sweep";
 
 export type VectorCollection =
   | ReadonlyMap<string, Float64Array>
@@ -62,6 +62,7 @@ export interface ViewerOptions {
   dashes?: ReadonlyArray<readonly number[]>;
   xScale?: "linear" | "log";
   xVector?: string;
+  xUnit?: string;
   yRanges?: Readonly<Record<string, AxisRange>>;
   unwrapPhase?: boolean;
   showControls?: boolean;
