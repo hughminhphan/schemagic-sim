@@ -38,4 +38,30 @@ describe("generateNetlist", () => {
     };
     expect(generateNetlist(shuffled).netlist).toBe(generateNetlist(document).netlist);
   });
+
+  it("generates a one-source linear DC sweep", () => {
+    const swept: CircuitDocument = {
+      ...structuredClone(document),
+      sim: { mode: "dc-sweep", dcSweep: { sourceId: "c1", start: 0, stop: 5, step: 0.1 } },
+    };
+    expect(generateNetlist(swept).netlist).toContain(".dc V1 0 5 0.1");
+  });
+
+  it("generates a two-source stepped DC sweep", () => {
+    const swept: CircuitDocument = {
+      ...structuredClone(document),
+      components: [
+        ...document.components,
+        { id: "c5", type: "isource", value: "1m", pos: [10, 4], rot: 0, mirror: false },
+      ],
+      sim: {
+        mode: "dc-sweep",
+        dcSweep: {
+          sourceId: "c1", start: 0, stop: 5, step: 0.25,
+          secondary: { sourceId: "c5", start: 0, stop: 0.001, step: 0.00025 },
+        },
+      },
+    };
+    expect(generateNetlist(swept).netlist).toContain(".dc V1 0 5 0.25 I5 0 0.001 0.00025");
+  });
 });

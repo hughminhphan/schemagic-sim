@@ -1,3 +1,4 @@
+import { defaultDCSweepConfig } from "./dc-sweep";
 import type { CircuitDocument } from "./types";
 
 function roundNumber(value: number): number {
@@ -27,7 +28,14 @@ export function deserializeCircuit(source: string): CircuitDocument {
 export function migrateCircuit(input: unknown): CircuitDocument {
   const value = input as Partial<CircuitDocument>;
   if (value.format !== "opencircuit-circuit") throw new Error("Not a scheMAGIC circuit document");
-  if (value.version === 1) return value as CircuitDocument;
+  if (value.version === 1) {
+    const document = value as CircuitDocument;
+    if (document.sim?.mode === "dc-sweep" && !document.sim.dcSweep) {
+      const dcSweep = defaultDCSweepConfig(document);
+      return { ...document, sim: { ...document.sim, ...(dcSweep ? { dcSweep } : {}) } };
+    }
+    return document;
+  }
   throw new Error(`Unsupported circuit document version ${String(value.version)}`);
 }
 export function fnv1a64(input: string): string {

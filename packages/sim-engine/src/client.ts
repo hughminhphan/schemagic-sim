@@ -1,4 +1,5 @@
 import type {
+  DCSweepRunSpec,
   SimulationLimits,
   SimulationProtocolError,
   SimulationRequest,
@@ -48,6 +49,10 @@ export class SimulationClient {
 
   runOpPoint(netlist: string, limits?: SimulationLimits): Promise<SimulationResult> {
     return this.enqueue("runOpPoint", netlist, limits);
+  }
+
+  runDCSweep(netlist: string, sweep: DCSweepRunSpec, limits?: SimulationLimits): Promise<SimulationResult> {
+    return this.enqueue("runDCSweep", netlist, limits, sweep);
   }
 
   runTransient(netlist: string, limits?: SimulationLimits): Promise<SimulationResult> {
@@ -113,14 +118,12 @@ export class SimulationClient {
     return { worker, ready };
   }
 
-  private enqueue(type: SimulationRequestType, netlist: string, limits?: SimulationLimits): Promise<SimulationResult> {
+  private enqueue(type: SimulationRequestType, netlist: string, limits?: SimulationLimits, sweep?: DCSweepRunSpec): Promise<SimulationResult> {
     if (this.disposed) return Promise.reject(new SimulationFailure({ code: "CANCELLED", message: "Simulation client is disposed", diagnostics: [] }));
-    const request: SimulationRequest = {
-      id: this.nextId++,
-      type,
-      netlist,
-      ...(limits ? { limits } : {}),
-    };
+    const id = this.nextId++;
+    const request: SimulationRequest = type === "runDCSweep"
+      ? { id, type, netlist, sweep: sweep!, ...(limits ? { limits } : {}) }
+      : { id, type, netlist, ...(limits ? { limits } : {}) };
     return new Promise<SimulationResult>((resolve, reject) => {
       const job: PendingRun = { request, resolve, reject };
       if (this.active) {
@@ -178,6 +181,7 @@ export class SimulationClient {
         data,
         elapsedMs: response.elapsedMs,
         rawfileBytes: response.rawfileBytes,
+        ...(response.sweep ? { sweep: response.sweep } : {}),
       });
     }
     this.dispatchQueued();

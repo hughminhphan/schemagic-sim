@@ -1,4 +1,5 @@
-import type { VectorMeta } from "./types";
+import { dcSweepRangePointCount } from "@opencircuit/circuit-schema";
+import type { DCSweepResultMetadata, DCSweepRunSpec, VectorMeta } from "./types";
 
 const DEFAULT_MAX_RAWFILE_BYTES = 128 * 1024 * 1024;
 const DEFAULT_MAX_SAMPLES = 1_000_000;
@@ -33,6 +34,10 @@ function classifyVariable(type: string): VectorMeta["kind"] {
   if (normalized === "time") return "time";
   if (normalized === "frequency") return "frequency";
   return "unknown";
+}
+
+export interface ParsedDCSweepRawfile extends ParsedRawfile {
+  sweep: DCSweepResultMetadata;
 }
 
 export function parseBinaryRawfile(bytes: Uint8Array, limits: RawfileLimits = {}): ParsedRawfile {
@@ -105,4 +110,34 @@ export function parseBinaryRawfile(bytes: Uint8Array, limits: RawfileLimits = {}
     bufferIndex: index,
   }));
   return { vectors, buffers, numPoints, complex, bytes: bytes.byteLength };
+}
+
+export function parseDCSweepRawfile(bytes: Uint8Array, sweep: DCSweepRunSpec, limits: RawfileLimits = {}): ParsedDCSweepRawfile {
+  const parsed = parseBinaryRawfile(bytes, limits);
+  if (parsed.complex) throw new Error("DC sweep rawfile must contain real vectors");
+  const primaryPoints = dcSweepRangePointCount({ sourceId: sweep.primary.componentId, start: sweep.primary.start, stop: sweep.primary.stop, step: sweep.primary.step });
+  const secondaryPoints = sweep.secondary
+    ? dcSweepRangePointCount({ sourceId: sweep.secondary.componentId, start: sweep.secondary.start, stop: sweep.secondary.stop, step: sweep.secondary.step })
+    : 1;
+  if (primaryPoints < 1 || secondaryPoints < 1) throw new Error("DC sweep request has an invalid range");
+  const expectedPoints = primaryPoints * secondaryPoints;
+  if (parsed.numPoints !== expectedPoints) throw new Error(`DC sweep returned ${parsed.numPoints} points, expected ${expectedPoints}`);
+  const axis = parsed.vectors[0];
+  if (!axis) throw new Error("DC sweep rawfile has no sweep axis");
+  const vectors: VectorMeta[] = parsed.vectors.map((vector, index) => index === 0 ? { ...vector, name: "sweep", kind: "sweep" } : vector);
+  const segments = Array.from({ length: secondaryPoints }, (_, index) => ({
+    startIndex: index * primaryPoints,
+    length: primaryPoints,
+    ...(sweep.secondary ? { secondaryValue: sweep.secondary.start + index * sweep.secondary.step } : {}),
+  }));
+  return {
+    ...parsed,
+    vectors,
+    sweep: {
+      axisVector: "sweep",
+      primary: sweep.primary,
+      ...(sweep.secondary ? { secondary: sweep.secondary } : {}),
+      segments,
+    },
+  };
 }
