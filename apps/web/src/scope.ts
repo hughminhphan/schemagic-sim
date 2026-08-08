@@ -3,6 +3,7 @@ import type { AnalysisMode, DCSweepSegment, SimulationResult } from "@opencircui
 
 export const TRACE_COLORS = ["#3FD983", "#E8A244", "#5FB0E8", "#F1EEE8", "#3FD983", "#E8A244"] as const;
 export const TRACE_DASHES = [[], [], [], [], [6, 3], [2, 3]] as const;
+const FAMILY_DASHES = [[], [6, 3], [2, 3], [8, 3, 2, 3], [1, 3], [10, 3]] as const;
 const LOCUS_ANNOTATION_ID = "pot-sweep";
 
 export interface ScopeProbe {
@@ -105,11 +106,11 @@ export class ScopePlot {
 
   setData(mode: AnalysisMode, result: SimulationResult | undefined): void {
     const modeChanged = this.mode !== mode;
-    const tracesBefore = JSON.stringify(this.traceDefinitions());
+    const tracesBefore = this.viewerSignature();
     if (modeChanged) this.clearLocus();
     this.mode = mode;
     this.result = result;
-    if (modeChanged || tracesBefore !== JSON.stringify(this.traceDefinitions())) this.remount();
+    if (modeChanged || tracesBefore !== this.viewerSignature()) this.remount();
     this.renderData();
   }
 
@@ -119,6 +120,10 @@ export class ScopePlot {
 
   downloadPNG(filename: string): void {
     this.viewer?.downloadPNG(filename);
+  }
+
+  private viewerSignature(): string {
+    return JSON.stringify({ traces: this.traceDefinitions(), xUnit: this.result?.sweep?.primary.unit });
   }
 
   private dcSegments(): DCSweepSegment[] {
@@ -135,8 +140,8 @@ export class ScopePlot {
           : probe.label,
         unit: "V",
         axisGroup: "voltage",
-        color: probe.color,
-        dash: TRACE_DASHES[segmentIndex % TRACE_DASHES.length] ?? [],
+        color: TRACE_COLORS[(probeIndex + segmentIndex) % TRACE_COLORS.length] ?? probe.color,
+        dash: FAMILY_DASHES[segmentIndex % FAMILY_DASHES.length] ?? [],
       })));
     }
     return this.probes.map((probe) => ({
