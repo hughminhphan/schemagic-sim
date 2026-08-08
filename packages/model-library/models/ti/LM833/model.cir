@@ -1,0 +1,27 @@
+* OpenCircuit Model Factory v0.1.0
+* Original work generated from public factual specifications.
+* This model is not a copy of, or adaptation from, any vendor SPICE model.
+* Source: https://www.ti.com/lit/ds/symlink/lm833.pdf
+* Revision: SLOS481B, July 2010, revised October 2014
+* Fit: exactly three native ngspice-46 fixed-point calibration iterations
+* Node order: INP INN VCC VEE OUT
+.subckt OC_TI_LM833 INP INN VCC VEE OUT
+.param AOL=3.1622776600e5 GBW=2.3239138624e7 SR=7.3708037582e6 IBIAS=3.0000000000e-7 IOS=2.5000000000e-8 VOS=1.5000000000e-4
+.param ROUT=3.7000000000e1 ILIM=3.3000000000e-2 VDRP_H=9.0000000000e-1 VDRP_L=9.0000000000e-1 CC=30p FP2=1.6272220046e7
+.param CMRR=1.0000000000e5 PSRR=1.7782794100e5 VSUP_NOM=3.0000000000e1 IQ=2.0500000000e-3 EN=4.5000000000e-9
+IBP 0 INP DC {IBIAS+IOS/2}
+IBN 0 INN DC {IBIAS-IOS/2}
+CDIF INP INN 1p
+BERR e 0 V = v(INP,INN) + VOS + v(nz) + 0.5*(v(INP)+v(INN))/CMRR + (v(VCC,VEE)-VSUP_NOM)/PSRR
+RE e 0 1meg
+RNZ nz 0 {EN*EN/(4*1.380649e-23*300.15)}
+BGM 0 p I = {SR*CC}*tanh({6.283185307*GBW/SR}*v(e))
+CP p 0 {CC}
+RP p 0 {AOL/(6.283185307*GBW*CC)}
+RP2 p p2 {1/(6.283185307*FP2*1p)}
+CP2 p2 0 1p
+BCLMP q 0 V = min(max(v(p2), v(VEE)+min(VDRP_L,0.49*v(VCC,VEE))), v(VCC)-min(VDRP_H,0.49*v(VCC,VEE)))
+RQ q 0 1meg
+BOUT 0 OUT I = ILIM*tanh((v(q)-v(OUT))/(ROUT*ILIM))
+IQVCC VCC VEE DC {IQ}
+.ends OC_TI_LM833

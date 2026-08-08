@@ -63,7 +63,7 @@ def measure_slew(parameters):
 .temp 25
 VCC vcc 0 DC 15
 VEE vee 0 DC -15
-VIN sig 0 PULSE(0 14 1u 1n 1n 1u 4u)
+VIN sig 0 PULSE(0 14 1u 1n 1n 5u 12u)
 X1 sig out vcc vee out OCFIT
 RL out 0 2k
 .tran 5n 20u

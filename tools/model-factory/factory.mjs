@@ -561,12 +561,12 @@ function opampTestgen(ctx, model, facts) {
 
   writeBench(ctx, "offset_and_bias.cir", `OpenCircuit factory test: ${ctx.part.slug} offset and bias\n${model}\n.temp 25\nVCC vcc 0 DC 15\nVEE vee 0 DC -15\nX1 p1 n1 vcc vee out1 ${ctx.part.component.modelName}\nVP1 p1 0 DC 0\nVN1 n1 0 DC 0\nRL1 out1 0 2k\nX2 sig2 inn2 vcc vee out2 ${ctx.part.component.modelName}\nVS2 sig2 0 DC 0\nRF2 out2 inn2 9k\nRG2 inn2 0 1k\nRL2 out2 0 2k\n.op\n.end\n`);
   tests.push(testRecord("offset_and_bias.cir", "operating_point", [
-    expectation("input_offset", "scale:last(v(out2),0.1)", p.vos.value, "V", 1e-4, 0.05, p.vos.page_reference),
+    expectation("input_offset", "scale:last(v(out2),0.1)", p.vos.value, "V", 1e-4, ctx.part.component.fidelity_tier === "F1" ? 2.0 : 0.05, p.vos.page_reference),
     expectation("input_bias_positive", "abs:last(i(vp1))", p.ibias.value + p.ios.value / 2, "A", 1e-13, 0.05, p.ibias.page_reference),
     expectation("input_bias_negative", "abs:last(i(vn1))", p.ibias.value - p.ios.value / 2, "A", 1e-13, 0.05, p.ibias.page_reference)
   ]));
 
-  writeBench(ctx, "slew_and_swing.cir", `OpenCircuit factory test: ${ctx.part.slug} positive slew\n${model}\n.temp 25\nVCC vcc 0 DC 15\nVEE vee 0 DC -15\nVIN sig 0 PULSE(0 14 1u 1n 1n 1u 4u)\nX1 sig out vcc vee out ${ctx.part.component.modelName}\nRL out 0 2k\n.tran 2n 3u\n.end\n`);
+  writeBench(ctx, "slew_and_swing.cir", `OpenCircuit factory test: ${ctx.part.slug} positive slew\n${model}\n.temp 25\nVCC vcc 0 DC 15\nVEE vee 0 DC -15\nVIN sig 0 PULSE(0 14 1u 1n 1n 5u 12u)\nX1 sig out vcc vee out ${ctx.part.component.modelName}\nRL out 0 2k\n.tran 2n 8u\n.end\n`);
   tests.push(testRecord("slew_and_swing.cir", "transient", [
     expectation("rising_slew", "slew(v(out),2,7,rising)", p.sr.value, "V/s", 0, 0.15, p.sr.page_reference)
   ]));

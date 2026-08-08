@@ -1,0 +1,183 @@
+{
+  "schema_version": "1.0.0",
+  "fitter": "native ngspice-46 rail-drop least squares plus three fixed-point GBW and slew calibration iterations",
+  "deterministic": true,
+  "parameters": {
+    "AOL": 100000,
+    "GBW": 15317131.854272902,
+    "SR": 13439713.150923546,
+    "IBIAS": 5e-07,
+    "IOS": 2e-08,
+    "VOS": 0.0005,
+    "ROUT": 0.3,
+    "ILIM": 0.038,
+    "VDRP_H": 1.999610071337677,
+    "VDRP_L": 1.9996097771085808,
+    "FP2": 8843350.199277455,
+    "CMRR": 100000.0,
+    "PSRR": 100000.0,
+    "VSUP_NOM": 30,
+    "IQ": 0.004,
+    "EN": 4e-09
+  },
+  "parameter_metadata": {
+    "AOL": {
+      "status": "direct typical transcription"
+    },
+    "GBW": {
+      "status": "native calibrated"
+    },
+    "SR": {
+      "status": "native calibrated"
+    },
+    "IBIAS": {
+      "status": "direct typical transcription"
+    },
+    "IOS": {
+      "status": "direct typical transcription"
+    },
+    "VOS": {
+      "status": "direct typical transcription"
+    },
+    "ROUT": {
+      "status": "direct typical transcription"
+    },
+    "ILIM": {
+      "status": "direct digitized typical transcription"
+    },
+    "VDRP_H": {
+      "status": "native fitted to 25 degC typical output swing"
+    },
+    "VDRP_L": {
+      "status": "native fitted to 25 degC typical output swing"
+    },
+    "FP2": {
+      "status": "derived from phase margin and calibrated GBW"
+    },
+    "CMRR": {
+      "status": "derived from direct typical dB value"
+    },
+    "PSRR": {
+      "status": "derived from direct typical dB value"
+    },
+    "VSUP_NOM": {
+      "status": "derived from datasheet test supply"
+    },
+    "IQ": {
+      "status": "direct typical transcription"
+    },
+    "EN": {
+      "status": "direct typical transcription"
+    }
+  },
+  "held_defaults": [
+    {
+      "parameter": "CC",
+      "value": 3e-11,
+      "unit": "F",
+      "reason": "held at default internal archetype scale"
+    },
+    {
+      "parameter": "CDIF",
+      "value": 1e-12,
+      "unit": "F",
+      "reason": "held at default input-capacitance placeholder"
+    },
+    {
+      "parameter": "RE",
+      "value": 1000000.0,
+      "unit": "ohm",
+      "reason": "held at default internal DC path"
+    },
+    {
+      "parameter": "CP2",
+      "value": 1e-12,
+      "unit": "F",
+      "reason": "held at default second-pole scale"
+    },
+    {
+      "parameter": "RQ",
+      "value": 1000000.0,
+      "unit": "ohm",
+      "reason": "held at default clamp-node DC path"
+    },
+    {
+      "parameter": "noise_reference_temperature",
+      "value": 300.15,
+      "unit": "K",
+      "reason": "held at default archetype noise normalization"
+    }
+  ],
+  "rail_drop_fit": {
+    "method": "scipy.optimize.least_squares with native ngspice in every residual",
+    "diff_step": 0.0001,
+    "target": 13,
+    "unit": "V",
+    "conditions": "RL as cited, VS = +/-15 V",
+    "nfev": 2,
+    "cost": 3.4607396517434605e-17
+  },
+  "calibration_iterations": [
+    {
+      "iteration": 1,
+      "gbw_measured": 6531033.635848297,
+      "sr_measured": 12575164.581682414
+    },
+    {
+      "iteration": 2,
+      "gbw_measured": 9996435.286309673,
+      "sr_measured": 12999494.10050117
+    },
+    {
+      "iteration": 3,
+      "gbw_measured": 9999895.688649617,
+      "sr_measured": 12999997.85746557
+    }
+  ],
+  "residuals": [
+    {
+      "quantity": "open-loop gain",
+      "datasheet_value": 100000,
+      "fitted_value": 99985.5019497022,
+      "unit": "V/V",
+      "relative_error": 0.00014498050297799637,
+      "citation": "p. 5 open-loop gain TYP"
+    },
+    {
+      "quantity": "unity-gain bandwidth",
+      "datasheet_value": 10000000,
+      "fitted_value": 9999996.92600279,
+      "unit": "Hz",
+      "relative_error": 3.073997210711241e-07,
+      "citation": "p. 6 AC characteristics"
+    },
+    {
+      "quantity": "slew rate",
+      "datasheet_value": 13000000,
+      "fitted_value": 12999999.949050238,
+      "unit": "V/s",
+      "relative_error": 3.91921243415429e-09,
+      "citation": "p. 6 slew-rate TYP"
+    },
+    {
+      "quantity": "positive output swing",
+      "datasheet_value": 13,
+      "fitted_value": 12.999999923580797,
+      "unit": "V",
+      "relative_error": 5.87840026228675e-09,
+      "citation": "p. 5 output swing TYP"
+    },
+    {
+      "quantity": "negative output swing",
+      "datasheet_value": -13,
+      "fitted_value": -12.999999923466312,
+      "unit": "V",
+      "relative_error": 5.8872067562823265e-09,
+      "citation": "p. 5 output swing TYP"
+    }
+  ],
+  "worst_relative_error": {
+    "value": 0.00014498050297799637,
+    "quantity": "open-loop gain"
+  }
+}
