@@ -1,0 +1,664 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "mpn",
+    "manufacturer",
+    "family",
+    "datasheet_identity",
+    "usable_curves",
+    "curves",
+    "specs",
+    "extraction_notes",
+    "omission_reason"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "mpn": {
+      "type": "string",
+      "minLength": 1
+    },
+    "manufacturer": {
+      "type": "string",
+      "minLength": 1
+    },
+    "family": {
+      "const": "mosfet"
+    },
+    "datasheet_identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "title",
+        "revision",
+        "pages_examined"
+      ],
+      "properties": {
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "revision": {
+          "type": "string",
+          "minLength": 1
+        },
+        "pages_examined": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "usable_curves": {
+      "type": "boolean"
+    },
+    "curves": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "x_axis",
+          "y_axis",
+          "test_conditions",
+          "page_reference",
+          "points"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "x_axis": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "quantity",
+              "unit",
+              "scale"
+            ],
+            "properties": {
+              "quantity": {
+                "type": "string",
+                "minLength": 1
+              },
+              "unit": {
+                "type": "string",
+                "minLength": 1
+              },
+              "scale": {
+                "enum": [
+                  "linear",
+                  "log"
+                ]
+              }
+            }
+          },
+          "y_axis": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "quantity",
+              "unit",
+              "scale"
+            ],
+            "properties": {
+              "quantity": {
+                "type": "string",
+                "minLength": 1
+              },
+              "unit": {
+                "type": "string",
+                "minLength": 1
+              },
+              "scale": {
+                "enum": [
+                  "linear",
+                  "log"
+                ]
+              }
+            }
+          },
+          "test_conditions": {
+            "type": "string",
+            "minLength": 1
+          },
+          "page_reference": {
+            "type": "string",
+            "minLength": 1
+          },
+          "points": {
+            "type": "array",
+            "minItems": 3,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "x",
+                "y"
+              ],
+              "properties": {
+                "x": {
+                  "type": "number"
+                },
+                "y": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "specs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "polarity",
+        "threshold_min",
+        "threshold_typ",
+        "threshold_max",
+        "rdson_points",
+        "ciss",
+        "coss",
+        "crss",
+        "breakdown_voltage",
+        "body_diode"
+      ],
+      "properties": {
+        "polarity": {
+          "enum": [
+            "n",
+            "p"
+          ]
+        },
+        "threshold_min": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "value",
+                "unit",
+                "conditions",
+                "page_reference",
+                "source_kind"
+              ],
+              "properties": {
+                "value": {
+                  "type": "number"
+                },
+                "unit": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "conditions": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "page_reference": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "source_kind": {
+                  "enum": [
+                    "minimum",
+                    "typical",
+                    "maximum",
+                    "digitized_typical_curve"
+                  ]
+                }
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "threshold_typ": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "value",
+                "unit",
+                "conditions",
+                "page_reference",
+                "source_kind"
+              ],
+              "properties": {
+                "value": {
+                  "type": "number"
+                },
+                "unit": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "conditions": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "page_reference": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "source_kind": {
+                  "enum": [
+                    "minimum",
+                    "typical",
+                    "maximum",
+                    "digitized_typical_curve"
+                  ]
+                }
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "threshold_max": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "value",
+                "unit",
+                "conditions",
+                "page_reference",
+                "source_kind"
+              ],
+              "properties": {
+                "value": {
+                  "type": "number"
+                },
+                "unit": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "conditions": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "page_reference": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "source_kind": {
+                  "enum": [
+                    "minimum",
+                    "typical",
+                    "maximum",
+                    "digitized_typical_curve"
+                  ]
+                }
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "rdson_points": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "vgs",
+              "current",
+              "resistance"
+            ],
+            "properties": {
+              "vgs": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "value",
+                  "unit",
+                  "conditions",
+                  "page_reference",
+                  "source_kind"
+                ],
+                "properties": {
+                  "value": {
+                    "type": "number"
+                  },
+                  "unit": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "conditions": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "page_reference": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "source_kind": {
+                    "enum": [
+                      "minimum",
+                      "typical",
+                      "maximum",
+                      "digitized_typical_curve"
+                    ]
+                  }
+                }
+              },
+              "current": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "value",
+                  "unit",
+                  "conditions",
+                  "page_reference",
+                  "source_kind"
+                ],
+                "properties": {
+                  "value": {
+                    "type": "number"
+                  },
+                  "unit": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "conditions": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "page_reference": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "source_kind": {
+                    "enum": [
+                      "minimum",
+                      "typical",
+                      "maximum",
+                      "digitized_typical_curve"
+                    ]
+                  }
+                }
+              },
+              "resistance": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "value",
+                  "unit",
+                  "conditions",
+                  "page_reference",
+                  "source_kind"
+                ],
+                "properties": {
+                  "value": {
+                    "type": "number"
+                  },
+                  "unit": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "conditions": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "page_reference": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "source_kind": {
+                    "enum": [
+                      "minimum",
+                      "typical",
+                      "maximum",
+                      "digitized_typical_curve"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "ciss": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "value",
+                "unit",
+                "conditions",
+                "page_reference",
+                "source_kind"
+              ],
+              "properties": {
+                "value": {
+                  "type": "number"
+                },
+                "unit": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "conditions": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "page_reference": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "source_kind": {
+                  "enum": [
+                    "minimum",
+                    "typical",
+                    "maximum",
+                    "digitized_typical_curve"
+                  ]
+                }
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "coss": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "value",
+                "unit",
+                "conditions",
+                "page_reference",
+                "source_kind"
+              ],
+              "properties": {
+                "value": {
+                  "type": "number"
+                },
+                "unit": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "conditions": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "page_reference": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "source_kind": {
+                  "enum": [
+                    "minimum",
+                    "typical",
+                    "maximum",
+                    "digitized_typical_curve"
+                  ]
+                }
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "crss": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "value",
+                "unit",
+                "conditions",
+                "page_reference",
+                "source_kind"
+              ],
+              "properties": {
+                "value": {
+                  "type": "number"
+                },
+                "unit": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "conditions": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "page_reference": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "source_kind": {
+                  "enum": [
+                    "minimum",
+                    "typical",
+                    "maximum",
+                    "digitized_typical_curve"
+                  ]
+                }
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "breakdown_voltage": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "value",
+                "unit",
+                "conditions",
+                "page_reference",
+                "source_kind"
+              ],
+              "properties": {
+                "value": {
+                  "type": "number"
+                },
+                "unit": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "conditions": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "page_reference": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "source_kind": {
+                  "enum": [
+                    "minimum",
+                    "typical",
+                    "maximum",
+                    "digitized_typical_curve"
+                  ]
+                }
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "body_diode": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "value",
+                "unit",
+                "conditions",
+                "page_reference",
+                "source_kind"
+              ],
+              "properties": {
+                "value": {
+                  "type": "number"
+                },
+                "unit": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "conditions": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "page_reference": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "source_kind": {
+                  "enum": [
+                    "minimum",
+                    "typical",
+                    "maximum",
+                    "digitized_typical_curve"
+                  ]
+                }
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "extraction_notes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "omission_reason": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  }
+}

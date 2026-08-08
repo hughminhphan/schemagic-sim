@@ -1,0 +1,655 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "mpn",
+    "manufacturer",
+    "family",
+    "datasheet_identity",
+    "usable_curves",
+    "curves",
+    "specs",
+    "extraction_notes",
+    "omission_reason"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "mpn": {
+      "type": "string",
+      "minLength": 1
+    },
+    "manufacturer": {
+      "type": "string",
+      "minLength": 1
+    },
+    "family": {
+      "const": "bjt"
+    },
+    "datasheet_identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "title",
+        "revision",
+        "pages_examined"
+      ],
+      "properties": {
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "revision": {
+          "type": "string",
+          "minLength": 1
+        },
+        "pages_examined": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "usable_curves": {
+      "type": "boolean"
+    },
+    "curves": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "x_axis",
+          "y_axis",
+          "test_conditions",
+          "page_reference",
+          "points"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "x_axis": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "quantity",
+              "unit",
+              "scale"
+            ],
+            "properties": {
+              "quantity": {
+                "type": "string",
+                "minLength": 1
+              },
+              "unit": {
+                "type": "string",
+                "minLength": 1
+              },
+              "scale": {
+                "enum": [
+                  "linear",
+                  "log"
+                ]
+              }
+            }
+          },
+          "y_axis": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "quantity",
+              "unit",
+              "scale"
+            ],
+            "properties": {
+              "quantity": {
+                "type": "string",
+                "minLength": 1
+              },
+              "unit": {
+                "type": "string",
+                "minLength": 1
+              },
+              "scale": {
+                "enum": [
+                  "linear",
+                  "log"
+                ]
+              }
+            }
+          },
+          "test_conditions": {
+            "type": "string",
+            "minLength": 1
+          },
+          "page_reference": {
+            "type": "string",
+            "minLength": 1
+          },
+          "points": {
+            "type": "array",
+            "minItems": 3,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "x",
+                "y"
+              ],
+              "properties": {
+                "x": {
+                  "type": "number"
+                },
+                "y": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "specs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "polarity",
+        "gain_points",
+        "saturation_points",
+        "ft",
+        "cobo",
+        "cibo",
+        "vceo"
+      ],
+      "properties": {
+        "polarity": {
+          "enum": [
+            "npn",
+            "pnp"
+          ]
+        },
+        "gain_points": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "collector_current",
+              "vce",
+              "hfe"
+            ],
+            "properties": {
+              "collector_current": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "value",
+                  "unit",
+                  "conditions",
+                  "page_reference",
+                  "source_kind"
+                ],
+                "properties": {
+                  "value": {
+                    "type": "number"
+                  },
+                  "unit": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "conditions": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "page_reference": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "source_kind": {
+                    "enum": [
+                      "minimum",
+                      "typical",
+                      "maximum",
+                      "digitized_typical_curve"
+                    ]
+                  }
+                }
+              },
+              "vce": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "value",
+                  "unit",
+                  "conditions",
+                  "page_reference",
+                  "source_kind"
+                ],
+                "properties": {
+                  "value": {
+                    "type": "number"
+                  },
+                  "unit": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "conditions": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "page_reference": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "source_kind": {
+                    "enum": [
+                      "minimum",
+                      "typical",
+                      "maximum",
+                      "digitized_typical_curve"
+                    ]
+                  }
+                }
+              },
+              "hfe": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "value",
+                  "unit",
+                  "conditions",
+                  "page_reference",
+                  "source_kind"
+                ],
+                "properties": {
+                  "value": {
+                    "type": "number"
+                  },
+                  "unit": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "conditions": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "page_reference": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "source_kind": {
+                    "enum": [
+                      "minimum",
+                      "typical",
+                      "maximum",
+                      "digitized_typical_curve"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "saturation_points": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "collector_current",
+              "base_current",
+              "vce_sat",
+              "vbe_sat"
+            ],
+            "properties": {
+              "collector_current": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "value",
+                  "unit",
+                  "conditions",
+                  "page_reference",
+                  "source_kind"
+                ],
+                "properties": {
+                  "value": {
+                    "type": "number"
+                  },
+                  "unit": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "conditions": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "page_reference": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "source_kind": {
+                    "enum": [
+                      "minimum",
+                      "typical",
+                      "maximum",
+                      "digitized_typical_curve"
+                    ]
+                  }
+                }
+              },
+              "base_current": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "value",
+                  "unit",
+                  "conditions",
+                  "page_reference",
+                  "source_kind"
+                ],
+                "properties": {
+                  "value": {
+                    "type": "number"
+                  },
+                  "unit": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "conditions": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "page_reference": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "source_kind": {
+                    "enum": [
+                      "minimum",
+                      "typical",
+                      "maximum",
+                      "digitized_typical_curve"
+                    ]
+                  }
+                }
+              },
+              "vce_sat": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "value",
+                  "unit",
+                  "conditions",
+                  "page_reference",
+                  "source_kind"
+                ],
+                "properties": {
+                  "value": {
+                    "type": "number"
+                  },
+                  "unit": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "conditions": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "page_reference": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "source_kind": {
+                    "enum": [
+                      "minimum",
+                      "typical",
+                      "maximum",
+                      "digitized_typical_curve"
+                    ]
+                  }
+                }
+              },
+              "vbe_sat": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "value",
+                      "unit",
+                      "conditions",
+                      "page_reference",
+                      "source_kind"
+                    ],
+                    "properties": {
+                      "value": {
+                        "type": "number"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "conditions": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "page_reference": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "source_kind": {
+                        "enum": [
+                          "minimum",
+                          "typical",
+                          "maximum",
+                          "digitized_typical_curve"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "ft": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "value",
+                "unit",
+                "conditions",
+                "page_reference",
+                "source_kind"
+              ],
+              "properties": {
+                "value": {
+                  "type": "number"
+                },
+                "unit": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "conditions": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "page_reference": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "source_kind": {
+                  "enum": [
+                    "minimum",
+                    "typical",
+                    "maximum",
+                    "digitized_typical_curve"
+                  ]
+                }
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cobo": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "value",
+                "unit",
+                "conditions",
+                "page_reference",
+                "source_kind"
+              ],
+              "properties": {
+                "value": {
+                  "type": "number"
+                },
+                "unit": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "conditions": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "page_reference": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "source_kind": {
+                  "enum": [
+                    "minimum",
+                    "typical",
+                    "maximum",
+                    "digitized_typical_curve"
+                  ]
+                }
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cibo": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "value",
+                "unit",
+                "conditions",
+                "page_reference",
+                "source_kind"
+              ],
+              "properties": {
+                "value": {
+                  "type": "number"
+                },
+                "unit": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "conditions": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "page_reference": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "source_kind": {
+                  "enum": [
+                    "minimum",
+                    "typical",
+                    "maximum",
+                    "digitized_typical_curve"
+                  ]
+                }
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "vceo": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "value",
+                "unit",
+                "conditions",
+                "page_reference",
+                "source_kind"
+              ],
+              "properties": {
+                "value": {
+                  "type": "number"
+                },
+                "unit": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "conditions": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "page_reference": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "source_kind": {
+                  "enum": [
+                    "minimum",
+                    "typical",
+                    "maximum",
+                    "digitized_typical_curve"
+                  ]
+                }
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "extraction_notes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "omission_reason": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  }
+}
