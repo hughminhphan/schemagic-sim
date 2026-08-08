@@ -16,7 +16,8 @@ sys.path.insert(0, str(HERE))
 sys.path.insert(0, str(FEEDER_ROOT))
 
 from conveyorlib import (ConveyorError, StateStore, build_luna_prompt, choose_balanced, cross_check,
-                         json_dump, load_and_validate_extraction, safe_stem, top_failure_reasons)
+                         json_dump, load_and_validate_extraction, safe_stem, top_failure_reasons,
+                         top_recorded_reasons)
 from feederlib import download_datasheets, query_manifest, reviewed_mpns, validate_manifest
 
 DEFAULT_DATA = HERE / "data"
@@ -156,9 +157,10 @@ def ingest_command(args) -> int:
     store = state_store(args.data_dir)
     try:
         row = store.get(tranche, part["lcsc_id"])
+        extraction_attempts = store.failure_attempts(tranche, part["lcsc_id"], "extracted")
         payload = load_and_validate_extraction(destination, HERE / "schemas" / f"{part['conveyor_family']}.schema.json", {"mpn": part["mpn"], "manufacturer": part["manufacturer"], "family": part["conveyor_family"]})
         discrepancies = cross_check(payload, part.get("seed_hints", []))
-        if discrepancies and row["attempts"] < 1:
+        if discrepancies and extraction_attempts < 1:
             reason = "; ".join(discrepancies)
             store.transition(tranche, part["lcsc_id"], "failed_extracted", reason=reason, extraction_path=str(destination.relative_to(staging)))
             print(json.dumps({"status": "retry", "lcsc_id": part["lcsc_id"], "discrepancies": discrepancies}, indent=2))
@@ -172,8 +174,9 @@ def ingest_command(args) -> int:
         print(json.dumps({"status": "accepted", "lcsc_id": part["lcsc_id"], "f2_candidate": demotion is None, "demotion_reason": demotion}, indent=2))
         return 0
     except ConveyorError as error:
+        extraction_attempts = store.failure_attempts(tranche, part["lcsc_id"], "extracted")
         store.transition(tranche, part["lcsc_id"], "failed_extracted", reason=str(error), extraction_path=str(destination.relative_to(staging)))
-        print(json.dumps({"status": "retry" if row["attempts"] < 1 else "failed", "error": str(error)}, indent=2))
+        print(json.dumps({"status": "retry" if extraction_attempts < 1 else "failed", "error": str(error)}, indent=2))
         return 2
     finally:
         store.close()
@@ -185,9 +188,15 @@ def fit_command(args) -> int:
     staging = args.data_dir / "staging" / tranche
     batches = staging / "factory-batches"
     packages_root = staging
-    parked: dict[str, str] = {}
-    f2_failures = Counter()
-    results = []
+    parked_path = staging / "family-parked.json"
+    previous_parking = json.loads(parked_path.read_text(encoding="utf-8")) if parked_path.is_file() else {}
+    parked: dict[str, str] = dict(previous_parking.get("parked", {}))
+    f2_failures = Counter(previous_parking.get("f2_gate_failures", {}))
+    results_path = staging / "factory-results.json"
+    previous_results = json.loads(results_path.read_text(encoding="utf-8")) if results_path.is_file() else {}
+    manifest_id_by_mpn = {part["mpn"]: part["lcsc_id"] for part in manifest["parts"]}
+    results_by_id = {(item.get("lcsc_id") or manifest_id_by_mpn.get(item["mpn"])): item for item in previous_results.get("results", [])}
+    staged_this_run = 0
     store = state_store(args.data_dir)
     try:
         for part in manifest["parts"]:
@@ -200,8 +209,9 @@ def fit_command(args) -> int:
             f2_candidate = row["fidelity"] != "F1" and part["conveyor_family"] not in parked
             demotion_reason = row["reason"]
             if not f2_candidate and part["conveyor_family"] in parked:
-                demotion_reason = parked[part["conveyor_family"]]
-            batch_part = {**part, "datasheet_path": str((staging / row["datasheet_path"]).resolve()), "extraction_path": str(extraction_path.resolve()) if f2_candidate and extraction_path else None, "allow_f1_demotion": True, "demotion_reason": demotion_reason}
+                parking_reason = parked[part["conveyor_family"]]
+                demotion_reason = "; ".join(reason for reason in (demotion_reason, parking_reason) if reason)
+            batch_part = {**part, "datasheet_path": str((staging / row["datasheet_path"]).resolve()), "extraction_path": str(extraction_path.resolve()) if extraction_path else None, "force_f1": not f2_candidate, "allow_f1_demotion": True, "demotion_reason": demotion_reason}
             batch = {"schema_version": "1.0.0", "kind": "opencircuit-conveyor-batch", "parts": [batch_part]}
             batch_path = batches / f"{safe_stem(part['lcsc_id'])}.json"
             json_dump(batch_path, batch)
@@ -224,13 +234,15 @@ def fit_command(args) -> int:
                     parked[part["conveyor_family"]] = f"family parked after two F2 fit-gate failures; later parts staged F1 ({reason})"
             store.transition(tranche, part["lcsc_id"], "fitted", fidelity=one["fidelity"], reason=reason, package_path=str(Path(one["package_path"]).relative_to(staging)))
             store.transition(tranche, part["lcsc_id"], "staged", fidelity=one["fidelity"], reason=reason, package_path=str(Path(one["package_path"]).relative_to(staging)))
-            results.append(one)
+            results_by_id[part["lcsc_id"]] = one
+            staged_this_run += 1
     finally:
         rows = store.rows(tranche)
         store.close()
+    results = [results_by_id[part["lcsc_id"]] for part in manifest["parts"] if part["lcsc_id"] in results_by_id]
     json_dump(staging / "family-parked.json", {"schema_version": "1.0.0", "parked": parked, "f2_gate_failures": dict(f2_failures)})
-    json_dump(staging / "factory-results.json", {"schema_version": "1.0.0", "results": results})
-    print(json.dumps({"staged": len(results), "fidelity": dict(Counter(item.get("fidelity") for item in results)), "states": dict(Counter(row["state"] for row in rows)), "parked": parked}, indent=2))
+    json_dump(results_path, {"schema_version": "1.0.0", "results": results})
+    print(json.dumps({"staged": staged_this_run, "total_staged": len(results), "fidelity": dict(Counter(item.get("fidelity") for item in results)), "states": dict(Counter(row["state"] for row in rows)), "parked": parked}, indent=2))
     return 0
 
 
@@ -241,7 +253,7 @@ def status_command(args) -> int:
         rows = store.rows(tranche)
     finally:
         store.close()
-    print(json.dumps({"tranche": tranche, "states": dict(Counter(row["state"] for row in rows)), "fidelity": dict(Counter(row["fidelity"] for row in rows if row["fidelity"])), "top_failure_reasons": top_failure_reasons(rows)}, indent=2))
+    print(json.dumps({"tranche": tranche, "states": dict(Counter(row["state"] for row in rows)), "fidelity": dict(Counter(row["fidelity"] for row in rows if row["fidelity"])), "top_failure_reasons": top_failure_reasons(rows), "top_recorded_reasons": top_recorded_reasons(rows)}, indent=2))
     return 0
 
 

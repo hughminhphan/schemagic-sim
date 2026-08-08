@@ -7,8 +7,9 @@ import math
 import re
 import sqlite3
 from collections import Counter
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
-from typing import Any, Iterable, Mapping, Sequence
+from typing import Any, Callable, Iterable, Mapping, Sequence
 
 SCHEMA_VERSION = "1.0.0"
 LINEAR_STATES = ("selected", "datasheet_fetched", "extracted", "fitted", "staged")
@@ -121,6 +122,12 @@ class StateStore:
                 raise ConveyorError(f"Illegal transition {from_state} -> {to_state}")
         elif base_to not in LINEAR_STATES[1:]:
             raise ConveyorError(f"Invalid failure bucket: {to_state}")
+        else:
+            target_index = LINEAR_STATES.index(base_to)
+            source_base = from_state.removeprefix("failed_")
+            source_index = LINEAR_STATES.index(source_base)
+            if to_state != from_state and target_index != source_index + 1:
+                raise ConveyorError(f"Illegal transition {from_state} -> {to_state}")
         allowed_fields = {"fidelity", "datasheet_path", "extraction_path", "package_path"}
         unknown = set(fields) - allowed_fields
         if unknown:
@@ -141,6 +148,14 @@ class StateStore:
                 "INSERT INTO transitions (tranche, lcsc_id, from_state, to_state, reason, created_at) VALUES (?, ?, ?, ?, ?, ?)",
                 (tranche, lcsc_id, from_state, to_state, reason, utc_now()),
             )
+
+    def failure_attempts(self, tranche: str, lcsc_id: str, stage: str) -> int:
+        if stage not in LINEAR_STATES[1:]:
+            raise ConveyorError(f"Invalid failure stage: {stage}")
+        return int(self.connection.execute(
+            "SELECT count(*) FROM transitions WHERE tranche = ? AND lcsc_id = ? AND to_state = ?",
+            (tranche, lcsc_id, f"failed_{stage}"),
+        ).fetchone()[0])
 
     def summary(self, tranche: str) -> dict[str, int]:
         counts = Counter(row["state"] for row in self.rows(tranche))
@@ -287,13 +302,19 @@ def extracted_targets(payload: Mapping[str, Any]) -> dict[str, list[float]]:
     return result
 
 
+def catalog_parametric_values(raw: Any) -> list[float]:
+    """Parse the asserted value or range, excluding numbers in test conditions after @."""
+    value_text = str(raw).split("@", 1)[0]
+    return numeric_values(value_text)
+
+
 def cross_check(payload: Mapping[str, Any], seed_hints: Sequence[Mapping[str, Any]], ratio_limit: float = 3.0) -> list[str]:
     targets = extracted_targets(payload)
     discrepancies: list[str] = []
     for hint in seed_hints:
         target = str(hint.get("factory_target", ""))
         extracted = [abs(value) for value in targets.get(target, []) if value != 0]
-        catalog = [abs(value) for value in numeric_values(hint.get("raw_value", "")) if value != 0]
+        catalog = [abs(value) for value in catalog_parametric_values(hint.get("raw_value", "")) if value != 0]
         if not extracted or not catalog:
             continue
         ratio = min(max(a, b) / min(a, b) for a in extracted for b in catalog)
@@ -325,6 +346,24 @@ def build_luna_prompt(repo_root: Path, pack_path: Path, datasheet_path: Path, pa
     return "\n".join(lines) + "\n"
 
 
+def run_extraction_batch(
+    jobs: Sequence[Mapping[str, Any]],
+    invoke: Callable[[Mapping[str, Any]], Any],
+    *,
+    max_concurrency: int = 4,
+) -> list[Any]:
+    """Dispatch extraction jobs through an injected Luna caller with a hard four-call ceiling."""
+    if max_concurrency < 1 or max_concurrency > 4:
+        raise ConveyorError("Extraction concurrency must be between 1 and 4")
+    with ThreadPoolExecutor(max_workers=max_concurrency) as executor:
+        return list(executor.map(invoke, jobs))
+
+
 def top_failure_reasons(rows: Iterable[Mapping[str, Any]], limit: int = 3) -> list[tuple[str, int]]:
     counter = Counter(row.get("reason") or "unspecified" for row in rows if str(row.get("state", "")).startswith("failed_"))
+    return counter.most_common(limit)
+
+
+def top_recorded_reasons(rows: Iterable[Mapping[str, Any]], limit: int = 3) -> list[tuple[str, int]]:
+    counter = Counter(row.get("reason") for row in rows if row.get("reason"))
     return counter.most_common(limit)

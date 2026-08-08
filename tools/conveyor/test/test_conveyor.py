@@ -3,13 +3,15 @@ from __future__ import annotations
 import json
 import sys
 import tempfile
+import threading
+import time
 import unittest
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(HERE))
 
-from conveyorlib import ConveyorError, StateStore, cross_check, load_and_validate_extraction
+from conveyorlib import ConveyorError, StateStore, cross_check, load_and_validate_extraction, run_extraction_batch
 
 
 def q(value, unit="V"):
@@ -37,13 +39,16 @@ class StateMachineTest(unittest.TestCase):
             self.assertEqual(len(store.rows("t")), 1)
             store.transition("t", "C1", "failed_datasheet_fetched", reason="HTTP 403")
             store.transition("t", "C1", "datasheet_fetched", datasheet_path="datasheets/D1.pdf")
+            store.transition("t", "C1", "failed_extracted", reason="bad JSON")
             store.transition("t", "C1", "extracted", extraction_path="extractions/D1.json")
             self.assertEqual(store.get("t", "C1")["state"], "extracted")
-            self.assertEqual(store.get("t", "C1")["attempts"], 1)
+            self.assertEqual(store.get("t", "C1")["attempts"], 2)
+            self.assertEqual(store.failure_attempts("t", "C1", "datasheet_fetched"), 1)
+            self.assertEqual(store.failure_attempts("t", "C1", "extracted"), 1)
             with self.assertRaises(ConveyorError):
                 store.transition("t", "C1", "staged")
             transitions = store.connection.execute("SELECT count(*) FROM transitions").fetchone()[0]
-            self.assertEqual(transitions, 4)
+            self.assertEqual(transitions, 5)
             store.close()
 
 
@@ -68,6 +73,44 @@ class CrossCheckTest(unittest.TestCase):
         bad = [{"factory_target": "diode.forward_voltage", "raw_value": "7.2V@10mA"}]
         self.assertEqual(cross_check(payload, matching), [])
         self.assertRegex(cross_check(payload, bad)[0], "closest ratio")
+
+    def test_ignores_test_condition_numbers_and_honors_si_prefixes(self):
+        payload = {
+            "family": "mosfet",
+            "specs": {
+                "rdson_points": [{"resistance": q(0.03, "ohm")}],
+                "threshold_min": None, "threshold_typ": None, "threshold_max": None,
+                "ciss": q(50e-12, "F"), "coss": None, "crss": None,
+            },
+        }
+        self.assertEqual(cross_check(payload, [{"factory_target": "vdmos.rds_on", "raw_value": "45mΩ@2.5V,4.0A"}]), [])
+        discrepancy = cross_check(payload, [{"factory_target": "vdmos.rds_on", "raw_value": "45Ω@2.5V,4.0A"}])[0]
+        self.assertIn("1.5e+03x", discrepancy)
+        self.assertEqual(cross_check(payload, [{"factory_target": "vdmos.ciss", "raw_value": "50pF@25V"}]), [])
+
+
+class MockedLunaDispatchTest(unittest.TestCase):
+    def test_hard_caps_mocked_luna_calls_at_four(self):
+        lock = threading.Lock()
+        active = 0
+        peak = 0
+
+        def invoke(job):
+            nonlocal active, peak
+            with lock:
+                active += 1
+                peak = max(peak, active)
+            time.sleep(0.01)
+            with lock:
+                active -= 1
+            return {"lcsc_id": job["lcsc_id"], "json_only": True}
+
+        jobs = [{"lcsc_id": f"C{index}"} for index in range(12)]
+        results = run_extraction_batch(jobs, invoke, max_concurrency=4)
+        self.assertEqual([item["lcsc_id"] for item in results], [item["lcsc_id"] for item in jobs])
+        self.assertLessEqual(peak, 4)
+        with self.assertRaises(ConveyorError):
+            run_extraction_batch(jobs, invoke, max_concurrency=5)
 
 
 if __name__ == "__main__":

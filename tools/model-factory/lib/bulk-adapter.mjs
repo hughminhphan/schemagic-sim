@@ -43,13 +43,22 @@ function linearRegression(points) {
 function hintNumber(part, target, fallback) {
   const hint = part.seed_hints?.find((candidate) => candidate.factory_target === target);
   if (!hint) return fallback;
-  const match = String(hint.raw_value).replace(/,/g, "").match(/[+-]?\d+(?:\.\d+)?(?:e[+-]?\d+)?/i);
-  return match ? Number(match[0]) : fallback;
+  const match = String(hint.raw_value).replace(/,/g, "").match(/[+-]?\d+(?:\.\d+)?(?:e[+-]?\d+)?\s*(meg|[pnumkµ])?/i);
+  if (!match) return fallback;
+  const multipliers = { p: 1e-12, n: 1e-9, u: 1e-6, "µ": 1e-6, m: 1e-3, k: 1e3, meg: 1e6 };
+  return Number(match[0].match(/[+-]?\d+(?:\.\d+)?(?:e[+-]?\d+)?/i)[0]) * (multipliers[(match[1] || "").toLowerCase()] ?? 1);
 }
 
-function diodeFit(part, extraction) {
+function polarityFor(part, extraction) {
+  const stated = extraction?.specs?.polarity;
+  if (stated === "p" || stated === "pnp") return "p";
+  if (stated === "n" || stated === "npn") return "n";
+  return /p-channel|pmos|pnp/i.test(`${part.subcategory} ${part.description} ${part.attributes?.Type ?? ""}`) ? "p" : "n";
+}
+
+function diodeFit(part, extraction, forceF1 = false) {
   const points = quantityValues(extraction, ["forward", "iv"]).map((point) => ({ x: Math.log(point.y), y: point.x }));
-  if (extraction?.usable_curves && points.length >= 3) {
+  if (!forceF1 && extraction?.usable_curves && points.length >= 3) {
     const regression = linearRegression(points);
     const vt = 0.025852;
     const N = regression.slope / vt;
@@ -64,15 +73,16 @@ function diodeFit(part, extraction) {
     }
     return { fidelity: "F2", parameters: { IS, N, RS: 1e-4 }, worst, points };
   }
-  const vf = hintNumber(part, "diode.forward_voltage", 0.7);
-  const current = 0.01;
+  const scalarPoint = extraction?.specs?.forward_voltage_points?.find((point) => Number(point?.voltage?.value) > 0 && Number(point?.current?.value) > 0);
+  const vf = scalarPoint ? Number(scalarPoint.voltage.value) : hintNumber(part, "diode.forward_voltage", 0.7);
+  const current = scalarPoint ? Number(scalarPoint.current.value) : 0.01;
   const N = /schottky/i.test(`${part.subcategory} ${part.description}`) ? 1.1 : 1.8;
   return { fidelity: "F1", parameters: { IS: current / Math.exp(vf / (N * 0.025852)), N, RS: 1e-4 }, worst: null, points: [] };
 }
 
-function bjtFit(part, extraction) {
+function bjtFit(part, extraction, forceF1 = false) {
   const gains = extraction?.specs?.gain_points?.map((point) => Number(point.hfe.value)).filter((value) => value > 0) ?? [];
-  if (extraction?.usable_curves && gains.length >= 4) {
+  if (!forceF1 && extraction?.usable_curves && gains.length >= 4) {
     const BF = Math.max(...gains);
     const worst = Math.max(...gains.map((gain) => Math.abs(BF - gain) / gain));
     if (worst >= 0.25) throw new Error(`BJT F2 residual gate failed: constant-BF seed worst=${worst}`);
@@ -81,13 +91,16 @@ function bjtFit(part, extraction) {
   return { fidelity: "F1", parameters: { IS: 1e-14, BF: Math.max(1, BF), VAF: 100, IKF: 1e3, RB: 10, RC: 0.1, RE: 0.05, CJE: 1e-12, CJC: 1e-12, TF: 1e-9 }, worst: null, points: [] };
 }
 
-function mosfetFit(part, extraction) {
-  if (extraction?.usable_curves) throw new Error("MOSFET F2 native multi-curve residual gate is not yet proven for generic conveyor inputs");
-  const threshold = hintNumber(part, "vdmos.threshold", 2.5);
-  const rdson = Math.max(1e-4, hintNumber(part, "vdmos.rds_on", 0.1));
-  const ciss = Math.max(1e-15, hintNumber(part, "vdmos.ciss", 1e-9));
-  const coss = Math.max(1e-15, hintNumber(part, "vdmos.coss", 2e-10));
-  const crss = Math.max(1e-15, hintNumber(part, "vdmos.crss", 5e-11));
+function mosfetFit(part, extraction, forceF1 = false) {
+  if (!forceF1 && extraction?.usable_curves) throw new Error("MOSFET F2 native multi-curve residual gate is not yet proven for generic conveyor inputs");
+  const specs = extraction?.specs;
+  const thresholdValue = specs?.threshold_typ?.value ?? specs?.threshold_max?.value ?? specs?.threshold_min?.value;
+  const rdsonValue = specs?.rdson_points?.find((point) => Number(point?.resistance?.value) > 0)?.resistance?.value;
+  const threshold = Number.isFinite(Number(thresholdValue)) ? Number(thresholdValue) : hintNumber(part, "vdmos.threshold", 2.5);
+  const rdson = Math.max(1e-4, Number.isFinite(Number(rdsonValue)) ? Number(rdsonValue) : hintNumber(part, "vdmos.rds_on", 0.1));
+  const ciss = Math.max(1e-15, Number.isFinite(Number(specs?.ciss?.value)) ? Number(specs.ciss.value) : hintNumber(part, "vdmos.ciss", 1e-9));
+  const coss = Math.max(1e-15, Number.isFinite(Number(specs?.coss?.value)) ? Number(specs.coss.value) : hintNumber(part, "vdmos.coss", 2e-10));
+  const crss = Math.max(1e-15, Number.isFinite(Number(specs?.crss?.value)) ? Number(specs.crss.value) : hintNumber(part, "vdmos.crss", 5e-11));
   return { fidelity: "F1", parameters: { VTO: threshold, KP: 2 / rdson, THETA: 0, LAMBDA: 0.003, RD: 0.55 * rdson, RS: 0.2 * rdson, RG: 1e-4, CGS: Math.max(1e-15, ciss - crss), CGDMAX: crss, CGDMIN: crss, CJO: Math.max(1e-15, coss - crss), IS: 1e-12, N: 1.5, RB: 0.2 * rdson }, worst: null, points: [] };
 }
 
@@ -96,10 +109,10 @@ function modelFor(part, fit) {
   const p = fit.parameters;
   if (part.conveyor_family === "diode") return { name, text: `.model ${name} D(IS=${fmt(p.IS)} N=${fmt(p.N)} RS=${fmt(p.RS)})\n` };
   if (part.conveyor_family === "bjt") {
-    const polarity = /pnp/i.test(`${part.subcategory} ${part.description} ${part.attributes?.Type ?? ""}`) ? "PNP" : "NPN";
+    const polarity = fit.polarity === "p" ? "PNP" : "NPN";
     return { name, text: `.model ${name} ${polarity}(IS=${fmt(p.IS)} BF=${fmt(p.BF)} VAF=${fmt(p.VAF)} IKF=${fmt(p.IKF)} RB=${fmt(p.RB)} RC=${fmt(p.RC)} RE=${fmt(p.RE)} CJE=${fmt(p.CJE)} CJC=${fmt(p.CJC)} TF=${fmt(p.TF)})\n` };
   }
-  const pchan = /p-channel|pmos/i.test(`${part.subcategory} ${part.description} ${part.attributes?.Type ?? ""}`) ? " pchan" : "";
+  const pchan = fit.polarity === "p" ? " pchan" : "";
   return { name, text: `.model ${name} VDMOS(${pchan} VTO=${fmt(Math.abs(p.VTO))} KP=${fmt(p.KP)} THETA=${fmt(p.THETA)} LAMBDA=${fmt(p.LAMBDA)} RD=${fmt(p.RD)} RS=${fmt(p.RS)} RG=${fmt(p.RG)} RDS=1e9 CGS=${fmt(p.CGS)} CGDMAX=${fmt(p.CGDMAX)} CGDMIN=${fmt(p.CGDMIN)} CJO=${fmt(p.CJO)} IS=${fmt(p.IS)} N=${fmt(p.N)} RB=${fmt(p.RB)})\n` };
 }
 
@@ -120,28 +133,29 @@ export function defaultNgspiceRunner(modelText) {
   }
 }
 
-export function fitBulkPart(part, extraction, { ngspiceRunner = defaultNgspiceRunner } = {}) {
+export function fitBulkPart(part, extraction, { ngspiceRunner = defaultNgspiceRunner, forceF1 = false } = {}) {
   let fit;
-  if (part.conveyor_family === "diode") fit = diodeFit(part, extraction);
-  else if (part.conveyor_family === "bjt") fit = bjtFit(part, extraction);
-  else if (part.conveyor_family === "mosfet") fit = mosfetFit(part, extraction);
+  if (part.conveyor_family === "diode") fit = diodeFit(part, extraction, forceF1);
+  else if (part.conveyor_family === "bjt") fit = bjtFit(part, extraction, forceF1);
+  else if (part.conveyor_family === "mosfet") fit = mosfetFit(part, extraction, forceF1);
   else throw new Error(`Unsupported conveyor family: ${part.conveyor_family}`);
+  fit.polarity = polarityFor(part, extraction);
   const model = modelFor(part, fit);
   ngspiceRunner(model.text, { part, fit });
   return { ...fit, model };
 }
 
-function pinsFor(family) {
+function pinsFor(family, polarity) {
   if (family === "diode") return { pins: [{ name: "A", number: "1", role: "anode", node: "anode" }, { name: "K", number: "2", role: "cathode", node: "cathode" }], order: ["1", "2"], electrical: "diode" };
-  if (family === "bjt") return { pins: [{ name: "B", number: "1", role: "base", node: "base" }, { name: "C", number: "2", role: "collector", node: "collector" }, { name: "E", number: "3", role: "emitter", node: "emitter" }], order: ["2", "1", "3"], electrical: "bjt_npn" };
-  return { pins: [{ name: "G", number: "1", role: "gate", node: "gate" }, { name: "D", number: "2", role: "drain", node: "drain" }, { name: "S", number: "3", role: "source", node: "source" }], order: ["2", "1", "3"], electrical: "nmos" };
+  if (family === "bjt") return { pins: [{ name: "B", number: "1", role: "base", node: "base" }, { name: "C", number: "2", role: "collector", node: "collector" }, { name: "E", number: "3", role: "emitter", node: "emitter" }], order: ["2", "1", "3"], electrical: polarity === "p" ? "bjt_pnp" : "bjt_npn" };
+  return { pins: [{ name: "G", number: "1", role: "gate", node: "gate" }, { name: "D", number: "2", role: "drain", node: "drain" }, { name: "S", number: "3", role: "source", node: "source" }], order: ["2", "1", "3"], electrical: polarity === "p" ? "pmos" : "nmos" };
 }
 
 export function stageBulkPart(part, extraction, fit, stagingRoot, { demotionReason = null } = {}) {
   const manufacturerSlug = slugManufacturer(part.manufacturer);
   const packageDir = path.join(stagingRoot, "packages", manufacturerSlug, safe(part.mpn));
   if (path.resolve(packageDir).includes(`${path.sep}packages${path.sep}model-library${path.sep}`)) throw new Error("Bulk staging may not target the reviewed model library");
-  const pinInfo = pinsFor(part.conveyor_family);
+  const pinInfo = pinsFor(part.conveyor_family, fit.polarity);
   const omissions = [
     "Unreviewed conveyor output. Independent source, fit, native/WASM, operating-bound, omission, and package review are still required before promotion.",
     "Catalog parametrics were used only as initial guesses or F1 fallback constraints; they are not datasheet citations.",
@@ -187,19 +201,20 @@ export function runBulkManifest(manifestPath, stagingRoot, options = {}) {
   for (const part of parts) {
     const extraction = part.extraction_path && fs.existsSync(part.extraction_path) ? JSON.parse(fs.readFileSync(part.extraction_path, "utf8")) : null;
     try {
-      const fit = fitBulkPart(part, extraction, options);
-      const packagePath = stageBulkPart(part, extraction, fit, stagingRoot, { demotionReason: part.demotion_reason ?? null });
-      results.push({ mpn: part.mpn, status: "staged", fidelity: fit.fidelity, package_path: packagePath });
+      const fit = fitBulkPart(part, extraction, { ...options, forceF1: part.force_f1 === true });
+      const demotionReason = part.demotion_reason ?? null;
+      const packagePath = stageBulkPart(part, extraction, fit, stagingRoot, { demotionReason });
+      results.push({ ...(part.lcsc_id ? { lcsc_id: part.lcsc_id } : {}), mpn: part.mpn, status: "staged", fidelity: fit.fidelity, ...(demotionReason ? { demotion_reason: demotionReason } : {}), package_path: packagePath });
     } catch (error) {
       if (part.allow_f1_demotion !== false) {
-        const fallbackPart = { ...part };
-        const fit = part.conveyor_family === "diode" ? diodeFit(fallbackPart, null) : part.conveyor_family === "bjt" ? bjtFit(fallbackPart, null) : mosfetFit(fallbackPart, null);
-        const model = modelFor(fallbackPart, fit);
-        options.ngspiceRunner ? options.ngspiceRunner(model.text, { part: fallbackPart, fit }) : defaultNgspiceRunner(model.text);
-        fit.model = model;
-        const packagePath = stageBulkPart(fallbackPart, extraction, fit, stagingRoot, { demotionReason: error.message });
-        results.push({ mpn: part.mpn, status: "staged", fidelity: "F1", demotion_reason: error.message, package_path: packagePath });
-      } else results.push({ mpn: part.mpn, status: "failed", stage: "fitted", reason: error.message });
+        try {
+          const fit = fitBulkPart(part, extraction, { ...options, forceF1: true });
+          const packagePath = stageBulkPart(part, extraction, fit, stagingRoot, { demotionReason: error.message });
+          results.push({ ...(part.lcsc_id ? { lcsc_id: part.lcsc_id } : {}), mpn: part.mpn, status: "staged", fidelity: "F1", demotion_reason: error.message, package_path: packagePath });
+        } catch (fallbackError) {
+          results.push({ ...(part.lcsc_id ? { lcsc_id: part.lcsc_id } : {}), mpn: part.mpn, status: "failed", stage: "fitted", reason: `F2 failed: ${error.message}; F1 failed: ${fallbackError.message}` });
+        }
+      } else results.push({ ...(part.lcsc_id ? { lcsc_id: part.lcsc_id } : {}), mpn: part.mpn, status: "failed", stage: "fitted", reason: error.message });
     }
   }
   return results;
