@@ -29,6 +29,12 @@ Optocouplers and misc (7): PC817*, 4N35, LL4148 (SMD alias family demo), BC846B 
 
 Alias/package policy: SMD siblings (MMBT3904 vs 2N3904) are separate component.json entries that may share a fitted die model with distinct package metadata; ordering-code aliases go in the alias field, they do not inflate the MPN count dishonestly (count = distinct component.json entries with real datasheet provenance).
 
+## Bulk tranche feeder
+
+`tools/part-feeder/` scales candidate selection to read-only SQL over a local, gitignored jlcparts/LCSC catalog dump. Its manifests, catalog parametrics, PDFs, and generated fit attempts are raw material, not reviewed models. SQL row counts, aliases, staged packages, and automated validation passes never increase the reviewed-model claim. A candidate counts only after independent source, citation, fit, native/WASM validation, operating-bound, omission, and package review promotes a real `component.json` package into `packages/model-library/models`.
+
+The feeder is limited to factual parametrics and datasheet PDFs. Vendor SPICE files and model packs are prohibited inputs. See [`tools/part-feeder/README.md`](../tools/part-feeder/README.md) for the local staging and promotion handoff.
+
 ## Per-family archetypes (P3 factory must implement + document each)
 - diode/zener/LED: single .model D card; fit IV (3+ points), reverse leakage, CJO/TT where datasheet gives them; zeners fit BV/IBV.
 - bjt: Gummel-Poon .model; fit from hFE vs IC table, VCE(sat), fT, Cob.

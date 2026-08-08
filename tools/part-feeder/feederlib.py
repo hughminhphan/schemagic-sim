@@ -136,7 +136,12 @@ def _remote_file(name: str, url: str, headers: Mapping[str, str]) -> RemoteFile:
 
 
 def remote_archive_id(files: Sequence[RemoteFile]) -> str:
-    material = "\n".join(f"{item.name}:{item.size}:{item.etag}:{item.last_modified}" for item in files)
+    # GitHub Pages can report one-second Last-Modified differences for identical
+    # split chunks from different edges. The terminal cache.zip metadata identifies
+    # the deployment; all segment names and sizes guard its expected archive shape.
+    terminal = files[-1]
+    shape = "\n".join(f"{item.name}:{item.size}" for item in files)
+    material = f"{shape}\nterminal:{terminal.etag}:{terminal.last_modified}"
     return hashlib.sha256(material.encode()).hexdigest()
 
 
@@ -194,10 +199,29 @@ def reassemble_split_zip(last_segment: Path, output_zip: Path) -> None:
                 "<4s4H2LH", data, eocd
             )
             if eocd + 22 + comment_length != len(data):
-                raise FeederError("ZIP64 or trailing-data split archives are not supported")
+                raise FeederError("Split archive has trailing data")
             if disk >= len(starts) or directory_disk >= len(starts):
                 raise FeederError("Split archive references a missing disk")
-            global_directory = starts[directory_disk] + directory_offset
+
+            zip64_locator = eocd - 20
+            if data[zip64_locator:zip64_locator + 4] == b"PK\x06\x07":
+                zip64_disk, zip64_offset, _ = struct.unpack_from("<LQL", data, zip64_locator + 4)
+                if zip64_disk >= len(starts):
+                    raise FeederError("ZIP64 end record references a missing disk")
+                zip64_eocd = starts[zip64_disk] + zip64_offset
+                if data[zip64_eocd:zip64_eocd + 4] != b"PK\x06\x06":
+                    raise FeederError("ZIP64 end record is invalid")
+                zip64_values = struct.unpack_from("<2H2L4Q", data, zip64_eocd + 12)
+                _, _, zip64_current_disk, zip64_directory_disk, _, zip64_entries, _, zip64_directory_offset = zip64_values
+                if zip64_current_disk >= len(starts) or zip64_directory_disk >= len(starts):
+                    raise FeederError("ZIP64 directory references a missing disk")
+                entry_count = zip64_entries
+                global_directory = starts[zip64_directory_disk] + zip64_directory_offset
+                struct.pack_into("<LLQQQQ", data, zip64_eocd + 16, 0, 0, entry_count, entry_count,
+                                 struct.unpack_from("<Q", data, zip64_eocd + 40)[0], global_directory)
+                struct.pack_into("<LQL", data, zip64_locator + 4, 0, zip64_eocd, 1)
+            else:
+                global_directory = starts[directory_disk] + directory_offset
             cursor = global_directory
             for _ in range(entry_count):
                 if data[cursor:cursor + 4] != b"PK\x01\x02":
