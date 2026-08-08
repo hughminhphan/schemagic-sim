@@ -50,7 +50,7 @@ Top-level JSON, version-stamped:
   - type is the GENERIC electrical type (resistor, capacitor, vsource, ground, led, bjt_npn, ...). mpn present => a real part from model-library; absent => parametric generic.
 - Wire: { id, points: [[x,y],...] } orthogonal polyline; junction dots derived, not stored.
 - Probe: { id, kind: "voltage"|"current"|"diff", target: {node|componentPin|wire}, color?: paletteToken }.
-- SimConfig: { mode: "live"|"op"|"tran"|"ac", tran?: {tstop, tstep?, maxstep?}, ac?: {fstart, fstop, pointsPerDecade, sweep:"dec"} }.
+- SimConfig: { mode: "live"|"op"|"dc-sweep"|"tran"|"ac", tran?: {tstop, tstep?, maxstep?}, ac?: {fstart, fstop, pointsPerDecade, sweep:"dec"}, dcSweep?: {sourceId, start, stop, step, secondary?: {sourceId, start, stop, step}} }. DC sweep ranges are linear, must have a non-zero span and a step whose sign moves from start toward stop, and are capped at 50,000 total points across both sweep dimensions.
 - Serialization: JSON.stringify with sorted object keys everywhere, arrays in id order, no floating noise (numbers round-tripped via canonical formatter, ≤ 12 significant digits). Same document => byte-identical string. This string is the undo/redo snapshot unit and the share-URL payload.
 
 ## 3. Electrical graph and netlist generation
@@ -60,12 +60,13 @@ Top-level JSON, version-stamped:
 - Netlist header comment carries document hash. Generic components map to SPICE primitives; mpn components emit `.include`-equivalent inline subckt from model-library (subckt names namespaced OC_<MANUFACTURER>_<MPN>).
 - Potentiometer: two resistors from one wiper parameter t ∈ [0.005, 0.995] (clamped; never 0/1 to avoid singular matrices).
 - Switch: ideal on = 1 mΩ resistor, off = 1 GΩ (documented honesty note in UI).
-- Every generated netlist ends with explicit analysis + output commands; no interactive .control loops in v1 [PENDING-SPIKE: exact output capture mechanism].
+- Every generated netlist ends with explicit analysis + output commands; no interactive .control loops in v1 [PENDING-SPIKE: exact output capture mechanism]. DC sweep generation emits `.dc <primary> <start> <stop> <step> [<secondary> <start> <stop> <step>]` for independent V/I sources selected by circuit component id.
 
 ## 4. Simulation worker protocol (FROZEN, per engine spike)
 
 - sim-engine runs entirely in a dedicated module Web Worker. One request at a time; a new request replaces any queued-not-started one. Engine initializes once and is reused; `destroy all` + rawfile cleanup between runs.
-- Request: { id, type: "runOpPoint"|"runTransient"|"runAC", netlist, limits? }. Response: { id, type:"ready"|"result"|"error" }; results carry VectorMeta[] + transferred ArrayBuffers (Float64; AC = interleaved re/im). Errors: code ∈ PARSE|CONVERGENCE|LIMIT|ENGINE|CANCELLED plus component-linked diagnostics.
+- Request: { id, type: "runOpPoint"|"runDCSweep"|"runTransient"|"runAC", netlist, limits?, sweep? }. `runDCSweep` requires `sweep: {primary: DCSweepSourceSpec, secondary?: DCSweepSourceSpec}` where each source spec is `{componentId, name, unit:"V"|"A", start, stop, step}`. Response: { id, type:"ready"|"result"|"error" }; results carry VectorMeta[] + transferred ArrayBuffers (Float64; AC = interleaved re/im). Errors: code ∈ PARSE|CONVERGENCE|LIMIT|ENGINE|CANCELLED plus component-linked diagnostics.
+- DC sweep result: the first raw vector is normalized to `{name:"sweep", kind:"sweep"}` and transferred like every other real Float64 vector. Probe vectors remain flattened in ngspice point order. The result adds `sweep: {axisVector:"sweep", primary, secondary?, segments:[{startIndex,length,secondaryValue?}]}`. A one-source sweep has one segment. A two-source sweep has one segment per secondary value, with each segment selecting the matching primary-axis and per-probe slices. This keeps the sweep axis, per-probe vectors, and stepped-family metadata explicit without duplicating buffers.
 - Output transport: ngspice BINARY rawfile parsed in the worker (validate header counts and byte length before allocating). wrdata only for debugging.
 - Cancellation/timeout: terminate the Worker, reject as CANCELLED, spawn and warm a fresh Worker (pre-warmed spare hides latency).
 - Hard limits: netlist ≤ 1 MiB; rawfile ≤ 128 MiB; ≤ 1M total samples; WASM MAXIMUM_MEMORY 256 MiB; warm interactive op timeout 2 s; tran/AC default 10 s. Includes resolve only through a controlled virtual include map; no host or network file access. Exceeding => structured error, never a hung UI.

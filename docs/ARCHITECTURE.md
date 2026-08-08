@@ -61,7 +61,7 @@ The pinned engine artifact is built under `tools/ngspice-wasm-build`. The browse
 
 ### Waveform viewer
 
-`packages/waveform-viewer` renders operating-point, transient, and AC data. It owns axis generation, decimation, cursor snapping, engineering formatting, Bode conversion, and CSV export. It consumes simulation vectors without owning circuit or solver state.
+`packages/waveform-viewer` renders operating-point sweeps, DC sweep curve families, transient data, and AC data. It owns axis generation, decimation, cursor snapping, engineering formatting, Bode conversion, legends, and CSV export. It consumes simulation vectors without owning circuit or solver state.
 
 ### Model import
 
