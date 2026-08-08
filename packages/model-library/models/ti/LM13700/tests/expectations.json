@@ -1,0 +1,302 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "transconductance_curve.cir",
+      "analysis_type": "ac_small_signal",
+      "scalar_checks": [
+        {
+          "name": "transconductance_1",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vout1),1000)"
+          },
+          "expected_value": 0.000019,
+          "unit": "S",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.12
+          },
+          "datasheet_citation": "p. 7 fig. 8",
+          "placeholder": false
+        },
+        {
+          "name": "transconductance_2",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vout2),1000)"
+          },
+          "expected_value": 0.00019,
+          "unit": "S",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.12
+          },
+          "datasheet_citation": "p. 7 fig. 8",
+          "placeholder": false
+        },
+        {
+          "name": "transconductance_3",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vout3),1000)"
+          },
+          "expected_value": 0.0019,
+          "unit": "S",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.12
+          },
+          "datasheet_citation": "p. 7 fig. 8",
+          "placeholder": false
+        },
+        {
+          "name": "transconductance_4",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vout4),1000)"
+          },
+          "expected_value": 0.0096,
+          "unit": "S",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.12
+          },
+          "datasheet_citation": "p. 7 fig. 8",
+          "placeholder": false
+        },
+        {
+          "name": "transconductance_5",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vout5),1000)"
+          },
+          "expected_value": 0.019,
+          "unit": "S",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.12
+          },
+          "datasheet_citation": "p. 7 fig. 8",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "amplifier_bias_curve.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "bias_pin_voltage_1",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(abc1))"
+          },
+          "expected_value": -13.78,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.04,
+            "relative": 0.05
+          },
+          "datasheet_citation": "p. 7 fig. 10",
+          "placeholder": false
+        },
+        {
+          "name": "bias_pin_voltage_2",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(abc2))"
+          },
+          "expected_value": -13.72,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.04,
+            "relative": 0.05
+          },
+          "datasheet_citation": "p. 7 fig. 10",
+          "placeholder": false
+        },
+        {
+          "name": "bias_pin_voltage_3",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(abc3))"
+          },
+          "expected_value": -13.620000000000001,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.04,
+            "relative": 0.05
+          },
+          "datasheet_citation": "p. 7 fig. 10",
+          "placeholder": false
+        },
+        {
+          "name": "bias_pin_voltage_4",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(abc4))"
+          },
+          "expected_value": -13.53,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.04,
+            "relative": 0.05
+          },
+          "datasheet_citation": "p. 7 fig. 10",
+          "placeholder": false
+        },
+        {
+          "name": "bias_pin_voltage_5",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(abc5))"
+          },
+          "expected_value": -13.48,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.04,
+            "relative": 0.05
+          },
+          "datasheet_citation": "p. 7 fig. 10",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "bandwidth.cir",
+      "analysis_type": "ac_small_signal",
+      "scalar_checks": [
+        {
+          "name": "open_loop_bandwidth",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "frequency_at_magnitude(i(vout),0.006788225099390855)"
+          },
+          "expected_value": 2000000,
+          "unit": "Hz",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.15
+          },
+          "datasheet_citation": "p. 5 electrical characteristics open-loop bandwidth TYP",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "peak_output_current.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "peak_output_current_typical",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vout))"
+          },
+          "expected_value": 0.0005,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.08
+          },
+          "datasheet_citation": "p. 5 electrical characteristics peak output current TYP",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": [
+        {
+          "name": "peak_output_current_bounds",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vout))"
+          },
+          "minimum": 0.00035,
+          "maximum": 0.00065,
+          "unit": "A",
+          "inclusive": true,
+          "datasheet_citation": "p. 5 electrical characteristics peak output current MIN; p. 5 electrical characteristics peak output current MAX",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "input_resistance.cir",
+      "analysis_type": "ac_small_signal",
+      "scalar_checks": [
+        {
+          "name": "differential_input_conductance",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "magnitude:last(i(vin))"
+          },
+          "expected_value": 0.00003846153846153846,
+          "unit": "S",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.08
+          },
+          "datasheet_citation": "p. 5 electrical characteristics input resistance TYP",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": [
+        {
+          "name": "input_resistance_minimum_conductance",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "magnitude:last(i(vin))"
+          },
+          "minimum": 0,
+          "maximum": 0.0001,
+          "unit": "S",
+          "inclusive": true,
+          "datasheet_citation": "p. 5 electrical characteristics input resistance MIN",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "buffer_output.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "buffer_output_voltage_minimum",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(bo1))"
+          },
+          "minimum": 10,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 5 electrical characteristics peak buffer output voltage MIN",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "transient_control.cir",
+      "analysis_type": "transient",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "controlled_output_after_bias_step",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "at(v(out),0.00002)"
+          },
+          "minimum": 0.35,
+          "maximum": 0.65,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 7 fig. 8",
+          "placeholder": false
+        }
+      ]
+    }
+  ]
+}

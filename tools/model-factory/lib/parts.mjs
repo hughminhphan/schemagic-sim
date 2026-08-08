@@ -2550,6 +2550,82 @@ Object.assign(PARTS, {
   LM833: p5Opamp({ mpn: "LM833", description: "Dual low-noise audio operational amplifier", aliases: ["LM833N", "LM833D"], packageName: "PDIP-8", packageStandard: "TI P package", pins: [{ name: "IN+", number: "3", role: "noninverting_input", node: "inp" }, { name: "IN-", number: "2", role: "inverting_input", node: "inn" }, { name: "VCC", number: "8", role: "positive_supply", node: "vcc" }, { name: "VEE", number: "4", role: "negative_supply", node: "vee" }, { name: "OUT", number: "1", role: "output", node: "out" }], spiceOrder: ["3", "2", "8", "4", "1"], sourceUrl: "https://www.ti.com/lit/ds/symlink/lm833.pdf", revision: "SLOS481B, July 2010, revised October 2014", pages: ["p. 5", "p. 6", "p. 4"], aol: 316227.766, gbw: 16e6, sr: 7e6, vos: 0.15e-3, vosMax: 2e-3, ibias: 300e-9, ios: 25e-9, swing: 14.1, ilim: 33e-3, cmrr: 100, psrr: 105, iq: 2.05e-3, en: 4.5e-9, phaseMargin: 55, rout: 37, supplyMin: 10, supplyMax: 36, channels: 2 })
 });
 
+Object.assign(PARTS, {
+  LM386: {
+    slug: "LM386", manufacturerSlug: "ti", pipeline: "specialty_analog",
+    identity: {
+      canonical_mpn: "LM386", manufacturer: "Texas Instruments", description: "Low-voltage audio power amplifier", electrical_family: "other", aliases: ["LM386N-1", "LM386N-3", "LM386M-1", "LM386MMX-1"], package: { name: "PDIP-8", standard: "TI P package", pin_count: 8 },
+      pins: [
+        { name: "GAIN", number: "1", role: "gain_control", node: "gain1" }, { name: "IN-", number: "2", role: "inverting_input", node: "inn" }, { name: "IN+", number: "3", role: "noninverting_input", node: "inp" }, { name: "GND", number: "4", role: "ground", node: "gnd" },
+        { name: "OUT", number: "5", role: "output", node: "out" }, { name: "VS", number: "6", role: "positive_supply", node: "vs" }, { name: "BYPASS", number: "7", role: "bypass", node: "bypass" }, { name: "GAIN", number: "8", role: "gain_control", node: "gain8" }
+      ],
+      spice_order: ["1", "2", "3", "4", "5", "6", "7", "8"]
+    },
+    source: { url: "https://www.ti.com/lit/ds/symlink/lm386.pdf", revision: "SNAS545D, May 2004, revised August 2023", pages: ["p. 1", "p. 3", "p. 4", "p. 5", "p. 6", "p. 10"] },
+    facts: {
+      schema_version: "1.0.0", specialty_variant: "lm386_audio_power_amp", extraction_method: "pdftotext -layout plus manual MIN/TYP/MAX transcription and manual typical-curve digitization",
+      fit_conditions: { temperature: quantity(25, "degC", "typical-characteristics condition unless stated", "p. 6 typical characteristics", "typical") },
+      parameters: {
+        supply_voltage: { minimum: quantity(4, "V", "LM386N-1/-3, LM386M-1, LM386MM-1 recommended operation", "p. 4 recommended operating conditions", "minimum"), maximum: quantity(12, "V", "LM386N-1/-3, LM386M-1, LM386MM-1 recommended operation", "p. 4 recommended operating conditions", "maximum") },
+        quiescent_current: { typical: quantity(4e-3, "A", "VS = 6 V, VIN = 0", "p. 5 electrical characteristics IQ TYP", "typical"), maximum: quantity(8e-3, "A", "VS = 6 V, VIN = 0", "p. 5 electrical characteristics IQ MAX", "maximum") },
+        gain_open: quantity(20, "V/V", "VS = 6 V, f = 1 kHz, pins 1 and 8 open; 26 dB", "p. 5 electrical characteristics AV", "typical"),
+        gain_bypassed: quantity(200, "V/V", "10 uF from pin 1 to pin 8; 46 dB", "p. 5 electrical characteristics AV", "typical"),
+        bandwidth: quantity(300e3, "Hz", "VS = 6 V, pins 1 and 8 open", "p. 5 electrical characteristics BW TYP", "typical"),
+        input_resistance: quantity(50e3, "ohm", "VS = 6 V", "p. 5 electrical characteristics RIN TYP", "typical"),
+        input_bias_current: quantity(250e-9, "A", "VS = 6 V, pins 2 and 3 open", "p. 5 electrical characteristics IBIAS TYP", "typical"),
+        output_power_6v_8ohm: { minimum: quantity(250e-3, "W", "VS = 6 V, RL = 8 ohm, THD = 10%", "p. 5 electrical characteristics POUT MIN", "minimum"), typical: quantity(325e-3, "W", "VS = 6 V, RL = 8 ohm, THD = 10%", "p. 5 electrical characteristics POUT TYP", "typical") },
+        distortion: quantity(0.002, "1", "AV = 20, VS = 6 V, RL = 8 ohm, POUT = 125 mW, f = 1 kHz", "p. 5 electrical characteristics THD TYP", "typical")
+      },
+      gain_frequency_points: [[1e3, 20.0], [10e3, 20.0], [100e3, 18.5], [300e3, 14.2], [1e6, 5.7]].map(([frequency, gain]) => ({ frequency: quantity(frequency, "Hz", "VS = 6 V, pins 1 and 8 open", "p. 6 fig. 6-4", "typical"), gain: quantity(gain, "V/V", `f = ${frequency} Hz, manually digitized pins-open curve`, "p. 6 fig. 6-4", "digitized_typical_curve") })),
+      output_swing_curve: [[4, 2.0], [6, 4.1], [8, 5.8], [10, 7.2], [12, 8.3]].map(([supply, swing]) => ({ supply_voltage: quantity(supply, "V", "RL = 8 ohm, TA = 25 degC", "p. 6 fig. 6-3", "typical"), load_resistance: quantity(8, "ohm", "selected 8-ohm family curve", "p. 6 fig. 6-3", "typical"), output_voltage_pp: quantity(swing, "Vpp", `VS = ${supply} V, RL = 8 ohm, manually digitized`, "p. 6 fig. 6-3", "digitized_typical_curve") }))
+    },
+    component: {
+      modelName: "OC_TI_LM386", fidelity_tier: "F2", domain_coverage: { dc: "fitted", ac: "fitted", transient: "approx", noise: "none", thermal: "none", digital: "none" }, supported_analyses: ["operating_point", "dc_sweep", "ac_small_signal", "transient"],
+      operating_summary: "F2 native-ngspice fit at 25 degC to cited pins-open gain-frequency and 8-ohm output-swing curves for 4 V to 12 V operation.",
+      numeric_bounds: [{ quantity: "supply_voltage", minimum: 4, maximum: 12, unit: "V", conditions: "Published recommended LM386N-1/-3 operating range", placeholder: false }, { quantity: "input_voltage", minimum: -0.4, maximum: 0.4, unit: "V", conditions: "Published absolute input-voltage limit; damage is not simulated", placeholder: false }],
+      omissions: ["GAIN_CL is an explicit subcircuit parameter. Pins 1 and 8 retain the published 1.5-kohm internal path, but the model does not infer gain from an externally connected capacitor or resistor; callers select gain explicitly from 20 to 200.", "The manually digitized Figure 6-3 and Figure 6-4 typical curves establish F2 only for closed-loop gain, bandwidth, output swing, and current limiting at 25 degC. Guaranteed output-power rows remain separately typed and are not treated as typical fit targets.", "The bypass pin is a first-order divider node. PSRR versus bypass capacitance, distortion, crossover behavior, clipping harmonics, speaker back-EMF, thermal limiting, short-circuit heating, package parasitics, noise, temperature behavior, and production spread are omitted.", "The output stage is a smooth compact current limiter with one dominant pole; it is not a transistor-level reproduction. Independent review remains pending-review."]
+    }
+  },
+  LM13700: {
+    slug: "LM13700", manufacturerSlug: "ti", pipeline: "specialty_analog",
+    identity: {
+      canonical_mpn: "LM13700", manufacturer: "Texas Instruments", description: "Dual operational transconductance amplifier with linearizing diodes and buffers", electrical_family: "other", aliases: ["LM13700N", "LM13700D", "LM13700M"], package: { name: "PDIP-16", standard: "TI NFG package", pin_count: 16 },
+      pins: [
+        { name: "IABC1", number: "1", role: "control_input", node: "iabc1" }, { name: "DIODE1", number: "2", role: "linearizing_diode_bias", node: "diode1" }, { name: "IN1+", number: "3", role: "noninverting_input", node: "inp1" }, { name: "IN1-", number: "4", role: "inverting_input", node: "inn1" },
+        { name: "OUT1", number: "5", role: "output", node: "out1" }, { name: "V-", number: "6", role: "negative_supply", node: "vee" }, { name: "BUFFER1 IN", number: "7", role: "buffer_input", node: "bufin1" }, { name: "BUFFER1 OUT", number: "8", role: "buffer_output", node: "bufout1" },
+        { name: "BUFFER2 OUT", number: "9", role: "buffer_output", node: "bufout2" }, { name: "BUFFER2 IN", number: "10", role: "buffer_input", node: "bufin2" }, { name: "V+", number: "11", role: "positive_supply", node: "vcc" }, { name: "OUT2", number: "12", role: "output", node: "out2" },
+        { name: "IN2-", number: "13", role: "inverting_input", node: "inn2" }, { name: "IN2+", number: "14", role: "noninverting_input", node: "inp2" }, { name: "DIODE2", number: "15", role: "linearizing_diode_bias", node: "diode2" }, { name: "IABC2", number: "16", role: "control_input", node: "iabc2" }
+      ],
+      spice_order: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"]
+    },
+    source: { url: "https://www.ti.com/lit/ds/symlink/lm13700.pdf", revision: "SNOSBW2F, November 1999, revised November 2015", pages: ["p. 1", "p. 3", "p. 4", "p. 5", "p. 6", "p. 7", "p. 9", "p. 10"] },
+    facts: {
+      schema_version: "1.0.0", specialty_variant: "lm13700_dual_ota", extraction_method: "pdftotext -layout plus manual MIN/TYP/MAX transcription, equation transcription, and manual typical-curve digitization",
+      fit_conditions: { temperature: quantity(25, "degC", "VS = +/-15 V, IABC = 500 uA unless stated", "p. 5 electrical characteristics heading", "typical") },
+      parameters: {
+        supply_voltage_total: { minimum: quantity(9.5, "V", "dual-supply recommended range is +/-4.75 V", "p. 4 recommended operating conditions", "minimum"), maximum: quantity(32, "V", "dual-supply recommended range is +/-16 V", "p. 4 recommended operating conditions", "maximum") },
+        forward_transconductance: { minimum: quantity(6.7e-3, "S", "VS = +/-15 V, IABC = 500 uA, temperature range", "p. 5 electrical characteristics gm MIN", "minimum"), typical: quantity(9.6e-3, "S", "VS = +/-15 V, IABC = 500 uA", "p. 5 electrical characteristics gm TYP", "typical"), maximum: quantity(13e-3, "S", "VS = +/-15 V, IABC = 500 uA", "p. 5 electrical characteristics gm MAX", "maximum") },
+        peak_output_current: { minimum: quantity(350e-6, "A", "RL = 0, IABC = 500 uA", "p. 5 electrical characteristics peak output current MIN", "minimum"), typical: quantity(500e-6, "A", "RL = 0, IABC = 500 uA", "p. 5 electrical characteristics peak output current TYP", "typical"), maximum: quantity(650e-6, "A", "RL = 0, IABC = 500 uA", "p. 5 electrical characteristics peak output current MAX", "maximum") },
+        input_resistance: { minimum: quantity(10e3, "ohm", "VS = +/-15 V, IABC = 500 uA", "p. 5 electrical characteristics input resistance MIN", "minimum"), typical: quantity(26e3, "ohm", "VS = +/-15 V, IABC = 500 uA", "p. 5 electrical characteristics input resistance TYP", "typical") },
+        open_loop_bandwidth: quantity(2e6, "Hz", "VS = +/-15 V, IABC = 500 uA", "p. 5 electrical characteristics open-loop bandwidth TYP", "typical"),
+        slew_rate: quantity(50e6, "V/s", "unity-gain compensated", "p. 5 electrical characteristics slew rate TYP", "typical"),
+        supply_current: quantity(2.6e-3, "A", "IABC = 500 uA, both channels", "p. 5 electrical characteristics supply current TYP", "typical"),
+        buffer_input_current: { typical: quantity(0.5e-6, "A", "buffer test configuration in footnote 1", "p. 5 electrical characteristics buffer input current TYP", "typical"), maximum: quantity(2e-6, "A", "buffer test configuration in footnote 1", "p. 5 electrical characteristics buffer input current MAX", "maximum") },
+        peak_buffer_output_voltage_minimum: quantity(10, "V", "ROUT = 5 kohm to -VS, buffer input connected to OTA output", "p. 5 electrical characteristics peak buffer output voltage MIN", "minimum"),
+        buffer_output_current_maximum: quantity(20e-3, "A", "absolute maximum; package dissipation must not be exceeded", "p. 4 absolute maximum ratings", "maximum")
+      },
+      transconductance_curve: [[1e-6, 19e-6, 1.22], [10e-6, 190e-6, 1.28], [100e-6, 1.9e-3, 1.38], [500e-6, 9.6e-3, 1.47], [1e-3, 19e-3, 1.52]].map(([iabc, gm, biasVoltage]) => ({ amplifier_bias_current: quantity(iabc, "A", "VS = +/-15 V, TA = 25 degC", "p. 7 fig. 8 and fig. 10", "typical"), transconductance: quantity(gm, "S", `IABC = ${iabc} A, manually digitized +25 degC curve`, "p. 7 fig. 8", "digitized_typical_curve"), bias_pin_voltage: quantity(biasVoltage, "V", `relative to V-, IABC = ${iabc} A, manually digitized +25 degC curve`, "p. 7 fig. 10", "digitized_typical_curve") })),
+      transfer_equation: { thermal_voltage: quantity(26e-3, "V", "kT/q at 25 degC", "p. 9 section 7.3.1 equation discussion", "derived"), output_current_relation: quantity(1, "1", "IOUT = IABC*tanh(VIN/(2*kT/q)); compact behavioral implementation of equations 1 through 5", "p. 9 section 7.3.1 equations 1-5", "derived") }
+    },
+    component: {
+      modelName: "OC_TI_LM13700", fidelity_tier: "F2", domain_coverage: { dc: "fitted", ac: "fitted", transient: "approx", noise: "none", thermal: "none", digital: "none" }, supported_analyses: ["operating_point", "dc_sweep", "ac_small_signal", "transient"],
+      operating_summary: "F2 dual-channel behavioral OTA model at 25 degC, fitted with native ngspice to cited transconductance and amplifier-bias voltage curves over 1 uA to 1 mA IABC.",
+      numeric_bounds: [{ quantity: "supply_voltage_total", minimum: 9.5, maximum: 32, unit: "V", conditions: "Published dual-supply recommended operating range", placeholder: false }, { quantity: "amplifier_bias_current", minimum: 0, maximum: 2e-3, unit: "A", conditions: "Published absolute maximum per IABC pin; failure is not simulated", placeholder: false }],
+      omissions: ["Both OTA channels, linearizing-diode pins, bias-current pins, and Darlington buffers are present. Channel matching, crosstalk, shared-supply modulation, package parasitics, and process spread are omitted.", "The OTA uses the cited differential-pair equation with a fitted scale factor. Linearizing diodes are represented as junctions, but externally biased diode linearization, distortion reduction, and the full large-signal transistor transfer are not curve-fitted.", "The amplifier-bias input uses a fitted compact voltage-plus-resistance law rather than an internal current mirror. Output resistance and buffer output resistance are held compact defaults; the buffer has a first-order Darlington drop and smooth 20 mA limit.", "Slew rate, output noise, input capacitance, output capacitance, leakage, temperature curves, overload recovery, supply failure, self-heating, and production spread are omitted or metadata-only. Independent review remains pending-review."]
+    }
+  }
+});
+
 const p5Vdmos = ({ mpn, sourceUrl, revision, rdson, ratedCurrent, transfer, ciss, coss, crss, crssCurve, qg, qg5, qgs, qgd, trr, rthjc }) => ({
   slug: mpn, manufacturerSlug: "infineon", pipeline: "vdmos",
   identity: {

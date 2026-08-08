@@ -1,0 +1,301 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "gain_frequency.cir",
+      "analysis_type": "ac_small_signal",
+      "scalar_checks": [
+        {
+          "name": "gain_curve_1",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "at_abs(v(out),frequency,1000)"
+          },
+          "expected_value": 20,
+          "unit": "V/V",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.18
+          },
+          "datasheet_citation": "p. 6 fig. 6-4",
+          "placeholder": false
+        },
+        {
+          "name": "gain_curve_2",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "at_abs(v(out),frequency,10000)"
+          },
+          "expected_value": 20,
+          "unit": "V/V",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.18
+          },
+          "datasheet_citation": "p. 6 fig. 6-4",
+          "placeholder": false
+        },
+        {
+          "name": "gain_curve_3",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "at_abs(v(out),frequency,100000)"
+          },
+          "expected_value": 18.5,
+          "unit": "V/V",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.18
+          },
+          "datasheet_citation": "p. 6 fig. 6-4",
+          "placeholder": false
+        },
+        {
+          "name": "gain_curve_4",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "at_abs(v(out),frequency,300000)"
+          },
+          "expected_value": 14.2,
+          "unit": "V/V",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.18
+          },
+          "datasheet_citation": "p. 6 fig. 6-4",
+          "placeholder": false
+        },
+        {
+          "name": "gain_curve_5",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "at_abs(v(out),frequency,1000000)"
+          },
+          "expected_value": 5.7,
+          "unit": "V/V",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.18
+          },
+          "datasheet_citation": "p. 6 fig. 6-4",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "gain_200.cir",
+      "analysis_type": "ac_small_signal",
+      "scalar_checks": [
+        {
+          "name": "gain_200_mode",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "magnitude:last(v(out))"
+          },
+          "expected_value": 200,
+          "unit": "V/V",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.05
+          },
+          "datasheet_citation": "p. 5 electrical characteristics AV",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "quiescent_and_bias.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "quiescent_supply_current",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vs))"
+          },
+          "expected_value": 0.004,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.12
+          },
+          "datasheet_citation": "p. 5 electrical characteristics IQ TYP",
+          "placeholder": false
+        },
+        {
+          "name": "positive_input_bias",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vinp))"
+          },
+          "expected_value": 2.5e-7,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 2e-8,
+            "relative": 0.1
+          },
+          "datasheet_citation": "p. 5 electrical characteristics IBIAS TYP",
+          "placeholder": false
+        },
+        {
+          "name": "negative_input_bias",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vinn))"
+          },
+          "expected_value": 2.5e-7,
+          "unit": "A",
+          "tolerance": {
+            "absolute": 2e-8,
+            "relative": 0.1
+          },
+          "datasheet_citation": "p. 5 electrical characteristics IBIAS TYP",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": [
+        {
+          "name": "quiescent_supply_current_maximum",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vs))"
+          },
+          "minimum": 0,
+          "maximum": 0.008,
+          "unit": "A",
+          "inclusive": true,
+          "datasheet_citation": "p. 5 electrical characteristics IQ MAX",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "output_swing_curve.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "output_swing_4_v_supply",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "affine:last(v(out1),2,-4)"
+          },
+          "expected_value": 2,
+          "unit": "Vpp",
+          "tolerance": {
+            "absolute": 0.15,
+            "relative": 0.12
+          },
+          "datasheet_citation": "p. 6 fig. 6-3",
+          "placeholder": false
+        },
+        {
+          "name": "output_swing_6_v_supply",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "affine:last(v(out2),2,-6)"
+          },
+          "expected_value": 4.1,
+          "unit": "Vpp",
+          "tolerance": {
+            "absolute": 0.15,
+            "relative": 0.12
+          },
+          "datasheet_citation": "p. 6 fig. 6-3",
+          "placeholder": false
+        },
+        {
+          "name": "output_swing_8_v_supply",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "affine:last(v(out3),2,-8)"
+          },
+          "expected_value": 5.8,
+          "unit": "Vpp",
+          "tolerance": {
+            "absolute": 0.15,
+            "relative": 0.12
+          },
+          "datasheet_citation": "p. 6 fig. 6-3",
+          "placeholder": false
+        },
+        {
+          "name": "output_swing_10_v_supply",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "affine:last(v(out4),2,-10)"
+          },
+          "expected_value": 7.2,
+          "unit": "Vpp",
+          "tolerance": {
+            "absolute": 0.15,
+            "relative": 0.12
+          },
+          "datasheet_citation": "p. 6 fig. 6-3",
+          "placeholder": false
+        },
+        {
+          "name": "output_swing_12_v_supply",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "affine:last(v(out5),2,-12)"
+          },
+          "expected_value": 8.3,
+          "unit": "Vpp",
+          "tolerance": {
+            "absolute": 0.15,
+            "relative": 0.12
+          },
+          "datasheet_citation": "p. 6 fig. 6-3",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "minimum_supply.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "minimum_supply_output_bias",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(out))"
+          },
+          "expected_value": 2,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.05,
+            "relative": 0.03
+          },
+          "datasheet_citation": "p. 4 recommended operating conditions",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "transient_response.cir",
+      "analysis_type": "transient",
+      "scalar_checks": [
+        {
+          "name": "settled_step_output",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "at(v(out),0.00002)"
+          },
+          "expected_value": 5,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.1,
+            "relative": 0.03
+          },
+          "datasheet_citation": "p. 5 electrical characteristics AV",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    }
+  ]
+}

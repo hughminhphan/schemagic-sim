@@ -1,0 +1,305 @@
+{
+  "schema_version": "1.0.0",
+  "specialty_variant": "lm13700_dual_ota",
+  "extraction_method": "pdftotext -layout plus manual MIN/TYP/MAX transcription, equation transcription, and manual typical-curve digitization",
+  "fit_conditions": {
+    "temperature": {
+      "value": 25,
+      "unit": "degC",
+      "conditions": "VS = +/-15 V, IABC = 500 uA unless stated",
+      "page_reference": "p. 5 electrical characteristics heading",
+      "source_kind": "typical"
+    }
+  },
+  "parameters": {
+    "supply_voltage_total": {
+      "minimum": {
+        "value": 9.5,
+        "unit": "V",
+        "conditions": "dual-supply recommended range is +/-4.75 V",
+        "page_reference": "p. 4 recommended operating conditions",
+        "source_kind": "minimum"
+      },
+      "maximum": {
+        "value": 32,
+        "unit": "V",
+        "conditions": "dual-supply recommended range is +/-16 V",
+        "page_reference": "p. 4 recommended operating conditions",
+        "source_kind": "maximum"
+      }
+    },
+    "forward_transconductance": {
+      "minimum": {
+        "value": 0.0067,
+        "unit": "S",
+        "conditions": "VS = +/-15 V, IABC = 500 uA, temperature range",
+        "page_reference": "p. 5 electrical characteristics gm MIN",
+        "source_kind": "minimum"
+      },
+      "typical": {
+        "value": 0.0096,
+        "unit": "S",
+        "conditions": "VS = +/-15 V, IABC = 500 uA",
+        "page_reference": "p. 5 electrical characteristics gm TYP",
+        "source_kind": "typical"
+      },
+      "maximum": {
+        "value": 0.013,
+        "unit": "S",
+        "conditions": "VS = +/-15 V, IABC = 500 uA",
+        "page_reference": "p. 5 electrical characteristics gm MAX",
+        "source_kind": "maximum"
+      }
+    },
+    "peak_output_current": {
+      "minimum": {
+        "value": 0.00035,
+        "unit": "A",
+        "conditions": "RL = 0, IABC = 500 uA",
+        "page_reference": "p. 5 electrical characteristics peak output current MIN",
+        "source_kind": "minimum"
+      },
+      "typical": {
+        "value": 0.0005,
+        "unit": "A",
+        "conditions": "RL = 0, IABC = 500 uA",
+        "page_reference": "p. 5 electrical characteristics peak output current TYP",
+        "source_kind": "typical"
+      },
+      "maximum": {
+        "value": 0.00065,
+        "unit": "A",
+        "conditions": "RL = 0, IABC = 500 uA",
+        "page_reference": "p. 5 electrical characteristics peak output current MAX",
+        "source_kind": "maximum"
+      }
+    },
+    "input_resistance": {
+      "minimum": {
+        "value": 10000,
+        "unit": "ohm",
+        "conditions": "VS = +/-15 V, IABC = 500 uA",
+        "page_reference": "p. 5 electrical characteristics input resistance MIN",
+        "source_kind": "minimum"
+      },
+      "typical": {
+        "value": 26000,
+        "unit": "ohm",
+        "conditions": "VS = +/-15 V, IABC = 500 uA",
+        "page_reference": "p. 5 electrical characteristics input resistance TYP",
+        "source_kind": "typical"
+      }
+    },
+    "open_loop_bandwidth": {
+      "value": 2000000,
+      "unit": "Hz",
+      "conditions": "VS = +/-15 V, IABC = 500 uA",
+      "page_reference": "p. 5 electrical characteristics open-loop bandwidth TYP",
+      "source_kind": "typical"
+    },
+    "slew_rate": {
+      "value": 50000000,
+      "unit": "V/s",
+      "conditions": "unity-gain compensated",
+      "page_reference": "p. 5 electrical characteristics slew rate TYP",
+      "source_kind": "typical"
+    },
+    "supply_current": {
+      "value": 0.0026,
+      "unit": "A",
+      "conditions": "IABC = 500 uA, both channels",
+      "page_reference": "p. 5 electrical characteristics supply current TYP",
+      "source_kind": "typical"
+    },
+    "buffer_input_current": {
+      "typical": {
+        "value": 5e-7,
+        "unit": "A",
+        "conditions": "buffer test configuration in footnote 1",
+        "page_reference": "p. 5 electrical characteristics buffer input current TYP",
+        "source_kind": "typical"
+      },
+      "maximum": {
+        "value": 0.000002,
+        "unit": "A",
+        "conditions": "buffer test configuration in footnote 1",
+        "page_reference": "p. 5 electrical characteristics buffer input current MAX",
+        "source_kind": "maximum"
+      }
+    },
+    "peak_buffer_output_voltage_minimum": {
+      "value": 10,
+      "unit": "V",
+      "conditions": "ROUT = 5 kohm to -VS, buffer input connected to OTA output",
+      "page_reference": "p. 5 electrical characteristics peak buffer output voltage MIN",
+      "source_kind": "minimum"
+    },
+    "buffer_output_current_maximum": {
+      "value": 0.02,
+      "unit": "A",
+      "conditions": "absolute maximum; package dissipation must not be exceeded",
+      "page_reference": "p. 4 absolute maximum ratings",
+      "source_kind": "maximum"
+    }
+  },
+  "transconductance_curve": [
+    {
+      "amplifier_bias_current": {
+        "value": 0.000001,
+        "unit": "A",
+        "conditions": "VS = +/-15 V, TA = 25 degC",
+        "page_reference": "p. 7 fig. 8 and fig. 10",
+        "source_kind": "typical"
+      },
+      "transconductance": {
+        "value": 0.000019,
+        "unit": "S",
+        "conditions": "IABC = 0.000001 A, manually digitized +25 degC curve",
+        "page_reference": "p. 7 fig. 8",
+        "source_kind": "digitized_typical_curve"
+      },
+      "bias_pin_voltage": {
+        "value": 1.22,
+        "unit": "V",
+        "conditions": "relative to V-, IABC = 0.000001 A, manually digitized +25 degC curve",
+        "page_reference": "p. 7 fig. 10",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "amplifier_bias_current": {
+        "value": 0.00001,
+        "unit": "A",
+        "conditions": "VS = +/-15 V, TA = 25 degC",
+        "page_reference": "p. 7 fig. 8 and fig. 10",
+        "source_kind": "typical"
+      },
+      "transconductance": {
+        "value": 0.00019,
+        "unit": "S",
+        "conditions": "IABC = 0.00001 A, manually digitized +25 degC curve",
+        "page_reference": "p. 7 fig. 8",
+        "source_kind": "digitized_typical_curve"
+      },
+      "bias_pin_voltage": {
+        "value": 1.28,
+        "unit": "V",
+        "conditions": "relative to V-, IABC = 0.00001 A, manually digitized +25 degC curve",
+        "page_reference": "p. 7 fig. 10",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "amplifier_bias_current": {
+        "value": 0.0001,
+        "unit": "A",
+        "conditions": "VS = +/-15 V, TA = 25 degC",
+        "page_reference": "p. 7 fig. 8 and fig. 10",
+        "source_kind": "typical"
+      },
+      "transconductance": {
+        "value": 0.0019,
+        "unit": "S",
+        "conditions": "IABC = 0.0001 A, manually digitized +25 degC curve",
+        "page_reference": "p. 7 fig. 8",
+        "source_kind": "digitized_typical_curve"
+      },
+      "bias_pin_voltage": {
+        "value": 1.38,
+        "unit": "V",
+        "conditions": "relative to V-, IABC = 0.0001 A, manually digitized +25 degC curve",
+        "page_reference": "p. 7 fig. 10",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "amplifier_bias_current": {
+        "value": 0.0005,
+        "unit": "A",
+        "conditions": "VS = +/-15 V, TA = 25 degC",
+        "page_reference": "p. 7 fig. 8 and fig. 10",
+        "source_kind": "typical"
+      },
+      "transconductance": {
+        "value": 0.0096,
+        "unit": "S",
+        "conditions": "IABC = 0.0005 A, manually digitized +25 degC curve",
+        "page_reference": "p. 7 fig. 8",
+        "source_kind": "digitized_typical_curve"
+      },
+      "bias_pin_voltage": {
+        "value": 1.47,
+        "unit": "V",
+        "conditions": "relative to V-, IABC = 0.0005 A, manually digitized +25 degC curve",
+        "page_reference": "p. 7 fig. 10",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "amplifier_bias_current": {
+        "value": 0.001,
+        "unit": "A",
+        "conditions": "VS = +/-15 V, TA = 25 degC",
+        "page_reference": "p. 7 fig. 8 and fig. 10",
+        "source_kind": "typical"
+      },
+      "transconductance": {
+        "value": 0.019,
+        "unit": "S",
+        "conditions": "IABC = 0.001 A, manually digitized +25 degC curve",
+        "page_reference": "p. 7 fig. 8",
+        "source_kind": "digitized_typical_curve"
+      },
+      "bias_pin_voltage": {
+        "value": 1.52,
+        "unit": "V",
+        "conditions": "relative to V-, IABC = 0.001 A, manually digitized +25 degC curve",
+        "page_reference": "p. 7 fig. 10",
+        "source_kind": "digitized_typical_curve"
+      }
+    }
+  ],
+  "transfer_equation": {
+    "thermal_voltage": {
+      "value": 0.026,
+      "unit": "V",
+      "conditions": "kT/q at 25 degC",
+      "page_reference": "p. 9 section 7.3.1 equation discussion",
+      "source_kind": "derived"
+    },
+    "output_current_relation": {
+      "value": 1,
+      "unit": "1",
+      "conditions": "IOUT = IABC*tanh(VIN/(2*kT/q)); compact behavioral implementation of equations 1 through 5",
+      "page_reference": "p. 9 section 7.3.1 equations 1-5",
+      "source_kind": "derived"
+    }
+  },
+  "identity": {
+    "canonical_mpn": "LM13700",
+    "manufacturer": "Texas Instruments",
+    "aliases": [
+      "LM13700N",
+      "LM13700D",
+      "LM13700M"
+    ]
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://www.ti.com/lit/ds/symlink/lm13700.pdf",
+    "revision": "SNOSBW2F, November 1999, revised November 2015",
+    "sha256": "5268be6e17dc7ac797c966980ac593a336a0998a6874851645b4612298347c46",
+    "accessed_date": "2026-08-09",
+    "pages_referenced": [
+      "p. 1",
+      "p. 3",
+      "p. 4",
+      "p. 5",
+      "p. 6",
+      "p. 7",
+      "p. 9",
+      "p. 10"
+    ],
+    "placeholder": false
+  }
+}

@@ -1,0 +1,162 @@
+{
+  "schema_version": "1.0.0",
+  "fitter": "scipy.optimize.least_squares with native ngspice-46 evaluations of cited typical curves",
+  "deterministic": true,
+  "parameters": {
+    "GM_SCALE": 0.9900712970267249,
+    "VT": 0.026,
+    "POLE_HZ": 2000000,
+    "VBIAS0": 1.2823117214360333,
+    "RABC": 273.3316105923557,
+    "RIN": 26000,
+    "ROUT": 2000000.0,
+    "IQ": 0.0026,
+    "VBUF_DROP": 1.2,
+    "RBUF": 25.0,
+    "ILIM_BUF": 0.02,
+    "IBUF": 5e-07
+  },
+  "parameter_metadata": {
+    "GM_SCALE": {
+      "status": "native fitted to manually digitized Figure 8 transconductance curve"
+    },
+    "VT": {
+      "status": "direct equation constant from datasheet section 7.3.1 at 25 degC"
+    },
+    "POLE_HZ": {
+      "status": "direct typical transcription"
+    },
+    "VBIAS0": {
+      "status": "native fitted to manually digitized Figure 10 amplifier-bias voltage curve"
+    },
+    "RABC": {
+      "status": "native fitted to manually digitized Figure 10 amplifier-bias voltage curve"
+    },
+    "RIN": {
+      "status": "direct typical transcription"
+    },
+    "ROUT": {
+      "status": "held compact output-resistance approximation"
+    },
+    "IQ": {
+      "status": "direct typical transcription"
+    },
+    "VBUF_DROP": {
+      "status": "derived Darlington buffer drop approximation"
+    },
+    "RBUF": {
+      "status": "held compact buffer output resistance"
+    },
+    "ILIM_BUF": {
+      "status": "direct absolute-maximum transcription"
+    },
+    "IBUF": {
+      "status": "direct typical transcription"
+    }
+  },
+  "held_defaults": [
+    {
+      "parameter": "ROUT",
+      "value": 2000000.0,
+      "unit": "ohm",
+      "reason": "held compact OTA output-resistance approximation"
+    },
+    {
+      "parameter": "RBUF",
+      "value": 25.0,
+      "unit": "ohm",
+      "reason": "held compact Darlington-buffer resistance"
+    }
+  ],
+  "optimizer": {
+    "status": 1,
+    "nfev": 5,
+    "diff_step": 0.0001
+  },
+  "residuals": [
+    {
+      "quantity": "transconductance at 1e-06 A IABC",
+      "datasheet_value": 1.9e-05,
+      "fitted_value": 1.903983263491659e-05,
+      "unit": "S",
+      "relative_error": 0.002096454469294124,
+      "citation": "p. 7 fig. 8"
+    },
+    {
+      "quantity": "transconductance at 1e-05 A IABC",
+      "datasheet_value": 0.00019,
+      "fitted_value": 0.00019039832634898024,
+      "unit": "S",
+      "relative_error": 0.0020964544683170225,
+      "citation": "p. 7 fig. 8"
+    },
+    {
+      "quantity": "transconductance at 0.0001 A IABC",
+      "datasheet_value": 0.0019,
+      "fitted_value": 0.001903983263489617,
+      "unit": "S",
+      "relative_error": 0.002096454468219473,
+      "citation": "p. 7 fig. 8"
+    },
+    {
+      "quantity": "transconductance at 0.0005 A IABC",
+      "datasheet_value": 0.0096,
+      "fitted_value": 0.009519916317448331,
+      "unit": "S",
+      "relative_error": 0.008342050265798736,
+      "citation": "p. 7 fig. 8"
+    },
+    {
+      "quantity": "transconductance at 0.001 A IABC",
+      "datasheet_value": 0.019,
+      "fitted_value": 0.01903983263489673,
+      "unit": "S",
+      "relative_error": 0.0020964544682488947,
+      "citation": "p. 7 fig. 8"
+    },
+    {
+      "quantity": "amplifier-bias pin voltage at 1e-06 A",
+      "datasheet_value": 1.22,
+      "fitted_value": 1.2825850530505924,
+      "unit": "V",
+      "relative_error": 0.051299223811961045,
+      "citation": "p. 7 fig. 10"
+    },
+    {
+      "quantity": "amplifier-bias pin voltage at 1e-05 A",
+      "datasheet_value": 1.28,
+      "fitted_value": 1.2850450375459204,
+      "unit": "V",
+      "relative_error": 0.003941435582750265,
+      "citation": "p. 7 fig. 10"
+    },
+    {
+      "quantity": "amplifier-bias pin voltage at 0.0001 A",
+      "datasheet_value": 1.38,
+      "fitted_value": 1.3096448824991995,
+      "unit": "V",
+      "relative_error": 0.050981969203478535,
+      "citation": "p. 7 fig. 10"
+    },
+    {
+      "quantity": "amplifier-bias pin voltage at 0.0005 A",
+      "datasheet_value": 1.47,
+      "fitted_value": 1.4189775267360005,
+      "unit": "V",
+      "relative_error": 0.03470916548571391,
+      "citation": "p. 7 fig. 10"
+    },
+    {
+      "quantity": "amplifier-bias pin voltage at 0.001 A",
+      "datasheet_value": 1.52,
+      "fitted_value": 1.5556433320320018,
+      "unit": "V",
+      "relative_error": 0.02344956054736958,
+      "citation": "p. 7 fig. 10"
+    }
+  ],
+  "worst_relative_error": {
+    "value": 0.051299223811961045,
+    "quantity": "amplifier-bias pin voltage at 1e-06 A"
+  }
+}
