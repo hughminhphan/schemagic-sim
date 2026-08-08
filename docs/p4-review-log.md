@@ -387,3 +387,32 @@ Fourteen packages pass the independent re-review and were stamped. Six remain `p
 | ICM7555 | PASS | Validator PASS; `astable.cir` and `monostable.cir` native/WASM PASS, with 5413.144491458205 Hz, 0.6234825939015303 duty, and 0.00010976476300575972 s pulse width reproduced exactly. F1 claims explicitly omit low-supply astable behavior. Probe output at 5 V supply was 0.019888129277743097 V. Shipped model, `fitted.json`, and card parameters agree. |
 
 The 14 passing reviewer fields were stamped as `luna independent reviewer (REV-B)` with validation date `2026-08-07`. All six failed packages remain `pending-review`. No model, test, fact, source, fitted evidence, or stored validation result was edited.
+
+## 2026-08-08: FINAL-REVIEW
+
+Reviewer: `luna independent reviewer (FINAL-REVIEW)`
+
+Seventeen packages pass the final independent review and were stamped. `PN2222A` remains pending because the prior saturation failure is still present. Every package passed `validate-package.mjs` before review. Two fresh benches per package were run through `tools/native-ngspice-reference/compare.mjs`; all 36 selected runs passed native ngspice-46 versus WASM. Stored validation records report `native_wasm_all_pass: true` and `expectations_all_pass: true` for all 18 packages.
+
+| MPN | Verdict | Independent evidence and in-region probe |
+| --- | --- | --- |
+| WP7113SBC | PASS | `forward_01.cir` and `reverse_leakage.cir` compare PASS. Fresh stored boundary value is 3.1319982877357417 V at 20 mA, below the stated 4.0 V maximum bound. Probe is inside the supported maximum-bound region. |
+| 74HC00 | PASS | `truth_table.cir` and `output_drive.cir` compare PASS. Stored logic-limit VOL is 0.0999791165242793 V, and propagation checks pass at 7.00017e-9 s and 8.57408e-9 s. In-region logic-low probe is 0.0006946765587053495 V. |
+| 74HC123 | PASS | `pulse_width.cir` and `quiescent_current.cir` compare PASS. Fresh pulse width is 0.000449086 s, matching the repaired approximately 449 us result. In-region monostable probe reproduces that value. |
+| 74HC4017 | PASS | `count_function.cir` and `quiescent_current.cir` compare PASS. Fresh Q3 is 4.5 V and Q2 is 2.78635e-9 V on the count bench. In-region count probe converges at the repaired Q3 value. |
+| LM4040A25 | PASS | `reference_100ua.cir` and `dynamic_impedance.cir` compare PASS, with stored `native_wasm_all_pass: true`; the prior `v(all)` vector mismatch is absent. In-region 100 uA reference probe is 2.5000164128699818 V. |
+| TL431 | PASS | `reference_10ma.cir` and `dynamic_impedance.cir` compare PASS, with stored `native_wasm_all_pass: true`; the prior `v(all)` mismatch is absent. In-region 10 mA reference probe is 2.4969225917330102 V. |
+| LMC555 | PASS | `astable.cir` and `monostable.cir` compare PASS. Fresh astable frequency is 4802.254943626986 Hz and duty is 0.6658963282467154, both within the repaired expectations. In-region astable probe reproduces both values. |
+| LM339 | PASS | `dc_levels.cir` and `offset_and_bias.cir` compare PASS, and stored `native_wasm_all_pass: true`; the prior `i(all)` mismatch is absent. In-region low-level probe is 0.14999999437500022 V. |
+| TIP31C | PASS | `dc_gain.cir` and `saturation.cir` compare PASS. The repaired full card parameter table contains all 20 fitted parameters and matches the shipped model values. In-region gain probes are 26.099043406766313 at 1 A and 14.324062623309384 at 3 A. |
+| TIP32C | PASS | `dc_gain.cir` and `saturation.cir` compare PASS. The repaired full card parameter table contains all 20 fitted parameters and matches the shipped model values. In-region gain probes are 26.09904340627652 at 1 A and 14.324062623271193 at 3 A. |
+| TIP120 | PASS | `dc_gain.cir` and `saturation.cir` compare PASS. The repaired full card table contains all 31 fitted composite parameters and matches the shipped model values. In-region gain probes are 1176.1951531382842 at 0.5 A and 2552.1406997800186 at 3 A. |
+| TIP125 | PASS | `dc_gain.cir` and `saturation.cir` compare PASS. The repaired full card table contains all 31 fitted composite parameters and matches the shipped model values. In-region gain probes are 1345.9389657508998 at 0.5 A and 2568.108313067704 at 3 A. |
+| BF256B | PASS | `idss.cir` and `transfer_curve.cir` compare PASS. The repaired full card parameter table contains all 14 fitted parameters and matches the shipped model values. In-region IDSS probe is 0.00988999503897503 A. |
+| AO3400A | PASS | `rdson.cir` and `capacitance.cir` compare PASS. Fresh stored RDS values reproduce 0.01779207094117625, 0.01930737716713231, and 0.023879210526790793 ohm, and all seven stored checks pass. In-region RDS probe is 0.01779207094117625 ohm. |
+| 2N7000 | PASS | `transfer_curve.cir` and `output_curve.cir` compare PASS. All 24 stored F2 checks have datasheet citations at the archetype thresholds, including p. 3 Figure 1 and Figure 2 curve references. In-region transfer probe at VGS = 4 V is 0.16388141600785447 A. |
+| PN2222A | FAIL | `dc_gain.cir` and `saturation.cir` compare PASS, but the prior defect remains: fresh VBE(sat) at IC = 0.5 A is 1.418342187637947 V against the cited 1.05 V maximum, an excess of 0.368342187637947 V or 35.080208%. The card still presents this as fitted data without an explicit omission or narrowed claim. Reviewer remains `pending-review`. |
+| IRF540N | PASS | `rdson.cir` and `transfer_curve.cir` compare PASS. All 20 stored F2 checks have datasheet citations at archetype thresholds, including p. 2 table rows and p. 3 to p. 4 figure checks. In-region RDS probe is 0.037000079150701456 ohm. |
+| 1N5819 | PASS | `forward_01.cir` and `forward_02.cir` compare PASS. All 16 stored F2 checks have datasheet citations at archetype thresholds, including p. 2 maximum rows and p. 5 to p. 6 curve checks. In-region forward probe is 0.22774362292593903 V at 20 mA. |
+
+No model, test, fact, source, fitted evidence, model card, or stored validation result was edited. Only reviewer and validation-date fields were stamped for the 17 passing packages. `PN2222A` fields were left pending. The 36 fresh comparison reports were written only under the session scratchpad.
