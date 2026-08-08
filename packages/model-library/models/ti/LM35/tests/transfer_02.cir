@@ -1,0 +1,22 @@
+OpenCircuit factory test: LM35 transfer at 25 degC
+* OpenCircuit Model Factory v0.1.0
+* Original work generated from public factual specifications.
+* This model is not a copy of, or adaptation from, any vendor SPICE model.
+* Source: https://www.ti.com/lit/ds/symlink/lm35.pdf
+* Revision: SNIS159H, August 1999, revised December 2017
+* Archetype: sensor_behavioral linear voltage output
+* Node order: VS OUT GND
+.subckt OC_TI_LM35 VS OUT GND params: TEMP_C=25
+.param SCALE=1.0000000000e-2 OFFSET=0 ROUT=5.0000000000e-1 IQ=5.6000000000e-5 VDROP=2.5000000000e0
+BIDEAL nideal GND V={OFFSET+SCALE*TEMP_C}
+BCLAMP ndrive GND V={min(max(v(nideal),v(GND)),v(VS)-VDROP)}
+ROUTER ndrive OUT {max(ROUT,1e-4)}
+RDC nideal GND 1G
+IQDRAW VS GND DC {IQ}
+.ends OC_TI_LM35
+
+VS vs 0 DC 5
+X1 vs out 0 OC_TI_LM35 TEMP_C=2.5000000000e1
+RLOAD out 0 10k
+.op
+.end

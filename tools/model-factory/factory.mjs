@@ -161,8 +161,15 @@ function stageAcquire(ctx) {
 function stageExtract(ctx) {
   requireFile(ctx.pdfPath, "extract");
   run("pdftotext", ["-layout", ctx.pdfPath, ctx.textPath]);
+  if (ctx.part.facts.extraction_method?.toLowerCase().includes("ocr")) {
+    const imageBase = path.join(ctx.workDir, "datasheet-page");
+    run("pdftoppm", ["-f", "1", "-singlefile", "-jpeg", "-r", "200", ctx.pdfPath, imageBase]);
+    const ocr = run("tesseract", [`${imageBase}.jpg`, "stdout"]);
+    fs.writeFileSync(ctx.textPath, ocr.stdout);
+  }
   const text = fs.readFileSync(ctx.textPath, "utf8");
-  if (!text.toLowerCase().includes(ctx.part.slug.toLowerCase())) throw new Error("Extracted text does not identify the requested MPN");
+  const sourceIdentifiers = [ctx.part.slug, ...(ctx.part.source.identifiers ?? [])];
+  if (!sourceIdentifiers.some((identifier) => text.toLowerCase().includes(identifier.toLowerCase()))) throw new Error("Extracted text does not identify the requested MPN or disclosed source-family identifier");
   const facts = structuredClone(ctx.part.facts);
   facts.identity = {
     canonical_mpn: ctx.part.identity.canonical_mpn,
@@ -186,7 +193,8 @@ function stageFit(ctx) {
     bjt: "fit_bjt.py",
     darlington: "fit_darlington.py",
     vdmos: "fit_vdmos.py",
-    opamp: "fit_opamp.py"
+    opamp: "fit_opamp.py",
+    sensor_behavioral: "fit_sensor.py"
   }[ctx.part.pipeline] ?? "fit_diode.py";
   run(python, [path.join(here, "python", script), factsPath, output], { timeout: 600_000 });
   const fitted = JSON.parse(fs.readFileSync(output, "utf8"));
@@ -251,6 +259,19 @@ function modelText(ctx, fitted) {
   if (ctx.part.pipeline === "opamp") {
     return `${header}* Fit: exactly three native ngspice-46 fixed-point calibration iterations\n* Node order: INP INN VCC VEE OUT\n.subckt ${ctx.part.component.modelName} INP INN VCC VEE OUT\n.param AOL=${formatSpice(p.AOL)} GBW=${formatSpice(p.GBW)} SR=${formatSpice(p.SR)} IBIAS=${formatSpice(p.IBIAS)} IOS=${formatSpice(p.IOS)} VOS=${formatSpice(p.VOS)}\n.param ROUT=${formatSpice(p.ROUT)} ILIM=${formatSpice(p.ILIM)} VDRP_H=${formatSpice(p.VDRP_H)} VDRP_L=${formatSpice(p.VDRP_L)} CC=30p FP2=${formatSpice(p.FP2)}\n.param CMRR=${formatSpice(p.CMRR)} PSRR=${formatSpice(p.PSRR)} VSUP_NOM=${formatSpice(p.VSUP_NOM)} IQ=${formatSpice(p.IQ)} EN=${formatSpice(p.EN)}\nIBP 0 INP DC {IBIAS+IOS/2}\nIBN 0 INN DC {IBIAS-IOS/2}\nCDIF INP INN 1p\nBERR e 0 V = v(INP,INN) + VOS + v(nz) + 0.5*(v(INP)+v(INN))/CMRR + (v(VCC,VEE)-VSUP_NOM)/PSRR\nRE e 0 1meg\nRNZ nz 0 {EN*EN/(4*1.380649e-23*300.15)}\nBGM 0 p I = {SR*CC}*tanh({6.283185307*GBW/SR}*v(e))\nCP p 0 {CC}\nRP p 0 {AOL/(6.283185307*GBW*CC)}\nRP2 p p2 {1/(6.283185307*FP2*1p)}\nCP2 p2 0 1p\nBCLMP q 0 V = min(max(v(p2), v(VEE)+min(VDRP_L,0.49*v(VCC,VEE))), v(VCC)-min(VDRP_H,0.49*v(VCC,VEE)))\nRQ q 0 1meg\nBOUT 0 OUT I = ILIM*tanh((v(q)-v(OUT))/(ROUT*ILIM))\nIQVCC VCC VEE DC {IQ}\n.ends ${ctx.part.component.modelName}\n`;
   }
+  if (ctx.part.pipeline === "sensor_behavioral") {
+    const variant = ctx.part.facts.sensor_variant;
+    if (variant === "linear_voltage") {
+      return `${header}* Archetype: sensor_behavioral linear voltage output\n* Node order: VS OUT GND\n.subckt ${ctx.part.component.modelName} VS OUT GND params: TEMP_C=25\n.param SCALE=${formatSpice(p.SCALE)} OFFSET=${formatSpice(p.OFFSET)} ROUT=${formatSpice(p.ROUT)} IQ=${formatSpice(p.IQ)} VDROP=${formatSpice(p.VDROP)}\nBIDEAL nideal GND V={OFFSET+SCALE*TEMP_C}\nBCLAMP ndrive GND V={min(max(v(nideal),v(GND)),v(VS)-VDROP)}\nROUTER ndrive OUT {max(ROUT,1e-4)}\nRDC nideal GND 1G\nIQDRAW VS GND DC {IQ}\n.ends ${ctx.part.component.modelName}\n`;
+    }
+    if (variant === "beta_ntc") {
+      return `${header}* Archetype: sensor_behavioral B-parameter NTC\n* Node order: P N\n.subckt ${ctx.part.component.modelName} P N params: TEMP_C=25\n.param R0=${formatSpice(p.R0)} T0_C=${formatSpice(p.T0_C)} BETA=${formatSpice(p.BETA)}\nRNTC P N R={max(R0*exp(BETA*(1/(TEMP_C+273.15)-1/(T0_C+273.15))),1e-4)}\n.ends ${ctx.part.component.modelName}\n`;
+    }
+    if (variant === "power_ldr") {
+      return `${header}* Archetype: sensor_behavioral illuminance power law\n* Node order: P N\n.subckt ${ctx.part.component.modelName} P N params: LUX=10\n.param R10=${formatSpice(p.R10)} GAMMA=${formatSpice(p.GAMMA)} LUX_FLOOR=${formatSpice(p.LUX_FLOOR)}\nRLDR P N R={max(R10*pow(max(LUX,LUX_FLOOR)/10,-GAMMA),1e-4)}\n.ends ${ctx.part.component.modelName}\n`;
+    }
+    throw new Error(`Unsupported sensor variant: ${variant}`);
+  }
   const optional = [];
   if (p.CJO > 0) optional.push(`CJO=${formatSpice(p.CJO)}`);
   if (p.TT > 0) optional.push(`TT=${formatSpice(p.TT)}`);
@@ -288,7 +309,7 @@ function baseComponent(ctx, fitted) {
     }],
     ordering_code_aliases: identity.aliases,
     datasheet: { url: ctx.part.source.url, revision: ctx.part.source.revision },
-    model_type: ["opamp", "darlington"].includes(ctx.part.pipeline) ? "subckt" : "dot_model",
+    model_type: ["opamp", "darlington", "sensor_behavioral"].includes(ctx.part.pipeline) ? "subckt" : "dot_model",
     fidelity_tier: ctx.part.component.fidelity_tier ?? "F2",
     domain_coverage: ctx.part.component.domain_coverage,
     supported_analyses: ctx.part.component.supported_analyses,
@@ -544,6 +565,36 @@ function opampTestgen(ctx, model, facts) {
   return tests;
 }
 
+function sensorTestgen(ctx, model, facts) {
+  const tests = [];
+  const variant = facts.sensor_variant;
+  facts.transfer_points.forEach((point, index) => {
+    const id = index + 1;
+    const file = `transfer_${String(id).padStart(2, "0")}.cir`;
+    let bench;
+    let expression;
+    if (variant === "linear_voltage") {
+      bench = `OpenCircuit factory test: ${ctx.part.slug} transfer at ${point.environment.value} degC\n${model}\nVS vs 0 DC 5\nX1 vs out 0 ${ctx.part.component.modelName} TEMP_C=${formatSpice(point.environment.value)}\nRLOAD out 0 10k\n.op\n.end\n`;
+      expression = "last(v(out))";
+    } else {
+      const parameter = variant === "beta_ntc" ? `TEMP_C=${formatSpice(point.environment.value)}` : `LUX=${formatSpice(point.environment.value)}`;
+      bench = `OpenCircuit factory test: ${ctx.part.slug} transfer at ${point.environment.value} ${point.environment.unit}\n${model}\nITEST 0 sense DC 1u\nX1 sense 0 ${ctx.part.component.modelName} ${parameter}\nRALL all 0 1G\n.op\n.end\n`;
+      expression = "scale:last(v(sense),1000000)";
+    }
+    writeBench(ctx, file, bench);
+    const target = point.electrical;
+    if (target.source_kind === "maximum") {
+      tests.push(testRecord(file, "operating_point", [], [hardBound(`transfer_maximum_${id}`, expression, target.unit, { minimum: 0, maximum: target.value }, target.page_reference)]));
+    } else if (target.source_kind === "minimum") {
+      tests.push(testRecord(file, "operating_point", [], [hardBound(`transfer_minimum_${id}`, expression, target.unit, { minimum: target.value }, target.page_reference)]));
+    } else {
+      const relativeTolerance = variant === "linear_voltage" ? 0.02 : variant === "beta_ntc" ? 0.16 : 0.08;
+      tests.push(testRecord(file, "operating_point", [expectation(`transfer_${id}`, expression, target.value, target.unit, variant === "linear_voltage" ? 0.005 : 0, relativeTolerance, target.page_reference)]));
+    }
+  });
+  return tests;
+}
+
 function stageTestgen(ctx) {
   const modelPath = path.join(ctx.packageDir, "model.cir");
   const factsPath = path.join(ctx.packageDir, "facts.json");
@@ -557,6 +608,7 @@ function stageTestgen(ctx) {
   if (["bjt", "darlington"].includes(ctx.part.pipeline)) tests = bjtTestgen(ctx, model, facts);
   else if (ctx.part.pipeline === "vdmos") tests = vdmosTestgen(ctx, model, facts);
   else if (ctx.part.pipeline === "opamp") tests = opampTestgen(ctx, model, facts);
+  else if (ctx.part.pipeline === "sensor_behavioral") tests = sensorTestgen(ctx, model, facts);
   if (ctx.part.pipeline) {
     writeJson(path.join(ctx.packageDir, "tests", "expectations.json"), { schema_version: "1.0.0", tests });
     console.log(`testgen ${ctx.part.slug}: ${tests.length} benches`);

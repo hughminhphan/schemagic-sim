@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "transfer_01.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "transfer_maximum_1",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale:last(v(sense),1000000)"
+          },
+          "minimum": 0,
+          "maximum": 20000,
+          "unit": "ohm",
+          "inclusive": true,
+          "datasheet_citation": "p. 1 light resistance at 10 lux",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "transfer_02.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "transfer_2",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale:last(v(sense),1000000)"
+          },
+          "expected_value": 3990.52462993776,
+          "unit": "ohm",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.08
+          },
+          "datasheet_citation": "p. 1 gamma definition and 10 lux maximum",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    }
+  ]
+}

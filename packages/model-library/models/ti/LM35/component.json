@@ -1,0 +1,137 @@
+{
+  "schema_version": "1.0.0",
+  "canonical_mpn": "LM35",
+  "manufacturer": "Texas Instruments",
+  "description": "Precision centigrade temperature sensor with 10 mV/degC analog output",
+  "electrical_family": "other",
+  "symbol_pins": [
+    {
+      "name": "+VS",
+      "number": "1",
+      "role": "positive_supply"
+    },
+    {
+      "name": "VOUT",
+      "number": "2",
+      "role": "output"
+    },
+    {
+      "name": "GND",
+      "number": "3",
+      "role": "ground"
+    }
+  ],
+  "spice_pin_mapping": [
+    {
+      "symbol_pin_number": "1",
+      "subckt_node": "supply",
+      "order": 1
+    },
+    {
+      "symbol_pin_number": "2",
+      "subckt_node": "output",
+      "order": 2
+    },
+    {
+      "symbol_pin_number": "3",
+      "subckt_node": "ground",
+      "order": 3
+    }
+  ],
+  "package_variants": [
+    {
+      "name": "TO-92",
+      "standard": "TI LP package",
+      "pin_count": 3,
+      "pin_map": [
+        {
+          "package_pin": "1",
+          "symbol_pin_number": "1"
+        },
+        {
+          "package_pin": "2",
+          "symbol_pin_number": "2"
+        },
+        {
+          "package_pin": "3",
+          "symbol_pin_number": "3"
+        }
+      ]
+    }
+  ],
+  "ordering_code_aliases": [
+    "LM35A",
+    "LM35C",
+    "LM35CA",
+    "LM35D"
+  ],
+  "datasheet": {
+    "url": "https://www.ti.com/lit/ds/symlink/lm35.pdf",
+    "revision": "SNIS159H, August 1999, revised December 2017"
+  },
+  "model_type": "subckt",
+  "fidelity_tier": "F1",
+  "domain_coverage": {
+    "dc": "approx",
+    "ac": "none",
+    "transient": "none",
+    "noise": "none",
+    "thermal": "none",
+    "digital": "none"
+  },
+  "supported_analyses": [
+    "operating_point",
+    "dc_sweep"
+  ],
+  "supported_operating_region": {
+    "summary": "F1 transfer-equation model from 2 degC to 150 degC at 4 V to 30 V. TEMP_C is an explicit caller-supplied subcircuit parameter.",
+    "numeric_bounds": [
+      {
+        "quantity": "temperature",
+        "minimum": 2,
+        "maximum": 150,
+        "unit": "degC",
+        "conditions": "Basic positive-supply circuit; below 2 degC requires the datasheet full-range bias circuit",
+        "placeholder": false
+      },
+      {
+        "quantity": "supply_voltage",
+        "minimum": 4,
+        "maximum": 30,
+        "unit": "V",
+        "conditions": "Recommended operating range",
+        "placeholder": false
+      }
+    ]
+  },
+  "known_omissions": [
+    "TEMP_C is caller supplied; package heat flow and thermal gradients are not simulated.",
+    "The 10 mV/degC nominal transfer is modelled, but the accuracy, nonlinearity, manufacturing spread, long-term drift, and temperature-dependent quiescent current are metadata only.",
+    "Response time and output capacitance stability are not modelled.",
+    "The basic positive-supply model is limited to 2 degC and above; the external resistor and negative supply required below 2 degC are not internalised.",
+    "Independent review remains pending-review."
+  ],
+  "licence": {
+    "spdx_id": "MIT",
+    "provenance_basis": "original_from_facts"
+  },
+  "generator": {
+    "tool_or_agent": "opencircuit-model-factory-v0.1.0",
+    "date": "2026-08-08"
+  },
+  "reviewer": {
+    "tool_or_agent": "pending-review",
+    "date": "2026-08-08"
+  },
+  "test_results": {
+    "status": "complete",
+    "pass_count": 3,
+    "fail_count": 0,
+    "total_count": 3,
+    "worst_observed_relative_fitting_error": {
+      "value": 0,
+      "quantity": "output voltage at 2 degC"
+    }
+  },
+  "validation_date": "2026-08-08"
+}

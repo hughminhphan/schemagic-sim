@@ -2281,6 +2281,110 @@ Object.assign(PARTS, {
   }
 });
 
+const sensorComponent = ({ modelName, fidelity, summary, bounds, omissions, dc = "fitted" }) => ({
+  modelName,
+  fidelity_tier: fidelity,
+  domain_coverage: { dc, ac: "none", transient: "none", noise: "none", thermal: "none", digital: "none" },
+  supported_analyses: ["operating_point", "dc_sweep"],
+  operating_summary: summary,
+  numeric_bounds: bounds,
+  omissions: [...omissions, "Independent review remains pending-review."]
+});
+
+Object.assign(PARTS, {
+  LM35: {
+    slug: "LM35", manufacturerSlug: "ti", pipeline: "sensor_behavioral",
+    identity: {
+      canonical_mpn: "LM35", manufacturer: "Texas Instruments", description: "Precision centigrade temperature sensor with 10 mV/degC analog output", electrical_family: "other", aliases: ["LM35A", "LM35C", "LM35CA", "LM35D"],
+      package: { name: "TO-92", standard: "TI LP package" },
+      pins: [{ name: "+VS", number: "1", role: "positive_supply", node: "supply" }, { name: "VOUT", number: "2", role: "output", node: "output" }, { name: "GND", number: "3", role: "ground", node: "ground" }], spice_order: ["1", "2", "3"]
+    },
+    source: { url: "https://www.ti.com/lit/ds/symlink/lm35.pdf", revision: "SNIS159H, August 1999, revised December 2017", pages: ["p. 1", "p. 4", "p. 5"] },
+    facts: {
+      schema_version: "1.0.0", extraction_method: "pdftotext -layout plus manual table transcription with MIN/TYP/MAX semantics", sensor_variant: "linear_voltage",
+      fit_conditions: { temperature: quantity(25, "degC", "VS = 5 V, ILOAD = 50 uA unless stated", "p. 5 section 6.5 heading", "typical") },
+      transfer_points: [2, 25, 150].map((temperature) => ({
+        environment: quantity(temperature, "degC", "caller-supplied case temperature", "p. 1 features and description", "datasheet_equation"),
+        electrical: quantity(0.010 * temperature, "V", `10 mV/degC ideal transfer at ${temperature} degC`, "p. 1 linear 10-mV/degC scale factor; p. 5 sensor gain", "derived_from_datasheet_equation")
+      })),
+      parameters: {
+        scale: quantity(0.010, "V/degC", "average slope over rated range", "p. 5 sensor gain TYP column", "typical"),
+        offset: quantity(0, "V", "ideal centigrade intercept", "p. 1 output directly proportional to centigrade temperature", "datasheet_equation"),
+        output_resistance: quantity(0.5, "ohm", "derived from 0.5 mV/mA typical load regulation", "p. 5 load regulation TYP column", "derived_model_input"),
+        quiescent_current: quantity(56e-6, "A", "VS = 5 V, TA = 25 degC", "p. 5 quiescent current TYP column", "typical"),
+        supply_headroom: quantity(2.5, "V", "conservative 4 V minimum supply minus 1.5 V output at 150 degC", "p. 4 recommended supply; p. 1 temperature range and transfer scale", "derived_model_input"),
+        supply_minimum: quantity(4, "V", "recommended operating condition", "p. 4 section 6.3 MIN column", "minimum"),
+        supply_maximum: quantity(30, "V", "recommended operating condition", "p. 4 section 6.3 MAX column", "maximum"),
+        accuracy_25c: quantity(0.2, "degC", "TA = 25 degC", "p. 5 accuracy TYP column", "typical")
+      }
+    },
+    component: sensorComponent({ modelName: "OC_TI_LM35", fidelity: "F1", summary: "F1 transfer-equation model from 2 degC to 150 degC at 4 V to 30 V. TEMP_C is an explicit caller-supplied subcircuit parameter.", bounds: [
+      { quantity: "temperature", minimum: 2, maximum: 150, unit: "degC", conditions: "Basic positive-supply circuit; below 2 degC requires the datasheet full-range bias circuit", placeholder: false },
+      { quantity: "supply_voltage", minimum: 4, maximum: 30, unit: "V", conditions: "Recommended operating range", placeholder: false }
+    ], omissions: ["TEMP_C is caller supplied; package heat flow and thermal gradients are not simulated.", "The 10 mV/degC nominal transfer is modelled, but the accuracy, nonlinearity, manufacturing spread, long-term drift, and temperature-dependent quiescent current are metadata only.", "Response time and output capacitance stability are not modelled.", "The basic positive-supply model is limited to 2 degC and above; the external resistor and negative supply required below 2 degC are not internalised."], dc: "approx" })
+  },
+  NTCLE100E3103JB0: {
+    slug: "NTCLE100E3103JB0", manufacturerSlug: "vishay", pipeline: "sensor_behavioral",
+    identity: {
+      canonical_mpn: "NTCLE100E3103JB0", manufacturer: "Vishay BCcomponents", description: "10 kohm radial-leaded NTC thermistor, 5 percent R25 tolerance", electrical_family: "other", aliases: [],
+      package: { name: "radial leaded bead", standard: "Vishay NTCLE100E3" },
+      pins: [{ name: "1", number: "1", role: "terminal", node: "positive" }, { name: "2", number: "2", role: "terminal", node: "negative" }], spice_order: ["1", "2"]
+    },
+    source: { url: "https://www.vishay.com/docs/29049/ntcle100.pdf", revision: "Document 29049, revision 07-May-2025", pages: ["p. 2", "p. 10"], identifiers: ["NTCLE100E3103***", "NTCLE100E3"] },
+    facts: {
+      schema_version: "1.0.0", extraction_method: "pdftotext -layout plus manual table transcription", sensor_variant: "beta_ntc",
+      fit_conditions: { temperature: quantity(25, "degC", "R25 reference condition", "p. 2 electrical data table", "typical") },
+      transfer_points: [
+        { environment: quantity(-40, "degC", "zero-power resistance table", "p. 10 NTCLE100E3103 resistance column", "typical_table"), electrical: quantity(332094, "ohm", "zero-power resistance at -40 degC", "p. 10 NTCLE100E3103 resistance column", "typical_table") },
+        { environment: quantity(25, "degC", "R25 reference", "p. 10 NTCLE100E3103 resistance column", "typical_table"), electrical: quantity(10000, "ohm", "zero-power resistance at 25 degC", "p. 10 NTCLE100E3103 resistance column", "typical_table") },
+        { environment: quantity(85, "degC", "zero-power resistance table", "p. 10 NTCLE100E3103 resistance column", "typical_table"), electrical: quantity(1070, "ohm", "zero-power resistance at 85 degC", "p. 10 NTCLE100E3103 resistance column", "typical_table") }
+      ],
+      parameters: {
+        nominal_resistance: quantity(10000, "ohm", "at 25 degC", "p. 2 R25 table, 103 row", "typical"),
+        reference_temperature: quantity(25, "degC", "R25 reference", "p. 2 R25 table heading", "typical"),
+        beta: quantity(3977, "K", "B25/85", "p. 2 B25/85 table, 103 row", "typical"),
+        resistance_tolerance: quantity(5, "%", "ordering-code J tolerance", "p. 1 tolerance range and part-number structure", "maximum"),
+        beta_tolerance: quantity(0.75, "%", "B25/85", "p. 2 B25/85 tolerance, 103 row", "maximum")
+      }
+    },
+    component: sensorComponent({ modelName: "OC_VISHAY_NTCLE100E3103JB0", fidelity: "F1", summary: "F1 native-fitted single-Beta resistance model from -40 degC to 85 degC, checked against the manufacturer resistance table.", bounds: [
+      { quantity: "temperature", minimum: -40, maximum: 85, unit: "degC", conditions: "B25/85 model validation interval", placeholder: false },
+      { quantity: "dissipated_power", minimum: 0, maximum: 0.001, unit: "W", conditions: "Validation benches use 1 uA to keep self-heating negligible", placeholder: false }
+    ], omissions: ["TEMP_C is caller supplied and self-heating is not simulated.", "A single B-parameter law does not reproduce the full manufacturer polynomial even within the -40 degC to 85 degC interval; the worst table residual is about 15 percent, so the package is capped at F1 and the resistance checks use a documented 16 percent tolerance.", "R25 and B tolerance, dissipation factor, thermal time constant, lead conduction, ageing, and humidity effects are metadata only."] })
+  },
+  GL5528: {
+    slug: "GL5528", manufacturerSlug: "senba", pipeline: "sensor_behavioral",
+    identity: {
+      canonical_mpn: "GL5528", manufacturer: "Nanyang Senba Optical & Electronic Co., Ltd.", description: "GL55-series cadmium-sulfide light-dependent resistor", electrical_family: "other", aliases: [],
+      package: { name: "5 mm epoxy photoresistor", standard: "GL55 series radial" },
+      pins: [{ name: "1", number: "1", role: "terminal", node: "positive" }, { name: "2", number: "2", role: "terminal", node: "negative" }], spice_order: ["1", "2"]
+    },
+    source: { url: "https://cdn.sparkfun.com/datasheets/Sensors/LightImaging/SEN-09088.pdf", revision: "GL5528.xls source sheet, created 25-Apr-2007; reputable SparkFun mirror", pages: ["p. 1"] },
+    facts: {
+      schema_version: "1.0.0", extraction_method: "OCR of image-only manufacturer source sheet mirrored by SparkFun; bounds and gamma semantics preserved", sensor_variant: "power_ldr",
+      fit_conditions: { temperature: quantity(25, "degC", "10 lux standard light A after specified pre-illumination", "p. 1 measuring conditions", "typical") },
+      transfer_points: [
+        { environment: quantity(10, "lux", "standard light A, 2854 K, after 2 h pre-illumination", "p. 1 measuring conditions", "typical"), electrical: quantity(20000, "ohm", "published 8 kohm to 20 kohm light-resistance range; maximum selected conservatively", "p. 1 light resistance at 10 lux", "maximum") },
+        { environment: quantity(100, "lux", "derived from published 10-to-100 lux gamma definition", "p. 1 gamma characteristic", "derived_model_input"), electrical: quantity(3990.52462993776, "ohm", "derived from 20 kohm at 10 lux and gamma 0.7", "p. 1 gamma definition and 10 lux maximum", "derived_model_input") }
+      ],
+      parameters: {
+        resistance_10lux_minimum: quantity(8000, "ohm", "10 lux at 25 degC", "p. 1 light resistance", "minimum"),
+        resistance_10lux_maximum: quantity(20000, "ohm", "10 lux at 25 degC", "p. 1 light resistance", "maximum"),
+        dark_resistance_minimum: quantity(1e6, "ohm", "0 lux, measured 10 seconds after pulsed 10 lux", "p. 1 dark resistance and measuring conditions", "minimum"),
+        gamma: quantity(0.7, "1", "100 lux to 10 lux", "p. 1 gamma value and definition", "typical"),
+        lux_floor: quantity(0.001, "lux", "numerical floor below supported region", "archetype-sensor-behavioral.md section 2.3", "held_default"),
+        maximum_voltage: quantity(150, "V", "darkness at 25 degC", "p. 1 maximum voltage", "maximum"),
+        maximum_power: quantity(0.1, "W", "TA = 25 degC", "p. 1 power dissipation", "maximum")
+      }
+    },
+    component: sensorComponent({ modelName: "OC_SENBA_GL5528", fidelity: "F1", summary: "F1 conservative power-law LDR model over 10 lux to 100 lux. LUX is an explicit caller-supplied subcircuit parameter.", bounds: [
+      { quantity: "illuminance", minimum: 10, maximum: 100, unit: "lux", conditions: "Published gamma interval", placeholder: false },
+      { quantity: "terminal_voltage", minimum: 0, maximum: 150, unit: "V", conditions: "Published maximum in darkness; failure not modelled", placeholder: false },
+      { quantity: "dissipated_power", minimum: 0, maximum: 0.1, unit: "W", conditions: "Published maximum at 25 degC; self-heating not modelled", placeholder: false }
+    ], omissions: ["The source sheet is image-only and is accessed through a reputable SparkFun mirror; manufacturer provenance is retained but fidelity is capped at F1.", "The published 8 kohm to 20 kohm range at 10 lux is a production bound, not a typical value. The model selects the 20 kohm maximum conservatively and claims no typical unit.", "LUX is caller supplied. Optical geometry, source spectrum, spectral response, hysteresis, memory, rise/fall dynamics, temperature coefficient, and ageing are not modelled.", "Dark resistance is a minimum bound and is not used as a continuous-curve target outside the published 10-to-100 lux gamma interval."] , dc: "approx" })
+  }
+});
+
 export function getPart(mpn) {
   const key = Object.keys(PARTS).find((candidate) => candidate.toLowerCase() === String(mpn).toLowerCase());
   if (!key) throw new Error(`Unsupported MPN: ${mpn}. Supported: ${Object.keys(PARTS).join(", ")}`);

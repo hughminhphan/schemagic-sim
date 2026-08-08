@@ -1,0 +1,145 @@
+{
+  "schema_version": "1.0.0",
+  "extraction_method": "pdftotext -layout plus manual table transcription with MIN/TYP/MAX semantics",
+  "sensor_variant": "linear_voltage",
+  "fit_conditions": {
+    "temperature": {
+      "value": 25,
+      "unit": "degC",
+      "conditions": "VS = 5 V, ILOAD = 50 uA unless stated",
+      "page_reference": "p. 5 section 6.5 heading",
+      "source_kind": "typical"
+    }
+  },
+  "transfer_points": [
+    {
+      "environment": {
+        "value": 2,
+        "unit": "degC",
+        "conditions": "caller-supplied case temperature",
+        "page_reference": "p. 1 features and description",
+        "source_kind": "datasheet_equation"
+      },
+      "electrical": {
+        "value": 0.02,
+        "unit": "V",
+        "conditions": "10 mV/degC ideal transfer at 2 degC",
+        "page_reference": "p. 1 linear 10-mV/degC scale factor; p. 5 sensor gain",
+        "source_kind": "derived_from_datasheet_equation"
+      }
+    },
+    {
+      "environment": {
+        "value": 25,
+        "unit": "degC",
+        "conditions": "caller-supplied case temperature",
+        "page_reference": "p. 1 features and description",
+        "source_kind": "datasheet_equation"
+      },
+      "electrical": {
+        "value": 0.25,
+        "unit": "V",
+        "conditions": "10 mV/degC ideal transfer at 25 degC",
+        "page_reference": "p. 1 linear 10-mV/degC scale factor; p. 5 sensor gain",
+        "source_kind": "derived_from_datasheet_equation"
+      }
+    },
+    {
+      "environment": {
+        "value": 150,
+        "unit": "degC",
+        "conditions": "caller-supplied case temperature",
+        "page_reference": "p. 1 features and description",
+        "source_kind": "datasheet_equation"
+      },
+      "electrical": {
+        "value": 1.5,
+        "unit": "V",
+        "conditions": "10 mV/degC ideal transfer at 150 degC",
+        "page_reference": "p. 1 linear 10-mV/degC scale factor; p. 5 sensor gain",
+        "source_kind": "derived_from_datasheet_equation"
+      }
+    }
+  ],
+  "parameters": {
+    "scale": {
+      "value": 0.01,
+      "unit": "V/degC",
+      "conditions": "average slope over rated range",
+      "page_reference": "p. 5 sensor gain TYP column",
+      "source_kind": "typical"
+    },
+    "offset": {
+      "value": 0,
+      "unit": "V",
+      "conditions": "ideal centigrade intercept",
+      "page_reference": "p. 1 output directly proportional to centigrade temperature",
+      "source_kind": "datasheet_equation"
+    },
+    "output_resistance": {
+      "value": 0.5,
+      "unit": "ohm",
+      "conditions": "derived from 0.5 mV/mA typical load regulation",
+      "page_reference": "p. 5 load regulation TYP column",
+      "source_kind": "derived_model_input"
+    },
+    "quiescent_current": {
+      "value": 0.000056,
+      "unit": "A",
+      "conditions": "VS = 5 V, TA = 25 degC",
+      "page_reference": "p. 5 quiescent current TYP column",
+      "source_kind": "typical"
+    },
+    "supply_headroom": {
+      "value": 2.5,
+      "unit": "V",
+      "conditions": "conservative 4 V minimum supply minus 1.5 V output at 150 degC",
+      "page_reference": "p. 4 recommended supply; p. 1 temperature range and transfer scale",
+      "source_kind": "derived_model_input"
+    },
+    "supply_minimum": {
+      "value": 4,
+      "unit": "V",
+      "conditions": "recommended operating condition",
+      "page_reference": "p. 4 section 6.3 MIN column",
+      "source_kind": "minimum"
+    },
+    "supply_maximum": {
+      "value": 30,
+      "unit": "V",
+      "conditions": "recommended operating condition",
+      "page_reference": "p. 4 section 6.3 MAX column",
+      "source_kind": "maximum"
+    },
+    "accuracy_25c": {
+      "value": 0.2,
+      "unit": "degC",
+      "conditions": "TA = 25 degC",
+      "page_reference": "p. 5 accuracy TYP column",
+      "source_kind": "typical"
+    }
+  },
+  "identity": {
+    "canonical_mpn": "LM35",
+    "manufacturer": "Texas Instruments",
+    "aliases": [
+      "LM35A",
+      "LM35C",
+      "LM35CA",
+      "LM35D"
+    ]
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://www.ti.com/lit/ds/symlink/lm35.pdf",
+    "revision": "SNIS159H, August 1999, revised December 2017",
+    "sha256": "beb5db9eea91a092c9315d5ac53ba6a7744ab518a76cc9cf53b424c74ed68625",
+    "accessed_date": "2026-08-08",
+    "pages_referenced": [
+      "p. 1",
+      "p. 4",
+      "p. 5"
+    ],
+    "placeholder": false
+  }
+}

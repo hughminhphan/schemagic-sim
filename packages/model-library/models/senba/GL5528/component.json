@@ -1,0 +1,126 @@
+{
+  "schema_version": "1.0.0",
+  "canonical_mpn": "GL5528",
+  "manufacturer": "Nanyang Senba Optical & Electronic Co., Ltd.",
+  "description": "GL55-series cadmium-sulfide light-dependent resistor",
+  "electrical_family": "other",
+  "symbol_pins": [
+    {
+      "name": "1",
+      "number": "1",
+      "role": "terminal"
+    },
+    {
+      "name": "2",
+      "number": "2",
+      "role": "terminal"
+    }
+  ],
+  "spice_pin_mapping": [
+    {
+      "symbol_pin_number": "1",
+      "subckt_node": "positive",
+      "order": 1
+    },
+    {
+      "symbol_pin_number": "2",
+      "subckt_node": "negative",
+      "order": 2
+    }
+  ],
+  "package_variants": [
+    {
+      "name": "5 mm epoxy photoresistor",
+      "standard": "GL55 series radial",
+      "pin_count": 2,
+      "pin_map": [
+        {
+          "package_pin": "1",
+          "symbol_pin_number": "1"
+        },
+        {
+          "package_pin": "2",
+          "symbol_pin_number": "2"
+        }
+      ]
+    }
+  ],
+  "ordering_code_aliases": [],
+  "datasheet": {
+    "url": "https://cdn.sparkfun.com/datasheets/Sensors/LightImaging/SEN-09088.pdf",
+    "revision": "GL5528.xls source sheet, created 25-Apr-2007; reputable SparkFun mirror"
+  },
+  "model_type": "subckt",
+  "fidelity_tier": "F1",
+  "domain_coverage": {
+    "dc": "approx",
+    "ac": "none",
+    "transient": "none",
+    "noise": "none",
+    "thermal": "none",
+    "digital": "none"
+  },
+  "supported_analyses": [
+    "operating_point",
+    "dc_sweep"
+  ],
+  "supported_operating_region": {
+    "summary": "F1 conservative power-law LDR model over 10 lux to 100 lux. LUX is an explicit caller-supplied subcircuit parameter.",
+    "numeric_bounds": [
+      {
+        "quantity": "illuminance",
+        "minimum": 10,
+        "maximum": 100,
+        "unit": "lux",
+        "conditions": "Published gamma interval",
+        "placeholder": false
+      },
+      {
+        "quantity": "terminal_voltage",
+        "minimum": 0,
+        "maximum": 150,
+        "unit": "V",
+        "conditions": "Published maximum in darkness; failure not modelled",
+        "placeholder": false
+      },
+      {
+        "quantity": "dissipated_power",
+        "minimum": 0,
+        "maximum": 0.1,
+        "unit": "W",
+        "conditions": "Published maximum at 25 degC; self-heating not modelled",
+        "placeholder": false
+      }
+    ]
+  },
+  "known_omissions": [
+    "The source sheet is image-only and is accessed through a reputable SparkFun mirror; manufacturer provenance is retained but fidelity is capped at F1.",
+    "The published 8 kohm to 20 kohm range at 10 lux is a production bound, not a typical value. The model selects the 20 kohm maximum conservatively and claims no typical unit.",
+    "LUX is caller supplied. Optical geometry, source spectrum, spectral response, hysteresis, memory, rise/fall dynamics, temperature coefficient, and ageing are not modelled.",
+    "Dark resistance is a minimum bound and is not used as a continuous-curve target outside the published 10-to-100 lux gamma interval.",
+    "Independent review remains pending-review."
+  ],
+  "licence": {
+    "spdx_id": "MIT",
+    "provenance_basis": "original_from_facts"
+  },
+  "generator": {
+    "tool_or_agent": "opencircuit-model-factory-v0.1.0",
+    "date": "2026-08-08"
+  },
+  "reviewer": {
+    "tool_or_agent": "pending-review",
+    "date": "2026-08-08"
+  },
+  "test_results": {
+    "status": "complete",
+    "pass_count": 2,
+    "fail_count": 0,
+    "total_count": 2,
+    "worst_observed_relative_fitting_error": {
+      "value": 0,
+      "quantity": "conservative resistance at 10 lux"
+    }
+  },
+  "validation_date": "2026-08-08"
+}

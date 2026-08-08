@@ -1,0 +1,115 @@
+{
+  "schema_version": "1.0.0",
+  "extraction_method": "OCR of image-only manufacturer source sheet mirrored by SparkFun; bounds and gamma semantics preserved",
+  "sensor_variant": "power_ldr",
+  "fit_conditions": {
+    "temperature": {
+      "value": 25,
+      "unit": "degC",
+      "conditions": "10 lux standard light A after specified pre-illumination",
+      "page_reference": "p. 1 measuring conditions",
+      "source_kind": "typical"
+    }
+  },
+  "transfer_points": [
+    {
+      "environment": {
+        "value": 10,
+        "unit": "lux",
+        "conditions": "standard light A, 2854 K, after 2 h pre-illumination",
+        "page_reference": "p. 1 measuring conditions",
+        "source_kind": "typical"
+      },
+      "electrical": {
+        "value": 20000,
+        "unit": "ohm",
+        "conditions": "published 8 kohm to 20 kohm light-resistance range; maximum selected conservatively",
+        "page_reference": "p. 1 light resistance at 10 lux",
+        "source_kind": "maximum"
+      }
+    },
+    {
+      "environment": {
+        "value": 100,
+        "unit": "lux",
+        "conditions": "derived from published 10-to-100 lux gamma definition",
+        "page_reference": "p. 1 gamma characteristic",
+        "source_kind": "derived_model_input"
+      },
+      "electrical": {
+        "value": 3990.52462993776,
+        "unit": "ohm",
+        "conditions": "derived from 20 kohm at 10 lux and gamma 0.7",
+        "page_reference": "p. 1 gamma definition and 10 lux maximum",
+        "source_kind": "derived_model_input"
+      }
+    }
+  ],
+  "parameters": {
+    "resistance_10lux_minimum": {
+      "value": 8000,
+      "unit": "ohm",
+      "conditions": "10 lux at 25 degC",
+      "page_reference": "p. 1 light resistance",
+      "source_kind": "minimum"
+    },
+    "resistance_10lux_maximum": {
+      "value": 20000,
+      "unit": "ohm",
+      "conditions": "10 lux at 25 degC",
+      "page_reference": "p. 1 light resistance",
+      "source_kind": "maximum"
+    },
+    "dark_resistance_minimum": {
+      "value": 1000000,
+      "unit": "ohm",
+      "conditions": "0 lux, measured 10 seconds after pulsed 10 lux",
+      "page_reference": "p. 1 dark resistance and measuring conditions",
+      "source_kind": "minimum"
+    },
+    "gamma": {
+      "value": 0.7,
+      "unit": "1",
+      "conditions": "100 lux to 10 lux",
+      "page_reference": "p. 1 gamma value and definition",
+      "source_kind": "typical"
+    },
+    "lux_floor": {
+      "value": 0.001,
+      "unit": "lux",
+      "conditions": "numerical floor below supported region",
+      "page_reference": "archetype-sensor-behavioral.md section 2.3",
+      "source_kind": "held_default"
+    },
+    "maximum_voltage": {
+      "value": 150,
+      "unit": "V",
+      "conditions": "darkness at 25 degC",
+      "page_reference": "p. 1 maximum voltage",
+      "source_kind": "maximum"
+    },
+    "maximum_power": {
+      "value": 0.1,
+      "unit": "W",
+      "conditions": "TA = 25 degC",
+      "page_reference": "p. 1 power dissipation",
+      "source_kind": "maximum"
+    }
+  },
+  "identity": {
+    "canonical_mpn": "GL5528",
+    "manufacturer": "Nanyang Senba Optical & Electronic Co., Ltd.",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://cdn.sparkfun.com/datasheets/Sensors/LightImaging/SEN-09088.pdf",
+    "revision": "GL5528.xls source sheet, created 25-Apr-2007; reputable SparkFun mirror",
+    "sha256": "568ea23f647b2c7b14daee99984244c5134cbc0d0ed63f4f424615c96d90384d",
+    "accessed_date": "2026-08-08",
+    "pages_referenced": [
+      "p. 1"
+    ],
+    "placeholder": false
+  }
+}

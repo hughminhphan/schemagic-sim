@@ -21,12 +21,18 @@ test("registry resolves supported MPNs case-insensitively", () => {
   assert.equal(getPart("2n3904"), PARTS["2N3904"]);
   assert.equal(getPart("irlz44n"), PARTS.IRLZ44N);
   assert.equal(getPart("tl072"), PARTS.TL072);
+  assert.equal(getPart("lm35"), PARTS.LM35);
+  assert.equal(getPart("ntcle100e3103jb0"), PARTS.NTCLE100E3103JB0);
+  assert.equal(getPart("gl5528"), PARTS.GL5528);
 });
 
 test("advanced golds select their required native fitting pipelines", () => {
   assert.equal(PARTS["2N3904"].pipeline, "bjt");
   assert.equal(PARTS.IRLZ44N.pipeline, "vdmos");
   assert.equal(PARTS.TL072.pipeline, "opamp");
+  assert.equal(PARTS.LM35.pipeline, "sensor_behavioral");
+  assert.equal(PARTS.NTCLE100E3103JB0.pipeline, "sensor_behavioral");
+  assert.equal(PARTS.GL5528.pipeline, "sensor_behavioral");
 });
 
 test("all factual quantities carry units, conditions, source kind, and page references", () => {
