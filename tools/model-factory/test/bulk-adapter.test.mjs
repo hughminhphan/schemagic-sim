@@ -67,6 +67,12 @@ test("bulk manifest accepts external datasheet and seed paths and stages pending
     assert.ok(component.test_results.total_count > 0);
     const expectations = JSON.parse(fs.readFileSync(path.join(result[0].package_path, "tests", "expectations.json"), "utf8"));
     assert.ok(expectations.tests.length > 0);
+    const benches = fs.readdirSync(path.join(result[0].package_path, "tests")).filter((name) => name.endsWith(".cir"));
+    assert.ok(benches.length > 0);
+    for (const bench of benches) {
+      const text = fs.readFileSync(path.join(result[0].package_path, "tests", bench), "utf8");
+      assert.match(text, /^\.temp 25$/m, `${bench} must pin the cited nominal temperature`);
+    }
     const facts = JSON.parse(fs.readFileSync(path.join(result[0].package_path, "facts.json"), "utf8"));
     assert.ok(facts.fit_points.some((point) => point.current.value === 0.01 && point.current.unit === "A" && point.voltage.value === 0.72 && point.voltage.unit === "V"));
     assert.equal(facts.electrical_limits.reverse_current_5v.value, 2e-6);
