@@ -1,0 +1,97 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "rdson.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "rdson_1",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d1),2.5)"
+          },
+          "expected_value": 1.5,
+          "unit": "ohm",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.5
+          },
+          "datasheet_citation": "p. 3, Electrical Characteristics, Drain-to-source On-resistance, VGS = 10 V row, TYP column",
+          "placeholder": false
+        },
+        {
+          "name": "rdson_3",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d3),5)"
+          },
+          "expected_value": 1.6,
+          "unit": "ohm",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.5
+          },
+          "datasheet_citation": "p. 3, Electrical Characteristics, Drain-to-source On-resistance, VGS = 4.5 V row, TYP column",
+          "placeholder": false
+        },
+        {
+          "name": "rdson_5",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d5),10)"
+          },
+          "expected_value": 2.73,
+          "unit": "ohm",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.5
+          },
+          "datasheet_citation": "p. 3, Electrical Characteristics, Drain-to-source On-resistance, VGS = 2.5 V row, TYP column",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": [
+        {
+          "name": "rdson_maximum_2",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d2),2.5)"
+          },
+          "minimum": 0,
+          "maximum": 1.9,
+          "unit": "ohm",
+          "inclusive": true,
+          "datasheet_citation": "p. 3, Electrical Characteristics, Drain-to-source On-resistance, VGS = 10 V row, MAX column",
+          "placeholder": false
+        },
+        {
+          "name": "rdson_maximum_4",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d4),5)"
+          },
+          "minimum": 0,
+          "maximum": 2.5,
+          "unit": "ohm",
+          "inclusive": true,
+          "datasheet_citation": "p. 3, Electrical Characteristics, Drain-to-source On-resistance, VGS = 4.5 V row, MAX column",
+          "placeholder": false
+        },
+        {
+          "name": "rdson_maximum_6",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d6),10)"
+          },
+          "minimum": 0,
+          "maximum": 4.5,
+          "unit": "ohm",
+          "inclusive": true,
+          "datasheet_citation": "p. 3, Electrical Characteristics, Drain-to-source On-resistance, VGS = 2.5 V row, MAX column",
+          "placeholder": false
+        }
+      ]
+    }
+  ]
+}

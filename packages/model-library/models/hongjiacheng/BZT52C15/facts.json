@@ -1,0 +1,180 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "schema_version": "1.0.0",
+    "mpn": "BZT52C15",
+    "manufacturer": "hongjiacheng",
+    "family": "diode",
+    "datasheet_identity": {
+      "title": "BZT52C2V0 THRU BZT52C75 SURFACE MOUNT ZENER DIODES",
+      "revision": "Rev:1.0",
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3",
+        "p. 4"
+      ]
+    },
+    "usable_curves": true,
+    "curves": [
+      {
+        "name": "BZT52C15 zener characteristic",
+        "x_axis": {
+          "quantity": "Zener voltage VZ",
+          "unit": "V",
+          "scale": "linear"
+        },
+        "y_axis": {
+          "quantity": "Zener current IZ",
+          "unit": "A",
+          "scale": "log"
+        },
+        "test_conditions": "Ta = 25 degC, pulsed; BZT52C15 trace labeled 15 in Fig. 2; PD = 500 mW envelope shown in the figure",
+        "page_reference": "p. 3, Fig. 2, Zener Characteristics (11V to 43V)",
+        "points": [
+          {
+            "x": 15.4,
+            "y": 0.0005
+          },
+          {
+            "x": 15.4,
+            "y": 0.001
+          },
+          {
+            "x": 15.4,
+            "y": 0.002
+          },
+          {
+            "x": 15.5,
+            "y": 0.005
+          },
+          {
+            "x": 15.6,
+            "y": 0.01
+          },
+          {
+            "x": 15.8,
+            "y": 0.02
+          }
+        ]
+      }
+    ],
+    "specs": {
+      "variant": "zener",
+      "forward_voltage_points": [
+        {
+          "current": {
+            "value": 0.01,
+            "unit": "A",
+            "conditions": "IF = 10 mA, Ta = 25 degC; maximum rating",
+            "page_reference": "p. 1, Maximum Ratings, Forward Voltage",
+            "source_kind": "maximum"
+          },
+          "voltage": {
+            "value": 0.9,
+            "unit": "V",
+            "conditions": "IF = 10 mA, Ta = 25 degC; maximum rating",
+            "page_reference": "p. 1, Maximum Ratings, Forward Voltage",
+            "source_kind": "maximum"
+          }
+        }
+      ],
+      "reverse_current": {
+        "value": 1e-07,
+        "unit": "A",
+        "conditions": "IR = 0.1 microA maximum at VR = 10.5 V, Ta = 25 degC",
+        "page_reference": "p. 2, Electrical Characteristics, BZT52C15 row",
+        "source_kind": "maximum"
+      },
+      "capacitance": null,
+      "reverse_recovery": null,
+      "breakdown_voltage": {
+        "value": 15,
+        "unit": "V",
+        "conditions": "IZT = 0.005 A, Ta = 25 degC; inclusive primary-table bounds 14.25 V minimum and 15.75 V maximum",
+        "page_reference": "p. 2, Electrical Characteristics, BZT52C15 row",
+        "source_kind": "typical"
+      },
+      "breakdown_current": {
+        "value": 0.005,
+        "unit": "A",
+        "conditions": "IZT = 5 mA for the stated zener voltage, Ta = 25 degC",
+        "page_reference": "p. 2, Electrical Characteristics, BZT52C15 row",
+        "source_kind": "typical"
+      }
+    },
+    "extraction_notes": [
+      "Zener semantics preserved: the nominal reverse breakdown voltage VZ = 15.0 V is paired with the tabulated reverse test current IZT = 5 mA, not with the forward-voltage rating.",
+      "The BZT52C15 row gives VZ = 14.25 V minimum, 15.00 V nominal, and 15.75 V maximum at IZT = 5 mA; maximum Zener impedance ZZT = 30 ohm at IZT; maximum knee impedance ZZK = 200 ohm at IZK = 1 mA; admissible Zener current IZM = 5 mA; and temperature-coefficient limits of 9.2 to 13.0 mV/degC at IZTC.",
+      "The BZT52C15 row gives maximum reverse leakage IR = 0.1 microA at VR = 10.5 V and Ta = 25 degC. The p. 1 maximum rating gives VF = 0.9 V maximum at IF = 10 mA and power dissipation PD = 350 mW.",
+      "The six zener-characteristic points are direct approximate graph-read observations from the visible BZT52C15 trace labeled 15 in p. 3 Fig. 2 at labeled logarithmic-current grid values; source-axis current in mA was converted to A and no points were interpolated or synthesized. The figure states Ta = 25 degC, pulsed, and shows a PD = 500 mW envelope.",
+      "Capacitance is shown only as family-level typical curves in p. 3 Fig. 3 at Ta = 25 degC and f = 1 MHz, with 0 V, 1 V, and 50% of nominal VZ bias curves; no tabulated BZT52C15 capacitance value is provided, so capacitance is null.",
+      "No reverse-recovery-time specification or test circuit is published in the supplied datasheet, so reverse recovery is null.",
+      "The supplied datasheet covers the BZT52C2V0 through BZT52C75 family; this extraction is restricted to the BZT52C15 row.",
+      "The supplied PDF SHA-256 was verified as 1e58426ecb363e87dbad0da3e5a12350aadc7203342e2c339877f1de5b2d7631."
+    ],
+    "omission_reason": null
+  },
+  "catalog_seed_hints": [],
+  "identity": {
+    "canonical_mpn": "BZT52C15",
+    "manufacturer": "hongjiacheng",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8564879643875295232",
+    "revision": "Rev:1.0",
+    "sha256": "1e58426ecb363e87dbad0da3e5a12350aadc7203342e2c339877f1de5b2d7631",
+    "accessed_date": "2026-08-09",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "placeholder": false
+  },
+  "fit_points": [
+    {
+      "current": {
+        "value": 0.0095,
+        "unit": "A",
+        "conditions": "Conservative F1 package bench at 95% of the cited current; IF = 10 mA, Ta = 25 degC; maximum rating",
+        "page_reference": "p. 1, Maximum Ratings, Forward Voltage",
+        "source_kind": "maximum"
+      },
+      "voltage": {
+        "value": 0.9,
+        "unit": "V",
+        "conditions": "IF = 10 mA, Ta = 25 degC; maximum rating",
+        "page_reference": "p. 1, Maximum Ratings, Forward Voltage",
+        "source_kind": "maximum"
+      }
+    }
+  ],
+  "electrical_limits": {},
+  "derived_model_inputs": {
+    "BV": {
+      "value": 15,
+      "unit": "V",
+      "conditions": "VZ nominal at IZT = 5 mA, Ta = 25 degC; inclusive table bounds 14.25 V minimum and 15.75 V maximum",
+      "page_reference": "p. 2, Electrical Characteristics, BZT52C15 row",
+      "source_kind": "typical"
+    },
+    "IBV": {
+      "value": 0.005,
+      "unit": "A",
+      "conditions": "IZT = 5 mA for the stated zener voltage, Ta = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, BZT52C15 row",
+      "source_kind": "typical"
+    },
+    "NBV": {
+      "value": 1,
+      "unit": "1",
+      "conditions": "First-order avalanche-knee default; no multi-point reverse-knee trace was available",
+      "page_reference": "model-factory Zener F1 policy",
+      "source_kind": "held_default"
+    }
+  }
+}

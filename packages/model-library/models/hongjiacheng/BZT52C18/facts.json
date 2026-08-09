@@ -1,0 +1,179 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "schema_version": "1.0.0",
+    "mpn": "BZT52C18",
+    "manufacturer": "hongjiacheng",
+    "family": "diode",
+    "datasheet_identity": {
+      "title": "BZT52C2V0 THRU BZT52C75 SURFACE MOUNT ZENER DIODES",
+      "revision": "Rev:1.0",
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3",
+        "p. 4"
+      ]
+    },
+    "usable_curves": true,
+    "curves": [
+      {
+        "name": "BZT52C18 zener characteristic",
+        "x_axis": {
+          "quantity": "Zener voltage VZ",
+          "unit": "V",
+          "scale": "linear"
+        },
+        "y_axis": {
+          "quantity": "Zener current IZ",
+          "unit": "A",
+          "scale": "log"
+        },
+        "test_conditions": "Ta = 25 degC, pulsed; BZT52C18 trace labeled 18 in Fig. 2; PD = 500 mW envelope shown in the figure",
+        "page_reference": "p. 3, Fig. 2, Zener Characteristics (11V to 43V)",
+        "points": [
+          {
+            "x": 18.24,
+            "y": 0.0005
+          },
+          {
+            "x": 18.27,
+            "y": 0.001
+          },
+          {
+            "x": 18.34,
+            "y": 0.002
+          },
+          {
+            "x": 18.54,
+            "y": 0.005
+          },
+          {
+            "x": 18.64,
+            "y": 0.01
+          },
+          {
+            "x": 18.99,
+            "y": 0.02
+          }
+        ]
+      }
+    ],
+    "specs": {
+      "variant": "zener",
+      "forward_voltage_points": [
+        {
+          "current": {
+            "value": 0.01,
+            "unit": "A",
+            "conditions": "IF = 10 mA, Ta = 25 degC; maximum rating",
+            "page_reference": "p. 1, Maximum Ratings",
+            "source_kind": "maximum"
+          },
+          "voltage": {
+            "value": 0.9,
+            "unit": "V",
+            "conditions": "IF = 10 mA, Ta = 25 degC; maximum rating",
+            "page_reference": "p. 1, Maximum Ratings",
+            "source_kind": "maximum"
+          }
+        }
+      ],
+      "reverse_current": {
+        "value": 1e-07,
+        "unit": "A",
+        "conditions": "IR = 0.1 microA maximum at VR = 12.6 V, Ta = 25 degC",
+        "page_reference": "p. 2, Electrical Characteristics, BZT52C18 row",
+        "source_kind": "maximum"
+      },
+      "capacitance": null,
+      "reverse_recovery": null,
+      "breakdown_voltage": {
+        "value": 18,
+        "unit": "V",
+        "conditions": "IZT = 0.005 A, Ta = 25 degC; inclusive primary-table bounds 17.1 V minimum and 18.9 V maximum",
+        "page_reference": "p. 2, Electrical Characteristics, BZT52C18 row",
+        "source_kind": "typical"
+      },
+      "breakdown_current": {
+        "value": 0.005,
+        "unit": "A",
+        "conditions": "IZT = 5 mA for the stated zener voltage, Ta = 25 degC",
+        "page_reference": "p. 2, Electrical Characteristics, BZT52C18 row",
+        "source_kind": "typical"
+      }
+    },
+    "extraction_notes": [
+      "Zener semantics preserved: the nominal breakdown voltage is paired with the tabulated IZT test current.",
+      "The BZT52C18 table row gives VZ = 17.10 V minimum, 18.00 V nominal, and 18.90 V maximum at IZT = 5 mA; ZZT maximum = 45 ohm at IZT; ZZK maximum = 225 ohm at IZK = 1 mA; admissible IZM = 5 mA.",
+      "The BZT52C18 temperature-coefficient bounds are 12.4 to 16.0 mV/degC at IZTC, as listed on p. 2.",
+      "The six zener-characteristic points are graph-read observations from the visible BZT52C18 trace in p. 3 Fig. 2 at labeled logarithmic-current grid values; they are not interpolated or synthesized. The figure states Ta = 25 degC, pulsed, and shows a PD = 500 mW envelope.",
+      "Capacitance is shown only as family-level typical curves in p. 3 Fig. 3 at Ta = 25 degC and f = 1 MHz, with 0 V, 1 V, and 50% of nominal VZ bias curves; no tabulated BZT52C18 capacitance value is provided, so capacitance is null.",
+      "No reverse-recovery-time specification or test circuit is published in the supplied datasheet, so reverse recovery is null.",
+      "Absolute maximum PD is 350 mW on p. 1; the p. 3 pulsed characteristic plot separately shows a 500 mW envelope and is preserved as the plot condition rather than substituted for the rating."
+    ],
+    "omission_reason": null
+  },
+  "catalog_seed_hints": [],
+  "identity": {
+    "canonical_mpn": "BZT52C18",
+    "manufacturer": "hongjiacheng",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8564879645389979648",
+    "revision": "Rev:1.0",
+    "sha256": "1e58426ecb363e87dbad0da3e5a12350aadc7203342e2c339877f1de5b2d7631",
+    "accessed_date": "2026-08-09",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "placeholder": false
+  },
+  "fit_points": [
+    {
+      "current": {
+        "value": 0.0095,
+        "unit": "A",
+        "conditions": "Conservative F1 package bench at 95% of the cited current; IF = 10 mA, Ta = 25 degC; maximum rating",
+        "page_reference": "p. 1, Maximum Ratings",
+        "source_kind": "maximum"
+      },
+      "voltage": {
+        "value": 0.9,
+        "unit": "V",
+        "conditions": "IF = 10 mA, Ta = 25 degC; maximum rating",
+        "page_reference": "p. 1, Maximum Ratings",
+        "source_kind": "maximum"
+      }
+    }
+  ],
+  "electrical_limits": {},
+  "derived_model_inputs": {
+    "BV": {
+      "value": 18,
+      "unit": "V",
+      "conditions": "VZ nominal at IZT = 5 mA, Ta = 25 degC; table bounds 17.10 V minimum and 18.90 V maximum",
+      "page_reference": "p. 2, Electrical Characteristics, BZT52C18 row",
+      "source_kind": "typical"
+    },
+    "IBV": {
+      "value": 0.005,
+      "unit": "A",
+      "conditions": "IZT = 5 mA for the stated zener voltage, Ta = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, BZT52C18 row",
+      "source_kind": "typical"
+    },
+    "NBV": {
+      "value": 1,
+      "unit": "1",
+      "conditions": "First-order avalanche-knee default; no multi-point reverse-knee trace was available",
+      "page_reference": "model-factory Zener F1 policy",
+      "source_kind": "held_default"
+    }
+  }
+}

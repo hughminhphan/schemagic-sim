@@ -1,0 +1,179 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "schema_version": "1.0.0",
+    "mpn": "BZT52C8V2S",
+    "manufacturer": "hongjiacheng",
+    "family": "diode",
+    "datasheet_identity": {
+      "title": "BZT52C2V0S THRU BZT52C75S SURFACE MOUNT ZENER DIODES",
+      "revision": "Rev:1.0",
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3",
+        "p. 4"
+      ]
+    },
+    "usable_curves": true,
+    "curves": [
+      {
+        "name": "BZT52C8V2S zener characteristic",
+        "x_axis": {
+          "quantity": "Zener voltage VZ",
+          "unit": "V",
+          "scale": "linear"
+        },
+        "y_axis": {
+          "quantity": "Zener current IZ",
+          "unit": "A",
+          "scale": "log"
+        },
+        "test_conditions": "Ta = 25 degC, pulsed, PD = 200 mW; BZT52C8V2S trace labeled 8.2 in Fig. 1",
+        "page_reference": "p. 3, Fig. 1 (Zener Characteristics, VZ up to 10 V), 8.2 trace",
+        "points": [
+          {
+            "x": 8.17,
+            "y": 0.0005
+          },
+          {
+            "x": 8.18,
+            "y": 0.001
+          },
+          {
+            "x": 8.18,
+            "y": 0.002
+          },
+          {
+            "x": 8.2,
+            "y": 0.005
+          },
+          {
+            "x": 8.24,
+            "y": 0.01
+          },
+          {
+            "x": 8.31,
+            "y": 0.02
+          }
+        ]
+      }
+    ],
+    "specs": {
+      "variant": "zener",
+      "forward_voltage_points": [
+        {
+          "current": {
+            "value": 0.01,
+            "unit": "A",
+            "conditions": "IF = 10 mA, Ta = 25 degC; maximum rating",
+            "page_reference": "p. 1, Maximum Ratings, Forward Voltage",
+            "source_kind": "maximum"
+          },
+          "voltage": {
+            "value": 0.9,
+            "unit": "V",
+            "conditions": "IF = 10 mA, Ta = 25 degC; maximum rating",
+            "page_reference": "p. 1, Maximum Ratings, Forward Voltage",
+            "source_kind": "maximum"
+          }
+        }
+      ],
+      "reverse_current": {
+        "value": 7e-07,
+        "unit": "A",
+        "conditions": "IR = 0.7 microA maximum at VR = 5.0 V, Ta = 25 degC",
+        "page_reference": "p. 2, Electrical Characteristics, BZT52C8V2S IR@VR row",
+        "source_kind": "maximum"
+      },
+      "capacitance": null,
+      "reverse_recovery": null,
+      "breakdown_voltage": {
+        "value": 8.2,
+        "unit": "V",
+        "conditions": "IZT = 0.005 A, Ta = 25 degC; inclusive primary-table bounds 7.7 V minimum and 8.7 V maximum",
+        "page_reference": "p. 2, Electrical Characteristics, BZT52C8V2S VZ row",
+        "source_kind": "typical"
+      },
+      "breakdown_current": {
+        "value": 0.005,
+        "unit": "A",
+        "conditions": "IZT = 5 mA for nominal VZ = 8.2 V, Ta = 25 degC",
+        "page_reference": "p. 2, Electrical Characteristics, BZT52C8V2S IZT row",
+        "source_kind": "typical"
+      }
+    },
+    "extraction_notes": [
+      "Zener semantics preserved: nominal reverse breakdown voltage VZ = 8.2 V is paired with the tabulated reverse test current IZT = 5 mA, not with the forward-voltage rating.",
+      "The BZT52C8V2S row was selected from the BZT52C2V0S through BZT52C75S family table. Its inclusive VZ bounds are 7.7 V minimum and 8.7 V maximum at IZT = 5 mA; maximum ZZT is 15 ohm at IZT, maximum ZZK is 80 ohm at IZK = 1 mA, and admissible IZM is 5 mA.",
+      "The BZT52C8V2S row gives maximum reverse leakage IR = 0.7 microA at VR = 5.0 V and temperature-coefficient limits of 3.2 to 6.2 mV/degC at IZTC, with Ta = 25 degC unless otherwise noted.",
+      "The six zener-characteristic points are direct approximate graph-read observations from the visible BZT52C8V2S trace labeled 8.2 in p. 3 Fig. 1 at labeled logarithmic-current grid values; source-axis current in mA was converted to A and no intermediate points were interpolated.",
+      "No capacitance or reverse-recovery specification is published for BZT52C8V2S in the supplied datasheet. The p. 3 capacitance, leakage, temperature-coefficient, and impedance plots are series-wide typical characteristics without a separate tabulated component-specific capacitance or reverse-recovery value, so no such values were assigned.",
+      "Maximum ratings include PD = 200 mW and forward voltage VF = 0.9 V at IF = 10 mA, both at Ta = 25 degC; junction and storage temperature limits are -55 to +150 degC and typical RthetaJ-A is 417 degC/W.",
+      "The supplied PDF SHA-256 was verified as 8d99c0b95ddbd62581320fd03378a72d97d914bc201c735536cd50e5f6753113."
+    ],
+    "omission_reason": null
+  },
+  "catalog_seed_hints": [],
+  "identity": {
+    "canonical_mpn": "BZT52C8V2S",
+    "manufacturer": "hongjiacheng",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8564879700021059584",
+    "revision": "Rev:1.0",
+    "sha256": "8d99c0b95ddbd62581320fd03378a72d97d914bc201c735536cd50e5f6753113",
+    "accessed_date": "2026-08-09",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "placeholder": false
+  },
+  "fit_points": [
+    {
+      "current": {
+        "value": 0.0095,
+        "unit": "A",
+        "conditions": "Conservative F1 package bench at 95% of the cited current; IF = 10 mA, Ta = 25 degC; maximum rating",
+        "page_reference": "p. 1, Maximum Ratings, Forward Voltage",
+        "source_kind": "maximum"
+      },
+      "voltage": {
+        "value": 0.9,
+        "unit": "V",
+        "conditions": "IF = 10 mA, Ta = 25 degC; maximum rating",
+        "page_reference": "p. 1, Maximum Ratings, Forward Voltage",
+        "source_kind": "maximum"
+      }
+    }
+  ],
+  "electrical_limits": {},
+  "derived_model_inputs": {
+    "BV": {
+      "value": 8.2,
+      "unit": "V",
+      "conditions": "VZ nominal at IZT = 5 mA, Ta = 25 degC; inclusive table bounds 7.7 V minimum and 8.7 V maximum",
+      "page_reference": "p. 2, Electrical Characteristics, BZT52C8V2S VZ row",
+      "source_kind": "typical"
+    },
+    "IBV": {
+      "value": 0.005,
+      "unit": "A",
+      "conditions": "IZT = 5 mA for nominal VZ = 8.2 V, Ta = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, BZT52C8V2S IZT row",
+      "source_kind": "typical"
+    },
+    "NBV": {
+      "value": 1,
+      "unit": "1",
+      "conditions": "First-order avalanche-knee default; no multi-point reverse-knee trace was available",
+      "page_reference": "model-factory Zener F1 policy",
+      "source_kind": "held_default"
+    }
+  }
+}

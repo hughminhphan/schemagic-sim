@@ -1,0 +1,216 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "dc_gain.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "hfe_at_0.001_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg1),419999.99999999994)"
+          },
+          "expected_value": 420,
+          "unit": "1",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 3, Fig. 2 DC Current Gain",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_at_0.002_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg2),205000)"
+          },
+          "expected_value": 410,
+          "unit": "1",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 3, Fig. 2 DC Current Gain",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_at_0.005_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg3),79000)"
+          },
+          "expected_value": 395,
+          "unit": "1",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 3, Fig. 2 DC Current Gain",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_at_0.01_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg4),38000)"
+          },
+          "expected_value": 380,
+          "unit": "1",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 3, Fig. 2 DC Current Gain",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_at_0.02_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg5),18000)"
+          },
+          "expected_value": 360,
+          "unit": "1",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 3, Fig. 2 DC Current Gain",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_at_0.05_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg6),6799.999999999999)"
+          },
+          "expected_value": 340,
+          "unit": "1",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 3, Fig. 2 DC Current Gain",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_at_0.08_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg7),3750)"
+          },
+          "expected_value": 300,
+          "unit": "1",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 3, Fig. 2 DC Current Gain",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_at_0.1_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg8),2500)"
+          },
+          "expected_value": 250,
+          "unit": "1",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 3, Fig. 2 DC Current Gain",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": [
+        {
+          "name": "hfe_minimum_at_0.002_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg9),99999.99999999999)"
+          },
+          "minimum": 200,
+          "unit": "1",
+          "inclusive": true,
+          "datasheet_citation": "p. 2, Electrical Characteristics, DC Current Gain hFE; Classification Of hFE",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_maximum_at_0.002_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg10),225000.00000000003)"
+          },
+          "maximum": 450,
+          "unit": "1",
+          "inclusive": true,
+          "datasheet_citation": "p. 2, Electrical Characteristics, DC Current Gain hFE; Classification Of hFE",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "saturation.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "vce_sat_1_maximum",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(cs1))"
+          },
+          "minimum": 0,
+          "maximum": 0.5,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 2, Electrical Characteristics, Collector-Emitter Saturation Voltage",
+          "placeholder": false
+        },
+        {
+          "name": "vbe_sat_1_maximum",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(bs1))"
+          },
+          "minimum": 0,
+          "maximum": 1.1,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 2, Electrical Characteristics, Base-Emitter Saturation Voltage",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "output_curve.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "boundary_region.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "upper_current_boundary_voltage",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(c))"
+          },
+          "minimum": 0,
+          "maximum": 5,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 3, Fig. 2 DC Current Gain",
+          "placeholder": false
+        }
+      ]
+    }
+  ]
+}

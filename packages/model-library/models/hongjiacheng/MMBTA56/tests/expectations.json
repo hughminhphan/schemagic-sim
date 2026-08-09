@@ -1,0 +1,183 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "dc_gain.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "hfe_at_0.01_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg1),16000)"
+          },
+          "expected_value": 160,
+          "unit": "1",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 2, Fig. 2 DC Current Gain, sparse visual digitization",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_at_0.03_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg2),5166.666666666667)"
+          },
+          "expected_value": 155,
+          "unit": "1",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 2, Fig. 2 DC Current Gain, sparse visual digitization",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_at_0.1_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg3),1449.9999999999998)"
+          },
+          "expected_value": 145,
+          "unit": "1",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 2, Fig. 2 DC Current Gain, sparse visual digitization",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_at_0.3_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg4),250)"
+          },
+          "expected_value": 75,
+          "unit": "1",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 2, Fig. 2 DC Current Gain, sparse visual digitization",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_at_0.5_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg5),76)"
+          },
+          "expected_value": 38,
+          "unit": "1",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 2, Fig. 2 DC Current Gain, sparse visual digitization",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": [
+        {
+          "name": "hfe_minimum_at_0.01_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg6),10000)"
+          },
+          "minimum": 100,
+          "unit": "1",
+          "inclusive": true,
+          "datasheet_citation": "p. 1, Electrical Characteristics, DC Current Gain hFE(1)",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_maximum_at_0.01_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg7),40000)"
+          },
+          "maximum": 400,
+          "unit": "1",
+          "inclusive": true,
+          "datasheet_citation": "p. 1, Electrical Characteristics, DC Current Gain hFE(1)",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_minimum_at_0.1_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg8),1000)"
+          },
+          "minimum": 100,
+          "unit": "1",
+          "inclusive": true,
+          "datasheet_citation": "p. 1, Electrical Characteristics, DC Current Gain hFE(2)",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "saturation.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "vce_sat_1_maximum",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(cs1))"
+          },
+          "minimum": 0,
+          "maximum": 0.25,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 1, Electrical Characteristics, Collector-Emitter Saturation Voltage",
+          "placeholder": false
+        },
+        {
+          "name": "vbe_sat_1_maximum",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(bs1))"
+          },
+          "minimum": 0,
+          "maximum": 1.2,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 1, Electrical Characteristics, Base-Emitter Saturation Voltage",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "output_curve.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "boundary_region.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "upper_current_boundary_voltage",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(c))"
+          },
+          "minimum": 0,
+          "maximum": 1,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 2, Fig. 2 DC Current Gain, sparse visual digitization",
+          "placeholder": false
+        }
+      ]
+    }
+  ]
+}

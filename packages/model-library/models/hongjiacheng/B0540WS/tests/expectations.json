@@ -1,0 +1,397 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "forward_01.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "forward_voltage_at_0.01_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "expected_value": 0.22,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.05
+          },
+          "datasheet_citation": "p. 2, Fig. 1, Ta = 25 degC curve",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "forward_02.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "forward_voltage_at_0.02_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "expected_value": 0.238,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.05
+          },
+          "datasheet_citation": "p. 2, Fig. 1, Ta = 25 degC curve",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "forward_03.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "forward_voltage_at_0.05_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "expected_value": 0.2655,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.05
+          },
+          "datasheet_citation": "p. 2, Fig. 1, Ta = 25 degC curve",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "forward_04.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "forward_voltage_at_0.1_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "expected_value": 0.2914,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.05
+          },
+          "datasheet_citation": "p. 2, Fig. 1, Ta = 25 degC curve",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "forward_05.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "forward_voltage_at_0.2_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "expected_value": 0.322,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.05
+          },
+          "datasheet_citation": "p. 2, Fig. 1, Ta = 25 degC curve",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "forward_06.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "forward_voltage_at_0.4_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "expected_value": 0.3606,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.05
+          },
+          "datasheet_citation": "p. 2, Fig. 1, Ta = 25 degC curve",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "forward_07.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "forward_voltage_at_0.6_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "expected_value": 0.3904,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.05
+          },
+          "datasheet_citation": "p. 2, Fig. 1, Ta = 25 degC curve",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "forward_08.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "forward_voltage_at_0.8_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "expected_value": 0.4205,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.05
+          },
+          "datasheet_citation": "p. 2, Fig. 1, Ta = 25 degC curve",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "forward_09.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "forward_voltage_maximum_at_0.5_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "minimum": 0,
+          "maximum": 0.51,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 2, Electrical Characteristics, VF2 row",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "forward_10.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "forward_voltage_maximum_at_1_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "minimum": 0,
+          "maximum": 0.62,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 2, Electrical Characteristics, VF3 row",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "forward_11.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "forward_voltage_at_0.01_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "expected_value": 0.22,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.05
+          },
+          "datasheet_citation": "p. 2, Fig. 1, Ta = 25 degC curve",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "forward_12.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "forward_voltage_at_0.02_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "expected_value": 0.238,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.05
+          },
+          "datasheet_citation": "p. 2, Fig. 1, Ta = 25 degC curve",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "forward_13.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "forward_voltage_at_0.05_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "expected_value": 0.2655,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.05
+          },
+          "datasheet_citation": "p. 2, Fig. 1, Ta = 25 degC curve",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "forward_14.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "forward_voltage_at_0.1_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "expected_value": 0.2914,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.05
+          },
+          "datasheet_citation": "p. 2, Fig. 1, Ta = 25 degC curve",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "forward_15.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "forward_voltage_at_0.2_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "expected_value": 0.322,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.05
+          },
+          "datasheet_citation": "p. 2, Fig. 1, Ta = 25 degC curve",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "forward_16.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "forward_voltage_at_0.4_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "expected_value": 0.3606,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.05
+          },
+          "datasheet_citation": "p. 2, Fig. 1, Ta = 25 degC curve",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "forward_17.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "forward_voltage_at_0.6_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "expected_value": 0.3904,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.05
+          },
+          "datasheet_citation": "p. 2, Fig. 1, Ta = 25 degC curve",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "forward_18.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "forward_voltage_at_0.8_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "expected_value": 0.4205,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.05
+          },
+          "datasheet_citation": "p. 2, Fig. 1, Ta = 25 degC curve",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    }
+  ]
+}

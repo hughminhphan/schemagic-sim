@@ -1,0 +1,65 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "forward_01.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "forward_voltage_maximum_at_0.19_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "minimum": 0,
+          "maximum": 1.2,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 1, maximum ratings, Forward Voltage @ IF=200mA",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "zener_voltage.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "zener_voltage_inclusive_bounds",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(cathode))"
+          },
+          "minimum": 4.845,
+          "maximum": 5.355,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 2, electrical characteristics, SMBJ5338B row, VZ @ IZT",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "reverse_leakage.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "reverse_leakage_maximum",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vbias))"
+          },
+          "minimum": 0,
+          "maximum": 1e-06,
+          "unit": "A",
+          "inclusive": true,
+          "datasheet_citation": "p. 2, electrical characteristics, SMBJ5338B row, IR @ VR",
+          "placeholder": false
+        }
+      ]
+    }
+  ]
+}

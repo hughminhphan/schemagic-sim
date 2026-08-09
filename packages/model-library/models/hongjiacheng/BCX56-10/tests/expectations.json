@@ -1,0 +1,170 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "dc_gain.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "hfe_at_0.001_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg1),160000)"
+          },
+          "expected_value": 160,
+          "unit": "1",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 3 Fig. 2",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_at_0.01_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg2),15000)"
+          },
+          "expected_value": 150,
+          "unit": "1",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 3 Fig. 2",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_at_0.1_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg3),1449.9999999999998)"
+          },
+          "expected_value": 145,
+          "unit": "1",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 3 Fig. 2",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_at_0.5_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg4),200)"
+          },
+          "expected_value": 100,
+          "unit": "1",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 3 Fig. 2",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_at_1_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg5),65)"
+          },
+          "expected_value": 65,
+          "unit": "1",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 3 Fig. 2",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": [
+        {
+          "name": "hfe_minimum_at_0.5_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg6),80)"
+          },
+          "minimum": 40,
+          "unit": "1",
+          "inclusive": true,
+          "datasheet_citation": "p. 2, Electrical Characteristics, hFE(1)",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_minimum_at_0.15_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg7),420.00000000000006)"
+          },
+          "minimum": 63,
+          "unit": "1",
+          "inclusive": true,
+          "datasheet_citation": "p. 2, Electrical Characteristics, hFE(2)",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_maximum_at_0.15_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg8),1666.6666666666667)"
+          },
+          "maximum": 250,
+          "unit": "1",
+          "inclusive": true,
+          "datasheet_citation": "p. 2, Electrical Characteristics, hFE(2)",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "saturation.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "vce_sat_1_maximum",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(cs1))"
+          },
+          "minimum": 0,
+          "maximum": 0.5,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 2, Electrical Characteristics, VCE(sat)",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "output_curve.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "boundary_region.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "upper_current_boundary_voltage",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(c))"
+          },
+          "minimum": 0,
+          "maximum": 2,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 3 Fig. 2",
+          "placeholder": false
+        }
+      ]
+    }
+  ]
+}
