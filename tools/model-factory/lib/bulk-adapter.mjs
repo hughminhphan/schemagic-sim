@@ -203,6 +203,45 @@ export function libraryCollisionReason(part, libraryRoot = reviewedLibraryRoot) 
   return null;
 }
 
+function stableValue(value) {
+  if (Array.isArray(value)) return value.map(stableValue);
+  if (value && typeof value === "object") return Object.fromEntries(Object.keys(value).sort().map((key) => [key, stableValue(value[key])]));
+  return value;
+}
+
+export function parameterVectorKey(part, fit) {
+  return JSON.stringify(stableValue({ family: part.conveyor_family, polarity: fit.polarity, parameters: fit.parameters }));
+}
+
+export function libraryDuplicateDieReason(part, fit, libraryRoot = reviewedLibraryRoot, ignorePackagePath = null) {
+  const candidateKey = parameterVectorKey(part, fit);
+  if (!fs.existsSync(libraryRoot)) return null;
+  for (const manufacturer of fs.readdirSync(libraryRoot, { withFileTypes: true })) {
+    if (!manufacturer.isDirectory()) continue;
+    const manufacturerDir = path.join(libraryRoot, manufacturer.name);
+    for (const packageEntry of fs.readdirSync(manufacturerDir, { withFileTypes: true })) {
+      if (!packageEntry.isDirectory()) continue;
+      const packagePath = path.join(manufacturerDir, packageEntry.name);
+      if (ignorePackagePath && path.resolve(packagePath) === path.resolve(ignorePackagePath)) continue;
+      const componentPath = path.join(packagePath, "component.json");
+      const fittedPath = path.join(packagePath, "fitted.json");
+      if (!fs.existsSync(componentPath) || !fs.existsSync(fittedPath)) continue;
+      const component = JSON.parse(fs.readFileSync(componentPath, "utf8"));
+      const family = String(component.electrical_family ?? "").startsWith("bjt_") ? "bjt"
+        : ["nmos", "pmos"].includes(component.electrical_family) ? "mosfet"
+          : component.electrical_family === "diode" ? "diode" : null;
+      if (family !== part.conveyor_family) continue;
+      const polarity = ["bjt_pnp", "pmos"].includes(component.electrical_family) ? "p" : "n";
+      const fitted = JSON.parse(fs.readFileSync(fittedPath, "utf8"));
+      const existingKey = JSON.stringify(stableValue({ family, polarity, parameters: fitted.parameters }));
+      if (existingKey === candidateKey) {
+        return `duplicate fitted die vector already represented by ${manufacturer.name}/${packageEntry.name}; no independent parameterization or shared-die evidence was supplied`;
+      }
+    }
+  }
+  return null;
+}
+
 export function repairKnownEvidenceDefects(part, extraction) {
   const repaired = structuredClone(extraction);
   if (String(part.mpn).toUpperCase() !== "MMBT2222ALT1G") return repaired;
@@ -613,29 +652,63 @@ export function runBulkManifest(manifestPath, stagingRoot, options = {}) {
   const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
   const parts = normalizeBulkManifest(manifest);
   const results = [];
+  const batchVectors = new Map();
+  const libraryRoot = options.libraryRoot ?? reviewedLibraryRoot;
+  const identity = (part) => ({ ...(part.lcsc_id ? { lcsc_id: part.lcsc_id } : {}), mpn: part.mpn });
+
+  const stageFit = (part, extraction, fit, demotionReason) => {
+    const existingReason = libraryDuplicateDieReason(part, fit, libraryRoot);
+    if (existingReason) {
+      results.push({ ...identity(part), status: "skipped", stage: "selection", reason: existingReason });
+      return false;
+    }
+    const vectorKey = parameterVectorKey(part, fit);
+    const prior = batchVectors.get(vectorKey);
+    if (prior) {
+      const reason = prior.blocked
+        ? `duplicate fitted die vector matches same-batch candidates ${prior.mpns.join(", ")}; no independent parameterization or shared-die evidence was supplied`
+        : `duplicate fitted die vector matches same-batch candidate ${prior.mpn}; no independent parameterization or shared-die evidence was supplied`;
+      if (!prior.blocked) {
+        fs.rmSync(prior.packagePath, { recursive: true, force: true });
+        results[prior.resultIndex] = { ...prior.identity, status: "skipped", stage: "selection", reason };
+      }
+      batchVectors.set(vectorKey, { blocked: true, mpns: [...new Set([...(prior.mpns ?? [prior.mpn]), part.mpn])] });
+      results.push({ ...identity(part), status: "skipped", stage: "selection", reason });
+      return false;
+    }
+    const ownPackagePath = path.join(stagingRoot, "packages", slugManufacturer(part.manufacturer), normalizedIdentity(part).packageSlug);
+    const stagedReason = libraryDuplicateDieReason(part, fit, path.join(stagingRoot, "packages"), ownPackagePath);
+    if (stagedReason) {
+      results.push({ ...identity(part), status: "skipped", stage: "selection", reason: stagedReason });
+      return false;
+    }
+    const packagePath = stageBulkPart(part, extraction, fit, stagingRoot, { demotionReason });
+    const resultIndex = results.length;
+    results.push({ ...identity(part), status: "staged", fidelity: fit.fidelity, ...(demotionReason ? { demotion_reason: demotionReason } : {}), package_path: packagePath });
+    batchVectors.set(vectorKey, { resultIndex, packagePath, mpn: part.mpn, identity: identity(part) });
+    return true;
+  };
+
   for (const part of parts) {
-    const collisionReason = libraryCollisionReason(part, options.libraryRoot ?? reviewedLibraryRoot);
+    const collisionReason = libraryCollisionReason(part, libraryRoot);
     if (collisionReason) {
-      results.push({ ...(part.lcsc_id ? { lcsc_id: part.lcsc_id } : {}), mpn: part.mpn, status: "skipped", stage: "selection", reason: collisionReason });
+      results.push({ ...identity(part), status: "skipped", stage: "selection", reason: collisionReason });
       continue;
     }
     const rawExtraction = part.extraction_path && fs.existsSync(part.extraction_path) ? JSON.parse(fs.readFileSync(part.extraction_path, "utf8")) : null;
     const extraction = rawExtraction ? repairKnownEvidenceDefects(part, rawExtraction) : null;
     try {
       const fit = fitBulkPart(part, extraction, { ...options, forceF1: part.force_f1 === true });
-      const demotionReason = part.demotion_reason ?? null;
-      const packagePath = stageBulkPart(part, extraction, fit, stagingRoot, { demotionReason });
-      results.push({ ...(part.lcsc_id ? { lcsc_id: part.lcsc_id } : {}), mpn: part.mpn, status: "staged", fidelity: fit.fidelity, ...(demotionReason ? { demotion_reason: demotionReason } : {}), package_path: packagePath });
+      stageFit(part, extraction, fit, part.demotion_reason ?? null);
     } catch (error) {
       if (part.allow_f1_demotion !== false) {
         try {
           const fit = fitBulkPart(part, extraction, { ...options, forceF1: true });
-          const packagePath = stageBulkPart(part, extraction, fit, stagingRoot, { demotionReason: error.message });
-          results.push({ ...(part.lcsc_id ? { lcsc_id: part.lcsc_id } : {}), mpn: part.mpn, status: "staged", fidelity: "F1", demotion_reason: error.message, package_path: packagePath });
+          stageFit(part, extraction, fit, error.message);
         } catch (fallbackError) {
-          results.push({ ...(part.lcsc_id ? { lcsc_id: part.lcsc_id } : {}), mpn: part.mpn, status: "failed", stage: "fitted", reason: `F2 failed: ${error.message}; F1 failed: ${fallbackError.message}` });
+          results.push({ ...identity(part), status: "failed", stage: "fitted", reason: `F2 failed: ${error.message}; F1 failed: ${fallbackError.message}` });
         }
-      } else results.push({ ...(part.lcsc_id ? { lcsc_id: part.lcsc_id } : {}), mpn: part.mpn, status: "failed", stage: "fitted", reason: error.message });
+      } else results.push({ ...identity(part), status: "failed", stage: "fitted", reason: error.message });
     }
   }
   return results;
