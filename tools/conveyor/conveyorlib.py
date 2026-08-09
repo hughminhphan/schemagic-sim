@@ -308,9 +308,18 @@ def catalog_parametric_values(raw: Any) -> list[float]:
     return numeric_values(value_text)
 
 
+# The catalog stores the same parameter under several attribute names, and the copies do
+# not always agree with each other: DMP2035U-7 carries both '45Ω@2.5V,4.0A' and
+# '23mΩ@4.5V, 30mΩ@2.5V, 41mΩ@1.8V' for vdmos.rds_on, the first having lost its milli
+# prefix. Flagging every disagreeing hint let one corrupt catalog row veto an extraction
+# that another row corroborated exactly. A target is corroborated when ANY hint mapped to
+# it agrees; only a target where NO hint agrees is a real discrepancy.
+RATIO_EPSILON = 1e-9
+
+
 def cross_check(payload: Mapping[str, Any], seed_hints: Sequence[Mapping[str, Any]], ratio_limit: float = 3.0) -> list[str]:
     targets = extracted_targets(payload)
-    discrepancies: list[str] = []
+    by_target: dict[str, list[tuple[float, Any]]] = {}
     for hint in seed_hints:
         target = str(hint.get("factory_target", ""))
         extracted = [abs(value) for value in targets.get(target, []) if value != 0]
@@ -318,11 +327,36 @@ def cross_check(payload: Mapping[str, Any], seed_hints: Sequence[Mapping[str, An
         if not extracted or not catalog:
             continue
         ratio = min(max(a, b) / min(a, b) for a in extracted for b in catalog)
-        if ratio > ratio_limit:
-            discrepancies.append(
-                f"{target}: catalog {hint.get('raw_value')!r} disagrees with extracted {extracted}; closest ratio {ratio:.3g}x"
-            )
+        by_target.setdefault(target, []).append((ratio, hint.get("raw_value")))
+
+    discrepancies: list[str] = []
+    for target, observations in by_target.items():
+        # The limit is a documented "up to Nx is tolerated". Compare with a relative
+        # epsilon so a ratio of exactly the limit is not decided by float representation:
+        # DMP3098L-7's Crss ratio evaluates to 3.0000000000000004 while its Coss ratio,
+        # off by the identical factor, evaluates to 2.9999999999999996.
+        if any(ratio <= ratio_limit * (1 + RATIO_EPSILON) for ratio, _ in observations):
+            continue
+        best_ratio, raw_value = min(observations, key=lambda item: item[0])
+        extracted = [abs(value) for value in targets.get(target, []) if value != 0]
+        discrepancies.append(
+            f"{target}: catalog {raw_value!r} disagrees with extracted {extracted}; closest ratio {best_ratio:.3g}x"
+        )
     return discrepancies
+
+
+def should_park_family(successes: int, consecutive_failures: int, park_after: int = 2) -> bool:
+    """Whether the F2 circuit breaker should trip for a family.
+
+    The breaker exists to stop a tranche burning compute on a family the pipeline plainly
+    cannot fit. A family that has already produced an F2 has demonstrated it can be fitted,
+    so its later F1s are per-part outcomes and must not park it: counting every gate
+    failure regardless of successes turned a handful of honest F1s into a whole-family
+    cascade in the first proving run, where 44 of 50 parts were staged without any attempt.
+    """
+    if successes > 0:
+        return False
+    return consecutive_failures >= park_after
 
 
 def build_luna_prompt(repo_root: Path, pack_path: Path, datasheet_path: Path, part: Mapping[str, Any], retry_discrepancies: Sequence[str] = ()) -> str:

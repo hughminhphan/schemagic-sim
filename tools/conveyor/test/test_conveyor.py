@@ -11,7 +11,8 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(HERE))
 
-from conveyorlib import ConveyorError, StateStore, cross_check, load_and_validate_extraction, run_extraction_batch
+from conveyorlib import (ConveyorError, StateStore, cross_check, load_and_validate_extraction,
+                         run_extraction_batch, should_park_family)
 
 
 def q(value, unit="V"):
@@ -87,6 +88,63 @@ class CrossCheckTest(unittest.TestCase):
         discrepancy = cross_check(payload, [{"factory_target": "vdmos.rds_on", "raw_value": "45Ω@2.5V,4.0A"}])[0]
         self.assertIn("1.5e+03x", discrepancy)
         self.assertEqual(cross_check(payload, [{"factory_target": "vdmos.ciss", "raw_value": "50pF@25V"}]), [])
+
+
+    def test_one_corroborating_hint_clears_a_corrupt_duplicate(self):
+        """The catalog holds the same parameter under several attribute names.
+
+        DMP2035U-7 carries both '45Ω@2.5V,4.0A' (which lost its milli prefix) and
+        '23mΩ@4.5V, 30mΩ@2.5V, 41mΩ@1.8V' for vdmos.rds_on. The extraction matches the
+        second exactly, so the target is corroborated and the corrupt row must not veto it.
+        """
+        payload = {
+            "family": "mosfet",
+            "specs": {
+                "rdson_points": [{"resistance": q(0.023, "ohm")}, {"resistance": q(0.03, "ohm")}, {"resistance": q(0.041, "ohm")}],
+                "threshold_min": None, "threshold_typ": None, "threshold_max": None,
+                "ciss": None, "coss": None, "crss": None,
+            },
+        }
+        corrupt = {"factory_target": "vdmos.rds_on", "raw_value": "45Ω@2.5V,4.0A"}
+        corroborating = {"factory_target": "vdmos.rds_on", "raw_value": "23mΩ@4.5V, 30mΩ@2.5V, 41mΩ@1.8V"}
+        self.assertRegex(cross_check(payload, [corrupt])[0], "closest ratio")
+        self.assertEqual(cross_check(payload, [corrupt, corroborating]), [])
+        self.assertEqual(cross_check(payload, [corroborating, corrupt]), [])
+
+    def test_a_ratio_exactly_at_the_limit_is_not_decided_by_float_representation(self):
+        """DMP3098L-7's Crss ratio evaluates to 3.0000000000000004 and its Coss ratio,
+        off by the identical factor, to 2.9999999999999996. The documented limit is 3.0x,
+        so neither may be flagged."""
+        payload = {
+            "family": "mosfet",
+            "specs": {
+                "rdson_points": [], "threshold_min": None, "threshold_typ": None, "threshold_max": None,
+                "ciss": None, "coss": q(7e-11, "F"), "crss": q(4.9e-11, "F"),
+            },
+        }
+        self.assertEqual(1.47e-10 / 4.9e-11 > 3.0, True, "fixture must reproduce the float boundary")
+        self.assertEqual(cross_check(payload, [{"factory_target": "vdmos.crss", "raw_value": "147pF"}]), [])
+        self.assertEqual(cross_check(payload, [{"factory_target": "vdmos.coss", "raw_value": "210pF"}]), [])
+        # A genuine disagreement beyond the limit is still reported.
+        self.assertRegex(cross_check(payload, [{"factory_target": "vdmos.crss", "raw_value": "500pF"}])[0], "closest ratio")
+
+
+class FamilyParkingTest(unittest.TestCase):
+    def test_parks_a_family_that_never_produces_an_f2(self):
+        self.assertFalse(should_park_family(successes=0, consecutive_failures=1))
+        self.assertTrue(should_park_family(successes=0, consecutive_failures=2))
+        self.assertTrue(should_park_family(successes=0, consecutive_failures=9))
+
+    def test_never_parks_a_family_that_has_already_produced_an_f2(self):
+        """The proving run staged 44 of 50 parts with no fit attempt because two honest
+        F1s parked a family the pipeline could in fact fit."""
+        for failures in range(0, 20):
+            self.assertFalse(should_park_family(successes=1, consecutive_failures=failures))
+        self.assertFalse(should_park_family(successes=12, consecutive_failures=6))
+
+    def test_park_threshold_is_configurable(self):
+        self.assertFalse(should_park_family(successes=0, consecutive_failures=3, park_after=4))
+        self.assertTrue(should_park_family(successes=0, consecutive_failures=4, park_after=4))
 
 
 class MockedLunaDispatchTest(unittest.TestCase):

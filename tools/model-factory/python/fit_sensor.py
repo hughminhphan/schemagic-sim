@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import argparse
 import json
-import math
 from pathlib import Path
 
 import numpy as np
@@ -58,10 +57,8 @@ def residual_linear(values, facts):
     return np.asarray([(a - t) / max(abs(t), 0.01) for a, t in zip(actual, target)])
 
 
-def residual_ntc(values, facts):
-    actual = evaluate_ntc(values, facts)
-    target = [point["electrical"]["value"] for point in facts["transfer_points"]]
-    return np.asarray([math.log(max(a, 1e-12) / t) for a, t in zip(actual, target)])
+# Deliberately no residual_ntc(): the beta_ntc variant transcribes its cited constants
+# and must never acquire an optimizer over R25 or B25/85. See the beta_ntc branch below.
 
 
 def rows(facts, actual, quantity, unit):
@@ -103,20 +100,33 @@ def main():
         measured = evaluate_linear(fit.x, facts)
         residuals = rows(facts, measured, "output voltage", "V")
         metadata = {"SCALE": {"status": "native fitted"}, "OFFSET": {"status": "native fitted"}, "ROUT": {"status": "derived from cited load regulation"}, "IQ": {"status": "direct typical transcription"}, "VDROP": {"status": "derived from cited minimum supply and maximum output"}}
+        fitter_description = "scipy.optimize.least_squares with native ngspice-46 evaluations"
     elif variant == "beta_ntc":
+        # Transcription only: never optimise R25 or B25/85.
+        #
+        # The published R25 and B25/85 tolerances describe a manufacturing spread across
+        # the population, not a fitting degree of freedom for one modelled part. Running
+        # least_squares inside those bounds let the optimizer trade cited constants away
+        # to chase the zero-power resistance table, and because the band is narrow the
+        # solution saturated it: the P5-rejected values 9500 ohm and 3947.1725 K are
+        # exactly 0.95 * R25 and 0.9925 * B25/85, i.e. the lower bounds, not a fit.
+        #
+        # The sensor archetype requires the cited facts to be transcribed unchanged. The
+        # B-parameter equation is then measured against the table through native ngspice,
+        # and whatever error remains is reported honestly rather than optimised away.
         p = facts["parameters"]
-        r0 = p["nominal_resistance"]["value"]
-        beta = p["beta"]["value"]
-        fit = least_squares(
-            residual_ntc,
-            x0=np.array([r0, beta]),
-            bounds=(np.array([0.95 * r0, 0.9925 * beta]), np.array([1.05 * r0, 1.0075 * beta])),
-            args=(facts,), method="trf", x_scale="jac", diff_step=1e-4, ftol=1e-12, xtol=1e-12, max_nfev=5000,
-        )
-        parameters = {"R0": float(fit.x[0]), "T0_C": p["reference_temperature"]["value"], "BETA": float(fit.x[1])}
-        measured = evaluate_ntc(fit.x, facts)
+        r0 = float(p["nominal_resistance"]["value"])
+        beta = float(p["beta"]["value"])
+        parameters = {"R0": r0, "T0_C": p["reference_temperature"]["value"], "BETA": beta}
+        measured = evaluate_ntc([r0, beta], facts)
         residuals = rows(facts, measured, "resistance", "ohm")
-        metadata = {"R0": {"status": "native fitted within R25 tolerance"}, "T0_C": {"status": "direct transcription"}, "BETA": {"status": "native fitted within published B25/85 tolerance"}}
+        metadata = {
+            "R0": {"status": "direct transcription of cited R25"},
+            "T0_C": {"status": "direct transcription of cited reference temperature"},
+            "BETA": {"status": "direct transcription of cited B25/85"},
+        }
+        fitter_description = "direct datasheet transcription evaluated with native ngspice-46"
+        fit = None
     elif variant == "power_ldr":
         p = facts["parameters"]
         # The source publishes only an 8 kohm to 20 kohm bound at 10 lux.
@@ -127,6 +137,7 @@ def main():
         parameters = {"R10": r10, "GAMMA": gamma, "LUX_FLOOR": p["lux_floor"]["value"]}
         residuals = rows(facts, measured, "conservative resistance", "ohm")
         metadata = {"R10": {"status": "published maximum selected as conservative F1 bound"}, "GAMMA": {"status": "direct typical transcription"}, "LUX_FLOOR": {"status": "supported-region floor"}}
+        fitter_description = "native ngspice-46 evaluation of published F1 bounds"
         fit = None
     else:
         raise SystemExit(f"unsupported sensor variant: {variant}")
@@ -134,7 +145,7 @@ def main():
     worst = max(residuals, key=lambda row: row["relative_error"])
     output = {
         "schema_version": "1.0.0",
-        "fitter": "scipy.optimize.least_squares with native ngspice-46 evaluations" if fit is not None else "native ngspice-46 evaluation of published F1 bounds",
+        "fitter": fitter_description,
         "deterministic": True,
         "parameters": parameters,
         "parameter_metadata": metadata,

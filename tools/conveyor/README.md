@@ -79,7 +79,7 @@ Responses must contain schema-conformant JSON only. Curves retain axes, units, t
 3. Enforce the usable-curve consistency rule.
 4. Cross-check extracted targets against jlcparts catalog parametrics.
 
-Catalog test-condition numbers after `@` are excluded from value comparison, and SI prefixes are normalized. A discrepant or invalid extraction receives one retry at the extraction stage. The retry brief quotes the discrepancy. A second catalog discrepancy is accepted only as an F1 candidate with the reason preserved in state. A datasheet without usable curves is also accepted only as F1.
+Catalog test-condition numbers after `@` are excluded from value comparison, and SI prefixes are normalized. The catalog stores the same parameter under several attribute names and the copies do not always agree, so a target is **corroborated when any hint mapped to it agrees** — one corrupt duplicate row cannot veto an extraction another row confirms. The documented ratio limit is compared with a relative epsilon so a ratio landing exactly on the limit is not decided by floating-point representation. A discrepant or invalid extraction receives one retry at the extraction stage. The retry brief quotes the discrepancy. A second catalog discrepancy is accepted only as an F1 candidate with the reason preserved in state. A datasheet without usable curves is also accepted only as F1.
 
 ## Fitting and family parking
 
@@ -89,14 +89,28 @@ Catalog test-condition numbers after `@` are excluded from value comparison, and
 node tools/model-factory/factory.mjs bulk --manifest <batch.json> --staging-root <local-staging>
 ```
 
-Every eligible part attempts F2 first. If the F2 gate fails, the adapter generates an honest F1 fallback and records the demotion reason in:
+Every eligible part attempts F2 first, through `tools/model-factory/python/fit_conveyor.py`:
+
+- curves are selected by axis quantity, unit and test condition, never by curve name
+- declared axis units are applied before fitting
+- traces that violate device physics (non-monotonic ohmic traces, body-diode curves offered as channel output curves) are excluded with a recorded reason
+- diodes fit `IS`, `N`, `RS`; BJTs fit a Gummel-Poon `BF`/`ISE`/`IKF` against the digitised typical hFE curve; MOSFETs fit `VTO`, `KP`, `THETA`, `LAMBDA`, `RD`
+- parameters the data cannot constrain are held at declared defaults rather than optimised onto a bound; a parameter that does park on a bound fails the gate regardless of its residual
+- every residual is measured by evaluating the emitted model card in native ngspice-46
+
+A conveyor F2 is a **DC-only** claim. `domain_coverage.ac` stays `none` and terminal capacitances are transcribed from the datasheet table, never fitted.
+
+Per-family tolerances live in `tools/model-factory/lib/fit-gates.json`, each with a written digitisation reading-error budget and the reviewed-library precedent that bounds it. If the F2 gate fails, the adapter generates an honest F1 fallback and records the demotion reason plus the full residual table in:
 
 - the SQLite state row and transition log
 - `factory-results.json`
 - the staged `component.json` known omissions
+- the staged `fitted.json` (`residuals`, `curves_used`, `curves_rejected`)
 - the staged `MODEL_CARD.md`
 
-After two F2 fit-gate failures in one family, the family is parked. Later parts in that family retain their extraction evidence but are staged directly at F1 with the family parking reason. `family-parked.json` persists both parked families and failure counts so a resumed fit does not forget the gate history.
+After `--park-after` consecutive F2 gate failures in a family **that has never produced an F2**, the family is parked; later parts retain their extraction evidence but are staged directly at F1 with the parking reason. A single F2 anywhere in the family clears the counter and prevents parking, because a family the pipeline can demonstrably fit must not be parked by its honest per-part F1s. `family-parked.json` persists parked families with both failure and success counts so a resumed fit does not forget the gate history.
+
+Use `fit --no-park` for proving or diagnostic runs so every part records its own fit evidence instead of inheriting a family reason.
 
 ## Local output
 
@@ -126,4 +140,6 @@ npm --prefix tools/conveyor run typecheck
 npm --prefix tools/model-factory test
 ```
 
-The conveyor suite covers state transitions and resumption, strict schema validation, catalog cross-checking, stage-specific retries, and a mocked Luna dispatcher with the four-call concurrency ceiling. The model-factory suite covers the bulk adapter while retaining the existing registry-backed one-MPN tests.
+The conveyor suite covers state transitions and resumption, strict schema validation, catalog cross-checking including the corroboration rule and the ratio epsilon, the family parking decision, stage-specific retries, and a mocked Luna dispatcher with the four-call concurrency ceiling. The model-factory suite covers the bulk adapter and the conveyor fitter — curve selection by axis semantics, declared-unit handling, extraction validation, bound-saturation rejection, ngspice-measured residuals, and the gate calibration table — while retaining the existing registry-backed one-MPN tests.
+
+`tools/conveyor/DIAGNOSIS.md` records why the first proving run produced 0 of 50 F2 packages and what the corrected pipeline produces instead.

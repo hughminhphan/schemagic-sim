@@ -6,6 +6,7 @@ import { fileURLToPath } from "node:url";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const localTmpRoot = path.resolve(here, "../tmp/conveyor-syntax");
+const conveyorFitRoot = path.resolve(here, "../tmp/conveyor-fit");
 
 const json = (value) => `${JSON.stringify(value, null, 2)}\n`;
 const safe = (value) => String(value).trim().replace(/[^A-Za-z0-9._-]+/g, "-").replace(/^[.-]+|[.-]+$/g, "") || "part";
@@ -20,24 +21,6 @@ function sha256(file) {
 function write(file, contents) {
   fs.mkdirSync(path.dirname(file), { recursive: true });
   fs.writeFileSync(file, contents);
-}
-
-function quantityValues(extraction, curveNames) {
-  const names = curveNames.map((name) => name.toLowerCase());
-  const curve = extraction?.curves?.find((candidate) => names.some((name) => candidate.name.toLowerCase().includes(name)));
-  return curve?.points?.map((point) => ({ x: Number(point.x), y: Number(point.y) })).filter((point) => Number.isFinite(point.x) && Number.isFinite(point.y) && point.x > 0 && point.y > 0) ?? [];
-}
-
-function linearRegression(points) {
-  const n = points.length;
-  const sx = points.reduce((sum, point) => sum + point.x, 0);
-  const sy = points.reduce((sum, point) => sum + point.y, 0);
-  const sxx = points.reduce((sum, point) => sum + point.x * point.x, 0);
-  const sxy = points.reduce((sum, point) => sum + point.x * point.y, 0);
-  const denominator = n * sxx - sx * sx;
-  if (!Number.isFinite(denominator) || Math.abs(denominator) < 1e-30) throw new Error("degenerate curve points");
-  const slope = (n * sxy - sx * sy) / denominator;
-  return { slope, intercept: (sy - slope * sx) / n };
 }
 
 function hintNumber(part, target, fallback) {
@@ -57,22 +40,6 @@ function polarityFor(part, extraction) {
 }
 
 function diodeFit(part, extraction, forceF1 = false) {
-  const points = quantityValues(extraction, ["forward", "iv"]).map((point) => ({ x: Math.log(point.y), y: point.x }));
-  if (!forceF1 && extraction?.usable_curves && points.length >= 3) {
-    const regression = linearRegression(points);
-    const vt = 0.025852;
-    const N = regression.slope / vt;
-    const IS = Math.exp(-regression.intercept / regression.slope);
-    const residuals = points.map((point) => {
-      const fitted = regression.intercept + regression.slope * point.x;
-      return Math.abs(fitted - point.y) / Math.max(Math.abs(point.y), 1e-9);
-    });
-    const worst = Math.max(...residuals);
-    if (!(N >= 0.8 && N <= 4 && IS >= 1e-20 && IS <= 1e-6 && worst < 0.08)) {
-      throw new Error(`diode F2 residual gate failed: N=${N}, IS=${IS}, worst=${worst}`);
-    }
-    return { fidelity: "F2", parameters: { IS, N, RS: 1e-4 }, worst, points };
-  }
   const scalarPoint = extraction?.specs?.forward_voltage_points?.find((point) => Number(point?.voltage?.value) > 0 && Number(point?.current?.value) > 0);
   const vf = scalarPoint ? Number(scalarPoint.voltage.value) : hintNumber(part, "diode.forward_voltage", 0.7);
   const current = scalarPoint ? Number(scalarPoint.current.value) : 0.01;
@@ -82,17 +49,11 @@ function diodeFit(part, extraction, forceF1 = false) {
 
 function bjtFit(part, extraction, forceF1 = false) {
   const gains = extraction?.specs?.gain_points?.map((point) => Number(point.hfe.value)).filter((value) => value > 0) ?? [];
-  if (!forceF1 && extraction?.usable_curves && gains.length >= 4) {
-    const BF = Math.max(...gains);
-    const worst = Math.max(...gains.map((gain) => Math.abs(BF - gain) / gain));
-    if (worst >= 0.25) throw new Error(`BJT F2 residual gate failed: constant-BF seed worst=${worst}`);
-  }
   const BF = gains.length ? Math.max(...gains) : hintNumber(part, "bjt.dc_current_gain", 100);
   return { fidelity: "F1", parameters: { IS: 1e-14, BF: Math.max(1, BF), VAF: 100, IKF: 1e3, RB: 10, RC: 0.1, RE: 0.05, CJE: 1e-12, CJC: 1e-12, TF: 1e-9 }, worst: null, points: [] };
 }
 
 function mosfetFit(part, extraction, forceF1 = false) {
-  if (!forceF1 && extraction?.usable_curves) throw new Error("MOSFET F2 native multi-curve residual gate is not yet proven for generic conveyor inputs");
   const specs = extraction?.specs;
   const thresholdValue = specs?.threshold_typ?.value ?? specs?.threshold_max?.value ?? specs?.threshold_min?.value;
   const rdsonValue = specs?.rdson_points?.find((point) => Number(point?.resistance?.value) > 0)?.resistance?.value;
@@ -110,7 +71,9 @@ function modelFor(part, fit) {
   if (part.conveyor_family === "diode") return { name, text: `.model ${name} D(IS=${fmt(p.IS)} N=${fmt(p.N)} RS=${fmt(p.RS)})\n` };
   if (part.conveyor_family === "bjt") {
     const polarity = fit.polarity === "p" ? "PNP" : "NPN";
-    return { name, text: `.model ${name} ${polarity}(IS=${fmt(p.IS)} BF=${fmt(p.BF)} VAF=${fmt(p.VAF)} IKF=${fmt(p.IKF)} RB=${fmt(p.RB)} RC=${fmt(p.RC)} RE=${fmt(p.RE)} CJE=${fmt(p.CJE)} CJC=${fmt(p.CJC)} TF=${fmt(p.TF)})\n` };
+    // ISE/NE carry the low-current roll-off of an F2 Gummel-Poon fit; the F1 path omits them.
+    const recombination = Number(p.ISE) > 0 ? ` ISE=${fmt(p.ISE)} NE=${fmt(p.NE ?? 1.5)} NF=${fmt(p.NF ?? 1)}` : "";
+    return { name, text: `.model ${name} ${polarity}(IS=${fmt(p.IS)} BF=${fmt(p.BF)} VAF=${fmt(p.VAF)} IKF=${fmt(p.IKF)}${recombination} RB=${fmt(p.RB)} RC=${fmt(p.RC)} RE=${fmt(p.RE)} CJE=${fmt(p.CJE)} CJC=${fmt(p.CJC)} TF=${fmt(p.TF)})\n` };
   }
   const pchan = fit.polarity === "p" ? " pchan" : "";
   return { name, text: `.model ${name} VDMOS(${pchan} VTO=${fmt(Math.abs(p.VTO))} KP=${fmt(p.KP)} THETA=${fmt(p.THETA)} LAMBDA=${fmt(p.LAMBDA)} RD=${fmt(p.RD)} RS=${fmt(p.RS)} RG=${fmt(p.RG)} RDS=1e9 CGS=${fmt(p.CGS)} CGDMAX=${fmt(p.CGDMAX)} CGDMIN=${fmt(p.CGDMIN)} CJO=${fmt(p.CJO)} IS=${fmt(p.IS)} N=${fmt(p.N)} RB=${fmt(p.RB)})\n` };
@@ -133,13 +96,68 @@ export function defaultNgspiceRunner(modelText) {
   }
 }
 
-export function fitBulkPart(part, extraction, { ngspiceRunner = defaultNgspiceRunner, forceF1 = false } = {}) {
+const BJT_AC_DEFAULTS = { CJE: 1e-12, CJC: 1e-12, TF: 1e-9 };
+
+function pythonInterpreter() {
+  for (const candidate of [path.resolve(here, "../.venv/bin/python"), path.resolve(here, "../../../tools/model-factory/.venv/bin/python")]) {
+    if (fs.existsSync(candidate)) return candidate;
+  }
+  return "python3";
+}
+
+/**
+ * Run the archetype-backed conveyor fitter.
+ *
+ * The F2 attempt lives in python/fit_conveyor.py because that is where the archetypes'
+ * scipy optimiser and the native ngspice evaluation helper already live. The previous
+ * in-file JS regressions selected curves by name, ignored declared units, and had no
+ * reachable F2 path for BJTs or MOSFETs at all. See tools/conveyor/DIAGNOSIS.md.
+ */
+export function defaultFitRunner(payload) {
+  fs.mkdirSync(conveyorFitRoot, { recursive: true });
+  const directory = fs.mkdtempSync(path.join(conveyorFitRoot, "fit-"));
+  try {
+    const input = path.join(directory, "payload.json");
+    const output = path.join(directory, "fitted.json");
+    fs.writeFileSync(input, json(payload));
+    const pythonDir = path.resolve(here, "../python");
+    const result = spawnSync(pythonInterpreter(), [path.join(pythonDir, "fit_conveyor.py"), input, output], {
+      cwd: pythonDir, encoding: "utf8", timeout: 900_000,
+    });
+    if (result.error) throw result.error;
+    if (result.status !== 0 || !fs.existsSync(output)) {
+      throw new Error(`conveyor fitter failed: ${result.stdout}\n${result.stderr}`.trim());
+    }
+    return JSON.parse(fs.readFileSync(output, "utf8"));
+  } finally {
+    fs.rmSync(directory, { recursive: true, force: true });
+  }
+}
+
+export function fitBulkPart(part, extraction, { ngspiceRunner = defaultNgspiceRunner, fitRunner = defaultFitRunner, forceF1 = false } = {}) {
+  const polarity = polarityFor(part, extraction);
   let fit;
-  if (part.conveyor_family === "diode") fit = diodeFit(part, extraction, forceF1);
+  if (!forceF1 && extraction?.usable_curves) {
+    const attempt = fitRunner({
+      family: part.conveyor_family, extraction, polarity,
+      mpn: part.mpn, manufacturer: part.manufacturer, seed_hints: part.seed_hints ?? [],
+    });
+    if (attempt?.fidelity !== "F2") {
+      throw new Error(attempt?.demotion_reason || `${part.conveyor_family} F2 fit produced no result`);
+    }
+    const parameters = part.conveyor_family === "bjt" ? { ...BJT_AC_DEFAULTS, ...attempt.parameters } : attempt.parameters;
+    fit = {
+      fidelity: "F2", parameters, worst: attempt.worst?.value ?? null,
+      worst_quantity: attempt.worst?.quantity ?? null, rms: attempt.rms ?? null,
+      residuals: attempt.residuals ?? [], curves_used: attempt.curves_used ?? [],
+      curves_rejected: attempt.curves_rejected ?? [], optimizer: attempt.optimizer ?? null,
+      fitter: attempt.fitter ?? null, points: [],
+    };
+  } else if (part.conveyor_family === "diode") fit = diodeFit(part, extraction, forceF1);
   else if (part.conveyor_family === "bjt") fit = bjtFit(part, extraction, forceF1);
   else if (part.conveyor_family === "mosfet") fit = mosfetFit(part, extraction, forceF1);
   else throw new Error(`Unsupported conveyor family: ${part.conveyor_family}`);
-  fit.polarity = polarityFor(part, extraction);
+  fit.polarity = polarity;
   const model = modelFor(part, fit);
   ngspiceRunner(model.text, { part, fit });
   return { ...fit, model };
@@ -172,14 +190,27 @@ export function stageBulkPart(part, extraction, fit, stagingRoot, { demotionReas
     domain_coverage: { dc: fit.fidelity === "F2" ? "fitted" : "approx", ac: "none", transient: "none", noise: "none", thermal: "none", digital: "none" },
     supported_analyses: ["operating_point", "dc_sweep"], supported_operating_region: { summary: `${fit.fidelity} unreviewed conveyor fit; bounds pending independent review.`, numeric_bounds: [{ quantity: "ambient_temperature", minimum: 25, maximum: 25, unit: "degC", conditions: "Nominal bulk fit temperature", placeholder: false }] },
     known_omissions: omissions, licence: { spdx_id: "MIT", provenance_basis: "original_from_facts" }, generator: { tool_or_agent: "opencircuit-conveyor-v0.1.0", date: new Date().toISOString().slice(0, 10) }, reviewer: { tool_or_agent: "pending-review", date: new Date().toISOString().slice(0, 10) },
-    test_results: { status: "pending", pass_count: 0, fail_count: 0, total_count: 0, worst_observed_relative_fitting_error: fit.worst == null ? null : { value: fit.worst, quantity: "bulk fit residual" } }, validation_date: null,
+    test_results: { status: "pending", pass_count: 0, fail_count: 0, total_count: 0, worst_observed_relative_fitting_error: fit.worst == null ? null : { value: fit.worst, quantity: fit.worst_quantity ?? "bulk fit residual" } }, validation_date: null,
   };
   write(path.join(packageDir, "component.json"), json(component));
   write(path.join(packageDir, "facts.json"), json({ schema_version: "1.0.0", extraction, catalog_seed_hints: part.seed_hints ?? [], identity: { canonical_mpn: part.mpn, manufacturer: part.manufacturer, aliases: [] }, source }));
-  write(path.join(packageDir, "fitted.json"), json({ schema_version: "1.0.0", fidelity_tier: fit.fidelity, parameters: fit.parameters, worst_relative_error: fit.worst == null ? null : { value: fit.worst, quantity: "bulk fit residual" } }));
+  write(path.join(packageDir, "fitted.json"), json({
+    schema_version: "1.0.0", fidelity_tier: fit.fidelity, parameters: fit.parameters,
+    fitter: fit.fitter ?? "catalog-parametric F1 fallback",
+    optimizer: fit.optimizer ?? null,
+    curves_used: fit.curves_used ?? [],
+    curves_rejected: fit.curves_rejected ?? [],
+    residuals: fit.residuals ?? [],
+    rms_relative_error: fit.rms ?? null,
+    worst_relative_error: fit.worst == null ? null : { value: fit.worst, quantity: fit.worst_quantity ?? "bulk fit residual" },
+  }));
   write(path.join(packageDir, "sources.json"), json([source]));
   write(path.join(packageDir, "model.cir"), `* Unreviewed OpenCircuit conveyor model\n* Original from public facts; no vendor SPICE input used.\n${fit.model.text}`);
-  write(path.join(packageDir, "MODEL_CARD.md"), `# ${part.mpn} unreviewed conveyor model card\n\n- Manufacturer: ${part.manufacturer}\n- Fidelity: ${fit.fidelity}\n- Reviewer: pending-review\n- Datasheet: ${part.datasheet_url}\n\n## Known omissions\n\n${omissions.map((item) => `- ${item}`).join("\n")}\n`);
+  const residualRows = (fit.residuals ?? []).map((row) => `| ${row.quantity} | ${row.datasheet_value} | ${Number(row.fitted_value).toPrecision(5)} | ${row.unit} | ${(100 * row.relative_error).toFixed(2)}% | ${row.citation} |`).join("\n");
+  const evidence = fit.residuals?.length
+    ? `\n## Fitted versus datasheet\n\nFit: ${fit.fitter}. Residuals are measured by evaluating this model card in native ngspice-46.\n\n| Quantity | Datasheet | Fitted | Unit | Relative error | Citation |\n| --- | ---: | ---: | --- | ---: | --- |\n${residualRows}\n\nWorst fitting error: ${(100 * fit.worst).toFixed(3)}% for ${fit.worst_quantity}. RMS: ${(100 * fit.rms).toFixed(3)}%.\n\n### Curves used\n\n${fit.curves_used.map((item) => `- ${item}`).join("\n")}\n${fit.curves_rejected?.length ? `\n### Curves rejected by validation\n\n${fit.curves_rejected.map((item) => `- ${item}`).join("\n")}\n` : ""}`
+    : "";
+  write(path.join(packageDir, "MODEL_CARD.md"), `# ${part.mpn} unreviewed conveyor model card\n\n- Manufacturer: ${part.manufacturer}\n- Fidelity: ${fit.fidelity}\n- Reviewer: pending-review\n- Datasheet: ${part.datasheet_url}\n${evidence}\n## Known omissions\n\n${omissions.map((item) => `- ${item}`).join("\n")}\n`);
   write(path.join(packageDir, "LICENSE"), "MIT License\n\nCopyright (c) 2026 OpenCircuit contributors\n");
   write(path.join(packageDir, "tests", "expectations.json"), json({ schema_version: "1.0.0", tests: [] }));
   return packageDir;
