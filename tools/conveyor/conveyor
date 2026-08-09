@@ -47,6 +47,8 @@ def parser() -> argparse.ArgumentParser:
     ingest.add_argument("--response", type=Path, required=True)
     fit = commands.add_parser("fit", help="run the factory bulk adapter and stage pending-review packages")
     fit.add_argument("manifest", type=Path)
+    fit.add_argument("--no-park", action="store_true", help="disable the family circuit breaker so every part records its own fit evidence (proving runs)")
+    fit.add_argument("--park-after", type=int, default=2, help="consecutive F2 gate failures, with no F2 success in the family, before parking")
     status = commands.add_parser("status", help="show state and fidelity counts")
     status.add_argument("manifest", type=Path)
     return root
@@ -192,6 +194,11 @@ def fit_command(args) -> int:
     previous_parking = json.loads(parked_path.read_text(encoding="utf-8")) if parked_path.is_file() else {}
     parked: dict[str, str] = dict(previous_parking.get("parked", {}))
     f2_failures = Counter(previous_parking.get("f2_gate_failures", {}))
+    # A family that has produced even one F2 has demonstrated the pipeline can fit it, so
+    # its later honest F1s are per-part outcomes, not evidence of a systematic failure.
+    # Counting every gate failure regardless of successes turned a handful of honest F1s
+    # into a whole-family cascade in the first proving run.
+    f2_successes = Counter(previous_parking.get("f2_gate_successes", {}))
     results_path = staging / "factory-results.json"
     previous_results = json.loads(results_path.read_text(encoding="utf-8")) if results_path.is_file() else {}
     manifest_id_by_mpn = {part["mpn"]: part["lcsc_id"] for part in manifest["parts"]}
@@ -228,10 +235,15 @@ def fit_command(args) -> int:
                 store.transition(tranche, part["lcsc_id"], "failed_fitted", reason=one.get("reason", "factory fit failed"))
                 continue
             reason = one.get("demotion_reason") or demotion_reason
-            if f2_candidate and one["fidelity"] == "F1":
-                f2_failures[part["conveyor_family"]] += 1
-                if f2_failures[part["conveyor_family"]] >= 2:
-                    parked[part["conveyor_family"]] = f"family parked after two F2 fit-gate failures; later parts staged F1 ({reason})"
+            family = part["conveyor_family"]
+            if f2_candidate and one["fidelity"] == "F2":
+                f2_successes[family] += 1
+                f2_failures[family] = 0
+            elif f2_candidate:
+                f2_failures[family] += 1
+                if not args.no_park and not f2_successes[family] and f2_failures[family] >= args.park_after:
+                    parked[family] = (f"family parked after {f2_failures[family]} consecutive F2 fit-gate failures "
+                                      f"with no F2 success; later parts staged F1 ({reason})")
             store.transition(tranche, part["lcsc_id"], "fitted", fidelity=one["fidelity"], reason=reason, package_path=str(Path(one["package_path"]).relative_to(staging)))
             store.transition(tranche, part["lcsc_id"], "staged", fidelity=one["fidelity"], reason=reason, package_path=str(Path(one["package_path"]).relative_to(staging)))
             results_by_id[part["lcsc_id"]] = one
@@ -240,7 +252,7 @@ def fit_command(args) -> int:
         rows = store.rows(tranche)
         store.close()
     results = [results_by_id[part["lcsc_id"]] for part in manifest["parts"] if part["lcsc_id"] in results_by_id]
-    json_dump(staging / "family-parked.json", {"schema_version": "1.0.0", "parked": parked, "f2_gate_failures": dict(f2_failures)})
+    json_dump(staging / "family-parked.json", {"schema_version": "1.0.0", "parked": parked, "f2_gate_failures": dict(f2_failures), "f2_gate_successes": dict(f2_successes)})
     json_dump(results_path, {"schema_version": "1.0.0", "results": results})
     print(json.dumps({"staged": staged_this_run, "total_staged": len(results), "fidelity": dict(Counter(item.get("fidelity") for item in results)), "states": dict(Counter(row["state"] for row in rows)), "parked": parked}, indent=2))
     return 0

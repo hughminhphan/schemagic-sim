@@ -1,0 +1,90 @@
+{
+  "schema_version": "1.0.0",
+  "title": "Conveyor F2 residual gate calibration",
+  "summary": "Per-family, per-quantity tolerances for the conveyor bulk fit. Every tolerance is justified by a stated digitisation reading-error budget or by reviewed-library precedent. Tolerances are NOT tuned to make parts pass; wrong-F2 is worse than honest-F1.",
+
+  "reading_error_model": {
+    "description": "Datasheet figures are printed with axes roughly 60-90 mm long. A careful digitiser places a point to within about 0.5 mm; 1.0 mm is realistic where traces are thick or overlap (min/typ/max families, multi-VGS output plots).",
+    "log_axis": "A log ordinate spanning D decades over H mm converts a delta-mm reading error into a relative error of 10^(D*delta/H) - 1. D=4, H=80, delta=0.5mm -> 5.9%. D=4, H=80, delta=1.0mm -> 12.2%. D=6, H=80, delta=1.0mm -> 18.9%.",
+    "linear_axis": "A linear axis converts a delta-mm error into delta/H of full scale. A point sitting at 20% of full scale with delta=1.0mm on H=80mm therefore carries 1/80/0.20 = 6.3% relative error, and points in the bottom decade of a linear plot are worse still.",
+    "tables_versus_figures": "Values transcribed from an electrical-characteristics TABLE carry no reading error. Their tolerance budget covers only model-form error (what the archetype's equations can represent), never digitisation."
+  },
+
+  "precedent": {
+    "description": "Calibration must remain consistent with the P5 independent review of the shipped library, which was correct.",
+    "must_stay_F2": [
+      { "part": "IRF540N", "worst": 0.175, "quantity": "Crss at 5 V", "worst_dc": 0.165 },
+      { "part": "IRLZ44N", "worst": 0.394, "quantity": "Crss at 1 V", "worst_dc": 0.192 }
+    ],
+    "must_stay_demoted": [
+      { "part": "IRFZ44N", "worst": 0.4267, "quantity": "Crss at 1 V", "worst_dc": 0.0872 },
+      { "part": "IRF3205", "worst": 0.4418, "quantity": "Crss at 50 V", "worst_dc": 0.1229 }
+    ],
+    "ceiling_rationale": "No conveyor tolerance may reach 0.40. The P5 demotion line sits between IRLZ44N at 39.4% and IRFZ44N at 42.7%; a gate at or above 0.40 would have passed parts the review correctly demoted."
+  },
+
+  "coverage": {
+    "description": "A conveyor F2 is a DC-only F2. domain_coverage.ac stays 'none' and terminal capacitances are transcribed from the datasheet table, never fitted. The conveyor therefore does not make the Crss claim that IRFZ44N and IRF3205 were demoted for, and its gates deliberately say nothing about AC accuracy.",
+    "dc": "fitted", "ac": "none", "transient": "none"
+  },
+
+  "families": {
+    "diode": {
+      "model": "ngspice .model D, fitting IS, N and RS to the 25 degC forward I-V curve per archetypes/diode.md",
+      "minimum_points": 4,
+      "quantities": {
+        "forward_voltage": {
+          "worst": 0.05,
+          "rms": 0.03,
+          "measured_in": "volts",
+          "rationale": "The residual is a VOLTAGE read off a LINEAR abscissa. A 0.5 mm error on an 80 mm axis spanning 1.2 V is 7.5 mV, which is 2.5% at the 0.3 V low end of a Schottky curve and 1.1% at 0.7 V. A 5% worst tolerance is roughly twice the worst-placed reading error and is TIGHTER than the 8% the broken fitter used, because a correct three-parameter fit has no excuse for a large voltage error."
+        }
+      },
+      "parameters": {
+        "IS": { "minimum": 1e-20, "maximum": 1e-3 },
+        "N": { "minimum": 0.9, "maximum": 4.0, "rationale": "N < 1 is better than an ideal junction and is unphysical; it signals a digitisation slope error. N > 4 signals a contaminated or multi-junction trace." },
+        "RS": { "minimum": 0, "maximum": 50, "rationale": "Bulk series resistance of a discrete small-signal or rectifier diode. A fit demanding more than 50 ohm is describing a digitisation artefact, not the part." }
+      }
+    },
+
+    "bjt": {
+      "model": "ngspice Gummel-Poon, fitting IS, BF, ISE and IKF to the digitised typical hFE-versus-IC curve at one stated VCE and 25 degC",
+      "minimum_points": 4,
+      "quantities": {
+        "dc_current_gain": {
+          "worst": 0.20,
+          "rms": 0.12,
+          "measured_in": "collector current at the cited base drive",
+          "rationale": "hFE is read off a log ordinate spanning about 1.5 decades over roughly 60 mm, so a 1.0 mm error is 10^(1.5/60) - 1 = 5.9%. The abscissa is a 4-decade log collector-current axis, and in the high-injection roll-off region the curve falls about one decade of hFE per decade of IC, so a 1.0 mm abscissa error adds up to a further 12%. Combined in quadrature that is about 13%; 20% covers trace thickness where the min, typ and max gain families overlap."
+        }
+      },
+      "notes": "Only source_kind values denoting a typical or digitised typical curve may enter the residual. Mixing minimum-spec and maximum-spec table gains into one residual is a category error, not a fit failure: it measures datasheet spread."
+    },
+
+    "mosfet": {
+      "model": "ngspice VDMOS, fitting VTO, KP, THETA, LAMBDA and RD to transfer and output curves plus RDS(on) points per archetypes/vdmos.md",
+      "minimum_points": 5,
+      "quantities": {
+        "drain_current": {
+          "worst": 0.20,
+          "rms": 0.12,
+          "measured_in": "amperes",
+          "rationale": "ID is read off transfer and output figures. Log ordinates on these plots span 3 to 4 decades over 70-90 mm, so a 1.0 mm error is 8-13%. Linear-ordinate output plots put the low-VGS traces in the bottom decade of full scale, where a 1.0 mm error on an 80 mm axis exceeds 10% relative. Reviewed precedent bounds this from above: IRLZ44N was accepted as F2 with a 19.2% worst transfer-current error."
+        },
+        "rds_on": {
+          "worst": 0.20,
+          "rms": 0.12,
+          "measured_in": "ohms",
+          "one_sided_for_maximum_specs": true,
+          "rationale": "RDS(on) comes from a TABLE, so it carries no reading error; the budget is model-form error only. A single VDMOS THETA term must reproduce on-resistance across several gate drives at once, and reviewed precedent accepted IRLZ44N as F2 at 12.2%. Where the cited value is a MAXIMUM the residual is one-sided: a typical-curve fit legitimately sits below a maximum spec, and only overshoot is penalised."
+        }
+      }
+    }
+  },
+
+  "parameter_physicality": {
+    "description": "Residual size is not sufficient evidence of a good fit. A fit is rejected regardless of residual when an optimiser has parked a parameter on a bound, because the true optimum lies outside the physical range and the reported residual is an artefact of the constraint.",
+    "bound_saturation_tolerance": 1e-6,
+    "rationale": "Observed in the proving tranche: LL4148-GS08 reached 4.9% worst error only by driving RS to its 500 ohm upper bound, and BAS16H,115 reached 3.0% only by driving N to a sub-unity lower bound. Both are digitisation artefacts wearing a small residual. This is the same failure mode that produced the P5-rejected NTC constants."
+  }
+}
