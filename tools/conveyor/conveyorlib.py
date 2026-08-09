@@ -173,6 +173,51 @@ def classify_family(part: Mapping[str, Any]) -> str:
     raise ConveyorError(f"Unsupported family for {part.get('mpn')}: {text}")
 
 
+def candidate_identifiers(part: Mapping[str, Any]) -> list[str]:
+    original = str(part["mpn"]).strip()
+    canonical = original.split(",", 1)[0].strip() if "nexperia" in str(part.get("manufacturer", "")).casefold() and "," in original else original
+    aliases = [original] if canonical != original else []
+    aliases.extend(alias for alias in part.get("ordering_code_aliases", []) if isinstance(alias, str))
+    return list(dict.fromkeys(value.casefold() for value in [canonical, *aliases] if value.strip()))
+
+
+def library_identifier_index(library_root: Path) -> dict[str, str]:
+    identifiers: dict[str, str] = {}
+    if not library_root.exists():
+        return identifiers
+    for component_path in library_root.glob("*/*/component.json"):
+        try:
+            component = json.loads(component_path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            continue
+        label = f"{component_path.parent.parent.name}/{component_path.parent.name}"
+        values = [component.get("canonical_mpn"), *(component.get("ordering_code_aliases") or [])]
+        for value in values:
+            if isinstance(value, str) and value.strip():
+                identifiers.setdefault(value.casefold(), label)
+    return identifiers
+
+
+def filter_library_collisions(parts: Sequence[Mapping[str, Any]], library_root: Path) -> tuple[list[dict[str, Any]], list[dict[str, str]]]:
+    library = library_identifier_index(library_root)
+    eligible: list[dict[str, Any]] = []
+    skipped: list[dict[str, str]] = []
+    for raw in parts:
+        part = dict(raw)
+        collisions = [(identifier, library[identifier]) for identifier in candidate_identifiers(part) if identifier in library]
+        if collisions:
+            identifiers = ", ".join(sorted({identifier for identifier, _ in collisions}))
+            packages = ", ".join(sorted({package for _, package in collisions}))
+            skipped.append({
+                "lcsc_id": str(part["lcsc_id"]),
+                "mpn": str(part["mpn"]),
+                "reason": f"library identity collision: {identifiers} already represented by {packages}",
+            })
+            continue
+        eligible.append(part)
+    return eligible, skipped
+
+
 def choose_balanced(parts: Sequence[Mapping[str, Any]], quotas: Mapping[str, int] = FAMILY_QUOTAS) -> list[dict[str, Any]]:
     selected: list[dict[str, Any]] = []
     counts = Counter()

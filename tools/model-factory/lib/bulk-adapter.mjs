@@ -8,6 +8,7 @@ import { stageCard, stageTestgen, stageValidate } from "../factory.mjs";
 const here = path.dirname(fileURLToPath(import.meta.url));
 const localTmpRoot = path.resolve(here, "../tmp/conveyor-syntax");
 const conveyorFitRoot = path.resolve(here, "../tmp/conveyor-fit");
+const reviewedLibraryRoot = path.resolve(here, "../../../packages/model-library/models");
 
 const json = (value) => `${JSON.stringify(value, null, 2)}\n`;
 const safe = (value) => String(value).trim().replace(/[^A-Za-z0-9._-]+/g, "-").replace(/^[.-]+|[.-]+$/g, "") || "part";
@@ -178,6 +179,28 @@ export function normalizedIdentity(part) {
     return { canonical, aliases: [original], packageSlug: safe(original.replace(",", "-")) };
   }
   return { canonical: original, aliases: [], packageSlug: safe(original) };
+}
+
+export function libraryCollisionReason(part, libraryRoot = reviewedLibraryRoot) {
+  const identity = normalizedIdentity(part);
+  const candidateIdentifiers = new Set([identity.canonical, ...identity.aliases].map((value) => value.toLowerCase()));
+  if (!fs.existsSync(libraryRoot)) return null;
+  for (const manufacturer of fs.readdirSync(libraryRoot, { withFileTypes: true })) {
+    if (!manufacturer.isDirectory()) continue;
+    const manufacturerDir = path.join(libraryRoot, manufacturer.name);
+    for (const packageEntry of fs.readdirSync(manufacturerDir, { withFileTypes: true })) {
+      if (!packageEntry.isDirectory()) continue;
+      const componentPath = path.join(manufacturerDir, packageEntry.name, "component.json");
+      if (!fs.existsSync(componentPath)) continue;
+      const component = JSON.parse(fs.readFileSync(componentPath, "utf8"));
+      const existing = [component.canonical_mpn, ...(component.ordering_code_aliases ?? [])]
+        .filter((value) => typeof value === "string" && value.trim())
+        .map((value) => value.toLowerCase());
+      const collision = existing.find((value) => candidateIdentifiers.has(value));
+      if (collision) return `library identity collision: ${collision} already represented by ${manufacturer.name}/${packageEntry.name}`;
+    }
+  }
+  return null;
 }
 
 export function repairKnownEvidenceDefects(part, extraction) {
@@ -591,6 +614,11 @@ export function runBulkManifest(manifestPath, stagingRoot, options = {}) {
   const parts = normalizeBulkManifest(manifest);
   const results = [];
   for (const part of parts) {
+    const collisionReason = libraryCollisionReason(part, options.libraryRoot ?? reviewedLibraryRoot);
+    if (collisionReason) {
+      results.push({ ...(part.lcsc_id ? { lcsc_id: part.lcsc_id } : {}), mpn: part.mpn, status: "skipped", stage: "selection", reason: collisionReason });
+      continue;
+    }
     const rawExtraction = part.extraction_path && fs.existsSync(part.extraction_path) ? JSON.parse(fs.readFileSync(part.extraction_path, "utf8")) : null;
     const extraction = rawExtraction ? repairKnownEvidenceDefects(part, rawExtraction) : null;
     try {

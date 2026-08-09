@@ -3,7 +3,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
-import { fitBulkPart, normalizedIdentity, normalizeBulkManifest, repairKnownEvidenceDefects, runBulkManifest } from "../lib/bulk-adapter.mjs";
+import { fitBulkPart, libraryCollisionReason, normalizedIdentity, normalizeBulkManifest, repairKnownEvidenceDefects, runBulkManifest } from "../lib/bulk-adapter.mjs";
 import { validatePackage } from "../../../packages/component-schema/lib.mjs";
 
 const quantity = (value, unit) => ({ value, unit, conditions: "fixture at 25 C", page_reference: "p. 2", source_kind: "typical" });
@@ -125,6 +125,29 @@ test("Nexperia ordering suffixes normalize into aliases", () => {
   assert.equal(identity.canonical, "BAS316");
   assert.deepEqual(identity.aliases, ["BAS316,115"]);
   assert.equal(identity.packageSlug, "BAS316-115");
+});
+
+test("bulk staging skips canonical and ordering-code alias collisions before fitting", () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "factory-collision-test-"));
+  try {
+    const library = path.join(root, "models");
+    const existing = path.join(library, "onsemi", "MMBT2222A");
+    fs.mkdirSync(existing, { recursive: true });
+    fs.writeFileSync(path.join(existing, "component.json"), JSON.stringify({ canonical_mpn: "MMBT2222A", ordering_code_aliases: ["MMBT2222ALT1G"] }));
+    assert.match(libraryCollisionReason({ mpn: "MMBT2222ALT1G", manufacturer: "onsemi" }, library), /onsemi\/MMBT2222A/);
+
+    const pdf = path.join(root, "datasheet.pdf");
+    fs.writeFileSync(pdf, "%PDF-1.7\nfixture\n");
+    const manifestPath = path.join(root, "batch.json");
+    fs.writeFileSync(manifestPath, JSON.stringify({ schema_version: "1.0.0", kind: "opencircuit-conveyor-batch", parts: [{ ...diodePart(pdf), mpn: "MMBT2222ALT1G" }] }));
+    const result = runBulkManifest(manifestPath, path.join(root, "staging"), { libraryRoot: library });
+    assert.equal(result[0].status, "skipped");
+    assert.equal(result[0].stage, "selection");
+    assert.match(result[0].reason, /ordering|identity collision/i);
+    assert.equal(fs.existsSync(path.join(root, "staging", "packages")), false);
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
 });
 
 test("known bare-page evidence is repaired to an explicit page and figure citation", () => {

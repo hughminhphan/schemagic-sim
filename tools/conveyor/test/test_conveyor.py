@@ -11,8 +11,8 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(HERE))
 
-from conveyorlib import (ConveyorError, StateStore, cross_check, load_and_validate_extraction,
-                         run_extraction_batch, should_park_family)
+from conveyorlib import (ConveyorError, StateStore, cross_check, filter_library_collisions,
+                         load_and_validate_extraction, run_extraction_batch, should_park_family)
 
 
 def q(value, unit="V"):
@@ -83,6 +83,27 @@ class SchemaValidationTest(unittest.TestCase):
             path.write_text(json.dumps(payload))
             with self.assertRaisesRegex(ConveyorError, "unknown keys"):
                 load_and_validate_extraction(path, HERE / "schemas/diode.schema.json", {"mpn": "D1", "manufacturer": "Fixture", "family": "diode"})
+
+
+class LibraryCollisionTest(unittest.TestCase):
+    def test_skips_normalized_canonical_and_alias_collisions_with_reasons(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            library = Path(temporary) / "models"
+            package = library / "onsemi" / "BAV99"
+            package.mkdir(parents=True)
+            (package / "component.json").write_text(json.dumps({
+                "canonical_mpn": "BAV99",
+                "ordering_code_aliases": ["BAV99LT1G", "MMBT2222ALT1G"],
+            }))
+            parts = [
+                {"lcsc_id": "C1", "mpn": "BAV99,215", "manufacturer": "Nexperia"},
+                {"lcsc_id": "C2", "mpn": "MMBT2222ALT1G", "manufacturer": "onsemi"},
+                {"lcsc_id": "C3", "mpn": "BAS316,115", "manufacturer": "Nexperia"},
+            ]
+            eligible, skipped = filter_library_collisions(parts, library)
+            self.assertEqual([part["lcsc_id"] for part in eligible], ["C3"])
+            self.assertEqual([item["lcsc_id"] for item in skipped], ["C1", "C2"])
+            self.assertTrue(all("onsemi/BAV99" in item["reason"] for item in skipped))
 
 
 class CrossCheckTest(unittest.TestCase):
