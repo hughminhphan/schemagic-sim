@@ -191,6 +191,92 @@ test("pre-demoted bulk part keeps extraction and p-channel metadata", () => {
   }
 });
 
+test("F1 diode fallback narrows a failed curve claim to its calibration point", () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "factory-diode-narrow-f1-test-"));
+  try {
+    const pdf = path.join(root, "datasheet.pdf");
+    fs.writeFileSync(pdf, "%PDF-1.7\nfixture\n");
+    const payload = extraction();
+    payload.usable_curves = false;
+    payload.curves = [];
+    payload.omission_reason = "curve fit did not meet the F2 gate";
+    payload.specs.forward_voltage_points = [
+      { current: { ...quantity(0.1, "A"), source_kind: "digitized_typical_curve" }, voltage: { ...quantity(0.25, "V"), source_kind: "digitized_typical_curve" } },
+      { current: { ...quantity(50, "A"), source_kind: "digitized_typical_curve" }, voltage: { ...quantity(1.05, "V"), source_kind: "digitized_typical_curve" } },
+      { current: { ...quantity(2, "A"), source_kind: "maximum" }, voltage: { ...quantity(0.55, "V"), source_kind: "maximum" } },
+    ];
+    const extractionPath = path.join(root, "extraction.json");
+    fs.writeFileSync(extractionPath, JSON.stringify(payload));
+    const manifestPath = path.join(root, "batch.json");
+    fs.writeFileSync(manifestPath, JSON.stringify({ schema_version: "1.0.0", kind: "opencircuit-conveyor-batch", parts: [{ ...diodePart(pdf), extraction_path: extractionPath, force_f1: true }] }));
+    const result = runBulkManifest(manifestPath, path.join(root, "staging"), { libraryRoot: path.join(root, "empty-library") });
+    assert.equal(result[0].status, "staged", JSON.stringify(result[0]));
+    const facts = JSON.parse(fs.readFileSync(path.join(result[0].package_path, "facts.json"), "utf8"));
+    assert.deepEqual(facts.fit_points.map((point) => point.current.value), [0.1, 1.9]);
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("F1 BJT fit does not turn a published maximum gain into a typical target", () => {
+  const payload = {
+    specs: {
+      polarity: "npn",
+      gain_points: [
+        { hfe: { ...quantity(120, "1"), source_kind: "minimum" } },
+        { hfe: { ...quantity(350, "1"), source_kind: "maximum" } },
+        { hfe: { ...quantity(118, "1"), source_kind: "digitized_typical_curve" } },
+      ],
+    },
+  };
+  const fit = fitBulkPart({ mpn: "FIXTURE-Q1", manufacturer: "Fixture Semi", conveyor_family: "bjt", subcategory: "NPN" }, payload, { forceF1: true, ngspiceRunner: () => ({ pass: true }) });
+  assert.equal(fit.parameters.BF, 118);
+});
+
+test("signed P-channel RDS evidence is magnitude-normalized before bench polarity is applied", () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "factory-signed-pmos-test-"));
+  try {
+    const pdf = path.join(root, "datasheet.pdf");
+    fs.writeFileSync(pdf, "%PDF-1.7\nfixture\n");
+    const payload = {
+      schema_version: "1.0.0", mpn: "FIXTURE-P1", manufacturer: "Fixture Semi", family: "mosfet",
+      datasheet_identity: { title: "Fixture P1", revision: "A", pages_examined: ["p. 2"] }, usable_curves: false, curves: [],
+      specs: {
+        polarity: "p",
+        threshold_min: { ...quantity(-0.7, "V"), source_kind: "minimum" }, threshold_typ: null, threshold_max: { ...quantity(-1.3, "V"), source_kind: "maximum" },
+        rdson_points: [
+          { vgs: quantity(-10, "V"), current: quantity(-4.2, "A"), resistance: { ...quantity(0.065, "ohm"), source_kind: "maximum" } },
+          { vgs: quantity(-4.5, "V"), current: quantity(-4, "A"), resistance: { ...quantity(0.075, "ohm"), source_kind: "maximum" } },
+        ],
+        ciss: quantity(954e-12, "F"), coss: quantity(115e-12, "F"), crss: quantity(77e-12, "F"), breakdown_voltage: quantity(-30, "V"), body_diode: null,
+      },
+      extraction_notes: [], omission_reason: "curve unavailable",
+    };
+    const extractionPath = path.join(root, "extraction.json");
+    fs.writeFileSync(extractionPath, JSON.stringify(payload));
+    const manifestPath = path.join(root, "batch.json");
+    fs.writeFileSync(manifestPath, JSON.stringify({ schema_version: "1.0.0", kind: "opencircuit-conveyor-batch", parts: [{ ...mosfetPart(pdf), extraction_path: extractionPath, force_f1: true }] }));
+    const result = runBulkManifest(manifestPath, path.join(root, "staging"), { libraryRoot: path.join(root, "empty-library") });
+    assert.equal(result[0].status, "staged", JSON.stringify(result[0]));
+    const facts = JSON.parse(fs.readFileSync(path.join(result[0].package_path, "facts.json"), "utf8"));
+    assert.deepEqual(facts.rdson_points.map((point) => [point.vgs.value, point.current.value]), [[10, 4.2], [4.5, 4]]);
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("catalog range and documented package-marking identities normalize into aliases", () => {
+  const ranged = normalizedIdentity({ mpn: "B772(RANGE:160-320)", manufacturer: "Fixture Semi" });
+  assert.equal(ranged.canonical, "B772");
+  assert.deepEqual(ranged.aliases, ["B772(RANGE:160-320)"]);
+  const marked = normalizedIdentity(
+    { mpn: "CJ2301 S1", manufacturer: "Fixture Semi" },
+    { datasheet_identity: { title: "CJ2301 P-Channel MOSFET" }, extraction_notes: ["The datasheet prints MARKING: S1."] },
+  );
+  assert.equal(marked.canonical, "CJ2301");
+  assert.deepEqual(marked.aliases, ["CJ2301 S1"]);
+});
+
 test("Nexperia ordering suffixes normalize into aliases", () => {
   const identity = normalizedIdentity({ mpn: "BAS316,115", manufacturer: "Nexperia" });
   assert.equal(identity.canonical, "BAS316");

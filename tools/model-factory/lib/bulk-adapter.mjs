@@ -71,8 +71,19 @@ function diodeFit(part, extraction, forceF1 = false) {
 }
 
 function bjtFit(part, extraction, forceF1 = false) {
-  const gains = extraction?.specs?.gain_points?.map((point) => Number(point.hfe.value)).filter((value) => value > 0) ?? [];
-  const BF = gains.length ? Math.max(...gains) : hintNumber(part, "bjt.dc_current_gain", 100);
+  const gainPoints = extraction?.specs?.gain_points ?? [];
+  const typicalGains = gainPoints
+    .filter((point) => !["minimum", "maximum"].includes(point.hfe?.source_kind))
+    .map((point) => Number(point.hfe?.value))
+    .filter((value) => value > 0);
+  const minimumGains = gainPoints
+    .filter((point) => point.hfe?.source_kind === "minimum")
+    .map((point) => Number(point.hfe?.value))
+    .filter((value) => value > 0);
+  // A published maximum is an inclusive bound, not a representative F1 target.
+  const BF = typicalGains.length ? Math.max(...typicalGains)
+    : minimumGains.length ? Math.max(...minimumGains)
+      : hintNumber(part, "bjt.dc_current_gain", 100);
   return { fidelity: "F1", parameters: { IS: 1e-14, BF: Math.max(1, BF), VAF: 100, IKF: 1e3, RB: 10, RC: 0.1, RE: 0.05, CJE: 1e-12, CJC: 1e-12, TF: 1e-9 }, worst: null, points: [] };
 }
 
@@ -202,17 +213,25 @@ function pinsFor(family, polarity) {
   return { pins: [{ name: "G", number: "1", role: "gate", node: "gate" }, { name: "D", number: "2", role: "drain", node: "drain" }, { name: "S", number: "3", role: "source", node: "source" }], order: ["2", "1", "3"], electrical: polarity === "p" ? "pmos" : "nmos" };
 }
 
-export function normalizedIdentity(part) {
+export function normalizedIdentity(part, extraction = null) {
   const original = String(part.mpn).trim();
   if (/nexperia/i.test(part.manufacturer) && original.includes(",")) {
     const canonical = original.split(",", 1)[0].trim();
     return { canonical, aliases: [original], packageSlug: safe(original.replace(",", "-")) };
   }
+  const ranged = /^([A-Za-z0-9][A-Za-z0-9._+/-]*)\(RANGE:[^)]+\)$/i.exec(original);
+  if (ranged) return { canonical: ranged[1], aliases: [original], packageSlug: safe(original) };
+  const marked = /^([A-Za-z0-9][A-Za-z0-9._+/-]*)\s+([A-Za-z0-9]{1,4})$/.exec(original);
+  const notes = extraction?.extraction_notes?.join(" ") ?? "";
+  const title = extraction?.datasheet_identity?.title ?? "";
+  if (marked && /marking/i.test(notes) && title.toLowerCase().includes(marked[1].toLowerCase())) {
+    return { canonical: marked[1], aliases: [original], packageSlug: safe(original) };
+  }
   return { canonical: original, aliases: [], packageSlug: safe(original) };
 }
 
-export function libraryCollisionReason(part, libraryRoot = reviewedLibraryRoot) {
-  const identity = normalizedIdentity(part);
+export function libraryCollisionReason(part, libraryRoot = reviewedLibraryRoot, extraction = null) {
+  const identity = normalizedIdentity(part, extraction);
   const candidateIdentifiers = new Set([identity.canonical, ...identity.aliases].map((value) => value.toLowerCase()));
   if (!fs.existsSync(libraryRoot)) return null;
   for (const manufacturer of fs.readdirSync(libraryRoot, { withFileTypes: true })) {
@@ -379,6 +398,7 @@ function bulkFactoryFacts(part, extraction, fit, identity, source) {
     const scalarForwardPoints = specs.forward_voltage_points ?? [];
     if (fit.fidelity === "F1") {
       const typicalPoints = scalarForwardPoints.filter((point) => !["minimum", "maximum"].includes(point.voltage?.source_kind));
+      const calibrationPoint = typicalPoints.find((point) => Number(point.voltage?.value) > 0 && Number(point.current?.value) > 0);
       const maximumPoints = scalarForwardPoints.filter((point) => point.voltage?.source_kind === "maximum").sort((left, right) => right.current.value - left.current.value);
       const conservativeMaximum = maximumPoints[0] ? {
         ...maximumPoints[0],
@@ -388,7 +408,9 @@ function bulkFactoryFacts(part, extraction, fit, identity, source) {
           conditions: `Conservative F1 package bench at 95% of the cited current; ${maximumPoints[0].current.conditions}`,
         },
       } : null;
-      fitPoints.push(...typicalPoints, ...(conservativeMaximum ? [conservativeMaximum] : []));
+      // F1 is calibrated to one representative point. Retaining an entire failed F2
+      // curve as package expectations would silently make the same multi-point claim.
+      fitPoints.push(...(calibrationPoint ? [calibrationPoint] : []), ...(conservativeMaximum ? [conservativeMaximum] : []));
     } else {
       fitPoints.push(...scalarForwardPoints);
     }
@@ -452,14 +474,19 @@ function bulkFactoryFacts(part, extraction, fit, identity, source) {
   }
   const thresholdConditions = specs.threshold_typ?.conditions ?? specs.threshold_max?.conditions ?? specs.threshold_min?.conditions ?? "Nominal threshold characterization";
   const thresholdCitation = specs.threshold_typ?.page_reference ?? specs.threshold_max?.page_reference ?? specs.threshold_min?.page_reference ?? source.pages_referenced[0];
-  const rdsonPoints = (specs.rdson_points ?? []).filter(isNominalTemperatureEvidence);
+  const rdsonPoints = (specs.rdson_points ?? []).filter(isNominalTemperatureEvidence).map((point) => ({
+    ...point,
+    vgs: magnitudeQuantity(point.vgs),
+    current: magnitudeQuantity(point.current),
+    resistance: magnitudeQuantity(point.resistance),
+  }));
   return {
     ...common,
     rdson_points: rdsonPoints,
     threshold: (fit.fidelity === "F2" || rdsonPoints.length === 0) && (specs.threshold_min || specs.threshold_typ || specs.threshold_max) ? {
-      minimum: specs.threshold_min,
-      typical: specs.threshold_typ,
-      maximum: specs.threshold_max,
+      minimum: magnitudeQuantity(specs.threshold_min),
+      typical: magnitudeQuantity(specs.threshold_typ),
+      maximum: magnitudeQuantity(specs.threshold_max),
       test_current: quantity(conditionCurrent(thresholdConditions, 250e-6), "A", thresholdConditions, thresholdCitation, "typical"),
     } : null,
     transfer_points: [],
@@ -553,7 +580,7 @@ export function pinPackageBenchTemperature(packageDir) {
 
 export function stageBulkPart(part, rawExtraction, fit, stagingRoot, { demotionReason = null } = {}) {
   const extraction = repairKnownEvidenceDefects(part, rawExtraction);
-  const identity = normalizedIdentity(part);
+  const identity = normalizedIdentity(part, extraction);
   const manufacturerSlug = slugManufacturer(part.manufacturer);
   const packageDir = path.join(stagingRoot, "packages", manufacturerSlug, identity.packageSlug);
   if (path.resolve(packageDir).includes(`${path.sep}packages${path.sep}model-library${path.sep}`)) throw new Error("Bulk staging may not target the reviewed model library");
@@ -712,7 +739,7 @@ export function runBulkManifest(manifestPath, stagingRoot, options = {}) {
       results.push({ ...identity(part), status: "skipped", stage: "selection", reason });
       return false;
     }
-    const ownPackagePath = path.join(stagingRoot, "packages", slugManufacturer(part.manufacturer), normalizedIdentity(part).packageSlug);
+    const ownPackagePath = path.join(stagingRoot, "packages", slugManufacturer(part.manufacturer), normalizedIdentity(part, extraction).packageSlug);
     const stagedReason = libraryDuplicateDieReason(part, fit, path.join(stagingRoot, "packages"), ownPackagePath);
     if (stagedReason) {
       results.push({ ...identity(part), status: "skipped", stage: "selection", reason: stagedReason });
@@ -726,13 +753,13 @@ export function runBulkManifest(manifestPath, stagingRoot, options = {}) {
   };
 
   for (const part of parts) {
-    const collisionReason = libraryCollisionReason(part, libraryRoot);
+    const rawExtraction = part.extraction_path && fs.existsSync(part.extraction_path) ? JSON.parse(fs.readFileSync(part.extraction_path, "utf8")) : null;
+    const extraction = rawExtraction ? repairKnownEvidenceDefects(part, rawExtraction) : null;
+    const collisionReason = libraryCollisionReason(part, libraryRoot, extraction);
     if (collisionReason) {
       results.push({ ...identity(part), status: "skipped", stage: "selection", reason: collisionReason });
       continue;
     }
-    const rawExtraction = part.extraction_path && fs.existsSync(part.extraction_path) ? JSON.parse(fs.readFileSync(part.extraction_path, "utf8")) : null;
-    const extraction = rawExtraction ? repairKnownEvidenceDefects(part, rawExtraction) : null;
     try {
       const fit = fitBulkPart(part, extraction, { ...options, forceF1: part.force_f1 === true });
       stageFit(part, extraction, fit, part.demotion_reason ?? null);
