@@ -216,6 +216,10 @@ def fit_command(args) -> int:
             extraction_path = staging / row["extraction_path"] if row["extraction_path"] else None
             f2_candidate = row["fidelity"] != "F1" and part["conveyor_family"] not in parked
             demotion_reason = row["reason"]
+            if str(demotion_reason or "").startswith("package regeneration failed;"):
+                demotion_reason = (results_by_id.get(part["lcsc_id"]) or {}).get("demotion_reason")
+            if f2_candidate:
+                demotion_reason = None
             if not f2_candidate and part["conveyor_family"] in parked:
                 parking_reason = parked[part["conveyor_family"]]
                 demotion_reason = "; ".join(reason for reason in (demotion_reason, parking_reason) if reason)
@@ -224,16 +228,30 @@ def fit_command(args) -> int:
             batch_path = batches / f"{safe_stem(part['lcsc_id'])}.json"
             json_dump(batch_path, batch)
             completed = subprocess.run(["node", str(FACTORY), "bulk", "--manifest", str(batch_path), "--staging-root", str(packages_root)], cwd=REPO_ROOT, text=True, capture_output=True, timeout=600)
+
+            def record_factory_failure(reason: str) -> None:
+                if row["state"] == "staged":
+                    store.transition(
+                        tranche,
+                        part["lcsc_id"],
+                        "staged",
+                        reason=f"package regeneration failed; retained prior staged package: {reason}",
+                        fidelity=row["fidelity"],
+                        package_path=row["package_path"],
+                    )
+                else:
+                    store.transition(tranche, part["lcsc_id"], "failed_fitted", reason=reason)
+
             if completed.returncode not in {0, 2}:
-                store.transition(tranche, part["lcsc_id"], "failed_fitted", reason=(completed.stderr or completed.stdout).strip())
+                record_factory_failure((completed.stderr or completed.stdout).strip())
                 continue
             try:
                 one = json.loads(completed.stdout)[0]
             except (json.JSONDecodeError, IndexError) as error:
-                store.transition(tranche, part["lcsc_id"], "failed_fitted", reason=f"factory returned invalid result: {error}")
+                record_factory_failure(f"factory returned invalid result: {error}")
                 continue
             if one["status"] == "failed":
-                store.transition(tranche, part["lcsc_id"], "failed_fitted", reason=one.get("reason", "factory fit failed"))
+                record_factory_failure(one.get("reason", "factory fit failed"))
                 continue
             reason = one.get("demotion_reason") or demotion_reason
             family = part["conveyor_family"]

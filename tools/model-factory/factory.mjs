@@ -445,6 +445,8 @@ function bjtTestgen(ctx, model, facts) {
     const gainExpression = `scale_abs:last(i(vcg${id}),${1 / baseCurrent})`;
     if (point.hfe.source_kind === "minimum") {
       gainBounds.push(hardBound(`hfe_minimum_at_${point.collector_current.value}_a`, gainExpression, "1", { minimum: point.hfe.value }, point.hfe.page_reference));
+    } else if (point.hfe.source_kind === "maximum") {
+      gainBounds.push(hardBound(`hfe_maximum_at_${point.collector_current.value}_a`, gainExpression, "1", { maximum: point.hfe.value }, point.hfe.page_reference));
     } else {
       gainChecks.push(expectation(`hfe_at_${point.collector_current.value}_a`, gainExpression, point.hfe.value, "1", 0, ctx.part.component.test_tolerances?.dc_current_gain ?? 0.30, point.hfe.page_reference));
     }
@@ -453,28 +455,31 @@ function bjtTestgen(ctx, model, facts) {
   writeBench(ctx, "dc_gain.cir", gainLines.join("\n"));
   tests.push(testRecord("dc_gain.cir", "operating_point", gainChecks, gainBounds));
 
-  const satLines = [`OpenCircuit factory test: ${ctx.part.slug} saturation`, model, ".temp 25"];
-  const satChecks = [];
-  const satBounds = [];
-  facts.saturation_points.forEach((point, index) => {
-    const id = index + 1;
-    satLines.push(`ICS${id} 0 cs${id} DC ${formatSpice(sign * point.collector_current.value)}`, `IBS${id} 0 bs${id} DC ${formatSpice(sign * point.base_current.value)}`, instance(`S${id}`, `cs${id}`, `bs${id}`));
-    for (const [name, expression, target] of [
-      [`vce_sat_${id}`, `abs:last(v(cs${id}))`, point.vce_sat],
-      [`vbe_sat_${id}`, `abs:last(v(bs${id}))`, point.vbe_sat]
-    ]) {
-      if (target.source_kind === "maximum") {
-        satBounds.push(hardBound(`${name}_maximum`, expression, "V", { minimum: 0, maximum: target.value }, target.page_reference));
-      } else if (target.source_kind === "minimum") {
-        satBounds.push(hardBound(`${name}_minimum`, expression, "V", { minimum: target.value }, target.page_reference));
-      } else {
-        satChecks.push(expectation(name, expression, target.value, "V", 0.02, 0.15, target.page_reference));
+  if (facts.saturation_points.length) {
+    const satLines = [`OpenCircuit factory test: ${ctx.part.slug} saturation`, model, ".temp 25"];
+    const satChecks = [];
+    const satBounds = [];
+    facts.saturation_points.forEach((point, index) => {
+      const id = index + 1;
+      satLines.push(`ICS${id} 0 cs${id} DC ${formatSpice(sign * point.collector_current.value)}`, `IBS${id} 0 bs${id} DC ${formatSpice(sign * point.base_current.value)}`, instance(`S${id}`, `cs${id}`, `bs${id}`));
+      for (const [name, expression, target] of [
+        [`vce_sat_${id}`, `abs:last(v(cs${id}))`, point.vce_sat],
+        [`vbe_sat_${id}`, `abs:last(v(bs${id}))`, point.vbe_sat]
+      ]) {
+        if (!target) continue;
+        if (target.source_kind === "maximum") {
+          satBounds.push(hardBound(`${name}_maximum`, expression, "V", { minimum: 0, maximum: target.value }, target.page_reference));
+        } else if (target.source_kind === "minimum") {
+          satBounds.push(hardBound(`${name}_minimum`, expression, "V", { minimum: target.value }, target.page_reference));
+        } else {
+          satChecks.push(expectation(name, expression, target.value, "V", 0.02, ctx.part.component.test_tolerances?.saturation_voltage ?? 0.15, target.page_reference));
+        }
       }
-    }
-  });
-  satLines.push(".op", ".end", "");
-  writeBench(ctx, "saturation.cir", satLines.join("\n"));
-  tests.push(testRecord("saturation.cir", "operating_point", satChecks, satBounds));
+    });
+    satLines.push(".op", ".end", "");
+    writeBench(ctx, "saturation.cir", satLines.join("\n"));
+    tests.push(testRecord("saturation.cir", "operating_point", satChecks, satBounds));
+  }
 
   if (facts.frequency_response) {
     const ft = facts.frequency_response;
