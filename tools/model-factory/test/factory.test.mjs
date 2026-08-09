@@ -85,6 +85,15 @@ test("JSON outputs reject non-finite validation numbers", () => {
   );
 });
 
+test("scale_abs:last evaluates MOSFET voltage and current vectors", () => {
+  const nativeResult = { vectors: [
+    { name: "v(d1)", type: "voltage", values: [0, -0.125] },
+    { name: "i(vd1)", type: "current", values: [0, -2e-6] },
+  ] };
+  assert.equal(expressionValue(nativeResult, "scale_abs:last(v(d1),8)"), 1);
+  assert.equal(expressionValue(nativeResult, "scale_abs:last(i(vd1),1000000)"), 2);
+});
+
 test("timer edge extraction computes frequency, duty cycle, and pulse width", () => {
   const time = Array.from({ length: 17 }, (_, index) => index);
   const output = time.map((value) => Math.floor(value / 2) % 2 === 0 ? 0 : 5);
