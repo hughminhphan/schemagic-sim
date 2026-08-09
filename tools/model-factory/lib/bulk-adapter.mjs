@@ -64,7 +64,7 @@ function diodeFit(part, extraction, forceF1 = false) {
   const RS = 1e-4;
   const maximum = scalarPoint?.voltage?.source_kind === "maximum";
   const calibrationCurrent = maximum ? current * 0.95 : current;
-  const calibrationVoltage = maximum ? vf * 0.98 : vf;
+  const calibrationVoltage = maximum ? vf * 0.97 : vf;
   const junctionVoltage = Math.max(NGSPICE_VT_25C, calibrationVoltage - calibrationCurrent * RS);
   const IS = calibrationCurrent / Math.expm1(junctionVoltage / (N * NGSPICE_VT_25C));
   return { fidelity: "F1", parameters: { IS, N, RS }, worst: null, points: [] };
