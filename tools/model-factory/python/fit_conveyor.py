@@ -408,7 +408,8 @@ def fit_diode(payload, rejected):
 
 
 def select_vbe_on(extraction):
-    """A base-emitter turn-on voltage curve, used to pin IS. Optional."""
+    """The nominal-temperature base-emitter turn-on curve used to pin IS. Optional."""
+    candidates = []
     for curve in extraction.get("curves") or []:
         xq, _, _ = axis(curve, "x")
         yq, _, _ = axis(curve, "y")
@@ -416,12 +417,18 @@ def select_vbe_on(extraction):
             continue
         if "satur" in yq:
             continue
+        temperature = temperature_of(curve)
+        if temperature is not None and abs(temperature - 25) > 5:
+            continue
         try:
             pts = [(ic, v) for ic, v in points_of(curve, "A", "V") if ic > 0 and v > 0]
         except Unfittable:
             continue
         if len(pts) >= 3:
-            return curve, pts
+            candidates.append((0 if temperature is not None else 1, -len(pts), curve, pts))
+    if candidates:
+        _, _, curve, pts = min(candidates, key=lambda item: item[:2])
+        return curve, pts
     return None, []
 
 
