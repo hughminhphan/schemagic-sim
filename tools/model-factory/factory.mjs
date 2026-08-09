@@ -1010,7 +1010,9 @@ export function expressionValue(nativeResult, expression) {
   if (match) return real(findVector(match[1]).values.at(-1)) * Number(match[2]);
   match = /^affine:last\((v\([^)]+\)),([^,]+),([^\)]+)\)$/.exec(expression);
   if (match) return real(findVector(match[1]).values.at(-1)) * Number(match[2]) + Number(match[3]);
-  match = /^scale_abs:last\(((?:i|v)\([^)]+\)),([^\)]+)\)$/.exec(expression);
+  match = /^scale_abs:last\((v\([^)]+\)),([^\)]+)\)$/.exec(expression);
+  if (match) return Math.abs(real(findVector(match[1]).values.at(-1)) * Number(match[2]));
+  match = /^scale_abs:last\((i\([^)]+\)),([^\)]+)\)$/.exec(expression);
   if (match) return Math.abs(real(findVector(match[1]).values.at(-1)) * Number(match[2]));
   match = /^imag_cap:last\((i\([^)]+\)),([^\)]+)\)$/.exec(expression);
   if (match) {

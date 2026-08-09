@@ -16,8 +16,8 @@ sys.path.insert(0, str(HERE))
 sys.path.insert(0, str(FEEDER_ROOT))
 
 from conveyorlib import (ConveyorError, StateStore, build_luna_prompt, choose_balanced, cross_check,
-                         json_dump, load_and_validate_extraction, safe_stem, should_park_family,
-                         top_failure_reasons, top_recorded_reasons)
+                         filter_library_collisions, json_dump, load_and_validate_extraction, safe_stem,
+                         should_park_family, top_failure_reasons, top_recorded_reasons)
 from feederlib import download_datasheets, query_manifest, reviewed_mpns, validate_manifest
 
 DEFAULT_DATA = HERE / "data"
@@ -83,11 +83,15 @@ def select_command(args) -> int:
         raise ConveyorError(f"External catalog data is incomplete: {args.catalog_data}")
     sql = args.sql_file.read_text(encoding="utf-8")
     source_state = json.loads(dump.read_text(encoding="utf-8"))
+    library_root = REPO_ROOT / "packages" / "model-library" / "models"
     raw = query_manifest(db, sql, {"stock_min": args.stock_min}, source_state,
-                         REPO_ROOT / "packages" / "model-library" / "models",
-                         f"sql-file:{args.sql_file.name}", limit=None, exclude_reviewed=True)
-    balanced = choose_balanced(raw["parts"])
-    manifest = {**raw, "parts": balanced, "part_count": len(balanced)}
+                         library_root, f"sql-file:{args.sql_file.name}", limit=None,
+                         exclude_reviewed=False)
+    eligible, collision_skips = filter_library_collisions(raw["parts"], library_root)
+    balanced = choose_balanced(eligible)
+    manifest = {**raw, "parts": balanced, "part_count": len(balanced), "selection_skips": collision_skips}
+    manifest["query"]["exclude_reviewed"] = True
+    manifest["query"]["reviewed_mpn_count"] = len(reviewed_mpns(library_root))
     manifest["query"]["family_quotas"] = {"diode": 18, "bjt": 16, "mosfet": 16}
     output = args.data_dir / "tranches" / f"{safe_stem(args.name)}.json"
     json_dump(output, manifest)
@@ -96,7 +100,7 @@ def select_command(args) -> int:
         store.seed(tranche_name(output), balanced)
     finally:
         store.close()
-    print(json.dumps({"manifest": str(output), "part_count": len(balanced), "families": dict(Counter(part["conveyor_family"] for part in balanced))}, indent=2))
+    print(json.dumps({"manifest": str(output), "part_count": len(balanced), "families": dict(Counter(part["conveyor_family"] for part in balanced)), "selection_skips": collision_skips}, indent=2))
     return 0
 
 
@@ -249,6 +253,15 @@ def fit_command(args) -> int:
                 one = json.loads(completed.stdout)[0]
             except (json.JSONDecodeError, IndexError) as error:
                 record_factory_failure(f"factory returned invalid result: {error}")
+                continue
+            if one["status"] == "skipped":
+                reason = f"selection skipped: {one.get('reason', 'candidate rejected by staging guard')}"
+                if row["state"] == "staged":
+                    store.transition(tranche, part["lcsc_id"], "staged", reason=reason,
+                                     fidelity=row["fidelity"], package_path=row["package_path"])
+                else:
+                    store.transition(tranche, part["lcsc_id"], "failed_fitted", reason=reason)
+                results_by_id[part["lcsc_id"]] = one
                 continue
             if one["status"] == "failed":
                 record_factory_failure(one.get("reason", "factory fit failed"))
