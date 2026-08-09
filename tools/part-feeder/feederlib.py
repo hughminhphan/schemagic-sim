@@ -5,6 +5,7 @@ from __future__ import annotations
 import contextlib
 import datetime as dt
 import hashlib
+import http.client
 import json
 import mmap
 import os
@@ -92,7 +93,7 @@ def retry(operation: Callable[[], Any], attempts: int, base_delay: float, sleepe
     for attempt in range(attempts):
         try:
             return operation()
-        except (OSError, urllib.error.URLError, urllib.error.HTTPError) as error:
+        except (OSError, urllib.error.URLError, urllib.error.HTTPError, http.client.HTTPException) as error:
             last_error = error
             if attempt + 1 < attempts:
                 sleeper(base_delay * (2**attempt))
@@ -613,7 +614,7 @@ def download_datasheets(
                 records.append(record)
                 completed += 1
                 break
-            except (OSError, urllib.error.URLError, urllib.error.HTTPError, FeederError) as error:
+            except (OSError, urllib.error.URLError, urllib.error.HTTPError, http.client.HTTPException, FeederError) as error:
                 destination.unlink(missing_ok=True)
                 error_text = str(error)
                 if attempt + 1 < retries:
