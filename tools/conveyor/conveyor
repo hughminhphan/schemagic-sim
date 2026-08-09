@@ -16,8 +16,8 @@ sys.path.insert(0, str(HERE))
 sys.path.insert(0, str(FEEDER_ROOT))
 
 from conveyorlib import (ConveyorError, StateStore, build_luna_prompt, choose_balanced, cross_check,
-                         json_dump, load_and_validate_extraction, safe_stem, top_failure_reasons,
-                         top_recorded_reasons)
+                         json_dump, load_and_validate_extraction, safe_stem, should_park_family,
+                         top_failure_reasons, top_recorded_reasons)
 from feederlib import download_datasheets, query_manifest, reviewed_mpns, validate_manifest
 
 DEFAULT_DATA = HERE / "data"
@@ -241,7 +241,7 @@ def fit_command(args) -> int:
                 f2_failures[family] = 0
             elif f2_candidate:
                 f2_failures[family] += 1
-                if not args.no_park and not f2_successes[family] and f2_failures[family] >= args.park_after:
+                if not args.no_park and should_park_family(f2_successes[family], f2_failures[family], args.park_after):
                     parked[family] = (f"family parked after {f2_failures[family]} consecutive F2 fit-gate failures "
                                       f"with no F2 success; later parts staged F1 ({reason})")
             store.transition(tranche, part["lcsc_id"], "fitted", fidelity=one["fidelity"], reason=reason, package_path=str(Path(one["package_path"]).relative_to(staging)))

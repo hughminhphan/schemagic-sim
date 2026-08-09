@@ -312,3 +312,90 @@ reading the reasons would have been drawn from a sample of six.
    already clear the existing 8% bar. Gate calibration is needed only to state, per
    family and per quantity kind, what digitisation reading error physically justifies —
    and must stay tight enough to keep demoting IRFZ44N and IRF3205 at 42-44% Crss error.
+
+---
+
+## 8. What building the fix then showed
+
+The fixes above are implemented in `tools/model-factory/python/fit_conveyor.py`, with the
+tolerances and their justification in `tools/model-factory/lib/fit-gates.json`. Running
+the corrected pipeline surfaced four further defects that the original code could not
+expose, because it never fitted a MOSFET at all:
+
+1. **Ordinate matching was too literal.** Extractions name the MOSFET ordinate
+   `"ID magnitude"`, which does not contain the word "current". Nine of sixteen MOSFETs
+   reported "no usable transfer curve" until the matcher recognised the quantity rather
+   than one spelling of it.
+2. **Body-diode curves were fitted as channel output curves.** `DMP3098L-7`'s
+   `Typical body-diode forward characteristic` is labelled with VGS = 0 V, so the channel
+   model was asked to carry junction current at zero gate drive and the residual pinned at
+   exactly 1.0. Now excluded with a recorded reason.
+3. **The VTO box constraint constrained the wrong quantity.** `archetypes/vdmos.md` says
+   to keep VTO inside the published VGS(th) minimum and maximum. But VGS(th) is *measured*
+   at a small drain current (250 uA typically), whereas VDMOS VTO is the threshold obtained
+   by extrapolating the strong-inversion square law back to zero current — systematically
+   higher, because the extrapolation ignores the moderate-inversion conduction the
+   measurement sits in. For `2N7002,215` the digitised transfer curve wants VTO = 2.65 V
+   against a published maximum of 2.50 V; forcing 2.50 V inflated the worst transfer
+   residual from 6% to 36%. A bounded extrapolation margin is now allowed and declared.
+4. **`diff_step` finite differences on a parameter that had collapsed to ~0.** scipy's
+   step is relative, so a THETA of 1e-17 gets a 1e-20 probe and can never escape.
+
+**Even with all four fixed, no MOSFET reaches the 20% DC gate.** This is a model-form
+limit, not an optimiser failure. An 80-start global search over VTO, KP, THETA, LAMBDA and
+RD for `2N7002,215` converges to the identical optimum every time (cost 0.1783), and
+fitting the curve groups separately shows they are mutually inconsistent under one
+parameter set:
+
+| Part | transfer only | output only | transfer + output + RDS(on) |
+| --- | ---: | ---: | ---: |
+| 2N7002LT1G | 0.051 | 0.288 | 0.313 |
+| 2N7002K-T1-GE3 | 0.059 | 0.153 | 0.330 |
+| BSS84-7-F | 0.073 | 0.187 | 0.398 |
+| DMP3098L-7 | 0.148 | — | 0.524 |
+| DMP2035U-7 | 0.182 | 0.478 | 0.543 |
+| 2N7002,215 | 0.363 → 0.063 after fix 3 | 0.161 | 0.214 |
+| BSS138LT1G | 0.808 | 0.048 | 0.822 |
+
+A single ngspice VDMOS square law with one RD cannot simultaneously reproduce a transfer
+curve and a multi-VGS output family for these small-signal parts. The closest miss is
+`2N7002,215` at **21.4%** against the 20% gate. **The gate was deliberately not moved for
+it.** Widening `drain_current` to 22% would rescue one part and is not defensible from the
+reading-error budget; the honest outcome is F1.
+
+A reviewer-facing follow-up that this lane did *not* apply, precisely because it would have
+been outcome-driven after seeing which parts were borderline: `fit-gates.json` documents
+that a point in the bottom of a linear-axis range carries a reading error exceeding the
+tolerance itself, which argues for excluding such points from the *gate* (region-of-validity
+masking). That rule should be decided on its own merits before it is allowed to move any
+part across a line.
+
+## 9. Refit results
+
+Rerun over the same 50 staged parts with the preserved extraction JSON, no new extraction
+calls, `fit --no-park` so every part records its own evidence:
+
+| Family | F2 | F1 (gate) | F1 (extraction) | total |
+| --- | ---: | ---: | ---: | ---: |
+| diode | **12** | 4 | 2 | 18 |
+| bjt | **10** | 5 | 1 | 16 |
+| mosfet | **0** | 14 | 2 | 16 |
+| **total** | **22** | **23** | **5** | **50** |
+
+Worst ngspice-measured residual on the 22 F2 parts ranges from 0.68% (`BAS321,115`) to
+16.4% (`PBSS4160T,215`). `SS36-E3/57T`, the part that produced `N = -2511`, now fits at
+`IS = 3.37 uA, N = 1.217, RS = 10.7 mohm` with a worst error of 1.84%, and its three
+wrongly-selected curves are recorded as rejected in the staged package.
+
+## 10. Would IRFZ44N and IRF3205 pass now?
+
+Their DC residuals — 8.7% and 12.3% worst transfer/output current — sit comfortably inside
+the conveyor's 20% `drain_current` gate, so under this pipeline they would pass its gate.
+
+**That is not a reason to reverse the P5 demotions, and this lane did not touch their
+packages.** A conveyor F2 is a DC-only claim: `domain_coverage.ac` stays `none` and
+terminal capacitances are transcribed from the datasheet table rather than fitted. Both
+parts were demoted for a 42-44% error on **Crss**, which is an AC claim the conveyor gate
+says nothing about. Passing a strictly weaker gate is not evidence that the stronger claim
+holds. Their shipped packages assert the AC coverage they failed, so the demotions stand
+on their own terms; any revisit belongs to a review lane with the capacitance fit in scope.

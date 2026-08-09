@@ -345,6 +345,20 @@ def cross_check(payload: Mapping[str, Any], seed_hints: Sequence[Mapping[str, An
     return discrepancies
 
 
+def should_park_family(successes: int, consecutive_failures: int, park_after: int = 2) -> bool:
+    """Whether the F2 circuit breaker should trip for a family.
+
+    The breaker exists to stop a tranche burning compute on a family the pipeline plainly
+    cannot fit. A family that has already produced an F2 has demonstrated it can be fitted,
+    so its later F1s are per-part outcomes and must not park it: counting every gate
+    failure regardless of successes turned a handful of honest F1s into a whole-family
+    cascade in the first proving run, where 44 of 50 parts were staged without any attempt.
+    """
+    if successes > 0:
+        return False
+    return consecutive_failures >= park_after
+
+
 def build_luna_prompt(repo_root: Path, pack_path: Path, datasheet_path: Path, part: Mapping[str, Any], retry_discrepancies: Sequence[str] = ()) -> str:
     pack = json.loads(pack_path.read_text(encoding="utf-8"))
     lines = [
