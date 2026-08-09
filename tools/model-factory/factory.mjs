@@ -5,7 +5,6 @@ import path from "node:path";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { getPart } from "./lib/parts.mjs";
-import { runBulkManifest } from "./lib/bulk-adapter.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(here, "../..");
@@ -447,7 +446,7 @@ function bjtTestgen(ctx, model, facts) {
     if (point.hfe.source_kind === "minimum") {
       gainBounds.push(hardBound(`hfe_minimum_at_${point.collector_current.value}_a`, gainExpression, "1", { minimum: point.hfe.value }, point.hfe.page_reference));
     } else {
-      gainChecks.push(expectation(`hfe_at_${point.collector_current.value}_a`, gainExpression, point.hfe.value, "1", 0, 0.30, point.hfe.page_reference));
+      gainChecks.push(expectation(`hfe_at_${point.collector_current.value}_a`, gainExpression, point.hfe.value, "1", 0, ctx.part.component.test_tolerances?.dc_current_gain ?? 0.30, point.hfe.page_reference));
     }
   });
   gainLines.push(".op", ".end", "");
@@ -514,54 +513,120 @@ function bjtTestgen(ctx, model, facts) {
 
 function vdmosTestgen(ctx, model, facts) {
   const tests = [];
-  const rdLines = [`OpenCircuit factory test: ${ctx.part.slug} RDS(on)`, model];
-  const rdChecks = [];
-  const rdHardChecks = [];
-  facts.rdson_points.forEach((point, index) => {
-    const id = index + 1;
-    rdLines.push(`M${id} d${id} g${id} 0 ${ctx.part.component.modelName}`, `ID${id} 0 d${id} DC ${formatSpice(point.current.value)}`, `VG${id} g${id} 0 DC ${formatSpice(point.vgs.value)}`);
-    if (point.resistance.source_kind === "maximum") {
-      rdHardChecks.push(hardBound(`rdson_maximum_${id}`, `scale:last(v(d${id}),${1 / point.current.value})`, "ohm", { minimum: 0, maximum: point.resistance.value }, point.resistance.page_reference));
-    } else {
-      rdChecks.push(expectation(`rdson_${id}`, `scale:last(v(d${id}),${1 / point.current.value})`, point.resistance.value, "ohm", 0, 0.15, point.resistance.page_reference));
-    }
-  });
-  rdLines.push(".op", ".end", "");
-  writeBench(ctx, "rdson.cir", rdLines.join("\n"));
-  tests.push(testRecord("rdson.cir", "operating_point", rdChecks, rdHardChecks));
+  const pChannel = ctx.part.identity.electrical_family === "pmos";
+  const signed = (value) => (pChannel ? -1 : 1) * Number(value);
+  const currentSource = (name, node, current) => pChannel
+    ? `${name} ${node} 0 DC ${formatSpice(current)}`
+    : `${name} 0 ${node} DC ${formatSpice(current)}`;
 
-  const transferLines = [`OpenCircuit factory test: ${ctx.part.slug} transfer`, model];
-  const transferChecks = [];
-  facts.transfer_points.forEach((point, index) => {
-    const id = index + 1;
-    transferLines.push(`MT${id} dt${id} gt${id} 0 ${ctx.part.component.modelName}`, `VDT${id} dt${id} 0 DC 25`, `VGT${id} gt${id} 0 DC ${point.vgs.value}`);
-    transferChecks.push(expectation(`transfer_${point.vgs.value}_v`, `abs:last(i(vdt${id}))`, point.current.value, "A", 0, 0.33, point.current.page_reference));
-  });
-  transferLines.push(".op", ".end", "");
-  writeBench(ctx, "transfer_curve.cir", transferLines.join("\n"));
-  tests.push(testRecord("transfer_curve.cir", "operating_point", transferChecks));
+  if (facts.rdson_points?.length) {
+    const rdLines = [`OpenCircuit factory test: ${ctx.part.slug} RDS(on)`, model];
+    const rdChecks = [];
+    const rdHardChecks = [];
+    facts.rdson_points.forEach((point, index) => {
+      const id = index + 1;
+      rdLines.push(
+        `M${id} d${id} g${id} 0 ${ctx.part.component.modelName}`,
+        currentSource(`ID${id}`, `d${id}`, point.current.value),
+        `VG${id} g${id} 0 DC ${formatSpice(signed(point.vgs.value))}`
+      );
+      const expression = `scale_abs:last(v(d${id}),${1 / point.current.value})`;
+      if (point.resistance.source_kind === "maximum") {
+        rdHardChecks.push(hardBound(`rdson_maximum_${id}`, expression, "ohm", { minimum: 0, maximum: point.resistance.value }, point.resistance.page_reference));
+      } else if (point.resistance.source_kind === "minimum") {
+        rdHardChecks.push(hardBound(`rdson_minimum_${id}`, expression, "ohm", { minimum: point.resistance.value }, point.resistance.page_reference));
+      } else {
+        rdChecks.push(expectation(`rdson_${id}`, expression, point.resistance.value, "ohm", 0, ctx.part.component.test_tolerances?.rds_on ?? 0.15, point.resistance.page_reference));
+      }
+    });
+    rdLines.push(".op", ".end", "");
+    writeBench(ctx, "rdson.cir", rdLines.join("\n"));
+    tests.push(testRecord("rdson.cir", "operating_point", rdChecks, rdHardChecks));
+  }
 
-  const outputLines = [`OpenCircuit factory test: ${ctx.part.slug} output`, model];
-  facts.output_points.forEach((point, index) => {
-    const id = index + 1;
-    outputLines.push(`MO${id} do${id} go${id} 0 ${ctx.part.component.modelName}`, `VDO${id} do${id} 0 DC ${point.vds.value}`, `VGO${id} go${id} 0 DC ${point.vgs.value}`);
-  });
-  outputLines.push(".op", ".end", "");
-  writeBench(ctx, "output_curve.cir", outputLines.join("\n"));
-  tests.push(testRecord("output_curve.cir", "operating_point"));
+  if (facts.threshold) {
+    const threshold = facts.threshold;
+    const current = threshold.test_current?.value ?? 250e-6;
+    const lines = [
+      `OpenCircuit factory test: ${ctx.part.slug} threshold bounds`,
+      model,
+      `MTH d d 0 ${ctx.part.component.modelName}`,
+      currentSource("ITH", "d", current),
+      ".op",
+      ".end",
+      ""
+    ];
+    const scalarChecks = [];
+    const hardChecks = [];
+    const expression = "abs:last(v(d))";
+    if (threshold.typical) scalarChecks.push(expectation("gate_threshold_typical", expression, threshold.typical.value, "V", 0, ctx.part.component.test_tolerances?.threshold ?? 0.35, threshold.typical.page_reference));
+    if (threshold.minimum || threshold.maximum) hardChecks.push(hardBound(
+      "gate_threshold_bounds",
+      expression,
+      "V",
+      {
+        ...(threshold.minimum ? { minimum: threshold.minimum.value } : {}),
+        ...(threshold.maximum ? { maximum: threshold.maximum.value } : {})
+      },
+      [threshold.minimum?.page_reference, threshold.maximum?.page_reference].filter(Boolean).join("; ")
+    ));
+    writeBench(ctx, "threshold.cir", lines.join("\n"));
+    tests.push(testRecord("threshold.cir", "operating_point", scalarChecks, hardChecks));
+  }
 
-  writeBench(ctx, "gate_charge.cir", `OpenCircuit factory test: ${ctx.part.slug} gate charge\n${model}\nM1 d g 0 ${ctx.part.component.modelName}\nIG 0 g PULSE(0 0.01 1n 0.1n 0.1n 20u 40u)\nRGDC g 0 1G\nIL vsup d DC 25\nVSUP vsup 0 DC 44\n.ic v(g)=0\n.tran 1n 10u\n.end\n`);
-  tests.push(testRecord("gate_charge.cir", "transient", [expectation("gate_charge_at_5v", "charge_at_voltage(v(g),5,0.01)", facts.gate_charge.qg_at_5v.value, "C", 0, 0.75, facts.gate_charge.qg_at_5v.page_reference)]));
+  if (facts.transfer_points?.length) {
+    const transferLines = [`OpenCircuit factory test: ${ctx.part.slug} transfer`, model];
+    const transferChecks = [];
+    facts.transfer_points.forEach((point, index) => {
+      const id = index + 1;
+      const vds = point.vds?.value ?? facts.transfer_vds?.value ?? 25;
+      transferLines.push(
+        `MT${id} dt${id} gt${id} 0 ${ctx.part.component.modelName}`,
+        `VDT${id} dt${id} 0 DC ${formatSpice(signed(vds))}`,
+        `VGT${id} gt${id} 0 DC ${formatSpice(signed(point.vgs.value))}`
+      );
+      transferChecks.push(expectation(`transfer_${point.vgs.value}_v`, `abs:last(i(vdt${id}))`, point.current.value, "A", 0, ctx.part.component.test_tolerances?.drain_current ?? 0.33, point.current.page_reference));
+    });
+    transferLines.push(".op", ".end", "");
+    writeBench(ctx, "transfer_curve.cir", transferLines.join("\n"));
+    tests.push(testRecord("transfer_curve.cir", "operating_point", transferChecks));
+  }
 
-  const caps = facts.capacitances;
-  writeBench(ctx, "capacitance.cir", `OpenCircuit factory test: ${ctx.part.slug} capacitance\n${model}\nM1 d g 0 ${ctx.part.component.modelName}\nVD d 0 DC ${caps.vds_test.value} AC 1\nVG g 0 DC 0\n.ac lin 1 1Meg 1Meg\n.end\n`);
-  tests.push(testRecord("capacitance.cir", "ac_small_signal", [
-    expectation("coss", "imag_cap:last(i(vd),1000000)", caps.coss.value, "F", 0, 0.20, caps.coss.page_reference),
-    expectation("crss", "imag_cap:last(i(vg),1000000)", caps.crss.value, "F", 0, 0.35, caps.crss.page_reference)
-  ]));
+  if (facts.output_points?.length) {
+    const outputLines = [`OpenCircuit factory test: ${ctx.part.slug} output`, model];
+    facts.output_points.forEach((point, index) => {
+      const id = index + 1;
+      outputLines.push(
+        `MO${id} do${id} go${id} 0 ${ctx.part.component.modelName}`,
+        `VDO${id} do${id} 0 DC ${formatSpice(signed(point.vds.value))}`,
+        `VGO${id} go${id} 0 DC ${formatSpice(signed(point.vgs.value))}`
+      );
+    });
+    outputLines.push(".op", ".end", "");
+    writeBench(ctx, "output_curve.cir", outputLines.join("\n"));
+    tests.push(testRecord("output_curve.cir", "operating_point"));
+  }
 
-  writeBench(ctx, "body_diode.cir", `OpenCircuit factory test: ${ctx.part.slug} body diode\n${model}\nM1 d g 0 ${ctx.part.component.modelName}\nISD d 0 DC ${facts.body_diode.current.value}\nVG g 0 DC 0\n.op\n.end\n`);
-  tests.push(testRecord("body_diode.cir", "operating_point", [expectation("body_diode_forward_voltage", "abs:last(v(d))", facts.body_diode.vsd.value, "V", 0.05, 0.10, facts.body_diode.vsd.page_reference)]));
+  if (facts.gate_charge?.qg_at_5v) {
+    writeBench(ctx, "gate_charge.cir", `OpenCircuit factory test: ${ctx.part.slug} gate charge\n${model}\nM1 d g 0 ${ctx.part.component.modelName}\nIG 0 g PULSE(0 0.01 1n 0.1n 0.1n 20u 40u)\nRGDC g 0 1G\nIL vsup d DC 25\nVSUP vsup 0 DC 44\n.ic v(g)=0\n.tran 1n 10u\n.end\n`);
+    tests.push(testRecord("gate_charge.cir", "transient", [expectation("gate_charge_at_5v", "charge_at_voltage(v(g),5,0.01)", facts.gate_charge.qg_at_5v.value, "C", 0, 0.75, facts.gate_charge.qg_at_5v.page_reference)]));
+  }
+
+  if (facts.capacitances?.coss && facts.capacitances?.crss && facts.capacitances?.vds_test) {
+    const caps = facts.capacitances;
+    writeBench(ctx, "capacitance.cir", `OpenCircuit factory test: ${ctx.part.slug} capacitance\n${model}\nM1 d g 0 ${ctx.part.component.modelName}\nVD d 0 DC ${formatSpice(signed(caps.vds_test.value))} AC 1\nVG g 0 DC 0\n.ac lin 1 1Meg 1Meg\n.end\n`);
+    tests.push(testRecord("capacitance.cir", "ac_small_signal", [
+      expectation("coss", "imag_cap:last(i(vd),1000000)", caps.coss.value, "F", 0, 0.20, caps.coss.page_reference),
+      expectation("crss", "imag_cap:last(i(vg),1000000)", caps.crss.value, "F", 0, 0.35, caps.crss.page_reference)
+    ]));
+  }
+
+  if (facts.body_diode?.current && facts.body_diode?.vsd) {
+    writeBench(ctx, "body_diode.cir", `OpenCircuit factory test: ${ctx.part.slug} body diode\n${model}\nM1 d g 0 ${ctx.part.component.modelName}\nISD d 0 DC ${facts.body_diode.current.value}\nVG g 0 DC 0\n.op\n.end\n`);
+    tests.push(testRecord("body_diode.cir", "operating_point", [expectation("body_diode_forward_voltage", "abs:last(v(d))", facts.body_diode.vsd.value, "V", 0.05, 0.10, facts.body_diode.vsd.page_reference)]));
+  }
+
+  if (!tests.length) throw new Error(`${ctx.part.slug} has no extracted VDMOS targets for bench generation`);
   return tests;
 }
 
@@ -726,7 +791,7 @@ function sensorTestgen(ctx, model, facts) {
   return tests;
 }
 
-function stageTestgen(ctx) {
+export function stageTestgen(ctx) {
   const modelPath = path.join(ctx.packageDir, "model.cir");
   const factsPath = path.join(ctx.packageDir, "facts.json");
   requireFile(modelPath, "testgen");
@@ -761,7 +826,7 @@ function stageTestgen(ctx) {
         point.voltage.value,
         "V",
         0.02,
-        0.04,
+        ctx.part.component.test_tolerances?.forward_voltage ?? 0.04,
         point.voltage.page_reference
       )],
       hard_bounds_checks: maximumBound
@@ -772,17 +837,18 @@ function stageTestgen(ctx) {
     });
   });
 
-  const reverseEntry = Object.entries(facts.electrical_limits).find(([name]) => /^reverse_current_[0-9.]+v$/i.test(name));
-  if (!reverseEntry) throw new Error(`${ctx.part.slug} requires a reverse_current_<voltage>v fact`);
-  const [reverseName, reverse] = reverseEntry;
-  const reverseVoltage = Number(reverseName.match(/_([0-9.]+)v$/i)[1]);
-  fs.writeFileSync(path.join(ctx.packageDir, "tests", "reverse_leakage.cir"), reverseBench(model, ctx.part.component.modelName, reverseVoltage));
-  tests.push({
-    test_netlist: "reverse_leakage.cir",
-    analysis_type: "operating_point",
-    scalar_checks: [],
-    hard_bounds_checks: [hardBound("reverse_leakage_maximum", "abs:last(i(vreverse))", "A", { minimum: 0, maximum: reverse.value }, reverse.page_reference)]
-  });
+  const reverseEntry = Object.entries(facts.electrical_limits ?? {}).find(([name]) => /^reverse_current_[0-9.]+v$/i.test(name));
+  if (reverseEntry) {
+    const [reverseName, reverse] = reverseEntry;
+    const reverseVoltage = Number(reverseName.match(/_([0-9.]+)v$/i)[1]);
+    fs.writeFileSync(path.join(ctx.packageDir, "tests", "reverse_leakage.cir"), reverseBench(model, ctx.part.component.modelName, reverseVoltage));
+    tests.push({
+      test_netlist: "reverse_leakage.cir",
+      analysis_type: "operating_point",
+      scalar_checks: [],
+      hard_bounds_checks: [hardBound("reverse_leakage_maximum", "abs:last(i(vreverse))", "A", { minimum: 0, maximum: reverse.value }, reverse.page_reference)]
+    });
+  }
 
   if (facts.zener_points) {
     for (const [index, point] of facts.zener_points.entries()) {
@@ -939,7 +1005,7 @@ export function expressionValue(nativeResult, expression) {
   if (match) return real(findVector(match[1]).values.at(-1)) * Number(match[2]);
   match = /^affine:last\((v\([^)]+\)),([^,]+),([^\)]+)\)$/.exec(expression);
   if (match) return real(findVector(match[1]).values.at(-1)) * Number(match[2]) + Number(match[3]);
-  match = /^scale_abs:last\((i\([^)]+\)),([^\)]+)\)$/.exec(expression);
+  match = /^scale_abs:last\(((?:i|v)\([^)]+\)),([^\)]+)\)$/.exec(expression);
   if (match) return Math.abs(real(findVector(match[1]).values.at(-1)) * Number(match[2]));
   match = /^imag_cap:last\((i\([^)]+\)),([^\)]+)\)$/.exec(expression);
   if (match) {
@@ -1022,7 +1088,7 @@ function evaluateCheck(value, check) {
   };
 }
 
-function stageValidate(ctx) {
+export function stageValidate(ctx) {
   assertNoTrackedPdfs();
   run("node", [packageValidator, ctx.packageDir]);
   const expectations = JSON.parse(fs.readFileSync(path.join(ctx.packageDir, "tests", "expectations.json"), "utf8"));
@@ -1031,6 +1097,8 @@ function stageValidate(ctx) {
   let failCount = 0;
   let worstEngineRelativeDelta = 0;
   let worstEngineAbsoluteDelta = 0;
+  let worstExpectationRelativeError = 0;
+  let worstExpectationQuantity = "package expectation";
 
   for (const test of expectations.tests) {
     const benchPath = path.join(ctx.packageDir, "tests", test.test_netlist);
@@ -1051,6 +1119,13 @@ function stageValidate(ctx) {
       const evaluation = evaluateCheck(value, check);
       if (evaluation.pass) passCount += 1;
       else failCount += 1;
+      if (Object.hasOwn(check, "expected_value")) {
+        const relativeError = evaluation.error / Math.max(Math.abs(check.expected_value), Number.EPSILON);
+        if (relativeError >= worstExpectationRelativeError) {
+          worstExpectationRelativeError = relativeError;
+          worstExpectationQuantity = check.name;
+        }
+      }
       checks.push({ name: check.name, ...evaluation });
     }
     results.push({
@@ -1085,7 +1160,7 @@ function stageValidate(ctx) {
     pass_count: passCount,
     fail_count: failCount,
     total_count: passCount + failCount,
-    worst_observed_relative_fitting_error: fitted.worst_relative_error
+    worst_observed_relative_fitting_error: fitted.worst_relative_error ?? { value: worstExpectationRelativeError, quantity: worstExpectationQuantity }
   };
   component.validation_date = today();
   writeJson(componentPath, component);
@@ -1115,7 +1190,7 @@ export function assertCardParameterTable(card, fitted) {
   }
 }
 
-function stageCard(ctx) {
+export function stageCard(ctx) {
   const fitted = JSON.parse(fs.readFileSync(path.join(ctx.packageDir, "fitted.json"), "utf8"));
   const validation = JSON.parse(fs.readFileSync(path.join(ctx.packageDir, "validation-results.json"), "utf8"));
   const source = JSON.parse(fs.readFileSync(path.join(ctx.packageDir, "sources.json"), "utf8"))[0];
@@ -1127,7 +1202,11 @@ function stageCard(ctx) {
   const heldDefaults = (fitted.held_defaults ?? []).map((item) => `| ${item.parameter} | ${Number(item.value).toExponential(8)} | ${item.unit} | ${item.reason} |`).join("\n");
   const heldDefaultsSection = heldDefaults ? `\n## Held defaults\n\n| Parameter | Value | Unit | Status |\n| --- | ---: | --- | --- |\n${heldDefaults}\n` : "";
   const omissions = ctx.part.component.omissions.map((item) => `- ${item}`).join("\n");
-  const card = `# ${ctx.part.identity.canonical_mpn} model card\n\n## Identity\n\n- Manufacturer: ${ctx.part.identity.manufacturer}\n- Description: ${ctx.part.identity.description}\n- Electrical family: ${ctx.part.identity.electrical_family}\n- Fidelity tier: ${ctx.part.component.fidelity_tier ?? "F2"}, datasheet-constrained\n- Independent reviewer: pending-review\n\n## Provenance\n\n- Datasheet: ${source.url}\n- Revision: ${source.revision}\n- Accessed: ${source.accessed_date}\n- Referenced pages: ${source.pages_referenced.join(", ")}\n- SHA-256: \`${source.sha256}\`\n- Basis: original model generated from public factual specifications\n- Vendor SPICE models used: none\n\n## Domain coverage\n\n| Domain | Coverage |\n| --- | --- |\n${coverageTable(ctx.part.component.domain_coverage)}\n\n## Model parameters\n\n| Parameter | Value | Status |\n| --- | ---: | --- |\n${parameterRows}\n${heldDefaultsSection}\n## Fitted versus datasheet\n\n| Quantity | Datasheet | Fitted | Unit | Relative error | Citation |\n| --- | ---: | ---: | --- | ---: | --- |\n${rows}\n\nWorst fitting error: ${(100 * fitted.worst_relative_error.value).toFixed(3)}% for ${fitted.worst_relative_error.quantity}.\n\nNative and WASM agreement: all ${validation.benches.length} benches passed. Worst reported relative delta was ${validation.worst_native_wasm_relative_delta.toExponential(3)} and worst absolute delta was ${validation.worst_native_wasm_absolute_delta.toExponential(3)}.\n\n## Known omissions\n\n${omissions}\n\n## Licence\n\nMIT. See \`LICENSE\`. The model is original work generated from public factual specifications and is not copied or adapted from a vendor SPICE model.\n`;
+  const fitSummary = fitted.worst_relative_error
+    ? `Worst fitting error: ${(100 * fitted.worst_relative_error.value).toFixed(3)}% for ${fitted.worst_relative_error.quantity}.`
+    : "F1 parameters are transcribed or derived from cited headline targets; no multi-point F2 residual claim is made.";
+  const fittedRows = rows || "| No F2 residual claim | n/a | n/a | n/a | n/a | See cited package expectations |";
+  const card = `# ${ctx.part.identity.canonical_mpn} model card\n\n## Identity\n\n- Manufacturer: ${ctx.part.identity.manufacturer}\n- Description: ${ctx.part.identity.description}\n- Electrical family: ${ctx.part.identity.electrical_family}\n- Fidelity tier: ${ctx.part.component.fidelity_tier ?? "F2"}, datasheet-constrained\n- Independent reviewer: pending-review\n\n## Provenance\n\n- Datasheet: ${source.url}\n- Revision: ${source.revision}\n- Accessed: ${source.accessed_date}\n- Referenced pages: ${source.pages_referenced.join(", ")}\n- SHA-256: \`${source.sha256}\`\n- Basis: original model generated from public factual specifications\n- Vendor SPICE models used: none\n\n## Domain coverage\n\n| Domain | Coverage |\n| --- | --- |\n${coverageTable(ctx.part.component.domain_coverage)}\n\n## Model parameters\n\n| Parameter | Value | Status |\n| --- | ---: | --- |\n${parameterRows}\n${heldDefaultsSection}\n## Fitted versus datasheet\n\n| Quantity | Datasheet | Fitted | Unit | Relative error | Citation |\n| --- | ---: | ---: | --- | ---: | --- |\n${fittedRows}\n\n${fitSummary}\n\nNative and WASM agreement: all ${validation.benches.length} benches passed. Worst reported relative delta was ${validation.worst_native_wasm_relative_delta.toExponential(3)} and worst absolute delta was ${validation.worst_native_wasm_absolute_delta.toExponential(3)}.\n\n## Known omissions\n\n${omissions}\n\n## Licence\n\nMIT. See \`LICENSE\`. The model is original work generated from public factual specifications and is not copied or adapted from a vendor SPICE model.\n`;
   assertCardParameterTable(card, fitted);
   fs.writeFileSync(path.join(ctx.packageDir, "MODEL_CARD.md"), card);
   run("node", [packageValidator, ctx.packageDir]);
@@ -1148,8 +1227,16 @@ const stageFunctions = {
 async function main() {
   const args = parseArgs(process.argv.slice(2));
   if (args.stage === "bulk") {
-    const results = runBulkManifest(path.resolve(args.manifest), path.resolve(args.stagingRoot));
-    console.log(json(results));
+    const { runBulkManifest } = await import("./lib/bulk-adapter.mjs");
+    const originalLog = console.log;
+    console.log = (...values) => console.error(...values);
+    let results;
+    try {
+      results = runBulkManifest(path.resolve(args.manifest), path.resolve(args.stagingRoot));
+    } finally {
+      console.log = originalLog;
+    }
+    process.stdout.write(json(results));
     if (results.some((result) => result.status === "failed")) process.exitCode = 2;
     return;
   }

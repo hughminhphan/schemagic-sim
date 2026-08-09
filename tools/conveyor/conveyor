@@ -49,6 +49,7 @@ def parser() -> argparse.ArgumentParser:
     fit.add_argument("manifest", type=Path)
     fit.add_argument("--no-park", action="store_true", help="disable the family circuit breaker so every part records its own fit evidence (proving runs)")
     fit.add_argument("--park-after", type=int, default=2, help="consecutive F2 gate failures, with no F2 success in the family, before parking")
+    fit.add_argument("--regenerate-staged", action="store_true", help="rebuild already staged packages from preserved extraction JSON")
     status = commands.add_parser("status", help="show state and fidelity counts")
     status.add_argument("manifest", type=Path)
     return root
@@ -208,9 +209,9 @@ def fit_command(args) -> int:
     try:
         for part in manifest["parts"]:
             row = store.get(tranche, part["lcsc_id"])
-            if row["state"] in {"fitted", "staged"}:
+            if row["state"] == "staged" and not args.regenerate_staged:
                 continue
-            if row["state"] != "extracted":
+            if row["state"] not in {"extracted", "fitted", "staged"}:
                 continue
             extraction_path = staging / row["extraction_path"] if row["extraction_path"] else None
             f2_candidate = row["fidelity"] != "F1" and part["conveyor_family"] not in parked
@@ -222,7 +223,7 @@ def fit_command(args) -> int:
             batch = {"schema_version": "1.0.0", "kind": "opencircuit-conveyor-batch", "parts": [batch_part]}
             batch_path = batches / f"{safe_stem(part['lcsc_id'])}.json"
             json_dump(batch_path, batch)
-            completed = subprocess.run(["node", str(FACTORY), "bulk", "--manifest", str(batch_path), "--staging-root", str(packages_root)], cwd=REPO_ROOT, text=True, capture_output=True, timeout=120)
+            completed = subprocess.run(["node", str(FACTORY), "bulk", "--manifest", str(batch_path), "--staging-root", str(packages_root)], cwd=REPO_ROOT, text=True, capture_output=True, timeout=600)
             if completed.returncode not in {0, 2}:
                 store.transition(tranche, part["lcsc_id"], "failed_fitted", reason=(completed.stderr or completed.stdout).strip())
                 continue
@@ -244,8 +245,12 @@ def fit_command(args) -> int:
                 if not args.no_park and should_park_family(f2_successes[family], f2_failures[family], args.park_after):
                     parked[family] = (f"family parked after {f2_failures[family]} consecutive F2 fit-gate failures "
                                       f"with no F2 success; later parts staged F1 ({reason})")
-            store.transition(tranche, part["lcsc_id"], "fitted", fidelity=one["fidelity"], reason=reason, package_path=str(Path(one["package_path"]).relative_to(staging)))
-            store.transition(tranche, part["lcsc_id"], "staged", fidelity=one["fidelity"], reason=reason, package_path=str(Path(one["package_path"]).relative_to(staging)))
+            package_path = str(Path(one["package_path"]).relative_to(staging))
+            if row["state"] == "extracted":
+                store.transition(tranche, part["lcsc_id"], "fitted", fidelity=one["fidelity"], reason=reason, package_path=package_path)
+                store.transition(tranche, part["lcsc_id"], "staged", fidelity=one["fidelity"], reason=reason, package_path=package_path)
+            else:
+                store.transition(tranche, part["lcsc_id"], "staged", fidelity=one["fidelity"], reason=reason, package_path=package_path)
             results_by_id[part["lcsc_id"]] = one
             staged_this_run += 1
     finally:
