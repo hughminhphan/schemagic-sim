@@ -191,7 +191,10 @@ def select_gain_curve(extraction, rejected):
         except Unfittable as exc:
             rejected.append(f"{label}: {exc}")
             continue
-        pts = [(ic, h) for ic, h in pts if ic > 0 and h > 0]
+        # Datasheet plots often preserve PNP polarity as negative IC values even though
+        # the device polarity is carried separately in specs.polarity. Fit magnitudes so
+        # an otherwise valid signed PNP gain curve is not discarded.
+        pts = sorted((abs(ic), abs(h)) for ic, h in pts if ic != 0 and h != 0)
         vce = bias_of(curve, "vce")
         if len(pts) >= GATES["families"]["bjt"]["minimum_points"] and vce and (best is None or len(pts) > len(best[2])):
             best = (curve, vce, pts)
@@ -421,7 +424,7 @@ def select_vbe_on(extraction):
         if temperature is not None and abs(temperature - 25) > 5:
             continue
         try:
-            pts = [(ic, v) for ic, v in points_of(curve, "A", "V") if ic > 0 and v > 0]
+            pts = sorted((abs(ic), abs(v)) for ic, v in points_of(curve, "A", "V") if ic != 0 and v != 0)
         except Unfittable:
             continue
         if len(pts) >= 3:

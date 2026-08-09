@@ -128,6 +128,24 @@ test("residuals are measured through native ngspice, not the fitter's own algebr
   assert.ok(fitted.worst.value <= gates.families.diode.quantities.forward_voltage.worst);
 });
 
+test("signed PNP gain and VBE curves are fitted as magnitudes", { skip }, () => {
+  const extraction = {
+    schema_version: "1.0.0", mpn: "FIXTURE-PNP", manufacturer: "Fixture", family: "bjt", usable_curves: true,
+    curves: [
+      curve("PNP DC current gain at 25 degC", "collector current", "A", "DC current gain hFE", "1", "VCE = -10 V, TJ = 25 degC",
+        [[-5e-2, 50], [-2e-2, 80], [-1e-2, 90], [-1e-3, 95], [-1e-4, 95]], "p. 3, Figure 1"),
+      curve("PNP base-emitter on voltage at 25 degC", "collector current", "A", "base-emitter on voltage VBE(on)", "V", "TJ = 25 degC",
+        [[-5e-2, -0.76], [-1e-2, -0.68], [-1e-3, -0.63], [-1e-4, -0.59]], "p. 3, Figure 4"),
+    ],
+    specs: { polarity: "pnp" },
+  };
+  const fitted = runFit({ family: "bjt", polarity: "p", mpn: "FIXTURE-PNP", manufacturer: "Fixture", extraction });
+  assert.equal(fitted.fidelity, "F2");
+  assert.equal(fitted.residuals.length, 5);
+  assert.ok(fitted.residuals.every((row) => row.datasheet_value > 0));
+  assert.match(fitted.optimizer.held_defaults.find((item) => item.parameter === "IS").reason, /VBE = 0\.68 V/);
+});
+
 test("BJT nominal IS uses the 25 degC VBE curve even when a hot curve appears first", { skip }, () => {
   const extraction = {
     schema_version: "1.0.0", mpn: "FIXTURE-Q", manufacturer: "Fixture", family: "bjt", usable_curves: true,

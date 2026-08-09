@@ -41,10 +41,24 @@ function polarityFor(part, extraction) {
   return /p-channel|pmos|pnp/i.test(`${part.subcategory} ${part.description} ${part.attributes?.Type ?? ""}`) ? "p" : "n";
 }
 
+function zenerInputs(extraction) {
+  if (extraction?.specs?.variant !== "zener") return null;
+  const voltage = normalizeEvidence(extraction.specs.breakdown_voltage);
+  const current = normalizeEvidence(extraction.specs.breakdown_current);
+  const BV = Number(voltage?.value);
+  const IBV = Number(current?.value);
+  return voltage?.unit === "V" && current?.unit === "A"
+    && Number.isFinite(BV) && BV > 0 && Number.isFinite(IBV) && IBV > 0
+    ? { BV, IBV, NBV: 1 }
+    : null;
+}
+
 function diodeFit(part, extraction, forceF1 = false) {
   const scalarPoint = extraction?.specs?.forward_voltage_points?.find((point) => Number(point?.voltage?.value) > 0 && Number(point?.current?.value) > 0);
-  const vf = scalarPoint ? Number(scalarPoint.voltage.value) : hintNumber(part, "diode.forward_voltage", 0.7);
-  const current = scalarPoint ? Number(scalarPoint.current.value) : 0.01;
+  const voltage = scalarPoint ? normalizeEvidence(scalarPoint.voltage) : null;
+  const forwardCurrent = scalarPoint ? normalizeEvidence(scalarPoint.current) : null;
+  const vf = voltage?.unit === "V" ? Number(voltage.value) : hintNumber(part, "diode.forward_voltage", 0.7);
+  const current = forwardCurrent?.unit === "A" ? Number(forwardCurrent.value) : 0.01;
   const N = /schottky/i.test(`${part.subcategory} ${part.description}`) ? 1.1 : 1.8;
   return { fidelity: "F1", parameters: { IS: current / Math.exp(vf / (N * 0.025852)), N, RS: 1e-4 }, worst: null, points: [] };
 }
@@ -70,7 +84,12 @@ function mosfetFit(part, extraction, forceF1 = false) {
 function modelFor(part, fit) {
   const name = `OC_${safe(part.manufacturer).toUpperCase()}_${safe(part.mpn).toUpperCase()}`;
   const p = fit.parameters;
-  if (part.conveyor_family === "diode") return { name, text: `.model ${name} D(IS=${fmt(p.IS)} N=${fmt(p.N)} RS=${fmt(p.RS)})\n` };
+  if (part.conveyor_family === "diode") {
+    const breakdown = Number(p.BV) > 0 && Number(p.IBV) > 0
+      ? ` BV=${fmt(p.BV)} IBV=${fmt(p.IBV)} NBV=${fmt(p.NBV ?? 1)}`
+      : "";
+    return { name, text: `.model ${name} D(IS=${fmt(p.IS)} N=${fmt(p.N)} RS=${fmt(p.RS)}${breakdown})\n` };
+  }
   if (part.conveyor_family === "bjt") {
     const polarity = fit.polarity === "p" ? "PNP" : "NPN";
     // ISE/NE carry the low-current roll-off of an F2 Gummel-Poon fit; the F1 path omits them.
@@ -161,6 +180,10 @@ export function fitBulkPart(part, extraction, { ngspiceRunner = defaultNgspiceRu
   else if (part.conveyor_family === "mosfet") fit = mosfetFit(part, extraction, forceF1);
   else throw new Error(`Unsupported conveyor family: ${part.conveyor_family}`);
   fit.polarity = polarity;
+  if (part.conveyor_family === "diode") {
+    const breakdown = zenerInputs(extraction);
+    if (breakdown) fit.parameters = { ...fit.parameters, ...breakdown };
+  }
   const model = modelFor(part, fit);
   ngspiceRunner(model.text, { part, fit });
   return { ...fit, model };
@@ -367,7 +390,13 @@ function bulkFactoryFacts(part, extraction, fit, identity, source) {
       const reverseVoltage = conditionNumber(specs.reverse_current.conditions, "VR", null);
       if (reverseVoltage != null) electricalLimits[`reverse_current_${reverseVoltage}v`] = specs.reverse_current;
     }
-    return { ...common, fit_points: fitPoints, electrical_limits: electricalLimits, derived_model_inputs: {} };
+    const derivedModelInputs = {};
+    if (Number(fit.parameters?.BV) > 0 && Number(fit.parameters?.IBV) > 0) {
+      derivedModelInputs.BV = specs.breakdown_voltage;
+      derivedModelInputs.IBV = specs.breakdown_current;
+      derivedModelInputs.NBV = quantity(1, "1", "First-order avalanche-knee default; no multi-point reverse-knee trace was available", "model-factory Zener F1 policy", "held_default");
+    }
+    return { ...common, fit_points: fitPoints, electrical_limits: electricalLimits, derived_model_inputs: derivedModelInputs };
   }
   if (part.conveyor_family === "bjt") {
     const gainPoints = [];

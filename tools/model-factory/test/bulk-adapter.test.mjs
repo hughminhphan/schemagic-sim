@@ -42,10 +42,56 @@ function extraction() {
   };
 }
 
+function zenerExtraction() {
+  const value = extraction();
+  value.specs.variant = "zener";
+  value.specs.breakdown_voltage = { ...quantity(5.1, "V"), conditions: "VZ = 5.1 V at IZT = 5 mA", page_reference: "p. 2 Zener table" };
+  value.specs.breakdown_current = { ...quantity(5, "mA"), conditions: "IZT = 5 mA at VZ = 5.1 V", page_reference: "p. 2 Zener table" };
+  return value;
+}
+
 test("bulk adapter fits curve-backed diode without touching reviewed library", () => {
   const fit = fitBulkPart(diodePart("unused.pdf"), extraction(), { ngspiceRunner: () => ({ pass: true }) });
   assert.equal(fit.fidelity, "F2");
   assert.match(fit.model.text, /\.model .* D\(/);
+});
+
+test("Zener model cards emit only cited positive BV and IBV values", () => {
+  const fit = fitBulkPart(diodePart("unused.pdf"), zenerExtraction(), { forceF1: true, ngspiceRunner: () => ({ pass: true }) });
+  assert.equal(fit.parameters.BV, 5.1);
+  assert.equal(fit.parameters.IBV, 0.005);
+  assert.equal(fit.parameters.NBV, 1);
+  assert.match(fit.model.text, / BV=5\.1000000000e0 IBV=5\.0000000000e-3 NBV=1\.0000000000e0/);
+
+  const incomplete = zenerExtraction();
+  incomplete.specs.breakdown_current = null;
+  const ratingOnlyPart = { ...diodePart("unused.pdf"), seed_hints: [{ factory_target: "diode.reverse_voltage", raw_value: "100V maximum rating" }] };
+  const ratingOnly = fitBulkPart(ratingOnlyPart, incomplete, { forceF1: true, ngspiceRunner: () => ({ pass: true }) });
+  assert.equal(ratingOnly.parameters.BV, undefined);
+  assert.doesNotMatch(ratingOnly.model.text, /\sBV=/);
+});
+
+test("staged Zener facts preserve the cited breakdown model inputs", () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "factory-zener-test-"));
+  try {
+    const pdf = path.join(root, "datasheet.pdf");
+    fs.writeFileSync(pdf, "%PDF-1.7\nfixture\n");
+    const extractionPath = path.join(root, "extraction.json");
+    fs.writeFileSync(extractionPath, JSON.stringify(zenerExtraction()));
+    const manifestPath = path.join(root, "batch.json");
+    fs.writeFileSync(manifestPath, JSON.stringify({ schema_version: "1.0.0", kind: "opencircuit-conveyor-batch", parts: [{ ...diodePart(pdf), extraction_path: extractionPath, force_f1: true }] }));
+    const result = runBulkManifest(manifestPath, path.join(root, "staging"), { ngspiceRunner: () => ({ pass: true }) });
+    assert.equal(result[0].status, "staged", JSON.stringify(result[0]));
+    const facts = JSON.parse(fs.readFileSync(path.join(result[0].package_path, "facts.json"), "utf8"));
+    assert.deepEqual(facts.derived_model_inputs.BV, { ...quantity(5.1, "V"), conditions: "VZ = 5.1 V at IZT = 5 mA", page_reference: "p. 2 Zener table" });
+    assert.equal(facts.derived_model_inputs.IBV.value, 0.005);
+    assert.equal(facts.derived_model_inputs.IBV.unit, "A");
+    assert.equal(facts.derived_model_inputs.IBV.page_reference, "p. 2 Zener table");
+    assert.equal(facts.derived_model_inputs.NBV.value, 1);
+    assert.equal(facts.derived_model_inputs.NBV.source_kind, "held_default");
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
 });
 
 test("bulk manifest accepts external datasheet and seed paths and stages pending-review", () => {
