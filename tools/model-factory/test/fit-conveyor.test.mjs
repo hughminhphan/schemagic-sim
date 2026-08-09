@@ -128,6 +128,27 @@ test("residuals are measured through native ngspice, not the fitter's own algebr
   assert.ok(fitted.worst.value <= gates.families.diode.quantities.forward_voltage.worst);
 });
 
+test("BJT nominal IS uses the 25 degC VBE curve even when a hot curve appears first", { skip }, () => {
+  const extraction = {
+    schema_version: "1.0.0", mpn: "FIXTURE-Q", manufacturer: "Fixture", family: "bjt", usable_curves: true,
+    curves: [
+      curve("DC current gain at 25 degC", "collector current", "A", "DC current gain hFE", "1", "VCE = 10 V, TJ = 25 degC",
+        [[1e-4, 95], [1e-3, 95], [1e-2, 90], [2e-2, 80], [5e-2, 50]], "p. 3, Figure 1"),
+      curve("Base-emitter on voltage at 150 degC", "collector current", "A", "base-emitter on voltage VBE(on)", "V", "TJ = 150 degC",
+        [[1e-4, 0.28], [1e-3, 0.36], [1e-2, 0.43], [5e-2, 0.57]], "p. 3, Figure 4"),
+      curve("Base-emitter on voltage at 25 degC", "collector current", "A", "base-emitter on voltage VBE(on)", "V", "TJ = 25 degC",
+        [[1e-4, 0.59], [1e-3, 0.63], [1e-2, 0.68], [5e-2, 0.76]], "p. 3, Figure 4"),
+    ],
+    specs: {},
+  };
+  const fitted = runFit({ family: "bjt", polarity: "n", mpn: "FIXTURE-Q", manufacturer: "Fixture", extraction });
+  assert.equal(fitted.fidelity, "F2");
+  assert.match(fitted.curves_used.join("\n"), /Base-emitter on voltage at 25 degC/);
+  assert.doesNotMatch(fitted.curves_used.join("\n"), /150 degC/);
+  const heldIs = fitted.optimizer.held_defaults.find((item) => item.parameter === "IS");
+  assert.match(heldIs.reason, /VBE = 0\.68 V/);
+});
+
 // ------------------------------------------------------------- gate calibration table
 
 test("gate calibration stays below the level that would have passed the P5 demotions", () => {

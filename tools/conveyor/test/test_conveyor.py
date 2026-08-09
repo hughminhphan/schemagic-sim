@@ -53,6 +53,24 @@ class StateMachineTest(unittest.TestCase):
             store.close()
 
 
+    def test_staged_package_can_be_refreshed_without_rewinding_state(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            store = StateStore(Path(temporary) / "state.sqlite3")
+            parts = [{"lcsc_id": "C1", "mpn": "D1", "manufacturer": "Fixture", "conveyor_family": "diode"}]
+            store.seed("t", parts)
+            store.transition("t", "C1", "datasheet_fetched", datasheet_path="datasheets/D1.pdf")
+            store.transition("t", "C1", "extracted", extraction_path="extractions/D1.json")
+            store.transition("t", "C1", "fitted", fidelity="F2", package_path="packages/fixture/D1")
+            store.transition("t", "C1", "staged", fidelity="F2", package_path="packages/fixture/D1")
+            store.transition("t", "C1", "staged", reason="package contract regenerated", fidelity="F1", package_path="packages/fixture/D1")
+            row = store.get("t", "C1")
+            self.assertEqual(row["state"], "staged")
+            self.assertEqual(row["fidelity"], "F1")
+            self.assertEqual(row["reason"], "package contract regenerated")
+            self.assertEqual(store.connection.execute("SELECT count(*) FROM transitions WHERE to_state = 'staged'").fetchone()[0], 2)
+            store.close()
+
+
 class SchemaValidationTest(unittest.TestCase):
     def test_accepts_strict_payload_and_rejects_unknown_fields(self):
         with tempfile.TemporaryDirectory() as temporary:

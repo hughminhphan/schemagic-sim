@@ -3,7 +3,8 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
-import { fitBulkPart, normalizeBulkManifest, runBulkManifest } from "../lib/bulk-adapter.mjs";
+import { fitBulkPart, normalizedIdentity, normalizeBulkManifest, repairKnownEvidenceDefects, runBulkManifest } from "../lib/bulk-adapter.mjs";
+import { validatePackage } from "../../../packages/component-schema/lib.mjs";
 
 const quantity = (value, unit) => ({ value, unit, conditions: "fixture at 25 C", page_reference: "p. 2", source_kind: "typical" });
 
@@ -37,7 +38,7 @@ function extraction() {
     schema_version: "1.0.0", mpn: "FIXTURE-D1", manufacturer: "Fixture Semi", family: "diode",
     datasheet_identity: { title: "Fixture D1", revision: "A", pages_examined: ["p. 2"] }, usable_curves: true,
     curves: [{ name: "Forward IV", x_axis: { quantity: "voltage", unit: "V", scale: "linear" }, y_axis: { quantity: "current", unit: "A", scale: "log" }, test_conditions: "TA=25 C", page_reference: "p. 2", points: [{ x: 0.48, y: 1e-4 }, { x: 0.60, y: 1e-3 }, { x: 0.72, y: 1e-2 }, { x: 0.84, y: 1e-1 }] }],
-    specs: { variant: "signal", forward_voltage_points: [{ current: quantity(0.01, "A"), voltage: quantity(0.72, "V") }], reverse_current: null, capacitance: null, reverse_recovery: null, breakdown_voltage: null, breakdown_current: null }, extraction_notes: [], omission_reason: null,
+    specs: { variant: "signal", forward_voltage_points: [{ current: quantity(10, "mA"), voltage: quantity(720, "mV") }], reverse_current: { ...quantity(2, "µA"), conditions: "VR=5 V, TA=25 C" }, capacitance: null, reverse_recovery: null, breakdown_voltage: null, breakdown_current: null }, extraction_notes: [], omission_reason: null,
   };
 }
 
@@ -61,7 +62,16 @@ test("bulk manifest accepts external datasheet and seed paths and stages pending
     assert.equal(result[0].status, "staged");
     assert.equal(result[0].fidelity, "F2");
     const component = JSON.parse(fs.readFileSync(path.join(result[0].package_path, "component.json"), "utf8"));
-    assert.equal(component.reviewer.tool_or_agent, "pending-review");
+    assert.equal(component.reviewer.tool_or_agent, "pending-independent-package-review");
+    assert.equal(component.test_results.status, "complete");
+    assert.ok(component.test_results.total_count > 0);
+    const expectations = JSON.parse(fs.readFileSync(path.join(result[0].package_path, "tests", "expectations.json"), "utf8"));
+    assert.ok(expectations.tests.length > 0);
+    const facts = JSON.parse(fs.readFileSync(path.join(result[0].package_path, "facts.json"), "utf8"));
+    assert.ok(facts.fit_points.some((point) => point.current.value === 0.01 && point.current.unit === "A" && point.voltage.value === 0.72 && point.voltage.unit === "V"));
+    assert.equal(facts.electrical_limits.reverse_current_5v.value, 2e-6);
+    assert.equal(facts.electrical_limits.reverse_current_5v.unit, "A");
+    assert.equal(validatePackage(result[0].package_path).errors.length, 0, "bulk packages must pass the package validator by construction");
     assert.doesNotMatch(result[0].package_path, /packages\/model-library/);
   } finally {
     fs.rmSync(root, { recursive: true, force: true });
@@ -102,6 +112,21 @@ test("pre-demoted bulk part keeps extraction and p-channel metadata", () => {
   } finally {
     fs.rmSync(root, { recursive: true, force: true });
   }
+});
+
+test("Nexperia ordering suffixes normalize into aliases", () => {
+  const identity = normalizedIdentity({ mpn: "BAS316,115", manufacturer: "Nexperia" });
+  assert.equal(identity.canonical, "BAS316");
+  assert.deepEqual(identity.aliases, ["BAS316,115"]);
+  assert.equal(identity.packageSlug, "BAS316-115");
+});
+
+test("known bare-page evidence is repaired to an explicit page and figure citation", () => {
+  const input = { curves: [{ page_reference: "3" }], specs: { gain: { page_reference: "3" } } };
+  const repaired = repairKnownEvidenceDefects({ mpn: "MMBT2222ALT1G" }, input);
+  assert.equal(repaired.curves[0].page_reference, "p. 3, Figure 3, DC Current Gain");
+  assert.equal(repaired.specs.gain.page_reference, "p. 3, Figure 3, DC Current Gain");
+  assert.equal(input.curves[0].page_reference, "3", "preserved extraction input must not be mutated");
 });
 
 test("bulk manifest validation is strict while legacy registry remains independent", () => {
