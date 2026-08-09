@@ -65,14 +65,14 @@
     "dc_sweep"
   ],
   "supported_operating_region": {
-    "summary": "F1 native-fitted single-Beta resistance model from -40 degC to 85 degC, checked against the manufacturer resistance table.",
+    "summary": "F1 single-Beta resistance model over the cited B25/85 interval, 25 degC to 85 degC, with R0, T0_C, and BETA transcribed directly from the datasheet and checked against the manufacturer resistance table. TEMP_C is an explicit caller-supplied subcircuit parameter.",
     "numeric_bounds": [
       {
         "quantity": "temperature",
-        "minimum": -40,
+        "minimum": 25,
         "maximum": 85,
         "unit": "degC",
-        "conditions": "B25/85 model validation interval",
+        "conditions": "Cited B25/85 interval; the single-Beta law is not claimed outside it",
         "placeholder": false
       },
       {
@@ -86,10 +86,14 @@
     ]
   },
   "known_omissions": [
-    "TEMP_C is caller supplied and self-heating is not simulated.",
-    "A single B-parameter law does not reproduce the full manufacturer polynomial even within the -40 degC to 85 degC interval; the worst table residual is about 15 percent, so the package is capped at F1 and the resistance checks use a documented 16 percent tolerance.",
-    "R25 and B tolerance, dissipation factor, thermal time constant, lead conduction, ageing, and humidity effects are metadata only.",
-    "P5 independent review rejected this package: shipped R0=9.5 kohm and BETA=3947.1725 are fitted values, but the sensor archetype requires direct transcription of the cited 10 kohm R25 and 3977 K B25/85 facts."
+    "TEMP_C is caller supplied. Heat flow, self-heating, and the surrounding thermal environment are not simulated.",
+    "R0, T0_C, and BETA are transcribed directly from the cited datasheet rows and no parameter is fitted, so the model tracks the manufacturer resistance table only as closely as a single B25/85 law allows.",
+    "A single B-parameter law does not reproduce the full Steinhart-Hart curvature of the manufacturer resistance table outside the cited B25/85 interval. The supported region is therefore 25 degC to 85 degC even though the part is rated -40 degC to +125 degC and the resistance table is published from -40 degC to 150 degC.",
+    "R25 tolerance, B25/85 tolerance, dissipation factor, thermal time constant, response time, lead conduction, mounting stress, ageing, humidity, and manufacturing spread are metadata only; no corner models are provided.",
+    "Behaviour outside the cited environmental and electrical bounds is unsupported even though the behavioural expression returns a finite value.",
+    "P5 independent review rejected the previous revision of this package because its shipped R0 = 9.5 kohm and BETA = 3947.1725 were fitted values, while the sensor archetype requires direct transcription of the cited 10 kohm R25 and 3977 K B25/85 facts.",
+    "Refit 2026-08-09 in response to that rejection: R0 = 10 kohm, T0_C = 25 degC, and BETA = 3977 K are now transcribed verbatim from p. 2, the claimed region is narrowed to the cited B25/85 interval, and the benches are re-derived from the p. 10 resistance table at 25 degC, 55 degC, and 85 degC.",
+    "Independent review remains pending-review."
   ],
   "licence": {
     "spdx_id": "MIT",
@@ -100,7 +104,7 @@
     "date": "2026-08-09"
   },
   "reviewer": {
-    "tool_or_agent": "gpt-5.6-sol independent reviewer (P5, rejected)",
+    "tool_or_agent": "pending-review",
     "date": "2026-08-09"
   },
   "test_results": {
@@ -109,8 +113,8 @@
     "fail_count": 0,
     "total_count": 3,
     "worst_observed_relative_fitting_error": {
-      "value": 0.14653898271474636,
-      "quantity": "resistance at -40 degC"
+      "value": 0.011750008982191446,
+      "quantity": "resistance at 55 degC"
     }
   },
   "validation_date": "2026-08-09"
