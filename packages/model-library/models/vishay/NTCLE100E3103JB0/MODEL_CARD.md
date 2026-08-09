@@ -6,7 +6,7 @@
 - Description: 10 kohm radial-leaded NTC thermistor, 5 percent R25 tolerance
 - Electrical family: other
 - Fidelity tier: F1, datasheet-constrained
-- Independent reviewer: pending-review
+- Independent reviewer: gpt-5.6-sol independent reviewer (P6 proving-50), 2026-08-09
 
 ## Provenance
 
@@ -58,7 +58,6 @@ Native and WASM agreement: all 3 benches passed. Worst reported relative delta w
 - Behaviour outside the cited environmental and electrical bounds is unsupported even though the behavioural expression returns a finite value.
 - P5 independent review rejected the previous revision of this package because its shipped R0 = 9.5 kohm and BETA = 3947.1725 were fitted values, while the sensor archetype requires direct transcription of the cited 10 kohm R25 and 3977 K B25/85 facts.
 - Refit 2026-08-09 in response to that rejection: R0 = 10 kohm, T0_C = 25 degC, and BETA = 3977 K are now transcribed verbatim from p. 2, the claimed region is narrowed to the cited B25/85 interval, and the benches are re-derived from the p. 10 resistance table at 25 degC, 55 degC, and 85 degC.
-- Independent review remains pending-review.
 
 ## Licence
 
