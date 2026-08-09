@@ -1,0 +1,52 @@
+{
+  "schema_version": "1.0.0",
+  "fitter": "direct datasheet transcription evaluated with native ngspice-46",
+  "deterministic": true,
+  "parameters": {
+    "R0": 10000,
+    "T0_C": 25,
+    "BETA": 3977
+  },
+  "parameter_metadata": {
+    "R0": {
+      "status": "direct transcription of the cited 10 kohm R25 (p. 2 electrical data and ordering information, 10 000 ohm R25 row)"
+    },
+    "T0_C": {
+      "status": "direct transcription of the cited R25 reference temperature (p. 2 electrical data and ordering information, R25 column heading)"
+    },
+    "BETA": {
+      "status": "direct transcription of the cited 3977 K B25/85 (p. 2 electrical data and ordering information, B25/85 column of the 10 000 ohm row)"
+    }
+  },
+  "optimizer": null,
+  "residuals": [
+    {
+      "quantity": "resistance at 25 degC",
+      "datasheet_value": 10000,
+      "fitted_value": 10000,
+      "unit": "ohm",
+      "relative_error": 0,
+      "citation": "p. 10 NTCLE100E3103 resistance column"
+    },
+    {
+      "quantity": "resistance at 55 degC",
+      "datasheet_value": 2989,
+      "fitted_value": 2953.8792231522298,
+      "unit": "ohm",
+      "relative_error": 0.011750008982191446,
+      "citation": "p. 10 NTCLE100E3103 resistance column"
+    },
+    {
+      "quantity": "resistance at 85 degC",
+      "datasheet_value": 1070,
+      "fitted_value": 1070.309272032671,
+      "unit": "ohm",
+      "relative_error": 0.00028903928287015,
+      "citation": "p. 10 NTCLE100E3103 resistance column"
+    }
+  ],
+  "worst_relative_error": {
+    "value": 0.011750008982191446,
+    "quantity": "resistance at 55 degC"
+  }
+}

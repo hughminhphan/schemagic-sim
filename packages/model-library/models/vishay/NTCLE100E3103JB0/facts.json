@@ -1,0 +1,146 @@
+{
+  "schema_version": "1.0.0",
+  "extraction_method": "pdftotext -layout plus manual table transcription",
+  "sensor_variant": "beta_ntc",
+  "fit_conditions": {
+    "temperature": {
+      "value": 25,
+      "unit": "degC",
+      "conditions": "R25 reference condition",
+      "page_reference": "p. 2 electrical data table",
+      "source_kind": "typical"
+    }
+  },
+  "transfer_points": [
+    {
+      "environment": {
+        "value": 25,
+        "unit": "degC",
+        "conditions": "R25 reference, lower end of the cited B25/85 interval",
+        "page_reference": "p. 10 NTCLE100E3103 resistance column",
+        "source_kind": "typical_table"
+      },
+      "electrical": {
+        "value": 10000,
+        "unit": "ohm",
+        "conditions": "zero-power resistance at 25 degC",
+        "page_reference": "p. 10 NTCLE100E3103 resistance column",
+        "source_kind": "typical_table"
+      }
+    },
+    {
+      "environment": {
+        "value": 55,
+        "unit": "degC",
+        "conditions": "mid-interval zero-power resistance table row",
+        "page_reference": "p. 10 NTCLE100E3103 resistance column",
+        "source_kind": "typical_table"
+      },
+      "electrical": {
+        "value": 2989,
+        "unit": "ohm",
+        "conditions": "zero-power resistance at 55 degC",
+        "page_reference": "p. 10 NTCLE100E3103 resistance column",
+        "source_kind": "typical_table"
+      }
+    },
+    {
+      "environment": {
+        "value": 85,
+        "unit": "degC",
+        "conditions": "upper end of the cited B25/85 interval",
+        "page_reference": "p. 10 NTCLE100E3103 resistance column",
+        "source_kind": "typical_table"
+      },
+      "electrical": {
+        "value": 1070,
+        "unit": "ohm",
+        "conditions": "zero-power resistance at 85 degC",
+        "page_reference": "p. 10 NTCLE100E3103 resistance column",
+        "source_kind": "typical_table"
+      }
+    }
+  ],
+  "parameters": {
+    "nominal_resistance": {
+      "value": 10000,
+      "unit": "ohm",
+      "conditions": "R25 at 25 degC, transcribed without adjustment",
+      "page_reference": "p. 2 electrical data and ordering information, 10 000 ohm R25 row",
+      "source_kind": "typical"
+    },
+    "reference_temperature": {
+      "value": 25,
+      "unit": "degC",
+      "conditions": "R25 reference temperature, transcribed without adjustment",
+      "page_reference": "p. 2 electrical data and ordering information, R25 column heading",
+      "source_kind": "typical"
+    },
+    "beta": {
+      "value": 3977,
+      "unit": "K",
+      "conditions": "B25/85, transcribed without adjustment",
+      "page_reference": "p. 2 electrical data and ordering information, B25/85 column of the 10 000 ohm row",
+      "source_kind": "typical"
+    },
+    "beta_interval_minimum": {
+      "value": 25,
+      "unit": "degC",
+      "conditions": "lower temperature defining the cited B25/85 value",
+      "page_reference": "p. 2 electrical data and ordering information, B25/85 column heading",
+      "source_kind": "typical"
+    },
+    "beta_interval_maximum": {
+      "value": 85,
+      "unit": "degC",
+      "conditions": "upper temperature defining the cited B25/85 value",
+      "page_reference": "p. 2 electrical data and ordering information, B25/85 column heading",
+      "source_kind": "typical"
+    },
+    "resistance_tolerance": {
+      "value": 5,
+      "unit": "%",
+      "conditions": "ordering-code J tolerance on R25",
+      "page_reference": "p. 2 electrical data and ordering information, 10 000 ohm R25-TOL column with note (1) J = 5 percent",
+      "source_kind": "maximum"
+    },
+    "beta_tolerance": {
+      "value": 0.75,
+      "unit": "%",
+      "conditions": "B25/85 tolerance of the 10 000 ohm row",
+      "page_reference": "p. 2 electrical data and ordering information, B25/85-TOL column of the 10 000 ohm row",
+      "source_kind": "maximum"
+    },
+    "operating_temperature_minimum": {
+      "value": -40,
+      "unit": "degC",
+      "conditions": "device rating at zero power dissipation, continuous; wider than the modelled region",
+      "page_reference": "p. 1 quick reference data operating temperature range",
+      "source_kind": "minimum"
+    },
+    "operating_temperature_maximum": {
+      "value": 125,
+      "unit": "degC",
+      "conditions": "device rating at zero power dissipation, continuous; wider than the modelled region",
+      "page_reference": "p. 1 quick reference data operating temperature range",
+      "source_kind": "maximum"
+    }
+  },
+  "identity": {
+    "canonical_mpn": "NTCLE100E3103JB0",
+    "manufacturer": "Vishay BCcomponents",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://www.vishay.com/docs/29049/ntcle100.pdf",
+    "revision": "Document 29049, revision 07-May-2025",
+    "sha256": "7a6b1228e4464d61dd4e2774db871c44cefb5b2353c1b1179330004c4562af69",
+    "accessed_date": "2026-08-09",
+    "pages_referenced": [
+      "p. 2",
+      "p. 10"
+    ],
+    "placeholder": false
+  }
+}

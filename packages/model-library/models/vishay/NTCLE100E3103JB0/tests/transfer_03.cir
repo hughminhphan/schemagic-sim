@@ -1,0 +1,18 @@
+OpenCircuit factory test: NTCLE100E3103JB0 transfer at 85 degC
+* OpenCircuit Model Factory v0.1.0
+* Original work generated from public factual specifications.
+* This model is not a copy of, or adaptation from, any vendor SPICE model.
+* Source: https://www.vishay.com/docs/29049/ntcle100.pdf
+* Revision: Document 29049, revision 07-May-2025
+* Archetype: sensor_behavioral B-parameter NTC
+* Node order: P N
+.subckt OC_VISHAY_NTCLE100E3103JB0 P N params: TEMP_C=25
+.param R0=1.0000000000e4 T0_C=2.5000000000e1 BETA=3.9770000000e3
+RNTC P N R={max(R0*exp(BETA*(1/(TEMP_C+273.15)-1/(T0_C+273.15))),1e-4)}
+.ends OC_VISHAY_NTCLE100E3103JB0
+
+ITEST 0 sense DC 1u
+X1 sense 0 OC_VISHAY_NTCLE100E3103JB0 TEMP_C=8.5000000000e1
+RALL all 0 1G
+.op
+.end

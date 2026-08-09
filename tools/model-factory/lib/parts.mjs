@@ -2396,22 +2396,34 @@ Object.assign(PARTS, {
       schema_version: "1.0.0", extraction_method: "pdftotext -layout plus manual table transcription", sensor_variant: "beta_ntc",
       fit_conditions: { temperature: quantity(25, "degC", "R25 reference condition", "p. 2 electrical data table", "typical") },
       transfer_points: [
-        { environment: quantity(-40, "degC", "zero-power resistance table", "p. 10 NTCLE100E3103 resistance column", "typical_table"), electrical: quantity(332094, "ohm", "zero-power resistance at -40 degC", "p. 10 NTCLE100E3103 resistance column", "typical_table") },
-        { environment: quantity(25, "degC", "R25 reference", "p. 10 NTCLE100E3103 resistance column", "typical_table"), electrical: quantity(10000, "ohm", "zero-power resistance at 25 degC", "p. 10 NTCLE100E3103 resistance column", "typical_table") },
-        { environment: quantity(85, "degC", "zero-power resistance table", "p. 10 NTCLE100E3103 resistance column", "typical_table"), electrical: quantity(1070, "ohm", "zero-power resistance at 85 degC", "p. 10 NTCLE100E3103 resistance column", "typical_table") }
+        { environment: quantity(25, "degC", "R25 reference, lower end of the cited B25/85 interval", "p. 10 NTCLE100E3103 resistance column", "typical_table"), electrical: quantity(10000, "ohm", "zero-power resistance at 25 degC", "p. 10 NTCLE100E3103 resistance column", "typical_table") },
+        { environment: quantity(55, "degC", "mid-interval zero-power resistance table row", "p. 10 NTCLE100E3103 resistance column", "typical_table"), electrical: quantity(2989, "ohm", "zero-power resistance at 55 degC", "p. 10 NTCLE100E3103 resistance column", "typical_table") },
+        { environment: quantity(85, "degC", "upper end of the cited B25/85 interval", "p. 10 NTCLE100E3103 resistance column", "typical_table"), electrical: quantity(1070, "ohm", "zero-power resistance at 85 degC", "p. 10 NTCLE100E3103 resistance column", "typical_table") }
       ],
       parameters: {
-        nominal_resistance: quantity(10000, "ohm", "at 25 degC", "p. 2 R25 table, 103 row", "typical"),
-        reference_temperature: quantity(25, "degC", "R25 reference", "p. 2 R25 table heading", "typical"),
-        beta: quantity(3977, "K", "B25/85", "p. 2 B25/85 table, 103 row", "typical"),
-        resistance_tolerance: quantity(5, "%", "ordering-code J tolerance", "p. 1 tolerance range and part-number structure", "maximum"),
-        beta_tolerance: quantity(0.75, "%", "B25/85", "p. 2 B25/85 tolerance, 103 row", "maximum")
+        nominal_resistance: quantity(10000, "ohm", "R25 at 25 degC, transcribed without adjustment", "p. 2 electrical data and ordering information, 10 000 ohm R25 row", "typical"),
+        reference_temperature: quantity(25, "degC", "R25 reference temperature, transcribed without adjustment", "p. 2 electrical data and ordering information, R25 column heading", "typical"),
+        beta: quantity(3977, "K", "B25/85, transcribed without adjustment", "p. 2 electrical data and ordering information, B25/85 column of the 10 000 ohm row", "typical"),
+        beta_interval_minimum: quantity(25, "degC", "lower temperature defining the cited B25/85 value", "p. 2 electrical data and ordering information, B25/85 column heading", "typical"),
+        beta_interval_maximum: quantity(85, "degC", "upper temperature defining the cited B25/85 value", "p. 2 electrical data and ordering information, B25/85 column heading", "typical"),
+        resistance_tolerance: quantity(5, "%", "ordering-code J tolerance on R25", "p. 2 electrical data and ordering information, 10 000 ohm R25-TOL column with note (1) J = 5 percent", "maximum"),
+        beta_tolerance: quantity(0.75, "%", "B25/85 tolerance of the 10 000 ohm row", "p. 2 electrical data and ordering information, B25/85-TOL column of the 10 000 ohm row", "maximum"),
+        operating_temperature_minimum: quantity(-40, "degC", "device rating at zero power dissipation, continuous; wider than the modelled region", "p. 1 quick reference data operating temperature range", "minimum"),
+        operating_temperature_maximum: quantity(125, "degC", "device rating at zero power dissipation, continuous; wider than the modelled region", "p. 1 quick reference data operating temperature range", "maximum")
       }
     },
-    component: sensorComponent({ modelName: "OC_VISHAY_NTCLE100E3103JB0", fidelity: "F1", summary: "F1 native-fitted single-Beta resistance model from -40 degC to 85 degC, checked against the manufacturer resistance table.", bounds: [
-      { quantity: "temperature", minimum: -40, maximum: 85, unit: "degC", conditions: "B25/85 model validation interval", placeholder: false },
+    component: sensorComponent({ modelName: "OC_VISHAY_NTCLE100E3103JB0", fidelity: "F1", summary: "F1 single-Beta resistance model over the cited B25/85 interval, 25 degC to 85 degC, with R0, T0_C, and BETA transcribed directly from the datasheet and checked against the manufacturer resistance table. TEMP_C is an explicit caller-supplied subcircuit parameter.", bounds: [
+      { quantity: "temperature", minimum: 25, maximum: 85, unit: "degC", conditions: "Cited B25/85 interval; the single-Beta law is not claimed outside it", placeholder: false },
       { quantity: "dissipated_power", minimum: 0, maximum: 0.001, unit: "W", conditions: "Validation benches use 1 uA to keep self-heating negligible", placeholder: false }
-    ], omissions: ["TEMP_C is caller supplied and self-heating is not simulated.", "A single B-parameter law does not reproduce the full manufacturer polynomial even within the -40 degC to 85 degC interval; the worst table residual is about 15 percent, so the package is capped at F1 and the resistance checks use a documented 16 percent tolerance.", "R25 and B tolerance, dissipation factor, thermal time constant, lead conduction, ageing, and humidity effects are metadata only."] })
+    ], omissions: [
+      "TEMP_C is caller supplied. Heat flow, self-heating, and the surrounding thermal environment are not simulated.",
+      "R0, T0_C, and BETA are transcribed directly from the cited datasheet rows and no parameter is fitted, so the model tracks the manufacturer resistance table only as closely as a single B25/85 law allows.",
+      "A single B-parameter law does not reproduce the full Steinhart-Hart curvature of the manufacturer resistance table outside the cited B25/85 interval. The supported region is therefore 25 degC to 85 degC even though the part is rated -40 degC to +125 degC and the resistance table is published from -40 degC to 150 degC.",
+      "R25 tolerance, B25/85 tolerance, dissipation factor, thermal time constant, response time, lead conduction, mounting stress, ageing, humidity, and manufacturing spread are metadata only; no corner models are provided.",
+      "Behaviour outside the cited environmental and electrical bounds is unsupported even though the behavioural expression returns a finite value.",
+      "P5 independent review rejected the previous revision of this package because its shipped R0 = 9.5 kohm and BETA = 3947.1725 were fitted values, while the sensor archetype requires direct transcription of the cited 10 kohm R25 and 3977 K B25/85 facts.",
+      "Refit 2026-08-09 in response to that rejection: R0 = 10 kohm, T0_C = 25 degC, and BETA = 3977 K are now transcribed verbatim from p. 2, the claimed region is narrowed to the cited B25/85 interval, and the benches are re-derived from the p. 10 resistance table at 25 degC, 55 degC, and 85 degC."
+    ] })
   },
   GL5528: {
     slug: "GL5528", manufacturerSlug: "senba", pipeline: "sensor_behavioral",
