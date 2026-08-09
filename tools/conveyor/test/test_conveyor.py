@@ -53,6 +53,20 @@ class StateMachineTest(unittest.TestCase):
             store.close()
 
 
+    def test_failed_fit_can_be_retried_to_staged(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            store = StateStore(Path(temporary) / "state.sqlite3")
+            parts = [{"lcsc_id": "C1", "mpn": "D1", "manufacturer": "Fixture", "conveyor_family": "diode"}]
+            store.seed("t", parts)
+            store.transition("t", "C1", "datasheet_fetched", datasheet_path="datasheets/D1.pdf")
+            store.transition("t", "C1", "extracted", extraction_path="extractions/D1.json")
+            store.transition("t", "C1", "failed_fitted", reason="package validation failed")
+            store.transition("t", "C1", "staged", fidelity="F1", package_path="packages/fixture/D1")
+            row = store.get("t", "C1")
+            self.assertEqual(row["state"], "staged")
+            self.assertEqual(row["fidelity"], "F1")
+            store.close()
+
     def test_staged_package_can_be_refreshed_without_rewinding_state(self):
         with tempfile.TemporaryDirectory() as temporary:
             store = StateStore(Path(temporary) / "state.sqlite3")

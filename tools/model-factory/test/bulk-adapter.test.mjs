@@ -94,6 +94,31 @@ test("staged Zener facts preserve the cited breakdown model inputs", () => {
   }
 });
 
+test("F1 diode calibration honors SI units and a cited maximum at 25 C", () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "factory-diode-f1-test-"));
+  try {
+    const pdf = path.join(root, "datasheet.pdf");
+    fs.writeFileSync(pdf, "%PDF-1.7\nfixture\n");
+    const maximum = extraction();
+    maximum.usable_curves = false;
+    maximum.curves = [];
+    maximum.omission_reason = "no part-specific curve";
+    maximum.specs.forward_voltage_points = [{
+      current: { ...quantity(5, "A"), source_kind: "maximum" },
+      voltage: { ...quantity(550, "mV"), source_kind: "maximum" },
+    }];
+    const extractionPath = path.join(root, "extraction.json");
+    fs.writeFileSync(extractionPath, JSON.stringify(maximum));
+    const manifestPath = path.join(root, "batch.json");
+    fs.writeFileSync(manifestPath, JSON.stringify({ schema_version: "1.0.0", kind: "opencircuit-conveyor-batch", parts: [{ ...diodePart(pdf), extraction_path: extractionPath, force_f1: true }] }));
+    const result = runBulkManifest(manifestPath, path.join(root, "staging"), { ngspiceRunner: () => ({ pass: true }) });
+    assert.equal(result[0].status, "staged", JSON.stringify(result[0]));
+    assert.equal(result[0].fidelity, "F1");
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+});
+
 test("bulk manifest accepts external datasheet and seed paths and stages pending-review", () => {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "factory-bulk-test-"));
   try {

@@ -15,6 +15,7 @@ const safe = (value) => String(value).trim().replace(/[^A-Za-z0-9._-]+/g, "-").r
 const slugManufacturer = (value) => safe(String(value).toLowerCase().replace(/\b(technologies|technology|semiconductor|semiconductors|incorporated|inc|corp|corporation|intertechnology)\b/g, "").trim());
 const number = (value, fallback) => Number.isFinite(Number(value)) ? Number(value) : fallback;
 const fmt = (value) => Number(value).toExponential(10).replace("e+", "e");
+const NGSPICE_VT_25C = 8.617333262e-5 * 298.15;
 
 function sha256(file) {
   return crypto.createHash("sha256").update(fs.readFileSync(file)).digest("hex");
@@ -60,7 +61,13 @@ function diodeFit(part, extraction, forceF1 = false) {
   const vf = voltage?.unit === "V" ? Number(voltage.value) : hintNumber(part, "diode.forward_voltage", 0.7);
   const current = forwardCurrent?.unit === "A" ? Number(forwardCurrent.value) : 0.01;
   const N = /schottky/i.test(`${part.subcategory} ${part.description}`) ? 1.1 : 1.8;
-  return { fidelity: "F1", parameters: { IS: current / Math.exp(vf / (N * 0.025852)), N, RS: 1e-4 }, worst: null, points: [] };
+  const RS = 1e-4;
+  const maximum = scalarPoint?.voltage?.source_kind === "maximum";
+  const calibrationCurrent = maximum ? current * 0.95 : current;
+  const calibrationVoltage = maximum ? vf * 0.98 : vf;
+  const junctionVoltage = Math.max(NGSPICE_VT_25C, calibrationVoltage - calibrationCurrent * RS);
+  const IS = calibrationCurrent / Math.expm1(junctionVoltage / (N * NGSPICE_VT_25C));
+  return { fidelity: "F1", parameters: { IS, N, RS }, worst: null, points: [] };
 }
 
 function bjtFit(part, extraction, forceF1 = false) {

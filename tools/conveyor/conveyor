@@ -215,7 +215,9 @@ def fit_command(args) -> int:
             row = store.get(tranche, part["lcsc_id"])
             if row["state"] == "staged" and not args.regenerate_staged:
                 continue
-            if row["state"] not in {"extracted", "fitted", "staged"}:
+            if row["state"] == "failed_fitted" and str(row["reason"] or "").startswith("selection skipped:"):
+                continue
+            if row["state"] not in {"extracted", "fitted", "failed_fitted", "staged"}:
                 continue
             extraction_path = staging / row["extraction_path"] if row["extraction_path"] else None
             f2_candidate = row["fidelity"] != "F1" and part["conveyor_family"] not in parked
