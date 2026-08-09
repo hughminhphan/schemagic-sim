@@ -1,0 +1,591 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "schema_version": "1.0.0",
+    "mpn": "BC817-40,215",
+    "manufacturer": "Nexperia",
+    "family": "bjt",
+    "datasheet_identity": {
+      "title": "BC817 series, 45 V, 500 mA NPN general-purpose transistors",
+      "revision": "Rev. 8 - 1 July 2022",
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3",
+        "p. 4",
+        "p. 5",
+        "p. 6",
+        "p. 7",
+        "p. 8",
+        "p. 9",
+        "p. 10",
+        "p. 11",
+        "p. 12",
+        "p. 13"
+      ]
+    },
+    "usable_curves": true,
+    "curves": [
+      {
+        "name": "BC817-40 DC current gain as a function of collector current",
+        "x_axis": {
+          "quantity": "collector current (I_C)",
+          "unit": "A",
+          "scale": "log"
+        },
+        "y_axis": {
+          "quantity": "DC current gain (h_FE)",
+          "unit": "1",
+          "scale": "linear"
+        },
+        "test_conditions": "VCE = 1 V, Tamb = 25 degC; typical curve (2), approximate manual digitization",
+        "page_reference": "p. 8, Fig. 12",
+        "points": [
+          {
+            "x": 0.0001,
+            "y": 375
+          },
+          {
+            "x": 0.001,
+            "y": 375
+          },
+          {
+            "x": 0.01,
+            "y": 370
+          },
+          {
+            "x": 0.1,
+            "y": 350
+          },
+          {
+            "x": 0.5,
+            "y": 120
+          }
+        ]
+      },
+      {
+        "name": "BC817-40 base-emitter saturation voltage as a function of collector current",
+        "x_axis": {
+          "quantity": "collector current (I_C)",
+          "unit": "A",
+          "scale": "log"
+        },
+        "y_axis": {
+          "quantity": "base-emitter saturation voltage (V_BE(sat))",
+          "unit": "V",
+          "scale": "log"
+        },
+        "test_conditions": "IC/IB = 10, Tamb = 25 degC; typical curve (2), approximate manual digitization",
+        "page_reference": "p. 8, Fig. 13",
+        "points": [
+          {
+            "x": 0.0001,
+            "y": 0.72
+          },
+          {
+            "x": 0.001,
+            "y": 0.74
+          },
+          {
+            "x": 0.01,
+            "y": 0.76
+          },
+          {
+            "x": 0.1,
+            "y": 0.86
+          },
+          {
+            "x": 0.5,
+            "y": 1
+          }
+        ]
+      },
+      {
+        "name": "BC817-40 collector-emitter saturation voltage as a function of collector current",
+        "x_axis": {
+          "quantity": "collector current (I_C)",
+          "unit": "A",
+          "scale": "log"
+        },
+        "y_axis": {
+          "quantity": "collector-emitter saturation voltage (V_CE(sat))",
+          "unit": "V",
+          "scale": "log"
+        },
+        "test_conditions": "IC/IB = 10, Tamb = 25 degC; typical curve (2), approximate manual digitization",
+        "page_reference": "p. 8, Fig. 14",
+        "points": [
+          {
+            "x": 0.001,
+            "y": 0.008
+          },
+          {
+            "x": 0.01,
+            "y": 0.011
+          },
+          {
+            "x": 0.1,
+            "y": 0.045
+          },
+          {
+            "x": 0.5,
+            "y": 0.22
+          }
+        ]
+      },
+      {
+        "name": "BC817-40 collector current as a function of collector-emitter voltage",
+        "x_axis": {
+          "quantity": "collector-emitter voltage (V_CE)",
+          "unit": "V",
+          "scale": "linear"
+        },
+        "y_axis": {
+          "quantity": "collector current (I_C)",
+          "unit": "A",
+          "scale": "linear"
+        },
+        "test_conditions": "Tamb = 25 degC; typical curve (1), IB = 6.0 mA, approximate manual digitization",
+        "page_reference": "p. 8, Fig. 15",
+        "points": [
+          {
+            "x": 0.5,
+            "y": 0.75
+          },
+          {
+            "x": 2.5,
+            "y": 0.88
+          },
+          {
+            "x": 5,
+            "y": 0.96
+          }
+        ]
+      }
+    ],
+    "specs": {
+      "polarity": "npn",
+      "gain_points": [
+        {
+          "collector_current": {
+            "value": 0.0001,
+            "unit": "A",
+            "conditions": "VCE = 1 V, IC = 0.1 mA, Tamb = 25 degC; typical curve (2)",
+            "page_reference": "p. 8, Fig. 12, digitized",
+            "source_kind": "digitized_typical_curve"
+          },
+          "vce": {
+            "value": 1,
+            "unit": "V",
+            "conditions": "IC = 0.1 mA, Tamb = 25 degC; typical curve (2)",
+            "page_reference": "p. 8, Fig. 12",
+            "source_kind": "digitized_typical_curve"
+          },
+          "hfe": {
+            "value": 375,
+            "unit": "1",
+            "conditions": "IC = 0.1 mA, VCE = 1 V, Tamb = 25 degC; typical curve (2)",
+            "page_reference": "p. 8, Fig. 12, digitized",
+            "source_kind": "digitized_typical_curve"
+          }
+        },
+        {
+          "collector_current": {
+            "value": 0.001,
+            "unit": "A",
+            "conditions": "VCE = 1 V, IC = 1 mA, Tamb = 25 degC; typical curve (2)",
+            "page_reference": "p. 8, Fig. 12, digitized",
+            "source_kind": "digitized_typical_curve"
+          },
+          "vce": {
+            "value": 1,
+            "unit": "V",
+            "conditions": "IC = 1 mA, Tamb = 25 degC; typical curve (2)",
+            "page_reference": "p. 8, Fig. 12",
+            "source_kind": "digitized_typical_curve"
+          },
+          "hfe": {
+            "value": 375,
+            "unit": "1",
+            "conditions": "IC = 1 mA, VCE = 1 V, Tamb = 25 degC; typical curve (2)",
+            "page_reference": "p. 8, Fig. 12, digitized",
+            "source_kind": "digitized_typical_curve"
+          }
+        },
+        {
+          "collector_current": {
+            "value": 0.01,
+            "unit": "A",
+            "conditions": "VCE = 1 V, IC = 10 mA, Tamb = 25 degC; typical curve (2)",
+            "page_reference": "p. 8, Fig. 12, digitized",
+            "source_kind": "digitized_typical_curve"
+          },
+          "vce": {
+            "value": 1,
+            "unit": "V",
+            "conditions": "IC = 10 mA, Tamb = 25 degC; typical curve (2)",
+            "page_reference": "p. 8, Fig. 12",
+            "source_kind": "digitized_typical_curve"
+          },
+          "hfe": {
+            "value": 370,
+            "unit": "1",
+            "conditions": "IC = 10 mA, VCE = 1 V, Tamb = 25 degC; typical curve (2)",
+            "page_reference": "p. 8, Fig. 12, digitized",
+            "source_kind": "digitized_typical_curve"
+          }
+        },
+        {
+          "collector_current": {
+            "value": 0.1,
+            "unit": "A",
+            "conditions": "VCE = 1 V, IC = 100 mA, Tamb = 25 degC; typical curve (2)",
+            "page_reference": "p. 8, Fig. 12, digitized",
+            "source_kind": "digitized_typical_curve"
+          },
+          "vce": {
+            "value": 1,
+            "unit": "V",
+            "conditions": "IC = 100 mA, Tamb = 25 degC; typical curve (2)",
+            "page_reference": "p. 8, Fig. 12",
+            "source_kind": "digitized_typical_curve"
+          },
+          "hfe": {
+            "value": 350,
+            "unit": "1",
+            "conditions": "IC = 100 mA, VCE = 1 V, Tamb = 25 degC; typical curve (2)",
+            "page_reference": "p. 8, Fig. 12, digitized",
+            "source_kind": "digitized_typical_curve"
+          }
+        },
+        {
+          "collector_current": {
+            "value": 0.5,
+            "unit": "A",
+            "conditions": "VCE = 1 V, IC = 500 mA, Tamb = 25 degC; typical curve (2)",
+            "page_reference": "p. 8, Fig. 12, digitized",
+            "source_kind": "digitized_typical_curve"
+          },
+          "vce": {
+            "value": 1,
+            "unit": "V",
+            "conditions": "IC = 500 mA, Tamb = 25 degC; typical curve (2)",
+            "page_reference": "p. 8, Fig. 12",
+            "source_kind": "digitized_typical_curve"
+          },
+          "hfe": {
+            "value": 120,
+            "unit": "1",
+            "conditions": "IC = 500 mA, VCE = 1 V, Tamb = 25 degC; typical curve (2)",
+            "page_reference": "p. 8, Fig. 12, digitized",
+            "source_kind": "digitized_typical_curve"
+          }
+        },
+        {
+          "collector_current": {
+            "value": 0.1,
+            "unit": "A",
+            "conditions": "VCE = 1 V, IC = 100 mA, Tamb = 25 degC; pulsed, tp <= 300 us, delta <= 0.02",
+            "page_reference": "p. 5, Table 8, hFE BC817-40 row",
+            "source_kind": "typical"
+          },
+          "vce": {
+            "value": 1,
+            "unit": "V",
+            "conditions": "IC = 100 mA, Tamb = 25 degC; pulsed, tp <= 300 us, delta <= 0.02",
+            "page_reference": "p. 5, Table 8, hFE conditions",
+            "source_kind": "typical"
+          },
+          "hfe": {
+            "value": 250,
+            "unit": "1",
+            "conditions": "IC = 100 mA, VCE = 1 V, Tamb = 25 degC; pulsed, tp <= 300 us, delta <= 0.02",
+            "page_reference": "p. 5, Table 8, hFE BC817-40 row",
+            "source_kind": "minimum"
+          }
+        },
+        {
+          "collector_current": {
+            "value": 0.1,
+            "unit": "A",
+            "conditions": "VCE = 1 V, IC = 100 mA, Tamb = 25 degC; pulsed, tp <= 300 us, delta <= 0.02",
+            "page_reference": "p. 5, Table 8, hFE BC817-40 row",
+            "source_kind": "typical"
+          },
+          "vce": {
+            "value": 1,
+            "unit": "V",
+            "conditions": "IC = 100 mA, Tamb = 25 degC; pulsed, tp <= 300 us, delta <= 0.02",
+            "page_reference": "p. 5, Table 8, hFE conditions",
+            "source_kind": "typical"
+          },
+          "hfe": {
+            "value": 600,
+            "unit": "1",
+            "conditions": "IC = 100 mA, VCE = 1 V, Tamb = 25 degC; pulsed, tp <= 300 us, delta <= 0.02",
+            "page_reference": "p. 5, Table 8, hFE BC817-40 row",
+            "source_kind": "maximum"
+          }
+        },
+        {
+          "collector_current": {
+            "value": 0.5,
+            "unit": "A",
+            "conditions": "VCE = 1 V, IC = 500 mA, Tamb = 25 degC; pulsed, tp <= 300 us, delta <= 0.02",
+            "page_reference": "p. 5, Table 8, hFE row",
+            "source_kind": "typical"
+          },
+          "vce": {
+            "value": 1,
+            "unit": "V",
+            "conditions": "IC = 500 mA, Tamb = 25 degC; pulsed, tp <= 300 us, delta <= 0.02",
+            "page_reference": "p. 5, Table 8, hFE conditions",
+            "source_kind": "typical"
+          },
+          "hfe": {
+            "value": 40,
+            "unit": "1",
+            "conditions": "IC = 500 mA, VCE = 1 V, Tamb = 25 degC; pulsed, tp <= 300 us, delta <= 0.02",
+            "page_reference": "p. 5, Table 8, hFE row",
+            "source_kind": "minimum"
+          }
+        }
+      ],
+      "saturation_points": [
+        {
+          "collector_current": {
+            "value": 0.01,
+            "unit": "A",
+            "conditions": "IB = 1 mA, IC/IB = 10, Tamb = 25 degC; typical curve (2)",
+            "page_reference": "p. 8, Fig. 13 and Fig. 14, digitized",
+            "source_kind": "digitized_typical_curve"
+          },
+          "base_current": {
+            "value": 0.001,
+            "unit": "A",
+            "conditions": "IC = 10 mA, IC/IB = 10, Tamb = 25 degC; typical curve (2)",
+            "page_reference": "p. 8, Fig. 13 and Fig. 14",
+            "source_kind": "digitized_typical_curve"
+          },
+          "vce_sat": {
+            "value": 0.011,
+            "unit": "V",
+            "conditions": "IC = 10 mA, IB = 1 mA, IC/IB = 10, Tamb = 25 degC; typical curve (2)",
+            "page_reference": "p. 8, Fig. 14, digitized",
+            "source_kind": "digitized_typical_curve"
+          },
+          "vbe_sat": {
+            "value": 0.76,
+            "unit": "V",
+            "conditions": "IC = 10 mA, IB = 1 mA, IC/IB = 10, Tamb = 25 degC; typical curve (2)",
+            "page_reference": "p. 8, Fig. 13, digitized",
+            "source_kind": "digitized_typical_curve"
+          }
+        },
+        {
+          "collector_current": {
+            "value": 0.1,
+            "unit": "A",
+            "conditions": "IB = 10 mA, IC/IB = 10, Tamb = 25 degC; typical curve (2)",
+            "page_reference": "p. 8, Fig. 13 and Fig. 14, digitized",
+            "source_kind": "digitized_typical_curve"
+          },
+          "base_current": {
+            "value": 0.01,
+            "unit": "A",
+            "conditions": "IC = 100 mA, IC/IB = 10, Tamb = 25 degC; typical curve (2)",
+            "page_reference": "p. 8, Fig. 13 and Fig. 14",
+            "source_kind": "digitized_typical_curve"
+          },
+          "vce_sat": {
+            "value": 0.045,
+            "unit": "V",
+            "conditions": "IC = 100 mA, IB = 10 mA, IC/IB = 10, Tamb = 25 degC; typical curve (2)",
+            "page_reference": "p. 8, Fig. 14, digitized",
+            "source_kind": "digitized_typical_curve"
+          },
+          "vbe_sat": {
+            "value": 0.86,
+            "unit": "V",
+            "conditions": "IC = 100 mA, IB = 10 mA, IC/IB = 10, Tamb = 25 degC; typical curve (2)",
+            "page_reference": "p. 8, Fig. 13, digitized",
+            "source_kind": "digitized_typical_curve"
+          }
+        },
+        {
+          "collector_current": {
+            "value": 0.5,
+            "unit": "A",
+            "conditions": "IB = 50 mA, IC = 500 mA, Tamb = 25 degC; pulsed, tp <= 300 us, delta <= 0.02",
+            "page_reference": "p. 5, Table 8, VCEsat row",
+            "source_kind": "typical"
+          },
+          "base_current": {
+            "value": 0.05,
+            "unit": "A",
+            "conditions": "IC = 500 mA, Tamb = 25 degC; pulsed, tp <= 300 us, delta <= 0.02",
+            "page_reference": "p. 5, Table 8, VCEsat row",
+            "source_kind": "typical"
+          },
+          "vce_sat": {
+            "value": 0.7,
+            "unit": "V",
+            "conditions": "IC = 500 mA, IB = 50 mA, Tamb = 25 degC; pulsed, tp <= 300 us, delta <= 0.02",
+            "page_reference": "p. 5, Table 8, VCEsat row",
+            "source_kind": "maximum"
+          },
+          "vbe_sat": null
+        }
+      ],
+      "ft": {
+        "value": 100000000,
+        "unit": "Hz",
+        "conditions": "VCE = 5 V, IC = 10 mA, f = 100 MHz, Tamb = 25 degC",
+        "page_reference": "p. 5, Table 8, fT row",
+        "source_kind": "minimum"
+      },
+      "cobo": {
+        "value": 3e-12,
+        "unit": "F",
+        "conditions": "VCB = 10 V, IE = 0 A, f = 1 MHz, Tamb = 25 degC",
+        "page_reference": "p. 5, Table 8, Cc row",
+        "source_kind": "typical"
+      },
+      "cibo": null,
+      "vceo": {
+        "value": 45,
+        "unit": "V",
+        "conditions": "IC = 10 mA, IE = 0 A, Tamb = 25 degC",
+        "page_reference": "p. 5, Table 8, V(BR)CEO row",
+        "source_kind": "minimum"
+      }
+    },
+    "extraction_notes": [
+      "The supplied datasheet covers the BC817-40 selection; the requested ordering MPN is BC817-40,215 in SOT23/TO-236AB.",
+      "The BC817-40 electrical table publishes hFE = 250 minimum and 600 maximum at IC = 100 mA, plus hFE = 40 minimum at IC = 500 mA; these guaranteed bounds are preserved and are not converted into typical values.",
+      "The Fig. 12, Fig. 13, and Fig. 14 25 degC typical curves were manually digitized at sparse points. The plotted VBE(sat) and VCE(sat) curves use IC/IB = 10.",
+      "The Fig. 15 output-characteristics curve was sampled for the IB = 6.0 mA trace at three VCE values; it is typical data at Tamb = 25 degC.",
+      "No tabulated VBE(on), VBE(sat), or input-capacitance Cibo row is published. VBE(sat) is represented by the digitized Fig. 13 curve, and the 500 mA table saturation point therefore has vbe_sat = null.",
+      "The fT entry is a guaranteed minimum and the collector capacitance Cc entry is typical; source kinds are preserved rather than converted into typical estimates."
+    ],
+    "omission_reason": "Cibo and tabulated VBE(on) are absent from the supplied datasheet. The output curve is only sparsely sampled, and all digitized curve values are approximate typical readings; no additional precision is implied."
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "DC Current Gain",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "bjt.dc_current_gain",
+      "raw_value": "250",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "DC Current Gain (hFE@Ic,Vce)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "bjt.dc_current_gain",
+      "raw_value": "250@100mA,1V",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "BC817-40",
+    "manufacturer": "Nexperia",
+    "aliases": [
+      "BC817-40,215"
+    ]
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8586175289637916672",
+    "revision": "Rev. 8 - 1 July 2022",
+    "sha256": "dbbbeafcbf13eb3d579ef03061a955c32d5ed3fa39470935ff826b4eb513b70e",
+    "accessed_date": "2026-08-09",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4",
+      "p. 5",
+      "p. 6",
+      "p. 7",
+      "p. 8",
+      "p. 9",
+      "p. 10",
+      "p. 11",
+      "p. 12",
+      "p. 13"
+    ],
+    "placeholder": false
+  },
+  "gain_points": [
+    {
+      "collector_current": {
+        "value": 0.1,
+        "unit": "A",
+        "conditions": "VCE = 1 V, IC = 100 mA, Tamb = 25 degC; pulsed, tp <= 300 us, delta <= 0.02",
+        "page_reference": "p. 5, Table 8, hFE BC817-40 row",
+        "source_kind": "typical"
+      },
+      "vce": {
+        "value": 1,
+        "unit": "V",
+        "conditions": "IC = 100 mA, Tamb = 25 degC; pulsed, tp <= 300 us, delta <= 0.02",
+        "page_reference": "p. 5, Table 8, hFE conditions",
+        "source_kind": "typical"
+      },
+      "hfe": {
+        "value": 250,
+        "unit": "1",
+        "conditions": "IC = 100 mA, VCE = 1 V, Tamb = 25 degC; pulsed, tp <= 300 us, delta <= 0.02",
+        "page_reference": "p. 5, Table 8, hFE BC817-40 row",
+        "source_kind": "minimum"
+      }
+    },
+    {
+      "collector_current": {
+        "value": 0.5,
+        "unit": "A",
+        "conditions": "VCE = 1 V, IC = 500 mA, Tamb = 25 degC; pulsed, tp <= 300 us, delta <= 0.02",
+        "page_reference": "p. 5, Table 8, hFE row",
+        "source_kind": "typical"
+      },
+      "vce": {
+        "value": 1,
+        "unit": "V",
+        "conditions": "IC = 500 mA, Tamb = 25 degC; pulsed, tp <= 300 us, delta <= 0.02",
+        "page_reference": "p. 5, Table 8, hFE conditions",
+        "source_kind": "typical"
+      },
+      "hfe": {
+        "value": 40,
+        "unit": "1",
+        "conditions": "IC = 500 mA, VCE = 1 V, Tamb = 25 degC; pulsed, tp <= 300 us, delta <= 0.02",
+        "page_reference": "p. 5, Table 8, hFE row",
+        "source_kind": "minimum"
+      }
+    },
+    {
+      "collector_current": {
+        "value": 0.0001,
+        "unit": "A",
+        "conditions": "VCE = 1 V, IC = 0.1 mA, Tamb = 25 degC; typical curve (2)",
+        "page_reference": "p. 8, Fig. 12, digitized",
+        "source_kind": "digitized_typical_curve"
+      },
+      "vce": {
+        "value": 1,
+        "unit": "V",
+        "conditions": "IC = 0.1 mA, Tamb = 25 degC; typical curve (2)",
+        "page_reference": "p. 8, Fig. 12",
+        "source_kind": "digitized_typical_curve"
+      },
+      "hfe": {
+        "value": 375,
+        "unit": "1",
+        "conditions": "IC = 0.1 mA, VCE = 1 V, Tamb = 25 degC; typical curve (2)",
+        "page_reference": "p. 8, Fig. 12, digitized",
+        "source_kind": "digitized_typical_curve"
+      }
+    }
+  ],
+  "saturation_points": []
+}

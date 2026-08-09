@@ -1,629 +1,591 @@
 {
   "schema_version": "1.0.0",
   "review_date": "2026-08-09",
-  "reviewer": "gpt-5.6-sol independent reviewer (P6 proving-50)",
+  "reviewer": "gpt-5.6-sol independent re-reviewer (P6 proving-50 final)",
+  "branch": "worktree-agent-afd1d235204e6778e",
   "scope": {
-    "reviewed_packages": 51,
-    "restored_in_library": 1,
-    "conveyor_staged": 50
+    "reviewed_packages": 50,
+    "conveyor_staged": 50,
+    "prior_library_packages": 122
   },
   "promoted": [
     {
-      "manufacturer_directory": "vishay",
-      "mpn": "NTCLE100E3103JB0",
-      "family": "sensor/other",
-      "tier": "F1",
-      "action": "approved in place after transcription refit",
-      "reasons": [
-        "R25 is directly transcribed as 10 kohm from datasheet page 2.",
-        "B25/85 is directly transcribed as 3977 K from datasheet page 2.",
-        "The supported region is limited to 25 degC through 85 degC.",
-        "All three package benches pass validation and native-versus-WASM comparison with zero reported engine delta.",
-        "The original P5 rejection and the subsequent refit history remain recorded."
-      ]
-    }
-  ],
-  "demoted-then-promoted": [],
-  "rejected": [
-    {
-      "manufacturer_directory": "diodes",
-      "mpn": "1N4148W-7-F",
-      "family": "diode",
-      "claimed_tier": "F2",
-      "reasons": [
-        "Mandatory package validation fails: tests/ contains no .cir bench and tests/expectations.json contains zero tests.",
-        "model.cir lacks the three required provenance header phrases.",
-        "The supported operating region contains only a 25 degC nominal-temperature point and says electrical bounds are pending independent review.",
-        "F2 evidence is incomplete: no cited test check, no package bench, no native-versus-WASM result, and test_results is pending while recording a non-null fitting error."
-      ]
-    },
-    {
-      "manufacturer_directory": "diodes",
-      "mpn": "1N4148WS-7-F",
-      "family": "diode",
-      "claimed_tier": "F2",
-      "reasons": [
-        "Mandatory package validation fails: tests/ contains no .cir bench and tests/expectations.json contains zero tests.",
-        "model.cir lacks the three required provenance header phrases.",
-        "The supported operating region contains only a 25 degC nominal-temperature point and says electrical bounds are pending independent review.",
-        "F2 evidence is incomplete: no cited test check, no package bench, no native-versus-WASM result, and test_results is pending while recording a non-null fitting error."
-      ]
-    },
-    {
-      "manufacturer_directory": "diodes",
-      "mpn": "1N5819HW-7-F",
-      "family": "diode",
-      "claimed_tier": "F1",
-      "reasons": [
-        "Mandatory package validation fails: tests/ contains no .cir bench and tests/expectations.json contains zero tests.",
-        "model.cir lacks the three required provenance header phrases.",
-        "The supported operating region contains only a 25 degC nominal-temperature point and says electrical bounds are pending independent review."
-      ]
-    },
-    {
-      "manufacturer_directory": "diodes",
-      "mpn": "2N7002-7-F",
-      "family": "mosfet",
-      "claimed_tier": "F1",
-      "reasons": [
-        "Mandatory package validation fails: tests/ contains no .cir bench and tests/expectations.json contains zero tests.",
-        "model.cir lacks the three required provenance header phrases.",
-        "The supported operating region contains only a 25 degC nominal-temperature point and says electrical bounds are pending independent review."
-      ]
-    },
-    {
-      "manufacturer_directory": "diodes",
-      "mpn": "2N7002DW-7-F",
-      "family": "mosfet",
-      "claimed_tier": "F1",
-      "reasons": [
-        "Mandatory package validation fails: tests/ contains no .cir bench and tests/expectations.json contains zero tests.",
-        "model.cir lacks the three required provenance header phrases.",
-        "The supported operating region contains only a 25 degC nominal-temperature point and says electrical bounds are pending independent review."
-      ]
-    },
-    {
-      "manufacturer_directory": "diodes",
-      "mpn": "2N7002K-7",
-      "family": "mosfet",
-      "claimed_tier": "F1",
-      "reasons": [
-        "Mandatory package validation fails: tests/ contains no .cir bench and tests/expectations.json contains zero tests.",
-        "model.cir lacks the three required provenance header phrases.",
-        "The supported operating region contains only a 25 degC nominal-temperature point and says electrical bounds are pending independent review."
-      ]
-    },
-    {
-      "manufacturer_directory": "diodes",
-      "mpn": "BSS84-7-F",
-      "family": "mosfet",
-      "claimed_tier": "F1",
-      "reasons": [
-        "Mandatory package validation fails: tests/ contains no .cir bench and tests/expectations.json contains zero tests.",
-        "model.cir lacks the three required provenance header phrases.",
-        "The supported operating region contains only a 25 degC nominal-temperature point and says electrical bounds are pending independent review."
-      ]
-    },
-    {
-      "manufacturer_directory": "diodes",
-      "mpn": "DMP2035U-7",
-      "family": "mosfet",
-      "claimed_tier": "F1",
-      "reasons": [
-        "Mandatory package validation fails: tests/ contains no .cir bench and tests/expectations.json contains zero tests.",
-        "model.cir lacks the three required provenance header phrases.",
-        "The supported operating region contains only a 25 degC nominal-temperature point and says electrical bounds are pending independent review."
-      ]
-    },
-    {
-      "manufacturer_directory": "diodes",
-      "mpn": "DMP3098L-7",
-      "family": "mosfet",
-      "claimed_tier": "F1",
-      "reasons": [
-        "Mandatory package validation fails: tests/ contains no .cir bench and tests/expectations.json contains zero tests.",
-        "model.cir lacks the three required provenance header phrases.",
-        "The supported operating region contains only a 25 degC nominal-temperature point and says electrical bounds are pending independent review."
-      ]
-    },
-    {
-      "manufacturer_directory": "diodes",
-      "mpn": "MMBT3904-7-F",
-      "family": "bjt",
-      "claimed_tier": "F2",
-      "reasons": [
-        "Mandatory package validation fails: tests/ contains no .cir bench and tests/expectations.json contains zero tests.",
-        "model.cir lacks the three required provenance header phrases.",
-        "The supported operating region contains only a 25 degC nominal-temperature point and says electrical bounds are pending independent review.",
-        "F2 evidence is incomplete: no cited test check, no package bench, no native-versus-WASM result, and test_results is pending while recording a non-null fitting error."
-      ]
-    },
-    {
-      "manufacturer_directory": "diodes",
+      "manufacturer_directory": "diodes-inc",
       "mpn": "MMBT3904T-7-F",
+      "source_staging_directory": "diodes/MMBT3904T-7-F",
       "family": "bjt",
-      "claimed_tier": "F2",
+      "tier": "F2",
       "reasons": [
-        "Mandatory package validation fails: tests/ contains no .cir bench and tests/expectations.json contains zero tests.",
-        "model.cir lacks the three required provenance header phrases.",
-        "The supported operating region contains only a 25 degC nominal-temperature point and says electrical bounds are pending independent review.",
-        "F2 evidence is incomplete: no cited test check, no package bench, no native-versus-WASM result, and test_results is pending while recording a non-null fitting error."
-      ]
-    },
-    {
-      "manufacturer_directory": "diodes",
-      "mpn": "S1M-13-F",
-      "family": "diode",
-      "claimed_tier": "F2",
-      "reasons": [
-        "Mandatory package validation fails: tests/ contains no .cir bench and tests/expectations.json contains zero tests.",
-        "model.cir lacks the three required provenance header phrases.",
-        "The supported operating region contains only a 25 degC nominal-temperature point and says electrical bounds are pending independent review.",
-        "F2 evidence is incomplete: no cited test check, no package bench, no native-versus-WASM result, and test_results is pending while recording a non-null fitting error."
+        "Recomputed 5 fitted residuals remain within the unchanged bjt gates; worst relative error is 0.0535497 and RMS is 0.0377317.",
+        "The cited typical curve, applicable hard bounds, 25 degC bench bias, and DC-only domain limits are explicit.",
+        "All 4 package benches and 15 checks passed fresh native ngspice versus WASM review."
       ]
     },
     {
       "manufacturer_directory": "nexperia",
-      "mpn": "2N7002-215",
-      "family": "mosfet",
-      "claimed_tier": "F1",
-      "reasons": [
-        "Mandatory package validation fails: tests/ contains no .cir bench and tests/expectations.json contains zero tests.",
-        "model.cir lacks the three required provenance header phrases.",
-        "The supported operating region contains only a 25 degC nominal-temperature point and says electrical bounds are pending independent review.",
-        "canonical_mpn contains a comma and violates the component schema pattern."
-      ]
-    },
-    {
-      "manufacturer_directory": "nexperia",
-      "mpn": "BAS16H-115",
-      "family": "diode",
-      "claimed_tier": "F1",
-      "reasons": [
-        "Mandatory package validation fails: tests/ contains no .cir bench and tests/expectations.json contains zero tests.",
-        "model.cir lacks the three required provenance header phrases.",
-        "The supported operating region contains only a 25 degC nominal-temperature point and says electrical bounds are pending independent review.",
-        "canonical_mpn contains a comma and violates the component schema pattern."
-      ]
-    },
-    {
-      "manufacturer_directory": "nexperia",
-      "mpn": "BAS316-115",
-      "family": "diode",
-      "claimed_tier": "F2",
-      "reasons": [
-        "Mandatory package validation fails: tests/ contains no .cir bench and tests/expectations.json contains zero tests.",
-        "model.cir lacks the three required provenance header phrases.",
-        "The supported operating region contains only a 25 degC nominal-temperature point and says electrical bounds are pending independent review.",
-        "F2 evidence is incomplete: no cited test check, no package bench, no native-versus-WASM result, and test_results is pending while recording a non-null fitting error.",
-        "canonical_mpn contains a comma and violates the component schema pattern."
-      ]
-    },
-    {
-      "manufacturer_directory": "nexperia",
-      "mpn": "BAS321-115",
-      "family": "diode",
-      "claimed_tier": "F2",
-      "reasons": [
-        "Mandatory package validation fails: tests/ contains no .cir bench and tests/expectations.json contains zero tests.",
-        "model.cir lacks the three required provenance header phrases.",
-        "The supported operating region contains only a 25 degC nominal-temperature point and says electrical bounds are pending independent review.",
-        "F2 evidence is incomplete: no cited test check, no package bench, no native-versus-WASM result, and test_results is pending while recording a non-null fitting error.",
-        "canonical_mpn contains a comma and violates the component schema pattern."
-      ]
-    },
-    {
-      "manufacturer_directory": "nexperia",
-      "mpn": "BAT54C-215",
-      "family": "diode",
-      "claimed_tier": "F1",
-      "reasons": [
-        "Mandatory package validation fails: tests/ contains no .cir bench and tests/expectations.json contains zero tests.",
-        "model.cir lacks the three required provenance header phrases.",
-        "The supported operating region contains only a 25 degC nominal-temperature point and says electrical bounds are pending independent review.",
-        "canonical_mpn contains a comma and violates the component schema pattern."
-      ]
-    },
-    {
-      "manufacturer_directory": "nexperia",
-      "mpn": "BAT54L-315",
-      "family": "diode",
-      "claimed_tier": "F2",
-      "reasons": [
-        "Mandatory package validation fails: tests/ contains no .cir bench and tests/expectations.json contains zero tests.",
-        "model.cir lacks the three required provenance header phrases.",
-        "The supported operating region contains only a 25 degC nominal-temperature point and says electrical bounds are pending independent review.",
-        "F2 evidence is incomplete: no cited test check, no package bench, no native-versus-WASM result, and test_results is pending while recording a non-null fitting error.",
-        "canonical_mpn contains a comma and violates the component schema pattern."
-      ]
-    },
-    {
-      "manufacturer_directory": "nexperia",
-      "mpn": "BAV70-215",
-      "family": "diode",
-      "claimed_tier": "F2",
-      "reasons": [
-        "Mandatory package validation fails: tests/ contains no .cir bench and tests/expectations.json contains zero tests.",
-        "model.cir lacks the three required provenance header phrases.",
-        "The supported operating region contains only a 25 degC nominal-temperature point and says electrical bounds are pending independent review.",
-        "F2 evidence is incomplete: no cited test check, no package bench, no native-versus-WASM result, and test_results is pending while recording a non-null fitting error.",
-        "canonical_mpn contains a comma and violates the component schema pattern."
-      ]
-    },
-    {
-      "manufacturer_directory": "nexperia",
-      "mpn": "BAV99-215",
-      "family": "diode",
-      "claimed_tier": "F2",
-      "reasons": [
-        "Mandatory package validation fails: tests/ contains no .cir bench and tests/expectations.json contains zero tests.",
-        "model.cir lacks the three required provenance header phrases.",
-        "The supported operating region contains only a 25 degC nominal-temperature point and says electrical bounds are pending independent review.",
-        "F2 evidence is incomplete: no cited test check, no package bench, no native-versus-WASM result, and test_results is pending while recording a non-null fitting error.",
-        "canonical_mpn contains a comma and violates the component schema pattern."
-      ]
-    },
-    {
-      "manufacturer_directory": "nexperia",
-      "mpn": "BC817-40-215",
+      "mpn": "BC847",
+      "source_staging_directory": "nexperia/BC847-215",
       "family": "bjt",
-      "claimed_tier": "F2",
+      "tier": "F1",
       "reasons": [
-        "Mandatory package validation fails: tests/ contains no .cir bench and tests/expectations.json contains zero tests.",
-        "model.cir lacks the three required provenance header phrases.",
-        "The supported operating region contains only a 25 degC nominal-temperature point and says electrical bounds are pending independent review.",
-        "F2 evidence is incomplete: no cited test check, no package bench, no native-versus-WASM result, and test_results is pending while recording a non-null fitting error.",
-        "canonical_mpn contains a comma and violates the component schema pattern."
+        "The F1 claim is limited to cited DC headline behavior at explicit 25 degC bias, with unsupported saturation, AC, transient, thermal, and noise behavior disclosed as applicable.",
+        "All 3 package benches and 2 checks passed fresh native ngspice versus WASM review."
       ]
     },
     {
       "manufacturer_directory": "nexperia",
-      "mpn": "BC846B-215",
+      "mpn": "BC847C",
+      "source_staging_directory": "nexperia/BC847C-215",
       "family": "bjt",
-      "claimed_tier": "F1",
+      "tier": "F1",
       "reasons": [
-        "Mandatory package validation fails: tests/ contains no .cir bench and tests/expectations.json contains zero tests.",
-        "model.cir lacks the three required provenance header phrases.",
-        "The supported operating region contains only a 25 degC nominal-temperature point and says electrical bounds are pending independent review.",
-        "canonical_mpn contains a comma and violates the component schema pattern."
+        "The F1 claim is limited to cited DC headline behavior at explicit 25 degC bias, with unsupported saturation, AC, transient, thermal, and noise behavior disclosed as applicable.",
+        "All 3 package benches and 2 checks passed fresh native ngspice versus WASM review."
       ]
     },
     {
       "manufacturer_directory": "nexperia",
-      "mpn": "BC847-215",
+      "mpn": "PMBT2907A",
+      "source_staging_directory": "nexperia/PMBT2907A-215",
       "family": "bjt",
-      "claimed_tier": "F1",
+      "tier": "F1",
       "reasons": [
-        "Mandatory package validation fails: tests/ contains no .cir bench and tests/expectations.json contains zero tests.",
-        "model.cir lacks the three required provenance header phrases.",
-        "The supported operating region contains only a 25 degC nominal-temperature point and says electrical bounds are pending independent review.",
-        "canonical_mpn contains a comma and violates the component schema pattern."
-      ]
-    },
-    {
-      "manufacturer_directory": "nexperia",
-      "mpn": "BC847C-215",
-      "family": "bjt",
-      "claimed_tier": "F1",
-      "reasons": [
-        "Mandatory package validation fails: tests/ contains no .cir bench and tests/expectations.json contains zero tests.",
-        "model.cir lacks the three required provenance header phrases.",
-        "The supported operating region contains only a 25 degC nominal-temperature point and says electrical bounds are pending independent review.",
-        "canonical_mpn contains a comma and violates the component schema pattern."
-      ]
-    },
-    {
-      "manufacturer_directory": "nexperia",
-      "mpn": "BSS84AKM-315",
-      "family": "mosfet",
-      "claimed_tier": "F1",
-      "reasons": [
-        "Mandatory package validation fails: tests/ contains no .cir bench and tests/expectations.json contains zero tests.",
-        "model.cir lacks the three required provenance header phrases.",
-        "The supported operating region contains only a 25 degC nominal-temperature point and says electrical bounds are pending independent review.",
-        "canonical_mpn contains a comma and violates the component schema pattern."
-      ]
-    },
-    {
-      "manufacturer_directory": "nexperia",
-      "mpn": "PBSS4160T-215",
-      "family": "bjt",
-      "claimed_tier": "F2",
-      "reasons": [
-        "Mandatory package validation fails: tests/ contains no .cir bench and tests/expectations.json contains zero tests.",
-        "model.cir lacks the three required provenance header phrases.",
-        "The supported operating region contains only a 25 degC nominal-temperature point and says electrical bounds are pending independent review.",
-        "F2 evidence is incomplete: no cited test check, no package bench, no native-versus-WASM result, and test_results is pending while recording a non-null fitting error.",
-        "canonical_mpn contains a comma and violates the component schema pattern."
-      ]
-    },
-    {
-      "manufacturer_directory": "nexperia",
-      "mpn": "PMBT2907A-215",
-      "family": "bjt",
-      "claimed_tier": "F1",
-      "reasons": [
-        "Mandatory package validation fails: tests/ contains no .cir bench and tests/expectations.json contains zero tests.",
-        "model.cir lacks the three required provenance header phrases.",
-        "The supported operating region contains only a 25 degC nominal-temperature point and says electrical bounds are pending independent review.",
-        "canonical_mpn contains a comma and violates the component schema pattern."
-      ]
-    },
-    {
-      "manufacturer_directory": "nexperia",
-      "mpn": "PMBT4403-215",
-      "family": "bjt",
-      "claimed_tier": "F2",
-      "reasons": [
-        "Mandatory package validation fails: tests/ contains no .cir bench and tests/expectations.json contains zero tests.",
-        "model.cir lacks the three required provenance header phrases.",
-        "The supported operating region contains only a 25 degC nominal-temperature point and says electrical bounds are pending independent review.",
-        "F2 evidence is incomplete: no cited test check, no package bench, no native-versus-WASM result, and test_results is pending while recording a non-null fitting error.",
-        "canonical_mpn contains a comma and violates the component schema pattern."
-      ]
-    },
-    {
-      "manufacturer_directory": "nexperia",
-      "mpn": "PMEG4010ESBYL",
-      "family": "diode",
-      "claimed_tier": "F1",
-      "reasons": [
-        "Mandatory package validation fails: tests/ contains no .cir bench and tests/expectations.json contains zero tests.",
-        "model.cir lacks the three required provenance header phrases.",
-        "The supported operating region contains only a 25 degC nominal-temperature point and says electrical bounds are pending independent review."
-      ]
-    },
-    {
-      "manufacturer_directory": "nexperia",
-      "mpn": "PMST3904-115",
-      "family": "bjt",
-      "claimed_tier": "F1",
-      "reasons": [
-        "Mandatory package validation fails: tests/ contains no .cir bench and tests/expectations.json contains zero tests.",
-        "model.cir lacks the three required provenance header phrases.",
-        "The supported operating region contains only a 25 degC nominal-temperature point and says electrical bounds are pending independent review.",
-        "canonical_mpn contains a comma and violates the component schema pattern.",
-        "The complete numeric model vector duplicates the other PMST3904-115/MMBT3904LT1G package without shared-die inheritance evidence."
-      ]
-    },
-    {
-      "manufacturer_directory": "onsemi",
-      "mpn": "2N7002KT1G",
-      "family": "mosfet",
-      "claimed_tier": "F1",
-      "reasons": [
-        "Mandatory package validation fails: tests/ contains no .cir bench and tests/expectations.json contains zero tests.",
-        "model.cir lacks the three required provenance header phrases.",
-        "The supported operating region contains only a 25 degC nominal-temperature point and says electrical bounds are pending independent review."
-      ]
-    },
-    {
-      "manufacturer_directory": "onsemi",
-      "mpn": "2N7002LT1G",
-      "family": "mosfet",
-      "claimed_tier": "F1",
-      "reasons": [
-        "Mandatory package validation fails: tests/ contains no .cir bench and tests/expectations.json contains zero tests.",
-        "model.cir lacks the three required provenance header phrases.",
-        "The supported operating region contains only a 25 degC nominal-temperature point and says electrical bounds are pending independent review."
-      ]
-    },
-    {
-      "manufacturer_directory": "onsemi",
-      "mpn": "BAT54SLT1G",
-      "family": "diode",
-      "claimed_tier": "F2",
-      "reasons": [
-        "Mandatory package validation fails: tests/ contains no .cir bench and tests/expectations.json contains zero tests.",
-        "model.cir lacks the three required provenance header phrases.",
-        "The supported operating region contains only a 25 degC nominal-temperature point and says electrical bounds are pending independent review.",
-        "F2 evidence is incomplete: no cited test check, no package bench, no native-versus-WASM result, and test_results is pending while recording a non-null fitting error."
-      ]
-    },
-    {
-      "manufacturer_directory": "onsemi",
-      "mpn": "BAV70LT1G",
-      "family": "diode",
-      "claimed_tier": "F2",
-      "reasons": [
-        "Mandatory package validation fails: tests/ contains no .cir bench and tests/expectations.json contains zero tests.",
-        "model.cir lacks the three required provenance header phrases.",
-        "The supported operating region contains only a 25 degC nominal-temperature point and says electrical bounds are pending independent review.",
-        "F2 evidence is incomplete: no cited test check, no package bench, no native-versus-WASM result, and test_results is pending while recording a non-null fitting error."
-      ]
-    },
-    {
-      "manufacturer_directory": "onsemi",
-      "mpn": "BAV99LT1G",
-      "family": "diode",
-      "claimed_tier": "F1",
-      "reasons": [
-        "Mandatory package validation fails: tests/ contains no .cir bench and tests/expectations.json contains zero tests.",
-        "model.cir lacks the three required provenance header phrases.",
-        "The supported operating region contains only a 25 degC nominal-temperature point and says electrical bounds are pending independent review."
-      ]
-    },
-    {
-      "manufacturer_directory": "onsemi",
-      "mpn": "BSS123LT1G",
-      "family": "mosfet",
-      "claimed_tier": "F1",
-      "reasons": [
-        "Mandatory package validation fails: tests/ contains no .cir bench and tests/expectations.json contains zero tests.",
-        "model.cir lacks the three required provenance header phrases.",
-        "The supported operating region contains only a 25 degC nominal-temperature point and says electrical bounds are pending independent review."
-      ]
-    },
-    {
-      "manufacturer_directory": "onsemi",
-      "mpn": "BSS138LT1G",
-      "family": "mosfet",
-      "claimed_tier": "F1",
-      "reasons": [
-        "Mandatory package validation fails: tests/ contains no .cir bench and tests/expectations.json contains zero tests.",
-        "model.cir lacks the three required provenance header phrases.",
-        "The supported operating region contains only a 25 degC nominal-temperature point and says electrical bounds are pending independent review."
-      ]
-    },
-    {
-      "manufacturer_directory": "onsemi",
-      "mpn": "FDV301N",
-      "family": "mosfet",
-      "claimed_tier": "F1",
-      "reasons": [
-        "Mandatory package validation fails: tests/ contains no .cir bench and tests/expectations.json contains zero tests.",
-        "model.cir lacks the three required provenance header phrases.",
-        "The supported operating region contains only a 25 degC nominal-temperature point and says electrical bounds are pending independent review."
-      ]
-    },
-    {
-      "manufacturer_directory": "onsemi",
-      "mpn": "MMBD7000LT1G",
-      "family": "diode",
-      "claimed_tier": "F2",
-      "reasons": [
-        "Mandatory package validation fails: tests/ contains no .cir bench and tests/expectations.json contains zero tests.",
-        "model.cir lacks the three required provenance header phrases.",
-        "The supported operating region contains only a 25 degC nominal-temperature point and says electrical bounds are pending independent review.",
-        "F2 evidence is incomplete: no cited test check, no package bench, no native-versus-WASM result, and test_results is pending while recording a non-null fitting error."
-      ]
-    },
-    {
-      "manufacturer_directory": "onsemi",
-      "mpn": "MMBT2222ALT1G",
-      "family": "bjt",
-      "claimed_tier": "F2",
-      "reasons": [
-        "Mandatory package validation fails: tests/ contains no .cir bench and tests/expectations.json contains zero tests.",
-        "model.cir lacks the three required provenance header phrases.",
-        "The supported operating region contains only a 25 degC nominal-temperature point and says electrical bounds are pending independent review.",
-        "F2 evidence is incomplete: no cited test check, no package bench, no native-versus-WASM result, and test_results is pending while recording a non-null fitting error.",
-        "Every fitted residual cites page as bare \"3\" rather than an explicit page-and-figure reference, although source page 3 contains Figure 3."
-      ]
-    },
-    {
-      "manufacturer_directory": "onsemi",
-      "mpn": "MMBT3904LT1G",
-      "family": "bjt",
-      "claimed_tier": "F1",
-      "reasons": [
-        "Mandatory package validation fails: tests/ contains no .cir bench and tests/expectations.json contains zero tests.",
-        "model.cir lacks the three required provenance header phrases.",
-        "The supported operating region contains only a 25 degC nominal-temperature point and says electrical bounds are pending independent review.",
-        "The complete numeric model vector duplicates the other PMST3904-115/MMBT3904LT1G package without shared-die inheritance evidence."
+        "The F1 claim is limited to cited DC headline behavior at explicit 25 degC bias, with unsupported saturation, AC, transient, thermal, and noise behavior disclosed as applicable.",
+        "All 3 package benches and 6 checks passed fresh native ngspice versus WASM review."
       ]
     },
     {
       "manufacturer_directory": "onsemi",
       "mpn": "MMBT3906LT1G",
+      "source_staging_directory": "onsemi/MMBT3906LT1G",
       "family": "bjt",
-      "claimed_tier": "F2",
+      "tier": "F2",
       "reasons": [
-        "Mandatory package validation fails: tests/ contains no .cir bench and tests/expectations.json contains zero tests.",
-        "model.cir lacks the three required provenance header phrases.",
-        "The supported operating region contains only a 25 degC nominal-temperature point and says electrical bounds are pending independent review.",
-        "F2 evidence is incomplete: no cited test check, no package bench, no native-versus-WASM result, and test_results is pending while recording a non-null fitting error."
+        "Recomputed 5 fitted residuals remain within the unchanged bjt gates; worst relative error is 0.0832062 and RMS is 0.0650715.",
+        "The cited typical curve, applicable hard bounds, 25 degC bench bias, and DC-only domain limits are explicit.",
+        "All 4 package benches and 15 checks passed fresh native ngspice versus WASM review."
       ]
+    }
+  ],
+  "demoted-then-promoted": [
+    {
+      "manufacturer_directory": "diodes-inc",
+      "mpn": "MMBT3904-7-F",
+      "source_staging_directory": "diodes/MMBT3904-7-F",
+      "family": "bjt",
+      "tier": "F1",
+      "reasons": [
+        "The F1 claim is limited to cited DC headline behavior at explicit 25 degC bias, with unsupported saturation, AC, transient, thermal, and noise behavior disclosed as applicable.",
+        "All 3 package benches and 6 checks passed fresh native ngspice versus WASM review."
+      ],
+      "original_claimed_tier": "F2",
+      "demotion_reason": "F2 evidence did not qualify; staged as F1: Validation failed for MMBT3904-7-F. See validation-results.json; failed package checks: hfe_at_0.0001_a observed 188.9643860050194 (allowed error 26), hfe_at_0.001_a observed 198.13568471670484 (allowed error 26), hfe_at_0.01_a observed 164.88900946916908 (allowed error 24)"
+    },
+    {
+      "manufacturer_directory": "nexperia",
+      "mpn": "BC817-40",
+      "source_staging_directory": "nexperia/BC817-40-215",
+      "family": "bjt",
+      "tier": "F1",
+      "reasons": [
+        "The F1 claim is limited to cited DC headline behavior at explicit 25 degC bias, with unsupported saturation, AC, transient, thermal, and noise behavior disclosed as applicable.",
+        "All 3 package benches and 4 checks passed fresh native ngspice versus WASM review."
+      ],
+      "original_claimed_tier": "F2",
+      "demotion_reason": "F2 evidence did not qualify; staged as F1: Validation failed for BC817-40-215. See validation-results.json; failed package checks: vce_sat_1 observed 0.06738200431177953 (allowed error 0.02), vce_sat_2 observed 0.08999813602860017 (allowed error 0.02)"
+    },
+    {
+      "manufacturer_directory": "nexperia",
+      "mpn": "PBSS4160T",
+      "source_staging_directory": "nexperia/PBSS4160T-215",
+      "family": "bjt",
+      "tier": "F1",
+      "reasons": [
+        "The F1 claim is limited to cited DC headline behavior at explicit 25 degC bias, with unsupported saturation, AC, transient, thermal, and noise behavior disclosed as applicable.",
+        "All 3 package benches and 2 checks passed fresh native ngspice versus WASM review."
+      ],
+      "original_claimed_tier": "F2",
+      "demotion_reason": "F2 evidence did not qualify; staged as F1: Validation failed for PBSS4160T-215. See validation-results.json; failed package checks: vce_sat_1 observed 0.14518457708368532 (allowed error 0.02), vce_sat_2 observed 0.15548837509197755 (allowed error 0.022000000000000002), vce_sat_3 observed 0.24175636195842717 (allowed error 0.04000000000000001)"
+    },
+    {
+      "manufacturer_directory": "nexperia",
+      "mpn": "PMBT4403",
+      "source_staging_directory": "nexperia/PMBT4403-215",
+      "family": "bjt",
+      "tier": "F1",
+      "reasons": [
+        "The F1 claim is limited to cited DC headline behavior at explicit 25 degC bias, with unsupported saturation, AC, transient, thermal, and noise behavior disclosed as applicable.",
+        "All 3 package benches and 7 checks passed fresh native ngspice versus WASM review."
+      ],
+      "original_claimed_tier": "F2",
+      "demotion_reason": "F2 evidence did not qualify; staged as F1: Validation failed for PMBT4403-215. See validation-results.json; failed package checks: vbe_sat_2_maximum observed 1.3151484220737057 (maximum 1.3)"
     },
     {
       "manufacturer_directory": "onsemi",
       "mpn": "MMBT4401LT1G",
+      "source_staging_directory": "onsemi/MMBT4401LT1G",
       "family": "bjt",
-      "claimed_tier": "F2",
+      "tier": "F1",
       "reasons": [
-        "Mandatory package validation fails: tests/ contains no .cir bench and tests/expectations.json contains zero tests.",
-        "model.cir lacks the three required provenance header phrases.",
-        "The supported operating region contains only a 25 degC nominal-temperature point and says electrical bounds are pending independent review.",
-        "F2 evidence is incomplete: no cited test check, no package bench, no native-versus-WASM result, and test_results is pending while recording a non-null fitting error."
-      ]
+        "The F1 claim is limited to cited DC headline behavior at explicit 25 degC bias, with unsupported saturation, AC, transient, thermal, and noise behavior disclosed as applicable.",
+        "All 3 package benches and 6 checks passed fresh native ngspice versus WASM review."
+      ],
+      "original_claimed_tier": "F2",
+      "demotion_reason": "F2 evidence did not qualify; staged as F1: Validation failed for MMBT4401LT1G. See validation-results.json; failed package checks: vbe_sat_2_maximum observed 0.970207274275057 (maximum 0.95), vbe_sat_3_maximum observed 1.394255144244331 (maximum 1.2)"
     },
     {
       "manufacturer_directory": "onsemi",
       "mpn": "MMBT4403LT1G",
+      "source_staging_directory": "onsemi/MMBT4403LT1G",
       "family": "bjt",
-      "claimed_tier": "F2",
+      "tier": "F1",
       "reasons": [
-        "Mandatory package validation fails: tests/ contains no .cir bench and tests/expectations.json contains zero tests.",
-        "model.cir lacks the three required provenance header phrases.",
-        "The supported operating region contains only a 25 degC nominal-temperature point and says electrical bounds are pending independent review.",
-        "F2 evidence is incomplete: no cited test check, no package bench, no native-versus-WASM result, and test_results is pending while recording a non-null fitting error."
-      ]
+        "The F1 claim is limited to cited DC headline behavior at explicit 25 degC bias, with unsupported saturation, AC, transient, thermal, and noise behavior disclosed as applicable.",
+        "All 3 package benches and 6 checks passed fresh native ngspice versus WASM review."
+      ],
+      "original_claimed_tier": "F2",
+      "demotion_reason": "F2 evidence did not qualify; staged as F1: Validation failed for MMBT4403LT1G. See validation-results.json; failed package checks: vbe_sat_2_maximum observed 1.3485809925112242 (maximum 1.3)"
     },
     {
       "manufacturer_directory": "onsemi",
       "mpn": "MMBTA42LT1G",
+      "source_staging_directory": "onsemi/MMBTA42LT1G",
+      "family": "bjt",
+      "tier": "F1",
+      "reasons": [
+        "The F1 claim is limited to cited DC headline behavior at explicit 25 degC bias, with unsupported saturation, AC, transient, thermal, and noise behavior disclosed as applicable.",
+        "All 3 package benches and 5 checks passed fresh native ngspice versus WASM review."
+      ],
+      "original_claimed_tier": "F2",
+      "demotion_reason": "F2 evidence did not qualify; staged as F1: Validation failed for MMBTA42LT1G. See validation-results.json; failed package checks: vce_sat_2 observed 0.09862923013498126 (allowed error 0.07600000000000001)"
+    }
+  ],
+  "rejected": [
+    {
+      "manufacturer_directory": "diodes",
+      "mpn": "1N4148W-7-F",
+      "canonical_mpn": "1N4148W-7-F",
+      "family": "diode",
+      "claimed_tier": "F1",
+      "was_first_pass_F2": true,
+      "reasons": [
+        "All 1 package bench(es) omit an explicit .temp 25 assertion, so they execute at the ngspice default rather than the cited 25 degC evidence condition. The P6 bias-condition requirement remains open."
+      ]
+    },
+    {
+      "manufacturer_directory": "diodes",
+      "mpn": "1N4148WS-7-F",
+      "canonical_mpn": "1N4148WS-7-F",
+      "family": "diode",
+      "claimed_tier": "F2",
+      "was_first_pass_F2": true,
+      "reasons": [
+        "All 10 package bench(es) omit an explicit .temp 25 assertion, so they execute at the ngspice default rather than the cited 25 degC evidence condition. The P6 bias-condition requirement remains open."
+      ]
+    },
+    {
+      "manufacturer_directory": "diodes",
+      "mpn": "1N5819HW-7-F",
+      "canonical_mpn": "1N5819HW-7-F",
+      "family": "diode",
+      "claimed_tier": "F1",
+      "was_first_pass_F2": false,
+      "reasons": [
+        "All 1 package bench(es) omit an explicit .temp 25 assertion, so they execute at the ngspice default rather than the cited 25 degC evidence condition. The P6 bias-condition requirement remains open."
+      ]
+    },
+    {
+      "manufacturer_directory": "diodes",
+      "mpn": "2N7002-7-F",
+      "canonical_mpn": "2N7002-7-F",
+      "family": "mosfet",
+      "claimed_tier": "F1",
+      "was_first_pass_F2": false,
+      "reasons": [
+        "All 1 package bench(es) omit an explicit .temp 25 assertion, so they execute at the ngspice default rather than the cited 25 degC evidence condition. The P6 bias-condition requirement remains open."
+      ]
+    },
+    {
+      "manufacturer_directory": "diodes",
+      "mpn": "2N7002DW-7-F",
+      "canonical_mpn": "2N7002DW-7-F",
+      "family": "mosfet",
+      "claimed_tier": "F1",
+      "was_first_pass_F2": false,
+      "reasons": [
+        "All 1 package bench(es) omit an explicit .temp 25 assertion, so they execute at the ngspice default rather than the cited 25 degC evidence condition. The P6 bias-condition requirement remains open."
+      ]
+    },
+    {
+      "manufacturer_directory": "diodes",
+      "mpn": "2N7002K-7",
+      "canonical_mpn": "2N7002K-7",
+      "family": "mosfet",
+      "claimed_tier": "F1",
+      "was_first_pass_F2": false,
+      "reasons": [
+        "All 1 package bench(es) omit an explicit .temp 25 assertion, so they execute at the ngspice default rather than the cited 25 degC evidence condition. The P6 bias-condition requirement remains open."
+      ]
+    },
+    {
+      "manufacturer_directory": "diodes",
+      "mpn": "BSS84-7-F",
+      "canonical_mpn": "BSS84-7-F",
+      "family": "mosfet",
+      "claimed_tier": "F1",
+      "was_first_pass_F2": false,
+      "reasons": [
+        "All 1 package bench(es) omit an explicit .temp 25 assertion, so they execute at the ngspice default rather than the cited 25 degC evidence condition. The P6 bias-condition requirement remains open."
+      ]
+    },
+    {
+      "manufacturer_directory": "diodes",
+      "mpn": "DMP2035U-7",
+      "canonical_mpn": "DMP2035U-7",
+      "family": "mosfet",
+      "claimed_tier": "F1",
+      "was_first_pass_F2": false,
+      "reasons": [
+        "All 1 package bench(es) omit an explicit .temp 25 assertion, so they execute at the ngspice default rather than the cited 25 degC evidence condition. The P6 bias-condition requirement remains open."
+      ]
+    },
+    {
+      "manufacturer_directory": "diodes",
+      "mpn": "DMP3098L-7",
+      "canonical_mpn": "DMP3098L-7",
+      "family": "mosfet",
+      "claimed_tier": "F1",
+      "was_first_pass_F2": false,
+      "reasons": [
+        "All 1 package bench(es) omit an explicit .temp 25 assertion, so they execute at the ngspice default rather than the cited 25 degC evidence condition. The P6 bias-condition requirement remains open."
+      ]
+    },
+    {
+      "manufacturer_directory": "diodes",
+      "mpn": "S1M-13-F",
+      "canonical_mpn": "S1M-13-F",
+      "family": "diode",
+      "claimed_tier": "F2",
+      "was_first_pass_F2": true,
+      "reasons": [
+        "All 24 package bench(es) omit an explicit .temp 25 assertion, so they execute at the ngspice default rather than the cited 25 degC evidence condition. The P6 bias-condition requirement remains open."
+      ]
+    },
+    {
+      "manufacturer_directory": "nexperia",
+      "mpn": "2N7002-215",
+      "canonical_mpn": "2N7002",
+      "family": "mosfet",
+      "claimed_tier": "F1",
+      "was_first_pass_F2": false,
+      "reasons": [
+        "All 1 package bench(es) omit an explicit .temp 25 assertion, so they execute at the ngspice default rather than the cited 25 degC evidence condition. The P6 bias-condition requirement remains open."
+      ]
+    },
+    {
+      "manufacturer_directory": "nexperia",
+      "mpn": "BAS16H-115",
+      "canonical_mpn": "BAS16H",
+      "family": "diode",
+      "claimed_tier": "F1",
+      "was_first_pass_F2": false,
+      "reasons": [
+        "All 1 package bench(es) omit an explicit .temp 25 assertion, so they execute at the ngspice default rather than the cited 25 degC evidence condition. The P6 bias-condition requirement remains open."
+      ]
+    },
+    {
+      "manufacturer_directory": "nexperia",
+      "mpn": "BAS316-115",
+      "canonical_mpn": "BAS316",
+      "family": "diode",
+      "claimed_tier": "F2",
+      "was_first_pass_F2": true,
+      "reasons": [
+        "All 10 package bench(es) omit an explicit .temp 25 assertion, so they execute at the ngspice default rather than the cited 25 degC evidence condition. The P6 bias-condition requirement remains open."
+      ]
+    },
+    {
+      "manufacturer_directory": "nexperia",
+      "mpn": "BAS321-115",
+      "canonical_mpn": "BAS321",
+      "family": "diode",
+      "claimed_tier": "F2",
+      "was_first_pass_F2": true,
+      "reasons": [
+        "All 10 package bench(es) omit an explicit .temp 25 assertion, so they execute at the ngspice default rather than the cited 25 degC evidence condition. The P6 bias-condition requirement remains open."
+      ]
+    },
+    {
+      "manufacturer_directory": "nexperia",
+      "mpn": "BAT54C-215",
+      "canonical_mpn": "BAT54C",
+      "family": "diode",
+      "claimed_tier": "F1",
+      "was_first_pass_F2": false,
+      "reasons": [
+        "All 1 package bench(es) omit an explicit .temp 25 assertion, so they execute at the ngspice default rather than the cited 25 degC evidence condition. The P6 bias-condition requirement remains open."
+      ]
+    },
+    {
+      "manufacturer_directory": "nexperia",
+      "mpn": "BAT54L-315",
+      "canonical_mpn": "BAT54L",
+      "family": "diode",
+      "claimed_tier": "F2",
+      "was_first_pass_F2": true,
+      "reasons": [
+        "All 11 package bench(es) omit an explicit .temp 25 assertion, so they execute at the ngspice default rather than the cited 25 degC evidence condition. The P6 bias-condition requirement remains open."
+      ]
+    },
+    {
+      "manufacturer_directory": "nexperia",
+      "mpn": "BAV70-215",
+      "canonical_mpn": "BAV70",
+      "family": "diode",
+      "claimed_tier": "F2",
+      "was_first_pass_F2": true,
+      "reasons": [
+        "All 12 package bench(es) omit an explicit .temp 25 assertion, so they execute at the ngspice default rather than the cited 25 degC evidence condition. The P6 bias-condition requirement remains open."
+      ]
+    },
+    {
+      "manufacturer_directory": "nexperia",
+      "mpn": "BAV99-215",
+      "canonical_mpn": "BAV99",
+      "family": "diode",
+      "claimed_tier": "F1",
+      "was_first_pass_F2": true,
+      "reasons": [
+        "All 1 package bench(es) omit an explicit .temp 25 assertion, so they execute at the ngspice default rather than the cited 25 degC evidence condition. The P6 bias-condition requirement remains open.",
+        "Canonical MPN BAV99 collides with the existing onsemi/BAV99 library package."
+      ]
+    },
+    {
+      "manufacturer_directory": "nexperia",
+      "mpn": "BC846B-215",
+      "canonical_mpn": "BC846B",
+      "family": "bjt",
+      "claimed_tier": "F1",
+      "was_first_pass_F2": false,
+      "reasons": [
+        "Canonical MPN BC846B collides with the existing nexperia/BC846B library package."
+      ]
+    },
+    {
+      "manufacturer_directory": "nexperia",
+      "mpn": "BSS84AKM-315",
+      "canonical_mpn": "BSS84AKM",
+      "family": "mosfet",
+      "claimed_tier": "F1",
+      "was_first_pass_F2": false,
+      "reasons": [
+        "All 1 package bench(es) omit an explicit .temp 25 assertion, so they execute at the ngspice default rather than the cited 25 degC evidence condition. The P6 bias-condition requirement remains open."
+      ]
+    },
+    {
+      "manufacturer_directory": "nexperia",
+      "mpn": "PMEG4010ESBYL",
+      "canonical_mpn": "PMEG4010ESBYL",
+      "family": "diode",
+      "claimed_tier": "F1",
+      "was_first_pass_F2": false,
+      "reasons": [
+        "All 5 package bench(es) omit an explicit .temp 25 assertion, so they execute at the ngspice default rather than the cited 25 degC evidence condition. The P6 bias-condition requirement remains open."
+      ]
+    },
+    {
+      "manufacturer_directory": "nexperia",
+      "mpn": "PMST3904-115",
+      "canonical_mpn": "PMST3904",
+      "family": "bjt",
+      "claimed_tier": "F1",
+      "was_first_pass_F2": false,
+      "reasons": [
+        "The complete F1 numeric model vector still duplicates the PMST3904/MMBT3904 counterpart without shared-die inheritance evidence or independent parameterization, so the predecessor finding remains open."
+      ]
+    },
+    {
+      "manufacturer_directory": "onsemi",
+      "mpn": "2N7002KT1G",
+      "canonical_mpn": "2N7002KT1G",
+      "family": "mosfet",
+      "claimed_tier": "F1",
+      "was_first_pass_F2": false,
+      "reasons": [
+        "All 1 package bench(es) omit an explicit .temp 25 assertion, so they execute at the ngspice default rather than the cited 25 degC evidence condition. The P6 bias-condition requirement remains open."
+      ]
+    },
+    {
+      "manufacturer_directory": "onsemi",
+      "mpn": "2N7002LT1G",
+      "canonical_mpn": "2N7002LT1G",
+      "family": "mosfet",
+      "claimed_tier": "F1",
+      "was_first_pass_F2": false,
+      "reasons": [
+        "All 1 package bench(es) omit an explicit .temp 25 assertion, so they execute at the ngspice default rather than the cited 25 degC evidence condition. The P6 bias-condition requirement remains open."
+      ]
+    },
+    {
+      "manufacturer_directory": "onsemi",
+      "mpn": "BAT54SLT1G",
+      "canonical_mpn": "BAT54SLT1G",
+      "family": "diode",
+      "claimed_tier": "F2",
+      "was_first_pass_F2": true,
+      "reasons": [
+        "All 10 package bench(es) omit an explicit .temp 25 assertion, so they execute at the ngspice default rather than the cited 25 degC evidence condition. The P6 bias-condition requirement remains open."
+      ]
+    },
+    {
+      "manufacturer_directory": "onsemi",
+      "mpn": "BAV70LT1G",
+      "canonical_mpn": "BAV70LT1G",
+      "family": "diode",
+      "claimed_tier": "F2",
+      "was_first_pass_F2": true,
+      "reasons": [
+        "All 10 package bench(es) omit an explicit .temp 25 assertion, so they execute at the ngspice default rather than the cited 25 degC evidence condition. The P6 bias-condition requirement remains open."
+      ]
+    },
+    {
+      "manufacturer_directory": "onsemi",
+      "mpn": "BAV99LT1G",
+      "canonical_mpn": "BAV99LT1G",
+      "family": "diode",
+      "claimed_tier": "F1",
+      "was_first_pass_F2": false,
+      "reasons": [
+        "All 1 package bench(es) omit an explicit .temp 25 assertion, so they execute at the ngspice default rather than the cited 25 degC evidence condition. The P6 bias-condition requirement remains open."
+      ]
+    },
+    {
+      "manufacturer_directory": "onsemi",
+      "mpn": "BSS123LT1G",
+      "canonical_mpn": "BSS123LT1G",
+      "family": "mosfet",
+      "claimed_tier": "F1",
+      "was_first_pass_F2": false,
+      "reasons": [
+        "All 1 package bench(es) omit an explicit .temp 25 assertion, so they execute at the ngspice default rather than the cited 25 degC evidence condition. The P6 bias-condition requirement remains open."
+      ]
+    },
+    {
+      "manufacturer_directory": "onsemi",
+      "mpn": "BSS138LT1G",
+      "canonical_mpn": "BSS138LT1G",
+      "family": "mosfet",
+      "claimed_tier": "F1",
+      "was_first_pass_F2": false,
+      "reasons": [
+        "All 1 package bench(es) omit an explicit .temp 25 assertion, so they execute at the ngspice default rather than the cited 25 degC evidence condition. The P6 bias-condition requirement remains open."
+      ]
+    },
+    {
+      "manufacturer_directory": "onsemi",
+      "mpn": "FDV301N",
+      "canonical_mpn": "FDV301N",
+      "family": "mosfet",
+      "claimed_tier": "F1",
+      "was_first_pass_F2": false,
+      "reasons": [
+        "All 1 package bench(es) omit an explicit .temp 25 assertion, so they execute at the ngspice default rather than the cited 25 degC evidence condition. The P6 bias-condition requirement remains open."
+      ]
+    },
+    {
+      "manufacturer_directory": "onsemi",
+      "mpn": "MMBD7000LT1G",
+      "canonical_mpn": "MMBD7000LT1G",
+      "family": "diode",
+      "claimed_tier": "F2",
+      "was_first_pass_F2": true,
+      "reasons": [
+        "All 12 package bench(es) omit an explicit .temp 25 assertion, so they execute at the ngspice default rather than the cited 25 degC evidence condition. The P6 bias-condition requirement remains open."
+      ]
+    },
+    {
+      "manufacturer_directory": "onsemi",
+      "mpn": "MMBT2222ALT1G",
+      "canonical_mpn": "MMBT2222ALT1G",
       "family": "bjt",
       "claimed_tier": "F2",
+      "was_first_pass_F2": true,
       "reasons": [
-        "Mandatory package validation fails: tests/ contains no .cir bench and tests/expectations.json contains zero tests.",
-        "model.cir lacks the three required provenance header phrases.",
-        "The supported operating region contains only a 25 degC nominal-temperature point and says electrical bounds are pending independent review.",
-        "F2 evidence is incomplete: no cited test check, no package bench, no native-versus-WASM result, and test_results is pending while recording a non-null fitting error.",
-        "The nominal bulk model derives IS from a 150 degC base-emitter curve, not a 25 degC curve, so the held-parameter temperature basis is not valid for the claimed nominal fit."
+        "MMBT2222ALT1G is already an ordering-code alias of the existing onsemi/MMBT2222A package; promoting a second canonical package would create an alias collision."
+      ]
+    },
+    {
+      "manufacturer_directory": "onsemi",
+      "mpn": "MMBT3904LT1G",
+      "canonical_mpn": "MMBT3904LT1G",
+      "family": "bjt",
+      "claimed_tier": "F1",
+      "was_first_pass_F2": false,
+      "reasons": [
+        "The complete F1 numeric model vector still duplicates the PMST3904/MMBT3904 counterpart without shared-die inheritance evidence or independent parameterization, so the predecessor finding remains open."
       ]
     },
     {
       "manufacturer_directory": "stmicroelectronics",
       "mpn": "STL90N10F7",
+      "canonical_mpn": "STL90N10F7",
       "family": "mosfet",
       "claimed_tier": "F1",
+      "was_first_pass_F2": false,
       "reasons": [
-        "Mandatory package validation fails: tests/ contains no .cir bench and tests/expectations.json contains zero tests.",
-        "model.cir lacks the three required provenance header phrases.",
-        "The supported operating region contains only a 25 degC nominal-temperature point and says electrical bounds are pending independent review."
+        "All 1 package bench(es) omit an explicit .temp 25 assertion, so they execute at the ngspice default rather than the cited 25 degC evidence condition. The P6 bias-condition requirement remains open."
       ]
     },
     {
       "manufacturer_directory": "vishay-intertech",
       "mpn": "2N7002K-T1-GE3",
+      "canonical_mpn": "2N7002K-T1-GE3",
       "family": "mosfet",
       "claimed_tier": "F1",
+      "was_first_pass_F2": false,
       "reasons": [
-        "Mandatory package validation fails: tests/ contains no .cir bench and tests/expectations.json contains zero tests.",
-        "model.cir lacks the three required provenance header phrases.",
-        "The supported operating region contains only a 25 degC nominal-temperature point and says electrical bounds are pending independent review."
+        "All 1 package bench(es) omit an explicit .temp 25 assertion, so they execute at the ngspice default rather than the cited 25 degC evidence condition. The P6 bias-condition requirement remains open."
       ]
     },
     {
       "manufacturer_directory": "vishay-intertech",
       "mpn": "LL4148-GS08",
+      "canonical_mpn": "LL4148-GS08",
       "family": "diode",
       "claimed_tier": "F1",
+      "was_first_pass_F2": false,
       "reasons": [
-        "Mandatory package validation fails: tests/ contains no .cir bench and tests/expectations.json contains zero tests.",
-        "model.cir lacks the three required provenance header phrases.",
-        "The supported operating region contains only a 25 degC nominal-temperature point and says electrical bounds are pending independent review."
+        "All 1 package bench(es) omit an explicit .temp 25 assertion, so they execute at the ngspice default rather than the cited 25 degC evidence condition. The P6 bias-condition requirement remains open."
       ]
     },
     {
       "manufacturer_directory": "vishay-intertech",
       "mpn": "SI2301CDS-T1-GE3",
+      "canonical_mpn": "SI2301CDS-T1-GE3",
       "family": "mosfet",
       "claimed_tier": "F1",
+      "was_first_pass_F2": false,
       "reasons": [
-        "Mandatory package validation fails: tests/ contains no .cir bench and tests/expectations.json contains zero tests.",
-        "model.cir lacks the three required provenance header phrases.",
-        "The supported operating region contains only a 25 degC nominal-temperature point and says electrical bounds are pending independent review."
+        "All 1 package bench(es) omit an explicit .temp 25 assertion, so they execute at the ngspice default rather than the cited 25 degC evidence condition. The P6 bias-condition requirement remains open."
       ]
     },
     {
       "manufacturer_directory": "vishay-intertech",
       "mpn": "SS36-E3-57T",
+      "canonical_mpn": "SS36-E3/57T",
       "family": "diode",
       "claimed_tier": "F2",
+      "was_first_pass_F2": true,
       "reasons": [
-        "Mandatory package validation fails: tests/ contains no .cir bench and tests/expectations.json contains zero tests.",
-        "model.cir lacks the three required provenance header phrases.",
-        "The supported operating region contains only a 25 degC nominal-temperature point and says electrical bounds are pending independent review.",
-        "F2 evidence is incomplete: no cited test check, no package bench, no native-versus-WASM result, and test_results is pending while recording a non-null fitting error."
+        "All 9 package bench(es) omit an explicit .temp 25 assertion, so they execute at the ngspice default rather than the cited 25 degC evidence condition. The P6 bias-condition requirement remains open."
       ]
     }
   ],
   "counts": {
-    "promoted_f2": 0,
-    "promoted_f1": 1,
-    "demoted_then_promoted": 0,
-    "rejected": 50,
-    "final_library_packages": 122
+    "promoted_f2": 2,
+    "promoted_f1": 3,
+    "demoted_then_promoted": 7,
+    "rejected": 38,
+    "final_library_packages": 134
   }
 }
