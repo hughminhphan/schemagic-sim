@@ -1,0 +1,255 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "dc_gain.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "hfe_at_0.001_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg1),180000)"
+          },
+          "expected_value": 180,
+          "unit": "1",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 5, fig. 13",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_at_0.01_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg2),17500)"
+          },
+          "expected_value": 175,
+          "unit": "1",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 5, fig. 13",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_at_0.03_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg3),5333.333333333333)"
+          },
+          "expected_value": 160,
+          "unit": "1",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 5, fig. 13",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_at_0.05_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg4),2500)"
+          },
+          "expected_value": 125,
+          "unit": "1",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 5, fig. 13",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_at_0.1_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg5),650)"
+          },
+          "expected_value": 65,
+          "unit": "1",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 5, fig. 13",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_at_0.001_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg6),180000)"
+          },
+          "expected_value": 180,
+          "unit": "1",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 5, fig. 13, digitized",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_at_0.01_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg7),17500)"
+          },
+          "expected_value": 175,
+          "unit": "1",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 5, fig. 13, digitized",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_at_0.03_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg8),5333.333333333333)"
+          },
+          "expected_value": 160,
+          "unit": "1",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 5, fig. 13, digitized",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_at_0.05_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg9),2500)"
+          },
+          "expected_value": 125,
+          "unit": "1",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 5, fig. 13, digitized",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_at_0.1_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg10),650)"
+          },
+          "expected_value": 65,
+          "unit": "1",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 5, fig. 13, digitized",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "saturation.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "vce_sat_1",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(cs1))"
+          },
+          "expected_value": 0.08,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 6, fig. 15, digitized",
+          "placeholder": false
+        },
+        {
+          "name": "vbe_sat_1",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(bs1))"
+          },
+          "expected_value": 0.75,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 6, fig. 16, digitized",
+          "placeholder": false
+        },
+        {
+          "name": "vce_sat_2",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(cs2))"
+          },
+          "expected_value": 0.12,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 6, fig. 15, digitized",
+          "placeholder": false
+        },
+        {
+          "name": "vbe_sat_2",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(bs2))"
+          },
+          "expected_value": 0.86,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 6, fig. 16, digitized",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "output_curve.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "boundary_region.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "upper_current_boundary_voltage",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(c))"
+          },
+          "minimum": 0,
+          "maximum": 1,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 5, fig. 13",
+          "placeholder": false
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,139 @@
+{
+  "schema_version": "1.0.0",
+  "canonical_mpn": "MMBT3906LT1G",
+  "manufacturer": "onsemi",
+  "description": "-55\u2103~+150\u2103 1 PNP 200mA 225mW 250MHz 250mV 40V 50nA 5V 60 PNP SOT-23 Bipolar (BJT) ROHS",
+  "electrical_family": "bjt_pnp",
+  "symbol_pins": [
+    {
+      "name": "B",
+      "number": "1",
+      "role": "base"
+    },
+    {
+      "name": "C",
+      "number": "2",
+      "role": "collector"
+    },
+    {
+      "name": "E",
+      "number": "3",
+      "role": "emitter"
+    }
+  ],
+  "spice_pin_mapping": [
+    {
+      "symbol_pin_number": "2",
+      "subckt_node": "collector",
+      "order": 1
+    },
+    {
+      "symbol_pin_number": "1",
+      "subckt_node": "base",
+      "order": 2
+    },
+    {
+      "symbol_pin_number": "3",
+      "subckt_node": "emitter",
+      "order": 3
+    }
+  ],
+  "package_variants": [
+    {
+      "name": "SOT-23",
+      "standard": "SOT-23",
+      "pin_count": 3,
+      "pin_map": [
+        {
+          "package_pin": "1",
+          "symbol_pin_number": "1"
+        },
+        {
+          "package_pin": "2",
+          "symbol_pin_number": "2"
+        },
+        {
+          "package_pin": "3",
+          "symbol_pin_number": "3"
+        }
+      ]
+    }
+  ],
+  "ordering_code_aliases": [],
+  "datasheet": {
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8586176242927718400",
+    "revision": "December 2013, Rev. 11"
+  },
+  "model_type": "dot_model",
+  "fidelity_tier": "F2",
+  "domain_coverage": {
+    "dc": "fitted",
+    "ac": "none",
+    "transient": "none",
+    "noise": "none",
+    "thermal": "none",
+    "digital": "none"
+  },
+  "supported_analyses": [
+    "operating_point",
+    "dc_sweep"
+  ],
+  "supported_operating_region": {
+    "summary": "Supported only over the cited 25 degC electrical characterization region: collector_current 0.001 to 0.1 A; collector_emitter_voltage 0 to 1 V.",
+    "numeric_bounds": [
+      {
+        "quantity": "collector_current",
+        "minimum": 0.001,
+        "maximum": 0.1,
+        "unit": "A",
+        "conditions": "Cited gain and saturation characterization span at 25 degC",
+        "placeholder": false
+      },
+      {
+        "quantity": "collector_emitter_voltage",
+        "minimum": 0,
+        "maximum": 1,
+        "unit": "V",
+        "conditions": "Cited gain-curve and table bias conditions",
+        "placeholder": false
+      },
+      {
+        "quantity": "ambient_temperature",
+        "minimum": 25,
+        "maximum": 25,
+        "unit": "degC",
+        "conditions": "Nominal model and package benches",
+        "placeholder": false
+      }
+    ]
+  },
+  "known_omissions": [
+    "AC, transient, noise, thermal, and package-parasitic behavior are outside this DC-only conveyor package.",
+    "Temperature dependence and self-heating are not modelled; the electrical region is limited to the cited nominal-temperature data.",
+    "Catalog parametrics were used only as initial guesses or F1 fallback constraints and are not datasheet citations.",
+    "VAF is omitted because the datasheet has no output-characteristics figure from which to extract an Early voltage; temperature-dependent parameters, reverse operation, noise, and full transient-curve digitization are also outside this minimum F2 extraction."
+  ],
+  "licence": {
+    "spdx_id": "MIT",
+    "provenance_basis": "original_from_facts"
+  },
+  "generator": {
+    "tool_or_agent": "opencircuit-model-factory-v0.1.0 bulk-adapter",
+    "date": "2026-08-09"
+  },
+  "reviewer": {
+    "tool_or_agent": "gpt-5.6-sol independent re-reviewer (P6 proving-50 final)",
+    "date": "2026-08-09"
+  },
+  "test_results": {
+    "status": "complete",
+    "pass_count": 15,
+    "fail_count": 0,
+    "total_count": 15,
+    "worst_observed_relative_fitting_error": {
+      "value": 0.08320617153230264,
+      "quantity": "collector current at IB for hFE 65 and IC 0.1 A"
+    }
+  },
+  "validation_date": "2026-08-09"
+}

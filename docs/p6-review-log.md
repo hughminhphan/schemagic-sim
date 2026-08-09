@@ -141,3 +141,86 @@ The machine-readable adjudication is in `docs/promotion-manifest.json`.
 - Source reproduction: 50 of 50 staged URLs resolved and 50 of 50 source hashes matched.
 - Aggregate model-library gate: `npm test --workspace=@opencircuit/model-library` passed, validating all 122 packages.
 - Final library package count: 122. No staged package was added, and the NTC approval does not change the count.
+
+## Final re-review and promotion
+
+Date: 2026-08-09
+
+Reviewer: `gpt-5.6-sol independent re-reviewer (P6 proving-50 final)`
+
+Branch: `worktree-agent-afd1d235204e6778e`
+
+Scope: second and final review of the 50 regenerated conveyor proving-tranche packages. The external staging source remained read-only. Review work used `.review-scratch/proving-50/packages/`.
+
+### Final verdict
+
+| Family | Reviewed | Promoted F2 | Promoted F1 | Demoted then promoted | Rejected |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Diode | 18 | 0 | 0 | 0 | 18 |
+| BJT | 16 | 2 | 3 | 7 | 4 |
+| MOSFET | 16 | 0 | 0 | 0 | 16 |
+| **Total** | **50** | **2** | **3** | **7** | **38** |
+
+Promoted F2:
+
+- `diodes-inc/MMBT3904T-7-F`
+- `onsemi/MMBT3906LT1G`
+
+Promoted F1 without a first-pass F2 claim:
+
+- `nexperia/BC847`
+- `nexperia/BC847C`
+- `nexperia/PMBT2907A`
+
+Demoted then promoted as F1:
+
+- `diodes-inc/MMBT3904-7-F`
+- `nexperia/BC817-40`
+- `nexperia/PBSS4160T`
+- `nexperia/PMBT4403`
+- `onsemi/MMBT4401LT1G`
+- `onsemi/MMBT4403LT1G`
+- `onsemi/MMBTA42LT1G`
+
+### Defect-class verification
+
+- Runnable package evidence is present for all 50 packages: 197 `.cir` benches, 50 non-empty expectation files, and 277 checks. A fresh independent run produced 197 of 197 native-versus-WASM passes and 277 of 277 expectation passes.
+- Provenance headers are complete in all 50 `model.cir` files. All 50 source hashes resolve to the preserved tranche PDFs, and all 50 source records reproduce their cached PDF SHA-256 values.
+- All 50 packages declare electrical and nominal-temperature operating bounds. The BJT benches explicitly assert `.temp 25`. All 34 diode and MOSFET packages omit an explicit temperature card, so their benches execute at the ngspice default rather than asserting the cited 25 degC condition. This leaves the P6 bias-condition defect open for those 34 packages and is a final rejection, not a repair request.
+- Component tier, fitted tier, completed test state, stored validation counts, and domain coverage are coherent for all 50 packages. The regenerated split is exactly 13 F2 and 37 F1.
+- No `canonical_mpn` contains a comma. All 17 comma-bearing Nexperia ordering codes are preserved as aliases of normalized canonical MPNs.
+- `MMBT2222ALT1G` now cites `p. 3, Figure 3, DC Current Gain` in every fitted residual. The cited PDF page contains Figure 3. The package is nevertheless rejected because `MMBT2222ALT1G` is already an alias of the existing `onsemi/MMBT2222A` package.
+- The repaired `MMBTA42LT1G` F2 attempt was reproduced independently. It selected the 25 degC VBE(on) curve and derived nominal `IS = 3.2034708367413186e-14 A` at `IC = 0.01 A`, `VBE = 0.68 V`, rather than using the 150 degC trace. Its second VCE(sat) expectation still failed during staging, so the recorded F1 demotion is correct. The promoted F1 package holds `IS = 1e-14 A` and excludes saturation-voltage behavior.
+- All nine mechanical self-demotions record a reason. Seven BJT packages have F1 claims and regions consistent with their retained evidence and are promoted. `1N4148W-7-F` and `BAV99-215` remain rejected because their benches do not assert 25 degC; `BAV99-215` also collides with the existing `BAV99` MPN.
+
+### F2 adjudication
+
+All 13 surviving F2 claims were individually rerun. Their 90 stored residual rows recompute exactly from `fitted.json`, including stored worst and RMS summaries, and every family quantity remains inside `fit-gates.json`. All cited pages were inspected in the preserved PDFs and resolve to the claimed curve. Every F2 package has multiple cited typical targets, applicable hard-bound checks, declared DC-only coverage, and fresh native-versus-WASM agreement.
+
+Only two F2 packages satisfy the full P6 ruling because they also assert the 25 degC bench bias and do not collide with the existing library. The ten diode F2 packages are rejected for the missing temperature assertion. `MMBT2222ALT1G` is rejected for the existing alias collision.
+
+### F1 spot checks and remaining rejections
+
+The other 28 first-pass F1 packages were checked per part for source resolution, parameter serialization, cited limits, bench outcomes, supported region, and known omissions. No promoted BJT showed a stale parameter, bound-saturated fit, unit-prefix error, wrong-figure fit, or unsupported domain claim.
+
+Final rejection classes:
+
+- All 18 diode packages and all 16 MOSFET packages: package benches omit `.temp 25`, leaving the cited nominal-temperature bias unasserted.
+- `nexperia/BC846B-215`: canonical MPN collides with the existing `nexperia/BC846B` package.
+- `onsemi/MMBT2222ALT1G`: ordering code collides with the existing `onsemi/MMBT2222A` alias.
+- `nexperia/PMST3904-115` and `onsemi/MMBT3904LT1G`: complete F1 numeric vectors still duplicate one another without shared-die inheritance evidence or independent parameterization. The predecessor finding remains open.
+- `nexperia/BAV99-215`, already rejected for bench bias, also collides with the existing `onsemi/BAV99` canonical MPN.
+
+The exact package-by-package reasons are recorded in `docs/promotion-manifest.json`. Rejected packages remain untouched in external staging.
+
+### Cross-library and layout result
+
+The promoted set has no canonical or alias collision with the prior 122 packages. Promotion uses existing manufacturer directory conventions, including `diodes-inc`, and normalized canonical MPN directory names for Nexperia ordering codes. Twelve packages were copied into the production library.
+
+### Final validation
+
+- Promoted package validator: 12 of 12 passed.
+- Promoted package fresh engine run: 38 of 38 benches passed native ngspice-46 versus WASM, and 76 of 76 expectations passed.
+- Full regenerated tranche engine run: 197 of 197 benches passed native versus WASM, and 277 of 277 expectations passed.
+- Full model-library gate: `npm test --workspace=@opencircuit/model-library` passed, validating all 134 packages.
+- Final library package count: 134.
