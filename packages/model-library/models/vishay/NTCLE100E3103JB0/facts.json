@@ -1,0 +1,118 @@
+{
+  "schema_version": "1.0.0",
+  "extraction_method": "pdftotext -layout plus manual table transcription",
+  "sensor_variant": "beta_ntc",
+  "fit_conditions": {
+    "temperature": {
+      "value": 25,
+      "unit": "degC",
+      "conditions": "R25 reference condition",
+      "page_reference": "p. 2 electrical data table",
+      "source_kind": "typical"
+    }
+  },
+  "transfer_points": [
+    {
+      "environment": {
+        "value": -40,
+        "unit": "degC",
+        "conditions": "zero-power resistance table",
+        "page_reference": "p. 10 NTCLE100E3103 resistance column",
+        "source_kind": "typical_table"
+      },
+      "electrical": {
+        "value": 332094,
+        "unit": "ohm",
+        "conditions": "zero-power resistance at -40 degC",
+        "page_reference": "p. 10 NTCLE100E3103 resistance column",
+        "source_kind": "typical_table"
+      }
+    },
+    {
+      "environment": {
+        "value": 25,
+        "unit": "degC",
+        "conditions": "R25 reference",
+        "page_reference": "p. 10 NTCLE100E3103 resistance column",
+        "source_kind": "typical_table"
+      },
+      "electrical": {
+        "value": 10000,
+        "unit": "ohm",
+        "conditions": "zero-power resistance at 25 degC",
+        "page_reference": "p. 10 NTCLE100E3103 resistance column",
+        "source_kind": "typical_table"
+      }
+    },
+    {
+      "environment": {
+        "value": 85,
+        "unit": "degC",
+        "conditions": "zero-power resistance table",
+        "page_reference": "p. 10 NTCLE100E3103 resistance column",
+        "source_kind": "typical_table"
+      },
+      "electrical": {
+        "value": 1070,
+        "unit": "ohm",
+        "conditions": "zero-power resistance at 85 degC",
+        "page_reference": "p. 10 NTCLE100E3103 resistance column",
+        "source_kind": "typical_table"
+      }
+    }
+  ],
+  "parameters": {
+    "nominal_resistance": {
+      "value": 10000,
+      "unit": "ohm",
+      "conditions": "at 25 degC",
+      "page_reference": "p. 2 R25 table, 103 row",
+      "source_kind": "typical"
+    },
+    "reference_temperature": {
+      "value": 25,
+      "unit": "degC",
+      "conditions": "R25 reference",
+      "page_reference": "p. 2 R25 table heading",
+      "source_kind": "typical"
+    },
+    "beta": {
+      "value": 3977,
+      "unit": "K",
+      "conditions": "B25/85",
+      "page_reference": "p. 2 B25/85 table, 103 row",
+      "source_kind": "typical"
+    },
+    "resistance_tolerance": {
+      "value": 5,
+      "unit": "%",
+      "conditions": "ordering-code J tolerance",
+      "page_reference": "p. 1 tolerance range and part-number structure",
+      "source_kind": "maximum"
+    },
+    "beta_tolerance": {
+      "value": 0.75,
+      "unit": "%",
+      "conditions": "B25/85",
+      "page_reference": "p. 2 B25/85 tolerance, 103 row",
+      "source_kind": "maximum"
+    }
+  },
+  "identity": {
+    "canonical_mpn": "NTCLE100E3103JB0",
+    "manufacturer": "Vishay BCcomponents",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://www.vishay.com/docs/29049/ntcle100.pdf",
+    "revision": "Document 29049, revision 07-May-2025",
+    "sha256": "7a6b1228e4464d61dd4e2774db871c44cefb5b2353c1b1179330004c4562af69",
+    "accessed_date": "2026-08-09",
+    "pages_referenced": [
+      "p. 2",
+      "p. 10"
+    ],
+    "placeholder": false
+  }
+}
