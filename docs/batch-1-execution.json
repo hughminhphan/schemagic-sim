@@ -1,0 +1,1108 @@
+{
+  "branch": "worktree-agent-ac303d82a854cb5b2",
+  "campaign": "scheMAGIC 1k model-library batch 1 execution",
+  "commits": [
+    {
+      "hash": "f1e2b06",
+      "subject": "fix(conveyor): batch-campaign hardening \u2014 temp pinning, collision/duplicate guards, evaluator"
+    },
+    {
+      "hash": "6531fc0",
+      "subject": "docs(conveyor): record batch-1 fresh selection"
+    },
+    {
+      "hash": "b6ebcf0",
+      "subject": "fix(model-factory): fit signed PNP and Zener parts"
+    },
+    {
+      "hash": "dc957df",
+      "subject": "fix(conveyor): retry validator-failed fits"
+    },
+    {
+      "hash": "d1b1395",
+      "subject": "fix(model-factory): guard maximum diode benches"
+    }
+  ],
+  "date": "2026-08-09",
+  "extraction": {
+    "accepted": 70,
+    "catalog_discrepancy_retries": [
+      {
+        "discrepancy": "vdmos.crss: catalog '6.6pF' disagrees with extracted [4.5e-11]; closest ratio 6.82x",
+        "job_index": 63,
+        "lcsc_id": "C427391",
+        "mpn": "MDD2301",
+        "retry_outcome": "second disagreement; honest F1 demotion"
+      }
+    ],
+    "extraction_demotions": [
+      {
+        "lcsc_id": "C19077455",
+        "mpn": "MM3Z5V1",
+        "reason": "No honest part-specific curve was available from the aggregate family plots."
+      },
+      {
+        "lcsc_id": "C427391",
+        "mpn": "MDD2301",
+        "reason": "cross-validation failed after one retry: vdmos.crss: catalog '6.6pF' disagrees with extracted [4.5e-11]; closest ratio 6.82x"
+      }
+    ],
+    "failed_extracted_transitions": 2,
+    "identity_validation_retries": [
+      {
+        "discrepancy": "Extraction manufacturer mismatch: 'Zhuhai Hongjiacheng Technology Co., Ltd' != 'hongjiacheng'",
+        "job_index": 56,
+        "lcsc_id": "C22379475",
+        "mpn": "2N7002K",
+        "retry_outcome": "accepted with exact catalog manufacturer identity"
+      }
+    ],
+    "initial_f1_candidates": 2,
+    "initial_f2_candidates": 68,
+    "jobs": 70,
+    "luna_calls": 74,
+    "response_directory": "/Users/hughp/Documents/opencircuit/.claude/worktrees/agent-ac303d82a854cb5b2/tools/conveyor/data/staging/batch-1-fresh-70/extractions",
+    "wrong_target_operational_retries": [
+      {
+        "first_result": "unrelated MMBT5551 BJT; assigned response file absent",
+        "job_index": 42,
+        "lcsc_id": "C7502691",
+        "mpn": "RB751V-40",
+        "retry_outcome": "accepted target extraction"
+      },
+      {
+        "first_result": "unrelated S9014 BJT; assigned response file absent",
+        "job_index": 58,
+        "lcsc_id": "C7420344",
+        "mpn": "HL2301A",
+        "retry_outcome": "accepted target extraction"
+      }
+    ]
+  },
+  "fetch": {
+    "cached_datasheets_copied": 70,
+    "downloaded": 0,
+    "missing": 0,
+    "source_was_copied_not_moved": true
+  },
+  "fitting_and_staging": {
+    "campaign_staging_duplicate_fitted_die_skips": 12,
+    "f1": 48,
+    "f2": 3,
+    "f1_outcome_reason_counts": {
+      "f2_gate_failure_demotion": 5,
+      "f2_package_validation_demotion": 5,
+      "family_parked_or_pre_demoted": 38
+    },
+    "family_parking_failure_counters": {
+      "bjt": 0,
+      "diode": 2,
+      "mosfet": 2
+    },
+    "f2_gate_successes": {
+      "bjt": 3
+    },
+    "factory_results": "/Users/hughp/Documents/opencircuit/.claude/worktrees/agent-ac303d82a854cb5b2/tools/conveyor/data/staging/batch-1-fresh-70/factory-results.json",
+    "failed": 1,
+    "family_parking": {
+      "diode": "family parked after 2 consecutive F2 fit-gate failures with no F2 success; later parts staged F1 (diode F2 gate failed: forward_voltage worst relative error 0.0538 exceeds gate 0.05)",
+      "mosfet": "family parked after 2 consecutive F2 fit-gate failures with no F2 success; later parts staged F1 (mosfet F2 gate failed: drain_current worst relative error 206.6953 exceeds gate 0.2; drain_current RMS relative error 45.8444 exceeds gate 0.12; rds_on worst relative error 2.1337 exceeds gate 0.2; rds_on RMS relative error 1.2249 exceeds gate 0.12)"
+    },
+    "family_parking_record": "/Users/hughp/Documents/opencircuit/.claude/worktrees/agent-ac303d82a854cb5b2/tools/conveyor/data/staging/batch-1-fresh-70/family-parked.json",
+    "identity_collisions_during_staging": 0,
+    "per_family": {
+      "bjt": {
+        "F1": 6,
+        "F2": 3,
+        "failed": 1,
+        "selected": 17,
+        "skipped": 7,
+        "staged": 9
+      },
+      "diode": {
+        "F1": 21,
+        "F2": 0,
+        "failed": 0,
+        "selected": 31,
+        "skipped": 10,
+        "staged": 21
+      },
+      "mosfet": {
+        "F1": 21,
+        "F2": 0,
+        "failed": 0,
+        "selected": 22,
+        "skipped": 1,
+        "staged": 21
+      }
+    },
+    "remaining_failure": {
+      "family": "bjt",
+      "lcsc_id": "C20069130",
+      "manufacturer": "hongjiacheng",
+      "mpn": "S9014",
+      "reason": "F2 failed: Validation failed for S9014. See validation-results.json; failed package checks: vce_sat_2 observed 0.0812146840061082 (allowed error 0.02), vbe_sat_2 observed 0.6020197240585929 (allowed error 0.066), vce_sat_3 observed 0.08155482229487018 (allowed error 0.02), vbe_sat_3 observed 0.6620493882584698 (allowed error 0.08000000000000002); F1 failed: Validation failed for S9014. See validation-results.json; failed package checks: hfe_at_0.01_a observed 1042.4870000348108 (allowed error 270)",
+      "stage": "fitted",
+      "state": "failed_fitted",
+      "status": "failed"
+    },
+    "reviewed_library_duplicate_fitted_die_skips": 6,
+    "selected_input": 70,
+    "skipped": 18,
+    "staged_validator_pass": 51,
+    "staging_collisions": 12
+  },
+  "outcomes": [
+    {
+      "family": "bjt",
+      "fidelity": "F2",
+      "lcsc_id": "C7420357",
+      "manufacturer": "hongjiacheng",
+      "mpn": "MMBT5551",
+      "package_path": "/Users/hughp/Documents/opencircuit/.claude/worktrees/agent-ac303d82a854cb5b2/tools/conveyor/data/staging/batch-1-fresh-70/packages/hongjiacheng/MMBT5551",
+      "review_status": "pending-independent-package-review",
+      "state": "staged",
+      "status": "staged",
+      "validator_pass": true
+    },
+    {
+      "family": "bjt",
+      "fidelity": "F2",
+      "lcsc_id": "C7420356",
+      "manufacturer": "hongjiacheng",
+      "mpn": "MMBT5401",
+      "package_path": "/Users/hughp/Documents/opencircuit/.claude/worktrees/agent-ac303d82a854cb5b2/tools/conveyor/data/staging/batch-1-fresh-70/packages/hongjiacheng/MMBT5401",
+      "review_status": "pending-independent-package-review",
+      "state": "staged",
+      "status": "staged",
+      "validator_pass": true
+    },
+    {
+      "family": "bjt",
+      "fidelity": "F1",
+      "lcsc_id": "C7420371",
+      "manufacturer": "hongjiacheng",
+      "mpn": "SS8550",
+      "package_path": "/Users/hughp/Documents/opencircuit/.claude/worktrees/agent-ac303d82a854cb5b2/tools/conveyor/data/staging/batch-1-fresh-70/packages/hongjiacheng/SS8550",
+      "reason": "bjt F2 gate failed: BF saturated its bound at 198; the residual is a constraint artefact",
+      "review_status": "pending-independent-package-review",
+      "state": "staged",
+      "status": "staged",
+      "validator_pass": true
+    },
+    {
+      "family": "bjt",
+      "fidelity": "F1",
+      "lcsc_id": "C20069125",
+      "manufacturer": "hongjiacheng",
+      "mpn": "S8050",
+      "package_path": "/Users/hughp/Documents/opencircuit/.claude/worktrees/agent-ac303d82a854cb5b2/tools/conveyor/data/staging/batch-1-fresh-70/packages/hongjiacheng/S8050",
+      "reason": "Validation failed for S8050. See validation-results.json; failed package checks: vce_sat_2 observed 0.06516803054299515 (allowed error 0.02), vce_sat_3 observed 0.06709648908657702 (allowed error 0.02), vce_sat_4 observed 0.08627394870712668 (allowed error 0.02), vbe_sat_5 observed 1.370642502167738 (allowed error 0.196)",
+      "review_status": "pending-independent-package-review",
+      "state": "staged",
+      "status": "staged",
+      "validator_pass": true
+    },
+    {
+      "collision_scope": "reviewed_library",
+      "family": "bjt",
+      "lcsc_id": "C408396",
+      "manufacturer": "MDD Microdiode Semiconductor",
+      "mpn": "MMBT5551",
+      "reason": "duplicate fitted die vector already represented by diodes-inc/MMBT3904-7-F; no independent parameterization or shared-die evidence was supplied",
+      "stage": "selection",
+      "state": "failed_fitted",
+      "status": "skipped"
+    },
+    {
+      "family": "bjt",
+      "fidelity": "F1",
+      "lcsc_id": "C364312",
+      "manufacturer": "MDD(Microdiode Semiconductor)",
+      "mpn": "S8050",
+      "package_path": "/Users/hughp/Documents/opencircuit/.claude/worktrees/agent-ac303d82a854cb5b2/tools/conveyor/data/staging/batch-1-fresh-70/packages/mdd-microdiode/S8050",
+      "reason": "Validation failed for S8050. See validation-results.json; failed package checks: vce_sat_2 observed 0.06541028954486199 (allowed error 0.02), vce_sat_3 observed 0.06722487391593898 (allowed error 0.02), vce_sat_4 observed 0.08524892337177024 (allowed error 0.02), vbe_sat_5 observed 1.3667550955938463 (allowed error 0.18000000000000002)",
+      "review_status": "pending-independent-package-review",
+      "state": "staged",
+      "status": "staged",
+      "validator_pass": true
+    },
+    {
+      "family": "bjt",
+      "lcsc_id": "C20069130",
+      "manufacturer": "hongjiacheng",
+      "mpn": "S9014",
+      "reason": "F2 failed: Validation failed for S9014. See validation-results.json; failed package checks: vce_sat_2 observed 0.0812146840061082 (allowed error 0.02), vbe_sat_2 observed 0.6020197240585929 (allowed error 0.066), vce_sat_3 observed 0.08155482229487018 (allowed error 0.02), vbe_sat_3 observed 0.6620493882584698 (allowed error 0.08000000000000002); F1 failed: Validation failed for S9014. See validation-results.json; failed package checks: hfe_at_0.01_a observed 1042.4870000348108 (allowed error 270)",
+      "stage": "fitted",
+      "state": "failed_fitted",
+      "status": "failed"
+    },
+    {
+      "family": "bjt",
+      "fidelity": "F1",
+      "lcsc_id": "C20069127",
+      "manufacturer": "hongjiacheng",
+      "mpn": "S9013",
+      "package_path": "/Users/hughp/Documents/opencircuit/.claude/worktrees/agent-ac303d82a854cb5b2/tools/conveyor/data/staging/batch-1-fresh-70/packages/hongjiacheng/S9013",
+      "reason": "Validation failed for S9013. See validation-results.json; failed package checks: vbe_sat_1_maximum observed 1.3722104454050679 (maximum 1.2)",
+      "review_status": "pending-independent-package-review",
+      "state": "staged",
+      "status": "staged",
+      "validator_pass": true
+    },
+    {
+      "family": "bjt",
+      "fidelity": "F1",
+      "lcsc_id": "C7420355",
+      "manufacturer": "hongjiacheng",
+      "mpn": "MMBT4401",
+      "package_path": "/Users/hughp/Documents/opencircuit/.claude/worktrees/agent-ac303d82a854cb5b2/tools/conveyor/data/staging/batch-1-fresh-70/packages/hongjiacheng/MMBT4401",
+      "reason": "Validation failed for MMBT4401. See validation-results.json; failed package checks: vbe_sat_1_maximum observed 0.9606771214182486 (maximum 0.95), vbe_sat_2_maximum observed 1.2986552780269451 (maximum 1.2)",
+      "review_status": "pending-independent-package-review",
+      "state": "staged",
+      "status": "staged",
+      "validator_pass": true
+    },
+    {
+      "family": "bjt",
+      "fidelity": "F1",
+      "lcsc_id": "C20069126",
+      "manufacturer": "hongjiacheng",
+      "mpn": "S8550",
+      "package_path": "/Users/hughp/Documents/opencircuit/.claude/worktrees/agent-ac303d82a854cb5b2/tools/conveyor/data/staging/batch-1-fresh-70/packages/hongjiacheng/S8550",
+      "reason": "Validation failed for S8550. See validation-results.json; failed package checks: vce_sat_2 observed 0.06533540820503604 (allowed error 0.02), vce_sat_3 observed 0.06784749544285637 (allowed error 0.02), vce_sat_4 observed 0.07865631051313365 (allowed error 0.02), vce_sat_6 observed 0.17607327592012506 (allowed error 0.05600000000000001)",
+      "review_status": "pending-independent-package-review",
+      "state": "staged",
+      "status": "staged",
+      "validator_pass": true
+    },
+    {
+      "collision_scope": "campaign_staging",
+      "family": "bjt",
+      "lcsc_id": "C20069129",
+      "manufacturer": "hongjiacheng",
+      "mpn": "S9012",
+      "reason": "duplicate fitted die vector already represented by hongjiacheng/SS8550; no independent parameterization or shared-die evidence was supplied",
+      "stage": "selection",
+      "state": "failed_fitted",
+      "status": "skipped"
+    },
+    {
+      "collision_scope": "reviewed_library",
+      "family": "bjt",
+      "lcsc_id": "C22388837",
+      "manufacturer": "hongjiacheng",
+      "mpn": "MMST3904",
+      "reason": "duplicate fitted die vector already represented by diodes-inc/MMBT3904-7-F; no independent parameterization or shared-die evidence was supplied",
+      "stage": "selection",
+      "state": "failed_fitted",
+      "status": "skipped"
+    },
+    {
+      "collision_scope": "reviewed_library",
+      "family": "bjt",
+      "lcsc_id": "C20069143",
+      "manufacturer": "hongjiacheng",
+      "mpn": "2SC1815",
+      "reason": "duplicate fitted die vector already represented by nexperia/PBSS4160T; no independent parameterization or shared-die evidence was supplied",
+      "stage": "selection",
+      "state": "failed_fitted",
+      "status": "skipped"
+    },
+    {
+      "family": "bjt",
+      "fidelity": "F2",
+      "lcsc_id": "C20069146",
+      "manufacturer": "hongjiacheng",
+      "mpn": "MMBTA92",
+      "package_path": "/Users/hughp/Documents/opencircuit/.claude/worktrees/agent-ac303d82a854cb5b2/tools/conveyor/data/staging/batch-1-fresh-70/packages/hongjiacheng/MMBTA92",
+      "review_status": "pending-independent-package-review",
+      "state": "staged",
+      "status": "staged",
+      "validator_pass": true
+    },
+    {
+      "collision_scope": "reviewed_library",
+      "family": "bjt",
+      "lcsc_id": "C20069138",
+      "manufacturer": "hongjiacheng",
+      "mpn": "MMBTA42",
+      "reason": "duplicate fitted die vector already represented by diodes-inc/MMBT3904-7-F; no independent parameterization or shared-die evidence was supplied",
+      "stage": "selection",
+      "state": "failed_fitted",
+      "status": "skipped"
+    },
+    {
+      "collision_scope": "reviewed_library",
+      "family": "bjt",
+      "lcsc_id": "C20069154",
+      "manufacturer": "hongjiacheng",
+      "mpn": "BC817-25",
+      "reason": "duplicate fitted die vector already represented by nexperia/PBSS4160T; no independent parameterization or shared-die evidence was supplied",
+      "stage": "selection",
+      "state": "failed_fitted",
+      "status": "skipped"
+    },
+    {
+      "collision_scope": "reviewed_library",
+      "family": "bjt",
+      "lcsc_id": "C20069141",
+      "manufacturer": "hongjiacheng",
+      "mpn": "MMBTA44",
+      "reason": "duplicate fitted die vector already represented by diodes-inc/MMBT3904-7-F; no independent parameterization or shared-die evidence was supplied",
+      "stage": "selection",
+      "state": "failed_fitted",
+      "status": "skipped"
+    },
+    {
+      "family": "diode",
+      "fidelity": "F1",
+      "lcsc_id": "C22466352",
+      "manufacturer": "hongjiacheng",
+      "mpn": "DSK24",
+      "package_path": "/Users/hughp/Documents/opencircuit/.claude/worktrees/agent-ac303d82a854cb5b2/tools/conveyor/data/staging/batch-1-fresh-70/packages/hongjiacheng/DSK24",
+      "reason": "F2 failed: diode F2 gate failed: forward_voltage worst relative error 0.0918 exceeds gate 0.05; forward_voltage RMS relative error 0.0645 exceeds gate 0.03; F1 failed: Validation failed for DSK24. See validation-results.json; failed package checks: forward_voltage_maximum_at_1.9_a observed 0.5532602773657976 (maximum 0.55); family parked after 2 consecutive F2 fit-gate failures with no F2 success; later parts staged F1 (diode F2 gate failed: forward_voltage worst relative error 0.0538 exceeds gate 0.05)",
+      "review_status": "pending-independent-package-review",
+      "state": "staged",
+      "status": "staged",
+      "validator_pass": true
+    },
+    {
+      "family": "diode",
+      "fidelity": "F1",
+      "lcsc_id": "C7420320",
+      "manufacturer": "hongjiacheng",
+      "mpn": "1N4148WT",
+      "package_path": "/Users/hughp/Documents/opencircuit/.claude/worktrees/agent-ac303d82a854cb5b2/tools/conveyor/data/staging/batch-1-fresh-70/packages/hongjiacheng/1N4148WT",
+      "reason": "diode F2 gate failed: RS saturated its physical bound at 50; the true optimum lies outside the physical range, so the residual is a constraint artefact; forward_voltage worst relative error 0.0751 exceeds gate 0.05; forward_voltage RMS relative error 0.0392 exceeds gate 0.03",
+      "review_status": "pending-independent-package-review",
+      "state": "staged",
+      "status": "staged",
+      "validator_pass": true
+    },
+    {
+      "collision_scope": "campaign_staging",
+      "family": "diode",
+      "lcsc_id": "C7420318",
+      "manufacturer": "hongjiacheng",
+      "mpn": "1N4148W",
+      "reason": "duplicate fitted die vector already represented by hongjiacheng/1N4148WT; no independent parameterization or shared-die evidence was supplied",
+      "stage": "selection",
+      "state": "failed_fitted",
+      "status": "skipped"
+    },
+    {
+      "family": "diode",
+      "fidelity": "F1",
+      "lcsc_id": "C7502695",
+      "manufacturer": "hongjiacheng",
+      "mpn": "BAT60B",
+      "package_path": "/Users/hughp/Documents/opencircuit/.claude/worktrees/agent-ac303d82a854cb5b2/tools/conveyor/data/staging/batch-1-fresh-70/packages/hongjiacheng/BAT60B",
+      "reason": "diode F2 gate failed: forward_voltage worst relative error 0.0538 exceeds gate 0.05",
+      "review_status": "pending-independent-package-review",
+      "state": "staged",
+      "status": "staged",
+      "validator_pass": true
+    },
+    {
+      "collision_scope": "campaign_staging",
+      "family": "diode",
+      "lcsc_id": "C437156",
+      "manufacturer": "MDD Microdiode Semiconductor",
+      "mpn": "1N4148WS",
+      "reason": "duplicate fitted die vector already represented by hongjiacheng/1N4148WT; no independent parameterization or shared-die evidence was supplied",
+      "stage": "selection",
+      "state": "failed_fitted",
+      "status": "skipped"
+    },
+    {
+      "family": "diode",
+      "fidelity": "F1",
+      "lcsc_id": "C7420331",
+      "manufacturer": "hongjiacheng",
+      "mpn": "B5819WS",
+      "package_path": "/Users/hughp/Documents/opencircuit/.claude/worktrees/agent-ac303d82a854cb5b2/tools/conveyor/data/staging/batch-1-fresh-70/packages/hongjiacheng/B5819WS",
+      "reason": "family parked after 2 consecutive F2 fit-gate failures with no F2 success; later parts staged F1 (diode F2 gate failed: forward_voltage worst relative error 0.0538 exceeds gate 0.05)",
+      "review_status": "pending-independent-package-review",
+      "state": "staged",
+      "status": "staged",
+      "validator_pass": true
+    },
+    {
+      "family": "diode",
+      "fidelity": "F1",
+      "lcsc_id": "C7420369",
+      "manufacturer": "hongjiacheng",
+      "mpn": "SS54",
+      "package_path": "/Users/hughp/Documents/opencircuit/.claude/worktrees/agent-ac303d82a854cb5b2/tools/conveyor/data/staging/batch-1-fresh-70/packages/hongjiacheng/SS54",
+      "reason": "F2 failed: Validation failed for SS54. See validation-results.json; failed package checks: forward_voltage_maximum_at_4.75_a observed 0.553545310210772 (maximum 0.55); F1 failed: Validation failed for SS54. See validation-results.json; failed package checks: forward_voltage_maximum_at_4.75_a observed 0.553545310210772 (maximum 0.55); family parked after 2 consecutive F2 fit-gate failures with no F2 success; later parts staged F1 (diode F2 gate failed: forward_voltage worst relative error 0.0538 exceeds gate 0.05)",
+      "review_status": "pending-independent-package-review",
+      "state": "staged",
+      "status": "staged",
+      "validator_pass": true
+    },
+    {
+      "collision_scope": "campaign_staging",
+      "family": "diode",
+      "lcsc_id": "C64885",
+      "manufacturer": "MDD Microdiode Semiconductor",
+      "mpn": "B5819W",
+      "reason": "duplicate fitted die vector already represented by hongjiacheng/B5819WS; no independent parameterization or shared-die evidence was supplied",
+      "stage": "selection",
+      "state": "failed_fitted",
+      "status": "skipped"
+    },
+    {
+      "family": "diode",
+      "fidelity": "F1",
+      "lcsc_id": "C18199088",
+      "manufacturer": "hongjiacheng",
+      "mpn": "1N4007W",
+      "package_path": "/Users/hughp/Documents/opencircuit/.claude/worktrees/agent-ac303d82a854cb5b2/tools/conveyor/data/staging/batch-1-fresh-70/packages/hongjiacheng/1N4007W",
+      "reason": "family parked after 2 consecutive F2 fit-gate failures with no F2 success; later parts staged F1 (diode F2 gate failed: forward_voltage worst relative error 0.0538 exceeds gate 0.05)",
+      "review_status": "pending-independent-package-review",
+      "state": "staged",
+      "status": "staged",
+      "validator_pass": true
+    },
+    {
+      "family": "diode",
+      "fidelity": "F1",
+      "lcsc_id": "C22399888",
+      "manufacturer": "hongjiacheng",
+      "mpn": "BZT52C4V3S",
+      "package_path": "/Users/hughp/Documents/opencircuit/.claude/worktrees/agent-ac303d82a854cb5b2/tools/conveyor/data/staging/batch-1-fresh-70/packages/hongjiacheng/BZT52C4V3S",
+      "reason": "family parked after 2 consecutive F2 fit-gate failures with no F2 success; later parts staged F1 (diode F2 gate failed: forward_voltage worst relative error 0.0538 exceeds gate 0.05)",
+      "review_status": "pending-independent-package-review",
+      "state": "staged",
+      "status": "staged",
+      "validator_pass": true
+    },
+    {
+      "collision_scope": "campaign_staging",
+      "family": "diode",
+      "lcsc_id": "C64886",
+      "manufacturer": "MDD Microdiode Semiconductor",
+      "mpn": "B5819WS",
+      "reason": "duplicate fitted die vector already represented by hongjiacheng/B5819WS; no independent parameterization or shared-die evidence was supplied",
+      "stage": "selection",
+      "state": "failed_fitted",
+      "status": "skipped"
+    },
+    {
+      "family": "diode",
+      "fidelity": "F1",
+      "lcsc_id": "C19077400",
+      "manufacturer": "hongjiacheng",
+      "mpn": "BZT52C4V7",
+      "package_path": "/Users/hughp/Documents/opencircuit/.claude/worktrees/agent-ac303d82a854cb5b2/tools/conveyor/data/staging/batch-1-fresh-70/packages/hongjiacheng/BZT52C4V7",
+      "reason": "family parked after 2 consecutive F2 fit-gate failures with no F2 success; later parts staged F1 (diode F2 gate failed: forward_voltage worst relative error 0.0538 exceeds gate 0.05)",
+      "review_status": "pending-independent-package-review",
+      "state": "staged",
+      "status": "staged",
+      "validator_pass": true
+    },
+    {
+      "family": "diode",
+      "fidelity": "F1",
+      "lcsc_id": "C7420329",
+      "manufacturer": "hongjiacheng",
+      "mpn": "B5817WS",
+      "package_path": "/Users/hughp/Documents/opencircuit/.claude/worktrees/agent-ac303d82a854cb5b2/tools/conveyor/data/staging/batch-1-fresh-70/packages/hongjiacheng/B5817WS",
+      "reason": "family parked after 2 consecutive F2 fit-gate failures with no F2 success; later parts staged F1 (diode F2 gate failed: forward_voltage worst relative error 0.0538 exceeds gate 0.05)",
+      "review_status": "pending-independent-package-review",
+      "state": "staged",
+      "status": "staged",
+      "validator_pass": true
+    },
+    {
+      "collision_scope": "campaign_staging",
+      "family": "diode",
+      "lcsc_id": "C7420319",
+      "manufacturer": "hongjiacheng",
+      "mpn": "1N4148WS",
+      "reason": "duplicate fitted die vector already represented by hongjiacheng/1N4148WT; no independent parameterization or shared-die evidence was supplied",
+      "stage": "selection",
+      "state": "failed_fitted",
+      "status": "skipped"
+    },
+    {
+      "collision_scope": "campaign_staging",
+      "family": "diode",
+      "lcsc_id": "C7420350",
+      "manufacturer": "hongjiacheng",
+      "mpn": "M7",
+      "reason": "duplicate fitted die vector already represented by hongjiacheng/1N4007W; no independent parameterization or shared-die evidence was supplied",
+      "stage": "selection",
+      "state": "failed_fitted",
+      "status": "skipped"
+    },
+    {
+      "family": "diode",
+      "fidelity": "F1",
+      "lcsc_id": "C19077393",
+      "manufacturer": "hongjiacheng",
+      "mpn": "BZT52B5V1",
+      "package_path": "/Users/hughp/Documents/opencircuit/.claude/worktrees/agent-ac303d82a854cb5b2/tools/conveyor/data/staging/batch-1-fresh-70/packages/hongjiacheng/BZT52B5V1",
+      "reason": "family parked after 2 consecutive F2 fit-gate failures with no F2 success; later parts staged F1 (diode F2 gate failed: forward_voltage worst relative error 0.0538 exceeds gate 0.05)",
+      "review_status": "pending-independent-package-review",
+      "state": "staged",
+      "status": "staged",
+      "validator_pass": true
+    },
+    {
+      "collision_scope": "campaign_staging",
+      "family": "diode",
+      "lcsc_id": "C19077401",
+      "manufacturer": "hongjiacheng",
+      "mpn": "BZT52C5V1",
+      "reason": "duplicate fitted die vector already represented by hongjiacheng/BZT52B5V1; no independent parameterization or shared-die evidence was supplied",
+      "stage": "selection",
+      "state": "failed_fitted",
+      "status": "skipped"
+    },
+    {
+      "family": "diode",
+      "fidelity": "F1",
+      "lcsc_id": "C22375293",
+      "manufacturer": "hongjiacheng",
+      "mpn": "BZT52C36S",
+      "package_path": "/Users/hughp/Documents/opencircuit/.claude/worktrees/agent-ac303d82a854cb5b2/tools/conveyor/data/staging/batch-1-fresh-70/packages/hongjiacheng/BZT52C36S",
+      "reason": "family parked after 2 consecutive F2 fit-gate failures with no F2 success; later parts staged F1 (diode F2 gate failed: forward_voltage worst relative error 0.0538 exceeds gate 0.05)",
+      "review_status": "pending-independent-package-review",
+      "state": "staged",
+      "status": "staged",
+      "validator_pass": true
+    },
+    {
+      "family": "diode",
+      "fidelity": "F1",
+      "lcsc_id": "C7420358",
+      "manufacturer": "hongjiacheng",
+      "mpn": "RS1M",
+      "package_path": "/Users/hughp/Documents/opencircuit/.claude/worktrees/agent-ac303d82a854cb5b2/tools/conveyor/data/staging/batch-1-fresh-70/packages/hongjiacheng/RS1M",
+      "reason": "family parked after 2 consecutive F2 fit-gate failures with no F2 success; later parts staged F1 (diode F2 gate failed: forward_voltage worst relative error 0.0538 exceeds gate 0.05)",
+      "review_status": "pending-independent-package-review",
+      "state": "staged",
+      "status": "staged",
+      "validator_pass": true
+    },
+    {
+      "family": "diode",
+      "fidelity": "F1",
+      "lcsc_id": "C19077410",
+      "manufacturer": "hongjiacheng",
+      "mpn": "BZT52C12",
+      "package_path": "/Users/hughp/Documents/opencircuit/.claude/worktrees/agent-ac303d82a854cb5b2/tools/conveyor/data/staging/batch-1-fresh-70/packages/hongjiacheng/BZT52C12",
+      "reason": "family parked after 2 consecutive F2 fit-gate failures with no F2 success; later parts staged F1 (diode F2 gate failed: forward_voltage worst relative error 0.0538 exceeds gate 0.05)",
+      "review_status": "pending-independent-package-review",
+      "state": "staged",
+      "status": "staged",
+      "validator_pass": true
+    },
+    {
+      "family": "diode",
+      "fidelity": "F1",
+      "lcsc_id": "C19077437",
+      "manufacturer": "hongjiacheng",
+      "mpn": "BZT52C3V3S",
+      "package_path": "/Users/hughp/Documents/opencircuit/.claude/worktrees/agent-ac303d82a854cb5b2/tools/conveyor/data/staging/batch-1-fresh-70/packages/hongjiacheng/BZT52C3V3S",
+      "reason": "family parked after 2 consecutive F2 fit-gate failures with no F2 success; later parts staged F1 (diode F2 gate failed: forward_voltage worst relative error 0.0538 exceeds gate 0.05)",
+      "review_status": "pending-independent-package-review",
+      "state": "staged",
+      "status": "staged",
+      "validator_pass": true
+    },
+    {
+      "collision_scope": "campaign_staging",
+      "family": "diode",
+      "lcsc_id": "C19077455",
+      "manufacturer": "hongjiacheng",
+      "mpn": "MM3Z5V1",
+      "reason": "duplicate fitted die vector already represented by hongjiacheng/BZT52B5V1; no independent parameterization or shared-die evidence was supplied",
+      "stage": "selection",
+      "state": "failed_fitted",
+      "status": "skipped"
+    },
+    {
+      "family": "diode",
+      "fidelity": "F1",
+      "lcsc_id": "C19077394",
+      "manufacturer": "hongjiacheng",
+      "mpn": "BZT52C2V7",
+      "package_path": "/Users/hughp/Documents/opencircuit/.claude/worktrees/agent-ac303d82a854cb5b2/tools/conveyor/data/staging/batch-1-fresh-70/packages/hongjiacheng/BZT52C2V7",
+      "reason": "family parked after 2 consecutive F2 fit-gate failures with no F2 success; later parts staged F1 (diode F2 gate failed: forward_voltage worst relative error 0.0538 exceeds gate 0.05)",
+      "review_status": "pending-independent-package-review",
+      "state": "staged",
+      "status": "staged",
+      "validator_pass": true
+    },
+    {
+      "family": "diode",
+      "fidelity": "F1",
+      "lcsc_id": "C22466354",
+      "manufacturer": "hongjiacheng",
+      "mpn": "DSK110",
+      "package_path": "/Users/hughp/Documents/opencircuit/.claude/worktrees/agent-ac303d82a854cb5b2/tools/conveyor/data/staging/batch-1-fresh-70/packages/hongjiacheng/DSK110",
+      "reason": "F2 failed: Validation failed for DSK110. See validation-results.json; failed package checks: forward_voltage_maximum_at_0.95_a observed 0.8513151289578652 (maximum 0.85); F1 failed: Validation failed for DSK110. See validation-results.json; failed package checks: forward_voltage_maximum_at_0.95_a observed 0.8513151289578652 (maximum 0.85); family parked after 2 consecutive F2 fit-gate failures with no F2 success; later parts staged F1 (diode F2 gate failed: forward_voltage worst relative error 0.0538 exceeds gate 0.05)",
+      "review_status": "pending-independent-package-review",
+      "state": "staged",
+      "status": "staged",
+      "validator_pass": true
+    },
+    {
+      "family": "diode",
+      "fidelity": "F1",
+      "lcsc_id": "C7420334",
+      "manufacturer": "hongjiacheng",
+      "mpn": "BAV21WS",
+      "package_path": "/Users/hughp/Documents/opencircuit/.claude/worktrees/agent-ac303d82a854cb5b2/tools/conveyor/data/staging/batch-1-fresh-70/packages/hongjiacheng/BAV21WS",
+      "reason": "family parked after 2 consecutive F2 fit-gate failures with no F2 success; later parts staged F1 (diode F2 gate failed: forward_voltage worst relative error 0.0538 exceeds gate 0.05)",
+      "review_status": "pending-independent-package-review",
+      "state": "staged",
+      "status": "staged",
+      "validator_pass": true
+    },
+    {
+      "family": "diode",
+      "fidelity": "F1",
+      "lcsc_id": "C7502691",
+      "manufacturer": "hongjiacheng",
+      "mpn": "RB751V-40",
+      "package_path": "/Users/hughp/Documents/opencircuit/.claude/worktrees/agent-ac303d82a854cb5b2/tools/conveyor/data/staging/batch-1-fresh-70/packages/hongjiacheng/RB751V-40",
+      "reason": "F2 failed: Validation failed for RB751V-40. See validation-results.json; failed package checks: forward_voltage_maximum_at_0.00095_a observed 0.37051198419815706 (maximum 0.37); F1 failed: Validation failed for RB751V-40. See validation-results.json; failed package checks: forward_voltage_maximum_at_0.00095_a observed 0.37051198419815706 (maximum 0.37); family parked after 2 consecutive F2 fit-gate failures with no F2 success; later parts staged F1 (diode F2 gate failed: forward_voltage worst relative error 0.0538 exceeds gate 0.05)",
+      "review_status": "pending-independent-package-review",
+      "state": "staged",
+      "status": "staged",
+      "validator_pass": true
+    },
+    {
+      "collision_scope": "campaign_staging",
+      "family": "diode",
+      "lcsc_id": "C7420330",
+      "manufacturer": "hongjiacheng",
+      "mpn": "B5819W",
+      "reason": "duplicate fitted die vector already represented by hongjiacheng/B5819WS; no independent parameterization or shared-die evidence was supplied",
+      "stage": "selection",
+      "state": "failed_fitted",
+      "status": "skipped"
+    },
+    {
+      "family": "diode",
+      "fidelity": "F1",
+      "lcsc_id": "C7420365",
+      "manufacturer": "hongjiacheng",
+      "mpn": "SS34",
+      "package_path": "/Users/hughp/Documents/opencircuit/.claude/worktrees/agent-ac303d82a854cb5b2/tools/conveyor/data/staging/batch-1-fresh-70/packages/hongjiacheng/SS34",
+      "reason": "F2 failed: Validation failed for SS34. See validation-results.json; failed package checks: forward_voltage_maximum_at_2.8499999999999996_a observed 0.5533552950039178 (maximum 0.55); F1 failed: Validation failed for SS34. See validation-results.json; failed package checks: forward_voltage_maximum_at_2.8499999999999996_a observed 0.5533552950039178 (maximum 0.55); family parked after 2 consecutive F2 fit-gate failures with no F2 success; later parts staged F1 (diode F2 gate failed: forward_voltage worst relative error 0.0538 exceeds gate 0.05)",
+      "review_status": "pending-independent-package-review",
+      "state": "staged",
+      "status": "staged",
+      "validator_pass": true
+    },
+    {
+      "family": "diode",
+      "fidelity": "F1",
+      "lcsc_id": "C19077448",
+      "manufacturer": "hongjiacheng",
+      "mpn": "BZT52C15S",
+      "package_path": "/Users/hughp/Documents/opencircuit/.claude/worktrees/agent-ac303d82a854cb5b2/tools/conveyor/data/staging/batch-1-fresh-70/packages/hongjiacheng/BZT52C15S",
+      "reason": "family parked after 2 consecutive F2 fit-gate failures with no F2 success; later parts staged F1 (diode F2 gate failed: forward_voltage worst relative error 0.0538 exceeds gate 0.05)",
+      "review_status": "pending-independent-package-review",
+      "state": "staged",
+      "status": "staged",
+      "validator_pass": true
+    },
+    {
+      "collision_scope": "campaign_staging",
+      "family": "diode",
+      "lcsc_id": "C18199202",
+      "manufacturer": "hongjiacheng",
+      "mpn": "SS24F",
+      "reason": "duplicate fitted die vector already represented by hongjiacheng/DSK24; no independent parameterization or shared-die evidence was supplied",
+      "stage": "selection",
+      "state": "failed_fitted",
+      "status": "skipped"
+    },
+    {
+      "family": "diode",
+      "fidelity": "F1",
+      "lcsc_id": "C19077395",
+      "manufacturer": "hongjiacheng",
+      "mpn": "BZT52C3V0",
+      "package_path": "/Users/hughp/Documents/opencircuit/.claude/worktrees/agent-ac303d82a854cb5b2/tools/conveyor/data/staging/batch-1-fresh-70/packages/hongjiacheng/BZT52C3V0",
+      "reason": "family parked after 2 consecutive F2 fit-gate failures with no F2 success; later parts staged F1 (diode F2 gate failed: forward_voltage worst relative error 0.0538 exceeds gate 0.05)",
+      "review_status": "pending-independent-package-review",
+      "state": "staged",
+      "status": "staged",
+      "validator_pass": true
+    },
+    {
+      "family": "mosfet",
+      "fidelity": "F1",
+      "lcsc_id": "C7420348",
+      "manufacturer": "hongjiacheng",
+      "mpn": "HL3400A",
+      "package_path": "/Users/hughp/Documents/opencircuit/.claude/worktrees/agent-ac303d82a854cb5b2/tools/conveyor/data/staging/batch-1-fresh-70/packages/hongjiacheng/HL3400A",
+      "reason": "mosfet F2 gate failed: THETA saturated its bound at 1; the residual is a constraint artefact; drain_current worst relative error 1.2197 exceeds gate 0.2; drain_current RMS relative error 0.4034 exceeds gate 0.12",
+      "review_status": "pending-independent-package-review",
+      "state": "staged",
+      "status": "staged",
+      "validator_pass": true
+    },
+    {
+      "family": "mosfet",
+      "fidelity": "F1",
+      "lcsc_id": "C28646264",
+      "manufacturer": "hongjiacheng",
+      "mpn": "HL6042",
+      "package_path": "/Users/hughp/Documents/opencircuit/.claude/worktrees/agent-ac303d82a854cb5b2/tools/conveyor/data/staging/batch-1-fresh-70/packages/hongjiacheng/HL6042",
+      "reason": "mosfet F2 gate failed: drain_current worst relative error 206.6953 exceeds gate 0.2; drain_current RMS relative error 45.8444 exceeds gate 0.12; rds_on worst relative error 2.1337 exceeds gate 0.2; rds_on RMS relative error 1.2249 exceeds gate 0.12",
+      "review_status": "pending-independent-package-review",
+      "state": "staged",
+      "status": "staged",
+      "validator_pass": true
+    },
+    {
+      "family": "mosfet",
+      "fidelity": "F1",
+      "lcsc_id": "C28646265",
+      "manufacturer": "hongjiacheng",
+      "mpn": "BSS138W",
+      "package_path": "/Users/hughp/Documents/opencircuit/.claude/worktrees/agent-ac303d82a854cb5b2/tools/conveyor/data/staging/batch-1-fresh-70/packages/hongjiacheng/BSS138W",
+      "reason": "family parked after 2 consecutive F2 fit-gate failures with no F2 success; later parts staged F1 (mosfet F2 gate failed: drain_current worst relative error 206.6953 exceeds gate 0.2; drain_current RMS relative error 45.8444 exceeds gate 0.12; rds_on worst relative error 2.1337 exceeds gate 0.2; rds_on RMS relative error 1.2249 exceeds gate 0.12)",
+      "review_status": "pending-independent-package-review",
+      "state": "staged",
+      "status": "staged",
+      "validator_pass": true
+    },
+    {
+      "family": "mosfet",
+      "fidelity": "F1",
+      "lcsc_id": "C22469448",
+      "manufacturer": "hongjiacheng",
+      "mpn": "HL3400",
+      "package_path": "/Users/hughp/Documents/opencircuit/.claude/worktrees/agent-ac303d82a854cb5b2/tools/conveyor/data/staging/batch-1-fresh-70/packages/hongjiacheng/HL3400",
+      "reason": "family parked after 2 consecutive F2 fit-gate failures with no F2 success; later parts staged F1 (mosfet F2 gate failed: drain_current worst relative error 206.6953 exceeds gate 0.2; drain_current RMS relative error 45.8444 exceeds gate 0.12; rds_on worst relative error 2.1337 exceeds gate 0.2; rds_on RMS relative error 1.2249 exceeds gate 0.12)",
+      "review_status": "pending-independent-package-review",
+      "state": "staged",
+      "status": "staged",
+      "validator_pass": true
+    },
+    {
+      "family": "mosfet",
+      "fidelity": "F1",
+      "lcsc_id": "C7420322",
+      "manufacturer": "hongjiacheng",
+      "mpn": "2N7002W",
+      "package_path": "/Users/hughp/Documents/opencircuit/.claude/worktrees/agent-ac303d82a854cb5b2/tools/conveyor/data/staging/batch-1-fresh-70/packages/hongjiacheng/2N7002W",
+      "reason": "family parked after 2 consecutive F2 fit-gate failures with no F2 success; later parts staged F1 (mosfet F2 gate failed: drain_current worst relative error 206.6953 exceeds gate 0.2; drain_current RMS relative error 45.8444 exceeds gate 0.12; rds_on worst relative error 2.1337 exceeds gate 0.2; rds_on RMS relative error 1.2249 exceeds gate 0.12)",
+      "review_status": "pending-independent-package-review",
+      "state": "staged",
+      "status": "staged",
+      "validator_pass": true
+    },
+    {
+      "family": "mosfet",
+      "fidelity": "F1",
+      "lcsc_id": "C7420347",
+      "manufacturer": "hongjiacheng",
+      "mpn": "HL2310A",
+      "package_path": "/Users/hughp/Documents/opencircuit/.claude/worktrees/agent-ac303d82a854cb5b2/tools/conveyor/data/staging/batch-1-fresh-70/packages/hongjiacheng/HL2310A",
+      "reason": "family parked after 2 consecutive F2 fit-gate failures with no F2 success; later parts staged F1 (mosfet F2 gate failed: drain_current worst relative error 206.6953 exceeds gate 0.2; drain_current RMS relative error 45.8444 exceeds gate 0.12; rds_on worst relative error 2.1337 exceeds gate 0.2; rds_on RMS relative error 1.2249 exceeds gate 0.12)",
+      "review_status": "pending-independent-package-review",
+      "state": "staged",
+      "status": "staged",
+      "validator_pass": true
+    },
+    {
+      "family": "mosfet",
+      "fidelity": "F1",
+      "lcsc_id": "C22469449",
+      "manufacturer": "hongjiacheng",
+      "mpn": "HL3401",
+      "package_path": "/Users/hughp/Documents/opencircuit/.claude/worktrees/agent-ac303d82a854cb5b2/tools/conveyor/data/staging/batch-1-fresh-70/packages/hongjiacheng/HL3401",
+      "reason": "family parked after 2 consecutive F2 fit-gate failures with no F2 success; later parts staged F1 (mosfet F2 gate failed: drain_current worst relative error 206.6953 exceeds gate 0.2; drain_current RMS relative error 45.8444 exceeds gate 0.12; rds_on worst relative error 2.1337 exceeds gate 0.2; rds_on RMS relative error 1.2249 exceeds gate 0.12)",
+      "review_status": "pending-independent-package-review",
+      "state": "staged",
+      "status": "staged",
+      "validator_pass": true
+    },
+    {
+      "family": "mosfet",
+      "fidelity": "F1",
+      "lcsc_id": "C7420339",
+      "manufacturer": "hongjiacheng",
+      "mpn": "BSS138",
+      "package_path": "/Users/hughp/Documents/opencircuit/.claude/worktrees/agent-ac303d82a854cb5b2/tools/conveyor/data/staging/batch-1-fresh-70/packages/hongjiacheng/BSS138",
+      "reason": "family parked after 2 consecutive F2 fit-gate failures with no F2 success; later parts staged F1 (mosfet F2 gate failed: drain_current worst relative error 206.6953 exceeds gate 0.2; drain_current RMS relative error 45.8444 exceeds gate 0.12; rds_on worst relative error 2.1337 exceeds gate 0.2; rds_on RMS relative error 1.2249 exceeds gate 0.12)",
+      "review_status": "pending-independent-package-review",
+      "state": "staged",
+      "status": "staged",
+      "validator_pass": true
+    },
+    {
+      "family": "mosfet",
+      "fidelity": "F1",
+      "lcsc_id": "C22379475",
+      "manufacturer": "hongjiacheng",
+      "mpn": "2N7002K",
+      "package_path": "/Users/hughp/Documents/opencircuit/.claude/worktrees/agent-ac303d82a854cb5b2/tools/conveyor/data/staging/batch-1-fresh-70/packages/hongjiacheng/2N7002K",
+      "reason": "family parked after 2 consecutive F2 fit-gate failures with no F2 success; later parts staged F1 (mosfet F2 gate failed: drain_current worst relative error 206.6953 exceeds gate 0.2; drain_current RMS relative error 45.8444 exceeds gate 0.12; rds_on worst relative error 2.1337 exceeds gate 0.2; rds_on RMS relative error 1.2249 exceeds gate 0.12)",
+      "review_status": "pending-independent-package-review",
+      "state": "staged",
+      "status": "staged",
+      "validator_pass": true
+    },
+    {
+      "family": "mosfet",
+      "fidelity": "F1",
+      "lcsc_id": "C7420349",
+      "manufacturer": "hongjiacheng",
+      "mpn": "HL3401A",
+      "package_path": "/Users/hughp/Documents/opencircuit/.claude/worktrees/agent-ac303d82a854cb5b2/tools/conveyor/data/staging/batch-1-fresh-70/packages/hongjiacheng/HL3401A",
+      "reason": "family parked after 2 consecutive F2 fit-gate failures with no F2 success; later parts staged F1 (mosfet F2 gate failed: drain_current worst relative error 206.6953 exceeds gate 0.2; drain_current RMS relative error 45.8444 exceeds gate 0.12; rds_on worst relative error 2.1337 exceeds gate 0.2; rds_on RMS relative error 1.2249 exceeds gate 0.12)",
+      "review_status": "pending-independent-package-review",
+      "state": "staged",
+      "status": "staged",
+      "validator_pass": true
+    },
+    {
+      "family": "mosfet",
+      "fidelity": "F1",
+      "lcsc_id": "C7420344",
+      "manufacturer": "hongjiacheng",
+      "mpn": "HL2301A",
+      "package_path": "/Users/hughp/Documents/opencircuit/.claude/worktrees/agent-ac303d82a854cb5b2/tools/conveyor/data/staging/batch-1-fresh-70/packages/hongjiacheng/HL2301A",
+      "reason": "family parked after 2 consecutive F2 fit-gate failures with no F2 success; later parts staged F1 (mosfet F2 gate failed: drain_current worst relative error 206.6953 exceeds gate 0.2; drain_current RMS relative error 45.8444 exceeds gate 0.12; rds_on worst relative error 2.1337 exceeds gate 0.2; rds_on RMS relative error 1.2249 exceeds gate 0.12)",
+      "review_status": "pending-independent-package-review",
+      "state": "staged",
+      "status": "staged",
+      "validator_pass": true
+    },
+    {
+      "family": "mosfet",
+      "fidelity": "F1",
+      "lcsc_id": "C427383",
+      "manufacturer": "MDD Microdiode Semiconductor",
+      "mpn": "MDD3401",
+      "package_path": "/Users/hughp/Documents/opencircuit/.claude/worktrees/agent-ac303d82a854cb5b2/tools/conveyor/data/staging/batch-1-fresh-70/packages/mdd-microdiode/MDD3401",
+      "reason": "family parked after 2 consecutive F2 fit-gate failures with no F2 success; later parts staged F1 (mosfet F2 gate failed: drain_current worst relative error 206.6953 exceeds gate 0.2; drain_current RMS relative error 45.8444 exceeds gate 0.12; rds_on worst relative error 2.1337 exceeds gate 0.2; rds_on RMS relative error 1.2249 exceeds gate 0.12)",
+      "review_status": "pending-independent-package-review",
+      "state": "staged",
+      "status": "staged",
+      "validator_pass": true
+    },
+    {
+      "family": "mosfet",
+      "fidelity": "F1",
+      "lcsc_id": "C427390",
+      "manufacturer": "MDD Microdiode Semiconductor",
+      "mpn": "MDD2302",
+      "package_path": "/Users/hughp/Documents/opencircuit/.claude/worktrees/agent-ac303d82a854cb5b2/tools/conveyor/data/staging/batch-1-fresh-70/packages/mdd-microdiode/MDD2302",
+      "reason": "family parked after 2 consecutive F2 fit-gate failures with no F2 success; later parts staged F1 (mosfet F2 gate failed: drain_current worst relative error 206.6953 exceeds gate 0.2; drain_current RMS relative error 45.8444 exceeds gate 0.12; rds_on worst relative error 2.1337 exceeds gate 0.2; rds_on RMS relative error 1.2249 exceeds gate 0.12)",
+      "review_status": "pending-independent-package-review",
+      "state": "staged",
+      "status": "staged",
+      "validator_pass": true
+    },
+    {
+      "family": "mosfet",
+      "fidelity": "F1",
+      "lcsc_id": "C8492",
+      "manufacturer": "LRC",
+      "mpn": "LBSS84LT1G",
+      "package_path": "/Users/hughp/Documents/opencircuit/.claude/worktrees/agent-ac303d82a854cb5b2/tools/conveyor/data/staging/batch-1-fresh-70/packages/lrc/LBSS84LT1G",
+      "reason": "family parked after 2 consecutive F2 fit-gate failures with no F2 success; later parts staged F1 (mosfet F2 gate failed: drain_current worst relative error 206.6953 exceeds gate 0.2; drain_current RMS relative error 45.8444 exceeds gate 0.12; rds_on worst relative error 2.1337 exceeds gate 0.2; rds_on RMS relative error 1.2249 exceeds gate 0.12)",
+      "review_status": "pending-independent-package-review",
+      "state": "staged",
+      "status": "staged",
+      "validator_pass": true
+    },
+    {
+      "family": "mosfet",
+      "fidelity": "F1",
+      "lcsc_id": "C20069149",
+      "manufacturer": "hongjiacheng",
+      "mpn": "2SK3018W",
+      "package_path": "/Users/hughp/Documents/opencircuit/.claude/worktrees/agent-ac303d82a854cb5b2/tools/conveyor/data/staging/batch-1-fresh-70/packages/hongjiacheng/2SK3018W",
+      "reason": "family parked after 2 consecutive F2 fit-gate failures with no F2 success; later parts staged F1 (mosfet F2 gate failed: drain_current worst relative error 206.6953 exceeds gate 0.2; drain_current RMS relative error 45.8444 exceeds gate 0.12; rds_on worst relative error 2.1337 exceeds gate 0.2; rds_on RMS relative error 1.2249 exceeds gate 0.12)",
+      "review_status": "pending-independent-package-review",
+      "state": "staged",
+      "status": "staged",
+      "validator_pass": true
+    },
+    {
+      "family": "mosfet",
+      "fidelity": "F1",
+      "lcsc_id": "C427391",
+      "manufacturer": "MDD Microdiode Semiconductor",
+      "mpn": "MDD2301",
+      "package_path": "/Users/hughp/Documents/opencircuit/.claude/worktrees/agent-ac303d82a854cb5b2/tools/conveyor/data/staging/batch-1-fresh-70/packages/mdd-microdiode/MDD2301",
+      "reason": "cross-validation failed after one retry: vdmos.crss: catalog '6.6pF' disagrees with extracted [4.5e-11]; closest ratio 6.82x; family parked after 2 consecutive F2 fit-gate failures with no F2 success; later parts staged F1 (mosfet F2 gate failed: drain_current worst relative error 206.6953 exceeds gate 0.2; drain_current RMS relative error 45.8444 exceeds gate 0.12; rds_on worst relative error 2.1337 exceeds gate 0.2; rds_on RMS relative error 1.2249 exceeds gate 0.12)",
+      "review_status": "pending-independent-package-review",
+      "state": "staged",
+      "status": "staged",
+      "validator_pass": true
+    },
+    {
+      "family": "mosfet",
+      "fidelity": "F1",
+      "lcsc_id": "C28646263",
+      "manufacturer": "hongjiacheng",
+      "mpn": "HL2309",
+      "package_path": "/Users/hughp/Documents/opencircuit/.claude/worktrees/agent-ac303d82a854cb5b2/tools/conveyor/data/staging/batch-1-fresh-70/packages/hongjiacheng/HL2309",
+      "reason": "family parked after 2 consecutive F2 fit-gate failures with no F2 success; later parts staged F1 (mosfet F2 gate failed: drain_current worst relative error 206.6953 exceeds gate 0.2; drain_current RMS relative error 45.8444 exceeds gate 0.12; rds_on worst relative error 2.1337 exceeds gate 0.2; rds_on RMS relative error 1.2249 exceeds gate 0.12)",
+      "review_status": "pending-independent-package-review",
+      "state": "staged",
+      "status": "staged",
+      "validator_pass": true
+    },
+    {
+      "family": "mosfet",
+      "fidelity": "F1",
+      "lcsc_id": "C28646274",
+      "manufacturer": "hongjiacheng",
+      "mpn": "HL2307",
+      "package_path": "/Users/hughp/Documents/opencircuit/.claude/worktrees/agent-ac303d82a854cb5b2/tools/conveyor/data/staging/batch-1-fresh-70/packages/hongjiacheng/HL2307",
+      "reason": "family parked after 2 consecutive F2 fit-gate failures with no F2 success; later parts staged F1 (mosfet F2 gate failed: drain_current worst relative error 206.6953 exceeds gate 0.2; drain_current RMS relative error 45.8444 exceeds gate 0.12; rds_on worst relative error 2.1337 exceeds gate 0.2; rds_on RMS relative error 1.2249 exceeds gate 0.12)",
+      "review_status": "pending-independent-package-review",
+      "state": "staged",
+      "status": "staged",
+      "validator_pass": true
+    },
+    {
+      "family": "mosfet",
+      "fidelity": "F1",
+      "lcsc_id": "C20069150",
+      "manufacturer": "hongjiacheng",
+      "mpn": "HJ8205",
+      "package_path": "/Users/hughp/Documents/opencircuit/.claude/worktrees/agent-ac303d82a854cb5b2/tools/conveyor/data/staging/batch-1-fresh-70/packages/hongjiacheng/HJ8205",
+      "reason": "family parked after 2 consecutive F2 fit-gate failures with no F2 success; later parts staged F1 (mosfet F2 gate failed: drain_current worst relative error 206.6953 exceeds gate 0.2; drain_current RMS relative error 45.8444 exceeds gate 0.12; rds_on worst relative error 2.1337 exceeds gate 0.2; rds_on RMS relative error 1.2249 exceeds gate 0.12)",
+      "review_status": "pending-independent-package-review",
+      "state": "staged",
+      "status": "staged",
+      "validator_pass": true
+    },
+    {
+      "family": "mosfet",
+      "fidelity": "F1",
+      "lcsc_id": "C7420343",
+      "manufacturer": "hongjiacheng",
+      "mpn": "HL2300",
+      "package_path": "/Users/hughp/Documents/opencircuit/.claude/worktrees/agent-ac303d82a854cb5b2/tools/conveyor/data/staging/batch-1-fresh-70/packages/hongjiacheng/HL2300",
+      "reason": "family parked after 2 consecutive F2 fit-gate failures with no F2 success; later parts staged F1 (mosfet F2 gate failed: drain_current worst relative error 206.6953 exceeds gate 0.2; drain_current RMS relative error 45.8444 exceeds gate 0.12; rds_on worst relative error 2.1337 exceeds gate 0.2; rds_on RMS relative error 1.2249 exceeds gate 0.12)",
+      "review_status": "pending-independent-package-review",
+      "state": "staged",
+      "status": "staged",
+      "validator_pass": true
+    },
+    {
+      "family": "mosfet",
+      "fidelity": "F1",
+      "lcsc_id": "C28646269",
+      "manufacturer": "hongjiacheng",
+      "mpn": "HL3407A",
+      "package_path": "/Users/hughp/Documents/opencircuit/.claude/worktrees/agent-ac303d82a854cb5b2/tools/conveyor/data/staging/batch-1-fresh-70/packages/hongjiacheng/HL3407A",
+      "reason": "family parked after 2 consecutive F2 fit-gate failures with no F2 success; later parts staged F1 (mosfet F2 gate failed: drain_current worst relative error 206.6953 exceeds gate 0.2; drain_current RMS relative error 45.8444 exceeds gate 0.12; rds_on worst relative error 2.1337 exceeds gate 0.2; rds_on RMS relative error 1.2249 exceeds gate 0.12)",
+      "review_status": "pending-independent-package-review",
+      "state": "staged",
+      "status": "staged",
+      "validator_pass": true
+    },
+    {
+      "collision_scope": "campaign_staging",
+      "family": "mosfet",
+      "lcsc_id": "C20069148",
+      "manufacturer": "hongjiacheng",
+      "mpn": "2SK3018",
+      "reason": "duplicate fitted die vector already represented by hongjiacheng/2SK3018W; no independent parameterization or shared-die evidence was supplied",
+      "stage": "selection",
+      "state": "failed_fitted",
+      "status": "skipped"
+    }
+  ],
+  "running_campaign_total": {
+    "approximately_100_target": 100,
+    "fresh_validator_pass": 51,
+    "note": "The fresh tranche stopped at 70 selected parts as scoped. Honest duplicate-die guards rejected 18 and one candidate failed both F2 and F1 package validation, so the validator-passing running total is below the approximate target.",
+    "previous_regenerated_validator_pass": 31,
+    "shortfall": 18,
+    "total": 82
+  },
+  "schema_version": "1.0.0",
+  "scope": {
+    "bulk_data_gitignored": true,
+    "bulk_data_root": "/Users/hughp/Documents/opencircuit/.claude/worktrees/agent-ac303d82a854cb5b2/tools/conveyor/data",
+    "promotion_performed": false,
+    "push_performed": false,
+    "read_only_catalog_database": "/Users/hughp/Documents/opencircuit/tools/part-feeder/data/jlcparts.sqlite3",
+    "read_only_datasheet_cache": "/Users/hughp/Documents/opencircuit/tools/part-feeder/data/staging/scale-1k",
+    "review_performed": false,
+    "reviewed_library_modified": false,
+    "stop_after": "staging"
+  },
+  "selection": {
+    "family_counts": {
+      "bjt": 17,
+      "diode": 31,
+      "mosfet": 22
+    },
+    "record": "/Users/hughp/Documents/opencircuit/.claude/worktrees/agent-ac303d82a854cb5b2/docs/batch-1-fresh-selection.json",
+    "scanned_through_scale_manifest_rank": 734,
+    "selected": 70,
+    "selection_skip_reason_counts": {
+      "existing_staging_or_p6": 2,
+      "library_identity_collision": 1,
+      "unsupported_family": 28
+    },
+    "selection_skips": 31,
+    "tranche_manifest": "/Users/hughp/Documents/opencircuit/.claude/worktrees/agent-ac303d82a854cb5b2/tools/conveyor/data/tranches/batch-1-fresh-70.json"
+  },
+  "tests": [
+    {
+      "command": "npm --prefix tools/model-factory test",
+      "failures": 0,
+      "result": "pass",
+      "tests": 38
+    },
+    {
+      "command": "npm --prefix tools/conveyor test",
+      "failures": 0,
+      "result": "pass",
+      "tests": 13
+    },
+    {
+      "command": "npm --prefix tools/conveyor run typecheck",
+      "result": "pass"
+    },
+    {
+      "command": "validatePackage over all fresh staged packages",
+      "failures": 0,
+      "packages": 51,
+      "result": "pass"
+    },
+    {
+      "bench_count": 75,
+      "command": "campaign package audit",
+      "native_validation_clean": 51,
+      "packages": 51,
+      "pending_review": 51,
+      "result": "pass",
+      "temp_pinned_packages": 51
+    },
+    {
+      "command": "git diff -- packages/model-library",
+      "result": "clean"
+    }
+  ],
+  "validation": {
+    "bench_count": 75,
+    "explicit_temp_25_packages": 51,
+    "native_validation_clean": 51,
+    "package_audit_errors": 0,
+    "package_schema_validator_fail": 0,
+    "package_schema_validator_pass": 51,
+    "pending_independent_review": 51
+  }
+}
