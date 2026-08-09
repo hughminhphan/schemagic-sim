@@ -1,0 +1,69 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "rdson.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "rdson_1",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d1),20)"
+          },
+          "expected_value": 3.2,
+          "unit": "ohm",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.5
+          },
+          "datasheet_citation": "p. 2 Electrical Characteristics, Static Drain-Source On-Resistance, TYP column",
+          "placeholder": false
+        },
+        {
+          "name": "rdson_3",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d3),2)"
+          },
+          "expected_value": 2.4,
+          "unit": "ohm",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.5
+          },
+          "datasheet_citation": "p. 2 Electrical Characteristics, Static Drain-Source On-Resistance, TYP column",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": [
+        {
+          "name": "rdson_maximum_2",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d2),20)"
+          },
+          "minimum": 0,
+          "maximum": 7.5,
+          "unit": "ohm",
+          "inclusive": true,
+          "datasheet_citation": "p. 2 Electrical Characteristics, Static Drain-Source On-Resistance, MAX column",
+          "placeholder": false
+        },
+        {
+          "name": "rdson_maximum_4",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d4),2)"
+          },
+          "minimum": 0,
+          "maximum": 5,
+          "unit": "ohm",
+          "inclusive": true,
+          "datasheet_citation": "p. 2 Electrical Characteristics, Static Drain-Source On-Resistance, MAX column",
+          "placeholder": false
+        }
+      ]
+    }
+  ]
+}

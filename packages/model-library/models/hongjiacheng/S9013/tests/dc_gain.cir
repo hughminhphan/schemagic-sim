@@ -1,0 +1,17 @@
+OpenCircuit factory test: S9013 DC gain
+* OpenCircuit Model Factory v0.1.0 bulk adapter
+* Original work generated from public factual specifications.
+* This model is not copied or adapted from any vendor SPICE model.
+* Source: https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8597552956200144896
+* Revision: Rev:1.0
+.model OC_HONGJIACHENG_S9013 NPN(IS=1.0000000000e-14 BF=1.2000000000e2 VAF=1.0000000000e2 IKF=1.0000000000e3 RB=1.0000000000e1 RC=1.0000000000e-1 RE=5.0000000000e-2 CJE=1.0000000000e-12 CJC=1.0000000000e-12 TF=1.0000000000e-9)
+
+.temp 25
+VCG1 cg1 0 DC 1.0000000000e0
+IBG1 0 bg1 DC 4.1666666667e-4
+QG1 cg1 bg1 0 OC_HONGJIACHENG_S9013
+VCG2 cg2 0 DC 1.0000000000e0
+IBG2 0 bg2 DC 1.2500000000e-2
+QG2 cg2 bg2 0 OC_HONGJIACHENG_S9013
+.op
+.end

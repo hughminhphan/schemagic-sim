@@ -1,0 +1,125 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "rdson.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "rdson_1",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d1),0.25)"
+          },
+          "expected_value": 0.033,
+          "unit": "ohm",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.5
+          },
+          "datasheet_citation": "p. 3 Fig. 3, VGS = -4.5 V curve at |ID| = 4 A",
+          "placeholder": false
+        },
+        {
+          "name": "rdson_2",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d2),0.25)"
+          },
+          "expected_value": 0.043,
+          "unit": "ohm",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.5
+          },
+          "datasheet_citation": "p. 3 Fig. 3, VGS = -2.5 V curve at |ID| = 4 A",
+          "placeholder": false
+        },
+        {
+          "name": "rdson_3",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d3),0.5)"
+          },
+          "expected_value": 0.042,
+          "unit": "ohm",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.5
+          },
+          "datasheet_citation": "p. 3 Fig. 3, VGS = -1.8 V curve at |ID| = 2 A",
+          "placeholder": false
+        },
+        {
+          "name": "rdson_4",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d4),1)"
+          },
+          "expected_value": 0.06,
+          "unit": "ohm",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.5
+          },
+          "datasheet_citation": "p. 3 Fig. 3, VGS = -1.5 V curve at |ID| = 1 A",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": [
+        {
+          "name": "rdson_1_published_maximum",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d1),0.25)"
+          },
+          "minimum": 0,
+          "maximum": 0.043,
+          "unit": "ohm",
+          "datasheet_citation": "p. 2 Static Parameter Characteristics, RDS(on), condition row 1, MAX column",
+          "placeholder": false,
+          "inclusive": true
+        },
+        {
+          "name": "rdson_2_published_maximum",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d2),0.25)"
+          },
+          "minimum": 0,
+          "maximum": 0.055,
+          "unit": "ohm",
+          "datasheet_citation": "p. 2 Static Parameter Characteristics, RDS(on), condition row 2, MAX column",
+          "placeholder": false,
+          "inclusive": true
+        },
+        {
+          "name": "rdson_3_published_maximum",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d3),0.5)"
+          },
+          "minimum": 0,
+          "maximum": 0.075,
+          "unit": "ohm",
+          "datasheet_citation": "p. 2 Static Parameter Characteristics, RDS(on), condition row 3, MAX column",
+          "placeholder": false,
+          "inclusive": true
+        },
+        {
+          "name": "rdson_4_published_maximum",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d4),1)"
+          },
+          "minimum": 0,
+          "maximum": 0.1,
+          "unit": "ohm",
+          "datasheet_citation": "p. 2 Static Parameter Characteristics, RDS(on), condition row 4, MAX column",
+          "placeholder": false,
+          "inclusive": true
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,273 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "schema_version": "1.0.0",
+    "mpn": "SS34",
+    "manufacturer": "hongjiacheng",
+    "family": "diode",
+    "datasheet_identity": {
+      "title": "SS32 THRU SS320 Surface Mount Schottky Barrier Rectifier",
+      "revision": "Rev:1.0",
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3"
+      ]
+    },
+    "usable_curves": true,
+    "curves": [
+      {
+        "name": "Forward current derating curve",
+        "x_axis": {
+          "quantity": "lead temperature",
+          "unit": "degC",
+          "scale": "linear"
+        },
+        "y_axis": {
+          "quantity": "average rectified output current",
+          "unit": "A",
+          "scale": "linear"
+        },
+        "test_conditions": "60 Hz sinewave, resistance load; SS32-SS320 family",
+        "page_reference": "p. 2, Fig. 1",
+        "points": [
+          {
+            "x": 0,
+            "y": 3
+          },
+          {
+            "x": 40,
+            "y": 3
+          },
+          {
+            "x": 80,
+            "y": 3
+          },
+          {
+            "x": 100,
+            "y": 2.7
+          },
+          {
+            "x": 120,
+            "y": 1.7
+          },
+          {
+            "x": 140,
+            "y": 0.7
+          },
+          {
+            "x": 150,
+            "y": 0
+          }
+        ]
+      },
+      {
+        "name": "Maximum non-repetitive peak forward surge current",
+        "x_axis": {
+          "quantity": "number of cycles",
+          "unit": "cycles",
+          "scale": "log"
+        },
+        "y_axis": {
+          "quantity": "peak forward surge current",
+          "unit": "A",
+          "scale": "linear"
+        },
+        "test_conditions": "8.3 ms single half sine wave, JEDEC method; SS32-SS320 family",
+        "page_reference": "p. 2, Fig. 2",
+        "points": [
+          {
+            "x": 1,
+            "y": 80
+          },
+          {
+            "x": 10,
+            "y": 35
+          },
+          {
+            "x": 100,
+            "y": 11
+          }
+        ]
+      },
+      {
+        "name": "Typical forward voltage, SS32-SS34 group",
+        "x_axis": {
+          "quantity": "instantaneous forward voltage",
+          "unit": "V",
+          "scale": "linear"
+        },
+        "y_axis": {
+          "quantity": "instantaneous forward current",
+          "unit": "A",
+          "scale": "log"
+        },
+        "test_conditions": "Tj = 25 degC; pulse width = 300 us; 1% duty cycle; SS32-SS34 curve group",
+        "page_reference": "p. 2, Fig. 3",
+        "points": [
+          {
+            "x": 0.245,
+            "y": 0.01
+          },
+          {
+            "x": 0.276,
+            "y": 0.1
+          },
+          {
+            "x": 0.374,
+            "y": 1
+          },
+          {
+            "x": 0.546,
+            "y": 10
+          },
+          {
+            "x": 1.04,
+            "y": 50
+          }
+        ]
+      },
+      {
+        "name": "Typical reverse characteristics, SS32-SS36 group at Tj=25 degC",
+        "x_axis": {
+          "quantity": "percent of rated peak reverse voltage",
+          "unit": "%",
+          "scale": "linear"
+        },
+        "y_axis": {
+          "quantity": "instantaneous reverse current",
+          "unit": "mA",
+          "scale": "log"
+        },
+        "test_conditions": "Tj = 25 degC; SS32-SS36 solid curve group",
+        "page_reference": "p. 2, Fig. 4",
+        "points": [
+          {
+            "x": 10,
+            "y": 0.005
+          },
+          {
+            "x": 20,
+            "y": 0.009
+          },
+          {
+            "x": 40,
+            "y": 0.014
+          },
+          {
+            "x": 60,
+            "y": 0.02
+          },
+          {
+            "x": 80,
+            "y": 0.03
+          },
+          {
+            "x": 100,
+            "y": 0.06
+          }
+        ]
+      }
+    ],
+    "specs": {
+      "variant": "schottky",
+      "forward_voltage_points": [
+        {
+          "current": {
+            "value": 3,
+            "unit": "A",
+            "conditions": "IF = 3.0 A, Ta = 25 degC",
+            "page_reference": "p. 2, electrical characteristics, maximum instantaneous forward voltage",
+            "source_kind": "maximum"
+          },
+          "voltage": {
+            "value": 0.55,
+            "unit": "V",
+            "conditions": "IF = 3.0 A, Ta = 25 degC",
+            "page_reference": "p. 2, electrical characteristics, maximum instantaneous forward voltage",
+            "source_kind": "maximum"
+          }
+        }
+      ],
+      "reverse_current": {
+        "value": 0.0005,
+        "unit": "A",
+        "conditions": "VR = VDC = 40 V, Ta = 25 degC",
+        "page_reference": "p. 2, electrical characteristics, maximum DC reverse current at rated DC blocking voltage, IR1",
+        "source_kind": "maximum"
+      },
+      "capacitance": {
+        "value": 5e-10,
+        "unit": "F",
+        "conditions": "4.0 V DC, 1 MHz, typical junction capacitance",
+        "page_reference": "p. 2, electrical characteristics, typical junction capacitance",
+        "source_kind": "typical"
+      },
+      "reverse_recovery": null,
+      "breakdown_voltage": null,
+      "breakdown_current": null
+    },
+    "extraction_notes": [
+      "SS34 is included in the SS32-SS34 curve group in Fig. 3 and the SS32-SS36 curve group in Fig. 4.",
+      "The plotted curve points are manual digitizations from the supplied figures and preserve the displayed axis scales; they are typical characteristics, not guaranteed limits.",
+      "Maximum ratings on p. 1 for SS34: VRRM = 40 V, VRMS = 28 V, VDC = 40 V, IF(AV) = 3.0 A, IFSM = 80 A, storage and junction temperature = -55 to +150 degC, RthetaJA = 80 degC/W, and RthetaJL = 20 degC/W.",
+      "The p. 2 electrical characteristics table also gives IR2 = 50 mA at VR = VDC and Ta = 100 degC for SS34; the required reverse_current field records the 25 degC IR1 maximum.",
+      "The datasheet publishes no reverse recovery time, breakdown voltage, or breakdown-current specification for SS34."
+    ],
+    "omission_reason": null
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "Forward Voltage (Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "0.55V@3.0A",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Voltage - Forward(Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "550mV@3A",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "SS34",
+    "manufacturer": "hongjiacheng",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8590905115182112768",
+    "revision": "Rev:1.0",
+    "sha256": "6f4e0d4eb66ab3b0f99d80b337bfad75a949c03badc693dac1238d5961458d77",
+    "accessed_date": "2026-08-09",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ],
+    "placeholder": false
+  },
+  "fit_points": [
+    {
+      "current": {
+        "value": 2.8499999999999996,
+        "unit": "A",
+        "conditions": "Conservative F1 package bench at 95% of the cited current; IF = 3.0 A, Ta = 25 degC",
+        "page_reference": "p. 2, electrical characteristics, maximum instantaneous forward voltage",
+        "source_kind": "maximum"
+      },
+      "voltage": {
+        "value": 0.55,
+        "unit": "V",
+        "conditions": "IF = 3.0 A, Ta = 25 degC",
+        "page_reference": "p. 2, electrical characteristics, maximum instantaneous forward voltage",
+        "source_kind": "maximum"
+      }
+    }
+  ],
+  "electrical_limits": {},
+  "derived_model_inputs": {}
+}

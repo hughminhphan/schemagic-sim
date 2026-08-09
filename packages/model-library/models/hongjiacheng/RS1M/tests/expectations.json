@@ -1,0 +1,25 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "forward_01.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "forward_voltage_maximum_at_0.95_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "minimum": 0,
+          "maximum": 1.3,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 2, electrical characteristics, maximum instantaneous forward voltage",
+          "placeholder": false
+        }
+      ]
+    }
+  ]
+}

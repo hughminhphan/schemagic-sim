@@ -1,0 +1,14 @@
+OpenCircuit factory test: LBSS84LT1G RDS(on)
+* OpenCircuit Model Factory v0.1.0 bulk adapter
+* Original work generated from public factual specifications.
+* This model is not copied or adapted from any vendor SPICE model.
+* Source: https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8579707737607241728
+* Revision: Rev. A
+.model OC_LRC_LBSS84LT1G VDMOS( pchan VTO=-2.0000000000e0 KP=4.0000000000e-1 THETA=0.0000000000e0 LAMBDA=3.0000000000e-3 RD=2.7500000000e0 RS=1.0000000000e0 RG=1.0000000000e-4 RDS=1e9 CGS=2.5000000000e-11 CGDMAX=5.0000000000e-12 CGDMIN=5.0000000000e-12 CJO=5.0000000000e-12 IS=1.0000000000e-12 N=1.5000000000e0 RB=1.0000000000e0)
+
+.temp 25
+M1 d1 g1 0 OC_LRC_LBSS84LT1G
+ID1 d1 0 DC 1.0000000000e-1
+VG1 g1 0 DC -5.0000000000e0
+.op
+.end

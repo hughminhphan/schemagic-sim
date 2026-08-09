@@ -1,0 +1,69 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "rdson.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "rdson_1",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d1),0.8)"
+          },
+          "expected_value": 0.275,
+          "unit": "ohm",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.5
+          },
+          "datasheet_citation": "p. 2 Static Parameter Characteristics, RDS(on), TYP column",
+          "placeholder": false
+        },
+        {
+          "name": "rdson_2",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d2),1)"
+          },
+          "expected_value": 0.406,
+          "unit": "ohm",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.5
+          },
+          "datasheet_citation": "p. 2 Static Parameter Characteristics, RDS(on), TYP column",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": [
+        {
+          "name": "rdson_1_published_maximum",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d1),0.8)"
+          },
+          "minimum": 0,
+          "maximum": 0.34,
+          "unit": "ohm",
+          "datasheet_citation": "p. 2 Static Parameter Characteristics, RDS(on), MAX column",
+          "placeholder": false,
+          "inclusive": true
+        },
+        {
+          "name": "rdson_2_published_maximum",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d2),1)"
+          },
+          "minimum": 0,
+          "maximum": 0.55,
+          "unit": "ohm",
+          "datasheet_citation": "p. 2 Static Parameter Characteristics, RDS(on), MAX column",
+          "placeholder": false,
+          "inclusive": true
+        }
+      ]
+    }
+  ]
+}

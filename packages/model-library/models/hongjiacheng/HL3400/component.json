@@ -1,0 +1,140 @@
+{
+  "schema_version": "1.0.0",
+  "canonical_mpn": "HL3400",
+  "manufacturer": "hongjiacheng",
+  "description": "mosfet from hongjiacheng",
+  "electrical_family": "nmos",
+  "symbol_pins": [
+    {
+      "name": "G",
+      "number": "1",
+      "role": "gate"
+    },
+    {
+      "name": "D",
+      "number": "2",
+      "role": "drain"
+    },
+    {
+      "name": "S",
+      "number": "3",
+      "role": "source"
+    }
+  ],
+  "spice_pin_mapping": [
+    {
+      "symbol_pin_number": "2",
+      "subckt_node": "drain",
+      "order": 1
+    },
+    {
+      "symbol_pin_number": "1",
+      "subckt_node": "gate",
+      "order": 2
+    },
+    {
+      "symbol_pin_number": "3",
+      "subckt_node": "source",
+      "order": 3
+    }
+  ],
+  "package_variants": [
+    {
+      "name": "SOT-23",
+      "standard": "SOT-23",
+      "pin_count": 3,
+      "pin_map": [
+        {
+          "package_pin": "1",
+          "symbol_pin_number": "1"
+        },
+        {
+          "package_pin": "2",
+          "symbol_pin_number": "2"
+        },
+        {
+          "package_pin": "3",
+          "symbol_pin_number": "3"
+        }
+      ]
+    }
+  ],
+  "ordering_code_aliases": [],
+  "datasheet": {
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8564879726336122880",
+    "revision": "Rev. 1.0"
+  },
+  "model_type": "dot_model",
+  "fidelity_tier": "F1",
+  "domain_coverage": {
+    "dc": "approx",
+    "ac": "none",
+    "transient": "none",
+    "noise": "none",
+    "thermal": "none",
+    "digital": "none"
+  },
+  "supported_analyses": [
+    "operating_point",
+    "dc_sweep"
+  ],
+  "supported_operating_region": {
+    "summary": "Supported only over the cited 25 degC electrical characterization region: gate_source_voltage_magnitude 2.5 to 10 V; drain_current_magnitude 3 to 5.6 A.",
+    "numeric_bounds": [
+      {
+        "quantity": "gate_source_voltage_magnitude",
+        "minimum": 2.5,
+        "maximum": 10,
+        "unit": "V",
+        "conditions": "Cited threshold and RDS(on) gate-bias conditions",
+        "placeholder": false
+      },
+      {
+        "quantity": "drain_current_magnitude",
+        "minimum": 3,
+        "maximum": 5.6,
+        "unit": "A",
+        "conditions": "Cited RDS(on) characterization currents",
+        "placeholder": false
+      },
+      {
+        "quantity": "ambient_temperature",
+        "minimum": 25,
+        "maximum": 25,
+        "unit": "degC",
+        "conditions": "Nominal model and package benches",
+        "placeholder": false
+      }
+    ]
+  },
+  "known_omissions": [
+    "AC, transient, noise, thermal, and package-parasitic behavior are outside this DC-only conveyor package.",
+    "Temperature dependence and self-heating are not modelled; the electrical region is limited to the cited nominal-temperature data.",
+    "Catalog parametrics were used only as initial guesses or F1 fallback constraints and are not datasheet citations.",
+    "F2 evidence did not qualify; staged as F1: family parked after 2 consecutive F2 fit-gate failures with no F2 success; later parts staged F1 (mosfet F2 gate failed: drain_current worst relative error 206.6953 exceeds gate 0.2; drain_current RMS relative error 45.8444 exceeds gate 0.12; rds_on worst relative error 2.1337 exceeds gate 0.2; rds_on RMS relative error 1.2249 exceeds gate 0.12)",
+    "Gate-threshold behavior is not covered by this F1 package; the supported region is limited to cited nominal-temperature RDS(on) targets."
+  ],
+  "licence": {
+    "spdx_id": "MIT",
+    "provenance_basis": "original_from_facts"
+  },
+  "generator": {
+    "tool_or_agent": "opencircuit-model-factory-v0.1.0 bulk-adapter",
+    "date": "2026-08-09"
+  },
+  "reviewer": {
+    "tool_or_agent": "gpt-5.6-sol independent reviewer (batch-1 scale campaign)",
+    "date": "2026-08-10"
+  },
+  "test_results": {
+    "status": "complete",
+    "pass_count": 6,
+    "fail_count": 0,
+    "total_count": 6,
+    "worst_observed_relative_fitting_error": {
+      "value": 0.32305374842940104,
+      "quantity": "rdson_5"
+    }
+  },
+  "validation_date": "2026-08-10"
+}

@@ -1,0 +1,127 @@
+{
+  "schema_version": "1.0.0",
+  "canonical_mpn": "BAT54L",
+  "manufacturer": "Nexperia",
+  "description": "1 Independent 200mA 2uA@25V 30V 600mA 800mV@100mA DFN1006-2 Schottky Diodes ROHS",
+  "electrical_family": "diode",
+  "symbol_pins": [
+    {
+      "name": "A",
+      "number": "1",
+      "role": "anode"
+    },
+    {
+      "name": "K",
+      "number": "2",
+      "role": "cathode"
+    }
+  ],
+  "spice_pin_mapping": [
+    {
+      "symbol_pin_number": "1",
+      "subckt_node": "anode",
+      "order": 1
+    },
+    {
+      "symbol_pin_number": "2",
+      "subckt_node": "cathode",
+      "order": 2
+    }
+  ],
+  "package_variants": [
+    {
+      "name": "DFN1006-2",
+      "standard": "DFN1006-2",
+      "pin_count": 2,
+      "pin_map": [
+        {
+          "package_pin": "1",
+          "symbol_pin_number": "1"
+        },
+        {
+          "package_pin": "2",
+          "symbol_pin_number": "2"
+        }
+      ]
+    }
+  ],
+  "ordering_code_aliases": [
+    "BAT54L,315"
+  ],
+  "datasheet": {
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8588912994449838080",
+    "revision": "BAT54L v.2, 3 September 2018"
+  },
+  "model_type": "dot_model",
+  "fidelity_tier": "F2",
+  "domain_coverage": {
+    "dc": "fitted",
+    "ac": "none",
+    "transient": "none",
+    "noise": "none",
+    "thermal": "none",
+    "digital": "none"
+  },
+  "supported_analyses": [
+    "operating_point",
+    "dc_sweep"
+  ],
+  "supported_operating_region": {
+    "summary": "Supported only over the cited 25 degC electrical characterization region: forward_current 0.0001 to 0.1 A; reverse_voltage 0 to 25 V.",
+    "numeric_bounds": [
+      {
+        "quantity": "forward_current",
+        "minimum": 0.0001,
+        "maximum": 0.1,
+        "unit": "A",
+        "conditions": "Cited forward targets and fitted 25 degC curve span",
+        "placeholder": false
+      },
+      {
+        "quantity": "reverse_voltage",
+        "minimum": 0,
+        "maximum": 25,
+        "unit": "V",
+        "conditions": "Cited reverse-leakage test condition",
+        "placeholder": false
+      },
+      {
+        "quantity": "ambient_temperature",
+        "minimum": 25,
+        "maximum": 25,
+        "unit": "degC",
+        "conditions": "Nominal model and package benches",
+        "placeholder": false
+      }
+    ]
+  },
+  "known_omissions": [
+    "AC, transient, noise, thermal, and package-parasitic behavior are outside this DC-only conveyor package.",
+    "Temperature dependence and self-heating are not modelled; the electrical region is limited to the cited nominal-temperature data.",
+    "Catalog parametrics were used only as initial guesses or F1 fallback constraints and are not datasheet citations.",
+    "Reverse recovery and reverse breakdown are not modelled because the supplied datasheet publishes no trr or breakdown voltage/current characteristic."
+  ],
+  "licence": {
+    "spdx_id": "MIT",
+    "provenance_basis": "original_from_facts"
+  },
+  "generator": {
+    "tool_or_agent": "opencircuit-model-factory-v0.1.0 bulk-adapter",
+    "date": "2026-08-09"
+  },
+  "reviewer": {
+    "tool_or_agent": "gpt-5.6-sol independent reviewer (batch-1 scale campaign)",
+    "date": "2026-08-10"
+  },
+  "test_results": {
+    "status": "complete",
+    "pass_count": 11,
+    "fail_count": 0,
+    "total_count": 11,
+    "worst_observed_relative_fitting_error": {
+      "value": 0.02525495569915642,
+      "quantity": "forward voltage at 0.03 A"
+    }
+  },
+  "validation_date": "2026-08-10"
+}

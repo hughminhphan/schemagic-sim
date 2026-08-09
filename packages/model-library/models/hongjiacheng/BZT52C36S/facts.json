@@ -1,0 +1,170 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "schema_version": "1.0.0",
+    "mpn": "BZT52C36S",
+    "manufacturer": "hongjiacheng",
+    "family": "diode",
+    "datasheet_identity": {
+      "title": "BZT52C2V0S THRU BZT52C75S SURFACE MOUNT ZENER DIODES",
+      "revision": "Rev:1.0",
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3",
+        "p. 4"
+      ]
+    },
+    "usable_curves": true,
+    "curves": [
+      {
+        "name": "Fig. 2 Zener Characteristics, BZT52C36S nominal trace",
+        "x_axis": {
+          "quantity": "zener voltage VZ",
+          "unit": "V",
+          "scale": "linear"
+        },
+        "y_axis": {
+          "quantity": "zener current IZ",
+          "unit": "A",
+          "scale": "log"
+        },
+        "test_conditions": "TA = 25 degC, pulsed; typical family characteristic curve for BZT52C2V0S through BZT52C75S, 36 V nominal trace",
+        "page_reference": "p. 3, Fig. 2 (Zener Characteristics, 11 V to 43 V)",
+        "points": [
+          {
+            "x": 35.35,
+            "y": 0.0005
+          },
+          {
+            "x": 35.4,
+            "y": 0.001
+          },
+          {
+            "x": 35.6,
+            "y": 0.002
+          },
+          {
+            "x": 35.8,
+            "y": 0.005
+          }
+        ]
+      }
+    ],
+    "specs": {
+      "variant": "zener",
+      "forward_voltage_points": [
+        {
+          "current": {
+            "value": 0.01,
+            "unit": "A",
+            "conditions": "IF = 10 mA, TA = 25 degC",
+            "page_reference": "p. 1, Maximum Ratings, Forward Voltage @ IF=10mA",
+            "source_kind": "maximum"
+          },
+          "voltage": {
+            "value": 0.9,
+            "unit": "V",
+            "conditions": "IF = 10 mA, TA = 25 degC",
+            "page_reference": "p. 1, Maximum Ratings, Forward Voltage @ IF=10mA",
+            "source_kind": "maximum"
+          }
+        }
+      ],
+      "reverse_current": {
+        "value": 1e-7,
+        "unit": "A",
+        "conditions": "VR = 25.2 V, TA = 25 degC",
+        "page_reference": "p. 2, Electrical Characteristics, BZT52C36S IR@VR",
+        "source_kind": "maximum"
+      },
+      "capacitance": null,
+      "reverse_recovery": null,
+      "breakdown_voltage": {
+        "value": 36,
+        "unit": "V",
+        "conditions": "IZT = 2 mA, TA = 25 degC; nominal VZ value",
+        "page_reference": "p. 2, Electrical Characteristics, BZT52C36S nominal zener voltage VZ",
+        "source_kind": "typical"
+      },
+      "breakdown_current": {
+        "value": 0.002,
+        "unit": "A",
+        "conditions": "VZ = nominal 36 V, TA = 25 degC; IZT test current",
+        "page_reference": "p. 2, Electrical Characteristics, BZT52C36S IZT",
+        "source_kind": "typical"
+      }
+    },
+    "extraction_notes": [
+      "This is a family datasheet; the BZT52C36S row was selected from the BZT52C2V0S through BZT52C75S electrical-characteristics table.",
+      "The Fig. 2 zener-characteristic points are manually digitized readings from the visible plotted BZT52C36S 36 V trace; source-axis current in mA was converted to A and no intermediate points were interpolated.",
+      "The BZT52C36S electrical-characteristics row gives VZ minimum 34.0 V, nominal 36.0 V, and maximum 38.0 V at IZT = 2 mA; maximum ZZT is 90 ohm at IZT and maximum ZZK is 350 ohm at IZK = 0.5 mA.",
+      "The electrical-characteristics row gives maximum reverse leakage IR = 0.1 microA at VR = 25.2 V and maximum admissible zener current IZM = 2 mA.",
+      "The row gives a typical temperature-coefficient range of 30.4 to 37.4 mV/degC at the stated temperature-coefficient test current.",
+      "No capacitance value or reverse-recovery time is published in the supplied datasheet. The remaining page 3 capacitance, leakage, temperature-coefficient, and impedance plots are series-wide typical characteristics without a uniquely identified BZT52C36S trace and were not assigned component-specific points."
+    ],
+    "omission_reason": null
+  },
+  "catalog_seed_hints": [],
+  "identity": {
+    "canonical_mpn": "BZT52C36S",
+    "manufacturer": "hongjiacheng",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8564879699135385600",
+    "revision": "Rev:1.0",
+    "sha256": "8d99c0b95ddbd62581320fd03378a72d97d914bc201c735536cd50e5f6753113",
+    "accessed_date": "2026-08-09",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "placeholder": false
+  },
+  "fit_points": [
+    {
+      "current": {
+        "value": 0.0095,
+        "unit": "A",
+        "conditions": "Conservative F1 package bench at 95% of the cited current; IF = 10 mA, TA = 25 degC",
+        "page_reference": "p. 1, Maximum Ratings, Forward Voltage @ IF=10mA",
+        "source_kind": "maximum"
+      },
+      "voltage": {
+        "value": 0.9,
+        "unit": "V",
+        "conditions": "IF = 10 mA, TA = 25 degC",
+        "page_reference": "p. 1, Maximum Ratings, Forward Voltage @ IF=10mA",
+        "source_kind": "maximum"
+      }
+    }
+  ],
+  "electrical_limits": {},
+  "derived_model_inputs": {
+    "BV": {
+      "value": 36,
+      "unit": "V",
+      "conditions": "IZT = 2 mA, TA = 25 degC; nominal VZ value",
+      "page_reference": "p. 2, Electrical Characteristics, BZT52C36S nominal zener voltage VZ",
+      "source_kind": "typical"
+    },
+    "IBV": {
+      "value": 0.002,
+      "unit": "A",
+      "conditions": "VZ = nominal 36 V, TA = 25 degC; IZT test current",
+      "page_reference": "p. 2, Electrical Characteristics, BZT52C36S IZT",
+      "source_kind": "typical"
+    },
+    "NBV": {
+      "value": 1,
+      "unit": "1",
+      "conditions": "First-order avalanche-knee default; no multi-point reverse-knee trace was available",
+      "page_reference": "model-factory Zener F1 policy",
+      "source_kind": "held_default"
+    }
+  }
+}
