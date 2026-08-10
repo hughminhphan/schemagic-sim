@@ -1,0 +1,810 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "schema_version": "1.0.0",
+    "mpn": "AP2301",
+    "manufacturer": "ALLPOWER ShenZhen Quan Li Semiconductor",
+    "family": "mosfet",
+    "datasheet_identity": {
+      "title": "AP2301 P-Channel Enhancement Mosfet",
+      "revision": "V1.1",
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3",
+        "p. 4",
+        "p. 5",
+        "p. 6"
+      ]
+    },
+    "usable_curves": true,
+    "curves": [
+      {
+        "name": "transfer_characteristics_typ_25C",
+        "x_axis": {
+          "quantity": "-VGS",
+          "unit": "V",
+          "scale": "linear"
+        },
+        "y_axis": {
+          "quantity": "-ID",
+          "unit": "A",
+          "scale": "linear"
+        },
+        "test_conditions": "TJ = 25 degC typical trace (a 100 degC companion trace is also drawn; both cross at about -VGS = 2.08 V, -ID = 8 A). The figure states no VDS test condition. Axes plot magnitudes of the negative P-channel quantities.",
+        "page_reference": "p. 4, Typical Performance Characteristics, Figure 2",
+        "points": [
+          {
+            "x": 1.25,
+            "y": 0.1
+          },
+          {
+            "x": 1.4,
+            "y": 0.5
+          },
+          {
+            "x": 1.5,
+            "y": 0.9
+          },
+          {
+            "x": 1.65,
+            "y": 2
+          },
+          {
+            "x": 1.8,
+            "y": 3.4
+          },
+          {
+            "x": 1.95,
+            "y": 5.4
+          },
+          {
+            "x": 2.1,
+            "y": 8.2
+          },
+          {
+            "x": 2.25,
+            "y": 11.6
+          },
+          {
+            "x": 2.4,
+            "y": 15.5
+          },
+          {
+            "x": 2.55,
+            "y": 20
+          }
+        ]
+      },
+      {
+        "name": "output_characteristics_vgs_minus10V",
+        "x_axis": {
+          "quantity": "-VDS",
+          "unit": "V",
+          "scale": "linear"
+        },
+        "y_axis": {
+          "quantity": "-ID",
+          "unit": "A",
+          "scale": "linear"
+        },
+        "test_conditions": "VGS = -10 V trace, TA = 25 degC typical. Label unambiguous (topmost, steepest trace). Axes plot magnitudes of negative quantities. Slope near origin about 16 A/V, i.e. about 63 mohm.",
+        "page_reference": "p. 4, Typical Performance Characteristics, Figure 1",
+        "points": [
+          {
+            "x": 0.25,
+            "y": 4
+          },
+          {
+            "x": 0.5,
+            "y": 8.2
+          },
+          {
+            "x": 0.75,
+            "y": 12.1
+          },
+          {
+            "x": 1,
+            "y": 15.9
+          },
+          {
+            "x": 1.3,
+            "y": 20
+          }
+        ]
+      },
+      {
+        "name": "output_characteristics_vgs_minus4p5V",
+        "x_axis": {
+          "quantity": "-VDS",
+          "unit": "V",
+          "scale": "linear"
+        },
+        "y_axis": {
+          "quantity": "-ID",
+          "unit": "A",
+          "scale": "linear"
+        },
+        "test_conditions": "VGS = -4.5 V trace, TA = 25 degC typical. Label unambiguous (second steep trace). Slope near origin about 13 A/V, i.e. about 77 mohm, which matches the feature-page RDS(on) assignment rather than the p. 2 table (see extraction notes).",
+        "page_reference": "p. 4, Typical Performance Characteristics, Figure 1",
+        "points": [
+          {
+            "x": 0.5,
+            "y": 6.8
+          },
+          {
+            "x": 1,
+            "y": 13
+          },
+          {
+            "x": 1.5,
+            "y": 17.4
+          },
+          {
+            "x": 1.85,
+            "y": 20
+          }
+        ]
+      },
+      {
+        "name": "output_characteristics_vgs_minus2V",
+        "x_axis": {
+          "quantity": "-VDS",
+          "unit": "V",
+          "scale": "linear"
+        },
+        "y_axis": {
+          "quantity": "-ID",
+          "unit": "A",
+          "scale": "linear"
+        },
+        "test_conditions": "VGS = -2 V, TA = 25 degC typical. Label assignment: the figure draws five traces but prints only four labels; the '-2V' label sits between two traces. Assigned to the trace saturating near 7.6 A because that is consistent with the Figure 2 transfer curve (about 6.5 A at -VGS = 2.0 V). See extraction notes.",
+        "page_reference": "p. 4, Typical Performance Characteristics, Figure 1",
+        "points": [
+          {
+            "x": 0.5,
+            "y": 3.7
+          },
+          {
+            "x": 1,
+            "y": 5.5
+          },
+          {
+            "x": 1.5,
+            "y": 6.4
+          },
+          {
+            "x": 2,
+            "y": 6.7
+          },
+          {
+            "x": 3,
+            "y": 7.2
+          },
+          {
+            "x": 4,
+            "y": 7.5
+          },
+          {
+            "x": 5,
+            "y": 7.6
+          }
+        ]
+      },
+      {
+        "name": "output_characteristics_vgs_minus1p5V",
+        "x_axis": {
+          "quantity": "-VDS",
+          "unit": "V",
+          "scale": "linear"
+        },
+        "y_axis": {
+          "quantity": "-ID",
+          "unit": "A",
+          "scale": "linear"
+        },
+        "test_conditions": "VGS = -1.5 V, TA = 25 degC typical. Assigned to the lowest trace (the '-1.5V' label is printed directly below it). Note this trace saturates near 4 A while the Figure 2 transfer curve reads only about 0.9 A at -VGS = 1.5 V; the two figures are mutually inconsistent at this gate drive. See extraction notes.",
+        "page_reference": "p. 4, Typical Performance Characteristics, Figure 1",
+        "points": [
+          {
+            "x": 0.5,
+            "y": 1.3
+          },
+          {
+            "x": 1,
+            "y": 2.2
+          },
+          {
+            "x": 2,
+            "y": 3.1
+          },
+          {
+            "x": 3,
+            "y": 3.55
+          },
+          {
+            "x": 4,
+            "y": 3.85
+          },
+          {
+            "x": 5,
+            "y": 3.95
+          }
+        ]
+      },
+      {
+        "name": "rdson_vs_drain_current_vgs_minus4p5V",
+        "x_axis": {
+          "quantity": "-ID",
+          "unit": "A",
+          "scale": "linear"
+        },
+        "y_axis": {
+          "quantity": "RDS(on)",
+          "unit": "mohm",
+          "scale": "linear"
+        },
+        "test_conditions": "VGS = -4.5 V trace, TA = 25 degC typical. Consistent with the p. 2 table row (57 mohm typ at VGS = -4.5 V, ID = -3 A) but not with the p. 1 feature box (74 mohm typ at -4.5 V); see extraction notes.",
+        "page_reference": "p. 4, Typical Performance Characteristics, Figure 3",
+        "points": [
+          {
+            "x": 0.3,
+            "y": 53.5
+          },
+          {
+            "x": 1,
+            "y": 53.6
+          },
+          {
+            "x": 2,
+            "y": 53.9
+          },
+          {
+            "x": 3,
+            "y": 54.2
+          },
+          {
+            "x": 4,
+            "y": 54.7
+          },
+          {
+            "x": 5.4,
+            "y": 55.5
+          }
+        ]
+      },
+      {
+        "name": "rdson_vs_drain_current_vgs_minus2p5V",
+        "x_axis": {
+          "quantity": "-ID",
+          "unit": "A",
+          "scale": "linear"
+        },
+        "y_axis": {
+          "quantity": "RDS(on)",
+          "unit": "mohm",
+          "scale": "linear"
+        },
+        "test_conditions": "VGS = -2.5 V trace, TA = 25 degC typical. Consistent with the p. 2 table row (74 mohm typ at VGS = -2.5 V, ID = -2 A).",
+        "page_reference": "p. 4, Typical Performance Characteristics, Figure 3",
+        "points": [
+          {
+            "x": 0.3,
+            "y": 70
+          },
+          {
+            "x": 1,
+            "y": 70.1
+          },
+          {
+            "x": 2,
+            "y": 70.3
+          },
+          {
+            "x": 3,
+            "y": 70.6
+          },
+          {
+            "x": 4,
+            "y": 71
+          },
+          {
+            "x": 5.4,
+            "y": 72
+          }
+        ]
+      },
+      {
+        "name": "body_diode_forward_characteristics_25C",
+        "x_axis": {
+          "quantity": "-VSD",
+          "unit": "V",
+          "scale": "linear"
+        },
+        "y_axis": {
+          "quantity": "-IS",
+          "unit": "A",
+          "scale": "log"
+        },
+        "test_conditions": "TJ = 25 degC trace (a TJ = 100 degC companion trace crosses it near -VSD = 1.8 V, -IS = 4 A). VGS = 0 implied by the source-drain diode context; the figure states no explicit bias. Note: this typical trace reads about 1.7 V at -IS = 3 A, which exceeds the p. 2 table maximum of 1.2 V at IS = -3 A; the figure and table are mutually inconsistent. See extraction notes.",
+        "page_reference": "p. 4, Typical Performance Characteristics, Figure 4",
+        "points": [
+          {
+            "x": 1.07,
+            "y": 0.1
+          },
+          {
+            "x": 1.2,
+            "y": 0.22
+          },
+          {
+            "x": 1.33,
+            "y": 0.5
+          },
+          {
+            "x": 1.45,
+            "y": 1
+          },
+          {
+            "x": 1.62,
+            "y": 2
+          },
+          {
+            "x": 1.8,
+            "y": 4
+          },
+          {
+            "x": 2.3,
+            "y": 10
+          }
+        ]
+      },
+      {
+        "name": "ciss_vs_vds",
+        "x_axis": {
+          "quantity": "-VDS",
+          "unit": "V",
+          "scale": "linear"
+        },
+        "y_axis": {
+          "quantity": "Ciss",
+          "unit": "pF",
+          "scale": "log"
+        },
+        "test_conditions": "VGS = 0 V, f = 1 MHz implied by the p. 2 capacitance table conditions; the figure axis is C(pF) versus -VDS(V), 0 to 20 V. Trace value at -VDS = 10 V anchors to the table typical Ciss = 503 pF.",
+        "page_reference": "p. 4, Typical Performance Characteristics, Figure 6",
+        "points": [
+          {
+            "x": 0,
+            "y": 1200
+          },
+          {
+            "x": 1,
+            "y": 750
+          },
+          {
+            "x": 2,
+            "y": 620
+          },
+          {
+            "x": 5,
+            "y": 530
+          },
+          {
+            "x": 10,
+            "y": 500
+          },
+          {
+            "x": 15,
+            "y": 485
+          },
+          {
+            "x": 20,
+            "y": 470
+          }
+        ]
+      },
+      {
+        "name": "coss_vs_vds",
+        "x_axis": {
+          "quantity": "-VDS",
+          "unit": "V",
+          "scale": "linear"
+        },
+        "y_axis": {
+          "quantity": "Coss",
+          "unit": "pF",
+          "scale": "log"
+        },
+        "test_conditions": "VGS = 0 V, f = 1 MHz implied by the p. 2 capacitance table conditions. The Coss and Crss traces nearly merge above -VDS = 5 V, so reads there carry extra uncertainty; the trace at -VDS = 10 V anchors to the table typical Coss = 67 pF.",
+        "page_reference": "p. 4, Typical Performance Characteristics, Figure 6",
+        "points": [
+          {
+            "x": 0,
+            "y": 560
+          },
+          {
+            "x": 1,
+            "y": 200
+          },
+          {
+            "x": 2,
+            "y": 110
+          },
+          {
+            "x": 5,
+            "y": 78
+          },
+          {
+            "x": 10,
+            "y": 68
+          },
+          {
+            "x": 15,
+            "y": 62
+          },
+          {
+            "x": 20,
+            "y": 57
+          }
+        ]
+      },
+      {
+        "name": "crss_vs_vds",
+        "x_axis": {
+          "quantity": "-VDS",
+          "unit": "V",
+          "scale": "linear"
+        },
+        "y_axis": {
+          "quantity": "Crss",
+          "unit": "pF",
+          "scale": "log"
+        },
+        "test_conditions": "VGS = 0 V, f = 1 MHz implied by the p. 2 capacitance table conditions. The Crss and Coss traces nearly merge above -VDS = 5 V, so reads there carry extra uncertainty; the trace at -VDS = 10 V anchors to the table typical Crss = 58 pF.",
+        "page_reference": "p. 4, Typical Performance Characteristics, Figure 6",
+        "points": [
+          {
+            "x": 0,
+            "y": 310
+          },
+          {
+            "x": 1,
+            "y": 150
+          },
+          {
+            "x": 2,
+            "y": 90
+          },
+          {
+            "x": 5,
+            "y": 66
+          },
+          {
+            "x": 10,
+            "y": 58
+          },
+          {
+            "x": 15,
+            "y": 52
+          },
+          {
+            "x": 20,
+            "y": 48
+          }
+        ]
+      },
+      {
+        "name": "gate_charge_characteristics",
+        "x_axis": {
+          "quantity": "Qg",
+          "unit": "nC",
+          "scale": "linear"
+        },
+        "y_axis": {
+          "quantity": "-VGS",
+          "unit": "V",
+          "scale": "linear"
+        },
+        "test_conditions": "VDS = -10 V, ID = -2 A (printed on the figure). Miller plateau at -VGS of about 1.5 V from about 0.85 nC to about 1.95 nC; endpoint about -VGS = 4.5 V at 4.1 nC. Consistent with the p. 2 table Qgs = 0.8 nC, Qgd = 1.1 nC, Qg = 4.1 nC at VGS = -4.5 V.",
+        "page_reference": "p. 4, Typical Performance Characteristics, Figure 5",
+        "points": [
+          {
+            "x": 0,
+            "y": 0
+          },
+          {
+            "x": 0.85,
+            "y": 1.5
+          },
+          {
+            "x": 1.95,
+            "y": 1.5
+          },
+          {
+            "x": 3,
+            "y": 3
+          },
+          {
+            "x": 4.1,
+            "y": 4.5
+          }
+        ]
+      }
+    ],
+    "specs": {
+      "polarity": "p",
+      "threshold_min": {
+        "value": -0.5,
+        "unit": "V",
+        "conditions": "VDS = VGS, ID = -250 uA; P-channel, quoted negative as printed (MIN column, smallest magnitude)",
+        "page_reference": "p. 2, MOSFET Electrical Characteristics, VGS(th) row, MIN column",
+        "source_kind": "minimum"
+      },
+      "threshold_typ": {
+        "value": -0.7,
+        "unit": "V",
+        "conditions": "VDS = VGS, ID = -250 uA; P-channel, quoted negative as printed",
+        "page_reference": "p. 2, MOSFET Electrical Characteristics, VGS(th) row, TYPE column",
+        "source_kind": "typical"
+      },
+      "threshold_max": {
+        "value": -1,
+        "unit": "V",
+        "conditions": "VDS = VGS, ID = -250 uA; P-channel, quoted negative as printed (MAX column, largest magnitude)",
+        "page_reference": "p. 2, MOSFET Electrical Characteristics, VGS(th) row, MAX column",
+        "source_kind": "maximum"
+      },
+      "rdson_points": [
+        {
+          "vgs": {
+            "value": -4.5,
+            "unit": "V",
+            "conditions": "RDS(on) test condition, first row",
+            "page_reference": "p. 2, MOSFET Electrical Characteristics, RDS(on) row 1",
+            "source_kind": "typical"
+          },
+          "current": {
+            "value": -3,
+            "unit": "A",
+            "conditions": "RDS(on) test condition, first row",
+            "page_reference": "p. 2, MOSFET Electrical Characteristics, RDS(on) row 1",
+            "source_kind": "typical"
+          },
+          "resistance": {
+            "value": 0.057,
+            "unit": "ohm",
+            "conditions": "VGS = -4.5 V, ID = -3 A, TA = 25 degC; TYPE column. Note the p. 1 feature box instead assigns 58 mohm typ to VGS = -10 V and 74 mohm typ to VGS = -4.5 V, contradicting this table; Figure 3 supports the table assignment",
+            "page_reference": "p. 2, MOSFET Electrical Characteristics, RDS(on) row 1, TYPE column",
+            "source_kind": "typical"
+          }
+        },
+        {
+          "vgs": {
+            "value": -4.5,
+            "unit": "V",
+            "conditions": "RDS(on) test condition, first row",
+            "page_reference": "p. 2, MOSFET Electrical Characteristics, RDS(on) row 1",
+            "source_kind": "typical"
+          },
+          "current": {
+            "value": -3,
+            "unit": "A",
+            "conditions": "RDS(on) test condition, first row",
+            "page_reference": "p. 2, MOSFET Electrical Characteristics, RDS(on) row 1",
+            "source_kind": "typical"
+          },
+          "resistance": {
+            "value": 0.075,
+            "unit": "ohm",
+            "conditions": "VGS = -4.5 V, ID = -3 A, TA = 25 degC; guaranteed maximum",
+            "page_reference": "p. 2, MOSFET Electrical Characteristics, RDS(on) row 1, MAX column",
+            "source_kind": "maximum"
+          }
+        },
+        {
+          "vgs": {
+            "value": -2.5,
+            "unit": "V",
+            "conditions": "RDS(on) test condition, second row",
+            "page_reference": "p. 2, MOSFET Electrical Characteristics, RDS(on) row 2",
+            "source_kind": "typical"
+          },
+          "current": {
+            "value": -2,
+            "unit": "A",
+            "conditions": "RDS(on) test condition, second row",
+            "page_reference": "p. 2, MOSFET Electrical Characteristics, RDS(on) row 2",
+            "source_kind": "typical"
+          },
+          "resistance": {
+            "value": 0.074,
+            "unit": "ohm",
+            "conditions": "VGS = -2.5 V, ID = -2 A, TA = 25 degC; TYPE column",
+            "page_reference": "p. 2, MOSFET Electrical Characteristics, RDS(on) row 2, TYPE column",
+            "source_kind": "typical"
+          }
+        },
+        {
+          "vgs": {
+            "value": -2.5,
+            "unit": "V",
+            "conditions": "RDS(on) test condition, second row",
+            "page_reference": "p. 2, MOSFET Electrical Characteristics, RDS(on) row 2",
+            "source_kind": "typical"
+          },
+          "current": {
+            "value": -2,
+            "unit": "A",
+            "conditions": "RDS(on) test condition, second row",
+            "page_reference": "p. 2, MOSFET Electrical Characteristics, RDS(on) row 2",
+            "source_kind": "typical"
+          },
+          "resistance": {
+            "value": 0.095,
+            "unit": "ohm",
+            "conditions": "VGS = -2.5 V, ID = -2 A, TA = 25 degC; guaranteed maximum",
+            "page_reference": "p. 2, MOSFET Electrical Characteristics, RDS(on) row 2, MAX column",
+            "source_kind": "maximum"
+          }
+        }
+      ],
+      "ciss": {
+        "value": 5.03e-10,
+        "unit": "F",
+        "conditions": "VDS = -10 V, VGS = 0 V, f = 1 MHz; printed 503 pF",
+        "page_reference": "p. 2, MOSFET Electrical Characteristics, Dynamic characteristics, Ciss, TYPE column",
+        "source_kind": "typical"
+      },
+      "coss": {
+        "value": 6.7e-11,
+        "unit": "F",
+        "conditions": "VDS = -10 V, VGS = 0 V, f = 1 MHz; printed 67 pF",
+        "page_reference": "p. 2, MOSFET Electrical Characteristics, Dynamic characteristics, Coss, TYPE column",
+        "source_kind": "typical"
+      },
+      "crss": {
+        "value": 5.8e-11,
+        "unit": "F",
+        "conditions": "VDS = -10 V, VGS = 0 V, f = 1 MHz; printed 58 pF",
+        "page_reference": "p. 2, MOSFET Electrical Characteristics, Dynamic characteristics, Crss, TYPE column",
+        "source_kind": "typical"
+      },
+      "breakdown_voltage": {
+        "value": -20,
+        "unit": "V",
+        "conditions": "V(BR)DSS at VGS = 0 V, ID = -250 uA; P-channel, quoted negative as printed",
+        "page_reference": "p. 2, MOSFET Electrical Characteristics, V(BR)DSS row, MIN column",
+        "source_kind": "minimum"
+      },
+      "body_diode": {
+        "value": 1.2,
+        "unit": "V",
+        "conditions": "Diode forward voltage (printed as VDS, positive) at VGS = 0 V, IS = -3 A; guaranteed maximum. No typical value is tabulated. The Figure 4 typical curve reads about 1.7 V at -IS = 3 A, exceeding this maximum; figure and table conflict",
+        "page_reference": "p. 2, Source-Drain Diode characteristics, Diode Forward voltage, MAX column",
+        "source_kind": "maximum"
+      }
+    },
+    "extraction_notes": [
+      "Source PDF SHA-256 verified: adf34596b68972382184a2e7387d6a3d2e79c4b16bf1d93318a115a3cba503a6 (C385296__AP2301.pdf, 6 pages, All Power Semiconductor Co.,Ltd, rev V1.1).",
+      "Extraction method: page 4 rasterized at 300 dpi with pdftoppm; each figure cropped and read visually. Curve points are digitized_typical_curve grade; estimated read accuracy about half a minor gridline (roughly 5 to 10 percent, worse on the log-scale capacitance plot where Coss and Crss nearly merge above 5 V).",
+      "Sign convention: this is a P-channel device. Tabulated specs are recorded with the datasheet's printed signs (VGS(th) -0.5/-0.7/-1.0 V, V(BR)DSS -20 V, RDS(on) conditions VGS = -4.5/-2.5 V and ID = -3/-2 A). Figure axes are printed as -ID(A), -VDS(V), -VGS(V), -IS(A), -VSD(V); curve points are the plotted magnitudes along those negated axes, so the sign is carried by the axis quantity label.",
+      "Internal RDS(on) contradiction: the p. 1 feature box states RDS(on) < 75 mohm (typ 58) at VGS = -10 V and < 95 mohm (typ 74) at VGS = -4.5 V, while the p. 2 electrical characteristics table states 57 typ / 75 max mohm at VGS = -4.5 V, ID = -3 A and 74 typ / 95 max mohm at VGS = -2.5 V, ID = -2 A. Figure 3 (about 54 mohm at -4.5 V, about 71 mohm at -2.5 V) supports the table; Figure 1's linear-region slopes (about 63 mohm at -10 V, about 77 mohm at -4.5 V) support the feature box. rdson_points records the normative p. 2 table rows.",
+      "Figure 1 (output characteristics) draws five traces but prints only four labels (VGS = -10 V, -4.5 V, -2 V, -1.5 V). The -10 V and -4.5 V labels unambiguously mark the two steep traces. The '-2V' label sits between the trace saturating near 16 A and the trace saturating near 7.6 A; it was assigned to the 7.6 A trace because the Figure 2 transfer curve gives about 6.5 A at -VGS = 2.0 V. The '-1.5V' label was assigned to the lowest trace (label printed directly below it). The unlabeled middle trace (11.9 A at -VDS = 2 V, 16 A at 5 V; consistent with roughly VGS = -2.4 to -2.5 V per the transfer curve) was omitted because its gate voltage is not printed.",
+      "Figure 1's -1.5 V trace (saturating near 4 A) is inconsistent with the Figure 2 transfer curve (about 0.9 A at -VGS = 1.5 V); both are recorded as drawn.",
+      "The transfer characteristics figure (Figure 2) states no VDS test condition; only the temperature labels 25 degC and 100 degC are printed. The 25 degC trace was digitized.",
+      "Body diode: the only tabulated value is the 1.2 V maximum at IS = -3 A; no typical is published. The Figure 4 typical 25 degC curve reads about 1.7 V at 3 A magnitude, which exceeds that tabulated maximum, so the figure and table are mutually inconsistent; both are recorded.",
+      "Capacitance curve reads at -VDS = 10 V were anchored against the p. 2 table typicals (Ciss 503 pF, Coss 67 pF, Crss 58 pF) and agree within read error.",
+      "Switching times (td(on) 11 ns, tr 52 ns, td(off) 16 ns, tf 10 ns at VDD = -10 V, ID = -3 A, VGS = -4.5 V, RG = 3 ohm) and gate charge table values (Qg 4.1 nC, Qgs 0.8 nC, Qgd 1.1 nC at VDS = -10 V, ID = -2 A, VGS = -4.5 V) are published on p. 2; the schema has no dedicated fields for them, so they are noted here. Gate leakage IGSS max +/-100 nA at VGS = +/-12 V; IDSS max 1 uA at VDS = -20 V. No trr/Qrr row, no RthJC, and no gate resistance row are published; RthJA is 125 degC/W max (p. 1 absolute maximum ratings).",
+      "No vendor SPICE model or model pack was used; every value comes from the public datasheet PDF."
+    ],
+    "omission_reason": null
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "Drain Source On Resistance (RDS(on)@Vgs,Id)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.rds_on",
+      "raw_value": "58m\u03a9",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Gate Threshold Voltage (Vgs(th))",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.threshold",
+      "raw_value": "1V",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Gate Threshold Voltage (Vgs(th)@Id)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.threshold",
+      "raw_value": "500mV@250uA",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Input Capacitance (Ciss@Vds)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.ciss",
+      "raw_value": "503pF@10V",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Input Capacitance(Ciss)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.ciss",
+      "raw_value": "503pF",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Output Capacitance(Coss)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.coss",
+      "raw_value": "67pF",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "RDS(on)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.rds_on",
+      "raw_value": "75m\u03a9@4.5V",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Reverse Transfer Capacitance (Crss@Vds)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.crss",
+      "raw_value": "58pF@10V",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "AP2301",
+    "manufacturer": "ALLPOWER ShenZhen Quan Li Semiconductor",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8588903984522809344",
+    "revision": "V1.1",
+    "sha256": "adf34596b68972382184a2e7387d6a3d2e79c4b16bf1d93318a115a3cba503a6",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4",
+      "p. 5",
+      "p. 6"
+    ],
+    "placeholder": false
+  },
+  "rdson_points": [
+    {
+      "vgs": {
+        "value": 4.5,
+        "unit": "V",
+        "conditions": "RDS(on) test condition, first row",
+        "page_reference": "p. 2, MOSFET Electrical Characteristics, RDS(on) row 1",
+        "source_kind": "typical"
+      },
+      "current": {
+        "value": 3,
+        "unit": "A",
+        "conditions": "RDS(on) test condition, first row",
+        "page_reference": "p. 2, MOSFET Electrical Characteristics, RDS(on) row 1",
+        "source_kind": "typical"
+      },
+      "resistance": {
+        "value": 0.057,
+        "unit": "ohm",
+        "conditions": "VGS = -4.5 V, ID = -3 A, TA = 25 degC; TYPE column. Note the p. 1 feature box instead assigns 58 mohm typ to VGS = -10 V and 74 mohm typ to VGS = -4.5 V, contradicting this table; Figure 3 supports the table assignment",
+        "page_reference": "p. 2, MOSFET Electrical Characteristics, RDS(on) row 1, TYPE column",
+        "source_kind": "typical"
+      }
+    }
+  ],
+  "threshold": null,
+  "transfer_points": [],
+  "output_points": []
+}

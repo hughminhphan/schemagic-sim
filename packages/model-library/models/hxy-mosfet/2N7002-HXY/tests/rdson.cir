@@ -1,0 +1,14 @@
+OpenCircuit factory test: 2N7002-HXY RDS(on)
+* OpenCircuit Model Factory v0.1.0 bulk adapter
+* Original work generated from public factual specifications.
+* This model is not copied or adapted from any vendor SPICE model.
+* Source: https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8589834412578795520
+* Revision: 1.0
+.model OC_HXY-MOSFET_2N7002-HXY VDMOS( VTO=1.2000000000e0 KP=1.5384615385e0 THETA=0.0000000000e0 LAMBDA=3.0000000000e-3 RD=7.1500000000e-1 RS=2.6000000000e-1 RG=1.0000000000e-4 RDS=1e9 CGS=1.6800000000e-11 CGDMAX=4.2000000000e-12 CGDMIN=4.2000000000e-12 CJO=6.8000000000e-12 IS=1.0000000000e-12 N=1.5000000000e0 RB=2.6000000000e-1)
+
+.temp 25
+M1 d1 g1 0 OC_HXY-MOSFET_2N7002-HXY
+ID1 0 d1 DC 1.0000000000e-1
+VG1 g1 0 DC 5.0000000000e0
+.op
+.end

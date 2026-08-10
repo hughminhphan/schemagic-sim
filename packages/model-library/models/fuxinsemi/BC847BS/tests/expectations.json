@@ -1,0 +1,110 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "dc_gain.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "hfe_minimum_at_0.002_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg1),99999.99999999999)"
+          },
+          "minimum": 200,
+          "unit": "1",
+          "inclusive": true,
+          "datasheet_citation": "p. 1, electrical characteristics, DC current gain",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "output_curve.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "boundary_region.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "upper_current_boundary_voltage",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(c))"
+          },
+          "minimum": 0,
+          "maximum": 5,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 1, electrical characteristics, DC current gain",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "review_hfe_maximum_source_2.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "hfe_maximum_source_2",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vc),225000.0)"
+          },
+          "unit": "1",
+          "inclusive": true,
+          "datasheet_citation": "p. 1, electrical characteristics, DC current gain",
+          "placeholder": false,
+          "maximum": 450.0,
+          "minimum": 0
+        }
+      ]
+    },
+    {
+      "test_netlist": "review_vce_sat_maximum_source_1.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "vce_sat_maximum_source_1",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(c))"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 1, electrical characteristics, collector-emitter saturation voltage (1)",
+          "placeholder": false,
+          "maximum": 0.25,
+          "minimum": 0
+        }
+      ]
+    },
+    {
+      "test_netlist": "review_vce_sat_maximum_source_2.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "vce_sat_maximum_source_2",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(c))"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 1, electrical characteristics, collector-emitter saturation voltage (2)",
+          "placeholder": false,
+          "maximum": 0.65,
+          "minimum": 0
+        }
+      ]
+    }
+  ]
+}

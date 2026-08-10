@@ -1,0 +1,330 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "schema_version": "1.0.0",
+    "mpn": "2N7002-HXY",
+    "manufacturer": "HXY MOSFET",
+    "family": "mosfet",
+    "datasheet_identity": {
+      "title": "2N7002-HXY N-Channel Enhancement Mode MOSFET",
+      "revision": "1.0",
+      "pages_examined": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ]
+    },
+    "usable_curves": true,
+    "curves": [
+      {
+        "name": "Drain-Source On-Resistance vs Drain Current",
+        "x_axis": {
+          "quantity": "drain current",
+          "unit": "A",
+          "scale": "log"
+        },
+        "y_axis": {
+          "quantity": "drain-source on-resistance",
+          "unit": "\u03a9",
+          "scale": "log"
+        },
+        "test_conditions": "Vgs=10V, Vds swept",
+        "page_reference": "3",
+        "points": [
+          {
+            "x": 0.05,
+            "y": 2.1
+          },
+          {
+            "x": 0.1,
+            "y": 1
+          },
+          {
+            "x": 0.2,
+            "y": 0.95
+          },
+          {
+            "x": 0.5,
+            "y": 0.92
+          },
+          {
+            "x": 1,
+            "y": 0.95
+          }
+        ]
+      },
+      {
+        "name": "RDS(on) vs Gate-Source Voltage",
+        "x_axis": {
+          "quantity": "gate-source voltage",
+          "unit": "V",
+          "scale": "linear"
+        },
+        "y_axis": {
+          "quantity": "drain-source on-resistance",
+          "unit": "\u03a9",
+          "scale": "linear"
+        },
+        "test_conditions": "Vds swept, multiple drain current levels",
+        "page_reference": "4",
+        "points": [
+          {
+            "x": 0.5,
+            "y": 2
+          },
+          {
+            "x": 1,
+            "y": 1.35
+          },
+          {
+            "x": 2,
+            "y": 1
+          },
+          {
+            "x": 3,
+            "y": 0.8
+          },
+          {
+            "x": 4,
+            "y": 0.7
+          },
+          {
+            "x": 5,
+            "y": 0.65
+          },
+          {
+            "x": 10,
+            "y": 0.58
+          }
+        ]
+      }
+    ],
+    "specs": {
+      "polarity": "n",
+      "threshold_min": {
+        "value": 0.7,
+        "unit": "V",
+        "conditions": "Vgs=Vss, Id=250\u03bcA",
+        "page_reference": "2",
+        "source_kind": "minimum"
+      },
+      "threshold_typ": {
+        "value": 1.2,
+        "unit": "V",
+        "conditions": "Vgs=Vss, Id=250\u03bcA",
+        "page_reference": "2",
+        "source_kind": "typical"
+      },
+      "threshold_max": {
+        "value": 1.9,
+        "unit": "V",
+        "conditions": "Vgs=Vss, Id=250\u03bcA",
+        "page_reference": "2",
+        "source_kind": "maximum"
+      },
+      "rdson_points": [
+        {
+          "vgs": {
+            "value": 5,
+            "unit": "V",
+            "conditions": "Gate-source voltage",
+            "page_reference": "2",
+            "source_kind": "typical"
+          },
+          "current": {
+            "value": 0.1,
+            "unit": "A",
+            "conditions": "Drain current",
+            "page_reference": "2",
+            "source_kind": "typical"
+          },
+          "resistance": {
+            "value": 1.3,
+            "unit": "\u03a9",
+            "conditions": "Vgs=5V, Id=0.1A",
+            "page_reference": "2",
+            "source_kind": "typical"
+          }
+        },
+        {
+          "vgs": {
+            "value": 10,
+            "unit": "V",
+            "conditions": "Gate-source voltage",
+            "page_reference": "2",
+            "source_kind": "typical"
+          },
+          "current": {
+            "value": 0.1,
+            "unit": "A",
+            "conditions": "Drain current",
+            "page_reference": "2",
+            "source_kind": "typical"
+          },
+          "resistance": {
+            "value": 1,
+            "unit": "\u03a9",
+            "conditions": "Vgs=10V, Id=0.1A",
+            "page_reference": "2",
+            "source_kind": "typical"
+          }
+        }
+      ],
+      "ciss": {
+        "value": 2.1e-11,
+        "unit": "F",
+        "conditions": "Vds=25V, Vgs=0V, f=1.0MHz",
+        "page_reference": "2",
+        "source_kind": "typical"
+      },
+      "coss": {
+        "value": 1.1e-11,
+        "unit": "F",
+        "conditions": "Vds=25V, Vgs=0V, f=1.0MHz",
+        "page_reference": "2",
+        "source_kind": "typical"
+      },
+      "crss": {
+        "value": 4.2e-12,
+        "unit": "F",
+        "conditions": "Vds=25V, Vgs=0V, f=1.0MHz",
+        "page_reference": "2",
+        "source_kind": "typical"
+      },
+      "breakdown_voltage": {
+        "value": 68,
+        "unit": "V",
+        "conditions": "Vgs=0V, Id=250\u03bcA",
+        "page_reference": "2",
+        "source_kind": "typical"
+      },
+      "body_diode": {
+        "value": 1.2,
+        "unit": "V",
+        "conditions": "Vgs=0V, Is=0.2A",
+        "page_reference": "2",
+        "source_kind": "maximum"
+      }
+    },
+    "extraction_notes": [
+      "N-channel enhancement mode MOSFET, SOT-23 package",
+      "Threshold voltage extracted from Electrical Characteristics table at Id=250\u03bcA",
+      "RDS(on) at Vgs=5V and Vgs=10V extracted from table; typical values prioritized",
+      "Capacitances converted from pF to farads (SI units)",
+      "Ciss, Coss, Crss measured at Vds=25V, Vgs=0V, f=1.0MHz per datasheet table",
+      "Breakdown voltage BVdss extracted as typical value 68V from table",
+      "Body diode forward voltage (Vsd) max value 1.2V at Is=0.2A",
+      "Two RDS(on) curves digitized from Figures 5 and 6, both readily traceable to table values",
+      "All numeric values cross-referenced against table F1 evidence on page 2"
+    ],
+    "omission_reason": null
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "Drain Source On Resistance (RDS(on)@Vgs,Id)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.rds_on",
+      "raw_value": "2\u03a9@10V,0.5A",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Gate Threshold Voltage (Vgs(th))",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.threshold",
+      "raw_value": "1.2V",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Gate Threshold Voltage (Vgs(th)@Id)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.threshold",
+      "raw_value": "1.9V@250uA",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Input Capacitance (Ciss@Vds)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.ciss",
+      "raw_value": "21pF@25V",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Input Capacitance(Ciss)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.ciss",
+      "raw_value": "21pF",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Output Capacitance(Coss)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.coss",
+      "raw_value": "11pF",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "RDS(on)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.rds_on",
+      "raw_value": "1\u03a9@10V",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Reverse Transfer Capacitance (Crss@Vds)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.crss",
+      "raw_value": "4.2pF",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "2N7002-HXY",
+    "manufacturer": "HXY MOSFET",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8589834412578795520",
+    "revision": "1.0",
+    "sha256": "764e549b984ffda77d4ff5a3035863534600f1aa346b73033ea3916e6cf312e2",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5"
+    ],
+    "placeholder": false
+  },
+  "rdson_points": [
+    {
+      "vgs": {
+        "value": 5,
+        "unit": "V",
+        "conditions": "Gate-source voltage",
+        "page_reference": "p. 2",
+        "source_kind": "typical"
+      },
+      "current": {
+        "value": 0.1,
+        "unit": "A",
+        "conditions": "Drain current",
+        "page_reference": "p. 2",
+        "source_kind": "typical"
+      },
+      "resistance": {
+        "value": 1.3,
+        "unit": "ohm",
+        "conditions": "Vgs=5V, Id=0.1A",
+        "page_reference": "p. 2",
+        "source_kind": "typical"
+      }
+    }
+  ],
+  "threshold": null,
+  "transfer_points": [],
+  "output_points": []
+}

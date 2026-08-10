@@ -1,0 +1,193 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "schema_version": "1.0.0",
+    "mpn": "BZT52C6V2",
+    "manufacturer": "hongjiacheng",
+    "family": "diode",
+    "datasheet_identity": {
+      "title": "BZT52C2V0 THRU BZT52C75 Surface Mount Zener Diodes, SOD-123 (Zhuhai Hongjiacheng Technology co., Ltd)",
+      "revision": "Rev:1.0",
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3",
+        "p. 4"
+      ]
+    },
+    "usable_curves": true,
+    "curves": [
+      {
+        "name": "Zener characteristics, BZT52C6V2 branch of Fig. 1 (Vz up to 10V)",
+        "x_axis": {
+          "quantity": "zener voltage VZ",
+          "unit": "V",
+          "scale": "linear"
+        },
+        "y_axis": {
+          "quantity": "zener current IZ",
+          "unit": "mA",
+          "scale": "log"
+        },
+        "test_conditions": "Ta = 25 degC, pulsed; family curve set drawn against a PD = 500 mW envelope; branch labeled 6.2 (BZT52C6V2)",
+        "page_reference": "p. 3, Fig. 1",
+        "points": [
+          {
+            "x": 6.09,
+            "y": 1
+          },
+          {
+            "x": 6.1,
+            "y": 2
+          },
+          {
+            "x": 6.12,
+            "y": 3
+          },
+          {
+            "x": 6.13,
+            "y": 5
+          },
+          {
+            "x": 6.14,
+            "y": 7
+          },
+          {
+            "x": 6.16,
+            "y": 10
+          },
+          {
+            "x": 6.17,
+            "y": 15
+          },
+          {
+            "x": 6.18,
+            "y": 20
+          },
+          {
+            "x": 6.21,
+            "y": 30
+          }
+        ]
+      }
+    ],
+    "specs": {
+      "variant": "zener",
+      "forward_voltage_points": [
+        {
+          "current": {
+            "value": 0.01,
+            "unit": "A",
+            "conditions": "Ta = 25 degC, forward voltage test current",
+            "page_reference": "p. 1, maximum ratings table",
+            "source_kind": "maximum"
+          },
+          "voltage": {
+            "value": 0.9,
+            "unit": "V",
+            "conditions": "IF = 10 mA, Ta = 25 degC",
+            "page_reference": "p. 1, maximum ratings table",
+            "source_kind": "maximum"
+          }
+        }
+      ],
+      "reverse_current": {
+        "value": 3e-06,
+        "unit": "A",
+        "conditions": "VR = 4.0 V, Ta = 25 degC (leakage current IR at VR, below the knee)",
+        "page_reference": "p. 2, electrical characteristics, BZT52C6V2 row",
+        "source_kind": "maximum"
+      },
+      "capacitance": null,
+      "reverse_recovery": null,
+      "breakdown_voltage": {
+        "value": 6.2,
+        "unit": "V",
+        "conditions": "Nominal zener voltage VZ at IZT = 5 mA, Ta = 25 degC; datasheet min 5.89 V, max 6.51 V",
+        "page_reference": "p. 2, electrical characteristics, BZT52C6V2 row",
+        "source_kind": "typical"
+      },
+      "breakdown_current": {
+        "value": 0.005,
+        "unit": "A",
+        "conditions": "IZT, the reverse test current at which VZ is specified, Ta = 25 degC",
+        "page_reference": "p. 2, electrical characteristics, BZT52C6V2 row",
+        "source_kind": "typical"
+      }
+    },
+    "extraction_notes": [
+      "Identity: LCSC C19077403 corresponds to BZT52C6V2, marking code WA, SOD-123 package, on the family datasheet BZT52C2V0 THRU BZT52C75 (www.ichjc.com). SHA-256 of the PDF verified: 1e58426ecb363e87dbad0da3e5a12350aadc7203342e2c339877f1de5b2d7631.",
+      "Zener impedance (no dedicated schema slot): ZZT = 10 ohm max at IZT = 5 mA; ZZK = 150 ohm max at IZK = 1.0 mA (p. 2, BZT52C6V2 row). These support the archetype variant-Z NBV/RS derivation.",
+      "Typical temperature coefficient at IZT: 0.4 to 3.7 mV/degC; admissible zener current IZM = 5 mA (p. 2, BZT52C6V2 row).",
+      "Ratings (p. 1): PD = 350 mW at Ta = 25 degC, RthJA = 357 degC/W, Tj and Tstg = -55 to +150 degC. Note Fig. 1 curves are drawn against a PD = 500 mW pulsed envelope, which exceeds the 350 mW continuous rating; digitized points are kept at or below 30 mA (0.19 W at 6.2 V).",
+      "Curve digitization method: page 3 rasterized at 200 dpi; axes calibrated from gridline pixel positions (x: 1 V at px 197, 53.1 px/V linear; y: 100 mA at row 284, 213.4 px/decade log). The branch labeled 6.2 is cleanly separated from the neighboring 5.6 and 6.8 branches at every sampled current. Stroke width about 3 px gives roughly +/-0.03 V reading uncertainty; values rounded to 0.01 V. The branch terminates on the power envelope between 30 and 50 mA, so no points were taken above 30 mA.",
+      "Digitization sanity checks: digitized VZ at IZT = 5 mA is 6.13 V, inside the table band 5.89 to 6.51 V; implied incremental impedance from 5 to 30 mA is about 3 ohm, consistent with ZZT max 10 ohm; local slope near 1 mA is about 19 ohm, well under ZZK max 150 ohm.",
+      "Forward data: the only forward point is VF = 0.9 V max at IF = 10 mA from the maximum ratings table (p. 1); the datasheet has no forward IV figure, so low-current recombination cannot be fitted from this sheet.",
+      "Capacitance: p. 3 has a family-level typical capacitance vs nominal zener voltage figure (0 V bias, 1 V bias, 50 percent VZ bias, f = 1 MHz), but at VZ = 6.2 the three curves and their label arrows are not separable with confidence in the raster, and the electrical table publishes no capacitance value; capacitance is therefore omitted rather than guessed.",
+      "No reverse recovery time is published anywhere on the datasheet."
+    ],
+    "omission_reason": null
+  },
+  "catalog_seed_hints": [],
+  "identity": {
+    "canonical_mpn": "BZT52C6V2",
+    "manufacturer": "hongjiacheng",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8564879636518621184",
+    "revision": "Rev:1.0",
+    "sha256": "1e58426ecb363e87dbad0da3e5a12350aadc7203342e2c339877f1de5b2d7631",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "placeholder": false
+  },
+  "fit_points": [
+    {
+      "current": {
+        "value": 0.0095,
+        "unit": "A",
+        "conditions": "Conservative F1 package bench at 95% of the cited current; Ta = 25 degC, forward voltage test current",
+        "page_reference": "p. 1, maximum ratings table",
+        "source_kind": "maximum"
+      },
+      "voltage": {
+        "value": 0.9,
+        "unit": "V",
+        "conditions": "IF = 10 mA, Ta = 25 degC",
+        "page_reference": "p. 1, maximum ratings table",
+        "source_kind": "maximum"
+      }
+    }
+  ],
+  "electrical_limits": {},
+  "derived_model_inputs": {
+    "BV": {
+      "value": 6.2,
+      "unit": "V",
+      "conditions": "Nominal zener voltage VZ at IZT = 5 mA, Ta = 25 degC; datasheet min 5.89 V, max 6.51 V",
+      "page_reference": "p. 2, electrical characteristics, BZT52C6V2 row",
+      "source_kind": "typical"
+    },
+    "IBV": {
+      "value": 0.005,
+      "unit": "A",
+      "conditions": "IZT, the reverse test current at which VZ is specified, Ta = 25 degC",
+      "page_reference": "p. 2, electrical characteristics, BZT52C6V2 row",
+      "source_kind": "typical"
+    },
+    "NBV": {
+      "value": 1,
+      "unit": "1",
+      "conditions": "First-order avalanche-knee default; no multi-point reverse-knee trace was available",
+      "page_reference": "model-factory Zener F1 policy",
+      "source_kind": "held_default"
+    }
+  }
+}

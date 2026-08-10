@@ -1,0 +1,89 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "dc_gain.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "hfe_minimum_at_0.002_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg1),209999.99999999997)"
+          },
+          "minimum": 420,
+          "unit": "1",
+          "inclusive": true,
+          "datasheet_citation": "p. 4",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "output_curve.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "boundary_region.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "upper_current_boundary_voltage",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(c))"
+          },
+          "minimum": 0,
+          "maximum": 5,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 4",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "review_hfe_minimum_source_1.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "hfe_minimum_source_1",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vc),210000.0)"
+          },
+          "unit": "1",
+          "inclusive": true,
+          "datasheet_citation": "4",
+          "placeholder": false,
+          "minimum": 420.0
+        }
+      ]
+    },
+    {
+      "test_netlist": "review_hfe_maximum_source_2.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "hfe_maximum_source_2",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vc),400000.0)"
+          },
+          "unit": "1",
+          "inclusive": true,
+          "datasheet_citation": "4",
+          "placeholder": false,
+          "maximum": 800.0,
+          "minimum": 0
+        }
+      ]
+    }
+  ]
+}

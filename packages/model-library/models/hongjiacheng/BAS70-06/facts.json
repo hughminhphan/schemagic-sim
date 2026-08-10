@@ -1,0 +1,367 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "schema_version": "1.0.0",
+    "mpn": "BAS70-06",
+    "manufacturer": "hongjiacheng",
+    "family": "diode",
+    "datasheet_identity": {
+      "title": "BAS70 THRU BAS70-06 SURFACE MOUNT SCHOTTKY BARRIER RECTIFIER",
+      "revision": "Rev.1.0",
+      "pages_examined": [
+        "p. 1",
+        "p. 2"
+      ]
+    },
+    "usable_curves": true,
+    "curves": [
+      {
+        "name": "Forward IV Characteristic",
+        "x_axis": {
+          "quantity": "Forward Voltage",
+          "unit": "V",
+          "scale": "linear"
+        },
+        "y_axis": {
+          "quantity": "Forward Current",
+          "unit": "A",
+          "scale": "log"
+        },
+        "test_conditions": "Ta = 25 degC",
+        "page_reference": "p. 2 Fig.1",
+        "points": [
+          {
+            "x": 0.2,
+            "y": 1e-05
+          },
+          {
+            "x": 0.3,
+            "y": 5e-05
+          },
+          {
+            "x": 0.4,
+            "y": 0.0002
+          },
+          {
+            "x": 0.5,
+            "y": 0.001
+          },
+          {
+            "x": 0.6,
+            "y": 0.008
+          },
+          {
+            "x": 0.7,
+            "y": 0.05
+          }
+        ]
+      },
+      {
+        "name": "Reverse Leakage Characteristic",
+        "x_axis": {
+          "quantity": "Reverse Voltage",
+          "unit": "V",
+          "scale": "linear"
+        },
+        "y_axis": {
+          "quantity": "Reverse Current",
+          "unit": "A",
+          "scale": "log"
+        },
+        "test_conditions": "Ta = 25 degC",
+        "page_reference": "p. 2 Fig.2",
+        "points": [
+          {
+            "x": 10,
+            "y": 1e-07
+          },
+          {
+            "x": 30,
+            "y": 5e-07
+          },
+          {
+            "x": 50,
+            "y": 2e-06
+          },
+          {
+            "x": 60,
+            "y": 3.5e-06
+          },
+          {
+            "x": 70,
+            "y": 5e-06
+          }
+        ]
+      },
+      {
+        "name": "Junction Capacitance vs Reverse Voltage",
+        "x_axis": {
+          "quantity": "Reverse Voltage",
+          "unit": "V",
+          "scale": "linear"
+        },
+        "y_axis": {
+          "quantity": "Capacitance",
+          "unit": "F",
+          "scale": "log"
+        },
+        "test_conditions": "f = 1 MHz, Ta = 25 degC",
+        "page_reference": "p. 2 Fig.3",
+        "points": [
+          {
+            "x": 1,
+            "y": 2e-11
+          },
+          {
+            "x": 5,
+            "y": 1.5e-11
+          },
+          {
+            "x": 10,
+            "y": 1.2e-11
+          },
+          {
+            "x": 15,
+            "y": 1e-11
+          },
+          {
+            "x": 20,
+            "y": 9e-12
+          }
+        ]
+      }
+    ],
+    "specs": {
+      "variant": "schottky",
+      "forward_voltage_points": [
+        {
+          "current": {
+            "value": 0.001,
+            "unit": "A",
+            "conditions": "IF = 1.0 mA, Ta = 25 degC",
+            "page_reference": "p. 2 electrical characteristics table",
+            "source_kind": "maximum"
+          },
+          "voltage": {
+            "value": 1,
+            "unit": "V",
+            "conditions": "IF = 1.0 mA, Ta = 25 degC",
+            "page_reference": "p. 2 electrical characteristics table",
+            "source_kind": "maximum"
+          }
+        },
+        {
+          "current": {
+            "value": 0.015,
+            "unit": "A",
+            "conditions": "IF = 15 mA, Ta = 25 degC",
+            "page_reference": "p. 2 electrical characteristics table",
+            "source_kind": "maximum"
+          },
+          "voltage": {
+            "value": 1.2,
+            "unit": "V",
+            "conditions": "IF = 15 mA, Ta = 25 degC",
+            "page_reference": "p. 2 electrical characteristics table",
+            "source_kind": "maximum"
+          }
+        }
+      ],
+      "reverse_current": {
+        "value": 2e-06,
+        "unit": "A",
+        "conditions": "VR = 50 V, Ta = 25 degC",
+        "page_reference": "p. 2 electrical characteristics table",
+        "source_kind": "maximum"
+      },
+      "capacitance": {
+        "value": 2e-11,
+        "unit": "F",
+        "conditions": "VR = 1.0 V, f = 1 MHz, Ta = 25 degC",
+        "page_reference": "p. 2 electrical characteristics table",
+        "source_kind": "maximum"
+      },
+      "reverse_recovery": null,
+      "breakdown_voltage": null,
+      "breakdown_current": null
+    },
+    "extraction_notes": [
+      "BAS70-06 is a Schottky barrier rectifier diode in SOT-23 package.",
+      "Device is marked with code 76 (as per datasheet marking table).",
+      "Forward voltage data extracted from electrical characteristics table: maximum ratings at two test currents.",
+      "Reverse current measured at VR = 50 V per datasheet specifications.",
+      "Junction capacitance (CT) measured at VR = 1.0 V, f = 1 MHz.",
+      "Forward IV, reverse leakage, and junction capacitance curves digitized from figures.",
+      "Schottky device has no reverse recovery time (TT = 0 by construction).",
+      "No reverse breakdown voltage specified; operates up to 70 V VRRM.",
+      "SI units (A, V, F, s) used throughout."
+    ],
+    "omission_reason": null
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "Voltage - Forward(Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "1V@15mA",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "BAS70-06",
+    "manufacturer": "hongjiacheng",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8603186701183700992",
+    "revision": "Rev.1.0",
+    "sha256": "0de8e09689f216a5e948e4a8740065d79164c74dfbea80ec348caf73a8b803ba",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2"
+    ],
+    "placeholder": false
+  },
+  "fit_points": [
+    {
+      "current": {
+        "value": 1e-05,
+        "unit": "A",
+        "conditions": "Ta = 25 degC",
+        "page_reference": "p. 2 Fig.1",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 0.2,
+        "unit": "V",
+        "conditions": "Ta = 25 degC",
+        "page_reference": "p. 2 Fig.1",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 5e-05,
+        "unit": "A",
+        "conditions": "Ta = 25 degC",
+        "page_reference": "p. 2 Fig.1",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 0.3,
+        "unit": "V",
+        "conditions": "Ta = 25 degC",
+        "page_reference": "p. 2 Fig.1",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 0.0002,
+        "unit": "A",
+        "conditions": "Ta = 25 degC",
+        "page_reference": "p. 2 Fig.1",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 0.4,
+        "unit": "V",
+        "conditions": "Ta = 25 degC",
+        "page_reference": "p. 2 Fig.1",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 0.001,
+        "unit": "A",
+        "conditions": "Ta = 25 degC",
+        "page_reference": "p. 2 Fig.1",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 0.5,
+        "unit": "V",
+        "conditions": "Ta = 25 degC",
+        "page_reference": "p. 2 Fig.1",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 0.008,
+        "unit": "A",
+        "conditions": "Ta = 25 degC",
+        "page_reference": "p. 2 Fig.1",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 0.6,
+        "unit": "V",
+        "conditions": "Ta = 25 degC",
+        "page_reference": "p. 2 Fig.1",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 0.05,
+        "unit": "A",
+        "conditions": "Ta = 25 degC",
+        "page_reference": "p. 2 Fig.1",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 0.7,
+        "unit": "V",
+        "conditions": "Ta = 25 degC",
+        "page_reference": "p. 2 Fig.1",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 0.001,
+        "unit": "A",
+        "conditions": "IF = 1.0 mA, Ta = 25 degC",
+        "page_reference": "p. 2 electrical characteristics table",
+        "source_kind": "maximum"
+      },
+      "voltage": {
+        "value": 1,
+        "unit": "V",
+        "conditions": "IF = 1.0 mA, Ta = 25 degC",
+        "page_reference": "p. 2 electrical characteristics table",
+        "source_kind": "maximum"
+      }
+    },
+    {
+      "current": {
+        "value": 0.015,
+        "unit": "A",
+        "conditions": "IF = 15 mA, Ta = 25 degC",
+        "page_reference": "p. 2 electrical characteristics table",
+        "source_kind": "maximum"
+      },
+      "voltage": {
+        "value": 1.2,
+        "unit": "V",
+        "conditions": "IF = 15 mA, Ta = 25 degC",
+        "page_reference": "p. 2 electrical characteristics table",
+        "source_kind": "maximum"
+      }
+    }
+  ],
+  "electrical_limits": {
+    "reverse_current_50v": {
+      "value": 2e-06,
+      "unit": "A",
+      "conditions": "VR = 50 V, Ta = 25 degC",
+      "page_reference": "p. 2 electrical characteristics table",
+      "source_kind": "maximum"
+    }
+  },
+  "derived_model_inputs": {}
+}

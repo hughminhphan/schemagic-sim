@@ -1,0 +1,67 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "rdson.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "rdson_1",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d1),0.35714285714285715)"
+          },
+          "expected_value": 0.045,
+          "unit": "ohm",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.5
+          },
+          "datasheet_citation": "p. 2 Electrical Characteristics, RDS(ON) row 1, TYP column (45 mOhm)",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "review_rdson_maximum_source_2.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "rdson_maximum_source_2",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d),0.35714285714285715)"
+          },
+          "unit": "ohm",
+          "inclusive": true,
+          "datasheet_citation": "p. 2 Electrical Characteristics, RDS(ON) row 1, MAX column (55 mOhm)",
+          "placeholder": false,
+          "maximum": 0.055,
+          "minimum": 0
+        }
+      ]
+    },
+    {
+      "test_netlist": "review_rdson_maximum_source_4.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "rdson_maximum_source_4",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d),0.5)"
+          },
+          "unit": "ohm",
+          "inclusive": true,
+          "datasheet_citation": "p. 2 Electrical Characteristics, RDS(ON) row 2, MAX column (85 mOhm)",
+          "placeholder": false,
+          "maximum": 0.085,
+          "minimum": 0
+        }
+      ]
+    }
+  ]
+}

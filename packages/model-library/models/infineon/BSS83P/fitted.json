@@ -1,0 +1,333 @@
+{
+  "schema_version": "1.0.0",
+  "fidelity_tier": "F2",
+  "parameters": {
+    "VTO": 1.827803416905431,
+    "KP": 0.5288201496696151,
+    "THETA": 0.07526592685550128,
+    "LAMBDA": 1.517161268347027e-12,
+    "RD": 0.3796778244666091,
+    "RS": 0.4,
+    "RG": 0.0001,
+    "CGS": 5.5000000000000004e-11,
+    "CGDMAX": 7e-12,
+    "CGDMIN": 7e-12,
+    "CJO": 1.1999999999999999e-11,
+    "IS": 1e-12,
+    "N": 1.5,
+    "RB": 0.4
+  },
+  "fitter": "scipy.optimize.least_squares with native ngspice-46 evaluations",
+  "optimizer": {
+    "optimizer_nfev": 30,
+    "optimizer_status": 3,
+    "held_defaults": [
+      {
+        "parameter": "LAMBDA",
+        "value": 1.517161268347027e-12,
+        "reason": "no channel-length modulation is resolvable from the digitised output range"
+      }
+    ]
+  },
+  "held_defaults": [
+    {
+      "parameter": "LAMBDA",
+      "value": 1.517161268347027e-12,
+      "reason": "no channel-length modulation is resolvable from the digitised output range"
+    }
+  ],
+  "curves_used": [
+    "transfer_characteristics_typ_25C (p. 6, 'Typ. transfer characteristics ID = f(VGS)')",
+    "output_characteristics_vgs_2p5_typ_25C (p. 6, 'Typ. output characteristic ID = f(VDS)', curve a)",
+    "output_characteristics_vgs_3p0_typ_25C (p. 6, 'Typ. output characteristic ID = f(VDS)', curve b)",
+    "output_characteristics_vgs_3p5_typ_25C (p. 6, 'Typ. output characteristic ID = f(VDS)', curve c)",
+    "output_characteristics_vgs_4p0_triode_typ_25C (p. 6, 'Typ. output characteristic ID = f(VDS)', curve d)"
+  ],
+  "curves_rejected": [],
+  "residuals": [
+    {
+      "quantity": "transfer current at VGS 2 V",
+      "gate_quantity": "drain_current",
+      "datasheet_value": 0.01,
+      "fitted_value": 0.008993660076317295,
+      "unit": "A",
+      "relative_error": 0.10063399236827052,
+      "citation": "p. 6, 'Typ. transfer characteristics ID = f(VGS)'"
+    },
+    {
+      "quantity": "transfer current at VGS 2.5 V",
+      "gate_quantity": "drain_current",
+      "datasheet_value": 0.09,
+      "fitted_value": 0.10083119474710588,
+      "unit": "A",
+      "relative_error": 0.12034660830117644,
+      "citation": "p. 6, 'Typ. transfer characteristics ID = f(VGS)'"
+    },
+    {
+      "quantity": "transfer current at VGS 2.75 V",
+      "gate_quantity": "drain_current",
+      "datasheet_value": 0.17,
+      "fitted_value": 0.17968947436554727,
+      "unit": "A",
+      "relative_error": 0.05699690803263095,
+      "citation": "p. 6, 'Typ. transfer characteristics ID = f(VGS)'"
+    },
+    {
+      "quantity": "transfer current at VGS 3 V",
+      "gate_quantity": "drain_current",
+      "datasheet_value": 0.285,
+      "fitted_value": 0.2760334465468105,
+      "unit": "A",
+      "relative_error": 0.03146159106382272,
+      "citation": "p. 6, 'Typ. transfer characteristics ID = f(VGS)'"
+    },
+    {
+      "quantity": "transfer current at VGS 3.25 V",
+      "gate_quantity": "drain_current",
+      "datasheet_value": 0.39,
+      "fitted_value": 0.3875947299296095,
+      "unit": "A",
+      "relative_error": 0.0061673591548474,
+      "citation": "p. 6, 'Typ. transfer characteristics ID = f(VGS)'"
+    },
+    {
+      "quantity": "transfer current at VGS 3.5 V",
+      "gate_quantity": "drain_current",
+      "datasheet_value": 0.52,
+      "fitted_value": 0.512564928089384,
+      "unit": "A",
+      "relative_error": 0.01429821521272305,
+      "citation": "p. 6, 'Typ. transfer characteristics ID = f(VGS)'"
+    },
+    {
+      "quantity": "transfer current at VGS 3.75 V",
+      "gate_quantity": "drain_current",
+      "datasheet_value": 0.66,
+      "fitted_value": 0.6494637245464854,
+      "unit": "A",
+      "relative_error": 0.015964053717446445,
+      "citation": "p. 6, 'Typ. transfer characteristics ID = f(VGS)'"
+    },
+    {
+      "quantity": "transfer current at VGS 4 V",
+      "gate_quantity": "drain_current",
+      "datasheet_value": 0.8,
+      "fitted_value": 0.7970596247788592,
+      "unit": "A",
+      "relative_error": 0.003675469026426098,
+      "citation": "p. 6, 'Typ. transfer characteristics ID = f(VGS)'"
+    },
+    {
+      "quantity": "transfer current at VGS 4.4 V",
+      "gate_quantity": "drain_current",
+      "datasheet_value": 1.02,
+      "fitted_value": 1.052931647922188,
+      "unit": "A",
+      "relative_error": 0.03228592933547838,
+      "citation": "p. 6, 'Typ. transfer characteristics ID = f(VGS)'"
+    },
+    {
+      "quantity": "output current at VGS 2.5 V, VDS 0.5 V",
+      "gate_quantity": "drain_current",
+      "datasheet_value": 0.085,
+      "fitted_value": 0.09121862166414481,
+      "unit": "A",
+      "relative_error": 0.07316025487229179,
+      "citation": "output characteristics"
+    },
+    {
+      "quantity": "output current at VGS 2.5 V, VDS 1 V",
+      "gate_quantity": "drain_current",
+      "datasheet_value": 0.092,
+      "fitted_value": 0.100831185736881,
+      "unit": "A",
+      "relative_error": 0.09599114931392398,
+      "citation": "output characteristics"
+    },
+    {
+      "quantity": "output current at VGS 2.5 V, VDS 2 V",
+      "gate_quantity": "drain_current",
+      "datasheet_value": 0.093,
+      "fitted_value": 0.1008311867380173,
+      "unit": "A",
+      "relative_error": 0.08420630901093876,
+      "citation": "output characteristics"
+    },
+    {
+      "quantity": "output current at VGS 2.5 V, VDS 3.5 V",
+      "gate_quantity": "drain_current",
+      "datasheet_value": 0.093,
+      "fitted_value": 0.10083118823972019,
+      "unit": "A",
+      "relative_error": 0.08420632515828162,
+      "citation": "output characteristics"
+    },
+    {
+      "quantity": "output current at VGS 3 V, VDS 0.5 V",
+      "gate_quantity": "drain_current",
+      "datasheet_value": 0.19,
+      "fitted_value": 0.16639296368222903,
+      "unit": "A",
+      "relative_error": 0.12424755956721566,
+      "citation": "output characteristics"
+    },
+    {
+      "quantity": "output current at VGS 3 V, VDS 1 V",
+      "gate_quantity": "drain_current",
+      "datasheet_value": 0.245,
+      "fitted_value": 0.26103094467311677,
+      "unit": "A",
+      "relative_error": 0.06543242723721134,
+      "citation": "output characteristics"
+    },
+    {
+      "quantity": "output current at VGS 3 V, VDS 1.5 V",
+      "gate_quantity": "drain_current",
+      "datasheet_value": 0.272,
+      "fitted_value": 0.27603343803534,
+      "unit": "A",
+      "relative_error": 0.014828816306396887,
+      "citation": "output characteristics"
+    },
+    {
+      "quantity": "output current at VGS 3 V, VDS 2.5 V",
+      "gate_quantity": "drain_current",
+      "datasheet_value": 0.276,
+      "fitted_value": 0.27603343903668975,
+      "unit": "A",
+      "relative_error": 0.00012115593003525653,
+      "citation": "output characteristics"
+    },
+    {
+      "quantity": "output current at VGS 3 V, VDS 4 V",
+      "gate_quantity": "drain_current",
+      "datasheet_value": 0.277,
+      "fitted_value": 0.27603344053871404,
+      "unit": "A",
+      "relative_error": 0.0034893843367725173,
+      "citation": "output characteristics"
+    },
+    {
+      "quantity": "output current at VGS 3.5 V, VDS 0.5 V",
+      "gate_quantity": "drain_current",
+      "datasheet_value": 0.26,
+      "fitted_value": 0.22024602170895136,
+      "unit": "A",
+      "relative_error": 0.15289991650403328,
+      "citation": "output characteristics"
+    },
+    {
+      "quantity": "output current at VGS 3.5 V, VDS 1 V",
+      "gate_quantity": "drain_current",
+      "datasheet_value": 0.4,
+      "fitted_value": 0.38711996409326804,
+      "unit": "A",
+      "relative_error": 0.03220008976682995,
+      "citation": "output characteristics"
+    },
+    {
+      "quantity": "output current at VGS 3.5 V, VDS 1.5 V",
+      "gate_quantity": "drain_current",
+      "datasheet_value": 0.49,
+      "fitted_value": 0.48852442575967187,
+      "unit": "A",
+      "relative_error": 0.0030113760006696445,
+      "citation": "output characteristics"
+    },
+    {
+      "quantity": "output current at VGS 3.5 V, VDS 2 V",
+      "gate_quantity": "drain_current",
+      "datasheet_value": 0.525,
+      "fitted_value": 0.5125649200764684,
+      "unit": "A",
+      "relative_error": 0.023685866521012677,
+      "citation": "output characteristics"
+    },
+    {
+      "quantity": "output current at VGS 3.5 V, VDS 3 V",
+      "gate_quantity": "drain_current",
+      "datasheet_value": 0.53,
+      "fitted_value": 0.5125649210780837,
+      "unit": "A",
+      "relative_error": 0.032896375324370404,
+      "citation": "output characteristics"
+    },
+    {
+      "quantity": "output current at VGS 3.5 V, VDS 4 V",
+      "gate_quantity": "drain_current",
+      "datasheet_value": 0.53,
+      "fitted_value": 0.5125649220796968,
+      "unit": "A",
+      "relative_error": 0.03289637343453432,
+      "citation": "output characteristics"
+    },
+    {
+      "quantity": "output current at VGS 4 V, VDS 0.4 V",
+      "gate_quantity": "drain_current",
+      "datasheet_value": 0.215,
+      "fitted_value": 0.21159852002072108,
+      "unit": "A",
+      "relative_error": 0.01582083711292521,
+      "citation": "output characteristics"
+    },
+    {
+      "quantity": "output current at VGS 4 V, VDS 0.8 V",
+      "gate_quantity": "drain_current",
+      "datasheet_value": 0.43,
+      "fitted_value": 0.3977725840785548,
+      "unit": "A",
+      "relative_error": 0.07494747888708181,
+      "citation": "output characteristics"
+    },
+    {
+      "quantity": "output current at VGS 4 V, VDS 1.27 V",
+      "gate_quantity": "drain_current",
+      "datasheet_value": 0.69,
+      "fitted_value": 0.5786017113818527,
+      "unit": "A",
+      "relative_error": 0.16144679509876417,
+      "citation": "output characteristics"
+    },
+    {
+      "quantity": "RDS(on) at VGS 4.5 V",
+      "gate_quantity": "rds_on",
+      "datasheet_value": 2,
+      "fitted_value": 1.7044992243547898,
+      "unit": "ohm",
+      "relative_error": 0.14775038782260508,
+      "citation": "electrical characteristics table"
+    },
+    {
+      "quantity": "RDS(on) at VGS 4.5 V",
+      "gate_quantity": "rds_on",
+      "datasheet_value": 3,
+      "fitted_value": 1.7044992243547898,
+      "unit": "ohm",
+      "relative_error": 0,
+      "citation": "electrical characteristics table"
+    },
+    {
+      "quantity": "RDS(on) at VGS 10 V",
+      "gate_quantity": "rds_on",
+      "datasheet_value": 1.4,
+      "fitted_value": 1.1601704072883303,
+      "unit": "ohm",
+      "relative_error": 0.17130685193690687,
+      "citation": "electrical characteristics table"
+    },
+    {
+      "quantity": "RDS(on) at VGS 10 V",
+      "gate_quantity": "rds_on",
+      "datasheet_value": 2,
+      "fitted_value": 1.1601704072883303,
+      "unit": "ohm",
+      "relative_error": 0,
+      "citation": "electrical characteristics table"
+    }
+  ],
+  "rms_relative_error": 0.0781560977562871,
+  "worst_relative_error": {
+    "value": 0.17130685193690687,
+    "quantity": "RDS(on) at VGS 10 V"
+  }
+}

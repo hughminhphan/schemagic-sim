@@ -1,0 +1,87 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "rdson.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "rdson_1",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d1),0.25)"
+          },
+          "expected_value": 0.048,
+          "unit": "ohm",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.5
+          },
+          "datasheet_citation": "PDF p.2 (printed 02), Electrical Characteristics, RDS(ON), Typ column (48 mOhm)",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "review_rdson_maximum_source_2.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "rdson_maximum_source_2",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d),0.25)"
+          },
+          "unit": "ohm",
+          "inclusive": true,
+          "datasheet_citation": "PDF p.2 (printed 02), Electrical Characteristics, RDS(ON), Max column (62 mOhm)",
+          "placeholder": false,
+          "maximum": 0.062,
+          "minimum": 0
+        }
+      ]
+    },
+    {
+      "test_netlist": "review_rdson_maximum_source_4.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "rdson_maximum_source_4",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d),0.3333333333333333)"
+          },
+          "unit": "ohm",
+          "inclusive": true,
+          "datasheet_citation": "PDF p.2 (printed 02), Electrical Characteristics, RDS(ON), Max column (73 mOhm)",
+          "placeholder": false,
+          "maximum": 0.073,
+          "minimum": 0
+        }
+      ]
+    },
+    {
+      "test_netlist": "review_rdson_maximum_source_6.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "rdson_maximum_source_6",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d),0.3333333333333333)"
+          },
+          "unit": "ohm",
+          "inclusive": true,
+          "datasheet_citation": "PDF p.2 (printed 02), Electrical Characteristics, RDS(ON), Max column (98 mOhm)",
+          "placeholder": false,
+          "maximum": 0.098,
+          "minimum": 0
+        }
+      ]
+    }
+  ]
+}

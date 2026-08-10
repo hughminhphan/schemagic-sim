@@ -1,0 +1,67 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "rdson.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "rdson_1",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d1),0.5)"
+          },
+          "expected_value": 0.13,
+          "unit": "ohm",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.5
+          },
+          "datasheet_citation": "p. 2, MOSFET Electrical Characteristics, RDS(on) row 1, Typ column",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "review_rdson_maximum_source_2.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "rdson_maximum_source_2",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d),0.5)"
+          },
+          "unit": "ohm",
+          "inclusive": true,
+          "datasheet_citation": "p. 2, MOSFET Electrical Characteristics, RDS(on) row 1, Max column",
+          "placeholder": false,
+          "maximum": 0.19,
+          "minimum": 0
+        }
+      ]
+    },
+    {
+      "test_netlist": "review_rdson_maximum_source_4.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "rdson_maximum_source_4",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d),0.6666666666666666)"
+          },
+          "unit": "ohm",
+          "inclusive": true,
+          "datasheet_citation": "p. 2, MOSFET Electrical Characteristics, RDS(on) row 2, Max column",
+          "placeholder": false,
+          "maximum": 0.24,
+          "minimum": 0
+        }
+      ]
+    }
+  ]
+}

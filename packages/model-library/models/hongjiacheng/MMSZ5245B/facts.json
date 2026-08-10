@@ -1,0 +1,206 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "schema_version": "1.0.0",
+    "mpn": "MMSZ5245B",
+    "manufacturer": "hongjiacheng",
+    "family": "diode",
+    "datasheet_identity": {
+      "title": "MMSZ5221B THRU MMSZ5267B Surface Mount Zener Diodes, SOD-123 (Zhuhai Hongjiacheng Technology co., Ltd)",
+      "revision": "Rev:1.1",
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3",
+        "p. 4",
+        "p. 5"
+      ]
+    },
+    "usable_curves": true,
+    "curves": [
+      {
+        "name": "Zener characteristic IZ vs VZ, 15 V nominal curve (MMSZ5245B), Fig. 2",
+        "x_axis": {
+          "quantity": "zener voltage VZ",
+          "unit": "V",
+          "scale": "linear"
+        },
+        "y_axis": {
+          "quantity": "zener current IZ",
+          "unit": "mA",
+          "scale": "log"
+        },
+        "test_conditions": "Ta = 25 degC, pulsed; 15 V curve of the family plot Fig. 2 (11 V to 39 V); curves terminate on the PD = 500 mW envelope",
+        "page_reference": "p. 3, Fig. 2",
+        "points": [
+          {
+            "x": 14.87,
+            "y": 0.65
+          },
+          {
+            "x": 14.9,
+            "y": 2.8
+          },
+          {
+            "x": 14.93,
+            "y": 4.5
+          },
+          {
+            "x": 14.94,
+            "y": 7.2
+          },
+          {
+            "x": 14.98,
+            "y": 9.4
+          },
+          {
+            "x": 15.01,
+            "y": 11
+          },
+          {
+            "x": 15.04,
+            "y": 13
+          },
+          {
+            "x": 15.09,
+            "y": 15.5
+          },
+          {
+            "x": 15.15,
+            "y": 17.5
+          },
+          {
+            "x": 15.32,
+            "y": 21.5
+          }
+        ]
+      }
+    ],
+    "specs": {
+      "variant": "zener",
+      "forward_voltage_points": [
+        {
+          "current": {
+            "value": 0.01,
+            "unit": "A",
+            "conditions": "specified forward test current IF for the VF limit, Ta = 25 degC",
+            "page_reference": "p. 1, Maximum Ratings table",
+            "source_kind": "typical"
+          },
+          "voltage": {
+            "value": 0.9,
+            "unit": "V",
+            "conditions": "IF = 10 mA, Ta = 25 degC",
+            "page_reference": "p. 1, Maximum Ratings table",
+            "source_kind": "maximum"
+          }
+        }
+      ],
+      "reverse_current": {
+        "value": 0.1,
+        "unit": "uA",
+        "conditions": "VR = 11.0 V, Ta = 25 degC",
+        "page_reference": "p. 2, Electrical Characteristics table, MMSZ5245B row",
+        "source_kind": "maximum"
+      },
+      "capacitance": {
+        "value": 12,
+        "unit": "pF",
+        "conditions": "bias at 50% of VZ nom (7.5 V), f = 1 MHz, Ta = 25 degC; read from the family curve at VZ nom = 15 V",
+        "page_reference": "p. 4, Fig. 5 Typical Capacitance",
+        "source_kind": "digitized_typical_curve"
+      },
+      "reverse_recovery": null,
+      "breakdown_voltage": {
+        "value": 15,
+        "unit": "V",
+        "conditions": "nominal VZ at IZT = 8.5 mA, Ta = 25 degC; datasheet limits: min 14.25 V, max 15.75 V",
+        "page_reference": "p. 2, Electrical Characteristics table, MMSZ5245B row",
+        "source_kind": "typical"
+      },
+      "breakdown_current": {
+        "value": 8.5,
+        "unit": "mA",
+        "conditions": "zener test current IZT at which VZ is specified, Ta = 25 degC",
+        "page_reference": "p. 2, Electrical Characteristics table, MMSZ5245B row",
+        "source_kind": "typical"
+      }
+    },
+    "extraction_notes": [
+      "Datasheet PDF SHA-256 verified: fec00843f279bccf78d55a456b749bf49d99676181d710880c28c93d8ee35181.",
+      "Target row on p. 2: MMSZ5245B, type code H5: VZ min 14.25 V / nom 15.0 V / max 15.75 V at IZT = 8.5 mA; ZZT = 16 ohm; IR = 0.1 uA max at VR = 11.0 V.",
+      "Zener impedance condition is ambiguous in this datasheet: the p. 2 column header reads 'ZZT@IZT=0.25mA', but the 16 ohm value matches the industry-standard ZZT at IZT = 8.5 mA, and 0.25 mA is the conventional knee (ZZK/IZK) test current (Fig. 6 likewise labels its upper curve IZ = 0.25 mA). ZZT is therefore recorded only in these notes, not as a conditioned spec.",
+      "Curve digitization method for Fig. 2: page rasterized at 400 dpi; plot frame and gridlines located programmatically; x axis linear 10-45 V, y axis log 0.5-100 mA; the 15 V curve is the 5th curve from the left (labels 11, 12, 13, 14, 15). Estimated uncertainty about +/-0.1 V in VZ (half stroke width) and a few percent in IZ. The curve merges into the 500 mW power envelope above about 22 mA, so points stop at 21.5 mA.",
+      "Digitized VZ at IZT = 8.5 mA is about 14.96 V, consistent with the 15.0 V nominal table value.",
+      "Capacitance was digitized from Fig. 5 at VZ nom = 15 V: 0 V bias about 30 pF, 1 V bias about 25 pF, 50%-of-VZ-nom bias about 12 pF; the 50% bias value is recorded as the capacitance spec.",
+      "VF max 0.9 V at IF = 10 mA appears in the p. 1 Maximum Ratings table; no forward IV curve is provided, so only this single forward point is available.",
+      "Thermal/limit context (not schema fields): PD = 500 mW at Ta <= 25 degC derating linearly to 0 at 150 degC (p. 4, Fig. 7); RthJA = 340 K/W (p. 1); Tj and Tstg -55 to +150 degC (p. 1).",
+      "reverse_recovery is null: no reverse recovery specification exists for this zener family in the datasheet.",
+      "Evidence source: public datasheet only; no vendor SPICE or model packs consulted."
+    ],
+    "omission_reason": null
+  },
+  "catalog_seed_hints": [],
+  "identity": {
+    "canonical_mpn": "MMSZ5245B",
+    "manufacturer": "hongjiacheng",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8564879394360479744",
+    "revision": "Rev:1.1",
+    "sha256": "fec00843f279bccf78d55a456b749bf49d99676181d710880c28c93d8ee35181",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4",
+      "p. 5"
+    ],
+    "placeholder": false
+  },
+  "fit_points": [
+    {
+      "current": {
+        "value": 0.0095,
+        "unit": "A",
+        "conditions": "Conservative F1 package bench at 95% of the cited current; specified forward test current IF for the VF limit, Ta = 25 degC",
+        "page_reference": "p. 1, Maximum Ratings table",
+        "source_kind": "typical"
+      },
+      "voltage": {
+        "value": 0.9,
+        "unit": "V",
+        "conditions": "IF = 10 mA, Ta = 25 degC",
+        "page_reference": "p. 1, Maximum Ratings table",
+        "source_kind": "maximum"
+      }
+    }
+  ],
+  "electrical_limits": {},
+  "derived_model_inputs": {
+    "BV": {
+      "value": 15,
+      "unit": "V",
+      "conditions": "nominal VZ at IZT = 8.5 mA, Ta = 25 degC; datasheet limits: min 14.25 V, max 15.75 V",
+      "page_reference": "p. 2, Electrical Characteristics table, MMSZ5245B row",
+      "source_kind": "typical"
+    },
+    "IBV": {
+      "value": 0.0085,
+      "unit": "A",
+      "conditions": "zener test current IZT at which VZ is specified, Ta = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics table, MMSZ5245B row",
+      "source_kind": "typical"
+    },
+    "NBV": {
+      "value": 1,
+      "unit": "1",
+      "conditions": "First-order avalanche-knee default; no multi-point reverse-knee trace was available",
+      "page_reference": "model-factory Zener F1 policy",
+      "source_kind": "held_default"
+    }
+  }
+}

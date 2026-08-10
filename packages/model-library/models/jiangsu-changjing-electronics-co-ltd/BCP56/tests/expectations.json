@@ -1,0 +1,130 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "dc_gain.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "hfe_at_0.1_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg4),1900)"
+          },
+          "expected_value": 190,
+          "unit": "1",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.75
+          },
+          "datasheet_citation": "p. 2, hFE - IC figure, Ta=25 degC curve",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": [
+        {
+          "name": "hfe_minimum_at_0.005_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg1),5000)"
+          },
+          "minimum": 25,
+          "unit": "1",
+          "inclusive": true,
+          "datasheet_citation": "p. 1 electrical characteristics",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_minimum_at_0.15_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg2),666.6666666666666)"
+          },
+          "minimum": 100,
+          "unit": "1",
+          "inclusive": true,
+          "datasheet_citation": "p. 1 classification of hFE(2) table",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_minimum_at_0.5_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg3),50)"
+          },
+          "minimum": 25,
+          "unit": "1",
+          "inclusive": true,
+          "datasheet_citation": "p. 1 electrical characteristics",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "output_curve.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "boundary_region.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "upper_current_boundary_voltage",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(c))"
+          },
+          "minimum": 0,
+          "maximum": 2,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 1 electrical characteristics",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "review_hfe_maximum_source_3.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "hfe_maximum_source_3",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vc),1666.6666666666667)"
+          },
+          "unit": "1",
+          "inclusive": true,
+          "datasheet_citation": "p. 1 classification of hFE(2) table",
+          "placeholder": false,
+          "maximum": 250.0,
+          "minimum": 0
+        }
+      ]
+    },
+    {
+      "test_netlist": "review_vce_sat_maximum_source_1.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "vce_sat_maximum_source_1",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(c))"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 1 electrical characteristics",
+          "placeholder": false,
+          "maximum": 0.5,
+          "minimum": 0
+        }
+      ]
+    }
+  ]
+}

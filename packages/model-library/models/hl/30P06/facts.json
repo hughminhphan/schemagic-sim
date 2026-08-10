@@ -1,0 +1,370 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "schema_version": "1.0.0",
+    "mpn": "30P06",
+    "manufacturer": "HL",
+    "family": "mosfet",
+    "datasheet_identity": {
+      "title": "P-Ch 30V Fast Switching MOSFETs 30P06",
+      "revision": "Version 1.1",
+      "pages_examined": [
+        "1",
+        "2",
+        "3"
+      ]
+    },
+    "usable_curves": true,
+    "curves": [
+      {
+        "name": "Output Characteristics (I_D vs V_DS)",
+        "x_axis": {
+          "quantity": "Drain-Source Voltage",
+          "unit": "V",
+          "scale": "linear"
+        },
+        "y_axis": {
+          "quantity": "Drain Current",
+          "unit": "A",
+          "scale": "linear"
+        },
+        "test_conditions": "V_DS from 0 to 5V, multiple V_GS values at T=25\u00b0C",
+        "page_reference": "3",
+        "points": [
+          {
+            "x": 0.5,
+            "y": 10
+          },
+          {
+            "x": 1,
+            "y": 20
+          },
+          {
+            "x": 1.5,
+            "y": 25
+          },
+          {
+            "x": 2,
+            "y": 30
+          },
+          {
+            "x": 3,
+            "y": 40
+          },
+          {
+            "x": 4,
+            "y": 50
+          },
+          {
+            "x": 5,
+            "y": 60
+          }
+        ]
+      },
+      {
+        "name": "Transfer Characteristics (I_D vs V_GS)",
+        "x_axis": {
+          "quantity": "Gate-Source Voltage",
+          "unit": "V",
+          "scale": "linear"
+        },
+        "y_axis": {
+          "quantity": "Drain Current",
+          "unit": "A",
+          "scale": "linear"
+        },
+        "test_conditions": "V_DS=-5V, T=25\u00b0C, multiple temperature curves shown",
+        "page_reference": "3",
+        "points": [
+          {
+            "x": -1,
+            "y": 5
+          },
+          {
+            "x": -1.5,
+            "y": 12
+          },
+          {
+            "x": -2,
+            "y": 20
+          },
+          {
+            "x": -2.5,
+            "y": 28
+          },
+          {
+            "x": -3,
+            "y": 40
+          },
+          {
+            "x": -4,
+            "y": 55
+          },
+          {
+            "x": -5,
+            "y": 60
+          }
+        ]
+      }
+    ],
+    "specs": {
+      "polarity": "p",
+      "threshold_min": {
+        "value": -1,
+        "unit": "V",
+        "conditions": "V_DS=V_GS, I_D=250\u00b5A",
+        "page_reference": "2",
+        "source_kind": "minimum"
+      },
+      "threshold_typ": {
+        "value": -1.8,
+        "unit": "V",
+        "conditions": "V_DS=V_GS, I_D=250\u00b5A",
+        "page_reference": "2",
+        "source_kind": "typical"
+      },
+      "threshold_max": {
+        "value": -2.5,
+        "unit": "V",
+        "conditions": "V_DS=V_GS, I_D=250\u00b5A",
+        "page_reference": "2",
+        "source_kind": "maximum"
+      },
+      "rdson_points": [
+        {
+          "vgs": {
+            "value": -10,
+            "unit": "V",
+            "conditions": "25\u00b0C",
+            "page_reference": "2",
+            "source_kind": "typical"
+          },
+          "current": {
+            "value": 10,
+            "unit": "A",
+            "conditions": "25\u00b0C",
+            "page_reference": "2",
+            "source_kind": "typical"
+          },
+          "resistance": {
+            "value": 0.024,
+            "unit": "ohm",
+            "conditions": "25\u00b0C",
+            "page_reference": "2",
+            "source_kind": "typical"
+          }
+        },
+        {
+          "vgs": {
+            "value": -10,
+            "unit": "V",
+            "conditions": "25\u00b0C",
+            "page_reference": "2",
+            "source_kind": "maximum"
+          },
+          "current": {
+            "value": 10,
+            "unit": "A",
+            "conditions": "25\u00b0C",
+            "page_reference": "2",
+            "source_kind": "maximum"
+          },
+          "resistance": {
+            "value": 0.029,
+            "unit": "ohm",
+            "conditions": "25\u00b0C",
+            "page_reference": "2",
+            "source_kind": "maximum"
+          }
+        },
+        {
+          "vgs": {
+            "value": -4.5,
+            "unit": "V",
+            "conditions": "25\u00b0C",
+            "page_reference": "2",
+            "source_kind": "typical"
+          },
+          "current": {
+            "value": 10,
+            "unit": "A",
+            "conditions": "25\u00b0C",
+            "page_reference": "2",
+            "source_kind": "typical"
+          },
+          "resistance": {
+            "value": 0.0304,
+            "unit": "ohm",
+            "conditions": "25\u00b0C",
+            "page_reference": "2",
+            "source_kind": "typical"
+          }
+        },
+        {
+          "vgs": {
+            "value": -4.5,
+            "unit": "V",
+            "conditions": "25\u00b0C",
+            "page_reference": "2",
+            "source_kind": "maximum"
+          },
+          "current": {
+            "value": 10,
+            "unit": "A",
+            "conditions": "25\u00b0C",
+            "page_reference": "2",
+            "source_kind": "maximum"
+          },
+          "resistance": {
+            "value": 0.039,
+            "unit": "ohm",
+            "conditions": "25\u00b0C",
+            "page_reference": "2",
+            "source_kind": "maximum"
+          }
+        }
+      ],
+      "ciss": {
+        "value": 4.026e-09,
+        "unit": "F",
+        "conditions": "V_GS=-25V, V_GS=0V, f=1MHz",
+        "page_reference": "2",
+        "source_kind": "typical"
+      },
+      "coss": {
+        "value": 1.34e-10,
+        "unit": "F",
+        "conditions": "V_GS=-25V, V_GS=0V, f=1MHz",
+        "page_reference": "2",
+        "source_kind": "typical"
+      },
+      "crss": {
+        "value": 9.8e-11,
+        "unit": "F",
+        "conditions": "V_GS=-25V, V_GS=0V, f=1MHz",
+        "page_reference": "2",
+        "source_kind": "typical"
+      },
+      "breakdown_voltage": {
+        "value": -60,
+        "unit": "V",
+        "conditions": "V_GS=0V, I_D=250\u00b5A",
+        "page_reference": "2",
+        "source_kind": "typical"
+      },
+      "body_diode": {
+        "value": -1.2,
+        "unit": "V",
+        "conditions": "V_GS=0V, I_S=-15A",
+        "page_reference": "2",
+        "source_kind": "typical"
+      }
+    },
+    "extraction_notes": [
+      "P-channel MOSFET, 30V rated device",
+      "Super low gate charge, suitable for PWM and switching applications",
+      "RDS(on) typical value 24m\u03a9 at V_GS=-10V, I_D=-30A per title specs",
+      "Both output and transfer characteristics extracted from typical curves",
+      "Threshold voltage polarity consistent with P-channel convention (negative values)",
+      "Capacitance values measured at f=1MHz as noted in electrical characteristics"
+    ],
+    "omission_reason": null
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "Drain Source On Resistance (RDS(on)@Vgs,Id)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.rds_on",
+      "raw_value": "30m\u03a9",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Gate Threshold Voltage (Vgs(th))",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.threshold",
+      "raw_value": "1.8V",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Gate Threshold Voltage (Vgs(th)@Id)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.threshold",
+      "raw_value": "2.5V",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Input Capacitance(Ciss)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.ciss",
+      "raw_value": "4.026nF",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Output Capacitance(Coss)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.coss",
+      "raw_value": "134pF",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "RDS(on)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.rds_on",
+      "raw_value": "24m\u03a9@10V, 30.4m\u03a9@4.5V",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Reverse Transfer Capacitance (Crss@Vds)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.crss",
+      "raw_value": "98pF",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "30P06",
+    "manufacturer": "HL",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8590910825551523840",
+    "revision": "Version 1.1",
+    "sha256": "17ee4fb1585b0b74b0b9f7f8b46b4ec0001538aafbffcda7be2bf123826fbaee",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "1",
+      "2",
+      "3"
+    ],
+    "placeholder": false
+  },
+  "rdson_points": [
+    {
+      "vgs": {
+        "value": 10,
+        "unit": "V",
+        "conditions": "25\u00b0C",
+        "page_reference": "p. 2",
+        "source_kind": "typical"
+      },
+      "current": {
+        "value": 10,
+        "unit": "A",
+        "conditions": "25\u00b0C",
+        "page_reference": "p. 2",
+        "source_kind": "typical"
+      },
+      "resistance": {
+        "value": 0.024,
+        "unit": "ohm",
+        "conditions": "25\u00b0C",
+        "page_reference": "p. 2",
+        "source_kind": "typical"
+      }
+    }
+  ],
+  "threshold": null,
+  "transfer_points": [],
+  "output_points": []
+}

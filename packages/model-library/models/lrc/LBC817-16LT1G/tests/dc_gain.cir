@@ -1,0 +1,20 @@
+OpenCircuit factory test: LBC817-16LT1G DC gain
+* OpenCircuit Model Factory v0.1.0 bulk adapter
+* Original work generated from public factual specifications.
+* This model is not copied or adapted from any vendor SPICE model.
+* Source: https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8588884575778426880
+* Revision: Rev.O
+.model OC_LRC_LBC817-16LT1G NPN(IS=1.0000000000e-14 BF=1.8000000000e2 VAF=1.0000000000e2 IKF=1.0000000000e3 RB=1.0000000000e1 RC=1.0000000000e-1 RE=5.0000000000e-2 CJE=1.0000000000e-12 CJC=1.0000000000e-12 TF=1.0000000000e-9)
+
+.temp 25
+VCG1 cg1 0 DC 1.0000000000e0
+IBG1 0 bg1 DC 1.0000000000e-3
+QG1 cg1 bg1 0 OC_LRC_LBC817-16LT1G
+VCG2 cg2 0 DC 1.0000000000e0
+IBG2 0 bg2 DC 1.2500000000e-2
+QG2 cg2 bg2 0 OC_LRC_LBC817-16LT1G
+VCG3 cg3 0 DC 1.0000000000e0
+IBG3 0 bg3 DC 5.5555555556e-6
+QG3 cg3 bg3 0 OC_LRC_LBC817-16LT1G
+.op
+.end

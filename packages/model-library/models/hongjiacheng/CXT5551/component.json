@@ -1,0 +1,140 @@
+{
+  "schema_version": "1.0.0",
+  "canonical_mpn": "CXT5551",
+  "manufacturer": "hongjiacheng",
+  "description": "bjt from hongjiacheng",
+  "electrical_family": "bjt_npn",
+  "symbol_pins": [
+    {
+      "name": "B",
+      "number": "1",
+      "role": "base"
+    },
+    {
+      "name": "C",
+      "number": "2",
+      "role": "collector"
+    },
+    {
+      "name": "E",
+      "number": "3",
+      "role": "emitter"
+    }
+  ],
+  "spice_pin_mapping": [
+    {
+      "symbol_pin_number": "2",
+      "subckt_node": "collector",
+      "order": 1
+    },
+    {
+      "symbol_pin_number": "1",
+      "subckt_node": "base",
+      "order": 2
+    },
+    {
+      "symbol_pin_number": "3",
+      "subckt_node": "emitter",
+      "order": 3
+    }
+  ],
+  "package_variants": [
+    {
+      "name": "SOT-89",
+      "standard": "SOT-89",
+      "pin_count": 3,
+      "pin_map": [
+        {
+          "package_pin": "1",
+          "symbol_pin_number": "1"
+        },
+        {
+          "package_pin": "2",
+          "symbol_pin_number": "2"
+        },
+        {
+          "package_pin": "3",
+          "symbol_pin_number": "3"
+        }
+      ]
+    }
+  ],
+  "ordering_code_aliases": [],
+  "datasheet": {
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8564879761374662656",
+    "revision": "Rev:1.1"
+  },
+  "model_type": "dot_model",
+  "fidelity_tier": "F1",
+  "domain_coverage": {
+    "dc": "approx",
+    "ac": "none",
+    "transient": "none",
+    "noise": "none",
+    "thermal": "none",
+    "digital": "none"
+  },
+  "supported_analyses": [
+    "operating_point",
+    "dc_sweep"
+  ],
+  "supported_operating_region": {
+    "summary": "Supported only over the cited 25 degC electrical characterization region: collector_current 0.001 to 0.1 A; collector_emitter_voltage 0 to 5 V.",
+    "numeric_bounds": [
+      {
+        "quantity": "collector_current",
+        "minimum": 0.001,
+        "maximum": 0.1,
+        "unit": "A",
+        "conditions": "Cited gain and saturation characterization span at 25 degC",
+        "placeholder": false
+      },
+      {
+        "quantity": "collector_emitter_voltage",
+        "minimum": 0,
+        "maximum": 5,
+        "unit": "V",
+        "conditions": "Cited gain-curve and table bias conditions",
+        "placeholder": false
+      },
+      {
+        "quantity": "ambient_temperature",
+        "minimum": 25,
+        "maximum": 25,
+        "unit": "degC",
+        "conditions": "Nominal model and package benches",
+        "placeholder": false
+      }
+    ]
+  },
+  "known_omissions": [
+    "AC, transient, noise, thermal, and package-parasitic behavior are outside this DC-only conveyor package.",
+    "Temperature dependence and self-heating are not modelled; the electrical region is limited to the cited nominal-temperature data.",
+    "Catalog parametrics were used only as initial guesses or F1 fallback constraints and are not datasheet citations.",
+    "F2 evidence did not qualify; staged as F1: bjt F2 gate failed: dc_current_gain worst relative error 0.2804 exceeds gate 0.2; dc_current_gain RMS relative error 0.1535 exceeds gate 0.12",
+    "Saturation-voltage behavior is not covered by this F1 package; the supported region is limited to cited DC current-gain evidence."
+  ],
+  "licence": {
+    "spdx_id": "MIT",
+    "provenance_basis": "original_from_facts"
+  },
+  "generator": {
+    "tool_or_agent": "opencircuit-model-factory-v0.1.0 bulk-adapter",
+    "date": "2026-08-10"
+  },
+  "reviewer": {
+    "tool_or_agent": "gpt-5.6-sol independent reviewer (batch-4 scale campaign)",
+    "date": "2026-08-10"
+  },
+  "test_results": {
+    "status": "complete",
+    "pass_count": 8,
+    "fail_count": 0,
+    "total_count": 8,
+    "worst_observed_relative_fitting_error": {
+      "value": 0.04279572086340977,
+      "quantity": "hfe_at_0.01_a"
+    }
+  },
+  "validation_date": "2026-08-10"
+}

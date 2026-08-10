@@ -1,0 +1,363 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "schema_version": "1.0.0",
+    "mpn": "BC807-25,215",
+    "manufacturer": "Nexperia",
+    "family": "bjt",
+    "datasheet_identity": {
+      "title": "BC807 series - 45 V, 500 mA PNP general-purpose transistors",
+      "revision": "Rev. 8 \u2014 1 July 2022",
+      "pages_examined": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13"
+      ]
+    },
+    "usable_curves": true,
+    "curves": [
+      {
+        "name": "DC current gain as a function of collector current",
+        "x_axis": {
+          "quantity": "collector current",
+          "unit": "mA",
+          "scale": "log"
+        },
+        "y_axis": {
+          "quantity": "DC current gain",
+          "unit": "dimensionless",
+          "scale": "linear"
+        },
+        "test_conditions": "VCE = -1 V, Tamb = 25 \u00b0C",
+        "page_reference": "7",
+        "points": [
+          {
+            "x": -0.1,
+            "y": 230
+          },
+          {
+            "x": -1,
+            "y": 220
+          },
+          {
+            "x": -10,
+            "y": 200
+          },
+          {
+            "x": -100,
+            "y": 160
+          },
+          {
+            "x": -500,
+            "y": 40
+          }
+        ]
+      },
+      {
+        "name": "Base-emitter saturation voltage as a function of collector current",
+        "x_axis": {
+          "quantity": "collector current",
+          "unit": "mA",
+          "scale": "log"
+        },
+        "y_axis": {
+          "quantity": "base-emitter saturation voltage",
+          "unit": "V",
+          "scale": "linear"
+        },
+        "test_conditions": "IC/IB = 10, Tamb = 25 \u00b0C",
+        "page_reference": "7",
+        "points": [
+          {
+            "x": -1,
+            "y": -0.95
+          },
+          {
+            "x": -10,
+            "y": -1
+          },
+          {
+            "x": -100,
+            "y": -1.05
+          },
+          {
+            "x": -500,
+            "y": -1.08
+          }
+        ]
+      },
+      {
+        "name": "Collector-emitter saturation voltage as a function of collector current",
+        "x_axis": {
+          "quantity": "collector current",
+          "unit": "mA",
+          "scale": "log"
+        },
+        "y_axis": {
+          "quantity": "collector-emitter saturation voltage",
+          "unit": "V",
+          "scale": "linear"
+        },
+        "test_conditions": "IC/IB = 10, Tamb = 25 \u00b0C",
+        "page_reference": "7",
+        "points": [
+          {
+            "x": -1,
+            "y": -0.015
+          },
+          {
+            "x": -10,
+            "y": -0.05
+          },
+          {
+            "x": -100,
+            "y": -0.15
+          },
+          {
+            "x": -500,
+            "y": -0.7
+          }
+        ]
+      }
+    ],
+    "specs": {
+      "polarity": "pnp",
+      "gain_points": [
+        {
+          "collector_current": {
+            "value": -100,
+            "unit": "mA",
+            "conditions": "VCE = -1 V, Tamb = 25 \u00b0C",
+            "page_reference": "5",
+            "source_kind": "minimum"
+          },
+          "vce": {
+            "value": -1,
+            "unit": "V",
+            "conditions": "DC current gain measurement condition",
+            "page_reference": "5",
+            "source_kind": "typical"
+          },
+          "hfe": {
+            "value": 160,
+            "unit": "dimensionless",
+            "conditions": "VCE = -1 V, IC = -100 mA",
+            "page_reference": "5",
+            "source_kind": "minimum"
+          }
+        },
+        {
+          "collector_current": {
+            "value": -100,
+            "unit": "mA",
+            "conditions": "VCE = -1 V, Tamb = 25 \u00b0C",
+            "page_reference": "5",
+            "source_kind": "maximum"
+          },
+          "vce": {
+            "value": -1,
+            "unit": "V",
+            "conditions": "DC current gain measurement condition",
+            "page_reference": "5",
+            "source_kind": "typical"
+          },
+          "hfe": {
+            "value": 400,
+            "unit": "dimensionless",
+            "conditions": "VCE = -1 V, IC = -100 mA",
+            "page_reference": "5",
+            "source_kind": "maximum"
+          }
+        },
+        {
+          "collector_current": {
+            "value": -500,
+            "unit": "mA",
+            "conditions": "VCE = -1 V, Tamb = 25 \u00b0C",
+            "page_reference": "5",
+            "source_kind": "typical"
+          },
+          "vce": {
+            "value": -1,
+            "unit": "V",
+            "conditions": "DC current gain measurement condition",
+            "page_reference": "5",
+            "source_kind": "typical"
+          },
+          "hfe": {
+            "value": 40,
+            "unit": "dimensionless",
+            "conditions": "VCE = -1 V, IC = -500 mA",
+            "page_reference": "5",
+            "source_kind": "minimum"
+          }
+        }
+      ],
+      "saturation_points": [
+        {
+          "collector_current": {
+            "value": -500,
+            "unit": "mA",
+            "conditions": "saturation condition",
+            "page_reference": "5",
+            "source_kind": "typical"
+          },
+          "base_current": {
+            "value": -50,
+            "unit": "mA",
+            "conditions": "IC/IB = 10 saturation ratio",
+            "page_reference": "5",
+            "source_kind": "typical"
+          },
+          "vce_sat": {
+            "value": -0.7,
+            "unit": "V",
+            "conditions": "IC = -500 mA, IB = -50 mA",
+            "page_reference": "5",
+            "source_kind": "typical"
+          },
+          "vbe_sat": {
+            "value": -1,
+            "unit": "V",
+            "conditions": "saturation, approximate from VBE curve",
+            "page_reference": "5",
+            "source_kind": "typical"
+          }
+        }
+      ],
+      "ft": {
+        "value": 80,
+        "unit": "MHz",
+        "conditions": "VCE = -5 V, IC = -10 mA, f = 100 MHz",
+        "page_reference": "5",
+        "source_kind": "typical"
+      },
+      "cobo": null,
+      "cibo": null,
+      "vceo": {
+        "value": -45,
+        "unit": "V",
+        "conditions": "open base, Tamb = 25 \u00b0C",
+        "page_reference": "3",
+        "source_kind": "maximum"
+      }
+    },
+    "extraction_notes": [
+      "BC807-25 is the medium-gain variant (160-400 hFE) of the BC807 general-purpose PNP transistor series",
+      "Datasheet contains variant-specific curves (Figures 8-11) for BC807-25",
+      "All electrical characteristics extracted from Table 8 (Characteristics) on page 5",
+      "Saturation voltage VCEsat = -700 mV at IC = -500 mA, IB = -50 mA from Table 8",
+      "Transition frequency fT = 80 MHz typical condition at VCE = -5 V, IC = -10 mA",
+      "Curve digitization based on visual reading from Figures 8-10 (pages 6-7)",
+      "PNP polarity confirmed from general description and pinning diagram (page 2)",
+      "Manufacturing code variant ',215' is part of the formal MPN as listed in datasheet",
+      "No explicit COBO or CIBO parasitic junction capacitances provided in datasheet for this variant"
+    ],
+    "omission_reason": null
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "DC Current Gain",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "bjt.dc_current_gain",
+      "raw_value": "160",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "DC Current Gain (hFE@Ic,Vce)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "bjt.dc_current_gain",
+      "raw_value": "160@100mA,1V",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "BC807-25",
+    "manufacturer": "Nexperia",
+    "aliases": [
+      "BC807-25,215"
+    ]
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8586179348705107968",
+    "revision": "Rev. 8 \u2014 1 July 2022",
+    "sha256": "adeef92a37906430a38449f574c7fc58e309443fee234d60fb54d9ce65a2b5f0",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "10",
+      "11",
+      "12",
+      "13"
+    ],
+    "placeholder": false
+  },
+  "gain_points": [
+    {
+      "collector_current": {
+        "value": 0.1,
+        "unit": "A",
+        "conditions": "VCE = -1 V, Tamb = 25 \u00b0C",
+        "page_reference": "p. 5",
+        "source_kind": "minimum"
+      },
+      "vce": {
+        "value": 1,
+        "unit": "V",
+        "conditions": "DC current gain measurement condition",
+        "page_reference": "p. 5",
+        "source_kind": "typical"
+      },
+      "hfe": {
+        "value": 160,
+        "unit": "dimensionless",
+        "conditions": "VCE = -1 V, IC = -100 mA",
+        "page_reference": "p. 5",
+        "source_kind": "minimum"
+      }
+    },
+    {
+      "collector_current": {
+        "value": 0.5,
+        "unit": "A",
+        "conditions": "VCE = -1 V, Tamb = 25 \u00b0C",
+        "page_reference": "p. 5",
+        "source_kind": "typical"
+      },
+      "vce": {
+        "value": 1,
+        "unit": "V",
+        "conditions": "DC current gain measurement condition",
+        "page_reference": "p. 5",
+        "source_kind": "typical"
+      },
+      "hfe": {
+        "value": 40,
+        "unit": "dimensionless",
+        "conditions": "VCE = -1 V, IC = -500 mA",
+        "page_reference": "p. 5",
+        "source_kind": "minimum"
+      }
+    }
+  ],
+  "saturation_points": []
+}

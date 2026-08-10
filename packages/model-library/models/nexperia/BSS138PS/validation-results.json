@@ -1,0 +1,110 @@
+{
+  "schema_version": "1.0.0",
+  "validation_date": "2026-08-10",
+  "native_wasm_all_pass": true,
+  "expectations_all_pass": true,
+  "expectation_pass_count": 10,
+  "expectation_fail_count": 0,
+  "worst_native_wasm_relative_delta": 1.8912981054800248e-10,
+  "worst_native_wasm_absolute_delta": 2.2755730633150506e-10,
+  "benches": [
+    {
+      "test_netlist": "rdson.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "rdson_1",
+          "pass": true,
+          "value": 1.0260739071794196,
+          "error": 0.026073907179419598,
+          "allowed": 0.2
+        },
+        {
+          "name": "rdson_3",
+          "pass": true,
+          "value": 0.9215162649859795,
+          "error": 0.021516264985979472,
+          "allowed": 0.18000000000000002
+        },
+        {
+          "name": "rdson_5",
+          "pass": true,
+          "value": 1.5652740377076835,
+          "error": 0.04527403770768346,
+          "allowed": 0.30400000000000005
+        },
+        {
+          "name": "rdson_6",
+          "pass": true,
+          "value": 1.2969941040315554,
+          "error": 0.016994104031555324,
+          "allowed": 0.256
+        },
+        {
+          "name": "rdson_maximum_2",
+          "pass": true,
+          "value": 1.0260739071794196,
+          "minimum": 0,
+          "maximum": 2
+        },
+        {
+          "name": "rdson_maximum_4",
+          "pass": true,
+          "value": 0.9215162649859795,
+          "minimum": 0,
+          "maximum": 1.6
+        }
+      ]
+    },
+    {
+      "test_netlist": "threshold.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "gate_threshold_typical",
+          "pass": true,
+          "value": 1.2031805333710173,
+          "error": 0.0031805333710173134,
+          "allowed": 0.42
+        },
+        {
+          "name": "gate_threshold_bounds",
+          "pass": true,
+          "value": 1.2031805333710173,
+          "minimum": 0.9,
+          "maximum": 1.5
+        }
+      ]
+    },
+    {
+      "test_netlist": "review_rdson_maximum_source_2.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "rdson_maximum_source_2",
+          "pass": true,
+          "value": 1.026073906974245,
+          "minimum": 0,
+          "maximum": 2
+        }
+      ]
+    },
+    {
+      "test_netlist": "review_rdson_maximum_source_4.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "rdson_maximum_source_4",
+          "pass": true,
+          "value": 0.9215162649859797,
+          "minimum": 0,
+          "maximum": 1.6
+        }
+      ]
+    }
+  ]
+}

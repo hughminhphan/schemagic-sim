@@ -1,0 +1,150 @@
+{
+  "schema_version": "1.0.0",
+  "canonical_mpn": "BSS138PS",
+  "manufacturer": "Nexperia",
+  "description": "1.5V 1.6Ω@10V 2 N-Channel 320mA 420mW 50pF 60V 800pC@4.5V SOT-363(SC-88) MOSFETs ROHS",
+  "electrical_family": "nmos",
+  "symbol_pins": [
+    {
+      "name": "G",
+      "number": "1",
+      "role": "gate"
+    },
+    {
+      "name": "D",
+      "number": "2",
+      "role": "drain"
+    },
+    {
+      "name": "S",
+      "number": "3",
+      "role": "source"
+    }
+  ],
+  "spice_pin_mapping": [
+    {
+      "symbol_pin_number": "2",
+      "subckt_node": "drain",
+      "order": 1
+    },
+    {
+      "symbol_pin_number": "1",
+      "subckt_node": "gate",
+      "order": 2
+    },
+    {
+      "symbol_pin_number": "3",
+      "subckt_node": "source",
+      "order": 3
+    }
+  ],
+  "package_variants": [
+    {
+      "name": "SOT-363(SC-88)",
+      "standard": "SOT-363(SC-88)",
+      "pin_count": 3,
+      "pin_map": [
+        {
+          "package_pin": "1",
+          "symbol_pin_number": "1"
+        },
+        {
+          "package_pin": "2",
+          "symbol_pin_number": "2"
+        },
+        {
+          "package_pin": "3",
+          "symbol_pin_number": "3"
+        }
+      ]
+    }
+  ],
+  "ordering_code_aliases": [
+    "BSS138PS,115"
+  ],
+  "datasheet": {
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8588884796995489792",
+    "revision": "Rev. 1 - 2 November 2010"
+  },
+  "model_type": "dot_model",
+  "fidelity_tier": "F2",
+  "domain_coverage": {
+    "dc": "fitted",
+    "ac": "none",
+    "transient": "none",
+    "noise": "none",
+    "thermal": "none",
+    "digital": "none"
+  },
+  "supported_analyses": [
+    "operating_point",
+    "dc_sweep"
+  ],
+  "supported_operating_region": {
+    "summary": "F2 curve-fit fidelity is supported only for the selected 25 degC DC transfer and output curves over their exact sampled VGS, VDS, and ID spans: transfer_characteristics_25C (8); output_characteristics_vgs_2.0V (7); output_characteristics_vgs_2.25V (7); output_characteristics_vgs_2.5V (7); output_characteristics_vgs_2.75V (7); output_characteristics_vgs_3.0V (7); output_characteristics_vgs_3.5V (7). Separate scalar hard bounds do not extend curve fidelity.",
+    "numeric_bounds": [
+      {
+        "quantity": "gate_source_voltage_magnitude",
+        "minimum": 1.5,
+        "maximum": 3.5,
+        "unit": "V",
+        "conditions": "Exact selected fitted transfer/output-curve gate-bias span",
+        "placeholder": false
+      },
+      {
+        "quantity": "drain_source_voltage_magnitude",
+        "minimum": 0.25,
+        "maximum": 3.9,
+        "unit": "V",
+        "conditions": "Exact selected fitted output-curve drain-voltage span",
+        "placeholder": false
+      },
+      {
+        "quantity": "drain_current_magnitude",
+        "minimum": 0.025,
+        "maximum": 0.976,
+        "unit": "A",
+        "conditions": "Exact selected fitted transfer/output-curve current span",
+        "placeholder": false
+      },
+      {
+        "quantity": "ambient_temperature",
+        "minimum": 25,
+        "maximum": 25,
+        "unit": "degC",
+        "conditions": "Exact temperature of the selected fitted curves",
+        "placeholder": false
+      }
+    ]
+  },
+  "known_omissions": [
+    "AC, transient, noise, thermal, and package-parasitic behavior are outside this DC-only conveyor package.",
+    "Temperature dependence and self-heating are not modelled; the electrical region is limited to the cited nominal-temperature data.",
+    "Catalog parametrics were used only as initial guesses or F1 fallback constraints and are not datasheet citations.",
+    "F2 curve-fit fidelity is limited to the exact selected 25 degC DC curves, biases, and sampled ranges named in supported_operating_region; separate scalar hard bounds do not extend the fitted claim.",
+    "Threshold, body-diode, capacitance, switching, thermal, SOA, and continuous-current fidelity are outside the F2 curve-fit claim unless separately enforced as a scalar hard bound."
+  ],
+  "licence": {
+    "spdx_id": "MIT",
+    "provenance_basis": "original_from_facts"
+  },
+  "generator": {
+    "tool_or_agent": "opencircuit-model-factory-v0.1.0 bulk-adapter",
+    "date": "2026-08-10"
+  },
+  "reviewer": {
+    "tool_or_agent": "gpt-5.6-sol independent reviewer (batch-4 scale campaign)",
+    "date": "2026-08-10"
+  },
+  "test_results": {
+    "status": "complete",
+    "pass_count": 10,
+    "fail_count": 0,
+    "total_count": 10,
+    "worst_observed_relative_fitting_error": {
+      "value": 0.08743160870106217,
+      "quantity": "output current at VGS 2 V, VDS 0.75 V"
+    }
+  },
+  "validation_date": "2026-08-10"
+}

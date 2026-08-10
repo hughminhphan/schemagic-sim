@@ -1,0 +1,390 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "schema_version": "1.0.0",
+    "mpn": "4953",
+    "manufacturer": "Guangdong Hottech",
+    "family": "mosfet",
+    "datasheet_identity": {
+      "title": "Dual P-Channel Enhancement Mode Field Effect Transistor",
+      "revision": "unspecified",
+      "pages_examined": [
+        "1",
+        "2",
+        "3"
+      ]
+    },
+    "usable_curves": true,
+    "curves": [
+      {
+        "name": "Transfer Characteristics",
+        "x_axis": {
+          "quantity": "Gate-Source Voltage",
+          "unit": "V",
+          "scale": "linear"
+        },
+        "y_axis": {
+          "quantity": "Drain Current",
+          "unit": "A",
+          "scale": "linear"
+        },
+        "test_conditions": "VDS=-15V, TJ=25\u00b0C",
+        "page_reference": "3, Figure 7",
+        "points": [
+          {
+            "x": 1.6,
+            "y": 0.1
+          },
+          {
+            "x": 2.5,
+            "y": 0.5
+          },
+          {
+            "x": 3.5,
+            "y": 2.5
+          },
+          {
+            "x": 4.5,
+            "y": 6
+          },
+          {
+            "x": 5.5,
+            "y": 12
+          }
+        ]
+      },
+      {
+        "name": "Output Characteristics",
+        "x_axis": {
+          "quantity": "Drain-Source Voltage",
+          "unit": "V",
+          "scale": "linear"
+        },
+        "y_axis": {
+          "quantity": "Drain Current",
+          "unit": "A",
+          "scale": "linear"
+        },
+        "test_conditions": "VGS=-10V, TJ=25\u00b0C",
+        "page_reference": "2, Figure 5",
+        "points": [
+          {
+            "x": 0.2,
+            "y": 17
+          },
+          {
+            "x": 1,
+            "y": 15
+          },
+          {
+            "x": 2,
+            "y": 14
+          },
+          {
+            "x": 3.5,
+            "y": 13.8
+          },
+          {
+            "x": 5,
+            "y": 13
+          }
+        ]
+      },
+      {
+        "name": "Input Capacitance vs Drain-Source Voltage",
+        "x_axis": {
+          "quantity": "Drain-Source Voltage",
+          "unit": "V",
+          "scale": "linear"
+        },
+        "y_axis": {
+          "quantity": "Input Capacitance",
+          "unit": "F",
+          "scale": "linear"
+        },
+        "test_conditions": "VGS=0V, f=1MHz",
+        "page_reference": "3, Figure 10",
+        "points": [
+          {
+            "x": 0,
+            "y": 6e-10
+          },
+          {
+            "x": 5,
+            "y": 5.4e-10
+          },
+          {
+            "x": 15,
+            "y": 5.2e-10
+          },
+          {
+            "x": 30,
+            "y": 5e-10
+          }
+        ]
+      }
+    ],
+    "specs": {
+      "polarity": "p",
+      "threshold_min": {
+        "value": 1.1,
+        "unit": "V",
+        "conditions": "VGS=VDS, ID=-250\u00b5A",
+        "page_reference": "1",
+        "source_kind": "minimum"
+      },
+      "threshold_typ": {
+        "value": 1.6,
+        "unit": "V",
+        "conditions": "VGS=VDS, ID=-250\u00b5A",
+        "page_reference": "1",
+        "source_kind": "typical"
+      },
+      "threshold_max": {
+        "value": 2.1,
+        "unit": "V",
+        "conditions": "VGS=VDS, ID=-250\u00b5A",
+        "page_reference": "1",
+        "source_kind": "maximum"
+      },
+      "rdson_points": [
+        {
+          "vgs": {
+            "value": 10,
+            "unit": "V",
+            "conditions": "VGS=-10V",
+            "page_reference": "1",
+            "source_kind": "typical"
+          },
+          "current": {
+            "value": 5.1,
+            "unit": "A",
+            "conditions": "ID=-5.1A",
+            "page_reference": "1",
+            "source_kind": "typical"
+          },
+          "resistance": {
+            "value": 0.043,
+            "unit": "ohm",
+            "conditions": "VGS=-10V, ID=-5.1A",
+            "page_reference": "1",
+            "source_kind": "typical"
+          }
+        },
+        {
+          "vgs": {
+            "value": 10,
+            "unit": "V",
+            "conditions": "VGS=-10V",
+            "page_reference": "1",
+            "source_kind": "maximum"
+          },
+          "current": {
+            "value": 5.1,
+            "unit": "A",
+            "conditions": "ID=-5.1A",
+            "page_reference": "1",
+            "source_kind": "maximum"
+          },
+          "resistance": {
+            "value": 0.055,
+            "unit": "ohm",
+            "conditions": "VGS=-10V, ID=-5.1A",
+            "page_reference": "1",
+            "source_kind": "maximum"
+          }
+        },
+        {
+          "vgs": {
+            "value": 4.5,
+            "unit": "V",
+            "conditions": "VGS=-4.5V",
+            "page_reference": "1",
+            "source_kind": "typical"
+          },
+          "current": {
+            "value": 4.2,
+            "unit": "A",
+            "conditions": "ID=-4.2A",
+            "page_reference": "1",
+            "source_kind": "typical"
+          },
+          "resistance": {
+            "value": 0.062,
+            "unit": "ohm",
+            "conditions": "VGS=-4.5V, ID=-4.2A",
+            "page_reference": "1",
+            "source_kind": "typical"
+          }
+        },
+        {
+          "vgs": {
+            "value": 4.5,
+            "unit": "V",
+            "conditions": "VGS=-4.5V",
+            "page_reference": "1",
+            "source_kind": "maximum"
+          },
+          "current": {
+            "value": 4.2,
+            "unit": "A",
+            "conditions": "ID=-4.2A",
+            "page_reference": "1",
+            "source_kind": "maximum"
+          },
+          "resistance": {
+            "value": 0.09,
+            "unit": "ohm",
+            "conditions": "VGS=-4.5V, ID=-4.2A",
+            "page_reference": "1",
+            "source_kind": "maximum"
+          }
+        }
+      ],
+      "ciss": {
+        "value": 5.2e-10,
+        "unit": "F",
+        "conditions": "VDS=-15V, VGS=0V, f=1MHz",
+        "page_reference": "1",
+        "source_kind": "typical"
+      },
+      "coss": {
+        "value": 1.3e-10,
+        "unit": "F",
+        "conditions": "VDS=-15V, VGS=0V, f=1MHz",
+        "page_reference": "1",
+        "source_kind": "typical"
+      },
+      "crss": {
+        "value": 7e-11,
+        "unit": "F",
+        "conditions": "VDS=-15V, VGS=0V, f=1MHz",
+        "page_reference": "1",
+        "source_kind": "typical"
+      },
+      "breakdown_voltage": {
+        "value": 30,
+        "unit": "V",
+        "conditions": "VGS=0V, ID=-250\u00b5A",
+        "page_reference": "1",
+        "source_kind": "minimum"
+      },
+      "body_diode": {
+        "value": 1.2,
+        "unit": "V",
+        "conditions": "IS=-5.1A, VGS=0V",
+        "page_reference": "1",
+        "source_kind": "typical"
+      }
+    },
+    "extraction_notes": [
+      "P-channel MOSFET; all voltage and current values reported as magnitudes per schema convention",
+      "Threshold voltage extracted from electrical characteristics table (VGS(th))",
+      "RDS(ON) values include both typical and maximum specs at two operating points",
+      "Capacitance values at 1 MHz from dynamic characteristics table",
+      "Transfer curve digitized from Figure 7 at VDS=-15V, 25\u00b0C",
+      "Output characteristics digitized from Figure 5 at VGS=-10V (maximum drive condition)",
+      "Capacitance curve digitized from Figure 10 showing Ciss trend vs VDS at VGS=0V",
+      "Breakdown voltage is V(BR)DSS minimum rating",
+      "Body diode forward voltage from drain-source diode characteristics"
+    ],
+    "omission_reason": null
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "Drain Source On Resistance (RDS(on)@Vgs,Id)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.rds_on",
+      "raw_value": "55m\u03a9@10V",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Gate Threshold Voltage (Vgs(th))",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.threshold",
+      "raw_value": "1.1V",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Gate Threshold Voltage (Vgs(th)@Id)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.threshold",
+      "raw_value": "1.1V@250uA",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Input Capacitance (Ciss@Vds)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.ciss",
+      "raw_value": "520pF@15V",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Input Capacitance(Ciss)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.ciss",
+      "raw_value": "520pF",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "RDS(on)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.rds_on",
+      "raw_value": "55m\u03a9@10V",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Reverse Transfer Capacitance (Crss@Vds)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.crss",
+      "raw_value": "70pF@15V",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "4953",
+    "manufacturer": "Guangdong Hottech",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8588905223956148224",
+    "revision": "unspecified",
+    "sha256": "a3e9f47bdf109d50fab65d57d74e4fd696c4f2cb21f264177c172d20c6170676",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "1",
+      "2",
+      "3"
+    ],
+    "placeholder": false
+  },
+  "rdson_points": [
+    {
+      "vgs": {
+        "value": 10,
+        "unit": "V",
+        "conditions": "VGS=-10V",
+        "page_reference": "p. 1",
+        "source_kind": "typical"
+      },
+      "current": {
+        "value": 5.1,
+        "unit": "A",
+        "conditions": "ID=-5.1A",
+        "page_reference": "p. 1",
+        "source_kind": "typical"
+      },
+      "resistance": {
+        "value": 0.043,
+        "unit": "ohm",
+        "conditions": "VGS=-10V, ID=-5.1A",
+        "page_reference": "p. 1",
+        "source_kind": "typical"
+      }
+    }
+  ],
+  "threshold": null,
+  "transfer_points": [],
+  "output_points": []
+}

@@ -1,0 +1,45 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "rdson.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "rdson_maximum_1",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d1),0.1)"
+          },
+          "minimum": 0,
+          "maximum": 0.075,
+          "unit": "ohm",
+          "inclusive": true,
+          "datasheet_citation": "p. 2",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "review_rdson_maximum_source_1.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "rdson_maximum_source_1",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d),0.1)"
+          },
+          "unit": "ohm",
+          "inclusive": true,
+          "datasheet_citation": "2",
+          "placeholder": false,
+          "maximum": 0.075,
+          "minimum": 0
+        }
+      ]
+    }
+  ]
+}

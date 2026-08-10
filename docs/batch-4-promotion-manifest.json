@@ -1,0 +1,4528 @@
+{
+  "schema_version": "1.0.0",
+  "review_date": "2026-08-10",
+  "reviewer": "gpt-5.6-sol independent reviewer (batch-4 scale campaign)",
+  "branch": "main",
+  "history_note": "Batch-4 survivor-only promotion. Ignored staging remained byte-identical to the initial review snapshot and rejected packages were not copied.",
+  "scope": {
+    "baseline_reviewed_packages": 359,
+    "staged_candidates_reviewed": 93,
+    "phase_a_staged": 9,
+    "fresh_staged": 84,
+    "phase_a_non_staged": {
+      "skipped": 2
+    },
+    "fresh_non_staged": {
+      "failed": 10,
+      "skipped": 23
+    },
+    "fresh_selected": 160,
+    "fresh_processed": 117,
+    "fresh_unlaunched": 43,
+    "terminal_extraction_failures": 6
+  },
+  "accounting": {
+    "promoted": 81,
+    "demoted": 0,
+    "rejected": 12,
+    "phase_a_promoted": 4,
+    "fresh_promoted": 77,
+    "phase_a_rejected": 5,
+    "fresh_rejected": 7,
+    "by_final_tier": {
+      "F1": 70,
+      "F2": 11
+    },
+    "by_family": {
+      "pmos": 14,
+      "nmos": 21,
+      "bjt_npn": 10,
+      "diode": 30,
+      "bjt_pnp": 6
+    },
+    "by_tier_and_family": {
+      "F1:bjt_npn": 8,
+      "F1:bjt_pnp": 5,
+      "F1:diode": 24,
+      "F1:nmos": 20,
+      "F1:pmos": 13,
+      "F2:bjt_npn": 2,
+      "F2:bjt_pnp": 1,
+      "F2:diode": 6,
+      "F2:nmos": 1,
+      "F2:pmos": 1
+    },
+    "rejection_classes": {
+      "published-hard-bound-failure": 7,
+      "phase-a-salvage-hard-bound-failure": 5
+    },
+    "final_reviewed_library_count": 440,
+    "hard_bound_checks_added": 130
+  },
+  "process_control_audit": {
+    "execution_outcomes": 128,
+    "staged_outcomes": 93,
+    "non_staged_outcomes": [
+      {
+        "origin": "phase-a",
+        "wave": null,
+        "status": "skipped",
+        "lcsc_id": "C2938369",
+        "mpn": "AO3402",
+        "manufacturer": "GOODWORK",
+        "reason": "library identity collision: ao3402 already represented by alpha-omega-semicon/AO3402"
+      },
+      {
+        "origin": "phase-a",
+        "wave": null,
+        "status": "skipped",
+        "lcsc_id": "C181167",
+        "mpn": "2SC1623（L6）",
+        "manufacturer": "Guangdong Hottech",
+        "reason": "library identity collision: 2sc1623 already represented by hongjiacheng/2SC1623"
+      },
+      {
+        "origin": "wave-1",
+        "wave": 1,
+        "status": "skipped",
+        "lcsc_id": "C551530",
+        "mpn": "MJD45H11J",
+        "manufacturer": "Nexperia",
+        "reason": "duplicate fitted die vector already represented by onsemi/MJD45H11T4G; no independent parameterization or shared-die evidence was supplied"
+      },
+      {
+        "origin": "wave-1",
+        "wave": 1,
+        "status": "failed",
+        "lcsc_id": "C17300",
+        "mpn": "MMBT8050D(J3Y)",
+        "manufacturer": "ST Semtech",
+        "reason": "F2 failed: node packages/component-schema/validate-package.mjs tools/conveyor/data/staging/batch-4/packages/st-semtech/MMBT8050D-J3Y.building-59318-1786353415049 failed\n\nFAIL tools/conveyor/data/staging/batch-4/packages/st-semtech/MMBT8050D-J3Y.building-59318-1786353415049\n  - component/canonical_mpn must match pattern \"^[A-Za-z0-9][A-Za-z0-9._+/-]*$\"; F1 failed: node packages/component-schema/validate-package.mjs tools/conveyor/data/staging/batch-4/packages/st-semtech/MMBT8050D-J3Y.building-59318-1786353415166 failed\n\nFAIL tools/conveyor/data/staging/batch-4/packages/st-semtech/MMBT8050D-J3Y.building-59318-1786353415166\n  - component/canonical_mpn must match pattern \"^[A-Za-z0-9][A-Za-z0-9._+/-]*$\""
+      },
+      {
+        "origin": "wave-1",
+        "wave": 1,
+        "status": "skipped",
+        "lcsc_id": "C181154",
+        "mpn": "C945",
+        "manufacturer": "Guangdong Hottech",
+        "reason": "duplicate fitted die vector already represented by nexperia/PBSS4160T; no independent parameterization or shared-die evidence was supplied"
+      },
+      {
+        "origin": "wave-1",
+        "wave": 1,
+        "status": "skipped",
+        "lcsc_id": "C94393",
+        "mpn": "BC847BLT1G",
+        "manufacturer": "onsemi",
+        "reason": "duplicate fitted die vector already represented by nexperia/BC847BW; no independent parameterization or shared-die evidence was supplied"
+      },
+      {
+        "origin": "wave-1",
+        "wave": 1,
+        "status": "skipped",
+        "lcsc_id": "C19077434",
+        "mpn": "BZT52B5V1S",
+        "manufacturer": "hongjiacheng",
+        "reason": "duplicate fitted die vector already represented by hongjiacheng/BZX584C5V1; no independent parameterization or shared-die evidence was supplied"
+      },
+      {
+        "origin": "wave-1",
+        "wave": 1,
+        "status": "skipped",
+        "lcsc_id": "C19077398",
+        "mpn": "BZT52C3V9",
+        "manufacturer": "hongjiacheng",
+        "reason": "duplicate fitted die vector already represented by hongjiacheng/BZT52C3V9S; no independent parameterization or shared-die evidence was supplied"
+      },
+      {
+        "origin": "wave-2",
+        "wave": 2,
+        "status": "skipped",
+        "lcsc_id": "C82477",
+        "mpn": "BC846BLT1G",
+        "manufacturer": "onsemi",
+        "reason": "duplicate fitted die vector already represented by diodes-inc/MMBT3904-7-F; no independent parameterization or shared-die evidence was supplied"
+      },
+      {
+        "origin": "wave-2",
+        "wave": 2,
+        "status": "failed",
+        "lcsc_id": "C5364246",
+        "mpn": "BC846BW",
+        "manufacturer": "Guangdong Hottech",
+        "reason": "initial Luna stream stalled without output; original transcript was unavailable; one operational retry ended with API connection closed mid-response and produced no output"
+      },
+      {
+        "origin": "wave-2",
+        "wave": 2,
+        "status": "skipped",
+        "lcsc_id": "C2828443",
+        "mpn": "MMBT3904T",
+        "manufacturer": "CBI",
+        "reason": "duplicate fitted die vector already represented by high-diode/BC817; no independent parameterization or shared-die evidence was supplied"
+      },
+      {
+        "origin": "wave-2",
+        "wave": 2,
+        "status": "skipped",
+        "lcsc_id": "C305456",
+        "mpn": "8550M-D",
+        "manufacturer": "Foshan Blue Rocket Elec",
+        "reason": "duplicate fitted die vector already represented by foshan-blue-rocket-elec/S8550M-D; no independent parameterization or shared-die evidence was supplied"
+      },
+      {
+        "origin": "wave-2",
+        "wave": 2,
+        "status": "failed",
+        "lcsc_id": "C12749",
+        "mpn": "LBC847CLT1G",
+        "manufacturer": "LRC",
+        "reason": "extraction rejected after its one focused retry: bjt.dc_current_gain: catalog '110' disagrees with extracted [520, 420, 800]; closest ratio 3.82x"
+      },
+      {
+        "origin": "wave-2",
+        "wave": 2,
+        "status": "skipped",
+        "lcsc_id": "C22395581",
+        "mpn": "BZX584C18",
+        "manufacturer": "hongjiacheng",
+        "reason": "duplicate fitted die vector already represented by hongjiacheng/BZT52C18; no independent parameterization or shared-die evidence was supplied"
+      },
+      {
+        "origin": "wave-2",
+        "wave": 2,
+        "status": "skipped",
+        "lcsc_id": "C22395539",
+        "mpn": "MM1Z5V6",
+        "manufacturer": "hongjiacheng",
+        "reason": "duplicate fitted die vector already represented by hongjiacheng/BZT52C5V6S; no independent parameterization or shared-die evidence was supplied"
+      },
+      {
+        "origin": "wave-2",
+        "wave": 2,
+        "status": "skipped",
+        "lcsc_id": "C7502711",
+        "mpn": "DSK14",
+        "manufacturer": "hongjiacheng",
+        "reason": "duplicate fitted die vector matches same-batch candidate DSK14; no independent parameterization or shared-die evidence was supplied"
+      },
+      {
+        "origin": "wave-2",
+        "wave": 2,
+        "status": "skipped",
+        "lcsc_id": "C19077462",
+        "mpn": "BZX584C3V3",
+        "manufacturer": "hongjiacheng",
+        "reason": "duplicate fitted die vector already represented by hongjiacheng/BZT52B3V3; no independent parameterization or shared-die evidence was supplied"
+      },
+      {
+        "origin": "wave-2",
+        "wave": 2,
+        "status": "skipped",
+        "lcsc_id": "C7502709",
+        "mpn": "DSK34",
+        "manufacturer": "hongjiacheng",
+        "reason": "duplicate fitted die vector matches same-batch candidate DSK14; no independent parameterization or shared-die evidence was supplied"
+      },
+      {
+        "origin": "wave-2",
+        "wave": 2,
+        "status": "failed",
+        "lcsc_id": "C347509",
+        "mpn": "FDN304P(UMW)",
+        "manufacturer": "UMW(Youtai Semiconductor Co., Ltd.)",
+        "reason": "F2 failed: mosfet extraction cannot support an F2 fit: no usable 25 degC transfer curve (drain current versus gate-source voltage); F1 failed: node packages/component-schema/validate-package.mjs tools/conveyor/data/staging/batch-4/packages/umw-youtai-co.-ltd/FDN304P-UMW.building-64069-1786362619765 failed\n\nFAIL tools/conveyor/data/staging/batch-4/packages/umw-youtai-co.-ltd/FDN304P-UMW.building-64069-1786362619765\n  - component/canonical_mpn must match pattern \"^[A-Za-z0-9][A-Za-z0-9._+/-]*$\""
+      },
+      {
+        "origin": "wave-3",
+        "wave": 3,
+        "status": "skipped",
+        "lcsc_id": "C5336792",
+        "mpn": "BC847C-QR",
+        "manufacturer": "Nexperia",
+        "reason": "duplicate fitted die vector already represented by onsemi/BC847CLT1G; no independent parameterization or shared-die evidence was supplied"
+      },
+      {
+        "origin": "wave-3",
+        "wave": 3,
+        "status": "skipped",
+        "lcsc_id": "C151597",
+        "mpn": "MMBTA06-7-F",
+        "manufacturer": "Diodes Incorporated",
+        "reason": "duplicate fitted die vector already represented by high-diode/BC817; no independent parameterization or shared-die evidence was supplied"
+      },
+      {
+        "origin": "wave-3",
+        "wave": 3,
+        "status": "skipped",
+        "lcsc_id": "C90281",
+        "mpn": "BC846A,215",
+        "manufacturer": "Nexperia",
+        "reason": "duplicate fitted die vector already represented by lrc/LBC817-16LT1G; no independent parameterization or shared-die evidence was supplied"
+      },
+      {
+        "origin": "wave-3",
+        "wave": 3,
+        "status": "skipped",
+        "lcsc_id": "C125315",
+        "mpn": "KTN2222AS-RTK/PS",
+        "manufacturer": "KEC Semicon",
+        "reason": "duplicate fitted die vector already represented by high-diode/BC817; no independent parameterization or shared-die evidence was supplied"
+      },
+      {
+        "origin": "wave-3",
+        "wave": 3,
+        "status": "skipped",
+        "lcsc_id": "C163723",
+        "mpn": "BC846ALT1G",
+        "manufacturer": "onsemi",
+        "reason": "duplicate fitted die vector already represented by lrc/LBC817-16LT1G; no independent parameterization or shared-die evidence was supplied"
+      },
+      {
+        "origin": "wave-3",
+        "wave": 3,
+        "status": "skipped",
+        "lcsc_id": "C426787",
+        "mpn": "BCP56-16TX",
+        "manufacturer": "Nexperia",
+        "reason": "duplicate fitted die vector already represented by high-diode/BC817; no independent parameterization or shared-die evidence was supplied"
+      },
+      {
+        "origin": "wave-3",
+        "wave": 3,
+        "status": "skipped",
+        "lcsc_id": "C686648",
+        "mpn": "FMMT593",
+        "manufacturer": "PJSEMI",
+        "reason": "duplicate fitted die vector already represented by tdsemic/MMBT2907-2F; no independent parameterization or shared-die evidence was supplied"
+      },
+      {
+        "origin": "wave-3",
+        "wave": 3,
+        "status": "failed",
+        "lcsc_id": "C18199087",
+        "mpn": "1N4004W",
+        "manufacturer": "hongjiacheng",
+        "reason": "F2 failed: diode F2 gate failed: N saturated its physical bound at 4; the true optimum lies outside the physical range, so the residual is a constraint artefact; forward_voltage worst relative error 0.3702 exceeds gate 0.05; forward_voltage RMS relative error 0.2496 exceeds gate 0.03; F1 failed: Validation failed for 1N4004W. See validation-results.json; failed package checks: forward_voltage_maximum_at_0.95_a observed 1.037639975018159 (maximum 1)"
+      },
+      {
+        "origin": "wave-3",
+        "wave": 3,
+        "status": "skipped",
+        "lcsc_id": "C22392482",
+        "mpn": "BAT54CW",
+        "manufacturer": "hongjiacheng",
+        "reason": "duplicate fitted die vector already represented by hongjiacheng/BAT54WS; no independent parameterization or shared-die evidence was supplied"
+      },
+      {
+        "origin": "wave-3",
+        "wave": 3,
+        "status": "skipped",
+        "lcsc_id": "C19077465",
+        "mpn": "BZX584C9V1",
+        "manufacturer": "hongjiacheng",
+        "reason": "duplicate fitted die vector already represented by hongjiacheng/BZT52C9V1S; no independent parameterization or shared-die evidence was supplied"
+      },
+      {
+        "origin": "wave-3",
+        "wave": 3,
+        "status": "failed",
+        "lcsc_id": "C19077397",
+        "mpn": "BZT52C3V6",
+        "manufacturer": "hongjiacheng",
+        "reason": "extraction rejected after its one focused retry: $.curves[2].points has too few items"
+      },
+      {
+        "origin": "wave-3",
+        "wave": 3,
+        "status": "failed",
+        "lcsc_id": "C347488",
+        "mpn": "SI2305A",
+        "manufacturer": "UMW Youtai Semiconductor Co Ltd",
+        "reason": "extraction rejected after its one focused retry: $ missing required keys: curves, datasheet_identity, extraction_notes, family, manufacturer, mpn, omission_reason, schema_version, specs, usable_curves"
+      },
+      {
+        "origin": "wave-3",
+        "wave": 3,
+        "status": "failed",
+        "lcsc_id": "C5190214",
+        "mpn": "2N7002DW",
+        "manufacturer": "Guangdong Hottech",
+        "reason": "extraction rejected after its one focused retry: $.specs.ciss does not match any allowed shape: $.specs.ciss has unknown keys: conversion_note; $.specs.ciss must be null"
+      },
+      {
+        "origin": "wave-3",
+        "wave": 3,
+        "status": "failed",
+        "lcsc_id": "C353066",
+        "mpn": "AP9926",
+        "manufacturer": "ALLPOWER ShenZhen Quan Li Semiconductor",
+        "reason": "extraction rejected after its one focused retry: vdmos.rds_on: catalog '27mΩ@4.5V,6.5A' disagrees with extracted [21.5, 30.5, 26.5]; closest ratio 796x; vdmos.ciss: catalog '700pF@10V' disagrees with extracted [700.0]; closest ratio 1e+12x; vdmos.coss: catalog '175pF' disagrees with extracted [175.0]; closest ratio 1e+12x; vdmos.crss: catalog '85pF' disagrees with extracted [85.0]; closest ratio 1e+12x"
+      },
+      {
+        "origin": "wave-3",
+        "wave": 3,
+        "status": "skipped",
+        "lcsc_id": "C2936839",
+        "mpn": "FS3401M",
+        "manufacturer": "FOSAN",
+        "reason": "duplicate fitted die vector already represented by hongjiacheng/HL3401; no independent parameterization or shared-die evidence was supplied"
+      },
+      {
+        "origin": "wave-3",
+        "wave": 3,
+        "status": "failed",
+        "lcsc_id": "C347501",
+        "mpn": "IRLML6401TR(UMW)",
+        "manufacturer": "UMW Youtai Semiconductor Co Ltd",
+        "reason": "F2 failed: mosfet F2 gate failed: drain_current worst relative error 60.7440 exceeds gate 0.2; drain_current RMS relative error 25.6640 exceeds gate 0.12; rds_on worst relative error 2.3741 exceeds gate 0.2; rds_on RMS relative error 2.0204 exceeds gate 0.12; F1 failed: node packages/component-schema/validate-package.mjs tools/conveyor/data/staging/batch-4/packages/umw-youtai-co-ltd/IRLML6401TR-UMW.building-93072-1786365263689 failed\n\nFAIL tools/conveyor/data/staging/batch-4/packages/umw-youtai-co-ltd/IRLML6401TR-UMW.building-93072-1786365263689\n  - component/canonical_mpn must match pattern \"^[A-Za-z0-9][A-Za-z0-9._+/-]*$\""
+      }
+    ],
+    "phase_a_skips": 2,
+    "fresh_skips": 23,
+    "fresh_failures": 10,
+    "unlaunched_selected_targets": 43,
+    "terminal_extraction_failures": [
+      "C5364246 BC846BW: no output after one operational retry",
+      "C12749 LBC847CLT1G: catalog gain discrepancy persisted after one focused retry",
+      "C19077397 BZT52C3V6: curve minItems schema failure persisted after one focused retry",
+      "C347488 SI2305A: required conveyor extraction schema remained invalid after one focused retry",
+      "C5190214 2N7002DW: focused units retry added an unrecognized field and remained schema-invalid",
+      "C353066 AP9926: SI resistance/capacitance catalog discrepancy remained after one focused retry"
+    ],
+    "maximum_required_live_lanes": 4,
+    "maximum_observed_live_lanes": 5,
+    "lane_deviation": "A scheduling-accounting mistake likely caused one brief five-lane overlap during wave 2. All subsequent scheduling used four or fewer live lanes. This is reported as a campaign deviation, not represented as compliant.",
+    "cross_contamination_found": false,
+    "unlaunched_selection": [
+      {
+        "wave": 4,
+        "selected": 26,
+        "processed": 0
+      },
+      {
+        "wave": 5,
+        "selected": 17,
+        "processed": 0
+      }
+    ]
+  },
+  "special_rulings": {
+    "si_retries": [
+      {
+        "package": "born/SI2309",
+        "decision": "promote F1",
+        "evidence": "Ciss 310 pF = 3.1e-10 F, Coss 22 pF = 2.2e-11 F, and Crss 15 pF = 1.5e-11 F were converted exactly once; original values and citations remain; curves_used is empty and AC coverage remains none."
+      },
+      {
+        "package": "doingter/DO2302E-Q",
+        "decision": "promote F1",
+        "evidence": "Ciss 180 pF = 1.8e-10 F, Coss 35 pF = 3.5e-11 F, and Crss 25 pF = 2.5e-11 F were converted exactly once; original values and citations remain; curves_used is empty and AC coverage remains none."
+      }
+    ],
+    "hl_3401": {
+      "decision": "promote F1",
+      "evidence": "Direct PDF inspection found the HL logo, 3401 part designation, P-channel symbol, -30 V and -4 A summary, negative-polarity electrical table, and P-channel curves. Mixed 20 V, N-Ch, and 20N02 boilerplate is treated as template contamination and does not outweigh the device-specific evidence."
+    }
+  },
+  "identity_corrections": [
+    {
+      "source_package": "infineon/BSS83PH6327",
+      "canonical_mpn": "BSS83P",
+      "ordering_alias": "BSS83PH6327"
+    },
+    {
+      "source_package": "infineon/IRFR024NTRPBF",
+      "canonical_mpn": "IRFR024NPbF",
+      "ordering_alias": "IRFR024NTRPBF"
+    },
+    {
+      "source_package": "kec-semicon/2N5551S-RTK-P",
+      "canonical_mpn": "2N5551S",
+      "ordering_alias": "2N5551S-RTK/P"
+    },
+    {
+      "source_package": "nexperia/BC817-40-QR",
+      "canonical_mpn": "BC817-40-Q",
+      "ordering_alias": "BC817-40-QR"
+    },
+    {
+      "source_package": "nexperia/PMV65XPEAR",
+      "canonical_mpn": "PMV65XPEA",
+      "ordering_alias": "PMV65XPEAR"
+    },
+    {
+      "source_package": "rohm-semicon/2SA1037AKT146R",
+      "canonical_mpn": "2SA1037AK",
+      "ordering_alias": "2SA1037AKT146R"
+    },
+    {
+      "source_package": "rohm-semicon/2SC2412KT146R",
+      "canonical_mpn": "2SC2412K",
+      "ordering_alias": "2SC2412KT146R"
+    },
+    {
+      "source_package": "rohm-semicon/2SK3541T2L",
+      "canonical_mpn": "2SK3541",
+      "ordering_alias": "2SK3541T2L"
+    }
+  ],
+  "promoted": [
+    {
+      "origin": "fresh",
+      "wave": 1,
+      "lcsc_id": "C385296",
+      "manufacturer_directory": "allpower-shenzhen-quan-li",
+      "staged_mpn": "AP2301",
+      "canonical_mpn": "AP2301",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/allpower-shenzhen-quan-li/AP2301",
+      "target_library_directory": "packages/model-library/models/allpower-shenzhen-quan-li/AP2301",
+      "family": "pmos",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 3,
+      "expectation_checks": 3,
+      "corrections": [
+        "Added and passed unchanged-model published hard-bound checks: rdson_maximum_source_2, rdson_maximum_source_4."
+      ],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 3 package benches and 3 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": [
+        {
+          "name": "rdson_maximum_source_2",
+          "test_netlist": "review_rdson_maximum_source_2.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d),0.3333333333333333)"
+          },
+          "unit": "ohm",
+          "minimum": 0,
+          "maximum": 0.075,
+          "inclusive": true,
+          "datasheet_citation": "p. 2, MOSFET Electrical Characteristics, RDS(on) row 1, MAX column"
+        },
+        {
+          "name": "rdson_maximum_source_4",
+          "test_netlist": "review_rdson_maximum_source_4.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d),0.5)"
+          },
+          "unit": "ohm",
+          "minimum": 0,
+          "maximum": 0.095,
+          "inclusive": true,
+          "datasheet_citation": "p. 2, MOSFET Electrical Characteristics, RDS(on) row 2, MAX column"
+        }
+      ]
+    },
+    {
+      "origin": "fresh",
+      "wave": 2,
+      "lcsc_id": "C471913",
+      "manufacturer_directory": "allpower-shenzhen-quan-li",
+      "staged_mpn": "AP30P30Q",
+      "canonical_mpn": "AP30P30Q",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/allpower-shenzhen-quan-li/AP30P30Q",
+      "target_library_directory": "packages/model-library/models/allpower-shenzhen-quan-li/AP30P30Q",
+      "family": "pmos",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 2,
+      "expectation_checks": 2,
+      "corrections": [
+        "Added and passed unchanged-model published hard-bound checks: rdson_maximum_source_3."
+      ],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 2 package benches and 2 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": [
+        {
+          "name": "rdson_maximum_source_3",
+          "test_netlist": "review_rdson_maximum_source_3.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d),0.125)"
+          },
+          "unit": "ohm",
+          "minimum": 0,
+          "maximum": 0.013,
+          "inclusive": true,
+          "datasheet_citation": "2"
+        }
+      ]
+    },
+    {
+      "origin": "fresh",
+      "wave": 1,
+      "lcsc_id": "C2849571",
+      "manufacturer_directory": "allpower-shenzhen-quan-li",
+      "staged_mpn": "AP5N10S",
+      "canonical_mpn": "AP5N10S",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/allpower-shenzhen-quan-li/AP5N10S",
+      "target_library_directory": "packages/model-library/models/allpower-shenzhen-quan-li/AP5N10S",
+      "family": "nmos",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 2,
+      "expectation_checks": 2,
+      "corrections": [
+        "Added and passed unchanged-model published hard-bound checks: rdson_maximum_source_2."
+      ],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 2 package benches and 2 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": [
+        {
+          "name": "rdson_maximum_source_2",
+          "test_netlist": "review_rdson_maximum_source_2.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d),0.3333333333333333)"
+          },
+          "unit": "ohm",
+          "minimum": 0,
+          "maximum": 0.145,
+          "inclusive": true,
+          "datasheet_citation": "2"
+        }
+      ]
+    },
+    {
+      "origin": "fresh",
+      "wave": 1,
+      "lcsc_id": "C469397",
+      "manufacturer_directory": "alpha-omega-semicon",
+      "staged_mpn": "AO4407C",
+      "canonical_mpn": "AO4407C",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/alpha-omega-semicon/AO4407C",
+      "target_library_directory": "packages/model-library/models/alpha-omega-semicon/AO4407C",
+      "family": "pmos",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 3,
+      "expectation_checks": 3,
+      "corrections": [
+        "Added and passed unchanged-model published hard-bound checks: rdson_maximum_source_2, rdson_maximum_source_5."
+      ],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 3 package benches and 3 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": [
+        {
+          "name": "rdson_maximum_source_2",
+          "test_netlist": "review_rdson_maximum_source_2.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d),0.07142857142857142)"
+          },
+          "unit": "ohm",
+          "minimum": 0,
+          "maximum": 0.0115,
+          "inclusive": true,
+          "datasheet_citation": "p.2 Electrical Characteristics, RDS(ON), MAX column"
+        },
+        {
+          "name": "rdson_maximum_source_5",
+          "test_netlist": "review_rdson_maximum_source_5.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d),0.1)"
+          },
+          "unit": "ohm",
+          "minimum": 0,
+          "maximum": 0.0185,
+          "inclusive": true,
+          "datasheet_citation": "p.2 Electrical Characteristics, RDS(ON), MAX column"
+        }
+      ]
+    },
+    {
+      "origin": "fresh",
+      "wave": 2,
+      "lcsc_id": "C431191",
+      "manufacturer_directory": "alpha-omega-semicon",
+      "staged_mpn": "AON7264E",
+      "canonical_mpn": "AON7264E",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/alpha-omega-semicon/AON7264E",
+      "target_library_directory": "packages/model-library/models/alpha-omega-semicon/AON7264E",
+      "family": "nmos",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 3,
+      "expectation_checks": 3,
+      "corrections": [
+        "Added and passed unchanged-model published hard-bound checks: rdson_maximum_source_2, rdson_maximum_source_4."
+      ],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 3 package benches and 3 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": [
+        {
+          "name": "rdson_maximum_source_2",
+          "test_netlist": "review_rdson_maximum_source_2.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d),0.058823529411764705)"
+          },
+          "unit": "ohm",
+          "minimum": 0,
+          "maximum": 0.0095,
+          "inclusive": true,
+          "datasheet_citation": "2"
+        },
+        {
+          "name": "rdson_maximum_source_4",
+          "test_netlist": "review_rdson_maximum_source_4.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d),0.06666666666666667)"
+          },
+          "unit": "ohm",
+          "minimum": 0,
+          "maximum": 0.0133,
+          "inclusive": true,
+          "datasheet_citation": "2"
+        }
+      ]
+    },
+    {
+      "origin": "fresh",
+      "wave": 1,
+      "lcsc_id": "C431496",
+      "manufacturer_directory": "born",
+      "staged_mpn": "SI2309",
+      "canonical_mpn": "SI2309",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/born/SI2309",
+      "target_library_directory": "packages/model-library/models/born/SI2309",
+      "family": "pmos",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 1,
+      "expectation_checks": 1,
+      "corrections": [],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 1 package benches and 1 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": []
+    },
+    {
+      "origin": "fresh",
+      "wave": 3,
+      "lcsc_id": "C177025",
+      "manufacturer_directory": "diodes",
+      "staged_mpn": "DMC2400UV-7",
+      "canonical_mpn": "DMC2400UV-7",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/diodes/DMC2400UV-7",
+      "target_library_directory": "packages/model-library/models/diodes/DMC2400UV-7",
+      "family": "nmos",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 1,
+      "expectation_checks": 1,
+      "corrections": [],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 1 package benches and 1 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": []
+    },
+    {
+      "origin": "fresh",
+      "wave": 1,
+      "lcsc_id": "C705324",
+      "manufacturer_directory": "diodes",
+      "staged_mpn": "MMBT3904Q-7-F",
+      "canonical_mpn": "MMBT3904Q-7-F",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/diodes/MMBT3904Q-7-F",
+      "target_library_directory": "packages/model-library/models/diodes/MMBT3904Q-7-F",
+      "family": "bjt_npn",
+      "original_tier": "F2",
+      "final_tier": "F2",
+      "benches": 5,
+      "expectation_checks": 21,
+      "corrections": [
+        "Added and passed unchanged-model published hard-bound checks: hfe_maximum_source_4.",
+        "Narrowed F2 supported scope to the exact selected 25 C curves, biases, and sampled ranges; scalar hard bounds do not extend curve fidelity."
+      ],
+      "reasons": [
+        "The F2 claim passed unchanged fit gates and is restricted to exact selected 25 C DC curves, biases, and sampled ranges.",
+        "All 5 package benches and 21 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": [
+        {
+          "name": "hfe_maximum_source_4",
+          "test_netlist": "review_hfe_maximum_source_4.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vc),30000.0)"
+          },
+          "unit": "1",
+          "minimum": 0,
+          "maximum": 300.0,
+          "inclusive": true,
+          "datasheet_citation": "p. 4 electrical characteristics, DC Current Gain"
+        }
+      ]
+    },
+    {
+      "origin": "fresh",
+      "wave": 1,
+      "lcsc_id": "C41384540",
+      "manufacturer_directory": "doingter",
+      "staged_mpn": "DO2302E-Q",
+      "canonical_mpn": "DO2302E-Q",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/doingter/DO2302E-Q",
+      "target_library_directory": "packages/model-library/models/doingter/DO2302E-Q",
+      "family": "nmos",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 3,
+      "expectation_checks": 3,
+      "corrections": [
+        "Added and passed unchanged-model published hard-bound checks: rdson_maximum_source_2, rdson_maximum_source_4."
+      ],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 3 package benches and 3 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": [
+        {
+          "name": "rdson_maximum_source_2",
+          "test_netlist": "review_rdson_maximum_source_2.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d),0.35714285714285715)"
+          },
+          "unit": "ohm",
+          "minimum": 0,
+          "maximum": 0.055,
+          "inclusive": true,
+          "datasheet_citation": "p. 2 Electrical Characteristics, RDS(ON) row 1, MAX column (55 mOhm)"
+        },
+        {
+          "name": "rdson_maximum_source_4",
+          "test_netlist": "review_rdson_maximum_source_4.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d),0.5)"
+          },
+          "unit": "ohm",
+          "minimum": 0,
+          "maximum": 0.085,
+          "inclusive": true,
+          "datasheet_citation": "p. 2 Electrical Characteristics, RDS(ON) row 2, MAX column (85 mOhm)"
+        }
+      ]
+    },
+    {
+      "origin": "fresh",
+      "wave": 2,
+      "lcsc_id": "C358380",
+      "manufacturer_directory": "foshan-blue-rocket-elec",
+      "staged_mpn": "BR2N7002K2",
+      "canonical_mpn": "BR2N7002K2",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/foshan-blue-rocket-elec/BR2N7002K2",
+      "target_library_directory": "packages/model-library/models/foshan-blue-rocket-elec/BR2N7002K2",
+      "family": "nmos",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 3,
+      "expectation_checks": 3,
+      "corrections": [
+        "Added and passed unchanged-model published hard-bound checks: rdson_maximum_source_1, rdson_maximum_source_3."
+      ],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 3 package benches and 3 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": [
+        {
+          "name": "rdson_maximum_source_1",
+          "test_netlist": "review_rdson_maximum_source_1.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d),2.0)"
+          },
+          "unit": "ohm",
+          "minimum": 0,
+          "maximum": 2.3,
+          "inclusive": true,
+          "datasheet_citation": "2"
+        },
+        {
+          "name": "rdson_maximum_source_3",
+          "test_netlist": "review_rdson_maximum_source_3.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d),20.0)"
+          },
+          "unit": "ohm",
+          "minimum": 0,
+          "maximum": 2.7,
+          "inclusive": true,
+          "datasheet_citation": "2"
+        }
+      ]
+    },
+    {
+      "origin": "fresh",
+      "wave": 1,
+      "lcsc_id": "C5380687",
+      "manufacturer_directory": "fuxinsemi",
+      "staged_mpn": "BC847BS",
+      "canonical_mpn": "BC847BS",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/fuxinsemi/BC847BS",
+      "target_library_directory": "packages/model-library/models/fuxinsemi/BC847BS",
+      "family": "bjt_npn",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 6,
+      "expectation_checks": 5,
+      "corrections": [
+        "Added and passed unchanged-model published hard-bound checks: hfe_maximum_source_2, vce_sat_maximum_source_1, vce_sat_maximum_source_2."
+      ],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 6 package benches and 5 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": [
+        {
+          "name": "hfe_maximum_source_2",
+          "test_netlist": "review_hfe_maximum_source_2.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vc),225000.0)"
+          },
+          "unit": "1",
+          "minimum": 0,
+          "maximum": 450.0,
+          "inclusive": true,
+          "datasheet_citation": "p. 1, electrical characteristics, DC current gain"
+        },
+        {
+          "name": "vce_sat_maximum_source_1",
+          "test_netlist": "review_vce_sat_maximum_source_1.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(c))"
+          },
+          "unit": "V",
+          "minimum": 0,
+          "maximum": 0.25,
+          "inclusive": true,
+          "datasheet_citation": "p. 1, electrical characteristics, collector-emitter saturation voltage (1)"
+        },
+        {
+          "name": "vce_sat_maximum_source_2",
+          "test_netlist": "review_vce_sat_maximum_source_2.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(c))"
+          },
+          "unit": "V",
+          "minimum": 0,
+          "maximum": 0.65,
+          "inclusive": true,
+          "datasheet_citation": "p. 1, electrical characteristics, collector-emitter saturation voltage (2)"
+        }
+      ]
+    },
+    {
+      "origin": "fresh",
+      "wave": 3,
+      "lcsc_id": "C717603",
+      "manufacturer_directory": "guangdong-hottech",
+      "staged_mpn": "4953",
+      "canonical_mpn": "4953",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/guangdong-hottech/4953",
+      "target_library_directory": "packages/model-library/models/guangdong-hottech/4953",
+      "family": "pmos",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 3,
+      "expectation_checks": 3,
+      "corrections": [
+        "Added and passed unchanged-model published hard-bound checks: rdson_maximum_source_2, rdson_maximum_source_4."
+      ],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 3 package benches and 3 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": [
+        {
+          "name": "rdson_maximum_source_2",
+          "test_netlist": "review_rdson_maximum_source_2.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d),0.19607843137254904)"
+          },
+          "unit": "ohm",
+          "minimum": 0,
+          "maximum": 0.055,
+          "inclusive": true,
+          "datasheet_citation": "1"
+        },
+        {
+          "name": "rdson_maximum_source_4",
+          "test_netlist": "review_rdson_maximum_source_4.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d),0.23809523809523808)"
+          },
+          "unit": "ohm",
+          "minimum": 0,
+          "maximum": 0.09,
+          "inclusive": true,
+          "datasheet_citation": "1"
+        }
+      ]
+    },
+    {
+      "origin": "fresh",
+      "wave": 2,
+      "lcsc_id": "C19271469",
+      "manufacturer_directory": "hl",
+      "staged_mpn": "20N03",
+      "canonical_mpn": "20N03",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/hl/20N03",
+      "target_library_directory": "packages/model-library/models/hl/20N03",
+      "family": "nmos",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 3,
+      "expectation_checks": 3,
+      "corrections": [
+        "Added and passed unchanged-model published hard-bound checks: rdson_maximum_source_2, rdson_maximum_source_4."
+      ],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 3 package benches and 3 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": [
+        {
+          "name": "rdson_maximum_source_2",
+          "test_netlist": "review_rdson_maximum_source_2.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d),0.2)"
+          },
+          "unit": "ohm",
+          "minimum": 0,
+          "maximum": 0.02,
+          "inclusive": true,
+          "datasheet_citation": "p. 2, Electrical Characteristics, RDS(on) row 1, Max column"
+        },
+        {
+          "name": "rdson_maximum_source_4",
+          "test_netlist": "review_rdson_maximum_source_4.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d),0.3333333333333333)"
+          },
+          "unit": "ohm",
+          "minimum": 0,
+          "maximum": 0.029,
+          "inclusive": true,
+          "datasheet_citation": "p. 2, Electrical Characteristics, RDS(on) row 2, Max column"
+        }
+      ]
+    },
+    {
+      "origin": "fresh",
+      "wave": 3,
+      "lcsc_id": "C18164395",
+      "manufacturer_directory": "hl",
+      "staged_mpn": "30P06",
+      "canonical_mpn": "30P06",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/hl/30P06",
+      "target_library_directory": "packages/model-library/models/hl/30P06",
+      "family": "pmos",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 3,
+      "expectation_checks": 3,
+      "corrections": [
+        "Added and passed unchanged-model published hard-bound checks: rdson_maximum_source_2, rdson_maximum_source_4."
+      ],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 3 package benches and 3 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": [
+        {
+          "name": "rdson_maximum_source_2",
+          "test_netlist": "review_rdson_maximum_source_2.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d),0.1)"
+          },
+          "unit": "ohm",
+          "minimum": 0,
+          "maximum": 0.029,
+          "inclusive": true,
+          "datasheet_citation": "2"
+        },
+        {
+          "name": "rdson_maximum_source_4",
+          "test_netlist": "review_rdson_maximum_source_4.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d),0.1)"
+          },
+          "unit": "ohm",
+          "minimum": 0,
+          "maximum": 0.039,
+          "inclusive": true,
+          "datasheet_citation": "2"
+        }
+      ]
+    },
+    {
+      "origin": "fresh",
+      "wave": 1,
+      "lcsc_id": "C7431448",
+      "manufacturer_directory": "hl",
+      "staged_mpn": "3401",
+      "canonical_mpn": "3401",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/hl/3401",
+      "target_library_directory": "packages/model-library/models/hl/3401",
+      "family": "pmos",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 4,
+      "expectation_checks": 4,
+      "corrections": [
+        "Added and passed unchanged-model published hard-bound checks: rdson_maximum_source_2, rdson_maximum_source_4, rdson_maximum_source_6."
+      ],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 4 package benches and 4 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": [
+        {
+          "name": "rdson_maximum_source_2",
+          "test_netlist": "review_rdson_maximum_source_2.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d),0.25)"
+          },
+          "unit": "ohm",
+          "minimum": 0,
+          "maximum": 0.062,
+          "inclusive": true,
+          "datasheet_citation": "PDF p.2 (printed 02), Electrical Characteristics, RDS(ON), Max column (62 mOhm)"
+        },
+        {
+          "name": "rdson_maximum_source_4",
+          "test_netlist": "review_rdson_maximum_source_4.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d),0.3333333333333333)"
+          },
+          "unit": "ohm",
+          "minimum": 0,
+          "maximum": 0.073,
+          "inclusive": true,
+          "datasheet_citation": "PDF p.2 (printed 02), Electrical Characteristics, RDS(ON), Max column (73 mOhm)"
+        },
+        {
+          "name": "rdson_maximum_source_6",
+          "test_netlist": "review_rdson_maximum_source_6.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d),0.3333333333333333)"
+          },
+          "unit": "ohm",
+          "minimum": 0,
+          "maximum": 0.098,
+          "inclusive": true,
+          "datasheet_citation": "PDF p.2 (printed 02), Electrical Characteristics, RDS(ON), Max column (98 mOhm)"
+        }
+      ]
+    },
+    {
+      "origin": "fresh",
+      "wave": 3,
+      "lcsc_id": "C18164387",
+      "manufacturer_directory": "hl",
+      "staged_mpn": "50N06",
+      "canonical_mpn": "50N06",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/hl/50N06",
+      "target_library_directory": "packages/model-library/models/hl/50N06",
+      "family": "nmos",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 3,
+      "expectation_checks": 3,
+      "corrections": [
+        "Added and passed unchanged-model published hard-bound checks: rdson_maximum_source_2, rdson_maximum_source_4."
+      ],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 3 package benches and 3 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": [
+        {
+          "name": "rdson_maximum_source_2",
+          "test_netlist": "review_rdson_maximum_source_2.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d),0.1)"
+          },
+          "unit": "ohm",
+          "minimum": 0,
+          "maximum": 0.011,
+          "inclusive": true,
+          "datasheet_citation": "2"
+        },
+        {
+          "name": "rdson_maximum_source_4",
+          "test_netlist": "review_rdson_maximum_source_4.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d),0.2)"
+          },
+          "unit": "ohm",
+          "minimum": 0,
+          "maximum": 0.014,
+          "inclusive": true,
+          "datasheet_citation": "2"
+        }
+      ]
+    },
+    {
+      "origin": "fresh",
+      "wave": 1,
+      "lcsc_id": "C19077479",
+      "manufacturer_directory": "hongjiacheng",
+      "staged_mpn": "1SMA4740A",
+      "canonical_mpn": "1SMA4740A",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/hongjiacheng/1SMA4740A",
+      "target_library_directory": "packages/model-library/models/hongjiacheng/1SMA4740A",
+      "family": "diode",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 4,
+      "expectation_checks": 4,
+      "corrections": [
+        "Added and passed unchanged-model published hard-bound checks: reverse_leakage_source_maximum, zener_voltage_source_bound."
+      ],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 4 package benches and 4 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": [
+        {
+          "name": "reverse_leakage_source_maximum",
+          "test_netlist": "review_reverse_leakage_source_maximum.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vreverse))"
+          },
+          "unit": "A",
+          "minimum": 0,
+          "maximum": 1e-05,
+          "inclusive": true,
+          "datasheet_citation": "p. 2, Electrical Characteristics, 1SMA4740A row"
+        },
+        {
+          "name": "zener_voltage_source_bound",
+          "test_netlist": "review_zener_voltage_source_bound.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(cathode))"
+          },
+          "unit": "V",
+          "minimum": 9.5,
+          "maximum": 10.5,
+          "inclusive": true,
+          "datasheet_citation": "p. 2, Electrical Characteristics, 1SMA4740A row"
+        }
+      ]
+    },
+    {
+      "origin": "fresh",
+      "wave": 3,
+      "lcsc_id": "C19077480",
+      "manufacturer_directory": "hongjiacheng",
+      "staged_mpn": "1SMA4742A",
+      "canonical_mpn": "1SMA4742A",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/hongjiacheng/1SMA4742A",
+      "target_library_directory": "packages/model-library/models/hongjiacheng/1SMA4742A",
+      "family": "diode",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 3,
+      "expectation_checks": 3,
+      "corrections": [
+        "Added and passed unchanged-model published hard-bound checks: forward_voltage_maximum_source_1, reverse_leakage_source_maximum."
+      ],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 3 package benches and 3 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": [
+        {
+          "name": "forward_voltage_maximum_source_1",
+          "test_netlist": "review_forward_voltage_maximum_source_1.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(anode))"
+          },
+          "unit": "V",
+          "minimum": 0,
+          "maximum": 1.5,
+          "inclusive": true,
+          "datasheet_citation": "1"
+        },
+        {
+          "name": "reverse_leakage_source_maximum",
+          "test_netlist": "review_reverse_leakage_source_maximum.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vreverse))"
+          },
+          "unit": "A",
+          "minimum": 0,
+          "maximum": 5e-06,
+          "inclusive": true,
+          "datasheet_citation": "2"
+        }
+      ]
+    },
+    {
+      "origin": "fresh",
+      "wave": 1,
+      "lcsc_id": "C19077490",
+      "manufacturer_directory": "hongjiacheng",
+      "staged_mpn": "1SMA5928A",
+      "canonical_mpn": "1SMA5928A",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/hongjiacheng/1SMA5928A",
+      "target_library_directory": "packages/model-library/models/hongjiacheng/1SMA5928A",
+      "family": "diode",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 3,
+      "expectation_checks": 3,
+      "corrections": [
+        "Added and passed unchanged-model published hard-bound checks: reverse_leakage_source_maximum, zener_voltage_source_bound."
+      ],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 3 package benches and 3 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": [
+        {
+          "name": "reverse_leakage_source_maximum",
+          "test_netlist": "review_reverse_leakage_source_maximum.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vreverse))"
+          },
+          "unit": "A",
+          "minimum": 0,
+          "maximum": 1e-06,
+          "inclusive": true,
+          "datasheet_citation": "p. 2, electrical characteristics, 1SMA5928A row"
+        },
+        {
+          "name": "zener_voltage_source_bound",
+          "test_netlist": "review_zener_voltage_source_bound.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(cathode))"
+          },
+          "unit": "V",
+          "minimum": 12.35,
+          "maximum": 13.65,
+          "inclusive": true,
+          "datasheet_citation": "p. 2, electrical characteristics, 1SMA5928A row"
+        }
+      ]
+    },
+    {
+      "origin": "fresh",
+      "wave": 1,
+      "lcsc_id": "C22466369",
+      "manufacturer_directory": "hongjiacheng",
+      "staged_mpn": "1SS389",
+      "canonical_mpn": "1SS389",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/hongjiacheng/1SS389",
+      "target_library_directory": "packages/model-library/models/hongjiacheng/1SS389",
+      "family": "diode",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 5,
+      "expectation_checks": 5,
+      "corrections": [
+        "Added and passed unchanged-model published hard-bound checks: forward_voltage_maximum_source_2, reverse_leakage_source_maximum, zener_voltage_source_bound."
+      ],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 5 package benches and 5 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": [
+        {
+          "name": "forward_voltage_maximum_source_2",
+          "test_netlist": "review_forward_voltage_maximum_source_2.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(anode))"
+          },
+          "unit": "V",
+          "minimum": 0,
+          "maximum": 0.3,
+          "inclusive": true,
+          "datasheet_citation": "p. 2, Electrical Characteristics, Maximum forward voltage"
+        },
+        {
+          "name": "reverse_leakage_source_maximum",
+          "test_netlist": "review_reverse_leakage_source_maximum.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vreverse))"
+          },
+          "unit": "A",
+          "minimum": 0,
+          "maximum": 2e-05,
+          "inclusive": true,
+          "datasheet_citation": "p. 2, Electrical Characteristics, Maximum reverse current"
+        },
+        {
+          "name": "zener_voltage_source_bound",
+          "test_netlist": "review_zener_voltage_source_bound.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(cathode))"
+          },
+          "unit": "V",
+          "minimum": 10.0,
+          "maximum": null,
+          "inclusive": true,
+          "datasheet_citation": "p. 2, Electrical Characteristics, Reverse voltage"
+        }
+      ]
+    },
+    {
+      "origin": "fresh",
+      "wave": 1,
+      "lcsc_id": "C7502696",
+      "manufacturer_directory": "hongjiacheng",
+      "staged_mpn": "B0520WS",
+      "canonical_mpn": "B0520WS",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/hongjiacheng/B0520WS",
+      "target_library_directory": "packages/model-library/models/hongjiacheng/B0520WS",
+      "family": "diode",
+      "original_tier": "F2",
+      "final_tier": "F2",
+      "benches": 21,
+      "expectation_checks": 21,
+      "corrections": [
+        "Added and passed unchanged-model published hard-bound checks: forward_voltage_maximum_source_1, forward_voltage_maximum_source_2, reverse_leakage_source_maximum.",
+        "Narrowed F2 supported scope to the exact selected 25 C curves, biases, and sampled ranges; scalar hard bounds do not extend curve fidelity."
+      ],
+      "reasons": [
+        "The F2 claim passed unchanged fit gates and is restricted to exact selected 25 C DC curves, biases, and sampled ranges.",
+        "All 21 package benches and 21 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": [
+        {
+          "name": "forward_voltage_maximum_source_1",
+          "test_netlist": "review_forward_voltage_maximum_source_1.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(anode))"
+          },
+          "unit": "V",
+          "minimum": 0,
+          "maximum": 0.33,
+          "inclusive": true,
+          "datasheet_citation": "2"
+        },
+        {
+          "name": "forward_voltage_maximum_source_2",
+          "test_netlist": "review_forward_voltage_maximum_source_2.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(anode))"
+          },
+          "unit": "V",
+          "minimum": 0,
+          "maximum": 0.385,
+          "inclusive": true,
+          "datasheet_citation": "2"
+        },
+        {
+          "name": "reverse_leakage_source_maximum",
+          "test_netlist": "review_reverse_leakage_source_maximum.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vreverse))"
+          },
+          "unit": "A",
+          "minimum": 0,
+          "maximum": 0.00025,
+          "inclusive": true,
+          "datasheet_citation": "2"
+        }
+      ]
+    },
+    {
+      "origin": "phase-a",
+      "wave": null,
+      "lcsc_id": "C7502726",
+      "manufacturer_directory": "hongjiacheng",
+      "staged_mpn": "BAS21S",
+      "canonical_mpn": "BAS21S",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/hongjiacheng/BAS21S",
+      "target_library_directory": "packages/model-library/models/hongjiacheng/BAS21S",
+      "family": "diode",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 4,
+      "expectation_checks": 4,
+      "corrections": [
+        "Added and passed unchanged-model published hard-bound checks: forward_voltage_maximum_source_1, reverse_leakage_source_maximum."
+      ],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 4 package benches and 4 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": [
+        {
+          "name": "forward_voltage_maximum_source_1",
+          "test_netlist": "review_forward_voltage_maximum_source_1.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(anode))"
+          },
+          "unit": "V",
+          "minimum": 0,
+          "maximum": 1.0,
+          "inclusive": true,
+          "datasheet_citation": "p. 2, Electrical Characteristics, maximum instantaneous forward voltage VF1"
+        },
+        {
+          "name": "reverse_leakage_source_maximum",
+          "test_netlist": "review_reverse_leakage_source_maximum.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vreverse))"
+          },
+          "unit": "A",
+          "minimum": 0,
+          "maximum": 1e-07,
+          "inclusive": true,
+          "datasheet_citation": "p. 2, Electrical Characteristics, Reverse Leakage Current IR"
+        }
+      ]
+    },
+    {
+      "origin": "fresh",
+      "wave": 3,
+      "lcsc_id": "C22466364",
+      "manufacturer_directory": "hongjiacheng",
+      "staged_mpn": "BAS70-06",
+      "canonical_mpn": "BAS70-06",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/hongjiacheng/BAS70-06",
+      "target_library_directory": "packages/model-library/models/hongjiacheng/BAS70-06",
+      "family": "diode",
+      "original_tier": "F2",
+      "final_tier": "F2",
+      "benches": 9,
+      "expectation_checks": 9,
+      "corrections": [
+        "Narrowed F2 supported scope to the exact selected 25 C curves, biases, and sampled ranges; scalar hard bounds do not extend curve fidelity."
+      ],
+      "reasons": [
+        "The F2 claim passed unchanged fit gates and is restricted to exact selected 25 C DC curves, biases, and sampled ranges.",
+        "All 9 package benches and 9 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": []
+    },
+    {
+      "origin": "fresh",
+      "wave": 2,
+      "lcsc_id": "C22466373",
+      "manufacturer_directory": "hongjiacheng",
+      "staged_mpn": "BAT54SW",
+      "canonical_mpn": "BAT54SW",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/hongjiacheng/BAT54SW",
+      "target_library_directory": "packages/model-library/models/hongjiacheng/BAT54SW",
+      "family": "diode",
+      "original_tier": "F2",
+      "final_tier": "F2",
+      "benches": 20,
+      "expectation_checks": 20,
+      "corrections": [
+        "Narrowed F2 supported scope to the exact selected 25 C curves, biases, and sampled ranges; scalar hard bounds do not extend curve fidelity."
+      ],
+      "reasons": [
+        "The F2 claim passed unchanged fit gates and is restricted to exact selected 25 C DC curves, biases, and sampled ranges.",
+        "All 20 package benches and 20 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": []
+    },
+    {
+      "origin": "fresh",
+      "wave": 2,
+      "lcsc_id": "C19077420",
+      "manufacturer_directory": "hongjiacheng",
+      "staged_mpn": "BZT52C36",
+      "canonical_mpn": "BZT52C36",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/hongjiacheng/BZT52C36",
+      "target_library_directory": "packages/model-library/models/hongjiacheng/BZT52C36",
+      "family": "diode",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 3,
+      "expectation_checks": 3,
+      "corrections": [
+        "Added and passed unchanged-model published hard-bound checks: reverse_leakage_source_maximum, zener_voltage_source_bound."
+      ],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 3 package benches and 3 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": [
+        {
+          "name": "reverse_leakage_source_maximum",
+          "test_netlist": "review_reverse_leakage_source_maximum.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vreverse))"
+          },
+          "unit": "A",
+          "minimum": 0,
+          "maximum": 1e-07,
+          "inclusive": true,
+          "datasheet_citation": "p. 2, Electrical Characteristics, BZT52C36 row"
+        },
+        {
+          "name": "zener_voltage_source_bound",
+          "test_netlist": "review_zener_voltage_source_bound.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(cathode))"
+          },
+          "unit": "V",
+          "minimum": 34.2,
+          "maximum": 37.8,
+          "inclusive": true,
+          "datasheet_citation": "p. 2, Electrical Characteristics, BZT52C36 row"
+        }
+      ]
+    },
+    {
+      "origin": "fresh",
+      "wave": 1,
+      "lcsc_id": "C19077439",
+      "manufacturer_directory": "hongjiacheng",
+      "staged_mpn": "BZT52C4V7S",
+      "canonical_mpn": "BZT52C4V7S",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/hongjiacheng/BZT52C4V7S",
+      "target_library_directory": "packages/model-library/models/hongjiacheng/BZT52C4V7S",
+      "family": "diode",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 3,
+      "expectation_checks": 3,
+      "corrections": [
+        "Added and passed unchanged-model published hard-bound checks: reverse_leakage_source_maximum, zener_voltage_source_bound."
+      ],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 3 package benches and 3 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": [
+        {
+          "name": "reverse_leakage_source_maximum",
+          "test_netlist": "review_reverse_leakage_source_maximum.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vreverse))"
+          },
+          "unit": "A",
+          "minimum": 0,
+          "maximum": 3e-06,
+          "inclusive": true,
+          "datasheet_citation": "p. 2 Electrical Characteristics, BZT52C4V7S row"
+        },
+        {
+          "name": "zener_voltage_source_bound",
+          "test_netlist": "review_zener_voltage_source_bound.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(cathode))"
+          },
+          "unit": "V",
+          "minimum": 4.4,
+          "maximum": 5.0,
+          "inclusive": true,
+          "datasheet_citation": "p. 2 Electrical Characteristics, BZT52C4V7S row"
+        }
+      ]
+    },
+    {
+      "origin": "fresh",
+      "wave": 1,
+      "lcsc_id": "C19077403",
+      "manufacturer_directory": "hongjiacheng",
+      "staged_mpn": "BZT52C6V2",
+      "canonical_mpn": "BZT52C6V2",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/hongjiacheng/BZT52C6V2",
+      "target_library_directory": "packages/model-library/models/hongjiacheng/BZT52C6V2",
+      "family": "diode",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 3,
+      "expectation_checks": 3,
+      "corrections": [
+        "Added and passed unchanged-model published hard-bound checks: reverse_leakage_source_maximum, zener_voltage_source_bound."
+      ],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 3 package benches and 3 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": [
+        {
+          "name": "reverse_leakage_source_maximum",
+          "test_netlist": "review_reverse_leakage_source_maximum.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vreverse))"
+          },
+          "unit": "A",
+          "minimum": 0,
+          "maximum": 3e-06,
+          "inclusive": true,
+          "datasheet_citation": "p. 2, electrical characteristics, BZT52C6V2 row"
+        },
+        {
+          "name": "zener_voltage_source_bound",
+          "test_netlist": "review_zener_voltage_source_bound.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(cathode))"
+          },
+          "unit": "V",
+          "minimum": 5.89,
+          "maximum": 6.51,
+          "inclusive": true,
+          "datasheet_citation": "p. 2, electrical characteristics, BZT52C6V2 row"
+        }
+      ]
+    },
+    {
+      "origin": "fresh",
+      "wave": 3,
+      "lcsc_id": "C19077464",
+      "manufacturer_directory": "hongjiacheng",
+      "staged_mpn": "BZX584C5V6",
+      "canonical_mpn": "BZX584C5V6",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/hongjiacheng/BZX584C5V6",
+      "target_library_directory": "packages/model-library/models/hongjiacheng/BZX584C5V6",
+      "family": "diode",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 1,
+      "expectation_checks": 1,
+      "corrections": [],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 1 package benches and 1 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": []
+    },
+    {
+      "origin": "fresh",
+      "wave": 1,
+      "lcsc_id": "C41375138",
+      "manufacturer_directory": "hongjiacheng",
+      "staged_mpn": "CXT5551",
+      "canonical_mpn": "CXT5551",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/hongjiacheng/CXT5551",
+      "target_library_directory": "packages/model-library/models/hongjiacheng/CXT5551",
+      "family": "bjt_npn",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 6,
+      "expectation_checks": 8,
+      "corrections": [
+        "Added and passed unchanged-model published hard-bound checks: hfe_maximum_source_3, vce_sat_maximum_source_1, vbe_sat_maximum_source_1."
+      ],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 6 package benches and 8 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": [
+        {
+          "name": "hfe_maximum_source_3",
+          "test_netlist": "review_hfe_maximum_source_3.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vc),30000.0)"
+          },
+          "unit": "1",
+          "minimum": 0,
+          "maximum": 300.0,
+          "inclusive": true,
+          "datasheet_citation": "p. 1 Electrical Characteristics, hFE(2)"
+        },
+        {
+          "name": "vce_sat_maximum_source_1",
+          "test_netlist": "review_vce_sat_maximum_source_1.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(c))"
+          },
+          "unit": "V",
+          "minimum": 0,
+          "maximum": 0.15,
+          "inclusive": true,
+          "datasheet_citation": "p. 1 Electrical Characteristics, VCE(sat)"
+        },
+        {
+          "name": "vbe_sat_maximum_source_1",
+          "test_netlist": "review_vbe_sat_maximum_source_1.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(b))"
+          },
+          "unit": "V",
+          "minimum": 0,
+          "maximum": 1.0,
+          "inclusive": true,
+          "datasheet_citation": "p. 1 Electrical Characteristics, VBE(sat)"
+        }
+      ]
+    },
+    {
+      "origin": "fresh",
+      "wave": 3,
+      "lcsc_id": "C7502713",
+      "manufacturer_directory": "hongjiacheng",
+      "staged_mpn": "DSK210",
+      "canonical_mpn": "DSK210",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/hongjiacheng/DSK210",
+      "target_library_directory": "packages/model-library/models/hongjiacheng/DSK210",
+      "family": "diode",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 2,
+      "expectation_checks": 2,
+      "corrections": [
+        "Added and passed unchanged-model published hard-bound checks: reverse_leakage_source_maximum."
+      ],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 2 package benches and 2 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": [
+        {
+          "name": "reverse_leakage_source_maximum",
+          "test_netlist": "review_reverse_leakage_source_maximum.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vreverse))"
+          },
+          "unit": "A",
+          "minimum": 0,
+          "maximum": 5e-05,
+          "inclusive": true,
+          "datasheet_citation": "p. 2, Electrical Characteristics table (IR1)"
+        }
+      ]
+    },
+    {
+      "origin": "phase-a",
+      "wave": null,
+      "lcsc_id": "C7502712",
+      "manufacturer_directory": "hongjiacheng",
+      "staged_mpn": "DSK26",
+      "canonical_mpn": "DSK26",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/hongjiacheng/DSK26",
+      "target_library_directory": "packages/model-library/models/hongjiacheng/DSK26",
+      "family": "diode",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 3,
+      "expectation_checks": 3,
+      "corrections": [
+        "Added and passed unchanged-model published hard-bound checks: reverse_leakage_source_maximum."
+      ],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 3 package benches and 3 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": [
+        {
+          "name": "reverse_leakage_source_maximum",
+          "test_netlist": "review_reverse_leakage_source_maximum.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vreverse))"
+          },
+          "unit": "A",
+          "minimum": 0,
+          "maximum": 0.0002,
+          "inclusive": true,
+          "datasheet_citation": "p. 2 electrical characteristics table, IR1 row"
+        }
+      ]
+    },
+    {
+      "origin": "fresh",
+      "wave": 2,
+      "lcsc_id": "C18199158",
+      "manufacturer_directory": "hongjiacheng",
+      "staged_mpn": "ES1D",
+      "canonical_mpn": "ES1D",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/hongjiacheng/ES1D",
+      "target_library_directory": "packages/model-library/models/hongjiacheng/ES1D",
+      "family": "diode",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 4,
+      "expectation_checks": 4,
+      "corrections": [
+        "Added and passed unchanged-model published hard-bound checks: forward_voltage_maximum_source_1, reverse_leakage_source_maximum."
+      ],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 4 package benches and 4 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": [
+        {
+          "name": "forward_voltage_maximum_source_1",
+          "test_netlist": "review_forward_voltage_maximum_source_1.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(anode))"
+          },
+          "unit": "V",
+          "minimum": 0,
+          "maximum": 1.0,
+          "inclusive": true,
+          "datasheet_citation": "2"
+        },
+        {
+          "name": "reverse_leakage_source_maximum",
+          "test_netlist": "review_reverse_leakage_source_maximum.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vreverse))"
+          },
+          "unit": "A",
+          "minimum": 0,
+          "maximum": 2e-06,
+          "inclusive": true,
+          "datasheet_citation": "2"
+        }
+      ]
+    },
+    {
+      "origin": "fresh",
+      "wave": 2,
+      "lcsc_id": "C18199137",
+      "manufacturer_directory": "hongjiacheng",
+      "staged_mpn": "ES1JW",
+      "canonical_mpn": "ES1JW",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/hongjiacheng/ES1JW",
+      "target_library_directory": "packages/model-library/models/hongjiacheng/ES1JW",
+      "family": "diode",
+      "original_tier": "F2",
+      "final_tier": "F2",
+      "benches": 16,
+      "expectation_checks": 16,
+      "corrections": [
+        "Added and passed unchanged-model published hard-bound checks: forward_voltage_maximum_source_1, reverse_leakage_source_maximum.",
+        "Narrowed F2 supported scope to the exact selected 25 C curves, biases, and sampled ranges; scalar hard bounds do not extend curve fidelity."
+      ],
+      "reasons": [
+        "The F2 claim passed unchanged fit gates and is restricted to exact selected 25 C DC curves, biases, and sampled ranges.",
+        "All 16 package benches and 16 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": [
+        {
+          "name": "forward_voltage_maximum_source_1",
+          "test_netlist": "review_forward_voltage_maximum_source_1.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(anode))"
+          },
+          "unit": "V",
+          "minimum": 0,
+          "maximum": 1.7,
+          "inclusive": true,
+          "datasheet_citation": "2"
+        },
+        {
+          "name": "reverse_leakage_source_maximum",
+          "test_netlist": "review_reverse_leakage_source_maximum.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vreverse))"
+          },
+          "unit": "A",
+          "minimum": 0,
+          "maximum": 2e-06,
+          "inclusive": true,
+          "datasheet_citation": "2"
+        }
+      ]
+    },
+    {
+      "origin": "fresh",
+      "wave": 3,
+      "lcsc_id": "C18199143",
+      "manufacturer_directory": "hongjiacheng",
+      "staged_mpn": "ES5JB",
+      "canonical_mpn": "ES5JB",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/hongjiacheng/ES5JB",
+      "target_library_directory": "packages/model-library/models/hongjiacheng/ES5JB",
+      "family": "diode",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 2,
+      "expectation_checks": 2,
+      "corrections": [
+        "Added and passed unchanged-model published hard-bound checks: forward_voltage_maximum_source_1."
+      ],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 2 package benches and 2 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": [
+        {
+          "name": "forward_voltage_maximum_source_1",
+          "test_netlist": "review_forward_voltage_maximum_source_1.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(anode))"
+          },
+          "unit": "V",
+          "minimum": 0,
+          "maximum": 1.7,
+          "inclusive": true,
+          "datasheet_citation": "2"
+        }
+      ]
+    },
+    {
+      "origin": "fresh",
+      "wave": 2,
+      "lcsc_id": "C18199154",
+      "manufacturer_directory": "hongjiacheng",
+      "staged_mpn": "ES5JBF",
+      "canonical_mpn": "ES5JBF",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/hongjiacheng/ES5JBF",
+      "target_library_directory": "packages/model-library/models/hongjiacheng/ES5JBF",
+      "family": "diode",
+      "original_tier": "F2",
+      "final_tier": "F2",
+      "benches": 17,
+      "expectation_checks": 17,
+      "corrections": [
+        "Added and passed unchanged-model published hard-bound checks: forward_voltage_maximum_source_1, reverse_leakage_source_maximum.",
+        "Narrowed F2 supported scope to the exact selected 25 C curves, biases, and sampled ranges; scalar hard bounds do not extend curve fidelity."
+      ],
+      "reasons": [
+        "The F2 claim passed unchanged fit gates and is restricted to exact selected 25 C DC curves, biases, and sampled ranges.",
+        "All 17 package benches and 17 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": [
+        {
+          "name": "forward_voltage_maximum_source_1",
+          "test_netlist": "review_forward_voltage_maximum_source_1.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(anode))"
+          },
+          "unit": "V",
+          "minimum": 0,
+          "maximum": 1.7,
+          "inclusive": true,
+          "datasheet_citation": "2"
+        },
+        {
+          "name": "reverse_leakage_source_maximum",
+          "test_netlist": "review_reverse_leakage_source_maximum.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vreverse))"
+          },
+          "unit": "A",
+          "minimum": 0,
+          "maximum": 2e-06,
+          "inclusive": true,
+          "datasheet_citation": "2"
+        }
+      ]
+    },
+    {
+      "origin": "fresh",
+      "wave": 1,
+      "lcsc_id": "C22395524",
+      "manufacturer_directory": "hongjiacheng",
+      "staged_mpn": "MM1W3V6",
+      "canonical_mpn": "MM1W3V6",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/hongjiacheng/MM1W3V6",
+      "target_library_directory": "packages/model-library/models/hongjiacheng/MM1W3V6",
+      "family": "diode",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 4,
+      "expectation_checks": 4,
+      "corrections": [
+        "Added and passed unchanged-model published hard-bound checks: forward_voltage_maximum_source_1, reverse_leakage_source_maximum, zener_voltage_source_bound."
+      ],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 4 package benches and 4 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": [
+        {
+          "name": "forward_voltage_maximum_source_1",
+          "test_netlist": "review_forward_voltage_maximum_source_1.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(anode))"
+          },
+          "unit": "V",
+          "minimum": 0,
+          "maximum": 1.2,
+          "inclusive": true,
+          "datasheet_citation": "1"
+        },
+        {
+          "name": "reverse_leakage_source_maximum",
+          "test_netlist": "review_reverse_leakage_source_maximum.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vreverse))"
+          },
+          "unit": "A",
+          "minimum": 0,
+          "maximum": 0.0001,
+          "inclusive": true,
+          "datasheet_citation": "2"
+        },
+        {
+          "name": "zener_voltage_source_bound",
+          "test_netlist": "review_zener_voltage_source_bound.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(cathode))"
+          },
+          "unit": "V",
+          "minimum": 3.4,
+          "maximum": 3.8,
+          "inclusive": true,
+          "datasheet_citation": "2"
+        }
+      ]
+    },
+    {
+      "origin": "fresh",
+      "wave": 1,
+      "lcsc_id": "C19077426",
+      "manufacturer_directory": "hongjiacheng",
+      "staged_mpn": "MMSZ5242B",
+      "canonical_mpn": "MMSZ5242B",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/hongjiacheng/MMSZ5242B",
+      "target_library_directory": "packages/model-library/models/hongjiacheng/MMSZ5242B",
+      "family": "diode",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 3,
+      "expectation_checks": 3,
+      "corrections": [
+        "Added and passed unchanged-model published hard-bound checks: forward_voltage_maximum_source_1, reverse_leakage_source_maximum."
+      ],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 3 package benches and 3 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": [
+        {
+          "name": "forward_voltage_maximum_source_1",
+          "test_netlist": "review_forward_voltage_maximum_source_1.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(anode))"
+          },
+          "unit": "V",
+          "minimum": 0,
+          "maximum": 0.9,
+          "inclusive": true,
+          "datasheet_citation": "1"
+        },
+        {
+          "name": "reverse_leakage_source_maximum",
+          "test_netlist": "review_reverse_leakage_source_maximum.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vreverse))"
+          },
+          "unit": "A",
+          "minimum": 0,
+          "maximum": 1e-06,
+          "inclusive": true,
+          "datasheet_citation": "2"
+        }
+      ]
+    },
+    {
+      "origin": "fresh",
+      "wave": 1,
+      "lcsc_id": "C19077428",
+      "manufacturer_directory": "hongjiacheng",
+      "staged_mpn": "MMSZ5245B",
+      "canonical_mpn": "MMSZ5245B",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/hongjiacheng/MMSZ5245B",
+      "target_library_directory": "packages/model-library/models/hongjiacheng/MMSZ5245B",
+      "family": "diode",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 3,
+      "expectation_checks": 3,
+      "corrections": [
+        "Added and passed unchanged-model published hard-bound checks: reverse_leakage_source_maximum, zener_voltage_source_bound."
+      ],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 3 package benches and 3 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": [
+        {
+          "name": "reverse_leakage_source_maximum",
+          "test_netlist": "review_reverse_leakage_source_maximum.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vreverse))"
+          },
+          "unit": "A",
+          "minimum": 0,
+          "maximum": 1e-07,
+          "inclusive": true,
+          "datasheet_citation": "p. 2, Electrical Characteristics table, MMSZ5245B row"
+        },
+        {
+          "name": "zener_voltage_source_bound",
+          "test_netlist": "review_zener_voltage_source_bound.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(cathode))"
+          },
+          "unit": "V",
+          "minimum": 14.25,
+          "maximum": 15.75,
+          "inclusive": true,
+          "datasheet_citation": "p. 2, Electrical Characteristics table, MMSZ5245B row"
+        }
+      ]
+    },
+    {
+      "origin": "fresh",
+      "wave": 3,
+      "lcsc_id": "C19077430",
+      "manufacturer_directory": "hongjiacheng",
+      "staged_mpn": "MMSZ5248B",
+      "canonical_mpn": "MMSZ5248B",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/hongjiacheng/MMSZ5248B",
+      "target_library_directory": "packages/model-library/models/hongjiacheng/MMSZ5248B",
+      "family": "diode",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 2,
+      "expectation_checks": 2,
+      "corrections": [
+        "Added and passed unchanged-model published hard-bound checks: reverse_leakage_source_maximum."
+      ],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 2 package benches and 2 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": [
+        {
+          "name": "reverse_leakage_source_maximum",
+          "test_netlist": "review_reverse_leakage_source_maximum.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vreverse))"
+          },
+          "unit": "A",
+          "minimum": 0,
+          "maximum": 1e-07,
+          "inclusive": true,
+          "datasheet_citation": "2"
+        }
+      ]
+    },
+    {
+      "origin": "fresh",
+      "wave": 2,
+      "lcsc_id": "C7502715",
+      "manufacturer_directory": "hongjiacheng",
+      "staged_mpn": "RB160M-30",
+      "canonical_mpn": "RB160M-30",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/hongjiacheng/RB160M-30",
+      "target_library_directory": "packages/model-library/models/hongjiacheng/RB160M-30",
+      "family": "diode",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 4,
+      "expectation_checks": 4,
+      "corrections": [
+        "Added and passed unchanged-model published hard-bound checks: forward_voltage_maximum_source_1, reverse_leakage_source_maximum."
+      ],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 4 package benches and 4 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": [
+        {
+          "name": "forward_voltage_maximum_source_1",
+          "test_netlist": "review_forward_voltage_maximum_source_1.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(anode))"
+          },
+          "unit": "V",
+          "minimum": 0,
+          "maximum": 0.46,
+          "inclusive": true,
+          "datasheet_citation": "p. 2, Electrical Characteristics, Maximum forward voltage"
+        },
+        {
+          "name": "reverse_leakage_source_maximum",
+          "test_netlist": "review_reverse_leakage_source_maximum.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vreverse))"
+          },
+          "unit": "A",
+          "minimum": 0,
+          "maximum": 5e-05,
+          "inclusive": true,
+          "datasheet_citation": "p. 2, Electrical Characteristics, Maximum reverse current"
+        }
+      ]
+    },
+    {
+      "origin": "fresh",
+      "wave": 2,
+      "lcsc_id": "C7502698",
+      "manufacturer_directory": "hongjiacheng",
+      "staged_mpn": "RB551V-30",
+      "canonical_mpn": "RB551V-30",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/hongjiacheng/RB551V-30",
+      "target_library_directory": "packages/model-library/models/hongjiacheng/RB551V-30",
+      "family": "diode",
+      "original_tier": "F2",
+      "final_tier": "F2",
+      "benches": 17,
+      "expectation_checks": 17,
+      "corrections": [
+        "Narrowed F2 supported scope to the exact selected 25 C curves, biases, and sampled ranges; scalar hard bounds do not extend curve fidelity."
+      ],
+      "reasons": [
+        "The F2 claim passed unchanged fit gates and is restricted to exact selected 25 C DC curves, biases, and sampled ranges.",
+        "All 17 package benches and 17 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": []
+    },
+    {
+      "origin": "fresh",
+      "wave": 3,
+      "lcsc_id": "C7502699",
+      "manufacturer_directory": "hongjiacheng",
+      "staged_mpn": "RB551V-40",
+      "canonical_mpn": "RB551V-40",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/hongjiacheng/RB551V-40",
+      "target_library_directory": "packages/model-library/models/hongjiacheng/RB551V-40",
+      "family": "diode",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 2,
+      "expectation_checks": 2,
+      "corrections": [
+        "Added and passed unchanged-model published hard-bound checks: reverse_leakage_source_maximum."
+      ],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 2 package benches and 2 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": [
+        {
+          "name": "reverse_leakage_source_maximum",
+          "test_netlist": "review_reverse_leakage_source_maximum.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vreverse))"
+          },
+          "unit": "A",
+          "minimum": 0,
+          "maximum": 0.0001,
+          "inclusive": true,
+          "datasheet_citation": "p. 2, Electrical Characteristics"
+        }
+      ]
+    },
+    {
+      "origin": "fresh",
+      "wave": 1,
+      "lcsc_id": "C18199092",
+      "manufacturer_directory": "hongjiacheng",
+      "staged_mpn": "S3MF",
+      "canonical_mpn": "S3MF",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/hongjiacheng/S3MF",
+      "target_library_directory": "packages/model-library/models/hongjiacheng/S3MF",
+      "family": "diode",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 4,
+      "expectation_checks": 4,
+      "corrections": [
+        "Added and passed unchanged-model published hard-bound checks: forward_voltage_maximum_source_1, reverse_leakage_source_maximum."
+      ],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 4 package benches and 4 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": [
+        {
+          "name": "forward_voltage_maximum_source_1",
+          "test_netlist": "review_forward_voltage_maximum_source_1.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(anode))"
+          },
+          "unit": "V",
+          "minimum": 0,
+          "maximum": 1.1,
+          "inclusive": true,
+          "datasheet_citation": "2"
+        },
+        {
+          "name": "reverse_leakage_source_maximum",
+          "test_netlist": "review_reverse_leakage_source_maximum.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vreverse))"
+          },
+          "unit": "A",
+          "minimum": 0,
+          "maximum": 4.9999999999999996e-06,
+          "inclusive": true,
+          "datasheet_citation": "2"
+        }
+      ]
+    },
+    {
+      "origin": "fresh",
+      "wave": 3,
+      "lcsc_id": "C18199210",
+      "manufacturer_directory": "hongjiacheng",
+      "staged_mpn": "SK106C",
+      "canonical_mpn": "SK106C",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/hongjiacheng/SK106C",
+      "target_library_directory": "packages/model-library/models/hongjiacheng/SK106C",
+      "family": "diode",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 3,
+      "expectation_checks": 3,
+      "corrections": [
+        "Added and passed unchanged-model published hard-bound checks: forward_voltage_maximum_source_1, reverse_leakage_source_maximum."
+      ],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 3 package benches and 3 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": [
+        {
+          "name": "forward_voltage_maximum_source_1",
+          "test_netlist": "review_forward_voltage_maximum_source_1.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(anode))"
+          },
+          "unit": "V",
+          "minimum": 0,
+          "maximum": 0.7,
+          "inclusive": true,
+          "datasheet_citation": "2"
+        },
+        {
+          "name": "reverse_leakage_source_maximum",
+          "test_netlist": "review_reverse_leakage_source_maximum.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vreverse))"
+          },
+          "unit": "A",
+          "minimum": 0,
+          "maximum": 5e-05,
+          "inclusive": true,
+          "datasheet_citation": "2"
+        }
+      ]
+    },
+    {
+      "origin": "fresh",
+      "wave": 3,
+      "lcsc_id": "C18199171",
+      "manufacturer_directory": "hongjiacheng",
+      "staged_mpn": "SS510",
+      "canonical_mpn": "SS510",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/hongjiacheng/SS510",
+      "target_library_directory": "packages/model-library/models/hongjiacheng/SS510",
+      "family": "diode",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 3,
+      "expectation_checks": 3,
+      "corrections": [
+        "Added and passed unchanged-model published hard-bound checks: forward_voltage_maximum_source_1, reverse_leakage_source_maximum."
+      ],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 3 package benches and 3 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": [
+        {
+          "name": "forward_voltage_maximum_source_1",
+          "test_netlist": "review_forward_voltage_maximum_source_1.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(anode))"
+          },
+          "unit": "V",
+          "minimum": 0,
+          "maximum": 0.85,
+          "inclusive": true,
+          "datasheet_citation": "2"
+        },
+        {
+          "name": "reverse_leakage_source_maximum",
+          "test_netlist": "review_reverse_leakage_source_maximum.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vreverse))"
+          },
+          "unit": "A",
+          "minimum": 0,
+          "maximum": 5e-05,
+          "inclusive": true,
+          "datasheet_citation": "2"
+        }
+      ]
+    },
+    {
+      "origin": "phase-a",
+      "wave": null,
+      "lcsc_id": "C18199181",
+      "manufacturer_directory": "hongjiacheng",
+      "staged_mpn": "SS54B",
+      "canonical_mpn": "SS54B",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/hongjiacheng/SS54B",
+      "target_library_directory": "packages/model-library/models/hongjiacheng/SS54B",
+      "family": "diode",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 3,
+      "expectation_checks": 3,
+      "corrections": [
+        "Added and passed unchanged-model published hard-bound checks: reverse_leakage_source_maximum."
+      ],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 3 package benches and 3 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": [
+        {
+          "name": "reverse_leakage_source_maximum",
+          "test_netlist": "review_reverse_leakage_source_maximum.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vreverse))"
+          },
+          "unit": "A",
+          "minimum": 0,
+          "maximum": 0.0002,
+          "inclusive": true,
+          "datasheet_citation": "p. 2, Electrical Characteristics, Maximum DC reverse current at rated DC blocking voltage"
+        }
+      ]
+    },
+    {
+      "origin": "fresh",
+      "wave": 2,
+      "lcsc_id": "C18199169",
+      "manufacturer_directory": "hongjiacheng",
+      "staged_mpn": "SS56",
+      "canonical_mpn": "SS56",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/hongjiacheng/SS56",
+      "target_library_directory": "packages/model-library/models/hongjiacheng/SS56",
+      "family": "diode",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 3,
+      "expectation_checks": 3,
+      "corrections": [
+        "Added and passed unchanged-model published hard-bound checks: reverse_leakage_source_maximum."
+      ],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 3 package benches and 3 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": [
+        {
+          "name": "reverse_leakage_source_maximum",
+          "test_netlist": "review_reverse_leakage_source_maximum.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vreverse))"
+          },
+          "unit": "A",
+          "minimum": 0,
+          "maximum": 0.0002,
+          "inclusive": true,
+          "datasheet_citation": "p. 2, Electrical Characteristics, Maximum DC reverse current at rated DC blocking voltage"
+        }
+      ]
+    },
+    {
+      "origin": "fresh",
+      "wave": 2,
+      "lcsc_id": "C4748728",
+      "manufacturer_directory": "hxy-mosfet",
+      "staged_mpn": "2N7002-HXY",
+      "canonical_mpn": "2N7002-HXY",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/hxy-mosfet/2N7002-HXY",
+      "target_library_directory": "packages/model-library/models/hxy-mosfet/2N7002-HXY",
+      "family": "nmos",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 1,
+      "expectation_checks": 1,
+      "corrections": [],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 1 package benches and 1 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": []
+    },
+    {
+      "origin": "fresh",
+      "wave": 1,
+      "lcsc_id": "C2932927",
+      "manufacturer_directory": "infineon",
+      "staged_mpn": "BSS83PH6327",
+      "canonical_mpn": "BSS83P",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/infineon/BSS83PH6327",
+      "target_library_directory": "packages/model-library/models/infineon/BSS83P",
+      "family": "pmos",
+      "original_tier": "F2",
+      "final_tier": "F2",
+      "benches": 2,
+      "expectation_checks": 6,
+      "corrections": [
+        "Canonicalized primary PDF identity to BSS83P and retained BSS83PH6327 as an ordering-code alias.",
+        "Narrowed F2 supported scope to the exact selected 25 C curves, biases, and sampled ranges; scalar hard bounds do not extend curve fidelity."
+      ],
+      "reasons": [
+        "The F2 claim passed unchanged fit gates and is restricted to exact selected 25 C DC curves, biases, and sampled ranges.",
+        "All 2 package benches and 6 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": []
+    },
+    {
+      "origin": "fresh",
+      "wave": 3,
+      "lcsc_id": "C2652",
+      "manufacturer_directory": "infineon",
+      "staged_mpn": "IRFB4227PBF",
+      "canonical_mpn": "IRFB4227PBF",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/infineon/IRFB4227PBF",
+      "target_library_directory": "packages/model-library/models/infineon/IRFB4227PBF",
+      "family": "nmos",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 1,
+      "expectation_checks": 1,
+      "corrections": [],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 1 package benches and 1 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": []
+    },
+    {
+      "origin": "fresh",
+      "wave": 1,
+      "lcsc_id": "C2583",
+      "manufacturer_directory": "infineon",
+      "staged_mpn": "IRFR024NTRPBF",
+      "canonical_mpn": "IRFR024NPbF",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/infineon/IRFR024NTRPBF",
+      "target_library_directory": "packages/model-library/models/infineon/IRFR024NPbF",
+      "family": "nmos",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 2,
+      "expectation_checks": 2,
+      "corrections": [
+        "Canonicalized primary PDF identity to IRFR024NPbF and retained IRFR024NTRPBF as an ordering-code alias.",
+        "Added and passed unchanged-model published hard-bound checks: rdson_maximum_source_1."
+      ],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 2 package benches and 2 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": [
+        {
+          "name": "rdson_maximum_source_1",
+          "test_netlist": "review_rdson_maximum_source_1.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d),0.1)"
+          },
+          "unit": "ohm",
+          "minimum": 0,
+          "maximum": 0.075,
+          "inclusive": true,
+          "datasheet_citation": "2"
+        }
+      ]
+    },
+    {
+      "origin": "fresh",
+      "wave": 2,
+      "lcsc_id": "C95810",
+      "manufacturer_directory": "jiangsu-changjing-electronics-co-ltd",
+      "staged_mpn": "BCP56-RANGE-100-250",
+      "canonical_mpn": "BCP56",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/jiangsu-changjing-electronics-co-ltd/BCP56-RANGE-100-250",
+      "target_library_directory": "packages/model-library/models/jiangsu-changjing-electronics-co-ltd/BCP56",
+      "family": "bjt_npn",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 5,
+      "expectation_checks": 7,
+      "corrections": [
+        "Added and passed unchanged-model published hard-bound checks: hfe_maximum_source_3, vce_sat_maximum_source_1."
+      ],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 5 package benches and 7 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": [
+        {
+          "name": "hfe_maximum_source_3",
+          "test_netlist": "review_hfe_maximum_source_3.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vc),1666.6666666666667)"
+          },
+          "unit": "1",
+          "minimum": 0,
+          "maximum": 250.0,
+          "inclusive": true,
+          "datasheet_citation": "p. 1 classification of hFE(2) table"
+        },
+        {
+          "name": "vce_sat_maximum_source_1",
+          "test_netlist": "review_vce_sat_maximum_source_1.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(c))"
+          },
+          "unit": "V",
+          "minimum": 0,
+          "maximum": 0.5,
+          "inclusive": true,
+          "datasheet_citation": "p. 1 electrical characteristics"
+        }
+      ]
+    },
+    {
+      "origin": "fresh",
+      "wave": 2,
+      "lcsc_id": "C7433254",
+      "manufacturer_directory": "jiangsu-changjing-electronics-co-ltd",
+      "staged_mpn": "CJ2309A",
+      "canonical_mpn": "CJ2309A",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/jiangsu-changjing-electronics-co-ltd/CJ2309A",
+      "target_library_directory": "packages/model-library/models/jiangsu-changjing-electronics-co-ltd/CJ2309A",
+      "family": "pmos",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 3,
+      "expectation_checks": 3,
+      "corrections": [
+        "Added and passed unchanged-model published hard-bound checks: rdson_maximum_source_2, rdson_maximum_source_4."
+      ],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 3 package benches and 3 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": [
+        {
+          "name": "rdson_maximum_source_2",
+          "test_netlist": "review_rdson_maximum_source_2.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d),0.5)"
+          },
+          "unit": "ohm",
+          "minimum": 0,
+          "maximum": 0.19,
+          "inclusive": true,
+          "datasheet_citation": "p. 2, MOSFET Electrical Characteristics, RDS(on) row 1, Max column"
+        },
+        {
+          "name": "rdson_maximum_source_4",
+          "test_netlist": "review_rdson_maximum_source_4.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d),0.6666666666666666)"
+          },
+          "unit": "ohm",
+          "minimum": 0,
+          "maximum": 0.24,
+          "inclusive": true,
+          "datasheet_citation": "p. 2, MOSFET Electrical Characteristics, RDS(on) row 2, Max column"
+        }
+      ]
+    },
+    {
+      "origin": "fresh",
+      "wave": 2,
+      "lcsc_id": "C112669",
+      "manufacturer_directory": "kec-semicon",
+      "staged_mpn": "2N5551S-RTK-P",
+      "canonical_mpn": "2N5551S",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/kec-semicon/2N5551S-RTK-P",
+      "target_library_directory": "packages/model-library/models/kec-semicon/2N5551S",
+      "family": "bjt_npn",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 7,
+      "expectation_checks": 9,
+      "corrections": [
+        "Canonicalized primary PDF identity to 2N5551S and retained 2N5551S-RTK/P as an ordering-code alias.",
+        "Added and passed unchanged-model published hard-bound checks: hfe_maximum_source_3, vce_sat_maximum_source_1, vbe_sat_maximum_source_1, vce_sat_maximum_source_2."
+      ],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 7 package benches and 9 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": [
+        {
+          "name": "hfe_maximum_source_3",
+          "test_netlist": "review_hfe_maximum_source_3.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vc),25000.0)"
+          },
+          "unit": "1",
+          "minimum": 0,
+          "maximum": 250.0,
+          "inclusive": true,
+          "datasheet_citation": "p. 2, electrical characteristics"
+        },
+        {
+          "name": "vce_sat_maximum_source_1",
+          "test_netlist": "review_vce_sat_maximum_source_1.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(c))"
+          },
+          "unit": "V",
+          "minimum": 0,
+          "maximum": 0.15,
+          "inclusive": true,
+          "datasheet_citation": "p. 2, electrical characteristics"
+        },
+        {
+          "name": "vbe_sat_maximum_source_1",
+          "test_netlist": "review_vbe_sat_maximum_source_1.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(b))"
+          },
+          "unit": "V",
+          "minimum": 0,
+          "maximum": 1.0,
+          "inclusive": true,
+          "datasheet_citation": "p. 2, electrical characteristics"
+        },
+        {
+          "name": "vce_sat_maximum_source_2",
+          "test_netlist": "review_vce_sat_maximum_source_2.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(c))"
+          },
+          "unit": "V",
+          "minimum": 0,
+          "maximum": 0.2,
+          "inclusive": true,
+          "datasheet_citation": "p. 2, electrical characteristics"
+        }
+      ]
+    },
+    {
+      "origin": "fresh",
+      "wave": 1,
+      "lcsc_id": "C383186",
+      "manufacturer_directory": "lrc",
+      "staged_mpn": "LBC817-16LT1G",
+      "canonical_mpn": "LBC817-16LT1G",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/lrc/LBC817-16LT1G",
+      "target_library_directory": "packages/model-library/models/lrc/LBC817-16LT1G",
+      "family": "bjt_npn",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 5,
+      "expectation_checks": 6,
+      "corrections": [
+        "Added and passed unchanged-model published hard-bound checks: hfe_maximum_source_4, vce_sat_maximum_source_3."
+      ],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 5 package benches and 6 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": [
+        {
+          "name": "hfe_maximum_source_4",
+          "test_netlist": "review_hfe_maximum_source_4.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vc),2500.0)"
+          },
+          "unit": "1",
+          "minimum": 0,
+          "maximum": 250.0,
+          "inclusive": true,
+          "datasheet_citation": "p. 2 electrical characteristics, hFE row"
+        },
+        {
+          "name": "vce_sat_maximum_source_3",
+          "test_netlist": "review_vce_sat_maximum_source_3.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(c))"
+          },
+          "unit": "V",
+          "minimum": 0,
+          "maximum": 0.7,
+          "inclusive": true,
+          "datasheet_citation": "p. 2 electrical characteristics, VCE(sat) row"
+        }
+      ]
+    },
+    {
+      "origin": "phase-a",
+      "wave": null,
+      "lcsc_id": "C8490",
+      "manufacturer_directory": "lrc",
+      "staged_mpn": "LBSS138LT1G",
+      "canonical_mpn": "LBSS138LT1G",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/lrc/LBSS138LT1G",
+      "target_library_directory": "packages/model-library/models/lrc/LBSS138LT1G",
+      "family": "nmos",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 2,
+      "expectation_checks": 2,
+      "corrections": [
+        "Added and passed unchanged-model published hard-bound checks: rdson_maximum_source_2."
+      ],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 2 package benches and 2 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": [
+        {
+          "name": "rdson_maximum_source_2",
+          "test_netlist": "review_rdson_maximum_source_2.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d),5.0)"
+          },
+          "unit": "ohm",
+          "minimum": 0,
+          "maximum": 10.0,
+          "inclusive": true,
+          "datasheet_citation": "p. 2, Electrical Characteristics, Static Drain-to-Source On-Resistance, MAX column"
+        }
+      ]
+    },
+    {
+      "origin": "fresh",
+      "wave": 2,
+      "lcsc_id": "C383299",
+      "manufacturer_directory": "lrc",
+      "staged_mpn": "S-LMBT3904LT1G",
+      "canonical_mpn": "S-LMBT3904LT1G",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/lrc/S-LMBT3904LT1G",
+      "target_library_directory": "packages/model-library/models/lrc/S-LMBT3904LT1G",
+      "family": "bjt_npn",
+      "original_tier": "F2",
+      "final_tier": "F2",
+      "benches": 5,
+      "expectation_checks": 19,
+      "corrections": [
+        "Added and passed unchanged-model published hard-bound checks: hfe_maximum_source_4.",
+        "Narrowed F2 supported scope to the exact selected 25 C curves, biases, and sampled ranges; scalar hard bounds do not extend curve fidelity."
+      ],
+      "reasons": [
+        "The F2 claim passed unchanged fit gates and is restricted to exact selected 25 C DC curves, biases, and sampled ranges.",
+        "All 5 package benches and 19 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": [
+        {
+          "name": "hfe_maximum_source_4",
+          "test_netlist": "review_hfe_maximum_source_4.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vc),30000.0)"
+          },
+          "unit": "1",
+          "minimum": 0,
+          "maximum": 300.0,
+          "inclusive": true,
+          "datasheet_citation": "p. 2, ON CHARACTERISTICS, DC Current Gain HFE"
+        }
+      ]
+    },
+    {
+      "origin": "fresh",
+      "wave": 3,
+      "lcsc_id": "C88012",
+      "manufacturer_directory": "nexperia",
+      "staged_mpn": "BC807-25-215",
+      "canonical_mpn": "BC807-25",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/nexperia/BC807-25-215",
+      "target_library_directory": "packages/model-library/models/nexperia/BC807-25",
+      "family": "bjt_pnp",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 6,
+      "expectation_checks": 6,
+      "corrections": [
+        "Added and passed unchanged-model published hard-bound checks: hfe_minimum_source_1, hfe_maximum_source_2, hfe_minimum_source_3."
+      ],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 6 package benches and 6 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": [
+        {
+          "name": "hfe_minimum_source_1",
+          "test_netlist": "review_hfe_minimum_source_1.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vc),1600.0)"
+          },
+          "unit": "1",
+          "minimum": 160.0,
+          "maximum": null,
+          "inclusive": true,
+          "datasheet_citation": "5"
+        },
+        {
+          "name": "hfe_maximum_source_2",
+          "test_netlist": "review_hfe_maximum_source_2.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vc),4000.0)"
+          },
+          "unit": "1",
+          "minimum": 0,
+          "maximum": 400.0,
+          "inclusive": true,
+          "datasheet_citation": "5"
+        },
+        {
+          "name": "hfe_minimum_source_3",
+          "test_netlist": "review_hfe_minimum_source_3.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vc),80.0)"
+          },
+          "unit": "1",
+          "minimum": 40.0,
+          "maximum": null,
+          "inclusive": true,
+          "datasheet_citation": "5"
+        }
+      ]
+    },
+    {
+      "origin": "fresh",
+      "wave": 1,
+      "lcsc_id": "C191355",
+      "manufacturer_directory": "nexperia",
+      "staged_mpn": "BC807DS-115",
+      "canonical_mpn": "BC807DS",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/nexperia/BC807DS-115",
+      "target_library_directory": "packages/model-library/models/nexperia/BC807DS",
+      "family": "bjt_pnp",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 5,
+      "expectation_checks": 6,
+      "corrections": [
+        "Added and passed unchanged-model published hard-bound checks: hfe_maximum_source_2, vce_sat_maximum_source_1."
+      ],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 5 package benches and 6 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": [
+        {
+          "name": "hfe_maximum_source_2",
+          "test_netlist": "review_hfe_maximum_source_2.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vc),4000.0)"
+          },
+          "unit": "1",
+          "minimum": 0,
+          "maximum": 400.0,
+          "inclusive": true,
+          "datasheet_citation": "page 3, Table 7"
+        },
+        {
+          "name": "vce_sat_maximum_source_1",
+          "test_netlist": "review_vce_sat_maximum_source_1.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(c))"
+          },
+          "unit": "V",
+          "minimum": 0,
+          "maximum": 0.7000000000000001,
+          "inclusive": true,
+          "datasheet_citation": "page 3, Table 7"
+        }
+      ]
+    },
+    {
+      "origin": "fresh",
+      "wave": 1,
+      "lcsc_id": "C5205149",
+      "manufacturer_directory": "nexperia",
+      "staged_mpn": "BC817-40-QR",
+      "canonical_mpn": "BC817-40-Q",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/nexperia/BC817-40-QR",
+      "target_library_directory": "packages/model-library/models/nexperia/BC817-40-Q",
+      "family": "bjt_npn",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 5,
+      "expectation_checks": 5,
+      "corrections": [
+        "Canonicalized primary PDF identity to BC817-40-Q and retained BC817-40-QR as an ordering-code alias.",
+        "Added and passed unchanged-model published hard-bound checks: hfe_maximum_source_2, vce_sat_maximum_source_1."
+      ],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 5 package benches and 5 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": [
+        {
+          "name": "hfe_maximum_source_2",
+          "test_netlist": "review_hfe_maximum_source_2.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vc),6000.0)"
+          },
+          "unit": "1",
+          "minimum": 0,
+          "maximum": 600.0,
+          "inclusive": true,
+          "datasheet_citation": "p. 5, Table 8, hFE row for BC817-40-Q"
+        },
+        {
+          "name": "vce_sat_maximum_source_1",
+          "test_netlist": "review_vce_sat_maximum_source_1.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(c))"
+          },
+          "unit": "V",
+          "minimum": 0,
+          "maximum": 0.7,
+          "inclusive": true,
+          "datasheet_citation": "p. 5, Table 8, VCEsat row"
+        }
+      ]
+    },
+    {
+      "origin": "fresh",
+      "wave": 3,
+      "lcsc_id": "C454952",
+      "manufacturer_directory": "nexperia",
+      "staged_mpn": "BC859C-215",
+      "canonical_mpn": "BC859C",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/nexperia/BC859C-215",
+      "target_library_directory": "packages/model-library/models/nexperia/BC859C",
+      "family": "bjt_pnp",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 5,
+      "expectation_checks": 4,
+      "corrections": [
+        "Added and passed unchanged-model published hard-bound checks: hfe_minimum_source_1, hfe_maximum_source_2."
+      ],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 5 package benches and 4 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": [
+        {
+          "name": "hfe_minimum_source_1",
+          "test_netlist": "review_hfe_minimum_source_1.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vc),210000.0)"
+          },
+          "unit": "1",
+          "minimum": 420.0,
+          "maximum": null,
+          "inclusive": true,
+          "datasheet_citation": "4"
+        },
+        {
+          "name": "hfe_maximum_source_2",
+          "test_netlist": "review_hfe_maximum_source_2.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vc),400000.0)"
+          },
+          "unit": "1",
+          "minimum": 0,
+          "maximum": 800.0,
+          "inclusive": true,
+          "datasheet_citation": "4"
+        }
+      ]
+    },
+    {
+      "origin": "fresh",
+      "wave": 1,
+      "lcsc_id": "C282529",
+      "manufacturer_directory": "nexperia",
+      "staged_mpn": "BSS138BK-215",
+      "canonical_mpn": "BSS138BK",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/nexperia/BSS138BK-215",
+      "target_library_directory": "packages/model-library/models/nexperia/BSS138BK",
+      "family": "nmos",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 1,
+      "expectation_checks": 1,
+      "corrections": [],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 1 package benches and 1 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": []
+    },
+    {
+      "origin": "fresh",
+      "wave": 1,
+      "lcsc_id": "C193381",
+      "manufacturer_directory": "nexperia",
+      "staged_mpn": "BSS138PS-115",
+      "canonical_mpn": "BSS138PS",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/nexperia/BSS138PS-115",
+      "target_library_directory": "packages/model-library/models/nexperia/BSS138PS",
+      "family": "nmos",
+      "original_tier": "F2",
+      "final_tier": "F2",
+      "benches": 4,
+      "expectation_checks": 10,
+      "corrections": [
+        "Added and passed unchanged-model published hard-bound checks: rdson_maximum_source_2, rdson_maximum_source_4.",
+        "Narrowed F2 supported scope to the exact selected 25 C curves, biases, and sampled ranges; scalar hard bounds do not extend curve fidelity."
+      ],
+      "reasons": [
+        "The F2 claim passed unchanged fit gates and is restricted to exact selected 25 C DC curves, biases, and sampled ranges.",
+        "All 4 package benches and 10 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": [
+        {
+          "name": "rdson_maximum_source_2",
+          "test_netlist": "review_rdson_maximum_source_2.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d),20.0)"
+          },
+          "unit": "ohm",
+          "minimum": 0,
+          "maximum": 2.0,
+          "inclusive": true,
+          "datasheet_citation": "6"
+        },
+        {
+          "name": "rdson_maximum_source_4",
+          "test_netlist": "review_rdson_maximum_source_4.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d),3.3333333333333335)"
+          },
+          "unit": "ohm",
+          "minimum": 0,
+          "maximum": 1.6,
+          "inclusive": true,
+          "datasheet_citation": "6"
+        }
+      ]
+    },
+    {
+      "origin": "fresh",
+      "wave": 2,
+      "lcsc_id": "C255584",
+      "manufacturer_directory": "nexperia",
+      "staged_mpn": "NX7002AK-215",
+      "canonical_mpn": "NX7002AK",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/nexperia/NX7002AK-215",
+      "target_library_directory": "packages/model-library/models/nexperia/NX7002AK",
+      "family": "nmos",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 4,
+      "expectation_checks": 4,
+      "corrections": [
+        "Added and passed unchanged-model published hard-bound checks: rdson_maximum_source_2, rdson_maximum_source_4, rdson_maximum_source_6."
+      ],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 4 package benches and 4 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": [
+        {
+          "name": "rdson_maximum_source_2",
+          "test_netlist": "review_rdson_maximum_source_2.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d),10.0)"
+          },
+          "unit": "ohm",
+          "minimum": 0,
+          "maximum": 4.5,
+          "inclusive": true,
+          "datasheet_citation": "6"
+        },
+        {
+          "name": "rdson_maximum_source_4",
+          "test_netlist": "review_rdson_maximum_source_4.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d),10.0)"
+          },
+          "unit": "ohm",
+          "minimum": 0,
+          "maximum": 9.2,
+          "inclusive": true,
+          "datasheet_citation": "6"
+        },
+        {
+          "name": "rdson_maximum_source_6",
+          "test_netlist": "review_rdson_maximum_source_6.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d),10.0)"
+          },
+          "unit": "ohm",
+          "minimum": 0,
+          "maximum": 5.2,
+          "inclusive": true,
+          "datasheet_citation": "6"
+        }
+      ]
+    },
+    {
+      "origin": "fresh",
+      "wave": 1,
+      "lcsc_id": "C8670",
+      "manufacturer_directory": "nexperia",
+      "staged_mpn": "PMBT3906-215",
+      "canonical_mpn": "PMBT3906",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/nexperia/PMBT3906-215",
+      "target_library_directory": "packages/model-library/models/nexperia/PMBT3906",
+      "family": "bjt_pnp",
+      "original_tier": "F2",
+      "final_tier": "F2",
+      "benches": 5,
+      "expectation_checks": 16,
+      "corrections": [
+        "Added and passed unchanged-model published hard-bound checks: hfe_maximum_source_4.",
+        "Narrowed F2 supported scope to the exact selected 25 C curves, biases, and sampled ranges; scalar hard bounds do not extend curve fidelity."
+      ],
+      "reasons": [
+        "The F2 claim passed unchanged fit gates and is restricted to exact selected 25 C DC curves, biases, and sampled ranges.",
+        "All 5 package benches and 16 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": [
+        {
+          "name": "hfe_maximum_source_4",
+          "test_netlist": "review_hfe_maximum_source_4.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vc),30000.0)"
+          },
+          "unit": "1",
+          "minimum": 0,
+          "maximum": 300.0,
+          "inclusive": true,
+          "datasheet_citation": "p. 3, Table 7"
+        }
+      ]
+    },
+    {
+      "origin": "fresh",
+      "wave": 1,
+      "lcsc_id": "C2889116",
+      "manufacturer_directory": "nexperia",
+      "staged_mpn": "PMV65XPEAR",
+      "canonical_mpn": "PMV65XPEA",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/nexperia/PMV65XPEAR",
+      "target_library_directory": "packages/model-library/models/nexperia/PMV65XPEA",
+      "family": "pmos",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 1,
+      "expectation_checks": 1,
+      "corrections": [
+        "Canonicalized primary PDF identity to PMV65XPEA and retained PMV65XPEAR as an ordering-code alias."
+      ],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 1 package benches and 1 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": []
+    },
+    {
+      "origin": "fresh",
+      "wave": 3,
+      "lcsc_id": "C145189",
+      "manufacturer_directory": "onsemi",
+      "staged_mpn": "NTZD3154NT1G",
+      "canonical_mpn": "NTZD3154NT1G",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/onsemi/NTZD3154NT1G",
+      "target_library_directory": "packages/model-library/models/onsemi/NTZD3154NT1G",
+      "family": "nmos",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 4,
+      "expectation_checks": 4,
+      "corrections": [
+        "Added and passed unchanged-model published hard-bound checks: rdson_maximum_source_2, rdson_maximum_source_4, rdson_maximum_source_6."
+      ],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 4 package benches and 4 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": [
+        {
+          "name": "rdson_maximum_source_2",
+          "test_netlist": "review_rdson_maximum_source_2.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d),1.8518518518518516)"
+          },
+          "unit": "ohm",
+          "minimum": 0,
+          "maximum": 0.55,
+          "inclusive": true,
+          "datasheet_citation": "page 2"
+        },
+        {
+          "name": "rdson_maximum_source_4",
+          "test_netlist": "review_rdson_maximum_source_4.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d),2.0)"
+          },
+          "unit": "ohm",
+          "minimum": 0,
+          "maximum": 0.7,
+          "inclusive": true,
+          "datasheet_citation": "page 2"
+        },
+        {
+          "name": "rdson_maximum_source_6",
+          "test_netlist": "review_rdson_maximum_source_6.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d),2.857142857142857)"
+          },
+          "unit": "ohm",
+          "minimum": 0,
+          "maximum": 0.9,
+          "inclusive": true,
+          "datasheet_citation": "page 2"
+        }
+      ]
+    },
+    {
+      "origin": "fresh",
+      "wave": 1,
+      "lcsc_id": "C5137092",
+      "manufacturer_directory": "realchip",
+      "staged_mpn": "RC3134KM3",
+      "canonical_mpn": "RC3134KM3",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/realchip/RC3134KM3",
+      "target_library_directory": "packages/model-library/models/realchip/RC3134KM3",
+      "family": "nmos",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 1,
+      "expectation_checks": 1,
+      "corrections": [],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 1 package benches and 1 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": []
+    },
+    {
+      "origin": "fresh",
+      "wave": 2,
+      "lcsc_id": "C111697",
+      "manufacturer_directory": "rohm-semicon",
+      "staged_mpn": "2SA1037AKT146R",
+      "canonical_mpn": "2SA1037AK",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/rohm-semicon/2SA1037AKT146R",
+      "target_library_directory": "packages/model-library/models/rohm-semicon/2SA1037AK",
+      "family": "bjt_pnp",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 5,
+      "expectation_checks": 5,
+      "corrections": [
+        "Canonicalized primary PDF identity to 2SA1037AK and retained 2SA1037AKT146R as an ordering-code alias.",
+        "Added and passed unchanged-model published hard-bound checks: hfe_maximum_source_2, vce_sat_maximum_source_1."
+      ],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 5 package benches and 5 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": [
+        {
+          "name": "hfe_maximum_source_2",
+          "test_netlist": "review_hfe_maximum_source_2.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vc),560000.0)"
+          },
+          "unit": "1",
+          "minimum": 0,
+          "maximum": 560.0,
+          "inclusive": true,
+          "datasheet_citation": "p. 2, Electrical characteristics"
+        },
+        {
+          "name": "vce_sat_maximum_source_1",
+          "test_netlist": "review_vce_sat_maximum_source_1.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(c))"
+          },
+          "unit": "V",
+          "minimum": 0,
+          "maximum": 0.5,
+          "inclusive": true,
+          "datasheet_citation": "p. 2, Electrical characteristics"
+        }
+      ]
+    },
+    {
+      "origin": "fresh",
+      "wave": 2,
+      "lcsc_id": "C111699",
+      "manufacturer_directory": "rohm-semicon",
+      "staged_mpn": "2SC2412KT146R",
+      "canonical_mpn": "2SC2412K",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/rohm-semicon/2SC2412KT146R",
+      "target_library_directory": "packages/model-library/models/rohm-semicon/2SC2412K",
+      "family": "bjt_npn",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 5,
+      "expectation_checks": 5,
+      "corrections": [
+        "Canonicalized primary PDF identity to 2SC2412K and retained 2SC2412KT146R as an ordering-code alias.",
+        "Added and passed unchanged-model published hard-bound checks: hfe_maximum_source_11, vce_sat_maximum_source_1."
+      ],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 5 package benches and 5 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": [
+        {
+          "name": "hfe_maximum_source_11",
+          "test_netlist": "review_hfe_maximum_source_11.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vc),560000.0)"
+          },
+          "unit": "1",
+          "minimum": 0,
+          "maximum": 560.0,
+          "inclusive": true,
+          "datasheet_citation": "p. 2 electrical characteristics table"
+        },
+        {
+          "name": "vce_sat_maximum_source_1",
+          "test_netlist": "review_vce_sat_maximum_source_1.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(c))"
+          },
+          "unit": "V",
+          "minimum": 0,
+          "maximum": 0.4,
+          "inclusive": true,
+          "datasheet_citation": "p. 2 electrical characteristics table"
+        }
+      ]
+    },
+    {
+      "origin": "fresh",
+      "wave": 2,
+      "lcsc_id": "C74740",
+      "manufacturer_directory": "rohm-semicon",
+      "staged_mpn": "2SK3541T2L",
+      "canonical_mpn": "2SK3541",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/rohm-semicon/2SK3541T2L",
+      "target_library_directory": "packages/model-library/models/rohm-semicon/2SK3541",
+      "family": "nmos",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 2,
+      "expectation_checks": 2,
+      "corrections": [
+        "Canonicalized primary PDF identity to 2SK3541 and retained 2SK3541T2L as an ordering-code alias.",
+        "Added and passed unchanged-model published hard-bound checks: rdson_maximum_source_2."
+      ],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 2 package benches and 2 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": [
+        {
+          "name": "rdson_maximum_source_2",
+          "test_netlist": "review_rdson_maximum_source_2.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d),1000.0)"
+          },
+          "unit": "ohm",
+          "minimum": 0,
+          "maximum": 13.0,
+          "inclusive": true,
+          "datasheet_citation": "Page 2, Electrical characteristics table"
+        }
+      ]
+    },
+    {
+      "origin": "fresh",
+      "wave": 2,
+      "lcsc_id": "C118316",
+      "manufacturer_directory": "shikues",
+      "staged_mpn": "SK2301AA",
+      "canonical_mpn": "SK2301AA",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/shikues/SK2301AA",
+      "target_library_directory": "packages/model-library/models/shikues/SK2301AA",
+      "family": "pmos",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 2,
+      "expectation_checks": 2,
+      "corrections": [
+        "Added and passed unchanged-model published hard-bound checks: rdson_maximum_source_2."
+      ],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 2 package benches and 2 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": [
+        {
+          "name": "rdson_maximum_source_2",
+          "test_netlist": "review_rdson_maximum_source_2.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d),0.5)"
+          },
+          "unit": "ohm",
+          "minimum": 0,
+          "maximum": 0.15,
+          "inclusive": true,
+          "datasheet_citation": "p. 1, Electrical Characteristics, RDS(ON) row 2, Max column"
+        }
+      ]
+    },
+    {
+      "origin": "fresh",
+      "wave": 3,
+      "lcsc_id": "C90157",
+      "manufacturer_directory": "st-semtech",
+      "staged_mpn": "MMBT9014C",
+      "canonical_mpn": "MMBT9014C",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/st-semtech/MMBT9014C",
+      "target_library_directory": "packages/model-library/models/st-semtech/MMBT9014C",
+      "family": "bjt_npn",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 7,
+      "expectation_checks": 7,
+      "corrections": [
+        "Added and passed unchanged-model published hard-bound checks: hfe_minimum_source_1, hfe_maximum_source_2, vce_sat_maximum_source_1, vbe_sat_maximum_source_1."
+      ],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 7 package benches and 7 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": [
+        {
+          "name": "hfe_minimum_source_1",
+          "test_netlist": "review_hfe_minimum_source_1.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vc),200000.0)"
+          },
+          "unit": "1",
+          "minimum": 200.0,
+          "maximum": null,
+          "inclusive": true,
+          "datasheet_citation": "1"
+        },
+        {
+          "name": "hfe_maximum_source_2",
+          "test_netlist": "review_hfe_maximum_source_2.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vc),450000.0)"
+          },
+          "unit": "1",
+          "minimum": 0,
+          "maximum": 450.0,
+          "inclusive": true,
+          "datasheet_citation": "1"
+        },
+        {
+          "name": "vce_sat_maximum_source_1",
+          "test_netlist": "review_vce_sat_maximum_source_1.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(c))"
+          },
+          "unit": "V",
+          "minimum": 0,
+          "maximum": 0.25,
+          "inclusive": true,
+          "datasheet_citation": "1"
+        },
+        {
+          "name": "vbe_sat_maximum_source_1",
+          "test_netlist": "review_vbe_sat_maximum_source_1.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(b))"
+          },
+          "unit": "V",
+          "minimum": 0,
+          "maximum": 1.0,
+          "inclusive": true,
+          "datasheet_citation": "1"
+        }
+      ]
+    },
+    {
+      "origin": "fresh",
+      "wave": 2,
+      "lcsc_id": "C46956351",
+      "manufacturer_directory": "tdsemic",
+      "staged_mpn": "MMBT2907-2F",
+      "canonical_mpn": "MMBT2907",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/tdsemic/MMBT2907-2F",
+      "target_library_directory": "packages/model-library/models/tdsemic/MMBT2907",
+      "family": "bjt_pnp",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 6,
+      "expectation_checks": 5,
+      "corrections": [
+        "Added and passed unchanged-model published hard-bound checks: hfe_maximum_source_2, vce_sat_maximum_source_1, vbe_sat_maximum_source_1."
+      ],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 6 package benches and 5 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": [
+        {
+          "name": "hfe_maximum_source_2",
+          "test_netlist": "review_hfe_maximum_source_2.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vc),2666.666666666667)"
+          },
+          "unit": "1",
+          "minimum": 0,
+          "maximum": 400.0,
+          "inclusive": true,
+          "datasheet_citation": "PDF p. 2 (datasheet Page 1), Electrical Characteristics, DC current gain hFE (MAX column)"
+        },
+        {
+          "name": "vce_sat_maximum_source_1",
+          "test_netlist": "review_vce_sat_maximum_source_1.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(c))"
+          },
+          "unit": "V",
+          "minimum": 0,
+          "maximum": 0.4,
+          "inclusive": true,
+          "datasheet_citation": "PDF p. 2 (datasheet Page 1), Electrical Characteristics, Collector-emitter saturation voltage VCE(sat) (MAX column)"
+        },
+        {
+          "name": "vbe_sat_maximum_source_1",
+          "test_netlist": "review_vbe_sat_maximum_source_1.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(b))"
+          },
+          "unit": "V",
+          "minimum": 0,
+          "maximum": 1.3,
+          "inclusive": true,
+          "datasheet_citation": "PDF p. 2 (datasheet Page 1), Electrical Characteristics, Base-emitter saturation voltage VBE(sat) (MAX column)"
+        }
+      ]
+    },
+    {
+      "origin": "fresh",
+      "wave": 3,
+      "lcsc_id": "C5182044",
+      "manufacturer_directory": "tech-public",
+      "staged_mpn": "SI2323DS",
+      "canonical_mpn": "SI2323DS",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/tech-public/SI2323DS",
+      "target_library_directory": "packages/model-library/models/tech-public/SI2323DS",
+      "family": "pmos",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 3,
+      "expectation_checks": 3,
+      "corrections": [
+        "Added and passed unchanged-model published hard-bound checks: rdson_maximum_source_2, rdson_maximum_source_4."
+      ],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 3 package benches and 3 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": [
+        {
+          "name": "rdson_maximum_source_2",
+          "test_netlist": "review_rdson_maximum_source_2.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d),0.24390243902439027)"
+          },
+          "unit": "ohm",
+          "minimum": 0,
+          "maximum": 0.052,
+          "inclusive": true,
+          "datasheet_citation": "2"
+        },
+        {
+          "name": "rdson_maximum_source_4",
+          "test_netlist": "review_rdson_maximum_source_4.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d),0.3333333333333333)"
+          },
+          "unit": "ohm",
+          "minimum": 0,
+          "maximum": 0.075,
+          "inclusive": true,
+          "datasheet_citation": "2"
+        }
+      ]
+    },
+    {
+      "origin": "fresh",
+      "wave": 1,
+      "lcsc_id": "C347499",
+      "manufacturer_directory": "umw-youtai-co-ltd",
+      "staged_mpn": "AO3416A",
+      "canonical_mpn": "AO3416A",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/umw-youtai-co-ltd/AO3416A",
+      "target_library_directory": "packages/model-library/models/umw-youtai-co-ltd/AO3416A",
+      "family": "nmos",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 4,
+      "expectation_checks": 4,
+      "corrections": [
+        "Added and passed unchanged-model published hard-bound checks: rdson_maximum_source_1, rdson_maximum_source_2, rdson_maximum_source_3."
+      ],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 4 package benches and 4 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": [
+        {
+          "name": "rdson_maximum_source_1",
+          "test_netlist": "review_rdson_maximum_source_1.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d),0.15384615384615385)"
+          },
+          "unit": "ohm",
+          "minimum": 0,
+          "maximum": 0.025,
+          "inclusive": true,
+          "datasheet_citation": "p. 2, Electrical Characteristics, RDS(ON) row 1"
+        },
+        {
+          "name": "rdson_maximum_source_2",
+          "test_netlist": "review_rdson_maximum_source_2.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d),0.18181818181818182)"
+          },
+          "unit": "ohm",
+          "minimum": 0,
+          "maximum": 0.033,
+          "inclusive": true,
+          "datasheet_citation": "p. 2, Electrical Characteristics, RDS(ON) row 2"
+        },
+        {
+          "name": "rdson_maximum_source_3",
+          "test_netlist": "review_rdson_maximum_source_3.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d),0.2)"
+          },
+          "unit": "ohm",
+          "minimum": 0,
+          "maximum": 0.051,
+          "inclusive": true,
+          "datasheet_citation": "p. 2, Electrical Characteristics, RDS(ON) row 3"
+        }
+      ]
+    },
+    {
+      "origin": "fresh",
+      "wave": 2,
+      "lcsc_id": "C347492",
+      "manufacturer_directory": "umw-youtai-co-ltd",
+      "staged_mpn": "SI2310A",
+      "canonical_mpn": "SI2310A",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/umw-youtai-co-ltd/SI2310A",
+      "target_library_directory": "packages/model-library/models/umw-youtai-co-ltd/SI2310A",
+      "family": "nmos",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 1,
+      "expectation_checks": 1,
+      "corrections": [],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 1 package benches and 1 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": []
+    },
+    {
+      "origin": "fresh",
+      "wave": 2,
+      "lcsc_id": "C2681218",
+      "manufacturer_directory": "umw-youtai-co-ltd",
+      "staged_mpn": "SI2318A",
+      "canonical_mpn": "SI2318A",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/umw-youtai-co-ltd/SI2318A",
+      "target_library_directory": "packages/model-library/models/umw-youtai-co-ltd/SI2318A",
+      "family": "nmos",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 2,
+      "expectation_checks": 2,
+      "corrections": [
+        "Added and passed unchanged-model published hard-bound checks: rdson_maximum_source_2."
+      ],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 2 package benches and 2 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": [
+        {
+          "name": "rdson_maximum_source_2",
+          "test_netlist": "review_rdson_maximum_source_2.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d),0.25641025641025644)"
+          },
+          "unit": "ohm",
+          "minimum": 0,
+          "maximum": 0.046,
+          "inclusive": true,
+          "datasheet_citation": "3, Section 5: Electrical Characteristics"
+        }
+      ]
+    },
+    {
+      "origin": "fresh",
+      "wave": 3,
+      "lcsc_id": "C377862",
+      "manufacturer_directory": "winsok-semicon",
+      "staged_mpn": "WSP4882",
+      "canonical_mpn": "WSP4882",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/winsok-semicon/WSP4882",
+      "target_library_directory": "packages/model-library/models/winsok-semicon/WSP4882",
+      "family": "nmos",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 2,
+      "expectation_checks": 2,
+      "corrections": [
+        "Added and passed unchanged-model published hard-bound checks: rdson_maximum_source_2."
+      ],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 2 package benches and 2 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": [
+        {
+          "name": "rdson_maximum_source_2",
+          "test_netlist": "review_rdson_maximum_source_2.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d),0.125)"
+          },
+          "unit": "ohm",
+          "minimum": 0,
+          "maximum": 0.026,
+          "inclusive": true,
+          "datasheet_citation": "2"
+        }
+      ]
+    },
+    {
+      "origin": "fresh",
+      "wave": 3,
+      "lcsc_id": "C148357",
+      "manufacturer_directory": "winsok-semicon",
+      "staged_mpn": "WST4041",
+      "canonical_mpn": "WST4041",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/winsok-semicon/WST4041",
+      "target_library_directory": "packages/model-library/models/winsok-semicon/WST4041",
+      "family": "pmos",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 1,
+      "expectation_checks": 1,
+      "corrections": [],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 1 package benches and 1 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": []
+    },
+    {
+      "origin": "fresh",
+      "wave": 2,
+      "lcsc_id": "C502865",
+      "manufacturer_directory": "wuxi-nce-power",
+      "staged_mpn": "NCE2309",
+      "canonical_mpn": "NCE2309",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/wuxi-nce-power/NCE2309",
+      "target_library_directory": "packages/model-library/models/wuxi-nce-power/NCE2309",
+      "family": "pmos",
+      "original_tier": "F1",
+      "final_tier": "F1",
+      "benches": 2,
+      "expectation_checks": 2,
+      "corrections": [
+        "Added and passed unchanged-model published hard-bound checks: rdson_maximum_source_2."
+      ],
+      "reasons": [
+        "The F1 claim is a conservative cited 25 C approximation with published scalar minima and maxima enforced as hard inclusive checks where supported.",
+        "All 2 package benches and 2 checks passed native ngspice-46 and pinned-WASM review."
+      ],
+      "hard_bound_additions": [
+        {
+          "name": "rdson_maximum_source_2",
+          "test_netlist": "review_rdson_maximum_source_2.cir",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d),0.6666666666666666)"
+          },
+          "unit": "ohm",
+          "minimum": 0,
+          "maximum": 0.19,
+          "inclusive": true,
+          "datasheet_citation": "page2"
+        }
+      ]
+    }
+  ],
+  "demoted": [],
+  "rejected": [
+    {
+      "origin": "fresh",
+      "wave": 1,
+      "lcsc_id": "C305484",
+      "manufacturer_directory": "foshan-blue-rocket-elec",
+      "staged_mpn": "S8550M-D",
+      "canonical_mpn": "S8550M-D",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/foshan-blue-rocket-elec/S8550M-D",
+      "family": "bjt_pnp",
+      "tier": "F1",
+      "classification": "published-hard-bound-failure",
+      "failed_hard_bounds": [
+        {
+          "check": "vbe_sat_maximum_source_2",
+          "observed": 1.3501162680702896,
+          "minimum": 0,
+          "maximum": 1.2,
+          "unit": "V",
+          "citation": "p. 2, Electrical Characteristics, VBE(sat)"
+        }
+      ],
+      "reason": "The unchanged staged model fails one or more cited inclusive published hard bounds. Parameter changes would be required, so the package was not promoted."
+    },
+    {
+      "origin": "fresh",
+      "wave": 1,
+      "lcsc_id": "C466643",
+      "manufacturer_directory": "high-diode",
+      "staged_mpn": "BC817",
+      "canonical_mpn": "BC817",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/high-diode/BC817",
+      "family": "bjt_npn",
+      "tier": "F1",
+      "classification": "published-hard-bound-failure",
+      "failed_hard_bounds": [
+        {
+          "check": "vbe_sat_maximum_source_1",
+          "observed": 1.350204697252162,
+          "minimum": 0,
+          "maximum": 1.2,
+          "unit": "V",
+          "citation": "p. 1, Electrical Characteristics, VBE(sat)"
+        }
+      ],
+      "reason": "The unchanged staged model fails one or more cited inclusive published hard bounds. Parameter changes would be required, so the package was not promoted."
+    },
+    {
+      "origin": "phase-a",
+      "wave": null,
+      "lcsc_id": "C7420325",
+      "manufacturer_directory": "hongjiacheng",
+      "staged_mpn": "B0540W",
+      "canonical_mpn": "B0540W",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/hongjiacheng/B0540W",
+      "family": "diode",
+      "tier": "F1",
+      "classification": "phase-a-salvage-hard-bound-failure",
+      "failed_hard_bounds": [
+        {
+          "check": "reverse_leakage_source_maximum",
+          "observed": 3.703181939199429e-05,
+          "minimum": 0,
+          "maximum": 2e-05,
+          "unit": "A",
+          "citation": "p. 2, Electrical Characteristics, maximum reverse current row at VR = 40 V"
+        }
+      ],
+      "reason": "The unchanged staged model fails one or more cited inclusive published hard bounds. Parameter changes would be required, so the package was not promoted."
+    },
+    {
+      "origin": "fresh",
+      "wave": 2,
+      "lcsc_id": "C7420359",
+      "manufacturer_directory": "hongjiacheng",
+      "staged_mpn": "RS2M",
+      "canonical_mpn": "RS2M",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/hongjiacheng/RS2M",
+      "family": "diode",
+      "tier": "F2",
+      "classification": "published-hard-bound-failure",
+      "failed_hard_bounds": [
+        {
+          "check": "reverse_leakage_source_maximum",
+          "observed": 9.360737938427409e-06,
+          "minimum": 0,
+          "maximum": 4.9999999999999996e-06,
+          "unit": "A",
+          "citation": "2"
+        }
+      ],
+      "reason": "The unchanged staged model fails one or more cited inclusive published hard bounds. Parameter changes would be required, so the package was not promoted."
+    },
+    {
+      "origin": "fresh",
+      "wave": 1,
+      "lcsc_id": "C18199102",
+      "manufacturer_directory": "hongjiacheng",
+      "staged_mpn": "S3MB",
+      "canonical_mpn": "S3MB",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/hongjiacheng/S3MB",
+      "family": "diode",
+      "tier": "F1",
+      "classification": "published-hard-bound-failure",
+      "failed_hard_bounds": [
+        {
+          "check": "reverse_leakage_source_maximum",
+          "observed": 1.5373747106536992e-05,
+          "minimum": 0,
+          "maximum": 2e-06,
+          "unit": "A",
+          "citation": "p. 2 electrical characteristics table"
+        }
+      ],
+      "reason": "The unchanged staged model fails one or more cited inclusive published hard bounds. Parameter changes would be required, so the package was not promoted."
+    },
+    {
+      "origin": "fresh",
+      "wave": 2,
+      "lcsc_id": "C2834467",
+      "manufacturer_directory": "htcsemi",
+      "staged_mpn": "HT8050ARTZ",
+      "canonical_mpn": "HT8050ARTZ",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/htcsemi/HT8050ARTZ",
+      "family": "bjt_npn",
+      "tier": "F1",
+      "classification": "published-hard-bound-failure",
+      "failed_hard_bounds": [
+        {
+          "check": "vbe_sat_maximum_source_1",
+          "observed": 1.6790965159378897,
+          "minimum": 0,
+          "maximum": 1.2,
+          "unit": "V",
+          "citation": "p. 1, Electrical Characteristics, Base-emitter saturation voltage"
+        }
+      ],
+      "reason": "The unchanged staged model fails one or more cited inclusive published hard bounds. Parameter changes would be required, so the package was not promoted."
+    },
+    {
+      "origin": "phase-a",
+      "wave": null,
+      "lcsc_id": "C4748804",
+      "manufacturer_directory": "hxy-mosfet",
+      "staged_mpn": "AO3400-HXY",
+      "canonical_mpn": "AO3400-HXY",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/hxy-mosfet/AO3400-HXY",
+      "family": "nmos",
+      "tier": "F1",
+      "classification": "phase-a-salvage-hard-bound-failure",
+      "failed_hard_bounds": [
+        {
+          "check": "rdson_maximum_source_6",
+          "observed": 0.03299351098409765,
+          "minimum": 0,
+          "maximum": 0.03,
+          "unit": "ohm",
+          "citation": "p. 2, Electrical Characteristics, RDS(ON), MAX column, third test-condition row"
+        }
+      ],
+      "reason": "The unchanged staged model fails one or more cited inclusive published hard bounds. Parameter changes would be required, so the package was not promoted."
+    },
+    {
+      "origin": "phase-a",
+      "wave": null,
+      "lcsc_id": "C8543",
+      "manufacturer_directory": "jiangsu-changjing-electronics-co-ltd",
+      "staged_mpn": "S9012-2T1-RANGE-200-350",
+      "canonical_mpn": "S9012",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/jiangsu-changjing-electronics-co-ltd/S9012-2T1-RANGE-200-350",
+      "family": "bjt_pnp",
+      "tier": "F1",
+      "classification": "phase-a-salvage-hard-bound-failure",
+      "failed_hard_bounds": [
+        {
+          "check": "vbe_sat_maximum_source_1",
+          "observed": 1.350288496349067,
+          "minimum": 0,
+          "maximum": 1.2,
+          "unit": "V",
+          "citation": "p. 1, Electrical Characteristics, Base-emitter saturation voltage"
+        }
+      ],
+      "reason": "The unchanged staged model fails one or more cited inclusive published hard bounds. Parameter changes would be required, so the package was not promoted."
+    },
+    {
+      "origin": "fresh",
+      "wave": 2,
+      "lcsc_id": "C668971",
+      "manufacturer_directory": "mcc-micro-commercial-components",
+      "staged_mpn": "MMS8050-H-TP",
+      "canonical_mpn": "MMS8050-H-TP",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/mcc-micro-commercial-components/MMS8050-H-TP",
+      "family": "bjt_npn",
+      "tier": "F1",
+      "classification": "published-hard-bound-failure",
+      "failed_hard_bounds": [
+        {
+          "check": "vbe_sat_maximum_source_1",
+          "observed": 1.3502884963491733,
+          "minimum": 0,
+          "maximum": 1.2,
+          "unit": "V",
+          "citation": "p. 2, Electrical Characteristics, Base-Emitter Saturation Voltage"
+        }
+      ],
+      "reason": "The unchanged staged model fails one or more cited inclusive published hard bounds. Parameter changes would be required, so the package was not promoted."
+    },
+    {
+      "origin": "phase-a",
+      "wave": null,
+      "lcsc_id": "C551528",
+      "manufacturer_directory": "nexperia",
+      "staged_mpn": "MJD44H11J",
+      "canonical_mpn": "MJD44H11J",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/nexperia/MJD44H11J",
+      "family": "bjt_npn",
+      "tier": "F1",
+      "classification": "phase-a-salvage-hard-bound-failure",
+      "failed_hard_bounds": [
+        {
+          "check": "vce_sat_maximum_source_1",
+          "observed": 1.3103287331786868,
+          "minimum": 0,
+          "maximum": 1,
+          "unit": "V",
+          "citation": "p. 4, Table 7, collector-emitter saturation voltage VCEsat"
+        },
+        {
+          "check": "vbe_sat_maximum_source_1",
+          "observed": 9.333825915456083,
+          "minimum": 0,
+          "maximum": 1.5,
+          "unit": "V",
+          "citation": "p. 4, Table 7, base-emitter saturation voltage VBEsat"
+        }
+      ],
+      "reason": "The unchanged staged model fails one or more cited inclusive published hard bounds. Parameter changes would be required, so the package was not promoted."
+    },
+    {
+      "origin": "fresh",
+      "wave": 1,
+      "lcsc_id": "C551944",
+      "manufacturer_directory": "nexperia",
+      "staged_mpn": "PBSS4540X-135",
+      "canonical_mpn": "PBSS4540X",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/nexperia/PBSS4540X-135",
+      "family": "bjt_npn",
+      "tier": "F1",
+      "classification": "published-hard-bound-failure",
+      "failed_hard_bounds": [
+        {
+          "check": "vce_sat_maximum_source_1",
+          "observed": 0.19986099253106115,
+          "minimum": 0,
+          "maximum": 0.09,
+          "unit": "V",
+          "citation": "p. 6, Table 7"
+        },
+        {
+          "check": "vce_sat_maximum_source_2",
+          "observed": 0.27513287097559014,
+          "minimum": 0,
+          "maximum": 0.12,
+          "unit": "V",
+          "citation": "p. 6, Table 7"
+        },
+        {
+          "check": "vce_sat_maximum_source_3",
+          "observed": 0.3745972807298536,
+          "minimum": 0,
+          "maximum": 0.15,
+          "unit": "V",
+          "citation": "p. 6, Table 7"
+        },
+        {
+          "check": "vce_sat_maximum_source_4",
+          "observed": 0.6907513486464715,
+          "minimum": 0,
+          "maximum": 0.29,
+          "unit": "V",
+          "citation": "p. 6, Table 7"
+        },
+        {
+          "check": "vbe_sat_maximum_source_4",
+          "observed": 3.0844121905795543,
+          "minimum": 0,
+          "maximum": 1.1,
+          "unit": "V",
+          "citation": "p. 6, Table 7"
+        },
+        {
+          "check": "vce_sat_maximum_source_5",
+          "observed": 0.8396896170988175,
+          "minimum": 0,
+          "maximum": 0.355,
+          "unit": "V",
+          "citation": "p. 6, Table 7 (also p. 1, Table 1)"
+        },
+        {
+          "check": "vbe_sat_maximum_source_5",
+          "observed": 6.157411744001578,
+          "minimum": 0,
+          "maximum": 1.2,
+          "unit": "V",
+          "citation": "p. 6, Table 7"
+        }
+      ],
+      "reason": "The unchanged staged model fails one or more cited inclusive published hard bounds. Parameter changes would be required, so the package was not promoted."
+    },
+    {
+      "origin": "phase-a",
+      "wave": null,
+      "lcsc_id": "C47515",
+      "manufacturer_directory": "onsemi",
+      "staged_mpn": "MJD45H11T4G",
+      "canonical_mpn": "MJD45H11T4G",
+      "source_staging_directory": "tools/conveyor/data/staging/batch-4/packages/onsemi/MJD45H11T4G",
+      "family": "bjt_pnp",
+      "tier": "F1",
+      "classification": "phase-a-salvage-hard-bound-failure",
+      "failed_hard_bounds": [
+        {
+          "check": "vce_sat_maximum_source_1",
+          "observed": 1.3103287331787634,
+          "minimum": 0,
+          "maximum": 1,
+          "unit": "V",
+          "citation": "p. 2, electrical characteristics, Collector-Emitter Saturation Voltage"
+        },
+        {
+          "check": "vbe_sat_maximum_source_1",
+          "observed": 9.333825915456034,
+          "minimum": 0,
+          "maximum": 1.5,
+          "unit": "V",
+          "citation": "p. 2, electrical characteristics, Base-Emitter Saturation Voltage"
+        }
+      ],
+      "reason": "The unchanged staged model fails one or more cited inclusive published hard bounds. Parameter changes would be required, so the package was not promoted."
+    }
+  ],
+  "verification": {
+    "promoted_packages": {
+      "validators_passed": 81,
+      "benches_passed": 344,
+      "expectation_checks_passed": 400,
+      "native_wasm_packages_passed": 81,
+      "worst_relative_delta": 0.00044408920985006256,
+      "worst_absolute_delta": 2.508518170962759e-09
+    },
+    "staging_snapshot": {
+      "status": "byte-identical",
+      "aggregate_sha256": "c99355cd179a292a581700822f892d7d1e2f88bee88bd422c211fe0018944be9"
+    },
+    "final_suite_status": "passed",
+    "original_candidates": {
+      "validators_passed": 93,
+      "benches_passed": 260,
+      "expectation_checks_passed": 321,
+      "temperature_pins_passed": 260
+    },
+    "full_library": {
+      "packages_validated": 440,
+      "model_library_tests_passed": 1
+    },
+    "model_factory_tests": {
+      "passed": 44,
+      "failed": 0
+    },
+    "conveyor_tests": {
+      "passed": 13,
+      "failed": 0
+    },
+    "conveyor_typecheck": "passed",
+    "workspace_typechecks": "passed",
+    "primary_pdf_sha256_reproductions": {
+      "passed": 93,
+      "failed": 0
+    },
+    "promoted_temperature_pins": {
+      "passed": 344,
+      "failed": 0
+    },
+    "promoted_pending_review_markers": 0,
+    "promoted_review_metadata_failures": 0,
+    "tracked_pdf_files": 0,
+    "tracked_sqlite_or_database_files": 0,
+    "tracked_extraction_staging_archive_or_vendor_model_data_paths": 0,
+    "absolute_scratch_worktree_or_staging_paths_in_changes": 0,
+    "git_diff_check": "passed"
+  },
+  "collision_audit": {
+    "promotion_introduced_normalized_canonical_or_alias_collisions": [],
+    "promotion_introduced_family_aware_complete_fitted_vector_collisions": [],
+    "pre_existing_baseline_identity_collision_groups": [
+      {
+        "normalized_identity": "1n4148",
+        "packages": [
+          "vishay/1N4148",
+          "vishay/LL4148"
+        ]
+      }
+    ],
+    "pre_existing_baseline_complete_vector_collision_groups": [
+      [
+        "nexperia/PMBT2907A",
+        "nexperia/PMBT4403",
+        "onsemi/MMBT4403LT1G"
+      ],
+      [
+        "nexperia/BC847C",
+        "nexperia/BC817-40"
+      ],
+      [
+        "onsemi/1N4001",
+        "onsemi/1N4007"
+      ],
+      [
+        "onsemi/MMBT4401LT1G",
+        "diodes-inc/MMBT3904-7-F"
+      ],
+      [
+        "vishay/LL4148",
+        "vishay/1N4148"
+      ],
+      [
+        "microchip/MCP6002",
+        "microchip/MCP6004"
+      ],
+      [
+        "ti/TL071",
+        "ti/TL074",
+        "ti/TL072",
+        "ti/TL081"
+      ]
+    ]
+  }
+}

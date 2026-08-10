@@ -1,0 +1,45 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "rdson.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "rdson_maximum_1",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d1),5)"
+          },
+          "minimum": 0,
+          "maximum": 3.5,
+          "unit": "ohm",
+          "inclusive": true,
+          "datasheet_citation": "p. 2, Electrical Characteristics, Static Drain-to-Source On-Resistance, MAX column",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "review_rdson_maximum_source_2.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "rdson_maximum_source_2",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d),5.0)"
+          },
+          "unit": "ohm",
+          "inclusive": true,
+          "datasheet_citation": "p. 2, Electrical Characteristics, Static Drain-to-Source On-Resistance, MAX column",
+          "placeholder": false,
+          "maximum": 10.0,
+          "minimum": 0
+        }
+      ]
+    }
+  ]
+}

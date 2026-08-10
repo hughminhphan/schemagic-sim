@@ -1,0 +1,107 @@
+{
+  "schema_version": "1.0.0",
+  "validation_date": "2026-08-10",
+  "native_wasm_all_pass": true,
+  "expectations_all_pass": true,
+  "expectation_pass_count": 7,
+  "expectation_fail_count": 0,
+  "worst_native_wasm_relative_delta": 5.044676040972309e-12,
+  "worst_native_wasm_absolute_delta": 2.8199664825478976e-13,
+  "benches": [
+    {
+      "test_netlist": "dc_gain.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "hfe_at_0.01_a",
+          "pass": true,
+          "value": 281.5548599002682,
+          "error": 11.554859900268184,
+          "allowed": 202.5
+        },
+        {
+          "name": "hfe_minimum_at_0.001_a",
+          "pass": true,
+          "value": 281.70004574690205,
+          "minimum": 200
+        }
+      ]
+    },
+    {
+      "test_netlist": "output_curve.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": []
+    },
+    {
+      "test_netlist": "boundary_region.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "upper_current_boundary_voltage",
+          "pass": true,
+          "value": 0.7203272262126177,
+          "minimum": 0,
+          "maximum": 5
+        }
+      ]
+    },
+    {
+      "test_netlist": "review_hfe_minimum_source_1.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "hfe_minimum_source_1",
+          "pass": true,
+          "value": 281.70004574867846,
+          "minimum": 200
+        }
+      ]
+    },
+    {
+      "test_netlist": "review_hfe_maximum_source_2.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "hfe_maximum_source_2",
+          "pass": true,
+          "value": 281.75711285705063,
+          "minimum": 0,
+          "maximum": 450
+        }
+      ]
+    },
+    {
+      "test_netlist": "review_vce_sat_maximum_source_1.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "vce_sat_maximum_source_1",
+          "pass": true,
+          "value": 0.08049280593058883,
+          "minimum": 0,
+          "maximum": 0.25
+        }
+      ]
+    },
+    {
+      "test_netlist": "review_vbe_sat_maximum_source_1.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "vbe_sat_maximum_source_1",
+          "pass": true,
+          "value": 0.8346658649957159,
+          "minimum": 0,
+          "maximum": 1
+        }
+      ]
+    }
+  ]
+}

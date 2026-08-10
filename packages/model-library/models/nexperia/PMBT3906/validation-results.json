@@ -1,0 +1,152 @@
+{
+  "schema_version": "1.0.0",
+  "validation_date": "2026-08-10",
+  "native_wasm_all_pass": true,
+  "expectations_all_pass": true,
+  "expectation_pass_count": 16,
+  "expectation_fail_count": 0,
+  "worst_native_wasm_relative_delta": 2.8898356912471e-11,
+  "worst_native_wasm_absolute_delta": 5.017097848281082e-13,
+  "benches": [
+    {
+      "test_netlist": "dc_gain.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "hfe_at_0.0001_a",
+          "pass": true,
+          "value": 219.75213746894264,
+          "error": 0.24786253105736478,
+          "allowed": 44
+        },
+        {
+          "name": "hfe_at_0.001_a",
+          "pass": true,
+          "value": 220.83087060575934,
+          "error": 0.830870605759344,
+          "allowed": 44
+        },
+        {
+          "name": "hfe_at_0.01_a",
+          "pass": true,
+          "value": 209.08739129433474,
+          "error": 0.9126087056652636,
+          "allowed": 42
+        },
+        {
+          "name": "hfe_at_0.03_a",
+          "pass": true,
+          "value": 185.29299225021205,
+          "error": 0.2929922502120519,
+          "allowed": 37
+        },
+        {
+          "name": "hfe_minimum_at_0.0001_a",
+          "pass": true,
+          "value": 220.96145691419267,
+          "minimum": 60
+        },
+        {
+          "name": "hfe_minimum_at_0.001_a",
+          "pass": true,
+          "value": 218.8199874052721,
+          "minimum": 80
+        },
+        {
+          "name": "hfe_minimum_at_0.01_a",
+          "pass": true,
+          "value": 196.88173244594154,
+          "minimum": 100
+        },
+        {
+          "name": "hfe_maximum_at_0.01_a",
+          "pass": true,
+          "value": 212.91645420997708,
+          "maximum": 300
+        },
+        {
+          "name": "hfe_minimum_at_0.05_a",
+          "pass": true,
+          "value": 128.64637494369634,
+          "minimum": 60
+        },
+        {
+          "name": "hfe_minimum_at_0.1_a",
+          "pass": true,
+          "value": 79.2480051735519,
+          "minimum": 30
+        }
+      ]
+    },
+    {
+      "test_netlist": "saturation.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "vce_sat_1_maximum",
+          "pass": true,
+          "value": 0.06870919924248839,
+          "minimum": 0,
+          "maximum": 0.25
+        },
+        {
+          "name": "vbe_sat_1_maximum",
+          "pass": true,
+          "value": 0.75358347697484,
+          "minimum": 0,
+          "maximum": 0.85
+        },
+        {
+          "name": "vce_sat_2_maximum",
+          "pass": true,
+          "value": 0.08153340993280496,
+          "minimum": 0,
+          "maximum": 0.4
+        },
+        {
+          "name": "vbe_sat_2_maximum",
+          "pass": true,
+          "value": 0.8433296670733113,
+          "minimum": 0,
+          "maximum": 0.95
+        }
+      ]
+    },
+    {
+      "test_netlist": "output_curve.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": []
+    },
+    {
+      "test_netlist": "boundary_region.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "upper_current_boundary_voltage",
+          "pass": true,
+          "value": 0.12486668511149131,
+          "minimum": 0,
+          "maximum": 1
+        }
+      ]
+    },
+    {
+      "test_netlist": "review_hfe_maximum_source_4.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "hfe_maximum_source_4",
+          "pass": true,
+          "value": 212.91646046673884,
+          "minimum": 0,
+          "maximum": 300
+        }
+      ]
+    }
+  ]
+}

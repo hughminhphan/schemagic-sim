@@ -1,0 +1,215 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "schema_version": "1.0.0",
+    "mpn": "ES5JB",
+    "manufacturer": "hongjiacheng",
+    "family": "diode",
+    "datasheet_identity": {
+      "title": "ES5AB THRU ES5JB SURFACE MOUNT FAST RECOVERY RECTIFIER",
+      "revision": "1.1",
+      "pages_examined": [
+        "1",
+        "2"
+      ]
+    },
+    "usable_curves": true,
+    "curves": [
+      {
+        "name": "Typical Forward Voltage (ES5JB)",
+        "x_axis": {
+          "quantity": "Instantaneous forward current",
+          "unit": "A",
+          "scale": "log"
+        },
+        "y_axis": {
+          "quantity": "Instantaneous forward voltage",
+          "unit": "V",
+          "scale": "linear"
+        },
+        "test_conditions": "Tj=25\u00b0C, Pulse width=300\u00b5s, 1% Duty Cycle",
+        "page_reference": "2",
+        "points": [
+          {
+            "x": 0.1,
+            "y": 0.6
+          },
+          {
+            "x": 0.2,
+            "y": 0.7
+          },
+          {
+            "x": 0.5,
+            "y": 0.85
+          },
+          {
+            "x": 1,
+            "y": 1
+          },
+          {
+            "x": 2,
+            "y": 1.3
+          },
+          {
+            "x": 5,
+            "y": 1.7
+          },
+          {
+            "x": 10,
+            "y": 2
+          }
+        ]
+      },
+      {
+        "name": "Typical Reverse Characteristics (ES5JB, Tj=25\u00b0C)",
+        "x_axis": {
+          "quantity": "Percent of rated peak reverse voltage",
+          "unit": "%",
+          "scale": "linear"
+        },
+        "y_axis": {
+          "quantity": "Instantaneous reverse current",
+          "unit": "\u00b5A",
+          "scale": "log"
+        },
+        "test_conditions": "Tj=25\u00b0C",
+        "page_reference": "2",
+        "points": [
+          {
+            "x": 0,
+            "y": 0.01
+          },
+          {
+            "x": 20,
+            "y": 0.1
+          },
+          {
+            "x": 40,
+            "y": 0.2
+          },
+          {
+            "x": 60,
+            "y": 0.5
+          },
+          {
+            "x": 80,
+            "y": 1
+          },
+          {
+            "x": 100,
+            "y": 2
+          }
+        ]
+      }
+    ],
+    "specs": {
+      "variant": "rectifier",
+      "forward_voltage_points": [
+        {
+          "current": {
+            "value": 5,
+            "unit": "A",
+            "conditions": "IF=5.0A",
+            "page_reference": "2",
+            "source_kind": "maximum"
+          },
+          "voltage": {
+            "value": 1.7,
+            "unit": "V",
+            "conditions": "IF=5.0A",
+            "page_reference": "2",
+            "source_kind": "maximum"
+          }
+        }
+      ],
+      "reverse_current": {
+        "value": 2,
+        "unit": "\u00b5A",
+        "conditions": "VR=VDC, TA=25\u00b0C",
+        "page_reference": "2",
+        "source_kind": "maximum"
+      },
+      "capacitance": {
+        "value": 75,
+        "unit": "pF",
+        "conditions": "4.0V DC, 1MHz",
+        "page_reference": "2",
+        "source_kind": "typical"
+      },
+      "reverse_recovery": {
+        "value": 35,
+        "unit": "ns",
+        "conditions": "IF=0.5A, IR=1.0A, Irr=0.25A",
+        "page_reference": "2",
+        "source_kind": "maximum"
+      },
+      "breakdown_voltage": {
+        "value": 600,
+        "unit": "V",
+        "conditions": "Repetitive Peak Reverse Voltage",
+        "page_reference": "1",
+        "source_kind": "maximum"
+      },
+      "breakdown_current": null
+    },
+    "extraction_notes": [
+      "ES5JB is a surface-mount fast recovery rectifier, DO-214AA(SMB) package",
+      "Datasheet is public, Rev.1.1 by Zhuhai Hongjiacheng Technology co., Ltd",
+      "Forward voltage curve digitized from Fig.3 (log-linear, 7 points, Tj=25\u00b0C)",
+      "Reverse characteristics curve digitized from Fig.4 (linear-log, 6 points, Tj=25\u00b0C)",
+      "All specs extracted from Maximum Ratings and Electrical Characteristics tables",
+      "SI units: voltage in V, current in A/\u00b5A, temperature in \u00b0C, capacitance in pF, time in ns",
+      "Thermal resistance R\u03b8J-A = 60 \u00b0C/W, R\u03b8J-L = 20 \u00b0C/W (typical)",
+      "Maximum average forward current IF(AV) = 5.0 A @ 60Hz sinewave",
+      "Non-repetitive peak surge current IFSM = 150 A @ 8.3ms half-sine",
+      "Junction temperature range: -55 to +150 \u00b0C"
+    ],
+    "omission_reason": null
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "Voltage - Forward(Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "1.7V@5.0A",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "ES5JB",
+    "manufacturer": "hongjiacheng",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8602925639540625408",
+    "revision": "1.1",
+    "sha256": "281fb2ebf25f46c091e0675852ea27c0961d91e689e42e4ee7cca5323dc2daad",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "1",
+      "2"
+    ],
+    "placeholder": false
+  },
+  "fit_points": [
+    {
+      "current": {
+        "value": 4.75,
+        "unit": "A",
+        "conditions": "Conservative F1 package bench at 95% of the cited current; IF=5.0A",
+        "page_reference": "p. 2",
+        "source_kind": "maximum"
+      },
+      "voltage": {
+        "value": 1.7,
+        "unit": "V",
+        "conditions": "IF=5.0A",
+        "page_reference": "p. 2",
+        "source_kind": "maximum"
+      }
+    }
+  ],
+  "electrical_limits": {},
+  "derived_model_inputs": {}
+}

@@ -1,0 +1,175 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "rdson.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "rdson_1",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d1),20)"
+          },
+          "expected_value": 1,
+          "unit": "ohm",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 6",
+          "placeholder": false
+        },
+        {
+          "name": "rdson_3",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d3),3.3333333333333335)"
+          },
+          "expected_value": 0.9,
+          "unit": "ohm",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 6",
+          "placeholder": false
+        },
+        {
+          "name": "rdson_5",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d5),3.3333333333333335)"
+          },
+          "expected_value": 1.52,
+          "unit": "ohm",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 7",
+          "placeholder": false
+        },
+        {
+          "name": "rdson_6",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d6),3.3333333333333335)"
+          },
+          "expected_value": 1.28,
+          "unit": "ohm",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 7",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": [
+        {
+          "name": "rdson_maximum_2",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d2),20)"
+          },
+          "minimum": 0,
+          "maximum": 2,
+          "unit": "ohm",
+          "inclusive": true,
+          "datasheet_citation": "p. 6",
+          "placeholder": false
+        },
+        {
+          "name": "rdson_maximum_4",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d4),3.3333333333333335)"
+          },
+          "minimum": 0,
+          "maximum": 1.6,
+          "unit": "ohm",
+          "inclusive": true,
+          "datasheet_citation": "p. 6",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "threshold.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "gate_threshold_typical",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(d))"
+          },
+          "expected_value": 1.2,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.35
+          },
+          "datasheet_citation": "p. 6",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": [
+        {
+          "name": "gate_threshold_bounds",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(d))"
+          },
+          "minimum": 0.9,
+          "maximum": 1.5,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 6; p. 6",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "review_rdson_maximum_source_2.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "rdson_maximum_source_2",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d),20.0)"
+          },
+          "unit": "ohm",
+          "inclusive": true,
+          "datasheet_citation": "6",
+          "placeholder": false,
+          "maximum": 2.0,
+          "minimum": 0
+        }
+      ]
+    },
+    {
+      "test_netlist": "review_rdson_maximum_source_4.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "rdson_maximum_source_4",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d),3.3333333333333335)"
+          },
+          "unit": "ohm",
+          "inclusive": true,
+          "datasheet_citation": "6",
+          "placeholder": false,
+          "maximum": 1.6,
+          "minimum": 0
+        }
+      ]
+    }
+  ]
+}

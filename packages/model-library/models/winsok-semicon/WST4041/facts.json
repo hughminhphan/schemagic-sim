@@ -1,0 +1,369 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "schema_version": "1.0.0",
+    "mpn": "WST4041",
+    "manufacturer": "Winsok Semicon",
+    "family": "mosfet",
+    "datasheet_identity": {
+      "title": "WST4041 P-Ch MOSFET",
+      "revision": "Dec.2014",
+      "pages_examined": [
+        "1",
+        "2",
+        "3",
+        "4"
+      ]
+    },
+    "usable_curves": true,
+    "curves": [
+      {
+        "name": "Transfer Characteristic",
+        "x_axis": {
+          "quantity": "drain-source voltage",
+          "unit": "V",
+          "scale": "linear"
+        },
+        "y_axis": {
+          "quantity": "drain current",
+          "unit": "A",
+          "scale": "linear"
+        },
+        "test_conditions": "VGS=-10V, TJ=25\u00b0C",
+        "page_reference": "3",
+        "points": [
+          {
+            "x": 0.2,
+            "y": 1
+          },
+          {
+            "x": 0.5,
+            "y": 2.5
+          },
+          {
+            "x": 1,
+            "y": 5
+          },
+          {
+            "x": 1.5,
+            "y": 7
+          }
+        ]
+      },
+      {
+        "name": "On-Resistance vs Gate-Source Voltage",
+        "x_axis": {
+          "quantity": "gate-source voltage",
+          "unit": "V",
+          "scale": "linear"
+        },
+        "y_axis": {
+          "quantity": "on-resistance",
+          "unit": "\u03a9",
+          "scale": "linear"
+        },
+        "test_conditions": "ID=3A, TJ=25\u00b0C",
+        "page_reference": "3",
+        "points": [
+          {
+            "x": 2.5,
+            "y": 0.15
+          },
+          {
+            "x": 4,
+            "y": 0.075
+          },
+          {
+            "x": 6,
+            "y": 0.045
+          },
+          {
+            "x": 10,
+            "y": 0.03
+          }
+        ]
+      },
+      {
+        "name": "Diode Forward Characteristics",
+        "x_axis": {
+          "quantity": "source-drain voltage",
+          "unit": "V",
+          "scale": "linear"
+        },
+        "y_axis": {
+          "quantity": "source current",
+          "unit": "A",
+          "scale": "linear"
+        },
+        "test_conditions": "TJ=25\u00b0C",
+        "page_reference": "3",
+        "points": [
+          {
+            "x": 0.3,
+            "y": 1
+          },
+          {
+            "x": 0.5,
+            "y": 2
+          },
+          {
+            "x": 0.8,
+            "y": 6
+          }
+        ]
+      },
+      {
+        "name": "Gate Charge Characteristics",
+        "x_axis": {
+          "quantity": "total gate charge",
+          "unit": "C",
+          "scale": "linear"
+        },
+        "y_axis": {
+          "quantity": "gate-source voltage",
+          "unit": "V",
+          "scale": "linear"
+        },
+        "test_conditions": "ID=3A, VDS=18V",
+        "page_reference": "3",
+        "points": [
+          {
+            "x": 2e-09,
+            "y": 2
+          },
+          {
+            "x": 5e-09,
+            "y": 3
+          },
+          {
+            "x": 1e-08,
+            "y": 5.5
+          },
+          {
+            "x": 1.5e-08,
+            "y": 8
+          },
+          {
+            "x": 2e-08,
+            "y": 12
+          }
+        ]
+      }
+    ],
+    "specs": {
+      "polarity": "p",
+      "threshold_min": {
+        "value": 0.8,
+        "unit": "V",
+        "conditions": "VGS=VDS, ID=250\u00b5A",
+        "page_reference": "2",
+        "source_kind": "minimum"
+      },
+      "threshold_typ": {
+        "value": 1.2,
+        "unit": "V",
+        "conditions": "VGS=VDS, ID=250\u00b5A",
+        "page_reference": "2",
+        "source_kind": "typical"
+      },
+      "threshold_max": {
+        "value": 2.2,
+        "unit": "V",
+        "conditions": "VGS=VDS, ID=250\u00b5A",
+        "page_reference": "2",
+        "source_kind": "maximum"
+      },
+      "rdson_points": [
+        {
+          "vgs": {
+            "value": 10,
+            "unit": "V",
+            "conditions": "TJ=25\u00b0C",
+            "page_reference": "2",
+            "source_kind": "typical"
+          },
+          "current": {
+            "value": 3,
+            "unit": "A",
+            "conditions": "TJ=25\u00b0C",
+            "page_reference": "2",
+            "source_kind": "typical"
+          },
+          "resistance": {
+            "value": 0.03,
+            "unit": "\u03a9",
+            "conditions": "VGS=10V, ID=3A",
+            "page_reference": "2",
+            "source_kind": "typical"
+          }
+        },
+        {
+          "vgs": {
+            "value": 4.5,
+            "unit": "V",
+            "conditions": "TJ=25\u00b0C",
+            "page_reference": "2",
+            "source_kind": "typical"
+          },
+          "current": {
+            "value": 1,
+            "unit": "A",
+            "conditions": "TJ=25\u00b0C",
+            "page_reference": "2",
+            "source_kind": "typical"
+          },
+          "resistance": {
+            "value": 0.04,
+            "unit": "\u03a9",
+            "conditions": "VGS=4.5V, ID=1A",
+            "page_reference": "2",
+            "source_kind": "typical"
+          }
+        }
+      ],
+      "ciss": {
+        "value": 4.2e-10,
+        "unit": "F",
+        "conditions": "VDS=15V, VGS=0V, f=1MHz",
+        "page_reference": "2",
+        "source_kind": "typical"
+      },
+      "coss": {
+        "value": 7.7e-11,
+        "unit": "F",
+        "conditions": "VDS=15V, VGS=0V, f=1MHz",
+        "page_reference": "2",
+        "source_kind": "typical"
+      },
+      "crss": {
+        "value": 5.5e-11,
+        "unit": "F",
+        "conditions": "VDS=15V, VGS=0V, f=1MHz",
+        "page_reference": "2",
+        "source_kind": "typical"
+      },
+      "breakdown_voltage": {
+        "value": 40,
+        "unit": "V",
+        "conditions": "VGS=0V, ID=250\u00b5A",
+        "page_reference": "2",
+        "source_kind": "minimum"
+      },
+      "body_diode": {
+        "value": 1.2,
+        "unit": "V",
+        "conditions": "VGS=0V, IS=1A, TJ=25\u00b0C",
+        "page_reference": "2",
+        "source_kind": "maximum"
+      }
+    },
+    "extraction_notes": [
+      "P-channel MOSFET rated for VDS=-40V, VGS=\u00b120V; continuous drain current -6A @ VGS=-10V, 25\u00b0C",
+      "Extracted table specs: VGS(th) range -0.8 to -2.2V; RDS(ON) 30-40m\u03a9 @ -10V/-3A and 40-58m\u03a9 @ -4.5V/-1A",
+      "Digitized F1 transfer at VGS=-10V showing linear output region; F2 on-resistance curve spans 2.5-10V gate drive",
+      "Capacitances at 1MHz: Ciss=420pF, Coss=77pF, Crss=55pF (VDS=15V, VGS=0V)",
+      "Reverse diode forward voltage -1.2V max; source current rating \u00b11.0A continuous, \u00b116A pulsed",
+      "All values expressed as magnitudes (P-channel polarity); gate charge typicals Qg=9.5nC, Qgs=1.7nC, Qgd=2.0nC",
+      "Four curves usable: output characteristics, RDS(ON) vs VGS, diode forward, gate charge; all readily digitized from datasheet figures"
+    ],
+    "omission_reason": null
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "Drain Source On Resistance (RDS(on)@Vgs,Id)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.rds_on",
+      "raw_value": "40m\u03a9@10V,3A",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Gate Threshold Voltage (Vgs(th))",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.threshold",
+      "raw_value": "2.2V",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Gate Threshold Voltage (Vgs(th)@Id)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.threshold",
+      "raw_value": "2.2V@250uA",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Input Capacitance(Ciss)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.ciss",
+      "raw_value": "420pF",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Output Capacitance(Coss)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.coss",
+      "raw_value": "77pF",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "RDS(on)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.rds_on",
+      "raw_value": "58m\u03a9@4.5V",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Reverse Transfer Capacitance (Crss@Vds)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.crss",
+      "raw_value": "55pF",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "WST4041",
+    "manufacturer": "Winsok Semicon",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8586187748759769088",
+    "revision": "Dec.2014",
+    "sha256": "708001ad15686c3a7005cf2164313f3f2905d47832d3a5c62a85a9cfd4b9447e",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "1",
+      "2",
+      "3",
+      "4"
+    ],
+    "placeholder": false
+  },
+  "rdson_points": [
+    {
+      "vgs": {
+        "value": 10,
+        "unit": "V",
+        "conditions": "TJ=25\u00b0C",
+        "page_reference": "p. 2",
+        "source_kind": "typical"
+      },
+      "current": {
+        "value": 3,
+        "unit": "A",
+        "conditions": "TJ=25\u00b0C",
+        "page_reference": "p. 2",
+        "source_kind": "typical"
+      },
+      "resistance": {
+        "value": 0.03,
+        "unit": "ohm",
+        "conditions": "VGS=10V, ID=3A",
+        "page_reference": "p. 2",
+        "source_kind": "typical"
+      }
+    }
+  ],
+  "threshold": null,
+  "transfer_points": [],
+  "output_points": []
+}

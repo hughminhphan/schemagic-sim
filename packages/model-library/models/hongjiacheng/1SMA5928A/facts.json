@@ -1,0 +1,139 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "schema_version": "1.0.0",
+    "mpn": "1SMA5928A",
+    "manufacturer": "hongjiacheng",
+    "family": "diode",
+    "datasheet_identity": {
+      "title": "1SMA5913A THRU 1SMA5945A Surface Mount Zener Diodes, DO-214AC (SMA) (Zhuhai Hongjiacheng Technology co., Ltd)",
+      "revision": "Rev:1.1",
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3",
+        "p. 4"
+      ]
+    },
+    "usable_curves": false,
+    "curves": [],
+    "specs": {
+      "variant": "zener",
+      "forward_voltage_points": [
+        {
+          "current": {
+            "value": 0.2,
+            "unit": "A",
+            "conditions": "Ta = 25 degC, forward voltage test current",
+            "page_reference": "p. 1, maximum ratings table",
+            "source_kind": "maximum"
+          },
+          "voltage": {
+            "value": 1.5,
+            "unit": "V",
+            "conditions": "IF = 200 mA, Ta = 25 degC",
+            "page_reference": "p. 1, maximum ratings table",
+            "source_kind": "maximum"
+          }
+        }
+      ],
+      "reverse_current": {
+        "value": 1e-06,
+        "unit": "A",
+        "conditions": "VR = 9.9 V, Ta = 25 degC (leakage current IR at VR, below the knee)",
+        "page_reference": "p. 2, electrical characteristics, 1SMA5928A row",
+        "source_kind": "maximum"
+      },
+      "capacitance": null,
+      "reverse_recovery": null,
+      "breakdown_voltage": {
+        "value": 13,
+        "unit": "V",
+        "conditions": "Nominal zener voltage VZ at IZT = 28.8 mA, Ta = 25 degC; datasheet min 12.35 V, max 13.65 V (+/-5 percent tolerance per note 1)",
+        "page_reference": "p. 2, electrical characteristics, 1SMA5928A row",
+        "source_kind": "typical"
+      },
+      "breakdown_current": {
+        "value": 0.0288,
+        "unit": "A",
+        "conditions": "IZT, the reverse test current at which VZ is specified, Ta = 25 degC",
+        "page_reference": "p. 2, electrical characteristics, 1SMA5928A row",
+        "source_kind": "typical"
+      }
+    },
+    "extraction_notes": [
+      "Identity: LCSC C19077490 corresponds to 1SMA5928A, type code 928A, DO-214AC (SMA) package, on the family datasheet 1SMA5913A THRU 1SMA5945A (www.ichjc.com). SHA-256 of the PDF verified: 8200f679467020a5bd7e0853cf057a2984daa6243c5870bb231f0e3b473bd319.",
+      "Zener impedance (no dedicated schema slot): ZZT = 7 ohm max at IZT = 28.8 mA; ZZK = 550 ohm max at IZK = 0.25 mA (p. 2, 1SMA5928A row). These support the archetype variant-Z NBV/RS derivation.",
+      "Admissible zener current IZM = 115 mA (p. 2, 1SMA5928A row).",
+      "Ratings (p. 1): PD = 1500 mW at Tc = 75 degC, VF = 1.5 V at IF = 200 mA, typical RthJA = 250 degC/W, Tj and Tstg = -55 to +150 degC. Fig. 1 (p. 3) derates PD linearly from 1.5 W at 75 degC lead temperature to 0 W at about 150 degC.",
+      "Curve assessment (p. 3, 400 dpi raster inspected): Fig. 3 'Zener Characteristics (Vz 12V to 68V)' is a family plot with roughly 14 unlabeled branches for 19 family members; the leftmost branch sits near 12 V at low current and the next near 15.5 V, so no branch can be attributed to the 13 V target with confidence. Digitizing was declined rather than guessed.",
+      "Fig. 5 'Typical Capacitance' is family-level (capacitance vs breakdown voltage at zero bias and at Vz/2) and its y-axis labels are misprinted (the top and middle decade are both labeled 100), so the axis cannot be calibrated reliably; the electrical table publishes no capacitance value, so capacitance is omitted rather than guessed.",
+      "Fig. 6 gives typical dynamic impedance vs Vz at IZ(dc) = 1, 10 and 20 mA, but the target-specific table maxima (ZZT, ZZK) are already recorded above and the figure adds no per-part attribution beyond them.",
+      "Forward data: the only forward point is VF = 1.5 V max at IF = 200 mA from the maximum ratings table (p. 1); the datasheet has no forward IV figure, so low-current forward recombination cannot be fitted from this sheet.",
+      "No reverse recovery time is published anywhere on the datasheet."
+    ],
+    "omission_reason": "Curves omitted: all characteristic figures are family-level; Fig. 3 branches are unlabeled and do not map 1:1 to the 19 family members, so no curve is attributable to the 13 V 1SMA5928A, and Fig. 5's misprinted y-axis prevents calibration. Extraction is table-based (F1): VZ min/nom/max at IZT, ZZT/ZZK, IR at VR, IZM, and the VF maximum rating."
+  },
+  "catalog_seed_hints": [],
+  "identity": {
+    "canonical_mpn": "1SMA5928A",
+    "manufacturer": "hongjiacheng",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8564879681640808449",
+    "revision": "Rev:1.1",
+    "sha256": "8200f679467020a5bd7e0853cf057a2984daa6243c5870bb231f0e3b473bd319",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "placeholder": false
+  },
+  "fit_points": [
+    {
+      "current": {
+        "value": 0.19,
+        "unit": "A",
+        "conditions": "Conservative F1 package bench at 95% of the cited current; Ta = 25 degC, forward voltage test current",
+        "page_reference": "p. 1, maximum ratings table",
+        "source_kind": "maximum"
+      },
+      "voltage": {
+        "value": 1.5,
+        "unit": "V",
+        "conditions": "IF = 200 mA, Ta = 25 degC",
+        "page_reference": "p. 1, maximum ratings table",
+        "source_kind": "maximum"
+      }
+    }
+  ],
+  "electrical_limits": {},
+  "derived_model_inputs": {
+    "BV": {
+      "value": 13,
+      "unit": "V",
+      "conditions": "Nominal zener voltage VZ at IZT = 28.8 mA, Ta = 25 degC; datasheet min 12.35 V, max 13.65 V (+/-5 percent tolerance per note 1)",
+      "page_reference": "p. 2, electrical characteristics, 1SMA5928A row",
+      "source_kind": "typical"
+    },
+    "IBV": {
+      "value": 0.0288,
+      "unit": "A",
+      "conditions": "IZT, the reverse test current at which VZ is specified, Ta = 25 degC",
+      "page_reference": "p. 2, electrical characteristics, 1SMA5928A row",
+      "source_kind": "typical"
+    },
+    "NBV": {
+      "value": 1,
+      "unit": "1",
+      "conditions": "First-order avalanche-knee default; no multi-point reverse-knee trace was available",
+      "page_reference": "model-factory Zener F1 policy",
+      "source_kind": "held_default"
+    }
+  }
+}

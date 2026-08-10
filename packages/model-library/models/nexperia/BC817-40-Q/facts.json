@@ -1,0 +1,382 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "schema_version": "1.0.0",
+    "mpn": "BC817-40-Q",
+    "manufacturer": "Nexperia",
+    "family": "bjt",
+    "datasheet_identity": {
+      "title": "BC817-Q series \u2014 45 V, 500 mA NPN general-purpose transistors",
+      "revision": "Rev. 1 \u2014 8 June 2021",
+      "pages_examined": [
+        "p. 1",
+        "p. 3",
+        "p. 5",
+        "p. 8",
+        "p. 11"
+      ]
+    },
+    "usable_curves": true,
+    "curves": [
+      {
+        "name": "DC current gain hFE versus collector current, 25 \u00b0C curve",
+        "x_axis": {
+          "quantity": "collector current IC",
+          "unit": "A",
+          "scale": "log"
+        },
+        "y_axis": {
+          "quantity": "DC current gain hFE",
+          "unit": "1",
+          "scale": "linear"
+        },
+        "test_conditions": "VCE = 1 V; Tamb = 25 \u00b0C; curve (2)",
+        "page_reference": "p. 8, Fig. 12",
+        "points": [
+          {
+            "x": 0.0001,
+            "y": 280
+          },
+          {
+            "x": 0.001,
+            "y": 275
+          },
+          {
+            "x": 0.01,
+            "y": 270
+          },
+          {
+            "x": 0.1,
+            "y": 255
+          },
+          {
+            "x": 1,
+            "y": 40
+          }
+        ]
+      },
+      {
+        "name": "Base-emitter saturation voltage VBEsat versus collector current, 25 \u00b0C curve",
+        "x_axis": {
+          "quantity": "collector current IC",
+          "unit": "A",
+          "scale": "log"
+        },
+        "y_axis": {
+          "quantity": "base-emitter saturation voltage VBEsat",
+          "unit": "V",
+          "scale": "log"
+        },
+        "test_conditions": "IC/IB = 10; Tamb = 25 \u00b0C; curve (2)",
+        "page_reference": "p. 8, Fig. 13",
+        "points": [
+          {
+            "x": 0.0001,
+            "y": 0.58
+          },
+          {
+            "x": 0.001,
+            "y": 0.65
+          },
+          {
+            "x": 0.01,
+            "y": 0.72
+          },
+          {
+            "x": 0.1,
+            "y": 0.85
+          },
+          {
+            "x": 1,
+            "y": 1.1
+          }
+        ]
+      },
+      {
+        "name": "Collector-emitter saturation voltage VCEsat versus collector current, 25 \u00b0C curve",
+        "x_axis": {
+          "quantity": "collector current IC",
+          "unit": "A",
+          "scale": "log"
+        },
+        "y_axis": {
+          "quantity": "collector-emitter saturation voltage VCEsat",
+          "unit": "V",
+          "scale": "log"
+        },
+        "test_conditions": "IC/IB = 10; Tamb = 25 \u00b0C; curve (2)",
+        "page_reference": "p. 8, Fig. 14",
+        "points": [
+          {
+            "x": 0.0001,
+            "y": 0.009
+          },
+          {
+            "x": 0.001,
+            "y": 0.01
+          },
+          {
+            "x": 0.01,
+            "y": 0.015
+          },
+          {
+            "x": 0.1,
+            "y": 0.05
+          },
+          {
+            "x": 1,
+            "y": 0.65
+          }
+        ]
+      },
+      {
+        "name": "Collector current IC versus collector-emitter voltage VCE at base current 1.2 mA",
+        "x_axis": {
+          "quantity": "collector-emitter voltage VCE",
+          "unit": "V",
+          "scale": "linear"
+        },
+        "y_axis": {
+          "quantity": "collector current IC",
+          "unit": "A",
+          "scale": "linear"
+        },
+        "test_conditions": "Tamb = 25 \u00b0C; IB = 1.2 mA; curve (10)",
+        "page_reference": "p. 8, Fig. 15",
+        "points": [
+          {
+            "x": 1,
+            "y": 0.32
+          },
+          {
+            "x": 2,
+            "y": 0.33
+          },
+          {
+            "x": 3,
+            "y": 0.34
+          },
+          {
+            "x": 4,
+            "y": 0.35
+          },
+          {
+            "x": 5,
+            "y": 0.36
+          }
+        ]
+      }
+    ],
+    "specs": {
+      "polarity": "npn",
+      "gain_points": [
+        {
+          "collector_current": {
+            "value": 0.1,
+            "unit": "A",
+            "conditions": "VCE = 1 V; Tamb = 25 \u00b0C; pulsed, tp \u2264 300 \u03bcs, \u03b4 \u2264 0.02",
+            "page_reference": "p. 5, Table 8, hFE row for BC817-40-Q",
+            "source_kind": "minimum"
+          },
+          "vce": {
+            "value": 1,
+            "unit": "V",
+            "conditions": "IC = 100 mA; Tamb = 25 \u00b0C; pulsed, tp \u2264 300 \u03bcs, \u03b4 \u2264 0.02",
+            "page_reference": "p. 5, Table 8, hFE row for BC817-40-Q",
+            "source_kind": "typical"
+          },
+          "hfe": {
+            "value": 250,
+            "unit": "1",
+            "conditions": "IC = 100 mA; VCE = 1 V; Tamb = 25 \u00b0C; pulsed, tp \u2264 300 \u03bcs, \u03b4 \u2264 0.02",
+            "page_reference": "p. 5, Table 8, hFE row for BC817-40-Q",
+            "source_kind": "minimum"
+          }
+        },
+        {
+          "collector_current": {
+            "value": 0.1,
+            "unit": "A",
+            "conditions": "VCE = 1 V; Tamb = 25 \u00b0C; pulsed, tp \u2264 300 \u03bcs, \u03b4 \u2264 0.02",
+            "page_reference": "p. 5, Table 8, hFE row for BC817-40-Q",
+            "source_kind": "maximum"
+          },
+          "vce": {
+            "value": 1,
+            "unit": "V",
+            "conditions": "IC = 100 mA; Tamb = 25 \u00b0C; pulsed, tp \u2264 300 \u03bcs, \u03b4 \u2264 0.02",
+            "page_reference": "p. 5, Table 8, hFE row for BC817-40-Q",
+            "source_kind": "typical"
+          },
+          "hfe": {
+            "value": 600,
+            "unit": "1",
+            "conditions": "IC = 100 mA; VCE = 1 V; Tamb = 25 \u00b0C; pulsed, tp \u2264 300 \u03bcs, \u03b4 \u2264 0.02",
+            "page_reference": "p. 5, Table 8, hFE row for BC817-40-Q",
+            "source_kind": "maximum"
+          }
+        },
+        {
+          "collector_current": {
+            "value": 0.5,
+            "unit": "A",
+            "conditions": "VCE = 1 V; Tamb = 25 \u00b0C; pulsed, tp \u2264 300 \u03bcs, \u03b4 \u2264 0.02",
+            "page_reference": "p. 5, Table 8, hFE row for BC817-Q series",
+            "source_kind": "minimum"
+          },
+          "vce": {
+            "value": 1,
+            "unit": "V",
+            "conditions": "IC = 500 mA; Tamb = 25 \u00b0C; pulsed, tp \u2264 300 \u03bcs, \u03b4 \u2264 0.02",
+            "page_reference": "p. 5, Table 8, hFE row for BC817-Q series",
+            "source_kind": "typical"
+          },
+          "hfe": {
+            "value": 40,
+            "unit": "1",
+            "conditions": "IC = 500 mA; VCE = 1 V; Tamb = 25 \u00b0C; pulsed, tp \u2264 300 \u03bcs, \u03b4 \u2264 0.02",
+            "page_reference": "p. 5, Table 8, hFE row for BC817-Q series",
+            "source_kind": "minimum"
+          }
+        }
+      ],
+      "saturation_points": [
+        {
+          "collector_current": {
+            "value": 0.5,
+            "unit": "A",
+            "conditions": "IB = 50 mA; Tamb = 25 \u00b0C; pulsed, tp \u2264 300 \u03bcs, \u03b4 \u2264 0.02",
+            "page_reference": "p. 5, Table 8, VCEsat row",
+            "source_kind": "typical"
+          },
+          "base_current": {
+            "value": 0.05,
+            "unit": "A",
+            "conditions": "IC = 500 mA; Tamb = 25 \u00b0C; pulsed, tp \u2264 300 \u03bcs, \u03b4 \u2264 0.02",
+            "page_reference": "p. 5, Table 8, VCEsat row",
+            "source_kind": "typical"
+          },
+          "vce_sat": {
+            "value": 0.7,
+            "unit": "V",
+            "conditions": "IC = 500 mA; IB = 50 mA; Tamb = 25 \u00b0C; pulsed, tp \u2264 300 \u03bcs, \u03b4 \u2264 0.02",
+            "page_reference": "p. 5, Table 8, VCEsat row",
+            "source_kind": "maximum"
+          },
+          "vbe_sat": null
+        }
+      ],
+      "ft": {
+        "value": 100000000,
+        "unit": "Hz",
+        "conditions": "VCE = 5 V; IC = 10 mA; f = 100 MHz; Tamb = 25 \u00b0C",
+        "page_reference": "p. 5, Table 8, fT row",
+        "source_kind": "minimum"
+      },
+      "cobo": {
+        "value": 3e-12,
+        "unit": "F",
+        "conditions": "VCB = 10 V; IE = 0 A; f = 1 MHz; Tamb = 25 \u00b0C",
+        "page_reference": "p. 5, Table 8, Cc row",
+        "source_kind": "typical"
+      },
+      "cibo": null,
+      "vceo": {
+        "value": 45,
+        "unit": "V",
+        "conditions": "IC = 10 mA; IE = 0 A; Tamb = 25 \u00b0C",
+        "page_reference": "p. 5, Table 8, V(BR)CEO row",
+        "source_kind": "minimum"
+      }
+    },
+    "extraction_notes": [
+      "Supplied PDF SHA-256 verified as 38853c63a5ce63b131485b5070c17582554351546b080ca644be9ee797d537cf.",
+      "The supplied MPN is BC817-40-QR; the inspected Nexperia datasheet identifies the corresponding selection as BC817-40-Q within the BC817-Q series.",
+      "The BC817-40-Q typical curves in Figs. 12\u201315 were manually digitized at explicitly readable axis grid positions; curve identities and 25 \u00b0C conditions are preserved.",
+      "The datasheet publishes collector capacitance Cc, transcribed as Cobo; no Cibo/input-capacitance value is published.",
+      "The hFE table gives guaranteed minimum and maximum bounds at 100 mA and a guaranteed minimum at 500 mA; these are retained as bounds rather than converted to typical values.",
+      "No VBEsat table value is published; the VBEsat typical curve is retained separately in Fig. 13."
+    ],
+    "omission_reason": null
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "DC Current Gain",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "bjt.dc_current_gain",
+      "raw_value": "250",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "BC817-40-Q",
+    "manufacturer": "Nexperia",
+    "aliases": [
+      "BC817-40-QR"
+    ]
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8590454675741966337",
+    "revision": "Rev. 1 \u2014 8 June 2021",
+    "sha256": "38853c63a5ce63b131485b5070c17582554351546b080ca644be9ee797d537cf",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "p. 1",
+      "p. 3",
+      "p. 5",
+      "p. 8",
+      "p. 11"
+    ],
+    "placeholder": false
+  },
+  "gain_points": [
+    {
+      "collector_current": {
+        "value": 0.1,
+        "unit": "A",
+        "conditions": "VCE = 1 V; Tamb = 25 \u00b0C; pulsed, tp \u2264 300 \u03bcs, \u03b4 \u2264 0.02",
+        "page_reference": "p. 5, Table 8, hFE row for BC817-40-Q",
+        "source_kind": "minimum"
+      },
+      "vce": {
+        "value": 1,
+        "unit": "V",
+        "conditions": "IC = 100 mA; Tamb = 25 \u00b0C; pulsed, tp \u2264 300 \u03bcs, \u03b4 \u2264 0.02",
+        "page_reference": "p. 5, Table 8, hFE row for BC817-40-Q",
+        "source_kind": "typical"
+      },
+      "hfe": {
+        "value": 250,
+        "unit": "1",
+        "conditions": "IC = 100 mA; VCE = 1 V; Tamb = 25 \u00b0C; pulsed, tp \u2264 300 \u03bcs, \u03b4 \u2264 0.02",
+        "page_reference": "p. 5, Table 8, hFE row for BC817-40-Q",
+        "source_kind": "minimum"
+      }
+    },
+    {
+      "collector_current": {
+        "value": 0.5,
+        "unit": "A",
+        "conditions": "VCE = 1 V; Tamb = 25 \u00b0C; pulsed, tp \u2264 300 \u03bcs, \u03b4 \u2264 0.02",
+        "page_reference": "p. 5, Table 8, hFE row for BC817-Q series",
+        "source_kind": "minimum"
+      },
+      "vce": {
+        "value": 1,
+        "unit": "V",
+        "conditions": "IC = 500 mA; Tamb = 25 \u00b0C; pulsed, tp \u2264 300 \u03bcs, \u03b4 \u2264 0.02",
+        "page_reference": "p. 5, Table 8, hFE row for BC817-Q series",
+        "source_kind": "typical"
+      },
+      "hfe": {
+        "value": 40,
+        "unit": "1",
+        "conditions": "IC = 500 mA; VCE = 1 V; Tamb = 25 \u00b0C; pulsed, tp \u2264 300 \u03bcs, \u03b4 \u2264 0.02",
+        "page_reference": "p. 5, Table 8, hFE row for BC817-Q series",
+        "source_kind": "minimum"
+      }
+    }
+  ],
+  "saturation_points": []
+}

@@ -1,0 +1,208 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "schema_version": "1.0.0",
+    "mpn": "BZX584C5V6",
+    "manufacturer": "hongjiacheng",
+    "family": "diode",
+    "datasheet_identity": {
+      "title": "BZX584C2V4 THRU BZX584C43 SURFACE MOUNT ZENER DIODES",
+      "revision": "1.0",
+      "pages_examined": [
+        "1",
+        "2",
+        "3"
+      ]
+    },
+    "usable_curves": true,
+    "curves": [
+      {
+        "name": "Zener Characteristic (IZ vs VZ)",
+        "x_axis": {
+          "quantity": "Zener Voltage",
+          "unit": "V",
+          "scale": "linear"
+        },
+        "y_axis": {
+          "quantity": "Zener Current",
+          "unit": "mA",
+          "scale": "log"
+        },
+        "test_conditions": "Ta=25\u00b0C, Pulsed, PD=150mW",
+        "page_reference": "3 (Fig.1)",
+        "points": [
+          {
+            "x": 4.8,
+            "y": 0.1
+          },
+          {
+            "x": 5.2,
+            "y": 0.5
+          },
+          {
+            "x": 5.6,
+            "y": 5
+          },
+          {
+            "x": 6,
+            "y": 15
+          }
+        ]
+      },
+      {
+        "name": "Temperature Coefficient vs Nominal Zener Voltage",
+        "x_axis": {
+          "quantity": "Nominal Zener Voltage",
+          "unit": "V",
+          "scale": "linear"
+        },
+        "y_axis": {
+          "quantity": "Temperature Coefficient",
+          "unit": "mV/\u2103",
+          "scale": "linear"
+        },
+        "test_conditions": "Ta=25\u00b0C, @ IZT",
+        "page_reference": "3 (Fig.3)",
+        "points": [
+          {
+            "x": 2.4,
+            "y": -3.5
+          },
+          {
+            "x": 5.6,
+            "y": -2
+          },
+          {
+            "x": 10,
+            "y": 2.5
+          },
+          {
+            "x": 20,
+            "y": 5
+          },
+          {
+            "x": 43,
+            "y": 10
+          }
+        ]
+      }
+    ],
+    "specs": {
+      "variant": "zener",
+      "forward_voltage_points": [
+        {
+          "current": {
+            "value": 10,
+            "unit": "mA",
+            "conditions": "IF = 10mA",
+            "page_reference": "1",
+            "source_kind": "typical"
+          },
+          "voltage": {
+            "value": 0.9,
+            "unit": "V",
+            "conditions": "IF = 10mA",
+            "page_reference": "1",
+            "source_kind": "typical"
+          }
+        }
+      ],
+      "reverse_current": {
+        "value": 1,
+        "unit": "\u00b5A",
+        "conditions": "VR = 2.0V, Ta=25\u00b0C",
+        "page_reference": "2",
+        "source_kind": "typical"
+      },
+      "capacitance": null,
+      "reverse_recovery": null,
+      "breakdown_voltage": {
+        "value": 5.6,
+        "unit": "V",
+        "conditions": "IZT = 5mA, Ta=25\u00b0C",
+        "page_reference": "2",
+        "source_kind": "typical"
+      },
+      "breakdown_current": {
+        "value": 5,
+        "unit": "mA",
+        "conditions": "@ VZ nom = 5.6V",
+        "page_reference": "2",
+        "source_kind": "typical"
+      }
+    },
+    "extraction_notes": [
+      "Marking: Z3",
+      "Package: SOD-523 surface mount",
+      "Power dissipation: 150 mW",
+      "Zener impedance @ IZT=5mA: 40 \u03a9",
+      "Maximum zener impedance @ IZK=1.0mA: 400 \u03a9",
+      "Reverse voltage rating: 2.0V",
+      "Temperature coefficient: -2 to +2.5 mV/\u00b0C",
+      "Typical thermal resistance R\u03b8J-A: 833 \u00b0C/W",
+      "Voltage range: Min 5.2V, Typical 5.6V, Max 6.0V"
+    ],
+    "omission_reason": null
+  },
+  "catalog_seed_hints": [],
+  "identity": {
+    "canonical_mpn": "BZX584C5V6",
+    "manufacturer": "hongjiacheng",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8564879666785394688",
+    "revision": "1.0",
+    "sha256": "c3bd1e74a20c839f2752124190b102cefde941279aed375a41560e907cd9b4c3",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "1",
+      "2",
+      "3"
+    ],
+    "placeholder": false
+  },
+  "fit_points": [
+    {
+      "current": {
+        "value": 0.01,
+        "unit": "A",
+        "conditions": "IF = 10mA",
+        "page_reference": "p. 1",
+        "source_kind": "typical"
+      },
+      "voltage": {
+        "value": 0.9,
+        "unit": "V",
+        "conditions": "IF = 10mA",
+        "page_reference": "p. 1",
+        "source_kind": "typical"
+      }
+    }
+  ],
+  "electrical_limits": {},
+  "derived_model_inputs": {
+    "BV": {
+      "value": 5.6,
+      "unit": "V",
+      "conditions": "IZT = 5mA, Ta=25\u00b0C",
+      "page_reference": "p. 2",
+      "source_kind": "typical"
+    },
+    "IBV": {
+      "value": 0.005,
+      "unit": "A",
+      "conditions": "@ VZ nom = 5.6V",
+      "page_reference": "p. 2",
+      "source_kind": "typical"
+    },
+    "NBV": {
+      "value": 1,
+      "unit": "1",
+      "conditions": "First-order avalanche-knee default; no multi-point reverse-knee trace was available",
+      "page_reference": "model-factory Zener F1 policy",
+      "source_kind": "held_default"
+    }
+  }
+}

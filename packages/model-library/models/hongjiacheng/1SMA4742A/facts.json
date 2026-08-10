@@ -1,0 +1,183 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "schema_version": "1.0.0",
+    "mpn": "1SMA4742A",
+    "manufacturer": "hongjiacheng",
+    "family": "diode",
+    "datasheet_identity": {
+      "title": "1SMA4728A THRU 1SMA4764A SURFACE MOUNT ZENER DIODES",
+      "revision": "1.0",
+      "pages_examined": [
+        "1",
+        "2",
+        "3"
+      ]
+    },
+    "usable_curves": true,
+    "curves": [
+      {
+        "name": "Forward Voltage vs Forward Current",
+        "x_axis": {
+          "quantity": "Forward voltage",
+          "unit": "V",
+          "scale": "linear"
+        },
+        "y_axis": {
+          "quantity": "Forward current",
+          "unit": "A",
+          "scale": "log"
+        },
+        "test_conditions": "Tj=25\u00b0C, Pulsewidth=300\u00b5s, 1% DutyCycle",
+        "page_reference": "3",
+        "points": [
+          {
+            "x": 0.4,
+            "y": 0.008
+          },
+          {
+            "x": 0.6,
+            "y": 0.018
+          },
+          {
+            "x": 0.8,
+            "y": 0.05
+          },
+          {
+            "x": 1,
+            "y": 0.15
+          },
+          {
+            "x": 1.2,
+            "y": 0.6
+          },
+          {
+            "x": 1.4,
+            "y": 2.2
+          },
+          {
+            "x": 1.6,
+            "y": 7
+          }
+        ]
+      }
+    ],
+    "specs": {
+      "variant": "zener",
+      "forward_voltage_points": [
+        {
+          "current": {
+            "value": 0.2,
+            "unit": "A",
+            "conditions": "IF=200mA, Ta=25\u00b0C",
+            "page_reference": "1",
+            "source_kind": "maximum"
+          },
+          "voltage": {
+            "value": 1.5,
+            "unit": "V",
+            "conditions": "IF=200mA, Ta=25\u00b0C",
+            "page_reference": "1",
+            "source_kind": "maximum"
+          }
+        }
+      ],
+      "reverse_current": {
+        "value": 5e-06,
+        "unit": "A",
+        "conditions": "VR=9V, Ta=25\u00b0C",
+        "page_reference": "2",
+        "source_kind": "maximum"
+      },
+      "capacitance": null,
+      "reverse_recovery": null,
+      "breakdown_voltage": {
+        "value": 12,
+        "unit": "V",
+        "conditions": "IZT=21mA, Ta=25\u00b0C",
+        "page_reference": "2",
+        "source_kind": "typical"
+      },
+      "breakdown_current": {
+        "value": 0.021,
+        "unit": "A",
+        "conditions": "VZ=12V, Ta=25\u00b0C",
+        "page_reference": "2",
+        "source_kind": "typical"
+      }
+    },
+    "extraction_notes": [
+      "1SMA4742A is a 1W surface-mount Zener diode in DO-214AC (SMA) package",
+      "Manufacturer: Zhuhai Hongjiacheng Technology Co., Ltd (hongjiacheng)",
+      "Nominal Zener voltage 12V (11.4V min, 12.6V max) at IZT=21mA",
+      "Zener impedance ZZT=9.0\u03a9 at IZT=21mA",
+      "Forward voltage digitized from typical curve Fig.3 (page 3)",
+      "Leakage current IR=5\u00b5A maximum at VR=9V",
+      "Maximum Zener current IZM=79mA",
+      "Thermal resistance R\u03b8J-A=250\u00b0C/W",
+      "Forward curve shows standard silicon diode characteristics with exponential region transition at ~0.6-0.7V"
+    ],
+    "omission_reason": null
+  },
+  "catalog_seed_hints": [],
+  "identity": {
+    "canonical_mpn": "1SMA4742A",
+    "manufacturer": "hongjiacheng",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8564879673646465024",
+    "revision": "1.0",
+    "sha256": "a66d0e20d37b19b6776d33e5d234d792d89e30813774a7dde79429c97d6773dd",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "1",
+      "2",
+      "3"
+    ],
+    "placeholder": false
+  },
+  "fit_points": [
+    {
+      "current": {
+        "value": 0.19,
+        "unit": "A",
+        "conditions": "Conservative F1 package bench at 95% of the cited current; IF=200mA, Ta=25\u00b0C",
+        "page_reference": "p. 1",
+        "source_kind": "maximum"
+      },
+      "voltage": {
+        "value": 1.5,
+        "unit": "V",
+        "conditions": "IF=200mA, Ta=25\u00b0C",
+        "page_reference": "p. 1",
+        "source_kind": "maximum"
+      }
+    }
+  ],
+  "electrical_limits": {},
+  "derived_model_inputs": {
+    "BV": {
+      "value": 12,
+      "unit": "V",
+      "conditions": "IZT=21mA, Ta=25\u00b0C",
+      "page_reference": "p. 2",
+      "source_kind": "typical"
+    },
+    "IBV": {
+      "value": 0.021,
+      "unit": "A",
+      "conditions": "VZ=12V, Ta=25\u00b0C",
+      "page_reference": "p. 2",
+      "source_kind": "typical"
+    },
+    "NBV": {
+      "value": 1,
+      "unit": "1",
+      "conditions": "First-order avalanche-knee default; no multi-point reverse-knee trace was available",
+      "page_reference": "model-factory Zener F1 policy",
+      "source_kind": "held_default"
+    }
+  }
+}
