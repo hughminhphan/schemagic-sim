@@ -1,0 +1,126 @@
+{
+  "schema_version": "1.0.0",
+  "canonical_mpn": "MM3Z3V0",
+  "manufacturer": "hongjiacheng",
+  "description": "diode from hongjiacheng",
+  "electrical_family": "diode",
+  "symbol_pins": [
+    {
+      "name": "A",
+      "number": "1",
+      "role": "anode"
+    },
+    {
+      "name": "K",
+      "number": "2",
+      "role": "cathode"
+    }
+  ],
+  "spice_pin_mapping": [
+    {
+      "symbol_pin_number": "1",
+      "subckt_node": "anode",
+      "order": 1
+    },
+    {
+      "symbol_pin_number": "2",
+      "subckt_node": "cathode",
+      "order": 2
+    }
+  ],
+  "package_variants": [
+    {
+      "name": "SOD-323",
+      "standard": "SOD-323",
+      "pin_count": 2,
+      "pin_map": [
+        {
+          "package_pin": "1",
+          "symbol_pin_number": "1"
+        },
+        {
+          "package_pin": "2",
+          "symbol_pin_number": "2"
+        }
+      ]
+    }
+  ],
+  "ordering_code_aliases": [],
+  "datasheet": {
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8564879399603765248",
+    "revision": "Rev 1.1"
+  },
+  "model_type": "dot_model",
+  "fidelity_tier": "F2",
+  "domain_coverage": {
+    "dc": "fitted",
+    "ac": "none",
+    "transient": "none",
+    "noise": "none",
+    "thermal": "none",
+    "digital": "none"
+  },
+  "supported_analyses": [
+    "operating_point",
+    "dc_sweep"
+  ],
+  "supported_operating_region": {
+    "summary": "F2 curve-fit fidelity is supported only for the selected 25 degC forward DC curve, Typical forward voltage at Ta = 25 degC (p. 3 Fig. 3, Typical Forward Voltage), with a linear forward voltage axis from 0.65 to 1.15 V and a log forward current axis from 0.001 to 0.5 A under forward-current operating points; no independent voltage bias. Separate scalar hard bounds do not extend curve fidelity.",
+    "numeric_bounds": [
+      {
+        "quantity": "forward_voltage",
+        "minimum": 0.65,
+        "maximum": 1.15,
+        "unit": "V",
+        "conditions": "Exact sampled linear x-axis span of the selected fitted 25 degC forward curve",
+        "placeholder": false
+      },
+      {
+        "quantity": "forward_current",
+        "minimum": 0.001,
+        "maximum": 0.5,
+        "unit": "A",
+        "conditions": "Exact sampled log y-axis span of the selected fitted 25 degC forward curve",
+        "placeholder": false
+      },
+      {
+        "quantity": "ambient_temperature",
+        "minimum": 25,
+        "maximum": 25,
+        "unit": "degC",
+        "conditions": "Exact temperature of the selected fitted curve",
+        "placeholder": false
+      }
+    ]
+  },
+  "known_omissions": [
+    "AC, transient, noise, thermal, and package-parasitic behavior are outside this DC-only conveyor package.",
+    "Temperature dependence and self-heating are not modelled; the electrical region is limited to the cited nominal-temperature data.",
+    "Catalog parametrics were used only as initial guesses or F1 fallback constraints and are not datasheet citations.",
+    "F2 curve-fit fidelity is limited to the exact selected 25 degC DC curve, bias, axes, and sampled range named in supported_operating_region; separate scalar hard bounds do not extend the fitted claim.",
+    "Reverse-bias, capacitance, switching, thermal, and temperature-dependence fidelity are outside the F2 curve-fit claim unless separately enforced as a scalar hard bound."
+  ],
+  "licence": {
+    "spdx_id": "MIT",
+    "provenance_basis": "original_from_facts"
+  },
+  "generator": {
+    "tool_or_agent": "opencircuit-model-factory-v0.1.0 bulk-adapter",
+    "date": "2026-08-10"
+  },
+  "reviewer": {
+    "tool_or_agent": "gpt-5.6-sol independent reviewer (batch-6 scale campaign)",
+    "date": "2026-08-11"
+  },
+  "test_results": {
+    "status": "complete",
+    "pass_count": 10,
+    "fail_count": 0,
+    "total_count": 10,
+    "worst_observed_relative_fitting_error": {
+      "value": 0.014044946137030277,
+      "quantity": "forward voltage at 0.01 A"
+    }
+  },
+  "validation_date": "2026-08-11"
+}

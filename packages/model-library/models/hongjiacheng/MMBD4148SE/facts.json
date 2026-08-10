@@ -1,0 +1,358 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [
+      {
+        "name": "Forward instantaneous characteristics, Ta = 25 degC",
+        "page_reference": "p. 2 Fig. 1",
+        "points": [
+          {
+            "x": 0.5,
+            "y": 0.0002
+          },
+          {
+            "x": 0.6,
+            "y": 0.0015
+          },
+          {
+            "x": 0.7,
+            "y": 0.008
+          },
+          {
+            "x": 0.8,
+            "y": 0.03
+          },
+          {
+            "x": 0.9,
+            "y": 0.08
+          },
+          {
+            "x": 1,
+            "y": 0.15
+          },
+          {
+            "x": 1.1,
+            "y": 0.25
+          }
+        ],
+        "test_conditions": "Ta = 25 degC",
+        "x_axis": {
+          "quantity": "forward voltage",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "forward current",
+          "scale": "log",
+          "unit": "A"
+        }
+      },
+      {
+        "name": "Reverse characteristics, Ta = 25 degC",
+        "page_reference": "p. 2 Fig. 2",
+        "points": [
+          {
+            "x": 0,
+            "y": 1e-08
+          },
+          {
+            "x": 20,
+            "y": 1.3e-08
+          },
+          {
+            "x": 40,
+            "y": 1.6e-08
+          },
+          {
+            "x": 60,
+            "y": 1.9e-08
+          },
+          {
+            "x": 80,
+            "y": 2.2e-08
+          }
+        ],
+        "test_conditions": "Ta = 25 degC",
+        "x_axis": {
+          "quantity": "reverse voltage",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "reverse current",
+          "scale": "log",
+          "unit": "A"
+        }
+      },
+      {
+        "name": "Typical junction capacitance",
+        "page_reference": "p. 2 Fig. 3",
+        "points": [
+          {
+            "x": 0,
+            "y": 1.23e-12
+          },
+          {
+            "x": 5,
+            "y": 1.18e-12
+          },
+          {
+            "x": 10,
+            "y": 1.15e-12
+          },
+          {
+            "x": 15,
+            "y": 1.12e-12
+          },
+          {
+            "x": 20,
+            "y": 1.1e-12
+          }
+        ],
+        "test_conditions": "Ta = 25 degC, f = 1 MHz",
+        "x_axis": {
+          "quantity": "reverse voltage",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "terminal capacitance",
+          "scale": "linear",
+          "unit": "F"
+        }
+      }
+    ],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3"
+      ],
+      "revision": "Rev:1.0",
+      "title": "MMBD41418A THRU MMBD4148SE FAST SWITCHING DIODES"
+    },
+    "extraction_notes": [
+      "The reverse-leakage table also specifies a maximum of 25 nA at VR = 25 V; reverse_current records the rated VR = 75 V row.",
+      "No typical electrical-table values are published for this family entry; the plotted Ta = 25 degC characteristics were digitized separately.",
+      "The forward, reverse, and capacitance plots were digitized from the Ta = 25 degC traces without interpolation between reported table rows.",
+      "The p. 1 Maximum Ratings row lists Reverse Breakdown voltage @ IR = 100 uA, symbol V_BR(R), as 75 V. The 100 uA is only the row's test current, not an independently guaranteed breakdown-current limit. Because this maximum-ratings entry has no explicit guaranteed minimum or typical value and is below the separate 100 V VRRM rating, breakdown_voltage and breakdown_current are omitted rather than treating 75 V as a measured maximum or guaranteed breakdown pair."
+    ],
+    "family": "diode",
+    "manufacturer": "hongjiacheng",
+    "mpn": "MMBD4148SE",
+    "omission_reason": null,
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": null,
+      "breakdown_voltage": null,
+      "capacitance": {
+        "conditions": "VR = 0 V, f = 1 MHz, Ta = 25 degC",
+        "page_reference": "p. 2 Electrical Characteristics, total capacitance, MAX column",
+        "source_kind": "maximum",
+        "unit": "F",
+        "value": 4e-12
+      },
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "IF = 10 mA, Ta = 25 degC",
+            "page_reference": "p. 2 Electrical Characteristics, maximum instantaneous forward voltage",
+            "source_kind": "maximum",
+            "unit": "A",
+            "value": 0.01
+          },
+          "voltage": {
+            "conditions": "IF = 10 mA, Ta = 25 degC",
+            "page_reference": "p. 2 Electrical Characteristics, maximum instantaneous forward voltage",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 1
+          }
+        }
+      ],
+      "reverse_current": {
+        "conditions": "VR = 75 V, Ta = 25 degC",
+        "page_reference": "p. 2 Electrical Characteristics, reverse leakage current, MAX column",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 5e-06
+      },
+      "reverse_recovery": {
+        "conditions": "IF = IR = 10 mA, Irr = 0.1 x IR, RL = 100 ohm, VR = 6 V, Ta = 25 degC",
+        "page_reference": "p. 2 Electrical Characteristics, maximum reverse recovery time, MAX column",
+        "source_kind": "maximum",
+        "unit": "s",
+        "value": 4e-09
+      },
+      "variant": "signal"
+    },
+    "usable_curves": true
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "Voltage - Forward(Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "1V@10mA",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "MMBD4148SE",
+    "manufacturer": "hongjiacheng",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8602890545010528256",
+    "revision": "Rev:1.0",
+    "sha256": "c81b6f8e6d7d837d640987ac1f2a7fdf68c918d14a0900c06f449176ba1af73e",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ],
+    "placeholder": false
+  },
+  "fit_points": [
+    {
+      "current": {
+        "value": 0.0002,
+        "unit": "A",
+        "conditions": "Ta = 25 degC",
+        "page_reference": "p. 2 Fig. 1",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 0.5,
+        "unit": "V",
+        "conditions": "Ta = 25 degC",
+        "page_reference": "p. 2 Fig. 1",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 0.0015,
+        "unit": "A",
+        "conditions": "Ta = 25 degC",
+        "page_reference": "p. 2 Fig. 1",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 0.6,
+        "unit": "V",
+        "conditions": "Ta = 25 degC",
+        "page_reference": "p. 2 Fig. 1",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 0.008,
+        "unit": "A",
+        "conditions": "Ta = 25 degC",
+        "page_reference": "p. 2 Fig. 1",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 0.7,
+        "unit": "V",
+        "conditions": "Ta = 25 degC",
+        "page_reference": "p. 2 Fig. 1",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 0.03,
+        "unit": "A",
+        "conditions": "Ta = 25 degC",
+        "page_reference": "p. 2 Fig. 1",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 0.8,
+        "unit": "V",
+        "conditions": "Ta = 25 degC",
+        "page_reference": "p. 2 Fig. 1",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 0.08,
+        "unit": "A",
+        "conditions": "Ta = 25 degC",
+        "page_reference": "p. 2 Fig. 1",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 0.9,
+        "unit": "V",
+        "conditions": "Ta = 25 degC",
+        "page_reference": "p. 2 Fig. 1",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 0.15,
+        "unit": "A",
+        "conditions": "Ta = 25 degC",
+        "page_reference": "p. 2 Fig. 1",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 1,
+        "unit": "V",
+        "conditions": "Ta = 25 degC",
+        "page_reference": "p. 2 Fig. 1",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 0.25,
+        "unit": "A",
+        "conditions": "Ta = 25 degC",
+        "page_reference": "p. 2 Fig. 1",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 1.1,
+        "unit": "V",
+        "conditions": "Ta = 25 degC",
+        "page_reference": "p. 2 Fig. 1",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "conditions": "IF = 10 mA, Ta = 25 degC",
+        "page_reference": "p. 2 Electrical Characteristics, maximum instantaneous forward voltage",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.01
+      },
+      "voltage": {
+        "conditions": "IF = 10 mA, Ta = 25 degC",
+        "page_reference": "p. 2 Electrical Characteristics, maximum instantaneous forward voltage",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 1
+      }
+    }
+  ],
+  "electrical_limits": {
+    "reverse_current_75v": {
+      "conditions": "VR = 75 V, Ta = 25 degC",
+      "page_reference": "p. 2 Electrical Characteristics, reverse leakage current, MAX column",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 5e-06
+    }
+  },
+  "derived_model_inputs": {}
+}

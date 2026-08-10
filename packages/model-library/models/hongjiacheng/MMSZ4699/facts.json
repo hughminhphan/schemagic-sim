@@ -1,0 +1,131 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3"
+      ],
+      "revision": "Rev:1.1",
+      "title": "MMSZ4678 THRU MMSZ4717 Surface Mount Zener Diodes"
+    },
+    "extraction_notes": [
+      "The MMSZ4699 row gives VZ min 11.40 V, nominal 12 V, max 12.60 V at IZT=50 uA, and IR=0.05 uA at VR=9.1 V.",
+      "No diode electrical characteristic curve for the MMSZ4699 variant is published; the page 3 plots are thermal only.",
+      "The public PDF identifies the manufacturer as Zhuhai Hongjiacheng Technology Co., Ltd.; the frozen catalog identity is hongjiacheng."
+    ],
+    "family": "diode",
+    "manufacturer": "hongjiacheng",
+    "mpn": "MMSZ4699",
+    "omission_reason": "No usable electrical diode curve is published for MMSZ4699; only power-derating and transient-thermal plots are present.",
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": {
+        "conditions": "IZT=50 uA; Ta=25 degC",
+        "page_reference": "p. 2 Electrical Characteristics, MMSZ4699 zener voltage test current",
+        "source_kind": "typical",
+        "unit": "A",
+        "value": 5e-05
+      },
+      "breakdown_voltage": {
+        "conditions": "IZT=50 uA; Ta=25 degC; nominal VZ selected",
+        "page_reference": "p. 2 Electrical Characteristics, MMSZ4699 nominal zener voltage",
+        "source_kind": "typical",
+        "unit": "V",
+        "value": 12
+      },
+      "capacitance": null,
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "IF=10 mA; Ta=25 degC",
+            "page_reference": "p. 1 Maximum Ratings, forward voltage",
+            "source_kind": "maximum",
+            "unit": "A",
+            "value": 0.01
+          },
+          "voltage": {
+            "conditions": "IF=10 mA; Ta=25 degC",
+            "page_reference": "p. 1 Maximum Ratings, forward voltage",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 0.9
+          }
+        }
+      ],
+      "reverse_current": {
+        "conditions": "VR=9.1 V; Ta=25 degC",
+        "page_reference": "p. 2 Electrical Characteristics, MMSZ4699 IR@VR",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 5e-08
+      },
+      "reverse_recovery": null,
+      "variant": "zener"
+    },
+    "usable_curves": false
+  },
+  "catalog_seed_hints": [],
+  "identity": {
+    "canonical_mpn": "MMSZ4699",
+    "manufacturer": "hongjiacheng",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8564879469190922240",
+    "revision": "Rev:1.1",
+    "sha256": "accb31a5082801c31d300eecb3d61bfee56dcc595f3d684df640d4a2bef9da13",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ],
+    "placeholder": false
+  },
+  "fit_points": [
+    {
+      "current": {
+        "conditions": "Conservative F1 package bench at 95% of the cited current; IF=10 mA; Ta=25 degC",
+        "page_reference": "p. 1 Maximum Ratings, forward voltage",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.0095
+      },
+      "voltage": {
+        "conditions": "IF=10 mA; Ta=25 degC",
+        "page_reference": "p. 1 Maximum Ratings, forward voltage",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 0.9
+      }
+    }
+  ],
+  "electrical_limits": {},
+  "derived_model_inputs": {
+    "BV": {
+      "conditions": "IZT=50 uA; Ta=25 degC; nominal VZ selected",
+      "page_reference": "p. 2 Electrical Characteristics, MMSZ4699 nominal zener voltage",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 12
+    },
+    "IBV": {
+      "conditions": "IZT=50 uA; Ta=25 degC",
+      "page_reference": "p. 2 Electrical Characteristics, MMSZ4699 zener voltage test current",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 5e-05
+    },
+    "NBV": {
+      "value": 1,
+      "unit": "1",
+      "conditions": "First-order avalanche-knee default; no multi-point reverse-knee trace was available",
+      "page_reference": "model-factory Zener F1 policy",
+      "source_kind": "held_default"
+    }
+  }
+}

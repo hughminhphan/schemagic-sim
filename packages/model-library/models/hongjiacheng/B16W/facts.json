@@ -1,0 +1,238 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [
+      {
+        "name": "Typical instantaneous forward characteristics, Ta=25 degC",
+        "page_reference": "p. 2 Fig. 1, 25 degC curve",
+        "points": [
+          {
+            "x": 0.2,
+            "y": 0.003
+          },
+          {
+            "x": 0.3,
+            "y": 0.05
+          },
+          {
+            "x": 0.4,
+            "y": 0.18
+          },
+          {
+            "x": 0.5,
+            "y": 0.5
+          },
+          {
+            "x": 0.6,
+            "y": 1
+          }
+        ],
+        "test_conditions": "Ta = 25 degC",
+        "x_axis": {
+          "quantity": "forward voltage VF",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "forward current IF",
+          "scale": "log",
+          "unit": "A"
+        }
+      },
+      {
+        "name": "Typical reverse characteristics, Ta=25 degC",
+        "page_reference": "p. 2 Fig. 2, 25 degC curve",
+        "points": [
+          {
+            "x": 0.1,
+            "y": 1.7e-06
+          },
+          {
+            "x": 10,
+            "y": 3.2e-06
+          },
+          {
+            "x": 20,
+            "y": 4e-06
+          },
+          {
+            "x": 30,
+            "y": 5.5e-06
+          },
+          {
+            "x": 40,
+            "y": 8.5e-06
+          },
+          {
+            "x": 50,
+            "y": 1.2e-05
+          },
+          {
+            "x": 60,
+            "y": 2e-05
+          }
+        ],
+        "test_conditions": "Ta = 25 degC",
+        "x_axis": {
+          "quantity": "reverse voltage VR",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "reverse current IR",
+          "scale": "log",
+          "unit": "A"
+        }
+      },
+      {
+        "name": "Typical junction capacitance, Ta=25 degC",
+        "page_reference": "p. 2 Fig. 3",
+        "points": [
+          {
+            "x": 0,
+            "y": 1.27e-10
+          },
+          {
+            "x": 1,
+            "y": 8e-11
+          },
+          {
+            "x": 2,
+            "y": 6.2e-11
+          },
+          {
+            "x": 4,
+            "y": 4.7e-11
+          },
+          {
+            "x": 6,
+            "y": 4e-11
+          },
+          {
+            "x": 8,
+            "y": 3.4e-11
+          },
+          {
+            "x": 10,
+            "y": 2.8e-11
+          }
+        ],
+        "test_conditions": "Ta = 25 degC, f = 1 MHz",
+        "x_axis": {
+          "quantity": "reverse voltage VR",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "terminal capacitance CT",
+          "scale": "linear",
+          "unit": "F"
+        }
+      }
+    ],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3"
+      ],
+      "revision": "Rev:1.0",
+      "title": "B16W SURFACE MOUNT SCHOTTKY BARRIER RECTIFIER"
+    },
+    "extraction_notes": [
+      "Forward, reverse, and capacitance curves are digitized readings from the supplied PDF figures; no interpolation or vendor SPICE data was used.",
+      "The datasheet publishes no reverse-recovery-time or reverse-breakdown-voltage specification."
+    ],
+    "family": "diode",
+    "manufacturer": "hongjiacheng",
+    "mpn": "B16W",
+    "omission_reason": "Reverse recovery and breakdown are not published in the supplied datasheet.",
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": null,
+      "breakdown_voltage": null,
+      "capacitance": {
+        "conditions": "Ta = 25 degC, VR = 4 V, f = 1 MHz",
+        "page_reference": "p. 2 electrical characteristics, capacitance between terminals",
+        "source_kind": "maximum",
+        "unit": "F",
+        "value": 1.2e-10
+      },
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "Ta = 25 degC, IF = 1.0 A",
+            "page_reference": "p. 2 electrical characteristics, maximum forward voltage",
+            "source_kind": "maximum",
+            "unit": "A",
+            "value": 1
+          },
+          "voltage": {
+            "conditions": "Ta = 25 degC, IF = 1.0 A",
+            "page_reference": "p. 2 electrical characteristics, maximum forward voltage",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 0.7
+          }
+        }
+      ],
+      "reverse_current": {
+        "conditions": "Ta = 25 degC, VR = 60 V",
+        "page_reference": "p. 2 electrical characteristics, maximum reverse current",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.0001
+      },
+      "reverse_recovery": null,
+      "variant": "schottky"
+    },
+    "usable_curves": true
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "Voltage - Forward(Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "700mV@1A",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "B16W",
+    "manufacturer": "hongjiacheng",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8602990846287355904",
+    "revision": "Rev:1.0",
+    "sha256": "a070c2ed361edf8154778189987946505db4ce6b9ce8963c497ee1fa5373a02a",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ],
+    "placeholder": false
+  },
+  "fit_points": [
+    {
+      "current": {
+        "conditions": "Conservative F1 package bench at 95% of the cited current; Ta = 25 degC, IF = 1.0 A",
+        "page_reference": "p. 2 electrical characteristics, maximum forward voltage",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.95
+      },
+      "voltage": {
+        "conditions": "Ta = 25 degC, IF = 1.0 A",
+        "page_reference": "p. 2 electrical characteristics, maximum forward voltage",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 0.7
+      }
+    }
+  ],
+  "electrical_limits": {},
+  "derived_model_inputs": {}
+}

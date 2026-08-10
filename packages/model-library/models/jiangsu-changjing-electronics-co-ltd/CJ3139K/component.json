@@ -1,0 +1,148 @@
+{
+  "schema_version": "1.0.0",
+  "canonical_mpn": "CJ3139K",
+  "manufacturer": "Jiangsu Changjing Electronics Technology Co Ltd",
+  "description": "-55℃~+150℃ 1 P-Channel 150mW 15pF 170pF 20V 350mV 520mΩ@4.5V 660mA SOT-723 MOSFETs ROHS",
+  "electrical_family": "pmos",
+  "symbol_pins": [
+    {
+      "name": "G",
+      "number": "1",
+      "role": "gate"
+    },
+    {
+      "name": "D",
+      "number": "2",
+      "role": "drain"
+    },
+    {
+      "name": "S",
+      "number": "3",
+      "role": "source"
+    }
+  ],
+  "spice_pin_mapping": [
+    {
+      "symbol_pin_number": "2",
+      "subckt_node": "drain",
+      "order": 1
+    },
+    {
+      "symbol_pin_number": "1",
+      "subckt_node": "gate",
+      "order": 2
+    },
+    {
+      "symbol_pin_number": "3",
+      "subckt_node": "source",
+      "order": 3
+    }
+  ],
+  "package_variants": [
+    {
+      "name": "SOT-723",
+      "standard": "SOT-723",
+      "pin_count": 3,
+      "pin_map": [
+        {
+          "package_pin": "1",
+          "symbol_pin_number": "1"
+        },
+        {
+          "package_pin": "2",
+          "symbol_pin_number": "2"
+        },
+        {
+          "package_pin": "3",
+          "symbol_pin_number": "3"
+        }
+      ]
+    }
+  ],
+  "ordering_code_aliases": [],
+  "datasheet": {
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8586202711444901888",
+    "revision": "H, Aug 2015"
+  },
+  "model_type": "dot_model",
+  "fidelity_tier": "F2",
+  "domain_coverage": {
+    "dc": "fitted",
+    "ac": "none",
+    "transient": "none",
+    "noise": "none",
+    "thermal": "none",
+    "digital": "none"
+  },
+  "supported_analyses": [
+    "operating_point",
+    "dc_sweep"
+  ],
+  "supported_operating_region": {
+    "summary": "F2 curve-fit fidelity is supported only for the selected 25 degC transfer DC curve, Typical transfer characteristics, TA = 25 degC (p. 3, Typical Characteristics, Transfer Characteristics, TA = 25 degC trace), with a linear |VGS| axis from 0.8 to 3 V and a linear |ID| axis from 0.05 to 2.5 A under |VDS| = 3 V, pulsed, TA = 25 degC, p-channel values plotted as magnitudes. P-channel signs are represented as magnitudes. Separate scalar hard bounds do not extend curve fidelity.",
+    "numeric_bounds": [
+      {
+        "quantity": "gate_source_voltage_magnitude",
+        "minimum": 0.8,
+        "maximum": 3,
+        "unit": "V",
+        "conditions": "Exact sampled linear x-axis span of the selected fitted 25 degC transfer curve",
+        "placeholder": false
+      },
+      {
+        "quantity": "drain_current_magnitude",
+        "minimum": 0.05,
+        "maximum": 2.5,
+        "unit": "A",
+        "conditions": "Exact sampled linear y-axis span of the selected fitted 25 degC transfer curve",
+        "placeholder": false
+      },
+      {
+        "quantity": "drain_source_voltage_magnitude",
+        "minimum": 3,
+        "maximum": 3,
+        "unit": "V",
+        "conditions": "Exact transfer-curve drain-source bias",
+        "placeholder": false
+      },
+      {
+        "quantity": "ambient_temperature",
+        "minimum": 25,
+        "maximum": 25,
+        "unit": "degC",
+        "conditions": "Exact temperature of the selected fitted curve",
+        "placeholder": false
+      }
+    ]
+  },
+  "known_omissions": [
+    "AC, transient, noise, thermal, and package-parasitic behavior are outside this DC-only conveyor package.",
+    "Temperature dependence and self-heating are not modelled; the electrical region is limited to the cited nominal-temperature data.",
+    "Catalog parametrics were used only as initial guesses or F1 fallback constraints and are not datasheet citations.",
+    "F2 curve-fit fidelity is limited to the exact selected 25 degC DC curve, bias, axes, and sampled range named in supported_operating_region; separate scalar hard bounds do not extend the fitted claim.",
+    "Reverse-bias, capacitance, switching, thermal, and temperature-dependence fidelity are outside the F2 curve-fit claim unless separately enforced as a scalar hard bound."
+  ],
+  "licence": {
+    "spdx_id": "MIT",
+    "provenance_basis": "original_from_facts"
+  },
+  "generator": {
+    "tool_or_agent": "opencircuit-model-factory-v0.1.0 bulk-adapter",
+    "date": "2026-08-10"
+  },
+  "reviewer": {
+    "tool_or_agent": "gpt-5.6-sol independent reviewer (batch-6 scale campaign)",
+    "date": "2026-08-11"
+  },
+  "test_results": {
+    "status": "complete",
+    "pass_count": 12,
+    "fail_count": 0,
+    "total_count": 12,
+    "worst_observed_relative_fitting_error": {
+      "value": 0.13670488810166717,
+      "quantity": "transfer current at VGS 3 V"
+    }
+  },
+  "validation_date": "2026-08-11"
+}

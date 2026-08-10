@@ -1,0 +1,206 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [
+      {
+        "name": "Typical forward voltage, SS215-SS220 group",
+        "page_reference": "p. 2 Fig. 3",
+        "points": [
+          {
+            "x": 0.6,
+            "y": 0.01
+          },
+          {
+            "x": 0.65,
+            "y": 0.1
+          },
+          {
+            "x": 0.76,
+            "y": 1
+          },
+          {
+            "x": 0.92,
+            "y": 10
+          },
+          {
+            "x": 1.05,
+            "y": 20
+          },
+          {
+            "x": 1.25,
+            "y": 40
+          },
+          {
+            "x": 1.5,
+            "y": 50
+          }
+        ],
+        "test_conditions": "TJ = 25 degC, pulse width = 300 us, duty cycle = 1%; SS220 is represented by the SS215-SS220 group trace",
+        "x_axis": {
+          "quantity": "forward voltage",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "forward current",
+          "scale": "log",
+          "unit": "A"
+        }
+      },
+      {
+        "name": "Typical reverse characteristics, SS28-SS220 group at 25 degC",
+        "page_reference": "p. 2 Fig. 4",
+        "points": [
+          {
+            "x": 0,
+            "y": 1.5e-06
+          },
+          {
+            "x": 20,
+            "y": 2.2e-06
+          },
+          {
+            "x": 40,
+            "y": 3e-06
+          },
+          {
+            "x": 60,
+            "y": 4e-06
+          },
+          {
+            "x": 80,
+            "y": 5.2e-06
+          },
+          {
+            "x": 100,
+            "y": 1e-05
+          }
+        ],
+        "test_conditions": "TJ = 25 degC; SS220 is represented by the SS28-SS220 group trace; reverse voltage is the plotted percentage of the rated peak reverse voltage",
+        "x_axis": {
+          "quantity": "percent of rated peak reverse voltage",
+          "scale": "linear",
+          "unit": "%"
+        },
+        "y_axis": {
+          "quantity": "reverse current",
+          "scale": "log",
+          "unit": "A"
+        }
+      }
+    ],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3"
+      ],
+      "revision": "Rev. 1.0",
+      "title": "SS22 THRU SS220 SURFACE MOUNT SCHOTTKY BARRIER RECTIFIER"
+    },
+    "extraction_notes": [
+      "The shared datasheet curves identify SS215-SS220 and SS28-SS220 groups rather than an individual SS220 trace; points retain those group semantics.",
+      "The electrical table publishes CJ = 300 pF for the SS28-SS220 group at 4.0 V DC and 1 MHz.",
+      "The electrical table publishes IR = 0.05 mA at rated reverse voltage for the SS28-SS220 group at TA = 25 degC and 10 mA at TA = 100 degC; the structured value preserves the 25 degC maximum.",
+      "The datasheet publishes no reverse-recovery-time row; reverse recovery is omitted."
+    ],
+    "family": "diode",
+    "manufacturer": "hongjiacheng",
+    "mpn": "SS220",
+    "omission_reason": null,
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": null,
+      "breakdown_voltage": null,
+      "capacitance": {
+        "conditions": "VR = 4.0 V DC, f = 1 MHz, TA = 25 degC",
+        "page_reference": "p. 2 Electrical Characteristics, typical junction capacitance, SS28-SS220 group",
+        "source_kind": "typical",
+        "unit": "F",
+        "value": 3e-10
+      },
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "IF = 2.0 A, TA = 25 degC",
+            "page_reference": "p. 2 Electrical Characteristics, maximum instantaneous forward voltage",
+            "source_kind": "maximum",
+            "unit": "A",
+            "value": 2
+          },
+          "voltage": {
+            "conditions": "IF = 2.0 A, TA = 25 degC",
+            "page_reference": "p. 2 Electrical Characteristics, maximum instantaneous forward voltage",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 0.95
+          }
+        }
+      ],
+      "reverse_current": {
+        "conditions": "VR = VDC = 200 V, TA = 25 degC",
+        "page_reference": "p. 2 Electrical Characteristics, maximum DC reverse current at rated DC blocking voltage, SS28-SS220 group",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 5e-05
+      },
+      "reverse_recovery": null,
+      "variant": "schottky"
+    },
+    "usable_curves": true
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "Forward Voltage (Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "0.95V@2.0A",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Voltage - Forward(Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "950mV@2A",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "SS220",
+    "manufacturer": "hongjiacheng",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8590905115254091776",
+    "revision": "Rev. 1.0",
+    "sha256": "dd6685a75cdccbe3a6a290f916cb29ad27e9252703862dc167c4967c2ff12bf4",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ],
+    "placeholder": false
+  },
+  "fit_points": [
+    {
+      "current": {
+        "conditions": "Conservative F1 package bench at 95% of the cited current; IF = 2.0 A, TA = 25 degC",
+        "page_reference": "p. 2 Electrical Characteristics, maximum instantaneous forward voltage",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 1.9
+      },
+      "voltage": {
+        "conditions": "IF = 2.0 A, TA = 25 degC",
+        "page_reference": "p. 2 Electrical Characteristics, maximum instantaneous forward voltage",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 0.95
+      }
+    }
+  ],
+  "electrical_limits": {},
+  "derived_model_inputs": {}
+}

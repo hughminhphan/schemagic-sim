@@ -1,0 +1,374 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [
+      {
+        "name": "continuous_drain_current_vs_case_temperature",
+        "page_reference": "p. 1 Fig. 1",
+        "points": [
+          {
+            "x": 25,
+            "y": 8
+          },
+          {
+            "x": 50,
+            "y": 7
+          },
+          {
+            "x": 75,
+            "y": 6.2
+          },
+          {
+            "x": 100,
+            "y": 5
+          },
+          {
+            "x": 125,
+            "y": 3.5
+          },
+          {
+            "x": 150,
+            "y": 0
+          }
+        ],
+        "test_conditions": "VGS=10 V; continuous drain current rating",
+        "x_axis": {
+          "quantity": "TC",
+          "scale": "linear",
+          "unit": "degC"
+        },
+        "y_axis": {
+          "quantity": "ID",
+          "scale": "linear",
+          "unit": "A"
+        }
+      },
+      {
+        "name": "normalized_rdson_vs_junction_temperature",
+        "page_reference": "p. 3 Fig. 2",
+        "points": [
+          {
+            "x": -50,
+            "y": 0.7
+          },
+          {
+            "x": 0,
+            "y": 0.88
+          },
+          {
+            "x": 50,
+            "y": 1.12
+          },
+          {
+            "x": 100,
+            "y": 1.4
+          },
+          {
+            "x": 150,
+            "y": 1.75
+          }
+        ],
+        "test_conditions": "ID=3 A; VDS=32 V; typical performance",
+        "x_axis": {
+          "quantity": "TJ",
+          "scale": "linear",
+          "unit": "degC"
+        },
+        "y_axis": {
+          "quantity": "normalized RDS(on)",
+          "scale": "linear",
+          "unit": "1"
+        }
+      },
+      {
+        "name": "normalized_threshold_vs_junction_temperature",
+        "page_reference": "p. 3 Fig. 3",
+        "points": [
+          {
+            "x": -50,
+            "y": 1.08
+          },
+          {
+            "x": 0,
+            "y": 1.03
+          },
+          {
+            "x": 50,
+            "y": 0.95
+          },
+          {
+            "x": 100,
+            "y": 0.82
+          },
+          {
+            "x": 150,
+            "y": 0.67
+          }
+        ],
+        "test_conditions": "Typical performance",
+        "x_axis": {
+          "quantity": "TJ",
+          "scale": "linear",
+          "unit": "degC"
+        },
+        "y_axis": {
+          "quantity": "normalized VGS(th)",
+          "scale": "linear",
+          "unit": "1"
+        }
+      },
+      {
+        "name": "gate_charge_waveform",
+        "page_reference": "p. 3 Fig. 4",
+        "points": [
+          {
+            "x": 0,
+            "y": 0
+          },
+          {
+            "x": 1.5,
+            "y": 3
+          },
+          {
+            "x": 4.5,
+            "y": 3
+          },
+          {
+            "x": 6,
+            "y": 4.2
+          },
+          {
+            "x": 9,
+            "y": 7.8
+          },
+          {
+            "x": 11,
+            "y": 10
+          }
+        ],
+        "test_conditions": "VDS=32 V; ID=3 A; typical performance",
+        "x_axis": {
+          "quantity": "Qg",
+          "scale": "linear",
+          "unit": "nC"
+        },
+        "y_axis": {
+          "quantity": "VGS",
+          "scale": "linear",
+          "unit": "V"
+        }
+      }
+    ],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3",
+        "p. 4"
+      ],
+      "revision": "undated",
+      "title": "AO4882 40V Dual N-Channel MOSFETs"
+    },
+    "extraction_notes": [
+      "The supplied AO4882 PDF is a scanned datasheet with no embedded text or printed revision/date.",
+      "The curves are transcribed from the supplied typical-performance plots; the device is specified as dual n-channel."
+    ],
+    "family": "mosfet",
+    "manufacturer": "TECH PUBLIC",
+    "mpn": "AO4882",
+    "omission_reason": null,
+    "schema_version": "1.0.0",
+    "specs": {
+      "body_diode": {
+        "conditions": "VGS=0 V; IS=1 A; TJ=25 degC",
+        "page_reference": "p. 2 Drain-Source Diode Characteristics, VSD, MAX",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 1
+      },
+      "breakdown_voltage": {
+        "conditions": "VGS=0 V; ID=250 uA; TJ=25 degC",
+        "page_reference": "p. 2 Electrical Characteristics, BVDSS, MIN",
+        "source_kind": "minimum",
+        "unit": "V",
+        "value": 40
+      },
+      "ciss": {
+        "conditions": "VGS=0 V; VDS=25 V; f=1 MHz; TJ=25 degC",
+        "page_reference": "p. 2 Electrical Characteristics, CISS, TYP",
+        "source_kind": "typical",
+        "unit": "F",
+        "value": 7.24e-10
+      },
+      "coss": {
+        "conditions": "VGS=0 V; VDS=25 V; f=1 MHz; TJ=25 degC",
+        "page_reference": "p. 2 Electrical Characteristics, COSS, TYP",
+        "source_kind": "typical",
+        "unit": "F",
+        "value": 7e-11
+      },
+      "crss": {
+        "conditions": "VGS=0 V; VDS=25 V; f=1 MHz; TJ=25 degC",
+        "page_reference": "p. 2 Electrical Characteristics, CRSS, TYP",
+        "source_kind": "typical",
+        "unit": "F",
+        "value": 1.09e-10
+      },
+      "polarity": "n",
+      "rdson_points": [
+        {
+          "current": {
+            "conditions": "VGS=10 V; TJ=25 degC",
+            "page_reference": "p. 2 Electrical Characteristics, RDS(ON) condition",
+            "source_kind": "maximum",
+            "unit": "A",
+            "value": 8
+          },
+          "resistance": {
+            "conditions": "VGS=10 V; ID=8 A; TJ=25 degC",
+            "page_reference": "p. 2 Electrical Characteristics, RDS(ON), MAX",
+            "source_kind": "maximum",
+            "unit": "ohm",
+            "value": 0.02
+          },
+          "vgs": {
+            "conditions": "ID=8 A; TJ=25 degC",
+            "page_reference": "p. 2 Electrical Characteristics, RDS(ON) condition",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 10
+          }
+        },
+        {
+          "current": {
+            "conditions": "VGS=4.5 V; TJ=25 degC",
+            "page_reference": "p. 2 Electrical Characteristics, RDS(ON) condition",
+            "source_kind": "maximum",
+            "unit": "A",
+            "value": 4
+          },
+          "resistance": {
+            "conditions": "VGS=4.5 V; ID=4 A; TJ=25 degC",
+            "page_reference": "p. 2 Electrical Characteristics, RDS(ON), MAX",
+            "source_kind": "maximum",
+            "unit": "ohm",
+            "value": 0.025
+          },
+          "vgs": {
+            "conditions": "ID=4 A; TJ=25 degC",
+            "page_reference": "p. 2 Electrical Characteristics, RDS(ON) condition",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 4.5
+          }
+        }
+      ],
+      "threshold_max": {
+        "conditions": "VGS=VDS; ID=250 uA; TJ=25 degC",
+        "page_reference": "p. 2 Electrical Characteristics, VGS(th), MAX",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 2.5
+      },
+      "threshold_min": {
+        "conditions": "VGS=VDS; ID=250 uA; TJ=25 degC",
+        "page_reference": "p. 2 Electrical Characteristics, VGS(th), MIN",
+        "source_kind": "minimum",
+        "unit": "V",
+        "value": 1.2
+      },
+      "threshold_typ": {
+        "conditions": "VGS=VDS; ID=250 uA; TJ=25 degC",
+        "page_reference": "p. 2 Electrical Characteristics, VGS(th), TYP",
+        "source_kind": "typical",
+        "unit": "V",
+        "value": 1.6
+      }
+    },
+    "usable_curves": true
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "Gate Threshold Voltage (Vgs(th))",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.threshold",
+      "raw_value": "2.5V",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Input Capacitance(Ciss)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.ciss",
+      "raw_value": "1.45nF",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Output Capacitance(Coss)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.coss",
+      "raw_value": "140pF",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "RDS(on)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.rds_on",
+      "raw_value": "25m\u03a9@4.5V",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Reverse Transfer Capacitance (Crss@Vds)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.crss",
+      "raw_value": "220pF",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "AO4882",
+    "manufacturer": "TECH PUBLIC",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8590234931319644160",
+    "revision": "undated",
+    "sha256": "b110fcf2068887432d33f8e527e7587e94b0003b8e2e899d2d47618634533963",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "placeholder": false
+  },
+  "rdson_points": [
+    {
+      "current": {
+        "conditions": "VGS=10 V; TJ=25 degC",
+        "page_reference": "p. 2 Electrical Characteristics, RDS(ON) condition",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 8
+      },
+      "resistance": {
+        "conditions": "VGS=10 V; ID=8 A; TJ=25 degC",
+        "page_reference": "p. 2 Electrical Characteristics, RDS(ON), MAX",
+        "source_kind": "maximum",
+        "unit": "ohm",
+        "value": 0.02
+      },
+      "vgs": {
+        "conditions": "ID=8 A; TJ=25 degC",
+        "page_reference": "p. 2 Electrical Characteristics, RDS(ON) condition",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 10
+      }
+    }
+  ],
+  "threshold": null,
+  "transfer_points": [],
+  "output_points": []
+}

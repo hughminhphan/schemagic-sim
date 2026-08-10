@@ -1,0 +1,494 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [
+      {
+        "name": "Typical output characteristics, |VGS| = 2.5 V",
+        "page_reference": "p. 3, Typical Characteristics, Output Characteristics, |VGS| = 2.5 V trace",
+        "points": [
+          {
+            "x": 0.2,
+            "y": 0.45
+          },
+          {
+            "x": 0.5,
+            "y": 1
+          },
+          {
+            "x": 1,
+            "y": 1.6
+          },
+          {
+            "x": 2,
+            "y": 2.1
+          },
+          {
+            "x": 3,
+            "y": 2.25
+          },
+          {
+            "x": 5,
+            "y": 2.35
+          }
+        ],
+        "test_conditions": "TA = 25 degC, pulsed, p-channel values plotted as magnitudes, |VGS| = 2.5 V",
+        "x_axis": {
+          "quantity": "|VDS|",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "|ID|",
+          "scale": "linear",
+          "unit": "A"
+        }
+      },
+      {
+        "name": "Typical transfer characteristics, TA = 25 degC",
+        "page_reference": "p. 3, Typical Characteristics, Transfer Characteristics, TA = 25 degC trace",
+        "points": [
+          {
+            "x": 0.8,
+            "y": 0.05
+          },
+          {
+            "x": 1,
+            "y": 0.15
+          },
+          {
+            "x": 1.2,
+            "y": 0.35
+          },
+          {
+            "x": 1.5,
+            "y": 0.7
+          },
+          {
+            "x": 2,
+            "y": 1.3
+          },
+          {
+            "x": 2.5,
+            "y": 2
+          },
+          {
+            "x": 3,
+            "y": 2.5
+          }
+        ],
+        "test_conditions": "|VDS| = 3 V, pulsed, TA = 25 degC, p-channel values plotted as magnitudes",
+        "x_axis": {
+          "quantity": "|VGS|",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "|ID|",
+          "scale": "linear",
+          "unit": "A"
+        }
+      },
+      {
+        "name": "Typical on-resistance versus drain current, |VGS| = 4.5 V",
+        "page_reference": "p. 3, Typical Characteristics, RDS(ON) - ID, |VGS| = 4.5 V trace",
+        "points": [
+          {
+            "x": 0.5,
+            "y": 0.44
+          },
+          {
+            "x": 0.8,
+            "y": 0.45
+          },
+          {
+            "x": 1,
+            "y": 0.46
+          },
+          {
+            "x": 1.2,
+            "y": 0.47
+          }
+        ],
+        "test_conditions": "TA = 25 degC, pulsed, |VGS| = 4.5 V",
+        "x_axis": {
+          "quantity": "|ID|",
+          "scale": "linear",
+          "unit": "A"
+        },
+        "y_axis": {
+          "quantity": "RDS(on)",
+          "scale": "linear",
+          "unit": "ohm"
+        }
+      },
+      {
+        "name": "Typical source-drain diode forward voltage, TA = 25 degC",
+        "page_reference": "p. 3, Typical Characteristics, IS - VSD, TA = 25 degC trace",
+        "points": [
+          {
+            "x": 0.5,
+            "y": 0.01
+          },
+          {
+            "x": 0.6,
+            "y": 0.04
+          },
+          {
+            "x": 0.7,
+            "y": 0.1
+          },
+          {
+            "x": 0.8,
+            "y": 0.25
+          },
+          {
+            "x": 1,
+            "y": 0.8
+          },
+          {
+            "x": 1.2,
+            "y": 1.8
+          }
+        ],
+        "test_conditions": "Pulsed, TA = 25 degC, p-channel values plotted as magnitudes",
+        "x_axis": {
+          "quantity": "|VSD|",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "|IS|",
+          "scale": "log",
+          "unit": "A"
+        }
+      }
+    ],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3",
+        "p. 4",
+        "p. 5"
+      ],
+      "revision": "H, Aug 2015",
+      "title": "CJ3139K P-Channel MOSFET"
+    },
+    "extraction_notes": [
+      "The p-channel signs are preserved in threshold, drain-current, drain-source-voltage, and body-diode scalar fields; curve axes use magnitudes explicitly labelled with | |.",
+      "RDS(on) table values are typical 0.430 ohm at -4.5 V/-1 A, 0.624 ohm at -2.5 V/-0.8 A, and 0.950 ohm at -1.8 V/-0.5 A; corresponding maximum values are 0.520, 0.700, and not separately tabulated.",
+      "The datasheet publishes switching times and gate leakage, but these are not represented by the strict extraction schema.",
+      "Curve points are direct readings from the published typical plots; no vendor SPICE model or fitted curve was used."
+    ],
+    "family": "mosfet",
+    "manufacturer": "Jiangsu Changjing Electronics Technology Co Ltd",
+    "mpn": "CJ3139K",
+    "omission_reason": null,
+    "schema_version": "1.0.0",
+    "specs": {
+      "body_diode": {
+        "conditions": "IS = -0.5 A, VGS = 0 V, TA = 25 degC",
+        "page_reference": "p. 2, Electrical Characteristics, VSD",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": -1.2
+      },
+      "breakdown_voltage": {
+        "conditions": "VGS = 0 V, ID = -250 uA, TA = 25 degC",
+        "page_reference": "p. 2, Electrical Characteristics, V(BR)DSS",
+        "source_kind": "minimum",
+        "unit": "V",
+        "value": -20
+      },
+      "ciss": {
+        "conditions": "VDS = -16 V, VGS = 0 V, f = 1 MHz, TA = 25 degC; typical, MAX = 170 pF",
+        "page_reference": "p. 2, Dynamic Electrical Characteristics, Ciss",
+        "source_kind": "typical",
+        "unit": "F",
+        "value": 1.13e-10
+      },
+      "coss": {
+        "conditions": "VDS = -16 V, VGS = 0 V, f = 1 MHz, TA = 25 degC; typical, MAX = 25 pF",
+        "page_reference": "p. 2, Dynamic Electrical Characteristics, Coss",
+        "source_kind": "typical",
+        "unit": "F",
+        "value": 1.5e-11
+      },
+      "crss": {
+        "conditions": "VDS = -16 V, VGS = 0 V, f = 1 MHz, TA = 25 degC; typical, MAX = 15 pF",
+        "page_reference": "p. 2, Dynamic Electrical Characteristics, Crss",
+        "source_kind": "typical",
+        "unit": "F",
+        "value": 9e-12
+      },
+      "polarity": "p",
+      "rdson_points": [
+        {
+          "current": {
+            "conditions": "VGS = -4.5 V, TA = 25 degC, pulse test",
+            "page_reference": "p. 2, Electrical Characteristics, RDS(on) row",
+            "source_kind": "typical",
+            "unit": "A",
+            "value": -1
+          },
+          "resistance": {
+            "conditions": "VGS = -4.5 V, ID = -1 A, TA = 25 degC; typical, MAX = 0.520 ohm",
+            "page_reference": "p. 2, Electrical Characteristics, RDS(on) row",
+            "source_kind": "typical",
+            "unit": "ohm",
+            "value": 0.43
+          },
+          "vgs": {
+            "conditions": "ID = -1 A, TA = 25 degC, pulse test",
+            "page_reference": "p. 2, Electrical Characteristics, RDS(on) row",
+            "source_kind": "typical",
+            "unit": "V",
+            "value": -4.5
+          }
+        },
+        {
+          "current": {
+            "conditions": "VGS = -2.5 V, TA = 25 degC, pulse test",
+            "page_reference": "p. 2, Electrical Characteristics, RDS(on) row",
+            "source_kind": "typical",
+            "unit": "A",
+            "value": -0.8
+          },
+          "resistance": {
+            "conditions": "VGS = -2.5 V, ID = -0.8 A, TA = 25 degC; typical, MAX = 0.700 ohm",
+            "page_reference": "p. 2, Electrical Characteristics, RDS(on) row",
+            "source_kind": "typical",
+            "unit": "ohm",
+            "value": 0.624
+          },
+          "vgs": {
+            "conditions": "ID = -0.8 A, TA = 25 degC, pulse test",
+            "page_reference": "p. 2, Electrical Characteristics, RDS(on) row",
+            "source_kind": "typical",
+            "unit": "V",
+            "value": -2.5
+          }
+        },
+        {
+          "current": {
+            "conditions": "VGS = -1.8 V, TA = 25 degC, pulse test",
+            "page_reference": "p. 2, Electrical Characteristics, RDS(on) row",
+            "source_kind": "typical",
+            "unit": "A",
+            "value": -0.5
+          },
+          "resistance": {
+            "conditions": "VGS = -1.8 V, ID = -0.5 A, TA = 25 degC; typical value as plotted, no tabulated typical column",
+            "page_reference": "p. 3, Typical Characteristics, RDS(ON) - ID, |VGS| = 1.8 V trace",
+            "source_kind": "typical",
+            "unit": "ohm",
+            "value": 0.95
+          },
+          "vgs": {
+            "conditions": "ID = -0.5 A, TA = 25 degC, TA = 25 degC, pulse test",
+            "page_reference": "p. 2, Electrical Characteristics, RDS(on) row",
+            "source_kind": "typical",
+            "unit": "V",
+            "value": -1.8
+          }
+        }
+      ],
+      "threshold_max": {
+        "conditions": "VDS = VGS, ID = -250 uA, TA = 25 degC",
+        "page_reference": "p. 2, Electrical Characteristics, VGS(th), MAX",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": -0.6
+      },
+      "threshold_min": {
+        "conditions": "VDS = VGS, ID = -250 uA, TA = 25 degC",
+        "page_reference": "p. 2, Electrical Characteristics, VGS(th), MIN",
+        "source_kind": "minimum",
+        "unit": "V",
+        "value": -0.35
+      },
+      "threshold_typ": {
+        "conditions": "VDS = VGS, ID = -250 uA, TA = 25 degC",
+        "page_reference": "p. 2, Electrical Characteristics, VGS(th), TYP",
+        "source_kind": "typical",
+        "unit": "V",
+        "value": -0.45
+      }
+    },
+    "usable_curves": true
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "Drain Source On Resistance (RDS(on)@Vgs,Id)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.rds_on",
+      "raw_value": "520m\u03a9@4.5V,0.66A",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Gate Threshold Voltage (Vgs(th))",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.threshold",
+      "raw_value": "350mV",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Gate Threshold Voltage (Vgs(th)@Id)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.threshold",
+      "raw_value": "0.35V@250uA",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Input Capacitance (Ciss@Vds)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.ciss",
+      "raw_value": "170pF@16V",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Input Capacitance(Ciss)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.ciss",
+      "raw_value": "170pF",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "RDS(on)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.rds_on",
+      "raw_value": "520m\u03a9@4.5V",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Reverse Transfer Capacitance (Crss@Vds)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.crss",
+      "raw_value": "15pF@16V",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "CJ3139K",
+    "manufacturer": "Jiangsu Changjing Electronics Technology Co Ltd",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8586202711444901888",
+    "revision": "H, Aug 2015",
+    "sha256": "857efdd0157336e9f6d414702e11a656f33f84396721129aa6e1b28722c6ac1e",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4",
+      "p. 5"
+    ],
+    "placeholder": false
+  },
+  "rdson_points": [
+    {
+      "current": {
+        "conditions": "VGS = -4.5 V, TA = 25 degC, pulse test",
+        "page_reference": "p. 2, Electrical Characteristics, RDS(on) row",
+        "source_kind": "typical",
+        "unit": "A",
+        "value": 1
+      },
+      "resistance": {
+        "conditions": "VGS = -4.5 V, ID = -1 A, TA = 25 degC; typical, MAX = 0.520 ohm",
+        "page_reference": "p. 2, Electrical Characteristics, RDS(on) row",
+        "source_kind": "typical",
+        "unit": "ohm",
+        "value": 0.43
+      },
+      "vgs": {
+        "conditions": "ID = -1 A, TA = 25 degC, pulse test",
+        "page_reference": "p. 2, Electrical Characteristics, RDS(on) row",
+        "source_kind": "typical",
+        "unit": "V",
+        "value": 4.5
+      }
+    },
+    {
+      "current": {
+        "conditions": "VGS = -2.5 V, TA = 25 degC, pulse test",
+        "page_reference": "p. 2, Electrical Characteristics, RDS(on) row",
+        "source_kind": "typical",
+        "unit": "A",
+        "value": 0.8
+      },
+      "resistance": {
+        "conditions": "VGS = -2.5 V, ID = -0.8 A, TA = 25 degC; typical, MAX = 0.700 ohm",
+        "page_reference": "p. 2, Electrical Characteristics, RDS(on) row",
+        "source_kind": "typical",
+        "unit": "ohm",
+        "value": 0.624
+      },
+      "vgs": {
+        "conditions": "ID = -0.8 A, TA = 25 degC, pulse test",
+        "page_reference": "p. 2, Electrical Characteristics, RDS(on) row",
+        "source_kind": "typical",
+        "unit": "V",
+        "value": 2.5
+      }
+    },
+    {
+      "current": {
+        "conditions": "VGS = -1.8 V, TA = 25 degC, pulse test",
+        "page_reference": "p. 2, Electrical Characteristics, RDS(on) row",
+        "source_kind": "typical",
+        "unit": "A",
+        "value": 0.5
+      },
+      "resistance": {
+        "conditions": "VGS = -1.8 V, ID = -0.5 A, TA = 25 degC; typical value as plotted, no tabulated typical column",
+        "page_reference": "p. 3, Typical Characteristics, RDS(ON) - ID, |VGS| = 1.8 V trace",
+        "source_kind": "typical",
+        "unit": "ohm",
+        "value": 0.95
+      },
+      "vgs": {
+        "conditions": "ID = -0.5 A, TA = 25 degC, TA = 25 degC, pulse test",
+        "page_reference": "p. 2, Electrical Characteristics, RDS(on) row",
+        "source_kind": "typical",
+        "unit": "V",
+        "value": 1.8
+      }
+    }
+  ],
+  "threshold": {
+    "minimum": {
+      "conditions": "VDS = VGS, ID = -250 uA, TA = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, VGS(th), MIN",
+      "source_kind": "minimum",
+      "unit": "V",
+      "value": 0.35
+    },
+    "typical": {
+      "conditions": "VDS = VGS, ID = -250 uA, TA = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, VGS(th), TYP",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 0.45
+    },
+    "maximum": {
+      "conditions": "VDS = VGS, ID = -250 uA, TA = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, VGS(th), MAX",
+      "source_kind": "maximum",
+      "unit": "V",
+      "value": 0.6
+    },
+    "test_current": {
+      "value": 0.00025,
+      "unit": "A",
+      "conditions": "VDS = VGS, ID = -250 uA, TA = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, VGS(th), TYP",
+      "source_kind": "typical"
+    }
+  },
+  "transfer_points": [],
+  "output_points": []
+}

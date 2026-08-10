@@ -1,0 +1,298 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [
+      {
+        "name": "Typical instantaneous forward characteristics, TA = 25 degC",
+        "page_reference": "p. 2 Fig. 1, TA = 25 degC curve",
+        "points": [
+          {
+            "x": 0.4,
+            "y": 1e-05
+          },
+          {
+            "x": 0.46,
+            "y": 3e-05
+          },
+          {
+            "x": 0.5,
+            "y": 0.0001
+          },
+          {
+            "x": 0.56,
+            "y": 0.0003
+          },
+          {
+            "x": 0.62,
+            "y": 0.001
+          },
+          {
+            "x": 0.7,
+            "y": 0.003
+          },
+          {
+            "x": 0.78,
+            "y": 0.01
+          },
+          {
+            "x": 0.86,
+            "y": 0.03
+          },
+          {
+            "x": 0.94,
+            "y": 0.1
+          }
+        ],
+        "test_conditions": "TA = 25 degC",
+        "x_axis": {
+          "quantity": "VF",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "IF",
+          "scale": "log",
+          "unit": "A"
+        }
+      },
+      {
+        "name": "Typical reverse characteristics, TA = 25 degC",
+        "page_reference": "p. 2 Fig. 2, TA = 25 degC curve",
+        "points": [
+          {
+            "x": 5,
+            "y": 9e-09
+          },
+          {
+            "x": 20,
+            "y": 1.2e-08
+          },
+          {
+            "x": 40,
+            "y": 1.5e-08
+          },
+          {
+            "x": 60,
+            "y": 1.8e-08
+          },
+          {
+            "x": 80,
+            "y": 2e-08
+          }
+        ],
+        "test_conditions": "TA = 25 degC",
+        "x_axis": {
+          "quantity": "VR",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "IR",
+          "scale": "log",
+          "unit": "A"
+        }
+      },
+      {
+        "name": "Typical reverse characteristics, TA = 100 degC",
+        "page_reference": "p. 2 Fig. 2, TA = 100 degC curve",
+        "points": [
+          {
+            "x": 5,
+            "y": 4e-07
+          },
+          {
+            "x": 20,
+            "y": 4.7e-07
+          },
+          {
+            "x": 40,
+            "y": 5.2e-07
+          },
+          {
+            "x": 60,
+            "y": 5.5e-07
+          },
+          {
+            "x": 80,
+            "y": 5.8e-07
+          }
+        ],
+        "test_conditions": "TA = 100 degC",
+        "x_axis": {
+          "quantity": "VR",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "IR",
+          "scale": "log",
+          "unit": "A"
+        }
+      },
+      {
+        "name": "Typical junction capacitance",
+        "page_reference": "p. 2 Fig. 3",
+        "points": [
+          {
+            "x": 0,
+            "y": 1.1e-12
+          },
+          {
+            "x": 2,
+            "y": 1.05e-12
+          },
+          {
+            "x": 5,
+            "y": 1.01e-12
+          },
+          {
+            "x": 10,
+            "y": 9.8e-13
+          },
+          {
+            "x": 15,
+            "y": 9.6e-13
+          },
+          {
+            "x": 20,
+            "y": 9.5e-13
+          }
+        ],
+        "test_conditions": "TA = 25 degC; f = 1 MHz",
+        "x_axis": {
+          "quantity": "VR",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "CT",
+          "scale": "linear",
+          "unit": "F"
+        }
+      }
+    ],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3"
+      ],
+      "revision": "Rev:1.0",
+      "title": "1SS400 FAST SWITCHING DIODES"
+    },
+    "extraction_notes": [
+      "The reverse-breakdown entry is the minimum guaranteed reverse breakdown voltage V(BR)R = 80 V at the specified test current IR = 100 uA; the row appears in the datasheet's Maximum Ratings table but is not a maximum constraint.",
+      "The paired breakdown current records the test current for that minimum V(BR)R guarantee, not a separately rated current limit.",
+      "Curve points are approximate readings from the plotted TA = 25 degC and TA = 100 degC traces."
+    ],
+    "family": "diode",
+    "manufacturer": "hongjiacheng",
+    "mpn": "1SS400",
+    "omission_reason": null,
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": {
+        "conditions": "Test current paired with the minimum reverse breakdown voltage, IR = 100 uA, TA = 25 degC",
+        "page_reference": "p. 1 Maximum Ratings, Reverse Breakdown voltage @IR = 100 uA",
+        "source_kind": "minimum",
+        "unit": "A",
+        "value": 0.0001
+      },
+      "breakdown_voltage": {
+        "conditions": "IR = 100 uA, TA = 25 degC; minimum reverse breakdown voltage V(BR)R",
+        "page_reference": "p. 1 Maximum Ratings, Reverse Breakdown voltage @IR = 100 uA",
+        "source_kind": "minimum",
+        "unit": "V",
+        "value": 80
+      },
+      "capacitance": {
+        "conditions": "VR = 0 V, f = 1 MHz",
+        "page_reference": "p. 2 Electrical Characteristics",
+        "source_kind": "typical",
+        "unit": "F",
+        "value": 3e-12
+      },
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "IF = 100 mA, TA = 25 degC",
+            "page_reference": "p. 2 Electrical Characteristics",
+            "source_kind": "maximum",
+            "unit": "A",
+            "value": 0.1
+          },
+          "voltage": {
+            "conditions": "IF = 100 mA, TA = 25 degC",
+            "page_reference": "p. 2 Electrical Characteristics",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 1.2
+          }
+        }
+      ],
+      "reverse_current": {
+        "conditions": "VR = 80 V, TA = 25 degC",
+        "page_reference": "p. 2 Electrical Characteristics",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 1e-07
+      },
+      "reverse_recovery": {
+        "conditions": "IF = 10 mA, VR = 6 V, Irr = 0.1 x IR, RL = 100 ohm",
+        "page_reference": "p. 2 Electrical Characteristics",
+        "source_kind": "maximum",
+        "unit": "s",
+        "value": 4e-09
+      },
+      "variant": "signal"
+    },
+    "usable_curves": true
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "Voltage - Forward(Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "1.2V@100mA",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "1SS400",
+    "manufacturer": "hongjiacheng",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8602990867712131072",
+    "revision": "Rev:1.0",
+    "sha256": "facf708820535b6c2810b6638302596738bf18a5a07a206ed34362c45cd50606",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ],
+    "placeholder": false
+  },
+  "fit_points": [
+    {
+      "current": {
+        "conditions": "Conservative F1 package bench at 95% of the cited current; IF = 100 mA, TA = 25 degC",
+        "page_reference": "p. 2 Electrical Characteristics",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.095
+      },
+      "voltage": {
+        "conditions": "IF = 100 mA, TA = 25 degC",
+        "page_reference": "p. 2 Electrical Characteristics",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 1.2
+      }
+    }
+  ],
+  "electrical_limits": {},
+  "derived_model_inputs": {}
+}

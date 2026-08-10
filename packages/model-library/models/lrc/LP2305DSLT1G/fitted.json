@@ -1,0 +1,142 @@
+{
+  "schema_version": "1.0.0",
+  "fidelity_tier": "F2",
+  "parameters": {
+    "VTO": 0.9050088311102548,
+    "KP": 38.23094481397913,
+    "THETA": 8.093755781649446e-11,
+    "LAMBDA": 9.678692160639464e-13,
+    "RD": 0.04696849592645476,
+    "RS": 0.013600000000000001,
+    "RG": 0.0001,
+    "CGS": 1.0349999999999998e-9,
+    "CGDMAX": 2.1e-10,
+    "CGDMIN": 2.1e-10,
+    "CJO": 1.65e-10,
+    "IS": 1e-12,
+    "N": 1.5,
+    "RB": 0.013600000000000001
+  },
+  "fitter": "scipy.optimize.least_squares with native ngspice-46 evaluations",
+  "optimizer": {
+    "optimizer_nfev": 67,
+    "optimizer_status": 3,
+    "held_defaults": [
+      {
+        "parameter": "VTO",
+        "value": 0.9050088311102548,
+        "reason": "strong-inversion extrapolated threshold sits 0.105 V above the published VGS(th) maximum of 0.8 V, within the 0.24 V extrapolation margin; VGS(th) is measured at a small drain current and is not the square-law VTO"
+      },
+      {
+        "parameter": "THETA",
+        "value": 8.093755781649446e-11,
+        "reason": "no mobility degradation is resolvable from the digitised transfer range"
+      },
+      {
+        "parameter": "LAMBDA",
+        "value": 9.678692160639464e-13,
+        "reason": "no channel-length modulation is resolvable from the digitised output range"
+      }
+    ]
+  },
+  "held_defaults": [
+    {
+      "parameter": "VTO",
+      "value": 0.9050088311102548,
+      "reason": "strong-inversion extrapolated threshold sits 0.105 V above the published VGS(th) maximum of 0.8 V, within the 0.24 V extrapolation margin; VGS(th) is measured at a small drain current and is not the square-law VTO"
+    },
+    {
+      "parameter": "THETA",
+      "value": 8.093755781649446e-11,
+      "reason": "no mobility degradation is resolvable from the digitised transfer range"
+    },
+    {
+      "parameter": "LAMBDA",
+      "value": 9.678692160639464e-13,
+      "reason": "no channel-length modulation is resolvable from the digitised output range"
+    }
+  ],
+  "curves_used": [
+    "P-channel transfer characteristics, 25 degC (p. 3, Fig. 1 Transfer Characteristics)"
+  ],
+  "curves_rejected": [],
+  "residuals": [
+    {
+      "quantity": "transfer current at VGS 1 V",
+      "gate_quantity": "drain_current",
+      "datasheet_value": 0.3,
+      "fitted_value": 0.297660860879873,
+      "unit": "A",
+      "relative_error": 0.007797130400423366,
+      "citation": "p. 3, Fig. 1 Transfer Characteristics"
+    },
+    {
+      "quantity": "transfer current at VGS 1.2 V",
+      "gate_quantity": "drain_current",
+      "datasheet_value": 1.5,
+      "fitted_value": 1.506475378456939,
+      "unit": "A",
+      "relative_error": 0.004316918971292605,
+      "citation": "p. 3, Fig. 1 Transfer Characteristics"
+    },
+    {
+      "quantity": "transfer current at VGS 1.5 V",
+      "gate_quantity": "drain_current",
+      "datasheet_value": 5,
+      "fitted_value": 5.2508601987080326,
+      "unit": "A",
+      "relative_error": 0.050172039741606514,
+      "citation": "p. 3, Fig. 1 Transfer Characteristics"
+    },
+    {
+      "quantity": "transfer current at VGS 1.8 V",
+      "gate_quantity": "drain_current",
+      "datasheet_value": 11,
+      "fitted_value": 10.727989239693459,
+      "unit": "A",
+      "relative_error": 0.024728250936958285,
+      "citation": "p. 3, Fig. 1 Transfer Characteristics"
+    },
+    {
+      "quantity": "transfer current at VGS 2 V",
+      "gate_quantity": "drain_current",
+      "datasheet_value": 15.5,
+      "fitted_value": 15.120024359030149,
+      "unit": "A",
+      "relative_error": 0.024514557481925894,
+      "citation": "p. 3, Fig. 1 Transfer Characteristics"
+    },
+    {
+      "quantity": "RDS(on) at VGS 4.5 V",
+      "gate_quantity": "rds_on",
+      "datasheet_value": 0.068,
+      "fitted_value": 0.06796905161746163,
+      "unit": "ohm",
+      "relative_error": 0,
+      "citation": "electrical characteristics table"
+    },
+    {
+      "quantity": "RDS(on) at VGS 2.5 V",
+      "gate_quantity": "rds_on",
+      "datasheet_value": 0.081,
+      "fitted_value": 0.0776809834936801,
+      "unit": "ohm",
+      "relative_error": 0,
+      "citation": "electrical characteristics table"
+    },
+    {
+      "quantity": "RDS(on) at VGS 1.8 V",
+      "gate_quantity": "rds_on",
+      "datasheet_value": 0.118,
+      "fitted_value": 0.09183635013776106,
+      "unit": "ohm",
+      "relative_error": 0,
+      "citation": "electrical characteristics table"
+    }
+  ],
+  "rms_relative_error": 0.021820616761033255,
+  "worst_relative_error": {
+    "value": 0.050172039741606514,
+    "quantity": "transfer current at VGS 1.5 V"
+  }
+}

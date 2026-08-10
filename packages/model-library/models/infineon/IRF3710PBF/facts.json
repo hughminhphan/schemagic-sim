@@ -1,0 +1,408 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [
+      {
+        "name": "Typical output characteristics, TJ = 25 degC, VGS = 10 V",
+        "page_reference": "p. 3 Fig. 1",
+        "points": [
+          {
+            "x": 0.1,
+            "y": 1
+          },
+          {
+            "x": 1,
+            "y": 10
+          },
+          {
+            "x": 2,
+            "y": 20
+          },
+          {
+            "x": 5,
+            "y": 40
+          },
+          {
+            "x": 10,
+            "y": 52
+          },
+          {
+            "x": 20,
+            "y": 57
+          },
+          {
+            "x": 50,
+            "y": 60
+          },
+          {
+            "x": 80,
+            "y": 62
+          }
+        ],
+        "test_conditions": "20 us pulse width, TJ = 25 degC; VGS = 10 V",
+        "x_axis": {
+          "quantity": "drain-source voltage",
+          "scale": "log",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "drain current",
+          "scale": "log",
+          "unit": "A"
+        }
+      },
+      {
+        "name": "Typical transfer characteristics, TJ = 25 degC, VDS = 15 V",
+        "page_reference": "p. 3 Fig. 3",
+        "points": [
+          {
+            "x": 3.5,
+            "y": 0.1
+          },
+          {
+            "x": 4,
+            "y": 1
+          },
+          {
+            "x": 4.5,
+            "y": 4
+          },
+          {
+            "x": 5,
+            "y": 10
+          },
+          {
+            "x": 6,
+            "y": 25
+          },
+          {
+            "x": 7,
+            "y": 55
+          },
+          {
+            "x": 8,
+            "y": 100
+          },
+          {
+            "x": 9,
+            "y": 170
+          }
+        ],
+        "test_conditions": "20 us pulse width, TJ = 25 degC; VDS = 15 V",
+        "x_axis": {
+          "quantity": "gate-source voltage",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "drain current",
+          "scale": "log",
+          "unit": "A"
+        }
+      },
+      {
+        "name": "Typical input capacitance Ciss versus drain-source voltage",
+        "page_reference": "p. 4 Fig. 5",
+        "points": [
+          {
+            "x": 1,
+            "y": 1e-08
+          },
+          {
+            "x": 2,
+            "y": 7e-09
+          },
+          {
+            "x": 5,
+            "y": 5e-09
+          },
+          {
+            "x": 10,
+            "y": 4e-09
+          },
+          {
+            "x": 20,
+            "y": 3.4e-09
+          },
+          {
+            "x": 50,
+            "y": 3e-09
+          },
+          {
+            "x": 100,
+            "y": 2.8e-09
+          }
+        ],
+        "test_conditions": "VGS = 0 V, f = 1 MHz, TJ = 25 degC",
+        "x_axis": {
+          "quantity": "drain-source voltage",
+          "scale": "log",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "input capacitance",
+          "scale": "log",
+          "unit": "F"
+        }
+      },
+      {
+        "name": "Typical source-drain diode forward voltage, TJ = 25 degC",
+        "page_reference": "p. 4 Fig. 7",
+        "points": [
+          {
+            "x": 0.2,
+            "y": 0.1
+          },
+          {
+            "x": 0.4,
+            "y": 0.3
+          },
+          {
+            "x": 0.6,
+            "y": 1
+          },
+          {
+            "x": 0.8,
+            "y": 3
+          },
+          {
+            "x": 1,
+            "y": 10
+          },
+          {
+            "x": 1.2,
+            "y": 30
+          },
+          {
+            "x": 1.5,
+            "y": 100
+          }
+        ],
+        "test_conditions": "VGS = 0 V, TJ = 25 degC",
+        "x_axis": {
+          "quantity": "source-drain voltage",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "reverse drain current",
+          "scale": "log",
+          "unit": "A"
+        }
+      }
+    ],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3",
+        "p. 4",
+        "p. 5",
+        "p. 6",
+        "p. 7",
+        "p. 8"
+      ],
+      "revision": "PD-94954D, 23-Jul-2010",
+      "title": "IRF3710PbF"
+    },
+    "extraction_notes": [
+      "The IRF3710PbF is an n-channel MOSFET.",
+      "The datasheet gives one maximum RDS(on) value and no minimum or typical table value.",
+      "The body-diode table also publishes typical VSD = 1.2 V only as a maximum column; the scalar is retained as the published maximum.",
+      "Curve points are digitized from the stated 25 degC typical figures; log axes are preserved."
+    ],
+    "family": "mosfet",
+    "manufacturer": "Infineon Technologies",
+    "mpn": "IRF3710PBF",
+    "omission_reason": null,
+    "schema_version": "1.0.0",
+    "specs": {
+      "body_diode": {
+        "conditions": "TJ = 25 degC; IS = 28 A, VGS = 0 V",
+        "page_reference": "p. 2 Source-Drain Ratings and Characteristics, VSD MAX",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 1.2
+      },
+      "breakdown_voltage": {
+        "conditions": "VGS = 0 V, ID = 250 uA",
+        "page_reference": "p. 2 Electrical Characteristics, V(BR)DSS",
+        "source_kind": "minimum",
+        "unit": "V",
+        "value": 100
+      },
+      "ciss": {
+        "conditions": "VGS = 0 V, VDS = 25 V, f = 1 MHz, TJ = 25 degC",
+        "page_reference": "p. 2 Electrical Characteristics, Ciss",
+        "source_kind": "typical",
+        "unit": "F",
+        "value": 3.13e-09
+      },
+      "coss": {
+        "conditions": "VGS = 0 V, VDS = 25 V, f = 1 MHz, TJ = 25 degC",
+        "page_reference": "p. 2 Electrical Characteristics, Coss",
+        "source_kind": "typical",
+        "unit": "F",
+        "value": 4.1e-10
+      },
+      "crss": {
+        "conditions": "VGS = 0 V, VDS = 25 V, f = 1 MHz, TJ = 25 degC",
+        "page_reference": "p. 2 Electrical Characteristics, Crss",
+        "source_kind": "typical",
+        "unit": "F",
+        "value": 7.2e-11
+      },
+      "polarity": "n",
+      "rdson_points": [
+        {
+          "current": {
+            "conditions": "VGS = 10 V, TJ = 25 degC",
+            "page_reference": "p. 2 Electrical Characteristics, RDS(on)",
+            "source_kind": "maximum",
+            "unit": "A",
+            "value": 28
+          },
+          "resistance": {
+            "conditions": "VGS = 10 V, ID = 28 A, TJ = 25 degC; pulse width <= 400 us, duty cycle <= 2%",
+            "page_reference": "p. 2 Electrical Characteristics, RDS(on)",
+            "source_kind": "maximum",
+            "unit": "ohm",
+            "value": 0.023
+          },
+          "vgs": {
+            "conditions": "TJ = 25 degC; ID = 28 A",
+            "page_reference": "p. 2 Electrical Characteristics, RDS(on)",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 10
+          }
+        }
+      ],
+      "threshold_max": {
+        "conditions": "TJ = 25 degC; VDS = VGS; ID = 250 uA",
+        "page_reference": "p. 2 Electrical Characteristics, VGS(th), MAX",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 4
+      },
+      "threshold_min": {
+        "conditions": "TJ = 25 degC; VDS = VGS; ID = 250 uA",
+        "page_reference": "p. 2 Electrical Characteristics, VGS(th), MIN",
+        "source_kind": "minimum",
+        "unit": "V",
+        "value": 2
+      },
+      "threshold_typ": null
+    },
+    "usable_curves": true
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "Drain Source On Resistance (RDS(on)@Vgs,Id)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.rds_on",
+      "raw_value": "23m\u03a9@10V,28A",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Gate Threshold Voltage (Vgs(th))",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.threshold",
+      "raw_value": "4V",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Gate Threshold Voltage (Vgs(th)@Id)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.threshold",
+      "raw_value": "4V@250uA",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Input Capacitance (Ciss@Vds)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.ciss",
+      "raw_value": "3130pF",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Input Capacitance(Ciss)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.ciss",
+      "raw_value": "3.13nF",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Output Capacitance(Coss)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.coss",
+      "raw_value": "410pF",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "RDS(on)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.rds_on",
+      "raw_value": "23m\u03a9@10V",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Reverse Transfer Capacitance (Crss@Vds)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.crss",
+      "raw_value": "72pF",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "IRF3710PBF",
+    "manufacturer": "Infineon Technologies",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8588896295771639808",
+    "revision": "PD-94954D, 23-Jul-2010",
+    "sha256": "e9cabee1fb9fd6c2a644d608110a87f9da85484ae3273ddde924bcbe9ede122c",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4",
+      "p. 5",
+      "p. 6",
+      "p. 7",
+      "p. 8"
+    ],
+    "placeholder": false
+  },
+  "rdson_points": [
+    {
+      "current": {
+        "conditions": "VGS = 10 V, TJ = 25 degC",
+        "page_reference": "p. 2 Electrical Characteristics, RDS(on)",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 28
+      },
+      "resistance": {
+        "conditions": "VGS = 10 V, ID = 28 A, TJ = 25 degC; pulse width <= 400 us, duty cycle <= 2%",
+        "page_reference": "p. 2 Electrical Characteristics, RDS(on)",
+        "source_kind": "maximum",
+        "unit": "ohm",
+        "value": 0.023
+      },
+      "vgs": {
+        "conditions": "TJ = 25 degC; ID = 28 A",
+        "page_reference": "p. 2 Electrical Characteristics, RDS(on)",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 10
+      }
+    }
+  ],
+  "threshold": null,
+  "transfer_points": [],
+  "output_points": []
+}

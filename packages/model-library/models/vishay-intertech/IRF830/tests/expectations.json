@@ -1,0 +1,25 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "rdson.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "rdson_maximum_1",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d1),0.37037037037037035)"
+          },
+          "minimum": 0,
+          "maximum": 1.5,
+          "unit": "ohm",
+          "inclusive": true,
+          "datasheet_citation": "p. 2 Specifications, RDS(on), MAX column",
+          "placeholder": false
+        }
+      ]
+    }
+  ]
+}

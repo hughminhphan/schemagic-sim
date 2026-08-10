@@ -1,0 +1,14 @@
+OpenCircuit factory test: JSM80N03D RDS(on)
+* OpenCircuit Model Factory v0.1.0 bulk adapter
+* Original work generated from public factual specifications.
+* This model is not copied or adapted from any vendor SPICE model.
+* Source: https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8603382553458335744
+* Revision: No revision stated
+.model OC_JSMSEMI_JSM80N03D VDMOS( VTO=1.5000000000e0 KP=4.0404040404e2 THETA=0.0000000000e0 LAMBDA=3.0000000000e-3 RD=2.7225000000e-3 RS=9.9000000000e-4 RG=1.0000000000e-4 RDS=1e9 CGS=1.3990000000e-9 CGDMAX=2.1500000000e-10 CGDMIN=2.1500000000e-10 CJO=3.0000000000e-11 IS=1.0000000000e-12 N=1.5000000000e0 RB=9.9000000000e-4)
+
+.temp 25
+M1 d1 g1 0 OC_JSMSEMI_JSM80N03D
+ID1 0 d1 DC 3.0000000000e1
+VG1 g1 0 DC 1.0000000000e1
+.op
+.end

@@ -1,0 +1,230 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3"
+      ],
+      "revision": "Revision not stated; document created 2018-07-30",
+      "title": "TPM7002DFN3 60V N-Channel Mosfet"
+    },
+    "extraction_notes": [
+      "Only tabulated characteristics are present in the supplied three-page datasheet; no transfer, output, capacitance-versus-VDS, gate-charge, or body-diode curves are published.",
+      "The RDS(ON) condition for the 10 V row prints ID = -300 mA; the current polarity is preserved exactly in the extracted value.",
+      "The datasheet gives IDSS maximum 1 uA at VDS = 60 V and VGS = 0 V, gate leakage limits, Qg typical 1.7 nC and maximum 2.4 nC, and trr maximum 30 ns; these fields have no slots in the strict schema."
+    ],
+    "family": "mosfet",
+    "manufacturer": "TECH PUBLIC",
+    "mpn": "TPM7002DFN3",
+    "omission_reason": "No usable characteristic plots are present; transfer, output, capacitance-versus-bias, gate-charge, and body-diode curves cannot be digitized from this datasheet.",
+    "schema_version": "1.0.0",
+    "specs": {
+      "body_diode": {
+        "conditions": "IS = 300 mA, VGS = 0 V, TA = 25 degC",
+        "page_reference": "p. 2 Electrical Characteristics, diode forward voltage, MAX column",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 1.2
+      },
+      "breakdown_voltage": {
+        "conditions": "VGS = 0 V, ID = 250 uA, TA = 25 degC",
+        "page_reference": "p. 2 Electrical Characteristics, drain-source breakdown voltage, 60 V rating",
+        "source_kind": "minimum",
+        "unit": "V",
+        "value": 60
+      },
+      "ciss": {
+        "conditions": "VDS = 30 V, VGS = 0 V, f = 1 MHz, TA = 25 degC",
+        "page_reference": "p. 2 Electrical Characteristics, Ciss",
+        "source_kind": "typical",
+        "unit": "F",
+        "value": 1.6e-11
+      },
+      "coss": {
+        "conditions": "VDS = 30 V, VGS = 0 V, f = 1 MHz, TA = 25 degC",
+        "page_reference": "p. 2 Electrical Characteristics, Coss",
+        "source_kind": "typical",
+        "unit": "F",
+        "value": 1e-11
+      },
+      "crss": {
+        "conditions": "VDS = 30 V, VGS = 0 V, f = 1 MHz, TA = 25 degC",
+        "page_reference": "p. 2 Electrical Characteristics, Crss",
+        "source_kind": "typical",
+        "unit": "F",
+        "value": 5.5e-12
+      },
+      "polarity": "n",
+      "rdson_points": [
+        {
+          "current": {
+            "conditions": "VGS = 10 V, ID = -300 mA, TA = 25 degC; polarity preserved as printed",
+            "page_reference": "p. 2 Electrical Characteristics, RDS(ON) condition",
+            "source_kind": "typical",
+            "unit": "A",
+            "value": -0.3
+          },
+          "resistance": {
+            "conditions": "VGS = 10 V, ID = -300 mA, TA = 25 degC",
+            "page_reference": "p. 2 Electrical Characteristics, RDS(ON), MAX column",
+            "source_kind": "maximum",
+            "unit": "ohm",
+            "value": 2.5
+          },
+          "vgs": {
+            "conditions": "VGS = 10 V, ID = -300 mA, TA = 25 degC",
+            "page_reference": "p. 2 Electrical Characteristics, RDS(ON) condition",
+            "source_kind": "typical",
+            "unit": "V",
+            "value": 10
+          }
+        },
+        {
+          "current": {
+            "conditions": "VGS = 4.5 V, ID = 200 mA, TA = 25 degC",
+            "page_reference": "p. 2 Electrical Characteristics, RDS(ON) condition",
+            "source_kind": "typical",
+            "unit": "A",
+            "value": 0.2
+          },
+          "resistance": {
+            "conditions": "VGS = 4.5 V, ID = 200 mA, TA = 25 degC",
+            "page_reference": "p. 2 Electrical Characteristics, RDS(ON), MAX column",
+            "source_kind": "maximum",
+            "unit": "ohm",
+            "value": 3
+          },
+          "vgs": {
+            "conditions": "VGS = 4.5 V, ID = 200 mA, TA = 25 degC",
+            "page_reference": "p. 2 Electrical Characteristics, RDS(ON) condition",
+            "source_kind": "typical",
+            "unit": "V",
+            "value": 4.5
+          }
+        }
+      ],
+      "threshold_max": {
+        "conditions": "VDS = VGS, ID = 250 uA, TA = 25 degC",
+        "page_reference": "p. 2 Electrical Characteristics, VGS(th), MAX column",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 2.5
+      },
+      "threshold_min": {
+        "conditions": "VDS = VGS, ID = 250 uA, TA = 25 degC",
+        "page_reference": "p. 2 Electrical Characteristics, VGS(th), MIN column",
+        "source_kind": "minimum",
+        "unit": "V",
+        "value": 1
+      },
+      "threshold_typ": {
+        "conditions": "VDS = VGS, ID = 250 uA, TA = 25 degC",
+        "page_reference": "p. 2 Electrical Characteristics, VGS(th), TYP column",
+        "source_kind": "typical",
+        "unit": "V",
+        "value": 1.5
+      }
+    },
+    "usable_curves": false
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "Drain Source On Resistance (RDS(on)@Vgs,Id)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.rds_on",
+      "raw_value": "1.2\u03a9@10V,300mA",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Gate Threshold Voltage (Vgs(th))",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.threshold",
+      "raw_value": "2.5V",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Gate Threshold Voltage (Vgs(th)@Id)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.threshold",
+      "raw_value": "1.5V@250uA",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Input Capacitance (Ciss@Vds)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.ciss",
+      "raw_value": "16pF@30V",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Input Capacitance(Ciss)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.ciss",
+      "raw_value": "16pF",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "RDS(on)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.rds_on",
+      "raw_value": "3\u03a9@4.5V",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Reverse Transfer Capacitance (Crss@Vds)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.crss",
+      "raw_value": "5.5pF@30V",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "TPM7002DFN3",
+    "manufacturer": "TECH PUBLIC",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8588912342117990400",
+    "revision": "Revision not stated; document created 2018-07-30",
+    "sha256": "b9121dbf1f354f22ab15bab61f5e38a4e117a1debee6506dda5e2158e83276b9",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ],
+    "placeholder": false
+  },
+  "rdson_points": [
+    {
+      "current": {
+        "conditions": "VGS = 10 V, ID = -300 mA, TA = 25 degC; polarity preserved as printed",
+        "page_reference": "p. 2 Electrical Characteristics, RDS(ON) condition",
+        "source_kind": "typical",
+        "unit": "A",
+        "value": 0.3
+      },
+      "resistance": {
+        "conditions": "VGS = 10 V, ID = -300 mA, TA = 25 degC",
+        "page_reference": "p. 2 Electrical Characteristics, RDS(ON), MAX column",
+        "source_kind": "maximum",
+        "unit": "ohm",
+        "value": 2.5
+      },
+      "vgs": {
+        "conditions": "VGS = 10 V, ID = -300 mA, TA = 25 degC",
+        "page_reference": "p. 2 Electrical Characteristics, RDS(ON) condition",
+        "source_kind": "typical",
+        "unit": "V",
+        "value": 10
+      }
+    }
+  ],
+  "threshold": null,
+  "transfer_points": [],
+  "output_points": []
+}

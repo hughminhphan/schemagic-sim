@@ -1,0 +1,14 @@
+OpenCircuit factory test: LP2301BLT1G RDS(on)
+* OpenCircuit Model Factory v0.1.0 bulk adapter
+* Original work generated from public factual specifications.
+* This model is not copied or adapted from any vendor SPICE model.
+* Source: https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8586176653705269248
+* Revision: Rev. O
+.model OC_LRC_LP2301BLT1G VDMOS( pchan VTO=-9.0000000000e-1 KP=2.8985507246e1 THETA=0.0000000000e0 LAMBDA=3.0000000000e-3 RD=3.7950000000e-2 RS=1.3800000000e-2 RG=1.0000000000e-4 RDS=1e9 CGS=7.8525000000e-10 CGDMAX=9.7260000000e-11 CGDMIN=9.7260000000e-11 CJO=4.8280000000e-11 IS=1.0000000000e-12 N=1.5000000000e0 RB=1.3800000000e-2)
+
+.temp 25
+M1 d1 g1 0 OC_LRC_LP2301BLT1G
+ID1 d1 0 DC 2.8000000000e0
+VG1 g1 0 DC -4.5000000000e0
+.op
+.end

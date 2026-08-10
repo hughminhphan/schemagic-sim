@@ -1,0 +1,183 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [
+      {
+        "name": "BZT52C27S reverse zener characteristic",
+        "page_reference": "Hongjiacheng BZT52C2V0S THRU BZT52C75S Rev. 1.0, p. 3, Fig. 2, Zener Characteristics (11 V to 43 V)",
+        "points": [
+          {
+            "x": 25.1,
+            "y": 0.0005
+          },
+          {
+            "x": 25.5,
+            "y": 0.001
+          },
+          {
+            "x": 27,
+            "y": 0.002
+          },
+          {
+            "x": 27.4,
+            "y": 0.005
+          },
+          {
+            "x": 27.9,
+            "y": 0.01
+          },
+          {
+            "x": 28.3,
+            "y": 0.02
+          },
+          {
+            "x": 28.9,
+            "y": 0.1
+          }
+        ],
+        "test_conditions": "Ta = 25 \u00b0C, pulsed, PD = 200 mW",
+        "x_axis": {
+          "quantity": "reverse zener voltage",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "reverse zener current",
+          "scale": "log",
+          "unit": "A"
+        }
+      }
+    ],
+    "datasheet_identity": {
+      "pages_examined": [
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "revision": "Rev. 1.0",
+      "title": "BZT52C2V0S THRU BZT52C75S Surface Mount Zener Diodes"
+    },
+    "extraction_notes": [
+      "The supplied PDF SHA-256 matches 8d99c0b95ddbd62581320fd03378a72d97d914bc201c735536cd50e5f6753113.",
+      "The BZT52C27S electrical-characteristics row specifies VZ minimum 25.1 V, nominal 27 V, and maximum 28.9 V at IZT = 2 mA, all at Ta = 25 \u00b0C.",
+      "The same row specifies maximum ZZT = 80 ohm at IZT = 2 mA and maximum ZZK = 300 ohm at IZK = 0.5 mA; these impedance values are not representable in this schema.",
+      "The Figure 2 points are approximate digitizations of the visible curve labeled 27 at grid intersections. No intermediate points were interpolated.",
+      "The capacitance chart is a family-level typical plot with multiple bias curves and no tabulated BZT52C27S capacitance scalar at a stated bias, so capacitance is omitted.",
+      "The datasheet publishes no reverse-recovery-time specification, so reverse recovery is omitted.",
+      "The zener voltage and current use reverse-bias polarity: the cathode is positive relative to the anode."
+    ],
+    "family": "diode",
+    "manufacturer": "hongjiacheng",
+    "mpn": "BZT52C27S",
+    "omission_reason": "No reverse-recovery specification is published. Capacitance is omitted because the datasheet provides only a family-level multi-curve plot without a tabulated BZT52C27S value at a specified bias and test frequency.",
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": {
+        "conditions": "IZT = 2 mA, Ta = 25 \u00b0C, reverse bias with cathode positive relative to anode; test current defining nominal VZ",
+        "page_reference": "Hongjiacheng BZT52C2V0S THRU BZT52C75S Rev. 1.0, p. 2, Electrical Characteristics, BZT52C27S IZT",
+        "source_kind": "typical",
+        "unit": "A",
+        "value": 0.002
+      },
+      "breakdown_voltage": {
+        "conditions": "IZT = 2 mA, Ta = 25 \u00b0C, reverse bias with cathode positive relative to anode; nominal zener voltage VZ",
+        "page_reference": "Hongjiacheng BZT52C2V0S THRU BZT52C75S Rev. 1.0, p. 2, Electrical Characteristics, BZT52C27S VZ at IZT",
+        "source_kind": "typical",
+        "unit": "V",
+        "value": 27
+      },
+      "capacitance": null,
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "IF = 10 mA, Ta = 25 \u00b0C",
+            "page_reference": "Hongjiacheng BZT52C2V0S THRU BZT52C75S Rev. 1.0, p. 1, Maximum Ratings, Forward Voltage",
+            "source_kind": "maximum",
+            "unit": "A",
+            "value": 0.01
+          },
+          "voltage": {
+            "conditions": "IF = 10 mA, Ta = 25 \u00b0C",
+            "page_reference": "Hongjiacheng BZT52C2V0S THRU BZT52C75S Rev. 1.0, p. 1, Maximum Ratings, Forward Voltage",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 0.9
+          }
+        }
+      ],
+      "reverse_current": {
+        "conditions": "VR = 18.9 V, Ta = 25 \u00b0C, reverse bias with cathode positive relative to anode",
+        "page_reference": "Hongjiacheng BZT52C2V0S THRU BZT52C75S Rev. 1.0, p. 2, Electrical Characteristics, BZT52C27S IR at VR",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 1e-07
+      },
+      "reverse_recovery": null,
+      "variant": "zener"
+    },
+    "usable_curves": true
+  },
+  "catalog_seed_hints": [],
+  "identity": {
+    "canonical_mpn": "BZT52C27S",
+    "manufacturer": "hongjiacheng",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8564879704571609088",
+    "revision": "Rev. 1.0",
+    "sha256": "8d99c0b95ddbd62581320fd03378a72d97d914bc201c735536cd50e5f6753113",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "1",
+      "2",
+      "3",
+      "4"
+    ],
+    "placeholder": false
+  },
+  "fit_points": [
+    {
+      "current": {
+        "conditions": "Conservative F1 package bench at 95% of the cited current; IF = 10 mA, Ta = 25 \u00b0C",
+        "page_reference": "Hongjiacheng BZT52C2V0S THRU BZT52C75S Rev. 1.0, p. 1, Maximum Ratings, Forward Voltage",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.0095
+      },
+      "voltage": {
+        "conditions": "IF = 10 mA, Ta = 25 \u00b0C",
+        "page_reference": "Hongjiacheng BZT52C2V0S THRU BZT52C75S Rev. 1.0, p. 1, Maximum Ratings, Forward Voltage",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 0.9
+      }
+    }
+  ],
+  "electrical_limits": {},
+  "derived_model_inputs": {
+    "BV": {
+      "conditions": "IZT = 2 mA, Ta = 25 \u00b0C, reverse bias with cathode positive relative to anode; nominal zener voltage VZ",
+      "page_reference": "Hongjiacheng BZT52C2V0S THRU BZT52C75S Rev. 1.0, p. 2, Electrical Characteristics, BZT52C27S VZ at IZT",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 27
+    },
+    "IBV": {
+      "conditions": "IZT = 2 mA, Ta = 25 \u00b0C, reverse bias with cathode positive relative to anode; test current defining nominal VZ",
+      "page_reference": "Hongjiacheng BZT52C2V0S THRU BZT52C75S Rev. 1.0, p. 2, Electrical Characteristics, BZT52C27S IZT",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.002
+    },
+    "NBV": {
+      "value": 1,
+      "unit": "1",
+      "conditions": "First-order avalanche-knee default; no multi-point reverse-knee trace was available",
+      "page_reference": "model-factory Zener F1 policy",
+      "source_kind": "held_default"
+    }
+  }
+}

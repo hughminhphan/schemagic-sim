@@ -1,0 +1,124 @@
+{
+  "schema_version": "1.0.0",
+  "validation_date": "2026-08-11",
+  "native_wasm_all_pass": true,
+  "expectations_all_pass": true,
+  "expectation_pass_count": 9,
+  "expectation_fail_count": 0,
+  "worst_native_wasm_relative_delta": 0.00044408920985006256,
+  "worst_native_wasm_absolute_delta": 7.418288205940371e-11,
+  "benches": [
+    {
+      "test_netlist": "rdson.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "rdson_maximum_1",
+          "pass": true,
+          "value": 0.06789493755014907,
+          "minimum": 0,
+          "maximum": 0.068
+        },
+        {
+          "name": "rdson_maximum_2",
+          "pass": true,
+          "value": 0.07750734299214151,
+          "minimum": 0,
+          "maximum": 0.081
+        },
+        {
+          "name": "rdson_maximum_3",
+          "pass": true,
+          "value": 0.09151236473239567,
+          "minimum": 0,
+          "maximum": 0.118
+        }
+      ]
+    },
+    {
+      "test_netlist": "threshold.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "gate_threshold_bounds",
+          "pass": true,
+          "value": 0.5743469331253643,
+          "minimum": 0.45,
+          "maximum": 0.8
+        }
+      ]
+    },
+    {
+      "test_netlist": "review_transfer_01.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "transfer_current_at_1_v",
+          "pass": true,
+          "value": 0.30052706622499725,
+          "error": 0.0005270662249972635,
+          "allowed": 0.06
+        }
+      ]
+    },
+    {
+      "test_netlist": "review_transfer_02.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "transfer_current_at_1.2_v",
+          "pass": true,
+          "value": 1.5198120738625711,
+          "error": 0.01981207386257111,
+          "allowed": 0.30000000000000004
+        }
+      ]
+    },
+    {
+      "test_netlist": "review_transfer_03.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "transfer_current_at_1.5_v",
+          "pass": true,
+          "value": 5.292412531133946,
+          "error": 0.2924125311339463,
+          "allowed": 1
+        }
+      ]
+    },
+    {
+      "test_netlist": "review_transfer_04.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "transfer_current_at_1.8_v",
+          "pass": true,
+          "value": 10.80561380823697,
+          "error": 0.19438619176303007,
+          "allowed": 2.2
+        }
+      ]
+    },
+    {
+      "test_netlist": "review_transfer_05.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "transfer_current_at_2_v",
+          "pass": true,
+          "value": 15.223930308651404,
+          "error": 0.2760696913485958,
+          "allowed": 3.1
+        }
+      ]
+    }
+  ]
+}

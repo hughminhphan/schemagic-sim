@@ -1,0 +1,148 @@
+{
+  "schema_version": "1.0.0",
+  "canonical_mpn": "LP2305DSLT1G",
+  "manufacturer": "LRC",
+  "description": "-55℃~+150℃ 1 P-Channel 1.1W 1.245nF 12V 210pF 375pF 4A 68mΩ@4.5V 800mV P-Channel SOT-23 MOSFETs ROHS",
+  "electrical_family": "pmos",
+  "symbol_pins": [
+    {
+      "name": "G",
+      "number": "1",
+      "role": "gate"
+    },
+    {
+      "name": "D",
+      "number": "2",
+      "role": "drain"
+    },
+    {
+      "name": "S",
+      "number": "3",
+      "role": "source"
+    }
+  ],
+  "spice_pin_mapping": [
+    {
+      "symbol_pin_number": "2",
+      "subckt_node": "drain",
+      "order": 1
+    },
+    {
+      "symbol_pin_number": "1",
+      "subckt_node": "gate",
+      "order": 2
+    },
+    {
+      "symbol_pin_number": "3",
+      "subckt_node": "source",
+      "order": 3
+    }
+  ],
+  "package_variants": [
+    {
+      "name": "SOT-23",
+      "standard": "SOT-23",
+      "pin_count": 3,
+      "pin_map": [
+        {
+          "package_pin": "1",
+          "symbol_pin_number": "1"
+        },
+        {
+          "package_pin": "2",
+          "symbol_pin_number": "2"
+        },
+        {
+          "package_pin": "3",
+          "symbol_pin_number": "3"
+        }
+      ]
+    }
+  ],
+  "ordering_code_aliases": [],
+  "datasheet": {
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8586189462162313216",
+    "revision": "Rev. A"
+  },
+  "model_type": "dot_model",
+  "fidelity_tier": "F2",
+  "domain_coverage": {
+    "dc": "fitted",
+    "ac": "none",
+    "transient": "none",
+    "noise": "none",
+    "thermal": "none",
+    "digital": "none"
+  },
+  "supported_analyses": [
+    "operating_point",
+    "dc_sweep"
+  ],
+  "supported_operating_region": {
+    "summary": "F2 curve-fit fidelity is supported only for the selected 25 degC transfer DC curve, P-channel transfer characteristics, 25 degC (p. 3, Fig. 1 Transfer Characteristics), with a linear magnitude of gate-source voltage axis from 1 to 2 V and a linear magnitude of drain current axis from 0.3 to 15.5 A under |VDS| = 5 V, TJ = 25 degC; plotted P-channel magnitudes. P-channel signs are represented as magnitudes. Separate scalar hard bounds do not extend curve fidelity.",
+    "numeric_bounds": [
+      {
+        "quantity": "gate_source_voltage_magnitude",
+        "minimum": 1,
+        "maximum": 2,
+        "unit": "V",
+        "conditions": "Exact sampled linear x-axis span of the selected fitted 25 degC transfer curve",
+        "placeholder": false
+      },
+      {
+        "quantity": "drain_current_magnitude",
+        "minimum": 0.3,
+        "maximum": 15.5,
+        "unit": "A",
+        "conditions": "Exact sampled linear y-axis span of the selected fitted 25 degC transfer curve",
+        "placeholder": false
+      },
+      {
+        "quantity": "drain_source_voltage_magnitude",
+        "minimum": 5,
+        "maximum": 5,
+        "unit": "V",
+        "conditions": "Exact transfer-curve drain-source bias",
+        "placeholder": false
+      },
+      {
+        "quantity": "ambient_temperature",
+        "minimum": 25,
+        "maximum": 25,
+        "unit": "degC",
+        "conditions": "Exact temperature of the selected fitted curve",
+        "placeholder": false
+      }
+    ]
+  },
+  "known_omissions": [
+    "AC, transient, noise, thermal, and package-parasitic behavior are outside this DC-only conveyor package.",
+    "Temperature dependence and self-heating are not modelled; the electrical region is limited to the cited nominal-temperature data.",
+    "Catalog parametrics were used only as initial guesses or F1 fallback constraints and are not datasheet citations.",
+    "F2 curve-fit fidelity is limited to the exact selected 25 degC DC curve, bias, axes, and sampled range named in supported_operating_region; separate scalar hard bounds do not extend the fitted claim.",
+    "Reverse-bias, capacitance, switching, thermal, and temperature-dependence fidelity are outside the F2 curve-fit claim unless separately enforced as a scalar hard bound."
+  ],
+  "licence": {
+    "spdx_id": "MIT",
+    "provenance_basis": "original_from_facts"
+  },
+  "generator": {
+    "tool_or_agent": "opencircuit-model-factory-v0.1.0 bulk-adapter",
+    "date": "2026-08-10"
+  },
+  "reviewer": {
+    "tool_or_agent": "gpt-5.6-sol independent reviewer (batch-6 scale campaign)",
+    "date": "2026-08-11"
+  },
+  "test_results": {
+    "status": "complete",
+    "pass_count": 9,
+    "fail_count": 0,
+    "total_count": 9,
+    "worst_observed_relative_fitting_error": {
+      "value": 0.050172039741606514,
+      "quantity": "transfer current at VGS 1.5 V"
+    }
+  },
+  "validation_date": "2026-08-11"
+}

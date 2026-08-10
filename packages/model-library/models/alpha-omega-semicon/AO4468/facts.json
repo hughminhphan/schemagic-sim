@@ -1,0 +1,398 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [
+      {
+        "name": "Typical on-region characteristics, VGS = 10 V",
+        "page_reference": "p. 3 Fig. 1, VGS = 10 V curve",
+        "points": [
+          {
+            "x": 0.5,
+            "y": 10
+          },
+          {
+            "x": 1,
+            "y": 18
+          },
+          {
+            "x": 2,
+            "y": 23
+          },
+          {
+            "x": 3,
+            "y": 25
+          },
+          {
+            "x": 5,
+            "y": 26
+          }
+        ],
+        "test_conditions": "TJ = 25 degC; pulsed test, note E",
+        "x_axis": {
+          "quantity": "VDS",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "ID",
+          "scale": "linear",
+          "unit": "A"
+        }
+      },
+      {
+        "name": "Typical transfer characteristics, VDS = 5 V, TJ = 25 degC",
+        "page_reference": "p. 3 Fig. 2, 25 degC curve",
+        "points": [
+          {
+            "x": 2,
+            "y": 0.2
+          },
+          {
+            "x": 2.5,
+            "y": 3
+          },
+          {
+            "x": 3,
+            "y": 8
+          },
+          {
+            "x": 3.5,
+            "y": 14
+          },
+          {
+            "x": 4,
+            "y": 19
+          },
+          {
+            "x": 5,
+            "y": 25
+          }
+        ],
+        "test_conditions": "TJ = 25 degC; pulsed test, note E",
+        "x_axis": {
+          "quantity": "VGS",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "ID",
+          "scale": "linear",
+          "unit": "A"
+        }
+      },
+      {
+        "name": "Typical body-diode characteristics, TJ = 25 degC",
+        "page_reference": "p. 3 Fig. 6, 25 degC curve",
+        "points": [
+          {
+            "x": 0.45,
+            "y": 0.001
+          },
+          {
+            "x": 0.6,
+            "y": 0.01
+          },
+          {
+            "x": 0.7,
+            "y": 0.1
+          },
+          {
+            "x": 0.78,
+            "y": 1
+          },
+          {
+            "x": 0.86,
+            "y": 3
+          },
+          {
+            "x": 0.95,
+            "y": 10
+          }
+        ],
+        "test_conditions": "VGS = 0 V; TJ = 25 degC; pulsed test",
+        "x_axis": {
+          "quantity": "VSD",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "IS",
+          "scale": "log",
+          "unit": "A"
+        }
+      },
+      {
+        "name": "Typical capacitance characteristics, VGS = 0 V",
+        "page_reference": "p. 4 Fig. 8, Ciss trace",
+        "points": [
+          {
+            "x": 0,
+            "y": 7.4e-10
+          },
+          {
+            "x": 5,
+            "y": 5e-10
+          },
+          {
+            "x": 10,
+            "y": 4.1e-10
+          },
+          {
+            "x": 15,
+            "y": 3.5e-10
+          },
+          {
+            "x": 20,
+            "y": 3.15e-10
+          },
+          {
+            "x": 25,
+            "y": 2.9e-10
+          },
+          {
+            "x": 30,
+            "y": 2.7e-10
+          }
+        ],
+        "test_conditions": "VGS = 0 V; f = 1 MHz",
+        "x_axis": {
+          "quantity": "VDS",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "Ciss",
+          "scale": "linear",
+          "unit": "F"
+        }
+      }
+    ],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3",
+        "p. 4",
+        "p. 5"
+      ],
+      "revision": "Rev.7.0: July 2013",
+      "title": "AO4468 30V N-Channel MOSFET"
+    },
+    "extraction_notes": [
+      "Curve points are approximate readings from the manufacturer characteristic plots.",
+      "RDS(on) values retain the published typ values and conditions; the 17 mOhm and 23 mOhm product-summary maxima are not substituted for the typical entries."
+    ],
+    "family": "mosfet",
+    "manufacturer": "Alpha Omega Semicon",
+    "mpn": "AO4468",
+    "omission_reason": null,
+    "schema_version": "1.0.0",
+    "specs": {
+      "body_diode": {
+        "conditions": "IS = 1 A, VGS = 0 V, TJ = 25 degC",
+        "page_reference": "p. 2 Electrical Characteristics, VSD",
+        "source_kind": "typical",
+        "unit": "V",
+        "value": 0.75
+      },
+      "breakdown_voltage": {
+        "conditions": "ID = 250 uA, VGS = 0 V",
+        "page_reference": "p. 2 Electrical Characteristics, BVDSS",
+        "source_kind": "minimum",
+        "unit": "V",
+        "value": 30
+      },
+      "ciss": {
+        "conditions": "VGS = 0 V, VDS = 15 V, f = 1 MHz",
+        "page_reference": "p. 2 Electrical Characteristics, Ciss",
+        "source_kind": "typical",
+        "unit": "F",
+        "value": 7.4e-10
+      },
+      "coss": {
+        "conditions": "VGS = 0 V, VDS = 15 V, f = 1 MHz",
+        "page_reference": "p. 2 Electrical Characteristics, Coss",
+        "source_kind": "typical",
+        "unit": "F",
+        "value": 1.1e-10
+      },
+      "crss": {
+        "conditions": "VGS = 0 V, VDS = 15 V, f = 1 MHz",
+        "page_reference": "p. 2 Electrical Characteristics, Crss",
+        "source_kind": "typical",
+        "unit": "F",
+        "value": 8.2e-11
+      },
+      "polarity": "n",
+      "rdson_points": [
+        {
+          "current": {
+            "conditions": "VGS = 10 V, TJ = 25 degC",
+            "page_reference": "p. 2 Electrical Characteristics, RDS(ON)",
+            "source_kind": "typical",
+            "unit": "A",
+            "value": 10.5
+          },
+          "resistance": {
+            "conditions": "VGS = 10 V, ID = 10.5 A, TJ = 25 degC",
+            "page_reference": "p. 2 Electrical Characteristics, RDS(ON)",
+            "source_kind": "typical",
+            "unit": "ohm",
+            "value": 0.014
+          },
+          "vgs": {
+            "conditions": "ID = 10.5 A, TJ = 25 degC",
+            "page_reference": "p. 2 Electrical Characteristics, RDS(ON)",
+            "source_kind": "typical",
+            "unit": "V",
+            "value": 10
+          }
+        },
+        {
+          "current": {
+            "conditions": "VGS = 4.5 V, TJ = 25 degC",
+            "page_reference": "p. 2 Electrical Characteristics, RDS(ON)",
+            "source_kind": "typical",
+            "unit": "A",
+            "value": 9
+          },
+          "resistance": {
+            "conditions": "VGS = 4.5 V, ID = 9 A, TJ = 25 degC",
+            "page_reference": "p. 2 Electrical Characteristics, RDS(ON)",
+            "source_kind": "typical",
+            "unit": "ohm",
+            "value": 0.018
+          },
+          "vgs": {
+            "conditions": "ID = 9 A, TJ = 25 degC",
+            "page_reference": "p. 2 Electrical Characteristics, RDS(ON)",
+            "source_kind": "typical",
+            "unit": "V",
+            "value": 4.5
+          }
+        }
+      ],
+      "threshold_max": {
+        "conditions": "VDS = VGS, ID = 250 uA",
+        "page_reference": "p. 2 Electrical Characteristics, VGS(th)",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 2.4
+      },
+      "threshold_min": {
+        "conditions": "VDS = VGS, ID = 250 uA",
+        "page_reference": "p. 2 Electrical Characteristics, VGS(th)",
+        "source_kind": "minimum",
+        "unit": "V",
+        "value": 1.2
+      },
+      "threshold_typ": {
+        "conditions": "VDS = VGS, ID = 250 uA",
+        "page_reference": "p. 2 Electrical Characteristics, VGS(th)",
+        "source_kind": "typical",
+        "unit": "V",
+        "value": 1.8
+      }
+    },
+    "usable_curves": true
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "Drain Source On Resistance (RDS(on)@Vgs,Id)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.rds_on",
+      "raw_value": "17m\u03a9@10V,10.5A",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Gate Threshold Voltage (Vgs(th))",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.threshold",
+      "raw_value": "1.2V",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Gate Threshold Voltage (Vgs(th)@Id)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.threshold",
+      "raw_value": "1.2V@250uA",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Input Capacitance (Ciss@Vds)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.ciss",
+      "raw_value": "888pF",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Input Capacitance(Ciss)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.ciss",
+      "raw_value": "888pF",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "RDS(on)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.rds_on",
+      "raw_value": "17m\u03a9@10V",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Reverse Transfer Capacitance (Crss@Vds)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.crss",
+      "raw_value": "115pF@15V",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "AO4468",
+    "manufacturer": "Alpha Omega Semicon",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8586196556965535744",
+    "revision": "Rev.7.0: July 2013",
+    "sha256": "df26e06a8d4c952142981db54616700aaf9f010b020e69b1e264b144a16559c0",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4",
+      "p. 5"
+    ],
+    "placeholder": false
+  },
+  "rdson_points": [
+    {
+      "current": {
+        "conditions": "VGS = 10 V, TJ = 25 degC",
+        "page_reference": "p. 2 Electrical Characteristics, RDS(ON)",
+        "source_kind": "typical",
+        "unit": "A",
+        "value": 10.5
+      },
+      "resistance": {
+        "conditions": "VGS = 10 V, ID = 10.5 A, TJ = 25 degC",
+        "page_reference": "p. 2 Electrical Characteristics, RDS(ON)",
+        "source_kind": "typical",
+        "unit": "ohm",
+        "value": 0.014
+      },
+      "vgs": {
+        "conditions": "ID = 10.5 A, TJ = 25 degC",
+        "page_reference": "p. 2 Electrical Characteristics, RDS(ON)",
+        "source_kind": "typical",
+        "unit": "V",
+        "value": 10
+      }
+    }
+  ],
+  "threshold": null,
+  "transfer_points": [],
+  "output_points": []
+}

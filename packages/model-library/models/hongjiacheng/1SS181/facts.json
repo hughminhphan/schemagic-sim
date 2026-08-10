@@ -1,0 +1,309 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [
+      {
+        "name": "Forward instantaneous characteristics, Ta = 25 degC",
+        "page_reference": "p. 2 Fig. 1",
+        "points": [
+          {
+            "x": 0.5,
+            "y": 0.0001
+          },
+          {
+            "x": 0.6,
+            "y": 0.001
+          },
+          {
+            "x": 0.61,
+            "y": 0.001
+          },
+          {
+            "x": 0.7,
+            "y": 0.01
+          },
+          {
+            "x": 0.74,
+            "y": 0.01
+          },
+          {
+            "x": 0.8,
+            "y": 0.03
+          },
+          {
+            "x": 0.92,
+            "y": 0.1
+          }
+        ],
+        "test_conditions": "Ta = 25 degC",
+        "x_axis": {
+          "quantity": "forward voltage",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "forward current",
+          "scale": "log",
+          "unit": "A"
+        }
+      },
+      {
+        "name": "Reverse characteristics, Ta = 25 degC",
+        "page_reference": "p. 2 Fig. 2",
+        "points": [
+          {
+            "x": 0,
+            "y": 1.1e-08
+          },
+          {
+            "x": 20,
+            "y": 1.5e-08
+          },
+          {
+            "x": 40,
+            "y": 1.8e-08
+          },
+          {
+            "x": 60,
+            "y": 2.2e-08
+          },
+          {
+            "x": 80,
+            "y": 2.5e-08
+          }
+        ],
+        "test_conditions": "Ta = 25 degC",
+        "x_axis": {
+          "quantity": "reverse voltage",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "reverse current",
+          "scale": "log",
+          "unit": "A"
+        }
+      },
+      {
+        "name": "Typical junction capacitance",
+        "page_reference": "p. 2 Fig. 3",
+        "points": [
+          {
+            "x": 0,
+            "y": 1e-12
+          },
+          {
+            "x": 5,
+            "y": 9.3e-13
+          },
+          {
+            "x": 10,
+            "y": 9.1e-13
+          },
+          {
+            "x": 15,
+            "y": 9e-13
+          },
+          {
+            "x": 20,
+            "y": 8.9e-13
+          }
+        ],
+        "test_conditions": "Ta = 25 degC, f = 1 MHz",
+        "x_axis": {
+          "quantity": "reverse voltage",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "terminal capacitance",
+          "scale": "linear",
+          "unit": "F"
+        }
+      }
+    ],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3"
+      ],
+      "revision": "Rev:1.0",
+      "title": "1SS181 FAST SWITCHING DIODES"
+    },
+    "extraction_notes": [
+      "The reverse-leakage table also specifies a maximum of 0.1 uA at VR = 30 V; reverse_current records the rated VR = 80 V row.",
+      "The capacitance table specifies 2.2 pF typical and 4.0 pF maximum at VR = 0 V, while the plotted Fig. 3 trace is approximately 1.0 pF at zero bias; both are preserved separately.",
+      "The forward and reverse characteristic plots were digitized from the Ta = 25 degC traces without interpolation between reported table rows.",
+      "The Maximum Ratings entry V(BR)R = 80 V @ IR = 100 uA is a rated reverse-voltage limit/test condition, not a guaranteed measured breakdown value; breakdown_voltage and breakdown_current are omitted."
+    ],
+    "family": "diode",
+    "manufacturer": "hongjiacheng",
+    "mpn": "1SS181",
+    "omission_reason": null,
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": null,
+      "breakdown_voltage": null,
+      "capacitance": {
+        "conditions": "VR = 0 V, f = 1 MHz, Ta = 25 degC",
+        "page_reference": "p. 2 Electrical Characteristics, total capacitance, TYP column",
+        "source_kind": "typical",
+        "unit": "F",
+        "value": 2.2e-12
+      },
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "IF = 1.0 mA, Ta = 25 degC",
+            "page_reference": "p. 2 Electrical Characteristics, maximum instantaneous forward voltage",
+            "source_kind": "typical",
+            "unit": "A",
+            "value": 0.001
+          },
+          "voltage": {
+            "conditions": "IF = 1.0 mA, Ta = 25 degC",
+            "page_reference": "p. 2 Electrical Characteristics, maximum instantaneous forward voltage",
+            "source_kind": "typical",
+            "unit": "V",
+            "value": 0.61
+          }
+        },
+        {
+          "current": {
+            "conditions": "IF = 10 mA, Ta = 25 degC",
+            "page_reference": "p. 2 Electrical Characteristics, maximum instantaneous forward voltage",
+            "source_kind": "typical",
+            "unit": "A",
+            "value": 0.01
+          },
+          "voltage": {
+            "conditions": "IF = 10 mA, Ta = 25 degC",
+            "page_reference": "p. 2 Electrical Characteristics, maximum instantaneous forward voltage",
+            "source_kind": "typical",
+            "unit": "V",
+            "value": 0.74
+          }
+        },
+        {
+          "current": {
+            "conditions": "IF = 100 mA, Ta = 25 degC",
+            "page_reference": "p. 2 Electrical Characteristics, maximum instantaneous forward voltage",
+            "source_kind": "typical",
+            "unit": "A",
+            "value": 0.1
+          },
+          "voltage": {
+            "conditions": "IF = 100 mA, Ta = 25 degC",
+            "page_reference": "p. 2 Electrical Characteristics, maximum instantaneous forward voltage",
+            "source_kind": "typical",
+            "unit": "V",
+            "value": 0.92
+          }
+        },
+        {
+          "current": {
+            "conditions": "IF = 100 mA, Ta = 25 degC",
+            "page_reference": "p. 2 Electrical Characteristics, maximum instantaneous forward voltage",
+            "source_kind": "maximum",
+            "unit": "A",
+            "value": 0.1
+          },
+          "voltage": {
+            "conditions": "IF = 100 mA, Ta = 25 degC",
+            "page_reference": "p. 2 Electrical Characteristics, maximum instantaneous forward voltage",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 1.2
+          }
+        }
+      ],
+      "reverse_current": {
+        "conditions": "VR = 80 V, Ta = 25 degC",
+        "page_reference": "p. 2 Electrical Characteristics, reverse leakage current, MAX column",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 5e-07
+      },
+      "reverse_recovery": {
+        "conditions": "IF = 10 mA, VR = 6 V, Irr = 0.1 x IR, RL = 100 ohm, Ta = 25 degC",
+        "page_reference": "p. 2 Electrical Characteristics, maximum reverse recovery time, MAX column",
+        "source_kind": "maximum",
+        "unit": "s",
+        "value": 4e-09
+      },
+      "variant": "signal"
+    },
+    "usable_curves": true
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "Forward Voltage (Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "1.2V@100mA",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Voltage - Forward(Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "1.2V@100mA",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "1SS181",
+    "manufacturer": "hongjiacheng",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8603005811870752768",
+    "revision": "Rev:1.0",
+    "sha256": "07656c454293cc23f61ce0d5b9999b30b6cdb290d06cf22e5c4015e32d8c85ac",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ],
+    "placeholder": false
+  },
+  "fit_points": [
+    {
+      "current": {
+        "conditions": "IF = 1.0 mA, Ta = 25 degC",
+        "page_reference": "p. 2 Electrical Characteristics, maximum instantaneous forward voltage",
+        "source_kind": "typical",
+        "unit": "A",
+        "value": 0.001
+      },
+      "voltage": {
+        "conditions": "IF = 1.0 mA, Ta = 25 degC",
+        "page_reference": "p. 2 Electrical Characteristics, maximum instantaneous forward voltage",
+        "source_kind": "typical",
+        "unit": "V",
+        "value": 0.61
+      }
+    },
+    {
+      "current": {
+        "conditions": "Conservative F1 package bench at 95% of the cited current; IF = 100 mA, Ta = 25 degC",
+        "page_reference": "p. 2 Electrical Characteristics, maximum instantaneous forward voltage",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.095
+      },
+      "voltage": {
+        "conditions": "IF = 100 mA, Ta = 25 degC",
+        "page_reference": "p. 2 Electrical Characteristics, maximum instantaneous forward voltage",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 1.2
+      }
+    }
+  ],
+  "electrical_limits": {},
+  "derived_model_inputs": {}
+}

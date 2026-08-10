@@ -1,0 +1,206 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [
+      {
+        "name": "Typical instantaneous forward voltage, ES2JW",
+        "page_reference": "p. 2 Fig. 3, Typical Forward Voltage, ES2JW trace",
+        "points": [
+          {
+            "x": 0.7,
+            "y": 0.1
+          },
+          {
+            "x": 0.9,
+            "y": 0.3
+          },
+          {
+            "x": 1.1,
+            "y": 1
+          },
+          {
+            "x": 1.35,
+            "y": 3
+          },
+          {
+            "x": 1.6,
+            "y": 6
+          },
+          {
+            "x": 1.9,
+            "y": 10
+          }
+        ],
+        "test_conditions": "TJ = 25 degC, pulse width = 300 us, 1% duty cycle, ES2JW dotted trace",
+        "x_axis": {
+          "quantity": "instantaneous forward voltage",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "instantaneous forward current",
+          "scale": "log",
+          "unit": "A"
+        }
+      },
+      {
+        "name": "Typical reverse characteristics, TJ = 25 degC",
+        "page_reference": "p. 2 Fig. 4, Typical Reverse Characteristics, TJ = 25 degC trace",
+        "points": [
+          {
+            "x": 20,
+            "y": 5e-08
+          },
+          {
+            "x": 40,
+            "y": 8e-08
+          },
+          {
+            "x": 60,
+            "y": 1.2e-07
+          },
+          {
+            "x": 80,
+            "y": 1.8e-07
+          },
+          {
+            "x": 100,
+            "y": 3e-07
+          },
+          {
+            "x": 120,
+            "y": 6e-07
+          }
+        ],
+        "test_conditions": "TJ = 25 degC, ES2JW reverse-characteristic curve, typical",
+        "x_axis": {
+          "quantity": "percent of rated peak reverse voltage",
+          "scale": "linear",
+          "unit": "%"
+        },
+        "y_axis": {
+          "quantity": "instantaneous reverse current",
+          "scale": "log",
+          "unit": "A"
+        }
+      }
+    ],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3"
+      ],
+      "revision": "Rev:1.0",
+      "title": "ES2AW THRU ES2JW SURFACE MOUNT HIGH EFFICIENT RECTIFIER"
+    },
+    "extraction_notes": [
+      "The datasheet gives a maximum reverse-recovery time of 35 ns at IF = 0.5 A, IR = 1 A, and Irr = 0.25 A.",
+      "The reverse-characteristic plot is a typical curve and is shown against percent of rated peak reverse voltage.",
+      "Curve points are direct readings from the published ES2JW traces; no vendor SPICE model or fitted curve was used."
+    ],
+    "family": "diode",
+    "manufacturer": "hongjiacheng",
+    "mpn": "ES2JW",
+    "omission_reason": null,
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": null,
+      "breakdown_voltage": {
+        "conditions": "Maximum repetitive peak reverse voltage, TA = 25 degC",
+        "page_reference": "p. 1, Maximum Ratings, ES2JW VRRM",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 600
+      },
+      "capacitance": {
+        "conditions": "VR = 4.0 V DC, f = 1 MHz, TA = 25 degC",
+        "page_reference": "p. 2, Electrical Characteristics, Typical junction capacitance, CJ",
+        "source_kind": "typical",
+        "unit": "F",
+        "value": 3.5e-11
+      },
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "IF = 2 A, TA = 25 degC",
+            "page_reference": "p. 2, Electrical Characteristics, Maximum instantaneous forward voltage",
+            "source_kind": "maximum",
+            "unit": "A",
+            "value": 2
+          },
+          "voltage": {
+            "conditions": "IF = 2 A, TA = 25 degC",
+            "page_reference": "p. 2, Electrical Characteristics, Maximum instantaneous forward voltage",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 1.68
+          }
+        }
+      ],
+      "reverse_current": {
+        "conditions": "VR = VDC = 600 V, TA = 25 degC",
+        "page_reference": "p. 2, Electrical Characteristics, Maximum DC reverse current, ES2JW, IR1",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 5e-06
+      },
+      "reverse_recovery": {
+        "conditions": "IF = 0.5 A, IR = 1.0 A, Irr = 0.25 A, TA = 25 degC",
+        "page_reference": "p. 2, Electrical Characteristics, Maximum reverse recovery time",
+        "source_kind": "maximum",
+        "unit": "s",
+        "value": 3.5e-08
+      },
+      "variant": "rectifier"
+    },
+    "usable_curves": true
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "Voltage - Forward(Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "1.68V@2A",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "ES2JW",
+    "manufacturer": "hongjiacheng",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8603186866623422464",
+    "revision": "Rev:1.0",
+    "sha256": "d2a7d8339d2d913e6f1da89cac04d4a6ba36dad80076f6395f70def2e8d24d13",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ],
+    "placeholder": false
+  },
+  "fit_points": [
+    {
+      "current": {
+        "conditions": "Conservative F1 package bench at 95% of the cited current; IF = 2 A, TA = 25 degC",
+        "page_reference": "p. 2, Electrical Characteristics, Maximum instantaneous forward voltage",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 1.9
+      },
+      "voltage": {
+        "conditions": "IF = 2 A, TA = 25 degC",
+        "page_reference": "p. 2, Electrical Characteristics, Maximum instantaneous forward voltage",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 1.68
+      }
+    }
+  ],
+  "electrical_limits": {},
+  "derived_model_inputs": {}
+}

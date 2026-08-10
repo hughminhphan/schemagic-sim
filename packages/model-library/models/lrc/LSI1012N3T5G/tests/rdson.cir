@@ -1,0 +1,14 @@
+OpenCircuit factory test: LSI1012N3T5G RDS(on)
+* OpenCircuit Model Factory v0.1.0 bulk adapter
+* Original work generated from public factual specifications.
+* This model is not copied or adapted from any vendor SPICE model.
+* Source: https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8589040973859475456
+* Revision: Rev.D May. 2021
+.model OC_LRC_LSI1012N3T5G VDMOS( VTO=9.0000000000e-1 KP=4.8780487805e0 THETA=0.0000000000e0 LAMBDA=3.0000000000e-3 RD=2.2550000000e-1 RS=8.2000000000e-2 RG=1.0000000000e-4 RDS=1e9 CGS=3.7700000000e-11 CGDMAX=5.8000000000e-12 CGDMIN=5.8000000000e-12 CJO=1.0000000000e-15 IS=1.0000000000e-12 N=1.5000000000e0 RB=8.2000000000e-2)
+
+.temp 25
+M1 d1 g1 0 OC_LRC_LSI1012N3T5G
+ID1 0 d1 DC 6.0000000000e-1
+VG1 g1 0 DC 4.5000000000e0
+.op
+.end

@@ -1,0 +1,133 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3"
+      ],
+      "revision": "Rev:1.1",
+      "title": "MMSZ4678 THRU MMSZ4717 SURFACE MOUNT ZENER DIODES"
+    },
+    "extraction_notes": [
+      "The only plotted figures are power dissipation versus ambient temperature and transient thermal impedance versus pulse duration; neither is an electrical diode curve usable for extraction.",
+      "MMSZ4688 zener voltage is specified as minimum 4.47 V, nominal 4.7 V, maximum 4.94 V at IZT = 50 uA. The breakdown-voltage field records the nominal value and preserves the min/max bin in this note.",
+      "The datasheet's electrical-parameter legend defines ZZT and ZZK, but the MMSZ4688 table provides no zener-impedance values, so knee sharpness cannot be extracted.",
+      "Maximum ratings include PD = 500 mW, Tstg = -55 to +150 degC, and Tj = -55 to +150 degC at Ta = 25 degC unless otherwise specified.",
+      "No capacitance or reverse-recovery data are published."
+    ],
+    "family": "diode",
+    "manufacturer": "hongjiacheng",
+    "mpn": "MMSZ4688",
+    "omission_reason": "No usable electrical diode curve is present. The datasheet contains only thermal derating and transient thermal impedance plots; the zener electrical data are tabulated without an I-V or impedance curve.",
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": {
+        "conditions": "IZT test current for MMSZ4688 zener voltage specification, Ta = 25 degC",
+        "page_reference": "p. 2, Electrical Characteristics, MMSZ4688 IZT",
+        "source_kind": "typical",
+        "unit": "A",
+        "value": 5e-05
+      },
+      "breakdown_voltage": {
+        "conditions": "IZT = 50 uA, Ta = 25 degC; nominal zener voltage for MMSZ4688",
+        "page_reference": "p. 2, Electrical Characteristics, MMSZ4688 nominal zener voltage VZ",
+        "source_kind": "typical",
+        "unit": "V",
+        "value": 4.7
+      },
+      "capacitance": null,
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "IF = 10 mA, Ta = 25 degC unless otherwise specified",
+            "page_reference": "p. 1, Maximum Ratings, forward voltage",
+            "source_kind": "maximum",
+            "unit": "A",
+            "value": 0.01
+          },
+          "voltage": {
+            "conditions": "IF = 10 mA, Ta = 25 degC unless otherwise specified",
+            "page_reference": "p. 1, Maximum Ratings, forward voltage",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 0.9
+          }
+        }
+      ],
+      "reverse_current": {
+        "conditions": "VR = 3.0 V, Ta = 25 degC",
+        "page_reference": "p. 2, Electrical Characteristics, MMSZ4688 leakage current IR@VR",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 1e-05
+      },
+      "reverse_recovery": null,
+      "variant": "zener"
+    },
+    "usable_curves": false
+  },
+  "catalog_seed_hints": [],
+  "identity": {
+    "canonical_mpn": "MMSZ4688",
+    "manufacturer": "hongjiacheng",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8564879465890816000",
+    "revision": "Rev:1.1",
+    "sha256": "accb31a5082801c31d300eecb3d61bfee56dcc595f3d684df640d4a2bef9da13",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ],
+    "placeholder": false
+  },
+  "fit_points": [
+    {
+      "current": {
+        "conditions": "Conservative F1 package bench at 95% of the cited current; IF = 10 mA, Ta = 25 degC unless otherwise specified",
+        "page_reference": "p. 1, Maximum Ratings, forward voltage",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.0095
+      },
+      "voltage": {
+        "conditions": "IF = 10 mA, Ta = 25 degC unless otherwise specified",
+        "page_reference": "p. 1, Maximum Ratings, forward voltage",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 0.9
+      }
+    }
+  ],
+  "electrical_limits": {},
+  "derived_model_inputs": {
+    "BV": {
+      "conditions": "IZT = 50 uA, Ta = 25 degC; nominal zener voltage for MMSZ4688",
+      "page_reference": "p. 2, Electrical Characteristics, MMSZ4688 nominal zener voltage VZ",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 4.7
+    },
+    "IBV": {
+      "conditions": "IZT test current for MMSZ4688 zener voltage specification, Ta = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, MMSZ4688 IZT",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 5e-05
+    },
+    "NBV": {
+      "value": 1,
+      "unit": "1",
+      "conditions": "First-order avalanche-knee default; no multi-point reverse-knee trace was available",
+      "page_reference": "model-factory Zener F1 policy",
+      "source_kind": "held_default"
+    }
+  }
+}

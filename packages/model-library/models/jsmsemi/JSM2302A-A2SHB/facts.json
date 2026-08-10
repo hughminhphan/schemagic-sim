@@ -1,0 +1,350 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [
+      {
+        "name": "Typical transfer characteristics at 25 degC",
+        "page_reference": "p. 3, ID-VGS plot, 25 degC curve",
+        "points": [
+          {
+            "x": 0.8,
+            "y": 0.0001
+          },
+          {
+            "x": 1,
+            "y": 0.0005
+          },
+          {
+            "x": 1.1,
+            "y": 0.002
+          },
+          {
+            "x": 1.2,
+            "y": 0.01
+          },
+          {
+            "x": 1.3,
+            "y": 0.08
+          },
+          {
+            "x": 1.4,
+            "y": 1
+          },
+          {
+            "x": 1.5,
+            "y": 8
+          }
+        ],
+        "test_conditions": "Tj = 25 degC; VDS not specified on figure",
+        "x_axis": {
+          "quantity": "gate-to-source voltage VGS",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "drain current ID",
+          "scale": "linear",
+          "unit": "A"
+        }
+      },
+      {
+        "name": "Typical output characteristics at VGS = 1.5 V",
+        "page_reference": "p. 3, ID-VDS plot, VGS = 1.5 V curve",
+        "points": [
+          {
+            "x": 0.2,
+            "y": 0.5
+          },
+          {
+            "x": 0.4,
+            "y": 0.72
+          },
+          {
+            "x": 0.8,
+            "y": 0.85
+          },
+          {
+            "x": 2,
+            "y": 0.9
+          },
+          {
+            "x": 4,
+            "y": 0.92
+          }
+        ],
+        "test_conditions": "Tj = 25 degC; VGS = 1.5 V",
+        "x_axis": {
+          "quantity": "drain-to-source voltage VDS",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "drain current ID",
+          "scale": "linear",
+          "unit": "A"
+        }
+      },
+      {
+        "name": "Typical output characteristics at VGS = 2.0 V",
+        "page_reference": "p. 3, ID-VDS plot, VGS = 2.0 V curve",
+        "points": [
+          {
+            "x": 0.2,
+            "y": 2.6
+          },
+          {
+            "x": 0.4,
+            "y": 4.2
+          },
+          {
+            "x": 0.8,
+            "y": 4.7
+          },
+          {
+            "x": 2,
+            "y": 4.85
+          },
+          {
+            "x": 4,
+            "y": 4.9
+          }
+        ],
+        "test_conditions": "Tj = 25 degC; VGS = 2.0 V",
+        "x_axis": {
+          "quantity": "drain-to-source voltage VDS",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "drain current ID",
+          "scale": "linear",
+          "unit": "A"
+        }
+      },
+      {
+        "name": "Typical gate charge",
+        "page_reference": "p. 3, VGS-Qg plot",
+        "points": [
+          {
+            "x": 0,
+            "y": 0
+          },
+          {
+            "x": 6e-10,
+            "y": 1.8
+          },
+          {
+            "x": 2e-09,
+            "y": 1.8
+          },
+          {
+            "x": 3e-09,
+            "y": 3
+          },
+          {
+            "x": 4.3e-09,
+            "y": 4.5
+          },
+          {
+            "x": 5e-09,
+            "y": 5
+          }
+        ],
+        "test_conditions": "VDS = 4.5 V; ID = 2 A",
+        "x_axis": {
+          "quantity": "gate charge Qg",
+          "scale": "linear",
+          "unit": "C"
+        },
+        "y_axis": {
+          "quantity": "gate-to-source voltage VGS",
+          "scale": "linear",
+          "unit": "V"
+        }
+      }
+    ],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3",
+        "p. 4"
+      ],
+      "revision": "No revision stated; datasheet page footer www.jsmsemi.com",
+      "title": "JSM2302A-A2SHB N-Channel MOSFET"
+    },
+    "extraction_notes": [
+      "Drain current ratings are ID = 3.0 A continuous and IDM = 10 A pulsed at Ta = 25 degC; VDSS = 20 V and VGSS = +/-8 V.",
+      "Body-diode forward voltage is 0.75 V typical and 1.2 V maximum at VGS = 0 V, ID = 1.25 A, Ta = 25 degC.",
+      "The datasheet publishes no Ciss, Coss, or Crss values and no capacitance-versus-VDS figure.",
+      "The output plot labels VGS = 0, 0.5, 1, 1.5, 2, and 2.5-5 V; only the 1.5 V and 2.0 V traces were digitized because the higher-current traces are clipped at the plot ceiling.",
+      "The transfer plot contains temperature curves at -55 degC, 25 degC, and 125 degC; the 25 degC trace was used."
+    ],
+    "family": "mosfet",
+    "manufacturer": "JSMSEMI",
+    "mpn": "JSM2302A-A2SHB",
+    "omission_reason": "No capacitance data were published. The transfer figure does not state VDS, and the high-current output traces are clipped at the 10 A plot ceiling.",
+    "schema_version": "1.0.0",
+    "specs": {
+      "body_diode": {
+        "conditions": "VGS = 0 V, ID = 1.25 A, Ta = 25 degC",
+        "page_reference": "p. 2 Electrical Characteristics, VSD, TYP",
+        "source_kind": "typical",
+        "unit": "V",
+        "value": 0.75
+      },
+      "breakdown_voltage": {
+        "conditions": "VGS = 0 V, ID = 10 uA, Ta = 25 degC",
+        "page_reference": "p. 2 Electrical Characteristics, V(BR)DSS, MIN",
+        "source_kind": "minimum",
+        "unit": "V",
+        "value": 20
+      },
+      "ciss": null,
+      "coss": null,
+      "crss": null,
+      "polarity": "n",
+      "rdson_points": [
+        {
+          "current": {
+            "conditions": "VGS = 4.5 V, Ta = 25 degC",
+            "page_reference": "p. 2 Electrical Characteristics, RDS(on)1 condition",
+            "source_kind": "typical",
+            "unit": "A",
+            "value": 3.6
+          },
+          "resistance": {
+            "conditions": "VGS = 4.5 V, ID = 3.6 A, Ta = 25 degC",
+            "page_reference": "p. 2 Electrical Characteristics, RDS(on)1, MAX",
+            "source_kind": "maximum",
+            "unit": "ohm",
+            "value": 0.06
+          },
+          "vgs": {
+            "conditions": "ID = 3.6 A, Ta = 25 degC",
+            "page_reference": "p. 2 Electrical Characteristics, RDS(on)1 condition",
+            "source_kind": "typical",
+            "unit": "V",
+            "value": 4.5
+          }
+        },
+        {
+          "current": {
+            "conditions": "VGS = 2.5 V, Ta = 25 degC",
+            "page_reference": "p. 2 Electrical Characteristics, RDS(on)2 condition",
+            "source_kind": "typical",
+            "unit": "A",
+            "value": 3.1
+          },
+          "resistance": {
+            "conditions": "VGS = 2.5 V, ID = 3.1 A, Ta = 25 degC",
+            "page_reference": "p. 2 Electrical Characteristics, RDS(on)2, MAX",
+            "source_kind": "maximum",
+            "unit": "ohm",
+            "value": 0.115
+          },
+          "vgs": {
+            "conditions": "ID = 3.1 A, Ta = 25 degC",
+            "page_reference": "p. 2 Electrical Characteristics, RDS(on)2 condition",
+            "source_kind": "typical",
+            "unit": "V",
+            "value": 2.5
+          }
+        }
+      ],
+      "threshold_max": {
+        "conditions": "VDS = VGS, ID = 50 uA, Ta = 25 degC",
+        "page_reference": "p. 2 Electrical Characteristics, VGS(th), MAX",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 1
+      },
+      "threshold_min": {
+        "conditions": "VDS = VGS, ID = 50 uA, Ta = 25 degC",
+        "page_reference": "p. 2 Electrical Characteristics, VGS(th), MIN",
+        "source_kind": "minimum",
+        "unit": "V",
+        "value": 0.5
+      },
+      "threshold_typ": null
+    },
+    "usable_curves": true
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "Drain Source On Resistance (RDS(on)@Vgs,Id)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.rds_on",
+      "raw_value": "115m\u03a9@2.5V,3.1A",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Gate Threshold Voltage (Vgs(th))",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.threshold",
+      "raw_value": "1V",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Gate Threshold Voltage (Vgs(th)@Id)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.threshold",
+      "raw_value": "0.5V@50uA",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "RDS(on)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.rds_on",
+      "raw_value": "60m\u03a9@4.5V",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "JSM2302A-A2SHB",
+    "manufacturer": "JSMSEMI",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8588945034095419392",
+    "revision": "No revision stated; datasheet page footer www.jsmsemi.com",
+    "sha256": "7af391bdaa4ce25b874254d96380afea37edd74ca1cd578998c0f69b213e6f01",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "placeholder": false
+  },
+  "rdson_points": [
+    {
+      "current": {
+        "conditions": "VGS = 4.5 V, Ta = 25 degC",
+        "page_reference": "p. 2 Electrical Characteristics, RDS(on)1 condition",
+        "source_kind": "typical",
+        "unit": "A",
+        "value": 3.6
+      },
+      "resistance": {
+        "conditions": "VGS = 4.5 V, ID = 3.6 A, Ta = 25 degC",
+        "page_reference": "p. 2 Electrical Characteristics, RDS(on)1, MAX",
+        "source_kind": "maximum",
+        "unit": "ohm",
+        "value": 0.06
+      },
+      "vgs": {
+        "conditions": "ID = 3.6 A, Ta = 25 degC",
+        "page_reference": "p. 2 Electrical Characteristics, RDS(on)1 condition",
+        "source_kind": "typical",
+        "unit": "V",
+        "value": 4.5
+      }
+    }
+  ],
+  "threshold": null,
+  "transfer_points": [],
+  "output_points": []
+}

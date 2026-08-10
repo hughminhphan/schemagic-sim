@@ -1,0 +1,140 @@
+{
+  "schema_version": "1.0.0",
+  "fidelity_tier": "F2",
+  "parameters": {
+    "VTO": 0.5976500592783363,
+    "KP": 2.0494395945609383,
+    "THETA": 0.47065177537244923,
+    "LAMBDA": 0.02053777291981532,
+    "RD": 0.0000010026708208965556,
+    "RS": 0.08600000000000001,
+    "RG": 0.0001,
+    "CGS": 1.04e-10,
+    "CGDMAX": 9e-12,
+    "CGDMIN": 9e-12,
+    "CJO": 6e-12,
+    "IS": 1e-12,
+    "N": 1.5,
+    "RB": 0.08600000000000001
+  },
+  "fitter": "scipy.optimize.least_squares with native ngspice-46 evaluations",
+  "optimizer": {
+    "optimizer_nfev": 37,
+    "optimizer_status": 3,
+    "held_defaults": [
+      {
+        "parameter": "RD",
+        "value": 0.0000010026708208965556,
+        "reason": "no drain resistance separable from the source resistance at these bias points"
+      }
+    ]
+  },
+  "held_defaults": [
+    {
+      "parameter": "RD",
+      "value": 0.0000010026708208965556,
+      "reason": "no drain resistance separable from the source resistance at these bias points"
+    }
+  ],
+  "curves_used": [
+    "Typical transfer characteristics, TA = 25 degC (p. 3, Typical Characteristics, Transfer Characteristics, TA = 25 degC trace)"
+  ],
+  "curves_rejected": [],
+  "residuals": [
+    {
+      "quantity": "transfer current at VGS 0.8 V",
+      "gate_quantity": "drain_current",
+      "datasheet_value": 0.05,
+      "fitted_value": 0.050278315087780356,
+      "unit": "A",
+      "relative_error": 0.005566301755607073,
+      "citation": "p. 3, Typical Characteristics, Transfer Characteristics, TA = 25 degC trace"
+    },
+    {
+      "quantity": "transfer current at VGS 1 V",
+      "gate_quantity": "drain_current",
+      "datasheet_value": 0.15,
+      "fitted_value": 0.1593348195310682,
+      "unit": "A",
+      "relative_error": 0.062232130207121414,
+      "citation": "p. 3, Typical Characteristics, Transfer Characteristics, TA = 25 degC trace"
+    },
+    {
+      "quantity": "transfer current at VGS 1.2 V",
+      "gate_quantity": "drain_current",
+      "datasheet_value": 0.35,
+      "fitted_value": 0.321322059025988,
+      "unit": "A",
+      "relative_error": 0.08193697421146284,
+      "citation": "p. 3, Typical Characteristics, Transfer Characteristics, TA = 25 degC trace"
+    },
+    {
+      "quantity": "transfer current at VGS 1.5 V",
+      "gate_quantity": "drain_current",
+      "datasheet_value": 0.7,
+      "fitted_value": 0.6340562549885362,
+      "unit": "A",
+      "relative_error": 0.09420535001637674,
+      "citation": "p. 3, Typical Characteristics, Transfer Characteristics, TA = 25 degC trace"
+    },
+    {
+      "quantity": "transfer current at VGS 2 V",
+      "gate_quantity": "drain_current",
+      "datasheet_value": 1.3,
+      "fitted_value": 1.2801735156681389,
+      "unit": "A",
+      "relative_error": 0.01525114179373937,
+      "citation": "p. 3, Typical Characteristics, Transfer Characteristics, TA = 25 degC trace"
+    },
+    {
+      "quantity": "transfer current at VGS 2.5 V",
+      "gate_quantity": "drain_current",
+      "datasheet_value": 2,
+      "fitted_value": 2.02786430506967,
+      "unit": "A",
+      "relative_error": 0.01393215253483504,
+      "citation": "p. 3, Typical Characteristics, Transfer Characteristics, TA = 25 degC trace"
+    },
+    {
+      "quantity": "transfer current at VGS 3 V",
+      "gate_quantity": "drain_current",
+      "datasheet_value": 2.5,
+      "fitted_value": 2.841762220254168,
+      "unit": "A",
+      "relative_error": 0.13670488810166717,
+      "citation": "p. 3, Typical Characteristics, Transfer Characteristics, TA = 25 degC trace"
+    },
+    {
+      "quantity": "RDS(on) at VGS 4.5 V",
+      "gate_quantity": "rds_on",
+      "datasheet_value": 0.43,
+      "fitted_value": 0.4590162397462332,
+      "unit": "ohm",
+      "relative_error": 0.06747962731682136,
+      "citation": "electrical characteristics table"
+    },
+    {
+      "quantity": "RDS(on) at VGS 2.5 V",
+      "gate_quantity": "rds_on",
+      "datasheet_value": 0.624,
+      "fitted_value": 0.6455552262384368,
+      "unit": "ohm",
+      "relative_error": 0.034543631792366594,
+      "citation": "electrical characteristics table"
+    },
+    {
+      "quantity": "RDS(on) at VGS 1.8 V",
+      "gate_quantity": "rds_on",
+      "datasheet_value": 0.95,
+      "fitted_value": 0.8608553738712637,
+      "unit": "ohm",
+      "relative_error": 0.09383644855656453,
+      "citation": "electrical characteristics table"
+    }
+  ],
+  "rms_relative_error": 0.07291029266782369,
+  "worst_relative_error": {
+    "value": 0.13670488810166717,
+    "quantity": "transfer current at VGS 3 V"
+  }
+}

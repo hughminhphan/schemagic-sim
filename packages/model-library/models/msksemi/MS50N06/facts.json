@@ -1,0 +1,247 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3",
+        "p. 4",
+        "p. 5",
+        "p. 6",
+        "p. 7"
+      ],
+      "revision": "No revision stated",
+      "title": "MS50N06 Product specification"
+    },
+    "extraction_notes": [
+      "The supplied seven-page PDF contains no transfer-characteristics, output-characteristics, or capacitance-versus-VDS figures. Figures are limited to thermal response, gate-charge waveform, switching waveform, and maximum safe operating area, so no usable extraction curves were included.",
+      "The tabulated capacitances are typical values at VDS = 25 V, VGS = 0 V, f = 1 MHz: Ciss = 2100 pF, Coss = 165 pF, Crss = 80 pF.",
+      "The datasheet publishes typical Qg = 39.2 nC, Qgs = 5.9 nC, and Qgd = 8.8 nC at VDS = 30 V, VGS = 10 V, ID = 10 A; these have no fields in the strict extraction schema.",
+      "The body-diode row specifies VSD maximum 1.2 V at VGS = 0 V, IS = 1 A, TJ = 25 degC.",
+      "No document revision is stated; the supplied PDF metadata creation date is 2026-03-19."
+    ],
+    "family": "mosfet",
+    "manufacturer": "MSKSEMI",
+    "mpn": "MS50N06",
+    "omission_reason": "No usable transfer, output, or capacitance curves are present in the supplied PDF; only tabulated electrical characteristics and unrelated thermal, gate-charge, switching, and safe-operating-area figures are available.",
+    "schema_version": "1.0.0",
+    "specs": {
+      "body_diode": {
+        "conditions": "VGS = 0 V, IS = 1 A, TJ = 25 degC",
+        "page_reference": "p. 2, drain-source diode characteristics and maximum ratings, diode forward voltage, MAX",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 1.2
+      },
+      "breakdown_voltage": {
+        "conditions": "VGS = 0 V, ID = 250 uA, TJ = 25 degC",
+        "page_reference": "p. 2, off characteristics, drain-source breakdown voltage, MIN",
+        "source_kind": "minimum",
+        "unit": "V",
+        "value": 60
+      },
+      "ciss": {
+        "conditions": "VDS = 25 V, VGS = 0 V, f = 1 MHz, TJ = 25 degC",
+        "page_reference": "p. 2, dynamic and switching characteristics, input capacitance",
+        "source_kind": "typical",
+        "unit": "F",
+        "value": 2.1e-09
+      },
+      "coss": {
+        "conditions": "VDS = 25 V, VGS = 0 V, f = 1 MHz, TJ = 25 degC",
+        "page_reference": "p. 2, dynamic and switching characteristics, output capacitance",
+        "source_kind": "typical",
+        "unit": "F",
+        "value": 1.65e-10
+      },
+      "crss": {
+        "conditions": "VDS = 25 V, VGS = 0 V, f = 1 MHz, TJ = 25 degC",
+        "page_reference": "p. 2, dynamic and switching characteristics, reverse transfer capacitance",
+        "source_kind": "typical",
+        "unit": "F",
+        "value": 8e-11
+      },
+      "polarity": "n",
+      "rdson_points": [
+        {
+          "current": {
+            "conditions": "VGS = 10 V, ID = 20 A, TJ = 25 degC; pulse test",
+            "page_reference": "p. 2, electrical characteristics, static drain-source on-resistance",
+            "source_kind": "maximum",
+            "unit": "A",
+            "value": 20
+          },
+          "resistance": {
+            "conditions": "VGS = 10 V, ID = 20 A, TJ = 25 degC",
+            "page_reference": "p. 2, electrical characteristics, static drain-source on-resistance, MAX",
+            "source_kind": "maximum",
+            "unit": "ohm",
+            "value": 0.016
+          },
+          "vgs": {
+            "conditions": "VGS = 10 V, ID = 20 A, TJ = 25 degC; pulse width <= 300 us, duty cycle <= 2%",
+            "page_reference": "p. 2, electrical characteristics, static drain-source on-resistance",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 10
+          }
+        },
+        {
+          "current": {
+            "conditions": "VGS = 4.5 V, ID = 10 A, TJ = 25 degC; pulse test",
+            "page_reference": "p. 2, electrical characteristics, static drain-source on-resistance",
+            "source_kind": "maximum",
+            "unit": "A",
+            "value": 10
+          },
+          "resistance": {
+            "conditions": "VGS = 4.5 V, ID = 10 A, TJ = 25 degC",
+            "page_reference": "p. 2, electrical characteristics, static drain-source on-resistance, MAX",
+            "source_kind": "maximum",
+            "unit": "ohm",
+            "value": 0.02
+          },
+          "vgs": {
+            "conditions": "VGS = 4.5 V, ID = 10 A, TJ = 25 degC; pulse width <= 300 us, duty cycle <= 2%",
+            "page_reference": "p. 2, electrical characteristics, static drain-source on-resistance",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 4.5
+          }
+        }
+      ],
+      "threshold_max": {
+        "conditions": "VGS = VDS, ID = 250 uA, TJ = 25 degC",
+        "page_reference": "p. 2, electrical characteristics, gate threshold voltage, MAX",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 2.5
+      },
+      "threshold_min": {
+        "conditions": "VGS = VDS, ID = 250 uA, TJ = 25 degC",
+        "page_reference": "p. 2, electrical characteristics, gate threshold voltage, MIN",
+        "source_kind": "minimum",
+        "unit": "V",
+        "value": 1
+      },
+      "threshold_typ": {
+        "conditions": "VGS = VDS, ID = 250 uA, TJ = 25 degC",
+        "page_reference": "p. 2, electrical characteristics, gate threshold voltage, TYP",
+        "source_kind": "typical",
+        "unit": "V",
+        "value": 1.6
+      }
+    },
+    "usable_curves": false
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "Drain Source On Resistance (RDS(on)@Vgs,Id)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.rds_on",
+      "raw_value": "15m\u03a9@10V,20A",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Gate Threshold Voltage (Vgs(th))",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.threshold",
+      "raw_value": "1.6V",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Gate Threshold Voltage (Vgs(th)@Id)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.threshold",
+      "raw_value": "2.5V@250uA",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Input Capacitance (Ciss@Vds)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.ciss",
+      "raw_value": "900pF@25V",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Input Capacitance(Ciss)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.ciss",
+      "raw_value": "1.68nF",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Output Capacitance(Coss)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.coss",
+      "raw_value": "115pF",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "RDS(on)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.rds_on",
+      "raw_value": "12m\u03a9@10V",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Reverse Transfer Capacitance (Crss@Vds)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.crss",
+      "raw_value": "33pF@25V",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "MS50N06",
+    "manufacturer": "MSKSEMI",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8757890263857537024",
+    "revision": "No revision stated",
+    "sha256": "607354428ed9acdbb8e4a75b6a0bf847d0c32f5321d360bf97e14dc8f2f2acea",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4",
+      "p. 5",
+      "p. 6",
+      "p. 7"
+    ],
+    "placeholder": false
+  },
+  "rdson_points": [
+    {
+      "current": {
+        "conditions": "VGS = 10 V, ID = 20 A, TJ = 25 degC; pulse test",
+        "page_reference": "p. 2, electrical characteristics, static drain-source on-resistance",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 20
+      },
+      "resistance": {
+        "conditions": "VGS = 10 V, ID = 20 A, TJ = 25 degC",
+        "page_reference": "p. 2, electrical characteristics, static drain-source on-resistance, MAX",
+        "source_kind": "maximum",
+        "unit": "ohm",
+        "value": 0.016
+      },
+      "vgs": {
+        "conditions": "VGS = 10 V, ID = 20 A, TJ = 25 degC; pulse width <= 300 us, duty cycle <= 2%",
+        "page_reference": "p. 2, electrical characteristics, static drain-source on-resistance",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 10
+      }
+    }
+  ],
+  "threshold": null,
+  "transfer_points": [],
+  "output_points": []
+}

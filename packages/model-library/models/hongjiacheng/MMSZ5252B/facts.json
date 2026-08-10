@@ -1,0 +1,294 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [
+      {
+        "name": "Typical zener characteristic, MMSZ5252B 24 V nominal curve",
+        "page_reference": "p. 3 Fig. 2, Zener Characteristics (11V to 39V)",
+        "points": [
+          {
+            "x": 22.9,
+            "y": 0.0005
+          },
+          {
+            "x": 23.1,
+            "y": 0.001
+          },
+          {
+            "x": 23.35,
+            "y": 0.002
+          },
+          {
+            "x": 23.65,
+            "y": 0.005
+          },
+          {
+            "x": 23.95,
+            "y": 0.01
+          },
+          {
+            "x": 24.25,
+            "y": 0.02
+          }
+        ],
+        "test_conditions": "TA = 25 degC, pulsed, PD = 500 mW; curve labelled 24 in the MMSZ52XXB family plot",
+        "x_axis": {
+          "quantity": "zener voltage",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "zener current",
+          "scale": "log",
+          "unit": "A"
+        }
+      },
+      {
+        "name": "Typical capacitance versus nominal zener voltage, 0 V bias",
+        "page_reference": "p. 4 Fig. 5, Typical Capacitance, 0V Bias trace",
+        "points": [
+          {
+            "x": 5,
+            "y": 1.3e-10
+          },
+          {
+            "x": 10,
+            "y": 5.5e-11
+          },
+          {
+            "x": 20,
+            "y": 2.4e-11
+          },
+          {
+            "x": 30,
+            "y": 1.6e-11
+          },
+          {
+            "x": 40,
+            "y": 1.2e-11
+          }
+        ],
+        "test_conditions": "TA = 25 degC, f = 1 MHz, 0 V bias; generic MMSZ52XXB series curve",
+        "x_axis": {
+          "quantity": "nominal zener voltage",
+          "scale": "log",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "capacitance",
+          "scale": "log",
+          "unit": "F"
+        }
+      },
+      {
+        "name": "Typical capacitance versus nominal zener voltage, 1 V bias",
+        "page_reference": "p. 4 Fig. 5, Typical Capacitance, 1V Bias trace",
+        "points": [
+          {
+            "x": 5,
+            "y": 9e-11
+          },
+          {
+            "x": 10,
+            "y": 3.5e-11
+          },
+          {
+            "x": 20,
+            "y": 1.8e-11
+          },
+          {
+            "x": 30,
+            "y": 1.3e-11
+          },
+          {
+            "x": 40,
+            "y": 1e-11
+          }
+        ],
+        "test_conditions": "TA = 25 degC, f = 1 MHz, 1 V bias; generic MMSZ52XXB series curve",
+        "x_axis": {
+          "quantity": "nominal zener voltage",
+          "scale": "log",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "capacitance",
+          "scale": "log",
+          "unit": "F"
+        }
+      },
+      {
+        "name": "Typical capacitance versus nominal zener voltage, 50% VZ nominal bias",
+        "page_reference": "p. 4 Fig. 5, Typical Capacitance, Bias At 50% Of VZ Nom trace",
+        "points": [
+          {
+            "x": 5,
+            "y": 6e-11
+          },
+          {
+            "x": 10,
+            "y": 2e-11
+          },
+          {
+            "x": 20,
+            "y": 9e-12
+          },
+          {
+            "x": 30,
+            "y": 5.5e-12
+          },
+          {
+            "x": 40,
+            "y": 3.5e-12
+          }
+        ],
+        "test_conditions": "TA = 25 degC, f = 1 MHz, bias at 50% of nominal VZ; generic MMSZ52XXB series curve",
+        "x_axis": {
+          "quantity": "nominal zener voltage",
+          "scale": "log",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "capacitance",
+          "scale": "log",
+          "unit": "F"
+        }
+      }
+    ],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3",
+        "p. 4",
+        "p. 5"
+      ],
+      "revision": "Rev:1.1",
+      "title": "MMSZ5221B THRU MMSZ5267B SURFACE MOUNT ZENER DIODES"
+    },
+    "extraction_notes": [
+      "MMSZ5252B VZ range at IZT = 0.0052 A is 22.80 V minimum, 24.00 V nominal, and 25.20 V maximum at TA = 25 degC.",
+      "MMSZ5252B maximum zener impedance is 33 ohm at IZ = 0.00025 A, as stated by the ZZT@IZT=0.25mA column heading.",
+      "The zener and capacitance plots are family-level typical curves; plotted points are manual digitizations and are not guaranteed limits."
+    ],
+    "family": "diode",
+    "manufacturer": "hongjiacheng",
+    "mpn": "MMSZ5252B",
+    "omission_reason": "Reverse-recovery data is not published. The capacitance value is available only from a family-level typical plot, not a part-specific table.",
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": {
+        "conditions": "Reverse zener test current IZT = 0.0052 A, TA = 25 degC",
+        "page_reference": "p. 2 Electrical Characteristics, MMSZ5252B IZT column",
+        "source_kind": "typical",
+        "unit": "A",
+        "value": 0.0052
+      },
+      "breakdown_voltage": {
+        "conditions": "IZT = 0.0052 A, TA = 25 degC; nominal zener voltage",
+        "page_reference": "p. 2 Electrical Characteristics, MMSZ5252B VZ row, Nom. column",
+        "source_kind": "typical",
+        "unit": "V",
+        "value": 24
+      },
+      "capacitance": {
+        "conditions": "Nominal VZ = 24 V, 0 V bias, TA = 25 degC, f = 1 MHz; digitized from generic series curve",
+        "page_reference": "p. 4 Fig. 5, Typical Capacitance, 0V Bias trace near nominal VZ = 24 V",
+        "source_kind": "digitized_typical_curve",
+        "unit": "F",
+        "value": 1.8e-11
+      },
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "IF = 0.01 A, TA = 25 degC",
+            "page_reference": "p. 1 Maximum Ratings, Forward Voltage @ IF=10mA",
+            "source_kind": "maximum",
+            "unit": "A",
+            "value": 0.01
+          },
+          "voltage": {
+            "conditions": "IF = 0.01 A, TA = 25 degC",
+            "page_reference": "p. 1 Maximum Ratings, Forward Voltage @ IF=10mA",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 0.9
+          }
+        }
+      ],
+      "reverse_current": {
+        "conditions": "VR = 18 V, TA = 25 degC",
+        "page_reference": "p. 2 Electrical Characteristics, MMSZ5252B IR@VR row, IR column",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 1e-07
+      },
+      "reverse_recovery": null,
+      "variant": "zener"
+    },
+    "usable_curves": true
+  },
+  "catalog_seed_hints": [],
+  "identity": {
+    "canonical_mpn": "MMSZ5252B",
+    "manufacturer": "hongjiacheng",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8564879397766254592",
+    "revision": "Rev:1.1",
+    "sha256": "fec00843f279bccf78d55a456b749bf49d99676181d710880c28c93d8ee35181",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4",
+      "p. 5"
+    ],
+    "placeholder": false
+  },
+  "fit_points": [
+    {
+      "current": {
+        "conditions": "Conservative F1 package bench at 95% of the cited current; IF = 0.01 A, TA = 25 degC",
+        "page_reference": "p. 1 Maximum Ratings, Forward Voltage @ IF=10mA",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.0095
+      },
+      "voltage": {
+        "conditions": "IF = 0.01 A, TA = 25 degC",
+        "page_reference": "p. 1 Maximum Ratings, Forward Voltage @ IF=10mA",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 0.9
+      }
+    }
+  ],
+  "electrical_limits": {},
+  "derived_model_inputs": {
+    "BV": {
+      "conditions": "IZT = 0.0052 A, TA = 25 degC; nominal zener voltage",
+      "page_reference": "p. 2 Electrical Characteristics, MMSZ5252B VZ row, Nom. column",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 24
+    },
+    "IBV": {
+      "conditions": "Reverse zener test current IZT = 0.0052 A, TA = 25 degC",
+      "page_reference": "p. 2 Electrical Characteristics, MMSZ5252B IZT column",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.0052
+    },
+    "NBV": {
+      "value": 1,
+      "unit": "1",
+      "conditions": "First-order avalanche-knee default; no multi-point reverse-knee trace was available",
+      "page_reference": "model-factory Zener F1 policy",
+      "source_kind": "held_default"
+    }
+  }
+}
