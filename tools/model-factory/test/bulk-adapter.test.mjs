@@ -317,6 +317,12 @@ test("catalog range and documented package-marking identities normalize into ali
   );
   assert.equal(titleCorroboratedMark.canonical, "MMBT8050D");
   assert.deepEqual(titleCorroboratedMark.aliases, ["MMBT8050D(J3Y)"]);
+  const gainRankAndMark = normalizedIdentity(
+    { mpn: "MMBT8050D(J3Y)", manufacturer: "ST Semtech" },
+    { datasheet_identity: { title: "MMBT8050 NPN transistor" }, extraction_notes: ["Identity preserved from the supplied target."] },
+  );
+  assert.equal(gainRankAndMark.canonical, "MMBT8050");
+  assert.deepEqual(gainRankAndMark.aliases, ["MMBT8050D(J3Y)"]);
   const supplierTag = normalizedIdentity(
     { mpn: "FDN304P(UMW)", manufacturer: "UMW" },
     { datasheet_identity: { title: "UMW FDN304P P-Channel MOSFET" }, extraction_notes: [] },

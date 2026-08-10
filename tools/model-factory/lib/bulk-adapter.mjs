@@ -242,8 +242,14 @@ export function normalizedIdentity(part, extraction = null) {
   const notes = extraction?.extraction_notes?.join(" ") ?? "";
   const title = extraction?.datasheet_identity?.title ?? "";
   const documentedSuffix = /^([A-Za-z0-9][A-Za-z0-9._+/-]*)(?:\s+[A-Za-z0-9-]{1,8})?\((?:RANGE:[^)]+|[A-Za-z0-9-]{1,8})\)$/i.exec(asciiParentheses);
-  const titleNamesBaseDevice = documentedSuffix
-    && new RegExp(`(^|[^A-Za-z0-9])${documentedSuffix[1].replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}([^A-Za-z0-9]|$)`, "i").test(title);
+  const titleNames = (candidate) => new RegExp(`(^|[^A-Za-z0-9])${candidate.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}([^A-Za-z0-9]|$)`, "i").test(title);
+  const titleNamesBaseDevice = documentedSuffix && titleNames(documentedSuffix[1]);
+  const rankedBase = documentedSuffix && /^(.+\d)[A-Z]$/i.exec(documentedSuffix[1]);
+  // Some BJT catalog identities append both a one-letter gain rank and a parenthetical
+  // package marking while the public datasheet title names the unranked base device.
+  if (rankedBase && titleNames(rankedBase[1]) && /(identity preserved|classification|gain|rank|marking)/i.test(notes)) {
+    return { canonical: rankedBase[1], aliases: [original], packageSlug: safe(original) };
+  }
   // Catalog MPNs commonly append a short package marking or supplier tag in parentheses.
   // When the cited datasheet title independently names the base device, the suffix is an
   // ordering alias even if the extractor did not use the word "marking" in its notes.
