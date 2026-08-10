@@ -12,7 +12,8 @@ HERE = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(HERE))
 
 from conveyorlib import (ConveyorError, StateStore, cross_check, filter_library_collisions,
-                         load_and_validate_extraction, run_extraction_batch, should_park_family)
+                         load_and_validate_extraction, normalize_extraction_payload,
+                         run_extraction_batch, should_park_family)
 
 
 def q(value, unit="V"):
@@ -97,6 +98,38 @@ class SchemaValidationTest(unittest.TestCase):
             path.write_text(json.dumps(payload))
             with self.assertRaisesRegex(ConveyorError, "unknown keys"):
                 load_and_validate_extraction(path, HERE / "schemas/diode.schema.json", {"mpn": "D1", "manufacturer": "Fixture", "family": "diode"})
+
+    def test_normalizes_quantity_annotations_and_omits_short_curves_without_invention(self):
+        payload = diode_payload()
+        payload["curves"].append({
+            **payload["curves"][0],
+            "name": "one cited point only",
+            "points": [{"x": 3.6, "y": 5.0}],
+        })
+        payload["specs"]["capacitance"] = {
+            **q(700, "pF"),
+            "conversion_note": "700 pF = 7e-10 F",
+        }
+        normalized = normalize_extraction_payload(payload)
+        self.assertEqual(len(normalized["curves"]), 1)
+        self.assertEqual(normalized["specs"]["capacitance"]["value"], 700e-12)
+        self.assertEqual(normalized["specs"]["capacitance"]["unit"], "F")
+        self.assertNotIn("conversion_note", normalized["specs"]["capacitance"])
+        self.assertRegex("\n".join(normalized["extraction_notes"]), "no points were invented")
+
+    def test_explicit_milliohm_citation_repairs_a_mislabeled_ohm_quantity(self):
+        payload = {
+            "extraction_notes": [],
+            "specs": {"rdson": {
+                "value": 21.5, "unit": "ohm",
+                "conditions": "midpoint of 19-24 mOhm range at 25 C",
+                "page_reference": "p. 2", "source_kind": "typical",
+            }},
+        }
+        normalized = normalize_extraction_payload(payload)
+        self.assertAlmostEqual(normalized["specs"]["rdson"]["value"], 0.0215)
+        self.assertEqual(normalized["specs"]["rdson"]["unit"], "ohm")
+        self.assertRegex("\n".join(normalized["extraction_notes"]), "explicit mOhm")
 
 
 class LibraryCollisionTest(unittest.TestCase):

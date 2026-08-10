@@ -166,6 +166,9 @@ def ingest_command(args) -> int:
         row = store.get(tranche, part["lcsc_id"])
         extraction_attempts = store.failure_attempts(tranche, part["lcsc_id"], "extracted")
         payload = load_and_validate_extraction(destination, HERE / "schemas" / f"{part['conveyor_family']}.schema.json", {"mpn": part["mpn"], "manufacturer": part["manufacturer"], "family": part["conveyor_family"]})
+        # Persist the deterministic, audited normalization so the fitter consumes the same
+        # schema-valid SI evidence that passed catalog cross-checking.
+        json_dump(destination, payload)
         discrepancies = cross_check(payload, part.get("seed_hints", []))
         if discrepancies and extraction_attempts < 1:
             reason = "; ".join(discrepancies)

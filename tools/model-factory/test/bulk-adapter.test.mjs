@@ -311,6 +311,18 @@ test("catalog range and documented package-marking identities normalize into ali
   );
   assert.equal(fullWidthMark.canonical, "2SC1623");
   assert.deepEqual(fullWidthMark.aliases, ["2SC1623（L6）"]);
+  const titleCorroboratedMark = normalizedIdentity(
+    { mpn: "MMBT8050D(J3Y)", manufacturer: "ST Semtech" },
+    { datasheet_identity: { title: "MMBT8050D NPN transistor" }, extraction_notes: ["Target identity preserved."] },
+  );
+  assert.equal(titleCorroboratedMark.canonical, "MMBT8050D");
+  assert.deepEqual(titleCorroboratedMark.aliases, ["MMBT8050D(J3Y)"]);
+  const supplierTag = normalizedIdentity(
+    { mpn: "FDN304P(UMW)", manufacturer: "UMW" },
+    { datasheet_identity: { title: "UMW FDN304P P-Channel MOSFET" }, extraction_notes: [] },
+  );
+  assert.equal(supplierTag.canonical, "FDN304P");
+  assert.deepEqual(supplierTag.aliases, ["FDN304P(UMW)"]);
 });
 
 test("Nexperia ordering suffixes normalize into aliases", () => {

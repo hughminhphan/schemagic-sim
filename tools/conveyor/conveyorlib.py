@@ -1,6 +1,7 @@
 """Resumable conveyor primitives for bulk datasheet-to-model staging."""
 from __future__ import annotations
 
+import copy
 import datetime as dt
 import json
 import math
@@ -297,11 +298,84 @@ def validate_schema(instance: Any, schema: Mapping[str, Any], trail: str = "$") 
                 validate_schema(value, properties[key], f"{trail}.{key}")
 
 
+_QUANTITY_UNIT_FACTORS = {
+    "A": (1.0, "A"), "mA": (1e-3, "A"), "uA": (1e-6, "A"), "µA": (1e-6, "A"), "nA": (1e-9, "A"), "pA": (1e-12, "A"),
+    "V": (1.0, "V"), "mV": (1e-3, "V"), "uV": (1e-6, "V"), "µV": (1e-6, "V"),
+    "F": (1.0, "F"), "mF": (1e-3, "F"), "uF": (1e-6, "F"), "µF": (1e-6, "F"), "nF": (1e-9, "F"), "pF": (1e-12, "F"),
+    "ohm": (1.0, "ohm"), "Ω": (1.0, "ohm"), "mohm": (1e-3, "ohm"), "mΩ": (1e-3, "ohm"), "kohm": (1e3, "ohm"), "kΩ": (1e3, "ohm"),
+    "s": (1.0, "s"), "ms": (1e-3, "s"), "us": (1e-6, "s"), "µs": (1e-6, "s"), "ns": (1e-9, "s"), "ps": (1e-12, "s"),
+    "Hz": (1.0, "Hz"), "kHz": (1e3, "Hz"), "MHz": (1e6, "Hz"), "GHz": (1e9, "Hz"),
+}
+
+
+def normalize_extraction_payload(raw: Mapping[str, Any]) -> dict[str, Any]:
+    """Apply narrow, evidence-preserving repairs before strict schema validation.
+
+    Luna sometimes emits an explanatory conversion_note beside an otherwise valid quantity,
+    or labels a value as ohms while its cited conditions explicitly say mOhm. The former is
+    moved into extraction_notes and the latter follows the explicit cited unit. Quantities are
+    then converted to base SI. Curves with fewer than three reported points cannot satisfy the
+    schema and are omitted with an audit note rather than padded with invented points.
+    """
+    payload = copy.deepcopy(dict(raw))
+    notes = payload.get("extraction_notes")
+    if not isinstance(notes, list):
+        notes = []
+        if "extraction_notes" in payload:
+            payload["extraction_notes"] = notes
+    repairs: list[str] = []
+
+    def visit(value: Any, trail: str) -> Any:
+        if isinstance(value, list):
+            return [visit(item, f"{trail}[{index}]") for index, item in enumerate(value)]
+        if not isinstance(value, dict):
+            return value
+        result = {key: visit(child, f"{trail}.{key}") for key, child in value.items() if key != "conversion_note"}
+        if "conversion_note" in value:
+            repairs.append(f"preserved {trail}.conversion_note: {value['conversion_note']}")
+        number = result.get("value")
+        unit = result.get("unit")
+        if isinstance(number, (int, float)) and not isinstance(number, bool) and isinstance(unit, str):
+            conditions = str(result.get("conditions", ""))
+            normalized_unit = unit.replace("μ", "µ")
+            if normalized_unit in {"ohm", "Ω"} and re.search(r"\bm(?:ohm|Ω)\b", conditions, re.I):
+                normalized_unit = "mohm"
+                repairs.append(f"used explicit mOhm unit from {trail}.conditions")
+            factor_and_unit = _QUANTITY_UNIT_FACTORS.get(normalized_unit)
+            if factor_and_unit:
+                factor, base_unit = factor_and_unit
+                result["value"] = number * factor
+                result["unit"] = base_unit
+        return result
+
+    payload = visit(payload, "$")
+    curves = payload.get("curves")
+    if isinstance(curves, list):
+        kept = []
+        for index, curve in enumerate(curves):
+            points = curve.get("points") if isinstance(curve, dict) else None
+            if isinstance(points, list) and len(points) < 3:
+                repairs.append(f"omitted $.curves[{index}] with {len(points)} cited point(s); schema requires at least 3 and no points were invented")
+            else:
+                kept.append(curve)
+        payload["curves"] = kept
+        if payload.get("usable_curves") and not kept:
+            payload["usable_curves"] = False
+            payload["omission_reason"] = payload.get("omission_reason") or "No extracted curve retained at the strict three-point minimum."
+    if repairs:
+        payload.setdefault("extraction_notes", [])
+        payload["extraction_notes"].extend(f"Deterministic normalization: {repair}" for repair in repairs)
+    return payload
+
+
 def load_and_validate_extraction(path: Path, schema_path: Path, expected: Mapping[str, str]) -> dict[str, Any]:
     try:
-        payload = json.loads(path.read_text(encoding="utf-8"))
+        raw_payload = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as error:
         raise ConveyorError(f"Invalid extraction JSON {path}: {error}") from error
+    if not isinstance(raw_payload, dict):
+        raise ConveyorError(f"Invalid extraction JSON {path}: root must be an object")
+    payload = normalize_extraction_payload(raw_payload)
     schema = json.loads(schema_path.read_text(encoding="utf-8"))
     validate_schema(payload, schema)
     for key in ("mpn", "manufacturer", "family"):

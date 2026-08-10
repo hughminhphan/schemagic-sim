@@ -242,8 +242,13 @@ export function normalizedIdentity(part, extraction = null) {
   const notes = extraction?.extraction_notes?.join(" ") ?? "";
   const title = extraction?.datasheet_identity?.title ?? "";
   const documentedSuffix = /^([A-Za-z0-9][A-Za-z0-9._+/-]*)(?:\s+[A-Za-z0-9-]{1,8})?\((?:RANGE:[^)]+|[A-Za-z0-9-]{1,8})\)$/i.exec(asciiParentheses);
-  if (documentedSuffix && /(marking|classification|rank|bin|range)/i.test(notes)
-      && title.toLowerCase().includes(documentedSuffix[1].toLowerCase())) {
+  const titleNamesBaseDevice = documentedSuffix
+    && new RegExp(`(^|[^A-Za-z0-9])${documentedSuffix[1].replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}([^A-Za-z0-9]|$)`, "i").test(title);
+  // Catalog MPNs commonly append a short package marking or supplier tag in parentheses.
+  // When the cited datasheet title independently names the base device, the suffix is an
+  // ordering alias even if the extractor did not use the word "marking" in its notes.
+  if (documentedSuffix && titleNamesBaseDevice
+      && (/(marking|classification|rank|bin|range)/i.test(notes) || !/^range:/i.test(asciiParentheses.slice(asciiParentheses.lastIndexOf("(") + 1)))) {
     return { canonical: documentedSuffix[1], aliases: [original], packageSlug: safe(original) };
   }
   const marked = /^([A-Za-z0-9][A-Za-z0-9._+/-]*)\s+([A-Za-z0-9]{1,4})$/.exec(original);
