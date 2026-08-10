@@ -243,6 +243,10 @@ export function normalizedIdentity(part, extraction = null) {
   const title = extraction?.datasheet_identity?.title ?? "";
   const documentedSuffix = /^([A-Za-z0-9][A-Za-z0-9._+/-]*)(?:\s+[A-Za-z0-9-]{1,8})?\((?:RANGE:[^)]+|[A-Za-z0-9-]{1,8})\)$/i.exec(asciiParentheses);
   const titleNames = (candidate) => new RegExp(`(^|[^A-Za-z0-9])${candidate.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}([^A-Za-z0-9]|$)`, "i").test(title);
+  const tapeReelSupplierTag = /^([A-Za-z0-9][A-Za-z0-9._+/-]*?)TR\([A-Za-z0-9-]{1,8}\)$/i.exec(asciiParentheses);
+  if (tapeReelSupplierTag && titleNames(tapeReelSupplierTag[1])) {
+    return { canonical: tapeReelSupplierTag[1], aliases: [original], packageSlug: safe(original) };
+  }
   const commaOrderingCode = /^([A-Za-z0-9][A-Za-z0-9._+/-]*),([A-Za-z0-9-]{1,12})$/.exec(original);
   if (commaOrderingCode && titleNames(commaOrderingCode[1])
       && /(ordering(?:-code)?|order code|requested ordering code|identity (?:is )?preserved)/i.test(notes)) {

@@ -329,6 +329,12 @@ test("catalog range and documented package-marking identities normalize into ali
   );
   assert.equal(supplierTag.canonical, "FDN304P");
   assert.deepEqual(supplierTag.aliases, ["FDN304P(UMW)"]);
+  const tapeReelSupplierTag = normalizedIdentity(
+    { mpn: "IRLR7843TR(UMW)", manufacturer: "UMW" },
+    { datasheet_identity: { title: "IRLR7843 30V N-Channel MOSFET" }, extraction_notes: [] },
+  );
+  assert.equal(tapeReelSupplierTag.canonical, "IRLR7843");
+  assert.deepEqual(tapeReelSupplierTag.aliases, ["IRLR7843TR(UMW)"]);
 });
 
 test("Nexperia ordering suffixes normalize into aliases", () => {
