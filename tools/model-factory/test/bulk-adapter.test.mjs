@@ -338,6 +338,19 @@ test("Nexperia ordering suffixes normalize into aliases", () => {
   assert.equal(identity.packageSlug, "BAS316-115");
 });
 
+test("datasheet-corroborated comma ordering codes normalize into aliases", () => {
+  const identity = normalizedIdentity(
+    { mpn: "T2N7002BK,LM", manufacturer: "TOSHIBA" },
+    {
+      datasheet_identity: { title: "T2N7002BK MOSFETs Silicon N-Channel MOS" },
+      extraction_notes: ["Ordering-code identity is preserved: the requested ordering code is T2N7002BK,LM."],
+    },
+  );
+  assert.equal(identity.canonical, "T2N7002BK");
+  assert.deepEqual(identity.aliases, ["T2N7002BK,LM"]);
+  assert.equal(identity.packageSlug, "T2N7002BK-LM");
+});
+
 test("bulk staging skips canonical and ordering-code alias collisions before fitting", () => {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "factory-collision-test-"));
   try {

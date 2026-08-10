@@ -243,6 +243,11 @@ export function normalizedIdentity(part, extraction = null) {
   const title = extraction?.datasheet_identity?.title ?? "";
   const documentedSuffix = /^([A-Za-z0-9][A-Za-z0-9._+/-]*)(?:\s+[A-Za-z0-9-]{1,8})?\((?:RANGE:[^)]+|[A-Za-z0-9-]{1,8})\)$/i.exec(asciiParentheses);
   const titleNames = (candidate) => new RegExp(`(^|[^A-Za-z0-9])${candidate.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}([^A-Za-z0-9]|$)`, "i").test(title);
+  const commaOrderingCode = /^([A-Za-z0-9][A-Za-z0-9._+/-]*),([A-Za-z0-9-]{1,12})$/.exec(original);
+  if (commaOrderingCode && titleNames(commaOrderingCode[1])
+      && /(ordering(?:-code)?|order code|requested ordering code|identity (?:is )?preserved)/i.test(notes)) {
+    return { canonical: commaOrderingCode[1], aliases: [original], packageSlug: safe(original.replace(",", "-")) };
+  }
   const titleNamesBaseDevice = documentedSuffix && titleNames(documentedSuffix[1]);
   const rankedBase = documentedSuffix && /^(.+\d)[A-Z]$/i.exec(documentedSuffix[1]);
   // Some BJT catalog identities append both a one-letter gain rank and a parenthetical
