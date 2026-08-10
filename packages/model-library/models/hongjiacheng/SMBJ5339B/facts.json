@@ -1,0 +1,139 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "schema_version": "1.0.0",
+    "mpn": "SMBJ5339B",
+    "manufacturer": "hongjiacheng",
+    "family": "diode",
+    "datasheet_identity": {
+      "title": "SMBJ5333B THRU SMBJ5388B SURFACE MOUNT ZENER DIODES",
+      "revision": "Rev:1.0",
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3",
+        "p. 4",
+        "p. 5"
+      ]
+    },
+    "usable_curves": false,
+    "curves": [],
+    "specs": {
+      "variant": "zener",
+      "forward_voltage_points": [
+        {
+          "current": {
+            "value": 0.2,
+            "unit": "A",
+            "conditions": "IF = 200 mA, TA = 25 degC",
+            "page_reference": "p. 1, Maximum Ratings, Forward Voltage @ IF = 200 mA",
+            "source_kind": "maximum"
+          },
+          "voltage": {
+            "value": 1.2,
+            "unit": "V",
+            "conditions": "IF = 200 mA, TA = 25 degC",
+            "page_reference": "p. 1, Maximum Ratings, Forward Voltage @ IF = 200 mA",
+            "source_kind": "maximum"
+          }
+        }
+      ],
+      "reverse_current": {
+        "value": 1e-06,
+        "unit": "A",
+        "conditions": "IR = 1.0 microA maximum at VR = 2.0 V, TA = 25 degC",
+        "page_reference": "p. 2, Electrical Characteristics, SMBJ5339B row",
+        "source_kind": "maximum"
+      },
+      "capacitance": null,
+      "reverse_recovery": null,
+      "breakdown_voltage": {
+        "value": 5.6,
+        "unit": "V",
+        "conditions": "IZT = 220 mA, TA = 25 degC; nominal zener voltage VZ at IZT",
+        "page_reference": "p. 2, Electrical Characteristics, SMBJ5339B VZ @ IZT row",
+        "source_kind": "typical"
+      },
+      "breakdown_current": {
+        "value": 0.22,
+        "unit": "A",
+        "conditions": "IZT = 220 mA at nominal VZ = 5.6 V, TA = 25 degC",
+        "page_reference": "p. 2, Electrical Characteristics, SMBJ5339B IZT row",
+        "source_kind": "typical"
+      }
+    },
+    "extraction_notes": [
+      "This is a family datasheet; the exact SMBJ5339B row was selected from the SMBJ5333B through SMBJ5388B electrical-characteristics table for manufacturer hongjiacheng.",
+      "The supplied PDF identity was verified as LCSC C19077494, MPN SMBJ5339B, manufacturer hongjiacheng, with SHA-256 64aade9d6c8bcc630328e7b0e3a958d2e8a83c0e2e2b23ab0c7cb96acffbf112.",
+      "Zener reverse semantics are preserved: nominal VZ = 5.6 V is paired with the tabulated reverse test current IZT = 220 mA; maximum ZZT = 1.0 ohm is at IZT and maximum ZZK = 400 ohm is at IZK = 1.0 mA.",
+      "The SMBJ5339B electrical-characteristics row gives maximum reverse leakage IR = 1.0 microA at VR = 2.0 V, maximum DC zener current IZM = 856 mA, maximum surge current IZSM = 13.4 A, and maximum voltage regulation of 0.25 V, with TA = 25 degC unless otherwise noted. These additional fields are not represented by the strict schema.",
+      "The p. 4 plots are power-temperature derating, temperature coefficient versus zener voltage, thermal resistance versus lead length, maximum surge power, and thermal response. No target-specific zener I-V or capacitance-versus-reverse-voltage plot is provided, and no component-specific capacitance or reverse-recovery time is published.",
+      "Maximum ratings include PD = 5000 mW at Tc = 75 degC and forward voltage VF = 1.2 V at IF = 200 mA on p. 1; junction and storage temperature limits are -55 to +150 degC and typical RthetaJ-A is 90 degC/W."
+    ],
+    "omission_reason": "No target-specific usable electrical curve was extracted: the datasheet's p. 4 plots cover thermal, surge-power, derating, and temperature-coefficient characteristics, not zener I-V or capacitance versus reverse voltage. Capacitance and reverse-recovery time are not published."
+  },
+  "catalog_seed_hints": [],
+  "identity": {
+    "canonical_mpn": "SMBJ5339B",
+    "manufacturer": "hongjiacheng",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8564879085702189056",
+    "revision": "Rev:1.0",
+    "sha256": "64aade9d6c8bcc630328e7b0e3a958d2e8a83c0e2e2b23ab0c7cb96acffbf112",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4",
+      "p. 5"
+    ],
+    "placeholder": false
+  },
+  "fit_points": [
+    {
+      "current": {
+        "value": 0.19,
+        "unit": "A",
+        "conditions": "Conservative F1 package bench at 95% of the cited current; IF = 200 mA, TA = 25 degC",
+        "page_reference": "p. 1, Maximum Ratings, Forward Voltage @ IF = 200 mA",
+        "source_kind": "maximum"
+      },
+      "voltage": {
+        "value": 1.2,
+        "unit": "V",
+        "conditions": "IF = 200 mA, TA = 25 degC",
+        "page_reference": "p. 1, Maximum Ratings, Forward Voltage @ IF = 200 mA",
+        "source_kind": "maximum"
+      }
+    }
+  ],
+  "electrical_limits": {},
+  "derived_model_inputs": {
+    "BV": {
+      "value": 5.6,
+      "unit": "V",
+      "conditions": "IZT = 220 mA, TA = 25 degC; nominal zener voltage VZ at IZT",
+      "page_reference": "p. 2, Electrical Characteristics, SMBJ5339B VZ @ IZT row",
+      "source_kind": "typical"
+    },
+    "IBV": {
+      "value": 0.22,
+      "unit": "A",
+      "conditions": "IZT = 220 mA at nominal VZ = 5.6 V, TA = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, SMBJ5339B IZT row",
+      "source_kind": "typical"
+    },
+    "NBV": {
+      "value": 1,
+      "unit": "1",
+      "conditions": "First-order avalanche-knee default; no multi-point reverse-knee trace was available",
+      "page_reference": "model-factory Zener F1 policy",
+      "source_kind": "held_default"
+    }
+  },
+  "canonical_mpn": "SMBJ5339B"
+}

@@ -1,0 +1,14 @@
+OpenCircuit independent review: published BJT saturation hard bounds
+* OpenCircuit Model Factory v0.1.0 bulk adapter
+* Original work generated from public factual specifications.
+* This model is not copied or adapted from any vendor SPICE model.
+* Source: https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8586182992973221888
+* Revision: Rev. 8 - 1 July 2022
+.model OC_NEXPERIA_BC817-16-215 NPN(IS=1.0000000000e-14 BF=1.7100001500e2 VAF=1.0000000000e2 IKF=1.0000000000e3 RB=1.0000000000e1 RC=1.0000000000e-1 RE=5.0000000000e-2 CJE=1.0000000000e-12 CJC=1.0000000000e-12 TF=1.0000000000e-9)
+
+.temp 25
+IC5 0 c5 DC 0.5
+IB5 0 b5 DC 0.05
+Q5 c5 b5 0 OC_NEXPERIA_BC817-16-215
+.op
+.end

@@ -1,0 +1,97 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "rdson.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "rdson_1",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d1),0.22727272727272727)"
+          },
+          "expected_value": 0.0455,
+          "unit": "ohm",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.5
+          },
+          "datasheet_citation": "p. 2, Electrical Characteristics, RDS(ON) first row, TYP",
+          "placeholder": false
+        },
+        {
+          "name": "rdson_3",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d3),0.25)"
+          },
+          "expected_value": 0.052,
+          "unit": "ohm",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.5
+          },
+          "datasheet_citation": "p. 2, Electrical Characteristics, RDS(ON) second row, TYP",
+          "placeholder": false
+        },
+        {
+          "name": "rdson_5",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d5),0.5)"
+          },
+          "expected_value": 0.064,
+          "unit": "ohm",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.5
+          },
+          "datasheet_citation": "p. 2, Electrical Characteristics, RDS(ON) third row, TYP",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": [
+        {
+          "name": "rdson_maximum_2",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d2),0.22727272727272727)"
+          },
+          "minimum": 0,
+          "maximum": 0.055,
+          "unit": "ohm",
+          "inclusive": true,
+          "datasheet_citation": "p. 2, Electrical Characteristics, RDS(ON) first row, MAX",
+          "placeholder": false
+        },
+        {
+          "name": "rdson_maximum_4",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d4),0.25)"
+          },
+          "minimum": 0,
+          "maximum": 0.068,
+          "unit": "ohm",
+          "inclusive": true,
+          "datasheet_citation": "p. 2, Electrical Characteristics, RDS(ON) second row, MAX",
+          "placeholder": false
+        },
+        {
+          "name": "rdson_maximum_6",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d6),0.5)"
+          },
+          "minimum": 0,
+          "maximum": 0.096,
+          "unit": "ohm",
+          "inclusive": true,
+          "datasheet_citation": "p. 2, Electrical Characteristics, RDS(ON) third row, MAX",
+          "placeholder": false
+        }
+      ]
+    }
+  ]
+}

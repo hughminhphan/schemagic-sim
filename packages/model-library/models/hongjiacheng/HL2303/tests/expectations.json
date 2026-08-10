@@ -1,0 +1,42 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "rdson.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "rdson_1",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d1),0.5263157894736842)"
+          },
+          "expected_value": 0.075,
+          "unit": "ohm",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.5
+          },
+          "datasheet_citation": "p. 2 Static Parameter Characteristics, RDS(on), first condition row, TYP column",
+          "placeholder": false
+        },
+        {
+          "name": "rdson_2",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d2),0.7142857142857143)"
+          },
+          "expected_value": 0.115,
+          "unit": "ohm",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.5
+          },
+          "datasheet_citation": "p. 2 Static Parameter Characteristics, RDS(on), second condition row, TYP column",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    }
+  ]
+}

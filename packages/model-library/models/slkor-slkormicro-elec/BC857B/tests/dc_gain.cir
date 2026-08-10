@@ -1,0 +1,14 @@
+OpenCircuit factory test: BC857B DC gain
+* OpenCircuit Model Factory v0.1.0 bulk adapter
+* Original work generated from public factual specifications.
+* This model is not copied or adapted from any vendor SPICE model.
+* Source: https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8588885188210266112
+* Revision: Not stated in supplied datasheet
+.model OC_SLKOR-SLKORMICRO-ELEC_BC857B PNP(IS=1.0000000000e-14 BF=2.2000000000e2 VAF=1.0000000000e2 IKF=1.0000000000e3 RB=1.0000000000e1 RC=1.0000000000e-1 RE=5.0000000000e-2 CJE=1.0000000000e-12 CJC=1.0000000000e-12 TF=1.0000000000e-9)
+
+.temp 25
+VCG1 cg1 0 DC -5.0000000000e0
+IBG1 0 bg1 DC -9.0909090909e-6
+QG1 cg1 bg1 0 OC_SLKOR-SLKORMICRO-ELEC_BC857B
+.op
+.end

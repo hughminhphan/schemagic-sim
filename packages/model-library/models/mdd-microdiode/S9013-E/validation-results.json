@@ -1,0 +1,77 @@
+{
+  "schema_version": "1.0.0",
+  "validation_date": "2026-08-10",
+  "native_wasm_all_pass": true,
+  "expectations_all_pass": true,
+  "expectation_pass_count": 6,
+  "expectation_fail_count": 0,
+  "worst_native_wasm_relative_delta": 2.1915560537433846e-12,
+  "worst_native_wasm_absolute_delta": 5.007105841059456e-14,
+  "benches": [
+    {
+      "test_netlist": "dc_gain.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "hfe_at_0.03_a",
+          "pass": true,
+          "value": 240.591420542815,
+          "error": 0.5914205428150012,
+          "allowed": 180
+        },
+        {
+          "name": "hfe_minimum_at_0.05_a",
+          "pass": true,
+          "value": 240.47507626284403,
+          "minimum": 120
+        },
+        {
+          "name": "hfe_maximum_at_0.05_a",
+          "pass": true,
+          "value": 240.47507626284403,
+          "maximum": 400
+        }
+      ]
+    },
+    {
+      "test_netlist": "output_curve.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": []
+    },
+    {
+      "test_netlist": "boundary_region.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "upper_current_boundary_voltage",
+          "pass": true,
+          "value": 0.14907805655712247,
+          "minimum": 0,
+          "maximum": 1
+        }
+      ]
+    },
+    {
+      "test_netlist": "saturation_bounds.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "vce_sat_maximum_1",
+          "pass": true,
+          "value": 0.14263965095458164,
+          "maximum": 0.8
+        },
+        {
+          "name": "vbe_sat_maximum_1",
+          "pass": true,
+          "value": 1.3504970535228957,
+          "maximum": 1.4
+        }
+      ]
+    }
+  ]
+}

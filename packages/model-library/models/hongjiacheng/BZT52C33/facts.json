@@ -1,0 +1,175 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "schema_version": "1.0.0",
+    "mpn": "BZT52C33",
+    "manufacturer": "hongjiacheng",
+    "family": "diode",
+    "datasheet_identity": {
+      "title": "BZT52C2V0 THRU BZT52C75 SURFACE MOUNT ZENER DIODES",
+      "revision": "Rev:1.0",
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3",
+        "p. 4"
+      ]
+    },
+    "usable_curves": true,
+    "curves": [
+      {
+        "name": "BZT52C33 zener characteristic",
+        "x_axis": {
+          "quantity": "Zener voltage VZ",
+          "unit": "V",
+          "scale": "linear"
+        },
+        "y_axis": {
+          "quantity": "Zener current IZ",
+          "unit": "A",
+          "scale": "log"
+        },
+        "test_conditions": "TA = 25 degC, pulsed, PD = 500 mW; BZT52C33 trace labeled 33 in the BZT52C2V0 through BZT52C75 series plot",
+        "page_reference": "p. 3, Fig. 2 (Zener Characteristics, 11 V to 43 V), 33 V trace",
+        "points": [
+          {
+            "x": 32.9,
+            "y": 0.0005
+          },
+          {
+            "x": 32.9,
+            "y": 0.001
+          },
+          {
+            "x": 33,
+            "y": 0.002
+          },
+          {
+            "x": 33.2,
+            "y": 0.005
+          },
+          {
+            "x": 33.6,
+            "y": 0.01
+          }
+        ]
+      }
+    ],
+    "specs": {
+      "variant": "zener",
+      "forward_voltage_points": [
+        {
+          "current": {
+            "value": 0.01,
+            "unit": "A",
+            "conditions": "IF = 10 mA, TA = 25 degC",
+            "page_reference": "p. 1, Maximum Ratings, Forward Voltage @ IF = 10 mA",
+            "source_kind": "maximum"
+          },
+          "voltage": {
+            "value": 0.9,
+            "unit": "V",
+            "conditions": "IF = 10 mA, TA = 25 degC",
+            "page_reference": "p. 1, Maximum Ratings, Forward Voltage @ IF = 10 mA",
+            "source_kind": "maximum"
+          }
+        }
+      ],
+      "reverse_current": {
+        "value": 1e-07,
+        "unit": "A",
+        "conditions": "IR = 0.1 microA maximum at VR = 23.1 V, TA = 25 degC",
+        "page_reference": "p. 2, Electrical Characteristics, BZT52C33 row",
+        "source_kind": "maximum"
+      },
+      "capacitance": null,
+      "reverse_recovery": null,
+      "breakdown_voltage": {
+        "value": 33,
+        "unit": "V",
+        "conditions": "IZT = 2 mA, TA = 25 degC; nominal zener voltage, with 31.35 V minimum and 34.65 V maximum",
+        "page_reference": "p. 2, Electrical Characteristics, BZT52C33 VZ row",
+        "source_kind": "typical"
+      },
+      "breakdown_current": {
+        "value": 0.002,
+        "unit": "A",
+        "conditions": "IZT = 2 mA at nominal VZ = 33.0 V, TA = 25 degC",
+        "page_reference": "p. 2, Electrical Characteristics, BZT52C33 IZT row",
+        "source_kind": "typical"
+      }
+    },
+    "extraction_notes": [
+      "PDF SHA-256 verified as 1e58426ecb363e87dbad0da3e5a12350aadc7203342e2c339877f1de5b2d7631.",
+      "This is a family datasheet; the exact BZT52C33 row was selected from the BZT52C2V0 through BZT52C75 electrical-characteristics table for manufacturer hongjiacheng.",
+      "The BZT52C33 row gives VZ minimum 31.35 V, nominal 33.0 V, and maximum 34.65 V at IZT = 2 mA; the nominal value and paired IZT are used for the zener breakdown fields.",
+      "The exact row gives maximum ZZT = 80 ohm at IZT = 2 mA, maximum ZZK = 325 ohm at IZK = 0.5 mA, reverse leakage IR = 0.1 microA at VR = 23.1 V, and admissible IZM = 2 mA. Zener impedance, knee current, temperature coefficient, and admissible-current fields are not represented by the strict schema.",
+      "The forward-voltage maximum is 0.9 V at IF = 10 mA from the p. 1 maximum-ratings table. No component-specific capacitance value or reverse-recovery time is published; the p. 3 capacitance and dynamic-impedance plots are grouped series-level characteristics without a uniquely identified BZT52C33 trace.",
+      "The five zener-characteristic points are direct approximate graph-read observations from the visible BZT52C33 trace labeled 33 in p. 3 Fig. 2 at labeled logarithmic-current grid values; source-axis current in mA was converted to A and no points were interpolated."
+    ],
+    "omission_reason": null
+  },
+  "catalog_seed_hints": [],
+  "identity": {
+    "canonical_mpn": "BZT52C33",
+    "manufacturer": "hongjiacheng",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8564879649391075328",
+    "revision": "Rev:1.0",
+    "sha256": "1e58426ecb363e87dbad0da3e5a12350aadc7203342e2c339877f1de5b2d7631",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "placeholder": false
+  },
+  "fit_points": [
+    {
+      "current": {
+        "value": 0.0095,
+        "unit": "A",
+        "conditions": "Conservative F1 package bench at 95% of the cited current; IF = 10 mA, TA = 25 degC",
+        "page_reference": "p. 1, Maximum Ratings, Forward Voltage @ IF = 10 mA",
+        "source_kind": "maximum"
+      },
+      "voltage": {
+        "value": 0.9,
+        "unit": "V",
+        "conditions": "IF = 10 mA, TA = 25 degC",
+        "page_reference": "p. 1, Maximum Ratings, Forward Voltage @ IF = 10 mA",
+        "source_kind": "maximum"
+      }
+    }
+  ],
+  "electrical_limits": {},
+  "derived_model_inputs": {
+    "BV": {
+      "value": 33,
+      "unit": "V",
+      "conditions": "IZT = 2 mA, TA = 25 degC; nominal zener voltage, with 31.35 V minimum and 34.65 V maximum",
+      "page_reference": "p. 2, Electrical Characteristics, BZT52C33 VZ row",
+      "source_kind": "typical"
+    },
+    "IBV": {
+      "value": 0.002,
+      "unit": "A",
+      "conditions": "IZT = 2 mA at nominal VZ = 33.0 V, TA = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, BZT52C33 IZT row",
+      "source_kind": "typical"
+    },
+    "NBV": {
+      "value": 1,
+      "unit": "1",
+      "conditions": "First-order avalanche-knee default; no multi-point reverse-knee trace was available",
+      "page_reference": "model-factory Zener F1 policy",
+      "source_kind": "held_default"
+    }
+  },
+  "canonical_mpn": "BZT52C33"
+}

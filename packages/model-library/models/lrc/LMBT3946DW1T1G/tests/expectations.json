@@ -1,0 +1,360 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "dc_gain.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "hfe_at_0.0001_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg1),1950000)"
+          },
+          "expected_value": 195,
+          "unit": "1",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 5, Electrical Characteristics Curves (NPN), DC Current Gain plot, digitized typical curve",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_at_0.0002_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg2),1000000)"
+          },
+          "expected_value": 200,
+          "unit": "1",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 5, Electrical Characteristics Curves (NPN), DC Current Gain plot, digitized typical curve",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_at_0.0005_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg3),410000)"
+          },
+          "expected_value": 205,
+          "unit": "1",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 5, Electrical Characteristics Curves (NPN), DC Current Gain plot, digitized typical curve",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_at_0.001_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg4),215000)"
+          },
+          "expected_value": 215,
+          "unit": "1",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 5, Electrical Characteristics Curves (NPN), DC Current Gain plot, digitized typical curve",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_at_0.005_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg5),46000)"
+          },
+          "expected_value": 230,
+          "unit": "1",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 5, Electrical Characteristics Curves (NPN), DC Current Gain plot, digitized typical curve",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_at_0.01_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg6),23500)"
+          },
+          "expected_value": 235,
+          "unit": "1",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 5, Electrical Characteristics Curves (NPN), DC Current Gain plot, digitized typical curve",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_at_0.02_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg7),11250)"
+          },
+          "expected_value": 225,
+          "unit": "1",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 5, Electrical Characteristics Curves (NPN), DC Current Gain plot, digitized typical curve",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_at_0.05_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg8),2999.9999999999995)"
+          },
+          "expected_value": 150,
+          "unit": "1",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 5, Electrical Characteristics Curves (NPN), DC Current Gain plot, digitized typical curve",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_at_0.1_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg9),749.9999999999999)"
+          },
+          "expected_value": 75,
+          "unit": "1",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 5, Electrical Characteristics Curves (NPN), DC Current Gain plot, digitized typical curve",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": [
+        {
+          "name": "hfe_minimum_at_0.0001_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg10),399999.99999999994)"
+          },
+          "minimum": 40,
+          "unit": "1",
+          "inclusive": true,
+          "datasheet_citation": "p. 3, NPN electrical characteristics, DC Current Gain HFE row",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_minimum_at_0.001_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg11),70000)"
+          },
+          "minimum": 70,
+          "unit": "1",
+          "inclusive": true,
+          "datasheet_citation": "p. 3, NPN electrical characteristics, DC Current Gain HFE row",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_minimum_at_0.01_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg12),10000)"
+          },
+          "minimum": 100,
+          "unit": "1",
+          "inclusive": true,
+          "datasheet_citation": "p. 3, NPN electrical characteristics, DC Current Gain HFE row",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_maximum_at_0.01_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg13),30000)"
+          },
+          "maximum": 300,
+          "unit": "1",
+          "inclusive": true,
+          "datasheet_citation": "p. 3, NPN electrical characteristics, DC Current Gain HFE row",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_minimum_at_0.05_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg14),1200)"
+          },
+          "minimum": 60,
+          "unit": "1",
+          "inclusive": true,
+          "datasheet_citation": "p. 3, NPN electrical characteristics, DC Current Gain HFE row",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_minimum_at_0.1_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg15),300)"
+          },
+          "minimum": 30,
+          "unit": "1",
+          "inclusive": true,
+          "datasheet_citation": "p. 3, NPN electrical characteristics, DC Current Gain HFE row",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "saturation.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "vce_sat_1_maximum",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(cs1))"
+          },
+          "minimum": 0,
+          "maximum": 0.2,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 3, NPN electrical characteristics, Collector-Emitter Saturation Voltage row",
+          "placeholder": false
+        },
+        {
+          "name": "vbe_sat_1_maximum",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(bs1))"
+          },
+          "minimum": 0,
+          "maximum": 0.85,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 3, NPN electrical characteristics, Base-Emitter Saturation Voltage row",
+          "placeholder": false
+        },
+        {
+          "name": "vce_sat_2_maximum",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(cs2))"
+          },
+          "minimum": 0,
+          "maximum": 0.3,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 3, NPN electrical characteristics, Collector-Emitter Saturation Voltage row",
+          "placeholder": false
+        },
+        {
+          "name": "vbe_sat_2_maximum",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(bs2))"
+          },
+          "minimum": 0,
+          "maximum": 0.95,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 3, NPN electrical characteristics, Base-Emitter Saturation Voltage row",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "output_curve.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "boundary_region.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "upper_current_boundary_voltage",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(c))"
+          },
+          "minimum": 0,
+          "maximum": 10,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 5, Electrical Characteristics Curves (NPN), DC Current Gain plot, digitized typical curve",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "saturation_bounds.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "vce_sat_maximum_1",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(c1))"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 3, NPN electrical characteristics, Collector-Emitter Saturation Voltage row",
+          "placeholder": false,
+          "maximum": 0.2
+        },
+        {
+          "name": "vbe_sat_maximum_1",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(b1))"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 3, NPN electrical characteristics, Base-Emitter Saturation Voltage row",
+          "placeholder": false,
+          "maximum": 0.85
+        },
+        {
+          "name": "vce_sat_maximum_2",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(c2))"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 3, NPN electrical characteristics, Collector-Emitter Saturation Voltage row",
+          "placeholder": false,
+          "maximum": 0.3
+        },
+        {
+          "name": "vbe_sat_maximum_2",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(b2))"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 3, NPN electrical characteristics, Base-Emitter Saturation Voltage row",
+          "placeholder": false,
+          "maximum": 0.95
+        }
+      ]
+    }
+  ]
+}

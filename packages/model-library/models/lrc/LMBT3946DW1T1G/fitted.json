@@ -1,0 +1,130 @@
+{
+  "schema_version": "1.0.0",
+  "fidelity_tier": "F2",
+  "parameters": {
+    "CJE": 1e-12,
+    "CJC": 1e-12,
+    "TF": 1e-9,
+    "IS": 6.752752311569166e-15,
+    "VAF": 100,
+    "RB": 10,
+    "RC": 0.1,
+    "RE": 0.05,
+    "BF": 307.71283483332616,
+    "ISE": 3.6242007992191644e-14,
+    "IKF": 0.044918934556527804
+  },
+  "fitter": "scipy.optimize.least_squares with native ngspice-46 evaluations",
+  "optimizer": {
+    "optimizer_nfev": 14,
+    "optimizer_status": 2,
+    "vce": 1,
+    "held_defaults": [
+      {
+        "parameter": "IS",
+        "value": 6.752752311569166e-15,
+        "reason": "derived from the cited VBE(on) curve at IC = 0.01 A, VBE = 0.72 V; hFE at forced base current does not constrain IS"
+      }
+    ]
+  },
+  "held_defaults": [
+    {
+      "parameter": "IS",
+      "value": 6.752752311569166e-15,
+      "reason": "derived from the cited VBE(on) curve at IC = 0.01 A, VBE = 0.72 V; hFE at forced base current does not constrain IS"
+    }
+  ],
+  "curves_used": [
+    "NPN DC current gain hFE versus collector current IC, TA = 25 degC (p. 5, Electrical Characteristics Curves (NPN), DC Current Gain plot, digitized typical curve)",
+    "NPN base-emitter on-voltage VBE(on) versus collector current IC (p. 5, Electrical Characteristics Curves (NPN), VBE(on) versus IC plot, digitized typical curve)"
+  ],
+  "curves_rejected": [],
+  "residuals": [
+    {
+      "quantity": "collector current at IB for hFE 195 and IC 0.0001 A",
+      "gate_quantity": "dc_current_gain",
+      "datasheet_value": 0.0001,
+      "fitted_value": 0.00009367318670849833,
+      "unit": "A",
+      "relative_error": 0.06326813291501669,
+      "citation": "p. 5, Electrical Characteristics Curves (NPN), DC Current Gain plot, digitized typical curve"
+    },
+    {
+      "quantity": "collector current at IB for hFE 200 and IC 0.0002 A",
+      "gate_quantity": "dc_current_gain",
+      "datasheet_value": 0.0002,
+      "fitted_value": 0.00020056898265452539,
+      "unit": "A",
+      "relative_error": 0.0028449132726268774,
+      "citation": "p. 5, Electrical Characteristics Curves (NPN), DC Current Gain plot, digitized typical curve"
+    },
+    {
+      "quantity": "collector current at IB for hFE 205 and IC 0.0005 A",
+      "gate_quantity": "dc_current_gain",
+      "datasheet_value": 0.0005,
+      "fitted_value": 0.0005382791282804167,
+      "unit": "A",
+      "relative_error": 0.07655825656083334,
+      "citation": "p. 5, Electrical Characteristics Curves (NPN), DC Current Gain plot, digitized typical curve"
+    },
+    {
+      "quantity": "collector current at IB for hFE 215 and IC 0.001 A",
+      "gate_quantity": "dc_current_gain",
+      "datasheet_value": 0.001,
+      "fitted_value": 0.0010767500238784145,
+      "unit": "A",
+      "relative_error": 0.07675002387841443,
+      "citation": "p. 5, Electrical Characteristics Curves (NPN), DC Current Gain plot, digitized typical curve"
+    },
+    {
+      "quantity": "collector current at IB for hFE 230 and IC 0.005 A",
+      "gate_quantity": "dc_current_gain",
+      "datasheet_value": 0.005,
+      "fitted_value": 0.005126991423519689,
+      "unit": "A",
+      "relative_error": 0.02539828470393777,
+      "citation": "p. 5, Electrical Characteristics Curves (NPN), DC Current Gain plot, digitized typical curve"
+    },
+    {
+      "quantity": "collector current at IB for hFE 235 and IC 0.01 A",
+      "gate_quantity": "dc_current_gain",
+      "datasheet_value": 0.01,
+      "fitted_value": 0.009521632607751851,
+      "unit": "A",
+      "relative_error": 0.04783673922481493,
+      "citation": "p. 5, Electrical Characteristics Curves (NPN), DC Current Gain plot, digitized typical curve"
+    },
+    {
+      "quantity": "collector current at IB for hFE 225 and IC 0.02 A",
+      "gate_quantity": "dc_current_gain",
+      "datasheet_value": 0.02,
+      "fitted_value": 0.017760838071448903,
+      "unit": "A",
+      "relative_error": 0.11195809642755485,
+      "citation": "p. 5, Electrical Characteristics Curves (NPN), DC Current Gain plot, digitized typical curve"
+    },
+    {
+      "quantity": "collector current at IB for hFE 150 and IC 0.05 A",
+      "gate_quantity": "dc_current_gain",
+      "datasheet_value": 0.05,
+      "fitted_value": 0.047049139059223144,
+      "unit": "A",
+      "relative_error": 0.059017218815537176,
+      "citation": "p. 5, Electrical Characteristics Curves (NPN), DC Current Gain plot, digitized typical curve"
+    },
+    {
+      "quantity": "collector current at IB for hFE 75 and IC 0.1 A",
+      "gate_quantity": "dc_current_gain",
+      "datasheet_value": 0.1,
+      "fitted_value": 0.11256077922990437,
+      "unit": "A",
+      "relative_error": 0.12560779229904367,
+      "citation": "p. 5, Electrical Characteristics Curves (NPN), DC Current Gain plot, digitized typical curve"
+    }
+  ],
+  "rms_relative_error": 0.07490073017835759,
+  "worst_relative_error": {
+    "value": 0.12560779229904367,
+    "quantity": "collector current at IB for hFE 75 and IC 0.1 A"
+  }
+}

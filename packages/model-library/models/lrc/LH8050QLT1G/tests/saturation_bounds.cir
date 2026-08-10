@@ -1,0 +1,14 @@
+OpenCircuit independent review: published BJT saturation hard bounds
+* OpenCircuit Model Factory v0.1.0 bulk adapter
+* Original work generated from public factual specifications.
+* This model is not copied or adapted from any vendor SPICE model.
+* Source: https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8586182845882634240
+* Revision: Rev.B
+.model OC_LRC_LH8050QLT1G NPN(IS=1.0000000000e-14 BF=3.0987909103e2 VAF=1.0000000000e2 IKF=5.5294899846e-1 ISE=4.3287179210e-14 NE=1.5000000000e0 NF=1.0000000000e0 RB=1.0000000000e1 RC=1.0000000000e-1 RE=5.0000000000e-2 CJE=1.0000000000e-12 CJC=1.0000000000e-12 TF=1.0000000000e-9)
+
+.temp 25
+IC1 0 c1 DC 0.8
+IB1 0 b1 DC 0.08
+Q1 c1 b1 0 OC_LRC_LH8050QLT1G
+.op
+.end

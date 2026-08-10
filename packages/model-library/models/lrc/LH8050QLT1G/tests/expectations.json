@@ -1,0 +1,279 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "dc_gain.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "hfe_at_0.001_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg1),245000.00000000003)"
+          },
+          "expected_value": 245,
+          "unit": "1",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 3, Electrical Characteristic Curves, HFE-IC plot",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_at_0.01_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg2),25500)"
+          },
+          "expected_value": 255,
+          "unit": "1",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 3, Electrical Characteristic Curves, HFE-IC plot",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_at_0.1_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg3),2500)"
+          },
+          "expected_value": 250,
+          "unit": "1",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 3, Electrical Characteristic Curves, HFE-IC plot",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_at_0.3_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg4),716.6666666666666)"
+          },
+          "expected_value": 215,
+          "unit": "1",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 3, Electrical Characteristic Curves, HFE-IC plot",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_at_0.5_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg5),330)"
+          },
+          "expected_value": 165,
+          "unit": "1",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 3, Electrical Characteristic Curves, HFE-IC plot",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_at_0.8_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg6),137.5)"
+          },
+          "expected_value": 110,
+          "unit": "1",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 3, Electrical Characteristic Curves, HFE-IC plot",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_at_0.001_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg10),245000.00000000003)"
+          },
+          "expected_value": 245,
+          "unit": "1",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 3, HFE-IC plot",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_at_0.01_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg11),25500)"
+          },
+          "expected_value": 255,
+          "unit": "1",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 3, HFE-IC plot",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_at_0.3_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg12),716.6666666666666)"
+          },
+          "expected_value": 215,
+          "unit": "1",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 3, HFE-IC plot",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_at_0.5_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg13),330)"
+          },
+          "expected_value": 165,
+          "unit": "1",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 3, HFE-IC plot",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_at_0.8_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg14),137.5)"
+          },
+          "expected_value": 110,
+          "unit": "1",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 3, HFE-IC plot",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": [
+        {
+          "name": "hfe_minimum_at_0.1_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg7),1600)"
+          },
+          "minimum": 160,
+          "unit": "1",
+          "inclusive": true,
+          "datasheet_citation": "p. 2, hFE classification note, Q = 160-320",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_maximum_at_0.1_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg8),3200)"
+          },
+          "maximum": 320,
+          "unit": "1",
+          "inclusive": true,
+          "datasheet_citation": "p. 2, hFE classification note, Q = 160-320",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_minimum_at_0.8_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg9),50)"
+          },
+          "minimum": 40,
+          "unit": "1",
+          "inclusive": true,
+          "datasheet_citation": "p. 2, Electrical Characteristics, DC Current Gain row",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "saturation.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "vce_sat_1_maximum",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(cs1))"
+          },
+          "minimum": 0,
+          "maximum": 0.5,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 2, Electrical Characteristics, Collector-Emitter Saturation Voltage row",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "output_curve.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "boundary_region.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "upper_current_boundary_voltage",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(c))"
+          },
+          "minimum": 0,
+          "maximum": 1,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 3, Electrical Characteristic Curves, HFE-IC plot",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "saturation_bounds.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "vce_sat_maximum_1",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(c1))"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 2, Electrical Characteristics, Collector-Emitter Saturation Voltage row",
+          "placeholder": false,
+          "maximum": 0.5
+        }
+      ]
+    }
+  ]
+}

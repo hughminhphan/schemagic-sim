@@ -1,0 +1,140 @@
+{
+  "schema_version": "1.0.0",
+  "canonical_mpn": "MMBT5551-E",
+  "manufacturer": "MDD Microdiode Semiconductor",
+  "description": "bjt from MDD Microdiode Semiconductor",
+  "electrical_family": "bjt_npn",
+  "symbol_pins": [
+    {
+      "name": "B",
+      "number": "1",
+      "role": "base"
+    },
+    {
+      "name": "C",
+      "number": "2",
+      "role": "collector"
+    },
+    {
+      "name": "E",
+      "number": "3",
+      "role": "emitter"
+    }
+  ],
+  "spice_pin_mapping": [
+    {
+      "symbol_pin_number": "2",
+      "subckt_node": "collector",
+      "order": 1
+    },
+    {
+      "symbol_pin_number": "1",
+      "subckt_node": "base",
+      "order": 2
+    },
+    {
+      "symbol_pin_number": "3",
+      "subckt_node": "emitter",
+      "order": 3
+    }
+  ],
+  "package_variants": [
+    {
+      "name": "SOT-23",
+      "standard": "SOT-23",
+      "pin_count": 3,
+      "pin_map": [
+        {
+          "package_pin": "1",
+          "symbol_pin_number": "1"
+        },
+        {
+          "package_pin": "2",
+          "symbol_pin_number": "2"
+        },
+        {
+          "package_pin": "3",
+          "symbol_pin_number": "3"
+        }
+      ]
+    }
+  ],
+  "ordering_code_aliases": [],
+  "datasheet": {
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8604433306284793856",
+    "revision": "Rev:2024A1"
+  },
+  "model_type": "dot_model",
+  "fidelity_tier": "F2",
+  "domain_coverage": {
+    "dc": "fitted",
+    "ac": "none",
+    "transient": "none",
+    "noise": "none",
+    "thermal": "none",
+    "digital": "none"
+  },
+  "supported_analyses": [
+    "operating_point",
+    "dc_sweep"
+  ],
+  "supported_operating_region": {
+    "summary": "F2 curve-fit fidelity is supported only for the cited 25 degC DC current-gain hFE versus collector-current curve from 0.001 to 0.2 A at VCE = 5 V. Other published scalar limits are hard-bound checks only, not curve-fidelity claims.",
+    "numeric_bounds": [
+      {
+        "quantity": "collector_current",
+        "minimum": 0.001,
+        "maximum": 0.2,
+        "unit": "A",
+        "conditions": "Cited gain and saturation characterization span at 25 degC",
+        "placeholder": false
+      },
+      {
+        "quantity": "collector_emitter_voltage",
+        "minimum": 5,
+        "maximum": 5,
+        "unit": "V",
+        "conditions": "Exact bias of the fitted 25 degC hFE curve",
+        "placeholder": false
+      },
+      {
+        "quantity": "ambient_temperature",
+        "minimum": 25,
+        "maximum": 25,
+        "unit": "degC",
+        "conditions": "Exact temperature of the fitted hFE curve",
+        "placeholder": false
+      }
+    ]
+  },
+  "known_omissions": [
+    "AC, transient, noise, thermal, and package-parasitic behavior are outside this DC-only conveyor package.",
+    "Temperature dependence and self-heating are not modelled; the electrical region is limited to the cited nominal-temperature data.",
+    "Catalog parametrics were used only as initial guesses or F1 fallback constraints and are not datasheet citations.",
+    "Not represented by the supplied schema: VAF/Early voltage, VCBO and VEBO as scalar spec fields, ICBO and IEBO, IC and power/thermal absolute ratings, hFE rank-bin metadata, and a tabulated VBE(on) scalar. Cibo has no exact table row and is therefore represented only by digitized typical curve evidence.",
+    "VBE(on), saturation, output-family, AC, switching, capacitance, thermal, SOA, and continuous-current fidelity are outside the F2 claim unless separately enforced as a published scalar hard bound."
+  ],
+  "licence": {
+    "spdx_id": "MIT",
+    "provenance_basis": "original_from_facts"
+  },
+  "generator": {
+    "tool_or_agent": "opencircuit-model-factory-v0.1.0 bulk-adapter",
+    "date": "2026-08-10"
+  },
+  "reviewer": {
+    "tool_or_agent": "gpt-5.6-sol independent reviewer (batch-3 scale campaign)",
+    "date": "2026-08-10"
+  },
+  "test_results": {
+    "status": "complete",
+    "pass_count": 25,
+    "fail_count": 0,
+    "total_count": 25,
+    "worst_observed_relative_fitting_error": {
+      "value": 0.18339934487781123,
+      "quantity": "collector current at IB for hFE 35 and IC 0.2 A"
+    }
+  },
+  "validation_date": "2026-08-10"
+}

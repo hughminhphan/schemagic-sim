@@ -1,0 +1,109 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "dc_gain.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "hfe_at_0.002_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg2),260000)"
+          },
+          "expected_value": 520,
+          "unit": "1",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.75
+          },
+          "datasheet_citation": "p. 2, electrical characteristics, DC Current Gain row",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": [
+        {
+          "name": "hfe_minimum_at_0.002_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg1),209999.99999999997)"
+          },
+          "minimum": 420,
+          "unit": "1",
+          "inclusive": true,
+          "datasheet_citation": "p. 2, electrical characteristics, DC Current Gain row",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_maximum_at_0.002_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg1),209999.99999999997)"
+          },
+          "maximum": 800,
+          "unit": "1",
+          "inclusive": true,
+          "datasheet_citation": "p. 2, electrical characteristics, DC Current Gain row",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "output_curve.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "boundary_region.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "upper_current_boundary_voltage",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(c))"
+          },
+          "minimum": 0,
+          "maximum": 5,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 2, electrical characteristics, DC Current Gain row",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "saturation_bounds.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "vce_sat_maximum_1",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(c1))"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 2, electrical characteristics, VCE(sat) row",
+          "placeholder": false,
+          "maximum": 0.25
+        },
+        {
+          "name": "vce_sat_maximum_2",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(c2))"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 2, electrical characteristics, VCE(sat) row",
+          "placeholder": false,
+          "maximum": 0.6
+        }
+      ]
+    }
+  ]
+}

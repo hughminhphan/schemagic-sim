@@ -1,0 +1,161 @@
+{
+  "schema_version": "1.0.0",
+  "validation_date": "2026-08-10",
+  "native_wasm_all_pass": true,
+  "expectations_all_pass": true,
+  "expectation_pass_count": 17,
+  "expectation_fail_count": 0,
+  "worst_native_wasm_relative_delta": 2.7686973699269278e-12,
+  "worst_native_wasm_absolute_delta": 3.610445276081009e-13,
+  "benches": [
+    {
+      "test_netlist": "dc_gain.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "hfe_at_0.001_a",
+          "pass": true,
+          "value": 240.43079709243355,
+          "error": 4.569202907566449,
+          "allowed": 49
+        },
+        {
+          "name": "hfe_at_0.01_a",
+          "pass": true,
+          "value": 269.61819372777364,
+          "error": 14.618193727773644,
+          "allowed": 51
+        },
+        {
+          "name": "hfe_at_0.1_a",
+          "pass": true,
+          "value": 248.58047163906494,
+          "error": 1.419528360935061,
+          "allowed": 50
+        },
+        {
+          "name": "hfe_at_0.3_a",
+          "pass": true,
+          "value": 198.98831087073233,
+          "error": 16.011689129267666,
+          "allowed": 43
+        },
+        {
+          "name": "hfe_at_0.5_a",
+          "pass": true,
+          "value": 160.37329507011577,
+          "error": 4.626704929884227,
+          "allowed": 33
+        },
+        {
+          "name": "hfe_at_0.8_a",
+          "pass": true,
+          "value": 118.50580565279023,
+          "error": 8.50580565279023,
+          "allowed": 22
+        },
+        {
+          "name": "hfe_at_0.001_a",
+          "pass": true,
+          "value": 240.43079709243355,
+          "error": 4.569202907566449,
+          "allowed": 49
+        },
+        {
+          "name": "hfe_at_0.01_a",
+          "pass": true,
+          "value": 269.618193727717,
+          "error": 14.618193727717028,
+          "allowed": 51
+        },
+        {
+          "name": "hfe_at_0.3_a",
+          "pass": true,
+          "value": 198.9883108707212,
+          "error": 16.011689129278807,
+          "allowed": 43
+        },
+        {
+          "name": "hfe_at_0.5_a",
+          "pass": true,
+          "value": 160.37329507010773,
+          "error": 4.62670492989227,
+          "allowed": 33
+        },
+        {
+          "name": "hfe_at_0.8_a",
+          "pass": true,
+          "value": 118.50580565279435,
+          "error": 8.50580565279435,
+          "allowed": 22
+        },
+        {
+          "name": "hfe_minimum_at_0.1_a",
+          "pass": true,
+          "value": 233.78658686469043,
+          "minimum": 160
+        },
+        {
+          "name": "hfe_maximum_at_0.1_a",
+          "pass": true,
+          "value": 255.0945029301559,
+          "maximum": 320
+        },
+        {
+          "name": "hfe_minimum_at_0.8_a",
+          "pass": true,
+          "value": 78.95241844350276,
+          "minimum": 40
+        }
+      ]
+    },
+    {
+      "test_netlist": "saturation.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "vce_sat_1_maximum",
+          "pass": true,
+          "value": 0.21395785409091517,
+          "minimum": 0,
+          "maximum": 0.5
+        }
+      ]
+    },
+    {
+      "test_netlist": "output_curve.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": []
+    },
+    {
+      "test_netlist": "boundary_region.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "upper_current_boundary_voltage",
+          "pass": true,
+          "value": 0.3235092902403753,
+          "minimum": 0,
+          "maximum": 1
+        }
+      ]
+    },
+    {
+      "test_netlist": "saturation_bounds.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "vce_sat_maximum_1",
+          "pass": true,
+          "value": 0.21395785409091517,
+          "maximum": 0.5
+        }
+      ]
+    }
+  ]
+}

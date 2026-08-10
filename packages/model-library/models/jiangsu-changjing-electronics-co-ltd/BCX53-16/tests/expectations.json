@@ -1,0 +1,186 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "dc_gain.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "hfe_at_0.001_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg1),220000)"
+          },
+          "expected_value": 220,
+          "unit": "1",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 3, Typical Characteristics, hFE \u2014 IC",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_at_0.01_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg2),21000)"
+          },
+          "expected_value": 210,
+          "unit": "1",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 3, Typical Characteristics, hFE \u2014 IC",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_at_0.1_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg3),1699.9999999999998)"
+          },
+          "expected_value": 170,
+          "unit": "1",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 3, Typical Characteristics, hFE \u2014 IC",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_at_1_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg4),35)"
+          },
+          "expected_value": 35,
+          "unit": "1",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.2
+          },
+          "datasheet_citation": "p. 3, Typical Characteristics, hFE \u2014 IC",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": [
+        {
+          "name": "hfe_minimum_at_0.005_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg5),12600)"
+          },
+          "minimum": 63,
+          "unit": "1",
+          "inclusive": true,
+          "datasheet_citation": "p. 2, Electrical Characteristics, DC current gain hFE(1)* row",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_minimum_at_0.15_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg6),666.6666666666666)"
+          },
+          "minimum": 100,
+          "unit": "1",
+          "inclusive": true,
+          "datasheet_citation": "p. 2, Classification of hFE(2), BCX53-16 range 100-250; hFE(2)* test row",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_maximum_at_0.15_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg7),1666.6666666666667)"
+          },
+          "maximum": 250,
+          "unit": "1",
+          "inclusive": true,
+          "datasheet_citation": "p. 2, Classification of hFE(2), BCX53-16 range 100-250; hFE(2)* test row",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_minimum_at_0.5_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg8),80)"
+          },
+          "minimum": 40,
+          "unit": "1",
+          "inclusive": true,
+          "datasheet_citation": "p. 2, Electrical Characteristics, DC current gain hFE(3)* row",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "saturation.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "vce_sat_1_maximum",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(cs1))"
+          },
+          "minimum": 0,
+          "maximum": 0.5,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 2, Electrical Characteristics, Collector-emitter saturation voltage VCE(sat)* row",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "output_curve.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "boundary_region.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "upper_current_boundary_voltage",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(c))"
+          },
+          "minimum": 0,
+          "maximum": 2,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 3, Typical Characteristics, hFE \u2014 IC",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "saturation_bounds.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "vce_sat_maximum_1",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(c1))"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 2, Electrical Characteristics, Collector-emitter saturation voltage VCE(sat)* row",
+          "placeholder": false,
+          "maximum": 0.5
+        }
+      ]
+    }
+  ]
+}

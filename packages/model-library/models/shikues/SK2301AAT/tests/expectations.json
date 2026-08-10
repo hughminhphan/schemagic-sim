@@ -1,0 +1,84 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "rdson.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "rdson_1",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d1),0.4347826086956522)"
+          },
+          "expected_value": 0.13,
+          "unit": "ohm",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.5
+          },
+          "datasheet_citation": "p. 2 Electrical Characteristics, RDS(ON), TYP column",
+          "placeholder": false
+        },
+        {
+          "name": "rdson_3",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d3),0.6666666666666666)"
+          },
+          "expected_value": 0.16,
+          "unit": "ohm",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.5
+          },
+          "datasheet_citation": "p. 2 Electrical Characteristics, RDS(ON), TYP column",
+          "placeholder": false
+        },
+        {
+          "name": "rdson_5",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d5),0.6666666666666666)"
+          },
+          "expected_value": 0.21,
+          "unit": "ohm",
+          "tolerance": {
+            "absolute": 0,
+            "relative": 0.5
+          },
+          "datasheet_citation": "p. 2 Electrical Characteristics, RDS(ON), TYP column",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": [
+        {
+          "name": "rdson_maximum_2",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d2),0.4347826086956522)"
+          },
+          "minimum": 0,
+          "maximum": 0.18,
+          "unit": "ohm",
+          "inclusive": true,
+          "datasheet_citation": "p. 2 Electrical Characteristics, RDS(ON), MAX column",
+          "placeholder": false
+        },
+        {
+          "name": "rdson_maximum_4",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d4),0.6666666666666666)"
+          },
+          "minimum": 0,
+          "maximum": 0.25,
+          "unit": "ohm",
+          "inclusive": true,
+          "datasheet_citation": "p. 2 Electrical Characteristics, RDS(ON), MAX column",
+          "placeholder": false
+        }
+      ]
+    }
+  ]
+}

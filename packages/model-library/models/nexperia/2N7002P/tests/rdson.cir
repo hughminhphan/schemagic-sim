@@ -1,0 +1,17 @@
+OpenCircuit factory test: 2N7002P-215 RDS(on)
+* OpenCircuit Model Factory v0.1.0 bulk adapter
+* Original work generated from public factual specifications.
+* This model is not copied or adapted from any vendor SPICE model.
+* Source: https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8586176229070684160
+* Revision: Rev. 02 - 29 July 2010
+.model OC_NEXPERIA_2N7002P-215 VDMOS( VTO=2.1926789314e0 KP=1.2337421649e0 THETA=4.8975885794e-1 LAMBDA=7.5403671144e-2 RD=2.2690443498e-1 RS=2.6000000000e-1 RG=1.0000000000e-4 RDS=1e9 CGS=2.6000000000e-11 CGDMAX=4.0000000000e-12 CGDMIN=4.0000000000e-12 CJO=3.0000000000e-12 IS=1.0000000000e-12 N=1.5000000000e0 RB=2.6000000000e-1)
+
+.temp 25
+M1 d1 g1 0 OC_NEXPERIA_2N7002P-215
+ID1 0 d1 DC 5.0000000000e-2
+VG1 g1 0 DC 5.0000000000e0
+M2 d2 g2 0 OC_NEXPERIA_2N7002P-215
+ID2 0 d2 DC 5.0000000000e-1
+VG2 g2 0 DC 1.0000000000e1
+.op
+.end

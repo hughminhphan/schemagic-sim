@@ -1,0 +1,20 @@
+OpenCircuit independent review: published BJT saturation hard bounds
+* OpenCircuit Model Factory v0.1.0 bulk adapter
+* Original work generated from public factual specifications.
+* This model is not copied or adapted from any vendor SPICE model.
+* Source: https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8586173324804706304
+* Revision: Revision No. 3, dated 2003-02-25
+.model OC_KEC-SEMICON_2N3904S-RTK-PS NPN(IS=1.0000000000e-14 BF=2.7826538024e2 VAF=1.0000000000e2 IKF=3.4597985341e-2 ISE=7.4151771851e-14 NE=1.5000000000e0 NF=1.0000000000e0 RB=1.0000000000e1 RC=1.0000000000e-1 RE=5.0000000000e-2 CJE=1.0000000000e-12 CJC=1.0000000000e-12 TF=1.0000000000e-9)
+
+.temp 25
+IC1 0 c1 DC 0.01
+IB1 0 b1 DC 0.001
+Q1 c1 b1 0 OC_KEC-SEMICON_2N3904S-RTK-PS
+IC2 0 c2 DC 0.01
+IB2 0 b2 DC 0.001
+Q2 c2 b2 0 OC_KEC-SEMICON_2N3904S-RTK-PS
+IC3 0 c3 DC 0.05
+IB3 0 b3 DC 0.005
+Q3 c3 b3 0 OC_KEC-SEMICON_2N3904S-RTK-PS
+.op
+.end

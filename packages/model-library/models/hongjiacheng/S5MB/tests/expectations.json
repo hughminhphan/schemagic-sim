@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "forward_01.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "forward_voltage_at_0.01_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "expected_value": 0.2,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.35
+          },
+          "datasheet_citation": "p. 2, Fig. 3, S5AB-S5MB grouped curve",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "forward_02.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "forward_voltage_maximum_at_4.75_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "minimum": 0,
+          "maximum": 1,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 2, Electrical Characteristics, S5MB VF row",
+          "placeholder": false
+        }
+      ]
+    }
+  ]
+}

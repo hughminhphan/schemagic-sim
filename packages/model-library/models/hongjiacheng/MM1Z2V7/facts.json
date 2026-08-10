@@ -1,0 +1,175 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "schema_version": "1.0.0",
+    "mpn": "MM1Z2V7",
+    "manufacturer": "hongjiacheng",
+    "family": "diode",
+    "datasheet_identity": {
+      "title": "MM1Z2V0 THRU MM1Z75 SURFACE MOUNT ZENER DIODES",
+      "revision": "Rev:1.0",
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3",
+        "p. 4"
+      ]
+    },
+    "usable_curves": true,
+    "curves": [
+      {
+        "name": "MM1Z2V7 zener characteristic",
+        "x_axis": {
+          "quantity": "Zener voltage",
+          "unit": "V",
+          "scale": "linear"
+        },
+        "y_axis": {
+          "quantity": "Zener current",
+          "unit": "A",
+          "scale": "linear"
+        },
+        "test_conditions": "Ta = 25 degC, pulsed, PD = 500 mW; curve labeled 2V7 in the figure",
+        "page_reference": "p. 3, Fig. 1, curve labeled 2V7",
+        "points": [
+          {
+            "x": 1.64,
+            "y": 0.001
+          },
+          {
+            "x": 2.58,
+            "y": 0.004
+          },
+          {
+            "x": 2.76,
+            "y": 0.007
+          },
+          {
+            "x": 2.91,
+            "y": 0.012
+          },
+          {
+            "x": 3.01,
+            "y": 0.017
+          }
+        ]
+      }
+    ],
+    "specs": {
+      "variant": "zener",
+      "forward_voltage_points": [
+        {
+          "current": {
+            "value": 0.01,
+            "unit": "A",
+            "conditions": "IF = 10 mA, Ta = 25 degC",
+            "page_reference": "p. 1, Maximum Ratings, Forward Voltage @ IF = 10 mA",
+            "source_kind": "maximum"
+          },
+          "voltage": {
+            "value": 0.9,
+            "unit": "V",
+            "conditions": "IF = 10 mA, Ta = 25 degC",
+            "page_reference": "p. 1, Maximum Ratings, Forward Voltage @ IF = 10 mA",
+            "source_kind": "maximum"
+          }
+        }
+      ],
+      "reverse_current": {
+        "value": 0.00012,
+        "unit": "A",
+        "conditions": "IR = 120 microA maximum at VR = 1 V, Ta = 25 degC",
+        "page_reference": "p. 2, Electrical Characteristics, MM1Z2V7 row, IR@VR",
+        "source_kind": "maximum"
+      },
+      "capacitance": null,
+      "reverse_recovery": null,
+      "breakdown_voltage": {
+        "value": 2.7,
+        "unit": "V",
+        "conditions": "IZT = 5 mA, Ta = 25 degC; nominal zener voltage",
+        "page_reference": "p. 2, Electrical Characteristics, MM1Z2V7 row, Nom. VZ",
+        "source_kind": "typical"
+      },
+      "breakdown_current": {
+        "value": 0.005,
+        "unit": "A",
+        "conditions": "IZT = 5 mA, Ta = 25 degC",
+        "page_reference": "p. 2, Electrical Characteristics, MM1Z2V7 row, IZT",
+        "source_kind": "typical"
+      }
+    },
+    "extraction_notes": [
+      "PDF SHA-256 verified as ff4a1051509db45f49817a41e5674adc11a1dea2a91e51ee958ffaed19b1d755.",
+      "MM1Z2V7 electrical-characteristics row: VZ minimum 2.5 V, nominal 2.7 V, maximum 2.9 V; IZT = 5 mA; maximum ZZT = 110 ohm at IZT; maximum IR = 120 microA at VR = 1 V; Ta = 25 degC unless otherwise noted.",
+      "The schema has no nominal source_kind, so the nominal VZ and its IZT test current are represented as typical while the min/max VZ values are retained in this note.",
+      "Maximum ratings also publish PD = 500 mW, VF maximum 0.9 V at IF = 10 mA, Tj and Tstg = -55 to +150 degC, and typical RthetaJ-A = 340 degC/W.",
+      "The MM1Z2V7 curve points were digitized from the labeled 2V7 curve in Fig. 1; the plotted axes are VZ in V and IZ in mA, converted here to SI amperes for the y values.",
+      "No diode capacitance, reverse-recovery specification, or ZZK/IZK knee-impedance pair is published in the supplied datasheet; those schema fields are null where applicable."
+    ],
+    "omission_reason": null
+  },
+  "catalog_seed_hints": [],
+  "identity": {
+    "canonical_mpn": "MM1Z2V7",
+    "manufacturer": "hongjiacheng",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8564879443223986176",
+    "revision": "Rev:1.0",
+    "sha256": "ff4a1051509db45f49817a41e5674adc11a1dea2a91e51ee958ffaed19b1d755",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "placeholder": false
+  },
+  "fit_points": [
+    {
+      "current": {
+        "value": 0.0095,
+        "unit": "A",
+        "conditions": "Conservative F1 package bench at 95% of the cited current; IF = 10 mA, Ta = 25 degC",
+        "page_reference": "p. 1, Maximum Ratings, Forward Voltage @ IF = 10 mA",
+        "source_kind": "maximum"
+      },
+      "voltage": {
+        "value": 0.9,
+        "unit": "V",
+        "conditions": "IF = 10 mA, Ta = 25 degC",
+        "page_reference": "p. 1, Maximum Ratings, Forward Voltage @ IF = 10 mA",
+        "source_kind": "maximum"
+      }
+    }
+  ],
+  "electrical_limits": {},
+  "derived_model_inputs": {
+    "BV": {
+      "value": 2.7,
+      "unit": "V",
+      "conditions": "IZT = 5 mA, Ta = 25 degC; nominal zener voltage",
+      "page_reference": "p. 2, Electrical Characteristics, MM1Z2V7 row, Nom. VZ",
+      "source_kind": "typical"
+    },
+    "IBV": {
+      "value": 0.005,
+      "unit": "A",
+      "conditions": "IZT = 5 mA, Ta = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, MM1Z2V7 row, IZT",
+      "source_kind": "typical"
+    },
+    "NBV": {
+      "value": 1,
+      "unit": "1",
+      "conditions": "First-order avalanche-knee default; no multi-point reverse-knee trace was available",
+      "page_reference": "model-factory Zener F1 policy",
+      "source_kind": "held_default"
+    }
+  },
+  "canonical_mpn": "MM1Z2V7"
+}

@@ -1,0 +1,40 @@
+{
+  "schema_version": "1.0.0",
+  "validation_date": "2026-08-10",
+  "native_wasm_all_pass": true,
+  "expectations_all_pass": true,
+  "expectation_pass_count": 2,
+  "expectation_fail_count": 0,
+  "worst_native_wasm_relative_delta": 5.382209365289777e-13,
+  "worst_native_wasm_absolute_delta": 7.87370169064161e-13,
+  "benches": [
+    {
+      "test_netlist": "forward_01.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "forward_voltage_maximum_at_0.19_a",
+          "pass": true,
+          "value": 1.4629125617854315,
+          "minimum": 0,
+          "maximum": 1.5
+        }
+      ]
+    },
+    {
+      "test_netlist": "reverse_leakage.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "reverse_leakage_maximum",
+          "pass": true,
+          "value": 1.0003475151235844e-11,
+          "minimum": 0,
+          "maximum": 0.000005
+        }
+      ]
+    }
+  ]
+}

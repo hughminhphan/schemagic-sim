@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "forward_01.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "forward_voltage_at_0.001_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "expected_value": 0.4,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.35
+          },
+          "datasheet_citation": "p. 2 fig. 3, dotted ES2JF curve",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "forward_02.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "forward_voltage_maximum_at_1.9_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "minimum": 0,
+          "maximum": 1.7,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 2 electrical characteristics, maximum instantaneous forward voltage",
+          "placeholder": false
+        }
+      ]
+    }
+  ]
+}

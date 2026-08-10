@@ -1,0 +1,116 @@
+{
+  "schema_version": "1.0.0",
+  "canonical_mpn": "BAW56",
+  "manufacturer": "hongjiacheng",
+  "description": "diode from hongjiacheng",
+  "electrical_family": "diode",
+  "symbol_pins": [
+    {
+      "name": "A",
+      "number": "1",
+      "role": "anode"
+    },
+    {
+      "name": "K",
+      "number": "2",
+      "role": "cathode"
+    }
+  ],
+  "spice_pin_mapping": [
+    {
+      "symbol_pin_number": "1",
+      "subckt_node": "anode",
+      "order": 1
+    },
+    {
+      "symbol_pin_number": "2",
+      "subckt_node": "cathode",
+      "order": 2
+    }
+  ],
+  "package_variants": [
+    {
+      "name": "SOT-23",
+      "standard": "SOT-23",
+      "pin_count": 2,
+      "pin_map": [
+        {
+          "package_pin": "1",
+          "symbol_pin_number": "1"
+        },
+        {
+          "package_pin": "2",
+          "symbol_pin_number": "2"
+        }
+      ]
+    }
+  ],
+  "ordering_code_aliases": [],
+  "datasheet": {
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8603005810385969152",
+    "revision": "Rev:1.0"
+  },
+  "model_type": "dot_model",
+  "fidelity_tier": "F2",
+  "domain_coverage": {
+    "dc": "fitted",
+    "ac": "none",
+    "transient": "none",
+    "noise": "none",
+    "thermal": "none",
+    "digital": "none"
+  },
+  "supported_analyses": [
+    "operating_point",
+    "dc_sweep"
+  ],
+  "supported_operating_region": {
+    "summary": "F2 curve-fit fidelity is supported only for the cited 25 degC forward-voltage curve from 3e-05 to 0.5 A. Any reverse-leakage limit is a scalar hard-bound check only, not reverse-bias curve fidelity.",
+    "numeric_bounds": [
+      {
+        "quantity": "forward_current",
+        "minimum": 3e-05,
+        "maximum": 0.5,
+        "unit": "A",
+        "conditions": "Cited forward targets and fitted 25 degC curve span",
+        "placeholder": false
+      },
+      {
+        "quantity": "ambient_temperature",
+        "minimum": 25,
+        "maximum": 25,
+        "unit": "degC",
+        "conditions": "Exact temperature of the fitted forward-voltage curve",
+        "placeholder": false
+      }
+    ]
+  },
+  "known_omissions": [
+    "AC, transient, noise, thermal, and package-parasitic behavior are outside this DC-only conveyor package.",
+    "Temperature dependence and self-heating are not modelled; the electrical region is limited to the cited nominal-temperature data.",
+    "Catalog parametrics were used only as initial guesses or F1 fallback constraints and are not datasheet citations."
+  ],
+  "licence": {
+    "spdx_id": "MIT",
+    "provenance_basis": "original_from_facts"
+  },
+  "generator": {
+    "tool_or_agent": "opencircuit-model-factory-v0.1.0 bulk-adapter",
+    "date": "2026-08-10"
+  },
+  "reviewer": {
+    "tool_or_agent": "gpt-5.6-sol independent reviewer (batch-3 scale campaign)",
+    "date": "2026-08-10"
+  },
+  "test_results": {
+    "status": "complete",
+    "pass_count": 14,
+    "fail_count": 0,
+    "total_count": 14,
+    "worst_observed_relative_fitting_error": {
+      "value": 0.0215822737923438,
+      "quantity": "forward voltage at 0.001 A"
+    }
+  },
+  "validation_date": "2026-08-10"
+}

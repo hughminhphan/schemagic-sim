@@ -1,0 +1,141 @@
+{
+  "schema_version": "1.0.0",
+  "canonical_mpn": "DMG1012T",
+  "manufacturer": "TECH PUBLIC",
+  "description": "-55℃~+150℃ 1 N-channel 1.1V 120pF 15pF 20V 20pF 280mW 300mΩ@2.5V 800mA N-Channel SOT-523 MOSFETs ROHS",
+  "electrical_family": "nmos",
+  "symbol_pins": [
+    {
+      "name": "G",
+      "number": "1",
+      "role": "gate"
+    },
+    {
+      "name": "D",
+      "number": "2",
+      "role": "drain"
+    },
+    {
+      "name": "S",
+      "number": "3",
+      "role": "source"
+    }
+  ],
+  "spice_pin_mapping": [
+    {
+      "symbol_pin_number": "2",
+      "subckt_node": "drain",
+      "order": 1
+    },
+    {
+      "symbol_pin_number": "1",
+      "subckt_node": "gate",
+      "order": 2
+    },
+    {
+      "symbol_pin_number": "3",
+      "subckt_node": "source",
+      "order": 3
+    }
+  ],
+  "package_variants": [
+    {
+      "name": "SOT-523",
+      "standard": "SOT-523",
+      "pin_count": 3,
+      "pin_map": [
+        {
+          "package_pin": "1",
+          "symbol_pin_number": "1"
+        },
+        {
+          "package_pin": "2",
+          "symbol_pin_number": "2"
+        },
+        {
+          "package_pin": "3",
+          "symbol_pin_number": "3"
+        }
+      ]
+    }
+  ],
+  "ordering_code_aliases": [],
+  "datasheet": {
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8588944021167755264",
+    "revision": "Not stated in supplied datasheet"
+  },
+  "model_type": "dot_model",
+  "fidelity_tier": "F1",
+  "domain_coverage": {
+    "dc": "approx",
+    "ac": "none",
+    "transient": "none",
+    "noise": "none",
+    "thermal": "none",
+    "digital": "none"
+  },
+  "supported_analyses": [
+    "operating_point",
+    "dc_sweep"
+  ],
+  "supported_operating_region": {
+    "summary": "Supported only over the cited 25 degC electrical characterization region: gate_source_voltage_magnitude 2.5 to 4.5 V; drain_current_magnitude 0.45 to 0.55 A.",
+    "numeric_bounds": [
+      {
+        "quantity": "gate_source_voltage_magnitude",
+        "minimum": 2.5,
+        "maximum": 4.5,
+        "unit": "V",
+        "conditions": "Cited threshold and RDS(on) gate-bias conditions",
+        "placeholder": false
+      },
+      {
+        "quantity": "drain_current_magnitude",
+        "minimum": 0.45,
+        "maximum": 0.55,
+        "unit": "A",
+        "conditions": "Cited RDS(on) characterization currents",
+        "placeholder": false
+      },
+      {
+        "quantity": "ambient_temperature",
+        "minimum": 25,
+        "maximum": 25,
+        "unit": "degC",
+        "conditions": "Nominal model and package benches",
+        "placeholder": false
+      }
+    ]
+  },
+  "known_omissions": [
+    "AC, transient, noise, thermal, and package-parasitic behavior are outside this DC-only conveyor package.",
+    "Temperature dependence and self-heating are not modelled; the electrical region is limited to the cited nominal-temperature data.",
+    "Catalog parametrics were used only as initial guesses or F1 fallback constraints and are not datasheet citations.",
+    "F2 evidence did not qualify; staged as F1: No usable electrical curves are present in the supplied three-page PDF. Pages 1 and 2 contain feature, rating, and electrical-characteristics tables, while page 3 is a package outline drawing; therefore no transfer, output, or capacitance-versus-voltage curve points are extracted.",
+    "No usable electrical curves are present in the supplied three-page PDF. Pages 1 and 2 contain feature, rating, and electrical-characteristics tables, while page 3 is a package outline drawing; therefore no transfer, output, or capacitance-versus-voltage curve points are extracted.",
+    "Gate-threshold behavior is not covered by this F1 package; the supported region is limited to cited nominal-temperature RDS(on) targets."
+  ],
+  "licence": {
+    "spdx_id": "MIT",
+    "provenance_basis": "original_from_facts"
+  },
+  "generator": {
+    "tool_or_agent": "opencircuit-model-factory-v0.1.0 bulk-adapter",
+    "date": "2026-08-10"
+  },
+  "reviewer": {
+    "tool_or_agent": "gpt-5.6-sol independent reviewer (batch-3 scale campaign)",
+    "date": "2026-08-10"
+  },
+  "test_results": {
+    "status": "complete",
+    "pass_count": 4,
+    "fail_count": 0,
+    "total_count": 4,
+    "worst_observed_relative_fitting_error": {
+      "value": 0.18810920684796406,
+      "quantity": "rdson_3"
+    }
+  },
+  "validation_date": "2026-08-10"
+}

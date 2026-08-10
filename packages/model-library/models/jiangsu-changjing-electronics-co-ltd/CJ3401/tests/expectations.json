@@ -1,0 +1,51 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "rdson.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "rdson_maximum_1",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d1),0.23809523809523808)"
+          },
+          "minimum": 0,
+          "maximum": 0.065,
+          "unit": "ohm",
+          "inclusive": true,
+          "datasheet_citation": "p. 2, Electrical characteristics, RDS(on), first row, MAX column",
+          "placeholder": false
+        },
+        {
+          "name": "rdson_maximum_2",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d2),0.25)"
+          },
+          "minimum": 0,
+          "maximum": 0.075,
+          "unit": "ohm",
+          "inclusive": true,
+          "datasheet_citation": "p. 2, Electrical characteristics, RDS(on), second row, MAX column",
+          "placeholder": false
+        },
+        {
+          "name": "rdson_maximum_3",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d3),1)"
+          },
+          "minimum": 0,
+          "maximum": 0.09,
+          "unit": "ohm",
+          "inclusive": true,
+          "datasheet_citation": "p. 2, Electrical characteristics, RDS(on), third row, MAX column",
+          "placeholder": false
+        }
+      ]
+    }
+  ]
+}

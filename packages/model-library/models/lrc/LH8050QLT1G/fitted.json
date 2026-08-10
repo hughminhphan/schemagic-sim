@@ -1,0 +1,102 @@
+{
+  "schema_version": "1.0.0",
+  "fidelity_tier": "F2",
+  "parameters": {
+    "CJE": 1e-12,
+    "CJC": 1e-12,
+    "TF": 1e-9,
+    "IS": 1e-14,
+    "VAF": 100,
+    "RB": 10,
+    "RC": 0.1,
+    "RE": 0.05,
+    "BF": 309.87909103102146,
+    "ISE": 4.328717921048795e-14,
+    "IKF": 0.5529489984574523
+  },
+  "fitter": "scipy.optimize.least_squares with native ngspice-46 evaluations",
+  "optimizer": {
+    "optimizer_nfev": 11,
+    "optimizer_status": 2,
+    "vce": 1,
+    "held_defaults": [
+      {
+        "parameter": "IS",
+        "value": 1e-14,
+        "reason": "held physical default; VBE evidence was not included in this hFE-only fit and hFE at forced base current does not constrain IS"
+      }
+    ]
+  },
+  "held_defaults": [
+    {
+      "parameter": "IS",
+      "value": 1e-14,
+      "reason": "held physical default; VBE evidence was not included in this hFE-only fit and hFE at forced base current does not constrain IS"
+    }
+  ],
+  "curves_used": [
+    "DC current gain hFE versus collector current IC, TA = 25 degC (p. 3, Electrical Characteristic Curves, HFE-IC plot)"
+  ],
+  "curves_rejected": [],
+  "residuals": [
+    {
+      "quantity": "collector current at IB for hFE 245 and IC 0.001 A",
+      "gate_quantity": "dc_current_gain",
+      "datasheet_value": 0.001,
+      "fitted_value": 0.0009813850251183531,
+      "unit": "A",
+      "relative_error": 0.018614974881646894,
+      "citation": "p. 3, Electrical Characteristic Curves, HFE-IC plot"
+    },
+    {
+      "quantity": "collector current at IB for hFE 255 and IC 0.01 A",
+      "gate_quantity": "dc_current_gain",
+      "datasheet_value": 0.01,
+      "fitted_value": 0.010573593272354964,
+      "unit": "A",
+      "relative_error": 0.057359327235496395,
+      "citation": "p. 3, Electrical Characteristic Curves, HFE-IC plot"
+    },
+    {
+      "quantity": "collector current at IB for hFE 250 and IC 0.1 A",
+      "gate_quantity": "dc_current_gain",
+      "datasheet_value": 0.1,
+      "fitted_value": 0.09943489278561257,
+      "unit": "A",
+      "relative_error": 0.005651072143874336,
+      "citation": "p. 3, Electrical Characteristic Curves, HFE-IC plot"
+    },
+    {
+      "quantity": "collector current at IB for hFE 215 and IC 0.3 A",
+      "gate_quantity": "dc_current_gain",
+      "datasheet_value": 0.3,
+      "fitted_value": 0.2776649715729851,
+      "unit": "A",
+      "relative_error": 0.07445009475671635,
+      "citation": "p. 3, Electrical Characteristic Curves, HFE-IC plot"
+    },
+    {
+      "quantity": "collector current at IB for hFE 165 and IC 0.5 A",
+      "gate_quantity": "dc_current_gain",
+      "datasheet_value": 0.5,
+      "fitted_value": 0.48599083716166835,
+      "unit": "A",
+      "relative_error": 0.02801832567666329,
+      "citation": "p. 3, Electrical Characteristic Curves, HFE-IC plot"
+    },
+    {
+      "quantity": "collector current at IB for hFE 110 and IC 0.8 A",
+      "gate_quantity": "dc_current_gain",
+      "datasheet_value": 0.8,
+      "fitted_value": 0.8618786368594056,
+      "unit": "A",
+      "relative_error": 0.07734829607425692,
+      "citation": "p. 3, Electrical Characteristic Curves, HFE-IC plot"
+    }
+  ],
+  "rms_relative_error": 0.05160611465018284,
+  "worst_relative_error": {
+    "value": 0.07734829607425692,
+    "quantity": "collector current at IB for hFE 110 and IC 0.8 A"
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "forward_01.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "forward_voltage_maximum_at_0.0095_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "minimum": 0,
+          "maximum": 0.9,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 1, Maximum Ratings, Forward Voltage @ IF = 10 mA",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "reverse_leakage.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "reverse_leakage_maximum",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vreverse))"
+          },
+          "minimum": 0,
+          "maximum": 5e-05,
+          "unit": "A",
+          "inclusive": true,
+          "datasheet_citation": "p. 2, Electrical Characteristics, BZX584C2V4 row",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "zener_bounds.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "zener_voltage_at_test_current",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(cathode))"
+          },
+          "minimum": 2.2,
+          "maximum": 2.6,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 2, Electrical Characteristics, BZX584C2V4 VZ row",
+          "placeholder": false
+        }
+      ]
+    }
+  ]
+}

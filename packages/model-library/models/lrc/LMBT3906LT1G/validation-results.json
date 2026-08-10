@@ -1,0 +1,118 @@
+{
+  "schema_version": "1.0.0",
+  "validation_date": "2026-08-10",
+  "native_wasm_all_pass": true,
+  "expectations_all_pass": true,
+  "expectation_pass_count": 13,
+  "expectation_fail_count": 0,
+  "worst_native_wasm_relative_delta": 3.9813838249408585e-12,
+  "worst_native_wasm_absolute_delta": 5.029310301551959e-14,
+  "benches": [
+    {
+      "test_netlist": "dc_gain.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "hfe_minimum_at_0.0001_a",
+          "pass": true,
+          "value": 100.3872790061866,
+          "minimum": 60
+        },
+        {
+          "name": "hfe_minimum_at_0.001_a",
+          "pass": true,
+          "value": 100.33528057027397,
+          "minimum": 80
+        },
+        {
+          "name": "hfe_minimum_at_0.01_a",
+          "pass": true,
+          "value": 100.2796632998182,
+          "minimum": 100
+        },
+        {
+          "name": "hfe_minimum_at_0.05_a",
+          "pass": true,
+          "value": 100.2067838655556,
+          "minimum": 60
+        },
+        {
+          "name": "hfe_minimum_at_0.1_a",
+          "pass": true,
+          "value": 100.10850459364096,
+          "minimum": 30
+        },
+        {
+          "name": "hfe_maximum_at_0.01_a",
+          "pass": true,
+          "value": 100.2796632998182,
+          "maximum": 300
+        }
+      ]
+    },
+    {
+      "test_netlist": "output_curve.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": []
+    },
+    {
+      "test_netlist": "boundary_region.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "upper_current_boundary_voltage",
+          "pass": true,
+          "value": 0.11362330656812475,
+          "minimum": 0,
+          "maximum": 1
+        }
+      ]
+    },
+    {
+      "test_netlist": "saturation_bounds.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "vce_sat_maximum_1",
+          "pass": true,
+          "value": 0.06827468923278601,
+          "maximum": 0.25
+        },
+        {
+          "name": "vbe_sat_minimum_1",
+          "pass": true,
+          "value": 0.7327026273222722,
+          "minimum": 0.65
+        },
+        {
+          "name": "vce_sat_maximum_2",
+          "pass": true,
+          "value": 0.06827468923278539,
+          "maximum": 0.25
+        },
+        {
+          "name": "vbe_sat_maximum_2",
+          "pass": true,
+          "value": 0.7327026273222721,
+          "maximum": 0.85
+        },
+        {
+          "name": "vce_sat_maximum_3",
+          "pass": true,
+          "value": 0.07448694953486762,
+          "maximum": 0.4
+        },
+        {
+          "name": "vbe_sat_maximum_3",
+          "pass": true,
+          "value": 0.8162640332433481,
+          "maximum": 0.95
+        }
+      ]
+    }
+  ]
+}

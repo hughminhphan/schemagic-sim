@@ -1,0 +1,93 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "dc_gain.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "hfe_minimum_at_0.002_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg1),55000)"
+          },
+          "minimum": 110,
+          "unit": "1",
+          "inclusive": true,
+          "datasheet_citation": "p. 1, Table 2, hFE BC846 row",
+          "placeholder": false
+        },
+        {
+          "name": "hfe_maximum_at_0.002_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg1),55000)"
+          },
+          "maximum": 450,
+          "unit": "1",
+          "inclusive": true,
+          "datasheet_citation": "p. 1, Table 2, hFE BC846 row",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "output_curve.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "boundary_region.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "upper_current_boundary_voltage",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(c))"
+          },
+          "minimum": 0,
+          "maximum": 5,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 1, Table 2, hFE BC846 row",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "saturation_bounds.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "vce_sat_maximum_2",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(c2))"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 4, Table 8, VCEsat row",
+          "placeholder": false,
+          "maximum": 0.2
+        },
+        {
+          "name": "vce_sat_maximum_4",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(c4))"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 4, Table 8, VCEsat row, footnote [1]",
+          "placeholder": false,
+          "maximum": 0.4
+        }
+      ]
+    }
+  ]
+}
