@@ -1,0 +1,233 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [
+      {
+        "name": "Typical forward voltage, SS18-SS110 curve group",
+        "page_reference": "Datasheet p. 2, Fig. 3 Typical Forward Voltage",
+        "points": [
+          {
+            "x": 0.446,
+            "y": 0.01
+          },
+          {
+            "x": 0.544,
+            "y": 0.1
+          },
+          {
+            "x": 0.732,
+            "y": 1
+          },
+          {
+            "x": 1.071,
+            "y": 10
+          },
+          {
+            "x": 1.593,
+            "y": 50
+          }
+        ],
+        "test_conditions": "Tj=25°C; pulse width=300 us; 1% duty cycle; dotted curve is the SS18-SS110 group, which includes SS18.",
+        "x_axis": {
+          "quantity": "Instantaneous forward voltage",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "Instantaneous forward current",
+          "scale": "log",
+          "unit": "A"
+        }
+      },
+      {
+        "name": "Typical reverse characteristics, SS18-SS120 curve group, Tj=100°C",
+        "page_reference": "Datasheet p. 2, Fig. 4 Typical Reverse Characteristics",
+        "points": [
+          {
+            "x": 10,
+            "y": 0.366
+          },
+          {
+            "x": 20,
+            "y": 0.585
+          },
+          {
+            "x": 40,
+            "y": 0.938
+          },
+          {
+            "x": 60,
+            "y": 1.273
+          },
+          {
+            "x": 80,
+            "y": 1.792
+          },
+          {
+            "x": 100,
+            "y": 3.89
+          }
+        ],
+        "test_conditions": "Tj=100°C; dashed curve is the SS18-SS120 group, which includes SS18; for SS18, 100% of rated peak reverse voltage corresponds to VRRM=80 V.",
+        "x_axis": {
+          "quantity": "Percent of rated peak reverse voltage",
+          "scale": "linear",
+          "unit": "%"
+        },
+        "y_axis": {
+          "quantity": "Instantaneous reverse current",
+          "scale": "log",
+          "unit": "mA"
+        }
+      },
+      {
+        "name": "Typical reverse characteristics, SS18-SS120 curve group, Tj=25°C",
+        "page_reference": "Datasheet p. 2, Fig. 4 Typical Reverse Characteristics",
+        "points": [
+          {
+            "x": 10,
+            "y": 0.001667
+          },
+          {
+            "x": 20,
+            "y": 0.002299
+          },
+          {
+            "x": 40,
+            "y": 0.003345
+          },
+          {
+            "x": 60,
+            "y": 0.00418
+          },
+          {
+            "x": 80,
+            "y": 0.005292
+          },
+          {
+            "x": 100,
+            "y": 0.010001
+          }
+        ],
+        "test_conditions": "Tj=25°C; dashed curve is the SS18-SS120 group, which includes SS18; for SS18, 100% of rated peak reverse voltage corresponds to VRRM=80 V.",
+        "x_axis": {
+          "quantity": "Percent of rated peak reverse voltage",
+          "scale": "linear",
+          "unit": "%"
+        },
+        "y_axis": {
+          "quantity": "Instantaneous reverse current",
+          "scale": "log",
+          "unit": "mA"
+        }
+      }
+    ],
+    "datasheet_identity": {
+      "pages_examined": [
+        "1",
+        "2",
+        "3"
+      ],
+      "revision": "Rev:1.0",
+      "title": "SS12 THRU SS120 SURFACE MOUNT SCHOTTKY BARRIER RECTIFIER"
+    },
+    "extraction_notes": [
+      "Target identity is SS18 in the SS12 THRU SS120 family; manufacturer footer identifies Zhuhai Hongjiacheng Technology co., Ltd. Citation: datasheet p. 1.",
+      "SS18 ratings on p. 1 are VRRM=80 V, VRMS=56 V, and VDC=80 V, with maximum average forward rectified current IF(AV)=1.0 A and non-repetitive peak forward surge current IFSM=30 A at t=8.3 ms half-sine wave. VRRM/VDC are reverse-voltage ratings, not a stated breakdown-voltage test, so breakdown_voltage and breakdown_current are null.",
+      "The reverse-current table also gives maximum IR2=50 mA at VR=VDC and TA=100°C for SS18. The single reverse_current field stores IR1=0.5 mA at TA=25°C; IR2 is retained here to preserve the second temperature condition. Citation: datasheet p. 2, Electrical Characteristics.",
+      "Polarity is explicitly stated as: cathode line denotes the cathode end. Citation: datasheet p. 1, Mechanical Data.",
+      "The plotted points are digitized from the target-containing curve groups only: Fig. 3 dotted SS18-SS110 and Fig. 4 dashed SS18-SS120. Fig. 1 is not included because its SS15-SS120 derating group does not isolate SS18; Fig. 2 is not included because it has no target-labelled curve."
+    ],
+    "family": "diode",
+    "manufacturer": "hongjiacheng",
+    "mpn": "SS18",
+    "omission_reason": null,
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": null,
+      "breakdown_voltage": null,
+      "capacitance": {
+        "conditions": "4.0 V DC, 1 MHz; typical junction capacitance CJ for SS18.",
+        "page_reference": "Datasheet p. 2, Electrical Characteristics",
+        "source_kind": "typical",
+        "unit": "F",
+        "value": 9e-11
+      },
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "IF=1.0 A; Ta=25°C unless otherwise noted; maximum instantaneous forward voltage for SS18.",
+            "page_reference": "Datasheet p. 2, Electrical Characteristics",
+            "source_kind": "maximum",
+            "unit": "A",
+            "value": 1
+          },
+          "voltage": {
+            "conditions": "IF=1.0 A; Ta=25°C unless otherwise noted; maximum instantaneous forward voltage for SS18.",
+            "page_reference": "Datasheet p. 2, Electrical Characteristics",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 0.85
+          }
+        }
+      ],
+      "reverse_current": {
+        "conditions": "VR=VDC at rated DC blocking voltage; TA=25°C; maximum DC reverse current IR1 for SS18.",
+        "page_reference": "Datasheet p. 2, Electrical Characteristics",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.0005
+      },
+      "reverse_recovery": null,
+      "variant": "schottky"
+    },
+    "usable_curves": true
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "Voltage - Forward(Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "850mV@1A",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "SS18",
+    "manufacturer": "hongjiacheng",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8603186850593333248",
+    "revision": "Rev:1.0",
+    "sha256": "084410db60775b4ccfceaf93f99c1ce2065e2fba09d9580a48ea3c1f5719a3a2",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "1",
+      "2",
+      "3"
+    ],
+    "placeholder": false
+  },
+  "fit_points": [
+    {
+      "current": {
+        "conditions": "Conservative F1 package bench at 95% of the cited current; IF=1.0 A; Ta=25°C unless otherwise noted; maximum instantaneous forward voltage for SS18.",
+        "page_reference": "Datasheet p. 2, Electrical Characteristics",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.95
+      },
+      "voltage": {
+        "conditions": "IF=1.0 A; Ta=25°C unless otherwise noted; maximum instantaneous forward voltage for SS18.",
+        "page_reference": "Datasheet p. 2, Electrical Characteristics",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 0.85
+      }
+    }
+  ],
+  "electrical_limits": {},
+  "derived_model_inputs": {}
+}

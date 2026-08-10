@@ -1,0 +1,176 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [
+      {
+        "name": "Zener characteristics, MMSZ5250B nominal 20 V curve",
+        "page_reference": "p. 3, Fig. 2, Zener Characteristics (11V to 39V), curve labelled 20",
+        "points": [
+          {
+            "x": 0.001,
+            "y": 19.84
+          },
+          {
+            "x": 0.002,
+            "y": 19.84
+          },
+          {
+            "x": 0.005,
+            "y": 20.03
+          },
+          {
+            "x": 0.01,
+            "y": 20.34
+          }
+        ],
+        "test_conditions": "Ta = 25 degC, pulsed; reverse-biased zener branch with cathode positive relative to anode; VZ and IZ are plotted as positive magnitudes; PD = 500 mW indicated",
+        "x_axis": {
+          "quantity": "Zener voltage (VZ)",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "Zener current (IZ)",
+          "scale": "log",
+          "unit": "A"
+        }
+      }
+    ],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3",
+        "p. 4"
+      ],
+      "revision": "Rev: 1.1",
+      "title": "MMSZ5221B THRU MMSZ5267B Surface Mount Silicon Zener Diodes"
+    },
+    "extraction_notes": [
+      "The supplied PDF SHA-256 matches the expected digest fec00843f279bccf78d55a456b749bf49d99676181d710880c28c93d8ee35181.",
+      "The MMSZ5250B row specifies nominal VZ = 20.0 V, IZT = 6.2 mA, maximum ZZT = 25 ohm, maximum IR = 0.1 uA at VR = 15 V, all at TA = 25 degC unless otherwise noted.",
+      "The zener curve points are manual digitizations of the real curve labelled 20 in Fig. 2; no interpolated or synthesized points were added.",
+      "The capacitance value is a manual digitization of the real 0V-bias typical curve in Fig. 5 at nominal VZ = 20 V, with VR = 0 V and f = 1 MHz.",
+      "Reverse recovery is omitted because the datasheet publishes no trr or switching-time specification.",
+      "Zener knee sharpness is not extractable from the supplied table because ZZK at IZK is not published; only maximum ZZT at IZT is provided."
+    ],
+    "family": "diode",
+    "manufacturer": "hongjiacheng",
+    "mpn": "MMSZ5250B",
+    "omission_reason": null,
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": {
+        "conditions": "IZT = 6.2 mA at nominal VZ = 20.0 V, TA = 25 degC; reverse zener current, cathode positive relative to anode",
+        "page_reference": "p. 2, Electrical Characteristics, MMSZ5250B row",
+        "source_kind": "typical",
+        "unit": "A",
+        "value": 0.0062
+      },
+      "breakdown_voltage": {
+        "conditions": "IZT = 6.2 mA reverse zener current, TA = 25 degC; nominal VZ, cathode positive relative to anode",
+        "page_reference": "p. 2, Electrical Characteristics, MMSZ5250B row",
+        "source_kind": "typical",
+        "unit": "V",
+        "value": 20
+      },
+      "capacitance": {
+        "conditions": "VR = 0 V bias, f = 1 MHz, TA = 25 degC, nominal VZ = 20 V; typical 0V-bias curve digitization",
+        "page_reference": "p. 4, Fig. 5, Typical Capacitance",
+        "source_kind": "digitized_typical_curve",
+        "unit": "F",
+        "value": 2.5e-11
+      },
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "IF = 10 mA, TA = 25 degC",
+            "page_reference": "p. 1, Maximum Ratings, Forward Voltage",
+            "source_kind": "maximum",
+            "unit": "A",
+            "value": 0.01
+          },
+          "voltage": {
+            "conditions": "IF = 10 mA, TA = 25 degC",
+            "page_reference": "p. 1, Maximum Ratings, Forward Voltage",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 0.9
+          }
+        }
+      ],
+      "reverse_current": {
+        "conditions": "VR = 15 V reverse bias, TA = 25 degC; maximum leakage current IR = 0.1 uA",
+        "page_reference": "p. 2, Electrical Characteristics, MMSZ5250B row",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 1e-7
+      },
+      "reverse_recovery": null,
+      "variant": "zener"
+    },
+    "usable_curves": true
+  },
+  "catalog_seed_hints": [],
+  "identity": {
+    "canonical_mpn": "MMSZ5250B",
+    "manufacturer": "hongjiacheng",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8564879396982595584",
+    "revision": "Rev: 1.1",
+    "sha256": "fec00843f279bccf78d55a456b749bf49d99676181d710880c28c93d8ee35181",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "placeholder": false
+  },
+  "fit_points": [
+    {
+      "current": {
+        "conditions": "Conservative F1 package bench at 95% of the cited current; IF = 10 mA, TA = 25 degC",
+        "page_reference": "p. 1, Maximum Ratings, Forward Voltage",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.0095
+      },
+      "voltage": {
+        "conditions": "IF = 10 mA, TA = 25 degC",
+        "page_reference": "p. 1, Maximum Ratings, Forward Voltage",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 0.9
+      }
+    }
+  ],
+  "electrical_limits": {},
+  "derived_model_inputs": {
+    "BV": {
+      "conditions": "IZT = 6.2 mA reverse zener current, TA = 25 degC; nominal VZ, cathode positive relative to anode",
+      "page_reference": "p. 2, Electrical Characteristics, MMSZ5250B row",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 20
+    },
+    "IBV": {
+      "conditions": "IZT = 6.2 mA at nominal VZ = 20.0 V, TA = 25 degC; reverse zener current, cathode positive relative to anode",
+      "page_reference": "p. 2, Electrical Characteristics, MMSZ5250B row",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.0062
+    },
+    "NBV": {
+      "value": 1,
+      "unit": "1",
+      "conditions": "First-order avalanche-knee default; no multi-point reverse-knee trace was available",
+      "page_reference": "model-factory Zener F1 policy",
+      "source_kind": "held_default"
+    }
+  }
+}

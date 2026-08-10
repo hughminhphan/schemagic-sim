@@ -1,0 +1,283 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [
+      {
+        "name": "typical_forward_characteristics_Ta25C_lower_family_curve",
+        "page_reference": "p. 2, Fig. 1 Typical Instantaneous Forward Characteristics",
+        "points": [
+          {
+            "x": 0.3,
+            "y": 0.125
+          },
+          {
+            "x": 0.4,
+            "y": 0.605
+          },
+          {
+            "x": 0.5,
+            "y": 1.14
+          },
+          {
+            "x": 0.6,
+            "y": 1.7
+          },
+          {
+            "x": 0.8,
+            "y": 2.77
+          },
+          {
+            "x": 1,
+            "y": 4.12
+          },
+          {
+            "x": 1.4,
+            "y": 7.28
+          },
+          {
+            "x": 1.6,
+            "y": 8.76
+          }
+        ],
+        "test_conditions": "Ta = 25 degC, typical family curve; forward current IF and forward voltage VF, using the lower-current Ta = 25 degC curve rather than the Ta = 100 degC curve",
+        "x_axis": {
+          "quantity": "forward voltage",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "forward current",
+          "scale": "log",
+          "unit": "A"
+        }
+      },
+      {
+        "name": "typical_reverse_characteristics_Ta25C_lower_family_curve",
+        "page_reference": "p. 2, Fig. 2 Typical Reverse Characteristics",
+        "points": [
+          {
+            "x": 1,
+            "y": 0.00000605
+          },
+          {
+            "x": 5,
+            "y": 0.00000718
+          },
+          {
+            "x": 10,
+            "y": 0.00000888
+          },
+          {
+            "x": 20,
+            "y": 0.0000125
+          },
+          {
+            "x": 25,
+            "y": 0.0000151
+          },
+          {
+            "x": 30,
+            "y": 0.0000184
+          },
+          {
+            "x": 35,
+            "y": 0.000023
+          },
+          {
+            "x": 39,
+            "y": 0.0000288
+          }
+        ],
+        "test_conditions": "Ta = 25 degC, typical family curve; reverse bias VR applied with cathode positive relative to anode, reverse current IR shown on the source plot in mA and converted to A; lower Ta = 25 degC curve rather than Ta = 100 degC",
+        "x_axis": {
+          "quantity": "reverse voltage",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "reverse current",
+          "scale": "log",
+          "unit": "A"
+        }
+      },
+      {
+        "name": "typical_junction_capacitance_Ta25C",
+        "page_reference": "p. 2, Fig. 3 Typical Junction Capacitance",
+        "points": [
+          {
+            "x": 0.1,
+            "y": 1.72e-10
+          },
+          {
+            "x": 0.2,
+            "y": 1.69e-10
+          },
+          {
+            "x": 0.5,
+            "y": 1.41e-10
+          },
+          {
+            "x": 1,
+            "y": 1.04e-10
+          },
+          {
+            "x": 2,
+            "y": 7.67e-11
+          },
+          {
+            "x": 5,
+            "y": 5.16e-11
+          },
+          {
+            "x": 10,
+            "y": 3.81e-11
+          },
+          {
+            "x": 15,
+            "y": 3.16e-11
+          },
+          {
+            "x": 18,
+            "y": 2.88e-11
+          }
+        ],
+        "test_conditions": "Ta = 25 degC, f = 1 MHz; reverse voltage VR and junction capacitance CJ, with source y-axis in pF converted to F",
+        "x_axis": {
+          "quantity": "reverse voltage",
+          "scale": "log",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "junction capacitance",
+          "scale": "log",
+          "unit": "F"
+        }
+      }
+    ],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3"
+      ],
+      "revision": "Rev:1.0",
+      "title": "B5817W THRU B5819W SURFACE MOUNT SCHOTTKY BARRIER RECTIFIER"
+    },
+    "extraction_notes": [
+      "The supplied PDF SHA-256 matches the expected hash 3d1e9091ea2c54fe73676fd95c6d24a4678a2b33e211f482b95dfec961baac1d.",
+      "B5818W values were selected from the B5817W/B5818W/B5819W family tables; maximum ratings are stated for Ta = 25 degC unless otherwise specified.",
+      "Forward voltage table values are maximum limits at the stated currents. The plotted forward curve is a typical family curve and is not individually keyed by part number; only the visible Ta = 25 degC branch was digitized.",
+      "The plotted reverse curve is a typical family curve and is not individually keyed by part number; only the visible Ta = 25 degC branch was digitized. Reverse current polarity is cathode positive relative to anode.",
+      "The plotted capacitance curve is the visible typical Ta = 25 degC, f = 1 MHz curve. Its source axis is in pF; extracted values are converted to SI unit F.",
+      "The 100 degC IR2 row was not used as a 25 degC fit input.",
+      "No reverse recovery time or reverse breakdown voltage/current specification is published in the supplied datasheet. VRRM/VDC are ratings, not breakdown measurements."
+    ],
+    "family": "diode",
+    "manufacturer": "hongjiacheng",
+    "mpn": "B5818W",
+    "omission_reason": "No reverse-recovery-time or breakdown-voltage/current specifications were published. The three plotted characteristics are usable typical curves, but the forward and reverse plots are family curves not individually keyed to B5818W.",
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": null,
+      "breakdown_voltage": null,
+      "capacitance": {
+        "conditions": "VR = 4.0 V, f = 1 MHz, Ta = 25 degC; typical junction capacitance CJ",
+        "page_reference": "p. 2, Electrical Characteristics, Typical junction capacitance",
+        "source_kind": "typical",
+        "unit": "F",
+        "value": 1.2e-10
+      },
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "IF = 1.0 A, Ta = 25 degC",
+            "page_reference": "p. 2, Electrical Characteristics, Maximum instantaneous forward voltage, VF1",
+            "source_kind": "maximum",
+            "unit": "A",
+            "value": 1
+          },
+          "voltage": {
+            "conditions": "IF = 1.0 A, Ta = 25 degC",
+            "page_reference": "p. 2, Electrical Characteristics, Maximum instantaneous forward voltage, VF1",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 0.55
+          }
+        },
+        {
+          "current": {
+            "conditions": "IF = 3.0 A, Ta = 25 degC",
+            "page_reference": "p. 2, Electrical Characteristics, Maximum instantaneous forward voltage, VF2",
+            "source_kind": "maximum",
+            "unit": "A",
+            "value": 3
+          },
+          "voltage": {
+            "conditions": "IF = 3.0 A, Ta = 25 degC",
+            "page_reference": "p. 2, Electrical Characteristics, Maximum instantaneous forward voltage, VF2",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 0.875
+          }
+        }
+      ],
+      "reverse_current": {
+        "conditions": "VR = VDC = 30 V, Ta = 25 degC; maximum DC reverse current at rated DC blocking voltage",
+        "page_reference": "p. 2, Electrical Characteristics, IR1",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.001
+      },
+      "reverse_recovery": null,
+      "variant": "schottky"
+    },
+    "usable_curves": true
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "Voltage - Forward(Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "550mV@1A",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "B5818W",
+    "manufacturer": "hongjiacheng",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8603186707303190528",
+    "revision": "Rev:1.0",
+    "sha256": "3d1e9091ea2c54fe73676fd95c6d24a4678a2b33e211f482b95dfec961baac1d",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ],
+    "placeholder": false
+  },
+  "fit_points": [
+    {
+      "current": {
+        "conditions": "Conservative F1 package bench at 95% of the cited current; IF = 3.0 A, Ta = 25 degC",
+        "page_reference": "p. 2, Electrical Characteristics, Maximum instantaneous forward voltage, VF2",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 2.8499999999999996
+      },
+      "voltage": {
+        "conditions": "IF = 3.0 A, Ta = 25 degC",
+        "page_reference": "p. 2, Electrical Characteristics, Maximum instantaneous forward voltage, VF2",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 0.875
+      }
+    }
+  ],
+  "electrical_limits": {},
+  "derived_model_inputs": {}
+}

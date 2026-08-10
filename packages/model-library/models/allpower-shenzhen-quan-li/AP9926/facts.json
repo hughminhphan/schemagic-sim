@@ -1,0 +1,335 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [
+      {
+        "name": "ID_vs_VGS",
+        "page_reference": "4",
+        "points": [
+          {
+            "x": 0.5,
+            "y": 1
+          },
+          {
+            "x": 1.5,
+            "y": 5
+          },
+          {
+            "x": 3.5,
+            "y": 15
+          },
+          {
+            "x": 4.5,
+            "y": 20
+          }
+        ],
+        "test_conditions": "VDS varies 1.5V to 4.5V; Ta=25°C",
+        "x_axis": {
+          "quantity": "Gate-Source Voltage",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "Drain Current",
+          "scale": "linear",
+          "unit": "A"
+        }
+      },
+      {
+        "name": "RDSon_vs_ID",
+        "page_reference": "4",
+        "points": [
+          {
+            "x": 1,
+            "y": 2.5
+          },
+          {
+            "x": 5,
+            "y": 1.2
+          },
+          {
+            "x": 10,
+            "y": 0.9
+          },
+          {
+            "x": 15,
+            "y": 0.8
+          }
+        ],
+        "test_conditions": "VGS=2.0V to 4.5V; Ta=25°C",
+        "x_axis": {
+          "quantity": "Drain Current",
+          "scale": "linear",
+          "unit": "A"
+        },
+        "y_axis": {
+          "quantity": "On-Resistance",
+          "scale": "linear",
+          "unit": "ohm"
+        }
+      }
+    ],
+    "datasheet_identity": {
+      "pages_examined": [
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "revision": "v1.0",
+      "title": "AP9926 N-Channel Power MOSFET Datasheet"
+    },
+    "extraction_notes": [
+      "Polarity: N-Channel definitively established from Page 1 title 'N-Channel Power MOSFET' and equivalent circuit diagram showing NMOS topology",
+      "Threshold voltage range (0.5-1.5V) extracted from Page 2 electrical characteristics table; typical value 1.0V at VDS=VGS, ID=250µA",
+      "RDSon points capture temperature dependence: 21.5 mOhm typical at 25°C vs 30.5 mOhm at 125°C for VGS=4.5V, ID=6.5A",
+      "Capacitance values (Ciss/Coss/Crss) are typical values at standard test conditions from Page 3 table",
+      "Body diode forward voltage range 0.65-1.2V specified at IS=1.3A; maximum 1.2V used for absolute worst-case design",
+      "Curves on Page 4 show ID-VGS transfer characteristic across VDS=1.5V to 4.5V range; digitized representative points at Ta=25°C",
+      "Deterministic normalization: used explicit mOhm unit from $.specs.rdson_points[0].resistance.conditions",
+      "Deterministic normalization: used explicit mOhm unit from $.specs.rdson_points[1].resistance.conditions",
+      "Deterministic normalization: used explicit mOhm unit from $.specs.rdson_points[2].resistance.conditions"
+    ],
+    "family": "mosfet",
+    "manufacturer": "ALLPOWER ShenZhen Quan Li Semiconductor",
+    "mpn": "AP9926",
+    "omission_reason": null,
+    "schema_version": "1.0.0",
+    "specs": {
+      "body_diode": {
+        "conditions": "IS=1.3A, VGS=0V, Ta=25°C (forward voltage); max value from table",
+        "page_reference": "3",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 1.2
+      },
+      "breakdown_voltage": {
+        "conditions": "VGS=0V, ID=250µA, Ta=25°C",
+        "page_reference": "2",
+        "source_kind": "minimum",
+        "unit": "V",
+        "value": 20
+      },
+      "ciss": {
+        "conditions": "VDS=10V, VGS=0V, f=1.0MHz, Ta=25°C",
+        "page_reference": "3",
+        "source_kind": "typical",
+        "unit": "F",
+        "value": 7e-10
+      },
+      "coss": {
+        "conditions": "VDS=10V, VGS=0V, f=1.0MHz, Ta=25°C",
+        "page_reference": "3",
+        "source_kind": "typical",
+        "unit": "F",
+        "value": 1.75e-10
+      },
+      "crss": {
+        "conditions": "VDS=10V, VGS=0V, f=1.0MHz, Ta=25°C",
+        "page_reference": "3",
+        "source_kind": "typical",
+        "unit": "F",
+        "value": 8.5e-11
+      },
+      "polarity": "n",
+      "rdson_points": [
+        {
+          "current": {
+            "conditions": "Drain current at test point",
+            "page_reference": "2",
+            "source_kind": "typical",
+            "unit": "A",
+            "value": 6.5
+          },
+          "resistance": {
+            "conditions": "RDSon at Ta=25°C, VGS=4.5V, ID=6.5A; midpoint of 19-24 mOhm range",
+            "page_reference": "2",
+            "source_kind": "typical",
+            "unit": "ohm",
+            "value": 0.021500000000000002
+          },
+          "vgs": {
+            "conditions": "Gate-Source voltage applied",
+            "page_reference": "2",
+            "source_kind": "typical",
+            "unit": "V",
+            "value": 4.5
+          }
+        },
+        {
+          "current": {
+            "conditions": "Drain current at test point",
+            "page_reference": "2",
+            "source_kind": "typical",
+            "unit": "A",
+            "value": 6.5
+          },
+          "resistance": {
+            "conditions": "RDSon at Ta=125°C, VGS=4.5V, ID=6.5A; midpoint of 27-34 mOhm range",
+            "page_reference": "2",
+            "source_kind": "typical",
+            "unit": "ohm",
+            "value": 0.0305
+          },
+          "vgs": {
+            "conditions": "Gate-Source voltage applied",
+            "page_reference": "2",
+            "source_kind": "typical",
+            "unit": "V",
+            "value": 4.5
+          }
+        },
+        {
+          "current": {
+            "conditions": "Drain current at test point",
+            "page_reference": "2",
+            "source_kind": "typical",
+            "unit": "A",
+            "value": 5.4
+          },
+          "resistance": {
+            "conditions": "RDSon at Ta=25°C, VGS=2.5V, ID=5.4A; midpoint of 23-30 mOhm range",
+            "page_reference": "2",
+            "source_kind": "typical",
+            "unit": "ohm",
+            "value": 0.0265
+          },
+          "vgs": {
+            "conditions": "Gate-Source voltage applied",
+            "page_reference": "2",
+            "source_kind": "typical",
+            "unit": "V",
+            "value": 2.5
+          }
+        }
+      ],
+      "threshold_max": {
+        "conditions": "VDS=VGS, ID=250µA, Ta=25°C",
+        "page_reference": "2",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 1.5
+      },
+      "threshold_min": {
+        "conditions": "VDS=VGS, ID=250µA, Ta=25°C",
+        "page_reference": "2",
+        "source_kind": "minimum",
+        "unit": "V",
+        "value": 0.5
+      },
+      "threshold_typ": {
+        "conditions": "VDS=VGS, ID=250µA, Ta=25°C",
+        "page_reference": "2",
+        "source_kind": "typical",
+        "unit": "V",
+        "value": 1
+      }
+    },
+    "usable_curves": true
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "Drain Source On Resistance (RDS(on)@Vgs,Id)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.rds_on",
+      "raw_value": "27mΩ@4.5V,6.5A",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Gate Threshold Voltage (Vgs(th))",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.threshold",
+      "raw_value": "1.5V",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Gate Threshold Voltage (Vgs(th)@Id)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.threshold",
+      "raw_value": "500mV@250uA",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Input Capacitance (Ciss@Vds)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.ciss",
+      "raw_value": "700pF@10V",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Input Capacitance(Ciss)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.ciss",
+      "raw_value": "700pF",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Output Capacitance(Coss)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.coss",
+      "raw_value": "175pF",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "RDS(on)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.rds_on",
+      "raw_value": "24mΩ@4.5V",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Reverse Transfer Capacitance (Crss@Vds)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.crss",
+      "raw_value": "85pF",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "AP9926",
+    "manufacturer": "ALLPOWER ShenZhen Quan Li Semiconductor",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8588884285843779584",
+    "revision": "v1.0",
+    "sha256": "e3641127732a645b7e89ed648ab234a8bb59fac91e3a81d5f84612955f3fbbee",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "1",
+      "2",
+      "3",
+      "4"
+    ],
+    "placeholder": false
+  },
+  "rdson_points": [
+    {
+      "current": {
+        "conditions": "Drain current at test point",
+        "page_reference": "p. 2",
+        "source_kind": "typical",
+        "unit": "A",
+        "value": 6.5
+      },
+      "resistance": {
+        "conditions": "RDSon at Ta=25°C, VGS=4.5V, ID=6.5A; midpoint of 19-24 mOhm range",
+        "page_reference": "p. 2",
+        "source_kind": "typical",
+        "unit": "ohm",
+        "value": 0.021500000000000002
+      },
+      "vgs": {
+        "conditions": "Gate-Source voltage applied",
+        "page_reference": "p. 2",
+        "source_kind": "typical",
+        "unit": "V",
+        "value": 4.5
+      }
+    }
+  ],
+  "threshold": null,
+  "transfer_points": [],
+  "output_points": []
+}

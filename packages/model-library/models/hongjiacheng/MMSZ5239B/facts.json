@@ -1,0 +1,196 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [
+      {
+        "name": "MMSZ5239B 9.1 V zener characteristic",
+        "page_reference": "p. 3, Fig. 1 (Zener Characteristics, VZ up to 10 V)",
+        "points": [
+          {
+            "x": 9.03,
+            "y": 0.0015
+          },
+          {
+            "x": 9.04,
+            "y": 0.0025
+          },
+          {
+            "x": 9.05,
+            "y": 0.004
+          },
+          {
+            "x": 9.06,
+            "y": 0.0055
+          },
+          {
+            "x": 9.08,
+            "y": 0.008
+          },
+          {
+            "x": 9.11,
+            "y": 0.012
+          },
+          {
+            "x": 9.13,
+            "y": 0.0155
+          },
+          {
+            "x": 9.17,
+            "y": 0.02
+          },
+          {
+            "x": 9.2,
+            "y": 0.025
+          },
+          {
+            "x": 9.3,
+            "y": 0.03
+          }
+        ],
+        "test_conditions": "Ta = 25 degC, pulsed; MMSZ5239B 9.1 V trace in the MMSZ5221B through MMSZ5267B series plot",
+        "x_axis": {
+          "quantity": "Zener voltage VZ",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "Zener current IZ",
+          "scale": "log",
+          "unit": "A"
+        }
+      }
+    ],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3",
+        "p. 4",
+        "p. 5"
+      ],
+      "revision": "Rev:1.1",
+      "title": "MMSZ5221B THRU MMSZ5267B SURFACE MOUNT ZENER DIODES"
+    },
+    "extraction_notes": [
+      "This is a family datasheet; the MMSZ5239B row was selected from the MMSZ5221B through MMSZ5267B table.",
+      "The Fig. 1 points are digitized readings from the plotted 9.1 V MMSZ5239B trace; current values were converted from mA to A and no intermediate points were interpolated.",
+      "The MMSZ5239B electrical-characteristics row gives VZ = 8.65 V minimum, 9.10 V nominal, and 9.56 V maximum at IZT = 20 mA; maximum ZZT is 10 ohm, IR is 3 microA maximum at VR = 7.0 V.",
+      "The table heading labels ZZT as ZZT@IZT=0.25mA while the MMSZ5239B row specifies IZT = 20 mA; no separate IZK or ZZK value is published, so zener impedance is not represented as a scalar spec.",
+      "Figures 4 through 6 are series-wide typical plots without a uniquely identified MMSZ5239B bias-specific trace or tabulated target value; they were not assigned component-specific capacitance or leakage points.",
+      "No capacitance value, reverse-recovery time, or reverse-recovery test circuit is published for MMSZ5239B in the supplied datasheet."
+    ],
+    "family": "diode",
+    "manufacturer": "hongjiacheng",
+    "mpn": "MMSZ5239B",
+    "omission_reason": null,
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": {
+        "conditions": "IZT = 20 mA at nominal VZ = 9.1 V, Ta = 25 degC",
+        "page_reference": "p. 2, Electrical Characteristics, MMSZ5239B IZT row",
+        "source_kind": "typical",
+        "unit": "A",
+        "value": 0.02
+      },
+      "breakdown_voltage": {
+        "conditions": "IZT = 20 mA, Ta = 25 degC; nominal VZ for MMSZ5239B",
+        "page_reference": "p. 2, Electrical Characteristics, MMSZ5239B VZ row",
+        "source_kind": "typical",
+        "unit": "V",
+        "value": 9.1
+      },
+      "capacitance": null,
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "IF = 10 mA, Ta = 25 degC",
+            "page_reference": "p. 1, Maximum Ratings, Forward Voltage @ IF=10mA",
+            "source_kind": "maximum",
+            "unit": "A",
+            "value": 0.01
+          },
+          "voltage": {
+            "conditions": "IF = 10 mA, Ta = 25 degC",
+            "page_reference": "p. 1, Maximum Ratings, Forward Voltage @ IF=10mA",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 0.9
+          }
+        }
+      ],
+      "reverse_current": {
+        "conditions": "VR = 7.0 V, Ta = 25 degC; maximum reverse leakage current for MMSZ5239B",
+        "page_reference": "p. 2, Electrical Characteristics, MMSZ5239B IR@VR row",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.000003
+      },
+      "reverse_recovery": null,
+      "variant": "zener"
+    },
+    "usable_curves": true
+  },
+  "catalog_seed_hints": [],
+  "identity": {
+    "canonical_mpn": "MMSZ5239B",
+    "manufacturer": "hongjiacheng",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8564879475449364480",
+    "revision": "Rev:1.1",
+    "sha256": "fec00843f279bccf78d55a456b749bf49d99676181d710880c28c93d8ee35181",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4",
+      "p. 5"
+    ],
+    "placeholder": false
+  },
+  "fit_points": [
+    {
+      "current": {
+        "conditions": "Conservative F1 package bench at 95% of the cited current; IF = 10 mA, Ta = 25 degC",
+        "page_reference": "p. 1, Maximum Ratings, Forward Voltage @ IF=10mA",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.0095
+      },
+      "voltage": {
+        "conditions": "IF = 10 mA, Ta = 25 degC",
+        "page_reference": "p. 1, Maximum Ratings, Forward Voltage @ IF=10mA",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 0.9
+      }
+    }
+  ],
+  "electrical_limits": {},
+  "derived_model_inputs": {
+    "BV": {
+      "conditions": "IZT = 20 mA, Ta = 25 degC; nominal VZ for MMSZ5239B",
+      "page_reference": "p. 2, Electrical Characteristics, MMSZ5239B VZ row",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 9.1
+    },
+    "IBV": {
+      "conditions": "IZT = 20 mA at nominal VZ = 9.1 V, Ta = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, MMSZ5239B IZT row",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.02
+    },
+    "NBV": {
+      "value": 1,
+      "unit": "1",
+      "conditions": "First-order avalanche-knee default; no multi-point reverse-knee trace was available",
+      "page_reference": "model-factory Zener F1 policy",
+      "source_kind": "held_default"
+    }
+  }
+}

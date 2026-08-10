@@ -1,0 +1,65 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "forward_01.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "forward_voltage_maximum_at_0.19_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "minimum": 0,
+          "maximum": 1.2,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "hongjiacheng MM1W30 datasheet Rev.1.0 p.1, Maximum Ratings, Forward Voltage",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "review_reverse_leakage_source_maximum.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "reverse_leakage_source_maximum",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vreverse))"
+          },
+          "unit": "A",
+          "inclusive": true,
+          "datasheet_citation": "hongjiacheng MM1W30 datasheet Rev.1.0 p.2, Electrical Characteristics, Leakage Current",
+          "placeholder": false,
+          "minimum": 0,
+          "maximum": 0.000005
+        }
+      ]
+    },
+    {
+      "test_netlist": "review_breakdown_voltage_source_bound.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "breakdown_voltage_source_bound",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(cathode))"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "hongjiacheng MM1W30 datasheet Rev.1.0 p.2, Electrical Characteristics, Nominal Zener Voltage",
+          "placeholder": false,
+          "minimum": 28.2,
+          "maximum": 32
+        }
+      ]
+    }
+  ]
+}

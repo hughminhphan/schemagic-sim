@@ -1,0 +1,478 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [
+      {
+        "name": "Typical Output Characteristics",
+        "page_reference": "3",
+        "points": [
+          {
+            "x": 0,
+            "y": 0
+          },
+          {
+            "x": 1,
+            "y": 0.25
+          },
+          {
+            "x": 2,
+            "y": 0.42
+          },
+          {
+            "x": 3,
+            "y": 0.55
+          },
+          {
+            "x": 4,
+            "y": 0.65
+          },
+          {
+            "x": 5,
+            "y": 0.72
+          },
+          {
+            "x": 6,
+            "y": 0.78
+          }
+        ],
+        "test_conditions": "TA=25°C, VGS=3.5V to 10V",
+        "x_axis": {
+          "quantity": "Drain-Source Voltage",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "Drain Current",
+          "scale": "linear",
+          "unit": "A"
+        }
+      },
+      {
+        "name": "Normalized Threshold Voltage vs Temperature",
+        "page_reference": "3",
+        "points": [
+          {
+            "x": -50,
+            "y": 1.65
+          },
+          {
+            "x": 0,
+            "y": 1.58
+          },
+          {
+            "x": 25,
+            "y": 1.5
+          },
+          {
+            "x": 75,
+            "y": 1.38
+          },
+          {
+            "x": 125,
+            "y": 1.25
+          },
+          {
+            "x": 150,
+            "y": 1.2
+          }
+        ],
+        "test_conditions": "ID=250µA",
+        "x_axis": {
+          "quantity": "Junction Temperature",
+          "scale": "linear",
+          "unit": "°C"
+        },
+        "y_axis": {
+          "quantity": "Normalized VGS(TH)",
+          "scale": "linear",
+          "unit": "V"
+        }
+      },
+      {
+        "name": "Typical Transfer Characteristics",
+        "page_reference": "3",
+        "points": [
+          {
+            "x": 0.5,
+            "y": 0
+          },
+          {
+            "x": 1,
+            "y": 0.01
+          },
+          {
+            "x": 2,
+            "y": 0.08
+          },
+          {
+            "x": 3,
+            "y": 0.2
+          },
+          {
+            "x": 4,
+            "y": 0.35
+          },
+          {
+            "x": 5,
+            "y": 0.5
+          },
+          {
+            "x": 6,
+            "y": 0.62
+          }
+        ],
+        "test_conditions": "VDS=6V, TJ=25°C and 125°C",
+        "x_axis": {
+          "quantity": "Gate-Source Voltage",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "Drain-Source Current",
+          "scale": "linear",
+          "unit": "A"
+        }
+      },
+      {
+        "name": "RDS(on) vs Gate-Source Voltage",
+        "page_reference": "3",
+        "points": [
+          {
+            "x": 2,
+            "y": 12
+          },
+          {
+            "x": 3,
+            "y": 6
+          },
+          {
+            "x": 4,
+            "y": 3.5
+          },
+          {
+            "x": 5,
+            "y": 2.5
+          },
+          {
+            "x": 6,
+            "y": 2
+          },
+          {
+            "x": 8,
+            "y": 1.8
+          },
+          {
+            "x": 10,
+            "y": 1.9
+          }
+        ],
+        "test_conditions": "ID=500mA, TJ=25°C",
+        "x_axis": {
+          "quantity": "Gate-Source Voltage",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "On-State Resistance",
+          "scale": "log",
+          "unit": "Ω"
+        }
+      },
+      {
+        "name": "Typical Source-Drain Diode Forward Voltage",
+        "page_reference": "3",
+        "points": [
+          {
+            "x": 0,
+            "y": 0
+          },
+          {
+            "x": 0.4,
+            "y": 0.01
+          },
+          {
+            "x": 0.8,
+            "y": 0.06
+          },
+          {
+            "x": 1,
+            "y": 0.15
+          },
+          {
+            "x": 1.2,
+            "y": 0.25
+          },
+          {
+            "x": 1.5,
+            "y": 0.4
+          },
+          {
+            "x": 2,
+            "y": 0.6
+          }
+        ],
+        "test_conditions": "TJ=25°C",
+        "x_axis": {
+          "quantity": "Source-Drain Voltage",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "Reverse Drain-Source Current",
+          "scale": "linear",
+          "unit": "A"
+        }
+      }
+    ],
+    "datasheet_identity": {
+      "pages_examined": [
+        "1",
+        "2",
+        "3"
+      ],
+      "revision": "1",
+      "title": "2N7002DW Dual N-Channel Enhancement Mode Field Effect Transistor"
+    },
+    "extraction_notes": [
+      "Dual N-channel MOSFET in SOT-363 package",
+      "Low RDS(ON): 1.9Ω at VGS=10V, ID=0.3A",
+      "Breakdown voltage 60V minimum at ID=250µA",
+      "Gate threshold voltage 1.5V typical at ID=250µA",
+      "Capacitances extracted at VDS=30V, VGS=0V, f=1MHz",
+      "Body diode forward voltage 0.8V typical at ID=0.2A",
+      "All temperature coefficients shown in typical characteristics curves",
+      "Device rated for junction temperature up to 150°C",
+      "Deterministic normalization: preserved $.specs.ciss.conversion_note: 12.0 pF → 1.2e-11 F (SI)",
+      "Deterministic normalization: preserved $.specs.coss.conversion_note: 3.2 pF → 3.2e-12 F (SI)",
+      "Deterministic normalization: preserved $.specs.crss.conversion_note: 0.8 pF → 8.0e-13 F (SI)"
+    ],
+    "family": "mosfet",
+    "manufacturer": "Guangdong Hottech",
+    "mpn": "2N7002DW",
+    "omission_reason": null,
+    "schema_version": "1.0.0",
+    "specs": {
+      "body_diode": {
+        "conditions": "TA=25°C, ID=0.2A, VGS=0V",
+        "page_reference": "2",
+        "source_kind": "typical",
+        "unit": "V",
+        "value": 0.8
+      },
+      "breakdown_voltage": {
+        "conditions": "VGS=0V, ID=250µA",
+        "page_reference": "2",
+        "source_kind": "minimum",
+        "unit": "V",
+        "value": 60
+      },
+      "ciss": {
+        "conditions": "VDS=30V, VGS=0V, f=1MHz",
+        "page_reference": "2",
+        "source_kind": "typical",
+        "unit": "F",
+        "value": 1.2e-11
+      },
+      "coss": {
+        "conditions": "VDS=30V, VGS=0V, f=1MHz",
+        "page_reference": "2",
+        "source_kind": "typical",
+        "unit": "F",
+        "value": 3.2e-12
+      },
+      "crss": {
+        "conditions": "VDS=30V, VGS=0V, f=1MHz",
+        "page_reference": "2",
+        "source_kind": "typical",
+        "unit": "F",
+        "value": 8e-13
+      },
+      "polarity": "n",
+      "rdson_points": [
+        {
+          "current": {
+            "conditions": "Pulse test",
+            "page_reference": "2",
+            "source_kind": "typical",
+            "unit": "A",
+            "value": 0.3
+          },
+          "resistance": {
+            "conditions": "TA=25°C",
+            "page_reference": "2",
+            "source_kind": "typical",
+            "unit": "ohm",
+            "value": 1.9
+          },
+          "vgs": {
+            "conditions": "TA=25°C",
+            "page_reference": "2",
+            "source_kind": "typical",
+            "unit": "V",
+            "value": 10
+          }
+        },
+        {
+          "current": {
+            "conditions": "Pulse test",
+            "page_reference": "2",
+            "source_kind": "maximum",
+            "unit": "A",
+            "value": 0.3
+          },
+          "resistance": {
+            "conditions": "TA=25°C",
+            "page_reference": "2",
+            "source_kind": "maximum",
+            "unit": "ohm",
+            "value": 3
+          },
+          "vgs": {
+            "conditions": "TA=25°C",
+            "page_reference": "2",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 10
+          }
+        },
+        {
+          "current": {
+            "conditions": "Pulse test",
+            "page_reference": "2",
+            "source_kind": "typical",
+            "unit": "A",
+            "value": 0.2
+          },
+          "resistance": {
+            "conditions": "TA=25°C",
+            "page_reference": "2",
+            "source_kind": "typical",
+            "unit": "ohm",
+            "value": 2.5
+          },
+          "vgs": {
+            "conditions": "TA=25°C",
+            "page_reference": "2",
+            "source_kind": "typical",
+            "unit": "V",
+            "value": 4.5
+          }
+        },
+        {
+          "current": {
+            "conditions": "Pulse test",
+            "page_reference": "2",
+            "source_kind": "maximum",
+            "unit": "A",
+            "value": 0.2
+          },
+          "resistance": {
+            "conditions": "TA=25°C",
+            "page_reference": "2",
+            "source_kind": "maximum",
+            "unit": "ohm",
+            "value": 4
+          },
+          "vgs": {
+            "conditions": "TA=25°C",
+            "page_reference": "2",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 4.5
+          }
+        }
+      ],
+      "threshold_max": {
+        "conditions": "VDS=VGS, ID=250µA",
+        "page_reference": "2",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 2.5
+      },
+      "threshold_min": {
+        "conditions": "VDS=VGS, ID=250µA",
+        "page_reference": "2",
+        "source_kind": "minimum",
+        "unit": "V",
+        "value": 1
+      },
+      "threshold_typ": {
+        "conditions": "VDS=VGS, ID=250µA",
+        "page_reference": "2",
+        "source_kind": "typical",
+        "unit": "V",
+        "value": 1.5
+      }
+    },
+    "usable_curves": true
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "Gate Threshold Voltage (Vgs(th))",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.threshold",
+      "raw_value": "2.5V",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Input Capacitance(Ciss)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.ciss",
+      "raw_value": "12pF",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "RDS(on)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.rds_on",
+      "raw_value": "1.9Ω@10V",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "2N7002DW",
+    "manufacturer": "Guangdong Hottech",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8590902445445107712",
+    "revision": "1",
+    "sha256": "497a9fd301f6c242d4cd9ffaa819e6591602349bf3396b67b20b896b8f7a219d",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "1",
+      "2",
+      "3"
+    ],
+    "placeholder": false
+  },
+  "rdson_points": [
+    {
+      "current": {
+        "conditions": "Pulse test",
+        "page_reference": "p. 2",
+        "source_kind": "typical",
+        "unit": "A",
+        "value": 0.3
+      },
+      "resistance": {
+        "conditions": "TA=25°C",
+        "page_reference": "p. 2",
+        "source_kind": "typical",
+        "unit": "ohm",
+        "value": 1.9
+      },
+      "vgs": {
+        "conditions": "TA=25°C",
+        "page_reference": "p. 2",
+        "source_kind": "typical",
+        "unit": "V",
+        "value": 10
+      }
+    }
+  ],
+  "threshold": null,
+  "transfer_points": [],
+  "output_points": []
+}

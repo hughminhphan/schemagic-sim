@@ -1,0 +1,175 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [
+      {
+        "name": "Fig. 1 Power Temperature Derating Curve",
+        "page_reference": "3",
+        "points": [
+          {
+            "x": 25,
+            "y": 1.5
+          },
+          {
+            "x": 75,
+            "y": 1.5
+          },
+          {
+            "x": 100,
+            "y": 1
+          },
+          {
+            "x": 125,
+            "y": 0.5
+          },
+          {
+            "x": 150,
+            "y": 0
+          }
+        ],
+        "test_conditions": "Series-wide derating curve applying to all types in the 1SMA5913A-1SMA5945A datasheet, including 1SMA5918A. Rated 1.5 W flat up to 75 degC lead temperature, then linear derating to 0 W at 150 degC. Sheet header: Ta = 25 degC unless otherwise specified.",
+        "x_axis": {
+          "quantity": "lead temperature",
+          "scale": "linear",
+          "unit": "degC"
+        },
+        "y_axis": {
+          "quantity": "maximum power dissipation PD",
+          "scale": "linear",
+          "unit": "W"
+        }
+      }
+    ],
+    "datasheet_identity": {
+      "pages_examined": [
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "revision": "Rev:1.1",
+      "title": "1SMA5913A THRU 1SMA5945A - SMA Surface Mount Silicon Zener Diodes (Zhuhai Hongjiacheng Technology Co., Ltd)"
+    },
+    "extraction_notes": [
+      "Target row (1SMA5918A / type code 918A), page 2 Electrical Characteristics, Ta = 25 degC: VZ min 4.84 V / nom 5.1 V / max 5.36 V @ IZT = 73.5 mA; maximum zener impedance ZZT = 4 ohm @ IZT = 73.5 mA; maximum zener impedance ZZK = 350 ohm @ IZK = 1.0 mA; IR = 5 uA max @ VR = 2.0 V; admissible zener current IZM = 294 mA.",
+      "Maximum ratings, page 1 (Ta = 25 degC unless otherwise specified): PD = 1500 mW @ Tc = 75 degC; VF = 1.5 V max @ IF = 200 mA; Tstg = -55 to +150 degC; Tj = -55 to +150 degC; typical thermal resistance RthJ-A = 250 degC/W. Package DO-214AC (SMA); polarity: cathode line denotes the cathode end.",
+      "Fig.2 Zener Characteristics (Vz 3.3 V to 10 V), page 3, contains the target's 5.1 V I-V curve but as one of ~9 unlabeled family curves crowded between the adjacent 4.7 V and 5.6 V types; curve attribution to 1SMA5918A is not possible, so no points were digitized (omitted rather than invented).",
+      "Fig.3 (Vz 12 V to 68 V), Fig.4 Temperature Coefficient (x-axis 10-100 V), and Fig.6 Zener Impedance vs Vz (x-axis 10-100 V) do not cover the target's 5.1 V rating; omitted as not target-specific.",
+      "Fig.5 Typical Capacitance is plotted against breakdown voltage on a 10-100 V log axis with an inconsistent (misprinted) y-axis labeling; the 5.1 V target sits at/below the plotted range, so no capacitance value was extracted and specs.capacitance is null.",
+      "No table capacitance, no reverse-recovery specification anywhere in the datasheet; both set to null.",
+      "forward_voltage_points current entry uses source_kind 'typical' to represent the exact specified test condition IF = 200 mA (the datasheet states it as a fixed test current, not a min/typ/max)."
+    ],
+    "family": "diode",
+    "manufacturer": "hongjiacheng",
+    "mpn": "1SMA5918A",
+    "omission_reason": null,
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": {
+        "conditions": "Zener test current IZT at which VZ and ZZT are specified; Ta = 25 degC. Maximum admissible zener current IZM = 294 mA for 1SMA5918A.",
+        "page_reference": "2",
+        "source_kind": "typical",
+        "unit": "A",
+        "value": 0.0735
+      },
+      "breakdown_voltage": {
+        "conditions": "Nominal zener (reverse breakdown) voltage VZ @ IZT = 73.5 mA; Ta = 25 degC; tolerance +/-5% (Note 1): Min 4.84 V, Max 5.36 V; 1SMA5918A row, type code 918A",
+        "page_reference": "2",
+        "source_kind": "typical",
+        "unit": "V",
+        "value": 5.1
+      },
+      "capacitance": null,
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "Specified forward test current IF for the VF maximum rating; Ta = 25 degC (Maximum Ratings table)",
+            "page_reference": "1",
+            "source_kind": "typical",
+            "unit": "A",
+            "value": 0.2
+          },
+          "voltage": {
+            "conditions": "Forward voltage VF @ IF = 200 mA; Ta = 25 degC (Maximum Ratings table); forward direction, anode positive",
+            "page_reference": "1",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 1.5
+          }
+        }
+      ],
+      "reverse_current": {
+        "conditions": "Reverse leakage current IR @ VR = 2.0 V (reverse bias, below breakdown); Ta = 25 degC; 1SMA5918A row of Electrical Characteristics table",
+        "page_reference": "2",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.0000049999999999999996
+      },
+      "reverse_recovery": null,
+      "variant": "zener"
+    },
+    "usable_curves": true
+  },
+  "catalog_seed_hints": [],
+  "identity": {
+    "canonical_mpn": "1SMA5918A",
+    "manufacturer": "hongjiacheng",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8564879679196069888",
+    "revision": "Rev:1.1",
+    "sha256": "8200f679467020a5bd7e0853cf057a2984daa6243c5870bb231f0e3b473bd319",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "1",
+      "2",
+      "3",
+      "4"
+    ],
+    "placeholder": false
+  },
+  "fit_points": [
+    {
+      "current": {
+        "conditions": "Conservative F1 package bench at 95% of the cited current; Specified forward test current IF for the VF maximum rating; Ta = 25 degC (Maximum Ratings table)",
+        "page_reference": "p. 1",
+        "source_kind": "typical",
+        "unit": "A",
+        "value": 0.19
+      },
+      "voltage": {
+        "conditions": "Forward voltage VF @ IF = 200 mA; Ta = 25 degC (Maximum Ratings table); forward direction, anode positive",
+        "page_reference": "p. 1",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 1.5
+      }
+    }
+  ],
+  "electrical_limits": {},
+  "derived_model_inputs": {
+    "BV": {
+      "conditions": "Nominal zener (reverse breakdown) voltage VZ @ IZT = 73.5 mA; Ta = 25 degC; tolerance +/-5% (Note 1): Min 4.84 V, Max 5.36 V; 1SMA5918A row, type code 918A",
+      "page_reference": "p. 2",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 5.1
+    },
+    "IBV": {
+      "conditions": "Zener test current IZT at which VZ and ZZT are specified; Ta = 25 degC. Maximum admissible zener current IZM = 294 mA for 1SMA5918A.",
+      "page_reference": "p. 2",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.0735
+    },
+    "NBV": {
+      "value": 1,
+      "unit": "1",
+      "conditions": "First-order avalanche-knee default; no multi-point reverse-knee trace was available",
+      "page_reference": "model-factory Zener F1 policy",
+      "source_kind": "held_default"
+    }
+  }
+}

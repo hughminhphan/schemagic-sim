@@ -1,0 +1,14 @@
+OpenCircuit factory test: 2N7002ET1G RDS(on)
+* OpenCircuit Model Factory v0.1.0 bulk adapter
+* Original work generated from public factual specifications.
+* This model is not copied or adapted from any vendor SPICE model.
+* Source: https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8586187104661745664
+* Revision: April 2016 - Rev. 4; Publication Order Number 2N7002E/D
+.model OC_ONSEMI_2N7002ET1G VDMOS( VTO=2.5000000000e0 KP=2.3255813953e0 THETA=0.0000000000e0 LAMBDA=3.0000000000e-3 RD=4.7300000000e-1 RS=1.7200000000e-1 RG=1.0000000000e-4 RDS=1e9 CGS=2.3800000000e-11 CGDMAX=2.9000000000e-12 CGDMIN=2.9000000000e-12 CJO=1.7000000000e-12 IS=1.0000000000e-12 N=1.5000000000e0 RB=1.7200000000e-1)
+
+.temp 25
+M1 d1 g1 0 OC_ONSEMI_2N7002ET1G
+ID1 0 d1 DC 2.4000000000e-1
+VG1 g1 0 DC 1.0000000000e1
+.op
+.end

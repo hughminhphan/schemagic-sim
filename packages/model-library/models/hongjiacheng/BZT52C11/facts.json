@@ -1,0 +1,178 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [
+      {
+        "name": "BZT52C11 zener characteristic",
+        "page_reference": "p. 3, Fig. 2 (Zener Characteristics, 11 V to 43 V)",
+        "points": [
+          {
+            "x": 10.92,
+            "y": 0.0005
+          },
+          {
+            "x": 10.92,
+            "y": 0.001
+          },
+          {
+            "x": 10.94,
+            "y": 0.005
+          },
+          {
+            "x": 10.95,
+            "y": 0.01
+          },
+          {
+            "x": 11,
+            "y": 0.02
+          },
+          {
+            "x": 11.06,
+            "y": 0.03
+          }
+        ],
+        "test_conditions": "Ta = 25 degC, pulsed; BZT52C11 trace in the BZT52C2V0 through BZT52C75 series plot; Fig. 2 shows a PD = 500 mW envelope",
+        "x_axis": {
+          "quantity": "Zener voltage VZ",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "Zener current IZ",
+          "scale": "log",
+          "unit": "A"
+        }
+      }
+    ],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3",
+        "p. 4"
+      ],
+      "revision": "Rev.1.0",
+      "title": "BZT52C2V0 THRU BZT52C75 SURFACE MOUNT ZENER DIODES"
+    },
+    "extraction_notes": [
+      "This is a family datasheet; the BZT52C11 row was selected from the BZT52C2V0 through BZT52C75 electrical-characteristics table.",
+      "The Fig. 2 points are digitized readings from the individually labeled BZT52C11 trace; source-axis current in mA was converted to A, and no intermediate points were interpolated.",
+      "The BZT52C11 row gives VZ = 10.45 V minimum, 11.00 V nominal, and 11.55 V maximum at IZT = 5 mA; maximum ZZT is 20 ohm at IZT, maximum ZZK is 150 ohm at IZK = 1 mA, and admissible IZM is 5 mA.",
+      "The reverse-leakage specification is a maximum IR of 0.1 microampere at VR = 8.0 V and Ta = 25 degC; it was converted to 1e-7 A.",
+      "The Fig. 2 series plot is pulsed and includes a PD = 500 mW envelope, while the component maximum-ratings table lists PD = 350 mW; the envelope was not treated as a component-specific rating.",
+      "No component-specific capacitance value or reverse-recovery time is published. The capacitance and impedance plots are series-wide typical characteristics without a uniquely identified BZT52C11 trace and were not assigned component-specific values."
+    ],
+    "family": "diode",
+    "manufacturer": "hongjiacheng",
+    "mpn": "BZT52C11",
+    "omission_reason": null,
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": {
+        "conditions": "IZT = 5 mA at nominal VZ = 11 V, Ta = 25 degC",
+        "page_reference": "p. 2, Electrical Characteristics, BZT52C11 IZT row",
+        "source_kind": "typical",
+        "unit": "A",
+        "value": 0.005
+      },
+      "breakdown_voltage": {
+        "conditions": "IZT = 5 mA, Ta = 25 degC; nominal VZ for BZT52C11",
+        "page_reference": "p. 2, Electrical Characteristics, BZT52C11 VZ row",
+        "source_kind": "typical",
+        "unit": "V",
+        "value": 11
+      },
+      "capacitance": null,
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "IF = 10 mA, Ta = 25 degC",
+            "page_reference": "p. 1, Maximum Ratings",
+            "source_kind": "maximum",
+            "unit": "A",
+            "value": 0.01
+          },
+          "voltage": {
+            "conditions": "IF = 10 mA, Ta = 25 degC",
+            "page_reference": "p. 1, Maximum Ratings",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 0.9
+          }
+        }
+      ],
+      "reverse_current": {
+        "conditions": "VR = 8.0 V, Ta = 25 degC; IR@VR maximum for BZT52C11",
+        "page_reference": "p. 2, Electrical Characteristics, BZT52C11 IR@VR row",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 1e-7
+      },
+      "reverse_recovery": null,
+      "variant": "zener"
+    },
+    "usable_curves": true
+  },
+  "catalog_seed_hints": [],
+  "identity": {
+    "canonical_mpn": "BZT52C11",
+    "manufacturer": "hongjiacheng",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8564879641560715264",
+    "revision": "Rev.1.0",
+    "sha256": "1e58426ecb363e87dbad0da3e5a12350aadc7203342e2c339877f1de5b2d7631",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "placeholder": false
+  },
+  "fit_points": [
+    {
+      "current": {
+        "conditions": "Conservative F1 package bench at 95% of the cited current; IF = 10 mA, Ta = 25 degC",
+        "page_reference": "p. 1, Maximum Ratings",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.0095
+      },
+      "voltage": {
+        "conditions": "IF = 10 mA, Ta = 25 degC",
+        "page_reference": "p. 1, Maximum Ratings",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 0.9
+      }
+    }
+  ],
+  "electrical_limits": {},
+  "derived_model_inputs": {
+    "BV": {
+      "conditions": "IZT = 5 mA, Ta = 25 degC; nominal VZ for BZT52C11",
+      "page_reference": "p. 2, Electrical Characteristics, BZT52C11 VZ row",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 11
+    },
+    "IBV": {
+      "conditions": "IZT = 5 mA at nominal VZ = 11 V, Ta = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, BZT52C11 IZT row",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.005
+    },
+    "NBV": {
+      "value": 1,
+      "unit": "1",
+      "conditions": "First-order avalanche-knee default; no multi-point reverse-knee trace was available",
+      "page_reference": "model-factory Zener F1 policy",
+      "source_kind": "held_default"
+    }
+  }
+}

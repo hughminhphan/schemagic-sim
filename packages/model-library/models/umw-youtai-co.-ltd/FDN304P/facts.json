@@ -1,0 +1,387 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [
+      {
+        "name": "On-Resistance Variation with Gate-to-Source Voltage (25°C)",
+        "page_reference": "4, Figure 4",
+        "points": [
+          {
+            "x": -1.8,
+            "y": 0.1
+          },
+          {
+            "x": -2,
+            "y": 0.075
+          },
+          {
+            "x": -2.5,
+            "y": 0.065
+          },
+          {
+            "x": -3,
+            "y": 0.055
+          },
+          {
+            "x": -4,
+            "y": 0.045
+          },
+          {
+            "x": -4.5,
+            "y": 0.04
+          }
+        ],
+        "test_conditions": "Ta=25°C, VDS=-10V, RL=3.5Ω",
+        "x_axis": {
+          "quantity": "gate-source voltage",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "drain-source on-resistance",
+          "scale": "linear",
+          "unit": "Ω"
+        }
+      },
+      {
+        "name": "Transfer Characteristics (25°C)",
+        "page_reference": "4, Figure 5",
+        "points": [
+          {
+            "x": -0.5,
+            "y": 0
+          },
+          {
+            "x": -1,
+            "y": -1
+          },
+          {
+            "x": -1.5,
+            "y": -3
+          },
+          {
+            "x": -2,
+            "y": -6
+          },
+          {
+            "x": -2.5,
+            "y": -9
+          },
+          {
+            "x": -3,
+            "y": -11
+          },
+          {
+            "x": -3.5,
+            "y": -12
+          }
+        ],
+        "test_conditions": "Ta=25°C, VDS=-5V",
+        "x_axis": {
+          "quantity": "gate-source voltage",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "drain current",
+          "scale": "linear",
+          "unit": "A"
+        }
+      },
+      {
+        "name": "On-Region Characteristics at VGS=-4.5V",
+        "page_reference": "4, Figure 1",
+        "points": [
+          {
+            "x": -0.1,
+            "y": -0.5
+          },
+          {
+            "x": -0.5,
+            "y": -1.8
+          },
+          {
+            "x": -1,
+            "y": -2.2
+          },
+          {
+            "x": -1.5,
+            "y": -2.35
+          },
+          {
+            "x": -2,
+            "y": -2.4
+          }
+        ],
+        "test_conditions": "Ta=25°C, VGS=-4.5V",
+        "x_axis": {
+          "quantity": "drain-source voltage",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "drain current",
+          "scale": "linear",
+          "unit": "A"
+        }
+      }
+    ],
+    "datasheet_identity": {
+      "pages_examined": [
+        "1",
+        "2",
+        "4",
+        "5"
+      ],
+      "revision": "Nov.2024",
+      "title": "-20V P-Channel MOSFET UMW FDN304P"
+    },
+    "extraction_notes": [
+      "P-Channel MOSFET optimized for battery power management, load switching, battery protection",
+      "Data extracted from UMW FDN304P datasheet revision Nov.2024",
+      "All drain currents negative per P-channel convention (ID flows from source to drain)",
+      "Capacitances converted from pF to Farads per SI standard",
+      "RDS(ON) values converted from mΩ to decimal ohms",
+      "Three RDS(ON) operating points represent typical values at specified VGS conditions",
+      "Curves digitized from figures with ±5% reading confidence",
+      "SOT-23 package, maximum ratings: VDS=-20V, ID=-2.4A continuous, RθJA=250°C/W"
+    ],
+    "family": "mosfet",
+    "manufacturer": "UMW(Youtai Semiconductor Co., Ltd.)",
+    "mpn": "FDN304P",
+    "omission_reason": null,
+    "schema_version": "1.0.0",
+    "specs": {
+      "body_diode": {
+        "conditions": "IS=-1A, VGS=0V, TC=25°C",
+        "page_reference": "2",
+        "source_kind": "typical",
+        "unit": "V",
+        "value": -1.2
+      },
+      "breakdown_voltage": {
+        "conditions": "VGS=0V, ID=-250µA",
+        "page_reference": "2",
+        "source_kind": "minimum",
+        "unit": "V",
+        "value": -20
+      },
+      "ciss": {
+        "conditions": "VDS=-10V, VGS=0V, f=1MHz",
+        "page_reference": "2",
+        "source_kind": "typical",
+        "unit": "F",
+        "value": 1.312e-9
+      },
+      "coss": {
+        "conditions": "VDS=-10V, VGS=-4.5V, f=1MHz",
+        "page_reference": "2",
+        "source_kind": "typical",
+        "unit": "F",
+        "value": 2.4e-10
+      },
+      "crss": {
+        "conditions": "VDS=-10V, VGS=0V, f=1MHz",
+        "page_reference": "2",
+        "source_kind": "typical",
+        "unit": "F",
+        "value": 1.06e-10
+      },
+      "polarity": "p",
+      "rdson_points": [
+        {
+          "current": {
+            "conditions": "continuous drain current",
+            "page_reference": "2",
+            "source_kind": "typical",
+            "unit": "A",
+            "value": -2.4
+          },
+          "resistance": {
+            "conditions": "VGS=-4.5V, ID=-2.4A",
+            "page_reference": "2",
+            "source_kind": "typical",
+            "unit": "ohm",
+            "value": 0.052
+          },
+          "vgs": {
+            "conditions": "gate-source voltage",
+            "page_reference": "2",
+            "source_kind": "typical",
+            "unit": "V",
+            "value": -4.5
+          }
+        },
+        {
+          "current": {
+            "conditions": "continuous drain current",
+            "page_reference": "2",
+            "source_kind": "typical",
+            "unit": "A",
+            "value": -2
+          },
+          "resistance": {
+            "conditions": "VGS=-2.5V, ID=-2A",
+            "page_reference": "2",
+            "source_kind": "typical",
+            "unit": "ohm",
+            "value": 0.07
+          },
+          "vgs": {
+            "conditions": "gate-source voltage",
+            "page_reference": "2",
+            "source_kind": "typical",
+            "unit": "V",
+            "value": -2.5
+          }
+        },
+        {
+          "current": {
+            "conditions": "continuous drain current",
+            "page_reference": "2",
+            "source_kind": "typical",
+            "unit": "A",
+            "value": -1.8
+          },
+          "resistance": {
+            "conditions": "VGS=-1.8V, ID=-1.8A",
+            "page_reference": "2",
+            "source_kind": "typical",
+            "unit": "ohm",
+            "value": 0.1
+          },
+          "vgs": {
+            "conditions": "gate-source voltage",
+            "page_reference": "2",
+            "source_kind": "typical",
+            "unit": "V",
+            "value": -1.8
+          }
+        }
+      ],
+      "threshold_max": {
+        "conditions": "VDS=VGS, ID=-250µA",
+        "page_reference": "2",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": -1.5
+      },
+      "threshold_min": {
+        "conditions": "VDS=VGS, ID=-250µA",
+        "page_reference": "2",
+        "source_kind": "minimum",
+        "unit": "V",
+        "value": -0.4
+      },
+      "threshold_typ": null
+    },
+    "usable_curves": true
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "Drain Source On Resistance (RDS(on)@Vgs,Id)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.rds_on",
+      "raw_value": "52mΩ@4.5V",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Gate Threshold Voltage (Vgs(th))",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.threshold",
+      "raw_value": "1.5V",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Gate Threshold Voltage (Vgs(th)@Id)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.threshold",
+      "raw_value": "1.5V@250uA",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Input Capacitance (Ciss@Vds)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.ciss",
+      "raw_value": "1312pF",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Input Capacitance(Ciss)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.ciss",
+      "raw_value": "1.312nF",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Output Capacitance(Coss)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.coss",
+      "raw_value": "240pF",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "RDS(on)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.rds_on",
+      "raw_value": "36mΩ@4.5V",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Reverse Transfer Capacitance (Crss@Vds)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "vdmos.crss",
+      "raw_value": "106pF",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "FDN304P",
+    "manufacturer": "UMW(Youtai Semiconductor Co., Ltd.)",
+    "aliases": [
+      "FDN304P(UMW)"
+    ]
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8755876973040013312",
+    "revision": "Nov.2024",
+    "sha256": "039d4722c05c1723d04a76f1b1eff62751b6fc2aed48440df7d5a94230193063",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "1",
+      "2",
+      "4",
+      "5"
+    ],
+    "placeholder": false
+  },
+  "rdson_points": [
+    {
+      "current": {
+        "conditions": "continuous drain current",
+        "page_reference": "p. 2",
+        "source_kind": "typical",
+        "unit": "A",
+        "value": 2.4
+      },
+      "resistance": {
+        "conditions": "VGS=-4.5V, ID=-2.4A",
+        "page_reference": "p. 2",
+        "source_kind": "typical",
+        "unit": "ohm",
+        "value": 0.052
+      },
+      "vgs": {
+        "conditions": "gate-source voltage",
+        "page_reference": "p. 2",
+        "source_kind": "typical",
+        "unit": "V",
+        "value": 4.5
+      }
+    }
+  ],
+  "threshold": null,
+  "transfer_points": [],
+  "output_points": []
+}

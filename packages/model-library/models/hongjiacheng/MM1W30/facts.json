@@ -1,0 +1,136 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p.1",
+        "p.2",
+        "p.3",
+        "p.4"
+      ],
+      "revision": "Rev.1.0",
+      "title": "MM1W3V3 THRU MM1W330 SURFACE MOUNT ZENER DIODES"
+    },
+    "extraction_notes": [
+      "The MM1W30 row on p.2 specifies VZ minimum 28.2 V, nominal 30 V, and maximum 32.0 V at IZT = 8.5 mA; the nominal value is used for the breakdown-voltage field and the min/max spread is preserved here.",
+      "IZT is the published zener test current paired with VZ, not a separately labelled minimum, typical, or maximum limit; source_kind typical is used because the schema has no test-condition category.",
+      "The p.1 forward-voltage entry is in Maximum Ratings and specifies VF = 1.2 V at IF = 200 mA; it is retained as a maximum, not as a typical forward-voltage value.",
+      "The p.2 leakage-current entry specifies IR = 5 microA at VR = 23 V; it is treated as a maximum leakage-current limit because no typical leakage column is provided.",
+      "The datasheet does not publish capacitance, reverse-recovery time, ZZK/IZK, or a target-specific zener regulation curve; those fields are omitted or null.",
+      "Reverse-bias and breakdown values use the datasheet zener polarity: cathode positive relative to anode."
+    ],
+    "family": "diode",
+    "manufacturer": "hongjiacheng",
+    "mpn": "MM1W30",
+    "omission_reason": "No usable target-specific electrical curve is present. The datasheet includes only generic family rating/thermal plots and no MM1W30-specific I-V, capacitance, or zener-regulation plot.",
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": {
+        "conditions": "Paired with nominal VZ = 30 V; reverse zener test current IZT = 8.5 mA, TA = 25 degC unless otherwise noted; cathode positive relative to anode",
+        "page_reference": "hongjiacheng MM1W30 datasheet Rev.1.0 p.2, Electrical Characteristics, IZT",
+        "source_kind": "typical",
+        "unit": "A",
+        "value": 0.0085
+      },
+      "breakdown_voltage": {
+        "conditions": "IZT = 8.5 mA, TA = 25 degC unless otherwise noted; reverse zener bias with cathode positive relative to anode; nominal VZ",
+        "page_reference": "hongjiacheng MM1W30 datasheet Rev.1.0 p.2, Electrical Characteristics, Nominal Zener Voltage",
+        "source_kind": "typical",
+        "unit": "V",
+        "value": 30
+      },
+      "capacitance": null,
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "IF = 200 mA, TA = 25 degC unless otherwise specified; forward bias with anode positive relative to cathode",
+            "page_reference": "hongjiacheng MM1W30 datasheet Rev.1.0 p.1, Maximum Ratings, Forward Voltage",
+            "source_kind": "maximum",
+            "unit": "A",
+            "value": 0.2
+          },
+          "voltage": {
+            "conditions": "IF = 200 mA, TA = 25 degC unless otherwise specified; forward bias with anode positive relative to cathode; maximum rating",
+            "page_reference": "hongjiacheng MM1W30 datasheet Rev.1.0 p.1, Maximum Ratings, Forward Voltage",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 1.2
+          }
+        }
+      ],
+      "reverse_current": {
+        "conditions": "VR = 23 V, TA = 25 degC unless otherwise noted; reverse bias with cathode positive relative to anode; leakage-current limit",
+        "page_reference": "hongjiacheng MM1W30 datasheet Rev.1.0 p.2, Electrical Characteristics, Leakage Current",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.000005
+      },
+      "reverse_recovery": null,
+      "variant": "zener"
+    },
+    "usable_curves": false
+  },
+  "catalog_seed_hints": [],
+  "identity": {
+    "canonical_mpn": "MM1W30",
+    "manufacturer": "hongjiacheng",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8564879453253242880",
+    "revision": "Rev.1.0",
+    "sha256": "58bc7212021acdd0099f74f5574992e2fe4afea33850f27c443c979da297e66c",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "p.1",
+      "p.2",
+      "p.3",
+      "p.4"
+    ],
+    "placeholder": false
+  },
+  "fit_points": [
+    {
+      "current": {
+        "conditions": "Conservative F1 package bench at 95% of the cited current; IF = 200 mA, TA = 25 degC unless otherwise specified; forward bias with anode positive relative to cathode",
+        "page_reference": "hongjiacheng MM1W30 datasheet Rev.1.0 p.1, Maximum Ratings, Forward Voltage",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.19
+      },
+      "voltage": {
+        "conditions": "IF = 200 mA, TA = 25 degC unless otherwise specified; forward bias with anode positive relative to cathode; maximum rating",
+        "page_reference": "hongjiacheng MM1W30 datasheet Rev.1.0 p.1, Maximum Ratings, Forward Voltage",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 1.2
+      }
+    }
+  ],
+  "electrical_limits": {},
+  "derived_model_inputs": {
+    "BV": {
+      "conditions": "IZT = 8.5 mA, TA = 25 degC unless otherwise noted; reverse zener bias with cathode positive relative to anode; nominal VZ",
+      "page_reference": "hongjiacheng MM1W30 datasheet Rev.1.0 p.2, Electrical Characteristics, Nominal Zener Voltage",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 30
+    },
+    "IBV": {
+      "conditions": "Paired with nominal VZ = 30 V; reverse zener test current IZT = 8.5 mA, TA = 25 degC unless otherwise noted; cathode positive relative to anode",
+      "page_reference": "hongjiacheng MM1W30 datasheet Rev.1.0 p.2, Electrical Characteristics, IZT",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.0085
+    },
+    "NBV": {
+      "value": 1,
+      "unit": "1",
+      "conditions": "First-order avalanche-knee default; no multi-point reverse-knee trace was available",
+      "page_reference": "model-factory Zener F1 policy",
+      "source_kind": "held_default"
+    }
+  }
+}

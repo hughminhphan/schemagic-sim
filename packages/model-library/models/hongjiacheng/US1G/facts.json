@@ -1,0 +1,263 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [
+      {
+        "name": "digitized_typical_forward_characteristics_US1G_Tj_25degC",
+        "page_reference": "p. 2 Fig. 3",
+        "points": [
+          {
+            "x": 0.963,
+            "y": 0.0209
+          },
+          {
+            "x": 1.039,
+            "y": 0.0826
+          },
+          {
+            "x": 1.115,
+            "y": 0.264
+          },
+          {
+            "x": 1.211,
+            "y": 0.879
+          },
+          {
+            "x": 1.325,
+            "y": 2.75
+          },
+          {
+            "x": 1.42,
+            "y": 5.88
+          },
+          {
+            "x": 1.554,
+            "y": 11.8
+          }
+        ],
+        "test_conditions": "Tj = 25 degC; pulse width = 300 us; 1% duty cycle; US1G dashed trace",
+        "x_axis": {
+          "quantity": "instantaneous forward voltage",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "instantaneous forward current",
+          "scale": "log",
+          "unit": "A"
+        }
+      },
+      {
+        "name": "digitized_typical_reverse_characteristics_Tj_25degC",
+        "page_reference": "p. 2 Fig. 4",
+        "points": [
+          {
+            "x": 1.19,
+            "y": 4.02e-8
+          },
+          {
+            "x": 18.98,
+            "y": 5.01e-8
+          },
+          {
+            "x": 39.75,
+            "y": 6.83e-8
+          },
+          {
+            "x": 60.51,
+            "y": 9.1e-8
+          },
+          {
+            "x": 81.27,
+            "y": 1.3e-7
+          },
+          {
+            "x": 102.03,
+            "y": 1.85e-7
+          },
+          {
+            "x": 113.9,
+            "y": 2.51e-7
+          },
+          {
+            "x": 122.8,
+            "y": 3.5e-7
+          }
+        ],
+        "test_conditions": "Tj = 25 degC; US1G rated peak reverse voltage VRRM = 400 V; reverse-current axis digitized from the plotted microampere scale and converted to A",
+        "x_axis": {
+          "quantity": "percent of rated peak reverse voltage",
+          "scale": "linear",
+          "unit": "%"
+        },
+        "y_axis": {
+          "quantity": "instantaneous reverse current",
+          "scale": "log",
+          "unit": "A"
+        }
+      },
+      {
+        "name": "digitized_typical_reverse_characteristics_Tj_125degC",
+        "page_reference": "p. 2 Fig. 4",
+        "points": [
+          {
+            "x": 1.19,
+            "y": 0.00000398
+          },
+          {
+            "x": 18.98,
+            "y": 0.0000042
+          },
+          {
+            "x": 39.75,
+            "y": 0.00000469
+          },
+          {
+            "x": 60.51,
+            "y": 0.00000554
+          },
+          {
+            "x": 81.27,
+            "y": 0.0000073
+          },
+          {
+            "x": 102.03,
+            "y": 0.0000112
+          },
+          {
+            "x": 113.9,
+            "y": 0.0000153
+          },
+          {
+            "x": 122.8,
+            "y": 0.0000284
+          }
+        ],
+        "test_conditions": "Tj = 125 degC; US1G rated peak reverse voltage VRRM = 400 V; reverse-current axis digitized from the plotted microampere scale and converted to A",
+        "x_axis": {
+          "quantity": "percent of rated peak reverse voltage",
+          "scale": "linear",
+          "unit": "%"
+        },
+        "y_axis": {
+          "quantity": "instantaneous reverse current",
+          "scale": "log",
+          "unit": "A"
+        }
+      }
+    ],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3"
+      ],
+      "revision": "Rev:1.1",
+      "title": "US1A THRU US1M SURFACE MOUNT HIGH EFFICIENT RECTIFIER"
+    },
+    "extraction_notes": [
+      "The datasheet contains usable typical electrical curves on p. 2: the US1G forward trace in Fig. 3 and the Tj = 25 degC and Tj = 125 degC reverse traces in Fig. 4.",
+      "Forward-curve points were digitized from the dashed US1G trace only; no intermediate points were synthesized.",
+      "Reverse-curve points were digitized from the plotted traces only. The reverse-current axis is labeled in microamperes; extracted values are represented in amperes.",
+      "VRRM, VRMS, and VDC ratings for US1G are 400 V on p. 1. These are maximum blocking ratings, not an explicitly specified reverse breakdown voltage, so breakdown_voltage and breakdown_current are null.",
+      "The separate TA = 100 degC reverse-current table row, 500 microA, was not used for the 25 degC reverse-current specification."
+    ],
+    "family": "diode",
+    "manufacturer": "hongjiacheng",
+    "mpn": "US1G",
+    "omission_reason": null,
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": null,
+      "breakdown_voltage": null,
+      "capacitance": {
+        "conditions": "TA = 25 degC; 4.0 V DC; f = 1 MHz",
+        "page_reference": "p. 2 electrical characteristics, Typical junction capacitance",
+        "source_kind": "typical",
+        "unit": "F",
+        "value": 2e-11
+      },
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "TA = 25 degC; IF = 1.0 A",
+            "page_reference": "p. 2 electrical characteristics, Maximum instantaneous forward voltage",
+            "source_kind": "maximum",
+            "unit": "A",
+            "value": 1
+          },
+          "voltage": {
+            "conditions": "TA = 25 degC; IF = 1.0 A",
+            "page_reference": "p. 2 electrical characteristics, Maximum instantaneous forward voltage",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 1
+          }
+        }
+      ],
+      "reverse_current": {
+        "conditions": "TA = 25 degC; VR = VDC = 400 V, rated DC blocking voltage for US1G",
+        "page_reference": "p. 2 electrical characteristics, Maximum DC reverse current at rated DC blocking voltage",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.000005
+      },
+      "reverse_recovery": {
+        "conditions": "TA = 25 degC; IF = 0.5 A; IR = 1.0 A; Irr = 0.25 A; maximum reverse recovery time",
+        "page_reference": "p. 2 electrical characteristics, Maximum reverse recovery time",
+        "source_kind": "maximum",
+        "unit": "s",
+        "value": 5e-8
+      },
+      "variant": "rectifier"
+    },
+    "usable_curves": true
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "Voltage - Forward(Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "1.4V@1A",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "US1G",
+    "manufacturer": "hongjiacheng",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8602926040482803712",
+    "revision": "Rev:1.1",
+    "sha256": "a35041a8ed9d8ddd02af14288567a5826d249ded1cf1afc8cc265c3638e9aa0a",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ],
+    "placeholder": false
+  },
+  "fit_points": [
+    {
+      "current": {
+        "conditions": "Conservative F1 package bench at 95% of the cited current; TA = 25 degC; IF = 1.0 A",
+        "page_reference": "p. 2 electrical characteristics, Maximum instantaneous forward voltage",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.95
+      },
+      "voltage": {
+        "conditions": "TA = 25 degC; IF = 1.0 A",
+        "page_reference": "p. 2 electrical characteristics, Maximum instantaneous forward voltage",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 1
+      }
+    }
+  ],
+  "electrical_limits": {},
+  "derived_model_inputs": {}
+}

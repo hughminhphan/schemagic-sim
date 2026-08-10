@@ -1,0 +1,188 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [
+      {
+        "name": "Typical forward current versus forward voltage, generic series characteristic",
+        "page_reference": "p. 3, Fig. 3 Typical Zener Breakdown Characteristics",
+        "points": [
+          {
+            "x": 0.65,
+            "y": 0.01
+          },
+          {
+            "x": 0.75,
+            "y": 0.071
+          },
+          {
+            "x": 0.85,
+            "y": 0.16
+          },
+          {
+            "x": 0.95,
+            "y": 0.39
+          },
+          {
+            "x": 1.05,
+            "y": 0.95
+          },
+          {
+            "x": 1.15,
+            "y": 1.5
+          },
+          {
+            "x": 1.3,
+            "y": 2.4
+          },
+          {
+            "x": 1.5,
+            "y": 4.4
+          },
+          {
+            "x": 1.55,
+            "y": 5.2
+          }
+        ],
+        "test_conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle; typical curve for the 1SMA4728A through 1SMA4764A series, not an MPN-specific curve",
+        "x_axis": {
+          "quantity": "forward voltage",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "forward current",
+          "scale": "log",
+          "unit": "A"
+        }
+      }
+    ],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3",
+        "p. 4"
+      ],
+      "revision": "Rev1.0",
+      "title": "1SMA4728A THRU 1SMA4764A SURFACE MOUNT ZENER DIODES"
+    },
+    "extraction_notes": [
+      "The datasheet SHA-256 matches the expected digest: a66d0e20d37b19b6776d33e5d234d792d89e30813774a7dde79429c97d6773dd.",
+      "Figure 3 is a real plotted forward characteristic, but it is generic to the full 1SMA4728A through 1SMA4764A series rather than specific to 1SMA4744A; points are digitized from the plotted curve only.",
+      "Figure 2 contains typical zener-impedance curves only for VZ = 25 V, 30 V, 65 V, and 91 V, so no target-specific zener-impedance curve was extracted for the 15 V nominal part.",
+      "The datasheet provides no capacitance or reverse-recovery specification for 1SMA4744A."
+    ],
+    "family": "diode",
+    "manufacturer": "hongjiacheng",
+    "mpn": "1SMA4744A",
+    "omission_reason": "No target-specific zener-impedance curve is published for the 15 V nominal part; Figure 2 only plots VZ = 25 V, 30 V, 65 V, and 91 V. Capacitance and reverse-recovery data are also absent.",
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": {
+        "conditions": "Reverse bias test current IZT corresponding to nominal VZ = 15 V, Ta = 25 degC",
+        "page_reference": "p. 2, Electrical Characteristics, IZT for 1SMA4744A",
+        "source_kind": "typical",
+        "unit": "A",
+        "value": 0.017
+      },
+      "breakdown_voltage": {
+        "conditions": "Reverse bias, IZT = 17 mA, Ta = 25 degC; nominal VZ",
+        "page_reference": "p. 2, Electrical Characteristics, VZ @ IZT for 1SMA4744A",
+        "source_kind": "typical",
+        "unit": "V",
+        "value": 15
+      },
+      "capacitance": null,
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "Forward bias, IF = 200 mA, Ta = 25 degC",
+            "page_reference": "p. 1, Maximum Ratings, Forward Voltage @ IF = 200 mA",
+            "source_kind": "maximum",
+            "unit": "A",
+            "value": 0.2
+          },
+          "voltage": {
+            "conditions": "Forward bias, IF = 200 mA, Ta = 25 degC",
+            "page_reference": "p. 1, Maximum Ratings, Forward Voltage @ IF = 200 mA",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 1.5
+          }
+        }
+      ],
+      "reverse_current": {
+        "conditions": "Reverse bias, VR = 11 V, Ta = 25 degC",
+        "page_reference": "p. 2, Electrical Characteristics, IR @ VR for 1SMA4744A",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.000001
+      },
+      "reverse_recovery": null,
+      "variant": "zener"
+    },
+    "usable_curves": true
+  },
+  "catalog_seed_hints": [],
+  "identity": {
+    "canonical_mpn": "1SMA4744A",
+    "manufacturer": "hongjiacheng",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8564879675240841216",
+    "revision": "Rev1.0",
+    "sha256": "a66d0e20d37b19b6776d33e5d234d792d89e30813774a7dde79429c97d6773dd",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "placeholder": false
+  },
+  "fit_points": [
+    {
+      "current": {
+        "conditions": "Conservative F1 package bench at 95% of the cited current; Forward bias, IF = 200 mA, Ta = 25 degC",
+        "page_reference": "p. 1, Maximum Ratings, Forward Voltage @ IF = 200 mA",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.19
+      },
+      "voltage": {
+        "conditions": "Forward bias, IF = 200 mA, Ta = 25 degC",
+        "page_reference": "p. 1, Maximum Ratings, Forward Voltage @ IF = 200 mA",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 1.5
+      }
+    }
+  ],
+  "electrical_limits": {},
+  "derived_model_inputs": {
+    "BV": {
+      "conditions": "Reverse bias, IZT = 17 mA, Ta = 25 degC; nominal VZ",
+      "page_reference": "p. 2, Electrical Characteristics, VZ @ IZT for 1SMA4744A",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 15
+    },
+    "IBV": {
+      "conditions": "Reverse bias test current IZT corresponding to nominal VZ = 15 V, Ta = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, IZT for 1SMA4744A",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.017
+    },
+    "NBV": {
+      "value": 1,
+      "unit": "1",
+      "conditions": "First-order avalanche-knee default; no multi-point reverse-knee trace was available",
+      "page_reference": "model-factory Zener F1 policy",
+      "source_kind": "held_default"
+    }
+  }
+}

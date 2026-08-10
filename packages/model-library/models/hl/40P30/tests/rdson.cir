@@ -1,0 +1,14 @@
+OpenCircuit factory test: 40P30 RDS(on)
+* OpenCircuit Model Factory v0.1.0 bulk adapter
+* Original work generated from public factual specifications.
+* This model is not copied or adapted from any vendor SPICE model.
+* Source: https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8590907125525278720
+* Revision: V2.0
+.model OC_HL_40P30 VDMOS( pchan VTO=-2.5000000000e0 KP=8.0000000000e1 THETA=0.0000000000e0 LAMBDA=3.0000000000e-3 RD=1.3750000000e-2 RS=5.0000000000e-3 RG=1.0000000000e-4 RDS=1e9 CGS=1.3130000000e-9 CGDMAX=1.0200000000e-10 CGDMIN=1.0200000000e-10 CJO=3.2000000000e-11 IS=1.0000000000e-12 N=1.5000000000e0 RB=5.0000000000e-3)
+
+.temp 25
+M1 d1 g1 0 OC_HL_40P30
+ID1 d1 0 DC 8.0000000000e0
+VG1 g1 0 DC -1.0000000000e1
+.op
+.end

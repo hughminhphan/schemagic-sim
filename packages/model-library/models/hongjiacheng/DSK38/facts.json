@@ -1,0 +1,428 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [
+      {
+        "name": "Typical forward voltage, DSK38-DSK310 curve",
+        "page_reference": "p. 2, Fig. 3",
+        "points": [
+          {
+            "x": 0.6,
+            "y": 0.924
+          },
+          {
+            "x": 0.8,
+            "y": 4.4
+          },
+          {
+            "x": 1,
+            "y": 9.81
+          },
+          {
+            "x": 1.2,
+            "y": 15.6
+          },
+          {
+            "x": 1.4,
+            "y": 20.4
+          }
+        ],
+        "test_conditions": "Tj = 25 degC; pulse width = 300 us; duty cycle = 1%; DSK38-DSK310 dotted typical curve",
+        "x_axis": {
+          "quantity": "instantaneous forward voltage",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "instantaneous forward current",
+          "scale": "log",
+          "unit": "A"
+        }
+      },
+      {
+        "name": "Typical reverse characteristics, DSK38 within DSK36-DSK320 curve",
+        "page_reference": "p. 2, Fig. 4",
+        "points": [
+          {
+            "x": 20,
+            "y": 0.0000017
+          },
+          {
+            "x": 40,
+            "y": 0.00000183
+          },
+          {
+            "x": 60,
+            "y": 0.00000211
+          },
+          {
+            "x": 80,
+            "y": 0.00000277
+          },
+          {
+            "x": 100,
+            "y": 0.00000474
+          }
+        ],
+        "test_conditions": "Tj = 25 degC; reverse polarity; DSK38 is included in the DSK36-DSK320 dashed typical curve; x-axis is percent of rated peak reverse voltage, with VRRM = 80 V for DSK38; plotted source axis is microampere and values are converted to A",
+        "x_axis": {
+          "quantity": "percent of rated peak reverse voltage",
+          "scale": "linear",
+          "unit": "%"
+        },
+        "y_axis": {
+          "quantity": "instantaneous reverse current",
+          "scale": "log",
+          "unit": "A"
+        }
+      }
+    ],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3"
+      ],
+      "revision": "Rev:1.0",
+      "title": "DSK32 THRU DSK320 SURFACE MOUNT SCHOTTKY BARRIER RECTIFIER"
+    },
+    "extraction_notes": [
+      "The supplied PDF SHA-256 matched the expected hash.",
+      "DSK38 is the 80 V member of the DSK32 through DSK320 Schottky barrier rectifier family; the datasheet groups DSK38 with DSK310 in Fig. 3 and with DSK36-DSK320 in Fig. 4.",
+      "Curve points are digitized from the actual plotted vector curves, not inferred from maximum ratings or interpolated from tabulated limits.",
+      "The Fig. 4 reverse-current curve is plotted in microampere and is represented here in amperes; its horizontal axis is percent of rated peak reverse voltage, not absolute reverse voltage.",
+      "The 0.85 V forward-voltage entry is a maximum bound at 3.0 A and is kept separate from the typical plotted curve points."
+    ],
+    "family": "diode",
+    "manufacturer": "hongjiacheng",
+    "mpn": "DSK38",
+    "omission_reason": "No reverse-recovery specification or breakdown characterization is provided. The 80 V VRRM/VDC ratings are maximum reverse-voltage limits, not breakdown data, so breakdown voltage and breakdown current are omitted.",
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": null,
+      "breakdown_voltage": null,
+      "capacitance": {
+        "conditions": "4.0 V DC bias; f = 1 MHz; TA = 25 degC",
+        "page_reference": "p. 2, Electrical Characteristics",
+        "source_kind": "typical",
+        "unit": "F",
+        "value": 1.6e-10
+      },
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "Tj = 25 degC; pulse width = 300 us; duty cycle = 1%; DSK38-DSK310 dotted typical curve",
+            "page_reference": "p. 2, Fig. 3",
+            "source_kind": "digitized_typical_curve",
+            "unit": "A",
+            "value": 0.924
+          },
+          "voltage": {
+            "conditions": "IF = 0.924 A; Tj = 25 degC; pulse width = 300 us; duty cycle = 1%; DSK38-DSK310 dotted typical curve",
+            "page_reference": "p. 2, Fig. 3",
+            "source_kind": "digitized_typical_curve",
+            "unit": "V",
+            "value": 0.6
+          }
+        },
+        {
+          "current": {
+            "conditions": "Tj = 25 degC; pulse width = 300 us; duty cycle = 1%; DSK38-DSK310 dotted typical curve",
+            "page_reference": "p. 2, Fig. 3",
+            "source_kind": "digitized_typical_curve",
+            "unit": "A",
+            "value": 4.4
+          },
+          "voltage": {
+            "conditions": "IF = 4.4 A; Tj = 25 degC; pulse width = 300 us; duty cycle = 1%; DSK38-DSK310 dotted typical curve",
+            "page_reference": "p. 2, Fig. 3",
+            "source_kind": "digitized_typical_curve",
+            "unit": "V",
+            "value": 0.8
+          }
+        },
+        {
+          "current": {
+            "conditions": "Tj = 25 degC; pulse width = 300 us; duty cycle = 1%; DSK38-DSK310 dotted typical curve",
+            "page_reference": "p. 2, Fig. 3",
+            "source_kind": "digitized_typical_curve",
+            "unit": "A",
+            "value": 9.81
+          },
+          "voltage": {
+            "conditions": "IF = 9.81 A; Tj = 25 degC; pulse width = 300 us; duty cycle = 1%; DSK38-DSK310 dotted typical curve",
+            "page_reference": "p. 2, Fig. 3",
+            "source_kind": "digitized_typical_curve",
+            "unit": "V",
+            "value": 1
+          }
+        },
+        {
+          "current": {
+            "conditions": "Tj = 25 degC; pulse width = 300 us; duty cycle = 1%; DSK38-DSK310 dotted typical curve",
+            "page_reference": "p. 2, Fig. 3",
+            "source_kind": "digitized_typical_curve",
+            "unit": "A",
+            "value": 15.6
+          },
+          "voltage": {
+            "conditions": "IF = 15.6 A; Tj = 25 degC; pulse width = 300 us; duty cycle = 1%; DSK38-DSK310 dotted typical curve",
+            "page_reference": "p. 2, Fig. 3",
+            "source_kind": "digitized_typical_curve",
+            "unit": "V",
+            "value": 1.2
+          }
+        },
+        {
+          "current": {
+            "conditions": "Tj = 25 degC; pulse width = 300 us; duty cycle = 1%; DSK38-DSK310 dotted typical curve",
+            "page_reference": "p. 2, Fig. 3",
+            "source_kind": "digitized_typical_curve",
+            "unit": "A",
+            "value": 20.4
+          },
+          "voltage": {
+            "conditions": "IF = 20.4 A; Tj = 25 degC; pulse width = 300 us; duty cycle = 1%; DSK38-DSK310 dotted typical curve",
+            "page_reference": "p. 2, Fig. 3",
+            "source_kind": "digitized_typical_curve",
+            "unit": "V",
+            "value": 1.4
+          }
+        },
+        {
+          "current": {
+            "conditions": "IF = 3.0 A; Ta = 25 degC",
+            "page_reference": "p. 2, Electrical Characteristics",
+            "source_kind": "maximum",
+            "unit": "A",
+            "value": 3
+          },
+          "voltage": {
+            "conditions": "IF = 3.0 A; Ta = 25 degC",
+            "page_reference": "p. 2, Electrical Characteristics",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 0.85
+          }
+        }
+      ],
+      "reverse_current": {
+        "conditions": "VR = VDC = 80 V; TA = 25 degC; rated DC blocking voltage",
+        "page_reference": "p. 2, Electrical Characteristics",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.00005
+      },
+      "reverse_recovery": null,
+      "variant": "schottky"
+    },
+    "usable_curves": true
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "Voltage - Forward(Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "850mV@3A",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "DSK38",
+    "manufacturer": "hongjiacheng",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8603186980939583488",
+    "revision": "Rev:1.0",
+    "sha256": "e39eda5ed17f31ea54b97ae7a6626b4269b0cdab5fbf29cece112017a075e41b",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ],
+    "placeholder": false
+  },
+  "fit_points": [
+    {
+      "current": {
+        "value": 0.924,
+        "unit": "A",
+        "conditions": "Tj = 25 degC; pulse width = 300 us; duty cycle = 1%; DSK38-DSK310 dotted typical curve",
+        "page_reference": "p. 2, Fig. 3",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 0.6,
+        "unit": "V",
+        "conditions": "Tj = 25 degC; pulse width = 300 us; duty cycle = 1%; DSK38-DSK310 dotted typical curve",
+        "page_reference": "p. 2, Fig. 3",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 4.4,
+        "unit": "A",
+        "conditions": "Tj = 25 degC; pulse width = 300 us; duty cycle = 1%; DSK38-DSK310 dotted typical curve",
+        "page_reference": "p. 2, Fig. 3",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 0.8,
+        "unit": "V",
+        "conditions": "Tj = 25 degC; pulse width = 300 us; duty cycle = 1%; DSK38-DSK310 dotted typical curve",
+        "page_reference": "p. 2, Fig. 3",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 9.81,
+        "unit": "A",
+        "conditions": "Tj = 25 degC; pulse width = 300 us; duty cycle = 1%; DSK38-DSK310 dotted typical curve",
+        "page_reference": "p. 2, Fig. 3",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 1,
+        "unit": "V",
+        "conditions": "Tj = 25 degC; pulse width = 300 us; duty cycle = 1%; DSK38-DSK310 dotted typical curve",
+        "page_reference": "p. 2, Fig. 3",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 15.6,
+        "unit": "A",
+        "conditions": "Tj = 25 degC; pulse width = 300 us; duty cycle = 1%; DSK38-DSK310 dotted typical curve",
+        "page_reference": "p. 2, Fig. 3",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 1.2,
+        "unit": "V",
+        "conditions": "Tj = 25 degC; pulse width = 300 us; duty cycle = 1%; DSK38-DSK310 dotted typical curve",
+        "page_reference": "p. 2, Fig. 3",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 20.4,
+        "unit": "A",
+        "conditions": "Tj = 25 degC; pulse width = 300 us; duty cycle = 1%; DSK38-DSK310 dotted typical curve",
+        "page_reference": "p. 2, Fig. 3",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 1.4,
+        "unit": "V",
+        "conditions": "Tj = 25 degC; pulse width = 300 us; duty cycle = 1%; DSK38-DSK310 dotted typical curve",
+        "page_reference": "p. 2, Fig. 3",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "conditions": "Tj = 25 degC; pulse width = 300 us; duty cycle = 1%; DSK38-DSK310 dotted typical curve",
+        "page_reference": "p. 2, Fig. 3",
+        "source_kind": "digitized_typical_curve",
+        "unit": "A",
+        "value": 0.924
+      },
+      "voltage": {
+        "conditions": "IF = 0.924 A; Tj = 25 degC; pulse width = 300 us; duty cycle = 1%; DSK38-DSK310 dotted typical curve",
+        "page_reference": "p. 2, Fig. 3",
+        "source_kind": "digitized_typical_curve",
+        "unit": "V",
+        "value": 0.6
+      }
+    },
+    {
+      "current": {
+        "conditions": "Tj = 25 degC; pulse width = 300 us; duty cycle = 1%; DSK38-DSK310 dotted typical curve",
+        "page_reference": "p. 2, Fig. 3",
+        "source_kind": "digitized_typical_curve",
+        "unit": "A",
+        "value": 4.4
+      },
+      "voltage": {
+        "conditions": "IF = 4.4 A; Tj = 25 degC; pulse width = 300 us; duty cycle = 1%; DSK38-DSK310 dotted typical curve",
+        "page_reference": "p. 2, Fig. 3",
+        "source_kind": "digitized_typical_curve",
+        "unit": "V",
+        "value": 0.8
+      }
+    },
+    {
+      "current": {
+        "conditions": "Tj = 25 degC; pulse width = 300 us; duty cycle = 1%; DSK38-DSK310 dotted typical curve",
+        "page_reference": "p. 2, Fig. 3",
+        "source_kind": "digitized_typical_curve",
+        "unit": "A",
+        "value": 9.81
+      },
+      "voltage": {
+        "conditions": "IF = 9.81 A; Tj = 25 degC; pulse width = 300 us; duty cycle = 1%; DSK38-DSK310 dotted typical curve",
+        "page_reference": "p. 2, Fig. 3",
+        "source_kind": "digitized_typical_curve",
+        "unit": "V",
+        "value": 1
+      }
+    },
+    {
+      "current": {
+        "conditions": "Tj = 25 degC; pulse width = 300 us; duty cycle = 1%; DSK38-DSK310 dotted typical curve",
+        "page_reference": "p. 2, Fig. 3",
+        "source_kind": "digitized_typical_curve",
+        "unit": "A",
+        "value": 15.6
+      },
+      "voltage": {
+        "conditions": "IF = 15.6 A; Tj = 25 degC; pulse width = 300 us; duty cycle = 1%; DSK38-DSK310 dotted typical curve",
+        "page_reference": "p. 2, Fig. 3",
+        "source_kind": "digitized_typical_curve",
+        "unit": "V",
+        "value": 1.2
+      }
+    },
+    {
+      "current": {
+        "conditions": "Tj = 25 degC; pulse width = 300 us; duty cycle = 1%; DSK38-DSK310 dotted typical curve",
+        "page_reference": "p. 2, Fig. 3",
+        "source_kind": "digitized_typical_curve",
+        "unit": "A",
+        "value": 20.4
+      },
+      "voltage": {
+        "conditions": "IF = 20.4 A; Tj = 25 degC; pulse width = 300 us; duty cycle = 1%; DSK38-DSK310 dotted typical curve",
+        "page_reference": "p. 2, Fig. 3",
+        "source_kind": "digitized_typical_curve",
+        "unit": "V",
+        "value": 1.4
+      }
+    },
+    {
+      "current": {
+        "conditions": "IF = 3.0 A; Ta = 25 degC",
+        "page_reference": "p. 2, Electrical Characteristics",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 3
+      },
+      "voltage": {
+        "conditions": "IF = 3.0 A; Ta = 25 degC",
+        "page_reference": "p. 2, Electrical Characteristics",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 0.85
+      }
+    }
+  ],
+  "electrical_limits": {},
+  "derived_model_inputs": {}
+}

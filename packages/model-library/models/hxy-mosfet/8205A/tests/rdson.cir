@@ -1,0 +1,14 @@
+OpenCircuit factory test: 8205A RDS(on)
+* OpenCircuit Model Factory v0.1.0 bulk adapter
+* Original work generated from public factual specifications.
+* This model is not copied or adapted from any vendor SPICE model.
+* Source: https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8589836866003365888
+* Revision: Not stated in supplied PDF
+.model OC_HXY-MOSFET_8205A VDMOS( VTO=7.0000000000e-1 KP=9.5238095238e1 THETA=0.0000000000e0 LAMBDA=3.0000000000e-3 RD=1.1550000000e-2 RS=4.2000000000e-3 RG=1.0000000000e-4 RDS=1e9 CGS=4.6000000000e-10 CGDMAX=1.4000000000e-10 CGDMIN=1.4000000000e-10 CJO=1.9000000000e-10 IS=1.0000000000e-12 N=1.5000000000e0 RB=4.2000000000e-3)
+
+.temp 25
+M1 d1 g1 0 OC_HXY-MOSFET_8205A
+ID1 0 d1 DC 4.5000000000e0
+VG1 g1 0 DC 4.5000000000e0
+.op
+.end

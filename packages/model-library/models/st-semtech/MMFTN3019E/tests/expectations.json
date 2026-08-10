@@ -1,0 +1,45 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "rdson.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "rdson_maximum_1",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d1),100)"
+          },
+          "minimum": 0,
+          "maximum": 8,
+          "unit": "ohm",
+          "inclusive": true,
+          "datasheet_citation": "p. 2 Characteristics at Ta = 25 degC, RDS(on), MAX column",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "review_rdson_maximum_2.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "rdson_maximum_2",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(v(d),1000)"
+          },
+          "unit": "ohm",
+          "inclusive": true,
+          "datasheet_citation": "p. 2 Characteristics at Ta = 25 degC, RDS(on), MAX column",
+          "placeholder": false,
+          "minimum": 0,
+          "maximum": 13
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,193 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [
+      {
+        "name": "digitized_typical_forward_voltage_SS55C_SS56C_Tj_25degC",
+        "page_reference": "p. 2 Fig. 3",
+        "points": [
+          {
+            "x": 0.455,
+            "y": 2.35
+          },
+          {
+            "x": 0.555,
+            "y": 4.75
+          },
+          {
+            "x": 0.655,
+            "y": 8.2
+          },
+          {
+            "x": 0.715,
+            "y": 10.9
+          },
+          {
+            "x": 0.805,
+            "y": 15.9
+          },
+          {
+            "x": 0.955,
+            "y": 26
+          }
+        ],
+        "test_conditions": "Tj = 25 degC; pulse width = 300 us; 1% duty cycle; SS55C-SS56C dashed trace, which includes SS56C",
+        "x_axis": {
+          "quantity": "instantaneous forward voltage",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "instantaneous forward current",
+          "scale": "log",
+          "unit": "A"
+        }
+      },
+      {
+        "name": "digitized_typical_reverse_characteristics_SS52C_SS56C_Tj_25degC",
+        "page_reference": "p. 2 Fig. 4",
+        "points": [
+          {
+            "x": 6,
+            "y": 0.00000597
+          },
+          {
+            "x": 18,
+            "y": 0.0000117
+          },
+          {
+            "x": 30,
+            "y": 0.0000166
+          },
+          {
+            "x": 42,
+            "y": 0.0000234
+          },
+          {
+            "x": 54,
+            "y": 0.000037
+          }
+        ],
+        "test_conditions": "Tj = 25 degC; SS52C-SS56C solid trace, which includes SS56C; plotted abscissa is 0-100% of rated peak reverse voltage, mapped to SS56C VRRM = 60 V; reverse voltage and current are reported as positive magnitudes",
+        "x_axis": {
+          "quantity": "reverse voltage corresponding to percent of rated peak reverse voltage",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "instantaneous reverse current",
+          "scale": "log",
+          "unit": "A"
+        }
+      }
+    ],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3"
+      ],
+      "revision": "Rev:1.0",
+      "title": "SS52C THRU SS520C Surface Mount Schottky Barrier Rectifier"
+    },
+    "extraction_notes": [
+      "The SS56C-specific forward trace is the dashed SS55C-SS56C family curve in p. 2 Fig. 3; the figure is typical at Tj = 25 degC, pulse width = 300 us, and 1% duty cycle.",
+      "The SS56C-specific reverse trace is the solid SS52C-SS56C family curve in p. 2 Fig. 4 at Tj = 25 degC; its 0-100% x-axis was mapped to reverse voltage using SS56C VRRM = VDC = 60 V.",
+      "The datasheet states that the cathode line denotes the cathode end. Reverse-curve voltage and current points are recorded as positive reverse-voltage and reverse-current magnitudes.",
+      "Tabulated VF and rated reverse current are maximum values; tabulated junction capacitance is a typical value. The separate Ta = 100 degC reverse-current row of 50 mA was not used for the 25 degC extraction.",
+      "No reverse-recovery time or breakdown voltage/current measurement is published. The 60 V VRRM/VDC rating is a maximum blocking rating, not a breakdown measurement.",
+      "The Fig. 1 derating curve and Fig. 2 surge-current curve were not extracted because they are thermal and surge-rating curves rather than diode electrical model curves."
+    ],
+    "family": "diode",
+    "manufacturer": "hongjiacheng",
+    "mpn": "SS56C",
+    "omission_reason": null,
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": null,
+      "breakdown_voltage": null,
+      "capacitance": {
+        "conditions": "Ta = 25 degC, DC reverse bias = 4.0 V, f = 1 MHz",
+        "page_reference": "p. 2 electrical characteristics, Typical junction capacitance",
+        "source_kind": "typical",
+        "unit": "F",
+        "value": 5.5e-10
+      },
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "Ta = 25 degC, IF = 5.0 A",
+            "page_reference": "p. 2 electrical characteristics, Maximum instantaneous forward voltage",
+            "source_kind": "maximum",
+            "unit": "A",
+            "value": 5
+          },
+          "voltage": {
+            "conditions": "Ta = 25 degC, IF = 5.0 A",
+            "page_reference": "p. 2 electrical characteristics, Maximum instantaneous forward voltage",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 0.68
+          }
+        }
+      ],
+      "reverse_current": {
+        "conditions": "Ta = 25 degC, VR = VDC = 60 V",
+        "page_reference": "p. 2 electrical characteristics, Maximum DC reverse current at rated DC blocking voltage",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.00015
+      },
+      "reverse_recovery": null,
+      "variant": "schottky"
+    },
+    "usable_curves": true
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "Voltage - Forward(Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "680mV@5A",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "SS56C",
+    "manufacturer": "hongjiacheng",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8602925667575488512",
+    "revision": "Rev:1.0",
+    "sha256": "2eb1ce7a5bd16a12a5f7914b4cae9e38b34481b48af156d5957cdc8b52245950",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ],
+    "placeholder": false
+  },
+  "fit_points": [
+    {
+      "current": {
+        "conditions": "Conservative F1 package bench at 95% of the cited current; Ta = 25 degC, IF = 5.0 A",
+        "page_reference": "p. 2 electrical characteristics, Maximum instantaneous forward voltage",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 4.75
+      },
+      "voltage": {
+        "conditions": "Ta = 25 degC, IF = 5.0 A",
+        "page_reference": "p. 2 electrical characteristics, Maximum instantaneous forward voltage",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 0.68
+      }
+    }
+  ],
+  "electrical_limits": {},
+  "derived_model_inputs": {}
+}

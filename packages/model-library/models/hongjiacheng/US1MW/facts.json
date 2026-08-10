@@ -1,0 +1,528 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [
+      {
+        "name": "Typical forward voltage, US1JW-US1MW curve",
+        "page_reference": "p. 2, Fig. 3",
+        "points": [
+          {
+            "x": 1.25,
+            "y": 0.1
+          },
+          {
+            "x": 1.37,
+            "y": 0.5
+          },
+          {
+            "x": 1.44,
+            "y": 1
+          },
+          {
+            "x": 1.52,
+            "y": 2
+          },
+          {
+            "x": 1.65,
+            "y": 5
+          },
+          {
+            "x": 1.79,
+            "y": 10
+          }
+        ],
+        "test_conditions": "Tj = 25 degC; pulse width = 300 us; 1% duty cycle; dotted US1JW-US1MW family curve",
+        "x_axis": {
+          "quantity": "Instantaneous forward voltage",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "Instantaneous forward current",
+          "scale": "log",
+          "unit": "A"
+        }
+      },
+      {
+        "name": "Typical reverse characteristics, Tj = 25 degC",
+        "page_reference": "p. 2, Fig. 4",
+        "points": [
+          {
+            "x": 10,
+            "y": 4.5e-8
+          },
+          {
+            "x": 40,
+            "y": 7e-8
+          },
+          {
+            "x": 80,
+            "y": 1.3e-7
+          },
+          {
+            "x": 100,
+            "y": 1.8e-7
+          },
+          {
+            "x": 120,
+            "y": 3.2e-7
+          }
+        ],
+        "test_conditions": "Tj = 25 degC; reverse-voltage axis is normalized to rated peak reverse voltage",
+        "x_axis": {
+          "quantity": "Percent of rated peak reverse voltage",
+          "scale": "linear",
+          "unit": "%"
+        },
+        "y_axis": {
+          "quantity": "Instantaneous reverse current",
+          "scale": "log",
+          "unit": "A"
+        }
+      },
+      {
+        "name": "Typical reverse characteristics, Tj = 125 degC",
+        "page_reference": "p. 2, Fig. 4",
+        "points": [
+          {
+            "x": 10,
+            "y": 0.0000045
+          },
+          {
+            "x": 40,
+            "y": 0.0000055
+          },
+          {
+            "x": 60,
+            "y": 0.0000066
+          },
+          {
+            "x": 80,
+            "y": 0.0000085
+          },
+          {
+            "x": 100,
+            "y": 0.000011
+          },
+          {
+            "x": 120,
+            "y": 0.00002
+          }
+        ],
+        "test_conditions": "Tj = 125 degC; reverse-voltage axis is normalized to rated peak reverse voltage",
+        "x_axis": {
+          "quantity": "Percent of rated peak reverse voltage",
+          "scale": "linear",
+          "unit": "%"
+        },
+        "y_axis": {
+          "quantity": "Instantaneous reverse current",
+          "scale": "log",
+          "unit": "A"
+        }
+      }
+    ],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3"
+      ],
+      "revision": "Rev:1.0",
+      "title": "US1AW THRU US1MW SURFACE MOUNT HIGH EFFICIENT RECTIFIER"
+    },
+    "extraction_notes": [
+      "The supplied PDF SHA-256 matches 6ae8bc6313d65420343f4f8cace46b6ab54276ccdce67afda8a038ca5006a523.",
+      "Page 1 identifies US1MW as the 1000 V variant: VRRM = 1000 V and VDC = 1000 V; IF(AV) = 1.0 A and IFSM = 30 A.",
+      "Page 2 Fig. 3 was digitized from the dotted US1JW-US1MW typical forward-voltage curve. The current axis is logarithmic and the curve is specified for Tj = 25 degC, 300 us pulse width, and 1% duty cycle.",
+      "Page 2 Fig. 4 was digitized for both Tj = 25 degC and Tj = 125 degC. Its x-axis is percent of rated peak reverse voltage, so those curve x-values are retained as percentages rather than converted to absolute voltage.",
+      "The table gives US1MW maximum VF = 1.7 V at IF = 1.0 A, maximum Trr = 75 ns, maximum IR1 = 2.0 uA at rated DC blocking voltage and TA = 25 degC, maximum IR2 = 200 uA at TA = 125 degC, and typical CJ = 9.0 pF at 4.0 V DC and 1 MHz.",
+      "Breakdown voltage and breakdown current are omitted because the datasheet supplies reverse-voltage ratings and leakage characteristics, not a breakdown test point; VRRM/VDC was not treated as breakdown evidence."
+    ],
+    "family": "diode",
+    "manufacturer": "hongjiacheng",
+    "mpn": "US1MW",
+    "omission_reason": null,
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": null,
+      "breakdown_voltage": null,
+      "capacitance": {
+        "conditions": "4.0 V DC reverse bias, f = 1 MHz, TA = 25 degC",
+        "page_reference": "p. 2, Electrical Characteristics, CJ",
+        "source_kind": "typical",
+        "unit": "F",
+        "value": 9e-12
+      },
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "IF = 1.0 A, TA = 25 degC",
+            "page_reference": "p. 2, Electrical Characteristics",
+            "source_kind": "maximum",
+            "unit": "A",
+            "value": 1
+          },
+          "voltage": {
+            "conditions": "IF = 1.0 A, TA = 25 degC",
+            "page_reference": "p. 2, Electrical Characteristics",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 1.7
+          }
+        },
+        {
+          "current": {
+            "conditions": "Tj = 25 degC; pulse width = 300 us; 1% duty cycle; US1JW-US1MW curve",
+            "page_reference": "p. 2, Fig. 3",
+            "source_kind": "digitized_typical_curve",
+            "unit": "A",
+            "value": 0.1
+          },
+          "voltage": {
+            "conditions": "IF = 0.1 A, Tj = 25 degC; pulse width = 300 us; 1% duty cycle; US1JW-US1MW curve",
+            "page_reference": "p. 2, Fig. 3",
+            "source_kind": "digitized_typical_curve",
+            "unit": "V",
+            "value": 1.25
+          }
+        },
+        {
+          "current": {
+            "conditions": "Tj = 25 degC; pulse width = 300 us; 1% duty cycle; US1JW-US1MW curve",
+            "page_reference": "p. 2, Fig. 3",
+            "source_kind": "digitized_typical_curve",
+            "unit": "A",
+            "value": 0.5
+          },
+          "voltage": {
+            "conditions": "IF = 0.5 A, Tj = 25 degC; pulse width = 300 us; 1% duty cycle; US1JW-US1MW curve",
+            "page_reference": "p. 2, Fig. 3",
+            "source_kind": "digitized_typical_curve",
+            "unit": "V",
+            "value": 1.37
+          }
+        },
+        {
+          "current": {
+            "conditions": "Tj = 25 degC; pulse width = 300 us; 1% duty cycle; US1JW-US1MW curve",
+            "page_reference": "p. 2, Fig. 3",
+            "source_kind": "digitized_typical_curve",
+            "unit": "A",
+            "value": 1
+          },
+          "voltage": {
+            "conditions": "IF = 1.0 A, Tj = 25 degC; pulse width = 300 us; 1% duty cycle; US1JW-US1MW curve",
+            "page_reference": "p. 2, Fig. 3",
+            "source_kind": "digitized_typical_curve",
+            "unit": "V",
+            "value": 1.44
+          }
+        },
+        {
+          "current": {
+            "conditions": "Tj = 25 degC; pulse width = 300 us; 1% duty cycle; US1JW-US1MW curve",
+            "page_reference": "p. 2, Fig. 3",
+            "source_kind": "digitized_typical_curve",
+            "unit": "A",
+            "value": 2
+          },
+          "voltage": {
+            "conditions": "IF = 2.0 A, Tj = 25 degC; pulse width = 300 us; 1% duty cycle; US1JW-US1MW curve",
+            "page_reference": "p. 2, Fig. 3",
+            "source_kind": "digitized_typical_curve",
+            "unit": "V",
+            "value": 1.52
+          }
+        },
+        {
+          "current": {
+            "conditions": "Tj = 25 degC; pulse width = 300 us; 1% duty cycle; US1JW-US1MW curve",
+            "page_reference": "p. 2, Fig. 3",
+            "source_kind": "digitized_typical_curve",
+            "unit": "A",
+            "value": 5
+          },
+          "voltage": {
+            "conditions": "IF = 5.0 A, Tj = 25 degC; pulse width = 300 us; 1% duty cycle; US1JW-US1MW curve",
+            "page_reference": "p. 2, Fig. 3",
+            "source_kind": "digitized_typical_curve",
+            "unit": "V",
+            "value": 1.65
+          }
+        },
+        {
+          "current": {
+            "conditions": "Tj = 25 degC; pulse width = 300 us; 1% duty cycle; US1JW-US1MW curve",
+            "page_reference": "p. 2, Fig. 3",
+            "source_kind": "digitized_typical_curve",
+            "unit": "A",
+            "value": 10
+          },
+          "voltage": {
+            "conditions": "IF = 10.0 A, Tj = 25 degC; pulse width = 300 us; 1% duty cycle; US1JW-US1MW curve",
+            "page_reference": "p. 2, Fig. 3",
+            "source_kind": "digitized_typical_curve",
+            "unit": "V",
+            "value": 1.79
+          }
+        }
+      ],
+      "reverse_current": {
+        "conditions": "VR = VDC = 1000 V, TA = 25 degC",
+        "page_reference": "p. 2, Electrical Characteristics, IR1",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.000002
+      },
+      "reverse_recovery": {
+        "conditions": "IF = 0.5 A, IR = 1.0 A, Irr = 0.25 A, TA = 25 degC",
+        "page_reference": "p. 2, Electrical Characteristics, Trr",
+        "source_kind": "maximum",
+        "unit": "s",
+        "value": 7.5e-8
+      },
+      "variant": "rectifier"
+    },
+    "usable_curves": true
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "Voltage - Forward(Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "1.7V@1A",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "US1MW",
+    "manufacturer": "hongjiacheng",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8603080471161024512",
+    "revision": "Rev:1.0",
+    "sha256": "6ae8bc6313d65420343f4f8cace46b6ab54276ccdce67afda8a038ca5006a523",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ],
+    "placeholder": false
+  },
+  "fit_points": [
+    {
+      "current": {
+        "value": 0.1,
+        "unit": "A",
+        "conditions": "Tj = 25 degC; pulse width = 300 us; 1% duty cycle; dotted US1JW-US1MW family curve",
+        "page_reference": "p. 2, Fig. 3",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 1.25,
+        "unit": "V",
+        "conditions": "Tj = 25 degC; pulse width = 300 us; 1% duty cycle; dotted US1JW-US1MW family curve",
+        "page_reference": "p. 2, Fig. 3",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 0.5,
+        "unit": "A",
+        "conditions": "Tj = 25 degC; pulse width = 300 us; 1% duty cycle; dotted US1JW-US1MW family curve",
+        "page_reference": "p. 2, Fig. 3",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 1.37,
+        "unit": "V",
+        "conditions": "Tj = 25 degC; pulse width = 300 us; 1% duty cycle; dotted US1JW-US1MW family curve",
+        "page_reference": "p. 2, Fig. 3",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 1,
+        "unit": "A",
+        "conditions": "Tj = 25 degC; pulse width = 300 us; 1% duty cycle; dotted US1JW-US1MW family curve",
+        "page_reference": "p. 2, Fig. 3",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 1.44,
+        "unit": "V",
+        "conditions": "Tj = 25 degC; pulse width = 300 us; 1% duty cycle; dotted US1JW-US1MW family curve",
+        "page_reference": "p. 2, Fig. 3",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 2,
+        "unit": "A",
+        "conditions": "Tj = 25 degC; pulse width = 300 us; 1% duty cycle; dotted US1JW-US1MW family curve",
+        "page_reference": "p. 2, Fig. 3",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 1.52,
+        "unit": "V",
+        "conditions": "Tj = 25 degC; pulse width = 300 us; 1% duty cycle; dotted US1JW-US1MW family curve",
+        "page_reference": "p. 2, Fig. 3",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 5,
+        "unit": "A",
+        "conditions": "Tj = 25 degC; pulse width = 300 us; 1% duty cycle; dotted US1JW-US1MW family curve",
+        "page_reference": "p. 2, Fig. 3",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 1.65,
+        "unit": "V",
+        "conditions": "Tj = 25 degC; pulse width = 300 us; 1% duty cycle; dotted US1JW-US1MW family curve",
+        "page_reference": "p. 2, Fig. 3",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 10,
+        "unit": "A",
+        "conditions": "Tj = 25 degC; pulse width = 300 us; 1% duty cycle; dotted US1JW-US1MW family curve",
+        "page_reference": "p. 2, Fig. 3",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 1.79,
+        "unit": "V",
+        "conditions": "Tj = 25 degC; pulse width = 300 us; 1% duty cycle; dotted US1JW-US1MW family curve",
+        "page_reference": "p. 2, Fig. 3",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "conditions": "IF = 1.0 A, TA = 25 degC",
+        "page_reference": "p. 2, Electrical Characteristics",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 1
+      },
+      "voltage": {
+        "conditions": "IF = 1.0 A, TA = 25 degC",
+        "page_reference": "p. 2, Electrical Characteristics",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 1.7
+      }
+    },
+    {
+      "current": {
+        "conditions": "Tj = 25 degC; pulse width = 300 us; 1% duty cycle; US1JW-US1MW curve",
+        "page_reference": "p. 2, Fig. 3",
+        "source_kind": "digitized_typical_curve",
+        "unit": "A",
+        "value": 0.1
+      },
+      "voltage": {
+        "conditions": "IF = 0.1 A, Tj = 25 degC; pulse width = 300 us; 1% duty cycle; US1JW-US1MW curve",
+        "page_reference": "p. 2, Fig. 3",
+        "source_kind": "digitized_typical_curve",
+        "unit": "V",
+        "value": 1.25
+      }
+    },
+    {
+      "current": {
+        "conditions": "Tj = 25 degC; pulse width = 300 us; 1% duty cycle; US1JW-US1MW curve",
+        "page_reference": "p. 2, Fig. 3",
+        "source_kind": "digitized_typical_curve",
+        "unit": "A",
+        "value": 0.5
+      },
+      "voltage": {
+        "conditions": "IF = 0.5 A, Tj = 25 degC; pulse width = 300 us; 1% duty cycle; US1JW-US1MW curve",
+        "page_reference": "p. 2, Fig. 3",
+        "source_kind": "digitized_typical_curve",
+        "unit": "V",
+        "value": 1.37
+      }
+    },
+    {
+      "current": {
+        "conditions": "Tj = 25 degC; pulse width = 300 us; 1% duty cycle; US1JW-US1MW curve",
+        "page_reference": "p. 2, Fig. 3",
+        "source_kind": "digitized_typical_curve",
+        "unit": "A",
+        "value": 1
+      },
+      "voltage": {
+        "conditions": "IF = 1.0 A, Tj = 25 degC; pulse width = 300 us; 1% duty cycle; US1JW-US1MW curve",
+        "page_reference": "p. 2, Fig. 3",
+        "source_kind": "digitized_typical_curve",
+        "unit": "V",
+        "value": 1.44
+      }
+    },
+    {
+      "current": {
+        "conditions": "Tj = 25 degC; pulse width = 300 us; 1% duty cycle; US1JW-US1MW curve",
+        "page_reference": "p. 2, Fig. 3",
+        "source_kind": "digitized_typical_curve",
+        "unit": "A",
+        "value": 2
+      },
+      "voltage": {
+        "conditions": "IF = 2.0 A, Tj = 25 degC; pulse width = 300 us; 1% duty cycle; US1JW-US1MW curve",
+        "page_reference": "p. 2, Fig. 3",
+        "source_kind": "digitized_typical_curve",
+        "unit": "V",
+        "value": 1.52
+      }
+    },
+    {
+      "current": {
+        "conditions": "Tj = 25 degC; pulse width = 300 us; 1% duty cycle; US1JW-US1MW curve",
+        "page_reference": "p. 2, Fig. 3",
+        "source_kind": "digitized_typical_curve",
+        "unit": "A",
+        "value": 5
+      },
+      "voltage": {
+        "conditions": "IF = 5.0 A, Tj = 25 degC; pulse width = 300 us; 1% duty cycle; US1JW-US1MW curve",
+        "page_reference": "p. 2, Fig. 3",
+        "source_kind": "digitized_typical_curve",
+        "unit": "V",
+        "value": 1.65
+      }
+    },
+    {
+      "current": {
+        "conditions": "Tj = 25 degC; pulse width = 300 us; 1% duty cycle; US1JW-US1MW curve",
+        "page_reference": "p. 2, Fig. 3",
+        "source_kind": "digitized_typical_curve",
+        "unit": "A",
+        "value": 10
+      },
+      "voltage": {
+        "conditions": "IF = 10.0 A, Tj = 25 degC; pulse width = 300 us; 1% duty cycle; US1JW-US1MW curve",
+        "page_reference": "p. 2, Fig. 3",
+        "source_kind": "digitized_typical_curve",
+        "unit": "V",
+        "value": 1.79
+      }
+    }
+  ],
+  "electrical_limits": {},
+  "derived_model_inputs": {}
+}

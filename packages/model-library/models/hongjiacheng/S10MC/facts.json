@@ -1,0 +1,280 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [
+      {
+        "name": "digitized_typical_forward_voltage_Tj_25degC",
+        "page_reference": "p. 2 Fig. 3",
+        "points": [
+          {
+            "x": 0.6,
+            "y": 0.364
+          },
+          {
+            "x": 0.7,
+            "y": 1.19
+          },
+          {
+            "x": 0.8,
+            "y": 2.95
+          },
+          {
+            "x": 0.9,
+            "y": 7.12
+          },
+          {
+            "x": 1,
+            "y": 12.8
+          },
+          {
+            "x": 1.1,
+            "y": 23.5
+          },
+          {
+            "x": 1.2,
+            "y": 33.1
+          },
+          {
+            "x": 1.3,
+            "y": 58.1
+          },
+          {
+            "x": 1.4,
+            "y": 81.4
+          }
+        ],
+        "test_conditions": "Tj = 25 degC; pulse width = 300 us; 1% duty cycle; typical forward voltage",
+        "x_axis": {
+          "quantity": "instantaneous forward voltage",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "instantaneous forward current",
+          "scale": "log",
+          "unit": "A"
+        }
+      },
+      {
+        "name": "digitized_typical_reverse_characteristics_Tj_125degC",
+        "page_reference": "p. 2 Fig. 4",
+        "points": [
+          {
+            "x": 0,
+            "y": 0.00000411
+          },
+          {
+            "x": 20,
+            "y": 0.00000417
+          },
+          {
+            "x": 40,
+            "y": 0.0000049
+          },
+          {
+            "x": 60,
+            "y": 0.00000577
+          },
+          {
+            "x": 80,
+            "y": 0.00000746
+          },
+          {
+            "x": 100,
+            "y": 0.000011
+          },
+          {
+            "x": 120,
+            "y": 0.0000219
+          },
+          {
+            "x": 125,
+            "y": 0.0000321
+          },
+          {
+            "x": 128,
+            "y": 0.0000542
+          }
+        ],
+        "test_conditions": "Tj = 125 degC; reverse bias axis is percent of rated peak reverse voltage; S10MC VRRM = 1000 V, so 100% = 1000 V",
+        "x_axis": {
+          "quantity": "percent of rated peak reverse voltage",
+          "scale": "linear",
+          "unit": "%"
+        },
+        "y_axis": {
+          "quantity": "instantaneous reverse current",
+          "scale": "log",
+          "unit": "A"
+        }
+      },
+      {
+        "name": "digitized_typical_reverse_characteristics_Tj_25degC",
+        "page_reference": "p. 2 Fig. 4",
+        "points": [
+          {
+            "x": 0,
+            "y": 4.18e-8
+          },
+          {
+            "x": 20,
+            "y": 5.42e-8
+          },
+          {
+            "x": 40,
+            "y": 6.67e-8
+          },
+          {
+            "x": 60,
+            "y": 9.79e-8
+          },
+          {
+            "x": 80,
+            "y": 1.27e-7
+          },
+          {
+            "x": 100,
+            "y": 1.87e-7
+          },
+          {
+            "x": 120,
+            "y": 3.03e-7
+          },
+          {
+            "x": 125,
+            "y": 6.25e-7
+          },
+          {
+            "x": 128,
+            "y": 0.00000682
+          }
+        ],
+        "test_conditions": "Tj = 25 degC; reverse bias axis is percent of rated peak reverse voltage; S10MC VRRM = 1000 V, so 100% = 1000 V",
+        "x_axis": {
+          "quantity": "percent of rated peak reverse voltage",
+          "scale": "linear",
+          "unit": "%"
+        },
+        "y_axis": {
+          "quantity": "instantaneous reverse current",
+          "scale": "log",
+          "unit": "A"
+        }
+      }
+    ],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3"
+      ],
+      "revision": "Rev. 1.1",
+      "title": "S10AC THRU S10MC Surface Mount General Purpose Rectifier"
+    },
+    "extraction_notes": [
+      "Forward-voltage and reverse-characteristics curves were digitized from the real plotted traces on p. 2 Fig. 3 and Fig. 4; Fig. 1 and Fig. 2 are thermal and surge-rating curves and were not extracted as diode electrical curves.",
+      "Fig. 3 is a typical forward characteristic at Tj = 25 degC with 300 us pulse width and 1% duty cycle; the plotted y-axis is logarithmic.",
+      "Fig. 4 contains separate Tj = 25 degC and Tj = 125 degC reverse-current traces; reverse-bias x values preserve the plotted percent-of-rated-peak-reverse-voltage axis and are converted to amperes on the y-axis.",
+      "The S10MC tabulated limits are VRRM = 1000 V, IF(AV) = 10.0 A, VF maximum = 1.0 V at IF = 10.0 A, and IR1 maximum = 2.0 uA at VR = VDC and TA = 25 degC.",
+      "The datasheet publishes no reverse-recovery time and no breakdown-voltage test point; these fields are therefore null rather than inferred from the reverse curve."
+    ],
+    "family": "diode",
+    "manufacturer": "hongjiacheng",
+    "mpn": "S10MC",
+    "omission_reason": null,
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": null,
+      "breakdown_voltage": null,
+      "capacitance": {
+        "conditions": "TA = 25 degC; reverse DC bias = 4.0 V; f = 1 MHz; typical junction capacitance",
+        "page_reference": "p. 2 electrical characteristics, Typical junction capacitance",
+        "source_kind": "typical",
+        "unit": "F",
+        "value": 8e-11
+      },
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "TA = 25 degC; IF = 10.0 A",
+            "page_reference": "p. 2 electrical characteristics, Maximum instantaneous forward voltage",
+            "source_kind": "maximum",
+            "unit": "A",
+            "value": 10
+          },
+          "voltage": {
+            "conditions": "TA = 25 degC; IF = 10.0 A",
+            "page_reference": "p. 2 electrical characteristics, Maximum instantaneous forward voltage",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 1
+          }
+        }
+      ],
+      "reverse_current": {
+        "conditions": "TA = 25 degC; VR = VDC = 1000 V; maximum DC reverse current at rated DC blocking voltage",
+        "page_reference": "p. 2 electrical characteristics, Maximum DC reverse current at rated DC blocking voltage, IR1",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.000002
+      },
+      "reverse_recovery": null,
+      "variant": "rectifier"
+    },
+    "usable_curves": true
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "Forward Voltage (Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "1V@10A",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Voltage - Forward(Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "1V@10A",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "S10MC",
+    "manufacturer": "hongjiacheng",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8603067654282358784",
+    "revision": "Rev. 1.1",
+    "sha256": "7dc0dcc5af3851b97966644c8219f357e5f8ae65b74a0bc8701c1fed8796176a",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ],
+    "placeholder": false
+  },
+  "fit_points": [
+    {
+      "current": {
+        "conditions": "Conservative F1 package bench at 95% of the cited current; TA = 25 degC; IF = 10.0 A",
+        "page_reference": "p. 2 electrical characteristics, Maximum instantaneous forward voltage",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 9.5
+      },
+      "voltage": {
+        "conditions": "TA = 25 degC; IF = 10.0 A",
+        "page_reference": "p. 2 electrical characteristics, Maximum instantaneous forward voltage",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 1
+      }
+    }
+  ],
+  "electrical_limits": {},
+  "derived_model_inputs": {}
+}

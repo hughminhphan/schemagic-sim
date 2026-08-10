@@ -1,0 +1,350 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [
+      {
+        "name": "Typical forward voltage, SS28-SS210 curve group",
+        "page_reference": "Hongjiacheng SS22 THRU SS220 Rev 1.0, p. 2, Fig. 3 Typical Forward Voltage",
+        "points": [
+          {
+            "x": 0.366,
+            "y": 0.0102
+          },
+          {
+            "x": 0.461,
+            "y": 0.1
+          },
+          {
+            "x": 0.644,
+            "y": 0.998
+          },
+          {
+            "x": 0.727,
+            "y": 2
+          },
+          {
+            "x": 0.988,
+            "y": 9.99
+          },
+          {
+            "x": 1.161,
+            "y": 20
+          }
+        ],
+        "test_conditions": "Typical curve, Tj = 25 degC, pulse width = 300 microseconds, 1% duty cycle; SS28 is included in the SS28-SS210 curve group.",
+        "x_axis": {
+          "quantity": "instantaneous forward voltage",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "instantaneous forward current",
+          "scale": "log",
+          "unit": "A"
+        }
+      },
+      {
+        "name": "Typical reverse characteristics, SS28-SS220 curve group, Tj = 25 degC",
+        "page_reference": "Hongjiacheng SS22 THRU SS220 Rev 1.0, p. 2, Fig. 4 Typical Reverse Characteristics",
+        "points": [
+          {
+            "x": 10,
+            "y": 0.001668
+          },
+          {
+            "x": 20,
+            "y": 0.0023
+          },
+          {
+            "x": 40,
+            "y": 0.003347
+          },
+          {
+            "x": 60,
+            "y": 0.004183
+          },
+          {
+            "x": 80,
+            "y": 0.005302
+          },
+          {
+            "x": 99.1,
+            "y": 0.01
+          }
+        ],
+        "test_conditions": "Typical curve, Tj = 25 degC; reverse bias is plotted as percent of the rated peak reverse voltage; SS28 is included in the SS28-SS220 curve group; plotted current values converted from the published mA axis to A.",
+        "x_axis": {
+          "quantity": "percent of rated peak reverse voltage",
+          "scale": "linear",
+          "unit": "%"
+        },
+        "y_axis": {
+          "quantity": "instantaneous reverse current",
+          "scale": "log",
+          "unit": "A"
+        }
+      },
+      {
+        "name": "Typical reverse characteristics, SS28-SS220 curve group, Tj = 100 degC",
+        "page_reference": "Hongjiacheng SS22 THRU SS220 Rev 1.0, p. 2, Fig. 4 Typical Reverse Characteristics",
+        "points": [
+          {
+            "x": 10,
+            "y": 0.3659
+          },
+          {
+            "x": 20,
+            "y": 0.5856
+          },
+          {
+            "x": 40,
+            "y": 0.9382
+          },
+          {
+            "x": 60,
+            "y": 1.2746
+          },
+          {
+            "x": 80,
+            "y": 1.7954
+          },
+          {
+            "x": 99.2,
+            "y": 3.8901
+          }
+        ],
+        "test_conditions": "Typical curve, Tj = 100 degC; reverse bias is plotted as percent of the rated peak reverse voltage; SS28 is included in the SS28-SS220 curve group; plotted current values converted from the published mA axis to A.",
+        "x_axis": {
+          "quantity": "percent of rated peak reverse voltage",
+          "scale": "linear",
+          "unit": "%"
+        },
+        "y_axis": {
+          "quantity": "instantaneous reverse current",
+          "scale": "log",
+          "unit": "A"
+        }
+      }
+    ],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3"
+      ],
+      "revision": "Rev 1.0",
+      "title": "SS22 THRU SS220 Surface Mount Schottky Barrier Rectifier"
+    },
+    "extraction_notes": [
+      "Source PDF SHA-256 verified as dd6685a75cdccbe3a6a290f916cb29ad27e9252703862dc167c4967c2ff12bf4.",
+      "SS28 is a Schottky barrier rectifier. The datasheet states that the cathode line denotes the cathode end; forward current and voltage are interpreted in the anode-to-cathode direction.",
+      "The Fig. 3 forward curve is the typical SS28-SS210 grouped curve. The Fig. 4 reverse curves are the typical SS28-SS220 grouped curves, with separate Tj = 25 degC and Tj = 100 degC branches. Plotted points are extracted from visible vector curves only and are not synthesized by interpolation.",
+      "The electrical-characteristics table forward-voltage entry is a maximum at IF = 2.0 A, while Fig. 3 values are typical curve readings. The reverse-current entry is a maximum; the junction-capacitance entry is typical.",
+      "The Fig. 4 x-axis is retained as percent of rated peak reverse voltage, preserving the published reverse-bias semantics. Its published mA y-axis values are converted to A.",
+      "The supplied PDF publishes no reverse-recovery-time or breakdown-voltage/current specification for SS28, so those spec fields are null."
+    ],
+    "family": "diode",
+    "manufacturer": "hongjiacheng",
+    "mpn": "SS28",
+    "omission_reason": null,
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": null,
+      "breakdown_voltage": null,
+      "capacitance": {
+        "conditions": "VR = 4.0 V DC, f = 1 MHz, TA = 25 degC",
+        "page_reference": "Hongjiacheng SS22 THRU SS220 Rev 1.0, p. 2, Electrical Characteristics, Typical junction capacitance, SS28-SS220 grouped row",
+        "source_kind": "typical",
+        "unit": "F",
+        "value": 3e-10
+      },
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "IF = 2.0 A, TA = 25 degC",
+            "page_reference": "Hongjiacheng SS22 THRU SS220 Rev 1.0, p. 2, Electrical Characteristics, Maximum instantaneous forward voltage, SS28 column",
+            "source_kind": "maximum",
+            "unit": "A",
+            "value": 2
+          },
+          "voltage": {
+            "conditions": "IF = 2.0 A, TA = 25 degC",
+            "page_reference": "Hongjiacheng SS22 THRU SS220 Rev 1.0, p. 2, Electrical Characteristics, Maximum instantaneous forward voltage, SS28 column",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 0.85
+          }
+        },
+        {
+          "current": {
+            "conditions": "Tj = 25 degC, pulse width = 300 microseconds, 1% duty cycle; SS28-SS210 typical curve group",
+            "page_reference": "Hongjiacheng SS22 THRU SS220 Rev 1.0, p. 2, Fig. 3 Typical Forward Voltage",
+            "source_kind": "digitized_typical_curve",
+            "unit": "A",
+            "value": 0.01
+          },
+          "voltage": {
+            "conditions": "Tj = 25 degC, pulse width = 300 microseconds, 1% duty cycle; SS28-SS210 typical curve group",
+            "page_reference": "Hongjiacheng SS22 THRU SS220 Rev 1.0, p. 2, Fig. 3 Typical Forward Voltage",
+            "source_kind": "digitized_typical_curve",
+            "unit": "V",
+            "value": 0.366
+          }
+        },
+        {
+          "current": {
+            "conditions": "Tj = 25 degC, pulse width = 300 microseconds, 1% duty cycle; SS28-SS210 typical curve group",
+            "page_reference": "Hongjiacheng SS22 THRU SS220 Rev 1.0, p. 2, Fig. 3 Typical Forward Voltage",
+            "source_kind": "digitized_typical_curve",
+            "unit": "A",
+            "value": 0.1
+          },
+          "voltage": {
+            "conditions": "Tj = 25 degC, pulse width = 300 microseconds, 1% duty cycle; SS28-SS210 typical curve group",
+            "page_reference": "Hongjiacheng SS22 THRU SS220 Rev 1.0, p. 2, Fig. 3 Typical Forward Voltage",
+            "source_kind": "digitized_typical_curve",
+            "unit": "V",
+            "value": 0.461
+          }
+        },
+        {
+          "current": {
+            "conditions": "Tj = 25 degC, pulse width = 300 microseconds, 1% duty cycle; SS28-SS210 typical curve group",
+            "page_reference": "Hongjiacheng SS22 THRU SS220 Rev 1.0, p. 2, Fig. 3 Typical Forward Voltage",
+            "source_kind": "digitized_typical_curve",
+            "unit": "A",
+            "value": 0.998
+          },
+          "voltage": {
+            "conditions": "Tj = 25 degC, pulse width = 300 microseconds, 1% duty cycle; SS28-SS210 typical curve group",
+            "page_reference": "Hongjiacheng SS22 THRU SS220 Rev 1.0, p. 2, Fig. 3 Typical Forward Voltage",
+            "source_kind": "digitized_typical_curve",
+            "unit": "V",
+            "value": 0.644
+          }
+        },
+        {
+          "current": {
+            "conditions": "Tj = 25 degC, pulse width = 300 microseconds, 1% duty cycle; SS28-SS210 typical curve group",
+            "page_reference": "Hongjiacheng SS22 THRU SS220 Rev 1.0, p. 2, Fig. 3 Typical Forward Voltage",
+            "source_kind": "digitized_typical_curve",
+            "unit": "A",
+            "value": 2
+          },
+          "voltage": {
+            "conditions": "Tj = 25 degC, pulse width = 300 microseconds, 1% duty cycle; SS28-SS210 typical curve group",
+            "page_reference": "Hongjiacheng SS22 THRU SS220 Rev 1.0, p. 2, Fig. 3 Typical Forward Voltage",
+            "source_kind": "digitized_typical_curve",
+            "unit": "V",
+            "value": 0.727
+          }
+        },
+        {
+          "current": {
+            "conditions": "Tj = 25 degC, pulse width = 300 microseconds, 1% duty cycle; SS28-SS210 typical curve group",
+            "page_reference": "Hongjiacheng SS22 THRU SS220 Rev 1.0, p. 2, Fig. 3 Typical Forward Voltage",
+            "source_kind": "digitized_typical_curve",
+            "unit": "A",
+            "value": 9.99
+          },
+          "voltage": {
+            "conditions": "Tj = 25 degC, pulse width = 300 microseconds, 1% duty cycle; SS28-SS210 typical curve group",
+            "page_reference": "Hongjiacheng SS22 THRU SS220 Rev 1.0, p. 2, Fig. 3 Typical Forward Voltage",
+            "source_kind": "digitized_typical_curve",
+            "unit": "V",
+            "value": 0.988
+          }
+        },
+        {
+          "current": {
+            "conditions": "Tj = 25 degC, pulse width = 300 microseconds, 1% duty cycle; SS28-SS210 typical curve group",
+            "page_reference": "Hongjiacheng SS22 THRU SS220 Rev 1.0, p. 2, Fig. 3 Typical Forward Voltage",
+            "source_kind": "digitized_typical_curve",
+            "unit": "A",
+            "value": 20
+          },
+          "voltage": {
+            "conditions": "Tj = 25 degC, pulse width = 300 microseconds, 1% duty cycle; SS28-SS210 typical curve group",
+            "page_reference": "Hongjiacheng SS22 THRU SS220 Rev 1.0, p. 2, Fig. 3 Typical Forward Voltage",
+            "source_kind": "digitized_typical_curve",
+            "unit": "V",
+            "value": 1.161
+          }
+        }
+      ],
+      "reverse_current": {
+        "conditions": "VR = VDC = 80 V, TA = 25 degC",
+        "page_reference": "Hongjiacheng SS22 THRU SS220 Rev 1.0, p. 2, Electrical Characteristics, Maximum DC reverse current at rated DC blocking voltage, SS28-SS220 grouped row",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.00005
+      },
+      "reverse_recovery": null,
+      "variant": "schottky"
+    },
+    "usable_curves": true
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "Voltage - Forward(Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "850mV@2A",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "SS28",
+    "manufacturer": "hongjiacheng",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8603186791952904192",
+    "revision": "Rev 1.0",
+    "sha256": "dd6685a75cdccbe3a6a290f916cb29ad27e9252703862dc167c4967c2ff12bf4",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ],
+    "placeholder": false
+  },
+  "fit_points": [
+    {
+      "current": {
+        "conditions": "Tj = 25 degC, pulse width = 300 microseconds, 1% duty cycle; SS28-SS210 typical curve group",
+        "page_reference": "Hongjiacheng SS22 THRU SS220 Rev 1.0, p. 2, Fig. 3 Typical Forward Voltage",
+        "source_kind": "digitized_typical_curve",
+        "unit": "A",
+        "value": 0.01
+      },
+      "voltage": {
+        "conditions": "Tj = 25 degC, pulse width = 300 microseconds, 1% duty cycle; SS28-SS210 typical curve group",
+        "page_reference": "Hongjiacheng SS22 THRU SS220 Rev 1.0, p. 2, Fig. 3 Typical Forward Voltage",
+        "source_kind": "digitized_typical_curve",
+        "unit": "V",
+        "value": 0.366
+      }
+    },
+    {
+      "current": {
+        "conditions": "Conservative F1 package bench at 95% of the cited current; IF = 2.0 A, TA = 25 degC",
+        "page_reference": "Hongjiacheng SS22 THRU SS220 Rev 1.0, p. 2, Electrical Characteristics, Maximum instantaneous forward voltage, SS28 column",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 1.9
+      },
+      "voltage": {
+        "conditions": "IF = 2.0 A, TA = 25 degC",
+        "page_reference": "Hongjiacheng SS22 THRU SS220 Rev 1.0, p. 2, Electrical Characteristics, Maximum instantaneous forward voltage, SS28 column",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 0.85
+      }
+    }
+  ],
+  "electrical_limits": {},
+  "derived_model_inputs": {}
+}

@@ -1,0 +1,362 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [
+      {
+        "name": "Typical forward voltage, SS38B-SS310B grouped curve",
+        "page_reference": "p. 2, Fig. 3 Typical Forward Voltage",
+        "points": [
+          {
+            "x": 0.5,
+            "y": 0.22
+          },
+          {
+            "x": 0.65,
+            "y": 1.05
+          },
+          {
+            "x": 0.75,
+            "y": 2.2
+          },
+          {
+            "x": 0.85,
+            "y": 4.3
+          },
+          {
+            "x": 0.95,
+            "y": 7.8
+          },
+          {
+            "x": 1.05,
+            "y": 12.5
+          },
+          {
+            "x": 1.2,
+            "y": 20
+          },
+          {
+            "x": 1.35,
+            "y": 31
+          }
+        ],
+        "test_conditions": "Tj = 25 degC; pulse width = 300 us; 1% duty cycle; typical grouped trace SS38B-SS310B, which includes SS310B; forward current is the anode-to-cathode magnitude.",
+        "x_axis": {
+          "quantity": "instantaneous forward voltage",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "instantaneous forward current",
+          "scale": "log",
+          "unit": "A"
+        }
+      },
+      {
+        "name": "Typical reverse characteristics, SS38B-SS320B grouped curve at Tj = 25 degC",
+        "page_reference": "p. 2, Fig. 4 Typical Reverse Characteristics",
+        "points": [
+          {
+            "x": 8,
+            "y": 0.0000013
+          },
+          {
+            "x": 20,
+            "y": 0.0000023
+          },
+          {
+            "x": 40,
+            "y": 0.0000032
+          },
+          {
+            "x": 60,
+            "y": 0.0000042
+          },
+          {
+            "x": 80,
+            "y": 0.0000055
+          },
+          {
+            "x": 100,
+            "y": 0.00001
+          }
+        ],
+        "test_conditions": "Tj = 25 degC; typical grouped trace SS38B-SS320B, which includes SS310B; reverse-voltage axis is the percentage of SS310B VRRM = 100 V; reverse current is the cathode-to-anode leakage magnitude.",
+        "x_axis": {
+          "quantity": "percent of rated peak reverse voltage",
+          "scale": "linear",
+          "unit": "%"
+        },
+        "y_axis": {
+          "quantity": "instantaneous reverse current",
+          "scale": "log",
+          "unit": "A"
+        }
+      },
+      {
+        "name": "Typical reverse characteristics, SS38B-SS320B grouped curve at Tj = 100 degC",
+        "page_reference": "p. 2, Fig. 4 Typical Reverse Characteristics",
+        "points": [
+          {
+            "x": 8,
+            "y": 0.00025
+          },
+          {
+            "x": 20,
+            "y": 0.00055
+          },
+          {
+            "x": 40,
+            "y": 0.00095
+          },
+          {
+            "x": 60,
+            "y": 0.0012
+          },
+          {
+            "x": 80,
+            "y": 0.0017
+          },
+          {
+            "x": 100,
+            "y": 0.004
+          }
+        ],
+        "test_conditions": "Tj = 100 degC; typical grouped trace SS38B-SS320B, which includes SS310B; reverse-voltage axis is the percentage of SS310B VRRM = 100 V; reverse current is the cathode-to-anode leakage magnitude.",
+        "x_axis": {
+          "quantity": "percent of rated peak reverse voltage",
+          "scale": "linear",
+          "unit": "%"
+        },
+        "y_axis": {
+          "quantity": "instantaneous reverse current",
+          "scale": "log",
+          "unit": "A"
+        }
+      }
+    ],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3"
+      ],
+      "revision": "Rev. 1.0",
+      "title": "SS32B THRU SS320B Surface Mount Schottky Barrier Rectifier"
+    },
+    "extraction_notes": [
+      "The datasheet is a family sheet; SS310B is the 100 V variant with VRRM = 100 V, VRMS = 70 V, and VDC = 100 V on p. 1.",
+      "Fig. 3 provides a grouped SS38B-SS310B typical forward curve rather than an individually separated SS310B trace; digitized points retain that group semantics.",
+      "Fig. 4 provides a grouped SS38B-SS320B typical reverse curve rather than an individually separated SS310B trace; digitized points retain the group semantics and the plotted Tj = 25 degC and Tj = 100 degC conditions.",
+      "No self-heating: junction temperature is fixed at TNOM. Thermal derating from the datasheet is not modelled.",
+      "Package parasitics (lead inductance, package capacitance) are not modelled.",
+      "Fitted at 25 C only. Temperature coefficients XTI and EG are at physical defaults unless a temperature sweep was fitted.",
+      "Schottky majority-carrier device: no minority-carrier storage, TT is zero by construction.",
+      "Junction capacitance is represented from one tabulated point at 4.0 V DC and 1 MHz; VJ and M are held at physical defaults, so capacitance versus reverse bias is approximate.",
+      "Reverse breakdown is not modelled: BV is absent, so the model conducts only leakage above the rated VRRM.",
+      "Flicker noise is not modelled: KF and AF are at defaults (no noise data published)."
+    ],
+    "family": "diode",
+    "manufacturer": "hongjiacheng",
+    "mpn": "SS310B",
+    "omission_reason": null,
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": null,
+      "breakdown_voltage": null,
+      "capacitance": {
+        "conditions": "4.0 V DC, 1 MHz, TA = 25 degC",
+        "page_reference": "p. 2, Electrical Characteristics, Typical junction capacitance",
+        "source_kind": "typical",
+        "unit": "F",
+        "value": 3e-10
+      },
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "IF = 3.0 A, TA = 25 degC",
+            "page_reference": "p. 2, Electrical Characteristics, Maximum instantaneous forward voltage",
+            "source_kind": "maximum",
+            "unit": "A",
+            "value": 3
+          },
+          "voltage": {
+            "conditions": "IF = 3.0 A, TA = 25 degC",
+            "page_reference": "p. 2, Electrical Characteristics, Maximum instantaneous forward voltage",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 0.85
+          }
+        },
+        {
+          "current": {
+            "conditions": "Tj = 25 degC; pulse width = 300 us; 1% duty cycle; SS38B-SS310B grouped typical curve",
+            "page_reference": "p. 2, Fig. 3 Typical Forward Voltage",
+            "source_kind": "digitized_typical_curve",
+            "unit": "A",
+            "value": 0.22
+          },
+          "voltage": {
+            "conditions": "IF = 0.22 A, Tj = 25 degC; pulse width = 300 us; 1% duty cycle; SS38B-SS310B grouped typical curve",
+            "page_reference": "p. 2, Fig. 3 Typical Forward Voltage",
+            "source_kind": "digitized_typical_curve",
+            "unit": "V",
+            "value": 0.5
+          }
+        },
+        {
+          "current": {
+            "conditions": "Tj = 25 degC; pulse width = 300 us; 1% duty cycle; SS38B-SS310B grouped typical curve",
+            "page_reference": "p. 2, Fig. 3 Typical Forward Voltage",
+            "source_kind": "digitized_typical_curve",
+            "unit": "A",
+            "value": 1.05
+          },
+          "voltage": {
+            "conditions": "IF = 1.05 A, Tj = 25 degC; pulse width = 300 us; 1% duty cycle; SS38B-SS310B grouped typical curve",
+            "page_reference": "p. 2, Fig. 3 Typical Forward Voltage",
+            "source_kind": "digitized_typical_curve",
+            "unit": "V",
+            "value": 0.65
+          }
+        },
+        {
+          "current": {
+            "conditions": "Tj = 25 degC; pulse width = 300 us; 1% duty cycle; SS38B-SS310B grouped typical curve",
+            "page_reference": "p. 2, Fig. 3 Typical Forward Voltage",
+            "source_kind": "digitized_typical_curve",
+            "unit": "A",
+            "value": 2.2
+          },
+          "voltage": {
+            "conditions": "IF = 2.2 A, Tj = 25 degC; pulse width = 300 us; 1% duty cycle; SS38B-SS310B grouped typical curve",
+            "page_reference": "p. 2, Fig. 3 Typical Forward Voltage",
+            "source_kind": "digitized_typical_curve",
+            "unit": "V",
+            "value": 0.75
+          }
+        },
+        {
+          "current": {
+            "conditions": "Tj = 25 degC; pulse width = 300 us; 1% duty cycle; SS38B-SS310B grouped typical curve",
+            "page_reference": "p. 2, Fig. 3 Typical Forward Voltage",
+            "source_kind": "digitized_typical_curve",
+            "unit": "A",
+            "value": 4.3
+          },
+          "voltage": {
+            "conditions": "IF = 4.3 A, Tj = 25 degC; pulse width = 300 us; 1% duty cycle; SS38B-SS310B grouped typical curve",
+            "page_reference": "p. 2, Fig. 3 Typical Forward Voltage",
+            "source_kind": "digitized_typical_curve",
+            "unit": "V",
+            "value": 0.85
+          }
+        },
+        {
+          "current": {
+            "conditions": "Tj = 25 degC; pulse width = 300 us; 1% duty cycle; SS38B-SS310B grouped typical curve",
+            "page_reference": "p. 2, Fig. 3 Typical Forward Voltage",
+            "source_kind": "digitized_typical_curve",
+            "unit": "A",
+            "value": 7.8
+          },
+          "voltage": {
+            "conditions": "IF = 7.8 A, Tj = 25 degC; pulse width = 300 us; 1% duty cycle; SS38B-SS310B grouped typical curve",
+            "page_reference": "p. 2, Fig. 3 Typical Forward Voltage",
+            "source_kind": "digitized_typical_curve",
+            "unit": "V",
+            "value": 0.95
+          }
+        },
+        {
+          "current": {
+            "conditions": "Tj = 25 degC; pulse width = 300 us; 1% duty cycle; SS38B-SS310B grouped typical curve",
+            "page_reference": "p. 2, Fig. 3 Typical Forward Voltage",
+            "source_kind": "digitized_typical_curve",
+            "unit": "A",
+            "value": 12.5
+          },
+          "voltage": {
+            "conditions": "IF = 12.5 A, Tj = 25 degC; pulse width = 300 us; 1% duty cycle; SS38B-SS310B grouped typical curve",
+            "page_reference": "p. 2, Fig. 3 Typical Forward Voltage",
+            "source_kind": "digitized_typical_curve",
+            "unit": "V",
+            "value": 1.05
+          }
+        }
+      ],
+      "reverse_current": {
+        "conditions": "VR = VDC = 100 V, TA = 25 degC",
+        "page_reference": "p. 2, Electrical Characteristics, Maximum DC reverse current at rated DC blocking voltage",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.00005
+      },
+      "reverse_recovery": null,
+      "variant": "schottky"
+    },
+    "usable_curves": true
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "Voltage - Forward(Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "850mV@3A",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "SS310B",
+    "manufacturer": "hongjiacheng",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8602925658377244672",
+    "revision": "Rev. 1.0",
+    "sha256": "0288550e2d59664f159097e9f903c9f2542e7493376be047ea12655fbf79aec5",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ],
+    "placeholder": false
+  },
+  "fit_points": [
+    {
+      "current": {
+        "conditions": "Tj = 25 degC; pulse width = 300 us; 1% duty cycle; SS38B-SS310B grouped typical curve",
+        "page_reference": "p. 2, Fig. 3 Typical Forward Voltage",
+        "source_kind": "digitized_typical_curve",
+        "unit": "A",
+        "value": 0.22
+      },
+      "voltage": {
+        "conditions": "IF = 0.22 A, Tj = 25 degC; pulse width = 300 us; 1% duty cycle; SS38B-SS310B grouped typical curve",
+        "page_reference": "p. 2, Fig. 3 Typical Forward Voltage",
+        "source_kind": "digitized_typical_curve",
+        "unit": "V",
+        "value": 0.5
+      }
+    },
+    {
+      "current": {
+        "conditions": "Conservative F1 package bench at 95% of the cited current; IF = 3.0 A, TA = 25 degC",
+        "page_reference": "p. 2, Electrical Characteristics, Maximum instantaneous forward voltage",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 2.8499999999999996
+      },
+      "voltage": {
+        "conditions": "IF = 3.0 A, TA = 25 degC",
+        "page_reference": "p. 2, Electrical Characteristics, Maximum instantaneous forward voltage",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 0.85
+      }
+    }
+  ],
+  "electrical_limits": {},
+  "derived_model_inputs": {}
+}

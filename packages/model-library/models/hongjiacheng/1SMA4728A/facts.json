@@ -1,0 +1,135 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3",
+        "p. 4"
+      ],
+      "revision": "Rev1.0",
+      "title": "1SMA4728A THRU 1SMA4764A SURFACE MOUNT ZENER DIODES"
+    },
+    "extraction_notes": [
+      "The supplied PDF SHA-256 is a66d0e20d37b19b6776d33e5d234d792d89e30813774a7dde79429c97d6773dd.",
+      "The target row on p. 2 specifies VZ = 3.10 V minimum, 3.3 V nominal, and 3.50 V maximum at IZT = 0.075 A; maximum Zener impedance ZZT at IZT is 10 ohm; admissible Zener current IZM is 0.285 A.",
+      "The datasheet defines polarity on p. 1: the cathode line denotes the cathode end.",
+      "Reverse recovery time and capacitance are not published for 1SMA4728A in the supplied datasheet, so those fields are null.",
+      "The p. 3 plots are not target-specific: Fig. 1 is a power-derating curve, Fig. 2 contains generic VZ = 25 V, 30 V, 65 V, and 91 V traces and no 3.3 V trace, and Fig. 3 is a generic forward characteristic with no 1SMA4728A-specific trace. No plotted points were invented."
+    ],
+    "family": "diode",
+    "manufacturer": "hongjiacheng",
+    "mpn": "1SMA4728A",
+    "omission_reason": "No target-specific usable curves are present. The only electrical plots on p. 3 are generic family characteristics: Fig. 2 omits the target's VZ = 3.3 V trace, while Fig. 3 has no 1SMA4728A-specific identity; Fig. 1 is power derating rather than a diode electrical curve. Therefore curves are omitted rather than digitizing non-target or underspecified traces.",
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": {
+        "conditions": "Ta = 25 °C unless otherwise noted; reverse zener current IZT = 0.075 A (75 mA), the test current at which the nominal VZ = 3.3 V is specified",
+        "page_reference": "p. 2, Electrical Characteristics, 1SMA4728A row",
+        "source_kind": "typical",
+        "unit": "A",
+        "value": 0.075
+      },
+      "breakdown_voltage": {
+        "conditions": "Ta = 25 °C unless otherwise noted; 1SMA4728A nominal zener voltage VZ = 3.3 V at reverse zener current IZT = 0.075 A (75 mA); specified VZ range is 3.10 V minimum to 3.50 V maximum",
+        "page_reference": "p. 2, Electrical Characteristics, 1SMA4728A row",
+        "source_kind": "typical",
+        "unit": "V",
+        "value": 3.3
+      },
+      "capacitance": null,
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "Ta = 25 °C; Maximum Ratings: forward voltage VF at IF = 0.2 A (200 mA)",
+            "page_reference": "p. 1, Maximum Ratings",
+            "source_kind": "maximum",
+            "unit": "A",
+            "value": 0.2
+          },
+          "voltage": {
+            "conditions": "Ta = 25 °C; Maximum Ratings: forward voltage VF at IF = 0.2 A (200 mA)",
+            "page_reference": "p. 1, Maximum Ratings",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 1.5
+          }
+        }
+      ],
+      "reverse_current": {
+        "conditions": "Ta = 25 °C unless otherwise noted; 1SMA4728A row, leakage current IR at reverse voltage VR = 1 V (100 µA)",
+        "page_reference": "p. 2, Electrical Characteristics, 1SMA4728A row",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.0001
+      },
+      "reverse_recovery": null,
+      "variant": "zener"
+    },
+    "usable_curves": false
+  },
+  "catalog_seed_hints": [],
+  "identity": {
+    "canonical_mpn": "1SMA4728A",
+    "manufacturer": "hongjiacheng",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8564879669129199617",
+    "revision": "Rev1.0",
+    "sha256": "a66d0e20d37b19b6776d33e5d234d792d89e30813774a7dde79429c97d6773dd",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "placeholder": false
+  },
+  "fit_points": [
+    {
+      "current": {
+        "conditions": "Conservative F1 package bench at 95% of the cited current; Ta = 25 °C; Maximum Ratings: forward voltage VF at IF = 0.2 A (200 mA)",
+        "page_reference": "p. 1, Maximum Ratings",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.19
+      },
+      "voltage": {
+        "conditions": "Ta = 25 °C; Maximum Ratings: forward voltage VF at IF = 0.2 A (200 mA)",
+        "page_reference": "p. 1, Maximum Ratings",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 1.5
+      }
+    }
+  ],
+  "electrical_limits": {},
+  "derived_model_inputs": {
+    "BV": {
+      "conditions": "Ta = 25 °C unless otherwise noted; 1SMA4728A nominal zener voltage VZ = 3.3 V at reverse zener current IZT = 0.075 A (75 mA); specified VZ range is 3.10 V minimum to 3.50 V maximum",
+      "page_reference": "p. 2, Electrical Characteristics, 1SMA4728A row",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 3.3
+    },
+    "IBV": {
+      "conditions": "Ta = 25 °C unless otherwise noted; reverse zener current IZT = 0.075 A (75 mA), the test current at which the nominal VZ = 3.3 V is specified",
+      "page_reference": "p. 2, Electrical Characteristics, 1SMA4728A row",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.075
+    },
+    "NBV": {
+      "value": 1,
+      "unit": "1",
+      "conditions": "First-order avalanche-knee default; no multi-point reverse-knee trace was available",
+      "page_reference": "model-factory Zener F1 policy",
+      "source_kind": "held_default"
+    }
+  }
+}

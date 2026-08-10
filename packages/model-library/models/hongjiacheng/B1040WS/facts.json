@@ -1,0 +1,291 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [
+      {
+        "name": "Typical instantaneous forward characteristics, Ta = 25 degC, pulsed",
+        "page_reference": "Public PDF p.2, Fig.1, Typical Instantaneous Forward Characteristics",
+        "points": [
+          {
+            "x": 0.18,
+            "y": 0.014
+          },
+          {
+            "x": 0.2,
+            "y": 0.019
+          },
+          {
+            "x": 0.25,
+            "y": 0.06
+          },
+          {
+            "x": 0.3,
+            "y": 0.13
+          },
+          {
+            "x": 0.35,
+            "y": 0.24
+          },
+          {
+            "x": 0.4,
+            "y": 0.5
+          },
+          {
+            "x": 0.45,
+            "y": 0.75
+          }
+        ],
+        "test_conditions": "Ta = 25 degC; pulsed condition; Ta = 25 degC trace selected from the typical forward-characteristics plot",
+        "x_axis": {
+          "quantity": "forward voltage",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "forward current",
+          "scale": "log",
+          "unit": "A"
+        }
+      },
+      {
+        "name": "Typical reverse characteristics, Ta = 25 degC, pulsed",
+        "page_reference": "Public PDF p.2, Fig.2, Typical Reverse Characteristics",
+        "points": [
+          {
+            "x": 0,
+            "y": 0.000003
+          },
+          {
+            "x": 5,
+            "y": 0.0000041
+          },
+          {
+            "x": 10,
+            "y": 0.0000048
+          },
+          {
+            "x": 20,
+            "y": 0.0000061
+          },
+          {
+            "x": 30,
+            "y": 0.0000082
+          },
+          {
+            "x": 40,
+            "y": 0.0000125
+          }
+        ],
+        "test_conditions": "Ta = 25 degC; pulsed condition; Ta = 25 degC trace selected from the typical reverse-characteristics plot",
+        "x_axis": {
+          "quantity": "reverse voltage",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "reverse current",
+          "scale": "log",
+          "unit": "A"
+        }
+      },
+      {
+        "name": "Typical junction capacitance, Ta = 25 degC, f = 1 MHz",
+        "page_reference": "Public PDF p.2, Fig.3, Typical Junction Capacitance",
+        "points": [
+          {
+            "x": 0,
+            "y": 9.2e-11
+          },
+          {
+            "x": 1,
+            "y": 4.8e-11
+          },
+          {
+            "x": 2,
+            "y": 3.6e-11
+          },
+          {
+            "x": 3,
+            "y": 3.1e-11
+          },
+          {
+            "x": 5,
+            "y": 2.7e-11
+          },
+          {
+            "x": 10,
+            "y": 1.9e-11
+          },
+          {
+            "x": 15,
+            "y": 1.65e-11
+          },
+          {
+            "x": 20,
+            "y": 1.55e-11
+          },
+          {
+            "x": 25,
+            "y": 1.45e-11
+          },
+          {
+            "x": 30,
+            "y": 1.4e-11
+          }
+        ],
+        "test_conditions": "Ta = 25 degC; f = 1 MHz; typical junction-capacitance trace",
+        "x_axis": {
+          "quantity": "reverse voltage",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "capacitance between terminals",
+          "scale": "linear",
+          "unit": "F"
+        }
+      }
+    ],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p.1",
+        "p.2",
+        "p.3"
+      ],
+      "revision": "Rev:1.0",
+      "title": "B1040WS Surface Mount Schottky Barrier Rectifier"
+    },
+    "extraction_notes": [
+      "Public datasheet PDF is identified by SHA-256 add53573e75159f1fb1a374daa64129aa9678a69ec2c2dcccc190e13dac1a903; the PDF identifies Zhuhai Hongjiacheng Technology Co., Ltd. and www.ichjc.com.",
+      "The p.1 maximum-ratings table and p.2 electrical-characteristics table state Ta = 25 degC unless otherwise specified; the plotted traces are typical and the forward/reverse traces are marked Pulsed.",
+      "The forward-voltage table is headed Maximum forward voltage. The recorded 0.45 V, 0.48 V, and 0.50 V values are the Type column; the separate Max column is 0.50 V, 0.53 V, and 0.58 V at IF = 0.5 A, 0.7 A, and 1.0 A respectively.",
+      "The reverse-current value of 50 uA at VR = 40 V is a maximum, not a typical value.",
+      "The terminal-capacitance value of 20 pF at VR = 10 V and f = 1.0 MHz is a maximum; Fig.3 is a separate typical capacitance-versus-reverse-voltage curve.",
+      "Fig.1 forward points use only the Ta = 25 degC trace; Fig.2 reverse points use only the Ta = 25 degC trace; Fig.3 points use the typical Ta = 25 degC, f = 1 MHz trace. Fig.4 is a power-derating plot and is not a diode electrical curve.",
+      "No reverse-recovery time, breakdown voltage, or breakdown current is published in the supplied PDF. Schottky polarity is cathode-line marked, with the cathode at the marked end."
+    ],
+    "family": "diode",
+    "manufacturer": "hongjiacheng",
+    "mpn": "B1040WS",
+    "omission_reason": null,
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": null,
+      "breakdown_voltage": null,
+      "capacitance": {
+        "conditions": "VR = 10 V, f = 1.0 MHz, TA = 25 degC; electrical-characteristics table, Capacitance between terminals, Max column",
+        "page_reference": "Public PDF p.2, Electrical Characteristics, Capacitance between terminals",
+        "source_kind": "maximum",
+        "unit": "F",
+        "value": 2e-11
+      },
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "IF = 0.5 A, TA = 25 degC; electrical-characteristics table, Type column for the row headed Maximum forward voltage",
+            "page_reference": "Public PDF p.2, Electrical Characteristics, Maximum forward voltage",
+            "source_kind": "typical",
+            "unit": "A",
+            "value": 0.5
+          },
+          "voltage": {
+            "conditions": "IF = 0.5 A, TA = 25 degC; electrical-characteristics table, Type column for the row headed Maximum forward voltage",
+            "page_reference": "Public PDF p.2, Electrical Characteristics, Maximum forward voltage",
+            "source_kind": "typical",
+            "unit": "V",
+            "value": 0.45
+          }
+        },
+        {
+          "current": {
+            "conditions": "IF = 0.7 A, TA = 25 degC; electrical-characteristics table, Type column for the row headed Maximum forward voltage",
+            "page_reference": "Public PDF p.2, Electrical Characteristics, Maximum forward voltage",
+            "source_kind": "typical",
+            "unit": "A",
+            "value": 0.7
+          },
+          "voltage": {
+            "conditions": "IF = 0.7 A, TA = 25 degC; electrical-characteristics table, Type column for the row headed Maximum forward voltage",
+            "page_reference": "Public PDF p.2, Electrical Characteristics, Maximum forward voltage",
+            "source_kind": "typical",
+            "unit": "V",
+            "value": 0.48
+          }
+        },
+        {
+          "current": {
+            "conditions": "IF = 1.0 A, TA = 25 degC; electrical-characteristics table, Type column for the row headed Maximum forward voltage",
+            "page_reference": "Public PDF p.2, Electrical Characteristics, Maximum forward voltage",
+            "source_kind": "typical",
+            "unit": "A",
+            "value": 1
+          },
+          "voltage": {
+            "conditions": "IF = 1.0 A, TA = 25 degC; electrical-characteristics table, Type column for the row headed Maximum forward voltage",
+            "page_reference": "Public PDF p.2, Electrical Characteristics, Maximum forward voltage",
+            "source_kind": "typical",
+            "unit": "V",
+            "value": 0.5
+          }
+        }
+      ],
+      "reverse_current": {
+        "conditions": "VR = 40 V, TA = 25 degC; electrical-characteristics table, Maximum reverse current, Max column",
+        "page_reference": "Public PDF p.2, Electrical Characteristics, Maximum reverse current",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.00005
+      },
+      "reverse_recovery": null,
+      "variant": "schottky"
+    },
+    "usable_curves": true
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "Voltage - Forward(Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "580mV@1A",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "B1040WS",
+    "manufacturer": "hongjiacheng",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8603186713762148352",
+    "revision": "Rev:1.0",
+    "sha256": "add53573e75159f1fb1a374daa64129aa9678a69ec2c2dcccc190e13dac1a903",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "p.1",
+      "p.2",
+      "p.3"
+    ],
+    "placeholder": false
+  },
+  "fit_points": [
+    {
+      "current": {
+        "conditions": "IF = 0.5 A, TA = 25 degC; electrical-characteristics table, Type column for the row headed Maximum forward voltage",
+        "page_reference": "Public PDF p.2, Electrical Characteristics, Maximum forward voltage",
+        "source_kind": "typical",
+        "unit": "A",
+        "value": 0.5
+      },
+      "voltage": {
+        "conditions": "IF = 0.5 A, TA = 25 degC; electrical-characteristics table, Type column for the row headed Maximum forward voltage",
+        "page_reference": "Public PDF p.2, Electrical Characteristics, Maximum forward voltage",
+        "source_kind": "typical",
+        "unit": "V",
+        "value": 0.45
+      }
+    }
+  ],
+  "electrical_limits": {},
+  "derived_model_inputs": {}
+}

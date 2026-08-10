@@ -1,0 +1,140 @@
+{
+  "schema_version": "1.0.0",
+  "canonical_mpn": "AO3416",
+  "manufacturer": "Alpha Omega Semicon",
+  "description": "-55℃~+150℃ 1 N-channel 1.1V 1.4W 1.65nF 10nC@4.5V 20V 22mΩ@4.5V 6.5A 87pF SOT-23 MOSFETs ROHS",
+  "electrical_family": "nmos",
+  "symbol_pins": [
+    {
+      "name": "G",
+      "number": "1",
+      "role": "gate"
+    },
+    {
+      "name": "D",
+      "number": "2",
+      "role": "drain"
+    },
+    {
+      "name": "S",
+      "number": "3",
+      "role": "source"
+    }
+  ],
+  "spice_pin_mapping": [
+    {
+      "symbol_pin_number": "2",
+      "subckt_node": "drain",
+      "order": 1
+    },
+    {
+      "symbol_pin_number": "1",
+      "subckt_node": "gate",
+      "order": 2
+    },
+    {
+      "symbol_pin_number": "3",
+      "subckt_node": "source",
+      "order": 3
+    }
+  ],
+  "package_variants": [
+    {
+      "name": "SOT-23",
+      "standard": "SOT-23",
+      "pin_count": 3,
+      "pin_map": [
+        {
+          "package_pin": "1",
+          "symbol_pin_number": "1"
+        },
+        {
+          "package_pin": "2",
+          "symbol_pin_number": "2"
+        },
+        {
+          "package_pin": "3",
+          "symbol_pin_number": "3"
+        }
+      ]
+    }
+  ],
+  "ordering_code_aliases": [],
+  "datasheet": {
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8586176348385103872",
+    "revision": "Rev 5: July 2010"
+  },
+  "model_type": "dot_model",
+  "fidelity_tier": "F1",
+  "domain_coverage": {
+    "dc": "approx",
+    "ac": "none",
+    "transient": "none",
+    "noise": "none",
+    "thermal": "none",
+    "digital": "none"
+  },
+  "supported_analyses": [
+    "operating_point",
+    "dc_sweep"
+  ],
+  "supported_operating_region": {
+    "summary": "Supported only over the cited 25 degC electrical characterization region: gate_source_voltage_magnitude 4.5 to 4.5 V; drain_current_magnitude 6.5 to 6.5 A.",
+    "numeric_bounds": [
+      {
+        "quantity": "gate_source_voltage_magnitude",
+        "minimum": 4.5,
+        "maximum": 4.5,
+        "unit": "V",
+        "conditions": "Cited threshold and RDS(on) gate-bias conditions",
+        "placeholder": false
+      },
+      {
+        "quantity": "drain_current_magnitude",
+        "minimum": 6.5,
+        "maximum": 6.5,
+        "unit": "A",
+        "conditions": "Cited RDS(on) characterization currents",
+        "placeholder": false
+      },
+      {
+        "quantity": "ambient_temperature",
+        "minimum": 25,
+        "maximum": 25,
+        "unit": "degC",
+        "conditions": "Nominal model and package benches",
+        "placeholder": false
+      }
+    ]
+  },
+  "known_omissions": [
+    "AC, transient, noise, thermal, and package-parasitic behavior are outside this DC-only conveyor package.",
+    "Temperature dependence and self-heating are not modelled; the electrical region is limited to the cited nominal-temperature data.",
+    "Catalog parametrics were used only as initial guesses or F1 fallback constraints and are not datasheet citations.",
+    "F2 evidence did not qualify; staged as F1: mosfet F2 gate failed: THETA saturated its bound at 1; the residual is a constraint artefact; drain_current worst relative error 3.8575 exceeds gate 0.2; drain_current RMS relative error 0.9434 exceeds gate 0.12; rds_on worst relative error 0.5260 exceeds gate 0.2; rds_on RMS relative error 0.2733 exceeds gate 0.12",
+    "Gate-threshold behavior is not covered by this F1 package; the supported region is limited to cited nominal-temperature RDS(on) targets."
+  ],
+  "licence": {
+    "spdx_id": "MIT",
+    "provenance_basis": "original_from_facts"
+  },
+  "generator": {
+    "tool_or_agent": "opencircuit-model-factory-v0.1.0 bulk-adapter",
+    "date": "2026-08-10"
+  },
+  "reviewer": {
+    "tool_or_agent": "gpt-5.6-sol independent reviewer (batch-5 scale campaign)",
+    "date": "2026-08-11"
+  },
+  "test_results": {
+    "status": "complete",
+    "pass_count": 4,
+    "fail_count": 0,
+    "total_count": 4,
+    "worst_observed_relative_fitting_error": {
+      "value": 0.11878549378159346,
+      "quantity": "rdson_1"
+    }
+  },
+  "validation_date": "2026-08-11"
+}
