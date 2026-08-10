@@ -338,9 +338,21 @@ def normalize_extraction_payload(raw: Mapping[str, Any]) -> dict[str, Any]:
         if isinstance(number, (int, float)) and not isinstance(number, bool) and isinstance(unit, str):
             conditions = str(result.get("conditions", ""))
             normalized_unit = unit.replace("μ", "µ")
-            if normalized_unit in {"ohm", "Ω"} and re.search(r"\bm(?:ohm|Ω)\b", conditions, re.I):
-                normalized_unit = "mohm"
-                repairs.append(f"used explicit mOhm unit from {trail}.conditions")
+            if normalized_unit in {"ohm", "Ω"}:
+                milliohm_match = re.search(r"([-+]?\d+(?:\.\d+)?)\s*m(?:ohm|Ω)\b", conditions, re.I)
+                cited_milliohms = float(milliohm_match.group(1)) if milliohm_match else None
+                already_si_ohms = (
+                    cited_milliohms is not None
+                    and math.isclose(abs(number) * 1_000, abs(cited_milliohms), rel_tol=1e-6, abs_tol=1e-12)
+                )
+                raw_uses_milliohms = bool(
+                    re.search(r"\bm(?:ohm|Ω)\b", conditions, re.I)
+                    and not already_si_ohms
+                    and abs(number) >= 1
+                )
+                if raw_uses_milliohms:
+                    normalized_unit = "mohm"
+                    repairs.append(f"used explicit mOhm unit from {trail}.conditions")
             factor_and_unit = _QUANTITY_UNIT_FACTORS.get(normalized_unit)
             if factor_and_unit:
                 factor, base_unit = factor_and_unit

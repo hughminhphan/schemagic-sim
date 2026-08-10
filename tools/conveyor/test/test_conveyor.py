@@ -131,6 +131,20 @@ class SchemaValidationTest(unittest.TestCase):
         self.assertEqual(normalized["specs"]["rdson"]["unit"], "ohm")
         self.assertRegex("\n".join(normalized["extraction_notes"]), "explicit mOhm")
 
+    def test_explicit_milliohm_citation_does_not_rescale_an_already_si_quantity(self):
+        payload = {
+            "extraction_notes": [],
+            "specs": {"rdson": {
+                "value": 0.052, "unit": "ohm",
+                "conditions": "datasheet MIN = 52 mOhm at 25 C",
+                "page_reference": "p. 2", "source_kind": "minimum",
+            }},
+        }
+        normalized = normalize_extraction_payload(payload)
+        self.assertEqual(normalized["specs"]["rdson"]["value"], 0.052)
+        self.assertEqual(normalized["specs"]["rdson"]["unit"], "ohm")
+        self.assertNotRegex("\n".join(normalized["extraction_notes"]), "explicit mOhm")
+
 
 class LibraryCollisionTest(unittest.TestCase):
     def test_skips_normalized_canonical_and_alias_collisions_with_reasons(self):
