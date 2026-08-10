@@ -312,6 +312,10 @@ def status_command(args) -> int:
 
 def main(argv=None) -> int:
     args = parser().parse_args(argv)
+    # Keep staging and package-path comparisons stable when callers pass a
+    # repo-relative data directory from inside the worktree.
+    args.data_dir = args.data_dir.resolve()
+    args.catalog_data = args.catalog_data.resolve()
     try:
         return {"select": select_command, "fetch": fetch_command, "jobs": jobs_command, "ingest": ingest_command, "fit": fit_command, "status": status_command}[args.command](args)
     except (ConveyorError, OSError, json.JSONDecodeError, subprocess.SubprocessError) as error:
