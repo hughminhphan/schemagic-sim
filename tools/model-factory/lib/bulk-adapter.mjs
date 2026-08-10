@@ -55,7 +55,10 @@ function zenerInputs(extraction) {
 }
 
 function diodeFit(part, extraction, forceF1 = false) {
-  const scalarPoint = extraction?.specs?.forward_voltage_points?.find((point) => Number(point?.voltage?.value) > 0 && Number(point?.current?.value) > 0);
+  const scalarPoints = extraction?.specs?.forward_voltage_points ?? [];
+  const scalarPoint = scalarPoints.find((point) => !["minimum", "maximum"].includes(point?.voltage?.source_kind)
+    && Number(point?.voltage?.value) > 0 && Number(point?.current?.value) > 0)
+    ?? scalarPoints.find((point) => Number(point?.voltage?.value) > 0 && Number(point?.current?.value) > 0);
   const voltage = scalarPoint ? normalizeEvidence(scalarPoint.voltage) : null;
   const forwardCurrent = scalarPoint ? normalizeEvidence(scalarPoint.current) : null;
   const vf = voltage?.unit === "V" ? Number(voltage.value) : hintNumber(part, "diode.forward_voltage", 0.7);
@@ -82,17 +85,31 @@ function bjtFit(part, extraction, forceF1 = false) {
     .filter((value) => value > 0);
   // A published maximum is an inclusive bound, not a representative F1 target.
   const BF = typicalGains.length ? Math.max(...typicalGains)
-    : minimumGains.length ? Math.max(...minimumGains)
+    // A minimum remains a hard inclusive package check. Give the first-order F1 model
+    // one percent parameter headroom so finite VCE and series resistance do not land just below it.
+    : minimumGains.length ? Math.max(...minimumGains) * 1.01
       : hintNumber(part, "bjt.dc_current_gain", 100);
   return { fidelity: "F1", parameters: { IS: 1e-14, BF: Math.max(1, BF), VAF: 100, IKF: 1e3, RB: 10, RC: 0.1, RE: 0.05, CJE: 1e-12, CJC: 1e-12, TF: 1e-9 }, worst: null, points: [] };
+}
+
+function mosfetCalibrationPoint(specs) {
+  const points = (specs?.rdson_points ?? []).filter(isNominalTemperatureEvidence);
+  return points.find((point) => !["minimum", "maximum"].includes(point?.resistance?.source_kind)
+    && Number(point?.resistance?.value) > 0)
+    ?? points.find((point) => Number(point?.resistance?.value) > 0);
 }
 
 function mosfetFit(part, extraction, forceF1 = false) {
   const specs = extraction?.specs;
   const thresholdValue = specs?.threshold_typ?.value ?? specs?.threshold_max?.value ?? specs?.threshold_min?.value;
-  const rdsonValue = specs?.rdson_points?.find((point) => Number(point?.resistance?.value) > 0)?.resistance?.value;
+  const calibrationPoint = mosfetCalibrationPoint(specs);
+  const rdsonValue = calibrationPoint?.resistance?.value;
   const threshold = Number.isFinite(Number(thresholdValue)) ? Number(thresholdValue) : hintNumber(part, "vdmos.threshold", 2.5);
-  const rdson = Math.max(1e-4, Number.isFinite(Number(rdsonValue)) ? Number(rdsonValue) : hintNumber(part, "vdmos.rds_on", 0.1));
+  const citedRdson = Number.isFinite(Number(rdsonValue)) ? Number(rdsonValue) : hintNumber(part, "vdmos.rds_on", 0.1);
+  // Published maxima stay hard inclusive checks. Parameterize below a maximum rather than
+  // placing the approximation exactly on a bound that simulator parasitics can narrowly miss.
+  const targetRdson = calibrationPoint?.resistance?.source_kind === "maximum" ? citedRdson * 0.9 : citedRdson;
+  const rdson = Math.max(1e-4, targetRdson);
   const ciss = Math.max(1e-15, Number.isFinite(Number(specs?.ciss?.value)) ? Number(specs.ciss.value) : hintNumber(part, "vdmos.ciss", 1e-9));
   const coss = Math.max(1e-15, Number.isFinite(Number(specs?.coss?.value)) ? Number(specs.coss.value) : hintNumber(part, "vdmos.coss", 2e-10));
   const crss = Math.max(1e-15, Number.isFinite(Number(specs?.crss?.value)) ? Number(specs.crss.value) : hintNumber(part, "vdmos.crss", 5e-11));
@@ -219,11 +236,17 @@ export function normalizedIdentity(part, extraction = null) {
     const canonical = original.split(",", 1)[0].trim();
     return { canonical, aliases: [original], packageSlug: safe(original.replace(",", "-")) };
   }
-  const ranged = /^([A-Za-z0-9][A-Za-z0-9._+/-]*)\(RANGE:[^)]+\)$/i.exec(original);
+  const asciiParentheses = original.replaceAll("（", "(").replaceAll("）", ")");
+  const ranged = /^([A-Za-z0-9][A-Za-z0-9._+/-]*)\(RANGE:[^)]+\)$/i.exec(asciiParentheses);
   if (ranged) return { canonical: ranged[1], aliases: [original], packageSlug: safe(original) };
-  const marked = /^([A-Za-z0-9][A-Za-z0-9._+/-]*)\s+([A-Za-z0-9]{1,4})$/.exec(original);
   const notes = extraction?.extraction_notes?.join(" ") ?? "";
   const title = extraction?.datasheet_identity?.title ?? "";
+  const documentedSuffix = /^([A-Za-z0-9][A-Za-z0-9._+/-]*)(?:\s+[A-Za-z0-9-]{1,8})?\((?:RANGE:[^)]+|[A-Za-z0-9-]{1,8})\)$/i.exec(asciiParentheses);
+  if (documentedSuffix && /(marking|classification|rank|bin|range)/i.test(notes)
+      && title.toLowerCase().includes(documentedSuffix[1].toLowerCase())) {
+    return { canonical: documentedSuffix[1], aliases: [original], packageSlug: safe(original) };
+  }
+  const marked = /^([A-Za-z0-9][A-Za-z0-9._+/-]*)\s+([A-Za-z0-9]{1,4})$/.exec(original);
   if (marked && /marking/i.test(notes) && title.toLowerCase().includes(marked[1].toLowerCase())) {
     return { canonical: marked[1], aliases: [original], packageSlug: safe(original) };
   }
@@ -474,12 +497,17 @@ function bulkFactoryFacts(part, extraction, fit, identity, source) {
   }
   const thresholdConditions = specs.threshold_typ?.conditions ?? specs.threshold_max?.conditions ?? specs.threshold_min?.conditions ?? "Nominal threshold characterization";
   const thresholdCitation = specs.threshold_typ?.page_reference ?? specs.threshold_max?.page_reference ?? specs.threshold_min?.page_reference ?? source.pages_referenced[0];
-  const rdsonPoints = (specs.rdson_points ?? []).filter(isNominalTemperatureEvidence).map((point) => ({
+  const allRdsonPoints = (specs.rdson_points ?? []).filter(isNominalTemperatureEvidence).map((point) => ({
     ...point,
     vgs: magnitudeQuantity(point.vgs),
     current: magnitudeQuantity(point.current),
     resistance: magnitudeQuantity(point.resistance),
   }));
+  // One-parameter F1 RDS(on) approximations support one cited calibration condition only.
+  // Keeping every table row after an F2 demotion would silently preserve a multi-bias claim.
+  const rdsonPoints = fit.fidelity === "F1"
+    ? [mosfetCalibrationPoint({ rdson_points: allRdsonPoints })].filter(Boolean)
+    : allRdsonPoints;
   return {
     ...common,
     rdson_points: rdsonPoints,

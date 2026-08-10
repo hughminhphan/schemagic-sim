@@ -164,6 +164,21 @@ test("forced F1 MOSFET fallback parses SI-prefixed catalog hints", () => {
   assert.match(fit.model.text, /VDMOS\( pchan/);
 });
 
+test("F1 MOSFET calibration uses the same nominal-temperature evidence as its package claim", () => {
+  const nonNominal = { ...quantity(5.6, "ohm"), conditions: "TJ = -55 to 150 degC", source_kind: "typical" };
+  const nominalMaximum = { ...quantity(3.5, "ohm"), source_kind: "maximum" };
+  const payload = { specs: {
+    polarity: "n", threshold_min: quantity(0.5, "V"), threshold_typ: null, threshold_max: quantity(1.5, "V"),
+    rdson_points: [
+      { vgs: quantity(2.75, "V"), current: quantity(0.2, "A"), resistance: nonNominal },
+      { vgs: quantity(5, "V"), current: quantity(0.2, "A"), resistance: nominalMaximum },
+    ],
+    ciss: quantity(45e-12, "F"), coss: quantity(20e-12, "F"), crss: quantity(4e-12, "F"),
+  } };
+  const fit = fitBulkPart({ ...mosfetPart("unused.pdf"), subcategory: "N-Channel MOSFET" }, payload, { forceF1: true, ngspiceRunner: () => ({ pass: true }) });
+  assert.equal(fit.parameters.KP, 2 / (3.5 * 0.9));
+});
+
 test("pre-demoted bulk part keeps extraction and p-channel metadata", () => {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "factory-bulk-pmos-test-"));
   try {
@@ -233,6 +248,15 @@ test("F1 BJT fit does not turn a published maximum gain into a typical target", 
   assert.equal(fit.parameters.BF, 118);
 });
 
+test("F1 BJT fit parameterizes slightly above a published minimum", () => {
+  const payload = { specs: { polarity: "npn", gain_points: [
+    { hfe: { ...quantity(60, "1"), source_kind: "minimum" } },
+    { hfe: { ...quantity(400, "1"), source_kind: "maximum" } },
+  ] } };
+  const fit = fitBulkPart({ mpn: "FIXTURE-Q2", manufacturer: "Fixture Semi", conveyor_family: "bjt", subcategory: "NPN" }, payload, { forceF1: true, ngspiceRunner: () => ({ pass: true }) });
+  assert.equal(fit.parameters.BF, 60.6);
+});
+
 test("signed P-channel RDS evidence is magnitude-normalized before bench polarity is applied", () => {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "factory-signed-pmos-test-"));
   try {
@@ -259,7 +283,7 @@ test("signed P-channel RDS evidence is magnitude-normalized before bench polarit
     const result = runBulkManifest(manifestPath, path.join(root, "staging"), { libraryRoot: path.join(root, "empty-library") });
     assert.equal(result[0].status, "staged", JSON.stringify(result[0]));
     const facts = JSON.parse(fs.readFileSync(path.join(result[0].package_path, "facts.json"), "utf8"));
-    assert.deepEqual(facts.rdson_points.map((point) => [point.vgs.value, point.current.value]), [[10, 4.2], [4.5, 4]]);
+    assert.deepEqual(facts.rdson_points.map((point) => [point.vgs.value, point.current.value]), [[10, 4.2]]);
   } finally {
     fs.rmSync(root, { recursive: true, force: true });
   }
@@ -275,6 +299,18 @@ test("catalog range and documented package-marking identities normalize into ali
   );
   assert.equal(marked.canonical, "CJ2301");
   assert.deepEqual(marked.aliases, ["CJ2301 S1"]);
+  const markedRange = normalizedIdentity(
+    { mpn: "S9012 2T1(RANGE:200-350)", manufacturer: "Fixture Semi" },
+    { datasheet_identity: { title: "S9012 PNP transistor" }, extraction_notes: ["Marking 2T1 is classification rank H with hFE range 200-350."] },
+  );
+  assert.equal(markedRange.canonical, "S9012");
+  assert.deepEqual(markedRange.aliases, ["S9012 2T1(RANGE:200-350)"]);
+  const fullWidthMark = normalizedIdentity(
+    { mpn: "2SC1623（L6）", manufacturer: "Fixture Semi" },
+    { datasheet_identity: { title: "2SC1623 NPN transistor" }, extraction_notes: ["The L6 bin is identified by its hFE classification range."] },
+  );
+  assert.equal(fullWidthMark.canonical, "2SC1623");
+  assert.deepEqual(fullWidthMark.aliases, ["2SC1623（L6）"]);
 });
 
 test("Nexperia ordering suffixes normalize into aliases", () => {
