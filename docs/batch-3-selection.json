@@ -1,0 +1,2327 @@
+{
+  "schema_version": "1.0.0",
+  "campaign": "scheMAGIC batch 3 selection and bounded recovery",
+  "date": "2026-08-10",
+  "authority": "execution/author lane only; selection and staging do not imply review, promotion, publication, or live status",
+  "checkpoint": {
+    "required_head": "96998387b28ef63739484d1dac40e288a01faf53",
+    "subject": "fix(model-factory): repair batch validation defects",
+    "required_parent": "6d1f1b167da22d6ec15d7709dfed7a3cb4d274ef",
+    "recovery_state": "preserved; ignored staging checkpoint treated as authoritative"
+  },
+  "deterministic_inputs": {
+    "source_manifest": "tools/part-feeder/data/manifests/scale-1k.json",
+    "source_manifest_part_count": 1034,
+    "source_order": "ascending frozen family rank with rotating family quotas; no reranking",
+    "reviewed_library_root": "packages/model-library/models",
+    "reviewed_package_count_before": 259,
+    "prior_campaign_exclusion": "all reviewed identities and prior campaign identities excluded, except explicit Phase-A salvage records",
+    "identity_guard": "case-insensitive canonical MPN and ordering aliases; Nexperia comma suffixes and RANGE identities normalized; within-campaign identity is manufacturer-qualified",
+    "fitted_vector_guard": "complete fitted family, polarity, and parameter vector checked against reviewed packages and existing batch-3 staging",
+    "datasheet_requirement": "valid frozen scale-1k cache hit with reproduced SHA-256; source bulk data remained read-only"
+  },
+  "accounting": {
+    "phase_a_records": 29,
+    "phase_a_staged": 22,
+    "fresh_selected": 120,
+    "fresh_selected_by_family": {
+      "bjt": 40,
+      "diode": 40,
+      "mosfet": 40
+    },
+    "waves": [
+      {
+        "wave": 1,
+        "requested": 40,
+        "quotas": {
+          "bjt": 14,
+          "diode": 13,
+          "mosfet": 13
+        },
+        "selected_count": 40
+      },
+      {
+        "wave": 2,
+        "requested": 40,
+        "quotas": {
+          "bjt": 13,
+          "diode": 14,
+          "mosfet": 13
+        },
+        "selected_count": 40
+      },
+      {
+        "wave": 3,
+        "requested": 40,
+        "quotas": {
+          "bjt": 13,
+          "diode": 13,
+          "mosfet": 14
+        },
+        "selected_count": 40
+      }
+    ],
+    "fresh_processing_cap": 160,
+    "fresh_processed": 120,
+    "stop_reason": "107 complete validator-passing packages staged, satisfying the approximately 100 target before the 160-target cap"
+  },
+  "phase_a_salvage": [
+    {
+      "lcsc_id": "C24278",
+      "mpn": "B772(RANGE:160-320)",
+      "manufacturer": "Jiangsu Changjing Electronics Technology Co Ltd",
+      "conveyor_family": "bjt",
+      "source": "batch-2-validation-failure",
+      "outcome": "staged",
+      "fidelity": "F1",
+      "reason": "Validation failed for B772-RANGE-160-320. See validation-results.json; failed package checks: vbe_sat_1_maximum observed 2.9938339468694135 (maximum 1.5)"
+    },
+    {
+      "lcsc_id": "C18221467",
+      "mpn": "S8050-J3Y",
+      "manufacturer": "JSMSEMI",
+      "conveyor_family": "bjt",
+      "source": "batch-2-validation-failure",
+      "outcome": "failed",
+      "fidelity": null,
+      "reason": "F2 failed: Validation failed for S8050-J3Y. See validation-results.json; failed package checks: vbe_sat_1_maximum observed 1.3696959144015224 (maximum 1.2); F1 failed: Validation failed for S8050-J3Y. See validation-results.json; failed package checks: hfe_minimum_at_0.05_a observed 118.27012221823097 (minimum 120)"
+    },
+    {
+      "lcsc_id": "C28646290",
+      "mpn": "DSK22",
+      "manufacturer": "hongjiacheng",
+      "conveyor_family": "diode",
+      "source": "batch-2-validation-failure",
+      "outcome": "staged",
+      "fidelity": "F1",
+      "reason": "diode F2 gate failed: forward_voltage worst relative error 0.0666 exceeds gate 0.05; forward_voltage RMS relative error 0.0351 exceeds gate 0.03"
+    },
+    {
+      "lcsc_id": "C7420368",
+      "mpn": "SS510B",
+      "manufacturer": "hongjiacheng",
+      "conveyor_family": "diode",
+      "source": "batch-2-validation-failure",
+      "outcome": "staged",
+      "fidelity": "F1",
+      "reason": "diode F2 gate failed: forward_voltage worst relative error 0.0620 exceeds gate 0.05; forward_voltage RMS relative error 0.0405 exceeds gate 0.03"
+    },
+    {
+      "lcsc_id": "C7420364",
+      "mpn": "SS310",
+      "manufacturer": "hongjiacheng",
+      "conveyor_family": "diode",
+      "source": "batch-2-validation-failure",
+      "outcome": "failed",
+      "fidelity": null,
+      "reason": "F2 failed: diode F2 gate failed: forward_voltage worst relative error 0.0585 exceeds gate 0.05; F1 failed: Validation failed for SS310. See validation-results.json; failed package checks: forward_voltage_at_0.0371_a observed 0.7094325299510689 (allowed error 0.13999999999999999)"
+    },
+    {
+      "lcsc_id": "C18199114",
+      "mpn": "FR107W",
+      "manufacturer": "hongjiacheng",
+      "conveyor_family": "diode",
+      "source": "batch-2-validation-failure",
+      "outcome": "staged",
+      "fidelity": "F1",
+      "reason": "diode F2 gate failed: N saturated its physical bound at 4; the true optimum lies outside the physical range, so the residual is a constraint artefact"
+    },
+    {
+      "lcsc_id": "C22466351",
+      "mpn": "DSK16",
+      "manufacturer": "hongjiacheng",
+      "conveyor_family": "diode",
+      "source": "batch-2-validation-failure",
+      "outcome": "staged",
+      "fidelity": "F1",
+      "reason": "diode F2 gate failed: IS saturated its physical bound at 0.001; the true optimum lies outside the physical range, so the residual is a constraint artefact"
+    },
+    {
+      "lcsc_id": "C7502714",
+      "mpn": "B5819WT",
+      "manufacturer": "hongjiacheng",
+      "conveyor_family": "diode",
+      "source": "batch-2-validation-failure",
+      "outcome": "failed",
+      "fidelity": null,
+      "reason": "F2 failed: diode F2 gate failed: N saturated its physical bound at 0.9; the true optimum lies outside the physical range, so the residual is a constraint artefact; F1 failed: Validation failed for B5819WT. See validation-results.json; failed package checks: forward_voltage_at_0.0917105_a observed 0.4113084207300977 (allowed error 0.0875)"
+    },
+    {
+      "lcsc_id": "C7420363",
+      "mpn": "SS26",
+      "manufacturer": "hongjiacheng",
+      "conveyor_family": "diode",
+      "source": "batch-2-validation-failure",
+      "outcome": "failed",
+      "fidelity": null,
+      "reason": "F2 failed: diode F2 gate failed: forward_voltage worst relative error 0.0583 exceeds gate 0.05; forward_voltage RMS relative error 0.0336 exceeds gate 0.03; F1 failed: Validation failed for SS26. See validation-results.json; failed package checks: forward_voltage_at_0.033983_a observed 0.5730088912966007 (allowed error 0.105)"
+    },
+    {
+      "lcsc_id": "C18199176",
+      "mpn": "SS16",
+      "manufacturer": "hongjiacheng",
+      "conveyor_family": "diode",
+      "source": "batch-2-validation-failure",
+      "outcome": "failed",
+      "fidelity": null,
+      "reason": "F2 failed: diode F2 gate failed: forward_voltage worst relative error 0.0532 exceeds gate 0.05; forward_voltage RMS relative error 0.0307 exceeds gate 0.03; F1 failed: Validation failed for SS16. See validation-results.json; failed package checks: forward_voltage_at_0.0353014_a observed 0.5937714279383806 (allowed error 0.13999999999999999)"
+    },
+    {
+      "lcsc_id": "C7420345",
+      "mpn": "HL2303",
+      "manufacturer": "hongjiacheng",
+      "conveyor_family": "mosfet",
+      "source": "batch-2-validation-failure",
+      "outcome": "staged",
+      "fidelity": "F1",
+      "reason": "mosfet extraction cannot support an F2 fit: no usable 25 degC transfer curve (drain current versus gate-source voltage)"
+    },
+    {
+      "lcsc_id": "C28646261",
+      "mpn": "HL2305",
+      "manufacturer": "hongjiacheng",
+      "conveyor_family": "mosfet",
+      "source": "batch-2-validation-failure",
+      "outcome": "staged",
+      "fidelity": "F1",
+      "reason": "mosfet extraction cannot support an F2 fit: no usable 25 degC transfer curve (drain current versus gate-source voltage)"
+    },
+    {
+      "lcsc_id": "C28646270",
+      "mpn": "HL3415A",
+      "manufacturer": "hongjiacheng",
+      "conveyor_family": "mosfet",
+      "source": "batch-2-validation-failure",
+      "outcome": "staged",
+      "fidelity": "F1",
+      "reason": "mosfet extraction cannot support an F2 fit: no usable 25 degC transfer curve (drain current versus gate-source voltage)"
+    },
+    {
+      "lcsc_id": "C28642376",
+      "mpn": "SI2301-A1SHB",
+      "manufacturer": "JSMSEMI",
+      "conveyor_family": "mosfet",
+      "source": "batch-2-validation-failure",
+      "outcome": "staged",
+      "fidelity": "F1",
+      "reason": "The supplied PDF contains no transfer, output, or capacitance-versus-VDS plots; only tabulated electrical characteristics are available, so no curve points were extracted.; family parked after 2 consecutive F2 fit-gate failures with no F2 success; later parts staged F1 (mosfet extraction cannot support an F2 fit: no usable 25 degC transfer curve (drain current versus gate-source voltage))"
+    },
+    {
+      "lcsc_id": "C181091",
+      "mpn": "AO3401",
+      "manufacturer": "Guangdong Hottech",
+      "conveyor_family": "mosfet",
+      "source": "batch-2-validation-failure",
+      "outcome": "staged",
+      "fidelity": "F1",
+      "reason": "family parked after 2 consecutive F2 fit-gate failures with no F2 success; later parts staged F1 (mosfet extraction cannot support an F2 fit: no usable 25 degC transfer curve (drain current versus gate-source voltage))"
+    },
+    {
+      "lcsc_id": "C2891731",
+      "mpn": "SI2301",
+      "manufacturer": "YONGYUTAI",
+      "conveyor_family": "mosfet",
+      "source": "batch-2-validation-failure",
+      "outcome": "staged",
+      "fidelity": "F1",
+      "reason": "The supplied PDF contains no transfer, output, or capacitance-versus-VDS plots; only tabulated electrical characteristics are available, so no curve points were extracted.; family parked after 2 consecutive F2 fit-gate failures with no F2 success; later parts staged F1 (mosfet extraction cannot support an F2 fit: no usable 25 degC transfer curve (drain current versus gate-source voltage))"
+    },
+    {
+      "lcsc_id": "C727156",
+      "mpn": "AO3401",
+      "manufacturer": "TWGMC",
+      "conveyor_family": "mosfet",
+      "source": "batch-2-validation-failure",
+      "outcome": "staged",
+      "fidelity": "F1",
+      "reason": "family parked after 2 consecutive F2 fit-gate failures with no F2 success; later parts staged F1 (mosfet extraction cannot support an F2 fit: no usable 25 degC transfer curve (drain current versus gate-source voltage))"
+    },
+    {
+      "lcsc_id": "C840839",
+      "mpn": "MDD3415",
+      "manufacturer": "MDD(Microdiode Semiconductor)",
+      "conveyor_family": "mosfet",
+      "source": "batch-2-validation-failure",
+      "outcome": "staged",
+      "fidelity": "F1",
+      "reason": "family parked after 2 consecutive F2 fit-gate failures with no F2 success; later parts staged F1 (mosfet extraction cannot support an F2 fit: no usable 25 degC transfer curve (drain current versus gate-source voltage))"
+    },
+    {
+      "lcsc_id": "C20628875",
+      "mpn": "AO3401",
+      "manufacturer": "FOSAN",
+      "conveyor_family": "mosfet",
+      "source": "batch-2-validation-failure",
+      "outcome": "staged",
+      "fidelity": "F1",
+      "reason": "family parked after 2 consecutive F2 fit-gate failures with no F2 success; later parts staged F1 (mosfet extraction cannot support an F2 fit: no usable 25 degC transfer curve (drain current versus gate-source voltage))"
+    },
+    {
+      "lcsc_id": "C347482",
+      "mpn": "SI2301A",
+      "manufacturer": "UMW Youtai Semiconductor Co Ltd",
+      "conveyor_family": "mosfet",
+      "source": "batch-2-validation-failure",
+      "outcome": "staged",
+      "fidelity": "F1",
+      "reason": "cross-validation failed after one retry: vdmos.crss: catalog '10pF@10V' disagrees with extracted [5.5e-11]; closest ratio 5.5x; family parked after 2 consecutive F2 fit-gate failures with no F2 success; later parts staged F1 (mosfet extraction cannot support an F2 fit: no usable 25 degC transfer curve (drain current versus gate-source voltage))"
+    },
+    {
+      "lcsc_id": "C20628872",
+      "mpn": "SI2302S",
+      "manufacturer": "FOSAN",
+      "conveyor_family": "mosfet",
+      "source": "batch-2-validation-failure",
+      "outcome": "skipped",
+      "fidelity": null,
+      "reason": "library identity collision: si2302s already represented by goodwork/SI2302S"
+    },
+    {
+      "lcsc_id": "C5261052",
+      "mpn": "SI2301-ZE",
+      "manufacturer": "HXY MOSFET",
+      "conveyor_family": "mosfet",
+      "source": "batch-2-validation-failure",
+      "outcome": "staged",
+      "fidelity": "F1",
+      "reason": "family parked after 2 consecutive F2 fit-gate failures with no F2 success; later parts staged F1 (mosfet extraction cannot support an F2 fit: no usable 25 degC transfer curve (drain current versus gate-source voltage))"
+    },
+    {
+      "lcsc_id": "C4748724",
+      "mpn": "AO3401-ED",
+      "manufacturer": "HXY MOSFET",
+      "conveyor_family": "mosfet",
+      "source": "batch-2-validation-failure",
+      "outcome": "staged",
+      "fidelity": "F1",
+      "reason": "family parked after 2 consecutive F2 fit-gate failures with no F2 success; later parts staged F1 (mosfet extraction cannot support an F2 fit: no usable 25 degC transfer curve (drain current versus gate-source voltage))"
+    },
+    {
+      "lcsc_id": "C181088",
+      "mpn": "SI2305",
+      "manufacturer": "Guangdong Hottech",
+      "conveyor_family": "mosfet",
+      "source": "batch-2-validation-failure",
+      "outcome": "staged",
+      "fidelity": "F1",
+      "reason": "family parked after 2 consecutive F2 fit-gate failures with no F2 success; later parts staged F1 (mosfet extraction cannot support an F2 fit: no usable 25 degC transfer curve (drain current versus gate-source voltage))"
+    },
+    {
+      "lcsc_id": "C13799",
+      "mpn": "CJ3401",
+      "manufacturer": "Jiangsu Changjing Electronics Technology Co Ltd",
+      "conveyor_family": "mosfet",
+      "source": "batch-2-validation-failure",
+      "outcome": "staged",
+      "fidelity": "F1",
+      "reason": "family parked after 2 consecutive F2 fit-gate failures with no F2 success; later parts staged F1 (mosfet extraction cannot support an F2 fit: no usable 25 degC transfer curve (drain current versus gate-source voltage))"
+    },
+    {
+      "lcsc_id": "C181093",
+      "mpn": "AO3407",
+      "manufacturer": "Guangdong Hottech",
+      "conveyor_family": "mosfet",
+      "source": "batch-2-validation-failure",
+      "outcome": "staged",
+      "fidelity": "F1",
+      "reason": "family parked after 2 consecutive F2 fit-gate failures with no F2 success; later parts staged F1 (mosfet extraction cannot support an F2 fit: no usable 25 degC transfer curve (drain current versus gate-source voltage))"
+    },
+    {
+      "lcsc_id": "C8547",
+      "mpn": "CJ2301 S1",
+      "manufacturer": "Jiangsu Changjing Electronics Technology Co Ltd",
+      "conveyor_family": "mosfet",
+      "source": "batch-2-validation-failure",
+      "outcome": "skipped",
+      "fidelity": null,
+      "reason": "duplicate fitted die vector already represented by jsmsemi/SI2301-A1SHB; no independent parameterization or shared-die evidence was supplied"
+    },
+    {
+      "lcsc_id": "C2836398",
+      "mpn": "AO3401CI-MS",
+      "manufacturer": "MSKSEMI",
+      "conveyor_family": "mosfet",
+      "source": "batch-2-validation-failure",
+      "outcome": "staged",
+      "fidelity": "F1",
+      "reason": "family parked after 2 consecutive F2 fit-gate failures with no F2 success; later parts staged F1 (mosfet extraction cannot support an F2 fit: no usable 25 degC transfer curve (drain current versus gate-source voltage))"
+    },
+    {
+      "lcsc_id": "C347478",
+      "mpn": "AO3407A",
+      "manufacturer": "UMW Youtai Semiconductor Co Ltd",
+      "conveyor_family": "mosfet",
+      "source": "batch-2-validation-failure",
+      "outcome": "staged",
+      "fidelity": "F1",
+      "reason": "family parked after 2 consecutive F2 fit-gate failures with no F2 success; later parts staged F1 (mosfet extraction cannot support an F2 fit: no usable 25 degC transfer curve (drain current versus gate-source voltage))"
+    }
+  ],
+  "fresh_waves": [
+    {
+      "wave": 1,
+      "quotas": {
+        "bjt": 14,
+        "diode": 13,
+        "mosfet": 13
+      },
+      "selected_count": 40,
+      "selected": [
+        {
+          "lcsc_id": "C41371418",
+          "mpn": "MMBT5551-E",
+          "manufacturer": "MDD Microdiode Semiconductor",
+          "conveyor_family": "bjt",
+          "family_rank": 76,
+          "scale_manifest_rank": 76,
+          "canonical_mpn_candidate": "MMBT5551-E",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C41371418__MMBT5551-E.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C41371418__MMBT5551-E.pdf",
+            "bytes": 3635834,
+            "sha256": "f9f768fff3119031a7444b7d53c5a412cdb028388e1db09c1d43f67990e33fb7",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C24280",
+          "mpn": "BCX56(RANGE:100-250)",
+          "manufacturer": "Jiangsu Changjing Electronics Technology Co Ltd",
+          "conveyor_family": "bjt",
+          "family_rank": 78,
+          "scale_manifest_rank": 78,
+          "canonical_mpn_candidate": "BCX56(RANGE:100-250)",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C24280__BCX56-RANGE-100-250.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C24280__BCX56-RANGE-100-250.pdf",
+            "bytes": 1290486,
+            "sha256": "806bdb1ae53cc6d276796a08eb3bca0f653e29a88ee7535cf0654ef1aa6fa8e8",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C545565",
+          "mpn": "BC856B",
+          "manufacturer": "UMW Youtai Semiconductor Co Ltd",
+          "conveyor_family": "bjt",
+          "family_rank": 79,
+          "scale_manifest_rank": 79,
+          "canonical_mpn_candidate": "BC856B",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C545565__BC856B.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C545565__BC856B.pdf",
+            "bytes": 458196,
+            "sha256": "9f713fe8f90f5c21db8f2adba9a94dd6273791b09233eca4847048b9b6c908da",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C8543",
+          "mpn": "S9012 2T1(RANGE:200-350)",
+          "manufacturer": "Jiangsu Changjing Electronics Technology Co Ltd",
+          "conveyor_family": "bjt",
+          "family_rank": 80,
+          "scale_manifest_rank": 80,
+          "canonical_mpn_candidate": "S9012 2T1(RANGE:200-350)",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C8543__S9012-2T1-RANGE-200-350.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C8543__S9012-2T1-RANGE-200-350.pdf",
+            "bytes": 858056,
+            "sha256": "91e50ac7c99f273b31127168b9e17765210dcd36244d9644e0a6915ac637e21f",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C41371419",
+          "mpn": "S9013-E",
+          "manufacturer": "MDD Microdiode Semiconductor",
+          "conveyor_family": "bjt",
+          "family_rank": 90,
+          "scale_manifest_rank": 90,
+          "canonical_mpn_candidate": "S9013-E",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C41371419__S9013-E.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C41371419__S9013-E.pdf",
+            "bytes": 3164777,
+            "sha256": "00cf4e28a7fc077c84d01ab1e69ee642192e5b72ed40534e80593cc1f6faefcb",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C20628878",
+          "mpn": "PXT8050",
+          "manufacturer": "FOSAN",
+          "conveyor_family": "bjt",
+          "family_rank": 96,
+          "scale_manifest_rank": 96,
+          "canonical_mpn_candidate": "PXT8050",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C20628878__PXT8050.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C20628878__PXT8050.pdf",
+            "bytes": 386801,
+            "sha256": "a9eefec71ebdf83f14d0256568eb8627f382161090e653a7000f67fa70594582",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C132810",
+          "mpn": "LH8050QLT1G",
+          "manufacturer": "LRC",
+          "conveyor_family": "bjt",
+          "family_rank": 99,
+          "scale_manifest_rank": 99,
+          "canonical_mpn_candidate": "LH8050QLT1G",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C132810__LH8050QLT1G.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C132810__LH8050QLT1G.pdf",
+            "bytes": 216829,
+            "sha256": "1104db6f6f5db648d30355ff2d845a372f8e37a2e66cb9513e6ede2f863a482d",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C181144",
+          "mpn": "BC856B",
+          "manufacturer": "Guangdong Hottech",
+          "conveyor_family": "bjt",
+          "family_rank": 104,
+          "scale_manifest_rank": 104,
+          "canonical_mpn_candidate": "BC856B",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C181144__BC856B.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C181144__BC856B.pdf",
+            "bytes": 455969,
+            "sha256": "d6eef4279f2370221979a2884f2687b0317979cc2d1f8a324eaf57e0cfde4544",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C30587305",
+          "mpn": "MMBT3904T-JSM",
+          "manufacturer": "JSMSEMI",
+          "conveyor_family": "bjt",
+          "family_rank": 106,
+          "scale_manifest_rank": 106,
+          "canonical_mpn_candidate": "MMBT3904T-JSM",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C30587305__MMBT3904T-JSM.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C30587305__MMBT3904T-JSM.pdf",
+            "bytes": 1577356,
+            "sha256": "5dd1bf3a0b075e7978be2cf0a6f784674eb849e8c02ab1614dcd1dfdd0688b99",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C15237",
+          "mpn": "BCX53-16(RANGE:100-250)",
+          "manufacturer": "Jiangsu Changjing Electronics Technology Co Ltd",
+          "conveyor_family": "bjt",
+          "family_rank": 112,
+          "scale_manifest_rank": 112,
+          "canonical_mpn_candidate": "BCX53-16(RANGE:100-250)",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C15237__BCX53-16-RANGE-100-250.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C15237__BCX53-16-RANGE-100-250.pdf",
+            "bytes": 1835925,
+            "sha256": "7a4729270f3eed6b8af7a6dea44eccfcb893bfeca33db7c521f472a64d01b4eb",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C193010",
+          "mpn": "2SC3356",
+          "manufacturer": "Guangdong Hottech",
+          "conveyor_family": "bjt",
+          "family_rank": 113,
+          "scale_manifest_rank": 113,
+          "canonical_mpn_candidate": "2SC3356",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C193010__2SC3356.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C193010__2SC3356.pdf",
+            "bytes": 823763,
+            "sha256": "2878dcdf31f8ed435655c110b8c60776312a12186dd5b865eb8748a67a855475",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C22395785",
+          "mpn": "SS8550S",
+          "manufacturer": "FOSAN",
+          "conveyor_family": "bjt",
+          "family_rank": 114,
+          "scale_manifest_rank": 114,
+          "canonical_mpn_candidate": "SS8550S",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C22395785__SS8550S.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C22395785__SS8550S.pdf",
+            "bytes": 240743,
+            "sha256": "ab17071b97a96670e959e4b7bcc287d4d1d7f81e5786789f8090d67db42d0c81",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C136169",
+          "mpn": "LMBT3946DW1T1G",
+          "manufacturer": "LRC",
+          "conveyor_family": "bjt",
+          "family_rank": 121,
+          "scale_manifest_rank": 121,
+          "canonical_mpn_candidate": "LMBT3946DW1T1G",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C136169__LMBT3946DW1T1G.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C136169__LMBT3946DW1T1G.pdf",
+            "bytes": 679954,
+            "sha256": "1e0a5e7f1410f8cedd935f9711eb906e1aabcb0946f3777ed45209516a9cb958",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C179342",
+          "mpn": "BC846,215",
+          "manufacturer": "Nexperia",
+          "conveyor_family": "bjt",
+          "family_rank": 127,
+          "scale_manifest_rank": 127,
+          "canonical_mpn_candidate": "BC846,215",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C179342__BC846-215.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C179342__BC846-215.pdf",
+            "bytes": 221788,
+            "sha256": "437812fa6dbaafd9229bdac3ede8eb981731d1e6c583fae7fb031f8c5724b6ff",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C7502688",
+          "mpn": "BAS40-04",
+          "manufacturer": "hongjiacheng",
+          "conveyor_family": "diode",
+          "family_rank": 75,
+          "scale_manifest_rank": 338,
+          "canonical_mpn_candidate": "BAS40-04",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C7502688__BAS40-04.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C7502688__BAS40-04.pdf",
+            "bytes": 144421,
+            "sha256": "01244f75349c5c0294a32bcf0d47e58cd25c59c8e0989c66fb32a69017139fbd",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C19077447",
+          "mpn": "BZT52C12S",
+          "manufacturer": "hongjiacheng",
+          "conveyor_family": "diode",
+          "family_rank": 76,
+          "scale_manifest_rank": 339,
+          "canonical_mpn_candidate": "BZT52C12S",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C19077447__BZT52C12S.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C19077447__BZT52C12S.pdf",
+            "bytes": 235849,
+            "sha256": "8d99c0b95ddbd62581320fd03378a72d97d914bc201c735536cd50e5f6753113",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C18199168",
+          "mpn": "SS58",
+          "manufacturer": "hongjiacheng",
+          "conveyor_family": "diode",
+          "family_rank": 77,
+          "scale_manifest_rank": 340,
+          "canonical_mpn_candidate": "SS58",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C18199168__SS58.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C18199168__SS58.pdf",
+            "bytes": 176195,
+            "sha256": "b38884f538ae872f79eb9a5180b78a35f02a329a9547d95a2e88620f92d1355c",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C22466370",
+          "mpn": "BAS40X",
+          "manufacturer": "hongjiacheng",
+          "conveyor_family": "diode",
+          "family_rank": 78,
+          "scale_manifest_rank": 341,
+          "canonical_mpn_candidate": "BAS40X",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C22466370__BAS40X.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C22466370__BAS40X.pdf",
+            "bytes": 149767,
+            "sha256": "da2ca14beab1313888c4d0e7e16af6811112c1787357da37d51fb7418731cdf7",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C22466367",
+          "mpn": "BAT46X",
+          "manufacturer": "hongjiacheng",
+          "conveyor_family": "diode",
+          "family_rank": 79,
+          "scale_manifest_rank": 342,
+          "canonical_mpn_candidate": "BAT46X",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C22466367__BAT46X.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C22466367__BAT46X.pdf",
+            "bytes": 152836,
+            "sha256": "549d05e07f917bf91fd4714e6a1ed561ef77e7e26b7f7e9e9d58e7946b03c499",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C28646288",
+          "mpn": "DSK220",
+          "manufacturer": "hongjiacheng",
+          "conveyor_family": "diode",
+          "family_rank": 80,
+          "scale_manifest_rank": 343,
+          "canonical_mpn_candidate": "DSK220",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C28646288__DSK220.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C28646288__DSK220.pdf",
+            "bytes": 149032,
+            "sha256": "20da722d7ee5a1a0b66b37f2e138cff5e24c108e6dfe6c03b89f75fe57109826",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C22379466",
+          "mpn": "MM1Z18",
+          "manufacturer": "hongjiacheng",
+          "conveyor_family": "diode",
+          "family_rank": 81,
+          "scale_manifest_rank": 344,
+          "canonical_mpn_candidate": "MM1Z18",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C22379466__MM1Z18.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C22379466__MM1Z18.pdf",
+            "bytes": 210722,
+            "sha256": "ff4a1051509db45f49817a41e5674adc11a1dea2a91e51ee958ffaed19b1d755",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C18199105",
+          "mpn": "S5MB",
+          "manufacturer": "hongjiacheng",
+          "conveyor_family": "diode",
+          "family_rank": 82,
+          "scale_manifest_rank": 345,
+          "canonical_mpn_candidate": "S5MB",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C18199105__S5MB.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C18199105__S5MB.pdf",
+            "bytes": 180989,
+            "sha256": "b47cf9fe06d5c2e0e322b46fb95a753e1398a40b5bb7eb52a70b2f4423cb1956",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C7502726",
+          "mpn": "BAS21S",
+          "manufacturer": "hongjiacheng",
+          "conveyor_family": "diode",
+          "family_rank": 83,
+          "scale_manifest_rank": 346,
+          "canonical_mpn_candidate": "BAS21S",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C7502726__BAS21S.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C7502726__BAS21S.pdf",
+            "bytes": 144726,
+            "sha256": "321b671951d465e3a52d924da6a2302d1188d002304a5f0112bed00ef755209a",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C22379468",
+          "mpn": "MM1Z2V7",
+          "manufacturer": "hongjiacheng",
+          "conveyor_family": "diode",
+          "family_rank": 84,
+          "scale_manifest_rank": 347,
+          "canonical_mpn_candidate": "MM1Z2V7",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C22379468__MM1Z2V7.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C22379468__MM1Z2V7.pdf",
+            "bytes": 210722,
+            "sha256": "ff4a1051509db45f49817a41e5674adc11a1dea2a91e51ee958ffaed19b1d755",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C7420325",
+          "mpn": "B0540W",
+          "manufacturer": "hongjiacheng",
+          "conveyor_family": "diode",
+          "family_rank": 85,
+          "scale_manifest_rank": 348,
+          "canonical_mpn_candidate": "B0540W",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C7420325__B0540W.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C7420325__B0540W.pdf",
+            "bytes": 159291,
+            "sha256": "5bd9410017948cc3c76af87d383c8ce6924b88b4d810382cf34c0957fc85bbcd",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C22466361",
+          "mpn": "B5818WS",
+          "manufacturer": "hongjiacheng",
+          "conveyor_family": "diode",
+          "family_rank": 86,
+          "scale_manifest_rank": 349,
+          "canonical_mpn_candidate": "B5818WS",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C22466361__B5818WS.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C22466361__B5818WS.pdf",
+            "bytes": 157721,
+            "sha256": "b461f5d86aea4f2ad2ecbf61b8f38ba0775aae76f1722f7f888f9de45b63a80b",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C7420317",
+          "mpn": "US1M",
+          "manufacturer": "hongjiacheng",
+          "conveyor_family": "diode",
+          "family_rank": 87,
+          "scale_manifest_rank": 350,
+          "canonical_mpn_candidate": "US1M",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C7420317__US1M.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C7420317__US1M.pdf",
+            "bytes": 181365,
+            "sha256": "a35041a8ed9d8ddd02af14288567a5826d249ded1cf1afc8cc265c3638e9aa0a",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C2841482",
+          "mpn": "AO4407A",
+          "manufacturer": "UMW Youtai Semiconductor Co Ltd",
+          "conveyor_family": "mosfet",
+          "family_rank": 86,
+          "scale_manifest_rank": 797,
+          "canonical_mpn_candidate": "AO4407A",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C2841482__AO4407A.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C2841482__AO4407A.pdf",
+            "bytes": 315931,
+            "sha256": "21451c29e692f5303dfb91c2bc78751ce9ab48ccfa0e6819262d0912afae4105",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C41384537",
+          "mpn": "DO2301E-Q",
+          "manufacturer": "DOINGTER",
+          "conveyor_family": "mosfet",
+          "family_rank": 89,
+          "scale_manifest_rank": 800,
+          "canonical_mpn_candidate": "DO2301E-Q",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C41384537__DO2301E-Q.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C41384537__DO2301E-Q.pdf",
+            "bytes": 486918,
+            "sha256": "1b5a087a8114b42ca3203af2ccd155400e456beb714cd6e33e1cdeeb8e1799da",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C369599",
+          "mpn": "30N06",
+          "manufacturer": "UMW Youtai Semiconductor Co Ltd",
+          "conveyor_family": "mosfet",
+          "family_rank": 91,
+          "scale_manifest_rank": 802,
+          "canonical_mpn_candidate": "30N06",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C369599__30N06.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C369599__30N06.pdf",
+            "bytes": 765428,
+            "sha256": "2847e30fb6b4debc85c38f109b4d07c8b59e4c3a817f036f016c56c8ee212a52",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C75882",
+          "mpn": "CJ2310",
+          "manufacturer": "Jiangsu Changjing Electronics Technology Co Ltd",
+          "conveyor_family": "mosfet",
+          "family_rank": 92,
+          "scale_manifest_rank": 803,
+          "canonical_mpn_candidate": "CJ2310",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C75882__CJ2310.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C75882__CJ2310.pdf",
+            "bytes": 1218917,
+            "sha256": "8095c146e18963bbe745b141c23716030c3caf7ab08f149070b07c666130deb8",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C347479",
+          "mpn": "AO3415A",
+          "manufacturer": "UMW Youtai Semiconductor Co Ltd",
+          "conveyor_family": "mosfet",
+          "family_rank": 95,
+          "scale_manifest_rank": 806,
+          "canonical_mpn_candidate": "AO3415A",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C347479__AO3415A.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C347479__AO3415A.pdf",
+            "bytes": 335046,
+            "sha256": "a7b8a73b492fc7e665bb4063498c23b8814d281e57413f467bb7a1e350b18b13",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C4748722",
+          "mpn": "AO3400-ED",
+          "manufacturer": "HXY MOSFET",
+          "conveyor_family": "mosfet",
+          "family_rank": 96,
+          "scale_manifest_rank": 807,
+          "canonical_mpn_candidate": "AO3400-ED",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C4748722__AO3400-ED.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C4748722__AO3400-ED.pdf",
+            "bytes": 2064843,
+            "sha256": "9a9126e58d24004d0174fbf6f3937491847b02076133bb079cf987a694df5658",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C14385",
+          "mpn": "AO3402",
+          "manufacturer": "Alpha Omega Semicon",
+          "conveyor_family": "mosfet",
+          "family_rank": 97,
+          "scale_manifest_rank": 808,
+          "canonical_mpn_candidate": "AO3402",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C14385__AO3402.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C14385__AO3402.pdf",
+            "bytes": 459818,
+            "sha256": "1548d27a0aa27f3d1a9cf685f552f0842bcd2891c750ccba92a411d7971df70e",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C427379",
+          "mpn": "BSS123",
+          "manufacturer": "MDD Microdiode Semiconductor",
+          "conveyor_family": "mosfet",
+          "family_rank": 98,
+          "scale_manifest_rank": 809,
+          "canonical_mpn_candidate": "BSS123",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C427379__BSS123.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C427379__BSS123.pdf",
+            "bytes": 5757451,
+            "sha256": "6c226a8d26fc87bf8f9bc6e0f23bafc78721184a0068f625058e15a50dbb9cda",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C382329",
+          "mpn": "IRLML6401",
+          "manufacturer": "KEXIN",
+          "conveyor_family": "mosfet",
+          "family_rank": 100,
+          "scale_manifest_rank": 811,
+          "canonical_mpn_candidate": "IRLML6401",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C382329__IRLML6401.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C382329__IRLML6401.pdf",
+            "bytes": 2384300,
+            "sha256": "2f1511cfd365252cc44b83cbba1e2ead60b3e7046daa568d2549e5d7faeced35",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C2568",
+          "mpn": "IRF640NPBF",
+          "manufacturer": "Infineon Technologies",
+          "conveyor_family": "mosfet",
+          "family_rank": 101,
+          "scale_manifest_rank": 812,
+          "canonical_mpn_candidate": "IRF640NPBF",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C2568__IRF640NPBF.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C2568__IRF640NPBF.pdf",
+            "bytes": 344064,
+            "sha256": "13670c13d7312cd204fb16ca53edae08141153598d21502a9162ef669f815af2",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C2886385",
+          "mpn": "AP40P05",
+          "manufacturer": "ALLPOWER ShenZhen Quan Li Semiconductor",
+          "conveyor_family": "mosfet",
+          "family_rank": 102,
+          "scale_manifest_rank": 813,
+          "canonical_mpn_candidate": "AP40P05",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C2886385__AP40P05.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C2886385__AP40P05.pdf",
+            "bytes": 780411,
+            "sha256": "c2445db87b4671df94b4a502e1d14e743c74c5ee1a976f2ffe781a1c4f53dd44",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C2944310",
+          "mpn": "AO4435",
+          "manufacturer": "UMW Youtai Semiconductor Co Ltd",
+          "conveyor_family": "mosfet",
+          "family_rank": 103,
+          "scale_manifest_rank": 814,
+          "canonical_mpn_candidate": "AO4435",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C2944310__AO4435.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C2944310__AO4435.pdf",
+            "bytes": 258207,
+            "sha256": "b1a88438fe66c692dd18b97c717db9694d181973a69049e4d63e821e4934ef36",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C36220",
+          "mpn": "AOD409",
+          "manufacturer": "Alpha Omega Semicon",
+          "conveyor_family": "mosfet",
+          "family_rank": 104,
+          "scale_manifest_rank": 815,
+          "canonical_mpn_candidate": "AOD409",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C36220__AOD409.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C36220__AOD409.pdf",
+            "bytes": 243076,
+            "sha256": "356a21bf75cd5b69da5c4fbd1fb6912e09bb81720a15a50560515e81fe3dd6f9",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        }
+      ]
+    },
+    {
+      "wave": 2,
+      "quotas": {
+        "bjt": 13,
+        "diode": 14,
+        "mosfet": 13
+      },
+      "selected_count": 40,
+      "selected": [
+        {
+          "lcsc_id": "C556165",
+          "mpn": "BC857B",
+          "manufacturer": "Slkor SLKORMICRO Elec",
+          "conveyor_family": "bjt",
+          "family_rank": 128,
+          "scale_manifest_rank": 128,
+          "canonical_mpn_candidate": "BC857B",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C556165__BC857B.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C556165__BC857B.pdf",
+            "bytes": 1927188,
+            "sha256": "b27e6044426e3c6009ed18c960878c7838cabacc4453fdb1ec761dfda4e1323d",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C131674",
+          "mpn": "BC847A,215",
+          "manufacturer": "Nexperia",
+          "conveyor_family": "bjt",
+          "family_rank": 130,
+          "scale_manifest_rank": 130,
+          "canonical_mpn_candidate": "BC847A,215",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C131674__BC847A-215.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C131674__BC847A-215.pdf",
+            "bytes": 236620,
+            "sha256": "43634945eddee9221b9bfb8d4f9c0c684b70e5d3526de3340cf327db6a7ef0be",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C41095",
+          "mpn": "MMBT5551LT1G",
+          "manufacturer": "onsemi",
+          "conveyor_family": "bjt",
+          "family_rank": 132,
+          "scale_manifest_rank": 132,
+          "canonical_mpn_candidate": "MMBT5551LT1G",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C41095__MMBT5551LT1G.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C41095__MMBT5551LT1G.pdf",
+            "bytes": 182231,
+            "sha256": "9f5d518b3ce13e1ff70bd429f524f7b7998b0fa39d2bced1d0c989782544ed1a",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C2891810",
+          "mpn": "MMBT2222",
+          "manufacturer": "YONGYUTAI",
+          "conveyor_family": "bjt",
+          "family_rank": 134,
+          "scale_manifest_rank": 134,
+          "canonical_mpn_candidate": "MMBT2222",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C2891810__MMBT2222.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C2891810__MMBT2222.pdf",
+            "bytes": 1127386,
+            "sha256": "fa5cf2035270b9024a5f779a380dbfab05e68527d3d62ba30de9715b68cf84b4",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C42441445",
+          "mpn": "SS8050 Y1",
+          "manufacturer": "TDSEMIC",
+          "conveyor_family": "bjt",
+          "family_rank": 137,
+          "scale_manifest_rank": 137,
+          "canonical_mpn_candidate": "SS8050 Y1",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C42441445__SS8050-Y1.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C42441445__SS8050-Y1.pdf",
+            "bytes": 796986,
+            "sha256": "dfa394362862540ae24f484e3986b5124b82cfb19f03f459e5f691195e16e871",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C126908",
+          "mpn": "BC817-16,215",
+          "manufacturer": "Nexperia",
+          "conveyor_family": "bjt",
+          "family_rank": 144,
+          "scale_manifest_rank": 144,
+          "canonical_mpn_candidate": "BC817-16,215",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C126908__BC817-16-215.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C126908__BC817-16-215.pdf",
+            "bytes": 316088,
+            "sha256": "dbbbeafcbf13eb3d579ef03061a955c32d5ed3fa39470935ff826b4eb513b70e",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C8512",
+          "mpn": "MMBT2222A 1P",
+          "manufacturer": "Jiangsu Changjing Electronics Technology Co Ltd",
+          "conveyor_family": "bjt",
+          "family_rank": 150,
+          "scale_manifest_rank": 150,
+          "canonical_mpn_candidate": "MMBT2222A 1P",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C8512__MMBT2222A-1P.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C8512__MMBT2222A-1P.pdf",
+            "bytes": 618956,
+            "sha256": "af383629b6a3bbb5165656557e940a95ef2e2fa77d5565ebe27eb5f499c91c2c",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C12091",
+          "mpn": "LMBT3906LT1G",
+          "manufacturer": "LRC",
+          "conveyor_family": "bjt",
+          "family_rank": 152,
+          "scale_manifest_rank": 152,
+          "canonical_mpn_candidate": "LMBT3906LT1G",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C12091__LMBT3906LT1G.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C12091__LMBT3906LT1G.pdf",
+            "bytes": 365832,
+            "sha256": "5d61e188fb3d947aae0af4fc6e57de418be71c25931e52dcaad1890122798b2c",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C41375137",
+          "mpn": "2SC2383",
+          "manufacturer": "hongjiacheng",
+          "conveyor_family": "bjt",
+          "family_rank": 153,
+          "scale_manifest_rank": 153,
+          "canonical_mpn_candidate": "2SC2383",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C41375137__2SC2383.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C41375137__2SC2383.pdf",
+            "bytes": 161888,
+            "sha256": "e2cc3e3ebdf3cb7c4680692cab8a372accac335e6e3615446cba1d320ee0c0b2",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C21488",
+          "mpn": "MMBT5401LT1G",
+          "manufacturer": "onsemi",
+          "conveyor_family": "bjt",
+          "family_rank": 154,
+          "scale_manifest_rank": 154,
+          "canonical_mpn_candidate": "MMBT5401LT1G",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C21488__MMBT5401LT1G.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C21488__MMBT5401LT1G.pdf",
+            "bytes": 115331,
+            "sha256": "617c73e42f9a6297d98416b8fb214d2690d267449cc64d604c83c863c7e69e14",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C78591",
+          "mpn": "LMBT4401LT1G",
+          "manufacturer": "LRC",
+          "conveyor_family": "bjt",
+          "family_rank": 155,
+          "scale_manifest_rank": 155,
+          "canonical_mpn_candidate": "LMBT4401LT1G",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C78591__LMBT4401LT1G.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C78591__LMBT4401LT1G.pdf",
+            "bytes": 600534,
+            "sha256": "23d893091fe0842932d1a6f6818549c6405b6e774142dc6f5a848dde12e353fc",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C8659",
+          "mpn": "BC847BW,115",
+          "manufacturer": "Nexperia",
+          "conveyor_family": "bjt",
+          "family_rank": 157,
+          "scale_manifest_rank": 157,
+          "canonical_mpn_candidate": "BC847BW,115",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C8659__BC847BW-115.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C8659__BC847BW-115.pdf",
+            "bytes": 234132,
+            "sha256": "4aa62e1c1c457343cfaee8deb9d2c98b2b44dd20d6241b16eeb060bb17c2e909",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C8667",
+          "mpn": "PMBT3904,215",
+          "manufacturer": "Nexperia",
+          "conveyor_family": "bjt",
+          "family_rank": 158,
+          "scale_manifest_rank": 158,
+          "canonical_mpn_candidate": "PMBT3904,215",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C8667__PMBT3904-215.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C8667__PMBT3904-215.pdf",
+            "bytes": 217391,
+            "sha256": "52f4fd888bec7d42d0de56c670ae3713294da3ac93ab15424b63436ac7421b3b",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C22395569",
+          "mpn": "BZT52B12",
+          "manufacturer": "hongjiacheng",
+          "conveyor_family": "diode",
+          "family_rank": 88,
+          "scale_manifest_rank": 351,
+          "canonical_mpn_candidate": "BZT52B12",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C22395569__BZT52B12.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C22395569__BZT52B12.pdf",
+            "bytes": 230953,
+            "sha256": "12a6f531411e866a8dd2acbad16a6aa069fbc15a48012ac0fe57aa5a00428170",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C18199200",
+          "mpn": "SS320F",
+          "manufacturer": "hongjiacheng",
+          "conveyor_family": "diode",
+          "family_rank": 89,
+          "scale_manifest_rank": 352,
+          "canonical_mpn_candidate": "SS320F",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C18199200__SS320F.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C18199200__SS320F.pdf",
+            "bytes": 156782,
+            "sha256": "6e25dd5f1ade6ca07c36871eb9e57aac7496349766c2edec3ac53f8ba13c027b",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C18199095",
+          "mpn": "M4",
+          "manufacturer": "hongjiacheng",
+          "conveyor_family": "diode",
+          "family_rank": 90,
+          "scale_manifest_rank": 353,
+          "canonical_mpn_candidate": "M4",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C18199095__M4.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C18199095__M4.pdf",
+            "bytes": 188636,
+            "sha256": "03f2b9959f3611e4c90bdf6b79de906aebb1c9c6d573ad2d462d7456f381deb7",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C18199155",
+          "mpn": "ES1DW",
+          "manufacturer": "hongjiacheng",
+          "conveyor_family": "diode",
+          "family_rank": 91,
+          "scale_manifest_rank": 354,
+          "canonical_mpn_candidate": "ES1DW",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C18199155__ES1DW.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C18199155__ES1DW.pdf",
+            "bytes": 160154,
+            "sha256": "54add4ec6272851e0e7617457eae2ee8742aa6ad1d3bae43660e5ddada67cbe8",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C7502702",
+          "mpn": "RB521S-30",
+          "manufacturer": "hongjiacheng",
+          "conveyor_family": "diode",
+          "family_rank": 92,
+          "scale_manifest_rank": 355,
+          "canonical_mpn_candidate": "RB521S-30",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C7502702__RB521S-30.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C7502702__RB521S-30.pdf",
+            "bytes": 145162,
+            "sha256": "3458db1e3f512fdef9e786d2021bf41f7df026970d78eca94f7123ae1412b652",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C7502712",
+          "mpn": "DSK26",
+          "manufacturer": "hongjiacheng",
+          "conveyor_family": "diode",
+          "family_rank": 93,
+          "scale_manifest_rank": 356,
+          "canonical_mpn_candidate": "DSK26",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C7502712__DSK26.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C7502712__DSK26.pdf",
+            "bytes": 149032,
+            "sha256": "20da722d7ee5a1a0b66b37f2e138cff5e24c108e6dfe6c03b89f75fe57109826",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C7420332",
+          "mpn": "BAT46W",
+          "manufacturer": "hongjiacheng",
+          "conveyor_family": "diode",
+          "family_rank": 94,
+          "scale_manifest_rank": 357,
+          "canonical_mpn_candidate": "BAT46W",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C7420332__BAT46W.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C7420332__BAT46W.pdf",
+            "bytes": 162064,
+            "sha256": "5ac9f520cd9fa5669f8a90f739dd120fa60b73013255df4ed6036262aab75d24",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C18199101",
+          "mpn": "S2MB",
+          "manufacturer": "hongjiacheng",
+          "conveyor_family": "diode",
+          "family_rank": 95,
+          "scale_manifest_rank": 358,
+          "canonical_mpn_candidate": "S2MB",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C18199101__S2MB.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C18199101__S2MB.pdf",
+            "bytes": 181822,
+            "sha256": "fd9c2383610a7578a3aeb04392aa5d60709346a0cbbcb5292d0d6afde927dcf6",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C18199163",
+          "mpn": "ES3JB",
+          "manufacturer": "hongjiacheng",
+          "conveyor_family": "diode",
+          "family_rank": 97,
+          "scale_manifest_rank": 360,
+          "canonical_mpn_candidate": "ES3JB",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C18199163__ES3JB.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C18199163__ES3JB.pdf",
+            "bytes": 181862,
+            "sha256": "0cc0de327cc0967d325949c66d91824a2738577fcec2e28b0b72b102fac2c252",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C19077450",
+          "mpn": "BZT52C18S",
+          "manufacturer": "hongjiacheng",
+          "conveyor_family": "diode",
+          "family_rank": 98,
+          "scale_manifest_rank": 361,
+          "canonical_mpn_candidate": "BZT52C18S",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C19077450__BZT52C18S.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C19077450__BZT52C18S.pdf",
+            "bytes": 235849,
+            "sha256": "8d99c0b95ddbd62581320fd03378a72d97d914bc201c735536cd50e5f6753113",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C18199181",
+          "mpn": "SS54B",
+          "manufacturer": "hongjiacheng",
+          "conveyor_family": "diode",
+          "family_rank": 99,
+          "scale_manifest_rank": 362,
+          "canonical_mpn_candidate": "SS54B",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C18199181__SS54B.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C18199181__SS54B.pdf",
+            "bytes": 176594,
+            "sha256": "a178ee3c95547ba58e1026caa12a6232c0bd098dd637deef0de35d5a8c20b9d2",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C18199116",
+          "mpn": "RS3MF",
+          "manufacturer": "hongjiacheng",
+          "conveyor_family": "diode",
+          "family_rank": 100,
+          "scale_manifest_rank": 363,
+          "canonical_mpn_candidate": "RS3MF",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C18199116__RS3MF.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C18199116__RS3MF.pdf",
+            "bytes": 155569,
+            "sha256": "43c548c27970d6040650111d376ab553cfb805ba84cc3540574755e5c09aa3e5",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C19077406",
+          "mpn": "BZT52C8V2",
+          "manufacturer": "hongjiacheng",
+          "conveyor_family": "diode",
+          "family_rank": 101,
+          "scale_manifest_rank": 364,
+          "canonical_mpn_candidate": "BZT52C8V2",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C19077406__BZT52C8V2.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C19077406__BZT52C8V2.pdf",
+            "bytes": 240037,
+            "sha256": "1e58426ecb363e87dbad0da3e5a12350aadc7203342e2c339877f1de5b2d7631",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C19077419",
+          "mpn": "BZT52C33",
+          "manufacturer": "hongjiacheng",
+          "conveyor_family": "diode",
+          "family_rank": 102,
+          "scale_manifest_rank": 365,
+          "canonical_mpn_candidate": "BZT52C33",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C19077419__BZT52C33.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C19077419__BZT52C33.pdf",
+            "bytes": 240037,
+            "sha256": "1e58426ecb363e87dbad0da3e5a12350aadc7203342e2c339877f1de5b2d7631",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C8490",
+          "mpn": "LBSS138LT1G",
+          "manufacturer": "LRC",
+          "conveyor_family": "mosfet",
+          "family_rank": 105,
+          "scale_manifest_rank": 816,
+          "canonical_mpn_candidate": "LBSS138LT1G",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C8490__LBSS138LT1G.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C8490__LBSS138LT1G.pdf",
+            "bytes": 553341,
+            "sha256": "68ca0860943499d898685952b6e474ad4e07d6732d86a37557d2f6e4e444e5b2",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C5357578",
+          "mpn": "MDD50N03D",
+          "manufacturer": "MDD Microdiode Semiconductor",
+          "conveyor_family": "mosfet",
+          "family_rank": 106,
+          "scale_manifest_rank": 817,
+          "canonical_mpn_candidate": "MDD50N03D",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C5357578__MDD50N03D.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C5357578__MDD50N03D.pdf",
+            "bytes": 1784747,
+            "sha256": "6134758afd2974be9924424bd39dac70f0ca439e50647bf8061329f31abcf54c",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C2938369",
+          "mpn": "AO3402",
+          "manufacturer": "GOODWORK",
+          "conveyor_family": "mosfet",
+          "family_rank": 107,
+          "scale_manifest_rank": 818,
+          "canonical_mpn_candidate": "AO3402",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C2938369__AO3402.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C2938369__AO3402.pdf",
+            "bytes": 39982380,
+            "sha256": "a2a8bd54d32f4c4f053a9d8b02f0ce3ffc3c6a7dad7ff8cd8d7f73e34db196c7",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C4748804",
+          "mpn": "AO3400-HXY",
+          "manufacturer": "HXY MOSFET",
+          "conveyor_family": "mosfet",
+          "family_rank": 108,
+          "scale_manifest_rank": 819,
+          "canonical_mpn_candidate": "AO3400-HXY",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C4748804__AO3400-HXY.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C4748804__AO3400-HXY.pdf",
+            "bytes": 1358847,
+            "sha256": "7ce506ae4395432bdf88a4331a90d7b6ae0fa0e2c4c1b8d0a1e21a0899bf5ba7",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C2682907",
+          "mpn": "ST3422A",
+          "manufacturer": "STANSON Tech",
+          "conveyor_family": "mosfet",
+          "family_rank": 109,
+          "scale_manifest_rank": 820,
+          "canonical_mpn_candidate": "ST3422A",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C2682907__ST3422A.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C2682907__ST3422A.pdf",
+            "bytes": 487940,
+            "sha256": "4cc35a120bb955b7e2fefe976005b81a0278dc2e3855c49381475d2906b130a2",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C919608",
+          "mpn": "YJQ40G10A",
+          "manufacturer": "Yangzhou Yangjie Elec Tech",
+          "conveyor_family": "mosfet",
+          "family_rank": 110,
+          "scale_manifest_rank": 821,
+          "canonical_mpn_candidate": "YJQ40G10A",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C919608__YJQ40G10A.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C919608__YJQ40G10A.pdf",
+            "bytes": 1453585,
+            "sha256": "57e7ee9351bb19cbdab9a87e2d286d37b454e8f21472722351b7cc5b06b9f777",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C2830320",
+          "mpn": "FS8205A",
+          "manufacturer": "TECH PUBLIC",
+          "conveyor_family": "mosfet",
+          "family_rank": 111,
+          "scale_manifest_rank": 822,
+          "canonical_mpn_candidate": "FS8205A",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C2830320__FS8205A.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C2830320__FS8205A.pdf",
+            "bytes": 1838616,
+            "sha256": "e4795f69f664a75065594f766b93ca0a30e5ed4da513f96b9dc4752c1f0f5d0b",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C916399",
+          "mpn": "JSM2301S",
+          "manufacturer": "JSMSEMI",
+          "conveyor_family": "mosfet",
+          "family_rank": 112,
+          "scale_manifest_rank": 823,
+          "canonical_mpn_candidate": "JSM2301S",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C916399__JSM2301S.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C916399__JSM2301S.pdf",
+            "bytes": 824053,
+            "sha256": "4272ac0925a3c8e9cde3ea28dc81f1f4a457131d868f50c19b2e3d64125963d9",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C282405",
+          "mpn": "2N7002BK,215",
+          "manufacturer": "Nexperia",
+          "conveyor_family": "mosfet",
+          "family_rank": 113,
+          "scale_manifest_rank": 824,
+          "canonical_mpn_candidate": "2N7002BK,215",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C282405__2N7002BK-215.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C282405__2N7002BK-215.pdf",
+            "bytes": 750300,
+            "sha256": "f6871b60a8a08e23dbe08ac657c903e1c85e6fb0e89e3e5a6298eda3568c7c4d",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C2833150",
+          "mpn": "AP4435C",
+          "manufacturer": "ALLPOWER ShenZhen Quan Li Semiconductor",
+          "conveyor_family": "mosfet",
+          "family_rank": 114,
+          "scale_manifest_rank": 825,
+          "canonical_mpn_candidate": "AP4435C",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C2833150__AP4435C.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C2833150__AP4435C.pdf",
+            "bytes": 646846,
+            "sha256": "c0d3630b351ecc978844b2be2b756c786463cacca6522c8b4c9d9895a4652e95",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C359106",
+          "mpn": "15N10",
+          "manufacturer": "UMW Youtai Semiconductor Co Ltd",
+          "conveyor_family": "mosfet",
+          "family_rank": 115,
+          "scale_manifest_rank": 826,
+          "canonical_mpn_candidate": "15N10",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C359106__15N10.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C359106__15N10.pdf",
+            "bytes": 431850,
+            "sha256": "fb840971b7d44d7421df9dddd1d286eb9b8e199a739c002ed5399e969a6b9467",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C2681220",
+          "mpn": "SI2309A",
+          "manufacturer": "UMW Youtai Semiconductor Co Ltd",
+          "conveyor_family": "mosfet",
+          "family_rank": 116,
+          "scale_manifest_rank": 827,
+          "canonical_mpn_candidate": "SI2309A",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C2681220__SI2309A.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C2681220__SI2309A.pdf",
+            "bytes": 230135,
+            "sha256": "48baeff8d527388544a2eec382a63aa5fce2ef5f944de2cf4f279b1995e65f5e",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C127273",
+          "mpn": "BSS84AK,215",
+          "manufacturer": "Nexperia",
+          "conveyor_family": "mosfet",
+          "family_rank": 117,
+          "scale_manifest_rank": 828,
+          "canonical_mpn_candidate": "BSS84AK,215",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C127273__BSS84AK-215.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C127273__BSS84AK-215.pdf",
+            "bytes": 1454133,
+            "sha256": "69f7101be46592f4b10ef78cd7e402972400acaa05b23e89cdce4cddd9695ea2",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        }
+      ]
+    },
+    {
+      "wave": 3,
+      "quotas": {
+        "bjt": 13,
+        "diode": 13,
+        "mosfet": 14
+      },
+      "selected_count": 40,
+      "selected": [
+        {
+          "lcsc_id": "C18536",
+          "mpn": "2N3904S-RTK/PS",
+          "manufacturer": "KEC Semicon",
+          "conveyor_family": "bjt",
+          "family_rank": 164,
+          "scale_manifest_rank": 164,
+          "canonical_mpn_candidate": "2N3904S-RTK/PS",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C18536__2N3904S-RTK-PS.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C18536__2N3904S-RTK-PS.pdf",
+            "bytes": 702332,
+            "sha256": "349bb72e391ed0e645c40b05b032a0bc8a5083828549bc0980592777076fd8e3",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C5300004",
+          "mpn": "2N3906S-RTK/PS",
+          "manufacturer": "KEC Semicon",
+          "conveyor_family": "bjt",
+          "family_rank": 165,
+          "scale_manifest_rank": 165,
+          "canonical_mpn_candidate": "2N3906S-RTK/PS",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C5300004__2N3906S-RTK-PS.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C5300004__2N3906S-RTK-PS.pdf",
+            "bytes": 102889,
+            "sha256": "42b31066d509301c296301ecc6e2403c1567df06869d5ea3576839d354e270cb",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C151520",
+          "mpn": "BFP650H6327",
+          "manufacturer": "Infineon Technologies",
+          "conveyor_family": "bjt",
+          "family_rank": 168,
+          "scale_manifest_rank": 168,
+          "canonical_mpn_candidate": "BFP650H6327",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C151520__BFP650H6327.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C151520__BFP650H6327.pdf",
+            "bytes": 1545604,
+            "sha256": "0f679b0447a8a6027359f440e46988fd57e0837310d6b1b2a9641afe8f41d2e7",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C181167",
+          "mpn": "2SC1623（L6）",
+          "manufacturer": "Guangdong Hottech",
+          "conveyor_family": "bjt",
+          "family_rank": 169,
+          "scale_manifest_rank": 169,
+          "canonical_mpn_candidate": "2SC1623（L6）",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C181167__2SC1623-L6.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C181167__2SC1623-L6.pdf",
+            "bytes": 1251763,
+            "sha256": "c06c375a068dd5f1a9cafc88f1264e0cfb8e0388049664fdb53487d1e26908c8",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C97290",
+          "mpn": "LH8550QLT1G",
+          "manufacturer": "LRC",
+          "conveyor_family": "bjt",
+          "family_rank": 171,
+          "scale_manifest_rank": 171,
+          "canonical_mpn_candidate": "LH8550QLT1G",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C97290__LH8550QLT1G.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C97290__LH8550QLT1G.pdf",
+            "bytes": 141745,
+            "sha256": "0a5d8504b1372d6c261ab737c2cee2325d11f9edd6aa75c0b345f7512f088333",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C5189252",
+          "mpn": "SS8050W",
+          "manufacturer": "TWGMC",
+          "conveyor_family": "bjt",
+          "family_rank": 172,
+          "scale_manifest_rank": 172,
+          "canonical_mpn_candidate": "SS8050W",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C5189252__SS8050W.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C5189252__SS8050W.pdf",
+            "bytes": 9798438,
+            "sha256": "5e9c149124c71fdaff9fb32a40cbf5d12167dbead07683671c2a59fa46a8a3fb",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C126303",
+          "mpn": "2SC5824T100Q",
+          "manufacturer": "ROHM Semicon",
+          "conveyor_family": "bjt",
+          "family_rank": 173,
+          "scale_manifest_rank": 173,
+          "canonical_mpn_candidate": "2SC5824T100Q",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C126303__2SC5824T100Q.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C126303__2SC5824T100Q.pdf",
+            "bytes": 576021,
+            "sha256": "b4eef31ec079ecc6e368053492f0657bd4ecbe1e29ca00ce716977fc306adbea",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C551528",
+          "mpn": "MJD44H11J",
+          "manufacturer": "Nexperia",
+          "conveyor_family": "bjt",
+          "family_rank": 175,
+          "scale_manifest_rank": 175,
+          "canonical_mpn_candidate": "MJD44H11J",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C551528__MJD44H11J.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C551528__MJD44H11J.pdf",
+            "bytes": 242684,
+            "sha256": "b887977f1df2e25f299a0ec5b2be06430f4454da04e9c11e523c822b0c82bdd2",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C150094",
+          "mpn": "BC847CLT1G",
+          "manufacturer": "onsemi",
+          "conveyor_family": "bjt",
+          "family_rank": 179,
+          "scale_manifest_rank": 179,
+          "canonical_mpn_candidate": "BC847CLT1G",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C150094__BC847CLT1G.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C150094__BC847CLT1G.pdf",
+            "bytes": 110646,
+            "sha256": "a01affdde0271e3589122587b4be78b084263042bdde48698c577f630c092d80",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C47515",
+          "mpn": "MJD45H11T4G",
+          "manufacturer": "onsemi",
+          "conveyor_family": "bjt",
+          "family_rank": 180,
+          "scale_manifest_rank": 180,
+          "canonical_mpn_candidate": "MJD45H11T4G",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C47515__MJD45H11T4G.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C47515__MJD45H11T4G.pdf",
+            "bytes": 129531,
+            "sha256": "4f95f0add038033491b7bc1c6a5db1e24b409d5572cc6ec42f1b33438a5d6176",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C5278868",
+          "mpn": "PMBT3904",
+          "manufacturer": "PAKER",
+          "conveyor_family": "bjt",
+          "family_rank": 183,
+          "scale_manifest_rank": 183,
+          "canonical_mpn_candidate": "PMBT3904",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C5278868__PMBT3904.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C5278868__PMBT3904.pdf",
+            "bytes": 1669901,
+            "sha256": "443cfb1f0d621145e9756ee8bd4e87b28419eef4be4b70c9172594101eab5c3b",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C2844025",
+          "mpn": "S8050M-D",
+          "manufacturer": "Foshan Blue Rocket Elec",
+          "conveyor_family": "bjt",
+          "family_rank": 185,
+          "scale_manifest_rank": 185,
+          "canonical_mpn_candidate": "S8050M-D",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C2844025__S8050M-D.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C2844025__S8050M-D.pdf",
+            "bytes": 895506,
+            "sha256": "07b7089a1fb615a41637cd047bb9fa4b646940d47a87f81bfed5054f147a7435",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C13962",
+          "mpn": "LMBT3906DW1T1G",
+          "manufacturer": "LRC",
+          "conveyor_family": "bjt",
+          "family_rank": 186,
+          "scale_manifest_rank": 186,
+          "canonical_mpn_candidate": "LMBT3906DW1T1G",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C13962__LMBT3906DW1T1G.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C13962__LMBT3906DW1T1G.pdf",
+            "bytes": 197826,
+            "sha256": "d92abb6c4c40ca56816d5932b9f5999e7e5ab5fdc97499168e174a0e9c8cf2c7",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C22375298",
+          "mpn": "BZT52C2V7S",
+          "manufacturer": "hongjiacheng",
+          "conveyor_family": "diode",
+          "family_rank": 103,
+          "scale_manifest_rank": 366,
+          "canonical_mpn_candidate": "BZT52C2V7S",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C22375298__BZT52C2V7S.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C22375298__BZT52C2V7S.pdf",
+            "bytes": 235849,
+            "sha256": "8d99c0b95ddbd62581320fd03378a72d97d914bc201c735536cd50e5f6753113",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C18199175",
+          "mpn": "SS210",
+          "manufacturer": "hongjiacheng",
+          "conveyor_family": "diode",
+          "family_rank": 104,
+          "scale_manifest_rank": 367,
+          "canonical_mpn_candidate": "SS210",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C18199175__SS210.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C18199175__SS210.pdf",
+            "bytes": 179711,
+            "sha256": "dd6685a75cdccbe3a6a290f916cb29ad27e9252703862dc167c4967c2ff12bf4",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C19077436",
+          "mpn": "BZT52C3V0S",
+          "manufacturer": "hongjiacheng",
+          "conveyor_family": "diode",
+          "family_rank": 105,
+          "scale_manifest_rank": 368,
+          "canonical_mpn_candidate": "BZT52C3V0S",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C19077436__BZT52C3V0S.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C19077436__BZT52C3V0S.pdf",
+            "bytes": 235849,
+            "sha256": "8d99c0b95ddbd62581320fd03378a72d97d914bc201c735536cd50e5f6753113",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C7502716",
+          "mpn": "BAS70WS",
+          "manufacturer": "hongjiacheng",
+          "conveyor_family": "diode",
+          "family_rank": 106,
+          "scale_manifest_rank": 369,
+          "canonical_mpn_candidate": "BAS70WS",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C7502716__BAS70WS.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C7502716__BAS70WS.pdf",
+            "bytes": 160518,
+            "sha256": "f7cc6507b660d11a040d67aa1e5b8d16b2d370577b88516c61c3fc60708f7aef",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C22395573",
+          "mpn": "BZX584C2V4",
+          "manufacturer": "hongjiacheng",
+          "conveyor_family": "diode",
+          "family_rank": 107,
+          "scale_manifest_rank": 370,
+          "canonical_mpn_candidate": "BZX584C2V4",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C22395573__BZX584C2V4.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C22395573__BZX584C2V4.pdf",
+            "bytes": 215619,
+            "sha256": "c3bd1e74a20c839f2752124190b102cefde941279aed375a41560e907cd9b4c3",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C19077494",
+          "mpn": "SMBJ5339B",
+          "manufacturer": "hongjiacheng",
+          "conveyor_family": "diode",
+          "family_rank": 108,
+          "scale_manifest_rank": 371,
+          "canonical_mpn_candidate": "SMBJ5339B",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C19077494__SMBJ5339B.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C19077494__SMBJ5339B.pdf",
+            "bytes": 251473,
+            "sha256": "64aade9d6c8bcc630328e7b0e3a958d2e8a83c0e2e2b23ab0c7cb96acffbf112",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C7420342",
+          "mpn": "ES2JF",
+          "manufacturer": "hongjiacheng",
+          "conveyor_family": "diode",
+          "family_rank": 109,
+          "scale_manifest_rank": 372,
+          "canonical_mpn_candidate": "ES2JF",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C7420342__ES2JF.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C7420342__ES2JF.pdf",
+            "bytes": 147974,
+            "sha256": "e9d9b5da7687ff98dd2ef09be3768594a289dd98a3f45ffac899966c88f975f9",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C19077473",
+          "mpn": "BZX84C18",
+          "manufacturer": "hongjiacheng",
+          "conveyor_family": "diode",
+          "family_rank": 110,
+          "scale_manifest_rank": 373,
+          "canonical_mpn_candidate": "BZX84C18",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C19077473__BZX84C18.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C19077473__BZX84C18.pdf",
+            "bytes": 221225,
+            "sha256": "39b6ea9e2fb90c0f556434867115de516305a365515113676b906ff1ade79e83",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C19077481",
+          "mpn": "1SMA4743A",
+          "manufacturer": "hongjiacheng",
+          "conveyor_family": "diode",
+          "family_rank": 111,
+          "scale_manifest_rank": 374,
+          "canonical_mpn_candidate": "1SMA4743A",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C19077481__1SMA4743A.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C19077481__1SMA4743A.pdf",
+            "bytes": 204716,
+            "sha256": "a66d0e20d37b19b6776d33e5d234d792d89e30813774a7dde79429c97d6773dd",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C19077467",
+          "mpn": "BZX84C3V3",
+          "manufacturer": "hongjiacheng",
+          "conveyor_family": "diode",
+          "family_rank": 112,
+          "scale_manifest_rank": 375,
+          "canonical_mpn_candidate": "BZX84C3V3",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C19077467__BZX84C3V3.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C19077467__BZX84C3V3.pdf",
+            "bytes": 221225,
+            "sha256": "39b6ea9e2fb90c0f556434867115de516305a365515113676b906ff1ade79e83",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C19077476",
+          "mpn": "1SMA4733A",
+          "manufacturer": "hongjiacheng",
+          "conveyor_family": "diode",
+          "family_rank": 113,
+          "scale_manifest_rank": 376,
+          "canonical_mpn_candidate": "1SMA4733A",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C19077476__1SMA4733A.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C19077476__1SMA4733A.pdf",
+            "bytes": 204716,
+            "sha256": "a66d0e20d37b19b6776d33e5d234d792d89e30813774a7dde79429c97d6773dd",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C7502697",
+          "mpn": "B0530WS",
+          "manufacturer": "hongjiacheng",
+          "conveyor_family": "diode",
+          "family_rank": 114,
+          "scale_manifest_rank": 377,
+          "canonical_mpn_candidate": "B0530WS",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C7502697__B0530WS.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C7502697__B0530WS.pdf",
+            "bytes": 162894,
+            "sha256": "e820f20f3c2a9ea5e6f5e6e778f4247ede3eef5cd48350c6efc41f5a1211f78f",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C7502729",
+          "mpn": "BAW56",
+          "manufacturer": "hongjiacheng",
+          "conveyor_family": "diode",
+          "family_rank": 115,
+          "scale_manifest_rank": 378,
+          "canonical_mpn_candidate": "BAW56",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C7502729__BAW56.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C7502729__BAW56.pdf",
+            "bytes": 148571,
+            "sha256": "a2914f785169191d77b758bf843a5a607ff5986edc5e4c333eec1516086fb77e",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C7431445",
+          "mpn": "3400",
+          "manufacturer": "HL",
+          "conveyor_family": "mosfet",
+          "family_rank": 118,
+          "scale_manifest_rank": 829,
+          "canonical_mpn_candidate": "3400",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C7431445__3400.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C7431445__3400.pdf",
+            "bytes": 885356,
+            "sha256": "1c39d4b8f551fbf497f3ed2481a419f840b4f039372762becf4da134c350f35e",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C232391",
+          "mpn": "2N7002WT1G",
+          "manufacturer": "onsemi",
+          "conveyor_family": "mosfet",
+          "family_rank": 119,
+          "scale_manifest_rank": 830,
+          "canonical_mpn_candidate": "2N7002WT1G",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C232391__2N7002WT1G.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C232391__2N7002WT1G.pdf",
+            "bytes": 159984,
+            "sha256": "16165ab815b5680d45ce8373e69ff65399486a0bbe51f24243299917e7b9fd06",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C10493",
+          "mpn": "SI2309CDS-T1-GE3",
+          "manufacturer": "Vishay Intertech",
+          "conveyor_family": "mosfet",
+          "family_rank": 120,
+          "scale_manifest_rank": 831,
+          "canonical_mpn_candidate": "SI2309CDS-T1-GE3",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C10493__SI2309CDS-T1-GE3.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C10493__SI2309CDS-T1-GE3.pdf",
+            "bytes": 110373,
+            "sha256": "455070140dfe2f823e26521c7bae64c76de0a91b014a68d435b3a882be4c5551",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C2830301",
+          "mpn": "DMG1012T",
+          "manufacturer": "TECH PUBLIC",
+          "conveyor_family": "mosfet",
+          "family_rank": 122,
+          "scale_manifest_rank": 833,
+          "canonical_mpn_candidate": "DMG1012T",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C2830301__DMG1012T.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C2830301__DMG1012T.pdf",
+            "bytes": 1636457,
+            "sha256": "3f74222668b5444b66e679f61314fd1f86b0101240c951b4c6f6e8242a538e0e",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C2938370",
+          "mpn": "AO3415",
+          "manufacturer": "GOODWORK",
+          "conveyor_family": "mosfet",
+          "family_rank": 123,
+          "scale_manifest_rank": 834,
+          "canonical_mpn_candidate": "AO3415",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C2938370__AO3415.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C2938370__AO3415.pdf",
+            "bytes": 40474631,
+            "sha256": "f4080695c57a95c27e56de17c85b5691653e680d16949baffbfdb3652dc5c847",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C2844731",
+          "mpn": "2N7002T",
+          "manufacturer": "TECH PUBLIC",
+          "conveyor_family": "mosfet",
+          "family_rank": 124,
+          "scale_manifest_rank": 835,
+          "canonical_mpn_candidate": "2N7002T",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C2844731__2N7002T.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C2844731__2N7002T.pdf",
+            "bytes": 810483,
+            "sha256": "e8f47ea3e12794c426f9e5cff107e50fd1a8cdabbd4a4f8415e35244cda636e6",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C81488",
+          "mpn": "2N7002P,215",
+          "manufacturer": "Nexperia",
+          "conveyor_family": "mosfet",
+          "family_rank": 125,
+          "scale_manifest_rank": 836,
+          "canonical_mpn_candidate": "2N7002P,215",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C81488__2N7002P-215.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C81488__2N7002P-215.pdf",
+            "bytes": 319219,
+            "sha256": "e46f90824a350be0ec3fcfea619b388a736ddec3c986561a8819fa07b987a767",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C5334586",
+          "mpn": "SK2301AAT",
+          "manufacturer": "Shikues",
+          "conveyor_family": "mosfet",
+          "family_rank": 126,
+          "scale_manifest_rank": 837,
+          "canonical_mpn_candidate": "SK2301AAT",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C5334586__SK2301AAT.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C5334586__SK2301AAT.pdf",
+            "bytes": 541963,
+            "sha256": "148f66455bcf694a8ab58fa772f1d27532190e9e5ed87007e44d53da8ccc134f",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C7471106",
+          "mpn": "15N10",
+          "manufacturer": "HL",
+          "conveyor_family": "mosfet",
+          "family_rank": 127,
+          "scale_manifest_rank": 838,
+          "canonical_mpn_candidate": "15N10",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C7471106__15N10.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C7471106__15N10.pdf",
+            "bytes": 1339142,
+            "sha256": "f8f777193ad882004aef0e715d5cf8b2efbf9e847c4138e16f6baed397aa6470",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C90479",
+          "mpn": "BLM3401",
+          "manufacturer": "BL Shanghai Belling",
+          "conveyor_family": "mosfet",
+          "family_rank": 128,
+          "scale_manifest_rank": 839,
+          "canonical_mpn_candidate": "BLM3401",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C90479__BLM3401.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C90479__BLM3401.pdf",
+            "bytes": 290323,
+            "sha256": "925a8cb0af8b5e0b4c694d60eae6b2227dded9f843899d288866925d69d5d81f",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C2849575",
+          "mpn": "AP2003",
+          "manufacturer": "ALLPOWER ShenZhen Quan Li Semiconductor",
+          "conveyor_family": "mosfet",
+          "family_rank": 129,
+          "scale_manifest_rank": 840,
+          "canonical_mpn_candidate": "AP2003",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C2849575__AP2003.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C2849575__AP2003.pdf",
+            "bytes": 3663008,
+            "sha256": "7a62f57e03a697d69fe4da72fb546954b92f619340a01fac1029258f15679a85",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C7543836",
+          "mpn": "40N06D",
+          "manufacturer": "HL",
+          "conveyor_family": "mosfet",
+          "family_rank": 130,
+          "scale_manifest_rank": 841,
+          "canonical_mpn_candidate": "40N06D",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C7543836__40N06D.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C7543836__40N06D.pdf",
+            "bytes": 778411,
+            "sha256": "83904394626a9397eb38c5c434694b69364ab24edb6d9109e393069d299c058b",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C5224175",
+          "mpn": "SI2300",
+          "manufacturer": "ElecSuper",
+          "conveyor_family": "mosfet",
+          "family_rank": 131,
+          "scale_manifest_rank": 842,
+          "canonical_mpn_candidate": "SI2300",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C5224175__SI2300.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C5224175__SI2300.pdf",
+            "bytes": 409273,
+            "sha256": "a58ca6754c7d2e1cff2884aab49832ad6c4854a7de407c2073d95ca6c8724864",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        },
+        {
+          "lcsc_id": "C20512",
+          "mpn": "DMG1012T-7",
+          "manufacturer": "Diodes Incorporated",
+          "conveyor_family": "mosfet",
+          "family_rank": 132,
+          "scale_manifest_rank": 843,
+          "canonical_mpn_candidate": "DMG1012T-7",
+          "datasheet": {
+            "source_path": "tools/part-feeder/data/staging/scale-1k/datasheets/C20512__DMG1012T-7.pdf",
+            "copied_path": "tools/conveyor/data/staging/batch-3/datasheets/C20512__DMG1012T-7.pdf",
+            "bytes": 520141,
+            "sha256": "2f226aaee67a900773753a79c93d565820d01a300a4b1b7409fd07072da8aa40",
+            "status": "valid-cache-hit-hash-reproduced"
+          }
+        }
+      ]
+    }
+  ],
+  "outputs": {
+    "ignored_staging_root": "tools/conveyor/data/staging/batch-3",
+    "tracked_execution_record": "docs/batch-3-execution.json"
+  },
+  "prohibitions": {
+    "review_performed": false,
+    "promotion_performed": false,
+    "push_performed": false,
+    "deployment_performed": false,
+    "publication_performed": false,
+    "github_touched": false
+  }
+}
