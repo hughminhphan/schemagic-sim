@@ -29,6 +29,25 @@ function runFit(payload) {
   }
 }
 
+function captureNativeResidualProbeNetlists() {
+  const program = String.raw`
+import json
+import fit_conveyor as subject
+captured = []
+subject.run_ngspice = lambda netlist: captured.append(netlist) or {}
+subject.vector = lambda *_args: [0.7]
+subject.diode_bench({"IS": 1e-12, "N": 1.5, "RS": 0.1}, [1e-3])
+subject.bjt_bench({"IS": 1e-15, "BF": 100, "VAF": 100, "IKF": 0.1, "ISE": 1e-15, "RB": 1, "RC": 0.1, "RE": 0.1}, [(1e-3, 100)], 5, "n")
+subject.vdmos_bench([2, 1, 0.1, 0.01, 0.1], {"RS": 0.1, "CGS": 1e-9, "CGDMAX": 1e-9, "CGDMIN": 1e-12, "CJO": 1e-9, "RB": 1}, [], [], [])
+print(json.dumps(captured))
+`;
+  const result = spawnSync(venvPython, ["-c", program], {
+    cwd: pythonDir, encoding: "utf8", timeout: 300_000,
+  });
+  assert.equal(result.status, 0, `native residual probe capture failed: ${result.stdout}\n${result.stderr}`);
+  return JSON.parse(result.stdout);
+}
+
 const curve = (name, xq, xu, yq, yu, conditions, points, page = "p. 3") => ({
   name, x_axis: { quantity: xq, unit: xu, scale: "linear" }, y_axis: { quantity: yq, unit: yu, scale: "log" },
   test_conditions: conditions, page_reference: page, points: points.map(([x, y]) => ({ x, y })),
@@ -115,6 +134,15 @@ test("zero series resistance is a declared held default, not a bound artefact", 
 });
 
 // --------------------------------------------------------------- residual provenance
+
+test("all native conveyor residual probes pin the cited 25 degC temperature", { skip }, () => {
+  const probes = captureNativeResidualProbeNetlists();
+  assert.equal(probes.length, 3);
+  for (const netlist of probes) {
+    assert.equal(netlist.match(/^\.temp 25$/gm)?.length, 1, netlist);
+    assert.ok(netlist.indexOf("\n.temp 25\n") < netlist.indexOf("\n.op\n"), netlist);
+  }
+});
 
 test("residuals are measured through native ngspice, not the fitter's own algebra", { skip }, () => {
   const fitted = runFit(diodePayload([curve("Forward", "Forward voltage", "V", "Forward current", "A", "25 degC", CLEAN_IV)]));

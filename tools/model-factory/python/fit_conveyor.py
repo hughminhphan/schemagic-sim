@@ -260,11 +260,12 @@ def select_mosfet_curves(extraction, rejected):
 # 40% transfer residual still on the table). Every probe therefore asks for a solution
 # far tighter than the differences the optimizer needs to see.
 PROBE_OPTIONS = ".options reltol=1e-6 abstol=1e-15 vntol=1e-9 itl1=500"
+NOMINAL_TEMPERATURE = ".temp 25"
 
 
 def diode_bench(params, currents):
     card = ".model DFIT D(IS={IS:.12e} N={N:.12g} RS={RS:.12g})".format(**params)
-    lines = ["Conveyor diode DC probe", PROBE_OPTIONS, card]
+    lines = ["Conveyor diode DC probe", PROBE_OPTIONS, card, NOMINAL_TEMPERATURE]
     for i, current in enumerate(currents, 1):
         # The 1G bleed gives the anode a DC path so the matrix stays non-singular when
         # the fit lands on RS = 0; at 1 V it leaks 1 nA against currents of 1e-4 A and up.
@@ -286,7 +287,7 @@ def bjt_bench(params, targets, vce, polarity):
     card = (".model QFIT {kind}(IS={IS:.12e} BF={BF:.12g} NF=1 VAF={VAF:.12g} "
             "IKF={IKF:.12e} ISE={ISE:.12e} NE=1.5 RB={RB:.12g} RC={RC:.12g} RE={RE:.12g})"
             ).format(kind=kind, **params)
-    lines = ["Conveyor BJT DC probe", PROBE_OPTIONS, card]
+    lines = ["Conveyor BJT DC probe", PROBE_OPTIONS, card, NOMINAL_TEMPERATURE]
     supply = -vce if pnp else vce
     for i, (ic, hfe) in enumerate(targets, 1):
         ib = ic / hfe
@@ -303,7 +304,7 @@ def vdmos_bench(dc, fixed, transfer, outputs, rdson):
             f"RD={rd:.12g} RS={fixed['RS']:.12g} RG=1e-4 RDS=1e9 "
             f"CGS={fixed['CGS']:.12e} CGDMAX={fixed['CGDMAX']:.12e} CGDMIN={fixed['CGDMIN']:.12e} "
             f"CJO={fixed['CJO']:.12e} IS=1e-12 N=1.5 RB={fixed['RB']:.12g} TNOM=27)")
-    lines = ["Conveyor VDMOS DC probe", PROBE_OPTIONS, card]
+    lines = ["Conveyor VDMOS DC probe", PROBE_OPTIONS, card, NOMINAL_TEMPERATURE]
     n = 0
     for vgs, vds, _ in transfer:
         n += 1
