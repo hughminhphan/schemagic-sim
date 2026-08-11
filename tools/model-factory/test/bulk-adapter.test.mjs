@@ -559,6 +559,20 @@ test("BJT saturation limits seed only a native fit and never become final resist
   assert.equal(fit.optimizer.resistance_fit_supported, true);
 });
 
+test("BJT F1 preserves partial saturation bounds without using them to identify resistances", () => {
+  const payload = bjtExtraction();
+  payload.specs.saturation_points = [
+    { collector_current: quantity(0.01, "A"), base_current: quantity(0.001, "A"), vce_sat: { ...quantity(0.20, "V"), source_kind: "maximum" }, vbe_sat: null },
+    { collector_current: quantity(0.10, "A"), base_current: quantity(0.010, "A"), vce_sat: { ...quantity(1.00, "V"), source_kind: "maximum" }, vbe_sat: { ...quantity(1.00, "V"), source_kind: "maximum" } },
+  ];
+  const facts = bjtArchetypeFacts(bjtPart(), payload);
+  assert.equal(facts.saturation_bound_points.length, 2);
+  assert.equal(facts.saturation_points.length, 1);
+  const fit = fitBulkPart(bjtPart(), payload, { forceF1: true });
+  assert.equal(fit.optimizer.resistance_fit_supported, false);
+  assert.match(fit.parameter_metadata.RB.status, /held default/);
+});
+
 test("BJT impossible condition-specific hard bounds fail without weakening inclusive checks", () => {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "factory-bjt-hard-bound-test-"));
   try {

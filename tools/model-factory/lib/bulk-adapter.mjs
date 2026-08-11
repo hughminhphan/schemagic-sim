@@ -172,7 +172,7 @@ export function bjtArchetypeFacts(part, extraction) {
     }))
     .filter((point) => Number(point.collector_current?.value) > 0 && Number(point.vce?.value) > 0 && Number(point.hfe?.value) > 0);
   if (!gainPoints.length) throw new Error(insufficientExtractedTargetsReason(part, extraction));
-  const saturationPoints = (specs.saturation_points ?? [])
+  const saturationBoundPoints = (specs.saturation_points ?? [])
     .filter((point) => isNominalTemperatureEvidence(point))
     .map((point) => ({
       ...point,
@@ -181,7 +181,10 @@ export function bjtArchetypeFacts(part, extraction) {
       vce_sat: magnitudeQuantity(point.vce_sat),
       vbe_sat: magnitudeQuantity(point.vbe_sat),
     }))
-    .filter((point) => Number(point.collector_current?.value) > 0 && Number(point.base_current?.value) > 0 && Number(point.vce_sat?.value) > 0 && Number(point.vbe_sat?.value) > 0);
+    .filter((point) => Number(point.collector_current?.value) > 0 && Number(point.base_current?.value) > 0
+      && (Number(point.vce_sat?.value) > 0 || Number(point.vbe_sat?.value) > 0));
+  const saturationPoints = saturationBoundPoints
+    .filter((point) => Number(point.vce_sat?.value) > 0 && Number(point.vbe_sat?.value) > 0);
   const ft = validEvidence(specs.ft, "Hz");
   const ftIc = ft ? conditionCurrent(ft.conditions, null) : null;
   const ftVce = ft ? conditionNumber(ft.conditions, "VCE", null) : null;
@@ -207,6 +210,7 @@ export function bjtArchetypeFacts(part, extraction) {
     device_class: /\bpower\b/i.test(`${part.subcategory ?? ""} ${part.description ?? ""}`) ? "power" : "signal",
     gain_points: gainPoints,
     saturation_points: saturationPoints,
+    saturation_bound_points: saturationBoundPoints,
     ...(frequencyResponse ? { frequency_response: frequencyResponse } : {}),
     ...(capacitances ? { capacitances } : {}),
   };
@@ -683,7 +687,7 @@ function bulkFactoryFacts(part, extraction, fit, identity, source) {
       gainPoints.push(...canonicalF1Facts.gain_points);
     }
     const saturationPoints = fit.fidelity === "F1"
-      ? canonicalF1Facts.saturation_points
+      ? canonicalF1Facts.saturation_bound_points
       : (specs.saturation_points ?? []).map((point) => ({
         ...point,
         collector_current: magnitudeQuantity(point.collector_current),
@@ -723,7 +727,7 @@ function bulkFactoryFacts(part, extraction, fit, identity, source) {
       ...(frequencyResponse ? { TF: frequencyResponse } : {}),
       ...(capacitances?.cobo && (fit.parameter_metadata?.CJC?.status ?? "").startsWith("voltage-de-embedded") ? { CJC: { cobo: capacitances.cobo, cobo_vcb: capacitances.cobo_vcb } } : {}),
       ...(capacitances?.cibo && (fit.parameter_metadata?.CJE?.status ?? "").startsWith("voltage-de-embedded") ? { CJE: { cibo: capacitances.cibo, cibo_veb: capacitances.cibo_veb } } : {}),
-      ...(resistanceFitted ? { RB_RC_RE: saturationPoints } : {}),
+      ...(resistanceFitted ? { RB_RC_RE: canonicalF1Facts.saturation_points } : {}),
     };
     return { ...common, gain_points: gainPoints, saturation_points: saturationPoints, frequency_response: frequencyResponse, capacitances, derived_model_inputs: derivedModelInputs };
   }
