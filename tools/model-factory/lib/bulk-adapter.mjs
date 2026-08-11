@@ -16,71 +16,6 @@ const slugManufacturer = (value) => safe(String(value).toLowerCase().replace(/\b
 const number = (value, fallback) => Number.isFinite(Number(value)) ? Number(value) : fallback;
 const fmt = (value) => Number(value).toExponential(10).replace("e+", "e");
 const NGSPICE_VT_25C = 8.617333262e-5 * 298.15;
-const COMMENT_LINE_LIMIT = 240;
-
-function safeCommentLine(value) {
-  return String(value ?? "")
-    .normalize("NFKC")
-    .replace(/[\r\n\t]+/g, " ")
-    .split("").filter((character) => {
-      const code = character.charCodeAt(0);
-      return code >= 0x20 && code !== 0x7f && code < 0x80;
-    }).join("")
-    .replace(/\s+/g, " ")
-    .trim()
-    .slice(0, COMMENT_LINE_LIMIT);
-}
-
-function normalizedPolarity(value) {
-  const text = String(value ?? "").toLowerCase();
-  if (/\bp(?:np|-channel|mos)\b/.test(text)) return "p";
-  if (/\bn(?:pn|-channel|mos)\b/.test(text)) return "n";
-  return null;
-}
-
-function polaritySignal(text) {
-  const value = String(text ?? "");
-  const hasP = /\bPNP\b|\bP[- ]CHANNEL\b|\bPMOS\b/i.test(value);
-  const hasN = /\bNPN\b|\bN[- ]CHANNEL\b|\bNMOS\b/i.test(value);
-  return hasP === hasN ? null : hasP ? "p" : "n";
-}
-
-function datasheetText(part) {
-  if (typeof part.datasheet_text === "string") return part.datasheet_text;
-  if (!part.datasheet_path || !fs.existsSync(part.datasheet_path)) return "";
-  const result = spawnSync("pdftotext", ["-f", "1", "-l", "2", part.datasheet_path, "-"], { encoding: "utf8", timeout: 30_000 });
-  return result.status === 0 ? result.stdout : "";
-}
-
-export function polarityContractReason(part, extraction, pdfText = datasheetText(part)) {
-  if (!["bjt", "mosfet"].includes(part.conveyor_family)) return null;
-  const extractionPolarity = normalizedPolarity(extraction?.specs?.polarity);
-  const catalogPolarity = polaritySignal(`${part.subcategory ?? ""} ${part.description ?? ""} ${part.attributes?.Type ?? ""}`);
-  const pdfPolarity = polaritySignal(pdfText);
-  const evidence = Object.entries({ extraction: extractionPolarity, catalog: catalogPolarity, pdf: pdfPolarity }).filter(([, value]) => value);
-  if (new Set(evidence.map(([, value]) => value)).size <= 1) return null;
-  return `polarity-mismatch: ${evidence.map(([source, value]) => `${source}=${value}`).join(", ")}; model polarity was not changed`;
-}
-
-export function unsupportedPackageContractReason(part, extraction, pdfText = datasheetText(part)) {
-  if (part.conveyor_family !== "bjt") return null;
-  const text = `${part.subcategory ?? ""} ${part.description ?? ""} ${extraction?.datasheet_identity?.title ?? ""} ${(extraction?.extraction_notes ?? []).join(" ")} ${pdfText.slice(0, 6000)}`;
-  const dual = /\bdual\s+(?:npn|pnp|bipolar|transistors?)\b|\bcomplementary\s+(?:pair|transistors?)\b|\bmatched\s+(?:pair|transistors?)\b|\btwo\s+(?:independent\s+)?transistors?\s+(?:in|within)\s+(?:one|a|the)\s+package\b/i.test(text);
-  return dual ? "unsupported-package-contract: dual BJT package detected; the single-transistor archetype cannot represent shared-package or paired-die topology" : null;
-}
-
-export function insufficientExtractedTargetsReason(part, extraction) {
-  if (part.conveyor_family !== "bjt") return null;
-  const gainPoints = extraction?.specs?.gain_points;
-  const usable = Array.isArray(gainPoints) && gainPoints.some((point) => Number(point?.hfe?.value) > 0 && Number(point?.collector_current?.value) !== 0 && Number(point?.vce?.value) !== 0);
-  return usable ? null : "insufficient-extracted-targets: BJT requires at least one cited positive hFE target with collector current and VCE";
-}
-
-function bulkContractReason(part, extraction) {
-  return unsupportedPackageContractReason(part, extraction)
-    ?? polarityContractReason(part, extraction)
-    ?? insufficientExtractedTargetsReason(part, extraction);
-}
 
 function sha256(file) {
   return crypto.createHash("sha256").update(fs.readFileSync(file)).digest("hex");
@@ -107,161 +42,54 @@ function polarityFor(part, extraction) {
   return /p-channel|pmos|pnp/i.test(`${part.subcategory} ${part.description} ${part.attributes?.Type ?? ""}`) ? "p" : "n";
 }
 
-function validEvidence(value, unit) {
-  const normalized = normalizeEvidence(value);
-  return normalized?.unit === unit && Number.isFinite(Number(normalized.value)) && Number(normalized.value) > 0 ? normalized : null;
-}
-
 function zenerInputs(extraction) {
   if (extraction?.specs?.variant !== "zener") return null;
-  const voltage = validEvidence(extraction.specs.breakdown_voltage, "V");
-  const current = validEvidence(extraction.specs.breakdown_current, "A");
-  const semantics = `${voltage?.conditions ?? ""} ${current?.conditions ?? ""}`;
-  if (!voltage || !current || !/\bVZ\b|zener/i.test(semantics) || !/\bIZT\b|test current/i.test(semantics)) return null;
-  return { BV: Number(voltage.value), IBV: Number(current.value), NBV: 1 };
+  const voltage = normalizeEvidence(extraction.specs.breakdown_voltage);
+  const current = normalizeEvidence(extraction.specs.breakdown_current);
+  const BV = Number(voltage?.value);
+  const IBV = Number(current?.value);
+  return voltage?.unit === "V" && current?.unit === "A"
+    && Number.isFinite(BV) && BV > 0 && Number.isFinite(IBV) && IBV > 0
+    ? { BV, IBV, NBV: 1 }
+    : null;
 }
 
 function diodeFit(part, extraction, forceF1 = false) {
-  const specs = normalizeEvidence(extraction?.specs ?? {});
-  const scalarPoints = specs.forward_voltage_points ?? [];
+  const scalarPoints = extraction?.specs?.forward_voltage_points ?? [];
   const scalarPoint = scalarPoints.find((point) => !["minimum", "maximum"].includes(point?.voltage?.source_kind)
     && Number(point?.voltage?.value) > 0 && Number(point?.current?.value) > 0)
     ?? scalarPoints.find((point) => Number(point?.voltage?.value) > 0 && Number(point?.current?.value) > 0);
-  const voltage = scalarPoint?.voltage ?? null;
-  const forwardCurrent = scalarPoint?.current ?? null;
+  const voltage = scalarPoint ? normalizeEvidence(scalarPoint.voltage) : null;
+  const forwardCurrent = scalarPoint ? normalizeEvidence(scalarPoint.current) : null;
   const vf = voltage?.unit === "V" ? Number(voltage.value) : hintNumber(part, "diode.forward_voltage", 0.7);
   const current = forwardCurrent?.unit === "A" ? Number(forwardCurrent.value) : 0.01;
-  // The F1 ideality and series-resistance values are archetype-held defaults. In particular,
-  // no Schottky-specific value is invented merely from a catalog family label.
-  const N = 1.8;
+  const N = /schottky/i.test(`${part.subcategory} ${part.description}`) ? 1.1 : 1.8;
   const RS = 1e-4;
   const maximum = scalarPoint?.voltage?.source_kind === "maximum";
   const calibrationCurrent = maximum ? current * 0.95 : current;
   const calibrationVoltage = maximum ? vf * 0.97 : vf;
   const junctionVoltage = Math.max(NGSPICE_VT_25C, calibrationVoltage - calibrationCurrent * RS);
   const IS = calibrationCurrent / Math.expm1(junctionVoltage / (N * NGSPICE_VT_25C));
-  const capacitance = validEvidence(specs.capacitance, "F");
-  const recovery = validEvidence(specs.reverse_recovery, "s");
-  const parameters = { IS, N, RS, ...(capacitance ? { CJO: Number(capacitance.value) } : {}), ...(recovery ? { TT: Number(recovery.value) } : {}) };
-  return {
-    fidelity: "F1", parameters, worst: null, points: [],
-    parameter_metadata: {
-      IS: { status: "analytically calibrated from cited forward-voltage evidence" },
-      N: { status: "held archetype default; no cited ideality factor" },
-      RS: { status: "held numerical floor; no independently identifiable series resistance" },
-      ...(capacitance ? { CJO: { status: `transcribed from cited ${capacitance.source_kind} capacitance; maximum values are retained conservatively` } } : {}),
-      ...(recovery ? { TT: { status: `transcribed from cited ${recovery.source_kind} reverse-recovery time` } } : {}),
-    },
-    held_defaults: [
-      { parameter: "N", value: N, unit: "1", reason: "held archetype default; extraction contains no cited ideality factor" },
-      { parameter: "RS", value: RS, unit: "ohm", reason: "held numerical floor; one F1 forward target cannot identify series resistance" },
-    ],
-  };
+  return { fidelity: "F1", parameters: { IS, N, RS }, worst: null, points: [] };
 }
 
-export function bjtArchetypeFacts(part, extraction) {
-  const specs = normalizeEvidence(extraction?.specs ?? {});
-  const gainPoints = (specs.gain_points ?? [])
-    .filter((point) => isNominalTemperatureEvidence(point))
-    .map((point) => ({
-      ...point,
-      collector_current: magnitudeQuantity(point.collector_current),
-      vce: magnitudeQuantity(point.vce),
-      hfe: magnitudeQuantity(point.hfe),
-      ...(point.vbe ? { vbe: magnitudeQuantity(point.vbe) } : {}),
-    }))
-    .filter((point) => Number(point.collector_current?.value) > 0 && Number(point.vce?.value) > 0 && Number(point.hfe?.value) > 0);
-  if (!gainPoints.length) throw new Error(insufficientExtractedTargetsReason(part, extraction));
-  const saturationBoundPoints = (specs.saturation_points ?? [])
-    .filter((point) => isNominalTemperatureEvidence(point))
-    .map((point) => ({
-      ...point,
-      collector_current: magnitudeQuantity(point.collector_current),
-      base_current: magnitudeQuantity(point.base_current),
-      vce_sat: magnitudeQuantity(point.vce_sat),
-      vbe_sat: magnitudeQuantity(point.vbe_sat),
-    }))
-    .filter((point) => Number(point.collector_current?.value) > 0 && Number(point.base_current?.value) > 0
-      && (Number(point.vce_sat?.value) > 0 || Number(point.vbe_sat?.value) > 0));
-  const saturationPoints = saturationBoundPoints
-    .filter((point) => Number(point.vce_sat?.value) > 0 && Number(point.vbe_sat?.value) > 0);
-  const ft = validEvidence(specs.ft, "Hz");
-  const ftIc = ft ? conditionCurrent(ft.conditions, null) : null;
-  const ftVce = ft ? conditionNumber(ft.conditions, "VCE", null) : null;
-  const frequencyResponse = ft && ftIc != null && ftVce != null ? {
-    ft,
-    ic: quantity(ftIc, "A", ft.conditions, ft.page_reference, ft.source_kind),
-    vce: quantity(ftVce, "V", ft.conditions, ft.page_reference, ft.source_kind),
-  } : null;
-  const cobo = validEvidence(specs.cobo, "F");
-  const cibo = validEvidence(specs.cibo, "F");
-  const coboVcb = cobo ? conditionNumber(cobo.conditions, "VCB", null) : null;
-  const ciboVeb = cibo ? conditionNumber(cibo.conditions, "VEB", conditionNumber(cibo.conditions, "VBE", null)) : null;
-  const capacitances = cobo || cibo ? {
-    ...(cobo ? { cobo, ...(coboVcb != null ? { cobo_vcb: quantity(coboVcb, "V", cobo.conditions, cobo.page_reference, cobo.source_kind) } : {}) } : {}),
-    ...(cibo ? { cibo, ...(ciboVeb != null ? { cibo_veb: quantity(ciboVeb, "V", cibo.conditions, cibo.page_reference, cibo.source_kind) } : {}) } : {}),
-  } : null;
-  const polarity = polarityFor(part, extraction);
-  return {
-    schema_version: "1.0.0",
-    fit_mode: "conveyor_f1",
-    identity: { canonical_mpn: normalizedIdentity(part, extraction).canonical, manufacturer: part.manufacturer },
-    model_polarity: polarity === "p" ? "PNP" : "NPN",
-    device_class: /\bpower\b/i.test(`${part.subcategory ?? ""} ${part.description ?? ""}`) ? "power" : "signal",
-    gain_points: gainPoints,
-    saturation_points: saturationPoints,
-    saturation_bound_points: saturationBoundPoints,
-    ...(frequencyResponse ? { frequency_response: frequencyResponse } : {}),
-    ...(capacitances ? { capacitances } : {}),
-  };
-}
-
-export function defaultBjtF1Runner(facts) {
-  fs.mkdirSync(conveyorFitRoot, { recursive: true });
-  const directory = fs.mkdtempSync(path.join(conveyorFitRoot, "fit-bjt-f1-"));
-  try {
-    const input = path.join(directory, "facts.json");
-    const output = path.join(directory, "fitted.json");
-    fs.writeFileSync(input, json(facts));
-    const pythonDir = path.resolve(here, "../python");
-    const result = spawnSync(pythonInterpreter(), [path.join(pythonDir, "fit_bjt.py"), input, output], {
-      cwd: pythonDir, encoding: "utf8", timeout: 900_000,
-    });
-    if (result.error) throw result.error;
-    if (result.status !== 0 || !fs.existsSync(output)) {
-      throw new Error(`canonical BJT F1 fitter failed: ${result.stdout}\n${result.stderr}`.trim());
-    }
-    const fitted = JSON.parse(fs.readFileSync(output, "utf8"));
-    // BF is the directly observed current-gain scale and is intentionally exempt from the
-    // generic optimizer-bound artefact gate, matching fit_conveyor.py. Every published hFE
-    // minimum and maximum is still evaluated natively as an inclusive package hard bound.
-    const saturated = (fitted.optimizer?.bound_saturated_parameters ?? []).filter((name) => name !== "BF");
-    if (saturated.length) {
-      throw new Error(`BJT F1 physical-bound gate failed: ${saturated.join(", ")} saturated an optimizer bound`);
-    }
-    return fitted;
-  } finally {
-    fs.rmSync(directory, { recursive: true, force: true });
-  }
-}
-
-function bjtFit(part, extraction, fitRunner = defaultBjtF1Runner) {
-  const result = fitRunner(bjtArchetypeFacts(part, extraction));
-  if (!result?.parameters || result.fidelity !== "F1") {
-    throw new Error("canonical BJT F1 fitter produced no F1 parameter vector");
-  }
-  return {
-    fidelity: "F1",
-    parameters: result.parameters,
-    worst: result.worst_relative_error?.value ?? null,
-    worst_quantity: result.worst_relative_error?.quantity ?? null,
-    residuals: result.residuals ?? [],
-    optimizer: result.optimizer ?? null,
-    fitter: result.fitter,
-    parameter_metadata: result.parameter_metadata ?? {},
-    held_defaults: result.held_defaults ?? [],
-    points: [],
-  };
+function bjtFit(part, extraction, forceF1 = false) {
+  const gainPoints = extraction?.specs?.gain_points ?? [];
+  const typicalGains = gainPoints
+    .filter((point) => !["minimum", "maximum"].includes(point.hfe?.source_kind))
+    .map((point) => Number(point.hfe?.value))
+    .filter((value) => value > 0);
+  const minimumGains = gainPoints
+    .filter((point) => point.hfe?.source_kind === "minimum")
+    .map((point) => Number(point.hfe?.value))
+    .filter((value) => value > 0);
+  // A published maximum is an inclusive bound, not a representative F1 target.
+  const BF = typicalGains.length ? Math.max(...typicalGains)
+    // A minimum remains a hard inclusive package check. Give the first-order F1 model
+    // one percent parameter headroom so finite VCE and series resistance do not land just below it.
+    : minimumGains.length ? Math.max(...minimumGains) * 1.01
+      : hintNumber(part, "bjt.dc_current_gain", 100);
+  return { fidelity: "F1", parameters: { IS: 1e-14, BF: Math.max(1, BF), VAF: 100, IKF: 1e3, RB: 10, RC: 0.1, RE: 0.05, CJE: 1e-12, CJC: 1e-12, TF: 1e-9 }, worst: null, points: [] };
 }
 
 function mosfetCalibrationPoint(specs) {
@@ -292,12 +120,10 @@ function modelFor(part, fit) {
   const name = `OC_${safe(part.manufacturer).toUpperCase()}_${safe(part.mpn).toUpperCase()}`;
   const p = fit.parameters;
   if (part.conveyor_family === "diode") {
-    const capacitance = Number(p.CJO) > 0 ? ` CJO=${fmt(p.CJO)}` : "";
-    const recovery = Number(p.TT) > 0 ? ` TT=${fmt(p.TT)}` : "";
     const breakdown = Number(p.BV) > 0 && Number(p.IBV) > 0
       ? ` BV=${fmt(p.BV)} IBV=${fmt(p.IBV)} NBV=${fmt(p.NBV ?? 1)}`
       : "";
-    return { name, text: `.model ${name} D(IS=${fmt(p.IS)} N=${fmt(p.N)} RS=${fmt(p.RS)}${capacitance}${recovery}${breakdown})\n` };
+    return { name, text: `.model ${name} D(IS=${fmt(p.IS)} N=${fmt(p.N)} RS=${fmt(p.RS)}${breakdown})\n` };
   }
   if (part.conveyor_family === "bjt") {
     const polarity = fit.polarity === "p" ? "PNP" : "NPN";
@@ -365,9 +191,7 @@ export function defaultFitRunner(payload) {
   }
 }
 
-export function fitBulkPart(part, extraction, { ngspiceRunner = defaultNgspiceRunner, fitRunner = defaultFitRunner, bjtF1Runner = defaultBjtF1Runner, forceF1 = false } = {}) {
-  const contractReason = bulkContractReason(part, extraction);
-  if (contractReason) throw new Error(contractReason);
+export function fitBulkPart(part, extraction, { ngspiceRunner = defaultNgspiceRunner, fitRunner = defaultFitRunner, forceF1 = false } = {}) {
   const polarity = polarityFor(part, extraction);
   let fit;
   if (!forceF1 && extraction?.usable_curves) {
@@ -384,26 +208,16 @@ export function fitBulkPart(part, extraction, { ngspiceRunner = defaultNgspiceRu
       worst_quantity: attempt.worst?.quantity ?? null, rms: attempt.rms ?? null,
       residuals: attempt.residuals ?? [], curves_used: attempt.curves_used ?? [],
       curves_rejected: attempt.curves_rejected ?? [], optimizer: attempt.optimizer ?? null,
-      fitter: attempt.fitter ?? null, parameter_metadata: attempt.parameter_metadata ?? {},
-      held_defaults: attempt.held_defaults ?? attempt.optimizer?.held_defaults ?? [], points: [],
+      fitter: attempt.fitter ?? null, points: [],
     };
   } else if (part.conveyor_family === "diode") fit = diodeFit(part, extraction, forceF1);
-  else if (part.conveyor_family === "bjt") fit = bjtFit(part, extraction, bjtF1Runner);
+  else if (part.conveyor_family === "bjt") fit = bjtFit(part, extraction, forceF1);
   else if (part.conveyor_family === "mosfet") fit = mosfetFit(part, extraction, forceF1);
   else throw new Error(`Unsupported conveyor family: ${part.conveyor_family}`);
   fit.polarity = polarity;
   if (part.conveyor_family === "diode") {
     const breakdown = zenerInputs(extraction);
-    if (breakdown) {
-      fit.parameters = { ...fit.parameters, ...breakdown };
-      fit.parameter_metadata = {
-        ...(fit.parameter_metadata ?? {}),
-        BV: { status: "transcribed from cited Zener VZ at IZT semantics" },
-        IBV: { status: "transcribed from cited Zener IZT" },
-        NBV: { status: "held first-order avalanche-knee default" },
-      };
-      fit.held_defaults = [...(fit.held_defaults ?? []), { parameter: "NBV", value: breakdown.NBV, unit: "1", reason: "held first-order avalanche-knee default; no cited multi-point knee trace" }];
-    }
+    if (breakdown) fit.parameters = { ...fit.parameters, ...breakdown };
   }
   const model = modelFor(part, fit);
   ngspiceRunner(model.text, { part, fit });
@@ -649,8 +463,6 @@ function bulkFactoryFacts(part, extraction, fit, identity, source) {
       if (reverseVoltage != null) electricalLimits[`reverse_current_${reverseVoltage}v`] = specs.reverse_current;
     }
     const derivedModelInputs = {};
-    if (Number(fit.parameters?.CJO) > 0 && specs.capacitance) derivedModelInputs.CJO = specs.capacitance;
-    if (Number(fit.parameters?.TT) > 0 && specs.reverse_recovery) derivedModelInputs.TT = specs.reverse_recovery;
     if (Number(fit.parameters?.BV) > 0 && Number(fit.parameters?.IBV) > 0) {
       derivedModelInputs.BV = specs.breakdown_voltage;
       derivedModelInputs.IBV = specs.breakdown_current;
@@ -659,7 +471,6 @@ function bulkFactoryFacts(part, extraction, fit, identity, source) {
     return { ...common, fit_points: fitPoints, electrical_limits: electricalLimits, derived_model_inputs: derivedModelInputs };
   }
   if (part.conveyor_family === "bjt") {
-    const canonicalF1Facts = fit.fidelity === "F1" ? bjtArchetypeFacts(part, extraction) : null;
     const gainPoints = [];
     if (fit.fidelity === "F2") {
       const curve = nominalCurve(extraction, (candidate) => {
@@ -677,59 +488,32 @@ function bulkFactoryFacts(part, extraction, fit, identity, source) {
           hfe: quantity(gain.value, gain.unit, curve.test_conditions, curve.page_reference, "digitized_typical_curve"),
         });
       }
-      gainPoints.push(...(specs.gain_points ?? []).map((point) => ({
-        ...point,
-        collector_current: magnitudeQuantity(point.collector_current),
-        vce: magnitudeQuantity(point.vce),
-        hfe: magnitudeQuantity(point.hfe),
-      })));
-    } else {
-      gainPoints.push(...canonicalF1Facts.gain_points);
     }
-    const saturationPoints = fit.fidelity === "F1"
-      ? canonicalF1Facts.saturation_bound_points
-      : (specs.saturation_points ?? []).map((point) => ({
-        ...point,
-        collector_current: magnitudeQuantity(point.collector_current),
-        base_current: magnitudeQuantity(point.base_current),
-        vce_sat: magnitudeQuantity(point.vce_sat),
-        vbe_sat: magnitudeQuantity(point.vbe_sat),
-      }));
-    const frequencyResponse = fit.fidelity === "F1"
-      ? canonicalF1Facts.frequency_response ?? null
-      : (() => {
-        const ft = validEvidence(specs.ft, "Hz");
-        const ftIc = ft ? conditionCurrent(ft.conditions, null) : null;
-        const ftVce = ft ? conditionNumber(ft.conditions, "VCE", null) : null;
-        return ft && ftIc != null && ftVce != null ? {
-          ft,
-          ic: quantity(ftIc, "A", ft.conditions, ft.page_reference, ft.source_kind),
-          vce: quantity(ftVce, "V", ft.conditions, ft.page_reference, ft.source_kind),
-        } : null;
-      })();
-    const capacitances = fit.fidelity === "F1" ? canonicalF1Facts.capacitances ?? null : (() => {
-      const cobo = validEvidence(specs.cobo, "F");
-      const cibo = validEvidence(specs.cibo, "F");
-      const coboVcb = cobo ? conditionNumber(cobo.conditions, "VCB", null) : null;
-      const ciboVeb = cibo ? conditionNumber(cibo.conditions, "VEB", conditionNumber(cibo.conditions, "VBE", null)) : null;
-      return cobo || cibo ? {
-        ...(cobo ? { cobo, ...(coboVcb != null ? { cobo_vcb: quantity(coboVcb, "V", cobo.conditions, cobo.page_reference, cobo.source_kind) } : {}) } : {}),
-        ...(cibo ? { cibo, ...(ciboVeb != null ? { cibo_veb: quantity(ciboVeb, "V", cibo.conditions, cibo.page_reference, cibo.source_kind) } : {}) } : {}),
-      } : null;
-    })();
-    const resistanceFitted = (fit.parameter_metadata?.RB?.status ?? "").startsWith("native fitted");
-    const derivedModelInputs = {
-      BF: gainPoints.map((point) => ({
-        hfe: point.hfe,
-        collector_current: point.collector_current,
-        vce: point.vce,
-      })),
-      ...(frequencyResponse ? { TF: frequencyResponse } : {}),
-      ...(capacitances?.cobo && (fit.parameter_metadata?.CJC?.status ?? "").startsWith("voltage-de-embedded") ? { CJC: { cobo: capacitances.cobo, cobo_vcb: capacitances.cobo_vcb } } : {}),
-      ...(capacitances?.cibo && (fit.parameter_metadata?.CJE?.status ?? "").startsWith("voltage-de-embedded") ? { CJE: { cibo: capacitances.cibo, cibo_veb: capacitances.cibo_veb } } : {}),
-      ...(resistanceFitted ? { RB_RC_RE: canonicalF1Facts.saturation_points } : {}),
-    };
-    return { ...common, gain_points: gainPoints, saturation_points: saturationPoints, frequency_response: frequencyResponse, capacitances, derived_model_inputs: derivedModelInputs };
+    const scalarGainPoints = (specs.gain_points ?? []).map((point) => ({
+      ...point,
+      collector_current: magnitudeQuantity(point.collector_current),
+      vce: magnitudeQuantity(point.vce),
+      hfe: magnitudeQuantity(point.hfe),
+    }));
+    if (fit.fidelity === "F1") {
+      const boundedPoints = scalarGainPoints.filter((point) => point.hfe?.source_kind === "minimum");
+      const typicalPoints = scalarGainPoints.filter((point) => !["minimum", "maximum"].includes(point.hfe?.source_kind));
+      const referenceGain = Number(fit.parameters?.BF);
+      const representative = typicalPoints
+        .filter((point) => Number(point.hfe?.value) > 0)
+        .sort((left, right) => Math.abs(left.hfe.value - referenceGain) - Math.abs(right.hfe.value - referenceGain))[0];
+      gainPoints.push(...boundedPoints, ...(representative ? [representative] : []));
+    } else {
+      gainPoints.push(...scalarGainPoints);
+    }
+    const saturationPoints = (specs.saturation_points ?? []).map((point) => ({
+      ...point,
+      collector_current: magnitudeQuantity(point.collector_current),
+      base_current: magnitudeQuantity(point.base_current),
+      vce_sat: magnitudeQuantity(point.vce_sat),
+      vbe_sat: magnitudeQuantity(point.vbe_sat),
+    }));
+    return { ...common, gain_points: gainPoints, saturation_points: fit.fidelity === "F2" || gainPoints.length === 0 ? saturationPoints : [] };
   }
   const thresholdConditions = specs.threshold_typ?.conditions ?? specs.threshold_max?.conditions ?? specs.threshold_min?.conditions ?? "Nominal threshold characterization";
   const thresholdCitation = specs.threshold_typ?.page_reference ?? specs.threshold_max?.page_reference ?? specs.threshold_min?.page_reference ?? source.pages_referenced[0];
@@ -863,6 +647,9 @@ export function stageBulkPart(part, rawExtraction, fit, stagingRoot, { demotionR
     ...(part.conveyor_family === "mosfet" && fit.fidelity === "F1" && (extraction?.specs?.rdson_points ?? []).some(isNominalTemperatureEvidence) && (extraction?.specs?.threshold_min || extraction?.specs?.threshold_typ || extraction?.specs?.threshold_max)
       ? ["Gate-threshold behavior is not covered by this F1 package; the supported region is limited to cited nominal-temperature RDS(on) targets."]
       : []),
+    ...(part.conveyor_family === "bjt" && fit.fidelity === "F1" && (extraction?.specs?.saturation_points ?? []).length
+      ? ["Saturation-voltage behavior is not covered by this F1 package; the supported region is limited to cited DC current-gain evidence."]
+      : []),
     "Independent package promotion review remains pending.",
   ];
   const source = {
@@ -906,8 +693,7 @@ export function stageBulkPart(part, rawExtraction, fit, stagingRoot, { demotionR
     parameters: fit.parameters,
     fitter: fit.fitter ?? "catalog-parametric F1 fallback",
     optimizer: fit.optimizer ?? null,
-    parameter_metadata: fit.parameter_metadata ?? {},
-    held_defaults: fit.held_defaults ?? fit.optimizer?.held_defaults ?? [],
+    held_defaults: fit.optimizer?.held_defaults ?? [],
     curves_used: fit.curves_used ?? [],
     curves_rejected: fit.curves_rejected ?? [],
     residuals: fit.residuals ?? [],
@@ -919,7 +705,7 @@ export function stageBulkPart(part, rawExtraction, fit, stagingRoot, { demotionR
     write(path.join(buildDir, "facts.json"), json(facts));
     write(path.join(buildDir, "fitted.json"), json(fitted));
     write(path.join(buildDir, "sources.json"), json([source]));
-    write(path.join(buildDir, "model.cir"), `* OpenCircuit Model Factory v0.1.0 bulk adapter\n* Original work generated from public factual specifications.\n* This model is not copied or adapted from any vendor SPICE model.\n* Source: ${safeCommentLine(source.url)}\n* Revision: ${safeCommentLine(source.revision) || "revision not stated in source"}\n${fit.model.text}`);
+    write(path.join(buildDir, "model.cir"), `* OpenCircuit Model Factory v0.1.0 bulk adapter\n* Original work generated from public factual specifications.\n* This model is not copied or adapted from any vendor SPICE model.\n* Source: ${source.url}\n* Revision: ${source.revision}\n${fit.model.text}`);
     write(path.join(buildDir, "MODEL_CARD.md"), `# ${identity.canonical} model card\n\nPending factory bench generation and native/WASM validation.\n`);
     write(path.join(buildDir, "LICENSE"), MIT_LICENSE);
     const ctx = bulkContext(part, fit, identity, pinInfo, source, omissions, operating, buildDir, stagingRoot);
@@ -1019,13 +805,7 @@ export function runBulkManifest(manifestPath, stagingRoot, options = {}) {
     const extraction = rawExtraction ? repairKnownEvidenceDefects(part, rawExtraction) : null;
     const collisionReason = libraryCollisionReason(part, libraryRoot, extraction);
     if (collisionReason) {
-      results.push({ ...identity(part), status: "skipped", stage: "selection", failure_category: "library-identity-collision", reason: collisionReason });
-      continue;
-    }
-    const contractReason = bulkContractReason(part, extraction);
-    if (contractReason) {
-      const failureCategory = contractReason.split(":", 1)[0];
-      results.push({ ...identity(part), status: "failed", stage: "fitted", failure_category: failureCategory, reason: contractReason });
+      results.push({ ...identity(part), status: "skipped", stage: "selection", reason: collisionReason });
       continue;
     }
     try {

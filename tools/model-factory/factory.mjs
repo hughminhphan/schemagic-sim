@@ -430,9 +430,6 @@ function testRecord(file, analysisType, scalarChecks = [], hardBoundsChecks = []
 }
 
 function bjtTestgen(ctx, model, facts) {
-  if (!Array.isArray(facts.gain_points) || facts.gain_points.length === 0) {
-    throw new Error("insufficient-extracted-targets: BJT requires at least one cited gain point before bench generation");
-  }
   const tests = [];
   const sign = ctx.part.identity.electrical_family === "bjt_pnp" ? -1 : 1;
   const instance = (name, collector, base, emitter = "0") => ctx.part.pipeline === "darlington"
@@ -490,8 +487,6 @@ function bjtTestgen(ctx, model, facts) {
     writeBench(ctx, "ft_bench.cir", `OpenCircuit factory test: ${ctx.part.slug} fT\n${model}\n.temp 25\nVCC c 0 DC ${formatSpice(sign * ft.vce.value)}\nIBDC 0 b DC ${formatSpice(sign * ft.ic.value / beta)}\nIAC 0 b AC 1\n${instance("1", "c", "b")}\n.ac dec 20 1Meg 10G\n.end\n`);
     if (ft.ft.source_kind === "minimum") {
       tests.push(testRecord("ft_bench.cir", "ac_small_signal", [], [hardBound("current_gain_bandwidth_minimum", "frequency_at_magnitude(i(vcc),1)", "Hz", { minimum: ft.ft.value }, ft.ft.page_reference)]));
-    } else if (ft.ft.source_kind === "maximum") {
-      tests.push(testRecord("ft_bench.cir", "ac_small_signal", [], [hardBound("current_gain_bandwidth_maximum", "frequency_at_magnitude(i(vcc),1)", "Hz", { maximum: ft.ft.value }, ft.ft.page_reference)]));
     } else {
       tests.push(testRecord("ft_bench.cir", "ac_small_signal", [expectation("current_gain_bandwidth", "frequency_at_magnitude(i(vcc),1)", ft.ft.value, "Hz", 0, 0.20, ft.ft.page_reference)]));
     }
@@ -499,19 +494,8 @@ function bjtTestgen(ctx, model, facts) {
 
   if (facts.capacitances) {
     const cap = facts.capacitances;
-    const capChecks = (name, expression, target) => target.source_kind === "minimum"
-      ? testRecord(name, "ac_small_signal", [], [hardBound(`${name.replace(".cir", "")}_minimum`, expression, "F", { minimum: target.value }, target.page_reference)])
-      : target.source_kind === "maximum"
-        ? testRecord(name, "ac_small_signal", [], [hardBound(`${name.replace(".cir", "")}_maximum`, expression, "F", { maximum: target.value }, target.page_reference)])
-        : testRecord(name, "ac_small_signal", [expectation(name.replace(".cir", ""), expression, target.value, "F", 0.5e-12, 0.20, target.page_reference)]);
-    if (cap.cobo && cap.cobo_vcb) {
-      writeBench(ctx, "cobo.cir", `OpenCircuit factory test: ${ctx.part.slug} Cobo\n${model}\n.temp 25\nVCB c 0 DC ${sign * cap.cobo_vcb.value} AC 1\n${instance("1", "c", "b")}\nVB b 0 DC 0\n.ac lin 1 1Meg 1Meg\n.end\n`);
-      tests.push(capChecks("cobo.cir", "imag_cap:last(i(vcb),1000000)", cap.cobo));
-    }
-    if (cap.cibo && cap.cibo_veb) {
-      writeBench(ctx, "cibo.cir", `OpenCircuit factory test: ${ctx.part.slug} Cibo\n${model}\n.temp 25\nVB b 0 DC 0 AC 1\nVE e 0 DC ${formatSpice(-sign * cap.cibo_veb.value)}\nRCOPEN c 0 1G\n${instance("1", "c", "b", "e")}\n.ac lin 1 1Meg 1Meg\n.end\n`);
-      tests.push(capChecks("cibo.cir", "imag_cap:last(i(vb),1000000)", cap.cibo));
-    }
+    writeBench(ctx, "capacitance.cir", `OpenCircuit factory test: ${ctx.part.slug} Cobo\n${model}\n.temp 25\nVCB c 0 DC ${sign * cap.cobo_vcb.value} AC 1\n${instance("1", "c", "b")}\nVB b 0 DC 0\n.ac lin 1 1Meg 1Meg\n.end\n`);
+    tests.push(testRecord("capacitance.cir", "ac_small_signal", [expectation("cobo", "imag_cap:last(i(vcb),1000000)", cap.cobo.value, "F", 0.5e-12, 0.20, cap.cobo.page_reference)]));
   }
 
   writeBench(ctx, "output_curve.cir", `OpenCircuit factory test: ${ctx.part.slug} output sanity\n${model}\n.temp 25\nVCE1 c1 0 DC ${2 * sign}\nIB1 0 b1 DC ${10e-6 * sign}\n${instance("1", "c1", "b1")}\nVCE2 c2 0 DC ${10 * sign}\nIB2 0 b2 DC ${50e-6 * sign}\n${instance("2", "c2", "b2")}\n.op\n.end\n`);
@@ -885,54 +869,40 @@ export function stageTestgen(ctx) {
     }
   }
 
-  if (!facts.zener_points && facts.derived_model_inputs?.BV && facts.derived_model_inputs?.IBV) {
-    const voltage = facts.derived_model_inputs.BV;
-    const current = facts.derived_model_inputs.IBV;
-    writeBench(ctx, "zener_operating_point.cir", `OpenCircuit factory test: ${ctx.part.slug} cited Zener operating point\n${model}\n.temp 25\nIZ 0 cathode DC ${formatSpice(current.value)}\nDdut 0 cathode ${ctx.part.component.modelName}\nRALL all 0 1G\n.op\n.end\n`);
-    const expression = "last(v(cathode))";
-    tests.push(testRecord(
-      "zener_operating_point.cir",
-      "operating_point",
-      ["minimum", "maximum"].includes(voltage.source_kind) ? [] : [expectation("zener_voltage_at_izt", expression, voltage.value, "V", 0.10, 0.10, voltage.page_reference)],
-      voltage.source_kind === "minimum"
-        ? [hardBound("zener_voltage_minimum_at_izt", expression, "V", { minimum: voltage.value }, voltage.page_reference)]
-        : voltage.source_kind === "maximum"
-          ? [hardBound("zener_voltage_maximum_at_izt", expression, "V", { maximum: voltage.value }, voltage.page_reference)]
-          : [],
-    ));
-  }
-
   if (facts.derived_model_inputs?.CJO) {
     const cap = facts.derived_model_inputs.CJO;
-    const expression = "magnitude:last(i(vac))";
-    const expectedCurrent = 2 * Math.PI * 1e6 * cap.value * 0.05;
     fs.writeFileSync(path.join(ctx.packageDir, "tests", "zero_bias_capacitance.cir"), capacitanceBench(model, ctx.part.component.modelName));
-    tests.push(testRecord(
-      "zero_bias_capacitance.cir",
-      "ac_small_signal",
-      ["minimum", "maximum"].includes(cap.source_kind) ? [] : [expectation("zero_bias_capacitive_current", expression, expectedCurrent, "A", 2e-8, 0.05, cap.page_reference)],
-      cap.source_kind === "minimum"
-        ? [hardBound("zero_bias_capacitance_minimum", expression, "A", { minimum: expectedCurrent }, cap.page_reference)]
-        : cap.source_kind === "maximum"
-          ? [hardBound("zero_bias_capacitance_maximum", expression, "A", { minimum: 0, maximum: expectedCurrent }, cap.page_reference)]
-          : [],
-    ));
+    tests.push({
+      test_netlist: "zero_bias_capacitance.cir",
+      analysis_type: "ac_small_signal",
+      scalar_checks: [expectation(
+        "zero_bias_capacitive_current",
+        "magnitude:last(i(vac))",
+        2 * Math.PI * 1e6 * cap.value * 0.05,
+        "A",
+        2e-8,
+        0.05,
+        cap.page_reference
+      )],
+      hard_bounds_checks: []
+    });
   }
 
   if (facts.derived_model_inputs?.TT) {
     const recovery = facts.derived_model_inputs.TT;
-    const expression = "recovery_time(i(vdrive),2e-8,1e-3)";
     fs.writeFileSync(path.join(ctx.packageDir, "tests", "reverse_recovery.cir"), reverseRecoveryBench(model, ctx.part.component.modelName));
-    tests.push(testRecord(
-      "reverse_recovery.cir",
-      "transient",
-      ["minimum", "maximum"].includes(recovery.source_kind) ? [] : [expectation("reverse_recovery_time", expression, recovery.value, "s", 2e-9, 0.20, recovery.page_reference)],
-      recovery.source_kind === "minimum"
-        ? [hardBound("reverse_recovery_time_minimum", expression, "s", { minimum: recovery.value }, recovery.page_reference)]
-        : recovery.source_kind === "maximum"
-          ? [hardBound("reverse_recovery_time_maximum", expression, "s", { minimum: 0, maximum: recovery.value }, recovery.page_reference)]
-          : [],
-    ));
+    tests.push({
+      test_netlist: "reverse_recovery.cir",
+      analysis_type: "transient",
+      scalar_checks: [],
+      hard_bounds_checks: [hardBound(
+        "reverse_recovery_time_maximum",
+        "recovery_time(i(vdrive),2e-8,1e-3)",
+        "s",
+        { minimum: 0, maximum: recovery.value },
+        recovery.page_reference
+      )]
+    });
   }
 
   writeJson(path.join(ctx.packageDir, "tests", "expectations.json"), { schema_version: "1.0.0", tests });

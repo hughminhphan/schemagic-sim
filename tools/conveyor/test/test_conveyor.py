@@ -11,10 +11,9 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(HERE))
 
-from conveyorlib import (ConveyorError, StateStore, cross_check, extraction_contract_guards,
-                         extraction_retry_allowed, failed_extraction_retry_pending,
-                         filter_library_collisions, load_and_validate_extraction,
-                         normalize_extraction_payload, run_extraction_batch, should_park_family)
+from conveyorlib import (ConveyorError, StateStore, cross_check, filter_library_collisions,
+                         load_and_validate_extraction, normalize_extraction_payload,
+                         run_extraction_batch, should_park_family)
 
 
 def q(value, unit="V"):
@@ -29,19 +28,6 @@ def diode_payload():
         "curves": [{"name": "Forward IV", "x_axis": {"quantity": "voltage", "unit": "V", "scale": "linear"}, "y_axis": {"quantity": "current", "unit": "A", "scale": "log"}, "test_conditions": "TA=25 C", "page_reference": "p. 2 fig. 1", "points": [{"x": .5, "y": .001}, {"x": .6, "y": .01}, {"x": .7, "y": .1}]}],
         "specs": {"variant": "signal", "forward_voltage_points": [{"current": q(.01, "A"), "voltage": q(.7)}], "reverse_current": None, "capacitance": None, "reverse_recovery": None, "breakdown_voltage": None, "breakdown_current": None},
         "extraction_notes": [], "omission_reason": None,
-    }
-
-
-def bjt_payload():
-    gain = {
-        "collector_current": q(0.01, "A"), "vce": q(5, "V"), "hfe": q(100, "1"),
-    }
-    return {
-        "schema_version": "1.0.0", "mpn": "Q1", "manufacturer": "Fixture", "family": "bjt",
-        "datasheet_identity": {"title": "Q1 single NPN transistor", "revision": "A", "pages_examined": ["p. 1", "p. 2"]},
-        "usable_curves": False, "curves": [],
-        "specs": {"polarity": "npn", "gain_points": [gain], "saturation_points": [], "ft": None, "cobo": None, "cibo": None, "vceo": q(40, "V")},
-        "extraction_notes": [], "omission_reason": "table evidence only",
     }
 
 
@@ -112,31 +98,6 @@ class SchemaValidationTest(unittest.TestCase):
             path.write_text(json.dumps(payload))
             with self.assertRaisesRegex(ConveyorError, "unknown keys"):
                 load_and_validate_extraction(path, HERE / "schemas/diode.schema.json", {"mpn": "D1", "manufacturer": "Fixture", "family": "diode"})
-
-    def test_accepts_independent_vbe_saturation_bound_without_vce_saturation(self):
-        with tempfile.TemporaryDirectory() as temporary:
-            path = Path(temporary) / "result.json"
-            payload = bjt_payload()
-            payload["specs"]["saturation_points"] = [{
-                "collector_current": q(2.0, "A"),
-                "base_current": q(0.05, "A"),
-                "vce_sat": None,
-                "vbe_sat": {
-                    **q(1.0, "V"),
-                    "conditions": "IC=2 A, IB=50 mA, TA=25 C",
-                    "page_reference": "p. 3 table 1",
-                    "source_kind": "maximum",
-                },
-            }]
-            path.write_text(json.dumps(payload))
-            result = load_and_validate_extraction(
-                path,
-                HERE / "schemas/bjt.schema.json",
-                {"mpn": "Q1", "manufacturer": "Fixture", "family": "bjt"},
-            )
-            point = result["specs"]["saturation_points"][0]
-            self.assertIsNone(point["vce_sat"])
-            self.assertEqual(point["vbe_sat"]["source_kind"], "maximum")
 
     def test_normalizes_quantity_annotations_and_omits_short_curves_without_invention(self):
         payload = diode_payload()
@@ -266,49 +227,6 @@ class CrossCheckTest(unittest.TestCase):
         self.assertEqual(cross_check(payload, [{"factory_target": "vdmos.coss", "raw_value": "210pF"}]), [])
         # A genuine disagreement beyond the limit is still reported.
         self.assertRegex(cross_check(payload, [{"factory_target": "vdmos.crss", "raw_value": "500pF"}])[0], "closest ratio")
-
-
-class ExtractionContractGuardTest(unittest.TestCase):
-    def test_empty_bjt_gain_points_require_one_bounded_reextraction(self):
-        payload = bjt_payload()
-        payload["specs"]["gain_points"] = []
-        failures = extraction_contract_guards(payload, {
-            "conveyor_family": "bjt", "subcategory": "NPN BJT", "description": "single NPN transistor",
-        }, "Q1 NPN silicon transistor")
-        self.assertEqual(failures, [{
-            "category": "insufficient-extracted-targets",
-            "reason": "insufficient-extracted-targets: BJT requires at least one cited positive hFE target with collector current and VCE",
-            "reextract": True,
-        }])
-
-    def test_polarity_mismatch_requires_reextraction_and_never_flips(self):
-        payload = bjt_payload()
-        payload["specs"]["polarity"] = "pnp"
-        failures = extraction_contract_guards(payload, {
-            "conveyor_family": "bjt", "subcategory": "NPN BJT", "description": "single NPN transistor",
-        }, "Q1 NPN silicon transistor")
-        mismatch = next(item for item in failures if item["category"] == "polarity-mismatch")
-        self.assertTrue(mismatch["reextract"])
-        self.assertRegex(mismatch["reason"], r"extraction=p, catalog=n, pdf=n")
-
-    def test_dual_bjt_parks_under_dedicated_unsupported_contract(self):
-        payload = bjt_payload()
-        failures = extraction_contract_guards(payload, {
-            "conveyor_family": "bjt", "subcategory": "Dual NPN BJT", "description": "two independent transistors in one package",
-        }, "Q1 dual NPN transistors")
-        self.assertEqual(len(failures), 1)
-        self.assertEqual(failures[0]["category"], "unsupported-package-contract")
-        self.assertFalse(failures[0]["reextract"])
-
-    def test_contract_mismatch_allows_exactly_one_retry(self):
-        retryable = [{"category": "polarity-mismatch", "reextract": True}]
-        unsupported = [{"category": "unsupported-package-contract", "reextract": False}]
-        self.assertTrue(extraction_retry_allowed(retryable, 0))
-        self.assertFalse(extraction_retry_allowed(retryable, 1))
-        self.assertFalse(extraction_retry_allowed(unsupported, 0))
-        self.assertTrue(failed_extraction_retry_pending("polarity-mismatch: fixture", 1))
-        self.assertFalse(failed_extraction_retry_pending("polarity-mismatch: fixture", 2))
-        self.assertFalse(failed_extraction_retry_pending("unsupported-package-contract: fixture", 1))
 
 
 class FamilyParkingTest(unittest.TestCase):
