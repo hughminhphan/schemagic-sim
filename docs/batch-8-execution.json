@@ -1,0 +1,268 @@
+{
+  "schema_version": "1.0.0",
+  "campaign": "scheMAGIC scale campaign batch 8 hardening and execution",
+  "date": "2026-08-11",
+  "authority": "hardening, deterministic selection, execution, and staging only; no review, promotion, push, deploy, publication, posting, GitHub action, or Vault update",
+  "status": "complete-source-exhausted-no-campaign-targets",
+  "base": {
+    "head": "309cf298a58f9a078a7d6ae790a1eb2e7908e82d",
+    "reviewed_package_count_before": 692,
+    "reviewed_package_count_after": 692,
+    "reviewed_library_modified": false
+  },
+  "hardening": {
+    "commit": "9f11d6724a85f22af525031afee4758c9e9d8157",
+    "subject": "fix(model-factory): pin residual probes to 25 C",
+    "code_files": [
+      "tools/model-factory/python/fit_conveyor.py",
+      "tools/model-factory/test/fit-conveyor.test.mjs"
+    ],
+    "shared_directive": ".temp 25",
+    "native_residual_probes_audited": 3,
+    "native_residual_probes_pinned": 3,
+    "probe_families": [
+      "diode",
+      "bjt",
+      "vdmos"
+    ],
+    "directive_count_per_probe": 1,
+    "directive_order": "after model card and before the native .op directive",
+    "regression_method": "Monkeypatch native ngspice execution, capture all three emitted probe netlists, and require exactly one line-level .temp 25 directive before line-level .op.",
+    "old_behavior_regression_result": "would fail because the old generated netlists contained zero .temp 25 directives",
+    "fit_gates_changed": false,
+    "parameter_bounds_changed": false,
+    "model_forms_changed": false,
+    "part_specific_bypasses_added": false
+  },
+  "selection": {
+    "document": "docs/batch-8-selection.json",
+    "selection_commit": "31f0be0eda050b7db8d0c239021d665270fd0c97",
+    "intended_frozen_campaign_order_start": 370,
+    "assigned_frozen_campaign_order_start": null,
+    "assigned_frozen_campaign_order_end": null,
+    "selected_count": 0,
+    "processed_count": 0,
+    "unprocessed_count": 0,
+    "new_target_ceiling": 160,
+    "new_target_ceiling_exceeded": false,
+    "later_target_launched_before_earlier_target": false,
+    "independent_review_rejections_revisited": 0,
+    "prior_execution_failures_retried": 0,
+    "order_370_status": "unassigned-because-the-frozen-supported-source-is-exhausted"
+  },
+  "execution_totals": {
+    "processed_count": 0,
+    "staged_count": 0,
+    "failed_or_skipped_count": 0,
+    "unprocessed_count": 0,
+    "staged_by_fidelity": {
+      "F1": 0,
+      "F2": 0
+    },
+    "staged_by_family": {
+      "diode": 0,
+      "mosfet": 0,
+      "bjt": 0
+    },
+    "failed_or_skipped_by_family": {
+      "diode": 0,
+      "mosfet": 0,
+      "bjt": 0
+    },
+    "stop_reason": "All 1,006 supported frozen source rows are accounted for by 1,004 prior campaign rows and two current reviewed identity/alias collisions. The remaining 28 source rows are pre-biased digital transistors outside the unchanged archetypes. No eligible target exists."
+  },
+  "source_exhaustion": {
+    "supported_source_rows": 1006,
+    "supported_prior_campaign_rows": 1004,
+    "supported_current_reviewed_identity_or_alias_collisions": 2,
+    "supported_eligible_rows": 0,
+    "by_family": {
+      "bjt": {
+        "source_rows": 235,
+        "prior_campaign_rows": 235,
+        "reviewed_collisions": 0,
+        "eligible": 0
+      },
+      "diode": {
+        "source_rows": 448,
+        "prior_campaign_rows": 447,
+        "reviewed_collisions": 1,
+        "eligible": 0
+      },
+      "mosfet": {
+        "source_rows": 323,
+        "prior_campaign_rows": 322,
+        "reviewed_collisions": 1,
+        "eligible": 0
+      }
+    },
+    "reviewed_collision_rows": [
+      {
+        "scale_manifest_rank": 692,
+        "family": "diode",
+        "lcsc_id": "C181118",
+        "mpn": "1SS355",
+        "manufacturer": "Guangdong Hottech",
+        "reviewed_collision": "packages/model-library/models/hongjiacheng/1SS355"
+      },
+      {
+        "scale_manifest_rank": 1003,
+        "family": "mosfet",
+        "lcsc_id": "C5224267",
+        "mpn": "BSS138BK",
+        "manufacturer": "ElecSuper",
+        "reviewed_collision": "packages/model-library/models/nexperia/BSS138BK"
+      }
+    ],
+    "unsupported_source_rows": 28,
+    "unsupported_category": "Digital Transistors",
+    "unsupported_reason": "Every unclassified row is a pre-biased digital transistor with an internal resistor network. The unchanged plain-BJT archetype does not represent that network, so these rows cannot be silently reclassified without changing the model form or archetype.",
+    "archetypes_widened": false,
+    "part_specific_bypasses_added": false,
+    "gates_loosened": false
+  },
+  "failure_retry_triage": {
+    "prior_failures_examined": 55,
+    "prior_failure_categories": {
+      "canonical-mpn-schema-failure": 2,
+      "complete-vector-collision": 41,
+      "inclusive-hard-bound-failure": 11,
+      "insufficient-source-evidence-failure": 1
+    },
+    "genuinely_new_reusable_defect_class_with_remaining_bounded_attempt": null,
+    "retry_count": 0,
+    "reason": "The 25 C hardening changes stored native fitted-residual evaluation only. Batch 7 hard-bound failures were already measured by explicit .temp 25 probes, while collision, identity/schema, and source-evidence failures are independent of residual temperature."
+  },
+  "extraction": {
+    "initial_target_extractions": 0,
+    "logical_extraction_attempts": 0,
+    "transport_retries": 0,
+    "completed_extraction_calls_repeated": 0,
+    "total_luna_lane_invocations": 0,
+    "maximum_live_luna_lanes": 0,
+    "concurrency_ceiling": 4,
+    "routing_note": "No extraction lane was launched because deterministic selection produced zero targets."
+  },
+  "validation": {
+    "package_validators_run": 0,
+    "package_validators_passed": 0,
+    "package_validators_failed": 0,
+    "candidate_benches_audited": 0,
+    "candidate_benches_with_explicit_temp_25": 0,
+    "candidate_benches_missing_explicit_temp_25": 0,
+    "native_residual_probe_netlists_audited_by_regression": 3,
+    "native_residual_probe_netlists_with_exactly_one_temp_25_before_op": 3,
+    "expectation_checks_passed": 0,
+    "expectation_checks_failed": 0,
+    "native_wasm_parity_candidates": 0,
+    "native_wasm_parity_failures": 0,
+    "f2_packages_audited": 0,
+    "f2_scope_issues": 0,
+    "f2_residual_issues": 0,
+    "f2_physical_bound_saturation_issues": 0,
+    "inclusive_hard_bound_probes": 0,
+    "inclusive_hard_bound_packages_passed": 0,
+    "inclusive_hard_bound_packages_failed": 0,
+    "zero_candidate_checks_not_fabricated": true
+  },
+  "source_evidence_audit": {
+    "candidate_packages": 0,
+    "sha256_pass": 0,
+    "sha256_fail": 0,
+    "citation_page_range_pass": 0,
+    "citation_page_range_fail": 0,
+    "canonical_identity_pass": 0,
+    "canonical_identity_fail": 0,
+    "new_source_fetches": 0
+  },
+  "collision_audit": {
+    "reviewed_baseline_packages": 692,
+    "selected_candidates": 0,
+    "source_rows_excluded_for_reviewed_identity_or_alias_collision": 2,
+    "final_identity_or_alias_collisions_with_reviewed": 0,
+    "final_identity_or_alias_collisions_within_batch": 0,
+    "final_complete_vector_collisions_with_reviewed": 0,
+    "final_complete_vector_collisions_within_batch": 0,
+    "collision_rows": [
+      {
+        "scale_manifest_rank": 692,
+        "family": "diode",
+        "lcsc_id": "C181118",
+        "mpn": "1SS355",
+        "manufacturer": "Guangdong Hottech",
+        "reviewed_collision": "packages/model-library/models/hongjiacheng/1SS355"
+      },
+      {
+        "scale_manifest_rank": 1003,
+        "family": "mosfet",
+        "lcsc_id": "C5224267",
+        "mpn": "BSS138BK",
+        "manufacturer": "ElecSuper",
+        "reviewed_collision": "packages/model-library/models/nexperia/BSS138BK"
+      }
+    ]
+  },
+  "tests": {
+    "model_factory": {
+      "command": "npm --prefix tools/model-factory test",
+      "passed": 46,
+      "failed": 0,
+      "skipped": 0
+    },
+    "conveyor": {
+      "command": "npm --prefix tools/conveyor test",
+      "passed": 16,
+      "failed": 0
+    },
+    "conveyor_typecheck": {
+      "command": "npm --prefix tools/conveyor run typecheck",
+      "result": "passed"
+    }
+  },
+  "repository_audits": {
+    "reviewed_package_count": 692,
+    "reviewed_library_diff_against_base": 0,
+    "git_diff_check": "passed",
+    "tracked_pdfs": 0,
+    "tracked_sqlite_databases": 0,
+    "tracked_manifests": 0,
+    "tracked_tranches": 0,
+    "tracked_extraction_responses": 0,
+    "tracked_staging_files": 0,
+    "tracked_conveyor_data_files": 0,
+    "tracked_part_feeder_data_files": 0,
+    "absolute_worktree_paths_in_tracked_batch_documents": 0,
+    "absolute_scratchpad_paths_in_tracked_batch_documents": 0
+  },
+  "tracked_outputs": {
+    "documents": [
+      "docs/batch-8-selection.json",
+      "docs/batch-8-execution.json"
+    ],
+    "code": [
+      "tools/model-factory/python/fit_conveyor.py",
+      "tools/model-factory/test/fit-conveyor.test.mjs"
+    ],
+    "staging_seeded": false
+  },
+  "commits": {
+    "base": "309cf298a58f9a078a7d6ae790a1eb2e7908e82d",
+    "hardening_commit": "9f11d6724a85f22af525031afee4758c9e9d8157",
+    "selection_commit": "31f0be0eda050b7db8d0c239021d665270fd0c97",
+    "execution_commit": "this document: docs(scale): record batch-8 execution",
+    "batch_8_tracked_commit_count": 3,
+    "commit_body_trailers": 0,
+    "co_authored_by_trailers": 0
+  },
+  "prohibited_actions": {
+    "reviewed": false,
+    "promoted": false,
+    "pushed": false,
+    "deployed": false,
+    "published": false,
+    "posted": false,
+    "github_commented": false,
+    "vault_updated": false
+  },
+  "processed_outcomes": []
+}
