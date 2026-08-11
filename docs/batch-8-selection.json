@@ -1,0 +1,679 @@
+{
+  "schema_version": "1.0.0",
+  "campaign": "scheMAGIC scale campaign batch 8 deterministic selection",
+  "date": "2026-08-11",
+  "authority": "hardening, deterministic selection, execution, and staging only; no review, promotion, push, deploy, publication, posting, GitHub action, or Vault update",
+  "status": "selection-exhausted-no-targets",
+  "tripwire": {
+    "worktree": ".claude/worktrees/agent-a4e2b44745cbce0e2",
+    "repository_owner": ".",
+    "head_before_hardening": "309cf298a58f9a078a7d6ae790a1eb2e7908e82d",
+    "reviewed_package_count": 692,
+    "passed": true
+  },
+  "hardening_gate": {
+    "required_before_selection": true,
+    "completed_before_selection": true,
+    "commit": "9f11d6724a85f22af525031afee4758c9e9d8157",
+    "subject": "fix(model-factory): pin residual probes to 25 C",
+    "defect": "Native fitted residual summary probes could omit an explicit temperature and inherit ngspice default 27 C while shipping benches and cited evidence use 25 C.",
+    "fix": "A shared .temp 25 directive is emitted exactly once before .op by the diode, BJT, and VDMOS native residual probes.",
+    "native_run_ngspice_call_sites_audited": 3,
+    "native_run_ngspice_call_sites_pinned_to_temp_25": 3,
+    "fit_gates_changed": false,
+    "parameter_bounds_changed": false,
+    "model_forms_changed": false,
+    "regression_old_behavior_would_fail": true,
+    "preselection_tests": {
+      "model_factory": {
+        "passed": 46,
+        "failed": 0
+      },
+      "conveyor": {
+        "passed": 16,
+        "failed": 0
+      },
+      "conveyor_typecheck": "passed"
+    }
+  },
+  "inputs": {
+    "frozen_manifest": "tools/part-feeder/data/manifests/scale-1k.json",
+    "source_part_count": 1034,
+    "copied_minimum_inputs_only": true,
+    "new_source_fetches": 0
+  },
+  "batch_7_execution_failure_triage": {
+    "examined_count": 55,
+    "failure_category_counts": {
+      "canonical-mpn-schema-failure": 2,
+      "complete-vector-collision": 41,
+      "inclusive-hard-bound-failure": 11,
+      "insufficient-source-evidence-failure": 1
+    },
+    "eligible_new_reusable_defect_classes": 0,
+    "retried_count": 0,
+    "reason_no_temperature_retries": "The 25 C hardening changes stored native fitted-residual evaluation only. Batch 7 hard-bound failures were already measured by explicit .temp 25 probes, while collision, identity/schema, and source-evidence failures are independent of residual temperature.",
+    "dispositions": [
+      {
+        "frozen_campaign_order": 241,
+        "lcsc_id": "C18199110",
+        "mpn": "S10JC",
+        "failure_category": "inclusive-hard-bound-failure",
+        "disposition": "parked-inclusive-hard-electrical-bound-failure-already-evaluated-at-explicit-25-c",
+        "batch_8_retry_allowed": false,
+        "temperature_hardening_relevance": "none"
+      },
+      {
+        "frozen_campaign_order": 244,
+        "lcsc_id": "C19077471",
+        "mpn": "BZX84C12",
+        "failure_category": "complete-vector-collision",
+        "disposition": "parked-complete-vector-collision",
+        "batch_8_retry_allowed": false,
+        "temperature_hardening_relevance": "none"
+      },
+      {
+        "frozen_campaign_order": 245,
+        "lcsc_id": "C18199126",
+        "mpn": "US1B",
+        "failure_category": "inclusive-hard-bound-failure",
+        "disposition": "parked-inclusive-hard-electrical-bound-failure-already-evaluated-at-explicit-25-c",
+        "batch_8_retry_allowed": false,
+        "temperature_hardening_relevance": "none"
+      },
+      {
+        "frozen_campaign_order": 246,
+        "lcsc_id": "C22375296",
+        "mpn": "BZT52C2V4",
+        "failure_category": "complete-vector-collision",
+        "disposition": "parked-complete-vector-collision",
+        "batch_8_retry_allowed": false,
+        "temperature_hardening_relevance": "none"
+      },
+      {
+        "frozen_campaign_order": 247,
+        "lcsc_id": "C22395522",
+        "mpn": "BZX84C8V2",
+        "failure_category": "complete-vector-collision",
+        "disposition": "parked-complete-vector-collision",
+        "batch_8_retry_allowed": false,
+        "temperature_hardening_relevance": "none"
+      },
+      {
+        "frozen_campaign_order": 248,
+        "lcsc_id": "C18199178",
+        "mpn": "SS110",
+        "failure_category": "complete-vector-collision",
+        "disposition": "parked-complete-vector-collision",
+        "batch_8_retry_allowed": false,
+        "temperature_hardening_relevance": "none"
+      },
+      {
+        "frozen_campaign_order": 251,
+        "lcsc_id": "C28646278",
+        "mpn": "SSL54B",
+        "failure_category": "inclusive-hard-bound-failure",
+        "disposition": "parked-inclusive-hard-electrical-bound-failure-already-evaluated-at-explicit-25-c",
+        "batch_8_retry_allowed": false,
+        "temperature_hardening_relevance": "none"
+      },
+      {
+        "frozen_campaign_order": 257,
+        "lcsc_id": "C22379469",
+        "mpn": "MM1Z27",
+        "failure_category": "complete-vector-collision",
+        "disposition": "parked-complete-vector-collision",
+        "batch_8_retry_allowed": false,
+        "temperature_hardening_relevance": "none"
+      },
+      {
+        "frozen_campaign_order": 258,
+        "lcsc_id": "C18199122",
+        "mpn": "US1DW",
+        "failure_category": "inclusive-hard-bound-failure",
+        "disposition": "parked-inclusive-hard-electrical-bound-failure-already-evaluated-at-explicit-25-c",
+        "batch_8_retry_allowed": false,
+        "temperature_hardening_relevance": "none"
+      },
+      {
+        "frozen_campaign_order": 261,
+        "lcsc_id": "C18199144",
+        "mpn": "ES5DC",
+        "failure_category": "inclusive-hard-bound-failure",
+        "disposition": "parked-inclusive-hard-electrical-bound-failure-already-evaluated-at-explicit-25-c",
+        "batch_8_retry_allowed": false,
+        "temperature_hardening_relevance": "none"
+      },
+      {
+        "frozen_campaign_order": 262,
+        "lcsc_id": "C7502685",
+        "mpn": "BAS40",
+        "failure_category": "complete-vector-collision",
+        "disposition": "parked-complete-vector-collision",
+        "batch_8_retry_allowed": false,
+        "temperature_hardening_relevance": "none"
+      },
+      {
+        "frozen_campaign_order": 263,
+        "lcsc_id": "C7502700",
+        "mpn": "RB751S-40",
+        "failure_category": "insufficient-source-evidence-failure",
+        "disposition": "parked-insufficient-source-evidence-or-exhausted-failure",
+        "batch_8_retry_allowed": false,
+        "temperature_hardening_relevance": "none"
+      },
+      {
+        "frozen_campaign_order": 265,
+        "lcsc_id": "C22379464",
+        "mpn": "MM1Z6V2",
+        "failure_category": "complete-vector-collision",
+        "disposition": "parked-complete-vector-collision",
+        "batch_8_retry_allowed": false,
+        "temperature_hardening_relevance": "none"
+      },
+      {
+        "frozen_campaign_order": 268,
+        "lcsc_id": "C22399889",
+        "mpn": "BZT52C13S",
+        "failure_category": "complete-vector-collision",
+        "disposition": "parked-complete-vector-collision",
+        "batch_8_retry_allowed": false,
+        "temperature_hardening_relevance": "none"
+      },
+      {
+        "frozen_campaign_order": 272,
+        "lcsc_id": "C18199185",
+        "mpn": "SS24B",
+        "failure_category": "complete-vector-collision",
+        "disposition": "parked-complete-vector-collision",
+        "batch_8_retry_allowed": false,
+        "temperature_hardening_relevance": "none"
+      },
+      {
+        "frozen_campaign_order": 273,
+        "lcsc_id": "C22395575",
+        "mpn": "BZX584C3V9",
+        "failure_category": "complete-vector-collision",
+        "disposition": "parked-complete-vector-collision",
+        "batch_8_retry_allowed": false,
+        "temperature_hardening_relevance": "none"
+      },
+      {
+        "frozen_campaign_order": 274,
+        "lcsc_id": "C22395567",
+        "mpn": "MMSZ5250BS",
+        "failure_category": "complete-vector-collision",
+        "disposition": "parked-complete-vector-collision",
+        "batch_8_retry_allowed": false,
+        "temperature_hardening_relevance": "none"
+      },
+      {
+        "frozen_campaign_order": 275,
+        "lcsc_id": "C22375287",
+        "mpn": "BZT52C11S",
+        "failure_category": "complete-vector-collision",
+        "disposition": "parked-complete-vector-collision",
+        "batch_8_retry_allowed": false,
+        "temperature_hardening_relevance": "none"
+      },
+      {
+        "frozen_campaign_order": 276,
+        "lcsc_id": "C18199182",
+        "mpn": "SS36B",
+        "failure_category": "complete-vector-collision",
+        "disposition": "parked-complete-vector-collision",
+        "batch_8_retry_allowed": false,
+        "temperature_hardening_relevance": "none"
+      },
+      {
+        "frozen_campaign_order": 282,
+        "lcsc_id": "C28646287",
+        "mpn": "DSK115",
+        "failure_category": "inclusive-hard-bound-failure",
+        "disposition": "parked-inclusive-hard-electrical-bound-failure-already-evaluated-at-explicit-25-c",
+        "batch_8_retry_allowed": false,
+        "temperature_hardening_relevance": "none"
+      },
+      {
+        "frozen_campaign_order": 283,
+        "lcsc_id": "C22395578",
+        "mpn": "BZX584C11",
+        "failure_category": "complete-vector-collision",
+        "disposition": "parked-complete-vector-collision",
+        "batch_8_retry_allowed": false,
+        "temperature_hardening_relevance": "none"
+      },
+      {
+        "frozen_campaign_order": 287,
+        "lcsc_id": "C7502689",
+        "mpn": "BAS40-05",
+        "failure_category": "complete-vector-collision",
+        "disposition": "parked-complete-vector-collision",
+        "batch_8_retry_allowed": false,
+        "temperature_hardening_relevance": "none"
+      },
+      {
+        "frozen_campaign_order": 290,
+        "lcsc_id": "C19077417",
+        "mpn": "BZT52C27",
+        "failure_category": "complete-vector-collision",
+        "disposition": "parked-complete-vector-collision",
+        "batch_8_retry_allowed": false,
+        "temperature_hardening_relevance": "none"
+      },
+      {
+        "frozen_campaign_order": 292,
+        "lcsc_id": "C22379460",
+        "mpn": "MM1Z6V8",
+        "failure_category": "complete-vector-collision",
+        "disposition": "parked-complete-vector-collision",
+        "batch_8_retry_allowed": false,
+        "temperature_hardening_relevance": "none"
+      },
+      {
+        "frozen_campaign_order": 293,
+        "lcsc_id": "C28646302",
+        "mpn": "SS220B",
+        "failure_category": "complete-vector-collision",
+        "disposition": "parked-complete-vector-collision",
+        "batch_8_retry_allowed": false,
+        "temperature_hardening_relevance": "none"
+      },
+      {
+        "frozen_campaign_order": 298,
+        "lcsc_id": "C18199108",
+        "mpn": "S8KC",
+        "failure_category": "inclusive-hard-bound-failure",
+        "disposition": "parked-inclusive-hard-electrical-bound-failure-already-evaluated-at-explicit-25-c",
+        "batch_8_retry_allowed": false,
+        "temperature_hardening_relevance": "none"
+      },
+      {
+        "frozen_campaign_order": 299,
+        "lcsc_id": "C22379473",
+        "mpn": "BZX84C6V8",
+        "failure_category": "complete-vector-collision",
+        "disposition": "parked-complete-vector-collision",
+        "batch_8_retry_allowed": false,
+        "temperature_hardening_relevance": "none"
+      },
+      {
+        "frozen_campaign_order": 301,
+        "lcsc_id": "C19077472",
+        "mpn": "BZX84C15",
+        "failure_category": "complete-vector-collision",
+        "disposition": "parked-complete-vector-collision",
+        "batch_8_retry_allowed": false,
+        "temperature_hardening_relevance": "none"
+      },
+      {
+        "frozen_campaign_order": 306,
+        "lcsc_id": "C18199107",
+        "mpn": "S6MC",
+        "failure_category": "inclusive-hard-bound-failure",
+        "disposition": "parked-inclusive-hard-electrical-bound-failure-already-evaluated-at-explicit-25-c",
+        "batch_8_retry_allowed": false,
+        "temperature_hardening_relevance": "none"
+      },
+      {
+        "frozen_campaign_order": 309,
+        "lcsc_id": "C18199104",
+        "mpn": "S5JB",
+        "failure_category": "inclusive-hard-bound-failure",
+        "disposition": "parked-inclusive-hard-electrical-bound-failure-already-evaluated-at-explicit-25-c",
+        "batch_8_retry_allowed": false,
+        "temperature_hardening_relevance": "none"
+      },
+      {
+        "frozen_campaign_order": 310,
+        "lcsc_id": "C18199112",
+        "mpn": "S5BBF",
+        "failure_category": "inclusive-hard-bound-failure",
+        "disposition": "parked-inclusive-hard-electrical-bound-failure-already-evaluated-at-explicit-25-c",
+        "batch_8_retry_allowed": false,
+        "temperature_hardening_relevance": "none"
+      },
+      {
+        "frozen_campaign_order": 311,
+        "lcsc_id": "C19077469",
+        "mpn": "BZX84C5V6",
+        "failure_category": "complete-vector-collision",
+        "disposition": "parked-complete-vector-collision",
+        "batch_8_retry_allowed": false,
+        "temperature_hardening_relevance": "none"
+      },
+      {
+        "frozen_campaign_order": 312,
+        "lcsc_id": "C28646300",
+        "mpn": "SK1045B",
+        "failure_category": "complete-vector-collision",
+        "disposition": "parked-complete-vector-collision",
+        "batch_8_retry_allowed": false,
+        "temperature_hardening_relevance": "none"
+      },
+      {
+        "frozen_campaign_order": 313,
+        "lcsc_id": "C22379470",
+        "mpn": "BZX84C7V5",
+        "failure_category": "complete-vector-collision",
+        "disposition": "parked-complete-vector-collision",
+        "batch_8_retry_allowed": false,
+        "temperature_hardening_relevance": "none"
+      },
+      {
+        "frozen_campaign_order": 314,
+        "lcsc_id": "C18199103",
+        "mpn": "S3MC",
+        "failure_category": "complete-vector-collision",
+        "disposition": "parked-complete-vector-collision",
+        "batch_8_retry_allowed": false,
+        "temperature_hardening_relevance": "none"
+      },
+      {
+        "frozen_campaign_order": 317,
+        "lcsc_id": "C22379454",
+        "mpn": "MM3Z5V1B",
+        "failure_category": "complete-vector-collision",
+        "disposition": "parked-complete-vector-collision",
+        "batch_8_retry_allowed": false,
+        "temperature_hardening_relevance": "none"
+      },
+      {
+        "frozen_campaign_order": 320,
+        "lcsc_id": "C18199162",
+        "mpn": "ES2DB",
+        "failure_category": "complete-vector-collision",
+        "disposition": "parked-complete-vector-collision",
+        "batch_8_retry_allowed": false,
+        "temperature_hardening_relevance": "none"
+      },
+      {
+        "frozen_campaign_order": 324,
+        "lcsc_id": "C22379455",
+        "mpn": "MM1Z18B",
+        "failure_category": "complete-vector-collision",
+        "disposition": "parked-complete-vector-collision",
+        "batch_8_retry_allowed": false,
+        "temperature_hardening_relevance": "none"
+      },
+      {
+        "frozen_campaign_order": 326,
+        "lcsc_id": "C22379467",
+        "mpn": "MM1Z20",
+        "failure_category": "complete-vector-collision",
+        "disposition": "parked-complete-vector-collision",
+        "batch_8_retry_allowed": false,
+        "temperature_hardening_relevance": "none"
+      },
+      {
+        "frozen_campaign_order": 329,
+        "lcsc_id": "C19077405",
+        "mpn": "BZT52C7V5",
+        "failure_category": "complete-vector-collision",
+        "disposition": "parked-complete-vector-collision",
+        "batch_8_retry_allowed": false,
+        "temperature_hardening_relevance": "none"
+      },
+      {
+        "frozen_campaign_order": 332,
+        "lcsc_id": "C22466343",
+        "mpn": "MM1Z5V1B",
+        "failure_category": "complete-vector-collision",
+        "disposition": "parked-complete-vector-collision",
+        "batch_8_retry_allowed": false,
+        "temperature_hardening_relevance": "none"
+      },
+      {
+        "frozen_campaign_order": 333,
+        "lcsc_id": "C22466342",
+        "mpn": "MM1Z12B",
+        "failure_category": "complete-vector-collision",
+        "disposition": "parked-complete-vector-collision",
+        "batch_8_retry_allowed": false,
+        "temperature_hardening_relevance": "none"
+      },
+      {
+        "frozen_campaign_order": 335,
+        "lcsc_id": "C18199120",
+        "mpn": "RS3MC",
+        "failure_category": "complete-vector-collision",
+        "disposition": "parked-complete-vector-collision",
+        "batch_8_retry_allowed": false,
+        "temperature_hardening_relevance": "none"
+      },
+      {
+        "frozen_campaign_order": 338,
+        "lcsc_id": "C22379462",
+        "mpn": "MM1Z15",
+        "failure_category": "complete-vector-collision",
+        "disposition": "parked-complete-vector-collision",
+        "batch_8_retry_allowed": false,
+        "temperature_hardening_relevance": "none"
+      },
+      {
+        "frozen_campaign_order": 342,
+        "lcsc_id": "C22395562",
+        "mpn": "MMSZ5231BS",
+        "failure_category": "complete-vector-collision",
+        "disposition": "parked-complete-vector-collision",
+        "batch_8_retry_allowed": false,
+        "temperature_hardening_relevance": "none"
+      },
+      {
+        "frozen_campaign_order": 343,
+        "lcsc_id": "C19077459",
+        "mpn": "MM3Z10",
+        "failure_category": "complete-vector-collision",
+        "disposition": "parked-complete-vector-collision",
+        "batch_8_retry_allowed": false,
+        "temperature_hardening_relevance": "none"
+      },
+      {
+        "frozen_campaign_order": 344,
+        "lcsc_id": "C22399886",
+        "mpn": "BZT52B10S",
+        "failure_category": "complete-vector-collision",
+        "disposition": "parked-complete-vector-collision",
+        "batch_8_retry_allowed": false,
+        "temperature_hardening_relevance": "none"
+      },
+      {
+        "frozen_campaign_order": 346,
+        "lcsc_id": "C18199207",
+        "mpn": "SS84C",
+        "failure_category": "inclusive-hard-bound-failure",
+        "disposition": "parked-inclusive-hard-electrical-bound-failure-already-evaluated-at-explicit-25-c",
+        "batch_8_retry_allowed": false,
+        "temperature_hardening_relevance": "none"
+      },
+      {
+        "frozen_campaign_order": 347,
+        "lcsc_id": "C19077435",
+        "mpn": "BZT52B5V6S",
+        "failure_category": "complete-vector-collision",
+        "disposition": "parked-complete-vector-collision",
+        "batch_8_retry_allowed": false,
+        "temperature_hardening_relevance": "none"
+      },
+      {
+        "frozen_campaign_order": 349,
+        "lcsc_id": "C22399884",
+        "mpn": "BZT52B8V2S",
+        "failure_category": "complete-vector-collision",
+        "disposition": "parked-complete-vector-collision",
+        "batch_8_retry_allowed": false,
+        "temperature_hardening_relevance": "none"
+      },
+      {
+        "frozen_campaign_order": 353,
+        "lcsc_id": "C22395579",
+        "mpn": "BZX584C12",
+        "failure_category": "complete-vector-collision",
+        "disposition": "parked-complete-vector-collision",
+        "batch_8_retry_allowed": false,
+        "temperature_hardening_relevance": "none"
+      },
+      {
+        "frozen_campaign_order": 357,
+        "lcsc_id": "C2927280",
+        "mpn": "1N5819WS S4",
+        "failure_category": "canonical-mpn-schema-failure",
+        "disposition": "parked-canonical-identity-schema-failure",
+        "batch_8_retry_allowed": false,
+        "temperature_hardening_relevance": "none"
+      },
+      {
+        "frozen_campaign_order": 362,
+        "lcsc_id": "C963381",
+        "mpn": "1N5819W",
+        "failure_category": "complete-vector-collision",
+        "disposition": "parked-complete-vector-collision",
+        "batch_8_retry_allowed": false,
+        "temperature_hardening_relevance": "none"
+      },
+      {
+        "frozen_campaign_order": 365,
+        "lcsc_id": "C19357",
+        "mpn": "1N4007 \u7f16\u5e26",
+        "failure_category": "canonical-mpn-schema-failure",
+        "disposition": "parked-canonical-identity-schema-failure",
+        "batch_8_retry_allowed": false,
+        "temperature_hardening_relevance": "none"
+      },
+      {
+        "frozen_campaign_order": 369,
+        "lcsc_id": "C14332",
+        "mpn": "SS2200",
+        "failure_category": "complete-vector-collision",
+        "disposition": "parked-complete-vector-collision",
+        "batch_8_retry_allowed": false,
+        "temperature_hardening_relevance": "none"
+      }
+    ]
+  },
+  "independent_review_rejection_quarantine": {
+    "count": 16,
+    "prior_count": 10,
+    "new_batch_7_count": 6,
+    "new_batch_7_rejections": [
+      {
+        "frozen_campaign_order": 252,
+        "lcsc_id": "C108639",
+        "mpn": "NCE6020AK"
+      },
+      {
+        "frozen_campaign_order": 256,
+        "lcsc_id": "C18199195",
+        "mpn": "SS54BF"
+      },
+      {
+        "frozen_campaign_order": 307,
+        "lcsc_id": "C18199199",
+        "mpn": "SS34F"
+      },
+      {
+        "frozen_campaign_order": 352,
+        "lcsc_id": "C7502703",
+        "mpn": "RB521S-40"
+      },
+      {
+        "frozen_campaign_order": 366,
+        "lcsc_id": "C181134",
+        "mpn": "1N4148W-T4"
+      },
+      {
+        "frozen_campaign_order": 368,
+        "lcsc_id": "C917121",
+        "mpn": "NRVB130T1G"
+      }
+    ],
+    "lcsc_ids": [
+      "C108639",
+      "C139445",
+      "C17300",
+      "C181134",
+      "C18199086",
+      "C18199090",
+      "C18199170",
+      "C18199195",
+      "C18199199",
+      "C193222",
+      "C22466356",
+      "C347501",
+      "C5364246",
+      "C5364313",
+      "C7502703",
+      "C917121"
+    ],
+    "revisited_count": 0
+  },
+  "frozen_source_exhaustion": {
+    "supported_source_rows": 1006,
+    "supported_prior_campaign_rows": 1004,
+    "supported_current_reviewed_identity_or_alias_collisions": 2,
+    "supported_eligible_rows": 0,
+    "by_family": {
+      "bjt": {
+        "source_rows": 235,
+        "prior_campaign_rows": 235,
+        "reviewed_collisions": 0,
+        "eligible": 0
+      },
+      "diode": {
+        "source_rows": 448,
+        "prior_campaign_rows": 447,
+        "reviewed_collisions": 1,
+        "eligible": 0
+      },
+      "mosfet": {
+        "source_rows": 323,
+        "prior_campaign_rows": 322,
+        "reviewed_collisions": 1,
+        "eligible": 0
+      }
+    },
+    "reviewed_collision_rows": [
+      {
+        "scale_manifest_rank": 692,
+        "family": "diode",
+        "lcsc_id": "C181118",
+        "mpn": "1SS355",
+        "manufacturer": "Guangdong Hottech",
+        "reviewed_collision": "packages/model-library/models/hongjiacheng/1SS355"
+      },
+      {
+        "scale_manifest_rank": 1003,
+        "family": "mosfet",
+        "lcsc_id": "C5224267",
+        "mpn": "BSS138BK",
+        "manufacturer": "ElecSuper",
+        "reviewed_collision": "packages/model-library/models/nexperia/BSS138BK"
+      }
+    ],
+    "unsupported_source_rows": 28,
+    "unsupported_category": "Digital Transistors",
+    "unsupported_reason": "Every unclassified row is a pre-biased digital transistor with an internal resistor network. The unchanged plain-BJT archetype does not represent that network, so these rows cannot be silently reclassified without changing the model form or archetype.",
+    "archetypes_widened": false,
+    "part_specific_bypasses_added": false,
+    "gates_loosened": false
+  },
+  "selection": {
+    "intended_next_frozen_campaign_order": 370,
+    "assigned_frozen_campaign_order_start": null,
+    "assigned_frozen_campaign_order_end": null,
+    "new_execution_ceiling": 160,
+    "new_selected_count": 0,
+    "selected_count": 0,
+    "by_family": {
+      "diode": 0,
+      "mosfet": 0,
+      "bjt": 0
+    },
+    "waves": [],
+    "order_370_status": "unassigned-because-no-eligible-supported-frozen-source-row-exists",
+    "stop_reason": "The frozen scale-1k source is exhausted after prior campaign rows, current reviewed identity/alias collisions, unchanged archetype support, and rejection/failure quarantine. No target was fabricated or reordered."
+  },
+  "ordering": "Frozen campaign order 370 remains the next unassigned order. No later order was created because no eligible supported source row remained.",
+  "staging_root": "tools/conveyor/data/staging/batch-8/packages",
+  "staging_seeded": false
+}
