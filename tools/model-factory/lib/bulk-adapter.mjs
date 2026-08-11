@@ -238,11 +238,27 @@ function mosfetFit(part, extraction, forceF1 = false, constraintRunner = default
     adjustable: { vto: true, rdson: true },
     fixed: { CGS: parameters.CGS, CGDMAX: parameters.CGDMAX, CGDMIN: parameters.CGDMIN, CJO: parameters.CJO },
   });
+  const finalSeedCoordinates = constrained.optimizer?.final_seed_coordinates ?? {};
+  const intervalSeeds = seeds.map((seed) => {
+    const finalCoordinate = seed.parameter_coordinate === "VTO"
+      ? finalSeedCoordinates.vto
+      : finalSeedCoordinates.rdson;
+    const finalValue = Number(finalCoordinate);
+    if (!Number.isFinite(finalValue)) return { ...seed, scored_as_residual: false };
+    const displacementDelta = finalValue - seed.value;
+    return {
+      ...seed,
+      scored_as_residual: false,
+      final_value: finalValue,
+      displaced: displacementDelta !== 0,
+      displacement_delta: displacementDelta,
+    };
+  });
   return {
     fidelity: "F1", parameters: constrained.parameters, worst: null, points: [], evidence_mode: "interval-constrained",
     parameter_metadata: mosfetParameterMetadata("interval-constrained", specs),
-    optimizer: { ...constrained.optimizer, seeds },
-    calibration: { evidence_mode: "interval-constrained", observations, constraints: constrained.constraint_results, seeds, residual_target_count: observations.length },
+    optimizer: { ...constrained.optimizer, seeds: intervalSeeds },
+    calibration: { evidence_mode: "interval-constrained", observations, constraints: constrained.constraint_results, seeds: intervalSeeds, residual_target_count: 0 },
   };
 }
 

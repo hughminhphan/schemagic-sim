@@ -73,6 +73,8 @@ for (const name of ["IRLML5203TRPBF", "IRF740PBF", "FDN360P"]) {
     assert.ok(fit.calibration.constraints.every((constraint) => constraint.inclusive && constraint.satisfied));
     assert.ok(fit.calibration.constraints.every((constraint) => constraint.temperature_c === 25));
     assert.equal(fit.optimizer.residual_target_count, 0, "bound constraints never enter a residual-target vector");
+    assert.equal(fit.calibration.residual_target_count, 0, "interval-constrained calibration has no residual targets");
+    assert.ok(fit.calibration.seeds.every((seed) => seed.scored_as_residual === false));
     assert.equal(fit.residuals?.length ?? 0, 0, "bound constraints are not emitted as equality residuals");
     for (const constraint of fit.calibration.constraints) {
       if (constraint.kind === "threshold_interval") {
@@ -85,6 +87,41 @@ for (const name of ["IRLML5203TRPBF", "IRF740PBF", "FDN360P"]) {
     }
   });
 }
+
+test("clean-room 2N7002K-T1-GE3 fixture keeps threshold typical and maximum-only RDS evidence out of residual scoring", { skip: skipNative, timeout: 300_000 }, () => {
+  const fixture = loadFixture("2N7002K-T1-GE3");
+  const fit = fitBulkPart(fixture.part, fixture.extraction, { forceF1: true, ngspiceRunner: syntaxPass });
+  assert.equal(fit.evidence_mode, "interval-constrained");
+  assert.deepEqual(
+    fit.calibration.seeds.map((seed) => seed.evidence_role),
+    ["typical_observation_seed", "bound_value_seed_only"],
+  );
+  assert.ok(fit.calibration.seeds.every((seed) => seed.scored_as_residual === false));
+  assert.equal(fit.calibration.residual_target_count, 0);
+  assert.equal(fit.optimizer.residual_target_count, 0);
+  assert.ok(fit.calibration.constraints.every((constraint) => constraint.inclusive && constraint.satisfied));
+  assert.ok(fit.calibration.constraints.every((constraint) => constraint.temperature_c === 25));
+  for (const seed of fit.calibration.seeds) {
+    assert.equal(seed.final_value, seed.value);
+    assert.equal(seed.displaced, false);
+    assert.equal(seed.displacement_delta, 0);
+  }
+});
+
+test("FDN360P records typical RDS seed projection without residual scoring", { skip: skipNative, timeout: 300_000 }, () => {
+  const fixture = loadFixture("FDN360P");
+  const fit = fitBulkPart(fixture.part, fixture.extraction, { forceF1: true, ngspiceRunner: syntaxPass });
+  const rdsonSeed = fit.calibration.seeds.find((seed) => seed.parameter_coordinate === "rdson");
+  assert.equal(rdsonSeed.evidence_role, "typical_observation_seed");
+  assert.equal(rdsonSeed.scored_as_residual, false);
+  assert.equal(fit.calibration.residual_target_count, 0);
+  assert.equal(fit.optimizer.residual_target_count, 0);
+  assert.equal(rdsonSeed.value, 0.060);
+  assert.ok(Math.abs(rdsonSeed.final_value - 0.05625755) < 1e-5, rdsonSeed.final_value);
+  assert.equal(rdsonSeed.displaced, true);
+  assert.ok(Math.abs(rdsonSeed.displacement_delta - (rdsonSeed.final_value - 0.060)) < 1e-15);
+  assert.ok(rdsonSeed.displacement_delta < 0);
+});
 
 test("threshold interval rejects equal endpoints before optimizer execution", () => {
   const fixture = loadFixture("IRF740PBF");
