@@ -1,0 +1,1053 @@
+{
+  "schema_version": "1.0.0",
+  "review": "batch-10-independent-package-review",
+  "reviewer": "gpt-5.6-sol independent reviewer",
+  "review_date": "2026-08-12",
+  "starting_head": "ed2023283880f8e0e1aaf17f5096b4a64b45db50",
+  "promotion_performed": false,
+  "paths": {
+    "execution_record": "/Users/hughp/Documents/opencircuit/docs/batch-10-execution.json",
+    "early_gate_staging_root": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-early-gate/staging/batch-10-early-gate-eligible",
+    "continuation_staging_root": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-continuation/staging/batch-10-continuation-eligible",
+    "reviewed_library_root": "/Users/hughp/Documents/opencircuit/packages/model-library/models",
+    "review_log": "/Users/hughp/Documents/opencircuit/docs/batch-10-review-log.md",
+    "promotion_manifest": "/Users/hughp/Documents/opencircuit/docs/batch-10-promotion-manifest.json"
+  },
+  "fingerprint_method": "SHA-256 over each package file in lexicographic relative-path order, updating relative path, NUL, file bytes, NUL.",
+  "counts": {
+    "reviewed_library_before": 703,
+    "reviewed_library_after": 703,
+    "reviewed": {
+      "total": 49,
+      "by_fidelity": {
+        "F1": 32,
+        "F2": 17
+      }
+    },
+    "approved": {
+      "total": 7,
+      "by_fidelity": {
+        "F1": 1,
+        "F2": 6
+      }
+    },
+    "rejected": {
+      "total": 42,
+      "by_fidelity": {
+        "F1": 31,
+        "F2": 11
+      }
+    },
+    "tier_changes": 0,
+    "rejection_classes": {
+      "f2-axis-unit-error": 1,
+      "unsupported-f1-numerical-evidence": 31,
+      "unsupported-f2-source-curve": 9,
+      "unsupported-f2-source-curve-and-hard-bound-evidence": 1
+    }
+  },
+  "reviewed_library_integrity": {
+    "package_count_before": 703,
+    "package_count_after": 703,
+    "aggregate_fingerprint_method": "find models -type f -print0 | sort -z | xargs -0 shasum -a 256 | shasum -a 256",
+    "aggregate_fingerprint_before": "72bd954cddef81138d996859a4596808b5a1d017e0b84a55f7388c761eae44ac",
+    "aggregate_fingerprint_after": "72bd954cddef81138d996859a4596808b5a1d017e0b84a55f7388c761eae44ac",
+    "modified": false
+  },
+  "collision_audit": {
+    "canonical_or_alias_collisions_with_reviewed_library": 0,
+    "complete_fitted_vector_collisions_with_reviewed_library": 0,
+    "canonical_or_alias_collisions_within_batch_10": 0,
+    "complete_fitted_vector_collisions_within_batch_10": 0
+  },
+  "validation": {
+    "package_schema": {
+      "passed": 49,
+      "failed": 0
+    },
+    "benches": {
+      "passed": 195,
+      "failed": 0,
+      "explicit_temp_25": 195
+    },
+    "expectations": {
+      "passed": 201,
+      "failed": 0,
+      "scalar_checks": 127,
+      "hard_bounds_checks": 74
+    },
+    "native_wasm_parity": {
+      "passed": 195,
+      "failed": 0
+    },
+    "source_pdf_sha256_matches": 49,
+    "source_url_matches": 49,
+    "page_citations_present": 49
+  },
+  "candidates": [
+    {
+      "frozen_campaign_order": 530,
+      "lcsc_id": "C41375136",
+      "catalog_mpn": "PXT8050",
+      "canonical_mpn": "PXT8050",
+      "manufacturer": "hongjiacheng",
+      "electrical_family": "bjt_npn",
+      "disposition": "approved",
+      "rejection_class": null,
+      "original_fidelity": "F1",
+      "final_fidelity": "F1",
+      "staging_root": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-early-gate/staging/batch-10-early-gate-eligible",
+      "package_path": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-early-gate/staging/batch-10-early-gate-eligible/packages/hongjiacheng/PXT8050",
+      "post_review_package_fingerprint_sha256": "3ebe4d542c71756ecd9da166b7e7cc20db2f2d34e96c15bff6be6301742bc9dc",
+      "reasons": [
+        "The PXT8050 identity, NPN polarity, SOT-89 package, pin mapping, and published 25 C current-gain bounds are source-supported. BF is conservatively tied to the published minimum, all included gain expectations pass, and unsupported saturation, breakdown, AC, and transient behavior remain excluded."
+      ],
+      "modifications": [
+        "Finalized reviewer metadata as independent-package-review-batch-10 dated 2026-08-12.",
+        "Removed pending-review language and recorded that approval is for promotion eligibility only; no promotion was performed.",
+        "Added the omitted published hFE maximum of 400 at IC = 100 mA and VCE = 1 V to facts and expectations.",
+        "Identified BF as the only evidence-derived model parameter and recorded IS, VAF, IKF, RB, RC, RE, CJE, CJC, and TF as unchanged generic F1 defaults.",
+        "Narrowed the supported claim to cited 25 C current-gain behavior at VCE = 1 V; saturation, breakdown, AC, and transient behavior remain excluded.",
+        "Corrected model-card validation prose without changing electrical data."
+      ]
+    },
+    {
+      "frozen_campaign_order": 532,
+      "lcsc_id": "C18124",
+      "catalog_mpn": "SOD4007",
+      "canonical_mpn": "SOD4007",
+      "manufacturer": "MDD Microdiode Semiconductor",
+      "electrical_family": "diode",
+      "disposition": "rejected",
+      "rejection_class": "unsupported-f1-numerical-evidence",
+      "original_fidelity": "F1",
+      "final_fidelity": "F1",
+      "staging_root": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-early-gate/staging/batch-10-early-gate-eligible",
+      "package_path": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-early-gate/staging/batch-10-early-gate-eligible/packages/mdd-microdiode/SOD4007",
+      "post_review_package_fingerprint_sha256": "6dfdc870ec2a80bae5c0b8df98d8e39a3cd74f77a5720ca658ded8492c1c8fb1",
+      "reasons": [
+        "The unchanged non-default diode IS value was generated from an unsupported synthetic equality target at 95% of the published maximum-current condition and 97% of the published maximum forward voltage. The primary source supplies an inclusive maximum, not a typical equality point. Acceptance would require a numerical model-parameter change, which this review prohibited."
+      ],
+      "modifications": []
+    },
+    {
+      "frozen_campaign_order": 534,
+      "lcsc_id": "C211752",
+      "catalog_mpn": "M7",
+      "canonical_mpn": "M7",
+      "manufacturer": "Yangzhou Yangjie Elec Tech",
+      "electrical_family": "diode",
+      "disposition": "approved",
+      "rejection_class": null,
+      "original_fidelity": "F2",
+      "final_fidelity": "F2",
+      "staging_root": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-early-gate/staging/batch-10-early-gate-eligible",
+      "package_path": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-early-gate/staging/batch-10-early-gate-eligible/packages/yangzhou-yangjie-elec-tech/M7",
+      "post_review_package_fingerprint_sha256": "d72c9718a5bb40886d2f16a1a1555ae1a03301620fc0e457021afd61a2a9a2f5",
+      "reasons": [
+        "The F2 points follow the cited M7 25 C pulsed forward curve in Figure 3. Independent native ngspice residuals pass the unchanged diode F2 gates, and the published 1.1 V maximum at 1.0 A is now explicitly checked."
+      ],
+      "modifications": [
+        "Finalized reviewer metadata as independent-package-review-batch-10 dated 2026-08-12.",
+        "Removed pending-review language and recorded that approval is for promotion eligibility only; no promotion was performed.",
+        "Corrected malformed forward-current evidence from value 1.1 unit V to value 1.0 unit A.",
+        "Added forward_09.cir and an inclusive 1.1 V maximum check at exactly 1.0 A; the pre-existing 1.1 A check was left numerically unchanged.",
+        "Narrowed the supported F2 scope to the source condition of 300 us pulse width and 1% duty cycle."
+      ]
+    },
+    {
+      "frozen_campaign_order": 536,
+      "lcsc_id": "C2482",
+      "catalog_mpn": "SS110",
+      "canonical_mpn": "SS110",
+      "manufacturer": "MDD Microdiode Semiconductor",
+      "electrical_family": "diode",
+      "disposition": "rejected",
+      "rejection_class": "unsupported-f2-source-curve-and-hard-bound-evidence",
+      "original_fidelity": "F2",
+      "final_fidelity": "F2",
+      "staging_root": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-early-gate/staging/batch-10-early-gate-eligible",
+      "package_path": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-early-gate/staging/batch-10-early-gate-eligible/packages/mdd-microdiode/SS110",
+      "post_review_package_fingerprint_sha256": "3fbf856f3520ac0da7d4e2462548668596adf80456018f398e7246d3b2fd3d78",
+      "reasons": [
+        "The fitted points follow the lower-voltage SS12 through SS14 family trace rather than the cited SS18 through SS1120 group containing SS110. The staged current evidence also records 0.85 V where the source condition is 1.0 A, so the encoded hard-bound current is not source-supported."
+      ],
+      "modifications": []
+    },
+    {
+      "frozen_campaign_order": 539,
+      "lcsc_id": "C727076",
+      "catalog_mpn": "DSK34",
+      "canonical_mpn": "DSK34",
+      "manufacturer": "TWGMC",
+      "electrical_family": "diode",
+      "disposition": "approved",
+      "rejection_class": null,
+      "original_fidelity": "F2",
+      "final_fidelity": "F2",
+      "staging_root": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-early-gate/staging/batch-10-early-gate-eligible",
+      "package_path": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-early-gate/staging/batch-10-early-gate-eligible/packages/twgmc/DSK34",
+      "post_review_package_fingerprint_sha256": "7b6f8c6aee8a48f28b56bf9861ad32cd9ae94168728ddbea98c746408cf58900",
+      "reasons": [
+        "The F2 points follow the cited DSK32/DSK34 forward trace. Independent native ngspice residuals pass the unchanged diode F2 gates, with source identity, axes, units, family grouping, and range supported."
+      ],
+      "modifications": [
+        "Finalized reviewer metadata as independent-package-review-batch-10 dated 2026-08-12.",
+        "Removed pending-review language and recorded that approval is for promotion eligibility only; no promotion was performed."
+      ]
+    },
+    {
+      "frozen_campaign_order": 543,
+      "lcsc_id": "C110856",
+      "catalog_mpn": "1N4007F",
+      "canonical_mpn": "1N4007F",
+      "manufacturer": "Shikues",
+      "electrical_family": "diode",
+      "disposition": "rejected",
+      "rejection_class": "unsupported-f2-source-curve",
+      "original_fidelity": "F2",
+      "final_fidelity": "F2",
+      "staging_root": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-early-gate/staging/batch-10-early-gate-eligible",
+      "package_path": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-early-gate/staging/batch-10-early-gate-eligible/packages/shikues/1N4007F",
+      "post_review_package_fingerprint_sha256": "146894f34f9e9fc8d1de2791c1ce32718ed1adce5b547467358eaf03dad4bd11",
+      "reasons": [
+        "The fitted points follow a hot-temperature trace rather than the cited 25 C trace. For example, the staged 0.66 V at 0.1 A point lies near the hot curve while the 25 C curve is substantially rightward."
+      ],
+      "modifications": []
+    },
+    {
+      "frozen_campaign_order": 544,
+      "lcsc_id": "C130413",
+      "catalog_mpn": "BAS16H,115",
+      "canonical_mpn": "BAS16H",
+      "manufacturer": "Nexperia",
+      "electrical_family": "diode",
+      "disposition": "rejected",
+      "rejection_class": "unsupported-f2-source-curve",
+      "original_fidelity": "F2",
+      "final_fidelity": "F2",
+      "staging_root": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-early-gate/staging/batch-10-early-gate-eligible",
+      "package_path": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-early-gate/staging/batch-10-early-gate-eligible/packages/nexperia/BAS16H-115",
+      "post_review_package_fingerprint_sha256": "dba8f2366973911a893f892730fdaee3aaae469a15b834914bacabf7f899c639",
+      "reasons": [
+        "The fitted points do not follow Figure 1 curve (3), the cited 25 C trace. They align with hotter temperature traces, so the passing numerical residuals are against the wrong source curve."
+      ],
+      "modifications": []
+    },
+    {
+      "frozen_campaign_order": 546,
+      "lcsc_id": "C5350986",
+      "catalog_mpn": "SS26",
+      "canonical_mpn": "SS26",
+      "manufacturer": "ElecSuper",
+      "electrical_family": "diode",
+      "disposition": "rejected",
+      "rejection_class": "unsupported-f1-numerical-evidence",
+      "original_fidelity": "F1",
+      "final_fidelity": "F1",
+      "staging_root": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-early-gate/staging/batch-10-early-gate-eligible",
+      "package_path": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-early-gate/staging/batch-10-early-gate-eligible/packages/elecsuper/SS26",
+      "post_review_package_fingerprint_sha256": "3a562ad78ee1c029271c926bbe05f1d4954f6b8b5f557107148c9a2446945a50",
+      "reasons": [
+        "The unchanged non-default diode IS value was generated from an unsupported synthetic equality target at 95% of the published maximum-current condition and 97% of the published maximum forward voltage. The primary source supplies an inclusive maximum, not a typical equality point. Acceptance would require a numerical model-parameter change, which this review prohibited."
+      ],
+      "modifications": []
+    },
+    {
+      "frozen_campaign_order": 549,
+      "lcsc_id": "C117823",
+      "catalog_mpn": "1N4148W-HE3-08",
+      "canonical_mpn": "1N4148W-HE3-08",
+      "manufacturer": "Vishay Intertech",
+      "electrical_family": "diode",
+      "disposition": "rejected",
+      "rejection_class": "unsupported-f1-numerical-evidence",
+      "original_fidelity": "F1",
+      "final_fidelity": "F1",
+      "staging_root": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-early-gate/staging/batch-10-early-gate-eligible",
+      "package_path": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-early-gate/staging/batch-10-early-gate-eligible/packages/vishay-intertech/1N4148W-HE3-08",
+      "post_review_package_fingerprint_sha256": "13702bca1e01c9e56e9ddd7cc8011691634c9d1c9a4340aa4affc8df533ef637",
+      "reasons": [
+        "The unchanged non-default diode IS value was generated from an unsupported synthetic equality target at 95% of the published maximum-current condition and 97% of the published maximum forward voltage. The primary source supplies an inclusive maximum, not a typical equality point. Acceptance would require a numerical model-parameter change, which this review prohibited."
+      ],
+      "modifications": []
+    },
+    {
+      "frozen_campaign_order": 553,
+      "lcsc_id": "C124190",
+      "catalog_mpn": "1N4448HWS-7-F",
+      "canonical_mpn": "1N4448HWS-7-F",
+      "manufacturer": "Diodes Incorporated",
+      "electrical_family": "diode",
+      "disposition": "rejected",
+      "rejection_class": "unsupported-f1-numerical-evidence",
+      "original_fidelity": "F1",
+      "final_fidelity": "F1",
+      "staging_root": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-early-gate/staging/batch-10-early-gate-eligible",
+      "package_path": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-early-gate/staging/batch-10-early-gate-eligible/packages/diodes/1N4448HWS-7-F",
+      "post_review_package_fingerprint_sha256": "58edd4c36f5579dd7029482137f5fb902036f91449cb818f5e57571ec36f85a7",
+      "reasons": [
+        "The unchanged non-default diode IS value was generated from an unsupported synthetic equality target at 95% of the published maximum-current condition and 97% of the published maximum forward voltage. The primary source supplies an inclusive maximum, not a typical equality point. Acceptance would require a numerical model-parameter change, which this review prohibited."
+      ],
+      "modifications": []
+    },
+    {
+      "frozen_campaign_order": 555,
+      "lcsc_id": "C47524",
+      "catalog_mpn": "S3MB",
+      "canonical_mpn": "S3MB",
+      "manufacturer": "MDD Microdiode Semiconductor",
+      "electrical_family": "diode",
+      "disposition": "rejected",
+      "rejection_class": "unsupported-f1-numerical-evidence",
+      "original_fidelity": "F1",
+      "final_fidelity": "F1",
+      "staging_root": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-early-gate/staging/batch-10-early-gate-eligible",
+      "package_path": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-early-gate/staging/batch-10-early-gate-eligible/packages/mdd-microdiode/S3MB",
+      "post_review_package_fingerprint_sha256": "37db08ff4b8a89c2f2530225783b85bd68aa746833cc45e5865d9061b86574fb",
+      "reasons": [
+        "The unchanged non-default diode IS value was generated from an unsupported synthetic equality target at 95% of the published maximum-current condition and 97% of the published maximum forward voltage. The primary source supplies an inclusive maximum, not a typical equality point. Acceptance would require a numerical model-parameter change, which this review prohibited."
+      ],
+      "modifications": []
+    },
+    {
+      "frozen_campaign_order": 557,
+      "lcsc_id": "C552848",
+      "catalog_mpn": "PMEG3005AESFYL",
+      "canonical_mpn": "PMEG3005AESFYL",
+      "manufacturer": "Nexperia",
+      "electrical_family": "diode",
+      "disposition": "rejected",
+      "rejection_class": "unsupported-f1-numerical-evidence",
+      "original_fidelity": "F1",
+      "final_fidelity": "F1",
+      "staging_root": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-early-gate/staging/batch-10-early-gate-eligible",
+      "package_path": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-early-gate/staging/batch-10-early-gate-eligible/packages/nexperia/PMEG3005AESFYL",
+      "post_review_package_fingerprint_sha256": "7b67d1be3691b0ae2baf086d711140d846960a2aba80a77690542d9086f65109",
+      "reasons": [
+        "The unchanged non-default diode IS value was generated from an unsupported synthetic equality target at 95% of the published maximum-current condition and 97% of the published maximum forward voltage. The primary source supplies an inclusive maximum, not a typical equality point. Acceptance would require a numerical model-parameter change, which this review prohibited."
+      ],
+      "modifications": []
+    },
+    {
+      "frozen_campaign_order": 559,
+      "lcsc_id": "C2988774",
+      "catalog_mpn": "1N5819W",
+      "canonical_mpn": "1N5819W",
+      "manufacturer": "Guangdong Hottech",
+      "electrical_family": "diode",
+      "disposition": "rejected",
+      "rejection_class": "unsupported-f1-numerical-evidence",
+      "original_fidelity": "F1",
+      "final_fidelity": "F1",
+      "staging_root": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-early-gate/staging/batch-10-early-gate-eligible",
+      "package_path": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-early-gate/staging/batch-10-early-gate-eligible/packages/guangdong-hottech/1N5819W",
+      "post_review_package_fingerprint_sha256": "c03dabccca932e5e05b3124b41872a1861681593b5ed86d26e17ab75b41753a9",
+      "reasons": [
+        "The unchanged non-default diode IS value was generated from an unsupported synthetic equality target at 95% of the published maximum-current condition and 97% of the published maximum forward voltage. The primary source supplies an inclusive maximum, not a typical equality point. Acceptance would require a numerical model-parameter change, which this review prohibited."
+      ],
+      "modifications": []
+    },
+    {
+      "frozen_campaign_order": 560,
+      "lcsc_id": "C82648",
+      "catalog_mpn": "ES1D-E3/61T",
+      "canonical_mpn": "ES1D-E3/61T",
+      "manufacturer": "Vishay Intertech",
+      "electrical_family": "diode",
+      "disposition": "rejected",
+      "rejection_class": "unsupported-f1-numerical-evidence",
+      "original_fidelity": "F1",
+      "final_fidelity": "F1",
+      "staging_root": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-early-gate/staging/batch-10-early-gate-eligible",
+      "package_path": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-early-gate/staging/batch-10-early-gate-eligible/packages/vishay-intertech/ES1D-E3-61T",
+      "post_review_package_fingerprint_sha256": "63fe6c73898f3b0b41c28c3b63879c8eda3f2e8be8a4aa573182898c08c32b03",
+      "reasons": [
+        "The unchanged non-default diode IS value was generated from an unsupported synthetic equality target at 95% of the published maximum-current condition and 97% of the published maximum forward voltage. The primary source supplies an inclusive maximum, not a typical equality point. Acceptance would require a numerical model-parameter change, which this review prohibited."
+      ],
+      "modifications": []
+    },
+    {
+      "frozen_campaign_order": 563,
+      "lcsc_id": "C107711",
+      "catalog_mpn": "LMDL914T1G",
+      "canonical_mpn": "LMDL914T1G",
+      "manufacturer": "LRC",
+      "electrical_family": "diode",
+      "disposition": "rejected",
+      "rejection_class": "unsupported-f2-source-curve",
+      "original_fidelity": "F2",
+      "final_fidelity": "F2",
+      "staging_root": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-early-gate/staging/batch-10-early-gate-eligible",
+      "package_path": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-early-gate/staging/batch-10-early-gate-eligible/packages/lrc/LMDL914T1G",
+      "post_review_package_fingerprint_sha256": "1693024f9f6f07f1160300a55a929068d97c40458cacadbb984e6e3651939050",
+      "reasons": [
+        "The fitted voltages, especially near 0.1 A, align with hotter traces rather than the cited 25 C trace."
+      ],
+      "modifications": []
+    },
+    {
+      "frozen_campaign_order": 565,
+      "lcsc_id": "C2457",
+      "catalog_mpn": "1N4007G",
+      "canonical_mpn": "1N4007G",
+      "manufacturer": "MDD Microdiode Semiconductor",
+      "electrical_family": "diode",
+      "disposition": "approved",
+      "rejection_class": null,
+      "original_fidelity": "F2",
+      "final_fidelity": "F2",
+      "staging_root": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-early-gate/staging/batch-10-early-gate-eligible",
+      "package_path": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-early-gate/staging/batch-10-early-gate-eligible/packages/mdd-microdiode/1N4007G",
+      "post_review_package_fingerprint_sha256": "8dc85103090ca422d0cd443a55ac0aea771a7c944b5216dce557da99bc8a7156",
+      "reasons": [
+        "The F2 points follow the datasheet single 25 C pulsed forward trace. Independent native ngspice residuals pass the unchanged diode F2 gates and the scope is limited to the source pulse condition."
+      ],
+      "modifications": [
+        "Finalized reviewer metadata as independent-package-review-batch-10 dated 2026-08-12.",
+        "Removed pending-review language and recorded that approval is for promotion eligibility only; no promotion was performed.",
+        "Narrowed the supported F2 scope to the source condition of 300 us pulse width and 1% duty cycle."
+      ]
+    },
+    {
+      "frozen_campaign_order": 566,
+      "lcsc_id": "C232529",
+      "catalog_mpn": "BAS20LT1G",
+      "canonical_mpn": "BAS20LT1G",
+      "manufacturer": "onsemi",
+      "electrical_family": "diode",
+      "disposition": "rejected",
+      "rejection_class": "unsupported-f2-source-curve",
+      "original_fidelity": "F2",
+      "final_fidelity": "F2",
+      "staging_root": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-early-gate/staging/batch-10-early-gate-eligible",
+      "package_path": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-early-gate/staging/batch-10-early-gate-eligible/packages/onsemi/BAS20LT1G",
+      "post_review_package_fingerprint_sha256": "e28fed00c7a7701b2521642f30304c13fc2c7faf8a6d17b0ea20fc05fbcd253e",
+      "reasons": [
+        "The fitted points do not consistently follow the Figure 2 25 C forward-characteristic trace."
+      ],
+      "modifications": []
+    },
+    {
+      "frozen_campaign_order": 567,
+      "lcsc_id": "C181127",
+      "catalog_mpn": "1N4007L",
+      "canonical_mpn": "1N4007L",
+      "manufacturer": "Guangdong Hottech",
+      "electrical_family": "diode",
+      "disposition": "rejected",
+      "rejection_class": "unsupported-f2-source-curve",
+      "original_fidelity": "F2",
+      "final_fidelity": "F2",
+      "staging_root": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-early-gate/staging/batch-10-early-gate-eligible",
+      "package_path": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-early-gate/staging/batch-10-early-gate-eligible/packages/guangdong-hottech/1N4007L",
+      "post_review_package_fingerprint_sha256": "5c2c77ac6386292530e0cf643d03e250cfc0c8fd9cbe445750c34b37c7f62b29",
+      "reasons": [
+        "The fitted points follow a hotter trace rather than Figure 3 at 25 C. The staged 0.72 V at 0.1 A point is not on the cited 25 C trace."
+      ],
+      "modifications": []
+    },
+    {
+      "frozen_campaign_order": 569,
+      "lcsc_id": "C2922192",
+      "catalog_mpn": "S10M",
+      "canonical_mpn": "S10M",
+      "manufacturer": "GOODWORK",
+      "electrical_family": "diode",
+      "disposition": "rejected",
+      "rejection_class": "unsupported-f1-numerical-evidence",
+      "original_fidelity": "F1",
+      "final_fidelity": "F1",
+      "staging_root": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-early-gate/staging/batch-10-early-gate-eligible",
+      "package_path": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-early-gate/staging/batch-10-early-gate-eligible/packages/goodwork/S10M",
+      "post_review_package_fingerprint_sha256": "abb5455bf2c640410ddafac43b7cba566da751bffc00c3b0da911584e9ce1fa3",
+      "reasons": [
+        "The unchanged non-default diode IS value was generated from an unsupported synthetic equality target at 95% of the published maximum-current condition and 97% of the published maximum forward voltage. The primary source supplies an inclusive maximum, not a typical equality point. Acceptance would require a numerical model-parameter change, which this review prohibited."
+      ],
+      "modifications": []
+    },
+    {
+      "frozen_campaign_order": 571,
+      "lcsc_id": "C81142",
+      "catalog_mpn": "LMBR140T1G",
+      "canonical_mpn": "LMBR140T1G",
+      "manufacturer": "LRC",
+      "electrical_family": "diode",
+      "disposition": "rejected",
+      "rejection_class": "unsupported-f1-numerical-evidence",
+      "original_fidelity": "F1",
+      "final_fidelity": "F1",
+      "staging_root": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-continuation/staging/batch-10-continuation-eligible",
+      "package_path": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-continuation/staging/batch-10-continuation-eligible/packages/lrc/LMBR140T1G",
+      "post_review_package_fingerprint_sha256": "18e44aa482eaf7b3e3f8207675380a45b9bcaec8a633893e8eea12293e30d09c",
+      "reasons": [
+        "The unchanged non-default diode IS value was generated from an unsupported synthetic equality target at 95% of the published maximum-current condition and 97% of the published maximum forward voltage. The primary source supplies an inclusive maximum, not a typical equality point. Acceptance would require a numerical model-parameter change, which this review prohibited."
+      ],
+      "modifications": []
+    },
+    {
+      "frozen_campaign_order": 574,
+      "lcsc_id": "C8661",
+      "catalog_mpn": "BAS21,215",
+      "canonical_mpn": "BAS21",
+      "manufacturer": "Nexperia",
+      "electrical_family": "diode",
+      "disposition": "rejected",
+      "rejection_class": "unsupported-f1-numerical-evidence",
+      "original_fidelity": "F1",
+      "final_fidelity": "F1",
+      "staging_root": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-continuation/staging/batch-10-continuation-eligible",
+      "package_path": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-continuation/staging/batch-10-continuation-eligible/packages/nexperia/BAS21-215",
+      "post_review_package_fingerprint_sha256": "0312b8f5c1c031362b37e3edfa2d659e75414fa6e1a47ff7f27c9ee4e698f746",
+      "reasons": [
+        "The unchanged non-default diode IS value was generated from an unsupported synthetic equality target at 95% of the published maximum-current condition and 97% of the published maximum forward voltage. The primary source supplies an inclusive maximum, not a typical equality point. Acceptance would require a numerical model-parameter change, which this review prohibited."
+      ],
+      "modifications": []
+    },
+    {
+      "frozen_campaign_order": 575,
+      "lcsc_id": "C2886580",
+      "catalog_mpn": "SS34A",
+      "canonical_mpn": "SS34A",
+      "manufacturer": "Guangdong Hottech",
+      "electrical_family": "diode",
+      "disposition": "rejected",
+      "rejection_class": "unsupported-f1-numerical-evidence",
+      "original_fidelity": "F1",
+      "final_fidelity": "F1",
+      "staging_root": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-continuation/staging/batch-10-continuation-eligible",
+      "package_path": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-continuation/staging/batch-10-continuation-eligible/packages/guangdong-hottech/SS34A",
+      "post_review_package_fingerprint_sha256": "5f52135d8bf772ffcddce259bff0d8fa40e8baf2b047b69cc2ee940ecb17ba59",
+      "reasons": [
+        "The unchanged non-default diode IS value was generated from an unsupported synthetic equality target at 95% of the published maximum-current condition and 97% of the published maximum forward voltage. The primary source supplies an inclusive maximum, not a typical equality point. Acceptance would require a numerical model-parameter change, which this review prohibited."
+      ],
+      "modifications": []
+    },
+    {
+      "frozen_campaign_order": 576,
+      "lcsc_id": "C2468",
+      "catalog_mpn": "FR207",
+      "canonical_mpn": "FR207",
+      "manufacturer": "MDD Microdiode Semiconductor",
+      "electrical_family": "diode",
+      "disposition": "rejected",
+      "rejection_class": "unsupported-f1-numerical-evidence",
+      "original_fidelity": "F1",
+      "final_fidelity": "F1",
+      "staging_root": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-continuation/staging/batch-10-continuation-eligible",
+      "package_path": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-continuation/staging/batch-10-continuation-eligible/packages/mdd-microdiode/FR207",
+      "post_review_package_fingerprint_sha256": "c50e50d5389c355f1667cedc08a87c2a230636cb46e76675843fbaebeccaed38",
+      "reasons": [
+        "The unchanged non-default diode IS value was generated from an unsupported synthetic equality target at 95% of the published maximum-current condition and 97% of the published maximum forward voltage. The primary source supplies an inclusive maximum, not a typical equality point. Acceptance would require a numerical model-parameter change, which this review prohibited."
+      ],
+      "modifications": []
+    },
+    {
+      "frozen_campaign_order": 577,
+      "lcsc_id": "C85100",
+      "catalog_mpn": "B560C-13-F",
+      "canonical_mpn": "B560C-13-F",
+      "manufacturer": "Diodes Incorporated",
+      "electrical_family": "diode",
+      "disposition": "rejected",
+      "rejection_class": "unsupported-f1-numerical-evidence",
+      "original_fidelity": "F1",
+      "final_fidelity": "F1",
+      "staging_root": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-continuation/staging/batch-10-continuation-eligible",
+      "package_path": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-continuation/staging/batch-10-continuation-eligible/packages/diodes/B560C-13-F",
+      "post_review_package_fingerprint_sha256": "0280ef4f5ca07e0c5fddc9da50a6d2d508dcb45e841f1031f919aa688f80fb47",
+      "reasons": [
+        "The unchanged non-default diode IS value was generated from an unsupported synthetic equality target at 95% of the published maximum-current condition and 97% of the published maximum forward voltage. The primary source supplies an inclusive maximum, not a typical equality point. Acceptance would require a numerical model-parameter change, which this review prohibited."
+      ],
+      "modifications": []
+    },
+    {
+      "frozen_campaign_order": 581,
+      "lcsc_id": "C21353",
+      "catalog_mpn": "MBR0540T1G",
+      "canonical_mpn": "MBR0540T1G",
+      "manufacturer": "onsemi",
+      "electrical_family": "diode",
+      "disposition": "rejected",
+      "rejection_class": "unsupported-f1-numerical-evidence",
+      "original_fidelity": "F1",
+      "final_fidelity": "F1",
+      "staging_root": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-continuation/staging/batch-10-continuation-eligible",
+      "package_path": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-continuation/staging/batch-10-continuation-eligible/packages/onsemi/MBR0540T1G",
+      "post_review_package_fingerprint_sha256": "b017b9011f677cb06c27cb2f4f96092c6f00161d988bff30915724e8a40e4958",
+      "reasons": [
+        "The unchanged non-default diode IS value was generated from an unsupported synthetic equality target at 95% of the published maximum-current condition and 97% of the published maximum forward voltage. The primary source supplies an inclusive maximum, not a typical equality point. Acceptance would require a numerical model-parameter change, which this review prohibited."
+      ],
+      "modifications": []
+    },
+    {
+      "frozen_campaign_order": 583,
+      "lcsc_id": "C35490",
+      "catalog_mpn": "SS36B",
+      "canonical_mpn": "SS36B",
+      "manufacturer": "MDD Microdiode Semiconductor",
+      "electrical_family": "diode",
+      "disposition": "rejected",
+      "rejection_class": "unsupported-f1-numerical-evidence",
+      "original_fidelity": "F1",
+      "final_fidelity": "F1",
+      "staging_root": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-continuation/staging/batch-10-continuation-eligible",
+      "package_path": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-continuation/staging/batch-10-continuation-eligible/packages/mdd-microdiode/SS36B",
+      "post_review_package_fingerprint_sha256": "0ae859302793e88167bc4e50b8ab6205aaa8c379be8a065706195b147264f877",
+      "reasons": [
+        "The unchanged non-default diode IS value was generated from an unsupported synthetic equality target at 95% of the published maximum-current condition and 97% of the published maximum forward voltage. The primary source supplies an inclusive maximum, not a typical equality point. Acceptance would require a numerical model-parameter change, which this review prohibited."
+      ],
+      "modifications": []
+    },
+    {
+      "frozen_campaign_order": 598,
+      "lcsc_id": "C78613",
+      "catalog_mpn": "PMLL4148L,115",
+      "canonical_mpn": "PMLL4148L",
+      "manufacturer": "Nexperia",
+      "electrical_family": "diode",
+      "disposition": "rejected",
+      "rejection_class": "unsupported-f1-numerical-evidence",
+      "original_fidelity": "F1",
+      "final_fidelity": "F1",
+      "staging_root": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-continuation/staging/batch-10-continuation-eligible",
+      "package_path": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-continuation/staging/batch-10-continuation-eligible/packages/nexperia/PMLL4148L-115",
+      "post_review_package_fingerprint_sha256": "44d6bdbb0d77e6dde3659162d38a777870ee567260dfbdae90f04dbfa234722f",
+      "reasons": [
+        "The unchanged non-default diode IS value was generated from an unsupported synthetic equality target at 95% of the published maximum-current condition and 97% of the published maximum forward voltage. The primary source supplies an inclusive maximum, not a typical equality point. Acceptance would require a numerical model-parameter change, which this review prohibited."
+      ],
+      "modifications": []
+    },
+    {
+      "frozen_campaign_order": 604,
+      "lcsc_id": "C511868",
+      "catalog_mpn": "DSS210",
+      "canonical_mpn": "DSS210",
+      "manufacturer": "BORN",
+      "electrical_family": "diode",
+      "disposition": "approved",
+      "rejection_class": null,
+      "original_fidelity": "F2",
+      "final_fidelity": "F2",
+      "staging_root": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-continuation/staging/batch-10-continuation-eligible",
+      "package_path": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-continuation/staging/batch-10-continuation-eligible/packages/born/DSS210",
+      "post_review_package_fingerprint_sha256": "f421dc2c76433d78672fe187ba67e7190d82167946a9d46c2b8cf4e2f39046f4",
+      "reasons": [
+        "The F2 points are consistent with the DSS27 through DSS210 family trace containing DSS210. Independent native ngspice residuals pass the unchanged diode F2 gates and the scope is limited to the source pulse condition."
+      ],
+      "modifications": [
+        "Finalized reviewer metadata as independent-package-review-batch-10 dated 2026-08-12.",
+        "Removed pending-review language and recorded that approval is for promotion eligibility only; no promotion was performed.",
+        "Narrowed the supported F2 scope to the source condition of 300 us pulse width and 1% duty cycle."
+      ]
+    },
+    {
+      "frozen_campaign_order": 605,
+      "lcsc_id": "C35501",
+      "catalog_mpn": "SS24B",
+      "canonical_mpn": "SS24B",
+      "manufacturer": "MDD Microdiode Semiconductor",
+      "electrical_family": "diode",
+      "disposition": "rejected",
+      "rejection_class": "unsupported-f1-numerical-evidence",
+      "original_fidelity": "F1",
+      "final_fidelity": "F1",
+      "staging_root": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-continuation/staging/batch-10-continuation-eligible",
+      "package_path": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-continuation/staging/batch-10-continuation-eligible/packages/mdd-microdiode/SS24B",
+      "post_review_package_fingerprint_sha256": "1490f2d2d331dbcc062602a86ccf1cb5d940aed2e3b5b752246f563adbb0dc1b",
+      "reasons": [
+        "The unchanged non-default diode IS value was generated from an unsupported synthetic equality target at 95% of the published maximum-current condition and 97% of the published maximum forward voltage. The primary source supplies an inclusive maximum, not a typical equality point. Acceptance would require a numerical model-parameter change, which this review prohibited."
+      ],
+      "modifications": []
+    },
+    {
+      "frozen_campaign_order": 609,
+      "lcsc_id": "C64894",
+      "catalog_mpn": "MBRX160",
+      "canonical_mpn": "MBRX160",
+      "manufacturer": "MDD Microdiode Semiconductor",
+      "electrical_family": "diode",
+      "disposition": "rejected",
+      "rejection_class": "f2-axis-unit-error",
+      "original_fidelity": "F2",
+      "final_fidelity": "F2",
+      "staging_root": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-continuation/staging/batch-10-continuation-eligible",
+      "package_path": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-continuation/staging/batch-10-continuation-eligible/packages/mdd-microdiode/MBRX160",
+      "post_review_package_fingerprint_sha256": "7579092fce7ae0e1a051bd21cad895e2e8689c2f57114b26423a3926869681f3",
+      "reasons": [
+        "Figure 3 uses mA on the forward-current axis, but the extraction declares A and creates points as high as 800 A. This is a 1000x axis-unit error and invalidates the fitted F2 evidence and claimed range."
+      ],
+      "modifications": []
+    },
+    {
+      "frozen_campaign_order": 610,
+      "lcsc_id": "C64988",
+      "catalog_mpn": "SS1200",
+      "canonical_mpn": "SS1200",
+      "manufacturer": "MDD Microdiode Semiconductor",
+      "electrical_family": "diode",
+      "disposition": "rejected",
+      "rejection_class": "unsupported-f2-source-curve",
+      "original_fidelity": "F2",
+      "final_fidelity": "F2",
+      "staging_root": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-continuation/staging/batch-10-continuation-eligible",
+      "package_path": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-continuation/staging/batch-10-continuation-eligible/packages/mdd-microdiode/SS1200",
+      "post_review_package_fingerprint_sha256": "ef6d385bb6f8981f713e43dd268e3bf7ec59daf25416bc557d590190b6813457",
+      "reasons": [
+        "The fitted points follow the lower-voltage SS12 through SS14 trace rather than the cited SS1150 through SS1200 family trace containing SS1200."
+      ],
+      "modifications": []
+    },
+    {
+      "frozen_campaign_order": 611,
+      "lcsc_id": "C7603322",
+      "catalog_mpn": "RB160M-90",
+      "canonical_mpn": "RB160M-90",
+      "manufacturer": "TECH PUBLIC",
+      "electrical_family": "diode",
+      "disposition": "rejected",
+      "rejection_class": "unsupported-f1-numerical-evidence",
+      "original_fidelity": "F1",
+      "final_fidelity": "F1",
+      "staging_root": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-continuation/staging/batch-10-continuation-eligible",
+      "package_path": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-continuation/staging/batch-10-continuation-eligible/packages/tech-public/RB160M-90",
+      "post_review_package_fingerprint_sha256": "3d12f5200d1b2918938762b00e7e4946566fe26f6c6db3c0ff976cfa61b7721e",
+      "reasons": [
+        "The unchanged non-default diode IS value was generated from an unsupported synthetic equality target at 95% of the published maximum-current condition and 97% of the published maximum forward voltage. The primary source supplies an inclusive maximum, not a typical equality point. Acceptance would require a numerical model-parameter change, which this review prohibited."
+      ],
+      "modifications": []
+    },
+    {
+      "frozen_campaign_order": 615,
+      "lcsc_id": "C21107",
+      "catalog_mpn": "BAT54HT1G",
+      "canonical_mpn": "BAT54HT1G",
+      "manufacturer": "onsemi",
+      "electrical_family": "diode",
+      "disposition": "approved",
+      "rejection_class": null,
+      "original_fidelity": "F2",
+      "final_fidelity": "F2",
+      "staging_root": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-continuation/staging/batch-10-continuation-eligible",
+      "package_path": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-continuation/staging/batch-10-continuation-eligible/packages/onsemi/BAT54HT1G",
+      "post_review_package_fingerprint_sha256": "599dc494d7116a79689e41f87d2e8321fa5fd6063b28df5a57c6f61225893b76",
+      "reasons": [
+        "The 25 C forward curve agrees with the datasheet table typical values. Independent native ngspice residuals pass the unchanged diode F2 gates, and all five separately published forward-voltage maxima are now checked inclusively."
+      ],
+      "modifications": [
+        "Finalized reviewer metadata as independent-package-review-batch-10 dated 2026-08-12.",
+        "Removed pending-review language and recorded that approval is for promotion eligibility only; no promotion was performed.",
+        "Added five separately published inclusive forward-voltage maxima: 0.24 V at 0.1 mA, 0.32 V at 1 mA, 0.40 V at 10 mA, 0.50 V at 30 mA, and 0.80 V at 100 mA.",
+        "Added the five corresponding hard-bound expectation checks to existing benches."
+      ]
+    },
+    {
+      "frozen_campaign_order": 618,
+      "lcsc_id": "C727080",
+      "catalog_mpn": "1N4004",
+      "canonical_mpn": "1N4004",
+      "manufacturer": "TWGMC",
+      "electrical_family": "diode",
+      "disposition": "rejected",
+      "rejection_class": "unsupported-f2-source-curve",
+      "original_fidelity": "F2",
+      "final_fidelity": "F2",
+      "staging_root": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-continuation/staging/batch-10-continuation-eligible",
+      "package_path": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-continuation/staging/batch-10-continuation-eligible/packages/twgmc/1N4004",
+      "post_review_package_fingerprint_sha256": "9645212ca7cccce1c160f3675c138f58fa532a8f2e71a7a7f65f7ebb38063a5d",
+      "reasons": [
+        "The fitted points follow the 125 C or another hot-temperature trace rather than the cited 25 C trace."
+      ],
+      "modifications": []
+    },
+    {
+      "frozen_campaign_order": 628,
+      "lcsc_id": "C908662",
+      "catalog_mpn": "K14",
+      "canonical_mpn": "K14",
+      "manufacturer": "GOODWORK",
+      "electrical_family": "diode",
+      "disposition": "approved",
+      "rejection_class": null,
+      "original_fidelity": "F2",
+      "final_fidelity": "F2",
+      "staging_root": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-continuation/staging/batch-10-continuation-eligible",
+      "package_path": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-continuation/staging/batch-10-continuation-eligible/packages/goodwork/K14",
+      "post_review_package_fingerprint_sha256": "1aaeffb4483891a117d218df3065fc6c888161983a5e19c1d64cb49ecb675c82",
+      "reasons": [
+        "The F2 points follow the K12 through K14 solid trace containing K14. Independent native ngspice residuals pass the unchanged diode F2 gates and the scope is limited to the source pulse condition."
+      ],
+      "modifications": [
+        "Finalized reviewer metadata as independent-package-review-batch-10 dated 2026-08-12.",
+        "Removed pending-review language and recorded that approval is for promotion eligibility only; no promotion was performed.",
+        "Narrowed the supported F2 scope to the source condition of 300 us pulse width and 1% duty cycle."
+      ]
+    },
+    {
+      "frozen_campaign_order": 633,
+      "lcsc_id": "C2908120",
+      "catalog_mpn": "1N4148WL",
+      "canonical_mpn": "1N4148WL",
+      "manufacturer": "GOODWORK",
+      "electrical_family": "diode",
+      "disposition": "rejected",
+      "rejection_class": "unsupported-f2-source-curve",
+      "original_fidelity": "F2",
+      "final_fidelity": "F2",
+      "staging_root": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-continuation/staging/batch-10-continuation-eligible",
+      "package_path": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-continuation/staging/batch-10-continuation-eligible/packages/goodwork/1N4148WL",
+      "post_review_package_fingerprint_sha256": "a14c20c66c4d9a46ad19bdd9aa9c08c63ade2d4a4bc30f513784b082d4cfdab7",
+      "reasons": [
+        "The fitted points follow the 100 C trace rather than the cited 25 C trace."
+      ],
+      "modifications": []
+    },
+    {
+      "frozen_campaign_order": 634,
+      "lcsc_id": "C47921",
+      "catalog_mpn": "MRA4007T3G",
+      "canonical_mpn": "MRA4007T3G",
+      "manufacturer": "onsemi",
+      "electrical_family": "diode",
+      "disposition": "rejected",
+      "rejection_class": "unsupported-f2-source-curve",
+      "original_fidelity": "F2",
+      "final_fidelity": "F2",
+      "staging_root": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-continuation/staging/batch-10-continuation-eligible",
+      "package_path": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-continuation/staging/batch-10-continuation-eligible/packages/onsemi/MRA4007T3G",
+      "post_review_package_fingerprint_sha256": "7d3dea84f6505d68ee2c358821be1e7f78c5ad3c5af9be10eb7ad59bc152027d",
+      "reasons": [
+        "The fitted points follow the 150 C trace rather than the cited 25 C trace. The staged 0.6 V at 0.01 A point is characteristic of the hot trace."
+      ],
+      "modifications": []
+    },
+    {
+      "frozen_campaign_order": 635,
+      "lcsc_id": "C2858707",
+      "catalog_mpn": "TPPMEG3001EEFZ",
+      "canonical_mpn": "TPPMEG3001EEFZ",
+      "manufacturer": "TECH PUBLIC",
+      "electrical_family": "diode",
+      "disposition": "rejected",
+      "rejection_class": "unsupported-f1-numerical-evidence",
+      "original_fidelity": "F1",
+      "final_fidelity": "F1",
+      "staging_root": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-continuation/staging/batch-10-continuation-eligible",
+      "package_path": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-continuation/staging/batch-10-continuation-eligible/packages/tech-public/TPPMEG3001EEFZ",
+      "post_review_package_fingerprint_sha256": "382179f26dd60d88e883de5e64f0d214852d27fe01863ca8f3321856bba5f864",
+      "reasons": [
+        "The unchanged non-default diode IS value was generated from an unsupported synthetic equality target at 95% of the published maximum-current condition and 97% of the published maximum forward voltage. The primary source supplies an inclusive maximum, not a typical equality point. Acceptance would require a numerical model-parameter change, which this review prohibited."
+      ],
+      "modifications": []
+    },
+    {
+      "frozen_campaign_order": 636,
+      "lcsc_id": "C908747",
+      "catalog_mpn": "SB1045L",
+      "canonical_mpn": "SB1045L",
+      "manufacturer": "GOODWORK",
+      "electrical_family": "diode",
+      "disposition": "rejected",
+      "rejection_class": "unsupported-f1-numerical-evidence",
+      "original_fidelity": "F1",
+      "final_fidelity": "F1",
+      "staging_root": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-continuation/staging/batch-10-continuation-eligible",
+      "package_path": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-continuation/staging/batch-10-continuation-eligible/packages/goodwork/SB1045L",
+      "post_review_package_fingerprint_sha256": "1e9f184ab6434535fce8124f13ca26d17a3bdd2f19a911c7f5618a36b84f760d",
+      "reasons": [
+        "The unchanged non-default diode IS value was generated from an unsupported synthetic equality target at 95% of the published maximum-current condition and 97% of the published maximum forward voltage. The primary source supplies an inclusive maximum, not a typical equality point. Acceptance would require a numerical model-parameter change, which this review prohibited."
+      ],
+      "modifications": []
+    },
+    {
+      "frozen_campaign_order": 640,
+      "lcsc_id": "C2886012",
+      "catalog_mpn": "CDBQC0130L-HF",
+      "canonical_mpn": "CDBQC0130L-HF",
+      "manufacturer": "Comchip",
+      "electrical_family": "diode",
+      "disposition": "rejected",
+      "rejection_class": "unsupported-f1-numerical-evidence",
+      "original_fidelity": "F1",
+      "final_fidelity": "F1",
+      "staging_root": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-continuation/staging/batch-10-continuation-eligible",
+      "package_path": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-continuation/staging/batch-10-continuation-eligible/packages/comchip/CDBQC0130L-HF",
+      "post_review_package_fingerprint_sha256": "c92a60c49b3f4d56e822a9a591287341e33adcbe7e35aa142c870b5bf10c8ebf",
+      "reasons": [
+        "The unchanged non-default diode IS value was generated from an unsupported synthetic equality target at 95% of the published maximum-current condition and 97% of the published maximum forward voltage. The primary source supplies an inclusive maximum, not a typical equality point. Acceptance would require a numerical model-parameter change, which this review prohibited."
+      ],
+      "modifications": []
+    },
+    {
+      "frozen_campaign_order": 645,
+      "lcsc_id": "C78545",
+      "catalog_mpn": "LMBR0540T1G",
+      "canonical_mpn": "LMBR0540T1G",
+      "manufacturer": "LRC",
+      "electrical_family": "diode",
+      "disposition": "rejected",
+      "rejection_class": "unsupported-f1-numerical-evidence",
+      "original_fidelity": "F1",
+      "final_fidelity": "F1",
+      "staging_root": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-continuation/staging/batch-10-continuation-eligible",
+      "package_path": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-continuation/staging/batch-10-continuation-eligible/packages/lrc/LMBR0540T1G",
+      "post_review_package_fingerprint_sha256": "c4af52e7e24a6124fb33ec8b171917f11453c4c226377be1e3e397ed0f6cac1e",
+      "reasons": [
+        "The unchanged non-default diode IS value was generated from an unsupported synthetic equality target at 95% of the published maximum-current condition and 97% of the published maximum forward voltage. The primary source supplies an inclusive maximum, not a typical equality point. Acceptance would require a numerical model-parameter change, which this review prohibited."
+      ],
+      "modifications": []
+    },
+    {
+      "frozen_campaign_order": 647,
+      "lcsc_id": "C908688",
+      "catalog_mpn": "SS10100-SMB",
+      "canonical_mpn": "SS10100-SMB",
+      "manufacturer": "GOODWORK",
+      "electrical_family": "diode",
+      "disposition": "rejected",
+      "rejection_class": "unsupported-f1-numerical-evidence",
+      "original_fidelity": "F1",
+      "final_fidelity": "F1",
+      "staging_root": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-continuation/staging/batch-10-continuation-eligible",
+      "package_path": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-continuation/staging/batch-10-continuation-eligible/packages/goodwork/SS10100-SMB",
+      "post_review_package_fingerprint_sha256": "3c9a9cece0bf5c3290f205be1f5fdc9561cd34609666ead7f4ace14ab769c63f",
+      "reasons": [
+        "The unchanged non-default diode IS value was generated from an unsupported synthetic equality target at 95% of the published maximum-current condition and 97% of the published maximum forward voltage. The primary source supplies an inclusive maximum, not a typical equality point. Acceptance would require a numerical model-parameter change, which this review prohibited."
+      ],
+      "modifications": []
+    },
+    {
+      "frozen_campaign_order": 651,
+      "lcsc_id": "C2971750",
+      "catalog_mpn": "RBR1MM40ATR",
+      "canonical_mpn": "RBR1MM40ATR",
+      "manufacturer": "ROHM Semicon",
+      "electrical_family": "diode",
+      "disposition": "rejected",
+      "rejection_class": "unsupported-f1-numerical-evidence",
+      "original_fidelity": "F1",
+      "final_fidelity": "F1",
+      "staging_root": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-continuation/staging/batch-10-continuation-eligible",
+      "package_path": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-continuation/staging/batch-10-continuation-eligible/packages/rohm-semicon/RBR1MM40ATR",
+      "post_review_package_fingerprint_sha256": "745239c58f5473f952a03d945cf001e8d314a98b5281d1f30f0e8ef4761908d6",
+      "reasons": [
+        "The unchanged non-default diode IS value was generated from an unsupported synthetic equality target at 95% of the published maximum-current condition and 97% of the published maximum forward voltage. The primary source supplies an inclusive maximum, not a typical equality point. Acceptance would require a numerical model-parameter change, which this review prohibited."
+      ],
+      "modifications": []
+    },
+    {
+      "frozen_campaign_order": 658,
+      "lcsc_id": "C23848",
+      "catalog_mpn": "MBR0520LT1G",
+      "canonical_mpn": "MBR0520LT1G",
+      "manufacturer": "onsemi",
+      "electrical_family": "diode",
+      "disposition": "rejected",
+      "rejection_class": "unsupported-f1-numerical-evidence",
+      "original_fidelity": "F1",
+      "final_fidelity": "F1",
+      "staging_root": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-continuation/staging/batch-10-continuation-eligible",
+      "package_path": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-continuation/staging/batch-10-continuation-eligible/packages/onsemi/MBR0520LT1G",
+      "post_review_package_fingerprint_sha256": "36d95881b75aa074f01c685cd77bc2802fb13f8940657c6338e64b16194dc96d",
+      "reasons": [
+        "The unchanged non-default diode IS value was generated from an unsupported synthetic equality target at 95% of the published maximum-current condition and 97% of the published maximum forward voltage. The primary source supplies an inclusive maximum, not a typical equality point. Acceptance would require a numerical model-parameter change, which this review prohibited."
+      ],
+      "modifications": []
+    },
+    {
+      "frozen_campaign_order": 667,
+      "lcsc_id": "C5451630",
+      "catalog_mpn": "1N5819WT",
+      "canonical_mpn": "1N5819WT",
+      "manufacturer": "HXY MOSFET",
+      "electrical_family": "diode",
+      "disposition": "rejected",
+      "rejection_class": "unsupported-f1-numerical-evidence",
+      "original_fidelity": "F1",
+      "final_fidelity": "F1",
+      "staging_root": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-continuation/staging/batch-10-continuation-eligible",
+      "package_path": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-continuation/staging/batch-10-continuation-eligible/packages/hxy-mosfet/1N5819WT",
+      "post_review_package_fingerprint_sha256": "207ba92d4a8202ba9cd239020acf502bdf6c690258a923a571933ccdde94257a",
+      "reasons": [
+        "The unchanged non-default diode IS value was generated from an unsupported synthetic equality target at 95% of the published maximum-current condition and 97% of the published maximum forward voltage. The primary source supplies an inclusive maximum, not a typical equality point. Acceptance would require a numerical model-parameter change, which this review prohibited."
+      ],
+      "modifications": []
+    },
+    {
+      "frozen_campaign_order": 670,
+      "lcsc_id": "C253520",
+      "catalog_mpn": "RF071MM2STR",
+      "canonical_mpn": "RF071MM2STR",
+      "manufacturer": "ROHM Semicon",
+      "electrical_family": "diode",
+      "disposition": "rejected",
+      "rejection_class": "unsupported-f1-numerical-evidence",
+      "original_fidelity": "F1",
+      "final_fidelity": "F1",
+      "staging_root": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-continuation/staging/batch-10-continuation-eligible",
+      "package_path": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-continuation/staging/batch-10-continuation-eligible/packages/rohm-semicon/RF071MM2STR",
+      "post_review_package_fingerprint_sha256": "1763fa0506a24a119df522aab09d6fa3605b6aa3bfa937d3053f77005880fce7",
+      "reasons": [
+        "The unchanged non-default diode IS value was generated from an unsupported synthetic equality target at 95% of the published maximum-current condition and 97% of the published maximum forward voltage. The primary source supplies an inclusive maximum, not a typical equality point. Acceptance would require a numerical model-parameter change, which this review prohibited."
+      ],
+      "modifications": []
+    },
+    {
+      "frozen_campaign_order": 680,
+      "lcsc_id": "C558436",
+      "catalog_mpn": "RB521CS-30",
+      "canonical_mpn": "RB521CS-30",
+      "manufacturer": "TECH PUBLIC",
+      "electrical_family": "diode",
+      "disposition": "rejected",
+      "rejection_class": "unsupported-f1-numerical-evidence",
+      "original_fidelity": "F1",
+      "final_fidelity": "F1",
+      "staging_root": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-continuation/staging/batch-10-continuation-eligible",
+      "package_path": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-continuation/staging/batch-10-continuation-eligible/packages/tech-public/RB521CS-30",
+      "post_review_package_fingerprint_sha256": "fe101336f4a08a894998b0bd06d701e0d2d69932bc6b83d5d86e32197cd23129",
+      "reasons": [
+        "The unchanged non-default diode IS value was generated from an unsupported synthetic equality target at 95% of the published maximum-current condition and 97% of the published maximum forward voltage. The primary source supplies an inclusive maximum, not a typical equality point. Acceptance would require a numerical model-parameter change, which this review prohibited."
+      ],
+      "modifications": []
+    },
+    {
+      "frozen_campaign_order": 684,
+      "lcsc_id": "C2986112",
+      "catalog_mpn": "ES1JF",
+      "canonical_mpn": "ES1JF",
+      "manufacturer": "GOODWORK",
+      "electrical_family": "diode",
+      "disposition": "rejected",
+      "rejection_class": "unsupported-f1-numerical-evidence",
+      "original_fidelity": "F1",
+      "final_fidelity": "F1",
+      "staging_root": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-continuation/staging/batch-10-continuation-eligible",
+      "package_path": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-continuation/staging/batch-10-continuation-eligible/packages/goodwork/ES1JF",
+      "post_review_package_fingerprint_sha256": "8dad199668ccc02c5f3ee6292254025e754170251481be0dc9d3a69998d04375",
+      "reasons": [
+        "The unchanged non-default diode IS value was generated from an unsupported synthetic equality target at 95% of the published maximum-current condition and 97% of the published maximum forward voltage. The primary source supplies an inclusive maximum, not a typical equality point. Acceptance would require a numerical model-parameter change, which this review prohibited."
+      ],
+      "modifications": []
+    },
+    {
+      "frozen_campaign_order": 689,
+      "lcsc_id": "C22399516",
+      "catalog_mpn": "SD103AWL",
+      "canonical_mpn": "SD103AWL",
+      "manufacturer": "GOODWORK",
+      "electrical_family": "diode",
+      "disposition": "rejected",
+      "rejection_class": "unsupported-f1-numerical-evidence",
+      "original_fidelity": "F1",
+      "final_fidelity": "F1",
+      "staging_root": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-continuation/staging/batch-10-continuation-eligible",
+      "package_path": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/batch-10-continuation/staging/batch-10-continuation-eligible/packages/goodwork/SD103AWL",
+      "post_review_package_fingerprint_sha256": "2b8ced31a83b30b383936e672cf71d769e5f8b5839979f9876ed1fb1cfd2e47d",
+      "reasons": [
+        "The unchanged non-default diode IS value was generated from an unsupported synthetic equality target at 95% of the published maximum-current condition and 97% of the published maximum forward voltage. The primary source supplies an inclusive maximum, not a typical equality point. Acceptance would require a numerical model-parameter change, which this review prohibited."
+      ],
+      "modifications": []
+    }
+  ]
+}
