@@ -95,6 +95,51 @@ class QueryManifestTest(unittest.TestCase):
             self.assertEqual(part["seed_hints"][0]["factory_target"], "diode.forward_voltage")
 
 
+class ReviewedSnapshotTest(unittest.TestCase):
+    def test_recorded_commit_ignores_later_library_promotions(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            repo_root = Path(temporary)
+            library_root = repo_root / "packages" / "model-library" / "models"
+            first = library_root / "fixture" / "first" / "component.json"
+            first.parent.mkdir(parents=True)
+            first.write_text(json.dumps({
+                "canonical_mpn": "FIRST-DIODE",
+                "ordering_code_aliases": ["FIRST-DIODE-RL"],
+                "electrical_family": "diode",
+            }))
+            subprocess.run(["git", "init"], cwd=repo_root, check=True, capture_output=True, text=True)
+            subprocess.run(["git", "config", "user.name", "Freeze Test"], cwd=repo_root, check=True)
+            subprocess.run(["git", "config", "user.email", "freeze@example.invalid"], cwd=repo_root, check=True)
+            subprocess.run(["git", "add", "packages/model-library/models"], cwd=repo_root, check=True)
+            subprocess.run(["git", "commit", "-m", "first snapshot"], cwd=repo_root, check=True, capture_output=True, text=True)
+            recorded_commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=repo_root, text=True).strip()
+
+            later = library_root / "fixture" / "later" / "component.json"
+            later.parent.mkdir(parents=True)
+            later.write_text(json.dumps({
+                "canonical_mpn": "LATER-DIODE",
+                "ordering_code_aliases": [],
+                "electrical_family": "diode",
+            }))
+            subprocess.run(["git", "add", "packages/model-library/models"], cwd=repo_root, check=True)
+            subprocess.run(["git", "commit", "-m", "later promotion"], cwd=repo_root, check=True, capture_output=True, text=True)
+
+            exact, normalized, package_count = reviewed_snapshot(library_root, recorded_commit)
+            self.assertEqual(package_count, 1)
+            self.assertIn("first-diode", exact)
+            self.assertIn(normalized_mpn_key("FIRST-DIODE", "diode"), normalized)
+            self.assertNotIn("later-diode", exact)
+
+    def test_unavailable_recorded_commit_fails_clearly(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            repo_root = Path(temporary)
+            library_root = repo_root / "packages" / "model-library" / "models"
+            library_root.mkdir(parents=True)
+            subprocess.run(["git", "init"], cwd=repo_root, check=True, capture_output=True, text=True)
+            with self.assertRaisesRegex(RuntimeError, "reviewed snapshot commit .* is unavailable"):
+                reviewed_snapshot(library_root, "0" * 40)
+
+
 class Scale2kFreezeTest(unittest.TestCase):
     feeder_root = Path(__file__).resolve().parents[1]
     repo_root = Path(__file__).resolve().parents[3]
@@ -133,6 +178,7 @@ class Scale2kFreezeTest(unittest.TestCase):
             reviewed_commit=manifest["freeze"]["reviewed_snapshot_commit"],
             created_at=manifest["created_at"],
         )
+        self.assertEqual(json.dumps(rerun, indent=2, sort_keys=True) + "\n", self.manifest_path.read_text())
         self.assertEqual(rerun["freeze"]["raw_row_order_sha256"], manifest["freeze"]["raw_row_order_sha256"])
         self.assertEqual(rerun["freeze"]["final_row_order_sha256"], manifest["freeze"]["final_row_order_sha256"])
         self.assertEqual(
@@ -150,7 +196,9 @@ class Scale2kFreezeTest(unittest.TestCase):
         handled = {part["lcsc_id"].casefold() for part in scale_1k["parts"]} | {
             value.casefold() for value in quarantine
         }
-        reviewed_exact, reviewed_normalized, package_count = reviewed_snapshot(self.library_root)
+        reviewed_exact, reviewed_normalized, package_count = reviewed_snapshot(
+            self.library_root, manifest["freeze"]["reviewed_snapshot_commit"]
+        )
         self.assertEqual(package_count, 692)
         orders = [part["frozen_campaign_order"] for part in manifest["parts"]]
         self.assertEqual(orders, list(range(370, 370 + len(orders))))

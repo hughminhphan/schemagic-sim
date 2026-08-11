@@ -10,6 +10,7 @@ import hashlib
 import json
 import re
 import sqlite3
+import subprocess
 import unicodedata
 from collections import Counter
 from pathlib import Path
@@ -45,14 +46,55 @@ def normalized_mpn_key(value: str, family: str | None = None) -> str:
     return re.sub(r"[^a-z0-9]+", "", text)
 
 
-def reviewed_snapshot(library_root: Path) -> tuple[set[str], dict[str, str], int]:
+def reviewed_snapshot(library_root: Path, reviewed_commit: str) -> tuple[set[str], dict[str, str], int]:
+    """Read reviewed identities from the immutable Git tree recorded by the freeze."""
+    repo_root = library_root.resolve().parents[2]
+    if not re.fullmatch(r"[0-9a-fA-F]{7,64}", reviewed_commit):
+        raise RuntimeError(f"reviewed snapshot commit is not a hexadecimal Git object name: {reviewed_commit!r}")
+    verify = subprocess.run(
+        ["git", "-C", str(repo_root), "rev-parse", "--verify", f"{reviewed_commit}^{{commit}}"],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if verify.returncode != 0:
+        detail = verify.stderr.strip() or verify.stdout.strip() or "Git object is unavailable"
+        raise RuntimeError(f"reviewed snapshot commit {reviewed_commit} is unavailable: {detail}")
+    commit = verify.stdout.strip()
+    tree = subprocess.run(
+        ["git", "-C", str(repo_root), "ls-tree", "-r", "--name-only", commit, "--", "packages/model-library/models"],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if tree.returncode != 0:
+        detail = tree.stderr.strip() or tree.stdout.strip() or "Git tree read failed"
+        raise RuntimeError(f"cannot read reviewed snapshot commit {commit}: {detail}")
+    component_paths = sorted(
+        (
+            path for path in tree.stdout.splitlines()
+            if path.startswith("packages/model-library/models/") and path.endswith("/component.json")
+        ),
+        key=lambda value: Path(value).parts,
+    )
     exact: set[str] = set()
     normalized: dict[str, str] = {}
-    package_count = 0
-    for component_path in sorted(library_root.glob("*/*/component.json")):
-        component = json.loads(component_path.read_text(encoding="utf-8"))
-        package_count += 1
-        label = str(component_path.parent.relative_to(library_root))
+    prefix = "packages/model-library/models/"
+    for component_path in component_paths:
+        shown = subprocess.run(
+            ["git", "-C", str(repo_root), "show", f"{commit}:{component_path}"],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        if shown.returncode != 0:
+            detail = shown.stderr.strip() or shown.stdout.strip() or "Git object read failed"
+            raise RuntimeError(f"cannot read {component_path} from reviewed snapshot commit {commit}: {detail}")
+        try:
+            component = json.loads(shown.stdout)
+        except json.JSONDecodeError as error:
+            raise RuntimeError(f"invalid component JSON at {commit}:{component_path}: {error}") from error
+        label = str(Path(component_path.removeprefix(prefix)).parent)
         electrical_family = str(component.get("electrical_family", ""))
         family = "bjt" if electrical_family.startswith("bjt_") else "mosfet" if electrical_family in {"nmos", "pmos"} else "diode" if electrical_family == "diode" else None
         values = [component.get("canonical_mpn"), *(component.get("ordering_code_aliases") or [])]
@@ -61,7 +103,7 @@ def reviewed_snapshot(library_root: Path) -> tuple[set[str], dict[str, str], int
                 continue
             exact.add(value.strip().casefold())
             normalized.setdefault(normalized_mpn_key(value, family), label)
-    return exact, normalized, package_count
+    return exact, normalized, len(component_paths)
 
 
 def row_fingerprint(rows: Iterable[Mapping[str, Any]]) -> str:
@@ -100,7 +142,7 @@ def freeze_manifest(
     sql = sql_file_text.strip()
     scale_1k_ids = _lcsc_ids(scale_1k)
     quarantine = {value.casefold() for value in quarantine_ids}
-    reviewed_exact, reviewed_normalized, reviewed_package_count = reviewed_snapshot(library_root)
+    reviewed_exact, reviewed_normalized, reviewed_package_count = reviewed_snapshot(library_root, reviewed_commit)
 
     raw_rows: list[dict[str, Any]] = []
     raw_available_by_family: dict[str, int] = {}
