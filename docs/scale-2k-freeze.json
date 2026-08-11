@@ -1,0 +1,263 @@
+{
+  "schema_version": "1.0.0",
+  "campaign": "scheMAGIC scale-2k deterministic freeze",
+  "date": "2026-08-11",
+  "status": "frozen-before-batch-9-extraction",
+  "authority": "freeze and unreviewed execution only; no review, promotion, push, deploy, publication, GitHub comment, or Vault update",
+  "tripwire": {
+    "worktree": ".claude/worktrees/agent-a4e2b44745cbce0e2",
+    "head": "310070d8e810c0beb8c4ee04bb0329f5f1e03bf8",
+    "reviewed_package_count": 692,
+    "passed": true
+  },
+  "frozen_database": {
+    "path": "tools/part-feeder/data/jlcparts.sqlite3",
+    "opened_read_only": true,
+    "archive_id": "be33bfda2d6fd7ee009a1acda1477a21ffa8345df473c4b543d7228981dccf4e",
+    "dump_date": "2026-08-08",
+    "last_modified": "Sat, 08 Aug 2026 13:01:14 GMT",
+    "database_sha256": "08b59bec3b8a35b1da52b0e9a6000ba190c1e1197c92d350b529a6b75fbe51c9",
+    "database_bytes": 5656805376,
+    "compressed_bytes": 657439529,
+    "dump_state_sha256": "a650e9f1059890d7e70c56f9d439c3e3e23c3bd9d147b110c9c27938ac0a46f0",
+    "source_url": "https://yaqwsx.github.io/jlcparts/data",
+    "archive_files": [
+      {
+        "etag": "\"6a77289a-3200000\"",
+        "name": "cache.z01",
+        "size": 52428800
+      },
+      {
+        "etag": "\"6a77289a-3200000\"",
+        "name": "cache.z02",
+        "size": 52428800
+      },
+      {
+        "etag": "\"6a772899-3200000\"",
+        "name": "cache.z03",
+        "size": 52428800
+      },
+      {
+        "etag": "\"6a77289a-3200000\"",
+        "name": "cache.z04",
+        "size": 52428800
+      },
+      {
+        "etag": "\"6a77289a-3200000\"",
+        "name": "cache.z05",
+        "size": 52428800
+      },
+      {
+        "etag": "\"6a77289a-3200000\"",
+        "name": "cache.z06",
+        "size": 52428800
+      },
+      {
+        "etag": "\"6a77289b-3200000\"",
+        "name": "cache.z07",
+        "size": 52428800
+      },
+      {
+        "etag": "\"6a77289a-3200000\"",
+        "name": "cache.z08",
+        "size": 52428800
+      },
+      {
+        "etag": "\"6a77289b-3200000\"",
+        "name": "cache.z09",
+        "size": 52428800
+      },
+      {
+        "etag": "\"6a77289a-3200000\"",
+        "name": "cache.z10",
+        "size": 52428800
+      },
+      {
+        "etag": "\"6a77289b-3200000\"",
+        "name": "cache.z11",
+        "size": 52428800
+      },
+      {
+        "etag": "\"6a77289a-3200000\"",
+        "name": "cache.z12",
+        "size": 52428800
+      },
+      {
+        "etag": "\"6a77289a-1afbb29\"",
+        "name": "cache.zip",
+        "size": 28293929
+      }
+    ],
+    "catalog_refresh_performed": false
+  },
+  "sql": {
+    "tracked_path": "tools/part-feeder/queries/scale-2k.sql",
+    "file_sha256": "c1bd13f4b5b2ef94b69977ceaa842682f2e488670ac6f9f94107640e6165886b",
+    "embedded_sql_sha256": "b113daa444b486ccef618b7aee3275286547fa18225de46773b5defe39b17ddb",
+    "embedded_sql": "WITH candidates AS (\n  SELECT\n    j.lcsc,\n    j.mfr,\n    COALESCE(NULLIF(j.manufacturer, ''), l.manufacturer) AS manufacturer,\n    j.category,\n    j.subcategory,\n    j.package,\n    j.stock,\n    j.preferred AS popularity,\n    j.description,\n    j.datasheet,\n    j.attributes,\n    l.attributes AS lcsc_attributes,\n    CASE\n      WHEN lower(j.subcategory) LIKE '%bipolar%'\n        AND lower(j.subcategory) NOT LIKE '%digital transistor%' THEN 'bjt'\n      WHEN lower(j.subcategory) LIKE '%mosfet%' THEN 'mosfet'\n      WHEN lower(j.category) LIKE '%diode%'\n        OR lower(j.subcategory) LIKE '%diode%' THEN 'diode'\n    END AS conveyor_family\n  FROM jlc_components AS j\n  LEFT JOIN lcsc_components AS l ON l.lcsc = j.lcsc\n  WHERE j.present = 1\n    AND j.stock >= 5000\n    AND j.datasheet <> ''\n    AND (\n      (\n        lower(j.subcategory) LIKE '%bipolar%'\n        AND lower(j.subcategory) NOT LIKE '%digital transistor%'\n      )\n      OR lower(j.subcategory) LIKE '%mosfet%'\n      OR lower(j.category) LIKE '%diode%'\n      OR lower(j.subcategory) LIKE '%diode%'\n    )\n    AND lower(j.category) NOT LIKE '%bridge%'\n    AND lower(j.subcategory) NOT LIKE '%bridge%'\n), ranked AS (\n  SELECT\n    *,\n    COUNT(*) OVER (PARTITION BY conveyor_family) AS raw_family_count,\n    ROW_NUMBER() OVER (\n      PARTITION BY conveyor_family\n      ORDER BY popularity DESC, stock DESC, lcsc ASC\n    ) AS family_rank\n  FROM candidates\n  WHERE conveyor_family IS NOT NULL\n)\nSELECT *\nFROM ranked\nWHERE (conveyor_family = 'diode' AND family_rank <= 1200)\n   OR (conveyor_family = 'mosfet' AND family_rank <= 900)\n   OR (conveyor_family = 'bjt' AND family_rank <= 650)\nORDER BY conveyor_family ASC, family_rank ASC",
+    "filters": {
+      "present": 1,
+      "minimum_stock": 5000,
+      "nonempty_datasheet": true,
+      "bridge_categories_excluded": true,
+      "digital_transistors_excluded_from_plain_bjt": true
+    },
+    "ranking": "preferred DESC, stock DESC, lcsc ASC per conveyor_family",
+    "global_order": "conveyor_family ASC, family_rank ASC after exclusions and normalized-MPN deduplication"
+  },
+  "caps": {
+    "diode": 1200,
+    "mosfet": 900,
+    "plain_bjt": 650,
+    "raw_capped_total": 2750,
+    "rationale": "Bound the deterministic expansion to 2,750 high-stock catalog rows while retaining substantial family headroom beyond one 160-target execution batch. Caps are applied only after the required per-family rank."
+  },
+  "raw_query_counts": {
+    "before_caps_total": 8523,
+    "before_caps_by_family": {
+      "bjt": 1163,
+      "diode": 5223,
+      "mosfet": 2137
+    },
+    "after_caps_total": 2750,
+    "after_caps_by_family": {
+      "bjt": 650,
+      "diode": 1200,
+      "mosfet": 900
+    },
+    "raw_row_order_sha256": "426c589d2a55d75d3df1a84745b9af8dfd295d46009763435a0d8abdaf323204"
+  },
+  "exclusions": {
+    "precedence": [
+      "quarantine-lcsc",
+      "scale-1k-lcsc",
+      "reviewed-identity-or-alias",
+      "normalized-mpn-dedup"
+    ],
+    "scale_1k": {
+      "manifest_path": "tools/part-feeder/data/manifests/scale-1k.json",
+      "manifest_sha256": "66cdce981387c1c9cc7670478628ee3a5c7244b7ec6f311ab6d32f8f18be10f4",
+      "handled_lcsc_count": 1034,
+      "raw_direct_matches": 1006,
+      "sequentially_excluded": 990
+    },
+    "reviewed_snapshot": {
+      "commit": "310070d8e810c0beb8c4ee04bb0329f5f1e03bf8",
+      "package_count": 692,
+      "exact_canonical_or_alias_count": 911,
+      "normalized_identity_count": 813,
+      "raw_direct_matches": 1376,
+      "sequentially_excluded": 634
+    },
+    "quarantine": {
+      "count": 16,
+      "lcsc_ids": [
+        "C108639",
+        "C139445",
+        "C17300",
+        "C181134",
+        "C18199086",
+        "C18199090",
+        "C18199170",
+        "C18199195",
+        "C18199199",
+        "C193222",
+        "C22466356",
+        "C347501",
+        "C5364246",
+        "C5364313",
+        "C7502703",
+        "C917121"
+      ],
+      "raw_direct_matches": 16,
+      "sequentially_excluded": 16,
+      "revisited": 0
+    },
+    "normalized_mpn_dedup": {
+      "algorithm": "NFKC casefold plus punctuation folding, catalog ordering/marking suffix removal, and plain-BJT gain-rank folding; numeric diode and MOSFET electrical value codes are retained",
+      "sequentially_excluded": 174,
+      "kept_rule": "earliest deterministic SQL-ranked row",
+      "suffix_variants_counted_as_distinct_without_primary_curve_evidence": false
+    },
+    "direct_overlap_counts": {
+      "quarantine_and_reviewed_overlap": 3,
+      "quarantine_lcsc": 16,
+      "reviewed_identity_or_alias": 1376,
+      "scale_1k_and_quarantine_overlap": 16,
+      "scale_1k_and_reviewed_overlap": 742,
+      "scale_1k_lcsc": 1006
+    },
+    "sequential_counts": {
+      "normalized_mpn_dedup": 174,
+      "quarantine": 16,
+      "reviewed_identity_or_alias": 634,
+      "scale_1k_lcsc": 990
+    },
+    "sequential_by_family": {
+      "bjt": {
+        "normalized_mpn_dedup": 61,
+        "quarantine": 2,
+        "reviewed_identity_or_alias": 193,
+        "scale_1k_lcsc": 233
+      },
+      "diode": {
+        "normalized_mpn_dedup": 82,
+        "quarantine": 9,
+        "reviewed_identity_or_alias": 321,
+        "scale_1k_lcsc": 439
+      },
+      "mosfet": {
+        "normalized_mpn_dedup": 31,
+        "quarantine": 5,
+        "reviewed_identity_or_alias": 120,
+        "scale_1k_lcsc": 318
+      }
+    }
+  },
+  "digital_transistor_deferral": {
+    "excluded": true,
+    "reason": "Pre-biased digital transistors contain internal resistor networks that the unchanged plain-BJT archetype does not represent. They remain deferred rather than being silently fitted as three-terminal plain BJTs.",
+    "archetype_changed": false
+  },
+  "frozen_manifest": {
+    "path": "tools/part-feeder/data/manifests/scale-2k.json",
+    "gitignored": true,
+    "sha256": "c003a37a26c5ce343ed884a38801d9a5acdbac17412d409dc2fd9c1b5ddf790e",
+    "bytes": 2457421,
+    "candidate_count": 936,
+    "by_family": {
+      "bjt": 161,
+      "diode": 349,
+      "mosfet": 426
+    },
+    "frozen_campaign_order_start": 370,
+    "frozen_campaign_order_end": 1305,
+    "orders_contiguous": true,
+    "final_row_order_sha256": "d5bef34cc28220a15bccf0f8a32495328d87c88d9ab4c6f05d003213e0fdd37c",
+    "post_fit_full_vector_collision_guard_preserved": true
+  },
+  "reproducibility": {
+    "generator": "tools/part-feeder/freeze_scale_2k.py",
+    "catalog_query_only": true,
+    "embedded_sql_matches_tracked_sql": true,
+    "deterministic_rerun_matches_row_set_and_order": true,
+    "no_handled_lcsc_reviewed_identity_alias_or_quarantine_collisions": true,
+    "order_starts_at_370_and_is_contiguous": true,
+    "digital_transistors_and_bridges_absent": true,
+    "tests": {
+      "part_feeder": {
+        "passed": 8,
+        "failed": 0,
+        "skipped_live_smoke": 1
+      },
+      "part_feeder_typecheck": "passed"
+    }
+  },
+  "batch_9_precondition": {
+    "freeze_completed_before_selection": true,
+    "extraction_calls_before_freeze": 0,
+    "intended_selection_order_start": 370,
+    "intended_selection_order_end": 529,
+    "intended_selection_count": 160
+  }
+}

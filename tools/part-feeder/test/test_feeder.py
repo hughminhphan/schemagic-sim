@@ -19,9 +19,11 @@ from feederlib import (
     download_datasheets,
     query_manifest,
     reassemble_split_zip,
+    sha256_file,
     validate_manifest,
     validate_pdf,
 )
+from freeze_scale_2k import freeze_manifest, normalized_mpn_key, reviewed_snapshot
 
 
 class SplitArchiveTest(unittest.TestCase):
@@ -91,6 +93,89 @@ class QueryManifestTest(unittest.TestCase):
             self.assertEqual(part["lcsc_id"], "C101")
             self.assertEqual(part["attributes"]["Reverse Voltage"], "100V")
             self.assertEqual(part["seed_hints"][0]["factory_target"], "diode.forward_voltage")
+
+
+class Scale2kFreezeTest(unittest.TestCase):
+    feeder_root = Path(__file__).resolve().parents[1]
+    repo_root = Path(__file__).resolve().parents[3]
+    common_git_dir = Path(subprocess.check_output(
+        ["git", "rev-parse", "--git-common-dir"], cwd=repo_root, text=True
+    ).strip()).resolve()
+    catalog_root = common_git_dir.parent / "tools" / "part-feeder" / "data"
+    db = catalog_root / "jlcparts.sqlite3"
+    dump_state = catalog_root / "dump.json"
+    scale_1k = catalog_root / "manifests" / "scale-1k.json"
+    manifest_path = feeder_root / "data" / "manifests" / "scale-2k.json"
+    sql_path = feeder_root / "queries" / "scale-2k.sql"
+    library_root = repo_root / "packages" / "model-library" / "models"
+    quarantine_document = repo_root / "docs" / "batch-8-selection.json"
+
+    @unittest.skipUnless(db.is_file() and manifest_path.is_file(), "frozen scale-2k inputs are required")
+    def test_frozen_manifest_matches_sql_and_reproduces_against_frozen_database(self) -> None:
+        manifest = json.loads(self.manifest_path.read_text())
+        sql_text = self.sql_path.read_text()
+        self.assertEqual(manifest["query"]["sql"], sql_text.strip())
+        self.assertEqual(manifest["query"]["sql_file_sha256"], sha256_file(self.sql_path))
+        self.assertEqual(manifest["source"]["database_sha256"], sha256_file(self.db))
+        dump_state = json.loads(self.dump_state.read_text())
+        scale_1k = json.loads(self.scale_1k.read_text())
+        quarantine = json.loads(self.quarantine_document.read_text())[
+            "independent_review_rejection_quarantine"
+        ]["lcsc_ids"]
+        rerun = freeze_manifest(
+            db_path=self.db,
+            sql_path=self.sql_path,
+            dump_state=dump_state,
+            scale_1k=scale_1k,
+            scale_1k_file_sha256=sha256_file(self.scale_1k),
+            library_root=self.library_root,
+            quarantine_ids=set(quarantine),
+            reviewed_commit=manifest["freeze"]["reviewed_snapshot_commit"],
+            created_at=manifest["created_at"],
+        )
+        self.assertEqual(rerun["freeze"]["raw_row_order_sha256"], manifest["freeze"]["raw_row_order_sha256"])
+        self.assertEqual(rerun["freeze"]["final_row_order_sha256"], manifest["freeze"]["final_row_order_sha256"])
+        self.assertEqual(
+            [(part["lcsc_id"], part["frozen_campaign_order"]) for part in rerun["parts"]],
+            [(part["lcsc_id"], part["frozen_campaign_order"]) for part in manifest["parts"]],
+        )
+
+    @unittest.skipUnless(manifest_path.is_file(), "frozen scale-2k manifest is required")
+    def test_frozen_rows_are_contiguous_unique_and_exclude_handled_identities(self) -> None:
+        manifest = json.loads(self.manifest_path.read_text())
+        scale_1k = json.loads(self.scale_1k.read_text())
+        quarantine = set(json.loads(self.quarantine_document.read_text())[
+            "independent_review_rejection_quarantine"
+        ]["lcsc_ids"])
+        handled = {part["lcsc_id"].casefold() for part in scale_1k["parts"]} | {
+            value.casefold() for value in quarantine
+        }
+        reviewed_exact, reviewed_normalized, package_count = reviewed_snapshot(self.library_root)
+        self.assertEqual(package_count, 692)
+        orders = [part["frozen_campaign_order"] for part in manifest["parts"]]
+        self.assertEqual(orders, list(range(370, 370 + len(orders))))
+        normalized = [part["normalized_mpn"] for part in manifest["parts"]]
+        self.assertEqual(len(normalized), len(set(normalized)))
+        for part in manifest["parts"]:
+            self.assertNotIn(part["lcsc_id"].casefold(), handled)
+            self.assertNotIn(part["mpn"].strip().casefold(), reviewed_exact)
+            self.assertNotIn(normalized_mpn_key(part["mpn"], part["conveyor_family"]), reviewed_normalized)
+
+    @unittest.skipUnless(manifest_path.is_file(), "frozen scale-2k manifest is required")
+    def test_frozen_sql_and_rows_exclude_digital_transistors_and_bridges(self) -> None:
+        sql = self.sql_path.read_text().casefold()
+        self.assertIn("j.present = 1", sql)
+        self.assertIn("j.stock >= 5000", sql)
+        self.assertIn("j.datasheet <> ''", sql)
+        self.assertIn("digital transistor", sql)
+        self.assertIn("not like '%bridge%'", sql)
+        self.assertIn("order by popularity desc, stock desc, lcsc asc", sql)
+        manifest = json.loads(self.manifest_path.read_text())
+        self.assertEqual(manifest["query"]["family_caps"], {"bjt": 650, "diode": 1200, "mosfet": 900})
+        for part in manifest["parts"]:
+            classification = f"{part['category']} {part['subcategory']}".casefold()
+            self.assertNotIn("digital transistor", classification)
+            self.assertNotIn("bridge", classification)
 
 
 class RateLimiterTest(unittest.TestCase):
