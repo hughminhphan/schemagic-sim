@@ -54,6 +54,17 @@ function zenerExtraction() {
   return value;
 }
 
+function explicitZenerExtraction() {
+  const value = zenerExtraction();
+  value.specs.breakdown_voltage = [
+    { ...quantity(11.4, "V"), conditions: "Minimum Zener voltage VZ = 11.4 V at IZT = 10 mA", page_reference: "p. 2 MM1W12 VZ minimum", source_kind: "minimum" },
+    { ...quantity(12, "V"), conditions: "Nominal Zener voltage VZ = 12 V at IZT = 10 mA", page_reference: "p. 2 MM1W12 VZ nominal" },
+    { ...quantity(12.6, "V"), conditions: "Maximum Zener voltage VZ = 12.6 V at IZT = 10 mA", page_reference: "p. 2 MM1W12 VZ maximum", source_kind: "maximum" },
+  ];
+  value.specs.breakdown_current = { ...quantity(0.01, "A"), conditions: "Zener test current IZT = 0.01 A", page_reference: "p. 2 MM1W12 IZT" };
+  return value;
+}
+
 test("bulk adapter fits curve-backed diode without touching reviewed library", () => {
   const fit = fitBulkPart(diodePart("unused.pdf"), extraction(), { ngspiceRunner: () => ({ pass: true }) });
   assert.equal(fit.fidelity, "F2");
@@ -68,19 +79,38 @@ test("Zener model cards emit only cited VZ and IZT values with held NBV", () => 
   assert.match(fit.model.text, / BV=5\.1000000000e0 IBV=5\.0000000000e-3 NBV=1\.0000000000e0/);
   assert.match(fit.parameter_metadata.NBV.status, /held first-order/);
   assert.ok(fit.held_defaults.some((item) => item.parameter === "NBV" && item.value === 1));
+  assert.equal(fit.diode_evidence.breakdown.tolerance.percent, 5);
+
+  const unitEquivalent = zenerExtraction();
+  unitEquivalent.specs.breakdown_current = { ...quantity(0.005, "A"), conditions: "Zener test current IZT = 0.005 A", page_reference: "p. 2 Zener table" };
+  assert.equal(fitBulkPart(zenerPart("unused.pdf"), unitEquivalent, { forceF1: true, ngspiceRunner: () => ({ pass: true }) }).parameters.IBV, 0.005);
+
+  const mismatched = zenerExtraction();
+  mismatched.specs.breakdown_current = { ...quantity(10, "mA"), conditions: "Zener test current IZT = 10 mA", page_reference: "p. 2 Zener table" };
+  assert.throws(
+    () => fitBulkPart(zenerPart("unused.pdf"), mismatched, { forceF1: true, ngspiceRunner: () => ({ pass: true }) }),
+    /VZ and breakdown-current IZT mismatch/,
+  );
+
+  const mislabeledCurrent = zenerExtraction();
+  mislabeledCurrent.specs.breakdown_current.conditions = "Zener test current IZT = 10 mA";
+  assert.throws(
+    () => fitBulkPart(zenerPart("unused.pdf"), mislabeledCurrent, { forceF1: true, ngspiceRunner: () => ({ pass: true }) }),
+    /conditions match the normalized breakdown-current value/,
+  );
 
   const incomplete = zenerExtraction();
   incomplete.specs.breakdown_current = null;
   assert.throws(
     () => fitBulkPart(zenerPart("unused.pdf"), incomplete, { forceF1: true, ngspiceRunner: () => ({ pass: true }) }),
-    /IZT test current/,
+    /numeric cited IZT/,
   );
 
   const ratingOnly = zenerExtraction();
   ratingOnly.specs.breakdown_voltage.conditions = "Maximum repetitive reverse voltage VRRM = 100 V";
   assert.throws(
     () => fitBulkPart(zenerPart("unused.pdf"), ratingOnly, { forceF1: true, ngspiceRunner: () => ({ pass: true }) }),
-    /requires a cited VZ quantity/,
+    /requires cited VZ quantities/,
   );
 
   const oneSided = zenerExtraction();
@@ -88,7 +118,14 @@ test("Zener model cards emit only cited VZ and IZT values with held NBV", () => 
   oneSided.specs.breakdown_voltage.conditions = "Maximum Zener voltage VZ = 5.35 V at IZT = 5 mA";
   assert.throws(
     () => fitBulkPart(zenerPart("unused.pdf"), oneSided, { forceF1: true, ngspiceRunner: () => ({ pass: true }) }),
-    /one-sided VZ evidence cannot identify the nominal BV parameter/,
+    /exactly one nominal VZ row is required/,
+  );
+
+  const explicitMismatch = explicitZenerExtraction();
+  explicitMismatch.specs.breakdown_voltage[0].conditions = "Minimum Zener voltage VZ = 11.4 V at IZT = 5 mA";
+  assert.throws(
+    () => fitBulkPart(zenerPart("unused.pdf"), explicitMismatch, { forceF1: true, ngspiceRunner: () => ({ pass: true }) }),
+    /VZ and breakdown-current IZT mismatch/,
   );
 
   const kneeTrace = zenerExtraction();
@@ -137,6 +174,35 @@ test("staged Zener facts preserve VZ, IZT, tolerance, polarity, and inclusive na
   }
 });
 
+test("MM1W12-style explicit Zener rows produce inclusive native bounds at one IZT", () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "factory-zener-explicit-test-"));
+  try {
+    const pdf = path.join(root, "datasheet.pdf");
+    fs.writeFileSync(pdf, "%PDF-1.7\nfixture\n");
+    const extractionPath = path.join(root, "extraction.json");
+    fs.writeFileSync(extractionPath, JSON.stringify(explicitZenerExtraction()));
+    const manifestPath = path.join(root, "batch.json");
+    fs.writeFileSync(manifestPath, JSON.stringify({ schema_version: "1.0.0", kind: "opencircuit-conveyor-batch", parts: [{ ...zenerPart(pdf), extraction_path: extractionPath, force_f1: true }] }));
+    const result = runBulkManifest(manifestPath, path.join(root, "staging"), { libraryRoot: path.join(root, "empty-library") });
+    assert.equal(result[0].status, "staged", JSON.stringify(result[0]));
+    const facts = JSON.parse(fs.readFileSync(path.join(result[0].package_path, "facts.json"), "utf8"));
+    const expectations = JSON.parse(fs.readFileSync(path.join(result[0].package_path, "tests", "expectations.json"), "utf8"));
+    assert.equal(facts.derived_model_inputs.BV.value, 12);
+    assert.equal(facts.derived_model_inputs.IBV.value, 0.01);
+    assert.deepEqual(
+      [facts.zener_points[0].voltage_minimum.value, facts.zener_points[0].voltage_maximum.value],
+      [11.4, 12.6],
+    );
+    assert.equal(facts.zener_points[0].voltage_minimum.page_reference, "p. 2 MM1W12 VZ minimum");
+    assert.equal(facts.zener_points[0].voltage_maximum.page_reference, "p. 2 MM1W12 VZ maximum");
+    const zenerCheck = expectations.tests.flatMap((entry) => entry.hard_bounds_checks).find((check) => check.name.startsWith("zener_voltage_at_"));
+    assert.deepEqual([zenerCheck.minimum, zenerCheck.maximum], [11.4, 12.6]);
+    assert.ok(fs.existsSync(path.join(result[0].package_path, "tests", "zener_01.cir")));
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+});
+
 test("F1 diode calibration honors SI units and a cited maximum at 25 C", () => {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "factory-diode-f1-test-"));
   try {
@@ -162,7 +228,7 @@ test("F1 diode calibration honors SI units and a cited maximum at 25 C", () => {
   }
 });
 
-test("CJO and maximum TT preserve cited scalar conditions through native ngspice benches", () => {
+test("CJO plus cited recovery evidence creates no TT model or condition-insensitive transient claim", () => {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "factory-diode-scalars-test-"));
   try {
     const pdf = path.join(root, "datasheet.pdf");
@@ -190,22 +256,28 @@ test("CJO and maximum TT preserve cited scalar conditions through native ngspice
     const facts = JSON.parse(fs.readFileSync(path.join(result[0].package_path, "facts.json"), "utf8"));
     const fitted = JSON.parse(fs.readFileSync(path.join(result[0].package_path, "fitted.json"), "utf8"));
     const component = JSON.parse(fs.readFileSync(path.join(result[0].package_path, "component.json"), "utf8"));
-    assert.match(model, / CJO=4\.0000000000e-12 TT=4\.0000000000e-9/);
+    assert.match(model, / CJO=4\.0000000000e-12/);
+    assert.doesNotMatch(model, /\sTT=/);
     assert.equal(facts.derived_model_inputs.CJO.value, 4e-12);
     assert.equal(facts.derived_model_inputs.CJO.source_kind, "maximum");
     assert.equal(facts.derived_model_inputs.CJO.conditions, "Zero-bias junction capacitance, VR = 0 V, f = 1 MHz, TA = 25 C");
-    assert.equal(facts.derived_model_inputs.TT.value, 4e-9);
-    assert.equal(facts.derived_model_inputs.TT.source_kind, "maximum");
-    assert.equal(fitted.held_defaults.some((item) => ["CJO", "TT"].includes(item.parameter)), false);
+    assert.equal(facts.derived_model_inputs.TT, undefined);
+    assert.equal(facts.scalar_model_inputs.TT, undefined);
+    assert.equal(facts.reported_unsupported_evidence.reverse_recovery.value, 4e-9);
+    assert.equal(facts.reported_unsupported_evidence.reverse_recovery.source_kind, "maximum");
+    assert.equal(facts.reported_unsupported_evidence.reverse_recovery.page_reference, "p. 3 switching table");
+    assert.match(facts.reported_unsupported_evidence.reverse_recovery.disposition, /reported source fact only/);
+    assert.equal(fitted.held_defaults.some((item) => item.parameter === "CJO"), false);
+    assert.ok(fitted.held_defaults.some((item) => item.parameter === "TT" && item.value === 0));
     assert.match(fitted.parameter_metadata.CJO.status, /zero-bias capacitance/);
-    assert.match(fitted.parameter_metadata.TT.status, /stated fixture/);
+    assert.match(fitted.parameter_metadata.TT.status, /exact cited IF, VR, IRR, RL, and recovery-criterion fixture/);
     assert.equal(component.domain_coverage.ac, "none");
     assert.equal(component.domain_coverage.transient, "none");
     assert.deepEqual(component.supported_analyses, ["operating_point", "dc_sweep"]);
     assert.match(component.known_omissions.join("\n"), /CJO represents only the cited zero-bias capacitance scalar/);
-    assert.match(component.known_omissions.join("\n"), /TT represents only the cited reverse-recovery time scalar/);
+    assert.match(component.known_omissions.join("\n"), /no transient scope, bench, hard bound, or recovery claim is created/);
     assert.ok(fs.existsSync(path.join(result[0].package_path, "tests", "zero_bias_capacitance.cir")));
-    assert.ok(fs.existsSync(path.join(result[0].package_path, "tests", "reverse_recovery.cir")));
+    assert.equal(fs.existsSync(path.join(result[0].package_path, "tests", "reverse_recovery.cir")), false);
   } finally {
     fs.rmSync(root, { recursive: true, force: true });
   }
@@ -222,7 +294,8 @@ test("nonzero-bias capacitance and incomplete recovery evidence stay omitted and
   assert.equal(fit.parameters.TT, undefined);
   assert.doesNotMatch(fit.model.text, /\s(?:CJO|TT)=/);
   assert.match(fit.parameter_metadata.CJO.status, /not stated at zero bias/);
-  assert.match(fit.parameter_metadata.TT.status, /lacks a usable forward\/reverse fixture and recovery criterion/);
+  assert.match(fit.parameter_metadata.TT.status, /does not reproduce the exact cited IF, VR, IRR, RL, and recovery-criterion fixture/);
+  assert.equal(fit.diode_evidence.recovery.evidence.value, 20e-9);
   assert.ok(fit.held_defaults.some((item) => item.parameter === "CJO" && item.value === 0));
   assert.ok(fit.held_defaults.some((item) => item.parameter === "TT" && item.value === 0));
 
@@ -234,7 +307,7 @@ test("nonzero-bias capacitance and incomplete recovery evidence stay omitted and
   assert.match(absentFit.parameter_metadata.TT.status, /no positive cited reverse-recovery quantity/);
 });
 
-test("typical TT is preserved as scalar model evidence without inventing a maximum hard bound", () => {
+test("TT-only evidence stays a reported fact with simulator-default TT and no transient claim", () => {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "factory-diode-tt-typical-test-"));
   try {
     const pdf = path.join(root, "datasheet.pdf");
@@ -250,9 +323,20 @@ test("typical TT is preserved as scalar model evidence without inventing a maxim
     const result = runBulkManifest(manifestPath, path.join(root, "staging"), { libraryRoot: path.join(root, "empty-library") });
     assert.equal(result[0].status, "staged", JSON.stringify(result[0]));
     const facts = JSON.parse(fs.readFileSync(path.join(result[0].package_path, "facts.json"), "utf8"));
-    assert.ok(Math.abs(facts.scalar_model_inputs.TT.value - 12e-9) < 1e-22);
-    assert.equal(facts.scalar_model_inputs.TT.source_kind, "typical");
+    const fitted = JSON.parse(fs.readFileSync(path.join(result[0].package_path, "fitted.json"), "utf8"));
+    const component = JSON.parse(fs.readFileSync(path.join(result[0].package_path, "component.json"), "utf8"));
+    const expectations = JSON.parse(fs.readFileSync(path.join(result[0].package_path, "tests", "expectations.json"), "utf8"));
+    const model = fs.readFileSync(path.join(result[0].package_path, "model.cir"), "utf8");
+    assert.equal(facts.scalar_model_inputs.TT, undefined);
     assert.equal(facts.derived_model_inputs.TT, undefined);
+    assert.ok(Math.abs(facts.reported_unsupported_evidence.reverse_recovery.value - 12e-9) < 1e-22);
+    assert.equal(facts.reported_unsupported_evidence.reverse_recovery.source_kind, "typical");
+    assert.equal(facts.reported_unsupported_evidence.reverse_recovery.conditions, "Typical reverse recovery trr at IF = 10 mA, IR = 10 mA, recovery to 25% of IRR");
+    assert.doesNotMatch(model, /\sTT=/);
+    assert.ok(fitted.held_defaults.some((item) => item.parameter === "TT" && item.value === 0));
+    assert.equal(component.domain_coverage.transient, "none");
+    assert.equal(expectations.tests.some((entry) => entry.analysis_type === "transient"), false);
+    assert.doesNotMatch(JSON.stringify(expectations), /recovery/i);
     assert.equal(fs.existsSync(path.join(result[0].package_path, "tests", "reverse_recovery.cir")), false);
   } finally {
     fs.rmSync(root, { recursive: true, force: true });
@@ -285,7 +369,17 @@ test("diode variant and package contracts park semantic mismatches and incompati
     () => fitBulkPart({ ...diodePart("unused.pdf"), package: "SOT-23", description: "switching diode" }, extraction(), { forceF1: true, ngspiceRunner: () => ({ pass: true }) }),
     /unsupported diode package contract: catalog identifies 3 terminals/,
   );
-  for (const description of ["bridge rectifier", "TVS transient voltage suppressor", "varactor diode", "photodiode", "PIN diode"]) {
+  for (const description of [
+    "bridge", "bridges", "bridge-rectifier", "bridge rectifiers",
+    "dual diode", "dual diodes", "two-diodes", "multi diode",
+    "diode array", "diode-array", "diode arrays", "array of diodes", "arrays-of-diodes",
+    "common anode switching diode", "common-anode switching diode", "common cathodes", "common-cathode diodes",
+    "series pair", "series-pair", "series pairs", "series connected diodes", "series-diode-pairs",
+    "TVS diode", "transient voltage suppressors",
+    "varactor diode", "varactors", "variable-capacitance diodes",
+    "photodiode", "photodiodes", "photo diode", "photo diodes", "photo-diode", "photo-diodes",
+    "PIN diode", "PIN diodes", "PIN-diode", "PIN-diodes",
+  ]) {
     assert.throws(
       () => fitBulkPart({ ...diodePart("unused.pdf"), description }, extraction(), { forceF1: true, ngspiceRunner: () => ({ pass: true }) }),
       /unsupported diode topology/,

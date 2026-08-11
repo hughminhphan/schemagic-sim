@@ -83,16 +83,16 @@ function diodeVariantContract(part, extraction) {
   if (!["zener", "schottky", "rectifier", "signal"].includes(variant)) {
     throw new Error(`unsupported diode variant: extraction must identify zener, schottky, rectifier, or signal for ${part.mpn}`);
   }
-  const text = diodeCatalogText(part);
+  const text = diodeCatalogText(part).normalize("NFKC").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
   const unsupportedTopology = [
-    [/\bbridge(?: rectifier)?\b/i, "bridge"],
-    [/\b(?:dual|double|triple|quad)\b|\b(?:two|2)\s+diodes?\b|\bdiode array\b|\barray of diodes\b/i, "multi-diode"],
-    [/common[ -](?:anode|cathode)/i, "common-terminal multi-diode"],
-    [/\bseries[ -](?:connected|pair|dual)\b/i, "series multi-diode"],
-    [/\bTVS\b|transient voltage suppress/i, "TVS"],
-    [/\bvaractor\b|variable capacitance diode/i, "varactor"],
-    [/\bphotodiode\b|photo diode/i, "photodiode"],
-    [/\bPIN diode\b/i, "PIN diode"],
+    [/\bbridges?\b(?:\s+rectifiers?)?|\bbridge\s+rectifiers?\b/, "bridge"],
+    [/\b(?:dual|double|triple|quad)\b|\bmulti\s+diodes?\b|\b(?:two|2)\s+diodes?\b|\bdiode\s+arrays?\b|\barrays?\s+of\s+diodes?\b/, "multi-diode"],
+    [/\bcommon\s+(?:anodes?|cathodes?)\b/, "common-terminal multi-diode"],
+    [/\bseries\s+(?:connected|pairs?|dual|connected\s+diodes?|dual\s+diodes?|diode\s+pairs?)\b/, "series multi-diode"],
+    [/\btvs\b|\btransient\s+voltage\s+suppress(?:or|ing)?s?\b/, "TVS"],
+    [/\bvaractors?\b|\bvariable\s+capacitance\s+diodes?\b/, "varactor"],
+    [/\bphotodiodes?\b|\bphoto\s+diodes?\b/, "photodiode"],
+    [/\bpin\s+diodes?\b/, "PIN diode"],
   ].find(([pattern]) => pattern.test(text));
   if (unsupportedTopology) {
     throw new Error(`unsupported diode topology: ${unsupportedTopology[1]} cannot use the single plain-diode archetype`);
@@ -123,14 +123,10 @@ function zeroBiasCapacitanceEvidence(extraction) {
 function reverseRecoveryEvidence(extraction) {
   const evidence = validEvidence(extraction?.specs?.reverse_recovery, "s");
   if (!evidence) return { evidence: null, reason: "no positive cited reverse-recovery quantity in seconds" };
-  const conditions = String(evidence.conditions ?? "");
-  const hasForwardFixture = /\bI\s*_?\s*F\b|forward current/i.test(conditions);
-  const hasReverseFixture = /\bI\s*_?\s*R\b|\bV\s*_?\s*R\b|reverse (?:current|voltage)|dI\s*\/\s*dt/i.test(conditions);
-  const hasCriterion = /\bI\s*_?\s*RR\b|recovery (?:criterion|threshold|to)|\b(?:10|25|50)\s*%|\bI\s*_?\s*R\s*=\s*(?:0?\.\d+|\d+\s*%)\s*(?:x|×)\s*I\s*_?\s*R\b/i.test(conditions);
-  if (!hasForwardFixture || !hasReverseFixture || !hasCriterion) {
-    return { evidence: null, reason: `cited reverse-recovery time lacks a usable forward/reverse fixture and recovery criterion: ${conditions || "conditions absent"}` };
-  }
-  return { evidence, reason: null };
+  return {
+    evidence,
+    reason: "the bulk factory does not reproduce the exact cited IF, VR, IRR, RL, and recovery-criterion fixture",
+  };
 }
 
 function zenerToleranceBounds(voltage) {
@@ -146,6 +142,20 @@ function zenerToleranceBounds(voltage) {
   };
 }
 
+function zenerConditionCurrent(evidence) {
+  const matches = [...String(evidence?.conditions ?? "").matchAll(/\b(?:I\s*_?\s*ZT(?:\d+)?|zener\s+test\s+current|test\s+current)\b\s*(?:=|:|of)?\s*([0-9]+(?:\.[0-9]+)?(?:e[+-]?\d+)?)\s*(p|n|u|µ|m)?A\b/gi)];
+  const values = matches.map((match) => Number(match[1]) * ({ p: 1e-12, n: 1e-9, u: 1e-6, "µ": 1e-6, m: 1e-3 }[match[2]?.toLowerCase()] ?? 1));
+  if (!values.length || values.some((value) => !Number.isFinite(value) || value <= 0)) return null;
+  if (values.some((value) => !sameCurrent(value, values[0]))) {
+    throw new Error(`unsupported Zener evidence: ambiguous IZT values in cited conditions: ${evidence.conditions}`);
+  }
+  return values[0];
+}
+
+function sameCurrent(left, right) {
+  return Math.abs(left - right) <= Math.max(1e-18, 1e-12 * Math.max(Math.abs(left), Math.abs(right)));
+}
+
 function zenerInputs(extraction) {
   if (extraction?.specs?.variant !== "zener") return null;
   const citedKneeTrace = (extraction.curves ?? []).some((curve) => {
@@ -156,19 +166,38 @@ function zenerInputs(extraction) {
   if (citedKneeTrace) {
     throw new Error("unsupported Zener F1 evidence: a cited reverse-knee trace requires a fitted knee shape and may not be replaced by held NBV");
   }
-  const voltage = validEvidence(extraction.specs.breakdown_voltage, "V");
+  const rawVoltages = Array.isArray(extraction.specs.breakdown_voltage)
+    ? extraction.specs.breakdown_voltage
+    : [extraction.specs.breakdown_voltage].filter(Boolean);
+  const voltages = rawVoltages.map((value) => validEvidence(value, "V"));
+  if (!voltages.length || voltages.some((voltage) => !voltage || !/\bV\s*_?\s*Z\b|zener voltage/i.test(String(voltage?.conditions ?? "")))) {
+    throw new Error("unsupported Zener evidence: BV requires cited VZ quantities, never maximum reverse-voltage ratings");
+  }
+  const nominalRows = voltages.filter((voltage) => !["minimum", "maximum"].includes(voltage.source_kind));
+  const minimumRows = voltages.filter((voltage) => voltage.source_kind === "minimum");
+  const maximumRows = voltages.filter((voltage) => voltage.source_kind === "maximum");
+  if (nominalRows.length !== 1) {
+    throw new Error("unsupported Zener evidence: exactly one nominal VZ row is required to identify the BV parameter");
+  }
+  if ((minimumRows.length || maximumRows.length) && (minimumRows.length !== 1 || maximumRows.length !== 1)) {
+    throw new Error("unsupported Zener evidence: explicit VZ bounds require one minimum and one maximum row with the nominal row");
+  }
+  const voltage = nominalRows[0];
   const current = validEvidence(extraction.specs.breakdown_current, "A");
-  if (!voltage || !/\bV\s*_?\s*Z\b|zener voltage/i.test(String(voltage?.conditions ?? ""))) {
-    throw new Error("unsupported Zener evidence: BV requires a cited VZ quantity, never a maximum reverse-voltage rating");
+  const currentCondition = zenerConditionCurrent(current);
+  if (!current || currentCondition == null || !sameCurrent(current.value, currentCondition)) {
+    throw new Error("unsupported Zener evidence: IBV requires a numeric cited IZT whose conditions match the normalized breakdown-current value");
   }
-  if (!/\bI\s*_?\s*ZT\b|zener test current|test current/i.test(String(voltage.conditions ?? ""))
-      || !current || !/\bI\s*_?\s*ZT\b|zener test current|test current/i.test(String(current?.conditions ?? ""))) {
-    throw new Error("unsupported Zener evidence: IBV requires the cited IZT test current associated with VZ");
+  for (const row of voltages) {
+    const rowCurrent = zenerConditionCurrent(row);
+    if (rowCurrent == null || !sameCurrent(rowCurrent, current.value)) {
+      throw new Error(`unsupported Zener evidence: VZ and breakdown-current IZT mismatch at ${row.page_reference ?? "uncited row"}`);
+    }
   }
-  if (["minimum", "maximum"].includes(voltage.source_kind)) {
-    throw new Error("unsupported Zener evidence: one-sided VZ evidence cannot identify the nominal BV parameter");
+  const tolerance = minimumRows.length ? { minimum: minimumRows[0], maximum: maximumRows[0], explicit: true } : zenerToleranceBounds(voltage);
+  if (tolerance && !(Number(tolerance.minimum.value) <= Number(voltage.value) && Number(voltage.value) <= Number(tolerance.maximum.value))) {
+    throw new Error("unsupported Zener evidence: inclusive VZ bounds do not contain the cited nominal VZ");
   }
-  const tolerance = zenerToleranceBounds(voltage);
   const NBV = quantity(1, "1", "First-order avalanche-knee default; no cited multi-point reverse-knee trace", "model-factory Zener F1 policy", "held_default");
   return {
     parameters: { BV: Number(voltage.value), IBV: Number(current.value), NBV: 1 },
@@ -393,10 +422,11 @@ export function fitBulkPart(part, extraction, { ngspiceRunner = defaultNgspiceRu
   fit.polarity = polarity;
   if (part.conveyor_family === "diode") {
     const { capacitance, recovery, breakdown } = preparedDiodeEvidence;
+    const supportedParameters = { ...(fit.parameters ?? {}) };
+    delete supportedParameters.TT;
     fit.parameters = {
-      ...fit.parameters,
+      ...supportedParameters,
       ...(capacitance.evidence ? { CJO: Number(capacitance.evidence.value) } : {}),
-      ...(recovery.evidence ? { TT: Number(recovery.evidence.value) } : {}),
       ...(breakdown?.parameters ?? {}),
     };
     fit.parameter_metadata = {
@@ -404,19 +434,17 @@ export function fitBulkPart(part, extraction, { ngspiceRunner = defaultNgspiceRu
       CJO: capacitance.evidence
         ? { status: `transcribed only from cited ${capacitance.evidence.source_kind} zero-bias capacitance; no broader AC behavior is claimed` }
         : { status: `omitted and held at the simulator default of 0 F: ${capacitance.reason}` },
-      TT: recovery.evidence
-        ? { status: `transcribed only from cited ${recovery.evidence.source_kind} reverse-recovery time and its stated fixture; no broader transient behavior is claimed` }
-        : { status: `omitted and held at the simulator default of 0 s: ${recovery.reason}` },
+      TT: { status: `omitted and held at the simulator default of 0 s: ${recovery.reason}` },
       ...(breakdown ? {
-        BV: { status: "transcribed from cited nominal Zener VZ at IZT semantics" },
-        IBV: { status: "transcribed from cited Zener IZT" },
+        BV: { status: "transcribed from cited nominal Zener VZ at matching IZT semantics" },
+        IBV: { status: "transcribed from cited Zener IZT matched numerically to VZ conditions" },
         NBV: { status: "held first-order avalanche-knee default; no cited knee trace" },
       } : {}),
     };
     fit.held_defaults = [
-      ...(fit.held_defaults ?? fit.optimizer?.held_defaults ?? []),
+      ...(fit.held_defaults ?? fit.optimizer?.held_defaults ?? []).filter((item) => item.parameter !== "TT"),
       ...(!capacitance.evidence ? [{ parameter: "CJO", value: 0, unit: "F", reason: capacitance.reason }] : []),
-      ...(!recovery.evidence ? [{ parameter: "TT", value: 0, unit: "s", reason: recovery.reason }] : []),
+      { parameter: "TT", value: 0, unit: "s", reason: recovery.reason },
       ...(breakdown ? [{ parameter: "NBV", value: 1, unit: "1", reason: "held first-order avalanche-knee default; no cited multi-point knee trace" }] : []),
     ];
     fit.diode_evidence = preparedDiodeEvidence;
@@ -670,11 +698,12 @@ function bulkFactoryFacts(part, extraction, fit, identity, source) {
     if (diodeEvidence.capacitance?.evidence) {
       derivedModelInputs.CJO = diodeEvidence.capacitance.evidence;
     }
-    if (diodeEvidence.recovery?.evidence?.source_kind === "maximum") {
-      derivedModelInputs.TT = diodeEvidence.recovery.evidence;
-    } else if (diodeEvidence.recovery?.evidence) {
-      scalarModelInputs.TT = diodeEvidence.recovery.evidence;
-    }
+    const reportedUnsupportedEvidence = diodeEvidence.recovery?.evidence ? {
+      reverse_recovery: {
+        ...diodeEvidence.recovery.evidence,
+        disposition: "reported source fact only; TT is held at the simulator default because the exact cited fixture is not reproduced",
+      },
+    } : {};
     if (diodeEvidence.breakdown) {
       derivedModelInputs.BV = diodeEvidence.breakdown.evidence.BV;
       derivedModelInputs.IBV = diodeEvidence.breakdown.evidence.IBV;
@@ -691,6 +720,7 @@ function bulkFactoryFacts(part, extraction, fit, identity, source) {
       electrical_limits: electricalLimits,
       derived_model_inputs: derivedModelInputs,
       scalar_model_inputs: scalarModelInputs,
+      reported_unsupported_evidence: reportedUnsupportedEvidence,
       zener_points: zenerPoints,
       diode_variant: diodeEvidence.contract,
     };
@@ -883,7 +913,7 @@ export function stageBulkPart(part, rawExtraction, fit, stagingRoot, { demotionR
         ? [`CJO is omitted and held at the simulator default of 0 F because ${fit.diode_evidence?.capacitance?.reason ?? "applicable zero-bias evidence is absent"}.`]
         : []),
     ...(part.conveyor_family === "diode" && fit.diode_evidence?.recovery?.evidence
-      ? ["TT represents only the cited reverse-recovery time scalar and its stated fixture; broader switching and transient fidelity is unsupported."]
+      ? ["The cited reverse-recovery fact and source conditions are preserved only as unsupported evidence. TT is held at the simulator default of 0 s because the bulk factory does not reproduce the exact IF, VR, IRR, RL, and recovery criterion; no transient scope, bench, hard bound, or recovery claim is created."]
       : part.conveyor_family === "diode"
         ? [`TT is omitted and held at the simulator default of 0 s because ${fit.diode_evidence?.recovery?.reason ?? "applicable reverse-recovery evidence is absent"}.`]
         : []),
