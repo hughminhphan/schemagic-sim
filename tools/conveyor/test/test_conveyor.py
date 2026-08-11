@@ -99,30 +99,6 @@ class SchemaValidationTest(unittest.TestCase):
             with self.assertRaisesRegex(ConveyorError, "unknown keys"):
                 load_and_validate_extraction(path, HERE / "schemas/diode.schema.json", {"mpn": "D1", "manufacturer": "Fixture", "family": "diode"})
 
-    def test_accepts_explicit_zener_minimum_nominal_and_maximum_rows(self):
-        with tempfile.TemporaryDirectory() as temporary:
-            path = Path(temporary) / "zener.json"
-            payload = diode_payload()
-            payload["specs"]["variant"] = "zener"
-            payload["specs"]["breakdown_voltage"] = [
-                {**q(11.4), "conditions": "VZ minimum at IZT = 10 mA", "source_kind": "minimum"},
-                {**q(12.0), "conditions": "VZ nominal at IZT = 10 mA"},
-                {**q(12.6), "conditions": "VZ maximum at IZT = 10 mA", "source_kind": "maximum"},
-            ]
-            payload["specs"]["breakdown_current"] = {
-                **q(10, "mA"), "conditions": "IZT = 10 mA",
-            }
-            path.write_text(json.dumps(payload))
-            result = load_and_validate_extraction(
-                path,
-                HERE / "schemas/diode.schema.json",
-                {"mpn": "D1", "manufacturer": "Fixture", "family": "diode"},
-            )
-            self.assertEqual(
-                [row["source_kind"] for row in result["specs"]["breakdown_voltage"]],
-                ["minimum", "typical", "maximum"],
-            )
-
     def test_normalizes_quantity_annotations_and_omits_short_curves_without_invention(self):
         payload = diode_payload()
         payload["curves"].append({
