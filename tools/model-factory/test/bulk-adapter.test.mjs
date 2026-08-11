@@ -17,6 +17,10 @@ function diodePart(pdf) {
   };
 }
 
+function zenerPart(pdf) {
+  return { ...diodePart(pdf), subcategory: "Zener Diodes", description: "single Zener voltage regulator diode" };
+}
+
 function mosfetPart(pdf) {
   return {
     mpn: "FIXTURE-P1", manufacturer: "Fixture Semi", conveyor_family: "mosfet",
@@ -45,8 +49,8 @@ function extraction() {
 function zenerExtraction() {
   const value = extraction();
   value.specs.variant = "zener";
-  value.specs.breakdown_voltage = { ...quantity(5.1, "V"), conditions: "VZ = 5.1 V at IZT = 5 mA", page_reference: "p. 2 Zener table" };
-  value.specs.breakdown_current = { ...quantity(5, "mA"), conditions: "IZT = 5 mA at VZ = 5.1 V", page_reference: "p. 2 Zener table" };
+  value.specs.breakdown_voltage = { ...quantity(5.1, "V"), conditions: "Nominal Zener voltage VZ = 5.1 V at IZT = 5 mA, tolerance ±5%", page_reference: "p. 2 Zener table" };
+  value.specs.breakdown_current = { ...quantity(5, "mA"), conditions: "Zener test current IZT = 5 mA at VZ = 5.1 V", page_reference: "p. 2 Zener table" };
   return value;
 }
 
@@ -56,22 +60,46 @@ test("bulk adapter fits curve-backed diode without touching reviewed library", (
   assert.match(fit.model.text, /\.model .* D\(/);
 });
 
-test("Zener model cards emit only cited positive BV and IBV values", () => {
-  const fit = fitBulkPart(diodePart("unused.pdf"), zenerExtraction(), { forceF1: true, ngspiceRunner: () => ({ pass: true }) });
+test("Zener model cards emit only cited VZ and IZT values with held NBV", () => {
+  const fit = fitBulkPart(zenerPart("unused.pdf"), zenerExtraction(), { forceF1: true, ngspiceRunner: () => ({ pass: true }) });
   assert.equal(fit.parameters.BV, 5.1);
   assert.equal(fit.parameters.IBV, 0.005);
   assert.equal(fit.parameters.NBV, 1);
   assert.match(fit.model.text, / BV=5\.1000000000e0 IBV=5\.0000000000e-3 NBV=1\.0000000000e0/);
+  assert.match(fit.parameter_metadata.NBV.status, /held first-order/);
+  assert.ok(fit.held_defaults.some((item) => item.parameter === "NBV" && item.value === 1));
 
   const incomplete = zenerExtraction();
   incomplete.specs.breakdown_current = null;
-  const ratingOnlyPart = { ...diodePart("unused.pdf"), seed_hints: [{ factory_target: "diode.reverse_voltage", raw_value: "100V maximum rating" }] };
-  const ratingOnly = fitBulkPart(ratingOnlyPart, incomplete, { forceF1: true, ngspiceRunner: () => ({ pass: true }) });
-  assert.equal(ratingOnly.parameters.BV, undefined);
-  assert.doesNotMatch(ratingOnly.model.text, /\sBV=/);
+  assert.throws(
+    () => fitBulkPart(zenerPart("unused.pdf"), incomplete, { forceF1: true, ngspiceRunner: () => ({ pass: true }) }),
+    /IZT test current/,
+  );
+
+  const ratingOnly = zenerExtraction();
+  ratingOnly.specs.breakdown_voltage.conditions = "Maximum repetitive reverse voltage VRRM = 100 V";
+  assert.throws(
+    () => fitBulkPart(zenerPart("unused.pdf"), ratingOnly, { forceF1: true, ngspiceRunner: () => ({ pass: true }) }),
+    /requires a cited VZ quantity/,
+  );
+
+  const oneSided = zenerExtraction();
+  oneSided.specs.breakdown_voltage.source_kind = "maximum";
+  oneSided.specs.breakdown_voltage.conditions = "Maximum Zener voltage VZ = 5.35 V at IZT = 5 mA";
+  assert.throws(
+    () => fitBulkPart(zenerPart("unused.pdf"), oneSided, { forceF1: true, ngspiceRunner: () => ({ pass: true }) }),
+    /one-sided VZ evidence cannot identify the nominal BV parameter/,
+  );
+
+  const kneeTrace = zenerExtraction();
+  kneeTrace.curves.push({ name: "Reverse Zener breakdown knee", x_axis: { quantity: "reverse voltage", unit: "V", scale: "linear" }, y_axis: { quantity: "reverse current", unit: "A", scale: "log" }, test_conditions: "TA = 25 C", page_reference: "p. 4", points: [{ x: 4.8, y: 1e-4 }, { x: 5.1, y: 5e-3 }, { x: 5.3, y: 2e-2 }] });
+  assert.throws(
+    () => fitBulkPart(zenerPart("unused.pdf"), kneeTrace, { forceF1: true, ngspiceRunner: () => ({ pass: true }) }),
+    /reverse-knee trace requires a fitted knee shape/,
+  );
 });
 
-test("staged Zener facts preserve the cited breakdown model inputs", () => {
+test("staged Zener facts preserve VZ, IZT, tolerance, polarity, and inclusive native bounds", () => {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "factory-zener-test-"));
   try {
     const pdf = path.join(root, "datasheet.pdf");
@@ -79,16 +107,31 @@ test("staged Zener facts preserve the cited breakdown model inputs", () => {
     const extractionPath = path.join(root, "extraction.json");
     fs.writeFileSync(extractionPath, JSON.stringify(zenerExtraction()));
     const manifestPath = path.join(root, "batch.json");
-    fs.writeFileSync(manifestPath, JSON.stringify({ schema_version: "1.0.0", kind: "opencircuit-conveyor-batch", parts: [{ ...diodePart(pdf), extraction_path: extractionPath, force_f1: true }] }));
-    const result = runBulkManifest(manifestPath, path.join(root, "staging"), { ngspiceRunner: () => ({ pass: true }) });
+    fs.writeFileSync(manifestPath, JSON.stringify({ schema_version: "1.0.0", kind: "opencircuit-conveyor-batch", parts: [{ ...zenerPart(pdf), extraction_path: extractionPath, force_f1: true }] }));
+    const result = runBulkManifest(manifestPath, path.join(root, "staging"), { libraryRoot: path.join(root, "empty-library") });
     assert.equal(result[0].status, "staged", JSON.stringify(result[0]));
     const facts = JSON.parse(fs.readFileSync(path.join(result[0].package_path, "facts.json"), "utf8"));
-    assert.deepEqual(facts.derived_model_inputs.BV, { ...quantity(5.1, "V"), conditions: "VZ = 5.1 V at IZT = 5 mA", page_reference: "p. 2 Zener table" });
+    const fitted = JSON.parse(fs.readFileSync(path.join(result[0].package_path, "fitted.json"), "utf8"));
+    const component = JSON.parse(fs.readFileSync(path.join(result[0].package_path, "component.json"), "utf8"));
+    const expectations = JSON.parse(fs.readFileSync(path.join(result[0].package_path, "tests", "expectations.json"), "utf8"));
+    assert.deepEqual(facts.derived_model_inputs.BV, { ...quantity(5.1, "V"), conditions: "Nominal Zener voltage VZ = 5.1 V at IZT = 5 mA, tolerance ±5%", page_reference: "p. 2 Zener table" });
     assert.equal(facts.derived_model_inputs.IBV.value, 0.005);
     assert.equal(facts.derived_model_inputs.IBV.unit, "A");
     assert.equal(facts.derived_model_inputs.IBV.page_reference, "p. 2 Zener table");
     assert.equal(facts.derived_model_inputs.NBV.value, 1);
     assert.equal(facts.derived_model_inputs.NBV.source_kind, "held_default");
+    assert.equal(facts.zener_points[0].voltage_minimum.value, 4.845);
+    assert.equal(facts.zener_points[0].voltage_minimum.source_kind, "minimum");
+    assert.equal(facts.zener_points[0].voltage_maximum.value, 5.3549999999999995);
+    assert.equal(facts.zener_points[0].voltage_maximum.source_kind, "maximum");
+    assert.deepEqual(component.symbol_pins.map((pin) => pin.role), ["anode", "cathode"]);
+    assert.equal(component.domain_coverage.ac, "none");
+    assert.equal(component.domain_coverage.transient, "none");
+    assert.match(component.known_omissions.join("\n"), /knee shape, dynamic impedance, thermal behavior, noise, and AC behavior are unsupported/);
+    assert.ok(fitted.held_defaults.some((item) => item.parameter === "NBV"));
+    const zenerCheck = expectations.tests.flatMap((entry) => entry.hard_bounds_checks).find((check) => check.name.startsWith("zener_voltage_at_"));
+    assert.deepEqual([zenerCheck.minimum, zenerCheck.maximum], [4.845, 5.3549999999999995]);
+    assert.ok(fs.existsSync(path.join(result[0].package_path, "tests", "zener_01.cir")));
   } finally {
     fs.rmSync(root, { recursive: true, force: true });
   }
@@ -114,6 +157,157 @@ test("F1 diode calibration honors SI units and a cited maximum at 25 C", () => {
     const result = runBulkManifest(manifestPath, path.join(root, "staging"), { ngspiceRunner: () => ({ pass: true }) });
     assert.equal(result[0].status, "staged", JSON.stringify(result[0]));
     assert.equal(result[0].fidelity, "F1");
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("CJO and maximum TT preserve cited scalar conditions through native ngspice benches", () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "factory-diode-scalars-test-"));
+  try {
+    const pdf = path.join(root, "datasheet.pdf");
+    fs.writeFileSync(pdf, "%PDF-1.7\nfixture\n");
+    const payload = extraction();
+    payload.usable_curves = false;
+    payload.curves = [];
+    payload.omission_reason = "No usable forward curve; cited scalar table points retained.";
+    payload.specs.forward_voltage_points = [
+      { current: quantity(10, "uA"), voltage: quantity(0.4, "V") },
+      { current: quantity(100, "uA"), voltage: quantity(0.49, "V") },
+      { current: quantity(1, "mA"), voltage: quantity(0.59, "V") },
+      { current: quantity(10, "mA"), voltage: quantity(0.7, "V") },
+      { current: quantity(100, "mA"), voltage: quantity(0.86, "V") },
+    ];
+    payload.specs.capacitance = { ...quantity(4, "pF"), conditions: "Zero-bias junction capacitance, VR = 0 V, f = 1 MHz, TA = 25 C", page_reference: "p. 3 capacitance table", source_kind: "maximum" };
+    payload.specs.reverse_recovery = { ...quantity(4, "ns"), conditions: "Reverse recovery trr at IF = 10 mA, VR = 6 V, IRR = 1 mA, RL = 100 ohm, TA = 25 C", page_reference: "p. 3 switching table", source_kind: "maximum" };
+    const extractionPath = path.join(root, "extraction.json");
+    fs.writeFileSync(extractionPath, JSON.stringify(payload));
+    const manifestPath = path.join(root, "batch.json");
+    fs.writeFileSync(manifestPath, JSON.stringify({ schema_version: "1.0.0", kind: "opencircuit-conveyor-batch", parts: [{ ...diodePart(pdf), extraction_path: extractionPath, force_f1: true }] }));
+    const result = runBulkManifest(manifestPath, path.join(root, "staging"), { libraryRoot: path.join(root, "empty-library") });
+    assert.equal(result[0].status, "staged", JSON.stringify(result[0]));
+    const model = fs.readFileSync(path.join(result[0].package_path, "model.cir"), "utf8");
+    const facts = JSON.parse(fs.readFileSync(path.join(result[0].package_path, "facts.json"), "utf8"));
+    const fitted = JSON.parse(fs.readFileSync(path.join(result[0].package_path, "fitted.json"), "utf8"));
+    const component = JSON.parse(fs.readFileSync(path.join(result[0].package_path, "component.json"), "utf8"));
+    assert.match(model, / CJO=4\.0000000000e-12 TT=4\.0000000000e-9/);
+    assert.equal(facts.derived_model_inputs.CJO.value, 4e-12);
+    assert.equal(facts.derived_model_inputs.CJO.source_kind, "maximum");
+    assert.equal(facts.derived_model_inputs.CJO.conditions, "Zero-bias junction capacitance, VR = 0 V, f = 1 MHz, TA = 25 C");
+    assert.equal(facts.derived_model_inputs.TT.value, 4e-9);
+    assert.equal(facts.derived_model_inputs.TT.source_kind, "maximum");
+    assert.equal(fitted.held_defaults.some((item) => ["CJO", "TT"].includes(item.parameter)), false);
+    assert.match(fitted.parameter_metadata.CJO.status, /zero-bias capacitance/);
+    assert.match(fitted.parameter_metadata.TT.status, /stated fixture/);
+    assert.equal(component.domain_coverage.ac, "none");
+    assert.equal(component.domain_coverage.transient, "none");
+    assert.deepEqual(component.supported_analyses, ["operating_point", "dc_sweep"]);
+    assert.match(component.known_omissions.join("\n"), /CJO represents only the cited zero-bias capacitance scalar/);
+    assert.match(component.known_omissions.join("\n"), /TT represents only the cited reverse-recovery time scalar/);
+    assert.ok(fs.existsSync(path.join(result[0].package_path, "tests", "zero_bias_capacitance.cir")));
+    assert.ok(fs.existsSync(path.join(result[0].package_path, "tests", "reverse_recovery.cir")));
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("nonzero-bias capacitance and incomplete recovery evidence stay omitted and disclosed", () => {
+  const payload = extraction();
+  payload.usable_curves = false;
+  payload.curves = [];
+  payload.specs.capacitance = { ...quantity(6, "pF"), conditions: "Junction capacitance at VR = 5 V, f = 1 MHz", page_reference: "p. 4 curve" };
+  payload.specs.reverse_recovery = { ...quantity(20, "ns"), conditions: "Switching time at TA = 25 C", page_reference: "p. 4 table", source_kind: "maximum" };
+  const fit = fitBulkPart(diodePart("unused.pdf"), payload, { forceF1: true });
+  assert.equal(fit.parameters.CJO, undefined);
+  assert.equal(fit.parameters.TT, undefined);
+  assert.doesNotMatch(fit.model.text, /\s(?:CJO|TT)=/);
+  assert.match(fit.parameter_metadata.CJO.status, /not stated at zero bias/);
+  assert.match(fit.parameter_metadata.TT.status, /lacks a usable forward\/reverse fixture and recovery criterion/);
+  assert.ok(fit.held_defaults.some((item) => item.parameter === "CJO" && item.value === 0));
+  assert.ok(fit.held_defaults.some((item) => item.parameter === "TT" && item.value === 0));
+
+  const absent = extraction();
+  absent.usable_curves = false;
+  absent.curves = [];
+  const absentFit = fitBulkPart(diodePart("unused.pdf"), absent, { forceF1: true });
+  assert.match(absentFit.parameter_metadata.CJO.status, /no positive cited junction-capacitance quantity/);
+  assert.match(absentFit.parameter_metadata.TT.status, /no positive cited reverse-recovery quantity/);
+});
+
+test("typical TT is preserved as scalar model evidence without inventing a maximum hard bound", () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "factory-diode-tt-typical-test-"));
+  try {
+    const pdf = path.join(root, "datasheet.pdf");
+    fs.writeFileSync(pdf, "%PDF-1.7\nfixture\n");
+    const payload = extraction();
+    payload.usable_curves = false;
+    payload.curves = [];
+    payload.specs.reverse_recovery = { ...quantity(12, "ns"), conditions: "Typical reverse recovery trr at IF = 10 mA, IR = 10 mA, recovery to 25% of IRR", page_reference: "p. 5 switching graph", source_kind: "typical" };
+    const extractionPath = path.join(root, "extraction.json");
+    fs.writeFileSync(extractionPath, JSON.stringify(payload));
+    const manifestPath = path.join(root, "batch.json");
+    fs.writeFileSync(manifestPath, JSON.stringify({ schema_version: "1.0.0", kind: "opencircuit-conveyor-batch", parts: [{ ...diodePart(pdf), extraction_path: extractionPath, force_f1: true }] }));
+    const result = runBulkManifest(manifestPath, path.join(root, "staging"), { libraryRoot: path.join(root, "empty-library") });
+    assert.equal(result[0].status, "staged", JSON.stringify(result[0]));
+    const facts = JSON.parse(fs.readFileSync(path.join(result[0].package_path, "facts.json"), "utf8"));
+    assert.ok(Math.abs(facts.scalar_model_inputs.TT.value - 12e-9) < 1e-22);
+    assert.equal(facts.scalar_model_inputs.TT.source_kind, "typical");
+    assert.equal(facts.derived_model_inputs.TT, undefined);
+    assert.equal(fs.existsSync(path.join(result[0].package_path, "tests", "reverse_recovery.cir")), false);
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("diode variant and package contracts park semantic mismatches and incompatible topologies", () => {
+  const zenerAsSignal = extraction();
+  assert.throws(
+    () => fitBulkPart(zenerPart("unused.pdf"), zenerAsSignal, { forceF1: true, ngspiceRunner: () => ({ pass: true }) }),
+    /variant mismatch: catalog identifies zener, extraction identifies signal/,
+  );
+
+  const schottky = extraction();
+  schottky.specs.variant = "schottky";
+  const schottkyPart = { ...diodePart("unused.pdf"), subcategory: "Schottky Barrier Diodes", description: "single Schottky diode" };
+  const schottkyFit = fitBulkPart(schottkyPart, schottky, { forceF1: true, ngspiceRunner: () => ({ pass: true }) });
+  assert.equal(schottkyFit.parameters.N, 1.2, "catalog text must not invent a Schottky-specific ideality factor");
+
+  const rectifier = extraction();
+  rectifier.specs.variant = "rectifier";
+  const rectifierFit = fitBulkPart({ ...diodePart("unused.pdf"), subcategory: "Rectifier Diodes", description: "single rectifier diode" }, rectifier, { forceF1: true, ngspiceRunner: () => ({ pass: true }) });
+  assert.equal(rectifierFit.fidelity, "F1");
+
+  assert.throws(
+    () => fitBulkPart({ ...diodePart("unused.pdf"), package: "SOT-23", description: "dual common-cathode switching diode" }, extraction(), { forceF1: true, ngspiceRunner: () => ({ pass: true }) }),
+    /unsupported diode topology: multi-diode|common-terminal multi-diode/,
+  );
+  assert.throws(
+    () => fitBulkPart({ ...diodePart("unused.pdf"), package: "SOT-23", description: "switching diode" }, extraction(), { forceF1: true, ngspiceRunner: () => ({ pass: true }) }),
+    /unsupported diode package contract: catalog identifies 3 terminals/,
+  );
+  for (const description of ["bridge rectifier", "TVS transient voltage suppressor", "varactor diode", "photodiode", "PIN diode"]) {
+    assert.throws(
+      () => fitBulkPart({ ...diodePart("unused.pdf"), description }, extraction(), { forceF1: true, ngspiceRunner: () => ({ pass: true }) }),
+      /unsupported diode topology/,
+      description,
+    );
+  }
+});
+
+test("bulk manifest parks an incompatible diode package before staging", () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "factory-diode-park-test-"));
+  try {
+    const pdf = path.join(root, "datasheet.pdf");
+    fs.writeFileSync(pdf, "%PDF-1.7\nfixture\n");
+    const extractionPath = path.join(root, "extraction.json");
+    fs.writeFileSync(extractionPath, JSON.stringify(extraction()));
+    const manifestPath = path.join(root, "batch.json");
+    fs.writeFileSync(manifestPath, JSON.stringify({ schema_version: "1.0.0", kind: "opencircuit-conveyor-batch", parts: [{ ...diodePart(pdf), package: "SOT-23", description: "dual common-cathode switching diode", extraction_path: extractionPath, force_f1: true }] }));
+    const result = runBulkManifest(manifestPath, path.join(root, "staging"), { libraryRoot: path.join(root, "empty-library") });
+    assert.equal(result[0].status, "failed");
+    assert.equal(result[0].stage, "fitted");
+    assert.match(result[0].reason, /unsupported diode topology/);
+    assert.equal(fs.existsSync(path.join(root, "staging", "packages")), false);
   } finally {
     fs.rmSync(root, { recursive: true, force: true });
   }

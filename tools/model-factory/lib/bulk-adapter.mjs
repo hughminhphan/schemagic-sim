@@ -15,7 +15,6 @@ const safe = (value) => String(value).trim().replace(/[^A-Za-z0-9._-]+/g, "-").r
 const slugManufacturer = (value) => safe(String(value).toLowerCase().replace(/\b(technologies|technology|semiconductor|semiconductors|incorporated|inc|corp|corporation|intertechnology)\b/g, "").trim());
 const number = (value, fallback) => Number.isFinite(Number(value)) ? Number(value) : fallback;
 const fmt = (value) => Number(value).toExponential(10).replace("e+", "e");
-const NGSPICE_VT_25C = 8.617333262e-5 * 298.15;
 
 function sha256(file) {
   return crypto.createHash("sha256").update(fs.readFileSync(file)).digest("hex");
@@ -42,35 +41,182 @@ function polarityFor(part, extraction) {
   return /p-channel|pmos|pnp/i.test(`${part.subcategory} ${part.description} ${part.attributes?.Type ?? ""}`) ? "p" : "n";
 }
 
-function zenerInputs(extraction) {
-  if (extraction?.specs?.variant !== "zener") return null;
-  const voltage = normalizeEvidence(extraction.specs.breakdown_voltage);
-  const current = normalizeEvidence(extraction.specs.breakdown_current);
-  const BV = Number(voltage?.value);
-  const IBV = Number(current?.value);
-  return voltage?.unit === "V" && current?.unit === "A"
-    && Number.isFinite(BV) && BV > 0 && Number.isFinite(IBV) && IBV > 0
-    ? { BV, IBV, NBV: 1 }
+function validEvidence(value, unit) {
+  const normalized = normalizeEvidence(value);
+  return normalized?.unit === unit
+    && Number.isFinite(Number(normalized.value))
+    && Number(normalized.value) > 0
+    ? normalized
     : null;
 }
 
-function diodeFit(part, extraction, forceF1 = false) {
-  const scalarPoints = extraction?.specs?.forward_voltage_points ?? [];
-  const scalarPoint = scalarPoints.find((point) => !["minimum", "maximum"].includes(point?.voltage?.source_kind)
-    && Number(point?.voltage?.value) > 0 && Number(point?.current?.value) > 0)
-    ?? scalarPoints.find((point) => Number(point?.voltage?.value) > 0 && Number(point?.current?.value) > 0);
-  const voltage = scalarPoint ? normalizeEvidence(scalarPoint.voltage) : null;
-  const forwardCurrent = scalarPoint ? normalizeEvidence(scalarPoint.current) : null;
-  const vf = voltage?.unit === "V" ? Number(voltage.value) : hintNumber(part, "diode.forward_voltage", 0.7);
-  const current = forwardCurrent?.unit === "A" ? Number(forwardCurrent.value) : 0.01;
-  const N = /schottky/i.test(`${part.subcategory} ${part.description}`) ? 1.1 : 1.8;
-  const RS = 1e-4;
-  const maximum = scalarPoint?.voltage?.source_kind === "maximum";
-  const calibrationCurrent = maximum ? current * 0.95 : current;
-  const calibrationVoltage = maximum ? vf * 0.97 : vf;
-  const junctionVoltage = Math.max(NGSPICE_VT_25C, calibrationVoltage - calibrationCurrent * RS);
-  const IS = calibrationCurrent / Math.expm1(junctionVoltage / (N * NGSPICE_VT_25C));
-  return { fidelity: "F1", parameters: { IS, N, RS }, worst: null, points: [] };
+function diodeCatalogText(part) {
+  return [part.category, part.subcategory, part.description, part.package, ...Object.entries(part.attributes ?? {}).flat()]
+    .filter((value) => value != null)
+    .join(" ");
+}
+
+function catalogDiodeVariant(part) {
+  const text = diodeCatalogText(part);
+  if (/\bzener\b|voltage[ -]regulator diode/i.test(text)) return "zener";
+  if (/\bschottky\b|\bSBD\b/i.test(text)) return "schottky";
+  if (/\brectifier\b|rectifying diode|fast recovery diode|ultrafast diode/i.test(text)) return "rectifier";
+  if (/switching diode|small[ -]signal diode|signal diode|high[ -]speed diode/i.test(text)) return "signal";
+  return null;
+}
+
+function explicitCatalogPinCount(part) {
+  for (const [key, rawValue] of Object.entries(part.attributes ?? {})) {
+    if (!/(?:number of )?(?:pins|terminals|leads)|pin count|terminal count|lead count/i.test(key)) continue;
+    const match = String(rawValue).trim().match(/^(\d+)$/);
+    if (match) return Number(match[1]);
+  }
+  const packageName = String(part.package ?? "");
+  if (/\bSOT-?(?:23|323)\b|\bSC-?70\b/i.test(packageName)) return 3;
+  if (/\bSOT-?(?:363|563|666)\b/i.test(packageName)) return 6;
+  if (/\b(?:TO-220|TO-252|TO-263)-?3\b/i.test(packageName)) return 3;
+  return null;
+}
+
+function diodeVariantContract(part, extraction) {
+  const variant = extraction?.specs?.variant;
+  if (!["zener", "schottky", "rectifier", "signal"].includes(variant)) {
+    throw new Error(`unsupported diode variant: extraction must identify zener, schottky, rectifier, or signal for ${part.mpn}`);
+  }
+  const text = diodeCatalogText(part);
+  const unsupportedTopology = [
+    [/\bbridge(?: rectifier)?\b/i, "bridge"],
+    [/\b(?:dual|double|triple|quad)\b|\b(?:two|2)\s+diodes?\b|\bdiode array\b|\barray of diodes\b/i, "multi-diode"],
+    [/common[ -](?:anode|cathode)/i, "common-terminal multi-diode"],
+    [/\bseries[ -](?:connected|pair|dual)\b/i, "series multi-diode"],
+    [/\bTVS\b|transient voltage suppress/i, "TVS"],
+    [/\bvaractor\b|variable capacitance diode/i, "varactor"],
+    [/\bphotodiode\b|photo diode/i, "photodiode"],
+    [/\bPIN diode\b/i, "PIN diode"],
+  ].find(([pattern]) => pattern.test(text));
+  if (unsupportedTopology) {
+    throw new Error(`unsupported diode topology: ${unsupportedTopology[1]} cannot use the single plain-diode archetype`);
+  }
+  const pinCount = explicitCatalogPinCount(part);
+  if (pinCount != null && pinCount !== 2) {
+    throw new Error(`unsupported diode package contract: catalog identifies ${pinCount} terminals but the plain-diode archetype has exactly two mapped terminals`);
+  }
+  const catalogVariant = catalogDiodeVariant(part);
+  if (catalogVariant && catalogVariant !== variant) {
+    throw new Error(`diode variant mismatch: catalog identifies ${catalogVariant}, extraction identifies ${variant}`);
+  }
+  return { variant, catalogVariant };
+}
+
+function zeroBiasCapacitanceEvidence(extraction) {
+  const evidence = validEvidence(extraction?.specs?.capacitance, "F");
+  if (!evidence) return { evidence: null, reason: "no positive cited junction-capacitance quantity in farads" };
+  const conditions = String(evidence.conditions ?? "");
+  const explicitZeroBias = /\bzero[ -](?:bias|reverse voltage)\b|\bno (?:dc )?bias\b/i.test(conditions)
+    || /\b(?:V\s*_?\s*R|VBIAS|reverse[ -]bias(?: voltage)?|bias voltage)\s*=\s*[+-]?0(?:\.0+)?\s*V\b/i.test(conditions);
+  if (!explicitZeroBias) {
+    return { evidence: null, reason: `cited capacitance is not stated at zero bias: ${conditions || "conditions absent"}` };
+  }
+  return { evidence, reason: null };
+}
+
+function reverseRecoveryEvidence(extraction) {
+  const evidence = validEvidence(extraction?.specs?.reverse_recovery, "s");
+  if (!evidence) return { evidence: null, reason: "no positive cited reverse-recovery quantity in seconds" };
+  const conditions = String(evidence.conditions ?? "");
+  const hasForwardFixture = /\bI\s*_?\s*F\b|forward current/i.test(conditions);
+  const hasReverseFixture = /\bI\s*_?\s*R\b|\bV\s*_?\s*R\b|reverse (?:current|voltage)|dI\s*\/\s*dt/i.test(conditions);
+  const hasCriterion = /\bI\s*_?\s*RR\b|recovery (?:criterion|threshold|to)|\b(?:10|25|50)\s*%|\bI\s*_?\s*R\s*=\s*(?:0?\.\d+|\d+\s*%)\s*(?:x|×)\s*I\s*_?\s*R\b/i.test(conditions);
+  if (!hasForwardFixture || !hasReverseFixture || !hasCriterion) {
+    return { evidence: null, reason: `cited reverse-recovery time lacks a usable forward/reverse fixture and recovery criterion: ${conditions || "conditions absent"}` };
+  }
+  return { evidence, reason: null };
+}
+
+function zenerToleranceBounds(voltage) {
+  const conditions = String(voltage?.conditions ?? "");
+  const match = conditions.match(/(?:±|\+\s*\/\s*-|\+\s*or\s*-|tolerance\s*(?:of|=|:)?\s*)(\d+(?:\.\d+)?)\s*%|(\d+(?:\.\d+)?)\s*%\s*tolerance/i);
+  const percent = Number(match?.[1] ?? match?.[2]);
+  if (!Number.isFinite(percent) || percent <= 0 || percent >= 100) return null;
+  const nominal = Number(voltage.value);
+  return {
+    minimum: { ...voltage, value: nominal * (1 - percent / 100), source_kind: "minimum", conditions: `Inclusive lower bound derived from cited ${percent}% Zener-voltage tolerance; ${conditions}` },
+    maximum: { ...voltage, value: nominal * (1 + percent / 100), source_kind: "maximum", conditions: `Inclusive upper bound derived from cited ${percent}% Zener-voltage tolerance; ${conditions}` },
+    percent,
+  };
+}
+
+function zenerInputs(extraction) {
+  if (extraction?.specs?.variant !== "zener") return null;
+  const citedKneeTrace = (extraction.curves ?? []).some((curve) => {
+    const text = `${curve.name ?? ""} ${curve.test_conditions ?? ""}`;
+    const axes = `${curve.x_axis?.quantity ?? ""} ${curve.y_axis?.quantity ?? ""}`;
+    return /zener|breakdown|reverse/i.test(text) && /voltage/i.test(axes) && /current/i.test(axes);
+  });
+  if (citedKneeTrace) {
+    throw new Error("unsupported Zener F1 evidence: a cited reverse-knee trace requires a fitted knee shape and may not be replaced by held NBV");
+  }
+  const voltage = validEvidence(extraction.specs.breakdown_voltage, "V");
+  const current = validEvidence(extraction.specs.breakdown_current, "A");
+  if (!voltage || !/\bV\s*_?\s*Z\b|zener voltage/i.test(String(voltage?.conditions ?? ""))) {
+    throw new Error("unsupported Zener evidence: BV requires a cited VZ quantity, never a maximum reverse-voltage rating");
+  }
+  if (!/\bI\s*_?\s*ZT\b|zener test current|test current/i.test(String(voltage.conditions ?? ""))
+      || !current || !/\bI\s*_?\s*ZT\b|zener test current|test current/i.test(String(current?.conditions ?? ""))) {
+    throw new Error("unsupported Zener evidence: IBV requires the cited IZT test current associated with VZ");
+  }
+  if (["minimum", "maximum"].includes(voltage.source_kind)) {
+    throw new Error("unsupported Zener evidence: one-sided VZ evidence cannot identify the nominal BV parameter");
+  }
+  const tolerance = zenerToleranceBounds(voltage);
+  const NBV = quantity(1, "1", "First-order avalanche-knee default; no cited multi-point reverse-knee trace", "model-factory Zener F1 policy", "held_default");
+  return {
+    parameters: { BV: Number(voltage.value), IBV: Number(current.value), NBV: 1 },
+    evidence: { BV: voltage, IBV: current, NBV },
+    tolerance,
+  };
+}
+
+function canonicalDiodeF1Facts(part, extraction) {
+  const scalarPoints = normalizeEvidence(extraction?.specs?.forward_voltage_points ?? [])
+    .filter((point) => point?.voltage?.unit === "V" && point?.current?.unit === "A"
+      && Number(point.voltage.value) > 0 && Number(point.current.value) > 0);
+  const nominalPoints = scalarPoints.filter((point) => !["minimum", "maximum"].includes(point.voltage.source_kind));
+  const scalarPoint = nominalPoints[0] ?? scalarPoints[0];
+  const citedVoltage = scalarPoint?.voltage ?? null;
+  const citedCurrent = scalarPoint?.current ?? null;
+  const maximum = citedVoltage?.source_kind === "maximum";
+  const voltage = citedVoltage
+    ? { ...citedVoltage, value: citedVoltage.value * (maximum ? 0.97 : 1), conditions: maximum ? `Internal conservative F1 calibration at 97% of the cited maximum; ${citedVoltage.conditions}` : citedVoltage.conditions }
+    : quantity(hintNumber(part, "diode.forward_voltage", 0.7), "V", "Internal F1 seed only; not a datasheet claim", "catalog seed hint", "held_default");
+  const current = citedCurrent
+    ? { ...citedCurrent, value: citedCurrent.value * (maximum ? 0.95 : 1), conditions: maximum ? `Internal conservative F1 calibration at 95% of the cited current; ${citedCurrent.conditions}` : citedCurrent.conditions }
+    : quantity(0.01, "A", "Internal F1 seed only; not a datasheet claim", "model-factory diode F1 policy", "held_default");
+  const fitPoints = nominalPoints.length >= 3 ? nominalPoints : [{ current, voltage }];
+  return {
+    fit_points: fitPoints,
+    fit_conditions: { temperature: quantity(25, "degC", "Nominal diode F1 archetype temperature", "model-factory diode F1 policy", "held_default") },
+    derived_model_inputs: {
+      N: quantity(1.2, "1", "Canonical single-bound diode ideality default", "tools/model-factory/python/fit_diode.py", "held_default"),
+      RS: quantity(0, "ohm", "Canonical single-bound diode series-resistance default", "tools/model-factory/python/fit_diode.py", "held_default"),
+    },
+  };
+}
+
+function diodeFit(part, extraction, diodeF1Runner) {
+  const fitted = diodeF1Runner(canonicalDiodeF1Facts(part, extraction));
+  return {
+    fidelity: "F1",
+    parameters: fitted.parameters,
+    worst: fitted.worst_relative_error?.value ?? null,
+    worst_quantity: fitted.worst_relative_error?.quantity ?? null,
+    rms: fitted.rms_relative_error ?? null,
+    residuals: fitted.residuals ?? [],
+    fitter: fitted.fitter,
+    parameter_metadata: fitted.parameter_metadata ?? {},
+    held_defaults: fitted.held_defaults ?? [],
+    points: [],
+  };
 }
 
 function bjtFit(part, extraction, forceF1 = false) {
@@ -120,10 +266,12 @@ function modelFor(part, fit) {
   const name = `OC_${safe(part.manufacturer).toUpperCase()}_${safe(part.mpn).toUpperCase()}`;
   const p = fit.parameters;
   if (part.conveyor_family === "diode") {
+    const capacitance = Number(p.CJO) > 0 ? ` CJO=${fmt(p.CJO)}` : "";
+    const recovery = Number(p.TT) > 0 ? ` TT=${fmt(p.TT)}` : "";
     const breakdown = Number(p.BV) > 0 && Number(p.IBV) > 0
       ? ` BV=${fmt(p.BV)} IBV=${fmt(p.IBV)} NBV=${fmt(p.NBV ?? 1)}`
       : "";
-    return { name, text: `.model ${name} D(IS=${fmt(p.IS)} N=${fmt(p.N)} RS=${fmt(p.RS)}${breakdown})\n` };
+    return { name, text: `.model ${name} D(IS=${fmt(p.IS)} N=${fmt(p.N)} RS=${fmt(p.RS)}${capacitance}${recovery}${breakdown})\n` };
   }
   if (part.conveyor_family === "bjt") {
     const polarity = fit.polarity === "p" ? "PNP" : "NPN";
@@ -191,7 +339,35 @@ export function defaultFitRunner(payload) {
   }
 }
 
-export function fitBulkPart(part, extraction, { ngspiceRunner = defaultNgspiceRunner, fitRunner = defaultFitRunner, forceF1 = false } = {}) {
+export function defaultDiodeF1Runner(facts) {
+  fs.mkdirSync(conveyorFitRoot, { recursive: true });
+  const directory = fs.mkdtempSync(path.join(conveyorFitRoot, "diode-f1-"));
+  try {
+    const input = path.join(directory, "facts.json");
+    const output = path.join(directory, "fitted.json");
+    fs.writeFileSync(input, json(facts));
+    const pythonDir = path.resolve(here, "../python");
+    const result = spawnSync(pythonInterpreter(), [path.join(pythonDir, "fit_diode.py"), input, output], {
+      cwd: pythonDir, encoding: "utf8", timeout: 900_000,
+    });
+    if (result.error) throw result.error;
+    if (result.status !== 0 || !fs.existsSync(output)) {
+      throw new Error(`canonical diode F1 fitter failed: ${result.stdout}\n${result.stderr}`.trim());
+    }
+    return JSON.parse(fs.readFileSync(output, "utf8"));
+  } finally {
+    fs.rmSync(directory, { recursive: true, force: true });
+  }
+}
+
+export function fitBulkPart(part, extraction, { ngspiceRunner = defaultNgspiceRunner, fitRunner = defaultFitRunner, diodeF1Runner = defaultDiodeF1Runner, forceF1 = false } = {}) {
+  const diodeContract = part.conveyor_family === "diode" ? diodeVariantContract(part, extraction) : null;
+  const preparedDiodeEvidence = part.conveyor_family === "diode" ? {
+    contract: diodeContract,
+    capacitance: zeroBiasCapacitanceEvidence(extraction),
+    recovery: reverseRecoveryEvidence(extraction),
+    breakdown: zenerInputs(extraction),
+  } : null;
   const polarity = polarityFor(part, extraction);
   let fit;
   if (!forceF1 && extraction?.usable_curves) {
@@ -210,14 +386,40 @@ export function fitBulkPart(part, extraction, { ngspiceRunner = defaultNgspiceRu
       curves_rejected: attempt.curves_rejected ?? [], optimizer: attempt.optimizer ?? null,
       fitter: attempt.fitter ?? null, points: [],
     };
-  } else if (part.conveyor_family === "diode") fit = diodeFit(part, extraction, forceF1);
+  } else if (part.conveyor_family === "diode") fit = diodeFit(part, extraction, diodeF1Runner);
   else if (part.conveyor_family === "bjt") fit = bjtFit(part, extraction, forceF1);
   else if (part.conveyor_family === "mosfet") fit = mosfetFit(part, extraction, forceF1);
   else throw new Error(`Unsupported conveyor family: ${part.conveyor_family}`);
   fit.polarity = polarity;
   if (part.conveyor_family === "diode") {
-    const breakdown = zenerInputs(extraction);
-    if (breakdown) fit.parameters = { ...fit.parameters, ...breakdown };
+    const { capacitance, recovery, breakdown } = preparedDiodeEvidence;
+    fit.parameters = {
+      ...fit.parameters,
+      ...(capacitance.evidence ? { CJO: Number(capacitance.evidence.value) } : {}),
+      ...(recovery.evidence ? { TT: Number(recovery.evidence.value) } : {}),
+      ...(breakdown?.parameters ?? {}),
+    };
+    fit.parameter_metadata = {
+      ...(fit.parameter_metadata ?? {}),
+      CJO: capacitance.evidence
+        ? { status: `transcribed only from cited ${capacitance.evidence.source_kind} zero-bias capacitance; no broader AC behavior is claimed` }
+        : { status: `omitted and held at the simulator default of 0 F: ${capacitance.reason}` },
+      TT: recovery.evidence
+        ? { status: `transcribed only from cited ${recovery.evidence.source_kind} reverse-recovery time and its stated fixture; no broader transient behavior is claimed` }
+        : { status: `omitted and held at the simulator default of 0 s: ${recovery.reason}` },
+      ...(breakdown ? {
+        BV: { status: "transcribed from cited nominal Zener VZ at IZT semantics" },
+        IBV: { status: "transcribed from cited Zener IZT" },
+        NBV: { status: "held first-order avalanche-knee default; no cited knee trace" },
+      } : {}),
+    };
+    fit.held_defaults = [
+      ...(fit.held_defaults ?? fit.optimizer?.held_defaults ?? []),
+      ...(!capacitance.evidence ? [{ parameter: "CJO", value: 0, unit: "F", reason: capacitance.reason }] : []),
+      ...(!recovery.evidence ? [{ parameter: "TT", value: 0, unit: "s", reason: recovery.reason }] : []),
+      ...(breakdown ? [{ parameter: "NBV", value: 1, unit: "1", reason: "held first-order avalanche-knee default; no cited multi-point knee trace" }] : []),
+    ];
+    fit.diode_evidence = preparedDiodeEvidence;
   }
   const model = modelFor(part, fit);
   ngspiceRunner(model.text, { part, fit });
@@ -463,12 +665,35 @@ function bulkFactoryFacts(part, extraction, fit, identity, source) {
       if (reverseVoltage != null) electricalLimits[`reverse_current_${reverseVoltage}v`] = specs.reverse_current;
     }
     const derivedModelInputs = {};
-    if (Number(fit.parameters?.BV) > 0 && Number(fit.parameters?.IBV) > 0) {
-      derivedModelInputs.BV = specs.breakdown_voltage;
-      derivedModelInputs.IBV = specs.breakdown_current;
-      derivedModelInputs.NBV = quantity(1, "1", "First-order avalanche-knee default; no multi-point reverse-knee trace was available", "model-factory Zener F1 policy", "held_default");
+    const scalarModelInputs = {};
+    const diodeEvidence = fit.diode_evidence ?? {};
+    if (diodeEvidence.capacitance?.evidence) {
+      derivedModelInputs.CJO = diodeEvidence.capacitance.evidence;
     }
-    return { ...common, fit_points: fitPoints, electrical_limits: electricalLimits, derived_model_inputs: derivedModelInputs };
+    if (diodeEvidence.recovery?.evidence?.source_kind === "maximum") {
+      derivedModelInputs.TT = diodeEvidence.recovery.evidence;
+    } else if (diodeEvidence.recovery?.evidence) {
+      scalarModelInputs.TT = diodeEvidence.recovery.evidence;
+    }
+    if (diodeEvidence.breakdown) {
+      derivedModelInputs.BV = diodeEvidence.breakdown.evidence.BV;
+      derivedModelInputs.IBV = diodeEvidence.breakdown.evidence.IBV;
+      derivedModelInputs.NBV = diodeEvidence.breakdown.evidence.NBV;
+    }
+    const zenerPoints = diodeEvidence.breakdown?.tolerance ? [{
+      current: diodeEvidence.breakdown.evidence.IBV,
+      voltage_minimum: diodeEvidence.breakdown.tolerance.minimum,
+      voltage_maximum: diodeEvidence.breakdown.tolerance.maximum,
+    }] : [];
+    return {
+      ...common,
+      fit_points: fitPoints,
+      electrical_limits: electricalLimits,
+      derived_model_inputs: derivedModelInputs,
+      scalar_model_inputs: scalarModelInputs,
+      zener_points: zenerPoints,
+      diode_variant: diodeEvidence.contract,
+    };
   }
   if (part.conveyor_family === "bjt") {
     const gainPoints = [];
@@ -557,6 +782,14 @@ function operatingRegion(part, facts) {
       const voltage = Number(name.match(/_([0-9.]+)v$/i)?.[1]);
       if (Number.isFinite(voltage)) bounds.push(numericBound("reverse_voltage", [0, voltage], "V", "Cited reverse-leakage test condition"));
     }
+    if (facts.zener_points?.length) {
+      bounds.push(numericBound(
+        "reverse_zener_voltage",
+        facts.zener_points.flatMap((point) => [point.voltage_minimum.value, point.voltage_maximum.value]),
+        "V",
+        "Inclusive cited Zener-voltage tolerance at IZT",
+      ));
+    }
   } else if (part.conveyor_family === "bjt") {
     bounds.push(numericBound("collector_current", [
       ...facts.gain_points.map((point) => point.collector_current.value),
@@ -644,6 +877,19 @@ export function stageBulkPart(part, rawExtraction, fit, stagingRoot, { demotionR
     ...(part.conveyor_family === "diode" && fit.fidelity === "F1" && extraction?.specs?.reverse_current
       ? ["Reverse-bias leakage is not covered by this F1 package because the approximation is supported only over cited forward-bias targets."]
       : []),
+    ...(part.conveyor_family === "diode" && fit.diode_evidence?.capacitance?.evidence
+      ? ["CJO represents only the cited zero-bias capacitance scalar and its stated conditions; frequency-dependent and bias-dependent AC fidelity is unsupported."]
+      : part.conveyor_family === "diode"
+        ? [`CJO is omitted and held at the simulator default of 0 F because ${fit.diode_evidence?.capacitance?.reason ?? "applicable zero-bias evidence is absent"}.`]
+        : []),
+    ...(part.conveyor_family === "diode" && fit.diode_evidence?.recovery?.evidence
+      ? ["TT represents only the cited reverse-recovery time scalar and its stated fixture; broader switching and transient fidelity is unsupported."]
+      : part.conveyor_family === "diode"
+        ? [`TT is omitted and held at the simulator default of 0 s because ${fit.diode_evidence?.recovery?.reason ?? "applicable reverse-recovery evidence is absent"}.`]
+        : []),
+    ...(part.conveyor_family === "diode" && fit.diode_evidence?.breakdown
+      ? ["NBV is held at 1 as a first-order avalanche-knee default; knee shape, dynamic impedance, thermal behavior, noise, and AC behavior are unsupported without a cited knee trace."]
+      : []),
     ...(part.conveyor_family === "mosfet" && fit.fidelity === "F1" && (extraction?.specs?.rdson_points ?? []).some(isNominalTemperatureEvidence) && (extraction?.specs?.threshold_min || extraction?.specs?.threshold_typ || extraction?.specs?.threshold_max)
       ? ["Gate-threshold behavior is not covered by this F1 package; the supported region is limited to cited nominal-temperature RDS(on) targets."]
       : []),
@@ -691,9 +937,10 @@ export function stageBulkPart(part, rawExtraction, fit, stagingRoot, { demotionR
     schema_version: "1.0.0",
     fidelity_tier: fit.fidelity,
     parameters: fit.parameters,
+    ...(part.conveyor_family === "diode" ? { parameter_metadata: fit.parameter_metadata ?? {} } : {}),
     fitter: fit.fitter ?? "catalog-parametric F1 fallback",
     optimizer: fit.optimizer ?? null,
-    held_defaults: fit.optimizer?.held_defaults ?? [],
+    held_defaults: part.conveyor_family === "diode" ? (fit.held_defaults ?? fit.optimizer?.held_defaults ?? []) : (fit.optimizer?.held_defaults ?? []),
     curves_used: fit.curves_used ?? [],
     curves_rejected: fit.curves_rejected ?? [],
     residuals: fit.residuals ?? [],
