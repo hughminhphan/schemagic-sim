@@ -113,6 +113,31 @@ class SchemaValidationTest(unittest.TestCase):
             with self.assertRaisesRegex(ConveyorError, "unknown keys"):
                 load_and_validate_extraction(path, HERE / "schemas/diode.schema.json", {"mpn": "D1", "manufacturer": "Fixture", "family": "diode"})
 
+    def test_accepts_independent_vbe_saturation_bound_without_vce_saturation(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            path = Path(temporary) / "result.json"
+            payload = bjt_payload()
+            payload["specs"]["saturation_points"] = [{
+                "collector_current": q(2.0, "A"),
+                "base_current": q(0.05, "A"),
+                "vce_sat": None,
+                "vbe_sat": {
+                    **q(1.0, "V"),
+                    "conditions": "IC=2 A, IB=50 mA, TA=25 C",
+                    "page_reference": "p. 3 table 1",
+                    "source_kind": "maximum",
+                },
+            }]
+            path.write_text(json.dumps(payload))
+            result = load_and_validate_extraction(
+                path,
+                HERE / "schemas/bjt.schema.json",
+                {"mpn": "Q1", "manufacturer": "Fixture", "family": "bjt"},
+            )
+            point = result["specs"]["saturation_points"][0]
+            self.assertIsNone(point["vce_sat"])
+            self.assertEqual(point["vbe_sat"]["source_kind"], "maximum")
+
     def test_normalizes_quantity_annotations_and_omits_short_curves_without_invention(self):
         payload = diode_payload()
         payload["curves"].append({

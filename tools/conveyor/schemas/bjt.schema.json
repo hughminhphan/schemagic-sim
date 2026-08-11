@@ -384,40 +384,47 @@
                 }
               },
               "vce_sat": {
-                "type": "object",
-                "additionalProperties": false,
-                "required": [
-                  "value",
-                  "unit",
-                  "conditions",
-                  "page_reference",
-                  "source_kind"
-                ],
-                "properties": {
-                  "value": {
-                    "type": "number"
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "value",
+                      "unit",
+                      "conditions",
+                      "page_reference",
+                      "source_kind"
+                    ],
+                    "properties": {
+                      "value": {
+                        "type": "number"
+                      },
+                      "unit": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "conditions": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "page_reference": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "source_kind": {
+                        "enum": [
+                          "minimum",
+                          "typical",
+                          "maximum",
+                          "digitized_typical_curve"
+                        ]
+                      }
+                    }
                   },
-                  "unit": {
-                    "type": "string",
-                    "minLength": 1
-                  },
-                  "conditions": {
-                    "type": "string",
-                    "minLength": 1
-                  },
-                  "page_reference": {
-                    "type": "string",
-                    "minLength": 1
-                  },
-                  "source_kind": {
-                    "enum": [
-                      "minimum",
-                      "typical",
-                      "maximum",
-                      "digitized_typical_curve"
-                    ]
+                  {
+                    "type": "null"
                   }
-                }
+                ]
               },
               "vbe_sat": {
                 "anyOf": [
