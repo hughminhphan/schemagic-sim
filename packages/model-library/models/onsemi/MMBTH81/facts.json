@@ -1,0 +1,158 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3",
+        "p. 4",
+        "p. 5",
+        "p. 6",
+        "p. 7",
+        "p. 8",
+        "p. 9",
+        "p. 10",
+        "p. 11",
+        "p. 12",
+        "p. 13"
+      ],
+      "revision": "Fairchild Semiconductor, 1997",
+      "title": "MPSH81 / MMBTH81 PNP RF Transistor"
+    },
+    "extraction_notes": [
+      "Curve plots were examined in the supplied PDF, but no numeric curve points were retained because the plotted traces did not provide a defensible three-point digitization from the text extraction; no points were invented.",
+      "Absolute ratings and electrical-characteristics values are cited only where a tabulated value was readable.",
+      "Values are recorded as SI magnitudes; PNP polarity is represented by specs.polarity.",
+      "Independent review corrected the source title, revision wording, gain-point current, minimum semantics, and associated SI conditions in the promoted copy only."
+    ],
+    "family": "bjt",
+    "manufacturer": "onsemi",
+    "mpn": "MMBTH81",
+    "omission_reason": "No defensible numeric curve points could be extracted from the supplied PDF plots without inventing or interpolating data.",
+    "schema_version": "1.0.0",
+    "specs": {
+      "cibo": null,
+      "cobo": {
+        "conditions": "VCB = -10 V, IE = 0, f = 1 MHz",
+        "page_reference": "p. 2 electrical characteristics",
+        "source_kind": "maximum",
+        "unit": "F",
+        "value": 8.5e-13
+      },
+      "ft": {
+        "conditions": "IC = -5 mA, VCE = -10 V, f = 100 MHz",
+        "page_reference": "p. 2 electrical characteristics",
+        "source_kind": "minimum",
+        "unit": "Hz",
+        "value": 600000000.0
+      },
+      "gain_points": [
+        {
+          "collector_current": {
+            "conditions": "IC = -0.005 A, VCE = -10 V, Ta = 25 degC",
+            "page_reference": "p. 2 electrical characteristics",
+            "source_kind": "minimum",
+            "unit": "A",
+            "value": 0.005
+          },
+          "hfe": {
+            "conditions": "IC = -0.005 A, VCE = -10 V, Ta = 25 degC",
+            "page_reference": "p. 2 electrical characteristics",
+            "source_kind": "minimum",
+            "unit": "1",
+            "value": 60
+          },
+          "vce": {
+            "conditions": "IC = -0.005 A, VCE = -10 V, Ta = 25 degC",
+            "page_reference": "p. 2 electrical characteristics",
+            "source_kind": "minimum",
+            "unit": "V",
+            "value": 10
+          }
+        }
+      ],
+      "polarity": "pnp",
+      "saturation_points": [],
+      "vceo": {
+        "conditions": "IC = -1 mA, IB = 0",
+        "page_reference": "p. 2 electrical characteristics",
+        "source_kind": "minimum",
+        "unit": "V",
+        "value": 20
+      }
+    },
+    "usable_curves": false
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "DC Current Gain",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "bjt.dc_current_gain",
+      "raw_value": "60",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "DC Current Gain (hFE@Ic,Vce)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "bjt.dc_current_gain",
+      "raw_value": "60@5.0mA,10V",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "MMBTH81",
+    "manufacturer": "onsemi",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8586188983088910336",
+    "revision": "Fairchild Semiconductor, 1997",
+    "sha256": "6401dce6c10b91448b8c88608868b6952c6eb5afca3f8bfa6f1c7b9fc8368d65",
+    "accessed_date": "2026-08-11",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4",
+      "p. 5",
+      "p. 6",
+      "p. 7",
+      "p. 8",
+      "p. 9",
+      "p. 10",
+      "p. 11",
+      "p. 12",
+      "p. 13"
+    ],
+    "placeholder": false
+  },
+  "gain_points": [
+    {
+      "collector_current": {
+        "conditions": "IC = -0.005 A, VCE = -10 V, Ta = 25 degC",
+        "page_reference": "p. 2 electrical characteristics",
+        "source_kind": "minimum",
+        "unit": "A",
+        "value": 0.005
+      },
+      "hfe": {
+        "conditions": "IC = -0.005 A, VCE = -10 V, Ta = 25 degC",
+        "page_reference": "p. 2 electrical characteristics",
+        "source_kind": "minimum",
+        "unit": "1",
+        "value": 60
+      },
+      "vce": {
+        "conditions": "IC = -0.005 A, VCE = -10 V, Ta = 25 degC",
+        "page_reference": "p. 2 electrical characteristics",
+        "source_kind": "minimum",
+        "unit": "V",
+        "value": 10
+      }
+    }
+  ],
+  "saturation_points": []
+}

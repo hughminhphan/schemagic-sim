@@ -1,0 +1,86 @@
+{
+  "schema_version": "1.0.0",
+  "validation_date": "2026-08-11",
+  "native_wasm_all_pass": true,
+  "expectations_all_pass": true,
+  "expectation_pass_count": 8,
+  "expectation_fail_count": 0,
+  "worst_native_wasm_relative_delta": 9.033821307087273e-12,
+  "worst_native_wasm_absolute_delta": 2.0096813102554734e-11,
+  "benches": [
+    {
+      "test_netlist": "dc_gain.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "hfe_at_0.0001_a",
+          "pass": true,
+          "value": 93.4011721100969,
+          "error": 1.5988278899031059,
+          "allowed": 19
+        },
+        {
+          "name": "hfe_at_0.001_a",
+          "pass": true,
+          "value": 92.92605670752963,
+          "error": 0.9260567075296251,
+          "allowed": 18.400000000000002
+        },
+        {
+          "name": "hfe_at_0.01_a",
+          "pass": true,
+          "value": 88.87959126938938,
+          "error": 0.8795912693893797,
+          "allowed": 17.6
+        },
+        {
+          "name": "hfe_at_0.05_a",
+          "pass": true,
+          "value": 74.77623747293104,
+          "error": 0.22376252706895627,
+          "allowed": 15
+        },
+        {
+          "name": "hfe_at_0.02_a",
+          "pass": true,
+          "value": 86.48978203447122,
+          "error": 8.510217965528781,
+          "allowed": 19
+        },
+        {
+          "name": "hfe_minimum_at_0.02_a",
+          "pass": true,
+          "value": 82.94424878235506,
+          "minimum": 60
+        },
+        {
+          "name": "hfe_maximum_at_0.02_a",
+          "pass": true,
+          "value": 88.3383642229485,
+          "maximum": 130
+        }
+      ]
+    },
+    {
+      "test_netlist": "output_curve.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": []
+    },
+    {
+      "test_netlist": "boundary_region.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "upper_current_boundary_voltage",
+          "pass": true,
+          "value": 3.3059331153634504,
+          "minimum": 0,
+          "maximum": 4
+        }
+      ]
+    }
+  ]
+}

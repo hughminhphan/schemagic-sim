@@ -1,0 +1,1708 @@
+{
+  "schema_version": "1.0.0",
+  "review": "batch-9-independent-review-and-scale-2k-freeze-adjudication",
+  "reviewer": "gpt-5.6-sol independent reviewer",
+  "review_date": "2026-08-11",
+  "starting_head": "321d13a2cc1c1a02c06242da97337c84d4d9e0fb",
+  "branch": "main",
+  "paths": {
+    "staging_root": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/staging/batch-9",
+    "shipping_library_root": "/Users/hughp/Documents/opencircuit/packages/model-library/models",
+    "review_log": "/Users/hughp/Documents/opencircuit/docs/batch-9-review-log.md",
+    "promotion_manifest": "/Users/hughp/Documents/opencircuit/docs/batch-9-promotion-manifest.json"
+  },
+  "counts": {
+    "baseline_reviewed_packages": 692,
+    "reviewed": {
+      "total": 30,
+      "by_electrical_family": {
+        "bjt_npn": 21,
+        "bjt_pnp": 9
+      },
+      "by_fidelity": {
+        "F2": 6,
+        "F1": 24
+      }
+    },
+    "promoted": {
+      "total": 11,
+      "by_electrical_family": {
+        "bjt_npn": 8,
+        "bjt_pnp": 3
+      },
+      "by_fidelity": {
+        "F2": 4,
+        "F1": 7
+      }
+    },
+    "rejected": {
+      "total": 19,
+      "by_electrical_family": {
+        "bjt_npn": 13,
+        "bjt_pnp": 6
+      },
+      "by_fidelity": {
+        "F1": 17,
+        "F2": 2
+      }
+    },
+    "final_reviewed_packages": 703,
+    "rejection_classes": {
+      "package-contract-unsupported": 4,
+      "unsupported-f2": 2,
+      "refit-required": 11,
+      "electrical-change-required": 2
+    }
+  },
+  "freeze_adjudication": {
+    "verdict": "pass",
+    "database_sha256": "08b59bec3b8a35b1da52b0e9a6000ba190c1e1197c92d350b529a6b75fbe51c9",
+    "database_size_bytes": 5656805376,
+    "sql_sha256": "c1bd13f4b5b2ef94b69977ceaa842682f2e488670ac6f9f94107640e6165886b",
+    "reproduced_manifest_sha256": "c003a37a26c5ce343ed884a38801d9a5acdbac17412d409dc2fd9c1b5ddf790e",
+    "byte_for_byte_reproducible": true,
+    "raw_candidates_before_caps": 8523,
+    "capped_rows": 2750,
+    "final_frozen_candidates": 936,
+    "final_by_family": {
+      "bjt": 161,
+      "diode": 349,
+      "mosfet": 426
+    },
+    "frozen_order_start": 370,
+    "frozen_order_end": 1305,
+    "sequential_exclusions": {
+      "scale_1k_lcsc": 990,
+      "reviewed_identity_or_alias": 634,
+      "quarantine": 16,
+      "normalized_mpn_deduplication": 174
+    },
+    "batch_9_orders": {
+      "start": 370,
+      "end": 529,
+      "count": 160,
+      "contiguous": true,
+      "unique_orders": 160,
+      "unique_lcsc_ids": 160,
+      "all_family": "bjt",
+      "sequence_matches_selection_staging_and_execution": true
+    },
+    "digital_transistor_rows": 0,
+    "bridge_rows": 0
+  },
+  "execution": {
+    "targets": 160,
+    "final_staged": 30,
+    "failed_or_skipped": 130,
+    "failure_categories": {
+      "complete-vector-collision": 71,
+      "datasheet-acquisition-failure": 1,
+      "factory-or-validation-failure": 38,
+      "inclusive-hard-bound-failure": 10,
+      "package-schema-or-evidence-failure": 4,
+      "source-evidence-failure": 6
+    },
+    "complete_vector_collisions": {
+      "count": 71,
+      "target_fraction": 0.44375,
+      "clusters": [
+        {
+          "represented_by": "lrc/LMBT3904DW1T1G",
+          "count": 11
+        },
+        {
+          "represented_by": "diodes-inc/MMBT3904-7-F",
+          "count": 8
+        },
+        {
+          "represented_by": "mcc-micro-commercial-components/MMSS8050-H-TP",
+          "count": 6
+        },
+        {
+          "represented_by": "hongjiacheng/MMBT4401",
+          "count": 5
+        },
+        {
+          "represented_by": "nexperia/PMBT2907A",
+          "count": 5
+        },
+        {
+          "represented_by": "lrc/LMBT3906LT1G",
+          "count": 4
+        },
+        {
+          "represented_by": "fuxinsemi/BC847BS",
+          "count": 4
+        },
+        {
+          "represented_by": "nexperia/BC846",
+          "count": 2
+        },
+        {
+          "represented_by": "hongjiacheng/S9013",
+          "count": 2
+        },
+        {
+          "represented_by": "nexperia/BC847BW",
+          "count": 2
+        },
+        {
+          "represented_by": "tdsemic/MMBT2907",
+          "count": 2
+        },
+        {
+          "represented_by": "nexperia/PBSS4330X-115",
+          "count": 2
+        },
+        {
+          "represented_by": "nexperia/PBSS5350X-115",
+          "count": 2
+        },
+        {
+          "represented_by": "mdd-microdiode/S8050",
+          "count": 1
+        },
+        {
+          "represented_by": "nexperia/BC817-40",
+          "count": 1
+        },
+        {
+          "represented_by": "onsemi/MJD44H11T4G",
+          "count": 1
+        },
+        {
+          "represented_by": "lrc/LBC847BLT1G",
+          "count": 1
+        },
+        {
+          "represented_by": "utc-unisonic-tech/MMBT1616AG-G-AE3-R",
+          "count": 1
+        },
+        {
+          "represented_by": "goodwork/S8550",
+          "count": 1
+        },
+        {
+          "represented_by": "nexperia/PMBS3904-215",
+          "count": 1
+        },
+        {
+          "represented_by": "cbi/MMBT5401T",
+          "count": 1
+        },
+        {
+          "represented_by": "hongjiacheng/MMST5551",
+          "count": 1
+        },
+        {
+          "represented_by": "onsemi/BC847BPDW1T1G",
+          "count": 1
+        },
+        {
+          "represented_by": "nexperia/PBSS4160T",
+          "count": 1
+        },
+        {
+          "represented_by": "jiangsu-changjing-electronics-co-ltd/2SD1898-RANGE-180-390",
+          "count": 1
+        },
+        {
+          "represented_by": "slkor-slkormicro-elec/BC857B",
+          "count": 1
+        },
+        {
+          "represented_by": "onsemi/MMBT5551LT1G",
+          "count": 1
+        },
+        {
+          "represented_by": "shikues/BCX51-16",
+          "count": 1
+        },
+        {
+          "represented_by": "onsemi/MMBTH81",
+          "count": 1
+        }
+      ],
+      "process_evidence": "Sparse BJT table extraction plus shared F1 defaults repeatedly collapsed unrelated catalog identities onto identical complete vectors. This is poor upstream evidence diversity, not a collision-rule defect. The unchanged guard prevented duplicated electrical behavior from being presented as catalog breadth."
+    },
+    "extraction": {
+      "initial_unique_target_calls": 159,
+      "bounded_discrepancy_retry_targets": 11,
+      "bounded_discrepancy_retry_lcsc_ids": [
+        "C144161",
+        "C2132",
+        "C2859128",
+        "C38780",
+        "C396014",
+        "C47297",
+        "C49581",
+        "C5204737",
+        "C6380449",
+        "C80071",
+        "C896648"
+      ],
+      "logical_extraction_calls": 170,
+      "completed_extraction_calls_repeated": 0,
+      "transport_retries": 0,
+      "total_luna_lane_invocations": 13,
+      "maximum_live_luna_lanes": 4,
+      "concurrency_ceiling": 4,
+      "explicit_model_overrides": 0,
+      "zero_work_isolated_lane_invocations": 2,
+      "interrupted_or_killed_lane_invocations": 2,
+      "missing_unique_calls_resumed_after_isolation_or_interruption": 79,
+      "invocations": [
+        {
+          "range": "370-409",
+          "kind": "initial-isolated",
+          "result": "zero shared-state calls; path inaccessible"
+        },
+        {
+          "range": "410-449",
+          "kind": "initial-isolated",
+          "result": "killed after zero shared-state calls"
+        },
+        {
+          "range": "450-489",
+          "kind": "initial",
+          "result": "40 accepted"
+        },
+        {
+          "range": "490-529",
+          "kind": "initial",
+          "result": "40 accepted; 8 bounded discrepancy retries"
+        },
+        {
+          "range": "370-409",
+          "kind": "replacement-interrupted",
+          "result": "3 accepted; 1 bounded discrepancy retry; stopped before order 373"
+        },
+        {
+          "range": "373-409",
+          "kind": "missing-only-resume",
+          "result": "37 accepted; zero retries"
+        },
+        {
+          "range": "410-413",
+          "kind": "non-isolated-replacement-narrowed",
+          "result": "4 accepted; zero retries; stopped before order 414"
+        },
+        {
+          "range": "412",
+          "kind": "synchronous-luna-child",
+          "result": "1 accepted; zero retries"
+        },
+        {
+          "range": "413",
+          "kind": "synchronous-luna-child",
+          "result": "1 accepted; zero retries"
+        },
+        {
+          "range": "414-422",
+          "kind": "partitioned-resume",
+          "result": "9 accepted; 1 bounded discrepancy retry (C38780); zero failures"
+        },
+        {
+          "range": "423-431",
+          "kind": "partitioned-resume",
+          "result": "9 accepted; 1 bounded discrepancy retry (C47297); zero failures"
+        },
+        {
+          "range": "432-440",
+          "kind": "partitioned-resume",
+          "result": "8 accepted; zero retries; C48587189 skipped at terminal datasheet failure without an extraction call"
+        },
+        {
+          "range": "441-449",
+          "kind": "partitioned-resume",
+          "result": "9 accepted; zero retries; zero failures"
+        }
+      ]
+    }
+  },
+  "staged_validation": {
+    "package_validators": {
+      "passed": 30,
+      "total": 30
+    },
+    "native_wasm_benches": {
+      "passed": 95,
+      "total": 95
+    },
+    "expectations": {
+      "passed": 121,
+      "total": 121
+    },
+    "hard_bounds": {
+      "passed": 74,
+      "total": 74
+    },
+    "temp_25_benches": {
+      "passed": 95,
+      "total": 95
+    },
+    "worst_native_wasm_relative_delta": 6.004309290589692e-07,
+    "worst_native_wasm_absolute_delta": 2.67321759062078e-07
+  },
+  "independent_hard_bounds": {
+    "source_derived_staging_probes": {
+      "probes": 68,
+      "packages": 18,
+      "package_validations_passed": 18
+    },
+    "exact_survivor_gain_probes": {
+      "passed": 19,
+      "total": 19,
+      "temperature_c": 25
+    },
+    "promoted_hard_bounds": {
+      "passed": 53,
+      "total": 53
+    }
+  },
+  "promoted_validation": {
+    "packages": 11,
+    "validators": 11,
+    "benches": 47,
+    "parity_pass": 47,
+    "checks": 75,
+    "check_pass": 75,
+    "hard_bounds": 53,
+    "hard_bound_pass": 53,
+    "temp25": 47,
+    "temp25_pass": 47,
+    "worst_native_wasm_relative_delta": 6.004309290589692e-07,
+    "worst_native_wasm_absolute_delta": 2.67321759062078e-07
+  },
+  "f2_gates": {
+    "rms_relative_current_error_maximum": 0.12,
+    "worst_relative_current_error_maximum": 0.2,
+    "parameter_bound_saturation_tolerance": 1e-06,
+    "unchanged": true,
+    "packages": {
+      "hxy-mosfet/S9014": {
+        "points": 5,
+        "rms": 0.049127669037895415,
+        "worst": 0.08076588269292273,
+        "curve": "PDF p. 2 hFE versus IC, Ta = 25 C, VCE = 5 V, 0.0001 to 0.1 A",
+        "axes": "collector current in A; DC current gain dimensionless",
+        "optimizer_bound_saturation": false,
+        "verdict": "promoted-f2",
+        "source_supported": true
+      },
+      "infineon/BFP420H6327": {
+        "points": 4,
+        "rms": 0.011105972249085643,
+        "worst": 0.016829767262137956,
+        "curve": "p. 8 Figure 6, Ta = 25 C, VCE = 3 V, 0.0001 to 0.05 A",
+        "axes": "collector current in A; DC current gain dimensionless",
+        "optimizer_bound_saturation": false,
+        "verdict": "promoted-f2",
+        "source_supported": true
+      },
+      "lrc/L8050QLT1G": {
+        "points": 6,
+        "rms": 0.02137365290894097,
+        "worst": 0.03732692858793378,
+        "curve": "PDF p. 3 Figure 1, Ta = 25 C, VCE = 1 V, 0.00001 to 0.8 A",
+        "axes": "collector current in A; DC current gain dimensionless",
+        "optimizer_bound_saturation": false,
+        "verdict": "promoted-f2",
+        "source_supported": true
+      },
+      "lrc/LBC847BLT1G": {
+        "points": 4,
+        "rms": 0.03408202159893817,
+        "worst": 0.04828351495105384,
+        "curve": "Staged citation p. 6 Figure 9 is LBC846B; correct LBC847B group is p. 8 Figure 17",
+        "axes": "staged points have axis, unit, and range mismatches",
+        "optimizer_bound_saturation": false,
+        "verdict": "rejected-unsupported-f2",
+        "source_supported": false
+      },
+      "lrc/LMBT5401LT1G": {
+        "points": 5,
+        "rms": 0.07381788384741182,
+        "worst": 0.0917255812712412,
+        "curve": "p. 3 Figure 1, Ta = 25 C dashed trace, VCE = -5 V, |IC| 0.001 to 0.1 A",
+        "axes": "collector-current magnitude in A; DC current gain dimensionless",
+        "optimizer_bound_saturation": false,
+        "verdict": "promoted-f2",
+        "source_supported": true
+      },
+      "nexperia/BCP68-115": {
+        "points": 5,
+        "rms": 0.013884522321079474,
+        "worst": 0.022908398375078003,
+        "curve": "p. 7 Figure 15 trace 2 at 25 C; staged hFE values do not match the plotted curve",
+        "axes": "collector current in A; DC current gain dimensionless",
+        "optimizer_bound_saturation": false,
+        "verdict": "rejected-unsupported-f2",
+        "source_supported": false
+      }
+    }
+  },
+  "collisions": {
+    "baseline_package_count": 692,
+    "candidates_reviewed": 30,
+    "candidate_identity_collisions_against_baseline": 0,
+    "candidate_identity_groups": 0,
+    "candidate_vector_collisions_against_baseline": 0,
+    "candidate_vector_groups": 0,
+    "final_library_package_count": 703,
+    "final_identity_groups_involving_promotions": 0,
+    "final_vector_groups_involving_promotions": 0,
+    "pre_existing_final_vector_groups": 7
+  },
+  "reproducibility": {
+    "staging_tree_files": 1257,
+    "staging_tree_bytes": 163724542,
+    "staging_tree_aggregate_sha256": "589d8d7c35555cd3db3117ea5e6eeda849466cdb3ed9c9a73ec5d68cb6b5bf05",
+    "staging_package_files": 365,
+    "staging_package_bytes": 705564,
+    "staging_package_aggregate_sha256": "b80a51e936a55df363fbb952238abcd7061c42a54596e8fe67147eb7d0324df0",
+    "promoted_model_and_fitted_files_byte_identical": true
+  },
+  "test_suites": {
+    "part_feeder_standard": {
+      "status": "pass",
+      "tests_run": 9,
+      "active_passed": 5,
+      "skipped": 4,
+      "note": "Three freeze tests skipped because the ignored scale-2k manifest is absent; the live smoke test is opt-in."
+    },
+    "part_feeder_freezer_bodies_with_reproduced_manifest": {
+      "status": "pass",
+      "passed": 3,
+      "total": 3
+    },
+    "part_feeder_typecheck": "pass",
+    "model_factory": {
+      "status": "pass",
+      "passed": 46,
+      "failed": 0
+    },
+    "conveyor": {
+      "status": "pass",
+      "passed": 16,
+      "failed": 0
+    },
+    "conveyor_typecheck": "pass",
+    "model_library": {
+      "status": "pass",
+      "package_count": 703,
+      "passed": 1,
+      "failed": 0
+    },
+    "workspace": {
+      "status": "pass",
+      "tests": 99,
+      "breakdown": {
+        "web": 4,
+        "circuit_schema": 21,
+        "component_schema": 4,
+        "model_import": 38,
+        "model_library": 1,
+        "sim_engine": 10,
+        "waveform_viewer": 21
+      }
+    },
+    "workspace_typechecks": {
+      "status": "pass",
+      "workspaces": 6
+    }
+  },
+  "deviations": [
+    "The initial isolated 370 through 409 extraction lane made zero shared-state calls because its path was inaccessible.",
+    "The initial isolated 410 through 449 extraction lane was killed after zero shared-state calls. A non-isolated replacement handled 410 through 413 and stopped before 414; missing work then completed in bounded 414 through 449 partitions. No completed extraction call was repeated.",
+    "Two extraction lanes were interrupted or killed, two isolated invocations performed zero work, and 79 missing unique calls were resumed. Maximum live lanes remained four.",
+    "The ignored scale-2k manifest is absent from the checkout, so the standard part-feeder run skipped three freeze tests. The same three test bodies passed against the byte-reproduced manifest and absolute frozen inputs at the required 692-package baseline, without changing tests or implementation.",
+    "No staging original, parameter, gate, fitter, conveyor implementation, feeder implementation, freeze record, or prior review rejection was modified or revisited.",
+    "No push, deploy, publish, GitHub comment, or Vault update was performed."
+  ],
+  "packages": [
+    {
+      "staged_package": "lrc/L8050QLT1G",
+      "staging_path": "tools/conveyor/data/staging/batch-9/packages/lrc/L8050QLT1G",
+      "frozen_campaign_order": 371,
+      "batch_9_order": 2,
+      "lcsc_id": "C49581",
+      "catalog_mpn": "L8050QLT1G",
+      "canonical_mpn": "L8050QLT1G",
+      "ordering_code_aliases": [],
+      "manufacturer": "LRC",
+      "electrical_family": "bjt_npn",
+      "fidelity": "F2",
+      "source_sha256": "0ec0d9f04eaf2214217fec557b75d372fe49044b691dfff04ff78a302d344875",
+      "source_hash_reproduced": true,
+      "source_page_count": 4,
+      "source_citations_in_range": true,
+      "source_record_consistent": true,
+      "disposition": "promoted",
+      "target_library_package": "lrc/L8050QLT1G",
+      "corrections": [
+        "Narrowed F2 scope to the exact 25 C, VCE = 1 V curve and sampled current range.",
+        "Added an exact inclusive Q-rank hFE probe, 150 through 300 at 100 mA."
+      ],
+      "rejection_class": null,
+      "rejection_reason": null,
+      "f2_adjudication": {
+        "points": 6,
+        "rms": 0.02137365290894097,
+        "worst": 0.03732692858793378,
+        "curve": "PDF p. 3 Figure 1, Ta = 25 C, VCE = 1 V, 0.00001 to 0.8 A",
+        "axes": "collector current in A; DC current gain dimensionless",
+        "optimizer_bound_saturation": false,
+        "verdict": "promoted-f2",
+        "source_supported": true
+      },
+      "electrical_files_unchanged_in_promotion": true,
+      "model_sha256": "2fc5169cc4fae1cd5e0598cfd5a780c092532800bfe6ce6480a27044d487bc05",
+      "fitted_vector_sha256": "983ed0a96374b28453eb91df7167f4c3cff4e7debc50b94a217e047a0b26cd44",
+      "promoted_bench_count": 5,
+      "promoted_parity_pass_count": 5,
+      "promoted_expectation_count": 11,
+      "promoted_expectation_pass_count": 11,
+      "promoted_temp_25_pass_count": 5,
+      "exact_gain_hard_bound_probes": [
+        {
+          "package": "lrc/L8050QLT1G",
+          "polarity": "NPN",
+          "temperature_c": 25,
+          "vce_v": 1,
+          "target_ic_a": 0.1,
+          "native_ic_a": 0.1000000000000131,
+          "native_ib_a": 0.0005764338359899933,
+          "native_hfe": 173.48044780936328,
+          "minimum_inclusive": 150,
+          "maximum_inclusive": 300,
+          "pass": true
+        }
+      ]
+    },
+    {
+      "staged_package": "lrc/LMBT3904DW1T1G",
+      "staging_path": "tools/conveyor/data/staging/batch-9/packages/lrc/LMBT3904DW1T1G",
+      "frozen_campaign_order": 372,
+      "batch_9_order": 3,
+      "lcsc_id": "C131781",
+      "catalog_mpn": "LMBT3904DW1T1G",
+      "canonical_mpn": "LMBT3904DW1T1G",
+      "ordering_code_aliases": [],
+      "manufacturer": "LRC",
+      "electrical_family": "bjt_npn",
+      "fidelity": "F1",
+      "source_sha256": "cf4b828e0ada7d3b11495d42c657b90ecf6ed1386416ebec3ba82a771f6ea17e",
+      "source_hash_reproduced": true,
+      "source_page_count": 5,
+      "source_citations_in_range": true,
+      "source_record_consistent": true,
+      "disposition": "rejected",
+      "target_library_package": null,
+      "corrections": [],
+      "rejection_class": "package-contract-unsupported",
+      "rejection_reason": "The source device is a dual NPN transistor, while the staged package represents one three-pin NPN transistor.",
+      "f2_adjudication": null
+    },
+    {
+      "staged_package": "hxy-mosfet/S9014",
+      "staging_path": "tools/conveyor/data/staging/batch-9/packages/hxy-mosfet/S9014",
+      "frozen_campaign_order": 414,
+      "batch_9_order": 45,
+      "lcsc_id": "C5184405",
+      "catalog_mpn": "S9014",
+      "canonical_mpn": "S9014",
+      "ordering_code_aliases": [],
+      "manufacturer": "HXY MOSFET",
+      "electrical_family": "bjt_npn",
+      "fidelity": "F2",
+      "source_sha256": "3d7eeb39ede84c27cdddebd413d2fb03a4870559d4897e8915890d48351b4b43",
+      "source_hash_reproduced": true,
+      "source_page_count": 5,
+      "source_citations_in_range": true,
+      "source_record_consistent": true,
+      "disposition": "promoted",
+      "target_library_package": "hxy-mosfet/S9014",
+      "corrections": [
+        "Corrected the hFE curve citation from PDF p. 3 to PDF p. 2 in promoted source metadata, expectations, and model card.",
+        "Narrowed F2 scope to the exact 25 C, VCE = 5 V curve and sampled collector-current range.",
+        "Added an exact table hFE range probe."
+      ],
+      "rejection_class": null,
+      "rejection_reason": null,
+      "f2_adjudication": {
+        "points": 5,
+        "rms": 0.049127669037895415,
+        "worst": 0.08076588269292273,
+        "curve": "PDF p. 2 hFE versus IC, Ta = 25 C, VCE = 5 V, 0.0001 to 0.1 A",
+        "axes": "collector current in A; DC current gain dimensionless",
+        "optimizer_bound_saturation": false,
+        "verdict": "promoted-f2",
+        "source_supported": true
+      },
+      "electrical_files_unchanged_in_promotion": true,
+      "model_sha256": "03fe124aefee8ae5310b50209e03a12188d853e1b4ac2439ad9c0f6242e06352",
+      "fitted_vector_sha256": "b4b6634b9513054f0e4efb0e1d2695ef14091bf2834c0ea45f9576cb58ad05b7",
+      "promoted_bench_count": 5,
+      "promoted_parity_pass_count": 5,
+      "promoted_expectation_count": 10,
+      "promoted_expectation_pass_count": 10,
+      "promoted_temp_25_pass_count": 5,
+      "exact_gain_hard_bound_probes": [
+        {
+          "package": "hxy-mosfet/S9014",
+          "polarity": "NPN",
+          "temperature_c": 25,
+          "vce_v": 5,
+          "target_ic_a": 0.001,
+          "native_ic_a": 0.0009999999999990665,
+          "native_ib_a": 3.548788852580153e-06,
+          "native_hfe": 281.7862773864427,
+          "minimum_inclusive": 200,
+          "maximum_inclusive": 1000,
+          "pass": true
+        }
+      ]
+    },
+    {
+      "staged_package": "lrc/LMBT5401LT1G",
+      "staging_path": "tools/conveyor/data/staging/batch-9/packages/lrc/LMBT5401LT1G",
+      "frozen_campaign_order": 415,
+      "batch_9_order": 46,
+      "lcsc_id": "C57683",
+      "catalog_mpn": "LMBT5401LT1G",
+      "canonical_mpn": "LMBT5401LT1G",
+      "ordering_code_aliases": [],
+      "manufacturer": "LRC",
+      "electrical_family": "bjt_pnp",
+      "fidelity": "F2",
+      "source_sha256": "820bf560795c69615f67f4a4d57fcfec23e25c2c4ef480a2eae19f8d985fb0fc",
+      "source_hash_reproduced": true,
+      "source_page_count": 5,
+      "source_citations_in_range": true,
+      "source_record_consistent": true,
+      "disposition": "promoted",
+      "target_library_package": "lrc/LMBT5401LT1G",
+      "corrections": [
+        "Narrowed F2 scope to the exact 25 C dashed trace at VCE = -5 V and sampled current range.",
+        "Added exact gain-minimum reviewer probes at all three cited table currents."
+      ],
+      "rejection_class": null,
+      "rejection_reason": null,
+      "f2_adjudication": {
+        "points": 5,
+        "rms": 0.07381788384741182,
+        "worst": 0.0917255812712412,
+        "curve": "p. 3 Figure 1, Ta = 25 C dashed trace, VCE = -5 V, |IC| 0.001 to 0.1 A",
+        "axes": "collector-current magnitude in A; DC current gain dimensionless",
+        "optimizer_bound_saturation": false,
+        "verdict": "promoted-f2",
+        "source_supported": true
+      },
+      "electrical_files_unchanged_in_promotion": true,
+      "model_sha256": "ba9c5d9f4909c1debc2db1537d091868a9c168fafc033f4ba2ab9f95481f940b",
+      "fitted_vector_sha256": "e163991d0c1ad88e11532ef2d2873d7a5d6b0bbbcfa8700f727df016ce771b13",
+      "promoted_bench_count": 5,
+      "promoted_parity_pass_count": 5,
+      "promoted_expectation_count": 16,
+      "promoted_expectation_pass_count": 16,
+      "promoted_temp_25_pass_count": 5,
+      "exact_gain_hard_bound_probes": [
+        {
+          "package": "lrc/LMBT5401LT1G",
+          "polarity": "PNP",
+          "temperature_c": 25,
+          "vce_v": -5,
+          "target_ic_a": 0.001,
+          "native_ic_a": -0.000999999999999629,
+          "native_ib_a": -1.67851126043301e-05,
+          "native_hfe": 59.57660359940966,
+          "minimum_inclusive": 50,
+          "maximum_inclusive": null,
+          "pass": true
+        },
+        {
+          "package": "lrc/LMBT5401LT1G",
+          "polarity": "PNP",
+          "temperature_c": 25,
+          "vce_v": -5,
+          "target_ic_a": 0.01,
+          "native_ic_a": -0.00999999999999999,
+          "native_ib_a": -0.000102840248877078,
+          "native_hfe": 97.23819330652051,
+          "minimum_inclusive": 60,
+          "maximum_inclusive": null,
+          "pass": true
+        },
+        {
+          "package": "lrc/LMBT5401LT1G",
+          "polarity": "PNP",
+          "temperature_c": 25,
+          "vce_v": -5,
+          "target_ic_a": 0.05,
+          "native_ic_a": -0.0500000000000165,
+          "native_ib_a": -0.0005250151823396,
+          "native_hfe": 95.23534115185755,
+          "minimum_inclusive": 50,
+          "maximum_inclusive": null,
+          "pass": true
+        }
+      ]
+    },
+    {
+      "staged_package": "nexperia/BCP68-115",
+      "staging_path": "tools/conveyor/data/staging/batch-9/packages/nexperia/BCP68-115",
+      "frozen_campaign_order": 422,
+      "batch_9_order": 53,
+      "lcsc_id": "C183262",
+      "catalog_mpn": "BCP68,115",
+      "canonical_mpn": "BCP68",
+      "ordering_code_aliases": [
+        "BCP68,115"
+      ],
+      "manufacturer": "Nexperia",
+      "electrical_family": "bjt_npn",
+      "fidelity": "F2",
+      "source_sha256": "b75f4ed10eba583edfa36d18a76be47ea18de0b8294499131682482966612dc5",
+      "source_hash_reproduced": true,
+      "source_page_count": 23,
+      "source_citations_in_range": true,
+      "source_record_consistent": true,
+      "disposition": "rejected",
+      "target_library_package": null,
+      "corrections": [],
+      "rejection_class": "unsupported-f2",
+      "rejection_reason": "Numerical residuals pass only against staged points that do not match the cited 25 C source curve. The source low-current plateau is about 260, not the staged 70 to 100 values.",
+      "f2_adjudication": {
+        "points": 5,
+        "rms": 0.013884522321079474,
+        "worst": 0.022908398375078003,
+        "curve": "p. 7 Figure 15 trace 2 at 25 C; staged hFE values do not match the plotted curve",
+        "axes": "collector current in A; DC current gain dimensionless",
+        "optimizer_bound_saturation": false,
+        "verdict": "rejected-unsupported-f2",
+        "source_supported": false
+      }
+    },
+    {
+      "staged_package": "diodes/FMMT624TA",
+      "staging_path": "tools/conveyor/data/staging/batch-9/packages/diodes/FMMT624TA",
+      "frozen_campaign_order": 424,
+      "batch_9_order": 55,
+      "lcsc_id": "C47297",
+      "catalog_mpn": "FMMT624TA",
+      "canonical_mpn": "FMMT624TA",
+      "ordering_code_aliases": [],
+      "manufacturer": "Diodes Incorporated",
+      "electrical_family": "bjt_npn",
+      "fidelity": "F1",
+      "source_sha256": "120c9e0efcb20afce395108936f472a97b76cd3fc483c50cf89275ca54fff317",
+      "source_hash_reproduced": true,
+      "source_page_count": 7,
+      "source_citations_in_range": true,
+      "source_record_consistent": true,
+      "disposition": "promoted",
+      "target_library_package": "diodes/FMMT624TA",
+      "corrections": [
+        "Finalized reviewer metadata.",
+        "Added exact 25 C gain-minimum reviewer probes at all three cited collector currents."
+      ],
+      "rejection_class": null,
+      "rejection_reason": null,
+      "f2_adjudication": null,
+      "electrical_files_unchanged_in_promotion": true,
+      "model_sha256": "53b81122469da6ccfc014f1d7d946bdfc17897399efdca33f948fd9a12f472ce",
+      "fitted_vector_sha256": "36f2ff3aa9be98d4d8c0721f256235c3ef5572339b3adfeb597f8cdedf80a65d",
+      "promoted_bench_count": 4,
+      "promoted_parity_pass_count": 4,
+      "promoted_expectation_count": 8,
+      "promoted_expectation_pass_count": 8,
+      "promoted_temp_25_pass_count": 4,
+      "exact_gain_hard_bound_probes": [
+        {
+          "package": "diodes/FMMT624TA",
+          "polarity": "NPN",
+          "temperature_c": 25,
+          "vce_v": 10,
+          "target_ic_a": 0.01,
+          "native_ic_a": 0.01000000000003148,
+          "native_ib_a": 2.033475027352642e-05,
+          "native_hfe": 491.76900947981477,
+          "minimum_inclusive": 200,
+          "maximum_inclusive": null,
+          "pass": true
+        },
+        {
+          "package": "diodes/FMMT624TA",
+          "polarity": "NPN",
+          "temperature_c": 25,
+          "vce_v": 10,
+          "target_ic_a": 0.2,
+          "native_ic_a": 0.1999999999997199,
+          "native_ib_a": 0.0004071590754639772,
+          "native_hfe": 491.2085031429309,
+          "minimum_inclusive": 300,
+          "maximum_inclusive": null,
+          "pass": true
+        },
+        {
+          "package": "diodes/FMMT624TA",
+          "polarity": "NPN",
+          "temperature_c": 25,
+          "vce_v": 10,
+          "target_ic_a": 1,
+          "native_ic_a": 0.9999999999988253,
+          "native_ib_a": 0.002040307529464673,
+          "native_hfe": 490.1221926388719,
+          "minimum_inclusive": 100,
+          "maximum_inclusive": null,
+          "pass": true
+        }
+      ]
+    },
+    {
+      "staged_package": "fuxinsemi/BC857BS",
+      "staging_path": "tools/conveyor/data/staging/batch-9/packages/fuxinsemi/BC857BS",
+      "frozen_campaign_order": 426,
+      "batch_9_order": 57,
+      "lcsc_id": "C5380688",
+      "catalog_mpn": "BC857BS",
+      "canonical_mpn": "BC857BS",
+      "ordering_code_aliases": [],
+      "manufacturer": "FUXINSEMI",
+      "electrical_family": "bjt_pnp",
+      "fidelity": "F1",
+      "source_sha256": "7a58bf48486426431d26fffb86ece05516c42b98dcabbcc0c353f50f80258fc4",
+      "source_hash_reproduced": true,
+      "source_page_count": 3,
+      "source_citations_in_range": true,
+      "source_record_consistent": true,
+      "disposition": "rejected",
+      "target_library_package": null,
+      "corrections": [],
+      "rejection_class": "package-contract-unsupported",
+      "rejection_reason": "The source device is a dual PNP transistor, while the staged package represents one three-pin transistor.",
+      "f2_adjudication": null
+    },
+    {
+      "staged_package": "hongjiacheng/S9018",
+      "staging_path": "tools/conveyor/data/staging/batch-9/packages/hongjiacheng/S9018",
+      "frozen_campaign_order": 430,
+      "batch_9_order": 61,
+      "lcsc_id": "C41375130",
+      "catalog_mpn": "S9018",
+      "canonical_mpn": "S9018",
+      "ordering_code_aliases": [],
+      "manufacturer": "hongjiacheng",
+      "electrical_family": "bjt_npn",
+      "fidelity": "F1",
+      "source_sha256": "87f4583e6652db4152f80e9cd61870d051234e57c3ea62c7a6ebc8baaa97c53e",
+      "source_hash_reproduced": true,
+      "source_page_count": 3,
+      "source_citations_in_range": true,
+      "source_record_consistent": true,
+      "disposition": "promoted",
+      "target_library_package": "hongjiacheng/S9018",
+      "corrections": [
+        "Finalized reviewer metadata.",
+        "Added an exact 25 C inclusive hFE range probe at 1 mA."
+      ],
+      "rejection_class": null,
+      "rejection_reason": null,
+      "f2_adjudication": null,
+      "electrical_files_unchanged_in_promotion": true,
+      "model_sha256": "17b1497104d2ca2e7b255b65888ec2c02e8a7719b4d852e877bd93b870e91736",
+      "fitted_vector_sha256": "42fbdde984bf24731a5053df17d5fa2deb363ab89da07a21d99e5b8472504dd9",
+      "promoted_bench_count": 4,
+      "promoted_parity_pass_count": 4,
+      "promoted_expectation_count": 3,
+      "promoted_expectation_pass_count": 3,
+      "promoted_temp_25_pass_count": 4,
+      "exact_gain_hard_bound_probes": [
+        {
+          "package": "hongjiacheng/S9018",
+          "polarity": "NPN",
+          "temperature_c": 25,
+          "vce_v": 5,
+          "target_ic_a": 0.001,
+          "native_ic_a": 0.001000000000000581,
+          "native_ib_a": 1.35556570136101e-05,
+          "native_hfe": 73.76993966405057,
+          "minimum_inclusive": 70,
+          "maximum_inclusive": 200,
+          "pass": true
+        }
+      ]
+    },
+    {
+      "staged_package": "hongjiacheng/MMST5551",
+      "staging_path": "tools/conveyor/data/staging/batch-9/packages/hongjiacheng/MMST5551",
+      "frozen_campaign_order": 434,
+      "batch_9_order": 65,
+      "lcsc_id": "C41410769",
+      "catalog_mpn": "MMST5551",
+      "canonical_mpn": "MMST5551",
+      "ordering_code_aliases": [],
+      "manufacturer": "hongjiacheng",
+      "electrical_family": "bjt_npn",
+      "fidelity": "F1",
+      "source_sha256": "1368b3f7c24ca204362af682e5ed1a18ee5a91107f6e932b6a860a554f5254b9",
+      "source_hash_reproduced": true,
+      "source_page_count": 3,
+      "source_citations_in_range": true,
+      "source_record_consistent": true,
+      "disposition": "promoted",
+      "target_library_package": "hongjiacheng/MMST5551",
+      "corrections": [
+        "Finalized reviewer metadata.",
+        "Added exact 25 C gain minimum and maximum reviewer probes, including the inclusive hFE maximum at 10 mA."
+      ],
+      "rejection_class": null,
+      "rejection_reason": null,
+      "f2_adjudication": null,
+      "electrical_files_unchanged_in_promotion": true,
+      "model_sha256": "3047d9dd9e793bf266e0ebf446c5c7dc042cd7d4e81cae4018a8a13dbc815fb8",
+      "fitted_vector_sha256": "801225bc9c3be7bbb5fcf4fbf06f4f7de48db22200258451a674a2a437e46430",
+      "promoted_bench_count": 4,
+      "promoted_parity_pass_count": 4,
+      "promoted_expectation_count": 7,
+      "promoted_expectation_pass_count": 7,
+      "promoted_temp_25_pass_count": 4,
+      "exact_gain_hard_bound_probes": [
+        {
+          "package": "hongjiacheng/MMST5551",
+          "polarity": "NPN",
+          "temperature_c": 25,
+          "vce_v": 5,
+          "target_ic_a": 0.001,
+          "native_ic_a": 0.0009999999999999356,
+          "native_ib_a": 1.1861199415761e-05,
+          "native_hfe": 84.30850582202919,
+          "minimum_inclusive": 80,
+          "maximum_inclusive": null,
+          "pass": true
+        },
+        {
+          "package": "hongjiacheng/MMST5551",
+          "polarity": "NPN",
+          "temperature_c": 25,
+          "vce_v": 5,
+          "target_ic_a": 0.01,
+          "native_ic_a": 0.009999999999995353,
+          "native_ib_a": 0.0001186819000497475,
+          "native_hfe": 84.25884651158842,
+          "minimum_inclusive": 80,
+          "maximum_inclusive": 300,
+          "pass": true
+        },
+        {
+          "package": "hongjiacheng/MMST5551",
+          "polarity": "NPN",
+          "temperature_c": 25,
+          "vce_v": 5,
+          "target_ic_a": 0.05,
+          "native_ic_a": 0.05000000000002708,
+          "native_ib_a": 0.0005937020754403153,
+          "native_hfe": 84.21732392116854,
+          "minimum_inclusive": 30,
+          "maximum_inclusive": null,
+          "pass": true
+        }
+      ]
+    },
+    {
+      "staged_package": "lrc/LBC847BLT1G",
+      "staging_path": "tools/conveyor/data/staging/batch-9/packages/lrc/LBC847BLT1G",
+      "frozen_campaign_order": 436,
+      "batch_9_order": 67,
+      "lcsc_id": "C131853",
+      "catalog_mpn": "LBC847BLT1G",
+      "canonical_mpn": "LBC847BLT1G",
+      "ordering_code_aliases": [],
+      "manufacturer": "LRC",
+      "electrical_family": "bjt_npn",
+      "fidelity": "F2",
+      "source_sha256": "a2073d8a5b399f44570b2563e2f3d50365817da4dce88abd3df97c67371d998e",
+      "source_hash_reproduced": true,
+      "source_page_count": 13,
+      "source_citations_in_range": true,
+      "source_record_consistent": true,
+      "disposition": "rejected",
+      "target_library_package": null,
+      "corrections": [],
+      "rejection_class": "unsupported-f2",
+      "rejection_reason": "Numerical residuals pass, but the staged F2 points cite the LBC846B curve instead of the LBC847B group curve and contain severe axis, unit, and range mismatches.",
+      "f2_adjudication": {
+        "points": 4,
+        "rms": 0.03408202159893817,
+        "worst": 0.04828351495105384,
+        "curve": "Staged citation p. 6 Figure 9 is LBC846B; correct LBC847B group is p. 8 Figure 17",
+        "axes": "staged points have axis, unit, and range mismatches",
+        "optimizer_bound_saturation": false,
+        "verdict": "rejected-unsupported-f2",
+        "source_supported": false
+      }
+    },
+    {
+      "staged_package": "infineon/BFP420H6327",
+      "staging_path": "tools/conveyor/data/staging/batch-9/packages/infineon/BFP420H6327",
+      "frozen_campaign_order": 439,
+      "batch_9_order": 70,
+      "lcsc_id": "C412737",
+      "catalog_mpn": "BFP420H6327",
+      "canonical_mpn": "BFP420H6327",
+      "ordering_code_aliases": [],
+      "manufacturer": "Infineon Technologies",
+      "electrical_family": "bjt_npn",
+      "fidelity": "F2",
+      "source_sha256": "d8ef01d0f74643bfa942f1938fa2b42aeac4276b3847a8012b5dc1a5933e68cd",
+      "source_hash_reproduced": true,
+      "source_page_count": 18,
+      "source_citations_in_range": true,
+      "source_record_consistent": true,
+      "disposition": "promoted",
+      "target_library_package": "infineon/BFP420H6327",
+      "corrections": [
+        "Narrowed F2 scope to Figure 6 at 25 C, VCE = 3 V, and the sampled current range.",
+        "Added an exact Table 3 hFE range probe at VCE = 4 V."
+      ],
+      "rejection_class": null,
+      "rejection_reason": null,
+      "f2_adjudication": {
+        "points": 4,
+        "rms": 0.011105972249085643,
+        "worst": 0.016829767262137956,
+        "curve": "p. 8 Figure 6, Ta = 25 C, VCE = 3 V, 0.0001 to 0.05 A",
+        "axes": "collector current in A; DC current gain dimensionless",
+        "optimizer_bound_saturation": false,
+        "verdict": "promoted-f2",
+        "source_supported": true
+      },
+      "electrical_files_unchanged_in_promotion": true,
+      "model_sha256": "64964c29d865ede370c165790f3aba3adc875c57e38639fab9da8654543917aa",
+      "fitted_vector_sha256": "c7a7001d5882b1942f5c47e2db8947f9039844e45538a7abeb27332375706af0",
+      "promoted_bench_count": 4,
+      "promoted_parity_pass_count": 4,
+      "promoted_expectation_count": 9,
+      "promoted_expectation_pass_count": 9,
+      "promoted_temp_25_pass_count": 4,
+      "exact_gain_hard_bound_probes": [
+        {
+          "package": "infineon/BFP420H6327",
+          "polarity": "NPN",
+          "temperature_c": 25,
+          "vce_v": 4,
+          "target_ic_a": 0.02,
+          "native_ic_a": 0.0199999999999973,
+          "native_ib_a": 0.0002331177995954984,
+          "native_hfe": 85.7935345765142,
+          "minimum_inclusive": 60,
+          "maximum_inclusive": 130,
+          "pass": true
+        }
+      ]
+    },
+    {
+      "staged_package": "rohm-semicon/2SC2411KT146R",
+      "staging_path": "tools/conveyor/data/staging/batch-9/packages/rohm-semicon/2SC2411KT146R",
+      "frozen_campaign_order": 452,
+      "batch_9_order": 83,
+      "lcsc_id": "C122622",
+      "catalog_mpn": "2SC2411KT146R",
+      "canonical_mpn": "2SC2411KT146R",
+      "ordering_code_aliases": [],
+      "manufacturer": "ROHM Semicon",
+      "electrical_family": "bjt_npn",
+      "fidelity": "F1",
+      "source_sha256": "d536ec781036542b394afb709670f60c7b636fa4f48b7acc9e7836c899b43dd8",
+      "source_hash_reproduced": true,
+      "source_page_count": 7,
+      "source_citations_in_range": true,
+      "source_record_consistent": true,
+      "disposition": "rejected",
+      "target_library_package": null,
+      "corrections": [],
+      "rejection_class": "refit-required",
+      "rejection_reason": "T146 is the taping code and final R is the 180 through 390 gain rank. The staged package uses generic minimum 82 and BF = 82.82.",
+      "f2_adjudication": null
+    },
+    {
+      "staged_package": "st-semtech/MMBT8550D-2TY",
+      "staging_path": "tools/conveyor/data/staging/batch-9/packages/st-semtech/MMBT8550D-2TY",
+      "frozen_campaign_order": 456,
+      "batch_9_order": 87,
+      "lcsc_id": "C47399",
+      "catalog_mpn": "MMBT8550D(2TY)",
+      "canonical_mpn": "MMBT8550D",
+      "ordering_code_aliases": [
+        "MMBT8550D(2TY)"
+      ],
+      "manufacturer": "ST Semtech",
+      "electrical_family": "bjt_npn",
+      "fidelity": "F1",
+      "source_sha256": "90002028bd6819bb4531e74cbc64685dea67a27c95539aafb30270d3a01efc0a",
+      "source_hash_reproduced": true,
+      "source_page_count": 2,
+      "source_citations_in_range": true,
+      "source_record_consistent": true,
+      "disposition": "rejected",
+      "target_library_package": null,
+      "corrections": [],
+      "rejection_class": "electrical-change-required",
+      "rejection_reason": "Primary source is PNP, while the staged contract and model are NPN. Promotion would require polarity and electrical-model changes.",
+      "f2_adjudication": null
+    },
+    {
+      "staged_package": "nexperia/PMBTA42-215",
+      "staging_path": "tools/conveyor/data/staging/batch-9/packages/nexperia/PMBTA42-215",
+      "frozen_campaign_order": 458,
+      "batch_9_order": 89,
+      "lcsc_id": "C417384",
+      "catalog_mpn": "PMBTA42,215",
+      "canonical_mpn": "PMBTA42",
+      "ordering_code_aliases": [
+        "PMBTA42,215"
+      ],
+      "manufacturer": "Nexperia",
+      "electrical_family": "bjt_npn",
+      "fidelity": "F1",
+      "source_sha256": "7d0374ebce37285e0a593acf298fabb4dedad33da719695ab2a5173b13578593",
+      "source_hash_reproduced": true,
+      "source_page_count": 7,
+      "source_citations_in_range": true,
+      "source_record_consistent": true,
+      "disposition": "rejected",
+      "target_library_package": null,
+      "corrections": [],
+      "rejection_class": "refit-required",
+      "rejection_reason": "Source minimum hFE is 25 at 1 mA and 40 at 10 mA and 30 mA. The staged package captures only 25 and uses BF = 25.25, so it fails the omitted 40 minimum claims without refitting.",
+      "f2_adjudication": null
+    },
+    {
+      "staged_package": "onsemi/BC857BDW1T1G",
+      "staging_path": "tools/conveyor/data/staging/batch-9/packages/onsemi/BC857BDW1T1G",
+      "frozen_campaign_order": 459,
+      "batch_9_order": 90,
+      "lcsc_id": "C154783",
+      "catalog_mpn": "BC857BDW1T1G",
+      "canonical_mpn": "BC857BDW1T1G",
+      "ordering_code_aliases": [],
+      "manufacturer": "onsemi",
+      "electrical_family": "bjt_pnp",
+      "fidelity": "F1",
+      "source_sha256": "3a5f33908380e4f2c87fecf9aa816e93ab89e73b81764c4a0e8140725ae1ac40",
+      "source_hash_reproduced": true,
+      "source_page_count": 7,
+      "source_citations_in_range": true,
+      "source_record_consistent": true,
+      "disposition": "rejected",
+      "target_library_package": null,
+      "corrections": [],
+      "rejection_class": "package-contract-unsupported",
+      "rejection_reason": "The source device is a dual PNP transistor, while the staged package represents one three-pin PNP transistor.",
+      "f2_adjudication": null
+    },
+    {
+      "staged_package": "lrc/LMBT2907ALT1G",
+      "staging_path": "tools/conveyor/data/staging/batch-9/packages/lrc/LMBT2907ALT1G",
+      "frozen_campaign_order": 460,
+      "batch_9_order": 91,
+      "lcsc_id": "C49582",
+      "catalog_mpn": "LMBT2907ALT1G",
+      "canonical_mpn": "LMBT2907ALT1G",
+      "ordering_code_aliases": [],
+      "manufacturer": "LRC",
+      "electrical_family": "bjt_npn",
+      "fidelity": "F1",
+      "source_sha256": "972edeefd64f88f25ff834d581d3739c805f57df168157f1b21c243a2e7b8917",
+      "source_hash_reproduced": true,
+      "source_page_count": 7,
+      "source_citations_in_range": true,
+      "source_record_consistent": true,
+      "disposition": "rejected",
+      "target_library_package": null,
+      "corrections": [],
+      "rejection_class": "electrical-change-required",
+      "rejection_reason": "Primary source is PNP, while the staged contract and model are NPN. Promotion would require polarity and electrical-model changes.",
+      "f2_adjudication": null
+    },
+    {
+      "staged_package": "rohm-semicon/2SC4617TLR",
+      "staging_path": "tools/conveyor/data/staging/batch-9/packages/rohm-semicon/2SC4617TLR",
+      "frozen_campaign_order": 463,
+      "batch_9_order": 94,
+      "lcsc_id": "C79959",
+      "catalog_mpn": "2SC4617TLR",
+      "canonical_mpn": "2SC4617TLR",
+      "ordering_code_aliases": [],
+      "manufacturer": "ROHM Semicon",
+      "electrical_family": "bjt_npn",
+      "fidelity": "F1",
+      "source_sha256": "03e4158d54f612930dd4f294f7de8f33172be70542b6e2f8e621c45a5fe2ff93",
+      "source_hash_reproduced": true,
+      "source_page_count": 13,
+      "source_citations_in_range": true,
+      "source_record_consistent": true,
+      "disposition": "promoted",
+      "target_library_package": "rohm-semicon/2SC4617TLR",
+      "corrections": [
+        "Confirmed TL is the taping code and R is the 180 through 390 gain rank.",
+        "Added an exact inclusive R-rank probe at 1 mA and VCE = 6 V."
+      ],
+      "rejection_class": null,
+      "rejection_reason": null,
+      "f2_adjudication": null,
+      "electrical_files_unchanged_in_promotion": true,
+      "model_sha256": "7a3bc5b16e20647385f8e4d4e663e3bc5b319e44e95a7eda5038f1743f25168d",
+      "fitted_vector_sha256": "306626c5776f3558f75628359e348328f5c7cdc87aa6f3f63dced8c2190748db",
+      "promoted_bench_count": 4,
+      "promoted_parity_pass_count": 4,
+      "promoted_expectation_count": 3,
+      "promoted_expectation_pass_count": 3,
+      "promoted_temp_25_pass_count": 4,
+      "exact_gain_hard_bound_probes": [
+        {
+          "package": "rohm-semicon/2SC4617TLR",
+          "polarity": "NPN",
+          "temperature_c": 25,
+          "vce_v": 6,
+          "target_ic_a": 0.001,
+          "native_ic_a": 0.0009999999999997984,
+          "native_ib_a": 5.221585892498204e-06,
+          "native_hfe": 191.51269759566486,
+          "minimum_inclusive": 180,
+          "maximum_inclusive": 390,
+          "pass": true
+        }
+      ]
+    },
+    {
+      "staged_package": "onsemi/BC847BPDW1T1G",
+      "staging_path": "tools/conveyor/data/staging/batch-9/packages/onsemi/BC847BPDW1T1G",
+      "frozen_campaign_order": 467,
+      "batch_9_order": 98,
+      "lcsc_id": "C232590",
+      "catalog_mpn": "BC847BPDW1T1G",
+      "canonical_mpn": "BC847BPDW1T1G",
+      "ordering_code_aliases": [],
+      "manufacturer": "onsemi",
+      "electrical_family": "bjt_npn",
+      "fidelity": "F1",
+      "source_sha256": "a75702cbefce76b9eb486fe6b0af444aa918c8ad2da7c02bc7c15c32923dc6fa",
+      "source_hash_reproduced": true,
+      "source_page_count": 17,
+      "source_citations_in_range": true,
+      "source_record_consistent": true,
+      "disposition": "rejected",
+      "target_library_package": null,
+      "corrections": [],
+      "rejection_class": "package-contract-unsupported",
+      "rejection_reason": "The source device is a complementary NPN and PNP dual, while the staged package represents one three-pin NPN transistor.",
+      "f2_adjudication": null
+    },
+    {
+      "staged_package": "jiangsu-changjing-electronics-co-ltd/2SD1898-RANGE-180-390",
+      "staging_path": "tools/conveyor/data/staging/batch-9/packages/jiangsu-changjing-electronics-co-ltd/2SD1898-RANGE-180-390",
+      "frozen_campaign_order": 492,
+      "batch_9_order": 123,
+      "lcsc_id": "C24228",
+      "catalog_mpn": "2SD1898(RANGE:180-390)",
+      "canonical_mpn": "2SD1898",
+      "ordering_code_aliases": [
+        "2SD1898(RANGE:180-390)"
+      ],
+      "manufacturer": "Jiangsu Changjing Electronics Technology Co Ltd",
+      "electrical_family": "bjt_npn",
+      "fidelity": "F1",
+      "source_sha256": "fc0a8bc4f3d6e1bdec3c7f05641bf720302cfe1b844b0e4d986cb1e88f406c16",
+      "source_hash_reproduced": true,
+      "source_page_count": 2,
+      "source_citations_in_range": true,
+      "source_record_consistent": true,
+      "disposition": "rejected",
+      "target_library_package": null,
+      "corrections": [],
+      "rejection_class": "refit-required",
+      "rejection_reason": "The ordering suffix is a 180 through 390 gain rank at IC = 500 mA, VCE = 3 V. The staged package treats 390 as typical at 1 uA and requires refitting.",
+      "f2_adjudication": null
+    },
+    {
+      "staged_package": "nexperia/BC850C-215",
+      "staging_path": "tools/conveyor/data/staging/batch-9/packages/nexperia/BC850C-215",
+      "frozen_campaign_order": 494,
+      "batch_9_order": 125,
+      "lcsc_id": "C80071",
+      "catalog_mpn": "BC850C,215",
+      "canonical_mpn": "BC850C",
+      "ordering_code_aliases": [
+        "BC850C,215"
+      ],
+      "manufacturer": "Nexperia",
+      "electrical_family": "bjt_npn",
+      "fidelity": "F1",
+      "source_sha256": "5a54f49bd041f6c5f40c3f020c680544d426a33353ddf5bd51e0f7817a53c558",
+      "source_hash_reproduced": true,
+      "source_page_count": 9,
+      "source_citations_in_range": true,
+      "source_record_consistent": true,
+      "disposition": "rejected",
+      "target_library_package": null,
+      "corrections": [],
+      "rejection_class": "refit-required",
+      "rejection_reason": "Source hFE is 450 typical at 10 uA and 420 minimum, 520 typical, 800 maximum at 2 mA. The staged extraction and BF = 5 are unsupported.",
+      "f2_adjudication": null
+    },
+    {
+      "staged_package": "twgmc/2SC4617",
+      "staging_path": "tools/conveyor/data/staging/batch-9/packages/twgmc/2SC4617",
+      "frozen_campaign_order": 502,
+      "batch_9_order": 133,
+      "lcsc_id": "C5204737",
+      "catalog_mpn": "2SC4617",
+      "canonical_mpn": "2SC4617",
+      "ordering_code_aliases": [],
+      "manufacturer": "TWGMC",
+      "electrical_family": "bjt_npn",
+      "fidelity": "F1",
+      "source_sha256": "905fd76e29e7d6547bfc9520efd9f9dcb33166d15ce90b1098d80710678e8bef",
+      "source_hash_reproduced": true,
+      "source_page_count": 3,
+      "source_citations_in_range": true,
+      "source_record_consistent": true,
+      "disposition": "rejected",
+      "target_library_package": null,
+      "corrections": [],
+      "rejection_class": "refit-required",
+      "rejection_reason": "Source hFE is 120 minimum and 560 maximum at IC = 1 mA, VCE = 6 V. The staged extraction treats 560 as typical at 0.1 uA and uses the published maximum as BF.",
+      "f2_adjudication": null
+    },
+    {
+      "staged_package": "diodes/ZXTN25012EFLTA",
+      "staging_path": "tools/conveyor/data/staging/batch-9/packages/diodes/ZXTN25012EFLTA",
+      "frozen_campaign_order": 509,
+      "batch_9_order": 140,
+      "lcsc_id": "C460289",
+      "catalog_mpn": "ZXTN25012EFLTA",
+      "canonical_mpn": "ZXTN25012EFLTA",
+      "ordering_code_aliases": [],
+      "manufacturer": "Diodes Incorporated",
+      "electrical_family": "bjt_npn",
+      "fidelity": "F1",
+      "source_sha256": "5fc0f98a1a8c1e84cc547852353b9200fe06811634d7100c9b1aa3f1672d592e",
+      "source_hash_reproduced": true,
+      "source_page_count": 8,
+      "source_citations_in_range": true,
+      "source_record_consistent": true,
+      "disposition": "rejected",
+      "target_library_package": null,
+      "corrections": [],
+      "rejection_class": "refit-required",
+      "rejection_reason": "The source provides representative typical gain values, including about 800 at IC = 10 mA. The staged BF = 500 derives from a materially incorrect, mislabeled point.",
+      "f2_adjudication": null
+    },
+    {
+      "staged_package": "jiangsu-changjing-electronics-co-ltd/2SA812-RANGE-300-400",
+      "staging_path": "tools/conveyor/data/staging/batch-9/packages/jiangsu-changjing-electronics-co-ltd/2SA812-RANGE-300-400",
+      "frozen_campaign_order": 510,
+      "batch_9_order": 141,
+      "lcsc_id": "C2132",
+      "catalog_mpn": "2SA812(RANGE:300-400)",
+      "canonical_mpn": "2SA812",
+      "ordering_code_aliases": [
+        "2SA812(RANGE:300-400)"
+      ],
+      "manufacturer": "Jiangsu Changjing Electronics Technology Co Ltd",
+      "electrical_family": "bjt_pnp",
+      "fidelity": "F1",
+      "source_sha256": "3acd20d8a0e64344ab05b3e1796e8d203c2b24556ea5ac037a897ca6bff95856",
+      "source_hash_reproduced": true,
+      "source_page_count": 2,
+      "source_citations_in_range": true,
+      "source_record_consistent": true,
+      "disposition": "rejected",
+      "target_library_package": null,
+      "corrections": [],
+      "rejection_class": "refit-required",
+      "rejection_reason": "The ordering suffix is a 300 through 400 gain rank. The staged extraction records hFE = 1 and treats the generic 600 maximum as typical, producing unsupported BF = 600.",
+      "f2_adjudication": null
+    },
+    {
+      "staged_package": "shikues/BCX51-16",
+      "staging_path": "tools/conveyor/data/staging/batch-9/packages/shikues/BCX51-16",
+      "frozen_campaign_order": 511,
+      "batch_9_order": 142,
+      "lcsc_id": "C475643",
+      "catalog_mpn": "BCX51-16",
+      "canonical_mpn": "BCX51-16",
+      "ordering_code_aliases": [],
+      "manufacturer": "Shikues",
+      "electrical_family": "bjt_pnp",
+      "fidelity": "F1",
+      "source_sha256": "dc6776f2b255cd469ab4032a533ad30fb0859dabc137a24d6f1ee2f41e1a1967",
+      "source_hash_reproduced": true,
+      "source_page_count": 6,
+      "source_citations_in_range": true,
+      "source_record_consistent": true,
+      "disposition": "rejected",
+      "target_library_package": null,
+      "corrections": [],
+      "rejection_class": "refit-required",
+      "rejection_reason": "Suffix -16 specifies minimum hFE 100 at IC = 150 mA. The staged model uses BF = 25 from a generic lower-current minimum.",
+      "f2_adjudication": null
+    },
+    {
+      "staged_package": "onsemi/MMBTH81",
+      "staging_path": "tools/conveyor/data/staging/batch-9/packages/onsemi/MMBTH81",
+      "frozen_campaign_order": 513,
+      "batch_9_order": 144,
+      "lcsc_id": "C190349",
+      "catalog_mpn": "MMBTH81",
+      "canonical_mpn": "MMBTH81",
+      "ordering_code_aliases": [],
+      "manufacturer": "onsemi",
+      "electrical_family": "bjt_pnp",
+      "fidelity": "F1",
+      "source_sha256": "6401dce6c10b91448b8c88608868b6952c6eb5afca3f8bfa6f1c7b9fc8368d65",
+      "source_hash_reproduced": true,
+      "source_page_count": 13,
+      "source_citations_in_range": true,
+      "source_record_consistent": true,
+      "disposition": "promoted",
+      "target_library_package": "onsemi/MMBTH81",
+      "corrections": [
+        "Corrected source title and revision wording.",
+        "Corrected hFE minimum semantics and source conditions, plus fT, Ccb, and VCEO metadata.",
+        "Replaced the unsupported staged scalar expectation with an exact inclusive minimum probe at 5 mA.",
+        "Narrowed F1 scope to the cited 25 C point at |VCE| = 10 V."
+      ],
+      "rejection_class": null,
+      "rejection_reason": null,
+      "f2_adjudication": null,
+      "electrical_files_unchanged_in_promotion": true,
+      "model_sha256": "e0d35aa85266163a7ce2a533a39ac12e8165c714951300e01b7dd0157c2ef04b",
+      "fitted_vector_sha256": "22659584a215fc550b662e24012e63a71defdb28af03fd817e5cdfe43c286a2b",
+      "promoted_bench_count": 4,
+      "promoted_parity_pass_count": 4,
+      "promoted_expectation_count": 2,
+      "promoted_expectation_pass_count": 2,
+      "promoted_temp_25_pass_count": 4,
+      "exact_gain_hard_bound_probes": [
+        {
+          "package": "onsemi/MMBTH81",
+          "polarity": "PNP",
+          "temperature_c": 25,
+          "vce_v": -10,
+          "target_ic_a": 0.005,
+          "native_ic_a": -0.00500000000000046,
+          "native_ib_a": -7.62420385444846e-05,
+          "native_hfe": 65.58061793013486,
+          "minimum_inclusive": 60,
+          "maximum_inclusive": null,
+          "pass": true
+        }
+      ]
+    },
+    {
+      "staged_package": "jiangsu-changjing-electronics-co-ltd/PZTA92",
+      "staging_path": "tools/conveyor/data/staging/batch-9/packages/jiangsu-changjing-electronics-co-ltd/PZTA92",
+      "frozen_campaign_order": 514,
+      "batch_9_order": 145,
+      "lcsc_id": "C2910143",
+      "catalog_mpn": "PZTA92",
+      "canonical_mpn": "PZTA92",
+      "ordering_code_aliases": [],
+      "manufacturer": "Jiangsu Changjing Electronics Technology Co Ltd",
+      "electrical_family": "bjt_pnp",
+      "fidelity": "F1",
+      "source_sha256": "fdb81aa89d776d1c61ff744aecdf248c7be1241ac04fdf389f712e4a375dd657",
+      "source_hash_reproduced": true,
+      "source_page_count": 4,
+      "source_citations_in_range": true,
+      "source_record_consistent": true,
+      "disposition": "promoted",
+      "target_library_package": "jiangsu-changjing-electronics-co-ltd/PZTA92",
+      "corrections": [
+        "Corrected source title and revision wording.",
+        "Corrected three hFE table currents, minimum semantics, units, source conditions, fT, Cob, and VCEO metadata.",
+        "Replaced the unsupported staged scalar expectation with exact inclusive minimum probes at 1, 10, and 30 mA.",
+        "Narrowed F1 scope to those three 25 C points at |VCE| = 10 V."
+      ],
+      "rejection_class": null,
+      "rejection_reason": null,
+      "f2_adjudication": null,
+      "electrical_files_unchanged_in_promotion": true,
+      "model_sha256": "ec5f7573441c3acec703a928e3a38de11e47944c75bb31dc154d9ec74c8fdf3d",
+      "fitted_vector_sha256": "72075f14a937cf2935a02c9eb911d7e68ff28a212915d6e5d461c807f05249f3",
+      "promoted_bench_count": 4,
+      "promoted_parity_pass_count": 4,
+      "promoted_expectation_count": 4,
+      "promoted_expectation_pass_count": 4,
+      "promoted_temp_25_pass_count": 4,
+      "exact_gain_hard_bound_probes": [
+        {
+          "package": "jiangsu-changjing-electronics-co-ltd/PZTA92",
+          "polarity": "PNP",
+          "temperature_c": 25,
+          "vce_v": -10,
+          "target_ic_a": 0.001,
+          "native_ic_a": -0.000999999999999993,
+          "native_ib_a": -2.28637432307436e-05,
+          "native_hfe": 43.73737011948896,
+          "minimum_inclusive": 25,
+          "maximum_inclusive": null,
+          "pass": true
+        },
+        {
+          "package": "jiangsu-changjing-electronics-co-ltd/PZTA92",
+          "polarity": "PNP",
+          "temperature_c": 25,
+          "vce_v": -10,
+          "target_ic_a": 0.01,
+          "native_ic_a": -0.00999999999999705,
+          "native_ib_a": -0.000228766049572832,
+          "native_hfe": 43.71278001552132,
+          "minimum_inclusive": 40,
+          "maximum_inclusive": null,
+          "pass": true
+        },
+        {
+          "package": "jiangsu-changjing-electronics-co-ltd/PZTA92",
+          "polarity": "PNP",
+          "temperature_c": 25,
+          "vce_v": -10,
+          "target_ic_a": 0.03,
+          "native_ic_a": -0.0300000000000044,
+          "native_ib_a": -0.000686507086386029,
+          "native_hfe": 43.69947607960326,
+          "minimum_inclusive": 25,
+          "maximum_inclusive": null,
+          "pass": true
+        }
+      ]
+    },
+    {
+      "staged_package": "foshan-blue-rocket-elec/9014",
+      "staging_path": "tools/conveyor/data/staging/batch-9/packages/foshan-blue-rocket-elec/9014",
+      "frozen_campaign_order": 518,
+      "batch_9_order": 149,
+      "lcsc_id": "C3037604",
+      "catalog_mpn": "9014",
+      "canonical_mpn": "9014",
+      "ordering_code_aliases": [],
+      "manufacturer": "Foshan Blue Rocket Elec",
+      "electrical_family": "bjt_npn",
+      "fidelity": "F1",
+      "source_sha256": "a5a623190c62d434ee35acb91faf8bac5e8c57cf9034ecfc7f4cf381be8c7d83",
+      "source_hash_reproduced": true,
+      "source_page_count": 6,
+      "source_citations_in_range": true,
+      "source_record_consistent": true,
+      "disposition": "rejected",
+      "target_library_package": null,
+      "corrections": [],
+      "rejection_class": "refit-required",
+      "rejection_reason": "Source hFE is 60 minimum and 1000 maximum at IC = 1 mA, VCE = 5 V. The staged package treats 1000 as typical at 50 nA and uses the published maximum as BF.",
+      "f2_adjudication": null
+    },
+    {
+      "staged_package": "jiangsu-changjing-electronics-co-ltd/MJD32C",
+      "staging_path": "tools/conveyor/data/staging/batch-9/packages/jiangsu-changjing-electronics-co-ltd/MJD32C",
+      "frozen_campaign_order": 520,
+      "batch_9_order": 151,
+      "lcsc_id": "C40241",
+      "catalog_mpn": "MJD32C",
+      "canonical_mpn": "MJD32C",
+      "ordering_code_aliases": [],
+      "manufacturer": "Jiangsu Changjing Electronics Technology Co Ltd",
+      "electrical_family": "bjt_pnp",
+      "fidelity": "F1",
+      "source_sha256": "020bc9cfdf7a3649a4f216e1f31581b060d42fb3e21b7506c3805d14a1a84fb6",
+      "source_hash_reproduced": true,
+      "source_page_count": 4,
+      "source_citations_in_range": true,
+      "source_record_consistent": true,
+      "disposition": "rejected",
+      "target_library_package": null,
+      "corrections": [],
+      "rejection_class": "refit-required",
+      "rejection_reason": "Source gives minimum hFE 25 at 1 A and minimum 15, maximum 75 at 3 A. The staged extraction marks minima and maxima as typical at wrong currents and sets BF = 75.",
+      "f2_adjudication": null
+    },
+    {
+      "staged_package": "umw-youtai-co-ltd/MMBTH10",
+      "staging_path": "tools/conveyor/data/staging/batch-9/packages/umw-youtai-co-ltd/MMBTH10",
+      "frozen_campaign_order": 525,
+      "batch_9_order": 156,
+      "lcsc_id": "C545531",
+      "catalog_mpn": "MMBTH10",
+      "canonical_mpn": "MMBTH10",
+      "ordering_code_aliases": [],
+      "manufacturer": "UMW Youtai Semiconductor Co Ltd",
+      "electrical_family": "bjt_npn",
+      "fidelity": "F1",
+      "source_sha256": "2a9450e4a971155a3f984e17c38762ec266dcad51b8cfb23c83501785a675197",
+      "source_hash_reproduced": true,
+      "source_page_count": 3,
+      "source_citations_in_range": true,
+      "source_record_consistent": true,
+      "disposition": "promoted",
+      "target_library_package": "umw-youtai-co-ltd/MMBTH10",
+      "corrections": [
+        "Corrected source title and revision wording.",
+        "Corrected the hFE test current from 0.1 uA to 4 mA, minimum semantics, fT, Cob, and VCEO metadata.",
+        "Replaced the unsupported staged scalar expectation with an exact inclusive minimum probe at 4 mA.",
+        "Narrowed F1 scope to the cited 25 C point at VCE = 10 V."
+      ],
+      "rejection_class": null,
+      "rejection_reason": null,
+      "f2_adjudication": null,
+      "electrical_files_unchanged_in_promotion": true,
+      "model_sha256": "20da18cd505969a9fafaaae5f656751d2ad1344bcfd03ace60287e171af93a60",
+      "fitted_vector_sha256": "22659584a215fc550b662e24012e63a71defdb28af03fd817e5cdfe43c286a2b",
+      "promoted_bench_count": 4,
+      "promoted_parity_pass_count": 4,
+      "promoted_expectation_count": 2,
+      "promoted_expectation_pass_count": 2,
+      "promoted_temp_25_pass_count": 4,
+      "exact_gain_hard_bound_probes": [
+        {
+          "package": "umw-youtai-co-ltd/MMBTH10",
+          "polarity": "NPN",
+          "temperature_c": 25,
+          "vce_v": 10,
+          "target_ic_a": 0.004,
+          "native_ic_a": 0.00400000000000151,
+          "native_ib_a": 6.099028981603792e-05,
+          "native_hfe": 65.58421040573046,
+          "minimum_inclusive": 60,
+          "maximum_inclusive": null,
+          "pass": true
+        }
+      ]
+    },
+    {
+      "staged_package": "onsemi/2N5401YBU",
+      "staging_path": "tools/conveyor/data/staging/batch-9/packages/onsemi/2N5401YBU",
+      "frozen_campaign_order": 529,
+      "batch_9_order": 160,
+      "lcsc_id": "C896648",
+      "catalog_mpn": "2N5401YBU",
+      "canonical_mpn": "2N5401YBU",
+      "ordering_code_aliases": [],
+      "manufacturer": "onsemi",
+      "electrical_family": "bjt_pnp",
+      "fidelity": "F1",
+      "source_sha256": "e2261720d3dcb873f49d81d6a8ced909b3b5bc60feeb4bf7e0873bec883d008d",
+      "source_hash_reproduced": true,
+      "source_page_count": 7,
+      "source_citations_in_range": true,
+      "source_record_consistent": true,
+      "disposition": "rejected",
+      "target_library_package": null,
+      "corrections": [],
+      "rejection_class": "refit-required",
+      "rejection_reason": "The Y gain class is 120 through 240 at IC = 10 mA. The staged extraction and BF = 2 do not represent the documented suffix rank.",
+      "f2_adjudication": null
+    }
+  ]
+}

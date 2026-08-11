@@ -1,0 +1,357 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [
+      {
+        "name": "DC current gain versus collector current",
+        "page_reference": "p. 8 Figure 6",
+        "points": [
+          {
+            "x": 0.0001,
+            "y": 95
+          },
+          {
+            "x": 0.001,
+            "y": 92
+          },
+          {
+            "x": 0.01,
+            "y": 88
+          },
+          {
+            "x": 0.05,
+            "y": 75
+          }
+        ],
+        "test_conditions": "VCE = 3 V; TA = 25 degC; typical curve; points digitized from Figure 6",
+        "x_axis": {
+          "quantity": "collector current",
+          "scale": "log",
+          "unit": "A"
+        },
+        "y_axis": {
+          "quantity": "DC current gain hFE",
+          "scale": "log",
+          "unit": "1"
+        }
+      }
+    ],
+    "datasheet_identity": {
+      "pages_examined": [
+        "pp. 1-18"
+      ],
+      "revision": "Revision 3.0, 2024-07-01",
+      "title": "BFP420 Surface mount wideband silicon NPN RF bipolar transistor"
+    },
+    "extraction_notes": [
+      "The datasheet contains a usable hFE versus IC plot; four points were digitized from Figure 6.",
+      "No VCEsat, VBEsat, or VBE(on) table rows were published; saturation_points is empty as permitted by the schema.",
+      "The ordering code BFP420H6327 is documented as the BFP420 die/package ordering variant."
+    ],
+    "family": "bjt",
+    "manufacturer": "Infineon Technologies",
+    "mpn": "BFP420H6327",
+    "omission_reason": null,
+    "schema_version": "1.0.0",
+    "specs": {
+      "cibo": {
+        "conditions": "VEB = 0.5 V; VCB = 0; f = 1 MHz; collector grounded; TA = 25 degC",
+        "page_reference": "p. 6 Table 4",
+        "source_kind": "typical",
+        "unit": "F",
+        "value": 5.5e-10
+      },
+      "cobo": {
+        "conditions": "VCB = 2 V; VBE = 0; f = 1 MHz; emitter grounded; TA = 25 degC",
+        "page_reference": "p. 6 Table 4",
+        "source_kind": "maximum",
+        "unit": "F",
+        "value": 3e-10
+      },
+      "ft": {
+        "conditions": "VCE = 3 V; IC = 30 mA; f = 2 GHz; TA = 25 degC",
+        "page_reference": "p. 6 Table 4",
+        "source_kind": "minimum",
+        "unit": "Hz",
+        "value": 18000000000
+      },
+      "gain_points": [
+        {
+          "collector_current": {
+            "conditions": "VCE = 4 V; pulse measured; TA = 25 degC",
+            "page_reference": "p. 6 Table 3",
+            "source_kind": "minimum",
+            "unit": "A",
+            "value": 0.02
+          },
+          "hfe": {
+            "conditions": "IC = 20 mA; VCE = 4 V; pulse measured; TA = 25 degC",
+            "page_reference": "p. 6 Table 3",
+            "source_kind": "minimum",
+            "unit": "1",
+            "value": 60
+          },
+          "vce": {
+            "conditions": "IC = 20 mA; TA = 25 degC",
+            "page_reference": "p. 6 Table 3",
+            "source_kind": "minimum",
+            "unit": "V",
+            "value": 4
+          }
+        },
+        {
+          "collector_current": {
+            "conditions": "VCE = 4 V; pulse measured; TA = 25 degC",
+            "page_reference": "p. 6 Table 3",
+            "source_kind": "typical",
+            "unit": "A",
+            "value": 0.02
+          },
+          "hfe": {
+            "conditions": "IC = 20 mA; VCE = 4 V; pulse measured; TA = 25 degC",
+            "page_reference": "p. 6 Table 3",
+            "source_kind": "typical",
+            "unit": "1",
+            "value": 95
+          },
+          "vce": {
+            "conditions": "IC = 20 mA; TA = 25 degC",
+            "page_reference": "p. 6 Table 3",
+            "source_kind": "typical",
+            "unit": "V",
+            "value": 4
+          }
+        },
+        {
+          "collector_current": {
+            "conditions": "VCE = 4 V; pulse measured; TA = 25 degC",
+            "page_reference": "p. 6 Table 3",
+            "source_kind": "maximum",
+            "unit": "A",
+            "value": 0.02
+          },
+          "hfe": {
+            "conditions": "IC = 20 mA; VCE = 4 V; pulse measured; TA = 25 degC",
+            "page_reference": "p. 6 Table 3",
+            "source_kind": "maximum",
+            "unit": "1",
+            "value": 130
+          },
+          "vce": {
+            "conditions": "IC = 20 mA; TA = 25 degC",
+            "page_reference": "p. 6 Table 3",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 4
+          }
+        }
+      ],
+      "polarity": "npn",
+      "saturation_points": [],
+      "vceo": {
+        "conditions": "IC = 1 mA; IB = 0; open base; TA = 25 degC",
+        "page_reference": "p. 6 Table 3",
+        "source_kind": "minimum",
+        "unit": "V",
+        "value": 4.5
+      }
+    },
+    "usable_curves": true
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "DC Current Gain",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "bjt.dc_current_gain",
+      "raw_value": "60",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "DC Current Gain (hFE@Ic,Vce)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "bjt.dc_current_gain",
+      "raw_value": "60@20mA,4V",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "BFP420H6327",
+    "manufacturer": "Infineon Technologies",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8757970042510426112",
+    "revision": "Revision 3.0, 2024-07-01",
+    "sha256": "d8ef01d0f74643bfa942f1938fa2b42aeac4276b3847a8012b5dc1a5933e68cd",
+    "accessed_date": "2026-08-11",
+    "pages_referenced": [
+      "pp. 1-18"
+    ],
+    "placeholder": false
+  },
+  "gain_points": [
+    {
+      "collector_current": {
+        "value": 0.0001,
+        "unit": "A",
+        "conditions": "VCE = 3 V; TA = 25 degC; typical curve; points digitized from Figure 6",
+        "page_reference": "p. 8 Figure 6",
+        "source_kind": "digitized_typical_curve"
+      },
+      "vce": {
+        "value": 3,
+        "unit": "V",
+        "conditions": "VCE = 3 V; TA = 25 degC; typical curve; points digitized from Figure 6",
+        "page_reference": "p. 8 Figure 6",
+        "source_kind": "digitized_typical_curve"
+      },
+      "hfe": {
+        "value": 95,
+        "unit": "1",
+        "conditions": "VCE = 3 V; TA = 25 degC; typical curve; points digitized from Figure 6",
+        "page_reference": "p. 8 Figure 6",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "collector_current": {
+        "value": 0.001,
+        "unit": "A",
+        "conditions": "VCE = 3 V; TA = 25 degC; typical curve; points digitized from Figure 6",
+        "page_reference": "p. 8 Figure 6",
+        "source_kind": "digitized_typical_curve"
+      },
+      "vce": {
+        "value": 3,
+        "unit": "V",
+        "conditions": "VCE = 3 V; TA = 25 degC; typical curve; points digitized from Figure 6",
+        "page_reference": "p. 8 Figure 6",
+        "source_kind": "digitized_typical_curve"
+      },
+      "hfe": {
+        "value": 92,
+        "unit": "1",
+        "conditions": "VCE = 3 V; TA = 25 degC; typical curve; points digitized from Figure 6",
+        "page_reference": "p. 8 Figure 6",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "collector_current": {
+        "value": 0.01,
+        "unit": "A",
+        "conditions": "VCE = 3 V; TA = 25 degC; typical curve; points digitized from Figure 6",
+        "page_reference": "p. 8 Figure 6",
+        "source_kind": "digitized_typical_curve"
+      },
+      "vce": {
+        "value": 3,
+        "unit": "V",
+        "conditions": "VCE = 3 V; TA = 25 degC; typical curve; points digitized from Figure 6",
+        "page_reference": "p. 8 Figure 6",
+        "source_kind": "digitized_typical_curve"
+      },
+      "hfe": {
+        "value": 88,
+        "unit": "1",
+        "conditions": "VCE = 3 V; TA = 25 degC; typical curve; points digitized from Figure 6",
+        "page_reference": "p. 8 Figure 6",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "collector_current": {
+        "value": 0.05,
+        "unit": "A",
+        "conditions": "VCE = 3 V; TA = 25 degC; typical curve; points digitized from Figure 6",
+        "page_reference": "p. 8 Figure 6",
+        "source_kind": "digitized_typical_curve"
+      },
+      "vce": {
+        "value": 3,
+        "unit": "V",
+        "conditions": "VCE = 3 V; TA = 25 degC; typical curve; points digitized from Figure 6",
+        "page_reference": "p. 8 Figure 6",
+        "source_kind": "digitized_typical_curve"
+      },
+      "hfe": {
+        "value": 75,
+        "unit": "1",
+        "conditions": "VCE = 3 V; TA = 25 degC; typical curve; points digitized from Figure 6",
+        "page_reference": "p. 8 Figure 6",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "collector_current": {
+        "conditions": "VCE = 4 V; pulse measured; TA = 25 degC",
+        "page_reference": "p. 6 Table 3",
+        "source_kind": "minimum",
+        "unit": "A",
+        "value": 0.02
+      },
+      "hfe": {
+        "conditions": "IC = 20 mA; VCE = 4 V; pulse measured; TA = 25 degC",
+        "page_reference": "p. 6 Table 3",
+        "source_kind": "minimum",
+        "unit": "1",
+        "value": 60
+      },
+      "vce": {
+        "conditions": "IC = 20 mA; TA = 25 degC",
+        "page_reference": "p. 6 Table 3",
+        "source_kind": "minimum",
+        "unit": "V",
+        "value": 4
+      }
+    },
+    {
+      "collector_current": {
+        "conditions": "VCE = 4 V; pulse measured; TA = 25 degC",
+        "page_reference": "p. 6 Table 3",
+        "source_kind": "typical",
+        "unit": "A",
+        "value": 0.02
+      },
+      "hfe": {
+        "conditions": "IC = 20 mA; VCE = 4 V; pulse measured; TA = 25 degC",
+        "page_reference": "p. 6 Table 3",
+        "source_kind": "typical",
+        "unit": "1",
+        "value": 95
+      },
+      "vce": {
+        "conditions": "IC = 20 mA; TA = 25 degC",
+        "page_reference": "p. 6 Table 3",
+        "source_kind": "typical",
+        "unit": "V",
+        "value": 4
+      }
+    },
+    {
+      "collector_current": {
+        "conditions": "VCE = 4 V; pulse measured; TA = 25 degC",
+        "page_reference": "p. 6 Table 3",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.02
+      },
+      "hfe": {
+        "conditions": "IC = 20 mA; VCE = 4 V; pulse measured; TA = 25 degC",
+        "page_reference": "p. 6 Table 3",
+        "source_kind": "maximum",
+        "unit": "1",
+        "value": 130
+      },
+      "vce": {
+        "conditions": "IC = 20 mA; TA = 25 degC",
+        "page_reference": "p. 6 Table 3",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 4
+      }
+    }
+  ],
+  "saturation_points": []
+}

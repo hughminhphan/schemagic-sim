@@ -1,0 +1,102 @@
+{
+  "schema_version": "1.0.0",
+  "fidelity_tier": "F2",
+  "parameters": {
+    "CJE": 1e-12,
+    "CJC": 1e-12,
+    "TF": 1e-9,
+    "IS": 1e-14,
+    "VAF": 100,
+    "RB": 10,
+    "RC": 0.1,
+    "RE": 0.05,
+    "BF": 195.2836388674184,
+    "ISE": 2.445744486255723e-14,
+    "IKF": 0.9568679339025858
+  },
+  "fitter": "scipy.optimize.least_squares with native ngspice-46 evaluations",
+  "optimizer": {
+    "optimizer_nfev": 16,
+    "optimizer_status": 3,
+    "vce": 1,
+    "held_defaults": [
+      {
+        "parameter": "IS",
+        "value": 1e-14,
+        "reason": "held physical default; the source supplies no VBE(on) curve and hFE at forced base current does not constrain IS"
+      }
+    ]
+  },
+  "held_defaults": [
+    {
+      "parameter": "IS",
+      "value": 1e-14,
+      "reason": "held physical default; the source supplies no VBE(on) curve and hFE at forced base current does not constrain IS"
+    }
+  ],
+  "curves_used": [
+    "DC current gain versus collector current (PDF page 3, Fig. 1)"
+  ],
+  "curves_rejected": [],
+  "residuals": [
+    {
+      "quantity": "collector current at IB for hFE 135 and IC 1e-05 A",
+      "gate_quantity": "dc_current_gain",
+      "datasheet_value": 0.00001,
+      "fitted_value": 0.000009809411283256964,
+      "unit": "A",
+      "relative_error": 0.019058871674303726,
+      "citation": "PDF page 3, Fig. 1"
+    },
+    {
+      "quantity": "collector current at IB for hFE 155 and IC 0.0001 A",
+      "gate_quantity": "dc_current_gain",
+      "datasheet_value": 0.0001,
+      "fitted_value": 0.00010373269285990361,
+      "unit": "A",
+      "relative_error": 0.03732692859903603,
+      "citation": "PDF page 3, Fig. 1"
+    },
+    {
+      "quantity": "collector current at IB for hFE 175 and IC 0.001 A",
+      "gate_quantity": "dc_current_gain",
+      "datasheet_value": 0.001,
+      "fitted_value": 0.0010145523679039314,
+      "unit": "A",
+      "relative_error": 0.01455236790393142,
+      "citation": "PDF page 3, Fig. 1"
+    },
+    {
+      "quantity": "collector current at IB for hFE 190 and IC 0.01 A",
+      "gate_quantity": "dc_current_gain",
+      "datasheet_value": 0.01,
+      "fitted_value": 0.00973545299905565,
+      "unit": "A",
+      "relative_error": 0.02645470009443509,
+      "citation": "PDF page 3, Fig. 1"
+    },
+    {
+      "quantity": "collector current at IB for hFE 175 and IC 0.1 A",
+      "gate_quantity": "dc_current_gain",
+      "datasheet_value": 0.1,
+      "fitted_value": 0.0992008258077981,
+      "unit": "A",
+      "relative_error": 0.007991741922019069,
+      "citation": "PDF page 3, Fig. 1"
+    },
+    {
+      "quantity": "collector current at IB for hFE 105 and IC 0.8 A",
+      "gate_quantity": "dc_current_gain",
+      "datasheet_value": 0.8,
+      "fitted_value": 0.8023956649022301,
+      "unit": "A",
+      "relative_error": 0.00299458112778761,
+      "citation": "PDF page 3, Fig. 1"
+    }
+  ],
+  "rms_relative_error": 0.02137365283049845,
+  "worst_relative_error": {
+    "value": 0.03732692859903603,
+    "quantity": "collector current at IB for hFE 155 and IC 0.0001 A"
+  }
+}

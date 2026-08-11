@@ -1,0 +1,139 @@
+{
+  "schema_version": "1.0.0",
+  "canonical_mpn": "S9014",
+  "manufacturer": "HXY MOSFET",
+  "description": "1 NPN 100mA 100nA 150MHz 200mW 300 300mV 45V 5V NPN SOT-23 Bipolar (BJT) ROHS",
+  "electrical_family": "bjt_npn",
+  "symbol_pins": [
+    {
+      "name": "B",
+      "number": "1",
+      "role": "base"
+    },
+    {
+      "name": "C",
+      "number": "2",
+      "role": "collector"
+    },
+    {
+      "name": "E",
+      "number": "3",
+      "role": "emitter"
+    }
+  ],
+  "spice_pin_mapping": [
+    {
+      "symbol_pin_number": "2",
+      "subckt_node": "collector",
+      "order": 1
+    },
+    {
+      "symbol_pin_number": "1",
+      "subckt_node": "base",
+      "order": 2
+    },
+    {
+      "symbol_pin_number": "3",
+      "subckt_node": "emitter",
+      "order": 3
+    }
+  ],
+  "package_variants": [
+    {
+      "name": "SOT-23",
+      "standard": "SOT-23",
+      "pin_count": 3,
+      "pin_map": [
+        {
+          "package_pin": "1",
+          "symbol_pin_number": "1"
+        },
+        {
+          "package_pin": "2",
+          "symbol_pin_number": "2"
+        },
+        {
+          "package_pin": "3",
+          "symbol_pin_number": "3"
+        }
+      ]
+    }
+  ],
+  "ordering_code_aliases": [],
+  "datasheet": {
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8590440689554395136",
+    "revision": "Not stated"
+  },
+  "model_type": "dot_model",
+  "fidelity_tier": "F2",
+  "domain_coverage": {
+    "dc": "fitted",
+    "ac": "none",
+    "transient": "none",
+    "noise": "none",
+    "thermal": "none",
+    "digital": "none"
+  },
+  "supported_analyses": [
+    "operating_point",
+    "dc_sweep"
+  ],
+  "supported_operating_region": {
+    "summary": "F2 DC current-gain fidelity is limited to the Ta = 25 degC hFE versus IC trace on p. 2 at VCE = 5 V, sampled from 0.0001 to 0.1 A collector current. Separate scalar table and saturation bounds do not extend the fitted curve claim.",
+    "numeric_bounds": [
+      {
+        "quantity": "collector_current",
+        "minimum": 0.0001,
+        "maximum": 0.1,
+        "unit": "A",
+        "conditions": "p. 2 hFE versus IC trace, Ta = 25 degC, VCE = 5 V",
+        "placeholder": false
+      },
+      {
+        "quantity": "collector_emitter_voltage",
+        "minimum": 5,
+        "maximum": 5,
+        "unit": "V",
+        "conditions": "p. 2 hFE versus IC trace, Ta = 25 degC, VCE = 5 V",
+        "placeholder": false
+      },
+      {
+        "quantity": "ambient_temperature",
+        "minimum": 25,
+        "maximum": 25,
+        "unit": "degC",
+        "conditions": "p. 2 hFE versus IC trace, Ta = 25 degC, VCE = 5 V",
+        "placeholder": false
+      }
+    ]
+  },
+  "known_omissions": [
+    "AC, transient, noise, thermal, and package-parasitic behavior are outside this DC-only conveyor package.",
+    "Temperature dependence and self-heating are not modelled; the electrical region is limited to the cited nominal-temperature data.",
+    "Catalog parametrics were used only as initial guesses or F1 fallback constraints and are not datasheet citations.",
+    "F2 curve-fit fidelity is limited to the exact selected 25 degC DC current-gain curve, fixed bias, and sampled current range named in supported_operating_region; separate scalar hard bounds do not extend the fitted claim."
+  ],
+  "licence": {
+    "spdx_id": "MIT",
+    "provenance_basis": "original_from_facts"
+  },
+  "generator": {
+    "tool_or_agent": "opencircuit-model-factory-v0.1.0 bulk-adapter",
+    "date": "2026-08-11"
+  },
+  "reviewer": {
+    "tool_or_agent": "gpt-5.6-sol independent reviewer (batch-9 scale campaign)",
+    "date": "2026-08-11"
+  },
+  "test_results": {
+    "status": "complete",
+    "pass_count": 5,
+    "fail_count": 0,
+    "total_count": 5,
+    "worst_observed_relative_fitting_error": {
+      "value": 0.08076588268865953,
+      "quantity": "collector current at IB for hFE 280 and IC 0.05 A"
+    }
+  },
+  "validation_date": "2026-08-11"
+}

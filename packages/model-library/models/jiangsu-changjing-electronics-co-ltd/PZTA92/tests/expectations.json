@@ -1,0 +1,80 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "dc_gain.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "output_curve.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "boundary_region.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "upper_current_boundary_voltage",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(c))"
+          },
+          "minimum": 0,
+          "maximum": 10,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 1 electrical characteristics",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "review_gain_hard_bounds.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "review_hfe_at_0p001_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg1),43737.370119489264)"
+          },
+          "minimum": 25,
+          "unit": "1",
+          "inclusive": true,
+          "datasheet_citation": "p. 1 electrical characteristics",
+          "placeholder": false
+        },
+        {
+          "name": "review_hfe_at_0p01_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg2),4371.2780015534217)"
+          },
+          "minimum": 40,
+          "unit": "1",
+          "inclusive": true,
+          "datasheet_citation": "p. 1 electrical characteristics",
+          "placeholder": false
+        },
+        {
+          "name": "review_hfe_at_0p03_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg3),1456.6492026532283)"
+          },
+          "minimum": 25,
+          "unit": "1",
+          "inclusive": true,
+          "datasheet_citation": "p. 1 electrical characteristics",
+          "placeholder": false
+        }
+      ]
+    }
+  ]
+}

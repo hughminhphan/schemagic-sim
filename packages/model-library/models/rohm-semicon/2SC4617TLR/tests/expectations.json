@@ -1,0 +1,70 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "dc_gain.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "hfe_minimum_at_0.001_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg1),180000)"
+          },
+          "minimum": 180,
+          "unit": "1",
+          "inclusive": true,
+          "datasheet_citation": "PDF page 2",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "output_curve.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "boundary_region.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "upper_current_boundary_voltage",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(c))"
+          },
+          "minimum": 0,
+          "maximum": 6,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "PDF page 2",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "review_gain_hard_bounds.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "review_hfe_at_0p001_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "scale_abs:last(i(vcg1),191512.69759570347)"
+          },
+          "minimum": 180,
+          "unit": "1",
+          "inclusive": true,
+          "datasheet_citation": "PDF p. 2 hFE classification table",
+          "placeholder": false,
+          "maximum": 390
+        }
+      ]
+    }
+  ]
+}

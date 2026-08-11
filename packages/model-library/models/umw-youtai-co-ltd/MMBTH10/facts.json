@@ -1,0 +1,138 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3"
+      ],
+      "revision": "Not stated",
+      "title": "UMW MMBTH10 TRANSISTOR (NPN)"
+    },
+    "extraction_notes": [
+      "Curve plots were examined in the supplied PDF, but no numeric curve points were retained because the plotted traces did not provide a defensible three-point digitization from the text extraction; no points were invented.",
+      "Absolute ratings and electrical-characteristics values are cited only where a tabulated value was readable.",
+      "Values are recorded as SI magnitudes; PNP polarity is represented by specs.polarity.",
+      "Independent review corrected the source title, revision wording, gain-point current, minimum semantics, and associated SI conditions in the promoted copy only."
+    ],
+    "family": "bjt",
+    "manufacturer": "UMW Youtai Semiconductor Co Ltd",
+    "mpn": "MMBTH10",
+    "omission_reason": "No defensible numeric curve points could be extracted from the supplied PDF plots without inventing or interpolating data.",
+    "schema_version": "1.0.0",
+    "specs": {
+      "cibo": null,
+      "cobo": {
+        "conditions": "VCB = 10 V, IE = 0, f = 1 MHz",
+        "page_reference": "p. 1 electrical characteristics",
+        "source_kind": "maximum",
+        "unit": "F",
+        "value": 7e-13
+      },
+      "ft": {
+        "conditions": "IC = 4 mA, VCE = 10 V, f = 100 MHz",
+        "page_reference": "p. 1 electrical characteristics",
+        "source_kind": "minimum",
+        "unit": "Hz",
+        "value": 650000000.0
+      },
+      "gain_points": [
+        {
+          "collector_current": {
+            "conditions": "IC = 0.004 A, VCE = 10 V, Ta = 25 degC",
+            "page_reference": "p. 1 electrical characteristics",
+            "source_kind": "minimum",
+            "unit": "A",
+            "value": 0.004
+          },
+          "hfe": {
+            "conditions": "IC = 0.004 A, VCE = 10 V, Ta = 25 degC",
+            "page_reference": "p. 1 electrical characteristics",
+            "source_kind": "minimum",
+            "unit": "1",
+            "value": 60
+          },
+          "vce": {
+            "conditions": "IC = 0.004 A, VCE = 10 V, Ta = 25 degC",
+            "page_reference": "p. 1 electrical characteristics",
+            "source_kind": "minimum",
+            "unit": "V",
+            "value": 10
+          }
+        }
+      ],
+      "polarity": "npn",
+      "saturation_points": [],
+      "vceo": {
+        "conditions": "IC = 1 mA, IB = 0",
+        "page_reference": "p. 1 electrical characteristics",
+        "source_kind": "minimum",
+        "unit": "V",
+        "value": 25
+      }
+    },
+    "usable_curves": false
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "DC Current Gain",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "bjt.dc_current_gain",
+      "raw_value": "60",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "DC Current Gain (hFE@Ic,Vce)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "bjt.dc_current_gain",
+      "raw_value": "60@4mA,10V",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "MMBTH10",
+    "manufacturer": "UMW Youtai Semiconductor Co Ltd",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8588918221278101504",
+    "revision": "Not stated",
+    "sha256": "2a9450e4a971155a3f984e17c38762ec266dcad51b8cfb23c83501785a675197",
+    "accessed_date": "2026-08-11",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ],
+    "placeholder": false
+  },
+  "gain_points": [
+    {
+      "collector_current": {
+        "conditions": "IC = 0.004 A, VCE = 10 V, Ta = 25 degC",
+        "page_reference": "p. 1 electrical characteristics",
+        "source_kind": "minimum",
+        "unit": "A",
+        "value": 0.004
+      },
+      "hfe": {
+        "conditions": "IC = 0.004 A, VCE = 10 V, Ta = 25 degC",
+        "page_reference": "p. 1 electrical characteristics",
+        "source_kind": "minimum",
+        "unit": "1",
+        "value": 60
+      },
+      "vce": {
+        "conditions": "IC = 0.004 A, VCE = 10 V, Ta = 25 degC",
+        "page_reference": "p. 1 electrical characteristics",
+        "source_kind": "minimum",
+        "unit": "V",
+        "value": 10
+      }
+    }
+  ],
+  "saturation_points": []
+}
