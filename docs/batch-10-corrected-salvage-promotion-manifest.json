@@ -1,0 +1,490 @@
+{
+  "schema_version": "1.0.0",
+  "review": "batch-10-corrected-salvage-final-review",
+  "reviewer": "gpt-5.6-sol independent reviewer",
+  "review_date": "2026-08-11",
+  "starting_tripwire": {
+    "repository_root_verified": true,
+    "head": "db734629b9ef10ffc279f249ffcbe59a0e197319",
+    "branch": "main",
+    "passed": true
+  },
+  "verdict": "block-promotion",
+  "salvage_status": "permanently-closed-after-this-pass",
+  "counts": {
+    "shipping_baseline": 703,
+    "corrected_staged_packages_adjudicated": 19,
+    "promoted": 0,
+    "rejected": 19,
+    "final_library_count": 703,
+    "by_electrical_family": {
+      "bjt_npn": 13,
+      "bjt_pnp": 6
+    },
+    "by_fidelity": {
+      "F1": 19
+    }
+  },
+  "paths": {
+    "corrected_staging": "tools/conveyor/data/staging/batch-10-salvage",
+    "blocked_history": "tools/conveyor/data/staging/batch-10-salvage-blocked-history",
+    "shipping_library": "packages/model-library/models",
+    "review_log": "docs/batch-10-corrected-salvage-review-log.md",
+    "promotion_manifest": "docs/batch-10-corrected-salvage-promotion-manifest.json"
+  },
+  "preserved_records": {
+    "original_block_review_log": {
+      "path": "docs/batch-10-salvage-review-log.md",
+      "sha256": "4a79d5bf62441ba887eeb1d7dcace46bcb98e0810f80e3adf4570f3d55511ea2"
+    },
+    "original_block_manifest": {
+      "path": "docs/batch-10-salvage-promotion-manifest.json",
+      "sha256": "c2c4ee02d6c3b4d61714ca747d1d079e42d8d290df035419a085e7b919d744f5"
+    },
+    "corrected_selection": {
+      "path": "docs/batch-10-corrected-salvage-selection.json",
+      "sha256": "ef709afffdf3d130adfc612dba4b5d4e763680ee1b20b34e548cd773071bd757"
+    },
+    "corrected_execution": {
+      "path": "docs/batch-10-corrected-salvage-execution.json",
+      "sha256": "bd2318bdd505abe56e825ea6bebea2caa069a591b50f8253ef6ad212dbb99910"
+    },
+    "blocked_history_tree": {
+      "files": 1741,
+      "bytes": 146146484,
+      "sha256": "09a0feb6c988639f5948233797fe71804b13fa4d09c7aa28e73b02b3618dc637"
+    },
+    "corrected_staging_tree": {
+      "files": 1722,
+      "bytes": 146124428,
+      "sha256": "25bd4e47c275559375af4f1134dae96d80cadfa8bdcc8938bbf6f834687b28b2"
+    },
+    "corrected_package_tree": {
+      "files": 271,
+      "bytes": 751877,
+      "sha256": "02cc50abb805f48a76603ed4a7ef5e6d8f2aa46c03222d78ca67601d1db843ea"
+    }
+  },
+  "code_review": {
+    "commits": {
+      "canonical_bjt_f1": "a8f41c791700402b7401acd4e228d4a09c374ca1",
+      "partial_saturation_bounds": "98679384cc1aea4033f455cdd1623b1f3b3a5b72",
+      "nullable_saturation_schema": "d79aedbcc72ab4dc58160221a1a373ee284cc7df",
+      "corrected_records": "db734629b9ef10ffc279f249ffcbe59a0e197319"
+    },
+    "verdict": "block",
+    "prior_material_defects": {
+      "voltage_deembedded_capacitance": "fixed",
+      "capacitance_and_resistance_delay_corrected_tf": "fixed",
+      "condition_specific_hfe_constraints": "fixed",
+      "saturation_maxima_seed_only": "not-fixed",
+      "real_native_ngspice_regressions": "fixed",
+      "nullable_independent_saturation_schema": "fixed",
+      "sound_contract_and_collision_guards": "preserved"
+    },
+    "material_finding": {
+      "file": "tools/model-factory/python/fit_bjt.py",
+      "lines": [
+        "16-21",
+        "215-230",
+        "328-330"
+      ],
+      "finding": "For fit_mode conveyor_f1, voltage_residual converts every published maximum to 0.8 times the limit and minimizes an equality residual to that synthetic value. The conveyor F1 path then accepts the voltage_fit vector directly and skips the later one-sided joint residual. Published saturation maxima therefore influence final RB, RC, and RE as arbitrary equality targets, not only as seeds and inclusive upper bounds.",
+      "native_probe": {
+        "facts": "two maximum VCE(sat) rows at 0.20 V and 1.00 V, and two maximum VBE(sat) rows at 0.80 V and 1.00 V",
+        "fitted_vce_sat_v": [
+          0.11286314016254799,
+          0.8047136859836903
+        ],
+        "fitted_vbe_sat_v": [
+          0.6400099512372457,
+          0.7999990048737858
+        ],
+        "synthetic_target_fraction": 0.8,
+        "optimizer": {
+          "voltage_nfev": 14,
+          "joint_nfev": 0,
+          "resistance_seed_only_reported": true
+        }
+      },
+      "test_gap": "The saturation regression only proves that final resistances differ from the closed-form seed. It does not prove that maximum evidence is one-sided or seed-only."
+    },
+    "other_guard_review": {
+      "fit_gates_weakened": false,
+      "published_hard_bounds_weakened": false,
+      "parameter_bounds_weakened": false,
+      "collision_rules_weakened": false,
+      "source_rules_weakened": false,
+      "existing_703_package_changes": 0
+    }
+  },
+  "package_review_scope": {
+    "source_pdf_and_electrical_review_entered": false,
+    "reason": "The user-required review order makes any material code defect a global hard stop before independent review of the 19 staged packages.",
+    "corrected_execution_evidence_not_adopted_as_independent_review": true,
+    "promoted_validation_and_native_wasm_parity": "not-applicable-no-promotions",
+    "expectation_and_hard_bound_rerun": "not-entered-after-code-block",
+    "source_and_collision_rerun": "not-entered-after-code-block",
+    "lbc846blt1g": {
+      "staged_fidelity": "F1",
+      "unsupported_curve_or_f2_claim_in_corrected_record": false,
+      "promotion_disposition": "rejected-by-global-code-block"
+    }
+  },
+  "packages": [
+    {
+      "frozen_campaign_order": 373,
+      "lcsc_id": "C727146",
+      "canonical_mpn": "2SC1815",
+      "catalog_mpn": "2SC1815",
+      "manufacturer": "TWGMC",
+      "package": "twgmc/2SC1815",
+      "electrical_family": "bjt_npn",
+      "fidelity_tier": "F1",
+      "disposition": "rejected",
+      "rejection_class": "global-material-code-block",
+      "reason": "Promotion eligibility was not entered because the mandatory code gate failed. The canonical F1 voltage stage still treats published saturation maxima as equality targets at 80 percent of the limit rather than using those maxima only as optimizer seeds and inclusive hard bounds.",
+      "immutable_vector_sha256": "2d9c2fe803aec2e51e6f8b19e92a9d8bfc30f1e3c280ef6bed7634dd19989132",
+      "fitted_json_sha256": "0b2a54eb9d188d46406e8f62f7b37ee7075110fa5460324cd5f6536072d1ae52",
+      "model_cir_sha256": "180fd0b54056ad690e8e19248aa58349e5ec78a979e55970dec463b22f5a8ab5"
+    },
+    {
+      "frozen_campaign_order": 376,
+      "lcsc_id": "C232538",
+      "canonical_mpn": "BC848CLT1G",
+      "catalog_mpn": "BC848CLT1G",
+      "manufacturer": "onsemi",
+      "package": "onsemi/BC848CLT1G",
+      "electrical_family": "bjt_npn",
+      "fidelity_tier": "F1",
+      "disposition": "rejected",
+      "rejection_class": "global-material-code-block",
+      "reason": "Promotion eligibility was not entered because the mandatory code gate failed. The canonical F1 voltage stage still treats published saturation maxima as equality targets at 80 percent of the limit rather than using those maxima only as optimizer seeds and inclusive hard bounds.",
+      "immutable_vector_sha256": "588868d299cf4f7d6de64c65c0bb53fd8bae00dfa5c376f12707974318cb7d5d",
+      "fitted_json_sha256": "5b1a5b866039793f15ef7984a7c3a686fdd0453fe6b401fd36db433d1200b33f",
+      "model_cir_sha256": "5f580bcc0326e482d1454b1fa0fd49fd6f1f52ac637aa9b144d07d7ec706594a"
+    },
+    {
+      "frozen_campaign_order": 392,
+      "lcsc_id": "C459860",
+      "canonical_mpn": "BC817-40Q-7-F",
+      "catalog_mpn": "BC817-40Q-7-F",
+      "manufacturer": "Diodes Incorporated",
+      "package": "diodes/BC817-40Q-7-F",
+      "electrical_family": "bjt_npn",
+      "fidelity_tier": "F1",
+      "disposition": "rejected",
+      "rejection_class": "global-material-code-block",
+      "reason": "Promotion eligibility was not entered because the mandatory code gate failed. The canonical F1 voltage stage still treats published saturation maxima as equality targets at 80 percent of the limit rather than using those maxima only as optimizer seeds and inclusive hard bounds.",
+      "immutable_vector_sha256": "231c9b1c10bddf836d90b2325196a8f12d27f71b8311ccdc0acd08315fb15e1c",
+      "fitted_json_sha256": "dda8aaa804a37005e10399239a8c5305df3dae1dea3f9f8cd377375613de3027",
+      "model_cir_sha256": "4e511c87bcecfff62ea5872c36e4cf3129e2a014912c420f95b5a44939f9e13a"
+    },
+    {
+      "frozen_campaign_order": 407,
+      "lcsc_id": "C194396",
+      "canonical_mpn": "PMST4403",
+      "catalog_mpn": "PMST4403,115",
+      "manufacturer": "Nexperia",
+      "package": "nexperia/PMST4403-115",
+      "electrical_family": "bjt_pnp",
+      "fidelity_tier": "F1",
+      "disposition": "rejected",
+      "rejection_class": "global-material-code-block",
+      "reason": "Promotion eligibility was not entered because the mandatory code gate failed. The canonical F1 voltage stage still treats published saturation maxima as equality targets at 80 percent of the limit rather than using those maxima only as optimizer seeds and inclusive hard bounds.",
+      "immutable_vector_sha256": "3ce47c73ee81e69f6ba8b0a1063a3ce50360d73ed622b7a2cf3e1e35434cbc39",
+      "fitted_json_sha256": "83ed63df1c70dc2aaf0e85e67aff0a96ab07c0a53174d215ad66e8299b60fbf4",
+      "model_cir_sha256": "ae93282cd2e092e5d57de0557c807cf1207eb78fe7e3918df036bf714848c0d8"
+    },
+    {
+      "frozen_campaign_order": 416,
+      "lcsc_id": "C190608",
+      "canonical_mpn": "MMBT2222AT",
+      "catalog_mpn": "MMBT2222AT",
+      "manufacturer": "Jiangsu Changjing Electronics Technology Co Ltd",
+      "package": "jiangsu-changjing-electronics-co-ltd/MMBT2222AT",
+      "electrical_family": "bjt_npn",
+      "fidelity_tier": "F1",
+      "disposition": "rejected",
+      "rejection_class": "global-material-code-block",
+      "reason": "Promotion eligibility was not entered because the mandatory code gate failed. The canonical F1 voltage stage still treats published saturation maxima as equality targets at 80 percent of the limit rather than using those maxima only as optimizer seeds and inclusive hard bounds.",
+      "immutable_vector_sha256": "1db74f00b55b684a7284a382fe44334456f508de513ff1fa1ac2be1efad19635",
+      "fitted_json_sha256": "9a5055dd950381eba956efb735ebd8f0f67de4a69d9e02ca3c2974df2c7a79ab",
+      "model_cir_sha256": "fbdf0e5b775e70373aff312aad8a5f72504009c1f81a943c6ebe168d9db054fe"
+    },
+    {
+      "frozen_campaign_order": 420,
+      "lcsc_id": "C6165146",
+      "canonical_mpn": "MMST3906",
+      "catalog_mpn": "MMST3906",
+      "manufacturer": "BORN",
+      "package": "born/MMST3906",
+      "electrical_family": "bjt_pnp",
+      "fidelity_tier": "F1",
+      "disposition": "rejected",
+      "rejection_class": "global-material-code-block",
+      "reason": "Promotion eligibility was not entered because the mandatory code gate failed. The canonical F1 voltage stage still treats published saturation maxima as equality targets at 80 percent of the limit rather than using those maxima only as optimizer seeds and inclusive hard bounds.",
+      "immutable_vector_sha256": "8b2e859787b23ba5f1d89ee335453095ff949256f147dd52d707e9f1ee1432da",
+      "fitted_json_sha256": "cdb71e2212bfa4a80da93594ce4b90dc6e8113411a32a800a20e7405b6488052",
+      "model_cir_sha256": "80b5aa8cd3927569f821eef4257c052abd96050574007b9f4fc6d10b37e6db79"
+    },
+    {
+      "frozen_campaign_order": 428,
+      "lcsc_id": "C116737",
+      "canonical_mpn": "FMMT458TA",
+      "catalog_mpn": "FMMT458TA",
+      "manufacturer": "Diodes Incorporated",
+      "package": "diodes/FMMT458TA",
+      "electrical_family": "bjt_npn",
+      "fidelity_tier": "F1",
+      "disposition": "rejected",
+      "rejection_class": "global-material-code-block",
+      "reason": "Promotion eligibility was not entered because the mandatory code gate failed. The canonical F1 voltage stage still treats published saturation maxima as equality targets at 80 percent of the limit rather than using those maxima only as optimizer seeds and inclusive hard bounds.",
+      "immutable_vector_sha256": "b4a99c87c895021721163b134826e7f93df7f9b31c01482abfd9b55bb8761f8a",
+      "fitted_json_sha256": "c3df4903c0a38573687e03baf49ee9e9c5e575d25677e1d7b4ba37626740acfe",
+      "model_cir_sha256": "2556aab3a9e12146fa15a89159cf07be9daf0576a78357b9bc5d4b498512bffa"
+    },
+    {
+      "frozen_campaign_order": 440,
+      "lcsc_id": "C12733",
+      "canonical_mpn": "LBC846BLT1G",
+      "catalog_mpn": "LBC846BLT1G",
+      "manufacturer": "LRC",
+      "package": "lrc/LBC846BLT1G",
+      "electrical_family": "bjt_npn",
+      "fidelity_tier": "F1",
+      "disposition": "rejected",
+      "rejection_class": "global-material-code-block",
+      "reason": "Promotion eligibility was not entered because the mandatory code gate failed. The canonical F1 voltage stage still treats published saturation maxima as equality targets at 80 percent of the limit rather than using those maxima only as optimizer seeds and inclusive hard bounds.",
+      "immutable_vector_sha256": "e35ba71e023bd6dc717d1681d54fa7d1605ae61ce8ba92633f837e7503ef3a3b",
+      "fitted_json_sha256": "bf004a8bd1cc5ef9a4dc6d61708573f9a6678db93470f92e4523f47ea7de4582",
+      "model_cir_sha256": "43130b1a015bcfc8a9401b87d642725e325b62c57e6255681d76306745a3f763"
+    },
+    {
+      "frozen_campaign_order": 442,
+      "lcsc_id": "C305413",
+      "canonical_mpn": "MPSA94",
+      "catalog_mpn": "MPSA94",
+      "manufacturer": "Foshan Blue Rocket Elec",
+      "package": "foshan-blue-rocket-elec/MPSA94",
+      "electrical_family": "bjt_pnp",
+      "fidelity_tier": "F1",
+      "disposition": "rejected",
+      "rejection_class": "global-material-code-block",
+      "reason": "Promotion eligibility was not entered because the mandatory code gate failed. The canonical F1 voltage stage still treats published saturation maxima as equality targets at 80 percent of the limit rather than using those maxima only as optimizer seeds and inclusive hard bounds.",
+      "immutable_vector_sha256": "57b0c058fbe7326fee48fc2a9333b492e48d840be42b59be17bc68a351ab26c9",
+      "fitted_json_sha256": "7503919290da9c1c9f5f4d3bd539967c70a717d96dc34dd506bf8aba9491ac04",
+      "model_cir_sha256": "7ed9a00c4e08eda13ccf571b78ea1c93a3b81bded99d8470a9129605a6d2b2cd"
+    },
+    {
+      "frozen_campaign_order": 453,
+      "lcsc_id": "C8533",
+      "canonical_mpn": "C1815",
+      "catalog_mpn": "C1815(RANGE:200-400)",
+      "manufacturer": "Jiangsu Changjing Electronics Technology Co Ltd",
+      "package": "jiangsu-changjing-electronics-co-ltd/C1815-RANGE-200-400",
+      "electrical_family": "bjt_npn",
+      "fidelity_tier": "F1",
+      "disposition": "rejected",
+      "rejection_class": "global-material-code-block",
+      "reason": "Promotion eligibility was not entered because the mandatory code gate failed. The canonical F1 voltage stage still treats published saturation maxima as equality targets at 80 percent of the limit rather than using those maxima only as optimizer seeds and inclusive hard bounds.",
+      "immutable_vector_sha256": "d1b9103fdf5bb3925b52b42ef5a7252dc24cb636481c38923f867f34cd0a4ac1",
+      "fitted_json_sha256": "80a276460b7cff90098785f56320601c3330dd44624f731c2013886f0336e8d9",
+      "model_cir_sha256": "5cce8901a38f5c62661f736699afc1586e9617658aad3820bccb1e3ee20910a1"
+    },
+    {
+      "frozen_campaign_order": 462,
+      "lcsc_id": "C131780",
+      "canonical_mpn": "LMBT3904WT1G",
+      "catalog_mpn": "LMBT3904WT1G",
+      "manufacturer": "LRC",
+      "package": "lrc/LMBT3904WT1G",
+      "electrical_family": "bjt_npn",
+      "fidelity_tier": "F1",
+      "disposition": "rejected",
+      "rejection_class": "global-material-code-block",
+      "reason": "Promotion eligibility was not entered because the mandatory code gate failed. The canonical F1 voltage stage still treats published saturation maxima as equality targets at 80 percent of the limit rather than using those maxima only as optimizer seeds and inclusive hard bounds.",
+      "immutable_vector_sha256": "808ee07dd870686b30ac7c215e5acda7af2efb7cc95f04384a75641844be03ec",
+      "fitted_json_sha256": "2b9d9aba8f115ad26583060f88a7b209973e3131c414f0eb7930a6043cae3704",
+      "model_cir_sha256": "3f6cee54fa8ae146e9432e46c11ed21a5a1dfd172769e4b376b722fcbb0f1998"
+    },
+    {
+      "frozen_campaign_order": 466,
+      "lcsc_id": "C75557",
+      "canonical_mpn": "PMBT5551",
+      "catalog_mpn": "PMBT5551,215",
+      "manufacturer": "Nexperia",
+      "package": "nexperia/PMBT5551-215",
+      "electrical_family": "bjt_npn",
+      "fidelity_tier": "F1",
+      "disposition": "rejected",
+      "rejection_class": "global-material-code-block",
+      "reason": "Promotion eligibility was not entered because the mandatory code gate failed. The canonical F1 voltage stage still treats published saturation maxima as equality targets at 80 percent of the limit rather than using those maxima only as optimizer seeds and inclusive hard bounds.",
+      "immutable_vector_sha256": "eba9559066f9cd4bf77959c7ffb581f1c358a738c8f2fbdc717e7cc5ac9b5179",
+      "fitted_json_sha256": "0e9d4826413dd6066e26a97ed62c4e1132e5722ac18caaee672ba5396a739dc1",
+      "model_cir_sha256": "a6418312456d511d924b679bb2919e97ade32eedfac7c9875a2ab56baddefa32"
+    },
+    {
+      "frozen_campaign_order": 475,
+      "lcsc_id": "C337068",
+      "canonical_mpn": "SL3904",
+      "catalog_mpn": "SL3904",
+      "manufacturer": "Slkor SLKORMICRO Elec",
+      "package": "slkor-slkormicro-elec/SL3904",
+      "electrical_family": "bjt_npn",
+      "fidelity_tier": "F1",
+      "disposition": "rejected",
+      "rejection_class": "global-material-code-block",
+      "reason": "Promotion eligibility was not entered because the mandatory code gate failed. The canonical F1 voltage stage still treats published saturation maxima as equality targets at 80 percent of the limit rather than using those maxima only as optimizer seeds and inclusive hard bounds.",
+      "immutable_vector_sha256": "7af6c3c7ebed35a062d15a48ffd443ac96d942ff123c51e9c9895342516b3292",
+      "fitted_json_sha256": "4a6d647dd75307e6a58d22ec2ac9697df0b1a170d95c15aad01ce7d43368fdbf",
+      "model_cir_sha256": "5b5992f1b99320647045f9f24254f8d9927f0abc7529370c074d9a5e53a46388"
+    },
+    {
+      "frozen_campaign_order": 483,
+      "lcsc_id": "C2991944",
+      "canonical_mpn": "2SC5658",
+      "catalog_mpn": "2SC5658",
+      "manufacturer": "Jiangsu Changjing Electronics Technology Co Ltd",
+      "package": "jiangsu-changjing-electronics-co-ltd/2SC5658",
+      "electrical_family": "bjt_npn",
+      "fidelity_tier": "F1",
+      "disposition": "rejected",
+      "rejection_class": "global-material-code-block",
+      "reason": "Promotion eligibility was not entered because the mandatory code gate failed. The canonical F1 voltage stage still treats published saturation maxima as equality targets at 80 percent of the limit rather than using those maxima only as optimizer seeds and inclusive hard bounds.",
+      "immutable_vector_sha256": "27aa47fe3d2f35b640be3572c8c3b35ad8f138739cad43d4bcf3363f1b282616",
+      "fitted_json_sha256": "ca15c50f25cc4bd5a726e246bd48318f6d4db70b85e20b6c27d74c3902c6abc9",
+      "model_cir_sha256": "8e24f20d2bdb26a2bfcb9e55ae24e3f2bc5f2c451551d7520f3e6d8ee7d7b391"
+    },
+    {
+      "frozen_campaign_order": 495,
+      "lcsc_id": "C184041",
+      "canonical_mpn": "MJD31T4G",
+      "catalog_mpn": "MJD31T4G",
+      "manufacturer": "onsemi",
+      "package": "onsemi/MJD31T4G",
+      "electrical_family": "bjt_npn",
+      "fidelity_tier": "F1",
+      "disposition": "rejected",
+      "rejection_class": "global-material-code-block",
+      "reason": "Promotion eligibility was not entered because the mandatory code gate failed. The canonical F1 voltage stage still treats published saturation maxima as equality targets at 80 percent of the limit rather than using those maxima only as optimizer seeds and inclusive hard bounds.",
+      "immutable_vector_sha256": "6f1ad05de482593843aeee7407532dd5c6d11571ea97a26eb64fde16689d3a66",
+      "fitted_json_sha256": "e1b994d643a7f15f8a17d8324cbeb9b998e2f8e20e2addbfa1492d3d2e8ec731",
+      "model_cir_sha256": "9a54c782c8aa1ccb96bdc1b5f9e3ee9deba9e5ec857ed91cfa0e421d28bbb509"
+    },
+    {
+      "frozen_campaign_order": 497,
+      "lcsc_id": "C2969834",
+      "canonical_mpn": "MJD31CT4",
+      "catalog_mpn": "MJD31CT4",
+      "manufacturer": "STMicroelectronics",
+      "package": "stmicroelectronics/MJD31CT4",
+      "electrical_family": "bjt_npn",
+      "fidelity_tier": "F1",
+      "disposition": "rejected",
+      "rejection_class": "global-material-code-block",
+      "reason": "Promotion eligibility was not entered because the mandatory code gate failed. The canonical F1 voltage stage still treats published saturation maxima as equality targets at 80 percent of the limit rather than using those maxima only as optimizer seeds and inclusive hard bounds.",
+      "immutable_vector_sha256": "286621b7ca9de01f12e46cac4b28f30dfa9f1be9198fec16730dc1569205b9b3",
+      "fitted_json_sha256": "c641f47f607bf08b030519d548be70b43e6340819d5b9e4b0c29b5eaed2ac9e0",
+      "model_cir_sha256": "f0338ddc4768b663b73b59490164227afe6755f938736475d60419ab9b054cb9"
+    },
+    {
+      "frozen_campaign_order": 504,
+      "lcsc_id": "C12734",
+      "canonical_mpn": "LBC856BLT1G",
+      "catalog_mpn": "LBC856BLT1G",
+      "manufacturer": "LRC",
+      "package": "lrc/LBC856BLT1G",
+      "electrical_family": "bjt_pnp",
+      "fidelity_tier": "F1",
+      "disposition": "rejected",
+      "rejection_class": "global-material-code-block",
+      "reason": "Promotion eligibility was not entered because the mandatory code gate failed. The canonical F1 voltage stage still treats published saturation maxima as equality targets at 80 percent of the limit rather than using those maxima only as optimizer seeds and inclusive hard bounds.",
+      "immutable_vector_sha256": "e065fee010e604907aa859a98bd13bd1f402c6b4c355e94474a7a7a0eb54c992",
+      "fitted_json_sha256": "f015d82ad5f5795d2825d6cd5ec85e7f84169afdc5daa55ea1cfab0821f3caba",
+      "model_cir_sha256": "fceaaf00ea8437661ceddada9aa14979443a2346a9d32bf4cb3b5d24a08536c6"
+    },
+    {
+      "frozen_campaign_order": 512,
+      "lcsc_id": "C475865",
+      "canonical_mpn": "FCX591",
+      "catalog_mpn": "FCX591",
+      "manufacturer": "Shikues",
+      "package": "shikues/FCX591",
+      "electrical_family": "bjt_pnp",
+      "fidelity_tier": "F1",
+      "disposition": "rejected",
+      "rejection_class": "global-material-code-block",
+      "reason": "Promotion eligibility was not entered because the mandatory code gate failed. The canonical F1 voltage stage still treats published saturation maxima as equality targets at 80 percent of the limit rather than using those maxima only as optimizer seeds and inclusive hard bounds.",
+      "immutable_vector_sha256": "d51629d62be4803f68645c40d7f795c1c536f9bfe3d9f94bcc3d08c927a48e64",
+      "fitted_json_sha256": "7ff2f86618b881bd366f179ece5ac37a4e0b58ce44cb503b220b8ebb8954eb6d",
+      "model_cir_sha256": "4e718ceca7a2217bbc3194103df95d620e17106f8d7bfea9fed061be329ce4c0"
+    },
+    {
+      "frozen_campaign_order": 527,
+      "lcsc_id": "C5766315",
+      "canonical_mpn": "MMBTA55",
+      "catalog_mpn": "MMBTA55",
+      "manufacturer": "HXY MOSFET",
+      "package": "hxy-mosfet/MMBTA55",
+      "electrical_family": "bjt_pnp",
+      "fidelity_tier": "F1",
+      "disposition": "rejected",
+      "rejection_class": "global-material-code-block",
+      "reason": "Promotion eligibility was not entered because the mandatory code gate failed. The canonical F1 voltage stage still treats published saturation maxima as equality targets at 80 percent of the limit rather than using those maxima only as optimizer seeds and inclusive hard bounds.",
+      "immutable_vector_sha256": "275f2a413fb1002e942f090b21ed5c6e1c1722788fa133adf8915d12b958aafb",
+      "fitted_json_sha256": "e701241596c65a848700de8d358ebce4bc136d8e54d3163f9ff78a83d884cad6",
+      "model_cir_sha256": "9be46d9bb9d7570e020edc37834820b65aa28a78f4292aba9864fc783ab4b21b"
+    }
+  ],
+  "tests": {
+    "model_library": {
+      "status": "passed",
+      "packages_validated": 703
+    },
+    "model_factory": {
+      "status": "passed",
+      "passed": 57,
+      "failed": 0
+    },
+    "conveyor": {
+      "status": "passed",
+      "passed": 21,
+      "failed": 0,
+      "typecheck": "passed"
+    },
+    "part_feeder": {
+      "status": "passed",
+      "discovered": 9,
+      "passed": 5,
+      "skipped": 4,
+      "failed": 0,
+      "typecheck": "passed"
+    },
+    "workspace": {
+      "status": "passed",
+      "tests": 99,
+      "typecheck": "passed",
+      "typescript_workspaces": 6
+    },
+    "material_probe": {
+      "status": "reproduced-code-defect",
+      "native_ngspice": true
+    }
+  },
+  "repository_audits": {
+    "reviewed_library_count": 703,
+    "reviewed_library_diff": "empty",
+    "promoted_packages": 0,
+    "electrical_vectors_changed": 0,
+    "blocked_history_modified": false,
+    "corrected_staging_modified": false,
+    "orders_530_or_later_selected": 0,
+    "push_deploy_publish_github_comment_vault_update": false,
+    "preexisting_untracked_roots": [
+      ".claude/",
+      "tools/conveyor/data.pre-hardening/"
+    ]
+  },
+  "closure_statement": "Batch 10 salvage is permanently closed after this pass. No further correction, salvage, restaging, or promotion loop is authorized by this review."
+}
