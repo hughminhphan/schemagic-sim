@@ -1,0 +1,1957 @@
+{
+  "fixture_basis": "Numerical regression snapshot transcribed read-only from the seven provenance-clean Batch 12 survivor artifacts before constrained-F1 implementation. It is test input only and does not stage or mutate any candidate.",
+  "survivors": [
+    {
+      "name": "AO7400",
+      "part": {
+        "mpn": "AO7400",
+        "manufacturer": "Alpha Omega Semicon",
+        "conveyor_family": "mosfet",
+        "subcategory": "N-Channel MOSFET",
+        "description": "-55\u2103~+150\u2103 1 N-channel 1.4V 1.7A 18pF 235pF 30V 350mW 35pF 4.82nC@4.5V 85m\u03a9@10V SC-70-3 MOSFETs ROHS",
+        "seed_hints": [
+          {
+            "attribute": "Drain Source On Resistance (RDS(on)@Vgs,Id)",
+            "evidence": "catalog_parametric_not_datasheet_citation",
+            "factory_target": "vdmos.rds_on",
+            "raw_value": "85m\u03a9@1.5A,10V",
+            "role": "initial_guess_only"
+          },
+          {
+            "attribute": "Gate Threshold Voltage (Vgs(th))",
+            "evidence": "catalog_parametric_not_datasheet_citation",
+            "factory_target": "vdmos.threshold",
+            "raw_value": "1.4V",
+            "role": "initial_guess_only"
+          },
+          {
+            "attribute": "Gate Threshold Voltage (Vgs(th)@Id)",
+            "evidence": "catalog_parametric_not_datasheet_citation",
+            "factory_target": "vdmos.threshold",
+            "raw_value": "1.4V@250uA",
+            "role": "initial_guess_only"
+          },
+          {
+            "attribute": "Input Capacitance (Ciss@Vds)",
+            "evidence": "catalog_parametric_not_datasheet_citation",
+            "factory_target": "vdmos.ciss",
+            "raw_value": "390pF@15V",
+            "role": "initial_guess_only"
+          },
+          {
+            "attribute": "Input Capacitance(Ciss)",
+            "evidence": "catalog_parametric_not_datasheet_citation",
+            "factory_target": "vdmos.ciss",
+            "raw_value": "235pF",
+            "role": "initial_guess_only"
+          },
+          {
+            "attribute": "Output Capacitance(Coss)",
+            "evidence": "catalog_parametric_not_datasheet_citation",
+            "factory_target": "vdmos.coss",
+            "raw_value": "35pF",
+            "role": "initial_guess_only"
+          },
+          {
+            "attribute": "RDS(on)",
+            "evidence": "catalog_parametric_not_datasheet_citation",
+            "factory_target": "vdmos.rds_on",
+            "raw_value": "85m\u03a9@10V",
+            "role": "initial_guess_only"
+          },
+          {
+            "attribute": "Reverse Transfer Capacitance (Crss@Vds)",
+            "evidence": "catalog_parametric_not_datasheet_citation",
+            "factory_target": "vdmos.crss",
+            "raw_value": "-",
+            "role": "initial_guess_only"
+          }
+        ]
+      },
+      "extraction": {
+        "usable_curves": false,
+        "curves": [],
+        "specs": {
+          "body_diode": null,
+          "breakdown_voltage": {
+            "conditions": "ID = 250 \u00b5A, VGS = 0 V; Tj = 25 \u00b0C unless otherwise noted.",
+            "page_reference": "Electrical Characteristics, p. 2",
+            "source_kind": "minimum",
+            "unit": "V",
+            "value": 30
+          },
+          "ciss": {
+            "conditions": "VGS = 0 V, VDS = 15 V, f = 1 MHz; Tj = 25 \u00b0C unless otherwise noted.",
+            "page_reference": "Electrical Characteristics, p. 2",
+            "source_kind": "typical",
+            "unit": "F",
+            "value": 2.35e-10
+          },
+          "coss": {
+            "conditions": "VGS = 0 V, VDS = 15 V, f = 1 MHz; Tj = 25 \u00b0C unless otherwise noted.",
+            "page_reference": "Electrical Characteristics, p. 2",
+            "source_kind": "typical",
+            "unit": "F",
+            "value": 3.5e-11
+          },
+          "crss": {
+            "conditions": "VGS = 0 V, VDS = 15 V, f = 1 MHz; Tj = 25 \u00b0C unless otherwise noted.",
+            "page_reference": "Electrical Characteristics, p. 2",
+            "source_kind": "typical",
+            "unit": "F",
+            "value": 1.8e-11
+          },
+          "polarity": "n",
+          "rdson_points": [
+            {
+              "current": {
+                "conditions": "VGS = 10 V, ID = 1.7 A; Tj = 25 \u00b0C unless otherwise noted.",
+                "page_reference": "Electrical Characteristics, p. 2",
+                "source_kind": "typical",
+                "unit": "A",
+                "value": 1.7
+              },
+              "resistance": {
+                "conditions": "VGS = 10 V, ID = 1.7 A; Tj = 25 \u00b0C unless otherwise noted.",
+                "page_reference": "Electrical Characteristics, p. 2",
+                "source_kind": "typical",
+                "unit": "ohm",
+                "value": 0.045
+              },
+              "vgs": {
+                "conditions": "VGS = 10 V, ID = 1.7 A; Tj = 25 \u00b0C unless otherwise noted.",
+                "page_reference": "Electrical Characteristics, p. 2",
+                "source_kind": "typical",
+                "unit": "V",
+                "value": 10
+              }
+            },
+            {
+              "current": {
+                "conditions": "VGS = 10 V, ID = 1.7 A; Tj = 25 \u00b0C unless otherwise noted.",
+                "page_reference": "Electrical Characteristics, p. 2",
+                "source_kind": "maximum",
+                "unit": "A",
+                "value": 1.7
+              },
+              "resistance": {
+                "conditions": "VGS = 10 V, ID = 1.7 A; Tj = 25 \u00b0C unless otherwise noted.",
+                "page_reference": "Electrical Characteristics, p. 2",
+                "source_kind": "maximum",
+                "unit": "ohm",
+                "value": 0.055
+              },
+              "vgs": {
+                "conditions": "VGS = 10 V, ID = 1.7 A; Tj = 25 \u00b0C unless otherwise noted.",
+                "page_reference": "Electrical Characteristics, p. 2",
+                "source_kind": "maximum",
+                "unit": "V",
+                "value": 10
+              }
+            },
+            {
+              "current": {
+                "conditions": "VGS = 10 V, ID = 1.7 A; Tj = 125 \u00b0C.",
+                "page_reference": "Electrical Characteristics, p. 2",
+                "source_kind": "maximum",
+                "unit": "A",
+                "value": 1.7
+              },
+              "resistance": {
+                "conditions": "VGS = 10 V, ID = 1.7 A; Tj = 125 \u00b0C.",
+                "page_reference": "Electrical Characteristics, p. 2",
+                "source_kind": "maximum",
+                "unit": "ohm",
+                "value": 0.07
+              },
+              "vgs": {
+                "conditions": "VGS = 10 V, ID = 1.7 A; Tj = 125 \u00b0C.",
+                "page_reference": "Electrical Characteristics, p. 2",
+                "source_kind": "maximum",
+                "unit": "V",
+                "value": 10
+              }
+            },
+            {
+              "current": {
+                "conditions": "VGS = 4.5 V, ID = 1.5 A; Tj = 25 \u00b0C unless otherwise noted.",
+                "page_reference": "Electrical Characteristics, p. 2",
+                "source_kind": "typical",
+                "unit": "A",
+                "value": 1.5
+              },
+              "resistance": {
+                "conditions": "VGS = 4.5 V, ID = 1.5 A; Tj = 25 \u00b0C unless otherwise noted.",
+                "page_reference": "Electrical Characteristics, p. 2",
+                "source_kind": "typical",
+                "unit": "ohm",
+                "value": 0.05
+              },
+              "vgs": {
+                "conditions": "VGS = 4.5 V, ID = 1.5 A; Tj = 25 \u00b0C unless otherwise noted.",
+                "page_reference": "Electrical Characteristics, p. 2",
+                "source_kind": "typical",
+                "unit": "V",
+                "value": 4.5
+              }
+            },
+            {
+              "current": {
+                "conditions": "VGS = 4.5 V, ID = 1.5 A; Tj = 25 \u00b0C unless otherwise noted.",
+                "page_reference": "Electrical Characteristics, p. 2",
+                "source_kind": "maximum",
+                "unit": "A",
+                "value": 1.5
+              },
+              "resistance": {
+                "conditions": "VGS = 4.5 V, ID = 1.5 A; Tj = 25 \u00b0C unless otherwise noted.",
+                "page_reference": "Electrical Characteristics, p. 2",
+                "source_kind": "maximum",
+                "unit": "ohm",
+                "value": 0.065
+              },
+              "vgs": {
+                "conditions": "VGS = 4.5 V, ID = 1.5 A; Tj = 25 \u00b0C unless otherwise noted.",
+                "page_reference": "Electrical Characteristics, p. 2",
+                "source_kind": "maximum",
+                "unit": "V",
+                "value": 4.5
+              }
+            },
+            {
+              "current": {
+                "conditions": "VGS = 2.5 V, ID = 1.5 A; Tj = 25 \u00b0C unless otherwise noted.",
+                "page_reference": "Electrical Characteristics, p. 2",
+                "source_kind": "typical",
+                "unit": "A",
+                "value": 1.5
+              },
+              "resistance": {
+                "conditions": "VGS = 2.5 V, ID = 1.5 A; Tj = 25 \u00b0C unless otherwise noted.",
+                "page_reference": "Electrical Characteristics, p. 2",
+                "source_kind": "typical",
+                "unit": "ohm",
+                "value": 0.061
+              },
+              "vgs": {
+                "conditions": "VGS = 2.5 V, ID = 1.5 A; Tj = 25 \u00b0C unless otherwise noted.",
+                "page_reference": "Electrical Characteristics, p. 2",
+                "source_kind": "typical",
+                "unit": "V",
+                "value": 2.5
+              }
+            },
+            {
+              "current": {
+                "conditions": "VGS = 2.5 V, ID = 1.5 A; Tj = 25 \u00b0C unless otherwise noted.",
+                "page_reference": "Electrical Characteristics, p. 2",
+                "source_kind": "maximum",
+                "unit": "A",
+                "value": 1.5
+              },
+              "resistance": {
+                "conditions": "VGS = 2.5 V, ID = 1.5 A; Tj = 25 \u00b0C unless otherwise noted.",
+                "page_reference": "Electrical Characteristics, p. 2",
+                "source_kind": "maximum",
+                "unit": "ohm",
+                "value": 0.085
+              },
+              "vgs": {
+                "conditions": "VGS = 2.5 V, ID = 1.5 A; Tj = 25 \u00b0C unless otherwise noted.",
+                "page_reference": "Electrical Characteristics, p. 2",
+                "source_kind": "maximum",
+                "unit": "V",
+                "value": 2.5
+              }
+            }
+          ],
+          "threshold_max": {
+            "conditions": "VDS = VGS, ID = 250 \u00b5A; Tj = 25 \u00b0C unless otherwise noted.",
+            "page_reference": "Electrical Characteristics, p. 2",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 1.5
+          },
+          "threshold_min": {
+            "conditions": "VDS = VGS, ID = 250 \u00b5A; Tj = 25 \u00b0C unless otherwise noted.",
+            "page_reference": "Electrical Characteristics, p. 2",
+            "source_kind": "minimum",
+            "unit": "V",
+            "value": 0.5
+          },
+          "threshold_typ": {
+            "conditions": "VDS = VGS, ID = 250 \u00b5A; Tj = 25 \u00b0C unless otherwise noted.",
+            "page_reference": "Electrical Characteristics, p. 2",
+            "source_kind": "typical",
+            "unit": "V",
+            "value": 1
+          }
+        }
+      },
+      "expected": {
+        "fidelity": "F1",
+        "parameters": {
+          "VTO": 1,
+          "KP": 44.44444444444444,
+          "THETA": 0,
+          "LAMBDA": 0.003,
+          "RD": 0.02475,
+          "RS": 0.009,
+          "RG": 0.0001,
+          "CGS": 2.1700000000000003e-10,
+          "CGDMAX": 1.8e-11,
+          "CGDMIN": 1.8e-11,
+          "CJO": 1.7000000000000003e-11,
+          "IS": 1e-12,
+          "N": 1.5,
+          "RB": 0.009
+        },
+        "model_text": ".model OC_ALPHA-OMEGA-SEMICON_AO7400 VDMOS( VTO=1.0000000000e0 KP=4.4444444444e1 THETA=0.0000000000e0 LAMBDA=3.0000000000e-3 RD=2.4750000000e-2 RS=9.0000000000e-3 RG=1.0000000000e-4 RDS=1e9 CGS=2.1700000000e-10 CGDMAX=1.8000000000e-11 CGDMIN=1.8000000000e-11 CJO=1.7000000000e-11 IS=1.0000000000e-12 N=1.5000000000e0 RB=9.0000000000e-3)\n"
+      }
+    },
+    {
+      "name": "FSS2301S",
+      "part": {
+        "mpn": "FSS2301S",
+        "manufacturer": "FOSAN",
+        "conveyor_family": "mosfet",
+        "subcategory": "P-Channel MOSFET",
+        "description": "-55\u2103~+150\u2103 1 P-Channel 128m\u03a9@2.5V 2.3A 20V 327pF 4.5nC 55pF 620mV 62pF 700mW P-Channel SOT-23 MOSFETs ROHS",
+        "seed_hints": [
+          {
+            "attribute": "Drain Source On Resistance (RDS(on)@Vgs,Id)",
+            "evidence": "catalog_parametric_not_datasheet_citation",
+            "factory_target": "vdmos.rds_on",
+            "raw_value": "120m\u03a9@4.5V,1.5A",
+            "role": "initial_guess_only"
+          },
+          {
+            "attribute": "Gate Threshold Voltage (Vgs(th))",
+            "evidence": "catalog_parametric_not_datasheet_citation",
+            "factory_target": "vdmos.threshold",
+            "raw_value": "620mV",
+            "role": "initial_guess_only"
+          },
+          {
+            "attribute": "Gate Threshold Voltage (Vgs(th)@Id)",
+            "evidence": "catalog_parametric_not_datasheet_citation",
+            "factory_target": "vdmos.threshold",
+            "raw_value": "1.5V@250uA",
+            "role": "initial_guess_only"
+          },
+          {
+            "attribute": "Input Capacitance (Ciss@Vds)",
+            "evidence": "catalog_parametric_not_datasheet_citation",
+            "factory_target": "vdmos.ciss",
+            "raw_value": "200pF@10V",
+            "role": "initial_guess_only"
+          },
+          {
+            "attribute": "Input Capacitance(Ciss)",
+            "evidence": "catalog_parametric_not_datasheet_citation",
+            "factory_target": "vdmos.ciss",
+            "raw_value": "327pF",
+            "role": "initial_guess_only"
+          },
+          {
+            "attribute": "Output Capacitance(Coss)",
+            "evidence": "catalog_parametric_not_datasheet_citation",
+            "factory_target": "vdmos.coss",
+            "raw_value": "62pF",
+            "role": "initial_guess_only"
+          },
+          {
+            "attribute": "RDS(on)",
+            "evidence": "catalog_parametric_not_datasheet_citation",
+            "factory_target": "vdmos.rds_on",
+            "raw_value": "128m\u03a9@2.5V",
+            "role": "initial_guess_only"
+          },
+          {
+            "attribute": "Reverse Transfer Capacitance (Crss@Vds)",
+            "evidence": "catalog_parametric_not_datasheet_citation",
+            "factory_target": "vdmos.crss",
+            "raw_value": "-",
+            "role": "initial_guess_only"
+          }
+        ]
+      },
+      "extraction": {
+        "usable_curves": false,
+        "curves": [],
+        "specs": {
+          "body_diode": {
+            "conditions": "TA=25 C; ISD=-1.7 A; VGS=0 V",
+            "page_reference": "PDF p. 2, Electrical Characteristics table",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 1.2
+          },
+          "breakdown_voltage": {
+            "conditions": "TA=25 C; IB=-250 uA; VGS=0 V",
+            "page_reference": "PDF p. 2, Electrical Characteristics table",
+            "source_kind": "minimum",
+            "unit": "V",
+            "value": 20
+          },
+          "ciss": {
+            "conditions": "TA=25 C; VGS=0 V; VDS=-10 V; f=1 MHz",
+            "page_reference": "PDF p. 2, Electrical Characteristics table",
+            "source_kind": "typical",
+            "unit": "F",
+            "value": 3.27e-10
+          },
+          "coss": {
+            "conditions": "TA=25 C; VGS=0 V; VDS=-10 V; f=1 MHz",
+            "page_reference": "PDF p. 2, Electrical Characteristics table",
+            "source_kind": "typical",
+            "unit": "F",
+            "value": 6.2e-11
+          },
+          "crss": {
+            "conditions": "TA=25 C; VGS=0 V; VDS=-10 V; f=1 MHz",
+            "page_reference": "PDF p. 2, Electrical Characteristics table",
+            "source_kind": "typical",
+            "unit": "F",
+            "value": 5.5e-11
+          },
+          "polarity": "p",
+          "rdson_points": [
+            {
+              "current": {
+                "conditions": "TA=25 C; ID=-1.5 A; VGS=-4.5 V",
+                "page_reference": "PDF p. 2, Electrical Characteristics table",
+                "source_kind": "typical",
+                "unit": "A",
+                "value": 1.5
+              },
+              "resistance": {
+                "conditions": "TA=25 C; ID=-1.5 A; VGS=-4.5 V",
+                "page_reference": "PDF p. 2, Electrical Characteristics table",
+                "source_kind": "typical",
+                "unit": "ohm",
+                "value": 0.09
+              },
+              "vgs": {
+                "conditions": "TA=25 C; ID=-1.5 A; VGS=-4.5 V",
+                "page_reference": "PDF p. 2, Electrical Characteristics table",
+                "source_kind": "typical",
+                "unit": "V",
+                "value": 4.5
+              }
+            },
+            {
+              "current": {
+                "conditions": "TA=25 C; ID=-1.5 A; VGS=-4.5 V",
+                "page_reference": "PDF p. 2, Electrical Characteristics table",
+                "source_kind": "maximum",
+                "unit": "A",
+                "value": 1.5
+              },
+              "resistance": {
+                "conditions": "TA=25 C; ID=-1.5 A; VGS=-4.5 V",
+                "page_reference": "PDF p. 2, Electrical Characteristics table",
+                "source_kind": "maximum",
+                "unit": "ohm",
+                "value": 0.12
+              },
+              "vgs": {
+                "conditions": "TA=25 C; ID=-1.5 A; VGS=-4.5 V",
+                "page_reference": "PDF p. 2, Electrical Characteristics table",
+                "source_kind": "maximum",
+                "unit": "V",
+                "value": 4.5
+              }
+            },
+            {
+              "current": {
+                "conditions": "TA=25 C; ID=-1.2 A; VGS=-2.5 V",
+                "page_reference": "PDF p. 2, Electrical Characteristics table",
+                "source_kind": "typical",
+                "unit": "A",
+                "value": 1.2
+              },
+              "resistance": {
+                "conditions": "TA=25 C; ID=-1.2 A; VGS=-2.5 V",
+                "page_reference": "PDF p. 2, Electrical Characteristics table",
+                "source_kind": "typical",
+                "unit": "ohm",
+                "value": 0.128
+              },
+              "vgs": {
+                "conditions": "TA=25 C; ID=-1.2 A; VGS=-2.5 V",
+                "page_reference": "PDF p. 2, Electrical Characteristics table",
+                "source_kind": "typical",
+                "unit": "V",
+                "value": 2.5
+              }
+            },
+            {
+              "current": {
+                "conditions": "TA=25 C; ID=-1.2 A; VGS=-2.5 V",
+                "page_reference": "PDF p. 2, Electrical Characteristics table",
+                "source_kind": "maximum",
+                "unit": "A",
+                "value": 1.2
+              },
+              "resistance": {
+                "conditions": "TA=25 C; ID=-1.2 A; VGS=-2.5 V",
+                "page_reference": "PDF p. 2, Electrical Characteristics table",
+                "source_kind": "maximum",
+                "unit": "ohm",
+                "value": 0.15
+              },
+              "vgs": {
+                "conditions": "TA=25 C; ID=-1.2 A; VGS=-2.5 V",
+                "page_reference": "PDF p. 2, Electrical Characteristics table",
+                "source_kind": "maximum",
+                "unit": "V",
+                "value": 2.5
+              }
+            },
+            {
+              "current": {
+                "conditions": "TA=25 C; ID=-1 A; VGS=-1.8 V",
+                "page_reference": "PDF p. 2, Electrical Characteristics table",
+                "source_kind": "typical",
+                "unit": "A",
+                "value": 1
+              },
+              "resistance": {
+                "conditions": "TA=25 C; ID=-1 A; VGS=-1.8 V",
+                "page_reference": "PDF p. 2, Electrical Characteristics table",
+                "source_kind": "typical",
+                "unit": "ohm",
+                "value": 0.185
+              },
+              "vgs": {
+                "conditions": "TA=25 C; ID=-1 A; VGS=-1.8 V",
+                "page_reference": "PDF p. 2, Electrical Characteristics table",
+                "source_kind": "typical",
+                "unit": "V",
+                "value": 1.8
+              }
+            },
+            {
+              "current": {
+                "conditions": "TA=25 C; ID=-1 A; VGS=-1.8 V",
+                "page_reference": "PDF p. 2, Electrical Characteristics table",
+                "source_kind": "maximum",
+                "unit": "A",
+                "value": 1
+              },
+              "resistance": {
+                "conditions": "TA=25 C; ID=-1 A; VGS=-1.8 V",
+                "page_reference": "PDF p. 2, Electrical Characteristics table",
+                "source_kind": "maximum",
+                "unit": "ohm",
+                "value": 0.25
+              },
+              "vgs": {
+                "conditions": "TA=25 C; ID=-1 A; VGS=-1.8 V",
+                "page_reference": "PDF p. 2, Electrical Characteristics table",
+                "source_kind": "maximum",
+                "unit": "V",
+                "value": 1.8
+              }
+            }
+          ],
+          "threshold_max": {
+            "conditions": "TA=25 C; ID=-250 uA; VGS=VDS",
+            "page_reference": "PDF p. 2, Electrical Characteristics table",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 1
+          },
+          "threshold_min": {
+            "conditions": "TA=25 C; ID=-250 uA; VGS=VDS",
+            "page_reference": "PDF p. 2, Electrical Characteristics table",
+            "source_kind": "minimum",
+            "unit": "V",
+            "value": 0.4
+          },
+          "threshold_typ": {
+            "conditions": "TA=25 C; ID=-250 uA; VGS=VDS",
+            "page_reference": "PDF p. 2, Electrical Characteristics table",
+            "source_kind": "typical",
+            "unit": "V",
+            "value": 0.62
+          }
+        }
+      },
+      "expected": {
+        "fidelity": "F1",
+        "parameters": {
+          "VTO": 0.62,
+          "KP": 22.22222222222222,
+          "THETA": 0,
+          "LAMBDA": 0.003,
+          "RD": 0.0495,
+          "RS": 0.018,
+          "RG": 0.0001,
+          "CGS": 2.72e-10,
+          "CGDMAX": 5.5e-11,
+          "CGDMIN": 5.5e-11,
+          "CJO": 7.000000000000008e-12,
+          "IS": 1e-12,
+          "N": 1.5,
+          "RB": 0.018
+        },
+        "model_text": ".model OC_FOSAN_FSS2301S VDMOS( pchan VTO=-6.2000000000e-1 KP=2.2222222222e1 THETA=0.0000000000e0 LAMBDA=3.0000000000e-3 RD=4.9500000000e-2 RS=1.8000000000e-2 RG=1.0000000000e-4 RDS=1e9 CGS=2.7200000000e-10 CGDMAX=5.5000000000e-11 CGDMIN=5.5000000000e-11 CJO=7.0000000000e-12 IS=1.0000000000e-12 N=1.5000000000e0 RB=1.8000000000e-2)\n"
+      }
+    },
+    {
+      "name": "IRLML0040",
+      "part": {
+        "mpn": "IRLML0040",
+        "manufacturer": "Guangdong Hottech",
+        "conveyor_family": "mosfet",
+        "subcategory": "N-Channel MOSFET",
+        "description": "-55\u2103~+150\u2103 1 N-channel 1.3W 2.5V 266pF 29pF 3.6A 3.9nC 40V 56m\u03a9@10V SOT-23 MOSFETs ROHS",
+        "seed_hints": [
+          {
+            "attribute": "Gate Threshold Voltage (Vgs(th))",
+            "evidence": "catalog_parametric_not_datasheet_citation",
+            "factory_target": "vdmos.threshold",
+            "raw_value": "2.5V",
+            "role": "initial_guess_only"
+          },
+          {
+            "attribute": "Input Capacitance(Ciss)",
+            "evidence": "catalog_parametric_not_datasheet_citation",
+            "factory_target": "vdmos.ciss",
+            "raw_value": "266pF",
+            "role": "initial_guess_only"
+          },
+          {
+            "attribute": "RDS(on)",
+            "evidence": "catalog_parametric_not_datasheet_citation",
+            "factory_target": "vdmos.rds_on",
+            "raw_value": "56m\u03a9@10V,3.6A",
+            "role": "initial_guess_only"
+          },
+          {
+            "attribute": "Reverse Transfer Capacitance (Crss@Vds)",
+            "evidence": "catalog_parametric_not_datasheet_citation",
+            "factory_target": "vdmos.crss",
+            "raw_value": "29pF",
+            "role": "initial_guess_only"
+          }
+        ]
+      },
+      "extraction": {
+        "usable_curves": false,
+        "curves": [],
+        "specs": {
+          "body_diode": {
+            "conditions": "TJ = 25 C; IS = 1.3 A; VGS = 0 V",
+            "page_reference": "p. 1, VSD row",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 1.2
+          },
+          "breakdown_voltage": {
+            "conditions": "VGS = 0 V; ID = 250 uA; TJ = 25 C",
+            "page_reference": "p. 1, V(BR)DSS row",
+            "source_kind": "minimum",
+            "unit": "V",
+            "value": 40
+          },
+          "ciss": {
+            "conditions": "VGS = 0 V; VDS = 25 V; f = 1 MHz; TJ = 25 C",
+            "page_reference": "p. 1, Ciss row",
+            "source_kind": "typical",
+            "unit": "F",
+            "value": 2.66e-10
+          },
+          "coss": {
+            "conditions": "VGS = 0 V; VDS = 25 V; f = 1 MHz; TJ = 25 C",
+            "page_reference": "p. 1, Coss row",
+            "source_kind": "typical",
+            "unit": "F",
+            "value": 4.9e-11
+          },
+          "crss": {
+            "conditions": "VGS = 0 V; VDS = 25 V; f = 1 MHz; TJ = 25 C",
+            "page_reference": "p. 1, Crss row",
+            "source_kind": "typical",
+            "unit": "F",
+            "value": 2.9e-11
+          },
+          "polarity": "n",
+          "rdson_points": [
+            {
+              "current": {
+                "conditions": "VGS = 10 V; TJ = 25 C",
+                "page_reference": "p. 1, RDS(on) row",
+                "source_kind": "typical",
+                "unit": "A",
+                "value": 3.6
+              },
+              "resistance": {
+                "conditions": "VGS = 10 V; ID = 3.6 A; TJ = 25 C",
+                "page_reference": "p. 1, RDS(on) row",
+                "source_kind": "typical",
+                "unit": "ohm",
+                "value": 0.044
+              },
+              "vgs": {
+                "conditions": "ID = 3.6 A; TJ = 25 C",
+                "page_reference": "p. 1, RDS(on) row",
+                "source_kind": "typical",
+                "unit": "V",
+                "value": 10
+              }
+            },
+            {
+              "current": {
+                "conditions": "VGS = 10 V; TJ = 25 C",
+                "page_reference": "p. 1, RDS(on) row",
+                "source_kind": "maximum",
+                "unit": "A",
+                "value": 3.6
+              },
+              "resistance": {
+                "conditions": "VGS = 10 V; ID = 3.6 A; TJ = 25 C",
+                "page_reference": "p. 1, RDS(on) row",
+                "source_kind": "maximum",
+                "unit": "ohm",
+                "value": 0.056
+              },
+              "vgs": {
+                "conditions": "ID = 3.6 A; TJ = 25 C",
+                "page_reference": "p. 1, RDS(on) row",
+                "source_kind": "maximum",
+                "unit": "V",
+                "value": 10
+              }
+            },
+            {
+              "current": {
+                "conditions": "VGS = 4.5 V; TJ = 25 C",
+                "page_reference": "p. 1, RDS(on) row",
+                "source_kind": "typical",
+                "unit": "A",
+                "value": 2.9
+              },
+              "resistance": {
+                "conditions": "VGS = 4.5 V; ID = 2.9 A; TJ = 25 C",
+                "page_reference": "p. 1, RDS(on) row",
+                "source_kind": "typical",
+                "unit": "ohm",
+                "value": 0.062
+              },
+              "vgs": {
+                "conditions": "ID = 2.9 A; TJ = 25 C",
+                "page_reference": "p. 1, RDS(on) row",
+                "source_kind": "typical",
+                "unit": "V",
+                "value": 4.5
+              }
+            },
+            {
+              "current": {
+                "conditions": "VGS = 4.5 V; TJ = 25 C",
+                "page_reference": "p. 1, RDS(on) row",
+                "source_kind": "maximum",
+                "unit": "A",
+                "value": 2.9
+              },
+              "resistance": {
+                "conditions": "VGS = 4.5 V; ID = 2.9 A; TJ = 25 C",
+                "page_reference": "p. 1, RDS(on) row",
+                "source_kind": "maximum",
+                "unit": "ohm",
+                "value": 0.078
+              },
+              "vgs": {
+                "conditions": "ID = 2.9 A; TJ = 25 C",
+                "page_reference": "p. 1, RDS(on) row",
+                "source_kind": "maximum",
+                "unit": "V",
+                "value": 4.5
+              }
+            }
+          ],
+          "threshold_max": {
+            "conditions": "VDS = VGS; ID = 25 uA; TJ = 25 C",
+            "page_reference": "p. 1, VGS(th) row",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 2.5
+          },
+          "threshold_min": {
+            "conditions": "VDS = VGS; ID = 25 uA; TJ = 25 C",
+            "page_reference": "p. 1, VGS(th) row",
+            "source_kind": "minimum",
+            "unit": "V",
+            "value": 1
+          },
+          "threshold_typ": {
+            "conditions": "VDS = VGS; ID = 25 uA; TJ = 25 C",
+            "page_reference": "p. 1, VGS(th) row",
+            "source_kind": "typical",
+            "unit": "V",
+            "value": 1.8
+          }
+        }
+      },
+      "expected": {
+        "fidelity": "F1",
+        "parameters": {
+          "VTO": 1.8,
+          "KP": 45.45454545454546,
+          "THETA": 0,
+          "LAMBDA": 0.003,
+          "RD": 0.0242,
+          "RS": 0.0088,
+          "RG": 0.0001,
+          "CGS": 2.37e-10,
+          "CGDMAX": 2.9e-11,
+          "CGDMIN": 2.9e-11,
+          "CJO": 2e-11,
+          "IS": 1e-12,
+          "N": 1.5,
+          "RB": 0.0088
+        },
+        "model_text": ".model OC_GUANGDONG-HOTTECH_IRLML0040 VDMOS( VTO=1.8000000000e0 KP=4.5454545455e1 THETA=0.0000000000e0 LAMBDA=3.0000000000e-3 RD=2.4200000000e-2 RS=8.8000000000e-3 RG=1.0000000000e-4 RDS=1e9 CGS=2.3700000000e-10 CGDMAX=2.9000000000e-11 CGDMIN=2.9000000000e-11 CJO=2.0000000000e-11 IS=1.0000000000e-12 N=1.5000000000e0 RB=8.8000000000e-3)\n"
+      }
+    },
+    {
+      "name": "BSC070N10NS3G",
+      "part": {
+        "mpn": "BSC070N10NS3G",
+        "manufacturer": "Infineon Technologies",
+        "conveyor_family": "mosfet",
+        "subcategory": "N-Channel MOSFET",
+        "description": "-55\u2103~+150\u2103 1 N-channel 100V 114W 21pF 3.5V 3nF 42nC@10V 520pF 7m\u03a9@10V 90A N-Channel TDSON-8(5x6) MOSFETs ROHS",
+        "seed_hints": [
+          {
+            "attribute": "Drain Source On Resistance (RDS(on)@Vgs,Id)",
+            "evidence": "catalog_parametric_not_datasheet_citation",
+            "factory_target": "vdmos.rds_on",
+            "raw_value": "7m\u03a9@10V,50A",
+            "role": "initial_guess_only"
+          },
+          {
+            "attribute": "Gate Threshold Voltage (Vgs(th))",
+            "evidence": "catalog_parametric_not_datasheet_citation",
+            "factory_target": "vdmos.threshold",
+            "raw_value": "3.5V",
+            "role": "initial_guess_only"
+          },
+          {
+            "attribute": "Gate Threshold Voltage (Vgs(th)@Id)",
+            "evidence": "catalog_parametric_not_datasheet_citation",
+            "factory_target": "vdmos.threshold",
+            "raw_value": "3.5V@75uA",
+            "role": "initial_guess_only"
+          },
+          {
+            "attribute": "Input Capacitance(Ciss)",
+            "evidence": "catalog_parametric_not_datasheet_citation",
+            "factory_target": "vdmos.ciss",
+            "raw_value": "3nF",
+            "role": "initial_guess_only"
+          },
+          {
+            "attribute": "Output Capacitance(Coss)",
+            "evidence": "catalog_parametric_not_datasheet_citation",
+            "factory_target": "vdmos.coss",
+            "raw_value": "520pF",
+            "role": "initial_guess_only"
+          },
+          {
+            "attribute": "RDS(on)",
+            "evidence": "catalog_parametric_not_datasheet_citation",
+            "factory_target": "vdmos.rds_on",
+            "raw_value": "7m\u03a9@10V",
+            "role": "initial_guess_only"
+          },
+          {
+            "attribute": "Reverse Transfer Capacitance (Crss@Vds)",
+            "evidence": "catalog_parametric_not_datasheet_citation",
+            "factory_target": "vdmos.crss",
+            "raw_value": "21pF",
+            "role": "initial_guess_only"
+          }
+        ]
+      },
+      "extraction": {
+        "usable_curves": false,
+        "curves": [],
+        "specs": {
+          "body_diode": {
+            "conditions": "VGS = 0 V; IF = 50 A; Tj = 25 \u00b0C",
+            "page_reference": "Datasheet p. 3",
+            "source_kind": "typical",
+            "unit": "V",
+            "value": 1
+          },
+          "breakdown_voltage": {
+            "conditions": "VGS = 0 V; ID = 1 mA; Tj = 25 \u00b0C",
+            "page_reference": "Datasheet p. 2",
+            "source_kind": "minimum",
+            "unit": "V",
+            "value": 100
+          },
+          "ciss": {
+            "conditions": "VGS = 0 V; VDS = 50 V; f = 1 MHz; Tj = 25 \u00b0C electrical-characteristics condition",
+            "page_reference": "Datasheet p. 3",
+            "source_kind": "typical",
+            "unit": "F",
+            "value": 3e-09
+          },
+          "coss": {
+            "conditions": "VGS = 0 V; VDS = 50 V; f = 1 MHz; Tj = 25 \u00b0C electrical-characteristics condition",
+            "page_reference": "Datasheet p. 3",
+            "source_kind": "typical",
+            "unit": "F",
+            "value": 5.2e-10
+          },
+          "crss": {
+            "conditions": "VGS = 0 V; VDS = 50 V; f = 1 MHz; Tj = 25 \u00b0C electrical-characteristics condition",
+            "page_reference": "Datasheet p. 3",
+            "source_kind": "typical",
+            "unit": "F",
+            "value": 2.1e-11
+          },
+          "polarity": "n",
+          "rdson_points": [
+            {
+              "current": {
+                "conditions": "Tj = 25 \u00b0C; VGS = 10 V",
+                "page_reference": "Datasheet p. 2",
+                "source_kind": "typical",
+                "unit": "A",
+                "value": 50
+              },
+              "resistance": {
+                "conditions": "Tj = 25 \u00b0C; VGS = 10 V; ID = 50 A",
+                "page_reference": "Datasheet p. 2",
+                "source_kind": "typical",
+                "unit": "ohm",
+                "value": 0.0063
+              },
+              "vgs": {
+                "conditions": "Tj = 25 \u00b0C; ID = 50 A",
+                "page_reference": "Datasheet p. 2",
+                "source_kind": "typical",
+                "unit": "V",
+                "value": 10
+              }
+            },
+            {
+              "current": {
+                "conditions": "Tj = 25 \u00b0C; VGS = 10 V",
+                "page_reference": "Datasheet p. 2",
+                "source_kind": "maximum",
+                "unit": "A",
+                "value": 50
+              },
+              "resistance": {
+                "conditions": "Tj = 25 \u00b0C; VGS = 10 V; ID = 50 A",
+                "page_reference": "Datasheet p. 2",
+                "source_kind": "maximum",
+                "unit": "ohm",
+                "value": 0.007
+              },
+              "vgs": {
+                "conditions": "Tj = 25 \u00b0C; ID = 50 A",
+                "page_reference": "Datasheet p. 2",
+                "source_kind": "maximum",
+                "unit": "V",
+                "value": 10
+              }
+            },
+            {
+              "current": {
+                "conditions": "Tj = 25 \u00b0C; VGS = 6 V",
+                "page_reference": "Datasheet p. 2",
+                "source_kind": "typical",
+                "unit": "A",
+                "value": 25
+              },
+              "resistance": {
+                "conditions": "Tj = 25 \u00b0C; VGS = 6 V; ID = 25 A",
+                "page_reference": "Datasheet p. 2",
+                "source_kind": "typical",
+                "unit": "ohm",
+                "value": 0.008
+              },
+              "vgs": {
+                "conditions": "Tj = 25 \u00b0C; ID = 25 A",
+                "page_reference": "Datasheet p. 2",
+                "source_kind": "typical",
+                "unit": "V",
+                "value": 6
+              }
+            },
+            {
+              "current": {
+                "conditions": "Tj = 25 \u00b0C; VGS = 6 V",
+                "page_reference": "Datasheet p. 2",
+                "source_kind": "maximum",
+                "unit": "A",
+                "value": 25
+              },
+              "resistance": {
+                "conditions": "Tj = 25 \u00b0C; VGS = 6 V; ID = 25 A",
+                "page_reference": "Datasheet p. 2",
+                "source_kind": "maximum",
+                "unit": "ohm",
+                "value": 0.014
+              },
+              "vgs": {
+                "conditions": "Tj = 25 \u00b0C; ID = 25 A",
+                "page_reference": "Datasheet p. 2",
+                "source_kind": "maximum",
+                "unit": "V",
+                "value": 6
+              }
+            }
+          ],
+          "threshold_max": {
+            "conditions": "VDS = VGS; ID = 75 \u00b5A; Tj = 25 \u00b0C",
+            "page_reference": "Datasheet p. 2",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 3.5
+          },
+          "threshold_min": {
+            "conditions": "VDS = VGS; ID = 75 \u00b5A; Tj = 25 \u00b0C",
+            "page_reference": "Datasheet p. 2",
+            "source_kind": "minimum",
+            "unit": "V",
+            "value": 2
+          },
+          "threshold_typ": {
+            "conditions": "VDS = VGS; ID = 75 \u00b5A; Tj = 25 \u00b0C",
+            "page_reference": "Datasheet p. 2",
+            "source_kind": "typical",
+            "unit": "V",
+            "value": 2.7
+          }
+        }
+      },
+      "expected": {
+        "fidelity": "F1",
+        "parameters": {
+          "VTO": 2.7,
+          "KP": 317.46031746031747,
+          "THETA": 0,
+          "LAMBDA": 0.003,
+          "RD": 0.003465,
+          "RS": 0.00126,
+          "RG": 0.0001,
+          "CGS": 2.979e-09,
+          "CGDMAX": 2.1e-11,
+          "CGDMIN": 2.1e-11,
+          "CJO": 4.989999999999999e-10,
+          "IS": 1e-12,
+          "N": 1.5,
+          "RB": 0.00126
+        },
+        "model_text": ".model OC_INFINEON-TECHNOLOGIES_BSC070N10NS3G VDMOS( VTO=2.7000000000e0 KP=3.1746031746e2 THETA=0.0000000000e0 LAMBDA=3.0000000000e-3 RD=3.4650000000e-3 RS=1.2600000000e-3 RG=1.0000000000e-4 RDS=1e9 CGS=2.9790000000e-9 CGDMAX=2.1000000000e-11 CGDMIN=2.1000000000e-11 CJO=4.9900000000e-10 IS=1.0000000000e-12 N=1.5000000000e0 RB=1.2600000000e-3)\n"
+      }
+    },
+    {
+      "name": "BSS131H6327",
+      "part": {
+        "mpn": "BSS131H6327",
+        "manufacturer": "Infineon Technologies",
+        "conveyor_family": "mosfet",
+        "subcategory": "N-Channel MOSFET",
+        "description": "-55\u2103~+150\u2103 1 N-channel 1.8V 10pF 110mA 14\u03a9@10V 240V 3.1nC@10V 360mW 4.2pF 77pF N-Channel SOT-23 MOSFETs ROHS",
+        "seed_hints": [
+          {
+            "attribute": "Drain Source On Resistance (RDS(on)@Vgs,Id)",
+            "evidence": "catalog_parametric_not_datasheet_citation",
+            "factory_target": "vdmos.rds_on",
+            "raw_value": "7.7\u03a9@10V,0.1A",
+            "role": "initial_guess_only"
+          },
+          {
+            "attribute": "Gate Threshold Voltage (Vgs(th))",
+            "evidence": "catalog_parametric_not_datasheet_citation",
+            "factory_target": "vdmos.threshold",
+            "raw_value": "1.8V",
+            "role": "initial_guess_only"
+          },
+          {
+            "attribute": "Gate Threshold Voltage (Vgs(th)@Id)",
+            "evidence": "catalog_parametric_not_datasheet_citation",
+            "factory_target": "vdmos.threshold",
+            "raw_value": "1.8V@56uA",
+            "role": "initial_guess_only"
+          },
+          {
+            "attribute": "Input Capacitance (Ciss@Vds)",
+            "evidence": "catalog_parametric_not_datasheet_citation",
+            "factory_target": "vdmos.ciss",
+            "raw_value": "77pF@25V",
+            "role": "initial_guess_only"
+          },
+          {
+            "attribute": "Input Capacitance(Ciss)",
+            "evidence": "catalog_parametric_not_datasheet_citation",
+            "factory_target": "vdmos.ciss",
+            "raw_value": "77pF",
+            "role": "initial_guess_only"
+          },
+          {
+            "attribute": "Output Capacitance(Coss)",
+            "evidence": "catalog_parametric_not_datasheet_citation",
+            "factory_target": "vdmos.coss",
+            "raw_value": "10pF",
+            "role": "initial_guess_only"
+          },
+          {
+            "attribute": "RDS(on)",
+            "evidence": "catalog_parametric_not_datasheet_citation",
+            "factory_target": "vdmos.rds_on",
+            "raw_value": "14\u03a9@10V",
+            "role": "initial_guess_only"
+          },
+          {
+            "attribute": "Reverse Transfer Capacitance (Crss@Vds)",
+            "evidence": "catalog_parametric_not_datasheet_citation",
+            "factory_target": "vdmos.crss",
+            "raw_value": "4.2pF",
+            "role": "initial_guess_only"
+          }
+        ]
+      },
+      "extraction": {
+        "usable_curves": true,
+        "curves": [
+          {
+            "name": "Typical transfer characteristics (curve 7)",
+            "page_reference": "PDF page 5 (printed page 5)",
+            "points": [
+              {
+                "x": 1.5,
+                "y": 0
+              },
+              {
+                "x": 2,
+                "y": 0.02
+              },
+              {
+                "x": 2.5,
+                "y": 0.08
+              },
+              {
+                "x": 3,
+                "y": 0.16
+              },
+              {
+                "x": 3.5,
+                "y": 0.27
+              },
+              {
+                "x": 4,
+                "y": 0.39
+              },
+              {
+                "x": 4.3,
+                "y": 0.45
+              }
+            ],
+            "test_conditions": "T_J = 25 \u00b0C; I_D = f(V_GS); |V_DS| > 2|I_D|/R_DS(on),max.",
+            "x_axis": {
+              "quantity": "Gate-to-source voltage V_GS",
+              "scale": "linear",
+              "unit": "V"
+            },
+            "y_axis": {
+              "quantity": "Drain current I_D",
+              "scale": "linear",
+              "unit": "A"
+            }
+          }
+        ],
+        "specs": {
+          "body_diode": {
+            "conditions": "V_GS = 0 V, I_F = 0.1 A, T_J = 25 \u00b0C.",
+            "page_reference": "PDF page 3 (printed page 3)",
+            "source_kind": "typical",
+            "unit": "V",
+            "value": 0.81
+          },
+          "breakdown_voltage": {
+            "conditions": "V_GS = 0 V, I_D = 250 \u00b5A, T_J = 25 \u00b0C per the electrical-characteristics heading.",
+            "page_reference": "PDF page 2 (printed page 2)",
+            "source_kind": "minimum",
+            "unit": "V",
+            "value": 240
+          },
+          "ciss": {
+            "conditions": "V_GS = 0 V, V_DS = 25 V, f = 1 MHz, T_J = 25 \u00b0C per the electrical-characteristics heading.",
+            "page_reference": "PDF page 3 (printed page 3)",
+            "source_kind": "typical",
+            "unit": "F",
+            "value": 5.8e-11
+          },
+          "coss": {
+            "conditions": "V_GS = 0 V, V_DS = 25 V, f = 1 MHz, T_J = 25 \u00b0C per the electrical-characteristics heading.",
+            "page_reference": "PDF page 3 (printed page 3)",
+            "source_kind": "typical",
+            "unit": "F",
+            "value": 7.3e-12
+          },
+          "crss": {
+            "conditions": "V_GS = 0 V, V_DS = 25 V, f = 1 MHz, T_J = 25 \u00b0C per the electrical-characteristics heading.",
+            "page_reference": "PDF page 3 (printed page 3)",
+            "source_kind": "typical",
+            "unit": "F",
+            "value": 2.7999999999999998e-12
+          },
+          "polarity": "n",
+          "rdson_points": [
+            {
+              "current": {
+                "conditions": "V_GS = 4.5 V, associated R_DS(on) test point, T_J = 25 \u00b0C per the electrical-characteristics heading.",
+                "page_reference": "PDF page 2 (printed page 2)",
+                "source_kind": "typical",
+                "unit": "A",
+                "value": 0.09
+              },
+              "resistance": {
+                "conditions": "V_GS = 4.5 V, I_D = 0.09 A, T_J = 25 \u00b0C per the electrical-characteristics heading.",
+                "page_reference": "PDF page 2 (printed page 2)",
+                "source_kind": "typical",
+                "unit": "ohm",
+                "value": 9.07
+              },
+              "vgs": {
+                "conditions": "V_GS = 4.5 V, I_D = 0.09 A, T_J = 25 \u00b0C per the electrical-characteristics heading.",
+                "page_reference": "PDF page 2 (printed page 2)",
+                "source_kind": "typical",
+                "unit": "V",
+                "value": 4.5
+              }
+            },
+            {
+              "current": {
+                "conditions": "V_GS = 4.5 V, associated R_DS(on) test point, T_J = 25 \u00b0C per the electrical-characteristics heading.",
+                "page_reference": "PDF page 2 (printed page 2)",
+                "source_kind": "maximum",
+                "unit": "A",
+                "value": 0.09
+              },
+              "resistance": {
+                "conditions": "V_GS = 4.5 V, I_D = 0.09 A, T_J = 25 \u00b0C per the electrical-characteristics heading.",
+                "page_reference": "PDF page 2 (printed page 2)",
+                "source_kind": "maximum",
+                "unit": "ohm",
+                "value": 20
+              },
+              "vgs": {
+                "conditions": "V_GS = 4.5 V, I_D = 0.09 A, T_J = 25 \u00b0C per the electrical-characteristics heading.",
+                "page_reference": "PDF page 2 (printed page 2)",
+                "source_kind": "maximum",
+                "unit": "V",
+                "value": 4.5
+              }
+            },
+            {
+              "current": {
+                "conditions": "V_GS = 10 V, associated R_DS(on) test point, T_J = 25 \u00b0C per the electrical-characteristics heading.",
+                "page_reference": "PDF page 2 (printed page 2)",
+                "source_kind": "typical",
+                "unit": "A",
+                "value": 0.1
+              },
+              "resistance": {
+                "conditions": "V_GS = 10 V, I_D = 0.1 A, T_J = 25 \u00b0C per the electrical-characteristics heading.",
+                "page_reference": "PDF page 2 (printed page 2)",
+                "source_kind": "typical",
+                "unit": "ohm",
+                "value": 7.7
+              },
+              "vgs": {
+                "conditions": "V_GS = 10 V, I_D = 0.1 A, T_J = 25 \u00b0C per the electrical-characteristics heading.",
+                "page_reference": "PDF page 2 (printed page 2)",
+                "source_kind": "typical",
+                "unit": "V",
+                "value": 10
+              }
+            },
+            {
+              "current": {
+                "conditions": "V_GS = 10 V, associated R_DS(on) test point, T_J = 25 \u00b0C per the electrical-characteristics heading.",
+                "page_reference": "PDF page 2 (printed page 2)",
+                "source_kind": "maximum",
+                "unit": "A",
+                "value": 0.1
+              },
+              "resistance": {
+                "conditions": "V_GS = 10 V, I_D = 0.1 A, T_J = 25 \u00b0C per the electrical-characteristics heading.",
+                "page_reference": "PDF page 2 (printed page 2)",
+                "source_kind": "maximum",
+                "unit": "ohm",
+                "value": 14
+              },
+              "vgs": {
+                "conditions": "V_GS = 10 V, I_D = 0.1 A, T_J = 25 \u00b0C per the electrical-characteristics heading.",
+                "page_reference": "PDF page 2 (printed page 2)",
+                "source_kind": "maximum",
+                "unit": "V",
+                "value": 10
+              }
+            }
+          ],
+          "threshold_max": {
+            "conditions": "V_DS = 0 V, I_D = 56 \u00b5A, T_J = 25 \u00b0C per the electrical-characteristics heading.",
+            "page_reference": "PDF page 2 (printed page 2)",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 1.8
+          },
+          "threshold_min": {
+            "conditions": "V_DS = 0 V, I_D = 56 \u00b5A, T_J = 25 \u00b0C per the electrical-characteristics heading.",
+            "page_reference": "PDF page 2 (printed page 2)",
+            "source_kind": "minimum",
+            "unit": "V",
+            "value": 0.8
+          },
+          "threshold_typ": {
+            "conditions": "V_DS = 0 V, I_D = 56 \u00b5A, T_J = 25 \u00b0C per the electrical-characteristics heading.",
+            "page_reference": "PDF page 2 (printed page 2)",
+            "source_kind": "typical",
+            "unit": "V",
+            "value": 1.4
+          }
+        }
+      },
+      "expected": {
+        "fidelity": "F2",
+        "parameters": {
+          "VTO": 1.5805219401556316,
+          "KP": 0.2111261193705724,
+          "THETA": 5.558011607393437e-15,
+          "LAMBDA": 0.02636495331000083,
+          "RD": 5.4008517921591555,
+          "RS": 1.814,
+          "RG": 0.0001,
+          "CGS": 5.52e-11,
+          "CGDMAX": 2.7999999999999998e-12,
+          "CGDMIN": 2.7999999999999998e-12,
+          "CJO": 4.500000000000001e-12,
+          "IS": 1e-12,
+          "N": 1.5,
+          "RB": 1.814
+        },
+        "model_text": ".model OC_INFINEON-TECHNOLOGIES_BSS131H6327 VDMOS( VTO=1.5805219402e0 KP=2.1112611937e-1 THETA=5.5580116074e-15 LAMBDA=2.6364953310e-2 RD=5.4008517922e0 RS=1.8140000000e0 RG=1.0000000000e-4 RDS=1e9 CGS=5.5200000000e-11 CGDMAX=2.8000000000e-12 CGDMIN=2.8000000000e-12 CJO=4.5000000000e-12 IS=1.0000000000e-12 N=1.5000000000e0 RB=1.8140000000e0)\n"
+      }
+    },
+    {
+      "name": "3401P-MS",
+      "part": {
+        "mpn": "3401P-MS",
+        "manufacturer": "MSKSEMI",
+        "conveyor_family": "mosfet",
+        "subcategory": "P-Channel MOSFET",
+        "description": "mosfet from MSKSEMI",
+        "seed_hints": [
+          {
+            "attribute": "Gate Threshold Voltage (Vgs(th))",
+            "evidence": "catalog_parametric_not_datasheet_citation",
+            "factory_target": "vdmos.threshold",
+            "raw_value": "1V",
+            "role": "initial_guess_only"
+          },
+          {
+            "attribute": "Input Capacitance(Ciss)",
+            "evidence": "catalog_parametric_not_datasheet_citation",
+            "factory_target": "vdmos.ciss",
+            "raw_value": "950pF",
+            "role": "initial_guess_only"
+          },
+          {
+            "attribute": "Output Capacitance(Coss)",
+            "evidence": "catalog_parametric_not_datasheet_citation",
+            "factory_target": "vdmos.coss",
+            "raw_value": "115pF",
+            "role": "initial_guess_only"
+          },
+          {
+            "attribute": "RDS(on)",
+            "evidence": "catalog_parametric_not_datasheet_citation",
+            "factory_target": "vdmos.rds_on",
+            "raw_value": "42m\u03a9@10V",
+            "role": "initial_guess_only"
+          },
+          {
+            "attribute": "Reverse Transfer Capacitance (Crss@Vds)",
+            "evidence": "catalog_parametric_not_datasheet_citation",
+            "factory_target": "vdmos.crss",
+            "raw_value": "75pF",
+            "role": "initial_guess_only"
+          }
+        ]
+      },
+      "extraction": {
+        "usable_curves": true,
+        "curves": [
+          {
+            "name": "Figure 7 Transfer Characteristics, T_J = 25 \u00b0C",
+            "page_reference": "PDF page 5 (Figure 7)",
+            "points": [
+              {
+                "x": 1.1,
+                "y": 0
+              },
+              {
+                "x": 1.4,
+                "y": 0.2
+              },
+              {
+                "x": 1.6,
+                "y": 0.8
+              },
+              {
+                "x": 1.8,
+                "y": 2.2
+              },
+              {
+                "x": 2,
+                "y": 4.3
+              },
+              {
+                "x": 2.2,
+                "y": 7
+              },
+              {
+                "x": 2.4,
+                "y": 10
+              }
+            ],
+            "test_conditions": "V_DS = -5 V as printed in Figure 7; T_J = 25 \u00b0C curve; p-channel quantities are represented as magnitudes.",
+            "x_axis": {
+              "quantity": "Gate-to-source voltage magnitude |V_GS|",
+              "scale": "linear",
+              "unit": "V"
+            },
+            "y_axis": {
+              "quantity": "Drain current magnitude |I_D|",
+              "scale": "linear",
+              "unit": "A"
+            }
+          }
+        ],
+        "specs": {
+          "body_diode": {
+            "conditions": "T_A = 25 \u00b0C unless otherwise noted; V_GS = 0 V, I_S = -1 A; source V_SD is -1.2 V and is represented as a p-channel magnitude; pulse test per Note 3 (pulse width \u2264 300 \u00b5s, duty cycle \u2264 2%).",
+            "page_reference": "PDF page 3 (Electrical Characteristics)",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 1.2
+          },
+          "breakdown_voltage": {
+            "conditions": "T_A = 25 \u00b0C unless otherwise noted; V_GS = 0 V, I_D = -250 \u00b5A; source BVDSS is -30 V and is represented as a p-channel magnitude.",
+            "page_reference": "PDF page 3 (Electrical Characteristics)",
+            "source_kind": "minimum",
+            "unit": "V",
+            "value": 30
+          },
+          "ciss": {
+            "conditions": "T_A = 25 \u00b0C unless otherwise noted; V_DS = -15 V, V_GS = 0 V, F = 1.0 MHz; source V_DS is preserved as signed.",
+            "page_reference": "PDF page 3 (Electrical Characteristics)",
+            "source_kind": "typical",
+            "unit": "F",
+            "value": 9.5e-10
+          },
+          "coss": {
+            "conditions": "T_A = 25 \u00b0C unless otherwise noted; V_DS = -15 V, V_GS = 0 V, F = 1.0 MHz; source V_DS is preserved as signed.",
+            "page_reference": "PDF page 3 (Electrical Characteristics)",
+            "source_kind": "typical",
+            "unit": "F",
+            "value": 1.15e-10
+          },
+          "crss": {
+            "conditions": "T_A = 25 \u00b0C unless otherwise noted; V_DS = -15 V, V_GS = 0 V, F = 1.0 MHz; source V_DS is preserved as signed.",
+            "page_reference": "PDF page 3 (Electrical Characteristics)",
+            "source_kind": "typical",
+            "unit": "F",
+            "value": 7.5e-11
+          },
+          "polarity": "p",
+          "rdson_points": [
+            {
+              "current": {
+                "conditions": "T_A = 25 \u00b0C unless otherwise noted; V_GS = -10 V, I_D = -4.2 A; source I_D is represented as a p-channel magnitude; pulse test per Note 3 (pulse width \u2264 300 \u00b5s, duty cycle \u2264 2%).",
+                "page_reference": "PDF page 3 (Electrical Characteristics)",
+                "source_kind": "typical",
+                "unit": "A",
+                "value": 4.2
+              },
+              "resistance": {
+                "conditions": "T_A = 25 \u00b0C unless otherwise noted; V_GS = -10 V, I_D = -4.2 A; pulse test per Note 3 (pulse width \u2264 300 \u00b5s, duty cycle \u2264 2%).",
+                "page_reference": "PDF page 3 (Electrical Characteristics)",
+                "source_kind": "typical",
+                "unit": "ohm",
+                "value": 0.042
+              },
+              "vgs": {
+                "conditions": "T_A = 25 \u00b0C unless otherwise noted; V_GS = -10 V, I_D = -4.2 A; source V_GS is represented as a p-channel magnitude; pulse test per Note 3 (pulse width \u2264 300 \u00b5s, duty cycle \u2264 2%).",
+                "page_reference": "PDF page 3 (Electrical Characteristics)",
+                "source_kind": "typical",
+                "unit": "V",
+                "value": 10
+              }
+            },
+            {
+              "current": {
+                "conditions": "T_A = 25 \u00b0C unless otherwise noted; V_GS = -10 V, I_D = -4.2 A; source I_D is represented as a p-channel magnitude; pulse test per Note 3 (pulse width \u2264 300 \u00b5s, duty cycle \u2264 2%).",
+                "page_reference": "PDF page 3 (Electrical Characteristics)",
+                "source_kind": "maximum",
+                "unit": "A",
+                "value": 4.2
+              },
+              "resistance": {
+                "conditions": "T_A = 25 \u00b0C unless otherwise noted; V_GS = -10 V, I_D = -4.2 A; pulse test per Note 3 (pulse width \u2264 300 \u00b5s, duty cycle \u2264 2%).",
+                "page_reference": "PDF page 3 (Electrical Characteristics)",
+                "source_kind": "maximum",
+                "unit": "ohm",
+                "value": 0.055
+              },
+              "vgs": {
+                "conditions": "T_A = 25 \u00b0C unless otherwise noted; V_GS = -10 V, I_D = -4.2 A; source V_GS is represented as a p-channel magnitude; pulse test per Note 3 (pulse width \u2264 300 \u00b5s, duty cycle \u2264 2%).",
+                "page_reference": "PDF page 3 (Electrical Characteristics)",
+                "source_kind": "maximum",
+                "unit": "V",
+                "value": 10
+              }
+            },
+            {
+              "current": {
+                "conditions": "T_A = 25 \u00b0C unless otherwise noted; V_GS = -4.5 V, I_D = -4 A; source I_D is represented as a p-channel magnitude; pulse test per Note 3 (pulse width \u2264 300 \u00b5s, duty cycle \u2264 2%).",
+                "page_reference": "PDF page 3 (Electrical Characteristics)",
+                "source_kind": "typical",
+                "unit": "A",
+                "value": 4
+              },
+              "resistance": {
+                "conditions": "T_A = 25 \u00b0C unless otherwise noted; V_GS = -4.5 V, I_D = -4 A; pulse test per Note 3 (pulse width \u2264 300 \u00b5s, duty cycle \u2264 2%).",
+                "page_reference": "PDF page 3 (Electrical Characteristics)",
+                "source_kind": "typical",
+                "unit": "ohm",
+                "value": 0.054
+              },
+              "vgs": {
+                "conditions": "T_A = 25 \u00b0C unless otherwise noted; V_GS = -4.5 V, I_D = -4 A; source V_GS is represented as a p-channel magnitude; pulse test per Note 3 (pulse width \u2264 300 \u00b5s, duty cycle \u2264 2%).",
+                "page_reference": "PDF page 3 (Electrical Characteristics)",
+                "source_kind": "typical",
+                "unit": "V",
+                "value": 4.5
+              }
+            },
+            {
+              "current": {
+                "conditions": "T_A = 25 \u00b0C unless otherwise noted; V_GS = -4.5 V, I_D = -4 A; source I_D is represented as a p-channel magnitude; pulse test per Note 3 (pulse width \u2264 300 \u00b5s, duty cycle \u2264 2%).",
+                "page_reference": "PDF page 3 (Electrical Characteristics)",
+                "source_kind": "maximum",
+                "unit": "A",
+                "value": 4
+              },
+              "resistance": {
+                "conditions": "T_A = 25 \u00b0C unless otherwise noted; V_GS = -4.5 V, I_D = -4 A; pulse test per Note 3 (pulse width \u2264 300 \u00b5s, duty cycle \u2264 2%).",
+                "page_reference": "PDF page 3 (Electrical Characteristics)",
+                "source_kind": "maximum",
+                "unit": "ohm",
+                "value": 0.07200000000000001
+              },
+              "vgs": {
+                "conditions": "T_A = 25 \u00b0C unless otherwise noted; V_GS = -4.5 V, I_D = -4 A; source V_GS is represented as a p-channel magnitude; pulse test per Note 3 (pulse width \u2264 300 \u00b5s, duty cycle \u2264 2%).",
+                "page_reference": "PDF page 3 (Electrical Characteristics)",
+                "source_kind": "maximum",
+                "unit": "V",
+                "value": 4.5
+              }
+            },
+            {
+              "current": {
+                "conditions": "T_A = 25 \u00b0C unless otherwise noted; V_GS = -2.5 V, I_D = -1 A; source I_D is represented as a p-channel magnitude; pulse test per Note 3 (pulse width \u2264 300 \u00b5s, duty cycle \u2264 2%).",
+                "page_reference": "PDF page 3 (Electrical Characteristics)",
+                "source_kind": "typical",
+                "unit": "A",
+                "value": 1
+              },
+              "resistance": {
+                "conditions": "T_A = 25 \u00b0C unless otherwise noted; V_GS = -2.5 V, I_D = -1 A; pulse test per Note 3 (pulse width \u2264 300 \u00b5s, duty cycle \u2264 2%).",
+                "page_reference": "PDF page 3 (Electrical Characteristics)",
+                "source_kind": "typical",
+                "unit": "ohm",
+                "value": 0.075
+              },
+              "vgs": {
+                "conditions": "T_A = 25 \u00b0C unless otherwise noted; V_GS = -2.5 V, I_D = -1 A; source V_GS is represented as a p-channel magnitude; pulse test per Note 3 (pulse width \u2264 300 \u00b5s, duty cycle \u2264 2%).",
+                "page_reference": "PDF page 3 (Electrical Characteristics)",
+                "source_kind": "typical",
+                "unit": "V",
+                "value": 2.5
+              }
+            },
+            {
+              "current": {
+                "conditions": "T_A = 25 \u00b0C unless otherwise noted; V_GS = -2.5 V, I_D = -1 A; source I_D is represented as a p-channel magnitude; pulse test per Note 3 (pulse width \u2264 300 \u00b5s, duty cycle \u2264 2%).",
+                "page_reference": "PDF page 3 (Electrical Characteristics)",
+                "source_kind": "maximum",
+                "unit": "A",
+                "value": 1
+              },
+              "resistance": {
+                "conditions": "T_A = 25 \u00b0C unless otherwise noted; V_GS = -2.5 V, I_D = -1 A; pulse test per Note 3 (pulse width \u2264 300 \u00b5s, duty cycle \u2264 2%).",
+                "page_reference": "PDF page 3 (Electrical Characteristics)",
+                "source_kind": "maximum",
+                "unit": "ohm",
+                "value": 0.12
+              },
+              "vgs": {
+                "conditions": "T_A = 25 \u00b0C unless otherwise noted; V_GS = -2.5 V, I_D = -1 A; source V_GS is represented as a p-channel magnitude; pulse test per Note 3 (pulse width \u2264 300 \u00b5s, duty cycle \u2264 2%).",
+                "page_reference": "PDF page 3 (Electrical Characteristics)",
+                "source_kind": "maximum",
+                "unit": "V",
+                "value": 2.5
+              }
+            }
+          ],
+          "threshold_max": {
+            "conditions": "T_A = 25 \u00b0C unless otherwise noted; V_DS = V_GS, I_D = -250 \u00b5A; source value is -1.3 V and is represented as a p-channel magnitude; pulse test per Note 3 (pulse width \u2264 300 \u00b5s, duty cycle \u2264 2%).",
+            "page_reference": "PDF page 3 (Electrical Characteristics)",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 1.3
+          },
+          "threshold_min": {
+            "conditions": "T_A = 25 \u00b0C unless otherwise noted; V_DS = V_GS, I_D = -250 \u00b5A; source value is -0.7 V and is represented as a p-channel magnitude; pulse test per Note 3 (pulse width \u2264 300 \u00b5s, duty cycle \u2264 2%).",
+            "page_reference": "PDF page 3 (Electrical Characteristics)",
+            "source_kind": "minimum",
+            "unit": "V",
+            "value": 0.7
+          },
+          "threshold_typ": {
+            "conditions": "T_A = 25 \u00b0C unless otherwise noted; V_DS = V_GS, I_D = -250 \u00b5A; source value is -1.0 V and is represented as a p-channel magnitude; pulse test per Note 3 (pulse width \u2264 300 \u00b5s, duty cycle \u2264 2%).",
+            "page_reference": "PDF page 3 (Electrical Characteristics)",
+            "source_kind": "typical",
+            "unit": "V",
+            "value": 1
+          }
+        }
+      },
+      "expected": {
+        "fidelity": "F2",
+        "parameters": {
+          "VTO": 1.2830951153474148,
+          "KP": 18.184289812907842,
+          "THETA": 1.3185261223631651e-09,
+          "LAMBDA": 4.080325241444882e-18,
+          "RD": 0.026571264536482796,
+          "RS": 0.008400000000000001,
+          "RG": 0.0001,
+          "CGS": 8.75e-10,
+          "CGDMAX": 7.5e-11,
+          "CGDMIN": 7.5e-11,
+          "CJO": 4.0000000000000004e-11,
+          "IS": 1e-12,
+          "N": 1.5,
+          "RB": 0.008400000000000001
+        },
+        "model_text": ".model OC_MSKSEMI_3401P-MS VDMOS( pchan VTO=-1.2830951153e0 KP=1.8184289813e1 THETA=1.3185261224e-9 LAMBDA=4.0803252414e-18 RD=2.6571264536e-2 RS=8.4000000000e-3 RG=1.0000000000e-4 RDS=1e9 CGS=8.7500000000e-10 CGDMAX=7.5000000000e-11 CGDMIN=7.5000000000e-11 CJO=4.0000000000e-11 IS=1.0000000000e-12 N=1.5000000000e0 RB=8.4000000000e-3)\n"
+      }
+    },
+    {
+      "name": "NCE3401AY",
+      "part": {
+        "mpn": "NCE3401AY",
+        "manufacturer": "Wuxi NCE Power Semiconductor",
+        "conveyor_family": "mosfet",
+        "subcategory": "P-Channel MOSFET",
+        "description": "-55\u2103~+150\u2103 1 P-Channel 1.3V 1.3W 115pF 30V 4.4A 75pF 80m\u03a9@2.5V 9.5nC@4.5V 950pF P-Channel SOT-23 MOSFETs ROHS",
+        "seed_hints": [
+          {
+            "attribute": "Drain Source On Resistance (RDS(on)@Vgs,Id)",
+            "evidence": "catalog_parametric_not_datasheet_citation",
+            "factory_target": "vdmos.rds_on",
+            "raw_value": "80m\u03a9@2.5V,1A",
+            "role": "initial_guess_only"
+          },
+          {
+            "attribute": "Gate Threshold Voltage (Vgs(th))",
+            "evidence": "catalog_parametric_not_datasheet_citation",
+            "factory_target": "vdmos.threshold",
+            "raw_value": "1.3V",
+            "role": "initial_guess_only"
+          },
+          {
+            "attribute": "Gate Threshold Voltage (Vgs(th)@Id)",
+            "evidence": "catalog_parametric_not_datasheet_citation",
+            "factory_target": "vdmos.threshold",
+            "raw_value": "1V@4.2A",
+            "role": "initial_guess_only"
+          },
+          {
+            "attribute": "Input Capacitance (Ciss@Vds)",
+            "evidence": "catalog_parametric_not_datasheet_citation",
+            "factory_target": "vdmos.ciss",
+            "raw_value": "950pF@15V",
+            "role": "initial_guess_only"
+          },
+          {
+            "attribute": "Input Capacitance(Ciss)",
+            "evidence": "catalog_parametric_not_datasheet_citation",
+            "factory_target": "vdmos.ciss",
+            "raw_value": "950pF",
+            "role": "initial_guess_only"
+          },
+          {
+            "attribute": "Output Capacitance(Coss)",
+            "evidence": "catalog_parametric_not_datasheet_citation",
+            "factory_target": "vdmos.coss",
+            "raw_value": "115pF",
+            "role": "initial_guess_only"
+          },
+          {
+            "attribute": "RDS(on)",
+            "evidence": "catalog_parametric_not_datasheet_citation",
+            "factory_target": "vdmos.rds_on",
+            "raw_value": "80m\u03a9@2.5V",
+            "role": "initial_guess_only"
+          },
+          {
+            "attribute": "Reverse Transfer Capacitance (Crss@Vds)",
+            "evidence": "catalog_parametric_not_datasheet_citation",
+            "factory_target": "vdmos.crss",
+            "raw_value": "75pF@15V",
+            "role": "initial_guess_only"
+          }
+        ]
+      },
+      "extraction": {
+        "usable_curves": false,
+        "curves": [],
+        "specs": {
+          "body_diode": {
+            "conditions": "T_A = 25 \u00b0C unless otherwise noted; V_GS = 0 V; I_SD = -1 A; source V_SD = -1.2 V represented as a p-channel magnitude.",
+            "page_reference": "PDF page 2 (printed page 2), Drain-Source Diode Characteristics table",
+            "source_kind": "typical",
+            "unit": "V",
+            "value": 1.2
+          },
+          "breakdown_voltage": {
+            "conditions": "T_A = 25 \u00b0C unless otherwise noted; V_GS = 0 V; I_D = -250 \u00b5A; source BV_DSS = -30 V represented as a p-channel magnitude.",
+            "page_reference": "PDF page 1 (printed page 1), Electrical Characteristics table",
+            "source_kind": "minimum",
+            "unit": "V",
+            "value": 30
+          },
+          "ciss": {
+            "conditions": "T_A = 25 \u00b0C unless otherwise noted; V_DS = -15 V; V_GS = 0 V; f = 1.0 MHz.",
+            "page_reference": "PDF page 2 (printed page 2), Dynamic Characteristics table",
+            "source_kind": "typical",
+            "unit": "F",
+            "value": 9.5e-10
+          },
+          "coss": {
+            "conditions": "T_A = 25 \u00b0C unless otherwise noted; V_DS = -15 V; V_GS = 0 V; f = 1.0 MHz.",
+            "page_reference": "PDF page 2 (printed page 2), Dynamic Characteristics table",
+            "source_kind": "typical",
+            "unit": "F",
+            "value": 1.15e-10
+          },
+          "crss": {
+            "conditions": "T_A = 25 \u00b0C unless otherwise noted; V_DS = -15 V; V_GS = 0 V; f = 1.0 MHz.",
+            "page_reference": "PDF page 2 (printed page 2), Dynamic Characteristics table",
+            "source_kind": "typical",
+            "unit": "F",
+            "value": 7.5e-11
+          },
+          "polarity": "p",
+          "rdson_points": [
+            {
+              "current": {
+                "conditions": "T_A = 25 \u00b0C unless otherwise noted; V_GS = -10 V; I_D = -4.2 A; source I_D represented as a p-channel magnitude.",
+                "page_reference": "PDF page 2 (printed page 2), Electrical Characteristics table",
+                "source_kind": "typical",
+                "unit": "A",
+                "value": 4.2
+              },
+              "resistance": {
+                "conditions": "T_A = 25 \u00b0C unless otherwise noted; V_GS = -10 V; I_D = -4.2 A; source RDS(on) = 39 m\u03a9 converted to \u03a9.",
+                "page_reference": "PDF page 2 (printed page 2), Electrical Characteristics table",
+                "source_kind": "typical",
+                "unit": "ohm",
+                "value": 0.039
+              },
+              "vgs": {
+                "conditions": "T_A = 25 \u00b0C unless otherwise noted; V_GS = -10 V; I_D = -4.2 A; source V_GS represented as a p-channel magnitude.",
+                "page_reference": "PDF page 2 (printed page 2), Electrical Characteristics table",
+                "source_kind": "typical",
+                "unit": "V",
+                "value": 10
+              }
+            },
+            {
+              "current": {
+                "conditions": "T_A = 25 \u00b0C unless otherwise noted; V_GS = -10 V; I_D = -4.2 A; source I_D represented as a p-channel magnitude.",
+                "page_reference": "PDF page 2 (printed page 2), Electrical Characteristics table",
+                "source_kind": "maximum",
+                "unit": "A",
+                "value": 4.2
+              },
+              "resistance": {
+                "conditions": "T_A = 25 \u00b0C unless otherwise noted; V_GS = -10 V; I_D = -4.2 A; source RDS(on) = 52 m\u03a9 converted to \u03a9.",
+                "page_reference": "PDF page 2 (printed page 2), Electrical Characteristics table",
+                "source_kind": "maximum",
+                "unit": "ohm",
+                "value": 0.052
+              },
+              "vgs": {
+                "conditions": "T_A = 25 \u00b0C unless otherwise noted; V_GS = -10 V; I_D = -4.2 A; source V_GS represented as a p-channel magnitude.",
+                "page_reference": "PDF page 2 (printed page 2), Electrical Characteristics table",
+                "source_kind": "maximum",
+                "unit": "V",
+                "value": 10
+              }
+            },
+            {
+              "current": {
+                "conditions": "T_A = 25 \u00b0C unless otherwise noted; V_GS = -4.5 V; I_D = -4 A; source I_D represented as a p-channel magnitude.",
+                "page_reference": "PDF page 2 (printed page 2), Electrical Characteristics table",
+                "source_kind": "typical",
+                "unit": "A",
+                "value": 4
+              },
+              "resistance": {
+                "conditions": "T_A = 25 \u00b0C unless otherwise noted; V_GS = -4.5 V; I_D = -4 A; source RDS(on) = 46 m\u03a9 converted to \u03a9.",
+                "page_reference": "PDF page 2 (printed page 2), Electrical Characteristics table",
+                "source_kind": "typical",
+                "unit": "ohm",
+                "value": 0.046
+              },
+              "vgs": {
+                "conditions": "T_A = 25 \u00b0C unless otherwise noted; V_GS = -4.5 V; I_D = -4 A; source V_GS represented as a p-channel magnitude.",
+                "page_reference": "PDF page 2 (printed page 2), Electrical Characteristics table",
+                "source_kind": "typical",
+                "unit": "V",
+                "value": 4.5
+              }
+            },
+            {
+              "current": {
+                "conditions": "T_A = 25 \u00b0C unless otherwise noted; V_GS = -4.5 V; I_D = -4 A; source I_D represented as a p-channel magnitude.",
+                "page_reference": "PDF page 2 (printed page 2), Electrical Characteristics table",
+                "source_kind": "maximum",
+                "unit": "A",
+                "value": 4
+              },
+              "resistance": {
+                "conditions": "T_A = 25 \u00b0C unless otherwise noted; V_GS = -4.5 V; I_D = -4 A; source RDS(on) = 65 m\u03a9 converted to \u03a9.",
+                "page_reference": "PDF page 2 (printed page 2), Electrical Characteristics table",
+                "source_kind": "maximum",
+                "unit": "ohm",
+                "value": 0.065
+              },
+              "vgs": {
+                "conditions": "T_A = 25 \u00b0C unless otherwise noted; V_GS = -4.5 V; I_D = -4 A; source V_GS represented as a p-channel magnitude.",
+                "page_reference": "PDF page 2 (printed page 2), Electrical Characteristics table",
+                "source_kind": "maximum",
+                "unit": "V",
+                "value": 4.5
+              }
+            },
+            {
+              "current": {
+                "conditions": "T_A = 25 \u00b0C unless otherwise noted; V_GS = -2.5 V; I_D = -1 A; source I_D represented as a p-channel magnitude.",
+                "page_reference": "PDF page 2 (printed page 2), Electrical Characteristics table",
+                "source_kind": "typical",
+                "unit": "A",
+                "value": 1
+              },
+              "resistance": {
+                "conditions": "T_A = 25 \u00b0C unless otherwise noted; V_GS = -2.5 V; I_D = -1 A; source RDS(on) = 61 m\u03a9 converted to \u03a9.",
+                "page_reference": "PDF page 2 (printed page 2), Electrical Characteristics table",
+                "source_kind": "typical",
+                "unit": "ohm",
+                "value": 0.061
+              },
+              "vgs": {
+                "conditions": "T_A = 25 \u00b0C unless otherwise noted; V_GS = -2.5 V; I_D = -1 A; source V_GS represented as a p-channel magnitude.",
+                "page_reference": "PDF page 2 (printed page 2), Electrical Characteristics table",
+                "source_kind": "typical",
+                "unit": "V",
+                "value": 2.5
+              }
+            },
+            {
+              "current": {
+                "conditions": "T_A = 25 \u00b0C unless otherwise noted; V_GS = -2.5 V; I_D = -1 A; source I_D represented as a p-channel magnitude.",
+                "page_reference": "PDF page 2 (printed page 2), Electrical Characteristics table",
+                "source_kind": "maximum",
+                "unit": "A",
+                "value": 1
+              },
+              "resistance": {
+                "conditions": "T_A = 25 \u00b0C unless otherwise noted; V_GS = -2.5 V; I_D = -1 A; source RDS(on) = 80 m\u03a9 converted to \u03a9.",
+                "page_reference": "PDF page 2 (printed page 2), Electrical Characteristics table",
+                "source_kind": "maximum",
+                "unit": "ohm",
+                "value": 0.08
+              },
+              "vgs": {
+                "conditions": "T_A = 25 \u00b0C unless otherwise noted; V_GS = -2.5 V; I_D = -1 A; source V_GS represented as a p-channel magnitude.",
+                "page_reference": "PDF page 2 (printed page 2), Electrical Characteristics table",
+                "source_kind": "maximum",
+                "unit": "V",
+                "value": 2.5
+              }
+            }
+          ],
+          "threshold_max": {
+            "conditions": "T_A = 25 \u00b0C unless otherwise noted; V_DS = V_GS; I_D = -250 \u00b5A; source V_GS(th) = -1.3 V represented as a p-channel magnitude.",
+            "page_reference": "PDF page 2 (printed page 2), Electrical Characteristics table",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 1.3
+          },
+          "threshold_min": {
+            "conditions": "T_A = 25 \u00b0C unless otherwise noted; V_DS = V_GS; I_D = -250 \u00b5A; source V_GS(th) = -0.7 V represented as a p-channel magnitude.",
+            "page_reference": "PDF page 2 (printed page 2), Electrical Characteristics table",
+            "source_kind": "minimum",
+            "unit": "V",
+            "value": 0.7
+          },
+          "threshold_typ": {
+            "conditions": "T_A = 25 \u00b0C unless otherwise noted; V_DS = V_GS; I_D = -250 \u00b5A; source V_GS(th) = -1 V represented as a p-channel magnitude.",
+            "page_reference": "PDF page 2 (printed page 2), Electrical Characteristics table",
+            "source_kind": "typical",
+            "unit": "V",
+            "value": 1
+          }
+        }
+      },
+      "expected": {
+        "fidelity": "F1",
+        "parameters": {
+          "VTO": 1,
+          "KP": 51.282051282051285,
+          "THETA": 0,
+          "LAMBDA": 0.003,
+          "RD": 0.02145,
+          "RS": 0.0078000000000000005,
+          "RG": 0.0001,
+          "CGS": 8.75e-10,
+          "CGDMAX": 7.5e-11,
+          "CGDMIN": 7.5e-11,
+          "CJO": 4.0000000000000004e-11,
+          "IS": 1e-12,
+          "N": 1.5,
+          "RB": 0.0078000000000000005
+        },
+        "model_text": ".model OC_WUXI-NCE-POWER-SEMICONDUCTOR_NCE3401AY VDMOS( pchan VTO=-1.0000000000e0 KP=5.1282051282e1 THETA=0.0000000000e0 LAMBDA=3.0000000000e-3 RD=2.1450000000e-2 RS=7.8000000000e-3 RG=1.0000000000e-4 RDS=1e9 CGS=8.7500000000e-10 CGDMAX=7.5000000000e-11 CGDMIN=7.5000000000e-11 CJO=4.0000000000e-11 IS=1.0000000000e-12 N=1.5000000000e0 RB=7.8000000000e-3)\n"
+      }
+    }
+  ]
+}

@@ -99,21 +99,151 @@ function mosfetCalibrationPoint(specs) {
     ?? points.find((point) => Number(point?.resistance?.value) > 0);
 }
 
-function mosfetFit(part, extraction, forceF1 = false) {
-  const specs = extraction?.specs;
-  const thresholdValue = specs?.threshold_typ?.value ?? specs?.threshold_max?.value ?? specs?.threshold_min?.value;
-  const calibrationPoint = mosfetCalibrationPoint(specs);
-  const rdsonValue = calibrationPoint?.resistance?.value;
-  const threshold = Number.isFinite(Number(thresholdValue)) ? Number(thresholdValue) : hintNumber(part, "vdmos.threshold", 2.5);
-  const citedRdson = Number.isFinite(Number(rdsonValue)) ? Number(rdsonValue) : hintNumber(part, "vdmos.rds_on", 0.1);
-  // Published maxima stay hard inclusive checks. Parameterize below a maximum rather than
-  // placing the approximation exactly on a bound that simulator parasitics can narrowly miss.
-  const targetRdson = calibrationPoint?.resistance?.source_kind === "maximum" ? citedRdson * 0.9 : citedRdson;
-  const rdson = Math.max(1e-4, targetRdson);
+function mosfetTypicalCalibrationPoint(specs) {
+  return (specs?.rdson_points ?? []).filter(isNominalTemperatureEvidence)
+    .find((point) => !["minimum", "maximum"].includes(point?.resistance?.source_kind)
+      && Number(point?.resistance?.value) > 0);
+}
+
+function evidenceTemperature(...values) {
+  const text = values.filter(Boolean).map((value) => value?.conditions ?? value).join(" ");
+  const matches = [...text.matchAll(/(-?\d+(?:\.\d+)?)\s*(?:deg\s*c|degc|°c|\bc\b)/gi)]
+    .map((match) => Number(match[1])).filter(Number.isFinite);
+  if (!matches.length) return null;
+  const first = matches[0];
+  if (matches.some((value) => Math.abs(value - first) > 1e-9)) throw new Error(`MOSFET evidence mixes temperatures in one condition: ${text}`);
+  return first;
+}
+
+function citedThresholdConstraint(specs) {
+  const minimum = normalizeEvidence(specs?.threshold_min);
+  const maximum = normalizeEvidence(specs?.threshold_max);
+  if (!minimum && !maximum) return null;
+  if (!minimum || !maximum) throw new Error("MOSFET F1 threshold evidence must provide both minimum and maximum for a two-sided interval");
+  const low = Math.abs(Number(minimum.value));
+  const high = Math.abs(Number(maximum.value));
+  if (minimum.unit !== "V" || maximum.unit !== "V" || !Number.isFinite(low) || !Number.isFinite(high) || low <= 0 || high <= 0) {
+    throw new Error("MOSFET F1 threshold interval must contain positive finite volt values");
+  }
+  if (!(low < high)) throw new Error(`MOSFET F1 threshold interval is degenerate or reversed: ${low} to ${high} V`);
+  const conditions = `${minimum.conditions ?? ""}; ${maximum.conditions ?? ""}`;
+  const normalizedConditions = conditions.replaceAll("_", "").replace(/\s+/g, "");
+  if (!/(?:VDS=VGS|VGS=VDS)/i.test(normalizedConditions)) throw new Error("MOSFET F1 threshold constraint currently requires cited VDS = VGS conditions");
+  const minimumCurrent = conditionCurrent(minimum.conditions, null);
+  const maximumCurrent = conditionCurrent(maximum.conditions, null);
+  if (!(minimumCurrent > 0) || !(maximumCurrent > 0) || Math.abs(minimumCurrent - maximumCurrent) > Math.max(minimumCurrent, maximumCurrent) * 1e-9) {
+    throw new Error("MOSFET F1 threshold bounds must cite the same positive drain current");
+  }
+  const citations = [minimum.page_reference, maximum.page_reference].filter((value) => typeof value === "string" && value.trim());
+  if (citations.length !== 2) throw new Error("MOSFET F1 threshold bounds must each carry a datasheet citation");
+  const temperature = evidenceTemperature(minimum, maximum);
+  if (temperature == null) throw new Error("MOSFET F1 threshold bounds must cite an exact temperature");
+  return {
+    id: "threshold_interval_1", kind: "threshold_interval", minimum_v: low, maximum_v: high,
+    current_a: minimumCurrent, temperature_c: temperature, inclusive: true,
+    conditions: minimum.conditions, citations,
+  };
+}
+
+function citedRdsonConstraints(specs) {
+  return (specs?.rdson_points ?? []).flatMap((rawPoint, index) => {
+    const point = normalizeEvidence(rawPoint);
+    if (point?.resistance?.source_kind !== "maximum") return [];
+    const maximum = Math.abs(Number(point.resistance.value));
+    const vgs = Math.abs(Number(point.vgs?.value));
+    const current = Math.abs(Number(point.current?.value));
+    if (point.resistance.unit !== "ohm" || point.vgs?.unit !== "V" || point.current?.unit !== "A"
+        || !(maximum > 0) || !(vgs > 0) || !(current > 0)) {
+      throw new Error(`MOSFET F1 RDS(on) maximum ${index + 1} lacks positive SI resistance, VGS, or ID evidence`);
+    }
+    const citations = [point.vgs.page_reference, point.current.page_reference, point.resistance.page_reference]
+      .filter((value) => typeof value === "string" && value.trim());
+    if (citations.length !== 3) throw new Error(`MOSFET F1 RDS(on) maximum ${index + 1} must carry cited VGS, ID, and resistance evidence`);
+    const temperature = evidenceTemperature(point.vgs, point.current, point.resistance);
+    if (temperature == null) throw new Error(`MOSFET F1 RDS(on) maximum ${index + 1} must cite an exact temperature`);
+    return [{
+      id: `rdson_maximum_${index + 1}`, kind: "rdson_maximum", maximum_ohm: maximum,
+      vgs_v: vgs, current_a: current, temperature_c: temperature,
+      inclusive: true, conditions: point.resistance.conditions, citations,
+    }];
+  });
+}
+
+function legacyMosfetParameters(part, specs, threshold, rdson) {
   const ciss = Math.max(1e-15, Number.isFinite(Number(specs?.ciss?.value)) ? Number(specs.ciss.value) : hintNumber(part, "vdmos.ciss", 1e-9));
   const coss = Math.max(1e-15, Number.isFinite(Number(specs?.coss?.value)) ? Number(specs.coss.value) : hintNumber(part, "vdmos.coss", 2e-10));
   const crss = Math.max(1e-15, Number.isFinite(Number(specs?.crss?.value)) ? Number(specs.crss.value) : hintNumber(part, "vdmos.crss", 5e-11));
-  return { fidelity: "F1", parameters: { VTO: threshold, KP: 2 / rdson, THETA: 0, LAMBDA: 0.003, RD: 0.55 * rdson, RS: 0.2 * rdson, RG: 1e-4, CGS: Math.max(1e-15, ciss - crss), CGDMAX: crss, CGDMIN: crss, CJO: Math.max(1e-15, coss - crss), IS: 1e-12, N: 1.5, RB: 0.2 * rdson }, worst: null, points: [] };
+  return { VTO: threshold, KP: 2 / rdson, THETA: 0, LAMBDA: 0.003, RD: 0.55 * rdson, RS: 0.2 * rdson, RG: 1e-4, CGS: Math.max(1e-15, ciss - crss), CGDMAX: crss, CGDMIN: crss, CJO: Math.max(1e-15, coss - crss), IS: 1e-12, N: 1.5, RB: 0.2 * rdson };
+}
+
+function mosfetParameterMetadata(evidenceMode, specs) {
+  const derived = Object.fromEntries(["VTO", "KP", "RD", "RS", "RB"].map((parameter) => [parameter, { status: `evidence-derived (${evidenceMode})`, evidence_mode: evidenceMode }]));
+  const evidenceDerived = (supported, status) => supported ? { status, evidence_mode: evidenceMode } : { status: "held catalog seed or physical default" };
+  return {
+    ...derived,
+    THETA: { status: "held F1 default" }, LAMBDA: { status: "held F1 default" }, RG: { status: "held F1 default" },
+    CGS: evidenceDerived(specs?.ciss && specs?.crss, "derived from cited capacitances"),
+    CGDMAX: evidenceDerived(specs?.crss, "derived from cited reverse-transfer capacitance"),
+    CGDMIN: evidenceDerived(specs?.crss, "derived from cited reverse-transfer capacitance"),
+    CJO: evidenceDerived(specs?.coss && specs?.crss, "derived from cited capacitances"),
+    IS: { status: "held F1 default" }, N: { status: "held F1 default" },
+  };
+}
+
+function mosfetFit(part, extraction, forceF1 = false, constraintRunner = defaultMosfetConstraintRunner) {
+  const specs = extraction?.specs;
+  if (!specs) throw new Error("MOSFET F1 critical calibration requires a datasheet extraction; catalog hints are seeds only");
+  const thresholdTypical = normalizeEvidence(specs.threshold_typ);
+  const rdsonTypicalPoint = mosfetTypicalCalibrationPoint(specs);
+  const thresholdConstraint = citedThresholdConstraint(specs);
+  const rdsonConstraints = citedRdsonConstraints(specs);
+  const hasThresholdTypical = thresholdTypical?.unit === "V" && Number.isFinite(Number(thresholdTypical.value)) && Number(thresholdTypical.value) !== 0;
+  const normalizedTypicalPoint = normalizeEvidence(rdsonTypicalPoint);
+  const hasRdsonTypical = normalizedTypicalPoint?.resistance?.unit === "ohm" && Number(normalizedTypicalPoint.resistance.value) > 0;
+  if (!hasThresholdTypical && !thresholdConstraint) throw new Error("MOSFET F1 critical threshold calibration has neither a cited typical point nor a valid two-sided interval");
+  if (!hasRdsonTypical && !rdsonConstraints.length) throw new Error("MOSFET F1 critical RDS(on) calibration has neither a cited typical point nor an inclusive maximum");
+
+  const thresholdSeed = hasThresholdTypical
+    ? Math.abs(Number(thresholdTypical.value))
+    : 0.5 * (thresholdConstraint.minimum_v + thresholdConstraint.maximum_v);
+  const rdsonSeed = hasRdsonTypical
+    ? Math.abs(Number(normalizedTypicalPoint.resistance.value))
+    : Math.min(...rdsonConstraints.map((constraint) => constraint.maximum_ohm));
+  const parameters = legacyMosfetParameters(part, specs, thresholdSeed, Math.max(1e-4, rdsonSeed));
+  const constraints = [thresholdConstraint, ...rdsonConstraints].filter(Boolean);
+  const observations = [
+    ...(hasThresholdTypical ? [{ quantity: "gate_threshold", value: thresholdSeed, unit: "V", role: "typical_observation", citation: thresholdTypical.page_reference }] : []),
+    ...(hasRdsonTypical ? [{ quantity: "rds_on", value: rdsonSeed, unit: "ohm", role: "typical_observation", citation: normalizedTypicalPoint.resistance.page_reference }] : []),
+  ];
+  const seeds = [
+    { parameter_coordinate: "VTO", value: thresholdSeed, unit: "V", evidence_role: hasThresholdTypical ? "typical_observation_seed" : "interval_midpoint_seed_only", scored_as_residual: hasThresholdTypical },
+    { parameter_coordinate: "rdson", value: rdsonSeed, unit: "ohm", evidence_role: hasRdsonTypical ? "typical_observation_seed" : "bound_value_seed_only", scored_as_residual: hasRdsonTypical },
+  ];
+
+  if (hasThresholdTypical && hasRdsonTypical) {
+    if (constraints.length) {
+      const checked = constraintRunner({
+        polarity: polarityFor(part, extraction), constraints, seed: { vto: thresholdSeed, rdson: Math.max(1e-4, rdsonSeed) },
+        adjustable: { vto: false, rdson: false },
+        fixed: { CGS: parameters.CGS, CGDMAX: parameters.CGDMAX, CGDMIN: parameters.CGDMIN, CJO: parameters.CJO },
+      });
+      if (JSON.stringify(checked.parameters) !== JSON.stringify(parameters)) throw new Error("typical-point MOSFET F1 constraint verification changed the legacy parameter vector");
+      return { fidelity: "F1", parameters, worst: null, points: [], evidence_mode: "typ-point", parameter_metadata: mosfetParameterMetadata("typ-point", specs), calibration: { evidence_mode: "typ-point", observations, constraints: checked.constraint_results, seeds, residual_target_count: observations.length } };
+    }
+    return { fidelity: "F1", parameters, worst: null, points: [], evidence_mode: "typ-point", parameter_metadata: mosfetParameterMetadata("typ-point", specs), calibration: { evidence_mode: "typ-point", observations, constraints: [], seeds, residual_target_count: observations.length } };
+  }
+
+  const constrained = constraintRunner({
+    polarity: polarityFor(part, extraction), constraints, seed: { vto: thresholdSeed, rdson: Math.max(1e-4, rdsonSeed) },
+    adjustable: { vto: true, rdson: true },
+    fixed: { CGS: parameters.CGS, CGDMAX: parameters.CGDMAX, CGDMIN: parameters.CGDMIN, CJO: parameters.CJO },
+  });
+  return {
+    fidelity: "F1", parameters: constrained.parameters, worst: null, points: [], evidence_mode: "interval-constrained",
+    parameter_metadata: mosfetParameterMetadata("interval-constrained", specs),
+    optimizer: { ...constrained.optimizer, seeds },
+    calibration: { evidence_mode: "interval-constrained", observations, constraints: constrained.constraint_results, seeds, residual_target_count: observations.length },
+  };
 }
 
 function modelFor(part, fit) {
@@ -191,7 +321,30 @@ export function defaultFitRunner(payload) {
   }
 }
 
-export function fitBulkPart(part, extraction, { ngspiceRunner = defaultNgspiceRunner, fitRunner = defaultFitRunner, forceF1 = false } = {}) {
+export function defaultMosfetConstraintRunner(payload) {
+  fs.mkdirSync(conveyorFitRoot, { recursive: true });
+  const directory = fs.mkdtempSync(path.join(conveyorFitRoot, "mosfet-f1-"));
+  try {
+    const input = path.join(directory, "payload.json");
+    const output = path.join(directory, "fitted.json");
+    fs.writeFileSync(input, json(payload));
+    const pythonDir = path.resolve(here, "../python");
+    const result = spawnSync(pythonInterpreter(), [path.join(pythonDir, "fit_mosfet_f1_constraints.py"), input, output], {
+      cwd: pythonDir, encoding: "utf8", timeout: 900_000,
+    });
+    if (result.error) throw result.error;
+    if (result.status !== 0 || !fs.existsSync(output)) {
+      throw new Error(`MOSFET F1 constraint fitter failed: ${result.stdout}\n${result.stderr}`.trim());
+    }
+    const fitted = JSON.parse(fs.readFileSync(output, "utf8"));
+    if (!fitted.ok) throw new Error(`MOSFET F1 constraint set is infeasible: ${fitted.error}`);
+    return fitted;
+  } finally {
+    fs.rmSync(directory, { recursive: true, force: true });
+  }
+}
+
+export function fitBulkPart(part, extraction, { ngspiceRunner = defaultNgspiceRunner, fitRunner = defaultFitRunner, mosfetConstraintRunner = defaultMosfetConstraintRunner, forceF1 = false } = {}) {
   const polarity = polarityFor(part, extraction);
   let fit;
   if (!forceF1 && extraction?.usable_curves) {
@@ -203,16 +356,24 @@ export function fitBulkPart(part, extraction, { ngspiceRunner = defaultNgspiceRu
       throw new Error(attempt?.demotion_reason || `${part.conveyor_family} F2 fit produced no result`);
     }
     const parameters = part.conveyor_family === "bjt" ? { ...BJT_AC_DEFAULTS, ...attempt.parameters } : attempt.parameters;
+    const attemptRows = attempt.residuals ?? [];
+    const constraintRows = attemptRows.filter((row) => row.evidence_role === "inequality_constraint");
+    const observationRows = attemptRows.filter((row) => row.evidence_role !== "inequality_constraint");
     fit = {
       fidelity: "F2", parameters, worst: attempt.worst?.value ?? null,
       worst_quantity: attempt.worst?.quantity ?? null, rms: attempt.rms ?? null,
-      residuals: attempt.residuals ?? [], curves_used: attempt.curves_used ?? [],
+      residuals: attemptRows, curves_used: attempt.curves_used ?? [],
       curves_rejected: attempt.curves_rejected ?? [], optimizer: attempt.optimizer ?? null,
-      fitter: attempt.fitter ?? null, points: [],
+      fitter: attempt.fitter ?? null, points: [], evidence_mode: "curve-fitted",
+      parameter_metadata: Object.fromEntries(Object.keys(parameters).map((name) => {
+        const held = (attempt.optimizer?.held_defaults ?? []).find((item) => item.parameter === name);
+        return [name, held ? { status: `held default: ${held.reason}` } : { status: "evidence-derived (curve-fitted)", evidence_mode: "curve-fitted" }];
+      })),
+      calibration: { evidence_mode: "curve-fitted", observations: observationRows, constraints: constraintRows, seeds: [], residual_target_count: observationRows.length },
     };
   } else if (part.conveyor_family === "diode") fit = diodeFit(part, extraction, forceF1);
   else if (part.conveyor_family === "bjt") fit = bjtFit(part, extraction, forceF1);
-  else if (part.conveyor_family === "mosfet") fit = mosfetFit(part, extraction, forceF1);
+  else if (part.conveyor_family === "mosfet") fit = mosfetFit(part, extraction, forceF1, mosfetConstraintRunner);
   else throw new Error(`Unsupported conveyor family: ${part.conveyor_family}`);
   fit.polarity = polarity;
   if (part.conveyor_family === "diode") {
@@ -393,9 +554,9 @@ function conditionNumber(text, symbol, fallback = null) {
 }
 
 function conditionCurrent(text, fallback = null) {
-  const match = String(text ?? "").match(/(?:I[DCR]|collector current|drain current)\|?\s*=\s*([0-9.eE+-]+)\s*(u|m)?A/i);
+  const match = String(text ?? "").replaceAll("_", "").match(/(?:I[DCR]|collector current|drain current)\|?\s*=\s*([0-9.eE+-]+)\s*(u|µ|μ|m)?A/i);
   if (!match) return fallback;
-  return Math.abs(Number(match[1])) * ({ u: 1e-6, m: 1e-3 }[match[2]?.toLowerCase()] ?? 1);
+  return Math.abs(Number(match[1])) * ({ u: 1e-6, "µ": 1e-6, "μ": 1e-6, m: 1e-3 }[match[2]?.toLowerCase()] ?? 1);
 }
 
 function nominalCurve(extraction, predicate) {
@@ -517,21 +678,24 @@ function bulkFactoryFacts(part, extraction, fit, identity, source) {
   }
   const thresholdConditions = specs.threshold_typ?.conditions ?? specs.threshold_max?.conditions ?? specs.threshold_min?.conditions ?? "Nominal threshold characterization";
   const thresholdCitation = specs.threshold_typ?.page_reference ?? specs.threshold_max?.page_reference ?? specs.threshold_min?.page_reference ?? source.pages_referenced[0];
-  const allRdsonPoints = (specs.rdson_points ?? []).filter(isNominalTemperatureEvidence).map((point) => ({
+  const sourceRdsonPoints = fit.evidence_mode === "interval-constrained"
+    ? (specs.rdson_points ?? [])
+    : (specs.rdson_points ?? []).filter(isNominalTemperatureEvidence);
+  const allRdsonPoints = sourceRdsonPoints.map((point) => ({
     ...point,
     vgs: magnitudeQuantity(point.vgs),
     current: magnitudeQuantity(point.current),
     resistance: magnitudeQuantity(point.resistance),
   }));
-  // One-parameter F1 RDS(on) approximations support one cited calibration condition only.
-  // Keeping every table row after an F2 demotion would silently preserve a multi-bias claim.
-  const rdsonPoints = fit.fidelity === "F1"
+  // Legacy typical-point F1 supports one representative RDS(on) condition. The constrained
+  // path retains every cited maximum because each remains an independently enforced bound.
+  const rdsonPoints = fit.fidelity === "F1" && fit.evidence_mode !== "interval-constrained"
     ? [mosfetCalibrationPoint({ rdson_points: allRdsonPoints })].filter(Boolean)
     : allRdsonPoints;
   return {
     ...common,
     rdson_points: rdsonPoints,
-    threshold: (fit.fidelity === "F2" || rdsonPoints.length === 0) && (specs.threshold_min || specs.threshold_typ || specs.threshold_max) ? {
+    threshold: (fit.fidelity === "F2" || fit.evidence_mode === "interval-constrained" || rdsonPoints.length === 0) && (specs.threshold_min || specs.threshold_typ || specs.threshold_max) ? {
       minimum: magnitudeQuantity(specs.threshold_min),
       typical: magnitudeQuantity(specs.threshold_typ),
       maximum: magnitudeQuantity(specs.threshold_max),
@@ -572,10 +736,15 @@ function operatingRegion(part, facts) {
     ], "V", "Cited threshold and RDS(on) gate-bias conditions"));
     bounds.push(numericBound("drain_current_magnitude", facts.rdson_points.map((point) => point.current.value), "A", "Cited RDS(on) characterization currents"));
   }
-  bounds.push({ quantity: "ambient_temperature", minimum: 25, maximum: 25, unit: "degC", conditions: "Nominal model and package benches", placeholder: false });
+  const citedTemperatures = part.conveyor_family === "mosfet" ? [
+    ...facts.rdson_points.map((point) => evidenceTemperature(point.vgs, point.current, point.resistance) ?? 25),
+    ...(facts.threshold ? [evidenceTemperature(facts.threshold.minimum, facts.threshold.typical, facts.threshold.maximum, facts.threshold.test_current) ?? 25] : []),
+  ] : [25];
+  bounds.push({ quantity: "ambient_temperature", minimum: Math.min(...citedTemperatures), maximum: Math.max(...citedTemperatures), unit: "degC", conditions: "Cited model and package benches", placeholder: false });
   const numericBounds = bounds.filter(Boolean);
   const named = numericBounds.filter((bound) => bound.quantity !== "ambient_temperature").map((bound) => `${bound.quantity} ${bound.minimum} to ${bound.maximum} ${bound.unit}`).join("; ");
-  return { summary: `Supported only over the cited 25 degC electrical characterization region: ${named}.`, numeric_bounds: numericBounds };
+  const temperatureSummary = citedTemperatures.every((value) => value === citedTemperatures[0]) ? `${citedTemperatures[0]} degC` : `${Math.min(...citedTemperatures)} to ${Math.max(...citedTemperatures)} degC`;
+  return { summary: `Supported only over the cited ${temperatureSummary} electrical characterization region: ${named}.`, numeric_bounds: numericBounds };
 }
 
 function bulkContext(part, fit, identity, pinInfo, source, omissions, operating, packageDir, stagingRoot) {
@@ -615,7 +784,7 @@ export function pinPackageBenchTemperature(packageDir) {
     if (!entry.isFile() || !entry.name.endsWith(".cir")) continue;
     const benchPath = path.join(testsDir, entry.name);
     const text = fs.readFileSync(benchPath, "utf8");
-    if (/^\.temp\s+25(?:\.0+)?\s*$/mi.test(text)) continue;
+    if (/^\.temp\s+-?\d+(?:\.\d+)?(?:e[+-]?\d+)?\s*$/mi.test(text)) continue;
     const lines = text.split("\n");
     const modelIndex = lines.findLastIndex((line) => /^\.model\b/i.test(line.trim()));
     if (modelIndex < 0) throw new Error(`${entry.name} has no .model card before temperature pinning`);
@@ -637,14 +806,14 @@ export function stageBulkPart(part, rawExtraction, fit, stagingRoot, { demotionR
   const pinInfo = pinsFor(part.conveyor_family, fit.polarity);
   const omissions = [
     "AC, transient, noise, thermal, and package-parasitic behavior are outside this DC-only conveyor package.",
-    "Temperature dependence and self-heating are not modelled; the electrical region is limited to the cited nominal-temperature data.",
-    "Catalog parametrics were used only as initial guesses or F1 fallback constraints and are not datasheet citations.",
+    "Temperature dependence and self-heating are not modelled; each electrical claim is limited to its exact cited bench temperature.",
+    "Catalog parametrics may be recorded only as optimizer seeds; they are not evidence, constraints, residual targets, or datasheet citations.",
     ...(demotionReason ? [`F2 evidence did not qualify; staged as F1: ${demotionReason}`] : []),
     ...(extraction?.omission_reason ? [extraction.omission_reason] : []),
     ...(part.conveyor_family === "diode" && fit.fidelity === "F1" && extraction?.specs?.reverse_current
       ? ["Reverse-bias leakage is not covered by this F1 package because the approximation is supported only over cited forward-bias targets."]
       : []),
-    ...(part.conveyor_family === "mosfet" && fit.fidelity === "F1" && (extraction?.specs?.rdson_points ?? []).some(isNominalTemperatureEvidence) && (extraction?.specs?.threshold_min || extraction?.specs?.threshold_typ || extraction?.specs?.threshold_max)
+    ...(part.conveyor_family === "mosfet" && fit.fidelity === "F1" && fit.evidence_mode !== "interval-constrained" && (extraction?.specs?.rdson_points ?? []).some(isNominalTemperatureEvidence) && (extraction?.specs?.threshold_min || extraction?.specs?.threshold_typ || extraction?.specs?.threshold_max)
       ? ["Gate-threshold behavior is not covered by this F1 package; the supported region is limited to cited nominal-temperature RDS(on) targets."]
       : []),
     ...(part.conveyor_family === "bjt" && fit.fidelity === "F1" && (extraction?.specs?.saturation_points ?? []).length
@@ -690,8 +859,15 @@ export function stageBulkPart(part, rawExtraction, fit, stagingRoot, { demotionR
   const fitted = {
     schema_version: "1.0.0",
     fidelity_tier: fit.fidelity,
+    evidence_mode: fit.evidence_mode ?? null,
     parameters: fit.parameters,
-    fitter: fit.fitter ?? "catalog-parametric F1 fallback",
+    parameter_metadata: fit.parameter_metadata ?? {},
+    calibration: fit.calibration ?? null,
+    fitter: fit.fitter ?? (fit.evidence_mode === "interval-constrained"
+      ? "native-ngspice constrained MOSFET F1 feasibility projection"
+      : fit.evidence_mode === "typ-point"
+        ? "datasheet typical-point MOSFET F1 formula"
+        : "catalog-parametric F1 fallback"),
     optimizer: fit.optimizer ?? null,
     held_defaults: fit.optimizer?.held_defaults ?? [],
     curves_used: fit.curves_used ?? [],

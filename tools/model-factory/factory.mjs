@@ -516,6 +516,16 @@ function bjtTestgen(ctx, model, facts) {
   return tests;
 }
 
+function evidenceTemperatureC(...values) {
+  const text = values.filter(Boolean).map((value) => value?.conditions ?? value).join(" ");
+  const temperatures = [...text.matchAll(/(-?\d+(?:\.\d+)?)\s*(?:deg\s*c|degc|°c|\bc\b)/gi)]
+    .map((match) => Number(match[1])).filter(Number.isFinite);
+  if (!temperatures.length) return 25;
+  const first = temperatures[0];
+  if (temperatures.some((value) => Math.abs(value - first) > 1e-9)) throw new Error(`Conflicting cited temperatures in MOSFET bench evidence: ${text}`);
+  return first;
+}
+
 function vdmosTestgen(ctx, model, facts) {
   const tests = [];
   const pChannel = ctx.part.identity.electrical_family === "pmos";
@@ -525,36 +535,48 @@ function vdmosTestgen(ctx, model, facts) {
     : `${name} 0 ${node} DC ${formatSpice(current)}`;
 
   if (facts.rdson_points?.length) {
-    const rdLines = [`OpenCircuit factory test: ${ctx.part.slug} RDS(on)`, model];
-    const rdChecks = [];
-    const rdHardChecks = [];
-    facts.rdson_points.forEach((point, index) => {
-      const id = index + 1;
-      rdLines.push(
-        `M${id} d${id} g${id} 0 ${ctx.part.component.modelName}`,
-        currentSource(`ID${id}`, `d${id}`, point.current.value),
-        `VG${id} g${id} 0 DC ${formatSpice(signed(point.vgs.value))}`
-      );
-      const expression = `scale_abs:last(v(d${id}),${1 / point.current.value})`;
-      if (point.resistance.source_kind === "maximum") {
-        rdHardChecks.push(hardBound(`rdson_maximum_${id}`, expression, "ohm", { minimum: 0, maximum: point.resistance.value }, point.resistance.page_reference));
-      } else if (point.resistance.source_kind === "minimum") {
-        rdHardChecks.push(hardBound(`rdson_minimum_${id}`, expression, "ohm", { minimum: point.resistance.value }, point.resistance.page_reference));
-      } else {
-        rdChecks.push(expectation(`rdson_${id}`, expression, point.resistance.value, "ohm", 0, ctx.part.component.test_tolerances?.rds_on ?? 0.15, point.resistance.page_reference));
-      }
+    const groups = new Map();
+    for (const point of facts.rdson_points) {
+      const temperature = evidenceTemperatureC(point.vgs, point.current, point.resistance);
+      const group = groups.get(temperature) ?? [];
+      group.push(point);
+      groups.set(temperature, group);
+    }
+    [...groups.entries()].forEach(([temperature, points], groupIndex) => {
+      const benchName = groupIndex === 0 ? "rdson.cir" : `rdson-${groupIndex + 1}.cir`;
+      const rdLines = [`OpenCircuit factory test: ${ctx.part.slug} RDS(on)`, model, `.temp ${Number(temperature)}`];
+      const rdChecks = [];
+      const rdHardChecks = [];
+      points.forEach((point, index) => {
+        const id = index + 1;
+        rdLines.push(
+          `M${id} d${id} g${id} 0 ${ctx.part.component.modelName}`,
+          currentSource(`ID${id}`, `d${id}`, point.current.value),
+          `VG${id} g${id} 0 DC ${formatSpice(signed(point.vgs.value))}`
+        );
+        const expression = `scale_abs:last(v(d${id}),${1 / point.current.value})`;
+        if (point.resistance.source_kind === "maximum") {
+          rdHardChecks.push(hardBound(`rdson_maximum_${groupIndex + 1}_${id}`, expression, "ohm", { minimum: 0, maximum: point.resistance.value }, point.resistance.page_reference));
+        } else if (point.resistance.source_kind === "minimum") {
+          rdHardChecks.push(hardBound(`rdson_minimum_${groupIndex + 1}_${id}`, expression, "ohm", { minimum: point.resistance.value }, point.resistance.page_reference));
+        } else {
+          rdChecks.push(expectation(`rdson_${groupIndex + 1}_${id}`, expression, point.resistance.value, "ohm", 0, ctx.part.component.test_tolerances?.rds_on ?? 0.15, point.resistance.page_reference));
+        }
+      });
+      rdLines.push(".op", ".end", "");
+      writeBench(ctx, benchName, rdLines.join("\n"));
+      tests.push(testRecord(benchName, "operating_point", rdChecks, rdHardChecks));
     });
-    rdLines.push(".op", ".end", "");
-    writeBench(ctx, "rdson.cir", rdLines.join("\n"));
-    tests.push(testRecord("rdson.cir", "operating_point", rdChecks, rdHardChecks));
   }
 
   if (facts.threshold) {
     const threshold = facts.threshold;
     const current = threshold.test_current?.value ?? 250e-6;
+    const temperature = evidenceTemperatureC(threshold.minimum, threshold.typical, threshold.maximum, threshold.test_current);
     const lines = [
       `OpenCircuit factory test: ${ctx.part.slug} threshold bounds`,
       model,
+      `.temp ${Number(temperature)}`,
       `MTH d d 0 ${ctx.part.component.modelName}`,
       currentSource("ITH", "d", current),
       ".op",

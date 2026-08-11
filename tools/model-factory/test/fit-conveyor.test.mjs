@@ -99,6 +99,39 @@ test("an unrecognised unit is refused rather than silently treated as SI", { ski
 
 // ------------------------------------------------------------ extraction validation
 
+test("MOSFET residual curves require explicit temperature, citation, and transfer bias or range", { skip }, () => {
+  const base = curve(
+    "Figure 1 Typical Transfer Characteristics",
+    "gate-to-source voltage VGS", "V", "drain current ID", "A",
+    "VDS = 10 V, TJ = 25 degC",
+    [[1, 1e-4], [1.5, 1e-3], [2, 1e-2], [2.5, 0.1], [3, 0.5], [3.5, 1]],
+    "PDF page 3 (Figure 1)",
+  );
+  const payload = (candidate) => ({ family: "mosfet", polarity: "n", mpn: "FIXTURE-M", manufacturer: "Fixture", seed_hints: [], extraction: {
+    schema_version: "1.0.0", mpn: "FIXTURE-M", manufacturer: "Fixture", family: "mosfet", usable_curves: true,
+    curves: [candidate], specs: { polarity: "n" },
+  } });
+
+  const noTemperature = structuredClone(base);
+  noTemperature.test_conditions = "VDS = 10 V";
+  const temperatureResult = runFit(payload(noTemperature));
+  assert.equal(temperatureResult.fidelity, "F1");
+  assert.match(temperatureResult.curves_rejected.join("\n"), /no explicit curve temperature/);
+
+  const noFigure = structuredClone(base);
+  noFigure.name = "Typical Transfer Characteristics";
+  noFigure.page_reference = "PDF page 3";
+  const citationResult = runFit(payload(noFigure));
+  assert.equal(citationResult.fidelity, "F1");
+  assert.match(citationResult.curves_rejected.join("\n"), /figure or curve number/);
+
+  const noBias = structuredClone(base);
+  noBias.test_conditions = "TJ = 25 degC";
+  const biasResult = runFit(payload(noBias));
+  assert.equal(biasResult.fidelity, "F1");
+  assert.match(biasResult.curves_rejected.join("\n"), /neither an explicit VDS bias nor a stated VDS saturation range/);
+});
+
 test("a non-monotonic forward curve is rejected, not fitted", { skip }, () => {
   const fitted = runFit(diodePayload([curve("Forward", "Forward voltage", "V", "Forward current", "A", "25 degC",
     [[0.48, 1e-4], [0.60, 1e-3], [0.72, 9e-4], [0.84, 1e-1]])]));
@@ -142,6 +175,24 @@ test("all native conveyor residual probes pin the cited 25 degC temperature", { 
     assert.equal(netlist.match(/^\.temp 25$/gm)?.length, 1, netlist);
     assert.ok(netlist.indexOf("\n.temp 25\n") < netlist.indexOf("\n.op\n"), netlist);
   }
+});
+
+test("standalone VDMOS native DC and capacitance probes pin 25 degC", { skip }, () => {
+  const program = String.raw`
+import json
+import fit_vdmos as subject
+captured = []
+subject.run_ngspice = lambda netlist: captured.append(netlist) or {}
+fixed = {"A": 0.5, "RS": 0.1, "RG": 0.1, "CGS": 1e-9, "CGDMAX": 1e-10, "CGDMIN": 1e-11, "CJO": 1e-10, "IS": 1e-12, "RB": 0.1, "TT": 1e-9, "BV": 100, "IBV": 1e-6, "RTHJC": 1, "RTHCA": 10}
+subject.evaluate_dc([2, 1, 0, 0.003, 0.1], fixed, {"transfer_points": [], "rdson_points": [], "output_points": []})
+subject.evaluate_capacitance(0.5, [2, 1, 0, 0.003, 0.1], fixed, {"capacitances": {"crss_curve": []}})
+print(json.dumps(captured))
+`;
+  const result = spawnSync(venvPython, ["-c", program], { cwd: pythonDir, encoding: "utf8" });
+  assert.equal(result.status, 0, result.stderr);
+  const probes = JSON.parse(result.stdout);
+  assert.equal(probes.length, 2);
+  for (const netlist of probes) assert.equal(netlist.match(/^\.temp 25$/gm)?.length, 1, netlist);
 });
 
 test("residuals are measured through native ngspice, not the fitter's own algebra", { skip }, () => {

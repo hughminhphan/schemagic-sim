@@ -81,7 +81,7 @@ def temperature_of(curve):
 
 def bias_of(curve, symbol):
     """A stated bias such as VGS or VCE, in volts, or None."""
-    text = context(curve)
+    text = context(curve).replace("_", "")
     m = re.search(rf"{symbol}\s*(?:magnitude)?\s*[= ]\s*(-?\d+(?:\.\d+)?)\s*v", text)
     return abs(float(m.group(1))) if m else None
 
@@ -225,7 +225,15 @@ def select_mosfet_curves(extraction, rejected):
             rejected.append(f"{label}: body/source-drain diode characteristic, not a channel output curve; excluded")
             continue
         temp = temperature_of(curve)
-        if temp is not None and abs(temp - 25) > 10:
+        citation = str(curve.get("page_reference") or "")
+        if temp is None:
+            rejected.append(f"{label}: no explicit curve temperature; excluded from MOSFET residual targets")
+            continue
+        if abs(temp - 25) > 1e-9:
+            continue
+        figure_context = f"{label} {citation}"
+        if not re.search(r"(?:p(?:age)?\.?\s*\d+|pdf\s+page\s+\d+)", citation, re.I) or not re.search(r"(?:fig(?:ure)?|curve)\s*\d+", figure_context, re.I):
+            rejected.append(f"{label}: citation must identify a page and the figure or curve number; excluded from MOSFET residual targets")
             continue
         try:
             pts = points_of(curve, "V", "A")
@@ -236,8 +244,19 @@ def select_mosfet_curves(extraction, rejected):
         if "vgs" in xq or "gate" in xq:
             pts = [(v, i) for v, i in pts if v > 0 and i > 0]
             pts = reject_non_monotonic(pts, "increasing", label, rejected)
+            vds = bias_of(curve, "vds")
+            if vds is None:
+                # Some transfer figures state the saturation-region range rather than one
+                # fixed drain bias, for example |VDS| > 2|ID|/RDS(on),max. The historical
+                # 10 V probe is retained only when that range is explicit; an unstated bias
+                # is still rejected. This preserves the qualified Batch 12 BSS131 fit.
+                stated_saturation_range = re.search(r"v_?ds.*[<>].*(?:i_?d|r_?ds)", context(curve), re.I)
+                if stated_saturation_range:
+                    vds = 10.0
+                else:
+                    rejected.append(f"{label}: transfer curve has neither an explicit VDS bias nor a stated VDS saturation range; excluded from MOSFET residual targets")
+                    continue
             if len(pts) >= 3 and (transfer is None or len(pts) > len(transfer[1])):
-                vds = bias_of(curve, "vds") or 10.0
                 transfer = (curve, pts, vds)
         elif "vds" in xq or "drain" in xq:
             vgs = bias_of(curve, "vgs")
@@ -544,10 +563,12 @@ def fit_mosfet(payload, rejected):
 
     transfer = [(vgs, tvds, current) for vgs, current in tpts]
     out_points = []
+    output_citations = []
     for curve, pts, vgs in outputs:
         used.append(f"{curve.get('name')} ({curve.get('page_reference')})")
         for vds, current in pts:
             out_points.append((vgs, vds, current))
+            output_citations.append(curve.get("page_reference") or "pending review")
 
     rdson = []
     for point in specs.get("rdson_points") or []:
@@ -656,18 +677,20 @@ def fit_mosfet(payload, rejected):
                           "datasheet_value": target, "fitted_value": actual, "unit": "A",
                           "relative_error": abs(actual - target) / abs(target),
                           "citation": tcurve.get("page_reference") or "pending review"})
-    for (vgs, vds, target), actual in zip(out_points, o):
+    for (vgs, vds, target), actual, citation in zip(out_points, o, output_citations):
         residuals.append({"quantity": f"output current at VGS {vgs:.6g} V, VDS {vds:.6g} V", "gate_quantity": "drain_current",
                           "datasheet_value": target, "fitted_value": actual, "unit": "A",
                           "relative_error": abs(actual - target) / abs(target),
-                          "citation": "output characteristics"})
+                          "citation": citation})
     for (vgs, current, target, kind), actual in zip(rdson, d):
         error = abs(actual - target) / abs(target)
         if kind == "maximum":
             error = max(actual - target, 0.0) / abs(target)
         residuals.append({"quantity": f"RDS(on) at VGS {vgs:.6g} V", "gate_quantity": "rds_on",
                           "datasheet_value": target, "fitted_value": actual, "unit": "ohm",
-                          "relative_error": error, "citation": "electrical characteristics table"})
+                          "relative_error": error, "citation": "electrical characteristics table",
+                          "evidence_role": "inequality_constraint" if kind == "maximum" else "typical_observation",
+                          **({"maximum": target, "inclusive": True} if kind == "maximum" else {})})
     return params, residuals, used, notes, {"optimizer_nfev": int(fit.nfev), "optimizer_status": int(fit.status),
                                             "held_defaults": held}
 

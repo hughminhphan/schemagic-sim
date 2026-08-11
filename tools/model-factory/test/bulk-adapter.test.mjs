@@ -3,7 +3,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
-import { fitBulkPart, libraryCollisionReason, libraryDuplicateDieReason, normalizedIdentity, normalizeBulkManifest, repairKnownEvidenceDefects, runBulkManifest } from "../lib/bulk-adapter.mjs";
+import { fitBulkPart, libraryCollisionReason, libraryDuplicateDieReason, normalizedIdentity, normalizeBulkManifest, pinPackageBenchTemperature, repairKnownEvidenceDefects, runBulkManifest } from "../lib/bulk-adapter.mjs";
 import { validatePackage } from "../../../packages/component-schema/lib.mjs";
 
 const quantity = (value, unit) => ({ value, unit, conditions: "fixture at 25 C", page_reference: "p. 2", source_kind: "typical" });
@@ -30,6 +30,36 @@ function mosfetPart(pdf) {
       { factory_target: "vdmos.crss", raw_value: "5pF@25V" },
     ],
     allow_f1_demotion: true,
+  };
+}
+
+function typicalMosfetExtraction(polarity = "p") {
+  const sign = polarity === "p" ? -1 : 1;
+  const thresholdConditions = `VDS = VGS, ID = ${sign * 250} µA, TJ = 25 °C`;
+  const rdsonConditions = `VGS = ${sign * 4.5} V, ID = ${sign * 2} A, TJ = 25 °C`;
+  return { specs: {
+    polarity,
+    threshold_min: { value: sign * 1, unit: "V", conditions: thresholdConditions, page_reference: "p. 2", source_kind: "minimum" },
+    threshold_typ: { value: sign * 1.5, unit: "V", conditions: thresholdConditions, page_reference: "p. 2", source_kind: "typical" },
+    threshold_max: { value: sign * 2, unit: "V", conditions: thresholdConditions, page_reference: "p. 2", source_kind: "maximum" },
+    rdson_points: [{
+      vgs: { value: sign * 4.5, unit: "V", conditions: rdsonConditions, page_reference: "p. 2", source_kind: "typical" },
+      current: { value: sign * 2, unit: "A", conditions: rdsonConditions, page_reference: "p. 2", source_kind: "typical" },
+      resistance: { value: 0.08, unit: "ohm", conditions: rdsonConditions, page_reference: "p. 2", source_kind: "typical" },
+    }],
+    ciss: quantity(50e-12, "F"), coss: quantity(20e-12, "F"), crss: quantity(5e-12, "F"),
+  } };
+}
+
+function passThroughConstraintRunner(payload) {
+  const rdson = payload.seed.rdson;
+  return {
+    parameters: {
+      VTO: payload.seed.vto, KP: 2 / rdson, THETA: 0, LAMBDA: 0.003, RD: 0.55 * rdson, RS: 0.2 * rdson,
+      RG: 1e-4, ...payload.fixed, IS: 1e-12, N: 1.5, RB: 0.2 * rdson,
+    },
+    constraint_results: payload.constraints.map((constraint) => ({ ...constraint, inclusive: true, satisfied: true })),
+    optimizer: { method: "fixture feasibility projection", residual_target_count: 0 },
   };
 }
 
@@ -155,28 +185,57 @@ test("bulk manifest accepts external datasheet and seed paths and stages pending
   }
 });
 
-test("forced F1 MOSFET fallback parses SI-prefixed catalog hints", () => {
-  const fit = fitBulkPart(mosfetPart("unused.pdf"), null, { forceF1: true, ngspiceRunner: () => ({ pass: true }) });
-  assert.equal(fit.fidelity, "F1");
-  assert.equal(fit.polarity, "p");
-  assert.ok(fit.parameters.CGS < 1e-9);
-  assert.equal(fit.parameters.CGDMAX, 5e-12);
-  assert.match(fit.model.text, /VDMOS\( pchan/);
+test("bench temperature pinning preserves an exact non-25 C directive", () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "factory-temperature-test-"));
+  try {
+    const tests = path.join(root, "tests");
+    fs.mkdirSync(tests);
+    const bench = path.join(tests, "constraint.cir");
+    fs.writeFileSync(bench, "temperature fixture\n.model M D\n.temp 75\nV1 n 0 0\n.op\n.end\n");
+    pinPackageBenchTemperature(root);
+    const text = fs.readFileSync(bench, "utf8");
+    assert.equal(text.match(/^\.temp 75$/gm)?.length, 1);
+    assert.equal(text.match(/^\.temp 25$/gm)?.length ?? 0, 0);
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
 });
 
-test("F1 MOSFET calibration uses the same nominal-temperature evidence as its package claim", () => {
-  const nonNominal = { ...quantity(5.6, "ohm"), conditions: "TJ = -55 to 150 degC", source_kind: "typical" };
-  const nominalMaximum = { ...quantity(3.5, "ohm"), source_kind: "maximum" };
+test("forced F1 MOSFET refuses silently defaulted critical calibration", () => {
+  assert.throws(
+    () => fitBulkPart(mosfetPart("unused.pdf"), null, { forceF1: true, ngspiceRunner: () => ({ pass: true }) }),
+    /critical calibration requires a datasheet extraction/,
+  );
+});
+
+test("F1 MOSFET bounds are constraints while interval midpoints and maxima are seeds only", () => {
+  const thresholdConditions = "VDS = VGS, ID = 250 µA, TJ = 25 °C";
+  const rdsonConditions = "VGS = 5 V, ID = 0.2 A, TJ = 25 °C";
   const payload = { specs: {
-    polarity: "n", threshold_min: quantity(0.5, "V"), threshold_typ: null, threshold_max: quantity(1.5, "V"),
-    rdson_points: [
-      { vgs: quantity(2.75, "V"), current: quantity(0.2, "A"), resistance: nonNominal },
-      { vgs: quantity(5, "V"), current: quantity(0.2, "A"), resistance: nominalMaximum },
-    ],
+    polarity: "n",
+    threshold_min: { ...quantity(0.5, "V"), conditions: thresholdConditions, source_kind: "minimum" },
+    threshold_typ: null,
+    threshold_max: { ...quantity(1.5, "V"), conditions: thresholdConditions, source_kind: "maximum" },
+    rdson_points: [{
+      vgs: { ...quantity(5, "V"), conditions: rdsonConditions },
+      current: { ...quantity(0.2, "A"), conditions: rdsonConditions },
+      resistance: { ...quantity(3.5, "ohm"), conditions: rdsonConditions, source_kind: "maximum" },
+    }],
     ciss: quantity(45e-12, "F"), coss: quantity(20e-12, "F"), crss: quantity(4e-12, "F"),
   } };
-  const fit = fitBulkPart({ ...mosfetPart("unused.pdf"), subcategory: "N-Channel MOSFET" }, payload, { forceF1: true, ngspiceRunner: () => ({ pass: true }) });
-  assert.equal(fit.parameters.KP, 2 / (3.5 * 0.9));
+  let runnerPayload;
+  const fit = fitBulkPart({ ...mosfetPart("unused.pdf"), subcategory: "N-Channel MOSFET" }, payload, {
+    forceF1: true,
+    ngspiceRunner: () => ({ pass: true }),
+    mosfetConstraintRunner: (input) => { runnerPayload = input; return passThroughConstraintRunner(input); },
+  });
+  assert.equal(fit.evidence_mode, "interval-constrained");
+  assert.equal(fit.residuals?.length ?? 0, 0);
+  assert.equal(fit.calibration.residual_target_count, 0);
+  assert.deepEqual(runnerPayload.constraints.map((constraint) => constraint.kind), ["threshold_interval", "rdson_maximum"]);
+  assert.deepEqual(fit.calibration.seeds.map((seed) => seed.evidence_role), ["interval_midpoint_seed_only", "bound_value_seed_only"]);
+  assert.ok(fit.calibration.seeds.every((seed) => seed.scored_as_residual === false));
+  assert.equal(fit.parameters.KP, 2 / 3.5, "a maximum may seed the optimizer but is not scaled into a synthetic target");
 });
 
 test("pre-demoted bulk part keeps extraction and p-channel metadata", () => {
@@ -188,13 +247,13 @@ test("pre-demoted bulk part keeps extraction and p-channel metadata", () => {
     const mosfetExtraction = {
       schema_version: "1.0.0", mpn: "FIXTURE-P1", manufacturer: "Fixture Semi", family: "mosfet",
       datasheet_identity: { title: "Fixture P1", revision: "A", pages_examined: ["p. 2"] }, usable_curves: false, curves: [],
-      specs: { polarity: "p", threshold_min: quantity(1, "V"), threshold_typ: quantity(1.5, "V"), threshold_max: quantity(2, "V"), rdson_points: [], ciss: quantity(50e-12, "F"), coss: quantity(20e-12, "F"), crss: quantity(5e-12, "F"), breakdown_voltage: quantity(30, "V"), body_diode: null },
+      specs: { ...typicalMosfetExtraction("p").specs, breakdown_voltage: quantity(30, "V"), body_diode: null },
       extraction_notes: [], omission_reason: "curve unavailable",
     };
     fs.writeFileSync(extractionPath, JSON.stringify(mosfetExtraction));
     const manifestPath = path.join(root, "batch.json");
     fs.writeFileSync(manifestPath, JSON.stringify({ schema_version: "1.0.0", kind: "opencircuit-conveyor-batch", parts: [{ ...mosfetPart(pdf), extraction_path: extractionPath, force_f1: true, demotion_reason: "catalog discrepancy" }] }));
-    const result = runBulkManifest(manifestPath, path.join(root, "staging"), { ngspiceRunner: () => ({ pass: true }) });
+    const result = runBulkManifest(manifestPath, path.join(root, "staging"), { ngspiceRunner: () => ({ pass: true }), mosfetConstraintRunner: passThroughConstraintRunner });
     assert.equal(result[0].demotion_reason, "catalog discrepancy");
     const component = JSON.parse(fs.readFileSync(path.join(result[0].package_path, "component.json"), "utf8"));
     const facts = JSON.parse(fs.readFileSync(path.join(result[0].package_path, "facts.json"), "utf8"));
@@ -267,10 +326,12 @@ test("signed P-channel RDS evidence is magnitude-normalized before bench polarit
       datasheet_identity: { title: "Fixture P1", revision: "A", pages_examined: ["p. 2"] }, usable_curves: false, curves: [],
       specs: {
         polarity: "p",
-        threshold_min: { ...quantity(-0.7, "V"), source_kind: "minimum" }, threshold_typ: null, threshold_max: { ...quantity(-1.3, "V"), source_kind: "maximum" },
+        threshold_min: { ...quantity(-0.7, "V"), conditions: "VDS = VGS, ID = -250 µA, TJ = 25 °C", source_kind: "minimum" },
+        threshold_typ: null,
+        threshold_max: { ...quantity(-1.3, "V"), conditions: "VDS = VGS, ID = -250 µA, TJ = 25 °C", source_kind: "maximum" },
         rdson_points: [
-          { vgs: quantity(-10, "V"), current: quantity(-4.2, "A"), resistance: { ...quantity(0.065, "ohm"), source_kind: "maximum" } },
-          { vgs: quantity(-4.5, "V"), current: quantity(-4, "A"), resistance: { ...quantity(0.075, "ohm"), source_kind: "maximum" } },
+          { vgs: { ...quantity(-10, "V"), conditions: "VGS = -10 V, ID = -4.2 A, TJ = 25 °C" }, current: { ...quantity(-4.2, "A"), conditions: "VGS = -10 V, ID = -4.2 A, TJ = 25 °C" }, resistance: { ...quantity(0.065, "ohm"), conditions: "VGS = -10 V, ID = -4.2 A, TJ = 25 °C", source_kind: "maximum" } },
+          { vgs: { ...quantity(-4.5, "V"), conditions: "VGS = -4.5 V, ID = -4 A, TJ = 25 °C" }, current: { ...quantity(-4, "A"), conditions: "VGS = -4.5 V, ID = -4 A, TJ = 25 °C" }, resistance: { ...quantity(0.075, "ohm"), conditions: "VGS = -4.5 V, ID = -4 A, TJ = 25 °C", source_kind: "maximum" } },
         ],
         ciss: quantity(954e-12, "F"), coss: quantity(115e-12, "F"), crss: quantity(77e-12, "F"), breakdown_voltage: quantity(-30, "V"), body_diode: null,
       },
@@ -283,7 +344,12 @@ test("signed P-channel RDS evidence is magnitude-normalized before bench polarit
     const result = runBulkManifest(manifestPath, path.join(root, "staging"), { libraryRoot: path.join(root, "empty-library") });
     assert.equal(result[0].status, "staged", JSON.stringify(result[0]));
     const facts = JSON.parse(fs.readFileSync(path.join(result[0].package_path, "facts.json"), "utf8"));
-    assert.deepEqual(facts.rdson_points.map((point) => [point.vgs.value, point.current.value]), [[10, 4.2]]);
+    const fitted = JSON.parse(fs.readFileSync(path.join(result[0].package_path, "fitted.json"), "utf8"));
+    assert.deepEqual(facts.rdson_points.map((point) => [point.vgs.value, point.current.value]), [[10, 4.2], [4.5, 4]]);
+    assert.equal(fitted.evidence_mode, "interval-constrained");
+    assert.equal(fitted.calibration.constraints.length, 3);
+    assert.equal(fitted.residuals.length, 0);
+    assert.ok(Object.values(fitted.parameter_metadata).filter((metadata) => metadata.evidence_mode).every((metadata) => metadata.evidence_mode === "interval-constrained"));
   } finally {
     fs.rmSync(root, { recursive: true, force: true });
   }
@@ -386,7 +452,7 @@ test("duplicate die vectors are rejected against the library and across one batc
     const library = path.join(root, "models");
     const existing = path.join(library, "fixture", "EXISTING-P1");
     fs.mkdirSync(existing, { recursive: true });
-    const fit = fitBulkPart(mosfetPart("unused.pdf"), null, { forceF1: true, ngspiceRunner: () => ({ pass: true }) });
+    const fit = fitBulkPart(mosfetPart("unused.pdf"), typicalMosfetExtraction("p"), { forceF1: true, ngspiceRunner: () => ({ pass: true }), mosfetConstraintRunner: passThroughConstraintRunner });
     fs.writeFileSync(path.join(existing, "component.json"), JSON.stringify({ electrical_family: "pmos" }));
     fs.writeFileSync(path.join(existing, "fitted.json"), JSON.stringify({ parameters: fit.parameters }));
     assert.match(libraryDuplicateDieReason(mosfetPart("unused.pdf"), fit, library), /fixture\/EXISTING-P1/);
@@ -396,7 +462,7 @@ test("duplicate die vectors are rejected against the library and across one batc
     const mosfetExtraction = {
       schema_version: "1.0.0", mpn: "FIXTURE-P1", manufacturer: "Fixture Semi", family: "mosfet",
       datasheet_identity: { title: "Fixture P1", revision: "A", pages_examined: ["p. 2"] }, usable_curves: false, curves: [],
-      specs: { polarity: "p", threshold_min: quantity(1, "V"), threshold_typ: quantity(1.5, "V"), threshold_max: quantity(2, "V"), rdson_points: [], ciss: quantity(50e-12, "F"), coss: quantity(20e-12, "F"), crss: quantity(5e-12, "F"), breakdown_voltage: quantity(30, "V"), body_diode: null },
+      specs: { ...typicalMosfetExtraction("p").specs, breakdown_voltage: quantity(30, "V"), body_diode: null },
       extraction_notes: [], omission_reason: "curve unavailable",
     };
     const extractionPath = path.join(root, "extraction.json");
@@ -406,7 +472,7 @@ test("duplicate die vectors are rejected against the library and across one batc
       { ...mosfetPart(pdf), mpn: "FIXTURE-P1A", extraction_path: extractionPath, force_f1: true },
       { ...mosfetPart(pdf), mpn: "FIXTURE-P1B", extraction_path: extractionPath, force_f1: true },
     ] }));
-    const results = runBulkManifest(manifestPath, path.join(root, "staging"), { libraryRoot: path.join(root, "empty-library"), ngspiceRunner: () => ({ pass: true }) });
+    const results = runBulkManifest(manifestPath, path.join(root, "staging"), { libraryRoot: path.join(root, "empty-library"), ngspiceRunner: () => ({ pass: true }), mosfetConstraintRunner: passThroughConstraintRunner });
     assert.deepEqual(results.map((result) => result.status), ["skipped", "skipped"]);
     assert.ok(results.every((result) => /same-batch candidate/.test(result.reason)));
     assert.equal(fs.existsSync(path.join(root, "staging", "packages", "fixture-semi", "FIXTURE-P1A")), false);

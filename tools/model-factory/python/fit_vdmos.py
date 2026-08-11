@@ -10,6 +10,7 @@ from scipy.optimize import least_squares
 from native_ngspice import run_ngspice, vector
 
 VT = 1.380649e-23 * 298.15 / 1.602176634e-19
+NOMINAL_TEMPERATURE = ".temp 25"
 
 
 def model_card(dc, fixed, a_value=None):
@@ -28,7 +29,7 @@ def model_card(dc, fixed, a_value=None):
 
 
 def evaluate_dc(parameters, fixed, facts):
-    lines = ["VDMOS native DC fit probe", model_card(parameters, fixed)]
+    lines = ["VDMOS native DC fit probe", model_card(parameters, fixed), NOMINAL_TEMPERATURE]
     for index, point in enumerate(facts["transfer_points"], 1):
         lines += [f"MT{index} dt{index} gt{index} 0 MFIT", f"VDT{index} dt{index} 0 DC 25", f"VGT{index} gt{index} 0 DC {point['vgs']['value']}"]
     for index, point in enumerate(facts["rdson_points"], 1):
@@ -68,7 +69,7 @@ def dc_residual(parameters, fixed, facts):
 
 
 def evaluate_capacitance(a_value, dc, fixed, facts):
-    lines = ["VDMOS native capacitance fit probe", model_card(dc, fixed, a_value)]
+    lines = ["VDMOS native capacitance fit probe", model_card(dc, fixed, a_value), NOMINAL_TEMPERATURE]
     for index, point in enumerate(facts["capacitances"]["crss_curve"], 1):
         lines += [f"MC{index} dc{index} gc{index} 0 MFIT", f"VDC{index} dc{index} 0 DC {point['vds']['value']} AC 1", f"VGC{index} gc{index} 0 DC 0"]
     lines += [".ac lin 1 1Meg 1Meg", ".end"]
