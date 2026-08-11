@@ -1,10 +1,13 @@
 from __future__ import annotations
 
+import contextlib
+import io
 import json
 import os
 import shutil
 import sqlite3
 import subprocess
+import tarfile
 import tempfile
 import unittest
 import urllib.request
@@ -110,6 +113,21 @@ class Scale2kFreezeTest(unittest.TestCase):
     library_root = repo_root / "packages" / "model-library" / "models"
     quarantine_document = repo_root / "docs" / "batch-8-selection.json"
 
+    @contextlib.contextmanager
+    def reviewed_library_at(self, commit: str):
+        """Materialize the reviewed library recorded by a frozen manifest."""
+        archive = subprocess.run(
+            ["git", "archive", "--format=tar", commit, "--", "packages/model-library/models"],
+            cwd=self.repo_root,
+            check=True,
+            capture_output=True,
+        ).stdout
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            with tarfile.open(fileobj=io.BytesIO(archive), mode="r:") as payload:
+                payload.extractall(root, filter="data")
+            yield root / "packages" / "model-library" / "models"
+
     @unittest.skipUnless(db.is_file() and manifest_path.is_file(), "frozen scale-2k inputs are required")
     def test_frozen_manifest_matches_sql_and_reproduces_against_frozen_database(self) -> None:
         manifest = json.loads(self.manifest_path.read_text())
@@ -122,17 +140,19 @@ class Scale2kFreezeTest(unittest.TestCase):
         quarantine = json.loads(self.quarantine_document.read_text())[
             "independent_review_rejection_quarantine"
         ]["lcsc_ids"]
-        rerun = freeze_manifest(
-            db_path=self.db,
-            sql_path=self.sql_path,
-            dump_state=dump_state,
-            scale_1k=scale_1k,
-            scale_1k_file_sha256=sha256_file(self.scale_1k),
-            library_root=self.library_root,
-            quarantine_ids=set(quarantine),
-            reviewed_commit=manifest["freeze"]["reviewed_snapshot_commit"],
-            created_at=manifest["created_at"],
-        )
+        reviewed_commit = manifest["freeze"]["reviewed_snapshot_commit"]
+        with self.reviewed_library_at(reviewed_commit) as reviewed_library:
+            rerun = freeze_manifest(
+                db_path=self.db,
+                sql_path=self.sql_path,
+                dump_state=dump_state,
+                scale_1k=scale_1k,
+                scale_1k_file_sha256=sha256_file(self.scale_1k),
+                library_root=reviewed_library,
+                quarantine_ids=set(quarantine),
+                reviewed_commit=reviewed_commit,
+                created_at=manifest["created_at"],
+            )
         self.assertEqual(rerun["freeze"]["raw_row_order_sha256"], manifest["freeze"]["raw_row_order_sha256"])
         self.assertEqual(rerun["freeze"]["final_row_order_sha256"], manifest["freeze"]["final_row_order_sha256"])
         self.assertEqual(
@@ -150,16 +170,19 @@ class Scale2kFreezeTest(unittest.TestCase):
         handled = {part["lcsc_id"].casefold() for part in scale_1k["parts"]} | {
             value.casefold() for value in quarantine
         }
-        reviewed_exact, reviewed_normalized, package_count = reviewed_snapshot(self.library_root)
-        self.assertEqual(package_count, 692)
-        orders = [part["frozen_campaign_order"] for part in manifest["parts"]]
-        self.assertEqual(orders, list(range(370, 370 + len(orders))))
-        normalized = [part["normalized_mpn"] for part in manifest["parts"]]
-        self.assertEqual(len(normalized), len(set(normalized)))
-        for part in manifest["parts"]:
-            self.assertNotIn(part["lcsc_id"].casefold(), handled)
-            self.assertNotIn(part["mpn"].strip().casefold(), reviewed_exact)
-            self.assertNotIn(normalized_mpn_key(part["mpn"], part["conveyor_family"]), reviewed_normalized)
+        self.assertEqual(reviewed_snapshot(self.library_root)[2], 703)
+        reviewed_commit = manifest["freeze"]["reviewed_snapshot_commit"]
+        with self.reviewed_library_at(reviewed_commit) as reviewed_library:
+            reviewed_exact, reviewed_normalized, package_count = reviewed_snapshot(reviewed_library)
+            self.assertEqual(package_count, manifest["freeze"]["reviewed_package_count"])
+            orders = [part["frozen_campaign_order"] for part in manifest["parts"]]
+            self.assertEqual(orders, list(range(370, 370 + len(orders))))
+            normalized = [part["normalized_mpn"] for part in manifest["parts"]]
+            self.assertEqual(len(normalized), len(set(normalized)))
+            for part in manifest["parts"]:
+                self.assertNotIn(part["lcsc_id"].casefold(), handled)
+                self.assertNotIn(part["mpn"].strip().casefold(), reviewed_exact)
+                self.assertNotIn(normalized_mpn_key(part["mpn"], part["conveyor_family"]), reviewed_normalized)
 
     @unittest.skipUnless(manifest_path.is_file(), "frozen scale-2k manifest is required")
     def test_frozen_sql_and_rows_exclude_digital_transistors_and_bridges(self) -> None:

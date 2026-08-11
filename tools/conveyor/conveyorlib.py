@@ -476,6 +476,81 @@ def cross_check(payload: Mapping[str, Any], seed_hints: Sequence[Mapping[str, An
     return discrepancies
 
 
+def _polarity_signal(text: Any) -> str | None:
+    value = str(text or "")
+    has_p = bool(re.search(r"\bPNP\b|\bP[- ]CHANNEL\b|\bPMOS\b", value, re.I))
+    has_n = bool(re.search(r"\bNPN\b|\bN[- ]CHANNEL\b|\bNMOS\b", value, re.I))
+    if has_p == has_n:
+        return None
+    return "p" if has_p else "n"
+
+
+def extraction_retry_allowed(guards: Sequence[Mapping[str, Any]], prior_failures: int) -> bool:
+    """Allow exactly one retry only when every guard identifies re-extraction as useful."""
+    return bool(guards) and prior_failures < 1 and all(bool(item.get("reextract")) for item in guards)
+
+
+def failed_extraction_retry_pending(reason: Any, failure_attempts: int) -> bool:
+    """Return whether a recorded extraction failure still has its single retry available."""
+    return failure_attempts == 1 and not str(reason or "").startswith("unsupported-package-contract:")
+
+
+def extraction_contract_guards(payload: Mapping[str, Any], part: Mapping[str, Any], pdf_text: str = "") -> list[dict[str, Any]]:
+    """Return deterministic evidence-contract failures before a model can be fitted.
+
+    Completeness and polarity mismatches permit one bounded re-extraction. A dual BJT is a
+    package-topology limitation, so it is parked immediately under its dedicated category.
+    """
+    family = str(payload.get("family") or part.get("conveyor_family") or "")
+    failures: list[dict[str, Any]] = []
+    if family == "bjt":
+        combined = " ".join([
+            str(part.get("subcategory", "")), str(part.get("description", "")),
+            str(payload.get("datasheet_identity", {}).get("title", "")),
+            " ".join(str(note) for note in payload.get("extraction_notes", [])),
+            pdf_text[:6000],
+        ])
+        if re.search(r"\bdual\s+(?:npn|pnp|bipolar|transistors?)\b|\bcomplementary\s+(?:pair|transistors?)\b|\bmatched\s+(?:pair|transistors?)\b|\btwo\s+(?:independent\s+)?transistors?\s+(?:in|within)\s+(?:one|a|the)\s+package\b", combined, re.I):
+            failures.append({
+                "category": "unsupported-package-contract",
+                "reason": "unsupported-package-contract: dual BJT package detected; the single-transistor archetype cannot represent shared-package or paired-die topology",
+                "reextract": False,
+            })
+            return failures
+        gain_points = payload.get("specs", {}).get("gain_points")
+        usable_gain = isinstance(gain_points, list) and any(
+            isinstance(point, dict)
+            and (_qvalue(point.get("hfe")) or 0) > 0
+            and abs(_qvalue(point.get("collector_current")) or 0) > 0
+            and abs(_qvalue(point.get("vce")) or 0) > 0
+            for point in gain_points
+        )
+        if not usable_gain:
+            failures.append({
+                "category": "insufficient-extracted-targets",
+                "reason": "insufficient-extracted-targets: BJT requires at least one cited positive hFE target with collector current and VCE",
+                "reextract": True,
+            })
+
+    if family in {"bjt", "mosfet"}:
+        extraction_polarity = _polarity_signal(payload.get("specs", {}).get("polarity"))
+        catalog_polarity = _polarity_signal(" ".join([
+            str(part.get("subcategory", "")), str(part.get("description", "")),
+            str((part.get("attributes") or {}).get("Type", "")),
+        ]))
+        pdf_polarity = _polarity_signal(pdf_text)
+        evidence = [(name, value) for name, value in (
+            ("extraction", extraction_polarity), ("catalog", catalog_polarity), ("pdf", pdf_polarity),
+        ) if value]
+        if len({value for _, value in evidence}) > 1:
+            failures.append({
+                "category": "polarity-mismatch",
+                "reason": "polarity-mismatch: " + ", ".join(f"{name}={value}" for name, value in evidence) + "; model polarity was not changed",
+                "reextract": True,
+            })
+    return failures
+
+
 def should_park_family(successes: int, consecutive_failures: int, park_after: int = 2) -> bool:
     """Whether the F2 circuit breaker should trip for a family.
 

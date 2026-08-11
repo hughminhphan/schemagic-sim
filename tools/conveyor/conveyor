@@ -16,8 +16,10 @@ sys.path.insert(0, str(HERE))
 sys.path.insert(0, str(FEEDER_ROOT))
 
 from conveyorlib import (ConveyorError, StateStore, build_luna_prompt, choose_balanced, cross_check,
-                         filter_library_collisions, json_dump, load_and_validate_extraction, safe_stem,
-                         should_park_family, top_failure_reasons, top_recorded_reasons)
+                         extraction_contract_guards, extraction_retry_allowed,
+                         failed_extraction_retry_pending, filter_library_collisions, json_dump,
+                         load_and_validate_extraction, safe_stem, should_park_family,
+                         top_failure_reasons, top_recorded_reasons)
 from feederlib import download_datasheets, query_manifest, reviewed_mpns, validate_manifest
 
 DEFAULT_DATA = HERE / "data"
@@ -74,6 +76,14 @@ def part_by_id(manifest: dict, lcsc_id: str) -> dict:
         if part["lcsc_id"].casefold() == lcsc_id.casefold():
             return part
     raise ConveyorError(f"No manifest part with LCSC ID {lcsc_id}")
+
+
+def pdf_identity_text(path: Path) -> str:
+    completed = subprocess.run(
+        ["pdftotext", "-f", "1", "-l", "2", str(path), "-"],
+        text=True, capture_output=True, timeout=30, check=False,
+    )
+    return completed.stdout if completed.returncode == 0 else ""
 
 
 def select_command(args) -> int:
@@ -140,6 +150,10 @@ def jobs_command(args) -> int:
             row = store.get(tranche, part["lcsc_id"])
             if row["state"] not in {"datasheet_fetched", "failed_extracted"}:
                 continue
+            if row["state"] == "failed_extracted" and not failed_extraction_retry_pending(
+                row["reason"], store.failure_attempts(tranche, part["lcsc_id"], "extracted")
+            ):
+                continue
             datasheet = staging / row["datasheet_path"]
             pack = HERE / "context-packs" / f"{part['conveyor_family']}.json"
             discrepancies = [row["reason"]] if row["state"] == "failed_extracted" and row["reason"] else []
@@ -169,6 +183,14 @@ def ingest_command(args) -> int:
         # Persist the deterministic, audited normalization so the fitter consumes the same
         # schema-valid SI evidence that passed catalog cross-checking.
         json_dump(destination, payload)
+        datasheet_path = staging / row["datasheet_path"] if row.get("datasheet_path") else None
+        guards = extraction_contract_guards(payload, part, pdf_identity_text(datasheet_path) if datasheet_path and datasheet_path.is_file() else "")
+        if guards:
+            reason = "; ".join(item["reason"] for item in guards)
+            retry_allowed = extraction_retry_allowed(guards, extraction_attempts)
+            store.transition(tranche, part["lcsc_id"], "failed_extracted", reason=reason, extraction_path=str(destination.relative_to(staging)))
+            print(json.dumps({"status": "retry" if retry_allowed else "failed", "lcsc_id": part["lcsc_id"], "contract_guards": guards}, indent=2))
+            return 2
         discrepancies = cross_check(payload, part.get("seed_hints", []))
         if discrepancies and extraction_attempts < 1:
             reason = "; ".join(discrepancies)

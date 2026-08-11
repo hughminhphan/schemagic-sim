@@ -1,9 +1,10 @@
 import assert from "node:assert/strict";
+import crypto from "node:crypto";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
-import { fitBulkPart, libraryCollisionReason, libraryDuplicateDieReason, normalizedIdentity, normalizeBulkManifest, repairKnownEvidenceDefects, runBulkManifest } from "../lib/bulk-adapter.mjs";
+import { fitBulkPart, insufficientExtractedTargetsReason, libraryCollisionReason, libraryDuplicateDieReason, normalizedIdentity, normalizeBulkManifest, polarityContractReason, repairKnownEvidenceDefects, runBulkManifest, unsupportedPackageContractReason } from "../lib/bulk-adapter.mjs";
 import { validatePackage } from "../../../packages/component-schema/lib.mjs";
 
 const quantity = (value, unit) => ({ value, unit, conditions: "fixture at 25 C", page_reference: "p. 2", source_kind: "typical" });
@@ -30,6 +31,36 @@ function mosfetPart(pdf) {
       { factory_target: "vdmos.crss", raw_value: "5pF@25V" },
     ],
     allow_f1_demotion: true,
+  };
+}
+
+function bjtPart(pdf = "unused.pdf") {
+  return {
+    mpn: "FIXTURE-Q1", manufacturer: "Fixture Semi", conveyor_family: "bjt",
+    datasheet_path: pdf, datasheet_url: "https://example.test/bjt.pdf",
+    category: "Transistors", subcategory: "NPN BJT", package: "SOT-23", description: "single NPN transistor",
+    seed_hints: [], allow_f1_demotion: true,
+  };
+}
+
+function gainPoint(hfe, sourceKind = "typical", current = 0.01, vce = 5) {
+  return {
+    collector_current: { ...quantity(current, "A"), source_kind: sourceKind },
+    vce: { ...quantity(vce, "V"), source_kind: sourceKind },
+    hfe: { ...quantity(hfe, "1"), source_kind: sourceKind },
+  };
+}
+
+function bjtExtraction() {
+  return {
+    schema_version: "1.0.0", mpn: "FIXTURE-Q1", manufacturer: "Fixture Semi", family: "bjt",
+    datasheet_identity: { title: "FIXTURE-Q1 single NPN transistor", revision: "A", pages_examined: ["p. 2"] },
+    usable_curves: false, curves: [], extraction_notes: [], omission_reason: "table evidence only",
+    specs: {
+      polarity: "npn",
+      gain_points: [gainPoint(100, "minimum"), gainPoint(300, "maximum"), gainPoint(180)],
+      saturation_points: [], ft: null, cobo: null, cibo: null, vceo: quantity(40, "V"),
+    },
   };
 }
 
@@ -129,7 +160,7 @@ test("bulk manifest accepts external datasheet and seed paths and stages pending
     const manifestPath = path.join(root, "batch.json");
     fs.writeFileSync(manifestPath, JSON.stringify({ schema_version: "1.0.0", kind: "opencircuit-conveyor-batch", parts: [{ ...diodePart(pdf), extraction_path: extractionPath }] }));
     const staging = path.join(root, "staging");
-    const result = runBulkManifest(manifestPath, staging, { ngspiceRunner: () => ({ pass: true }) });
+    const result = runBulkManifest(manifestPath, staging, { libraryRoot: path.join(root, "empty-library"), ngspiceRunner: () => ({ pass: true }) });
     assert.equal(result[0].status, "staged");
     assert.equal(result[0].fidelity, "F2");
     const component = JSON.parse(fs.readFileSync(path.join(result[0].package_path, "component.json"), "utf8"));
@@ -233,26 +264,20 @@ test("F1 diode fallback narrows a failed curve claim to its calibration point", 
   }
 });
 
-test("F1 BJT fit does not turn a published maximum gain into a typical target", () => {
+test("F1 BJT fit satisfies every published minimum without targeting a maximum", () => {
   const payload = {
     specs: {
       polarity: "npn",
-      gain_points: [
-        { hfe: { ...quantity(120, "1"), source_kind: "minimum" } },
-        { hfe: { ...quantity(350, "1"), source_kind: "maximum" } },
-        { hfe: { ...quantity(118, "1"), source_kind: "digitized_typical_curve" } },
-      ],
+      gain_points: [gainPoint(120, "minimum"), gainPoint(350, "maximum"), gainPoint(118, "digitized_typical_curve")],
     },
   };
   const fit = fitBulkPart({ mpn: "FIXTURE-Q1", manufacturer: "Fixture Semi", conveyor_family: "bjt", subcategory: "NPN" }, payload, { forceF1: true, ngspiceRunner: () => ({ pass: true }) });
-  assert.equal(fit.parameters.BF, 118);
+  assert.equal(fit.parameters.BF, 121.2);
+  assert.ok(fit.parameters.BF <= 350);
 });
 
 test("F1 BJT fit parameterizes slightly above a published minimum", () => {
-  const payload = { specs: { polarity: "npn", gain_points: [
-    { hfe: { ...quantity(60, "1"), source_kind: "minimum" } },
-    { hfe: { ...quantity(400, "1"), source_kind: "maximum" } },
-  ] } };
+  const payload = { specs: { polarity: "npn", gain_points: [gainPoint(60, "minimum"), gainPoint(400, "maximum")] } };
   const fit = fitBulkPart({ mpn: "FIXTURE-Q2", manufacturer: "Fixture Semi", conveyor_family: "bjt", subcategory: "NPN" }, payload, { forceF1: true, ngspiceRunner: () => ({ pass: true }) });
   assert.equal(fit.parameters.BF, 60.6);
 });
@@ -422,6 +447,168 @@ test("known bare-page evidence is repaired to an explicit page and figure citati
   assert.equal(repaired.curves[0].page_reference, "p. 3, Figure 3, DC Current Gain");
   assert.equal(repaired.specs.gain.page_reference, "p. 3, Figure 3, DC Current Gain");
   assert.equal(input.curves[0].page_reference, "3", "preserved extraction input must not be mutated");
+});
+
+test("empty BJT gain evidence parks deterministically before fitting", () => {
+  const payload = bjtExtraction();
+  payload.specs.gain_points = [];
+  assert.match(insufficientExtractedTargetsReason(bjtPart(), payload), /^insufficient-extracted-targets:/);
+  assert.throws(
+    () => fitBulkPart(bjtPart(), payload, { forceF1: true, ngspiceRunner: () => ({ pass: true }) }),
+    /^Error: insufficient-extracted-targets:/,
+  );
+
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "factory-empty-bjt-test-"));
+  try {
+    const pdf = path.join(root, "datasheet.pdf");
+    fs.writeFileSync(pdf, "%PDF-1.7\nfixture\n");
+    const extractionPath = path.join(root, "extraction.json");
+    fs.writeFileSync(extractionPath, JSON.stringify(payload));
+    const manifestPath = path.join(root, "batch.json");
+    fs.writeFileSync(manifestPath, JSON.stringify({ schema_version: "1.0.0", kind: "opencircuit-conveyor-batch", parts: [{ ...bjtPart(pdf), extraction_path: extractionPath }] }));
+    let fitCalls = 0;
+    const result = runBulkManifest(manifestPath, path.join(root, "staging"), { libraryRoot: path.join(root, "empty-library"), fitRunner: () => { fitCalls += 1; throw new Error("must not fit"); } });
+    assert.equal(fitCalls, 0);
+    assert.equal(result[0].status, "failed");
+    assert.equal(result[0].failure_category, "insufficient-extracted-targets");
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("BJT F1 derives only cited archetype dimensions and preserves inclusive gain bounds", () => {
+  const payload = bjtExtraction();
+  payload.specs.gain_points = [gainPoint(100, "minimum", 0.001), gainPoint(120, "minimum", 0.01), gainPoint(121, "maximum", 0.01), gainPoint(115, "typical", 0.01)];
+  payload.specs.ft = { ...quantity(200, "MHz"), conditions: "IC = 10 mA, VCE = 5 V, fT = 200 MHz" };
+  payload.specs.cobo = { ...quantity(4, "pF"), source_kind: "maximum", conditions: "VCB = 5 V, f = 1 MHz" };
+  payload.specs.cibo = { ...quantity(12, "pF"), source_kind: "maximum", conditions: "VEB = 0.5 V, f = 1 MHz" };
+  payload.specs.saturation_points = [
+    { collector_current: quantity(0.01, "A"), base_current: quantity(0.001, "A"), vce_sat: { ...quantity(0.10, "V"), source_kind: "maximum" }, vbe_sat: { ...quantity(0.80, "V"), source_kind: "maximum" } },
+    { collector_current: quantity(0.10, "A"), base_current: quantity(0.010, "A"), vce_sat: { ...quantity(0.19, "V"), source_kind: "maximum" }, vbe_sat: { ...quantity(0.89, "V"), source_kind: "maximum" } },
+  ];
+  const fit = fitBulkPart(bjtPart(), payload, { forceF1: true, ngspiceRunner: () => ({ pass: true }) });
+  assert.equal(fit.parameters.BF, 121, "the 1% minimum margin is capped by the published inclusive maximum");
+  assert.ok(fit.parameters.BF >= 120 && fit.parameters.BF <= 121);
+  assert.ok(Math.abs(fit.parameters.TF - 1 / (2 * Math.PI * 200e6)) < 1e-20);
+  assert.equal(fit.parameters.CJC, 4e-12);
+  assert.ok(Math.abs(fit.parameters.CJE - 8e-12) < 1e-24);
+  assert.ok(Math.abs(fit.parameters.RC - 0.75) < 1e-12);
+  assert.ok(Math.abs(fit.parameters.RE - 0.25) < 1e-12);
+  assert.ok(Math.abs(fit.parameters.RB - 10) < 1e-9);
+  assert.equal(fit.parameters.VAF, 100);
+  assert.match(fit.parameter_metadata.TF.status, /1\/\(2\*pi\*fT\)/);
+  assert.match(fit.parameter_metadata.CJE.status, /Cibo minus cited Cobo/);
+  assert.ok(fit.held_defaults.some((item) => item.parameter === "VAF"));
+  assert.ok(!fit.held_defaults.some((item) => ["RB", "RC", "RE", "TF", "CJC", "CJE"].includes(item.parameter)));
+
+  const ciboOnly = bjtExtraction();
+  ciboOnly.specs.cibo = { ...quantity(12, "pF"), source_kind: "maximum", conditions: "VEB = 0.5 V, f = 1 MHz" };
+  const heldCapacitance = fitBulkPart(bjtPart(), ciboOnly, { forceF1: true, ngspiceRunner: () => ({ pass: true }) });
+  assert.equal(heldCapacitance.parameters.CJE, 1e-12);
+  assert.ok(heldCapacitance.held_defaults.some((item) => item.parameter === "CJE"));
+});
+
+test("diode F1 transcribes cited capacitance and recovery without Schottky invention", () => {
+  const payload = extraction();
+  payload.usable_curves = false;
+  payload.curves = [];
+  payload.specs.variant = "schottky";
+  payload.specs.capacitance = { ...quantity(10, "pF"), source_kind: "maximum", conditions: "VR = 0 V, f = 1 MHz" };
+  payload.specs.reverse_recovery = { ...quantity(20, "ns"), source_kind: "maximum", conditions: "IF = 10 mA, IR = 10 mA" };
+  const fit = fitBulkPart({ ...diodePart("unused.pdf"), subcategory: "Schottky Diodes" }, payload, { forceF1: true, ngspiceRunner: () => ({ pass: true }) });
+  assert.equal(fit.parameters.N, 1.8);
+  assert.equal(fit.parameters.CJO, 10e-12);
+  assert.equal(fit.parameters.TT, 20e-9);
+  assert.match(fit.model.text, / CJO=1\.0000000000e-11 TT=2\.0000000000e-8/);
+  assert.match(fit.parameter_metadata.CJO.status, /maximum values are retained conservatively/);
+});
+
+test("polarity and dual-package guards never silently change a BJT model", () => {
+  const payload = bjtExtraction();
+  assert.equal(polarityContractReason(bjtPart(), payload, "FIXTURE-Q1 NPN silicon transistor"), null);
+  assert.match(polarityContractReason(bjtPart(), { ...payload, specs: { ...payload.specs, polarity: "pnp" } }, "FIXTURE-Q1 NPN silicon transistor"), /^polarity-mismatch:/);
+  assert.match(unsupportedPackageContractReason({ ...bjtPart(), description: "dual NPN transistors" }, payload, ""), /^unsupported-package-contract:/);
+  assert.throws(
+    () => fitBulkPart({ ...bjtPart(), description: "dual NPN transistors" }, payload, { forceF1: true, ngspiceRunner: () => ({ pass: true }) }),
+    /unsupported-package-contract/,
+  );
+});
+
+test("new model comments sanitize OCR control text without mutating source metadata", () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "factory-comment-hygiene-test-"));
+  try {
+    const pdf = path.join(root, "datasheet.pdf");
+    fs.writeFileSync(pdf, "%PDF-1.7\nfixture\n");
+    const payload = extraction();
+    payload.usable_curves = false;
+    payload.curves = [];
+    payload.datasheet_identity.revision = "Rev A\n* OCR\u0000garbage Ω";
+    const extractionPath = path.join(root, "extraction.json");
+    fs.writeFileSync(extractionPath, JSON.stringify(payload));
+    const manifestPath = path.join(root, "batch.json");
+    fs.writeFileSync(manifestPath, JSON.stringify({ schema_version: "1.0.0", kind: "opencircuit-conveyor-batch", parts: [{ ...diodePart(pdf), extraction_path: extractionPath, force_f1: true }] }));
+    const result = runBulkManifest(manifestPath, path.join(root, "staging"), { libraryRoot: path.join(root, "empty-library") });
+    assert.equal(result[0].status, "staged", JSON.stringify(result[0]));
+    const model = fs.readFileSync(path.join(result[0].package_path, "model.cir"), "utf8");
+    assert.match(model, /^\* Revision: Rev A \* OCRgarbage$/m);
+    assert.doesNotMatch(model, /Ω|\u0000/);
+    const sources = JSON.parse(fs.readFileSync(path.join(result[0].package_path, "sources.json"), "utf8"));
+    assert.equal(sources[0].revision, payload.datasheet_identity.revision, "factual source JSON remains byte-faithful to the extraction");
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("all reviewed packages including the 11 Batch 9 promotions are collision-only and never refitted", () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "factory-reviewed-regression-test-"));
+  try {
+    const repoRoot = path.resolve(path.dirname(new URL(import.meta.url).pathname), "../../..");
+    const libraryRoot = path.join(repoRoot, "packages/model-library/models");
+    const promotion = JSON.parse(fs.readFileSync(path.join(repoRoot, "docs/batch-9-promotion-manifest.json"), "utf8"));
+    const promoted = promotion.packages.filter((item) => item.disposition === "promoted");
+    assert.equal(promoted.length, 11);
+    const componentPaths = [];
+    for (const manufacturer of fs.readdirSync(libraryRoot)) {
+      const manufacturerDir = path.join(libraryRoot, manufacturer);
+      if (!fs.statSync(manufacturerDir).isDirectory()) continue;
+      for (const packageName of fs.readdirSync(manufacturerDir)) {
+        const componentPath = path.join(manufacturerDir, packageName, "component.json");
+        if (fs.existsSync(componentPath)) componentPaths.push(componentPath);
+      }
+    }
+    assert.equal(componentPaths.length, 703);
+    const digest = () => {
+      const hash = crypto.createHash("sha256");
+      for (const componentPath of componentPaths.sort()) {
+        const packageDir = path.dirname(componentPath);
+        for (const file of fs.readdirSync(packageDir).sort()) {
+          const candidate = path.join(packageDir, file);
+          if (fs.statSync(candidate).isFile()) hash.update(path.relative(libraryRoot, candidate)).update(fs.readFileSync(candidate));
+        }
+      }
+      return hash.digest("hex");
+    };
+    const before = digest();
+    const pdf = path.join(root, "datasheet.pdf");
+    fs.writeFileSync(pdf, "%PDF-1.7\nfixture\n");
+    const parts = componentPaths.map((componentPath, index) => {
+      const component = JSON.parse(fs.readFileSync(componentPath, "utf8"));
+      const family = String(component.electrical_family).startsWith("bjt_") ? "bjt" : ["nmos", "pmos"].includes(component.electrical_family) ? "mosfet" : "diode";
+      return { lcsc_id: `REVIEWED-${index}`, mpn: component.canonical_mpn, manufacturer: component.manufacturer, conveyor_family: family, datasheet_path: pdf, datasheet_url: component.datasheet.url };
+    });
+    const manifestPath = path.join(root, "batch.json");
+    fs.writeFileSync(manifestPath, JSON.stringify({ schema_version: "1.0.0", kind: "opencircuit-conveyor-batch", parts }));
+    let fitCalls = 0;
+    const results = runBulkManifest(manifestPath, path.join(root, "staging"), { libraryRoot, fitRunner: () => { fitCalls += 1; throw new Error("reviewed package refit attempted"); } });
+    assert.equal(fitCalls, 0);
+    assert.equal(results.length, 703);
+    assert.ok(results.every((result) => result.status === "skipped" && result.failure_category === "library-identity-collision"));
+    assert.equal(digest(), before);
+    const reviewedPaths = new Set(componentPaths.map((componentPath) => path.relative(libraryRoot, path.dirname(componentPath))));
+    assert.ok(promoted.every((item) => reviewedPaths.has(item.target_library_package)));
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
 });
 
 test("bulk manifest validation is strict while legacy registry remains independent", () => {
