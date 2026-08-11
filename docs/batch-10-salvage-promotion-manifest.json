@@ -1,0 +1,503 @@
+{
+  "schema_version": "1.0.0",
+  "review": "batch-10-salvage-independent-review",
+  "reviewer": "gpt-5.6-sol independent reviewer",
+  "review_date": "2026-08-11",
+  "starting_head": "7a7ecdc9abab5b879dfe6c5b7679de577b049fc2",
+  "branch": "main",
+  "verdict": "block-promotion",
+  "promoted_count": 0,
+  "final_library_count": 703,
+  "paths": {
+    "staging_root": "/Users/hughp/Documents/opencircuit/tools/conveyor/data/staging/batch-10-salvage",
+    "shipping_library_root": "/Users/hughp/Documents/opencircuit/packages/model-library/models",
+    "review_log": "/Users/hughp/Documents/opencircuit/docs/batch-10-salvage-review-log.md",
+    "promotion_manifest": "/Users/hughp/Documents/opencircuit/docs/batch-10-salvage-promotion-manifest.json"
+  },
+  "counts": {
+    "baseline_reviewed_packages": 703,
+    "reviewed": {
+      "total": 9,
+      "by_electrical_family": {
+        "bjt_npn": 6,
+        "bjt_pnp": 3
+      },
+      "by_fidelity": {
+        "F1": 8,
+        "F2": 1
+      }
+    },
+    "promoted": {
+      "total": 0,
+      "by_electrical_family": {},
+      "by_fidelity": {}
+    },
+    "rejected": {
+      "total": 9,
+      "by_electrical_family": {
+        "bjt_npn": 6,
+        "bjt_pnp": 3
+      },
+      "by_fidelity": {
+        "F1": 8,
+        "F2": 1
+      },
+      "classes": {
+        "refit-required": 5,
+        "unsupported-f2": 1,
+        "reusable-code-block": 3
+      }
+    },
+    "final_reviewed_packages": 703
+  },
+  "correction_commit_review": {
+    "commit": "ca9b70cd5b2536f0949b8525a7f2f77d6b840548",
+    "verdict": "block",
+    "material_findings": [
+      {
+        "file": "tools/model-factory/lib/bulk-adapter.mjs",
+        "lines": "202-208",
+        "finding": "The F1 BJT path sets CJC equal to the cited biased Cobo, sets CJE to Cibo minus Cobo, and sets TF to 1/(2*pi*fT). The existing BJT archetype voltage-de-embeds Cobo and Cibo to zero-bias junction capacitances and subtracts capacitance and series-resistance delay from the published total fT delay before assigning TF.",
+        "reference": "tools/model-factory/python/fit_bjt.py:145-149 and 229-235"
+      },
+      {
+        "file": "tools/model-factory/lib/bulk-adapter.mjs",
+        "lines": "191-199",
+        "finding": "Condition-specific hFE minima and maxima are collapsed into one global minimum and maximum and compared as if they shared collector current and VCE. This can reject electrically valid current-dependent tables as inconsistent and can cap BF using a maximum from a different bias point.",
+        "sample": "D882 was reported as inconsistent because a 200 minimum and 120 maximum were compared globally after source conditions were discarded from the aggregation."
+      },
+      {
+        "file": "tools/model-factory/lib/bulk-adapter.mjs",
+        "lines": "163-179 and 209-214",
+        "finding": "VCE(sat) and VBE(sat) limit rows are converted directly into final RC, RE, and RB values. The existing archetype uses the same style of calculation only as an optimizer seed, then performs native-ngspice fitting. Treating independent maximum limits as observed slope points is not an equivalent evidence-backed derivation."
+      },
+      {
+        "file": "tools/model-factory/test/bulk-adapter.test.mjs",
+        "lines": "479-502",
+        "finding": "Regression assertions lock in the direct TF, CJC, and CJE formulas and mock the ngspice runner, so the tests pass while the generated AC parameters miss the existing archetype contract and source benches."
+      }
+    ],
+    "verified_passes": [
+      "Empty BJT gain_points are parked before fitting with one bounded re-extraction path.",
+      "Diode CJO and TT transcription matches the diode archetype when cited evidence is present.",
+      "Zener BV and IBV require VZ and IZT semantics and do not infer breakdown from a maximum rating.",
+      "Polarity disagreement is rejected rather than silently flipped.",
+      "Detected dual-BJT packages are parked under an unsupported package contract.",
+      "Generated model comments sanitize control and non-ASCII OCR text without mutating factual source JSON.",
+      "Inclusive hard-bound comparison remains value >= minimum and value <= maximum.",
+      "The correction commit changed no file beneath packages/model-library/models."
+    ],
+    "gate_or_source_weakening": false,
+    "existing_703_package_changes": 0
+  },
+  "f2_adjudication": {
+    "package": "lrc/LBC846BLT1G",
+    "temperature_c": 25,
+    "unchanged_gates": {
+      "rms_relative_error_maximum": 0.12,
+      "worst_relative_error_maximum": 0.2,
+      "optimizer_bound_saturation_tolerance": 0.000001
+    },
+    "fresh_fit_against_staged_points": {
+      "rms_relative_error": 0.03408208221364545,
+      "worst_relative_error": 0.04828351492424193,
+      "optimizer_nfev": 10,
+      "optimizer_status": 2,
+      "optimizer_bound_saturated": false
+    },
+    "source_verdict": "unsupported",
+    "reason": "The numerical fit passes only against staged points of hFE 350 at 1 mA, 330 at 10 mA, 310 at 100 mA, and 270 at 1 A. PDF p. 6 Figure 9 is the LBC846B 25 C curve at VCE = 1 V, but its plotted roll-off does not support the 100 mA and 1 A staged values. A source-correct claim requires a new electrical fit."
+  },
+  "hard_bound_failure_sample": {
+    "population": 82,
+    "sample_size": 9,
+    "population_package_mentions": {
+      "current_gain_bandwidth_minimum": 41,
+      "cobo_expectation": 15,
+      "saturation_voltage": 59,
+      "base_emitter_saturation_voltage": 49,
+      "gain_bound": 13,
+      "upper_current_boundary": 8
+    },
+    "verdict": "The inclusive comparison itself is correct and many failures are honest consequences of coarse models. The sample also exposes systematic parameter semantics defects: direct TF assignment produces repeated just-below-minimum fT results, biased capacitances are not de-embedded, and global gain-bound aggregation discards bias conditions. Promotion is blocked rather than weakening any bound.",
+    "samples": [
+      {
+        "order": 373,
+        "lcsc_id": "C727146",
+        "mpn": "2SC1815",
+        "evidence": "VCE(sat) 0.3215800924 V exceeded the inclusive 0.25 V maximum.",
+        "classification": "honest model failure"
+      },
+      {
+        "order": 374,
+        "lcsc_id": "C105430",
+        "mpn": "SS8550(RANGE:120-200)",
+        "evidence": "F1 VBE(sat) 1.6788752630 V exceeded 1.2 V; fT 99.7127766 MHz missed the 100 MHz minimum.",
+        "classification": "honest saturation failure plus systematic TF under-target"
+      },
+      {
+        "order": 375,
+        "lcsc_id": "C727141",
+        "mpn": "S9015",
+        "evidence": "F1 fT 149.8630918 MHz missed the 150 MHz minimum.",
+        "classification": "systematic TF under-target"
+      },
+      {
+        "order": 379,
+        "lcsc_id": "C29094",
+        "mpn": "FMMT491(RANGE:100-300)",
+        "evidence": "F2 hFE 99.1153396 missed minimum 100 and VBE(sat) 1.9186815 V exceeded 1.1 V; F1 also missed saturation limits and fT 149.6272904 MHz missed 150 MHz.",
+        "classification": "honest DC failures plus systematic TF under-target"
+      },
+      {
+        "order": 380,
+        "lcsc_id": "C549491",
+        "mpn": "BC847QASZ",
+        "evidence": "F1 VCE(sat) values 0.1047709599 V and 0.3072899668 V exceeded 0.1 V and 0.3 V; fT 98.8029337 MHz missed 100 MHz.",
+        "classification": "honest saturation failures plus systematic TF under-target"
+      },
+      {
+        "order": 381,
+        "lcsc_id": "C461194",
+        "mpn": "BCW71,215",
+        "evidence": "fT 99.4735713 MHz missed 100 MHz and Cobo 1.0379633923 pF exceeded its allowed typical error.",
+        "classification": "systematic TF and biased-capacitance derivation defects"
+      },
+      {
+        "order": 385,
+        "lcsc_id": "C5279057",
+        "mpn": "D882",
+        "evidence": "F2 missed three 1 A hFE minima and VBE(sat); F1 then declared global hFE minimum 200 inconsistent with global maximum 120.",
+        "classification": "honest F2 failure plus condition-discarding bound aggregation defect"
+      },
+      {
+        "order": 401,
+        "lcsc_id": "C61615",
+        "mpn": "MMBT3906T(RANGE:100-300)",
+        "evidence": "F1 fT 241.8116454 MHz missed 250 MHz and Cobo 2.2966174857 pF exceeded its allowed typical error.",
+        "classification": "systematic TF and biased-capacitance derivation defects"
+      },
+      {
+        "order": 465,
+        "lcsc_id": "C41375139",
+        "mpn": "2SA1013",
+        "evidence": "hFE 331.400498 exceeded maximum 320; VCE(sat) 1.6023596280 V exceeded 1.5 V; VBE(sat) 1.7355505189 V exceeded 0.75 V.",
+        "classification": "honest inclusive-bound failures"
+      }
+    ]
+  },
+  "source_audit": {
+    "pdf_hashes_reproduced": 9,
+    "pdf_hash_mismatches": 0,
+    "page_counts_checked": 9,
+    "packages": [
+      {
+        "package": "lrc/L2SC1623RLT1G",
+        "pdf_pages": 5,
+        "sha256": "317064f993da5c37da13ec3db7886259108497fb3a5c1a88d2e7a8d618e6d185"
+      },
+      {
+        "package": "lrc/LBC846BLT1G",
+        "pdf_pages": 13,
+        "sha256": "5d5223eb912f5722058eaedea4ed8b654231d37b125ca22a2d2eca5044d9dcdb"
+      },
+      {
+        "package": "foshan-blue-rocket-elec/MPSA94",
+        "pdf_pages": 6,
+        "sha256": "5c440fc65566b507911b2051657f698c4875976532f4dcdd042a2d1722eed9a4"
+      },
+      {
+        "package": "nexperia/PMST3906-115",
+        "pdf_pages": 11,
+        "sha256": "6c77885c159f9b2f6c545126d4f37ee8a45cf4427d7adaabfff83df6427900c1"
+      },
+      {
+        "package": "hxy-mosfet/BCX56",
+        "pdf_pages": 5,
+        "sha256": "60e544c8d70e3cf909786648bec9667e2dba4f6eede2c8ec043157e1eda0adc9"
+      },
+      {
+        "package": "jiangsu-changjing-electronics-co-ltd/FMMT619",
+        "pdf_pages": 4,
+        "sha256": "e514be17c1481e25b553ff2e2f747bca5723dbec2549eaf7b4bd656d6fb23ced"
+      },
+      {
+        "package": "onsemi/SMMBT5551LT1G",
+        "pdf_pages": 6,
+        "sha256": "9f5d518b3ce13e1ff70bd429f524f7b7998b0fa39d2bced1d0c989782544ed1a"
+      },
+      {
+        "package": "shikues/FCX591",
+        "pdf_pages": 2,
+        "sha256": "35a83ead7b85ab11719810f5fd04e38c963896f3012bec6470edfb47514fd5af"
+      },
+      {
+        "package": "pjsemi/FMMT617",
+        "pdf_pages": 4,
+        "sha256": "61f21b80f9a7e2c9d169635bf178cf44174a414c2f67b390fd37f18348d1292e"
+      }
+    ]
+  },
+  "collision_audit": {
+    "baseline_packages": 703,
+    "candidate_identity_or_alias_collisions": 0,
+    "candidate_complete_vector_collisions": 0,
+    "candidate_to_candidate_identity_or_alias_collisions": 0,
+    "candidate_to_candidate_complete_vector_collisions": 0,
+    "shared_die_exceptions": 0
+  },
+  "staged_validation": {
+    "scratch_copy_revalidation": true,
+    "staging_modified": false,
+    "packages_validated": 9,
+    "package_validator_passes": 9,
+    "native_wasm_benches_passed": 39,
+    "expectation_checks_passed": 60,
+    "hard_bounds_passed": 44,
+    "explicit_temp_25_benches": 39,
+    "benches_missing_explicit_temp_25": 0,
+    "worst_native_wasm_relative_delta": 0.000001078588051750227,
+    "worst_native_wasm_absolute_delta": 6.635181727387973e-7
+  },
+  "source_correct_exact_gain_probes": {
+    "temperature_c": 25,
+    "passed": 9,
+    "failed": 0,
+    "probes": [
+      {
+        "package": "foshan-blue-rocket-elec/MPSA94",
+        "collector_current_a": 0.001,
+        "vce_v": -10,
+        "hfe": 88.3476205,
+        "inclusive_minimum": 70,
+        "inclusive_maximum": null,
+        "pass": true
+      },
+      {
+        "package": "foshan-blue-rocket-elec/MPSA94",
+        "collector_current_a": 0.01,
+        "vce_v": -10,
+        "hfe": 88.2807788,
+        "inclusive_minimum": 80,
+        "inclusive_maximum": 300,
+        "pass": true
+      },
+      {
+        "package": "foshan-blue-rocket-elec/MPSA94",
+        "collector_current_a": 0.1,
+        "vce_v": -10,
+        "hfe": 88.0433279,
+        "inclusive_minimum": 40,
+        "inclusive_maximum": null,
+        "pass": true
+      },
+      {
+        "package": "hxy-mosfet/BCX56",
+        "collector_current_a": 0.005,
+        "vce_v": 2,
+        "hfe": 64.4538795,
+        "inclusive_minimum": 40,
+        "inclusive_maximum": null,
+        "pass": true
+      },
+      {
+        "package": "hxy-mosfet/BCX56",
+        "collector_current_a": 0.15,
+        "vce_v": 2,
+        "hfe": 64.2964149,
+        "inclusive_minimum": 63,
+        "inclusive_maximum": 250,
+        "pass": true
+      },
+      {
+        "package": "hxy-mosfet/BCX56",
+        "collector_current_a": 0.5,
+        "vce_v": 2,
+        "hfe": 64.0308064,
+        "inclusive_minimum": 25,
+        "inclusive_maximum": null,
+        "pass": true
+      },
+      {
+        "package": "onsemi/SMMBT5551LT1G",
+        "collector_current_a": 0.001,
+        "vce_v": 5,
+        "hfe": 84.3076143,
+        "inclusive_minimum": 80,
+        "inclusive_maximum": null,
+        "pass": true
+      },
+      {
+        "package": "onsemi/SMMBT5551LT1G",
+        "collector_current_a": 0.01,
+        "vce_v": 5,
+        "hfe": 84.2499311,
+        "inclusive_minimum": 80,
+        "inclusive_maximum": 250,
+        "pass": true
+      },
+      {
+        "package": "onsemi/SMMBT5551LT1G",
+        "collector_current_a": 0.05,
+        "vce_v": 5,
+        "hfe": 84.1727469,
+        "inclusive_minimum": 30,
+        "inclusive_maximum": null,
+        "pass": true
+      }
+    ]
+  },
+  "packages": [
+    {
+      "order": 408,
+      "lcsc_id": "C136117",
+      "staging_package": "lrc/L2SC1623RLT1G",
+      "fidelity_tier": "F1",
+      "electrical_family": "bjt_npn",
+      "disposition": "rejected",
+      "rejection_class": "refit-required",
+      "reason": "The R ordering rank is hFE 180 through 390, but the staged extraction and BF 121.2 represent the generic 120 through 560 family range. Promotion requires an electrical refit."
+    },
+    {
+      "order": 440,
+      "lcsc_id": "C12733",
+      "staging_package": "lrc/LBC846BLT1G",
+      "fidelity_tier": "F2",
+      "electrical_family": "bjt_npn",
+      "disposition": "rejected",
+      "rejection_class": "unsupported-f2",
+      "reason": "Fresh residuals pass only against staged points that do not match the cited 25 C source curve. Source-correct points require a new electrical fit."
+    },
+    {
+      "order": 442,
+      "lcsc_id": "C305413",
+      "staging_package": "foshan-blue-rocket-elec/MPSA94",
+      "fidelity_tier": "F1",
+      "electrical_family": "bjt_pnp",
+      "disposition": "rejected",
+      "rejection_class": "reusable-code-block",
+      "reason": "The model passes all three source-correct exact 25 C hFE bounds, but staged facts shift the first three collector currents by a factor of ten, cite nonexistent PDF page 7, and retain an unsupported curve claim. Those are metadata and scope corrections only, but promotion is blocked by the material reusable-code defects."
+    },
+    {
+      "order": 464,
+      "lcsc_id": "C81183",
+      "staging_package": "nexperia/PMST3906-115",
+      "fidelity_tier": "F1",
+      "electrical_family": "bjt_pnp",
+      "disposition": "rejected",
+      "rejection_class": "refit-required",
+      "reason": "The source hFE table includes minima 80 at 1 mA, 100 at 10 mA, 60 at 50 mA, and 30 at 100 mA plus fT and capacitance evidence. The staged package retains only 60 at 0.1 mA and uses BF 60.6. Source-correct coverage requires a refit."
+    },
+    {
+      "order": 486,
+      "lcsc_id": "C5345980",
+      "staging_package": "hxy-mosfet/BCX56",
+      "fidelity_tier": "F1",
+      "electrical_family": "bjt_npn",
+      "disposition": "rejected",
+      "rejection_class": "reusable-code-block",
+      "reason": "The model passes all three source-correct exact 25 C hFE conditions, including the 63 through 250 range at 150 mA. Staged saturation semantics need a metadata correction, but promotion is blocked by the material reusable-code defects."
+    },
+    {
+      "order": 493,
+      "lcsc_id": "C53071",
+      "staging_package": "jiangsu-changjing-electronics-co-ltd/FMMT619",
+      "fidelity_tier": "F1",
+      "electrical_family": "bjt_npn",
+      "disposition": "rejected",
+      "rejection_class": "refit-required",
+      "reason": "The source supplies hFE minima at 10 mA, 200 mA, 1 A, and 2 A, a 6 A typical value, fT 100 MHz minimum, Cob 20 pF maximum, and saturation limits. The staged top-level gain current is unsupported at 0.1 uA, BF derives from malformed evidence, source revision is OCR noise, and the package needs source-correct electrical fitting."
+    },
+    {
+      "order": 505,
+      "lcsc_id": "C152538",
+      "staging_package": "onsemi/SMMBT5551LT1G",
+      "fidelity_tier": "F1",
+      "electrical_family": "bjt_npn",
+      "disposition": "rejected",
+      "rejection_class": "reusable-code-block",
+      "reason": "The staged evidence is source-consistent and the model passes all three source-correct exact 25 C hFE conditions. It is otherwise promotion-eligible, but promotion is blocked by the material reusable-code defects."
+    },
+    {
+      "order": 512,
+      "lcsc_id": "C475865",
+      "staging_package": "shikues/FCX591",
+      "fidelity_tier": "F1",
+      "electrical_family": "bjt_pnp",
+      "disposition": "rejected",
+      "rejection_class": "refit-required",
+      "reason": "The source hFE range is 100 through 300 at 500 mA and VCE -5 V. Staged facts claim hFE 300 at 0.1 uA as typical and BF 300 is derived from the published maximum. Promotion requires a refit."
+    },
+    {
+      "order": 523,
+      "lcsc_id": "C686650",
+      "staging_package": "pjsemi/FMMT617",
+      "fidelity_tier": "F1",
+      "electrical_family": "bjt_npn",
+      "disposition": "rejected",
+      "rejection_class": "refit-required",
+      "reason": "The source specifies fT 150 MHz minimum at 50 mA and VCE 10 V, but the staged package records 100 MHz at malformed conditions and sets TF from 100 MHz. Correcting it changes model parameters."
+    }
+  ],
+  "tests": {
+    "model_library": {
+      "status": "passed",
+      "packages_validated": 703
+    },
+    "model_factory": {
+      "status": "passed",
+      "passed": 52,
+      "failed": 0
+    },
+    "conveyor": {
+      "status": "passed",
+      "passed": 20,
+      "failed": 0,
+      "typecheck": "passed"
+    },
+    "part_feeder": {
+      "status": "passed",
+      "discovered": 9,
+      "passed": 5,
+      "skipped": 4,
+      "failed": 0,
+      "typecheck": "passed"
+    },
+    "root": {
+      "status": "passed",
+      "workspace_tests": 99,
+      "typecheck": "passed",
+      "typescript_workspaces": 6
+    }
+  },
+  "repository_audits": {
+    "starting_tripwire_passed": true,
+    "starting_pwd": "/Users/hughp/Documents/opencircuit",
+    "starting_head": "7a7ecdc9abab5b879dfe6c5b7679de577b049fc2",
+    "starting_branch": "main",
+    "staging_package_tree_files": 120,
+    "staging_package_tree_bytes": 285693,
+    "staging_package_tree_sha256": "fbe8d3d71a6b5d46b930557fd90de932fb9d48645638e3abcce392856b202375",
+    "whole_staging_tree_files": 1741,
+    "whole_staging_tree_bytes": 146146484,
+    "whole_staging_tree_sha256": "317c9951e04f98c6055b0c15a7fa52efd4936e89652a30f0953af78b4db2f9ec",
+    "staging_modified": false,
+    "promoted_packages": 0,
+    "promoted_parameter_files_modified": 0,
+    "promoted_pending_review_markers": 0,
+    "promoted_cached_pdfs_or_archives": 0,
+    "promoted_databases_or_extraction_responses": 0,
+    "promoted_absolute_staging_or_scratch_paths": 0,
+    "promoted_false_vendor_model_claims": 0,
+    "preexisting_untracked_roots": [
+      ".claude/",
+      "tools/conveyor/data.pre-hardening/"
+    ],
+    "push_deploy_publish_github_comment_vault_update": false
+  },
+  "deviations": [
+    "No package was promoted because a material defect in reusable code is a hard promotion block.",
+    "Promoted-package validation and byte-identity checks are vacuous because the promoted set is empty.",
+    "Four part-feeder tests were skipped because one live smoke test is opt-in and three frozen scale-2k inputs are absent from this checkout."
+  ]
+}
