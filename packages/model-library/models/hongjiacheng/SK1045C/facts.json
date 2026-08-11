@@ -1,0 +1,153 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [
+      {
+        "name": "Typical reverse characteristic for SK1045C",
+        "page_reference": "p. 2, Fig. 4 Typical Reverse Characteristics",
+        "points": [
+          {
+            "x": 0,
+            "y": 0.000004
+          },
+          {
+            "x": 20,
+            "y": 0.000008
+          },
+          {
+            "x": 40,
+            "y": 0.000013
+          },
+          {
+            "x": 60,
+            "y": 0.00002
+          },
+          {
+            "x": 80,
+            "y": 0.000035
+          },
+          {
+            "x": 100,
+            "y": 0.00007
+          }
+        ],
+        "test_conditions": "Tj = 25 degC; SK102C-SK1045C solid curve",
+        "x_axis": {
+          "quantity": "Percent of rated peak reverse voltage",
+          "scale": "linear",
+          "unit": "%"
+        },
+        "y_axis": {
+          "quantity": "Instantaneous reverse current",
+          "scale": "log",
+          "unit": "A"
+        }
+      }
+    ],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3"
+      ],
+      "revision": "Rev:1.0",
+      "title": "SK102C THRU SK1020C"
+    },
+    "extraction_notes": [
+      "The SK102C-SK1045C solid reverse-current curve was digitized from p. 2 Fig. 4; points are direct curve readings and are not interpolated.",
+      "The SK1045C electrical values are taken from the shared SK102C-SK1045C or SK102C-SK106C table groups.",
+      "No reverse-recovery time or breakdown characteristic is published in the supplied datasheet."
+    ],
+    "family": "diode",
+    "manufacturer": "hongjiacheng",
+    "mpn": "SK1045C",
+    "omission_reason": null,
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": null,
+      "breakdown_voltage": null,
+      "capacitance": {
+        "conditions": "VR = 4.0 V DC, f = 1 MHz, Ta = 25 degC",
+        "page_reference": "p. 2, Electrical Characteristics",
+        "source_kind": "typical",
+        "unit": "F",
+        "value": 5e-10
+      },
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "IF = 10 A, Ta = 25 degC",
+            "page_reference": "p. 2, Electrical Characteristics, SK102C-SK1045C group",
+            "source_kind": "maximum",
+            "unit": "A",
+            "value": 10
+          },
+          "voltage": {
+            "conditions": "IF = 10 A, Ta = 25 degC",
+            "page_reference": "p. 2, Electrical Characteristics, SK102C-SK1045C group",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 0.55
+          }
+        }
+      ],
+      "reverse_current": {
+        "conditions": "VRM = VDC = 45 V, Ta = 25 degC",
+        "page_reference": "p. 2, Electrical Characteristics, SK102C-SK106C group",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.0005
+      },
+      "reverse_recovery": null,
+      "variant": "schottky"
+    },
+    "usable_curves": true
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "Voltage - Forward(Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "550mV@10A",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "SK1045C",
+    "manufacturer": "hongjiacheng",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8602925402776223744",
+    "revision": "Rev:1.0",
+    "sha256": "74a8ba71c03469d205043d0bb401613b30ce978069c7d4070eab1523d9224b1c",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ],
+    "placeholder": false
+  },
+  "fit_points": [
+    {
+      "current": {
+        "conditions": "Conservative F1 package bench at 95% of the cited current; IF = 10 A, Ta = 25 degC",
+        "page_reference": "p. 2, Electrical Characteristics, SK102C-SK1045C group",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 9.5
+      },
+      "voltage": {
+        "conditions": "IF = 10 A, Ta = 25 degC",
+        "page_reference": "p. 2, Electrical Characteristics, SK102C-SK1045C group",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 0.55
+      }
+    }
+  ],
+  "electrical_limits": {},
+  "derived_model_inputs": {}
+}

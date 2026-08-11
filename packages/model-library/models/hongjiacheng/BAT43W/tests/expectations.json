@@ -1,0 +1,146 @@
+{
+  "schema_version": "1.0.0",
+  "tests": [
+    {
+      "test_netlist": "forward_01.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "forward_voltage_at_0.002_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "expected_value": 0.3,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.35
+          },
+          "datasheet_citation": "p. 2 fig. 1",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "forward_02.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "forward_voltage_maximum_at_0.19_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "minimum": 0,
+          "maximum": 1,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 2 electrical characteristics",
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "review_forward_voltage_minimum_source_1.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "forward_voltage_minimum_source_1",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(anode))"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 2 electrical characteristics",
+          "placeholder": false,
+          "minimum": 0.26
+        }
+      ]
+    },
+    {
+      "test_netlist": "review_forward_voltage_maximum_source_1.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "forward_voltage_maximum_source_1",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(anode))"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 2 electrical characteristics",
+          "placeholder": false,
+          "maximum": 0.33,
+          "minimum": 0
+        }
+      ]
+    },
+    {
+      "test_netlist": "review_forward_voltage_maximum_source_2.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "forward_voltage_maximum_source_2",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(anode))"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 2 electrical characteristics",
+          "placeholder": false,
+          "maximum": 0.45,
+          "minimum": 0
+        }
+      ]
+    },
+    {
+      "test_netlist": "review_forward_voltage_maximum_source_3.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "forward_voltage_maximum_source_3",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(v(anode))"
+          },
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 2 electrical characteristics",
+          "placeholder": false,
+          "maximum": 1,
+          "minimum": 0
+        }
+      ]
+    },
+    {
+      "test_netlist": "review_reverse_leakage_maximum_source_1.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "reverse_leakage_maximum_source_1",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "abs:last(i(vreverse))"
+          },
+          "unit": "A",
+          "inclusive": true,
+          "datasheet_citation": "p. 2 electrical characteristics",
+          "placeholder": false,
+          "minimum": 0,
+          "maximum": 5e-07
+        }
+      ]
+    }
+  ]
+}

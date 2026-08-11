@@ -1,0 +1,290 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [
+      {
+        "name": "Fig.3 Typical Forward Voltage, M1-M7 curve",
+        "page_reference": "p. 2 Fig.3",
+        "points": [
+          {
+            "x": 0.6,
+            "y": 0.01
+          },
+          {
+            "x": 0.66,
+            "y": 0.03
+          },
+          {
+            "x": 0.72,
+            "y": 0.1
+          },
+          {
+            "x": 0.8,
+            "y": 0.3
+          },
+          {
+            "x": 0.88,
+            "y": 1
+          },
+          {
+            "x": 0.98,
+            "y": 2
+          },
+          {
+            "x": 1.1,
+            "y": 5
+          },
+          {
+            "x": 1.23,
+            "y": 10
+          }
+        ],
+        "test_conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle",
+        "x_axis": {
+          "quantity": "instantaneous forward voltage",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "instantaneous forward current",
+          "scale": "log",
+          "unit": "A"
+        }
+      }
+    ],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3"
+      ],
+      "revision": "Rev:1.1",
+      "title": "M1 THRU M7 SURFACE MOUNT GENERAL PURPOSE RECTIFIER (SMA Surface Mount General Purpose Rectifier)"
+    },
+    "extraction_notes": [
+      "Family datasheet M1-M7; M6 is the 800 V member: VRRM = VDC = 800 V and VRMS = 560 V (p. 1). IF(AV) = 1.0 A and IFSM = 30.0 A at 8.3 ms half-sine are common ratings.",
+      "Electrical table gives VF maximum 1.0 V at IF = 1.0 A, IR1 maximum 2.0 uA at VR = VDC and Ta = 25 degC, IR2 maximum 200 uA at Ta = 125 degC, and CJ typical 18 pF at 4.0 V DC and 1 MHz (p. 2). The high-temperature leakage row is recorded only as context and is not used as the 25 degC reverse-current input.",
+      "Fig.3 forward-voltage trace was digitized from the printed linear-voltage/log-current grid; plotted values are recorded in SI amperes. Fig.4 is a normalized reverse-characteristics plot with unreadable raster text and was not used as an absolute-voltage curve.",
+      "No reverse recovery time or measured avalanche/breakdown row is published. VRRM is an absolute maximum rating, not a measured breakdown voltage, so breakdown fields are null."
+    ],
+    "family": "diode",
+    "manufacturer": "hongjiacheng",
+    "mpn": "M6",
+    "omission_reason": null,
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": null,
+      "breakdown_voltage": null,
+      "capacitance": {
+        "conditions": "VR = 4.0 V DC, f = 1 MHz, Ta = 25 degC; typical junction capacitance CJ",
+        "page_reference": "p. 2 electrical characteristics",
+        "source_kind": "typical",
+        "unit": "F",
+        "value": 1.8e-11
+      },
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "IF = 1.0 A, Ta = 25 degC; maximum instantaneous forward voltage",
+            "page_reference": "p. 2 electrical characteristics",
+            "source_kind": "typical",
+            "unit": "A",
+            "value": 1
+          },
+          "voltage": {
+            "conditions": "IF = 1.0 A, Ta = 25 degC; M1-M7 family row",
+            "page_reference": "p. 2 electrical characteristics",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 1
+          }
+        }
+      ],
+      "reverse_current": {
+        "conditions": "VR = VDC = 800 V, Ta = 25 degC; maximum DC reverse current at rated DC blocking voltage",
+        "page_reference": "p. 2 electrical characteristics",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.000002
+      },
+      "reverse_recovery": null,
+      "variant": "rectifier"
+    },
+    "usable_curves": true
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "Voltage - Forward(Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "1V@1A",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "M6",
+    "manufacturer": "hongjiacheng",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8603067851838676992",
+    "revision": "Rev:1.1",
+    "sha256": "03f2b9959f3611e4c90bdf6b79de906aebb1c9c6d573ad2d462d7456f381deb7",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ],
+    "placeholder": false
+  },
+  "fit_points": [
+    {
+      "current": {
+        "value": 0.01,
+        "unit": "A",
+        "conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle",
+        "page_reference": "p. 2 Fig.3",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 0.6,
+        "unit": "V",
+        "conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle",
+        "page_reference": "p. 2 Fig.3",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 0.03,
+        "unit": "A",
+        "conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle",
+        "page_reference": "p. 2 Fig.3",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 0.66,
+        "unit": "V",
+        "conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle",
+        "page_reference": "p. 2 Fig.3",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 0.1,
+        "unit": "A",
+        "conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle",
+        "page_reference": "p. 2 Fig.3",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 0.72,
+        "unit": "V",
+        "conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle",
+        "page_reference": "p. 2 Fig.3",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 0.3,
+        "unit": "A",
+        "conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle",
+        "page_reference": "p. 2 Fig.3",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 0.8,
+        "unit": "V",
+        "conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle",
+        "page_reference": "p. 2 Fig.3",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 1,
+        "unit": "A",
+        "conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle",
+        "page_reference": "p. 2 Fig.3",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 0.88,
+        "unit": "V",
+        "conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle",
+        "page_reference": "p. 2 Fig.3",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 2,
+        "unit": "A",
+        "conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle",
+        "page_reference": "p. 2 Fig.3",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 0.98,
+        "unit": "V",
+        "conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle",
+        "page_reference": "p. 2 Fig.3",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 5,
+        "unit": "A",
+        "conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle",
+        "page_reference": "p. 2 Fig.3",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 1.1,
+        "unit": "V",
+        "conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle",
+        "page_reference": "p. 2 Fig.3",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 10,
+        "unit": "A",
+        "conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle",
+        "page_reference": "p. 2 Fig.3",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 1.23,
+        "unit": "V",
+        "conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle",
+        "page_reference": "p. 2 Fig.3",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "conditions": "IF = 1.0 A, Ta = 25 degC; maximum instantaneous forward voltage",
+        "page_reference": "p. 2 electrical characteristics",
+        "source_kind": "typical",
+        "unit": "A",
+        "value": 1
+      },
+      "voltage": {
+        "conditions": "IF = 1.0 A, Ta = 25 degC; M1-M7 family row",
+        "page_reference": "p. 2 electrical characteristics",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 1
+      }
+    }
+  ],
+  "electrical_limits": {},
+  "derived_model_inputs": {}
+}

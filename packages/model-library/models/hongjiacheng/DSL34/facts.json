@@ -1,0 +1,149 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [
+      {
+        "name": "Typical forward voltage for DSL34 curve",
+        "page_reference": "p. 2, Fig. 3 Typical Junction Capacitance",
+        "points": [
+          {
+            "x": 0.26,
+            "y": 0.01
+          },
+          {
+            "x": 0.29,
+            "y": 0.1
+          },
+          {
+            "x": 0.32,
+            "y": 1
+          },
+          {
+            "x": 0.35,
+            "y": 3
+          },
+          {
+            "x": 0.4,
+            "y": 10
+          },
+          {
+            "x": 0.47,
+            "y": 30
+          }
+        ],
+        "test_conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle; DSL34 solid curve",
+        "x_axis": {
+          "quantity": "instantaneous forward voltage",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "instantaneous forward current",
+          "scale": "log",
+          "unit": "A"
+        }
+      }
+    ],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3"
+      ],
+      "revision": "Rev. 1.0",
+      "title": "DSL34 THRU DSL310 SURFACE MOUNT SCHOTTKY BARRIER RECTIFIER"
+    },
+    "extraction_notes": [
+      "Maximum repetitive peak reverse voltage VRRM is 40 V and maximum average forward rectified current IF(AV) is 3.0 A at Ta = 25 degC (p. 1).",
+      "Non-repetitive peak forward surge current IFSM is 60 A at t = 8.3 ms half-sine wave (p. 1).",
+      "No junction-capacitance value or reverse-recovery time is published.",
+      "The forward curve is a family characteristic for DSL34, DSL36, and DSL310; the DSL34 trace is the solid curve.",
+      "No breakdown characteristic is published for DSL34."
+    ],
+    "family": "diode",
+    "manufacturer": "hongjiacheng",
+    "mpn": "DSL34",
+    "omission_reason": null,
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": null,
+      "breakdown_voltage": null,
+      "capacitance": null,
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "IF = 3.0 A, Ta = 25 degC",
+            "page_reference": "p. 2, electrical characteristics, maximum instantaneous forward voltage",
+            "source_kind": "maximum",
+            "unit": "A",
+            "value": 3
+          },
+          "voltage": {
+            "conditions": "IF = 3.0 A, Ta = 25 degC; maximum instantaneous forward voltage",
+            "page_reference": "p. 2, electrical characteristics, maximum instantaneous forward voltage",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 0.45
+          }
+        }
+      ],
+      "reverse_current": {
+        "conditions": "VR = VDC = 40 V, Ta = 25 degC",
+        "page_reference": "p. 1, maximum ratings; p. 2, electrical characteristics, IR1",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.0005
+      },
+      "reverse_recovery": null,
+      "variant": "schottky"
+    },
+    "usable_curves": true
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "Voltage - Forward(Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "450mV@3A",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "DSL34",
+    "manufacturer": "hongjiacheng",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8603186949142564864",
+    "revision": "Rev. 1.0",
+    "sha256": "550dba6950829ece4f284802fbb90b838806e7aa39b15fdd21b722f4253b9907",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ],
+    "placeholder": false
+  },
+  "fit_points": [
+    {
+      "current": {
+        "conditions": "Conservative F1 package bench at 95% of the cited current; IF = 3.0 A, Ta = 25 degC",
+        "page_reference": "p. 2, electrical characteristics, maximum instantaneous forward voltage",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 2.8499999999999996
+      },
+      "voltage": {
+        "conditions": "IF = 3.0 A, Ta = 25 degC; maximum instantaneous forward voltage",
+        "page_reference": "p. 2, electrical characteristics, maximum instantaneous forward voltage",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 0.45
+      }
+    }
+  ],
+  "electrical_limits": {},
+  "derived_model_inputs": {}
+}

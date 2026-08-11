@@ -1,0 +1,485 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [
+      {
+        "name": "Forward Characteristics, Ta = 25 degC",
+        "page_reference": "p. 2 Typical Characteristics",
+        "points": [
+          {
+            "x": 0.42,
+            "y": 0.00001
+          },
+          {
+            "x": 0.48,
+            "y": 0.0001
+          },
+          {
+            "x": 0.55,
+            "y": 0.001
+          },
+          {
+            "x": 0.62,
+            "y": 0.01
+          },
+          {
+            "x": 0.72,
+            "y": 0.05
+          },
+          {
+            "x": 0.82,
+            "y": 0.1
+          },
+          {
+            "x": 0.98,
+            "y": 0.2
+          }
+        ],
+        "test_conditions": "Pulsed, Ta = 25 degC; 1N4148WS-E family characteristic",
+        "x_axis": {
+          "quantity": "forward voltage",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "forward current",
+          "scale": "log",
+          "unit": "A"
+        }
+      },
+      {
+        "name": "Reverse Characteristics, Ta = 25 degC",
+        "page_reference": "p. 2 Typical Characteristics",
+        "points": [
+          {
+            "x": 5,
+            "y": 1.1e-8
+          },
+          {
+            "x": 10,
+            "y": 1.3e-8
+          },
+          {
+            "x": 20,
+            "y": 1.6e-8
+          },
+          {
+            "x": 40,
+            "y": 2e-8
+          },
+          {
+            "x": 60,
+            "y": 2.4e-8
+          },
+          {
+            "x": 75,
+            "y": 2.8e-8
+          },
+          {
+            "x": 80,
+            "y": 3e-8
+          }
+        ],
+        "test_conditions": "Pulsed, Ta = 25 degC; 1N4148WS-E characteristic",
+        "x_axis": {
+          "quantity": "reverse voltage",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "reverse current",
+          "scale": "log",
+          "unit": "A"
+        }
+      },
+      {
+        "name": "Capacitance Characteristics",
+        "page_reference": "p. 2 Typical Characteristics",
+        "points": [
+          {
+            "x": 0,
+            "y": 1.02e-12
+          },
+          {
+            "x": 1,
+            "y": 1e-12
+          },
+          {
+            "x": 5,
+            "y": 9.7e-13
+          },
+          {
+            "x": 10,
+            "y": 9.4e-13
+          },
+          {
+            "x": 15,
+            "y": 9.2e-13
+          },
+          {
+            "x": 20,
+            "y": 9e-13
+          }
+        ],
+        "test_conditions": "Ta = 25 degC, f = 1 MHz",
+        "x_axis": {
+          "quantity": "reverse voltage",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "capacitance between terminals",
+          "scale": "linear",
+          "unit": "F"
+        }
+      }
+    ],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3"
+      ],
+      "revision": "Rev:2024A1",
+      "title": "1N4148WS-E"
+    },
+    "extraction_notes": [
+      "The table gives maximum VF values 0.715 V at 1 mA, 0.855 V at 10 mA, 1.0 V at 50 mA, and 1.25 V at 150 mA.",
+      "Reverse-current rows are 0.025 microA at VR = 20 V and 1 microA at VR = 75 V, both at Tj = 25 degC; the high-temperature rows were not used.",
+      "V(BR)R = 75 V is specified at IR = 1 microA; the reverse-breakdown pair is recorded as minimum voltage and test current.",
+      "Curves were digitized from the supplied p. 2 raster; the curve is marked for reference only."
+    ],
+    "family": "diode",
+    "manufacturer": "MDD Microdiode Semiconductor",
+    "mpn": "1N4148WS-E",
+    "omission_reason": null,
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": {
+        "conditions": "V(BR)R = 75 V, Ta = 25 degC",
+        "page_reference": "p. 1 maximum ratings and electrical characteristics",
+        "source_kind": "typical",
+        "unit": "A",
+        "value": 0.000001
+      },
+      "breakdown_voltage": {
+        "conditions": "IR = 1 microA, Ta = 25 degC",
+        "page_reference": "p. 1 maximum ratings and electrical characteristics",
+        "source_kind": "minimum",
+        "unit": "V",
+        "value": 75
+      },
+      "capacitance": {
+        "conditions": "VR = 0 V, f = 1.0 MHz, Ta = 25 degC",
+        "page_reference": "p. 1 maximum ratings and electrical characteristics",
+        "source_kind": "typical",
+        "unit": "F",
+        "value": 2e-12
+      },
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "IF = 1.0 mA, Ta = 25 degC",
+            "page_reference": "p. 1 maximum ratings and electrical characteristics",
+            "source_kind": "typical",
+            "unit": "A",
+            "value": 0.001
+          },
+          "voltage": {
+            "conditions": "IF = 1.0 mA, Ta = 25 degC",
+            "page_reference": "p. 1 maximum ratings and electrical characteristics",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 0.715
+          }
+        },
+        {
+          "current": {
+            "conditions": "IF = 10 mA, Ta = 25 degC",
+            "page_reference": "p. 1 maximum ratings and electrical characteristics",
+            "source_kind": "typical",
+            "unit": "A",
+            "value": 0.01
+          },
+          "voltage": {
+            "conditions": "IF = 10 mA, Ta = 25 degC",
+            "page_reference": "p. 1 maximum ratings and electrical characteristics",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 0.855
+          }
+        },
+        {
+          "current": {
+            "conditions": "IF = 50 mA, Ta = 25 degC",
+            "page_reference": "p. 1 maximum ratings and electrical characteristics",
+            "source_kind": "typical",
+            "unit": "A",
+            "value": 0.05
+          },
+          "voltage": {
+            "conditions": "IF = 50 mA, Ta = 25 degC",
+            "page_reference": "p. 1 maximum ratings and electrical characteristics",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 1
+          }
+        },
+        {
+          "current": {
+            "conditions": "IF = 150 mA, Ta = 25 degC",
+            "page_reference": "p. 1 maximum ratings and electrical characteristics",
+            "source_kind": "typical",
+            "unit": "A",
+            "value": 0.15
+          },
+          "voltage": {
+            "conditions": "IF = 150 mA, Ta = 25 degC",
+            "page_reference": "p. 1 maximum ratings and electrical characteristics",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 1.25
+          }
+        }
+      ],
+      "reverse_current": {
+        "conditions": "VR = 20 V, Tj = 25 degC",
+        "page_reference": "p. 1 maximum ratings and electrical characteristics",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 2.5e-8
+      },
+      "reverse_recovery": {
+        "conditions": "IF = IR = 10 mA, Irr = 0.1 x IR, RL = 100 ohm, Ta = 25 degC",
+        "page_reference": "p. 1 maximum ratings and electrical characteristics",
+        "source_kind": "maximum",
+        "unit": "s",
+        "value": 4e-9
+      },
+      "variant": "signal"
+    },
+    "usable_curves": true
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "Forward Voltage (Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "-",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Voltage - Forward(Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "1.25V@150mA",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "1N4148WS-E",
+    "manufacturer": "MDD Microdiode Semiconductor",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8604432959844077568",
+    "revision": "Rev:2024A1",
+    "sha256": "0e7a780941daf716efccb8e5b3ff81879235eaac6c8d59413c4a710ddd40c268",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ],
+    "placeholder": false
+  },
+  "fit_points": [
+    {
+      "current": {
+        "value": 0.00001,
+        "unit": "A",
+        "conditions": "Pulsed, Ta = 25 degC; 1N4148WS-E family characteristic",
+        "page_reference": "p. 2 Typical Characteristics",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 0.42,
+        "unit": "V",
+        "conditions": "Pulsed, Ta = 25 degC; 1N4148WS-E family characteristic",
+        "page_reference": "p. 2 Typical Characteristics",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 0.0001,
+        "unit": "A",
+        "conditions": "Pulsed, Ta = 25 degC; 1N4148WS-E family characteristic",
+        "page_reference": "p. 2 Typical Characteristics",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 0.48,
+        "unit": "V",
+        "conditions": "Pulsed, Ta = 25 degC; 1N4148WS-E family characteristic",
+        "page_reference": "p. 2 Typical Characteristics",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 0.001,
+        "unit": "A",
+        "conditions": "Pulsed, Ta = 25 degC; 1N4148WS-E family characteristic",
+        "page_reference": "p. 2 Typical Characteristics",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 0.55,
+        "unit": "V",
+        "conditions": "Pulsed, Ta = 25 degC; 1N4148WS-E family characteristic",
+        "page_reference": "p. 2 Typical Characteristics",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 0.01,
+        "unit": "A",
+        "conditions": "Pulsed, Ta = 25 degC; 1N4148WS-E family characteristic",
+        "page_reference": "p. 2 Typical Characteristics",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 0.62,
+        "unit": "V",
+        "conditions": "Pulsed, Ta = 25 degC; 1N4148WS-E family characteristic",
+        "page_reference": "p. 2 Typical Characteristics",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 0.05,
+        "unit": "A",
+        "conditions": "Pulsed, Ta = 25 degC; 1N4148WS-E family characteristic",
+        "page_reference": "p. 2 Typical Characteristics",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 0.72,
+        "unit": "V",
+        "conditions": "Pulsed, Ta = 25 degC; 1N4148WS-E family characteristic",
+        "page_reference": "p. 2 Typical Characteristics",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 0.1,
+        "unit": "A",
+        "conditions": "Pulsed, Ta = 25 degC; 1N4148WS-E family characteristic",
+        "page_reference": "p. 2 Typical Characteristics",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 0.82,
+        "unit": "V",
+        "conditions": "Pulsed, Ta = 25 degC; 1N4148WS-E family characteristic",
+        "page_reference": "p. 2 Typical Characteristics",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 0.2,
+        "unit": "A",
+        "conditions": "Pulsed, Ta = 25 degC; 1N4148WS-E family characteristic",
+        "page_reference": "p. 2 Typical Characteristics",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 0.98,
+        "unit": "V",
+        "conditions": "Pulsed, Ta = 25 degC; 1N4148WS-E family characteristic",
+        "page_reference": "p. 2 Typical Characteristics",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "conditions": "IF = 1.0 mA, Ta = 25 degC",
+        "page_reference": "p. 1 maximum ratings and electrical characteristics",
+        "source_kind": "typical",
+        "unit": "A",
+        "value": 0.001
+      },
+      "voltage": {
+        "conditions": "IF = 1.0 mA, Ta = 25 degC",
+        "page_reference": "p. 1 maximum ratings and electrical characteristics",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 0.715
+      }
+    },
+    {
+      "current": {
+        "conditions": "IF = 10 mA, Ta = 25 degC",
+        "page_reference": "p. 1 maximum ratings and electrical characteristics",
+        "source_kind": "typical",
+        "unit": "A",
+        "value": 0.01
+      },
+      "voltage": {
+        "conditions": "IF = 10 mA, Ta = 25 degC",
+        "page_reference": "p. 1 maximum ratings and electrical characteristics",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 0.855
+      }
+    },
+    {
+      "current": {
+        "conditions": "IF = 50 mA, Ta = 25 degC",
+        "page_reference": "p. 1 maximum ratings and electrical characteristics",
+        "source_kind": "typical",
+        "unit": "A",
+        "value": 0.05
+      },
+      "voltage": {
+        "conditions": "IF = 50 mA, Ta = 25 degC",
+        "page_reference": "p. 1 maximum ratings and electrical characteristics",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 1
+      }
+    },
+    {
+      "current": {
+        "conditions": "IF = 150 mA, Ta = 25 degC",
+        "page_reference": "p. 1 maximum ratings and electrical characteristics",
+        "source_kind": "typical",
+        "unit": "A",
+        "value": 0.15
+      },
+      "voltage": {
+        "conditions": "IF = 150 mA, Ta = 25 degC",
+        "page_reference": "p. 1 maximum ratings and electrical characteristics",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 1.25
+      }
+    }
+  ],
+  "electrical_limits": {
+    "reverse_current_20v": {
+      "conditions": "VR = 20 V, Tj = 25 degC",
+      "page_reference": "p. 1 maximum ratings and electrical characteristics",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 2.5e-8
+    }
+  },
+  "derived_model_inputs": {}
+}

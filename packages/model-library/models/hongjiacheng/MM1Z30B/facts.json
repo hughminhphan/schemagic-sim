@@ -1,0 +1,133 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3",
+        "p. 4"
+      ],
+      "revision": "Rev:1.0",
+      "title": "MM1Z2V0B THRU MM1Z75B SURFACE MOUNT ZENER DIODES (SOD-123 Surface Mount Silicon Zener Diodes)"
+    },
+    "extraction_notes": [
+      "MM1Z30B table row gives VZ min/nom/max = 29.4/30.0/30.6 V at IZT = 5 mA; ZZT = 80 ohm at IZT; IR = 0.1 uA at VR = 23 V (p. 2).",
+      "The p. 3 zener-characteristics plots label curves for 10B, 12B, 15B, 18B, 20B, 22B, 27B and 33B; no MM1Z30B-specific trace is labeled or separable. Curves are therefore omitted rather than borrowing the neighboring 27B or 33B trace.",
+      "No per-part capacitance or reverse-recovery time is published."
+    ],
+    "family": "diode",
+    "manufacturer": "hongjiacheng",
+    "mpn": "MM1Z30B",
+    "omission_reason": "No usable MM1Z30B-specific curve is published: the p. 3 family zener plots label 27B and 33B traces but not 30B, so adjacent-part curves cannot be assigned to MM1Z30B without inventing evidence.",
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": {
+        "conditions": "IZT = 5 mA, zener test current for the VZ specification",
+        "page_reference": "p. 2 electrical characteristics, MM1Z30B row",
+        "source_kind": "typical",
+        "unit": "A",
+        "value": 0.005
+      },
+      "breakdown_voltage": {
+        "conditions": "VZ nominal at IZT = 5 mA, Ta = 25 degC; min 29.4 V, max 30.6 V",
+        "page_reference": "p. 2 electrical characteristics, MM1Z30B row",
+        "source_kind": "typical",
+        "unit": "V",
+        "value": 30
+      },
+      "capacitance": null,
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "IF = 10 mA, Ta = 25 degC; forward voltage maximum-rating row",
+            "page_reference": "p. 1 maximum ratings",
+            "source_kind": "typical",
+            "unit": "A",
+            "value": 0.01
+          },
+          "voltage": {
+            "conditions": "IF = 10 mA, Ta = 25 degC; maximum forward voltage",
+            "page_reference": "p. 1 maximum ratings",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 0.9
+          }
+        }
+      ],
+      "reverse_current": {
+        "conditions": "VR = 23 V, Ta = 25 degC; MM1Z30B row",
+        "page_reference": "p. 2 electrical characteristics",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 1e-7
+      },
+      "reverse_recovery": null,
+      "variant": "zener"
+    },
+    "usable_curves": false
+  },
+  "catalog_seed_hints": [],
+  "identity": {
+    "canonical_mpn": "MM1Z30B",
+    "manufacturer": "hongjiacheng",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8564879504889454592",
+    "revision": "Rev:1.0",
+    "sha256": "973430b8752739fba1fe918950ff3c00dcfbcc6e940eafdcd01397cb0d5b07d8",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "placeholder": false
+  },
+  "fit_points": [
+    {
+      "current": {
+        "conditions": "Conservative F1 package bench at 95% of the cited current; IF = 10 mA, Ta = 25 degC; forward voltage maximum-rating row",
+        "page_reference": "p. 1 maximum ratings",
+        "source_kind": "typical",
+        "unit": "A",
+        "value": 0.0095
+      },
+      "voltage": {
+        "conditions": "IF = 10 mA, Ta = 25 degC; maximum forward voltage",
+        "page_reference": "p. 1 maximum ratings",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 0.9
+      }
+    }
+  ],
+  "electrical_limits": {},
+  "derived_model_inputs": {
+    "BV": {
+      "conditions": "VZ nominal at IZT = 5 mA, Ta = 25 degC; min 29.4 V, max 30.6 V",
+      "page_reference": "p. 2 electrical characteristics, MM1Z30B row",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 30
+    },
+    "IBV": {
+      "conditions": "IZT = 5 mA, zener test current for the VZ specification",
+      "page_reference": "p. 2 electrical characteristics, MM1Z30B row",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.005
+    },
+    "NBV": {
+      "value": 1,
+      "unit": "1",
+      "conditions": "First-order avalanche-knee default; no multi-point reverse-knee trace was available",
+      "page_reference": "model-factory Zener F1 policy",
+      "source_kind": "held_default"
+    }
+  }
+}

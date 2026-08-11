@@ -1,0 +1,254 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [
+      {
+        "name": "Typical forward voltage (ES2A-ES2D curve)",
+        "page_reference": "p. 2, Fig. 3",
+        "points": [
+          {
+            "x": 0.4,
+            "y": 0.001
+          },
+          {
+            "x": 0.5,
+            "y": 0.01
+          },
+          {
+            "x": 0.62,
+            "y": 0.1
+          },
+          {
+            "x": 0.82,
+            "y": 1
+          },
+          {
+            "x": 1.12,
+            "y": 5
+          },
+          {
+            "x": 1.35,
+            "y": 10
+          }
+        ],
+        "test_conditions": "TA = 25 degC, pulse width = 300 us, 1% duty cycle",
+        "x_axis": {
+          "quantity": "forward voltage",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "forward current",
+          "scale": "log",
+          "unit": "A"
+        }
+      }
+    ],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3"
+      ],
+      "revision": "Rev:1.1",
+      "title": "ES2A THRU ES2J"
+    },
+    "extraction_notes": [
+      "The forward curve is digitized from the shared ES2A-ES2D typical curve in Fig. 3.",
+      "The high-temperature reverse-current row is 100 uA at VR = VDC and TA = 125 degC; the schema reverse_current field records the 25 degC row."
+    ],
+    "family": "diode",
+    "manufacturer": "hongjiacheng",
+    "mpn": "ES2A",
+    "omission_reason": null,
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": null,
+      "breakdown_voltage": null,
+      "capacitance": {
+        "conditions": "VR = 4.0 V DC, f = 1 MHz, TA = 25 degC",
+        "page_reference": "p. 2, Electrical Characteristics, Typical junction capacitance",
+        "source_kind": "typical",
+        "unit": "F",
+        "value": 3.1e-11
+      },
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "IF = 2.0 A, TA = 25 degC",
+            "page_reference": "p. 2, Electrical Characteristics, Maximum instantaneous forward voltage",
+            "source_kind": "maximum",
+            "unit": "A",
+            "value": 2
+          },
+          "voltage": {
+            "conditions": "IF = 2.0 A, TA = 25 degC",
+            "page_reference": "p. 2, Electrical Characteristics, Maximum instantaneous forward voltage",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 0.95
+          }
+        }
+      ],
+      "reverse_current": {
+        "conditions": "VR = VDC = 50 V, TA = 25 degC",
+        "page_reference": "p. 2, Electrical Characteristics, Maximum DC reverse current",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.000005
+      },
+      "reverse_recovery": {
+        "conditions": "IF = 0.5 A, IR = 1.0 A, Irr = 0.25 A, TA = 25 degC",
+        "page_reference": "p. 2, Electrical Characteristics, Maximum reverse recovery time",
+        "source_kind": "maximum",
+        "unit": "s",
+        "value": 3.5e-8
+      },
+      "variant": "rectifier"
+    },
+    "usable_curves": true
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "Voltage - Forward(Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "1V@2A",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "ES2A",
+    "manufacturer": "hongjiacheng",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8603080179069964288",
+    "revision": "Rev:1.1",
+    "sha256": "d0c8b65118a0ad631758c21f543007272f63cbc8913b901350d507265f357009",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ],
+    "placeholder": false
+  },
+  "fit_points": [
+    {
+      "current": {
+        "value": 0.001,
+        "unit": "A",
+        "conditions": "TA = 25 degC, pulse width = 300 us, 1% duty cycle",
+        "page_reference": "p. 2, Fig. 3",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 0.4,
+        "unit": "V",
+        "conditions": "TA = 25 degC, pulse width = 300 us, 1% duty cycle",
+        "page_reference": "p. 2, Fig. 3",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 0.01,
+        "unit": "A",
+        "conditions": "TA = 25 degC, pulse width = 300 us, 1% duty cycle",
+        "page_reference": "p. 2, Fig. 3",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 0.5,
+        "unit": "V",
+        "conditions": "TA = 25 degC, pulse width = 300 us, 1% duty cycle",
+        "page_reference": "p. 2, Fig. 3",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 0.1,
+        "unit": "A",
+        "conditions": "TA = 25 degC, pulse width = 300 us, 1% duty cycle",
+        "page_reference": "p. 2, Fig. 3",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 0.62,
+        "unit": "V",
+        "conditions": "TA = 25 degC, pulse width = 300 us, 1% duty cycle",
+        "page_reference": "p. 2, Fig. 3",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 1,
+        "unit": "A",
+        "conditions": "TA = 25 degC, pulse width = 300 us, 1% duty cycle",
+        "page_reference": "p. 2, Fig. 3",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 0.82,
+        "unit": "V",
+        "conditions": "TA = 25 degC, pulse width = 300 us, 1% duty cycle",
+        "page_reference": "p. 2, Fig. 3",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 5,
+        "unit": "A",
+        "conditions": "TA = 25 degC, pulse width = 300 us, 1% duty cycle",
+        "page_reference": "p. 2, Fig. 3",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 1.12,
+        "unit": "V",
+        "conditions": "TA = 25 degC, pulse width = 300 us, 1% duty cycle",
+        "page_reference": "p. 2, Fig. 3",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 10,
+        "unit": "A",
+        "conditions": "TA = 25 degC, pulse width = 300 us, 1% duty cycle",
+        "page_reference": "p. 2, Fig. 3",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 1.35,
+        "unit": "V",
+        "conditions": "TA = 25 degC, pulse width = 300 us, 1% duty cycle",
+        "page_reference": "p. 2, Fig. 3",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "conditions": "IF = 2.0 A, TA = 25 degC",
+        "page_reference": "p. 2, Electrical Characteristics, Maximum instantaneous forward voltage",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 2
+      },
+      "voltage": {
+        "conditions": "IF = 2.0 A, TA = 25 degC",
+        "page_reference": "p. 2, Electrical Characteristics, Maximum instantaneous forward voltage",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 0.95
+      }
+    }
+  ],
+  "electrical_limits": {},
+  "derived_model_inputs": {}
+}

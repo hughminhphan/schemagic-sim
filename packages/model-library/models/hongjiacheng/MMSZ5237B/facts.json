@@ -1,0 +1,178 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [
+      {
+        "name": "Zener characteristic, MMSZ5237B nominal 8.2 V trace",
+        "page_reference": "p. 3 fig. 1, 8.2 V nominal trace",
+        "points": [
+          {
+            "x": 7.2,
+            "y": 0.0005
+          },
+          {
+            "x": 7.5,
+            "y": 0.001
+          },
+          {
+            "x": 7.8,
+            "y": 0.003
+          },
+          {
+            "x": 8,
+            "y": 0.01
+          },
+          {
+            "x": 8.2,
+            "y": 0.02
+          },
+          {
+            "x": 8.35,
+            "y": 0.05
+          }
+        ],
+        "test_conditions": "TA = 25 degC, pulsed, PD = 500 mW",
+        "x_axis": {
+          "quantity": "Zener voltage",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "Zener current",
+          "scale": "log",
+          "unit": "A"
+        }
+      }
+    ],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3",
+        "p. 4",
+        "p. 5"
+      ],
+      "revision": "Rev:1.1",
+      "title": "MMSZ5221B THRU MMSZ5267B"
+    },
+    "extraction_notes": [
+      "No self-heating or thermal derating model input is represented in this extraction.",
+      "Package parasitics are not represented in this extraction.",
+      "Electrical table: VZ min 7.79 V, nominal 8.2 V, max 8.61 V at IZT = 20 mA; ZZT maximum 8 ohm at the table heading condition IZT = 0.25 mA; IR maximum 3 microA at VR = 6.5 V.",
+      "The datasheet publishes no capacitance or reverse-recovery value for this part."
+    ],
+    "family": "diode",
+    "manufacturer": "hongjiacheng",
+    "mpn": "MMSZ5237B",
+    "omission_reason": null,
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": {
+        "conditions": "IZT = 20 mA, TA = 25 degC",
+        "page_reference": "p. 2 electrical characteristics, MMSZ5237B row",
+        "source_kind": "typical",
+        "unit": "A",
+        "value": 0.02
+      },
+      "breakdown_voltage": {
+        "conditions": "IZT = 20 mA, TA = 25 degC; nominal VZ",
+        "page_reference": "p. 2 electrical characteristics, MMSZ5237B row",
+        "source_kind": "typical",
+        "unit": "V",
+        "value": 8.2
+      },
+      "capacitance": null,
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "IF = 10 mA, TA = 25 degC",
+            "page_reference": "p. 1 maximum ratings",
+            "source_kind": "maximum",
+            "unit": "A",
+            "value": 0.01
+          },
+          "voltage": {
+            "conditions": "IF = 10 mA, TA = 25 degC",
+            "page_reference": "p. 1 maximum ratings",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 0.9
+          }
+        }
+      ],
+      "reverse_current": {
+        "conditions": "VR = 6.5 V, TA = 25 degC",
+        "page_reference": "p. 2 electrical characteristics, MMSZ5237B row",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.000003
+      },
+      "reverse_recovery": null,
+      "variant": "zener"
+    },
+    "usable_curves": true
+  },
+  "catalog_seed_hints": [],
+  "identity": {
+    "canonical_mpn": "MMSZ5237B",
+    "manufacturer": "hongjiacheng",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8564879474543665152",
+    "revision": "Rev:1.1",
+    "sha256": "fec00843f279bccf78d55a456b749bf49d99676181d710880c28c93d8ee35181",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4",
+      "p. 5"
+    ],
+    "placeholder": false
+  },
+  "fit_points": [
+    {
+      "current": {
+        "conditions": "Conservative F1 package bench at 95% of the cited current; IF = 10 mA, TA = 25 degC",
+        "page_reference": "p. 1 maximum ratings",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.0095
+      },
+      "voltage": {
+        "conditions": "IF = 10 mA, TA = 25 degC",
+        "page_reference": "p. 1 maximum ratings",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 0.9
+      }
+    }
+  ],
+  "electrical_limits": {},
+  "derived_model_inputs": {
+    "BV": {
+      "conditions": "IZT = 20 mA, TA = 25 degC; nominal VZ",
+      "page_reference": "p. 2 electrical characteristics, MMSZ5237B row",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 8.2
+    },
+    "IBV": {
+      "conditions": "IZT = 20 mA, TA = 25 degC",
+      "page_reference": "p. 2 electrical characteristics, MMSZ5237B row",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.02
+    },
+    "NBV": {
+      "value": 1,
+      "unit": "1",
+      "conditions": "First-order avalanche-knee default; no multi-point reverse-knee trace was available",
+      "page_reference": "model-factory Zener F1 policy",
+      "source_kind": "held_default"
+    }
+  }
+}

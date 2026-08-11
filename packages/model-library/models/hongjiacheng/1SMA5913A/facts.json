@@ -1,0 +1,189 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [
+      {
+        "name": "Zener characteristic, curve labeled 3.3 V nominal",
+        "page_reference": "p. 3 Fig.2",
+        "points": [
+          {
+            "x": 2.6,
+            "y": 0.1
+          },
+          {
+            "x": 2.78,
+            "y": 0.2
+          },
+          {
+            "x": 2.9,
+            "y": 0.5
+          },
+          {
+            "x": 3,
+            "y": 1
+          },
+          {
+            "x": 3.08,
+            "y": 2
+          },
+          {
+            "x": 3.16,
+            "y": 5
+          },
+          {
+            "x": 3.22,
+            "y": 10
+          },
+          {
+            "x": 3.28,
+            "y": 20
+          },
+          {
+            "x": 3.38,
+            "y": 50
+          }
+        ],
+        "test_conditions": "Ta = 25 degC, pulsed; Fig.2 curve for the 3.3 V to 10 V family",
+        "x_axis": {
+          "quantity": "zener voltage",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "zener current",
+          "scale": "log",
+          "unit": "mA"
+        }
+      }
+    ],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3",
+        "p. 4"
+      ],
+      "revision": "Rev:1.1",
+      "title": "1SMA5913A THRU 1SMA5945A SURFACE MOUNT ZENER DIODES"
+    },
+    "extraction_notes": [
+      "Family datasheet 1SMA5913A through 1SMA5945A; 1SMA5913A row: VZ min 3.13 V, nominal 3.3 V, max 3.47 V at IZT = 113.6 mA; ZZT maximum 10 ohm at IZT; ZZK maximum 500 ohm at IZK = 1.0 mA; admissible IZM = 454 mA (p. 2).",
+      "Fig.2 3.3 V trace was digitized from the printed linear-voltage/log-current grid on p. 3. The graph is a family plot, so table values remain the authoritative nominal test pair.",
+      "Fig.5 Typical Capacitance and Fig.6 zener impedance are family-level plots and were not extracted as per-part curves; no capacitance value is tabulated for an individual type.",
+      "No reverse-recovery value is published.",
+      "Curve current axis preserves the printed mA unit; table current values were converted to SI amperes in specs."
+    ],
+    "family": "diode",
+    "manufacturer": "hongjiacheng",
+    "mpn": "1SMA5913A",
+    "omission_reason": null,
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": {
+        "conditions": "IZT = 113.6 mA, Ta = 25 degC",
+        "page_reference": "p. 2 electrical characteristics, 1SMA5913A row",
+        "source_kind": "typical",
+        "unit": "A",
+        "value": 0.1136
+      },
+      "breakdown_voltage": {
+        "conditions": "IZT = 113.6 mA, Ta = 25 degC; nominal VZ",
+        "page_reference": "p. 2 electrical characteristics, 1SMA5913A row",
+        "source_kind": "typical",
+        "unit": "V",
+        "value": 3.3
+      },
+      "capacitance": null,
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "IF = 200 mA, Ta = 25 degC",
+            "page_reference": "p. 1 maximum ratings",
+            "source_kind": "typical",
+            "unit": "A",
+            "value": 0.2
+          },
+          "voltage": {
+            "conditions": "IF = 200 mA, Ta = 25 degC; maximum forward voltage",
+            "page_reference": "p. 1 maximum ratings",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 1.5
+          }
+        }
+      ],
+      "reverse_current": {
+        "conditions": "VR = 1.0 V, Ta = 25 degC; maximum leakage current",
+        "page_reference": "p. 2 electrical characteristics, 1SMA5913A row",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.0001
+      },
+      "reverse_recovery": null,
+      "variant": "zener"
+    },
+    "usable_curves": true
+  },
+  "catalog_seed_hints": [],
+  "identity": {
+    "canonical_mpn": "1SMA5913A",
+    "manufacturer": "hongjiacheng",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8564879678357209088",
+    "revision": "Rev:1.1",
+    "sha256": "8200f679467020a5bd7e0853cf057a2984daa6243c5870bb231f0e3b473bd319",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "placeholder": false
+  },
+  "fit_points": [
+    {
+      "current": {
+        "conditions": "Conservative F1 package bench at 95% of the cited current; IF = 200 mA, Ta = 25 degC",
+        "page_reference": "p. 1 maximum ratings",
+        "source_kind": "typical",
+        "unit": "A",
+        "value": 0.19
+      },
+      "voltage": {
+        "conditions": "IF = 200 mA, Ta = 25 degC; maximum forward voltage",
+        "page_reference": "p. 1 maximum ratings",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 1.5
+      }
+    }
+  ],
+  "electrical_limits": {},
+  "derived_model_inputs": {
+    "BV": {
+      "conditions": "IZT = 113.6 mA, Ta = 25 degC; nominal VZ",
+      "page_reference": "p. 2 electrical characteristics, 1SMA5913A row",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 3.3
+    },
+    "IBV": {
+      "conditions": "IZT = 113.6 mA, Ta = 25 degC",
+      "page_reference": "p. 2 electrical characteristics, 1SMA5913A row",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.1136
+    },
+    "NBV": {
+      "value": 1,
+      "unit": "1",
+      "conditions": "First-order avalanche-knee default; no multi-point reverse-knee trace was available",
+      "page_reference": "model-factory Zener F1 policy",
+      "source_kind": "held_default"
+    }
+  }
+}

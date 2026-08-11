@@ -1,0 +1,170 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [
+      {
+        "name": "Zener characteristics, MMSZ5229B trace",
+        "page_reference": "p. 3, Fig. 1, Zener Characteristics (Vz Up to 10V)",
+        "points": [
+          {
+            "x": 4.09,
+            "y": 0.5
+          },
+          {
+            "x": 4.2,
+            "y": 1
+          },
+          {
+            "x": 4.3,
+            "y": 20
+          },
+          {
+            "x": 4.52,
+            "y": 100
+          }
+        ],
+        "test_conditions": "Ta = 25 degC, pulsed; MMSZ5229B 4.3 V trace in the family zener-characteristics plot",
+        "x_axis": {
+          "quantity": "zener voltage",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "zener current",
+          "scale": "log",
+          "unit": "mA"
+        }
+      }
+    ],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3",
+        "p. 4",
+        "p. 5"
+      ],
+      "revision": "Rev. 1.1",
+      "title": "MMSZ5221B THRU MMSZ5267B SURFACE MOUNT ZENER DIODES"
+    },
+    "extraction_notes": [
+      "The MMSZ5229B row was transcribed from the p. 2 table: VZ min 4.09 V, nominal 4.3 V, max 4.52 V at IZT = 20 mA; ZZT = 22 ohm; IR max = 5 uA at VR = 1 V.",
+      "The zener curve points are digitized readings from the labeled 4.3 V MMSZ5229B trace in the p. 3 family plot; no interpolation was added.",
+      "The datasheet provides characteristic plots for capacitance and impedance but no single numeric capacitance or reverse-recovery-time value for MMSZ5229B.",
+      "Maximum ratings include PD = 500 mW, VF = 0.9 V at IF = 10 mA, Tstg = -55 to +150 degC, and Tj = -55 to +150 degC."
+    ],
+    "family": "diode",
+    "manufacturer": "hongjiacheng",
+    "mpn": "MMSZ5229B",
+    "omission_reason": null,
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": {
+        "conditions": "IZT = 20 mA, Ta = 25 degC",
+        "page_reference": "p. 2, Electrical Characteristics, MMSZ5229B VZ",
+        "source_kind": "typical",
+        "unit": "A",
+        "value": 0.02
+      },
+      "breakdown_voltage": {
+        "conditions": "IZT = 20 mA, Ta = 25 degC; nominal zener voltage",
+        "page_reference": "p. 2, Electrical Characteristics, MMSZ5229B VZ",
+        "source_kind": "typical",
+        "unit": "V",
+        "value": 4.3
+      },
+      "capacitance": null,
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "IF = 10 mA, Ta = 25 degC",
+            "page_reference": "p. 1, Maximum Ratings, Forward Voltage @ IF=10mA",
+            "source_kind": "maximum",
+            "unit": "A",
+            "value": 0.01
+          },
+          "voltage": {
+            "conditions": "IF = 10 mA, Ta = 25 degC",
+            "page_reference": "p. 1, Maximum Ratings, Forward Voltage @ IF=10mA",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 0.9
+          }
+        }
+      ],
+      "reverse_current": {
+        "conditions": "VR = 1 V, Ta = 25 degC",
+        "page_reference": "p. 2, Electrical Characteristics, MMSZ5229B IR@VR",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.000005
+      },
+      "reverse_recovery": null,
+      "variant": "zener"
+    },
+    "usable_curves": true
+  },
+  "catalog_seed_hints": [],
+  "identity": {
+    "canonical_mpn": "MMSZ5229B",
+    "manufacturer": "hongjiacheng",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8564879489047568384",
+    "revision": "Rev. 1.1",
+    "sha256": "fec00843f279bccf78d55a456b749bf49d99676181d710880c28c93d8ee35181",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4",
+      "p. 5"
+    ],
+    "placeholder": false
+  },
+  "fit_points": [
+    {
+      "current": {
+        "conditions": "Conservative F1 package bench at 95% of the cited current; IF = 10 mA, Ta = 25 degC",
+        "page_reference": "p. 1, Maximum Ratings, Forward Voltage @ IF=10mA",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.0095
+      },
+      "voltage": {
+        "conditions": "IF = 10 mA, Ta = 25 degC",
+        "page_reference": "p. 1, Maximum Ratings, Forward Voltage @ IF=10mA",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 0.9
+      }
+    }
+  ],
+  "electrical_limits": {},
+  "derived_model_inputs": {
+    "BV": {
+      "conditions": "IZT = 20 mA, Ta = 25 degC; nominal zener voltage",
+      "page_reference": "p. 2, Electrical Characteristics, MMSZ5229B VZ",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 4.3
+    },
+    "IBV": {
+      "conditions": "IZT = 20 mA, Ta = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, MMSZ5229B VZ",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.02
+    },
+    "NBV": {
+      "value": 1,
+      "unit": "1",
+      "conditions": "First-order avalanche-knee default; no multi-point reverse-knee trace was available",
+      "page_reference": "model-factory Zener F1 policy",
+      "source_kind": "held_default"
+    }
+  }
+}

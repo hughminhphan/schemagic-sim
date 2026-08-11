@@ -1,0 +1,126 @@
+{
+  "schema_version": "1.0.0",
+  "canonical_mpn": "SM4007PL",
+  "manufacturer": "MDD Microdiode Semiconductor",
+  "description": "-55℃~+150℃ 1.1V@1A 10uA@1kV 1A 1kV 25A Independent SOD-123FL Diodes - General Purpose ROHS",
+  "electrical_family": "diode",
+  "symbol_pins": [
+    {
+      "name": "A",
+      "number": "1",
+      "role": "anode"
+    },
+    {
+      "name": "K",
+      "number": "2",
+      "role": "cathode"
+    }
+  ],
+  "spice_pin_mapping": [
+    {
+      "symbol_pin_number": "1",
+      "subckt_node": "anode",
+      "order": 1
+    },
+    {
+      "symbol_pin_number": "2",
+      "subckt_node": "cathode",
+      "order": 2
+    }
+  ],
+  "package_variants": [
+    {
+      "name": "SOD-123FL",
+      "standard": "SOD-123FL",
+      "pin_count": 2,
+      "pin_map": [
+        {
+          "package_pin": "1",
+          "symbol_pin_number": "1"
+        },
+        {
+          "package_pin": "2",
+          "symbol_pin_number": "2"
+        }
+      ]
+    }
+  ],
+  "ordering_code_aliases": [],
+  "datasheet": {
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8586175619906613248",
+    "revision": "Rev. 2024A3"
+  },
+  "model_type": "dot_model",
+  "fidelity_tier": "F2",
+  "domain_coverage": {
+    "dc": "fitted",
+    "ac": "none",
+    "transient": "none",
+    "noise": "none",
+    "thermal": "none",
+    "digital": "none"
+  },
+  "supported_analyses": [
+    "operating_point",
+    "dc_sweep"
+  ],
+  "supported_operating_region": {
+    "summary": "F2 DC curve-fit fidelity is limited to Typical forward characteristic, TJ = 25 degC (p. 2, Fig. 3, Typical Forward Characteristic), under Typical characteristic at TJ = 25 degC; family curve for SM4001PL through SM4007PL; the linear instantaneous forward voltage axis spans 0.8 to 0.93 V and the log instantaneous forward current axis spans 0.1 to 1 A. Forward-current operating points have no independent voltage bias. Separate scalar hard bounds do not extend the fitted claim.",
+    "numeric_bounds": [
+      {
+        "quantity": "instantaneous_forward_voltage",
+        "minimum": 0.8,
+        "maximum": 0.93,
+        "unit": "V",
+        "conditions": "Selected F2 curve x axis: Typical forward characteristic, TJ = 25 degC",
+        "placeholder": false
+      },
+      {
+        "quantity": "instantaneous_forward_current",
+        "minimum": 0.1,
+        "maximum": 1,
+        "unit": "A",
+        "conditions": "Selected F2 curve y axis: Typical forward characteristic, TJ = 25 degC",
+        "placeholder": false
+      },
+      {
+        "quantity": "ambient_temperature",
+        "minimum": 25,
+        "maximum": 25,
+        "unit": "degC",
+        "conditions": "Typical characteristic at TJ = 25 degC; family curve for SM4001PL through SM4007PL",
+        "placeholder": false
+      }
+    ]
+  },
+  "known_omissions": [
+    "AC, transient, noise, thermal, and package-parasitic behavior are outside this DC-only conveyor package.",
+    "Temperature dependence and self-heating are not modelled; the electrical region is limited to the cited nominal-temperature data.",
+    "Catalog parametrics were used only as initial guesses or F1 fallback constraints and are not datasheet citations.",
+    "F2 curve-fit fidelity is limited to the exact selected 25 degC DC curve, axes, conditions, and sampled range named in supported_operating_region; separate scalar hard bounds do not extend the fitted claim.",
+    "Reverse-bias, capacitance, switching, thermal, and temperature-dependence fidelity are outside the F2 curve-fit claim unless separately enforced as a scalar hard bound."
+  ],
+  "licence": {
+    "spdx_id": "MIT",
+    "provenance_basis": "original_from_facts"
+  },
+  "generator": {
+    "tool_or_agent": "opencircuit-model-factory-v0.1.0 bulk-adapter",
+    "date": "2026-08-10"
+  },
+  "reviewer": {
+    "tool_or_agent": "gpt-5.6-sol independent reviewer (batch-7 scale campaign)",
+    "date": "2026-08-11"
+  },
+  "test_results": {
+    "status": "complete",
+    "pass_count": 8,
+    "fail_count": 0,
+    "total_count": 8,
+    "worst_observed_relative_fitting_error": {
+      "value": 0.0074639404121479664,
+      "quantity": "forward voltage at 0.5 A"
+    }
+  },
+  "validation_date": "2026-08-11"
+}

@@ -1,0 +1,271 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [
+      {
+        "name": "Fig.3 Typical Forward Voltage, SS515B-SS520B curve",
+        "page_reference": "p. 2 Fig.3",
+        "points": [
+          {
+            "x": 0.45,
+            "y": 0.01
+          },
+          {
+            "x": 0.49,
+            "y": 0.03
+          },
+          {
+            "x": 0.55,
+            "y": 0.1
+          },
+          {
+            "x": 0.63,
+            "y": 0.3
+          },
+          {
+            "x": 0.73,
+            "y": 1
+          },
+          {
+            "x": 0.85,
+            "y": 3
+          },
+          {
+            "x": 1.01,
+            "y": 10
+          }
+        ],
+        "test_conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle; legend curve SS515B-SS520B",
+        "x_axis": {
+          "quantity": "instantaneous forward voltage",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "instantaneous forward current",
+          "scale": "log",
+          "unit": "A"
+        }
+      }
+    ],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3"
+      ],
+      "revision": "Rev:1.0",
+      "title": "SS52B THRU SS520B SURFACE MOUNT SCHOTTKY BARRIER RECTIFIER (SMB Surface Mount Schottky Barrier Rectifier)"
+    },
+    "extraction_notes": [
+      "Family datasheet SS52B-SS520B; SS520B is the 200 V member: VRRM = VDC = 200 V and VRMS = 140 V (p. 1). IF(AV) = 5.0 A and IFSM = 120 A at 8.3 ms half-sine are common ratings.",
+      "Table merged cells assign VF maximum 0.95 V at IF = 5.0 A to SS515B-SS520B; IR1 maximum 0.05 mA at VR = VDC, Ta = 25 degC to SS58B-SS520B; CJ typical 300 pF at 4.0 V DC and 1 MHz to the family (p. 2).",
+      "Fig.3 SS515B-SS520B forward trace was digitized from the printed linear-voltage/log-current grid; plotted current values were converted from amperes as printed and retained as SI amperes.",
+      "Fig.1 and Fig.2 are thermal/surge rating curves and were not digitized. Fig.4 is a normalized reverse-characteristics plot for grouped parts and was not used as an absolute-voltage curve.",
+      "No reverse recovery time or measured avalanche/breakdown row is published. VRRM is an absolute maximum rating, not a measured breakdown voltage, so breakdown fields are null."
+    ],
+    "family": "diode",
+    "manufacturer": "hongjiacheng",
+    "mpn": "SS520B",
+    "omission_reason": null,
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": null,
+      "breakdown_voltage": null,
+      "capacitance": {
+        "conditions": "VR = 4.0 V DC, f = 1 MHz, Ta = 25 degC; typical junction capacitance CJ",
+        "page_reference": "p. 2 electrical characteristics",
+        "source_kind": "typical",
+        "unit": "F",
+        "value": 3e-10
+      },
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "IF = 5.0 A, Ta = 25 degC; maximum instantaneous forward voltage",
+            "page_reference": "p. 2 electrical characteristics",
+            "source_kind": "typical",
+            "unit": "A",
+            "value": 5
+          },
+          "voltage": {
+            "conditions": "IF = 5.0 A, Ta = 25 degC; SS515B-SS520B column group",
+            "page_reference": "p. 2 electrical characteristics",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 0.95
+          }
+        }
+      ],
+      "reverse_current": {
+        "conditions": "VR = VDC = 200 V, Ta = 25 degC; SS58B-SS520B column group",
+        "page_reference": "p. 2 electrical characteristics",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.00005
+      },
+      "reverse_recovery": null,
+      "variant": "schottky"
+    },
+    "usable_curves": true
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "Voltage - Forward(Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "950mV@5.0A",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "SS520B",
+    "manufacturer": "hongjiacheng",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8602925387370545152",
+    "revision": "Rev:1.0",
+    "sha256": "a178ee3c95547ba58e1026caa12a6232c0bd098dd637deef0de35d5a8c20b9d2",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ],
+    "placeholder": false
+  },
+  "fit_points": [
+    {
+      "current": {
+        "value": 0.01,
+        "unit": "A",
+        "conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle; legend curve SS515B-SS520B",
+        "page_reference": "p. 2 Fig.3",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 0.45,
+        "unit": "V",
+        "conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle; legend curve SS515B-SS520B",
+        "page_reference": "p. 2 Fig.3",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 0.03,
+        "unit": "A",
+        "conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle; legend curve SS515B-SS520B",
+        "page_reference": "p. 2 Fig.3",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 0.49,
+        "unit": "V",
+        "conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle; legend curve SS515B-SS520B",
+        "page_reference": "p. 2 Fig.3",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 0.1,
+        "unit": "A",
+        "conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle; legend curve SS515B-SS520B",
+        "page_reference": "p. 2 Fig.3",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 0.55,
+        "unit": "V",
+        "conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle; legend curve SS515B-SS520B",
+        "page_reference": "p. 2 Fig.3",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 0.3,
+        "unit": "A",
+        "conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle; legend curve SS515B-SS520B",
+        "page_reference": "p. 2 Fig.3",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 0.63,
+        "unit": "V",
+        "conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle; legend curve SS515B-SS520B",
+        "page_reference": "p. 2 Fig.3",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 1,
+        "unit": "A",
+        "conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle; legend curve SS515B-SS520B",
+        "page_reference": "p. 2 Fig.3",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 0.73,
+        "unit": "V",
+        "conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle; legend curve SS515B-SS520B",
+        "page_reference": "p. 2 Fig.3",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 3,
+        "unit": "A",
+        "conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle; legend curve SS515B-SS520B",
+        "page_reference": "p. 2 Fig.3",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 0.85,
+        "unit": "V",
+        "conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle; legend curve SS515B-SS520B",
+        "page_reference": "p. 2 Fig.3",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 10,
+        "unit": "A",
+        "conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle; legend curve SS515B-SS520B",
+        "page_reference": "p. 2 Fig.3",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 1.01,
+        "unit": "V",
+        "conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle; legend curve SS515B-SS520B",
+        "page_reference": "p. 2 Fig.3",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "conditions": "IF = 5.0 A, Ta = 25 degC; maximum instantaneous forward voltage",
+        "page_reference": "p. 2 electrical characteristics",
+        "source_kind": "typical",
+        "unit": "A",
+        "value": 5
+      },
+      "voltage": {
+        "conditions": "IF = 5.0 A, Ta = 25 degC; SS515B-SS520B column group",
+        "page_reference": "p. 2 electrical characteristics",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 0.95
+      }
+    }
+  ],
+  "electrical_limits": {},
+  "derived_model_inputs": {}
+}

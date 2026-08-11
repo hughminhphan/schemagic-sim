@@ -1,0 +1,278 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [
+      {
+        "name": "Fig.3 Typical Forward Voltage",
+        "page_reference": "p. 2 fig. 3",
+        "points": [
+          {
+            "x": 0.6,
+            "y": 0.00998
+          },
+          {
+            "x": 0.628,
+            "y": 0.0199
+          },
+          {
+            "x": 0.678,
+            "y": 0.049
+          },
+          {
+            "x": 0.731,
+            "y": 0.1
+          },
+          {
+            "x": 0.796,
+            "y": 0.197
+          },
+          {
+            "x": 0.914,
+            "y": 0.495
+          },
+          {
+            "x": 1.031,
+            "y": 1
+          },
+          {
+            "x": 1.169,
+            "y": 2
+          },
+          {
+            "x": 1.373,
+            "y": 5.01
+          },
+          {
+            "x": 1.53,
+            "y": 9.97
+          }
+        ],
+        "test_conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle",
+        "x_axis": {
+          "quantity": "instantaneous forward voltage",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "instantaneous forward current",
+          "scale": "log",
+          "unit": "A"
+        }
+      }
+    ],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3"
+      ],
+      "revision": "Rev:1.0",
+      "title": "FR101W THRU FR107W SOD-123FL Surface Mount Fast Recovery Rectifier"
+    },
+    "extraction_notes": [
+      "Family datasheet FR101W THRU FR107W; FR102W column (marking code F2): VRRM = 100 V, VRMS = 70 V, VDC = 100 V (p. 1 maximum ratings).",
+      "Absolute maximum ratings for operating-region use only (never fitted): IF(AV) = 1.0 A, IFSM = 30.0 A at 8.3 ms half-sine, Tj = -55 to +150 degC (p. 1).",
+      "Full manufacturer name on the datasheet: Zhuhai Hongjiacheng Technology co., Ltd (www.ichjc.com).",
+      "Fig.3 has a single typical forward-voltage curve for the whole family; digitized from the PDF vector path with axes calibrated against tick labels; x linear 0.2-1.6 V, y log 0.01-10 A.",
+      "Trr limit 150 ns applies to FR101W-FR104W; FR105W is 250 ns and FR106W-FR107W 500 ns.",
+      "High-temperature reverse leakage row IR2 = 200 uA at VR = VDC, TA = 125 degC (p. 2) transcribed here as a note only; per archetype it must not be fitted.",
+      "Fig.1 (derating), Fig.2 (surge vs cycles) and Fig.4 (reverse current vs percent of rated peak reverse voltage) are present but not digitized: thermal/surge ratings or percent-normalized family curves, not per-part electrical model inputs.",
+      "No measured breakdown row exists; breakdown_voltage and breakdown_current are null.",
+      "source_kind 'typical' on specified test currents means 'exact specified test condition'; the schema enum has no dedicated value for test conditions.",
+      "All values converted to SI base units (uA -> A, pF -> F, ns -> s)."
+    ],
+    "family": "diode",
+    "manufacturer": "hongjiacheng",
+    "mpn": "FR102W",
+    "omission_reason": null,
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": null,
+      "breakdown_voltage": null,
+      "capacitance": {
+        "conditions": "VR = 4.0 V DC, f = 1 MHz",
+        "page_reference": "p. 2 electrical characteristics",
+        "source_kind": "typical",
+        "unit": "F",
+        "value": 9e-12
+      },
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "specified test current for the VF limit row",
+            "page_reference": "p. 2 electrical characteristics",
+            "source_kind": "typical",
+            "unit": "A",
+            "value": 1
+          },
+          "voltage": {
+            "conditions": "IF = 1.0 A, Ta = 25 degC",
+            "page_reference": "p. 2 electrical characteristics",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 1.3
+          }
+        },
+        {
+          "current": {
+            "conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle",
+            "page_reference": "p. 2 fig. 3",
+            "source_kind": "digitized_typical_curve",
+            "unit": "A",
+            "value": 0.01
+          },
+          "voltage": {
+            "conditions": "IF = 0.01 A, Tj = 25 degC, pulse width = 300 us, 1% duty cycle",
+            "page_reference": "p. 2 fig. 3",
+            "source_kind": "digitized_typical_curve",
+            "unit": "V",
+            "value": 0.6
+          }
+        },
+        {
+          "current": {
+            "conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle",
+            "page_reference": "p. 2 fig. 3",
+            "source_kind": "digitized_typical_curve",
+            "unit": "A",
+            "value": 0.1
+          },
+          "voltage": {
+            "conditions": "IF = 0.1 A, Tj = 25 degC, pulse width = 300 us, 1% duty cycle",
+            "page_reference": "p. 2 fig. 3",
+            "source_kind": "digitized_typical_curve",
+            "unit": "V",
+            "value": 0.731
+          }
+        },
+        {
+          "current": {
+            "conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle",
+            "page_reference": "p. 2 fig. 3",
+            "source_kind": "digitized_typical_curve",
+            "unit": "A",
+            "value": 1
+          },
+          "voltage": {
+            "conditions": "IF = 1.0 A, Tj = 25 degC, pulse width = 300 us, 1% duty cycle",
+            "page_reference": "p. 2 fig. 3",
+            "source_kind": "digitized_typical_curve",
+            "unit": "V",
+            "value": 1.031
+          }
+        },
+        {
+          "current": {
+            "conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle",
+            "page_reference": "p. 2 fig. 3",
+            "source_kind": "digitized_typical_curve",
+            "unit": "A",
+            "value": 5
+          },
+          "voltage": {
+            "conditions": "IF = 5.0 A, Tj = 25 degC, pulse width = 300 us, 1% duty cycle",
+            "page_reference": "p. 2 fig. 3",
+            "source_kind": "digitized_typical_curve",
+            "unit": "V",
+            "value": 1.373
+          }
+        },
+        {
+          "current": {
+            "conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle",
+            "page_reference": "p. 2 fig. 3",
+            "source_kind": "digitized_typical_curve",
+            "unit": "A",
+            "value": 10
+          },
+          "voltage": {
+            "conditions": "IF = 10.0 A, Tj = 25 degC, pulse width = 300 us, 1% duty cycle",
+            "page_reference": "p. 2 fig. 3",
+            "source_kind": "digitized_typical_curve",
+            "unit": "V",
+            "value": 1.53
+          }
+        }
+      ],
+      "reverse_current": {
+        "conditions": "VR = VDC = 100 V, TA = 25 degC",
+        "page_reference": "p. 2 electrical characteristics",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.000002
+      },
+      "reverse_recovery": {
+        "conditions": "IF = 0.5 A, IR = 1.0 A, Irr = 0.25 A; FR101W-FR104W column",
+        "page_reference": "p. 2 electrical characteristics",
+        "source_kind": "maximum",
+        "unit": "s",
+        "value": 1.5e-7
+      },
+      "variant": "rectifier"
+    },
+    "usable_curves": true
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "Voltage - Forward(Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "1.3V@1.0A",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "FR102W",
+    "manufacturer": "hongjiacheng",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8602926027585318912",
+    "revision": "Rev:1.0",
+    "sha256": "99f2464eb95688f23159cfb3c661787505dc896c54870c2c03629c1d76c0bdf8",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ],
+    "placeholder": false
+  },
+  "fit_points": [
+    {
+      "current": {
+        "conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle",
+        "page_reference": "p. 2 fig. 3",
+        "source_kind": "digitized_typical_curve",
+        "unit": "A",
+        "value": 0.01
+      },
+      "voltage": {
+        "conditions": "IF = 0.01 A, Tj = 25 degC, pulse width = 300 us, 1% duty cycle",
+        "page_reference": "p. 2 fig. 3",
+        "source_kind": "digitized_typical_curve",
+        "unit": "V",
+        "value": 0.6
+      }
+    },
+    {
+      "current": {
+        "conditions": "Conservative F1 package bench at 95% of the cited current; specified test current for the VF limit row",
+        "page_reference": "p. 2 electrical characteristics",
+        "source_kind": "typical",
+        "unit": "A",
+        "value": 0.95
+      },
+      "voltage": {
+        "conditions": "IF = 1.0 A, Ta = 25 degC",
+        "page_reference": "p. 2 electrical characteristics",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 1.3
+      }
+    }
+  ],
+  "electrical_limits": {},
+  "derived_model_inputs": {}
+}

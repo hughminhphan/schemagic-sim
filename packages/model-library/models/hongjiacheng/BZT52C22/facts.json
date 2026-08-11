@@ -1,0 +1,171 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [
+      {
+        "name": "Zener characteristic, 22 V curve",
+        "page_reference": "p. 3, Fig. 2 Zener Characteristics, 11 V to 43 V panel",
+        "points": [
+          {
+            "x": 21.2,
+            "y": 0.0005
+          },
+          {
+            "x": 21.7,
+            "y": 0.002
+          },
+          {
+            "x": 22,
+            "y": 0.005
+          },
+          {
+            "x": 22.35,
+            "y": 0.015
+          },
+          {
+            "x": 22.65,
+            "y": 0.03
+          }
+        ],
+        "test_conditions": "Ta=25 degC, pulsed; 22 V curve in the plotted zener-characteristics family.",
+        "x_axis": {
+          "quantity": "zener voltage",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "zener current",
+          "scale": "log",
+          "unit": "A"
+        }
+      }
+    ],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3",
+        "p. 4"
+      ],
+      "revision": "Rev:1.0",
+      "title": "BZT52C2V0 THRU BZT52C75 SURFACE MOUNT ZENER DIODES"
+    },
+    "extraction_notes": [
+      "Zener curve points are digitized from the plotted 22 V curve on p. 3; no points were interpolated between plotted readings.",
+      "The datasheet publishes zener impedance and temperature coefficient but the extraction schema has no fields for them.",
+      "No individual-part junction-capacitance or reverse-recovery specification is published."
+    ],
+    "family": "diode",
+    "manufacturer": "hongjiacheng",
+    "mpn": "BZT52C22",
+    "omission_reason": null,
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": {
+        "conditions": "IZT=5 mA, Ta=25 degC",
+        "page_reference": "p. 2, Electrical Characteristics, BZT52C22 IZT row",
+        "source_kind": "typical",
+        "unit": "A",
+        "value": 0.005
+      },
+      "breakdown_voltage": {
+        "conditions": "IZT=5 mA, Ta=25 degC; nominal VZ",
+        "page_reference": "p. 2, Electrical Characteristics, BZT52C22 VZ row",
+        "source_kind": "typical",
+        "unit": "V",
+        "value": 22
+      },
+      "capacitance": null,
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "IF=10 mA, Ta=25 degC",
+            "page_reference": "p. 1, Maximum Ratings, Forward Voltage",
+            "source_kind": "maximum",
+            "unit": "A",
+            "value": 0.01
+          },
+          "voltage": {
+            "conditions": "IF=10 mA, Ta=25 degC",
+            "page_reference": "p. 1, Maximum Ratings, Forward Voltage",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 0.9
+          }
+        }
+      ],
+      "reverse_current": {
+        "conditions": "VR=15.4 V, Ta=25 degC",
+        "page_reference": "p. 2, Electrical Characteristics, BZT52C22 IR@VR",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 1e-7
+      },
+      "reverse_recovery": null,
+      "variant": "zener"
+    },
+    "usable_curves": true
+  },
+  "catalog_seed_hints": [],
+  "identity": {
+    "canonical_mpn": "BZT52C22",
+    "manufacturer": "hongjiacheng",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8564879700763181056",
+    "revision": "Rev:1.0",
+    "sha256": "1e58426ecb363e87dbad0da3e5a12350aadc7203342e2c339877f1de5b2d7631",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "placeholder": false
+  },
+  "fit_points": [
+    {
+      "current": {
+        "conditions": "Conservative F1 package bench at 95% of the cited current; IF=10 mA, Ta=25 degC",
+        "page_reference": "p. 1, Maximum Ratings, Forward Voltage",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.0095
+      },
+      "voltage": {
+        "conditions": "IF=10 mA, Ta=25 degC",
+        "page_reference": "p. 1, Maximum Ratings, Forward Voltage",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 0.9
+      }
+    }
+  ],
+  "electrical_limits": {},
+  "derived_model_inputs": {
+    "BV": {
+      "conditions": "IZT=5 mA, Ta=25 degC; nominal VZ",
+      "page_reference": "p. 2, Electrical Characteristics, BZT52C22 VZ row",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 22
+    },
+    "IBV": {
+      "conditions": "IZT=5 mA, Ta=25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, BZT52C22 IZT row",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.005
+    },
+    "NBV": {
+      "value": 1,
+      "unit": "1",
+      "conditions": "First-order avalanche-knee default; no multi-point reverse-knee trace was available",
+      "page_reference": "model-factory Zener F1 policy",
+      "source_kind": "held_default"
+    }
+  }
+}

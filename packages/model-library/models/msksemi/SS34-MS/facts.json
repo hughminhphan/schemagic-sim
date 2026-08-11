@@ -1,0 +1,224 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [
+      {
+        "name": "typical instantaneous forward characteristics, SS32-SS34 curve",
+        "page_reference": "p. 3, Fig. 3, SS32-SS34 solid curve",
+        "points": [
+          {
+            "x": 0.6,
+            "y": 0.73
+          },
+          {
+            "x": 0.8,
+            "y": 2.1
+          },
+          {
+            "x": 1.2,
+            "y": 7.3
+          }
+        ],
+        "test_conditions": "TJ = 25 degC",
+        "x_axis": {
+          "quantity": "instantaneous forward voltage",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "instantaneous forward current",
+          "scale": "log",
+          "unit": "A"
+        }
+      },
+      {
+        "name": "typical reverse characteristics, TJ=25 degC curve",
+        "page_reference": "p. 3, Fig. 4, TJ=25 degC curve",
+        "points": [
+          {
+            "x": 10,
+            "y": 0.0000054
+          },
+          {
+            "x": 25,
+            "y": 0.000012
+          },
+          {
+            "x": 50,
+            "y": 0.000019
+          },
+          {
+            "x": 100,
+            "y": 0.000038
+          }
+        ],
+        "test_conditions": "TJ = 25 degC; reverse voltage shown as percent of peak reverse voltage",
+        "x_axis": {
+          "quantity": "percent of peak reverse voltage",
+          "scale": "linear",
+          "unit": "%"
+        },
+        "y_axis": {
+          "quantity": "instantaneous reverse current",
+          "scale": "log",
+          "unit": "A"
+        }
+      },
+      {
+        "name": "typical junction capacitance, SS32-SS34 curve",
+        "page_reference": "p. 3, Fig. 5, SS32-SS34 solid curve",
+        "points": [
+          {
+            "x": 0.1,
+            "y": 1.3e-9
+          },
+          {
+            "x": 0.5,
+            "y": 1.1e-9
+          },
+          {
+            "x": 5,
+            "y": 5.1e-10
+          },
+          {
+            "x": 20,
+            "y": 2.8e-10
+          },
+          {
+            "x": 100,
+            "y": 1.3e-10
+          }
+        ],
+        "test_conditions": "TJ = 25 degC",
+        "x_axis": {
+          "quantity": "reverse voltage",
+          "scale": "log",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "junction capacitance",
+          "scale": "log",
+          "unit": "F"
+        }
+      }
+    ],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3",
+        "p. 4",
+        "p. 5"
+      ],
+      "revision": "Not stated in supplied PDF",
+      "title": "SS32-MS THRU SS310-MS Product specification"
+    },
+    "extraction_notes": [
+      "The supplied PDF has no stated revision; the title and page references were transcribed from the document.",
+      "The SS34-MS column is grouped with SS32-MS for the 0.55 V maximum forward-voltage value and 500 pF typical junction-capacitance value on p. 2.",
+      "Curve points were manually digitized from real p. 3 plots only: Fig. 3 SS32-SS34, Fig. 4 TJ=25 degC, and Fig. 5 SS32-SS34. No interpolation was added; plotted mA and pF values were converted to A and F.",
+      "The p. 2 ratings table gives VRRM = 40 V, VRMS = 28 V, VDC = 40 V, IF(AV) = 3.0 A, and IFSM = 100.0 A for SS34-MS.",
+      "The datasheet publishes no reverse-recovery-time or breakdown-voltage/current specification for this part."
+    ],
+    "family": "diode",
+    "manufacturer": "MSKSEMI",
+    "mpn": "SS34-MS",
+    "omission_reason": null,
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": null,
+      "breakdown_voltage": null,
+      "capacitance": {
+        "conditions": "VR = 4.0 V DC, f = 1 MHz; typical junction capacitance",
+        "page_reference": "p. 2, maximum ratings and electrical characteristics, CJ row and Note 1",
+        "source_kind": "typical",
+        "unit": "F",
+        "value": 5e-10
+      },
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "IF = 3.0 A, TA = 25 degC; maximum instantaneous forward voltage",
+            "page_reference": "p. 2, maximum ratings and electrical characteristics, VF row",
+            "source_kind": "maximum",
+            "unit": "A",
+            "value": 3
+          },
+          "voltage": {
+            "conditions": "IF = 3.0 A, TA = 25 degC; maximum instantaneous forward voltage",
+            "page_reference": "p. 2, maximum ratings and electrical characteristics, VF row",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 0.55
+          }
+        }
+      ],
+      "reverse_current": {
+        "conditions": "VR = 40 V rated DC blocking voltage, TA = 25 degC; maximum DC reverse current",
+        "page_reference": "p. 2, maximum ratings and electrical characteristics, IR row",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.0005
+      },
+      "reverse_recovery": null,
+      "variant": "rectifier"
+    },
+    "usable_curves": true
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "Forward Voltage (Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "550mV@3A",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Voltage - Forward(Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "550mV@3A",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "SS34-MS",
+    "manufacturer": "MSKSEMI",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8588907327055806464",
+    "revision": "Not stated in supplied PDF",
+    "sha256": "97df496df6e26e863de86e318c69fff1545cd8fd7d875e2e6a8a9bacb2eb7cdf",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4",
+      "p. 5"
+    ],
+    "placeholder": false
+  },
+  "fit_points": [
+    {
+      "current": {
+        "conditions": "Conservative F1 package bench at 95% of the cited current; IF = 3.0 A, TA = 25 degC; maximum instantaneous forward voltage",
+        "page_reference": "p. 2, maximum ratings and electrical characteristics, VF row",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 2.8499999999999996
+      },
+      "voltage": {
+        "conditions": "IF = 3.0 A, TA = 25 degC; maximum instantaneous forward voltage",
+        "page_reference": "p. 2, maximum ratings and electrical characteristics, VF row",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 0.55
+      }
+    }
+  ],
+  "electrical_limits": {},
+  "derived_model_inputs": {}
+}

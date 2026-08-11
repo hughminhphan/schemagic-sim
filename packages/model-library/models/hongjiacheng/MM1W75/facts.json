@@ -1,0 +1,205 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [
+      {
+        "name": "power_derating",
+        "page_reference": "p. 3, Fig. 1 Power Derating Curve",
+        "points": [
+          {
+            "x": 0,
+            "y": 1
+          },
+          {
+            "x": 75,
+            "y": 1
+          },
+          {
+            "x": 112.5,
+            "y": 0.5
+          },
+          {
+            "x": 150,
+            "y": 0
+          }
+        ],
+        "test_conditions": "Ta = 25 degC unless otherwise specified; power derating family curve from Fig. 1.",
+        "x_axis": {
+          "quantity": "ambient temperature",
+          "scale": "linear",
+          "unit": "degC"
+        },
+        "y_axis": {
+          "quantity": "power dissipation",
+          "scale": "linear",
+          "unit": "W"
+        }
+      },
+      {
+        "name": "transient_thermal_impedance",
+        "page_reference": "p. 3, Fig. 2 Typical Transient Thermal Impedance",
+        "points": [
+          {
+            "x": 0.009981,
+            "y": 3.05615
+          },
+          {
+            "x": 0.106181,
+            "y": 12.140105
+          },
+          {
+            "x": 0.904321,
+            "y": 33.330664
+          },
+          {
+            "x": 6.30273,
+            "y": 49.086492
+          },
+          {
+            "x": 100.121396,
+            "y": 54.518811
+          }
+        ],
+        "test_conditions": "Ta = 25 degC unless otherwise specified; typical transient thermal impedance curve from Fig. 2.",
+        "x_axis": {
+          "quantity": "pulse duration",
+          "scale": "log",
+          "unit": "s"
+        },
+        "y_axis": {
+          "quantity": "transient thermal impedance",
+          "scale": "log",
+          "unit": "K/W"
+        }
+      }
+    ],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3",
+        "p. 4"
+      ],
+      "revision": "Rev.1.0",
+      "title": "MM1W3V3 THRU MM1W330 - SURFACE MOUNT SILICON ZENER DIODES"
+    },
+    "extraction_notes": [
+      "The forward-voltage row is a maximum rating at IF = 200 mA.",
+      "The nominal zener voltage and IZT are recorded as the nominal test pair; the table also gives VZ min = 71.2 V and max = 78.8 V.",
+      "The supplied datasheet has no electrical zener characteristic plot for the MM1W75 branch; the reported curves are the published power-derating and transient-thermal plots.",
+      "No capacitance or reverse-recovery value is published for this part in the supplied datasheet."
+    ],
+    "family": "diode",
+    "manufacturer": "hongjiacheng",
+    "mpn": "MM1W75",
+    "omission_reason": null,
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": {
+        "conditions": "IZT = 3.3 mA, Ta = 25 degC",
+        "page_reference": "p. 3, Electrical Characteristics, MM1W75 IZT",
+        "source_kind": "typical",
+        "unit": "A",
+        "value": 0.0033
+      },
+      "breakdown_voltage": {
+        "conditions": "IZT = 3.3 mA, Ta = 25 degC; nominal VZ",
+        "page_reference": "p. 3, Electrical Characteristics, MM1W75 VZ",
+        "source_kind": "typical",
+        "unit": "V",
+        "value": 75
+      },
+      "capacitance": null,
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "IF = 200 mA, Ta = 25 degC",
+            "page_reference": "p. 1, Maximum Ratings, Forward Voltage @ IF=200mA",
+            "source_kind": "maximum",
+            "unit": "A",
+            "value": 0.2
+          },
+          "voltage": {
+            "conditions": "IF = 200 mA, Ta = 25 degC",
+            "page_reference": "p. 1, Maximum Ratings, Forward Voltage @ IF=200mA",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 1.2
+          }
+        }
+      ],
+      "reverse_current": {
+        "conditions": "VR = 56 V, Ta = 25 degC",
+        "page_reference": "p. 3, Electrical Characteristics, MM1W75 IR@VR",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.000001
+      },
+      "reverse_recovery": null,
+      "variant": "zener"
+    },
+    "usable_curves": true
+  },
+  "catalog_seed_hints": [],
+  "identity": {
+    "canonical_mpn": "MM1W75",
+    "manufacturer": "hongjiacheng",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8564879460828020737",
+    "revision": "Rev.1.0",
+    "sha256": "58bc7212021acdd0099f74f5574992e2fe4afea33850f27c443c979da297e66c",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "placeholder": false
+  },
+  "fit_points": [
+    {
+      "current": {
+        "conditions": "Conservative F1 package bench at 95% of the cited current; IF = 200 mA, Ta = 25 degC",
+        "page_reference": "p. 1, Maximum Ratings, Forward Voltage @ IF=200mA",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.19
+      },
+      "voltage": {
+        "conditions": "IF = 200 mA, Ta = 25 degC",
+        "page_reference": "p. 1, Maximum Ratings, Forward Voltage @ IF=200mA",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 1.2
+      }
+    }
+  ],
+  "electrical_limits": {},
+  "derived_model_inputs": {
+    "BV": {
+      "conditions": "IZT = 3.3 mA, Ta = 25 degC; nominal VZ",
+      "page_reference": "p. 3, Electrical Characteristics, MM1W75 VZ",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 75
+    },
+    "IBV": {
+      "conditions": "IZT = 3.3 mA, Ta = 25 degC",
+      "page_reference": "p. 3, Electrical Characteristics, MM1W75 IZT",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.0033
+    },
+    "NBV": {
+      "value": 1,
+      "unit": "1",
+      "conditions": "First-order avalanche-knee default; no multi-point reverse-knee trace was available",
+      "page_reference": "model-factory Zener F1 policy",
+      "source_kind": "held_default"
+    }
+  }
+}

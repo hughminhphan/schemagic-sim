@@ -1,0 +1,54 @@
+{
+  "schema_version": "1.0.0",
+  "validation_date": "2026-08-11",
+  "native_wasm_all_pass": true,
+  "expectations_all_pass": true,
+  "expectation_pass_count": 3,
+  "expectation_fail_count": 0,
+  "worst_native_wasm_relative_delta": 6.15182390931523e-15,
+  "worst_native_wasm_absolute_delta": 3.3306690738754696e-15,
+  "benches": [
+    {
+      "test_netlist": "forward_01.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "forward_voltage_maximum_at_9.5_a",
+          "pass": true,
+          "value": 0.5414116403481731,
+          "minimum": 0,
+          "maximum": 0.55
+        }
+      ]
+    },
+    {
+      "test_netlist": "review_forward_voltage_maximum_source_1.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "forward_voltage_maximum_source_1",
+          "pass": true,
+          "value": 0.5429112831952718,
+          "minimum": 0,
+          "maximum": 0.55
+        }
+      ]
+    },
+    {
+      "test_netlist": "review_reverse_leakage_maximum_source_1.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "reverse_leakage_maximum_source_1",
+          "pass": true,
+          "value": 4.7093821652456414e-8,
+          "minimum": 0,
+          "maximum": 0.0005
+        }
+      ]
+    }
+  ]
+}

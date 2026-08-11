@@ -1,0 +1,174 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [
+      {
+        "name": "Typical zener characteristic, MM3Z51 curve",
+        "page_reference": "p. 3, Fig. 2",
+        "points": [
+          {
+            "x": 50.6,
+            "y": 0.0005
+          },
+          {
+            "x": 50.7,
+            "y": 0.001
+          },
+          {
+            "x": 50.9,
+            "y": 0.002
+          },
+          {
+            "x": 51.1,
+            "y": 0.01
+          },
+          {
+            "x": 51.4,
+            "y": 0.02
+          }
+        ],
+        "test_conditions": "Ta = 25 degC; pulsed",
+        "x_axis": {
+          "quantity": "zener voltage",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "zener current",
+          "scale": "log",
+          "unit": "A"
+        }
+      }
+    ],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3",
+        "p. 4",
+        "p. 5"
+      ],
+      "revision": "Rev:1.1",
+      "title": "MM3Z2V0 THRU MM3Z75"
+    },
+    "extraction_notes": [
+      "The datasheet lists ZZT = 180 ohm at IZT = 2 mA and ZZK = 500 ohm at IZK = 0.5 mA, but the strict schema has no impedance fields.",
+      "The plotted zener curve is a direct digitization of the MM3Z51 family curve in Fig. 2; no interpolation was used.",
+      "The datasheet provides capacitance only as a family plot and no tabulated capacitance value for MM3Z51, so capacitance is null.",
+      "The datasheet publishes no reverse-recovery-time value."
+    ],
+    "family": "diode",
+    "manufacturer": "hongjiacheng",
+    "mpn": "MM3Z51",
+    "omission_reason": null,
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": {
+        "conditions": "IZT = 2 mA, Ta = 25 degC",
+        "page_reference": "p. 2, electrical characteristics, MM3Z51 row",
+        "source_kind": "typical",
+        "unit": "A",
+        "value": 0.002
+      },
+      "breakdown_voltage": {
+        "conditions": "IZT = 2 mA, Ta = 25 degC; nominal VZ",
+        "page_reference": "p. 2, electrical characteristics, MM3Z51 row",
+        "source_kind": "typical",
+        "unit": "V",
+        "value": 51
+      },
+      "capacitance": null,
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "IF = 10 mA, Ta = 25 degC",
+            "page_reference": "p. 1, maximum ratings",
+            "source_kind": "maximum",
+            "unit": "A",
+            "value": 0.01
+          },
+          "voltage": {
+            "conditions": "IF = 10 mA, Ta = 25 degC",
+            "page_reference": "p. 1, maximum ratings",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 0.9
+          }
+        }
+      ],
+      "reverse_current": {
+        "conditions": "VR = 35.7 V, Ta = 25 degC",
+        "page_reference": "p. 2, electrical characteristics, MM3Z51 row",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 5e-8
+      },
+      "reverse_recovery": null,
+      "variant": "zener"
+    },
+    "usable_curves": true
+  },
+  "catalog_seed_hints": [],
+  "identity": {
+    "canonical_mpn": "MM3Z51",
+    "manufacturer": "hongjiacheng",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8564879461657952256",
+    "revision": "Rev:1.1",
+    "sha256": "cc537a86da7714b2322122f522876343acdfa40bd213f643c959f51920fce06e",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4",
+      "p. 5"
+    ],
+    "placeholder": false
+  },
+  "fit_points": [
+    {
+      "current": {
+        "conditions": "Conservative F1 package bench at 95% of the cited current; IF = 10 mA, Ta = 25 degC",
+        "page_reference": "p. 1, maximum ratings",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.0095
+      },
+      "voltage": {
+        "conditions": "IF = 10 mA, Ta = 25 degC",
+        "page_reference": "p. 1, maximum ratings",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 0.9
+      }
+    }
+  ],
+  "electrical_limits": {},
+  "derived_model_inputs": {
+    "BV": {
+      "conditions": "IZT = 2 mA, Ta = 25 degC; nominal VZ",
+      "page_reference": "p. 2, electrical characteristics, MM3Z51 row",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 51
+    },
+    "IBV": {
+      "conditions": "IZT = 2 mA, Ta = 25 degC",
+      "page_reference": "p. 2, electrical characteristics, MM3Z51 row",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.002
+    },
+    "NBV": {
+      "value": 1,
+      "unit": "1",
+      "conditions": "First-order avalanche-knee default; no multi-point reverse-knee trace was available",
+      "page_reference": "model-factory Zener F1 policy",
+      "source_kind": "held_default"
+    }
+  }
+}

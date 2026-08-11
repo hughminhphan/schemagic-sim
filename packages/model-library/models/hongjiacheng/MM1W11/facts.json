@@ -1,0 +1,170 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [
+      {
+        "name": "Power derating curve",
+        "page_reference": "p. 3, Fig. 1 Power Derating Curve",
+        "points": [
+          {
+            "x": 0,
+            "y": 1
+          },
+          {
+            "x": 75,
+            "y": 1
+          },
+          {
+            "x": 100,
+            "y": 0.667
+          },
+          {
+            "x": 125,
+            "y": 0.333
+          },
+          {
+            "x": 150,
+            "y": 0
+          }
+        ],
+        "test_conditions": "Ta=25 degC unless otherwise specified; series power-derating characteristic, PD=1.0 W up to approximately 75 degC, then decreasing to zero at 150 degC.",
+        "x_axis": {
+          "quantity": "ambient temperature",
+          "scale": "linear",
+          "unit": "degC"
+        },
+        "y_axis": {
+          "quantity": "power dissipation",
+          "scale": "linear",
+          "unit": "W"
+        }
+      }
+    ],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3",
+        "p. 4"
+      ],
+      "revision": "Rev:1.0",
+      "title": "MM1W3V3 THRU MM1W330 SURFACE MOUNT ZENER DIODES"
+    },
+    "extraction_notes": [
+      "The datasheet has no zener-characteristic plot for this family; the usable plotted curve is the p. 3 power-derating curve.",
+      "No junction-capacitance or reverse-recovery specification is published for this family."
+    ],
+    "family": "diode",
+    "manufacturer": "hongjiacheng",
+    "mpn": "MM1W11",
+    "omission_reason": null,
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": {
+        "conditions": "IZT=23 mA, Ta=25 degC",
+        "page_reference": "p. 2, Electrical Characteristics, MM1W11 IZT row",
+        "source_kind": "typical",
+        "unit": "A",
+        "value": 0.023
+      },
+      "breakdown_voltage": {
+        "conditions": "IZT=23 mA, Ta=25 degC; nominal VZ",
+        "page_reference": "p. 2, Electrical Characteristics, MM1W11 VZ row",
+        "source_kind": "typical",
+        "unit": "V",
+        "value": 11
+      },
+      "capacitance": null,
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "IF=200 mA, Ta=25 degC",
+            "page_reference": "p. 1, Maximum Ratings, Forward Voltage",
+            "source_kind": "maximum",
+            "unit": "A",
+            "value": 0.2
+          },
+          "voltage": {
+            "conditions": "IF=200 mA, Ta=25 degC",
+            "page_reference": "p. 1, Maximum Ratings, Forward Voltage",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 1.2
+          }
+        }
+      ],
+      "reverse_current": {
+        "conditions": "VR=8 V, Ta=25 degC",
+        "page_reference": "p. 2, Electrical Characteristics, MM1W11 IR@VR",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.000005
+      },
+      "reverse_recovery": null,
+      "variant": "zener"
+    },
+    "usable_curves": true
+  },
+  "catalog_seed_hints": [],
+  "identity": {
+    "canonical_mpn": "MM1W11",
+    "manufacturer": "hongjiacheng",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8564879449863569408",
+    "revision": "Rev:1.0",
+    "sha256": "58bc7212021acdd0099f74f5574992e2fe4afea33850f27c443c979da297e66c",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "placeholder": false
+  },
+  "fit_points": [
+    {
+      "current": {
+        "conditions": "Conservative F1 package bench at 95% of the cited current; IF=200 mA, Ta=25 degC",
+        "page_reference": "p. 1, Maximum Ratings, Forward Voltage",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.19
+      },
+      "voltage": {
+        "conditions": "IF=200 mA, Ta=25 degC",
+        "page_reference": "p. 1, Maximum Ratings, Forward Voltage",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 1.2
+      }
+    }
+  ],
+  "electrical_limits": {},
+  "derived_model_inputs": {
+    "BV": {
+      "conditions": "IZT=23 mA, Ta=25 degC; nominal VZ",
+      "page_reference": "p. 2, Electrical Characteristics, MM1W11 VZ row",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 11
+    },
+    "IBV": {
+      "conditions": "IZT=23 mA, Ta=25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, MM1W11 IZT row",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.023
+    },
+    "NBV": {
+      "value": 1,
+      "unit": "1",
+      "conditions": "First-order avalanche-knee default; no multi-point reverse-knee trace was available",
+      "page_reference": "model-factory Zener F1 policy",
+      "source_kind": "held_default"
+    }
+  }
+}

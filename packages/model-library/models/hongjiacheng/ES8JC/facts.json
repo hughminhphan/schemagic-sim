@@ -1,0 +1,236 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [
+      {
+        "name": "Typical forward voltage, ES8JC curve",
+        "page_reference": "p. 2, Fig. 3",
+        "points": [
+          {
+            "x": 0.85,
+            "y": 0.01
+          },
+          {
+            "x": 0.92,
+            "y": 0.1
+          },
+          {
+            "x": 1.08,
+            "y": 1
+          },
+          {
+            "x": 1.25,
+            "y": 10
+          },
+          {
+            "x": 1.42,
+            "y": 20
+          }
+        ],
+        "test_conditions": "Tj = 25 degC; pulse width = 300 us; 1% duty cycle",
+        "x_axis": {
+          "quantity": "forward voltage",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "forward current",
+          "scale": "log",
+          "unit": "A"
+        }
+      }
+    ],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3"
+      ],
+      "revision": "Rev:1.1",
+      "title": "ES8AC THRU ES8JC"
+    },
+    "extraction_notes": [
+      "The datasheet is a family sheet; ES8JC-specific ratings were selected from the ES8JC column.",
+      "The reverse-current value at Ta = 125 degC (200 uA) was transcribed from the table but is not used as the 25 degC reverse-current fitting target.",
+      "The plotted forward curve is a direct digitization of the ES8JC dashed curve; no interpolation was used.",
+      "The datasheet publishes no breakdown-voltage or breakdown-current characteristic for ES8JC."
+    ],
+    "family": "diode",
+    "manufacturer": "hongjiacheng",
+    "mpn": "ES8JC",
+    "omission_reason": null,
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": null,
+      "breakdown_voltage": null,
+      "capacitance": {
+        "conditions": "VR = 4.0 V DC, f = 1 MHz, Ta = 25 degC",
+        "page_reference": "p. 2, electrical characteristics",
+        "source_kind": "typical",
+        "unit": "F",
+        "value": 8.2e-11
+      },
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "IF = 8.0 A, Ta = 25 degC",
+            "page_reference": "p. 2, electrical characteristics",
+            "source_kind": "maximum",
+            "unit": "A",
+            "value": 8
+          },
+          "voltage": {
+            "conditions": "IF = 8.0 A, Ta = 25 degC",
+            "page_reference": "p. 2, electrical characteristics",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 1.7
+          }
+        }
+      ],
+      "reverse_current": {
+        "conditions": "VR = VDC (600 V), Ta = 25 degC",
+        "page_reference": "p. 2, electrical characteristics",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.000002
+      },
+      "reverse_recovery": {
+        "conditions": "IF = 0.5 A, IR = 1.0 A, Irr = 0.25 A, Ta = 25 degC",
+        "page_reference": "p. 2, electrical characteristics",
+        "source_kind": "maximum",
+        "unit": "s",
+        "value": 3.5e-8
+      },
+      "variant": "rectifier"
+    },
+    "usable_curves": true
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "Voltage - Forward(Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "1.7V@8A",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "ES8JC",
+    "manufacturer": "hongjiacheng",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8602925648763494400",
+    "revision": "Rev:1.1",
+    "sha256": "f070663f640e778703b2ff792b7984f48fa7d8fd155488386a3663f350728058",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ],
+    "placeholder": false
+  },
+  "fit_points": [
+    {
+      "current": {
+        "value": 0.01,
+        "unit": "A",
+        "conditions": "Tj = 25 degC; pulse width = 300 us; 1% duty cycle",
+        "page_reference": "p. 2, Fig. 3",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 0.85,
+        "unit": "V",
+        "conditions": "Tj = 25 degC; pulse width = 300 us; 1% duty cycle",
+        "page_reference": "p. 2, Fig. 3",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 0.1,
+        "unit": "A",
+        "conditions": "Tj = 25 degC; pulse width = 300 us; 1% duty cycle",
+        "page_reference": "p. 2, Fig. 3",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 0.92,
+        "unit": "V",
+        "conditions": "Tj = 25 degC; pulse width = 300 us; 1% duty cycle",
+        "page_reference": "p. 2, Fig. 3",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 1,
+        "unit": "A",
+        "conditions": "Tj = 25 degC; pulse width = 300 us; 1% duty cycle",
+        "page_reference": "p. 2, Fig. 3",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 1.08,
+        "unit": "V",
+        "conditions": "Tj = 25 degC; pulse width = 300 us; 1% duty cycle",
+        "page_reference": "p. 2, Fig. 3",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 10,
+        "unit": "A",
+        "conditions": "Tj = 25 degC; pulse width = 300 us; 1% duty cycle",
+        "page_reference": "p. 2, Fig. 3",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 1.25,
+        "unit": "V",
+        "conditions": "Tj = 25 degC; pulse width = 300 us; 1% duty cycle",
+        "page_reference": "p. 2, Fig. 3",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 20,
+        "unit": "A",
+        "conditions": "Tj = 25 degC; pulse width = 300 us; 1% duty cycle",
+        "page_reference": "p. 2, Fig. 3",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 1.42,
+        "unit": "V",
+        "conditions": "Tj = 25 degC; pulse width = 300 us; 1% duty cycle",
+        "page_reference": "p. 2, Fig. 3",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "conditions": "IF = 8.0 A, Ta = 25 degC",
+        "page_reference": "p. 2, electrical characteristics",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 8
+      },
+      "voltage": {
+        "conditions": "IF = 8.0 A, Ta = 25 degC",
+        "page_reference": "p. 2, electrical characteristics",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 1.7
+      }
+    }
+  ],
+  "electrical_limits": {},
+  "derived_model_inputs": {}
+}

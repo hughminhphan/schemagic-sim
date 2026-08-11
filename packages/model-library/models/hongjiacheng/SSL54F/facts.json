@@ -1,0 +1,153 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [
+      {
+        "name": "Typical reverse characteristic for SSL54F",
+        "page_reference": "p. 2, Fig. 4 Typical Reverse Characteristics",
+        "points": [
+          {
+            "x": 0,
+            "y": 0.000006
+          },
+          {
+            "x": 20,
+            "y": 0.000013
+          },
+          {
+            "x": 40,
+            "y": 0.000022
+          },
+          {
+            "x": 60,
+            "y": 0.000032
+          },
+          {
+            "x": 80,
+            "y": 0.00005
+          },
+          {
+            "x": 100,
+            "y": 0.0001
+          }
+        ],
+        "test_conditions": "Tj = 25 degC; SSL54F-SSL56F solid curve",
+        "x_axis": {
+          "quantity": "Percent of rated peak reverse voltage",
+          "scale": "linear",
+          "unit": "%"
+        },
+        "y_axis": {
+          "quantity": "Instantaneous reverse current",
+          "scale": "log",
+          "unit": "A"
+        }
+      }
+    ],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3"
+      ],
+      "revision": "Rev:1.0",
+      "title": "SSL54F THRU SSL510F"
+    },
+    "extraction_notes": [
+      "The SSL54F-SSL56F solid reverse-current curve was digitized from p. 2 Fig. 4; points are direct curve readings and are not interpolated.",
+      "The high-temperature reverse-current row at Ta = 100 degC is not used as the nominal fit input.",
+      "No reverse-recovery time or breakdown characteristic is published in the supplied datasheet."
+    ],
+    "family": "diode",
+    "manufacturer": "hongjiacheng",
+    "mpn": "SSL54F",
+    "omission_reason": null,
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": null,
+      "breakdown_voltage": null,
+      "capacitance": {
+        "conditions": "VR = 4.0 V DC, f = 1 MHz, Ta = 25 degC",
+        "page_reference": "p. 2, Electrical Characteristics, SSL54F row",
+        "source_kind": "typical",
+        "unit": "F",
+        "value": 4.2e-10
+      },
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "IF = 5.0 A, Ta = 25 degC",
+            "page_reference": "p. 2, Electrical Characteristics, SSL54F row",
+            "source_kind": "maximum",
+            "unit": "A",
+            "value": 5
+          },
+          "voltage": {
+            "conditions": "IF = 5.0 A, Ta = 25 degC",
+            "page_reference": "p. 2, Electrical Characteristics, SSL54F row",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 0.48
+          }
+        }
+      ],
+      "reverse_current": {
+        "conditions": "VR = VDC = 40 V, Ta = 25 degC",
+        "page_reference": "p. 2, Electrical Characteristics, SSL54F row",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.0005
+      },
+      "reverse_recovery": null,
+      "variant": "schottky"
+    },
+    "usable_curves": true
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "Voltage - Forward(Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "450mV@5A",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "SSL54F",
+    "manufacturer": "hongjiacheng",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8603363973505175552",
+    "revision": "Rev:1.0",
+    "sha256": "94f6719eb21dc4a8333b7e7c82f5bca7c9de07763772951dbf8bb1a5183e8af0",
+    "accessed_date": "2026-08-10",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ],
+    "placeholder": false
+  },
+  "fit_points": [
+    {
+      "current": {
+        "conditions": "Conservative F1 package bench at 95% of the cited current; IF = 5.0 A, Ta = 25 degC",
+        "page_reference": "p. 2, Electrical Characteristics, SSL54F row",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 4.75
+      },
+      "voltage": {
+        "conditions": "IF = 5.0 A, Ta = 25 degC",
+        "page_reference": "p. 2, Electrical Characteristics, SSL54F row",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 0.48
+      }
+    }
+  ],
+  "electrical_limits": {},
+  "derived_model_inputs": {}
+}
