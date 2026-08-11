@@ -16,7 +16,6 @@ const slugManufacturer = (value) => safe(String(value).toLowerCase().replace(/\b
 const number = (value, fallback) => Number.isFinite(Number(value)) ? Number(value) : fallback;
 const fmt = (value) => Number(value).toExponential(10).replace("e+", "e");
 const NGSPICE_VT_25C = 8.617333262e-5 * 298.15;
-const BJT_F1_GAIN_MARGIN = 1.01;
 const COMMENT_LINE_LIMIT = 240;
 
 function safeCommentLine(value) {
@@ -160,81 +159,104 @@ function diodeFit(part, extraction, forceF1 = false) {
   };
 }
 
-function saturationResistanceSeeds(points) {
-  const valid = points.filter((point) => Number(point?.collector_current?.value) > 0 && Number(point?.vce_sat?.value) > 0)
-    .sort((left, right) => Number(left.collector_current.value) - Number(right.collector_current.value));
-  if (!valid.length) return {};
-  const first = valid[0];
-  const last = valid.at(-1);
-  const deltaCurrent = Number(last.collector_current.value) - Number(first.collector_current.value);
-  const slope = Math.abs(deltaCurrent) > 1e-15
-    ? (Number(last.vce_sat.value) - Number(first.vce_sat.value)) / deltaCurrent
-    : Number(first.vce_sat.value) / Number(first.collector_current.value);
-  const series = slope > 0 ? slope : Number(first.vce_sat.value) / Number(first.collector_current.value);
-  const result = series > 0 ? { RE: 0.25 * series, RC: 0.75 * series } : {};
-  if (valid.length > 1 && Number(first.vbe_sat?.value) > 0 && Number(last.vbe_sat?.value) > 0) {
-    const deltaBaseCurrent = Number(last.base_current?.value) - Number(first.base_current?.value);
-    const rb = Math.abs(deltaBaseCurrent) > 1e-15 ? (Number(last.vbe_sat.value) - Number(first.vbe_sat.value)) / deltaBaseCurrent : 0;
-    if (rb > 0) result.RB = rb;
-  }
-  return result;
-}
-
-function bjtFit(part, extraction, forceF1 = false) {
+export function bjtArchetypeFacts(part, extraction) {
   const specs = normalizeEvidence(extraction?.specs ?? {});
-  const gainPoints = specs.gain_points ?? [];
+  const gainPoints = (specs.gain_points ?? [])
+    .filter((point) => isNominalTemperatureEvidence(point))
+    .map((point) => ({
+      ...point,
+      collector_current: magnitudeQuantity(point.collector_current),
+      vce: magnitudeQuantity(point.vce),
+      hfe: magnitudeQuantity(point.hfe),
+      ...(point.vbe ? { vbe: magnitudeQuantity(point.vbe) } : {}),
+    }))
+    .filter((point) => Number(point.collector_current?.value) > 0 && Number(point.vce?.value) > 0 && Number(point.hfe?.value) > 0);
   if (!gainPoints.length) throw new Error(insufficientExtractedTargetsReason(part, extraction));
-  const gains = (kind) => gainPoints.filter((point) => point.hfe?.source_kind === kind).map((point) => Number(point.hfe.value)).filter((value) => value > 0);
-  const typicalGains = gainPoints.filter((point) => !["minimum", "maximum"].includes(point.hfe?.source_kind)).map((point) => Number(point.hfe.value)).filter((value) => value > 0);
-  const minimumGains = gains("minimum");
-  const maximumGains = gains("maximum");
-  const publishedMinimum = minimumGains.length ? Math.max(...minimumGains) : null;
-  const publishedMaximum = maximumGains.length ? Math.min(...maximumGains) : null;
-  if (publishedMinimum != null && publishedMaximum != null && publishedMinimum > publishedMaximum) {
-    throw new Error(`inconsistent-extracted-bounds: published BJT hFE minimum ${publishedMinimum} exceeds maximum ${publishedMaximum}`);
-  }
-  const minimumTarget = publishedMinimum == null ? null : publishedMinimum * BJT_F1_GAIN_MARGIN;
-  let BF = typicalGains.length ? Math.max(...typicalGains) : minimumTarget ?? publishedMaximum;
-  if (minimumTarget != null) BF = Math.max(BF, minimumTarget);
-  if (publishedMaximum != null) BF = Math.min(BF, publishedMaximum);
-  if (!Number.isFinite(BF) || BF <= 0) throw new Error(insufficientExtractedTargetsReason(part, extraction));
-
+  const saturationPoints = (specs.saturation_points ?? [])
+    .filter((point) => isNominalTemperatureEvidence(point))
+    .map((point) => ({
+      ...point,
+      collector_current: magnitudeQuantity(point.collector_current),
+      base_current: magnitudeQuantity(point.base_current),
+      vce_sat: magnitudeQuantity(point.vce_sat),
+      vbe_sat: magnitudeQuantity(point.vbe_sat),
+    }))
+    .filter((point) => Number(point.collector_current?.value) > 0 && Number(point.base_current?.value) > 0 && Number(point.vce_sat?.value) > 0 && Number(point.vbe_sat?.value) > 0);
   const ft = validEvidence(specs.ft, "Hz");
+  const ftIc = ft ? conditionCurrent(ft.conditions, null) : null;
+  const ftVce = ft ? conditionNumber(ft.conditions, "VCE", null) : null;
+  const frequencyResponse = ft && ftIc != null && ftVce != null ? {
+    ft,
+    ic: quantity(ftIc, "A", ft.conditions, ft.page_reference, ft.source_kind),
+    vce: quantity(ftVce, "V", ft.conditions, ft.page_reference, ft.source_kind),
+  } : null;
   const cobo = validEvidence(specs.cobo, "F");
   const cibo = validEvidence(specs.cibo, "F");
-  const CJC = cobo ? Number(cobo.value) : 1e-12;
-  const hasCjeEvidence = Boolean(cobo && cibo && Number(cibo.value) > Number(cobo.value));
-  const CJE = hasCjeEvidence ? Number(cibo.value) - Number(cobo.value) : 1e-12;
-  const TF = ft ? 1 / (2 * Math.PI * Number(ft.value)) : 1e-9;
-  const resistanceSeeds = saturationResistanceSeeds(specs.saturation_points ?? []);
-  const parameters = {
-    IS: 1e-14, BF: Math.max(1, BF), VAF: 100, IKF: 1e3,
-    RB: resistanceSeeds.RB ?? 10, RC: resistanceSeeds.RC ?? 0.1, RE: resistanceSeeds.RE ?? 0.05,
-    CJE, CJC, TF,
-  };
-  const heldDefaults = [
-    { parameter: "IS", value: parameters.IS, unit: "A", reason: "held F1 transport-current default; no cited VBE target identifies IS" },
-    { parameter: "VAF", value: parameters.VAF, unit: "V", reason: "held at the BJT archetype value because no usable output-characteristics family was fitted" },
-    { parameter: "IKF", value: parameters.IKF, unit: "A", reason: "held F1 high-current roll-off default; cited evidence does not identify IKF" },
-    ...(!ft ? [{ parameter: "TF", value: TF, unit: "s", reason: "held F1 transit-time default; no cited fT" }] : []),
-    ...(!cobo ? [{ parameter: "CJC", value: CJC, unit: "F", reason: "held F1 capacitance default; no cited Cobo" }] : []),
-    ...(!hasCjeEvidence ? [{ parameter: "CJE", value: CJE, unit: "F", reason: "held F1 capacitance default; both cited Cibo and Cobo are required to identify a positive CJE" }] : []),
-    ...(!resistanceSeeds.RB ? [{ parameter: "RB", value: parameters.RB, unit: "ohm", reason: "held F1 base-resistance default; two applicable cited saturation points are required" }] : []),
-    ...(!resistanceSeeds.RC ? [{ parameter: "RC", value: parameters.RC, unit: "ohm", reason: "held F1 collector-resistance default; no applicable cited saturation point" }] : []),
-    ...(!resistanceSeeds.RE ? [{ parameter: "RE", value: parameters.RE, unit: "ohm", reason: "held F1 emitter-resistance default; no applicable cited saturation point" }] : []),
-  ];
+  const coboVcb = cobo ? conditionNumber(cobo.conditions, "VCB", null) : null;
+  const ciboVeb = cibo ? conditionNumber(cibo.conditions, "VEB", conditionNumber(cibo.conditions, "VBE", null)) : null;
+  const capacitances = cobo || cibo ? {
+    ...(cobo ? { cobo, ...(coboVcb != null ? { cobo_vcb: quantity(coboVcb, "V", cobo.conditions, cobo.page_reference, cobo.source_kind) } : {}) } : {}),
+    ...(cibo ? { cibo, ...(ciboVeb != null ? { cibo_veb: quantity(ciboVeb, "V", cibo.conditions, cibo.page_reference, cibo.source_kind) } : {}) } : {}),
+  } : null;
+  const polarity = polarityFor(part, extraction);
   return {
-    fidelity: "F1", parameters, worst: null, points: [], held_defaults: heldDefaults,
-    parameter_metadata: {
-      BF: { status: `derived from cited hFE evidence with ${BJT_F1_GAIN_MARGIN} minimum margin and published-maximum cap` },
-      TF: { status: ft ? "derived as 1/(2*pi*fT) from cited fT" : "held default" },
-      CJC: { status: cobo ? `derived from cited ${cobo.source_kind} Cobo; maximum values are retained conservatively` : "held default" },
-      CJE: { status: hasCjeEvidence ? `derived as cited Cibo minus cited Cobo; ${cibo.source_kind === "maximum" || cobo.source_kind === "maximum" ? "published maxima are retained as inclusive conservative upper values" : "cited scalar values are retained"}` : "held default" },
-      RB: { status: resistanceSeeds.RB ? "derived from the cited VBE(sat)-versus-base-current slope" : "held default" },
-      RC: { status: resistanceSeeds.RC ? "derived as 75% of the cited VCE(sat)-versus-collector-current resistance" : "held default" },
-      RE: { status: resistanceSeeds.RE ? "derived as 25% of the cited VCE(sat)-versus-collector-current resistance" : "held default" },
-      VAF: { status: "held at archetype default 100 V" },
-    },
+    schema_version: "1.0.0",
+    fit_mode: "conveyor_f1",
+    identity: { canonical_mpn: normalizedIdentity(part, extraction).canonical, manufacturer: part.manufacturer },
+    model_polarity: polarity === "p" ? "PNP" : "NPN",
+    device_class: /\bpower\b/i.test(`${part.subcategory ?? ""} ${part.description ?? ""}`) ? "power" : "signal",
+    gain_points: gainPoints,
+    saturation_points: saturationPoints,
+    ...(frequencyResponse ? { frequency_response: frequencyResponse } : {}),
+    ...(capacitances ? { capacitances } : {}),
+  };
+}
+
+export function defaultBjtF1Runner(facts) {
+  fs.mkdirSync(conveyorFitRoot, { recursive: true });
+  const directory = fs.mkdtempSync(path.join(conveyorFitRoot, "fit-bjt-f1-"));
+  try {
+    const input = path.join(directory, "facts.json");
+    const output = path.join(directory, "fitted.json");
+    fs.writeFileSync(input, json(facts));
+    const pythonDir = path.resolve(here, "../python");
+    const result = spawnSync(pythonInterpreter(), [path.join(pythonDir, "fit_bjt.py"), input, output], {
+      cwd: pythonDir, encoding: "utf8", timeout: 900_000,
+    });
+    if (result.error) throw result.error;
+    if (result.status !== 0 || !fs.existsSync(output)) {
+      throw new Error(`canonical BJT F1 fitter failed: ${result.stdout}\n${result.stderr}`.trim());
+    }
+    const fitted = JSON.parse(fs.readFileSync(output, "utf8"));
+    // BF is the directly observed current-gain scale and is intentionally exempt from the
+    // generic optimizer-bound artefact gate, matching fit_conveyor.py. Every published hFE
+    // minimum and maximum is still evaluated natively as an inclusive package hard bound.
+    const saturated = (fitted.optimizer?.bound_saturated_parameters ?? []).filter((name) => name !== "BF");
+    if (saturated.length) {
+      throw new Error(`BJT F1 physical-bound gate failed: ${saturated.join(", ")} saturated an optimizer bound`);
+    }
+    return fitted;
+  } finally {
+    fs.rmSync(directory, { recursive: true, force: true });
+  }
+}
+
+function bjtFit(part, extraction, fitRunner = defaultBjtF1Runner) {
+  const result = fitRunner(bjtArchetypeFacts(part, extraction));
+  if (!result?.parameters || result.fidelity !== "F1") {
+    throw new Error("canonical BJT F1 fitter produced no F1 parameter vector");
+  }
+  return {
+    fidelity: "F1",
+    parameters: result.parameters,
+    worst: result.worst_relative_error?.value ?? null,
+    worst_quantity: result.worst_relative_error?.quantity ?? null,
+    residuals: result.residuals ?? [],
+    optimizer: result.optimizer ?? null,
+    fitter: result.fitter,
+    parameter_metadata: result.parameter_metadata ?? {},
+    held_defaults: result.held_defaults ?? [],
+    points: [],
   };
 }
 
@@ -339,7 +361,7 @@ export function defaultFitRunner(payload) {
   }
 }
 
-export function fitBulkPart(part, extraction, { ngspiceRunner = defaultNgspiceRunner, fitRunner = defaultFitRunner, forceF1 = false } = {}) {
+export function fitBulkPart(part, extraction, { ngspiceRunner = defaultNgspiceRunner, fitRunner = defaultFitRunner, bjtF1Runner = defaultBjtF1Runner, forceF1 = false } = {}) {
   const contractReason = bulkContractReason(part, extraction);
   if (contractReason) throw new Error(contractReason);
   const polarity = polarityFor(part, extraction);
@@ -362,7 +384,7 @@ export function fitBulkPart(part, extraction, { ngspiceRunner = defaultNgspiceRu
       held_defaults: attempt.held_defaults ?? attempt.optimizer?.held_defaults ?? [], points: [],
     };
   } else if (part.conveyor_family === "diode") fit = diodeFit(part, extraction, forceF1);
-  else if (part.conveyor_family === "bjt") fit = bjtFit(part, extraction, forceF1);
+  else if (part.conveyor_family === "bjt") fit = bjtFit(part, extraction, bjtF1Runner);
   else if (part.conveyor_family === "mosfet") fit = mosfetFit(part, extraction, forceF1);
   else throw new Error(`Unsupported conveyor family: ${part.conveyor_family}`);
   fit.polarity = polarity;
@@ -633,6 +655,7 @@ function bulkFactoryFacts(part, extraction, fit, identity, source) {
     return { ...common, fit_points: fitPoints, electrical_limits: electricalLimits, derived_model_inputs: derivedModelInputs };
   }
   if (part.conveyor_family === "bjt") {
+    const canonicalF1Facts = fit.fidelity === "F1" ? bjtArchetypeFacts(part, extraction) : null;
     const gainPoints = [];
     if (fit.fidelity === "F2") {
       const curve = nominalCurve(extraction, (candidate) => {
@@ -650,54 +673,57 @@ function bulkFactoryFacts(part, extraction, fit, identity, source) {
           hfe: quantity(gain.value, gain.unit, curve.test_conditions, curve.page_reference, "digitized_typical_curve"),
         });
       }
-    }
-    const scalarGainPoints = (specs.gain_points ?? []).map((point) => ({
-      ...point,
-      collector_current: magnitudeQuantity(point.collector_current),
-      vce: magnitudeQuantity(point.vce),
-      hfe: magnitudeQuantity(point.hfe),
-    }));
-    if (fit.fidelity === "F1") {
-      const boundedPoints = scalarGainPoints.filter((point) => ["minimum", "maximum"].includes(point.hfe?.source_kind));
-      const typicalPoints = scalarGainPoints.filter((point) => !["minimum", "maximum"].includes(point.hfe?.source_kind));
-      const referenceGain = Number(fit.parameters?.BF);
-      const representative = typicalPoints
-        .filter((point) => Number(point.hfe?.value) > 0)
-        .sort((left, right) => Math.abs(left.hfe.value - referenceGain) - Math.abs(right.hfe.value - referenceGain))[0];
-      gainPoints.push(...boundedPoints, ...(representative ? [representative] : []));
+      gainPoints.push(...(specs.gain_points ?? []).map((point) => ({
+        ...point,
+        collector_current: magnitudeQuantity(point.collector_current),
+        vce: magnitudeQuantity(point.vce),
+        hfe: magnitudeQuantity(point.hfe),
+      })));
     } else {
-      gainPoints.push(...scalarGainPoints);
+      gainPoints.push(...canonicalF1Facts.gain_points);
     }
-    const saturationPoints = (specs.saturation_points ?? []).map((point) => ({
-      ...point,
-      collector_current: magnitudeQuantity(point.collector_current),
-      base_current: magnitudeQuantity(point.base_current),
-      vce_sat: magnitudeQuantity(point.vce_sat),
-      vbe_sat: magnitudeQuantity(point.vbe_sat),
-    }));
-    const ft = validEvidence(specs.ft, "Hz");
-    const ftIc = ft ? conditionCurrent(ft.conditions, null) : null;
-    const ftVce = ft ? conditionNumber(ft.conditions, "VCE", null) : null;
-    const frequencyResponse = ft && ftIc != null && ftVce != null ? {
-      ft,
-      ic: quantity(ftIc, "A", ft.conditions, ft.page_reference, ft.source_kind),
-      vce: quantity(ftVce, "V", ft.conditions, ft.page_reference, ft.source_kind),
-    } : null;
-    const cobo = validEvidence(specs.cobo, "F");
-    const cibo = validEvidence(specs.cibo, "F");
-    const coboVcb = cobo ? conditionNumber(cobo.conditions, "VCB", null) : null;
-    const ciboVeb = cibo ? conditionNumber(cibo.conditions, "VEB", conditionNumber(cibo.conditions, "VBE", null)) : null;
-    const capacitances = cobo || cibo ? {
-      ...(cobo ? { cobo, ...(coboVcb != null ? { cobo_vcb: quantity(coboVcb, "V", cobo.conditions, cobo.page_reference, cobo.source_kind) } : {}) } : {}),
-      ...(cibo ? { cibo, ...(ciboVeb != null ? { cibo_veb: quantity(ciboVeb, "V", cibo.conditions, cibo.page_reference, cibo.source_kind) } : {}) } : {}),
-    } : null;
+    const saturationPoints = fit.fidelity === "F1"
+      ? canonicalF1Facts.saturation_points
+      : (specs.saturation_points ?? []).map((point) => ({
+        ...point,
+        collector_current: magnitudeQuantity(point.collector_current),
+        base_current: magnitudeQuantity(point.base_current),
+        vce_sat: magnitudeQuantity(point.vce_sat),
+        vbe_sat: magnitudeQuantity(point.vbe_sat),
+      }));
+    const frequencyResponse = fit.fidelity === "F1"
+      ? canonicalF1Facts.frequency_response ?? null
+      : (() => {
+        const ft = validEvidence(specs.ft, "Hz");
+        const ftIc = ft ? conditionCurrent(ft.conditions, null) : null;
+        const ftVce = ft ? conditionNumber(ft.conditions, "VCE", null) : null;
+        return ft && ftIc != null && ftVce != null ? {
+          ft,
+          ic: quantity(ftIc, "A", ft.conditions, ft.page_reference, ft.source_kind),
+          vce: quantity(ftVce, "V", ft.conditions, ft.page_reference, ft.source_kind),
+        } : null;
+      })();
+    const capacitances = fit.fidelity === "F1" ? canonicalF1Facts.capacitances ?? null : (() => {
+      const cobo = validEvidence(specs.cobo, "F");
+      const cibo = validEvidence(specs.cibo, "F");
+      const coboVcb = cobo ? conditionNumber(cobo.conditions, "VCB", null) : null;
+      const ciboVeb = cibo ? conditionNumber(cibo.conditions, "VEB", conditionNumber(cibo.conditions, "VBE", null)) : null;
+      return cobo || cibo ? {
+        ...(cobo ? { cobo, ...(coboVcb != null ? { cobo_vcb: quantity(coboVcb, "V", cobo.conditions, cobo.page_reference, cobo.source_kind) } : {}) } : {}),
+        ...(cibo ? { cibo, ...(ciboVeb != null ? { cibo_veb: quantity(ciboVeb, "V", cibo.conditions, cibo.page_reference, cibo.source_kind) } : {}) } : {}),
+      } : null;
+    })();
+    const resistanceFitted = (fit.parameter_metadata?.RB?.status ?? "").startsWith("native fitted");
     const derivedModelInputs = {
-      BF: gainPoints.map((point) => point.hfe),
-      ...(ft ? { TF: ft } : {}),
-      ...(cobo ? { CJC: cobo } : {}),
-      ...((fit.parameter_metadata?.CJE?.status ?? "").startsWith("derived") ? { CJE: { cibo, cobo } } : {}),
-      ...((saturationPoints.length && (fit.parameter_metadata?.RB?.status ?? "").startsWith("derived")) ? { RB: saturationPoints.map((point) => point.vbe_sat).filter(Boolean) } : {}),
-      ...((saturationPoints.length && (fit.parameter_metadata?.RC?.status ?? "").startsWith("derived")) ? { RC_RE: saturationPoints.map((point) => point.vce_sat) } : {}),
+      BF: gainPoints.map((point) => ({
+        hfe: point.hfe,
+        collector_current: point.collector_current,
+        vce: point.vce,
+      })),
+      ...(frequencyResponse ? { TF: frequencyResponse } : {}),
+      ...(capacitances?.cobo && (fit.parameter_metadata?.CJC?.status ?? "").startsWith("voltage-de-embedded") ? { CJC: { cobo: capacitances.cobo, cobo_vcb: capacitances.cobo_vcb } } : {}),
+      ...(capacitances?.cibo && (fit.parameter_metadata?.CJE?.status ?? "").startsWith("voltage-de-embedded") ? { CJE: { cibo: capacitances.cibo, cibo_veb: capacitances.cibo_veb } } : {}),
+      ...(resistanceFitted ? { RB_RC_RE: saturationPoints } : {}),
     };
     return { ...common, gain_points: gainPoints, saturation_points: saturationPoints, frequency_response: frequencyResponse, capacitances, derived_model_inputs: derivedModelInputs };
   }
