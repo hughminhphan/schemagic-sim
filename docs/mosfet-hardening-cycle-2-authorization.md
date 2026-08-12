@@ -69,9 +69,21 @@ Batch 15 PASS requires:
 
 FAIL stops the campaign without relaxing gates.
 
-## Campaign overlap
+## Expanded end-to-end scope
 
-Batch 16 orders 990 through 1029 may complete selection, fresh PDF download, topology preflight, and extraction in parallel with hardening and Batch 15 fitting. It uses concurrency 4 until the scheduler upgrade is merged and independently verified, then concurrency 8. Batch 16 fitting remains blocked until Batch 15 proving passes.
+The complete F2 audit expanded the mandatory fit barrier beyond the original four blocker sites. Approval also requires:
+
+- `fit_vdmos.py` to use every curve's actual VDS and exact evidence temperature, with validated condition and citation identities.
+- Bulk F2 facts to preserve transfer and output evidence used to earn F2.
+- Package expectations and validation to link evidence, condition, citation, cohort, and bench identities without invalidating the existing 710 reviewed packages.
+- Pulse-qualified evidence to receive an equivalent pulse bench or remain excluded from DC F2 claims.
+- `archetypes/vdmos.md` to resolve the VTO-bound policy.
+- Curated VDMOS facts to migrate away from independently combinable free-form critical conditions.
+- An integrated end-to-end adversarial review of extraction, fit metadata, package facts, expectations, generated netlists, and native validation.
+
+## Campaign overlap correction
+
+Batch 16 candidate preparation is no longer authorized during hardening. A coordinator created only the fresh ignored root `tools/conveyor/data/batch-16-prefit/` and its exact 40-row manifest for orders 990 through 1029 before the expanded audit ruling arrived. No PDFs, jobs, topology preflight, Luna calls, responses, ledger, fit, staging, or tracked selection record were created. The root remains preserved and unused. No further Batch 16 work may occur until the integrated MOSFET review approves and Batch 15 proving passes.
 
 ## Release gates
 
