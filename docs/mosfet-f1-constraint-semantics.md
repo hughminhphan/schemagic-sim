@@ -6,17 +6,20 @@ This phase adds a constrained F1 calibration path without changing the meaning o
 
 Every evidence-derived MOSFET result records one mode in `fitted.json`:
 
-- `typ-point`: the existing threshold-typical and RDS(on)-typical parameter path. Its numerical formulas are unchanged.
-- `interval-constrained`: at least one critical typical value is absent, so native ngspice feasibility constraints are used.
+- `typ-point`: the existing threshold-typical and RDS(on)-typical parameter path. Its numerical formulas are unchanged. Each typical observation must independently carry an exact primary datasheet page citation, exact temperature, and all required operating conditions.
+- `interval-constrained`: at least one critical typical value is absent or inadmissible, so native ngspice feasibility constraints are used. An inadmissible typical value is never retained as an observation or typical-observation seed.
 - `curve-fitted`: the existing F2 transfer and output curve path.
 
 `calibration.observations`, `calibration.constraints`, and `calibration.seeds` are separate collections. A threshold interval midpoint or RDS(on) maximum may appear in `seeds` with a seed-only role. It does not appear in `observations` or `residuals`.
 
 ## Constraint rules
 
-- Published VGS(th) minimum and maximum values form one inclusive two-sided constraint at the cited ID, VDS relationship, and temperature.
-- A missing threshold endpoint, equal endpoints, reversed endpoints, mismatched currents, or an unsupported VDS condition fails before optimization.
-- Each published RDS(on) maximum is an independent inclusive one-sided constraint at its cited VGS, ID, and temperature.
+- A threshold typical observation is admissible only when its own evidence states VDS = VGS, positive ID, exact temperature, and an exact primary datasheet page citation.
+- Published VGS(th) minimum and maximum values form one inclusive two-sided constraint only when each endpoint independently states the same supported VDS = VGS relationship, ID, temperature, and compatible page and table context.
+- A missing threshold endpoint, equal endpoints, reversed endpoints, mismatched currents, mismatched temperatures, incompatible citation context, borrowed conditions, or an unsupported VDS condition fails before optimization.
+- Each published RDS(on) typical or maximum must carry its own VGS, ID, exact temperature, condition text, and exact primary datasheet citations for the VGS, ID, and resistance fields.
+- The three fields of an RDS(on) point must resolve to one condition identity. Free-floating fields from different rows, temperatures, biases, pages, or table contexts are never combined.
+- Each admissible published RDS(on) maximum is an independent inclusive one-sided constraint at its cited VGS, ID, and temperature.
 - Bounds are not equality observations. The constrained F1 optimizer has no bound residual-target vector.
 - Native probes emit exactly one `.temp` directive for the cited temperature.
 - A model is accepted only after native ngspice verifies every inclusive constraint.
@@ -31,7 +34,7 @@ The native helper maps each threshold interval into a feasible VTO interval and 
 
 The phase stops for the affected part when any of these conditions occurs:
 
-- Critical threshold or RDS(on) evidence is silently defaulted from catalog hints.
+- Critical threshold or RDS(on) evidence is silently defaulted from catalog hints, a synthetic 250 uA threshold current, or a synthetic temperature.
 - The threshold interval is incomplete, degenerate, reversed, or condition-incompatible.
 - Required units, currents, biases, citations, or temperatures cannot be mapped.
 - The feasible intersection is empty.

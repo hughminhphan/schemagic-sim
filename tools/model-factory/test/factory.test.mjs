@@ -1,6 +1,9 @@
 import assert from "node:assert/strict";
+import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
 import test from "node:test";
-import { assertCardParameterTable, assertEmittedParametersMatchFitted, assertFiniteNumbers, expressionValue, renderParameterTable } from "../factory.mjs";
+import { assertCardParameterTable, assertEmittedParametersMatchFitted, assertFiniteNumbers, expressionValue, renderParameterTable, stageTestgen } from "../factory.mjs";
 import { PARTS, getPart } from "../lib/parts.mjs";
 
 function assertQuantityReferences(value) {
@@ -92,6 +95,36 @@ test("scale_abs:last evaluates MOSFET voltage and current vectors", () => {
   ] };
   assert.equal(expressionValue(nativeResult, "scale_abs:last(v(d1),8)"), 1);
   assert.equal(expressionValue(nativeResult, "scale_abs:last(i(vd1),1000000)"), 2);
+});
+
+test("VDMOS threshold test generation has no silent 250 uA or temperature fallback", () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "factory-threshold-evidence-test-"));
+  try {
+    fs.mkdirSync(path.join(root, "tests"));
+    fs.writeFileSync(path.join(root, "model.cir"), ".model DUT VDMOS(VTO=1 KP=1)\n");
+    fs.writeFileSync(path.join(root, "facts.json"), JSON.stringify({
+      rdson_points: [],
+      threshold: {
+        minimum: { value: 1, unit: "V", conditions: "VDS = VGS, ID = 500 uA", page_reference: "p. 2", source_kind: "minimum" },
+        typical: null,
+        maximum: { value: 2, unit: "V", conditions: "VDS = VGS, ID = 500 uA", page_reference: "p. 2", source_kind: "maximum" },
+      },
+      transfer_points: [],
+      output_points: [],
+    }));
+    const ctx = {
+      packageDir: root,
+      part: {
+        slug: "NO-FALLBACK",
+        pipeline: "vdmos",
+        identity: { electrical_family: "nmos" },
+        component: { modelName: "DUT", test_tolerances: { threshold: 0.35 } },
+      },
+    };
+    assert.throws(() => stageTestgen(ctx), /requires an exact cited positive test_current in amperes/);
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
 });
 
 test("timer edge extraction computes frequency, duty cycle, and pulse width", () => {

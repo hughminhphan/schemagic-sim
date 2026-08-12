@@ -30,17 +30,142 @@ function verifyWithoutProjection(payload) {
   };
 }
 
-test("five Batch 12 typical-point outputs stay exact and all seven survivors retain fidelity gates", { skip: skipNative, timeout: 900_000 }, () => {
+function noOptimizer() {
+  assert.fail("constraint optimizer must not run for rejected evidence");
+}
+
+test("incomplete threshold and RDS typical values cannot become typ-point observations", () => {
+  const extraction = {
+    specs: {
+      polarity: "n",
+      threshold_typ: { value: 1.5, unit: "V", source_kind: "typical" },
+      rdson_points: [{
+        vgs: { value: 4.5, unit: "V", source_kind: "typical" },
+        current: { value: 2, unit: "A", source_kind: "typical" },
+        resistance: { value: 0.08, unit: "ohm", source_kind: "typical" },
+      }],
+    },
+  };
+  assert.throws(
+    () => fitBulkPart({ mpn: "INCOMPLETE", manufacturer: "Fixture", conveyor_family: "mosfet", subcategory: "N-Channel" }, extraction, {
+      forceF1: true, ngspiceRunner: syntaxPass, mosfetConstraintRunner: noOptimizer,
+    }),
+    /neither an admissible cited typical point nor a valid two-sided interval.*threshold drain current/,
+  );
+});
+
+test("invalid typical values fall back only to independently complete constraints", () => {
+  const fixture = loadFixture("IRF740PBF");
+  fixture.extraction.specs.threshold_typ = { value: 3, unit: "V", source_kind: "typical" };
+  fixture.extraction.specs.rdson_points.unshift({
+    vgs: { value: 10, unit: "V", source_kind: "typical" },
+    current: { value: 6, unit: "A", source_kind: "typical" },
+    resistance: { value: 0.4, unit: "ohm", source_kind: "typical" },
+  });
+  const fit = fitBulkPart(fixture.part, fixture.extraction, {
+    forceF1: true, ngspiceRunner: syntaxPass, mosfetConstraintRunner: verifyWithoutProjection,
+  });
+  assert.equal(fit.evidence_mode, "interval-constrained");
+  assert.deepEqual(fit.calibration.observations, []);
+  assert.deepEqual(fit.calibration.seeds.map((seed) => seed.evidence_role), ["interval_midpoint_seed_only", "bound_value_seed_only"]);
+  assert.ok(fit.calibration.seeds.every((seed) => seed.scored_as_residual === false));
+});
+
+test("threshold endpoints cannot borrow VDS, ID, temperature, or citation context", () => {
+  const mutations = [
+    ["unsupported VDS relationship", (fixture) => { fixture.extraction.specs.threshold_min.conditions = "VDS = 0 V, ID = 250 µA, TJ = 25 °C"; }, /independently state the supported VDS = VGS relationship/],
+    ["borrowed ID and temperature", (fixture) => { fixture.extraction.specs.threshold_min.conditions = "VDS = VGS"; }, /state its own positive threshold drain current/],
+    ["temperature mismatch", (fixture) => { fixture.extraction.specs.threshold_max.conditions = "VDS = VGS, ID = 250 µA, TJ = 75 °C"; }, /same exact temperature/],
+    ["citation mismatch", (fixture) => { fixture.extraction.specs.threshold_max.page_reference = "PDF p. 3, Specifications table"; }, /compatible page and table context/],
+  ];
+  for (const [name, mutate, pattern] of mutations) {
+    const fixture = loadFixture("IRF740PBF");
+    mutate(fixture);
+    assert.throws(
+      () => fitBulkPart(fixture.part, fixture.extraction, { forceF1: true, ngspiceRunner: syntaxPass, mosfetConstraintRunner: noOptimizer }),
+      pattern,
+      name,
+    );
+  }
+});
+
+test("RDS conditions cannot be hybridized across VGS, ID, temperature, or citations", () => {
+  const mutations = [
+    ["VGS field condition mismatch", (point) => { point.vgs.conditions = "VGS = 4.5 V, ID = 6.0 A, TJ = 25 °C"; }, /one condition identity|disagree with their own cited VGS/],
+    ["ID field condition mismatch", (point) => { point.current.conditions = "VGS = 10 V, ID = 3.0 A, TJ = 25 °C"; }, /one condition identity|disagree with their own cited VGS or ID/],
+    ["temperature mismatch", (point) => { point.current.conditions = "VGS = 10 V, ID = 6.0 A, TJ = 75 °C"; }, /one condition identity/],
+    ["citation mismatch", (point) => { point.current.page_reference = "PDF p. 3, Specifications table"; }, /compatible page and table context/],
+  ];
+  for (const [name, mutate, pattern] of mutations) {
+    const fixture = loadFixture("IRF740PBF");
+    mutate(fixture.extraction.specs.rdson_points[0]);
+    assert.throws(
+      () => fitBulkPart(fixture.part, fixture.extraction, { forceF1: true, ngspiceRunner: syntaxPass, mosfetConstraintRunner: noOptimizer }),
+      pattern,
+      name,
+    );
+  }
+});
+
+test("mismatched RDS typical evidence is omitted without contaminating a valid maximum", () => {
+  const fixture = loadFixture("IRF740PBF");
+  fixture.extraction.specs.rdson_points.unshift({
+    vgs: { value: 4.5, unit: "V", conditions: "VGS = 10 V, ID = 2 A, TJ = 25 °C", page_reference: "PDF p. 2, Specifications table", source_kind: "typical" },
+    current: { value: 2, unit: "A", conditions: "VGS = 4.5 V, ID = 2 A, TJ = 25 °C", page_reference: "PDF p. 2, Specifications table", source_kind: "typical" },
+    resistance: { value: 0.08, unit: "ohm", conditions: "VGS = 4.5 V, ID = 2 A, TJ = 25 °C", page_reference: "PDF p. 2, Specifications table", source_kind: "typical" },
+  });
+  const fit = fitBulkPart(fixture.part, fixture.extraction, {
+    forceF1: true, ngspiceRunner: syntaxPass, mosfetConstraintRunner: verifyWithoutProjection,
+  });
+  assert.equal(fit.evidence_mode, "interval-constrained");
+  assert.equal(fit.calibration.observations.some((observation) => observation.quantity === "rds_on"), false);
+  const [rdsonConstraint] = fit.calibration.constraints.filter((constraint) => constraint.kind === "rdson_maximum");
+  assert.equal(rdsonConstraint.vgs_v, 10);
+  assert.equal(rdsonConstraint.current_a, 6);
+  assert.match(rdsonConstraint.conditions, /VGS = 10 V, ID = 6\.0 A/);
+  assert.ok(rdsonConstraint.citations.every((citation) => citation === "PDF p. 2, Specifications table"));
+  assert.match(rdsonConstraint.condition_identity, /^rdson\|vgs=10\|id=6\|temperature=25\|/);
+});
+
+test("valid N/P and mixed typical/maximum fixtures propagate complete condition identities", () => {
+  for (const name of ["IRF740PBF", "IRLML5203TRPBF", "FDN360P", "2N7002K-T1-GE3"]) {
+    const fixture = loadFixture(name);
+    const fit = fitBulkPart(fixture.part, fixture.extraction, {
+      forceF1: true, ngspiceRunner: syntaxPass, mosfetConstraintRunner: verifyWithoutProjection,
+    });
+    for (const row of [...fit.calibration.observations, ...fit.calibration.constraints]) {
+      assert.ok(row.condition_identity, `${name} missing condition identity`);
+      assert.ok(row.temperature_c === 25, `${name} temperature metadata`);
+      assert.ok(Array.isArray(row.citations) && row.citations.length > 0, `${name} citation metadata`);
+      assert.ok(typeof row.conditions === "string" && row.conditions.length > 0, `${name} condition metadata`);
+      if (row.quantity === "rds_on" || row.kind === "rdson_maximum") {
+        assert.ok(row.vgs_v > 0 && row.current_a > 0, `${name} RDS bias metadata`);
+      }
+    }
+  }
+});
+
+test("valid Batch 12 typical-point formulas stay exact, incomplete snapshots fail closed, and F2 gates stay fixed", { skip: skipNative, timeout: 900_000 }, () => {
   const regression = loadFixture("batch12-survivor-regression");
+  const validTypicalNames = new Set(["AO7400", "FSS2301S", "NCE3401AY"]);
+  const incompleteTypicalNames = new Set(["IRLML0040", "BSC070N10NS3G"]);
   assert.equal(regression.survivors.length, 7);
   for (const survivor of regression.survivors) {
+    if (incompleteTypicalNames.has(survivor.name)) {
+      assert.throws(
+        () => fitBulkPart(survivor.part, survivor.extraction, { forceF1: true, ngspiceRunner: syntaxPass, mosfetConstraintRunner: noOptimizer }),
+        /must state its own exact VGS and ID/,
+        `${survivor.name} must not retain split free-floating RDS conditions`,
+      );
+      continue;
+    }
     const fit = fitBulkPart(survivor.part, survivor.extraction, {
       forceF1: survivor.expected.fidelity === "F1",
       ngspiceRunner: syntaxPass,
       ...(survivor.expected.fidelity === "F1" ? { mosfetConstraintRunner: verifyWithoutProjection } : {}),
     });
     assert.equal(fit.fidelity, survivor.expected.fidelity, survivor.name);
-    if (survivor.expected.fidelity === "F1") {
+    if (validTypicalNames.has(survivor.name)) {
       assert.deepEqual(fit.parameters, survivor.expected.parameters, `${survivor.name} typical-point parameter vector changed`);
       assert.equal(fit.model.text, survivor.expected.model_text, `${survivor.name} typical-point model card changed`);
     } else {
@@ -94,8 +219,9 @@ test("clean-room 2N7002K-T1-GE3 fixture keeps threshold typical and maximum-only
   assert.equal(fit.evidence_mode, "interval-constrained");
   assert.deepEqual(
     fit.calibration.seeds.map((seed) => seed.evidence_role),
-    ["typical_observation_seed", "bound_value_seed_only"],
+    ["interval_midpoint_seed_only", "bound_value_seed_only"],
   );
+  assert.equal(fit.calibration.observations.some((observation) => observation.quantity === "gate_threshold"), false);
   assert.ok(fit.calibration.seeds.every((seed) => seed.scored_as_residual === false));
   assert.equal(fit.calibration.residual_target_count, 0);
   assert.equal(fit.optimizer.residual_target_count, 0);

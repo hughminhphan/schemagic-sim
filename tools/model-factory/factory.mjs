@@ -520,7 +520,7 @@ function evidenceTemperatureC(...values) {
   const text = values.filter(Boolean).map((value) => value?.conditions ?? value).join(" ");
   const temperatures = [...text.matchAll(/(-?\d+(?:\.\d+)?)\s*(?:deg\s*c|degc|°c|\bc\b)/gi)]
     .map((match) => Number(match[1])).filter(Number.isFinite);
-  if (!temperatures.length) return 25;
+  if (!temperatures.length) throw new Error(`MOSFET bench evidence must cite an exact temperature: ${text}`);
   const first = temperatures[0];
   if (temperatures.some((value) => Math.abs(value - first) > 1e-9)) throw new Error(`Conflicting cited temperatures in MOSFET bench evidence: ${text}`);
   return first;
@@ -571,7 +571,10 @@ function vdmosTestgen(ctx, model, facts) {
 
   if (facts.threshold) {
     const threshold = facts.threshold;
-    const current = threshold.test_current?.value ?? 250e-6;
+    const current = Number(threshold.test_current?.value);
+    if (!(current > 0) || threshold.test_current?.unit !== "A") {
+      throw new Error(`${ctx.part.slug} threshold bench requires an exact cited positive test_current in amperes`);
+    }
     const temperature = evidenceTemperatureC(threshold.minimum, threshold.typical, threshold.maximum, threshold.test_current);
     const lines = [
       `OpenCircuit factory test: ${ctx.part.slug} threshold bounds`,
