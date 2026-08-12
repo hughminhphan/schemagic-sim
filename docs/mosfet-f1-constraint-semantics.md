@@ -40,3 +40,23 @@ The phase stops for the affected part when any of these conditions occurs:
 - A digitized MOSFET F2 curve lacks validated axes, units, temperature, page and figure or curve identity, transfer bias or explicit saturation range, or monotonicity.
 
 No constraint may be relaxed to continue a phase. No new fidelity tier is introduced. F2 worst and RMS gates remain 0.20 and 0.12. Candidate processing remains blocked until independent code review approves this implementation.
+
+## Canonical condition identity
+
+Every critical MOSFET threshold or RDS(on) datum used by F1 or F2 must resolve to one complete condition identity before it can affect a seed, bound, observation, residual, constraint, expectation, region, or bench.
+
+A complete identity contains:
+
+- exact temperature in degrees Celsius
+- VGS
+- ID
+- VDS relationship, either `VDS = VGS` or an explicit cited VDS
+- normalized qualifier tokens, including pulse width, duty cycle, and test mode
+- primary datasheet page and table or figure citation
+- evidence role, such as typical observation, inclusive minimum or maximum, or curve point
+
+Each field in a threshold or RDS(on) group must independently resolve to the same identity. One field cannot lend its current, voltage, temperature, citation, or qualifier to another. Unknown residual qualifiers, unmatched pulse conditions, incompatible citation context, or missing critical conditions fail the affected part closed.
+
+Validated threshold values may shape F2 VTO seeds and bounds. Unvalidated threshold values must not influence optimization. Validated RDS(on) typical values may enter F2 residual observations. Validated maxima may enter inclusive constraints. Every emitted row carries its real citation and condition identity.
+
+Critical current, voltage, temperature, condition, and citation defaults are prohibited in conveyor candidate paths. A genuinely non-critical physical constant may remain only when recorded explicitly as a `held_default` in fitted metadata. The Python fit boundary independently rejects incomplete critical evidence even when upstream JavaScript validation regresses.
