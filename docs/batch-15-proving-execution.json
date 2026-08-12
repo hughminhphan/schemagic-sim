@@ -1,0 +1,87 @@
+{
+  "schema_version": "1.0.0",
+  "date": "2026-08-12",
+  "campaign": "scheMAGIC scale-2k Batch 15 MOSFET F1 constraint proving execution",
+  "status": "terminal-stop-before-fit-second-code-review-block",
+  "base_and_freeze": {
+    "required_base": "ec7a8b7",
+    "selection_record_commit": "6f526f8",
+    "reviewed_package_count_before": 710,
+    "reviewed_package_count_after": 710,
+    "reviewed_library_modified": false,
+    "scale_2k_manifest_sha256": "c003a37a26c5ce343ed884a38801d9a5acdbac17412d409dc2fd9c1b5ddf790e"
+  },
+  "selection": {
+    "frozen_campaign_order_start": 980,
+    "frozen_campaign_order_end": 989,
+    "selected_count": 10,
+    "fixed_denominator": 10,
+    "target_substitutions": 0
+  },
+  "extraction": {
+    "fresh_canonical_pdfs_downloaded": 10,
+    "topology_preflights_completed": 10,
+    "parked_before_extraction": 2,
+    "parked_rows": [
+      "980|C212325|DMN3067LW-7|gate-protected",
+      "988|C2944059|FS3415|gate-protected"
+    ],
+    "eligible_luna_calls": 8,
+    "accepted_responses": 8,
+    "focused_retries": 0,
+    "missing_only_replacements": 0,
+    "identity_mismatches": 0,
+    "completion_ledger_entries": 8,
+    "completion_ledger_unique_keys": 8,
+    "immutable_job_count": 10,
+    "immutable_job_hash_drift": 0
+  },
+  "fit_and_staging": {
+    "fit_blocked_pending_code_approval": true,
+    "parts_entering_fit": 0,
+    "fit_passes": 0,
+    "packages_staged": 0,
+    "packages_validated": 0,
+    "packages_reviewed": 0,
+    "packages_promoted": 0
+  },
+  "code_review": {
+    "initial_verdict": "BLOCK",
+    "bounded_remediation_commit": "46f64c395091ab48b35bb03b46e14dd6e1c613d6",
+    "re_review_verdict": "BLOCK",
+    "remediation_cycle_limit": 1,
+    "remediation_cycle_consumed": true,
+    "blocked_remediation_preserved_branch": "batch-15-blocked-remediation",
+    "approved_main_restored_to": "6f526f8",
+    "remaining_blockers": [
+      "F2 RDS(on) evidence can enter residuals or constraints without one exact validated condition identity",
+      "F2 threshold evidence can influence seeds and bounds without complete independent conditions and citations",
+      "F1 RDS(on) condition matching does not reject incompatible additional qualifiers such as pulse duration",
+      "a silent 25 degree Celsius operating-region metadata fallback remains"
+    ]
+  },
+  "proving_gate": {
+    "minimum_provenance_clean_staged": 6,
+    "minimum_interval_constrained_staged": 3,
+    "evaluated": false,
+    "decision": "STOP",
+    "reason": "The second independent code-review BLOCK stopped the campaign before the single fit pass."
+  },
+  "guardrails": {
+    "reviewed_models_changed": false,
+    "production_deployed": false,
+    "promotion_run": false,
+    "candidate_review_run": false,
+    "vendor_spice_used": false,
+    "fit_gates_relaxed": false,
+    "hard_bounds_relaxed": false,
+    "part_specific_bypasses_added": 0
+  },
+  "terminal_result": {
+    "decision": "STOP_AND_ESCALATE",
+    "summary": "Batch 15 completed fresh extraction for eight eligible MOSFETs and parked two gate-protected rows. No candidate fit ran. The one bounded constrained-F1 remediation passed its author tests but failed the authorized independent re-review because incomplete or hybrid evidence remained admissible in F2 and one F1 condition-identity path. The reviewed library remains 710.",
+    "new_remediation_authorized_by_this_record": false,
+    "new_candidate_execution_authorized_by_this_record": false,
+    "continuation_into_order_990_or_later_authorized": false
+  }
+}

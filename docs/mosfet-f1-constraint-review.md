@@ -58,6 +58,20 @@ These paths violate the exact-condition, condition-compatibility, and fail-befor
 - Unchanged F2 gates: worst `0.20`, RMS `0.12`
 - All 710 reviewed packages remain schema-valid
 
-## Remediation status
+## Remediation re-review
 
-One bounded remediation and one independent re-review are authorized by `docs/scale-2k-campaign-authorization.md`. Candidate fitting remains blocked until the re-review records an approving verdict below.
+- Date: 2026-08-12
+- Remediation commit: `46f64c395091ab48b35bb03b46e14dd6e1c613d6`
+- Reviewer: independent GPT-5.6 Sol read-only gate lane
+- Verdict: **BLOCK**
+
+The remediation closed the originally demonstrated F1 exploits, preserved valid AO7400, FSS2301S, and NCE3401AY vectors, kept F2 gates at worst `0.20` and RMS `0.12`, and passed 68 model-factory tests, 4 component-schema tests, all 710 reviewed packages, 16 conveyor tests, and workspace tests and typechecks.
+
+The independent re-review found remaining fail-open candidate paths:
+
+1. `fit_conveyor.py` still admitted F2 RDS(on) typical and maximum evidence without requiring exact temperature, conditions, field citations, compatible page/table context, or one shared condition identity. Incomplete and hybrid points entered F2 residual observations and inequality constraints.
+2. F2 threshold minimum, typical, and maximum values still influenced VTO seeds and optimization bounds without independently validated VDS relationship, ID, temperature, and citation.
+3. F1 RDS(on) validation compared parsed VGS, ID, temperature, and citation context but did not reject incompatible additional qualifiers such as different pulse durations.
+4. MOSFET operating-region metadata retained a silent `25 °C` fallback in a conveyor candidate path.
+
+The second BLOCK exhausts the one remediation cycle authorized by `docs/scale-2k-campaign-authorization.md`. Candidate fitting and the campaign remain stopped. The blocked remediation is preserved on branch `batch-15-blocked-remediation`; approved main was restored to `6f526f8`. No reviewed package or production code was changed.
