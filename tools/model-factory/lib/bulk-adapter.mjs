@@ -92,6 +92,19 @@ function bjtFit(part, extraction, forceF1 = false) {
   return { fidelity: "F1", parameters: { IS: 1e-14, BF: Math.max(1, BF), VAF: 100, IKF: 1e3, RB: 10, RC: 0.1, RE: 0.05, CJE: 1e-12, CJC: 1e-12, TF: 1e-9 }, worst: null, points: [] };
 }
 
+function mosfetCalibrationPoint(specs) {
+  const points = (specs?.rdson_points ?? []).filter(isNominalTemperatureEvidence);
+  return points.find((point) => !["minimum", "maximum"].includes(point?.resistance?.source_kind)
+    && Number(point?.resistance?.value) > 0)
+    ?? points.find((point) => Number(point?.resistance?.value) > 0);
+}
+
+function mosfetTypicalCalibrationPoint(specs) {
+  return (specs?.rdson_points ?? []).filter(isNominalTemperatureEvidence)
+    .find((point) => !["minimum", "maximum"].includes(point?.resistance?.source_kind)
+      && Number(point?.resistance?.value) > 0);
+}
+
 function evidenceTemperature(...values) {
   const text = values.filter(Boolean).map((value) => value?.conditions ?? value).join(" ");
   const matches = [...text.matchAll(/(-?\d+(?:\.\d+)?)\s*(?:deg\s*c|degc|°c|\bc\b)/gi)]
@@ -102,482 +115,58 @@ function evidenceTemperature(...values) {
   return first;
 }
 
-function stableJson(value) {
-  return JSON.stringify(stableValue(value));
-}
-
-function identityHash(prefix, value) {
-  return `${prefix}:${crypto.createHash("sha256").update(stableJson(value)).digest("hex")}`;
-}
-
-function withoutKeys(value, keys) {
-  return Object.fromEntries(Object.entries(value).filter(([key]) => !keys.includes(key)));
-}
-
-function nearlyEqual(left, right) {
-  return Math.abs(left - right) <= Math.max(Math.abs(left), Math.abs(right), 1) * 1e-9;
-}
-
-function sourceHashFor(part, extraction) {
-  const explicit = extraction?.datasheet_identity?.source_sha256 ?? extraction?.datasheet_identity?.sha256
-    ?? extraction?.source_sha256 ?? part?.source_sha256 ?? part?.datasheet_sha256;
-  if (typeof explicit === "string" && /^(?:sha256:)?[0-9a-f]{64}$/i.test(explicit.trim())) {
-    return explicit.trim().replace(/^sha256:/i, "").toLowerCase();
+function citedThresholdConstraint(specs) {
+  const minimum = normalizeEvidence(specs?.threshold_min);
+  const maximum = normalizeEvidence(specs?.threshold_max);
+  if (!minimum && !maximum) return null;
+  if (!minimum || !maximum) throw new Error("MOSFET F1 threshold evidence must provide both minimum and maximum for a two-sided interval");
+  const low = Math.abs(Number(minimum.value));
+  const high = Math.abs(Number(maximum.value));
+  if (minimum.unit !== "V" || maximum.unit !== "V" || !Number.isFinite(low) || !Number.isFinite(high) || low <= 0 || high <= 0) {
+    throw new Error("MOSFET F1 threshold interval must contain positive finite volt values");
   }
-  if (part?.datasheet_path && fs.existsSync(part.datasheet_path)) return sha256(part.datasheet_path);
-  throw new Error("MOSFET critical evidence requires the real datasheet source SHA-256");
-}
-
-function citationIdentity(pageReference, { sourceSha256, sourceRevision, label, curveName = null, defaultRow = null, defaultColumn = null } = {}) {
-  const citation = String(pageReference ?? "").trim();
-  if (!citation || /pending|placeholder|unknown|tbd|n\/a/i.test(citation)) throw new Error(`${label} prohibits placeholder citations`);
-  const pageMatch = citation.match(/(?:\bp(?:age)?\.?\s*|\bpage\s*)(\d+)/i);
-  if (!pageMatch) throw new Error(`${label} must carry an exact primary datasheet page citation`);
-  const tableMatch = citation.match(/(?:^|[,;(])\s*([^,;()]*?\btable)\b/i);
-  const rowMatch = citation.match(/\brow\s*[:=]?\s*([^,;()]+)/i);
-  const figureMatch = citation.match(/\bfigure\s*([A-Za-z0-9.-]+)/i) ?? String(curveName ?? "").match(/\bfigure\s*([A-Za-z0-9.-]+)/i);
-  const curveMatch = citation.match(/\bcurve\s*[:=#]?\s*([^,;()]+)/i) ?? String(curveName ?? "").match(/\bcurve\s*[:=#]?\s*([^,;()]+)/i);
-  const traceMatch = citation.match(/\btrace\s*[:=#]?\s*([^,;()]+)/i) ?? String(curveName ?? "").match(/\btrace\s*[:=#]?\s*([^,;()]+)/i);
-  const sectionMatch = citation.match(/\bsection\s*[:=]?\s*([^,;()]+)/i);
-  const columnMatch = citation.match(/\bcolumn\s*[:=]?\s*([^,;()]+)/i);
-  const row = rowMatch?.[1]?.trim() ?? defaultRow;
-  const column = columnMatch?.[1]?.trim() ?? defaultColumn;
-  const table = tableMatch?.[1]?.trim();
-  const figure = figureMatch?.[1]?.trim();
-  const curve = curveMatch?.[1]?.trim() ?? (figure && curveName ? String(curveName).trim() : undefined);
-  const trace = traceMatch?.[1]?.trim();
-  if (table && !row) throw new Error(`${label} table citation must name its row`);
-  if (figure && !curve && !trace) throw new Error(`${label} figure citation must name its curve or trace`);
-  if ((!table || !row) && (!figure || (!curve && !trace))) {
-    throw new Error(`${label} citation must identify table and row or figure and curve/trace`);
+  if (!(low < high)) throw new Error(`MOSFET F1 threshold interval is degenerate or reversed: ${low} to ${high} V`);
+  const conditions = `${minimum.conditions ?? ""}; ${maximum.conditions ?? ""}`;
+  const normalizedConditions = conditions.replaceAll("_", "").replace(/\s+/g, "");
+  if (!/(?:VDS=VGS|VGS=VDS)/i.test(normalizedConditions)) throw new Error("MOSFET F1 threshold constraint currently requires cited VDS = VGS conditions");
+  const minimumCurrent = conditionCurrent(minimum.conditions, null);
+  const maximumCurrent = conditionCurrent(maximum.conditions, null);
+  if (!(minimumCurrent > 0) || !(maximumCurrent > 0) || Math.abs(minimumCurrent - maximumCurrent) > Math.max(minimumCurrent, maximumCurrent) * 1e-9) {
+    throw new Error("MOSFET F1 threshold bounds must cite the same positive drain current");
   }
-  const identity = {
-    source_sha256: sourceSha256,
-    ...(sourceRevision ? { source_revision: sourceRevision } : {}),
-    page: Number(pageMatch[1]),
-    ...(sectionMatch ? { section: sectionMatch[1].trim() } : {}),
-    ...(table ? { table, row } : { figure, ...(curve ? { curve } : { trace }) }),
-    ...(column ? { column } : {}),
-  };
-  return { ...identity, citation_id: identityHash("sha256", identity) };
-}
-
-function conditionVoltage(text, symbol, fallback = null) {
-  const normalized = String(text ?? "").replaceAll("_", "");
-  const match = normalized.match(new RegExp(`${symbol}\\s*(?:magnitude)?\\s*=\\s*([0-9.eE+-]+)\\s*(m|u|µ|μ)?V`, "i"));
-  if (!match || !Number.isFinite(Number(match[1]))) return fallback;
-  return Math.abs(Number(match[1])) * ({ m: 1e-3, u: 1e-6, "µ": 1e-6, "μ": 1e-6 }[match[2]?.toLowerCase()] ?? 1);
-}
-
-function conditionDrainCurrent(text, fallback = null) {
-  const normalized = String(text ?? "").replaceAll("_", "");
-  const match = normalized.match(/(?:ID|drain\s*current)\|?\s*=\s*([0-9.eE+-]+)\s*(u|µ|μ|m)?A/i);
-  if (!match || !Number.isFinite(Number(match[1]))) return fallback;
-  return Math.abs(Number(match[1])) * ({ u: 1e-6, "µ": 1e-6, "μ": 1e-6, m: 1e-3 }[match[2]?.toLowerCase()] ?? 1);
-}
-
-function temperatureIdentity(text, label) {
-  const conditionText = String(text ?? "").replaceAll("_", "");
-  const matches = [...conditionText.matchAll(/\b(TJ|TA|TC|junction(?:\s+temperature)?|ambient(?:\s+temperature)?|case(?:\s+temperature)?)\s*=\s*(-?\d+(?:\.\d+)?)\s*(?:deg\s*c|degc|°c|\bc\b)/gi)];
-  if (matches.length !== 1) throw new Error(`${label} must state exactly one temperature with junction, ambient, or case kind`);
-  const token = matches[0][1].toLowerCase();
-  const kind = token === "tj" || token.startsWith("junction") ? "junction" : token === "ta" || token.startsWith("ambient") ? "ambient" : "case";
-  return { kind, value_c: Number(matches[0][2]) };
-}
-
-function timeSeconds(value, unit) {
-  return Number(value) * ({ s: 1, ms: 1e-3, us: 1e-6, "µs": 1e-6, ns: 1e-9 }[String(unit).toLowerCase()] ?? NaN);
-}
-
-function testModeIdentity(text, label, { curve = false } = {}) {
-  const conditionText = String(text ?? "").replaceAll("μ", "µ");
-  const pulse = /\bpuls(?:e|ed)\b/i.test(conditionText);
-  const width = conditionText.match(/pulse\s*width\s*(<=|≤|=|<)\s*([0-9.eE+-]+)\s*(s|ms|us|µs|ns)\b/i);
-  const duty = conditionText.match(/duty\s*(?:cycle)?\s*(<=|≤|=|<)\s*([0-9.eE+-]+)\s*%/i);
-  const period = conditionText.match(/(?:repetition\s*)?period\s*=\s*([0-9.eE+-]+)\s*(s|ms|us|µs|ns)\b/i);
-  const frequency = conditionText.match(/(?:repetition\s*)?frequency\s*=\s*([0-9.eE+-]+)\s*(Hz|kHz|MHz)\b/i);
-  if (pulse) {
-    if (!width || !duty) throw new Error(`${label} pulsed evidence must state pulse width and duty cycle`);
-    const qualifiers = [
-      { key: "pulse_width_operator", value: width[1].replace("≤", "<=") },
-      { key: "duty_cycle_operator", value: duty[1].replace("≤", "<=") },
-    ];
-    const mode = {
-      kind: /single\s*pulse/i.test(conditionText) ? "single_pulse" : "pulsed",
-      pulse_width_s: timeSeconds(width[2], width[3]),
-      duty_cycle: Number(duty[2]) / 100,
-      ...(period ? { repetition_period_s: timeSeconds(period[1], period[2]) } : {}),
-      ...(frequency ? { repetition_frequency_hz: Number(frequency[1]) * ({ hz: 1, khz: 1e3, mhz: 1e6 }[frequency[2].toLowerCase()]) } : {}),
-    };
-    return { mode, qualifiers };
-  }
-  if (/\b(?:test\s*mode\s*=\s*)?continuous\b/i.test(conditionText)) return { mode: { kind: "continuous" }, qualifiers: [] };
-  if (/\b(?:test\s*mode\s*=\s*)?dc\b/i.test(conditionText) || curve) return { mode: { kind: "dc" }, qualifiers: [] };
-  throw new Error(`${label} must state its exact test mode`);
-}
-
-function normalizedQualifiers(text, testModeQualifiers) {
-  const qualifiers = [...testModeQualifiers];
-  if (/unless\s+otherwise\s+noted/i.test(text)) qualifiers.push({ key: "temperature_scope", value: "unless_otherwise_noted" });
-  if (/electrical[-\s]characteristics\s+heading/i.test(text)) qualifiers.push({ key: "condition_source", value: "electrical_characteristics_heading" });
-  return qualifiers.sort((left, right) => left.key.localeCompare(right.key) || left.value.localeCompare(right.value));
-}
-
-function rejectUnknownQualifierSegments(text, label) {
-  const segments = String(text ?? "").split(/[;,]/).map((segment) => segment.trim()).filter(Boolean);
-  const recognized = [
-    /\b(?:T_?J|T_?A|T_?C|junction|ambient|case)\b\s*=/i, /\bV_?DS\b\s*=\s*V_?GS/i,
-    /\bV_?GS\b\s*=\s*V_?DS/i, /\bV_?GS\b\s*=/i, /\bV_?DS\b\s*=/i, /\bI_?D\b\s*=/i,
-    /\btest\s*mode\s*=/i, /\bcontinuous\b/i, /\bDC\b/i, /\bpuls(?:e|ed)\b/i,
-    /pulse\s*width/i, /duty\s*(?:cycle)?/i, /repetition\s*(?:period|frequency)/i,
-    /unless\s+otherwise\s+noted/i, /electrical[-\s]characteristics\s+heading/i,
-    /(?:source\s+)?(?:V_?GS|I_?D|RDS\(on\)|V_?GS\(th\)|value).*represented.*magnitude/i,
-    /source\s+(?:V_?GS|I_?D|RDS\(on\)|V_?GS\(th\)|value)\s*=/i,
-    /as\s+printed\s+in\s+figure/i, /associated\s+R_?DS\(on\)\s+test\s+point/i,
-    /(?:T_?J|T_?A|T_?C)\s*=.*\bcurve\b/i, /p-channel\s+quantities\s+are\s+represented\s+as\s+magnitudes/i,
-    /I_?D\s*=\s*f\(V_?GS\)/i, /\|?V_?DS\|?\s*>\s*2\s*\|?I_?D\|?\s*\/\s*R_?DS\(on\)/i, /^max\.?$/i,
-    /converted\s+to/i, /per\s+Note\s+\d+/i,
-  ];
-  const unknown = segments.filter((segment) => !recognized.some((pattern) => pattern.test(segment)));
-  if (unknown.length) throw new Error(`${label} has unknown residual qualifier tokens: ${unknown.join("; ")}`);
-}
-
-function completeConditionIdentity({ characteristic, polarity, magnitudeConvention, temperature, electrical, testMode, qualifiers }) {
-  const identity = {
-    schema_version: "1.0.0", characteristic, polarity,
-    magnitude_convention: magnitudeConvention, temperature, electrical, test_mode: testMode,
-    qualifiers: [...qualifiers].sort((left, right) => left.key.localeCompare(right.key) || left.value.localeCompare(right.value)),
-  };
-  return { ...identity, condition_id: identityHash("sha256", identity) };
-}
-
-function citationCohortMaterial(characteristic, conditionId, citation) {
+  const citations = [minimum.page_reference, maximum.page_reference].filter((value) => typeof value === "string" && value.trim());
+  if (citations.length !== 2) throw new Error("MOSFET F1 threshold bounds must each carry a datasheet citation");
+  const temperature = evidenceTemperature(minimum, maximum);
+  if (temperature == null) throw new Error("MOSFET F1 threshold bounds must cite an exact temperature");
   return {
-    characteristic,
-    condition_id: conditionId,
-    ...Object.fromEntries(
-      ["source_sha256", "page", "table", "row", "figure", "curve", "trace"]
-        .filter((key) => Object.hasOwn(citation, key))
-        .map((key) => [key, citation[key]]),
-    ),
+    id: "threshold_interval_1", kind: "threshold_interval", minimum_v: low, maximum_v: high,
+    current_a: minimumCurrent, temperature_c: temperature, inclusive: true,
+    conditions: minimum.conditions, citations,
   };
 }
 
-function evidenceIdentity(role, conditionIdentity, citationIdentityValue, quantity, valueSi, unitSi) {
-  const characteristic = conditionIdentity.characteristic;
-  const evidence = {
-    characteristic,
-    role,
-    quantity,
-    value_si: valueSi,
-    unit_si: unitSi,
-    condition_id: conditionIdentity.condition_id,
-    citation_id: citationIdentityValue.citation_id,
-  };
-  return {
-    evidence_id: identityHash("sha256", evidence),
-    cohort_id: identityHash("sha256", citationCohortMaterial(characteristic, conditionIdentity.condition_id, citationIdentityValue)),
-    role,
-    condition_id: conditionIdentity.condition_id,
-    citation_id: citationIdentityValue.citation_id,
-  };
-}
-
-function evidenceBundle(role, conditionIdentity, citationIdentityValue, quantity, valueSi, unitSi) {
-  return {
-    condition_identity: conditionIdentity,
-    citation_identity: citationIdentityValue,
-    evidence_identity: evidenceIdentity(role, conditionIdentity, citationIdentityValue, quantity, valueSi, unitSi),
-  };
-}
-
-function sameIdentity(left, right) {
-  return left.condition_identity.condition_id === right.condition_identity.condition_id
-    && left.evidence_identity.cohort_id === right.evidence_identity.cohort_id;
-}
-
-function validateThresholdEvidence(rawEvidence, sourceKind, label, context) {
-  const evidence = normalizeEvidence(rawEvidence);
-  const value = Math.abs(Number(evidence?.value));
-  if (evidence?.unit !== "V" || !(value > 0) || evidence.source_kind !== sourceKind) {
-    throw new Error(`${label} must be a positive finite ${sourceKind} threshold voltage`);
-  }
-  if (typeof evidence.conditions !== "string" || !evidence.conditions.trim()) throw new Error(`${label} must state its own operating conditions`);
-  rejectUnknownQualifierSegments(evidence.conditions, label);
-  const current = conditionDrainCurrent(evidence.conditions, null);
-  if (!(current > 0)) throw new Error(`${label} must state its own positive threshold drain current`);
-  const normalized = evidence.conditions.replaceAll("_", "").replace(/\s+/g, "");
-  if (!/(?:VDS=VGS|VGS=VDS)/i.test(normalized) || conditionVoltage(evidence.conditions, "VDS", null) != null || conditionVoltage(evidence.conditions, "VGS", null) != null) {
-    throw new Error(`${label} must independently state the supported VDS = VGS relationship`);
-  }
-  const temperature = temperatureIdentity(evidence.conditions, label);
-  const parsedTestMode = testModeIdentity(evidence.conditions, label);
-  const magnitudeConvention = /-\s*\d/.test(evidence.conditions) || Number(rawEvidence?.value) < 0 ? "signed" : "absolute";
-  const conditionIdentity = completeConditionIdentity({
-    characteristic: "gate_threshold", polarity: context.polarity, magnitudeConvention, temperature,
-    electrical: {
-      vgs: { kind: "relation", relation: "vgs_equals_vds" },
-      vds: { kind: "relation", relation: "vds_equals_vgs" },
-      id: { kind: "fixed", value_a: current },
-    },
-    testMode: parsedTestMode.mode,
-    qualifiers: normalizedQualifiers(evidence.conditions, parsedTestMode.qualifiers),
-  });
-  const citationIdentityValue = citationIdentity(evidence.page_reference, {
-    ...context, label, defaultRow: "gate threshold voltage", defaultColumn: sourceKind,
-  });
-  return {
-    evidence, value, current, temperature: temperature.value_c, relationship: "VDS = VGS", citation: evidence.page_reference,
-    ...evidenceBundle(
-      sourceKind,
-      conditionIdentity,
-      citationIdentityValue,
-      `threshold_${sourceKind}`,
-      value,
-      "V",
-    ),
-  };
-}
-
-function citedThresholdConstraint(specs, context) {
-  if (!specs?.threshold_min && !specs?.threshold_max) return null;
-  if (!specs?.threshold_min || !specs?.threshold_max) throw new Error("MOSFET F1 threshold evidence must provide both minimum and maximum for a two-sided interval");
-  const minimum = validateThresholdEvidence(specs.threshold_min, "minimum", "MOSFET F1 threshold minimum", context);
-  const maximum = validateThresholdEvidence(specs.threshold_max, "maximum", "MOSFET F1 threshold maximum", context);
-  if (!(minimum.value < maximum.value)) throw new Error(`MOSFET F1 threshold interval is degenerate or reversed: ${minimum.value} to ${maximum.value} V`);
-  if (!sameIdentity(minimum, maximum)) throw new Error("MOSFET F1 threshold bounds must independently resolve to the same condition and citation cohort identity");
-  return {
-    id: "threshold_interval_1", kind: "threshold_interval", minimum_v: minimum.value, maximum_v: maximum.value,
-    current_a: minimum.current, temperature_c: minimum.temperature, vds_relationship: minimum.relationship, inclusive: true,
-    conditions: minimum.evidence.conditions, citations: [minimum.citation, maximum.citation],
-    condition_identity: minimum.condition_identity,
-    citation_identities: [minimum.citation_identity, maximum.citation_identity],
-    evidence_identities: [minimum.evidence_identity, maximum.evidence_identity],
-    citation_cohort: citationCohort([minimum.citation_identity, maximum.citation_identity], minimum.condition_identity),
-    evidence: [
-      thresholdConstraintEvidence(minimum, "threshold_minimum", minimum.value),
-      thresholdConstraintEvidence(maximum, "threshold_maximum", maximum.value),
-    ],
-    vds_relation: "vds_equals_vgs",
-  };
-}
-
-function validateRdsonPoint(rawPoint, index, sourceKind, context) {
-  const point = normalizeEvidence(rawPoint);
-  const label = `MOSFET F1 RDS(on) ${sourceKind} ${index + 1}`;
-  const resistance = Math.abs(Number(point?.resistance?.value));
-  const vgs = Math.abs(Number(point?.vgs?.value));
-  const current = Math.abs(Number(point?.current?.value));
-  if (point?.resistance?.unit !== "ohm" || point?.vgs?.unit !== "V" || point?.current?.unit !== "A"
-      || !(resistance > 0) || !(vgs > 0) || !(current > 0)) {
-    throw new Error(`${label} lacks positive SI resistance, VGS, or ID evidence`);
-  }
-  if (point.resistance.source_kind !== sourceKind) throw new Error(`${label} resistance evidence must carry source_kind ${sourceKind}`);
-  const role = sourceKind;
-  const fields = [["VGS", point.vgs], ["ID", point.current], ["resistance", point.resistance]].map(([field, evidence]) => {
-    const fieldLabel = `${label} ${field}`;
-    if (typeof evidence?.conditions !== "string" || !evidence.conditions.trim()) throw new Error(`${fieldLabel} must state its own operating conditions`);
-    rejectUnknownQualifierSegments(evidence.conditions, fieldLabel);
-    const parsedVgs = conditionVoltage(evidence.conditions, "VGS", null);
-    const parsedCurrent = conditionDrainCurrent(evidence.conditions, null);
-    if (!(parsedVgs > 0) || !(parsedCurrent > 0)) throw new Error(`${fieldLabel} must state its own exact VGS and ID`);
-    const temperature = temperatureIdentity(evidence.conditions, fieldLabel);
-    const parsedTestMode = testModeIdentity(evidence.conditions, fieldLabel);
-    const magnitudeConvention = /-\s*\d/.test(evidence.conditions) || Number(rawPoint?.vgs?.value) < 0 || Number(rawPoint?.current?.value) < 0 ? "signed" : "absolute";
-    const conditionIdentity = completeConditionIdentity({
-      characteristic: "rds_on", polarity: context.polarity, magnitudeConvention, temperature,
-      electrical: {
-        vgs: { kind: "fixed", value_v: parsedVgs },
-        vds: { kind: "relation", relation: "vds=id*rds_on" },
-        id: { kind: "fixed", value_a: parsedCurrent },
-      },
-      testMode: parsedTestMode.mode,
-      qualifiers: normalizedQualifiers(evidence.conditions, parsedTestMode.qualifiers),
-    });
-    const citationIdentityValue = citationIdentity(evidence.page_reference, {
-      ...context, label: fieldLabel, defaultRow: `rds_on_${index + 1}`, defaultColumn: field.toLowerCase(),
-    });
-    const quantity = field === "VGS" ? "vgs" : field === "ID" ? "drain_current" : `rds_on_${sourceKind}`;
-    const valueSi = field === "VGS" ? vgs : field === "ID" ? current : resistance;
-    const unitSi = field === "VGS" ? "V" : field === "ID" ? "A" : "ohm";
-    return { parsedVgs, parsedCurrent, temperature: temperature.value_c, citation: evidence.page_reference, ...evidenceBundle(role, conditionIdentity, citationIdentityValue, quantity, valueSi, unitSi) };
-  });
-  if (!fields.slice(1).every((field) => sameIdentity(fields[0], field))) {
-    throw new Error(`${label} VGS, ID, resistance, qualifiers, and citations must independently describe one condition and citation cohort identity`);
-  }
-  if (!nearlyEqual(vgs, fields[0].parsedVgs) || !nearlyEqual(current, fields[0].parsedCurrent)) {
-    throw new Error(`${label} field values disagree with their own cited VGS or ID conditions`);
-  }
-  return {
-    point, index, resistance, vgs, current, temperature: fields[0].temperature,
-    citations: fields.map((field) => field.citation), conditions: point.resistance.conditions,
-    condition_identity: fields[0].condition_identity,
-    citation_identities: fields.map((field) => field.citation_identity),
-    evidence_identities: fields.map((field) => field.evidence_identity),
-    validated_fields: fields,
-  };
-}
-
-function citedRdsonEvidence(specs, context) {
-  const typical = [];
-  const typicalErrors = [];
-  const maximum = [];
-  for (const [index, rawPoint] of (specs?.rdson_points ?? []).entries()) {
-    const sourceKind = rawPoint?.resistance?.source_kind;
-    if (sourceKind === "maximum") maximum.push(validateRdsonPoint(rawPoint, index, "maximum", context));
-    else if (sourceKind === "typical") {
-      try {
-        const validated = validateRdsonPoint(rawPoint, index, "typical", context);
-        if (Math.abs(validated.temperature - 25) <= 5) typical.push(validated);
-      } catch (error) {
-        typicalErrors.push(error);
-      }
-    } else if (sourceKind != null) throw new Error(`MOSFET RDS(on) point ${index + 1} has unsupported evidence role ${sourceKind}`);
-  }
-  return { typical, typicalErrors, maximum };
-}
-
-function citedRdsonConstraints(evidence) {
-  return evidence.maximum.map((validated) => ({
-    id: `rdson_maximum_${validated.index + 1}`, kind: "rdson_maximum", maximum_ohm: validated.resistance,
-    vgs_v: validated.vgs, current_a: validated.current, temperature_c: validated.temperature,
-    inclusive: true, conditions: validated.conditions, citations: validated.citations,
-    condition_identity: validated.condition_identity, citation_identities: validated.citation_identities,
-    evidence_identities: validated.evidence_identities,
-    citation_cohort: citationCohort(validated.citation_identities, validated.condition_identity),
-    evidence: [
-      rdsonConstraintEvidence(validated.validated_fields[0], "vgs", validated.vgs, "V"),
-      rdsonConstraintEvidence(validated.validated_fields[1], "drain_current", validated.current, "A"),
-      rdsonConstraintEvidence(validated.validated_fields[2], "rds_on_maximum", validated.resistance, "ohm"),
-    ],
-    source_index: validated.index,
-  }));
-}
-
-function curveCharacteristic(curve) {
-  const x = String(curve?.x_axis?.quantity ?? "").toLowerCase();
-  const y = String(curve?.y_axis?.quantity ?? "").toLowerCase();
-  if (x.includes("gate") && x.includes("source") && y.includes("drain") && y.includes("current")) return "transfer_current";
-  if (x.includes("drain") && x.includes("source") && y.includes("drain") && y.includes("current")) return "output_current";
-  return null;
-}
-
-function normalizeMosfetCurve(curve, curveIndex, context) {
-  if (curve?.condition_identity || curve?.citation_identity || curve?.curve_id || (curve?.points ?? []).some((point) => point?.evidence_identity)) {
-    throw new Error(`MOSFET F2 curve ${curveIndex + 1} may not override canonical identity fields`);
-  }
-  const characteristic = curveCharacteristic(curve);
-  if (!characteristic) return curve;
-  const label = `MOSFET F2 ${characteristic} curve ${curveIndex + 1}`;
-  const xUnit = siValue(1, curve?.x_axis?.unit).unit;
-  const yUnit = siValue(1, curve?.y_axis?.unit).unit;
-  if (xUnit !== "V" || yUnit !== "A") throw new Error(`${label} requires voltage and current axes with recognized SI units`);
-  if (!Array.isArray(curve.points) || curve.points.length < 4) throw new Error(`${label} requires at least four ordered digitized points`);
-  const conditions = String(curve.test_conditions ?? "");
-  rejectUnknownQualifierSegments(conditions, label);
-  const temperature = temperatureIdentity(conditions, label);
-  const parsedTestMode = testModeIdentity(conditions, label, { curve: false });
-  const fixedVds = conditionVoltage(conditions, "VDS", null);
-  const fixedVgs = conditionVoltage(conditions, "VGS", null);
-  if (characteristic === "transfer_current" && !(fixedVds > 0)) {
-    throw new Error(`${label} requires an explicit fixed VDS; a saturation inequality is not a fixed bias`);
-  }
-  if (characteristic === "output_current" && !(fixedVgs > 0)) throw new Error(`${label} requires an explicit fixed VGS trace identity`);
-  const rawPoints = curve.points.map((point, pointIndex) => {
-    if (point?.condition_identity || point?.citation_identity || point?.evidence_identity) throw new Error(`${label} point ${pointIndex} may not override shared identities`);
-    const x = siValue(point?.x, curve.x_axis.unit);
-    const y = siValue(point?.y, curve.y_axis.unit);
-    if (!Number.isFinite(x.value) || !Number.isFinite(y.value)) throw new Error(`${label} point ${pointIndex} is not finite`);
-    return { point_index: pointIndex, x_si: Math.abs(x.value), y_si: Math.abs(y.value) };
-  });
-  const electrical = characteristic === "transfer_current"
-    ? {
-      vgs: { kind: "range", lower_v: Math.min(...rawPoints.map((point) => point.x_si)), upper_v: Math.max(...rawPoints.map((point) => point.x_si)) },
-      vds: { kind: "fixed", value_v: fixedVds }, id: { kind: "range", lower_a: Math.min(...rawPoints.map((point) => point.y_si)), upper_a: Math.max(...rawPoints.map((point) => point.y_si)) },
+function citedRdsonConstraints(specs) {
+  return (specs?.rdson_points ?? []).flatMap((rawPoint, index) => {
+    const point = normalizeEvidence(rawPoint);
+    if (point?.resistance?.source_kind !== "maximum") return [];
+    const maximum = Math.abs(Number(point.resistance.value));
+    const vgs = Math.abs(Number(point.vgs?.value));
+    const current = Math.abs(Number(point.current?.value));
+    if (point.resistance.unit !== "ohm" || point.vgs?.unit !== "V" || point.current?.unit !== "A"
+        || !(maximum > 0) || !(vgs > 0) || !(current > 0)) {
+      throw new Error(`MOSFET F1 RDS(on) maximum ${index + 1} lacks positive SI resistance, VGS, or ID evidence`);
     }
-    : {
-      vgs: { kind: "fixed", value_v: fixedVgs },
-      vds: { kind: "range", lower_v: Math.min(...rawPoints.map((point) => point.x_si)), upper_v: Math.max(...rawPoints.map((point) => point.x_si)) },
-      id: { kind: "range", lower_a: Math.min(...rawPoints.map((point) => point.y_si)), upper_a: Math.max(...rawPoints.map((point) => point.y_si)) },
-    };
-  const conditionIdentity = completeConditionIdentity({
-    characteristic, polarity: context.polarity,
-    magnitudeConvention: /magnitude|\|V|\|I|p-channel/i.test(`${curve.x_axis.quantity} ${curve.y_axis.quantity} ${conditions}`) ? "absolute" : "signed",
-    temperature, electrical, testMode: parsedTestMode.mode,
-    qualifiers: normalizedQualifiers(conditions, parsedTestMode.qualifiers),
+    const citations = [point.vgs.page_reference, point.current.page_reference, point.resistance.page_reference]
+      .filter((value) => typeof value === "string" && value.trim());
+    if (citations.length !== 3) throw new Error(`MOSFET F1 RDS(on) maximum ${index + 1} must carry cited VGS, ID, and resistance evidence`);
+    const temperature = evidenceTemperature(point.vgs, point.current, point.resistance);
+    if (temperature == null) throw new Error(`MOSFET F1 RDS(on) maximum ${index + 1} must cite an exact temperature`);
+    return [{
+      id: `rdson_maximum_${index + 1}`, kind: "rdson_maximum", maximum_ohm: maximum,
+      vgs_v: vgs, current_a: current, temperature_c: temperature,
+      inclusive: true, conditions: point.resistance.conditions, citations,
+    }];
   });
-  const citationIdentityValue = citationIdentity(curve.page_reference, { ...context, label, curveName: curve.name });
-  const xAxis = { quantity: characteristic === "transfer_current" ? "vgs" : "vds", unit: "V" };
-  const yAxis = { quantity: "id", unit: "A" };
-  const curveHashInput = {
-    schema_version: "1.0.0",
-    characteristic,
-    x_axis: xAxis,
-    y_axis: yAxis,
-    condition_id: conditionIdentity.condition_id,
-    citation_id: citationIdentityValue.citation_id,
-    points: rawPoints,
-  };
-  const curveId = identityHash("sha256", curveHashInput);
-  const cohortInput = { characteristic, condition_id: conditionIdentity.condition_id, citation_id: citationIdentityValue.citation_id, curve_id: curveId };
-  const cohortId = identityHash("sha256", cohortInput);
-  const points = rawPoints.map((point) => {
-    const evidenceInput = {
-      characteristic, role: "digitized_typical_curve", ...point,
-      condition_id: conditionIdentity.condition_id, citation_id: citationIdentityValue.citation_id,
-      cohort_id: cohortId, curve_id: curveId,
-    };
-    return {
-      ...point,
-      evidence_identity: {
-        evidence_id: identityHash("sha256", evidenceInput), cohort_id: cohortId, role: "digitized_typical_curve",
-        condition_id: conditionIdentity.condition_id, citation_id: citationIdentityValue.citation_id,
-        curve_id: curveId,
-      },
-    };
-  });
-  return {
-    name: curve.name,
-    page_reference: curve.page_reference,
-    test_conditions: curve.test_conditions,
-    curve_id: curveId,
-    characteristic,
-    x_axis: xAxis,
-    y_axis: yAxis,
-    condition_identity: conditionIdentity,
-    citation_identity: citationIdentityValue,
-    points,
-  };
-}
-
-function normalizeMosfetExtractionForFit(part, extraction) {
-  if (!extraction?.specs) throw new Error("MOSFET candidate fit requires a datasheet extraction");
-  const context = mosfetEvidenceContext(part, extraction);
-  const normalized = structuredClone(extraction);
-  normalized.evidence_contract_version = "1.0.0";
-  normalized.curves = (extraction.curves ?? []).map((curve, index) => normalizeMosfetCurve(curve, index, context));
-  const specs = normalized.specs;
-  const threshold = {};
-  for (const [key, sourceKind] of [["threshold_min", "minimum"], ["threshold_typ", "typical"], ["threshold_max", "maximum"]]) {
-    if (specs[key]) threshold[key] = validateThresholdEvidence(specs[key], sourceKind, `MOSFET F2 ${key}`, context);
-  }
-  if (Object.keys(threshold).length) {
-    const identities = Object.values(threshold);
-    if (!identities.slice(1).every((item) => sameIdentity(identities[0], item))) throw new Error("MOSFET F2 threshold fields do not share one condition and citation cohort");
-    for (const [key, validated] of Object.entries(threshold)) specs[key] = { ...validated.evidence, condition_identity: validated.condition_identity, citation_identity: validated.citation_identity, evidence_identity: validated.evidence_identity };
-  }
-  const rdson = citedRdsonEvidence(specs, context);
-  const accepted = new Map([...rdson.typical, ...rdson.maximum].map((item) => [item.index, item]));
-  if (rdson.typicalErrors.length) throw rdson.typicalErrors[0];
-  specs.rdson_points = (specs.rdson_points ?? []).map((point, index) => {
-    const validated = accepted.get(index);
-    if (!validated) throw new Error(`MOSFET F2 RDS(on) point ${index + 1} lacks a supported evidence role`);
-    return Object.fromEntries([["vgs", 0], ["current", 1], ["resistance", 2]].map(([key, fieldIndex]) => [key, {
-      ...point[key], condition_identity: validated.condition_identity,
-      citation_identity: validated.citation_identities[fieldIndex], evidence_identity: validated.evidence_identities[fieldIndex],
-    }]));
-  });
-  return normalized;
 }
 
 function legacyMosfetParameters(part, specs, threshold, rdson) {
@@ -589,134 +178,52 @@ function legacyMosfetParameters(part, specs, threshold, rdson) {
 
 function mosfetParameterMetadata(evidenceMode, specs) {
   const derived = Object.fromEntries(["VTO", "KP", "RD", "RS", "RB"].map((parameter) => [parameter, { status: `evidence-derived (${evidenceMode})`, evidence_mode: evidenceMode }]));
+  const evidenceDerived = (supported, status) => supported ? { status, evidence_mode: evidenceMode } : { status: "held catalog seed or physical default" };
   return {
     ...derived,
-    THETA: { status: "declared fixed F1 model constant" },
-    LAMBDA: { status: "declared fixed F1 model constant" },
-    RG: { status: "declared fixed F1 model constant" },
-    CGS: { status: specs?.ciss && specs?.crss ? "derived from cited capacitances" : "declared fixed F1 model constant", evidence_mode: evidenceMode },
-    CGDMAX: { status: specs?.crss ? "derived from cited reverse-transfer capacitance" : "declared fixed F1 model constant", evidence_mode: evidenceMode },
-    CGDMIN: { status: specs?.crss ? "derived from cited reverse-transfer capacitance" : "declared fixed F1 model constant", evidence_mode: evidenceMode },
-    CJO: { status: specs?.coss && specs?.crss ? "derived from cited capacitances" : "declared fixed F1 model constant", evidence_mode: evidenceMode },
-    IS: { status: "declared fixed F1 model constant" },
-    N: { status: "declared fixed F1 model constant" },
-  };
-}
-
-function mosfetEvidenceContext(part, extraction) {
-  return {
-    polarity: polarityFor(part, extraction),
-    sourceSha256: sourceHashFor(part, extraction),
-    sourceRevision: extraction?.datasheet_identity?.revision,
-  };
-}
-
-function citationCohort(validatedFields, conditionIdentity) {
-  const identities = validatedFields.map((field) => withoutKeys(field, ["citation_id", "column"]));
-  const unique = [...new Map(identities.map((identity) => [stableJson(identity), identity])).values()];
-  if (unique.length !== 1) throw new Error("MOSFET evidence citation fields do not share one citation cohort");
-  const identity = unique[0];
-  const material = citationCohortMaterial(conditionIdentity.characteristic, conditionIdentity.condition_id, identity);
-  return {
-    cohort_id: identityHash("sha256", material),
-    source_sha256: identity.source_sha256,
-    page: identity.page,
-    table: identity.table,
-    row: identity.row,
-  };
-}
-
-function thresholdConstraintEvidence(validated, quantity, value) {
-  return {
-    quantity, value_si: value, unit_si: "V",
-    condition_identity: validated.condition_identity,
-    citation_identity: validated.citation_identity,
-    evidence_identity: validated.evidence_identity,
-  };
-}
-
-function rdsonConstraintEvidence(validated, quantity, value, unit) {
-  return {
-    quantity, value_si: value, unit_si: unit,
-    condition_identity: validated.condition_identity,
-    citation_identity: validated.citation_identity,
-    evidence_identity: validated.evidence_identity,
+    THETA: { status: "held F1 default" }, LAMBDA: { status: "held F1 default" }, RG: { status: "held F1 default" },
+    CGS: evidenceDerived(specs?.ciss && specs?.crss, "derived from cited capacitances"),
+    CGDMAX: evidenceDerived(specs?.crss, "derived from cited reverse-transfer capacitance"),
+    CGDMIN: evidenceDerived(specs?.crss, "derived from cited reverse-transfer capacitance"),
+    CJO: evidenceDerived(specs?.coss && specs?.crss, "derived from cited capacitances"),
+    IS: { status: "held F1 default" }, N: { status: "held F1 default" },
   };
 }
 
 function mosfetFit(part, extraction, forceF1 = false, constraintRunner = defaultMosfetConstraintRunner) {
   const specs = extraction?.specs;
   if (!specs) throw new Error("MOSFET F1 critical calibration requires a datasheet extraction; catalog hints are seeds only");
-  const context = mosfetEvidenceContext(part, extraction);
-  let thresholdTypical = null;
-  let thresholdTypicalError = null;
-  if (specs.threshold_typ) {
-    try {
-      thresholdTypical = validateThresholdEvidence(specs.threshold_typ, "typical", "MOSFET F1 threshold typical", context);
-    } catch (error) {
-      thresholdTypicalError = error;
-    }
-  }
-  const thresholdConstraint = citedThresholdConstraint(specs, context);
-  const rdsonEvidence = citedRdsonEvidence(specs, context);
-  const rdsonTypical = rdsonEvidence.typical[0] ?? null;
-  const rdsonConstraints = citedRdsonConstraints(rdsonEvidence);
-  const hasThresholdTypical = Boolean(thresholdTypical);
-  const hasRdsonTypical = Boolean(rdsonTypical);
-  if (!hasThresholdTypical && !thresholdConstraint) {
-    throw new Error(`MOSFET F1 critical threshold calibration has neither an admissible cited typical point nor a valid two-sided interval${thresholdTypicalError ? `: ${thresholdTypicalError.message}` : ""}`);
-  }
-  if (!hasRdsonTypical && !rdsonConstraints.length) {
-    throw new Error(`MOSFET F1 critical RDS(on) calibration has neither an admissible cited typical point nor an inclusive maximum${rdsonEvidence.typicalErrors[0] ? `: ${rdsonEvidence.typicalErrors[0].message}` : ""}`);
-  }
+  const thresholdTypical = normalizeEvidence(specs.threshold_typ);
+  const rdsonTypicalPoint = mosfetTypicalCalibrationPoint(specs);
+  const thresholdConstraint = citedThresholdConstraint(specs);
+  const rdsonConstraints = citedRdsonConstraints(specs);
+  const hasThresholdTypical = thresholdTypical?.unit === "V" && Number.isFinite(Number(thresholdTypical.value)) && Number(thresholdTypical.value) !== 0;
+  const normalizedTypicalPoint = normalizeEvidence(rdsonTypicalPoint);
+  const hasRdsonTypical = normalizedTypicalPoint?.resistance?.unit === "ohm" && Number(normalizedTypicalPoint.resistance.value) > 0;
+  if (!hasThresholdTypical && !thresholdConstraint) throw new Error("MOSFET F1 critical threshold calibration has neither a cited typical point nor a valid two-sided interval");
+  if (!hasRdsonTypical && !rdsonConstraints.length) throw new Error("MOSFET F1 critical RDS(on) calibration has neither a cited typical point nor an inclusive maximum");
 
   const thresholdSeed = hasThresholdTypical
-    ? thresholdTypical.value
+    ? Math.abs(Number(thresholdTypical.value))
     : 0.5 * (thresholdConstraint.minimum_v + thresholdConstraint.maximum_v);
   const rdsonSeed = hasRdsonTypical
-    ? rdsonTypical.resistance
+    ? Math.abs(Number(normalizedTypicalPoint.resistance.value))
     : Math.min(...rdsonConstraints.map((constraint) => constraint.maximum_ohm));
   const parameters = legacyMosfetParameters(part, specs, thresholdSeed, Math.max(1e-4, rdsonSeed));
   const constraints = [thresholdConstraint, ...rdsonConstraints].filter(Boolean);
   const observations = [
-    ...(hasThresholdTypical ? [{
-      quantity: "gate_threshold", value: thresholdSeed, unit: "V", role: "typical_observation",
-      citation: thresholdTypical.citation, citations: [thresholdTypical.citation],
-      conditions: thresholdTypical.evidence.conditions, current_a: thresholdTypical.current,
-      temperature_c: thresholdTypical.temperature, vds_relationship: thresholdTypical.relationship,
-      condition_identity: thresholdTypical.condition_identity,
-      citation_identity: thresholdTypical.citation_identity,
-      evidence_identity: thresholdTypical.evidence_identity,
-    }] : []),
-    ...(hasRdsonTypical ? [{
-      quantity: "rds_on", value: rdsonSeed, unit: "ohm", role: "typical_observation",
-      citation: rdsonTypical.point.resistance.page_reference, citations: rdsonTypical.citations,
-      conditions: rdsonTypical.conditions, vgs_v: rdsonTypical.vgs, current_a: rdsonTypical.current,
-      temperature_c: rdsonTypical.temperature, condition_identity: rdsonTypical.condition_identity,
-      citation_identities: rdsonTypical.citation_identities,
-      evidence_identities: rdsonTypical.evidence_identities,
-      source_index: rdsonTypical.index,
-    }] : []),
+    ...(hasThresholdTypical ? [{ quantity: "gate_threshold", value: thresholdSeed, unit: "V", role: "typical_observation", citation: thresholdTypical.page_reference }] : []),
+    ...(hasRdsonTypical ? [{ quantity: "rds_on", value: rdsonSeed, unit: "ohm", role: "typical_observation", citation: normalizedTypicalPoint.resistance.page_reference }] : []),
   ];
   const seeds = [
-    {
-      parameter_coordinate: "VTO", value: thresholdSeed, unit: "V",
-      evidence_role: hasThresholdTypical ? "typical_observation_seed" : "interval_midpoint_seed_only",
-      scored_as_residual: hasThresholdTypical,
-      ...(hasThresholdTypical ? { condition_identity: thresholdTypical.condition_identity } : { condition_identity: thresholdConstraint.condition_identity }),
-    },
-    {
-      parameter_coordinate: "rdson", value: rdsonSeed, unit: "ohm",
-      evidence_role: hasRdsonTypical ? "typical_observation_seed" : "bound_value_seed_only",
-      scored_as_residual: hasRdsonTypical,
-      condition_identity: hasRdsonTypical ? rdsonTypical.condition_identity : rdsonConstraints.find((constraint) => constraint.maximum_ohm === rdsonSeed)?.condition_identity,
-    },
+    { parameter_coordinate: "VTO", value: thresholdSeed, unit: "V", evidence_role: hasThresholdTypical ? "typical_observation_seed" : "interval_midpoint_seed_only", scored_as_residual: hasThresholdTypical },
+    { parameter_coordinate: "rdson", value: rdsonSeed, unit: "ohm", evidence_role: hasRdsonTypical ? "typical_observation_seed" : "bound_value_seed_only", scored_as_residual: hasRdsonTypical },
   ];
 
   if (hasThresholdTypical && hasRdsonTypical) {
     if (constraints.length) {
       const checked = constraintRunner({
-        evidence_contract_version: "1.0.0", polarity: polarityFor(part, extraction), constraints, seed: { vto: thresholdSeed, rdson: Math.max(1e-4, rdsonSeed) },
+        polarity: polarityFor(part, extraction), constraints, seed: { vto: thresholdSeed, rdson: Math.max(1e-4, rdsonSeed) },
         adjustable: { vto: false, rdson: false },
         fixed: { CGS: parameters.CGS, CGDMAX: parameters.CGDMAX, CGDMIN: parameters.CGDMIN, CJO: parameters.CJO },
       });
@@ -727,7 +234,7 @@ function mosfetFit(part, extraction, forceF1 = false, constraintRunner = default
   }
 
   const constrained = constraintRunner({
-    evidence_contract_version: "1.0.0", polarity: polarityFor(part, extraction), constraints, seed: { vto: thresholdSeed, rdson: Math.max(1e-4, rdsonSeed) },
+    polarity: polarityFor(part, extraction), constraints, seed: { vto: thresholdSeed, rdson: Math.max(1e-4, rdsonSeed) },
     adjustable: { vto: true, rdson: true },
     fixed: { CGS: parameters.CGS, CGDMAX: parameters.CGDMAX, CGDMIN: parameters.CGDMIN, CJO: parameters.CJO },
   });
@@ -857,10 +364,8 @@ export function fitBulkPart(part, extraction, { ngspiceRunner = defaultNgspiceRu
   const polarity = polarityFor(part, extraction);
   let fit;
   if (!forceF1 && extraction?.usable_curves) {
-    const fitExtraction = part.conveyor_family === "mosfet" ? normalizeMosfetExtractionForFit(part, extraction) : extraction;
     const attempt = fitRunner({
-      ...(part.conveyor_family === "mosfet" ? { evidence_contract_version: "1.0.0" } : {}),
-      family: part.conveyor_family, extraction: fitExtraction, polarity,
+      family: part.conveyor_family, extraction, polarity,
       mpn: part.mpn, manufacturer: part.manufacturer, seed_hints: part.seed_hints ?? [],
     });
     if (attempt?.fidelity !== "F2") {
@@ -868,12 +373,6 @@ export function fitBulkPart(part, extraction, { ngspiceRunner = defaultNgspiceRu
     }
     const parameters = part.conveyor_family === "bjt" ? { ...BJT_AC_DEFAULTS, ...attempt.parameters } : attempt.parameters;
     const attemptRows = attempt.residuals ?? [];
-    if (part.conveyor_family === "mosfet") {
-      if (attempt.evidence_contract_version !== "1.0.0") throw new Error("MOSFET F2 fitter result omitted evidence_contract_version 1.0.0");
-      for (const row of attemptRows) {
-        if (!row.condition_identity || !row.citation_identity || !row.evidence_identity) throw new Error("MOSFET F2 fitter result omitted complete evidence identities");
-      }
-    }
     const constraintRows = attemptRows.filter((row) => row.evidence_role === "inequality_constraint");
     const observationRows = attemptRows.filter((row) => row.evidence_role !== "inequality_constraint");
     fit = {
@@ -882,8 +381,6 @@ export function fitBulkPart(part, extraction, { ngspiceRunner = defaultNgspiceRu
       residuals: attemptRows, curves_used: attempt.curves_used ?? [],
       curves_rejected: attempt.curves_rejected ?? [], optimizer: attempt.optimizer ?? null,
       fitter: attempt.fitter ?? null, points: [], evidence_mode: "curve-fitted",
-      evidence_contract_version: attempt.evidence_contract_version ?? null,
-      evidence_curves: part.conveyor_family === "mosfet" ? fitExtraction.curves.filter((curve) => curve.characteristic) : [],
       parameter_metadata: Object.fromEntries(Object.keys(parameters).map((name) => {
         const held = (attempt.optimizer?.held_defaults ?? []).find((item) => item.parameter === name);
         return [name, held ? { status: `held default: ${held.reason}` } : { status: "evidence-derived (curve-fitted)", evidence_mode: "curve-fitted" }];
@@ -1091,62 +588,6 @@ function isNominalTemperatureEvidence(point) {
   return temperatures.length === 0 || temperatures.every((temperature) => Math.abs(temperature - 25) <= 5);
 }
 
-function acceptedRdsonFactPoints(specs, fit, part = null, extraction = null) {
-  if (fit.fidelity === "F2") return specs.rdson_points ?? [];
-  const evidence = citedRdsonEvidence(specs, mosfetEvidenceContext(part, extraction));
-  const accepted = fit.evidence_mode === "typ-point"
-    ? evidence.typical.filter((validated) => validated.index === fit.calibration?.observations?.find((observation) => observation.quantity === "rds_on")?.source_index)
-    : [...evidence.typical, ...evidence.maximum];
-  return accepted.map((validated) => Object.fromEntries(
-    [["vgs", 0], ["current", 1], ["resistance", 2]].map(([key, fieldIndex]) => [key, {
-      ...validated.point[key],
-      condition_identity: validated.condition_identity,
-      citation_identity: validated.citation_identities[fieldIndex],
-      evidence_identity: validated.evidence_identities[fieldIndex],
-    }]),
-  ));
-}
-
-function identityDatum(validated, quantityLabel, sourceEvidence = validated.evidence) {
-  return {
-    ...magnitudeQuantity(normalizeEvidence(sourceEvidence)),
-    quantity: quantityLabel,
-    condition_identity: validated.condition_identity,
-    citation_identity: validated.citation_identity,
-    evidence_identity: validated.evidence_identity,
-  };
-}
-
-function acceptedThresholdFacts(specs, fit, part, extraction) {
-  const context = mosfetEvidenceContext(part, extraction);
-  let typical = null;
-  try {
-    if (specs.threshold_typ) typical = validateThresholdEvidence(specs.threshold_typ, "typical", "MOSFET threshold facts typical", context);
-  } catch {
-    typical = null;
-  }
-  let minimum = null;
-  let maximum = null;
-  try {
-    if (specs.threshold_min) minimum = validateThresholdEvidence(specs.threshold_min, "minimum", "MOSFET threshold facts minimum", context);
-    if (specs.threshold_max) maximum = validateThresholdEvidence(specs.threshold_max, "maximum", "MOSFET threshold facts maximum", context);
-    const cohort = [minimum, typical, maximum].filter(Boolean);
-    if (cohort.length > 1 && !cohort.slice(1).every((item) => sameIdentity(cohort[0], item))) {
-      throw new Error("MOSFET threshold facts do not share one condition and citation cohort");
-    }
-  } catch (error) {
-    if (fit.fidelity !== "F2") throw error;
-    minimum = null;
-    maximum = null;
-  }
-  if (!minimum && !typical && !maximum) return null;
-  return {
-    minimum: minimum ? identityDatum(minimum, "threshold_minimum") : null,
-    typical: typical ? identityDatum(typical, "threshold_typical") : null,
-    maximum: maximum ? identityDatum(maximum, "threshold_maximum") : null,
-  };
-}
-
 function bulkFactoryFacts(part, extraction, fit, identity, source) {
   const common = {
     schema_version: "1.0.0",
@@ -1251,28 +692,31 @@ function bulkFactoryFacts(part, extraction, fit, identity, source) {
     }));
     return { ...common, gain_points: gainPoints, saturation_points: fit.fidelity === "F2" || gainPoints.length === 0 ? saturationPoints : [] };
   }
-  const factSpecs = fit.fidelity === "F2" ? normalizeMosfetExtractionForFit(part, extraction).specs : specs;
-  const rdsonPoints = acceptedRdsonFactPoints(factSpecs, fit, part, extraction).map((point) => ({
-    vgs: { ...magnitudeQuantity(normalizeEvidence(point.vgs)), quantity: "vgs" },
-    current: { ...magnitudeQuantity(normalizeEvidence(point.current)), quantity: "drain_current" },
-    resistance: {
-      ...magnitudeQuantity(normalizeEvidence(point.resistance)),
-      quantity: point.resistance.source_kind === "minimum" ? "rds_on_minimum" : point.resistance.source_kind === "maximum" ? "rds_on_maximum" : "rds_on_typical",
-    },
+  const thresholdConditions = specs.threshold_typ?.conditions ?? specs.threshold_max?.conditions ?? specs.threshold_min?.conditions ?? "Nominal threshold characterization";
+  const thresholdCitation = specs.threshold_typ?.page_reference ?? specs.threshold_max?.page_reference ?? specs.threshold_min?.page_reference ?? source.pages_referenced[0];
+  const sourceRdsonPoints = fit.evidence_mode === "interval-constrained"
+    ? (specs.rdson_points ?? [])
+    : (specs.rdson_points ?? []).filter(isNominalTemperatureEvidence);
+  const allRdsonPoints = sourceRdsonPoints.map((point) => ({
+    ...point,
+    vgs: magnitudeQuantity(point.vgs),
+    current: magnitudeQuantity(point.current),
+    resistance: magnitudeQuantity(point.resistance),
   }));
-  const threshold = (fit.fidelity === "F2" || fit.evidence_mode === "interval-constrained" || rdsonPoints.length === 0)
-    ? acceptedThresholdFacts(factSpecs, fit, part, extraction)
-    : null;
-  const transferCurves = (fit.evidence_curves ?? []).filter((curve) => curve.characteristic === "transfer_current");
-  const outputCurves = (fit.evidence_curves ?? []).filter((curve) => curve.characteristic === "output_current");
+  // Legacy typical-point F1 supports one representative RDS(on) condition. The constrained
+  // path retains every cited maximum because each remains an independently enforced bound.
+  const rdsonPoints = fit.fidelity === "F1" && fit.evidence_mode !== "interval-constrained"
+    ? [mosfetCalibrationPoint({ rdson_points: allRdsonPoints })].filter(Boolean)
+    : allRdsonPoints;
   return {
     ...common,
-    evidence_contract_version: "1.0.0",
     rdson_points: rdsonPoints,
-    threshold,
-    curves: [...transferCurves, ...outputCurves],
-    transfer_curves: transferCurves,
-    output_curves: outputCurves,
+    threshold: (fit.fidelity === "F2" || fit.evidence_mode === "interval-constrained" || rdsonPoints.length === 0) && (specs.threshold_min || specs.threshold_typ || specs.threshold_max) ? {
+      minimum: magnitudeQuantity(specs.threshold_min),
+      typical: magnitudeQuantity(specs.threshold_typ),
+      maximum: magnitudeQuantity(specs.threshold_max),
+      test_current: quantity(conditionCurrent(thresholdConditions, 250e-6), "A", thresholdConditions, thresholdCitation, "typical"),
+    } : null,
     transfer_points: [],
     output_points: [],
   };
@@ -1284,77 +728,7 @@ function numericBound(quantityName, values, unit, conditions) {
   return { quantity: quantityName, minimum: Math.min(...finite), maximum: Math.max(...finite), unit, conditions, placeholder: false };
 }
 
-function evidenceRef(row) {
-  return {
-    evidence_id: row.evidence.evidence_id,
-    condition_id: row.condition.condition_id,
-    citation_id: row.citation.citation_id,
-    cohort_id: row.evidence.cohort_id,
-  };
-}
-
-function strictMosfetEvidenceRows(facts) {
-  const rows = [];
-  for (const point of facts.rdson_points ?? []) {
-    for (const datum of [point.vgs, point.current, point.resistance]) {
-      rows.push({ condition: datum.condition_identity, citation: datum.citation_identity, evidence: datum.evidence_identity });
-    }
-  }
-  for (const field of ["minimum", "typical", "maximum"]) {
-    const datum = facts.threshold?.[field];
-    if (datum) rows.push({ condition: datum.condition_identity, citation: datum.citation_identity, evidence: datum.evidence_identity });
-  }
-  for (const curve of facts.curves ?? []) {
-    for (const point of curve.points ?? []) rows.push({ condition: curve.condition_identity, citation: curve.citation_identity, evidence: point.evidence_identity });
-  }
-  return rows;
-}
-
-function conditionValuesForRegion(condition, quantityName, temperatureKind = null) {
-  if (quantityName === "temperature") return condition.temperature.kind === temperatureKind ? [condition.temperature.value_c] : [];
-  const field = condition.electrical[quantityName];
-  if (field.kind === "fixed") return [field[`value_${quantityName === "id" ? "a" : "v"}`]];
-  if (field.kind === "range") return [field[`lower_${quantityName === "id" ? "a" : "v"}`], field[`upper_${quantityName === "id" ? "a" : "v"}`]];
-  return [];
-}
-
-function strictMosfetBound(quantityName, rows, unit, { temperatureKind = null } = {}) {
-  const selected = rows.filter((row) => conditionValuesForRegion(row.condition, quantityName, temperatureKind).length);
-  if (!selected.length) return null;
-  const values = selected.flatMap((row) => conditionValuesForRegion(row.condition, quantityName, temperatureKind));
-  const refs = [...new Map(selected.map((row) => [row.evidence.evidence_id, evidenceRef(row)])).values()];
-  const material = {
-    quantity: quantityName,
-    kind: "range",
-    unit,
-    minimum: Math.min(...values),
-    maximum: Math.max(...values),
-    evidence_refs: refs,
-    condition_ids: [...new Set(refs.map((ref) => ref.condition_id))].sort(),
-    citation_ids: [...new Set(refs.map((ref) => ref.citation_id))].sort(),
-    derivation: "direct_evidence_union",
-    ...(temperatureKind ? { temperature_kind: temperatureKind } : {}),
-  };
-  return { bound_id: identityHash("sha256", material), ...material, conditions: "Direct cited MOSFET evidence union", placeholder: false };
-}
-
-function strictMosfetOperatingRegion(facts) {
-  const rows = strictMosfetEvidenceRows(facts);
-  const bounds = [
-    strictMosfetBound("vgs", rows, "V"),
-    strictMosfetBound("vds", rows, "V"),
-    strictMosfetBound("id", rows, "A"),
-    ...["junction", "ambient", "case"].map((kind) => strictMosfetBound("temperature", rows, "degC", { temperatureKind: kind })),
-  ].filter(Boolean);
-  if (!bounds.some((bound) => bound.quantity === "vgs") || !bounds.some((bound) => bound.quantity === "id") || !bounds.some((bound) => bound.quantity === "temperature")) {
-    throw new Error("MOSFET supported operating region lacks validated VGS, ID, or temperature evidence");
-  }
-  const summary = bounds.map((bound) => `${bound.quantity}${bound.temperature_kind ? `(${bound.temperature_kind})` : ""} ${bound.minimum} to ${bound.maximum} ${bound.unit}`).join("; ");
-  return { contract_version: "1.0.0", summary: `Supported only over the direct cited evidence union: ${summary}.`, numeric_bounds: bounds };
-}
-
 function operatingRegion(part, facts) {
-  if (part.conveyor_family === "mosfet" && facts.evidence_contract_version === "1.0.0") return strictMosfetOperatingRegion(facts);
   const bounds = [];
   if (part.conveyor_family === "diode") {
     const currents = facts.fit_points.map((point) => point.current.value);
@@ -1379,12 +753,9 @@ function operatingRegion(part, facts) {
     bounds.push(numericBound("drain_current_magnitude", facts.rdson_points.map((point) => point.current.value), "A", "Cited RDS(on) characterization currents"));
   }
   const citedTemperatures = part.conveyor_family === "mosfet" ? [
-    ...facts.rdson_points.map((point) => evidenceTemperature(point.vgs, point.current, point.resistance)),
-    ...(facts.threshold ? [evidenceTemperature(facts.threshold.minimum, facts.threshold.typical, facts.threshold.maximum, facts.threshold.test_current)] : []),
-    ...(facts.transfer_curves ?? []).map((curve) => curve.condition_identity?.temperature?.value_c),
-    ...(facts.output_curves ?? []).map((curve) => curve.condition_identity?.temperature?.value_c),
-  ].filter(Number.isFinite) : [25];
-  if (part.conveyor_family === "mosfet" && !citedTemperatures.length) throw new Error("MOSFET supported operating region has no validated cited temperature");
+    ...facts.rdson_points.map((point) => evidenceTemperature(point.vgs, point.current, point.resistance) ?? 25),
+    ...(facts.threshold ? [evidenceTemperature(facts.threshold.minimum, facts.threshold.typical, facts.threshold.maximum, facts.threshold.test_current) ?? 25] : []),
+  ] : [25];
   bounds.push({ quantity: "ambient_temperature", minimum: Math.min(...citedTemperatures), maximum: Math.max(...citedTemperatures), unit: "degC", conditions: "Cited model and package benches", placeholder: false });
   const numericBounds = bounds.filter(Boolean);
   const named = numericBounds.filter((bound) => bound.quantity !== "ambient_temperature").map((bound) => `${bound.quantity} ${bound.minimum} to ${bound.maximum} ${bound.unit}`).join("; ");
@@ -1409,7 +780,6 @@ function bulkContext(part, fit, identity, pinInfo, source, omissions, operating,
       },
       component: {
         modelName: fit.model.name,
-        ...(part.conveyor_family === "mosfet" ? { supported_operating_region: operating } : {}),
         fidelity_tier: fit.fidelity,
         domain_coverage: { dc: fit.fidelity === "F2" ? "fitted" : "approx", ac: "none", transient: "none", noise: "none", thermal: "none", digital: "none" },
         omissions,
@@ -1494,16 +864,7 @@ export function stageBulkPart(part, rawExtraction, fit, stagingRoot, { demotionR
     fidelity_tier: fit.fidelity,
     domain_coverage: { dc: fit.fidelity === "F2" ? "fitted" : "approx", ac: "none", transient: "none", noise: "none", thermal: "none", digital: "none" },
     supported_analyses: ["operating_point", "dc_sweep"],
-    supported_operating_region: part.conveyor_family === "mosfet"
-      ? { summary: operating.summary, numeric_bounds: operating.numeric_bounds.map((bound) => ({
-          quantity: bound.quantity,
-          minimum: bound.minimum,
-          maximum: bound.maximum,
-          unit: bound.unit,
-          conditions: bound.conditions,
-          placeholder: false,
-        })) }
-      : operating,
+    supported_operating_region: operating,
     known_omissions: omissions,
     licence: { spdx_id: "MIT", provenance_basis: "original_from_facts" },
     generator: { tool_or_agent: "opencircuit-model-factory-v0.1.0 bulk-adapter", date: new Date().toISOString().slice(0, 10) },
@@ -1526,8 +887,6 @@ export function stageBulkPart(part, rawExtraction, fit, stagingRoot, { demotionR
     optimizer: fit.optimizer ?? null,
     held_defaults: fit.optimizer?.held_defaults ?? [],
     curves_used: fit.curves_used ?? [],
-    evidence_contract_version: fit.evidence_contract_version ?? (part.conveyor_family === "mosfet" ? "1.0.0" : null),
-    evidence_curves: fit.evidence_curves ?? [],
     curves_rejected: fit.curves_rejected ?? [],
     residuals: fit.residuals ?? [],
     rms_relative_error: fit.rms ?? null,
