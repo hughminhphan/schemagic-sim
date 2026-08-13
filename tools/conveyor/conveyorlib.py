@@ -3,20 +3,29 @@ from __future__ import annotations
 
 import copy
 import datetime as dt
+import hashlib
 import json
 import math
+import os
+import queue
 import re
 import sqlite3
+import threading
+import time
 from collections import Counter
 from concurrent.futures import ThreadPoolExecutor
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Callable, Iterable, Mapping, Sequence
+from typing import Any, Callable, Iterable, Mapping, Protocol, Sequence
 
 SCHEMA_VERSION = "1.0.0"
 LINEAR_STATES = ("selected", "datasheet_fetched", "extracted", "fitted", "staged")
 FAILURE_STATES = tuple(f"failed_{stage}" for stage in LINEAR_STATES[1:])
 ALL_STATES = set(LINEAR_STATES + FAILURE_STATES)
 FAMILY_QUOTAS = {"diode": 18, "bjt": 16, "mosfet": 16}
+DEFAULT_LUNA_CAP = 8
+MAX_LUNA_CAP = 8
+DEFAULT_LEASE_SECONDS = 900.0
 
 
 class ConveyorError(RuntimeError):
@@ -44,9 +53,10 @@ class StateStore:
     def __init__(self, path: Path):
         path.parent.mkdir(parents=True, exist_ok=True)
         self.path = path
-        self.connection = sqlite3.connect(path)
+        self.connection = sqlite3.connect(path, timeout=30, check_same_thread=False)
         self.connection.row_factory = sqlite3.Row
         self.connection.execute("PRAGMA journal_mode=WAL")
+        self.connection.execute("PRAGMA busy_timeout=30000")
         self.connection.executescript("""
             CREATE TABLE IF NOT EXISTS parts (
               tranche TEXT NOT NULL,
@@ -73,8 +83,72 @@ class StateStore:
               reason TEXT,
               created_at TEXT NOT NULL
             );
+            CREATE TABLE IF NOT EXISTS extraction_jobs (
+              job_key TEXT PRIMARY KEY,
+              tranche TEXT NOT NULL,
+              lcsc_id TEXT NOT NULL,
+              job_hash TEXT NOT NULL,
+              job_json TEXT NOT NULL,
+              state TEXT NOT NULL DEFAULT 'pending',
+              attempts INTEGER NOT NULL DEFAULT 0,
+              discrepancy_retries INTEGER NOT NULL DEFAULT 0,
+              missing_replacements INTEGER NOT NULL DEFAULT 0,
+              lease_owner TEXT,
+              lease_until REAL,
+              active_attempt INTEGER,
+              canonical_path TEXT NOT NULL,
+              reason TEXT,
+              created_at TEXT NOT NULL,
+              updated_at TEXT NOT NULL,
+              UNIQUE (tranche, lcsc_id)
+            );
+            CREATE TABLE IF NOT EXISTS extraction_attempts (
+              job_key TEXT NOT NULL,
+              attempt INTEGER NOT NULL,
+              worker_id TEXT NOT NULL,
+              state TEXT NOT NULL,
+              temp_path TEXT NOT NULL,
+              started_at TEXT NOT NULL,
+              completed_at TEXT,
+              reason TEXT,
+              PRIMARY KEY (job_key, attempt),
+              FOREIGN KEY (job_key) REFERENCES extraction_jobs(job_key)
+            );
+            CREATE TABLE IF NOT EXISTS extraction_completed (
+              job_key TEXT PRIMARY KEY,
+              job_hash TEXT NOT NULL,
+              canonical_path TEXT NOT NULL UNIQUE,
+              completed_at TEXT NOT NULL,
+              FOREIGN KEY (job_key) REFERENCES extraction_jobs(job_key)
+            );
         """)
+        self._migrate_scheduler_schema()
+        self.connection.execute(
+            "CREATE INDEX IF NOT EXISTS extraction_jobs_state_idx ON extraction_jobs(state, lease_until, created_at)"
+        )
         self.connection.commit()
+
+    def _migrate_scheduler_schema(self) -> None:
+        """Add scheduler columns when opening a pre-coordinator state database."""
+        expected = {
+            "job_hash": "TEXT",
+            "job_json": "TEXT",
+            "state": "TEXT NOT NULL DEFAULT 'pending'",
+            "attempts": "INTEGER NOT NULL DEFAULT 0",
+            "discrepancy_retries": "INTEGER NOT NULL DEFAULT 0",
+            "missing_replacements": "INTEGER NOT NULL DEFAULT 0",
+            "lease_owner": "TEXT",
+            "lease_until": "REAL",
+            "active_attempt": "INTEGER",
+            "canonical_path": "TEXT",
+            "reason": "TEXT",
+            "created_at": "TEXT",
+            "updated_at": "TEXT",
+        }
+        columns = {row[1] for row in self.connection.execute("PRAGMA table_info(extraction_jobs)")}
+        for name, declaration in expected.items():
+            if name not in columns:
+                self.connection.execute(f"ALTER TABLE extraction_jobs ADD COLUMN {name} {declaration}")
 
     def close(self) -> None:
         self.connection.close()
@@ -161,6 +235,169 @@ class StateStore:
     def summary(self, tranche: str) -> dict[str, int]:
         counts = Counter(row["state"] for row in self.rows(tranche))
         return dict(sorted(counts.items()))
+
+    def register_extraction_job(self, job: Mapping[str, Any]) -> dict[str, Any]:
+        record = immutable_job_record(job)
+        now = utc_now()
+        with self.connection:
+            existing = self.connection.execute(
+                "SELECT * FROM extraction_jobs WHERE job_key = ?", (record["job_key"],)
+            ).fetchone()
+            if existing is not None:
+                if existing["job_hash"] != record["job_hash"] or existing["job_json"] != record["job_json"]:
+                    raise ConveyorError(f"Extraction job hash drift for {record['job_key']}")
+                return dict(existing)
+            identity = self.connection.execute(
+                "SELECT job_key, job_hash FROM extraction_jobs WHERE tranche = ? AND lcsc_id = ?",
+                (record["tranche"], record["lcsc_id"]),
+            ).fetchone()
+            if identity is not None:
+                raise ConveyorError(
+                    f"Extraction identity already registered as {identity['job_key']}; refusing replacement"
+                )
+            self.connection.execute(
+                """INSERT INTO extraction_jobs
+                   (job_key, tranche, lcsc_id, job_hash, job_json, canonical_path, created_at, updated_at)
+                   VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
+                (record["job_key"], record["tranche"], record["lcsc_id"], record["job_hash"],
+                 record["job_json"], record["canonical_path"], now, now),
+            )
+        return dict(self.connection.execute(
+            "SELECT * FROM extraction_jobs WHERE job_key = ?", (record["job_key"],)
+        ).fetchone())
+
+    def scheduler_rows(self, tranche: str | None = None) -> list[dict[str, Any]]:
+        if tranche is None:
+            query, values = "SELECT * FROM extraction_jobs ORDER BY created_at, job_key", ()
+        else:
+            query, values = "SELECT * FROM extraction_jobs WHERE tranche = ? ORDER BY created_at, job_key", (tranche,)
+        return [dict(row) for row in self.connection.execute(query, values)]
+
+    def reserve_extraction_job(self, worker_id: str, lease_seconds: float = DEFAULT_LEASE_SECONDS) -> dict[str, Any] | None:
+        if lease_seconds <= 0:
+            raise ConveyorError("Extraction lease must be positive")
+        now_epoch = time.time()
+        lease_until = now_epoch + lease_seconds
+        self.connection.execute("BEGIN IMMEDIATE")
+        try:
+            row = self.connection.execute(
+                """SELECT * FROM extraction_jobs
+                   WHERE state IN ('pending', 'retry_discrepancy', 'retry_missing')
+                      OR (state = 'leased' AND lease_until <= ?)
+                   ORDER BY CASE state WHEN 'leased' THEN 0 ELSE 1 END, created_at, job_key
+                   LIMIT 1""",
+                (now_epoch,),
+            ).fetchone()
+            if row is None:
+                self.connection.commit()
+                return None
+            if self.connection.execute(
+                "SELECT 1 FROM extraction_completed WHERE job_key = ?", (row["job_key"],)
+            ).fetchone():
+                self.connection.execute(
+                    "UPDATE extraction_jobs SET state = 'completed', updated_at = ? WHERE job_key = ?",
+                    (utc_now(), row["job_key"]),
+                )
+                self.connection.commit()
+                return None
+            attempt = int(row["attempts"]) + 1
+            updated = self.connection.execute(
+                """UPDATE extraction_jobs
+                   SET state = 'leased', attempts = ?, active_attempt = ?, lease_owner = ?,
+                       lease_until = ?, updated_at = ?
+                   WHERE job_key = ? AND state = ? AND attempts = ?""",
+                (attempt, attempt, worker_id, lease_until, utc_now(), row["job_key"], row["state"], row["attempts"]),
+            )
+            if updated.rowcount != 1:
+                self.connection.rollback()
+                return None
+            job = json.loads(row["job_json"])
+            if row["state"] == "retry_discrepancy" and row["reason"]:
+                job["prompt"] = (
+                    str(job["prompt"]) + "\nThis is the one permitted discrepancy retry. Resolve or explain:\n"
+                    + str(row["reason"]) + "\n"
+                )
+            temp_path = attempt_response_path(Path(row["canonical_path"]), attempt)
+            temp_path.parent.mkdir(parents=True, exist_ok=True)
+            self.connection.execute(
+                """INSERT INTO extraction_attempts
+                   (job_key, attempt, worker_id, state, temp_path, started_at)
+                   VALUES (?, ?, ?, 'leased', ?, ?)""",
+                (row["job_key"], attempt, worker_id, str(temp_path), utc_now()),
+            )
+            self.connection.commit()
+            return {**job, "job_key": row["job_key"], "job_hash": row["job_hash"], "attempt": attempt,
+                    "response_path": str(temp_path), "canonical_path": row["canonical_path"]}
+        except Exception:
+            if self.connection.in_transaction:
+                self.connection.rollback()
+            raise
+
+    def finish_extraction_attempt(
+        self, job_key: str, attempt: int, *, state: str, reason: str | None = None,
+        canonical_path: str | None = None,
+    ) -> None:
+        allowed = {"completed", "retry_discrepancy", "retry_missing", "quarantined"}
+        if state not in allowed:
+            raise ConveyorError(f"Invalid extraction completion state: {state}")
+        with self.connection:
+            row = self.connection.execute(
+                "SELECT * FROM extraction_jobs WHERE job_key = ?", (job_key,)
+            ).fetchone()
+            if row is None:
+                raise ConveyorError(f"Unknown extraction job: {job_key}")
+            if row["state"] != "leased" or row["active_attempt"] != attempt:
+                raise ConveyorError(f"Stale extraction completion for {job_key} attempt {attempt}")
+            if state == "retry_discrepancy" and int(row["discrepancy_retries"]) >= 1:
+                state, reason = "quarantined", f"discrepancy retry exhausted: {reason or 'unspecified'}"
+            if state == "retry_missing" and int(row["missing_replacements"]) >= 1:
+                state, reason = "quarantined", f"missing-response replacement exhausted: {reason or 'unspecified'}"
+            increments = []
+            if state == "retry_discrepancy":
+                increments.append("discrepancy_retries = discrepancy_retries + 1")
+            if state == "retry_missing":
+                increments.append("missing_replacements = missing_replacements + 1")
+            if state == "completed":
+                completed_path = canonical_path or row["canonical_path"]
+                self.connection.execute(
+                    """INSERT INTO extraction_completed (job_key, job_hash, canonical_path, completed_at)
+                       VALUES (?, ?, ?, ?)""",
+                    (job_key, row["job_hash"], completed_path, utc_now()),
+                )
+            assignments = ["state = ?", "reason = ?", "lease_owner = NULL", "lease_until = NULL",
+                           "active_attempt = NULL", "updated_at = ?", *increments]
+            self.connection.execute(
+                f"UPDATE extraction_jobs SET {', '.join(assignments)} WHERE job_key = ?",
+                (state, reason, utc_now(), job_key),
+            )
+            self.connection.execute(
+                """UPDATE extraction_attempts SET state = ?, completed_at = ?, reason = ?
+                   WHERE job_key = ? AND attempt = ?""",
+                (state, utc_now(), reason, job_key, attempt),
+            )
+
+    def recover_expired_leases(self, now_epoch: float | None = None) -> int:
+        now_epoch = time.time() if now_epoch is None else now_epoch
+        with self.connection:
+            rows = self.connection.execute(
+                "SELECT job_key, active_attempt FROM extraction_jobs WHERE state = 'leased' AND lease_until <= ?",
+                (now_epoch,),
+            ).fetchall()
+            for row in rows:
+                self.connection.execute(
+                    """UPDATE extraction_attempts SET state = 'lease_expired', completed_at = ?, reason = 'lease expired'
+                       WHERE job_key = ? AND attempt = ? AND state = 'leased'""",
+                    (utc_now(), row["job_key"], row["active_attempt"]),
+                )
+                self.connection.execute(
+                    """UPDATE extraction_jobs SET state = 'pending', lease_owner = NULL, lease_until = NULL,
+                       active_attempt = NULL, reason = 'lease expired', updated_at = ? WHERE job_key = ?""",
+                    (utc_now(), row["job_key"]),
+                )
+        return len(rows)
+
+    def completed_job_keys(self) -> set[str]:
+        return {row[0] for row in self.connection.execute("SELECT job_key FROM extraction_completed")}
 
 
 def classify_family(part: Mapping[str, Any]) -> str:
@@ -511,15 +748,293 @@ def build_luna_prompt(repo_root: Path, pack_path: Path, datasheet_path: Path, pa
     return "\n".join(lines) + "\n"
 
 
+def canonical_json(value: Mapping[str, Any]) -> str:
+    return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+
+
+def immutable_job_record(job: Mapping[str, Any]) -> dict[str, str]:
+    required = {"tranche", "lcsc_id", "mpn", "manufacturer", "family", "schema_path", "response_path", "prompt"}
+    missing = required - set(job)
+    if missing:
+        raise ConveyorError(f"Extraction job missing immutable fields: {', '.join(sorted(missing))}")
+    immutable = {key: job[key] for key in sorted(job) if key not in {"attempt", "job_hash", "canonical_path"}}
+    job_json = canonical_json(immutable)
+    job_hash = hashlib.sha256(job_json.encode("utf-8")).hexdigest()
+    return {
+        "job_key": f"{job['tranche']}:{job['lcsc_id']}",
+        "tranche": str(job["tranche"]),
+        "lcsc_id": str(job["lcsc_id"]),
+        "job_hash": job_hash,
+        "job_json": job_json,
+        "canonical_path": str(Path(str(job["response_path"])).resolve()),
+    }
+
+
+def attempt_response_path(canonical_path: Path, attempt: int) -> Path:
+    return canonical_path.with_name(f".{canonical_path.name}.attempt-{attempt}.tmp")
+
+
+def publish_response_no_overwrite(temporary: Path, canonical: Path) -> None:
+    """Claim an absent destination, then atomically rename validated evidence into it."""
+    canonical.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        descriptor = os.open(canonical, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+    except FileExistsError as error:
+        raise ConveyorError(f"Canonical extraction already exists; refusing overwrite: {canonical}") from error
+    os.close(descriptor)
+    try:
+        os.replace(temporary, canonical)
+    except OSError as error:
+        try:
+            if canonical.stat().st_size == 0:
+                canonical.unlink()
+        except OSError:
+            pass
+        raise ConveyorError(f"Could not atomically publish extraction {canonical}: {error}") from error
+
+
+def quarantine_response(temporary: Path, reason: str) -> Path | None:
+    if not temporary.exists():
+        return None
+    digest = hashlib.sha256(reason.encode("utf-8")).hexdigest()[:12]
+    quarantine = temporary.with_name(f"{temporary.name}.quarantine-{digest}")
+    if quarantine.exists():
+        quarantine = temporary.with_name(f"{temporary.name}.quarantine-{digest}-{time.time_ns()}")
+    os.rename(temporary, quarantine)
+    return quarantine
+
+
+class ExtractionJobProducer(Protocol):
+    """Overlap-ready source. Producers may prepare PDFs/topology while workers consume jobs."""
+
+    def __iter__(self) -> Iterable[Mapping[str, Any]]: ...
+
+
+@dataclass(frozen=True)
+class ExtractionCompletion:
+    job: Mapping[str, Any]
+    invoke_error: str | None = None
+
+
+class ExtractionCoordinator:
+    """SQLite-coordinated Luna scheduler with one validating completion consumer."""
+
+    def __init__(
+        self,
+        state_path: Path,
+        invoke: Callable[[Mapping[str, Any]], Any],
+        *,
+        max_concurrency: int = DEFAULT_LUNA_CAP,
+        lease_seconds: float = DEFAULT_LEASE_SECONDS,
+    ):
+        if max_concurrency < 1 or max_concurrency > MAX_LUNA_CAP:
+            raise ConveyorError(f"Extraction concurrency must be between 1 and {MAX_LUNA_CAP}")
+        self.state_path = state_path
+        self.invoke = invoke
+        self.max_concurrency = max_concurrency
+        self.lease_seconds = lease_seconds
+        self.completion_queue: queue.Queue[ExtractionCompletion | None] = queue.Queue(maxsize=2 * max_concurrency)
+        self._producer_done = threading.Event()
+        self._errors: list[BaseException] = []
+        self._results: list[dict[str, Any]] = []
+        self._lock = threading.Lock()
+
+    def _store(self) -> StateStore:
+        return StateStore(self.state_path)
+
+    def register(self, jobs: ExtractionJobProducer | Iterable[Mapping[str, Any]]) -> int:
+        count = 0
+        store = self._store()
+        try:
+            for job in jobs:
+                store.register_extraction_job(job)
+                count += 1
+        finally:
+            store.close()
+        return count
+
+    def reconcile(self) -> int:
+        """Complete validated canonical files left between rename and SQLite commit."""
+        store = self._store()
+        reconciled = 0
+        try:
+            for row in store.scheduler_rows():
+                if row["state"] == "completed":
+                    continue
+                canonical = Path(row["canonical_path"])
+                if not canonical.is_file():
+                    continue
+                job = json.loads(row["job_json"])
+                load_and_validate_extraction(
+                    canonical, Path(job["schema_path"]),
+                    {"mpn": job["mpn"], "manufacturer": job["manufacturer"], "family": job["family"]},
+                )
+                with store.connection:
+                    store.connection.execute(
+                        "INSERT OR IGNORE INTO extraction_completed (job_key, job_hash, canonical_path, completed_at) VALUES (?, ?, ?, ?)",
+                        (row["job_key"], row["job_hash"], row["canonical_path"], utc_now()),
+                    )
+                    store.connection.execute(
+                        """UPDATE extraction_jobs SET state = 'completed', reason = 'restart reconciliation',
+                           lease_owner = NULL, lease_until = NULL, active_attempt = NULL, updated_at = ? WHERE job_key = ?""",
+                        (utc_now(), row["job_key"]),
+                    )
+                reconciled += 1
+        finally:
+            store.close()
+        return reconciled
+
+    @staticmethod
+    def _write_invoke_result(job: Mapping[str, Any], result: Any) -> None:
+        path = Path(str(job["response_path"]))
+        if result is None:
+            return
+        path.parent.mkdir(parents=True, exist_ok=True)
+        if isinstance(result, Mapping):
+            path.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        elif isinstance(result, bytes):
+            path.write_bytes(result)
+        elif isinstance(result, str):
+            path.write_text(result, encoding="utf-8")
+        elif isinstance(result, Path):
+            path.write_bytes(result.read_bytes())
+        else:
+            raise ConveyorError(f"Unsupported extraction response type: {type(result).__name__}")
+
+    def _producer(self, jobs: ExtractionJobProducer | Iterable[Mapping[str, Any]]) -> None:
+        store = self._store()
+        try:
+            for job in jobs:
+                store.register_extraction_job(job)
+        except BaseException as error:
+            with self._lock:
+                self._errors.append(error)
+        finally:
+            store.close()
+            self._producer_done.set()
+
+    def _worker(self, worker_index: int) -> None:
+        store = self._store()
+        worker_id = f"worker-{worker_index}"
+        try:
+            while True:
+                job = store.reserve_extraction_job(worker_id, self.lease_seconds)
+                if job is None:
+                    leased = int(store.connection.execute(
+                        "SELECT count(*) FROM extraction_jobs WHERE state = 'leased'"
+                    ).fetchone()[0])
+                    if leased or not self._producer_done.is_set():
+                        time.sleep(0.002)
+                        continue
+                    return
+                error = None
+                try:
+                    result = self.invoke(job)
+                    self._write_invoke_result(job, result)
+                except BaseException as caught:
+                    error = str(caught)
+                self.completion_queue.put(ExtractionCompletion(job, error))
+        except BaseException as error:
+            with self._lock:
+                self._errors.append(error)
+        finally:
+            store.close()
+
+    def _consume_one(self, completion: ExtractionCompletion, store: StateStore) -> None:
+        job = completion.job
+        temporary = Path(str(job["response_path"]))
+        canonical = Path(str(job["canonical_path"]))
+        key, attempt = str(job["job_key"]), int(job["attempt"])
+        if completion.invoke_error or not temporary.is_file() or temporary.stat().st_size == 0:
+            reason = completion.invoke_error or "worker produced no response"
+            quarantine_response(temporary, reason)
+            store.finish_extraction_attempt(key, attempt, state="retry_missing", reason=reason)
+            self._results.append({"job_key": key, "status": "retry_missing", "reason": reason})
+            return
+        try:
+            payload = load_and_validate_extraction(
+                temporary, Path(str(job["schema_path"])),
+                {"mpn": str(job["mpn"]), "manufacturer": str(job["manufacturer"]), "family": str(job["family"])},
+            )
+        except ConveyorError as error:
+            quarantine = quarantine_response(temporary, str(error))
+            store.finish_extraction_attempt(key, attempt, state="quarantined", reason=str(error))
+            self._results.append({"job_key": key, "status": "quarantined", "reason": str(error),
+                                  "quarantine_path": str(quarantine) if quarantine else None})
+            return
+        discrepancies = cross_check(payload, job.get("seed_hints", []))
+        row = next(item for item in store.scheduler_rows() if item["job_key"] == key)
+        if discrepancies and int(row["discrepancy_retries"]) < 1:
+            reason = "; ".join(discrepancies)
+            quarantine_response(temporary, reason)
+            store.finish_extraction_attempt(key, attempt, state="retry_discrepancy", reason=reason)
+            self._results.append({"job_key": key, "status": "retry_discrepancy", "reason": reason})
+            return
+        if canonical.exists():
+            quarantine_response(temporary, "canonical response already exists")
+            store.finish_extraction_attempt(key, attempt, state="quarantined", reason="canonical response already exists")
+            self._results.append({"job_key": key, "status": "quarantined", "reason": "canonical response already exists"})
+            return
+        json_dump(temporary, payload)
+        publish_response_no_overwrite(temporary, canonical)
+        reason = "cross-validation failed after one retry: " + "; ".join(discrepancies) if discrepancies else None
+        store.finish_extraction_attempt(key, attempt, state="completed", reason=reason, canonical_path=str(canonical))
+        self._results.append({"job_key": key, "status": "completed", "reason": reason})
+
+    def _consumer(self, worker_count: int) -> None:
+        store = self._store()
+        stopped = 0
+        try:
+            while stopped < worker_count:
+                completion = self.completion_queue.get()
+                try:
+                    if completion is None:
+                        stopped += 1
+                    else:
+                        self._consume_one(completion, store)
+                except BaseException as error:
+                    with self._lock:
+                        self._errors.append(error)
+                finally:
+                    self.completion_queue.task_done()
+        finally:
+            store.close()
+
+    def run(self, jobs: ExtractionJobProducer | Iterable[Mapping[str, Any]] = ()) -> list[dict[str, Any]]:
+        self.reconcile()
+        store = self._store()
+        try:
+            store.recover_expired_leases()
+        finally:
+            store.close()
+        consumer = threading.Thread(target=self._consumer, args=(self.max_concurrency,), name="extraction-completion", daemon=True)
+        consumer.start()
+        producer = threading.Thread(target=self._producer, args=(jobs,), name="extraction-producer", daemon=True)
+        producer.start()
+        workers = [threading.Thread(target=self._worker, args=(index,), name=f"extraction-{index}", daemon=True)
+                   for index in range(self.max_concurrency)]
+        for worker in workers:
+            worker.start()
+        producer.join()
+        for worker in workers:
+            worker.join()
+            self.completion_queue.put(None)
+        self.completion_queue.join()
+        consumer.join()
+        if self._errors:
+            raise ConveyorError(f"Extraction coordinator failed: {self._errors[0]}") from self._errors[0]
+        return list(self._results)
+
+
 def run_extraction_batch(
     jobs: Sequence[Mapping[str, Any]],
     invoke: Callable[[Mapping[str, Any]], Any],
     *,
-    max_concurrency: int = 4,
+    max_concurrency: int = DEFAULT_LUNA_CAP,
 ) -> list[Any]:
-    """Dispatch extraction jobs through an injected Luna caller with a hard four-call ceiling."""
-    if max_concurrency < 1 or max_concurrency > 4:
-        raise ConveyorError("Extraction concurrency must be between 1 and 4")
+    """Compatibility helper for injected callers, with the same hard eight-call ceiling."""
+    if max_concurrency < 1 or max_concurrency > MAX_LUNA_CAP:
+        raise ConveyorError(f"Extraction concurrency must be between 1 and {MAX_LUNA_CAP}")
     with ThreadPoolExecutor(max_workers=max_concurrency) as executor:
         return list(executor.map(invoke, jobs))
 
