@@ -614,6 +614,15 @@ def bound_saturated(value, lower, upper):
     return (value - lower) / span < tol or (upper - value) / span < tol
 
 
+RELATIVE_ERROR_FLOOR = 1e-12
+
+
+def relative_error(actual, target, maximum=False):
+    denominator = max(abs(float(target)), RELATIVE_ERROR_FLOOR)
+    difference = max(float(actual) - float(target), 0.0) if maximum else abs(float(actual) - float(target))
+    return difference / denominator
+
+
 def apply_gate(family, residuals, parameter_notes):
     """Return (passed, reason). Residual rows carry a 'gate_quantity' key."""
     limits = GATES["families"][family]["quantities"]
@@ -684,7 +693,7 @@ def fit_diode(payload, rejected):
         "quantity": f"forward voltage at {current:.6g} A",
         "gate_quantity": "forward_voltage",
         "datasheet_value": float(target), "fitted_value": float(actual), "unit": "V",
-        "relative_error": abs(actual - target) / abs(target),
+        "relative_error": relative_error(actual, target),
         "citation": curve.get("page_reference") or "pending review",
     } for current, target, actual in zip(I, V, measured)]
     return params, residuals, used, notes, {"optimizer_nfev": int(fit.nfev), "optimizer_status": int(fit.status),
@@ -809,7 +818,7 @@ def fit_bjt(payload, rejected):
         "quantity": f"collector current at IB for hFE {h:.6g} and IC {t:.6g} A",
         "gate_quantity": "dc_current_gain",
         "datasheet_value": float(t), "fitted_value": float(a), "unit": "A",
-        "relative_error": abs(a - t) / abs(t),
+        "relative_error": relative_error(a, t),
         "citation": curve.get("page_reference") or "pending review",
     } for (t, h), a in zip(targets, measured)]
     return params, residuals, used, notes, {"optimizer_nfev": int(fit.nfev), "optimizer_status": int(fit.status),
@@ -998,7 +1007,7 @@ def fit_mosfet(payload, rejected):
     for point, (vgs, vds, target, temperature), actual in zip(tcurve["points"], transfer, t):
         residuals.append({"quantity": f"transfer current at VGS {vgs:.6g} V", "gate_quantity": "drain_current",
                           "datasheet_value": target, "fitted_value": actual, "unit": "A",
-                          "relative_error": abs(actual - target) / abs(target),
+                          "relative_error": relative_error(actual, target),
                           "citation": real_citation(transfer_citation), "condition_identity": transfer_identity["condition_identity"],
                           "citation_identity": transfer_citation, "evidence_identity": point["evidence_identity"],
                           "curve_id": transfer_identity["curve_id"], "temperature_c": temperature,
@@ -1006,13 +1015,11 @@ def fit_mosfet(payload, rejected):
     for (vgs, vds, target, temperature), actual, provenance in zip(out_points, o, output_provenance):
         residuals.append({"quantity": f"output current at VGS {vgs:.6g} V, VDS {vds:.6g} V", "gate_quantity": "drain_current",
                           "datasheet_value": target, "fitted_value": actual, "unit": "A",
-                          "relative_error": abs(actual - target) / abs(target),
+                          "relative_error": relative_error(actual, target),
                           "citation": real_citation(provenance["citation_identity"]), **provenance,
                           "temperature_c": temperature, "evidence_role": "typical_observation"})
     for (vgs, current, target, kind, components, temperature), actual in zip(rdson, d):
-        error = abs(actual - target) / abs(target)
-        if kind == "maximum":
-            error = max(actual - target, 0.0) / abs(target)
+        error = relative_error(actual, target, maximum=kind == "maximum")
         resistance_evidence = components[2]
         residuals.append({"quantity": f"RDS(on) at VGS {vgs:.6g} V", "gate_quantity": "rds_on",
                           "datasheet_value": target, "fitted_value": actual, "unit": "ohm",
@@ -1066,7 +1073,8 @@ def main():
             **({"evidence_contract_version": IDENTITY_VERSION} if family == "mosfet" else {}),
             "parameters": params, "residuals": residuals, "curves_used": used,
             "worst": {"value": worst_row["relative_error"], "quantity": worst_row["quantity"]},
-            "rms": rms, "fitter": "scipy.optimize.least_squares with native ngspice-46 evaluations",
+            "rms": rms, "gate_pass": passed,
+            "fitter": "scipy.optimize.least_squares with native ngspice-46 evaluations",
             "optimizer": meta,
             "demotion_reason": None if passed else f"{family} F2 gate failed: {reason}",
         })

@@ -6,16 +6,19 @@ import { fileURLToPath } from "node:url";
 import Ajv2020 from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
 import {
+  activeVdmosModelCard,
   citationCohortMaterial,
   claimedIdentityMaterial,
   curveCohortMaterial,
+  directEvidenceIntersectionErrors,
   directEvidenceUnionErrors,
   curveIdentityMaterial,
   identityHash,
   operatingRegionBoundMaterial,
   pointEvidenceMaterial,
   scalarEvidenceMaterial,
-  stableIdentityValue
+  stableIdentityValue,
+  summarizeMosfetResiduals
 } from "./evidence-identity.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -104,12 +107,28 @@ function expectationRole(evidenceRole) {
         : "typical_observation";
 }
 
-function conditionValues(condition, quantity) {
-  if (quantity === "temperature") return [condition.temperature.value_c];
+function conditionDomain(condition, quantity, temperatureKind = null) {
+  if (quantity === "temperature") {
+    return condition.temperature.kind === temperatureKind
+      ? { minimum: condition.temperature.value_c, maximum: condition.temperature.value_c }
+      : null;
+  }
   const electrical = condition.electrical[quantity];
-  if (electrical.kind === "fixed") return [electrical[`value_${quantity === "id" ? "a" : "v"}`]];
-  if (electrical.kind === "range") return [electrical[`lower_${quantity === "id" ? "a" : "v"}`], electrical[`upper_${quantity === "id" ? "a" : "v"}`]];
-  return [];
+  if (electrical.kind === "fixed") {
+    const value = electrical[`value_${quantity === "id" ? "a" : "v"}`];
+    return { minimum: value, maximum: value };
+  }
+  if (electrical.kind === "range") return {
+    minimum: electrical[`lower_${quantity === "id" ? "a" : "v"}`],
+    maximum: electrical[`upper_${quantity === "id" ? "a" : "v"}`]
+  };
+  if (electrical.kind === "enumerated") return { values: electrical.values };
+  return null;
+}
+
+function conditionValues(condition, quantity, temperatureKind = null) {
+  const domain = conditionDomain(condition, quantity, temperatureKind);
+  return domain ? domain.values ?? [domain.minimum, domain.maximum] : [];
 }
 
 function collectFactsEvidence(facts) {
@@ -218,24 +237,31 @@ function verifyFactsIdentities(evidence) {
   return errors;
 }
 
-function sourceContractErrors(component, sources, evidence) {
+function sourceContractErrors(component, facts, sources, evidence) {
   const errors = [];
-  const byHash = new Map();
-  for (const [index, source] of (sources ?? []).entries()) {
-    const rows = byHash.get(source.sha256) ?? [];
-    rows.push({ source, index });
-    byHash.set(source.sha256, rows);
+  const datasheetSources = (sources ?? []).filter((source) => source.kind === "datasheet");
+  const matches = datasheetSources.filter((source) => source.url === component?.datasheet?.url);
+  if (matches.length !== 1) {
+    errors.push("component datasheet.url must resolve exactly once to a datasheet source");
+    return errors;
   }
+  const datasheet = matches[0];
+  if (component?.datasheet?.revision !== datasheet.revision) errors.push("component datasheet.revision disagrees with sources.json");
+  const factsSource = facts?.source;
+  if (!factsSource || factsSource.url !== datasheet.url || factsSource.sha256 !== datasheet.sha256 || factsSource.revision !== datasheet.revision) {
+    errors.push("facts.source URL, SHA-256, and revision must exactly match the component datasheet source in sources.json");
+  }
+  const checkedCitationIds = new Set();
   for (const row of evidence) {
-    const matches = byHash.get(row.citation?.source_sha256) ?? [];
-    if (matches.length !== 1) errors.push(`${row.label}.citation_identity.source_sha256 must resolve exactly once in sources.json`);
-    else if (row.citation?.source_revision != null && row.citation.source_revision !== matches[0].source.revision) {
+    if (checkedCitationIds.has(row.citation?.citation_id)) continue;
+    checkedCitationIds.add(row.citation?.citation_id);
+    if (row.citation?.source_sha256 !== datasheet.sha256) {
+      errors.push(`${row.label}.citation_identity.source_sha256 must resolve to the same datasheet source in sources.json`);
+    }
+    if (row.citation?.source_revision != null && row.citation.source_revision !== datasheet.revision) {
       errors.push(`${row.label}.citation_identity.source_revision disagrees with sources.json`);
     }
   }
-  const datasheetMatches = (sources ?? []).filter((source) => source.kind === "datasheet" && source.url === component?.datasheet?.url);
-  if (datasheetMatches.length !== 1) errors.push("component datasheet.url must resolve exactly once to a datasheet source");
-  else if (component?.datasheet?.revision !== datasheetMatches[0].revision) errors.push("component datasheet.revision disagrees with sources.json");
   return errors;
 }
 
@@ -269,7 +295,7 @@ function residualCalibrationErrors(fitted) {
       continue;
     }
     const record = matches[0];
-    for (const field of ["quantity", "gate_quantity", "datasheet_value", "unit"]) {
+    for (const field of ["quantity", "gate_quantity", "datasheet_value", "unit", "evidence_role"]) {
       if (residual[field] !== record[field]) errors.push(`${label}.${field} disagrees with its declared calibration record`);
     }
     for (const [field, nested] of [["condition_identity", "condition_id"], ["citation_identity", "citation_id"], ["evidence_identity", "evidence_id"]]) {
@@ -279,28 +305,185 @@ function residualCalibrationErrors(fitted) {
   return errors;
 }
 
-function fittedEvidenceSemantics(row, item, resolved, group, index, itemLabel, errors) {
-  if (group !== "residuals" || item.evidence_identity?.evidence_id !== row.evidence_identity?.evidence_id) return;
-  const expectedQuantity = resolved.kind === "point" ? resolved.curve?.y_axis?.quantity : resolved.quantity;
-  const expectedValue = resolved.kind === "point" ? resolved.point?.y_si : resolved.valueSi;
-  const expectedUnit = resolved.kind === "point" ? resolved.curve?.y_axis?.unit : resolved.unitSi;
-  const gateQuantity = resolved.characteristic === "rds_on" ? "rds_on"
-    : resolved.characteristic === "transfer_current" || resolved.characteristic === "output_current" ? "drain_current"
-      : resolved.characteristic;
-  if (row.datasheet_value !== expectedValue) errors.push(`${itemLabel}.datasheet_value disagrees with referenced evidence`);
-  if (row.unit !== expectedUnit) errors.push(`${itemLabel}.unit disagrees with referenced evidence`);
-  if (row.gate_quantity !== gateQuantity) errors.push(`${itemLabel}.gate_quantity disagrees with referenced evidence quantity`);
-  if (resolved.kind === "point" && !String(row.quantity ?? "").toLowerCase().includes(resolved.characteristic === "transfer_current" ? "transfer current" : "output current")) {
-    errors.push(`${itemLabel}.quantity disagrees with referenced evidence characteristic`);
+function mosfetResidualSummaryErrors(component, fitted) {
+  if (!["nmos", "pmos"].includes(component?.electrical_family) || fitted?.fidelity_tier !== "F2") return [];
+  const errors = [];
+  const summary = summarizeMosfetResiduals(fitted?.residuals);
+  if (!summary.worst || !Number.isFinite(summary.rms)) return ["fitted F2 MOSFET residual summary requires finite residual rows"];
+  const same = (left, right) => Number.isFinite(Number(left)) && Number.isFinite(Number(right)) && Math.abs(Number(left) - Number(right)) <= 1e-12 * Math.max(1, Math.abs(Number(left)), Math.abs(Number(right)));
+  for (const [index, item] of summary.rows.entries()) {
+    if (!same(fitted.residuals[index].relative_error, item.relativeError)) errors.push(`fitted.residuals[${index}].relative_error disagrees with datasheet and fitted values`);
   }
-  if (resolved.kind === "scalar" && resolved.characteristic === "rds_on" && !/rds\s*\(?on\)?/i.test(String(row.quantity ?? ""))) {
-    errors.push(`${itemLabel}.quantity disagrees with referenced evidence characteristic`);
+  const declaredRms = fitted.rms_relative_error ?? fitted.rms;
+  if (!same(declaredRms, summary.rms)) errors.push("fitted RMS relative error disagrees with recomputed residuals");
+  const declaredWorst = fitted.worst_relative_error ?? fitted.worst;
+  if (!same(declaredWorst?.value, summary.worst.relativeError) || declaredWorst?.quantity !== summary.worst.row.quantity) {
+    errors.push("fitted worst relative error value and quantity disagree with recomputed residuals");
   }
-  const declared = (group === "residuals" ? row : null);
-  if (!declared || !Number.isFinite(Number(declared.fitted_value))) errors.push(`${itemLabel}.fitted_value must declare the calibrated model observation`);
+  const declaredGate = fitted.gate?.pass ?? fitted.gate?.passed ?? fitted.f2_gate_pass;
+  if (typeof declaredGate !== "boolean") errors.push("fitted F2 MOSFET gate result must be declared");
+  else if (declaredGate !== summary.gatePass) errors.push("fitted F2 MOSFET gate result disagrees with recomputed 0.20 worst and 0.12 RMS quantity gates");
+  if (!summary.gatePass) errors.push("fitted F2 MOSFET residuals fail the 0.20 worst and 0.12 RMS quantity gates");
+  return errors;
 }
 
-function validateNewContractPackage(component, facts, fitted, modelText, expectations, sources) {
+function canonicalCalibrationQuantity(resolved) {
+  if (resolved.kind === "point") return resolved.characteristic === "transfer_current" ? "transfer current" : "output current";
+  if (resolved.characteristic === "rds_on") return "rds_on";
+  if (resolved.characteristic === "gate_threshold") return "gate_threshold";
+  return resolved.characteristic;
+}
+
+function canonicalGateQuantity(resolved) {
+  return resolved.characteristic === "rds_on" ? "rds_on"
+    : ["transfer_current", "output_current"].includes(resolved.characteristic) ? "drain_current"
+      : resolved.characteristic;
+}
+
+function itemSemanticFields(item) {
+  return {
+    quantity: item?.quantity,
+    value: Object.hasOwn(item ?? {}, "value_si") ? item.value_si
+      : Object.hasOwn(item ?? {}, "datasheet_value") ? item.datasheet_value
+        : Object.hasOwn(item ?? {}, "value") ? item.value : undefined,
+    unit: item?.unit_si ?? item?.unit,
+    role: item?.evidence_role ?? item?.role
+  };
+}
+
+function roleMatchesEvidence(role, evidenceRole) {
+  const accepted = new Set([evidenceRole, expectationRole(evidenceRole), evidenceRole === "digitized_typical_curve" ? "typical_observation" : null]);
+  return role == null || accepted.has(role);
+}
+
+function fittedEvidenceSemantics(row, item, resolved, group, itemLabel, errors) {
+  const expectedValue = resolved.kind === "point" ? resolved.point?.y_si : resolved.valueSi;
+  const expectedUnit = resolved.kind === "point" ? resolved.curve?.y_axis?.unit : resolved.unitSi;
+  const expectedQuantity = resolved.kind === "point" ? resolved.curve?.y_axis?.quantity : resolved.quantity;
+  const itemFields = itemSemanticFields(item);
+  if (itemFields.quantity != null && itemFields.quantity !== expectedQuantity) errors.push(`${itemLabel}.quantity disagrees with referenced evidence`);
+  if (itemFields.value != null && itemFields.value !== expectedValue) errors.push(`${itemLabel}.datasheet value disagrees with referenced evidence`);
+  if (itemFields.unit != null && itemFields.unit !== expectedUnit) errors.push(`${itemLabel}.unit disagrees with referenced evidence`);
+  if (!roleMatchesEvidence(itemFields.role, resolved.evidence?.role)) errors.push(`${itemLabel}.role disagrees with referenced evidence`);
+
+  if (item.evidence_identity?.evidence_id !== row.evidence_identity?.evidence_id) return;
+  const expectedRecordQuantity = canonicalCalibrationQuantity(resolved);
+  if (row.datasheet_value != null && row.datasheet_value !== expectedValue) errors.push(`${itemLabel}.datasheet_value disagrees with referenced evidence`);
+  if (row.value != null && row.value !== expectedValue) errors.push(`${itemLabel}.value disagrees with referenced evidence`);
+  if (row.unit !== expectedUnit) errors.push(`${itemLabel}.unit disagrees with referenced evidence`);
+  if (row.gate_quantity != null && row.gate_quantity !== canonicalGateQuantity(resolved)) errors.push(`${itemLabel}.gate_quantity disagrees with referenced evidence quantity`);
+  const quantityText = String(row.quantity ?? "").toLowerCase().replaceAll("_", " ");
+  const recordQuantityMatches = resolved.characteristic === "rds_on" ? /rds|rdson/i.test(quantityText)
+    : quantityText.includes(expectedRecordQuantity.replaceAll("_", " "));
+  if (row.quantity != null && !recordQuantityMatches) errors.push(`${itemLabel}.quantity disagrees with referenced evidence characteristic`);
+  if (!roleMatchesEvidence(row.evidence_role ?? row.role, resolved.evidence?.role)) errors.push(`${itemLabel}.role disagrees with referenced evidence`);
+  if (group === "residuals" && !Number.isFinite(Number(row.fitted_value))) errors.push(`${itemLabel}.fitted_value must declare the calibrated model observation`);
+}
+
+function validateMosfetChannelCard(component, modelText) {
+  if (!["nmos", "pmos"].includes(component?.electrical_family)) return [];
+  try {
+    const card = activeVdmosModelCard(modelText);
+    if (component.electrical_family === "pmos" && !card.pchan) return ["active DUT VDMOS model card must declare pchan exactly for electrical_family pmos"];
+    if (component.electrical_family === "nmos" && card.pchan) return ["active DUT VDMOS model card must not declare pchan for electrical_family nmos"];
+    return [];
+  } catch (error) {
+    return [error.message];
+  }
+}
+
+function parseGeneratedMosfetBench(text, label) {
+  const lines = String(text).split(/\r?\n/).map((line) => line.trim()).filter((line) => line && !line.startsWith("*"));
+  const temperatures = lines.filter((line) => /^\.temp\b/i.test(line));
+  if (temperatures.length !== 1) throw new Error(`${label} must declare exactly one .temp directive`);
+  const tempTokens = temperatures[0].split(/\s+/);
+  if (tempTokens.length !== 2 || !Number.isFinite(Number(tempTokens[1]))) throw new Error(`${label} has an unsupported .temp directive`);
+  const analyses = lines.filter((line) => /^\.(?:op|dc|ac|tran)\b/i.test(line));
+  if (analyses.length !== 1 || !/^\.op$/i.test(analyses[0])) throw new Error(`${label} linked MOSFET evidence supports only the generated .op bench grammar`);
+  const sources = new Map();
+  const mosfets = [];
+  for (const line of lines) {
+    let match = /^([VI]\S*)\s+(\S+)\s+(\S+)\s+DC\s+(\S+)$/i.exec(line);
+    if (match) {
+      const value = Number(match[4]);
+      if (!Number.isFinite(value)) throw new Error(`${label} source ${match[1]} has a non-fixed or non-numeric DC value`);
+      sources.set(match[1].toLowerCase(), { name: match[1], positive: match[2].toLowerCase(), negative: match[3].toLowerCase(), value });
+      continue;
+    }
+    match = /^(M\S*)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)$/i.exec(line);
+    if (match) mosfets.push({ name: match[1], drain: match[2].toLowerCase(), gate: match[3].toLowerCase(), source: match[4].toLowerCase(), model: match[5] });
+  }
+  return { temperature: Number(tempTokens[1]), sources, mosfets };
+}
+
+function validateLinkedMosfetBenches(component, packageDir, expectations, byEvidenceId) {
+  if (!["nmos", "pmos"].includes(component?.electrical_family)) return [];
+  const errors = [];
+  const sign = component.electrical_family === "pmos" ? -1 : 1;
+  const same = (left, right) => Number.isFinite(Number(left)) && Number.isFinite(Number(right)) && Math.abs(Number(left) - Number(right)) <= 1e-12 * Math.max(1, Math.abs(Number(left)), Math.abs(Number(right)));
+  const assertVoltage = (bench, node, expected, label) => {
+    const source = [...bench.sources.values()].find((candidate) => candidate.positive === node && candidate.negative === "0");
+    if (!source || !same(source.value, sign * expected)) throw new Error(`${label} does not encode the exact ${component.electrical_family.toUpperCase()} voltage bias`);
+  };
+  const assertCurrent = (bench, node, expected, label) => {
+    const source = [...bench.sources.values()].find((candidate) => component.electrical_family === "pmos"
+      ? candidate.positive === node && candidate.negative === "0"
+      : candidate.positive === "0" && candidate.negative === node);
+    if (!source || !same(Math.abs(source.value), Math.abs(expected))) throw new Error(`${label} does not encode the exact ${component.electrical_family.toUpperCase()} drain-current bias`);
+  };
+  for (const [testIndex, test] of (expectations?.tests ?? []).entries()) {
+    const linked = [...(test.scalar_checks ?? []), ...(test.hard_bounds_checks ?? [])].filter((check) => check.evidence_id);
+    if (!linked.length || !linked.some((check) => ["transfer_current", "output_current", "rds_on", "gate_threshold"].includes(byEvidenceId.get(check.evidence_id)?.characteristic))) continue;
+    const label = `tests[${testIndex}] ${test.test_netlist}`;
+    if (test.analysis_type !== "operating_point") {
+      errors.push(`${label} linked MOSFET condition cannot be represented outside the generated operating-point grammar`);
+      continue;
+    }
+    let bench;
+    try { bench = parseGeneratedMosfetBench(fs.readFileSync(path.join(packageDir, "tests", test.test_netlist), "utf8"), label); }
+    catch (error) { errors.push(error.message); continue; }
+    for (const check of linked) {
+      const resolved = byEvidenceId.get(check.evidence_id);
+      if (!resolved) continue;
+      const condition = resolved.condition;
+      const checkLabel = `${label} check ${check.name}`;
+      if (!["dc", "continuous"].includes(condition.test_mode.kind)) {
+        errors.push(`${checkLabel} condition cannot be represented by a static generated bench`);
+        continue;
+      }
+      if (!same(bench.temperature, condition.temperature.value_c)) errors.push(`${checkLabel} .temp disagrees with condition identity`);
+      try {
+        const expression = String(check.expression_source?.expression ?? "").toLowerCase();
+        if (["transfer_current", "output_current"].includes(resolved.characteristic)) {
+          const branch = /i\(([^)]+)\)/.exec(expression)?.[1];
+          const drainSource = branch ? bench.sources.get(branch) : null;
+          if (!drainSource || drainSource.negative !== "0") throw new Error(`${checkLabel} does not reference a generated drain-voltage source`);
+          const transistor = bench.mosfets.find((candidate) => candidate.drain === drainSource.positive && candidate.source === "0");
+          if (!transistor) throw new Error(`${checkLabel} has no generated DUT instance for its drain source`);
+          const vds = resolved.characteristic === "transfer_current" ? condition.electrical.vds?.value_v : resolved.point.x_si;
+          const vgs = resolved.characteristic === "transfer_current" ? resolved.point.x_si : condition.electrical.vgs?.value_v;
+          if (condition.electrical[resolved.characteristic === "transfer_current" ? "vds" : "vgs"]?.kind !== "fixed") throw new Error(`${checkLabel} linked curve condition lacks the required fixed bias`);
+          if (!same(drainSource.value, sign * vds)) throw new Error(`${checkLabel} drain-source bias disagrees with condition identity`);
+          assertVoltage(bench, transistor.gate, vgs, checkLabel);
+        } else if (resolved.characteristic === "rds_on") {
+          const node = /v\(([^)]+)\)/.exec(expression)?.[1];
+          const transistor = bench.mosfets.find((candidate) => candidate.drain === node && candidate.source === "0");
+          if (!transistor || condition.electrical.vgs.kind !== "fixed" || condition.electrical.id.kind !== "fixed") throw new Error(`${checkLabel} cannot represent the linked RDS(on) condition`);
+          assertVoltage(bench, transistor.gate, condition.electrical.vgs.value_v, checkLabel);
+          assertCurrent(bench, transistor.drain, condition.electrical.id.value_a, checkLabel);
+        } else if (resolved.characteristic === "gate_threshold") {
+          const node = /v\(([^)]+)\)/.exec(expression)?.[1];
+          const transistor = bench.mosfets.find((candidate) => candidate.drain === node && candidate.gate === node && candidate.source === "0");
+          if (!transistor || condition.electrical.vds?.relation !== "vds_equals_vgs" || condition.electrical.id.kind !== "fixed") throw new Error(`${checkLabel} cannot represent the linked threshold condition`);
+          assertCurrent(bench, node, condition.electrical.id.value_a, checkLabel);
+        } else throw new Error(`${checkLabel} uses unsupported linked MOSFET bench semantics`);
+      } catch (error) { errors.push(error.message); }
+    }
+  }
+  return errors;
+}
+
+function validateNewContractPackage(component, facts, fitted, modelText, expectations, sources, packageDir) {
   const errors = [];
   const evidence = collectFactsEvidence(facts);
   const region = component?.supported_operating_region;
@@ -309,15 +492,23 @@ function validateNewContractPackage(component, facts, fitted, modelText, expecta
   if (fitted?.evidence_contract_version !== "1.0.0") errors.push("fitted evidence_contract_version must be 1.0.0");
   if (!evidence.length) errors.push("facts must contain resolvable evidence identities for a 1.0.0 contract package");
   errors.push(...verifyFactsIdentities(evidence));
-  errors.push(...sourceContractErrors(component, sources, evidence));
+  errors.push(...sourceContractErrors(component, facts, sources, evidence));
+  errors.push(...validateMosfetChannelCard(component, modelText));
   const byEvidenceId = new Map(evidence.map((row) => [row.evidence.evidence_id, row]));
+  errors.push(...validateLinkedMosfetBenches(component, packageDir, expectations, byEvidenceId));
   errors.push(...residualCalibrationErrors(fitted));
+  errors.push(...mosfetResidualSummaryErrors(component, fitted));
 
-  const emitted = new Map();
-  for (const match of modelText.matchAll(/\b([A-Z][A-Z0-9_]*)\s*=\s*([^\s(){}]+)/g)) {
-    const value = Number(match[2]);
-    if (Number.isFinite(value)) emitted.set(match[1], value);
-  }
+  const emitted = ["nmos", "pmos"].includes(component?.electrical_family)
+    ? (() => { try { return activeVdmosModelCard(modelText).parameters; } catch { return new Map(); } })()
+    : (() => {
+      const values = new Map();
+      for (const match of modelText.matchAll(/\b([A-Z][A-Z0-9_]*)\s*=\s*([^\s(){}]+)/g)) {
+        const value = Number(match[2]);
+        if (Number.isFinite(value)) values.set(match[1], value);
+      }
+      return values;
+    })();
   for (const [name, expected] of Object.entries(fitted?.parameters ?? {})) {
     if (!Number.isFinite(Number(expected))) continue;
     if (!emitted.has(name)) errors.push(`model.cir is missing fitted parameter ${name}`);
@@ -362,7 +553,7 @@ function validateNewContractPackage(component, facts, fitted, modelText, expecta
           || !sameCanonicalContent(item.evidence_identity, resolved.evidence)) {
           errors.push(`${itemLabel} does not resolve to facts evidence`);
         } else {
-          fittedEvidenceSemantics(row, item, resolved, group, index, itemLabel, errors);
+          fittedEvidenceSemantics(row, item, resolved, group, itemLabel, errors);
         }
       }
     }
@@ -385,10 +576,12 @@ function validateNewContractPackage(component, facts, fitted, modelText, expecta
     const conditionIds = [...new Set(referenced.map((row) => row.condition.condition_id))].sort();
     const citationIds = [...new Set(referenced.map((row) => row.citation.citation_id))].sort();
     if (JSON.stringify(bound.condition_ids) !== JSON.stringify(conditionIds) || JSON.stringify(bound.citation_ids) !== JSON.stringify(citationIds)) errors.push(`${label} identity sets disagree with evidence_refs`);
-    const values = referenced.flatMap((row) => bound.quantity === "temperature" && row.condition.temperature.kind !== bound.temperature_kind ? [] : conditionValues(row.condition, bound.quantity));
+    const domains = referenced.map((row) => conditionDomain(row.condition, bound.quantity, bound.temperature_kind));
+    const values = domains.filter(Boolean).flatMap((domain) => domain.values ?? [domain.minimum, domain.maximum]);
     const covers = (value) => bound.kind === "enumerated" ? bound.values?.includes(value) : (bound.minimum == null || value >= bound.minimum - 1e-12) && (bound.maximum == null || value <= bound.maximum + 1e-12);
-    if (values.some((value) => !covers(value))) errors.push(`${label} omits referenced evidence values`);
+    if (bound.derivation === "direct_evidence_union" && values.some((value) => !covers(value))) errors.push(`${label} omits referenced evidence values`);
     errors.push(...directEvidenceUnionErrors(bound, values, label));
+    errors.push(...directEvidenceIntersectionErrors(bound, domains, label));
     if (bound.bound_id) {
       if (bound.bound_id !== identityHash(operatingRegionBoundMaterial(bound))) errors.push(`${label}.bound_id does not match canonical content`);
     }
@@ -613,7 +806,7 @@ export function validatePackage(packageDir) {
     const modelPath = path.join(absoluteDir, "model.cir");
     if (component && [factsPath, fittedPath, modelPath].every((target) => fs.existsSync(target))) {
       try {
-        errors.push(...validateNewContractPackage(component, readJson(factsPath), readJson(fittedPath), fs.readFileSync(modelPath, "utf8"), expectations, sources));
+        errors.push(...validateNewContractPackage(component, readJson(factsPath), readJson(fittedPath), fs.readFileSync(modelPath, "utf8"), expectations, sources, absoluteDir));
       } catch (error) {
         errors.push(`evidence contract package cannot be read: ${error.message}`);
       }

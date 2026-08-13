@@ -82,6 +82,22 @@ test("generate postcondition enforces negative PMOS VTO magnitude and preserves 
     { parameters: { VTO: 2.1, KP: 1 } },
     "nmos"
   ));
+  assert.throws(() => assertEmittedParametersMatchFitted(
+    ".model DUT VDMOS(VTO=-2.1 KP=1)\n",
+    { parameters: { VTO: 2.1, KP: 1 } },
+    "pmos"
+  ), /must declare pchan/);
+  assert.throws(() => assertEmittedParametersMatchFitted(
+    ".model DUT VDMOS(pchan VTO=2.1 KP=1)\n",
+    { parameters: { VTO: 2.1, KP: 1 } },
+    "nmos"
+  ), /must not declare pchan/);
+  assert.doesNotThrow(() => assertEmittedParametersMatchFitted(
+    "* .model DUT VDMOS(pchan VTO=-99 KP=99)\n.model UNRELATED VDMOS(pchan VTO=-8 KP=8)\n.model DUT VDMOS(VTO=2.1 KP=1)\nM1 d g 0 DUT\n",
+    { parameters: { VTO: 2.1, KP: 1 } },
+    "nmos",
+    "DUT"
+  ));
 });
 
 test("generate postcondition rejects stale parameter cards", () => {

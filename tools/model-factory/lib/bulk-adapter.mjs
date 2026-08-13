@@ -894,7 +894,7 @@ export function fitBulkPart(part, extraction, { ngspiceRunner = defaultNgspiceRu
     const observationRows = attemptRows.filter((row) => row.evidence_role !== "inequality_constraint");
     fit = {
       fidelity: "F2", parameters, worst: attempt.worst?.value ?? null,
-      worst_quantity: attempt.worst?.quantity ?? null, rms: attempt.rms ?? null,
+      worst_quantity: attempt.worst?.quantity ?? null, rms: attempt.rms ?? null, gate_pass: attempt.gate_pass,
       residuals: attemptRows, curves_used: attempt.curves_used ?? [],
       curves_rejected: attempt.curves_rejected ?? [], optimizer: attempt.optimizer ?? null,
       fitter: attempt.fitter ?? null, points: [], evidence_mode: "curve-fitted",
@@ -1671,6 +1671,7 @@ export function stageBulkPart(part, rawExtraction, fit, stagingRoot, { demotionR
     residuals: fit.residuals ?? [],
     rms_relative_error: fit.rms ?? null,
     worst_relative_error: fit.worst == null ? null : { value: fit.worst, quantity: fit.worst_quantity ?? "bulk fit residual" },
+    ...(part.conveyor_family === "mosfet" && fit.fidelity === "F2" ? { f2_gate_pass: fit.gate_pass } : {}),
   };
   try {
     write(path.join(buildDir, "component.json"), json(component));

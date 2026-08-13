@@ -5,14 +5,17 @@ import path from "node:path";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import {
+  activeVdmosModelCard,
   citationCohortMaterial,
   curveCohortMaterial,
   curveIdentityMaterial,
+  directEvidenceIntersectionErrors,
   directEvidenceUnionErrors,
   identityHash as canonicalIdentityHash,
   pointEvidenceMaterial,
   scalarEvidenceMaterial,
-  stableIdentityValue
+  stableIdentityValue,
+  summarizeMosfetResiduals
 } from "../../packages/component-schema/evidence-identity.mjs";
 import { getPart } from "./lib/parts.mjs";
 
@@ -248,9 +251,15 @@ function emittedParameterValues(model) {
   return values;
 }
 
-export function assertEmittedParametersMatchFitted(model, fitted, electricalFamily = null) {
-  const emitted = emittedParameterValues(model);
+export function assertEmittedParametersMatchFitted(model, fitted, electricalFamily = null, modelName = null) {
+  let emitted;
   const mismatches = [];
+  if (["nmos", "pmos"].includes(electricalFamily)) {
+    const card = activeVdmosModelCard(model, modelName);
+    emitted = card.parameters;
+    if (electricalFamily === "pmos" && !card.pchan) mismatches.push("channel: PMOS active DUT VDMOS card must declare pchan");
+    if (electricalFamily === "nmos" && card.pchan) mismatches.push("channel: NMOS active DUT VDMOS card must not declare pchan");
+  } else emitted = emittedParameterValues(model);
   for (const [name, expected] of Object.entries(fitted.parameters ?? {})) {
     if (!Number.isFinite(Number(expected))) continue;
     if (!emitted.has(name)) {
@@ -395,7 +404,7 @@ function stageGenerate(ctx) {
     if (fs.existsSync(factsPath)) assertMosfetConditionIdentityContract(ctx, JSON.parse(fs.readFileSync(factsPath, "utf8")), fitted);
   }
   const model = modelText(ctx, fitted);
-  if (ctx.part.pipeline !== "darlington") assertEmittedParametersMatchFitted(model, fitted, ctx.part.identity.electrical_family);
+  if (ctx.part.pipeline !== "darlington") assertEmittedParametersMatchFitted(model, fitted, ctx.part.identity.electrical_family, ctx.part.component.modelName);
   fs.writeFileSync(path.join(ctx.packageDir, "model.cir"), model);
   writeJson(path.join(ctx.packageDir, "component.json"), baseComponent(ctx, fitted));
   console.log(`generate ${ctx.part.slug}: ${ctx.part.component.modelName}`);
@@ -876,7 +885,7 @@ function assertCriticalFittedProvenance(fitted, packageEvidence) {
     const matches = calibrationRecords.filter((record) => record.evidence_identity?.evidence_id === residual.evidence_identity?.evidence_id);
     if (matches.length !== 1) throw new Error(`${trail} must resolve exactly once to a declared calibration record`);
     const record = matches[0];
-    for (const field of ["quantity", "gate_quantity", "datasheet_value", "unit"]) {
+    for (const field of ["quantity", "gate_quantity", "datasheet_value", "unit", "evidence_role"]) {
       if (record[field] !== residual[field]) throw new Error(`${trail}.${field} disagrees with its declared calibration record`);
     }
     for (const [field, nested] of [["condition_identity", "condition_id"], ["citation_identity", "citation_id"], ["evidence_identity", "evidence_id"]]) {
@@ -905,27 +914,49 @@ function assertCriticalFittedProvenance(fitted, packageEvidence) {
       if (!packageRow || packageRow.condition.condition_id !== condition.condition_id || packageRow.citation.citation_id !== citation.citation_id) {
         throw new Error(`${itemTrail} does not resolve to package evidence`);
       }
-      if (group === "residuals" && item.evidence_identity?.evidence_id === row.evidence_identity?.evidence_id) {
-        const expectedValue = packageRow.kind === "point" ? packageRow.point.y_si : packageRow.valueSi;
-        const expectedUnit = packageRow.kind === "point" ? packageRow.curve.y_axis.unit : packageRow.unitSi;
+      const expectedValue = packageRow.kind === "point" ? packageRow.point.y_si : packageRow.valueSi;
+      const expectedUnit = packageRow.kind === "point" ? packageRow.curve.y_axis.unit : packageRow.unitSi;
+      const expectedQuantity = packageRow.kind === "point" ? packageRow.curve.y_axis.quantity : packageRow.quantity;
+      const itemValue = Object.hasOwn(item, "value_si") ? item.value_si : Object.hasOwn(item, "datasheet_value") ? item.datasheet_value : Object.hasOwn(item, "value") ? item.value : undefined;
+      if (item.quantity != null && item.quantity !== expectedQuantity) throw new Error(`${itemTrail}.quantity disagrees with referenced evidence`);
+      if (itemValue != null && !closeEnough(itemValue, expectedValue)) throw new Error(`${itemTrail}.datasheet value disagrees with referenced evidence`);
+      if ((item.unit_si ?? item.unit) != null && (item.unit_si ?? item.unit) !== expectedUnit) throw new Error(`${itemTrail}.unit disagrees with referenced evidence`);
+      const primary = item.evidence_identity?.evidence_id === row.evidence_identity?.evidence_id;
+      if (primary) {
         const expectedGate = packageRow.characteristic === "rds_on" ? "rds_on"
           : ["transfer_current", "output_current"].includes(packageRow.characteristic) ? "drain_current"
             : packageRow.characteristic;
-        if (!closeEnough(row.datasheet_value, expectedValue)) throw new Error(`${trail}.datasheet_value disagrees with referenced evidence`);
-        if (row.unit !== expectedUnit) throw new Error(`${trail}.unit disagrees with referenced evidence`);
-        if (row.gate_quantity !== expectedGate) throw new Error(`${trail}.gate_quantity disagrees with referenced evidence quantity`);
-        if (!Number.isFinite(Number(row.fitted_value))) throw new Error(`${trail}.fitted_value must declare the calibrated model observation`);
+        if (row.datasheet_value != null && !closeEnough(row.datasheet_value, expectedValue)) throw new Error(`${trail}.datasheet_value disagrees with referenced evidence`);
+        if (row.value != null && !closeEnough(row.value, expectedValue)) throw new Error(`${trail}.value disagrees with referenced evidence`);
+        if (row.unit != null && row.unit !== expectedUnit) throw new Error(`${trail}.unit disagrees with referenced evidence`);
+        if (row.gate_quantity != null && row.gate_quantity !== expectedGate) throw new Error(`${trail}.gate_quantity disagrees with referenced evidence quantity`);
+        if (group === "residuals" && !Number.isFinite(Number(row.fitted_value))) throw new Error(`${trail}.fitted_value must declare the calibrated model observation`);
       }
     }
   }
 }
 
-function conditionValues(condition, quantity) {
-  if (quantity === "temperature") return [condition.temperature.value_c];
+function conditionDomain(condition, quantity, temperatureKind = null) {
+  if (quantity === "temperature") return condition.temperature.kind === temperatureKind
+    ? { minimum: condition.temperature.value_c, maximum: condition.temperature.value_c }
+    : null;
   const electrical = condition.electrical[quantity];
-  if (electrical.kind === "fixed") return [electrical[`value_${quantity === "id" ? "a" : "v"}`]];
-  if (electrical.kind === "range") return [electrical[`lower_${quantity === "id" ? "a" : "v"}`], electrical[`upper_${quantity === "id" ? "a" : "v"}`]];
-  return [];
+  if (electrical.kind === "fixed") {
+    const value = electrical[`value_${quantity === "id" ? "a" : "v"}`];
+    return { minimum: value, maximum: value };
+  }
+  if (electrical.kind === "range") return {
+    minimum: electrical[`lower_${quantity === "id" ? "a" : "v"}`],
+    maximum: electrical[`upper_${quantity === "id" ? "a" : "v"}`]
+  };
+  if (electrical.kind === "enumerated") return { values: electrical.values };
+  return null;
+}
+
+function conditionValues(condition, quantity, temperatureKind = null) {
+  const domain = conditionDomain(condition, quantity, temperatureKind);
+  if (!domain) return [];
+  return domain.values ?? [domain.minimum, domain.maximum];
 }
 
 function assertMosfetRegionContract(region, packageEvidence) {
@@ -963,15 +994,15 @@ function assertMosfetRegionContract(region, packageEvidence) {
     const conditionIds = [...new Set(referenced.map((row) => row.condition.condition_id))].sort();
     const citationIds = [...new Set(referenced.map((row) => row.citation.citation_id))].sort();
     if (JSON.stringify(bound.condition_ids) !== JSON.stringify(conditionIds) || JSON.stringify(bound.citation_ids) !== JSON.stringify(citationIds)) throw new Error(`${trail} identity sets disagree with evidence_refs`);
-    const evidenceValues = referenced.flatMap((row) => {
-      if (bound.quantity === "temperature" && row.condition.temperature.kind !== bound.temperature_kind) return [];
-      return conditionValues(row.condition, bound.quantity);
-    });
+    const evidenceDomains = referenced.map((row) => conditionDomain(row.condition, bound.quantity, bound.temperature_kind));
+    const evidenceValues = evidenceDomains.filter(Boolean).flatMap((domain) => domain.values ?? [domain.minimum, domain.maximum]);
     const covers = (value) => bound.kind === "enumerated" ? bound.values.some((candidate) => closeEnough(candidate, value))
       : (bound.minimum == null || value >= bound.minimum - 1e-12) && (bound.maximum == null || value <= bound.maximum + 1e-12);
-    if (evidenceValues.some((value) => !covers(value))) throw new Error(`${trail} omits referenced evidence values`);
+    if (bound.derivation === "direct_evidence_union" && evidenceValues.some((value) => !covers(value))) throw new Error(`${trail} omits referenced evidence values`);
     const unionErrors = directEvidenceUnionErrors(bound, evidenceValues, trail);
     if (unionErrors.length) throw new Error(unionErrors[0]);
+    const intersectionErrors = directEvidenceIntersectionErrors(bound, evidenceDomains, trail);
+    if (intersectionErrors.length) throw new Error(intersectionErrors[0]);
     assertIdentityHash(bound, "bound_id", trail, (value) => Object.fromEntries(Object.entries(value).filter(([key]) => !["bound_id", "conditions", "placeholder"].includes(key))));
   }
   const required = new Set(["vgs", "id", "temperature"]);
@@ -988,10 +1019,40 @@ export function assertMosfetConditionIdentityContract(ctx, facts, fitted) {
     throw new Error("MOSFET package provenance requires a non-placeholder datasheet source with SHA-256 and cited pages");
   }
   assertHeldDefaults(fitted);
+  let datasheet = source;
+  if (ctx.packageDir) {
+    const sourcesPath = path.join(ctx.packageDir, "sources.json");
+    const componentPath = path.join(ctx.packageDir, "component.json");
+    if (fs.existsSync(sourcesPath) && fs.existsSync(componentPath)) {
+      const sources = JSON.parse(fs.readFileSync(sourcesPath, "utf8"));
+      const component = JSON.parse(fs.readFileSync(componentPath, "utf8"));
+      const componentUrl = component.datasheet?.url;
+      const datasheets = sources.filter((candidate) => candidate.kind === "datasheet" && candidate.url === componentUrl);
+      if (datasheets.length !== 1) throw new Error("MOSFET component datasheet URL must resolve exactly once in sources.json");
+      datasheet = datasheets[0];
+      if (component.datasheet?.revision !== datasheet.revision) throw new Error("MOSFET component datasheet revision disagrees with sources.json");
+      if (source.url !== datasheet.url || source.sha256 !== datasheet.sha256 || source.revision !== datasheet.revision) {
+        throw new Error("MOSFET facts.source URL, SHA-256, and revision must exactly match the selected sources.json datasheet");
+      }
+    }
+  }
   const evidence = criticalMosfetEvidence(facts);
   if (!evidence.rows.length) throw new Error(`${ctx.part.slug} has no critical MOSFET condition identities`);
-  if (evidence.rows.some((row) => row.citation.source_sha256 !== source.sha256)) throw new Error("MOSFET citation identity source hash disagrees with package provenance");
+  if (evidence.rows.some((row) => row.citation.source_sha256 !== datasheet.sha256 || (row.citation.source_revision != null && row.citation.source_revision !== datasheet.revision))) {
+    throw new Error("MOSFET citation identity must resolve to the same sources.json datasheet");
+  }
   assertCriticalFittedProvenance(fitted, evidence.rows);
+  if (fitted.fidelity_tier === "F2") {
+    const summary = summarizeMosfetResiduals(fitted.residuals);
+    if (!summary.worst || !Number.isFinite(summary.rms)) throw new Error("MOSFET F2 residual summary requires finite residuals");
+    for (const [index, item] of summary.rows.entries()) if (!closeEnough(fitted.residuals[index].relative_error, item.relativeError)) throw new Error(`fitted.residuals[${index}].relative_error disagrees with recomputed residual`);
+    if (!closeEnough(fitted.rms_relative_error ?? fitted.rms, summary.rms)) throw new Error("MOSFET F2 RMS disagrees with recomputed residuals");
+    const declaredWorst = fitted.worst_relative_error ?? fitted.worst;
+    if (!closeEnough(declaredWorst?.value, summary.worst.relativeError) || declaredWorst?.quantity !== summary.worst.row.quantity) throw new Error("MOSFET F2 worst quantity or value disagrees with recomputed residuals");
+    const declaredGate = fitted.gate?.pass ?? fitted.f2_gate_pass;
+    if (typeof declaredGate !== "boolean" || declaredGate !== summary.gatePass) throw new Error("MOSFET F2 declared gate result disagrees with recomputed 0.20 worst and 0.12 RMS gates");
+    if (!summary.gatePass) throw new Error("MOSFET F2 residuals fail the 0.20 worst and 0.12 RMS gates");
+  }
   assertMosfetRegionContract(ctx.part.component.supported_operating_region ?? {
     contract_version: ctx.part.component.operating_contract_version,
     numeric_bounds: ctx.part.component.numeric_bounds
