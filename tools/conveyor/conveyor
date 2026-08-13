@@ -15,10 +15,9 @@ FEEDER_ROOT = HERE.parent / "part-feeder"
 sys.path.insert(0, str(HERE))
 sys.path.insert(0, str(FEEDER_ROOT))
 
-from conveyorlib import (DEFAULT_LUNA_CAP, MAX_LUNA_CAP, ConveyorError, ExtractionCoordinator,
-                         StateStore, build_luna_prompt, choose_balanced, filter_library_collisions,
-                         json_dump, safe_stem, should_park_family, top_failure_reasons,
-                         top_recorded_reasons)
+from conveyorlib import (ConveyorError, StateStore, build_luna_prompt, choose_balanced, cross_check,
+                         filter_library_collisions, json_dump, load_and_validate_extraction, safe_stem,
+                         should_park_family, top_failure_reasons, top_recorded_reasons)
 from feederlib import download_datasheets, query_manifest, reviewed_mpns, validate_manifest
 
 DEFAULT_DATA = HERE / "data"
@@ -40,17 +39,9 @@ def parser() -> argparse.ArgumentParser:
     fetch.add_argument("manifest", type=Path)
     fetch.add_argument("--rate", type=float, default=0.5)
     fetch.add_argument("--retries", type=int, default=4)
-    jobs = commands.add_parser("jobs", help="write immutable coordinator-backed Luna extraction records")
+    jobs = commands.add_parser("jobs", help="write one Luna extraction brief per fetched datasheet")
     jobs.add_argument("manifest", type=Path)
-    jobs.add_argument("--max-concurrency", type=int, default=DEFAULT_LUNA_CAP,
-                      help=f"recorded live Luna cap (default {DEFAULT_LUNA_CAP}, hard maximum {MAX_LUNA_CAP})")
-    extract = commands.add_parser("extract", help="run coordinator validation and publication for job responses")
-    extract.add_argument("manifest", type=Path)
-    extract.add_argument("--jobs-file", type=Path)
-    extract.add_argument("--response-dir", type=Path,
-                         help="producer directory containing <lcsc-id>.json or <lcsc-id>__<mpn>.json")
-    extract.add_argument("--max-concurrency", type=int, default=DEFAULT_LUNA_CAP)
-    ingest = commands.add_parser("ingest", help="delegate one response through coordinator validation/publication")
+    ingest = commands.add_parser("ingest", help="validate and cross-check one Luna JSON response")
     ingest.add_argument("manifest", type=Path)
     ingest.add_argument("--lcsc-id", required=True)
     ingest.add_argument("--response", type=Path, required=True)
@@ -139,8 +130,6 @@ def fetch_command(args) -> int:
 
 
 def jobs_command(args) -> int:
-    if args.max_concurrency < 1 or args.max_concurrency > MAX_LUNA_CAP:
-        raise ConveyorError(f"Extraction concurrency must be between 1 and {MAX_LUNA_CAP}")
     manifest = load_manifest(args.manifest)
     tranche = tranche_name(args.manifest)
     staging = args.data_dir / "staging" / tranche
@@ -155,104 +144,52 @@ def jobs_command(args) -> int:
             pack = HERE / "context-packs" / f"{part['conveyor_family']}.json"
             discrepancies = [row["reason"]] if row["state"] == "failed_extracted" and row["reason"] else []
             prompt = build_luna_prompt(REPO_ROOT, pack, datasheet.resolve(), part, discrepancies)
-            job = {
-                "tranche": tranche,
-                "lcsc_id": part["lcsc_id"],
-                "mpn": part["mpn"],
-                "manufacturer": part["manufacturer"],
-                "family": part["conveyor_family"],
-                "datasheet_path": str(datasheet.resolve()),
-                "schema_path": str((HERE / "schemas" / f"{part['conveyor_family']}.schema.json").resolve()),
-                "response_path": str((staging / "extractions" / f"{safe_stem(part['lcsc_id'])}__{safe_stem(part['mpn'])}.json").resolve()),
-                "prompt": prompt,
-                "seed_hints": part.get("seed_hints", []),
-            }
-            registered = store.register_extraction_job(job)
-            jobs.append({**job, "job_key": registered["job_key"], "job_hash": registered["job_hash"]})
+            jobs.append({"lcsc_id": part["lcsc_id"], "mpn": part["mpn"], "family": part["conveyor_family"], "datasheet_path": str(datasheet.resolve()), "response_path": str((staging / "extractions" / f"{safe_stem(part['lcsc_id'])}__{safe_stem(part['mpn'])}.json").resolve()), "prompt": prompt})
     finally:
         store.close()
     output = staging / "extraction-jobs.json"
-    json_dump(output, {"schema_version": "1.0.0", "tranche": tranche, "job_count": len(jobs),
-                       "max_concurrency": args.max_concurrency,
-                       "completion_queue_capacity": 2 * args.max_concurrency, "jobs": jobs})
-    print(json.dumps({"jobs": str(output), "job_count": len(jobs),
-                      "max_concurrency": args.max_concurrency,
-                      "completion_queue_capacity": 2 * args.max_concurrency}, indent=2))
+    json_dump(output, {"schema_version": "1.0.0", "tranche": tranche, "job_count": len(jobs), "max_concurrency": 4, "jobs": jobs})
+    print(json.dumps({"jobs": str(output), "job_count": len(jobs), "max_concurrency": 4}, indent=2))
     return 0
 
 
-def load_jobs_file(path: Path) -> list[dict]:
-    document = json.loads(path.read_text(encoding="utf-8"))
-    jobs = document.get("jobs")
-    if not isinstance(jobs, list):
-        raise ConveyorError(f"Extraction jobs file has no jobs array: {path}")
-    return jobs
-
-
-def response_file(response_dir: Path, job: dict) -> Path:
-    candidates = [
-        response_dir / f"{safe_stem(job['lcsc_id'])}__{safe_stem(job['mpn'])}.json",
-        response_dir / f"{safe_stem(job['lcsc_id'])}.json",
-    ]
-    return next((path for path in candidates if path.is_file()), candidates[0])
-
-
-def run_coordinator(args, jobs: list[dict], response_for_job) -> tuple[int, list[dict]]:
-    def invoke(job):
-        path = response_for_job(job)
-        return path if path.is_file() else None
-
-    coordinator = ExtractionCoordinator(
-        args.data_dir / "conveyor-state.sqlite3", invoke, max_concurrency=args.max_concurrency
-    )
-    results = coordinator.run(jobs)
+def ingest_command(args) -> int:
     manifest = load_manifest(args.manifest)
-    staging = (args.data_dir / "staging" / tranche_name(args.manifest)).resolve()
+    tranche = tranche_name(args.manifest)
+    part = part_by_id(manifest, args.lcsc_id)
+    staging = args.data_dir / "staging" / tranche
+    destination = staging / "extractions" / f"{safe_stem(part['lcsc_id'])}__{safe_stem(part['mpn'])}.json"
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    destination.write_bytes(args.response.read_bytes())
     store = state_store(args.data_dir)
     try:
-        for result in results:
-            job = next(item for item in jobs if f"{item['tranche']}:{item['lcsc_id']}" == result["job_key"])
-            part = part_by_id(manifest, job["lcsc_id"])
-            row = store.get(job["tranche"], job["lcsc_id"])
-            if result["status"] == "completed" and row["state"] in {"datasheet_fetched", "failed_extracted"}:
-                canonical = Path(job["response_path"]).resolve()
-                payload = json.loads(canonical.read_text(encoding="utf-8"))
-                demotion = result.get("reason")
-                if not demotion and not payload["usable_curves"]:
-                    demotion = payload.get("omission_reason") or "datasheet lacks usable curves"
-                store.transition(
-                    job["tranche"], job["lcsc_id"], "extracted", reason=demotion,
-                    extraction_path=str(canonical.relative_to(staging)), fidelity="F1" if demotion else None,
-                )
-            elif result["status"] in {"retry_missing", "retry_discrepancy", "quarantined"} and row["state"] in {"datasheet_fetched", "failed_extracted"}:
-                store.transition(job["tranche"], job["lcsc_id"], "failed_extracted", reason=result.get("reason"))
+        row = store.get(tranche, part["lcsc_id"])
+        extraction_attempts = store.failure_attempts(tranche, part["lcsc_id"], "extracted")
+        payload = load_and_validate_extraction(destination, HERE / "schemas" / f"{part['conveyor_family']}.schema.json", {"mpn": part["mpn"], "manufacturer": part["manufacturer"], "family": part["conveyor_family"]})
+        # Persist the deterministic, audited normalization so the fitter consumes the same
+        # schema-valid SI evidence that passed catalog cross-checking.
+        json_dump(destination, payload)
+        discrepancies = cross_check(payload, part.get("seed_hints", []))
+        if discrepancies and extraction_attempts < 1:
+            reason = "; ".join(discrepancies)
+            store.transition(tranche, part["lcsc_id"], "failed_extracted", reason=reason, extraction_path=str(destination.relative_to(staging)))
+            print(json.dumps({"status": "retry", "lcsc_id": part["lcsc_id"], "discrepancies": discrepancies}, indent=2))
+            return 2
+        demotion = None
+        if discrepancies:
+            demotion = "cross-validation failed after one retry: " + "; ".join(discrepancies)
+        elif not payload["usable_curves"]:
+            demotion = payload.get("omission_reason") or "datasheet lacks usable curves"
+        store.transition(tranche, part["lcsc_id"], "extracted", reason=demotion, extraction_path=str(destination.relative_to(staging)), fidelity="F1" if demotion else None)
+        print(json.dumps({"status": "accepted", "lcsc_id": part["lcsc_id"], "f2_candidate": demotion is None, "demotion_reason": demotion}, indent=2))
+        return 0
+    except ConveyorError as error:
+        extraction_attempts = store.failure_attempts(tranche, part["lcsc_id"], "extracted")
+        store.transition(tranche, part["lcsc_id"], "failed_extracted", reason=str(error), extraction_path=str(destination.relative_to(staging)))
+        print(json.dumps({"status": "retry" if extraction_attempts < 1 else "failed", "error": str(error)}, indent=2))
+        return 2
     finally:
         store.close()
-    terminal_failures = sum(result["status"] == "quarantined" for result in results)
-    retries = sum(result["status"].startswith("retry_") for result in results)
-    return (2 if terminal_failures or retries else 0), results
-
-
-def extract_command(args) -> int:
-    tranche = tranche_name(args.manifest)
-    jobs_path = args.jobs_file or args.data_dir / "staging" / tranche / "extraction-jobs.json"
-    response_dir = (args.response_dir or jobs_path.parent / "responses").resolve()
-    code, results = run_coordinator(args, load_jobs_file(jobs_path), lambda job: response_file(response_dir, job))
-    print(json.dumps({"status": "completed" if code == 0 else "attention", "results": results}, indent=2))
-    return code
-
-
-def ingest_command(args) -> int:
-    tranche = tranche_name(args.manifest)
-    jobs_path = args.data_dir / "staging" / tranche / "extraction-jobs.json"
-    jobs = [job for job in load_jobs_file(jobs_path) if job["lcsc_id"].casefold() == args.lcsc_id.casefold()]
-    if len(jobs) != 1:
-        raise ConveyorError(f"Expected one registered extraction job for {args.lcsc_id}")
-    args.max_concurrency = 1
-    response = args.response.resolve()
-    code, results = run_coordinator(args, jobs, lambda job: response)
-    print(json.dumps(results[-1] if results else {"status": "already_completed", "job_key": f"{tranche}:{args.lcsc_id}"}, indent=2))
-    return code
 
 
 def fit_command(args) -> int:
@@ -380,9 +317,7 @@ def main(argv=None) -> int:
     args.data_dir = args.data_dir.resolve()
     args.catalog_data = args.catalog_data.resolve()
     try:
-        return {"select": select_command, "fetch": fetch_command, "jobs": jobs_command,
-                "extract": extract_command, "ingest": ingest_command, "fit": fit_command,
-                "status": status_command}[args.command](args)
+        return {"select": select_command, "fetch": fetch_command, "jobs": jobs_command, "ingest": ingest_command, "fit": fit_command, "status": status_command}[args.command](args)
     except (ConveyorError, OSError, json.JSONDecodeError, subprocess.SubprocessError) as error:
         print(f"conveyor: {error}", file=sys.stderr)
         return 1
