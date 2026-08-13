@@ -560,7 +560,7 @@ export class SchematicEditor {
         this.options.onHoverWire?.(undefined);
       }
     });
-    this.element.addEventListener("keydown", (event) => {
+    const keydown = (event: KeyboardEvent) => {
       if ((event.target as Element).tagName === "INPUT") return;
       if (event.key === " ") { this.space = true; event.preventDefault(); }
       else if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "z") { event.preventDefault(); event.shiftKey ? this.redo() : this.undo(); }
@@ -577,7 +577,9 @@ export class SchematicEditor {
         if (this.wirePoints) { this.cancelWire(); this.render(); }
         else this.setTool("select");
       }
-    });
+    };
+    this.element.addEventListener("keydown", keydown);
+    window.addEventListener("keydown", (event) => { if (document.activeElement !== this.element && this.wirePoints) keydown(event); });
     this.element.addEventListener("keyup", (event) => { if (event.key === " ") this.space = false; });
   }
 
