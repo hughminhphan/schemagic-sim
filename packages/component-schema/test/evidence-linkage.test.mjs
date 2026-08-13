@@ -141,17 +141,17 @@ test("placeholder and generic citations are rejected for linked expectations", (
   })), "citation_locator must identify a specific table row or figure curve/trace");
 });
 
-test("pulse-qualified evidence requires an equivalent pulse bench", () => {
-  const pulse = { test_mode: "pulse", pulse_width_s: 0.0003, duty_cycle: 0.02 };
-  assert.deepEqual(errorsFor(documentWith(linkedCheck({ evidence_qualification: pulse, bench_qualification: pulse }))), []);
-  assertRejected(documentWith(linkedCheck({
-    evidence_qualification: pulse,
-    bench_qualification: { test_mode: "continuous_dc" }
-  })), "bench qualification must match evidence qualification");
-  assertRejected(documentWith(linkedCheck({
-    evidence_qualification: pulse,
-    bench_qualification: { test_mode: "pulse", pulse_width_s: 0.001, duty_cycle: 0.02 }
-  })), "bench qualification must match evidence qualification");
+test("pulse-qualified new-contract claims fail closed without an implemented pulse bench", () => {
+  for (const pulse of [
+    { test_mode: "pulsed", pulse_width_s: 0.0003, duty_cycle: 0.02 },
+    { test_mode: "single_pulse", pulse_width_s: 0.0003 },
+  ]) {
+    assertRejected(documentWith(linkedCheck({ evidence_qualification: pulse, bench_qualification: pulse })), "unsupported without an implemented equivalent pulse bench");
+    assertRejected(documentWith(linkedCheck({
+      evidence_qualification: pulse,
+      bench_qualification: { test_mode: "continuous_dc" }
+    })), "bench qualification must match evidence qualification");
+  }
 });
 
 test("new F2 cohorts require a member expectation and declared evidence membership", () => {

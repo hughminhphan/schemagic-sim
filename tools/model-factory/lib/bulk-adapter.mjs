@@ -808,7 +808,10 @@ export function defaultNgspiceRunner(modelText) {
 const BJT_AC_DEFAULTS = { CJE: 1e-12, CJC: 1e-12, TF: 1e-9 };
 
 function pythonInterpreter() {
-  for (const candidate of [path.resolve(here, "../.venv/bin/python"), path.resolve(here, "../../../tools/model-factory/.venv/bin/python")]) {
+  for (const candidate of [
+    path.resolve(here, "../.venv/bin/python"),
+    path.resolve(here, "../../../../../../tools/model-factory/.venv/bin/python"),
+  ]) {
     if (fs.existsSync(candidate)) return candidate;
   }
   return "python3";
@@ -992,6 +995,138 @@ function stableValue(value) {
   if (Array.isArray(value)) return value.map(stableValue);
   if (value && typeof value === "object") return Object.fromEntries(Object.keys(value).sort().map((key) => [key, stableValue(value[key])]));
   return value;
+}
+
+function legacyCoordinate(raw, quantityName) {
+  if (raw?.kind === "fixed") return { kind: "fixed", [`value_${quantityName === "id" ? "a" : "v"}`]: Number(raw.value) };
+  if (raw?.kind === "range") return { kind: "range", [`lower_${quantityName === "id" ? "a" : "v"}`]: Number(raw.minimum), [`upper_${quantityName === "id" ? "a" : "v"}`]: Number(raw.maximum) };
+  if (raw?.kind === "equal_to_gate_source_voltage") return { kind: "relation", relation: "vds_equals_vgs" };
+  if (raw?.kind === "swept") return { kind: "relation", relation: "measured_threshold" };
+  if (raw?.kind === "measured_result") return { kind: "relation", relation: "measured_result" };
+  throw new Error(`unsupported curated VDMOS ${quantityName} coordinate ${raw?.kind ?? "missing"}`);
+}
+
+function legacyTestMode(qualifiers) {
+  const mode = qualifiers?.test_mode;
+  if (mode === "electrical_characteristic") return { kind: "dc" };
+  if (mode === "pulse") {
+    const pulseWidth = Number(qualifiers?.pulse_width_maximum?.value);
+    if (!(pulseWidth > 0)) throw new Error("curated VDMOS pulse evidence requires a positive pulse-width limit");
+    return {
+      kind: "pulsed",
+      pulse_width_s: pulseWidth,
+      ...(qualifiers?.duty_cycle_maximum == null ? {} : { duty_cycle: Number(qualifiers.duty_cycle_maximum.value) }),
+    };
+  }
+  throw new Error(`unsupported curated VDMOS test mode ${mode ?? "missing"}`);
+}
+
+function canonicalCuratedCondition(identity, characteristic) {
+  const condition = {
+    schema_version: "1.0.0",
+    characteristic,
+    polarity: "n",
+    magnitude_convention: "absolute",
+    temperature: { kind: identity.temperature.kind, value_c: Number(identity.temperature.value) },
+    electrical: {
+      vgs: legacyCoordinate(identity.gate_source_voltage, "vgs"),
+      vds: legacyCoordinate(identity.drain_source_voltage, "vds"),
+      id: legacyCoordinate(identity.drain_current, "id"),
+    },
+    test_mode: legacyTestMode(identity.qualifiers),
+    qualifiers: (identity.qualifiers?.tokens ?? []).map((token) => ({ key: "source_qualifier", value: String(token) }))
+      .sort((left, right) => left.value.localeCompare(right.value)),
+  };
+  return { ...condition, condition_id: identityHash("sha256", condition) };
+}
+
+function canonicalCuratedCitation(citation, sourceSha256) {
+  const page = Number(String(citation.page_reference).match(/\bp\.\s*(\d+)/i)?.[1]);
+  if (!(page > 0)) throw new Error(`curated VDMOS citation lacks an exact page: ${citation.page_reference}`);
+  const locator = citation.locator;
+  const value = {
+    source_sha256: sourceSha256,
+    page,
+    ...(locator.kind === "table_row"
+      ? { table: "Electrical characteristics", row: locator.label }
+      : locator.kind === "figure"
+        ? { figure: String(locator.label).match(/Fig\.\s*([^,]+)/i)?.[1] ?? locator.label, curve: locator.label }
+        : (() => { throw new Error(`unsupported curated VDMOS citation locator ${locator.kind}`); })()),
+  };
+  return { ...value, citation_id: identityHash("sha256", value) };
+}
+
+function canonicalCuratedDatum(datum, characteristic, quantityName, role, sourceSha256) {
+  const condition = canonicalCuratedCondition(datum.identity, characteristic);
+  const citation = canonicalCuratedCitation(datum.identity.citation, sourceSha256);
+  const value = Number(datum.value);
+  const evidence = {
+    role,
+    condition_id: condition.condition_id,
+    citation_id: citation.citation_id,
+    cohort_id: identityHash("sha256", citationCohortMaterial(characteristic, condition.condition_id, citation)),
+  };
+  return {
+    value,
+    unit: datum.unit,
+    condition_identity: condition,
+    citation_identity: citation,
+    evidence_identity: {
+      ...evidence,
+      evidence_id: identityHash("sha256", { characteristic, role, quantity: quantityName, value_si: value, unit_si: datum.unit, condition_id: condition.condition_id, citation_id: citation.citation_id }),
+    },
+  };
+}
+
+function canonicalCuratedCurve(curve, characteristic, sourceSha256) {
+  const condition = canonicalCuratedCondition(curve.condition_identity, characteristic);
+  const citation = canonicalCuratedCitation(curve.citation_identity, sourceSha256);
+  const points = curve.points.map(({ x_si, y_si, point_index }) => ({ x_si: Number(x_si), y_si: Number(y_si), point_index }));
+  const xAxis = { quantity: characteristic === "transfer_current" ? "vgs" : "vds", unit: "V" };
+  const yAxis = { quantity: "id", unit: "A" };
+  const curveId = identityHash("sha256", { schema_version: "1.0.0", characteristic, x_axis: xAxis, y_axis: yAxis, condition_id: condition.condition_id, citation_id: citation.citation_id, points });
+  const cohortId = identityHash("sha256", { characteristic, condition_id: condition.condition_id, citation_id: citation.citation_id, curve_id: curveId });
+  return {
+    name: curve.citation_identity.locator.label,
+    curve_id: curveId,
+    characteristic,
+    x_axis: xAxis,
+    y_axis: yAxis,
+    condition_identity: condition,
+    citation_identity: citation,
+    points: points.map((point) => ({ ...point, evidence_identity: {
+      role: "digitized_typical_curve",
+      condition_id: condition.condition_id,
+      citation_id: citation.citation_id,
+      cohort_id: cohortId,
+      curve_id: curveId,
+      evidence_id: identityHash("sha256", { characteristic, role: "digitized_typical_curve", ...point, condition_id: condition.condition_id, citation_id: citation.citation_id, cohort_id: cohortId, curve_id: curveId }),
+    } })),
+  };
+}
+
+export function adaptCuratedVdmosFactsForPython(facts, sourceSha256) {
+  if (!/^[0-9a-f]{64}$/.test(String(sourceSha256))) throw new Error("curated VDMOS adapter requires the real datasheet SHA-256");
+  return {
+    evidence_contract_version: "1.0.0",
+    threshold: {
+      minimum: canonicalCuratedDatum(facts.threshold.minimum, "gate_threshold", "threshold_minimum", "minimum", sourceSha256),
+      maximum: canonicalCuratedDatum(facts.threshold.maximum, "gate_threshold", "threshold_maximum", "maximum", sourceSha256),
+    },
+    rdson_points: facts.rdson_points.map((point) => {
+      const resistance = canonicalCuratedDatum(point.resistance, "rds_on", "rds_on_maximum", "maximum", sourceSha256);
+      const condition = resistance.condition_identity;
+      const citation = resistance.citation_identity;
+      const datum = (source, quantityName) => {
+        const value = Number(source.value);
+        const evidence = { role: "maximum", condition_id: condition.condition_id, citation_id: citation.citation_id, cohort_id: identityHash("sha256", citationCohortMaterial("rds_on", condition.condition_id, citation)) };
+        return { value, unit: source.unit, condition_identity: condition, citation_identity: citation, evidence_identity: { ...evidence, evidence_id: identityHash("sha256", { characteristic: "rds_on", role: "maximum", quantity: quantityName, value_si: value, unit_si: source.unit, condition_id: condition.condition_id, citation_id: citation.citation_id }) } };
+      };
+      return { vgs: datum(point.vgs, "vgs"), current: datum(point.current, "drain_current"), resistance };
+    }),
+    transfer_curves: facts.transfer_curves.map((curve) => canonicalCuratedCurve(curve, "transfer_current", sourceSha256)),
+    output_curves: facts.output_curves.map((curve) => canonicalCuratedCurve(curve, "output_current", sourceSha256)),
+  };
 }
 
 export function parameterVectorKey(part, fit) {
@@ -1505,16 +1640,7 @@ export function stageBulkPart(part, rawExtraction, fit, stagingRoot, { demotionR
     fidelity_tier: fit.fidelity,
     domain_coverage: { dc: fit.fidelity === "F2" ? "fitted" : "approx", ac: "none", transient: "none", noise: "none", thermal: "none", digital: "none" },
     supported_analyses: ["operating_point", "dc_sweep"],
-    supported_operating_region: part.conveyor_family === "mosfet"
-      ? { summary: operating.summary, numeric_bounds: operating.numeric_bounds.map((bound) => ({
-          quantity: bound.quantity,
-          minimum: bound.minimum,
-          maximum: bound.maximum,
-          unit: bound.unit,
-          conditions: bound.conditions,
-          placeholder: false,
-        })) }
-      : operating,
+    supported_operating_region: operating,
     known_omissions: omissions,
     licence: { spdx_id: "MIT", provenance_basis: "original_from_facts" },
     generator: { tool_or_agent: "opencircuit-model-factory-v0.1.0 bulk-adapter", date: new Date().toISOString().slice(0, 10) },

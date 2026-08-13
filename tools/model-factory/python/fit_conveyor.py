@@ -886,19 +886,9 @@ def fit_mosfet(payload, rejected):
         raise Unfittable("no independently complete validated threshold identity for VTO seed and bounds")
     seed_vth = vth_typ if vth_typ is not None else vth_max if vth_max is not None else vth_min
     lo_vth = vth_min if vth_min is not None else 0.3 * seed_vth
-    # A datasheet VGS(th) is measured at a small drain current (250 uA is typical). The
-    # VDMOS VTO is instead the threshold obtained by extrapolating the strong-inversion
-    # square law back to zero current, and that extrapolated value is systematically
-    # HIGHER than the measured VGS(th) because it ignores the sub- and moderate-inversion
-    # conduction that the measurement point sits in. Box-constraining VTO to the published
-    # VGS(th) band therefore constrains the wrong quantity: for 2N7002,215 the digitised
-    # transfer curve wants VTO = 2.65 V against a published maximum of 2.50 V, and forcing
-    # 2.50 V inflates the worst transfer residual from 6% to 36%. Allow a bounded
-    # extrapolation margin above the published maximum and declare it whenever it is used.
-    vth_extrapolation_margin = min(0.5, 0.3 * (vth_max if vth_max is not None else seed_vth))
-    hi_vth = (vth_max + vth_extrapolation_margin) if vth_max is not None else 3.0 * seed_vth
+    hi_vth = vth_max if vth_max is not None else 3.0 * seed_vth
     if not (lo_vth < hi_vth):
-        lo_vth, hi_vth = 0.3 * seed_vth, 3.0 * seed_vth
+        raise Unfittable(f"published threshold interval is degenerate or reversed: {lo_vth} to {hi_vth} V")
 
     typical_rdson = [row for row in rdson if row[3] == "typical"]
     maximum_rdson = [row for row in rdson if row[3] == "maximum"]
@@ -983,12 +973,6 @@ def fit_mosfet(payload, rejected):
         "LAMBDA": "no channel-length modulation is resolvable from the digitised output range",
         "RD": "no drain resistance separable from the source resistance at these bias points",
     }
-    if vth_max is not None and vto > vth_max:
-        held.append({"parameter": "VTO", "value": vto,
-                     "reason": f"strong-inversion extrapolated threshold sits {vto - vth_max:.3g} V above the "
-                               f"published VGS(th) maximum of {vth_max:.3g} V, within the "
-                               f"{vth_extrapolation_margin:.3g} V extrapolation margin; VGS(th) is measured at a "
-                               f"small drain current and is not the square-law VTO"})
     for index, name in enumerate(["VTO", "KP", "THETA", "LAMBDA", "RD"]):
         # VTO resting on a published threshold min/max is the archetype's intent, not saturation.
         if name == "VTO":

@@ -372,7 +372,6 @@ export const PARTS = {
     },
     facts: {
       schema_version: "1.0.0",
-      evidence_contract_version: "1.0.0",
       extraction_method: "pdftotext plus manual structuring and curve digitization",
       fit_conditions: { temperature: quantity(25, "degC", "Electrical characteristics unless stated", "p. 2 heading") },
       threshold: vdmosThreshold({ minimum: 1.0, maximum: 2.0 }),
@@ -2784,7 +2783,7 @@ const p5Vdmos = ({ mpn, sourceUrl, revision, rdson, ratedCurrent, transfer, ciss
   },
   source: { url: sourceUrl, revision, pages: ["p. 1", "p. 2", "p. 3", "p. 4"] },
   facts: {
-    schema_version: "1.0.0", evidence_contract_version: "1.0.0", extraction_method: "pdftotext -layout plus manual typical-curve digitization and MIN/TYP/MAX table transcription",
+    schema_version: "1.0.0", extraction_method: "pdftotext -layout plus manual typical-curve digitization and MIN/TYP/MAX table transcription",
     fit_conditions: { temperature: quantity(25, "degC", "Electrical characteristics unless stated", "p. 2 heading", "typical") },
     threshold: vdmosThreshold({ minimum: 2, maximum: 4 }),
     transfer_curves: [vdmosTransferCurve({

@@ -99,17 +99,21 @@
       "additionalProperties": false,
       "required": ["test_mode"],
       "properties": {
-        "test_mode": { "enum": ["continuous_dc", "pulse"] },
+        "test_mode": { "enum": ["continuous_dc", "pulsed", "single_pulse"] },
         "pulse_width_s": { "type": "number", "exclusiveMinimum": 0 },
         "duty_cycle": { "type": "number", "exclusiveMinimum": 0, "maximum": 1 }
       },
       "allOf": [
         {
           "if": {
-            "properties": { "test_mode": { "const": "pulse" } },
+            "properties": { "test_mode": { "enum": ["pulsed", "single_pulse"] } },
             "required": ["test_mode"]
           },
-          "then": { "required": ["pulse_width_s", "duty_cycle"] },
+          "then": {
+            "if": { "properties": { "test_mode": { "const": "pulsed" } } },
+            "then": { "required": ["pulse_width_s", "duty_cycle"] },
+            "else": { "required": ["pulse_width_s"] }
+          },
           "else": {
             "not": {
               "anyOf": [

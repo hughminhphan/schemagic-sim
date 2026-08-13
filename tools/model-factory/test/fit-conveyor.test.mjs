@@ -238,6 +238,20 @@ test("MOSFET F2 fails closed without the canonical contract marker", { skip }, (
   assert.match(fitted.demotion_reason, /evidence_contract_version 1\.0\.0/);
 });
 
+test("MOSFET F2 VTO never exceeds a complete published threshold maximum", { skip, timeout: 300_000 }, () => {
+  const payload = canonicalMosfetPayload();
+  payload.extraction.specs.threshold_max.value = 2.05;
+  payload.extraction.specs.threshold_max.evidence_identity = evidenceDatum({
+    characteristic: "gate_threshold", quantity: "threshold_maximum", value: 2.05, unit: "V", role: "maximum",
+    condition: payload.extraction.specs.threshold_max.condition_identity,
+    citation: payload.extraction.specs.threshold_max.citation_identity,
+  }).evidence_identity;
+  const fitted = runFit(payload);
+  assert.ok(fitted.parameters, fitted.demotion_reason);
+  assert.ok(fitted.parameters.VTO <= 2.05 + 1e-12, `VTO ${fitted.parameters.VTO} exceeded published maximum`);
+  assert.ok(!(fitted.optimizer.held_defaults ?? []).some((item) => item.parameter === "VTO"), "critical VTO must not be a held-default exception");
+});
+
 test("MOSFET F2 rejects incomplete, hybrid, pulsed, placeholder, and unknown qualifier evidence", { skip }, () => {
   const mutations = [
     ["missing temperature", (p) => { delete p.extraction.specs.threshold_min.condition_identity.temperature; }],

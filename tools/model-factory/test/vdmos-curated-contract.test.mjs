@@ -1,6 +1,18 @@
 import assert from "node:assert/strict";
+import fs from "node:fs";
+import path from "node:path";
+import { spawnSync } from "node:child_process";
 import test from "node:test";
+import { fileURLToPath } from "node:url";
+import { adaptCuratedVdmosFactsForPython } from "../lib/bulk-adapter.mjs";
 import { PARTS } from "../lib/parts.mjs";
+
+const here = path.dirname(fileURLToPath(import.meta.url));
+const pythonDir = path.resolve(here, "../python");
+const localVenvPython = path.resolve(here, "../.venv/bin/python");
+const sharedVenvPython = path.resolve(here, "../../../../../../tools/model-factory/.venv/bin/python");
+const venvPython = fs.existsSync(localVenvPython) ? localVenvPython : sharedVenvPython;
+const pythonSkip = fs.existsSync(venvPython) ? false : "requires tools/model-factory/.venv";
 
 const VD_MOS_MPNS = ["IRLZ44N", "IRFZ44N", "IRF3205"];
 const CURVE_KEYS = ["curve_id", "characteristic", "x_axis", "y_axis", "condition_identity", "citation_identity", "points"];
@@ -58,12 +70,12 @@ function assertCurve(curve, characteristic, label) {
   });
 }
 
-test("curated VDMOS facts implement frozen evidence contract 1.0.0", () => {
+test("pulse-only curated VDMOS facts do not advertise the static DC evidence contract", () => {
   const curated = Object.values(PARTS).filter((part) => part.pipeline === "vdmos");
   assert.deepEqual(curated.map((part) => part.slug).sort(), [...VD_MOS_MPNS].sort());
   for (const part of curated) {
     const facts = part.facts;
-    assert.equal(facts.evidence_contract_version, "1.0.0", part.slug);
+    assert.equal(facts.evidence_contract_version, undefined, part.slug);
     assert.ok(!Object.hasOwn(facts, "transfer_points"), `${part.slug} flat transfer_points prohibited`);
     assert.ok(!Object.hasOwn(facts, "output_points"), `${part.slug} flat output_points prohibited`);
     assert.ok(!Object.hasOwn(facts, "critical_evidence"), `${part.slug} out-of-band identity catalog prohibited`);
@@ -96,4 +108,31 @@ test("per-part RDS pulse limits follow the exact table footnotes", () => {
   for (const point of PARTS.IRLZ44N.facts.rdson_points) assert.equal(point.resistance.identity.qualifiers.pulse_width_maximum.value, 300e-6);
   assert.equal(PARTS.IRFZ44N.facts.rdson_points[0].resistance.identity.qualifiers.pulse_width_maximum.value, 400e-6);
   assert.equal(PARTS.IRF3205.facts.rdson_points[0].resistance.identity.qualifiers.pulse_width_maximum.value, 400e-6);
+});
+
+test("curated adapter crosses the Python boundary and pulse-only DC evidence fails closed", { skip: pythonSkip }, () => {
+  for (const part of Object.values(PARTS).filter((candidate) => candidate.pipeline === "vdmos")) {
+    const source = JSON.parse(fs.readFileSync(path.resolve(here, `../../../packages/model-library/models/${part.manufacturerSlug}/${part.slug}/sources.json`), "utf8"))[0];
+    const canonical = adaptCuratedVdmosFactsForPython(part.facts, source.sha256);
+    assert.equal(canonical.evidence_contract_version, "1.0.0");
+    assert.ok(canonical.transfer_curves.every((curve) => curve.condition_identity.test_mode.kind === "pulsed"));
+    assert.ok(canonical.output_curves.every((curve) => curve.condition_identity.test_mode.kind === "pulsed"));
+    assert.ok(canonical.rdson_points.every((point) => point.resistance.condition_identity.test_mode.kind === "pulsed"));
+
+    const program = String.raw`
+import json
+import sys
+import fit_vdmos
+facts = json.load(sys.stdin)
+try:
+    fit_vdmos.prepare_dc_facts(facts)
+except Exception as exc:
+    print(type(exc).__name__ + ": " + str(exc))
+    raise SystemExit(0)
+raise SystemExit("pulse-only curated VDMOS facts unexpectedly entered a static DC fit")
+`;
+    const result = spawnSync(venvPython, ["-c", program], { cwd: pythonDir, input: JSON.stringify(canonical), encoding: "utf8" });
+    assert.equal(result.status, 0, `${part.slug}: ${result.stdout}\n${result.stderr}`);
+    assert.match(result.stdout, /pulsed evidence and cannot enter a static DC MOSFET fit/);
+  }
 });

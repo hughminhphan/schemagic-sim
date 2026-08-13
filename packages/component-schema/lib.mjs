@@ -2,6 +2,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
+import crypto from "node:crypto";
 import { fileURLToPath } from "node:url";
 import Ajv2020 from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
@@ -64,6 +65,121 @@ function sameQualification(left, right) {
     && left?.duty_cycle === right?.duty_cycle;
 }
 
+function stableValue(value) {
+  if (Array.isArray(value)) return value.map(stableValue);
+  if (value && typeof value === "object") return Object.fromEntries(Object.keys(value).sort().map((key) => [key, stableValue(value[key])]));
+  return value;
+}
+
+function identityHash(value) {
+  return `sha256:${crypto.createHash("sha256").update(JSON.stringify(stableValue(value))).digest("hex")}`;
+}
+
+function conditionValues(condition, quantity) {
+  if (quantity === "temperature") return [condition.temperature.value_c];
+  const electrical = condition.electrical[quantity];
+  if (electrical.kind === "fixed") return [electrical[`value_${quantity === "id" ? "a" : "v"}`]];
+  if (electrical.kind === "range") return [electrical[`lower_${quantity === "id" ? "a" : "v"}`], electrical[`upper_${quantity === "id" ? "a" : "v"}`]];
+  return [];
+}
+
+function collectFactsEvidence(facts) {
+  const rows = [];
+  const addDatum = (datum) => {
+    if (datum?.condition_identity && datum?.citation_identity && datum?.evidence_identity) {
+      rows.push({ condition: datum.condition_identity, citation: datum.citation_identity, evidence: datum.evidence_identity });
+    }
+  };
+  for (const point of facts?.rdson_points ?? []) for (const datum of [point.vgs, point.current, point.resistance]) addDatum(datum);
+  for (const field of ["minimum", "typical", "maximum"]) addDatum(facts?.threshold?.[field]);
+  for (const curve of facts?.curves ?? []) for (const point of curve.points ?? []) {
+    rows.push({ condition: curve.condition_identity, citation: curve.citation_identity, evidence: point.evidence_identity });
+  }
+  return rows;
+}
+
+function validateNewContractPackage(component, facts, fitted, modelText, expectations) {
+  const errors = [];
+  const evidence = collectFactsEvidence(facts);
+  const byEvidenceId = new Map(evidence.map((row) => [row.evidence.evidence_id, row]));
+  const region = component?.supported_operating_region;
+
+  if (facts?.evidence_contract_version !== "1.0.0") errors.push("facts evidence_contract_version must be 1.0.0");
+  if (fitted?.evidence_contract_version !== "1.0.0") errors.push("fitted evidence_contract_version must be 1.0.0");
+  if (!evidence.length) errors.push("facts must contain resolvable evidence identities for a 1.0.0 contract package");
+
+  const emitted = new Map();
+  for (const match of modelText.matchAll(/\b([A-Z][A-Z0-9_]*)\s*=\s*([^\s(){}]+)/g)) {
+    const value = Number(match[2]);
+    if (Number.isFinite(value)) emitted.set(match[1], value);
+  }
+  for (const [name, expected] of Object.entries(fitted?.parameters ?? {})) {
+    if (!Number.isFinite(Number(expected))) continue;
+    if (!emitted.has(name)) errors.push(`model.cir is missing fitted parameter ${name}`);
+    else {
+      const actual = emitted.get(name);
+      const expectedValue = Number(expected);
+      const polarityMagnitude = component?.electrical_family === "pmos" && name === "VTO"
+        && Math.abs(Math.abs(actual) - Math.abs(expectedValue)) <= 5e-10 * Math.max(1, Math.abs(expectedValue));
+      if (!polarityMagnitude && Math.abs(actual - expectedValue) > 5e-10 * Math.max(1, Math.abs(expectedValue))) {
+        errors.push(`model.cir parameter ${name} disagrees with fitted.json`);
+      }
+    }
+  }
+
+  for (const { check, path: checkPath } of expectationChecks(expectations)) {
+    if (!check.evidence_id) continue;
+    const resolved = byEvidenceId.get(check.evidence_id);
+    if (!resolved || resolved.condition.condition_id !== check.condition_id || resolved.citation.citation_id !== check.citation_id || resolved.evidence.cohort_id !== check.cohort_id) {
+      errors.push(`expectations ${checkPath} does not resolve to facts evidence`);
+    }
+  }
+
+  for (const [group, rows] of [["calibration.observations", fitted?.calibration?.observations ?? []], ["calibration.constraints", fitted?.calibration?.constraints ?? []], ["residuals", fitted?.residuals ?? []]]) {
+    for (const [index, row] of rows.entries()) {
+      const linked = [
+        ...(Array.isArray(row.evidence) && row.evidence.length ? row.evidence
+          : Array.isArray(row.evidence_identities) ? row.evidence_identities.map((evidence_identity, evidenceIndex) => ({ condition_identity: row.condition_identity, citation_identity: row.citation_identities?.[evidenceIndex], evidence_identity }))
+            : row.evidence_identity ? [{ condition_identity: row.condition_identity, citation_identity: row.citation_identity, evidence_identity: row.evidence_identity }] : []),
+        ...(row.component_evidence ?? []).map((evidence_identity) => ({ condition_identity: row.condition_identity, citation_identity: row.citation_identity, evidence_identity })),
+      ];
+      for (const item of linked) {
+        const resolved = byEvidenceId.get(item.evidence_identity?.evidence_id);
+        if (!resolved || resolved.condition.condition_id !== item.condition_identity?.condition_id || resolved.citation.citation_id !== item.citation_identity?.citation_id) {
+          errors.push(`fitted.${group}[${index}] does not resolve to facts evidence`);
+        }
+      }
+    }
+  }
+
+  if (region?.contract_version !== "1.0.0") errors.push("component supported_operating_region.contract_version must be 1.0.0");
+  if (!(region?.numeric_bounds?.length > 0)) errors.push("component supported_operating_region.numeric_bounds must be non-empty");
+  for (const [index, bound] of (region?.numeric_bounds ?? []).entries()) {
+    const label = `component supported_operating_region.numeric_bounds[${index}]`;
+    for (const field of ["bound_id", "kind", "evidence_refs", "condition_ids", "citation_ids", "derivation"]) {
+      if (bound[field] == null || (Array.isArray(bound[field]) && bound[field].length === 0)) errors.push(`${label}.${field} is required for contract 1.0.0`);
+    }
+    const referenced = [];
+    for (const ref of bound.evidence_refs ?? []) {
+      const resolved = byEvidenceId.get(ref.evidence_id);
+      if (!resolved || resolved.condition.condition_id !== ref.condition_id || resolved.citation.citation_id !== ref.citation_id || resolved.evidence.cohort_id !== ref.cohort_id) {
+        errors.push(`${label} evidence_refs do not resolve to facts`);
+      } else referenced.push(resolved);
+    }
+    const conditionIds = [...new Set(referenced.map((row) => row.condition.condition_id))].sort();
+    const citationIds = [...new Set(referenced.map((row) => row.citation.citation_id))].sort();
+    if (JSON.stringify(bound.condition_ids) !== JSON.stringify(conditionIds) || JSON.stringify(bound.citation_ids) !== JSON.stringify(citationIds)) errors.push(`${label} identity sets disagree with evidence_refs`);
+    const values = referenced.flatMap((row) => bound.quantity === "temperature" && row.condition.temperature.kind !== bound.temperature_kind ? [] : conditionValues(row.condition, bound.quantity));
+    const covers = (value) => bound.kind === "enumerated" ? bound.values?.includes(value) : (bound.minimum == null || value >= bound.minimum - 1e-12) && (bound.maximum == null || value <= bound.maximum + 1e-12);
+    if (values.some((value) => !covers(value))) errors.push(`${label} omits referenced evidence values`);
+    if (bound.bound_id) {
+      const material = Object.fromEntries(Object.entries(bound).filter(([key]) => !["bound_id", "conditions", "placeholder"].includes(key)));
+      if (bound.bound_id !== identityHash(material)) errors.push(`${label}.bound_id does not match canonical content`);
+    }
+  }
+  return errors;
+}
+
 export function validateExpectationsDocument(expectations) {
   return [
     ...schemaErrors("expectations", validators.expectations, expectations),
@@ -100,8 +216,8 @@ function evidenceContractErrors(expectations) {
     if (!sameQualification(check.evidence_qualification, check.bench_qualification)) {
       errors.push(`expectations ${checkPath} bench qualification must match evidence qualification`);
     }
-    if (check.evidence_qualification?.test_mode === "pulse" && check.bench_qualification?.test_mode === "continuous_dc") {
-      errors.push(`expectations ${checkPath} pulse-qualified evidence cannot be claimed by a continuous DC bench`);
+    if (["pulsed", "single_pulse"].includes(check.evidence_qualification?.test_mode)) {
+      errors.push(`expectations ${checkPath} pulse-qualified evidence is unsupported without an implemented equivalent pulse bench`);
     }
 
     const cohort = cohorts.get(check.cohort_id);
@@ -250,8 +366,35 @@ export function validatePackage(packageDir) {
   }
 
   const componentPath = path.join(absoluteDir, "component.json");
+  let component = null;
   if (fs.existsSync(componentPath)) {
-    errors.push(...validateComponentFiles(componentPath).errors);
+    const validation = validateComponentFiles(componentPath);
+    component = validation.component;
+    errors.push(...validation.errors);
+  }
+
+  const expectationsPath = path.join(absoluteDir, "tests", "expectations.json");
+  let expectations = null;
+  if (fs.existsSync(expectationsPath)) {
+    try { expectations = readJson(expectationsPath); } catch { /* read diagnostics are emitted above */ }
+  }
+  const newContract = expectations?.evidence_contract_version === "1.0.0";
+  if (newContract) {
+    for (const relative of ["facts.json", "fitted.json"]) {
+      const target = path.join(absoluteDir, relative);
+      if (!fs.existsSync(target)) errors.push(`missing required package file for evidence contract 1.0.0: ${relative}`);
+      else if (fs.statSync(target).size === 0) errors.push(`required package file is empty: ${relative}`);
+    }
+    const factsPath = path.join(absoluteDir, "facts.json");
+    const fittedPath = path.join(absoluteDir, "fitted.json");
+    const modelPath = path.join(absoluteDir, "model.cir");
+    if (component && [factsPath, fittedPath, modelPath].every((target) => fs.existsSync(target))) {
+      try {
+        errors.push(...validateNewContractPackage(component, readJson(factsPath), readJson(fittedPath), fs.readFileSync(modelPath, "utf8"), expectations));
+      } catch (error) {
+        errors.push(`evidence contract package cannot be read: ${error.message}`);
+      }
+    }
   }
 
   if (fs.existsSync(path.join(absoluteDir, "sources.json"))) {

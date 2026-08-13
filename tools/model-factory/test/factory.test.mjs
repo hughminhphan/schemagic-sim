@@ -225,6 +225,14 @@ test("conveyor MOSFET package contract rejects hidden critical defaults and hybr
   const hybrid = structuredClone(facts);
   hybrid.rdson_points[0].current.condition_identity = mosfetIdentity("rds_on", { electrical: { ...condition.electrical, id: { kind: "fixed", value_a: 5 } } });
   assert.throws(() => assertMosfetConditionIdentityContract(ctx, hybrid, { parameters: {}, held_defaults: [] }), /hybrid/);
+
+  const missingRef = structuredClone(ctx);
+  missingRef.part.component.supported_operating_region.numeric_bounds[0].evidence_refs = [];
+  assert.throws(() => assertMosfetConditionIdentityContract(missingRef, facts, { parameters: {}, held_defaults: [] }), /evidence_refs must be non-empty/);
+
+  const alteredRef = structuredClone(ctx);
+  alteredRef.part.component.supported_operating_region.numeric_bounds[0].evidence_refs[0].evidence_id = `sha256:${"f".repeat(64)}`;
+  assert.throws(() => assertMosfetConditionIdentityContract(alteredRef, facts, { parameters: {}, held_defaults: [] }), /does not resolve to package evidence/);
 });
 
 test("legacy reviewed MOSFET package generation remains backward-compatible", () => {

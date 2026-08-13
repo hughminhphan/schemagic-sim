@@ -679,7 +679,7 @@ export function normalizeMosfetEvidenceIdentity(raw, condition, citation, trail 
 
 function evidenceLinks(evidence, condition, citation = null) {
   const qualification = condition.test_mode.kind === "pulsed" || condition.test_mode.kind === "single_pulse"
-    ? { test_mode: "pulse", pulse_width_s: condition.test_mode.pulse_width_s, duty_cycle: condition.test_mode.duty_cycle }
+    ? { test_mode: condition.test_mode.kind, pulse_width_s: condition.test_mode.pulse_width_s, ...(condition.test_mode.duty_cycle == null ? {} : { duty_cycle: condition.test_mode.duty_cycle }) }
     : { test_mode: "continuous_dc" };
   const locator = citation?.table
     ? { page: citation.page, table: citation.table, row: citation.row }
@@ -1653,6 +1653,12 @@ export function stageValidate(ctx) {
     assertMosfetConditionIdentityContract(ctx, facts, fitted);
   }
   run("node", [packageValidator, ctx.packageDir]);
+  if (ctx.part.pipeline === "vdmos") {
+    const emittedComponent = JSON.parse(fs.readFileSync(path.join(ctx.packageDir, "component.json"), "utf8"));
+    const facts = JSON.parse(fs.readFileSync(path.join(ctx.packageDir, "facts.json"), "utf8"));
+    const fitted = JSON.parse(fs.readFileSync(path.join(ctx.packageDir, "fitted.json"), "utf8"));
+    assertMosfetConditionIdentityContract({ ...ctx, part: { ...ctx.part, component: { ...ctx.part.component, supported_operating_region: emittedComponent.supported_operating_region } } }, facts, fitted);
+  }
   const expectations = JSON.parse(fs.readFileSync(path.join(ctx.packageDir, "tests", "expectations.json"), "utf8"));
   const results = [];
   let passCount = 0;
