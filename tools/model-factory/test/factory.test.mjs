@@ -202,6 +202,15 @@ test("canonical MOSFET curves preserve typed VDS, temperature, curve IDs, and or
   const hybrid = structuredClone(curve);
   hybrid.points[0].evidence_identity.condition_id = `sha256:${"c".repeat(64)}`;
   assert.throws(() => normalizeMosfetCurve(hybrid), /does not match canonical content|hybrid condition or citation IDs/);
+  for (const mutate of [
+    (candidate) => { candidate.points[0].evidence_identity.point_index = 99; },
+    (candidate) => { candidate.points[0].evidence_identity.curve_id = `sha256:${"f".repeat(64)}`; },
+    (candidate) => { candidate.points[0].evidence_identity.role = "typical"; }
+  ]) {
+    const candidate = structuredClone(curve);
+    mutate(candidate);
+    assert.throws(() => normalizeMosfetCurve(candidate), /hybrid curve identity|role must be digitized_typical_curve/);
+  }
   const placeholder = structuredClone(curve);
   placeholder.citation_identity = citationIdentity({ figure: "placeholder" });
   assert.throws(() => normalizeMosfetCurve(placeholder), /figure is invalid/);

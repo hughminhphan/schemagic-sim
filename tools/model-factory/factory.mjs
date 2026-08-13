@@ -727,12 +727,13 @@ export function normalizeMosfetCurve(raw, trail = "curve") {
     const xSi = assertFinite(point.x_si, `${trail}.points[${index}].x_si`);
     const ySi = assertFinite(point.y_si, `${trail}.points[${index}].y_si`);
     if (point.point_index !== index) throw new Error(`${trail}.points must be ordered with contiguous point_index values`);
+    if (point.evidence_identity?.curve_id !== raw.curve_id || point.evidence_identity?.point_index !== point.point_index) throw new Error(`${trail}.points[${index}] has hybrid curve identity`);
+    if (point.evidence_identity?.role !== "digitized_typical_curve") throw new Error(`${trail}.points[${index}].evidence_identity.role must be digitized_typical_curve`);
     const evidence = normalizeMosfetEvidenceIdentity(point.evidence_identity, condition, citation, `${trail}.points[${index}].evidence_identity`, {
       curve: true,
       characteristic: raw.characteristic,
       point: { x_si: xSi, y_si: ySi, point_index: point.point_index }
     });
-    if (evidence.curve_id !== raw.curve_id || evidence.point_index !== point.point_index) throw new Error(`${trail}.points[${index}] has hybrid curve identity`);
     return { x_si: xSi, y_si: ySi, point_index: point.point_index, evidence_identity: evidence };
   });
   assertIdentityHash(raw, "curve_id", trail, (curve) => curveIdentityMaterial(curve, condition.condition_id, citation.citation_id));

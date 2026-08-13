@@ -181,6 +181,11 @@ function verifyFactsIdentities(evidence) {
         );
         checkedCurves.add(row.curve);
       }
+      if (row.evidence?.point_index !== row.point?.point_index) errors.push(`${row.label}.evidence_identity.point_index disagrees with raw point`);
+      if (row.evidence?.curve_id !== row.curve?.curve_id) errors.push(`${row.label}.evidence_identity.curve_id disagrees with enclosing curve`);
+      if (row.evidence?.condition_id !== row.condition?.condition_id) errors.push(`${row.label}.evidence_identity.condition_id disagrees with enclosing curve`);
+      if (row.evidence?.citation_id !== row.citation?.citation_id) errors.push(`${row.label}.evidence_identity.citation_id disagrees with enclosing curve`);
+      if (row.evidence?.role !== "digitized_typical_curve") errors.push(`${row.label}.evidence_identity.role must be digitized_typical_curve for a curve point`);
       const cohortMaterial = curveCohortMaterial(row.characteristic, row.condition.condition_id, row.citation.citation_id, row.curve.curve_id);
       const cohortKey = JSON.stringify(stableIdentityValue(cohortMaterial));
       const previousCohortMaterial = cohortMaterials.get(row.evidence?.cohort_id);

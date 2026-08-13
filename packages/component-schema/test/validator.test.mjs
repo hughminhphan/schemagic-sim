@@ -179,6 +179,21 @@ test("stale condition hashes fail for electrical bias, temperature, test mode, a
   ]) assert.ok(mutateContractFixture(mutate).some((error) => error.includes("condition_id does not match canonical content")));
 });
 
+test("redundant nested curve-point identities must match the raw point and enclosing curve before hash validation", () => {
+  const cases = [
+    [(f) => { f.facts.curves[0].points[0].evidence_identity.point_index = 99; }, "evidence_identity.point_index disagrees with raw point"],
+    [(f) => { f.facts.curves[0].points[0].evidence_identity.curve_id = `sha256:${"f".repeat(64)}`; }, "evidence_identity.curve_id disagrees with enclosing curve"],
+    [(f) => { f.facts.curves[0].points[0].evidence_identity.condition_id = f.facts.threshold.typical.condition_identity.condition_id; }, "evidence_identity.condition_id disagrees with enclosing curve"],
+    [(f) => { f.facts.curves[0].points[0].evidence_identity.citation_id = f.facts.threshold.typical.citation_identity.citation_id; }, "evidence_identity.citation_id disagrees with enclosing curve"],
+    [(f) => { f.facts.curves[0].points[0].evidence_identity.cohort_id = `sha256:${"f".repeat(64)}`; }, "evidence_identity.cohort_id does not match canonical content"],
+    [(f) => { f.facts.curves[0].points[0].evidence_identity.role = "typical"; }, "evidence_identity.role must be digitized_typical_curve for a curve point"]
+  ];
+  for (const [mutate, fragment] of cases) {
+    const errors = mutateContractFixture(mutate);
+    assert.ok(errors.some((error) => error.includes(fragment)), `${fragment}: ${errors.join("\n")}`);
+  }
+});
+
 test("stale curve, cohort, point evidence, expectation linkage, and bound hashes fail closed", () => {
   const cases = [
     [(f) => { f.facts.curves[0].x_axis.quantity = "vds"; }, "curve_id does not match canonical content"],
