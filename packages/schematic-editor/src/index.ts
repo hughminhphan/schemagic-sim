@@ -8,11 +8,14 @@ import {
   type ComponentType,
   type Point,
 } from "@opencircuit/circuit-schema";
+import { EDITOR_SYMBOLS } from "./symbols.generated";
 
 export { PARTS } from "@opencircuit/circuit-schema";
 
 const NS = "http://www.w3.org/2000/svg";
 const GRID = 8;
+const SNAP_RADIUS_PX = 10;
+const SWITCH_CLOSED_ANGLE = Math.atan2(0.7, 1.4) * 180 / Math.PI;
 type Tool = "select" | "wire" | ComponentType;
 
 export interface EditorChange {
@@ -37,6 +40,44 @@ interface WireStyle {
   opacity?: number;
 }
 
+interface SymbolLayers {
+  background: string[];
+  strokes: string[];
+  solid: string[];
+}
+
+interface PinReference {
+  componentId: string;
+  pinIndex: number;
+}
+
+interface WireAttachment {
+  start?: PinReference;
+  end?: PinReference;
+}
+
+interface SnapCandidate {
+  point: Point;
+  kind: "pin" | "vertex" | "segment";
+  distance: number;
+  componentId?: string;
+  pinIndex?: number;
+  wireId?: string;
+}
+
+type Drag =
+  | {
+    kind: "component";
+    id: string;
+    origins: Map<string, Point>;
+    originalWires: Map<string, Point[]>;
+    attachments: Map<string, WireAttachment>;
+    moved: boolean;
+  }
+  | { kind: "pot"; id: string }
+  | { kind: "box"; start: Point; end: Point }
+  | { kind: "pan"; start: Point; origin: Point };
+
 const esc = (value: string) => value.replace(/[&<>"']/g, (character) => ({
   "&": "&amp;",
   "<": "&lt;",
@@ -47,37 +88,80 @@ const esc = (value: string) => value.replace(/[&<>"']/g, (character) => ({
 const idMax = (items: { id: string }[], prefix: string) => Math.max(0, ...items.map((item) => item.id.startsWith(prefix) ? Number(item.id.slice(prefix.length)) || 0 : 0));
 const path = (points: Point[]) => points.map((point, index) => `${index ? "L" : "M"}${point[0]} ${point[1]}`).join(" ");
 const clamp = (value: number, minimum: number, maximum: number) => Math.max(minimum, Math.min(maximum, value));
+const samePoint = (a: Point, b: Point) => a[0] === b[0] && a[1] === b[1];
+const pointKey = (point: Point) => `${point[0]},${point[1]}`;
+const clonePoint = (point: Point): Point => [point[0], point[1]];
 
-function symbol(component: CircuitComponent): string {
-  const type = component.type;
-  switch (type) {
-    case "resistor": return `<path d="M-2 0h.45l.35-.7.7 1.4.7-1.4.7 1.4.65-.7H2"/>`;
-    case "capacitor": return `<path d="M-2 0h1.55m0-1.2v2.4m.9-2.4v2.4M.45 0H2"/>`;
-    case "inductor": return `<path d="M-2 0h.35c0-1 1-1 1 0s1 1 1 0 1-1 1 0 1 1 1 0H2"/>`;
-    case "vsource":
-    case "vsource_pulse":
-    case "vsource_sine": return `<circle cx="0" cy="0" r="1.25"/><path d="M0-2v.75M0 1.25V2M-.45-.45h.9M0-.9v.9M-.45.55h.9"/>`;
-    case "isource": return `<circle cx="0" cy="0" r="1.25"/><path d="M0-2v.75M0 1.25V2M0 .75V-.65m-.45.45L0-.7l.45.5"/>`;
-    case "ground": return `<path d="M0 0v.55M-1 .55H1M-.65 1h1.3M-.3 1.45h.6"/>`;
-    case "switch_spst": return `<path d="M-2 0h.7m2.6 0H2M-1.3 0L1.1 ${component.params?.closed ? 0 : -1.1}"/><circle cx="-1.3" cy="0" r=".12"/><circle cx="1.3" cy="0" r=".12"/>`;
-    case "potentiometer": {
-      const t = clamp(Number(component.params?.t ?? 0.5), 0.005, 0.995);
-      const y = 6 - 12 * t;
-      return `<path d="M0-6v3.2l-.7.35 1.4.7-1.4.7 1.4.7-.7.35V6"/><path class="pot-wiper" d="M4 ${y}H.8"/><rect class="pot-knob" x="3.4" y="${y - 0.6}" width="1.2" height="1.2"/><path class="pot-hit" data-pot-hit="${esc(component.id)}" data-testid="pot-wiper" d="M4-6V6"/>`;
-    }
-    case "diode":
-    case "led": return `<path d="M0-2v.75M0 1.25V2M-1.15-1.25h2.3L0 1.25Zm-1.15 2.5h2.3${type === "led" ? "M.8-1.2l1-.8m-.45 1.35 1-.8" : ""}"/>`;
-    case "bjt_npn":
-    case "bjt_pnp": return `<path d="M-2 0h.8m0-1.6v3.2m0-1.05L2-4m-3.2 3.45L2 4M1.1 2.7l.9 1.3-1.5-.35${type === "bjt_pnp" ? "M1.55-3.65L.3-3.1l.85.85" : ""}"/>`;
-    case "nmos":
-    case "pmos": return `<path d="M-2 0h.8m.3-1.8v3.6m.5-3.2v3.2M-.4-1.25H2V-4M-.4 1.25H2V4${type === "pmos" ? "M-1.2 0a.35.35 0 1 0 .01 0" : ""}"/>`;
-    case "opamp_ideal": return `<path d="M-4-2h1M-4 2h1M4 0H3M-3-3L3 0-3 3Zm.7.7v.6m-.3-.3h.6m0 3h.6"/>`;
+function splitSymbolMarkup(markup: string): SymbolLayers {
+  const layers: SymbolLayers = { background: [], strokes: [], solid: [] };
+  for (const tag of markup.match(/<(?:path|circle|rect|ellipse|line|polyline|polygon)\b[^>]*\/>/g) ?? []) {
+    if (/class="[^"]*sym-bg/.test(tag)) layers.background.push(tag);
+    else if (/class="[^"]*sym-solid/.test(tag)) layers.solid.push(tag);
+    else layers.strokes.push(tag);
   }
+  return layers;
+}
+
+function wrappedLayer(markup: string[], transformValue: string, className = ""): string {
+  if (!markup.length) return "";
+  return `<g${className ? ` class="${className}"` : ""} transform="${transformValue}">${markup.join("")}</g>`;
+}
+
+function renderedSymbol(component: CircuitComponent, interactive = true): string {
+  const definition = EDITOR_SYMBOLS[component.type];
+  const base = splitSymbolMarkup(definition.markup);
+  const background = [...base.background];
+  const strokes = [...base.strokes];
+  const solid = [...base.solid];
+
+  if (component.type === "potentiometer" && definition.wiper) {
+    const t = clamp(Number(component.params?.t ?? 0.5), 0.005, 0.995);
+    const y = 6 - 12 * t;
+    const wiper = splitSymbolMarkup(definition.wiper);
+    const translation = `translate(0 ${y})`;
+    background.push(wrappedLayer(wiper.background, translation, "pot-wiper"));
+    strokes.push(wrappedLayer(wiper.strokes, translation, "pot-wiper"));
+    solid.push(wrappedLayer(wiper.solid, translation, "pot-wiper"));
+  }
+
+  if (component.type === "switch_spst" && definition.lever && definition.leverPivot) {
+    const lever = splitSymbolMarkup(definition.lever);
+    const [pivotX, pivotY] = definition.leverPivot;
+    const rotation = component.params?.closed ? `rotate(${SWITCH_CLOSED_ANGLE} ${pivotX} ${pivotY})` : "rotate(0)";
+    background.push(wrappedLayer(lever.background, rotation));
+    strokes.push(wrappedLayer(lever.strokes, rotation));
+    solid.push(wrappedLayer(lever.solid, rotation));
+  }
+
+  return `${background.join("")}${strokes.join("")}${solid.join("")}${interactive && component.type === "potentiometer" ? `<path class="pot-hit" data-pot-hit="${esc(component.id)}" data-testid="pot-wiper" d="M4-6V6"/>` : ""}`;
+}
+
+function rotateAround(point: Point, pivot: Point, degrees: number): Point {
+  const radians = degrees * Math.PI / 180;
+  const x = point[0] - pivot[0];
+  const y = point[1] - pivot[1];
+  return [pivot[0] + x * Math.cos(radians) - y * Math.sin(radians), pivot[1] + x * Math.sin(radians) + y * Math.cos(radians)];
+}
+
+function componentBbox(component: CircuitComponent): [number, number, number, number] {
+  if (component.type !== "switch_spst") return [...EDITOR_SYMBOLS[component.type].bbox];
+  const definition = EDITOR_SYMBOLS.switch_spst;
+  const pivot = definition.leverPivot ?? [-0.8, 0];
+  const angle = component.params?.closed ? SWITCH_CLOSED_ANGLE : 0;
+  const leverPoints = [rotateAround([-0.6, -0.1], pivot, angle), rotateAround([0.6, -0.7], pivot, angle)];
+  return [
+    Math.min(-2, ...leverPoints.map((point) => point[0])),
+    Math.min(-0.2, ...leverPoints.map((point) => point[1])),
+    Math.max(2, ...leverPoints.map((point) => point[0])),
+    Math.max(0.2, ...leverPoints.map((point) => point[1])),
+  ];
 }
 
 export function partSymbolMarkup(type: ComponentType): string {
   const component = { id: "x", type, pos: [0, 0], rot: 0, mirror: false } as CircuitComponent;
-  return `<svg viewBox="-2.5 -3.5 5 7" aria-hidden="true">${symbol(component)}</svg>`;
+  const [minX, minY, maxX, maxY] = componentBbox(component);
+  const margin = 0.65;
+  return `<svg class="editor-symbol part-symbol" viewBox="${minX - margin} ${minY - margin} ${maxX - minX + margin * 2} ${maxY - minY + margin * 2}" aria-hidden="true">${renderedSymbol(component, false)}</svg>`;
 }
 
 function transform(component: CircuitComponent): string {
@@ -85,12 +169,99 @@ function transform(component: CircuitComponent): string {
 }
 
 function compactWire(points: Point[]): Point[] {
-  return points
-    .filter((point, index) => index === 0 || point[0] !== points[index - 1]![0] || point[1] !== points[index - 1]![1])
-    .filter((point, index, array) => index === 0 || index === array.length - 1 || !(
-      (array[index - 1]![0] === point[0] && point[0] === array[index + 1]![0])
-      || (array[index - 1]![1] === point[1] && point[1] === array[index + 1]![1])
-    ));
+  const compacted: Point[] = [];
+  for (const source of points) {
+    const point = clonePoint(source);
+    if (compacted.length && samePoint(compacted.at(-1)!, point)) continue;
+    compacted.push(point);
+    while (compacted.length >= 3) {
+      const a = compacted.at(-3)!;
+      const b = compacted.at(-2)!;
+      const c = compacted.at(-1)!;
+      if (!((a[0] === b[0] && b[0] === c[0]) || (a[1] === b[1] && b[1] === c[1]))) break;
+      compacted.splice(compacted.length - 2, 1);
+    }
+  }
+  return compacted;
+}
+
+function orthogonalLeg(start: Point, end: Point, horizontalFirst: boolean): Point[] {
+  if (samePoint(start, end)) return [];
+  if (start[0] === end[0] || start[1] === end[1]) return [clonePoint(end)];
+  return horizontalFirst
+    ? [[end[0], start[1]], clonePoint(end)]
+    : [[start[0], end[1]], clonePoint(end)];
+}
+
+function pointInSegmentInterior(point: Point, a: Point, b: Point): boolean {
+  if (a[0] === b[0] && point[0] === a[0]) return point[1] > Math.min(a[1], b[1]) && point[1] < Math.max(a[1], b[1]);
+  if (a[1] === b[1] && point[1] === a[1]) return point[0] > Math.min(a[0], b[0]) && point[0] < Math.max(a[0], b[0]);
+  return false;
+}
+
+function normalizeJunctions(document: CircuitDocument): void {
+  for (const wire of document.wires) wire.points = compactWire(wire.points);
+  const candidates = new Map<string, { point: Point; wireIds: Set<string>; pin: boolean }>();
+  for (const wire of document.wires) {
+    for (const endpoint of [wire.points[0], wire.points.at(-1)]) {
+      if (!endpoint) continue;
+      const key = pointKey(endpoint);
+      const candidate = candidates.get(key) ?? { point: clonePoint(endpoint), wireIds: new Set<string>(), pin: false };
+      candidate.wireIds.add(wire.id);
+      candidates.set(key, candidate);
+    }
+  }
+  for (const component of document.components) {
+    for (const pin of componentPinPoints(component)) {
+      const key = pointKey(pin);
+      const candidate = candidates.get(key) ?? { point: clonePoint(pin), wireIds: new Set<string>(), pin: false };
+      candidate.pin = true;
+      candidates.set(key, candidate);
+    }
+  }
+
+  for (const wire of document.wires) {
+    const normalized: Point[] = [];
+    for (let index = 1; index < wire.points.length; index += 1) {
+      const a = wire.points[index - 1]!;
+      const b = wire.points[index]!;
+      if (index === 1) normalized.push(clonePoint(a));
+      const insertions = [...candidates.values()]
+        .filter((candidate) => (candidate.pin || [...candidate.wireIds].some((id) => id !== wire.id)) && pointInSegmentInterior(candidate.point, a, b))
+        .sort((left, right) => {
+          const leftDistance = Math.hypot(left.point[0] - a[0], left.point[1] - a[1]);
+          const rightDistance = Math.hypot(right.point[0] - a[0], right.point[1] - a[1]);
+          return leftDistance - rightDistance;
+        });
+      for (const insertion of insertions) normalized.push(clonePoint(insertion.point));
+      normalized.push(clonePoint(b));
+    }
+    wire.points = compactWire(normalized);
+  }
+}
+
+function rubberBandWire(original: Point[], start: Point | undefined, end: Point | undefined): Point[] {
+  if (original.length < 2) return original.map(clonePoint);
+  let points = original.map(clonePoint);
+  if (start) {
+    const oldStart = original[0]!;
+    const neighbor = original[1]!;
+    points[0] = clonePoint(start);
+    if (start[0] !== neighbor[0] && start[1] !== neighbor[1]) {
+      const bend: Point = oldStart[1] === neighbor[1] ? [neighbor[0], start[1]] : [start[0], neighbor[1]];
+      points.splice(1, 0, bend);
+    }
+  }
+  if (end) {
+    const oldEnd = original.at(-1)!;
+    const neighbor = original.at(-2)!;
+    points[points.length - 1] = clonePoint(end);
+    if (end[0] !== neighbor[0] && end[1] !== neighbor[1]) {
+      const bend: Point = oldEnd[1] === neighbor[1] ? [neighbor[0], end[1]] : [end[0], neighbor[1]];
+      points.splice(points.length - 1, 0, bend);
+    }
+  }
+  return compactWire(points);
 }
 
 function flowForCurrent(current: number): { u: number; spacing: number } | undefined {
@@ -119,11 +290,29 @@ function polylineLength(points: Point[]): number {
   return points.slice(1).reduce((sum, point, index) => sum + Math.hypot(point[0] - points[index]![0], point[1] - points[index]![1]), 0);
 }
 
-type Drag =
-  | { kind: "component"; start: Point; origin: Point; id: string }
-  | { kind: "pot"; id: string }
-  | { kind: "box"; start: Point }
-  | { kind: "pan"; start: Point; origin: Point };
+function formatEngineeringValue(value: number): string {
+  if (!Number.isFinite(value)) return String(value);
+  if (value === 0) return "0";
+  const prefixes: [number, string][] = [[1e9, "G"], [1e6, "M"], [1e3, "k"], [1, ""], [1e-3, "m"], [1e-6, "u"], [1e-9, "n"], [1e-12, "p"]];
+  const absolute = Math.abs(value);
+  const [factor, suffix] = prefixes.find(([candidate]) => absolute >= candidate) ?? prefixes.at(-1)!;
+  const scaled = value / factor;
+  const precision = Math.max(0, 4 - Math.floor(Math.log10(Math.abs(scaled))) - 1);
+  return `${Number(scaled.toFixed(precision))}${suffix}`;
+}
+
+function valueLabelPosition(component: CircuitComponent): { point: Point; anchor: "start" | "middle" | "end" } {
+  const [minX, minY, maxX, maxY] = componentBbox(component);
+  const offset = component.label?.offset ?? [0, minY - 1.5];
+  if (Math.abs(offset[0]) >= Math.abs(offset[1]) && offset[0] !== 0) {
+    return offset[0] < 0
+      ? { point: [maxX + 1.2, offset[1]], anchor: "start" }
+      : { point: [minX - 1.2, offset[1]], anchor: "end" };
+  }
+  return offset[1] <= 0
+    ? { point: [offset[0], maxY + 1.5], anchor: "middle" }
+    : { point: [offset[0], minY - 1.2], anchor: "middle" };
+}
 
 export class SchematicEditor {
   readonly element: SVGSVGElement;
@@ -134,13 +323,18 @@ export class SchematicEditor {
   private undoStack: string[] = [];
   private redoStack: string[] = [];
   private gestureSnapshot = "";
-  private wireStart: Point | undefined;
+  private wirePoints: Point[] | undefined;
   private wirePreview: Point | undefined;
+  private wireSnap: SnapCandidate | undefined;
+  private wireHorizontalFirst = true;
   private pan: Point;
   private zoom: number;
   private space = false;
   private drag: Drag | undefined;
   private hoveredWire: string | undefined;
+  private ghostPoint: Point | undefined;
+  private pendingRotation: CircuitComponent["rot"] = 0;
+  private pendingMirror = false;
   private readonly wireStyles = new Map<string, WireStyle>();
   private readonly wireCurrents = new Map<string, number>();
   private forcedStatic = false;
@@ -178,6 +372,7 @@ export class SchematicEditor {
     this.gestureSnapshot = "";
   }
   setDocument(document: CircuitDocument, resetHistory = true): void {
+    this.cancelWire();
     this.doc = structuredClone(document);
     this.pan = this.doc.view?.pan ?? [0, 0];
     this.zoom = this.doc.view?.zoom ?? 1;
@@ -187,7 +382,14 @@ export class SchematicEditor {
     this.clearSelection();
     this.render();
   }
-  setTool(tool: Tool): void { this.tool = tool; this.wireStart = undefined; this.wirePreview = undefined; this.options.onMidWire?.(false); this.render(); }
+  setTool(tool: Tool): void {
+    this.cancelWire();
+    this.tool = tool;
+    this.pendingRotation = 0;
+    this.pendingMirror = false;
+    this.ghostPoint = this.isComponentTool(tool) ? this.canvasCenter() : undefined;
+    this.render();
+  }
   getTool(): Tool { return this.tool; }
   selected(): { components: string[]; wires: string[] } { return { components: [...this.selectedComponents], wires: [...this.selectedWires] }; }
   canUndo(): boolean { return this.undoStack.length > 0; }
@@ -210,8 +412,32 @@ export class SchematicEditor {
     this.render();
     this.emit("redo");
   }
-  rotate(): void { this.change(() => { for (const id of this.selectedComponents) { const component = this.doc.components.find((item) => item.id === id); if (component) component.rot = ((component.rot + 90) % 360) as CircuitComponent["rot"]; } }); }
-  mirror(): void { this.change(() => { for (const id of this.selectedComponents) { const component = this.doc.components.find((item) => item.id === id); if (component) component.mirror = !component.mirror; } }); }
+  rotate(): void {
+    if (this.isComponentTool(this.tool)) {
+      this.pendingRotation = ((this.pendingRotation + 90) % 360) as CircuitComponent["rot"];
+      this.render();
+      return;
+    }
+    this.change(() => {
+      for (const id of this.selectedComponents) {
+        const component = this.doc.components.find((item) => item.id === id);
+        if (component) component.rot = ((component.rot + 90) % 360) as CircuitComponent["rot"];
+      }
+    });
+  }
+  mirror(): void {
+    if (this.isComponentTool(this.tool)) {
+      this.pendingMirror = !this.pendingMirror;
+      this.render();
+      return;
+    }
+    this.change(() => {
+      for (const id of this.selectedComponents) {
+        const component = this.doc.components.find((item) => item.id === id);
+        if (component) component.mirror = !component.mirror;
+      }
+    });
+  }
   deleteSelected(): void { this.change(() => { this.doc.components = this.doc.components.filter((component) => !this.selectedComponents.has(component.id)); this.doc.wires = this.doc.wires.filter((wire) => !this.selectedWires.has(wire.id)); this.clearSelection(); }); }
   copy(): string { return JSON.stringify({ components: this.doc.components.filter((component) => this.selectedComponents.has(component.id)), wires: this.doc.wires.filter((wire) => this.selectedWires.has(wire.id)) }); }
   paste(source?: string): void {
@@ -284,11 +510,21 @@ export class SchematicEditor {
   }
   exportSvg(): string {
     const clone = this.element.cloneNode(true) as SVGSVGElement;
-    clone.querySelectorAll(".editor-hit,.editor-component-hit,.editor-selection,.selection-box,.wire-preview,.pot-hit").forEach((element) => element.remove());
+    clone.querySelectorAll(".editor-hit,.editor-component-hit,.editor-selection,.selection-box,.wire-preview,.pot-hit,.snap-indicator,.placement-ghost,.pin-open").forEach((element) => element.remove());
     clone.setAttribute("xmlns", NS);
     clone.setAttribute("viewBox", `0 0 ${this.host.clientWidth} ${this.host.clientHeight}`);
     clone.setAttribute("width", String(this.host.clientWidth));
     clone.setAttribute("height", String(this.host.clientHeight));
+    clone.removeAttribute("tabindex");
+    const computed = getComputedStyle(this.element);
+    const color = (name: string, fallback: string) => computed.getPropertyValue(name).trim() || fallback;
+    const vellum = color("--vellum", "#F1EEE8");
+    const graphite900 = color("--graphite-900", "#15181B");
+    const graphite700 = color("--graphite-700", "#2A2F34");
+    const graphite500 = color("--graphite-500", "#6E7378");
+    const style = document.createElementNS(NS, "style");
+    style.textContent = `.editor-bg{fill:${vellum}}.grid-dot{fill:${graphite500};opacity:.22}.editor-symbol,.editor-symbol *{fill:none;stroke:${graphite900};stroke-width:1.5;stroke-linecap:square;stroke-linejoin:miter;vector-effect:non-scaling-stroke}.editor-symbol .sym-bg{fill:${vellum};stroke:none}.editor-symbol .sym-solid{fill:${graphite900};stroke:${graphite900};stroke-width:1}.editor-symbol .sym-bold{stroke-width:2.2}.editor-symbol .pin-lead{stroke-width:1.4}.editor-label{fill:${graphite700};stroke:${vellum};paint-order:stroke fill;font-family:sans-serif;font-weight:500;pointer-events:none}.editor-value{fill:${graphite700}}.editor-wire{fill:none;stroke:${graphite500};stroke-width:1.8;stroke-linecap:square;stroke-linejoin:miter;vector-effect:non-scaling-stroke}.connection-node{fill:${graphite700};stroke:${graphite700};stroke-width:1;vector-effect:non-scaling-stroke}.static-chevron{fill:none;stroke:${graphite900};stroke-width:1;stroke-linecap:square;stroke-linejoin:miter;vector-effect:non-scaling-stroke}.editor-led-halo{pointer-events:none}`;
+    (clone.querySelector("defs") ?? clone).append(style);
     this.applyStaticEncoding(clone, true);
     return `<?xml version="1.0" encoding="UTF-8"?>\n${new XMLSerializer().serializeToString(clone)}`;
   }
@@ -307,6 +543,17 @@ export class SchematicEditor {
     this.element.addEventListener("pointermove", (event) => this.pointerMove(event));
     this.element.addEventListener("pointerup", (event) => this.pointerUp(event));
     this.element.addEventListener("pointercancel", (event) => this.pointerUp(event));
+    this.element.addEventListener("dblclick", (event) => {
+      if (!this.wirePoints) return;
+      event.preventDefault();
+      this.finishWire(false);
+    });
+    this.element.addEventListener("contextmenu", (event) => {
+      if (!this.wirePoints) return;
+      event.preventDefault();
+      this.cancelWire();
+      this.render();
+    });
     this.element.addEventListener("pointerleave", () => {
       if (!this.drag && this.hoveredWire !== undefined) {
         this.hoveredWire = undefined;
@@ -320,11 +567,16 @@ export class SchematicEditor {
       else if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "y") { event.preventDefault(); this.redo(); }
       else if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "c") { event.preventDefault(); this.copyToClipboard(); }
       else if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "v") { event.preventDefault(); this.paste(); }
+      else if (event.key === "Enter" && this.wirePoints) { event.preventDefault(); this.finishWire(true); }
+      else if (event.key === "/" && this.wirePoints) { event.preventDefault(); this.wireHorizontalFirst = !this.wireHorizontalFirst; this.render(); }
       else if (event.key.toLowerCase() === "r") this.rotate();
       else if (event.key.toLowerCase() === "x") this.mirror();
       else if (event.key.toLowerCase() === "f") this.fit();
       else if (event.key === "Delete" || event.key === "Backspace") this.deleteSelected();
-      else if (event.key === "Escape") this.setTool("select");
+      else if (event.key === "Escape") {
+        if (this.wirePoints) { this.cancelWire(); this.render(); }
+        else this.setTool("select");
+      }
     });
     this.element.addEventListener("keyup", (event) => { if (event.key === " ") this.space = false; });
   }
@@ -332,48 +584,50 @@ export class SchematicEditor {
   private pointerDown(event: PointerEvent): void {
     this.element.focus();
     const target = event.target as SVGElement;
-    const world = this.snap(this.toWorld(event.clientX, event.clientY));
+    const raw = this.toWorld(event.clientX, event.clientY);
+    const world = this.snap(raw);
+    if (event.button === 2) {
+      if (this.wirePoints) { this.cancelWire(); this.render(); }
+      return;
+    }
     if (this.space || event.button === 1) {
       this.drag = { kind: "pan", start: [event.clientX, event.clientY], origin: [...this.pan] };
       this.element.setPointerCapture(event.pointerId);
       return;
     }
-    if (this.tool === "wire") {
-      if (!this.wireStart) { this.wireStart = world; this.wirePreview = world; this.options.onMidWire?.(true); }
-      else {
-        this.change(() => {
-          const points = compactWire([this.wireStart!, [world[0], this.wireStart![1]], world]);
-          if (points.length >= 2) this.doc.wires.push({ id: `w${idMax(this.doc.wires, "w") + 1}`, points });
-        });
-        this.wireStart = undefined;
-        this.wirePreview = undefined;
-        this.options.onMidWire?.(false);
-      }
-      this.render();
+    if (this.wirePoints || this.tool === "wire") {
+      const candidate = this.findWireSnap(raw);
+      this.commitWireClick(candidate?.point ?? world, candidate);
       return;
     }
-    if (this.tool !== "select") {
+    if (this.isComponentTool(this.tool)) {
+      const point = this.ghostPoint ?? world;
       this.change(() => {
         const part = partByType(this.tool as ComponentType);
         const id = `c${idMax(this.doc.components, "c") + 1}`;
         const component: CircuitComponent = {
           id,
           type: part.type,
-          pos: world,
-          rot: 0,
-          mirror: false,
+          pos: clonePoint(point),
+          rot: this.pendingRotation,
+          mirror: this.pendingMirror,
           label: { text: `${part.prefix}${id.slice(1)}`, offset: [0, -3] },
           ...(part.defaultValue !== undefined ? { value: part.defaultValue } : {}),
           ...(part.type === "potentiometer" ? { params: { t: 0.5 } } : {}),
         };
         this.doc.components.push(component);
+        normalizeJunctions(this.doc);
         this.clearSelection();
         this.selectedComponents.add(id);
       });
       this.tool = "select";
+      this.ghostPoint = undefined;
+      this.pendingRotation = 0;
+      this.pendingMirror = false;
       this.render();
       return;
     }
+
     const potId = target.closest<SVGElement>("[data-pot-hit]")?.dataset.potHit;
     if (potId) {
       this.clearSelection();
@@ -386,14 +640,22 @@ export class SchematicEditor {
       this.updatePotFromPointer(potId, event.clientX, event.clientY);
       return;
     }
+
+    const pin = this.findNearestPin(raw);
+    if (pin) {
+      this.beginWire(pin.point);
+      this.wireSnap = pin;
+      this.render();
+      return;
+    }
+
     const componentId = target.closest<SVGGElement>("[data-component-id]")?.dataset.componentId;
     const wireId = target.closest<SVGElement>("[data-wire-id]")?.dataset.wireId;
     if (componentId) {
       if (!event.shiftKey && !this.selectedComponents.has(componentId)) this.clearSelection();
       this.selectedComponents.add(componentId);
-      const component = this.doc.components.find((item) => item.id === componentId)!;
       this.beginGesture();
-      this.drag = { kind: "component", start: world, origin: [...component.pos], id: componentId };
+      this.drag = this.makeComponentDrag(componentId);
       this.emitSelection();
       this.element.setPointerCapture(event.pointerId);
       this.render();
@@ -405,7 +667,7 @@ export class SchematicEditor {
       this.render();
     } else {
       if (!event.shiftKey) this.clearSelection();
-      this.drag = { kind: "box", start: world };
+      this.drag = { kind: "box", start: world, end: world };
       this.element.setPointerCapture(event.pointerId);
       this.emitSelection();
       this.render();
@@ -413,41 +675,55 @@ export class SchematicEditor {
   }
 
   private pointerMove(event: PointerEvent): void {
-    if (!this.drag && !this.wireStart) {
+    const raw = this.toWorld(event.clientX, event.clientY);
+    const world = this.snap(raw);
+    if (this.isComponentTool(this.tool) && !this.drag) this.ghostPoint = world;
+    if (!this.drag && !this.wirePoints) {
       const id = (event.target as Element).closest<SVGElement>("[data-wire-id]")?.dataset.wireId;
       if (id !== this.hoveredWire) {
         this.hoveredWire = id;
         this.options.onHoverWire?.(id);
       }
     }
-    const world = this.snap(this.toWorld(event.clientX, event.clientY));
-    if (this.wireStart) { this.wirePreview = world; this.render(); return; }
-    if (!this.drag) return;
-    if (this.drag.kind === "pot") { this.updatePotFromPointer(this.drag.id, event.clientX, event.clientY); return; }
-    if (this.drag.kind === "pan") { this.pan = [this.drag.origin[0] + event.clientX - this.drag.start[0], this.drag.origin[1] + event.clientY - this.drag.start[1]]; this.render(); return; }
-    if (this.drag.kind === "component") {
-      const drag = this.drag;
-      const component = this.doc.components.find((item) => item.id === drag.id);
-      if (component) component.pos = [drag.origin[0] + world[0] - drag.start[0], drag.origin[1] + world[1] - drag.start[1]];
+    if (this.wirePoints) {
+      const candidate = this.findWireSnap(raw);
+      this.wireSnap = candidate;
+      this.wirePreview = candidate?.point ?? world;
       this.render();
       return;
     }
-    this.wirePreview = world;
+    if (!this.drag) {
+      if (this.isComponentTool(this.tool)) this.render();
+      return;
+    }
+    if (this.drag.kind === "pot") { this.updatePotFromPointer(this.drag.id, event.clientX, event.clientY); return; }
+    if (this.drag.kind === "pan") { this.pan = [this.drag.origin[0] + event.clientX - this.drag.start[0], this.drag.origin[1] + event.clientY - this.drag.start[1]]; this.render(); return; }
+    if (this.drag.kind === "component") {
+      this.updateComponentDrag(this.drag, world);
+      this.render();
+      return;
+    }
+    this.drag.end = world;
     this.render();
   }
 
   private pointerUp(event: PointerEvent): void {
     if (!this.drag) return;
     if (this.drag.kind === "component") {
-      if (this.gestureSnapshot && this.gestureSnapshot !== canonicalizeCircuit(this.doc)) this.emit("edit");
+      if (this.drag.moved) {
+        for (const wire of this.doc.wires) wire.points = compactWire(wire.points);
+        normalizeJunctions(this.doc);
+      }
+      const changed = Boolean(this.gestureSnapshot && this.gestureSnapshot !== canonicalizeCircuit(this.doc));
       this.endGesture();
+      if (changed) this.emit("edit");
     } else if (this.drag.kind === "pot") {
       const id = this.drag.id;
       this.endGesture();
       this.options.onLiveGesture?.(false, id);
-    } else if (this.drag.kind === "box" && this.wirePreview) {
+    } else if (this.drag.kind === "box") {
       const a = this.drag.start;
-      const b = this.wirePreview;
+      const b = this.drag.end;
       const minX = Math.min(a[0], b[0]);
       const maxX = Math.max(a[0], b[0]);
       const minY = Math.min(a[1], b[1]);
@@ -460,9 +736,50 @@ export class SchematicEditor {
       this.emit("view");
     }
     this.drag = undefined;
-    this.wirePreview = undefined;
     if (this.element.hasPointerCapture(event.pointerId)) this.element.releasePointerCapture(event.pointerId);
     this.render();
+  }
+
+  private makeComponentDrag(id: string): Extract<Drag, { kind: "component" }> {
+    const origins = new Map<string, Point>();
+    for (const component of this.doc.components) if (this.selectedComponents.has(component.id)) origins.set(component.id, clonePoint(component.pos));
+    const selectedPins = new Map<string, PinReference>();
+    for (const component of this.doc.components) {
+      if (!this.selectedComponents.has(component.id)) continue;
+      componentPinPoints(component).forEach((pin, pinIndex) => selectedPins.set(pointKey(pin), { componentId: component.id, pinIndex }));
+    }
+    const originalWires = new Map<string, Point[]>();
+    const attachments = new Map<string, WireAttachment>();
+    for (const wire of this.doc.wires) {
+      const start = wire.points[0] ? selectedPins.get(pointKey(wire.points[0])) : undefined;
+      const end = wire.points.at(-1) ? selectedPins.get(pointKey(wire.points.at(-1)!)) : undefined;
+      if (!start && !end) continue;
+      originalWires.set(wire.id, wire.points.map(clonePoint));
+      attachments.set(wire.id, { ...(start ? { start } : {}), ...(end ? { end } : {}) });
+    }
+    return { kind: "component", id, origins, originalWires, attachments, moved: false };
+  }
+
+  private updateComponentDrag(drag: Extract<Drag, { kind: "component" }>, anchor: Point): void {
+    const primaryOrigin = drag.origins.get(drag.id);
+    if (!primaryOrigin) return;
+    const delta: Point = [anchor[0] - primaryOrigin[0], anchor[1] - primaryOrigin[1]];
+    for (const [id, origin] of drag.origins) {
+      const component = this.doc.components.find((item) => item.id === id);
+      if (component) component.pos = [origin[0] + delta[0], origin[1] + delta[1]];
+    }
+    for (const [wireId, attachment] of drag.attachments) {
+      const wire = this.doc.wires.find((item) => item.id === wireId);
+      const original = drag.originalWires.get(wireId);
+      if (!wire || !original) continue;
+      const attachedPoint = (reference: PinReference | undefined): Point | undefined => {
+        if (!reference) return undefined;
+        const component = this.doc.components.find((item) => item.id === reference.componentId);
+        return componentPinPoints(component!)[reference.pinIndex];
+      };
+      wire.points = rubberBandWire(original, attachedPoint(attachment.start), attachedPoint(attachment.end));
+    }
+    drag.moved = drag.moved || delta[0] !== 0 || delta[1] !== 0;
   }
 
   private updatePotFromPointer(id: string, clientX: number, clientY: number): void {
@@ -480,11 +797,101 @@ export class SchematicEditor {
     });
   }
 
+  private beginWire(point: Point): void {
+    this.wirePoints = [clonePoint(point)];
+    this.wirePreview = clonePoint(point);
+    this.wireHorizontalFirst = true;
+    this.options.onMidWire?.(true);
+  }
+
+  private commitWireClick(point: Point, candidate: SnapCandidate | undefined): void {
+    if (!this.wirePoints) {
+      this.beginWire(point);
+      this.wireSnap = candidate;
+      this.render();
+      return;
+    }
+    const start = this.wirePoints.at(-1)!;
+    this.wirePoints = compactWire([...this.wirePoints, ...orthogonalLeg(start, point, this.wireHorizontalFirst)]);
+    this.wirePreview = clonePoint(point);
+    this.wireSnap = candidate;
+    if (candidate && this.wirePoints.length >= 2) this.finishWire(false);
+    else this.render();
+  }
+
+  private finishWire(includePreview: boolean): void {
+    if (!this.wirePoints) return;
+    let points = this.wirePoints.map(clonePoint);
+    if (includePreview && this.wirePreview) points = compactWire([...points, ...orthogonalLeg(points.at(-1)!, this.wirePreview, this.wireHorizontalFirst)]);
+    points = compactWire(points);
+    this.cancelWire();
+    if (points.length < 2) { this.render(); return; }
+    this.change(() => {
+      this.doc.wires.push({ id: `w${idMax(this.doc.wires, "w") + 1}`, points });
+      normalizeJunctions(this.doc);
+    });
+  }
+
+  private cancelWire(): void {
+    const active = Boolean(this.wirePoints);
+    this.wirePoints = undefined;
+    this.wirePreview = undefined;
+    this.wireSnap = undefined;
+    if (active) this.options.onMidWire?.(false);
+  }
+
+  private findNearestPin(raw: Point): SnapCandidate | undefined {
+    let nearest: SnapCandidate | undefined;
+    const radius = SNAP_RADIUS_PX / (GRID * this.zoom);
+    for (const component of this.doc.components) {
+      componentPinPoints(component).forEach((pin, pinIndex) => {
+        const distance = Math.hypot(pin[0] - raw[0], pin[1] - raw[1]);
+        if (distance <= radius && (!nearest || distance < nearest.distance)) nearest = { point: clonePoint(pin), kind: "pin", distance, componentId: component.id, pinIndex };
+      });
+    }
+    return nearest;
+  }
+
+  private findWireSnap(raw: Point): SnapCandidate | undefined {
+    const candidates: SnapCandidate[] = [];
+    const pin = this.findNearestPin(raw);
+    if (pin) candidates.push(pin);
+    const radius = SNAP_RADIUS_PX / (GRID * this.zoom);
+    for (const wire of this.doc.wires) {
+      for (const vertex of wire.points) {
+        const distance = Math.hypot(vertex[0] - raw[0], vertex[1] - raw[1]);
+        if (distance <= radius) candidates.push({ point: clonePoint(vertex), kind: "vertex", distance, wireId: wire.id });
+      }
+      for (let index = 1; index < wire.points.length; index += 1) {
+        const a = wire.points[index - 1]!;
+        const b = wire.points[index]!;
+        let candidate: Point | undefined;
+        if (a[0] === b[0]) {
+          const y = clamp(Math.round(raw[1]), Math.min(a[1], b[1]) + 1, Math.max(a[1], b[1]) - 1);
+          if (y > Math.min(a[1], b[1]) && y < Math.max(a[1], b[1])) candidate = [a[0], y];
+        } else if (a[1] === b[1]) {
+          const x = clamp(Math.round(raw[0]), Math.min(a[0], b[0]) + 1, Math.max(a[0], b[0]) - 1);
+          if (x > Math.min(a[0], b[0]) && x < Math.max(a[0], b[0])) candidate = [x, a[1]];
+        }
+        if (!candidate) continue;
+        const distance = Math.hypot(candidate[0] - raw[0], candidate[1] - raw[1]);
+        if (distance <= radius) candidates.push({ point: candidate, kind: "segment", distance, wireId: wire.id });
+      }
+    }
+    const priority: Record<SnapCandidate["kind"], number> = { pin: 0, vertex: 1, segment: 2 };
+    return candidates.sort((left, right) => left.distance - right.distance || priority[left.kind] - priority[right.kind])[0];
+  }
+
   private toWorld(x: number, y: number): Point {
     const rect = this.element.getBoundingClientRect();
     return [(x - rect.left - this.pan[0]) / GRID / this.zoom, (y - rect.top - this.pan[1]) / GRID / this.zoom];
   }
   private snap([x, y]: Point): Point { return [Math.round(x), Math.round(y)]; }
+  private canvasCenter(): Point {
+    const rect = this.element.getBoundingClientRect();
+    return this.snap(this.toWorld(rect.left + rect.width / 2, rect.top + rect.height / 2));
+  }
+  private isComponentTool(tool: Tool): tool is ComponentType { return tool !== "select" && tool !== "wire"; }
   private saveView(): void { this.doc.view = { pan: [...this.pan], zoom: this.zoom }; }
   private change(fn: () => void): void {
     const before = canonicalizeCircuit(this.doc);
@@ -525,7 +932,8 @@ export class SchematicEditor {
         wirePath.style.strokeWidth = "0.9";
         continue;
       }
-      wirePath.style.strokeWidth = String([0.9, 1.4, 2, 2.8][Math.min(3, Math.floor(flow.u * 4))]);
+      const width = [0.9, 1.4, 2, 2.8][Math.min(3, Math.floor(flow.u * 4))]!;
+      wirePath.style.strokeWidth = String(width);
       const scale = GRID * this.zoom;
       const spacing = flow.spacing / scale;
       const size = 3 / scale;
@@ -543,20 +951,69 @@ export class SchematicEditor {
   }
 
   private render(): void {
-    const nodes = new Map<string, number>();
-    for (const wire of this.doc.wires) for (const point of wire.points) nodes.set(point.join(","), (nodes.get(point.join(",")) ?? 0) + 1);
-    for (const component of this.doc.components) for (const point of componentPinPoints(component)) nodes.set(point.join(","), (nodes.get(point.join(",")) ?? 0) + 1);
-    const preview = this.wireStart && this.wirePreview ? compactWire([this.wireStart, [this.wirePreview[0], this.wireStart[1]], this.wirePreview]) : [];
-    let selection = "";
-    if (this.drag?.kind === "box" && this.wirePreview) {
-      const a = this.drag.start;
-      const b = this.wirePreview;
-      selection = `<rect class="selection-box" x="${Math.min(a[0], b[0])}" y="${Math.min(a[1], b[1])}" width="${Math.abs(a[0] - b[0])}" height="${Math.abs(a[1] - b[1])}"/>`;
+    const wirePointKeys = new Set(this.doc.wires.flatMap((wire) => wire.points.map(pointKey)));
+    const pinCounts = new Map<string, number>();
+    const pins = this.doc.components.flatMap((component) => componentPinPoints(component).map((point, pinIndex) => ({ component, point, pinIndex })));
+    for (const pin of pins) pinCounts.set(pointKey(pin.point), (pinCounts.get(pointKey(pin.point)) ?? 0) + 1);
+
+    const legCounts = new Map<string, number>();
+    const addLeg = (point: Point) => legCounts.set(pointKey(point), (legCounts.get(pointKey(point)) ?? 0) + 1);
+    for (const wire of this.doc.wires) {
+      for (let index = 1; index < wire.points.length; index += 1) {
+        addLeg(wire.points[index - 1]!);
+        addLeg(wire.points[index]!);
+      }
     }
+    for (const pin of pins) addLeg(pin.point);
+
+    let preview: Point[] = [];
+    if (this.wirePoints?.length) {
+      preview = this.wirePoints.map(clonePoint);
+      if (this.wirePreview) preview = compactWire([...preview, ...orthogonalLeg(preview.at(-1)!, this.wirePreview, this.wireHorizontalFirst)]);
+    }
+    const selection = this.drag?.kind === "box"
+      ? `<rect class="selection-box" x="${Math.min(this.drag.start[0], this.drag.end[0])}" y="${Math.min(this.drag.start[1], this.drag.end[1])}" width="${Math.abs(this.drag.start[0] - this.drag.end[0])}" height="${Math.abs(this.drag.start[1] - this.drag.end[1])}"/>`
+      : "";
     const labelSize = (11 / (GRID * this.zoom)).toFixed(4);
     const labelKnockout = (3 / (GRID * this.zoom)).toFixed(4);
     const junctionRadius = (3.5 / (GRID * this.zoom)).toFixed(4);
-    this.element.innerHTML = `<defs><pattern id="editor-grid" width="1" height="1" patternUnits="userSpaceOnUse"><circle cx=".08" cy=".08" r=".035" class="grid-dot"/></pattern><radialGradient id="editor-led"><stop offset="0" stop-color="#BE7318" stop-opacity=".62"/><stop offset="1" stop-color="#BE7318" stop-opacity="0"/></radialGradient></defs><rect width="100%" height="100%" class="editor-bg"/><g class="editor-world" transform="translate(${this.pan[0]} ${this.pan[1]}) scale(${GRID * this.zoom})"><rect x="${-this.pan[0] / GRID / this.zoom}" y="${-this.pan[1] / GRID / this.zoom}" width="${this.host.clientWidth / GRID / this.zoom}" height="${this.host.clientHeight / GRID / this.zoom}" fill="url(#editor-grid)"/>${this.doc.wires.map((wire) => `<g data-wire-id="${wire.id}" class="editor-wire-group${this.selectedWires.has(wire.id) ? " selected" : ""}"><path data-wire-id="${wire.id}" class="editor-wire" d="${path(wire.points)}"/><path data-wire-id="${wire.id}" class="editor-hit" d="${path(wire.points)}"/></g>`).join("")}<g id="chevron-layer" class="chevron-layer"></g>${preview.length ? `<path class="wire-preview" d="${path(preview)}"/>` : ""}${this.doc.components.map((component) => `<g data-component-id="${component.id}" class="editor-component${this.selectedComponents.has(component.id) ? " selected" : ""}" transform="${transform(component)}"><rect class="editor-component-hit" x="-3" y="-3" width="6" height="6"/>${component.type === "led" ? `<circle data-led-halo="${component.id}" class="editor-led-halo" cx="0" cy="0" r="3" fill="url(#editor-led)" opacity="0"/>` : ""}<g class="editor-symbol">${symbol(component)}</g><rect class="editor-selection" x="-3" y="-3" width="6" height="6"/>${component.type === "ground" || !component.label?.text ? "" : `<text class="editor-label" style="font-size:${labelSize}px;stroke-width:${labelKnockout}px" x="${component.label.offset[0]}" y="${component.label.offset[1]}" transform="scale(${component.mirror ? -1 : 1} 1) rotate(${-component.rot})">${esc(component.label.text)}</text>`}</g>`).join("")}${[...nodes].filter(([, count]) => count > 2).map(([key]) => { const [x, y] = key.split(","); return `<circle class="connection-node junction" cx="${x}" cy="${y}" r="${junctionRadius}"/>`; }).join("")}${selection}</g>`;
+    const pinRadius = (3 / (GRID * this.zoom)).toFixed(4);
+    const snapRadius = (5 / (GRID * this.zoom)).toFixed(4);
+
+    const components = this.doc.components.map((component) => {
+      const [minX, minY, maxX, maxY] = componentBbox(component);
+      const hitX = minX - 0.5;
+      const hitY = minY - 0.5;
+      const hitWidth = maxX - minX + 1;
+      const hitHeight = maxY - minY + 1;
+      const textTransform = `scale(${component.mirror ? -1 : 1} 1) rotate(${-component.rot})`;
+      const refdes = component.type === "ground" || !component.label?.text ? "" : `<text class="editor-label" style="font-size:${labelSize}px;stroke-width:${labelKnockout}px" x="${component.label.offset[0]}" y="${component.label.offset[1]}" transform="${textTransform}">${esc(component.label.text)}</text>`;
+      let value = "";
+      if (component.value !== undefined && component.type !== "ground" && component.type !== "switch_spst" && !(component.type === "opamp_ideal" && component.value === undefined)) {
+        const position = valueLabelPosition(component);
+        const display = typeof component.value === "number" ? formatEngineeringValue(component.value) : component.value;
+        value = `<text class="editor-label editor-value" style="font-size:${labelSize}px;stroke-width:${labelKnockout}px" x="${position.point[0]}" y="${position.point[1]}" text-anchor="${position.anchor}" transform="${textTransform}">${esc(display)}</text>`;
+      }
+      return `<g data-component-id="${component.id}" data-anchor-x="${component.pos[0]}" data-anchor-y="${component.pos[1]}" class="editor-component${this.selectedComponents.has(component.id) ? " selected" : ""}" transform="${transform(component)}"><rect class="editor-component-hit" x="${hitX}" y="${hitY}" width="${hitWidth}" height="${hitHeight}"/>${component.type === "led" ? `<circle data-led-halo="${component.id}" class="editor-led-halo" cx="0" cy="0" r="3" fill="url(#editor-led)" opacity="0"/>` : ""}<g class="editor-symbol">${renderedSymbol(component)}</g><rect class="editor-selection" x="${hitX}" y="${hitY}" width="${hitWidth}" height="${hitHeight}"/>${refdes}${value}</g>`;
+    }).join("");
+
+    let ghost = "";
+    if (this.isComponentTool(this.tool) && this.ghostPoint) {
+      const component = { id: "ghost", type: this.tool, pos: this.ghostPoint, rot: this.pendingRotation, mirror: this.pendingMirror } as CircuitComponent;
+      ghost = `<g class="placement-ghost" transform="${transform(component)}"><g class="editor-symbol">${renderedSymbol(component, false)}</g></g>`;
+    }
+
+    const openPins = pins
+      .filter((pin) => !wirePointKeys.has(pointKey(pin.point)) && (pinCounts.get(pointKey(pin.point)) ?? 0) < 2)
+      .map((pin) => `<circle class="pin-open" data-pin-component="${pin.component.id}" data-pin-index="${pin.pinIndex}" cx="${pin.point[0]}" cy="${pin.point[1]}" r="${pinRadius}"/>`)
+      .join("");
+    const junctions = [...legCounts]
+      .filter(([, count]) => count >= 3)
+      .map(([key]) => { const [x, y] = key.split(","); return `<circle class="connection-node junction" cx="${x}" cy="${y}" r="${junctionRadius}"/>`; })
+      .join("");
+    const snapIndicator = this.wireSnap ? `<circle class="snap-indicator" cx="${this.wireSnap.point[0]}" cy="${this.wireSnap.point[1]}" r="${snapRadius}"/>` : "";
+
+    this.element.innerHTML = `<defs><pattern id="editor-grid" width="1" height="1" patternUnits="userSpaceOnUse"><circle cx=".08" cy=".08" r=".035" class="grid-dot"/></pattern><radialGradient id="editor-led"><stop offset="0" stop-color="#BE7318" stop-opacity=".62"/><stop offset="1" stop-color="#BE7318" stop-opacity="0"/></radialGradient></defs><rect width="100%" height="100%" class="editor-bg"/><g class="editor-world" transform="translate(${this.pan[0]} ${this.pan[1]}) scale(${GRID * this.zoom})"><rect x="${-this.pan[0] / GRID / this.zoom}" y="${-this.pan[1] / GRID / this.zoom}" width="${this.host.clientWidth / GRID / this.zoom}" height="${this.host.clientHeight / GRID / this.zoom}" fill="url(#editor-grid)"/>${this.doc.wires.map((wire) => `<g data-wire-id="${wire.id}" class="editor-wire-group${this.selectedWires.has(wire.id) ? " selected" : ""}"><path data-wire-id="${wire.id}" class="editor-wire" d="${path(wire.points)}"/><path data-wire-id="${wire.id}" class="editor-hit" d="${path(wire.points)}"/></g>`).join("")}<g id="chevron-layer" class="chevron-layer"></g>${preview.length >= 2 ? `<path class="wire-preview" d="${path(preview)}"/>` : ""}${components}${openPins}${junctions}${ghost}${snapIndicator}${selection}</g>`;
     for (const [id, style] of this.wireStyles) this.applyWireStyle(id, style);
     this.applyStaticEncoding();
   }

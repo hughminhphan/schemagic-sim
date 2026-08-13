@@ -32,8 +32,8 @@ const steps: TourStep[] = [
     target: ".symbol-rail",
     eyebrow: "BUILD",
     title: "Place parts and draw wires.",
-    body: "Choose a component, then click the canvas to place it. Use Wire for orthogonal connections and Select to move, inspect or box-select parts.",
-    tip: "Press R to rotate, X to mirror and Delete to remove a selection.",
+    body: "Choose a component, then click the canvas to place it. Start a wire at a pin, click to add right-angle corners, then end on a pin or wire.",
+    tip: "Double-click or press Enter to end a wire mid-air. Press R to rotate, X to mirror and Delete to remove a selection.",
     placement: "right",
   },
   {
@@ -118,7 +118,7 @@ const guideMarkup = `
           </article>
 
           <article class="guide-section" id="guide-build">
-            <div class="guide-copy"><span class="guide-number">02</span><h2>Build and edit</h2><p>Pick a part from the left rail and click to place it. Wire connects pins with right-angle runs. Select a component to move it or edit its value in the inspector.</p><ol><li><strong>Parts rail</strong> — choose Select, Wire or a component.</li><li><strong>Canvas</strong> — place, connect, pan and zoom.</li><li><strong>Inspector</strong> — edit values and read measurements.</li></ol></div>
+            <div class="guide-copy"><span class="guide-number">02</span><h2>Build and edit</h2><p>Pick a part from the left rail and click to place it. Start wires at pins, click to add right-angle corners, then finish on another pin or wire. Select a component to move it or edit its value in the inspector.</p><ol><li><strong>Parts rail</strong> — choose Select, Wire or a component.</li><li><strong>Canvas</strong> — place, connect, pan and zoom.</li><li><strong>Inspector</strong> — edit values and read measurements.</li></ol></div>
             <figure class="guide-ui-visual guide-ui-workbench" data-ui-clone=".workbench"><figcaption>LIVE UI · BUILD AREA</figcaption></figure>
           </article>
 
@@ -138,7 +138,7 @@ const guideMarkup = `
           </article>
 
           <article class="guide-section" id="guide-shortcuts">
-            <div class="guide-copy"><span class="guide-number">06</span><h2>Move quickly</h2><div class="guide-key-grid"><kbd>R</kbd><span>Rotate selection</span><kbd>X</kbd><span>Mirror selection</span><kbd>F</kbd><span>Fit circuit</span><kbd>⌘ / Ctrl Z</kbd><span>Undo</span><kbd>Space + drag</kbd><span>Pan</span><kbd>Wheel</kbd><span>Zoom to cursor</span><kbd>?</kbd><span>Full shortcut sheet</span></div></div>
+            <div class="guide-copy"><span class="guide-number">06</span><h2>Move quickly</h2><div class="guide-key-grid"><kbd>R</kbd><span>Rotate selection or pending part</span><kbd>X</kbd><span>Mirror selection or pending part</span><kbd>/</kbd><span>Toggle wire bend direction</span><kbd>Enter</kbd><span>End wire mid-air</span><kbd>F</kbd><span>Fit circuit</span><kbd>⌘ / Ctrl Z</kbd><span>Undo</span><kbd>Space + drag</kbd><span>Pan</span><kbd>Wheel</kbd><span>Zoom to cursor</span><kbd>?</kbd><span>Full shortcut sheet</span></div></div>
           </article>
         </div>
       </div>
