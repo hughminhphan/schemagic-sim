@@ -106,13 +106,8 @@ export function directEvidenceUnionErrors(bound, evidenceValues, label = "operat
       ? []
       : [`${label} direct_evidence_union values must exactly equal the sorted unique referenced values`];
   }
-  if (bound.kind === "minimum") {
-    if (expected.length !== 1) return [`${label} direct_evidence_union cannot represent multiple finite referenced values as a one-sided minimum`];
-    if (bound.minimum !== minimum) return [`${label} direct_evidence_union minimum must equal the referenced minimum`];
-  }
-  if (bound.kind === "maximum") {
-    if (expected.length !== 1) return [`${label} direct_evidence_union cannot represent multiple finite referenced values as a one-sided maximum`];
-    if (bound.maximum !== maximum) return [`${label} direct_evidence_union maximum must equal the referenced maximum`];
+  if (bound.kind === "minimum" || bound.kind === "maximum") {
+    return [`${label} direct_evidence_union cannot represent finite referenced values as a one-sided ${bound.kind}`];
   }
   if (bound.kind === "range" && (bound.minimum !== minimum || bound.maximum !== maximum)) {
     return [`${label} direct_evidence_union range must exactly equal the referenced extrema`];

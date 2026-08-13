@@ -56,7 +56,7 @@ test("versioned package chain requires facts and fitted while legacy packages st
     fs.writeFileSync(expectationsPath, JSON.stringify(expectations));
     fs.rmSync(path.join(root, "facts.json"));
     fs.rmSync(path.join(root, "fitted.json"));
-    const errors = validatePackage(root).errors;
+    const errors = validatePackage(root, { requireEvidenceContract: true }).errors;
     assert.ok(errors.some((error) => error.includes("facts.json")), errors.join("\n"));
     assert.ok(errors.some((error) => error.includes("fitted.json")), errors.join("\n"));
     assert.deepEqual(validatePackage(source).errors, []);
@@ -152,7 +152,7 @@ function mutateContractFixture(mutator) {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "component-hash-contract-"));
   try {
     writeContractPackage(root, fixture);
-    return validatePackage(root).errors;
+    return validatePackage(root, { requireEvidenceContract: true }).errors;
   } finally {
     fs.rmSync(root, { recursive: true, force: true });
   }
@@ -162,7 +162,7 @@ test("correct canonical evidence-contract package validates", () => {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "component-hash-contract-valid-"));
   try {
     writeContractPackage(root);
-    assert.deepEqual(validatePackage(root).errors, []);
+    assert.deepEqual(validatePackage(root, { requireEvidenceContract: true }).errors, []);
   } finally {
     fs.rmSync(root, { recursive: true, force: true });
   }
@@ -189,8 +189,9 @@ test("contract detection fails closed when any authoritative marker or linkage s
   }
 });
 
-test("contract detection survives simultaneous erasure of all removable contract linkage", () => {
+test("caller-required contract survives simultaneous package-local marker and generator mutation", () => {
   const errors = mutateContractFixture((fixture) => {
+    fixture.component.generator.tool_or_agent = "legacy bulk adapter with mutated package text";
     delete fixture.component.evidence_contract_version;
     delete fixture.facts.evidence_contract_version;
     delete fixture.fitted.evidence_contract_version;
@@ -241,6 +242,9 @@ test("redundant nested curve-point identities must match the raw point and enclo
 });
 
 test("PMOS and NMOS emitted VTO signs must match the channel with the fitted magnitude", () => {
+  const fittedNegativeNmos = mutateContractFixture((fixture) => { fixture.fitted.parameters.VTO = -2; });
+  assert.ok(fittedNegativeNmos.some((error) => error.includes("fitted.json NMOS VTO must be positive")), fittedNegativeNmos.join("\n"));
+
   const positivePmos = mutateContractFixture((fixture) => { fixture.component.electrical_family = "pmos"; });
   assert.ok(positivePmos.some((error) => error.includes("must declare pchan") || error.includes("PMOS VTO must be negative")), positivePmos.join("\n"));
 
@@ -250,7 +254,7 @@ test("PMOS and NMOS emitted VTO signs must match the channel with the fitted mag
     writeContractPackage(nmosRoot);
     fs.writeFileSync(path.join(nmosRoot, "model.cir"), "* OpenCircuit Model Factory\n* Original work\n* Public factual specifications\n.model DUT VDMOS(VTO=-2)\n");
     fs.writeFileSync(path.join(nmosRoot, "tests", "transfer.cir"), "Fixture test\n.model DUT VDMOS(VTO=-2)\n.temp 75\nMT1 d g 0 DUT\nVd d 0 DC 10\nVg g 0 DC 2.5\n.op\n.end\n");
-    const errors = validatePackage(nmosRoot).errors;
+    const errors = validatePackage(nmosRoot, { requireEvidenceContract: true }).errors;
     assert.ok(errors.some((error) => error.includes("NMOS VTO must be positive")), errors.join("\n"));
   } finally { fs.rmSync(nmosRoot, { recursive: true, force: true }); }
   assert.deepEqual(negativeNmos, []);
@@ -262,9 +266,9 @@ test("PMOS and NMOS emitted VTO signs must match the channel with the fitted mag
     writeContractPackage(root, fixture);
     fs.writeFileSync(path.join(root, "model.cir"), "* OpenCircuit Model Factory\n* Original work\n* Public factual specifications\n.model DUT VDMOS(pchan VTO=-2)\n");
     fs.writeFileSync(path.join(root, "tests", "transfer.cir"), "Fixture test\n.model DUT VDMOS(pchan VTO=-2)\n.temp 75\nMT1 d g 0 DUT\nVd d 0 DC -10\nVg g 0 DC -2.5\n.op\n.end\n");
-    assert.deepEqual(validatePackage(root).errors, []);
+    assert.deepEqual(validatePackage(root, { requireEvidenceContract: true }).errors, []);
     fs.writeFileSync(path.join(root, "model.cir"), "* OpenCircuit Model Factory\n* Original work\n* Public factual specifications\n.model DUT VDMOS(pchan VTO=-2.2)\n");
-    assert.ok(validatePackage(root).errors.some((error) => error.includes("VTO magnitude disagrees")));
+    assert.ok(validatePackage(root, { requireEvidenceContract: true }).errors.some((error) => error.includes("VTO magnitude disagrees")));
   } finally {
     fs.rmSync(root, { recursive: true, force: true });
   }
@@ -292,7 +296,7 @@ test("duplicate selected datasheet SHA is rejected even when the selected URL re
     const sources = JSON.parse(fs.readFileSync(sourcesPath, "utf8"));
     sources.push({ ...sources[0], url: "https://example.com/duplicate-record.pdf" });
     fs.writeFileSync(sourcesPath, JSON.stringify(sources));
-    const errors = validatePackage(root).errors;
+    const errors = validatePackage(root, { requireEvidenceContract: true }).errors;
     assert.ok(errors.some((error) => error.includes("selected datasheet SHA-256 must resolve exactly once")), errors.join("\n"));
   } finally { fs.rmSync(root, { recursive: true, force: true }); }
 });
@@ -310,7 +314,7 @@ test("linked operating benches reject temperature, analysis, VDS, and VGS mutati
     try {
       writeContractPackage(root);
       fs.writeFileSync(path.join(root, "tests", "transfer.cir"), bench);
-      const errors = validatePackage(root).errors;
+      const errors = validatePackage(root, { requireEvidenceContract: true }).errors;
       assert.ok(errors.some((error) => error.includes(fragment)), `${fragment}: ${errors.join("\n")}`);
     } finally { fs.rmSync(root, { recursive: true, force: true }); }
   }
@@ -326,7 +330,7 @@ test("linked NMOS and PMOS benches must instantiate the active model.cir DUT car
       const pmos = family === "pmos";
       fs.writeFileSync(path.join(root, "model.cir"), `* OpenCircuit Model Factory\n* Original work\n* Public factual specifications\n.model DUT VDMOS(${pmos ? "pchan VTO=-2" : "VTO=2"})\n.model WRONG VDMOS(${pmos ? "pchan VTO=-2" : "VTO=2"})\n* MT1 d g 0 WRONG\n`);
       fs.writeFileSync(path.join(root, "tests", "transfer.cir"), `Fixture test\n.model DUT VDMOS(${pmos ? "pchan VTO=-2" : "VTO=2"})\n.temp 75\nMT1 d g 0 WRONG\nVd d 0 DC ${pmos ? -10 : 10}\nVg g 0 DC ${pmos ? -2.5 : 2.5}\n.op\n.end\n`);
-      const errors = validatePackage(root).errors;
+      const errors = validatePackage(root, { requireEvidenceContract: true }).errors;
       assert.ok(errors.some((error) => error.includes("generated DUT instance must use active model DUT")), `${family}: ${errors.join("\n")}`);
     } finally { fs.rmSync(root, { recursive: true, force: true }); }
   }
@@ -337,9 +341,21 @@ test("linked MOSFET benches reject local active-model card substitution", () => 
   try {
     writeContractPackage(root);
     fs.writeFileSync(path.join(root, "tests", "transfer.cir"), "Fixture test\n.model DUT VDMOS(VTO=9)\n.temp 75\nMT1 d g 0 DUT\nVd d 0 DC 10\nVg g 0 DC 2.5\n.op\n.end\n");
-    const errors = validatePackage(root).errors;
+    const errors = validatePackage(root, { requireEvidenceContract: true }).errors;
     assert.ok(errors.some((error) => error.includes("must exactly match model.cir")), errors.join("\n"));
   } finally { fs.rmSync(root, { recursive: true, force: true }); }
+});
+
+test("linked MOSFET benches reject include and lib model shadowing", () => {
+  for (const directive of [".include shadow.cir", ".lib shadow.lib corner"]) {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), "component-bench-indirect-shadow-"));
+    try {
+      writeContractPackage(root);
+      fs.writeFileSync(path.join(root, "tests", "transfer.cir"), `Fixture test\n${directive}\n.model DUT VDMOS(VTO=2)\n.temp 75\nMT1 d g 0 DUT\nVd d 0 DC 10\nVg g 0 DC 2.5\n.op\n.end\n`);
+      const errors = validatePackage(root, { requireEvidenceContract: true }).errors;
+      assert.ok(errors.some((error) => error.includes("must not load .include or .lib")), `${directive}: ${errors.join("\n")}`);
+    } finally { fs.rmSync(root, { recursive: true, force: true }); }
+  }
 });
 
 test("linked expectation and fitted residual evidence semantics fail exact mutations", () => {
@@ -420,11 +436,58 @@ test("F2 residual targets require bidirectional completeness", () => {
     fixture.fitted.rms_relative_error = null;
     fixture.fitted.worst_relative_error = null;
   });
-  assert.ok(omitted.some((error) => error.includes("residual_target_count must equal the residual row count")), omitted.join("\n"));
+  assert.ok(omitted.some((error) => error.includes("residual_target_count must equal the observation-linked residual row count")), omitted.join("\n"));
   assert.ok(omitted.some((error) => error.includes("must resolve exactly once to a residual row")), omitted.join("\n"));
 
   const staleCount = mutateContractFixture((fixture) => { fixture.fitted.calibration.residual_target_count = 2; });
   assert.ok(staleCount.some((error) => error.includes("residual_target_count must equal the declared calibration observation count")), staleCount.join("\n"));
+});
+
+test("component fidelity is authoritative and must match fitted fidelity", () => {
+  for (const mutate of [
+    (fixture) => { delete fixture.fitted.fidelity_tier; },
+    (fixture) => { fixture.fitted.fidelity_tier = "F1"; }
+  ]) {
+    const errors = mutateContractFixture(mutate);
+    assert.ok(errors.some((error) => error.includes("fitted.fidelity_tier must exactly equal component.fidelity_tier")), errors.join("\n"));
+  }
+});
+
+test("F2 residual target count excludes valid inequality-constraint residual rows", () => {
+  const errors = mutateContractFixture((fixture) => {
+    const conditionMaterial = {
+      schema_version: "1.0.0",
+      characteristic: "rds_on",
+      polarity: "n",
+      magnitude_convention: "absolute",
+      temperature: { kind: "junction", value_c: 75 },
+      electrical: { vgs: { kind: "fixed", value_v: 10 }, vds: { kind: "derived", relation: "id_times_rds" }, id: { kind: "fixed", value_a: 5 } },
+      test_mode: { kind: "dc" },
+      qualifiers: []
+    };
+    const condition = { ...conditionMaterial, condition_id: identityHash(conditionMaterial) };
+    const citationMaterial = { source_sha256: "a".repeat(64), page: 4, table: "Electrical characteristics", row: "Static drain-source on-resistance" };
+    const citation = { ...citationMaterial, citation_id: identityHash(citationMaterial) };
+    const cohortId = identityHash(citationCohortMaterial("rds_on", condition.condition_id, citation));
+    const makeEvidence = (role, quantityName, value, unit) => {
+      const base = { role, condition_id: condition.condition_id, citation_id: citation.citation_id, cohort_id: cohortId };
+      return { ...base, evidence_id: identityHash(scalarEvidenceMaterial("rds_on", base, quantityName, value, unit)) };
+    };
+    const vgsEvidence = makeEvidence("condition", "vgs", 10, "V");
+    const currentEvidence = makeEvidence("condition", "id", 5, "A");
+    const evidence = makeEvidence("maximum", "resistance", 0.1, "ohm");
+    fixture.facts.rdson_points = [{
+      vgs: { quantity: "vgs", value: 10, unit: "V", conditions: "ID = 5 A, TJ = 75 C", page_reference: "p. 4", source_kind: "condition", condition_identity: condition, citation_identity: citation, evidence_identity: vgsEvidence },
+      current: { quantity: "id", value: 5, unit: "A", conditions: "VGS = 10 V, TJ = 75 C", page_reference: "p. 4", source_kind: "condition", condition_identity: condition, citation_identity: citation, evidence_identity: currentEvidence },
+      resistance: { quantity: "resistance", value: 0.1, unit: "ohm", conditions: "VGS = 10 V, ID = 5 A, TJ = 75 C", page_reference: "p. 4", source_kind: "maximum", condition_identity: condition, citation_identity: citation, evidence_identity: evidence }
+    }];
+    const constraint = { quantity: "rds_on maximum", gate_quantity: "rds_on", datasheet_value: 0.1, unit: "ohm", evidence_role: "inequality_constraint", condition_identity: condition, citation_identity: citation, evidence_identity: evidence };
+    fixture.fitted.calibration.constraints.push(constraint);
+    fixture.fitted.residuals.push({ ...constraint, fitted_value: 0.08, relative_error: 0, maximum: 0.1 });
+    const relativeErrors = fixture.fitted.residuals.map((row) => row.relative_error);
+    fixture.fitted.rms_relative_error = Math.sqrt(relativeErrors.reduce((sum, value) => sum + value ** 2, 0) / relativeErrors.length);
+  });
+  assert.deepEqual(errors, []);
 });
 
 test("direct evidence intersection helper handles ranges, values, enumerations, and empty overlap exactly", () => {
@@ -435,11 +498,13 @@ test("direct evidence intersection helper handles ranges, values, enumerations, 
   assert.ok(directEvidenceIntersectionErrors({ derivation: "direct_evidence_intersection", kind: "range", minimum: 1, maximum: 5 }, [{ minimum: 1, maximum: 5 }, { minimum: 2, maximum: 4 }])[0].includes("exactly equal"));
 });
 
-test("direct evidence union rejects non-singleton one-sided bounds", () => {
-  const values = [10, 20];
-  assert.ok(directEvidenceUnionErrors({ derivation: "direct_evidence_union", kind: "minimum", minimum: 10 }, values)[0].includes("one-sided minimum"));
-  assert.ok(directEvidenceUnionErrors({ derivation: "direct_evidence_union", kind: "maximum", maximum: 20 }, values)[0].includes("one-sided maximum"));
-  assert.deepEqual(directEvidenceUnionErrors({ derivation: "direct_evidence_union", kind: "range", minimum: 10, maximum: 20 }, values), []);
+test("direct evidence union rejects every finite one-sided bound", () => {
+  for (const values of [[10], [10, 10], [10, 20]]) {
+    assert.ok(directEvidenceUnionErrors({ derivation: "direct_evidence_union", kind: "minimum", minimum: 10 }, values)[0].includes("one-sided minimum"));
+    assert.ok(directEvidenceUnionErrors({ derivation: "direct_evidence_union", kind: "maximum", maximum: values.at(-1) }, values)[0].includes("one-sided maximum"));
+  }
+  assert.deepEqual(directEvidenceUnionErrors({ derivation: "direct_evidence_union", kind: "range", minimum: 10, maximum: 10 }, [10, 10]), []);
+  assert.deepEqual(directEvidenceUnionErrors({ derivation: "direct_evidence_union", kind: "range", minimum: 10, maximum: 20 }, [10, 20]), []);
 });
 
 test("direct evidence intersections require the exact non-empty overlap", () => {

@@ -261,17 +261,20 @@ export function assertEmittedParametersMatchFitted(model, fitted, electricalFami
     if (electricalFamily === "nmos" && card.pchan) mismatches.push("channel: NMOS active DUT VDMOS card must not declare pchan");
   } else emitted = emittedParameterValues(model);
   for (const [name, expected] of Object.entries(fitted.parameters ?? {})) {
-    if (!Number.isFinite(Number(expected))) continue;
+    const expectedValue = Number(expected);
+    if (!Number.isFinite(expectedValue)) continue;
     if (!emitted.has(name)) {
       mismatches.push(`${name}: missing from emitted model`);
       continue;
     }
     const actual = emitted.get(name);
-    const scale = Math.max(1, Math.abs(Number(expected)));
-    if (electricalFamily === "pmos" && name === "VTO") {
+    const scale = Math.max(1, Math.abs(expectedValue));
+    if (electricalFamily === "nmos" && name === "VTO" && !(expectedValue > 0)) {
+      mismatches.push(`VTO: NMOS fitted ${expectedValue}, expected a positive threshold`);
+    } else if (electricalFamily === "pmos" && name === "VTO") {
       if (!(actual < 0)) mismatches.push(`VTO: PMOS emitted ${actual}, expected a negative threshold`);
-      else if (Math.abs(Math.abs(actual) - Math.abs(Number(expected))) > 5e-10 * scale) mismatches.push(`VTO: emitted magnitude ${Math.abs(actual)}, fitted ${expected}`);
-    } else if (Math.abs(actual - Number(expected)) > 5e-10 * scale) {
+      else if (Math.abs(Math.abs(actual) - Math.abs(expectedValue)) > 5e-10 * scale) mismatches.push(`VTO: emitted magnitude ${Math.abs(actual)}, fitted ${expected}`);
+    } else if (Math.abs(actual - expectedValue) > 5e-10 * scale) {
       mismatches.push(`${name}: emitted ${actual}, fitted ${expected}`);
     }
   }
@@ -884,14 +887,18 @@ function assertCriticalFittedProvenance(fitted, packageEvidence) {
   const residuals = fitted.residuals ?? [];
   const calibrationRecords = [...observations, ...constraints];
   const residualTargetCount = fitted.calibration?.residual_target_count;
+  const sameCalibrationRecord = (left, right) =>
+    left?.evidence_identity?.evidence_id === right?.evidence_identity?.evidence_id
+    && left?.evidence_role === right?.evidence_role;
   if (!Number.isInteger(residualTargetCount) || residualTargetCount < 0) throw new Error("fitted.calibration.residual_target_count must be a non-negative integer");
   if (fitted.fidelity_tier === "F2") {
+    const observationResidualCount = residuals.filter((residual) => observations.some((observation) => sameCalibrationRecord(observation, residual))).length;
     if (residualTargetCount !== observations.length) throw new Error("fitted.calibration.residual_target_count must equal the calibration observation count");
-    if (residualTargetCount !== residuals.length) throw new Error("fitted.calibration.residual_target_count must equal the residual row count");
+    if (residualTargetCount !== observationResidualCount) throw new Error("fitted.calibration.residual_target_count must equal the observation-linked residual row count");
   }
   for (const [index, residual] of residuals.entries()) {
     const trail = `fitted.residuals[${index}]`;
-    const matches = calibrationRecords.filter((record) => record.evidence_identity?.evidence_id === residual.evidence_identity?.evidence_id);
+    const matches = calibrationRecords.filter((record) => sameCalibrationRecord(record, residual));
     if (matches.length !== 1) throw new Error(`${trail} must resolve exactly once to a declared calibration record`);
     const record = matches[0];
     for (const field of ["quantity", "gate_quantity", "datasheet_value", "unit", "evidence_role"]) {
@@ -902,7 +909,7 @@ function assertCriticalFittedProvenance(fitted, packageEvidence) {
     }
   }
   if (fitted.fidelity_tier === "F2") for (const [index, observation] of observations.entries()) {
-    const matches = residuals.filter((residual) => residual.evidence_identity?.evidence_id === observation.evidence_identity?.evidence_id);
+    const matches = residuals.filter((residual) => sameCalibrationRecord(residual, observation));
     if (matches.length !== 1) throw new Error(`fitted.calibration.observations[${index}] must resolve exactly once to a residual row`);
   }
   const groups = [
@@ -1026,7 +1033,8 @@ function assertMosfetRegionContract(region, packageEvidence) {
 export function assertMosfetConditionIdentityContract(ctx, facts, fitted) {
   const strict = ctx.part.pipeline === "vdmos" && facts?.evidence_contract_version === "1.0.0";
   if (!strict) return { strict: false, rows: [], curves: [] };
-  if (facts.evidence_contract_version !== "1.0.0") throw new Error("Conveyor MOSFET facts require evidence_contract_version 1.0.0");
+  const componentTier = ctx.part.component?.fidelity_tier;
+  if (fitted?.fidelity_tier !== componentTier) throw new Error("MOSFET fitted.fidelity_tier must exactly equal component.fidelity_tier");
   const source = facts.source;
   if (!source || source.placeholder !== false || !SHA256_HEX.test(source.sha256) || !Array.isArray(source.pages_referenced) || !source.pages_referenced.length) {
     throw new Error("MOSFET package provenance requires a non-placeholder datasheet source with SHA-256 and cited pages");
@@ -1775,7 +1783,7 @@ export function stageValidate(ctx) {
     const fitted = JSON.parse(fs.readFileSync(path.join(ctx.packageDir, "fitted.json"), "utf8"));
     assertMosfetConditionIdentityContract(ctx, facts, fitted);
   }
-  run("node", [packageValidator, ctx.packageDir]);
+  run("node", [packageValidator, ...(ctx.part.pipeline === "vdmos" ? ["--require-evidence-contract"] : []), ctx.packageDir]);
   if (ctx.part.pipeline === "vdmos") {
     const emittedComponent = JSON.parse(fs.readFileSync(path.join(ctx.packageDir, "component.json"), "utf8"));
     const facts = JSON.parse(fs.readFileSync(path.join(ctx.packageDir, "facts.json"), "utf8"));
@@ -1855,7 +1863,7 @@ export function stageValidate(ctx) {
   };
   component.validation_date = today();
   writeJson(componentPath, component);
-  run("node", [packageValidator, ctx.packageDir]);
+  run("node", [packageValidator, ...(ctx.part.pipeline === "vdmos" ? ["--require-evidence-contract"] : []), ctx.packageDir]);
   console.log(`validate ${ctx.part.slug}: ${passCount} checks, engine max rel ${worstEngineRelativeDelta.toExponential(3)}`);
 }
 
@@ -1900,7 +1908,7 @@ export function stageCard(ctx) {
   const card = `# ${ctx.part.identity.canonical_mpn} model card\n\n## Identity\n\n- Manufacturer: ${ctx.part.identity.manufacturer}\n- Description: ${ctx.part.identity.description}\n- Electrical family: ${ctx.part.identity.electrical_family}\n- Fidelity tier: ${ctx.part.component.fidelity_tier ?? "F2"}, datasheet-constrained\n- Independent reviewer: pending-review\n\n## Provenance\n\n- Datasheet: ${source.url}\n- Revision: ${source.revision}\n- Accessed: ${source.accessed_date}\n- Referenced pages: ${source.pages_referenced.join(", ")}\n- SHA-256: \`${source.sha256}\`\n- Basis: original model generated from public factual specifications\n- Vendor SPICE models used: none\n\n## Domain coverage\n\n| Domain | Coverage |\n| --- | --- |\n${coverageTable(ctx.part.component.domain_coverage)}\n\n## Model parameters\n\n| Parameter | Value | Status |\n| --- | ---: | --- |\n${parameterRows}\n${heldDefaultsSection}\n## Fitted versus datasheet\n\n| Quantity | Datasheet | Fitted | Unit | Relative error | Citation |\n| --- | ---: | ---: | --- | ---: | --- |\n${fittedRows}\n\n${fitSummary}\n\nNative and WASM agreement: all ${validation.benches.length} benches passed. Worst reported relative delta was ${validation.worst_native_wasm_relative_delta.toExponential(3)} and worst absolute delta was ${validation.worst_native_wasm_absolute_delta.toExponential(3)}.\n\n## Known omissions\n\n${omissions}\n\n## Licence\n\nMIT. See \`LICENSE\`. The model is original work generated from public factual specifications and is not copied or adapted from a vendor SPICE model.\n`;
   assertCardParameterTable(card, fitted);
   fs.writeFileSync(path.join(ctx.packageDir, "MODEL_CARD.md"), card);
-  run("node", [packageValidator, ctx.packageDir]);
+  run("node", [packageValidator, ...(ctx.part.pipeline === "vdmos" ? ["--require-evidence-contract"] : []), ctx.packageDir]);
   console.log(`card ${ctx.part.slug}: MODEL_CARD.md`);
 }
 

@@ -254,14 +254,14 @@ test("native curve-backed NMOS and PMOS stage end to end with complete point ide
       const [result] = runBulkManifest(manifestPath, path.join(root, "staging"), { libraryRoot: path.join(root, "empty-library") });
       assert.equal(result.status, "staged", JSON.stringify(result));
       assert.equal(result.fidelity, "F2");
-      assert.deepEqual(validatePackage(result.package_path).errors, []);
+      assert.deepEqual(validatePackage(result.package_path, { requireEvidenceContract: true }).errors, []);
       const facts = JSON.parse(fs.readFileSync(path.join(result.package_path, "facts.json"), "utf8"));
       assert.ok(facts.curves[0].points.every((point) => point.evidence_identity.point_index === point.point_index));
       const model = fs.readFileSync(path.join(result.package_path, "model.cir"), "utf8");
       if (polarity === "p") {
         assert.match(model, /VDMOS\(\s*pchan VTO=-/);
         fs.writeFileSync(path.join(result.package_path, "model.cir"), model.replace(/VTO=-/, "VTO="));
-        assert.ok(validatePackage(result.package_path).errors.some((error) => error.includes("PMOS VTO must be negative")));
+        assert.ok(validatePackage(result.package_path, { requireEvidenceContract: true }).errors.some((error) => error.includes("PMOS VTO must be negative")));
       } else assert.match(model, /VDMOS\(\s*VTO=\+?/);
     } finally {
       fs.rmSync(root, { recursive: true, force: true });

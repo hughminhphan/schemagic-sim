@@ -87,6 +87,11 @@ test("generate postcondition enforces negative PMOS VTO magnitude and preserves 
     "nmos"
   ));
   assert.throws(() => assertEmittedParametersMatchFitted(
+    ".model DUT VDMOS(VTO=2.1 KP=1)\n",
+    { parameters: { VTO: -2.1, KP: 1 } },
+    "nmos"
+  ), /NMOS fitted -2.1, expected a positive threshold/);
+  assert.throws(() => assertEmittedParametersMatchFitted(
     ".model DUT VDMOS(VTO=-2.1 KP=1)\n",
     { parameters: { VTO: 2.1, KP: 1 } },
     "pmos"
@@ -276,29 +281,30 @@ test("conveyor MOSFET package contract rejects hidden critical defaults and hybr
     }]
   };
   const evidenceRows = [vgsEvidence, currentEvidence, resistanceEvidence].map((evidence) => ({ condition, citation, evidence }));
-  const ctx = { part: { slug: "fixture", pipeline: "vdmos", component: { supported_operating_region: { contract_version: "1.0.0", numeric_bounds: [
+  const ctx = { part: { slug: "fixture", pipeline: "vdmos", component: { fidelity_tier: "F1", supported_operating_region: { contract_version: "1.0.0", numeric_bounds: [
     regionBound("vgs", [10], evidenceRows), regionBound("vds", [10], evidenceRows), regionBound("id", [6], evidenceRows), regionBound("temperature", [75], evidenceRows)
   ] } } } };
   const zeroTargets = { observations: [], constraints: [], residual_target_count: 0 };
-  assert.doesNotThrow(() => assertMosfetConditionIdentityContract(ctx, facts, { parameters: {}, held_defaults: [], calibration: zeroTargets, residuals: [] }));
-  assert.throws(() => assertMosfetConditionIdentityContract(ctx, facts, { parameters: { VTO: 2 }, held_defaults: [{ parameter: "VTO", value: 2, unit: "V", reason: "physical constant" }], calibration: zeroTargets, residuals: [] }), /critical MOSFET/);
+  const fitted = (extra = {}) => ({ fidelity_tier: "F1", parameters: {}, held_defaults: [], calibration: zeroTargets, residuals: [], ...extra });
+  assert.doesNotThrow(() => assertMosfetConditionIdentityContract(ctx, facts, fitted()));
+  assert.throws(() => assertMosfetConditionIdentityContract(ctx, facts, fitted({ parameters: { VTO: 2 }, held_defaults: [{ parameter: "VTO", value: 2, unit: "V", reason: "physical constant" }] })), /critical MOSFET/);
   const hybrid = structuredClone(facts);
   hybrid.rdson_points[0].current.condition_identity = mosfetIdentity("rds_on", { electrical: { ...condition.electrical, id: { kind: "fixed", value_a: 5 } } });
-  assert.throws(() => assertMosfetConditionIdentityContract(ctx, hybrid, { parameters: {}, held_defaults: [], calibration: zeroTargets, residuals: [] }), /hybrid/);
+  assert.throws(() => assertMosfetConditionIdentityContract(ctx, hybrid, fitted()), /hybrid/);
 
   const missingRef = structuredClone(ctx);
   missingRef.part.component.supported_operating_region.numeric_bounds[0].evidence_refs = [];
-  assert.throws(() => assertMosfetConditionIdentityContract(missingRef, facts, { parameters: {}, held_defaults: [], calibration: zeroTargets, residuals: [] }), /evidence_refs must be non-empty/);
+  assert.throws(() => assertMosfetConditionIdentityContract(missingRef, facts, fitted()), /evidence_refs must be non-empty/);
 
   const alteredRef = structuredClone(ctx);
   alteredRef.part.component.supported_operating_region.numeric_bounds[0].evidence_refs[0].evidence_id = `sha256:${"f".repeat(64)}`;
-  assert.throws(() => assertMosfetConditionIdentityContract(alteredRef, facts, { parameters: {}, held_defaults: [], calibration: zeroTargets, residuals: [] }), /does not resolve to package evidence/);
+  assert.throws(() => assertMosfetConditionIdentityContract(alteredRef, facts, fitted()), /does not resolve to package evidence/);
 
   const widened = structuredClone(ctx);
   const widenedBound = widened.part.component.supported_operating_region.numeric_bounds[0];
   widenedBound.values = [9, 10, 11];
   widenedBound.bound_id = identityHash(Object.fromEntries(Object.entries(widenedBound).filter(([key]) => key !== "bound_id")));
-  assert.throws(() => assertMosfetConditionIdentityContract(widened, facts, { parameters: {}, held_defaults: [], calibration: zeroTargets, residuals: [] }), /sorted unique referenced values/);
+  assert.throws(() => assertMosfetConditionIdentityContract(widened, facts, fitted()), /sorted unique referenced values/);
 });
 
 test("legacy reviewed MOSFET package generation remains backward-compatible", () => {
