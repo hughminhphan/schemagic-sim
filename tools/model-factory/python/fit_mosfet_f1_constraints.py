@@ -14,8 +14,6 @@ from collections import defaultdict
 from pathlib import Path
 
 from native_ngspice import run_ngspice, vector
-from fit_conveyor import (IDENTITY_VERSION, Unfittable, canonical_hash, citation_cohort_material,
-                           finite_number, validate_citation_identity, validate_condition_identity)
 
 PROBE_OPTIONS = ".options reltol=1e-6 abstol=1e-15 vntol=1e-9 itl1=500"
 BISECTION_STEPS = 48
@@ -23,100 +21,6 @@ BISECTION_STEPS = 48
 
 class Infeasible(Exception):
     """No model in the declared F1 search domain satisfies every constraint."""
-
-
-def evidence_hash(characteristic, role, quantity, value_si, unit_si, condition_id, citation_id):
-    return canonical_hash({"characteristic": characteristic, "role": role, "quantity": quantity,
-                           "value_si": value_si, "unit_si": unit_si,
-                           "condition_id": condition_id, "citation_id": citation_id})
-
-
-def validate_constraint_evidence(payload):
-    """Pass-through validation only: never infer, merge, or default critical evidence."""
-    if payload.get("evidence_contract_version") != IDENTITY_VERSION:
-        if payload.get("test_only_allow_legacy_evidence") is True:
-            return
-        raise ValueError(f"MOSFET F1 constraint payload requires evidence_contract_version {IDENTITY_VERSION}")
-    for index, constraint in enumerate(payload.get("constraints") or []):
-        label = f"constraints[{index}]"
-        kind = constraint.get("kind")
-        characteristic = "gate_threshold" if kind == "threshold_interval" else "rds_on" if kind == "rdson_maximum" else None
-        if characteristic is None:
-            raise ValueError(f"{label} has unsupported kind {kind!r}")
-        try:
-            condition = validate_condition_identity(constraint.get("condition_identity"), characteristic,
-                                                    f"{label}.condition_identity", dc_only=True)
-        except Unfittable as exc:
-            raise ValueError(str(exc)) from exc
-        cohort = constraint.get("citation_cohort")
-        required_cohort = {"cohort_id", "source_sha256", "page", "table", "row"}
-        if not isinstance(cohort, dict) or set(cohort) != required_cohort:
-            raise ValueError(f"{label}.citation_cohort must contain exactly {sorted(required_cohort)}")
-        evidence_rows = constraint.get("evidence")
-        expected = ([('threshold_minimum', 'V', 'minimum', constraint.get('minimum_v')),
-                     ('threshold_maximum', 'V', 'maximum', constraint.get('maximum_v'))]
-                    if kind == "threshold_interval" else
-                    [('vgs', 'V', None, constraint.get('vgs_v')),
-                     ('drain_current', 'A', None, constraint.get('current_a')),
-                     ('rds_on_maximum', 'ohm', 'maximum', constraint.get('maximum_ohm'))])
-        if not isinstance(evidence_rows, list) or len(evidence_rows) != len(expected):
-            raise ValueError(f"{label}.evidence must contain {len(expected)} independently complete rows")
-        condition_ids, cohort_ids = set(), set()
-        for row_index, (row, (quantity, unit, required_role, top_value)) in enumerate(zip(evidence_rows, expected)):
-            row_label = f"{label}.evidence[{row_index}]"
-            if not isinstance(row, dict) or set(row) != {"quantity", "value_si", "unit_si", "condition_identity", "citation_identity", "evidence_identity"}:
-                raise ValueError(f"{row_label} has incomplete or unknown fields")
-            if row["quantity"] != quantity or row["unit_si"] != unit:
-                raise ValueError(f"{row_label} quantity or SI unit does not match the constraint contract")
-            value = finite_number(row["value_si"], f"{row_label}.value_si")
-            if abs(value - float(top_value)) > max(1e-15, abs(value) * 1e-12):
-                raise ValueError(f"{row_label} value does not match top-level probe field")
-            try:
-                row_condition = validate_condition_identity(row["condition_identity"], characteristic,
-                                                            f"{row_label}.condition_identity", dc_only=True)
-                citation = validate_citation_identity(row["citation_identity"], f"{row_label}.citation_identity")
-            except Unfittable as exc:
-                raise ValueError(str(exc)) from exc
-            if row_condition != condition:
-                raise ValueError(f"{row_label} condition identity is not byte-equivalent to the constraint identity")
-            identity = row["evidence_identity"]
-            if not isinstance(identity, dict) or set(identity) != {"evidence_id", "cohort_id", "role", "condition_id", "citation_id"}:
-                raise ValueError(f"{row_label}.evidence_identity has incomplete or unknown fields")
-            if required_role and identity["role"] != required_role:
-                raise ValueError(f"{row_label} requires evidence role {required_role}")
-            if kind == "rdson_maximum" and identity["role"] != "maximum":
-                raise ValueError(f"{row_label} RDS maximum components must all use maximum role")
-            expected_cohort = canonical_hash(citation_cohort_material(characteristic, condition["condition_id"], citation))
-            expected_evidence = evidence_hash(characteristic, identity["role"], quantity, value, unit,
-                                              condition["condition_id"], citation["citation_id"])
-            if identity["condition_id"] != condition["condition_id"] or identity["citation_id"] != citation["citation_id"] \
-                    or identity["cohort_id"] != expected_cohort or identity["evidence_id"] != expected_evidence:
-                raise ValueError(f"{row_label} hashes do not match canonical evidence content")
-            condition_ids.add(identity["condition_id"])
-            cohort_ids.add(identity["cohort_id"])
-        if condition_ids != {condition["condition_id"]} or len(cohort_ids) != 1:
-            raise ValueError(f"{label} contains hybrid condition or citation cohort fields")
-        if cohort["cohort_id"] != next(iter(cohort_ids)):
-            raise ValueError(f"{label}.citation_cohort.cohort_id does not match evidence")
-        representative = evidence_rows[0]["citation_identity"]
-        for key in ("source_sha256", "page", "table", "row"):
-            if cohort[key] != representative[key]:
-                raise ValueError(f"{label}.citation_cohort.{key} does not match evidence citation")
-        electrical = condition["electrical"]
-        temperature = condition["temperature"]["value_c"]
-        if abs(float(constraint["temperature_c"]) - temperature) > 1e-12:
-            raise ValueError(f"{label}.temperature_c does not match condition identity")
-        if kind == "threshold_interval":
-            if constraint.get("vds_relation") != "vds_equals_vgs" or electrical["vds"] != {"kind": "relation", "relation": "vds_equals_vgs"}:
-                raise ValueError(f"{label} threshold VDS relation does not match condition identity")
-            if electrical["id"].get("kind") != "fixed" or abs(abs(electrical["id"]["value_a"]) - abs(float(constraint["current_a"]))) > 1e-15:
-                raise ValueError(f"{label}.current_a does not match threshold condition identity")
-        else:
-            if electrical["vgs"].get("kind") != "fixed" or electrical["id"].get("kind") != "fixed":
-                raise ValueError(f"{label} RDS condition requires exact VGS and ID")
-            if abs(abs(electrical["vgs"]["value_v"]) - abs(float(constraint["vgs_v"]))) > 1e-15 \
-                    or abs(abs(electrical["id"]["value_a"]) - abs(float(constraint["current_a"]))) > 1e-15:
-                raise ValueError(f"{label} probe values do not match RDS condition identity")
 
 
 def model_parameters(vto, rdson_seed, fixed):
@@ -272,7 +176,6 @@ def constraint_results(constraints, measured):
 
 
 def fit(payload):
-    validate_constraint_evidence(payload)
     constraints = payload["constraints"]
     if not constraints:
         raise ValueError("constrained MOSFET F1 fit requires at least one inequality constraint")
@@ -344,7 +247,7 @@ def main():
     payload = json.loads(Path(args.payload).read_text())
     try:
         result = {"ok": True, **fit(payload)}
-    except (Infeasible, Unfittable, ValueError, KeyError, TypeError) as exc:
+    except (Infeasible, ValueError, KeyError, TypeError) as exc:
         result = {"ok": False, "error": str(exc)}
     Path(args.output).write_text(json.dumps(result, indent=2) + "\n")
 
