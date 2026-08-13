@@ -9,6 +9,7 @@ import {
   citationCohortMaterial,
   claimedIdentityMaterial,
   curveCohortMaterial,
+  directEvidenceUnionErrors,
   curveIdentityMaterial,
   identityHash,
   operatingRegionBoundMaterial,
@@ -217,7 +218,89 @@ function verifyFactsIdentities(evidence) {
   return errors;
 }
 
-function validateNewContractPackage(component, facts, fitted, modelText, expectations) {
+function sourceContractErrors(component, sources, evidence) {
+  const errors = [];
+  const byHash = new Map();
+  for (const [index, source] of (sources ?? []).entries()) {
+    const rows = byHash.get(source.sha256) ?? [];
+    rows.push({ source, index });
+    byHash.set(source.sha256, rows);
+  }
+  for (const row of evidence) {
+    const matches = byHash.get(row.citation?.source_sha256) ?? [];
+    if (matches.length !== 1) errors.push(`${row.label}.citation_identity.source_sha256 must resolve exactly once in sources.json`);
+    else if (row.citation?.source_revision != null && row.citation.source_revision !== matches[0].source.revision) {
+      errors.push(`${row.label}.citation_identity.source_revision disagrees with sources.json`);
+    }
+  }
+  const datasheetMatches = (sources ?? []).filter((source) => source.kind === "datasheet" && source.url === component?.datasheet?.url);
+  if (datasheetMatches.length !== 1) errors.push("component datasheet.url must resolve exactly once to a datasheet source");
+  else if (component?.datasheet?.revision !== datasheetMatches[0].revision) errors.push("component datasheet.revision disagrees with sources.json");
+  return errors;
+}
+
+function expectationEvidenceSemantics(check, resolved, checkPath, errors) {
+  const expectedValue = resolved.kind === "point" ? resolved.point?.y_si : resolved.valueSi;
+  const expectedUnit = resolved.kind === "point" ? resolved.curve?.y_axis?.unit : resolved.unitSi;
+  if (Object.hasOwn(check, "expected_value") && check.expected_value !== expectedValue) errors.push(`expectations ${checkPath} expected_value disagrees with facts evidence`);
+  if (Object.hasOwn(check, "minimum") && resolved.evidence?.role === "minimum" && check.minimum !== expectedValue) errors.push(`expectations ${checkPath} minimum disagrees with facts evidence`);
+  if (Object.hasOwn(check, "maximum") && resolved.evidence?.role === "maximum" && check.maximum !== expectedValue) errors.push(`expectations ${checkPath} maximum disagrees with facts evidence`);
+  if (check.unit !== expectedUnit) errors.push(`expectations ${checkPath} unit disagrees with facts evidence`);
+
+  const expression = String(check.expression_source?.expression ?? "").toLowerCase();
+  const characteristic = resolved.characteristic;
+  const quantityMatches = ["transfer_current", "output_current"].includes(characteristic) ? /\bi\s*\(/.test(expression)
+    : characteristic === "gate_threshold" ? /\bv\s*\(/.test(expression) && !/\bi\s*\(/.test(expression)
+      : characteristic === "rds_on" ? /scale_abs:/.test(expression)
+        : true;
+  if (!quantityMatches) errors.push(`expectations ${checkPath} expression quantity disagrees with bench metric semantics`);
+  if (resolved.kind === "point" && resolved.curve?.y_axis?.quantity !== "id") errors.push(`expectations ${checkPath} quantity disagrees with bench metric semantics`);
+}
+
+function residualCalibrationErrors(fitted) {
+  const errors = [];
+  const records = [...(fitted?.calibration?.observations ?? []), ...(fitted?.calibration?.constraints ?? [])];
+  const primaryEvidenceId = (row) => row?.evidence_identity?.evidence_id;
+  for (const [index, residual] of (fitted?.residuals ?? []).entries()) {
+    const matches = records.filter((record) => primaryEvidenceId(record) === primaryEvidenceId(residual));
+    const label = `fitted.residuals[${index}]`;
+    if (matches.length !== 1) {
+      errors.push(`${label} must resolve exactly once to a declared calibration record`);
+      continue;
+    }
+    const record = matches[0];
+    for (const field of ["quantity", "gate_quantity", "datasheet_value", "unit"]) {
+      if (residual[field] !== record[field]) errors.push(`${label}.${field} disagrees with its declared calibration record`);
+    }
+    for (const [field, nested] of [["condition_identity", "condition_id"], ["citation_identity", "citation_id"], ["evidence_identity", "evidence_id"]]) {
+      if (residual[field]?.[nested] !== record[field]?.[nested]) errors.push(`${label}.${field}.${nested} disagrees with its declared calibration record`);
+    }
+  }
+  return errors;
+}
+
+function fittedEvidenceSemantics(row, item, resolved, group, index, itemLabel, errors) {
+  if (group !== "residuals" || item.evidence_identity?.evidence_id !== row.evidence_identity?.evidence_id) return;
+  const expectedQuantity = resolved.kind === "point" ? resolved.curve?.y_axis?.quantity : resolved.quantity;
+  const expectedValue = resolved.kind === "point" ? resolved.point?.y_si : resolved.valueSi;
+  const expectedUnit = resolved.kind === "point" ? resolved.curve?.y_axis?.unit : resolved.unitSi;
+  const gateQuantity = resolved.characteristic === "rds_on" ? "rds_on"
+    : resolved.characteristic === "transfer_current" || resolved.characteristic === "output_current" ? "drain_current"
+      : resolved.characteristic;
+  if (row.datasheet_value !== expectedValue) errors.push(`${itemLabel}.datasheet_value disagrees with referenced evidence`);
+  if (row.unit !== expectedUnit) errors.push(`${itemLabel}.unit disagrees with referenced evidence`);
+  if (row.gate_quantity !== gateQuantity) errors.push(`${itemLabel}.gate_quantity disagrees with referenced evidence quantity`);
+  if (resolved.kind === "point" && !String(row.quantity ?? "").toLowerCase().includes(resolved.characteristic === "transfer_current" ? "transfer current" : "output current")) {
+    errors.push(`${itemLabel}.quantity disagrees with referenced evidence characteristic`);
+  }
+  if (resolved.kind === "scalar" && resolved.characteristic === "rds_on" && !/rds\s*\(?on\)?/i.test(String(row.quantity ?? ""))) {
+    errors.push(`${itemLabel}.quantity disagrees with referenced evidence characteristic`);
+  }
+  const declared = (group === "residuals" ? row : null);
+  if (!declared || !Number.isFinite(Number(declared.fitted_value))) errors.push(`${itemLabel}.fitted_value must declare the calibrated model observation`);
+}
+
+function validateNewContractPackage(component, facts, fitted, modelText, expectations, sources) {
   const errors = [];
   const evidence = collectFactsEvidence(facts);
   const region = component?.supported_operating_region;
@@ -226,7 +309,9 @@ function validateNewContractPackage(component, facts, fitted, modelText, expecta
   if (fitted?.evidence_contract_version !== "1.0.0") errors.push("fitted evidence_contract_version must be 1.0.0");
   if (!evidence.length) errors.push("facts must contain resolvable evidence identities for a 1.0.0 contract package");
   errors.push(...verifyFactsIdentities(evidence));
+  errors.push(...sourceContractErrors(component, sources, evidence));
   const byEvidenceId = new Map(evidence.map((row) => [row.evidence.evidence_id, row]));
+  errors.push(...residualCalibrationErrors(fitted));
 
   const emitted = new Map();
   for (const match of modelText.matchAll(/\b([A-Z][A-Z0-9_]*)\s*=\s*([^\s(){}]+)/g)) {
@@ -239,9 +324,12 @@ function validateNewContractPackage(component, facts, fitted, modelText, expecta
     else {
       const actual = emitted.get(name);
       const expectedValue = Number(expected);
-      const polarityMagnitude = component?.electrical_family === "pmos" && name === "VTO"
-        && Math.abs(Math.abs(actual) - Math.abs(expectedValue)) <= 5e-10 * Math.max(1, Math.abs(expectedValue));
-      if (!polarityMagnitude && Math.abs(actual - expectedValue) > 5e-10 * Math.max(1, Math.abs(expectedValue))) {
+      if (component?.electrical_family === "pmos" && name === "VTO") {
+        if (!(actual < 0)) errors.push("model.cir PMOS VTO must be negative");
+        if (Math.abs(Math.abs(actual) - Math.abs(expectedValue)) > 5e-10 * Math.max(1, Math.abs(expectedValue))) {
+          errors.push("model.cir parameter VTO magnitude disagrees with fitted.json");
+        }
+      } else if (Math.abs(actual - expectedValue) > 5e-10 * Math.max(1, Math.abs(expectedValue))) {
         errors.push(`model.cir parameter ${name} disagrees with fitted.json`);
       }
     }
@@ -257,16 +345,14 @@ function validateNewContractPackage(component, facts, fitted, modelText, expecta
     if (check.evidence_role !== expectationRole(resolved.evidence.role)) errors.push(`expectations ${checkPath} evidence_role disagrees with facts evidence`);
     if (!sameCanonicalContent(check.citation_locator, locatorFromCitation(resolved.citation))) errors.push(`expectations ${checkPath} citation_locator disagrees with facts citation`);
     if (!sameQualification(check.evidence_qualification, qualificationFromCondition(resolved.condition))) errors.push(`expectations ${checkPath} evidence_qualification disagrees with facts condition`);
+    expectationEvidenceSemantics(check, resolved, checkPath, errors);
   }
 
   for (const [group, rows] of [["calibration.observations", fitted?.calibration?.observations ?? []], ["calibration.constraints", fitted?.calibration?.constraints ?? []], ["residuals", fitted?.residuals ?? []]]) {
     for (const [index, row] of rows.entries()) {
-      const linked = [
-        ...(Array.isArray(row.evidence) && row.evidence.length ? row.evidence
-          : Array.isArray(row.evidence_identities) ? row.evidence_identities.map((evidence_identity, evidenceIndex) => ({ condition_identity: row.condition_identity, citation_identity: row.citation_identities?.[evidenceIndex], evidence_identity }))
-            : row.evidence_identity ? [{ condition_identity: row.condition_identity, citation_identity: row.citation_identity, evidence_identity: row.evidence_identity }] : []),
-        ...(row.component_evidence ?? []).map((evidence_identity) => ({ condition_identity: row.condition_identity, citation_identity: row.citation_identity, evidence_identity })),
-      ];
+      const linked = Array.isArray(row.evidence) && row.evidence.length ? row.evidence
+        : Array.isArray(row.evidence_identities) ? row.evidence_identities.map((evidence_identity, evidenceIndex) => ({ condition_identity: row.condition_identity, citation_identity: row.citation_identities?.[evidenceIndex], evidence_identity }))
+          : row.evidence_identity ? [{ condition_identity: row.condition_identity, citation_identity: row.citation_identity, evidence_identity: row.evidence_identity }] : [];
       for (const [evidenceIndex, item] of linked.entries()) {
         const itemLabel = `fitted.${group}[${index}]${linked.length > 1 ? `.evidence[${evidenceIndex}]` : ""}`;
         verifyClaimedIdentity(item.condition_identity?.condition_id, claimedIdentityMaterial(item.condition_identity ?? {}, "condition_id"), `${itemLabel}.condition_identity.condition_id`, errors);
@@ -275,6 +361,8 @@ function validateNewContractPackage(component, facts, fitted, modelText, expecta
         if (!resolved || resolved.condition.condition_id !== item.condition_identity?.condition_id || resolved.citation.citation_id !== item.citation_identity?.citation_id
           || !sameCanonicalContent(item.evidence_identity, resolved.evidence)) {
           errors.push(`${itemLabel} does not resolve to facts evidence`);
+        } else {
+          fittedEvidenceSemantics(row, item, resolved, group, index, itemLabel, errors);
         }
       }
     }
@@ -300,6 +388,7 @@ function validateNewContractPackage(component, facts, fitted, modelText, expecta
     const values = referenced.flatMap((row) => bound.quantity === "temperature" && row.condition.temperature.kind !== bound.temperature_kind ? [] : conditionValues(row.condition, bound.quantity));
     const covers = (value) => bound.kind === "enumerated" ? bound.values?.includes(value) : (bound.minimum == null || value >= bound.minimum - 1e-12) && (bound.maximum == null || value <= bound.maximum + 1e-12);
     if (values.some((value) => !covers(value))) errors.push(`${label} omits referenced evidence values`);
+    errors.push(...directEvidenceUnionErrors(bound, values, label));
     if (bound.bound_id) {
       if (bound.bound_id !== identityHash(operatingRegionBoundMaterial(bound))) errors.push(`${label}.bound_id does not match canonical content`);
     }
@@ -377,6 +466,7 @@ export function validateComponentFiles(componentPath) {
   const errors = [];
   let component;
   let expectations = null;
+  let sources = null;
 
   try {
     component = readJson(absoluteComponentPath);
@@ -387,7 +477,8 @@ export function validateComponentFiles(componentPath) {
 
   if (fs.existsSync(sourcesPath)) {
     try {
-      errors.push(...schemaErrors("sources", validators.sources, readJson(sourcesPath)));
+      sources = readJson(sourcesPath);
+      errors.push(...schemaErrors("sources", validators.sources, sources));
     } catch (error) {
       errors.push(`sources cannot be read: ${error.message}`);
     }
@@ -443,7 +534,7 @@ export function validateComponentFiles(componentPath) {
     if (!fs.existsSync(testPath)) errors.push(`referenced test netlist does not exist: tests/${test.test_netlist}`);
   }
 
-  return { errors, component, expectations };
+  return { errors, component, expectations, sources };
 }
 
 function syntaxCheckModel(packageDir) {
@@ -497,9 +588,11 @@ export function validatePackage(packageDir) {
 
   const componentPath = path.join(absoluteDir, "component.json");
   let component = null;
+  let sources = null;
   if (fs.existsSync(componentPath)) {
     const validation = validateComponentFiles(componentPath);
     component = validation.component;
+    sources = validation.sources;
     errors.push(...validation.errors);
   }
 
@@ -520,7 +613,7 @@ export function validatePackage(packageDir) {
     const modelPath = path.join(absoluteDir, "model.cir");
     if (component && [factsPath, fittedPath, modelPath].every((target) => fs.existsSync(target))) {
       try {
-        errors.push(...validateNewContractPackage(component, readJson(factsPath), readJson(fittedPath), fs.readFileSync(modelPath, "utf8"), expectations));
+        errors.push(...validateNewContractPackage(component, readJson(factsPath), readJson(fittedPath), fs.readFileSync(modelPath, "utf8"), expectations, sources));
       } catch (error) {
         errors.push(`evidence contract package cannot be read: ${error.message}`);
       }

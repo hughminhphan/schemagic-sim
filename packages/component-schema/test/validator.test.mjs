@@ -123,7 +123,8 @@ function contractFixture() {
   const scalarEvidence = { ...scalarEvidenceBase, evidence_id: identityHash(scalarEvidenceMaterial("gate_threshold", scalarEvidenceBase, "threshold_typical", 2, "V")) };
   const thresholdTypical = { quantity: "threshold_typical", value: 2, unit: "V", conditions: "VDS = VGS, ID = 250 uA, TJ = 75 C, DC", page_reference: "p. 2 electrical characteristics, Gate threshold voltage", source_kind: "typical", condition_identity: scalarCondition, citation_identity: scalarCitation, evidence_identity: scalarEvidence };
   const linked = { condition_identity: condition, citation_identity: citation, evidence_identity: firstEvidence };
-  const fitted = { evidence_contract_version: "1.0.0", parameters: { VTO: 2 }, calibration: { observations: [{ quantity: "transfer current", ...linked }], constraints: [] }, residuals: [{ quantity: "transfer current", ...linked }] };
+  const calibrationRecord = { quantity: "transfer current", gate_quantity: "drain_current", datasheet_value: 5, unit: "A", ...linked };
+  const fitted = { evidence_contract_version: "1.0.0", parameters: { VTO: 2 }, calibration: { observations: [calibrationRecord], constraints: [] }, residuals: [{ ...calibrationRecord, fitted_value: 5.1 }] };
   return { component, facts: { evidence_contract_version: "1.0.0", threshold: { typical: thresholdTypical }, curves: [curve] }, fitted, expectations };
 }
 
@@ -192,6 +193,82 @@ test("redundant nested curve-point identities must match the raw point and enclo
     const errors = mutateContractFixture(mutate);
     assert.ok(errors.some((error) => error.includes(fragment)), `${fragment}: ${errors.join("\n")}`);
   }
+});
+
+test("PMOS emitted VTO must be negative with the fitted magnitude while NMOS remains signed-equal", () => {
+  const positivePmos = mutateContractFixture((fixture) => { fixture.component.electrical_family = "pmos"; });
+  assert.ok(positivePmos.some((error) => error.includes("PMOS VTO must be negative")), positivePmos.join("\n"));
+
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "component-pmos-native-"));
+  try {
+    const fixture = contractFixture();
+    fixture.component.electrical_family = "pmos";
+    writeContractPackage(root, fixture);
+    fs.writeFileSync(path.join(root, "model.cir"), "* OpenCircuit Model Factory\n* Original work\n* Public factual specifications\n.model DUT VDMOS(pchan VTO=-2)\n");
+    assert.deepEqual(validatePackage(root).errors, []);
+    fs.writeFileSync(path.join(root, "model.cir"), "* OpenCircuit Model Factory\n* Original work\n* Public factual specifications\n.model DUT VDMOS(pchan VTO=-2.2)\n");
+    assert.ok(validatePackage(root).errors.some((error) => error.includes("VTO magnitude disagrees")));
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("contract sources must resolve citation hashes and component datasheet metadata exactly once", () => {
+  for (const [mutate, fragment] of [
+    [(f) => { f.facts.curves[0].citation_identity.source_sha256 = "b".repeat(64); f.facts.curves[0].citation_identity.citation_id = identityHash({ source_sha256: "b".repeat(64), page: 3, figure: "3", curve: "75 C typical" }); }, "resolve exactly once"],
+    [(f) => { f.component.datasheet.url = "https://example.com/unrelated.pdf"; }, "datasheet.url"],
+    [(f) => { f.component.datasheet.revision = "2"; }, "datasheet.revision"]
+  ]) {
+    const errors = mutateContractFixture(mutate);
+    assert.ok(errors.some((error) => error.includes(fragment)), `${fragment}: ${errors.join("\n")}`);
+  }
+});
+
+test("linked expectation and fitted residual evidence semantics fail exact mutations", () => {
+  const cases = [
+    [(f) => { f.expectations.tests[0].scalar_checks[0].expected_value = 6; }, "expected_value disagrees"],
+    [(f) => { f.expectations.tests[0].scalar_checks[0].unit = "V"; }, "unit disagrees"],
+    [(f) => { f.expectations.tests[0].scalar_checks[0].expression_source.expression = "last(v(d))"; }, "expression quantity disagrees"],
+    [(f) => { f.fitted.residuals[0].datasheet_value = 6; }, "datasheet_value disagrees"],
+    [(f) => { f.fitted.residuals[0].unit = "V"; }, "unit disagrees"],
+    [(f) => { f.fitted.residuals[0].gate_quantity = "gate_threshold"; }, "gate_quantity disagrees"],
+    [(f) => { f.fitted.residuals[0].quantity = "output current"; }, "quantity disagrees"]
+  ];
+  for (const [mutate, fragment] of cases) {
+    const errors = mutateContractFixture(mutate);
+    assert.ok(errors.some((error) => error.includes(fragment)), `${fragment}: ${errors.join("\n")}`);
+  }
+});
+
+test("fitted residual must resolve exactly once to its declared calibration record", () => {
+  const missing = mutateContractFixture((fixture) => { fixture.fitted.calibration.observations = []; });
+  assert.ok(missing.some((error) => error.includes("resolve exactly once to a declared calibration record")), missing.join("\n"));
+
+  const mismatched = mutateContractFixture((fixture) => { fixture.fitted.calibration.observations[0].datasheet_value = 6; });
+  assert.ok(mismatched.some((error) => error.includes("datasheet_value disagrees with its declared calibration record")), mismatched.join("\n"));
+
+  const duplicate = mutateContractFixture((fixture) => { fixture.fitted.calibration.observations.push(structuredClone(fixture.fitted.calibration.observations[0])); });
+  assert.ok(duplicate.some((error) => error.includes("resolve exactly once to a declared calibration record")), duplicate.join("\n"));
+});
+
+test("direct evidence union bounds require exact rehashed extrema and sorted unique enumerations", () => {
+  const widened = mutateContractFixture((fixture) => {
+    const bound = fixture.component.supported_operating_region.numeric_bounds[0];
+    bound.minimum = 0;
+    bound.maximum = 20;
+    bound.bound_id = identityHash(Object.fromEntries(Object.entries(bound).filter(([key]) => !["bound_id", "conditions", "placeholder"].includes(key))));
+  });
+  assert.ok(widened.some((error) => error.includes("exactly equal the referenced extrema")), widened.join("\n"));
+
+  const enumerated = mutateContractFixture((fixture) => {
+    const bound = fixture.component.supported_operating_region.numeric_bounds[0];
+    bound.kind = "enumerated";
+    delete bound.minimum;
+    delete bound.maximum;
+    bound.values = [11, 10];
+    bound.bound_id = identityHash(Object.fromEntries(Object.entries(bound).filter(([key]) => !["bound_id", "conditions", "placeholder"].includes(key))));
+  });
+  assert.ok(enumerated.some((error) => error.includes("sorted unique referenced values")), enumerated.join("\n"));
 });
 
 test("stale curve, cohort, point evidence, expectation linkage, and bound hashes fail closed", () => {

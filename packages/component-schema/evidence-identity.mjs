@@ -75,3 +75,27 @@ export function operatingRegionBoundMaterial(bound) {
     Object.entries(bound).filter(([key]) => !["bound_id", "conditions", "placeholder"].includes(key))
   );
 }
+
+export function directEvidenceUnionErrors(bound, evidenceValues, label = "operating-region bound") {
+  if (bound?.derivation !== "direct_evidence_union") return [];
+  const values = evidenceValues.map(Number).filter(Number.isFinite);
+  if (!values.length) return [`${label} direct_evidence_union has no referenced values for its quantity`];
+  const minimum = Math.min(...values);
+  const maximum = Math.max(...values);
+  if (bound.kind === "enumerated") {
+    const expected = [...new Set(values)].sort((left, right) => left - right);
+    return JSON.stringify(bound.values) === JSON.stringify(expected)
+      ? []
+      : [`${label} direct_evidence_union values must exactly equal the sorted unique referenced values`];
+  }
+  if (bound.kind === "minimum" && bound.minimum !== minimum) {
+    return [`${label} direct_evidence_union minimum must equal the referenced minimum`];
+  }
+  if (bound.kind === "maximum" && bound.maximum !== maximum) {
+    return [`${label} direct_evidence_union maximum must equal the referenced maximum`];
+  }
+  if (bound.kind === "range" && (bound.minimum !== minimum || bound.maximum !== maximum)) {
+    return [`${label} direct_evidence_union range must exactly equal the referenced extrema`];
+  }
+  return [];
+}

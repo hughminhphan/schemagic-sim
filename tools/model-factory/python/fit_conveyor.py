@@ -276,13 +276,13 @@ def validate_curve_identity(curve, characteristic, x_unit, y_unit, label):
     cohort_id = curve_cohort_id(characteristic, condition["condition_id"], citation["citation_id"], curve_id)
     for index, (raw_point, point) in enumerate(zip(points, curve_points)):
         evidence = raw_point["evidence_identity"]
-        require_exact_keys(evidence, {"evidence_id", "cohort_id", "role", "condition_id", "citation_id"},
-                           {"curve_id"}, f"{label}.points[{index}].evidence_identity")
+        require_exact_keys(evidence, {"evidence_id", "cohort_id", "role", "condition_id", "citation_id", "curve_id", "point_index"},
+                           set(), f"{label}.points[{index}].evidence_identity")
         if evidence["role"] != "digitized_typical_curve" or evidence["condition_id"] != condition["condition_id"] \
                 or evidence["citation_id"] != citation["citation_id"] or evidence["cohort_id"] != cohort_id:
             raise Unfittable(f"{label}.points[{index}] identity references do not match the shared curve identity")
-        if "curve_id" in evidence and evidence["curve_id"] != curve_id:
-            raise Unfittable(f"{label}.points[{index}].evidence_identity.curve_id does not match the curve")
+        if evidence["curve_id"] != curve_id or evidence["point_index"] != point["point_index"]:
+            raise Unfittable(f"{label}.points[{index}] nested curve and point identity does not match the point")
         point_material = {"characteristic": characteristic, "role": "digitized_typical_curve", **point,
                           "condition_id": condition["condition_id"], "citation_id": citation["citation_id"],
                           "cohort_id": cohort_id, "curve_id": curve_id}
@@ -557,10 +557,13 @@ def bjt_bench(params, targets, vce, polarity):
     return [abs(float(vector(result, f"vc{i}#branch", f"i(vc{i})")[0])) for i in range(1, len(targets) + 1)]
 
 
-def vdmos_bench(dc, fixed, transfer, outputs, rdson):
+def vdmos_bench(dc, fixed, transfer, outputs, rdson, polarity="n"):
     """Probe each evidence row at its exact validated temperature and bias."""
     vto, kp, theta, lam, rd = dc
-    card = (f".model MFIT VDMOS(VTO={vto:.12g} KP={kp:.12g} THETA={theta:.12g} LAMBDA={lam:.12g} "
+    p_channel = polarity == "p"
+    channel = "pchan " if p_channel else ""
+    emitted_vto = -abs(vto) if p_channel else abs(vto)
+    card = (f".model MFIT VDMOS({channel}VTO={emitted_vto:.12g} KP={kp:.12g} THETA={theta:.12g} LAMBDA={lam:.12g} "
             f"RD={rd:.12g} RS={fixed['RS']:.12g} RG=1e-4 RDS=1e9 "
             f"CGS={fixed['CGS']:.12e} CGDMAX={fixed['CGDMAX']:.12e} CGDMIN={fixed['CGDMIN']:.12e} "
             f"CJO={fixed['CJO']:.12e} IS=1e-12 N=1.5 RB={fixed['RB']:.12g} TNOM=27)")
@@ -574,28 +577,30 @@ def vdmos_bench(dc, fixed, transfer, outputs, rdson):
         names = []
         for probe_index, (group, row_index, row) in enumerate(rows, 1):
             names.append((group, row_index, probe_index, row))
+            sign = -1 if p_channel else 1
             if group == "transfer":
                 vgs, vds, _, _ = row
                 lines += [f"MT{probe_index} d{probe_index} g{probe_index} 0 MFIT",
-                          f"VD{probe_index} d{probe_index} 0 DC {vds:.12g}",
-                          f"VG{probe_index} g{probe_index} 0 DC {vgs:.12g}"]
+                          f"VD{probe_index} d{probe_index} 0 DC {sign * vds:.12g}",
+                          f"VG{probe_index} g{probe_index} 0 DC {sign * vgs:.12g}"]
             elif group == "output":
                 vgs, vds, _, _ = row
                 lines += [f"MO{probe_index} d{probe_index} g{probe_index} 0 MFIT",
-                          f"VD{probe_index} d{probe_index} 0 DC {vds:.12g}",
-                          f"VG{probe_index} g{probe_index} 0 DC {vgs:.12g}"]
+                          f"VD{probe_index} d{probe_index} 0 DC {sign * vds:.12g}",
+                          f"VG{probe_index} g{probe_index} 0 DC {sign * vgs:.12g}"]
             else:
                 vgs, current, _, _, _, _ = row
+                current_drive = f"ID{probe_index} d{probe_index} 0 DC {current:.12g}" if p_channel else f"ID{probe_index} 0 d{probe_index} DC {current:.12g}"
                 lines += [f"MR{probe_index} d{probe_index} g{probe_index} 0 MFIT",
-                          f"ID{probe_index} 0 d{probe_index} DC {current:.12g}",
-                          f"VG{probe_index} g{probe_index} 0 DC {vgs:.12g}"]
+                          current_drive,
+                          f"VG{probe_index} g{probe_index} 0 DC {sign * vgs:.12g}"]
         lines += [".op", ".end"]
         result = run_ngspice("\n".join(lines) + "\n")
         for group, row_index, probe_index, row in names:
             if group in {"transfer", "output"}:
                 value = abs(float(vector(result, f"vd{probe_index}#branch", f"i(vd{probe_index})")[0]))
             else:
-                value = float(vector(result, f"v(d{probe_index})", f"d{probe_index}")[0]) / row[1]
+                value = abs(float(vector(result, f"v(d{probe_index})", f"d{probe_index}")[0])) / row[1]
             values[group][row_index] = value
     return values["transfer"], values["output"], values["rdson"]
 
@@ -937,7 +942,7 @@ def fit_mosfet(payload, rejected):
 
     def residual(p):
         try:
-            t, o, d = vdmos_bench(p, fixed, transfer, out_points, rdson)
+            t, o, d = vdmos_bench(p, fixed, transfer, out_points, rdson, payload.get("polarity", "n"))
         except Exception:
             return np.full(len(transfer) + len(out_points) + len(rdson), 1e3)
         rows = []
@@ -969,9 +974,9 @@ def fit_mosfet(payload, rejected):
     # resting there is a held default to declare, not an optimiser artefact. Resting on an
     # UPPER bound still means the true optimum is outside the physical range.
     floor_is_held = {
-        "THETA": "no mobility degradation is resolvable from the digitised transfer range",
-        "LAMBDA": "no channel-length modulation is resolvable from the digitised output range",
-        "RD": "no drain resistance separable from the source resistance at these bias points",
+        "THETA": ("1", "no mobility degradation is resolvable from the digitised transfer range"),
+        "LAMBDA": ("1/V", "no channel-length modulation is resolvable from the digitised output range"),
+        "RD": ("ohm", "no drain resistance separable from the source resistance at these bias points"),
     }
     for index, name in enumerate(["VTO", "KP", "THETA", "LAMBDA", "RD"]):
         # VTO resting on a published threshold min/max is the archetype's intent, not saturation.
@@ -982,11 +987,12 @@ def fit_mosfet(payload, rejected):
             continue
         at_lower = (value - lo[index]) < (hi[index] - value)
         if at_lower and name in floor_is_held:
-            held.append({"parameter": name, "value": value, "reason": floor_is_held[name]})
+            unit, reason = floor_is_held[name]
+            held.append({"parameter": name, "value": value, "unit": unit, "reason": reason})
         else:
             notes.append(f"{name} saturated its bound at {value:.6g}; the residual is a constraint artefact")
 
-    t, o, d = vdmos_bench(fit.x, fixed, transfer, out_points, rdson)
+    t, o, d = vdmos_bench(fit.x, fixed, transfer, out_points, rdson, payload.get("polarity", "n"))
     residuals = []
     transfer_citation = transfer_identity["citation_identity"]
     for point, (vgs, vds, target, temperature), actual in zip(tcurve["points"], transfer, t):
@@ -1014,6 +1020,10 @@ def fit_mosfet(payload, rejected):
                           "condition_identity": resistance_evidence["condition_identity"],
                           "citation_identity": resistance_evidence["citation_identity"],
                           "evidence_identity": resistance_evidence["evidence_identity"],
+                          "evidence": [{"quantity": quantity, "value_si": component["value"], "unit_si": component["unit"],
+                                        "condition_identity": component["condition_identity"], "citation_identity": component["citation_identity"],
+                                        "evidence_identity": component["evidence_identity"]}
+                                       for quantity, component in zip(("vgs", "drain_current", f"rds_on_{kind}"), components)],
                           "component_evidence": [component["evidence_identity"] for component in components],
                           "temperature_c": temperature,
                           "evidence_role": "inequality_constraint" if kind == "maximum" else "typical_observation",
@@ -1053,6 +1063,7 @@ def main():
         rms = math.sqrt(sum(r["relative_error"] ** 2 for r in residuals) / len(residuals))
         result.update({
             "fidelity": "F2" if passed else "F1",
+            **({"evidence_contract_version": IDENTITY_VERSION} if family == "mosfet" else {}),
             "parameters": params, "residuals": residuals, "curves_used": used,
             "worst": {"value": worst_row["relative_error"], "quantity": worst_row["quantity"]},
             "rms": rms, "fitter": "scipy.optimize.least_squares with native ngspice-46 evaluations",

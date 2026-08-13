@@ -8,6 +8,7 @@ import {
   citationCohortMaterial,
   curveCohortMaterial,
   curveIdentityMaterial,
+  directEvidenceUnionErrors,
   identityHash as canonicalIdentityHash,
   pointEvidenceMaterial,
   scalarEvidenceMaterial,
@@ -247,7 +248,7 @@ function emittedParameterValues(model) {
   return values;
 }
 
-export function assertEmittedParametersMatchFitted(model, fitted) {
+export function assertEmittedParametersMatchFitted(model, fitted, electricalFamily = null) {
   const emitted = emittedParameterValues(model);
   const mismatches = [];
   for (const [name, expected] of Object.entries(fitted.parameters ?? {})) {
@@ -258,7 +259,10 @@ export function assertEmittedParametersMatchFitted(model, fitted) {
     }
     const actual = emitted.get(name);
     const scale = Math.max(1, Math.abs(Number(expected)));
-    if (Math.abs(actual - Number(expected)) > 5e-10 * scale) {
+    if (electricalFamily === "pmos" && name === "VTO") {
+      if (!(actual < 0)) mismatches.push(`VTO: PMOS emitted ${actual}, expected a negative threshold`);
+      else if (Math.abs(Math.abs(actual) - Math.abs(Number(expected))) > 5e-10 * scale) mismatches.push(`VTO: emitted magnitude ${Math.abs(actual)}, fitted ${expected}`);
+    } else if (Math.abs(actual - Number(expected)) > 5e-10 * scale) {
       mismatches.push(`${name}: emitted ${actual}, fitted ${expected}`);
     }
   }
@@ -290,7 +294,9 @@ function modelText(ctx, fitted) {
   }
   if (ctx.part.pipeline === "vdmos") {
     const names = ["VTO", "KP", "THETA", "LAMBDA", "RD", "RS", "RG", "CGS", "CGDMAX", "CGDMIN", "A", "CJO", "IS", "N", "RB", "TT", "BV", "IBV", "RTHJC", "RTHCA"];
-    return `${header}* Fit: native ngspice-46 in scipy.optimize.least_squares, diff_step=1e-4\n.model ${ctx.part.component.modelName} VDMOS(${names.map((name) => `${name}=${formatSpice(p[name])}`).join(" ")} RDS=1e9 VJ=0.8 M=0.5 FC=0.5 NBV=1 TNOM=27)\n`;
+    const pChannel = ctx.part.identity.electrical_family === "pmos";
+    const parameter = (name) => name === "VTO" && pChannel ? -Math.abs(p[name]) : p[name];
+    return `${header}* Fit: native ngspice-46 in scipy.optimize.least_squares, diff_step=1e-4\n.model ${ctx.part.component.modelName} VDMOS(${pChannel ? "pchan " : ""}${names.map((name) => `${name}=${formatSpice(parameter(name))}`).join(" ")} RDS=1e9 VJ=0.8 M=0.5 FC=0.5 NBV=1 TNOM=27)\n`;
   }
   if (ctx.part.pipeline === "opamp") {
     return `${header}* Fit: exactly three native ngspice-46 fixed-point calibration iterations\n* Node order: INP INN VCC VEE OUT\n.subckt ${ctx.part.component.modelName} INP INN VCC VEE OUT\n.param AOL=${formatSpice(p.AOL)} GBW=${formatSpice(p.GBW)} SR=${formatSpice(p.SR)} IBIAS=${formatSpice(p.IBIAS)} IOS=${formatSpice(p.IOS)} VOS=${formatSpice(p.VOS)}\n.param ROUT=${formatSpice(p.ROUT)} ILIM=${formatSpice(p.ILIM)} VDRP_H=${formatSpice(p.VDRP_H)} VDRP_L=${formatSpice(p.VDRP_L)} CC=30p FP2=${formatSpice(p.FP2)}\n.param CMRR=${formatSpice(p.CMRR)} PSRR=${formatSpice(p.PSRR)} VSUP_NOM=${formatSpice(p.VSUP_NOM)} IQ=${formatSpice(p.IQ)} EN=${formatSpice(p.EN)}\nIBP 0 INP DC {IBIAS+IOS/2}\nIBN 0 INN DC {IBIAS-IOS/2}\nCDIF INP INN 1p\nBERR e 0 V = v(INP,INN) + VOS + v(nz) + 0.5*(v(INP)+v(INN))/CMRR + (v(VCC,VEE)-VSUP_NOM)/PSRR\nRE e 0 1meg\nRNZ nz 0 {EN*EN/(4*1.380649e-23*300.15)}\nBGM 0 p I = {SR*CC}*tanh({6.283185307*GBW/SR}*v(e))\nCP p 0 {CC}\nRP p 0 {AOL/(6.283185307*GBW*CC)}\nRP2 p p2 {1/(6.283185307*FP2*1p)}\nCP2 p2 0 1p\nBCLMP q 0 V = min(max(v(p2), v(VEE)+min(VDRP_L,0.49*v(VCC,VEE))), v(VCC)-min(VDRP_H,0.49*v(VCC,VEE)))\nRQ q 0 1meg\nBOUT 0 OUT I = ILIM*tanh((v(q)-v(OUT))/(ROUT*ILIM))\nIQVCC VCC VEE DC {IQ}\n.ends ${ctx.part.component.modelName}\n`;
@@ -389,7 +395,7 @@ function stageGenerate(ctx) {
     if (fs.existsSync(factsPath)) assertMosfetConditionIdentityContract(ctx, JSON.parse(fs.readFileSync(factsPath, "utf8")), fitted);
   }
   const model = modelText(ctx, fitted);
-  if (ctx.part.pipeline !== "darlington") assertEmittedParametersMatchFitted(model, fitted);
+  if (ctx.part.pipeline !== "darlington") assertEmittedParametersMatchFitted(model, fitted, ctx.part.identity.electrical_family);
   fs.writeFileSync(path.join(ctx.packageDir, "model.cir"), model);
   writeJson(path.join(ctx.packageDir, "component.json"), baseComponent(ctx, fitted));
   console.log(`generate ${ctx.part.slug}: ${ctx.part.component.modelName}`);
@@ -757,7 +763,7 @@ function assertQuantityIdentity(quantity, trail, expected = {}) {
   if (expected.vgs != null && (condition.electrical.vgs.kind !== "fixed" || !closeEnough(Math.abs(condition.electrical.vgs.value_v), expected.vgs))) throw new Error(`${trail} has hybrid VGS metadata`);
   if (expected.current != null && (condition.electrical.id.kind !== "fixed" || !closeEnough(Math.abs(condition.electrical.id.value_a), expected.current))) throw new Error(`${trail} has hybrid ID metadata`);
   if (expected.vds != null && (condition.electrical.vds.kind !== "fixed" || !closeEnough(Math.abs(condition.electrical.vds.value_v), expected.vds))) throw new Error(`${trail} has hybrid VDS metadata`);
-  return { condition, citation, evidence };
+  return { condition, citation, evidence, kind: "scalar", characteristic: condition.characteristic, quantity: quantity.quantity, valueSi: quantity.value, unitSi: quantity.unit };
 }
 
 function assertSamePointIdentity(identities, trail) {
@@ -830,7 +836,7 @@ function criticalMosfetEvidence(facts) {
   }
   const curves = (facts.curves ?? []).map((curve, index) => normalizeMosfetCurve(curve, `facts.curves[${index}]`));
   for (const curve of curves) {
-    for (const point of curve.points) rows.push({ condition: curve.condition_identity, citation: curve.citation_identity, evidence: point.evidence_identity });
+    for (const point of curve.points) rows.push({ condition: curve.condition_identity, citation: curve.citation_identity, evidence: point.evidence_identity, kind: "point", characteristic: curve.characteristic, curve, point });
   }
   return { rows, curves };
 }
@@ -864,6 +870,19 @@ function assertHeldDefaults(fitted) {
 
 function assertCriticalFittedProvenance(fitted, packageEvidence) {
   const byEvidenceId = new Map(packageEvidence.map((row) => [row.evidence.evidence_id, row]));
+  const calibrationRecords = [...(fitted.calibration?.observations ?? []), ...(fitted.calibration?.constraints ?? [])];
+  for (const [index, residual] of (fitted.residuals ?? []).entries()) {
+    const trail = `fitted.residuals[${index}]`;
+    const matches = calibrationRecords.filter((record) => record.evidence_identity?.evidence_id === residual.evidence_identity?.evidence_id);
+    if (matches.length !== 1) throw new Error(`${trail} must resolve exactly once to a declared calibration record`);
+    const record = matches[0];
+    for (const field of ["quantity", "gate_quantity", "datasheet_value", "unit"]) {
+      if (record[field] !== residual[field]) throw new Error(`${trail}.${field} disagrees with its declared calibration record`);
+    }
+    for (const [field, nested] of [["condition_identity", "condition_id"], ["citation_identity", "citation_id"], ["evidence_identity", "evidence_id"]]) {
+      if (record[field]?.[nested] !== residual[field]?.[nested]) throw new Error(`${trail}.${field}.${nested} disagrees with its declared calibration record`);
+    }
+  }
   const groups = [
     ["calibration.observations", fitted.calibration?.observations ?? []],
     ["calibration.constraints", fitted.calibration?.constraints ?? []],
@@ -885,6 +904,17 @@ function assertCriticalFittedProvenance(fitted, packageEvidence) {
       const packageRow = byEvidenceId.get(evidence.evidence_id);
       if (!packageRow || packageRow.condition.condition_id !== condition.condition_id || packageRow.citation.citation_id !== citation.citation_id) {
         throw new Error(`${itemTrail} does not resolve to package evidence`);
+      }
+      if (group === "residuals" && item.evidence_identity?.evidence_id === row.evidence_identity?.evidence_id) {
+        const expectedValue = packageRow.kind === "point" ? packageRow.point.y_si : packageRow.valueSi;
+        const expectedUnit = packageRow.kind === "point" ? packageRow.curve.y_axis.unit : packageRow.unitSi;
+        const expectedGate = packageRow.characteristic === "rds_on" ? "rds_on"
+          : ["transfer_current", "output_current"].includes(packageRow.characteristic) ? "drain_current"
+            : packageRow.characteristic;
+        if (!closeEnough(row.datasheet_value, expectedValue)) throw new Error(`${trail}.datasheet_value disagrees with referenced evidence`);
+        if (row.unit !== expectedUnit) throw new Error(`${trail}.unit disagrees with referenced evidence`);
+        if (row.gate_quantity !== expectedGate) throw new Error(`${trail}.gate_quantity disagrees with referenced evidence quantity`);
+        if (!Number.isFinite(Number(row.fitted_value))) throw new Error(`${trail}.fitted_value must declare the calibrated model observation`);
       }
     }
   }
@@ -940,6 +970,8 @@ function assertMosfetRegionContract(region, packageEvidence) {
     const covers = (value) => bound.kind === "enumerated" ? bound.values.some((candidate) => closeEnough(candidate, value))
       : (bound.minimum == null || value >= bound.minimum - 1e-12) && (bound.maximum == null || value <= bound.maximum + 1e-12);
     if (evidenceValues.some((value) => !covers(value))) throw new Error(`${trail} omits referenced evidence values`);
+    const unionErrors = directEvidenceUnionErrors(bound, evidenceValues, trail);
+    if (unionErrors.length) throw new Error(unionErrors[0]);
     assertIdentityHash(bound, "bound_id", trail, (value) => Object.fromEntries(Object.entries(value).filter(([key]) => !["bound_id", "conditions", "placeholder"].includes(key))));
   }
   const required = new Set(["vgs", "id", "temperature"]);
@@ -982,11 +1014,15 @@ function vdmosTestgen(ctx, model, facts, fitted) {
     for (const [index, point] of facts.rdson_points.entries()) {
       let identity = null;
       const temperature = strict
-        ? (identity = assertSamePointIdentity([
-          assertQuantityIdentity(point.vgs, `facts.rdson_points[${index}].vgs`, { characteristic: "rds_on", quantityLabel: "vgs", vgs: point.vgs.value, current: point.current.value }),
-          assertQuantityIdentity(point.current, `facts.rdson_points[${index}].current`, { characteristic: "rds_on", quantityLabel: "drain_current", vgs: point.vgs.value, current: point.current.value }),
-          assertQuantityIdentity(point.resistance, `facts.rdson_points[${index}].resistance`, { characteristic: "rds_on", quantityLabel: point.resistance.source_kind === "minimum" ? "rds_on_minimum" : point.resistance.source_kind === "maximum" ? "rds_on_maximum" : "rds_on_typical", vgs: point.vgs.value, current: point.current.value })
-        ], `facts.rdson_points[${index}]`), assertDcConditionIdentity(identity.condition, `facts.rdson_points[${index}]`), identity.condition.temperature.value_c)
+        ? (() => {
+          const vgsIdentity = assertQuantityIdentity(point.vgs, `facts.rdson_points[${index}].vgs`, { characteristic: "rds_on", quantityLabel: "vgs", vgs: point.vgs.value, current: point.current.value });
+          const currentIdentity = assertQuantityIdentity(point.current, `facts.rdson_points[${index}].current`, { characteristic: "rds_on", quantityLabel: "drain_current", vgs: point.vgs.value, current: point.current.value });
+          const resistanceIdentity = assertQuantityIdentity(point.resistance, `facts.rdson_points[${index}].resistance`, { characteristic: "rds_on", quantityLabel: point.resistance.source_kind === "minimum" ? "rds_on_minimum" : point.resistance.source_kind === "maximum" ? "rds_on_maximum" : "rds_on_typical", vgs: point.vgs.value, current: point.current.value });
+          assertSamePointIdentity([vgsIdentity, currentIdentity, resistanceIdentity], `facts.rdson_points[${index}]`);
+          identity = resistanceIdentity;
+          assertDcConditionIdentity(identity.condition, `facts.rdson_points[${index}]`);
+          return identity.condition.temperature.value_c;
+        })()
         : legacyMosfetTemperature(facts, `facts.rdson_points[${index}]`, point.vgs, point.current, point.resistance);
       const group = groups.get(temperature) ?? [];
       group.push({ point, identity });

@@ -532,7 +532,7 @@ function normalizeMosfetCurve(curve, curveIndex, context) {
       evidence_identity: {
         evidence_id: identityHash("sha256", evidenceInput), cohort_id: cohortId, role: "digitized_typical_curve",
         condition_id: conditionIdentity.condition_id, citation_id: citationIdentityValue.citation_id,
-        curve_id: curveId,
+        curve_id: curveId, point_index: point.point_index,
       },
     };
   });
@@ -564,7 +564,7 @@ function normalizeMosfetExtractionForFit(part, extraction) {
   if (Object.keys(threshold).length) {
     const identities = Object.values(threshold);
     if (!identities.slice(1).every((item) => sameIdentity(identities[0], item))) throw new Error("MOSFET F2 threshold fields do not share one condition and citation cohort");
-    for (const [key, validated] of Object.entries(threshold)) specs[key] = { ...validated.evidence, condition_identity: validated.condition_identity, citation_identity: validated.citation_identity, evidence_identity: validated.evidence_identity };
+    for (const [key, validated] of Object.entries(threshold)) specs[key] = { ...magnitudeQuantity(validated.evidence), condition_identity: validated.condition_identity, citation_identity: validated.citation_identity, evidence_identity: validated.evidence_identity };
   }
   const rdson = citedRdsonEvidence(specs, context);
   const accepted = new Map([...rdson.typical, ...rdson.maximum].map((item) => [item.index, item]));
@@ -573,7 +573,7 @@ function normalizeMosfetExtractionForFit(part, extraction) {
     const validated = accepted.get(index);
     if (!validated) throw new Error(`MOSFET F2 RDS(on) point ${index + 1} lacks a supported evidence role`);
     return Object.fromEntries([["vgs", 0], ["current", 1], ["resistance", 2]].map(([key, fieldIndex]) => [key, {
-      ...point[key], condition_identity: validated.condition_identity,
+      ...magnitudeQuantity(point[key]), condition_identity: validated.condition_identity,
       citation_identity: validated.citation_identities[fieldIndex], evidence_identity: validated.evidence_identities[fieldIndex],
     }]));
   });
@@ -1100,6 +1100,7 @@ function canonicalCuratedCurve(curve, characteristic, sourceSha256) {
       citation_id: citation.citation_id,
       cohort_id: cohortId,
       curve_id: curveId,
+      point_index: point.point_index,
       evidence_id: identityHash("sha256", { characteristic, role: "digitized_typical_curve", ...point, condition_id: condition.condition_id, citation_id: citation.citation_id, cohort_id: cohortId, curve_id: curveId }),
     } })),
   };
@@ -1409,8 +1410,9 @@ function bulkFactoryFacts(part, extraction, fit, identity, source) {
     },
   }));
   const threshold = acceptedThresholdFacts(factSpecs, fit, part, extraction);
-  const transferCurves = (fit.evidence_curves ?? []).filter((curve) => curve.characteristic === "transfer_current");
-  const outputCurves = (fit.evidence_curves ?? []).filter((curve) => curve.characteristic === "output_current");
+  const contractCurve = (curve) => Object.fromEntries(Object.entries(curve).filter(([key]) => !["name", "page_reference", "test_conditions"].includes(key)));
+  const transferCurves = (fit.evidence_curves ?? []).filter((curve) => curve.characteristic === "transfer_current").map(contractCurve);
+  const outputCurves = (fit.evidence_curves ?? []).filter((curve) => curve.characteristic === "output_current").map(contractCurve);
   return {
     ...common,
     evidence_contract_version: "1.0.0",

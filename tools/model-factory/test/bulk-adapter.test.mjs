@@ -52,6 +52,42 @@ function typicalMosfetExtraction(polarity = "p") {
   } };
 }
 
+function curveBackedMosfetExtraction(polarity) {
+  const sign = polarity === "p" ? -1 : 1;
+  const thresholdConditions = `VDS = VGS, ID = ${sign * 250} µA, TJ = 25 °C; test mode = DC`;
+  const rdsonConditions = `VGS = ${sign * 4.5} V, ID = ${sign * 2} A, TJ = 25 °C; test mode = DC`;
+  return {
+    schema_version: "1.0.0", mpn: `FIXTURE-${polarity.toUpperCase()}F2`, manufacturer: "Fixture Semi", family: "mosfet",
+    datasheet_identity: { title: `Fixture ${polarity.toUpperCase()}F2`, revision: "A", pages_examined: ["p. 2", "p. 4"] },
+    usable_curves: true,
+    curves: [{
+      name: "Figure 4 transfer curve 25 C typical",
+      x_axis: { quantity: "gate-source voltage magnitude", unit: "V", scale: "linear" },
+      y_axis: { quantity: "drain current magnitude", unit: "A", scale: "linear" },
+      test_conditions: `VDS = ${sign * 10} V, TJ = 25 °C; test mode = DC`,
+      page_reference: "p. 4, Figure 4, curve 25 C typical",
+      points: [
+        { x: 2, y: 0.24947561191452294 }, { x: 2.5, y: 0.9541553189214618 },
+        { x: 3, y: 2.062867136930862 }, { x: 3.5, y: 3.530660490174647 },
+        { x: 4, y: 5.320235612695495 },
+      ],
+    }],
+    specs: {
+      polarity,
+      threshold_min: { value: sign * 1, unit: "V", conditions: thresholdConditions, page_reference: "p. 2, Electrical Characteristics table", source_kind: "minimum" },
+      threshold_typ: { value: sign * 1.5, unit: "V", conditions: thresholdConditions, page_reference: "p. 2, Electrical Characteristics table", source_kind: "typical" },
+      threshold_max: { value: sign * 2, unit: "V", conditions: thresholdConditions, page_reference: "p. 2, Electrical Characteristics table", source_kind: "maximum" },
+      rdson_points: [{
+        vgs: { value: sign * 4.5, unit: "V", conditions: rdsonConditions, page_reference: "p. 2, Electrical Characteristics table", source_kind: "typical" },
+        current: { value: sign * 2, unit: "A", conditions: rdsonConditions, page_reference: "p. 2, Electrical Characteristics table", source_kind: "typical" },
+        resistance: { value: 0.24609678127274964, unit: "ohm", conditions: rdsonConditions, page_reference: "p. 2, Electrical Characteristics table", source_kind: "typical" },
+      }],
+      ciss: quantity(50e-12, "F"), coss: quantity(20e-12, "F"), crss: quantity(5e-12, "F"), breakdown_voltage: quantity(30, "V"), body_diode: null,
+    },
+    extraction_notes: [], omission_reason: null,
+  };
+}
+
 function passThroughConstraintRunner(payload) {
   const rdson = payload.seed.rdson;
   return {
@@ -199,6 +235,37 @@ test("bench temperature pinning preserves an exact non-25 C directive", () => {
     assert.equal(text.match(/^\.temp 25$/gm)?.length ?? 0, 0);
   } finally {
     fs.rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("native curve-backed NMOS and PMOS stage end to end with complete point identities", { timeout: 600_000 }, () => {
+  for (const polarity of ["n", "p"]) {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), `factory-${polarity}mos-f2-stage-`));
+    try {
+      const pdf = path.join(root, "datasheet.pdf");
+      fs.writeFileSync(pdf, "%PDF-1.7\nfixture\n");
+      const extractionPath = path.join(root, "extraction.json");
+      fs.writeFileSync(extractionPath, JSON.stringify(curveBackedMosfetExtraction(polarity)));
+      const manifestPath = path.join(root, "batch.json");
+      const base = mosfetPart(pdf);
+      fs.writeFileSync(manifestPath, JSON.stringify({ schema_version: "1.0.0", kind: "opencircuit-conveyor-batch", parts: [{
+        ...base, mpn: `FIXTURE-${polarity.toUpperCase()}F2`, subcategory: polarity === "p" ? "P-Channel MOSFET" : "N-Channel MOSFET", extraction_path: extractionPath,
+      }] }));
+      const [result] = runBulkManifest(manifestPath, path.join(root, "staging"), { libraryRoot: path.join(root, "empty-library") });
+      assert.equal(result.status, "staged", JSON.stringify(result));
+      assert.equal(result.fidelity, "F2");
+      assert.deepEqual(validatePackage(result.package_path).errors, []);
+      const facts = JSON.parse(fs.readFileSync(path.join(result.package_path, "facts.json"), "utf8"));
+      assert.ok(facts.curves[0].points.every((point) => point.evidence_identity.point_index === point.point_index));
+      const model = fs.readFileSync(path.join(result.package_path, "model.cir"), "utf8");
+      if (polarity === "p") {
+        assert.match(model, /VDMOS\(\s*pchan VTO=-/);
+        fs.writeFileSync(path.join(result.package_path, "model.cir"), model.replace(/VTO=-/, "VTO="));
+        assert.ok(validatePackage(result.package_path).errors.some((error) => error.includes("PMOS VTO must be negative")));
+      } else assert.match(model, /VDMOS\(\s*VTO=\+?/);
+    } finally {
+      fs.rmSync(root, { recursive: true, force: true });
+    }
   }
 });
 

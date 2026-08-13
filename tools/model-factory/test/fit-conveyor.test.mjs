@@ -103,7 +103,7 @@ function canonicalCurve(characteristic, points, condition, citation, axes = { x:
     citation_identity: citation, curve_id,
     points: normalized.map((point) => ({ ...point, evidence_identity: {
       role: "digitized_typical_curve", condition_id: condition.condition_id, citation_id: citation.citation_id,
-      cohort_id, curve_id, evidence_id: hash({ characteristic, role: "digitized_typical_curve", ...point,
+      cohort_id, curve_id, point_index: point.point_index, evidence_id: hash({ characteristic, role: "digitized_typical_curve", ...point,
         condition_id: condition.condition_id, citation_id: citation.citation_id, cohort_id, curve_id }),
     } })),
   };

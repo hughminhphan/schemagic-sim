@@ -61,6 +61,29 @@ test("generate postcondition accepts emitted fitted parameters", () => {
   ));
 });
 
+test("generate postcondition enforces negative PMOS VTO magnitude and preserves NMOS equality", () => {
+  assert.doesNotThrow(() => assertEmittedParametersMatchFitted(
+    ".model DUT VDMOS(pchan VTO=-2.1 KP=1)\n",
+    { parameters: { VTO: 2.1, KP: 1 } },
+    "pmos"
+  ));
+  assert.throws(() => assertEmittedParametersMatchFitted(
+    ".model DUT VDMOS(pchan VTO=2.1 KP=1)\n",
+    { parameters: { VTO: 2.1, KP: 1 } },
+    "pmos"
+  ), /expected a negative threshold/);
+  assert.throws(() => assertEmittedParametersMatchFitted(
+    ".model DUT VDMOS(pchan VTO=-2.2 KP=1)\n",
+    { parameters: { VTO: 2.1, KP: 1 } },
+    "pmos"
+  ), /emitted magnitude 2.2, fitted 2.1/);
+  assert.doesNotThrow(() => assertEmittedParametersMatchFitted(
+    ".model DUT VDMOS(VTO=2.1 KP=1)\n",
+    { parameters: { VTO: 2.1, KP: 1 } },
+    "nmos"
+  ));
+});
+
 test("generate postcondition rejects stale parameter cards", () => {
   assert.throws(() => assertEmittedParametersMatchFitted(
     ".model DUT NPN(IS=1e-14 BF=2000)\n",
@@ -249,6 +272,12 @@ test("conveyor MOSFET package contract rejects hidden critical defaults and hybr
   const alteredRef = structuredClone(ctx);
   alteredRef.part.component.supported_operating_region.numeric_bounds[0].evidence_refs[0].evidence_id = `sha256:${"f".repeat(64)}`;
   assert.throws(() => assertMosfetConditionIdentityContract(alteredRef, facts, { parameters: {}, held_defaults: [] }), /does not resolve to package evidence/);
+
+  const widened = structuredClone(ctx);
+  const widenedBound = widened.part.component.supported_operating_region.numeric_bounds[0];
+  widenedBound.values = [9, 10, 11];
+  widenedBound.bound_id = identityHash(Object.fromEntries(Object.entries(widenedBound).filter(([key]) => key !== "bound_id")));
+  assert.throws(() => assertMosfetConditionIdentityContract(widened, facts, { parameters: {}, held_defaults: [] }), /sorted unique referenced values/);
 });
 
 test("legacy reviewed MOSFET package generation remains backward-compatible", () => {
