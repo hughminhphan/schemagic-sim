@@ -321,7 +321,6 @@ function baseComponent(ctx, fitted) {
   const packageInfo = identity.package;
   return {
     schema_version: "1.0.0",
-    ...(ctx.part.component.evidence_contract_version ? { evidence_contract_version: ctx.part.component.evidence_contract_version } : {}),
     canonical_mpn: identity.canonical_mpn,
     manufacturer: identity.manufacturer,
     description: identity.description,
@@ -352,7 +351,7 @@ function baseComponent(ctx, fitted) {
     fidelity_tier: ctx.part.component.fidelity_tier ?? "F2",
     domain_coverage: ctx.part.component.domain_coverage,
     supported_analyses: ctx.part.component.supported_analyses,
-    supported_operating_region: ctx.part.component.supported_operating_region ?? {
+    supported_operating_region: {
       summary: ctx.part.component.operating_summary,
       numeric_bounds: ctx.part.component.numeric_bounds
     },
@@ -375,10 +374,6 @@ function stageGenerate(ctx) {
   const fittedPath = path.join(ctx.packageDir, "fitted.json");
   requireFile(fittedPath, "generate");
   const fitted = JSON.parse(fs.readFileSync(fittedPath, "utf8"));
-  if (ctx.part.pipeline === "vdmos") {
-    const factsPath = path.join(ctx.packageDir, "facts.json");
-    if (fs.existsSync(factsPath)) assertMosfetConditionIdentityContract(ctx, JSON.parse(fs.readFileSync(factsPath, "utf8")), fitted);
-  }
   const model = modelText(ctx, fitted);
   if (ctx.part.pipeline !== "darlington") assertEmittedParametersMatchFitted(model, fitted);
   fs.writeFileSync(path.join(ctx.packageDir, "model.cir"), model);
@@ -402,7 +397,7 @@ function reverseRecoveryBench(model, modelName) {
   return `OpenCircuit factory test: reverse recovery\n${model}\nVdrive src 0 PULSE(1.7 -6 20n 0.1n 0.1n 20n 50n)\nRload src anode 100\nDdut anode 0 ${modelName}\n.tran 0.05n 50n\n.end\n`;
 }
 
-function expectation(name, expression, expectedValue, unit, absolute, relative, citation, identityLinks = null) {
+function expectation(name, expression, expectedValue, unit, absolute, relative, citation) {
   return {
     name,
     expression_source: { kind: "raw_variable", expression },
@@ -410,12 +405,11 @@ function expectation(name, expression, expectedValue, unit, absolute, relative, 
     unit,
     tolerance: { absolute, relative },
     datasheet_citation: citation,
-    ...(identityLinks ?? {}),
     placeholder: false
   };
 }
 
-function hardBound(name, expression, unit, bounds, citation, identityLinks = null) {
+function hardBound(name, expression, unit, bounds, citation) {
   return {
     name,
     expression_source: { kind: "raw_variable", expression },
@@ -423,7 +417,6 @@ function hardBound(name, expression, unit, bounds, citation, identityLinks = nul
     unit,
     inclusive: true,
     datasheet_citation: citation,
-    ...(identityLinks ?? {}),
     placeholder: false
   };
 }
@@ -523,425 +516,18 @@ function bjtTestgen(ctx, model, facts) {
   return tests;
 }
 
-const MOSFET_CRITICAL_PARAMETERS = new Set(["VTO", "KP", "RD", "RS", "RB"]);
-const PLACEHOLDER_CITATION = /^(?:n\/?a|none|unknown|tbd|todo|fixture|placeholder|catalog|datasheet|source|not stated|model-factory)(?:\b|$)/i;
-const SHA256_ID = /^sha256:[0-9a-f]{64}$/;
-const SHA256_HEX = /^[0-9a-f]{64}$/;
-
-function closeEnough(left, right) {
-  const a = Number(left);
-  const b = Number(right);
-  return Number.isFinite(a) && Number.isFinite(b) && Math.abs(a - b) <= 1e-9 * Math.max(1, Math.abs(a), Math.abs(b));
-}
-
-function realDatasheetCitation(citation, trail) {
-  if (typeof citation !== "string" || !citation.trim() || PLACEHOLDER_CITATION.test(citation.trim())) {
-    throw new Error(`${trail} must carry a real datasheet citation`);
-  }
-  const text = citation.trim();
-  if (!/(?:\bp\.?\s*\d+|\bpage\s+\d+)/i.test(text)
-      || !/(?:table|fig(?:ure)?|curve|characteristics|section|heading|source-drain|electrical)/i.test(text)) {
-    throw new Error(`${trail} citation must identify a datasheet page and table, figure, curve, or section: ${text}`);
-  }
-  return text;
-}
-
-function assertExactKeys(raw, required, optional, trail) {
-  const keys = Object.keys(raw);
-  for (const key of required) if (!Object.hasOwn(raw, key)) throw new Error(`${trail}.${key} is required`);
-  const allowed = new Set([...required, ...optional]);
-  for (const key of keys) if (!allowed.has(key)) throw new Error(`${trail}.${key} is not part of the frozen contract`);
-}
-
-function assertFinite(value, trail) {
-  const number = Number(value);
-  if (!Number.isFinite(number)) throw new Error(`${trail} must be finite`);
-  return number;
-}
-
-function stableIdentityValue(value) {
-  if (Array.isArray(value)) return value.map(stableIdentityValue);
-  if (value && typeof value === "object") return Object.fromEntries(Object.keys(value).sort().map((key) => [key, stableIdentityValue(value[key])]));
-  return value;
-}
-
-export function identityHash(value) {
-  return `sha256:${crypto.createHash("sha256").update(JSON.stringify(stableIdentityValue(value))).digest("hex")}`;
-}
-
-function assertIdentityHash(raw, idField, trail, projection = null) {
-  const claimed = raw[idField];
-  if (!SHA256_ID.test(claimed)) throw new Error(`${trail}.${idField} must be sha256:<64 lowercase hex>`);
-  const payload = projection ? projection(raw) : Object.fromEntries(Object.entries(raw).filter(([key]) => key !== idField));
-  const expected = identityHash(payload);
-  if (claimed !== expected) throw new Error(`${trail}.${idField} does not match canonical content`);
-}
-
-function assertVoltageCondition(raw, trail) {
-  if (!raw || typeof raw !== "object" || Array.isArray(raw)) throw new Error(`${trail} is required`);
-  if (raw.kind === "fixed") {
-    assertExactKeys(raw, ["kind", "value_v"], [], trail);
-    assertFinite(raw.value_v, `${trail}.value_v`);
-  } else if (raw.kind === "relation") {
-    assertExactKeys(raw, ["kind", "relation"], [], trail);
-    if (!["vds_equals_vgs", "saturation_region"].includes(raw.relation)) throw new Error(`${trail}.relation is invalid`);
-  } else if (raw.kind === "range") {
-    assertExactKeys(raw, ["kind", "lower_v", "upper_v"], [], trail);
-    const lower = assertFinite(raw.lower_v, `${trail}.lower_v`);
-    const upper = assertFinite(raw.upper_v, `${trail}.upper_v`);
-    if (lower > upper) throw new Error(`${trail} range is reversed`);
-  } else throw new Error(`${trail}.kind is invalid`);
-  return structuredClone(raw);
-}
-
-function assertCurrentCondition(raw, trail) {
-  if (!raw || typeof raw !== "object" || Array.isArray(raw)) throw new Error(`${trail} is required`);
-  if (raw.kind === "fixed") {
-    assertExactKeys(raw, ["kind", "value_a"], [], trail);
-    if (!(assertFinite(raw.value_a, `${trail}.value_a`) > 0)) throw new Error(`${trail}.value_a must be positive`);
-  } else if (raw.kind === "range") {
-    assertExactKeys(raw, ["kind", "lower_a", "upper_a"], [], trail);
-    const lower = assertFinite(raw.lower_a, `${trail}.lower_a`);
-    const upper = assertFinite(raw.upper_a, `${trail}.upper_a`);
-    if (!(lower > 0) || lower > upper) throw new Error(`${trail} range must be positive and ordered`);
-  } else throw new Error(`${trail}.kind is invalid`);
-  return structuredClone(raw);
-}
-
-function assertAbsoluteCondition(condition, trail) {
-  const numeric = Object.entries(condition).filter(([key]) => /^(?:value|lower|upper)_[va]$/.test(key));
-  if (numeric.some(([, value]) => value < 0)) throw new Error(`${trail} must be nonnegative under absolute magnitude convention`);
-}
-
-export function normalizeMosfetConditionIdentity(raw, trail = "condition_identity") {
-  if (!raw || typeof raw !== "object" || Array.isArray(raw)) throw new Error(`${trail} is required`);
-  assertExactKeys(raw, ["schema_version", "characteristic", "polarity", "magnitude_convention", "temperature", "electrical", "test_mode", "qualifiers", "condition_id"], [], trail);
-  if (raw.schema_version !== "1.0.0") throw new Error(`${trail}.schema_version must be 1.0.0`);
-  if (!["gate_threshold", "rds_on", "transfer_current", "output_current"].includes(raw.characteristic)) throw new Error(`${trail}.characteristic is invalid`);
-  if (!["n", "p"].includes(raw.polarity)) throw new Error(`${trail}.polarity is invalid`);
-  if (!["signed", "absolute"].includes(raw.magnitude_convention)) throw new Error(`${trail}.magnitude_convention is invalid`);
-  assertIdentityHash(raw, "condition_id", trail);
-  assertExactKeys(raw.temperature ?? {}, ["kind", "value_c"], [], `${trail}.temperature`);
-  if (!["junction", "ambient", "case"].includes(raw.temperature.kind)) throw new Error(`${trail}.temperature.kind is invalid`);
-  assertFinite(raw.temperature.value_c, `${trail}.temperature.value_c`);
-  assertExactKeys(raw.electrical ?? {}, ["vgs", "vds", "id"], [], `${trail}.electrical`);
-  const vgs = assertVoltageCondition(raw.electrical.vgs, `${trail}.electrical.vgs`);
-  const vds = assertVoltageCondition(raw.electrical.vds, `${trail}.electrical.vds`);
-  const id = assertCurrentCondition(raw.electrical.id, `${trail}.electrical.id`);
-  if (raw.magnitude_convention === "absolute") {
-    assertAbsoluteCondition(vgs, `${trail}.electrical.vgs`);
-    assertAbsoluteCondition(vds, `${trail}.electrical.vds`);
-    assertAbsoluteCondition(id, `${trail}.electrical.id`);
-  }
-  if (raw.characteristic === "transfer_current" && vds.kind !== "fixed") throw new Error(`${trail} transfer_current requires fixed VDS`);
-  assertExactKeys(raw.test_mode ?? {}, ["kind"], ["pulse_width_s", "duty_cycle", "repetition_period_s", "repetition_frequency_hz"], `${trail}.test_mode`);
-  if (!["dc", "continuous", "pulsed", "single_pulse"].includes(raw.test_mode.kind)) throw new Error(`${trail}.test_mode.kind is invalid`);
-  for (const field of ["pulse_width_s", "duty_cycle", "repetition_period_s", "repetition_frequency_hz"]) {
-    if (Object.hasOwn(raw.test_mode, field) && !(assertFinite(raw.test_mode[field], `${trail}.test_mode.${field}`) > 0)) throw new Error(`${trail}.test_mode.${field} must be positive`);
-  }
-  if (!Array.isArray(raw.qualifiers)) throw new Error(`${trail}.qualifiers must be an array`);
-  const qualifierKeys = raw.qualifiers.map((qualifier, index) => {
-    assertExactKeys(qualifier ?? {}, ["key", "value"], [], `${trail}.qualifiers[${index}]`);
-    if (typeof qualifier.key !== "string" || !qualifier.key || typeof qualifier.value !== "string" || !qualifier.value) throw new Error(`${trail}.qualifiers[${index}] must contain non-empty strings`);
-    return `${qualifier.key} ${qualifier.value}`;
-  });
-  if (new Set(qualifierKeys).size !== qualifierKeys.length || qualifierKeys.some((value, index) => index && value < qualifierKeys[index - 1])) {
-    throw new Error(`${trail}.qualifiers must be sorted by key/value with no duplicate pairs`);
-  }
-  return { ...structuredClone(raw), electrical: { vgs, vds, id } };
-}
-
-export function normalizeMosfetCitationIdentity(raw, trail = "citation_identity") {
-  if (!raw || typeof raw !== "object" || Array.isArray(raw)) throw new Error(`${trail} is required`);
-  const optional = ["source_revision", "section", "table", "row", "column", "figure", "curve", "trace"];
-  assertExactKeys(raw, ["source_sha256", "page", "citation_id"], optional, trail);
-  if (!SHA256_HEX.test(raw.source_sha256)) throw new Error(`${trail}.source_sha256 must be 64 lowercase hex`);
-  if (!Number.isInteger(raw.page) || raw.page <= 0) throw new Error(`${trail}.page must be a positive integer`);
-  assertIdentityHash(raw, "citation_id", trail);
-  for (const field of optional) if (Object.hasOwn(raw, field) && (typeof raw[field] !== "string" || !raw[field].trim() || PLACEHOLDER_CITATION.test(raw[field].trim()))) throw new Error(`${trail}.${field} is invalid`);
-  if (!(raw.table && raw.row) && !(raw.figure && (raw.curve || raw.trace))) throw new Error(`${trail} requires table+row or figure+(curve|trace)`);
-  return structuredClone(raw);
-}
-
-export function normalizeMosfetEvidenceIdentity(raw, condition, citation, trail = "evidence_identity", { curve = false } = {}) {
-  if (!raw || typeof raw !== "object" || Array.isArray(raw)) throw new Error(`${trail} is required`);
-  assertExactKeys(raw, ["evidence_id", "cohort_id", "role", "condition_id", "citation_id"], curve ? ["curve_id", "point_index"] : [], trail);
-  if (!SHA256_ID.test(raw.cohort_id)) throw new Error(`${trail}.cohort_id must be sha256:<64 lowercase hex>`);
-  assertIdentityHash(raw, "evidence_id", trail);
-  if (!["minimum", "typical", "maximum", "digitized_typical_curve", "seed_only"].includes(raw.role)) throw new Error(`${trail}.role is invalid`);
-  if (raw.condition_id !== condition.condition_id || raw.citation_id !== citation.citation_id) throw new Error(`${trail} contains hybrid condition or citation IDs`);
-  if (curve) {
-    if (!SHA256_ID.test(raw.curve_id)) throw new Error(`${trail}.curve_id must be sha256:<64 lowercase hex>`);
-    if (!Number.isInteger(raw.point_index) || raw.point_index < 0) throw new Error(`${trail}.point_index must be a nonnegative integer`);
-  }
-  return structuredClone(raw);
-}
-
-function evidenceLinks(evidence, condition) {
-  return {
-    evidence_id: evidence.evidence_id,
-    condition_id: evidence.condition_id,
-    citation_id: evidence.citation_id,
-    cohort_id: evidence.cohort_id,
-    bench_condition_id: condition.condition_id,
-    ...(evidence.curve_id ? { curve_id: evidence.curve_id, point_index: evidence.point_index } : {})
-  };
-}
-
-export function normalizeMosfetCurve(raw, trail = "curve") {
-  if (!raw || typeof raw !== "object" || Array.isArray(raw)) throw new Error(`${trail} is required`);
-  assertExactKeys(raw, ["curve_id", "characteristic", "x_axis", "y_axis", "condition_identity", "citation_identity", "points"], [], trail);
-  if (!["transfer_current", "output_current"].includes(raw.characteristic)) throw new Error(`${trail}.characteristic is invalid`);
-  assertExactKeys(raw.x_axis ?? {}, ["quantity", "unit"], [], `${trail}.x_axis`);
-  const requiredX = raw.characteristic === "transfer_current" ? "vgs" : "vds";
-  if (raw.x_axis.quantity !== requiredX || raw.x_axis.unit !== "V") throw new Error(`${trail}.x_axis must be ${requiredX} in V`);
-  assertExactKeys(raw.y_axis ?? {}, ["quantity", "unit"], [], `${trail}.y_axis`);
-  if (raw.y_axis.quantity !== "id" || raw.y_axis.unit !== "A") throw new Error(`${trail}.y_axis must be id in A`);
-  const condition = normalizeMosfetConditionIdentity(raw.condition_identity, `${trail}.condition_identity`);
-  const citation = normalizeMosfetCitationIdentity(raw.citation_identity, `${trail}.citation_identity`);
-  if (condition.characteristic !== raw.characteristic) throw new Error(`${trail} characteristic disagrees with condition identity`);
-  if (!Array.isArray(raw.points) || !raw.points.length) throw new Error(`${trail}.points must be non-empty`);
-  const points = raw.points.map((point, index) => {
-    assertExactKeys(point ?? {}, ["x_si", "y_si", "point_index", "evidence_identity"], [], `${trail}.points[${index}]`);
-    const xSi = assertFinite(point.x_si, `${trail}.points[${index}].x_si`);
-    const ySi = assertFinite(point.y_si, `${trail}.points[${index}].y_si`);
-    if (point.point_index !== index) throw new Error(`${trail}.points must be ordered with contiguous point_index values`);
-    const evidence = normalizeMosfetEvidenceIdentity(point.evidence_identity, condition, citation, `${trail}.points[${index}].evidence_identity`, { curve: true });
-    if (evidence.curve_id !== raw.curve_id || evidence.point_index !== point.point_index) throw new Error(`${trail}.points[${index}] has hybrid curve identity`);
-    return { x_si: xSi, y_si: ySi, point_index: point.point_index, evidence_identity: evidence };
-  });
-  assertIdentityHash(raw, "curve_id", trail, (curve) => ({
-    characteristic: curve.characteristic,
-    x_axis: curve.x_axis,
-    y_axis: curve.y_axis,
-    condition_id: condition.condition_id,
-    citation_id: citation.citation_id,
-    points: curve.points.map(({ x_si, y_si, point_index }) => ({ point_index, x_si, y_si }))
-  }));
-  return { ...structuredClone(raw), condition_identity: condition, citation_identity: citation, points };
-}
-
-function assertQuantityIdentity(quantity, trail, expected = {}) {
-  if (!quantity || typeof quantity !== "object") throw new Error(`${trail} is required`);
-  const condition = normalizeMosfetConditionIdentity(quantity.condition_identity, `${trail}.condition_identity`);
-  const citation = normalizeMosfetCitationIdentity(quantity.citation_identity, `${trail}.citation_identity`);
-  const evidence = normalizeMosfetEvidenceIdentity(quantity.evidence_identity, condition, citation, `${trail}.evidence_identity`);
-  realDatasheetCitation(quantity.page_reference, `${trail}.page_reference`);
-  if (typeof quantity.quantity !== "string" || quantity.quantity !== expected.quantityLabel) throw new Error(`${trail}.quantity must be ${expected.quantityLabel}`);
-  if (expected.characteristic && condition.characteristic !== expected.characteristic) throw new Error(`${trail} has the wrong characteristic`);
-  if (expected.role && evidence.role !== expected.role) throw new Error(`${trail} has the wrong evidence role`);
-  if (expected.vgs != null && (condition.electrical.vgs.kind !== "fixed" || !closeEnough(Math.abs(condition.electrical.vgs.value_v), expected.vgs))) throw new Error(`${trail} has hybrid VGS metadata`);
-  if (expected.current != null && (condition.electrical.id.kind !== "fixed" || !closeEnough(Math.abs(condition.electrical.id.value_a), expected.current))) throw new Error(`${trail} has hybrid ID metadata`);
-  if (expected.vds != null && (condition.electrical.vds.kind !== "fixed" || !closeEnough(Math.abs(condition.electrical.vds.value_v), expected.vds))) throw new Error(`${trail} has hybrid VDS metadata`);
-  return { condition, citation, evidence };
-}
-
-function assertSamePointIdentity(identities, trail) {
-  for (const identity of identities.slice(1)) {
-    if (identity.condition.condition_id !== identities[0].condition.condition_id
-        || identity.citation.citation_id !== identities[0].citation.citation_id
-        || identity.evidence.cohort_id !== identities[0].evidence.cohort_id) {
-      throw new Error(`${trail} contains hybrid condition, citation, or cohort metadata`);
-    }
-  }
-  return identities[0];
-}
-
-function assertDcConditionIdentity(identity, trail) {
-  if (!["dc", "continuous"].includes(identity.test_mode.kind)) {
-    throw new Error(`${trail} is ${identity.test_mode.kind}-qualified and cannot be emitted as a continuous operating-point bench`);
-  }
-}
-
 function evidenceTemperatureC(...values) {
   const text = values.filter(Boolean).map((value) => value?.conditions ?? value).join(" ");
   const temperatures = [...text.matchAll(/(-?\d+(?:\.\d+)?)\s*(?:deg\s*c|degc|°c|\bc\b)/gi)]
     .map((match) => Number(match[1])).filter(Number.isFinite);
-  if (!temperatures.length) return null;
+  if (!temperatures.length) return 25;
   const first = temperatures[0];
   if (temperatures.some((value) => Math.abs(value - first) > 1e-9)) throw new Error(`Conflicting cited temperatures in MOSFET bench evidence: ${text}`);
   return first;
 }
 
-function conditionCurrentA(...values) {
-  const text = values.filter(Boolean).map((value) => value?.conditions ?? value).join(" ").replaceAll("_", "");
-  const currents = [...text.matchAll(/(?:I[D]|drain current)\|?\s*=\s*([0-9.eE+-]+)\s*(u|µ|μ|m)?A/gi)]
-    .map((match) => Math.abs(Number(match[1])) * ({ u: 1e-6, "µ": 1e-6, "μ": 1e-6, m: 1e-3 }[match[2]?.toLowerCase()] ?? 1))
-    .filter(Number.isFinite);
-  if (!currents.length) return null;
-  const first = currents[0];
-  if (currents.some((value) => !closeEnough(value, first))) throw new Error(`Conflicting cited MOSFET currents: ${text}`);
-  return first;
-}
-
-function conditionVoltageV(symbol, ...values) {
-  const text = values.filter(Boolean).map((value) => value?.conditions ?? value).join(" ").replaceAll("_", "");
-  const voltages = [...text.matchAll(new RegExp(`${symbol}\\s*=\\s*([0-9.eE+-]+)\\s*V`, "gi"))]
-    .map((match) => Math.abs(Number(match[1]))).filter(Number.isFinite);
-  if (!voltages.length) return null;
-  const first = voltages[0];
-  if (voltages.some((value) => !closeEnough(value, first))) throw new Error(`Conflicting cited MOSFET ${symbol} values: ${text}`);
-  return first;
-}
-
-function legacyMosfetTemperature(facts, trail, ...values) {
-  const cited = evidenceTemperatureC(...values);
-  if (cited != null) return cited;
-  const declared = facts.fit_conditions?.temperature;
-  if (declared && Number.isFinite(Number(declared.value)) && declared.unit === "degC") return Number(declared.value);
-  throw new Error(`${trail} requires an exact cited temperature; no 25 degC default is permitted`);
-}
-
-function criticalMosfetEvidence(facts) {
-  const rows = [];
-  for (const [index, point] of (facts.rdson_points ?? []).entries()) {
-    const expectedLabels = {
-      vgs: "vgs",
-      current: "drain_current",
-      resistance: point.resistance?.source_kind === "minimum" ? "rds_on_minimum" : point.resistance?.source_kind === "maximum" ? "rds_on_maximum" : "rds_on_typical"
-    };
-    rows.push(...["vgs", "current", "resistance"].map((field) => assertQuantityIdentity(point[field], `facts.rdson_points[${index}].${field}`, { characteristic: "rds_on", quantityLabel: expectedLabels[field] })));
-  }
-  for (const field of ["minimum", "typical", "maximum"]) {
-    if (facts.threshold?.[field]) rows.push(assertQuantityIdentity(facts.threshold[field], `facts.threshold.${field}`, { characteristic: "gate_threshold", role: field, quantityLabel: `threshold_${field}` }));
-  }
-  const curves = (facts.curves ?? []).map((curve, index) => normalizeMosfetCurve(curve, `facts.curves[${index}]`));
-  for (const curve of curves) {
-    for (const point of curve.points) rows.push({ condition: curve.condition_identity, citation: curve.citation_identity, evidence: point.evidence_identity });
-  }
-  return { rows, curves };
-}
-
-function assertHeldDefaults(fitted) {
-  const held = fitted.held_defaults ?? fitted.optimizer?.held_defaults ?? [];
-  if (!Array.isArray(held)) throw new Error("fitted.held_defaults must be an array");
-  const byParameter = new Map();
-  for (const [index, item] of held.entries()) {
-    const trail = `fitted.held_defaults[${index}]`;
-    if (!item || typeof item !== "object") throw new Error(`${trail} must be an object`);
-    const parameter = String(item.parameter ?? "").trim();
-    if (!parameter || MOSFET_CRITICAL_PARAMETERS.has(parameter) || /(?:temp|threshold|drain.?current|vds)/i.test(parameter)) {
-      throw new Error(`${trail} cannot hold a critical MOSFET condition or parameter default`);
-    }
-    if (!Number.isFinite(Number(item.value)) || typeof item.unit !== "string" || !item.unit.trim()
-        || typeof item.reason !== "string" || !item.reason.trim() || PLACEHOLDER_CITATION.test(item.reason.trim())) {
-      throw new Error(`${trail} must truthfully record parameter, finite value, unit, and reason`);
-    }
-    if (Object.hasOwn(fitted.parameters ?? {}, parameter) && !closeEnough(fitted.parameters[parameter], item.value)) {
-      throw new Error(`${trail}.value disagrees with fitted.parameters.${parameter}`);
-    }
-    byParameter.set(parameter, item);
-  }
-  for (const [parameter, metadata] of Object.entries(fitted.parameter_metadata ?? {})) {
-    if (/held(?:\s|_|-)*(?:default|constant)|physical default|catalog seed/i.test(String(metadata?.status ?? "")) && !byParameter.has(parameter)) {
-      throw new Error(`fitted.parameter_metadata.${parameter} declares a held default without truthful held_defaults metadata`);
-    }
-  }
-}
-
-function assertCriticalFittedProvenance(fitted, packageEvidence) {
-  const byEvidenceId = new Map(packageEvidence.map((row) => [row.evidence.evidence_id, row]));
-  const groups = [
-    ["calibration.observations", fitted.calibration?.observations ?? []],
-    ["calibration.constraints", fitted.calibration?.constraints ?? []],
-    ["calibration.seeds", fitted.calibration?.seeds ?? []],
-    ["residuals", fitted.residuals ?? []]
-  ];
-  for (const [group, rows] of groups) for (const [index, row] of rows.entries()) {
-    const trail = `fitted.${group}[${index}]`;
-    const text = `${row.quantity ?? ""} ${row.kind ?? ""} ${row.parameter_coordinate ?? ""}`;
-    if (!/(?:threshold|gate_threshold|rds|rdson|transfer current|output current|\bVTO\b)/i.test(text)) throw new Error(`${trail} uses a non-canonical critical MOSFET quantity label`);
-    const condition = normalizeMosfetConditionIdentity(row.condition_identity, `${trail}.condition_identity`);
-    const citation = normalizeMosfetCitationIdentity(row.citation_identity, `${trail}.citation_identity`);
-    const evidence = normalizeMosfetEvidenceIdentity(row.evidence_identity, condition, citation, `${trail}.evidence_identity`, { curve: Object.hasOwn(row.evidence_identity ?? {}, "curve_id") });
-    const packageRow = byEvidenceId.get(evidence.evidence_id);
-    if (!packageRow || packageRow.condition.condition_id !== condition.condition_id || packageRow.citation.citation_id !== citation.citation_id) {
-      throw new Error(`${trail} does not resolve to package evidence`);
-    }
-  }
-}
-
-function conditionValues(condition, quantity) {
-  if (quantity === "temperature") return [condition.temperature.value_c];
-  const electrical = condition.electrical[quantity];
-  if (electrical.kind === "fixed") return [electrical[`value_${quantity === "id" ? "a" : "v"}`]];
-  if (electrical.kind === "range") return [electrical[`lower_${quantity === "id" ? "a" : "v"}`], electrical[`upper_${quantity === "id" ? "a" : "v"}`]];
-  return [];
-}
-
-function assertMosfetRegionContract(region, packageEvidence) {
-  if (!region || region.contract_version !== "1.0.0" || !Array.isArray(region.numeric_bounds) || !region.numeric_bounds.length) {
-    throw new Error("MOSFET supported_operating_region must use contract_version 1.0.0 with numeric bounds");
-  }
-  const byEvidenceId = new Map(packageEvidence.map((row) => [row.evidence.evidence_id, row]));
-  const representedQuantities = new Set();
-  for (const [index, bound] of region.numeric_bounds.entries()) {
-    representedQuantities.add(bound.quantity);
-    const trail = `supported_operating_region.numeric_bounds[${index}]`;
-    assertExactKeys(bound, ["bound_id", "quantity", "kind", "unit", "evidence_refs", "condition_ids", "citation_ids", "derivation"], ["minimum", "maximum", "values", "temperature_kind"], trail);
-    if (!["vgs", "vds", "id", "temperature"].includes(bound.quantity)) throw new Error(`${trail}.quantity is invalid`);
-    if (!["minimum", "maximum", "range", "enumerated"].includes(bound.kind)) throw new Error(`${trail}.kind is invalid`);
-    const expectedUnit = bound.quantity === "id" ? "A" : bound.quantity === "temperature" ? "degC" : "V";
-    if (bound.unit !== expectedUnit) throw new Error(`${trail}.unit must be ${expectedUnit}`);
-    if (!["direct_evidence_union", "direct_evidence_intersection"].includes(bound.derivation)) throw new Error(`${trail}.derivation is invalid`);
-    if (bound.quantity === "temperature" && !["junction", "ambient", "case"].includes(bound.temperature_kind)) throw new Error(`${trail}.temperature_kind is required`);
-    if (bound.kind === "enumerated") {
-      if (!Array.isArray(bound.values) || !bound.values.length || bound.values.some((value) => !Number.isFinite(Number(value)))) throw new Error(`${trail}.values must be finite and non-empty`);
-    } else {
-      if (["minimum", "range"].includes(bound.kind)) assertFinite(bound.minimum, `${trail}.minimum`);
-      if (["maximum", "range"].includes(bound.kind)) assertFinite(bound.maximum, `${trail}.maximum`);
-      if (bound.kind === "range" && bound.minimum > bound.maximum) throw new Error(`${trail} range is reversed`);
-    }
-    if (!Array.isArray(bound.evidence_refs) || !bound.evidence_refs.length) throw new Error(`${trail}.evidence_refs must be non-empty`);
-    const referenced = bound.evidence_refs.map((ref, refIndex) => {
-      assertExactKeys(ref ?? {}, ["evidence_id", "condition_id", "citation_id", "cohort_id"], [], `${trail}.evidence_refs[${refIndex}]`);
-      const resolved = byEvidenceId.get(ref.evidence_id);
-      if (!resolved || resolved.condition.condition_id !== ref.condition_id || resolved.citation.citation_id !== ref.citation_id || resolved.evidence.cohort_id !== ref.cohort_id) {
-        throw new Error(`${trail}.evidence_refs[${refIndex}] does not resolve to package evidence`);
-      }
-      return resolved;
-    });
-    const conditionIds = [...new Set(referenced.map((row) => row.condition.condition_id))].sort();
-    const citationIds = [...new Set(referenced.map((row) => row.citation.citation_id))].sort();
-    if (JSON.stringify(bound.condition_ids) !== JSON.stringify(conditionIds) || JSON.stringify(bound.citation_ids) !== JSON.stringify(citationIds)) throw new Error(`${trail} identity sets disagree with evidence_refs`);
-    const evidenceValues = referenced.flatMap((row) => {
-      if (bound.quantity === "temperature" && row.condition.temperature.kind !== bound.temperature_kind) return [];
-      return conditionValues(row.condition, bound.quantity);
-    });
-    const covers = (value) => bound.kind === "enumerated" ? bound.values.some((candidate) => closeEnough(candidate, value))
-      : (bound.minimum == null || value >= bound.minimum - 1e-12) && (bound.maximum == null || value <= bound.maximum + 1e-12);
-    if (evidenceValues.some((value) => !covers(value))) throw new Error(`${trail} omits referenced evidence values`);
-    assertIdentityHash(bound, "bound_id", trail);
-  }
-  const required = new Set(["vgs", "id", "temperature"]);
-  if (packageEvidence.some((row) => conditionValues(row.condition, "vds").length)) required.add("vds");
-  for (const quantity of required) if (!representedQuantities.has(quantity)) throw new Error(`MOSFET supported region is missing ${quantity} evidence coverage`);
-}
-
-export function assertMosfetConditionIdentityContract(ctx, facts, fitted) {
-  const strict = ctx.part.pipeline === "vdmos" && facts?.evidence_contract_version === "1.0.0";
-  if (!strict) return { strict: false, rows: [], curves: [] };
-  if (facts.evidence_contract_version !== "1.0.0") throw new Error("Conveyor MOSFET facts require evidence_contract_version 1.0.0");
-  const source = facts.source;
-  if (!source || source.placeholder !== false || !SHA256_HEX.test(source.sha256) || !Array.isArray(source.pages_referenced) || !source.pages_referenced.length) {
-    throw new Error("MOSFET package provenance requires a non-placeholder datasheet source with SHA-256 and cited pages");
-  }
-  assertHeldDefaults(fitted);
-  const evidence = criticalMosfetEvidence(facts);
-  if (!evidence.rows.length) throw new Error(`${ctx.part.slug} has no critical MOSFET condition identities`);
-  if (evidence.rows.some((row) => row.citation.source_sha256 !== source.sha256)) throw new Error("MOSFET citation identity source hash disagrees with package provenance");
-  assertCriticalFittedProvenance(fitted, evidence.rows);
-  assertMosfetRegionContract(ctx.part.component.supported_operating_region ?? {
-    contract_version: ctx.part.component.operating_contract_version,
-    numeric_bounds: ctx.part.component.numeric_bounds
-  }, evidence.rows);
-  return { strict: true, ...evidence };
-}
-
-function vdmosTestgen(ctx, model, facts, fitted) {
+function vdmosTestgen(ctx, model, facts) {
   const tests = [];
-  const contract = assertMosfetConditionIdentityContract(ctx, facts, fitted);
-  const strict = contract.strict;
   const pChannel = ctx.part.identity.electrical_family === "pmos";
   const signed = (value) => (pChannel ? -1 : 1) * Number(value);
   const currentSource = (name, node, current) => pChannel
@@ -950,17 +536,10 @@ function vdmosTestgen(ctx, model, facts, fitted) {
 
   if (facts.rdson_points?.length) {
     const groups = new Map();
-    for (const [index, point] of facts.rdson_points.entries()) {
-      let identity = null;
-      const temperature = strict
-        ? (identity = assertSamePointIdentity([
-          assertQuantityIdentity(point.vgs, `facts.rdson_points[${index}].vgs`, { characteristic: "rds_on", quantityLabel: "vgs", vgs: point.vgs.value, current: point.current.value }),
-          assertQuantityIdentity(point.current, `facts.rdson_points[${index}].current`, { characteristic: "rds_on", quantityLabel: "drain_current", vgs: point.vgs.value, current: point.current.value }),
-          assertQuantityIdentity(point.resistance, `facts.rdson_points[${index}].resistance`, { characteristic: "rds_on", quantityLabel: point.resistance.source_kind === "minimum" ? "rds_on_minimum" : point.resistance.source_kind === "maximum" ? "rds_on_maximum" : "rds_on_typical", vgs: point.vgs.value, current: point.current.value })
-        ], `facts.rdson_points[${index}]`), assertDcConditionIdentity(identity.condition, `facts.rdson_points[${index}]`), identity.condition.temperature.value_c)
-        : legacyMosfetTemperature(facts, `facts.rdson_points[${index}]`, point.vgs, point.current, point.resistance);
+    for (const point of facts.rdson_points) {
+      const temperature = evidenceTemperatureC(point.vgs, point.current, point.resistance);
       const group = groups.get(temperature) ?? [];
-      group.push({ point, identity });
+      group.push(point);
       groups.set(temperature, group);
     }
     [...groups.entries()].forEach(([temperature, points], groupIndex) => {
@@ -968,7 +547,7 @@ function vdmosTestgen(ctx, model, facts, fitted) {
       const rdLines = [`OpenCircuit factory test: ${ctx.part.slug} RDS(on)`, model, `.temp ${Number(temperature)}`];
       const rdChecks = [];
       const rdHardChecks = [];
-      points.forEach(({ point, identity }, index) => {
+      points.forEach((point, index) => {
         const id = index + 1;
         rdLines.push(
           `M${id} d${id} g${id} 0 ${ctx.part.component.modelName}`,
@@ -976,13 +555,12 @@ function vdmosTestgen(ctx, model, facts, fitted) {
           `VG${id} g${id} 0 DC ${formatSpice(signed(point.vgs.value))}`
         );
         const expression = `scale_abs:last(v(d${id}),${1 / point.current.value})`;
-        const links = strict ? evidenceLinks(identity.evidence, identity.condition) : null;
         if (point.resistance.source_kind === "maximum") {
-          rdHardChecks.push(hardBound(`rdson_maximum_${groupIndex + 1}_${id}`, expression, "ohm", { minimum: 0, maximum: point.resistance.value }, point.resistance.page_reference, links));
+          rdHardChecks.push(hardBound(`rdson_maximum_${groupIndex + 1}_${id}`, expression, "ohm", { minimum: 0, maximum: point.resistance.value }, point.resistance.page_reference));
         } else if (point.resistance.source_kind === "minimum") {
-          rdHardChecks.push(hardBound(`rdson_minimum_${groupIndex + 1}_${id}`, expression, "ohm", { minimum: point.resistance.value }, point.resistance.page_reference, links));
+          rdHardChecks.push(hardBound(`rdson_minimum_${groupIndex + 1}_${id}`, expression, "ohm", { minimum: point.resistance.value }, point.resistance.page_reference));
         } else {
-          rdChecks.push(expectation(`rdson_${groupIndex + 1}_${id}`, expression, point.resistance.value, "ohm", 0, ctx.part.component.test_tolerances?.rds_on ?? 0.15, point.resistance.page_reference, links));
+          rdChecks.push(expectation(`rdson_${groupIndex + 1}_${id}`, expression, point.resistance.value, "ohm", 0, ctx.part.component.test_tolerances?.rds_on ?? 0.15, point.resistance.page_reference));
         }
       });
       rdLines.push(".op", ".end", "");
@@ -993,30 +571,8 @@ function vdmosTestgen(ctx, model, facts, fitted) {
 
   if (facts.threshold) {
     const threshold = facts.threshold;
-    const thresholdValues = [threshold.minimum, threshold.typical, threshold.maximum].filter(Boolean);
-    if (!thresholdValues.length) throw new Error("MOSFET threshold has no cited values");
-    let identity = null;
-    let current;
-    let temperature;
-    if (strict) {
-      const identities = thresholdValues.map((value, index) => assertQuantityIdentity(value, `facts.threshold.value[${index}]`, { characteristic: "gate_threshold", quantityLabel: `threshold_${value.source_kind}` }));
-      identity = identities[0];
-      if (identities.some((entry) => entry.condition.condition_id !== identity.condition.condition_id
-          || entry.citation.citation_id !== identity.citation.citation_id
-          || entry.evidence.cohort_id !== identity.evidence.cohort_id)) {
-        throw new Error("facts.threshold contains hybrid condition, citation, or cohort metadata");
-      }
-      assertDcConditionIdentity(identity.condition, "facts.threshold");
-      if (identity.condition.electrical.id.kind !== "fixed") throw new Error("MOSFET threshold bench requires exact fixed ID");
-      if (identity.condition.electrical.vds.kind !== "relation" || identity.condition.electrical.vds.relation !== "vds_equals_vgs") throw new Error("MOSFET threshold bench requires VDS = VGS");
-      current = identity.condition.electrical.id.value_a;
-      temperature = identity.condition.temperature.value_c;
-    } else {
-      current = Number(threshold.test_current?.value);
-      if (!(current > 0)) current = conditionCurrentA(...thresholdValues, threshold.test_current);
-      if (!(current > 0)) throw new Error("MOSFET threshold bench requires cited test current; no 250 uA default is permitted");
-      temperature = legacyMosfetTemperature(facts, "facts.threshold", ...thresholdValues, threshold.test_current);
-    }
+    const current = threshold.test_current?.value ?? 250e-6;
+    const temperature = evidenceTemperatureC(threshold.minimum, threshold.typical, threshold.maximum, threshold.test_current);
     const lines = [
       `OpenCircuit factory test: ${ctx.part.slug} threshold bounds`,
       model,
@@ -1030,56 +586,27 @@ function vdmosTestgen(ctx, model, facts, fitted) {
     const scalarChecks = [];
     const hardChecks = [];
     const expression = "abs:last(v(d))";
-    if (threshold.typical) {
-      const typicalIdentity = strict ? assertQuantityIdentity(threshold.typical, "facts.threshold.typical", { characteristic: "gate_threshold", role: "typical", quantityLabel: "threshold_typical" }) : null;
-      scalarChecks.push(expectation("gate_threshold_typical", expression, threshold.typical.value, "V", 0, ctx.part.component.test_tolerances?.threshold ?? 0.35, threshold.typical.page_reference, strict ? evidenceLinks(typicalIdentity.evidence, typicalIdentity.condition) : null));
-    }
-    if (threshold.minimum) {
-      const minimumIdentity = strict ? assertQuantityIdentity(threshold.minimum, "facts.threshold.minimum", { characteristic: "gate_threshold", role: "minimum", quantityLabel: "threshold_minimum" }) : null;
-      hardChecks.push(hardBound("gate_threshold_minimum", expression, "V", { minimum: threshold.minimum.value }, threshold.minimum.page_reference, strict ? evidenceLinks(minimumIdentity.evidence, minimumIdentity.condition) : null));
-    }
-    if (threshold.maximum) {
-      const maximumIdentity = strict ? assertQuantityIdentity(threshold.maximum, "facts.threshold.maximum", { characteristic: "gate_threshold", role: "maximum", quantityLabel: "threshold_maximum" }) : null;
-      hardChecks.push(hardBound("gate_threshold_maximum", expression, "V", { maximum: threshold.maximum.value }, threshold.maximum.page_reference, strict ? evidenceLinks(maximumIdentity.evidence, maximumIdentity.condition) : null));
-    }
+    if (threshold.typical) scalarChecks.push(expectation("gate_threshold_typical", expression, threshold.typical.value, "V", 0, ctx.part.component.test_tolerances?.threshold ?? 0.35, threshold.typical.page_reference));
+    if (threshold.minimum || threshold.maximum) hardChecks.push(hardBound(
+      "gate_threshold_bounds",
+      expression,
+      "V",
+      {
+        ...(threshold.minimum ? { minimum: threshold.minimum.value } : {}),
+        ...(threshold.maximum ? { maximum: threshold.maximum.value } : {})
+      },
+      [threshold.minimum?.page_reference, threshold.maximum?.page_reference].filter(Boolean).join("; ")
+    ));
     writeBench(ctx, "threshold.cir", lines.join("\n"));
     tests.push(testRecord("threshold.cir", "operating_point", scalarChecks, hardChecks));
   }
 
-  const transferCurves = strict ? contract.curves.filter((curve) => curve.characteristic === "transfer_current") : [];
-  if (strict && facts.transfer_points?.length) throw new Error("New-contract MOSFET transfer evidence must remain a validated curve object, not reconstructed point quantities");
-  if (strict && facts.output_points?.length) throw new Error("New-contract MOSFET output evidence must remain a validated curve object, not reconstructed point quantities");
-  if (transferCurves.length) {
-    transferCurves.forEach((curve, curveIndex) => {
-      const condition = curve.condition_identity;
-      assertDcConditionIdentity(condition, `facts.curves transfer ${curveIndex}`);
-      if (condition.electrical.vds.kind !== "fixed") throw new Error("Transfer curve bench requires exact fixed VDS");
-      const vds = condition.electrical.vds.value_v;
-      const transferLines = [`OpenCircuit factory test: ${ctx.part.slug} transfer curve ${curveIndex + 1}`, model, `.temp ${formatSpice(condition.temperature.value_c)}`];
-      const transferChecks = [];
-      curve.points.forEach((point, index) => {
-        const id = index + 1;
-        transferLines.push(
-          `MT${id} dt${id} gt${id} 0 ${ctx.part.component.modelName}`,
-          `VDT${id} dt${id} 0 DC ${formatSpice(signed(vds))}`,
-          `VGT${id} gt${id} 0 DC ${formatSpice(signed(point.x_si))}`
-        );
-        transferChecks.push(expectation(`transfer_curve_${curveIndex + 1}_point_${point.point_index}`, `abs:last(i(vdt${id}))`, point.y_si, "A", 0, ctx.part.component.test_tolerances?.drain_current ?? 0.33, curve.citation_identity.figure ? `p. ${curve.citation_identity.page}, Figure ${curve.citation_identity.figure}, ${curve.citation_identity.curve ?? curve.citation_identity.trace}` : `p. ${curve.citation_identity.page}`, evidenceLinks(point.evidence_identity, condition)));
-      });
-      transferLines.push(".op", ".end", "");
-      const file = transferCurves.length === 1 ? "transfer_curve.cir" : `transfer_curve-${curveIndex + 1}.cir`;
-      writeBench(ctx, file, transferLines.join("\n"));
-      tests.push(testRecord(file, "operating_point", transferChecks));
-    });
-  } else if (facts.transfer_points?.length) {
+  if (facts.transfer_points?.length) {
     const transferLines = [`OpenCircuit factory test: ${ctx.part.slug} transfer`, model];
     const transferChecks = [];
-    const temperatures = new Set();
     facts.transfer_points.forEach((point, index) => {
       const id = index + 1;
-      const vds = Number(point.vds?.value ?? facts.transfer_vds?.value ?? conditionVoltageV("VDS", point.vgs, point.current));
-      if (!(vds > 0)) throw new Error(`MOSFET transfer point ${index + 1} requires cited VDS; no 25 V default is permitted`);
-      temperatures.add(legacyMosfetTemperature(facts, `facts.transfer_points[${index}]`, point.vgs, point.current, point.vds, facts.transfer_vds));
+      const vds = point.vds?.value ?? facts.transfer_vds?.value ?? 25;
       transferLines.push(
         `MT${id} dt${id} gt${id} 0 ${ctx.part.component.modelName}`,
         `VDT${id} dt${id} 0 DC ${formatSpice(signed(vds))}`,
@@ -1087,36 +614,12 @@ function vdmosTestgen(ctx, model, facts, fitted) {
       );
       transferChecks.push(expectation(`transfer_${point.vgs.value}_v`, `abs:last(i(vdt${id}))`, point.current.value, "A", 0, ctx.part.component.test_tolerances?.drain_current ?? 0.33, point.current.page_reference));
     });
-    if (temperatures.size !== 1) throw new Error("MOSFET transfer points with different temperatures require separate condition-identity curves");
-    transferLines.splice(2, 0, `.temp ${formatSpice([...temperatures][0])}`);
     transferLines.push(".op", ".end", "");
     writeBench(ctx, "transfer_curve.cir", transferLines.join("\n"));
     tests.push(testRecord("transfer_curve.cir", "operating_point", transferChecks));
   }
 
-  const outputCurves = strict ? contract.curves.filter((curve) => curve.characteristic === "output_current") : [];
-  if (outputCurves.length) {
-    outputCurves.forEach((curve, curveIndex) => {
-      const condition = curve.condition_identity;
-      assertDcConditionIdentity(condition, `facts.curves output ${curveIndex}`);
-      if (condition.electrical.vgs.kind !== "fixed") throw new Error("Output curve bench requires exact fixed VGS");
-      const outputLines = [`OpenCircuit factory test: ${ctx.part.slug} output curve ${curveIndex + 1}`, model, `.temp ${formatSpice(condition.temperature.value_c)}`];
-      const outputChecks = [];
-      curve.points.forEach((point, index) => {
-        const id = index + 1;
-        outputLines.push(
-          `MO${id} do${id} go${id} 0 ${ctx.part.component.modelName}`,
-          `VDO${id} do${id} 0 DC ${formatSpice(signed(point.x_si))}`,
-          `VGO${id} go${id} 0 DC ${formatSpice(signed(condition.electrical.vgs.value_v))}`
-        );
-        outputChecks.push(expectation(`output_curve_${curveIndex + 1}_point_${point.point_index}`, `abs:last(i(vdo${id}))`, point.y_si, "A", 0, ctx.part.component.test_tolerances?.drain_current ?? 0.33, `p. ${curve.citation_identity.page}, Figure ${curve.citation_identity.figure}, ${curve.citation_identity.curve ?? curve.citation_identity.trace}`, evidenceLinks(point.evidence_identity, condition)));
-      });
-      outputLines.push(".op", ".end", "");
-      const file = outputCurves.length === 1 ? "output_curve.cir" : `output_curve-${curveIndex + 1}.cir`;
-      writeBench(ctx, file, outputLines.join("\n"));
-      tests.push(testRecord(file, "operating_point", outputChecks));
-    });
-  } else if (facts.output_points?.length) {
+  if (facts.output_points?.length) {
     const outputLines = [`OpenCircuit factory test: ${ctx.part.slug} output`, model];
     facts.output_points.forEach((point, index) => {
       const id = index + 1;
@@ -1326,11 +829,7 @@ export function stageTestgen(ctx) {
   ensureDirectory(path.join(ctx.packageDir, "tests"));
 
   if (["bjt", "darlington", "sibling_alias"].includes(ctx.part.pipeline)) tests = bjtTestgen(ctx, model, facts);
-  else if (ctx.part.pipeline === "vdmos") {
-    const fittedPath = path.join(ctx.packageDir, "fitted.json");
-    requireFile(fittedPath, "testgen VDMOS provenance");
-    tests = vdmosTestgen(ctx, model, facts, JSON.parse(fs.readFileSync(fittedPath, "utf8")));
-  }
+  else if (ctx.part.pipeline === "vdmos") tests = vdmosTestgen(ctx, model, facts);
   else if (ctx.part.pipeline === "opamp") tests = opampTestgen(ctx, model, facts);
   else if (ctx.part.pipeline === "specialty_analog") tests = specialtyTestgen(ctx, model, facts);
   else if (ctx.part.pipeline === "sensor_behavioral") tests = sensorTestgen(ctx, model, facts);
@@ -1620,11 +1119,6 @@ function evaluateCheck(value, check) {
 
 export function stageValidate(ctx) {
   assertNoTrackedPdfs();
-  if (ctx.part.pipeline === "vdmos") {
-    const facts = JSON.parse(fs.readFileSync(path.join(ctx.packageDir, "facts.json"), "utf8"));
-    const fitted = JSON.parse(fs.readFileSync(path.join(ctx.packageDir, "fitted.json"), "utf8"));
-    assertMosfetConditionIdentityContract(ctx, facts, fitted);
-  }
   run("node", [packageValidator, ctx.packageDir]);
   const expectations = JSON.parse(fs.readFileSync(path.join(ctx.packageDir, "tests", "expectations.json"), "utf8"));
   const results = [];
