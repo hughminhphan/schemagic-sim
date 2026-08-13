@@ -879,8 +879,17 @@ function assertHeldDefaults(fitted) {
 
 function assertCriticalFittedProvenance(fitted, packageEvidence) {
   const byEvidenceId = new Map(packageEvidence.map((row) => [row.evidence.evidence_id, row]));
-  const calibrationRecords = [...(fitted.calibration?.observations ?? []), ...(fitted.calibration?.constraints ?? [])];
-  for (const [index, residual] of (fitted.residuals ?? []).entries()) {
+  const observations = fitted.calibration?.observations ?? [];
+  const constraints = fitted.calibration?.constraints ?? [];
+  const residuals = fitted.residuals ?? [];
+  const calibrationRecords = [...observations, ...constraints];
+  const residualTargetCount = fitted.calibration?.residual_target_count;
+  if (!Number.isInteger(residualTargetCount) || residualTargetCount < 0) throw new Error("fitted.calibration.residual_target_count must be a non-negative integer");
+  if (fitted.fidelity_tier === "F2") {
+    if (residualTargetCount !== observations.length) throw new Error("fitted.calibration.residual_target_count must equal the calibration observation count");
+    if (residualTargetCount !== residuals.length) throw new Error("fitted.calibration.residual_target_count must equal the residual row count");
+  }
+  for (const [index, residual] of residuals.entries()) {
     const trail = `fitted.residuals[${index}]`;
     const matches = calibrationRecords.filter((record) => record.evidence_identity?.evidence_id === residual.evidence_identity?.evidence_id);
     if (matches.length !== 1) throw new Error(`${trail} must resolve exactly once to a declared calibration record`);
@@ -891,6 +900,10 @@ function assertCriticalFittedProvenance(fitted, packageEvidence) {
     for (const [field, nested] of [["condition_identity", "condition_id"], ["citation_identity", "citation_id"], ["evidence_identity", "evidence_id"]]) {
       if (record[field]?.[nested] !== residual[field]?.[nested]) throw new Error(`${trail}.${field}.${nested} disagrees with its declared calibration record`);
     }
+  }
+  if (fitted.fidelity_tier === "F2") for (const [index, observation] of observations.entries()) {
+    const matches = residuals.filter((residual) => residual.evidence_identity?.evidence_id === observation.evidence_identity?.evidence_id);
+    if (matches.length !== 1) throw new Error(`fitted.calibration.observations[${index}] must resolve exactly once to a residual row`);
   }
   const groups = [
     ["calibration.observations", fitted.calibration?.observations ?? []],

@@ -279,25 +279,26 @@ test("conveyor MOSFET package contract rejects hidden critical defaults and hybr
   const ctx = { part: { slug: "fixture", pipeline: "vdmos", component: { supported_operating_region: { contract_version: "1.0.0", numeric_bounds: [
     regionBound("vgs", [10], evidenceRows), regionBound("vds", [10], evidenceRows), regionBound("id", [6], evidenceRows), regionBound("temperature", [75], evidenceRows)
   ] } } } };
-  assert.doesNotThrow(() => assertMosfetConditionIdentityContract(ctx, facts, { parameters: {}, held_defaults: [] }));
-  assert.throws(() => assertMosfetConditionIdentityContract(ctx, facts, { parameters: { VTO: 2 }, held_defaults: [{ parameter: "VTO", value: 2, unit: "V", reason: "physical constant" }] }), /critical MOSFET/);
+  const zeroTargets = { observations: [], constraints: [], residual_target_count: 0 };
+  assert.doesNotThrow(() => assertMosfetConditionIdentityContract(ctx, facts, { parameters: {}, held_defaults: [], calibration: zeroTargets, residuals: [] }));
+  assert.throws(() => assertMosfetConditionIdentityContract(ctx, facts, { parameters: { VTO: 2 }, held_defaults: [{ parameter: "VTO", value: 2, unit: "V", reason: "physical constant" }], calibration: zeroTargets, residuals: [] }), /critical MOSFET/);
   const hybrid = structuredClone(facts);
   hybrid.rdson_points[0].current.condition_identity = mosfetIdentity("rds_on", { electrical: { ...condition.electrical, id: { kind: "fixed", value_a: 5 } } });
-  assert.throws(() => assertMosfetConditionIdentityContract(ctx, hybrid, { parameters: {}, held_defaults: [] }), /hybrid/);
+  assert.throws(() => assertMosfetConditionIdentityContract(ctx, hybrid, { parameters: {}, held_defaults: [], calibration: zeroTargets, residuals: [] }), /hybrid/);
 
   const missingRef = structuredClone(ctx);
   missingRef.part.component.supported_operating_region.numeric_bounds[0].evidence_refs = [];
-  assert.throws(() => assertMosfetConditionIdentityContract(missingRef, facts, { parameters: {}, held_defaults: [] }), /evidence_refs must be non-empty/);
+  assert.throws(() => assertMosfetConditionIdentityContract(missingRef, facts, { parameters: {}, held_defaults: [], calibration: zeroTargets, residuals: [] }), /evidence_refs must be non-empty/);
 
   const alteredRef = structuredClone(ctx);
   alteredRef.part.component.supported_operating_region.numeric_bounds[0].evidence_refs[0].evidence_id = `sha256:${"f".repeat(64)}`;
-  assert.throws(() => assertMosfetConditionIdentityContract(alteredRef, facts, { parameters: {}, held_defaults: [] }), /does not resolve to package evidence/);
+  assert.throws(() => assertMosfetConditionIdentityContract(alteredRef, facts, { parameters: {}, held_defaults: [], calibration: zeroTargets, residuals: [] }), /does not resolve to package evidence/);
 
   const widened = structuredClone(ctx);
   const widenedBound = widened.part.component.supported_operating_region.numeric_bounds[0];
   widenedBound.values = [9, 10, 11];
   widenedBound.bound_id = identityHash(Object.fromEntries(Object.entries(widenedBound).filter(([key]) => key !== "bound_id")));
-  assert.throws(() => assertMosfetConditionIdentityContract(widened, facts, { parameters: {}, held_defaults: [] }), /sorted unique referenced values/);
+  assert.throws(() => assertMosfetConditionIdentityContract(widened, facts, { parameters: {}, held_defaults: [], calibration: zeroTargets, residuals: [] }), /sorted unique referenced values/);
 });
 
 test("legacy reviewed MOSFET package generation remains backward-compatible", () => {
@@ -345,7 +346,7 @@ test("pulse-qualified MOSFET curve evidence is rejected from continuous operatin
     fs.mkdirSync(path.join(root, "tests"));
     fs.writeFileSync(path.join(root, "model.cir"), ".model DUT VDMOS(VTO=2 KP=1 RD=0.1 RS=0.1 RG=1e-4 CGS=1p CGDMAX=1p CGDMIN=1p A=1 CJO=1p IS=1e-12 N=1 RB=0.1 TT=1n BV=60 IBV=1u RTHJC=1 RTHCA=60)\n");
     fs.writeFileSync(path.join(root, "facts.json"), JSON.stringify(facts));
-    fs.writeFileSync(path.join(root, "fitted.json"), JSON.stringify({ parameters: {}, held_defaults: [] }));
+    fs.writeFileSync(path.join(root, "fitted.json"), JSON.stringify({ parameters: {}, held_defaults: [], calibration: { observations: [], constraints: [], residual_target_count: 0 }, residuals: [] }));
     assert.throws(() => stageTestgen(ctx), /pulsed-qualified/);
   } finally {
     fs.rmSync(root, { recursive: true, force: true });

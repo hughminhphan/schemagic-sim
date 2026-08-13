@@ -1629,6 +1629,7 @@ export function stageBulkPart(part, rawExtraction, fit, stagingRoot, { demotionR
   const operating = operatingRegion(part, facts);
   const component = {
     schema_version: "1.0.0",
+    ...(part.conveyor_family === "mosfet" ? { evidence_contract_version: "1.0.0" } : {}),
     canonical_mpn: identity.canonical,
     manufacturer: part.manufacturer,
     description: part.description || `${part.conveyor_family} from ${part.manufacturer}`,
@@ -1645,7 +1646,7 @@ export function stageBulkPart(part, rawExtraction, fit, stagingRoot, { demotionR
     supported_operating_region: operating,
     known_omissions: omissions,
     licence: { spdx_id: "MIT", provenance_basis: "original_from_facts" },
-    generator: { tool_or_agent: "opencircuit-model-factory-v0.1.0 bulk-adapter", date: new Date().toISOString().slice(0, 10) },
+    generator: { tool_or_agent: part.conveyor_family === "mosfet" ? "opencircuit-model-factory-v0.1.0 bulk-adapter evidence-contract-1.0.0" : "opencircuit-model-factory-v0.1.0 bulk-adapter", date: new Date().toISOString().slice(0, 10) },
     reviewer: { tool_or_agent: "pending-independent-package-review", date: new Date().toISOString().slice(0, 10) },
     test_results: { status: "pending", pass_count: 0, fail_count: 0, total_count: 0, worst_observed_relative_fitting_error: null },
     validation_date: null,

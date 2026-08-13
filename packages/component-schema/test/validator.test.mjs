@@ -10,6 +10,7 @@ import {
   curveCohortMaterial,
   curveIdentityMaterial,
   directEvidenceIntersectionErrors,
+  directEvidenceUnionErrors,
   identityHash,
   pointEvidenceMaterial,
   scalarEvidenceMaterial,
@@ -102,14 +103,14 @@ function contractFixture() {
   const boundMaterial = { quantity: "vds", kind: "range", minimum: 10, maximum: 10, unit: "V", evidence_refs: refs, condition_ids: [condition.condition_id], citation_ids: [citation.citation_id], derivation: "direct_evidence_union" };
   const bound = { bound_id: identityHash(boundMaterial), ...boundMaterial, conditions: "Direct cited evidence", placeholder: false };
   const component = {
-    schema_version: "1.0.0", canonical_mpn: "FIXTURE", manufacturer: "Fixture", description: "Contract fixture", electrical_family: "nmos",
+    schema_version: "1.0.0", evidence_contract_version: "1.0.0", canonical_mpn: "FIXTURE", manufacturer: "Fixture", description: "Contract fixture", electrical_family: "nmos",
     symbol_pins: [{ name: "G", number: "1", role: "gate" }, { name: "D", number: "2", role: "drain" }, { name: "S", number: "3", role: "source" }],
     spice_pin_mapping: [{ symbol_pin_number: "2", subckt_node: "drain", order: 1 }, { symbol_pin_number: "1", subckt_node: "gate", order: 2 }, { symbol_pin_number: "3", subckt_node: "source", order: 3 }],
     package_variants: [{ name: "TO-220", standard: "JEDEC", pin_count: 3, pin_map: [{ package_pin: "1", symbol_pin_number: "1" }, { package_pin: "2", symbol_pin_number: "2" }, { package_pin: "3", symbol_pin_number: "3" }] }],
     ordering_code_aliases: [], datasheet: { url: "https://example.com/fixture.pdf", revision: "1" }, model_type: "dot_model", fidelity_tier: "F2",
     domain_coverage: { dc: "fitted", ac: "none", transient: "none", noise: "none", thermal: "none", digital: "none" }, supported_analyses: ["operating_point"],
     supported_operating_region: { contract_version: "1.0.0", summary: "Direct cited evidence only", numeric_bounds: [bound] }, known_omissions: ["Fixture"],
-    licence: { spdx_id: "MIT", provenance_basis: "original_from_facts" }, generator: { tool_or_agent: "fixture-generator", date: "2026-08-13" }, reviewer: { tool_or_agent: "fixture-reviewer", date: "2026-08-13" },
+    licence: { spdx_id: "MIT", provenance_basis: "original_from_facts" }, generator: { tool_or_agent: "opencircuit-model-factory-v0.1.0 bulk-adapter evidence-contract-1.0.0", date: "2026-08-13" }, reviewer: { tool_or_agent: "fixture-reviewer", date: "2026-08-13" },
     test_results: { status: "pending", pass_count: 0, fail_count: 0, total_count: 0, worst_observed_relative_fitting_error: null }, validation_date: null
   };
   const qualification = { test_mode: "continuous_dc" };
@@ -128,7 +129,7 @@ function contractFixture() {
   const linked = { condition_identity: condition, citation_identity: citation, evidence_identity: firstEvidence };
   const calibrationRecord = { quantity: "transfer current", gate_quantity: "drain_current", datasheet_value: 5, unit: "A", evidence_role: "typical_observation", ...linked };
   const relativeError = Math.abs(5.1 - 5) / 5;
-  const fitted = { evidence_contract_version: "1.0.0", fidelity_tier: "F2", parameters: { VTO: 2 }, calibration: { observations: [calibrationRecord], constraints: [] }, residuals: [{ ...calibrationRecord, fitted_value: 5.1, relative_error: relativeError }], rms_relative_error: relativeError, worst_relative_error: { value: relativeError, quantity: "transfer current" }, f2_gate_pass: true };
+  const fitted = { evidence_contract_version: "1.0.0", fidelity_tier: "F2", parameters: { VTO: 2 }, calibration: { observations: [calibrationRecord], constraints: [], residual_target_count: 1 }, residuals: [{ ...calibrationRecord, fitted_value: 5.1, relative_error: relativeError }], rms_relative_error: relativeError, worst_relative_error: { value: relativeError, quantity: "transfer current" }, f2_gate_pass: true };
   return { component, facts: { evidence_contract_version: "1.0.0", source: { kind: "datasheet", url: "https://example.com/fixture.pdf", revision: "1", sha256: "a".repeat(64), accessed_date: "2026-08-13", pages_referenced: ["3"], placeholder: false }, threshold: { typical: thresholdTypical }, curves: [curve] }, fitted, expectations };
 }
 
@@ -138,7 +139,7 @@ function writeContractPackage(root, fixture = contractFixture()) {
   fs.writeFileSync(path.join(root, "facts.json"), JSON.stringify(fixture.facts));
   fs.writeFileSync(path.join(root, "fitted.json"), JSON.stringify(fixture.fitted));
   fs.writeFileSync(path.join(root, "tests", "expectations.json"), JSON.stringify(fixture.expectations));
-  fs.writeFileSync(path.join(root, "tests", "transfer.cir"), "Fixture test\n.temp 75\nMT1 d g 0 DUT\nVd d 0 DC 10\nVg g 0 DC 2.5\n.op\n.end\n");
+  fs.writeFileSync(path.join(root, "tests", "transfer.cir"), "Fixture test\n.model DUT VDMOS(VTO=2)\n.temp 75\nMT1 d g 0 DUT\nVd d 0 DC 10\nVg g 0 DC 2.5\n.op\n.end\n");
   fs.writeFileSync(path.join(root, "model.cir"), "* OpenCircuit Model Factory\n* Original work\n* Public factual specifications\n.model DUT VDMOS(VTO=2)\n");
   fs.writeFileSync(path.join(root, "sources.json"), JSON.stringify([{ kind: "datasheet", url: "https://example.com/fixture.pdf", revision: "1", sha256: "a".repeat(64), accessed_date: "2026-08-13", pages_referenced: ["3"], placeholder: false }]));
   fs.writeFileSync(path.join(root, "MODEL_CARD.md"), "Fixture\n");
@@ -169,6 +170,8 @@ test("correct canonical evidence-contract package validates", () => {
 
 test("contract detection fails closed when any authoritative marker or linkage set is removed or downgraded", () => {
   const cases = [
+    ["component marker removal", (f) => { delete f.component.evidence_contract_version; }, "component evidence_contract_version"],
+    ["component marker downgrade", (f) => { f.component.evidence_contract_version = "0.9.0"; }, "component evidence_contract_version"],
     ["facts marker removal", (f) => { delete f.facts.evidence_contract_version; }, "facts evidence_contract_version"],
     ["facts marker downgrade", (f) => { f.facts.evidence_contract_version = "0.9.0"; }, "facts evidence_contract_version"],
     ["fitted marker removal", (f) => { delete f.fitted.evidence_contract_version; }, "fitted evidence_contract_version"],
@@ -176,14 +179,33 @@ test("contract detection fails closed when any authoritative marker or linkage s
     ["expectations marker removal", (f) => { delete f.expectations.evidence_contract_version; }, "expectations evidence_contract_version"],
     ["expectations marker downgrade", (f) => { f.expectations.evidence_contract_version = "0.9.0"; }, "expectations evidence_contract_version"],
     ["expectations cohort removal", (f) => { delete f.expectations.evidence_cohorts; }, "evidence_cohorts"],
-    ["component marker removal", (f) => { delete f.component.supported_operating_region.contract_version; }, "contract_version"],
-    ["component marker downgrade", (f) => { f.component.supported_operating_region.contract_version = "0.9.0"; }, "contract_version"],
+    ["region marker removal", (f) => { delete f.component.supported_operating_region.contract_version; }, "contract_version"],
+    ["region marker downgrade", (f) => { f.component.supported_operating_region.contract_version = "0.9.0"; }, "contract_version"],
     ["component evidence refs removal", (f) => { delete f.component.supported_operating_region.numeric_bounds[0].evidence_refs; }, "evidence_refs"]
   ];
   for (const [name, mutate, fragment] of cases) {
     const errors = mutateContractFixture(mutate);
     assert.ok(errors.some((error) => error.includes(fragment)), `${name}: ${errors.join("\n")}`);
   }
+});
+
+test("contract detection survives simultaneous erasure of all removable contract linkage", () => {
+  const errors = mutateContractFixture((fixture) => {
+    delete fixture.component.evidence_contract_version;
+    delete fixture.facts.evidence_contract_version;
+    delete fixture.fitted.evidence_contract_version;
+    delete fixture.expectations.evidence_contract_version;
+    delete fixture.expectations.evidence_cohorts;
+    for (const test of fixture.expectations.tests) for (const check of [...test.scalar_checks, ...test.hard_bounds_checks]) {
+      for (const field of ["evidence_id", "condition_id", "citation_id", "cohort_id", "bench_condition_id", "evidence_role", "citation_locator", "evidence_qualification", "bench_qualification"]) delete check[field];
+    }
+    delete fixture.component.supported_operating_region.contract_version;
+    for (const bound of fixture.component.supported_operating_region.numeric_bounds) {
+      for (const field of ["bound_id", "evidence_refs", "condition_ids", "citation_ids", "derivation"]) delete bound[field];
+    }
+  });
+  assert.ok(errors.some((error) => error.includes("component evidence_contract_version")), errors.join("\n"));
+  assert.ok(errors.some((error) => error.includes("facts evidence_contract_version")), errors.join("\n"));
 });
 
 test("stale citation locator hashes fail for page, table, and figure mutations", () => {
@@ -218,9 +240,20 @@ test("redundant nested curve-point identities must match the raw point and enclo
   }
 });
 
-test("PMOS emitted VTO must be negative with the fitted magnitude while NMOS remains signed-equal", () => {
+test("PMOS and NMOS emitted VTO signs must match the channel with the fitted magnitude", () => {
   const positivePmos = mutateContractFixture((fixture) => { fixture.component.electrical_family = "pmos"; });
   assert.ok(positivePmos.some((error) => error.includes("must declare pchan") || error.includes("PMOS VTO must be negative")), positivePmos.join("\n"));
+
+  const negativeNmos = mutateContractFixture(() => {});
+  const nmosRoot = fs.mkdtempSync(path.join(os.tmpdir(), "component-nmos-negative-vto-"));
+  try {
+    writeContractPackage(nmosRoot);
+    fs.writeFileSync(path.join(nmosRoot, "model.cir"), "* OpenCircuit Model Factory\n* Original work\n* Public factual specifications\n.model DUT VDMOS(VTO=-2)\n");
+    fs.writeFileSync(path.join(nmosRoot, "tests", "transfer.cir"), "Fixture test\n.model DUT VDMOS(VTO=-2)\n.temp 75\nMT1 d g 0 DUT\nVd d 0 DC 10\nVg g 0 DC 2.5\n.op\n.end\n");
+    const errors = validatePackage(nmosRoot).errors;
+    assert.ok(errors.some((error) => error.includes("NMOS VTO must be positive")), errors.join("\n"));
+  } finally { fs.rmSync(nmosRoot, { recursive: true, force: true }); }
+  assert.deepEqual(negativeNmos, []);
 
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "component-pmos-native-"));
   try {
@@ -228,7 +261,7 @@ test("PMOS emitted VTO must be negative with the fitted magnitude while NMOS rem
     fixture.component.electrical_family = "pmos";
     writeContractPackage(root, fixture);
     fs.writeFileSync(path.join(root, "model.cir"), "* OpenCircuit Model Factory\n* Original work\n* Public factual specifications\n.model DUT VDMOS(pchan VTO=-2)\n");
-    fs.writeFileSync(path.join(root, "tests", "transfer.cir"), "Fixture test\n.temp 75\nMT1 d g 0 DUT\nVd d 0 DC -10\nVg g 0 DC -2.5\n.op\n.end\n");
+    fs.writeFileSync(path.join(root, "tests", "transfer.cir"), "Fixture test\n.model DUT VDMOS(pchan VTO=-2)\n.temp 75\nMT1 d g 0 DUT\nVd d 0 DC -10\nVg g 0 DC -2.5\n.op\n.end\n");
     assert.deepEqual(validatePackage(root).errors, []);
     fs.writeFileSync(path.join(root, "model.cir"), "* OpenCircuit Model Factory\n* Original work\n* Public factual specifications\n.model DUT VDMOS(pchan VTO=-2.2)\n");
     assert.ok(validatePackage(root).errors.some((error) => error.includes("VTO magnitude disagrees")));
@@ -265,11 +298,12 @@ test("duplicate selected datasheet SHA is rejected even when the selected URL re
 });
 
 test("linked operating benches reject temperature, analysis, VDS, and VGS mutations", () => {
+  const model = ".model DUT VDMOS(VTO=2)\n";
   const cases = [
-    ["Fixture test\n.temp 25\nMT1 d g 0 DUT\nVd d 0 DC 10\nVg g 0 DC 2.5\n.op\n.end\n", ".temp disagrees"],
-    ["Fixture test\n.temp 75\nMT1 d g 0 DUT\nVd d 0 DC 10\nVg g 0 DC 2.5\n.dc Vg 0 4 1\n.end\n", "only the generated .op"],
-    ["Fixture test\n.temp 75\nMT1 d g 0 DUT\nVd d 0 DC 11\nVg g 0 DC 2.5\n.op\n.end\n", "drain-source bias disagrees"],
-    ["Fixture test\n.temp 75\nMT1 d g 0 DUT\nVd d 0 DC 10\nVg g 0 DC 3\n.op\n.end\n", "voltage bias"]
+    [`Fixture test\n${model}.temp 25\nMT1 d g 0 DUT\nVd d 0 DC 10\nVg g 0 DC 2.5\n.op\n.end\n`, ".temp disagrees"],
+    [`Fixture test\n${model}.temp 75\nMT1 d g 0 DUT\nVd d 0 DC 10\nVg g 0 DC 2.5\n.dc Vg 0 4 1\n.end\n`, "only the generated .op"],
+    [`Fixture test\n${model}.temp 75\nMT1 d g 0 DUT\nVd d 0 DC 11\nVg g 0 DC 2.5\n.op\n.end\n`, "drain-source bias disagrees"],
+    [`Fixture test\n${model}.temp 75\nMT1 d g 0 DUT\nVd d 0 DC 10\nVg g 0 DC 3\n.op\n.end\n`, "voltage bias"]
   ];
   for (const [bench, fragment] of cases) {
     const root = fs.mkdtempSync(path.join(os.tmpdir(), "component-bench-contract-"));
@@ -291,11 +325,21 @@ test("linked NMOS and PMOS benches must instantiate the active model.cir DUT car
       writeContractPackage(root, fixture);
       const pmos = family === "pmos";
       fs.writeFileSync(path.join(root, "model.cir"), `* OpenCircuit Model Factory\n* Original work\n* Public factual specifications\n.model DUT VDMOS(${pmos ? "pchan VTO=-2" : "VTO=2"})\n.model WRONG VDMOS(${pmos ? "pchan VTO=-2" : "VTO=2"})\n* MT1 d g 0 WRONG\n`);
-      fs.writeFileSync(path.join(root, "tests", "transfer.cir"), `Fixture test\n.temp 75\nMT1 d g 0 WRONG\nVd d 0 DC ${pmos ? -10 : 10}\nVg g 0 DC ${pmos ? -2.5 : 2.5}\n.op\n.end\n`);
+      fs.writeFileSync(path.join(root, "tests", "transfer.cir"), `Fixture test\n.model DUT VDMOS(${pmos ? "pchan VTO=-2" : "VTO=2"})\n.temp 75\nMT1 d g 0 WRONG\nVd d 0 DC ${pmos ? -10 : 10}\nVg g 0 DC ${pmos ? -2.5 : 2.5}\n.op\n.end\n`);
       const errors = validatePackage(root).errors;
       assert.ok(errors.some((error) => error.includes("generated DUT instance must use active model DUT")), `${family}: ${errors.join("\n")}`);
     } finally { fs.rmSync(root, { recursive: true, force: true }); }
   }
+});
+
+test("linked MOSFET benches reject local active-model card substitution", () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "component-bench-model-shadow-"));
+  try {
+    writeContractPackage(root);
+    fs.writeFileSync(path.join(root, "tests", "transfer.cir"), "Fixture test\n.model DUT VDMOS(VTO=9)\n.temp 75\nMT1 d g 0 DUT\nVd d 0 DC 10\nVg g 0 DC 2.5\n.op\n.end\n");
+    const errors = validatePackage(root).errors;
+    assert.ok(errors.some((error) => error.includes("must exactly match model.cir")), errors.join("\n"));
+  } finally { fs.rmSync(root, { recursive: true, force: true }); }
 });
 
 test("linked expectation and fitted residual evidence semantics fail exact mutations", () => {
@@ -334,6 +378,7 @@ test("F2 expectations may deliberately sample fitted residual evidence while fac
       citation_identity: curve.citation_identity,
       evidence_identity: secondEvidence
     });
+    fixture.fitted.calibration.residual_target_count = fixture.fitted.calibration.observations.length;
     const relativeErrors = fixture.fitted.residuals.map((row) => row.relative_error);
     fixture.fitted.rms_relative_error = Math.sqrt(relativeErrors.reduce((sum, value) => sum + value ** 2, 0) / relativeErrors.length);
   });
@@ -369,12 +414,32 @@ test("fitted residual must resolve exactly once to its declared calibration reco
   assert.ok(duplicate.some((error) => error.includes("resolve exactly once to a declared calibration record")), duplicate.join("\n"));
 });
 
+test("F2 residual targets require bidirectional completeness", () => {
+  const omitted = mutateContractFixture((fixture) => {
+    fixture.fitted.residuals = [];
+    fixture.fitted.rms_relative_error = null;
+    fixture.fitted.worst_relative_error = null;
+  });
+  assert.ok(omitted.some((error) => error.includes("residual_target_count must equal the residual row count")), omitted.join("\n"));
+  assert.ok(omitted.some((error) => error.includes("must resolve exactly once to a residual row")), omitted.join("\n"));
+
+  const staleCount = mutateContractFixture((fixture) => { fixture.fitted.calibration.residual_target_count = 2; });
+  assert.ok(staleCount.some((error) => error.includes("residual_target_count must equal the declared calibration observation count")), staleCount.join("\n"));
+});
+
 test("direct evidence intersection helper handles ranges, values, enumerations, and empty overlap exactly", () => {
   assert.deepEqual(directEvidenceIntersectionErrors({ derivation: "direct_evidence_intersection", kind: "range", minimum: 2, maximum: 4 }, [{ minimum: 1, maximum: 5 }, { minimum: 2, maximum: 4 }]), []);
   assert.deepEqual(directEvidenceIntersectionErrors({ derivation: "direct_evidence_intersection", kind: "enumerated", values: [3] }, [{ minimum: 3, maximum: 3 }]), []);
   assert.deepEqual(directEvidenceIntersectionErrors({ derivation: "direct_evidence_intersection", kind: "enumerated", values: [2, 4] }, [{ values: [1, 2, 4] }, { values: [2, 3, 4] }]), []);
   assert.ok(directEvidenceIntersectionErrors({ derivation: "direct_evidence_intersection", kind: "range", minimum: 1, maximum: 4 }, [{ minimum: 1, maximum: 2 }, { minimum: 3, maximum: 4 }])[0].includes("empty"));
   assert.ok(directEvidenceIntersectionErrors({ derivation: "direct_evidence_intersection", kind: "range", minimum: 1, maximum: 5 }, [{ minimum: 1, maximum: 5 }, { minimum: 2, maximum: 4 }])[0].includes("exactly equal"));
+});
+
+test("direct evidence union rejects non-singleton one-sided bounds", () => {
+  const values = [10, 20];
+  assert.ok(directEvidenceUnionErrors({ derivation: "direct_evidence_union", kind: "minimum", minimum: 10 }, values)[0].includes("one-sided minimum"));
+  assert.ok(directEvidenceUnionErrors({ derivation: "direct_evidence_union", kind: "maximum", maximum: 20 }, values)[0].includes("one-sided maximum"));
+  assert.deepEqual(directEvidenceUnionErrors({ derivation: "direct_evidence_union", kind: "range", minimum: 10, maximum: 20 }, values), []);
 });
 
 test("direct evidence intersections require the exact non-empty overlap", () => {

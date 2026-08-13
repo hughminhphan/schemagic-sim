@@ -287,9 +287,19 @@ function expectationEvidenceSemantics(check, resolved, checkPath, errors) {
 
 function residualCalibrationErrors(fitted) {
   const errors = [];
-  const records = [...(fitted?.calibration?.observations ?? []), ...(fitted?.calibration?.constraints ?? [])];
+  const observations = fitted?.calibration?.observations ?? [];
+  const constraints = fitted?.calibration?.constraints ?? [];
+  const records = [...observations, ...constraints];
+  const residuals = fitted?.residuals ?? [];
   const primaryEvidenceId = (row) => row?.evidence_identity?.evidence_id;
-  for (const [index, residual] of (fitted?.residuals ?? []).entries()) {
+  const targetCount = fitted?.calibration?.residual_target_count;
+  if (!Number.isInteger(targetCount) || targetCount < 0) {
+    errors.push("fitted.calibration.residual_target_count must be a non-negative integer");
+  } else if (fitted?.fidelity_tier === "F2") {
+    if (targetCount !== observations.length) errors.push("fitted.calibration.residual_target_count must equal the declared calibration observation count");
+    if (targetCount !== residuals.length) errors.push("fitted.calibration.residual_target_count must equal the residual row count");
+  }
+  for (const [index, residual] of residuals.entries()) {
     const matches = records.filter((record) => primaryEvidenceId(record) === primaryEvidenceId(residual));
     const label = `fitted.residuals[${index}]`;
     if (matches.length !== 1) {
@@ -303,6 +313,10 @@ function residualCalibrationErrors(fitted) {
     for (const [field, nested] of [["condition_identity", "condition_id"], ["citation_identity", "citation_id"], ["evidence_identity", "evidence_id"]]) {
       if (residual[field]?.[nested] !== record[field]?.[nested]) errors.push(`${label}.${field}.${nested} disagrees with its declared calibration record`);
     }
+  }
+  if (fitted?.fidelity_tier === "F2") for (const [index, observation] of observations.entries()) {
+    const matches = residuals.filter((residual) => primaryEvidenceId(residual) === primaryEvidenceId(observation));
+    if (matches.length !== 1) errors.push(`fitted.calibration.observations[${index}] must resolve exactly once to a residual row`);
   }
   return errors;
 }
@@ -386,15 +400,32 @@ function validateMosfetChannelCard(component, modelText) {
   if (!["nmos", "pmos"].includes(component?.electrical_family)) return [];
   try {
     const card = activeVdmosModelCard(modelText);
-    if (component.electrical_family === "pmos" && !card.pchan) return ["active DUT VDMOS model card must declare pchan exactly for electrical_family pmos"];
-    if (component.electrical_family === "nmos" && card.pchan) return ["active DUT VDMOS model card must not declare pchan for electrical_family nmos"];
+    const vto = card.parameters.get("VTO");
+    if (component.electrical_family === "pmos") {
+      if (!card.pchan) return ["active DUT VDMOS model card must declare pchan exactly for electrical_family pmos"];
+      if (!(vto < 0)) return ["active DUT VDMOS model card PMOS VTO must be negative"];
+    } else {
+      if (card.pchan) return ["active DUT VDMOS model card must not declare pchan for electrical_family nmos"];
+      if (!(vto > 0)) return ["active DUT VDMOS model card NMOS VTO must be positive"];
+    }
     return [];
   } catch (error) {
     return [error.message];
   }
 }
 
-function parseGeneratedMosfetBench(text, label) {
+function vdmosCardSignature(text, modelName, label) {
+  const active = String(text).split(/\r?\n/)
+    .filter((line) => !/^\s*\*/.test(line))
+    .map((line) => line.replace(/\s+\$.*$/, ""))
+    .join("\n");
+  const cards = [...active.matchAll(/^\s*\.model\s+(\S+)\s+VDMOS\s*\(([^)]*)\)/gim)]
+    .filter((match) => match[1].toLowerCase() === modelName.toLowerCase());
+  if (cards.length !== 1) throw new Error(`${label} must resolve exactly one active model ${modelName} card`);
+  return cards[0][2].trim().replace(/\s+/g, " ").toLowerCase();
+}
+
+function parseGeneratedMosfetBench(text, label, activeModelName, activeModelSignature) {
   const lines = String(text).split(/\r?\n/).map((line) => line.trim()).filter((line) => line && !line.startsWith("*"));
   const temperatures = lines.filter((line) => /^\.temp\b/i.test(line));
   if (temperatures.length !== 1) throw new Error(`${label} must declare exactly one .temp directive`);
@@ -402,6 +433,16 @@ function parseGeneratedMosfetBench(text, label) {
   if (tempTokens.length !== 2 || !Number.isFinite(Number(tempTokens[1]))) throw new Error(`${label} has an unsupported .temp directive`);
   const analyses = lines.filter((line) => /^\.(?:op|dc|ac|tran)\b/i.test(line));
   if (analyses.length !== 1 || !/^\.op$/i.test(analyses[0])) throw new Error(`${label} linked MOSFET evidence supports only the generated .op bench grammar`);
+  const modelNames = lines.flatMap((line) => {
+    const match = /^\.model\s+(\S+)\b/i.exec(line);
+    return match ? [match[1]] : [];
+  });
+  if (modelNames.filter((name) => name.toLowerCase() === activeModelName.toLowerCase()).length !== 1) {
+    throw new Error(`${label} must embed exactly one authoritative active model ${activeModelName} card`);
+  }
+  if (vdmosCardSignature(text, activeModelName, label) !== activeModelSignature) {
+    throw new Error(`${label} embedded active model ${activeModelName} card must exactly match model.cir`);
+  }
   const sources = new Map();
   const mosfets = [];
   for (const line of lines) {
@@ -418,9 +459,12 @@ function parseGeneratedMosfetBench(text, label) {
   return { temperature: Number(tempTokens[1]), sources, mosfets };
 }
 
-function validateLinkedMosfetBenches(component, packageDir, expectations, byEvidenceId, activeModelName) {
+function validateLinkedMosfetBenches(component, packageDir, expectations, byEvidenceId, activeModelName, modelText) {
   if (!["nmos", "pmos"].includes(component?.electrical_family)) return [];
   const errors = [];
+  let activeModelSignature;
+  try { activeModelSignature = vdmosCardSignature(modelText, activeModelName, "model.cir"); }
+  catch (error) { return [error.message]; }
   const sign = component.electrical_family === "pmos" ? -1 : 1;
   const same = (left, right) => Number.isFinite(Number(left)) && Number.isFinite(Number(right)) && Math.abs(Number(left) - Number(right)) <= 1e-12 * Math.max(1, Math.abs(Number(left)), Math.abs(Number(right)));
   const assertVoltage = (bench, node, expected, label) => {
@@ -442,7 +486,7 @@ function validateLinkedMosfetBenches(component, packageDir, expectations, byEvid
       continue;
     }
     let bench;
-    try { bench = parseGeneratedMosfetBench(fs.readFileSync(path.join(packageDir, "tests", test.test_netlist), "utf8"), label); }
+    try { bench = parseGeneratedMosfetBench(fs.readFileSync(path.join(packageDir, "tests", test.test_netlist), "utf8"), label, activeModelName, activeModelSignature); }
     catch (error) { errors.push(error.message); continue; }
     for (const check of linked) {
       const resolved = byEvidenceId.get(check.evidence_id);
@@ -493,6 +537,7 @@ function validateNewContractPackage(component, facts, fitted, modelText, expecta
   const evidence = collectFactsEvidence(facts);
   const region = component?.supported_operating_region;
 
+  if (component?.evidence_contract_version !== "1.0.0") errors.push("component evidence_contract_version must be 1.0.0");
   if (facts?.evidence_contract_version !== "1.0.0") errors.push("facts evidence_contract_version must be 1.0.0");
   if (fitted?.evidence_contract_version !== "1.0.0") errors.push("fitted evidence_contract_version must be 1.0.0");
   if (!evidence.length) errors.push("facts must contain resolvable evidence identities for a 1.0.0 contract package");
@@ -504,7 +549,7 @@ function validateNewContractPackage(component, facts, fitted, modelText, expecta
   if (["nmos", "pmos"].includes(component?.electrical_family)) {
     try { activeModelName = activeVdmosModelCard(modelText).name; } catch { /* channel-card validation emits the diagnostic */ }
   }
-  if (activeModelName) errors.push(...validateLinkedMosfetBenches(component, packageDir, expectations, byEvidenceId, activeModelName));
+  if (activeModelName) errors.push(...validateLinkedMosfetBenches(component, packageDir, expectations, byEvidenceId, activeModelName, modelText));
   errors.push(...residualCalibrationErrors(fitted));
   errors.push(...mosfetResidualSummaryErrors(component, fitted));
 
@@ -524,8 +569,9 @@ function validateNewContractPackage(component, facts, fitted, modelText, expecta
     else {
       const actual = emitted.get(name);
       const expectedValue = Number(expected);
-      if (component?.electrical_family === "pmos" && name === "VTO") {
-        if (!(actual < 0)) errors.push("model.cir PMOS VTO must be negative");
+      if (["nmos", "pmos"].includes(component?.electrical_family) && name === "VTO") {
+        if (component.electrical_family === "pmos" && !(actual < 0)) errors.push("model.cir PMOS VTO must be negative");
+        if (component.electrical_family === "nmos" && !(actual > 0)) errors.push("model.cir NMOS VTO must be positive");
         if (Math.abs(Math.abs(actual) - Math.abs(expectedValue)) > 5e-10 * Math.max(1, Math.abs(expectedValue))) {
           errors.push("model.cir parameter VTO magnitude disagrees with fitted.json");
         }
@@ -749,7 +795,11 @@ function packageContractSignals(component, facts, fitted, expectations) {
   const region = component?.supported_operating_region;
   const bounds = Array.isArray(region?.numeric_bounds) ? region.numeric_bounds : [];
   const checks = expectationChecks(expectations);
+  const generatedByEvidenceContractBulkPath = ["nmos", "pmos"].includes(component?.electrical_family)
+    && component?.generator?.tool_or_agent === "opencircuit-model-factory-v0.1.0 bulk-adapter evidence-contract-1.0.0";
   return [
+    generatedByEvidenceContractBulkPath && "authoritative MOSFET bulk-adapter evidence-contract generator path",
+    component?.evidence_contract_version != null && "component.evidence_contract_version",
     facts?.evidence_contract_version != null && "facts.evidence_contract_version",
     fitted?.evidence_contract_version != null && "fitted.evidence_contract_version",
     expectations?.evidence_contract_version != null && "expectations.evidence_contract_version",
@@ -764,6 +814,7 @@ function contractVersionErrors(component, facts, fitted, expectations) {
   const errors = [];
   const region = component?.supported_operating_region;
   for (const [label, value] of [
+    ["component evidence_contract_version", component?.evidence_contract_version],
     ["facts evidence_contract_version", facts?.evidence_contract_version],
     ["fitted evidence_contract_version", fitted?.evidence_contract_version],
     ["expectations evidence_contract_version", expectations?.evidence_contract_version],
