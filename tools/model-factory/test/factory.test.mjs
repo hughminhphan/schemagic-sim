@@ -228,7 +228,7 @@ test("conveyor MOSFET package contract rejects hidden critical defaults and hybr
 });
 
 test("legacy reviewed MOSFET package generation remains backward-compatible", () => {
-  const packageDir = path.resolve("../../packages/model-library/models/infineon/IRLZ44N");
+  const packageDir = path.resolve("packages/model-library/models/infineon/irlz44n");
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "factory-mosfet-legacy-"));
   try {
     fs.cpSync(packageDir, root, { recursive: true });

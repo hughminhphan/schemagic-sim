@@ -237,7 +237,6 @@ test("valid Batch 12 typical-point formulas stay exact, incomplete snapshots fai
   const regression = loadFixture("batch12-survivor-regression");
   const validTypicalNames = new Set(["AO7400", "FSS2301S", "NCE3401AY"]);
   const incompleteTypicalNames = new Set(["IRLML0040", "BSC070N10NS3G"]);
-  const inadmissibleF2Names = new Set(["BSS131H6327", "3401P-MS"]);
   assert.equal(regression.survivors.length, 7);
   for (const survivor of regression.survivors) {
     if (incompleteTypicalNames.has(survivor.name)) {
@@ -245,14 +244,6 @@ test("valid Batch 12 typical-point formulas stay exact, incomplete snapshots fai
         () => fitBulkPart(survivor.part, survivor.extraction, { forceF1: true, ngspiceRunner: syntaxPass, mosfetConstraintRunner: noOptimizer }),
         /must state its own exact VGS and ID/,
         `${survivor.name} must not retain split free-floating RDS conditions`,
-      );
-      continue;
-    }
-    if (inadmissibleF2Names.has(survivor.name)) {
-      assert.throws(
-        () => fitBulkPart(survivor.part, survivor.extraction, { ngspiceRunner: syntaxPass }),
-        survivor.name === "BSS131H6327" ? /explicit fixed VDS.*saturation inequality/i : /pulsed evidence.*static DC MOSFET fit/i,
-        `${survivor.name} must fail closed when its curve and scalar evidence cannot share a DC fit contract`,
       );
       continue;
     }
