@@ -38,14 +38,10 @@ jobs:
       - name: Run workspace tests
         run: npm test
 
-      # Keep model-package schema and provenance validation visible as an
-      # explicit hard gate even though the model-library test script also runs it.
-      - name: Validate every component model package
-        shell: bash
-        run: |
-          while IFS= read -r -d '' model; do
-            node packages/component-schema/validate-package.mjs "$model"
-          done < <(find packages/model-library/models -mindepth 2 -maxdepth 2 -type d -print0 | sort -z)
+      # Keep policy-aware model-package schema and provenance validation visible
+      # as an explicit hard gate even though the model-library test also runs it.
+      - name: Validate every registered component model package
+        run: node packages/model-library/validate-library.mjs
 
       - name: Build all workspaces
         run: npm run build

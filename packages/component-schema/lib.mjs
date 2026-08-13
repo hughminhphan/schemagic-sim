@@ -434,39 +434,71 @@ function vdmosCardSignature(text, modelName, label) {
   return cards[0][2].trim().replace(/\s+/g, " ").toLowerCase();
 }
 
+const SPICE_DECIMAL_LITERAL = /^[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?$/;
+
 function parseGeneratedMosfetBench(text, label, activeModelName, activeModelSignature) {
-  const lines = String(text).split(/\r?\n/).map((line) => line.trim()).filter((line) => line && !line.startsWith("*"));
-  if (lines.some((line) => /^\.(?:include|lib)\b/i.test(line))) {
-    throw new Error(`${label} generated MOSFET bench must not load .include or .lib model definitions`);
+  const physicalLines = String(text).split(/\r?\n/);
+  const title = physicalLines[0]?.trim();
+  if (!title || title.startsWith("*") || title.startsWith(".") || title.startsWith("+")) {
+    throw new Error(`${label} generated MOSFET bench must begin with one physical title line`);
   }
-  const temperatures = lines.filter((line) => /^\.temp\b/i.test(line));
+  const statements = physicalLines.slice(1).map((line) => line.trim()).filter((line) => line && !line.startsWith("*"));
+  const allowedStatement = (line) => [
+    /^\.model\s+\S+\s+VDMOS\s*\([^)]*\)$/i,
+    /^\.temp\s+\S+$/i,
+    /^[VI]\S*\s+\S+\s+\S+\s+DC\s+\S+$/i,
+    /^M\S*\s+\S+\s+\S+\s+\S+\s+\S+$/i,
+    /^\.op$/i,
+    /^\.end$/i
+  ].some((pattern) => pattern.test(line));
+  const unsupported = statements.find((line) => !allowedStatement(line));
+  if (unsupported) {
+    throw new Error(`${label} generated MOSFET bench contains unsupported statement ${JSON.stringify(unsupported)}`);
+  }
+  const endings = statements.filter((line) => /^\.end$/i.test(line));
+  if (endings.length !== 1 || statements.at(-1)?.toLowerCase() !== ".end") {
+    throw new Error(`${label} generated MOSFET bench must terminate with exactly one .end directive`);
+  }
+  const temperatures = statements.filter((line) => /^\.temp\b/i.test(line));
   if (temperatures.length !== 1) throw new Error(`${label} must declare exactly one .temp directive`);
   const tempTokens = temperatures[0].split(/\s+/);
-  if (tempTokens.length !== 2 || !Number.isFinite(Number(tempTokens[1]))) throw new Error(`${label} has an unsupported .temp directive`);
-  const analyses = lines.filter((line) => /^\.(?:op|dc|ac|tran)\b/i.test(line));
+  if (tempTokens.length !== 2 || !SPICE_DECIMAL_LITERAL.test(tempTokens[1]) || !Number.isFinite(Number(tempTokens[1]))) throw new Error(`${label} has an unsupported .temp directive`);
+  const analyses = statements.filter((line) => /^\.(?:op|dc|ac|tran)\b/i.test(line));
   if (analyses.length !== 1 || !/^\.op$/i.test(analyses[0])) throw new Error(`${label} linked MOSFET evidence supports only the generated .op bench grammar`);
-  const modelNames = lines.flatMap((line) => {
+  const modelNames = statements.flatMap((line) => {
     const match = /^\.model\s+(\S+)\b/i.exec(line);
     return match ? [match[1]] : [];
   });
-  if (modelNames.filter((name) => name.toLowerCase() === activeModelName.toLowerCase()).length !== 1) {
-    throw new Error(`${label} must embed exactly one authoritative active model ${activeModelName} card`);
+  if (modelNames.length !== 1 || modelNames[0].toLowerCase() !== activeModelName.toLowerCase()) {
+    throw new Error(`${label} must embed exactly one authoritative active model ${activeModelName} card and no auxiliary model cards`);
   }
   if (vdmosCardSignature(text, activeModelName, label) !== activeModelSignature) {
     throw new Error(`${label} embedded active model ${activeModelName} card must exactly match model.cir`);
   }
   const sources = new Map();
   const mosfets = [];
-  for (const line of lines) {
+  const mosfetNames = new Set();
+  for (const line of statements) {
     let match = /^([VI]\S*)\s+(\S+)\s+(\S+)\s+DC\s+(\S+)$/i.exec(line);
     if (match) {
       const value = Number(match[4]);
-      if (!Number.isFinite(value)) throw new Error(`${label} source ${match[1]} has a non-fixed or non-numeric DC value`);
-      sources.set(match[1].toLowerCase(), { name: match[1], positive: match[2].toLowerCase(), negative: match[3].toLowerCase(), value });
+      const sourceName = match[1].toLowerCase();
+      const nodes = [match[2], match[3]].map((node) => node.toLowerCase());
+      if (nodes.includes("gnd")) throw new Error(`${label} generated MOSFET bench must use 0, not the ngspice gnd alias`);
+      if (!SPICE_DECIMAL_LITERAL.test(match[4]) || !Number.isFinite(value)) throw new Error(`${label} source ${match[1]} has a non-fixed or non-decimal DC value`);
+      if (sources.has(sourceName)) throw new Error(`${label} source names must be unique`);
+      sources.set(sourceName, { name: match[1], positive: match[2].toLowerCase(), negative: match[3].toLowerCase(), value });
       continue;
     }
     match = /^(M\S*)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)$/i.exec(line);
-    if (match) mosfets.push({ name: match[1], drain: match[2].toLowerCase(), gate: match[3].toLowerCase(), source: match[4].toLowerCase(), model: match[5] });
+    if (match) {
+      const mosfetName = match[1].toLowerCase();
+      const nodes = [match[2], match[3], match[4]].map((node) => node.toLowerCase());
+      if (nodes.includes("gnd")) throw new Error(`${label} generated MOSFET bench must use 0, not the ngspice gnd alias`);
+      if (mosfetNames.has(mosfetName)) throw new Error(`${label} MOSFET instance names must be unique`);
+      mosfetNames.add(mosfetName);
+      mosfets.push({ name: match[1], drain: match[2].toLowerCase(), gate: match[3].toLowerCase(), source: match[4].toLowerCase(), model: match[5] });
+    }
   }
   return { temperature: Number(tempTokens[1]), sources, mosfets };
 }
@@ -500,6 +532,14 @@ function validateLinkedMosfetBenches(component, packageDir, expectations, byEvid
     let bench;
     try { bench = parseGeneratedMosfetBench(fs.readFileSync(path.join(packageDir, "tests", test.test_netlist), "utf8"), label, activeModelName, activeModelSignature); }
     catch (error) { errors.push(error.message); continue; }
+    const consumedSourceNames = new Set();
+    const consumedMosfetNames = new Set();
+    const consumeSource = (source) => { if (source) consumedSourceNames.add(source.name.toLowerCase()); };
+    const consumeMosfet = (mosfet) => { if (mosfet) consumedMosfetNames.add(mosfet.name.toLowerCase()); };
+    const voltageSource = (node) => [...bench.sources.values()].find((candidate) => candidate.positive === node && candidate.negative === "0");
+    const currentSource = (node) => [...bench.sources.values()].find((candidate) => component.electrical_family === "pmos"
+      ? candidate.positive === node && candidate.negative === "0"
+      : candidate.positive === "0" && candidate.negative === node);
     for (const check of linked) {
       const resolved = byEvidenceId.get(check.evidence_id);
       if (!resolved) continue;
@@ -518,6 +558,10 @@ function validateLinkedMosfetBenches(component, packageDir, expectations, byEvid
           if (!drainSource || drainSource.negative !== "0") throw new Error(`${checkLabel} does not reference a generated drain-voltage source`);
           const transistor = bench.mosfets.find((candidate) => candidate.drain === drainSource.positive && candidate.source === "0");
           if (!transistor) throw new Error(`${checkLabel} has no generated DUT instance for its drain source`);
+          const gateSource = voltageSource(transistor.gate);
+          consumeSource(drainSource);
+          consumeSource(gateSource);
+          consumeMosfet(transistor);
           if (transistor.model.toLowerCase() !== activeModelName.toLowerCase()) throw new Error(`${checkLabel} generated DUT instance must use active model ${activeModelName}`);
           const vds = resolved.characteristic === "transfer_current" ? condition.electrical.vds?.value_v : resolved.point.x_si;
           const vgs = resolved.characteristic === "transfer_current" ? resolved.point.x_si : condition.electrical.vgs?.value_v;
@@ -529,6 +573,9 @@ function validateLinkedMosfetBenches(component, packageDir, expectations, byEvid
           const transistor = bench.mosfets.find((candidate) => candidate.drain === node && candidate.source === "0");
           if (!transistor || condition.electrical.vgs.kind !== "fixed" || condition.electrical.id.kind !== "fixed") throw new Error(`${checkLabel} cannot represent the linked RDS(on) condition`);
           if (transistor.model.toLowerCase() !== activeModelName.toLowerCase()) throw new Error(`${checkLabel} generated DUT instance must use active model ${activeModelName}`);
+          consumeSource(voltageSource(transistor.gate));
+          consumeSource(currentSource(transistor.drain));
+          consumeMosfet(transistor);
           assertVoltage(bench, transistor.gate, condition.electrical.vgs.value_v, checkLabel);
           assertCurrent(bench, transistor.drain, condition.electrical.id.value_a, checkLabel);
         } else if (resolved.characteristic === "gate_threshold") {
@@ -536,9 +583,16 @@ function validateLinkedMosfetBenches(component, packageDir, expectations, byEvid
           const transistor = bench.mosfets.find((candidate) => candidate.drain === node && candidate.gate === node && candidate.source === "0");
           if (!transistor || condition.electrical.vds?.relation !== "vds_equals_vgs" || condition.electrical.id.kind !== "fixed") throw new Error(`${checkLabel} cannot represent the linked threshold condition`);
           if (transistor.model.toLowerCase() !== activeModelName.toLowerCase()) throw new Error(`${checkLabel} generated DUT instance must use active model ${activeModelName}`);
+          consumeSource(currentSource(node));
+          consumeMosfet(transistor);
           assertCurrent(bench, node, condition.electrical.id.value_a, checkLabel);
         } else throw new Error(`${checkLabel} uses unsupported linked MOSFET bench semantics`);
       } catch (error) { errors.push(error.message); }
+    }
+    const unconsumedSources = [...bench.sources.values()].filter((source) => !consumedSourceNames.has(source.name.toLowerCase()));
+    const unconsumedMosfets = bench.mosfets.filter((mosfet) => !consumedMosfetNames.has(mosfet.name.toLowerCase()));
+    if (unconsumedSources.length || unconsumedMosfets.length) {
+      errors.push(`${label} contains generated sources or MOSFET instances that are not consumed by linked evidence checks`);
     }
   }
   return errors;

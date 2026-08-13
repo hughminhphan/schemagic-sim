@@ -305,7 +305,7 @@ test("linked operating benches reject temperature, analysis, VDS, and VGS mutati
   const model = ".model DUT VDMOS(VTO=2)\n";
   const cases = [
     [`Fixture test\n${model}.temp 25\nMT1 d g 0 DUT\nVd d 0 DC 10\nVg g 0 DC 2.5\n.op\n.end\n`, ".temp disagrees"],
-    [`Fixture test\n${model}.temp 75\nMT1 d g 0 DUT\nVd d 0 DC 10\nVg g 0 DC 2.5\n.dc Vg 0 4 1\n.end\n`, "only the generated .op"],
+    [`Fixture test\n${model}.temp 75\nMT1 d g 0 DUT\nVd d 0 DC 10\nVg g 0 DC 2.5\n.dc Vg 0 4 1\n.end\n`, "contains unsupported statement"],
     [`Fixture test\n${model}.temp 75\nMT1 d g 0 DUT\nVd d 0 DC 11\nVg g 0 DC 2.5\n.op\n.end\n`, "drain-source bias disagrees"],
     [`Fixture test\n${model}.temp 75\nMT1 d g 0 DUT\nVd d 0 DC 10\nVg g 0 DC 3\n.op\n.end\n`, "voltage bias"]
   ];
@@ -346,14 +346,80 @@ test("linked MOSFET benches reject local active-model card substitution", () => 
   } finally { fs.rmSync(root, { recursive: true, force: true }); }
 });
 
-test("linked MOSFET benches reject include and lib model shadowing", () => {
-  for (const directive of [".include shadow.cir", ".lib shadow.lib corner"]) {
-    const root = fs.mkdtempSync(path.join(os.tmpdir(), "component-bench-indirect-shadow-"));
+test("linked MOSFET benches reject every statement outside the generated allowlist", () => {
+  for (const directive of [
+    ".include shadow.cir",
+    ".lib shadow.lib corner",
+    ".control\naltermod @DUT[VTO]=9\nop\n.endc",
+    ".control\nop\n.endc",
+    ".source shadow.cir",
+    "altermod @DUT[VTO]=9",
+    "RHELP d 0 1k"
+  ]) {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), "component-bench-unsupported-statement-"));
     try {
       writeContractPackage(root);
       fs.writeFileSync(path.join(root, "tests", "transfer.cir"), `Fixture test\n${directive}\n.model DUT VDMOS(VTO=2)\n.temp 75\nMT1 d g 0 DUT\nVd d 0 DC 10\nVg g 0 DC 2.5\n.op\n.end\n`);
       const errors = validatePackage(root, { requireEvidenceContract: true }).errors;
-      assert.ok(errors.some((error) => error.includes("must not load .include or .lib")), `${directive}: ${errors.join("\n")}`);
+      assert.ok(errors.some((error) => error.includes("contains unsupported statement")), `${directive}: ${errors.join("\n")}`);
+    } finally { fs.rmSync(root, { recursive: true, force: true }); }
+  }
+});
+
+test("linked MOSFET benches cannot hide a live statement in the title slot", () => {
+  for (const prefix of ["* comment\n", "\n"]) {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), "component-bench-title-slot-"));
+    try {
+      writeContractPackage(root);
+      fs.writeFileSync(path.join(root, "tests", "transfer.cir"), `${prefix}RSHUNT d 0 1\n.model DUT VDMOS(VTO=2)\n.temp 75\nMT1 d g 0 DUT\nVd d 0 DC 10\nVg g 0 DC 2.5\n.op\n.end\n`);
+      const errors = validatePackage(root, { requireEvidenceContract: true }).errors;
+      assert.ok(errors.some((error) => error.includes("must begin with one physical title line")), `${JSON.stringify(prefix)}: ${errors.join("\n")}`);
+    } finally { fs.rmSync(root, { recursive: true, force: true }); }
+  }
+});
+
+test("linked MOSFET benches reject auxiliary models, devices, and sources", () => {
+  for (const extra of [
+    ".model AUX VDMOS(VTO=0.1)",
+    "MX1 d g 0 DUT",
+    "IINJECT 0 d DC 5"
+  ]) {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), "component-bench-extra-topology-"));
+    try {
+      writeContractPackage(root);
+      fs.writeFileSync(path.join(root, "tests", "transfer.cir"), `Fixture test\n.model DUT VDMOS(VTO=2)\n.temp 75\nMT1 d g 0 DUT\nVd d 0 DC 10\nVg g 0 DC 2.5\n${extra}\n.op\n.end\n`);
+      const errors = validatePackage(root, { requireEvidenceContract: true }).errors;
+      assert.ok(errors.some((error) => error.includes("no auxiliary model cards") || error.includes("not consumed by linked evidence checks")), `${extra}: ${errors.join("\n")}`);
+    } finally { fs.rmSync(root, { recursive: true, force: true }); }
+  }
+});
+
+test("linked MOSFET benches reject ngspice ground aliases and non-decimal numeric tokens", () => {
+  for (const mutate of [
+    (bench) => bench.replace("MT1 d g 0 DUT", "MT1 gnd g 0 DUT").replace("Vd d 0 DC 10", "Vd gnd 0 DC 10"),
+    (bench) => bench.replace("Vd d 0 DC 10", "Vd d 0 DC 0xA"),
+    (bench) => bench.replace("Vg g 0 DC 2.5", "Vg g 0 DC 0b10"),
+    (bench) => bench.replace(".temp 75", ".temp 0x4b")
+  ]) {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), "component-bench-ngspice-token-"));
+    try {
+      writeContractPackage(root);
+      const bench = "Fixture test\n.model DUT VDMOS(VTO=2)\n.temp 75\nMT1 d g 0 DUT\nVd d 0 DC 10\nVg g 0 DC 2.5\n.op\n.end\n";
+      fs.writeFileSync(path.join(root, "tests", "transfer.cir"), mutate(bench));
+      const errors = validatePackage(root, { requireEvidenceContract: true }).errors;
+      assert.ok(errors.some((error) => error.includes("gnd alias") || error.includes("non-decimal") || error.includes("unsupported .temp")), errors.join("\n"));
+    } finally { fs.rmSync(root, { recursive: true, force: true }); }
+  }
+});
+
+test("linked MOSFET benches require exactly one final end directive", () => {
+  for (const ending of ["", ".end\n.end", ".end\nVextra x 0 DC 0"]) {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), "component-bench-end-grammar-"));
+    try {
+      writeContractPackage(root);
+      fs.writeFileSync(path.join(root, "tests", "transfer.cir"), `Fixture test\n.model DUT VDMOS(VTO=2)\n.temp 75\nMT1 d g 0 DUT\nVd d 0 DC 10\nVg g 0 DC 2.5\n.op\n${ending}\n`);
+      const errors = validatePackage(root, { requireEvidenceContract: true }).errors;
+      assert.ok(errors.some((error) => error.includes("must terminate with exactly one .end")), `${ending}: ${errors.join("\n")}`);
     } finally { fs.rmSync(root, { recursive: true, force: true }); }
   }
 });
