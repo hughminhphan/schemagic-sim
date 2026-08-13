@@ -121,6 +121,21 @@
     "part_specific_bypasses_added": 0,
     "fit_retries_run": 0
   },
+  "final_release_control_audit": {
+    "date": "2026-08-14",
+    "verdict": "APPROVE",
+    "audited_head": "4c3318d",
+    "scope": "terminal record, Batch 15 integrity evidence, single fit-pass outcome, reviewed-library immutability, and campaign stop conditions",
+    "confirmed": [
+      "the cumulative code APPROVE preceded the fit pass",
+      "all 10 immutable jobs retained their recorded hashes and read-only modes",
+      "the completion ledger contained exactly 8 unique accepted keys with matching response hashes",
+      "exactly one fit pass transitioned all 8 eligible rows from extracted to failed_fitted",
+      "zero packages were staged and both fixed proving thresholds failed",
+      "no retry, promotion, reviewed-library mutation, deployment, or authorized continuation occurred"
+    ],
+    "authorization_effect": "record verification only; the campaign remains stopped and this audit authorizes no push, deployment, promotion, or continuation"
+  },
   "terminal_result": {
     "decision": "STOP_CAMPAIGN_GATE_FAIL",
     "summary": "After a fresh cumulative APPROVE of the integrated evidence-admission code, all ten immutable job hashes and eight unique accepted completion-ledger entries were reverified. Orders 980 and 988 remained parked. The one authorized fit pass ran over the eight accepted extractions and staged zero packages because every candidate failed the strict F1 and F2 evidence contracts. The Batch 15 proving gate therefore failed without retries or relaxed constraints. The reviewed library remains 710.",
