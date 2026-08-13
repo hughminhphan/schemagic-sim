@@ -1,8 +1,6 @@
 from __future__ import annotations
 
 import json
-import queue
-import sqlite3
 import sys
 import tempfile
 import threading
@@ -13,10 +11,8 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(HERE))
 
-from conveyorlib import (MAX_LUNA_CAP, ConveyorError, ExtractionCompletion,
-                         ExtractionCoordinator, StateStore, attempt_response_path, cross_check,
-                         filter_library_collisions, load_and_validate_extraction,
-                         normalize_extraction_payload, publish_response_no_overwrite,
+from conveyorlib import (ConveyorError, StateStore, cross_check, filter_library_collisions,
+                         load_and_validate_extraction, normalize_extraction_payload,
                          run_extraction_batch, should_park_family)
 
 
@@ -252,7 +248,7 @@ class FamilyParkingTest(unittest.TestCase):
 
 
 class MockedLunaDispatchTest(unittest.TestCase):
-    def test_hard_caps_mocked_luna_calls_at_eight(self):
+    def test_hard_caps_mocked_luna_calls_at_four(self):
         lock = threading.Lock()
         active = 0
         peak = 0
@@ -267,187 +263,12 @@ class MockedLunaDispatchTest(unittest.TestCase):
                 active -= 1
             return {"lcsc_id": job["lcsc_id"], "json_only": True}
 
-        jobs = [{"lcsc_id": f"C{index}"} for index in range(24)]
-        results = run_extraction_batch(jobs, invoke, max_concurrency=8)
+        jobs = [{"lcsc_id": f"C{index}"} for index in range(12)]
+        results = run_extraction_batch(jobs, invoke, max_concurrency=4)
         self.assertEqual([item["lcsc_id"] for item in results], [item["lcsc_id"] for item in jobs])
-        self.assertLessEqual(peak, 8)
-        self.assertEqual(MAX_LUNA_CAP, 8)
+        self.assertLessEqual(peak, 4)
         with self.assertRaises(ConveyorError):
-            run_extraction_batch(jobs, invoke, max_concurrency=9)
-
-
-class CoordinatorSchedulerTest(unittest.TestCase):
-    def setUp(self):
-        self.temporary = tempfile.TemporaryDirectory()
-        self.root = Path(self.temporary.name)
-        self.state = self.root / "state.sqlite3"
-        self.schema = HERE / "schemas/diode.schema.json"
-
-    def tearDown(self):
-        self.temporary.cleanup()
-
-    def job(self, lcsc_id="C1", mpn="D1", **updates):
-        value = {
-            "tranche": "t", "lcsc_id": lcsc_id, "mpn": mpn,
-            "manufacturer": "Fixture", "family": "diode",
-            "schema_path": str(self.schema),
-            "response_path": str(self.root / "out" / f"{lcsc_id}.json"),
-            "prompt": f"extract {mpn}", "seed_hints": [],
-        }
-        value.update(updates)
-        return value
-
-    def test_atomic_reservation_is_unique(self):
-        store = StateStore(self.state)
-        store.register_extraction_job(self.job())
-        store.close()
-        barrier = threading.Barrier(2)
-        reservations = []
-        lock = threading.Lock()
-
-        def reserve(worker):
-            local = StateStore(self.state)
-            barrier.wait()
-            result = local.reserve_extraction_job(worker, 30)
-            with lock:
-                reservations.append(result)
-            local.close()
-
-        threads = [threading.Thread(target=reserve, args=(f"w{i}",)) for i in range(2)]
-        for thread in threads:
-            thread.start()
-        for thread in threads:
-            thread.join()
-        self.assertEqual(sum(item is not None for item in reservations), 1)
-
-    def test_out_of_order_completion_is_consumed_once(self):
-        jobs = [self.job("C1", "D1"), self.job("C2", "D2")]
-
-        def invoke(job):
-            time.sleep(0.03 if job["lcsc_id"] == "C1" else 0.001)
-            payload = diode_payload()
-            payload["mpn"] = job["mpn"]
-            payload["datasheet_identity"]["title"] = job["mpn"]
-            return payload
-
-        coordinator = ExtractionCoordinator(self.state, invoke, max_concurrency=2)
-        results = coordinator.run(jobs)
-        self.assertEqual([item["job_key"] for item in results], ["t:C2", "t:C1"])
-        store = StateStore(self.state)
-        self.assertEqual(store.completed_job_keys(), {"t:C1", "t:C2"})
-        store.close()
-
-    def test_duplicate_completed_dispatch_is_refused(self):
-        calls = 0
-
-        def invoke(job):
-            nonlocal calls
-            calls += 1
-            return diode_payload()
-
-        coordinator = ExtractionCoordinator(self.state, invoke, max_concurrency=1)
-        self.assertEqual(coordinator.run([self.job()])[0]["status"], "completed")
-        second = ExtractionCoordinator(self.state, invoke, max_concurrency=1)
-        self.assertEqual(second.run([self.job()]), [])
-        self.assertEqual(calls, 1)
-
-    def test_identity_mismatch_is_quarantined(self):
-        payload = diode_payload()
-        payload["mpn"] = "WRONG"
-        results = ExtractionCoordinator(self.state, lambda job: payload, max_concurrency=1).run([self.job()])
-        self.assertEqual(results[0]["status"], "quarantined")
-        self.assertFalse(Path(self.job()["response_path"]).exists())
-        self.assertTrue(list((self.root / "out").glob("*.quarantine-*")))
-
-    def test_zero_response_is_replaced_once(self):
-        calls = 0
-
-        def invoke(job):
-            nonlocal calls
-            calls += 1
-            return None if calls == 1 else diode_payload()
-
-        coordinator = ExtractionCoordinator(self.state, invoke, max_concurrency=1)
-        results = coordinator.run([self.job()])
-        self.assertEqual([item["status"] for item in results], ["retry_missing", "completed"])
-        self.assertEqual(calls, 2)
-        store = StateStore(self.state)
-        row = store.scheduler_rows()[0]
-        self.assertEqual(row["missing_replacements"], 1)
-        self.assertEqual(row["attempts"], 2)
-        store.close()
-
-    def test_discrepancy_retries_once(self):
-        bad = diode_payload()
-        job = self.job(seed_hints=[{"factory_target": "diode.forward_voltage", "raw_value": "7.2V"}])
-        coordinator = ExtractionCoordinator(self.state, lambda reserved: bad, max_concurrency=1)
-        results = coordinator.run([job])
-        self.assertEqual([item["status"] for item in results], ["retry_discrepancy", "completed"])
-        self.assertIn("after one retry", results[-1]["reason"])
-        store = StateStore(self.state)
-        self.assertEqual(store.scheduler_rows()[0]["discrepancy_retries"], 1)
-        store.close()
-
-    def test_atomic_publish_never_overwrites(self):
-        canonical = self.root / "canonical.json"
-        canonical.write_text("old")
-        temporary = attempt_response_path(canonical, 1)
-        temporary.write_text("new")
-        with self.assertRaisesRegex(ConveyorError, "refusing overwrite"):
-            publish_response_no_overwrite(temporary, canonical)
-        self.assertEqual(canonical.read_text(), "old")
-        self.assertEqual(temporary.read_text(), "new")
-
-    def test_completion_queue_is_bounded_and_backpressures(self):
-        coordinator = ExtractionCoordinator(self.state, lambda job: None, max_concurrency=2)
-        self.assertEqual(coordinator.completion_queue.maxsize, 4)
-        for index in range(4):
-            coordinator.completion_queue.put(ExtractionCompletion({"index": index}))
-        with self.assertRaises(queue.Full):
-            coordinator.completion_queue.put_nowait(ExtractionCompletion({"index": 5}))
-
-    def test_expired_lease_is_recovered(self):
-        store = StateStore(self.state)
-        store.register_extraction_job(self.job())
-        first = store.reserve_extraction_job("dead-worker", 0.001)
-        time.sleep(0.01)
-        self.assertEqual(store.recover_expired_leases(), 1)
-        second = store.reserve_extraction_job("replacement", 10)
-        self.assertEqual(second["job_key"], first["job_key"])
-        self.assertEqual(second["attempt"], 2)
-        store.close()
-
-    def test_hash_drift_is_a_hard_stop(self):
-        store = StateStore(self.state)
-        store.register_extraction_job(self.job())
-        with self.assertRaisesRegex(ConveyorError, "hash drift"):
-            store.register_extraction_job(self.job(prompt="changed"))
-        store.close()
-
-    def test_restart_reconciles_valid_canonical_file(self):
-        store = StateStore(self.state)
-        row = store.register_extraction_job(self.job())
-        store.reserve_extraction_job("crashed", 30)
-        Path(row["canonical_path"]).parent.mkdir(parents=True, exist_ok=True)
-        Path(row["canonical_path"]).write_text(json.dumps(diode_payload()))
-        store.close()
-        coordinator = ExtractionCoordinator(self.state, lambda job: self.fail("must not redispatch"), max_concurrency=1)
-        self.assertEqual(coordinator.reconcile(), 1)
-        self.assertEqual(coordinator.run([]), [])
-        store = StateStore(self.state)
-        self.assertEqual(store.scheduler_rows()[0]["state"], "completed")
-        store.close()
-
-    def test_existing_database_is_migrated(self):
-        connection = sqlite3.connect(self.state)
-        connection.execute("CREATE TABLE extraction_jobs (job_key TEXT PRIMARY KEY, tranche TEXT, lcsc_id TEXT)")
-        connection.commit()
-        connection.close()
-        store = StateStore(self.state)
-        columns = {row[1] for row in store.connection.execute("PRAGMA table_info(extraction_jobs)")}
-        self.assertIn("job_hash", columns)
-        self.assertIn("lease_until", columns)
-        store.close()
+            run_extraction_batch(jobs, invoke, max_concurrency=5)
 
 
 if __name__ == "__main__":

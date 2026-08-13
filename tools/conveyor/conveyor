@@ -15,10 +15,9 @@ FEEDER_ROOT = HERE.parent / "part-feeder"
 sys.path.insert(0, str(HERE))
 sys.path.insert(0, str(FEEDER_ROOT))
 
-from conveyorlib import (DEFAULT_LUNA_CAP, MAX_LUNA_CAP, ConveyorError, StateStore,
-                         build_luna_prompt, choose_balanced, cross_check, filter_library_collisions,
-                         json_dump, load_and_validate_extraction, safe_stem, should_park_family,
-                         top_failure_reasons, top_recorded_reasons)
+from conveyorlib import (ConveyorError, StateStore, build_luna_prompt, choose_balanced, cross_check,
+                         filter_library_collisions, json_dump, load_and_validate_extraction, safe_stem,
+                         should_park_family, top_failure_reasons, top_recorded_reasons)
 from feederlib import download_datasheets, query_manifest, reviewed_mpns, validate_manifest
 
 DEFAULT_DATA = HERE / "data"
@@ -40,10 +39,8 @@ def parser() -> argparse.ArgumentParser:
     fetch.add_argument("manifest", type=Path)
     fetch.add_argument("--rate", type=float, default=0.5)
     fetch.add_argument("--retries", type=int, default=4)
-    jobs = commands.add_parser("jobs", help="write immutable coordinator-backed Luna extraction records")
+    jobs = commands.add_parser("jobs", help="write one Luna extraction brief per fetched datasheet")
     jobs.add_argument("manifest", type=Path)
-    jobs.add_argument("--max-concurrency", type=int, default=DEFAULT_LUNA_CAP,
-                      help=f"live Luna cap (default {DEFAULT_LUNA_CAP}, hard maximum {MAX_LUNA_CAP})")
     ingest = commands.add_parser("ingest", help="validate and cross-check one Luna JSON response")
     ingest.add_argument("manifest", type=Path)
     ingest.add_argument("--lcsc-id", required=True)
@@ -133,8 +130,6 @@ def fetch_command(args) -> int:
 
 
 def jobs_command(args) -> int:
-    if args.max_concurrency < 1 or args.max_concurrency > MAX_LUNA_CAP:
-        raise ConveyorError(f"Extraction concurrency must be between 1 and {MAX_LUNA_CAP}")
     manifest = load_manifest(args.manifest)
     tranche = tranche_name(args.manifest)
     staging = args.data_dir / "staging" / tranche
@@ -149,29 +144,12 @@ def jobs_command(args) -> int:
             pack = HERE / "context-packs" / f"{part['conveyor_family']}.json"
             discrepancies = [row["reason"]] if row["state"] == "failed_extracted" and row["reason"] else []
             prompt = build_luna_prompt(REPO_ROOT, pack, datasheet.resolve(), part, discrepancies)
-            job = {
-                "tranche": tranche,
-                "lcsc_id": part["lcsc_id"],
-                "mpn": part["mpn"],
-                "manufacturer": part["manufacturer"],
-                "family": part["conveyor_family"],
-                "datasheet_path": str(datasheet.resolve()),
-                "schema_path": str((HERE / "schemas" / f"{part['conveyor_family']}.schema.json").resolve()),
-                "response_path": str((staging / "extractions" / f"{safe_stem(part['lcsc_id'])}__{safe_stem(part['mpn'])}.json").resolve()),
-                "prompt": prompt,
-                "seed_hints": part.get("seed_hints", []),
-            }
-            registered = store.register_extraction_job(job)
-            jobs.append({**job, "job_key": registered["job_key"], "job_hash": registered["job_hash"]})
+            jobs.append({"lcsc_id": part["lcsc_id"], "mpn": part["mpn"], "family": part["conveyor_family"], "datasheet_path": str(datasheet.resolve()), "response_path": str((staging / "extractions" / f"{safe_stem(part['lcsc_id'])}__{safe_stem(part['mpn'])}.json").resolve()), "prompt": prompt})
     finally:
         store.close()
     output = staging / "extraction-jobs.json"
-    json_dump(output, {"schema_version": "1.0.0", "tranche": tranche, "job_count": len(jobs),
-                       "max_concurrency": args.max_concurrency,
-                       "completion_queue_capacity": 2 * args.max_concurrency, "jobs": jobs})
-    print(json.dumps({"jobs": str(output), "job_count": len(jobs),
-                      "max_concurrency": args.max_concurrency,
-                      "completion_queue_capacity": 2 * args.max_concurrency}, indent=2))
+    json_dump(output, {"schema_version": "1.0.0", "tranche": tranche, "job_count": len(jobs), "max_concurrency": 4, "jobs": jobs})
+    print(json.dumps({"jobs": str(output), "job_count": len(jobs), "max_concurrency": 4}, indent=2))
     return 0
 
 
