@@ -138,8 +138,15 @@ function citationIdentity(overrides = {}) {
 }
 
 function evidenceIdentity(condition, citation, role, overrides = {}) {
-  const content = { cohort_id: `sha256:${"b".repeat(64)}`, role, condition_id: condition.condition_id, citation_id: citation.citation_id, ...overrides };
-  return withId(content, "evidence_id");
+  const { quantity, value_si, unit_si, x_si, y_si, ...identityOverrides } = overrides;
+  const cohortId = overrides.curve_id
+    ? identityHash({ characteristic: condition.characteristic, condition_id: condition.condition_id, citation_id: citation.citation_id, curve_id: overrides.curve_id })
+    : identityHash({ characteristic: condition.characteristic, condition_id: condition.condition_id, source_sha256: citation.source_sha256, page: citation.page, ...(citation.table ? { table: citation.table, row: citation.row } : { figure: citation.figure, ...(citation.curve ? { curve: citation.curve } : { trace: citation.trace }) }) });
+  const content = { cohort_id: overrides.cohort_id ?? cohortId, role, condition_id: condition.condition_id, citation_id: citation.citation_id, ...identityOverrides };
+  const material = overrides.curve_id
+    ? { characteristic: condition.characteristic, role, point_index: overrides.point_index, x_si, y_si, condition_id: condition.condition_id, citation_id: citation.citation_id, cohort_id: content.cohort_id, curve_id: overrides.curve_id }
+    : { characteristic: condition.characteristic, role, quantity, value_si, unit_si, condition_id: condition.condition_id, citation_id: citation.citation_id };
+  return { ...content, evidence_id: identityHash(material) };
 }
 
 function quantity(label, value, unit, sourceKind, condition, citation, evidence) {
@@ -151,7 +158,7 @@ function curveIdentity(characteristic, conditionOverrides = {}) {
   const citation = citationIdentity();
   const axis = characteristic === "transfer_current" ? "vgs" : "vds";
   const rawPoints = [{ x_si: 2.5, y_si: 5, point_index: 0 }, { x_si: 3, y_si: 20, point_index: 1 }];
-  const curveId = identityHash({ characteristic, x_axis: { quantity: axis, unit: "V" }, y_axis: { quantity: "id", unit: "A" }, condition_id: condition.condition_id, citation_id: citation.citation_id, points: rawPoints });
+  const curveId = identityHash({ schema_version: "1.0.0", characteristic, x_axis: { quantity: axis, unit: "V" }, y_axis: { quantity: "id", unit: "A" }, condition_id: condition.condition_id, citation_id: citation.citation_id, points: rawPoints });
   return {
     curve_id: curveId,
     characteristic,
@@ -159,7 +166,7 @@ function curveIdentity(characteristic, conditionOverrides = {}) {
     y_axis: { quantity: "id", unit: "A" },
     condition_identity: condition,
     citation_identity: citation,
-    points: rawPoints.map((point) => ({ ...point, evidence_identity: evidenceIdentity(condition, citation, "digitized_typical_curve", { curve_id: curveId, point_index: point.point_index }) }))
+    points: rawPoints.map((point) => ({ ...point, evidence_identity: evidenceIdentity(condition, citation, "digitized_typical_curve", { curve_id: curveId, point_index: point.point_index, x_si: point.x_si, y_si: point.y_si }) }))
   };
 }
 
@@ -203,9 +210,9 @@ test("canonical MOSFET curves preserve typed VDS, temperature, curve IDs, and or
 test("conveyor MOSFET package contract rejects hidden critical defaults and hybrid provenance", () => {
   const condition = mosfetIdentity("rds_on");
   const citation = citationIdentity();
-  const vgsEvidence = evidenceIdentity(condition, citation, "typical");
-  const currentEvidence = evidenceIdentity(condition, citation, "typical", { cohort_id: vgsEvidence.cohort_id });
-  const resistanceEvidence = evidenceIdentity(condition, citation, "maximum", { cohort_id: vgsEvidence.cohort_id });
+  const vgsEvidence = evidenceIdentity(condition, citation, "typical", { quantity: "vgs", value_si: 10, unit_si: "V" });
+  const currentEvidence = evidenceIdentity(condition, citation, "typical", { cohort_id: vgsEvidence.cohort_id, quantity: "drain_current", value_si: 6, unit_si: "A" });
+  const resistanceEvidence = evidenceIdentity(condition, citation, "maximum", { cohort_id: vgsEvidence.cohort_id, quantity: "rds_on_maximum", value_si: 0.1, unit_si: "ohm" });
   const facts = {
     evidence_contract_version: "1.0.0",
     extraction: {},

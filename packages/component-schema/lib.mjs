@@ -2,10 +2,20 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
-import crypto from "node:crypto";
 import { fileURLToPath } from "node:url";
 import Ajv2020 from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
+import {
+  citationCohortMaterial,
+  claimedIdentityMaterial,
+  curveCohortMaterial,
+  curveIdentityMaterial,
+  identityHash,
+  operatingRegionBoundMaterial,
+  pointEvidenceMaterial,
+  scalarEvidenceMaterial,
+  stableIdentityValue
+} from "./evidence-identity.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const readJson = (file) => JSON.parse(fs.readFileSync(file, "utf8"));
@@ -59,20 +69,38 @@ function hasPlaceholderLocator(locator) {
   );
 }
 
+function sameCanonicalContent(left, right) {
+  return JSON.stringify(stableIdentityValue(left)) === JSON.stringify(stableIdentityValue(right));
+}
+
 function sameQualification(left, right) {
   return left?.test_mode === right?.test_mode
     && left?.pulse_width_s === right?.pulse_width_s
     && left?.duty_cycle === right?.duty_cycle;
 }
 
-function stableValue(value) {
-  if (Array.isArray(value)) return value.map(stableValue);
-  if (value && typeof value === "object") return Object.fromEntries(Object.keys(value).sort().map((key) => [key, stableValue(value[key])]));
-  return value;
+function qualificationFromCondition(condition) {
+  if (["pulsed", "single_pulse"].includes(condition?.test_mode?.kind)) {
+    return {
+      test_mode: condition.test_mode.kind,
+      pulse_width_s: condition.test_mode.pulse_width_s,
+      ...(condition.test_mode.duty_cycle == null ? {} : { duty_cycle: condition.test_mode.duty_cycle })
+    };
+  }
+  return { test_mode: "continuous_dc" };
 }
 
-function identityHash(value) {
-  return `sha256:${crypto.createHash("sha256").update(JSON.stringify(stableValue(value))).digest("hex")}`;
+function locatorFromCitation(citation) {
+  if (citation?.table) return { page: citation.page, table: citation.table, row: citation.row };
+  if (citation?.figure) return { page: citation.page, figure: citation.figure, ...(citation.curve ? { curve: citation.curve } : { trace: citation.trace }) };
+  return null;
+}
+
+function expectationRole(evidenceRole) {
+  return evidenceRole === "minimum" ? "inclusive_minimum"
+    : evidenceRole === "maximum" ? "inclusive_maximum"
+      : evidenceRole === "digitized_typical_curve" ? "curve_point"
+        : "typical_observation";
 }
 
 function conditionValues(condition, quantity) {
@@ -85,28 +113,115 @@ function conditionValues(condition, quantity) {
 
 function collectFactsEvidence(facts) {
   const rows = [];
-  const addDatum = (datum) => {
+  const addDatum = (datum, label) => {
     if (datum?.condition_identity && datum?.citation_identity && datum?.evidence_identity) {
-      rows.push({ condition: datum.condition_identity, citation: datum.citation_identity, evidence: datum.evidence_identity });
+      rows.push({
+        condition: datum.condition_identity,
+        citation: datum.citation_identity,
+        evidence: datum.evidence_identity,
+        characteristic: datum.condition_identity.characteristic,
+        quantity: datum.quantity,
+        valueSi: datum.value,
+        unitSi: datum.unit,
+        label,
+        kind: "scalar"
+      });
     }
   };
-  for (const point of facts?.rdson_points ?? []) for (const datum of [point.vgs, point.current, point.resistance]) addDatum(datum);
-  for (const field of ["minimum", "typical", "maximum"]) addDatum(facts?.threshold?.[field]);
-  for (const curve of facts?.curves ?? []) for (const point of curve.points ?? []) {
-    rows.push({ condition: curve.condition_identity, citation: curve.citation_identity, evidence: point.evidence_identity });
+  for (const [pointIndex, point] of (facts?.rdson_points ?? []).entries()) {
+    for (const field of ["vgs", "current", "resistance"]) addDatum(point[field], `facts.rdson_points[${pointIndex}].${field}`);
+  }
+  for (const field of ["minimum", "typical", "maximum"]) addDatum(facts?.threshold?.[field], `facts.threshold.${field}`);
+  for (const [curveIndex, curve] of (facts?.curves ?? []).entries()) for (const [pointIndex, point] of (curve.points ?? []).entries()) {
+    rows.push({
+      condition: curve.condition_identity,
+      citation: curve.citation_identity,
+      evidence: point.evidence_identity,
+      characteristic: curve.characteristic,
+      curve,
+      point,
+      label: `facts.curves[${curveIndex}].points[${pointIndex}]`,
+      kind: "point"
+    });
   }
   return rows;
+}
+
+function verifyClaimedIdentity(claimed, material, label, errors) {
+  if (claimed !== identityHash(material)) errors.push(`${label} does not match canonical content`);
+}
+
+function verifyFactsIdentities(evidence) {
+  const errors = [];
+  const checkedConditions = new Set();
+  const checkedCitations = new Set();
+  const checkedCurves = new Set();
+  const checkedCohortIds = new Set();
+  const cohortMaterials = new Map();
+
+  for (const row of evidence) {
+    const conditionLabel = `${row.label}.condition_identity.condition_id`;
+    if (!checkedConditions.has(row.condition)) {
+      verifyClaimedIdentity(row.condition?.condition_id, claimedIdentityMaterial(row.condition ?? {}, "condition_id"), conditionLabel, errors);
+      checkedConditions.add(row.condition);
+    }
+    const citationLabel = `${row.label}.citation_identity.citation_id`;
+    if (!checkedCitations.has(row.citation)) {
+      verifyClaimedIdentity(row.citation?.citation_id, claimedIdentityMaterial(row.citation ?? {}, "citation_id"), citationLabel, errors);
+      checkedCitations.add(row.citation);
+    }
+
+    if (row.kind === "point") {
+      if (!checkedCurves.has(row.curve)) {
+        verifyClaimedIdentity(
+          row.curve?.curve_id,
+          curveIdentityMaterial(row.curve, row.condition.condition_id, row.citation.citation_id),
+          `${row.label.replace(/\.points\[\d+\]$/, "")}.curve_id`,
+          errors
+        );
+        checkedCurves.add(row.curve);
+      }
+      const cohortMaterial = curveCohortMaterial(row.characteristic, row.condition.condition_id, row.citation.citation_id, row.curve.curve_id);
+      const cohortKey = JSON.stringify(stableIdentityValue(cohortMaterial));
+      const previousCohortMaterial = cohortMaterials.get(row.evidence?.cohort_id);
+      if (previousCohortMaterial && previousCohortMaterial !== cohortKey) errors.push(`${row.label}.evidence_identity.cohort_id is reused for different canonical content`);
+      cohortMaterials.set(row.evidence?.cohort_id, cohortKey);
+      if (!checkedCohortIds.has(row.evidence?.cohort_id)) {
+        verifyClaimedIdentity(row.evidence?.cohort_id, cohortMaterial, `${row.label}.evidence_identity.cohort_id`, errors);
+        checkedCohortIds.add(row.evidence?.cohort_id);
+      }
+      verifyClaimedIdentity(row.evidence?.evidence_id, pointEvidenceMaterial(row.characteristic, row.point, row.evidence), `${row.label}.evidence_identity.evidence_id`, errors);
+    } else {
+      const cohortMaterial = citationCohortMaterial(row.characteristic, row.condition.condition_id, row.citation);
+      const cohortKey = JSON.stringify(stableIdentityValue(cohortMaterial));
+      const previousCohortMaterial = cohortMaterials.get(row.evidence?.cohort_id);
+      if (previousCohortMaterial && previousCohortMaterial !== cohortKey) errors.push(`${row.label}.evidence_identity.cohort_id is reused for different canonical content`);
+      cohortMaterials.set(row.evidence?.cohort_id, cohortKey);
+      if (!checkedCohortIds.has(row.evidence?.cohort_id)) {
+        verifyClaimedIdentity(row.evidence?.cohort_id, cohortMaterial, `${row.label}.evidence_identity.cohort_id`, errors);
+        checkedCohortIds.add(row.evidence?.cohort_id);
+      }
+      verifyClaimedIdentity(
+        row.evidence?.evidence_id,
+        scalarEvidenceMaterial(row.characteristic, row.evidence, row.quantity, row.valueSi, row.unitSi),
+        `${row.label}.evidence_identity.evidence_id`,
+        errors
+      );
+    }
+  }
+  return errors;
 }
 
 function validateNewContractPackage(component, facts, fitted, modelText, expectations) {
   const errors = [];
   const evidence = collectFactsEvidence(facts);
-  const byEvidenceId = new Map(evidence.map((row) => [row.evidence.evidence_id, row]));
   const region = component?.supported_operating_region;
 
   if (facts?.evidence_contract_version !== "1.0.0") errors.push("facts evidence_contract_version must be 1.0.0");
   if (fitted?.evidence_contract_version !== "1.0.0") errors.push("fitted evidence_contract_version must be 1.0.0");
   if (!evidence.length) errors.push("facts must contain resolvable evidence identities for a 1.0.0 contract package");
+  errors.push(...verifyFactsIdentities(evidence));
+  const byEvidenceId = new Map(evidence.map((row) => [row.evidence.evidence_id, row]));
 
   const emitted = new Map();
   for (const match of modelText.matchAll(/\b([A-Z][A-Z0-9_]*)\s*=\s*([^\s(){}]+)/g)) {
@@ -132,7 +247,11 @@ function validateNewContractPackage(component, facts, fitted, modelText, expecta
     const resolved = byEvidenceId.get(check.evidence_id);
     if (!resolved || resolved.condition.condition_id !== check.condition_id || resolved.citation.citation_id !== check.citation_id || resolved.evidence.cohort_id !== check.cohort_id) {
       errors.push(`expectations ${checkPath} does not resolve to facts evidence`);
+      continue;
     }
+    if (check.evidence_role !== expectationRole(resolved.evidence.role)) errors.push(`expectations ${checkPath} evidence_role disagrees with facts evidence`);
+    if (!sameCanonicalContent(check.citation_locator, locatorFromCitation(resolved.citation))) errors.push(`expectations ${checkPath} citation_locator disagrees with facts citation`);
+    if (!sameQualification(check.evidence_qualification, qualificationFromCondition(resolved.condition))) errors.push(`expectations ${checkPath} evidence_qualification disagrees with facts condition`);
   }
 
   for (const [group, rows] of [["calibration.observations", fitted?.calibration?.observations ?? []], ["calibration.constraints", fitted?.calibration?.constraints ?? []], ["residuals", fitted?.residuals ?? []]]) {
@@ -143,10 +262,14 @@ function validateNewContractPackage(component, facts, fitted, modelText, expecta
             : row.evidence_identity ? [{ condition_identity: row.condition_identity, citation_identity: row.citation_identity, evidence_identity: row.evidence_identity }] : []),
         ...(row.component_evidence ?? []).map((evidence_identity) => ({ condition_identity: row.condition_identity, citation_identity: row.citation_identity, evidence_identity })),
       ];
-      for (const item of linked) {
+      for (const [evidenceIndex, item] of linked.entries()) {
+        const itemLabel = `fitted.${group}[${index}]${linked.length > 1 ? `.evidence[${evidenceIndex}]` : ""}`;
+        verifyClaimedIdentity(item.condition_identity?.condition_id, claimedIdentityMaterial(item.condition_identity ?? {}, "condition_id"), `${itemLabel}.condition_identity.condition_id`, errors);
+        verifyClaimedIdentity(item.citation_identity?.citation_id, claimedIdentityMaterial(item.citation_identity ?? {}, "citation_id"), `${itemLabel}.citation_identity.citation_id`, errors);
         const resolved = byEvidenceId.get(item.evidence_identity?.evidence_id);
-        if (!resolved || resolved.condition.condition_id !== item.condition_identity?.condition_id || resolved.citation.citation_id !== item.citation_identity?.citation_id) {
-          errors.push(`fitted.${group}[${index}] does not resolve to facts evidence`);
+        if (!resolved || resolved.condition.condition_id !== item.condition_identity?.condition_id || resolved.citation.citation_id !== item.citation_identity?.citation_id
+          || !sameCanonicalContent(item.evidence_identity, resolved.evidence)) {
+          errors.push(`${itemLabel} does not resolve to facts evidence`);
         }
       }
     }
@@ -173,8 +296,7 @@ function validateNewContractPackage(component, facts, fitted, modelText, expecta
     const covers = (value) => bound.kind === "enumerated" ? bound.values?.includes(value) : (bound.minimum == null || value >= bound.minimum - 1e-12) && (bound.maximum == null || value <= bound.maximum + 1e-12);
     if (values.some((value) => !covers(value))) errors.push(`${label} omits referenced evidence values`);
     if (bound.bound_id) {
-      const material = Object.fromEntries(Object.entries(bound).filter(([key]) => !["bound_id", "conditions", "placeholder"].includes(key)));
-      if (bound.bound_id !== identityHash(material)) errors.push(`${label}.bound_id does not match canonical content`);
+      if (bound.bound_id !== identityHash(operatingRegionBoundMaterial(bound))) errors.push(`${label}.bound_id does not match canonical content`);
     }
   }
   return errors;
@@ -229,9 +351,12 @@ function evidenceContractErrors(expectations) {
   }
 
   if (marked) {
-    for (const [cohortId] of cohorts) {
-      if (!linkedChecks.some(({ check }) => check.cohort_id === cohortId)) {
+    for (const [cohortId, cohort] of cohorts) {
+      const linkedEvidenceIds = [...new Set(linkedChecks.filter(({ check }) => check.cohort_id === cohortId).map(({ check }) => check.evidence_id))].sort();
+      if (!linkedEvidenceIds.length) {
         errors.push(`expectations F2 evidence cohort ${cohortId} must have at least one linked expectation`);
+      } else if (JSON.stringify([...cohort.evidence_ids].sort()) !== JSON.stringify(linkedEvidenceIds)) {
+        errors.push(`expectations F2 evidence cohort ${cohortId} membership must exactly match linked expectations`);
       }
     }
   }

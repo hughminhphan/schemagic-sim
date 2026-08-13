@@ -4,6 +4,15 @@ import fs from "node:fs";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
+import {
+  citationCohortMaterial,
+  curveCohortMaterial,
+  curveIdentityMaterial,
+  identityHash as canonicalIdentityHash,
+  pointEvidenceMaterial,
+  scalarEvidenceMaterial,
+  stableIdentityValue
+} from "../../packages/component-schema/evidence-identity.mjs";
 import { getPart } from "./lib/parts.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -559,14 +568,8 @@ function assertFinite(value, trail) {
   return number;
 }
 
-function stableIdentityValue(value) {
-  if (Array.isArray(value)) return value.map(stableIdentityValue);
-  if (value && typeof value === "object") return Object.fromEntries(Object.keys(value).sort().map((key) => [key, stableIdentityValue(value[key])]));
-  return value;
-}
-
 export function identityHash(value) {
-  return `sha256:${crypto.createHash("sha256").update(JSON.stringify(stableIdentityValue(value))).digest("hex")}`;
+  return canonicalIdentityHash(value);
 }
 
 function assertIdentityHash(raw, idField, trail, projection = null) {
@@ -663,7 +666,7 @@ export function normalizeMosfetCitationIdentity(raw, trail = "citation_identity"
   return structuredClone(raw);
 }
 
-export function normalizeMosfetEvidenceIdentity(raw, condition, citation, trail = "evidence_identity", { curve = false } = {}) {
+export function normalizeMosfetEvidenceIdentity(raw, condition, citation, trail = "evidence_identity", { curve = false, characteristic = condition?.characteristic, quantity = null, valueSi = null, unitSi = null, point = null } = {}) {
   if (!raw || typeof raw !== "object" || Array.isArray(raw)) throw new Error(`${trail} is required`);
   assertExactKeys(raw, ["evidence_id", "cohort_id", "role", "condition_id", "citation_id"], curve ? ["curve_id", "point_index"] : [], trail);
   if (!SHA256_ID.test(raw.cohort_id)) throw new Error(`${trail}.cohort_id must be sha256:<64 lowercase hex>`);
@@ -673,6 +676,13 @@ export function normalizeMosfetEvidenceIdentity(raw, condition, citation, trail 
   if (curve) {
     if (!SHA256_ID.test(raw.curve_id)) throw new Error(`${trail}.curve_id must be sha256:<64 lowercase hex>`);
     if (!Number.isInteger(raw.point_index) || raw.point_index < 0) throw new Error(`${trail}.point_index must be a nonnegative integer`);
+    const expectedCohort = identityHash(curveCohortMaterial(characteristic, condition.condition_id, citation.citation_id, raw.curve_id));
+    if (raw.cohort_id !== expectedCohort) throw new Error(`${trail}.cohort_id does not match canonical curve membership`);
+    if (point && raw.evidence_id !== identityHash(pointEvidenceMaterial(characteristic, point, raw))) throw new Error(`${trail}.evidence_id does not match canonical point content`);
+  } else if (quantity != null) {
+    const expectedCohort = identityHash(citationCohortMaterial(characteristic, condition.condition_id, citation));
+    if (raw.cohort_id !== expectedCohort) throw new Error(`${trail}.cohort_id does not match canonical citation cohort`);
+    if (raw.evidence_id !== identityHash(scalarEvidenceMaterial(characteristic, raw, quantity, valueSi, unitSi))) throw new Error(`${trail}.evidence_id does not match canonical scalar content`);
   }
   return structuredClone(raw);
 }
@@ -717,18 +727,15 @@ export function normalizeMosfetCurve(raw, trail = "curve") {
     const xSi = assertFinite(point.x_si, `${trail}.points[${index}].x_si`);
     const ySi = assertFinite(point.y_si, `${trail}.points[${index}].y_si`);
     if (point.point_index !== index) throw new Error(`${trail}.points must be ordered with contiguous point_index values`);
-    const evidence = normalizeMosfetEvidenceIdentity(point.evidence_identity, condition, citation, `${trail}.points[${index}].evidence_identity`, { curve: true });
+    const evidence = normalizeMosfetEvidenceIdentity(point.evidence_identity, condition, citation, `${trail}.points[${index}].evidence_identity`, {
+      curve: true,
+      characteristic: raw.characteristic,
+      point: { x_si: xSi, y_si: ySi, point_index: point.point_index }
+    });
     if (evidence.curve_id !== raw.curve_id || evidence.point_index !== point.point_index) throw new Error(`${trail}.points[${index}] has hybrid curve identity`);
     return { x_si: xSi, y_si: ySi, point_index: point.point_index, evidence_identity: evidence };
   });
-  assertIdentityHash(raw, "curve_id", trail, (curve) => ({
-    characteristic: curve.characteristic,
-    x_axis: curve.x_axis,
-    y_axis: curve.y_axis,
-    condition_id: condition.condition_id,
-    citation_id: citation.citation_id,
-    points: curve.points.map(({ x_si, y_si, point_index }) => ({ point_index, x_si, y_si }))
-  }));
+  assertIdentityHash(raw, "curve_id", trail, (curve) => curveIdentityMaterial(curve, condition.condition_id, citation.citation_id));
   return { ...structuredClone(raw), condition_identity: condition, citation_identity: citation, points };
 }
 
@@ -736,7 +743,12 @@ function assertQuantityIdentity(quantity, trail, expected = {}) {
   if (!quantity || typeof quantity !== "object") throw new Error(`${trail} is required`);
   const condition = normalizeMosfetConditionIdentity(quantity.condition_identity, `${trail}.condition_identity`);
   const citation = normalizeMosfetCitationIdentity(quantity.citation_identity, `${trail}.citation_identity`);
-  const evidence = normalizeMosfetEvidenceIdentity(quantity.evidence_identity, condition, citation, `${trail}.evidence_identity`);
+  const evidence = normalizeMosfetEvidenceIdentity(quantity.evidence_identity, condition, citation, `${trail}.evidence_identity`, {
+    characteristic: condition.characteristic,
+    quantity: quantity.quantity,
+    valueSi: quantity.value,
+    unitSi: quantity.unit
+  });
   realDatasheetCitation(quantity.page_reference, `${trail}.page_reference`);
   if (typeof quantity.quantity !== "string" || quantity.quantity !== expected.quantityLabel) throw new Error(`${trail}.quantity must be ${expected.quantityLabel}`);
   if (expected.characteristic && condition.characteristic !== expected.characteristic) throw new Error(`${trail} has the wrong characteristic`);
