@@ -11,6 +11,127 @@ const fitPoint = (current, voltage, citation, sourceKind = "digitized_typical_cu
   voltage: quantity(voltage, "V", `IF = ${current} A, TA = 25 degC`, citation, sourceKind)
 });
 
+export const VDMOS_EVIDENCE_POLICY = Object.freeze({
+  identity_version: "vdmos-critical-evidence-v1",
+  threshold_bounds: "published_minimum_and_maximum_are_inclusive_physical_constraints",
+  threshold_typical: "observation_and_seed_only",
+  threshold_extrapolation: "forbidden_outside_published_interval",
+  threshold_absent_fallback: "declared_curve_derived_held_default_only_without_threshold_bound_support",
+  pulse_dc_equivalence: "forbidden_without_explicit_datasheet_evidence"
+});
+
+const vdmosConditionQuantity = (value, unit, description, pageReference) =>
+  quantity(value, unit, description, pageReference, "condition_identity");
+
+const vdmosCitation = (id, pageReference, locatorKind, locatorLabel) => ({
+  id,
+  page_reference: pageReference,
+  locator: { kind: locatorKind, label: locatorLabel }
+});
+
+const vdmosCondition = ({ id, display, pageReference, fixedBiases = {}, sweptCoordinates = [] }) => ({
+  id,
+  display,
+  temperature: {
+    kind: "junction",
+    ...vdmosConditionQuantity(25, "degC", `${id} canonical junction temperature`, pageReference)
+  },
+  measurement: {
+    mode: "pulse_limited",
+    maximum_pulse_width: vdmosConditionQuantity(300e-6, "s", `${id} maximum pulse width`, pageReference),
+    maximum_duty_cycle: vdmosConditionQuantity(0.02, "1", `${id} maximum duty cycle`, pageReference)
+  },
+  fixed_biases: fixedBiases,
+  swept_coordinates: sweptCoordinates
+});
+
+const vdmosEvidence = (id, role, sourceKind, conditionId, citationId) => ({
+  id,
+  role,
+  source_kind: sourceKind,
+  condition_id: conditionId,
+  citation_id: citationId
+});
+
+const vdmosCriticalDatum = (value, unit, evidence, condition, citation, legacyPageReference = citation.page_reference) => ({
+  ...quantity(value, unit, condition.display, legacyPageReference, evidence.source_kind),
+  evidence_id: evidence.id,
+  evidence_role: evidence.role,
+  condition_id: condition.id,
+  citation_id: citation.id
+});
+
+const makeVdmosCriticalEvidence = ({ mpn, rdsonRows }) => {
+  const scope = mpn.toLowerCase();
+  const citations = {
+    threshold_table: vdmosCitation(`${scope}.citation.threshold-table`, "p. 2 electrical characteristics", "table_row", "VGS(th), gate threshold voltage"),
+    rdson_table: vdmosCitation(`${scope}.citation.rdson-table`, "p. 2 electrical characteristics", "table_row", "RDS(on), static drain-source on-resistance"),
+    transfer_figure: vdmosCitation(`${scope}.citation.transfer-figure`, "p. 3 fig. 3", "figure", "Fig. 3, typical transfer characteristics"),
+    output_figure: vdmosCitation(`${scope}.citation.output-figure`, "p. 3 fig. 1", "figure", "Fig. 1, typical output characteristics")
+  };
+  const conditions = {
+    threshold_250ua: vdmosCondition({
+      id: `${scope}.condition.threshold-250ua`,
+      display: "VDS = VGS, ID = 250 uA",
+      pageReference: citations.threshold_table.page_reference,
+      fixedBiases: {
+        drain_gate_relation: { kind: "equal", drain: "VDS", gate: "VGS" },
+        drain_current: vdmosConditionQuantity(250e-6, "A", "threshold definition drain current", citations.threshold_table.page_reference)
+      },
+      sweptCoordinates: ["gate_source_voltage"]
+    }),
+    transfer_vds25: vdmosCondition({
+      id: `${scope}.condition.transfer-vds25`,
+      display: "VDS = 25 V, TJ = 25 degC",
+      pageReference: citations.transfer_figure.page_reference,
+      fixedBiases: {
+        drain_source_voltage: vdmosConditionQuantity(25, "V", "actual transfer-curve drain-source voltage", citations.transfer_figure.page_reference)
+      },
+      sweptCoordinates: ["gate_source_voltage", "drain_current"]
+    }),
+    output_tj25: vdmosCondition({
+      id: `${scope}.condition.output-tj25`,
+      display: "TJ = 25 degC",
+      pageReference: citations.output_figure.page_reference,
+      sweptCoordinates: ["gate_source_voltage", "drain_source_voltage", "drain_current"]
+    })
+  };
+  for (const [index, row] of rdsonRows.entries()) {
+    conditions[`rdson_${index + 1}`] = vdmosCondition({
+      id: `${scope}.condition.rdson-${index + 1}`,
+      display: `VGS = ${row.vgs} V, ID = ${row.current} A`,
+      pageReference: citations.rdson_table.page_reference,
+      fixedBiases: {
+        gate_source_voltage: vdmosConditionQuantity(row.vgs, "V", "RDS(on) gate-source test voltage", citations.rdson_table.page_reference),
+        drain_current: vdmosConditionQuantity(row.current, "A", "RDS(on) drain test current", citations.rdson_table.page_reference)
+      },
+      sweptCoordinates: ["drain_source_voltage"]
+    });
+  }
+  const identities = {
+    threshold_minimum: vdmosEvidence(`${scope}.evidence.threshold-minimum`, "inclusive_lower_physical_constraint", "minimum", conditions.threshold_250ua.id, citations.threshold_table.id),
+    threshold_maximum: vdmosEvidence(`${scope}.evidence.threshold-maximum`, "inclusive_upper_physical_constraint", "maximum", conditions.threshold_250ua.id, citations.threshold_table.id),
+    transfer_typical_curve: vdmosEvidence(`${scope}.evidence.transfer-typical-curve`, "typical_observation", "digitized_typical_curve", conditions.transfer_vds25.id, citations.transfer_figure.id),
+    output_typical_curve: vdmosEvidence(`${scope}.evidence.output-typical-curve`, "typical_observation", "digitized_typical_curve", conditions.output_tj25.id, citations.output_figure.id)
+  };
+  for (const [index] of rdsonRows.entries()) {
+    identities[`rdson_${index + 1}_maximum`] = vdmosEvidence(`${scope}.evidence.rdson-${index + 1}-maximum`, "inclusive_upper_physical_constraint", "maximum", conditions[`rdson_${index + 1}`].id, citations.rdson_table.id);
+  }
+  return { policy: VDMOS_EVIDENCE_POLICY, conditions, citations, identities };
+};
+
+const vdmosDatumFrom = (catalog, evidenceKey, value, unit, legacyPageReference) => {
+  const evidence = catalog.identities[evidenceKey];
+  const condition = Object.values(catalog.conditions).find((candidate) => candidate.id === evidence.condition_id);
+  const citation = Object.values(catalog.citations).find((candidate) => candidate.id === evidence.citation_id);
+  return vdmosCriticalDatum(value, unit, evidence, condition, citation, legacyPageReference);
+};
+
+const irlz44nCriticalEvidence = makeVdmosCriticalEvidence({
+  mpn: "IRLZ44N",
+  rdsonRows: [{ vgs: 10, current: 25 }, { vgs: 5, current: 25 }, { vgs: 4, current: 21 }]
+});
+
 export const PARTS = {
   "1N4148": {
     slug: "1N4148",
@@ -237,27 +358,28 @@ export const PARTS = {
       schema_version: "1.0.0",
       extraction_method: "pdftotext plus manual structuring and curve digitization",
       fit_conditions: { temperature: quantity(25, "degC", "Electrical characteristics unless stated", "p. 2 heading") },
+      critical_evidence: irlz44nCriticalEvidence,
       threshold: {
-        minimum: quantity(1.0, "V", "VDS = VGS, ID = 250 uA", "p. 2 electrical characteristics", "minimum"),
-        maximum: quantity(2.0, "V", "VDS = VGS, ID = 250 uA", "p. 2 electrical characteristics", "maximum")
+        minimum: vdmosDatumFrom(irlz44nCriticalEvidence, "threshold_minimum", 1.0, "V"),
+        maximum: vdmosDatumFrom(irlz44nCriticalEvidence, "threshold_maximum", 2.0, "V")
       },
       transfer_points: [
-        { vgs: quantity(2.5, "V", "VDS = 25 V, TJ = 25 degC", "p. 3 fig. 3"), current: quantity(5, "A", "VGS = 2.5 V, VDS = 25 V", "p. 3 fig. 3, digitized", "digitized_typical_curve") },
-        { vgs: quantity(3.0, "V", "VDS = 25 V, TJ = 25 degC", "p. 3 fig. 3"), current: quantity(20, "A", "VGS = 3.0 V, VDS = 25 V", "p. 3 fig. 3, digitized", "digitized_typical_curve") },
-        { vgs: quantity(3.5, "V", "VDS = 25 V, TJ = 25 degC", "p. 3 fig. 3"), current: quantity(40, "A", "VGS = 3.5 V, VDS = 25 V", "p. 3 fig. 3, digitized", "digitized_typical_curve") },
-        { vgs: quantity(4.0, "V", "VDS = 25 V, TJ = 25 degC", "p. 3 fig. 3"), current: quantity(60, "A", "VGS = 4.0 V, VDS = 25 V", "p. 3 fig. 3, digitized", "digitized_typical_curve") },
-        { vgs: quantity(5.0, "V", "VDS = 25 V, TJ = 25 degC", "p. 3 fig. 3"), current: quantity(95, "A", "VGS = 5.0 V, VDS = 25 V", "p. 3 fig. 3, digitized", "digitized_typical_curve") },
-        { vgs: quantity(6.0, "V", "VDS = 25 V, TJ = 25 degC", "p. 3 fig. 3"), current: quantity(125, "A", "VGS = 6.0 V, VDS = 25 V", "p. 3 fig. 3, digitized", "digitized_typical_curve") }
+        { vgs: vdmosDatumFrom(irlz44nCriticalEvidence, "transfer_typical_curve", 2.5, "V"), current: vdmosDatumFrom(irlz44nCriticalEvidence, "transfer_typical_curve", 5, "A", "p. 3 fig. 3, digitized") },
+        { vgs: vdmosDatumFrom(irlz44nCriticalEvidence, "transfer_typical_curve", 3.0, "V"), current: vdmosDatumFrom(irlz44nCriticalEvidence, "transfer_typical_curve", 20, "A", "p. 3 fig. 3, digitized") },
+        { vgs: vdmosDatumFrom(irlz44nCriticalEvidence, "transfer_typical_curve", 3.5, "V"), current: vdmosDatumFrom(irlz44nCriticalEvidence, "transfer_typical_curve", 40, "A", "p. 3 fig. 3, digitized") },
+        { vgs: vdmosDatumFrom(irlz44nCriticalEvidence, "transfer_typical_curve", 4.0, "V"), current: vdmosDatumFrom(irlz44nCriticalEvidence, "transfer_typical_curve", 60, "A", "p. 3 fig. 3, digitized") },
+        { vgs: vdmosDatumFrom(irlz44nCriticalEvidence, "transfer_typical_curve", 5.0, "V"), current: vdmosDatumFrom(irlz44nCriticalEvidence, "transfer_typical_curve", 95, "A", "p. 3 fig. 3, digitized") },
+        { vgs: vdmosDatumFrom(irlz44nCriticalEvidence, "transfer_typical_curve", 6.0, "V"), current: vdmosDatumFrom(irlz44nCriticalEvidence, "transfer_typical_curve", 125, "A", "p. 3 fig. 3, digitized") }
       ],
       rdson_points: [
-        { vgs: quantity(10, "V", "ID = 25 A", "p. 2 electrical characteristics"), current: quantity(25, "A", "VGS = 10 V", "p. 2 electrical characteristics"), resistance: quantity(0.022, "ohm", "VGS = 10 V, ID = 25 A", "p. 2 electrical characteristics", "maximum") },
-        { vgs: quantity(5, "V", "ID = 25 A", "p. 2 electrical characteristics"), current: quantity(25, "A", "VGS = 5 V", "p. 2 electrical characteristics"), resistance: quantity(0.025, "ohm", "VGS = 5 V, ID = 25 A", "p. 2 electrical characteristics", "maximum") },
-        { vgs: quantity(4, "V", "ID = 21 A", "p. 2 electrical characteristics"), current: quantity(21, "A", "VGS = 4 V", "p. 2 electrical characteristics"), resistance: quantity(0.035, "ohm", "VGS = 4 V, ID = 21 A", "p. 2 electrical characteristics", "maximum") }
+        { vgs: vdmosDatumFrom(irlz44nCriticalEvidence, "rdson_1_maximum", 10, "V"), current: vdmosDatumFrom(irlz44nCriticalEvidence, "rdson_1_maximum", 25, "A"), resistance: vdmosDatumFrom(irlz44nCriticalEvidence, "rdson_1_maximum", 0.022, "ohm") },
+        { vgs: vdmosDatumFrom(irlz44nCriticalEvidence, "rdson_2_maximum", 5, "V"), current: vdmosDatumFrom(irlz44nCriticalEvidence, "rdson_2_maximum", 25, "A"), resistance: vdmosDatumFrom(irlz44nCriticalEvidence, "rdson_2_maximum", 0.025, "ohm") },
+        { vgs: vdmosDatumFrom(irlz44nCriticalEvidence, "rdson_3_maximum", 4, "V"), current: vdmosDatumFrom(irlz44nCriticalEvidence, "rdson_3_maximum", 21, "A"), resistance: vdmosDatumFrom(irlz44nCriticalEvidence, "rdson_3_maximum", 0.035, "ohm") }
       ],
       output_points: [
-        { vgs: quantity(2.5, "V", "TJ = 25 degC", "p. 3 fig. 1"), vds: quantity(10, "V", "VGS = 2.5 V", "p. 3 fig. 1"), current: quantity(5, "A", "VGS = 2.5 V, VDS = 10 V", "p. 3 fig. 1, digitized", "digitized_typical_curve") },
-        { vgs: quantity(3.0, "V", "TJ = 25 degC", "p. 3 fig. 1"), vds: quantity(10, "V", "VGS = 3 V", "p. 3 fig. 1"), current: quantity(20, "A", "VGS = 3 V, VDS = 10 V", "p. 3 fig. 1, digitized", "digitized_typical_curve") },
-        { vgs: quantity(4.0, "V", "TJ = 25 degC", "p. 3 fig. 1"), vds: quantity(10, "V", "VGS = 4 V", "p. 3 fig. 1"), current: quantity(60, "A", "VGS = 4 V, VDS = 10 V", "p. 3 fig. 1, digitized", "digitized_typical_curve") }
+        { vgs: vdmosDatumFrom(irlz44nCriticalEvidence, "output_typical_curve", 2.5, "V"), vds: vdmosDatumFrom(irlz44nCriticalEvidence, "output_typical_curve", 10, "V"), current: vdmosDatumFrom(irlz44nCriticalEvidence, "output_typical_curve", 5, "A", "p. 3 fig. 1, digitized") },
+        { vgs: vdmosDatumFrom(irlz44nCriticalEvidence, "output_typical_curve", 3.0, "V"), vds: vdmosDatumFrom(irlz44nCriticalEvidence, "output_typical_curve", 10, "V"), current: vdmosDatumFrom(irlz44nCriticalEvidence, "output_typical_curve", 20, "A", "p. 3 fig. 1, digitized") },
+        { vgs: vdmosDatumFrom(irlz44nCriticalEvidence, "output_typical_curve", 4.0, "V"), vds: vdmosDatumFrom(irlz44nCriticalEvidence, "output_typical_curve", 10, "V"), current: vdmosDatumFrom(irlz44nCriticalEvidence, "output_typical_curve", 60, "A", "p. 3 fig. 1, digitized") }
       ],
       capacitances: {
         ciss: quantity(1700e-12, "F", "VDS = 25 V, VGS = 0, f = 1 MHz", "p. 2 electrical characteristics", "typical"),
@@ -2638,7 +2760,9 @@ Object.assign(PARTS, {
   }
 });
 
-const p5Vdmos = ({ mpn, sourceUrl, revision, rdson, ratedCurrent, transfer, ciss, coss, crss, crssCurve, qg, qg5, qgs, qgd, trr, rthjc }) => ({
+const p5Vdmos = ({ mpn, sourceUrl, revision, rdson, ratedCurrent, transfer, ciss, coss, crss, crssCurve, qg, qg5, qgs, qgd, trr, rthjc }) => {
+  const criticalEvidence = makeVdmosCriticalEvidence({ mpn, rdsonRows: [{ vgs: 10, current: ratedCurrent }] });
+  return ({
   slug: mpn, manufacturerSlug: "infineon", pipeline: "vdmos",
   identity: {
     canonical_mpn: mpn, manufacturer: "Infineon Technologies (International Rectifier legacy)", description: `55 V N-channel HEXFET power MOSFET`, electrical_family: "nmos", aliases: [`${mpn}PbF`],
@@ -2649,10 +2773,25 @@ const p5Vdmos = ({ mpn, sourceUrl, revision, rdson, ratedCurrent, transfer, ciss
   facts: {
     schema_version: "1.0.0", extraction_method: "pdftotext -layout plus manual typical-curve digitization and MIN/TYP/MAX table transcription",
     fit_conditions: { temperature: quantity(25, "degC", "Electrical characteristics unless stated", "p. 2 heading", "typical") },
-    threshold: { minimum: quantity(2, "V", "VDS = VGS, ID = 250 uA", "p. 2 electrical characteristics", "minimum"), maximum: quantity(4, "V", "VDS = VGS, ID = 250 uA", "p. 2 electrical characteristics", "maximum") },
-    transfer_points: transfer.map(([vgs, current]) => ({ vgs: quantity(vgs, "V", "VDS = 25 V, TJ = 25 degC", "p. 3 fig. 3", "typical"), current: quantity(current, "A", `VGS = ${vgs} V, VDS = 25 V`, "p. 3 fig. 3, manually digitized 25 degC curve", "digitized_typical_curve") })),
-    rdson_points: [{ vgs: quantity(10, "V", `ID = ${ratedCurrent} A`, "p. 2 electrical characteristics", "typical"), current: quantity(ratedCurrent, "A", "VGS = 10 V", "p. 2 electrical characteristics", "typical"), resistance: quantity(rdson, "ohm", `VGS = 10 V, ID = ${ratedCurrent} A`, "p. 2 RDS(on) MAX", "maximum") }],
-    output_points: transfer.slice(0, 5).map(([vgs, current]) => ({ vgs: quantity(vgs, "V", "TJ = 25 degC", "p. 3 fig. 1", "typical"), vds: quantity(10, "V", `VGS = ${vgs} V`, "p. 3 fig. 1", "typical"), current: quantity(current, "A", `VGS = ${vgs} V, VDS = 10 V`, "p. 3 fig. 1, manually digitized 25 degC curve", "digitized_typical_curve") })),
+    critical_evidence: criticalEvidence,
+    threshold: {
+      minimum: vdmosDatumFrom(criticalEvidence, "threshold_minimum", 2, "V"),
+      maximum: vdmosDatumFrom(criticalEvidence, "threshold_maximum", 4, "V")
+    },
+    transfer_points: transfer.map(([vgs, current]) => ({
+      vgs: vdmosDatumFrom(criticalEvidence, "transfer_typical_curve", vgs, "V"),
+      current: vdmosDatumFrom(criticalEvidence, "transfer_typical_curve", current, "A", "p. 3 fig. 3, manually digitized 25 degC curve")
+    })),
+    rdson_points: [{
+      vgs: vdmosDatumFrom(criticalEvidence, "rdson_1_maximum", 10, "V"),
+      current: vdmosDatumFrom(criticalEvidence, "rdson_1_maximum", ratedCurrent, "A"),
+      resistance: vdmosDatumFrom(criticalEvidence, "rdson_1_maximum", rdson, "ohm", "p. 2 RDS(on) MAX")
+    }],
+    output_points: transfer.slice(0, 5).map(([vgs, current]) => ({
+      vgs: vdmosDatumFrom(criticalEvidence, "output_typical_curve", vgs, "V"),
+      vds: vdmosDatumFrom(criticalEvidence, "output_typical_curve", 10, "V"),
+      current: vdmosDatumFrom(criticalEvidence, "output_typical_curve", current, "A", "p. 3 fig. 1, manually digitized 25 degC curve")
+    })),
     capacitances: {
       ciss: quantity(ciss, "F", "VDS = 25 V, VGS = 0, f = 1 MHz", "p. 2 electrical characteristics", "typical"), coss: quantity(coss, "F", "VDS = 25 V, VGS = 0, f = 1 MHz", "p. 2 electrical characteristics", "typical"), crss: quantity(crss, "F", "VDS = 25 V, VGS = 0, f = 1 MHz", "p. 2 electrical characteristics", "typical"), vds_test: quantity(25, "V", "capacitance test bias", "p. 2 electrical characteristics", "typical"),
       crss_curve: crssCurve.map(([vds, value]) => ({ vds: quantity(vds, "V", "VGS = 0, f = 1 MHz", "p. 4 fig. 5", "typical"), crss: quantity(value, "F", `VDS = ${vds} V`, "p. 4 fig. 5, manually digitized", "digitized_typical_curve") }))
@@ -2669,6 +2808,7 @@ const p5Vdmos = ({ mpn, sourceUrl, revision, rdson, ratedCurrent, transfer, ciss
     omissions: ["The RDS(on), body-diode voltage, and total gate-charge rows are guaranteed maxima; they are retained with source semantics and are not described as typical device values.", "Gate charge is not an optimizer residual. It is checked independently with a broad 75 percent tolerance because the compact VDMOS capacitance law does not reproduce the cited Miller plateau closely; transient coverage is approximate.", "Avalanche, UIS, safe-operating-area failure, temperature-dependent transfer, self-heating in the default three-terminal instance, package inductance, gate-oxide failure, process spread, and noise are not modelled.", "RG is held at the factory numerical floor because the datasheet does not publish intrinsic gate resistance.", "Independent review remains pending-review."]
   }
 });
+};
 
 Object.assign(PARTS, {
   IRFZ44N: p5Vdmos({ mpn: "IRFZ44N", sourceUrl: "https://www.infineon.com/assets/row/public/documents/24/49/infineon-irfz44n-datasheet-en.pdf", revision: "IRFZ44NPbF, 21-Sep-2010", rdson: 0.0175, ratedCurrent: 25, transfer: [[4.5, 7], [5, 20], [6, 55], [7, 85], [8, 110]], ciss: 1470e-12, coss: 360e-12, crss: 88e-12, crssCurve: [[1, 750e-12], [2, 580e-12], [5, 340e-12], [10, 200e-12], [20, 120e-12], [50, 65e-12]], qg: 63e-9, qg5: 24e-9, qgs: 14e-9, qgd: 23e-9, trr: 63e-9, rthjc: 1.5 }),
