@@ -246,6 +246,8 @@ function sourceContractErrors(component, facts, sources, evidence) {
     return errors;
   }
   const datasheet = matches[0];
+  const selectedHashMatches = datasheetSources.filter((source) => source.sha256 === datasheet.sha256);
+  if (selectedHashMatches.length !== 1) errors.push("selected datasheet SHA-256 must resolve exactly once in sources.json");
   if (component?.datasheet?.revision !== datasheet.revision) errors.push("component datasheet.revision disagrees with sources.json");
   const factsSource = facts?.source;
   if (!factsSource || factsSource.url !== datasheet.url || factsSource.sha256 !== datasheet.sha256 || factsSource.revision !== datasheet.revision) {
@@ -416,7 +418,7 @@ function parseGeneratedMosfetBench(text, label) {
   return { temperature: Number(tempTokens[1]), sources, mosfets };
 }
 
-function validateLinkedMosfetBenches(component, packageDir, expectations, byEvidenceId) {
+function validateLinkedMosfetBenches(component, packageDir, expectations, byEvidenceId, activeModelName) {
   if (!["nmos", "pmos"].includes(component?.electrical_family)) return [];
   const errors = [];
   const sign = component.electrical_family === "pmos" ? -1 : 1;
@@ -460,6 +462,7 @@ function validateLinkedMosfetBenches(component, packageDir, expectations, byEvid
           if (!drainSource || drainSource.negative !== "0") throw new Error(`${checkLabel} does not reference a generated drain-voltage source`);
           const transistor = bench.mosfets.find((candidate) => candidate.drain === drainSource.positive && candidate.source === "0");
           if (!transistor) throw new Error(`${checkLabel} has no generated DUT instance for its drain source`);
+          if (transistor.model.toLowerCase() !== activeModelName.toLowerCase()) throw new Error(`${checkLabel} generated DUT instance must use active model ${activeModelName}`);
           const vds = resolved.characteristic === "transfer_current" ? condition.electrical.vds?.value_v : resolved.point.x_si;
           const vgs = resolved.characteristic === "transfer_current" ? resolved.point.x_si : condition.electrical.vgs?.value_v;
           if (condition.electrical[resolved.characteristic === "transfer_current" ? "vds" : "vgs"]?.kind !== "fixed") throw new Error(`${checkLabel} linked curve condition lacks the required fixed bias`);
@@ -469,12 +472,14 @@ function validateLinkedMosfetBenches(component, packageDir, expectations, byEvid
           const node = /v\(([^)]+)\)/.exec(expression)?.[1];
           const transistor = bench.mosfets.find((candidate) => candidate.drain === node && candidate.source === "0");
           if (!transistor || condition.electrical.vgs.kind !== "fixed" || condition.electrical.id.kind !== "fixed") throw new Error(`${checkLabel} cannot represent the linked RDS(on) condition`);
+          if (transistor.model.toLowerCase() !== activeModelName.toLowerCase()) throw new Error(`${checkLabel} generated DUT instance must use active model ${activeModelName}`);
           assertVoltage(bench, transistor.gate, condition.electrical.vgs.value_v, checkLabel);
           assertCurrent(bench, transistor.drain, condition.electrical.id.value_a, checkLabel);
         } else if (resolved.characteristic === "gate_threshold") {
           const node = /v\(([^)]+)\)/.exec(expression)?.[1];
           const transistor = bench.mosfets.find((candidate) => candidate.drain === node && candidate.gate === node && candidate.source === "0");
           if (!transistor || condition.electrical.vds?.relation !== "vds_equals_vgs" || condition.electrical.id.kind !== "fixed") throw new Error(`${checkLabel} cannot represent the linked threshold condition`);
+          if (transistor.model.toLowerCase() !== activeModelName.toLowerCase()) throw new Error(`${checkLabel} generated DUT instance must use active model ${activeModelName}`);
           assertCurrent(bench, node, condition.electrical.id.value_a, checkLabel);
         } else throw new Error(`${checkLabel} uses unsupported linked MOSFET bench semantics`);
       } catch (error) { errors.push(error.message); }
@@ -495,7 +500,11 @@ function validateNewContractPackage(component, facts, fitted, modelText, expecta
   errors.push(...sourceContractErrors(component, facts, sources, evidence));
   errors.push(...validateMosfetChannelCard(component, modelText));
   const byEvidenceId = new Map(evidence.map((row) => [row.evidence.evidence_id, row]));
-  errors.push(...validateLinkedMosfetBenches(component, packageDir, expectations, byEvidenceId));
+  let activeModelName = null;
+  if (["nmos", "pmos"].includes(component?.electrical_family)) {
+    try { activeModelName = activeVdmosModelCard(modelText).name; } catch { /* channel-card validation emits the diagnostic */ }
+  }
+  if (activeModelName) errors.push(...validateLinkedMosfetBenches(component, packageDir, expectations, byEvidenceId, activeModelName));
   errors.push(...residualCalibrationErrors(fitted));
   errors.push(...mosfetResidualSummaryErrors(component, fitted));
 
@@ -730,6 +739,42 @@ export function validateComponentFiles(componentPath) {
   return { errors, component, expectations, sources };
 }
 
+const EVIDENCE_CONTRACT_VERSION = "1.0.0";
+
+function hasOwn(value, field) {
+  return value != null && typeof value === "object" && Object.hasOwn(value, field);
+}
+
+function packageContractSignals(component, facts, fitted, expectations) {
+  const region = component?.supported_operating_region;
+  const bounds = Array.isArray(region?.numeric_bounds) ? region.numeric_bounds : [];
+  const checks = expectationChecks(expectations);
+  return [
+    facts?.evidence_contract_version != null && "facts.evidence_contract_version",
+    fitted?.evidence_contract_version != null && "fitted.evidence_contract_version",
+    expectations?.evidence_contract_version != null && "expectations.evidence_contract_version",
+    expectations?.evidence_cohorts != null && "expectations.evidence_cohorts",
+    checks.some(({ check }) => LINKAGE_FIELDS.some((field) => hasOwn(check, field))) && "expectations versioned evidence linkage",
+    region?.contract_version != null && "component supported_operating_region.contract_version",
+    bounds.some((bound) => ["bound_id", "evidence_refs", "condition_ids", "citation_ids", "derivation"].some((field) => hasOwn(bound, field))) && "component versioned evidence refs"
+  ].filter(Boolean);
+}
+
+function contractVersionErrors(component, facts, fitted, expectations) {
+  const errors = [];
+  const region = component?.supported_operating_region;
+  for (const [label, value] of [
+    ["facts evidence_contract_version", facts?.evidence_contract_version],
+    ["fitted evidence_contract_version", fitted?.evidence_contract_version],
+    ["expectations evidence_contract_version", expectations?.evidence_contract_version],
+    ["component supported_operating_region.contract_version", region?.contract_version]
+  ]) {
+    if (value !== EVIDENCE_CONTRACT_VERSION) errors.push(`${label} must be ${EVIDENCE_CONTRACT_VERSION}`);
+  }
+  if (!Array.isArray(expectations?.evidence_cohorts)) errors.push(`expectations evidence_cohorts is required for evidence contract ${EVIDENCE_CONTRACT_VERSION}`);
+  return errors;
+}
+
 function syntaxCheckModel(packageDir) {
   const modelPath = path.join(packageDir, "model.cir");
   const scratch = fs.mkdtempSync(path.join(os.tmpdir(), "opencircuit-model-check-"));
@@ -790,23 +835,32 @@ export function validatePackage(packageDir) {
   }
 
   const expectationsPath = path.join(absoluteDir, "tests", "expectations.json");
+  const factsPath = path.join(absoluteDir, "facts.json");
+  const fittedPath = path.join(absoluteDir, "fitted.json");
+  const modelPath = path.join(absoluteDir, "model.cir");
   let expectations = null;
+  let facts = null;
+  let fitted = null;
   if (fs.existsSync(expectationsPath)) {
     try { expectations = readJson(expectationsPath); } catch { /* read diagnostics are emitted above */ }
   }
-  const newContract = expectations?.evidence_contract_version === "1.0.0";
-  if (newContract) {
+  if (fs.existsSync(factsPath)) {
+    try { facts = readJson(factsPath); } catch (error) { errors.push(`facts cannot be read: ${error.message}`); }
+  }
+  if (fs.existsSync(fittedPath)) {
+    try { fitted = readJson(fittedPath); } catch (error) { errors.push(`fitted cannot be read: ${error.message}`); }
+  }
+  const contractSignals = packageContractSignals(component, facts, fitted, expectations);
+  if (contractSignals.length) {
     for (const relative of ["facts.json", "fitted.json"]) {
       const target = path.join(absoluteDir, relative);
-      if (!fs.existsSync(target)) errors.push(`missing required package file for evidence contract 1.0.0: ${relative}`);
+      if (!fs.existsSync(target)) errors.push(`missing required package file for evidence contract ${EVIDENCE_CONTRACT_VERSION}: ${relative}`);
       else if (fs.statSync(target).size === 0) errors.push(`required package file is empty: ${relative}`);
     }
-    const factsPath = path.join(absoluteDir, "facts.json");
-    const fittedPath = path.join(absoluteDir, "fitted.json");
-    const modelPath = path.join(absoluteDir, "model.cir");
-    if (component && [factsPath, fittedPath, modelPath].every((target) => fs.existsSync(target))) {
+    errors.push(...contractVersionErrors(component, facts, fitted, expectations));
+    if (component && facts && fitted && expectations && fs.existsSync(modelPath)) {
       try {
-        errors.push(...validateNewContractPackage(component, readJson(factsPath), readJson(fittedPath), fs.readFileSync(modelPath, "utf8"), expectations, sources, absoluteDir));
+        errors.push(...validateNewContractPackage(component, facts, fitted, fs.readFileSync(modelPath, "utf8"), expectations, sources, absoluteDir));
       } catch (error) {
         errors.push(`evidence contract package cannot be read: ${error.message}`);
       }

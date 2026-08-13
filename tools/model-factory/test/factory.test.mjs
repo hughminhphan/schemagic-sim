@@ -3,8 +3,12 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
+import { fileURLToPath } from "node:url";
 import { assertCardParameterTable, assertEmittedParametersMatchFitted, assertFiniteNumbers, assertMosfetConditionIdentityContract, expressionValue, identityHash, normalizeMosfetConditionIdentity, normalizeMosfetCurve, renderParameterTable, stageTestgen } from "../factory.mjs";
 import { PARTS, getPart } from "../lib/parts.mjs";
+
+const here = path.dirname(fileURLToPath(import.meta.url));
+const repoRoot = path.resolve(here, "../../..");
 
 function assertQuantityReferences(value) {
   if (Array.isArray(value)) return value.forEach(assertQuantityReferences);
@@ -297,7 +301,7 @@ test("conveyor MOSFET package contract rejects hidden critical defaults and hybr
 });
 
 test("legacy reviewed MOSFET package generation remains backward-compatible", () => {
-  const packageDir = path.resolve("../../packages/model-library/models/infineon/IRLZ44N");
+  const packageDir = path.join(repoRoot, "packages/model-library/models/infineon/IRLZ44N");
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "factory-mosfet-legacy-"));
   try {
     fs.cpSync(packageDir, root, { recursive: true });

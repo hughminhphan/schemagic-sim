@@ -58,6 +58,7 @@ test("versioned package chain requires facts and fitted while legacy packages st
     const errors = validatePackage(root).errors;
     assert.ok(errors.some((error) => error.includes("facts.json")), errors.join("\n"));
     assert.ok(errors.some((error) => error.includes("fitted.json")), errors.join("\n"));
+    assert.deepEqual(validatePackage(source).errors, []);
   } finally {
     fs.rmSync(root, { recursive: true, force: true });
   }
@@ -166,6 +167,25 @@ test("correct canonical evidence-contract package validates", () => {
   }
 });
 
+test("contract detection fails closed when any authoritative marker or linkage set is removed or downgraded", () => {
+  const cases = [
+    ["facts marker removal", (f) => { delete f.facts.evidence_contract_version; }, "facts evidence_contract_version"],
+    ["facts marker downgrade", (f) => { f.facts.evidence_contract_version = "0.9.0"; }, "facts evidence_contract_version"],
+    ["fitted marker removal", (f) => { delete f.fitted.evidence_contract_version; }, "fitted evidence_contract_version"],
+    ["fitted marker downgrade", (f) => { f.fitted.evidence_contract_version = "0.9.0"; }, "fitted evidence_contract_version"],
+    ["expectations marker removal", (f) => { delete f.expectations.evidence_contract_version; }, "expectations evidence_contract_version"],
+    ["expectations marker downgrade", (f) => { f.expectations.evidence_contract_version = "0.9.0"; }, "expectations evidence_contract_version"],
+    ["expectations cohort removal", (f) => { delete f.expectations.evidence_cohorts; }, "evidence_cohorts"],
+    ["component marker removal", (f) => { delete f.component.supported_operating_region.contract_version; }, "contract_version"],
+    ["component marker downgrade", (f) => { f.component.supported_operating_region.contract_version = "0.9.0"; }, "contract_version"],
+    ["component evidence refs removal", (f) => { delete f.component.supported_operating_region.numeric_bounds[0].evidence_refs; }, "evidence_refs"]
+  ];
+  for (const [name, mutate, fragment] of cases) {
+    const errors = mutateContractFixture(mutate);
+    assert.ok(errors.some((error) => error.includes(fragment)), `${name}: ${errors.join("\n")}`);
+  }
+});
+
 test("stale citation locator hashes fail for page, table, and figure mutations", () => {
   for (const mutate of [
     (f) => { f.facts.curves[0].citation_identity.page = 99; },
@@ -231,6 +251,19 @@ test("contract sources must resolve citation hashes and component datasheet meta
   }
 });
 
+test("duplicate selected datasheet SHA is rejected even when the selected URL remains unique", () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "component-source-duplicate-sha-"));
+  try {
+    writeContractPackage(root);
+    const sourcesPath = path.join(root, "sources.json");
+    const sources = JSON.parse(fs.readFileSync(sourcesPath, "utf8"));
+    sources.push({ ...sources[0], url: "https://example.com/duplicate-record.pdf" });
+    fs.writeFileSync(sourcesPath, JSON.stringify(sources));
+    const errors = validatePackage(root).errors;
+    assert.ok(errors.some((error) => error.includes("selected datasheet SHA-256 must resolve exactly once")), errors.join("\n"));
+  } finally { fs.rmSync(root, { recursive: true, force: true }); }
+});
+
 test("linked operating benches reject temperature, analysis, VDS, and VGS mutations", () => {
   const cases = [
     ["Fixture test\n.temp 25\nMT1 d g 0 DUT\nVd d 0 DC 10\nVg g 0 DC 2.5\n.op\n.end\n", ".temp disagrees"],
@@ -249,6 +282,22 @@ test("linked operating benches reject temperature, analysis, VDS, and VGS mutati
   }
 });
 
+test("linked NMOS and PMOS benches must instantiate the active model.cir DUT card", () => {
+  for (const family of ["nmos", "pmos"]) {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), `component-${family}-wrong-model-`));
+    try {
+      const fixture = contractFixture();
+      fixture.component.electrical_family = family;
+      writeContractPackage(root, fixture);
+      const pmos = family === "pmos";
+      fs.writeFileSync(path.join(root, "model.cir"), `* OpenCircuit Model Factory\n* Original work\n* Public factual specifications\n.model DUT VDMOS(${pmos ? "pchan VTO=-2" : "VTO=2"})\n.model WRONG VDMOS(${pmos ? "pchan VTO=-2" : "VTO=2"})\n* MT1 d g 0 WRONG\n`);
+      fs.writeFileSync(path.join(root, "tests", "transfer.cir"), `Fixture test\n.temp 75\nMT1 d g 0 WRONG\nVd d 0 DC ${pmos ? -10 : 10}\nVg g 0 DC ${pmos ? -2.5 : 2.5}\n.op\n.end\n`);
+      const errors = validatePackage(root).errors;
+      assert.ok(errors.some((error) => error.includes("generated DUT instance must use active model DUT")), `${family}: ${errors.join("\n")}`);
+    } finally { fs.rmSync(root, { recursive: true, force: true }); }
+  }
+});
+
 test("linked expectation and fitted residual evidence semantics fail exact mutations", () => {
   const cases = [
     [(f) => { f.expectations.tests[0].scalar_checks[0].expected_value = 6; }, "expected_value disagrees"],
@@ -263,6 +312,32 @@ test("linked expectation and fitted residual evidence semantics fail exact mutat
     const errors = mutateContractFixture(mutate);
     assert.ok(errors.some((error) => error.includes(fragment)), `${fragment}: ${errors.join("\n")}`);
   }
+});
+
+test("F2 expectations may deliberately sample fitted residual evidence while facts and fitted preserve every residual", () => {
+  const errors = mutateContractFixture((fixture) => {
+    const curve = fixture.facts.curves[0];
+    const secondEvidence = curve.points[1].evidence_identity;
+    fixture.fitted.calibration.observations.push({
+      ...structuredClone(fixture.fitted.calibration.observations[0]),
+      datasheet_value: curve.points[1].y_si,
+      condition_identity: curve.condition_identity,
+      citation_identity: curve.citation_identity,
+      evidence_identity: secondEvidence
+    });
+    fixture.fitted.residuals.push({
+      ...structuredClone(fixture.fitted.residuals[0]),
+      datasheet_value: curve.points[1].y_si,
+      fitted_value: curve.points[1].y_si,
+      relative_error: 0,
+      condition_identity: curve.condition_identity,
+      citation_identity: curve.citation_identity,
+      evidence_identity: secondEvidence
+    });
+    const relativeErrors = fixture.fitted.residuals.map((row) => row.relative_error);
+    fixture.fitted.rms_relative_error = Math.sqrt(relativeErrors.reduce((sum, value) => sum + value ** 2, 0) / relativeErrors.length);
+  });
+  assert.deepEqual(errors, []);
 });
 
 test("F2 residual integrity recomputes rows, summaries, worst identity, and gate", () => {

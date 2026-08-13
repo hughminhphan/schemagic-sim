@@ -48,17 +48,50 @@ ALLOWED_EVIDENCE_ROLES = {"minimum", "typical", "maximum", "digitized_typical_cu
 ALLOWED_RESIDUAL_QUALIFIERS = {"typical", "digitized_typical_curve", "maximum"}
 
 
+def canonical_number(value):
+    """ECMAScript JSON number spelling used by the JavaScript package-ID producer."""
+    number = float(value)
+    if not math.isfinite(number):
+        raise ValueError("identity material numbers must be finite")
+    if number == 0:
+        return "0"
+    magnitude = abs(number)
+    shortest = repr(number).lower()
+    if "e" in shortest:
+        mantissa, exponent = shortest.split("e")
+        exponent_value = int(exponent)
+        if magnitude >= 1e21 or magnitude < 1e-6:
+            return f"{mantissa}e{'+' if exponent_value >= 0 else '-'}{abs(exponent_value)}"
+        digits = mantissa.replace("-", "").replace(".", "")
+        sign = "-" if number < 0 else ""
+        decimal_position = 1 + exponent_value
+        return sign + "0." + "0" * (-decimal_position) + digits if decimal_position <= 0 \
+            else sign + digits[:decimal_position] + "0" * max(decimal_position - len(digits), 0) \
+            + ("." + digits[decimal_position:] if decimal_position < len(digits) else "")
+    return str(int(number)) if number.is_integer() else shortest
+
+
 def canonical_json(value):
-    """Cross-language canonical JSON with shortest integral IEEE number spelling."""
-    def normalize(item):
-        if isinstance(item, dict):
-            return {key: normalize(child) for key, child in item.items()}
+    """Cross-language canonical JSON matching JavaScript JSON.stringify for contract numbers.
+
+    Python independently recomputes every supplied condition, citation, cohort, curve,
+    and evidence ID before fitting, so exponent spelling is part of package acceptance.
+    """
+    def encode(item):
+        if item is None:
+            return "null"
+        if isinstance(item, bool):
+            return "true" if item else "false"
+        if isinstance(item, str):
+            return json.dumps(item, ensure_ascii=False, separators=(",", ":"))
+        if isinstance(item, (int, float)):
+            return canonical_number(item)
         if isinstance(item, list):
-            return [normalize(child) for child in item]
-        if isinstance(item, float) and math.isfinite(item) and item.is_integer():
-            return int(item)
-        return item
-    return json.dumps(normalize(value), sort_keys=True, separators=(",", ":"), ensure_ascii=False, allow_nan=False)
+            return "[" + ",".join(encode(child) for child in item) + "]"
+        if isinstance(item, dict):
+            return "{" + ",".join(f"{json.dumps(key, ensure_ascii=False)}:{encode(item[key])}" for key in sorted(item)) + "}"
+        raise TypeError(f"identity material contains non-JSON value: {type(item).__name__}")
+    return encode(value)
 
 
 def canonical_hash(value, excluded=()):

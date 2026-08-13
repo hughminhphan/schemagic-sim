@@ -6,6 +6,7 @@ import test from "node:test";
 import { createHash } from "node:crypto";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
+import { canonicalIdentityJson } from "../../../packages/component-schema/evidence-identity.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const pythonDir = path.resolve(here, "../python");
@@ -30,6 +31,15 @@ function runFit(payload) {
   } finally {
     fs.rmSync(root, { recursive: true, force: true });
   }
+}
+
+function pythonCanonicalJson(value) {
+  const program = "import json,sys; from fit_conveyor import canonical_json; print(canonical_json(json.loads(sys.stdin.read())))";
+  const result = spawnSync(venvPython, ["-c", program], {
+    cwd: pythonDir, encoding: "utf8", input: JSON.stringify(value), timeout: 30_000,
+  });
+  assert.equal(result.status, 0, `Python canonical JSON failed: ${result.stdout}\n${result.stderr}`);
+  return result.stdout.trim();
 }
 
 function captureNativeResidualProbeNetlists() {
@@ -64,6 +74,15 @@ function canonical(value) {
 
 const hash = (value) => `sha256:${createHash("sha256").update(canonical(value)).digest("hex")}`;
 const sourceSha = "1".repeat(64);
+
+test("Python and JavaScript canonical package-ID numbers use identical exponent spelling", () => {
+  const vectors = [
+    { value: 1e-7, threshold: 1e-6, large: 1e21 },
+    { value: -0, tiny: 1.2e-12, ordinary: 0.000001, integer: 1.0 },
+    { nested: [1e20, 1e21, -2.5e-7, 2.5e-6] }
+  ];
+  for (const vector of vectors) assert.equal(pythonCanonicalJson(vector), canonicalIdentityJson(vector));
+});
 
 function conditionIdentity(characteristic, { polarity = "n", temperature = 25, vgs, vds, id, mode = { kind: "dc" }, qualifiers = [] } = {}) {
   const identity = {

@@ -1665,7 +1665,7 @@ export function stageBulkPart(part, rawExtraction, fit, stagingRoot, { demotionR
     optimizer: fit.optimizer ?? null,
     held_defaults: fit.optimizer?.held_defaults ?? [],
     curves_used: fit.curves_used ?? [],
-    evidence_contract_version: fit.evidence_contract_version ?? (part.conveyor_family === "mosfet" ? "1.0.0" : null),
+    ...(part.conveyor_family === "mosfet" ? { evidence_contract_version: fit.evidence_contract_version ?? "1.0.0" } : {}),
     evidence_curves: fit.evidence_curves ?? [],
     curves_rejected: fit.curves_rejected ?? [],
     residuals: fit.residuals ?? [],

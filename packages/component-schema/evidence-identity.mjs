@@ -8,8 +8,26 @@ export function stableIdentityValue(value) {
   return value;
 }
 
+export function canonicalIdentityJson(value) {
+  const encode = (item) => {
+    if (item === null) return "null";
+    if (typeof item === "string") return JSON.stringify(item);
+    if (typeof item === "boolean") return item ? "true" : "false";
+    if (typeof item === "number") {
+      if (!Number.isFinite(item)) throw new Error("identity material numbers must be finite");
+      return JSON.stringify(Object.is(item, -0) ? 0 : item);
+    }
+    if (Array.isArray(item)) return `[${item.map(encode).join(",")}]`;
+    if (item && typeof item === "object") {
+      return `{${Object.keys(item).sort().map((key) => `${JSON.stringify(key)}:${encode(item[key])}`).join(",")}}`;
+    }
+    throw new Error(`identity material contains non-JSON value: ${typeof item}`);
+  };
+  return encode(value);
+}
+
 export function identityHash(value) {
-  return `sha256:${crypto.createHash("sha256").update(JSON.stringify(stableIdentityValue(value))).digest("hex")}`;
+  return `sha256:${crypto.createHash("sha256").update(canonicalIdentityJson(value)).digest("hex")}`;
 }
 
 export function claimedIdentityMaterial(value, idField) {
