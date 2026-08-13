@@ -3,12 +3,15 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
+import { createHash } from "node:crypto";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const pythonDir = path.resolve(here, "../python");
-const venvPython = path.resolve(here, "../.venv/bin/python");
+const localVenvPython = path.resolve(here, "../.venv/bin/python");
+const sharedVenvPython = "/Users/hughp/Documents/opencircuit/tools/model-factory/.venv/bin/python";
+const venvPython = fs.existsSync(localVenvPython) ? localVenvPython : sharedVenvPython;
 const gates = JSON.parse(fs.readFileSync(path.resolve(here, "../lib/fit-gates.json"), "utf8"));
 const skip = fs.existsSync(venvPython) && fs.existsSync("/opt/homebrew/bin/ngspice")
   ? false : "requires tools/model-factory/.venv and native ngspice";
@@ -38,7 +41,7 @@ subject.run_ngspice = lambda netlist: captured.append(netlist) or {}
 subject.vector = lambda *_args: [0.7]
 subject.diode_bench({"IS": 1e-12, "N": 1.5, "RS": 0.1}, [1e-3])
 subject.bjt_bench({"IS": 1e-15, "BF": 100, "VAF": 100, "IKF": 0.1, "ISE": 1e-15, "RB": 1, "RC": 0.1, "RE": 0.1}, [(1e-3, 100)], 5, "n")
-subject.vdmos_bench([2, 1, 0.1, 0.01, 0.1], {"RS": 0.1, "CGS": 1e-9, "CGDMAX": 1e-9, "CGDMIN": 1e-12, "CJO": 1e-9, "RB": 1}, [], [], [])
+subject.vdmos_bench([2, 1, 0.1, 0.01, 0.1], {"RS": 0.1, "CGS": 1e-9, "CGDMAX": 1e-9, "CGDMIN": 1e-12, "CJO": 1e-9, "RB": 1}, [(3, 7, 0.1, 25)], [], [])
 print(json.dumps(captured))
 `;
   const result = spawnSync(venvPython, ["-c", program], {
@@ -52,6 +55,87 @@ const curve = (name, xq, xu, yq, yu, conditions, points, page = "p. 3") => ({
   name, x_axis: { quantity: xq, unit: xu, scale: "linear" }, y_axis: { quantity: yq, unit: yu, scale: "log" },
   test_conditions: conditions, page_reference: page, points: points.map(([x, y]) => ({ x, y })),
 });
+
+function canonical(value) {
+  if (Array.isArray(value)) return `[${value.map(canonical).join(",")}]`;
+  if (value && typeof value === "object") return `{${Object.keys(value).sort().map((key) => `${JSON.stringify(key)}:${canonical(value[key])}`).join(",")}}`;
+  return JSON.stringify(value);
+}
+
+const hash = (value) => `sha256:${createHash("sha256").update(canonical(value)).digest("hex")}`;
+const sourceSha = "1".repeat(64);
+
+function conditionIdentity(characteristic, { polarity = "n", temperature = 25, vgs, vds, id, mode = { kind: "dc" }, qualifiers = [] } = {}) {
+  const identity = {
+    schema_version: "1.0.0", characteristic, polarity, magnitude_convention: "absolute",
+    temperature: { kind: "junction", value_c: temperature },
+    electrical: { vgs, vds, id }, test_mode: mode, qualifiers,
+  };
+  return { ...identity, condition_id: hash(identity) };
+}
+
+function citationIdentity({ page = 3, table, row, column, figure, curve: curveName } = {}) {
+  const identity = { source_sha256: sourceSha, page,
+    ...(table ? { table, row, ...(column ? { column } : {}) } : { figure, curve: curveName }) };
+  return { ...identity, citation_id: hash(identity) };
+}
+
+function evidenceDatum({ characteristic, quantity, value, unit, role, condition, citation }) {
+  const cohortMaterial = { characteristic, condition_id: condition.condition_id, source_sha256: citation.source_sha256,
+    page: citation.page, ...(citation.table ? { table: citation.table, row: citation.row } : { figure: citation.figure, curve: citation.curve }) };
+  const identity = { role, condition_id: condition.condition_id, citation_id: citation.citation_id, cohort_id: hash(cohortMaterial) };
+  const evidenceMaterial = { characteristic, role, quantity, value_si: value, unit_si: unit,
+    condition_id: condition.condition_id, citation_id: citation.citation_id };
+  return { value, unit, condition_identity: condition, citation_identity: citation,
+    evidence_identity: { ...identity, evidence_id: hash(evidenceMaterial) } };
+}
+
+function canonicalCurve(characteristic, points, condition, citation, axes = { x: "VGS", y: "ID" }) {
+  const normalized = points.map(([x, y], point_index) => ({ point_index, x_si: x, y_si: y }));
+  const x_axis = { quantity: axes.x, unit: "V", scale: "linear" };
+  const y_axis = { quantity: axes.y, unit: "A", scale: "log" };
+  const curveMaterial = { schema_version: "1.0.0", characteristic, x_axis, y_axis,
+    condition_id: condition.condition_id, citation_id: citation.citation_id, points: normalized };
+  const curve_id = hash(curveMaterial);
+  const cohort_id = hash({ characteristic, condition_id: condition.condition_id, citation_id: citation.citation_id, curve_id });
+  return {
+    name: `${citation.figure} ${citation.curve}`, x_axis, y_axis, condition_identity: condition,
+    citation_identity: citation, curve_id,
+    points: normalized.map((point) => ({ ...point, evidence_identity: {
+      role: "digitized_typical_curve", condition_id: condition.condition_id, citation_id: citation.citation_id,
+      cohort_id, curve_id, evidence_id: hash({ characteristic, role: "digitized_typical_curve", ...point,
+        condition_id: condition.condition_id, citation_id: citation.citation_id, cohort_id, curve_id }),
+    } })),
+  };
+}
+
+function canonicalMosfetPayload({ polarity = "n", temperature = 25, transferVds = 7, mode = { kind: "dc" } } = {}) {
+  const thresholdCondition = conditionIdentity("gate_threshold", { polarity, temperature,
+    vgs: { kind: "relation", relation: "measured_threshold" },
+    vds: { kind: "relation", relation: "vds_equals_vgs" }, id: { kind: "fixed", value_a: 250e-6 }, mode });
+  const thresholdCitation = citationIdentity({ page: 2, table: "Electrical characteristics", row: "Gate threshold voltage" });
+  const transferCondition = conditionIdentity("transfer_current", { polarity, temperature,
+    vgs: { kind: "range", lower_v: 1, upper_v: 4 }, vds: { kind: "fixed", value_v: transferVds },
+    id: { kind: "range", lower_a: 1e-4, upper_a: 1 }, mode });
+  const transferCitation = citationIdentity({ page: 3, figure: "Figure 1", curve: "25 C trace" });
+  const rdsCondition = conditionIdentity("rds_on", { polarity, temperature,
+    vgs: { kind: "fixed", value_v: 4.5 }, vds: { kind: "range", lower_v: 0, upper_v: 1 },
+    id: { kind: "fixed", value_a: 1 }, mode });
+  const rdsCitation = citationIdentity({ page: 2, table: "Electrical characteristics", row: "Static drain-source on resistance" });
+  const threshold = {
+    threshold_min: evidenceDatum({ characteristic: "gate_threshold", quantity: "threshold_minimum", value: 1, unit: "V", role: "minimum", condition: thresholdCondition, citation: thresholdCitation }),
+    threshold_max: evidenceDatum({ characteristic: "gate_threshold", quantity: "threshold_maximum", value: 2.5, unit: "V", role: "maximum", condition: thresholdCondition, citation: thresholdCitation }),
+  };
+  const rdson = {
+    vgs: evidenceDatum({ characteristic: "rds_on", quantity: "vgs", value: 4.5, unit: "V", role: "typical", condition: rdsCondition, citation: rdsCitation }),
+    current: evidenceDatum({ characteristic: "rds_on", quantity: "drain_current", value: 1, unit: "A", role: "typical", condition: rdsCondition, citation: rdsCitation }),
+    resistance: evidenceDatum({ characteristic: "rds_on", quantity: "rds_on_typical", value: 0.2, unit: "ohm", role: "typical", condition: rdsCondition, citation: rdsCitation }),
+  };
+  return { family: "mosfet", polarity, evidence_contract_version: "1.0.0", extraction: {
+    usable_curves: true, specs: { ...threshold, rdson_points: [rdson] },
+    curves: [canonicalCurve("transfer_current", [[1, 1e-4], [1.5, 1e-3], [2, 1e-2], [2.5, 0.1], [3, 0.5], [3.5, 1]], transferCondition, transferCitation)],
+  } };
+}
 
 const diodePayload = (curves, specs = {}) => ({
   family: "diode", polarity: "n", mpn: "FIXTURE-D", manufacturer: "Fixture", seed_hints: [],
@@ -99,7 +183,7 @@ test("an unrecognised unit is refused rather than silently treated as SI", { ski
 
 // ------------------------------------------------------------ extraction validation
 
-test("MOSFET residual curves require explicit temperature, citation, and transfer bias or range", { skip }, () => {
+test("legacy MOSFET residual curves are not admissible without canonical identities", { skip }, () => {
   const base = curve(
     "Figure 1 Typical Transfer Characteristics",
     "gate-to-source voltage VGS", "V", "drain current ID", "A",
@@ -116,20 +200,84 @@ test("MOSFET residual curves require explicit temperature, citation, and transfe
   noTemperature.test_conditions = "VDS = 10 V";
   const temperatureResult = runFit(payload(noTemperature));
   assert.equal(temperatureResult.fidelity, "F1");
-  assert.match(temperatureResult.curves_rejected.join("\n"), /no explicit curve temperature/);
+  assert.match(temperatureResult.demotion_reason, /evidence_contract_version/);
 
   const noFigure = structuredClone(base);
   noFigure.name = "Typical Transfer Characteristics";
   noFigure.page_reference = "PDF page 3";
   const citationResult = runFit(payload(noFigure));
   assert.equal(citationResult.fidelity, "F1");
-  assert.match(citationResult.curves_rejected.join("\n"), /figure or curve number/);
+  assert.match(citationResult.demotion_reason, /evidence_contract_version/);
 
   const noBias = structuredClone(base);
   noBias.test_conditions = "TJ = 25 degC";
   const biasResult = runFit(payload(noBias));
   assert.equal(biasResult.fidelity, "F1");
-  assert.match(biasResult.curves_rejected.join("\n"), /neither an explicit VDS bias nor a stated VDS saturation range/);
+  assert.match(biasResult.demotion_reason, /evidence_contract_version/);
+});
+
+test("canonical MOSFET F2 carries identities and probes exact curve bias and temperature", { skip, timeout: 300_000 }, () => {
+  const payload = canonicalMosfetPayload({ polarity: "n", temperature: 75, transferVds: 7 });
+  const fitted = runFit(payload);
+  assert.ok(["F1", "F2"].includes(fitted.fidelity));
+  assert.ok(fitted.parameters, `${fitted.demotion_reason}\n${fitted.curves_rejected.join("\n")}`);
+  assert.ok(fitted.residuals.every((row) => row.condition_identity?.condition_id?.startsWith("sha256:")));
+  assert.ok(fitted.residuals.every((row) => row.citation_identity?.citation_id?.startsWith("sha256:")));
+  assert.ok(fitted.residuals.every((row) => row.evidence_identity?.evidence_id?.startsWith("sha256:")));
+  assert.ok(fitted.residuals.every((row) => row.temperature_c === 75));
+  assert.equal(fitted.optimizer.seed_provenance.VTO.condition_identity.temperature.value_c, 75);
+  assert.match(fitted.residuals[0].citation, /page 3, figure Figure 1/);
+});
+
+test("MOSFET F2 fails closed without the canonical contract marker", { skip }, () => {
+  const payload = canonicalMosfetPayload();
+  delete payload.evidence_contract_version;
+  const fitted = runFit(payload);
+  assert.equal(fitted.fidelity, "F1");
+  assert.equal(fitted.parameters, null);
+  assert.match(fitted.demotion_reason, /evidence_contract_version 1\.0\.0/);
+});
+
+test("MOSFET F2 rejects incomplete, hybrid, pulsed, placeholder, and unknown qualifier evidence", { skip }, () => {
+  const mutations = [
+    ["missing temperature", (p) => { delete p.extraction.specs.threshold_min.condition_identity.temperature; }],
+    ["hybrid RDS cohort", (p) => { p.extraction.specs.rdson_points[0].current.evidence_identity.cohort_id = `sha256:${"f".repeat(64)}`; }],
+    ["pulsed DC evidence", (p) => { p.extraction.curves[0].condition_identity.test_mode = { kind: "pulsed", pulse_width_s: 1e-6 }; }],
+    ["placeholder citation", (p) => { p.extraction.specs.threshold_max.citation_identity.table = "pending review"; }],
+    ["unknown RDS qualifier", (p) => { p.extraction.specs.rdson_points[0].resistance.evidence_identity.role = "estimated"; }],
+    ["point identity override", (p) => { p.extraction.curves[0].points[0].condition_identity = p.extraction.curves[0].condition_identity; }],
+  ];
+  for (const [name, mutate] of mutations) {
+    const payload = canonicalMosfetPayload();
+    mutate(payload);
+    const fitted = runFit(payload);
+    assert.equal(fitted.fidelity, "F1", name);
+    assert.equal(fitted.parameters, null, name);
+  }
+});
+
+test("MOSFET F2 rejects a published incomplete critical point rather than dropping it", { skip }, () => {
+  const payload = canonicalMosfetPayload();
+  delete payload.extraction.specs.rdson_points[0].current.condition_identity;
+  const fitted = runFit(payload);
+  assert.equal(fitted.fidelity, "F1");
+  assert.equal(fitted.parameters, null);
+  assert.match(fitted.demotion_reason, /condition_identity/);
+});
+
+test("canonical N, P, and mixed threshold cohorts validate independently", { skip }, () => {
+  for (const polarity of ["n", "p"]) {
+    const payload = canonicalMosfetPayload({ polarity });
+    const fitted = runFit(payload);
+    assert.ok(fitted.parameters, `${polarity}: ${fitted.demotion_reason}`);
+  }
+  const mixed = canonicalMosfetPayload();
+  const foreign = canonicalMosfetPayload({ temperature: 125 }).extraction.specs.threshold_max;
+  mixed.extraction.specs.threshold_max = foreign;
+  const fitted = runFit(mixed);
+  assert.equal(fitted.fidelity, "F1");
+  assert.equal(fitted.parameters, null);
+  assert.match(fitted.demotion_reason, /hybrid|cohort/i);
 });
 
 test("a non-monotonic forward curve is rejected, not fitted", { skip }, () => {
@@ -177,22 +325,27 @@ test("all native conveyor residual probes pin the cited 25 degC temperature", { 
   }
 });
 
-test("standalone VDMOS native DC and capacitance probes pin 25 degC", { skip }, () => {
+test("standalone VDMOS native probes use exact evidence temperatures and transfer VDS", { skip }, () => {
   const program = String.raw`
 import json
 import fit_vdmos as subject
 captured = []
 subject.run_ngspice = lambda netlist: captured.append(netlist) or {}
+subject.vector = lambda *_args: [0.1]
 fixed = {"A": 0.5, "RS": 0.1, "RG": 0.1, "CGS": 1e-9, "CGDMAX": 1e-10, "CGDMIN": 1e-11, "CJO": 1e-10, "IS": 1e-12, "RB": 0.1, "TT": 1e-9, "BV": 100, "IBV": 1e-6, "RTHJC": 1, "RTHCA": 10}
-subject.evaluate_dc([2, 1, 0, 0.003, 0.1], fixed, {"transfer_points": [], "rdson_points": [], "output_points": []})
-subject.evaluate_capacitance(0.5, [2, 1, 0, 0.003, 0.1], fixed, {"capacitances": {"crss_curve": []}})
+prepared = {"_prepared": True, "transfer_points": [{"vgs": 3, "vds": 7, "current": 0.1, "temperature_c": 75}], "rdson_points": [], "output_points": []}
+subject.evaluate_dc([2, 1, 0, 0.003, 0.1], fixed, prepared)
+subject.evaluate_capacitance(0.5, [2, 1, 0, 0.003, 0.1], fixed, {"capacitance_temperature_c": 125, "capacitances": {"crss_curve": []}})
 print(json.dumps(captured))
 `;
   const result = spawnSync(venvPython, ["-c", program], { cwd: pythonDir, encoding: "utf8" });
   assert.equal(result.status, 0, result.stderr);
   const probes = JSON.parse(result.stdout);
   assert.equal(probes.length, 2);
-  for (const netlist of probes) assert.equal(netlist.match(/^\.temp 25$/gm)?.length, 1, netlist);
+  assert.match(probes[0], /^\.temp 75$/m);
+  assert.match(probes[0], / DC 7(?:\.0+)?$/m);
+  assert.doesNotMatch(probes[0], / DC 25$/m);
+  assert.match(probes[1], /^\.temp 125$/m);
 });
 
 test("residuals are measured through native ngspice, not the fitter's own algebra", { skip }, () => {

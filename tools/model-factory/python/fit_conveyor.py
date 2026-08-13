@@ -18,6 +18,7 @@ Every reported residual is measured by evaluating the emitted model in native
 ngspice-46, never by re-evaluating the fitter's own algebra.
 """
 import argparse
+import hashlib
 import json
 import math
 import re
@@ -37,6 +38,263 @@ SI = {"y": 1e-24, "z": 1e-21, "a": 1e-18, "f": 1e-15, "p": 1e-12, "n": 1e-9,
 
 class Unfittable(Exception):
     """The extraction cannot support an F2 fit. Carries the honest reason."""
+
+
+IDENTITY_VERSION = "1.0.0"
+HASH_PATTERN = re.compile(r"^sha256:[0-9a-f]{64}$")
+PLACEHOLDER_CITATION = re.compile(r"(?:pending|placeholder|unknown|tbd|todo|n/?a|not\s+available)", re.I)
+ALLOWED_CHARACTERISTICS = {"gate_threshold", "rds_on", "transfer_current", "output_current"}
+ALLOWED_EVIDENCE_ROLES = {"minimum", "typical", "maximum", "digitized_typical_curve", "seed_only"}
+ALLOWED_RESIDUAL_QUALIFIERS = {"typical", "digitized_typical_curve", "maximum"}
+
+
+def canonical_json(value):
+    """Cross-language canonical JSON with shortest integral IEEE number spelling."""
+    def normalize(item):
+        if isinstance(item, dict):
+            return {key: normalize(child) for key, child in item.items()}
+        if isinstance(item, list):
+            return [normalize(child) for child in item]
+        if isinstance(item, float) and math.isfinite(item) and item.is_integer():
+            return int(item)
+        return item
+    return json.dumps(normalize(value), sort_keys=True, separators=(",", ":"), ensure_ascii=False, allow_nan=False)
+
+
+def canonical_hash(value, excluded=()):
+    material = {key: item for key, item in value.items() if key not in set(excluded)}
+    return "sha256:" + hashlib.sha256(canonical_json(material).encode("utf-8")).hexdigest()
+
+
+def require_exact_keys(value, required, optional, label):
+    if not isinstance(value, dict):
+        raise Unfittable(f"{label} must be an object")
+    keys = set(value)
+    missing = set(required) - keys
+    unknown = keys - set(required) - set(optional)
+    if missing:
+        raise Unfittable(f"{label} is incomplete; missing {', '.join(sorted(missing))}")
+    if unknown:
+        raise Unfittable(f"{label} contains unknown fields {', '.join(sorted(unknown))}")
+    if any(item is None for item in value.values()):
+        raise Unfittable(f"{label} must omit absent optional fields instead of using null")
+
+
+def finite_number(value, label):
+    if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(float(value)):
+        raise Unfittable(f"{label} must be a finite number")
+    return float(value)
+
+
+def validate_voltage_shape(value, label):
+    require_exact_keys(value, {"kind"}, {"value_v", "relation", "lower_v", "upper_v"}, label)
+    kind = value["kind"]
+    if kind == "fixed":
+        if set(value) != {"kind", "value_v"}:
+            raise Unfittable(f"{label} fixed voltage requires only value_v")
+        finite_number(value["value_v"], f"{label}.value_v")
+    elif kind == "relation":
+        if set(value) != {"kind", "relation"} or not isinstance(value["relation"], str) or not value["relation"].strip():
+            raise Unfittable(f"{label} relation voltage requires only a non-empty relation")
+    elif kind == "range":
+        if set(value) != {"kind", "lower_v", "upper_v"}:
+            raise Unfittable(f"{label} range voltage requires lower_v and upper_v")
+        low = finite_number(value["lower_v"], f"{label}.lower_v")
+        high = finite_number(value["upper_v"], f"{label}.upper_v")
+        if not low < high:
+            raise Unfittable(f"{label} voltage range must be increasing")
+    else:
+        raise Unfittable(f"{label}.kind is unknown: {kind!r}")
+
+
+def validate_current_shape(value, label):
+    require_exact_keys(value, {"kind"}, {"value_a", "lower_a", "upper_a"}, label)
+    kind = value["kind"]
+    if kind == "fixed":
+        if set(value) != {"kind", "value_a"}:
+            raise Unfittable(f"{label} fixed current requires only value_a")
+        finite_number(value["value_a"], f"{label}.value_a")
+    elif kind == "range":
+        if set(value) != {"kind", "lower_a", "upper_a"}:
+            raise Unfittable(f"{label} current range requires lower_a and upper_a")
+        low = finite_number(value["lower_a"], f"{label}.lower_a")
+        high = finite_number(value["upper_a"], f"{label}.upper_a")
+        if not low < high:
+            raise Unfittable(f"{label} current range must be increasing")
+    else:
+        raise Unfittable(f"{label}.kind is unknown: {kind!r}")
+
+
+def validate_condition_identity(identity, characteristic=None, label="condition_identity", dc_only=False):
+    require_exact_keys(identity,
+                       {"schema_version", "characteristic", "polarity", "magnitude_convention", "temperature",
+                        "electrical", "test_mode", "qualifiers", "condition_id"}, set(), label)
+    if identity["schema_version"] != IDENTITY_VERSION:
+        raise Unfittable(f"{label}.schema_version must be {IDENTITY_VERSION}")
+    if identity["characteristic"] not in ALLOWED_CHARACTERISTICS or (characteristic and identity["characteristic"] != characteristic):
+        raise Unfittable(f"{label}.characteristic does not match {characteristic!r}")
+    if identity["polarity"] not in {"n", "p"} or identity["magnitude_convention"] not in {"signed", "absolute"}:
+        raise Unfittable(f"{label} has invalid polarity or magnitude convention")
+    temperature = identity["temperature"]
+    require_exact_keys(temperature, {"kind", "value_c"}, set(), f"{label}.temperature")
+    if temperature["kind"] not in {"junction", "ambient", "case"}:
+        raise Unfittable(f"{label}.temperature.kind is unknown")
+    finite_number(temperature["value_c"], f"{label}.temperature.value_c")
+    electrical = identity["electrical"]
+    require_exact_keys(electrical, {"vgs", "vds", "id"}, set(), f"{label}.electrical")
+    validate_voltage_shape(electrical["vgs"], f"{label}.electrical.vgs")
+    validate_voltage_shape(electrical["vds"], f"{label}.electrical.vds")
+    validate_current_shape(electrical["id"], f"{label}.electrical.id")
+    mode = identity["test_mode"]
+    require_exact_keys(mode, {"kind"}, {"pulse_width_s", "duty_cycle", "repetition_period_s", "repetition_frequency_hz"}, f"{label}.test_mode")
+    if mode["kind"] not in {"dc", "continuous", "pulsed", "single_pulse"}:
+        raise Unfittable(f"{label}.test_mode.kind is unknown")
+    for key in set(mode) - {"kind"}:
+        number = finite_number(mode[key], f"{label}.test_mode.{key}")
+        if number <= 0 or (key == "duty_cycle" and number > 1):
+            raise Unfittable(f"{label}.test_mode.{key} is outside its physical range")
+    if mode["kind"] in {"dc", "continuous"} and len(mode) != 1:
+        raise Unfittable(f"{label} continuous/DC mode cannot carry pulse qualifiers")
+    if mode["kind"] in {"pulsed", "single_pulse"} and "pulse_width_s" not in mode:
+        raise Unfittable(f"{label} pulsed mode requires pulse_width_s")
+    if dc_only and mode["kind"] not in {"dc", "continuous"}:
+        raise Unfittable(f"{label} is pulsed evidence and cannot enter a static DC MOSFET fit")
+    qualifiers = identity["qualifiers"]
+    if not isinstance(qualifiers, list):
+        raise Unfittable(f"{label}.qualifiers must be an array")
+    normalized = []
+    for index, qualifier in enumerate(qualifiers):
+        require_exact_keys(qualifier, {"key", "value"}, set(), f"{label}.qualifiers[{index}]")
+        if not all(isinstance(qualifier[key], str) and qualifier[key].strip() for key in ("key", "value")):
+            raise Unfittable(f"{label}.qualifiers[{index}] must contain non-empty strings")
+        normalized.append((qualifier["key"], qualifier["value"]))
+    if normalized != sorted(normalized) or len(normalized) != len(set(normalized)):
+        raise Unfittable(f"{label}.qualifiers must be unique and sorted by key then value")
+    if not HASH_PATTERN.fullmatch(str(identity["condition_id"])) or identity["condition_id"] != canonical_hash(identity, {"condition_id"}):
+        raise Unfittable(f"{label}.condition_id does not match canonical content")
+    return identity
+
+
+def validate_citation_identity(identity, label="citation_identity"):
+    require_exact_keys(identity, {"source_sha256", "page", "citation_id"},
+                       {"source_revision", "section", "table", "row", "column", "figure", "curve", "trace"}, label)
+    source_hash = identity["source_sha256"]
+    if not isinstance(source_hash, str) or not re.fullmatch(r"(?:sha256:)?[0-9a-f]{64}", source_hash):
+        raise Unfittable(f"{label}.source_sha256 must be a real SHA-256 digest")
+    if isinstance(identity["page"], bool) or not isinstance(identity["page"], int) or identity["page"] <= 0:
+        raise Unfittable(f"{label}.page must be a positive integer")
+    for key in set(identity) - {"source_sha256", "page", "citation_id"}:
+        if not isinstance(identity[key], str) or not identity[key].strip() or PLACEHOLDER_CITATION.search(identity[key]):
+            raise Unfittable(f"{label}.{key} is missing or placeholder citation context")
+    table_locator = all(key in identity for key in ("table", "row"))
+    figure_locator = "figure" in identity and ("curve" in identity or "trace" in identity)
+    if table_locator == figure_locator:
+        raise Unfittable(f"{label} must identify exactly one table+row or figure+curve/trace locator")
+    if not HASH_PATTERN.fullmatch(str(identity["citation_id"])) or identity["citation_id"] != canonical_hash(identity, {"citation_id"}):
+        raise Unfittable(f"{label}.citation_id does not match canonical content")
+    return identity
+
+
+def citation_cohort_material(characteristic, condition_id, citation):
+    locator = {key: citation[key] for key in ("source_sha256", "page", "table", "row", "figure", "curve", "trace") if key in citation}
+    return {"characteristic": characteristic, "condition_id": condition_id, **locator}
+
+
+def evidence_value_material(characteristic, role, quantity, value_si, unit_si, condition_id, citation_id):
+    return {"characteristic": characteristic, "role": role, "quantity": quantity, "value_si": value_si,
+            "unit_si": unit_si, "condition_id": condition_id, "citation_id": citation_id}
+
+
+def validate_evidence_bundle(datum, characteristic, quantity, unit_si, roles, label, dc_only=False):
+    if not isinstance(datum, dict):
+        raise Unfittable(f"{label} must be an object")
+    condition = validate_condition_identity(datum.get("condition_identity"), characteristic, f"{label}.condition_identity", dc_only=dc_only)
+    citation = validate_citation_identity(datum.get("citation_identity"), f"{label}.citation_identity")
+    evidence = datum.get("evidence_identity")
+    require_exact_keys(evidence, {"evidence_id", "cohort_id", "role", "condition_id", "citation_id"}, set(), f"{label}.evidence_identity")
+    if evidence["role"] not in roles or evidence["role"] not in ALLOWED_EVIDENCE_ROLES:
+        raise Unfittable(f"{label}.evidence_identity.role is not allowed for {quantity}")
+    if evidence["condition_id"] != condition["condition_id"] or evidence["citation_id"] != citation["citation_id"]:
+        raise Unfittable(f"{label} identity references do not match their full objects")
+    expected_cohort = canonical_hash(citation_cohort_material(characteristic, condition["condition_id"], citation))
+    if evidence["cohort_id"] != expected_cohort:
+        raise Unfittable(f"{label}.evidence_identity.cohort_id does not match condition and citation cohort")
+    value = finite_number(datum.get("value"), f"{label}.value")
+    if datum.get("unit") != unit_si:
+        raise Unfittable(f"{label}.unit must be {unit_si}")
+    expected_evidence = canonical_hash(evidence_value_material(characteristic, evidence["role"], quantity, value, unit_si,
+                                                               condition["condition_id"], citation["citation_id"]))
+    if evidence["evidence_id"] != expected_evidence:
+        raise Unfittable(f"{label}.evidence_identity.evidence_id does not match value and identities")
+    return {"condition_identity": condition, "citation_identity": citation, "evidence_identity": evidence,
+            "value": value, "unit": unit_si}
+
+
+def identities_equal(rows, label):
+    if not rows:
+        return
+    condition_ids = {row["condition_identity"]["condition_id"] for row in rows}
+    cohort_ids = {row["evidence_identity"]["cohort_id"] for row in rows}
+    if len(condition_ids) != 1 or len(cohort_ids) != 1:
+        raise Unfittable(f"{label} fields are a hybrid of incompatible conditions or citation cohorts")
+
+
+def curve_cohort_id(characteristic, condition_id, citation_id, curve_id):
+    return canonical_hash({"characteristic": characteristic, "condition_id": condition_id,
+                           "citation_id": citation_id, "curve_id": curve_id})
+
+
+def validate_curve_identity(curve, characteristic, x_unit, y_unit, label):
+    condition = validate_condition_identity(curve.get("condition_identity"), characteristic,
+                                            f"{label}.condition_identity", dc_only=True)
+    citation = validate_citation_identity(curve.get("citation_identity"), f"{label}.citation_identity")
+    if "figure" not in citation:
+        raise Unfittable(f"{label}.citation_identity must use a figure+curve/trace locator")
+    x_axis = curve.get("x_axis")
+    y_axis = curve.get("y_axis")
+    if not isinstance(x_axis, dict) or not isinstance(y_axis, dict):
+        raise Unfittable(f"{label} must carry explicit x_axis and y_axis objects")
+    if x_axis.get("unit") != x_unit or y_axis.get("unit") != y_unit:
+        raise Unfittable(f"{label} axes must use SI units {x_unit} and {y_unit}")
+    points = curve.get("points")
+    if not isinstance(points, list) or not points:
+        raise Unfittable(f"{label} must carry digitized points")
+    curve_points = []
+    for index, point in enumerate(points):
+        require_exact_keys(point, {"point_index", "x_si", "y_si", "evidence_identity"}, set(), f"{label}.points[{index}]")
+        if point["point_index"] != index:
+            raise Unfittable(f"{label}.points[{index}].point_index must preserve ordered zero-based indexing")
+        curve_points.append({"point_index": index,
+                             "x_si": finite_number(point["x_si"], f"{label}.points[{index}].x_si"),
+                             "y_si": finite_number(point["y_si"], f"{label}.points[{index}].y_si")})
+    material = {"schema_version": IDENTITY_VERSION, "characteristic": characteristic,
+                "x_axis": x_axis, "y_axis": y_axis, "condition_id": condition["condition_id"],
+                "citation_id": citation["citation_id"], "points": curve_points}
+    curve_id = curve.get("curve_id")
+    if not HASH_PATTERN.fullmatch(str(curve_id)) or curve_id != canonical_hash(material):
+        raise Unfittable(f"{label}.curve_id does not match canonical axes, identities, and ordered points")
+    cohort_id = curve_cohort_id(characteristic, condition["condition_id"], citation["citation_id"], curve_id)
+    for index, (raw_point, point) in enumerate(zip(points, curve_points)):
+        evidence = raw_point["evidence_identity"]
+        require_exact_keys(evidence, {"evidence_id", "cohort_id", "role", "condition_id", "citation_id"},
+                           {"curve_id"}, f"{label}.points[{index}].evidence_identity")
+        if evidence["role"] != "digitized_typical_curve" or evidence["condition_id"] != condition["condition_id"] \
+                or evidence["citation_id"] != citation["citation_id"] or evidence["cohort_id"] != cohort_id:
+            raise Unfittable(f"{label}.points[{index}] identity references do not match the shared curve identity")
+        if "curve_id" in evidence and evidence["curve_id"] != curve_id:
+            raise Unfittable(f"{label}.points[{index}].evidence_identity.curve_id does not match the curve")
+        point_material = {"characteristic": characteristic, "role": "digitized_typical_curve", **point,
+                          "condition_id": condition["condition_id"], "citation_id": citation["citation_id"],
+                          "cohort_id": cohort_id, "curve_id": curve_id}
+        if evidence["evidence_id"] != canonical_hash(point_material):
+            raise Unfittable(f"{label}.points[{index}].evidence_id does not match the canonical point")
+    return {"condition_identity": condition, "citation_identity": citation, "curve_id": curve_id,
+            "cohort_id": cohort_id, "points": curve_points}
+
+
+def real_citation(citation):
+    locator = f"table {citation['table']}, row {citation['row']}" if "table" in citation else f"figure {citation['figure']}, {('curve ' + citation['curve']) if 'curve' in citation else ('trace ' + citation['trace'])}"
+    return f"source {citation['source_sha256']}, page {citation['page']}, {locator}"
 
 
 # --------------------------------------------------------------------------- units
@@ -204,70 +462,52 @@ def select_gain_curve(extraction, rejected):
 
 
 def select_mosfet_curves(extraction, rejected):
-    """Transfer curve plus per-VGS output curves, with non-physical traces excluded."""
+    """Select only canonical, independently identified static transfer/output curves."""
     transfer = None
     outputs = []
     for curve in extraction.get("curves") or []:
         xq, _, _ = axis(curve, "x")
         yq, _, _ = axis(curve, "y")
         label = curve.get("name") or "unnamed curve"
-        # Extractions name this ordinate "drain current", "ID", or "ID magnitude"; match
-        # the quantity, not one spelling of it.
         is_drain_current = ("current" in yq or "drain" in yq or re.search(r"\bid\b", yq))
         if not is_drain_current or "capacit" in yq or "resist" in yq or "normal" in yq or "gate" in yq:
             continue
-        # The body/source-drain diode conducts through the parasitic junction, not the
-        # channel, and its figures are often labelled with a VGS of 0 V. Fitting one as an
-        # output curve asks the channel model to carry diode current at zero gate drive,
-        # which pins the residual at 1.0 (observed on DMP3098L-7).
         blob = f"{xq} {yq} {context(curve)}"
         if "body" in blob or "source-drain" in blob or "source drain" in blob or "diode" in blob:
             rejected.append(f"{label}: body/source-drain diode characteristic, not a channel output curve; excluded")
             continue
-        temp = temperature_of(curve)
-        citation = str(curve.get("page_reference") or "")
-        if temp is None:
-            rejected.append(f"{label}: no explicit curve temperature; excluded from MOSFET residual targets")
-            continue
-        if abs(temp - 25) > 1e-9:
-            continue
-        figure_context = f"{label} {citation}"
-        if not re.search(r"(?:p(?:age)?\.?\s*\d+|pdf\s+page\s+\d+)", citation, re.I) or not re.search(r"(?:fig(?:ure)?|curve)\s*\d+", figure_context, re.I):
-            rejected.append(f"{label}: citation must identify a page and the figure or curve number; excluded from MOSFET residual targets")
+        characteristic = "transfer_current" if ("vgs" in xq or "gate" in xq) else "output_current" if ("vds" in xq or "drain" in xq) else None
+        if characteristic is None:
             continue
         try:
-            pts = points_of(curve, "V", "A")
+            identity = validate_curve_identity(curve, characteristic, "V", "A", label)
         except Unfittable as exc:
             rejected.append(f"{label}: {exc}")
             continue
-
-        if "vgs" in xq or "gate" in xq:
-            pts = [(v, i) for v, i in pts if v > 0 and i > 0]
-            pts = reject_non_monotonic(pts, "increasing", label, rejected)
-            vds = bias_of(curve, "vds")
-            if vds is None:
-                # Some transfer figures state the saturation-region range rather than one
-                # fixed drain bias, for example |VDS| > 2|ID|/RDS(on),max. The historical
-                # 10 V probe is retained only when that range is explicit; an unstated bias
-                # is still rejected. This preserves the qualified Batch 12 BSS131 fit.
-                stated_saturation_range = re.search(r"v_?ds.*[<>].*(?:i_?d|r_?ds)", context(curve), re.I)
-                if stated_saturation_range:
-                    vds = 10.0
-                else:
-                    rejected.append(f"{label}: transfer curve has neither an explicit VDS bias nor a stated VDS saturation range; excluded from MOSFET residual targets")
-                    continue
-            if len(pts) >= 3 and (transfer is None or len(pts) > len(transfer[1])):
-                transfer = (curve, pts, vds)
-        elif "vds" in xq or "drain" in xq:
-            vgs = bias_of(curve, "vgs")
-            if vgs is None:
+        condition = identity["condition_identity"]
+        electrical = condition["electrical"]
+        pts = [(abs(point["x_si"]), abs(point["y_si"])) for point in identity["points"]
+               if point["x_si"] != 0 and point["y_si"] != 0]
+        if characteristic == "transfer_current":
+            vds_shape = electrical["vds"]
+            if vds_shape["kind"] != "fixed":
+                rejected.append(f"{label}: transfer residual requires an exact cited VDS; ranges and relations cannot be replaced by a probe default")
                 continue
-            pts = [(v, i) for v, i in pts if v > 0 and i > 0]
+            vds = abs(float(vds_shape["value_v"]))
+            pts = reject_non_monotonic(pts, "increasing", label, rejected)
+            if len(pts) >= 3 and (transfer is None or len(pts) > len(transfer[1])):
+                transfer = (curve, pts, vds, identity)
+        else:
+            vgs_shape = electrical["vgs"]
+            if vgs_shape["kind"] != "fixed":
+                rejected.append(f"{label}: output residual requires an exact cited VGS")
+                continue
+            vgs = abs(float(vgs_shape["value_v"]))
             pts = reject_non_monotonic(pts, "nondecreasing", label, rejected)
             if len(pts) >= 2:
-                outputs.append((curve, pts, vgs))
+                outputs.append((curve, pts, vgs, identity))
     if transfer is None:
-        raise Unfittable("no usable 25 degC transfer curve (drain current versus gate-source voltage)")
+        raise Unfittable("no usable canonical static transfer curve with exact temperature, VDS, citation, and point identities")
     return transfer, outputs
 
 
@@ -318,30 +558,46 @@ def bjt_bench(params, targets, vce, polarity):
 
 
 def vdmos_bench(dc, fixed, transfer, outputs, rdson):
+    """Probe each evidence row at its exact validated temperature and bias."""
     vto, kp, theta, lam, rd = dc
     card = (f".model MFIT VDMOS(VTO={vto:.12g} KP={kp:.12g} THETA={theta:.12g} LAMBDA={lam:.12g} "
             f"RD={rd:.12g} RS={fixed['RS']:.12g} RG=1e-4 RDS=1e9 "
             f"CGS={fixed['CGS']:.12e} CGDMAX={fixed['CGDMAX']:.12e} CGDMIN={fixed['CGDMIN']:.12e} "
             f"CJO={fixed['CJO']:.12e} IS=1e-12 N=1.5 RB={fixed['RB']:.12g} TNOM=27)")
-    lines = ["Conveyor VDMOS DC probe", PROBE_OPTIONS, card, NOMINAL_TEMPERATURE]
-    n = 0
-    for vgs, vds, _ in transfer:
-        n += 1
-        lines += [f"MT{n} dt{n} gt{n} 0 MFIT", f"VDT{n} dt{n} 0 DC {vds:.12g}", f"VGT{n} gt{n} 0 DC {vgs:.12g}"]
-    m = 0
-    for vgs, vds, _ in outputs:
-        m += 1
-        lines += [f"MO{m} do{m} go{m} 0 MFIT", f"VDO{m} do{m} 0 DC {vds:.12g}", f"VGO{m} go{m} 0 DC {vgs:.12g}"]
-    r = 0
-    for vgs, current, _, _ in rdson:
-        r += 1
-        lines += [f"MR{r} dr{r} gr{r} 0 MFIT", f"IDR{r} 0 dr{r} DC {current:.12g}", f"VGR{r} gr{r} 0 DC {vgs:.12g}"]
-    lines += [".op", ".end"]
-    result = run_ngspice("\n".join(lines) + "\n")
-    t = [abs(float(vector(result, f"vdt{i}#branch", f"i(vdt{i})")[0])) for i in range(1, n + 1)]
-    o = [abs(float(vector(result, f"vdo{i}#branch", f"i(vdo{i})")[0])) for i in range(1, m + 1)]
-    d = [float(vector(result, f"v(dr{i})", f"dr{i}")[0]) / rdson[i - 1][1] for i in range(1, r + 1)]
-    return t, o, d
+    values = {"transfer": [None] * len(transfer), "output": [None] * len(outputs), "rdson": [None] * len(rdson)}
+    grouped = {}
+    for group, rows in (("transfer", transfer), ("output", outputs), ("rdson", rdson)):
+        for index, row in enumerate(rows):
+            grouped.setdefault(float(row[-1]), []).append((group, index, row))
+    for temperature, rows in grouped.items():
+        lines = ["Conveyor VDMOS DC probe", PROBE_OPTIONS, card, f".temp {temperature:.12g}"]
+        names = []
+        for probe_index, (group, row_index, row) in enumerate(rows, 1):
+            names.append((group, row_index, probe_index, row))
+            if group == "transfer":
+                vgs, vds, _, _ = row
+                lines += [f"MT{probe_index} d{probe_index} g{probe_index} 0 MFIT",
+                          f"VD{probe_index} d{probe_index} 0 DC {vds:.12g}",
+                          f"VG{probe_index} g{probe_index} 0 DC {vgs:.12g}"]
+            elif group == "output":
+                vgs, vds, _, _ = row
+                lines += [f"MO{probe_index} d{probe_index} g{probe_index} 0 MFIT",
+                          f"VD{probe_index} d{probe_index} 0 DC {vds:.12g}",
+                          f"VG{probe_index} g{probe_index} 0 DC {vgs:.12g}"]
+            else:
+                vgs, current, _, _, _, _ = row
+                lines += [f"MR{probe_index} d{probe_index} g{probe_index} 0 MFIT",
+                          f"ID{probe_index} 0 d{probe_index} DC {current:.12g}",
+                          f"VG{probe_index} g{probe_index} 0 DC {vgs:.12g}"]
+        lines += [".op", ".end"]
+        result = run_ngspice("\n".join(lines) + "\n")
+        for group, row_index, probe_index, row in names:
+            if group in {"transfer", "output"}:
+                value = abs(float(vector(result, f"vd{probe_index}#branch", f"i(vd{probe_index})")[0]))
+            else:
+                value = float(vector(result, f"v(d{probe_index})", f"d{probe_index}")[0]) / row[1]
+            values[group][row_index] = value
+    return values["transfer"], values["output"], values["rdson"]
 
 
 # ------------------------------------------------------------------------ gate logic
@@ -556,41 +812,80 @@ def fit_bjt(payload, rejected):
 
 
 def fit_mosfet(payload, rejected):
+    if payload.get("evidence_contract_version") != IDENTITY_VERSION:
+        raise Unfittable(f"MOSFET fit requires evidence_contract_version {IDENTITY_VERSION}")
     extraction = payload["extraction"]
     specs = extraction.get("specs") or {}
-    (tcurve, tpts, tvds), outputs = select_mosfet_curves(extraction, rejected)
-    used = [f"{tcurve.get('name')} ({tcurve.get('page_reference')})"]
-
-    transfer = [(vgs, tvds, current) for vgs, current in tpts]
+    (tcurve, tpts, tvds, transfer_identity), outputs = select_mosfet_curves(extraction, rejected)
+    used = [f"{tcurve.get('name')} ({real_citation(transfer_identity['citation_identity'])})"]
+    transfer_temperature = transfer_identity["condition_identity"]["temperature"]["value_c"]
+    transfer = [(vgs, tvds, current, transfer_temperature) for vgs, current in tpts]
     out_points = []
-    output_citations = []
-    for curve, pts, vgs in outputs:
-        used.append(f"{curve.get('name')} ({curve.get('page_reference')})")
-        for vds, current in pts:
-            out_points.append((vgs, vds, current))
-            output_citations.append(curve.get("page_reference") or "pending review")
+    output_provenance = []
+    for curve, pts, vgs, identity in outputs:
+        used.append(f"{curve.get('name')} ({real_citation(identity['citation_identity'])})")
+        temperature = identity["condition_identity"]["temperature"]["value_c"]
+        for point, (vds, current) in zip(curve["points"], pts):
+            out_points.append((vgs, vds, current, temperature))
+            output_provenance.append({"condition_identity": identity["condition_identity"],
+                                      "citation_identity": identity["citation_identity"],
+                                      "evidence_identity": point["evidence_identity"],
+                                      "curve_id": identity["curve_id"]})
 
+    threshold = {}
+    for key, quantity, role in (("threshold_min", "threshold_minimum", "minimum"),
+                                ("threshold_typ", "threshold_typical", "typical"),
+                                ("threshold_max", "threshold_maximum", "maximum")):
+        raw = specs.get(key)
+        if raw is None:
+            continue
+        threshold[key] = validate_evidence_bundle(raw, "gate_threshold", quantity, "V", {role}, key, dc_only=True)
+    if threshold:
+        identities_equal(list(threshold.values()), "published threshold cohort")
     rdson = []
-    for point in specs.get("rdson_points") or []:
-        resistance = ((point or {}).get("resistance") or {}).get("value")
-        vgs = ((point or {}).get("vgs") or {}).get("value")
-        current = ((point or {}).get("current") or {}).get("value")
-        if resistance and vgs and current:
-            rdson.append((abs(float(vgs)), abs(float(current)), float(resistance),
-                          ((point or {}).get("resistance") or {}).get("source_kind")))
+    for index, point in enumerate(specs.get("rdson_points") or []):
+        label = f"rdson_points[{index}]"
+        if not isinstance(point, dict):
+            raise Unfittable(f"{label} must be an object")
+        raw_resistance = point.get("resistance") or {}
+        raw_resistance_identity = raw_resistance.get("evidence_identity") or {}
+        resistance_role = raw_resistance_identity.get("role")
+        if resistance_role not in {"typical", "maximum"}:
+            raise Unfittable(f"{label}.resistance has unknown residual qualifier {resistance_role!r}")
+        components = [
+            validate_evidence_bundle(point.get("vgs"), "rds_on", "vgs", "V", {resistance_role}, f"{label}.vgs", dc_only=True),
+            validate_evidence_bundle(point.get("current"), "rds_on", "drain_current", "A", {resistance_role}, f"{label}.current", dc_only=True),
+            validate_evidence_bundle(raw_resistance, "rds_on", f"rds_on_{resistance_role}", "ohm", {resistance_role}, f"{label}.resistance", dc_only=True),
+        ]
+        identities_equal(components, label)
+        roles = {component["evidence_identity"]["role"] for component in components}
+        if len(roles) != 1 or next(iter(roles)) not in ALLOWED_RESIDUAL_QUALIFIERS:
+            raise Unfittable(f"{label} has hybrid or unknown residual qualifiers")
+        role = next(iter(roles))
+        condition = components[0]["condition_identity"]
+        electrical = condition["electrical"]
+        if electrical["vgs"]["kind"] != "fixed" or electrical["id"]["kind"] != "fixed":
+            raise Unfittable(f"{label} condition identity requires exact VGS and ID")
+        vgs, current, resistance = (abs(component["value"]) for component in components)
+        if abs(vgs - abs(electrical["vgs"]["value_v"])) > max(1e-15, vgs * 1e-12) \
+                or abs(current - abs(electrical["id"]["value_a"])) > max(1e-15, current * 1e-12):
+            raise Unfittable(f"{label} values do not match its condition identity")
+        rdson.append((vgs, current, resistance, role, components,
+                      condition["temperature"]["value_c"]))
 
     total = len(transfer) + len(out_points)
     if total < GATES["families"]["mosfet"]["minimum_points"]:
         raise Unfittable(f"only {total} usable transfer/output points after validation; "
                          f"{GATES['families']['mosfet']['minimum_points']} required")
 
-    def q(name):
-        value = (specs.get(name) or {}).get("value")
-        return abs(float(value)) if isinstance(value, (int, float)) else None
-
-    vth_min, vth_typ, vth_max = q("threshold_min"), q("threshold_typ"), q("threshold_max")
-    seed_vth = vth_typ or vth_max or vth_min or 2.0
-    lo_vth = vth_min if vth_min else 0.3 * seed_vth
+    vth_min = abs(threshold["threshold_min"]["value"]) if "threshold_min" in threshold else None
+    vth_typ = abs(threshold["threshold_typ"]["value"]) if "threshold_typ" in threshold else None
+    vth_max = abs(threshold["threshold_max"]["value"]) if "threshold_max" in threshold else None
+    independently_complete_thresholds = [value for value in (vth_typ, vth_max, vth_min) if value is not None and value > 0]
+    if not independently_complete_thresholds:
+        raise Unfittable("no independently complete validated threshold identity for VTO seed and bounds")
+    seed_vth = vth_typ if vth_typ is not None else vth_max if vth_max is not None else vth_min
+    lo_vth = vth_min if vth_min is not None else 0.3 * seed_vth
     # A datasheet VGS(th) is measured at a small drain current (250 uA is typical). The
     # VDMOS VTO is instead the threshold obtained by extrapolating the strong-inversion
     # square law back to zero current, and that extrapolated value is systematically
@@ -600,13 +895,46 @@ def fit_mosfet(payload, rejected):
     # transfer curve wants VTO = 2.65 V against a published maximum of 2.50 V, and forcing
     # 2.50 V inflates the worst transfer residual from 6% to 36%. Allow a bounded
     # extrapolation margin above the published maximum and declare it whenever it is used.
-    vth_extrapolation_margin = min(0.5, 0.3 * (vth_max or seed_vth))
-    hi_vth = (vth_max + vth_extrapolation_margin) if vth_max else 3.0 * seed_vth
+    vth_extrapolation_margin = min(0.5, 0.3 * (vth_max if vth_max is not None else seed_vth))
+    hi_vth = (vth_max + vth_extrapolation_margin) if vth_max is not None else 3.0 * seed_vth
     if not (lo_vth < hi_vth):
         lo_vth, hi_vth = 0.3 * seed_vth, 3.0 * seed_vth
 
-    rd_seed = max(rdson[0][2] if rdson else 0.1, 1e-4)
-    ciss, coss, crss = q("ciss") or 1e-9, q("coss") or 2e-10, q("crss") or 5e-11
+    typical_rdson = [row for row in rdson if row[3] == "typical"]
+    maximum_rdson = [row for row in rdson if row[3] == "maximum"]
+    if typical_rdson:
+        rd_seed = max(typical_rdson[0][2], 1e-4)
+        rd_seed_provenance = typical_rdson[0][4][2]
+    elif maximum_rdson:
+        rd_seed = max(min(row[2] for row in maximum_rdson), 1e-4)
+        rd_seed_provenance = min(maximum_rdson, key=lambda row: row[2])[4][2]
+    else:
+        raise Unfittable("no complete exact RDS(on) identity for a resistance seed or constraint")
+
+    held = []
+    def optional_capacitance(name):
+        raw = specs.get(name)
+        if raw is None:
+            return None
+        value = raw.get("value") if isinstance(raw, dict) else None
+        unit = raw.get("unit") if isinstance(raw, dict) else None
+        if not isinstance(value, (int, float)) or not math.isfinite(float(value)) or float(value) <= 0 or unit != "F":
+            raise Unfittable(f"published {name} is incomplete; a critical published point cannot be silently dropped")
+        return float(value)
+
+    ciss, coss, crss = (optional_capacitance(name) for name in ("ciss", "coss", "crss"))
+    if crss is None:
+        crss = 5e-11
+        held.append({"parameter": "CGDMAX/CGDMIN", "value": crss, "unit": "F",
+                     "reason": "explicit non-critical physical default; no published Crss supplied"})
+    if ciss is None:
+        ciss = 1e-9
+        held.append({"parameter": "CISS", "value": ciss, "unit": "F",
+                     "reason": "explicit non-critical physical default; no published Ciss supplied"})
+    if coss is None:
+        coss = 2e-10
+        held.append({"parameter": "COSS", "value": coss, "unit": "F",
+                     "reason": "explicit non-critical physical default; no published Coss supplied"})
     fixed = {"RS": max(0.20 * rd_seed, 1e-5), "RB": max(0.2 * rd_seed, 1e-4),
              "CGS": max(ciss - crss, 1e-15), "CGDMAX": max(crss, 1e-15),
              "CGDMIN": max(crss, 1e-15), "CJO": max(coss - crss, 1e-15)}
@@ -623,11 +951,11 @@ def fit_mosfet(payload, rejected):
         except Exception:
             return np.full(len(transfer) + len(out_points) + len(rdson), 1e3)
         rows = []
-        for (_, _, target), actual in zip(transfer, t):
+        for (_, _, target, _), actual in zip(transfer, t):
             rows.append(math.log(max(actual, 1e-12)) - math.log(target))
-        for (_, _, target), actual in zip(out_points, o):
+        for (_, _, target, _), actual in zip(out_points, o):
             rows.append(math.log(max(actual, 1e-12)) - math.log(target))
-        for (_, _, target, kind), actual in zip(rdson, d):
+        for (_, _, target, kind, _, _), actual in zip(rdson, d):
             norm = (actual - target) / target
             # A typical-curve fit may legitimately sit below a MAXIMUM spec.
             rows.append(20.0 * max(norm, 0.0) + 0.05 * min(norm, 0.0) if kind == "maximum" else norm)
@@ -640,8 +968,12 @@ def fit_mosfet(payload, rejected):
               "RS": fixed["RS"], "RG": 1e-4, "CGS": fixed["CGS"], "CGDMAX": fixed["CGDMAX"],
               "CGDMIN": fixed["CGDMIN"], "CJO": fixed["CJO"], "IS": 1e-12, "N": 1.5, "RB": fixed["RB"]}
 
+    held.extend([
+        {"parameter": "RG", "value": 1e-4, "unit": "ohm", "reason": "explicit non-critical gate resistance default"},
+        {"parameter": "IS", "value": 1e-12, "unit": "A", "reason": "explicit non-critical body-diode saturation-current default for DC channel fitting"},
+        {"parameter": "N", "value": 1.5, "unit": "1", "reason": "explicit non-critical body-diode emission-coefficient default for DC channel fitting"},
+    ])
     notes = []
-    held = []
     # THETA and LAMBDA describe second-order effects. Their lower bound is zero, which is
     # the physically meaningful "effect not resolvable from these curves" value, so
     # resting there is a held default to declare, not an optimiser artefact. Resting on an
@@ -651,7 +983,7 @@ def fit_mosfet(payload, rejected):
         "LAMBDA": "no channel-length modulation is resolvable from the digitised output range",
         "RD": "no drain resistance separable from the source resistance at these bias points",
     }
-    if vth_max and vto > vth_max:
+    if vth_max is not None and vto > vth_max:
         held.append({"parameter": "VTO", "value": vto,
                      "reason": f"strong-inversion extrapolated threshold sits {vto - vth_max:.3g} V above the "
                                f"published VGS(th) maximum of {vth_max:.3g} V, within the "
@@ -672,27 +1004,44 @@ def fit_mosfet(payload, rejected):
 
     t, o, d = vdmos_bench(fit.x, fixed, transfer, out_points, rdson)
     residuals = []
-    for (vgs, vds, target), actual in zip(transfer, t):
+    transfer_citation = transfer_identity["citation_identity"]
+    for point, (vgs, vds, target, temperature), actual in zip(tcurve["points"], transfer, t):
         residuals.append({"quantity": f"transfer current at VGS {vgs:.6g} V", "gate_quantity": "drain_current",
                           "datasheet_value": target, "fitted_value": actual, "unit": "A",
                           "relative_error": abs(actual - target) / abs(target),
-                          "citation": tcurve.get("page_reference") or "pending review"})
-    for (vgs, vds, target), actual, citation in zip(out_points, o, output_citations):
+                          "citation": real_citation(transfer_citation), "condition_identity": transfer_identity["condition_identity"],
+                          "citation_identity": transfer_citation, "evidence_identity": point["evidence_identity"],
+                          "curve_id": transfer_identity["curve_id"], "temperature_c": temperature,
+                          "evidence_role": "typical_observation"})
+    for (vgs, vds, target, temperature), actual, provenance in zip(out_points, o, output_provenance):
         residuals.append({"quantity": f"output current at VGS {vgs:.6g} V, VDS {vds:.6g} V", "gate_quantity": "drain_current",
                           "datasheet_value": target, "fitted_value": actual, "unit": "A",
                           "relative_error": abs(actual - target) / abs(target),
-                          "citation": citation})
-    for (vgs, current, target, kind), actual in zip(rdson, d):
+                          "citation": real_citation(provenance["citation_identity"]), **provenance,
+                          "temperature_c": temperature, "evidence_role": "typical_observation"})
+    for (vgs, current, target, kind, components, temperature), actual in zip(rdson, d):
         error = abs(actual - target) / abs(target)
         if kind == "maximum":
             error = max(actual - target, 0.0) / abs(target)
+        resistance_evidence = components[2]
         residuals.append({"quantity": f"RDS(on) at VGS {vgs:.6g} V", "gate_quantity": "rds_on",
                           "datasheet_value": target, "fitted_value": actual, "unit": "ohm",
-                          "relative_error": error, "citation": "electrical characteristics table",
+                          "relative_error": error, "citation": real_citation(resistance_evidence["citation_identity"]),
+                          "condition_identity": resistance_evidence["condition_identity"],
+                          "citation_identity": resistance_evidence["citation_identity"],
+                          "evidence_identity": resistance_evidence["evidence_identity"],
+                          "component_evidence": [component["evidence_identity"] for component in components],
+                          "temperature_c": temperature,
                           "evidence_role": "inequality_constraint" if kind == "maximum" else "typical_observation",
                           **({"maximum": target, "inclusive": True} if kind == "maximum" else {})})
+    threshold_provenance = [{"quantity": key, **row} for key, row in threshold.items()]
+    seed_provenance = {
+        "VTO": next((row for key, row in threshold.items() if abs(row["value"]) == seed_vth), None),
+        "rdson": rd_seed_provenance,
+    }
     return params, residuals, used, notes, {"optimizer_nfev": int(fit.nfev), "optimizer_status": int(fit.status),
-                                            "held_defaults": held}
+                                            "held_defaults": held, "threshold_evidence": threshold_provenance,
+                                            "seed_provenance": seed_provenance}
 
 
 FITTERS = {"diode": fit_diode, "bjt": fit_bjt, "mosfet": fit_mosfet}
