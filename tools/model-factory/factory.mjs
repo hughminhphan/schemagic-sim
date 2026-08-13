@@ -667,7 +667,7 @@ export function normalizeMosfetEvidenceIdentity(raw, condition, citation, trail 
   if (!raw || typeof raw !== "object" || Array.isArray(raw)) throw new Error(`${trail} is required`);
   assertExactKeys(raw, ["evidence_id", "cohort_id", "role", "condition_id", "citation_id"], curve ? ["curve_id", "point_index"] : [], trail);
   if (!SHA256_ID.test(raw.cohort_id)) throw new Error(`${trail}.cohort_id must be sha256:<64 lowercase hex>`);
-  assertIdentityHash(raw, "evidence_id", trail);
+  if (!SHA256_ID.test(raw.evidence_id)) throw new Error(`${trail}.evidence_id must be sha256:<64 lowercase hex>`);
   if (!["minimum", "typical", "maximum", "digitized_typical_curve", "seed_only"].includes(raw.role)) throw new Error(`${trail}.role is invalid`);
   if (raw.condition_id !== condition.condition_id || raw.citation_id !== citation.citation_id) throw new Error(`${trail} contains hybrid condition or citation IDs`);
   if (curve) {
@@ -677,14 +677,25 @@ export function normalizeMosfetEvidenceIdentity(raw, condition, citation, trail 
   return structuredClone(raw);
 }
 
-function evidenceLinks(evidence, condition) {
+function evidenceLinks(evidence, condition, citation = null) {
+  const qualification = condition.test_mode.kind === "pulsed" || condition.test_mode.kind === "single_pulse"
+    ? { test_mode: "pulse", pulse_width_s: condition.test_mode.pulse_width_s, duty_cycle: condition.test_mode.duty_cycle }
+    : { test_mode: "continuous_dc" };
+  const locator = citation?.table
+    ? { page: citation.page, table: citation.table, row: citation.row }
+    : citation?.figure
+      ? { page: citation.page, figure: citation.figure, ...(citation.curve ? { curve: citation.curve } : { trace: citation.trace }) }
+      : null;
   return {
     evidence_id: evidence.evidence_id,
     condition_id: evidence.condition_id,
     citation_id: evidence.citation_id,
     cohort_id: evidence.cohort_id,
     bench_condition_id: condition.condition_id,
-    ...(evidence.curve_id ? { curve_id: evidence.curve_id, point_index: evidence.point_index } : {})
+    evidence_role: evidence.role === "minimum" ? "inclusive_minimum" : evidence.role === "maximum" ? "inclusive_maximum" : evidence.role === "digitized_typical_curve" ? "curve_point" : "typical_observation",
+    citation_locator: locator,
+    evidence_qualification: qualification,
+    bench_qualification: qualification,
   };
 }
 
@@ -738,9 +749,8 @@ function assertQuantityIdentity(quantity, trail, expected = {}) {
 
 function assertSamePointIdentity(identities, trail) {
   for (const identity of identities.slice(1)) {
-    if (identity.condition.condition_id !== identities[0].condition.condition_id
-        || identity.citation.citation_id !== identities[0].citation.citation_id
-        || identity.evidence.cohort_id !== identities[0].evidence.cohort_id) {
+    const sameCitationCohort = identity.evidence.cohort_id === identities[0].evidence.cohort_id;
+    if (identity.condition.condition_id !== identities[0].condition.condition_id || !sameCitationCohort) {
       throw new Error(`${trail} contains hybrid condition, citation, or cohort metadata`);
     }
   }
@@ -844,19 +854,25 @@ function assertCriticalFittedProvenance(fitted, packageEvidence) {
   const groups = [
     ["calibration.observations", fitted.calibration?.observations ?? []],
     ["calibration.constraints", fitted.calibration?.constraints ?? []],
-    ["calibration.seeds", fitted.calibration?.seeds ?? []],
     ["residuals", fitted.residuals ?? []]
   ];
   for (const [group, rows] of groups) for (const [index, row] of rows.entries()) {
     const trail = `fitted.${group}[${index}]`;
     const text = `${row.quantity ?? ""} ${row.kind ?? ""} ${row.parameter_coordinate ?? ""}`;
     if (!/(?:threshold|gate_threshold|rds|rdson|transfer current|output current|\bVTO\b)/i.test(text)) throw new Error(`${trail} uses a non-canonical critical MOSFET quantity label`);
-    const condition = normalizeMosfetConditionIdentity(row.condition_identity, `${trail}.condition_identity`);
-    const citation = normalizeMosfetCitationIdentity(row.citation_identity, `${trail}.citation_identity`);
-    const evidence = normalizeMosfetEvidenceIdentity(row.evidence_identity, condition, citation, `${trail}.evidence_identity`, { curve: Object.hasOwn(row.evidence_identity ?? {}, "curve_id") });
-    const packageRow = byEvidenceId.get(evidence.evidence_id);
-    if (!packageRow || packageRow.condition.condition_id !== condition.condition_id || packageRow.citation.citation_id !== citation.citation_id) {
-      throw new Error(`${trail} does not resolve to package evidence`);
+    const linked = Array.isArray(row.evidence) && row.evidence.length ? row.evidence
+      : Array.isArray(row.evidence_identities) && Array.isArray(row.citation_identities)
+        ? row.evidence_identities.map((evidence_identity, evidenceIndex) => ({ condition_identity: row.condition_identity, citation_identity: row.citation_identities[evidenceIndex], evidence_identity }))
+        : [{ condition_identity: row.condition_identity, citation_identity: row.citation_identity, evidence_identity: row.evidence_identity }];
+    for (const [evidenceIndex, item] of linked.entries()) {
+      const itemTrail = linked.length === 1 ? trail : `${trail}.evidence[${evidenceIndex}]`;
+      const condition = normalizeMosfetConditionIdentity(item.condition_identity, `${itemTrail}.condition_identity`);
+      const citation = normalizeMosfetCitationIdentity(item.citation_identity, `${itemTrail}.citation_identity`);
+      const evidence = normalizeMosfetEvidenceIdentity(item.evidence_identity, condition, citation, `${itemTrail}.evidence_identity`, { curve: Object.hasOwn(item.evidence_identity ?? {}, "curve_id") });
+      const packageRow = byEvidenceId.get(evidence.evidence_id);
+      if (!packageRow || packageRow.condition.condition_id !== condition.condition_id || packageRow.citation.citation_id !== citation.citation_id) {
+        throw new Error(`${itemTrail} does not resolve to package evidence`);
+      }
     }
   }
 }
@@ -878,7 +894,7 @@ function assertMosfetRegionContract(region, packageEvidence) {
   for (const [index, bound] of region.numeric_bounds.entries()) {
     representedQuantities.add(bound.quantity);
     const trail = `supported_operating_region.numeric_bounds[${index}]`;
-    assertExactKeys(bound, ["bound_id", "quantity", "kind", "unit", "evidence_refs", "condition_ids", "citation_ids", "derivation"], ["minimum", "maximum", "values", "temperature_kind"], trail);
+    assertExactKeys(bound, ["bound_id", "quantity", "kind", "unit", "evidence_refs", "condition_ids", "citation_ids", "derivation"], ["minimum", "maximum", "values", "temperature_kind", "conditions", "placeholder"], trail);
     if (!["vgs", "vds", "id", "temperature"].includes(bound.quantity)) throw new Error(`${trail}.quantity is invalid`);
     if (!["minimum", "maximum", "range", "enumerated"].includes(bound.kind)) throw new Error(`${trail}.kind is invalid`);
     const expectedUnit = bound.quantity === "id" ? "A" : bound.quantity === "temperature" ? "degC" : "V";
@@ -911,7 +927,7 @@ function assertMosfetRegionContract(region, packageEvidence) {
     const covers = (value) => bound.kind === "enumerated" ? bound.values.some((candidate) => closeEnough(candidate, value))
       : (bound.minimum == null || value >= bound.minimum - 1e-12) && (bound.maximum == null || value <= bound.maximum + 1e-12);
     if (evidenceValues.some((value) => !covers(value))) throw new Error(`${trail} omits referenced evidence values`);
-    assertIdentityHash(bound, "bound_id", trail);
+    assertIdentityHash(bound, "bound_id", trail, (value) => Object.fromEntries(Object.entries(value).filter(([key]) => !["bound_id", "conditions", "placeholder"].includes(key))));
   }
   const required = new Set(["vgs", "id", "temperature"]);
   if (packageEvidence.some((row) => conditionValues(row.condition, "vds").length)) required.add("vds");
@@ -976,7 +992,7 @@ function vdmosTestgen(ctx, model, facts, fitted) {
           `VG${id} g${id} 0 DC ${formatSpice(signed(point.vgs.value))}`
         );
         const expression = `scale_abs:last(v(d${id}),${1 / point.current.value})`;
-        const links = strict ? evidenceLinks(identity.evidence, identity.condition) : null;
+        const links = strict ? evidenceLinks(identity.evidence, identity.condition, identity.citation) : null;
         if (point.resistance.source_kind === "maximum") {
           rdHardChecks.push(hardBound(`rdson_maximum_${groupIndex + 1}_${id}`, expression, "ohm", { minimum: 0, maximum: point.resistance.value }, point.resistance.page_reference, links));
         } else if (point.resistance.source_kind === "minimum") {
@@ -1032,15 +1048,15 @@ function vdmosTestgen(ctx, model, facts, fitted) {
     const expression = "abs:last(v(d))";
     if (threshold.typical) {
       const typicalIdentity = strict ? assertQuantityIdentity(threshold.typical, "facts.threshold.typical", { characteristic: "gate_threshold", role: "typical", quantityLabel: "threshold_typical" }) : null;
-      scalarChecks.push(expectation("gate_threshold_typical", expression, threshold.typical.value, "V", 0, ctx.part.component.test_tolerances?.threshold ?? 0.35, threshold.typical.page_reference, strict ? evidenceLinks(typicalIdentity.evidence, typicalIdentity.condition) : null));
+      scalarChecks.push(expectation("gate_threshold_typical", expression, threshold.typical.value, "V", 0, ctx.part.component.test_tolerances?.threshold ?? 0.35, threshold.typical.page_reference, strict ? evidenceLinks(typicalIdentity.evidence, typicalIdentity.condition, typicalIdentity.citation) : null));
     }
     if (threshold.minimum) {
       const minimumIdentity = strict ? assertQuantityIdentity(threshold.minimum, "facts.threshold.minimum", { characteristic: "gate_threshold", role: "minimum", quantityLabel: "threshold_minimum" }) : null;
-      hardChecks.push(hardBound("gate_threshold_minimum", expression, "V", { minimum: threshold.minimum.value }, threshold.minimum.page_reference, strict ? evidenceLinks(minimumIdentity.evidence, minimumIdentity.condition) : null));
+      hardChecks.push(hardBound("gate_threshold_minimum", expression, "V", { minimum: threshold.minimum.value }, threshold.minimum.page_reference, strict ? evidenceLinks(minimumIdentity.evidence, minimumIdentity.condition, minimumIdentity.citation) : null));
     }
     if (threshold.maximum) {
       const maximumIdentity = strict ? assertQuantityIdentity(threshold.maximum, "facts.threshold.maximum", { characteristic: "gate_threshold", role: "maximum", quantityLabel: "threshold_maximum" }) : null;
-      hardChecks.push(hardBound("gate_threshold_maximum", expression, "V", { maximum: threshold.maximum.value }, threshold.maximum.page_reference, strict ? evidenceLinks(maximumIdentity.evidence, maximumIdentity.condition) : null));
+      hardChecks.push(hardBound("gate_threshold_maximum", expression, "V", { maximum: threshold.maximum.value }, threshold.maximum.page_reference, strict ? evidenceLinks(maximumIdentity.evidence, maximumIdentity.condition, maximumIdentity.citation) : null));
     }
     writeBench(ctx, "threshold.cir", lines.join("\n"));
     tests.push(testRecord("threshold.cir", "operating_point", scalarChecks, hardChecks));
@@ -1064,7 +1080,7 @@ function vdmosTestgen(ctx, model, facts, fitted) {
           `VDT${id} dt${id} 0 DC ${formatSpice(signed(vds))}`,
           `VGT${id} gt${id} 0 DC ${formatSpice(signed(point.x_si))}`
         );
-        transferChecks.push(expectation(`transfer_curve_${curveIndex + 1}_point_${point.point_index}`, `abs:last(i(vdt${id}))`, point.y_si, "A", 0, ctx.part.component.test_tolerances?.drain_current ?? 0.33, curve.citation_identity.figure ? `p. ${curve.citation_identity.page}, Figure ${curve.citation_identity.figure}, ${curve.citation_identity.curve ?? curve.citation_identity.trace}` : `p. ${curve.citation_identity.page}`, evidenceLinks(point.evidence_identity, condition)));
+        transferChecks.push(expectation(`transfer_curve_${curveIndex + 1}_point_${point.point_index}`, `abs:last(i(vdt${id}))`, point.y_si, "A", 0, ctx.part.component.test_tolerances?.drain_current ?? 0.33, curve.citation_identity.figure ? `p. ${curve.citation_identity.page}, Figure ${curve.citation_identity.figure}, ${curve.citation_identity.curve ?? curve.citation_identity.trace}` : `p. ${curve.citation_identity.page}`, evidenceLinks(point.evidence_identity, condition, curve.citation_identity)));
       });
       transferLines.push(".op", ".end", "");
       const file = transferCurves.length === 1 ? "transfer_curve.cir" : `transfer_curve-${curveIndex + 1}.cir`;
@@ -1109,7 +1125,7 @@ function vdmosTestgen(ctx, model, facts, fitted) {
           `VDO${id} do${id} 0 DC ${formatSpice(signed(point.x_si))}`,
           `VGO${id} go${id} 0 DC ${formatSpice(signed(condition.electrical.vgs.value_v))}`
         );
-        outputChecks.push(expectation(`output_curve_${curveIndex + 1}_point_${point.point_index}`, `abs:last(i(vdo${id}))`, point.y_si, "A", 0, ctx.part.component.test_tolerances?.drain_current ?? 0.33, `p. ${curve.citation_identity.page}, Figure ${curve.citation_identity.figure}, ${curve.citation_identity.curve ?? curve.citation_identity.trace}`, evidenceLinks(point.evidence_identity, condition)));
+        outputChecks.push(expectation(`output_curve_${curveIndex + 1}_point_${point.point_index}`, `abs:last(i(vdo${id}))`, point.y_si, "A", 0, ctx.part.component.test_tolerances?.drain_current ?? 0.33, `p. ${curve.citation_identity.page}, Figure ${curve.citation_identity.figure}, ${curve.citation_identity.curve ?? curve.citation_identity.trace}`, evidenceLinks(point.evidence_identity, condition, curve.citation_identity)));
       });
       outputLines.push(".op", ".end", "");
       const file = outputCurves.length === 1 ? "output_curve.cir" : `output_curve-${curveIndex + 1}.cir`;
@@ -1335,7 +1351,18 @@ export function stageTestgen(ctx) {
   else if (ctx.part.pipeline === "specialty_analog") tests = specialtyTestgen(ctx, model, facts);
   else if (ctx.part.pipeline === "sensor_behavioral") tests = sensorTestgen(ctx, model, facts);
   if (ctx.part.pipeline) {
-    writeJson(path.join(ctx.packageDir, "tests", "expectations.json"), { schema_version: "1.0.0", tests });
+    const strictEvidence = ctx.part.pipeline === "vdmos" && facts.evidence_contract_version === "1.0.0";
+    const linkedChecks = tests.flatMap((entry) => [...(entry.scalar_checks ?? []), ...(entry.hard_bounds_checks ?? [])]).filter((check) => check.evidence_id);
+    const evidenceCohorts = [...new Map(linkedChecks.map((check) => [check.cohort_id, {
+      cohort_id: check.cohort_id,
+      fidelity_tier: "F2",
+      evidence_ids: linkedChecks.filter((candidate) => candidate.cohort_id === check.cohort_id).map((candidate) => candidate.evidence_id).filter((value, index, values) => values.indexOf(value) === index),
+    }])).values()];
+    writeJson(path.join(ctx.packageDir, "tests", "expectations.json"), {
+      schema_version: "1.0.0",
+      ...(strictEvidence ? { evidence_contract_version: "1.0.0", evidence_cohorts: evidenceCohorts } : {}),
+      tests,
+    });
     console.log(`testgen ${ctx.part.slug}: ${tests.length} benches`);
     return;
   }

@@ -316,7 +316,7 @@ function validateThresholdEvidence(rawEvidence, sourceKind, label, context) {
   const conditionIdentity = completeConditionIdentity({
     characteristic: "gate_threshold", polarity: context.polarity, magnitudeConvention, temperature,
     electrical: {
-      vgs: { kind: "relation", relation: "vgs_equals_vds" },
+      vgs: { kind: "relation", relation: "vds_equals_vgs" },
       vds: { kind: "relation", relation: "vds_equals_vgs" },
       id: { kind: "fixed", value_a: current },
     },
@@ -324,7 +324,7 @@ function validateThresholdEvidence(rawEvidence, sourceKind, label, context) {
     qualifiers: normalizedQualifiers(evidence.conditions, parsedTestMode.qualifiers),
   });
   const citationIdentityValue = citationIdentity(evidence.page_reference, {
-    ...context, label, defaultRow: "gate threshold voltage", defaultColumn: sourceKind,
+    ...context, label, defaultRow: "gate threshold voltage",
   });
   return {
     evidence, value, current, temperature: temperature.value_c, relationship: "VDS = VGS", citation: evidence.page_reference,
@@ -388,7 +388,7 @@ function validateRdsonPoint(rawPoint, index, sourceKind, context) {
       characteristic: "rds_on", polarity: context.polarity, magnitudeConvention, temperature,
       electrical: {
         vgs: { kind: "fixed", value_v: parsedVgs },
-        vds: { kind: "relation", relation: "vds=id*rds_on" },
+        vds: { kind: "relation", relation: "saturation_region" },
         id: { kind: "fixed", value_a: parsedCurrent },
       },
       testMode: parsedTestMode.mode,
@@ -695,6 +695,11 @@ function mosfetFit(part, extraction, forceF1 = false, constraintRunner = default
       temperature_c: rdsonTypical.temperature, condition_identity: rdsonTypical.condition_identity,
       citation_identities: rdsonTypical.citation_identities,
       evidence_identities: rdsonTypical.evidence_identities,
+      evidence: [
+        rdsonConstraintEvidence(rdsonTypical.validated_fields[0], "vgs", rdsonTypical.vgs, "V"),
+        rdsonConstraintEvidence(rdsonTypical.validated_fields[1], "drain_current", rdsonTypical.current, "A"),
+        rdsonConstraintEvidence(rdsonTypical.validated_fields[2], "rds_on_typical", rdsonTypical.resistance, "ohm"),
+      ],
       source_index: rdsonTypical.index,
     }] : []),
   ];
@@ -703,13 +708,21 @@ function mosfetFit(part, extraction, forceF1 = false, constraintRunner = default
       parameter_coordinate: "VTO", value: thresholdSeed, unit: "V",
       evidence_role: hasThresholdTypical ? "typical_observation_seed" : "interval_midpoint_seed_only",
       scored_as_residual: hasThresholdTypical,
-      ...(hasThresholdTypical ? { condition_identity: thresholdTypical.condition_identity } : { condition_identity: thresholdConstraint.condition_identity }),
+      ...(hasThresholdTypical
+        ? {
+            condition_identity: thresholdTypical.condition_identity,
+            evidence: [thresholdConstraintEvidence(thresholdTypical, "threshold_typical", thresholdTypical.value)],
+          }
+        : { condition_identity: thresholdConstraint.condition_identity, evidence: thresholdConstraint.evidence }),
     },
     {
       parameter_coordinate: "rdson", value: rdsonSeed, unit: "ohm",
       evidence_role: hasRdsonTypical ? "typical_observation_seed" : "bound_value_seed_only",
       scored_as_residual: hasRdsonTypical,
       condition_identity: hasRdsonTypical ? rdsonTypical.condition_identity : rdsonConstraints.find((constraint) => constraint.maximum_ohm === rdsonSeed)?.condition_identity,
+      evidence: hasRdsonTypical
+        ? [rdsonConstraintEvidence(rdsonTypical.validated_fields[2], "rds_on_typical", rdsonTypical.resistance, "ohm")]
+        : rdsonConstraints.find((constraint) => constraint.maximum_ohm === rdsonSeed)?.evidence,
     },
   ];
 
@@ -1260,9 +1273,7 @@ function bulkFactoryFacts(part, extraction, fit, identity, source) {
       quantity: point.resistance.source_kind === "minimum" ? "rds_on_minimum" : point.resistance.source_kind === "maximum" ? "rds_on_maximum" : "rds_on_typical",
     },
   }));
-  const threshold = (fit.fidelity === "F2" || fit.evidence_mode === "interval-constrained" || rdsonPoints.length === 0)
-    ? acceptedThresholdFacts(factSpecs, fit, part, extraction)
-    : null;
+  const threshold = acceptedThresholdFacts(factSpecs, fit, part, extraction);
   const transferCurves = (fit.evidence_curves ?? []).filter((curve) => curve.characteristic === "transfer_current");
   const outputCurves = (fit.evidence_curves ?? []).filter((curve) => curve.characteristic === "output_current");
   return {

@@ -7,7 +7,7 @@ import { fitBulkPart, libraryCollisionReason, libraryDuplicateDieReason, normali
 import { validatePackage } from "../../../packages/component-schema/lib.mjs";
 
 const quantity = (value, unit) => ({ value, unit, conditions: "fixture at 25 C", page_reference: "p. 2, Electrical Characteristics table", source_kind: "typical" });
-const fixtureSourceSha256 = "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef";
+const fixtureSourceSha256 = "58346148e907c6d42d5efbb6ac681765701d53d09413067fe67e2b7ea9294e86";
 
 function diodePart(pdf) {
   return {
@@ -254,7 +254,7 @@ test("pre-demoted bulk part keeps extraction and p-channel metadata", () => {
     fs.writeFileSync(extractionPath, JSON.stringify(mosfetExtraction));
     const manifestPath = path.join(root, "batch.json");
     fs.writeFileSync(manifestPath, JSON.stringify({ schema_version: "1.0.0", kind: "opencircuit-conveyor-batch", parts: [{ ...mosfetPart(pdf), extraction_path: extractionPath, force_f1: true, demotion_reason: "catalog discrepancy" }] }));
-    const result = runBulkManifest(manifestPath, path.join(root, "staging"), { ngspiceRunner: () => ({ pass: true }), mosfetConstraintRunner: passThroughConstraintRunner });
+    const result = runBulkManifest(manifestPath, path.join(root, "staging"), { libraryRoot: path.join(root, "empty-library"), ngspiceRunner: () => ({ pass: true }), mosfetConstraintRunner: passThroughConstraintRunner });
     assert.equal(result[0].demotion_reason, "catalog discrepancy");
     const component = JSON.parse(fs.readFileSync(path.join(result[0].package_path, "component.json"), "utf8"));
     const facts = JSON.parse(fs.readFileSync(path.join(result[0].package_path, "facts.json"), "utf8"));
