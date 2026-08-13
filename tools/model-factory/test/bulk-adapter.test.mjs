@@ -6,7 +6,8 @@ import test from "node:test";
 import { fitBulkPart, libraryCollisionReason, libraryDuplicateDieReason, normalizedIdentity, normalizeBulkManifest, pinPackageBenchTemperature, repairKnownEvidenceDefects, runBulkManifest } from "../lib/bulk-adapter.mjs";
 import { validatePackage } from "../../../packages/component-schema/lib.mjs";
 
-const quantity = (value, unit) => ({ value, unit, conditions: "fixture at 25 C", page_reference: "p. 2", source_kind: "typical" });
+const quantity = (value, unit) => ({ value, unit, conditions: "fixture at 25 C", page_reference: "p. 2, Electrical Characteristics table", source_kind: "typical" });
+const fixtureSourceSha256 = "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef";
 
 function diodePart(pdf) {
   return {
@@ -35,17 +36,17 @@ function mosfetPart(pdf) {
 
 function typicalMosfetExtraction(polarity = "p") {
   const sign = polarity === "p" ? -1 : 1;
-  const thresholdConditions = `VDS = VGS, ID = ${sign * 250} µA, TJ = 25 °C`;
-  const rdsonConditions = `VGS = ${sign * 4.5} V, ID = ${sign * 2} A, TJ = 25 °C`;
-  return { specs: {
+  const thresholdConditions = `VDS = VGS, ID = ${sign * 250} µA, TJ = 25 °C; test mode = DC`;
+  const rdsonConditions = `VGS = ${sign * 4.5} V, ID = ${sign * 2} A, TJ = 25 °C; test mode = DC`;
+  return { source_sha256: fixtureSourceSha256, specs: {
     polarity,
-    threshold_min: { value: sign * 1, unit: "V", conditions: thresholdConditions, page_reference: "p. 2", source_kind: "minimum" },
-    threshold_typ: { value: sign * 1.5, unit: "V", conditions: thresholdConditions, page_reference: "p. 2", source_kind: "typical" },
-    threshold_max: { value: sign * 2, unit: "V", conditions: thresholdConditions, page_reference: "p. 2", source_kind: "maximum" },
+    threshold_min: { value: sign * 1, unit: "V", conditions: thresholdConditions, page_reference: "p. 2, Electrical Characteristics table", source_kind: "minimum" },
+    threshold_typ: { value: sign * 1.5, unit: "V", conditions: thresholdConditions, page_reference: "p. 2, Electrical Characteristics table", source_kind: "typical" },
+    threshold_max: { value: sign * 2, unit: "V", conditions: thresholdConditions, page_reference: "p. 2, Electrical Characteristics table", source_kind: "maximum" },
     rdson_points: [{
-      vgs: { value: sign * 4.5, unit: "V", conditions: rdsonConditions, page_reference: "p. 2", source_kind: "typical" },
-      current: { value: sign * 2, unit: "A", conditions: rdsonConditions, page_reference: "p. 2", source_kind: "typical" },
-      resistance: { value: 0.08, unit: "ohm", conditions: rdsonConditions, page_reference: "p. 2", source_kind: "typical" },
+      vgs: { value: sign * 4.5, unit: "V", conditions: rdsonConditions, page_reference: "p. 2, Electrical Characteristics table", source_kind: "typical" },
+      current: { value: sign * 2, unit: "A", conditions: rdsonConditions, page_reference: "p. 2, Electrical Characteristics table", source_kind: "typical" },
+      resistance: { value: 0.08, unit: "ohm", conditions: rdsonConditions, page_reference: "p. 2, Electrical Characteristics table", source_kind: "typical" },
     }],
     ciss: quantity(50e-12, "F"), coss: quantity(20e-12, "F"), crss: quantity(5e-12, "F"),
   } };
@@ -209,9 +210,9 @@ test("forced F1 MOSFET refuses silently defaulted critical calibration", () => {
 });
 
 test("F1 MOSFET bounds are constraints while interval midpoints and maxima are seeds only", () => {
-  const thresholdConditions = "VDS = VGS, ID = 250 µA, TJ = 25 °C";
-  const rdsonConditions = "VGS = 5 V, ID = 0.2 A, TJ = 25 °C";
-  const payload = { specs: {
+  const thresholdConditions = "VDS = VGS, ID = 250 µA, TJ = 25 °C; test mode = DC";
+  const rdsonConditions = "VGS = 5 V, ID = 0.2 A, TJ = 25 °C; test mode = DC";
+  const payload = { source_sha256: fixtureSourceSha256, specs: {
     polarity: "n",
     threshold_min: { ...quantity(0.5, "V"), conditions: thresholdConditions, source_kind: "minimum" },
     threshold_typ: null,
@@ -324,14 +325,15 @@ test("signed P-channel RDS evidence is magnitude-normalized before bench polarit
     const payload = {
       schema_version: "1.0.0", mpn: "FIXTURE-P1", manufacturer: "Fixture Semi", family: "mosfet",
       datasheet_identity: { title: "Fixture P1", revision: "A", pages_examined: ["p. 2"] }, usable_curves: false, curves: [],
+      source_sha256: fixtureSourceSha256,
       specs: {
         polarity: "p",
-        threshold_min: { ...quantity(-0.7, "V"), conditions: "VDS = VGS, ID = -250 µA, TJ = 25 °C", source_kind: "minimum" },
+        threshold_min: { ...quantity(-0.7, "V"), conditions: "VDS = VGS, ID = -250 µA, TJ = 25 °C; test mode = DC", source_kind: "minimum" },
         threshold_typ: null,
-        threshold_max: { ...quantity(-1.3, "V"), conditions: "VDS = VGS, ID = -250 µA, TJ = 25 °C", source_kind: "maximum" },
+        threshold_max: { ...quantity(-1.3, "V"), conditions: "VDS = VGS, ID = -250 µA, TJ = 25 °C; test mode = DC", source_kind: "maximum" },
         rdson_points: [
-          { vgs: { ...quantity(-10, "V"), conditions: "VGS = -10 V, ID = -4.2 A, TJ = 25 °C" }, current: { ...quantity(-4.2, "A"), conditions: "VGS = -10 V, ID = -4.2 A, TJ = 25 °C" }, resistance: { ...quantity(0.065, "ohm"), conditions: "VGS = -10 V, ID = -4.2 A, TJ = 25 °C", source_kind: "maximum" } },
-          { vgs: { ...quantity(-4.5, "V"), conditions: "VGS = -4.5 V, ID = -4 A, TJ = 25 °C" }, current: { ...quantity(-4, "A"), conditions: "VGS = -4.5 V, ID = -4 A, TJ = 25 °C" }, resistance: { ...quantity(0.075, "ohm"), conditions: "VGS = -4.5 V, ID = -4 A, TJ = 25 °C", source_kind: "maximum" } },
+          { vgs: { ...quantity(-10, "V"), conditions: "VGS = -10 V, ID = -4.2 A, TJ = 25 °C; test mode = DC" }, current: { ...quantity(-4.2, "A"), conditions: "VGS = -10 V, ID = -4.2 A, TJ = 25 °C; test mode = DC" }, resistance: { ...quantity(0.065, "ohm"), conditions: "VGS = -10 V, ID = -4.2 A, TJ = 25 °C; test mode = DC", source_kind: "maximum" } },
+          { vgs: { ...quantity(-4.5, "V"), conditions: "VGS = -4.5 V, ID = -4 A, TJ = 25 °C; test mode = DC" }, current: { ...quantity(-4, "A"), conditions: "VGS = -4.5 V, ID = -4 A, TJ = 25 °C; test mode = DC" }, resistance: { ...quantity(0.075, "ohm"), conditions: "VGS = -4.5 V, ID = -4 A, TJ = 25 °C; test mode = DC", source_kind: "maximum" } },
         ],
         ciss: quantity(954e-12, "F"), coss: quantity(115e-12, "F"), crss: quantity(77e-12, "F"), breakdown_voltage: quantity(-30, "V"), body_diode: null,
       },
