@@ -47,6 +47,17 @@ test("loads all bundled examples and solves", async ({ page }) => {
   }
 });
 
+test("opamp example keeps its generated background outline", async ({ page }) => {
+  await page.goto("/#example=opamp-noninverting");
+  await page.reload();
+  await expect(page.locator("#workspace-button")).toHaveText("TL072 non-inverting amplifier");
+  await expect(page.getByTestId("engine-ready")).toBeVisible({ timeout: 45_000 });
+
+  const body = page.locator('[data-component-id="c4"] .sym-bg');
+  await expect(body).toHaveCount(1);
+  expect(await body.evaluate((element) => getComputedStyle(element).stroke)).not.toBe("none");
+});
+
 test("catalog renders model detail and places real 2N3904 model", async ({ page }) => {
   await page.getByRole("button", { name: "Catalog" }).click();
   const dialog = page.getByRole("dialog", { name: "Component catalog" });
