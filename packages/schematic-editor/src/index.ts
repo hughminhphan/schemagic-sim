@@ -200,7 +200,7 @@ function pointInSegmentInterior(point: Point, a: Point, b: Point): boolean {
 }
 
 function normalizeJunctions(document: CircuitDocument): void {
-  for (const wire of document.wires) wire.points = compactWire(wire.points);
+  for (const wire of document.wires) wire.points = wire.points.filter((point, index, points) => index === 0 || !samePoint(point, points[index - 1]!)).map(clonePoint);
   const candidates = new Map<string, { point: Point; wireIds: Set<string>; pin: boolean }>();
   for (const wire of document.wires) {
     for (const endpoint of [wire.points[0], wire.points.at(-1)]) {
@@ -236,7 +236,7 @@ function normalizeJunctions(document: CircuitDocument): void {
       for (const insertion of insertions) normalized.push(clonePoint(insertion.point));
       normalized.push(clonePoint(b));
     }
-    wire.points = compactWire(normalized);
+    wire.points = normalized.filter((point, index, points) => index === 0 || !samePoint(point, points[index - 1]!));
   }
 }
 
@@ -567,7 +567,7 @@ export class SchematicEditor {
       else if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "y") { event.preventDefault(); this.redo(); }
       else if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "c") { event.preventDefault(); this.copyToClipboard(); }
       else if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "v") { event.preventDefault(); this.paste(); }
-      else if (event.key === "Enter" && this.wirePoints) { event.preventDefault(); this.finishWire(true); }
+      else if (event.key === "Enter" && this.wirePoints) { event.preventDefault(); event.stopPropagation(); this.finishWire(true); }
       else if (event.key === "/" && this.wirePoints) { event.preventDefault(); this.wireHorizontalFirst = !this.wireHorizontalFirst; this.render(); }
       else if (event.key.toLowerCase() === "r") this.rotate();
       else if (event.key.toLowerCase() === "x") this.mirror();
@@ -956,15 +956,20 @@ export class SchematicEditor {
     const pins = this.doc.components.flatMap((component) => componentPinPoints(component).map((point, pinIndex) => ({ component, point, pinIndex })));
     for (const pin of pins) pinCounts.set(pointKey(pin.point), (pinCounts.get(pointKey(pin.point)) ?? 0) + 1);
 
-    const legCounts = new Map<string, number>();
-    const addLeg = (point: Point) => legCounts.set(pointKey(point), (legCounts.get(pointKey(point)) ?? 0) + 1);
+    const legDirections = new Map<string, Set<string>>();
+    const addLeg = (point: Point, other: Point) => {
+      const dx = Math.sign(other[0] - point[0]);
+      const dy = Math.sign(other[1] - point[1]);
+      const directions = legDirections.get(pointKey(point)) ?? new Set<string>();
+      directions.add(`${dx},${dy}`);
+      legDirections.set(pointKey(point), directions);
+    };
     for (const wire of this.doc.wires) {
       for (let index = 1; index < wire.points.length; index += 1) {
-        addLeg(wire.points[index - 1]!);
-        addLeg(wire.points[index]!);
+        addLeg(wire.points[index - 1]!, wire.points[index]!);
+        addLeg(wire.points[index]!, wire.points[index - 1]!);
       }
     }
-    for (const pin of pins) addLeg(pin.point);
 
     let preview: Point[] = [];
     if (this.wirePoints?.length) {
@@ -1007,8 +1012,8 @@ export class SchematicEditor {
       .filter((pin) => !wirePointKeys.has(pointKey(pin.point)) && (pinCounts.get(pointKey(pin.point)) ?? 0) < 2)
       .map((pin) => `<circle class="pin-open" data-pin-component="${pin.component.id}" data-pin-index="${pin.pinIndex}" cx="${pin.point[0]}" cy="${pin.point[1]}" r="${pinRadius}"/>`)
       .join("");
-    const junctions = [...legCounts]
-      .filter(([, count]) => count >= 3)
+    const junctions = [...legDirections]
+      .filter(([, directions]) => directions.size >= 3)
       .map(([key]) => { const [x, y] = key.split(","); return `<circle class="connection-node junction" cx="${x}" cy="${y}" r="${junctionRadius}"/>`; })
       .join("");
     const snapIndicator = this.wireSnap ? `<circle class="snap-indicator" cx="${this.wireSnap.point[0]}" cy="${this.wireSnap.point[1]}" r="${snapRadius}"/>` : "";
