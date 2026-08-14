@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 const resistorDividerNoise = {
   format: "opencircuit-circuit",
-  version: 1,
+  version: 2,
   meta: { title: "Resistor divider noise" },
   components: [
     { id: "c1", type: "vsource", value: 1, pos: [8, 12], rot: 0, mirror: false, label: { text: "VIN", offset: [-4, 0] } },

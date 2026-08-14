@@ -20,8 +20,8 @@ export function encodeCircuit(document: CircuitDocument): string {
 }
 
 export function decodeCircuit(payload: string): CircuitDocument {
-  const parsed = JSON.parse(strFromU8(inflateSync(fromBase64Url(payload)))) as Partial<CircuitDocument>;
-  if (parsed.format !== "opencircuit-circuit" || parsed.version !== 1 || !Array.isArray(parsed.components) || !Array.isArray(parsed.wires)) {
+  const parsed = JSON.parse(strFromU8(inflateSync(fromBase64Url(payload)))) as { format?: unknown; version?: unknown; components?: unknown; wires?: unknown };
+  if (parsed.format !== "opencircuit-circuit" || (parsed.version !== 1 && parsed.version !== 2) || !Array.isArray(parsed.components) || !Array.isArray(parsed.wires)) {
     throw new Error("Share URL does not contain a supported circuit document");
   }
   return migrateCircuit(parsed);

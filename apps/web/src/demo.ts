@@ -2,7 +2,7 @@ import type { CircuitDocument } from "@opencircuit/circuit-schema";
 
 export const demoCircuit: CircuitDocument = {
   format: "opencircuit-circuit",
-  version: 1,
+  version: 2,
   meta: {
     title: "NPN LED bench",
     description: "A 2N3904 low-side LED driver controlled by a potentiometer.",
@@ -19,13 +19,14 @@ export const demoCircuit: CircuitDocument = {
     { id: "c9", type: "ground", pos: [46, 30], rot: 0, mirror: false },
   ],
   wires: [
+    { id: "migration-v1-v2-1", points: [[46, 19], [46, 18]] },
     { id: "w1", points: [[8, 22], [8, 11], [18, 11], [58, 11]] },
-    { id: "w2", points: [[18, 16], [18, 11]] },
+    { id: "w2", points: [[18, 20], [18, 11]] },
     { id: "w3", points: [[8, 26], [8, 30]] },
-    { id: "w4", points: [[18, 28], [18, 30]] },
-    { id: "w5", points: [[22, 22], [30, 22]] },
+    { id: "w4", points: [[18, 24], [18, 30]] },
+    { id: "w5", points: [[20, 22], [30, 22]] },
     { id: "w6", points: [[34, 22], [42, 22]] },
-    { id: "w7", points: [[46, 26], [46, 30]] },
+    { id: "w7", points: [[46, 25], [46, 30]] },
     { id: "w8", points: [[58, 15], [58, 17]] },
     { id: "w9", points: [[58, 21], [52, 21], [52, 18], [46, 18]] },
   ],

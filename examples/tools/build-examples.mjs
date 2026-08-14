@@ -15,7 +15,7 @@ const wire = (id, points) => ({ id, points });
 const ground = (id, pos) => component(id, "ground", pos);
 const base = (title, description, components, wires, probes, mode, sim = {}) => ({
   format: "opencircuit-circuit",
-  version: 1,
+  version: 2,
   meta: { title, description },
   components,
   wires,
@@ -68,8 +68,9 @@ examples.set("common-emitter-amp", base(
     wire("w1", [[12, 14], [12, 10], [24, 10], [40, 10]]),
     wire("w2", [[8, 26], [14, 26]]), wire("w3", [[18, 26], [22, 26], [22, 22], [36, 22]]),
     wire("w4", [[24, 16], [24, 10]]), wire("w5", [[24, 20], [24, 22]]), wire("w6", [[24, 24], [24, 22]]),
-    wire("w7", [[40, 14], [40, 18]]), wire("w8", [[40, 26], [40, 28]]),
+    wire("w7", [[40, 14], [40, 18]]), wire("w8", [[40, 25], [40, 28]]),
     wire("w9", [[40, 18], [46, 18]]), wire("w10", [[50, 18], [54, 18], [54, 22]]),
+    wire("migration-v1-v2-1", [[40, 19], [40, 18]]),
     wire("w11", [[12, 18], [12, 18]]), wire("w12", [[8, 30], [8, 30]]), wire("w13", [[24, 28], [24, 28]]), wire("w14", [[40, 32], [40, 32]]), wire("w15", [[54, 26], [54, 26]]),
   ],
   [
@@ -99,6 +100,7 @@ examples.set("mosfet-led-switch", base(
     wire("w3", [[36, 24], [44, 24], [44, 26], [48, 26]]), wire("w4", [[44, 28], [44, 26]]),
     wire("w5", [[52, 10], [52, 10]]), wire("w6", [[52, 14], [52, 14]]), wire("w7", [[52, 18], [52, 18]]), wire("w8", [[52, 22], [52, 22]]),
     wire("w9", [[10, 16], [10, 16]]), wire("w10", [[12, 28], [12, 28]]), wire("w11", [[44, 32], [44, 32]]), wire("w12", [[52, 30], [52, 30]]),
+    wire("migration-v1-v2-1", [[52, 23], [52, 22]]), wire("migration-v1-v2-2", [[52, 29], [52, 30]]),
   ],
   [
     { id: "p1", kind: "voltage", target: { wire: "w3" }, color: "#3987e5" },
