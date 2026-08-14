@@ -1,4 +1,4 @@
-import { canonicalizeCircuit, fnv1a64 } from "./canonical";
+import { canonicalizeCircuitForNetlistHash, fnv1a64 } from "./canonical";
 import { dcSweepSourceName, inspectDCSweepConfig } from "./dc-sweep";
 import { inspectNoiseConfig } from "./noise";
 import { componentPinPoints, parseEngineering } from "./parts";
@@ -38,7 +38,7 @@ export function generateNetlist(document:CircuitDocument,requestedMode?:Analysis
   const nodeAt=(point:Point)=>{const root=uf.find(pointKey(point));if(root===uf.find(groundRoot))return "0";let name=rootNames.get(root);if(!name){name=`n${next++}`;rootNames.set(root,name);}return name;};
   const componentNodes:Record<string,string[]>={};for(const component of components)componentNodes[component.id]=(pins.get(component.id)??[]).map(nodeAt);
   const wireNodes=Object.fromEntries(wires.map((wire)=>[wire.id,nodeAt(wire.points[0]!) ]));
-  const documentHash=fnv1a64(canonicalizeCircuit(document,false)); const lines:string[]=[];const lineMap:NetlistLine[]=[];const componentCurrents:Record<string,string>={};
+  const documentHash=fnv1a64(canonicalizeCircuitForNetlistHash(document)); const lines:string[]=[];const lineMap:NetlistLine[]=[];const componentCurrents:Record<string,string>={};
   add(lines,lineMap,`scheMAGIC Simulator document ${documentHash}`,{stage:"header"});add(lines,lineMap,`* document-hash ${documentHash}`,{stage:"header"});
   const mode=requestedMode??document.sim.mode;const noiseInputId=mode==="noise"?document.sim.noise?.inputSourceId:undefined;const used=new Set<string>();
   for(const c of components){if(c.type==="ground")continue;const n=componentNodes[c.id]??[];const s=suffix(c.id);let line="";let current="";const noiseReference=c.id===noiseInputId?" AC 1":"";

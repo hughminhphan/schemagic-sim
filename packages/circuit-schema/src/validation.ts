@@ -5,7 +5,7 @@ import type { CircuitDocument, ValidationIssue } from "./types";
 
 export function validateCircuit(document: CircuitDocument): ValidationIssue[] {
   const issues: ValidationIssue[] = [];
-  if (document.format !== "opencircuit-circuit" || document.version !== 1) issues.push({ path: "version", message: "Unsupported circuit document format or version" });
+  if (document.format !== "opencircuit-circuit" || document.version !== 2) issues.push({ path: "version", message: "Unsupported circuit document format or version" });
   if (!document.meta?.title?.trim()) issues.push({ path: "meta.title", message: "Workspace needs a title" });
   const ids = new Set<string>();
   for (const component of document.components) {

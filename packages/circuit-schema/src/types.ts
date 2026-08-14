@@ -36,10 +36,11 @@ export interface SimConfig {
   noise?: NoiseConfig;
 }
 export interface CircuitDocument {
-  format: "opencircuit-circuit"; version: 1; meta: CircuitMeta;
+  format: "opencircuit-circuit"; version: 2; meta: CircuitMeta;
   components: CircuitComponent[]; wires: CircuitWire[]; probes: CircuitProbe[]; sim: SimConfig;
   view?: { pan: Point; zoom: number };
 }
+export type CircuitDocumentV1 = Omit<CircuitDocument, "version"> & { version: 1 };
 export interface NetlistLine { line: number; componentId?: string; stage: "component" | "model" | "analysis" | "header" }
 export interface GeneratedNetlist {
   netlist: string; lineMap: NetlistLine[]; componentNodes: Record<string, string[]>;

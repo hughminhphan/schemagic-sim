@@ -11,13 +11,13 @@ export const PARTS: readonly PartDefinition[] = [
   { type: "isource", name: "DC current source", prefix: "I", pins: [[0,-2],[0,2]], defaultValue: "1m" },
   { type: "ground", name: "Ground", prefix: "GND", pins: [[0,0]] },
   { type: "switch_spst", name: "SPST switch", prefix: "S", pins: [[-2,0],[2,0]], note: "Ideal switch uses 1 mΩ on and 1 GΩ off." },
-  { type: "potentiometer", name: "Potentiometer", prefix: "P", pins: [[0,-6],[4,0],[0,6]], defaultValue: "10k" },
+  { type: "potentiometer", name: "Potentiometer", prefix: "P", pins: [[0,-2],[2,0],[0,2]], defaultValue: "10k" },
   { type: "diode", name: "Diode", prefix: "D", pins: [[0,-2],[0,2]], defaultValue: "generic" },
   { type: "led", name: "LED", prefix: "LED", pins: [[0,-2],[0,2]], defaultValue: "red" },
-  { type: "bjt_npn", name: "NPN transistor", prefix: "Q", pins: [[2,-4],[-2,0],[2,4]], note: "Generic device unless an MPN is selected." },
-  { type: "bjt_pnp", name: "PNP transistor", prefix: "Q", pins: [[2,-4],[-2,0],[2,4]], note: "Generic device unless an MPN is selected." },
-  { type: "nmos", name: "NMOS", prefix: "M", pins: [[2,-4],[-2,0],[2,4]], note: "Generic level-1 device. No manufacturer part is implied." },
-  { type: "pmos", name: "PMOS", prefix: "M", pins: [[2,-4],[-2,0],[2,4]], note: "Generic level-1 device. No manufacturer part is implied." },
+  { type: "bjt_npn", name: "NPN transistor", prefix: "Q", pins: [[2,-3],[-2,0],[2,3]], note: "Generic device unless an MPN is selected." },
+  { type: "bjt_pnp", name: "PNP transistor", prefix: "Q", pins: [[2,-3],[-2,0],[2,3]], note: "Generic device unless an MPN is selected." },
+  { type: "nmos", name: "NMOS", prefix: "M", pins: [[2,-3],[-2,0],[2,3]], note: "Generic level-1 device. No manufacturer part is implied." },
+  { type: "pmos", name: "PMOS", prefix: "M", pins: [[2,-3],[-2,0],[2,3]], note: "Generic level-1 device. No manufacturer part is implied." },
   { type: "opamp_ideal", name: "Ideal opamp", prefix: "U", pins: [[-4,-2],[-4,2],[4,0]], note: "Simple high-gain VCVS model, not a real opamp." },
 ];
 export const partByType = (type: ComponentType): PartDefinition => {
@@ -25,12 +25,14 @@ export const partByType = (type: ComponentType): PartDefinition => {
   if (!part) throw new Error(`Unsupported component type ${type}`);
   return part;
 };
-function transform([inputX,inputY]: Point, component: CircuitComponent): Point {
+export function componentPoint(component: CircuitComponent, [inputX,inputY]: Point): Point {
   const x = component.mirror ? -inputX : inputX;
-  switch (component.rot) { case 0:return [x,inputY]; case 90:return [-inputY,x]; case 180:return [-x,-inputY]; case 270:return [inputY,-x]; }
+  let offset: Point;
+  switch (component.rot) { case 0:offset=[x,inputY];break; case 90:offset=[-inputY,x];break; case 180:offset=[-x,-inputY];break; case 270:offset=[inputY,-x];break; }
+  return [component.pos[0]+offset[0],component.pos[1]+offset[1]];
 }
 export function componentPinPoints(component: CircuitComponent): Point[] {
-  return partByType(component.type).pins.map((offset) => { const [x,y] = transform(offset, component); return [component.pos[0]+x, component.pos[1]+y]; });
+  return partByType(component.type).pins.map((offset) => componentPoint(component, offset));
 }
 export function parseEngineering(value: number | string | undefined, fallback = 0): number {
   if (typeof value === "number") return value;
