@@ -45,7 +45,7 @@ test("opens a persistent written guide with live UI references and can replay th
   await expect(guide).toBeVisible();
   await expect(guide.locator(".guide-section")).toHaveCount(6);
   await expect(guide.locator(".guide-ui-clone")).toHaveCount(5);
-  await expect(guide.locator(".guide-ui-canvas .editor-wire").first()).toBeVisible();
+  await expect(guide.locator(".guide-ui-canvas .editor-wire:visible").first()).toBeVisible();
   await expect(guide.getByText("Imported source stays browser-local.")).toBeVisible();
 
   await guide.getByRole("button", { name: "Replay walkthrough" }).click();
