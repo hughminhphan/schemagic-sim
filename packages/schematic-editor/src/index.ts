@@ -116,7 +116,7 @@ function renderedSymbol(component: CircuitComponent, interactive = true): string
 
   if (component.type === "potentiometer" && definition.wiper) {
     const t = clamp(Number(component.params?.t ?? 0.5), 0.005, 0.995);
-    const y = 6 - 12 * t;
+    const y = 2 - 4 * t;
     const wiper = splitSymbolMarkup(definition.wiper);
     const translation = `translate(0 ${y})`;
     background.push(wrappedLayer(wiper.background, translation, "pot-wiper"));
@@ -133,7 +133,7 @@ function renderedSymbol(component: CircuitComponent, interactive = true): string
     solid.push(wrappedLayer(lever.solid, rotation));
   }
 
-  return `${background.join("")}${strokes.join("")}${solid.join("")}${interactive && component.type === "potentiometer" ? `<path class="pot-hit" data-pot-hit="${esc(component.id)}" data-testid="pot-wiper" d="M4-6V6"/>` : ""}`;
+  return `${background.join("")}${strokes.join("")}${solid.join("")}${interactive && component.type === "potentiometer" ? `<path class="pot-hit" data-pot-hit="${esc(component.id)}" data-testid="pot-wiper" d="M2-2V2"/>` : ""}`;
 }
 
 function rotateAround(point: Point, pivot: Point, degrees: number): Point {
@@ -792,7 +792,7 @@ export class SchematicEditor {
     const dy = world[1] - component.pos[1];
     const radians = -component.rot * Math.PI / 180;
     const localY = dx * Math.sin(radians) + dy * Math.cos(radians);
-    const t = clamp((6 - localY) / 12, 0.005, 0.995);
+    const t = clamp((2 - localY) / 4, 0.005, 0.995);
     this.editLive((document) => {
       const pot = document.components.find((item) => item.id === id);
       if (pot) pot.params = { ...(pot.params ?? {}), t };
