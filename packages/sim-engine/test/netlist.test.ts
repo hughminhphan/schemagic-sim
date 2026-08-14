@@ -4,7 +4,7 @@ import type { CircuitDocument } from "../src/types";
 
 const document: CircuitDocument = {
   format: "opencircuit-circuit",
-  version: 1,
+  version: 2,
   meta: { title: "Determinism fixture" },
   components: [
     { id: "c1", type: "vsource", value: 5, pos: [0, 4], rot: 0, mirror: false },
