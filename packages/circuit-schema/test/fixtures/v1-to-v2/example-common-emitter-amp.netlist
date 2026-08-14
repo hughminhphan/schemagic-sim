@@ -1,0 +1,16 @@
+scheMAGIC Simulator document ae19f5ea0a83790a
+* document-hash ae19f5ea0a83790a
+V1 n1 0 DC 5 AC 1 $ component:c1
+V2 n2 0 SIN(0 350m 1k) AC 1 $ component:c2
+C3 n2 n3 1u $ component:c3
+R4 n1 n4 56k $ component:c4
+R5 n4 0 12k $ component:c5
+R6 n1 n5 10k $ component:c6
+Q7 n5 n3 n6 OC_2N3904 $ component:c7
+R8 n6 0 1k $ component:c8
+C9 n5 n7 1u $ component:c9
+R10 n7 0 100k $ component:c10
+.model OC_2N3904 NPN(IS=6.734F BF=255.9 VAF=74.03 IKF=0.2847 ISE=6.734F NE=1.307 BR=6.092 VAR=12.5 IKR=0.1 RC=1 CJE=4.493P TF=0.3012N CJC=3.638P TR=239.5N)
+.save all v1#branch v2#branch @c3[i] @r4[i] @r5[i] @r6[i] @q7[ic] @r8[i] @c9[i] @r10[i]
+.ac dec 35 10 10000000
+.end

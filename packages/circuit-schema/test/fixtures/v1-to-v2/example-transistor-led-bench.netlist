@@ -1,0 +1,14 @@
+scheMAGIC Simulator document 553c0e3577d4d8ab
+* document-hash 553c0e3577d4d8ab
+V1 n1 0 DC 5 $ component:c1
+R2T n1 n2 5000.00000000 $ component:c2
+R2B n2 0 5000.00000000 $ component:c2
+R3 n2 n3 10000 $ component:c3
+Q4 n4 n3 0 OC_2N3904 $ component:c4
+R5 n1 n5 330 $ component:c5
+D6 n5 n4 OC_LED_RED $ component:c6
+.model OC_2N3904 NPN(IS=6.734F BF=255.9 VAF=74.03 IKF=0.2847 ISE=6.734F NE=1.307 BR=6.092 VAR=12.5 IKR=0.1 RC=1 CJE=4.493P TF=0.3012N CJC=3.638P TR=239.5N)
+.model OC_LED_RED D(IS=1e-20 N=2 RS=10 EG=1.8 CJO=30P BV=5 IBV=10U)
+.save all v1#branch @r2t[i] @r3[i] @q4[ic] @r5[i] @d6[id]
+.op
+.end

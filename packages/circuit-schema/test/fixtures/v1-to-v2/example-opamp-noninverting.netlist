@@ -1,0 +1,15 @@
+scheMAGIC Simulator document f58bfef1900b19f0
+* document-hash f58bfef1900b19f0
+V1 n1 0 DC 15 $ component:c1
+V2 n2 0 DC -15 $ component:c2
+V3 n3 0 SIN(0 1 10k) $ component:c3
+X4 n3 n4 n5 OC_IDEAL_OPAMP $ component:c4
+R5 n6 n5 100k $ component:c5
+R6 n4 0 10k $ component:c6
+R7 n5 0 10k $ component:c7
+.subckt OC_IDEAL_OPAMP INP INN OUT
+EGAIN OUT 0 INP INN 1000000
+.ends OC_IDEAL_OPAMP
+.save all v1#branch v2#branch v3#branch @r5[i] @r6[i] @r7[i]
+.tran 1e-7 0.0005 0 5e-7
+.end
