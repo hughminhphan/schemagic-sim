@@ -1,13 +1,57 @@
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
-import { fitBulkPart, libraryCollisionReason, libraryDuplicateDieReason, normalizedIdentity, normalizeBulkManifest, pinPackageBenchTemperature, repairKnownEvidenceDefects, runBulkManifest } from "../lib/bulk-adapter.mjs";
+import { applyConditionAdjudicationSupplement, fitBulkPart, libraryCollisionReason, libraryDuplicateDieReason, normalizedIdentity, normalizeBulkManifest, pinPackageBenchTemperature, repairKnownEvidenceDefects, runBulkManifest, stageBulkPart } from "../lib/bulk-adapter.mjs";
 import { validatePackage } from "../../../packages/component-schema/lib.mjs";
 
 const quantity = (value, unit) => ({ value, unit, conditions: "fixture at 25 C", page_reference: "p. 2, Electrical Characteristics table", source_kind: "typical" });
 const fixtureSourceSha256 = "58346148e907c6d42d5efbb6ac681765701d53d09413067fe67e2b7ea9294e86";
+const semanticFixtureRoot = fs.mkdtempSync(path.join(os.tmpdir(), "factory-semantic-test-"));
+const semanticFixturePdf = path.join(semanticFixtureRoot, "datasheet.pdf");
+fs.writeFileSync(semanticFixturePdf, "%PDF-1.7\nsemantic fixture\n");
+const semanticSourceSha256 = createHash("sha256").update(fs.readFileSync(semanticFixturePdf)).digest("hex");
+test.after(() => fs.rmSync(semanticFixtureRoot, { recursive: true, force: true }));
+
+function stableValue(value) {
+  if (Array.isArray(value)) return value.map(stableValue);
+  if (value && typeof value === "object") return Object.fromEntries(Object.keys(value).sort().map((key) => [key, stableValue(value[key])]));
+  return value;
+}
+
+function contentHash(value) {
+  return `sha256:${createHash("sha256").update(JSON.stringify(stableValue(value))).digest("hex")}`;
+}
+
+function extractionPointer(root, pointer) {
+  return pointer.slice(1).split("/").reduce((value, token) => value[Number.isInteger(Number(token)) && String(Number(token)) === token ? Number(token) : token], root);
+}
+
+function adjudicationSupplement(extraction, entries, extractionBytes = Buffer.from(JSON.stringify(extraction))) {
+  const supplement = {
+    schema_version: "1.0.0",
+    kind: "opencircuit-condition-adjudication-supplement",
+    extraction_sha256: `sha256:${createHash("sha256").update(extractionBytes).digest("hex")}`,
+    source_sha256: extraction.source_sha256,
+    entries: entries.map((entry) => ({
+      ...entry,
+      targets: entry.targets.map((json_pointer) => ({ json_pointer, target_sha256: contentHash(extractionPointer(extraction, json_pointer)) })),
+    })),
+  };
+  return { ...supplement, supplement_id: contentHash(supplement) };
+}
+
+function semanticCondition({ polarity = "n", magnitude = "absolute", temperature = 25, provenance = "table_heading", mode = "dc", electrical }) {
+  return {
+    polarity,
+    magnitude_convention: magnitude,
+    temperature: { status: "stated", kind: "junction", value_c: temperature, provenance },
+    electrical,
+    test_mode: typeof mode === "string" ? { kind: mode } : mode,
+  };
+}
 
 function diodePart(pdf) {
   return {
@@ -32,6 +76,10 @@ function mosfetPart(pdf) {
     ],
     allow_f1_demotion: true,
   };
+}
+
+function semanticMosfetPart() {
+  return mosfetPart(semanticFixturePdf);
 }
 
 function typicalMosfetExtraction(polarity = "p") {
@@ -86,6 +134,55 @@ function curveBackedMosfetExtraction(polarity) {
     },
     extraction_notes: [], omission_reason: null,
   };
+}
+
+function intervalMosfetExtraction({ polarity = "n", thresholdModeText = "", temperatureText = "TJ = +25 degC" } = {}) {
+  const sign = polarity === "p" ? 1 : 1;
+  const thresholdConditions = `VDS = VGS, ID = ${sign * 250} µA, ${temperatureText}${thresholdModeText}`;
+  const rdsonConditions = `VGS = ${sign * 5} V, ID = ${sign * 0.2} A, ${temperatureText}; test mode = DC`;
+  return {
+    source_sha256: semanticSourceSha256,
+    datasheet_identity: { title: "Semantic MOSFET fixture", revision: "A", pages_examined: ["p. 2"] },
+    specs: {
+    polarity,
+    threshold_min: { ...quantity(sign * 0.5, "V"), conditions: thresholdConditions, source_kind: "minimum" },
+    threshold_typ: null,
+    threshold_max: { ...quantity(sign * 1.5, "V"), conditions: thresholdConditions, source_kind: "maximum" },
+    rdson_points: [{
+      vgs: { ...quantity(sign * 5, "V"), conditions: rdsonConditions },
+      current: { ...quantity(sign * 0.2, "A"), conditions: rdsonConditions },
+      resistance: { ...quantity(3.5, "ohm"), conditions: rdsonConditions, source_kind: "maximum" },
+    }],
+    ciss: quantity(45e-12, "F"), coss: quantity(20e-12, "F"), crss: quantity(4e-12, "F"),
+  } };
+}
+
+function intervalAdjudication(extraction, { thresholdMode = "not_stated", disclosures = ["typical figure label"], temperature = null, magnitude = "absolute" } = {}) {
+  const statedTemperature = temperature ?? { status: "stated", kind: "junction", value_c: 25, provenance: "table_heading" };
+  const thresholdElectrical = {
+    vgs: { kind: "relation", relation: "vds_equals_vgs" },
+    vds: { kind: "relation", relation: "vds_equals_vgs" },
+    id: { kind: "fixed", value_a: 250e-6 },
+  };
+  const rdsonElectrical = {
+    vgs: { kind: "fixed", value_v: 5 },
+    vds: { kind: "relation", relation: "saturation_region" },
+    id: { kind: "fixed", value_a: 0.2 },
+  };
+  return adjudicationSupplement(extraction, [
+    {
+      characteristic: "gate_threshold",
+      targets: ["/specs/threshold_min", "/specs/threshold_max"],
+      condition: { polarity: extraction.specs.polarity, magnitude_convention: magnitude, temperature: statedTemperature, electrical: thresholdElectrical, test_mode: { kind: thresholdMode } },
+      disclosures,
+    },
+    {
+      characteristic: "rds_on",
+      targets: ["/specs/rdson_points/0/vgs", "/specs/rdson_points/0/current", "/specs/rdson_points/0/resistance"],
+      condition: semanticCondition({ polarity: extraction.specs.polarity, magnitude, electrical: rdsonElectrical }),
+      disclosures: ["RDS row label retained verbatim"],
+    },
+  ]);
 }
 
 function passThroughConstraintRunner(payload) {
@@ -304,6 +401,254 @@ test("F1 MOSFET bounds are constraints while interval midpoints and maxima are s
   assert.deepEqual(fit.calibration.seeds.map((seed) => seed.evidence_role), ["interval_midpoint_seed_only", "bound_value_seed_only"]);
   assert.ok(fit.calibration.seeds.every((seed) => seed.scored_as_residual === false));
   assert.equal(fit.parameters.KP, 2 / 3.5, "a maximum may seed the optimizer but is not scaled into a synthetic target");
+});
+
+test("content-addressed semantics admit threshold not_stated without parsing disclosures", () => {
+  const part = { ...semanticMosfetPart(), subcategory: "N-Channel MOSFET" };
+  const extraction = intervalMosfetExtraction();
+  const original = structuredClone(extraction);
+  const first = intervalAdjudication(extraction, { disclosures: ["typical output characteristic", "arbitrary Luna disclosure wording"] });
+  const second = intervalAdjudication(extraction, { disclosures: ["same facts, completely different disclosure prose"] });
+  const adjudicatedFirst = applyConditionAdjudicationSupplement(part, extraction, first);
+  const adjudicatedSecond = applyConditionAdjudicationSupplement(part, extraction, second);
+  let firstPayload;
+  let secondPayload;
+  const firstFit = fitBulkPart(part, adjudicatedFirst, {
+    forceF1: true,
+    mosfetConstraintRunner: (payload) => { firstPayload = payload; return passThroughConstraintRunner(payload); },
+  });
+  const secondFit = fitBulkPart(part, adjudicatedSecond, {
+    forceF1: true,
+    mosfetConstraintRunner: (payload) => { secondPayload = payload; return passThroughConstraintRunner(payload); },
+  });
+  assert.equal(firstFit.evidence_mode, "interval-constrained");
+  assert.equal(firstPayload.constraints[0].condition_identity.test_mode.kind, "dc");
+  assert.ok(firstPayload.constraints[0].condition_identity.qualifiers.some((item) => item.key === "source_test_mode" && item.value === "not_stated"));
+  assert.equal(firstPayload.constraints[0].condition_identity.condition_id, secondPayload.constraints[0].condition_identity.condition_id);
+  assert.deepEqual(extraction, original, "semantic adjudication must not mutate the immutable extraction");
+});
+
+test("validated semantic fit view cannot mutate after hash verification", () => {
+  const part = { ...semanticMosfetPart(), subcategory: "N-Channel MOSFET" };
+  const extraction = intervalMosfetExtraction();
+  const supplement = intervalAdjudication(extraction);
+  const adjudicated = applyConditionAdjudicationSupplement(part, extraction, supplement);
+
+  assert.ok(Object.isFrozen(adjudicated));
+  assert.ok(Object.isFrozen(adjudicated.specs.threshold_min));
+  assert.ok(Object.isFrozen(adjudicated.specs.threshold_min.condition_semantics));
+  assert.throws(() => { adjudicated.specs.threshold_min.value = 0.05; }, TypeError);
+  assert.throws(() => { adjudicated.specs.threshold_max.value = 0.15; }, TypeError);
+  assert.throws(() => {
+    adjudicated.specs.threshold_min.condition_semantics.condition.temperature.value_c = 125;
+  }, TypeError);
+
+  let runnerPayload;
+  const fit = fitBulkPart(part, adjudicated, {
+    forceF1: true,
+    mosfetConstraintRunner: (payload) => {
+      runnerPayload = payload;
+      return passThroughConstraintRunner(payload);
+    },
+  });
+  assert.equal(fit.evidence_mode, "interval-constrained");
+  assert.equal(runnerPayload.constraints[0].minimum_v, 0.5);
+  assert.equal(runnerPayload.constraints[0].maximum_v, 1.5);
+
+  extraction.specs.threshold_min.value = 0.05;
+  assert.throws(
+    () => stageBulkPart(part, adjudicated, fit, path.join(semanticFixtureRoot, "mutated-source-stage"), { sourceExtraction: extraction }),
+    /source extraction no longer matches its validated snapshot/,
+  );
+});
+
+test("manifest staging preserves the original extraction while using validated semantics", () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "factory-semantic-stage-test-"));
+  try {
+    const extraction = intervalMosfetExtraction();
+    const extractionBytes = Buffer.from(JSON.stringify(extraction));
+    const supplement = intervalAdjudication(extraction, { disclosures: ["staging disclosure remains sidecar-only"] });
+    const extractionPath = path.join(root, "extraction.json");
+    const supplementPath = path.join(root, "supplement.json");
+    fs.writeFileSync(extractionPath, extractionBytes);
+    fs.writeFileSync(supplementPath, JSON.stringify(supplement));
+    const manifestPath = path.join(root, "manifest.json");
+    fs.writeFileSync(manifestPath, JSON.stringify({
+      schema_version: "1.0.0",
+      kind: "opencircuit-conveyor-batch",
+      parts: [{
+        ...semanticMosfetPart(),
+        subcategory: "N-Channel MOSFET",
+        extraction_path: extractionPath,
+        adjudication_supplement_path: supplementPath,
+        force_f1: true,
+      }],
+    }));
+    const [result] = runBulkManifest(manifestPath, path.join(root, "staging"), {
+      libraryRoot: path.join(root, "empty-library"),
+      mosfetConstraintRunner: passThroughConstraintRunner,
+    });
+    assert.equal(result.status, "staged", JSON.stringify(result));
+    const facts = JSON.parse(fs.readFileSync(path.join(result.package_path, "facts.json"), "utf8"));
+    assert.deepEqual(facts.extraction, extraction);
+    assert.ok(!JSON.stringify(facts.extraction).includes("condition_semantics"));
+    assert.ok(facts.threshold.minimum.condition_identity.qualifiers.some((item) => item.key === "source_test_mode" && item.value === "not_stated"));
+    assert.deepEqual(validatePackage(result.package_path, { requireEvidenceContract: true }).errors, []);
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("typed semantic mutations fail before fitting", () => {
+  const part = { ...semanticMosfetPart(), subcategory: "N-Channel MOSFET" };
+  const extraction = intervalMosfetExtraction();
+  const mutations = [
+    ["unknown typed field", (supplement) => { supplement.entries[0].condition.unexpected = true; }],
+    ["temperature not stated", (supplement) => { supplement.entries[0].condition.temperature = { status: "not_stated" }; }],
+    ["RDS not stated", (supplement) => { supplement.entries[1].condition.test_mode = { kind: "not_stated" }; }],
+    ["typed current drift", (supplement) => { supplement.entries[0].condition.electrical.id.value_a = 500e-6; }],
+  ];
+  for (const [name, mutate] of mutations) {
+    const supplement = intervalAdjudication(extraction);
+    mutate(supplement);
+    supplement.supplement_id = contentHash(Object.fromEntries(Object.entries(supplement).filter(([key]) => key !== "supplement_id")));
+    assert.throws(() => {
+      const adjudicated = applyConditionAdjudicationSupplement(part, extraction, supplement);
+      fitBulkPart(part, adjudicated, { forceF1: true, mosfetConstraintRunner: passThroughConstraintRunner });
+    }, undefined, name);
+  }
+});
+
+test("raw extraction semantics cannot bypass supplement validation", () => {
+  const part = { ...semanticMosfetPart(), subcategory: "N-Channel MOSFET" };
+  const extraction = intervalMosfetExtraction();
+  const supplement = intervalAdjudication(extraction);
+  const forged = structuredClone(extraction);
+  forged.specs.threshold_min.condition_semantics = {
+    schema_version: "1.0.0",
+    characteristic: "gate_threshold",
+    condition: supplement.entries[0].condition,
+    disclosures: [],
+    supplement_id: supplement.supplement_id,
+  };
+  assert.throws(
+    () => fitBulkPart(part, forged, { forceF1: true, mosfetConstraintRunner: passThroughConstraintRunner }),
+    /were not loaded from a validated supplement/,
+  );
+});
+
+test("supplement source hash must match canonical datasheet bytes", () => {
+  const part = { ...semanticMosfetPart(), subcategory: "N-Channel MOSFET" };
+  const extraction = intervalMosfetExtraction();
+  extraction.source_sha256 = "f".repeat(64);
+  const supplement = intervalAdjudication(extraction);
+  assert.throws(
+    () => applyConditionAdjudicationSupplement(part, extraction, supplement),
+    /source hash does not match the canonical datasheet bytes/,
+  );
+});
+
+test("supplement extraction bytes must encode the trusted extraction object", () => {
+  const part = { ...semanticMosfetPart(), subcategory: "N-Channel MOSFET" };
+  const bytesExtraction = intervalMosfetExtraction();
+  const extractionBytes = Buffer.from(JSON.stringify(bytesExtraction));
+  const rawExtraction = structuredClone(bytesExtraction);
+  rawExtraction.specs.threshold_min.value = 0.05;
+  rawExtraction.specs.threshold_max.value = 0.15;
+  const supplement = intervalAdjudication(rawExtraction);
+  supplement.extraction_sha256 = `sha256:${createHash("sha256").update(extractionBytes).digest("hex")}`;
+  supplement.supplement_id = contentHash(Object.fromEntries(Object.entries(supplement).filter(([key]) => key !== "supplement_id")));
+  assert.throws(
+    () => applyConditionAdjudicationSupplement(part, rawExtraction, supplement, extractionBytes),
+    /extraction bytes do not encode the supplied extraction object/,
+  );
+});
+
+test("pulsed adjudication cannot enter a static MOSFET fit", () => {
+  const part = { ...semanticMosfetPart(), subcategory: "N-Channel MOSFET" };
+  const extraction = intervalMosfetExtraction();
+  const supplement = intervalAdjudication(extraction);
+  supplement.entries[0].condition.test_mode = { kind: "pulsed", pulse_width_s: 1e-6 };
+  supplement.supplement_id = contentHash(Object.fromEntries(Object.entries(supplement).filter(([key]) => key !== "supplement_id")));
+  const adjudicated = applyConditionAdjudicationSupplement(part, extraction, supplement);
+  assert.throws(
+    () => fitBulkPart(part, adjudicated, { forceF1: true, mosfetConstraintRunner: passThroughConstraintRunner }),
+    /pulsed evidence and cannot enter a static DC MOSFET fit/,
+  );
+});
+
+test("supplement hashes bind extraction values, units, citations, conditions, and points", () => {
+  const part = { ...semanticMosfetPart(), subcategory: "N-Channel MOSFET" };
+  const original = intervalMosfetExtraction();
+  const supplement = intervalAdjudication(original);
+  for (const mutate of [
+    (value) => { value.specs.threshold_min.value = 0.6; },
+    (value) => { value.specs.threshold_min.unit = "mV"; },
+    (value) => { value.specs.threshold_min.page_reference = "p. 9, other row"; },
+    (value) => { value.specs.threshold_min.conditions += "; changed"; },
+  ]) {
+    const changed = structuredClone(original);
+    mutate(changed);
+    assert.throws(() => applyConditionAdjudicationSupplement(part, changed, supplement), /extraction hash does not match/);
+  }
+  const targetTamper = structuredClone(supplement);
+  targetTamper.entries[0].targets[0].target_sha256 = `sha256:${"0".repeat(64)}`;
+  targetTamper.supplement_id = contentHash(Object.fromEntries(Object.entries(targetTamper).filter(([key]) => key !== "supplement_id")));
+  assert.throws(() => applyConditionAdjudicationSupplement(part, original, targetTamper), /target_sha256/);
+});
+
+test("signed positive temperatures and prose-independent P-channel magnitudes are accepted", () => {
+  const part = semanticMosfetPart();
+  const extraction = intervalMosfetExtraction({ polarity: "p", temperatureText: "TJ = +25 °C" });
+  const supplement = intervalAdjudication(extraction, {
+    magnitude: "absolute",
+    disclosures: ["p-channel value recorded as magnitude", "typical figure label retained"],
+  });
+  const adjudicated = applyConditionAdjudicationSupplement(part, extraction, supplement);
+  const fit = fitBulkPart(part, adjudicated, { forceF1: true, mosfetConstraintRunner: passThroughConstraintRunner });
+  assert.equal(fit.evidence_mode, "interval-constrained");
+  assert.equal(fit.calibration.constraints[0].condition_identity.temperature.value_c, 25);
+  assert.equal(fit.calibration.constraints[0].condition_identity.magnitude_convention, "absolute");
+});
+
+test("typed absolute curve semantics reject signed source coordinates", () => {
+  const part = semanticMosfetPart();
+  const extraction = curveBackedMosfetExtraction("p");
+  extraction.source_sha256 = semanticSourceSha256;
+  extraction.curves[0].points = extraction.curves[0].points.map((point) => ({ x: -Math.abs(point.x), y: -Math.abs(point.y) }));
+  extraction.curves[0].test_conditions = "VDS = -10 V, TJ = +25 °C";
+  const xs = extraction.curves[0].points.map((point) => Math.abs(point.x));
+  const ys = extraction.curves[0].points.map((point) => Math.abs(point.y));
+  const supplement = adjudicationSupplement(extraction, [{
+    characteristic: "transfer_current",
+    targets: ["/curves/0"],
+    condition: semanticCondition({ polarity: "p", magnitude: "absolute", provenance: "figure_label", mode: "not_stated", electrical: {
+      vgs: { kind: "range", lower_v: Math.min(...xs), upper_v: Math.max(...xs) },
+      vds: { kind: "fixed", value_v: 10 },
+      id: { kind: "range", lower_a: Math.min(...ys), upper_a: Math.max(...ys) },
+    } }),
+    disclosures: ["source figure uses signed P-channel coordinates"],
+  }]);
+  const adjudicated = applyConditionAdjudicationSupplement(part, extraction, supplement);
+  assert.throws(() => fitBulkPart(part, adjudicated), /magnitude convention contradicts signed curve coordinates/);
+});
+
+test("one-sided threshold evidence remains insufficient after semantic adjudication", () => {
+  const part = { ...semanticMosfetPart(), subcategory: "N-Channel MOSFET" };
+  const extraction = intervalMosfetExtraction();
+  delete extraction.specs.threshold_max;
+  const supplement = adjudicationSupplement(extraction, [{
+    characteristic: "gate_threshold",
+    targets: ["/specs/threshold_min"],
+    condition: semanticCondition({ mode: "not_stated", electrical: {
+      vgs: { kind: "relation", relation: "vds_equals_vgs" },
+      vds: { kind: "relation", relation: "vds_equals_vgs" },
+      id: { kind: "fixed", value_a: 250e-6 },
+    } }),
+    disclosures: [],
+  }]);
+  const adjudicated = applyConditionAdjudicationSupplement(part, extraction, supplement);
+  assert.throws(() => fitBulkPart(part, adjudicated, { forceF1: true, mosfetConstraintRunner: passThroughConstraintRunner }), /both minimum and maximum/);
 });
 
 test("pre-demoted bulk part keeps extraction and p-channel metadata", () => {

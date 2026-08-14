@@ -203,6 +203,32 @@ def validate_condition_identity(identity, characteristic=None, label="condition_
         normalized.append((qualifier["key"], qualifier["value"]))
     if normalized != sorted(normalized) or len(normalized) != len(set(normalized)):
         raise Unfittable(f"{label}.qualifiers must be unique and sorted by key then value")
+    qualifier_map = dict(normalized)
+    semantic_adjudication = qualifier_map.get("semantic_adjudication")
+    source_mode = qualifier_map.get("source_test_mode")
+    temperature_provenance = qualifier_map.get("temperature_provenance")
+    static_policy = qualifier_map.get("static_characteristic_policy")
+    adjudication_fields = {key for key in qualifier_map if key in {
+        "semantic_adjudication", "source_test_mode", "temperature_provenance", "static_characteristic_policy"
+    }}
+    if adjudication_fields:
+        if semantic_adjudication != "content_addressed":
+            raise Unfittable(f"{label} semantic adjudication must be content-addressed")
+        if source_mode not in {"dc", "continuous", "pulsed", "single_pulse", "not_stated"}:
+            raise Unfittable(f"{label} has an unknown adjudicated source test mode")
+        if temperature_provenance not in {"inline_condition", "table_heading", "figure_label", "footnote", "section_scope"}:
+            raise Unfittable(f"{label} has unknown adjudicated temperature provenance")
+        if source_mode == "not_stated":
+            if identity["characteristic"] not in {"gate_threshold", "transfer_current", "output_current"}:
+                raise Unfittable(f"{label} does not admit not_stated source mode for this characteristic")
+            if mode["kind"] != "dc" or static_policy != identity["characteristic"]:
+                raise Unfittable(f"{label} not_stated source mode lacks the exact static-characteristic policy")
+        elif static_policy is not None:
+            raise Unfittable(f"{label} static-characteristic policy is only valid for not_stated source mode")
+        elif mode["kind"] != source_mode:
+            raise Unfittable(f"{label} source and canonical test modes disagree")
+        if dc_only and source_mode in {"pulsed", "single_pulse"}:
+            raise Unfittable(f"{label} is pulsed source evidence and cannot enter a static DC MOSFET fit")
     if not HASH_PATTERN.fullmatch(str(identity["condition_id"])) or identity["condition_id"] != canonical_hash(identity, {"condition_id"}):
         raise Unfittable(f"{label}.condition_id does not match canonical content")
     return identity
@@ -363,10 +389,10 @@ def context(curve):
 def temperature_of(curve):
     """Ambient/junction temperature in degC stated for this curve, or None."""
     text = context(curve)
-    m = re.search(r"(?:t[ajc]?\s*(?:amb|j|a|c)?\s*[= ]\s*)(-?\d+(?:\.\d+)?)\s*(?:deg\s*c|degc|°c|c\b)", text)
+    m = re.search(r"(?:t[ajc]?\s*(?:amb|j|a|c)?\s*[= ]\s*)([+-]?\d+(?:\.\d+)?)\s*(?:deg\s*c|degc|°c|c\b)", text)
     if m:
         return float(m.group(1))
-    m = re.search(r"(-?\d+(?:\.\d+)?)\s*(?:deg\s*c|degc|°c)", text)
+    m = re.search(r"([+-]?\d+(?:\.\d+)?)\s*(?:deg\s*c|degc|°c)", text)
     return float(m.group(1)) if m else None
 
 

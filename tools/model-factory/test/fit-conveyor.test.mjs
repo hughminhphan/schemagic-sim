@@ -93,6 +93,15 @@ function conditionIdentity(characteristic, { polarity = "n", temperature = 25, v
   return { ...identity, condition_id: hash(identity) };
 }
 
+function adjudicationQualifiers(sourceMode, characteristic, provenance = "table_heading") {
+  return [
+    { key: "semantic_adjudication", value: "content_addressed" },
+    { key: "source_test_mode", value: sourceMode },
+    { key: "temperature_provenance", value: provenance },
+    ...(sourceMode === "not_stated" ? [{ key: "static_characteristic_policy", value: characteristic }] : []),
+  ].sort((left, right) => left.key.localeCompare(right.key) || left.value.localeCompare(right.value));
+}
+
 function citationIdentity({ page = 3, table, row, column, figure, curve: curveName } = {}) {
   const identity = { source_sha256: sourceSha, page,
     ...(table ? { table, row, ...(column ? { column } : {}) } : { figure, curve: curveName }) };
@@ -128,18 +137,24 @@ function canonicalCurve(characteristic, points, condition, citation, axes = { x:
   };
 }
 
-function canonicalMosfetPayload({ polarity = "n", temperature = 25, transferVds = 7, mode = { kind: "dc" } } = {}) {
+function canonicalMosfetPayload({ polarity = "n", temperature = 25, transferVds = 7, mode = { kind: "dc" }, sourceModes = null } = {}) {
+  const thresholdSourceMode = sourceModes?.threshold ?? mode.kind;
+  const transferSourceMode = sourceModes?.transfer ?? mode.kind;
+  const rdsSourceMode = sourceModes?.rds ?? mode.kind;
   const thresholdCondition = conditionIdentity("gate_threshold", { polarity, temperature,
     vgs: { kind: "relation", relation: "measured_threshold" },
-    vds: { kind: "relation", relation: "vds_equals_vgs" }, id: { kind: "fixed", value_a: 250e-6 }, mode });
+    vds: { kind: "relation", relation: "vds_equals_vgs" }, id: { kind: "fixed", value_a: 250e-6 }, mode,
+    qualifiers: sourceModes ? adjudicationQualifiers(thresholdSourceMode, "gate_threshold") : [] });
   const thresholdCitation = citationIdentity({ page: 2, table: "Electrical characteristics", row: "Gate threshold voltage" });
   const transferCondition = conditionIdentity("transfer_current", { polarity, temperature,
     vgs: { kind: "range", lower_v: 1, upper_v: 4 }, vds: { kind: "fixed", value_v: transferVds },
-    id: { kind: "range", lower_a: 1e-4, upper_a: 1 }, mode });
+    id: { kind: "range", lower_a: 1e-4, upper_a: 1 }, mode,
+    qualifiers: sourceModes ? adjudicationQualifiers(transferSourceMode, "transfer_current", "figure_label") : [] });
   const transferCitation = citationIdentity({ page: 3, figure: "Figure 1", curve: "25 C trace" });
   const rdsCondition = conditionIdentity("rds_on", { polarity, temperature,
     vgs: { kind: "fixed", value_v: 4.5 }, vds: { kind: "range", lower_v: 0, upper_v: 1 },
-    id: { kind: "fixed", value_a: 1 }, mode });
+    id: { kind: "fixed", value_a: 1 }, mode,
+    qualifiers: sourceModes ? adjudicationQualifiers(rdsSourceMode, "rds_on") : [] });
   const rdsCitation = citationIdentity({ page: 2, table: "Electrical characteristics", row: "Static drain-source on resistance" });
   const threshold = {
     threshold_min: evidenceDatum({ characteristic: "gate_threshold", quantity: "threshold_minimum", value: 1, unit: "V", role: "minimum", condition: thresholdCondition, citation: thresholdCitation }),
@@ -246,6 +261,18 @@ test("canonical MOSFET F2 carries identities and probes exact curve bias and tem
   assert.ok(fitted.residuals.every((row) => row.temperature_c === 75));
   assert.equal(fitted.optimizer.seed_provenance.VTO.condition_identity.temperature.value_c, 75);
   assert.match(fitted.residuals[0].citation, /page 3, figure Figure 1/);
+});
+
+test("Python admits content-addressed not_stated source mode only under the fixed characteristic policy", { skip, timeout: 300_000 }, () => {
+  const admitted = canonicalMosfetPayload({ sourceModes: { threshold: "not_stated", transfer: "not_stated", rds: "dc" } });
+  const fitted = runFit(admitted);
+  assert.ok(fitted.parameters, fitted.demotion_reason);
+
+  const forbidden = canonicalMosfetPayload({ sourceModes: { threshold: "dc", transfer: "dc", rds: "not_stated" } });
+  const rejected = runFit(forbidden);
+  assert.equal(rejected.fidelity, "F1");
+  assert.equal(rejected.parameters, null);
+  assert.match(rejected.demotion_reason, /does not admit not_stated source mode/);
 });
 
 test("MOSFET F2 fails closed without the canonical contract marker", { skip }, () => {

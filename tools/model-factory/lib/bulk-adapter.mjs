@@ -94,7 +94,7 @@ function bjtFit(part, extraction, forceF1 = false) {
 
 function evidenceTemperature(...values) {
   const text = values.filter(Boolean).map((value) => value?.conditions ?? value).join(" ");
-  const matches = [...text.matchAll(/(-?\d+(?:\.\d+)?)\s*(?:deg\s*c|degc|°c|\bc\b)/gi)]
+  const matches = [...text.matchAll(/([+-]?\d+(?:\.\d+)?)\s*(?:deg\s*c|degc|°c|\bc\b)/gi)]
     .map((match) => Number(match[1])).filter(Number.isFinite);
   if (!matches.length) return null;
   const first = matches[0];
@@ -178,7 +178,7 @@ function conditionDrainCurrent(text, fallback = null) {
 
 function temperatureIdentity(text, label) {
   const conditionText = String(text ?? "").replaceAll("_", "");
-  const matches = [...conditionText.matchAll(/\b(TJ|TA|TC|junction(?:\s+temperature)?|ambient(?:\s+temperature)?|case(?:\s+temperature)?)\s*=\s*(-?\d+(?:\.\d+)?)\s*(?:deg\s*c|degc|°c|\bc\b)/gi)];
+  const matches = [...conditionText.matchAll(/\b(TJ|TA|TC|junction(?:\s+temperature)?|ambient(?:\s+temperature)?|case(?:\s+temperature)?)\s*=\s*([+-]?\d+(?:\.\d+)?)\s*(?:deg\s*c|degc|°c|\bc\b)/gi)];
   if (matches.length !== 1) throw new Error(`${label} must state exactly one temperature with junction, ambient, or case kind`);
   const token = matches[0][1].toLowerCase();
   const kind = token === "tj" || token.startsWith("junction") ? "junction" : token === "ta" || token.startsWith("ambient") ? "ambient" : "case";
@@ -242,6 +242,272 @@ function rejectUnknownQualifierSegments(text, label) {
   if (unknown.length) throw new Error(`${label} has unknown residual qualifier tokens: ${unknown.join("; ")}`);
 }
 
+const ADJUDICATION_KIND = "opencircuit-condition-adjudication-supplement";
+const ADJUDICATED_CHARACTERISTICS = new Set(["gate_threshold", "rds_on", "transfer_current", "output_current"]);
+const NOT_STATED_MODE_CHARACTERISTICS = new Set(["gate_threshold", "transfer_current", "output_current"]);
+const TEMPERATURE_PROVENANCE = new Set(["inline_condition", "table_heading", "figure_label", "footnote", "section_scope"]);
+const TEST_MODE_KINDS = new Set(["dc", "continuous", "pulsed", "single_pulse", "not_stated"]);
+const adjudicatedTargets = new WeakSet();
+const adjudicatedExtractions = new WeakSet();
+const adjudicatedSourceExtractions = new WeakMap();
+
+function deepFreeze(value) {
+  if (!value || typeof value !== "object" || Object.isFrozen(value)) return value;
+  for (const child of Object.values(value)) deepFreeze(child);
+  return Object.freeze(value);
+}
+
+function requireExactObjectKeys(value, required, optional, label) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) throw new Error(`${label} must be an object`);
+  const keys = Object.keys(value);
+  const allowed = new Set([...required, ...optional]);
+  const missing = required.filter((key) => !Object.hasOwn(value, key));
+  const unknown = keys.filter((key) => !allowed.has(key));
+  if (missing.length || unknown.length) {
+    throw new Error(`${label} has invalid fields${missing.length ? `; missing ${missing.join(", ")}` : ""}${unknown.length ? `; unknown ${unknown.join(", ")}` : ""}`);
+  }
+}
+
+function finiteSemanticNumber(value, label) {
+  if (typeof value !== "number" || !Number.isFinite(value)) throw new Error(`${label} must be a finite number`);
+  return value;
+}
+
+function validateVoltageCondition(value, label) {
+  requireExactObjectKeys(value, ["kind"], ["value_v", "relation", "lower_v", "upper_v"], label);
+  if (value.kind === "fixed") {
+    requireExactObjectKeys(value, ["kind", "value_v"], [], label);
+    finiteSemanticNumber(value.value_v, `${label}.value_v`);
+  } else if (value.kind === "relation") {
+    requireExactObjectKeys(value, ["kind", "relation"], [], label);
+    if (typeof value.relation !== "string" || !value.relation.trim()) throw new Error(`${label}.relation must be a non-empty string`);
+  } else if (value.kind === "range") {
+    requireExactObjectKeys(value, ["kind", "lower_v", "upper_v"], [], label);
+    const lower = finiteSemanticNumber(value.lower_v, `${label}.lower_v`);
+    const upper = finiteSemanticNumber(value.upper_v, `${label}.upper_v`);
+    if (!(lower < upper)) throw new Error(`${label} range must be increasing`);
+  } else throw new Error(`${label}.kind is unknown`);
+}
+
+function validateCurrentCondition(value, label) {
+  requireExactObjectKeys(value, ["kind"], ["value_a", "lower_a", "upper_a"], label);
+  if (value.kind === "fixed") {
+    requireExactObjectKeys(value, ["kind", "value_a"], [], label);
+    finiteSemanticNumber(value.value_a, `${label}.value_a`);
+  } else if (value.kind === "range") {
+    requireExactObjectKeys(value, ["kind", "lower_a", "upper_a"], [], label);
+    const lower = finiteSemanticNumber(value.lower_a, `${label}.lower_a`);
+    const upper = finiteSemanticNumber(value.upper_a, `${label}.upper_a`);
+    if (!(lower < upper)) throw new Error(`${label} range must be increasing`);
+  } else throw new Error(`${label}.kind is unknown`);
+}
+
+function validateTypedTestMode(mode, characteristic, label) {
+  requireExactObjectKeys(mode, ["kind"], ["pulse_width_s", "duty_cycle", "repetition_period_s", "repetition_frequency_hz"], label);
+  if (!TEST_MODE_KINDS.has(mode.kind)) throw new Error(`${label}.kind is unknown`);
+  for (const key of Object.keys(mode).filter((key) => key !== "kind")) {
+    const numeric = finiteSemanticNumber(mode[key], `${label}.${key}`);
+    if (!(numeric > 0) || (key === "duty_cycle" && numeric > 1)) throw new Error(`${label}.${key} is outside its physical range`);
+  }
+  if (["dc", "continuous", "not_stated"].includes(mode.kind) && Object.keys(mode).length !== 1) {
+    throw new Error(`${label} ${mode.kind} mode cannot carry pulse fields`);
+  }
+  if (["pulsed", "single_pulse"].includes(mode.kind) && !Object.hasOwn(mode, "pulse_width_s")) {
+    throw new Error(`${label} pulsed mode requires pulse_width_s`);
+  }
+  if (mode.kind === "not_stated" && !NOT_STATED_MODE_CHARACTERISTICS.has(characteristic)) {
+    throw new Error(`${label} not_stated is not admitted for ${characteristic}`);
+  }
+}
+
+function validateTypedTemperature(temperature, label) {
+  requireExactObjectKeys(temperature, ["status"], ["kind", "value_c", "provenance"], label);
+  if (temperature.status === "not_stated") {
+    requireExactObjectKeys(temperature, ["status"], [], label);
+    throw new Error(`${label} not_stated fails closed`);
+  }
+  if (temperature.status !== "stated") throw new Error(`${label}.status is unknown`);
+  requireExactObjectKeys(temperature, ["status", "kind", "value_c", "provenance"], [], label);
+  if (!["junction", "ambient", "case"].includes(temperature.kind)) throw new Error(`${label}.kind is unknown`);
+  finiteSemanticNumber(temperature.value_c, `${label}.value_c`);
+  if (!TEMPERATURE_PROVENANCE.has(temperature.provenance)) throw new Error(`${label}.provenance is unknown`);
+  return { kind: temperature.kind, value_c: temperature.value_c };
+}
+
+function validateTypedCondition(condition, characteristic, label) {
+  requireExactObjectKeys(condition, ["polarity", "magnitude_convention", "temperature", "electrical", "test_mode"], [], label);
+  if (!["n", "p"].includes(condition.polarity)) throw new Error(`${label}.polarity is unknown`);
+  if (!["signed", "absolute"].includes(condition.magnitude_convention)) throw new Error(`${label}.magnitude_convention is unknown`);
+  const temperature = validateTypedTemperature(condition.temperature, `${label}.temperature`);
+  requireExactObjectKeys(condition.electrical, ["vgs", "vds", "id"], [], `${label}.electrical`);
+  validateVoltageCondition(condition.electrical.vgs, `${label}.electrical.vgs`);
+  validateVoltageCondition(condition.electrical.vds, `${label}.electrical.vds`);
+  validateCurrentCondition(condition.electrical.id, `${label}.electrical.id`);
+  validateTypedTestMode(condition.test_mode, characteristic, `${label}.test_mode`);
+  return { temperature };
+}
+
+function decodePointerToken(token) {
+  if (/~(?:[^01]|$)/.test(token)) throw new Error(`invalid JSON pointer token ${token}`);
+  return token.replaceAll("~1", "/").replaceAll("~0", "~");
+}
+
+function pointerTarget(root, pointer, label) {
+  if (typeof pointer !== "string" || !pointer.startsWith("/") || pointer === "/") throw new Error(`${label} must be an absolute JSON pointer`);
+  let value = root;
+  for (const token of pointer.slice(1).split("/").map(decodePointerToken)) {
+    if (Array.isArray(value)) {
+      if (!/^(?:0|[1-9]\d*)$/.test(token) || Number(token) >= value.length) throw new Error(`${label} does not resolve`);
+      value = value[Number(token)];
+    } else if (value && typeof value === "object" && Object.hasOwn(value, token)) value = value[token];
+    else throw new Error(`${label} does not resolve`);
+  }
+  return value;
+}
+
+function characteristicForPointer(pointer) {
+  if (/^\/specs\/threshold_(?:min|typ|max)$/.test(pointer)) return "gate_threshold";
+  if (/^\/specs\/rdson_points\/(?:0|[1-9]\d*)\/(?:vgs|current|resistance)$/.test(pointer)) return "rds_on";
+  if (/^\/curves\/(?:0|[1-9]\d*)$/.test(pointer)) return null;
+  throw new Error(`semantic adjudication target is outside the MOSFET evidence surface: ${pointer}`);
+}
+
+function normalizeSha256(value, label) {
+  if (typeof value !== "string" || !/^(?:sha256:)?[0-9a-f]{64}$/i.test(value.trim())) throw new Error(`${label} must be a SHA-256 digest`);
+  return value.trim().replace(/^sha256:/i, "").toLowerCase();
+}
+
+function validateAdjudicationSupplement(part, rawExtraction, supplement, extractionBytes) {
+  requireExactObjectKeys(supplement, ["schema_version", "kind", "extraction_sha256", "source_sha256", "entries", "supplement_id"], [], "semantic adjudication supplement");
+  if (supplement.schema_version !== "1.0.0" || supplement.kind !== ADJUDICATION_KIND) throw new Error("unsupported semantic adjudication supplement");
+  if (!Buffer.isBuffer(extractionBytes)) throw new Error("semantic adjudication extraction bytes must be a Buffer");
+  let extractionFromBytes;
+  try {
+    extractionFromBytes = JSON.parse(extractionBytes.toString("utf8"));
+  } catch {
+    throw new Error("semantic adjudication extraction bytes are not valid JSON");
+  }
+  if (identityHash("sha256", extractionFromBytes) !== identityHash("sha256", rawExtraction)) {
+    throw new Error("semantic adjudication extraction bytes do not encode the supplied extraction object");
+  }
+  const extractionHash = crypto.createHash("sha256").update(extractionBytes).digest("hex");
+  if (normalizeSha256(supplement.extraction_sha256, "semantic adjudication extraction_sha256") !== extractionHash) {
+    throw new Error("semantic adjudication extraction hash does not match the immutable extraction bytes");
+  }
+  if (!part?.datasheet_path || !fs.existsSync(part.datasheet_path)) {
+    throw new Error("semantic adjudication requires the canonical datasheet file");
+  }
+  const canonicalSourceHash = sha256(part.datasheet_path);
+  if (normalizeSha256(supplement.source_sha256, "semantic adjudication source_sha256") !== canonicalSourceHash
+      || sourceHashFor(part, rawExtraction) !== canonicalSourceHash) {
+    throw new Error("semantic adjudication source hash does not match the canonical datasheet bytes");
+  }
+  if (supplement.supplement_id !== identityHash("sha256", withoutKeys(supplement, ["supplement_id"]))) {
+    throw new Error("semantic adjudication supplement_id does not match canonical content");
+  }
+  if (!Array.isArray(supplement.entries) || !supplement.entries.length) throw new Error("semantic adjudication supplement requires entries");
+  const seenPointers = new Set();
+  const validated = [];
+  for (const [entryIndex, entry] of supplement.entries.entries()) {
+    const label = `semantic adjudication entries[${entryIndex}]`;
+    requireExactObjectKeys(entry, ["targets", "characteristic", "condition", "disclosures"], [], label);
+    if (!ADJUDICATED_CHARACTERISTICS.has(entry.characteristic)) throw new Error(`${label}.characteristic is unknown`);
+    const { temperature } = validateTypedCondition(entry.condition, entry.characteristic, `${label}.condition`);
+    if (entry.condition.polarity !== polarityFor(part, rawExtraction)) throw new Error(`${label}.condition.polarity contradicts the part`);
+    if (!Array.isArray(entry.disclosures) || entry.disclosures.some((item) => typeof item !== "string" || !item.trim())) {
+      throw new Error(`${label}.disclosures must contain only non-empty strings`);
+    }
+    if (!Array.isArray(entry.targets) || !entry.targets.length) throw new Error(`${label}.targets must be a non-empty array`);
+    const targets = entry.targets.map((target, targetIndex) => {
+      const targetLabel = `${label}.targets[${targetIndex}]`;
+      requireExactObjectKeys(target, ["json_pointer", "target_sha256"], [], targetLabel);
+      if (seenPointers.has(target.json_pointer)) throw new Error(`${targetLabel}.json_pointer is duplicated`);
+      seenPointers.add(target.json_pointer);
+      const pointerCharacteristic = characteristicForPointer(target.json_pointer);
+      const originalTarget = pointerTarget(rawExtraction, target.json_pointer, `${targetLabel}.json_pointer`);
+      const actualCharacteristic = pointerCharacteristic ?? curveCharacteristic(originalTarget);
+      if (actualCharacteristic !== entry.characteristic) throw new Error(`${targetLabel} characteristic does not match its extraction target`);
+      if (normalizeSha256(target.target_sha256, `${targetLabel}.target_sha256`) !== identityHash("sha256", originalTarget).slice(7)) {
+        throw new Error(`${targetLabel}.target_sha256 does not match the immutable extraction subtree`);
+      }
+      return target.json_pointer;
+    });
+    validated.push({ ...entry, temperature, targets });
+  }
+  return validated;
+}
+
+export function applyConditionAdjudicationSupplement(part, rawExtraction, supplement, extractionBytes = Buffer.from(JSON.stringify(rawExtraction))) {
+  const entries = validateAdjudicationSupplement(part, rawExtraction, supplement, extractionBytes);
+  const sourceExtraction = deepFreeze(structuredClone(rawExtraction));
+  const repaired = repairKnownEvidenceDefects(part, rawExtraction);
+  for (const entry of entries) {
+    for (const pointer of entry.targets) {
+      const rawTarget = pointerTarget(rawExtraction, pointer, pointer);
+      const target = pointerTarget(repaired, pointer, pointer);
+      if (identityHash("sha256", rawTarget) !== identityHash("sha256", target)) {
+        throw new Error(`${pointer} was changed by deterministic evidence repair and cannot be semantically adjudicated`);
+      }
+      target.condition_semantics = {
+        schema_version: "1.0.0",
+        characteristic: entry.characteristic,
+        condition: structuredClone(entry.condition),
+        disclosures: [...entry.disclosures],
+        supplement_id: supplement.supplement_id,
+      };
+      adjudicatedTargets.add(target);
+    }
+  }
+  deepFreeze(repaired);
+  adjudicatedExtractions.add(repaired);
+  adjudicatedSourceExtractions.set(repaired, sourceExtraction);
+  return repaired;
+}
+
+function adjudicatedCondition(target, characteristic, label, context) {
+  const semantics = target?.condition_semantics;
+  if (!semantics) return null;
+  if (!adjudicatedTargets.has(target)) throw new Error(`${label} condition semantics were not loaded from a validated supplement`);
+  requireExactObjectKeys(semantics, ["schema_version", "characteristic", "condition", "disclosures", "supplement_id"], [], `${label}.condition_semantics`);
+  if (semantics.schema_version !== "1.0.0" || semantics.characteristic !== characteristic) throw new Error(`${label} semantic characteristic mismatch`);
+  if (!/^sha256:[0-9a-f]{64}$/.test(semantics.supplement_id)) throw new Error(`${label} semantic supplement ID is invalid`);
+  const { temperature } = validateTypedCondition(semantics.condition, characteristic, `${label}.condition_semantics.condition`);
+  if (semantics.condition.polarity !== context.polarity) throw new Error(`${label} semantic polarity mismatch`);
+  if (!Array.isArray(semantics.disclosures) || semantics.disclosures.some((item) => typeof item !== "string" || !item.trim())) {
+    throw new Error(`${label} semantic disclosures must contain only non-empty strings`);
+  }
+  const sourceMode = semantics.condition.test_mode;
+  if (["pulsed", "single_pulse"].includes(sourceMode.kind)) {
+    throw new Error(`${label} is pulsed evidence and cannot enter a static DC MOSFET fit`);
+  }
+  const testMode = sourceMode.kind === "not_stated" ? { kind: "dc" } : structuredClone(sourceMode);
+  const qualifiers = [
+    { key: "semantic_adjudication", value: "content_addressed" },
+    { key: "source_test_mode", value: sourceMode.kind },
+    { key: "temperature_provenance", value: semantics.condition.temperature.provenance },
+    ...(sourceMode.kind === "not_stated" ? [{ key: "static_characteristic_policy", value: characteristic }] : []),
+  ].sort((left, right) => left.key.localeCompare(right.key) || left.value.localeCompare(right.value));
+  return {
+    temperature,
+    testMode,
+    magnitudeConvention: semantics.condition.magnitude_convention,
+    electrical: structuredClone(semantics.condition.electrical),
+    qualifiers,
+  };
+}
+
+function assertFixedSemanticValue(shape, expected, label, key) {
+  if (shape?.kind !== "fixed" || !nearlyEqual(shape[key], expected)) throw new Error(`${label} typed electrical value disagrees with the immutable extraction`);
+}
+
+function assertRangeSemanticValue(shape, values, label, lowerKey, upperKey) {
+  const lower = Math.min(...values);
+  const upper = Math.max(...values);
+  if (shape?.kind !== "range" || !nearlyEqual(shape[lowerKey], lower) || !nearlyEqual(shape[upperKey], upper)) {
+    throw new Error(`${label} typed electrical range disagrees with the immutable extraction`);
+  }
+}
+
 function completeConditionIdentity({ characteristic, polarity, magnitudeConvention, temperature, electrical, testMode, qualifiers }) {
   const identity = {
     schema_version: "1.0.0", characteristic, polarity,
@@ -303,25 +569,41 @@ function validateThresholdEvidence(rawEvidence, sourceKind, label, context) {
     throw new Error(`${label} must be a positive finite ${sourceKind} threshold voltage`);
   }
   if (typeof evidence.conditions !== "string" || !evidence.conditions.trim()) throw new Error(`${label} must state its own operating conditions`);
-  rejectUnknownQualifierSegments(evidence.conditions, label);
+  const adjudicated = adjudicatedCondition(rawEvidence, "gate_threshold", label, context);
+  if (!adjudicated) rejectUnknownQualifierSegments(evidence.conditions, label);
   const current = conditionDrainCurrent(evidence.conditions, null);
   if (!(current > 0)) throw new Error(`${label} must state its own positive threshold drain current`);
   const normalized = evidence.conditions.replaceAll("_", "").replace(/\s+/g, "");
   if (!/(?:VDS=VGS|VGS=VDS)/i.test(normalized) || conditionVoltage(evidence.conditions, "VDS", null) != null || conditionVoltage(evidence.conditions, "VGS", null) != null) {
     throw new Error(`${label} must independently state the supported VDS = VGS relationship`);
   }
-  const temperature = temperatureIdentity(evidence.conditions, label);
-  const parsedTestMode = testModeIdentity(evidence.conditions, label);
-  const magnitudeConvention = /-\s*\d/.test(evidence.conditions) || Number(rawEvidence?.value) < 0 ? "signed" : "absolute";
+  const parsedTemperature = temperatureIdentity(evidence.conditions, label);
+  const legacyTestMode = adjudicated ? null : testModeIdentity(evidence.conditions, label);
+  const electrical = adjudicated?.electrical ?? {
+    vgs: { kind: "relation", relation: "vds_equals_vgs" },
+    vds: { kind: "relation", relation: "vds_equals_vgs" },
+    id: { kind: "fixed", value_a: current },
+  };
+  if (adjudicated) {
+    if (electrical.vgs?.kind !== "relation" || electrical.vgs.relation !== "vds_equals_vgs"
+        || electrical.vds?.kind !== "relation" || electrical.vds.relation !== "vds_equals_vgs") {
+      throw new Error(`${label} typed threshold semantics must preserve VDS = VGS`);
+    }
+    assertFixedSemanticValue(electrical.id, current, label, "value_a");
+    if (adjudicated.temperature.kind !== parsedTemperature.kind || !nearlyEqual(adjudicated.temperature.value_c, parsedTemperature.value_c)) {
+      throw new Error(`${label} typed temperature disagrees with the immutable extraction`);
+    }
+    if (Number(rawEvidence?.value) < 0 && adjudicated.magnitudeConvention !== "signed") {
+      throw new Error(`${label} typed magnitude convention contradicts the signed source value`);
+    }
+  }
+  const temperature = adjudicated?.temperature ?? parsedTemperature;
+  const magnitudeConvention = adjudicated?.magnitudeConvention ?? (/-\s*\d/.test(evidence.conditions) || Number(rawEvidence?.value) < 0 ? "signed" : "absolute");
   const conditionIdentity = completeConditionIdentity({
     characteristic: "gate_threshold", polarity: context.polarity, magnitudeConvention, temperature,
-    electrical: {
-      vgs: { kind: "relation", relation: "vds_equals_vgs" },
-      vds: { kind: "relation", relation: "vds_equals_vgs" },
-      id: { kind: "fixed", value_a: current },
-    },
-    testMode: parsedTestMode.mode,
-    qualifiers: normalizedQualifiers(evidence.conditions, parsedTestMode.qualifiers),
+    electrical,
+    testMode: adjudicated?.testMode ?? legacyTestMode.mode,
+    qualifiers: adjudicated?.qualifiers ?? normalizedQualifiers(evidence.conditions, legacyTestMode.qualifiers),
   });
   const citationIdentityValue = citationIdentity(evidence.page_reference, {
     ...context, label, defaultRow: "gate threshold voltage",
@@ -374,25 +656,41 @@ function validateRdsonPoint(rawPoint, index, sourceKind, context) {
   }
   if (point.resistance.source_kind !== sourceKind) throw new Error(`${label} resistance evidence must carry source_kind ${sourceKind}`);
   const role = sourceKind;
-  const fields = [["VGS", point.vgs], ["ID", point.current], ["resistance", point.resistance]].map(([field, evidence]) => {
+  const fields = [["VGS", "vgs", point.vgs], ["ID", "current", point.current], ["resistance", "resistance", point.resistance]].map(([field, rawKey, evidence]) => {
     const fieldLabel = `${label} ${field}`;
     if (typeof evidence?.conditions !== "string" || !evidence.conditions.trim()) throw new Error(`${fieldLabel} must state its own operating conditions`);
-    rejectUnknownQualifierSegments(evidence.conditions, fieldLabel);
+    const adjudicated = adjudicatedCondition(rawPoint?.[rawKey], "rds_on", fieldLabel, context);
+    if (!adjudicated) rejectUnknownQualifierSegments(evidence.conditions, fieldLabel);
     const parsedVgs = conditionVoltage(evidence.conditions, "VGS", null);
     const parsedCurrent = conditionDrainCurrent(evidence.conditions, null);
     if (!(parsedVgs > 0) || !(parsedCurrent > 0)) throw new Error(`${fieldLabel} must state its own exact VGS and ID`);
-    const temperature = temperatureIdentity(evidence.conditions, fieldLabel);
-    const parsedTestMode = testModeIdentity(evidence.conditions, fieldLabel);
-    const magnitudeConvention = /-\s*\d/.test(evidence.conditions) || Number(rawPoint?.vgs?.value) < 0 || Number(rawPoint?.current?.value) < 0 ? "signed" : "absolute";
+    const parsedTemperature = temperatureIdentity(evidence.conditions, fieldLabel);
+    const legacyTestMode = adjudicated ? null : testModeIdentity(evidence.conditions, fieldLabel);
+    const electrical = adjudicated?.electrical ?? {
+      vgs: { kind: "fixed", value_v: parsedVgs },
+      vds: { kind: "relation", relation: "saturation_region" },
+      id: { kind: "fixed", value_a: parsedCurrent },
+    };
+    if (adjudicated) {
+      assertFixedSemanticValue(electrical.vgs, parsedVgs, fieldLabel, "value_v");
+      assertFixedSemanticValue(electrical.id, parsedCurrent, fieldLabel, "value_a");
+      if (electrical.vds?.kind !== "relation" || electrical.vds.relation !== "saturation_region") {
+        throw new Error(`${fieldLabel} typed RDS(on) semantics must preserve the saturation-region relation`);
+      }
+      if (adjudicated.temperature.kind !== parsedTemperature.kind || !nearlyEqual(adjudicated.temperature.value_c, parsedTemperature.value_c)) {
+        throw new Error(`${fieldLabel} typed temperature disagrees with the immutable extraction`);
+      }
+      if ((Number(rawPoint?.vgs?.value) < 0 || Number(rawPoint?.current?.value) < 0) && adjudicated.magnitudeConvention !== "signed") {
+        throw new Error(`${fieldLabel} typed magnitude convention contradicts the signed source values`);
+      }
+    }
+    const temperature = adjudicated?.temperature ?? parsedTemperature;
+    const magnitudeConvention = adjudicated?.magnitudeConvention ?? (/-\s*\d/.test(evidence.conditions) || Number(rawPoint?.vgs?.value) < 0 || Number(rawPoint?.current?.value) < 0 ? "signed" : "absolute");
     const conditionIdentity = completeConditionIdentity({
       characteristic: "rds_on", polarity: context.polarity, magnitudeConvention, temperature,
-      electrical: {
-        vgs: { kind: "fixed", value_v: parsedVgs },
-        vds: { kind: "relation", relation: "saturation_region" },
-        id: { kind: "fixed", value_a: parsedCurrent },
-      },
-      testMode: parsedTestMode.mode,
-      qualifiers: normalizedQualifiers(evidence.conditions, parsedTestMode.qualifiers),
+      electrical,
+      testMode: adjudicated?.testMode ?? legacyTestMode.mode,
+      qualifiers: adjudicated?.qualifiers ?? normalizedQualifiers(evidence.conditions, legacyTestMode.qualifiers),
     });
     const citationIdentityValue = citationIdentity(evidence.page_reference, {
       ...context, label: fieldLabel, defaultRow: `rds_on_${index + 1}`, defaultColumn: field.toLowerCase(),
@@ -474,23 +772,26 @@ function normalizeMosfetCurve(curve, curveIndex, context) {
   if (xUnit !== "V" || yUnit !== "A") throw new Error(`${label} requires voltage and current axes with recognized SI units`);
   if (!Array.isArray(curve.points) || curve.points.length < 4) throw new Error(`${label} requires at least four ordered digitized points`);
   const conditions = String(curve.test_conditions ?? "");
-  rejectUnknownQualifierSegments(conditions, label);
-  const temperature = temperatureIdentity(conditions, label);
-  const parsedTestMode = testModeIdentity(conditions, label, { curve: false });
+  const adjudicated = adjudicatedCondition(curve, characteristic, label, context);
+  if (!adjudicated) rejectUnknownQualifierSegments(conditions, label);
+  const parsedTemperature = temperatureIdentity(conditions, label);
+  const legacyTestMode = adjudicated ? null : testModeIdentity(conditions, label, { curve: false });
   const fixedVds = conditionVoltage(conditions, "VDS", null);
   const fixedVgs = conditionVoltage(conditions, "VGS", null);
   if (characteristic === "transfer_current" && !(fixedVds > 0)) {
     throw new Error(`${label} requires an explicit fixed VDS; a saturation inequality is not a fixed bias`);
   }
   if (characteristic === "output_current" && !(fixedVgs > 0)) throw new Error(`${label} requires an explicit fixed VGS trace identity`);
+  let hasSignedCurveCoordinate = false;
   const rawPoints = curve.points.map((point, pointIndex) => {
     if (point?.condition_identity || point?.citation_identity || point?.evidence_identity) throw new Error(`${label} point ${pointIndex} may not override shared identities`);
     const x = siValue(point?.x, curve.x_axis.unit);
     const y = siValue(point?.y, curve.y_axis.unit);
     if (!Number.isFinite(x.value) || !Number.isFinite(y.value)) throw new Error(`${label} point ${pointIndex} is not finite`);
+    if (x.value < 0 || y.value < 0) hasSignedCurveCoordinate = true;
     return { point_index: pointIndex, x_si: Math.abs(x.value), y_si: Math.abs(y.value) };
   });
-  const electrical = characteristic === "transfer_current"
+  const derivedElectrical = characteristic === "transfer_current"
     ? {
       vgs: { kind: "range", lower_v: Math.min(...rawPoints.map((point) => point.x_si)), upper_v: Math.max(...rawPoints.map((point) => point.x_si)) },
       vds: { kind: "fixed", value_v: fixedVds }, id: { kind: "range", lower_a: Math.min(...rawPoints.map((point) => point.y_si)), upper_a: Math.max(...rawPoints.map((point) => point.y_si)) },
@@ -500,11 +801,29 @@ function normalizeMosfetCurve(curve, curveIndex, context) {
       vds: { kind: "range", lower_v: Math.min(...rawPoints.map((point) => point.x_si)), upper_v: Math.max(...rawPoints.map((point) => point.x_si)) },
       id: { kind: "range", lower_a: Math.min(...rawPoints.map((point) => point.y_si)), upper_a: Math.max(...rawPoints.map((point) => point.y_si)) },
     };
+  const electrical = adjudicated?.electrical ?? derivedElectrical;
+  if (adjudicated) {
+    if (characteristic === "transfer_current") {
+      assertRangeSemanticValue(electrical.vgs, rawPoints.map((point) => point.x_si), label, "lower_v", "upper_v");
+      assertFixedSemanticValue(electrical.vds, fixedVds, label, "value_v");
+    } else {
+      assertFixedSemanticValue(electrical.vgs, fixedVgs, label, "value_v");
+      assertRangeSemanticValue(electrical.vds, rawPoints.map((point) => point.x_si), label, "lower_v", "upper_v");
+    }
+    assertRangeSemanticValue(electrical.id, rawPoints.map((point) => point.y_si), label, "lower_a", "upper_a");
+    if (adjudicated.temperature.kind !== parsedTemperature.kind || !nearlyEqual(adjudicated.temperature.value_c, parsedTemperature.value_c)) {
+      throw new Error(`${label} typed temperature disagrees with the immutable extraction`);
+    }
+    if (hasSignedCurveCoordinate && adjudicated.magnitudeConvention !== "signed") {
+      throw new Error(`${label} typed magnitude convention contradicts signed curve coordinates`);
+    }
+  }
   const conditionIdentity = completeConditionIdentity({
     characteristic, polarity: context.polarity,
-    magnitudeConvention: /magnitude|\|V|\|I|p-channel/i.test(`${curve.x_axis.quantity} ${curve.y_axis.quantity} ${conditions}`) ? "absolute" : "signed",
-    temperature, electrical, testMode: parsedTestMode.mode,
-    qualifiers: normalizedQualifiers(conditions, parsedTestMode.qualifiers),
+    magnitudeConvention: adjudicated?.magnitudeConvention ?? (/magnitude|\|V|\|I|p-channel/i.test(`${curve.x_axis.quantity} ${curve.y_axis.quantity} ${conditions}`) ? "absolute" : "signed"),
+    temperature: adjudicated?.temperature ?? parsedTemperature, electrical,
+    testMode: adjudicated?.testMode ?? legacyTestMode.mode,
+    qualifiers: adjudicated?.qualifiers ?? normalizedQualifiers(conditions, legacyTestMode.qualifiers),
   });
   const citationIdentityValue = citationIdentity(curve.page_reference, { ...context, label, curveName: curve.name });
   const xAxis = { quantity: characteristic === "transfer_current" ? "vgs" : "vds", unit: "V" };
@@ -557,16 +876,17 @@ function normalizeMosfetExtractionForFit(part, extraction) {
   normalized.evidence_contract_version = "1.0.0";
   normalized.curves = (extraction.curves ?? []).map((curve, index) => normalizeMosfetCurve(curve, index, context));
   const specs = normalized.specs;
+  const sourceSpecs = extraction.specs;
   const threshold = {};
   for (const [key, sourceKind] of [["threshold_min", "minimum"], ["threshold_typ", "typical"], ["threshold_max", "maximum"]]) {
-    if (specs[key]) threshold[key] = validateThresholdEvidence(specs[key], sourceKind, `MOSFET F2 ${key}`, context);
+    if (sourceSpecs[key]) threshold[key] = validateThresholdEvidence(sourceSpecs[key], sourceKind, `MOSFET F2 ${key}`, context);
   }
   if (Object.keys(threshold).length) {
     const identities = Object.values(threshold);
     if (!identities.slice(1).every((item) => sameIdentity(identities[0], item))) throw new Error("MOSFET F2 threshold fields do not share one condition and citation cohort");
     for (const [key, validated] of Object.entries(threshold)) specs[key] = { ...magnitudeQuantity(validated.evidence), condition_identity: validated.condition_identity, citation_identity: validated.citation_identity, evidence_identity: validated.evidence_identity };
   }
-  const rdson = citedRdsonEvidence(specs, context);
+  const rdson = citedRdsonEvidence(sourceSpecs, context);
   const accepted = new Map([...rdson.typical, ...rdson.maximum].map((item) => [item.index, item]));
   if (rdson.typicalErrors.length) throw rdson.typicalErrors[0];
   specs.rdson_points = (specs.rdson_points ?? []).map((point, index) => {
@@ -1198,7 +1518,9 @@ function siValue(value, unit) {
 }
 
 function magnitudeQuantity(value) {
-  return value ? { ...value, value: Math.abs(Number(value.value)) } : value;
+  if (!value) return value;
+  const { condition_semantics: _conditionSemantics, ...publicValue } = value;
+  return { ...publicValue, value: Math.abs(Number(value.value)) };
 }
 
 function normalizeEvidence(value) {
@@ -1236,16 +1558,18 @@ function nominalCurve(extraction, predicate) {
 
 function isNominalTemperatureEvidence(point) {
   const text = Object.values(point ?? {}).map((value) => value?.conditions ?? "").join(" ");
-  const temperatures = [...text.matchAll(/(-?\d+(?:\.\d+)?)\s*(?:deg\s*c|degc|°c)/gi)].map((match) => Number(match[1]));
+  const temperatures = [...text.matchAll(/([+-]?\d+(?:\.\d+)?)\s*(?:deg\s*c|degc|°c)/gi)].map((match) => Number(match[1]));
   return temperatures.length === 0 || temperatures.every((temperature) => Math.abs(temperature - 25) <= 5);
 }
 
 function acceptedRdsonFactPoints(specs, fit, part = null, extraction = null) {
-  if (fit.fidelity === "F2") return specs.rdson_points ?? [];
+  if (fit.fidelity === "F2" && !adjudicatedExtractions.has(extraction)) return specs.rdson_points ?? [];
   const evidence = citedRdsonEvidence(specs, mosfetEvidenceContext(part, extraction));
-  const accepted = fit.evidence_mode === "typ-point"
-    ? evidence.typical.filter((validated) => validated.index === fit.calibration?.observations?.find((observation) => observation.quantity === "rds_on")?.source_index)
-    : [...evidence.typical, ...evidence.maximum];
+  const accepted = fit.fidelity === "F2"
+    ? [...evidence.typical, ...evidence.maximum]
+    : fit.evidence_mode === "typ-point"
+      ? evidence.typical.filter((validated) => validated.index === fit.calibration?.observations?.find((observation) => observation.quantity === "rds_on")?.source_index)
+      : [...evidence.typical, ...evidence.maximum];
   return accepted.map((validated) => Object.fromEntries(
     [["vgs", 0], ["current", 1], ["resistance", 2]].map(([key, fieldIndex]) => [key, {
       ...validated.point[key],
@@ -1296,10 +1620,10 @@ function acceptedThresholdFacts(specs, fit, part, extraction) {
   };
 }
 
-function bulkFactoryFacts(part, extraction, fit, identity, source) {
+function bulkFactoryFacts(part, extraction, fit, identity, source, sourceExtraction = extraction) {
   const common = {
     schema_version: "1.0.0",
-    extraction,
+    extraction: sourceExtraction,
     catalog_seed_hints: part.seed_hints ?? [],
     identity: { canonical_mpn: identity.canonical, manufacturer: part.manufacturer, aliases: identity.aliases },
     source,
@@ -1400,7 +1724,11 @@ function bulkFactoryFacts(part, extraction, fit, identity, source) {
     }));
     return { ...common, gain_points: gainPoints, saturation_points: fit.fidelity === "F2" || gainPoints.length === 0 ? saturationPoints : [] };
   }
-  const factSpecs = fit.fidelity === "F2" ? normalizeMosfetExtractionForFit(part, extraction).specs : specs;
+  const factSpecs = adjudicatedExtractions.has(extraction)
+    ? extraction.specs
+    : fit.fidelity === "F2"
+      ? normalizeMosfetExtractionForFit(part, extraction).specs
+      : extraction.specs;
   const rdsonPoints = acceptedRdsonFactPoints(factSpecs, fit, part, extraction).map((point) => ({
     vgs: { ...magnitudeQuantity(normalizeEvidence(point.vgs)), quantity: "vgs" },
     current: { ...magnitudeQuantity(normalizeEvidence(point.current)), quantity: "drain_current" },
@@ -1589,8 +1917,16 @@ export function pinPackageBenchTemperature(packageDir) {
   }
 }
 
-export function stageBulkPart(part, rawExtraction, fit, stagingRoot, { demotionReason = null } = {}) {
-  const extraction = repairKnownEvidenceDefects(part, rawExtraction);
+export function stageBulkPart(part, rawExtraction, fit, stagingRoot, { demotionReason = null, sourceExtraction = rawExtraction } = {}) {
+  const extraction = adjudicatedExtractions.has(rawExtraction) ? rawExtraction : repairKnownEvidenceDefects(part, rawExtraction);
+  const boundSourceExtraction = adjudicatedSourceExtractions.get(rawExtraction);
+  if (boundSourceExtraction) {
+    if (sourceExtraction !== rawExtraction
+        && identityHash("sha256", sourceExtraction) !== identityHash("sha256", boundSourceExtraction)) {
+      throw new Error("semantic adjudication source extraction no longer matches its validated snapshot");
+    }
+    sourceExtraction = boundSourceExtraction;
+  }
   const identity = normalizedIdentity(part, extraction);
   const manufacturerSlug = slugManufacturer(part.manufacturer);
   const packageDir = path.join(stagingRoot, "packages", manufacturerSlug, identity.packageSlug);
@@ -1625,7 +1961,7 @@ export function stageBulkPart(part, rawExtraction, fit, stagingRoot, { demotionR
     placeholder: false,
   };
   if (!source.pages_referenced.length) throw new Error(`${part.mpn} has no cited datasheet pages`);
-  const facts = bulkFactoryFacts(part, extraction, fit, identity, source);
+  const facts = bulkFactoryFacts(part, extraction, fit, identity, source, sourceExtraction);
   const operating = operatingRegion(part, facts);
   const component = {
     schema_version: "1.0.0",
@@ -1729,6 +2065,9 @@ export function normalizeBulkManifest(manifest) {
   return manifest.parts.map((part, index) => {
     for (const field of ["mpn", "manufacturer", "conveyor_family", "datasheet_path", "datasheet_url"]) if (!part[field]) throw new Error(`Bulk part ${index} missing ${field}`);
     if (!fs.existsSync(part.datasheet_path)) throw new Error(`Bulk part ${index} datasheet not found: ${part.datasheet_path}`);
+    if (part.adjudication_supplement_path && !fs.existsSync(part.adjudication_supplement_path)) {
+      throw new Error(`Bulk part ${index} adjudication supplement not found: ${part.adjudication_supplement_path}`);
+    }
     return { ...part, seed_hints: Array.isArray(part.seed_hints) ? part.seed_hints : [] };
   });
 }
@@ -1741,7 +2080,7 @@ export function runBulkManifest(manifestPath, stagingRoot, options = {}) {
   const libraryRoot = options.libraryRoot ?? reviewedLibraryRoot;
   const identity = (part) => ({ ...(part.lcsc_id ? { lcsc_id: part.lcsc_id } : {}), mpn: part.mpn });
 
-  const stageFit = (part, extraction, fit, demotionReason) => {
+  const stageFit = (part, extraction, sourceExtraction, fit, demotionReason) => {
     const existingReason = libraryDuplicateDieReason(part, fit, libraryRoot);
     if (existingReason) {
       results.push({ ...identity(part), status: "skipped", stage: "selection", reason: existingReason });
@@ -1767,7 +2106,7 @@ export function runBulkManifest(manifestPath, stagingRoot, options = {}) {
       results.push({ ...identity(part), status: "skipped", stage: "selection", reason: stagedReason });
       return false;
     }
-    const packagePath = stageBulkPart(part, extraction, fit, stagingRoot, { demotionReason });
+    const packagePath = stageBulkPart(part, extraction, fit, stagingRoot, { demotionReason, sourceExtraction });
     const resultIndex = results.length;
     results.push({ ...identity(part), status: "staged", fidelity: fit.fidelity, ...(demotionReason ? { demotion_reason: demotionReason } : {}), package_path: packagePath });
     batchVectors.set(vectorKey, { resultIndex, packagePath, mpn: part.mpn, identity: identity(part) });
@@ -1775,8 +2114,16 @@ export function runBulkManifest(manifestPath, stagingRoot, options = {}) {
   };
 
   for (const part of parts) {
-    const rawExtraction = part.extraction_path && fs.existsSync(part.extraction_path) ? JSON.parse(fs.readFileSync(part.extraction_path, "utf8")) : null;
-    const extraction = rawExtraction ? repairKnownEvidenceDefects(part, rawExtraction) : null;
+    const extractionBytes = part.extraction_path && fs.existsSync(part.extraction_path) ? fs.readFileSync(part.extraction_path) : null;
+    const rawExtraction = extractionBytes ? JSON.parse(extractionBytes.toString("utf8")) : null;
+    const supplement = part.adjudication_supplement_path
+      ? JSON.parse(fs.readFileSync(part.adjudication_supplement_path, "utf8"))
+      : null;
+    const extraction = rawExtraction
+      ? supplement
+        ? applyConditionAdjudicationSupplement(part, rawExtraction, supplement, extractionBytes)
+        : repairKnownEvidenceDefects(part, rawExtraction)
+      : null;
     const collisionReason = libraryCollisionReason(part, libraryRoot, extraction);
     if (collisionReason) {
       results.push({ ...identity(part), status: "skipped", stage: "selection", reason: collisionReason });
@@ -1784,12 +2131,12 @@ export function runBulkManifest(manifestPath, stagingRoot, options = {}) {
     }
     try {
       const fit = fitBulkPart(part, extraction, { ...options, forceF1: part.force_f1 === true });
-      stageFit(part, extraction, fit, part.demotion_reason ?? null);
+      stageFit(part, extraction, rawExtraction, fit, part.demotion_reason ?? null);
     } catch (error) {
       if (part.allow_f1_demotion !== false) {
         try {
           const fit = fitBulkPart(part, extraction, { ...options, forceF1: true });
-          stageFit(part, extraction, fit, error.message);
+          stageFit(part, extraction, rawExtraction, fit, error.message);
         } catch (fallbackError) {
           results.push({ ...identity(part), status: "failed", stage: "fitted", reason: `F2 failed: ${error.message}; F1 failed: ${fallbackError.message}` });
         }
