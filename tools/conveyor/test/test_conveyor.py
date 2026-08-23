@@ -146,6 +146,122 @@ class SchemaValidationTest(unittest.TestCase):
         self.assertNotRegex("\n".join(normalized["extraction_notes"]), "explicit mOhm")
 
 
+class MosfetCriticalProvenanceTest(unittest.TestCase):
+    def load_fixture(self):
+        return json.loads((HERE / "test/fixtures/mosfet-critical.json").read_text(encoding="utf-8"))
+
+    def validate(self, payload):
+        with tempfile.TemporaryDirectory() as temporary:
+            path = Path(temporary) / "result.json"
+            path.write_text(json.dumps(payload), encoding="utf-8")
+            return load_and_validate_extraction(
+                path,
+                HERE / "schemas/mosfet.schema.json",
+                {"mpn": "M1", "manufacturer": "Fixture", "family": "mosfet"},
+            )
+
+    def test_accepts_complete_scalar_and_curve_locators_with_production_axis_tokens(self):
+        result = self.validate(self.load_fixture())
+        curve = result["curves"][0]
+        self.assertEqual(curve["x_axis"]["quantity"], "VDS")
+        self.assertEqual(curve["y_axis"]["quantity"], "ID")
+        self.assertEqual(curve["electrical_bias"][0]["quantity"], "V_GS")
+        self.assertEqual(curve["locator"]["curve_or_trace"], "VGS = 4.5 V trace")
+
+    def test_rejects_scalar_locator_without_page_table_and_row(self):
+        payload = self.load_fixture()
+        del payload["specs"]["threshold_typ"]["locator"]["row"]
+        with self.assertRaisesRegex(ConveyorError, r"threshold_typ\.locator.*missing row"):
+            self.validate(payload)
+
+    def test_rejects_curve_locator_without_page_figure_and_curve_or_trace(self):
+        payload = self.load_fixture()
+        del payload["curves"][0]["locator"]["curve_or_trace"]
+        with self.assertRaisesRegex(ConveyorError, "curve_or_trace"):
+            self.validate(payload)
+
+    def test_rejects_non_integer_locator_page(self):
+        payload = self.load_fixture()
+        payload["curves"][0]["locator"]["page"] = "p. 5"
+        with self.assertRaisesRegex(ConveyorError, r"locator\.page must be a positive integer|not of type 'integer'"):
+            self.validate(payload)
+
+    def test_rejects_missing_or_not_stated_temperature(self):
+        payload = self.load_fixture()
+        del payload["curves"][0]["temperature"]
+        with self.assertRaisesRegex(ConveyorError, "temperature"):
+            self.validate(payload)
+
+        payload = self.load_fixture()
+        payload["curves"][0]["temperature"]["kind"] = "not_stated"
+        with self.assertRaisesRegex(ConveyorError, "temperature.kind"):
+            self.validate(payload)
+
+    def test_rejects_missing_unknown_or_duplicate_fixed_bias(self):
+        payload = self.load_fixture()
+        payload["curves"][0]["electrical_bias"] = []
+        with self.assertRaisesRegex(ConveyorError, "electrical_bias"):
+            self.validate(payload)
+
+        payload = self.load_fixture()
+        payload["curves"][0]["electrical_bias"][0]["quantity"] = "VGD"
+        with self.assertRaisesRegex(ConveyorError, "electrical_bias"):
+            self.validate(payload)
+
+        payload = self.load_fixture()
+        payload["curves"][0]["electrical_bias"].append(
+            {"quantity": "VGS", "value": 5.0, "unit": "V"}
+        )
+        with self.assertRaisesRegex(ConveyorError, "duplicate or conflicting vgs"):
+            self.validate(payload)
+
+        payload = self.load_fixture()
+        payload["curves"][0]["electrical_bias"][0]["quantity"] = "VDS"
+        with self.assertRaisesRegex(ConveyorError, "exactly one fixed VGS"):
+            self.validate(payload)
+
+    def test_rejects_noncanonical_temperature_provenance(self):
+        payload = self.load_fixture()
+        payload["curves"][0]["temperature"]["provenance"] = "TA = 25 C"
+        with self.assertRaisesRegex(ConveyorError, "temperature.provenance"):
+            self.validate(payload)
+
+    def test_rejects_untyped_or_incomplete_test_mode(self):
+        payload = self.load_fixture()
+        payload["curves"][0]["test_mode"] = "pulsed"
+        with self.assertRaisesRegex(ConveyorError, "test_mode"):
+            self.validate(payload)
+
+        payload = self.load_fixture()
+        payload["curves"][0]["test_mode"] = {"kind": "not_stated"}
+        with self.assertRaisesRegex(ConveyorError, "test_mode.kind"):
+            self.validate(payload)
+
+        payload = self.load_fixture()
+        payload["curves"][0]["test_mode"] = {"kind": "pulsed"}
+        with self.assertRaisesRegex(ConveyorError, "pulse_width_s"):
+            self.validate(payload)
+
+    def test_rejects_pulse_metadata_on_continuous_curve(self):
+        payload = self.load_fixture()
+        payload["curves"][0]["test_mode"] = {"kind": "continuous", "pulse_width_s": 1e-6}
+        with self.assertRaisesRegex(ConveyorError, "cannot attach pulse timing"):
+            self.validate(payload)
+
+    def test_accepts_only_the_canonical_repetition_frequency_field(self):
+        payload = self.load_fixture()
+        payload["curves"][0]["test_mode"]["repetition_frequency_hz"] = 100
+        self.assertEqual(
+            self.validate(payload)["curves"][0]["test_mode"]["repetition_frequency_hz"],
+            100,
+        )
+
+        payload = self.load_fixture()
+        payload["curves"][0]["test_mode"]["repetition_hz"] = 100
+        with self.assertRaisesRegex(ConveyorError, "repetition_hz"):
+            self.validate(payload)
+
+
 class LibraryCollisionTest(unittest.TestCase):
     def test_skips_normalized_canonical_and_alias_collisions_with_reasons(self):
         with tempfile.TemporaryDirectory() as temporary:

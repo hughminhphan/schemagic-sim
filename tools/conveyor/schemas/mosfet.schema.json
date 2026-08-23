@@ -70,6 +70,10 @@
           "y_axis",
           "test_conditions",
           "page_reference",
+          "locator",
+          "temperature",
+          "electrical_bias",
+          "test_mode",
           "points"
         ],
         "properties": {
@@ -135,9 +139,127 @@
             "type": "string",
             "minLength": 1
           },
+          "locator": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "page",
+              "figure",
+              "curve_or_trace"
+            ],
+            "properties": {
+              "page": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "figure": {
+                "type": "string",
+                "minLength": 1
+              },
+              "curve_or_trace": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "temperature": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "kind",
+              "value",
+              "provenance"
+            ],
+            "properties": {
+              "kind": {
+                "enum": [
+                  "ambient",
+                  "case",
+                  "junction"
+                ]
+              },
+              "value": {
+                "type": "number"
+              },
+              "provenance": {
+                "enum": [
+                  "inline_condition",
+                  "table_heading",
+                  "figure_label",
+                  "footnote",
+                  "section_scope"
+                ]
+              }
+            }
+          },
+          "electrical_bias": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "quantity",
+                "value",
+                "unit"
+              ],
+              "properties": {
+                "quantity": {
+                  "enum": [
+                    "VGS",
+                    "V_GS",
+                    "VDS",
+                    "V_DS",
+                    "ID",
+                    "I_D",
+                    "vgs",
+                    "v_gs",
+                    "vds",
+                    "v_ds",
+                    "id",
+                    "i_d"
+                  ]
+                },
+                "value": {
+                  "type": "number"
+                },
+                "unit": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          },
+          "test_mode": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "kind"
+            ],
+            "properties": {
+              "kind": {
+                "enum": [
+                  "dc",
+                  "continuous",
+                  "pulsed",
+                  "single_pulse",
+                  "not_stated"
+                ]
+              },
+              "pulse_width_s": {
+                "type": "number"
+              },
+              "duty_cycle": {
+                "type": "number"
+              },
+              "repetition_frequency_hz": {
+                "type": "number"
+              }
+            }
+          },
           "points": {
             "type": "array",
-            "minItems": 3,
+            "minItems": 4,
             "items": {
               "type": "object",
               "additionalProperties": false,
@@ -190,6 +312,7 @@
                 "unit",
                 "conditions",
                 "page_reference",
+                "locator",
                 "source_kind"
               ],
               "properties": {
@@ -207,6 +330,9 @@
                 "page_reference": {
                   "type": "string",
                   "minLength": 1
+                },
+                "locator": {
+                  "type": "object"
                 },
                 "source_kind": {
                   "enum": [
@@ -233,6 +359,7 @@
                 "unit",
                 "conditions",
                 "page_reference",
+                "locator",
                 "source_kind"
               ],
               "properties": {
@@ -250,6 +377,9 @@
                 "page_reference": {
                   "type": "string",
                   "minLength": 1
+                },
+                "locator": {
+                  "type": "object"
                 },
                 "source_kind": {
                   "enum": [
@@ -276,6 +406,7 @@
                 "unit",
                 "conditions",
                 "page_reference",
+                "locator",
                 "source_kind"
               ],
               "properties": {
@@ -293,6 +424,9 @@
                 "page_reference": {
                   "type": "string",
                   "minLength": 1
+                },
+                "locator": {
+                  "type": "object"
                 },
                 "source_kind": {
                   "enum": [
@@ -328,6 +462,7 @@
                   "unit",
                   "conditions",
                   "page_reference",
+                  "locator",
                   "source_kind"
                 ],
                 "properties": {
@@ -345,6 +480,9 @@
                   "page_reference": {
                     "type": "string",
                     "minLength": 1
+                  },
+                  "locator": {
+                    "type": "object"
                   },
                   "source_kind": {
                     "enum": [
@@ -364,6 +502,7 @@
                   "unit",
                   "conditions",
                   "page_reference",
+                  "locator",
                   "source_kind"
                 ],
                 "properties": {
@@ -381,6 +520,9 @@
                   "page_reference": {
                     "type": "string",
                     "minLength": 1
+                  },
+                  "locator": {
+                    "type": "object"
                   },
                   "source_kind": {
                     "enum": [
@@ -400,6 +542,7 @@
                   "unit",
                   "conditions",
                   "page_reference",
+                  "locator",
                   "source_kind"
                 ],
                 "properties": {
@@ -417,6 +560,9 @@
                   "page_reference": {
                     "type": "string",
                     "minLength": 1
+                  },
+                  "locator": {
+                    "type": "object"
                   },
                   "source_kind": {
                     "enum": [
@@ -441,6 +587,7 @@
                 "unit",
                 "conditions",
                 "page_reference",
+                "locator",
                 "source_kind"
               ],
               "properties": {
@@ -458,6 +605,9 @@
                 "page_reference": {
                   "type": "string",
                   "minLength": 1
+                },
+                "locator": {
+                  "type": "object"
                 },
                 "source_kind": {
                   "enum": [
@@ -484,6 +634,7 @@
                 "unit",
                 "conditions",
                 "page_reference",
+                "locator",
                 "source_kind"
               ],
               "properties": {
@@ -501,6 +652,9 @@
                 "page_reference": {
                   "type": "string",
                   "minLength": 1
+                },
+                "locator": {
+                  "type": "object"
                 },
                 "source_kind": {
                   "enum": [
@@ -527,6 +681,7 @@
                 "unit",
                 "conditions",
                 "page_reference",
+                "locator",
                 "source_kind"
               ],
               "properties": {
@@ -544,6 +699,9 @@
                 "page_reference": {
                   "type": "string",
                   "minLength": 1
+                },
+                "locator": {
+                  "type": "object"
                 },
                 "source_kind": {
                   "enum": [
@@ -570,6 +728,7 @@
                 "unit",
                 "conditions",
                 "page_reference",
+                "locator",
                 "source_kind"
               ],
               "properties": {
@@ -587,6 +746,9 @@
                 "page_reference": {
                   "type": "string",
                   "minLength": 1
+                },
+                "locator": {
+                  "type": "object"
                 },
                 "source_kind": {
                   "enum": [
@@ -613,6 +775,7 @@
                 "unit",
                 "conditions",
                 "page_reference",
+                "locator",
                 "source_kind"
               ],
               "properties": {
@@ -630,6 +793,9 @@
                 "page_reference": {
                   "type": "string",
                   "minLength": 1
+                },
+                "locator": {
+                  "type": "object"
                 },
                 "source_kind": {
                   "enum": [

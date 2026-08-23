@@ -380,6 +380,128 @@ def normalize_extraction_payload(raw: Mapping[str, Any]) -> dict[str, Any]:
     return payload
 
 
+_MOSFET_BIAS_QUANTITIES = {
+    "vgs": "vgs", "v_gs": "vgs",
+    "vds": "vds", "v_ds": "vds",
+    "id": "id", "i_d": "id",
+}
+_MOSFET_TEMPERATURE_KINDS = {"ambient", "case", "junction"}
+_MOSFET_TEMPERATURE_PROVENANCE = {
+    "inline_condition", "table_heading", "figure_label", "footnote", "section_scope",
+}
+_MOSFET_TEST_MODES = {"dc", "continuous", "pulsed", "single_pulse", "not_stated"}
+
+
+def _require_locator(value: Any, fields: set[str], trail: str) -> None:
+    if not isinstance(value, dict):
+        raise ConveyorError(f"{trail} must be an object")
+    if set(value) != fields:
+        missing = fields - set(value)
+        extra = set(value) - fields
+        detail = []
+        if missing:
+            detail.append(f"missing {', '.join(sorted(missing))}")
+        if extra:
+            detail.append(f"unknown {', '.join(sorted(extra))}")
+        raise ConveyorError(f"{trail} is incomplete: {'; '.join(detail)}")
+    page = value["page"]
+    if not isinstance(page, int) or isinstance(page, bool) or page < 1:
+        raise ConveyorError(f"{trail}.page must be a positive integer")
+    for field in sorted(fields - {"page"}):
+        if not isinstance(value[field], str) or not value[field].strip():
+            raise ConveyorError(f"{trail}.{field} must be a non-empty string")
+
+
+def _validate_mosfet_critical_provenance(payload: Mapping[str, Any]) -> None:
+    """Fail closed on fresh MOSFET evidence before any fitting can begin."""
+    scalar_fields = (
+        "threshold_min", "threshold_typ", "threshold_max", "ciss", "coss", "crss",
+        "breakdown_voltage", "body_diode",
+    )
+    specs = payload["specs"]
+    for field in scalar_fields:
+        quantity = specs[field]
+        if quantity is not None:
+            _require_locator(quantity.get("locator"), {"page", "table", "row"}, f"$.specs.{field}.locator")
+    for index, point in enumerate(specs["rdson_points"]):
+        for field in ("vgs", "current", "resistance"):
+            _require_locator(
+                point[field].get("locator"),
+                {"page", "table", "row"},
+                f"$.specs.rdson_points[{index}].{field}.locator",
+            )
+
+    for index, curve in enumerate(payload["curves"]):
+        trail = f"$.curves[{index}]"
+        _require_locator(curve.get("locator"), {"page", "figure", "curve_or_trace"}, f"{trail}.locator")
+
+        temperature = curve.get("temperature")
+        if not isinstance(temperature, dict):
+            raise ConveyorError(f"{trail}.temperature must be an object")
+        kind = temperature.get("kind")
+        value = temperature.get("value")
+        provenance = temperature.get("provenance")
+        if kind not in _MOSFET_TEMPERATURE_KINDS:
+            raise ConveyorError(f"{trail}.temperature.kind must state ambient, case, or junction")
+        if not isinstance(value, (int, float)) or isinstance(value, bool) or not math.isfinite(value):
+            raise ConveyorError(f"{trail}.temperature.value must be a finite Celsius value")
+        if provenance not in _MOSFET_TEMPERATURE_PROVENANCE:
+            raise ConveyorError(f"{trail}.temperature.provenance must use a canonical source location")
+
+        electrical_bias = curve.get("electrical_bias")
+        if not isinstance(electrical_bias, list) or not electrical_bias:
+            raise ConveyorError(f"{trail}.electrical_bias must state at least one fixed electrical bias")
+        seen_biases: set[str] = set()
+        for bias_index, bias in enumerate(electrical_bias):
+            bias_trail = f"{trail}.electrical_bias[{bias_index}]"
+            quantity = bias.get("quantity") if isinstance(bias, dict) else None
+            canonical = _MOSFET_BIAS_QUANTITIES.get(str(quantity).casefold())
+            if canonical is None:
+                raise ConveyorError(f"{bias_trail}.quantity must be VGS, V_GS, VDS, V_DS, ID, or I_D")
+            if canonical in seen_biases:
+                raise ConveyorError(f"{trail}.electrical_bias has duplicate or conflicting {canonical} entries")
+            seen_biases.add(canonical)
+            bias_value = bias.get("value")
+            if not isinstance(bias_value, (int, float)) or isinstance(bias_value, bool) or not math.isfinite(bias_value):
+                raise ConveyorError(f"{bias_trail}.value must be a finite number")
+            if not isinstance(bias.get("unit"), str) or not bias["unit"].strip():
+                raise ConveyorError(f"{bias_trail}.unit must be a non-empty string")
+
+        x_quantity = _MOSFET_BIAS_QUANTITIES.get(str(curve.get("x_axis", {}).get("quantity")).casefold())
+        y_quantity = _MOSFET_BIAS_QUANTITIES.get(str(curve.get("y_axis", {}).get("quantity")).casefold())
+        required_bias = "vds" if (x_quantity, y_quantity) == ("vgs", "id") else (
+            "vgs" if (x_quantity, y_quantity) == ("vds", "id") else None
+        )
+        if required_bias is not None and seen_biases != {required_bias}:
+            raise ConveyorError(f"{trail}.electrical_bias must contain exactly one fixed {required_bias.upper()} record")
+
+        test_mode = curve.get("test_mode")
+        if not isinstance(test_mode, dict):
+            raise ConveyorError(f"{trail}.test_mode must be an object")
+        mode = test_mode.get("kind")
+        if mode not in _MOSFET_TEST_MODES or mode == "not_stated":
+            raise ConveyorError(f"{trail}.test_mode.kind must explicitly state dc, continuous, pulsed, or single_pulse")
+        pulse_fields = {"pulse_width_s", "duty_cycle", "repetition_frequency_hz"} & set(test_mode)
+        if mode in {"pulsed", "single_pulse"}:
+            pulse_width = test_mode.get("pulse_width_s")
+            if not isinstance(pulse_width, (int, float)) or isinstance(pulse_width, bool) or not math.isfinite(pulse_width) or pulse_width <= 0:
+                raise ConveyorError(f"{trail}.test_mode.pulse_width_s must be a positive finite number for {mode}")
+        elif pulse_fields:
+            raise ConveyorError(f"{trail}.test_mode cannot attach pulse timing to {mode} data")
+        duty_cycle = test_mode.get("duty_cycle")
+        if duty_cycle is not None and (
+            not isinstance(duty_cycle, (int, float)) or isinstance(duty_cycle, bool)
+            or not math.isfinite(duty_cycle) or duty_cycle <= 0 or duty_cycle > 1
+        ):
+            raise ConveyorError(f"{trail}.test_mode.duty_cycle must be in (0, 1]")
+        repetition_hz = test_mode.get("repetition_frequency_hz")
+        if repetition_hz is not None and (
+            not isinstance(repetition_hz, (int, float)) or isinstance(repetition_hz, bool)
+            or not math.isfinite(repetition_hz) or repetition_hz <= 0
+        ):
+            raise ConveyorError(f"{trail}.test_mode.repetition_frequency_hz must be a positive finite number")
+
+
 def load_and_validate_extraction(path: Path, schema_path: Path, expected: Mapping[str, str]) -> dict[str, Any]:
     try:
         raw_payload = json.loads(path.read_text(encoding="utf-8"))
@@ -390,6 +512,8 @@ def load_and_validate_extraction(path: Path, schema_path: Path, expected: Mappin
     payload = normalize_extraction_payload(raw_payload)
     schema = json.loads(schema_path.read_text(encoding="utf-8"))
     validate_schema(payload, schema)
+    if payload.get("family") == "mosfet":
+        _validate_mosfet_critical_provenance(payload)
     for key in ("mpn", "manufacturer", "family"):
         if str(payload[key]).casefold() != str(expected[key]).casefold():
             raise ConveyorError(f"Extraction {key} mismatch: {payload[key]!r} != {expected[key]!r}")

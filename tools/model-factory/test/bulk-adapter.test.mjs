@@ -197,6 +197,40 @@ function passThroughConstraintRunner(payload) {
   };
 }
 
+const f2MosfetParameters = {
+  VTO: 1.5, KP: 8, THETA: 0, LAMBDA: 0.003, RD: 0.04, RS: 0.02, RG: 1e-4,
+  CGS: 45e-12, CGDMAX: 5e-12, CGDMIN: 5e-12, CJO: 15e-12, IS: 1e-12, N: 1.5, RB: 0.02,
+};
+
+function acceptedF2Attempt() {
+  return {
+    fidelity: "F2", evidence_contract_version: "1.0.0", parameters: f2MosfetParameters,
+    residuals: [], worst: { value: 0, quantity: "drain_current" }, rms: 0, gate_pass: true,
+  };
+}
+
+function productionCurveExtraction({ xQuantity = "V_GS", yQuantity = "I_D", fixedQuantity = "V_DS", output = false } = {}) {
+  const value = curveBackedMosfetExtraction("n");
+  value.source_sha256 = fixtureSourceSha256;
+  const curve = value.curves[0];
+  curve.name = output ? "Figure 5 output trace VGS 4.5 V" : "Figure 4 transfer trace 25 C typical";
+  curve.x_axis.quantity = xQuantity;
+  curve.y_axis.quantity = yQuantity;
+  curve.test_conditions = output ? "VGS = 4.5 V, TJ = 25 °C; test mode = DC" : "VDS = 10 V, TJ = 25 °C; test mode = DC";
+  curve.page_reference = output ? "p. 4, Figure 5, trace VGS 4.5 V" : "p. 4, Figure 4, curve 25 C typical";
+  curve.locator = { page: 4, figure: output ? "5" : "4", curve_or_trace: output ? "VGS 4.5 V" : "25 C typical" };
+  curve.temperature = { kind: "junction", value: 25, provenance: "figure_label" };
+  curve.electrical_bias = [{ quantity: fixedQuantity, value: output ? 4.5 : 10, unit: "V" }];
+  curve.test_mode = { kind: "dc" };
+  for (const threshold of [value.specs.threshold_min, value.specs.threshold_typ, value.specs.threshold_max]) {
+    threshold.locator = { page: 2, table: "Electrical Characteristics", row: "Gate Threshold Voltage" };
+  }
+  for (const datum of Object.values(value.specs.rdson_points[0])) {
+    datum.locator = { page: 2, table: "Electrical Characteristics", row: "Static Drain-Source On-Resistance" };
+  }
+  return value;
+}
+
 function extraction() {
   return {
     schema_version: "1.0.0", mpn: "FIXTURE-D1", manufacturer: "Fixture Semi", family: "diode",
@@ -213,6 +247,75 @@ function zenerExtraction() {
   value.specs.breakdown_current = { ...quantity(5, "mA"), conditions: "IZT = 5 mA at VZ = 5.1 V", page_reference: "p. 2 Zener table" };
   return value;
 }
+
+test("production MOSFET axis aliases and structured evidence normalize to the canonical fit contract", () => {
+  const cases = [
+    { xQuantity: "VGS", yQuantity: "ID", fixedQuantity: "VDS", output: false, characteristic: "transfer_current", xCanonical: "vgs" },
+    { xQuantity: "V_GS", yQuantity: "I_D", fixedQuantity: "V_DS", output: false, characteristic: "transfer_current", xCanonical: "vgs" },
+    { xQuantity: "VDS", yQuantity: "ID", fixedQuantity: "VGS", output: true, characteristic: "output_current", xCanonical: "vds" },
+    { xQuantity: "V_DS", yQuantity: "I_D", fixedQuantity: "V_GS", output: true, characteristic: "output_current", xCanonical: "vds" },
+  ];
+  for (const item of cases) {
+    const extraction = productionCurveExtraction(item);
+    const original = structuredClone(extraction);
+    let fitterPayload;
+    const fit = fitBulkPart({ ...mosfetPart("unused.pdf"), subcategory: "N-Channel MOSFET" }, extraction, {
+      fitRunner: (payload) => { fitterPayload = payload; return acceptedF2Attempt(); },
+      ngspiceRunner: () => ({ pass: true }),
+    });
+    const [normalized] = fitterPayload.extraction.curves;
+    assert.equal(normalized.characteristic, item.characteristic);
+    assert.deepEqual(normalized.x_axis, { quantity: item.xCanonical, unit: "V" });
+    assert.deepEqual(normalized.y_axis, { quantity: "id", unit: "A" });
+    assert.deepEqual(normalized.condition_identity.temperature, { kind: "junction", value_c: 25 });
+    assert.equal(normalized.condition_identity.test_mode.kind, "dc");
+    assert.equal(normalized.citation_identity.page, 4);
+    assert.equal(normalized.citation_identity.curve, item.output ? "VGS 4.5 V" : "25 C typical");
+    assert.equal(fitterPayload.extraction.specs.threshold_min.citation_identity.row, "Gate Threshold Voltage");
+    assert.equal(fitterPayload.extraction.specs.rdson_points[0].resistance.citation_identity.row, "Static Drain-Source On-Resistance");
+    assert.equal(fit.evidence_curves[0].characteristic, item.characteristic);
+    assert.deepEqual(extraction, original, "axis and structured-evidence normalization must not mutate source values, units, points, or citations");
+  }
+});
+
+test("production MOSFET curve fields fail closed without weakening units, citations, temperature, bias, or mode gates", () => {
+  const mutations = [
+    ["near-miss axis", (curve) => { curve.x_axis.quantity = "V_GD"; }, /unsupported electrical axis pairing/],
+    ["wrong axis unit", (curve) => { curve.x_axis.unit = "mA"; }, /requires voltage and current axes/],
+    ["incomplete locator", (curve) => { delete curve.locator.curve_or_trace; }, /invalid fields|curve_or_trace/],
+    ["text locator page", (curve) => { curve.locator.page = "4"; }, /positive integer page/],
+    ["temperature not stated", (curve) => { curve.temperature.kind = "not_stated"; }, /temperature.kind is unknown/],
+    ["temperature conflict", (curve) => { curve.temperature.value = 125; }, /structured temperature disagrees/],
+    ["wrong fixed bias", (curve) => { curve.electrical_bias[0].quantity = "VGS"; }, /may only state fixed VDS/],
+    ["bias conflict", (curve) => { curve.electrical_bias[0].value = 9; }, /structured electrical bias disagrees/],
+    ["mode not stated", (curve) => { curve.test_mode.kind = "not_stated"; }, /not_stated fails closed/],
+    ["pulsed static fit", (curve) => {
+      curve.test_mode = { kind: "pulsed", pulse_width_s: 1e-6, duty_cycle: 0.01 };
+      curve.test_conditions = "VDS = 10 V, TJ = 25 °C; pulsed; pulse width = 1 us; duty cycle = 1%";
+    }, /pulsed evidence and cannot enter a static DC MOSFET fit/],
+  ];
+  for (const [name, mutate, pattern] of mutations) {
+    const extraction = productionCurveExtraction();
+    mutate(extraction.curves[0]);
+    assert.throws(
+      () => fitBulkPart({ ...mosfetPart("unused.pdf"), subcategory: "N-Channel MOSFET" }, extraction, {
+        fitRunner: () => { throw new Error("fitter must not run for invalid structured evidence"); },
+        ngspiceRunner: () => ({ pass: true }),
+      }),
+      pattern,
+      name,
+    );
+  }
+  const scalarLocator = productionCurveExtraction();
+  delete scalarLocator.specs.threshold_min.locator.row;
+  assert.throws(
+    () => fitBulkPart({ ...mosfetPart("unused.pdf"), subcategory: "N-Channel MOSFET" }, scalarLocator, {
+      fitRunner: () => { throw new Error("fitter must not run for invalid scalar locator"); },
+      ngspiceRunner: () => ({ pass: true }),
+    }),
+    /invalid fields|row/,
+  );
+});
 
 test("bulk adapter fits curve-backed diode without touching reviewed library", () => {
   const fit = fitBulkPart(diodePart("unused.pdf"), extraction(), { ngspiceRunner: () => ({ pass: true }) });

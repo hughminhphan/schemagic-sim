@@ -8,6 +8,11 @@
     "Inspect only the supplied datasheet and the bundled archetype and gold example.",
     "Attempt transfer, output, and capacitance curve extraction before falling back to tables.",
     "Use SI units, preserve axes and test conditions, and fit p-channel values as magnitudes.",
+    "For every non-null critical scalar, preserve page_reference and add locator with an exact positive-integer page plus non-empty table and row strings.",
+    "For every curve, preserve page_reference and add locator with an exact positive-integer page plus non-empty figure and curve_or_trace strings.",
+    "For every curve, provide at least four ordered digitized points and add temperature as kind (ambient, case, or junction), numeric Celsius value, and canonical provenance inline_condition, table_heading, figure_label, footnote, or section_scope; omit the curve when temperature is not stated.",
+    "For transfer curves, electrical_bias must contain exactly one fixed VDS or V_DS record; for output curves it must contain exactly one fixed VGS or V_GS record. For other curves, record each explicitly fixed VGS, V_GS, VDS, V_DS, ID, or I_D bias with an exact numeric value and unit; omit the curve when no fixed electrical bias is stated.",
+    "For every curve, add test_mode with canonical kind dc, continuous, pulsed, or single_pulse. Pulsed and single_pulse data also require pulse_width_s; include duty_cycle or repetition_frequency_hz only when explicitly stated, and omit the curve when test mode is not stated.",
     "Return one JSON object only, with no markdown fences or commentary."
   ]
 }

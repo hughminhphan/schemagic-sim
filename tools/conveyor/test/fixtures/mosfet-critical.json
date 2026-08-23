@@ -1,0 +1,93 @@
+{
+  "schema_version": "1.0.0",
+  "mpn": "M1",
+  "manufacturer": "Fixture",
+  "family": "mosfet",
+  "datasheet_identity": {
+    "title": "M1 N-channel MOSFET",
+    "revision": "A",
+    "pages_examined": ["p. 2", "p. 5"]
+  },
+  "usable_curves": true,
+  "curves": [
+    {
+      "name": "Output characteristic, VGS = 4.5 V",
+      "x_axis": {"quantity": "VDS", "unit": "V", "scale": "linear"},
+      "y_axis": {"quantity": "ID", "unit": "A", "scale": "linear"},
+      "test_conditions": "TA = 25 C; pulsed, tp = 80 us; VGS = 4.5 V",
+      "page_reference": "p. 5, Figure 3, VGS = 4.5 V trace",
+      "locator": {"page": 5, "figure": "Figure 3", "curve_or_trace": "VGS = 4.5 V trace"},
+      "temperature": {"kind": "ambient", "value": 25, "provenance": "inline_condition"},
+      "electrical_bias": [{"quantity": "V_GS", "value": 4.5, "unit": "V"}],
+      "test_mode": {"kind": "pulsed", "pulse_width_s": 0.00008, "duty_cycle": 0.005},
+      "points": [
+        {"x": 0.1, "y": 1.0},
+        {"x": 0.2, "y": 2.0},
+        {"x": 0.3, "y": 3.0},
+        {"x": 0.4, "y": 4.0}
+      ]
+    }
+  ],
+  "specs": {
+    "polarity": "n",
+    "threshold_min": null,
+    "threshold_typ": {
+      "value": 1.5,
+      "unit": "V",
+      "conditions": "VDS = VGS, ID = 250 uA, TJ = 25 C",
+      "page_reference": "p. 2, Electrical Characteristics, Gate threshold voltage row",
+      "locator": {"page": 2, "table": "Electrical Characteristics", "row": "Gate threshold voltage"},
+      "source_kind": "typical"
+    },
+    "threshold_max": null,
+    "rdson_points": [
+      {
+        "vgs": {
+          "value": 4.5,
+          "unit": "V",
+          "conditions": "ID = 5 A, TJ = 25 C",
+          "page_reference": "p. 2, Electrical Characteristics, RDS(on) at VGS = 4.5 V row",
+          "locator": {"page": 2, "table": "Electrical Characteristics", "row": "RDS(on), VGS = 4.5 V"},
+          "source_kind": "typical"
+        },
+        "current": {
+          "value": 5,
+          "unit": "A",
+          "conditions": "VGS = 4.5 V, TJ = 25 C",
+          "page_reference": "p. 2, Electrical Characteristics, RDS(on) at VGS = 4.5 V row",
+          "locator": {"page": 2, "table": "Electrical Characteristics", "row": "RDS(on), VGS = 4.5 V"},
+          "source_kind": "typical"
+        },
+        "resistance": {
+          "value": 0.03,
+          "unit": "ohm",
+          "conditions": "VGS = 4.5 V, ID = 5 A, TJ = 25 C",
+          "page_reference": "p. 2, Electrical Characteristics, RDS(on) at VGS = 4.5 V row",
+          "locator": {"page": 2, "table": "Electrical Characteristics", "row": "RDS(on), VGS = 4.5 V"},
+          "source_kind": "typical"
+        }
+      }
+    ],
+    "ciss": {
+      "value": 1e-9,
+      "unit": "F",
+      "conditions": "VDS = 25 V, VGS = 0 V, f = 1 MHz",
+      "page_reference": "p. 2, Dynamic Characteristics, Input capacitance row",
+      "locator": {"page": 2, "table": "Dynamic Characteristics", "row": "Input capacitance"},
+      "source_kind": "typical"
+    },
+    "coss": null,
+    "crss": null,
+    "breakdown_voltage": {
+      "value": 60,
+      "unit": "V",
+      "conditions": "VGS = 0 V, ID = 250 uA",
+      "page_reference": "p. 2, Electrical Characteristics, Drain-source breakdown voltage row",
+      "locator": {"page": 2, "table": "Electrical Characteristics", "row": "Drain-source breakdown voltage"},
+      "source_kind": "minimum"
+    },
+    "body_diode": null
+  },
+  "extraction_notes": [],
+  "omission_reason": null
+}

@@ -129,6 +129,33 @@ function sourceHashFor(part, extraction) {
 }
 
 function citationIdentity(pageReference, { sourceSha256, sourceRevision, label, curveName = null, defaultRow = null, defaultColumn = null } = {}) {
+  if (pageReference && typeof pageReference === "object" && !Array.isArray(pageReference)) {
+    const locator = pageReference;
+    const page = locator.page;
+    if (!Number.isInteger(page) || page < 1) throw new Error(`${label} locator must carry a positive integer page`);
+    let location;
+    if (Object.hasOwn(locator, "table") || Object.hasOwn(locator, "row")) {
+      requireExactObjectKeys(locator, ["page", "table", "row"], [], `${label} locator`);
+      if (typeof locator.table !== "string" || !locator.table.trim() || typeof locator.row !== "string" || !locator.row.trim()) {
+        throw new Error(`${label} table locator must name its table and row`);
+      }
+      location = { table: locator.table.trim(), row: locator.row.trim() };
+    } else {
+      requireExactObjectKeys(locator, ["page", "figure", "curve_or_trace"], [], `${label} locator`);
+      if (typeof locator.figure !== "string" || !locator.figure.trim()
+          || typeof locator.curve_or_trace !== "string" || !locator.curve_or_trace.trim()) {
+        throw new Error(`${label} figure locator must name its figure and curve or trace`);
+      }
+      location = { figure: locator.figure.trim(), curve: locator.curve_or_trace.trim() };
+    }
+    const identity = {
+      source_sha256: sourceSha256,
+      ...(sourceRevision ? { source_revision: sourceRevision } : {}),
+      page,
+      ...location,
+    };
+    return { ...identity, citation_id: identityHash("sha256", identity) };
+  }
   const citation = String(pageReference ?? "").trim();
   if (!citation || /pending|placeholder|unknown|tbd|n\/a/i.test(citation)) throw new Error(`${label} prohibits placeholder citations`);
   const pageMatch = citation.match(/(?:\bp(?:age)?\.?\s*|\bpage\s*)(\d+)/i);
@@ -605,7 +632,7 @@ function validateThresholdEvidence(rawEvidence, sourceKind, label, context) {
     testMode: adjudicated?.testMode ?? legacyTestMode.mode,
     qualifiers: adjudicated?.qualifiers ?? normalizedQualifiers(evidence.conditions, legacyTestMode.qualifiers),
   });
-  const citationIdentityValue = citationIdentity(evidence.page_reference, {
+  const citationIdentityValue = citationIdentity(evidence.locator ?? evidence.page_reference, {
     ...context, label, defaultRow: "gate threshold voltage",
   });
   return {
@@ -692,7 +719,7 @@ function validateRdsonPoint(rawPoint, index, sourceKind, context) {
       testMode: adjudicated?.testMode ?? legacyTestMode.mode,
       qualifiers: adjudicated?.qualifiers ?? normalizedQualifiers(evidence.conditions, legacyTestMode.qualifiers),
     });
-    const citationIdentityValue = citationIdentity(evidence.page_reference, {
+    const citationIdentityValue = citationIdentity(evidence.locator ?? evidence.page_reference, {
       ...context, label: fieldLabel, defaultRow: `rds_on_${index + 1}`, defaultColumn: field.toLowerCase(),
     });
     const quantity = field === "VGS" ? "vgs" : field === "ID" ? "drain_current" : `rds_on_${sourceKind}`;
@@ -752,12 +779,90 @@ function citedRdsonConstraints(evidence) {
   }));
 }
 
-function curveCharacteristic(curve) {
-  const x = String(curve?.x_axis?.quantity ?? "").toLowerCase();
-  const y = String(curve?.y_axis?.quantity ?? "").toLowerCase();
-  if (x.includes("gate") && x.includes("source") && y.includes("drain") && y.includes("current")) return "transfer_current";
-  if (x.includes("drain") && x.includes("source") && y.includes("drain") && y.includes("current")) return "output_current";
+function standardMosfetAxisQuantity(value) {
+  const token = String(value ?? "").trim();
+  if (/^V_?GS$/i.test(token)) return "vgs";
+  if (/^V_?DS$/i.test(token)) return "vds";
+  if (/^I_?D$/i.test(token)) return "id";
   return null;
+}
+
+function mosfetAxisQuantity(value) {
+  const standard = standardMosfetAxisQuantity(value);
+  if (standard) return standard;
+  const words = String(value ?? "").toLowerCase();
+  if (words.includes("gate") && words.includes("source") && words.includes("voltage")) return "vgs";
+  if (words.includes("drain") && words.includes("source") && words.includes("voltage")) return "vds";
+  if (words.includes("drain") && words.includes("current")) return "id";
+  return null;
+}
+
+function curveCharacteristic(curve) {
+  const x = mosfetAxisQuantity(curve?.x_axis?.quantity);
+  const y = mosfetAxisQuantity(curve?.y_axis?.quantity);
+  if (x === "vgs" && y === "id") return "transfer_current";
+  if (x === "vds" && y === "id") return "output_current";
+  return null;
+}
+
+function structuredCurveFields(curve) {
+  const names = ["temperature", "electrical_bias", "test_mode"];
+  const present = names.filter((name) => Object.hasOwn(curve ?? {}, name));
+  if (!present.length) return false;
+  const missing = names.filter((name) => !Object.hasOwn(curve, name));
+  if (missing.length) throw new Error(`structured MOSFET curve condition is incomplete; missing ${missing.join(", ")}`);
+  return true;
+}
+
+function validateStructuredCurveCondition(curve, characteristic, rawPoints, label) {
+  requireExactObjectKeys(curve.temperature, ["kind", "value", "provenance"], [], `${label}.temperature`);
+  if (!["junction", "ambient", "case"].includes(curve.temperature.kind)) throw new Error(`${label}.temperature.kind is unknown`);
+  const temperatureValue = finiteSemanticNumber(curve.temperature.value, `${label}.temperature.value`);
+  if (!TEMPERATURE_PROVENANCE.has(curve.temperature.provenance)) throw new Error(`${label}.temperature.provenance is unknown`);
+  const temperature = { kind: curve.temperature.kind, value_c: temperatureValue };
+
+  validateTypedTestMode(curve.test_mode, characteristic, `${label}.test_mode`);
+  if (curve.test_mode.kind === "not_stated") throw new Error(`${label}.test_mode not_stated fails closed`);
+  if (["pulsed", "single_pulse"].includes(curve.test_mode.kind)) {
+    throw new Error(`${label} is pulsed evidence and cannot enter a static DC MOSFET fit`);
+  }
+  const testMode = structuredClone(curve.test_mode);
+
+  if (!Array.isArray(curve.electrical_bias) || !curve.electrical_bias.length) {
+    throw new Error(`${label}.electrical_bias must be a non-empty array`);
+  }
+  const bias = new Map();
+  for (const [index, record] of curve.electrical_bias.entries()) {
+    const recordLabel = `${label}.electrical_bias[${index}]`;
+    requireExactObjectKeys(record, ["quantity", "value", "unit"], [], recordLabel);
+    const quantity = standardMosfetAxisQuantity(record.quantity);
+    if (!quantity) throw new Error(`${recordLabel}.quantity is not a standard MOSFET electrical alias`);
+    if (bias.has(quantity)) throw new Error(`${label}.electrical_bias duplicates ${quantity}`);
+    const converted = siValue(record.value, record.unit);
+    const expectedUnit = quantity === "id" ? "A" : "V";
+    if (converted.unit !== expectedUnit || !Number.isFinite(converted.value)) {
+      throw new Error(`${recordLabel} must carry a finite ${expectedUnit} value`);
+    }
+    bias.set(quantity, Math.abs(converted.value));
+  }
+  const fixedQuantity = characteristic === "transfer_current" ? "vds" : "vgs";
+  const disallowed = [...bias.keys()].filter((quantity) => quantity !== fixedQuantity);
+  if (disallowed.length) throw new Error(`${label}.electrical_bias may only state fixed ${fixedQuantity.toUpperCase()} for this curve`);
+  const fixedValue = bias.get(fixedQuantity);
+  if (!(fixedValue > 0)) throw new Error(`${label}.electrical_bias requires a positive fixed ${fixedQuantity.toUpperCase()}`);
+
+  const electrical = characteristic === "transfer_current"
+    ? {
+      vgs: { kind: "range", lower_v: Math.min(...rawPoints.map((point) => point.x_si)), upper_v: Math.max(...rawPoints.map((point) => point.x_si)) },
+      vds: { kind: "fixed", value_v: fixedValue },
+      id: { kind: "range", lower_a: Math.min(...rawPoints.map((point) => point.y_si)), upper_a: Math.max(...rawPoints.map((point) => point.y_si)) },
+    }
+    : {
+      vgs: { kind: "fixed", value_v: fixedValue },
+      vds: { kind: "range", lower_v: Math.min(...rawPoints.map((point) => point.x_si)), upper_v: Math.max(...rawPoints.map((point) => point.x_si)) },
+      id: { kind: "range", lower_a: Math.min(...rawPoints.map((point) => point.y_si)), upper_a: Math.max(...rawPoints.map((point) => point.y_si)) },
+    };
+  return { temperature, testMode, electrical, fixedQuantity, fixedValue };
 }
 
 function normalizeMosfetCurve(curve, curveIndex, context) {
@@ -765,23 +870,24 @@ function normalizeMosfetCurve(curve, curveIndex, context) {
     throw new Error(`MOSFET F2 curve ${curveIndex + 1} may not override canonical identity fields`);
   }
   const characteristic = curveCharacteristic(curve);
-  if (!characteristic) return curve;
+  if (!characteristic) {
+    const x = standardMosfetAxisQuantity(curve?.x_axis?.quantity);
+    const y = standardMosfetAxisQuantity(curve?.y_axis?.quantity);
+    if (["vgs", "vds"].includes(x) || y === "id") throw new Error(`MOSFET F2 curve ${curveIndex + 1} has an unsupported electrical axis pairing`);
+    return curve;
+  }
   const label = `MOSFET F2 ${characteristic} curve ${curveIndex + 1}`;
   const xUnit = siValue(1, curve?.x_axis?.unit).unit;
   const yUnit = siValue(1, curve?.y_axis?.unit).unit;
   if (xUnit !== "V" || yUnit !== "A") throw new Error(`${label} requires voltage and current axes with recognized SI units`);
   if (!Array.isArray(curve.points) || curve.points.length < 4) throw new Error(`${label} requires at least four ordered digitized points`);
   const conditions = String(curve.test_conditions ?? "");
+  const hasStructuredFields = structuredCurveFields(curve);
   const adjudicated = adjudicatedCondition(curve, characteristic, label, context);
+  if (hasStructuredFields && adjudicated) throw new Error(`${label} may not mix direct structured conditions with supplement semantics`);
   if (!adjudicated) rejectUnknownQualifierSegments(conditions, label);
   const parsedTemperature = temperatureIdentity(conditions, label);
   const legacyTestMode = adjudicated ? null : testModeIdentity(conditions, label, { curve: false });
-  const fixedVds = conditionVoltage(conditions, "VDS", null);
-  const fixedVgs = conditionVoltage(conditions, "VGS", null);
-  if (characteristic === "transfer_current" && !(fixedVds > 0)) {
-    throw new Error(`${label} requires an explicit fixed VDS; a saturation inequality is not a fixed bias`);
-  }
-  if (characteristic === "output_current" && !(fixedVgs > 0)) throw new Error(`${label} requires an explicit fixed VGS trace identity`);
   let hasSignedCurveCoordinate = false;
   const rawPoints = curve.points.map((point, pointIndex) => {
     if (point?.condition_identity || point?.citation_identity || point?.evidence_identity) throw new Error(`${label} point ${pointIndex} may not override shared identities`);
@@ -791,6 +897,23 @@ function normalizeMosfetCurve(curve, curveIndex, context) {
     if (x.value < 0 || y.value < 0) hasSignedCurveCoordinate = true;
     return { point_index: pointIndex, x_si: Math.abs(x.value), y_si: Math.abs(y.value) };
   });
+  const structured = hasStructuredFields ? validateStructuredCurveCondition(curve, characteristic, rawPoints, label) : null;
+  const legacyFixedVds = conditionVoltage(conditions, "VDS", null);
+  const legacyFixedVgs = conditionVoltage(conditions, "VGS", null);
+  if (characteristic === "transfer_current" && !(legacyFixedVds > 0)) {
+    throw new Error(`${label} requires an explicit fixed VDS; a saturation inequality is not a fixed bias`);
+  }
+  if (characteristic === "output_current" && !(legacyFixedVgs > 0)) throw new Error(`${label} requires an explicit fixed VGS trace identity`);
+  if (structured) {
+    const legacyFixedValue = characteristic === "transfer_current" ? legacyFixedVds : legacyFixedVgs;
+    if (!nearlyEqual(structured.fixedValue, legacyFixedValue)) throw new Error(`${label} structured electrical bias disagrees with test_conditions`);
+    if (structured.temperature.kind !== parsedTemperature.kind || !nearlyEqual(structured.temperature.value_c, parsedTemperature.value_c)) {
+      throw new Error(`${label} structured temperature disagrees with test_conditions`);
+    }
+    if (stableJson(structured.testMode) !== stableJson(legacyTestMode.mode)) throw new Error(`${label} structured test mode disagrees with test_conditions`);
+  }
+  const fixedVds = structured?.electrical.vds.value_v ?? legacyFixedVds;
+  const fixedVgs = structured?.electrical.vgs.value_v ?? legacyFixedVgs;
   const derivedElectrical = characteristic === "transfer_current"
     ? {
       vgs: { kind: "range", lower_v: Math.min(...rawPoints.map((point) => point.x_si)), upper_v: Math.max(...rawPoints.map((point) => point.x_si)) },
@@ -801,7 +924,7 @@ function normalizeMosfetCurve(curve, curveIndex, context) {
       vds: { kind: "range", lower_v: Math.min(...rawPoints.map((point) => point.x_si)), upper_v: Math.max(...rawPoints.map((point) => point.x_si)) },
       id: { kind: "range", lower_a: Math.min(...rawPoints.map((point) => point.y_si)), upper_a: Math.max(...rawPoints.map((point) => point.y_si)) },
     };
-  const electrical = adjudicated?.electrical ?? derivedElectrical;
+  const electrical = adjudicated?.electrical ?? structured?.electrical ?? derivedElectrical;
   if (adjudicated) {
     if (characteristic === "transfer_current") {
       assertRangeSemanticValue(electrical.vgs, rawPoints.map((point) => point.x_si), label, "lower_v", "upper_v");
@@ -821,11 +944,11 @@ function normalizeMosfetCurve(curve, curveIndex, context) {
   const conditionIdentity = completeConditionIdentity({
     characteristic, polarity: context.polarity,
     magnitudeConvention: adjudicated?.magnitudeConvention ?? (/magnitude|\|V|\|I|p-channel/i.test(`${curve.x_axis.quantity} ${curve.y_axis.quantity} ${conditions}`) ? "absolute" : "signed"),
-    temperature: adjudicated?.temperature ?? parsedTemperature, electrical,
-    testMode: adjudicated?.testMode ?? legacyTestMode.mode,
+    temperature: adjudicated?.temperature ?? structured?.temperature ?? parsedTemperature, electrical,
+    testMode: adjudicated?.testMode ?? structured?.testMode ?? legacyTestMode.mode,
     qualifiers: adjudicated?.qualifiers ?? normalizedQualifiers(conditions, legacyTestMode.qualifiers),
   });
-  const citationIdentityValue = citationIdentity(curve.page_reference, { ...context, label, curveName: curve.name });
+  const citationIdentityValue = citationIdentity(curve.locator ?? curve.page_reference, { ...context, label, curveName: curve.name });
   const xAxis = { quantity: characteristic === "transfer_current" ? "vgs" : "vds", unit: "V" };
   const yAxis = { quantity: "id", unit: "A" };
   const curveHashInput = {
