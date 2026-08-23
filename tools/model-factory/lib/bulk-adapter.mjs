@@ -2364,11 +2364,15 @@ export function stageBulkPart(part, rawExtraction, fit, stagingRoot, { demotionR
     parameters: fit.parameters,
     parameter_metadata: fit.parameter_metadata ?? {},
     calibration: fit.calibration ?? null,
-    fitter: fit.fitter ?? (fit.evidence_mode === "interval-constrained"
-      ? "native-ngspice constrained MOSFET F1 feasibility projection"
-      : fit.evidence_mode === "typ-point"
-        ? "datasheet typical-point MOSFET F1 formula"
-        : "catalog-parametric F1 fallback"),
+    fitter: fit.fitter ?? (part.conveyor_family === "diode" && fit.evidence_mode === "bound-constrained"
+      ? "cited-maximum diode F1 interior-feasibility projection"
+      : part.conveyor_family === "diode" && fit.evidence_mode === "typ-point"
+        ? "datasheet typical-point diode F1 formula"
+        : fit.evidence_mode === "interval-constrained"
+          ? "native-ngspice constrained MOSFET F1 feasibility projection"
+          : fit.evidence_mode === "typ-point"
+            ? "datasheet typical-point MOSFET F1 formula"
+            : "catalog-parametric F1 fallback"),
     optimizer: fit.optimizer ?? null,
     held_defaults: fit.optimizer?.held_defaults ?? [],
     curves_used: fit.curves_used ?? [],

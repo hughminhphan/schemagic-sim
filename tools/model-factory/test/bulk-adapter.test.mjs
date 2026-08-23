@@ -672,6 +672,8 @@ test("staged Zener facts preserve the cited breakdown model inputs", () => {
     assert.equal(facts.derived_model_inputs.IBV.page_reference, "p. 2 Zener table");
     assert.equal(facts.derived_model_inputs.NBV.value, 1);
     assert.equal(facts.derived_model_inputs.NBV.source_kind, "held_default");
+    const fitted = JSON.parse(fs.readFileSync(path.join(result[0].package_path, "fitted.json"), "utf8"));
+    assert.equal(fitted.fitter, "datasheet typical-point diode F1 formula");
   } finally {
     fs.rmSync(root, { recursive: true, force: true });
   }
@@ -697,6 +699,8 @@ test("F1 diode calibration honors SI units and a cited maximum at 25 C", () => {
     const result = runBulkManifest(manifestPath, path.join(root, "staging"), { ngspiceRunner: () => ({ pass: true }) });
     assert.equal(result[0].status, "staged", JSON.stringify(result[0]));
     assert.equal(result[0].fidelity, "F1");
+    const fitted = JSON.parse(fs.readFileSync(path.join(result[0].package_path, "fitted.json"), "utf8"));
+    assert.equal(fitted.fitter, "cited-maximum diode F1 interior-feasibility projection");
   } finally {
     fs.rmSync(root, { recursive: true, force: true });
   }
