@@ -99,27 +99,34 @@
       "additionalProperties": false,
       "required": ["test_mode"],
       "properties": {
-        "test_mode": { "enum": ["continuous_dc", "pulsed", "single_pulse"] },
+        "test_mode": { "enum": ["continuous_dc", "pulsed", "single_pulse", "pulsed_limit", "not_stated"] },
         "pulse_width_s": { "type": "number", "exclusiveMinimum": 0 },
-        "duty_cycle": { "type": "number", "exclusiveMinimum": 0, "maximum": 1 }
+        "duty_cycle": { "type": "number", "exclusiveMinimum": 0, "maximum": 1 },
+        "maximum_pulse_width_s": { "type": "number", "exclusiveMinimum": 0 },
+        "maximum_duty_cycle": { "type": "number", "exclusiveMinimum": 0, "maximum": 1 }
       },
       "allOf": [
         {
-          "if": {
-            "properties": { "test_mode": { "enum": ["pulsed", "single_pulse"] } },
-            "required": ["test_mode"]
-          },
+          "if": { "properties": { "test_mode": { "const": "pulsed" } }, "required": ["test_mode"] },
           "then": {
-            "if": { "properties": { "test_mode": { "const": "pulsed" } } },
-            "then": { "required": ["pulse_width_s", "duty_cycle"] },
-            "else": { "required": ["pulse_width_s"] }
+            "required": ["pulse_width_s", "duty_cycle"],
+            "not": { "anyOf": [{ "required": ["maximum_pulse_width_s"] }, { "required": ["maximum_duty_cycle"] }] }
           },
           "else": {
-            "not": {
-              "anyOf": [
-                { "required": ["pulse_width_s"] },
-                { "required": ["duty_cycle"] }
-              ]
+            "if": { "properties": { "test_mode": { "const": "single_pulse" } }, "required": ["test_mode"] },
+            "then": {
+              "required": ["pulse_width_s"],
+              "not": { "anyOf": [{ "required": ["duty_cycle"] }, { "required": ["maximum_pulse_width_s"] }, { "required": ["maximum_duty_cycle"] }] }
+            },
+            "else": {
+              "if": { "properties": { "test_mode": { "const": "pulsed_limit" } }, "required": ["test_mode"] },
+              "then": {
+                "anyOf": [{ "required": ["maximum_pulse_width_s"] }, { "required": ["maximum_duty_cycle"] }],
+                "not": { "anyOf": [{ "required": ["pulse_width_s"] }, { "required": ["duty_cycle"] }] }
+              },
+              "else": {
+                "not": { "anyOf": [{ "required": ["pulse_width_s"] }, { "required": ["duty_cycle"] }, { "required": ["maximum_pulse_width_s"] }, { "required": ["maximum_duty_cycle"] }] }
+              }
             }
           }
         }
@@ -160,7 +167,7 @@
       "required": ["cohort_id", "fidelity_tier", "evidence_ids"],
       "properties": {
         "cohort_id": { "$ref": "#/$defs/cohortId" },
-        "fidelity_tier": { "const": "F2" },
+        "fidelity_tier": { "enum": ["F1", "F2"] },
         "evidence_ids": {
           "type": "array",
           "minItems": 1,
@@ -179,7 +186,8 @@
         "evidence_role": { "$ref": "#/$defs/evidenceRole" },
         "citation_locator": { "$ref": "#/$defs/citationLocator" },
         "evidence_qualification": { "$ref": "#/$defs/conditionQualification" },
-        "bench_qualification": { "$ref": "#/$defs/conditionQualification" }
+        "bench_qualification": { "$ref": "#/$defs/conditionQualification" },
+        "bench_equivalence_policy": { "const": "isothermal_diode_forward_projection" }
       },
       "dependentRequired": {
         "evidence_id": ["condition_id", "citation_id", "cohort_id", "bench_condition_id", "evidence_role", "citation_locator", "evidence_qualification", "bench_qualification"],
@@ -190,7 +198,8 @@
         "evidence_role": ["evidence_id", "condition_id", "citation_id", "cohort_id", "bench_condition_id", "citation_locator", "evidence_qualification", "bench_qualification"],
         "citation_locator": ["evidence_id", "condition_id", "citation_id", "cohort_id", "bench_condition_id", "evidence_role", "evidence_qualification", "bench_qualification"],
         "evidence_qualification": ["evidence_id", "condition_id", "citation_id", "cohort_id", "bench_condition_id", "evidence_role", "citation_locator", "bench_qualification"],
-        "bench_qualification": ["evidence_id", "condition_id", "citation_id", "cohort_id", "bench_condition_id", "evidence_role", "citation_locator", "evidence_qualification"]
+        "bench_qualification": ["evidence_id", "condition_id", "citation_id", "cohort_id", "bench_condition_id", "evidence_role", "citation_locator", "evidence_qualification"],
+        "bench_equivalence_policy": ["evidence_id", "condition_id", "citation_id", "cohort_id", "bench_condition_id", "evidence_role", "citation_locator", "evidence_qualification", "bench_qualification"]
       }
     },
     "expressionSource": {
@@ -242,7 +251,8 @@
         "evidence_role": { "$ref": "#/$defs/evidenceRole" },
         "citation_locator": { "$ref": "#/$defs/citationLocator" },
         "evidence_qualification": { "$ref": "#/$defs/conditionQualification" },
-        "bench_qualification": { "$ref": "#/$defs/conditionQualification" }
+        "bench_qualification": { "$ref": "#/$defs/conditionQualification" },
+        "bench_equivalence_policy": { "const": "isothermal_diode_forward_projection" }
       },
       "allOf": [{ "$ref": "#/$defs/evidenceLinkageProperties" }]
     },
@@ -274,7 +284,8 @@
         "evidence_role": { "$ref": "#/$defs/evidenceRole" },
         "citation_locator": { "$ref": "#/$defs/citationLocator" },
         "evidence_qualification": { "$ref": "#/$defs/conditionQualification" },
-        "bench_qualification": { "$ref": "#/$defs/conditionQualification" }
+        "bench_qualification": { "$ref": "#/$defs/conditionQualification" },
+        "bench_equivalence_policy": { "const": "isothermal_diode_forward_projection" }
       },
       "allOf": [{ "$ref": "#/$defs/evidenceLinkageProperties" }],
       "anyOf": [

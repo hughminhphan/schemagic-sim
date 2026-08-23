@@ -38,7 +38,35 @@ test("tracked admission policy preserves the frozen 710-package legacy inventory
     policy.legacy_inventory.sha256,
     "a587d60b946e42f1285f293fba7c5eedbfc5229415e09813de7e85d7fda4c87e"
   );
-  assert.deepEqual(policy.strict_evidence_contract_packages, []);
+  assert.deepEqual(policy.strict_evidence_contract_packages, [
+    "born/DSS26",
+    "born/F1M",
+    "diodes/B230A-13-F",
+    "fuxinsemi/DFLS2100",
+    "guangdong-hottech/SS24L",
+    "hongjiacheng/SSL510B",
+    "hxy-mosfet/ZMM3V6",
+    "lge/BZV55C12",
+    "mcc-micro-commercial-components/1N4148WX-TP",
+    "mdd-microdiode/10A10",
+    "mdd-microdiode/6A10",
+    "mdd-microdiode/DL4007",
+    "msksemi/MS2A40LWS",
+    "nexperia/BZX384-B12-115",
+    "nexperia/BZX384-B24-115",
+    "nexperia/BZX84-C2V7-215",
+    "nexperia/BZX84-C33-215",
+    "nexperia/BZX84J-B10-115",
+    "onsemi/BAS21HT1G",
+    "rohm-semicon/RB161QS-40T18R",
+    "smc-sangdest-microelectronicstronic-nanjing/1N4007FL",
+    "tech-public/TPMEG4020EPK",
+    "tech-public/TPNSR05F40NXT5G",
+    "vishay-intertech/S1G-E3-61T",
+    "yangzhou-yangjie-elec-tech/G1M",
+    "yongyutai/CD4148WSP",
+    "yongyutai/ZMM16V"
+  ]);
 });
 
 test("admission policy selects strict validation outside candidate package contents", () => {

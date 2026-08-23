@@ -141,17 +141,46 @@ test("placeholder and generic citations are rejected for linked expectations", (
   })), "citation_locator must identify a specific table row or figure curve/trace");
 });
 
-test("pulse-qualified new-contract claims fail closed without an implemented pulse bench", () => {
+test("pulse-qualified new-contract claims require exactly matching bench qualification", () => {
   for (const pulse of [
     { test_mode: "pulsed", pulse_width_s: 0.0003, duty_cycle: 0.02 },
     { test_mode: "single_pulse", pulse_width_s: 0.0003 },
   ]) {
-    assertRejected(documentWith(linkedCheck({ evidence_qualification: pulse, bench_qualification: pulse })), "unsupported without an implemented equivalent pulse bench");
+    assert.deepEqual(errorsFor(documentWith(linkedCheck({ evidence_qualification: pulse, bench_qualification: pulse }))), []);
     assertRejected(documentWith(linkedCheck({
       evidence_qualification: pulse,
       bench_qualification: { test_mode: "continuous_dc" }
     })), "bench qualification must match evidence qualification");
   }
+});
+
+test("F1 evidence cohorts are valid for strict bound and typical-point packages", () => {
+  const document = documentWith();
+  document.evidence_cohorts[0].fidelity_tier = "F1";
+  assert.deepEqual(errorsFor(document), []);
+});
+
+test("isothermal diode projection records unresolved source timing instead of inventing DC", () => {
+  for (const sourceQualification of [
+    { test_mode: "not_stated" },
+    { test_mode: "pulsed_limit", maximum_pulse_width_s: 0.0003, maximum_duty_cycle: 0.02 },
+  ]) {
+    const projected = linkedCheck({
+      evidence_qualification: sourceQualification,
+      bench_qualification: { test_mode: "continuous_dc" },
+      bench_equivalence_policy: "isothermal_diode_forward_projection",
+    });
+    assert.deepEqual(errorsFor(documentWith(projected)), []);
+    assertRejected(documentWith(linkedCheck({
+      evidence_qualification: sourceQualification,
+      bench_qualification: { test_mode: "continuous_dc" },
+    })), "bench qualification must match evidence qualification");
+  }
+  assertRejected(documentWith(linkedCheck({
+    evidence_qualification: { test_mode: "pulsed", pulse_width_s: 0.0003, duty_cycle: 0.01 },
+    bench_qualification: { test_mode: "continuous_dc" },
+    bench_equivalence_policy: "isothermal_diode_forward_projection",
+  })), "requires not-stated or pulse-limited source mode");
 });
 
 test("new F2 cohorts require a member expectation and declared evidence membership", () => {

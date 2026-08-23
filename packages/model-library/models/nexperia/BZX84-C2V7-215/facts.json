@@ -1,0 +1,276 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [],
+    "datasheet_identity": {
+      "pages_examined": [
+        "PDF p. 1",
+        "PDF p. 2",
+        "PDF p. 3",
+        "PDF p. 4",
+        "PDF p. 5",
+        "PDF p. 6",
+        "PDF p. 7",
+        "PDF p. 8",
+        "PDF p. 9",
+        "PDF p. 10",
+        "PDF p. 11",
+        "PDF p. 12",
+        "PDF p. 13",
+        "PDF p. 14"
+      ],
+      "revision": "Rev. 7 — 1 January 2023",
+      "title": "BZX84 series Voltage regulator diodes"
+    },
+    "extraction_notes": [
+      "Table 8 gives BZX84-C2V7 working-voltage limits of 2.50 V minimum and 2.90 V maximum at IZ = 5 mA. The minimum value was retained as the exact breakdown-voltage/current pair; no midpoint or nominal value was interpolated.",
+      "The BZX84-C2V7 row also gives maximum differential resistance of 600 ohm at IZ = 1 mA and 100 ohm at IZ = 5 mA; these fields are outside this extraction schema.",
+      "No C2V7-specific forward I-V trace is published: p. 8 forward plots are for C2V4, C6V8, C7V5, and C75. Fig. 8 on p. 9 is a crowded multi-type reverse-leakage overview; no curve points were retained where the C2V7 trace could not be unambiguously isolated.",
+      "No reverse-recovery-time value is published. Thermal and peak-power plots were inspected but excluded from electrical fit evidence."
+    ],
+    "family": "diode",
+    "manufacturer": "Nexperia",
+    "mpn": "BZX84-C2V7,215",
+    "omission_reason": "No unambiguous C2V7-specific electrical curve was retained: the published forward curves apply to other voltage variants, and the multi-type reverse-leakage overview does not isolate a sufficiently clear C2V7 trace for non-interpolated digitization.",
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": {
+        "conditions": "Tj = 25 degC; BZX84-C2V7 VZ = 2.50 V minimum test condition.",
+        "page_reference": "PDF p. 5, Table 8, BZX84-C2V7 row",
+        "source_kind": "minimum",
+        "unit": "A",
+        "value": 0.005
+      },
+      "breakdown_voltage": {
+        "conditions": "Tj = 25 degC; IZ = 5 mA; BZX84-C2V7 minimum working voltage.",
+        "page_reference": "PDF p. 5, Table 8, BZX84-C2V7 row",
+        "source_kind": "minimum",
+        "unit": "V",
+        "value": 2.5
+      },
+      "capacitance": {
+        "conditions": "Tj = 25 degC; VR = 0 V; f = 1 MHz.",
+        "page_reference": "PDF p. 5, Table 8, BZX84-C2V7 row and footnote 1",
+        "source_kind": "maximum",
+        "unit": "F",
+        "value": 4.5e-10
+      },
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "Tj = 25 degC; IF = 10 mA; pulse test tp <= 100 us, delta <= 0.02.",
+            "page_reference": "PDF p. 4, Table 7 Characteristics",
+            "source_kind": "maximum",
+            "unit": "A",
+            "value": 0.01
+          },
+          "voltage": {
+            "conditions": "Tj = 25 degC; IF = 10 mA; pulse test tp <= 100 us, delta <= 0.02.",
+            "page_reference": "PDF p. 4, Table 7 Characteristics",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 0.9
+          }
+        }
+      ],
+      "reverse_current": {
+        "conditions": "Tj = 25 degC; VR = 1 V.",
+        "page_reference": "PDF p. 5, Table 8, BZX84-C2V7 row",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.00002
+      },
+      "reverse_recovery": null,
+      "variant": "zener"
+    },
+    "usable_curves": false
+  },
+  "catalog_seed_hints": [],
+  "identity": {
+    "canonical_mpn": "BZX84-C2V7",
+    "manufacturer": "Nexperia",
+    "aliases": [
+      "BZX84-C2V7,215"
+    ]
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8588893627758493696",
+    "revision": "Rev. 7 — 1 January 2023",
+    "sha256": "e6278027e055c1b077d2fb733903d60f3fd66724e45a310a7501c69edb99ddb9",
+    "accessed_date": "2026-08-23",
+    "pages_referenced": [
+      "PDF p. 1",
+      "PDF p. 2",
+      "PDF p. 3",
+      "PDF p. 4",
+      "PDF p. 5",
+      "PDF p. 6",
+      "PDF p. 7",
+      "PDF p. 8",
+      "PDF p. 9",
+      "PDF p. 10",
+      "PDF p. 11",
+      "PDF p. 12",
+      "PDF p. 13",
+      "PDF p. 14"
+    ],
+    "placeholder": false
+  },
+  "evidence_contract_version": "1.0.0",
+  "fit_points": [
+    {
+      "current": {
+        "conditions": "Tj = 25 degC; IF = 10 mA; pulse test tp <= 100 us, delta <= 0.02.",
+        "page_reference": "PDF p. 4, Table 7 Characteristics",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.01
+      },
+      "voltage": {
+        "conditions": "Tj = 25 degC; IF = 10 mA; pulse test tp <= 100 us, delta <= 0.02.",
+        "page_reference": "PDF p. 4, Table 7 Characteristics",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 0.9
+      }
+    }
+  ],
+  "forward_voltage_points": [
+    {
+      "current": {
+        "conditions": "Tj = 25 degC; IF = 10 mA; pulse test tp <= 100 us, delta <= 0.02.",
+        "page_reference": "PDF p. 4, Table 7 Characteristics",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.01,
+        "quantity": "forward_current",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "junction",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 0.01
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 0.9
+            }
+          },
+          "test_mode": {
+            "kind": "pulsed_limit",
+            "maximum_pulse_width_s": 0.00009999999999999999
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "Tj = 25 degC; IF = 10 mA; pulse test tp <= 100 us, delta <= 0.02."
+            }
+          ],
+          "condition_id": "sha256:f18d40b2773055365f39994d052d04b77d8b84cb105c84a1384a24ded995fcc1"
+        },
+        "citation_identity": {
+          "source_sha256": "e6278027e055c1b077d2fb733903d60f3fd66724e45a310a7501c69edb99ddb9",
+          "source_revision": "Rev. 7 — 1 January 2023",
+          "page": 4,
+          "table": "Table 7 Characteristics",
+          "row": "Forward Current",
+          "citation_id": "sha256:089bb2e9b265125987beb1472f104bd25f111d625275fe5e65f24f253c099a04"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:b8e656596c8d40c8fddbb8b0b612019824f33cd2320a42e25133454d2586a45a",
+          "cohort_id": "sha256:671e21b4cb73c3f30be5ddb16472c64d3e7067b8b71b1a3b7cc856f508715c00",
+          "role": "maximum",
+          "condition_id": "sha256:f18d40b2773055365f39994d052d04b77d8b84cb105c84a1384a24ded995fcc1",
+          "citation_id": "sha256:089bb2e9b265125987beb1472f104bd25f111d625275fe5e65f24f253c099a04"
+        }
+      },
+      "voltage": {
+        "conditions": "Tj = 25 degC; IF = 10 mA; pulse test tp <= 100 us, delta <= 0.02.",
+        "page_reference": "PDF p. 4, Table 7 Characteristics",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 0.9,
+        "quantity": "forward_voltage",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "junction",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 0.01
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 0.9
+            }
+          },
+          "test_mode": {
+            "kind": "pulsed_limit",
+            "maximum_pulse_width_s": 0.00009999999999999999
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "Tj = 25 degC; IF = 10 mA; pulse test tp <= 100 us, delta <= 0.02."
+            }
+          ],
+          "condition_id": "sha256:f18d40b2773055365f39994d052d04b77d8b84cb105c84a1384a24ded995fcc1"
+        },
+        "citation_identity": {
+          "source_sha256": "e6278027e055c1b077d2fb733903d60f3fd66724e45a310a7501c69edb99ddb9",
+          "source_revision": "Rev. 7 — 1 January 2023",
+          "page": 4,
+          "table": "Table 7 Characteristics",
+          "row": "Forward Voltage",
+          "citation_id": "sha256:4282675592ca3887e434222450d7ed1b954432c2c857e59ac90946ebb3b9996b"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:569b85a9bf7273580952443e5907d273fddb9011358dabf858225bd4cf55f361",
+          "cohort_id": "sha256:f304f2d1a64006c02d2be7eee5185cbb62c5395583c6ffa2202d60465abd5cf3",
+          "role": "maximum",
+          "condition_id": "sha256:f18d40b2773055365f39994d052d04b77d8b84cb105c84a1384a24ded995fcc1",
+          "citation_id": "sha256:4282675592ca3887e434222450d7ed1b954432c2c857e59ac90946ebb3b9996b"
+        }
+      }
+    }
+  ],
+  "curves": [],
+  "electrical_limits": {},
+  "derived_model_inputs": {
+    "BV": {
+      "conditions": "Tj = 25 degC; IZ = 5 mA; BZX84-C2V7 minimum working voltage.",
+      "page_reference": "PDF p. 5, Table 8, BZX84-C2V7 row",
+      "source_kind": "minimum",
+      "unit": "V",
+      "value": 2.5
+    },
+    "IBV": {
+      "conditions": "Tj = 25 degC; BZX84-C2V7 VZ = 2.50 V minimum test condition.",
+      "page_reference": "PDF p. 5, Table 8, BZX84-C2V7 row",
+      "source_kind": "minimum",
+      "unit": "A",
+      "value": 0.005
+    },
+    "NBV": {
+      "value": 1,
+      "unit": "1",
+      "conditions": "First-order avalanche-knee default; no multi-point reverse-knee trace was available",
+      "page_reference": "model-factory Zener F1 policy",
+      "source_kind": "held_default"
+    }
+  }
+}

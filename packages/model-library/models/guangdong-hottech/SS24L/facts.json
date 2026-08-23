@@ -1,0 +1,292 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [
+      {
+        "name": "Forward current derating, SS22L-SS24L",
+        "page_reference": "PDF p. 2, Fig. 1",
+        "points": [
+          {
+            "x": 50,
+            "y": 1.7
+          },
+          {
+            "x": 105,
+            "y": 1.7
+          },
+          {
+            "x": 125,
+            "y": 0
+          }
+        ],
+        "test_conditions": "Resistive or inductive load; SS22L-SS24L trace in Fig. 1.",
+        "x_axis": {
+          "quantity": "Lead temperature",
+          "scale": "linear",
+          "unit": "degC"
+        },
+        "y_axis": {
+          "quantity": "Average forward current",
+          "scale": "linear",
+          "unit": "A"
+        }
+      },
+      {
+        "name": "Maximum non-repetitive forward surge current",
+        "page_reference": "PDF p. 2, Fig. 2",
+        "points": [
+          {
+            "x": 1,
+            "y": 50
+          },
+          {
+            "x": 10,
+            "y": 30
+          },
+          {
+            "x": 100,
+            "y": 15
+          }
+        ],
+        "test_conditions": "8.3 ms single half sine-wave; JEDEC method.",
+        "x_axis": {
+          "quantity": "Number of cycles at 60 Hz",
+          "scale": "log",
+          "unit": "cycles"
+        },
+        "y_axis": {
+          "quantity": "Peak forward surge current",
+          "scale": "linear",
+          "unit": "A"
+        }
+      }
+    ],
+    "datasheet_identity": {
+      "pages_examined": [
+        "PDF p. 1",
+        "PDF p. 2",
+        "PDF p. 3",
+        "PDF p. 4"
+      ],
+      "revision": "Not stated",
+      "title": "SS22L-SS210L Schottky Barrier Diode"
+    },
+    "extraction_notes": [
+      "The p. 1 forward-voltage entry of 0.5 V is merged across SS22L, SS23L, and SS24L; it was retained for SS24L at the printed IF = 2 A condition.",
+      "The electrical-characteristics table prints a 0.5 mA reverse-current limit at T = 25 degC and V = VR; the 40 V SS24L VR rating supplies the device-specific V = VR condition.",
+      "Fig. 1 and Fig. 2 were visually inspected and their displayed trace/grid intersections were digitized; Fig. 3 was not used for an additional forward-voltage table point because it contains no printed numeric point annotations.",
+      "No reverse-recovery-time value or breakdown-voltage/current test pair is printed in the datasheet. The 40 V VRRM/VR entries are ratings, not a breakdown test pair."
+    ],
+    "family": "diode",
+    "manufacturer": "Guangdong Hottech",
+    "mpn": "SS24L",
+    "omission_reason": null,
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": null,
+      "breakdown_voltage": null,
+      "capacitance": {
+        "conditions": "TA = 25 degC; V = 4 V; f = 1 MHz.",
+        "page_reference": "PDF p. 1, Electrical Characteristics",
+        "source_kind": "maximum",
+        "unit": "F",
+        "value": 1.6e-10
+      },
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "TA = 25 degC; IF = 2 A; SS22L-SS24L shared table entry.",
+            "page_reference": "PDF p. 1, Electrical Characteristics",
+            "source_kind": "maximum",
+            "unit": "A",
+            "value": 2
+          },
+          "voltage": {
+            "conditions": "TA = 25 degC; IF = 2 A; SS22L-SS24L shared table entry.",
+            "page_reference": "PDF p. 1, Electrical Characteristics",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 0.5
+          }
+        }
+      ],
+      "reverse_current": {
+        "conditions": "TA = 25 degC; V = VR (VR = 40 V for SS24L).",
+        "page_reference": "PDF p. 1, Electrical Characteristics and Maximum Ratings",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.0005
+      },
+      "reverse_recovery": null,
+      "variant": "schottky"
+    },
+    "usable_curves": true
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "Forward Voltage (Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "500mV@2A",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Voltage - Forward(Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "500mV@2A",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "SS24L",
+    "manufacturer": "Guangdong Hottech",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8588918822799204352",
+    "revision": "Not stated",
+    "sha256": "61f09f11f7304db2dc1636a10d24b63b0a92ec57c5ed273b6efa493271a06da1",
+    "accessed_date": "2026-08-23",
+    "pages_referenced": [
+      "PDF p. 1",
+      "PDF p. 2",
+      "PDF p. 3",
+      "PDF p. 4"
+    ],
+    "placeholder": false
+  },
+  "evidence_contract_version": "1.0.0",
+  "fit_points": [
+    {
+      "current": {
+        "conditions": "TA = 25 degC; IF = 2 A; SS22L-SS24L shared table entry.",
+        "page_reference": "PDF p. 1, Electrical Characteristics",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 2
+      },
+      "voltage": {
+        "conditions": "TA = 25 degC; IF = 2 A; SS22L-SS24L shared table entry.",
+        "page_reference": "PDF p. 1, Electrical Characteristics",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 0.5
+      }
+    }
+  ],
+  "forward_voltage_points": [
+    {
+      "current": {
+        "conditions": "TA = 25 degC; IF = 2 A; SS22L-SS24L shared table entry.",
+        "page_reference": "PDF p. 1, Electrical Characteristics",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 2,
+        "quantity": "forward_current",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "ambient",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 2
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 0.5
+            }
+          },
+          "test_mode": {
+            "kind": "not_stated"
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "TA = 25 degC; IF = 2 A; SS22L-SS24L shared table entry."
+            }
+          ],
+          "condition_id": "sha256:3c0340622f0a2f62ba3ba82cc6e891c469c3f8a988e5fce6e33cc3c3081d9fdb"
+        },
+        "citation_identity": {
+          "source_sha256": "61f09f11f7304db2dc1636a10d24b63b0a92ec57c5ed273b6efa493271a06da1",
+          "source_revision": "Not stated",
+          "page": 1,
+          "table": "Electrical Characteristics",
+          "row": "Forward Current",
+          "citation_id": "sha256:459956b878e09eb967efac16f3120e616459793231cbdea331f37b4643cbbb02"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:5813bfbc661cb16a64df7c7ecf8fc41a4f33b5d85d06630835cfb6e56024e162",
+          "cohort_id": "sha256:6a0e386d3ed7bd8167aace485b57a218dc9e0e01bd473983b5870b81bbd30071",
+          "role": "maximum",
+          "condition_id": "sha256:3c0340622f0a2f62ba3ba82cc6e891c469c3f8a988e5fce6e33cc3c3081d9fdb",
+          "citation_id": "sha256:459956b878e09eb967efac16f3120e616459793231cbdea331f37b4643cbbb02"
+        }
+      },
+      "voltage": {
+        "conditions": "TA = 25 degC; IF = 2 A; SS22L-SS24L shared table entry.",
+        "page_reference": "PDF p. 1, Electrical Characteristics",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 0.5,
+        "quantity": "forward_voltage",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "ambient",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 2
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 0.5
+            }
+          },
+          "test_mode": {
+            "kind": "not_stated"
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "TA = 25 degC; IF = 2 A; SS22L-SS24L shared table entry."
+            }
+          ],
+          "condition_id": "sha256:3c0340622f0a2f62ba3ba82cc6e891c469c3f8a988e5fce6e33cc3c3081d9fdb"
+        },
+        "citation_identity": {
+          "source_sha256": "61f09f11f7304db2dc1636a10d24b63b0a92ec57c5ed273b6efa493271a06da1",
+          "source_revision": "Not stated",
+          "page": 1,
+          "table": "Electrical Characteristics",
+          "row": "Forward Voltage",
+          "citation_id": "sha256:48816d05f05f59f57e0983f2f40790fb413cb2a23738f0f5fd8cb2cc85b21758"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:f52b304b46aa836e7de73adb7dd6dbff75955ee2362d5d7240cd0d8b0d7ad093",
+          "cohort_id": "sha256:45fb9aa66e46ddf246df0a2122f8ef32370c394a08458977acc96bee49ce7dfc",
+          "role": "maximum",
+          "condition_id": "sha256:3c0340622f0a2f62ba3ba82cc6e891c469c3f8a988e5fce6e33cc3c3081d9fdb",
+          "citation_id": "sha256:48816d05f05f59f57e0983f2f40790fb413cb2a23738f0f5fd8cb2cc85b21758"
+        }
+      }
+    }
+  ],
+  "curves": [],
+  "electrical_limits": {},
+  "derived_model_inputs": {}
+}

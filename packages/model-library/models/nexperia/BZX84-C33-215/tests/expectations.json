@@ -1,0 +1,55 @@
+{
+  "schema_version": "1.0.0",
+  "evidence_contract_version": "1.0.0",
+  "evidence_cohorts": [
+    {
+      "cohort_id": "sha256:a543ec46b5c48281bd1e518c408dfcc73ec63f684958a42c1568e8bd92bdeb61",
+      "fidelity_tier": "F1",
+      "evidence_ids": [
+        "sha256:06187b7448b87e421a39421f67bce7e334334cf03ce22bf89af0c19af44b6f9c"
+      ]
+    }
+  ],
+  "tests": [
+    {
+      "test_netlist": "forward_01.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "forward_voltage_maximum_at_0.01_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "minimum": 0,
+          "maximum": 0.9,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 4, Table 7 Characteristics and note 1",
+          "evidence_id": "sha256:06187b7448b87e421a39421f67bce7e334334cf03ce22bf89af0c19af44b6f9c",
+          "condition_id": "sha256:bde34d9f85df222d0e07d926e70847a92b2a315b04c697f17aaf52a4de43d4dd",
+          "citation_id": "sha256:3d3b1e2558469de77a6c75622ad7d8c6010b7c9cc7636e13fb172f6e0c479a91",
+          "cohort_id": "sha256:a543ec46b5c48281bd1e518c408dfcc73ec63f684958a42c1568e8bd92bdeb61",
+          "bench_condition_id": "sha256:bde34d9f85df222d0e07d926e70847a92b2a315b04c697f17aaf52a4de43d4dd",
+          "evidence_role": "inclusive_maximum",
+          "citation_locator": {
+            "page": 4,
+            "table": "Table 7 Characteristics and note 1",
+            "row": "Forward Voltage"
+          },
+          "evidence_qualification": {
+            "test_mode": "pulsed_limit",
+            "maximum_pulse_width_s": 0.00009999999999999999,
+            "maximum_duty_cycle": 0.02
+          },
+          "bench_qualification": {
+            "test_mode": "continuous_dc"
+          },
+          "bench_equivalence_policy": "isothermal_diode_forward_projection",
+          "placeholder": false
+        }
+      ]
+    }
+  ]
+}

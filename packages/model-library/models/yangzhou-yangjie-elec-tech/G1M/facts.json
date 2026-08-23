@@ -1,0 +1,256 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [
+      {
+        "name": "typical_instantaneous_forward_current_vs_forward_voltage",
+        "page_reference": "p. 2, Fig. 3 Forward Voltage",
+        "points": [
+          {
+            "x": 0.7,
+            "y": 0.01
+          },
+          {
+            "x": 0.8,
+            "y": 0.1
+          },
+          {
+            "x": 0.96,
+            "y": 1
+          }
+        ],
+        "test_conditions": "Typical curve; no temperature, pulse width, or duty-cycle condition is stated in Fig. 3",
+        "x_axis": {
+          "quantity": "instantaneous forward voltage",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "instantaneous forward current",
+          "scale": "log",
+          "unit": "A"
+        }
+      }
+    ],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3",
+        "p. 4"
+      ],
+      "revision": "S-S036 Rev. 2.4, 23-Apr-19",
+      "title": "G1A THRU G1M — Surface Mount General Purpose Rectifier"
+    },
+    "extraction_notes": [
+      "Fig. 3 contains the only forward I/V plot applicable to this rectifier family. Points were digitized directly at labelled current grid lines and rounded to the graph-reading precision; no intermediate points were interpolated.",
+      "The forward-voltage and reverse-current values in the p. 1 table are maximum ratings, not typical characterization values.",
+      "The 1000 V G1M repetitive-peak-reverse-voltage rating identifies the rated DC blocking voltage used for the reverse-current condition; it is not recorded as a measured breakdown point."
+    ],
+    "family": "diode",
+    "manufacturer": "Yangzhou Yangjie Elec Tech",
+    "mpn": "G1M",
+    "omission_reason": "The datasheet publishes no junction-capacitance value, reverse-recovery-time value, or paired breakdown-voltage/current measurement; those fields are null.",
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": null,
+      "breakdown_voltage": null,
+      "capacitance": null,
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "IFM = 1.0 A; Ta = 25 degC unless otherwise specified",
+            "page_reference": "p. 1, Electrical Characteristics",
+            "source_kind": "maximum",
+            "unit": "A",
+            "value": 1
+          },
+          "voltage": {
+            "conditions": "Maximum instantaneous forward voltage drop per diode at IFM = 1.0 A; Ta = 25 degC unless otherwise specified",
+            "page_reference": "p. 1, Electrical Characteristics",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 1.1
+          }
+        }
+      ],
+      "reverse_current": {
+        "conditions": "Maximum DC reverse current at rated DC blocking voltage VR = 1000 V for G1M; Ta = 25 degC",
+        "page_reference": "p. 1, Maximum Ratings and Electrical Characteristics, G1M column",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.000005
+      },
+      "reverse_recovery": null,
+      "variant": "rectifier"
+    },
+    "usable_curves": true
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "Forward Voltage (Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "1.1V@1A",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Voltage - Forward(Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "1.1V@1A",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "G1M",
+    "manufacturer": "Yangzhou Yangjie Elec Tech",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8588918623443935232",
+    "revision": "S-S036 Rev. 2.4, 23-Apr-19",
+    "sha256": "1469ce7fc01cba62a91a63b242c703317e2a06d0c149f9919809714854be4632",
+    "accessed_date": "2026-08-23",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "placeholder": false
+  },
+  "evidence_contract_version": "1.0.0",
+  "fit_points": [
+    {
+      "current": {
+        "conditions": "IFM = 1.0 A; Ta = 25 degC unless otherwise specified",
+        "page_reference": "p. 1, Electrical Characteristics",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 1
+      },
+      "voltage": {
+        "conditions": "Maximum instantaneous forward voltage drop per diode at IFM = 1.0 A; Ta = 25 degC unless otherwise specified",
+        "page_reference": "p. 1, Electrical Characteristics",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 1.1
+      }
+    }
+  ],
+  "forward_voltage_points": [
+    {
+      "current": {
+        "conditions": "IFM = 1.0 A; Ta = 25 degC unless otherwise specified",
+        "page_reference": "p. 1, Electrical Characteristics",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 1,
+        "quantity": "forward_current",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "ambient",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 1
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 1.1
+            }
+          },
+          "test_mode": {
+            "kind": "not_stated"
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "IFM = 1.0 A; Ta = 25 degC unless otherwise specified"
+            }
+          ],
+          "condition_id": "sha256:c40978c11757118ccc0eb0be716fe20441adc0313d3f004868400670df55849e"
+        },
+        "citation_identity": {
+          "source_sha256": "1469ce7fc01cba62a91a63b242c703317e2a06d0c149f9919809714854be4632",
+          "source_revision": "S-S036 Rev. 2.4, 23-Apr-19",
+          "page": 1,
+          "table": "Electrical Characteristics",
+          "row": "Forward Current",
+          "citation_id": "sha256:2c2b764a2432c7a1660c2c32ec576eea092079bea79d77ade2af26290fa6af80"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:cc2f53bc1d91644736d22ce446bd4b337a107f1cc2a0d87873dad914b6174f77",
+          "cohort_id": "sha256:c708882a1960908ccfb91a164d3d4d2b3f1a6bfc58be91314b2677ea985c7bbb",
+          "role": "maximum",
+          "condition_id": "sha256:c40978c11757118ccc0eb0be716fe20441adc0313d3f004868400670df55849e",
+          "citation_id": "sha256:2c2b764a2432c7a1660c2c32ec576eea092079bea79d77ade2af26290fa6af80"
+        }
+      },
+      "voltage": {
+        "conditions": "Maximum instantaneous forward voltage drop per diode at IFM = 1.0 A; Ta = 25 degC unless otherwise specified",
+        "page_reference": "p. 1, Electrical Characteristics",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 1.1,
+        "quantity": "forward_voltage",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "ambient",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 1
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 1.1
+            }
+          },
+          "test_mode": {
+            "kind": "not_stated"
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "Maximum instantaneous forward voltage drop per diode at IFM = 1.0 A; Ta = 25 degC unless otherwise specified"
+            }
+          ],
+          "condition_id": "sha256:2fc71310928fed15fb7553d7ef4ba621333db7f32afbb1002eb1514beb1e46df"
+        },
+        "citation_identity": {
+          "source_sha256": "1469ce7fc01cba62a91a63b242c703317e2a06d0c149f9919809714854be4632",
+          "source_revision": "S-S036 Rev. 2.4, 23-Apr-19",
+          "page": 1,
+          "table": "Electrical Characteristics",
+          "row": "Forward Voltage",
+          "citation_id": "sha256:81e7f4d43c882afa3cf174ba00e3d6ee10ba503c2f354d5f46d6cdc9e2f93e08"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:d7de6f34a89e506fbfa150f79a9b80702a5baa1fe9e1aee0e85c1cc037fd96f0",
+          "cohort_id": "sha256:400febb055f5fd4ec8f4bafd6c1c41a412105905b4e7b99b1192180728d1b92b",
+          "role": "maximum",
+          "condition_id": "sha256:2fc71310928fed15fb7553d7ef4ba621333db7f32afbb1002eb1514beb1e46df",
+          "citation_id": "sha256:81e7f4d43c882afa3cf174ba00e3d6ee10ba503c2f354d5f46d6cdc9e2f93e08"
+        }
+      }
+    }
+  ],
+  "curves": [],
+  "electrical_limits": {},
+  "derived_model_inputs": {}
+}

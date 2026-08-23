@@ -1,0 +1,518 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [
+      {
+        "name": "typical_forward_characteristics_b220_through_b240",
+        "page_reference": "PDF p. 3, Fig. 1 Typical Forward Characteristics",
+        "points": [
+          {
+            "x": 0.22,
+            "y": 0.01
+          },
+          {
+            "x": 0.28,
+            "y": 0.1
+          },
+          {
+            "x": 0.38,
+            "y": 1
+          },
+          {
+            "x": 0.6,
+            "y": 10
+          }
+        ],
+        "test_conditions": "TJ = 25 °C; IF pulse width = 300 µs; B220 through B240 curve",
+        "x_axis": {
+          "quantity": "instantaneous_forward_voltage",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "instantaneous_forward_current",
+          "scale": "log",
+          "unit": "A"
+        }
+      },
+      {
+        "name": "forward_current_derating_curve",
+        "page_reference": "PDF p. 3, Fig. 4 Forward Current Derating Curve",
+        "points": [
+          {
+            "x": 25,
+            "y": 2
+          },
+          {
+            "x": 100,
+            "y": 2
+          },
+          {
+            "x": 150,
+            "y": 0
+          }
+        ],
+        "test_conditions": "Fig. 4 Forward Current Derating Curve",
+        "x_axis": {
+          "quantity": "terminal_temperature",
+          "scale": "linear",
+          "unit": "°C"
+        },
+        "y_axis": {
+          "quantity": "average_forward_current",
+          "scale": "linear",
+          "unit": "A"
+        }
+      },
+      {
+        "name": "maximum_non_repetitive_peak_forward_surge_current",
+        "page_reference": "PDF p. 3, Fig. 6 Max Non-Repetitive Peak Forward Surge Current",
+        "points": [
+          {
+            "x": 1,
+            "y": 50
+          },
+          {
+            "x": 10,
+            "y": 27
+          },
+          {
+            "x": 100,
+            "y": 12
+          }
+        ],
+        "test_conditions": "Single half-sine-wave",
+        "x_axis": {
+          "quantity": "number_of_cycles_at_60_hz",
+          "scale": "log",
+          "unit": "cycles"
+        },
+        "y_axis": {
+          "quantity": "peak_forward_surge_current",
+          "scale": "linear",
+          "unit": "A"
+        }
+      }
+    ],
+    "datasheet_identity": {
+      "pages_examined": [
+        "PDF p. 1",
+        "PDF p. 2",
+        "PDF p. 3",
+        "PDF p. 4",
+        "PDF p. 5"
+      ],
+      "revision": "DS13004 Rev. 22 - 2, July 2015",
+      "title": "B220/A - B260/A 2.0A Surface Mount Schottky Barrier Rectifier"
+    },
+    "extraction_notes": [
+      "B230A-13-F is the SMA package member of the B230/A (B220/A through B240/A) Schottky family.",
+      "The p. 2 electrical-characteristics heading states TA = +25 °C unless otherwise specified, and Note 6 states that a short-duration pulse test minimizes self-heating.",
+      "The table also gives 20 mA maximum leakage at rated VR and TA = +100 °C; the singular reverse_current field retains the normal-temperature 0.5 mA maximum, consistent with the specified 25 °C extraction condition.",
+      "The Fig. 1 B220-through-B240 forward points and the Fig. 6 surge points were digitized directly from the plotted traces at labeled current or cycle positions; no interpolated data points were added.",
+      "VRRM, VRWM, and VR are operating ratings, not a paired reverse-breakdown test, so breakdown_voltage and breakdown_current are null."
+    ],
+    "family": "diode",
+    "manufacturer": "Diodes Incorporated",
+    "mpn": "B230A-13-F",
+    "omission_reason": null,
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": null,
+      "breakdown_voltage": null,
+      "capacitance": {
+        "conditions": "VR = 40 V; f = 1 MHz; TA = +25 °C",
+        "page_reference": "PDF p. 2, Electrical Characteristics",
+        "source_kind": "maximum",
+        "unit": "F",
+        "value": 2e-10
+      },
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "TA = +25 °C; B220/A, B230/A, and B240/A row; short-duration pulse test",
+            "page_reference": "PDF p. 2, Electrical Characteristics",
+            "source_kind": "maximum",
+            "unit": "A",
+            "value": 2
+          },
+          "voltage": {
+            "conditions": "IF = 2.0 A; TA = +25 °C; B220/A, B230/A, and B240/A row; short-duration pulse test",
+            "page_reference": "PDF p. 2, Electrical Characteristics",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 0.5
+          }
+        },
+        {
+          "current": {
+            "conditions": "TJ = 25 °C; IF pulse width = 300 µs; B220 through B240 curve",
+            "page_reference": "PDF p. 3, Fig. 1 Typical Forward Characteristics",
+            "source_kind": "digitized_typical_curve",
+            "unit": "A",
+            "value": 0.01
+          },
+          "voltage": {
+            "conditions": "TJ = 25 °C; IF = 0.01 A; IF pulse width = 300 µs; B220 through B240 curve",
+            "page_reference": "PDF p. 3, Fig. 1 Typical Forward Characteristics",
+            "source_kind": "digitized_typical_curve",
+            "unit": "V",
+            "value": 0.22
+          }
+        },
+        {
+          "current": {
+            "conditions": "TJ = 25 °C; IF pulse width = 300 µs; B220 through B240 curve",
+            "page_reference": "PDF p. 3, Fig. 1 Typical Forward Characteristics",
+            "source_kind": "digitized_typical_curve",
+            "unit": "A",
+            "value": 0.1
+          },
+          "voltage": {
+            "conditions": "TJ = 25 °C; IF = 0.1 A; IF pulse width = 300 µs; B220 through B240 curve",
+            "page_reference": "PDF p. 3, Fig. 1 Typical Forward Characteristics",
+            "source_kind": "digitized_typical_curve",
+            "unit": "V",
+            "value": 0.28
+          }
+        },
+        {
+          "current": {
+            "conditions": "TJ = 25 °C; IF pulse width = 300 µs; B220 through B240 curve",
+            "page_reference": "PDF p. 3, Fig. 1 Typical Forward Characteristics",
+            "source_kind": "digitized_typical_curve",
+            "unit": "A",
+            "value": 1
+          },
+          "voltage": {
+            "conditions": "TJ = 25 °C; IF = 1 A; IF pulse width = 300 µs; B220 through B240 curve",
+            "page_reference": "PDF p. 3, Fig. 1 Typical Forward Characteristics",
+            "source_kind": "digitized_typical_curve",
+            "unit": "V",
+            "value": 0.38
+          }
+        },
+        {
+          "current": {
+            "conditions": "TJ = 25 °C; IF pulse width = 300 µs; B220 through B240 curve",
+            "page_reference": "PDF p. 3, Fig. 1 Typical Forward Characteristics",
+            "source_kind": "digitized_typical_curve",
+            "unit": "A",
+            "value": 10
+          },
+          "voltage": {
+            "conditions": "TJ = 25 °C; IF = 10 A; IF pulse width = 300 µs; B220 through B240 curve",
+            "page_reference": "PDF p. 3, Fig. 1 Typical Forward Characteristics",
+            "source_kind": "digitized_typical_curve",
+            "unit": "V",
+            "value": 0.6
+          }
+        }
+      ],
+      "reverse_current": {
+        "conditions": "Rated VR = 30 V for B230/A; TA = +25 °C; short-duration pulse test",
+        "page_reference": "PDF p. 2, Electrical Characteristics",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.0005
+      },
+      "reverse_recovery": null,
+      "variant": "schottky"
+    },
+    "usable_curves": true
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "Forward Voltage (Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "500mV@2A",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Voltage - Forward(Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "500mV@2A",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "B230A-13-F",
+    "manufacturer": "Diodes Incorporated",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8560078861175455744",
+    "revision": "DS13004 Rev. 22 - 2, July 2015",
+    "sha256": "19ab27e98e717e7012275062b715964897882f3ce95eab846f71d5f2b485ab5b",
+    "accessed_date": "2026-08-23",
+    "pages_referenced": [
+      "PDF p. 1",
+      "PDF p. 2",
+      "PDF p. 3",
+      "PDF p. 4",
+      "PDF p. 5"
+    ],
+    "placeholder": false
+  },
+  "evidence_contract_version": "1.0.0",
+  "fit_points": [
+    {
+      "current": {
+        "conditions": "TJ = 25 °C; IF pulse width = 300 µs; B220 through B240 curve",
+        "page_reference": "PDF p. 3, Fig. 1 Typical Forward Characteristics",
+        "source_kind": "digitized_typical_curve",
+        "unit": "A",
+        "value": 0.01
+      },
+      "voltage": {
+        "conditions": "TJ = 25 °C; IF = 0.01 A; IF pulse width = 300 µs; B220 through B240 curve",
+        "page_reference": "PDF p. 3, Fig. 1 Typical Forward Characteristics",
+        "source_kind": "digitized_typical_curve",
+        "unit": "V",
+        "value": 0.22
+      }
+    },
+    {
+      "current": {
+        "conditions": "TA = +25 °C; B220/A, B230/A, and B240/A row; short-duration pulse test",
+        "page_reference": "PDF p. 2, Electrical Characteristics",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 2
+      },
+      "voltage": {
+        "conditions": "IF = 2.0 A; TA = +25 °C; B220/A, B230/A, and B240/A row; short-duration pulse test",
+        "page_reference": "PDF p. 2, Electrical Characteristics",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 0.5
+      }
+    }
+  ],
+  "forward_voltage_points": [
+    {
+      "current": {
+        "conditions": "TA = +25 °C; B220/A, B230/A, and B240/A row; short-duration pulse test",
+        "page_reference": "PDF p. 2, Electrical Characteristics",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 2,
+        "quantity": "forward_current",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "ambient",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 2
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 0.5
+            }
+          },
+          "test_mode": {
+            "kind": "not_stated"
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "TA = +25 °C; B220/A, B230/A, and B240/A row; short-duration pulse test"
+            }
+          ],
+          "condition_id": "sha256:9385c8d5c3f758f47bd636239f19a519025b0605bf56fc9fef8eb8d75313ab70"
+        },
+        "citation_identity": {
+          "source_sha256": "19ab27e98e717e7012275062b715964897882f3ce95eab846f71d5f2b485ab5b",
+          "source_revision": "DS13004 Rev. 22 - 2, July 2015",
+          "page": 2,
+          "table": "Electrical Characteristics",
+          "row": "Forward Current",
+          "citation_id": "sha256:98b5e8a86c8e36743bd127ad8ae55fa65cc5338eeaa23698b8bd32fcf6918557"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:bc34f66a73d8003cc02129a52c06e5d5ea0eab37dad27890c2746d82890d3662",
+          "cohort_id": "sha256:43091443b0f3e4646770e1f7220bfeb03b76546a4ed6cb99c1ac58966e60387b",
+          "role": "maximum",
+          "condition_id": "sha256:9385c8d5c3f758f47bd636239f19a519025b0605bf56fc9fef8eb8d75313ab70",
+          "citation_id": "sha256:98b5e8a86c8e36743bd127ad8ae55fa65cc5338eeaa23698b8bd32fcf6918557"
+        }
+      },
+      "voltage": {
+        "conditions": "IF = 2.0 A; TA = +25 °C; B220/A, B230/A, and B240/A row; short-duration pulse test",
+        "page_reference": "PDF p. 2, Electrical Characteristics",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 0.5,
+        "quantity": "forward_voltage",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "ambient",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 2
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 0.5
+            }
+          },
+          "test_mode": {
+            "kind": "not_stated"
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "IF = 2.0 A; TA = +25 °C; B220/A, B230/A, and B240/A row; short-duration pulse test"
+            }
+          ],
+          "condition_id": "sha256:00ebf3031ae3e54dcd58117d45bf924dcd175c34ec9b5eca616427fd8b3500f1"
+        },
+        "citation_identity": {
+          "source_sha256": "19ab27e98e717e7012275062b715964897882f3ce95eab846f71d5f2b485ab5b",
+          "source_revision": "DS13004 Rev. 22 - 2, July 2015",
+          "page": 2,
+          "table": "Electrical Characteristics",
+          "row": "Forward Voltage",
+          "citation_id": "sha256:2d858309777c5561e71af404839f24db2beee84cf71bd34a531cb3cb5596fe49"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:170a444e2a231b6da37b1b1c6e2984418f6b7cd985956349a2bce06be9fc6575",
+          "cohort_id": "sha256:dddeffccbd3f66bf2be9183a8171047723d6b551950285eb912990766d504a2c",
+          "role": "maximum",
+          "condition_id": "sha256:00ebf3031ae3e54dcd58117d45bf924dcd175c34ec9b5eca616427fd8b3500f1",
+          "citation_id": "sha256:2d858309777c5561e71af404839f24db2beee84cf71bd34a531cb3cb5596fe49"
+        }
+      }
+    },
+    {
+      "current": {
+        "conditions": "TJ = 25 °C; IF pulse width = 300 µs; B220 through B240 curve",
+        "page_reference": "PDF p. 3, Fig. 1 Typical Forward Characteristics",
+        "source_kind": "digitized_typical_curve",
+        "unit": "A",
+        "value": 0.01,
+        "quantity": "forward_current",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "junction",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 0.01
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 0.22
+            }
+          },
+          "test_mode": {
+            "kind": "pulsed_limit",
+            "maximum_pulse_width_s": 0.0003
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "TJ = 25 °C; IF pulse width = 300 µs; B220 through B240 curve"
+            }
+          ],
+          "condition_id": "sha256:6b833cf8cd464230114ea63c161aba365c4883b6f8c57996b4029a81523354ca"
+        },
+        "citation_identity": {
+          "source_sha256": "19ab27e98e717e7012275062b715964897882f3ce95eab846f71d5f2b485ab5b",
+          "source_revision": "DS13004 Rev. 22 - 2, July 2015",
+          "page": 3,
+          "figure": "1",
+          "curve": "Forward Current: TJ = 25 °C; IF pulse width = 300 µs; B220 through B240 curve",
+          "citation_id": "sha256:20413a765a6ea69f8ab764d18977fa9a12a4da23e02232d23ee9ad69263aafdd"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:3b1bb2acc6037e381877eff8b91f2653ee2f32627a5908eb7344ed378947e00e",
+          "cohort_id": "sha256:4754b29332e515b46484fa544a12b49d954850a6a8a04a4dd00114df72584adf",
+          "role": "digitized_typical_curve",
+          "condition_id": "sha256:6b833cf8cd464230114ea63c161aba365c4883b6f8c57996b4029a81523354ca",
+          "citation_id": "sha256:20413a765a6ea69f8ab764d18977fa9a12a4da23e02232d23ee9ad69263aafdd"
+        }
+      },
+      "voltage": {
+        "conditions": "TJ = 25 °C; IF = 0.01 A; IF pulse width = 300 µs; B220 through B240 curve",
+        "page_reference": "PDF p. 3, Fig. 1 Typical Forward Characteristics",
+        "source_kind": "digitized_typical_curve",
+        "unit": "V",
+        "value": 0.22,
+        "quantity": "forward_voltage",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "junction",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 0.01
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 0.22
+            }
+          },
+          "test_mode": {
+            "kind": "pulsed_limit",
+            "maximum_pulse_width_s": 0.0003
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "TJ = 25 °C; IF = 0.01 A; IF pulse width = 300 µs; B220 through B240 curve"
+            }
+          ],
+          "condition_id": "sha256:4bb54cb80315a249b56d306fdeca736fe0ed428822316b1fe50f744cba47cb5d"
+        },
+        "citation_identity": {
+          "source_sha256": "19ab27e98e717e7012275062b715964897882f3ce95eab846f71d5f2b485ab5b",
+          "source_revision": "DS13004 Rev. 22 - 2, July 2015",
+          "page": 3,
+          "figure": "1",
+          "curve": "Forward Voltage: TJ = 25 °C; IF = 0.01 A; IF pulse width = 300 µs; B220 through B240 curve",
+          "citation_id": "sha256:87bbdfdfa818f897478e15f61acc80001de67947962859c3e371b751501095e3"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:7a93a4eec88f3d6d943646756ba160e0e31a652f426e44c95474ac2c6d2cdd10",
+          "cohort_id": "sha256:89398ab5389df153bf7466a810fddec7ba3124d386b4953b4804fa72aff20783",
+          "role": "digitized_typical_curve",
+          "condition_id": "sha256:4bb54cb80315a249b56d306fdeca736fe0ed428822316b1fe50f744cba47cb5d",
+          "citation_id": "sha256:87bbdfdfa818f897478e15f61acc80001de67947962859c3e371b751501095e3"
+        }
+      }
+    }
+  ],
+  "curves": [],
+  "electrical_limits": {},
+  "derived_model_inputs": {}
+}

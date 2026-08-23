@@ -417,6 +417,67 @@ function opBench(model, modelName, name, current) {
   return `OpenCircuit factory test: ${name}\n${model}\nItest 0 anode DC ${formatSpice(current)}\nVanchor anchor 0 DC 0\nRanchor anchor 0 1G\nDdut anode 0 ${modelName}\n.op\n.end\n`;
 }
 
+function strictDiodeForwardBench(model, modelName, name, current, condition) {
+  const temperature = Number(condition.temperature.value_c);
+  if (["dc", "continuous", "not_stated", "pulsed_limit"].includes(condition.test_mode.kind)) return {
+    text: `OpenCircuit factory test: ${name}\n${model}\n.temp ${formatSpice(temperature)}\nItest 0 anode DC ${formatSpice(current)}\nVanchor anchor 0 DC 0\nRanchor anchor 0 1G\nDdut anode 0 ${modelName}\n.op\n.end\n`,
+    analysisType: "operating_point",
+    expression: "last(v(anode))",
+  };
+  const width = Number(condition.test_mode.pulse_width_s);
+  const duty = condition.test_mode.kind === "pulsed" ? Number(condition.test_mode.duty_cycle) : null;
+  if (!(width > 0) || (condition.test_mode.kind === "pulsed" && !(duty > 0 && duty < 1))) {
+    throw new Error(`${name} has an invalid diode pulse qualification`);
+  }
+  const delay = width;
+  const edge = width / 1000;
+  const period = duty == null ? width * 4 : width / duty;
+  const sample = delay + edge + width / 2;
+  const stop = delay + edge + width * 0.75;
+  const step = width / 40;
+  return {
+    text: `OpenCircuit factory test: ${name}\n${model}\n.temp ${formatSpice(temperature)}\nItest 0 anode PULSE(${formatSpice(0)} ${formatSpice(current)} ${formatSpice(delay)} ${formatSpice(edge)} ${formatSpice(edge)} ${formatSpice(width)} ${formatSpice(period)})\nVanchor anchor 0 DC 0\nRanchor anchor 0 1G\nDdut anode 0 ${modelName}\n.tran ${formatSpice(step)} ${formatSpice(stop)}\n.end\n`,
+    analysisType: "transient",
+    expression: `at(v(anode),${formatSpice(sample)})`,
+  };
+}
+
+function diodeCitationText(citation, fallback) {
+  if (!citation) return fallback;
+  if (citation.table) return `p. ${citation.page}, Table ${citation.table}, row ${citation.row}`;
+  return `p. ${citation.page}, Figure ${citation.figure}, ${citation.curve ?? citation.trace}`;
+}
+
+function strictDiodeForwardRows(facts, fidelityTier) {
+  const rows = [];
+  for (const curve of facts.curves ?? []) if (curve.characteristic === "forward_voltage") {
+    for (const point of curve.points ?? []) rows.push({
+      current: point.x_si,
+      voltage: point.y_si,
+      role: point.evidence_identity.role,
+      condition: curve.condition_identity,
+      citation: curve.citation_identity,
+      evidence: point.evidence_identity,
+      pageReference: diodeCitationText(curve.citation_identity, "forward-voltage curve"),
+    });
+  }
+  for (const point of facts.forward_voltage_points ?? []) {
+    const voltage = point.voltage;
+    if (!voltage?.evidence_identity) continue;
+    if (fidelityTier === "F2" && !["minimum", "maximum"].includes(voltage.evidence_identity.role)) continue;
+    rows.push({
+      current: point.current.value,
+      voltage: voltage.value,
+      role: voltage.evidence_identity.role,
+      condition: voltage.condition_identity,
+      citation: voltage.citation_identity,
+      evidence: voltage.evidence_identity,
+      pageReference: voltage.page_reference,
+    });
+  }
+  return rows;
+}
+
 function reverseBench(model, modelName, voltage) {
   return `OpenCircuit factory test: reverse leakage\n${model}\nVreverse cathode 0 DC ${formatSpice(voltage)}\nDdut 0 cathode ${modelName}\n.op\n.end\n`;
 }
@@ -706,9 +767,15 @@ export function normalizeMosfetEvidenceIdentity(raw, condition, citation, trail 
 }
 
 function evidenceLinks(evidence, condition, citation = null) {
+  const diodeProjection = condition.characteristic === "forward_voltage" && ["not_stated", "pulsed_limit"].includes(condition.test_mode.kind);
   const qualification = condition.test_mode.kind === "pulsed" || condition.test_mode.kind === "single_pulse"
     ? { test_mode: condition.test_mode.kind, pulse_width_s: condition.test_mode.pulse_width_s, ...(condition.test_mode.duty_cycle == null ? {} : { duty_cycle: condition.test_mode.duty_cycle }) }
+    : diodeProjection && condition.test_mode.kind === "pulsed_limit"
+      ? { test_mode: "pulsed_limit", ...(condition.test_mode.maximum_pulse_width_s == null ? {} : { maximum_pulse_width_s: condition.test_mode.maximum_pulse_width_s }), ...(condition.test_mode.maximum_duty_cycle == null ? {} : { maximum_duty_cycle: condition.test_mode.maximum_duty_cycle }) }
+      : diodeProjection && condition.test_mode.kind === "not_stated"
+        ? { test_mode: "not_stated" }
     : { test_mode: "continuous_dc" };
+  const projected = diodeProjection;
   const locator = citation?.table
     ? { page: citation.page, table: citation.table, row: citation.row }
     : citation?.figure
@@ -723,7 +790,8 @@ function evidenceLinks(evidence, condition, citation = null) {
     evidence_role: evidence.role === "minimum" ? "inclusive_minimum" : evidence.role === "maximum" ? "inclusive_maximum" : evidence.role === "digitized_typical_curve" ? "curve_point" : "typical_observation",
     citation_locator: locator,
     evidence_qualification: qualification,
-    bench_qualification: qualification,
+    bench_qualification: projected ? { test_mode: "continuous_dc" } : qualification,
+    ...(projected ? { bench_equivalence_policy: "isothermal_diode_forward_projection" } : {}),
   };
 }
 
@@ -1498,27 +1566,41 @@ export function stageTestgen(ctx) {
     return;
   }
 
-  facts.fit_points.forEach((point, index) => {
+  const strictDiodeEvidence = facts.evidence_contract_version === "1.0.0" && Array.isArray(facts.forward_voltage_points);
+  const forwardRows = strictDiodeEvidence
+    ? strictDiodeForwardRows(facts, ctx.part.component.fidelity_tier)
+    : facts.fit_points.map((point) => ({
+      current: point.current.value,
+      voltage: point.voltage.value,
+      role: point.voltage.source_kind,
+      pageReference: point.voltage.page_reference,
+    }));
+  forwardRows.forEach((row, index) => {
     const file = `forward_${String(index + 1).padStart(2, "0")}.cir`;
-    fs.writeFileSync(path.join(ctx.packageDir, "tests", file), opBench(model, ctx.part.component.modelName, file, point.current.value));
-    const maximumBound = point.voltage.source_kind.includes("maximum");
-    const minimumBound = point.voltage.source_kind.includes("minimum");
+    const bench = strictDiodeEvidence
+      ? strictDiodeForwardBench(model, ctx.part.component.modelName, file, row.current, row.condition)
+      : { text: opBench(model, ctx.part.component.modelName, file, row.current), analysisType: "operating_point", expression: "last(v(anode))" };
+    fs.writeFileSync(path.join(ctx.packageDir, "tests", file), bench.text);
+    const maximumBound = row.role.includes("maximum");
+    const minimumBound = row.role.includes("minimum");
+    const links = strictDiodeEvidence ? evidenceLinks(row.evidence, row.condition, row.citation) : null;
     tests.push({
       test_netlist: file,
-      analysis_type: "operating_point",
+      analysis_type: bench.analysisType,
       scalar_checks: maximumBound || minimumBound ? [] : [expectation(
-        `forward_voltage_at_${point.current.value}_a`,
-        "last(v(anode))",
-        point.voltage.value,
+        `forward_voltage_at_${row.current}_a`,
+        bench.expression,
+        row.voltage,
         "V",
         0.02,
         ctx.part.component.test_tolerances?.forward_voltage ?? 0.04,
-        point.voltage.page_reference
+        row.pageReference,
+        links
       )],
       hard_bounds_checks: maximumBound
-        ? [hardBound(`forward_voltage_maximum_at_${point.current.value}_a`, "last(v(anode))", "V", { minimum: 0, maximum: point.voltage.value }, point.voltage.page_reference)]
+        ? [hardBound(`forward_voltage_maximum_at_${row.current}_a`, bench.expression, "V", { minimum: 0, maximum: row.voltage }, row.pageReference, links)]
         : minimumBound
-          ? [hardBound(`forward_voltage_minimum_at_${point.current.value}_a`, "last(v(anode))", "V", { minimum: point.voltage.value }, point.voltage.page_reference)]
+          ? [hardBound(`forward_voltage_minimum_at_${row.current}_a`, bench.expression, "V", { minimum: row.voltage }, row.pageReference, links)]
           : []
     });
   });
@@ -1586,7 +1668,17 @@ export function stageTestgen(ctx) {
     });
   }
 
-  writeJson(path.join(ctx.packageDir, "tests", "expectations.json"), { schema_version: "1.0.0", tests });
+  const linkedChecks = tests.flatMap((entry) => [...(entry.scalar_checks ?? []), ...(entry.hard_bounds_checks ?? [])]).filter((check) => check.evidence_id);
+  const evidenceCohorts = [...new Map(linkedChecks.map((check) => [check.cohort_id, {
+    cohort_id: check.cohort_id,
+    fidelity_tier: ctx.part.component.fidelity_tier,
+    evidence_ids: linkedChecks.filter((candidate) => candidate.cohort_id === check.cohort_id).map((candidate) => candidate.evidence_id).filter((value, index, values) => values.indexOf(value) === index),
+  }])).values()];
+  writeJson(path.join(ctx.packageDir, "tests", "expectations.json"), {
+    schema_version: "1.0.0",
+    ...(strictDiodeEvidence ? { evidence_contract_version: "1.0.0", evidence_cohorts: evidenceCohorts } : {}),
+    tests,
+  });
   console.log(`testgen ${ctx.part.slug}: ${tests.length} benches`);
 }
 

@@ -1,0 +1,280 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [
+      {
+        "name": "Diode capacitance versus zener voltage",
+        "page_reference": "p. 2, Figure 5 Diode Capacitance vs. Z-Voltage",
+        "points": [
+          {
+            "x": 10,
+            "y": 4e-11
+          },
+          {
+            "x": 15,
+            "y": 2e-11
+          },
+          {
+            "x": 20,
+            "y": 1.5e-11
+          }
+        ],
+        "test_conditions": "VR = 2 V; Tj = 25 °C.",
+        "x_axis": {
+          "quantity": "zener_voltage",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "diode_capacitance",
+          "scale": "linear",
+          "unit": "F"
+        }
+      }
+    ],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3",
+        "p. 4"
+      ],
+      "revision": "20170701-P1",
+      "title": "BZV55C Series — 500 mW Hermetically Sealed Glass Zener Voltage Rectifiers"
+    },
+    "extraction_notes": [
+      "The target row publishes only VZ limits: 11.4 V minimum and 12.7 V maximum at IZT = 5 mA. No nominal VZ is stated, so the minimum is recorded rather than treating the C12 suffix as a measured typical value.",
+      "Figure 5 points and the 30 pF target capacitance were digitized directly from the plotted family curve and rounded to its readable resolution; no intermediate points were interpolated."
+    ],
+    "family": "diode",
+    "manufacturer": "LGE",
+    "mpn": "BZV55C12",
+    "omission_reason": "The datasheet provides no reverse-recovery-time specification.",
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": {
+        "conditions": "IZT for the published 11.4 V minimum to 12.7 V maximum VZ range of BZV55C12; TA = 25 °C unless otherwise noted.",
+        "page_reference": "p. 4, Electrical Characteristics table, BZV55C12 row",
+        "source_kind": "minimum",
+        "unit": "A",
+        "value": 0.005
+      },
+      "breakdown_voltage": {
+        "conditions": "VZ minimum at IZT = 5 mA for BZV55C12; TA = 25 °C unless otherwise noted.",
+        "page_reference": "p. 4, Electrical Characteristics table, BZV55C12 row",
+        "source_kind": "minimum",
+        "unit": "V",
+        "value": 11.4
+      },
+      "capacitance": {
+        "conditions": "Digitized directly from the family curve at VZ = 12 V; VR = 2 V; Tj = 25 °C.",
+        "page_reference": "p. 2, Figure 5 Diode Capacitance vs. Z-Voltage",
+        "source_kind": "digitized_typical_curve",
+        "unit": "F",
+        "value": 3e-11
+      },
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "IF = 100 mA; applies to all listed types; TA = 25 °C unless otherwise noted.",
+            "page_reference": "p. 4, Electrical Characteristics table footnote",
+            "source_kind": "maximum",
+            "unit": "A",
+            "value": 0.1
+          },
+          "voltage": {
+            "conditions": "VF maximum at IF = 100 mA; applies to all listed types; TA = 25 °C unless otherwise noted.",
+            "page_reference": "p. 4, Electrical Characteristics table footnote",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 1
+          }
+        }
+      ],
+      "reverse_current": {
+        "conditions": "IR maximum at VR = 9.1 V for BZV55C12; TA = 25 °C unless otherwise noted.",
+        "page_reference": "p. 4, Electrical Characteristics table, BZV55C12 row",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 1e-7
+      },
+      "reverse_recovery": null,
+      "variant": "zener"
+    },
+    "usable_curves": true
+  },
+  "catalog_seed_hints": [],
+  "identity": {
+    "canonical_mpn": "BZV55C12",
+    "manufacturer": "LGE",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8588912960299544576",
+    "revision": "20170701-P1",
+    "sha256": "d50783a8653f08c7ab507300df2891e9eb5da9fbe83461bda47404c20c5f1389",
+    "accessed_date": "2026-08-23",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "placeholder": false
+  },
+  "evidence_contract_version": "1.0.0",
+  "fit_points": [
+    {
+      "current": {
+        "conditions": "IF = 100 mA; applies to all listed types; TA = 25 °C unless otherwise noted.",
+        "page_reference": "p. 4, Electrical Characteristics table footnote",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.1
+      },
+      "voltage": {
+        "conditions": "VF maximum at IF = 100 mA; applies to all listed types; TA = 25 °C unless otherwise noted.",
+        "page_reference": "p. 4, Electrical Characteristics table footnote",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 1
+      }
+    }
+  ],
+  "forward_voltage_points": [
+    {
+      "current": {
+        "conditions": "IF = 100 mA; applies to all listed types; TA = 25 °C unless otherwise noted.",
+        "page_reference": "p. 4, Electrical Characteristics table footnote",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.1,
+        "quantity": "forward_current",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "ambient",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 0.1
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 1
+            }
+          },
+          "test_mode": {
+            "kind": "not_stated"
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "IF = 100 mA; applies to all listed types; TA = 25 °C unless otherwise noted."
+            }
+          ],
+          "condition_id": "sha256:f5a8f9359e3ba86d415095bdc6af24b123163543512f8e9eb3e29c6a8501adee"
+        },
+        "citation_identity": {
+          "source_sha256": "d50783a8653f08c7ab507300df2891e9eb5da9fbe83461bda47404c20c5f1389",
+          "source_revision": "20170701-P1",
+          "page": 4,
+          "table": "Electrical Characteristics table footnote",
+          "row": "Forward Current",
+          "citation_id": "sha256:02f93d64380888c80ab2079df8030cb82df4cc31593c87023018e0dc1a6cc25b"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:080d84a189177c089451c3ec7df923e0b2b718720a003a92744ed70daea98120",
+          "cohort_id": "sha256:f96afe09aa1db99a04ed9c029708b6a54f48a6b59f4a3176b207b611d8430d1e",
+          "role": "maximum",
+          "condition_id": "sha256:f5a8f9359e3ba86d415095bdc6af24b123163543512f8e9eb3e29c6a8501adee",
+          "citation_id": "sha256:02f93d64380888c80ab2079df8030cb82df4cc31593c87023018e0dc1a6cc25b"
+        }
+      },
+      "voltage": {
+        "conditions": "VF maximum at IF = 100 mA; applies to all listed types; TA = 25 °C unless otherwise noted.",
+        "page_reference": "p. 4, Electrical Characteristics table footnote",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 1,
+        "quantity": "forward_voltage",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "ambient",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 0.1
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 1
+            }
+          },
+          "test_mode": {
+            "kind": "not_stated"
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "VF maximum at IF = 100 mA; applies to all listed types; TA = 25 °C unless otherwise noted."
+            }
+          ],
+          "condition_id": "sha256:3fb7130eab6bf1124274b6b5e2ac922a5794ccaa6319d48433b77bb1b6ff3189"
+        },
+        "citation_identity": {
+          "source_sha256": "d50783a8653f08c7ab507300df2891e9eb5da9fbe83461bda47404c20c5f1389",
+          "source_revision": "20170701-P1",
+          "page": 4,
+          "table": "Electrical Characteristics table footnote",
+          "row": "Forward Voltage",
+          "citation_id": "sha256:14a3c875778d89928ae0df8ac3dd00b028581fa5780a827600ab76161dc2a9ab"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:aaf5e64961a73debd5f623ba613baea355cee33082f90a06b5a0ff589d693234",
+          "cohort_id": "sha256:cda85971998ddd552b07bdb8d957876678ec8a70390a3a7ba8e6322aa7ac0399",
+          "role": "maximum",
+          "condition_id": "sha256:3fb7130eab6bf1124274b6b5e2ac922a5794ccaa6319d48433b77bb1b6ff3189",
+          "citation_id": "sha256:14a3c875778d89928ae0df8ac3dd00b028581fa5780a827600ab76161dc2a9ab"
+        }
+      }
+    }
+  ],
+  "curves": [],
+  "electrical_limits": {},
+  "derived_model_inputs": {
+    "BV": {
+      "conditions": "VZ minimum at IZT = 5 mA for BZV55C12; TA = 25 °C unless otherwise noted.",
+      "page_reference": "p. 4, Electrical Characteristics table, BZV55C12 row",
+      "source_kind": "minimum",
+      "unit": "V",
+      "value": 11.4
+    },
+    "IBV": {
+      "conditions": "IZT for the published 11.4 V minimum to 12.7 V maximum VZ range of BZV55C12; TA = 25 °C unless otherwise noted.",
+      "page_reference": "p. 4, Electrical Characteristics table, BZV55C12 row",
+      "source_kind": "minimum",
+      "unit": "A",
+      "value": 0.005
+    },
+    "NBV": {
+      "value": 1,
+      "unit": "1",
+      "conditions": "First-order avalanche-knee default; no multi-point reverse-knee trace was available",
+      "page_reference": "model-factory Zener F1 policy",
+      "source_kind": "held_default"
+    }
+  }
+}

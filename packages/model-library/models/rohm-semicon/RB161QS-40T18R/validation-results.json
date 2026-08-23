@@ -1,0 +1,96 @@
+{
+  "schema_version": "1.0.0",
+  "validation_date": "2026-08-23",
+  "native_wasm_all_pass": true,
+  "expectations_all_pass": true,
+  "expectation_pass_count": 6,
+  "expectation_fail_count": 0,
+  "worst_native_wasm_relative_delta": 8.098394821536817e-14,
+  "worst_native_wasm_absolute_delta": 1.84297022087776e-14,
+  "benches": [
+    {
+      "test_netlist": "forward_01.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "forward_voltage_at_0.001_a",
+          "pass": true,
+          "value": 0.22757228580367275,
+          "error": 0.007572285803672751,
+          "allowed": 0.02
+        }
+      ]
+    },
+    {
+      "test_netlist": "forward_02.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "forward_voltage_at_0.01_a",
+          "pass": true,
+          "value": 0.28905957125441173,
+          "error": 0.009059571254411702,
+          "allowed": 0.02
+        }
+      ]
+    },
+    {
+      "test_netlist": "forward_03.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "forward_voltage_at_0.1_a",
+          "pass": true,
+          "value": 0.3568870099769909,
+          "error": 0.006887009976990932,
+          "allowed": 0.02
+        }
+      ]
+    },
+    {
+      "test_netlist": "forward_04.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "forward_voltage_at_1_a",
+          "pass": true,
+          "value": 0.4880722040551801,
+          "error": 0.00807220405518011,
+          "allowed": 0.024
+        }
+      ]
+    },
+    {
+      "test_netlist": "forward_05.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "forward_voltage_maximum_at_1_a",
+          "pass": true,
+          "value": 0.4880722040551801,
+          "minimum": 0,
+          "maximum": 0.6
+        }
+      ]
+    },
+    {
+      "test_netlist": "reverse_leakage.cir",
+      "analysis": "op",
+      "native_wasm_pass": true,
+      "checks": [
+        {
+          "name": "reverse_leakage_maximum",
+          "pass": true,
+          "value": 1.8099822773695757e-7,
+          "minimum": 0,
+          "maximum": 0.0001
+        }
+      ]
+    }
+  ]
+}

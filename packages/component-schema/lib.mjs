@@ -48,7 +48,8 @@ const LINKAGE_FIELDS = [
   "evidence_role",
   "citation_locator",
   "evidence_qualification",
-  "bench_qualification"
+  "bench_qualification",
+  "bench_equivalence_policy"
 ];
 const GENERIC_CITATION = /^(?:n\/?a|none|unknown|tbd|todo|placeholder|datasheet|data\s*sheet|source|manufacturer(?:\s+datasheet)?|see\s+datasheet|electrical characteristics|typical characteristics|figure|table|page|p\.?|fig\.?)$/i;
 
@@ -78,9 +79,7 @@ function sameCanonicalContent(left, right) {
 }
 
 function sameQualification(left, right) {
-  return left?.test_mode === right?.test_mode
-    && left?.pulse_width_s === right?.pulse_width_s
-    && left?.duty_cycle === right?.duty_cycle;
+  return sameCanonicalContent(left, right);
 }
 
 function qualificationFromCondition(condition) {
@@ -91,6 +90,12 @@ function qualificationFromCondition(condition) {
       ...(condition.test_mode.duty_cycle == null ? {} : { duty_cycle: condition.test_mode.duty_cycle })
     };
   }
+  if (condition?.characteristic === "forward_voltage" && condition?.test_mode?.kind === "pulsed_limit") return {
+    test_mode: "pulsed_limit",
+    ...(condition.test_mode.maximum_pulse_width_s == null ? {} : { maximum_pulse_width_s: condition.test_mode.maximum_pulse_width_s }),
+    ...(condition.test_mode.maximum_duty_cycle == null ? {} : { maximum_duty_cycle: condition.test_mode.maximum_duty_cycle }),
+  };
+  if (condition?.characteristic === "forward_voltage" && condition?.test_mode?.kind === "not_stated") return { test_mode: "not_stated" };
   return { test_mode: "continuous_dc" };
 }
 
@@ -107,20 +112,26 @@ function expectationRole(evidenceRole) {
         : "typical_observation";
 }
 
+function electricalUnitSuffix(quantity) {
+  return ["id", "forward_current"].includes(quantity) ? "a" : "v";
+}
+
 function conditionDomain(condition, quantity, temperatureKind = null) {
   if (quantity === "temperature") {
-    return condition.temperature.kind === temperatureKind
+    return condition?.temperature?.kind === temperatureKind
       ? { minimum: condition.temperature.value_c, maximum: condition.temperature.value_c }
       : null;
   }
-  const electrical = condition.electrical[quantity];
+  const electrical = condition?.electrical?.[quantity];
+  if (!electrical) return null;
+  const suffix = electricalUnitSuffix(quantity);
   if (electrical.kind === "fixed") {
-    const value = electrical[`value_${quantity === "id" ? "a" : "v"}`];
+    const value = electrical[`value_${suffix}`];
     return { minimum: value, maximum: value };
   }
   if (electrical.kind === "range") return {
-    minimum: electrical[`lower_${quantity === "id" ? "a" : "v"}`],
-    maximum: electrical[`upper_${quantity === "id" ? "a" : "v"}`]
+    minimum: electrical[`lower_${suffix}`],
+    maximum: electrical[`upper_${suffix}`]
   };
   if (electrical.kind === "enumerated") return { values: electrical.values };
   return null;
@@ -150,6 +161,9 @@ function collectFactsEvidence(facts) {
   };
   for (const [pointIndex, point] of (facts?.rdson_points ?? []).entries()) {
     for (const field of ["vgs", "current", "resistance"]) addDatum(point[field], `facts.rdson_points[${pointIndex}].${field}`);
+  }
+  for (const [pointIndex, point] of (facts?.forward_voltage_points ?? []).entries()) {
+    for (const field of ["current", "voltage"]) addDatum(point[field], `facts.forward_voltage_points[${pointIndex}].${field}`);
   }
   for (const field of ["minimum", "typical", "maximum"]) addDatum(facts?.threshold?.[field], `facts.threshold.${field}`);
   for (const [curveIndex, curve] of (facts?.curves ?? []).entries()) for (const [pointIndex, point] of (curve.points ?? []).entries()) {
@@ -280,9 +294,14 @@ function expectationEvidenceSemantics(check, resolved, checkPath, errors) {
   const quantityMatches = ["transfer_current", "output_current"].includes(characteristic) ? /\bi\s*\(/.test(expression)
     : characteristic === "gate_threshold" ? /\bv\s*\(/.test(expression) && !/\bi\s*\(/.test(expression)
       : characteristic === "rds_on" ? /scale_abs:/.test(expression)
+        : characteristic === "forward_voltage" ? /\bv\s*\(/.test(expression) && !/\bi\s*\(/.test(expression)
         : true;
   if (!quantityMatches) errors.push(`expectations ${checkPath} expression quantity disagrees with bench metric semantics`);
-  if (resolved.kind === "point" && resolved.curve?.y_axis?.quantity !== "id") errors.push(`expectations ${checkPath} quantity disagrees with bench metric semantics`);
+  const expectedPointQuantity = ["transfer_current", "output_current"].includes(characteristic) ? "id"
+    : characteristic === "forward_voltage" ? "forward_voltage" : null;
+  if (resolved.kind === "point" && expectedPointQuantity && resolved.curve?.y_axis?.quantity !== expectedPointQuantity) {
+    errors.push(`expectations ${checkPath} quantity disagrees with bench metric semantics`);
+  }
 }
 
 function residualCalibrationErrors(fitted, fidelityTier) {
@@ -348,15 +367,19 @@ function mosfetResidualSummaryErrors(component, fitted, fidelityTier) {
 }
 
 function canonicalCalibrationQuantity(resolved) {
-  if (resolved.kind === "point") return resolved.characteristic === "transfer_current" ? "transfer current" : "output current";
+  if (resolved.kind === "point") return resolved.characteristic === "transfer_current" ? "transfer current"
+    : resolved.characteristic === "output_current" ? "output current"
+      : resolved.characteristic === "forward_voltage" ? "forward voltage" : resolved.characteristic;
   if (resolved.characteristic === "rds_on") return "rds_on";
   if (resolved.characteristic === "gate_threshold") return "gate_threshold";
+  if (resolved.characteristic === "forward_voltage") return "forward voltage";
   return resolved.characteristic;
 }
 
 function canonicalGateQuantity(resolved) {
   return resolved.characteristic === "rds_on" ? "rds_on"
     : ["transfer_current", "output_current"].includes(resolved.characteristic) ? "drain_current"
+      : resolved.characteristic === "forward_voltage" ? "forward_voltage"
       : resolved.characteristic;
 }
 
@@ -545,7 +568,8 @@ function validateLinkedMosfetBenches(component, packageDir, expectations, byEvid
       if (!resolved) continue;
       const condition = resolved.condition;
       const checkLabel = `${label} check ${check.name}`;
-      if (!["dc", "continuous"].includes(condition.test_mode.kind)) {
+      const staticNotStatedThresholdPolicy = resolved.characteristic === "gate_threshold" && condition.test_mode.kind === "not_stated";
+      if (!["dc", "continuous"].includes(condition.test_mode.kind) && !staticNotStatedThresholdPolicy) {
         errors.push(`${checkLabel} condition cannot be represented by a static generated bench`);
         continue;
       }
@@ -598,6 +622,92 @@ function validateLinkedMosfetBenches(component, packageDir, expectations, byEvid
   return errors;
 }
 
+function diodeCard(text, label) {
+  const cards = [...String(text).matchAll(/^\s*\.model\s+(\S+)\s+D\s*\(([^)]*)\)/gim)];
+  if (cards.length !== 1) throw new Error(`${label} must contain exactly one active diode model card`);
+  return { name: cards[0][1], signature: cards[0][2].trim().replace(/\s+/g, " ").toLowerCase() };
+}
+
+function validateLinkedDiodeBenches(component, packageDir, expectations, byEvidenceId, modelText) {
+  if (component?.electrical_family !== "diode") return [];
+  const errors = [];
+  let active;
+  try { active = diodeCard(modelText, "model.cir"); }
+  catch (error) { return [error.message]; }
+  const same = (left, right) => Number.isFinite(Number(left)) && Number.isFinite(Number(right))
+    && Math.abs(Number(left) - Number(right)) <= 1e-12 * Math.max(1, Math.abs(Number(left)), Math.abs(Number(right)));
+  for (const [testIndex, test] of (expectations?.tests ?? []).entries()) {
+    const linked = [...(test.scalar_checks ?? []), ...(test.hard_bounds_checks ?? [])]
+      .filter((check) => byEvidenceId.get(check.evidence_id)?.characteristic === "forward_voltage");
+    if (!linked.length) continue;
+    const label = `tests[${testIndex}] ${test.test_netlist}`;
+    let text;
+    try { text = fs.readFileSync(path.join(packageDir, "tests", test.test_netlist), "utf8"); }
+    catch (error) { errors.push(`${label} cannot be read: ${error.message}`); continue; }
+    let embedded;
+    try { embedded = diodeCard(text, label); }
+    catch (error) { errors.push(error.message); continue; }
+    if (embedded.name.toLowerCase() !== active.name.toLowerCase() || embedded.signature !== active.signature) {
+      errors.push(`${label} embedded diode model card must exactly match model.cir`);
+      continue;
+    }
+    const temperatureMatches = [...text.matchAll(/^\s*\.temp\s+(\S+)\s*$/gim)];
+    const dcMatches = [...text.matchAll(/^\s*Itest\s+0\s+anode\s+DC\s+(\S+)\s*$/gim)];
+    const pulseMatches = [...text.matchAll(/^\s*Itest\s+0\s+anode\s+PULSE\(\s*(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s*\)\s*$/gim)];
+    const diodeMatches = [...text.matchAll(/^\s*Ddut\s+anode\s+0\s+(\S+)\s*$/gim)];
+    if (temperatureMatches.length !== 1 || !SPICE_DECIMAL_LITERAL.test(temperatureMatches[0][1])) {
+      errors.push(`${label} must declare exactly one decimal .temp`);
+      continue;
+    }
+    if (diodeMatches.length !== 1 || diodeMatches[0][1].toLowerCase() !== active.name.toLowerCase()) {
+      errors.push(`${label} must contain exactly one DUT using active diode model ${active.name}`);
+      continue;
+    }
+    for (const check of linked) {
+      const resolved = byEvidenceId.get(check.evidence_id);
+      const condition = resolved.condition;
+      const checkLabel = `${label} check ${check.name}`;
+      const expectedCurrent = resolved.kind === "point" ? resolved.point.x_si
+        : condition.electrical?.forward_current?.kind === "fixed" ? condition.electrical.forward_current.value_a : null;
+      if (!Number.isFinite(expectedCurrent)) {
+        errors.push(`${checkLabel} lacks an exact forward-current coordinate`);
+        continue;
+      }
+      if (!same(temperatureMatches[0][1], condition.temperature?.value_c)) errors.push(`${checkLabel} .temp disagrees with condition identity`);
+      const expression = String(check.expression_source?.expression ?? "").toLowerCase();
+      if (!/\bv\(anode\)/.test(expression)) errors.push(`${checkLabel} must measure the generated diode anode voltage`);
+      if (["dc", "continuous"].includes(condition.test_mode?.kind)) {
+        if (test.analysis_type !== "operating_point" || dcMatches.length !== 1 || pulseMatches.length !== 0
+            || !SPICE_DECIMAL_LITERAL.test(dcMatches[0]?.[1] ?? "") || !same(dcMatches[0]?.[1], expectedCurrent)) {
+          errors.push(`${checkLabel} does not encode its exact continuous-DC current condition`);
+        }
+      } else if (["not_stated", "pulsed_limit"].includes(condition.test_mode?.kind)) {
+        if (check.bench_equivalence_policy !== "isothermal_diode_forward_projection"
+            || check.bench_qualification?.test_mode !== "continuous_dc"
+            || test.analysis_type !== "operating_point" || dcMatches.length !== 1 || pulseMatches.length !== 0
+            || !SPICE_DECIMAL_LITERAL.test(dcMatches[0]?.[1] ?? "") || !same(dcMatches[0]?.[1], expectedCurrent)) {
+          errors.push(`${checkLabel} does not encode the declared isothermal diode forward projection`);
+        }
+      } else if (["pulsed", "single_pulse"].includes(condition.test_mode?.kind)) {
+        const values = pulseMatches[0]?.slice(1).map(Number) ?? [];
+        const [initial, pulsed, delay, rise, fall, width, period] = values;
+        const pulseIsExact = test.analysis_type === "transient" && pulseMatches.length === 1 && dcMatches.length === 0
+          && values.every(Number.isFinite) && same(initial, 0) && same(pulsed, expectedCurrent)
+          && same(width, condition.test_mode.pulse_width_s) && delay > 0 && rise > 0 && fall > 0 && period > width;
+        if (!pulseIsExact) errors.push(`${checkLabel} does not encode its exact pulse current and width`);
+        if (condition.test_mode.kind === "pulsed" && pulseIsExact && !same(width / period, condition.test_mode.duty_cycle)) {
+          errors.push(`${checkLabel} pulse duty cycle disagrees with condition identity`);
+        }
+        const sample = Number(/\bat\(v\(anode\),\s*([0-9.eE+-]+)\)/.exec(expression)?.[1]);
+        if (!Number.isFinite(sample) || !(sample > delay + rise && sample < delay + rise + width)) {
+          errors.push(`${checkLabel} must sample within the qualified current pulse`);
+        }
+      } else errors.push(`${checkLabel} uses an unsupported diode test mode`);
+    }
+  }
+  return errors;
+}
+
 function validateNewContractPackage(component, facts, fitted, modelText, expectations, sources, packageDir) {
   const errors = [];
   const evidence = collectFactsEvidence(facts);
@@ -616,6 +726,7 @@ function validateNewContractPackage(component, facts, fitted, modelText, expecta
     try { activeModelName = activeVdmosModelCard(modelText).name; } catch { /* channel-card validation emits the diagnostic */ }
   }
   if (activeModelName) errors.push(...validateLinkedMosfetBenches(component, packageDir, expectations, byEvidenceId, activeModelName, modelText));
+  errors.push(...validateLinkedDiodeBenches(component, packageDir, expectations, byEvidenceId, modelText));
   const fidelityTier = component?.fidelity_tier;
   if (fitted?.fidelity_tier !== fidelityTier) errors.push("fitted.fidelity_tier must exactly equal component.fidelity_tier");
   errors.push(...residualCalibrationErrors(fitted, fidelityTier));
@@ -660,6 +771,11 @@ function validateNewContractPackage(component, facts, fitted, modelText, expecta
     if (check.evidence_role !== expectationRole(resolved.evidence.role)) errors.push(`expectations ${checkPath} evidence_role disagrees with facts evidence`);
     if (!sameCanonicalContent(check.citation_locator, locatorFromCitation(resolved.citation))) errors.push(`expectations ${checkPath} citation_locator disagrees with facts citation`);
     if (!sameQualification(check.evidence_qualification, qualificationFromCondition(resolved.condition))) errors.push(`expectations ${checkPath} evidence_qualification disagrees with facts condition`);
+    if (check.bench_equivalence_policy != null && (component?.electrical_family !== "diode"
+        || resolved.characteristic !== "forward_voltage"
+        || !["not_stated", "pulsed_limit"].includes(resolved.condition?.test_mode?.kind))) {
+      errors.push(`expectations ${checkPath} isothermal diode projection is only valid for forward-voltage evidence with unresolved source timing`);
+    }
     expectationEvidenceSemantics(check, resolved, checkPath, errors);
   }
 
@@ -746,13 +862,14 @@ function evidenceContractErrors(expectations) {
     if (hasPlaceholderLocator(check.citation_locator)) {
       errors.push(`expectations ${checkPath} citation_locator must identify a specific table row or figure curve/trace`);
     }
-    if (!sameQualification(check.evidence_qualification, check.bench_qualification)) {
-      errors.push(`expectations ${checkPath} bench qualification must match evidence qualification`);
+    const qualificationMatches = sameQualification(check.evidence_qualification, check.bench_qualification);
+    const projection = check.bench_equivalence_policy === "isothermal_diode_forward_projection";
+    if (!qualificationMatches && !projection) errors.push(`expectations ${checkPath} bench qualification must match evidence qualification`);
+    if (projection && (qualificationMatches
+        || !["not_stated", "pulsed_limit"].includes(check.evidence_qualification?.test_mode)
+        || check.bench_qualification?.test_mode !== "continuous_dc")) {
+      errors.push(`expectations ${checkPath} isothermal diode projection requires not-stated or pulse-limited source mode and a continuous-DC bench`);
     }
-    if (["pulsed", "single_pulse"].includes(check.evidence_qualification?.test_mode)) {
-      errors.push(`expectations ${checkPath} pulse-qualified evidence is unsupported without an implemented equivalent pulse bench`);
-    }
-
     const cohort = cohorts.get(check.cohort_id);
     if (marked && !cohort) {
       errors.push(`expectations ${checkPath} references undeclared evidence cohort ${check.cohort_id}`);

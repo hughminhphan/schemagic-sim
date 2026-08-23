@@ -1,0 +1,235 @@
+{
+  "schema_version": "1.0.0",
+  "evidence_contract_version": "1.0.0",
+  "canonical_mpn": "ZMM16V",
+  "manufacturer": "YONGYUTAI",
+  "description": "1 Independent 100nA@12V 15.3V~17.1V 16V 170Ω 40Ω 500mW LL-34 Zener Diodes ROHS",
+  "electrical_family": "diode",
+  "symbol_pins": [
+    {
+      "name": "A",
+      "number": "1",
+      "role": "anode"
+    },
+    {
+      "name": "K",
+      "number": "2",
+      "role": "cathode"
+    }
+  ],
+  "spice_pin_mapping": [
+    {
+      "symbol_pin_number": "1",
+      "subckt_node": "anode",
+      "order": 1
+    },
+    {
+      "symbol_pin_number": "2",
+      "subckt_node": "cathode",
+      "order": 2
+    }
+  ],
+  "package_variants": [
+    {
+      "name": "LL-34",
+      "standard": "LL-34",
+      "pin_count": 2,
+      "pin_map": [
+        {
+          "package_pin": "1",
+          "symbol_pin_number": "1"
+        },
+        {
+          "package_pin": "2",
+          "symbol_pin_number": "2"
+        }
+      ]
+    }
+  ],
+  "ordering_code_aliases": [],
+  "datasheet": {
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8590197001180131328",
+    "revision": "Not stated"
+  },
+  "model_type": "dot_model",
+  "fidelity_tier": "F1",
+  "domain_coverage": {
+    "dc": "approx",
+    "ac": "none",
+    "transient": "none",
+    "noise": "none",
+    "thermal": "none",
+    "digital": "none"
+  },
+  "supported_analyses": [
+    "operating_point",
+    "dc_sweep"
+  ],
+  "supported_operating_region": {
+    "contract_version": "1.0.0",
+    "summary": "Supported only over the direct cited diode forward-evidence union: forward_current 0.000001 to 0.1 A; forward_voltage 0.45 to 1 V; temperature 25 to 25 degC; temperature 25 to 25 degC.",
+    "numeric_bounds": [
+      {
+        "bound_id": "sha256:9777dee2c035482e56c62b1335c84d23f7560674a2e3a9f247d92c3b11975f41",
+        "quantity": "forward_current",
+        "kind": "range",
+        "unit": "A",
+        "minimum": 0.000001,
+        "maximum": 0.1,
+        "evidence_refs": [
+          {
+            "evidence_id": "sha256:be4e51526f56607833cfabbc91f807dc38a3250f291c465de661bf8fc45647f5",
+            "condition_id": "sha256:925aa96314e0cf0314b9830fd71a8173bcb7e455609cab4a73cde72fb9ecd83a",
+            "citation_id": "sha256:bd93faa65b31f509ccb60a69646733c5282454fe0abb47367789793f2fd5e57c",
+            "cohort_id": "sha256:1828af42fd8ca41dff84c0d7cf09ef38cac09cef809e56f960aadf4367cf19b1"
+          },
+          {
+            "evidence_id": "sha256:c437ce15d712d9e54aee285fab63295ef4e3317b9056e9ea7284429bceab024b",
+            "condition_id": "sha256:c231141514790073b6e6880b431c8638dfb703ed2d162d59e14b37bebe1ea4f0",
+            "citation_id": "sha256:d100986d0ec696ea0e4d349ea0cb5890ec2ac5fa8832459d6a0bf0e10e71746b",
+            "cohort_id": "sha256:184ce629ef54788d91583e1b395ad8ded6117c0ad5d4176f9ca0b3a809a85f03"
+          }
+        ],
+        "condition_ids": [
+          "sha256:925aa96314e0cf0314b9830fd71a8173bcb7e455609cab4a73cde72fb9ecd83a",
+          "sha256:c231141514790073b6e6880b431c8638dfb703ed2d162d59e14b37bebe1ea4f0"
+        ],
+        "citation_ids": [
+          "sha256:bd93faa65b31f509ccb60a69646733c5282454fe0abb47367789793f2fd5e57c",
+          "sha256:d100986d0ec696ea0e4d349ea0cb5890ec2ac5fa8832459d6a0bf0e10e71746b"
+        ],
+        "derivation": "direct_evidence_union",
+        "conditions": "Direct cited diode forward-evidence union",
+        "placeholder": false
+      },
+      {
+        "bound_id": "sha256:c07998a54e617d71e4624fdd9f66b23d66bb12c64f53c920698ba4316f3bf684",
+        "quantity": "forward_voltage",
+        "kind": "range",
+        "unit": "V",
+        "minimum": 0.45,
+        "maximum": 1,
+        "evidence_refs": [
+          {
+            "evidence_id": "sha256:f5f32673175f4fea463d3904109925df4cf9c15659cc3c417010572348b66147",
+            "condition_id": "sha256:925aa96314e0cf0314b9830fd71a8173bcb7e455609cab4a73cde72fb9ecd83a",
+            "citation_id": "sha256:1fd731c716f9ddf7730ee9b4eff376015b47c1012688c1f29a4d56da9e8c3eb4",
+            "cohort_id": "sha256:7f76ce2becf57ee2b044bc8883efff35a22695f2f3fda198f0ecd9b9942dce88"
+          },
+          {
+            "evidence_id": "sha256:0e4263d1d85d1040f382996fd9f1b95f67e1a56889be50c97d8cf5c2b7fc3add",
+            "condition_id": "sha256:c231141514790073b6e6880b431c8638dfb703ed2d162d59e14b37bebe1ea4f0",
+            "citation_id": "sha256:8bf3253d9c0b67a285a278efc0543098039a77adde9acc713d948d622f02226a",
+            "cohort_id": "sha256:e7a64c0ebc77c881755e7233745114a13abc571e565fe6426fa7704099ae674e"
+          }
+        ],
+        "condition_ids": [
+          "sha256:925aa96314e0cf0314b9830fd71a8173bcb7e455609cab4a73cde72fb9ecd83a",
+          "sha256:c231141514790073b6e6880b431c8638dfb703ed2d162d59e14b37bebe1ea4f0"
+        ],
+        "citation_ids": [
+          "sha256:1fd731c716f9ddf7730ee9b4eff376015b47c1012688c1f29a4d56da9e8c3eb4",
+          "sha256:8bf3253d9c0b67a285a278efc0543098039a77adde9acc713d948d622f02226a"
+        ],
+        "derivation": "direct_evidence_union",
+        "conditions": "Direct cited diode forward-evidence union",
+        "placeholder": false
+      },
+      {
+        "bound_id": "sha256:8137c5eddf28824e0621fdaf4d45b6109941a989032872fbba5cbcb732538c75",
+        "quantity": "temperature",
+        "kind": "range",
+        "unit": "degC",
+        "minimum": 25,
+        "maximum": 25,
+        "evidence_refs": [
+          {
+            "evidence_id": "sha256:be4e51526f56607833cfabbc91f807dc38a3250f291c465de661bf8fc45647f5",
+            "condition_id": "sha256:925aa96314e0cf0314b9830fd71a8173bcb7e455609cab4a73cde72fb9ecd83a",
+            "citation_id": "sha256:bd93faa65b31f509ccb60a69646733c5282454fe0abb47367789793f2fd5e57c",
+            "cohort_id": "sha256:1828af42fd8ca41dff84c0d7cf09ef38cac09cef809e56f960aadf4367cf19b1"
+          },
+          {
+            "evidence_id": "sha256:f5f32673175f4fea463d3904109925df4cf9c15659cc3c417010572348b66147",
+            "condition_id": "sha256:925aa96314e0cf0314b9830fd71a8173bcb7e455609cab4a73cde72fb9ecd83a",
+            "citation_id": "sha256:1fd731c716f9ddf7730ee9b4eff376015b47c1012688c1f29a4d56da9e8c3eb4",
+            "cohort_id": "sha256:7f76ce2becf57ee2b044bc8883efff35a22695f2f3fda198f0ecd9b9942dce88"
+          }
+        ],
+        "condition_ids": [
+          "sha256:925aa96314e0cf0314b9830fd71a8173bcb7e455609cab4a73cde72fb9ecd83a"
+        ],
+        "citation_ids": [
+          "sha256:1fd731c716f9ddf7730ee9b4eff376015b47c1012688c1f29a4d56da9e8c3eb4",
+          "sha256:bd93faa65b31f509ccb60a69646733c5282454fe0abb47367789793f2fd5e57c"
+        ],
+        "derivation": "direct_evidence_union",
+        "temperature_kind": "ambient",
+        "conditions": "Direct cited diode forward-evidence union",
+        "placeholder": false
+      },
+      {
+        "bound_id": "sha256:422ffbd2e2c763886fac08f682b66e0b2b5f8bd0d7128ff46aa3c0b40afefd07",
+        "quantity": "temperature",
+        "kind": "range",
+        "unit": "degC",
+        "minimum": 25,
+        "maximum": 25,
+        "evidence_refs": [
+          {
+            "evidence_id": "sha256:c437ce15d712d9e54aee285fab63295ef4e3317b9056e9ea7284429bceab024b",
+            "condition_id": "sha256:c231141514790073b6e6880b431c8638dfb703ed2d162d59e14b37bebe1ea4f0",
+            "citation_id": "sha256:d100986d0ec696ea0e4d349ea0cb5890ec2ac5fa8832459d6a0bf0e10e71746b",
+            "cohort_id": "sha256:184ce629ef54788d91583e1b395ad8ded6117c0ad5d4176f9ca0b3a809a85f03"
+          },
+          {
+            "evidence_id": "sha256:0e4263d1d85d1040f382996fd9f1b95f67e1a56889be50c97d8cf5c2b7fc3add",
+            "condition_id": "sha256:c231141514790073b6e6880b431c8638dfb703ed2d162d59e14b37bebe1ea4f0",
+            "citation_id": "sha256:8bf3253d9c0b67a285a278efc0543098039a77adde9acc713d948d622f02226a",
+            "cohort_id": "sha256:e7a64c0ebc77c881755e7233745114a13abc571e565fe6426fa7704099ae674e"
+          }
+        ],
+        "condition_ids": [
+          "sha256:c231141514790073b6e6880b431c8638dfb703ed2d162d59e14b37bebe1ea4f0"
+        ],
+        "citation_ids": [
+          "sha256:8bf3253d9c0b67a285a278efc0543098039a77adde9acc713d948d622f02226a",
+          "sha256:d100986d0ec696ea0e4d349ea0cb5890ec2ac5fa8832459d6a0bf0e10e71746b"
+        ],
+        "derivation": "direct_evidence_union",
+        "temperature_kind": "junction",
+        "conditions": "Direct cited diode forward-evidence union",
+        "placeholder": false
+      }
+    ]
+  },
+  "known_omissions": [
+    "AC, transient, noise, thermal, and package-parasitic behavior are outside this DC-only conveyor package.",
+    "Temperature dependence and self-heating are not modelled; each electrical claim is limited to its exact cited bench temperature.",
+    "Catalog parametrics may be recorded only as optimizer seeds; they are not evidence, constraints, residual targets, or datasheet citations.",
+    "Reverse-bias leakage is not covered by this F1 package because the approximation is supported only over cited forward-bias targets."
+  ],
+  "licence": {
+    "spdx_id": "MIT",
+    "provenance_basis": "original_from_facts"
+  },
+  "generator": {
+    "tool_or_agent": "opencircuit-model-factory-v0.1.0 bulk-adapter evidence-contract-1.0.0",
+    "date": "2026-08-23"
+  },
+  "reviewer": {
+    "tool_or_agent": "gpt-5.6-terra independent package reviewer",
+    "date": "2026-08-23"
+  },
+  "test_results": {
+    "status": "complete",
+    "pass_count": 2,
+    "fail_count": 0,
+    "total_count": 2,
+    "worst_observed_relative_fitting_error": {
+      "value": 0.01758000480706549,
+      "quantity": "forward_voltage_at_0.000001_a"
+    }
+  },
+  "validation_date": "2026-08-23"
+}

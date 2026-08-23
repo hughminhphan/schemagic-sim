@@ -7,7 +7,7 @@ import test from "node:test";
 import { applyConditionAdjudicationSupplement, fitBulkPart, libraryCollisionReason, libraryDuplicateDieReason, normalizedIdentity, normalizeBulkManifest, pinPackageBenchTemperature, repairKnownEvidenceDefects, runBulkManifest, stageBulkPart, validateBulkCandidateEvidence, validateMosfetCandidateEvidence } from "../lib/bulk-adapter.mjs";
 import { validatePackage } from "../../../packages/component-schema/lib.mjs";
 
-const quantity = (value, unit) => ({ value, unit, conditions: "fixture at 25 C", page_reference: "p. 2, Electrical Characteristics table", source_kind: "typical" });
+const quantity = (value, unit) => ({ value, unit, conditions: "TA = 25 C; test mode = DC", page_reference: "p. 2, Electrical Characteristics table", source_kind: "typical" });
 const fixtureSourceSha256 = "58346148e907c6d42d5efbb6ac681765701d53d09413067fe67e2b7ea9294e86";
 const semanticFixtureRoot = fs.mkdtempSync(path.join(os.tmpdir(), "factory-semantic-test-"));
 const semanticFixturePdf = path.join(semanticFixtureRoot, "datasheet.pdf");
@@ -260,7 +260,7 @@ function extraction() {
   return {
     schema_version: "1.0.0", mpn: "FIXTURE-D1", manufacturer: "Fixture Semi", family: "diode",
     datasheet_identity: { title: "Fixture D1", revision: "A", pages_examined: ["p. 2"] }, usable_curves: true,
-    curves: [{ name: "Forward IV", x_axis: { quantity: "voltage", unit: "V", scale: "linear" }, y_axis: { quantity: "current", unit: "A", scale: "log" }, test_conditions: "TA=25 C", page_reference: "p. 2", points: [{ x: 0.48, y: 1e-4 }, { x: 0.60, y: 1e-3 }, { x: 0.72, y: 1e-2 }, { x: 0.84, y: 1e-1 }] }],
+    curves: [{ name: "Forward IV", x_axis: { quantity: "voltage", unit: "V", scale: "linear" }, y_axis: { quantity: "current", unit: "A", scale: "log" }, test_conditions: "TA=25 C; test mode = DC", page_reference: "p. 2, Figure 1, curve: Forward IV", points: [{ x: 0.48, y: 1e-4 }, { x: 0.60, y: 1e-3 }, { x: 0.72, y: 1e-2 }, { x: 0.84, y: 1e-1 }] }],
     specs: { variant: "signal", forward_voltage_points: [{ current: quantity(10, "mA"), voltage: quantity(720, "mV") }], reverse_current: { ...quantity(2, "µA"), conditions: "VR=5 V, TA=25 C" }, capacitance: null, reverse_recovery: null, breakdown_voltage: null, breakdown_current: null }, extraction_notes: [], omission_reason: null,
   };
 }
@@ -674,6 +674,7 @@ test("staged Zener facts preserve the cited breakdown model inputs", () => {
     assert.equal(facts.derived_model_inputs.NBV.source_kind, "held_default");
     const fitted = JSON.parse(fs.readFileSync(path.join(result[0].package_path, "fitted.json"), "utf8"));
     assert.equal(fitted.fitter, "datasheet typical-point diode F1 formula");
+    assert.deepEqual(validatePackage(result[0].package_path, { requireEvidenceContract: true }).errors, []);
   } finally {
     fs.rmSync(root, { recursive: true, force: true });
   }
@@ -689,8 +690,8 @@ test("F1 diode calibration honors SI units and a cited maximum at 25 C", () => {
     maximum.curves = [];
     maximum.omission_reason = "no part-specific curve";
     maximum.specs.forward_voltage_points = [{
-      current: { ...quantity(5, "A"), source_kind: "maximum" },
-      voltage: { ...quantity(550, "mV"), source_kind: "maximum" },
+      current: { ...quantity(5, "A"), conditions: "TA = 25 C; source test mode is not stated", source_kind: "maximum" },
+      voltage: { ...quantity(550, "mV"), conditions: "IF = 5 A; TA = 25 C; source test mode is not stated", source_kind: "maximum" },
     }];
     const extractionPath = path.join(root, "extraction.json");
     fs.writeFileSync(extractionPath, JSON.stringify(maximum));
@@ -701,6 +702,14 @@ test("F1 diode calibration honors SI units and a cited maximum at 25 C", () => {
     assert.equal(result[0].fidelity, "F1");
     const fitted = JSON.parse(fs.readFileSync(path.join(result[0].package_path, "fitted.json"), "utf8"));
     assert.equal(fitted.fitter, "cited-maximum diode F1 interior-feasibility projection");
+    const facts = JSON.parse(fs.readFileSync(path.join(result[0].package_path, "facts.json"), "utf8"));
+    assert.equal(facts.forward_voltage_points[0].voltage.condition_identity.test_mode.kind, "not_stated");
+    const expectations = JSON.parse(fs.readFileSync(path.join(result[0].package_path, "tests", "expectations.json"), "utf8"));
+    const [bound] = expectations.tests[0].hard_bounds_checks;
+    assert.deepEqual(bound.evidence_qualification, { test_mode: "not_stated" });
+    assert.deepEqual(bound.bench_qualification, { test_mode: "continuous_dc" });
+    assert.equal(bound.bench_equivalence_policy, "isothermal_diode_forward_projection");
+    assert.deepEqual(validatePackage(result[0].package_path, { requireEvidenceContract: true }).errors, []);
   } finally {
     fs.rmSync(root, { recursive: true, force: true });
   }
@@ -712,7 +721,9 @@ test("bulk manifest accepts external datasheet and seed paths and stages pending
     const pdf = path.join(root, "datasheet.pdf");
     fs.writeFileSync(pdf, "%PDF-1.7\nfixture\n");
     const extractionPath = path.join(root, "extraction.json");
-    fs.writeFileSync(extractionPath, JSON.stringify(extraction()));
+    const pulsedExtraction = extraction();
+    pulsedExtraction.curves[0].test_conditions = "TJ = 25 C; pulse width = 300 us; duty cycle = 1%";
+    fs.writeFileSync(extractionPath, JSON.stringify(pulsedExtraction));
     const manifestPath = path.join(root, "batch.json");
     fs.writeFileSync(manifestPath, JSON.stringify({ schema_version: "1.0.0", kind: "opencircuit-conveyor-batch", parts: [{ ...diodePart(pdf), extraction_path: extractionPath }] }));
     const staging = path.join(root, "staging");
@@ -725,17 +736,37 @@ test("bulk manifest accepts external datasheet and seed paths and stages pending
     assert.ok(component.test_results.total_count > 0);
     const expectations = JSON.parse(fs.readFileSync(path.join(result[0].package_path, "tests", "expectations.json"), "utf8"));
     assert.ok(expectations.tests.length > 0);
+    assert.ok(expectations.tests.some((entry) => entry.analysis_type === "transient"));
     const benches = fs.readdirSync(path.join(result[0].package_path, "tests")).filter((name) => name.endsWith(".cir"));
     assert.ok(benches.length > 0);
     for (const bench of benches) {
       const text = fs.readFileSync(path.join(result[0].package_path, "tests", bench), "utf8");
-      assert.match(text, /^\.temp 25$/m, `${bench} must pin the cited nominal temperature`);
+      const temperature = text.match(/^\.temp\s+([^\s]+)$/m);
+      assert.equal(Number(temperature?.[1]), 25, `${bench} must pin the cited nominal temperature`);
     }
+    assert.match(fs.readFileSync(path.join(result[0].package_path, "tests", "forward_01.cir"), "utf8"), /Itest 0 anode PULSE\(/);
     const facts = JSON.parse(fs.readFileSync(path.join(result[0].package_path, "facts.json"), "utf8"));
     assert.ok(facts.fit_points.some((point) => point.current.value === 0.01 && point.current.unit === "A" && point.voltage.value === 0.72 && point.voltage.unit === "V"));
     assert.equal(facts.electrical_limits.reverse_current_5v.value, 2e-6);
     assert.equal(facts.electrical_limits.reverse_current_5v.unit, "A");
-    assert.equal(validatePackage(result[0].package_path).errors.length, 0, "bulk packages must pass the package validator by construction");
+    assert.deepEqual(validatePackage(result[0].package_path, { requireEvidenceContract: true }).errors, [], "bulk packages must pass strict evidence-contract validation by construction");
+    const expectationsPath = path.join(result[0].package_path, "tests", "expectations.json");
+    const linked = JSON.parse(fs.readFileSync(expectationsPath, "utf8"));
+    linked.tests[0].scalar_checks[0].citation_id = `sha256:${"0".repeat(64)}`;
+    fs.writeFileSync(expectationsPath, JSON.stringify(linked));
+    assert.ok(
+      validatePackage(result[0].package_path, { requireEvidenceContract: true }).errors.some((error) => error.includes("does not resolve to facts evidence")),
+      "strict diode validation must fail closed when an expectation citation link is malformed",
+    );
+    fs.writeFileSync(expectationsPath, JSON.stringify(expectations));
+    const fittedPath = path.join(result[0].package_path, "fitted.json");
+    const malformedFitted = JSON.parse(fs.readFileSync(fittedPath, "utf8"));
+    malformedFitted.residuals[0].evidence_identity.evidence_id = `sha256:${"1".repeat(64)}`;
+    fs.writeFileSync(fittedPath, JSON.stringify(malformedFitted));
+    assert.ok(
+      validatePackage(result[0].package_path, { requireEvidenceContract: true }).errors.some((error) => error.includes("fitted.residuals[0] does not resolve to facts evidence")),
+      "strict diode validation must fail closed when a residual evidence link is malformed",
+    );
     assert.doesNotMatch(result[0].package_path, /packages\/model-library/);
   } finally {
     fs.rmSync(root, { recursive: true, force: true });

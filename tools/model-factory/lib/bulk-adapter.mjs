@@ -198,16 +198,19 @@ function citationIdentity(pageReference, { sourceSha256, sourceRevision, label, 
   if (!citation || /pending|placeholder|unknown|tbd|n\/a/i.test(citation)) throw new Error(`${label} prohibits placeholder citations`);
   const pageMatch = citation.match(/(?:\bp(?:age)?\.?\s*|\bpage\s*)(\d+)/i);
   if (!pageMatch) throw new Error(`${label} must carry an exact primary datasheet page citation`);
-  const tableMatch = citation.match(/(?:^|[,;(])\s*([^,;()]*?\btable)\b/i);
+  const tableMatch = citation.match(/(?:^|[,;(])\s*([^,;()]*\btable\b[^,;()]*)/i);
   const rowMatch = citation.match(/\brow\s*[:=]?\s*([^,;()]+)/i);
-  const figureMatch = citation.match(/\bfigure\s*([A-Za-z0-9.-]+)/i) ?? String(curveName ?? "").match(/\bfigure\s*([A-Za-z0-9.-]+)/i);
+  const figureMatch = citation.match(/\bfig(?:ure)?\.?\s*([A-Za-z0-9.-]+)/i) ?? String(curveName ?? "").match(/\bfig(?:ure)?\.?\s*([A-Za-z0-9.-]+)/i);
   const curveMatch = citation.match(/\bcurve\s*[:=#]?\s*([^,;()]+)/i) ?? String(curveName ?? "").match(/\bcurve\s*[:=#]?\s*([^,;()]+)/i);
   const traceMatch = citation.match(/\btrace\s*[:=#]?\s*([^,;()]+)/i) ?? String(curveName ?? "").match(/\btrace\s*[:=#]?\s*([^,;()]+)/i);
   const sectionMatch = citation.match(/\bsection\s*[:=]?\s*([^,;()]+)/i);
   const columnMatch = citation.match(/\bcolumn\s*[:=]?\s*([^,;()]+)/i);
   const row = rowMatch?.[1]?.trim() ?? defaultRow;
   const column = columnMatch?.[1]?.trim() ?? defaultColumn;
-  const table = tableMatch?.[1]?.trim();
+  const inferredTable = defaultRow && !figureMatch
+    ? citation.slice((pageMatch.index ?? 0) + pageMatch[0].length).replace(/^\s*[,;:()-]*\s*/, "").trim()
+    : null;
+  const table = tableMatch?.[1]?.trim() ?? inferredTable;
   const figure = figureMatch?.[1]?.trim();
   const curve = curveMatch?.[1]?.trim() ?? (figure && curveName ? String(curveName).trim() : undefined);
   const trace = traceMatch?.[1]?.trim();
@@ -1263,6 +1266,201 @@ function selectDiodeForwardEvidence(extraction) {
   };
 }
 
+function diodeTemperatureIdentity(text, label) {
+  const matches = [...String(text ?? "").matchAll(/([+-]?\d+(?:\.\d+)?)\s*(?:deg\s*c|degc|°c|\bc\b)/gi)]
+    .map((match) => Number(match[1])).filter(Number.isFinite);
+  if (!matches.length) throw new Error(`${label} must state an exact evidence temperature`);
+  if (matches.some((value) => Math.abs(value - matches[0]) > 1e-9)) throw new Error(`${label} mixes evidence temperatures`);
+  return matches[0];
+}
+
+function diodeTestModeIdentity(text, label) {
+  const source = String(text ?? "");
+  const width = source.match(/(?:pulse\s*width|pw|t\s*p)\s*(<=|≤|=|:)?\s*([0-9.eE+-]+)\s*(n|u|µ|m)?s/i);
+  const duty = source.match(/(?:duty\s*(?:cycle)?|delta|δ)\s*(<=|≤|=|:)?\s*([0-9.eE+-]+)\s*%?/i);
+  const seconds = width && Number(width[2]) * ({ n: 1e-9, u: 1e-6, "µ": 1e-6, m: 1e-3 }[width[3]?.toLowerCase()] ?? 1);
+  if (/single[-\s]?pulse/i.test(source)) {
+    if (!(seconds > 0)) throw new Error(`${label} single-pulse evidence must state pulse width`);
+    return { kind: "single_pulse", pulse_width_s: seconds };
+  }
+  if (/pulsed|pulse\s*(?:test|width)|\bt\s*p\b/i.test(source)) {
+    const dutyCycle = duty && Number(duty[2]) / (/%/.test(duty[0]) || Number(duty[2]) > 1 ? 100 : 1);
+    const limited = [width?.[1], duty?.[1]].some((operator) => operator === "<=" || operator === "≤")
+      || !(seconds > 0) || !(dutyCycle > 0 && dutyCycle <= 1);
+    if (limited) return {
+      kind: seconds > 0 || dutyCycle > 0 ? "pulsed_limit" : "not_stated",
+      ...(seconds > 0 ? { maximum_pulse_width_s: seconds } : {}),
+      ...(dutyCycle > 0 && dutyCycle <= 1 ? { maximum_duty_cycle: dutyCycle } : {}),
+    };
+    return { kind: "pulsed", pulse_width_s: seconds, duty_cycle: dutyCycle };
+  }
+  if (/\b(?:continuous\s*)?dc\b|test\s*mode\s*[=:]?\s*dc|mA\s*dc\b/i.test(source)) return { kind: "dc" };
+  return { kind: "not_stated" };
+}
+
+function diodeConditionIdentity({ current, voltage, currents = null, voltages = null, conditions, characteristic = "forward_voltage" }, label) {
+  const coordinate = (value, values, unit) => Array.isArray(values)
+    ? { kind: "enumerated", values: values.map(Number) }
+    : { kind: "fixed", [`value_${unit}`]: Number(value) };
+  const condition = {
+    schema_version: "1.0.0",
+    characteristic,
+    polarity: "n",
+    magnitude_convention: "absolute",
+    temperature: {
+      kind: /\b(?:t[\s_-]*(?:a|amb)|ambient)\b/i.test(String(conditions)) && !/\b(?:t[\s_-]*j|junction)\b/i.test(String(conditions)) ? "ambient" : "junction",
+      value_c: diodeTemperatureIdentity(conditions, label),
+    },
+    electrical: {
+      forward_current: coordinate(current, currents, "a"),
+      forward_voltage: coordinate(voltage, voltages, "v"),
+    },
+    test_mode: diodeTestModeIdentity(conditions, label),
+    qualifiers: [{ key: "source_conditions", value: String(conditions).trim() }],
+  };
+  return { ...condition, condition_id: identityHash("sha256", condition) };
+}
+
+function diodeCitationIdentity(evidence, source, label, defaultRow) {
+  let locator = evidence.locator ?? evidence.page_reference;
+  if (!defaultRow && typeof locator === "string" && evidence.curve_name && !/\bfig(?:ure)?\.?\s*[A-Za-z0-9.-]+/i.test(locator)) {
+    const page = Number(locator.match(/(?:\bp(?:age)?\.?\s*|\bpage\s*)(\d+)/i)?.[1]);
+    if (Number.isInteger(page) && page > 0) locator = { page, figure: String(evidence.curve_name), curve_or_trace: String(evidence.curve_name) };
+  }
+  return citationIdentity(locator, {
+    sourceSha256: source.sha256,
+    sourceRevision: source.revision,
+    label,
+    curveName: evidence.curve_name ?? (defaultRow && evidence.conditions ? `${defaultRow}: ${evidence.conditions}` : null),
+    defaultRow,
+  });
+}
+
+function canonicalDiodeScalarDatum(point, field, index, source) {
+  const current = normalizeEvidence(point.current);
+  const voltage = normalizeEvidence(point.voltage);
+  const evidence = field === "current" ? current : voltage;
+  const quantity = field === "current" ? "forward_current" : "forward_voltage";
+  const condition = diodeConditionIdentity({
+    current: Number(current.value), voltage: Number(voltage.value), conditions: evidence.conditions,
+  }, `Diode forward point ${index + 1} ${field}`);
+  const citation = diodeCitationIdentity(
+    evidence,
+    source,
+    `Diode forward point ${index + 1} ${field}`,
+    field === "current" ? "Forward Current" : "Forward Voltage",
+  );
+  const role = evidence.source_kind;
+  return {
+    ...magnitudeQuantity(evidence),
+    quantity,
+    condition_identity: condition,
+    citation_identity: citation,
+    evidence_identity: evidenceIdentity(role, condition, citation, quantity, Math.abs(Number(evidence.value)), evidence.unit),
+  };
+}
+
+function canonicalDiodeForwardCurve(curve, index, source) {
+  const x = curve?.x_axis ?? {};
+  const y = curve?.y_axis ?? {};
+  const xUnit = x.unit;
+  const yUnit = y.unit;
+  const rawPoints = curve?.points ?? [];
+  const points = rawPoints.map((point, pointIndex) => {
+    const voltage = siValue(point.x, xUnit);
+    const current = siValue(point.y, yUnit);
+    if (voltage.unit !== "V" || current.unit !== "A" || !(voltage.value > 0) || !(current.value > 0)) {
+      throw new Error(`Diode forward curve ${index + 1} point ${pointIndex + 1} must be a positive voltage/current pair`);
+    }
+    return { x_si: current.value, y_si: voltage.value, point_index: pointIndex };
+  });
+  if (!points.length) throw new Error(`Diode forward curve ${index + 1} has no points`);
+  const condition = diodeConditionIdentity({
+    current: points[0].x_si,
+    voltage: points[0].y_si,
+    currents: points.map((point) => point.x_si),
+    voltages: points.map((point) => point.y_si),
+    conditions: curve.test_conditions,
+  }, `Diode forward curve ${index + 1}`);
+  const citation = diodeCitationIdentity(
+    { locator: curve.locator, page_reference: curve.page_reference, curve_name: curve.name },
+    source,
+    `Diode forward curve ${index + 1}`,
+    null,
+  );
+  const canonical = {
+    schema_version: "1.0.0",
+    characteristic: "forward_voltage",
+    x_axis: { quantity: "forward_current", unit: "A" },
+    y_axis: { quantity: "forward_voltage", unit: "V" },
+    condition_id: condition.condition_id,
+    citation_id: citation.citation_id,
+    points,
+  };
+  const curveId = identityHash("sha256", canonical);
+  const cohortId = identityHash("sha256", { characteristic: "forward_voltage", condition_id: condition.condition_id, citation_id: citation.citation_id, curve_id: curveId });
+  return {
+    curve_id: curveId,
+    characteristic: "forward_voltage",
+    x_axis: canonical.x_axis,
+    y_axis: canonical.y_axis,
+    condition_identity: condition,
+    citation_identity: citation,
+    points: points.map((point) => ({
+      ...point,
+      evidence_identity: {
+        role: "digitized_typical_curve",
+        condition_id: condition.condition_id,
+        citation_id: citation.citation_id,
+        cohort_id: cohortId,
+        curve_id: curveId,
+        point_index: point.point_index,
+        evidence_id: identityHash("sha256", {
+          characteristic: "forward_voltage", role: "digitized_typical_curve", ...point,
+          condition_id: condition.condition_id, citation_id: citation.citation_id, cohort_id: cohortId, curve_id: curveId,
+        }),
+      },
+    })),
+  };
+}
+
+function canonicalDiodeEvidence(extraction, source, fit) {
+  const rawScalarPoints = extraction?.specs?.forward_voltage_points ?? [];
+  const selectedScalarIndexes = (() => {
+    if (fit.fidelity === "F2") return rawScalarPoints
+      .map((point, index) => [point, index])
+      .filter(([point]) => ["minimum", "maximum"].includes(point.voltage?.source_kind))
+      .map(([, index]) => index);
+    const selection = selectDiodeForwardEvidence(extraction);
+    return rawScalarPoints
+      .map((point, index) => [point, index])
+      .filter(([point]) => point === selection.calibration || selection.constraints.includes(point))
+      .map(([, index]) => index);
+  })();
+  const scalarPoints = selectedScalarIndexes.map((index) => {
+    const point = rawScalarPoints[index];
+    return {
+    current: canonicalDiodeScalarDatum(point, "current", index, source),
+    voltage: canonicalDiodeScalarDatum(point, "voltage", index, source),
+    source_index: index,
+    };
+  });
+  const forwardCurves = (extraction?.curves ?? []).filter((curve) => {
+      const x = String(curve?.x_axis?.quantity ?? "").toLowerCase();
+      const y = String(curve?.y_axis?.quantity ?? "").toLowerCase();
+      return x.includes("voltage") && y.includes("current");
+    });
+  const used = fit.fidelity === "F2" ? forwardCurves.filter((curve) => (fit.curves_used ?? []).some((entry) =>
+    String(entry).includes(String(curve.name)) && String(entry).includes(String(curve.page_reference)),
+  )) : [];
+  if (fit.fidelity === "F2" && used.length !== 1) {
+    throw new Error(`Diode F2 evidence contract requires exactly one fitter-used forward curve; found ${used.length}`);
+  }
+  const curves = used.map((curve, index) => canonicalDiodeForwardCurve(curve, index, source));
+  if (fit.fidelity === "F2" && !curves.length) throw new Error("Diode F2 evidence contract requires a canonical forward-voltage curve");
+  return { scalarPoints, curves };
+}
+
 function validateDiodeCandidateEvidence(extraction) {
   const selection = selectDiodeForwardEvidence(extraction);
   return { family: "diode", route: selection.route, extraction: structuredClone(extraction) };
@@ -2009,6 +2207,7 @@ function bulkFactoryFacts(part, extraction, fit, identity, source, sourceExtract
   };
   const specs = normalizeEvidence(extraction?.specs ?? {});
   if (part.conveyor_family === "diode") {
+    const diodeEvidence = canonicalDiodeEvidence(extraction, source, fit);
     const fitPoints = [];
     if (fit.fidelity === "F2" && fit.residuals?.length) {
       const curve = nominalCurve(extraction, (candidate) => {
@@ -2047,7 +2246,15 @@ function bulkFactoryFacts(part, extraction, fit, identity, source, sourceExtract
       derivedModelInputs.IBV = specs.breakdown_current;
       derivedModelInputs.NBV = quantity(1, "1", "First-order avalanche-knee default; no multi-point reverse-knee trace was available", "model-factory Zener F1 policy", "held_default");
     }
-    return { ...common, fit_points: fitPoints, electrical_limits: electricalLimits, derived_model_inputs: derivedModelInputs };
+    return {
+      ...common,
+      evidence_contract_version: "1.0.0",
+      fit_points: fitPoints,
+      forward_voltage_points: diodeEvidence.scalarPoints.map(({ source_index: _sourceIndex, ...point }) => point),
+      curves: diodeEvidence.curves,
+      electrical_limits: electricalLimits,
+      derived_model_inputs: derivedModelInputs,
+    };
   }
   if (part.conveyor_family === "bjt") {
     const gainPoints = [];
@@ -2122,6 +2329,72 @@ function bulkFactoryFacts(part, extraction, fit, identity, source, sourceExtract
     transfer_points: [],
     output_points: [],
   };
+}
+
+function diodeLinkedRecord(row, datum) {
+  return {
+    ...row,
+    quantity: row.quantity ?? "forward voltage",
+    gate_quantity: row.gate_quantity ?? "forward_voltage",
+    datasheet_value: row.datasheet_value ?? row.value_v ?? row.maximum_voltage_v,
+    unit: row.unit ?? "V",
+    condition_identity: datum.condition_identity,
+    citation_identity: datum.citation_identity,
+    evidence_identity: datum.evidence_identity,
+    evidence_role: row.evidence_role ?? (datum.evidence_identity.role === "maximum" ? "inequality_constraint" : "typical_observation"),
+  };
+}
+
+function enrichDiodeEvidenceContract(packageDir, extraction, fit, source) {
+  const factsPath = path.join(packageDir, "facts.json");
+  const fittedPath = path.join(packageDir, "fitted.json");
+  const facts = JSON.parse(fs.readFileSync(factsPath, "utf8"));
+  const fitted = JSON.parse(fs.readFileSync(fittedPath, "utf8"));
+  const evidence = canonicalDiodeEvidence(extraction, source, fit);
+  const typical = evidence.scalarPoints.find((point) => !["minimum", "maximum"].includes(point.voltage.source_kind));
+  const maximum = evidence.scalarPoints.filter((point) => point.voltage.source_kind === "maximum");
+
+  fitted.evidence_contract_version = "1.0.0";
+  if (fit.fidelity === "F1") {
+    const observation = typical && fit.calibration?.observations?.length
+      ? diodeLinkedRecord(fit.calibration.observations[0], typical.voltage)
+      : null;
+    const constraints = (fit.calibration?.constraints ?? []).map((constraint, index) =>
+      diodeLinkedRecord(constraint, maximum[index]?.voltage ?? maximum.find((point) => point.voltage.value === constraint.maximum_voltage_v)?.voltage),
+    );
+    fitted.calibration = {
+      ...fit.calibration,
+      observations: observation ? [observation] : [],
+      constraints,
+      residual_target_count: observation ? 1 : 0,
+    };
+  } else {
+    const curvePoints = evidence.curves.flatMap((curve) => curve.points);
+    if (fit.residuals.length !== curvePoints.length) {
+      throw new Error(`Diode F2 residual count ${fit.residuals.length} does not match canonical forward-curve point count ${curvePoints.length}`);
+    }
+    const residuals = fit.residuals.map((row) => {
+      const current = Number(String(row.quantity).match(/at\s+([0-9.eE+-]+)\s*A/i)?.[1]);
+      const matches = curvePoints.filter((point) => point.x_si === current && point.y_si === row.datasheet_value);
+      if (matches.length !== 1) throw new Error(`Diode F2 residual ${row.quantity} does not resolve exactly once to its fitted forward-curve point`);
+      const curve = evidence.curves.find((candidate) => candidate.points.includes(matches[0]));
+      return diodeLinkedRecord(row, {
+        condition_identity: curve.condition_identity,
+        citation_identity: curve.citation_identity,
+        evidence_identity: matches[0].evidence_identity,
+      });
+    });
+    fitted.residuals = residuals;
+    fitted.calibration = {
+      ...fit.calibration,
+      observations: residuals.filter((row) => row.evidence_role !== "inequality_constraint"),
+      constraints: residuals.filter((row) => row.evidence_role === "inequality_constraint"),
+      residual_target_count: residuals.filter((row) => row.evidence_role !== "inequality_constraint").length,
+    };
+  }
+
+  write(factsPath, json(facts));
+  write(fittedPath, json(fitted));
 }
 
 function numericBound(quantityName, values, unit, conditions) {
@@ -2199,8 +2472,67 @@ function strictMosfetOperatingRegion(facts) {
   return { contract_version: "1.0.0", summary: `Supported only over the direct cited evidence union: ${summary}.`, numeric_bounds: bounds };
 }
 
+function strictDiodeEvidenceRows(facts) {
+  const rows = [];
+  for (const point of facts.forward_voltage_points ?? []) {
+    for (const datum of [point.current, point.voltage]) rows.push({
+      condition: datum.condition_identity, citation: datum.citation_identity, evidence: datum.evidence_identity,
+      value: datum.value, quantity: datum.quantity,
+    });
+  }
+  for (const curve of facts.curves ?? []) if (curve.characteristic === "forward_voltage") {
+    for (const point of curve.points ?? []) rows.push({
+      condition: curve.condition_identity, citation: curve.citation_identity, evidence: point.evidence_identity,
+      current: point.x_si, voltage: point.y_si, quantity: "curve_point",
+    });
+  }
+  return rows;
+}
+
+function strictDiodeBound(quantity, rows, unit, { temperatureKind = null } = {}) {
+  const values = rows.flatMap((row) => quantity === "forward_current"
+    ? row.current == null ? (row.quantity === quantity ? [row.value] : []) : [row.current]
+    : quantity === "forward_voltage"
+      ? row.voltage == null ? (row.quantity === quantity ? [row.value] : []) : [row.voltage]
+      : row.condition?.temperature?.kind === temperatureKind ? [row.condition.temperature.value_c] : []);
+  const selected = rows.filter((row) => quantity === "temperature"
+    ? row.condition?.temperature?.kind === temperatureKind
+    : quantity === "forward_current"
+      ? row.current != null || row.quantity === quantity
+      : row.voltage != null || row.quantity === quantity);
+  if (!values.length || !selected.length) return null;
+  const refs = [...new Map(selected.map((row) => [row.evidence.evidence_id, evidenceRef(row)])).values()];
+  const material = {
+    quantity, kind: "range", unit,
+    minimum: Math.min(...values), maximum: Math.max(...values),
+    evidence_refs: refs,
+    condition_ids: [...new Set(refs.map((ref) => ref.condition_id))].sort(),
+    citation_ids: [...new Set(refs.map((ref) => ref.citation_id))].sort(),
+    derivation: "direct_evidence_union",
+    ...(quantity === "temperature" ? { temperature_kind: temperatureKind } : {}),
+  };
+  return { bound_id: identityHash("sha256", material), ...material, conditions: "Direct cited diode forward-evidence union", placeholder: false };
+}
+
+function strictDiodeOperatingRegion(facts) {
+  const rows = strictDiodeEvidenceRows(facts);
+  const numeric_bounds = [
+    strictDiodeBound("forward_current", rows, "A"),
+    strictDiodeBound("forward_voltage", rows, "V"),
+    ...["ambient", "junction", "case"].map((temperatureKind) => strictDiodeBound("temperature", rows, "degC", { temperatureKind })),
+  ].filter(Boolean);
+  if (!numeric_bounds.some((bound) => bound.quantity === "forward_current")
+      || !numeric_bounds.some((bound) => bound.quantity === "forward_voltage")
+      || !numeric_bounds.some((bound) => bound.quantity === "temperature")) {
+    throw new Error("Diode supported operating region lacks cited forward current, voltage, or temperature evidence");
+  }
+  const summary = numeric_bounds.map((bound) => `${bound.quantity} ${bound.minimum} to ${bound.maximum} ${bound.unit}`).join("; ");
+  return { contract_version: "1.0.0", summary: `Supported only over the direct cited diode forward-evidence union: ${summary}.`, numeric_bounds };
+}
+
 function operatingRegion(part, facts) {
   if (part.conveyor_family === "mosfet" && facts.evidence_contract_version === "1.0.0") return strictMosfetOperatingRegion(facts);
+  if (part.conveyor_family === "diode" && facts.evidence_contract_version === "1.0.0") return strictDiodeOperatingRegion(facts);
   const bounds = [];
   if (part.conveyor_family === "diode") {
     const currents = facts.fit_points.map((point) => point.current.value);
@@ -2335,7 +2667,7 @@ export function stageBulkPart(part, rawExtraction, fit, stagingRoot, { demotionR
   const operating = operatingRegion(part, facts);
   const component = {
     schema_version: "1.0.0",
-    ...(part.conveyor_family === "mosfet" ? { evidence_contract_version: "1.0.0" } : {}),
+    ...(["mosfet", "diode"].includes(part.conveyor_family) ? { evidence_contract_version: "1.0.0" } : {}),
     canonical_mpn: identity.canonical,
     manufacturer: part.manufacturer,
     description: part.description || `${part.conveyor_family} from ${part.manufacturer}`,
@@ -2352,7 +2684,7 @@ export function stageBulkPart(part, rawExtraction, fit, stagingRoot, { demotionR
     supported_operating_region: operating,
     known_omissions: omissions,
     licence: { spdx_id: "MIT", provenance_basis: "original_from_facts" },
-    generator: { tool_or_agent: part.conveyor_family === "mosfet" ? "opencircuit-model-factory-v0.1.0 bulk-adapter evidence-contract-1.0.0" : "opencircuit-model-factory-v0.1.0 bulk-adapter", date: new Date().toISOString().slice(0, 10) },
+    generator: { tool_or_agent: ["mosfet", "diode"].includes(part.conveyor_family) ? "opencircuit-model-factory-v0.1.0 bulk-adapter evidence-contract-1.0.0" : "opencircuit-model-factory-v0.1.0 bulk-adapter", date: new Date().toISOString().slice(0, 10) },
     reviewer: { tool_or_agent: "pending-independent-package-review", date: new Date().toISOString().slice(0, 10) },
     test_results: { status: "pending", pass_count: 0, fail_count: 0, total_count: 0, worst_observed_relative_fitting_error: null },
     validation_date: null,
@@ -2376,7 +2708,7 @@ export function stageBulkPart(part, rawExtraction, fit, stagingRoot, { demotionR
     optimizer: fit.optimizer ?? null,
     held_defaults: fit.optimizer?.held_defaults ?? [],
     curves_used: fit.curves_used ?? [],
-    ...(part.conveyor_family === "mosfet" ? { evidence_contract_version: fit.evidence_contract_version ?? "1.0.0" } : {}),
+    ...(["mosfet", "diode"].includes(part.conveyor_family) ? { evidence_contract_version: fit.evidence_contract_version ?? "1.0.0" } : {}),
     evidence_curves: fit.evidence_curves ?? [],
     curves_rejected: fit.curves_rejected ?? [],
     residuals: fit.residuals ?? [],
@@ -2392,6 +2724,7 @@ export function stageBulkPart(part, rawExtraction, fit, stagingRoot, { demotionR
     write(path.join(buildDir, "model.cir"), `* OpenCircuit Model Factory v0.1.0 bulk adapter\n* Original work generated from public factual specifications.\n* This model is not copied or adapted from any vendor SPICE model.\n* Source: ${source.url}\n* Revision: ${source.revision}\n${fit.model.text}`);
     write(path.join(buildDir, "MODEL_CARD.md"), `# ${identity.canonical} model card\n\nPending factory bench generation and native/WASM validation.\n`);
     write(path.join(buildDir, "LICENSE"), MIT_LICENSE);
+    if (part.conveyor_family === "diode") enrichDiodeEvidenceContract(buildDir, extraction, fit, source);
     const ctx = bulkContext(part, fit, identity, pinInfo, source, omissions, operating, buildDir, stagingRoot);
     fs.mkdirSync(ctx.workDir, { recursive: true });
     try {

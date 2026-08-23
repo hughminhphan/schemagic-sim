@@ -1,0 +1,96 @@
+{
+  "schema_version": "1.0.0",
+  "evidence_contract_version": "1.0.0",
+  "evidence_cohorts": [
+    {
+      "cohort_id": "sha256:0e2c68566e1bee372878a485e2a0d840c3d5938d263d075b7dc62380fc4a09de",
+      "fidelity_tier": "F1",
+      "evidence_ids": [
+        "sha256:3db6fbdbe15a1be9390e1afaae5b1630c2ec8eb96c24857807a9e4c69dc6c5ae"
+      ]
+    },
+    {
+      "cohort_id": "sha256:dfc16559015b613b93d3f0264affb71171f05fa9b2dc96af7a7dd9c3ec1901fa",
+      "fidelity_tier": "F1",
+      "evidence_ids": [
+        "sha256:ef514879aef37cc3fe124b4437c762ecb5075418189619805655df24c111d02f"
+      ]
+    }
+  ],
+  "tests": [
+    {
+      "test_netlist": "forward_01.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "forward_voltage_maximum_at_0.1_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "minimum": 0,
+          "maximum": 1,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 2, Electrical Characteristics",
+          "evidence_id": "sha256:3db6fbdbe15a1be9390e1afaae5b1630c2ec8eb96c24857807a9e4c69dc6c5ae",
+          "condition_id": "sha256:5b30bfa7f82c3631ce155f53c5d6ec9fcd6bf322c1b289d80e7d9f96c6201d2a",
+          "citation_id": "sha256:46da69b4f843f370c2973e2d1be6b67447d9b44909e4585935de2b700b1762e6",
+          "cohort_id": "sha256:0e2c68566e1bee372878a485e2a0d840c3d5938d263d075b7dc62380fc4a09de",
+          "bench_condition_id": "sha256:5b30bfa7f82c3631ce155f53c5d6ec9fcd6bf322c1b289d80e7d9f96c6201d2a",
+          "evidence_role": "inclusive_maximum",
+          "citation_locator": {
+            "page": 2,
+            "table": "Electrical Characteristics",
+            "row": "Forward Voltage"
+          },
+          "evidence_qualification": {
+            "test_mode": "continuous_dc"
+          },
+          "bench_qualification": {
+            "test_mode": "continuous_dc"
+          },
+          "placeholder": false
+        }
+      ]
+    },
+    {
+      "test_netlist": "forward_02.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "forward_voltage_maximum_at_0.2_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "minimum": 0,
+          "maximum": 1.25,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 2, Electrical Characteristics",
+          "evidence_id": "sha256:ef514879aef37cc3fe124b4437c762ecb5075418189619805655df24c111d02f",
+          "condition_id": "sha256:af09842629af12775d18bc8d018b6313c737702aa23be1a4e59685a45dea4d08",
+          "citation_id": "sha256:46da69b4f843f370c2973e2d1be6b67447d9b44909e4585935de2b700b1762e6",
+          "cohort_id": "sha256:dfc16559015b613b93d3f0264affb71171f05fa9b2dc96af7a7dd9c3ec1901fa",
+          "bench_condition_id": "sha256:af09842629af12775d18bc8d018b6313c737702aa23be1a4e59685a45dea4d08",
+          "evidence_role": "inclusive_maximum",
+          "citation_locator": {
+            "page": 2,
+            "table": "Electrical Characteristics",
+            "row": "Forward Voltage"
+          },
+          "evidence_qualification": {
+            "test_mode": "continuous_dc"
+          },
+          "bench_qualification": {
+            "test_mode": "continuous_dc"
+          },
+          "placeholder": false
+        }
+      ]
+    }
+  ]
+}

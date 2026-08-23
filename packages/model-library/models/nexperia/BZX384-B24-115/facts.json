@@ -1,0 +1,275 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3",
+        "p. 4",
+        "p. 5",
+        "p. 6",
+        "p. 7",
+        "p. 8",
+        "p. 9",
+        "p. 10",
+        "p. 11",
+        "p. 12",
+        "p. 13",
+        "p. 14"
+      ],
+      "revision": "Rev. 4 — 1 January 2023",
+      "title": "BZX384 series — Voltage regulator diodes"
+    },
+    "extraction_notes": [
+      "BZX384-B24 is the ±2 % selection; the single breakdown-voltage field records its published lower VZ limit."
+    ],
+    "family": "diode",
+    "manufacturer": "Nexperia",
+    "mpn": "BZX384-B24,115",
+    "omission_reason": "No usable target-specific curve was extracted; the datasheet provides no reverse-recovery-time specification.",
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": {
+        "conditions": "IZ associated with the published VZ range for BZX384-B24; Tj = 25 °C.",
+        "page_reference": "p. 6, Table 8 Characteristics per type, BZX384-B24 row",
+        "source_kind": "minimum",
+        "unit": "A",
+        "value": 0.005
+      },
+      "breakdown_voltage": {
+        "conditions": "VZ minimum at IZ = 5 mA for BZX384-B24; Tj = 25 °C.",
+        "page_reference": "p. 6, Table 8 Characteristics per type, BZX384-B24 row",
+        "source_kind": "minimum",
+        "unit": "V",
+        "value": 23.5
+      },
+      "capacitance": {
+        "conditions": "Cd maximum at f = 1 MHz and VR = 0 V for the 24 V type; Tj = 25 °C.",
+        "page_reference": "p. 6, Table 8 Characteristics per type, 24 V row and note 1",
+        "source_kind": "maximum",
+        "unit": "F",
+        "value": 5.5e-11
+      },
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "IF = 10 mA; pulse test tp ≤ 100 µs and duty cycle δ ≤ 0.02; Tj = 25 °C.",
+            "page_reference": "p. 4, Table 7 Characteristics and note 1",
+            "source_kind": "maximum",
+            "unit": "A",
+            "value": 0.01
+          },
+          "voltage": {
+            "conditions": "VF maximum at IF = 10 mA; pulse test tp ≤ 100 µs and duty cycle δ ≤ 0.02; Tj = 25 °C.",
+            "page_reference": "p. 4, Table 7 Characteristics and note 1",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 0.9
+          }
+        }
+      ],
+      "reverse_current": {
+        "conditions": "IR maximum at VR = 16.8 V for the 24 V type; Tj = 25 °C.",
+        "page_reference": "p. 6, Table 8 Characteristics per type, 24 V row",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 5e-8
+      },
+      "reverse_recovery": null,
+      "variant": "zener"
+    },
+    "usable_curves": false
+  },
+  "catalog_seed_hints": [],
+  "identity": {
+    "canonical_mpn": "BZX384-B24",
+    "manufacturer": "Nexperia",
+    "aliases": [
+      "BZX384-B24,115"
+    ]
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8588915600903049216",
+    "revision": "Rev. 4 — 1 January 2023",
+    "sha256": "a381ee1ec1ad5a2b2a77d1888ef95e846891aafd2f3d159b620c641cec395cdb",
+    "accessed_date": "2026-08-23",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4",
+      "p. 5",
+      "p. 6",
+      "p. 7",
+      "p. 8",
+      "p. 9",
+      "p. 10",
+      "p. 11",
+      "p. 12",
+      "p. 13",
+      "p. 14"
+    ],
+    "placeholder": false
+  },
+  "evidence_contract_version": "1.0.0",
+  "fit_points": [
+    {
+      "current": {
+        "conditions": "IF = 10 mA; pulse test tp ≤ 100 µs and duty cycle δ ≤ 0.02; Tj = 25 °C.",
+        "page_reference": "p. 4, Table 7 Characteristics and note 1",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.01
+      },
+      "voltage": {
+        "conditions": "VF maximum at IF = 10 mA; pulse test tp ≤ 100 µs and duty cycle δ ≤ 0.02; Tj = 25 °C.",
+        "page_reference": "p. 4, Table 7 Characteristics and note 1",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 0.9
+      }
+    }
+  ],
+  "forward_voltage_points": [
+    {
+      "current": {
+        "conditions": "IF = 10 mA; pulse test tp ≤ 100 µs and duty cycle δ ≤ 0.02; Tj = 25 °C.",
+        "page_reference": "p. 4, Table 7 Characteristics and note 1",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.01,
+        "quantity": "forward_current",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "junction",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 0.01
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 0.9
+            }
+          },
+          "test_mode": {
+            "kind": "pulsed_limit",
+            "maximum_pulse_width_s": 0.00009999999999999999,
+            "maximum_duty_cycle": 0.02
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "IF = 10 mA; pulse test tp ≤ 100 µs and duty cycle δ ≤ 0.02; Tj = 25 °C."
+            }
+          ],
+          "condition_id": "sha256:cf800d7cb31adb56d11cb7135a0df8aa070b547cd1507f3eb096b538c874b9a5"
+        },
+        "citation_identity": {
+          "source_sha256": "a381ee1ec1ad5a2b2a77d1888ef95e846891aafd2f3d159b620c641cec395cdb",
+          "source_revision": "Rev. 4 — 1 January 2023",
+          "page": 4,
+          "table": "Table 7 Characteristics and note 1",
+          "row": "Forward Current",
+          "citation_id": "sha256:429e9151be234b43ae1bf62970636ea17aa3bc5f78395056ab7b05a720e9a968"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:7ef5e801e12f8398df54ab48b3ad74a4f11c3af66725dca1903c6c9969c2c0ed",
+          "cohort_id": "sha256:c05232855405cb7eb63ad803dd65dd6bb52440b350e409c945b392eb5513ea7a",
+          "role": "maximum",
+          "condition_id": "sha256:cf800d7cb31adb56d11cb7135a0df8aa070b547cd1507f3eb096b538c874b9a5",
+          "citation_id": "sha256:429e9151be234b43ae1bf62970636ea17aa3bc5f78395056ab7b05a720e9a968"
+        }
+      },
+      "voltage": {
+        "conditions": "VF maximum at IF = 10 mA; pulse test tp ≤ 100 µs and duty cycle δ ≤ 0.02; Tj = 25 °C.",
+        "page_reference": "p. 4, Table 7 Characteristics and note 1",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 0.9,
+        "quantity": "forward_voltage",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "junction",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 0.01
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 0.9
+            }
+          },
+          "test_mode": {
+            "kind": "pulsed_limit",
+            "maximum_pulse_width_s": 0.00009999999999999999,
+            "maximum_duty_cycle": 0.02
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "VF maximum at IF = 10 mA; pulse test tp ≤ 100 µs and duty cycle δ ≤ 0.02; Tj = 25 °C."
+            }
+          ],
+          "condition_id": "sha256:bde34d9f85df222d0e07d926e70847a92b2a315b04c697f17aaf52a4de43d4dd"
+        },
+        "citation_identity": {
+          "source_sha256": "a381ee1ec1ad5a2b2a77d1888ef95e846891aafd2f3d159b620c641cec395cdb",
+          "source_revision": "Rev. 4 — 1 January 2023",
+          "page": 4,
+          "table": "Table 7 Characteristics and note 1",
+          "row": "Forward Voltage",
+          "citation_id": "sha256:59a6bcd5463a8e6dbba7c00c6f962d530f7b909b62eddf8dc4870e72026f8eb2"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:0005eb0e7f2f4ca4971cfe745df5cd6598c87fe43d518016c8d05954ad3839e6",
+          "cohort_id": "sha256:d3a108312442d9e9cb1568757db1c5e375612324a6904cf99e56e3c4376b8a59",
+          "role": "maximum",
+          "condition_id": "sha256:bde34d9f85df222d0e07d926e70847a92b2a315b04c697f17aaf52a4de43d4dd",
+          "citation_id": "sha256:59a6bcd5463a8e6dbba7c00c6f962d530f7b909b62eddf8dc4870e72026f8eb2"
+        }
+      }
+    }
+  ],
+  "curves": [],
+  "electrical_limits": {},
+  "derived_model_inputs": {
+    "BV": {
+      "conditions": "VZ minimum at IZ = 5 mA for BZX384-B24; Tj = 25 °C.",
+      "page_reference": "p. 6, Table 8 Characteristics per type, BZX384-B24 row",
+      "source_kind": "minimum",
+      "unit": "V",
+      "value": 23.5
+    },
+    "IBV": {
+      "conditions": "IZ associated with the published VZ range for BZX384-B24; Tj = 25 °C.",
+      "page_reference": "p. 6, Table 8 Characteristics per type, BZX384-B24 row",
+      "source_kind": "minimum",
+      "unit": "A",
+      "value": 0.005
+    },
+    "NBV": {
+      "value": 1,
+      "unit": "1",
+      "conditions": "First-order avalanche-knee default; no multi-point reverse-knee trace was available",
+      "page_reference": "model-factory Zener F1 policy",
+      "source_kind": "held_default"
+    }
+  }
+}

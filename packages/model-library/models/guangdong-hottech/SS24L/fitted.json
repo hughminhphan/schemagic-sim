@@ -1,0 +1,114 @@
+{
+  "schema_version": "1.0.0",
+  "fidelity_tier": "F1",
+  "evidence_mode": "bound-constrained",
+  "parameters": {
+    "IS": 6.741662320929112e-8,
+    "N": 1.1,
+    "RS": 0.0001
+  },
+  "parameter_metadata": {
+    "IS": {
+      "status": "derived from cited maximum bound",
+      "evidence_mode": "bound-constrained"
+    },
+    "N": {
+      "status": "declared fixed F1 policy constant",
+      "evidence_mode": "bound-constrained"
+    },
+    "RS": {
+      "status": "declared fixed F1 policy constant",
+      "evidence_mode": "bound-constrained"
+    }
+  },
+  "calibration": {
+    "evidence_mode": "bound-constrained",
+    "observations": [],
+    "residual_target_count": 0,
+    "constraints": [
+      {
+        "kind": "forward_voltage_maximum",
+        "inclusive": true,
+        "source": {
+          "voltage": "PDF p. 1, Electrical Characteristics",
+          "current": "PDF p. 1, Electrical Characteristics",
+          "conditions": "TA = 25 degC; IF = 2 A; SS22L-SS24L shared table entry.",
+          "source_kind": "maximum"
+        },
+        "maximum_voltage_v": 0.5,
+        "current_a": 2,
+        "quantity": "forward voltage",
+        "gate_quantity": "forward_voltage",
+        "datasheet_value": 0.5,
+        "unit": "V",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "ambient",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 2
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 0.5
+            }
+          },
+          "test_mode": {
+            "kind": "not_stated"
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "TA = 25 degC; IF = 2 A; SS22L-SS24L shared table entry."
+            }
+          ],
+          "condition_id": "sha256:3c0340622f0a2f62ba3ba82cc6e891c469c3f8a988e5fce6e33cc3c3081d9fdb"
+        },
+        "citation_identity": {
+          "source_sha256": "61f09f11f7304db2dc1636a10d24b63b0a92ec57c5ed273b6efa493271a06da1",
+          "source_revision": "Not stated",
+          "page": 1,
+          "table": "Electrical Characteristics",
+          "row": "Forward Voltage",
+          "citation_id": "sha256:48816d05f05f59f57e0983f2f40790fb413cb2a23738f0f5fd8cb2cc85b21758"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:f52b304b46aa836e7de73adb7dd6dbff75955ee2362d5d7240cd0d8b0d7ad093",
+          "cohort_id": "sha256:45fb9aa66e46ddf246df0a2122f8ef32370c394a08458977acc96bee49ce7dfc",
+          "role": "maximum",
+          "condition_id": "sha256:3c0340622f0a2f62ba3ba82cc6e891c469c3f8a988e5fce6e33cc3c3081d9fdb",
+          "citation_id": "sha256:48816d05f05f59f57e0983f2f40790fb413cb2a23738f0f5fd8cb2cc85b21758"
+        },
+        "evidence_role": "inequality_constraint"
+      }
+    ],
+    "seeds": [
+      {
+        "parameter_coordinate": "IS",
+        "evidence_role": "maximum_bound_interior_feasibility_seed_only",
+        "value": 6.741662320929112e-8,
+        "unit": "A",
+        "policy": "derive from 0.95 times cited maximum current and 0.97 times cited maximum voltage",
+        "current_factor": 0.95,
+        "voltage_factor": 0.97
+      }
+    ]
+  },
+  "fitter": "cited-maximum diode F1 interior-feasibility projection",
+  "optimizer": null,
+  "held_defaults": [],
+  "curves_used": [],
+  "evidence_contract_version": "1.0.0",
+  "evidence_curves": [],
+  "curves_rejected": [],
+  "residuals": [],
+  "rms_relative_error": null,
+  "worst_relative_error": null
+}
