@@ -537,6 +537,61 @@ test("direct threshold not_stated remains an explicit static-characteristic poli
   );
 });
 
+test("pulse-tested scalar RDS(on) remains pulse-labelled while pulsed curves and thresholds stay excluded", () => {
+  const extraction = productionCurveExtraction();
+  extraction.usable_curves = false;
+  extraction.curves = [];
+  extraction.specs.threshold_typ = null;
+  const pulsedMode = { kind: "pulsed", pulse_width_s: 400e-6, duty_cycle: 0.02 };
+  for (const datum of Object.values(extraction.specs.rdson_points[0])) {
+    datum.condition.test_mode = structuredClone(pulsedMode);
+    datum.conditions = "VGS = 4.5 V, ID = 2 A; pulse width <= 400 us, duty cycle <= 2%";
+    datum.source_kind = datum === extraction.specs.rdson_points[0].resistance ? "maximum" : datum.source_kind;
+  }
+  let runnerPayload;
+  const part = { ...mosfetPart("unused.pdf"), subcategory: "N-Channel MOSFET" };
+  assert.equal(validateMosfetCandidateEvidence(part, extraction).route, "interval-constrained");
+  fitBulkPart(part, extraction, {
+    forceF1: true,
+    ngspiceRunner: () => ({ pass: true }),
+    mosfetConstraintRunner: (payload) => { runnerPayload = payload; return passThroughConstraintRunner(payload); },
+  });
+  const identity = runnerPayload.constraints.find((constraint) => constraint.kind === "rdson_maximum").condition_identity;
+  assert.deepEqual(identity.test_mode, pulsedMode);
+  assert.ok(identity.qualifiers.some((item) => item.key === "calibration_interpretation" && item.value === "quasi_static_rds_snapshot"));
+  assert.ok(identity.qualifiers.some((item) => item.key === "typed_source_test_mode" && item.value === "pulsed"));
+
+  const adjudicationExtraction = intervalMosfetExtraction();
+  for (const datum of Object.values(adjudicationExtraction.specs.rdson_points[0])) {
+    datum.conditions = "VGS = 5 V, ID = 0.2 A, TJ = 25 degC; pulse width <= 400 us, duty cycle <= 2%";
+  }
+  const supplement = intervalAdjudication(adjudicationExtraction);
+  supplement.entries[1].condition.test_mode = structuredClone(pulsedMode);
+  supplement.supplement_id = contentHash(Object.fromEntries(Object.entries(supplement).filter(([key]) => key !== "supplement_id")));
+  const adjudicationPart = { ...semanticMosfetPart(), subcategory: "N-Channel MOSFET" };
+  const adjudicated = applyConditionAdjudicationSupplement(adjudicationPart, adjudicationExtraction, supplement);
+  let adjudicatedPayload;
+  fitBulkPart(adjudicationPart, adjudicated, {
+    forceF1: true,
+    ngspiceRunner: () => ({ pass: true }),
+    mosfetConstraintRunner: (payload) => { adjudicatedPayload = payload; return passThroughConstraintRunner(payload); },
+  });
+  const adjudicatedIdentity = adjudicatedPayload.constraints.find((constraint) => constraint.kind === "rdson_maximum").condition_identity;
+  assert.deepEqual(adjudicatedIdentity.test_mode, pulsedMode);
+  assert.ok(adjudicatedIdentity.qualifiers.some((item) => item.key === "calibration_interpretation" && item.value === "quasi_static_rds_snapshot"));
+  assert.ok(adjudicatedIdentity.qualifiers.some((item) => item.key === "semantic_adjudication" && item.value === "content_addressed"));
+
+  const pulsedThreshold = structuredClone(extraction);
+  pulsedThreshold.specs.threshold_min.condition.test_mode = structuredClone(pulsedMode);
+  pulsedThreshold.specs.threshold_min.conditions = "VDS = VGS, ID = 250 uA; pulse width <= 400 us, duty cycle <= 2%";
+  assert.throws(() => validateMosfetCandidateEvidence(part, pulsedThreshold), /pulsed evidence and cannot enter a static DC MOSFET fit/);
+
+  const pulsedCurve = productionCurveExtraction();
+  pulsedCurve.curves[0].test_mode = structuredClone(pulsedMode);
+  pulsedCurve.curves[0].test_conditions = "VDS = 10 V, TJ = 25 °C; pulse width <= 400 us, duty cycle <= 2%";
+  assert.throws(() => validateMosfetCandidateEvidence(part, pulsedCurve), /pulsed evidence and cannot enter a static DC MOSFET fit/);
+});
+
 test("family-wide candidate preflight classifies cited diode evidence without seed-only admission", () => {
   const typical = extraction();
   assert.equal(validateBulkCandidateEvidence(diodePart("unused.pdf"), typical).route, "direct-typical-or-digitized");

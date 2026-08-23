@@ -578,7 +578,8 @@ function adjudicatedCondition(target, characteristic, label, context) {
     throw new Error(`${label} semantic disclosures must contain only non-empty strings`);
   }
   const sourceMode = semantics.condition.test_mode;
-  if (["pulsed", "single_pulse"].includes(sourceMode.kind)) {
+  const pulsedRdsonSnapshot = characteristic === "rds_on" && ["pulsed", "single_pulse"].includes(sourceMode.kind);
+  if (["pulsed", "single_pulse"].includes(sourceMode.kind) && !pulsedRdsonSnapshot) {
     throw new Error(`${label} is pulsed evidence and cannot enter a static DC MOSFET fit`);
   }
   const testMode = sourceMode.kind === "not_stated" ? { kind: "dc" } : structuredClone(sourceMode);
@@ -586,6 +587,7 @@ function adjudicatedCondition(target, characteristic, label, context) {
     { key: "semantic_adjudication", value: "content_addressed" },
     { key: "source_test_mode", value: sourceMode.kind },
     { key: "temperature_provenance", value: semantics.condition.temperature.provenance },
+    ...(pulsedRdsonSnapshot ? [{ key: "calibration_interpretation", value: "quasi_static_rds_snapshot" }] : []),
     ...(sourceMode.kind === "not_stated" ? [{ key: "static_characteristic_policy", value: characteristic }] : []),
   ].sort((left, right) => left.key.localeCompare(right.key) || left.value.localeCompare(right.value));
   return {
@@ -611,7 +613,8 @@ function directCondition(target, characteristic, label, context) {
     throw new Error(`${label} direct condition fixed VGS must be positive`);
   }
   const sourceMode = condition.test_mode;
-  if (["pulsed", "single_pulse"].includes(sourceMode.kind)) {
+  const pulsedRdsonSnapshot = characteristic === "rds_on" && ["pulsed", "single_pulse"].includes(sourceMode.kind);
+  if (["pulsed", "single_pulse"].includes(sourceMode.kind) && !pulsedRdsonSnapshot) {
     throw new Error(`${label} is pulsed evidence and cannot enter a static DC MOSFET fit`);
   }
   if (sourceMode.kind === "not_stated" && characteristic !== "gate_threshold") {
@@ -622,6 +625,7 @@ function directCondition(target, characteristic, label, context) {
     { key: "typed_condition_source", value: "direct_extraction" },
     { key: "typed_source_test_mode", value: sourceMode.kind },
     { key: "typed_temperature_provenance", value: condition.temperature.provenance },
+    ...(pulsedRdsonSnapshot ? [{ key: "calibration_interpretation", value: "quasi_static_rds_snapshot" }] : []),
     ...(sourceMode.kind === "not_stated" ? [{ key: "typed_static_characteristic_policy", value: characteristic }] : []),
   ].sort((left, right) => left.key.localeCompare(right.key) || left.value.localeCompare(right.value));
   return {
