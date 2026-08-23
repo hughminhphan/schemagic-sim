@@ -85,3 +85,16 @@ Batch 16 proving uses exact untouched frozen orders 990 through 999, fixed denom
 9. A proving failure stops candidate execution and records the concrete terminal result; gates are not relaxed.
 
 On PASS only, run an independent package review, collision audit, deterministic promotion, all repository and native/WASM gates, and a final independent release audit before any repository push or deployment. Public launch and community posts remain separately approval-gated.
+
+## Cycle 1 process stop and clean restart
+
+During the first parallel implementation cycle, the conveyor worker reported that one broad read-only `rg` unintentionally descended into the prohibited `tools/conveyor/data.pre-hardening/` root. The coordinator immediately interrupted both implementation workers and audited the shared tree.
+
+Cycle 1 is terminal and none of its worker context may be used. At the stop:
+
+- no tracked code edit existed;
+- no Batch 16 ignored root existed;
+- no target slice, PDF, topology preflight, job, model call, response, extraction, fit, staging package, review, promotion, push, deployment, or publication existed; and
+- local HEAD remained exact commit `4c91157`.
+
+Hugh's active direction is to keep going after the previous terminal. Because Cycle 1 produced no candidate state and no implementation diff, the narrow safe remediation is a clean Cycle 2 restart from `4c91157` with new workers, explicit file allowlists, and no repository-wide searches. The contaminated worker is excluded. The fresh candidate root for the eventual proving run is changed to `tools/conveyor/data/batch-16-proving-cycle2/`, required absent before creation. All target identities, denominator, thresholds, isolation rules, call limits, review gates, and release gates above remain unchanged.
