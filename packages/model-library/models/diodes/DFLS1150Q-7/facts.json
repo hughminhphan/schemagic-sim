@@ -1,0 +1,228 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3",
+        "p. 4",
+        "p. 5",
+        "p. 6"
+      ],
+      "revision": "DS38627 Rev. 4 - 2, December 2024",
+      "title": "DFLS1150Q 1.0A High-Voltage Schottky Barrier Rectifier"
+    },
+    "extraction_notes": [
+      "Full rendered datasheet inspected; plot traces were not discretely digitized."
+    ],
+    "family": "diode",
+    "manufacturer": "Diodes Incorporated",
+    "mpn": "DFLS1150Q-7",
+    "omission_reason": "No non-invented curve coordinates were extracted from the rendered plots.",
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": null,
+      "breakdown_voltage": null,
+      "capacitance": null,
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "TA = 25 degC",
+            "page_reference": "p. 1 product summary",
+            "source_kind": "maximum",
+            "unit": "A",
+            "value": 1
+          },
+          "voltage": {
+            "conditions": "IF = 1 A, TA = 25 degC",
+            "page_reference": "p. 1 product summary",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 0.82
+          }
+        }
+      ],
+      "reverse_current": {
+        "conditions": "TA = 25 degC",
+        "page_reference": "p. 1 product summary",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.000002
+      },
+      "reverse_recovery": null,
+      "variant": "schottky"
+    },
+    "usable_curves": false
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "Forward Voltage (Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "820mV@1A",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Voltage - Forward(Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "820mV@1A",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "DFLS1150Q-7",
+    "manufacturer": "Diodes Incorporated",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8586197557579669504",
+    "revision": "DS38627 Rev. 4 - 2, December 2024",
+    "sha256": "436752a6304bf3a6ea0649f11e45b84f75d9fe620f12686ffb656f17358a4b22",
+    "accessed_date": "2026-08-23",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4",
+      "p. 5",
+      "p. 6"
+    ],
+    "placeholder": false
+  },
+  "evidence_contract_version": "1.0.0",
+  "fit_points": [
+    {
+      "current": {
+        "conditions": "TA = 25 degC",
+        "page_reference": "p. 1 product summary",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 1
+      },
+      "voltage": {
+        "conditions": "IF = 1 A, TA = 25 degC",
+        "page_reference": "p. 1 product summary",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 0.82
+      }
+    }
+  ],
+  "forward_voltage_points": [
+    {
+      "current": {
+        "conditions": "TA = 25 degC",
+        "page_reference": "p. 1 product summary",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 1,
+        "quantity": "forward_current",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "ambient",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 1
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 0.82
+            }
+          },
+          "test_mode": {
+            "kind": "not_stated"
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "TA = 25 degC"
+            }
+          ],
+          "condition_id": "sha256:9fabe73d98581d2394d0e3e11c4b5a67bbad6ac1e3acfcc6ffefc0ed9bc492f5"
+        },
+        "citation_identity": {
+          "source_sha256": "436752a6304bf3a6ea0649f11e45b84f75d9fe620f12686ffb656f17358a4b22",
+          "source_revision": "DS38627 Rev. 4 - 2, December 2024",
+          "page": 1,
+          "table": "product summary",
+          "row": "Forward Current",
+          "citation_id": "sha256:e75ceb62975ed75ecee69709675d26adcc173457811da8b88c9f5414d0451d66"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:bfde9cacebfd651041d760be11b3fbf6b454f98cad74bd717a3475acc24262ef",
+          "cohort_id": "sha256:e2b1cf2bfe773e5f30cd517d87f169f0ecff5a9838bb5f1baf79c160c6aed3b7",
+          "role": "maximum",
+          "condition_id": "sha256:9fabe73d98581d2394d0e3e11c4b5a67bbad6ac1e3acfcc6ffefc0ed9bc492f5",
+          "citation_id": "sha256:e75ceb62975ed75ecee69709675d26adcc173457811da8b88c9f5414d0451d66"
+        }
+      },
+      "voltage": {
+        "conditions": "IF = 1 A, TA = 25 degC",
+        "page_reference": "p. 1 product summary",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 0.82,
+        "quantity": "forward_voltage",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "ambient",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 1
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 0.82
+            }
+          },
+          "test_mode": {
+            "kind": "not_stated"
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "IF = 1 A, TA = 25 degC"
+            }
+          ],
+          "condition_id": "sha256:40a792cb5ff0ba235f92f2afdf4fbfb9a7718c68f8f32ea06fcaeea24174dd43"
+        },
+        "citation_identity": {
+          "source_sha256": "436752a6304bf3a6ea0649f11e45b84f75d9fe620f12686ffb656f17358a4b22",
+          "source_revision": "DS38627 Rev. 4 - 2, December 2024",
+          "page": 1,
+          "table": "product summary",
+          "row": "Forward Voltage",
+          "citation_id": "sha256:1afdf12eebdd773cc33b21be4f9a998af174dd1e6bfdefcab48940ec996ce0c7"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:8b0360d138623f0d15c2a0432818e20e327263da43500e485cd66da6031b4a09",
+          "cohort_id": "sha256:4a1cb4f7442df11244c14570cd1831aa43dbe04f711572c9790ebca131296f85",
+          "role": "maximum",
+          "condition_id": "sha256:40a792cb5ff0ba235f92f2afdf4fbfb9a7718c68f8f32ea06fcaeea24174dd43",
+          "citation_id": "sha256:1afdf12eebdd773cc33b21be4f9a998af174dd1e6bfdefcab48940ec996ce0c7"
+        }
+      }
+    }
+  ],
+  "curves": [],
+  "electrical_limits": {},
+  "derived_model_inputs": {}
+}

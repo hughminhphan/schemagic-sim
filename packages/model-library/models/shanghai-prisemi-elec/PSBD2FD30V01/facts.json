@@ -1,0 +1,226 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3",
+        "p. 4",
+        "p. 5"
+      ],
+      "revision": "Rev.06.2",
+      "title": "PSBD2FD30V01 Schottky Barrier Diode"
+    },
+    "extraction_notes": [
+      "No curve points were digitized."
+    ],
+    "family": "diode",
+    "manufacturer": "Shanghai Prisemi Elec",
+    "mpn": "PSBD2FD30V01",
+    "omission_reason": "Table-only extraction.",
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": null,
+      "breakdown_voltage": null,
+      "capacitance": null,
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "TA = 25 C",
+            "page_reference": "p. 1 electrical characteristics",
+            "source_kind": "maximum",
+            "unit": "A",
+            "value": 0.01
+          },
+          "voltage": {
+            "conditions": "IF = 10 mA, TA = 25 C",
+            "page_reference": "p. 1 electrical characteristics",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 0.35
+          }
+        }
+      ],
+      "reverse_current": {
+        "conditions": "VR = 10 V, TA = 25 C",
+        "page_reference": "p. 1 electrical characteristics",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.00001
+      },
+      "reverse_recovery": null,
+      "variant": "schottky"
+    },
+    "usable_curves": false
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "Forward Voltage (Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "340mV@10mA",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Voltage - Forward(Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "340mV@10mA",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "PSBD2FD30V01",
+    "manufacturer": "Shanghai Prisemi Elec",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8588898886346162176",
+    "revision": "Rev.06.2",
+    "sha256": "9741c7e4a30787db2b1b40284d3892fdbf706f589544802d9fc3a19cb7039117",
+    "accessed_date": "2026-08-23",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4",
+      "p. 5"
+    ],
+    "placeholder": false
+  },
+  "evidence_contract_version": "1.0.0",
+  "fit_points": [
+    {
+      "current": {
+        "conditions": "TA = 25 C",
+        "page_reference": "p. 1 electrical characteristics",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.01
+      },
+      "voltage": {
+        "conditions": "IF = 10 mA, TA = 25 C",
+        "page_reference": "p. 1 electrical characteristics",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 0.35
+      }
+    }
+  ],
+  "forward_voltage_points": [
+    {
+      "current": {
+        "conditions": "TA = 25 C",
+        "page_reference": "p. 1 electrical characteristics",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.01,
+        "quantity": "forward_current",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "ambient",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 0.01
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 0.35
+            }
+          },
+          "test_mode": {
+            "kind": "not_stated"
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "TA = 25 C"
+            }
+          ],
+          "condition_id": "sha256:a40faf69f7052af9f38b598e3d4ddebd14d4c5cf919f9884929916db9fa5acfc"
+        },
+        "citation_identity": {
+          "source_sha256": "9741c7e4a30787db2b1b40284d3892fdbf706f589544802d9fc3a19cb7039117",
+          "source_revision": "Rev.06.2",
+          "page": 1,
+          "table": "electrical characteristics",
+          "row": "Forward Current",
+          "citation_id": "sha256:3b84caa85b90c20bfd0215598adffb6f19ed23d6e71dc98a9e4e74c9fee7e433"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:44d74c1d17fe90be8a4d4720d87157663ab82e5258490dd736a75954bd65f8d7",
+          "cohort_id": "sha256:c0cb206ab8d65d899c4dc8c6a85e7f75e300f799d9498f9bfddbb0b439da47e5",
+          "role": "maximum",
+          "condition_id": "sha256:a40faf69f7052af9f38b598e3d4ddebd14d4c5cf919f9884929916db9fa5acfc",
+          "citation_id": "sha256:3b84caa85b90c20bfd0215598adffb6f19ed23d6e71dc98a9e4e74c9fee7e433"
+        }
+      },
+      "voltage": {
+        "conditions": "IF = 10 mA, TA = 25 C",
+        "page_reference": "p. 1 electrical characteristics",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 0.35,
+        "quantity": "forward_voltage",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "ambient",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 0.01
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 0.35
+            }
+          },
+          "test_mode": {
+            "kind": "not_stated"
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "IF = 10 mA, TA = 25 C"
+            }
+          ],
+          "condition_id": "sha256:c45d3779423ffbbcac013e2711ef80dcf6c0f5aba96cf85ccd44d0c0f3a6c796"
+        },
+        "citation_identity": {
+          "source_sha256": "9741c7e4a30787db2b1b40284d3892fdbf706f589544802d9fc3a19cb7039117",
+          "source_revision": "Rev.06.2",
+          "page": 1,
+          "table": "electrical characteristics",
+          "row": "Forward Voltage",
+          "citation_id": "sha256:e1e1679f3e064290151640e24ff6dee4e4cb7a967facdef1a6674300e74bfce7"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:ddfed0add9855c79dde7cc450e02f2ae9668d616f7cb1be80e86783dabb02e1d",
+          "cohort_id": "sha256:27f8bf703f29d4d20b17ce0213d50716a834c9039d56baa1527ffa0ab4846e3a",
+          "role": "maximum",
+          "condition_id": "sha256:c45d3779423ffbbcac013e2711ef80dcf6c0f5aba96cf85ccd44d0c0f3a6c796",
+          "citation_id": "sha256:e1e1679f3e064290151640e24ff6dee4e4cb7a967facdef1a6674300e74bfce7"
+        }
+      }
+    }
+  ],
+  "curves": [],
+  "electrical_limits": {},
+  "derived_model_inputs": {}
+}

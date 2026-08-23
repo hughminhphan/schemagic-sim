@@ -1,0 +1,234 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3"
+      ],
+      "revision": "Rev:2024A1",
+      "title": "ES1AF through ES1JF Fast Recovery Rectifiers"
+    },
+    "extraction_notes": [
+      "Full rendered datasheet inspected; plot traces were not discretely digitized."
+    ],
+    "family": "diode",
+    "manufacturer": "MDD Microdiode Semiconductor",
+    "mpn": "ES1DF",
+    "omission_reason": "No non-invented curve coordinates were extracted from the rendered plots.",
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": null,
+      "breakdown_voltage": null,
+      "capacitance": {
+        "conditions": "VR = 4 V, f = 1 MHz, TA = 25 degC",
+        "page_reference": "p. 1 ratings table",
+        "source_kind": "typical",
+        "unit": "F",
+        "value": 1.5e-11
+      },
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "TA = 25 degC",
+            "page_reference": "p. 1 ratings table",
+            "source_kind": "maximum",
+            "unit": "A",
+            "value": 1
+          },
+          "voltage": {
+            "conditions": "IF = 1 A, TA = 25 degC",
+            "page_reference": "p. 1 ratings table",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 1.25
+          }
+        }
+      ],
+      "reverse_current": {
+        "conditions": "rated DC blocking voltage, TA = 25 degC",
+        "page_reference": "p. 1 ratings table",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.000005
+      },
+      "reverse_recovery": {
+        "conditions": "IF = 0.5 A, IR = 1 A, Irr = 0.25 A, TA = 25 degC",
+        "page_reference": "p. 1 ratings table",
+        "source_kind": "maximum",
+        "unit": "s",
+        "value": 3.5e-8
+      },
+      "variant": "rectifier"
+    },
+    "usable_curves": false
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "Forward Voltage (Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "950mV@1A",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Voltage - Forward(Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "950mV@1A",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "ES1DF",
+    "manufacturer": "MDD Microdiode Semiconductor",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8586194509189287936",
+    "revision": "Rev:2024A1",
+    "sha256": "aacc124f9f11b98be4fce03fe7cf99fe62d0755fcdd57360e517aae1fbf6f4a5",
+    "accessed_date": "2026-08-23",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ],
+    "placeholder": false
+  },
+  "evidence_contract_version": "1.0.0",
+  "fit_points": [
+    {
+      "current": {
+        "conditions": "TA = 25 degC",
+        "page_reference": "p. 1 ratings table",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 1
+      },
+      "voltage": {
+        "conditions": "IF = 1 A, TA = 25 degC",
+        "page_reference": "p. 1 ratings table",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 1.25
+      }
+    }
+  ],
+  "forward_voltage_points": [
+    {
+      "current": {
+        "conditions": "TA = 25 degC",
+        "page_reference": "p. 1 ratings table",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 1,
+        "quantity": "forward_current",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "ambient",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 1
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 1.25
+            }
+          },
+          "test_mode": {
+            "kind": "not_stated"
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "TA = 25 degC"
+            }
+          ],
+          "condition_id": "sha256:b7bbbba415bf55dbfa216514ad47f64324798332cc0d9433b2e6f031b92bef4a"
+        },
+        "citation_identity": {
+          "source_sha256": "aacc124f9f11b98be4fce03fe7cf99fe62d0755fcdd57360e517aae1fbf6f4a5",
+          "source_revision": "Rev:2024A1",
+          "page": 1,
+          "table": "p. 1 ratings table",
+          "row": "Forward Current",
+          "citation_id": "sha256:02614a1e3a652ec554e798daa91cd0a3c4a7ff703a09223493047708d889f92e"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:db9bdaf116acbfc203f191928512ae83ee1e09fe76b77ca513a9efb9b7777a03",
+          "cohort_id": "sha256:62821150fe3f4c19d6465e29bbd5c4ab80113cccb455aeea4ef47b72f92d3b93",
+          "role": "maximum",
+          "condition_id": "sha256:b7bbbba415bf55dbfa216514ad47f64324798332cc0d9433b2e6f031b92bef4a",
+          "citation_id": "sha256:02614a1e3a652ec554e798daa91cd0a3c4a7ff703a09223493047708d889f92e"
+        }
+      },
+      "voltage": {
+        "conditions": "IF = 1 A, TA = 25 degC",
+        "page_reference": "p. 1 ratings table",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 1.25,
+        "quantity": "forward_voltage",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "ambient",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 1
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 1.25
+            }
+          },
+          "test_mode": {
+            "kind": "not_stated"
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "IF = 1 A, TA = 25 degC"
+            }
+          ],
+          "condition_id": "sha256:db35cac89af9a90fea5020028b07f26185b47e44a736f9801d52fd0d9250e0fb"
+        },
+        "citation_identity": {
+          "source_sha256": "aacc124f9f11b98be4fce03fe7cf99fe62d0755fcdd57360e517aae1fbf6f4a5",
+          "source_revision": "Rev:2024A1",
+          "page": 1,
+          "table": "p. 1 ratings table",
+          "row": "Forward Voltage",
+          "citation_id": "sha256:4f01a2d1832b872837fb878a33ea366b6f479a160a515d5302ea03611bad2134"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:231e32416df723fee9de483ccb2f997a4fefc3f346a4b38e7ab0960b64423191",
+          "cohort_id": "sha256:608536565b42a0fd9bd24bf989ddcdb95b1915cded49eadc8910752e2ddc870d",
+          "role": "maximum",
+          "condition_id": "sha256:db35cac89af9a90fea5020028b07f26185b47e44a736f9801d52fd0d9250e0fb",
+          "citation_id": "sha256:4f01a2d1832b872837fb878a33ea366b6f479a160a515d5302ea03611bad2134"
+        }
+      }
+    }
+  ],
+  "curves": [],
+  "electrical_limits": {},
+  "derived_model_inputs": {}
+}

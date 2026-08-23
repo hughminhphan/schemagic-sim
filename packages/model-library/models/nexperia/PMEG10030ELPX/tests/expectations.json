@@ -1,0 +1,57 @@
+{
+  "schema_version": "1.0.0",
+  "evidence_contract_version": "1.0.0",
+  "evidence_cohorts": [
+    {
+      "cohort_id": "sha256:ce58666f971b2e5de870e76cc5780f9508d433915b6def92a49a552744087b7d",
+      "fidelity_tier": "F1",
+      "evidence_ids": [
+        "sha256:f397c7f786e03f3e86eea5b8ae8dd4fab76eda35d9039b49ed353f342e51e925"
+      ]
+    }
+  ],
+  "tests": [
+    {
+      "test_netlist": "forward_01.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "forward_voltage_at_3_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "expected_value": 0.71,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.35
+          },
+          "datasheet_citation": "p. 1 electrical characteristics",
+          "evidence_id": "sha256:f397c7f786e03f3e86eea5b8ae8dd4fab76eda35d9039b49ed353f342e51e925",
+          "condition_id": "sha256:b96297f1229e754e3b27871ec80aec7af32c5309ddd5d07f44227e90b02e7480",
+          "citation_id": "sha256:4c09186f3df63d345037a0e25bed491155e43460253de03a6b1d6b97e8293931",
+          "cohort_id": "sha256:ce58666f971b2e5de870e76cc5780f9508d433915b6def92a49a552744087b7d",
+          "bench_condition_id": "sha256:b96297f1229e754e3b27871ec80aec7af32c5309ddd5d07f44227e90b02e7480",
+          "evidence_role": "typical_observation",
+          "citation_locator": {
+            "page": 1,
+            "table": "electrical characteristics",
+            "row": "Forward Voltage"
+          },
+          "evidence_qualification": {
+            "test_mode": "pulsed_limit",
+            "maximum_pulse_width_s": 0.0003,
+            "maximum_duty_cycle": 0.02
+          },
+          "bench_qualification": {
+            "test_mode": "continuous_dc"
+          },
+          "bench_equivalence_policy": "isothermal_diode_forward_projection",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    }
+  ]
+}

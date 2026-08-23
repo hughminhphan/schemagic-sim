@@ -1,0 +1,238 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3",
+        "p. 4",
+        "p. 5",
+        "p. 6",
+        "p. 7",
+        "p. 8",
+        "p. 9",
+        "p. 10",
+        "p. 11",
+        "p. 12",
+        "p. 13"
+      ],
+      "revision": "revision not stated in source",
+      "title": "PMEG10030ELPX Schottky barrier diode"
+    },
+    "extraction_notes": [],
+    "family": "diode",
+    "manufacturer": "Nexperia",
+    "mpn": "PMEG10030ELPX",
+    "omission_reason": "Table-only extraction.",
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": null,
+      "breakdown_voltage": null,
+      "capacitance": null,
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "tp <= 300 us; delta <= 0.02; TA = 25 C",
+            "page_reference": "p. 1 electrical characteristics",
+            "source_kind": "typical",
+            "unit": "A",
+            "value": 3
+          },
+          "voltage": {
+            "conditions": "IF = 3 A; tp <= 300 us; delta <= 0.02; TA = 25 C",
+            "page_reference": "p. 1 electrical characteristics",
+            "source_kind": "typical",
+            "unit": "V",
+            "value": 0.71
+          }
+        }
+      ],
+      "reverse_current": null,
+      "reverse_recovery": null,
+      "variant": "schottky"
+    },
+    "usable_curves": false
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "Forward Voltage (Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "770mV@3A",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Voltage - Forward(Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "770mV@3A",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "PMEG10030ELPX",
+    "manufacturer": "Nexperia",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8590903072380444672",
+    "revision": "revision not stated in source",
+    "sha256": "3f2d11b2a8cb15e1e777a6a463dc0992090e0ba46e7c685288e50559983a4502",
+    "accessed_date": "2026-08-23",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4",
+      "p. 5",
+      "p. 6",
+      "p. 7",
+      "p. 8",
+      "p. 9",
+      "p. 10",
+      "p. 11",
+      "p. 12",
+      "p. 13"
+    ],
+    "placeholder": false
+  },
+  "evidence_contract_version": "1.0.0",
+  "fit_points": [
+    {
+      "current": {
+        "conditions": "tp <= 300 us; delta <= 0.02; TA = 25 C",
+        "page_reference": "p. 1 electrical characteristics",
+        "source_kind": "typical",
+        "unit": "A",
+        "value": 3
+      },
+      "voltage": {
+        "conditions": "IF = 3 A; tp <= 300 us; delta <= 0.02; TA = 25 C",
+        "page_reference": "p. 1 electrical characteristics",
+        "source_kind": "typical",
+        "unit": "V",
+        "value": 0.71
+      }
+    }
+  ],
+  "forward_voltage_points": [
+    {
+      "current": {
+        "conditions": "tp <= 300 us; delta <= 0.02; TA = 25 C",
+        "page_reference": "p. 1 electrical characteristics",
+        "source_kind": "typical",
+        "unit": "A",
+        "value": 3,
+        "quantity": "forward_current",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "ambient",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 3
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 0.71
+            }
+          },
+          "test_mode": {
+            "kind": "pulsed_limit",
+            "maximum_pulse_width_s": 0.0003,
+            "maximum_duty_cycle": 0.02
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "tp <= 300 us; delta <= 0.02; TA = 25 C"
+            }
+          ],
+          "condition_id": "sha256:448c7e07d3f21c5a5cc143b8ccbbf330616f73bc06f528029e01bbf34a867487"
+        },
+        "citation_identity": {
+          "source_sha256": "3f2d11b2a8cb15e1e777a6a463dc0992090e0ba46e7c685288e50559983a4502",
+          "source_revision": "revision not stated in source",
+          "page": 1,
+          "table": "electrical characteristics",
+          "row": "Forward Current",
+          "citation_id": "sha256:ae67cd97d91a4d348cd6435b279f05a41f7b5ee6460ed101eb63db1d8bc0a833"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:8d829d952a5b1246f024028f53de947b69e48f75b924d5fcb9aaa966a15c4b47",
+          "cohort_id": "sha256:5cb850c265722ad9531a547442c61aa297d8cba67f8886d33c500046c129c726",
+          "role": "typical",
+          "condition_id": "sha256:448c7e07d3f21c5a5cc143b8ccbbf330616f73bc06f528029e01bbf34a867487",
+          "citation_id": "sha256:ae67cd97d91a4d348cd6435b279f05a41f7b5ee6460ed101eb63db1d8bc0a833"
+        }
+      },
+      "voltage": {
+        "conditions": "IF = 3 A; tp <= 300 us; delta <= 0.02; TA = 25 C",
+        "page_reference": "p. 1 electrical characteristics",
+        "source_kind": "typical",
+        "unit": "V",
+        "value": 0.71,
+        "quantity": "forward_voltage",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "ambient",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 3
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 0.71
+            }
+          },
+          "test_mode": {
+            "kind": "pulsed_limit",
+            "maximum_pulse_width_s": 0.0003,
+            "maximum_duty_cycle": 0.02
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "IF = 3 A; tp <= 300 us; delta <= 0.02; TA = 25 C"
+            }
+          ],
+          "condition_id": "sha256:b96297f1229e754e3b27871ec80aec7af32c5309ddd5d07f44227e90b02e7480"
+        },
+        "citation_identity": {
+          "source_sha256": "3f2d11b2a8cb15e1e777a6a463dc0992090e0ba46e7c685288e50559983a4502",
+          "source_revision": "revision not stated in source",
+          "page": 1,
+          "table": "electrical characteristics",
+          "row": "Forward Voltage",
+          "citation_id": "sha256:4c09186f3df63d345037a0e25bed491155e43460253de03a6b1d6b97e8293931"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:f397c7f786e03f3e86eea5b8ae8dd4fab76eda35d9039b49ed353f342e51e925",
+          "cohort_id": "sha256:ce58666f971b2e5de870e76cc5780f9508d433915b6def92a49a552744087b7d",
+          "role": "typical",
+          "condition_id": "sha256:b96297f1229e754e3b27871ec80aec7af32c5309ddd5d07f44227e90b02e7480",
+          "citation_id": "sha256:4c09186f3df63d345037a0e25bed491155e43460253de03a6b1d6b97e8293931"
+        }
+      }
+    }
+  ],
+  "curves": [],
+  "electrical_limits": {},
+  "derived_model_inputs": {}
+}

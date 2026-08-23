@@ -1,0 +1,224 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3",
+        "p. 4"
+      ],
+      "revision": "revision not stated in source",
+      "title": "MSS1P6-M3 Surface Mount Schottky Rectifier"
+    },
+    "extraction_notes": [
+      "No curve points were digitized."
+    ],
+    "family": "diode",
+    "manufacturer": "Vishay Intertech",
+    "mpn": "MSS1P6-M3/89A",
+    "omission_reason": "Table-only extraction.",
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": null,
+      "breakdown_voltage": null,
+      "capacitance": {
+        "conditions": "VR = 4 V, f = 1 MHz",
+        "page_reference": "p. 1 electrical characteristics",
+        "source_kind": "typical",
+        "unit": "F",
+        "value": 4e-11
+      },
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "TA = 25 C",
+            "page_reference": "p. 1 electrical characteristics",
+            "source_kind": "typical",
+            "unit": "A",
+            "value": 0.5
+          },
+          "voltage": {
+            "conditions": "IF = 0.5 A, TA = 25 C",
+            "page_reference": "p. 1 electrical characteristics",
+            "source_kind": "typical",
+            "unit": "V",
+            "value": 0.4
+          }
+        }
+      ],
+      "reverse_current": null,
+      "reverse_recovery": null,
+      "variant": "schottky"
+    },
+    "usable_curves": false
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "Forward Voltage (Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "680mV@1A",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Voltage - Forward(Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "680mV@1A",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "MSS1P6-M3/89A",
+    "manufacturer": "Vishay Intertech",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8589834567906320384",
+    "revision": "revision not stated in source",
+    "sha256": "9f29b6c59535ffe8056fd3973d504480c68ccc1b7217995dbb2edd6b49ad7e35",
+    "accessed_date": "2026-08-23",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "placeholder": false
+  },
+  "evidence_contract_version": "1.0.0",
+  "fit_points": [
+    {
+      "current": {
+        "conditions": "TA = 25 C",
+        "page_reference": "p. 1 electrical characteristics",
+        "source_kind": "typical",
+        "unit": "A",
+        "value": 0.5
+      },
+      "voltage": {
+        "conditions": "IF = 0.5 A, TA = 25 C",
+        "page_reference": "p. 1 electrical characteristics",
+        "source_kind": "typical",
+        "unit": "V",
+        "value": 0.4
+      }
+    }
+  ],
+  "forward_voltage_points": [
+    {
+      "current": {
+        "conditions": "TA = 25 C",
+        "page_reference": "p. 1 electrical characteristics",
+        "source_kind": "typical",
+        "unit": "A",
+        "value": 0.5,
+        "quantity": "forward_current",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "ambient",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 0.5
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 0.4
+            }
+          },
+          "test_mode": {
+            "kind": "not_stated"
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "TA = 25 C"
+            }
+          ],
+          "condition_id": "sha256:d6e1d210b68d7d2e0ddbce6d2990cc1b008a0ff5eb726094c9478822666042f9"
+        },
+        "citation_identity": {
+          "source_sha256": "9f29b6c59535ffe8056fd3973d504480c68ccc1b7217995dbb2edd6b49ad7e35",
+          "source_revision": "revision not stated in source",
+          "page": 1,
+          "table": "electrical characteristics",
+          "row": "Forward Current",
+          "citation_id": "sha256:4a454a99d463b81802bbc29256c0b83cec5c4d4268231082ee87b57a4c7c5846"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:ce70683201aff31cbb3e8c11ac75de35a84edb4a2d7813450c3e374aeb8c8daf",
+          "cohort_id": "sha256:3ea9c3faab8cad82c7602a1332a5f7c84b493601dba5a5c60fdbe5e747d2762e",
+          "role": "typical",
+          "condition_id": "sha256:d6e1d210b68d7d2e0ddbce6d2990cc1b008a0ff5eb726094c9478822666042f9",
+          "citation_id": "sha256:4a454a99d463b81802bbc29256c0b83cec5c4d4268231082ee87b57a4c7c5846"
+        }
+      },
+      "voltage": {
+        "conditions": "IF = 0.5 A, TA = 25 C",
+        "page_reference": "p. 1 electrical characteristics",
+        "source_kind": "typical",
+        "unit": "V",
+        "value": 0.4,
+        "quantity": "forward_voltage",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "ambient",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 0.5
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 0.4
+            }
+          },
+          "test_mode": {
+            "kind": "not_stated"
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "IF = 0.5 A, TA = 25 C"
+            }
+          ],
+          "condition_id": "sha256:dd8e28d9313d41707c0a72a48a81ce764e7581e892d960b25e736f1f62825789"
+        },
+        "citation_identity": {
+          "source_sha256": "9f29b6c59535ffe8056fd3973d504480c68ccc1b7217995dbb2edd6b49ad7e35",
+          "source_revision": "revision not stated in source",
+          "page": 1,
+          "table": "electrical characteristics",
+          "row": "Forward Voltage",
+          "citation_id": "sha256:ef0f02d5b4fc0c173e70cccf553f44682a674ae079b4ace4b59eeeb0f3d60773"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:1c37204e61f030486bad33d95a20555786d87275417e6cec04ee94bb3cb8a27d",
+          "cohort_id": "sha256:0345d49023c559b37f81ac5d06be9e8fb538818ff699b6d849d4bca64d544b24",
+          "role": "typical",
+          "condition_id": "sha256:dd8e28d9313d41707c0a72a48a81ce764e7581e892d960b25e736f1f62825789",
+          "citation_id": "sha256:ef0f02d5b4fc0c173e70cccf553f44682a674ae079b4ace4b59eeeb0f3d60773"
+        }
+      }
+    }
+  ],
+  "curves": [],
+  "electrical_limits": {},
+  "derived_model_inputs": {}
+}

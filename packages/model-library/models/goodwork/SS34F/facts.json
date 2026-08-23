@@ -1,0 +1,231 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3",
+        "p. 4"
+      ],
+      "revision": "REV 2.0 2025 JAN",
+      "title": "SS32F THRU SS310F 3.0 AMP SURFACE MOUNT SCHOTTKY BARRIER RECTIFIERS"
+    },
+    "extraction_notes": [
+      "The forward-characteristic figure overlays several SS3xF variants; no unambiguous numerical curve samples were digitized.",
+      "No reverse-recovery specification is published."
+    ],
+    "family": "diode",
+    "manufacturer": "GOODWORK",
+    "mpn": "SS34F",
+    "omission_reason": "No individually attributable curve points were extracted from the multi-variant plots; table evidence is retained.",
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": null,
+      "breakdown_voltage": null,
+      "capacitance": {
+        "conditions": "VR = 4.0 V DC, f = 1 MHz",
+        "page_reference": "p. 1 note 1",
+        "source_kind": "typical",
+        "unit": "F",
+        "value": 3e-10
+      },
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "TA = 25 C",
+            "page_reference": "p. 1 maximum ratings and electrical characteristics",
+            "source_kind": "maximum",
+            "unit": "A",
+            "value": 3
+          },
+          "voltage": {
+            "conditions": "IF = 3.0 A, TA = 25 C",
+            "page_reference": "p. 1 maximum ratings and electrical characteristics",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 0.7
+          }
+        }
+      ],
+      "reverse_current": {
+        "conditions": "VR = rated DC blocking voltage, TA = 25 C",
+        "page_reference": "p. 1 maximum ratings and electrical characteristics",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.0001
+      },
+      "reverse_recovery": null,
+      "variant": "schottky"
+    },
+    "usable_curves": false
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "Forward Voltage (Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "550mV@3A",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Voltage - Forward(Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "550mV@3A",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "SS34F",
+    "manufacturer": "GOODWORK",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8757772768068939776",
+    "revision": "REV 2.0 2025 JAN",
+    "sha256": "dd335b491b01bed2ac8fd2e7b1a593b29460e32ee1ed5ed067399df2ca77cc97",
+    "accessed_date": "2026-08-23",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "placeholder": false
+  },
+  "evidence_contract_version": "1.0.0",
+  "fit_points": [
+    {
+      "current": {
+        "conditions": "TA = 25 C",
+        "page_reference": "p. 1 maximum ratings and electrical characteristics",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 3
+      },
+      "voltage": {
+        "conditions": "IF = 3.0 A, TA = 25 C",
+        "page_reference": "p. 1 maximum ratings and electrical characteristics",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 0.7
+      }
+    }
+  ],
+  "forward_voltage_points": [
+    {
+      "current": {
+        "conditions": "TA = 25 C",
+        "page_reference": "p. 1 maximum ratings and electrical characteristics",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 3,
+        "quantity": "forward_current",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "ambient",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 3
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 0.7
+            }
+          },
+          "test_mode": {
+            "kind": "not_stated"
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "TA = 25 C"
+            }
+          ],
+          "condition_id": "sha256:22ae5de15bc39efbd0a76d711f7bd9b4dd1f11ef74846a4617d1deefd089a7cc"
+        },
+        "citation_identity": {
+          "source_sha256": "dd335b491b01bed2ac8fd2e7b1a593b29460e32ee1ed5ed067399df2ca77cc97",
+          "source_revision": "REV 2.0 2025 JAN",
+          "page": 1,
+          "table": "maximum ratings and electrical characteristics",
+          "row": "Forward Current",
+          "citation_id": "sha256:72a6fd3a0bddf8f09b7114685fed3975c15f690b74c0e1788af169bf63151ec5"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:b97d545a427a9e73bc0997f54c5ea44f796537895178986af426b823311ce94c",
+          "cohort_id": "sha256:49361217ed52ae0a2e14f71052b58ddfec4fbd87ac3bc831566e1ac9a0650657",
+          "role": "maximum",
+          "condition_id": "sha256:22ae5de15bc39efbd0a76d711f7bd9b4dd1f11ef74846a4617d1deefd089a7cc",
+          "citation_id": "sha256:72a6fd3a0bddf8f09b7114685fed3975c15f690b74c0e1788af169bf63151ec5"
+        }
+      },
+      "voltage": {
+        "conditions": "IF = 3.0 A, TA = 25 C",
+        "page_reference": "p. 1 maximum ratings and electrical characteristics",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 0.7,
+        "quantity": "forward_voltage",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "ambient",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 3
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 0.7
+            }
+          },
+          "test_mode": {
+            "kind": "not_stated"
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "IF = 3.0 A, TA = 25 C"
+            }
+          ],
+          "condition_id": "sha256:3ab80cf1a8c6457780925eff1bb91417f3fc9b29d9291cbd05fe52a3cd05afec"
+        },
+        "citation_identity": {
+          "source_sha256": "dd335b491b01bed2ac8fd2e7b1a593b29460e32ee1ed5ed067399df2ca77cc97",
+          "source_revision": "REV 2.0 2025 JAN",
+          "page": 1,
+          "table": "maximum ratings and electrical characteristics",
+          "row": "Forward Voltage",
+          "citation_id": "sha256:760e5d659be0e5b174f53b232d4e8a32f855e5d62c0c0511f3406ee6a84436d7"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:79863083a109dc85c5676aa9acf4c976cc3a49afadc5604523b031e16454a82b",
+          "cohort_id": "sha256:8fb1b170c66fc6d4cbc23b3a2f7e63e72c0cb3cc560cd6b9f4892c1221c17476",
+          "role": "maximum",
+          "condition_id": "sha256:3ab80cf1a8c6457780925eff1bb91417f3fc9b29d9291cbd05fe52a3cd05afec",
+          "citation_id": "sha256:760e5d659be0e5b174f53b232d4e8a32f855e5d62c0c0511f3406ee6a84436d7"
+        }
+      }
+    }
+  ],
+  "curves": [],
+  "electrical_limits": {},
+  "derived_model_inputs": {}
+}

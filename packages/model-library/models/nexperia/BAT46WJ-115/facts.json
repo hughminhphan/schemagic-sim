@@ -1,0 +1,231 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3",
+        "p. 4",
+        "p. 5",
+        "p. 6",
+        "p. 7",
+        "p. 8",
+        "p. 9",
+        "p. 10",
+        "p. 11"
+      ],
+      "revision": "datasheet as supplied",
+      "title": "BAT46WJ Schottky barrier diode"
+    },
+    "extraction_notes": [
+      "Full rendered datasheet inspected; plot traces were not discretely digitized."
+    ],
+    "family": "diode",
+    "manufacturer": "Nexperia",
+    "mpn": "BAT46WJ,115",
+    "omission_reason": "No non-invented curve coordinates were extracted; the cited pulsed table forward-voltage observation is retained.",
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": null,
+      "breakdown_voltage": null,
+      "capacitance": null,
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "tp <= 300 us; delta <= 0.02; pulsed; Tamb = 25 C",
+            "page_reference": "p. 1 table 2 characteristics",
+            "source_kind": "typical",
+            "unit": "A",
+            "value": 0.25
+          },
+          "voltage": {
+            "conditions": "IF = 250 mA; tp <= 300 us; delta <= 0.02; pulsed; Tamb = 25 C",
+            "page_reference": "p. 1 table 2 characteristics",
+            "source_kind": "typical",
+            "unit": "V",
+            "value": 0.71
+          }
+        }
+      ],
+      "reverse_current": null,
+      "reverse_recovery": null,
+      "variant": "schottky"
+    },
+    "usable_curves": false
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "Voltage - Forward(Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "850mV@250mA",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "BAT46WJ",
+    "manufacturer": "Nexperia",
+    "aliases": [
+      "BAT46WJ,115"
+    ]
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8586186000074739712",
+    "revision": "datasheet as supplied",
+    "sha256": "3db497f9978753c3518ce9c35773f73ca68b763473930f0d0c475102fcaef87d",
+    "accessed_date": "2026-08-23",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4",
+      "p. 5",
+      "p. 6",
+      "p. 7",
+      "p. 8",
+      "p. 9",
+      "p. 10",
+      "p. 11"
+    ],
+    "placeholder": false
+  },
+  "evidence_contract_version": "1.0.0",
+  "fit_points": [
+    {
+      "current": {
+        "conditions": "tp <= 300 us; delta <= 0.02; pulsed; Tamb = 25 C",
+        "page_reference": "p. 1 table 2 characteristics",
+        "source_kind": "typical",
+        "unit": "A",
+        "value": 0.25
+      },
+      "voltage": {
+        "conditions": "IF = 250 mA; tp <= 300 us; delta <= 0.02; pulsed; Tamb = 25 C",
+        "page_reference": "p. 1 table 2 characteristics",
+        "source_kind": "typical",
+        "unit": "V",
+        "value": 0.71
+      }
+    }
+  ],
+  "forward_voltage_points": [
+    {
+      "current": {
+        "conditions": "tp <= 300 us; delta <= 0.02; pulsed; Tamb = 25 C",
+        "page_reference": "p. 1 table 2 characteristics",
+        "source_kind": "typical",
+        "unit": "A",
+        "value": 0.25,
+        "quantity": "forward_current",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "ambient",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 0.25
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 0.71
+            }
+          },
+          "test_mode": {
+            "kind": "pulsed_limit",
+            "maximum_pulse_width_s": 0.0003,
+            "maximum_duty_cycle": 0.02
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "tp <= 300 us; delta <= 0.02; pulsed; Tamb = 25 C"
+            }
+          ],
+          "condition_id": "sha256:8852cbd13d019405bcc32e1339c95c6ebc12cd43f568a4aa50a4961532709a83"
+        },
+        "citation_identity": {
+          "source_sha256": "3db497f9978753c3518ce9c35773f73ca68b763473930f0d0c475102fcaef87d",
+          "source_revision": "datasheet as supplied",
+          "page": 1,
+          "table": "p. 1 table 2 characteristics",
+          "row": "Forward Current",
+          "citation_id": "sha256:80c0d93dd75b7965b23d4cebdebd17a613022b28b70de2844e07c265846b6cf0"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:69276d7a473219ab11c324b54033a8c3a791a700658dda4017882555a09f4cf8",
+          "cohort_id": "sha256:19873b1af8cfb535e347f90a5abf196f7fe09c5c97f13af5ba8a05631c431e30",
+          "role": "typical",
+          "condition_id": "sha256:8852cbd13d019405bcc32e1339c95c6ebc12cd43f568a4aa50a4961532709a83",
+          "citation_id": "sha256:80c0d93dd75b7965b23d4cebdebd17a613022b28b70de2844e07c265846b6cf0"
+        }
+      },
+      "voltage": {
+        "conditions": "IF = 250 mA; tp <= 300 us; delta <= 0.02; pulsed; Tamb = 25 C",
+        "page_reference": "p. 1 table 2 characteristics",
+        "source_kind": "typical",
+        "unit": "V",
+        "value": 0.71,
+        "quantity": "forward_voltage",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "ambient",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 0.25
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 0.71
+            }
+          },
+          "test_mode": {
+            "kind": "pulsed_limit",
+            "maximum_pulse_width_s": 0.0003,
+            "maximum_duty_cycle": 0.02
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "IF = 250 mA; tp <= 300 us; delta <= 0.02; pulsed; Tamb = 25 C"
+            }
+          ],
+          "condition_id": "sha256:7ce13221ec51010374318411963c9bc911cbd31145053fe8bf06d4c4048330f5"
+        },
+        "citation_identity": {
+          "source_sha256": "3db497f9978753c3518ce9c35773f73ca68b763473930f0d0c475102fcaef87d",
+          "source_revision": "datasheet as supplied",
+          "page": 1,
+          "table": "p. 1 table 2 characteristics",
+          "row": "Forward Voltage",
+          "citation_id": "sha256:aea125a250c1e8d1e57b25e2d54cd9ad2619e48fbfdbf135d4d1df08eb227a52"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:f2f2c29be85bdcb494a7c04e507535504bf17aece8589d9e0e2d8fd644c11e08",
+          "cohort_id": "sha256:7327d0ddc6969303890c57233dbbc82878d6024c9bdb72afea8b3752d11f5fec",
+          "role": "typical",
+          "condition_id": "sha256:7ce13221ec51010374318411963c9bc911cbd31145053fe8bf06d4c4048330f5",
+          "citation_id": "sha256:aea125a250c1e8d1e57b25e2d54cd9ad2619e48fbfdbf135d4d1df08eb227a52"
+        }
+      }
+    }
+  ],
+  "curves": [],
+  "electrical_limits": {},
+  "derived_model_inputs": {}
+}

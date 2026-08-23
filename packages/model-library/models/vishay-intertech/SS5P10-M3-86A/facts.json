@@ -1,0 +1,218 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3",
+        "p. 4",
+        "p. 5"
+      ],
+      "revision": "02-Aug-13",
+      "title": "SS5P9, SS5P10 High Current Density Surface Mount Schottky Barrier Rectifiers"
+    },
+    "extraction_notes": [],
+    "family": "diode",
+    "manufacturer": "Vishay Intertech",
+    "mpn": "SS5P10-M3/86A",
+    "omission_reason": "Table-only extraction.",
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": null,
+      "breakdown_voltage": null,
+      "capacitance": null,
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "TA = 25 C",
+            "page_reference": "p. 2 electrical characteristics",
+            "source_kind": "maximum",
+            "unit": "A",
+            "value": 5
+          },
+          "voltage": {
+            "conditions": "IF = 5.0 A, TA = 25 C",
+            "page_reference": "p. 2 electrical characteristics",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 0.88
+          }
+        }
+      ],
+      "reverse_current": null,
+      "reverse_recovery": null,
+      "variant": "schottky"
+    },
+    "usable_curves": false
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "Forward Voltage (Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "880mV@5A",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Voltage - Forward(Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "880mV@5A",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "SS5P10-M3/86A",
+    "manufacturer": "Vishay Intertech",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8588935399255654400",
+    "revision": "02-Aug-13",
+    "sha256": "e7f8678e50b565242efddbce315940914466d4ae168c411516547d20c149866c",
+    "accessed_date": "2026-08-23",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4",
+      "p. 5"
+    ],
+    "placeholder": false
+  },
+  "evidence_contract_version": "1.0.0",
+  "fit_points": [
+    {
+      "current": {
+        "conditions": "TA = 25 C",
+        "page_reference": "p. 2 electrical characteristics",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 5
+      },
+      "voltage": {
+        "conditions": "IF = 5.0 A, TA = 25 C",
+        "page_reference": "p. 2 electrical characteristics",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 0.88
+      }
+    }
+  ],
+  "forward_voltage_points": [
+    {
+      "current": {
+        "conditions": "TA = 25 C",
+        "page_reference": "p. 2 electrical characteristics",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 5,
+        "quantity": "forward_current",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "ambient",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 5
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 0.88
+            }
+          },
+          "test_mode": {
+            "kind": "not_stated"
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "TA = 25 C"
+            }
+          ],
+          "condition_id": "sha256:54518fdb58c38d6f5377fb5545f1000bdfcbaf9dc199dacaff680084af707e63"
+        },
+        "citation_identity": {
+          "source_sha256": "e7f8678e50b565242efddbce315940914466d4ae168c411516547d20c149866c",
+          "source_revision": "02-Aug-13",
+          "page": 2,
+          "table": "electrical characteristics",
+          "row": "Forward Current",
+          "citation_id": "sha256:75367ebd469f0c740be5c73fd17acddaa4992ed61ba2517eb737111af573eb19"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:34b75322811609e71ac96a6c4087c05d40b4b99b43350389651043d18055deb3",
+          "cohort_id": "sha256:b90f4641fb6a48cc43aa69ef2777a303b1bdc2b78bd2f9cc61ac80d83f1d0658",
+          "role": "maximum",
+          "condition_id": "sha256:54518fdb58c38d6f5377fb5545f1000bdfcbaf9dc199dacaff680084af707e63",
+          "citation_id": "sha256:75367ebd469f0c740be5c73fd17acddaa4992ed61ba2517eb737111af573eb19"
+        }
+      },
+      "voltage": {
+        "conditions": "IF = 5.0 A, TA = 25 C",
+        "page_reference": "p. 2 electrical characteristics",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 0.88,
+        "quantity": "forward_voltage",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "ambient",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 5
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 0.88
+            }
+          },
+          "test_mode": {
+            "kind": "not_stated"
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "IF = 5.0 A, TA = 25 C"
+            }
+          ],
+          "condition_id": "sha256:0c4d880f535b07c54ffa43b0afcc701a598d08801a4f2da52b256de2b8894a37"
+        },
+        "citation_identity": {
+          "source_sha256": "e7f8678e50b565242efddbce315940914466d4ae168c411516547d20c149866c",
+          "source_revision": "02-Aug-13",
+          "page": 2,
+          "table": "electrical characteristics",
+          "row": "Forward Voltage",
+          "citation_id": "sha256:64a2a4719979d4b26ee27eab8d96749bc0e5f5170a617677e91d0253268c2e17"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:1e19900c726ce9a4f46c93652692f711def494f8e997233f5ae2b5ad9fbbafb8",
+          "cohort_id": "sha256:16aa128c916f6db4e67c6f942084553e1a1921962e26113d640f247f6735a8af",
+          "role": "maximum",
+          "condition_id": "sha256:0c4d880f535b07c54ffa43b0afcc701a598d08801a4f2da52b256de2b8894a37",
+          "citation_id": "sha256:64a2a4719979d4b26ee27eab8d96749bc0e5f5170a617677e91d0253268c2e17"
+        }
+      }
+    }
+  ],
+  "curves": [],
+  "electrical_limits": {},
+  "derived_model_inputs": {}
+}
