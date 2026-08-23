@@ -11,20 +11,21 @@
   "usable_curves": true,
   "curves": [
     {
-      "name": "Output characteristic, VGS = 4.5 V",
-      "x_axis": {"quantity": "VDS", "unit": "V", "scale": "linear"},
+      "name": "Transfer characteristic, VDS = 10 V",
+      "x_axis": {"quantity": "VGS", "unit": "V", "scale": "linear"},
       "y_axis": {"quantity": "ID", "unit": "A", "scale": "linear"},
-      "test_conditions": "TA = 25 C; test mode = DC; VGS = 4.5 V",
-      "page_reference": "p. 5, Figure 3, VGS = 4.5 V trace",
-      "locator": {"page": 5, "figure": "Figure 3", "curve_or_trace": "VGS = 4.5 V trace"},
+      "test_conditions": "TA = 25 C; test mode = DC; VDS = 10 V",
+      "page_reference": "p. 5, Figure 3, VDS = 10 V transfer trace",
+      "locator": {"page": 5, "figure": "Figure 3", "curve_or_trace": "VDS = 10 V transfer trace"},
       "temperature": {"kind": "ambient", "value": 25, "provenance": "inline_condition"},
-      "electrical_bias": [{"quantity": "V_GS", "value": 4.5, "unit": "V"}],
+      "electrical_bias": [{"quantity": "V_DS", "value": 10, "unit": "V"}],
       "test_mode": {"kind": "dc"},
+      "magnitude_convention": "absolute",
       "points": [
-        {"x": 0.1, "y": 1.0},
-        {"x": 0.2, "y": 2.0},
-        {"x": 0.3, "y": 3.0},
-        {"x": 0.4, "y": 4.0}
+        {"x": 1.0, "y": 0.01},
+        {"x": 2.0, "y": 0.2},
+        {"x": 3.0, "y": 1.0},
+        {"x": 4.0, "y": 3.0}
       ]
     }
   ],
@@ -34,9 +35,20 @@
     "threshold_typ": {
       "value": 1.5,
       "unit": "V",
-      "conditions": "VDS = VGS, ID = 250 uA, TJ = 25 C; test mode = DC",
+      "conditions": "VDS = VGS, ID = 250 uA, TJ = 25 C",
       "page_reference": "p. 2, Electrical Characteristics, Gate threshold voltage row",
       "locator": {"page": 2, "table": "Electrical Characteristics", "row": "Gate threshold voltage"},
+      "condition": {
+        "polarity": "n",
+        "magnitude_convention": "absolute",
+        "temperature": {"status": "stated", "kind": "junction", "value_c": 25, "provenance": "table_heading"},
+        "electrical": {
+          "vgs": {"kind": "relation", "relation": "vds_equals_vgs"},
+          "vds": {"kind": "relation", "relation": "vds_equals_vgs"},
+          "id": {"kind": "fixed", "value_a": 0.00025}
+        },
+        "test_mode": {"kind": "not_stated"}
+      },
       "source_kind": "typical"
     },
     "threshold_max": null,
@@ -48,6 +60,17 @@
           "conditions": "VGS = 4.5 V, ID = 5 A, TJ = 25 C; test mode = DC",
           "page_reference": "p. 2, Electrical Characteristics, RDS(on) at VGS = 4.5 V row",
           "locator": {"page": 2, "table": "Electrical Characteristics", "row": "RDS(on), VGS = 4.5 V"},
+          "condition": {
+            "polarity": "n",
+            "magnitude_convention": "absolute",
+            "temperature": {"status": "stated", "kind": "junction", "value_c": 25, "provenance": "table_heading"},
+            "electrical": {
+              "vgs": {"kind": "fixed", "value_v": 4.5},
+              "vds": {"kind": "relation", "relation": "saturation_region"},
+              "id": {"kind": "fixed", "value_a": 5}
+            },
+            "test_mode": {"kind": "dc"}
+          },
           "source_kind": "typical"
         },
         "current": {
@@ -56,6 +79,17 @@
           "conditions": "VGS = 4.5 V, ID = 5 A, TJ = 25 C; test mode = DC",
           "page_reference": "p. 2, Electrical Characteristics, RDS(on) at VGS = 4.5 V row",
           "locator": {"page": 2, "table": "Electrical Characteristics", "row": "RDS(on), VGS = 4.5 V"},
+          "condition": {
+            "polarity": "n",
+            "magnitude_convention": "absolute",
+            "temperature": {"status": "stated", "kind": "junction", "value_c": 25, "provenance": "table_heading"},
+            "electrical": {
+              "vgs": {"kind": "fixed", "value_v": 4.5},
+              "vds": {"kind": "relation", "relation": "saturation_region"},
+              "id": {"kind": "fixed", "value_a": 5}
+            },
+            "test_mode": {"kind": "dc"}
+          },
           "source_kind": "typical"
         },
         "resistance": {
@@ -64,6 +98,17 @@
           "conditions": "VGS = 4.5 V, ID = 5 A, TJ = 25 C; test mode = DC",
           "page_reference": "p. 2, Electrical Characteristics, RDS(on) at VGS = 4.5 V row",
           "locator": {"page": 2, "table": "Electrical Characteristics", "row": "RDS(on), VGS = 4.5 V"},
+          "condition": {
+            "polarity": "n",
+            "magnitude_convention": "absolute",
+            "temperature": {"status": "stated", "kind": "junction", "value_c": 25, "provenance": "table_heading"},
+            "electrical": {
+              "vgs": {"kind": "fixed", "value_v": 4.5},
+              "vds": {"kind": "relation", "relation": "saturation_region"},
+              "id": {"kind": "fixed", "value_a": 5}
+            },
+            "test_mode": {"kind": "dc"}
+          },
           "source_kind": "typical"
         }
       }

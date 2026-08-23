@@ -4,7 +4,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
-import { applyConditionAdjudicationSupplement, fitBulkPart, libraryCollisionReason, libraryDuplicateDieReason, normalizedIdentity, normalizeBulkManifest, pinPackageBenchTemperature, repairKnownEvidenceDefects, runBulkManifest, stageBulkPart } from "../lib/bulk-adapter.mjs";
+import { applyConditionAdjudicationSupplement, fitBulkPart, libraryCollisionReason, libraryDuplicateDieReason, normalizedIdentity, normalizeBulkManifest, pinPackageBenchTemperature, repairKnownEvidenceDefects, runBulkManifest, stageBulkPart, validateBulkCandidateEvidence, validateMosfetCandidateEvidence } from "../lib/bulk-adapter.mjs";
 import { validatePackage } from "../../../packages/component-schema/lib.mjs";
 
 const quantity = (value, unit) => ({ value, unit, conditions: "fixture at 25 C", page_reference: "p. 2, Electrical Characteristics table", source_kind: "typical" });
@@ -222,11 +222,24 @@ function productionCurveExtraction({ xQuantity = "V_GS", yQuantity = "I_D", fixe
   curve.temperature = { kind: "junction", value: 25, provenance: "figure_label" };
   curve.electrical_bias = [{ quantity: fixedQuantity, value: output ? 4.5 : 10, unit: "V" }];
   curve.test_mode = { kind: "dc" };
+  curve.magnitude_convention = "absolute";
+  const thresholdCondition = semanticCondition({ polarity: "n", magnitude: "absolute", electrical: {
+    vgs: { kind: "relation", relation: "vds_equals_vgs" },
+    vds: { kind: "relation", relation: "vds_equals_vgs" },
+    id: { kind: "fixed", value_a: 250e-6 },
+  } });
+  const rdsonCondition = semanticCondition({ polarity: "n", magnitude: "absolute", electrical: {
+    vgs: { kind: "fixed", value_v: 4.5 },
+    vds: { kind: "relation", relation: "saturation_region" },
+    id: { kind: "fixed", value_a: 2 },
+  } });
   for (const threshold of [value.specs.threshold_min, value.specs.threshold_typ, value.specs.threshold_max]) {
     threshold.locator = { page: 2, table: "Electrical Characteristics", row: "Gate Threshold Voltage" };
+    threshold.condition = structuredClone(thresholdCondition);
   }
   for (const datum of Object.values(value.specs.rdson_points[0])) {
     datum.locator = { page: 2, table: "Electrical Characteristics", row: "Static Drain-Source On-Resistance" };
+    datum.condition = structuredClone(rdsonCondition);
   }
   return value;
 }
@@ -269,7 +282,7 @@ test("production MOSFET axis aliases and structured evidence normalize to the ca
     assert.deepEqual(normalized.y_axis, { quantity: "id", unit: "A" });
     assert.deepEqual(normalized.condition_identity.temperature, { kind: "junction", value_c: 25 });
     assert.equal(normalized.condition_identity.test_mode.kind, "dc");
-    assert.ok(normalized.condition_identity.qualifiers.some((item) => item.key === "temperature_provenance" && item.value === "figure_label"));
+    assert.ok(normalized.condition_identity.qualifiers.some((item) => item.key === "typed_temperature_provenance" && item.value === "figure_label"));
     assert.equal(normalized.citation_identity.page, 4);
     assert.equal(normalized.citation_identity.curve, item.output ? "VGS 4.5 V" : "25 C typical");
     assert.equal(fitterPayload.extraction.specs.threshold_min.citation_identity.row, "Gate Threshold Voltage");
@@ -330,6 +343,162 @@ test("production MOSFET curve fields fail closed without weakening units, citati
   );
 });
 
+test("direct MOSFET conditions admit opaque source prose while explicit contradictions still fail", () => {
+  const extraction = productionCurveExtraction();
+  extraction.curves[0].test_conditions = "Figure caption retained verbatim: nominal transfer characteristic";
+  for (const datum of [
+    extraction.specs.threshold_min, extraction.specs.threshold_typ, extraction.specs.threshold_max,
+    ...Object.values(extraction.specs.rdson_points[0]),
+  ]) datum.conditions = "Electrical Characteristics table; see note 3";
+  let invoked = false;
+  fitBulkPart({ ...mosfetPart("unused.pdf"), subcategory: "N-Channel MOSFET" }, extraction, {
+    fitRunner: () => { invoked = true; return acceptedF2Attempt(); }, ngspiceRunner: () => ({ pass: true }),
+  });
+  assert.equal(invoked, true);
+  assert.equal(validateMosfetCandidateEvidence({ ...mosfetPart("unused.pdf"), subcategory: "N-Channel MOSFET" }, extraction).route, "curve-fitted");
+  assert.ok(extraction.curves[0].condition_identity == null, "source extraction remains unmodified");
+
+  const contradictory = productionCurveExtraction();
+  contradictory.curves[0].test_conditions = "VDS = 9 V, TJ = 25 °C; test mode = DC";
+  assert.throws(
+    () => validateMosfetCandidateEvidence({ ...mosfetPart("unused.pdf"), subcategory: "N-Channel MOSFET" }, contradictory),
+    /structured electrical bias disagrees/,
+  );
+  const temperatureConflict = productionCurveExtraction();
+  temperatureConflict.specs.threshold_min.conditions = "VDS = VGS, ID = 250 uA, TJ = 125 °C; test mode = DC";
+  assert.throws(
+    () => validateMosfetCandidateEvidence({ ...mosfetPart("unused.pdf"), subcategory: "N-Channel MOSFET" }, temperatureConflict),
+    /typed temperature disagrees/,
+  );
+  const rawPulsed = productionCurveExtraction();
+  rawPulsed.curves[0].test_conditions = "VDS = 10 V, TJ = 25 °C; pulsed";
+  assert.throws(
+    () => validateMosfetCandidateEvidence({ ...mosfetPart("unused.pdf"), subcategory: "N-Channel MOSFET" }, rawPulsed),
+    /structured test mode disagrees/,
+  );
+});
+
+test("direct MOSFET conditions preserve signed P-channel evidence and reject a false absolute claim", () => {
+  const extraction = productionCurveExtraction();
+  extraction.specs.polarity = "p";
+  extraction.curves[0].points = extraction.curves[0].points.map((point) => ({ x: -point.x, y: -point.y }));
+  extraction.curves[0].magnitude_convention = "absolute";
+  for (const datum of [
+    extraction.specs.threshold_min, extraction.specs.threshold_typ, extraction.specs.threshold_max,
+    ...Object.values(extraction.specs.rdson_points[0]),
+  ]) {
+    datum.condition.polarity = "p";
+    datum.condition.magnitude_convention = "signed";
+  }
+  assert.throws(
+    () => validateMosfetCandidateEvidence({ ...mosfetPart("unused.pdf"), subcategory: "P-Channel MOSFET" }, extraction),
+    /structured magnitude convention contradicts signed curve coordinates/,
+  );
+  extraction.curves[0].magnitude_convention = "signed";
+  assert.equal(validateMosfetCandidateEvidence({ ...mosfetPart("unused.pdf"), subcategory: "P-Channel MOSFET" }, extraction).route, "curve-fitted");
+});
+
+test("direct threshold not_stated remains an explicit static-characteristic policy while curves stay strict", () => {
+  const extraction = productionCurveExtraction();
+  extraction.specs.threshold_min.condition.test_mode = { kind: "not_stated" };
+  extraction.specs.threshold_typ.condition.test_mode = { kind: "not_stated" };
+  extraction.specs.threshold_max.condition.test_mode = { kind: "not_stated" };
+  for (const threshold of [extraction.specs.threshold_min, extraction.specs.threshold_typ, extraction.specs.threshold_max]) {
+    threshold.conditions = "Electrical Characteristics table; static parameter";
+  }
+  assert.equal(validateMosfetCandidateEvidence({ ...mosfetPart("unused.pdf"), subcategory: "N-Channel MOSFET" }, extraction).route, "curve-fitted");
+  const explicitModeConflict = productionCurveExtraction();
+  explicitModeConflict.specs.threshold_typ.condition.test_mode = { kind: "not_stated" };
+  assert.throws(
+    () => validateMosfetCandidateEvidence({ ...mosfetPart("unused.pdf"), subcategory: "N-Channel MOSFET" }, explicitModeConflict),
+    /structured test mode disagrees/,
+  );
+
+  const missing = productionCurveExtraction();
+  delete missing.curves[0].magnitude_convention;
+  assert.throws(
+    () => validateMosfetCandidateEvidence({ ...mosfetPart("unused.pdf"), subcategory: "N-Channel MOSFET" }, missing),
+    /missing magnitude_convention/,
+  );
+  const missingScalar = productionCurveExtraction();
+  delete missingScalar.specs.threshold_typ.condition.temperature;
+  assert.throws(
+    () => validateMosfetCandidateEvidence({ ...mosfetPart("unused.pdf"), subcategory: "N-Channel MOSFET" }, missingScalar),
+    /condition has invalid fields; missing temperature/,
+  );
+  const negativeId = productionCurveExtraction();
+  negativeId.specs.threshold_typ.condition.electrical.id.value_a = -250e-6;
+  assert.throws(
+    () => validateMosfetCandidateEvidence({ ...mosfetPart("unused.pdf"), subcategory: "N-Channel MOSFET" }, negativeId),
+    /fixed ID must be positive/,
+  );
+  const negativeVgs = productionCurveExtraction();
+  negativeVgs.specs.rdson_points[0].vgs.condition.electrical.vgs.value_v = -4.5;
+  assert.throws(
+    () => validateMosfetCandidateEvidence({ ...mosfetPart("unused.pdf"), subcategory: "N-Channel MOSFET" }, negativeVgs),
+    /fixed VGS must be positive/,
+  );
+  const pulsed = productionCurveExtraction();
+  pulsed.curves[0].test_mode = { kind: "pulsed", pulse_width_s: 1e-6 };
+  assert.throws(
+    () => validateMosfetCandidateEvidence({ ...mosfetPart("unused.pdf"), subcategory: "N-Channel MOSFET" }, pulsed),
+    /pulsed evidence and cannot enter a static DC MOSFET fit/,
+  );
+  const noTransfer = productionCurveExtraction();
+  noTransfer.curves = [];
+  assert.throws(
+    () => validateMosfetCandidateEvidence({ ...mosfetPart("unused.pdf"), subcategory: "N-Channel MOSFET" }, noTransfer),
+    /requires at least one normalized static transfer_current curve/,
+  );
+});
+
+test("family-wide candidate preflight classifies cited diode evidence without seed-only admission", () => {
+  const typical = extraction();
+  assert.equal(validateBulkCandidateEvidence(diodePart("unused.pdf"), typical).route, "direct-typical-or-digitized");
+
+  const maximumOnly = extraction();
+  maximumOnly.specs.forward_voltage_points[0].voltage.source_kind = "maximum";
+  maximumOnly.specs.forward_voltage_points[0].current.source_kind = "maximum";
+  assert.equal(validateBulkCandidateEvidence(diodePart("unused.pdf"), maximumOnly).route, "maximum-bound-only");
+  const maximumFit = fitBulkPart(diodePart("unused.pdf"), maximumOnly, { forceF1: true, ngspiceRunner: () => ({ pass: true }) });
+  assert.equal(maximumFit.evidence_mode, "bound-constrained");
+  assert.equal(maximumFit.calibration.residual_target_count, 0);
+  assert.deepEqual(maximumFit.calibration.observations, []);
+  assert.equal(maximumFit.calibration.constraints[0].kind, "forward_voltage_maximum");
+  assert.equal(maximumFit.calibration.seeds[0].current_factor, 0.95);
+  assert.equal(maximumFit.calibration.seeds[0].voltage_factor, 0.97);
+  assert.match(maximumFit.parameter_metadata.IS.status, /cited maximum bound/);
+  assert.match(maximumFit.parameter_metadata.N.status, /fixed F1 policy/);
+  assert.match(maximumFit.parameter_metadata.RS.status, /fixed F1 policy/);
+
+  const noEvidence = extraction();
+  noEvidence.specs.forward_voltage_points = [];
+  assert.throws(() => validateBulkCandidateEvidence(diodePart("unused.pdf"), noEvidence), /positive cited forward-voltage\/current pair/);
+  const minimumOnly = extraction();
+  minimumOnly.specs.forward_voltage_points[0].voltage.source_kind = "minimum";
+  minimumOnly.specs.forward_voltage_points[0].current.source_kind = "minimum";
+  assert.throws(() => validateBulkCandidateEvidence(diodePart("unused.pdf"), minimumOnly), /matching typical, digitized_typical_curve, or maximum/);
+  const mixedRoles = extraction();
+  mixedRoles.specs.forward_voltage_points[0].current.source_kind = "maximum";
+  assert.throws(() => validateBulkCandidateEvidence(diodePart("unused.pdf"), mixedRoles), /matching typical, digitized_typical_curve, or maximum/);
+  const wrongUnit = extraction();
+  wrongUnit.specs.forward_voltage_points[0].voltage.unit = "ohm";
+  assert.throws(() => validateBulkCandidateEvidence(diodePart("unused.pdf"), wrongUnit), /matching typical, digitized_typical_curve, or maximum/);
+});
+
+test("MOSFET pure preflight uses the fitter's interval route when only RDS(on) maximum is admitted", () => {
+  const extraction = productionCurveExtraction();
+  extraction.usable_curves = false;
+  extraction.curves = [];
+  extraction.specs.threshold_min = null;
+  extraction.specs.threshold_max = null;
+  extraction.specs.rdson_points[0].resistance.source_kind = "maximum";
+  assert.equal(
+    validateMosfetCandidateEvidence({ ...mosfetPart("unused.pdf"), subcategory: "N-Channel MOSFET" }, extraction).route,
+    "interval-constrained",
+  );
+});
+
 test("the conveyor MOSFET critical fixture crosses the producer-consumer boundary", () => {
   const extraction = JSON.parse(fs.readFileSync(
     new URL("../../conveyor/test/fixtures/mosfet-critical.json", import.meta.url),
@@ -342,23 +511,28 @@ test("the conveyor MOSFET critical fixture crosses the producer-consumer boundar
     manufacturer: "Fixture",
     subcategory: "N-Channel MOSFET",
   };
+  assert.equal(validateBulkCandidateEvidence(part, extraction).route, "curve-fitted");
   const fit = fitBulkPart(part, extraction, {
     fitRunner: (payload) => { fitterPayload = payload; return acceptedF2Attempt(); },
     ngspiceRunner: () => ({ pass: true }),
   });
   const [curve] = fitterPayload.extraction.curves;
-  assert.equal(curve.characteristic, "output_current");
+  assert.equal(curve.characteristic, "transfer_current");
   assert.deepEqual(curve.citation_identity, {
     source_sha256: semanticSourceSha256,
     source_revision: "A",
     page: 5,
     figure: "Figure 3",
-    curve: "VGS = 4.5 V trace",
+    curve: "VDS = 10 V transfer trace",
     citation_id: curve.citation_identity.citation_id,
   });
   assert.ok(curve.condition_identity.qualifiers.some(
-    (item) => item.key === "temperature_provenance" && item.value === "inline_condition",
+    (item) => item.key === "typed_temperature_provenance" && item.value === "inline_condition",
   ));
+  assert.ok(curve.condition_identity.qualifiers.some(
+    (item) => item.key === "typed_condition_source" && item.value === "direct_extraction",
+  ));
+  assert.ok(!curve.condition_identity.qualifiers.some((item) => item.key === "semantic_adjudication"));
   assert.equal(fit.fidelity, "F2");
   assert.equal(fit.evidence_curves.length, 1);
 });

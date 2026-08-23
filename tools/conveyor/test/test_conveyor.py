@@ -163,10 +163,68 @@ class MosfetCriticalProvenanceTest(unittest.TestCase):
     def test_accepts_complete_scalar_and_curve_locators_with_production_axis_tokens(self):
         result = self.validate(self.load_fixture())
         curve = result["curves"][0]
-        self.assertEqual(curve["x_axis"]["quantity"], "VDS")
+        self.assertEqual(curve["x_axis"]["quantity"], "VGS")
         self.assertEqual(curve["y_axis"]["quantity"], "ID")
-        self.assertEqual(curve["electrical_bias"][0]["quantity"], "V_GS")
-        self.assertEqual(curve["locator"]["curve_or_trace"], "VGS = 4.5 V trace")
+        self.assertEqual(curve["electrical_bias"][0]["quantity"], "V_DS")
+        self.assertEqual(curve["locator"]["curve_or_trace"], "VDS = 10 V transfer trace")
+        self.assertEqual(result["specs"]["threshold_typ"]["condition"]["test_mode"]["kind"], "not_stated")
+        self.assertNotIn("test mode", result["specs"]["threshold_typ"]["conditions"].lower())
+
+    def test_rejects_missing_or_malformed_direct_scalar_conditions(self):
+        payload = self.load_fixture()
+        del payload["specs"]["threshold_typ"]["condition"]
+        with self.assertRaisesRegex(ConveyorError, r"threshold_typ.*condition"):
+            self.validate(payload)
+
+        payload = self.load_fixture()
+        payload["specs"]["threshold_typ"]["condition"]["temperature"] = {"status": "not_stated"}
+        with self.assertRaisesRegex(ConveyorError, r"temperature.*(?:stated|missing)"):
+            self.validate(payload)
+
+        payload = self.load_fixture()
+        payload["specs"]["rdson_points"][0]["vgs"]["condition"]["test_mode"] = {"kind": "not_stated"}
+        with self.assertRaisesRegex(ConveyorError, r"RDS\(on\).*test_mode|test_mode.kind"):
+            self.validate(payload)
+
+    def test_rejects_direct_scalar_condition_contradictions(self):
+        payload = self.load_fixture()
+        payload["specs"]["rdson_points"][0]["current"]["condition"]["electrical"]["id"]["value_a"] = 4
+        with self.assertRaisesRegex(ConveyorError, r"one identical direct condition"):
+            self.validate(payload)
+
+        payload = self.load_fixture()
+        for field in ("vgs", "current", "resistance"):
+            payload["specs"]["rdson_points"][0][field]["condition"]["polarity"] = "p"
+        with self.assertRaisesRegex(ConveyorError, r"polarity must match"):
+            self.validate(payload)
+
+        payload = self.load_fixture()
+        for field in ("vgs", "current", "resistance"):
+            payload["specs"]["rdson_points"][0][field]["condition"]["electrical"]["id"]["value_a"] = 4
+        with self.assertRaisesRegex(ConveyorError, r"current.value contradicts"):
+            self.validate(payload)
+
+    def test_rejects_signed_scalar_values_with_absolute_or_nonpositive_canonical_magnitudes(self):
+        payload = self.load_fixture()
+        payload["specs"]["threshold_typ"]["value"] = -1.5
+        with self.assertRaisesRegex(ConveyorError, r"signed but its direct condition declares absolute"):
+            self.validate(payload)
+
+        payload = self.load_fixture()
+        payload["specs"]["rdson_points"][0]["vgs"]["value"] = -4.5
+        with self.assertRaisesRegex(ConveyorError, r"signed VGS or ID values but its direct condition declares absolute"):
+            self.validate(payload)
+
+        payload = self.load_fixture()
+        payload["specs"]["threshold_typ"]["condition"]["electrical"]["id"]["value_a"] = 0
+        with self.assertRaisesRegex(ConveyorError, r"positive canonical magnitude"):
+            self.validate(payload)
+
+        payload = self.load_fixture()
+        for field in ("vgs", "current", "resistance"):
+            payload["specs"]["rdson_points"][0][field]["condition"]["electrical"]["vgs"]["value_v"] = 0
+        with self.assertRaisesRegex(ConveyorError, r"positive canonical magnitude"):
+            self.validate(payload)
 
     def test_rejects_scalar_locator_without_page_table_and_row(self):
         payload = self.load_fixture()
@@ -210,14 +268,14 @@ class MosfetCriticalProvenanceTest(unittest.TestCase):
 
         payload = self.load_fixture()
         payload["curves"][0]["electrical_bias"].append(
-            {"quantity": "VGS", "value": 5.0, "unit": "V"}
+            {"quantity": "VDS", "value": 10.0, "unit": "V"}
         )
-        with self.assertRaisesRegex(ConveyorError, "duplicate or conflicting vgs"):
+        with self.assertRaisesRegex(ConveyorError, "duplicate or conflicting vds"):
             self.validate(payload)
 
         payload = self.load_fixture()
-        payload["curves"][0]["electrical_bias"][0]["quantity"] = "VDS"
-        with self.assertRaisesRegex(ConveyorError, "exactly one fixed VGS"):
+        payload["curves"][0]["electrical_bias"][0]["quantity"] = "VGS"
+        with self.assertRaisesRegex(ConveyorError, "exactly one fixed VDS"):
             self.validate(payload)
 
     def test_rejects_noncanonical_temperature_provenance(self):
@@ -231,6 +289,17 @@ class MosfetCriticalProvenanceTest(unittest.TestCase):
         payload["curves"][0]["x_axis"]["quantity"] = "ID"
         payload["curves"][0]["y_axis"]["quantity"] = "VGS"
         with self.assertRaisesRegex(ConveyorError, "unsupported MOSFET electrical axis pairing"):
+            self.validate(payload)
+
+    def test_rejects_magnitude_axis_suffix_or_signed_absolute_curve(self):
+        payload = self.load_fixture()
+        payload["curves"][0]["x_axis"]["quantity"] = "VDS magnitude"
+        with self.assertRaisesRegex(ConveyorError, r"without a magnitude suffix"):
+            self.validate(payload)
+
+        payload = self.load_fixture()
+        payload["curves"][0]["points"][0]["y"] = -1
+        with self.assertRaisesRegex(ConveyorError, r"absolute contradicts signed"):
             self.validate(payload)
 
     def test_rejects_inverted_or_partial_descriptive_electrical_axes(self):

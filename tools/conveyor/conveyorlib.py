@@ -390,6 +390,130 @@ _MOSFET_TEMPERATURE_PROVENANCE = {
     "inline_condition", "table_heading", "figure_label", "footnote", "section_scope",
 }
 _MOSFET_TEST_MODES = {"dc", "continuous", "pulsed", "single_pulse", "not_stated"}
+_MOSFET_MAGNITUDE_CONVENTIONS = {"signed", "absolute"}
+
+
+def _require_exact_keys(value: Any, required: set[str], optional: set[str], trail: str) -> None:
+    if not isinstance(value, dict):
+        raise ConveyorError(f"{trail} must be an object")
+    actual = set(value)
+    missing = required - actual
+    extra = actual - required - optional
+    if missing or extra:
+        detail = []
+        if missing:
+            detail.append(f"missing {', '.join(sorted(missing))}")
+        if extra:
+            detail.append(f"unknown {', '.join(sorted(extra))}")
+        raise ConveyorError(f"{trail} is incomplete: {'; '.join(detail)}")
+
+
+def _finite_number(value: Any, trail: str) -> float:
+    if not isinstance(value, (int, float)) or isinstance(value, bool) or not math.isfinite(value):
+        raise ConveyorError(f"{trail} must be a finite number")
+    return float(value)
+
+
+def _validate_voltage_condition(value: Any, trail: str) -> None:
+    _require_exact_keys(value, {"kind"}, {"value_v", "relation", "lower_v", "upper_v"}, trail)
+    if value["kind"] == "fixed":
+        _require_exact_keys(value, {"kind", "value_v"}, set(), trail)
+        _finite_number(value["value_v"], f"{trail}.value_v")
+    elif value["kind"] == "relation":
+        _require_exact_keys(value, {"kind", "relation"}, set(), trail)
+        if not isinstance(value["relation"], str) or not value["relation"].strip():
+            raise ConveyorError(f"{trail}.relation must be a non-empty string")
+    elif value["kind"] == "range":
+        _require_exact_keys(value, {"kind", "lower_v", "upper_v"}, set(), trail)
+        if not _finite_number(value["lower_v"], f"{trail}.lower_v") < _finite_number(value["upper_v"], f"{trail}.upper_v"):
+            raise ConveyorError(f"{trail} range must be increasing")
+    else:
+        raise ConveyorError(f"{trail}.kind is unknown")
+
+
+def _validate_current_condition(value: Any, trail: str) -> None:
+    _require_exact_keys(value, {"kind"}, {"value_a", "lower_a", "upper_a"}, trail)
+    if value["kind"] == "fixed":
+        _require_exact_keys(value, {"kind", "value_a"}, set(), trail)
+        _finite_number(value["value_a"], f"{trail}.value_a")
+    elif value["kind"] == "range":
+        _require_exact_keys(value, {"kind", "lower_a", "upper_a"}, set(), trail)
+        if not _finite_number(value["lower_a"], f"{trail}.lower_a") < _finite_number(value["upper_a"], f"{trail}.upper_a"):
+            raise ConveyorError(f"{trail} range must be increasing")
+    else:
+        raise ConveyorError(f"{trail}.kind is unknown")
+
+
+def _validate_typed_test_mode(value: Any, trail: str, *, allow_not_stated: bool) -> None:
+    _require_exact_keys(
+        value,
+        {"kind"},
+        {"pulse_width_s", "duty_cycle", "repetition_period_s", "repetition_frequency_hz"},
+        trail,
+    )
+    mode = value["kind"]
+    if mode not in _MOSFET_TEST_MODES or (mode == "not_stated" and not allow_not_stated):
+        raise ConveyorError(f"{trail}.kind must explicitly state dc, continuous, pulsed, or single_pulse")
+    pulse_fields = {"pulse_width_s", "duty_cycle", "repetition_period_s", "repetition_frequency_hz"} & set(value)
+    if mode in {"pulsed", "single_pulse"}:
+        if _finite_number(value.get("pulse_width_s"), f"{trail}.pulse_width_s") <= 0:
+            raise ConveyorError(f"{trail}.pulse_width_s must be a positive finite number for {mode}")
+    elif pulse_fields:
+        raise ConveyorError(f"{trail} cannot attach pulse timing to {mode} data")
+    for field in sorted(pulse_fields - {"pulse_width_s"}):
+        numeric = _finite_number(value[field], f"{trail}.{field}")
+        if numeric <= 0 or (field == "duty_cycle" and numeric > 1):
+            raise ConveyorError(f"{trail}.{field} is outside its physical range")
+
+
+def _validate_direct_scalar_condition(
+    value: Any,
+    trail: str,
+    *,
+    polarity: str,
+    characteristic: str,
+) -> None:
+    _require_exact_keys(value, {"polarity", "magnitude_convention", "temperature", "electrical", "test_mode"}, set(), trail)
+    if value["polarity"] != polarity:
+        raise ConveyorError(f"{trail}.polarity must match $.specs.polarity")
+    if value["magnitude_convention"] not in _MOSFET_MAGNITUDE_CONVENTIONS:
+        raise ConveyorError(f"{trail}.magnitude_convention must be signed or absolute")
+
+    temperature = value["temperature"]
+    _require_exact_keys(temperature, {"status", "kind", "value_c", "provenance"}, set(), f"{trail}.temperature")
+    if temperature["status"] != "stated":
+        raise ConveyorError(f"{trail}.temperature.status must be stated")
+    if temperature["kind"] not in _MOSFET_TEMPERATURE_KINDS:
+        raise ConveyorError(f"{trail}.temperature.kind must state ambient, case, or junction")
+    _finite_number(temperature["value_c"], f"{trail}.temperature.value_c")
+    if temperature["provenance"] not in _MOSFET_TEMPERATURE_PROVENANCE:
+        raise ConveyorError(f"{trail}.temperature.provenance must use a canonical source location")
+
+    electrical = value["electrical"]
+    _require_exact_keys(electrical, {"vgs", "vds", "id"}, set(), f"{trail}.electrical")
+    _validate_voltage_condition(electrical["vgs"], f"{trail}.electrical.vgs")
+    _validate_voltage_condition(electrical["vds"], f"{trail}.electrical.vds")
+    _validate_current_condition(electrical["id"], f"{trail}.electrical.id")
+    _validate_typed_test_mode(value["test_mode"], f"{trail}.test_mode", allow_not_stated=characteristic == "gate_threshold")
+
+    if characteristic == "gate_threshold":
+        for quantity in ("vgs", "vds"):
+            coordinate = electrical[quantity]
+            if coordinate.get("kind") != "relation" or coordinate.get("relation") != "vds_equals_vgs":
+                raise ConveyorError(f"{trail}.electrical.{quantity} must preserve vds_equals_vgs")
+        if electrical["id"].get("kind") != "fixed":
+            raise ConveyorError(f"{trail}.electrical.id must be fixed for gate threshold evidence")
+        if _finite_number(electrical["id"]["value_a"], f"{trail}.electrical.id.value_a") <= 0:
+            raise ConveyorError(f"{trail}.electrical.id.value_a must be a positive canonical magnitude")
+    else:
+        if electrical["vgs"].get("kind") != "fixed" or electrical["id"].get("kind") != "fixed":
+            raise ConveyorError(f"{trail}.electrical must use fixed VGS and ID for RDS(on) evidence")
+        if electrical["vds"].get("kind") != "relation" or electrical["vds"].get("relation") != "saturation_region":
+            raise ConveyorError(f"{trail}.electrical.vds must preserve saturation_region for RDS(on) evidence")
+        if _finite_number(electrical["vgs"]["value_v"], f"{trail}.electrical.vgs.value_v") <= 0:
+            raise ConveyorError(f"{trail}.electrical.vgs.value_v must be a positive canonical magnitude")
+        if _finite_number(electrical["id"]["value_a"], f"{trail}.electrical.id.value_a") <= 0:
+            raise ConveyorError(f"{trail}.electrical.id.value_a must be a positive canonical magnitude")
 
 
 def _mosfet_axis_quantity(value: Any) -> str | None:
@@ -433,21 +557,55 @@ def _validate_mosfet_critical_provenance(payload: Mapping[str, Any]) -> None:
         "breakdown_voltage", "body_diode",
     )
     specs = payload["specs"]
+    polarity = specs["polarity"]
     for field in scalar_fields:
         quantity = specs[field]
         if quantity is not None:
             _require_locator(quantity.get("locator"), {"page", "table", "row"}, f"$.specs.{field}.locator")
+    for field in ("threshold_min", "threshold_typ", "threshold_max"):
+        quantity = specs[field]
+        if quantity is not None:
+            _validate_direct_scalar_condition(
+                quantity.get("condition"),
+                f"$.specs.{field}.condition",
+                polarity=polarity,
+                characteristic="gate_threshold",
+            )
+            if _finite_number(quantity.get("value"), f"$.specs.{field}.value") < 0 and quantity["condition"]["magnitude_convention"] == "absolute":
+                raise ConveyorError(f"$.specs.{field}.value is signed but its direct condition declares absolute magnitude")
     for index, point in enumerate(specs["rdson_points"]):
+        direct_conditions = []
         for field in ("vgs", "current", "resistance"):
             _require_locator(
                 point[field].get("locator"),
                 {"page", "table", "row"},
                 f"$.specs.rdson_points[{index}].{field}.locator",
             )
+            direct_condition = point[field].get("condition")
+            _validate_direct_scalar_condition(
+                direct_condition,
+                f"$.specs.rdson_points[{index}].{field}.condition",
+                polarity=polarity,
+                characteristic="rds_on",
+            )
+            direct_conditions.append(direct_condition)
+        if not all(condition == direct_conditions[0] for condition in direct_conditions[1:]):
+            raise ConveyorError(f"$.specs.rdson_points[{index}] must carry one identical direct condition for VGS, ID, and resistance")
+        condition_electrical = direct_conditions[0]["electrical"]
+        raw_vgs = _finite_number(point["vgs"].get("value"), f"$.specs.rdson_points[{index}].vgs.value")
+        raw_current = _finite_number(point["current"].get("value"), f"$.specs.rdson_points[{index}].current.value")
+        if (raw_vgs < 0 or raw_current < 0) and direct_conditions[0]["magnitude_convention"] == "absolute":
+            raise ConveyorError(f"$.specs.rdson_points[{index}] has signed VGS or ID values but its direct condition declares absolute magnitude")
+        if not math.isclose(abs(raw_vgs), abs(condition_electrical["vgs"]["value_v"]), rel_tol=1e-9, abs_tol=1e-12):
+            raise ConveyorError(f"$.specs.rdson_points[{index}].vgs.value contradicts its direct condition")
+        if not math.isclose(abs(raw_current), abs(condition_electrical["id"]["value_a"]), rel_tol=1e-9, abs_tol=1e-12):
+            raise ConveyorError(f"$.specs.rdson_points[{index}].current.value contradicts its direct condition")
 
     for index, curve in enumerate(payload["curves"]):
         trail = f"$.curves[{index}]"
         _require_locator(curve.get("locator"), {"page", "figure", "curve_or_trace"}, f"{trail}.locator")
+        if curve.get("magnitude_convention") not in _MOSFET_MAGNITUDE_CONVENTIONS:
+            raise ConveyorError(f"{trail}.magnitude_convention must be signed or absolute")
 
         temperature = curve.get("temperature")
         if not isinstance(temperature, dict):
@@ -481,8 +639,13 @@ def _validate_mosfet_critical_provenance(payload: Mapping[str, Any]) -> None:
             if not isinstance(bias.get("unit"), str) or not bias["unit"].strip():
                 raise ConveyorError(f"{bias_trail}.unit must be a non-empty string")
 
-        x_quantity = _mosfet_axis_quantity(curve.get("x_axis", {}).get("quantity"))
-        y_quantity = _mosfet_axis_quantity(curve.get("y_axis", {}).get("quantity"))
+        x_axis = curve.get("x_axis", {}).get("quantity")
+        y_axis = curve.get("y_axis", {}).get("quantity")
+        for axis, label in ((x_axis, "x_axis"), (y_axis, "y_axis")):
+            if re.fullmatch(r"(?:V_?(?:GS|DS)|I_?D)\s+magnitude", str(axis).strip(), re.I):
+                raise ConveyorError(f"{trail}.{label}.quantity must use canonical VGS, VDS, or ID without a magnitude suffix")
+        x_quantity = _mosfet_axis_quantity(x_axis)
+        y_quantity = _mosfet_axis_quantity(y_axis)
         required_bias = "vds" if (x_quantity, y_quantity) == ("vgs", "id") else (
             "vgs" if (x_quantity, y_quantity) == ("vds", "id") else None
         )
@@ -491,31 +654,13 @@ def _validate_mosfet_critical_provenance(payload: Mapping[str, Any]) -> None:
         if required_bias is not None and seen_biases != {required_bias}:
             raise ConveyorError(f"{trail}.electrical_bias must contain exactly one fixed {required_bias.upper()} record")
 
-        test_mode = curve.get("test_mode")
-        if not isinstance(test_mode, dict):
-            raise ConveyorError(f"{trail}.test_mode must be an object")
-        mode = test_mode.get("kind")
-        if mode not in _MOSFET_TEST_MODES or mode == "not_stated":
-            raise ConveyorError(f"{trail}.test_mode.kind must explicitly state dc, continuous, pulsed, or single_pulse")
-        pulse_fields = {"pulse_width_s", "duty_cycle", "repetition_frequency_hz"} & set(test_mode)
-        if mode in {"pulsed", "single_pulse"}:
-            pulse_width = test_mode.get("pulse_width_s")
-            if not isinstance(pulse_width, (int, float)) or isinstance(pulse_width, bool) or not math.isfinite(pulse_width) or pulse_width <= 0:
-                raise ConveyorError(f"{trail}.test_mode.pulse_width_s must be a positive finite number for {mode}")
-        elif pulse_fields:
-            raise ConveyorError(f"{trail}.test_mode cannot attach pulse timing to {mode} data")
-        duty_cycle = test_mode.get("duty_cycle")
-        if duty_cycle is not None and (
-            not isinstance(duty_cycle, (int, float)) or isinstance(duty_cycle, bool)
-            or not math.isfinite(duty_cycle) or duty_cycle <= 0 or duty_cycle > 1
+        _validate_typed_test_mode(curve.get("test_mode"), f"{trail}.test_mode", allow_not_stated=False)
+        if curve["magnitude_convention"] == "absolute" and any(
+            point.get(axis, 0) < 0
+            for point in curve.get("points", []) if isinstance(point, dict)
+            for axis in ("x", "y")
         ):
-            raise ConveyorError(f"{trail}.test_mode.duty_cycle must be in (0, 1]")
-        repetition_hz = test_mode.get("repetition_frequency_hz")
-        if repetition_hz is not None and (
-            not isinstance(repetition_hz, (int, float)) or isinstance(repetition_hz, bool)
-            or not math.isfinite(repetition_hz) or repetition_hz <= 0
-        ):
-            raise ConveyorError(f"{trail}.test_mode.repetition_frequency_hz must be a positive finite number")
+            raise ConveyorError(f"{trail}.magnitude_convention absolute contradicts signed curve coordinates")
 
 
 def load_and_validate_extraction(path: Path, schema_path: Path, expected: Mapping[str, str]) -> dict[str, Any]:

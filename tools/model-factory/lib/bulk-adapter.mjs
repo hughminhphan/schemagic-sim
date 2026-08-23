@@ -55,22 +55,51 @@ function zenerInputs(extraction) {
 }
 
 function diodeFit(part, extraction, forceF1 = false) {
-  const scalarPoints = extraction?.specs?.forward_voltage_points ?? [];
-  const scalarPoint = scalarPoints.find((point) => !["minimum", "maximum"].includes(point?.voltage?.source_kind)
-    && Number(point?.voltage?.value) > 0 && Number(point?.current?.value) > 0)
-    ?? scalarPoints.find((point) => Number(point?.voltage?.value) > 0 && Number(point?.current?.value) > 0);
-  const voltage = scalarPoint ? normalizeEvidence(scalarPoint.voltage) : null;
-  const forwardCurrent = scalarPoint ? normalizeEvidence(scalarPoint.current) : null;
-  const vf = voltage?.unit === "V" ? Number(voltage.value) : hintNumber(part, "diode.forward_voltage", 0.7);
-  const current = forwardCurrent?.unit === "A" ? Number(forwardCurrent.value) : 0.01;
+  const selection = selectDiodeForwardEvidence(extraction);
+  const scalarPoint = selection.calibration;
+  const voltage = normalizeEvidence(scalarPoint.voltage);
+  const forwardCurrent = normalizeEvidence(scalarPoint.current);
+  const vf = Number(voltage.value);
+  const current = Number(forwardCurrent.value);
   const N = /schottky/i.test(`${part.subcategory} ${part.description}`) ? 1.1 : 1.8;
   const RS = 1e-4;
-  const maximum = scalarPoint?.voltage?.source_kind === "maximum";
+  const maximum = selection.route === "maximum-bound-only";
   const calibrationCurrent = maximum ? current * 0.95 : current;
   const calibrationVoltage = maximum ? vf * 0.97 : vf;
   const junctionVoltage = Math.max(NGSPICE_VT_25C, calibrationVoltage - calibrationCurrent * RS);
   const IS = calibrationCurrent / Math.expm1(junctionVoltage / (N * NGSPICE_VT_25C));
-  return { fidelity: "F1", parameters: { IS, N, RS }, worst: null, points: [] };
+  const source = {
+    voltage: scalarPoint.voltage?.page_reference, current: scalarPoint.current?.page_reference,
+    conditions: scalarPoint.voltage?.conditions ?? scalarPoint.current?.conditions ?? "",
+    source_kind: scalarPoint.voltage?.source_kind ?? scalarPoint.current?.source_kind ?? null,
+  };
+  if (maximum) {
+    return {
+      fidelity: "F1", parameters: { IS, N, RS }, worst: null, points: [], evidence_mode: "bound-constrained",
+      calibration: {
+        evidence_mode: "bound-constrained", observations: [], residual_target_count: 0,
+        constraints: [{ kind: "forward_voltage_maximum", inclusive: true, source, maximum_voltage_v: vf, current_a: current }],
+        seeds: [{
+          parameter_coordinate: "IS", evidence_role: "maximum_bound_interior_feasibility_seed_only", value: IS, unit: "A",
+          policy: "derive from 0.95 times cited maximum current and 0.97 times cited maximum voltage",
+          current_factor: 0.95, voltage_factor: 0.97,
+        }],
+      },
+      parameter_metadata: {
+        IS: { status: "derived from cited maximum bound", evidence_mode: "bound-constrained" },
+        N: { status: "declared fixed F1 policy constant", evidence_mode: "bound-constrained" },
+        RS: { status: "declared fixed F1 policy constant", evidence_mode: "bound-constrained" },
+      },
+    };
+  }
+  return {
+    fidelity: "F1", parameters: { IS, N, RS }, worst: null, points: [], evidence_mode: "typ-point",
+    calibration: {
+      evidence_mode: "typ-point", observations: [{ kind: "forward_voltage", source, value_v: vf, current_a: current }],
+      constraints: [], residual_target_count: 1,
+      seeds: [{ parameter_coordinate: "IS", evidence_role: "typical_observation_seed", value: IS, unit: "A" }],
+    },
+  };
 }
 
 function bjtFit(part, extraction, forceF1 = false) {
@@ -207,9 +236,21 @@ function temperatureIdentity(text, label) {
   const conditionText = String(text ?? "").replaceAll("_", "");
   const matches = [...conditionText.matchAll(/\b(TJ|TA|TC|junction(?:\s+temperature)?|ambient(?:\s+temperature)?|case(?:\s+temperature)?)\s*=\s*([+-]?\d+(?:\.\d+)?)\s*(?:deg\s*c|degc|°c|\bc\b)/gi)];
   if (matches.length !== 1) throw new Error(`${label} must state exactly one temperature with junction, ambient, or case kind`);
-  const token = matches[0][1].toLowerCase();
+  return temperatureFromMatch(matches[0]);
+}
+
+function statedTemperatureIdentity(text, label) {
+  const conditionText = String(text ?? "").replaceAll("_", "");
+  const matches = [...conditionText.matchAll(/\b(TJ|TA|TC|junction(?:\s+temperature)?|ambient(?:\s+temperature)?|case(?:\s+temperature)?)\s*=\s*([+-]?\d+(?:\.\d+)?)\s*(?:deg\s*c|degc|°c|\bc\b)/gi)];
+  if (!matches.length) return null;
+  if (matches.length !== 1) throw new Error(`${label} states more than one temperature`);
+  return temperatureFromMatch(matches[0]);
+}
+
+function temperatureFromMatch(match) {
+  const token = match[1].toLowerCase();
   const kind = token === "tj" || token.startsWith("junction") ? "junction" : token === "ta" || token.startsWith("ambient") ? "ambient" : "case";
-  return { kind, value_c: Number(matches[0][2]) };
+  return { kind, value_c: Number(match[2]) };
 }
 
 function timeSeconds(value, unit) {
@@ -217,6 +258,15 @@ function timeSeconds(value, unit) {
 }
 
 function testModeIdentity(text, label, { curve = false } = {}) {
+  const result = statedTestModeIdentity(text, label, { curve });
+  if (!result) throw new Error(`${label} must state its exact test mode`);
+  if (["pulsed", "single_pulse"].includes(result.mode.kind) && (!Object.hasOwn(result.mode, "pulse_width_s") || !Object.hasOwn(result.mode, "duty_cycle"))) {
+    throw new Error(`${label} pulsed evidence must state pulse width and duty cycle`);
+  }
+  return result;
+}
+
+function statedTestModeIdentity(text, label, { curve = false } = {}) {
   const conditionText = String(text ?? "").replaceAll("μ", "µ");
   const pulse = /\bpuls(?:e|ed)\b/i.test(conditionText);
   const width = conditionText.match(/pulse\s*width\s*(<=|≤|=|<)\s*([0-9.eE+-]+)\s*(s|ms|us|µs|ns)\b/i);
@@ -224,15 +274,14 @@ function testModeIdentity(text, label, { curve = false } = {}) {
   const period = conditionText.match(/(?:repetition\s*)?period\s*=\s*([0-9.eE+-]+)\s*(s|ms|us|µs|ns)\b/i);
   const frequency = conditionText.match(/(?:repetition\s*)?frequency\s*=\s*([0-9.eE+-]+)\s*(Hz|kHz|MHz)\b/i);
   if (pulse) {
-    if (!width || !duty) throw new Error(`${label} pulsed evidence must state pulse width and duty cycle`);
     const qualifiers = [
-      { key: "pulse_width_operator", value: width[1].replace("≤", "<=") },
-      { key: "duty_cycle_operator", value: duty[1].replace("≤", "<=") },
+      ...(width ? [{ key: "pulse_width_operator", value: width[1].replace("≤", "<=") }] : []),
+      ...(duty ? [{ key: "duty_cycle_operator", value: duty[1].replace("≤", "<=") }] : []),
     ];
     const mode = {
       kind: /single\s*pulse/i.test(conditionText) ? "single_pulse" : "pulsed",
-      pulse_width_s: timeSeconds(width[2], width[3]),
-      duty_cycle: Number(duty[2]) / 100,
+      ...(width ? { pulse_width_s: timeSeconds(width[2], width[3]) } : {}),
+      ...(duty ? { duty_cycle: Number(duty[2]) / 100 } : {}),
       ...(period ? { repetition_period_s: timeSeconds(period[1], period[2]) } : {}),
       ...(frequency ? { repetition_frequency_hz: Number(frequency[1]) * ({ hz: 1, khz: 1e3, mhz: 1e6 }[frequency[2].toLowerCase()]) } : {}),
     };
@@ -240,7 +289,7 @@ function testModeIdentity(text, label, { curve = false } = {}) {
   }
   if (/\b(?:test\s*mode\s*=\s*)?continuous\b/i.test(conditionText)) return { mode: { kind: "continuous" }, qualifiers: [] };
   if (/\b(?:test\s*mode\s*=\s*)?dc\b/i.test(conditionText) || curve) return { mode: { kind: "dc" }, qualifiers: [] };
-  throw new Error(`${label} must state its exact test mode`);
+  return null;
 }
 
 function normalizedQualifiers(text, testModeQualifiers) {
@@ -248,6 +297,19 @@ function normalizedQualifiers(text, testModeQualifiers) {
   if (/unless\s+otherwise\s+noted/i.test(text)) qualifiers.push({ key: "temperature_scope", value: "unless_otherwise_noted" });
   if (/electrical[-\s]characteristics\s+heading/i.test(text)) qualifiers.push({ key: "condition_source", value: "electrical_characteristics_heading" });
   return qualifiers.sort((left, right) => left.key.localeCompare(right.key) || left.value.localeCompare(right.value));
+}
+
+function assertStructuredTestModeCompatibility(structuredMode, statedMode, label, sourceMode = structuredMode) {
+  if (!statedMode) return;
+  if (sourceMode.kind === "not_stated" || sourceMode.kind !== statedMode.mode.kind) {
+    throw new Error(`${label} structured test mode disagrees with test_conditions`);
+  }
+  for (const [key, value] of Object.entries(statedMode.mode)) {
+    if (key === "kind") continue;
+    if (!Object.hasOwn(structuredMode, key) || !nearlyEqual(structuredMode[key], value)) {
+      throw new Error(`${label} structured test mode disagrees with test_conditions`);
+    }
+  }
 }
 
 function rejectUnknownQualifierSegments(text, label) {
@@ -517,8 +579,45 @@ function adjudicatedCondition(target, characteristic, label, context) {
   return {
     temperature,
     testMode,
+    sourceTestMode: structuredClone(sourceMode),
     magnitudeConvention: semantics.condition.magnitude_convention,
     electrical: structuredClone(semantics.condition.electrical),
+    qualifiers,
+  };
+}
+
+function directCondition(target, characteristic, label, context) {
+  const condition = target?.condition;
+  if (!condition) return null;
+  if (target?.condition_semantics) throw new Error(`${label} may not mix direct condition with adjudication semantics`);
+  const { temperature } = validateTypedCondition(condition, characteristic, `${label}.condition`);
+  if (condition.polarity !== context.polarity) throw new Error(`${label} direct condition polarity mismatch`);
+  if (condition.electrical.id?.kind === "fixed" && !(condition.electrical.id.value_a > 0)) {
+    throw new Error(`${label} direct condition fixed ID must be positive`);
+  }
+  if (characteristic === "rds_on" && condition.electrical.vgs?.kind === "fixed" && !(condition.electrical.vgs.value_v > 0)) {
+    throw new Error(`${label} direct condition fixed VGS must be positive`);
+  }
+  const sourceMode = condition.test_mode;
+  if (["pulsed", "single_pulse"].includes(sourceMode.kind)) {
+    throw new Error(`${label} is pulsed evidence and cannot enter a static DC MOSFET fit`);
+  }
+  if (sourceMode.kind === "not_stated" && characteristic !== "gate_threshold") {
+    throw new Error(`${label} direct condition may use test_mode not_stated only for gate_threshold`);
+  }
+  const testMode = sourceMode.kind === "not_stated" ? { kind: "dc" } : structuredClone(sourceMode);
+  const qualifiers = [
+    { key: "typed_condition_source", value: "direct_extraction" },
+    { key: "typed_source_test_mode", value: sourceMode.kind },
+    { key: "typed_temperature_provenance", value: condition.temperature.provenance },
+    ...(sourceMode.kind === "not_stated" ? [{ key: "typed_static_characteristic_policy", value: characteristic }] : []),
+  ].sort((left, right) => left.key.localeCompare(right.key) || left.value.localeCompare(right.value));
+  return {
+    temperature,
+    testMode,
+    sourceTestMode: structuredClone(sourceMode),
+    magnitudeConvention: condition.magnitude_convention,
+    electrical: structuredClone(condition.electrical),
     qualifiers,
   };
 }
@@ -597,40 +696,53 @@ function validateThresholdEvidence(rawEvidence, sourceKind, label, context) {
   }
   if (typeof evidence.conditions !== "string" || !evidence.conditions.trim()) throw new Error(`${label} must state its own operating conditions`);
   const adjudicated = adjudicatedCondition(rawEvidence, "gate_threshold", label, context);
-  if (!adjudicated) rejectUnknownQualifierSegments(evidence.conditions, label);
-  const current = conditionDrainCurrent(evidence.conditions, null);
-  if (!(current > 0)) throw new Error(`${label} must state its own positive threshold drain current`);
+  const direct = directCondition(rawEvidence, "gate_threshold", label, context);
+  if (adjudicated && direct) throw new Error(`${label} may not mix direct condition with adjudication semantics`);
+  const semantic = adjudicated ?? direct;
+  if (!semantic) rejectUnknownQualifierSegments(evidence.conditions, label);
+  const parsedCurrent = conditionDrainCurrent(evidence.conditions, null);
+  if (!semantic && !(parsedCurrent > 0)) throw new Error(`${label} must state its own positive threshold drain current`);
   const normalized = evidence.conditions.replaceAll("_", "").replace(/\s+/g, "");
-  if (!/(?:VDS=VGS|VGS=VDS)/i.test(normalized) || conditionVoltage(evidence.conditions, "VDS", null) != null || conditionVoltage(evidence.conditions, "VGS", null) != null) {
+  const statedRelationship = /(?:VDS=VGS|VGS=VDS)/i.test(normalized)
+    && conditionVoltage(evidence.conditions, "VDS", null) == null
+    && conditionVoltage(evidence.conditions, "VGS", null) == null;
+  if (!semantic && !statedRelationship) {
     throw new Error(`${label} must independently state the supported VDS = VGS relationship`);
   }
-  const parsedTemperature = temperatureIdentity(evidence.conditions, label);
-  const legacyTestMode = adjudicated ? null : testModeIdentity(evidence.conditions, label);
-  const electrical = adjudicated?.electrical ?? {
+  const parsedTemperature = semantic ? statedTemperatureIdentity(evidence.conditions, label) : temperatureIdentity(evidence.conditions, label);
+  const legacyTestMode = semantic ? statedTestModeIdentity(evidence.conditions, label) : testModeIdentity(evidence.conditions, label);
+  if (semantic) assertStructuredTestModeCompatibility(semantic.testMode, legacyTestMode, label, semantic.sourceTestMode);
+  const electrical = semantic?.electrical ?? {
     vgs: { kind: "relation", relation: "vds_equals_vgs" },
     vds: { kind: "relation", relation: "vds_equals_vgs" },
-    id: { kind: "fixed", value_a: current },
+    id: { kind: "fixed", value_a: parsedCurrent },
   };
-  if (adjudicated) {
+  if (semantic) {
     if (electrical.vgs?.kind !== "relation" || electrical.vgs.relation !== "vds_equals_vgs"
         || electrical.vds?.kind !== "relation" || electrical.vds.relation !== "vds_equals_vgs") {
       throw new Error(`${label} typed threshold semantics must preserve VDS = VGS`);
     }
-    assertFixedSemanticValue(electrical.id, current, label, "value_a");
-    if (adjudicated.temperature.kind !== parsedTemperature.kind || !nearlyEqual(adjudicated.temperature.value_c, parsedTemperature.value_c)) {
+    const current = Math.abs(Number(electrical.id?.value_a));
+    if (!(current > 0)) throw new Error(`${label} typed threshold semantics must state its own positive threshold drain current`);
+    if (parsedCurrent != null) assertFixedSemanticValue(electrical.id, parsedCurrent, label, "value_a");
+    if (parsedTemperature && (semantic.temperature.kind !== parsedTemperature.kind || !nearlyEqual(semantic.temperature.value_c, parsedTemperature.value_c))) {
       throw new Error(`${label} typed temperature disagrees with the immutable extraction`);
     }
-    if (Number(rawEvidence?.value) < 0 && adjudicated.magnitudeConvention !== "signed") {
+    if (statedRelationship && (electrical.vgs?.relation !== "vds_equals_vgs" || electrical.vds?.relation !== "vds_equals_vgs")) {
+      throw new Error(`${label} typed threshold relationship disagrees with the immutable extraction`);
+    }
+    if (Number(rawEvidence?.value) < 0 && semantic.magnitudeConvention !== "signed") {
       throw new Error(`${label} typed magnitude convention contradicts the signed source value`);
     }
   }
-  const temperature = adjudicated?.temperature ?? parsedTemperature;
-  const magnitudeConvention = adjudicated?.magnitudeConvention ?? (/-\s*\d/.test(evidence.conditions) || Number(rawEvidence?.value) < 0 ? "signed" : "absolute");
+  const current = semantic ? Math.abs(Number(electrical.id.value_a)) : parsedCurrent;
+  const temperature = semantic?.temperature ?? parsedTemperature;
+  const magnitudeConvention = semantic?.magnitudeConvention ?? (/-\s*\d/.test(evidence.conditions) || Number(rawEvidence?.value) < 0 ? "signed" : "absolute");
   const conditionIdentity = completeConditionIdentity({
     characteristic: "gate_threshold", polarity: context.polarity, magnitudeConvention, temperature,
     electrical,
-    testMode: adjudicated?.testMode ?? legacyTestMode.mode,
-    qualifiers: adjudicated?.qualifiers ?? normalizedQualifiers(evidence.conditions, legacyTestMode.qualifiers),
+    testMode: semantic?.testMode ?? legacyTestMode.mode,
+    qualifiers: semantic?.qualifiers ?? normalizedQualifiers(evidence.conditions, legacyTestMode.qualifiers),
   });
   const citationIdentityValue = citationIdentity(evidence.locator ?? evidence.page_reference, {
     ...context, label, defaultRow: "gate threshold voltage",
@@ -687,37 +799,46 @@ function validateRdsonPoint(rawPoint, index, sourceKind, context) {
     const fieldLabel = `${label} ${field}`;
     if (typeof evidence?.conditions !== "string" || !evidence.conditions.trim()) throw new Error(`${fieldLabel} must state its own operating conditions`);
     const adjudicated = adjudicatedCondition(rawPoint?.[rawKey], "rds_on", fieldLabel, context);
-    if (!adjudicated) rejectUnknownQualifierSegments(evidence.conditions, fieldLabel);
+    const direct = directCondition(rawPoint?.[rawKey], "rds_on", fieldLabel, context);
+    if (adjudicated && direct) throw new Error(`${fieldLabel} may not mix direct condition with adjudication semantics`);
+    const semantic = adjudicated ?? direct;
+    if (!semantic) rejectUnknownQualifierSegments(evidence.conditions, fieldLabel);
     const parsedVgs = conditionVoltage(evidence.conditions, "VGS", null);
     const parsedCurrent = conditionDrainCurrent(evidence.conditions, null);
-    if (!(parsedVgs > 0) || !(parsedCurrent > 0)) throw new Error(`${fieldLabel} must state its own exact VGS and ID`);
-    const parsedTemperature = temperatureIdentity(evidence.conditions, fieldLabel);
-    const legacyTestMode = adjudicated ? null : testModeIdentity(evidence.conditions, fieldLabel);
-    const electrical = adjudicated?.electrical ?? {
+    if (!semantic && (!(parsedVgs > 0) || !(parsedCurrent > 0))) throw new Error(`${fieldLabel} must state its own exact VGS and ID`);
+    const parsedTemperature = semantic ? statedTemperatureIdentity(evidence.conditions, fieldLabel) : temperatureIdentity(evidence.conditions, fieldLabel);
+    const legacyTestMode = semantic ? statedTestModeIdentity(evidence.conditions, fieldLabel) : testModeIdentity(evidence.conditions, fieldLabel);
+    if (semantic) assertStructuredTestModeCompatibility(semantic.testMode, legacyTestMode, fieldLabel, semantic.sourceTestMode);
+    const electrical = semantic?.electrical ?? {
       vgs: { kind: "fixed", value_v: parsedVgs },
       vds: { kind: "relation", relation: "saturation_region" },
       id: { kind: "fixed", value_a: parsedCurrent },
     };
-    if (adjudicated) {
-      assertFixedSemanticValue(electrical.vgs, parsedVgs, fieldLabel, "value_v");
-      assertFixedSemanticValue(electrical.id, parsedCurrent, fieldLabel, "value_a");
+    if (semantic) {
+      if (!(Math.abs(Number(electrical.vgs?.value_v)) > 0) || !(Math.abs(Number(electrical.id?.value_a)) > 0)) {
+        throw new Error(`${fieldLabel} typed RDS(on) semantics must state positive VGS and ID`);
+      }
+      if (parsedVgs != null) assertFixedSemanticValue(electrical.vgs, parsedVgs, fieldLabel, "value_v");
+      if (parsedCurrent != null) assertFixedSemanticValue(electrical.id, parsedCurrent, fieldLabel, "value_a");
       if (electrical.vds?.kind !== "relation" || electrical.vds.relation !== "saturation_region") {
         throw new Error(`${fieldLabel} typed RDS(on) semantics must preserve the saturation-region relation`);
       }
-      if (adjudicated.temperature.kind !== parsedTemperature.kind || !nearlyEqual(adjudicated.temperature.value_c, parsedTemperature.value_c)) {
+      if (parsedTemperature && (semantic.temperature.kind !== parsedTemperature.kind || !nearlyEqual(semantic.temperature.value_c, parsedTemperature.value_c))) {
         throw new Error(`${fieldLabel} typed temperature disagrees with the immutable extraction`);
       }
-      if ((Number(rawPoint?.vgs?.value) < 0 || Number(rawPoint?.current?.value) < 0) && adjudicated.magnitudeConvention !== "signed") {
+      if ((Number(rawPoint?.vgs?.value) < 0 || Number(rawPoint?.current?.value) < 0) && semantic.magnitudeConvention !== "signed") {
         throw new Error(`${fieldLabel} typed magnitude convention contradicts the signed source values`);
       }
     }
-    const temperature = adjudicated?.temperature ?? parsedTemperature;
-    const magnitudeConvention = adjudicated?.magnitudeConvention ?? (/-\s*\d/.test(evidence.conditions) || Number(rawPoint?.vgs?.value) < 0 || Number(rawPoint?.current?.value) < 0 ? "signed" : "absolute");
+    const normalizedVgs = semantic ? Math.abs(Number(electrical.vgs.value_v)) : parsedVgs;
+    const normalizedCurrent = semantic ? Math.abs(Number(electrical.id.value_a)) : parsedCurrent;
+    const temperature = semantic?.temperature ?? parsedTemperature;
+    const magnitudeConvention = semantic?.magnitudeConvention ?? (/-\s*\d/.test(evidence.conditions) || Number(rawPoint?.vgs?.value) < 0 || Number(rawPoint?.current?.value) < 0 ? "signed" : "absolute");
     const conditionIdentity = completeConditionIdentity({
       characteristic: "rds_on", polarity: context.polarity, magnitudeConvention, temperature,
       electrical,
-      testMode: adjudicated?.testMode ?? legacyTestMode.mode,
-      qualifiers: adjudicated?.qualifiers ?? normalizedQualifiers(evidence.conditions, legacyTestMode.qualifiers),
+      testMode: semantic?.testMode ?? legacyTestMode.mode,
+      qualifiers: semantic?.qualifiers ?? normalizedQualifiers(evidence.conditions, legacyTestMode.qualifiers),
     });
     const citationIdentityValue = citationIdentity(evidence.locator ?? evidence.page_reference, {
       ...context, label: fieldLabel, defaultRow: `rds_on_${index + 1}`, defaultColumn: field.toLowerCase(),
@@ -725,7 +846,7 @@ function validateRdsonPoint(rawPoint, index, sourceKind, context) {
     const quantity = field === "VGS" ? "vgs" : field === "ID" ? "drain_current" : `rds_on_${sourceKind}`;
     const valueSi = field === "VGS" ? vgs : field === "ID" ? current : resistance;
     const unitSi = field === "VGS" ? "V" : field === "ID" ? "A" : "ohm";
-    return { parsedVgs, parsedCurrent, temperature: temperature.value_c, citation: evidence.page_reference, ...evidenceBundle(role, conditionIdentity, citationIdentityValue, quantity, valueSi, unitSi) };
+    return { parsedVgs: normalizedVgs, parsedCurrent: normalizedCurrent, temperature: temperature.value_c, citation: evidence.page_reference, ...evidenceBundle(role, conditionIdentity, citationIdentityValue, quantity, valueSi, unitSi) };
   });
   if (!fields.slice(1).every((field) => sameIdentity(fields[0], field))) {
     throw new Error(`${label} VGS, ID, resistance, qualifiers, and citations must independently describe one condition and citation cohort identity`);
@@ -806,7 +927,7 @@ function curveCharacteristic(curve) {
 }
 
 function structuredCurveFields(curve) {
-  const names = ["temperature", "electrical_bias", "test_mode"];
+  const names = ["temperature", "electrical_bias", "test_mode", "magnitude_convention"];
   const present = names.filter((name) => Object.hasOwn(curve ?? {}, name));
   if (!present.length) return false;
   const missing = names.filter((name) => !Object.hasOwn(curve, name));
@@ -815,6 +936,9 @@ function structuredCurveFields(curve) {
 }
 
 function validateStructuredCurveCondition(curve, characteristic, rawPoints, label) {
+  if (!["signed", "absolute"].includes(curve.magnitude_convention)) {
+    throw new Error(`${label}.magnitude_convention must be signed or absolute`);
+  }
   requireExactObjectKeys(curve.temperature, ["kind", "value", "provenance"], [], `${label}.temperature`);
   if (!["junction", "ambient", "case"].includes(curve.temperature.kind)) throw new Error(`${label}.temperature.kind is unknown`);
   const temperatureValue = finiteSemanticNumber(curve.temperature.value, `${label}.temperature.value`);
@@ -843,7 +967,8 @@ function validateStructuredCurveCondition(curve, characteristic, rawPoints, labe
     if (converted.unit !== expectedUnit || !Number.isFinite(converted.value)) {
       throw new Error(`${recordLabel} must carry a finite ${expectedUnit} value`);
     }
-    bias.set(quantity, Math.abs(converted.value));
+    if (!(converted.value > 0)) throw new Error(`${recordLabel} must carry a positive ${expectedUnit} value`);
+    bias.set(quantity, converted.value);
   }
   const fixedQuantity = characteristic === "transfer_current" ? "vds" : "vgs";
   const disallowed = [...bias.keys()].filter((quantity) => quantity !== fixedQuantity);
@@ -862,7 +987,10 @@ function validateStructuredCurveCondition(curve, characteristic, rawPoints, labe
       vds: { kind: "range", lower_v: Math.min(...rawPoints.map((point) => point.x_si)), upper_v: Math.max(...rawPoints.map((point) => point.x_si)) },
       id: { kind: "range", lower_a: Math.min(...rawPoints.map((point) => point.y_si)), upper_a: Math.max(...rawPoints.map((point) => point.y_si)) },
     };
-  return { temperature, temperatureProvenance: curve.temperature.provenance, testMode, electrical, fixedQuantity, fixedValue };
+  return {
+    temperature, temperatureProvenance: curve.temperature.provenance, testMode, electrical,
+    fixedQuantity, fixedValue, magnitudeConvention: curve.magnitude_convention,
+  };
 }
 
 function normalizeMosfetCurve(curve, curveIndex, context) {
@@ -885,9 +1013,13 @@ function normalizeMosfetCurve(curve, curveIndex, context) {
   const hasStructuredFields = structuredCurveFields(curve);
   const adjudicated = adjudicatedCondition(curve, characteristic, label, context);
   if (hasStructuredFields && adjudicated) throw new Error(`${label} may not mix direct structured conditions with supplement semantics`);
-  if (!adjudicated) rejectUnknownQualifierSegments(conditions, label);
-  const parsedTemperature = temperatureIdentity(conditions, label);
-  const legacyTestMode = adjudicated ? null : testModeIdentity(conditions, label, { curve: false });
+  if (!adjudicated && !hasStructuredFields) rejectUnknownQualifierSegments(conditions, label);
+  const parsedTemperature = (adjudicated || hasStructuredFields)
+    ? statedTemperatureIdentity(conditions, label)
+    : temperatureIdentity(conditions, label);
+  const legacyTestMode = (adjudicated || hasStructuredFields)
+    ? statedTestModeIdentity(conditions, label, { curve: false })
+    : testModeIdentity(conditions, label, { curve: false });
   let hasSignedCurveCoordinate = false;
   const rawPoints = curve.points.map((point, pointIndex) => {
     if (point?.condition_identity || point?.citation_identity || point?.evidence_identity) throw new Error(`${label} point ${pointIndex} may not override shared identities`);
@@ -900,18 +1032,19 @@ function normalizeMosfetCurve(curve, curveIndex, context) {
   const structured = hasStructuredFields ? validateStructuredCurveCondition(curve, characteristic, rawPoints, label) : null;
   const legacyFixedVds = conditionVoltage(conditions, "VDS", null);
   const legacyFixedVgs = conditionVoltage(conditions, "VGS", null);
-  if (characteristic === "transfer_current" && !(legacyFixedVds > 0)) {
+  if (!structured && !adjudicated && characteristic === "transfer_current" && !(legacyFixedVds > 0)) {
     throw new Error(`${label} requires an explicit fixed VDS; a saturation inequality is not a fixed bias`);
   }
-  if (characteristic === "output_current" && !(legacyFixedVgs > 0)) throw new Error(`${label} requires an explicit fixed VGS trace identity`);
+  if (!structured && !adjudicated && characteristic === "output_current" && !(legacyFixedVgs > 0)) throw new Error(`${label} requires an explicit fixed VGS trace identity`);
   if (structured) {
     const legacyFixedValue = characteristic === "transfer_current" ? legacyFixedVds : legacyFixedVgs;
-    if (!nearlyEqual(structured.fixedValue, legacyFixedValue)) throw new Error(`${label} structured electrical bias disagrees with test_conditions`);
-    if (structured.temperature.kind !== parsedTemperature.kind || !nearlyEqual(structured.temperature.value_c, parsedTemperature.value_c)) {
+    if (legacyFixedValue != null && !nearlyEqual(structured.fixedValue, legacyFixedValue)) throw new Error(`${label} structured electrical bias disagrees with test_conditions`);
+    if (parsedTemperature && (structured.temperature.kind !== parsedTemperature.kind || !nearlyEqual(structured.temperature.value_c, parsedTemperature.value_c))) {
       throw new Error(`${label} structured temperature disagrees with test_conditions`);
     }
-    if (stableJson(structured.testMode) !== stableJson(legacyTestMode.mode)) throw new Error(`${label} structured test mode disagrees with test_conditions`);
+    assertStructuredTestModeCompatibility(structured.testMode, legacyTestMode, label);
   }
+  if (adjudicated) assertStructuredTestModeCompatibility(adjudicated.testMode, legacyTestMode, label, adjudicated.sourceTestMode);
   const fixedVds = structured?.electrical.vds.value_v ?? legacyFixedVds;
   const fixedVgs = structured?.electrical.vgs.value_v ?? legacyFixedVgs;
   const derivedElectrical = characteristic === "transfer_current"
@@ -934,21 +1067,29 @@ function normalizeMosfetCurve(curve, curveIndex, context) {
       assertRangeSemanticValue(electrical.vds, rawPoints.map((point) => point.x_si), label, "lower_v", "upper_v");
     }
     assertRangeSemanticValue(electrical.id, rawPoints.map((point) => point.y_si), label, "lower_a", "upper_a");
-    if (adjudicated.temperature.kind !== parsedTemperature.kind || !nearlyEqual(adjudicated.temperature.value_c, parsedTemperature.value_c)) {
+    if (parsedTemperature && (adjudicated.temperature.kind !== parsedTemperature.kind || !nearlyEqual(adjudicated.temperature.value_c, parsedTemperature.value_c))) {
       throw new Error(`${label} typed temperature disagrees with the immutable extraction`);
     }
     if (hasSignedCurveCoordinate && adjudicated.magnitudeConvention !== "signed") {
       throw new Error(`${label} typed magnitude convention contradicts signed curve coordinates`);
     }
   }
+  if (structured && hasSignedCurveCoordinate && structured.magnitudeConvention !== "signed") {
+    throw new Error(`${label} structured magnitude convention contradicts signed curve coordinates`);
+  }
   const conditionIdentity = completeConditionIdentity({
     characteristic, polarity: context.polarity,
-    magnitudeConvention: adjudicated?.magnitudeConvention ?? (/magnitude|\|V|\|I|p-channel/i.test(`${curve.x_axis.quantity} ${curve.y_axis.quantity} ${conditions}`) ? "absolute" : "signed"),
+    magnitudeConvention: adjudicated?.magnitudeConvention ?? structured?.magnitudeConvention ?? (/magnitude|\|V|\|I|p-channel/i.test(`${curve.x_axis.quantity} ${curve.y_axis.quantity} ${conditions}`) ? "absolute" : "signed"),
     temperature: adjudicated?.temperature ?? structured?.temperature ?? parsedTemperature, electrical,
     testMode: adjudicated?.testMode ?? structured?.testMode ?? legacyTestMode.mode,
     qualifiers: adjudicated?.qualifiers ?? [
-      ...normalizedQualifiers(conditions, legacyTestMode.qualifiers),
-      ...(structured ? [{ key: "temperature_provenance", value: structured.temperatureProvenance }] : []),
+      ...(structured
+        ? [
+            { key: "typed_condition_source", value: "direct_extraction" },
+            { key: "typed_source_test_mode", value: structured.testMode.kind },
+            { key: "typed_temperature_provenance", value: structured.temperatureProvenance },
+          ]
+        : normalizedQualifiers(conditions, legacyTestMode.qualifiers)),
     ],
   });
   const citationIdentityValue = citationIdentity(curve.locator ?? curve.page_reference, { ...context, label, curveName: curve.name });
@@ -1024,6 +1165,90 @@ function normalizeMosfetExtractionForFit(part, extraction) {
     }]));
   });
   return normalized;
+}
+
+export function validateMosfetCandidateEvidence(part, extraction) {
+  if (!extraction?.specs) throw new Error("MOSFET candidate evidence requires a datasheet extraction");
+  if (extraction.usable_curves) {
+    const normalized = normalizeMosfetExtractionForFit(part, extraction);
+    if (!normalized.curves.some((curve) => curve.characteristic === "transfer_current")) {
+      throw new Error("MOSFET F2 candidate evidence requires at least one normalized static transfer_current curve");
+    }
+    return { family: "mosfet", route: "curve-fitted", extraction: normalized };
+  }
+  const context = mosfetEvidenceContext(part, extraction);
+  const specs = extraction.specs;
+  let thresholdTypical = null;
+  let thresholdTypicalError = null;
+  if (specs.threshold_typ) {
+    try {
+      thresholdTypical = validateThresholdEvidence(specs.threshold_typ, "typical", "MOSFET threshold typical", context);
+    } catch (error) {
+      thresholdTypicalError = error;
+    }
+  }
+  const thresholdConstraint = citedThresholdConstraint(specs, context);
+  const rdson = citedRdsonEvidence(specs, context);
+  const hasThresholdTypical = Boolean(thresholdTypical);
+  const hasRdsonTypical = Boolean(rdson.typical[0]);
+  const hasRdsonConstraint = Boolean(rdson.maximum.length);
+  if (!hasThresholdTypical && !thresholdConstraint) {
+    throw new Error(`MOSFET F1 critical threshold calibration has neither an admissible cited typical point nor a valid two-sided interval${thresholdTypicalError ? `: ${thresholdTypicalError.message}` : ""}`);
+  }
+  if (!hasRdsonTypical && !hasRdsonConstraint) {
+    throw new Error("MOSFET F1 critical RDS(on) calibration has neither an admissible cited typical point nor an inclusive maximum");
+  }
+  return {
+    family: "mosfet",
+    route: hasThresholdTypical && hasRdsonTypical ? "typ-point" : "interval-constrained",
+    extraction: structuredClone(extraction),
+  };
+}
+
+function positiveDiodeForwardEvidence(point) {
+  const voltage = normalizeEvidence(point?.voltage);
+  const current = normalizeEvidence(point?.current);
+  return voltage?.unit === "V" && current?.unit === "A"
+    && Number(voltage.value) > 0 && Number(current.value) > 0
+    && typeof voltage.conditions === "string" && voltage.conditions.trim()
+    && typeof current.conditions === "string" && current.conditions.trim()
+    && typeof voltage.page_reference === "string" && voltage.page_reference.trim()
+    && typeof current.page_reference === "string" && current.page_reference.trim();
+}
+
+function selectDiodeForwardEvidence(extraction) {
+  const points = extraction?.specs?.forward_voltage_points;
+  if (!Array.isArray(points)) throw new Error("Diode candidate evidence requires forward_voltage_points from the extraction");
+  if (!points.length) throw new Error("Diode candidate evidence requires a positive cited forward-voltage/current pair; catalog hints are seeds only");
+  const supported = new Set(["typical", "digitized_typical_curve", "maximum"]);
+  for (const point of points) {
+    const voltageKind = point?.voltage?.source_kind;
+    const currentKind = point?.current?.source_kind;
+    if (!positiveDiodeForwardEvidence(point) || voltageKind !== currentKind || !supported.has(voltageKind)) {
+      throw new Error("Diode candidate evidence requires matching typical, digitized_typical_curve, or maximum positive SI forward-voltage/current evidence");
+    }
+  }
+  const direct = points.find((point) => ["typical", "digitized_typical_curve"].includes(point.voltage.source_kind));
+  return {
+    route: direct ? "direct-typical-or-digitized" : "maximum-bound-only",
+    calibration: direct ?? points[0],
+    constraints: points.filter((point) => point.voltage.source_kind === "maximum"),
+  };
+}
+
+function validateDiodeCandidateEvidence(extraction) {
+  const selection = selectDiodeForwardEvidence(extraction);
+  return { family: "diode", route: selection.route, extraction: structuredClone(extraction) };
+}
+
+export function validateBulkCandidateEvidence(part, extraction) {
+  if (part?.conveyor_family === "mosfet") return validateMosfetCandidateEvidence(part, extraction);
+  if (part?.conveyor_family === "diode") return validateDiodeCandidateEvidence(extraction);
+  if (part?.conveyor_family === "bjt") {
+    if (!extraction?.specs) throw new Error("BJT candidate evidence requires a datasheet extraction");
+    return { family: "bjt", route: "family-specific", extraction: structuredClone(extraction) };
+  }
+  throw new Error(`Unsupported conveyor family: ${part?.conveyor_family ?? "missing"}`);
 }
 
 function legacyMosfetParameters(part, specs, threshold, rdson) {
@@ -1645,7 +1870,7 @@ function siValue(value, unit) {
 
 function magnitudeQuantity(value) {
   if (!value) return value;
-  const { condition_semantics: _conditionSemantics, ...publicValue } = value;
+  const { condition_semantics: _conditionSemantics, condition: _condition, ...publicValue } = value;
   return { ...publicValue, value: Math.abs(Number(value.value)) };
 }
 

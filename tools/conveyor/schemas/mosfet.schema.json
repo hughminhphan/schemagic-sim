@@ -74,6 +74,7 @@
           "temperature",
           "electrical_bias",
           "test_mode",
+          "magnitude_convention",
           "points"
         ],
         "properties": {
@@ -252,10 +253,19 @@
               "duty_cycle": {
                 "type": "number"
               },
+              "repetition_period_s": {
+                "type": "number"
+              },
               "repetition_frequency_hz": {
                 "type": "number"
               }
             }
+          },
+          "magnitude_convention": {
+            "enum": [
+              "signed",
+              "absolute"
+            ]
           },
           "points": {
             "type": "array",
@@ -313,6 +323,7 @@
                 "conditions",
                 "page_reference",
                 "locator",
+                "condition",
                 "source_kind"
               ],
               "properties": {
@@ -332,6 +343,9 @@
                   "minLength": 1
                 },
                 "locator": {
+                  "type": "object"
+                },
+                "condition": {
                   "type": "object"
                 },
                 "source_kind": {
@@ -360,6 +374,7 @@
                 "conditions",
                 "page_reference",
                 "locator",
+                "condition",
                 "source_kind"
               ],
               "properties": {
@@ -379,6 +394,9 @@
                   "minLength": 1
                 },
                 "locator": {
+                  "type": "object"
+                },
+                "condition": {
                   "type": "object"
                 },
                 "source_kind": {
@@ -407,6 +425,7 @@
                 "conditions",
                 "page_reference",
                 "locator",
+                "condition",
                 "source_kind"
               ],
               "properties": {
@@ -426,6 +445,9 @@
                   "minLength": 1
                 },
                 "locator": {
+                  "type": "object"
+                },
+                "condition": {
                   "type": "object"
                 },
                 "source_kind": {
@@ -463,6 +485,7 @@
                   "conditions",
                   "page_reference",
                   "locator",
+                  "condition",
                   "source_kind"
                 ],
                 "properties": {
@@ -482,6 +505,9 @@
                     "minLength": 1
                   },
                   "locator": {
+                    "type": "object"
+                  },
+                  "condition": {
                     "type": "object"
                   },
                   "source_kind": {
@@ -503,6 +529,7 @@
                   "conditions",
                   "page_reference",
                   "locator",
+                  "condition",
                   "source_kind"
                 ],
                 "properties": {
@@ -524,6 +551,9 @@
                   "locator": {
                     "type": "object"
                   },
+                  "condition": {
+                    "type": "object"
+                  },
                   "source_kind": {
                     "enum": [
                       "minimum",
@@ -543,6 +573,7 @@
                   "conditions",
                   "page_reference",
                   "locator",
+                  "condition",
                   "source_kind"
                 ],
                 "properties": {
@@ -562,6 +593,9 @@
                     "minLength": 1
                   },
                   "locator": {
+                    "type": "object"
+                  },
+                  "condition": {
                     "type": "object"
                   },
                   "source_kind": {
