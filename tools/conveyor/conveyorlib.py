@@ -517,17 +517,7 @@ def _validate_direct_scalar_condition(
 
 
 def _mosfet_axis_quantity(value: Any) -> str | None:
-    canonical = _MOSFET_BIAS_QUANTITIES.get(str(value).casefold())
-    if canonical is not None:
-        return canonical
-    words = str(value).casefold()
-    if "gate" in words and "source" in words and "voltage" in words:
-        return "vgs"
-    if "drain" in words and "source" in words and "voltage" in words:
-        return "vds"
-    if "drain" in words and "current" in words:
-        return "id"
-    return None
+    return _MOSFET_BIAS_QUANTITIES.get(str(value).casefold())
 
 
 def _require_locator(value: Any, fields: set[str], trail: str) -> None:
@@ -636,6 +626,10 @@ def _validate_mosfet_critical_provenance(payload: Mapping[str, Any]) -> None:
             bias_value = bias.get("value")
             if not isinstance(bias_value, (int, float)) or isinstance(bias_value, bool) or not math.isfinite(bias_value):
                 raise ConveyorError(f"{bias_trail}.value must be a finite number")
+            if bias_value == 0:
+                raise ConveyorError(f"{bias_trail}.value must be non-zero")
+            if bias_value < 0 and curve["magnitude_convention"] == "absolute":
+                raise ConveyorError(f"{bias_trail}.value is signed but the curve declares absolute magnitude")
             if not isinstance(bias.get("unit"), str) or not bias["unit"].strip():
                 raise ConveyorError(f"{bias_trail}.unit must be a non-empty string")
 
@@ -644,6 +638,13 @@ def _validate_mosfet_critical_provenance(payload: Mapping[str, Any]) -> None:
         for axis, label in ((x_axis, "x_axis"), (y_axis, "y_axis")):
             if re.fullmatch(r"(?:V_?(?:GS|DS)|I_?D)\s+magnitude", str(axis).strip(), re.I):
                 raise ConveyorError(f"{trail}.{label}.quantity must use canonical VGS, VDS, or ID without a magnitude suffix")
+            axis_words = str(axis).casefold()
+            if (
+                all(word in axis_words for word in ("gate", "source", "voltage"))
+                or all(word in axis_words for word in ("drain", "source", "voltage"))
+                or all(word in axis_words for word in ("drain", "current"))
+            ):
+                raise ConveyorError(f"{trail}.{label}.quantity must use an exact VGS, V_GS, VDS, V_DS, ID, or I_D alias")
         x_quantity = _mosfet_axis_quantity(x_axis)
         y_quantity = _mosfet_axis_quantity(y_axis)
         required_bias = "vds" if (x_quantity, y_quantity) == ("vgs", "id") else (

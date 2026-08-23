@@ -68,17 +68,26 @@ function diodeFit(part, extraction, forceF1 = false) {
   const calibrationVoltage = maximum ? vf * 0.97 : vf;
   const junctionVoltage = Math.max(NGSPICE_VT_25C, calibrationVoltage - calibrationCurrent * RS);
   const IS = calibrationCurrent / Math.expm1(junctionVoltage / (N * NGSPICE_VT_25C));
-  const source = {
-    voltage: scalarPoint.voltage?.page_reference, current: scalarPoint.current?.page_reference,
-    conditions: scalarPoint.voltage?.conditions ?? scalarPoint.current?.conditions ?? "",
-    source_kind: scalarPoint.voltage?.source_kind ?? scalarPoint.current?.source_kind ?? null,
-  };
+  const sourceFor = (point) => ({
+    voltage: point.voltage?.page_reference, current: point.current?.page_reference,
+    conditions: point.voltage?.conditions ?? point.current?.conditions ?? "",
+    source_kind: point.voltage?.source_kind ?? point.current?.source_kind ?? null,
+  });
+  const source = sourceFor(scalarPoint);
+  const maximumConstraints = selection.constraints.map((point) => {
+    const maximumVoltage = normalizeEvidence(point.voltage);
+    const maximumCurrent = normalizeEvidence(point.current);
+    return {
+      kind: "forward_voltage_maximum", inclusive: true, source: sourceFor(point),
+      maximum_voltage_v: Number(maximumVoltage.value), current_a: Number(maximumCurrent.value),
+    };
+  });
   if (maximum) {
     return {
       fidelity: "F1", parameters: { IS, N, RS }, worst: null, points: [], evidence_mode: "bound-constrained",
       calibration: {
         evidence_mode: "bound-constrained", observations: [], residual_target_count: 0,
-        constraints: [{ kind: "forward_voltage_maximum", inclusive: true, source, maximum_voltage_v: vf, current_a: current }],
+        constraints: maximumConstraints,
         seeds: [{
           parameter_coordinate: "IS", evidence_role: "maximum_bound_interior_feasibility_seed_only", value: IS, unit: "A",
           policy: "derive from 0.95 times cited maximum current and 0.97 times cited maximum voltage",
@@ -96,7 +105,7 @@ function diodeFit(part, extraction, forceF1 = false) {
     fidelity: "F1", parameters: { IS, N, RS }, worst: null, points: [], evidence_mode: "typ-point",
     calibration: {
       evidence_mode: "typ-point", observations: [{ kind: "forward_voltage", source, value_v: vf, current_a: current }],
-      constraints: [], residual_target_count: 1,
+      constraints: maximumConstraints, residual_target_count: 1,
       seeds: [{ parameter_coordinate: "IS", evidence_role: "typical_observation_seed", value: IS, unit: "A" }],
     },
   };
@@ -706,6 +715,8 @@ function validateThresholdEvidence(rawEvidence, sourceKind, label, context) {
   const statedRelationship = /(?:VDS=VGS|VGS=VDS)/i.test(normalized)
     && conditionVoltage(evidence.conditions, "VDS", null) == null
     && conditionVoltage(evidence.conditions, "VGS", null) == null;
+  const statedVds = conditionVoltage(evidence.conditions, "VDS", null);
+  const statedVgs = conditionVoltage(evidence.conditions, "VGS", null);
   if (!semantic && !statedRelationship) {
     throw new Error(`${label} must independently state the supported VDS = VGS relationship`);
   }
@@ -730,6 +741,9 @@ function validateThresholdEvidence(rawEvidence, sourceKind, label, context) {
     }
     if (statedRelationship && (electrical.vgs?.relation !== "vds_equals_vgs" || electrical.vds?.relation !== "vds_equals_vgs")) {
       throw new Error(`${label} typed threshold relationship disagrees with the immutable extraction`);
+    }
+    if (statedVds != null || statedVgs != null) {
+      throw new Error(`${label} typed threshold relationship disagrees with fixed VDS or VGS in the immutable extraction`);
     }
     if (Number(rawEvidence?.value) < 0 && semantic.magnitudeConvention !== "signed") {
       throw new Error(`${label} typed magnitude convention contradicts the signed source value`);
@@ -804,6 +818,7 @@ function validateRdsonPoint(rawPoint, index, sourceKind, context) {
     const semantic = adjudicated ?? direct;
     if (!semantic) rejectUnknownQualifierSegments(evidence.conditions, fieldLabel);
     const parsedVgs = conditionVoltage(evidence.conditions, "VGS", null);
+    const parsedVds = conditionVoltage(evidence.conditions, "VDS", null);
     const parsedCurrent = conditionDrainCurrent(evidence.conditions, null);
     if (!semantic && (!(parsedVgs > 0) || !(parsedCurrent > 0))) throw new Error(`${fieldLabel} must state its own exact VGS and ID`);
     const parsedTemperature = semantic ? statedTemperatureIdentity(evidence.conditions, fieldLabel) : temperatureIdentity(evidence.conditions, fieldLabel);
@@ -823,6 +838,7 @@ function validateRdsonPoint(rawPoint, index, sourceKind, context) {
       if (electrical.vds?.kind !== "relation" || electrical.vds.relation !== "saturation_region") {
         throw new Error(`${fieldLabel} typed RDS(on) semantics must preserve the saturation-region relation`);
       }
+      if (parsedVds != null) throw new Error(`${fieldLabel} typed RDS(on) saturation-region relation disagrees with fixed VDS in the immutable extraction`);
       if (parsedTemperature && (semantic.temperature.kind !== parsedTemperature.kind || !nearlyEqual(semantic.temperature.value_c, parsedTemperature.value_c))) {
         throw new Error(`${fieldLabel} typed temperature disagrees with the immutable extraction`);
       }
@@ -967,8 +983,11 @@ function validateStructuredCurveCondition(curve, characteristic, rawPoints, labe
     if (converted.unit !== expectedUnit || !Number.isFinite(converted.value)) {
       throw new Error(`${recordLabel} must carry a finite ${expectedUnit} value`);
     }
-    if (!(converted.value > 0)) throw new Error(`${recordLabel} must carry a positive ${expectedUnit} value`);
-    bias.set(quantity, converted.value);
+    if (!(Math.abs(converted.value) > 0)) throw new Error(`${recordLabel} must carry a non-zero ${expectedUnit} value`);
+    if (converted.value < 0 && curve.magnitude_convention !== "signed") {
+      throw new Error(`${recordLabel} negative value requires signed magnitude_convention`);
+    }
+    bias.set(quantity, Math.abs(converted.value));
   }
   const fixedQuantity = characteristic === "transfer_current" ? "vds" : "vgs";
   const disallowed = [...bias.keys()].filter((quantity) => quantity !== fixedQuantity);
@@ -1011,6 +1030,14 @@ function normalizeMosfetCurve(curve, curveIndex, context) {
   if (!Array.isArray(curve.points) || curve.points.length < 4) throw new Error(`${label} requires at least four ordered digitized points`);
   const conditions = String(curve.test_conditions ?? "");
   const hasStructuredFields = structuredCurveFields(curve);
+  if (hasStructuredFields) {
+    const structuredX = standardMosfetAxisQuantity(curve?.x_axis?.quantity);
+    const structuredY = standardMosfetAxisQuantity(curve?.y_axis?.quantity);
+    if ((characteristic === "transfer_current" && (structuredX !== "vgs" || structuredY !== "id"))
+        || (characteristic === "output_current" && (structuredX !== "vds" || structuredY !== "id"))) {
+      throw new Error(`${label} direct structured curves require exact standard MOSFET axis aliases`);
+    }
+  }
   const adjudicated = adjudicatedCondition(curve, characteristic, label, context);
   if (hasStructuredFields && adjudicated) throw new Error(`${label} may not mix direct structured conditions with supplement semantics`);
   if (!adjudicated && !hasStructuredFields) rejectUnknownQualifierSegments(conditions, label);
@@ -1168,7 +1195,7 @@ function normalizeMosfetExtractionForFit(part, extraction) {
 }
 
 export function validateMosfetCandidateEvidence(part, extraction) {
-  if (!extraction?.specs) throw new Error("MOSFET candidate evidence requires a datasheet extraction");
+  if (!extraction?.specs) throw new Error("MOSFET F1 critical calibration requires a datasheet extraction; catalog hints are seeds only");
   if (extraction.usable_curves) {
     const normalized = normalizeMosfetExtractionForFit(part, extraction);
     if (!normalized.curves.some((curve) => curve.characteristic === "transfer_current")) {
@@ -1541,6 +1568,7 @@ export function defaultMosfetConstraintRunner(payload) {
 }
 
 export function fitBulkPart(part, extraction, { ngspiceRunner = defaultNgspiceRunner, fitRunner = defaultFitRunner, mosfetConstraintRunner = defaultMosfetConstraintRunner, forceF1 = false } = {}) {
+  if (["mosfet", "diode"].includes(part?.conveyor_family)) validateBulkCandidateEvidence(part, extraction);
   const polarity = polarityFor(part, extraction);
   let fit;
   if (!forceF1 && extraction?.usable_curves) {
@@ -2003,17 +2031,8 @@ function bulkFactoryFacts(part, extraction, fit, identity, source, sourceExtract
       const typicalPoints = scalarForwardPoints.filter((point) => !["minimum", "maximum"].includes(point.voltage?.source_kind));
       const calibrationPoint = typicalPoints.find((point) => Number(point.voltage?.value) > 0 && Number(point.current?.value) > 0);
       const maximumPoints = scalarForwardPoints.filter((point) => point.voltage?.source_kind === "maximum").sort((left, right) => right.current.value - left.current.value);
-      const conservativeMaximum = maximumPoints[0] ? {
-        ...maximumPoints[0],
-        current: {
-          ...maximumPoints[0].current,
-          value: maximumPoints[0].current.value * 0.95,
-          conditions: `Conservative F1 package bench at 95% of the cited current; ${maximumPoints[0].current.conditions}`,
-        },
-      } : null;
-      // F1 is calibrated to one representative point. Retaining an entire failed F2
-      // curve as package expectations would silently make the same multi-point claim.
-      fitPoints.push(...(calibrationPoint ? [calibrationPoint] : []), ...(conservativeMaximum ? [conservativeMaximum] : []));
+      // F1 is calibrated to one representative point; every cited maximum remains an exact inequality coordinate.
+      fitPoints.push(...(calibrationPoint ? [calibrationPoint] : []), ...maximumPoints);
     } else {
       fitPoints.push(...scalarForwardPoints);
     }
@@ -2479,6 +2498,14 @@ export function runBulkManifest(manifestPath, stagingRoot, options = {}) {
     if (collisionReason) {
       results.push({ ...identity(part), status: "skipped", stage: "selection", reason: collisionReason });
       continue;
+    }
+    if (["mosfet", "diode"].includes(part.conveyor_family)) {
+      try {
+        validateBulkCandidateEvidence(part, extraction);
+      } catch (error) {
+        results.push({ ...identity(part), status: "failed", stage: "preflight", reason: error.message });
+        continue;
+      }
     }
     try {
       const fit = fitBulkPart(part, extraction, { ...options, forceF1: part.force_f1 === true });

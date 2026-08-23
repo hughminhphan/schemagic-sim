@@ -278,6 +278,14 @@ class MosfetCriticalProvenanceTest(unittest.TestCase):
         with self.assertRaisesRegex(ConveyorError, "exactly one fixed VDS"):
             self.validate(payload)
 
+        payload = self.load_fixture()
+        payload["curves"][0]["electrical_bias"][0]["value"] = -10
+        with self.assertRaisesRegex(ConveyorError, r"signed.*absolute magnitude"):
+            self.validate(payload)
+
+        payload["curves"][0]["magnitude_convention"] = "signed"
+        self.assertEqual(self.validate(payload)["curves"][0]["electrical_bias"][0]["value"], -10)
+
     def test_rejects_noncanonical_temperature_provenance(self):
         payload = self.load_fixture()
         payload["curves"][0]["temperature"]["provenance"] = "TA = 25 C"
@@ -304,15 +312,21 @@ class MosfetCriticalProvenanceTest(unittest.TestCase):
 
     def test_rejects_inverted_or_partial_descriptive_electrical_axes(self):
         payload = self.load_fixture()
+        payload["curves"][0]["x_axis"]["quantity"] = "gate-source voltage"
+        payload["curves"][0]["y_axis"]["quantity"] = "drain current"
+        with self.assertRaisesRegex(ConveyorError, "exact VGS"):
+            self.validate(payload)
+
+        payload = self.load_fixture()
         payload["curves"][0]["x_axis"]["quantity"] = "drain current"
         payload["curves"][0]["y_axis"]["quantity"] = "gate source voltage"
-        with self.assertRaisesRegex(ConveyorError, "unsupported MOSFET electrical axis pairing"):
+        with self.assertRaisesRegex(ConveyorError, "exact VGS"):
             self.validate(payload)
 
         payload = self.load_fixture()
         payload["curves"][0]["x_axis"]["quantity"] = "drain current"
         payload["curves"][0]["y_axis"]["quantity"] = "capacitance"
-        with self.assertRaisesRegex(ConveyorError, "unsupported MOSFET electrical axis pairing"):
+        with self.assertRaisesRegex(ConveyorError, "exact VGS"):
             self.validate(payload)
 
     def test_rejects_untyped_or_incomplete_test_mode(self):

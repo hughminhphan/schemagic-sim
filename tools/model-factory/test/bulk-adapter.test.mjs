@@ -241,6 +241,18 @@ function productionCurveExtraction({ xQuantity = "V_GS", yQuantity = "I_D", fixe
     datum.locator = { page: 2, table: "Electrical Characteristics", row: "Static Drain-Source On-Resistance" };
     datum.condition = structuredClone(rdsonCondition);
   }
+  if (output) {
+    value.curves.push({
+      ...structuredClone(curve),
+      name: "Figure 4 transfer trace 25 C typical",
+      x_axis: { quantity: "VGS", unit: "V", scale: "linear" },
+      y_axis: { quantity: "ID", unit: "A", scale: "linear" },
+      test_conditions: "VDS = 10 V, TJ = 25 °C; test mode = DC",
+      page_reference: "p. 4, Figure 4, curve 25 C typical",
+      locator: { page: 4, figure: "4", curve_or_trace: "25 C typical" },
+      electrical_bias: [{ quantity: "VDS", value: 10, unit: "V" }],
+    });
+  }
   return value;
 }
 
@@ -370,12 +382,78 @@ test("direct MOSFET conditions admit opaque source prose while explicit contradi
     () => validateMosfetCandidateEvidence({ ...mosfetPart("unused.pdf"), subcategory: "N-Channel MOSFET" }, temperatureConflict),
     /typed temperature disagrees/,
   );
+  const distinctThresholdBias = productionCurveExtraction();
+  distinctThresholdBias.specs.threshold_typ.conditions = "VDS = 10 V, VGS = 1 V, ID = 250 uA, TJ = 25 °C; test mode = DC";
+  assert.throws(
+    () => validateMosfetCandidateEvidence({ ...mosfetPart("unused.pdf"), subcategory: "N-Channel MOSFET" }, distinctThresholdBias),
+    /relationship disagrees with fixed VDS or VGS/,
+  );
+  const oneFixedThresholdBias = productionCurveExtraction();
+  oneFixedThresholdBias.specs.threshold_typ.conditions = "VDS = 10 V, ID = 250 uA, TJ = 25 °C; test mode = DC";
+  assert.throws(
+    () => validateMosfetCandidateEvidence({ ...mosfetPart("unused.pdf"), subcategory: "N-Channel MOSFET" }, oneFixedThresholdBias),
+    /relationship disagrees with fixed VDS or VGS/,
+  );
+  const fixedRdsonVds = productionCurveExtraction();
+  for (const datum of Object.values(fixedRdsonVds.specs.rdson_points[0])) {
+    datum.conditions = "VGS = 4.5 V, VDS = 10 V, ID = 2 A, TJ = 25 °C; test mode = DC";
+  }
+  assert.throws(
+    () => validateMosfetCandidateEvidence({ ...mosfetPart("unused.pdf"), subcategory: "N-Channel MOSFET" }, fixedRdsonVds),
+    /saturation-region relation disagrees with fixed VDS/,
+  );
   const rawPulsed = productionCurveExtraction();
   rawPulsed.curves[0].test_conditions = "VDS = 10 V, TJ = 25 °C; pulsed";
   assert.throws(
     () => validateMosfetCandidateEvidence({ ...mosfetPart("unused.pdf"), subcategory: "N-Channel MOSFET" }, rawPulsed),
     /structured test mode disagrees/,
   );
+});
+
+test("fit entrypoint cannot bypass MOSFET or diode preflight", () => {
+  const noTransfer = productionCurveExtraction();
+  noTransfer.curves = [];
+  let mosfetRunnerCalled = false;
+  assert.throws(
+    () => fitBulkPart({ ...mosfetPart("unused.pdf"), subcategory: "N-Channel MOSFET" }, noTransfer, {
+      fitRunner: () => { mosfetRunnerCalled = true; return acceptedF2Attempt(); }, ngspiceRunner: () => ({ pass: true }),
+    }),
+    /requires at least one normalized static transfer_current curve/,
+  );
+  assert.equal(mosfetRunnerCalled, false);
+  const noDiodeEvidence = extraction();
+  noDiodeEvidence.specs.forward_voltage_points = [];
+  let diodeRunnerCalled = false;
+  assert.throws(
+    () => fitBulkPart(diodePart("unused.pdf"), noDiodeEvidence, {
+      fitRunner: () => { diodeRunnerCalled = true; return acceptedF2Attempt(); }, ngspiceRunner: () => ({ pass: true }),
+    }),
+    /positive cited forward-voltage\/current pair/,
+  );
+  assert.equal(diodeRunnerCalled, false);
+});
+
+test("bulk manifests record preflight failure without an F1 demotion", () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "factory-preflight-terminal-test-"));
+  try {
+    const pdf = path.join(root, "datasheet.pdf");
+    const extractionPath = path.join(root, "extraction.json");
+    const manifestPath = path.join(root, "batch.json");
+    fs.writeFileSync(pdf, "%PDF-1.7\nfixture\n");
+    const extraction = productionCurveExtraction();
+    extraction.curves = [];
+    fs.writeFileSync(extractionPath, JSON.stringify(extraction));
+    fs.writeFileSync(manifestPath, JSON.stringify({
+      schema_version: "1.0.0", kind: "opencircuit-conveyor-batch",
+      parts: [{ ...mosfetPart(pdf), subcategory: "N-Channel MOSFET", extraction_path: extractionPath }],
+    }));
+    const [result] = runBulkManifest(manifestPath, path.join(root, "staging"), { fitRunner: () => { throw new Error("must not fit"); } });
+    assert.equal(result.status, "failed");
+    assert.equal(result.stage, "preflight");
+    assert.match(result.reason, /requires at least one normalized static transfer_current curve/);
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
 });
 
 test("direct MOSFET conditions preserve signed P-channel evidence and reject a false absolute claim", () => {
@@ -395,7 +473,14 @@ test("direct MOSFET conditions preserve signed P-channel evidence and reject a f
     /structured magnitude convention contradicts signed curve coordinates/,
   );
   extraction.curves[0].magnitude_convention = "signed";
+  extraction.curves[0].electrical_bias[0].value = -10;
   assert.equal(validateMosfetCandidateEvidence({ ...mosfetPart("unused.pdf"), subcategory: "P-Channel MOSFET" }, extraction).route, "curve-fitted");
+  const negativeAbsoluteBias = productionCurveExtraction();
+  negativeAbsoluteBias.curves[0].electrical_bias[0].value = -10;
+  assert.throws(
+    () => validateMosfetCandidateEvidence({ ...mosfetPart("unused.pdf"), subcategory: "N-Channel MOSFET" }, negativeAbsoluteBias),
+    /negative value requires signed magnitude_convention/,
+  );
 });
 
 test("direct threshold not_stated remains an explicit static-characteristic policy while curves stay strict", () => {
@@ -470,6 +555,17 @@ test("family-wide candidate preflight classifies cited diode evidence without se
   assert.match(maximumFit.parameter_metadata.IS.status, /cited maximum bound/);
   assert.match(maximumFit.parameter_metadata.N.status, /fixed F1 policy/);
   assert.match(maximumFit.parameter_metadata.RS.status, /fixed F1 policy/);
+
+  const directWithMaximum = extraction();
+  directWithMaximum.specs.forward_voltage_points.push({
+    current: { ...quantity(2, "A"), source_kind: "maximum" },
+    voltage: { ...quantity(0.55, "V"), source_kind: "maximum" },
+  });
+  const mixedFit = fitBulkPart(diodePart("unused.pdf"), directWithMaximum, { forceF1: true, ngspiceRunner: () => ({ pass: true }) });
+  assert.equal(mixedFit.evidence_mode, "typ-point");
+  assert.equal(mixedFit.calibration.constraints.length, 1);
+  assert.equal(mixedFit.calibration.constraints[0].current_a, 2);
+  assert.equal(mixedFit.calibration.constraints[0].maximum_voltage_v, 0.55);
 
   const noEvidence = extraction();
   noEvidence.specs.forward_voltage_points = [];
@@ -1022,7 +1118,7 @@ test("F1 diode fallback narrows a failed curve claim to its calibration point", 
     const result = runBulkManifest(manifestPath, path.join(root, "staging"), { libraryRoot: path.join(root, "empty-library") });
     assert.equal(result[0].status, "staged", JSON.stringify(result[0]));
     const facts = JSON.parse(fs.readFileSync(path.join(result[0].package_path, "facts.json"), "utf8"));
-    assert.deepEqual(facts.fit_points.map((point) => point.current.value), [0.1, 1.9]);
+    assert.deepEqual(facts.fit_points.map((point) => point.current.value), [0.1, 2]);
   } finally {
     fs.rmSync(root, { recursive: true, force: true });
   }
