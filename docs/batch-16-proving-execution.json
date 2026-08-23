@@ -1,0 +1,115 @@
+{
+  "schema_version": "1.0.0",
+  "date": "2026-08-23",
+  "campaign": "scale-2k-mosfet",
+  "cycle": "batch-16-proving-cycle2",
+  "status": "terminal-gate-fail",
+  "authorization": {
+    "direct_user_instruction": "okay lets keep going then",
+    "authorization_commit": "4c91157",
+    "clean_restart_commit": "f4ba66f",
+    "selection_commit": "f9432ba",
+    "correction_commits": ["d74d494", "f2ec72a", "a21906e"],
+    "approved_correction_commit": "a21906e9c7fb344965c183a5610d71fe724a6509",
+    "independent_code_review": "APPROVE"
+  },
+  "selection": {
+    "orders": "990..999",
+    "fixed_denominator": 10,
+    "substitutions": 0,
+    "source_manifest_sha256": "c003a37a26c5ce343ed884a38801d9a5acdbac17412d409dc2fd9c1b5ddf790e",
+    "tranche_manifest_sha256": "e3193b23d07d08a666552aae36f47ba6a7d22c4aa1d8096cf8ba1fefda7a255c",
+    "identity_vector_sha256": "d6f8db7b728f445fc77c7ef4466e8fb07005fa29af181169457738098832b8bd",
+    "topology_preflight": "all 10 supported single-channel MOSFETs",
+    "parked_topologies": 0
+  },
+  "correction_verification": {
+    "conveyor_tests": {"passed": 28, "failed": 0},
+    "model_factory_tests": {"passed": 104, "failed": 0},
+    "workspace_tests": "PASS",
+    "workspace_typecheck": "PASS",
+    "workspace_build": "PASS",
+    "reviewed_library_validation": {"passed_packages": 710, "failed_packages": 0},
+    "reviewed_inventory_sha256": "a587d60b946e42f1285f293fba7c5eedbfc5229415e09813de7e85d7fda4c87e"
+  },
+  "candidate_integrity": {
+    "data_root": "tools/conveyor/data/batch-16-proving-cycle2",
+    "fresh_root_verified_absent_before_creation": true,
+    "pdfs_downloaded": 10,
+    "pdfs_verified": 10,
+    "pdf_integrity_sha256": "696a4e4b57673e6f0c151f10a951c834ff35ff3e024f2774b730f7c657b4ef1b",
+    "jobs_created": 10,
+    "job_mode": "0444",
+    "jobs_reverified_unchanged_after_calls": true,
+    "jobs_integrity_sha256": "757798fc5a8f66056da365f00eb6d0761f4730e56a6eb259145050497ffd7a90",
+    "luna_lanes_used": 2,
+    "completed_calls": 10,
+    "repeated_completed_calls": 0,
+    "focused_discrepancy_retries": 0,
+    "missing_only_replacements": 0,
+    "supplements": 0,
+    "completion_ledger_sha256_after_fit": "fa3c55393485c45d1fb624036f9c620627865bb6304fbc40fbeac6c96ca281ac",
+    "integrity_before_fit_sha256": "f05872fb89507c2ab7b7efd7593c3d964a9b9e016c3927bff107f78ec36b0395",
+    "normalized_extraction_vector_sha256": "77510cc34c6160618769c7353a102e1f601bf32da9defac15559dcc3377f0c33"
+  },
+  "extraction_result": {
+    "accepted": 10,
+    "f2_candidates": 6,
+    "pre_demoted_f1": 4,
+    "catalog_discrepancy_failures": 0,
+    "summary": "Six responses retained provenance-complete curves. Four honestly omitted all curves because the primary PDF did not state the complete temperature, fixed-bias, pulse-width, or test-mode semantics required by the unchanged gate."
+  },
+  "fit_execution": {
+    "commands_run": 1,
+    "fit_passes": 1,
+    "no_park": true,
+    "fit_retries": 0,
+    "execution_head": "a21906e9c7fb344965c183a5610d71fe724a6509",
+    "isolated_clean_worktree_used": true,
+    "isolation_reason": "Unrelated user edits appeared in the primary worktree immediately before fitting; they were preserved and excluded from the approved execution tree.",
+    "factory_batch_vector_sha256": "55a8d10afe67c521dfbe5123c9d737e2d7373b395a76ec0949c38d43d5369984",
+    "factory_results_sha256": "8a57f1677e1145d42f70a54483d454cbff1cf98d67b70e5996382f7521c9d3f6",
+    "state_database_sha256": "b574321df930d6ccc0e8027eb2814a3099162a20893962740af0492189d10cd5",
+    "staged": 0,
+    "interval_constrained_staged": 0,
+    "failed_fitted": 10
+  },
+  "failure_summary": [
+    {"order": 990, "lcsc_id": "C504071", "mpn": "CJAB35P03", "reason": "F2 output-current pulsed evidence did not state both pulse width and duty cycle; F1 threshold-minimum evidence did not state its exact test mode."},
+    {"order": 991, "lcsc_id": "C82360", "mpn": "CJ3401A", "reason": "F2 and F1 threshold-minimum evidence retained an unknown residual P-channel magnitude qualifier."},
+    {"order": 992, "lcsc_id": "C5379814", "mpn": "TK10A80E,S4X(S", "reason": "F2 and F1 threshold-minimum evidence did not independently state the supported VDS = VGS relationship."},
+    {"order": 993, "lcsc_id": "C140583", "mpn": "NTS2101PT1G", "reason": "F2 output-current evidence did not state its exact test mode; F1 threshold evidence did not provide both interval endpoints."},
+    {"order": 994, "lcsc_id": "C44209", "mpn": "CJ2304", "reason": "F2 output-current pulsed evidence did not state both pulse width and duty cycle; F1 threshold-minimum evidence did not state exactly one typed temperature."},
+    {"order": 995, "lcsc_id": "C30170165", "mpn": "10N06Q", "reason": "F2 and F1 threshold-minimum evidence did not state its exact test mode."},
+    {"order": 996, "lcsc_id": "C5224264", "mpn": "BSS138L", "reason": "F2 output-current evidence retained unknown typical-characteristic and ambient-section qualifiers; F1 threshold-minimum evidence did not state its exact test mode."},
+    {"order": 997, "lcsc_id": "C148250", "mpn": "BSC028N06NS", "reason": "F2 and F1 threshold-minimum evidence did not state its exact test mode."},
+    {"order": 998, "lcsc_id": "C167139", "mpn": "WPM3407-3/TR", "reason": "F2 and F1 threshold-minimum evidence retained an unknown residual P-channel magnitude qualifier."},
+    {"order": 999, "lcsc_id": "C5379811", "mpn": "TPH2R608NH,L1Q(M", "reason": "F2 output-current evidence retained an unknown common-source qualifier; F1 threshold-minimum evidence did not independently state the supported VDS = VGS relationship."}
+  ],
+  "proving_gate": {
+    "minimum_provenance_clean_staged": 6,
+    "minimum_interval_constrained_staged": 3,
+    "actual_provenance_clean_staged": 0,
+    "actual_interval_constrained_staged": 0,
+    "decision": "FAIL",
+    "reason": "The single authorized fit pass staged 0 of the fixed denominator 10."
+  },
+  "guardrails": {
+    "fit_thresholds_relaxed": false,
+    "hard_bounds_relaxed": false,
+    "citation_or_provenance_rules_relaxed": false,
+    "collision_or_package_rules_relaxed": false,
+    "package_review_run": false,
+    "promotion_run": false,
+    "reviewed_models_changed": false,
+    "repository_pushed": false,
+    "production_deployed": false,
+    "publications_made": false
+  },
+  "terminal_result": {
+    "decision": "STOP_BATCH_16_PROVING_GATE_FAIL",
+    "retired_orders": "990..999",
+    "reviewed_package_count": 710,
+    "summary": "The producer-consumer correction passed independent review and the fresh extraction step admitted all ten responses, including six curve-bearing F2 candidates. The unchanged fitting contract then rejected every target for concrete unresolved evidence semantics. No package staged, so independent package review, promotion, push, and deployment remain blocked."
+  }
+}
