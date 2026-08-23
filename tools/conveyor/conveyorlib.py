@@ -699,6 +699,132 @@ def _validate_mosfet_critical_provenance(payload: Mapping[str, Any]) -> None:
             raise ConveyorError(f"{trail}.magnitude_convention absolute contradicts signed curve coordinates")
 
 
+def load_and_translate_mosfet_evidence_envelope(
+    path: Path,
+    schema_path: Path,
+    output_schema_path: Path,
+) -> dict[str, Any]:
+    """Expand a flat, source-reviewed MOSFET envelope into the strict extraction contract."""
+    try:
+        envelope = json.loads(path.read_text(encoding="utf-8"))
+        schema = json.loads(schema_path.read_text(encoding="utf-8"))
+        output_schema = json.loads(output_schema_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as error:
+        raise ConveyorError(f"Invalid MOSFET evidence envelope {path}: {error}") from error
+    if not isinstance(envelope, dict):
+        raise ConveyorError(f"Invalid MOSFET evidence envelope {path}: root must be an object")
+    validate_schema(envelope, schema)
+
+    polarity = envelope["polarity"]
+
+    def direct_condition(record: Mapping[str, Any], *, characteristic: str) -> dict[str, Any]:
+        temperature = record["temperature"]
+        if characteristic == "gate_threshold":
+            electrical = {
+                "vgs": {"kind": "relation", "relation": "vds_equals_vgs"},
+                "vds": {"kind": "relation", "relation": "vds_equals_vgs"},
+                "id": {"kind": "fixed", "value_a": abs(record["id_a"])},
+            }
+        else:
+            electrical = {
+                "vgs": {"kind": "fixed", "value_v": abs(record["vgs_v"])},
+                "vds": {"kind": "relation", "relation": "saturation_region"},
+                "id": {"kind": "fixed", "value_a": abs(record["id_a"])},
+            }
+        return {
+            "polarity": polarity,
+            "magnitude_convention": record["magnitude_convention"],
+            "temperature": {
+                "status": "stated",
+                "kind": temperature["kind"],
+                "value_c": temperature["value_c"],
+                "provenance": temperature["provenance"],
+            },
+            "electrical": electrical,
+            "test_mode": dict(record["test_mode"]),
+        }
+
+    def scalar_datum(
+        record: Mapping[str, Any],
+        *,
+        value: float,
+        unit: str,
+        source_kind: str,
+        condition: Mapping[str, Any],
+    ) -> dict[str, Any]:
+        return {
+            "value": value,
+            "unit": unit,
+            "conditions": record["conditions"],
+            "page_reference": record["page_reference"],
+            "locator": dict(record["locator"]),
+            "condition": dict(condition),
+            "source_kind": source_kind,
+        }
+
+    threshold_fields = {"minimum_v": "minimum", "typical_v": "typical", "maximum_v": "maximum"}
+    threshold_output: dict[str, Any] = {
+        "threshold_min": None,
+        "threshold_typ": None,
+        "threshold_max": None,
+    }
+    threshold = envelope["threshold"]
+    if threshold is not None:
+        present = [field for field in threshold_fields if threshold[field] is not None]
+        if not present:
+            raise ConveyorError("MOSFET evidence envelope threshold must contain at least one source value")
+        condition = direct_condition(threshold, characteristic="gate_threshold")
+        output_names = {"minimum_v": "threshold_min", "typical_v": "threshold_typ", "maximum_v": "threshold_max"}
+        for field in present:
+            threshold_output[output_names[field]] = scalar_datum(
+                threshold,
+                value=threshold[field],
+                unit="V",
+                source_kind=threshold_fields[field],
+                condition=condition,
+            )
+
+    rdson_output = []
+    for index, record in enumerate(envelope["rdson_points"]):
+        resistance_fields = {"typical_ohm": "typical", "maximum_ohm": "maximum"}
+        present = [field for field in resistance_fields if record[field] is not None]
+        if not present:
+            raise ConveyorError(f"MOSFET evidence envelope rdson_points[{index}] must contain a typical or maximum resistance")
+        condition = direct_condition(record, characteristic="rds_on")
+        for field in present:
+            source_kind = resistance_fields[field]
+            rdson_output.append({
+                "vgs": scalar_datum(record, value=record["vgs_v"], unit="V", source_kind=source_kind, condition=condition),
+                "current": scalar_datum(record, value=record["id_a"], unit="A", source_kind=source_kind, condition=condition),
+                "resistance": scalar_datum(record, value=record[field], unit="ohm", source_kind=source_kind, condition=condition),
+            })
+
+    payload = {
+        "schema_version": "1.0.0",
+        "mpn": envelope["mpn"],
+        "manufacturer": envelope["manufacturer"],
+        "family": "mosfet",
+        "datasheet_identity": dict(envelope["datasheet_identity"]),
+        "usable_curves": False,
+        "curves": [],
+        "specs": {
+            "polarity": polarity,
+            **threshold_output,
+            "rdson_points": rdson_output,
+            "ciss": None,
+            "coss": None,
+            "crss": None,
+            "breakdown_voltage": None,
+            "body_diode": None,
+        },
+        "extraction_notes": list(envelope["extraction_notes"]),
+        "omission_reason": envelope["omission_reason"],
+    }
+    validate_schema(payload, output_schema)
+    _validate_mosfet_critical_provenance(payload)
+    return payload
+
+
 def load_and_validate_extraction(path: Path, schema_path: Path, expected: Mapping[str, str]) -> dict[str, Any]:
     try:
         raw_payload = json.loads(path.read_text(encoding="utf-8"))

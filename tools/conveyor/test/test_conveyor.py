@@ -12,6 +12,7 @@ HERE = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(HERE))
 
 from conveyorlib import (ConveyorError, StateStore, cross_check, filter_library_collisions,
+                         load_and_translate_mosfet_evidence_envelope,
                          load_and_validate_extraction, normalize_extraction_payload,
                          run_extraction_batch, should_park_family, validate_schema)
 
@@ -207,6 +208,139 @@ class MosfetCriticalProvenanceTest(unittest.TestCase):
                 {"$ref": "#/$defs/value", "type": "object"},
                 root_schema={"$defs": {"value": {"type": "object"}}},
             )
+
+    def test_flat_evidence_envelope_expands_to_the_strict_production_contract(self):
+        envelope = {
+            "schema_version": "1.0.0",
+            "mpn": "M1",
+            "manufacturer": "Fixture",
+            "family": "mosfet",
+            "datasheet_identity": {"title": "M1 datasheet", "revision": "A", "pages_examined": ["p. 2"]},
+            "polarity": "n",
+            "threshold": {
+                "minimum_v": 1.0,
+                "typical_v": 1.5,
+                "maximum_v": 2.0,
+                "conditions": "VDS = VGS, ID = 250 uA, TJ = 25 C",
+                "page_reference": "p. 2, Electrical Characteristics, Gate threshold voltage row",
+                "locator": {"page": 2, "table": "Electrical Characteristics", "row": "Gate threshold voltage"},
+                "magnitude_convention": "absolute",
+                "temperature": {"kind": "junction", "value_c": 25, "provenance": "table_heading"},
+                "id_a": 0.00025,
+                "test_mode": {"kind": "not_stated"},
+            },
+            "rdson_points": [{
+                "vgs_v": 4.5,
+                "id_a": 5.0,
+                "typical_ohm": 0.0215,
+                "maximum_ohm": 0.03,
+                "conditions": "VGS = 4.5 V, ID = 5 A, TJ = 25 C; test mode = DC",
+                "page_reference": "p. 2, Electrical Characteristics, RDS(on) row",
+                "locator": {"page": 2, "table": "Electrical Characteristics", "row": "RDS(on), VGS = 4.5 V"},
+                "magnitude_convention": "absolute",
+                "temperature": {"kind": "junction", "value_c": 25, "provenance": "table_heading"},
+                "test_mode": {"kind": "dc"},
+            }],
+            "extraction_notes": ["Direct table evidence only."],
+            "omission_reason": "No curve coordinates extracted.",
+        }
+        with tempfile.TemporaryDirectory() as temporary:
+            envelope_path = Path(temporary) / "envelope.json"
+            envelope_path.write_text(json.dumps(envelope), encoding="utf-8")
+            payload = load_and_translate_mosfet_evidence_envelope(
+                envelope_path,
+                HERE / "schemas/mosfet-evidence-envelope.schema.json",
+                HERE / "schemas/mosfet.schema.json",
+            )
+            self.assertEqual(payload["specs"]["threshold_min"]["source_kind"], "minimum")
+            self.assertEqual(payload["specs"]["threshold_typ"]["value"], 1.5)
+            self.assertEqual(payload["specs"]["threshold_max"]["source_kind"], "maximum")
+            self.assertEqual([point["resistance"]["source_kind"] for point in payload["specs"]["rdson_points"]], ["typical", "maximum"])
+            strict_path = Path(temporary) / "strict.json"
+            strict_path.write_text(json.dumps(payload), encoding="utf-8")
+            validated = load_and_validate_extraction(
+                strict_path,
+                HERE / "schemas/mosfet.schema.json",
+                {"mpn": "M1", "manufacturer": "Fixture", "family": "mosfet"},
+            )
+            self.assertEqual(validated["specs"]["threshold_min"]["condition"]["electrical"]["vds"]["relation"], "vds_equals_vgs")
+
+            envelope["threshold"]["minimum_v"] = None
+            envelope["threshold"]["typical_v"] = None
+            envelope["threshold"]["maximum_v"] = None
+            envelope_path.write_text(json.dumps(envelope), encoding="utf-8")
+            with self.assertRaisesRegex(ConveyorError, "at least one source value"):
+                load_and_translate_mosfet_evidence_envelope(
+                    envelope_path,
+                    HERE / "schemas/mosfet-evidence-envelope.schema.json",
+                    HERE / "schemas/mosfet.schema.json",
+                )
+
+            envelope["threshold"] = None
+            envelope_path.write_text(json.dumps(envelope), encoding="utf-8")
+            with self.assertRaisesRegex(ConveyorError, r"threshold.*must be an object"):
+                load_and_translate_mosfet_evidence_envelope(
+                    envelope_path,
+                    HERE / "schemas/mosfet-evidence-envelope.schema.json",
+                    HERE / "schemas/mosfet.schema.json",
+                )
+
+    def test_flat_evidence_envelope_preserves_signed_p_channel_source_values(self):
+        envelope = {
+            "schema_version": "1.0.0",
+            "mpn": "P1",
+            "manufacturer": "Fixture",
+            "family": "mosfet",
+            "datasheet_identity": {"title": "P1 datasheet", "revision": "A", "pages_examined": ["p. 2"]},
+            "polarity": "p",
+            "threshold": {
+                "minimum_v": -1.0,
+                "typical_v": -1.5,
+                "maximum_v": -2.0,
+                "conditions": "VDS = VGS, ID = -250 uA, TJ = 25 C",
+                "page_reference": "p. 2, Electrical Characteristics, Gate threshold voltage row",
+                "locator": {"page": 2, "table": "Electrical Characteristics", "row": "Gate threshold voltage"},
+                "magnitude_convention": "signed",
+                "temperature": {"kind": "junction", "value_c": 25, "provenance": "table_heading"},
+                "id_a": -0.00025,
+                "test_mode": {"kind": "not_stated"},
+            },
+            "rdson_points": [{
+                "vgs_v": -4.5,
+                "id_a": -5.0,
+                "typical_ohm": 0.0215,
+                "maximum_ohm": 0.03,
+                "conditions": "VGS = -4.5 V, ID = -5 A, TJ = 25 C; test mode = DC",
+                "page_reference": "p. 2, Electrical Characteristics, RDS(on) row",
+                "locator": {"page": 2, "table": "Electrical Characteristics", "row": "RDS(on), VGS = -4.5 V"},
+                "magnitude_convention": "signed",
+                "temperature": {"kind": "junction", "value_c": 25, "provenance": "table_heading"},
+                "test_mode": {"kind": "dc"},
+            }],
+            "extraction_notes": ["Signed direct table evidence only."],
+            "omission_reason": "No curve coordinates extracted.",
+        }
+        with tempfile.TemporaryDirectory() as temporary:
+            envelope_path = Path(temporary) / "envelope.json"
+            envelope_path.write_text(json.dumps(envelope), encoding="utf-8")
+            payload = load_and_translate_mosfet_evidence_envelope(
+                envelope_path,
+                HERE / "schemas/mosfet-evidence-envelope.schema.json",
+                HERE / "schemas/mosfet.schema.json",
+            )
+            self.assertEqual(payload["specs"]["threshold_min"]["value"], -1.0)
+            self.assertEqual(payload["specs"]["threshold_min"]["condition"]["electrical"]["id"]["value_a"], 0.00025)
+            self.assertEqual(payload["specs"]["rdson_points"][0]["vgs"]["value"], -4.5)
+            self.assertEqual(payload["specs"]["rdson_points"][0]["vgs"]["condition"]["electrical"]["vgs"]["value_v"], 4.5)
+
+            envelope["rdson_points"] = []
+            envelope_path.write_text(json.dumps(envelope), encoding="utf-8")
+            with self.assertRaisesRegex(ConveyorError, r"rdson_points.*too few items"):
+                load_and_translate_mosfet_evidence_envelope(
+                    envelope_path,
+                    HERE / "schemas/mosfet-evidence-envelope.schema.json",
+                    HERE / "schemas/mosfet.schema.json",
+                )
 
     def test_rejects_missing_or_malformed_direct_scalar_conditions(self):
         payload = self.load_fixture()
