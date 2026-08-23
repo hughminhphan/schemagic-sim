@@ -26,7 +26,7 @@ Terra replaces Luna for new semantic extraction, but a model swap alone is insuf
 
 The sole source remains frozen `tools/part-feeder/data/manifests/scale-2k.json`, SHA-256 `c003a37a26c5ce343ed884a38801d9a5acdbac17412d409dc2fd9c1b5ddf790e`.
 
-This authorization reopens the 190 untouched deferred diode orders 690 through 879. They were scheduling deferrals, not permanent technical condemnations: no PDF was downloaded, no extraction call ran, and no fit was attempted. Their blocker was the old diode F1 fallback that converted published maxima into synthetic equality targets. Current tracked regressions require maxima to remain inclusive constraints and prohibit that synthetic target behavior.
+This authorization reopens the 190 untouched deferred diode orders 690 through 879. They were scheduling deferrals, not permanent technical condemnations: no PDF was downloaded, no extraction call ran, and no fit was attempted. Their blocker was the diode F1 fallback around published maxima. A further code audit found that the current package path preserves a published maximum as a bound, but its F1 parameter derivation still uses an undocumented 95% current / 97% voltage interior surrogate and records no honest bound-only calibration mode. Candidate work is therefore also blocked until the narrow provenance correction below distinguishes direct evidence from a maximum-only constraint and rejects seed-only preflight admission.
 
 The fresh candidate pool is therefore:
 
@@ -36,9 +36,9 @@ The fresh candidate pool is therefore:
 
 The campaign needs 290 promotions from 496 candidates, a 58.47% aggregate yield. Orders 880..999 remain retired and no old candidate response, supplement, fit, or package may be reused.
 
-## Narrow typed-evidence correction
+## Narrow evidence correction
 
-Before any new PDF download or semantic extraction, one reviewed correction may change only the MOSFET producer/consumer evidence boundary and directly related tests and fixtures:
+Before any new PDF download or semantic extraction, one reviewed correction may change only the MOSFET producer/consumer evidence boundary, the family-wide pure preflight validator, the diode F1 calibration provenance record, and directly related tests and fixtures:
 
 - structured condition semantics become canonical for curves while raw `test_conditions` remains preserved as audited source text;
 - exact parseable contradictions between source text and structured facts still fail, but unknown descriptive prose cannot veto otherwise complete typed evidence;
@@ -49,9 +49,16 @@ Before any new PDF download or semantic extraction, one reviewed correction may 
 - pulsed and single-pulse curves remain excluded from static F2 fitting; and
 - a pure no-fit/no-stage candidate-evidence validator must run the same normalizer and admission checks used by the fitter.
 
+For diodes, the same correction must:
+
+- reject seed-only preflight admission and require at least one positive SI forward-voltage/current pair from the extraction;
+- classify direct typical or digitized-curve evidence separately from maximum-bound-only evidence;
+- keep a published maximum as an inequality constraint with zero residual targets, never relabel it as a typical observation; and
+- record the conservative bound-only parameter policy and its source constraint explicitly instead of reporting a catalog-parametric fallback.
+
 Python fit physics, F2 error gates, hard bounds, model forms, collision logic, package admission, native ngspice, and native/WASM parity are unchanged.
 
-Required regressions include opaque but preserved source prose with complete typed facts, parseable contradictions, P-channel magnitude handling, pulsed-to-static rejection, threshold `not_stated` policy, missing temperature, missing interval endpoint, missing `VDS = VGS`, malformed locators, and one production fixture crossing conveyor through the pure factory evidence validator.
+Required regressions include opaque but preserved source prose with complete typed facts, parseable contradictions, P-channel magnitude handling, pulsed-to-static rejection, threshold `not_stated` policy, missing temperature, missing interval endpoint, missing `VDS = VGS`, malformed locators, one production fixture crossing conveyor through the pure factory evidence validator, and diode preflight cases for direct, maximum-bound-only, and seed-only evidence.
 
 The correction requires focused suites, full conveyor and model-factory suites, all 710 reviewed packages, workspace tests/typechecks/build, and independent read-only adversarial review before candidate work.
 
