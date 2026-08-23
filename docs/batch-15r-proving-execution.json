@@ -1,0 +1,117 @@
+{
+  "schema_version": "1.0.0",
+  "date": "2026-08-23",
+  "campaign": "scheMAGIC scale-2k Batch 15R typed-evidence recovery proving execution",
+  "status": "terminal-proving-gate-fail-after-single-fit-pass",
+  "base_and_code": {
+    "branch": "mosfet-cycle4-finish",
+    "approved_typed_interface_commit": "381f039",
+    "reviewed_package_count_before": 710,
+    "reviewed_package_count_after": 710,
+    "reviewed_library_modified": false,
+    "repository_pushed": false
+  },
+  "original_batch_integrity": {
+    "immutable_job_count": 10,
+    "immutable_job_hash_drift": 0,
+    "parked_orders": [980, 988],
+    "eligible_original_extractions": 8,
+    "completion_ledger_entries": 8,
+    "completion_ledger_unique_keys": 8,
+    "original_response_hashes_reverified": 8,
+    "integrity_record": "tools/conveyor/data/batch-15-proving/staging/batch-15-proving/batch-15r-integrity-before.json"
+  },
+  "semantic_adjudication": {
+    "initial_proposals_completed": 8,
+    "focused_retries_used": 3,
+    "accepted_supplements": 6,
+    "rejected_candidates": 2,
+    "accepted_orders": [982, 983, 984, 985, 986, 989],
+    "rejections": [
+      {
+        "frozen_campaign_order": 981,
+        "lcsc_id": "C353086",
+        "mpn": "AP2N7002",
+        "reason": "The focused retry removed five invalid output-current classifications but retained transfer-current entries whose abbreviated VGS/ID axes are not classifiable by the approved typed contract. The supplement validator rejected the remaining characteristic mismatch; the single retry was consumed."
+      },
+      {
+        "frozen_campaign_order": 987,
+        "lcsc_id": "C154721",
+        "mpn": "ZXMN2A01FTA",
+        "reason": "The focused retry emitted drain_current, which is not an admitted adjudication characteristic. The supplement validator rejected the proposal; the single retry was consumed."
+      }
+    ],
+    "adjudication_integrity_sha256": "870e4ea518a833d3181721d47c3dbbfa14ccebe14e1c4598233049c929de1e56",
+    "manifest_sha256": "7b011790664ca5b7d28b6cbb665a7b425a77a93eee4c5ba406d3dbcdf078d7e5",
+    "ledger_sha256": "c90a50b38c56e63133a5ca92e02c3edba65e53c0bed86b9c3a4c36a5562ebede"
+  },
+  "fit_and_staging": {
+    "fixed_denominator": 10,
+    "candidates_entering_fit": 6,
+    "fit_passes": 1,
+    "provenance_clean_packages_staged": 0,
+    "interval_constrained_packages_staged": 0,
+    "packages_reviewed": 0,
+    "packages_promoted": 0,
+    "fit_results_sha256": "a8fa7e9e1494b7af5fd01e3cde8b2cf175bba6447b27c15f6b96655cfabf615a",
+    "failure_summary": [
+      {
+        "lcsc_id": "C485687",
+        "mpn": "AOD66923",
+        "reason": "F2 output-current evidence retained a temperature-not-specified qualifier; F1 threshold-minimum citation did not identify a table+row or figure+curve/trace."
+      },
+      {
+        "lcsc_id": "C353072",
+        "mpn": "AP4438",
+        "reason": "F2 output-current citation did not identify a table+row or figure+curve/trace; F1 threshold-minimum citation had the same structural deficiency."
+      },
+      {
+        "lcsc_id": "C518789",
+        "mpn": "FDN338P",
+        "reason": "F2 output-current evidence did not state an exact test mode; F1 threshold-minimum citation did not identify a table+row or figure+curve/trace."
+      },
+      {
+        "lcsc_id": "C238629",
+        "mpn": "SE30150B",
+        "reason": "F2 output-current evidence retained unresolved typical-figure and temperature-not-specified qualifiers; F1 threshold-minimum citation did not identify a table+row or figure+curve/trace."
+      },
+      {
+        "lcsc_id": "C260863",
+        "mpn": "ZVN3320FTA",
+        "reason": "F2 output-current evidence retained an unresolved typical-output qualifier; F1 threshold-minimum citation did not identify a table+row or figure+curve/trace."
+      },
+      {
+        "lcsc_id": "C3021112",
+        "mpn": "SI2309CDS",
+        "reason": "F2 output-current evidence retained unresolved typical, P-channel-magnitude, and temperature-not-specified qualifiers; F1 threshold-minimum evidence did not state exactly one typed temperature."
+      }
+    ]
+  },
+  "proving_gate": {
+    "minimum_provenance_clean_staged": 6,
+    "minimum_interval_constrained_staged": 3,
+    "actual_provenance_clean_staged": 0,
+    "actual_interval_constrained_staged": 0,
+    "evaluated": true,
+    "decision": "FAIL",
+    "reason": "The single authorized Batch 15R fit pass staged 0 of the fixed denominator 10, below both unchanged thresholds."
+  },
+  "guardrails": {
+    "fit_thresholds_relaxed": false,
+    "hard_bounds_relaxed": false,
+    "citation_or_provenance_rules_relaxed": false,
+    "collision_or_package_rules_relaxed": false,
+    "fit_retries_run": 0,
+    "package_review_run": false,
+    "promotion_run": false,
+    "reviewed_models_changed": false,
+    "production_deployed": false,
+    "publications_made": false
+  },
+  "terminal_result": {
+    "decision": "STOP_CAMPAIGN_BATCH_15R_GATE_FAIL",
+    "retired_orders": "980..989",
+    "batch_16_authorized": false,
+    "summary": "The typed evidence interface remained approved and six content-addressed supplements passed deterministic integrity checks, but the one Batch 15R fit pass exposed genuine unresolved citation and curve-condition deficiencies and staged zero packages. Orders 980 through 989 retire. The reviewed library remains 710. Under the tracked recovery authorization, only a new direct user instruction after this failure may redirect the campaign."
+  }
+}
