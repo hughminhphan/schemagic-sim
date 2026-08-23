@@ -392,6 +392,20 @@ _MOSFET_TEMPERATURE_PROVENANCE = {
 _MOSFET_TEST_MODES = {"dc", "continuous", "pulsed", "single_pulse", "not_stated"}
 
 
+def _mosfet_axis_quantity(value: Any) -> str | None:
+    canonical = _MOSFET_BIAS_QUANTITIES.get(str(value).casefold())
+    if canonical is not None:
+        return canonical
+    words = str(value).casefold()
+    if "gate" in words and "source" in words and "voltage" in words:
+        return "vgs"
+    if "drain" in words and "source" in words and "voltage" in words:
+        return "vds"
+    if "drain" in words and "current" in words:
+        return "id"
+    return None
+
+
 def _require_locator(value: Any, fields: set[str], trail: str) -> None:
     if not isinstance(value, dict):
         raise ConveyorError(f"{trail} must be an object")
@@ -467,8 +481,8 @@ def _validate_mosfet_critical_provenance(payload: Mapping[str, Any]) -> None:
             if not isinstance(bias.get("unit"), str) or not bias["unit"].strip():
                 raise ConveyorError(f"{bias_trail}.unit must be a non-empty string")
 
-        x_quantity = _MOSFET_BIAS_QUANTITIES.get(str(curve.get("x_axis", {}).get("quantity")).casefold())
-        y_quantity = _MOSFET_BIAS_QUANTITIES.get(str(curve.get("y_axis", {}).get("quantity")).casefold())
+        x_quantity = _mosfet_axis_quantity(curve.get("x_axis", {}).get("quantity"))
+        y_quantity = _mosfet_axis_quantity(curve.get("y_axis", {}).get("quantity"))
         required_bias = "vds" if (x_quantity, y_quantity) == ("vgs", "id") else (
             "vgs" if (x_quantity, y_quantity) == ("vds", "id") else None
         )

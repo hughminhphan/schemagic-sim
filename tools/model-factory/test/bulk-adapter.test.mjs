@@ -286,6 +286,14 @@ test("production MOSFET curve fields fail closed without weakening units, citati
       curve.x_axis.quantity = "ID";
       curve.y_axis.quantity = "VGS";
     }, /unsupported electrical axis pairing/],
+    ["inverted descriptive axes", (curve) => {
+      curve.x_axis.quantity = "drain current";
+      curve.y_axis.quantity = "gate source voltage";
+    }, /unsupported electrical axis pairing/],
+    ["partial descriptive electrical axes", (curve) => {
+      curve.x_axis.quantity = "drain current";
+      curve.y_axis.quantity = "capacitance";
+    }, /unsupported electrical axis pairing/],
     ["wrong axis unit", (curve) => { curve.x_axis.unit = "mA"; }, /requires voltage and current axes/],
     ["incomplete locator", (curve) => { delete curve.locator.curve_or_trace; }, /invalid fields|curve_or_trace/],
     ["text locator page", (curve) => { curve.locator.page = "4"; }, /positive integer page/],

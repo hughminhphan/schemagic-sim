@@ -233,6 +233,19 @@ class MosfetCriticalProvenanceTest(unittest.TestCase):
         with self.assertRaisesRegex(ConveyorError, "unsupported MOSFET electrical axis pairing"):
             self.validate(payload)
 
+    def test_rejects_inverted_or_partial_descriptive_electrical_axes(self):
+        payload = self.load_fixture()
+        payload["curves"][0]["x_axis"]["quantity"] = "drain current"
+        payload["curves"][0]["y_axis"]["quantity"] = "gate source voltage"
+        with self.assertRaisesRegex(ConveyorError, "unsupported MOSFET electrical axis pairing"):
+            self.validate(payload)
+
+        payload = self.load_fixture()
+        payload["curves"][0]["x_axis"]["quantity"] = "drain current"
+        payload["curves"][0]["y_axis"]["quantity"] = "capacitance"
+        with self.assertRaisesRegex(ConveyorError, "unsupported MOSFET electrical axis pairing"):
+            self.validate(payload)
+
     def test_rejects_untyped_or_incomplete_test_mode(self):
         payload = self.load_fixture()
         payload["curves"][0]["test_mode"] = "pulsed"

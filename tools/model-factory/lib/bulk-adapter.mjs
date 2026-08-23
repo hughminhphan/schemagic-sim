@@ -871,8 +871,8 @@ function normalizeMosfetCurve(curve, curveIndex, context) {
   }
   const characteristic = curveCharacteristic(curve);
   if (!characteristic) {
-    const x = standardMosfetAxisQuantity(curve?.x_axis?.quantity);
-    const y = standardMosfetAxisQuantity(curve?.y_axis?.quantity);
+    const x = mosfetAxisQuantity(curve?.x_axis?.quantity);
+    const y = mosfetAxisQuantity(curve?.y_axis?.quantity);
     if (x || y) throw new Error(`MOSFET F2 curve ${curveIndex + 1} has an unsupported electrical axis pairing`);
     return curve;
   }
