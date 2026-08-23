@@ -14,12 +14,12 @@
       "name": "Output characteristic, VGS = 4.5 V",
       "x_axis": {"quantity": "VDS", "unit": "V", "scale": "linear"},
       "y_axis": {"quantity": "ID", "unit": "A", "scale": "linear"},
-      "test_conditions": "TA = 25 C; pulsed, tp = 80 us; VGS = 4.5 V",
+      "test_conditions": "TA = 25 C; test mode = DC; VGS = 4.5 V",
       "page_reference": "p. 5, Figure 3, VGS = 4.5 V trace",
       "locator": {"page": 5, "figure": "Figure 3", "curve_or_trace": "VGS = 4.5 V trace"},
       "temperature": {"kind": "ambient", "value": 25, "provenance": "inline_condition"},
       "electrical_bias": [{"quantity": "V_GS", "value": 4.5, "unit": "V"}],
-      "test_mode": {"kind": "pulsed", "pulse_width_s": 0.00008, "duty_cycle": 0.005},
+      "test_mode": {"kind": "dc"},
       "points": [
         {"x": 0.1, "y": 1.0},
         {"x": 0.2, "y": 2.0},
@@ -34,7 +34,7 @@
     "threshold_typ": {
       "value": 1.5,
       "unit": "V",
-      "conditions": "VDS = VGS, ID = 250 uA, TJ = 25 C",
+      "conditions": "VDS = VGS, ID = 250 uA, TJ = 25 C; test mode = DC",
       "page_reference": "p. 2, Electrical Characteristics, Gate threshold voltage row",
       "locator": {"page": 2, "table": "Electrical Characteristics", "row": "Gate threshold voltage"},
       "source_kind": "typical"
@@ -45,7 +45,7 @@
         "vgs": {
           "value": 4.5,
           "unit": "V",
-          "conditions": "ID = 5 A, TJ = 25 C",
+          "conditions": "VGS = 4.5 V, ID = 5 A, TJ = 25 C; test mode = DC",
           "page_reference": "p. 2, Electrical Characteristics, RDS(on) at VGS = 4.5 V row",
           "locator": {"page": 2, "table": "Electrical Characteristics", "row": "RDS(on), VGS = 4.5 V"},
           "source_kind": "typical"
@@ -53,7 +53,7 @@
         "current": {
           "value": 5,
           "unit": "A",
-          "conditions": "VGS = 4.5 V, TJ = 25 C",
+          "conditions": "VGS = 4.5 V, ID = 5 A, TJ = 25 C; test mode = DC",
           "page_reference": "p. 2, Electrical Characteristics, RDS(on) at VGS = 4.5 V row",
           "locator": {"page": 2, "table": "Electrical Characteristics", "row": "RDS(on), VGS = 4.5 V"},
           "source_kind": "typical"
@@ -61,7 +61,7 @@
         "resistance": {
           "value": 0.03,
           "unit": "ohm",
-          "conditions": "VGS = 4.5 V, ID = 5 A, TJ = 25 C",
+          "conditions": "VGS = 4.5 V, ID = 5 A, TJ = 25 C; test mode = DC",
           "page_reference": "p. 2, Electrical Characteristics, RDS(on) at VGS = 4.5 V row",
           "locator": {"page": 2, "table": "Electrical Characteristics", "row": "RDS(on), VGS = 4.5 V"},
           "source_kind": "typical"

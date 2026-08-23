@@ -226,6 +226,13 @@ class MosfetCriticalProvenanceTest(unittest.TestCase):
         with self.assertRaisesRegex(ConveyorError, "temperature.provenance"):
             self.validate(payload)
 
+    def test_rejects_inverted_standard_electrical_axes(self):
+        payload = self.load_fixture()
+        payload["curves"][0]["x_axis"]["quantity"] = "ID"
+        payload["curves"][0]["y_axis"]["quantity"] = "VGS"
+        with self.assertRaisesRegex(ConveyorError, "unsupported MOSFET electrical axis pairing"):
+            self.validate(payload)
+
     def test_rejects_untyped_or_incomplete_test_mode(self):
         payload = self.load_fixture()
         payload["curves"][0]["test_mode"] = "pulsed"
@@ -250,14 +257,18 @@ class MosfetCriticalProvenanceTest(unittest.TestCase):
 
     def test_accepts_only_the_canonical_repetition_frequency_field(self):
         payload = self.load_fixture()
-        payload["curves"][0]["test_mode"]["repetition_frequency_hz"] = 100
+        payload["curves"][0]["test_mode"] = {
+            "kind": "pulsed", "pulse_width_s": 1e-6, "repetition_frequency_hz": 100,
+        }
         self.assertEqual(
             self.validate(payload)["curves"][0]["test_mode"]["repetition_frequency_hz"],
             100,
         )
 
         payload = self.load_fixture()
-        payload["curves"][0]["test_mode"]["repetition_hz"] = 100
+        payload["curves"][0]["test_mode"] = {
+            "kind": "pulsed", "pulse_width_s": 1e-6, "repetition_hz": 100,
+        }
         with self.assertRaisesRegex(ConveyorError, "repetition_hz"):
             self.validate(payload)
 

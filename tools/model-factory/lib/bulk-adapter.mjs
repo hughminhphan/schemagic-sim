@@ -862,7 +862,7 @@ function validateStructuredCurveCondition(curve, characteristic, rawPoints, labe
       vds: { kind: "range", lower_v: Math.min(...rawPoints.map((point) => point.x_si)), upper_v: Math.max(...rawPoints.map((point) => point.x_si)) },
       id: { kind: "range", lower_a: Math.min(...rawPoints.map((point) => point.y_si)), upper_a: Math.max(...rawPoints.map((point) => point.y_si)) },
     };
-  return { temperature, testMode, electrical, fixedQuantity, fixedValue };
+  return { temperature, temperatureProvenance: curve.temperature.provenance, testMode, electrical, fixedQuantity, fixedValue };
 }
 
 function normalizeMosfetCurve(curve, curveIndex, context) {
@@ -873,7 +873,7 @@ function normalizeMosfetCurve(curve, curveIndex, context) {
   if (!characteristic) {
     const x = standardMosfetAxisQuantity(curve?.x_axis?.quantity);
     const y = standardMosfetAxisQuantity(curve?.y_axis?.quantity);
-    if (["vgs", "vds"].includes(x) || y === "id") throw new Error(`MOSFET F2 curve ${curveIndex + 1} has an unsupported electrical axis pairing`);
+    if (x || y) throw new Error(`MOSFET F2 curve ${curveIndex + 1} has an unsupported electrical axis pairing`);
     return curve;
   }
   const label = `MOSFET F2 ${characteristic} curve ${curveIndex + 1}`;
@@ -946,7 +946,10 @@ function normalizeMosfetCurve(curve, curveIndex, context) {
     magnitudeConvention: adjudicated?.magnitudeConvention ?? (/magnitude|\|V|\|I|p-channel/i.test(`${curve.x_axis.quantity} ${curve.y_axis.quantity} ${conditions}`) ? "absolute" : "signed"),
     temperature: adjudicated?.temperature ?? structured?.temperature ?? parsedTemperature, electrical,
     testMode: adjudicated?.testMode ?? structured?.testMode ?? legacyTestMode.mode,
-    qualifiers: adjudicated?.qualifiers ?? normalizedQualifiers(conditions, legacyTestMode.qualifiers),
+    qualifiers: adjudicated?.qualifiers ?? [
+      ...normalizedQualifiers(conditions, legacyTestMode.qualifiers),
+      ...(structured ? [{ key: "temperature_provenance", value: structured.temperatureProvenance }] : []),
+    ],
   });
   const citationIdentityValue = citationIdentity(curve.locator ?? curve.page_reference, { ...context, label, curveName: curve.name });
   const xAxis = { quantity: characteristic === "transfer_current" ? "vgs" : "vds", unit: "V" };

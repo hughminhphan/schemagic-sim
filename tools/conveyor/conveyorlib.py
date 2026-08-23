@@ -472,6 +472,8 @@ def _validate_mosfet_critical_provenance(payload: Mapping[str, Any]) -> None:
         required_bias = "vds" if (x_quantity, y_quantity) == ("vgs", "id") else (
             "vgs" if (x_quantity, y_quantity) == ("vds", "id") else None
         )
+        if required_bias is None and (x_quantity is not None or y_quantity is not None):
+            raise ConveyorError(f"{trail} has an unsupported MOSFET electrical axis pairing")
         if required_bias is not None and seen_biases != {required_bias}:
             raise ConveyorError(f"{trail}.electrical_bias must contain exactly one fixed {required_bias.upper()} record")
 

@@ -269,6 +269,7 @@ test("production MOSFET axis aliases and structured evidence normalize to the ca
     assert.deepEqual(normalized.y_axis, { quantity: "id", unit: "A" });
     assert.deepEqual(normalized.condition_identity.temperature, { kind: "junction", value_c: 25 });
     assert.equal(normalized.condition_identity.test_mode.kind, "dc");
+    assert.ok(normalized.condition_identity.qualifiers.some((item) => item.key === "temperature_provenance" && item.value === "figure_label"));
     assert.equal(normalized.citation_identity.page, 4);
     assert.equal(normalized.citation_identity.curve, item.output ? "VGS 4.5 V" : "25 C typical");
     assert.equal(fitterPayload.extraction.specs.threshold_min.citation_identity.row, "Gate Threshold Voltage");
@@ -281,6 +282,10 @@ test("production MOSFET axis aliases and structured evidence normalize to the ca
 test("production MOSFET curve fields fail closed without weakening units, citations, temperature, bias, or mode gates", () => {
   const mutations = [
     ["near-miss axis", (curve) => { curve.x_axis.quantity = "V_GD"; }, /unsupported electrical axis pairing/],
+    ["inverted standard axes", (curve) => {
+      curve.x_axis.quantity = "ID";
+      curve.y_axis.quantity = "VGS";
+    }, /unsupported electrical axis pairing/],
     ["wrong axis unit", (curve) => { curve.x_axis.unit = "mA"; }, /requires voltage and current axes/],
     ["incomplete locator", (curve) => { delete curve.locator.curve_or_trace; }, /invalid fields|curve_or_trace/],
     ["text locator page", (curve) => { curve.locator.page = "4"; }, /positive integer page/],
@@ -315,6 +320,39 @@ test("production MOSFET curve fields fail closed without weakening units, citati
     }),
     /invalid fields|row/,
   );
+});
+
+test("the conveyor MOSFET critical fixture crosses the producer-consumer boundary", () => {
+  const extraction = JSON.parse(fs.readFileSync(
+    new URL("../../conveyor/test/fixtures/mosfet-critical.json", import.meta.url),
+    "utf8",
+  ));
+  let fitterPayload;
+  const part = {
+    ...mosfetPart(semanticFixturePdf),
+    mpn: "M1",
+    manufacturer: "Fixture",
+    subcategory: "N-Channel MOSFET",
+  };
+  const fit = fitBulkPart(part, extraction, {
+    fitRunner: (payload) => { fitterPayload = payload; return acceptedF2Attempt(); },
+    ngspiceRunner: () => ({ pass: true }),
+  });
+  const [curve] = fitterPayload.extraction.curves;
+  assert.equal(curve.characteristic, "output_current");
+  assert.deepEqual(curve.citation_identity, {
+    source_sha256: semanticSourceSha256,
+    source_revision: "A",
+    page: 5,
+    figure: "Figure 3",
+    curve: "VGS = 4.5 V trace",
+    citation_id: curve.citation_identity.citation_id,
+  });
+  assert.ok(curve.condition_identity.qualifiers.some(
+    (item) => item.key === "temperature_provenance" && item.value === "inline_condition",
+  ));
+  assert.equal(fit.fidelity, "F2");
+  assert.equal(fit.evidence_curves.length, 1);
 });
 
 test("bulk adapter fits curve-backed diode without touching reviewed library", () => {
