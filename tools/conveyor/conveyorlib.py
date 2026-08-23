@@ -241,13 +241,41 @@ def choose_balanced(parts: Sequence[Mapping[str, Any]], quotas: Mapping[str, int
     return selected
 
 
-def validate_schema(instance: Any, schema: Mapping[str, Any], trail: str = "$") -> None:
+def validate_schema(
+    instance: Any,
+    schema: Mapping[str, Any],
+    trail: str = "$",
+    root_schema: Mapping[str, Any] | None = None,
+    ref_stack: tuple[str, ...] = (),
+) -> None:
     """Small strict validator for the checked-in schema vocabulary."""
+    if not isinstance(schema, Mapping):
+        raise ConveyorError(f"{trail} uses a non-object schema")
+    if root_schema is None:
+        root_schema = schema
+    if "$ref" in schema:
+        reference = schema["$ref"]
+        if set(schema) != {"$ref"}:
+            raise ConveyorError(f"{trail} uses unsupported sibling keywords beside $ref")
+        if not isinstance(reference, str) or not reference.startswith("#/"):
+            raise ConveyorError(f"{trail} uses unsupported schema reference {reference!r}")
+        if reference in ref_stack:
+            raise ConveyorError(f"{trail} uses circular schema reference {reference!r}")
+        target: Any = root_schema
+        for token in reference[2:].split("/"):
+            key = token.replace("~1", "/").replace("~0", "~")
+            if not isinstance(target, Mapping) or key not in target:
+                raise ConveyorError(f"{trail} uses unresolved schema reference {reference!r}")
+            target = target[key]
+        if not isinstance(target, Mapping):
+            raise ConveyorError(f"{trail} schema reference {reference!r} does not resolve to an object")
+        validate_schema(instance, target, trail, root_schema, (*ref_stack, reference))
+        return
     if "anyOf" in schema:
         errors = []
         for candidate in schema["anyOf"]:
             try:
-                validate_schema(instance, candidate, trail)
+                validate_schema(instance, candidate, trail, root_schema, ref_stack)
                 return
             except ConveyorError as error:
                 errors.append(str(error))
@@ -258,7 +286,7 @@ def validate_schema(instance: Any, schema: Mapping[str, Any], trail: str = "$") 
             return
         candidates = [item for item in expected if item != "null"]
         if candidates:
-            validate_schema(instance, {**schema, "type": candidates[0]}, trail)
+            validate_schema(instance, {**schema, "type": candidates[0]}, trail, root_schema, ref_stack)
             return
     elif expected == "object" and not isinstance(instance, dict):
         raise ConveyorError(f"{trail} must be an object")
@@ -268,6 +296,8 @@ def validate_schema(instance: Any, schema: Mapping[str, Any], trail: str = "$") 
         raise ConveyorError(f"{trail} must be a string")
     elif expected == "number" and (not isinstance(instance, (int, float)) or isinstance(instance, bool) or not math.isfinite(instance)):
         raise ConveyorError(f"{trail} must be a finite number")
+    elif expected == "integer" and (not isinstance(instance, int) or isinstance(instance, bool)):
+        raise ConveyorError(f"{trail} must be an integer")
     elif expected == "boolean" and not isinstance(instance, bool):
         raise ConveyorError(f"{trail} must be a boolean")
     elif expected == "null" and instance is not None:
@@ -278,11 +308,16 @@ def validate_schema(instance: Any, schema: Mapping[str, Any], trail: str = "$") 
         raise ConveyorError(f"{trail} must be one of {schema['enum']!r}")
     if isinstance(instance, str) and len(instance) < schema.get("minLength", 0):
         raise ConveyorError(f"{trail} is too short")
+    if isinstance(instance, (int, float)) and not isinstance(instance, bool):
+        if "minimum" in schema and instance < schema["minimum"]:
+            raise ConveyorError(f"{trail} must be at least {schema['minimum']}")
+        if "maximum" in schema and instance > schema["maximum"]:
+            raise ConveyorError(f"{trail} must be at most {schema['maximum']}")
     if isinstance(instance, list):
         if len(instance) < schema.get("minItems", 0):
             raise ConveyorError(f"{trail} has too few items")
         for index, item in enumerate(instance):
-            validate_schema(item, schema.get("items", {}), f"{trail}[{index}]")
+            validate_schema(item, schema.get("items", {}), f"{trail}[{index}]", root_schema, ref_stack)
     if isinstance(instance, dict):
         required = set(schema.get("required", []))
         missing = required - set(instance)
@@ -295,7 +330,7 @@ def validate_schema(instance: Any, schema: Mapping[str, Any], trail: str = "$") 
                 raise ConveyorError(f"{trail} has unknown keys: {', '.join(sorted(extra))}")
         for key, value in instance.items():
             if key in properties:
-                validate_schema(value, properties[key], f"{trail}.{key}")
+                validate_schema(value, properties[key], f"{trail}.{key}", root_schema, ref_stack)
 
 
 _QUANTITY_UNIT_FACTORS = {

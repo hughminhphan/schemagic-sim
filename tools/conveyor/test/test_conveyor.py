@@ -13,7 +13,7 @@ sys.path.insert(0, str(HERE))
 
 from conveyorlib import (ConveyorError, StateStore, cross_check, filter_library_collisions,
                          load_and_validate_extraction, normalize_extraction_payload,
-                         run_extraction_batch, should_park_family)
+                         run_extraction_batch, should_park_family, validate_schema)
 
 
 def q(value, unit="V"):
@@ -170,6 +170,44 @@ class MosfetCriticalProvenanceTest(unittest.TestCase):
         self.assertEqual(result["specs"]["threshold_typ"]["condition"]["test_mode"]["kind"], "not_stated")
         self.assertNotIn("test mode", result["specs"]["threshold_typ"]["conditions"].lower())
 
+    def test_published_schema_requires_the_runtime_direct_condition_and_locator_shapes(self):
+        schema = json.loads((HERE / "schemas/mosfet.schema.json").read_text(encoding="utf-8"))
+        validate_schema(self.load_fixture(), schema)
+
+        payload = self.load_fixture()
+        payload["specs"]["threshold_typ"]["condition"] = {
+            "temperature": "TJ=25 C",
+            "electrical_bias": "VDS=VGS, ID=25 uA",
+            "test_mode": "not stated",
+        }
+        with self.assertRaisesRegex(ConveyorError, r"condition.*(?:missing required keys|unknown keys)"):
+            validate_schema(payload, schema)
+
+        payload = self.load_fixture()
+        payload["specs"]["threshold_typ"]["locator"] = {"page": 2}
+        with self.assertRaisesRegex(ConveyorError, r"locator.*missing required keys.*(?:row|table)"):
+            validate_schema(payload, schema)
+
+    def test_local_schema_references_fail_closed(self):
+        with self.assertRaisesRegex(ConveyorError, "circular schema reference"):
+            validate_schema(
+                {},
+                {"$ref": "#/$defs/loop"},
+                root_schema={"$defs": {"loop": {"$ref": "#/$defs/loop"}}},
+            )
+        with self.assertRaisesRegex(ConveyorError, "does not resolve to an object"):
+            validate_schema(
+                {},
+                {"$ref": "#/$defs/value"},
+                root_schema={"$defs": {"value": "not-a-schema"}},
+            )
+        with self.assertRaisesRegex(ConveyorError, "unsupported sibling keywords"):
+            validate_schema(
+                {},
+                {"$ref": "#/$defs/value", "type": "object"},
+                root_schema={"$defs": {"value": {"type": "object"}}},
+            )
+
     def test_rejects_missing_or_malformed_direct_scalar_conditions(self):
         payload = self.load_fixture()
         del payload["specs"]["threshold_typ"]["condition"]
@@ -229,7 +267,7 @@ class MosfetCriticalProvenanceTest(unittest.TestCase):
     def test_rejects_scalar_locator_without_page_table_and_row(self):
         payload = self.load_fixture()
         del payload["specs"]["threshold_typ"]["locator"]["row"]
-        with self.assertRaisesRegex(ConveyorError, r"threshold_typ\.locator.*missing row"):
+        with self.assertRaisesRegex(ConveyorError, r"threshold_typ\.locator.*missing (?:required keys: )?row"):
             self.validate(payload)
 
     def test_rejects_curve_locator_without_page_figure_and_curve_or_trace(self):
@@ -241,7 +279,7 @@ class MosfetCriticalProvenanceTest(unittest.TestCase):
     def test_rejects_non_integer_locator_page(self):
         payload = self.load_fixture()
         payload["curves"][0]["locator"]["page"] = "p. 5"
-        with self.assertRaisesRegex(ConveyorError, r"locator\.page must be a positive integer|not of type 'integer'"):
+        with self.assertRaisesRegex(ConveyorError, r"locator\.page must be (?:a positive|an) integer|not of type 'integer'"):
             self.validate(payload)
 
     def test_rejects_missing_or_not_stated_temperature(self):
