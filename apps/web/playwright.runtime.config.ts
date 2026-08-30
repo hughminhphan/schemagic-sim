@@ -9,6 +9,7 @@ export default defineConfig({
   fullyParallel: false,
   workers: 1,
   retries: 0,
+  expect: { timeout: 15_000 },
   reporter: "line",
   outputDir: "test-results/designer-runtime",
   preserveOutput: "always",

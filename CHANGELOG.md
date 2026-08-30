@@ -17,6 +17,7 @@ All notable scheMAGIC releases are documented here. The project uses semantic ve
 - The current Simulator document remains version 3 with V1/V2 migration support; the incompatible multi-circuit Designer document is version 4.
 - Simulation results combine Measurement run provenance with Designer execution receipts.
 - The web release is versioned and tested as one product instead of separate preview branches.
+- The Designer runtime contract is versioned at `2026-08-30.1` with a 10-second cold shared-runner p95 ceiling; local and CI reports remain explicitly environment-bound.
 
 ### Known limitations
 

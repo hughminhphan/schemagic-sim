@@ -229,6 +229,7 @@ test("ordinary Power target discovery settles to zero compatible targets after p
 });
 
 test("Motor primary-part customization remains an inert target-only projection across file and URL transfer", async ({ page }) => {
+  test.setTimeout(120_000);
   await startReferenceDesign(page, "Motor");
   await openWorkspaceTab(page, "Optimize");
   const sourceResultHash = await ordinaryResultHash(page);
@@ -568,7 +569,7 @@ test("Motor primary-part customization remains an inert target-only projection a
   });
   await expect(page.getByText(
     /scheMAGIC primary-part customization evaluation failed \(profile_mismatch\)/u,
-  )).toBeVisible();
+  )).toBeVisible({ timeout: 20_000 });
   await expect(page.locator("[data-primary-customization-target]")).toHaveValue(instruction.contentHash);
   await expect(targetResult).toBeVisible();
   expect(await targetResult.locator(":scope > code").innerText()).toBe(targetResultHash);

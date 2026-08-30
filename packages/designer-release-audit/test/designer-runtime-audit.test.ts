@@ -103,7 +103,7 @@ function payload(browserVersion = "fixture-chromium-1"): Omit<DesignerRuntimeRep
 describe("Designer runtime audit V1", () => {
   it("parses the content-addressed workload contract and round-trips a bounded report", () => {
     expect(contract).toMatchObject({
-      version: "2026-08-26.3",
+      version: "2026-08-30.1",
       workloads: [
         {
           application: "motor.brushed-dc",
@@ -117,7 +117,7 @@ describe("Designer runtime audit V1", () => {
       boundaries: {
         memory: expect.stringContaining("customization target discovery"),
       },
-      contentHash: "sha256:0b9602bf26211a38e301e830a95dc9e7f7ee7e0c2778beb8c6e8834a8f257928",
+      contentHash: "sha256:201eac547ff0617270a8540ed5aa5b1de3c1d9f3b3df4eebba0fd15dada14779",
     });
     const report = createDesignerRuntimeReportV1(payload(), contract);
     expect(parseDesignerRuntimeReportV1(structuredClone(report), contract)).toEqual(report);
@@ -134,8 +134,8 @@ describe("Designer runtime audit V1", () => {
       status: "pass",
       blockers: [],
       evidence: {
-        contractVersion: "2026-08-26.3",
-        contractContentHash: "sha256:0b9602bf26211a38e301e830a95dc9e7f7ee7e0c2778beb8c6e8834a8f257928",
+        contractVersion: "2026-08-30.1",
+        contractContentHash: "sha256:201eac547ff0617270a8540ed5aa5b1de3c1d9f3b3df4eebba0fd15dada14779",
         implemented: {
           exactMotorPowerWorkloads: true,
           exactProductionIdentities: true,

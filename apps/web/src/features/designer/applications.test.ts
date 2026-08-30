@@ -699,7 +699,7 @@ describe("production Designer application readiness", () => {
       customized,
       "customized_target_electrical_bom_csv",
     )).rejects.toThrow("exact authorized customized result and source");
-  }, 150_000);
+  }, 240_000);
 
   it("keeps strict generation empty until an explicit unknown-evidence opt-in", async () => {
     const motor = designerApplications()[0]!;

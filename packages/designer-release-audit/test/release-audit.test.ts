@@ -905,8 +905,8 @@ describe("Designer V1 release readiness audit", () => {
       status: "pass",
       blockers: [],
       evidence: {
-        contractVersion: "2026-08-26.3",
-        contractContentHash: "sha256:0b9602bf26211a38e301e830a95dc9e7f7ee7e0c2778beb8c6e8834a8f257928",
+        contractVersion: "2026-08-30.1",
+        contractContentHash: "sha256:201eac547ff0617270a8540ed5aa5b1de3c1d9f3b3df4eebba0fd15dada14779",
       },
     });
     expect(byId.get("web.production-workflow")?.blockers).toEqual([
