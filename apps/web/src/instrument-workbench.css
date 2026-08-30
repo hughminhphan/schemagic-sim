@@ -1,0 +1,97 @@
+.instrument-workbench {
+  --iw-bg: #111417;
+  --iw-panel: #181c20;
+  --iw-rule: #30363c;
+  --iw-ink: #f1eee8;
+  --iw-muted: #a9aeb3;
+  --iw-accent: #3fd983;
+  min-width: 0;
+  color: var(--iw-ink);
+  background: var(--iw-bg);
+  border: 1px solid var(--iw-rule);
+  font: 12px/1.4 "IBM Plex Sans", system-ui, sans-serif;
+}
+
+.instrument-workbench *,
+.instrument-workbench *::before,
+.instrument-workbench *::after { box-sizing: border-box; }
+.instrument-workbench [hidden] { display: none !important; }
+.instrument-workbench__header,
+.instrument-workbench__section-heading,
+.instrument-workbench__header-actions,
+.instrument-workbench__inline-form,
+.instrument-workbench__fields { display: flex; align-items: center; gap: 8px; }
+.instrument-workbench__header { justify-content: space-between; padding: 12px 14px; border-bottom: 1px solid var(--iw-rule); }
+.instrument-workbench__header h2,
+.instrument-workbench h3,
+.instrument-workbench p { margin: 0; }
+.instrument-workbench__header h2 { font: 600 17px/1.2 "IBM Plex Sans", system-ui, sans-serif; }
+.instrument-workbench__eyebrow { color: var(--iw-muted); font: 600 10px/1.3 "IBM Plex Mono", ui-monospace, monospace; letter-spacing: .1em; }
+.instrument-workbench button,
+.instrument-workbench input,
+.instrument-workbench select {
+  min-height: 28px;
+  color: var(--iw-ink);
+  background: var(--iw-panel);
+  border: 1px solid #535a61;
+  border-radius: 0;
+  font: inherit;
+}
+.instrument-workbench input,
+.instrument-workbench select { min-width: 0; padding: 4px 6px; }
+.instrument-workbench button { padding: 4px 8px; cursor: pointer; }
+.instrument-workbench button:hover:not(:disabled),
+.instrument-workbench button.active { color: #07110b; background: var(--iw-accent); border-color: var(--iw-accent); }
+.instrument-workbench button:disabled { cursor: not-allowed; opacity: .45; }
+.instrument-workbench :focus-visible { outline: 2px solid #5fb0e8; outline-offset: 2px; }
+.instrument-workbench__target,
+.instrument-workbench__sign { padding: 7px 14px; }
+.instrument-workbench__target { color: var(--iw-ink); background: #1b2320; border-bottom: 1px solid var(--iw-rule); font-weight: 600; }
+.instrument-workbench__sign { color: var(--iw-muted); border-bottom: 1px solid var(--iw-rule); }
+.instrument-workbench__expression { display: grid; gap: 5px; padding: 10px 14px; border-bottom: 1px solid var(--iw-rule); }
+.instrument-workbench__expression > div { display: grid; grid-template-columns: minmax(160px, 1fr) auto; gap: 8px; }
+.instrument-workbench__expression input { width: 100%; font-family: "IBM Plex Mono", ui-monospace, monospace; }
+.instrument-workbench__expression [role="status"] { min-height: 17px; color: #f26d6d; }
+.instrument-workbench__columns { display: grid; grid-template-columns: repeat(2, minmax(260px, 1fr)); }
+.instrument-workbench__columns > section { min-width: 0; padding: 12px 14px; border-right: 1px solid var(--iw-rule); border-bottom: 1px solid var(--iw-rule); }
+.instrument-workbench__columns > section:nth-child(2n) { border-right: 0; }
+.instrument-workbench__columns h3 { margin-bottom: 8px; font-size: 13px; }
+.instrument-workbench__section-heading { justify-content: space-between; }
+.instrument-workbench__fields { align-items: start; flex-wrap: wrap; }
+.instrument-workbench__fields label { display: grid; gap: 4px; color: var(--iw-muted); }
+.instrument-workbench fieldset { display: flex; align-items: end; flex-wrap: wrap; gap: 8px; margin: 10px 0 0; padding: 8px; border: 1px solid var(--iw-rule); }
+.instrument-workbench fieldset legend { padding: 0 4px; color: var(--iw-muted); }
+.instrument-workbench fieldset label { display: grid; gap: 4px; color: var(--iw-muted); }
+.instrument-workbench input[type="checkbox"] { min-height: 0; accent-color: var(--iw-accent); }
+.instrument-workbench__trace-list,
+.instrument-workbench__capture-list { display: grid; gap: 4px; margin: 0; padding: 0; list-style: none; }
+.instrument-workbench__trace-list li { display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; align-items: center; gap: 7px; padding: 5px 6px; border: 1px solid var(--iw-rule); }
+.instrument-workbench__trace-list li.selected { border-color: var(--iw-accent); }
+.instrument-workbench__trace-list [data-trace-action="select"] { overflow: hidden; text-align: left; text-overflow: ellipsis; white-space: nowrap; background: transparent; border: 0; }
+.instrument-workbench__trace-list span { color: var(--iw-muted); font: 10px/1.2 "IBM Plex Mono", ui-monospace, monospace; }
+.instrument-workbench__trace-list .instrument-workbench__trace-feedback { grid-column: 2 / -1; color: #f1b36d; white-space: normal; }
+.instrument-workbench__inline-form { flex-wrap: wrap; }
+.instrument-workbench__inline-form input { flex: 1 1 130px; }
+.instrument-workbench table { width: 100%; margin-top: 8px; border-collapse: collapse; font: 11px/1.35 "IBM Plex Mono", ui-monospace, monospace; }
+.instrument-workbench caption { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
+.instrument-workbench th,
+.instrument-workbench td { padding: 5px 6px; text-align: left; border-bottom: 1px solid var(--iw-rule); }
+.instrument-workbench td:nth-child(3) { text-align: right; }
+.instrument-workbench__measurement-parameters { color: var(--iw-muted); overflow-wrap: anywhere; }
+.instrument-workbench [data-testid="measurement-parameter-diagnostic"] { min-height: 17px; margin-top: 6px; color: #f26d6d; }
+.instrument-workbench [data-testid="trigger-config-diagnostic"] { min-height: 17px; color: #f26d6d; }
+.instrument-workbench__capture-list { margin-top: 8px; color: var(--iw-muted); font-family: "IBM Plex Mono", ui-monospace, monospace; }
+.instrument-workbench__capture-list li { padding: 5px 0; border-bottom: 1px solid var(--iw-rule); }
+
+@media (max-width: 760px) {
+  .instrument-workbench__columns { grid-template-columns: minmax(0, 1fr); }
+  .instrument-workbench__columns > section { border-right: 0; }
+  .instrument-workbench__header { align-items: start; }
+  .instrument-workbench__header-actions { flex-wrap: wrap; justify-content: end; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .instrument-workbench *,
+  .instrument-workbench *::before,
+  .instrument-workbench *::after { scroll-behavior: auto !important; transition: none !important; animation: none !important; }
+}

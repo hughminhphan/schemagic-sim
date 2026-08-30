@@ -8,7 +8,7 @@
   display: grid;
   width: 100%;
   height: 100%;
-  grid-template-rows: auto minmax(0, 1fr) auto;
+  grid-template-rows: auto minmax(0, 1fr) auto auto auto auto;
   min-width: 0;
   min-height: 0;
   overflow: hidden;
@@ -34,6 +34,7 @@
 }
 .oc-waveform-viewer__readout { border-top: 1px solid var(--oc-rule); border-bottom: 0; flex-wrap: nowrap; overflow-x: auto; }
 .oc-waveform-viewer__legend { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 12px; min-width: 0; }
+.oc-waveform-viewer__cursor-controls { display: flex; align-items: center; gap: 4px; margin-left: auto; }
 .oc-waveform-viewer__trace {
   display: inline-flex;
   align-items: center;
@@ -61,10 +62,42 @@
   cursor: pointer;
 }
 .oc-waveform-viewer__action + .oc-waveform-viewer__action { margin-left: -8px; }
+.oc-waveform-viewer__cursor-controls .oc-waveform-viewer__action { margin-left: 0; }
 .oc-waveform-viewer__canvas-wrap { position: relative; min-width: 0; min-height: 0; overflow: hidden; outline: none; }
+.oc-waveform-viewer__canvas-wrap:focus-visible { box-shadow: inset 0 0 0 2px #5fb0e8; }
 .oc-waveform-viewer__canvas { display: block; width: 100%; height: 100%; touch-action: none; cursor: crosshair; }
 .oc-waveform-viewer__measure { white-space: pre; font-family: "IBM Plex Mono", ui-monospace, monospace; font-variant-numeric: tabular-nums; }
 .oc-waveform-viewer__hint { margin-left: auto; color: var(--oc-muted); }
+.oc-waveform-viewer__trigger-status {
+  min-height: 24px;
+  padding: 5px 8px;
+  color: #e8a244;
+  border-top: 1px solid var(--oc-rule);
+  font: 500 11px/1.3 "IBM Plex Mono", ui-monospace, monospace;
+}
+.oc-waveform-viewer__trigger-status[data-trigger-state="off"] { display: none; }
+.oc-waveform-viewer__table-panel { max-height: 160px; overflow: auto; border-top: 1px solid var(--oc-rule); }
+.oc-waveform-viewer__result-table { width: 100%; border-collapse: collapse; color: var(--oc-ink); font: 11px/1.35 "IBM Plex Mono", ui-monospace, monospace; }
+.oc-waveform-viewer__result-table th,
+.oc-waveform-viewer__result-table td { padding: 4px 8px; text-align: right; border-bottom: 1px solid var(--oc-rule); white-space: nowrap; }
+.oc-waveform-viewer__result-table th:first-child,
+.oc-waveform-viewer__result-table td:first-child { text-align: left; }
+.oc-waveform-viewer__result-table th { position: sticky; top: 0; color: var(--oc-muted); background: var(--oc-surface); }
+.oc-waveform-viewer__sr-status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+@media (max-width: 900px) {
+  .oc-waveform-viewer__toolbar { flex-wrap: wrap; }
+  .oc-waveform-viewer__cursor-controls { order: 3; width: 100%; margin-left: 0; overflow-x: auto; }
+}
 @media (prefers-reduced-motion: reduce) {
   .oc-waveform-viewer *, .oc-waveform-viewer *::before, .oc-waveform-viewer *::after { scroll-behavior: auto !important; transition: none !important; animation: none !important; }
 }

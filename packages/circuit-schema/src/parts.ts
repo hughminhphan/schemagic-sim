@@ -38,8 +38,31 @@ export function parseEngineering(value: number | string | undefined, fallback = 
   if (typeof value === "number") return value;
   if (!value?.trim()) return fallback;
   const text = value.trim().replace(/µ/g, "u");
-  const match = text.match(/^([+-]?(?:\d+(?:\.\d*)?|\.\d+))\s*([pnumkKMG]?)(?:[a-zA-ZΩ]*)$/);
+  const match = text.match(/^([+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?)\s*(meg|[pnumkKMG]?)(?:[a-zA-ZΩ]*)$/i);
   if (!match) return Number(text);
-  const factor: Record<string, number> = { p:1e-12,n:1e-9,u:1e-6,m:1e-3,"":1,k:1e3,K:1e3,M:1e6,G:1e9 };
-  return Number(match[1]) * (factor[match[2] ?? ""] ?? 1);
+  const suffix = match[2] ?? "";
+  const factor: Record<string, number> = { p:1e-12,n:1e-9,u:1e-6,m:1e-3,"":1,k:1e3,meg:1e6,g:1e9 };
+  const normalizedSuffix = suffix === "M" ? "meg" : suffix.toLowerCase();
+  return Number(match[1]) * (factor[normalizedSuffix] ?? 1);
+}
+
+export function finiteEngineering(value: number | string | undefined, fallback: number | string, label = "Engineering value"): number {
+  const fallbackNumber = typeof fallback === "number" ? fallback : parseEngineering(fallback, Number.NaN);
+  const parsed = parseEngineering(value, fallbackNumber);
+  if (!Number.isFinite(parsed)) throw new Error(`${label} must be a finite engineering value`);
+  return Object.is(parsed, -0) ? 0 : parsed;
+}
+
+export function spiceNumber(value: number | string | undefined, fallback: number | string, label = "Engineering value"): string {
+  const candidate = value === undefined || (typeof value === "string" && !value.trim()) ? fallback : value;
+  const parsed = finiteEngineering(candidate, fallback, label);
+  if (typeof candidate === "string") {
+    const match = candidate.trim().replace(/µ/g, "u").match(/^([+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?)\s*(meg|[pnumkKMG]?)(?:[a-zA-ZΩ]*)$/i);
+    if (match) {
+      const coefficient = Number(match[1]).toString();
+      const suffix = match[2] === "M" ? "meg" : (match[2] ?? "").toLowerCase();
+      return `${coefficient}${suffix}`;
+    }
+  }
+  return Number(parsed.toPrecision(12)).toString();
 }

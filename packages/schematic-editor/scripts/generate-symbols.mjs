@@ -27,6 +27,7 @@ const SYMBOLS = [
   ["pmos", "Simulation_SPICE.kicad_symdir/PMOS.kicad_sym", "PMOS"],
   ["opamp_ideal", "Simulation_SPICE.kicad_symdir/OPAMP.kicad_sym", "OPAMP"],
 ];
+const POT_WIPER_TRAVEL = [-2, 2];
 
 function fail(message) {
   throw new Error(`[generate-symbols] ${message}`);
@@ -192,6 +193,14 @@ function parsePin(node, subsymbolName) {
     name: String(name[1]),
     number: String(number[1]),
   };
+}
+
+function propertyPoint(definition, propertyName, type) {
+  const matches = children(definition, "property").filter((node) => node[1] === propertyName);
+  if (matches.length !== 1) fail(`${type}: expected exactly one ${propertyName} property, found ${matches.length}`);
+  const at = child(matches[0], "at");
+  if (!at) fail(`${type}: ${propertyName} property is missing its anchor`);
+  return [numberAt(at, 1, `${type} ${propertyName} x`), numberAt(at, 2, `${type} ${propertyName} y`)];
 }
 
 function selectPins(type, pins) {
@@ -362,9 +371,31 @@ function arcGeometry(start, mid, end, context) {
   return { center, radius, startAngle, delta, sweep, largeArc: delta > Math.PI ? 1 : 0 };
 }
 
+function arcBounds(center, radiusX, radiusY, geometry) {
+  const points = [];
+  const progress = (angle) => geometry.sweep
+    ? normalizeAngle(angle - geometry.startAngle)
+    : normalizeAngle(geometry.startAngle - angle);
+  for (const angle of [geometry.startAngle, geometry.startAngle + (geometry.sweep ? geometry.delta : -geometry.delta), 0, Math.PI / 2, Math.PI, Math.PI * 3 / 2]) {
+    if (progress(angle) <= geometry.delta + 1e-8) {
+      points.push([center[0] + radiusX * Math.cos(angle), center[1] + radiusY * Math.sin(angle)]);
+    }
+  }
+  return points;
+}
+
+function fmtPrecision(value, precision) {
+  const factor = 10 ** precision;
+  const rounded = Math.round((value + Number.EPSILON) * factor) / factor;
+  return String(Object.is(rounded, -0) || Math.abs(rounded) < 0.5 / factor ? 0 : rounded);
+}
+
 function fmt(value) {
-  const rounded = Math.round((value + Number.EPSILON) * 10000) / 10000;
-  return String(Object.is(rounded, -0) || Math.abs(rounded) < 0.00005 ? 0 : rounded);
+  return fmtPrecision(value, 4);
+}
+
+function fmtArc(value) {
+  return fmtPrecision(value, 6);
 }
 
 function classAttribute(classes) {
@@ -404,9 +435,12 @@ function renderPrimitive(graphic, transform, type) {
     if (!centerNode || !radiusNode) fail(`${context}: circle missing center/radius`);
     const center = applyTransform([numberAt(centerNode, 1, `${context} center x`), numberAt(centerNode, 2, `${context} center y`)], transform);
     const sourceRadius = numberAt(radiusNode, 1, `${context} radius`);
-    const radius = sourceRadius * Math.sqrt(Math.abs(transform.a * transform.c));
-    bounds.push([center[0] - radius, center[1] - radius], [center[0] + radius, center[1] + radius]);
-    markup = `<circle${classAttribute(classes)} cx="${fmt(center[0])}" cy="${fmt(center[1])}" r="${fmt(radius)}"/>`;
+    const radiusX = sourceRadius * Math.abs(transform.a);
+    const radiusY = sourceRadius * Math.abs(transform.c);
+    bounds.push([center[0] - radiusX, center[1] - radiusY], [center[0] + radiusX, center[1] + radiusY]);
+    markup = Math.abs(radiusX - radiusY) <= 1e-8
+      ? `<circle${classAttribute(classes)} cx="${fmt(center[0])}" cy="${fmt(center[1])}" r="${fmt(radiusX)}"/>`
+      : `<ellipse${classAttribute(classes)} cx="${fmt(center[0])}" cy="${fmt(center[1])}" rx="${fmt(radiusX)}" ry="${fmt(radiusY)}"/>`;
   } else if (tag === "arc") {
     const startNode = child(node, "start");
     const midNode = child(node, "mid");
@@ -414,18 +448,19 @@ function renderPrimitive(graphic, transform, type) {
     if (!startNode || !midNode || !endNode) fail(`${context}: arc missing start/mid/end`);
     const sourcePoints = [startNode, midNode, endNode].map((point, index) => [numberAt(point, 1, `${context} point ${index} x`), numberAt(point, 2, `${context} point ${index} y`)]);
     const [start, mid, end] = sourcePoints.map((point) => applyTransform(point, transform));
-    const geometry = arcGeometry(start, mid, end, context);
-    const anisotropy = Math.abs(Math.abs(transform.a) - Math.abs(transform.c)) / Math.abs(transform.a);
-    const radius = anisotropy > 0.02
-      ? arcGeometry(...sourcePoints, context).radius * Math.sqrt(Math.abs(transform.a * transform.c))
-      : geometry.radius;
-    markup = `<path${classAttribute(classes)} d="M${fmt(start[0])} ${fmt(start[1])} A${fmt(radius)} ${fmt(radius)} 0 ${geometry.largeArc} ${geometry.sweep} ${fmt(end[0])} ${fmt(end[1])}"/>`;
-    const signedDelta = geometry.sweep ? geometry.delta : -geometry.delta;
-    for (let step = 0; step <= 64; step += 1) {
-      const angle = geometry.startAngle + signedDelta * step / 64;
-      bounds.push([geometry.center[0] + radius * Math.cos(angle), geometry.center[1] + radius * Math.sin(angle)]);
-    }
-    bounds.push(start, mid, end);
+    const sourceGeometry = arcGeometry(sourcePoints[0], sourcePoints[1], sourcePoints[2], context);
+    const center = applyTransform(sourceGeometry.center, transform);
+    const radiusX = sourceGeometry.radius * Math.abs(transform.a);
+    const radiusY = sourceGeometry.radius * Math.abs(transform.c);
+    const normalizedPoints = [start, mid, end].map((point) => [
+      (point[0] - center[0]) / radiusX,
+      (point[1] - center[1]) / radiusY,
+    ]);
+    const geometry = arcGeometry(normalizedPoints[0], normalizedPoints[1], normalizedPoints[2], context);
+    // Arc coordinates need two extra decimals so SVG's endpoint-to-center conversion
+    // preserves slightly off-semicircle KiCad arcs instead of inflating their bounds.
+    markup = `<path${classAttribute(classes)} d="M${fmtArc(start[0])} ${fmtArc(start[1])} A${fmtArc(radiusX)} ${fmtArc(radiusY)} 0 ${geometry.largeArc} ${geometry.sweep} ${fmtArc(end[0])} ${fmtArc(end[1])}"/>`;
+    bounds.push(...arcBounds(center, radiusX, radiusY, geometry), start, mid, end);
   } else {
     fail(`${context}: unsupported primitive ${tag}`);
   }
@@ -443,12 +478,14 @@ function isSwitchLeverGraphic(graphic) {
 }
 
 function renderPinLead(pin, transform) {
-  const start = applyTransform(pin.at, transform);
-  const end = applyTransform(pinLeadEndpoint(pin), transform);
+  const outer = applyTransform(pin.at, transform);
+  const inner = applyTransform(pinLeadEndpoint(pin), transform);
   return {
-    markup: `<path class="pin-lead" d="M${fmt(start[0])} ${fmt(start[1])} L${fmt(end[0])} ${fmt(end[1])}"/>`,
-    bounds: [start, end],
+    markup: `<path class="pin-lead" d="M${fmt(inner[0])} ${fmt(inner[1])} L${fmt(outer[0])} ${fmt(outer[1])}"/>`,
+    bounds: [inner, outer],
     background: false,
+    inner,
+    outer,
   };
 }
 
@@ -486,38 +523,63 @@ function generateSymbol(type, sourcePath, symbolName, targets, definitions) {
   const selectedPins = selectPins(type, collected.pins);
   if (selectedPins.length !== targets.length) fail(`${type}: selected ${selectedPins.length} pins but PARTS defines ${targets.length}`);
   const transform = solveTransform(type, selectedPins, targets);
+  const refdesAnchor = applyTransform(propertyPoint(entry.definition, "Reference", type), transform);
+  const valueAnchor = applyTransform(propertyPoint(entry.definition, "Value", type), transform);
   const markupElements = [];
   const wiperElements = [];
   const leverElements = [];
   const allBounds = [];
+  const bodyBounds = [];
+  let wiperAnchor;
 
   for (const graphic of collected.graphics) {
     const rendered = renderPrimitive(graphic, transform, type);
-    allBounds.push(...rendered.bounds);
-    if (type === "potentiometer" && isPotentiometerWiperGraphic(graphic)) wiperElements.push(rendered);
-    else if (type === "switch_spst" && isSwitchLeverGraphic(graphic)) leverElements.push(rendered);
-    else markupElements.push(rendered);
+    if (type === "potentiometer" && isPotentiometerWiperGraphic(graphic)) {
+      wiperElements.push(rendered);
+      for (const [x, y] of rendered.bounds) {
+        const travelBounds = [[x, y + POT_WIPER_TRAVEL[0]], [x, y + POT_WIPER_TRAVEL[1]]];
+        allBounds.push(...travelBounds);
+        bodyBounds.push(...travelBounds);
+      }
+    } else {
+      allBounds.push(...rendered.bounds);
+      bodyBounds.push(...rendered.bounds);
+      if (type === "switch_spst" && isSwitchLeverGraphic(graphic)) leverElements.push(rendered);
+      else markupElements.push(rendered);
+    }
   }
   if (type === "opamp_ideal") {
     const glyphs = renderOpampGlyphs(transform);
     markupElements.push(...glyphs);
     allBounds.push(...glyphs.flatMap((glyph) => glyph.bounds));
+    bodyBounds.push(...glyphs.flatMap((glyph) => glyph.bounds));
   }
   for (const { pin, targetIndex } of selectedPins) {
     const rendered = renderPinLead(pin, transform);
     allBounds.push(...rendered.bounds);
-    if (type === "potentiometer" && targetIndex === 1) wiperElements.push(rendered);
-    else markupElements.push(rendered);
+    markupElements.push(rendered);
+    if (type === "potentiometer" && targetIndex === 1) wiperAnchor = rendered.inner;
   }
 
   if (markupElements.length === 0) fail(`${type}: generated empty markup`);
   if (type === "potentiometer" && wiperElements.length === 0) fail("potentiometer: failed to isolate wiper artwork");
+  if (type === "potentiometer" && (!wiperAnchor || !wiperElements.some((element) => element.bounds.some((point) => Math.hypot(point[0] - wiperAnchor[0], point[1] - wiperAnchor[1]) <= 1e-8)))) {
+    fail("potentiometer: fixed pin lead and movable wiper do not share an anchor");
+  }
   if (type === "switch_spst" && leverElements.length !== 1) fail(`switch_spst: expected one movable lever, found ${leverElements.length}`);
+  if (bodyBounds.length === 0) fail(`${type}: generated empty body bounds`);
   const xs = allBounds.map((point) => point[0]);
   const ys = allBounds.map((point) => point[1]);
+  const bodyXs = bodyBounds.map((point) => point[0]);
+  const bodyYs = bodyBounds.map((point) => point[1]);
   const bbox = [Math.min(...xs), Math.min(...ys), Math.max(...xs), Math.max(...ys)];
-  const result = { type, markup: sortedMarkup(markupElements), bbox, pins: targets.map((point) => [...point]) };
-  if (type === "potentiometer") result.wiper = sortedMarkup(wiperElements);
+  const bodyBbox = [Math.min(...bodyXs), Math.min(...bodyYs), Math.max(...bodyXs), Math.max(...bodyYs)];
+  const result = { type, markup: sortedMarkup(markupElements), refdesAnchor, valueAnchor, bodyBbox, bbox, pins: targets.map((point) => [...point]) };
+  if (type === "potentiometer") {
+    result.wiper = sortedMarkup(wiperElements);
+    result.wiperAnchor = wiperAnchor;
+    result.wiperTravel = [...POT_WIPER_TRAVEL];
+  }
   if (type === "switch_spst") {
     result.lever = sortedMarkup(leverElements);
     result.leverPivot = applyTransform([-2.032, 0], transform);
@@ -534,10 +596,15 @@ function formatSymbol(result) {
     `  ${JSON.stringify(result.type)}: {`,
     `    type: ${JSON.stringify(result.type)},`,
     `    markup: ${JSON.stringify(result.markup)},`,
+    `    refdesAnchor: ${formatPoint(result.refdesAnchor)},`,
+    `    valueAnchor: ${formatPoint(result.valueAnchor)},`,
   ];
   if (result.wiper !== undefined) lines.push(`    wiper: ${JSON.stringify(result.wiper)},`);
+  if (result.wiperAnchor !== undefined) lines.push(`    wiperAnchor: ${formatPoint(result.wiperAnchor)},`);
+  if (result.wiperTravel !== undefined) lines.push(`    wiperTravel: [${result.wiperTravel.map(fmt).join(", ")}],`);
   if (result.lever !== undefined) lines.push(`    lever: ${JSON.stringify(result.lever)},`);
   if (result.leverPivot !== undefined) lines.push(`    leverPivot: ${formatPoint(result.leverPivot)},`);
+  lines.push(`    bodyBbox: [${result.bodyBbox.map(fmt).join(", ")}],`);
   lines.push(`    bbox: [${result.bbox.map(fmt).join(", ")}],`);
   lines.push(`    pins: [${result.pins.map(formatPoint).join(", ")}],`);
   lines.push("  },");
@@ -560,11 +627,19 @@ export interface EditorSymbol {
   type: ComponentType;
   /** SVG inner markup, editor grid units, y-down, origin = component anchor. Classes only: sym-bg, sym-solid, sym-bold, pin-lead. */
   markup: string;
+  /** Canonical transformed KiCad property anchors. Runtime layout follows these anchors with normalized screen spacing; historical screen-oriented label offsets are ignored. */
+  refdesAnchor: Point;
+  valueAnchor: Point;
   /** Present only for potentiometer / switch_spst. */
   wiper?: string;
+  /** Fixed zero-offset junction and allowed y-translation for the movable potentiometer artwork. */
+  wiperAnchor?: Point;
+  wiperTravel?: [number, number];
   lever?: string;
   leverPivot?: Point;
-  /** Tight bounding box incl. pin leads: [minX, minY, maxX, maxY], grid units. */
+  /** Tight graphics-only bounding box excluding electrical pin leads. */
+  bodyBbox: [number, number, number, number];
+  /** Tight bounding box incl. pin leads and full declared motion: [minX, minY, maxX, maxY], grid units. */
   bbox: [number, number, number, number];
   /** Connection points; MUST deep-equal PARTS pins for this type, same order. */
   pins: Point[];

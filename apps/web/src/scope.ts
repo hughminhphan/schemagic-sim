@@ -1,5 +1,14 @@
-import { formatValue, mount, type TraceDefinition, type WaveformViewer } from "@opencircuit/waveform-viewer";
+import {
+  formatValue,
+  mount,
+  type CursorPosition,
+  type CursorSnapshot,
+  type TraceDefinition,
+  type ViewerState,
+  type WaveformViewer,
+} from "@opencircuit/waveform-viewer";
 import type { AnalysisMode, DCSweepSegment, SimulationResult } from "@opencircuit/sim-engine";
+import type { WorkbenchPlotDataset } from "./measurement-workbench";
 
 export const TRACE_COLORS = ["#3FD983", "#E8A244", "#5FB0E8", "#F1EEE8", "#3FD983", "#E8A244"] as const;
 export const TRACE_DASHES = [[], [], [], [], [6, 3], [2, 3]] as const;
@@ -7,6 +16,7 @@ const FAMILY_DASHES = [[], [6, 3], [2, 3], [8, 3, 2, 3], [1, 3], [10, 3]] as con
 const LOCUS_ANNOTATION_ID = "pot-sweep";
 
 export interface ScopeProbe {
+  id?: string;
   node: string;
   label: string;
   color: string;
@@ -24,6 +34,7 @@ function dcFamilySource(probeIndex: number, segmentIndex: number): string {
 }
 
 export class ScopePlot {
+  private readonly controls: HTMLDivElement;
   private readonly viewerHost: HTMLDivElement;
   private readonly autoButton: HTMLButtonElement;
   private readonly manualButton: HTMLButtonElement;
@@ -33,11 +44,14 @@ export class ScopePlot {
   private probes: ScopeProbe[] = [];
   private mode: AnalysisMode = "op";
   private result: SimulationResult | undefined;
+  private workbenchDataset: WorkbenchPlotDataset | undefined;
+  private releaseWorkbenchListeners: (() => void) | undefined;
   private locus: [number, number][] = [];
   private locusActive = false;
 
   constructor(host: HTMLElement) {
     const controls = document.createElement("div");
+    this.controls = controls;
     controls.className = "scope-scale-controls";
     this.autoButton = document.createElement("button");
     this.autoButton.type = "button";
@@ -72,6 +86,15 @@ export class ScopePlot {
       this.renderLocus();
     });
     this.remount();
+  }
+
+  setEmpty(empty: boolean): void {
+    this.controls.hidden = empty;
+    this.viewerHost.hidden = empty;
+    if (empty) {
+      this.noiseTotals.hidden = true;
+      this.keepLocusButton.hidden = true;
+    }
   }
 
   beginLocus(): void {
@@ -115,8 +138,30 @@ export class ScopePlot {
     if (modeChanged) this.clearLocus();
     this.mode = mode;
     this.result = result;
-    if (modeChanged || tracesBefore !== this.viewerSignature()) this.remount();
+    if (!this.workbenchDataset && (modeChanged || tracesBefore !== this.viewerSignature())) this.remount();
     this.renderData();
+  }
+
+  setWorkbenchDataset(dataset: WorkbenchPlotDataset | undefined): void {
+    const previousKind = this.workbenchDataset?.kind;
+    const hadDataset = Boolean(this.workbenchDataset);
+    this.workbenchDataset = dataset;
+    const remount = !this.viewer || hadDataset !== Boolean(dataset) || previousKind !== dataset?.kind;
+    if (remount) this.remount();
+    else this.bindWorkbenchListeners();
+    this.renderData();
+  }
+
+  setWorkbenchData(dataset: WorkbenchPlotDataset | undefined): void {
+    this.setWorkbenchDataset(dataset);
+  }
+
+  getViewerState(): ViewerState | undefined {
+    return this.viewer?.getState();
+  }
+
+  restoreViewerState(state: ViewerState): void {
+    this.viewer?.restoreState(state);
   }
 
   downloadCSV(filename: string): void {
@@ -128,7 +173,15 @@ export class ScopePlot {
   }
 
   private viewerSignature(): string {
-    return JSON.stringify({ traces: this.traceDefinitions(), xUnit: this.result?.sweep?.primary.unit, noise: this.result?.noise });
+    return JSON.stringify({ traces: this.traceDefinitions(), xUnit: this.result?.sweep?.primary.unit, noise: this.result?.noise, workbench: this.workbenchSignature() });
+  }
+
+  private workbenchSignature(): string {
+    const dataset = this.workbenchDataset;
+    return dataset ? JSON.stringify({
+      kind: dataset.kind,
+      traces: dataset.traces.map((trace) => [trace.id, trace.source, trace.xSource, trace.unit, trace.axisGroup, trace.valueKind]),
+    }) : "";
   }
 
   private dcSegments(): DCSweepSegment[] {
@@ -140,6 +193,7 @@ export class ScopePlot {
       const noise = this.result.noise;
       return [
         {
+          id: `noise:${noise.outputVector}`,
           source: noise.outputVector,
           label: `Output noise at V(${noise.output.positiveNode})`,
           unit: noise.output.densityUnit,
@@ -147,6 +201,7 @@ export class ScopePlot {
           color: TRACE_COLORS[0],
         },
         {
+          id: `noise:${noise.inputVector}`,
           source: noise.inputVector,
           label: `Input-referred to ${noise.input.name}`,
           unit: noise.input.densityUnit,
@@ -158,6 +213,7 @@ export class ScopePlot {
     if (this.mode === "dc-sweep" && this.result?.sweep) {
       const secondary = this.result.sweep.secondary;
       return this.probes.flatMap((probe, probeIndex) => this.dcSegments().map((segment, segmentIndex) => ({
+        id: `dc:${probe.id ?? probe.node}:${segmentIndex}`,
         source: dcFamilySource(probeIndex, segmentIndex),
         label: secondary && segment.secondaryValue !== undefined
           ? `${probe.label} · ${secondary.name}=${formatValue(segment.secondaryValue, { unit: secondary.unit, reserveSign: false })}`
@@ -168,7 +224,8 @@ export class ScopePlot {
         dash: FAMILY_DASHES[segmentIndex % FAMILY_DASHES.length] ?? [],
       })));
     }
-    return this.probes.map((probe) => ({
+    return this.probes.map((probe, index) => ({
+      id: probe.id ?? `probe:${probe.node}:${index}`,
       source: `v(${probe.node})`.toLowerCase(),
       label: probe.label,
       unit: "V",
@@ -178,20 +235,30 @@ export class ScopePlot {
   }
 
   private remount(): void {
+    this.releaseWorkbenchListeners?.();
+    this.releaseWorkbenchListeners = undefined;
     this.viewer?.destroy();
+    const dataset = this.workbenchDataset;
     this.viewer = mount(this.viewerHost, {
-      traces: this.traceDefinitions(),
+      traces: dataset ? [...dataset.traces] : this.traceDefinitions(),
       colors: [...TRACE_COLORS],
-      xScale: this.mode === "ac" || this.mode === "noise" ? "log" : "linear",
-      ...(this.mode === "dc-sweep" ? { xVector: "sweep", xUnit: this.result?.sweep?.primary.unit ?? "" } : {}),
-      ...(this.mode === "noise" ? { xVector: "frequency", xUnit: "Hz" } : {}),
+      xScale: dataset ? (dataset.kind === "ac" || dataset.kind === "noise" ? "log" : "linear") : this.mode === "ac" || this.mode === "noise" ? "log" : "linear",
+      ...(dataset ? { layout: dataset.layout, yScales: dataset.yScales } : {}),
+      ...(dataset?.trigger ? { trigger: dataset.trigger } : {}),
+      ...(!dataset && this.mode === "dc-sweep" ? { xVector: "sweep", xUnit: this.result?.sweep?.primary.unit ?? "" } : {}),
+      ...(!dataset && this.mode === "noise" ? { xVector: "frequency", xUnit: "Hz" } : {}),
       showControls: true,
       className: "schemagic-waveform-viewer",
     });
+    this.bindWorkbenchListeners();
     this.renderLocus();
   }
 
   private renderData(): void {
+    if (this.workbenchDataset) {
+      this.renderWorkbenchDataset(this.workbenchDataset);
+      return;
+    }
     this.renderNoiseTotals();
     if (!this.viewer || !this.result || (this.mode !== "tran" && this.mode !== "ac" && this.mode !== "noise" && this.mode !== "dc-sweep")) return;
     const vectors = new Map<string, Float64Array>();
@@ -232,6 +299,42 @@ export class ScopePlot {
       if (values) vectors.set(trace.source, values);
     }
     this.viewer.setData({ kind: this.mode, vectors });
+  }
+
+  private renderWorkbenchDataset(dataset: WorkbenchPlotDataset): void {
+    if (!this.viewer) return;
+    this.noiseTotals.hidden = true;
+    this.noiseTotals.replaceChildren();
+    this.viewer.setTraces(dataset.traces);
+    this.viewer.setLayout(dataset.layout);
+    for (const [axisGroup, scale] of Object.entries(dataset.yScales)) this.viewer.setYScale(axisGroup, scale);
+    this.viewer.setTriggerResult(dataset.trigger);
+    this.viewer.setData({ kind: dataset.kind, vectors: dataset.vectors });
+    if (dataset.cursors) {
+      const state = this.viewer.getState();
+      this.viewer.restoreState({ ...state, cursors: structuredClone(dataset.cursors) });
+    }
+  }
+
+  private bindWorkbenchListeners(): void {
+    this.releaseWorkbenchListeners?.();
+    this.releaseWorkbenchListeners = undefined;
+    const viewer = this.viewer;
+    const dataset = this.workbenchDataset;
+    if (!viewer || !dataset) return;
+    const releases: Array<() => void> = [];
+    if (dataset.onCursorsChange) {
+      const position = (snapshot: CursorSnapshot | null): CursorPosition | null => snapshot ? {
+        x: snapshot.x,
+        ...(snapshot.y === undefined ? {} : { y: snapshot.y }),
+        ...(snapshot.traceId === undefined ? {} : { traceId: snapshot.traceId }),
+      } : null;
+      releases.push(viewer.onCursorChange((state) => dataset.onCursorsChange?.({ a: position(state.a), b: position(state.b) })));
+    }
+    if (dataset.onTraceVisibilityChange) {
+      releases.push(viewer.onTraceVisibilityChange((traceId, visible) => dataset.onTraceVisibilityChange?.(traceId, visible)));
+    }
+    this.releaseWorkbenchListeners = () => { for (const release of releases) release(); };
   }
 
   private renderNoiseTotals(): void {

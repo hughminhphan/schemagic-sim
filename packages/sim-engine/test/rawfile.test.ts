@@ -1,7 +1,15 @@
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
-import { parseBinaryRawfile, parseDCSweepRawfile, parseNoiseRawfiles } from "../src/rawfile";
+import {
+  complexImaginary,
+  complexMagnitude,
+  complexPhaseDegrees,
+  complexReal,
+  parseBinaryRawfile,
+  parseDCSweepRawfile,
+  parseNoiseRawfiles,
+} from "../src/rawfile";
 import type { DCSweepRunSpec, NoiseRunSpec } from "../src/types";
 
 const fixturePath = fileURLToPath(new URL("./fixtures/simple-real.raw", import.meta.url));
@@ -28,11 +36,11 @@ function dcRawfile(rows: number[][]): Uint8Array {
   return output;
 }
 
-function realRawfile(plotname: string, variables: string[], rows: number[][]): Uint8Array {
+function realRawfile(plotname: string, variables: string[], rows: number[][], flags = "real"): Uint8Array {
   const header = new TextEncoder().encode([
     "Title: noise fixture",
     `Plotname: ${plotname}`,
-    "Flags: real",
+    `Flags: ${flags}`,
     `No. Variables: ${variables.length}`,
     `No. Points: ${rows.length}`,
     "Variables:",
@@ -46,6 +54,29 @@ function realRawfile(plotname: string, variables: string[], rows: number[][]): U
   const output = new Uint8Array(header.length + data.length);
   output.set(header);
   output.set(data, header.length);
+  return output;
+}
+
+function complexRawfile(variables: string[], rows: Array<Array<readonly [number, number]>>): Uint8Array {
+  const header = new TextEncoder().encode([
+    "Title: complex fixture",
+    "Plotname: AC Analysis",
+    "Flags: complex",
+    `No. Variables: ${variables.length}`,
+    `No. Points: ${rows.length}`,
+    "Variables:",
+    ...variables.map((variable, index) => `\t${index}\t${variable}`),
+    "Binary:\n",
+  ].join("\n"));
+  const data = new Uint8Array(rows.length * variables.length * 16);
+  const view = new DataView(data.buffer);
+  let offset = 0;
+  for (const row of rows) for (const [real, imaginary] of row) {
+    view.setFloat64(offset, real, true); offset += 8;
+    view.setFloat64(offset, imaginary, true); offset += 8;
+  }
+  const output = new Uint8Array(header.length + data.length);
+  output.set(header); output.set(data, header.length);
   return output;
 }
 
@@ -65,6 +96,29 @@ describe("parseBinaryRawfile", () => {
     const bytes = new Uint8Array(readFileSync(fixturePath));
     expect(() => parseBinaryRawfile(bytes.subarray(0, bytes.length - 8))).toThrow(/truncated/i);
     expect(() => parseBinaryRawfile(bytes, { maxSamples: 5 })).toThrow(/sample limit/i);
+  });
+
+  it("requires a valid flag set, exact payload, unique names and finite values", () => {
+    expect(() => parseBinaryRawfile(realRawfile("Transient", ["time\ttime"], [[0]], "real complex"))).toThrow(/flags/i);
+    expect(() => parseBinaryRawfile(realRawfile("Transient", ["time\ttime", "time\ttime"], [[0, 1]]))).toThrow(/unique/i);
+    expect(() => parseBinaryRawfile(realRawfile("Transient", ["time\ttime", "v(out)\tvoltage"], [[0, Number.NaN]]))).toThrow(/non-finite/i);
+    const exact = realRawfile("Transient", ["time\ttime"], [[0]]);
+    const trailing = new Uint8Array(exact.length + 1); trailing.set(exact); trailing[trailing.length - 1] = 7;
+    expect(() => parseBinaryRawfile(trailing)).toThrow(/trailing/i);
+  });
+
+  it("validates real and complex independent axes and exposes complex helpers", () => {
+    expect(() => parseBinaryRawfile(realRawfile("Transient", ["time\ttime", "v(out)\tvoltage"], [[0, 1], [0, 2]]))).toThrow(/strictly increasing/i);
+    const parsed = parseBinaryRawfile(complexRawfile(
+      ["frequency\tfrequency", "v(out)\tvoltage"],
+      [[[10, 0], [3, 4]], [[100, 0], [-1, 0]]],
+    ));
+    const values = new Float64Array(parsed.buffers[1]!);
+    expect([...complexReal(values)]).toEqual([3, -1]);
+    expect([...complexImaginary(values)]).toEqual([4, 0]);
+    expect([...complexMagnitude(values)]).toEqual([5, 1]);
+    expect([...complexPhaseDegrees(values)]).toEqual([Math.atan2(4, 3) * 180 / Math.PI, 180]);
+    expect(() => parseBinaryRawfile(complexRawfile(["frequency\tfrequency"], [[[10, 1]]]))).toThrow(/imaginary/i);
   });
 
   it("parses a one-source DC sweep with an explicit sweep axis", () => {
@@ -100,6 +154,20 @@ describe("parseBinaryRawfile", () => {
     expect(parsed.noise.output.total.meanSquare).toBeCloseTo(3.6e-15, 20);
     expect(parsed.noise.input).toMatchObject({ densityUnit: "V/√Hz", total: { rms: 1.2e-7, rmsUnit: "V", meanSquareUnit: "V²" } });
     expect(parsed.noise.input.total.meanSquare).toBeCloseTo(1.44e-14, 20);
+    expect(parsed.noise.output.negativeNode).toBe("0");
+    expect(() => parseNoiseRawfiles(density, integrated, spec, { maxRawfileBytes: density.length + integrated.length - 1 })).toThrow(/combined/i);
+  });
+
+  it("preserves genuine differential noise output metadata", () => {
+    const spec: NoiseRunSpec = {
+      output: { probeId: "pdiff", positiveNode: "n2", negativeNode: "n1" },
+      input: { componentId: "c1", name: "V1", unit: "V" },
+      frequency: { sweep: "dec", pointsPerDecade: 10, fstart: 10, fstop: 100 },
+      temperatureC: 27,
+    };
+    const density = realRawfile("Noise Spectral Density Curves", ["frequency\tfrequency", "inoise_spectrum\tvoltage-density", "onoise_spectrum\tvoltage-density"], [[10, 1e-9, 2e-9], [100, 1e-9, 2e-9]]);
+    const integrated = realRawfile("Integrated Noise", ["v(onoise_total)\tvoltage", "v(inoise_total)\tvoltage"], [[2e-8, 1e-8]]);
+    expect(parseNoiseRawfiles(density, integrated, spec).noise.output).toMatchObject({ positiveNode: "n2", negativeNode: "n1" });
   });
 
   it("parses a two-source DC sweep into stepped curve segments", () => {
@@ -118,5 +186,9 @@ describe("parseBinaryRawfile", () => {
       { startIndex: 3, length: 3, secondaryValue: 0.0005 },
       { startIndex: 6, length: 3, secondaryValue: 0.001 },
     ]);
+  });
+
+  it("rejects a DC result whose returned primary axis differs from the requested sweep", () => {
+    expect(() => parseDCSweepRawfile(dcRawfile([[0, 0], [1.1, 0.7], [2, 0.75]]), { primary })).toThrow(/axis mismatch/i);
   });
 });

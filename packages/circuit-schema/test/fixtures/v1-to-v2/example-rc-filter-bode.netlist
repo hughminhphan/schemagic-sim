@@ -1,8 +1,10 @@
 scheMAGIC Simulator document 3d86b9603f9572f8
 * document-hash 3d86b9603f9572f8
 V1 n1 0 SIN(0 1 1k) AC 1 $ component:c1
-R2 n1 n2 1k $ component:c2
-C3 n2 0 100n $ component:c3
-.save all v1#branch @r2[i] @c3[i]
+R2 n1 oc_ac_c2 1k $ component:c2
+VOCSc2 oc_ac_c2 n2 0 $ component:c2
+C3 n2 oc_ac_c3 100n $ component:c3
+VOCSc3 oc_ac_c3 0 0 $ component:c3
+.save all v1#branch vocsc2#branch vocsc3#branch
 .ac dec 40 10 1000000
 .end

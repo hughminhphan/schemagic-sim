@@ -1,8 +1,8 @@
-import type { CircuitDocument } from "@opencircuit/circuit-schema";
+import { pinVoltageProbe, type CircuitDocument } from "@opencircuit/circuit-schema";
 
 export const demoCircuit: CircuitDocument = {
   format: "opencircuit-circuit",
-  version: 2,
+  version: 3,
   meta: {
     title: "NPN LED bench",
     description: "A 2N3904 low-side LED driver controlled by a potentiometer.",
@@ -30,9 +30,7 @@ export const demoCircuit: CircuitDocument = {
     { id: "w8", points: [[58, 15], [58, 17]] },
     { id: "w9", points: [[58, 21], [52, 21], [52, 18], [46, 18]] },
   ],
-  probes: [
-    { id: "p1", kind: "voltage", target: { componentPin: ["c4", 0] }, color: "#2E86C8" },
-  ],
+  probes: [pinVoltageProbe("p1", "c4", 0, { color: "#2E86C8" })],
   sim: {
     mode: "live",
     tran: { tstop: 0.01, tstep: 0.00002, maxstep: 0.00005 },

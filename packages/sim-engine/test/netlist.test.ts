@@ -4,7 +4,7 @@ import type { CircuitDocument } from "../src/types";
 
 const document: CircuitDocument = {
   format: "opencircuit-circuit",
-  version: 2,
+  version: 3,
   meta: { title: "Determinism fixture" },
   components: [
     { id: "c1", type: "vsource", value: 5, pos: [0, 4], rot: 0, mirror: false },
@@ -39,6 +39,33 @@ describe("generateNetlist", () => {
     expect(generateNetlist(shuffled).netlist).toBe(generateNetlist(document).netlist);
   });
 
+  it("uses exact net labels before allocating anonymous node names", () => {
+    const labeled: CircuitDocument = {
+      format: "opencircuit-circuit",
+      version: 3,
+      meta: { title: "Labeled RC fixture" },
+      components: [
+        { id: "c1", type: "vsource", value: 5, pos: [0, 4], rot: 0, mirror: false },
+        { id: "c2", type: "resistor", value: "1k", pos: [4, 2], rot: 0, mirror: false },
+        { id: "c3", type: "ground", pos: [0, 6], rot: 0, mirror: false },
+        { id: "c4", type: "resistor", value: "10k", pos: [8, 4], rot: 90, mirror: false },
+      ],
+      wires: [
+        { id: "wIn", netLabel: "in", points: [[0, 2], [2, 2]] },
+        { id: "wOut", netLabel: "out", points: [[6, 2], [8, 2]] },
+        { id: "wGround", points: [[0, 6], [8, 6]] },
+      ],
+      probes: [],
+      sim: { mode: "op" },
+    };
+    const generated = generateNetlist(labeled);
+    expect(generated.wireNodes).toEqual({ wGround: "0", wIn: "in", wOut: "out" });
+    expect(generated.componentNodes).toMatchObject({ c1: ["in", "0"], c2: ["in", "out"], c4: ["out", "0"] });
+    expect(generated.netlist).toMatch(/^V1 in 0 DC 5/m);
+    expect(generated.netlist).toMatch(/^R2 in out 1k/m);
+    expect(generated.netlist).toMatch(/^R4 out 0 10k/m);
+  });
+
   it("generates a one-source linear DC sweep", () => {
     const swept: CircuitDocument = {
       ...structuredClone(document),
@@ -50,7 +77,15 @@ describe("generateNetlist", () => {
   it("generates noise analysis with an explicit output, input reference and temperature", () => {
     const noise: CircuitDocument = {
       ...structuredClone(document),
-      probes: [{ id: "p1", kind: "voltage", target: { wire: "w1" } }],
+      probes: [{
+        id: "p1",
+        expressionVersion: 1,
+        expression: {
+          kind: "voltage",
+          positive: { kind: "schematic-wire", wireId: "w1" },
+          negative: { kind: "runtime-node", name: "0" },
+        },
+      }],
       sim: {
         mode: "noise",
         noise: {

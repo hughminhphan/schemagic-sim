@@ -1,16 +1,23 @@
 scheMAGIC Simulator document ae19f5ea0a83790a
 * document-hash ae19f5ea0a83790a
-V1 n1 0 DC 5 AC 1 $ component:c1
+V1 n1 0 DC 5 $ component:c1
 V2 n2 0 SIN(0 350m 1k) AC 1 $ component:c2
-C3 n2 n3 1u $ component:c3
-R4 n1 n4 56k $ component:c4
-R5 n4 0 12k $ component:c5
-R6 n1 n5 10k $ component:c6
+C3 n2 oc_ac_c3 1u $ component:c3
+VOCSc3 oc_ac_c3 n3 0 $ component:c3
+R4 n1 oc_ac_c4 56k $ component:c4
+VOCSc4 oc_ac_c4 n4 0 $ component:c4
+R5 n4 oc_ac_c5 12k $ component:c5
+VOCSc5 oc_ac_c5 0 0 $ component:c5
+R6 n1 oc_ac_c6 10k $ component:c6
+VOCSc6 oc_ac_c6 n5 0 $ component:c6
 Q7 n5 n3 n6 OC_2N3904 $ component:c7
-R8 n6 0 1k $ component:c8
-C9 n5 n7 1u $ component:c9
-R10 n7 0 100k $ component:c10
+R8 n6 oc_ac_c8 1k $ component:c8
+VOCSc8 oc_ac_c8 0 0 $ component:c8
+C9 n5 oc_ac_c9 1u $ component:c9
+VOCSc9 oc_ac_c9 n7 0 $ component:c9
+R10 n7 oc_ac_c10 100k $ component:c10
+VOCSc10 oc_ac_c10 0 0 $ component:c10
 .model OC_2N3904 NPN(IS=6.734F BF=255.9 VAF=74.03 IKF=0.2847 ISE=6.734F NE=1.307 BR=6.092 VAR=12.5 IKR=0.1 RC=1 CJE=4.493P TF=0.3012N CJC=3.638P TR=239.5N)
-.save all v1#branch v2#branch @c3[i] @r4[i] @r5[i] @r6[i] @q7[ic] @r8[i] @c9[i] @r10[i]
+.save all v1#branch v2#branch vocsc3#branch vocsc4#branch vocsc5#branch vocsc6#branch vocsc8#branch vocsc9#branch vocsc10#branch
 .ac dec 35 10 10000000
 .end

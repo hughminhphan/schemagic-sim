@@ -1,7 +1,19 @@
+import { SIGNAL_EXPRESSION_VERSION, type SerializedNodeReference, type SerializedSignalProbe } from "@opencircuit/signal-workbench";
 import { defaultDCSweepConfig } from "./dc-sweep";
+import { importedModelPartId, legacyImportedAnalysisValidity, normalizedImportedModelLibrary } from "./imports";
 import { defaultNoiseConfig } from "./noise";
 import { componentPinPoints, componentPoint } from "./parts";
-import type { CircuitComponent, CircuitDocument, CircuitDocumentV1, ComponentType, Point } from "./types";
+import type {
+  CircuitComponent,
+  CircuitDocument,
+  CircuitDocumentV1,
+  CircuitDocumentV2,
+  ComponentType,
+  ImportedModelLibrary,
+  ImportedModelPart,
+  LegacyCircuitProbe,
+  Point,
+} from "./types";
 
 const AFFECTED_PIN_OFFSETS: Partial<Record<ComponentType, { old: readonly Point[]; current: readonly Point[] }>> = {
   potentiometer: { old: [[0,-6],[4,0],[0,6]], current: [[0,-2],[2,0],[0,2]] },
@@ -41,16 +53,37 @@ function oldPinPoints(component: CircuitComponent): Point[] {
   return offsets ? offsets.map((offset) => componentPoint(component, offset)) : componentPinPoints(component);
 }
 
-function applyLegacySimDefaults(document: CircuitDocument): CircuitDocument {
+function applyLegacySimDefaults(document: CircuitDocumentV2): CircuitDocumentV2 {
   if (document.sim?.mode === "dc-sweep" && !document.sim.dcSweep) {
     const dcSweep = defaultDCSweepConfig(document);
     if (dcSweep) return { ...document, sim: { ...document.sim, dcSweep } };
   }
-  if (document.sim?.mode === "noise" && !document.sim.noise) {
-    const noise = defaultNoiseConfig(document);
-    if (noise) return { ...document, sim: { ...document.sim, noise } };
-  }
   return document;
+}
+
+function legacyProbeForHash(probe: SerializedSignalProbe): LegacyCircuitProbe {
+  const base = {
+    id: probe.id,
+    ...(probe.label === undefined ? {} : { label: probe.label }),
+    ...(probe.color === undefined ? {} : { color: probe.color }),
+  };
+  if (probe.expression.kind === "voltage") {
+    const positive = probe.expression.positive;
+    const target = positive.kind === "schematic-wire"
+      ? { wire: positive.wireId }
+      : positive.kind === "schematic-pin"
+        ? { componentPin: [positive.componentId, positive.pin] as [string, number] }
+        : { node: positive.name };
+    return { ...base, kind: "voltage", target };
+  }
+  if (probe.expression.kind === "current") {
+    const component = probe.expression.component;
+    const target = component.kind === "schematic-component" && typeof probe.expression.terminal === "number"
+      ? { componentPin: [component.componentId, probe.expression.terminal] as [string, number] }
+      : { node: component.kind === "runtime-device" ? component.name : component.componentId };
+    return { ...base, kind: "current", target };
+  }
+  return { ...base, kind: "diff", target: { node: JSON.stringify(probe.expression) } };
 }
 
 export function legacyCircuitForNetlistHash(input: CircuitDocument): CircuitDocumentV1 {
@@ -90,10 +123,11 @@ export function legacyCircuitForNetlistHash(input: CircuitDocument): CircuitDocu
       return { ...wire, points };
     });
 
-  return { ...document, version: 1, wires };
+  const { modelImports: _modelImports, ...legacy } = document;
+  return { ...legacy, version: 1, wires, probes: document.probes.map(legacyProbeForHash) };
 }
 
-export function migrateCircuitV1toV2(input: CircuitDocumentV1): CircuitDocument {
+export function migrateCircuitV1toV2(input: CircuitDocumentV1): CircuitDocumentV2 {
   const components = structuredClone(input.components) as CircuitComponent[];
   const wires = structuredClone(input.wires);
   const moves: PinMove[] = [];
@@ -209,11 +243,122 @@ export function migrateCircuitV1toV2(input: CircuitDocumentV1): CircuitDocument 
     return [{ ...wire, points: compacted }];
   });
 
-  const document: CircuitDocument = {
+  const document: CircuitDocumentV2 = {
     ...structuredClone(input),
     version: 2,
     components,
     wires: migratedWires,
   };
   return applyLegacySimDefaults(document);
+}
+
+function probeNodeReference(probe: LegacyCircuitProbe): SerializedNodeReference {
+  if (probe.target.wire) return { kind: "schematic-wire", wireId: probe.target.wire };
+  if (probe.target.componentPin) return { kind: "schematic-pin", componentId: probe.target.componentPin[0], pin: probe.target.componentPin[1] };
+  return { kind: "runtime-node", name: probe.target.node?.trim() || "0" };
+}
+
+function migrateLegacyProbe(probe: LegacyCircuitProbe): SerializedSignalProbe {
+  const common = {
+    id: probe.id,
+    expressionVersion: SIGNAL_EXPRESSION_VERSION,
+    ...(probe.label === undefined ? {} : { label: probe.label }),
+    ...(probe.color === undefined ? {} : { color: probe.color }),
+  };
+  if (probe.kind === "current") {
+    const pin = probe.target.componentPin;
+    return {
+      ...common,
+      expression: pin
+        ? { kind: "current", component: { kind: "schematic-component", componentId: pin[0] }, terminal: pin[1] }
+        : { kind: "current", component: { kind: "runtime-device", name: probe.target.node?.trim() || `wire:${probe.target.wire ?? "unknown"}` } },
+    };
+  }
+  return {
+    ...common,
+    expression: {
+      kind: "voltage",
+      positive: probeNodeReference(probe),
+      negative: { kind: "runtime-node", name: "0" },
+    },
+  };
+}
+
+const legacyPinOrder: Partial<Record<ComponentType, readonly string[]>> = {
+  diode: ["A", "K"],
+  led: ["A", "K"],
+  bjt_npn: ["C", "B", "E"],
+  bjt_pnp: ["C", "B", "E"],
+  nmos: ["D", "G", "S"],
+  pmos: ["D", "G", "S"],
+  opamp_ideal: ["IN+", "IN-", "OUT"],
+};
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return Boolean(value) && typeof value === "object" && !Array.isArray(value);
+}
+
+function legacyImportedParts(value: unknown): { library?: ImportedModelLibrary; ids: Map<string, string> } {
+  if (!Array.isArray(value) || value.length === 0) return { ids: new Map() };
+  const ids = new Map<string, string>();
+  const byId = new Map<string, ImportedModelPart>();
+  for (const candidate of value) {
+    if (!isRecord(candidate)) continue;
+    const definitionKind = candidate.definitionKind === "subckt" ? "subckt" : "model";
+    const baseType = typeof candidate.baseType === "string" ? candidate.baseType as ComponentType : "resistor";
+    const rawMapping = isRecord(candidate.userMapping) ? candidate.userMapping : {};
+    const preferredOrder = legacyPinOrder[baseType];
+    const labels = preferredOrder?.every((label) => Object.prototype.hasOwnProperty.call(rawMapping, label))
+      ? [...preferredOrder]
+      : Object.keys(rawMapping);
+    const rawPart: Omit<ImportedModelPart, "id" | "analysisValidity"> = {
+      sourceName: typeof candidate.sourceName === "string" ? candidate.sourceName : "imported-model.lib",
+      sourceText: typeof candidate.sourceText === "string" ? candidate.sourceText : "",
+      definition: {
+        kind: definitionKind,
+        name: typeof candidate.name === "string" ? candidate.name : "",
+        scopePath: [],
+      },
+      baseType,
+      pinMapping: definitionKind === "subckt"
+        ? labels.map((label, symbolPinIndex) => ({ symbolPinIndex, modelPinIndex: Number(rawMapping[label]) }))
+        : [],
+    };
+    const withoutId: Omit<ImportedModelPart, "id"> = {
+      ...rawPart,
+      analysisValidity: legacyImportedAnalysisValidity(rawPart),
+    };
+    const id = importedModelPartId(withoutId);
+    const part = { id, ...withoutId };
+    byId.set(id, part);
+    if (typeof candidate.id === "string") ids.set(candidate.id, id);
+  }
+  const parts = [...byId.values()];
+  return parts.length > 0
+    ? { library: normalizedImportedModelLibrary({ format: "opencircuit-imported-models", version: 1, parts }), ids }
+    : { ids };
+}
+
+export function migrateCircuitV2toV3(input: CircuitDocumentV2): CircuitDocument {
+  const document = structuredClone(input);
+  const migratedImports = legacyImportedParts(document.importedParts);
+  const components = document.components.map((component) => {
+    const importedPartId = component.params?.importedPartId;
+    const migratedId = typeof importedPartId === "string" ? migratedImports.ids.get(importedPartId) : undefined;
+    if (!migratedId) return component;
+    return { ...component, params: { ...component.params, importedPartId: migratedId } };
+  });
+  const { importedParts: _legacyImports, ...base } = document;
+  const migrated: CircuitDocument = {
+    ...base,
+    version: 3,
+    components,
+    probes: document.probes.map(migrateLegacyProbe),
+    ...(migratedImports.library ? { modelImports: migratedImports.library } : {}),
+  };
+  if (migrated.sim.mode === "noise" && !migrated.sim.noise) {
+    const noise = defaultNoiseConfig(migrated);
+    if (noise) migrated.sim = { ...migrated.sim, noise };
+  }
+  return migrated;
 }

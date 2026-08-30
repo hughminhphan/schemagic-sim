@@ -258,7 +258,6 @@ describe("waveform viewer rendering", () => {
 
     const internal = viewer as unknown as {
       annotations: Map<string, { points: Array<readonly [number, number] | null> }>;
-      setCursor(which: "a" | "b", pixelX: number): void;
     };
     expect(internal.annotations.get("pot-sweep")?.points[2]).toBeNull();
     expect(lastCanvas.context.clipCount).toBeGreaterThan(0);
@@ -278,10 +277,83 @@ describe("waveform viewer rendering", () => {
     expect(internal.annotations.size).toBe(1);
     expect(internal.annotations.get("pot-sweep")?.points).toHaveLength(2);
 
-    internal.setCursor("a", 344);
-    expect(viewer.getCursorState().a?.values["Pot sweep"]).toBeTypeOf("number");
+    viewer.setCursor("a", { x: 0.5 });
+    expect(viewer.getCursorState().a?.values["annotation:pot-sweep"]).toBeTypeOf("number");
 
     viewer.removeAnnotation("pot-sweep");
     expect(internal.annotations.size).toBe(0);
+  });
+
+  it("keeps duplicate display labels distinct through stable trace ids", () => {
+    const viewer = mount(new FakeElement() as unknown as HTMLElement, {
+      traces: [
+        { id: "run-a:out", source: "a", label: "V(out)", unit: "V" },
+        { id: "run-b:out", source: "b", label: "V(out)", unit: "V" },
+      ],
+    });
+    viewer.setData({
+      kind: "tran",
+      vectors: {
+        time: Float64Array.of(0, 1, 2),
+        a: Float64Array.of(1, 2, 3),
+        b: Float64Array.of(4, 5, 6),
+      },
+    });
+    viewer.setCursor("a", { x: 1 });
+
+    expect(viewer.getCursorState().a?.values).toMatchObject({ "run-a:out": 2, "run-b:out": 5 });
+  });
+
+  it("renders mixed complex and real derived traces on an AC frequency axis", () => {
+    const viewer = mount(new FakeElement() as unknown as HTMLElement, {
+      traces: [
+        { id: "voltage", source: "voltage", label: "V(out)", valueKind: "complex" },
+        { id: "gain", source: "gain", label: "Transfer gain", unit: "dB", axisGroup: "gain", valueKind: "real" },
+      ],
+    });
+    expect(() => viewer.setData({
+      kind: "ac",
+      vectors: {
+        frequency: Float64Array.of(10, 100, 1_000),
+        voltage: Float64Array.of(1, 0, 0.7, -0.2, 0.1, -0.1),
+        gain: Float64Array.of(-0.1, -3, -20),
+      },
+    })).not.toThrow();
+    viewer.setCursor("a", { x: 100 });
+
+    expect(viewer.getCursorState().a?.values).toMatchObject({
+      "voltage:magnitude": expect.any(Number),
+      "voltage:phase": expect.any(Number),
+      gain: -3,
+    });
+  });
+
+  it("preserves visibility, ranges, layout, and cursors across compatible samples", () => {
+    const viewer = mount(new FakeElement() as unknown as HTMLElement, {
+      traces: [{ id: "out", source: "out", label: "Output", unit: "V" }],
+    });
+    viewer.setData({ kind: "tran", vectors: { time: Float64Array.of(0, 1, 2), out: Float64Array.of(0, 1, 0) } });
+    viewer.setTraceVisible("out", false);
+    viewer.setLayout("stack");
+    viewer.setCursor("a", { x: 1 });
+    const before = viewer.getState();
+    viewer.setTraces([{ id: "out", source: "out", label: "Renamed output", unit: "V" }]);
+    expect(viewer.getState()).toEqual(before);
+    viewer.setData({ kind: "tran", vectors: { time: Float64Array.of(0, 1, 2), out: Float64Array.of(0, 2, 0) } });
+
+    expect(viewer.getState()).toEqual(before);
+  });
+
+  it("reports unit-incompatible overlays", () => {
+    const viewer = mount(new FakeElement() as unknown as HTMLElement, {
+      layout: "overlay",
+      traces: [
+        { id: "voltage", source: "v", label: "Signal", unit: "V" },
+        { id: "current", source: "i", label: "Signal", unit: "A" },
+      ],
+    });
+    viewer.setData({ kind: "tran", vectors: { time: Float64Array.of(0, 1), v: Float64Array.of(0, 1), i: Float64Array.of(1, 0) } });
+
+    expect(viewer.getDiagnostics()).toContainEqual(expect.objectContaining({ code: "INCOMPATIBLE_OVERLAY" }));
   });
 });
