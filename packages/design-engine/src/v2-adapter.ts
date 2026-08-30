@@ -1,4 +1,11 @@
-import { upgradeCircuitV1ToV2, type CircuitDocumentV2 } from "@opencircuit/circuit-schema";
+import {
+  upgradeCircuitV1ToV4,
+  type CircuitDocument,
+  type CircuitDocumentV1,
+  type CircuitDocumentV4,
+  type CircuitProbe,
+  type LegacyCircuitProbe,
+} from "@opencircuit/circuit-schema";
 import { designProfileId, type PartClassId } from "@opencircuit/design-library/v2-runtime";
 import {
   DESIGN_V2_MAX_HOOK_VALUE_CANONICAL_BYTES, boundedDetachedFrozenDesignV2Value, canonicalDesignV2Payload, compareDesignV2Tokens, designSha256ContentHash,
@@ -60,6 +67,57 @@ function matchedV1(option: MatchedOptionV2): MatchedOption {
   return { optionKey: wrapped.v1OptionKey, data: dataWithoutProfileMap(wrapped.v1Data), derivedValues: option.derivedValues, components: localComponents(option), simulationCoverage: option.simulationCoverage, warnings: option.warnings } as MatchedOption;
 }
 
+function legacyProbeForDesignerUpgrade(probe: Readonly<CircuitProbe>): LegacyCircuitProbe {
+  const presentation = {
+    id: probe.id,
+    ...(probe.label === undefined ? {} : { label: probe.label }),
+    ...(probe.color === undefined ? {} : { color: probe.color }),
+  };
+  const expression = probe.expression;
+  if (expression.kind === "voltage") {
+    if (expression.negative.kind !== "runtime-node" || expression.negative.name !== "0") {
+      throw new TypeError(`V1 recipe probe ${probe.id} uses a differential voltage expression that Designer V4 cannot represent`);
+    }
+    const positive = expression.positive;
+    const target = positive.kind === "schematic-wire"
+      ? { wire: positive.wireId }
+      : positive.kind === "schematic-pin"
+        ? { componentPin: [positive.componentId, positive.pin] as [string, number] }
+        : { node: positive.name };
+    return { ...presentation, kind: "voltage", target };
+  }
+  if (expression.kind === "current") {
+    if (expression.component.kind !== "schematic-component" || (
+      expression.terminal !== undefined && typeof expression.terminal !== "number"
+    )) {
+      throw new TypeError(`V1 recipe probe ${probe.id} uses a current expression that Designer V4 cannot represent`);
+    }
+    return {
+      ...presentation,
+      kind: "current",
+      target: { componentPin: [expression.component.componentId, expression.terminal ?? 0] },
+    };
+  }
+  throw new TypeError(`V1 recipe probe ${probe.id} uses an expression that Designer V4 cannot represent`);
+}
+
+function upgradeSimulatorCircuitToDesignerV4(input: Readonly<CircuitDocument>): CircuitDocumentV4 {
+  if (input.modelImports !== undefined && input.modelImports.parts.length > 0) {
+    throw new TypeError("V1 recipe circuit uses imported Simulator models that Designer V4 cannot represent");
+  }
+  const legacyShape: CircuitDocumentV1 = {
+    format: "opencircuit-circuit",
+    version: 1,
+    meta: structuredClone(input.meta),
+    components: structuredClone(input.components),
+    wires: structuredClone(input.wires),
+    probes: input.probes.map(legacyProbeForDesignerUpgrade),
+    sim: structuredClone(input.sim),
+    ...(input.view === undefined ? {} : { view: structuredClone(input.view) }),
+  };
+  return upgradeCircuitV1ToV4(legacyShape);
+}
+
 function reviewedComponents(components: MatchedOption["components"], environment: RecipeEnvironmentV2): MatchedOptionV2["components"] {
   return components.map((component) => {
     const matches = environment.catalog.profiles.filter((profile) => profile.part.manufacturerId === component.part.manufacturerId && profile.part.manufacturerPartNumber === component.part.manufacturerPartNumber);
@@ -75,7 +133,7 @@ function reviewedRejection<T>(outcome: T, environment: RecipeEnvironmentV2,legac
   if(new Set(resolved).size!==resolved.length)resolved.push(INVALID_REJECTION_PROFILE_ID);return{...rejected,...(rejected.componentProfileIds?{componentProfileIds:resolved.sort(compareDesignV2Tokens)}:{})};
 }
 
-function classifyCircuit(circuit: CircuitDocumentV2, components: MatchedOptionV2["components"]): CandidateMaterializationV2 {
+function classifyCircuit(circuit: CircuitDocumentV4, components: MatchedOptionV2["components"]): CandidateMaterializationV2 {
   const classifications: CircuitInstanceClassificationV2[] = [];
   const nonRepresentations: CircuitBomNonRepresentationV2[] = [];
   for (const graph of circuit.circuits) {
@@ -126,7 +184,7 @@ export function adaptDesignRecipeV1ToV2(recipeInput: DesignRecipe, optionsInput:
       const wrapped = unwrap(candidate.data);
       const v1Candidate = { ...candidate, optionKey: wrapped.v1OptionKey, data: dataWithoutProfileMap(wrapped.v1Data), components:localComponents(candidate as unknown as MatchedOptionV2) };
       const source = snapshotJson(recipe.materialize(snapshotJson(v1Candidate) as never, v1Environment(environment)));
-      const upgraded = upgradeCircuitV1ToV2(source);
+      const upgraded = upgradeSimulatorCircuitToDesignerV4(source);
       const explicitConfig = upgraded.scenarios[0]!.config;
       upgraded.scenarios = candidate.simulationCoverage.filter((entry) => entry.modelTier === "behavioral").map((entry) => ({ id: entry.scenarioId, title: entry.scenarioId, circuitId: "main", config: structuredClone(explicitConfig) })).sort((left, right) => compareDesignV2Tokens(left.id, right.id));
       upgraded.defaultScenarioId = upgraded.scenarios[0]?.id ?? null;

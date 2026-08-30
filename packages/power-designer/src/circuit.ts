@@ -1,4 +1,11 @@
-import type { CircuitComponent, CircuitDocument, CircuitProbe, CircuitWire } from "@opencircuit/circuit-schema";
+import {
+  componentCurrentProbe,
+  wireVoltageProbe,
+  type CircuitComponent,
+  type CircuitDocument,
+  type CircuitProbe,
+  type CircuitWire,
+} from "@opencircuit/circuit-schema";
 import type {
   CandidateForMaterialization,
   RecipeEnvironment,
@@ -20,21 +27,21 @@ export const BUCK_SIMULATION_SCENARIO_IDS = [
 export type BuckSimulationScenarioId = typeof BUCK_SIMULATION_SCENARIO_IDS[number];
 
 const STEADY_STATE_LIMITATIONS = [
-  "The selected regulator/controller is not modeled as a physical IC because frozen CircuitDocument v1 has no IC or subcircuit component.",
+  "The selected regulator/controller is not modeled as a physical IC by this behavioral Simulator V3 circuit.",
   "Generic level-1 MOSFETs and authored complementary gate pulses approximate the switching power stage; analytic estimates remain authoritative.",
 ];
 
 const STARTUP_LIMITATIONS = [
   "Startup covers delayed behavioral gate enable and passive output rise only; soft-start, UVLO, current-limit, and control-loop dynamics are unavailable.",
-  "The selected regulator/controller is not modeled as a physical IC because frozen CircuitDocument v1 has no IC or subcircuit component.",
+  "The selected regulator/controller is not modeled as a physical IC by this behavioral Simulator V3 circuit.",
 ];
 
 const LOAD_STEP_LIMITATIONS = [
-  "Unavailable: frozen CircuitDocument v1 has no pulsed current or load-step stimulus and no per-scenario document/config reference.",
+  "Unavailable: this Simulator V3 circuit has no pulsed current or load-step stimulus and no per-scenario document/config reference.",
 ];
 
 const LINE_STEP_LIMITATIONS = [
-  "Unavailable: frozen CircuitDocument v1 stores one SimConfig and cannot attach an alternate line-step source/config to this candidate.",
+  "Unavailable: this Simulator V3 circuit stores one SimConfig and cannot attach an alternate line-step source/config to this candidate.",
 ];
 
 export function buckSimulationCoverage(): SimulationCoverage[] {
@@ -169,11 +176,14 @@ function gateDriveSource(
 function wires(): CircuitWire[] {
   return [
     { id: "vin-rail", points: [[4, 14], [4, 8], [24, 8]] },
+    { id: "high-side-drain-pin", points: [[24, 9], [24, 8]] },
     { id: "input-capacitor-positive", points: [[10, 14], [4, 14]] },
     { id: "input-source-ground", points: [[4, 18], [4, 24]] },
     { id: "input-capacitor-ground", points: [[10, 18], [10, 24]] },
     { id: "high-gate", points: [[16, 12], [20, 12]] },
     { id: "switch-node", points: [[16, 16], [24, 16], [30, 16]] },
+    { id: "high-side-source-pin", points: [[24, 15], [24, 16]] },
+    { id: "low-side-drain-pin", points: [[24, 17], [24, 16]] },
     { id: "low-gate", points: [[16, 20], [20, 20]] },
     { id: "output-rail", points: [[34, 16], [38, 16], [46, 16], [52, 16]] },
     { id: "output-capacitor-positive", points: [[38, 16], [38, 18]] },
@@ -182,18 +192,19 @@ function wires(): CircuitWire[] {
     { id: "load-ground", points: [[46, 22], [46, 24]] },
     { id: "feedback-node", points: [[52, 20], [56, 20]] },
     { id: "ground-rail", points: [[4, 24], [10, 24], [16, 24], [24, 24], [28, 24], [38, 24], [46, 24], [52, 24]] },
+    { id: "low-side-source-pin", points: [[24, 23], [24, 24]] },
     { id: "ground-symbol", points: [[28, 24], [28, 28]] },
   ];
 }
 
 function probes(): CircuitProbe[] {
   return [
-    { id: "vin-voltage", kind: "voltage", target: { wire: "vin-rail" }, color: "#8b5cf6" },
-    { id: "input-current", kind: "current", target: { componentPin: ["input-source", 0] }, color: "#f59e0b" },
-    { id: "switch-node-voltage", kind: "voltage", target: { wire: "switch-node" }, color: "#ef4444" },
-    { id: "inductor-current", kind: "current", target: { componentPin: ["power-inductor", 0] }, color: "#10b981" },
-    { id: "output-voltage", kind: "voltage", target: { wire: "output-rail" }, color: "#3b82f6" },
-    { id: "feedback-voltage", kind: "voltage", target: { wire: "feedback-node" }, color: "#ec4899" },
+    wireVoltageProbe("vin-voltage", "vin-rail", { color: "#8b5cf6" }),
+    componentCurrentProbe("input-current", "input-source", 0, { color: "#f59e0b" }),
+    wireVoltageProbe("switch-node-voltage", "switch-node", { color: "#ef4444" }),
+    componentCurrentProbe("inductor-current", "power-inductor", 0, { color: "#10b981" }),
+    wireVoltageProbe("output-voltage", "output-rail", { color: "#3b82f6" }),
+    wireVoltageProbe("feedback-voltage", "feedback-node", { color: "#ec4899" }),
   ];
 }
 
@@ -315,7 +326,7 @@ export function materializeBuckCircuit(
 
   return {
     format: "opencircuit-circuit",
-    version: 1,
+    version: 3,
     meta: {
       title: `scheMAGIC Power Designer behavioral buck — ${primary.part.manufacturerPartNumber}`,
       description: `Connected editable Track B2 behavioral power stage using synthetic test-only profiles. ${behavioralBoundary} Load-step and line-step remain unavailable under the frozen circuit contract.`,

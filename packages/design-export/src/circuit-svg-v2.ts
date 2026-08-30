@@ -1,10 +1,10 @@
 import {
-  componentPinPointsV2,
-  type CircuitComponentV2,
-  type CircuitGraphV2,
+  componentPinPointsV4,
+  type CircuitComponentV4,
+  type CircuitGraphV4,
   type DesignBlockDefinition,
   type Point,
-  type SimulationScenarioV2,
+  type SimulationScenarioV4,
 } from "@opencircuit/circuit-schema";
 import {
   canonicalDesignV2Payload,
@@ -45,7 +45,7 @@ export class CandidateCircuitSvgExportErrorV2 extends Error {
 }
 
 export interface CandidateCircuitSvgScenarioV2 {
-  scenario: SimulationScenarioV2;
+  scenario: SimulationScenarioV4;
   coverage: SimulationCoverageV2;
 }
 
@@ -64,7 +64,7 @@ export interface CandidateCircuitSvgMetadataV2 {
     id: CandidateIdV2;
     recipeId: string;
   };
-  circuit: CircuitGraphV2;
+  circuit: CircuitGraphV4;
   designBlocks: DesignBlockDefinition[];
   scenarios: CandidateCircuitSvgScenarioV2[];
   candidateWarnings: string[];
@@ -175,7 +175,7 @@ function deepFreeze<T>(value: T): T {
 
 function referencedBlocks(
   candidate: Readonly<DesignCandidateV2>,
-  circuit: Readonly<CircuitGraphV2>,
+  circuit: Readonly<CircuitGraphV4>,
 ): DesignBlockDefinition[] {
   const refs = new Set(circuit.components.flatMap((component) => component.type === "design_block"
     ? [`${component.block.id}\u0000${component.block.version}\u0000${component.block.contentHash}`]
@@ -203,7 +203,7 @@ function scenariosForCircuit(
 function metadataFor(
   result: Readonly<DesignResultV2>,
   candidate: Readonly<DesignCandidateV2>,
-  circuit: Readonly<CircuitGraphV2>,
+  circuit: Readonly<CircuitGraphV4>,
 ): CandidateCircuitSvgMetadataV2 {
   return {
     format: "schemagic-circuit-svg-metadata",
@@ -224,12 +224,12 @@ function metadataFor(
   };
 }
 
-function valueLabel(component: CircuitComponentV2): string | undefined {
+function valueLabel(component: CircuitComponentV4): string | undefined {
   if ("value" in component && component.value !== undefined) return String(component.value);
   return component.mpn;
 }
 
-function symbol(component: CircuitComponentV2, blocks: readonly DesignBlockDefinition[]): string {
+function symbol(component: CircuitComponentV4, blocks: readonly DesignBlockDefinition[]): string {
   switch (component.type) {
     case "resistor": return '<path d="M-2 0h.45l.35-.7.7 1.4.7-1.4.7 1.4.65-.7H2"/>';
     case "capacitor": return '<path d="M-2 0h1.55m0-1.2v2.4m.9-2.4v2.4M.45 0H2"/>';
@@ -263,7 +263,7 @@ function symbol(component: CircuitComponentV2, blocks: readonly DesignBlockDefin
   }
 }
 
-function componentLabelPoint(component: Readonly<CircuitComponentV2>): Point {
+function componentLabelPoint(component: Readonly<CircuitComponentV4>): Point {
   return component.label === undefined
     ? [component.pos[0], component.pos[1] - 3]
     : [
@@ -278,7 +278,7 @@ type ComponentTextLine = {
   text: string;
 };
 
-function componentTextLines(component: Readonly<CircuitComponentV2>): ComponentTextLine[] {
+function componentTextLines(component: Readonly<CircuitComponentV4>): ComponentTextLine[] {
   const label = component.label?.text ?? component.id;
   const lines: ComponentTextLine[] = wrappedDisplay(label, WORLD_TEXT_CHARACTERS)
     .map((text) => ({ kind: "label" as const, className: "component-label" as const, text }));
@@ -351,10 +351,10 @@ function segmentIntersectsBounds(start: Point, end: Point, source: ComponentText
 }
 
 function componentRenderBounds(
-  component: Readonly<CircuitComponentV2>,
+  component: Readonly<CircuitComponentV4>,
   blocks: readonly DesignBlockDefinition[],
 ): ComponentTextLayout["bounds"] {
-  const points = [component.pos, ...componentPinPointsV2(component, blocks)];
+  const points = [component.pos, ...componentPinPointsV4(component, blocks)];
   const xs = points.map((point) => point[0]);
   const ys = points.map((point) => point[1]);
   const symbolMargin = 1.5;
@@ -425,7 +425,7 @@ function allGeometryPoints(metadata: Readonly<CandidateCircuitSvgMetadataV2>): P
   ];
   const textLayouts = componentTextLayouts(metadata);
   for (const component of metadata.circuit.components) {
-    points.push(...componentPinPointsV2(component, metadata.designBlocks));
+    points.push(...componentPinPointsV4(component, metadata.designBlocks));
     const layout = textLayouts.get(component.id);
     if (layout === undefined) throw new TypeError("SVG component text layout is unresolved");
     points.push(
@@ -484,7 +484,7 @@ function probeLines(metadata: Readonly<CandidateCircuitSvgMetadataV2>): string[]
     });
 }
 
-function wireMarkup(circuit: Readonly<CircuitGraphV2>): string {
+function wireMarkup(circuit: Readonly<CircuitGraphV4>): string {
   return [...circuit.wires]
     .sort((left, right) => compareText(left.id, right.id))
     .map((wire) => `<polyline class="wire" data-wire-id="${xmlAttribute(wire.id)}" points="${wire.points.map((point) => `${numberText(point[0])},${numberText(point[1])}`).join(" ")}"/>`)
@@ -510,7 +510,7 @@ function componentMarkup(metadata: Readonly<CandidateCircuitSvgMetadataV2>): str
           WORLD_TEXT_CHARACTER_WIDTH,
         ))
         .join("");
-      const pins = componentPinPointsV2(component, metadata.designBlocks)
+      const pins = componentPinPointsV4(component, metadata.designBlocks)
         .map((point, index) => `<circle class="pin" data-pin-index="${index}" cx="${numberText(point[0])}" cy="${numberText(point[1])}" r=".13"/>`)
         .join("");
       return `<g data-component-id="${xmlAttribute(component.id)}" data-component-type="${xmlAttribute(component.type)}"><g class="symbol" transform="${transform}">${symbol(component, metadata.designBlocks)}</g>${pins}${text}</g>`;
@@ -539,7 +539,7 @@ function pointAtPolylineMiddle(points: readonly Point[]): Point | undefined {
 
 function probePoint(
   metadata: Readonly<CandidateCircuitSvgMetadataV2>,
-  target: Readonly<CircuitGraphV2["probes"][number]["target"]>,
+  target: Readonly<CircuitGraphV4["probes"][number]["target"]>,
 ): Point | undefined {
   if (target.wire !== undefined) {
     const wire = metadata.circuit.wires.find((entry) => entry.id === target.wire);
@@ -549,7 +549,7 @@ function probePoint(
   const [componentId, pin] = target.componentPin;
   const component = metadata.circuit.components.find((entry) => entry.id === componentId);
   if (component === undefined) return undefined;
-  const points = componentPinPointsV2(component, metadata.designBlocks);
+  const points = componentPinPointsV4(component, metadata.designBlocks);
   if (typeof pin === "number") return points[pin];
   if (component.type !== "design_block") return undefined;
   const definition = metadata.designBlocks.find((block) => block.id === component.block.id
@@ -710,7 +710,7 @@ export function _renderCandidateCircuitSvgV2ForTest(metadata: Readonly<Candidate
 export function _renderCandidateCircuitSvgV2FromProjection(
   result: Readonly<DesignResultV2>,
   candidate: Readonly<DesignCandidateV2>,
-  circuit: Readonly<CircuitGraphV2>,
+  circuit: Readonly<CircuitGraphV4>,
   extension?: Readonly<CandidateCircuitSvgRenderExtensionV2>,
 ): string {
   return render(metadataFor(result, candidate, circuit), extension);

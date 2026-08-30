@@ -112,7 +112,7 @@ function scenarioV2Result(): Record<string, unknown> {
     ],
     circuit: {
       format: "opencircuit-circuit",
-      version: 2,
+      version: 4,
       meta: { title: "Scenario inspection fixture" },
       designBlocks: [],
       circuits: [{
@@ -686,7 +686,7 @@ test("external-NMOS Motor exposes only exact direct-gate structural observations
   const permissiveResult = parseDesignResultV2(JSON.parse(permissiveResultArtifact.content));
   expect(permissiveResult).toMatchObject({
     requestHash: "sha256:3eb6902cfb864b7e6977388fee7fa76535f9388b905b10e943849bb3207ab94f",
-    contentHash: "sha256:6e3986d02348a5415bbc0c56d85c1899450551c0635fac258bd575b010be1be7",
+    contentHash: "sha256:0ea210d5fdd7f9fa5fd29a0815b94bb80d5deef79b022631cf43b6afdf50c176",
     libraryContentHash: "sha256:06a4ef8b8141852bf9506c6f4f632a7b349b0947c449f85172313380dc195d38",
     diagnostics: [],
   });
@@ -845,7 +845,7 @@ test("Power retains the reviewed Bel BOM only as an ineligible exact structural 
     .toHaveText("sha256:fdef96d5e34b8acea673b9df199430c5be56d64c5cb5e58481a20d89d4df57f6");
   await expect(page.locator(".designer-results-header")).toContainText("0 eligible · 1 observed");
   await expect(page.locator(".designer-results-header")).toContainText("0 generation exclusions");
-  await expect(page.locator(".designer-trust-banner > code")).toHaveText("sha256:78bc0f7ad6dc3c641903b1b3168c1a9a926ea78f69ebe1f2a77102d3d4b2608e");
+  await expect(page.locator(".designer-trust-banner > code")).toHaveText("sha256:8c95de1232f9bab1a133712379287b322f76f199461581a358eecf0666dd386a");
   const permissiveReferenceEvidence = powerObservationCaveats.locator("[data-power-reference-evidence]");
   await expect(permissiveReferenceEvidence).toContainText("Request-relevant observations2");
   await expect(permissiveReferenceEvidence).toContainText("Strict rules closed0");
@@ -891,7 +891,7 @@ test("Power retains the reviewed Bel BOM only as an ineligible exact structural 
   expect(generated).toMatchObject({
     libraryVersion: "2026-08-27.2",
     requestHash: "sha256:f21a643aba1a3c8cb75d42ff2e69b4f12a25168becdb68fbf54f720649821cd4",
-    contentHash: "sha256:78bc0f7ad6dc3c641903b1b3168c1a9a926ea78f69ebe1f2a77102d3d4b2608e",
+    contentHash: "sha256:8c95de1232f9bab1a133712379287b322f76f199461581a358eecf0666dd386a",
     libraryContentHash: "sha256:7ef5a9f9f7e1724e253e81850adc64673154fcfd9668b9b476d4d15125dfcbd3",
     rejectedCandidates: [],
   });
@@ -942,7 +942,7 @@ test("Power retains the reviewed Bel BOM only as an ineligible exact structural 
   expect(bom.content).toContain("F1F2-0804-100M");
   expect(bom.content).toContain("output-capacitor,output-capacitor,murata-manufacturing,GRM32ER71E226KE15L,packages/design-library/parts/shared.mlcc-capacitor/murata-manufacturing/GRM32ER71E226KE15L.json,2");
   expect(bom.content).toContain("sha256:c36cdcd96b25808fb913f152e211a6c08ac7f0bf675274f393bd00b31b2d3b1c");
-  expect(bom.content).toContain("sha256:97248bdb723e2a02bb3347c46c434ff2b7d9d95099d3ccdb69ad581d305bd409");
+  expect(bom.content).toContain("sha256:91bc09b720b1bf152c69fa53fd015494ed6cd6d7430fcd909fb72734bd5d5a37");
   expect(bom.content).toContain("ineligible");
 
   const powerSvg = await downloadText(page, "Structural SVG");
@@ -996,7 +996,7 @@ test("Power retains the reviewed Bel BOM only as an ineligible exact structural 
         contentHash: null,
       },
     },
-    contentHash: "sha256:2009c6b162838424343601bc8d0aa6da7188543f29a8f20b4fe6004b1d55b5d9",
+    contentHash: "sha256:1cde50595ebed875cb5f77e8c7a449bd3e1be2355a9dcbc150dbe6e972d28af8",
   });
   expect(physicalHandoff.lines).toHaveLength(7);
   expect(physicalHandoff.lines.flatMap((line) => line.structuralInstances)).toHaveLength(8);

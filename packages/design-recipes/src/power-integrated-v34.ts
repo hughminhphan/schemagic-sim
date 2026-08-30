@@ -4,7 +4,7 @@ import {
   compareDesignV2Tokens,
   designSha256ContentHash,
 } from "@opencircuit/design-schema";
-import type { CircuitComponentV2, CircuitGraphV2 } from "@opencircuit/circuit-schema";
+import type { CircuitComponentV4, CircuitGraphV4 } from "@opencircuit/circuit-schema";
 import { POWER_NATIVE_INTEGRATED_SYNCHRONOUS_BUCK_RECIPE_FACTS_V33 } from "./power-integrated-v33";
 import type { NativeCandidateV2, NativeEnvironmentV2, NativeRecipeV2 } from "./types";
 
@@ -59,7 +59,7 @@ function exactPassiveInstances(
   type: "capacitor" | "inductor",
   positions: readonly [number, number][],
   rot: 0 | 90,
-): CircuitComponentV2[] {
+): CircuitComponentV4[] {
   const component = selected(candidate, id);
   if (component.quantityPerAssembly !== positions.length || component.value === undefined) {
     throw new TypeError(`Facts-V3.4 behavioral materialization requires ${positions.length} exact-valued ${id}`);
@@ -88,7 +88,7 @@ function behavioralOutputStage(
   candidate: Readonly<NativeCandidateV2>,
   environment: Readonly<NativeEnvironmentV2>,
   frequency: number,
-): CircuitGraphV2 {
+): CircuitGraphV4 {
   if (environment.request.application !== "power.buck") {
     throw new TypeError("Facts-V3.4 behavioral materialization requires a power.buck request");
   }

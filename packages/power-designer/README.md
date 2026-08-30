@@ -213,10 +213,10 @@ and rejected pre-materialization identity
 `candidate:v2:sha256:62dd4ac80d3ea6139640eb4dafc064f40ee99e778849b3c13ba95b50f8b2a697`.
 The package-level permissive V3 observation has request
 `sha256:3702fc5b906a3bfc2caeccc547b222b44fe0827b4a4972b1d4890ef35e100400`,
-result `sha256:0c0beab37c6d04b2bac6cd028035dae9de69855e85ef6e190ccbe5098e25021b`,
+result `sha256:6530aafac0a6060283fb17dabfd8121bfe4b3051634dcbe43a88ed8ea21b498f`,
 candidate `candidate:v2:sha256:1fc0e2f47f13060b4606b7cda6e54fae2b297ffbf7873bfe089c37114c444173`,
 and ineligible decision
-`sha256:7bb304f6a30b58adac8ee9250ec2cda6e4104af965f0d517de0918295228c76c`.
+`sha256:95231bcb28308d796619e24ea92d936639bc4e426ea17fed9f9f4c8a88a168cd`.
 The browser preset has separate canonical request bytes. Its strict request
 `sha256:30b8c0fac110f71ce3e71c9347afe725f2a1ad29aa4fdb6bfde8bc87cc73771c`
 produces result `sha256:d3b7fed4eb2d5f5e862ed8dfafb629771f813b967fd166902c4bd51bc6aabef2`
@@ -224,9 +224,9 @@ with rejected identity
 `candidate:v2:sha256:88b7d52b012cd7edfda6ba8f5ef0611c7d2ffeff870614ccf9d0dea6f1ca679d`.
 Its explicit-inspection request
 `sha256:f21a643aba1a3c8cb75d42ff2e69b4f12a25168becdb68fbf54f720649821cd4`
-produces result `sha256:78bc0f7ad6dc3c641903b1b3168c1a9a926ea78f69ebe1f2a77102d3d4b2608e`,
+produces result `sha256:8c95de1232f9bab1a133712379287b322f76f199461581a358eecf0666dd386a`,
 candidate `candidate:v2:sha256:e6a4681fa38e5b47f8f59963924e9cd99b749932ba8052f68e34d96cef68035a`,
-and decision `sha256:97248bdb723e2a02bb3347c46c434ff2b7d9d95099d3ccdb69ad581d305bd409`.
+and decision `sha256:91bc09b720b1bf152c69fa53fd015494ed6cd6d7430fcd909fb72734bd5d5a37`.
 All current paths bind context
 `sha256:7ef5a9f9f7e1724e253e81850adc64673154fcfd9668b9b476d4d15125dfcbd3`,
 catalog `sha256:0c56438b69da824a08963f5492096a9387eacfc84ac72c572103a7a3239b8890`,

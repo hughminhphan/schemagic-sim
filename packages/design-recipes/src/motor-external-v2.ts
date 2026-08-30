@@ -1,7 +1,7 @@
 import {
   calculateDesignBlockContentHash,
-  type CircuitComponentV2,
-  type CircuitDocumentV2,
+  type CircuitComponentV4,
+  type CircuitDocumentV4,
   type DesignBlockDefinition,
 } from "@opencircuit/circuit-schema";
 import {
@@ -1028,9 +1028,9 @@ function mountedHeight(profile: ExternalProfile): number {
 function legacyMaterialize(candidate: Readonly<NativeCandidateV2>, contract: Readonly<ExternalRecipeContract>): NativeMaterializationV2 {
   const nonRepresentedIds = new Set(["driver", "mosfet", "supply-tvs"]);
   const physical = candidate.components.filter((component) => !nonRepresentedIds.has(component.id));
-  const components: CircuitComponentV2[] = [
+  const components: CircuitComponentV4[] = [
     { id: "ground", type: "ground", pos: [0, 0], rot: 0, mirror: false },
-    ...physical.map((component, index): CircuitComponentV2 => ({
+    ...physical.map((component, index): CircuitComponentV4 => ({
       id: `bom-${String(index + 1).padStart(2, "0")}`,
       type: component.role.includes("capacitor") || component.role.includes("decoupling") ? "capacitor" : "resistor",
       value: component.value?.value ?? 1,
@@ -1040,9 +1040,9 @@ function legacyMaterialize(candidate: Readonly<NativeCandidateV2>, contract: Rea
       mirror: false,
     })),
   ];
-  const circuit: CircuitDocumentV2 = {
+  const circuit: CircuitDocumentV4 = {
     format: "opencircuit-circuit",
-    version: 2,
+    version: 4,
     meta: {
       title: `Catalog-native ${contract.profileLabel} external-NMOS motor bridge`,
       description: "Deterministic static BOM bindings only; no semiconductor behavior or switching dynamics are claimed.",
@@ -1156,7 +1156,7 @@ function materializeV31(
     },
   });
   const blockRef = (block: DesignBlockDefinition) => ({ id: block.id, version: block.version, contentHash: block.contentHash });
-  const components: CircuitComponentV2[] = [
+  const components: CircuitComponentV4[] = [
     ...(bootstrap === undefined ? [] : [{ id: "bootstrap-capacitor", type: "capacitor" as const, value: bootstrap.value.value, mpn: bootstrap.part.manufacturerPartNumber, pos: [60, 36] as [number, number], rot: 90 as const, mirror: false }]),
     { id: "bulk-capacitor", type: "capacitor", value: bulk.value.value, mpn: bulk.part.manufacturerPartNumber, pos: [20, 44], rot: 90, mirror: false },
     { id: "current-sense-resistor", type: "resistor", value: sense.value.value, mpn: sense.part.manufacturerPartNumber, pos: [68, 48], rot: 0, mirror: false },
@@ -1168,9 +1168,9 @@ function materializeV31(
     { id: "pulldown-resistor", type: "resistor", value: pulldown.value.value, mpn: pulldown.part.manufacturerPartNumber, pos: [72, 36], rot: 90, mirror: false },
     { id: "supply-tvs", type: "design_block", block: blockRef(tvsBlock), mpn: tvs.part.manufacturerPartNumber, pos: [28, 44], rot: 0, mirror: false },
   ];
-  const structuralCircuit: CircuitDocumentV2 = {
+  const structuralCircuit: CircuitDocumentV4 = {
     format: "opencircuit-circuit",
-    version: 2,
+    version: 4,
     meta: {
       title: `Catalog-native ${contract.profileLabel} external-NMOS motor bridge`,
       description: "The exact-BOM assembly remains structural and schematic-only. A separate request-derived averaged operating-point graph contains no selected-part model and makes no package-pin, switching, performance, or fidelity claim.",
@@ -1212,7 +1212,7 @@ function materializeV31(
     defaultScenarioId: null,
   };
   const companion = buildMotorOperatingPointCompanionV2(request, candidate.components);
-  const circuit: CircuitDocumentV2 = {
+  const circuit: CircuitDocumentV4 = {
     ...structuralCircuit,
     circuits: [...structuralCircuit.circuits, companion.graph],
     scenarios: [companion.scenario],

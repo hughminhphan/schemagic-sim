@@ -50,7 +50,7 @@ test("a shared Designer V2 result reopens from the same-origin static cache whil
   await expect(page.locator("[data-production-constraint-policy]")).toHaveCount(0);
   await expect(page.locator("[data-production-execution-ledger]")).toHaveCount(0);
   const cachedPaths = await page.evaluate(async () => {
-    const cache = await caches.open("schemagic-shell-v2");
+    const cache = await caches.open("schemagic-shell-v3");
     return (await cache.keys()).map((request) => new URL(request.url).pathname).sort();
   });
   expect(cachedPaths).toContain("/");

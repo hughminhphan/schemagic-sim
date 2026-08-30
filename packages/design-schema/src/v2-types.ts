@@ -1,4 +1,4 @@
-import type { CircuitDocumentV2, Sha256ContentHash } from "@opencircuit/circuit-schema";
+import type { CircuitDocumentV4, Sha256ContentHash } from "@opencircuit/circuit-schema";
 import type { CommercialRankingCriterionV1 } from "@opencircuit/sourcing-schema";
 import type { CandidateMetric, CandidateMetrics, DerivedValue, DesignResult, SelectedComponent } from "./candidate";
 import type { ConstraintResult } from "./constraint";
@@ -68,7 +68,7 @@ export interface DesignCandidateV2 {
   constraints: ConstraintResult[];
   metrics: CandidateMetricsV2;
   simulationCoverage: SimulationCoverageV2[];
-  circuit: CircuitDocumentV2;
+  circuit: CircuitDocumentV4;
   circuitInstanceClassifications: CircuitInstanceClassificationV2[];
   circuitBomNonRepresentations: CircuitBomNonRepresentationV2[];
   warnings: string[];

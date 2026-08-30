@@ -61,7 +61,7 @@ function targetCandidate(requestHash: Sha256ContentHash): DesignCandidateV2 {
     simulationCoverage: [],
     circuit: {
       format: "opencircuit-circuit",
-      version: 2,
+      version: 4,
       meta: { title: "Schema-only target projection" },
       designBlocks: [],
       circuits: [{

@@ -3,11 +3,11 @@ import {
   calculateDesignBlockContentHash,
   generateScenarioNetlist,
   parseEngineDiagnostics,
-  type CircuitDocumentV2,
+  type CircuitDocumentV4,
   type DesignBlockDefinition,
 } from "../src";
 
-describe("v2 scenario re-export", () => {
+describe("v4 scenario re-export", () => {
   it("generates scenario netlists through sim-engine", () => {
     const payload: Omit<DesignBlockDefinition, "contentHash"> = {
       id: "display-block",
@@ -17,10 +17,10 @@ describe("v2 scenario re-export", () => {
       netlist: { kind: "schematic_only", reason: "Display only" },
     };
     const block: DesignBlockDefinition = { ...payload, contentHash: calculateDesignBlockContentHash(payload) };
-    const document: CircuitDocumentV2 = {
+    const document: CircuitDocumentV4 = {
       format: "opencircuit-circuit",
-      version: 2,
-      meta: { title: "Sim engine v2" },
+      version: 4,
+      meta: { title: "Sim engine v4" },
       designBlocks: [block],
       circuits: [{
         id: "main",
@@ -39,7 +39,7 @@ describe("v2 scenario re-export", () => {
     expect(generateScenarioNetlist(document, "op").omissions[0]?.componentId).toBe("u.display:1");
   });
 
-  it("maps diagnostics back to the full v2 component-ID alphabet", () => {
+  it("maps diagnostics back to the full v4 component-ID alphabet", () => {
     const netlist = "title\nRoc_00 1 0 1k $ component:r.part:1\n.end\n";
     expect(parseEngineDiagnostics(netlist, "fatal error in netlist at line 2")).toEqual([
       expect.objectContaining({ componentId: "r.part:1", netLine: 2, message: "fatal error in netlist at line 2" }),

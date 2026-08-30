@@ -435,7 +435,7 @@ export function assessSelectedPassiveCiWiringV1(
   workflowText: string,
   harnessPackageText: string,
 ): SelectedPassiveCiWiringAssessmentV1 {
-  const expectedHarnessCommand = "npm --prefix ../.. exec --workspace=@opencircuit/sim-engine -- vitest run test/selected-passive-application-golden.test.ts && npm --prefix ../.. run build --workspace=@opencircuit/sim-engine && node selected-passive-application-golden.mjs --verify-persisted-report";
+  const expectedHarnessCommand = "npm --prefix ../.. run test --workspace=@opencircuit/sim-engine -- test/selected-passive-application-golden.test.ts && npm --prefix ../.. run build --workspace=@opencircuit/sim-engine && node selected-passive-application-golden.mjs --verify-persisted-report";
   let harnessPackage: { scripts?: Record<string, unknown> } | null = null;
   try {
     harnessPackage = JSON.parse(harnessPackageText) as { scripts?: Record<string, unknown> };
@@ -599,7 +599,7 @@ export function assessSelectedSemiconductorCiWiringV1(
   workflowText: string,
   harnessPackageText: string,
 ): SelectedSemiconductorCiWiringAssessmentV1 {
-  const expectedHarnessCommand = "npm --prefix ../.. exec --workspace=@opencircuit/sim-engine -- vitest run test/selected-semiconductor-application-golden.test.ts && if [ -f selected-semiconductor-application-golden/contract.json ] && [ -f selected-semiconductor-application-golden/execution-report.json ]; then npm --prefix ../.. run build --workspace=@opencircuit/sim-engine && node selected-semiconductor-application-golden.mjs --verify-persisted-report; else echo 'Selected-semiconductor device-model golden unavailable: current external-Motor structural identities exist, but no approved model package, dedicated device-model contract, or execution report is present.'; fi";
+  const expectedHarnessCommand = "npm --prefix ../.. run test --workspace=@opencircuit/sim-engine -- test/selected-semiconductor-application-golden.test.ts && if [ -f selected-semiconductor-application-golden/contract.json ] && [ -f selected-semiconductor-application-golden/execution-report.json ]; then npm --prefix ../.. run build --workspace=@opencircuit/sim-engine && node selected-semiconductor-application-golden.mjs --verify-persisted-report; else echo 'Selected-semiconductor device-model golden unavailable: current external-Motor structural identities exist, but no approved model package, dedicated device-model contract, or execution report is present.'; fi";
   let harnessPackage: { scripts?: Record<string, unknown> } | null = null;
   try {
     harnessPackage = JSON.parse(harnessPackageText) as { scripts?: Record<string, unknown> };
@@ -716,7 +716,7 @@ export function assessSelectedSemiconductorRdsonProjectionCiWiringV1(
   workflowText: string,
   harnessPackageText: string,
 ): SelectedSemiconductorRdsonProjectionCiWiringAssessmentV1 {
-  const expectedHarnessCommand = "npm --prefix ../.. exec --workspace=@opencircuit/sim-engine -- vitest run test/selected-semiconductor-rdson-projection.test.ts && node --test test/selected-semiconductor-rdson-projection-report.test.mjs && npm --prefix ../.. run build --workspace=@opencircuit/sim-engine && node selected-semiconductor-rdson-projection.mjs --verify-persisted-report";
+  const expectedHarnessCommand = "npm --prefix ../.. run test --workspace=@opencircuit/sim-engine -- test/selected-semiconductor-rdson-projection.test.ts && node --test test/selected-semiconductor-rdson-projection-report.test.mjs && npm --prefix ../.. run build --workspace=@opencircuit/sim-engine && node selected-semiconductor-rdson-projection.mjs --verify-persisted-report";
   let harnessPackage: { scripts?: Record<string, unknown> } | null = null;
   try {
     harnessPackage = JSON.parse(harnessPackageText) as { scripts?: Record<string, unknown> };
@@ -955,7 +955,7 @@ export function assessSelectedSemiconductorRdsonProjectionExecutableEvidenceV1(
   const expectedSourceContentHashes = {
     identityTest: "sha256:1345107849bc4684bce0e42e907b50710af2ed6101b2a2e506e8015520a24c68",
     reportTest: "sha256:5dfecf3c77792cceeb011c9dbab63e1f84feedb4887fecdef14204d41d2ef711",
-    runner: "sha256:0ea4f3e13d3268580da949f48998f50a304c9b5ced992c5569ed28eefd0428d9",
+    runner: "sha256:5b360aa72d7f409b05cf39c858891a2b3b78f5d796a059e10ccb6184d24d1380",
   } as const;
   const hashSource = (value: string): `sha256:${string}` => `sha256:${createHash("sha256").update(value, "utf8").digest("hex")}`;
   const actualSourceContentHashes = {
@@ -1699,7 +1699,7 @@ function behavioralApplicationGoldenContractGate(): DesignerReleaseGateV1 {
       && identityTest.includes("M2_POWER_REQUEST")
       && identityTest.includes("generateP1CompactFixture")
       && identityTest.includes("generateP2HighVoltageFixture")
-      && identityTest.includes("generated.netlist).toBe(fixture)")
+      && identityTest.includes('expect.soft(generated.netlist, `${testCase.id} netlist`).toBe(fixture)')
       && identityTest.includes("calculateSimulationNetlistContentHashV1"),
     nativeAndWasmRunner: runner.includes("runNative({ netlist")
       && runner.includes("browserWorker.run(netlist")
@@ -2169,7 +2169,7 @@ function selectedPassiveApplicationGoldenContractGate(): DesignerReleaseGateV1 {
       && testCase.recipe.version === "3.4.6"
       && testCase.recipe.contentHash === "sha256:c36cdcd96b25808fb913f152e211a6c08ac7f0bf675274f393bd00b31b2d3b1c"
       && testCase.requestHash === "sha256:f21a643aba1a3c8cb75d42ff2e69b4f12a25168becdb68fbf54f720649821cd4"
-      && testCase.resultContentHash === "sha256:78bc0f7ad6dc3c641903b1b3168c1a9a926ea78f69ebe1f2a77102d3d4b2608e"
+      && testCase.resultContentHash === "sha256:8c95de1232f9bab1a133712379287b322f76f199461581a358eecf0666dd386a"
       && testCase.strictGeneration?.requestHash === "sha256:30b8c0fac110f71ce3e71c9347afe725f2a1ad29aa4fdb6bfde8bc87cc73771c"
       && testCase.strictGeneration.resultContentHash === "sha256:d3b7fed4eb2d5f5e862ed8dfafb629771f813b967fd166902c4bd51bc6aabef2"
       && testCase.strictGeneration.retainedCandidateCount === 0
@@ -2182,7 +2182,7 @@ function selectedPassiveApplicationGoldenContractGate(): DesignerReleaseGateV1 {
       })
       && testCase.constraintPolicy?.id === "production_strict_v1"
       && testCase.constraintPolicy.contentHash === "sha256:fdef96d5e34b8acea673b9df199430c5be56d64c5cb5e58481a20d89d4df57f6"
-      && testCase.constraintDecisionContentHash === "sha256:97248bdb723e2a02bb3347c46c434ff2b7d9d95099d3ccdb69ad581d305bd409"
+      && testCase.constraintDecisionContentHash === "sha256:91bc09b720b1bf152c69fa53fd015494ed6cd6d7430fcd909fb72734bd5d5a37"
       && JSON.stringify(testCase.observationCounts) === JSON.stringify({
         recipes: 4, supportedRecipes: 3, enumerated: 1, solved: 1, matchOutcomes: 1,
         matched: 1, checked: 1, estimated: 1, deduped: 1, pareto: 1,
@@ -2196,7 +2196,7 @@ function selectedPassiveApplicationGoldenContractGate(): DesignerReleaseGateV1 {
       && testCase.library.sourceReleaseContentHash === "sha256:a72bfec6700904360882893a96db5a9420efccfb46ad78f1e3826301abe1f29e"
       && testCase.scenarioId === "ideal_pwm_output_stage_transient"
       && testCase.scenarioHash === "a09afbbb72d487c1"
-      && testCase.serializationHash === "550f2daffe407ca3"
+      && testCase.serializationHash === "550831affe3a64c1"
       && testCase.analysis === "tran",
     exactReviewedPassiveBindings: JSON.stringify(observedBindings) === JSON.stringify(expectedBindings),
     behavioralPrimaryWithoutSelectedModel: testCase?.primaryBinding?.selectedComponentId === "primary"
@@ -2240,7 +2240,7 @@ function selectedPassiveApplicationGoldenContractGate(): DesignerReleaseGateV1 {
       && runner.includes("operatingConditionsWithinReviewedEvidence: false")
       && runner.includes("physicalWaveformFidelityProved: false"),
     explicitHarnessCommand: harnessPackage.includes('"test:selected-passive-application-golden"')
-      && harnessPackage.includes("vitest run test/selected-passive-application-golden.test.ts")
+      && harnessPackage.includes("run test --workspace=@opencircuit/sim-engine -- test/selected-passive-application-golden.test.ts")
       && harnessPackage.includes("node selected-passive-application-golden.mjs"),
     conditionalContinuousIntegrationWiring: ciWiring.implemented,
     canonicalExecutionArtifact: executionResultAttached,
@@ -2927,8 +2927,8 @@ function selectedSemiconductorRdsonProjectionGate(
       && testCase.presetId === "motor.external-24v"
       && testCase.observationKind === "production_constraint_observation"
       && identity?.requestHash === "sha256:3eb6902cfb864b7e6977388fee7fa76535f9388b905b10e943849bb3207ab94f"
-      && identity.resultContentHash === "sha256:6e3986d02348a5415bbc0c56d85c1899450551c0635fac258bd575b010be1be7"
-      && identity.constraintDecisionContentHash === "sha256:ff525983f903d423d8cdb782176bf591d9990c9ffcf0fac4e404fbefb4f3ed59"
+      && identity.resultContentHash === "sha256:0ea210d5fdd7f9fa5fd29a0815b94bb80d5deef79b022631cf43b6afdf50c176"
+      && identity.constraintDecisionContentHash === "sha256:f797708f3ebbd0ef2eec06f189cbd02f642f9292f2501368e62a44a7feaf7b3e"
       && identity.candidateId === "candidate:v2:sha256:6b16171207d7e5afdb3284ad6d566cf2ccf9d565fbfea6a353c6d183b6b45bed"
       && identity.candidateIndex === 0
       && identity.candidateEligible === false
@@ -3251,8 +3251,8 @@ function selectedSemiconductorApplicationGoldenContractGate(
     && motorGenerationTest.includes('"candidate:v2:sha256:fce7b8a1f83bd1e305e12392a16d8f337e06106c66482640338cf03acdc12382"')
     && webApplicationsTest.includes("keeps exact MIC4606-2 direct-gate observations structural and V3-ineligible")
     && webApplicationsTest.includes('strictResult: "sha256:e89dcf5512270699df5f7886772a7ae2dcdaead9eea5e53133320420c6d9b435"')
-    && webApplicationsTest.includes('permissiveResult: "sha256:6e3986d02348a5415bbc0c56d85c1899450551c0635fac258bd575b010be1be7"')
-    && webApplicationsTest.includes('decision: "sha256:ff525983f903d423d8cdb782176bf591d9990c9ffcf0fac4e404fbefb4f3ed59"')
+    && webApplicationsTest.includes('permissiveResult: "sha256:0ea210d5fdd7f9fa5fd29a0815b94bb80d5deef79b022631cf43b6afdf50c176"')
+    && webApplicationsTest.includes('decision: "sha256:f797708f3ebbd0ef2eec06f189cbd02f642f9292f2501368e62a44a7feaf7b3e"')
     && webApplicationsTest.includes('"candidate:v2:sha256:6b16171207d7e5afdb3284ad6d566cf2ccf9d565fbfea6a353c6d183b6b45bed"')
     && webApplicationsTest.includes('"candidate:v2:sha256:d0c2ae8814e0ec945608bf4998e571b0884059f000e29590785960ebaccbca70"')
     && exactExternalMotorDirectGateCountsImplemented(webApplicationsTest)
@@ -3630,8 +3630,8 @@ function selectedSemiconductorApplicationGoldenContractGate(
         browserStrictResultContentHash: "sha256:e89dcf5512270699df5f7886772a7ae2dcdaead9eea5e53133320420c6d9b435",
         browserStrictRetainedCandidateCount: 0,
         browserStrictRejectionCount: 54,
-        browserPermissiveResultContentHash: "sha256:6e3986d02348a5415bbc0c56d85c1899450551c0635fac258bd575b010be1be7",
-        browserPermissiveDecisionContentHash: "sha256:ff525983f903d423d8cdb782176bf591d9990c9ffcf0fac4e404fbefb4f3ed59",
+        browserPermissiveResultContentHash: "sha256:0ea210d5fdd7f9fa5fd29a0815b94bb80d5deef79b022631cf43b6afdf50c176",
+        browserPermissiveDecisionContentHash: "sha256:f797708f3ebbd0ef2eec06f189cbd02f642f9292f2501368e62a44a7feaf7b3e",
         browserCandidateIds: [
           "candidate:v2:sha256:6b16171207d7e5afdb3284ad6d566cf2ccf9d565fbfea6a353c6d183b6b45bed",
           "candidate:v2:sha256:d0c2ae8814e0ec945608bf4998e571b0884059f000e29590785960ebaccbca70",
@@ -3728,7 +3728,7 @@ function exportGate(): DesignerReleaseGateV1 {
       && physicalHandoffV2.includes('manufacturingOutputClaim: "none"')
       && physicalHandoffV2.includes('export function exportFootprintAssignedPowerKicadSchematicV2')
       && physicalHandoffV2.includes('"physical_mapping_unavailable",\n    handoff.diagnostics')
-      && physicalHandoffV2Test.includes('"sha256:2009c6b162838424343601bc8d0aa6da7188543f29a8f20b4fe6004b1d55b5d9"')
+      && physicalHandoffV2Test.includes('"sha256:1cde50595ebed875cb5f77e8c7a449bd3e1be2355a9dcbc150dbe6e972d28af8"')
       && physicalHandoffV2Test.includes('recipeVersion: "3.4.6"')
       && physicalHandoffV2Test.includes("priorImmutableRecipeArtifact.provenance.candidate.recipeVersion = \"3.4.5\"")
       && physicalHandoffV2Test.includes('fails footprint-assigned KiCad emission closed for all eight structural instances')
@@ -3759,7 +3759,7 @@ function exportGate(): DesignerReleaseGateV1 {
     },
     physicalImplementationHandoff: {
       v1PredecessorContentHash: "sha256:dc8671f69b6588e6d11fd65fa9b954951ccc0dc28d208a6e3c877e8cbf24e068",
-      v2SuccessorContentHash: "sha256:2009c6b162838424343601bc8d0aa6da7188543f29a8f20b4fe6004b1d55b5d9",
+      v2SuccessorContentHash: "sha256:1cde50595ebed875cb5f77e8c7a449bd3e1be2355a9dcbc150dbe6e972d28af8",
       supportedRecipeIdentities: [
         {
           version: "3.4.5",
@@ -4098,8 +4098,8 @@ function strictDefaultCandidateContractImplemented(): boolean {
     && test.includes("No series-gate resistor is selected")
     && test.includes("exactly three reviewed 10 µF MLCC profiles while excluding the 100 nF C1608 from both roles")
     && test.includes("Those nominal passes do not prove effective capacitance")
-    && test.includes('permissiveResult: "sha256:6e3986d02348a5415bbc0c56d85c1899450551c0635fac258bd575b010be1be7"')
-    && test.includes('decision: "sha256:ff525983f903d423d8cdb782176bf591d9990c9ffcf0fac4e404fbefb4f3ed59"')
+    && test.includes('permissiveResult: "sha256:0ea210d5fdd7f9fa5fd29a0815b94bb80d5deef79b022631cf43b6afdf50c176"')
+    && test.includes('decision: "sha256:f797708f3ebbd0ef2eec06f189cbd02f642f9292f2501368e62a44a7feaf7b3e"')
     && test.includes("expect(first.constraintDecision.candidates).toHaveLength(2)")
     && test.includes('"candidate:v2:sha256:6b16171207d7e5afdb3284ad6d566cf2ccf9d565fbfea6a353c6d183b6b45bed"')
     && test.includes('"candidate:v2:sha256:d0c2ae8814e0ec945608bf4998e571b0884059f000e29590785960ebaccbca70"')
@@ -4129,8 +4129,8 @@ function strictDefaultCandidateContractImplemented(): boolean {
     && test.includes('candidateId: "candidate:v2:sha256:88b7d52b012cd7edfda6ba8f5ef0611c7d2ffeff870614ccf9d0dea6f1ca679d"')
     && test.includes('expect(strict.contextManifestContentHash).toBe("sha256:7ef5a9f9f7e1724e253e81850adc64673154fcfd9668b9b476d4d15125dfcbd3")')
     && test.includes('expect(strict.result.contentHash).toBe("sha256:d3b7fed4eb2d5f5e862ed8dfafb629771f813b967fd166902c4bd51bc6aabef2")')
-    && test.includes('expect(first.result.contentHash).toBe("sha256:78bc0f7ad6dc3c641903b1b3168c1a9a926ea78f69ebe1f2a77102d3d4b2608e")')
-    && test.includes('expect(first.constraintDecision.contentHash).toBe("sha256:97248bdb723e2a02bb3347c46c434ff2b7d9d95099d3ccdb69ad581d305bd409")')
+    && test.includes('expect(first.result.contentHash).toBe("sha256:8c95de1232f9bab1a133712379287b322f76f199461581a358eecf0666dd386a")')
+    && test.includes('expect(first.constraintDecision.contentHash).toBe("sha256:91bc09b720b1bf152c69fa53fd015494ed6cd6d7430fcd909fb72734bd5d5a37")')
     && test.includes('id: "candidate:v2:sha256:e6a4681fa38e5b47f8f59963924e9cd99b749932ba8052f68e34d96cef68035a"')
     && test.includes("expect(strict.execution.rejections[0]!.constraints?.some((constraint) => constraint.status === \"fail\")).toBe(false)")
     && test.includes("expect(first.result.candidates).toHaveLength(1)")
@@ -4147,8 +4147,8 @@ function strictDefaultCandidateContractImplemented(): boolean {
     && browserTest.includes("the 100 nF C1608 is excluded from both roles")
     && browserTest.includes("application adequacy remains unknown")
     && browserTest.includes("Generated 2 structural observations; the installed production policy marks 0 eligible.")
-    && browserTest.includes('contentHash: "sha256:6e3986d02348a5415bbc0c56d85c1899450551c0635fac258bd575b010be1be7"')
-    && browserTest.includes('contentHash: "sha256:78bc0f7ad6dc3c641903b1b3168c1a9a926ea78f69ebe1f2a77102d3d4b2608e"')
+    && browserTest.includes('contentHash: "sha256:0ea210d5fdd7f9fa5fd29a0815b94bb80d5deef79b022631cf43b6afdf50c176"')
+    && browserTest.includes('contentHash: "sha256:8c95de1232f9bab1a133712379287b322f76f199461581a358eecf0666dd386a"')
     && browserTest.includes('component.id === "gate-resistor"')
     && browserTest.includes('sourceId: "microchip-mic4606-ds20005604h"')
     && browserTest.includes("Power retains the reviewed Bel BOM only as an ineligible exact structural observation")
@@ -4261,7 +4261,7 @@ function powerExternalFetReadinessContractGate(): DesignerReleaseGateV1 {
     && externalLeaf.includes("scenarios: []")
     && externalLeaf.includes('defaultCircuitId: "assembly"')
     && externalLeaf.includes("defaultScenarioId: null")
-    && recipeTest.includes("componentPinPointsV2")
+    && recipeTest.includes("componentPinPointsV4")
     && recipeTest.includes("is unwired")
     && recipeTest.includes("modelTier: \"unavailable\"");
   const readinessSeparatedFromIntegrated = externalReadiness?.recognizedContract === true
@@ -4497,7 +4497,7 @@ function constraintDecisionSidecarV3Gate(): DesignerReleaseGateV1 {
     && webApplicationsTest.includes('expect(strict.contextManifestContentHash).toBe("sha256:7ef5a9f9f7e1724e253e81850adc64673154fcfd9668b9b476d4d15125dfcbd3")')
     && motorTest.includes("observes the exact MIC4606-2 direct-gate structure without inventing a gate resistor or eligibility")
     && motorTest.includes("result: generation.observation.result.contentHash")
-    && motorTest.includes('result: "sha256:01b56be6e6dfc3ca46bb36550f6999571d19bd109e73e99d29d308a69a7733b3"')
+    && motorTest.includes('result: "sha256:487cfeca28ed0a67d27df858b87925deca3896a8f9fc4ac19c9de75647cacdb2"')
     && motorTest.includes("expect(generation.observation.result.candidates).toHaveLength(2)")
     && motorTest.includes("expect(generation.decision.candidates).toHaveLength(2)")
     && motorTest.includes("materialized: 54,")
@@ -4522,12 +4522,12 @@ function constraintDecisionSidecarV3Gate(): DesignerReleaseGateV1 {
     && motorTest.includes('rule.disposition === "satisfied")).toHaveLength(9)')
     && motorTest.includes('rule.disposition !== "satisfied")).toHaveLength(21)')
     && motorTest.includes("decision: generation.decision.contentHash")
-    && motorTest.includes('decision: "sha256:f7dafa7fd6397b7a3fcfe43f12a93e0b05017faa0f91d25ae846584c5afe0604"')
-    && motorTest.includes('result: "sha256:5d3073a4e68e71f60f2d9eeaabb2ca90da213a3794c6a6779ad83eeefd703044"')
+    && motorTest.includes('decision: "sha256:093fab8cc210268d42e0af901b9fe72be506268c69d74ceb733bd01f807f70b2"')
+    && motorTest.includes('result: "sha256:8594f24adad54036b6e8df4d94a97798ee31c6ca8acdec2169a13966ebe287c0"')
     && motorTest.includes('execution: "sha256:34a59924931a3d6200594670374c5e6d57f07e4722b9d7a92736a0001adc79e4"')
     && motorTest.includes('"candidate:v2:sha256:3f9953a5582e56cd999070367f1b3c4830bfad4d4e9df55e2ce91891fb5cb16e"')
-    && motorTest.includes('decision: "sha256:27aabbc0fc3d812752e803d3ce15d40457572b2faa1f81def3a8f52ff6d05276"')
-    && powerTest.includes('expect(first.observation.result.contentHash).toBe("sha256:0c0beab37c6d04b2bac6cd028035dae9de69855e85ef6e190ccbe5098e25021b")')
+    && motorTest.includes('decision: "sha256:96a51723912ee42c1a1837c1ce388bef95fd6ecb0d328ca618a24e2380b4a9d4"')
+    && powerTest.includes('expect(first.observation.result.contentHash).toBe("sha256:6530aafac0a6060283fb17dabfd8121bfe4b3051634dcbe43a88ed8ea21b498f")')
     && powerTest.includes('expect(first.observation.result.candidates).toHaveLength(1)')
     && powerTest.includes('id: "candidate:v2:sha256:1fc0e2f47f13060b4606b7cda6e54fae2b297ffbf7873bfe089c37114c444173"')
     && powerTest.includes('expect(first.observation.execution.rejections).toEqual([])')
@@ -4552,7 +4552,7 @@ function constraintDecisionSidecarV3Gate(): DesignerReleaseGateV1 {
     && powerRecipeTest.includes('expect.objectContaining({ id: "output-capacitor-2", type: "capacitor", value: 0.000022, mpn: "GRM32ER71E226KE15L" })')
     && powerTest.includes(']))).toEqual({ pass: 9, unknown: 13, fail: 0 })')
     && powerTest.includes('expect(first.decision.eligibleCandidateIds).toEqual([])')
-    && powerTest.includes('expect(first.decision.contentHash).toBe("sha256:7bb304f6a30b58adac8ee9250ec2cda6e4104af965f0d517de0918295228c76c")')
+    && powerTest.includes('expect(first.decision.contentHash).toBe("sha256:95231bcb28308d796619e24ea92d936639bc4e426ea17fed9f9f4c8a88a168cd")')
     && productionConstraintDecisionUiImplemented;
   return gate("contract.constraint-decision-sidecar-v3", implemented ? "pass" : "blocked", [
     ...(implemented ? [] : ["production_constraint_decision_sidecar_v3_contract_unverified"]),

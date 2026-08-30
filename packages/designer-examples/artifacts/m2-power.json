@@ -42,7 +42,7 @@
       "schemaVersion": 1
     },
     "result": {
-      "canonicalContentHash": "sha256:5a3503be8d65e4cc4ea8a7623f63072c7f0d44b7e40084099f33bf365c8f1edf",
+      "canonicalContentHash": "sha256:fc3f8bb231ad65f8a9c08c5e6e182e7b8ee0f30bfb88451937318eea50b4c8b1",
       "format": "schemagic-design-result",
       "schemaVersion": 1
     }
@@ -517,53 +517,69 @@
           "probes": [
             {
               "color": "#1B9350",
-              "id": "probe-bridge-output",
-              "kind": "voltage",
-              "target": {
-                "componentPin": [
-                  "r-motor-winding",
-                  0
-                ]
-              }
+              "expression": {
+                "kind": "voltage",
+                "negative": {
+                  "kind": "runtime-node",
+                  "name": "0"
+                },
+                "positive": {
+                  "componentId": "r-motor-winding",
+                  "kind": "schematic-pin",
+                  "pin": 0
+                }
+              },
+              "expressionVersion": 1,
+              "id": "probe-bridge-output"
             },
             {
               "color": "#EA8C2A",
-              "id": "probe-motor-return",
-              "kind": "voltage",
-              "target": {
-                "componentPin": [
-                  "v-motor-back-emf",
-                  1
-                ]
-              }
+              "expression": {
+                "kind": "voltage",
+                "negative": {
+                  "kind": "runtime-node",
+                  "name": "0"
+                },
+                "positive": {
+                  "componentId": "v-motor-back-emf",
+                  "kind": "schematic-pin",
+                  "pin": 1
+                }
+              },
+              "expressionVersion": 1,
+              "id": "probe-motor-return"
             },
             {
               "color": "#2457D6",
-              "id": "probe-motor-current",
-              "kind": "current",
-              "target": {
-                "componentPin": [
-                  "r-motor-winding",
-                  0
-                ]
-              }
+              "expression": {
+                "component": {
+                  "componentId": "r-motor-winding",
+                  "kind": "schematic-component"
+                },
+                "kind": "current",
+                "terminal": 0
+              },
+              "expressionVersion": 1,
+              "id": "probe-motor-current"
             },
             {
               "color": "#A43EBB",
-              "id": "probe-supply-current",
-              "kind": "current",
-              "target": {
-                "componentPin": [
-                  "v-bridge-average",
-                  0
-                ]
-              }
+              "expression": {
+                "component": {
+                  "componentId": "v-bridge-average",
+                  "kind": "schematic-component"
+                },
+                "kind": "current",
+                "terminal": 0
+              },
+              "expressionVersion": 1,
+              "id": "probe-supply-current"
             }
           ],
           "sim": {
             "mode": "op"
           },
-          "version": 1,
+          "version": 3,
           "view": {
             "pan": [
               4,
@@ -3171,53 +3187,69 @@
           "probes": [
             {
               "color": "#1B9350",
-              "id": "probe-bridge-output",
-              "kind": "voltage",
-              "target": {
-                "componentPin": [
-                  "r-motor-winding",
-                  0
-                ]
-              }
+              "expression": {
+                "kind": "voltage",
+                "negative": {
+                  "kind": "runtime-node",
+                  "name": "0"
+                },
+                "positive": {
+                  "componentId": "r-motor-winding",
+                  "kind": "schematic-pin",
+                  "pin": 0
+                }
+              },
+              "expressionVersion": 1,
+              "id": "probe-bridge-output"
             },
             {
               "color": "#EA8C2A",
-              "id": "probe-motor-return",
-              "kind": "voltage",
-              "target": {
-                "componentPin": [
-                  "v-motor-back-emf",
-                  1
-                ]
-              }
+              "expression": {
+                "kind": "voltage",
+                "negative": {
+                  "kind": "runtime-node",
+                  "name": "0"
+                },
+                "positive": {
+                  "componentId": "v-motor-back-emf",
+                  "kind": "schematic-pin",
+                  "pin": 1
+                }
+              },
+              "expressionVersion": 1,
+              "id": "probe-motor-return"
             },
             {
               "color": "#2457D6",
-              "id": "probe-motor-current",
-              "kind": "current",
-              "target": {
-                "componentPin": [
-                  "r-motor-winding",
-                  0
-                ]
-              }
+              "expression": {
+                "component": {
+                  "componentId": "r-motor-winding",
+                  "kind": "schematic-component"
+                },
+                "kind": "current",
+                "terminal": 0
+              },
+              "expressionVersion": 1,
+              "id": "probe-motor-current"
             },
             {
               "color": "#A43EBB",
-              "id": "probe-supply-current",
-              "kind": "current",
-              "target": {
-                "componentPin": [
-                  "v-bridge-average",
-                  0
-                ]
-              }
+              "expression": {
+                "component": {
+                  "componentId": "v-bridge-average",
+                  "kind": "schematic-component"
+                },
+                "kind": "current",
+                "terminal": 0
+              },
+              "expressionVersion": 1,
+              "id": "probe-supply-current"
             }
           ],
           "sim": {
             "mode": "op"
           },
-          "version": 1,
+          "version": 3,
           "view": {
             "pan": [
               4,
@@ -5825,53 +5857,69 @@
           "probes": [
             {
               "color": "#1B9350",
-              "id": "probe-bridge-output",
-              "kind": "voltage",
-              "target": {
-                "componentPin": [
-                  "r-motor-winding",
-                  0
-                ]
-              }
+              "expression": {
+                "kind": "voltage",
+                "negative": {
+                  "kind": "runtime-node",
+                  "name": "0"
+                },
+                "positive": {
+                  "componentId": "r-motor-winding",
+                  "kind": "schematic-pin",
+                  "pin": 0
+                }
+              },
+              "expressionVersion": 1,
+              "id": "probe-bridge-output"
             },
             {
               "color": "#EA8C2A",
-              "id": "probe-motor-return",
-              "kind": "voltage",
-              "target": {
-                "componentPin": [
-                  "v-motor-back-emf",
-                  1
-                ]
-              }
+              "expression": {
+                "kind": "voltage",
+                "negative": {
+                  "kind": "runtime-node",
+                  "name": "0"
+                },
+                "positive": {
+                  "componentId": "v-motor-back-emf",
+                  "kind": "schematic-pin",
+                  "pin": 1
+                }
+              },
+              "expressionVersion": 1,
+              "id": "probe-motor-return"
             },
             {
               "color": "#2457D6",
-              "id": "probe-motor-current",
-              "kind": "current",
-              "target": {
-                "componentPin": [
-                  "r-motor-winding",
-                  0
-                ]
-              }
+              "expression": {
+                "component": {
+                  "componentId": "r-motor-winding",
+                  "kind": "schematic-component"
+                },
+                "kind": "current",
+                "terminal": 0
+              },
+              "expressionVersion": 1,
+              "id": "probe-motor-current"
             },
             {
               "color": "#A43EBB",
-              "id": "probe-supply-current",
-              "kind": "current",
-              "target": {
-                "componentPin": [
-                  "v-bridge-average",
-                  0
-                ]
-              }
+              "expression": {
+                "component": {
+                  "componentId": "v-bridge-average",
+                  "kind": "schematic-component"
+                },
+                "kind": "current",
+                "terminal": 0
+              },
+              "expressionVersion": 1,
+              "id": "probe-supply-current"
             }
           ],
           "sim": {
             "mode": "op"
           },
-          "version": 1,
+          "version": 3,
           "view": {
             "pan": [
               4,
@@ -8479,53 +8527,69 @@
           "probes": [
             {
               "color": "#1B9350",
-              "id": "probe-bridge-output",
-              "kind": "voltage",
-              "target": {
-                "componentPin": [
-                  "r-motor-winding",
-                  0
-                ]
-              }
+              "expression": {
+                "kind": "voltage",
+                "negative": {
+                  "kind": "runtime-node",
+                  "name": "0"
+                },
+                "positive": {
+                  "componentId": "r-motor-winding",
+                  "kind": "schematic-pin",
+                  "pin": 0
+                }
+              },
+              "expressionVersion": 1,
+              "id": "probe-bridge-output"
             },
             {
               "color": "#EA8C2A",
-              "id": "probe-motor-return",
-              "kind": "voltage",
-              "target": {
-                "componentPin": [
-                  "v-motor-back-emf",
-                  1
-                ]
-              }
+              "expression": {
+                "kind": "voltage",
+                "negative": {
+                  "kind": "runtime-node",
+                  "name": "0"
+                },
+                "positive": {
+                  "componentId": "v-motor-back-emf",
+                  "kind": "schematic-pin",
+                  "pin": 1
+                }
+              },
+              "expressionVersion": 1,
+              "id": "probe-motor-return"
             },
             {
               "color": "#2457D6",
-              "id": "probe-motor-current",
-              "kind": "current",
-              "target": {
-                "componentPin": [
-                  "r-motor-winding",
-                  0
-                ]
-              }
+              "expression": {
+                "component": {
+                  "componentId": "r-motor-winding",
+                  "kind": "schematic-component"
+                },
+                "kind": "current",
+                "terminal": 0
+              },
+              "expressionVersion": 1,
+              "id": "probe-motor-current"
             },
             {
               "color": "#A43EBB",
-              "id": "probe-supply-current",
-              "kind": "current",
-              "target": {
-                "componentPin": [
-                  "v-bridge-average",
-                  0
-                ]
-              }
+              "expression": {
+                "component": {
+                  "componentId": "v-bridge-average",
+                  "kind": "schematic-component"
+                },
+                "kind": "current",
+                "terminal": 0
+              },
+              "expressionVersion": 1,
+              "id": "probe-supply-current"
             }
           ],
           "sim": {
             "mode": "op"
           },
-          "version": 1,
+          "version": 3,
           "view": {
             "pan": [
               4,

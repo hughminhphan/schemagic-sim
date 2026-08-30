@@ -80,6 +80,14 @@ export class PulseRenderer {
     else if (this.fallback && this.slowFrames < 30) this.setFallback(undefined);
   }
 
+  clear(): void {
+    this.wires = [];
+    this.vref = 1;
+    this.iref = 0.01;
+    this.setFallback(undefined);
+    this.prepareCanvas();
+  }
+
   dispose(): void {
     cancelAnimationFrame(this.animationFrame);
     this.canvas.remove();

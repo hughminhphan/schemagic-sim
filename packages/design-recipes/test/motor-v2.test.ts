@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import { generateScenarioNetlist, validateCircuitV2 } from "@opencircuit/circuit-schema";
+import { generateScenarioNetlist, validateCircuitV4 } from "@opencircuit/circuit-schema";
 import {
   FACTS_SCHEMA_VERSION_V2,
   admissionContentHash,
@@ -457,7 +457,7 @@ describe("facts-schema-V2 native Motor recipe", () => {
       warnings: matched.warnings,
     };
     const materialized = MOTOR_NATIVE_RECIPE_FACTS_V2.materialize(candidate, exactEnvironment);
-    expect(validateCircuitV2(materialized.circuit)).toEqual([]);
+    expect(validateCircuitV4(materialized.circuit)).toEqual([]);
     expect(materialized.circuitInstanceClassifications).toEqual([
       { circuitId: "assembly", componentId: "bulk-capacitor", kind: "physical", selectedComponentId: "bulk-capacitor", representedQuantityPerAssembly: 1 },
       { circuitId: "assembly", componentId: "ground", kind: "non_bom", reason: "Ground is a schematic reference, not a BOM line." },
@@ -949,7 +949,7 @@ describe("facts-schema-V2 native Motor recipe", () => {
       warnings: outcome.value.warnings,
     };
     const materialized = recipe.materialize(candidate, environment);
-    expect(validateCircuitV2(materialized.circuit)).toEqual([]);
+    expect(validateCircuitV4(materialized.circuit)).toEqual([]);
     const assembly = materialized.circuit.circuits.find((circuit) => circuit.id === "assembly")!;
     expect(assembly.components.some((component) => component.id === "gate-resistor")).toBe(false);
     expect(assembly.wires).toEqual(expect.arrayContaining([
@@ -1094,7 +1094,7 @@ describe("facts-schema-V2 native Motor recipe", () => {
       warnings: outcome.value.warnings,
     };
     const materialized = recipe.materialize(candidate, environment);
-    expect(validateCircuitV2(materialized.circuit)).toEqual([]);
+    expect(validateCircuitV4(materialized.circuit)).toEqual([]);
     const assembly = materialized.circuit.circuits.find((circuit) => circuit.id === "assembly")!;
     expect(assembly.components).toEqual(expect.arrayContaining([
       expect.objectContaining({ id: "bootstrap-capacitor", mpn: "GRM31CR61H106KA12L" }),
@@ -1342,7 +1342,7 @@ describe("facts-schema-V2 native Motor recipe", () => {
     };
     const materialized = MOTOR_NATIVE_EXTERNAL_NMOS_RECIPE_FACTS_V31.materialize(candidate, environment);
     expect(MOTOR_NATIVE_EXTERNAL_NMOS_RECIPE_FACTS_V31.materialize(candidate, environment)).toEqual(materialized);
-    expect(validateCircuitV2(materialized.circuit)).toEqual([]);
+    expect(validateCircuitV4(materialized.circuit)).toEqual([]);
     expect(materialized.circuit.circuits.map((circuit) => circuit.id)).toEqual(["assembly", "behavioral-operating-point"]);
     expect(materialized.circuit.defaultCircuitId).toBe("assembly");
     expect(materialized.circuit.scenarios).toEqual([
@@ -1424,7 +1424,7 @@ describe("facts-schema-V2 native Motor recipe", () => {
       warnings: [],
     };
     const materialized = MOTOR_NATIVE_EXTERNAL_NMOS_RECIPE_FACTS_V2.materialize(candidate, exactEnvironment);
-    expect(validateCircuitV2(materialized.circuit)).toEqual([]);
+    expect(validateCircuitV4(materialized.circuit)).toEqual([]);
     expect(materialized.circuitInstanceClassifications.filter((entry) => entry.kind === "physical").map((entry) => entry.representedQuantityPerAssembly)).toEqual([2, 1, 1, 4, 1, 4]);
     expect(materialized.circuitBomNonRepresentations.map((entry) => entry.selectedComponentId)).toEqual(["driver", "mosfet", "supply-tvs"]);
   });

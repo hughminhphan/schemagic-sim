@@ -1054,12 +1054,12 @@ describe("production Designer application readiness", () => {
       strictRequest: "sha256:2fd2159070a51d75077ea7e2d7aa968af94728cc3d869aaf42f9dfc0be13d563",
       strictResult: "sha256:e89dcf5512270699df5f7886772a7ae2dcdaead9eea5e53133320420c6d9b435",
       permissiveRequest: "sha256:3eb6902cfb864b7e6977388fee7fa76535f9388b905b10e943849bb3207ab94f",
-      permissiveResult: "sha256:6e3986d02348a5415bbc0c56d85c1899450551c0635fac258bd575b010be1be7",
+      permissiveResult: "sha256:0ea210d5fdd7f9fa5fd29a0815b94bb80d5deef79b022631cf43b6afdf50c176",
       candidateIds: [
         "candidate:v2:sha256:6b16171207d7e5afdb3284ad6d566cf2ccf9d565fbfea6a353c6d183b6b45bed",
         "candidate:v2:sha256:d0c2ae8814e0ec945608bf4998e571b0884059f000e29590785960ebaccbca70",
       ],
-      decision: "sha256:ff525983f903d423d8cdb782176bf591d9990c9ffcf0fac4e404fbefb4f3ed59",
+      decision: "sha256:f797708f3ebbd0ef2eec06f189cbd02f642f9292f2501368e62a44a7feaf7b3e",
     });
     expect(strict.result.candidates).toEqual([]);
     expect(strict.result.rejectedCandidates).toHaveLength(54);
@@ -1392,12 +1392,12 @@ describe("production Designer application readiness", () => {
     expect(isAuthorizedStrictPowerInspectionSource(first, power)).toBe(false);
     expect(first.contextManifestContentHash).toBe("sha256:7ef5a9f9f7e1724e253e81850adc64673154fcfd9668b9b476d4d15125dfcbd3");
     expect(first.result.requestHash).toBe("sha256:f21a643aba1a3c8cb75d42ff2e69b4f12a25168becdb68fbf54f720649821cd4");
-    expect(first.result.contentHash).toBe("sha256:78bc0f7ad6dc3c641903b1b3168c1a9a926ea78f69ebe1f2a77102d3d4b2608e");
+    expect(first.result.contentHash).toBe("sha256:8c95de1232f9bab1a133712379287b322f76f199461581a358eecf0666dd386a");
     expect(first.result.libraryVersion).toBe("2026-08-27.2");
     expect(first.referenceDesignEvidence).toEqual(strict.referenceDesignEvidence);
     expect(JSON.stringify(first.result)).not.toContain("power_reference_design_evidence");
     expect(JSON.stringify(first.constraintDecision)).not.toContain("power_reference_design_evidence");
-    expect(first.constraintDecision.contentHash).toBe("sha256:97248bdb723e2a02bb3347c46c434ff2b7d9d95099d3ccdb69ad581d305bd409");
+    expect(first.constraintDecision.contentHash).toBe("sha256:91bc09b720b1bf152c69fa53fd015494ed6cd6d7430fcd909fb72734bd5d5a37");
     expect(first.constraintDecision.eligibleCandidateIds).toEqual([]);
     expect(first.constraintDecision.policy.contentHash).toBe(POWER_CONSTRAINT_POLICY_V3_PRODUCTION_STATUS.contentHash);
     expect(first.execution.counts).toEqual({
@@ -1629,7 +1629,7 @@ describe("production Designer application readiness", () => {
           contentHash: null,
         },
       },
-      contentHash: "sha256:2009c6b162838424343601bc8d0aa6da7188543f29a8f20b4fe6004b1d55b5d9",
+      contentHash: "sha256:1cde50595ebed875cb5f77e8c7a449bd3e1be2355a9dcbc150dbe6e972d28af8",
     });
   }, 60_000);
 });

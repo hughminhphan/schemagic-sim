@@ -81,7 +81,7 @@ function candidate(request: DesignRequest): DesignCandidate {
     simulationCoverage: [{ scenarioId: "steady_state", modelTier: "unavailable", limitations: ["No redistributable model"] }],
     circuit: {
       format: "opencircuit-circuit",
-      version: 1,
+      version: 3,
       meta: { title: "Synthetic shared UI candidate" },
       components: [],
       wires: [],

@@ -1,4 +1,11 @@
-import type { CircuitComponent, CircuitDocument, CircuitWire, Point } from "@opencircuit/circuit-schema";
+import {
+  componentCurrentProbe,
+  pinVoltageProbe,
+  type CircuitComponent,
+  type CircuitDocument,
+  type CircuitWire,
+  type Point,
+} from "@opencircuit/circuit-schema";
 import type { CandidateForMaterialization } from "@opencircuit/design-engine";
 import type { BrushedDcMotorDesignRequest, SelectedComponent } from "@opencircuit/design-schema";
 import { motorProfileById } from "./catalog";
@@ -245,7 +252,7 @@ export function materializeBehavioralMotorCircuit(
 
   return {
     format: "opencircuit-circuit",
-    version: 1,
+    version: 3,
     meta: {
       title: `scheMAGIC Motor Designer behavioral ${topology === "integrated" ? "integrated" : "external-NMOS"} H-bridge — ${driver.part.manufacturerPartNumber}`,
       description: "Editable averaged operating-point model: static ideal bridge switches, effective capacitors, winding R/L where supplied, and an explicit operating-point back-EMF source. It does not model PWM edges, selected-part silicon, speed/torque dynamics, protection, thermal behavior, or PCB parasitics. Gate-driver control, gate resistors, pull-downs, and bootstrap parts remain in the candidate BOM but are not representable on these static two-terminal switches.",
@@ -253,10 +260,10 @@ export function materializeBehavioralMotorCircuit(
     components,
     wires,
     probes: [
-      { id: "probe-bridge-output", kind: "voltage", target: { componentPin: ["r-motor-winding", 0] }, color: "#1B9350" },
-      { id: "probe-motor-return", kind: "voltage", target: { componentPin: ["v-motor-back-emf", 1] }, color: "#EA8C2A" },
-      { id: "probe-motor-current", kind: "current", target: { componentPin: ["r-motor-winding", 0] }, color: "#2457D6" },
-      { id: "probe-supply-current", kind: "current", target: { componentPin: ["v-bridge-average", 0] }, color: "#A43EBB" },
+      pinVoltageProbe("probe-bridge-output", "r-motor-winding", 0, { color: "#1B9350" }),
+      pinVoltageProbe("probe-motor-return", "v-motor-back-emf", 1, { color: "#EA8C2A" }),
+      componentCurrentProbe("probe-motor-current", "r-motor-winding", 0, { color: "#2457D6" }),
+      componentCurrentProbe("probe-supply-current", "v-bridge-average", 0, { color: "#A43EBB" }),
     ],
     sim: { mode: "op" },
     view: { pan: [4, 2], zoom: 1 },

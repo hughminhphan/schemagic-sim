@@ -101,7 +101,7 @@ function scenarioResult(): DesignResultV2 {
     ],
     circuit: {
       format: "opencircuit-circuit",
-      version: 2,
+      version: 4,
       meta: { title: "Scenario-plan fixture" },
       designBlocks: [block],
       circuits: [

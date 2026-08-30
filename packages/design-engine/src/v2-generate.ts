@@ -1,5 +1,6 @@
 import { designProfileEnvelopeContentHash, designProfileId } from "@opencircuit/design-library/v2-runtime";
-import { canonicalizeCircuitV2, generateScenarioNetlist, validateCircuitV2 } from "@opencircuit/circuit-schema";
+import { canonicalizeCircuitV4, validateCircuitV4 } from "@opencircuit/circuit-schema";
+import { generateScenarioNetlist } from "@opencircuit/circuit-schema/v4-netlist";
 import {
   DESIGN_EXECUTION_REPORT_V2_MAX_CANONICAL_BYTES, DESIGN_RESULT_V2_MAX_CANONICAL_BYTES,
   DESIGN_V2_MAX_CANDIDATES, DESIGN_V2_MAX_DRAFTS, DESIGN_V2_MAX_HOOK_VALUE_CANONICAL_BYTES,
@@ -283,8 +284,8 @@ function generatePreparedWithDrafts(request: ElectricalDesignRequestV2, prepared
         const coverage = [...matched.simulationCoverage].map((entry) => ({ ...entry, limitations: sortedUnique(entry.limitations) })).sort((left,right) => compareDesignV2Tokens(left.scenarioId,right.scenarioId));
         const forMaterialization: CandidateForMaterializationV2 = detachedFrozenDesignV2Value({ id:candidateId, recipeId:recipe.id, libraryVersion:prepared.manifest.version, data:matched.data, components:matched.components, derivedValues:matched.derivedValues, constraints, metrics, simulationCoverage:coverage, warnings });
         const materialization = hook(recipe, "materialize", () => recipe.materialize(frozenHookInput(forMaterialization), frozenHookInput(environment))); executionCounts.materialized += 1;
-        if (validateCircuitV2(materialization.circuit).length > 0) error({ code:"recipe_contract_invalid", stage:"materialize", recipeId:recipe.id }, "recipe_contract");
-        const circuit=JSON.parse(canonicalizeCircuitV2(materialization.circuit,true)) as typeof materialization.circuit;
+        if (validateCircuitV4(materialization.circuit).length > 0) error({ code:"recipe_contract_invalid", stage:"materialize", recipeId:recipe.id }, "recipe_contract");
+        const circuit=JSON.parse(canonicalizeCircuitV4(materialization.circuit,true)) as typeof materialization.circuit;
         const candidate: DesignCandidateV2 = { schemaVersion:2, id:candidateId, requestHash:identityInput.requestHash, recipeId:recipe.id, libraryVersion:prepared.manifest.version, components:matched.components, derivedValues:matched.derivedValues, constraints, metrics, simulationCoverage:coverage, circuit, circuitInstanceClassifications:materialization.circuitInstanceClassifications, circuitBomNonRepresentations:materialization.circuitBomNonRepresentations, warnings };
         let validatedCandidate: DesignCandidateV2;
         try {

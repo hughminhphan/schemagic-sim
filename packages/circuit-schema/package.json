@@ -4,14 +4,18 @@
   "private": true,
   "description": "Versioned circuit-document contracts for scheMAGIC Designer and Simulator",
   "type": "module",
-  "exports": { ".": "./src/index.ts" },
+  "exports": {
+    ".": "./src/index.ts",
+    "./v4-netlist": "./src/v4-netlist.ts"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "test": "vitest run",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
-    "@opencircuit/model-import": "*"
+    "@opencircuit/model-import": "*",
+    "@opencircuit/signal-workbench": "*"
   },
   "devDependencies": {
     "@types/node": "24.3.0",

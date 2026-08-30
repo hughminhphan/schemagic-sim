@@ -1,6 +1,6 @@
 import type {
-  CircuitGraphV2,
-  SimulationScenarioV2,
+  CircuitGraphV4,
+  SimulationScenarioV4,
 } from "@opencircuit/circuit-schema";
 import {
   canonicalDesignV2Number,
@@ -16,8 +16,8 @@ export const MOTOR_BEHAVIORAL_OPERATING_POINT_SCENARIO_ID = "pwm_loaded_steady_s
 export const MOTOR_SELECTED_PART_MODEL_COVERAGE_ID = "selected_part_model" as const;
 
 export interface MotorOperatingPointCompanionV2 {
-  readonly graph: CircuitGraphV2;
-  readonly scenario: SimulationScenarioV2;
+  readonly graph: CircuitGraphV4;
+  readonly scenario: SimulationScenarioV4;
   readonly coverage: SimulationCoverageV2;
   readonly circuitInstanceClassifications: CircuitInstanceClassificationV2[];
   readonly circuitBomNonRepresentations: CircuitBomNonRepresentationV2[];
@@ -44,7 +44,7 @@ export function buildMotorOperatingPointCompanionV2(
   const windingDropV = canonical(loadCurrentA * windingResistanceOhm);
   const operatingPointBackEmfV = canonical(averageBridgeVoltageV - windingDropV);
   const nonBomReason = "Request-derived behavioral primitive; it does not represent any selected BOM line or manufacturer-part model.";
-  const graph: CircuitGraphV2 = {
+  const graph: CircuitGraphV4 = {
     id: "behavioral-operating-point",
     title: "Request-derived averaged PWM loaded operating point",
     components: [
@@ -112,7 +112,7 @@ export function buildMotorOperatingPointCompanionV2(
       { id: "probe-operating-back-emf", kind: "voltage", target: { componentPin: ["v-motor-back-emf", 0] } },
     ],
   };
-  const scenario: SimulationScenarioV2 = {
+  const scenario: SimulationScenarioV4 = {
     id: MOTOR_BEHAVIORAL_OPERATING_POINT_SCENARIO_ID,
     title: "Averaged PWM loaded steady state",
     circuitId: graph.id,

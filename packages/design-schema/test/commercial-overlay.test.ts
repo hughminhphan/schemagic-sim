@@ -90,7 +90,7 @@ function oneCandidateResult(): DesignResultV2 {
     metrics: { values: [], warningCount: 0, estimateCount: 0, unknownCount: 0 },
     simulationCoverage: [{ scenarioId: "op", modelTier: "behavioral" as const, limitations: [] }],
     circuit: {
-      format: "opencircuit-circuit" as const, version: 2 as const, meta: { title: "Commercial fixture" },
+      format: "opencircuit-circuit" as const, version: 4 as const, meta: { title: "Commercial fixture" },
       designBlocks: [],
       circuits: [{
         id: "main", title: "Main",

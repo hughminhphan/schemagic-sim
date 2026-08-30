@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 const bjtOutputFamily = {
   format: "opencircuit-circuit",
-  version: 1,
+  version: 3,
   meta: { title: "2N3904 output family" },
   components: [
     { id: "c1", type: "vsource", value: 5, pos: [8, 12], rot: 0, mirror: false, label: { text: "VCE", offset: [-4, 0] } },
@@ -12,15 +12,24 @@ const bjtOutputFamily = {
     { id: "c5", type: "bjt_npn", mpn: "2N3904", pos: [26, 18], rot: 0, mirror: false, label: { text: "Q1", offset: [5, 0] } },
     { id: "c6", type: "ground", pos: [8, 14], rot: 0, mirror: false },
     { id: "c7", type: "ground", pos: [8, 26], rot: 0, mirror: false },
-    { id: "c8", type: "ground", pos: [28, 22], rot: 0, mirror: false },
+    { id: "c8", type: "ground", pos: [28, 21], rot: 0, mirror: false },
   ],
   wires: [
     { id: "w1", points: [[8, 10], [16, 10]] },
-    { id: "w2", points: [[20, 10], [28, 10], [28, 14]] },
+    { id: "w2", points: [[20, 10], [28, 10], [28, 15]] },
     { id: "w3", points: [[8, 22], [14, 22]] },
     { id: "w4", points: [[18, 22], [24, 22], [24, 18]] },
   ],
-  probes: [{ id: "p1", kind: "voltage", target: { wire: "w2" }, color: "#3FD983" }],
+  probes: [{
+    id: "p1",
+    expressionVersion: 1,
+    expression: {
+      kind: "voltage",
+      positive: { kind: "schematic-wire", wireId: "w2" },
+      negative: { kind: "runtime-node", name: "0" },
+    },
+    color: "#3FD983",
+  }],
   sim: {
     mode: "dc-sweep",
     dcSweep: {

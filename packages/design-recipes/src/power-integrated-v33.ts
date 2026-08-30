@@ -1,7 +1,7 @@
 import {
   calculateDesignBlockContentHash,
-  type CircuitComponentV2,
-  type CircuitDocumentV2,
+  type CircuitComponentV4,
+  type CircuitDocumentV4,
   type DesignBlockDefinition,
 } from "@opencircuit/circuit-schema";
 import {
@@ -833,7 +833,7 @@ function materialize(
     rot: 0 | 90,
     componentId: string = selectedComponentId,
     expectedQuantityPerAssembly = 1,
-  ): CircuitComponentV2 => {
+  ): CircuitComponentV4 => {
     const component = selected.get(selectedComponentId)!;
     if (component.value === undefined || component.quantityPerAssembly !== expectedQuantityPerAssembly) {
       throw new TypeError(`Facts-V3.3 integrated-buck materialization requires ${expectedQuantityPerAssembly} exact-valued ${selectedComponentId}`);
@@ -885,7 +885,7 @@ function materialize(
     ...definitionPayload,
     contentHash: calculateDesignBlockContentHash(definitionPayload),
   };
-  const components: CircuitComponentV2[] = [
+  const components: CircuitComponentV4[] = [
     passive("bootstrap-capacitor", "capacitor", [20, -8], 0),
     passive("feedback-lower", "resistor", [44, 16], 90),
     passive("feedback-upper", "resistor", [44, 8], 90),
@@ -903,9 +903,9 @@ function materialize(
       mirror: false,
     },
   ];
-  const circuit: CircuitDocumentV2 = {
+  const circuit: CircuitDocumentV4 = {
     format: "opencircuit-circuit",
-    version: 2,
+    version: 4,
     meta: {
       title: "Catalog-native facts-V3.3 integrated synchronous buck structural schematic",
       description: "Connected exact-BOM structure only; it provides no regulation, simulation, performance, or selected-part fidelity claim.",

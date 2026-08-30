@@ -1,5 +1,7 @@
 # ADR-0005: Designer v2 result and circuit boundary
 
+> Circuit-document version references are superseded by [ADR-0013](0013-separate-simulator-v3-and-designer-v4-circuit-formats.md). Designer request/result protocol V2 remains distinct from the persisted multi-circuit document, which is released as V4.
+
 - Status: Accepted; implementation in progress
 - Date: 2026-08-23
 - Scope: `@opencircuit/design-schema`, `@opencircuit/design-engine`, Motor and Power recipe adapters, `@opencircuit/design-export`, and scheMAGIC Designer

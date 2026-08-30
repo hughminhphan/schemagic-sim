@@ -2,11 +2,15 @@
 
 [![CI](https://github.com/hughminhphan/schemagic-sim/actions/workflows/ci.yml/badge.svg)](https://github.com/hughminhphan/schemagic-sim/actions/workflows/ci.yml)
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
-[![Live demo](https://img.shields.io/badge/live-sim.schemagic.design-1B9350)](https://sim.schemagic.design)
+[![Live demo](https://img.shields.io/badge/live-schemagic.pages.dev-1B9350)](https://schemagic.pages.dev)
 
 scheMAGIC is a free, open-source electronics design suite for turning declared requirements into inspectable circuits, checking them with evidence-backed models, and simulating them locally in the browser.
 
 Everything in this repository belongs to the scheMAGIC product family: Designer, Motor Designer, Power Designer, Simulator, Sourcing, design exports, the Component Library, and the model-authoring toolchain. The historical `@opencircuit/*` workspace namespace remains only as a stable internal compatibility API for imports and persisted formats; it is not a separate product or public brand.
+
+## Release status
+
+`v0.2.0-rc.1` brings the Simulator, Measurement Workbench, Motor/Power Designer and 771-package component-model library into one versioned release candidate. Open the [Simulator](https://schemagic.pages.dev/) or [Designer](https://schemagic.pages.dev/designer). See the [changelog](CHANGELOG.md) and [release contract](docs/releases/v0.2.0-rc.1.md) for compatibility, verification and known limitations.
 
 ## Product family
 
@@ -18,7 +22,7 @@ Everything in this repository belongs to the scheMAGIC product family: Designer,
 | Simulator | Local ngspice-46 WebAssembly circuit bench | Operating point, DC sweep, transient, AC, and noise analyses |
 | Sourcing | Provider-neutral BOM policy and dated offer evaluation | V2 lookup, authorization issuance, and trusted verification share one fail-closed operation-permission validator. Invalid execution modes or approval references fail before cache or adapter access; legacy V1 lookup is audit-only, and raw provider factories are not public package subpaths. DigiKey and Mouser remain disabled pending credentials, written approval, and terms; no live provider access is enabled |
 | Exports | Design JSON, BOM CSV, scenario plans, structural SVG/KiCad, printable HTML, SPICE, and behavioral simulation CSV contracts | Exact-regenerated production observations expose JSON, BOM, structural SVG/KiCad, printable HTML, and zero-omission Scenario SPICE for the separate generic behavioral scenarios. Customized-target inspection receipts contain the sidecar and exact BOM/SVG descriptors, not the artifact payloads; replay is mandatory and conveys no installed-context or production authority. Simulation CSV and Simulator handoff remain disabled without pinned-engine samples and an exact matching simulation receipt |
-| Component Library and model tools | Reviewed manufacturer models, ingestion, fitting, and native/WASM verification | 47 independently reviewed single-subcircuit assets are admitted to the browser-safe execution registry; all other assets remain unavailable until their exact execution gate passes |
+| Component Library and model tools | Reviewed manufacturer models, ingestion, fitting, and native/WASM verification | 771 evidence-bearing model packages are validated; 47 independently reviewed single-subcircuit assets are admitted to the browser-safe execution registry, while other assets remain unavailable until their exact execution gate passes |
 
 Catalog `2026-08-27.2` (`sha256:a72bfec6700904360882893a96db5a9420efccfb46ad78f1e3826301abe1f29e`) contains 24 independently reviewed profiles, including the admitted TI `DRV8262DDVR`, Diodes `3.0SMCJ33CAQ` TVS, Bel Fuse `F1F2-0804-100M` inductor, and Murata `GRM32ER71E226KE15L` MLCC. It preserves corrected geometry exactly: DRV8262 Most/Density-A TOP-copper bounds are `129.123381013 mm²`, DRV8876 copper bounds are `38.500010211 mm²`, TPS54302 copper bounds are `10.582498183 mm²`, and the CSD18540 direct land pattern is `31.24224 mm²`. DRV8262 admission grants no generation feasibility and the installed recipe rejects it before materialization; LM70880 remains researching after its attempted profile was withdrawn. Catalog admission alone grants no candidate eligibility, selected-part simulation, provider, sourcing, or release authority.
 
@@ -40,7 +44,7 @@ Keep the pointer visible, avoid cuts during the pot drag, and return the final G
 
 | Try it live | Run locally |
 | --- | --- |
-| Open [sim.schemagic.design](https://sim.schemagic.design). No account or installation is required. | `git clone https://github.com/hughminhphan/schemagic-sim.git`<br>`cd schemagic-sim`<br>`npm install`<br>`npm run dev` |
+| Open [schemagic.pages.dev](https://schemagic.pages.dev). No account or installation is required. | `git clone https://github.com/hughminhphan/schemagic-sim.git`<br>`cd schemagic-sim`<br>`npm ci`<br>`npm run dev` |
 
 ## Features
 

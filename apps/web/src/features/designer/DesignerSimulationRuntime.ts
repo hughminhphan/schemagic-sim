@@ -1,13 +1,13 @@
 import type {
-  CircuitDocumentV2,
-  CircuitGraphV2,
-  CircuitProbeV2,
-  SimulationScenarioV2,
+  CircuitDocumentV4,
+  CircuitGraphV4,
+  CircuitProbeV4,
+  SimulationScenarioV4,
 } from "@opencircuit/circuit-schema";
+import { generateScenarioNetlist } from "@opencircuit/circuit-schema/v4-netlist";
 import {
   SimulationClient,
   calculateSimulationNetlistContentHashV1,
-  generateScenarioNetlist,
   verifySimulationExecutionReceiptV1,
   type SimulationResult,
   type WorkerReadyResponse,
@@ -26,7 +26,7 @@ const SVG_NS = "http://www.w3.org/2000/svg";
 export interface DesignerSimulationInput {
   readonly key: string;
   readonly netlist: string;
-  readonly circuit: Readonly<CircuitDocumentV2>;
+  readonly circuit: Readonly<CircuitDocumentV4>;
   readonly scenarioId: string;
 }
 
@@ -40,8 +40,8 @@ export interface DesignerSimulationTrace {
 export interface DesignerSimulationExecution {
   readonly key: string;
   readonly ready: Readonly<WorkerReadyResponse>;
-  readonly scenario: Readonly<SimulationScenarioV2>;
-  readonly graph: Readonly<CircuitGraphV2>;
+  readonly scenario: Readonly<SimulationScenarioV4>;
+  readonly graph: Readonly<CircuitGraphV4>;
   readonly result: Readonly<SimulationResult>;
   readonly traces: readonly DesignerSimulationTrace[];
 }
@@ -53,7 +53,7 @@ function humanize(value: string): string {
 }
 
 function targetNode(
-  probe: Readonly<CircuitProbeV2>,
+  probe: Readonly<CircuitProbeV4>,
   generated: Readonly<ReturnType<typeof generateScenarioNetlist>>,
 ): string | undefined {
   if (probe.target.node !== undefined) return probe.target.node;
@@ -64,7 +64,7 @@ function targetNode(
 }
 
 function probeTrace(
-  probe: Readonly<CircuitProbeV2>,
+  probe: Readonly<CircuitProbeV4>,
   generated: Readonly<ReturnType<typeof generateScenarioNetlist>>,
   result: Readonly<SimulationResult>,
   index: number,
@@ -95,7 +95,7 @@ function fallbackTraces(result: Readonly<SimulationResult>): DesignerSimulationT
 }
 
 function tracesFor(
-  graph: Readonly<CircuitGraphV2>,
+  graph: Readonly<CircuitGraphV4>,
   generated: Readonly<ReturnType<typeof generateScenarioNetlist>>,
   result: Readonly<SimulationResult>,
 ): DesignerSimulationTrace[] {
@@ -118,7 +118,7 @@ export class DesignerSimulationRunner {
   }
 
   async run(input: Readonly<DesignerSimulationInput>): Promise<DesignerSimulationExecution> {
-    const circuit = structuredClone(input.circuit) as CircuitDocumentV2;
+    const circuit = structuredClone(input.circuit) as CircuitDocumentV4;
     const scenario = circuit.scenarios.find((entry) => entry.id === input.scenarioId);
     if (scenario === undefined) throw new Error("The selected behavioral scenario is no longer present.");
     const graph = circuit.circuits.find((entry) => entry.id === scenario.circuitId);

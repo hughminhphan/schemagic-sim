@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { generateScenarioNetlist, validateCircuitV2 } from "@opencircuit/circuit-schema";
+import { generateScenarioNetlist, validateCircuitV4 } from "@opencircuit/circuit-schema";
 import { designProfileEnvelopeContentHash } from "@opencircuit/design-library";
 import { exportProductionDesignArtifactV2 } from "@opencircuit/design-export/production-artifact-v2";
 import {
@@ -73,7 +73,7 @@ describe("Power Designer V3 production constraint observation", () => {
     const first = generateBuckConstraintObservationV3(v3Request);
     expect(first.kind).toBe("production_constraint_observation");
     expect(first.observation.result.requestHash).toBe("sha256:3702fc5b906a3bfc2caeccc547b222b44fe0827b4a4972b1d4890ef35e100400");
-    expect(first.observation.result.contentHash).toBe("sha256:0c0beab37c6d04b2bac6cd028035dae9de69855e85ef6e190ccbe5098e25021b");
+    expect(first.observation.result.contentHash).toBe("sha256:6530aafac0a6060283fb17dabfd8121bfe4b3051634dcbe43a88ed8ea21b498f");
     expect(first.observation.execution.counts).toEqual({
       recipes: 4,
       supportedRecipes: 3,
@@ -179,8 +179,8 @@ describe("Power Designer V3 production constraint observation", () => {
         ]),
       }),
     ]);
-    expect(first.decision.contentHash).toBe("sha256:7bb304f6a30b58adac8ee9250ec2cda6e4104af965f0d517de0918295228c76c");
-    expect(validateCircuitV2(candidate.circuit)).toEqual([]);
+    expect(first.decision.contentHash).toBe("sha256:95231bcb28308d796619e24ea92d936639bc4e426ea17fed9f9f4c8a88a168cd");
+    expect(validateCircuitV4(candidate.circuit)).toEqual([]);
     expect(candidate.components.length).toBeGreaterThan(0);
     const scenario = generateScenarioNetlist(candidate.circuit, "ideal_pwm_output_stage_transient");
     expect(scenario.omissions).toEqual([]);
@@ -199,7 +199,7 @@ describe("Power Designer V3 production constraint observation", () => {
     );
     const artifact = exportBom();
     expect(designSha256ContentHash(artifact.content)).toBe(
-      "sha256:8864b2d5edfb6bb6c7a1e6fe03b919b131eddaee907c4e4b0a2e6c3492fd69ab",
+      "sha256:8fc057c4f2b549cc9fc05bdae37398ff5a6ac625a77bbc42d913990c44602593",
     );
     expect(artifact.content).toContain("observation_only,ineligible");
     for (const component of candidate.components) {

@@ -5,6 +5,7 @@ import {
   calculateSimulationNetlistContentHashV1,
   verifySimulationExecutionReceiptV1,
 } from "../src/provenance";
+import { createRunProvenance, effectiveSimulationLimits } from "../src/identity";
 import type { SimulationResult, VectorMeta } from "../src/types";
 
 const vectors: VectorMeta[] = [
@@ -24,7 +25,23 @@ async function result(): Promise<SimulationResult> {
     data,
     rawfileBytes: 256,
   });
-  return { vectors: structuredClone(vectors), data, elapsedMs: 12.5, rawfileBytes: 256, receipt };
+  const limits = effectiveSimulationLimits("runTransient");
+  const provenance = await createRunProvenance({
+    type: "runTransient",
+    netlist: "receipt fixture\n.tran 1u 2u\n.end\n",
+    limits,
+  });
+  return {
+    provenance,
+    vectors: structuredClone(vectors),
+    data,
+    elapsedMs: 12.5,
+    engineMs: 10,
+    parseMs: 1,
+    queueMs: 0.5,
+    rawfileBytes: 256,
+    receipt,
+  };
 }
 
 describe("simulation execution receipt V1", () => {
@@ -40,6 +57,8 @@ describe("simulation execution receipt V1", () => {
     );
     expect(first.receipt.vectorCount).toBe(2);
     expect(first.receipt.scalarSampleCount).toBe(6);
+    expect(first.provenance.runKey).toMatch(/^[0-9a-f]{64}$/);
+    expect(first.provenance.requestType).toBe(first.receipt.requestType);
     await expect(verifySimulationExecutionReceiptV1(first)).resolves.toEqual([]);
   });
 

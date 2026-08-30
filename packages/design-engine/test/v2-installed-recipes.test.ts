@@ -370,7 +370,7 @@ describe("private installed native recipe sets", () => {
       contentHash: allowed.result.contentHash,
       candidateIds: allowed.result.candidates.map((candidate) => candidate.id),
     }).toEqual({
-      contentHash: "sha256:fc6ecab9ec2a50e3dfd6df6c5309faa3070168bbfc5aacd3e607626ddd485fdd",
+      contentHash: "sha256:2690a9ead0c94172456da4c46477637bb6ac73e562d91ed0526aee5883a4fd8a",
       candidateIds: [
         "candidate:v2:sha256:4ab497c91c72e20f50fdcad9fd509757b0f2f2bb0bb37f86c82d41825c232199",
       ],

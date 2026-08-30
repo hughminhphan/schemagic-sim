@@ -38,6 +38,17 @@ jobs:
       - name: Run workspace tests
         run: npm test
 
+      - name: Run workspace type checks
+        run: npm run typecheck
+
+      # The authoring tools live outside the root workspace glob and therefore
+      # need explicit release gates.
+      - name: Run model-authoring tool tests
+        run: |
+          npm test --prefix tools/model-factory
+          npm test --prefix tools/conveyor
+          npm run typecheck --prefix tools/conveyor
+
       # Keep policy-aware model-package schema and provenance validation visible
       # as an explicit hard gate even though the model-library test also runs it.
       - name: Validate every registered component model package
@@ -53,6 +64,28 @@ jobs:
           path: apps/web/dist
           if-no-files-found: error
           retention-days: 14
+
+  browser-integration:
+    name: Simulator, Measurement, and Designer browser integration
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Install pinned Chromium runtime
+        run: npx playwright install --with-deps chromium
+
+      - name: Run integrated browser suite
+        run: npm run test:e2e --workspace=@opencircuit/web -- --project=chromium
 
   native-comparison:
     name: Native versus WASM comparison

@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import {
   calculateDesignBlockContentHash,
-  validateCircuitV2,
+  validateCircuitV4,
   type DesignBlockDefinition,
 } from "@opencircuit/circuit-schema";
 import {
@@ -84,7 +84,7 @@ function omissionResult(): DesignResultV2 {
     }],
     circuit: {
       format: "opencircuit-circuit",
-      version: 2,
+      version: 4,
       meta: { title: "Schematic-only omission fixture" },
       designBlocks: [block],
       circuits: [{
@@ -135,7 +135,7 @@ function omissionResult(): DesignResultV2 {
 }
 
 function assertValidFixture(result: DesignResultV2): void {
-  const circuitIssues = validateCircuitV2(result.candidates[0]!.circuit);
+  const circuitIssues = validateCircuitV4(result.candidates[0]!.circuit);
   if (circuitIssues.length > 0) throw new Error(JSON.stringify(circuitIssues));
   try {
     parseDesignResultV2(result);

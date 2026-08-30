@@ -1,4 +1,4 @@
-import type { CircuitComponentV2, CircuitDocumentV2 } from "@opencircuit/circuit-schema";
+import type { CircuitComponentV4, CircuitDocumentV4 } from "@opencircuit/circuit-schema";
 import { FACTS_SCHEMA_VERSION, designProfileId, getDesignProfileCodec, parseDesignProfileFor, type DesignProfileV1, type PartClassId, type ProfileEvidenceRef, type ProfileFact, type ProfileQuantity } from "@opencircuit/design-library/v2-runtime";
 import { compareDesignV2Tokens, type ConstraintResult, type EvidenceRef, type Quantity, type SelectedComponent } from "@opencircuit/design-schema";
 import type { NativeCandidateV2, NativeCatalogV2, NativeMaterializationV2 } from "./types";
@@ -88,7 +88,7 @@ function passiveType(role: string): "capacitor" | "inductor" | "resistor" {
 
 export function materializeBom(candidate: Readonly<NativeCandidateV2>, title: string, nonRepresentedIds: ReadonlySet<string>): NativeMaterializationV2 {
   const physical = candidate.components.filter((entry) => !nonRepresentedIds.has(entry.id));
-  const components: CircuitComponentV2[] = [
+  const components: CircuitComponentV4[] = [
     { id: "ground", type: "ground", pos: [0, 0], rot: 0, mirror: false },
     ...physical.map((entry, index) => ({
       id: `bom-${String(index + 1).padStart(2, "0")}`,
@@ -100,9 +100,9 @@ export function materializeBom(candidate: Readonly<NativeCandidateV2>, title: st
       mirror: false,
     })),
   ];
-  const circuit: CircuitDocumentV2 = {
+  const circuit: CircuitDocumentV4 = {
     format: "opencircuit-circuit",
-    version: 2,
+    version: 4,
     meta: { title, description: "Deterministic BOM placement graph; executable semiconductor models are not yet admitted." },
     designBlocks: [],
     circuits: [{ id: "assembly", title: "BOM placement", components, wires: [], probes: [] }],

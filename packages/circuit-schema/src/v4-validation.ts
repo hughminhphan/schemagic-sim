@@ -1,20 +1,20 @@
 import { deserializeCircuit } from "./canonical";
 import { DC_SWEEP_MAX_POINTS, dcSweepRangePointCount } from "./dc-sweep";
 import { NOISE_MAX_POINTS, noisePointCount } from "./noise";
-import { componentPinPointsV2 } from "./parts";
+import { componentPinPointsV4 } from "./parts";
 import { hasForbiddenControl, hasUnpairedSurrogate, isSafeEngineeringValue } from "./spice-token";
-import { calculateDesignBlockContentHash, canonicalizeCircuitV2, canonicalizeV2Value, detachedCircuitV2Snapshot } from "./v2-canonical";
+import { calculateDesignBlockContentHash, canonicalizeCircuitV4, canonicalizeV4Value, detachedCircuitV4Snapshot } from "./v4-canonical";
 import type {
   AnyCircuitDocument,
-  CircuitComponentV2,
+  CircuitComponentV4,
   CircuitContractFailureCode,
   CircuitContractIssue,
-  CircuitDocumentV2,
-  CircuitGraphV2,
-  CircuitProbeV2,
+  CircuitDocumentV4,
+  CircuitGraphV4,
+  CircuitProbeV4,
   DCSweepRange,
   DesignBlockDefinition,
-  ExecutableSimConfigV2,
+  ExecutableSimConfigV4,
   JsonAnnotation,
   NoiseConfig,
   Point,
@@ -141,7 +141,7 @@ function validateComponent(
   component: unknown,
   path: string,
   circuitId: string | undefined,
-): component is CircuitComponentV2 {
+): component is CircuitComponentV4 {
   if (!isRecord(component)) {
     push(issues, "UNKNOWN_FIELD", path, "Must be an object", { ...(circuitId ? { circuitId } : {}) });
     return false;
@@ -156,7 +156,7 @@ function validateComponent(
     diode: [], led: [], bjt_npn: [], bjt_pnp: [], nmos: [], pmos: [], opamp_ideal: [], ground: [],
   };
   if (typeof type !== "string" || !Object.hasOwn(extras, type)) {
-    push(issues, "INVALID_REFERENCE", `${path}.type`, `Unsupported v2 component type ${String(type)}`, { ...(circuitId ? { circuitId } : {}) });
+    push(issues, "INVALID_REFERENCE", `${path}.type`, `Unsupported v4 component type ${String(type)}`, { ...(circuitId ? { circuitId } : {}) });
     closed(issues, component, path, base);
     return false;
   }
@@ -173,7 +173,7 @@ function validateComponent(
     else {
       annotation(issues, component.annotations, `${path}.annotations`, 0);
       try {
-        if (new TextEncoder().encode(JSON.stringify(canonicalizeV2Value(component.annotations))).byteLength > MAX_ANNOTATION_BYTES) {
+        if (new TextEncoder().encode(JSON.stringify(canonicalizeV4Value(component.annotations))).byteLength > MAX_ANNOTATION_BYTES) {
           push(issues, "EXECUTION_LIMIT", `${path}.annotations`, `Annotations are limited to ${MAX_ANNOTATION_BYTES} bytes`, context);
         }
       } catch {
@@ -240,7 +240,7 @@ function validateWire(issues: CircuitContractIssue[], wire: unknown, path: strin
   return id;
 }
 
-function validateProbe(issues: CircuitContractIssue[], probe: unknown, path: string, circuitId?: string): probe is CircuitProbeV2 {
+function validateProbe(issues: CircuitContractIssue[], probe: unknown, path: string, circuitId?: string): probe is CircuitProbeV4 {
   if (!closed(issues, probe, path, ["id", "kind", "target", "color"])) return false;
   safeId(issues, probe.id, `${path}.id`);
   if (!["voltage", "current", "diff"].includes(probe.kind as string)) push(issues, "INVALID_REFERENCE", `${path}.kind`, "Unsupported probe kind", { ...(circuitId ? { circuitId } : {}) });
@@ -281,9 +281,9 @@ function validateConfig(
   issues: CircuitContractIssue[],
   config: unknown,
   path: string,
-  graph: CircuitGraphV2 | undefined,
+  graph: CircuitGraphV4 | undefined,
   scenarioId: string | undefined,
-): config is ExecutableSimConfigV2 {
+): config is ExecutableSimConfigV4 {
   if (!isRecord(config) || typeof config.mode !== "string") {
     push(issues, "INVALID_SIM_CONFIG", path, "Scenario needs a closed executable config", { ...(scenarioId ? { scenarioId } : {}) });
     return false;
@@ -396,23 +396,23 @@ function validateDefinition(issues: CircuitContractIssue[], definition: unknown,
   return true;
 }
 
-export function validateCircuitV2(inputDocument: CircuitDocumentV2): CircuitContractIssue[] {
+export function validateCircuitV4(inputDocument: CircuitDocumentV4): CircuitContractIssue[] {
   const issues: CircuitContractIssue[] = [];
-  let document: CircuitDocumentV2;
+  let document: CircuitDocumentV4;
   try {
-    document = detachedCircuitV2Snapshot(inputDocument);
+    document = detachedCircuitV4Snapshot(inputDocument);
   } catch {
     push(issues, "UNKNOWN_FIELD", "", "Circuit document cannot be detached into canonical JSON");
     return issues;
   }
   if (!closed(issues, document, "", ["format", "version", "meta", "designBlocks", "circuits", "scenarios", "defaultCircuitId", "defaultScenarioId"])) return issues;
-  if (document.format !== "opencircuit-circuit" || document.version !== 2) push(issues, "UNSUPPORTED_CIRCUIT_VERSION", "version", "Unsupported circuit document format or version");
+  if (document.format !== "opencircuit-circuit" || document.version !== 4) push(issues, "UNSUPPORTED_CIRCUIT_VERSION", "version", "Unsupported circuit document format or version");
   if (closed(issues, document.meta, "meta", ["title", "description"])) {
     safeString(issues, document.meta.title, "meta.title", true);
     if (document.meta.description !== undefined) safeString(issues, document.meta.description, "meta.description");
   }
   try {
-    if (new TextEncoder().encode(canonicalizeCircuitV2(document)).byteLength > MAX_DOCUMENT_BYTES) push(issues, "EXECUTION_LIMIT", "", `Circuit document exceeds ${MAX_DOCUMENT_BYTES} bytes`);
+    if (new TextEncoder().encode(canonicalizeCircuitV4(document)).byteLength > MAX_DOCUMENT_BYTES) push(issues, "EXECUTION_LIMIT", "", `Circuit document exceeds ${MAX_DOCUMENT_BYTES} bytes`);
   } catch {
     push(issues, "UNKNOWN_FIELD", "", "Circuit document is not canonical JSON");
   }
@@ -428,7 +428,7 @@ export function validateCircuitV2(inputDocument: CircuitDocumentV2): CircuitCont
     }
   });
 
-  const circuits = new Map<string, CircuitGraphV2>();
+  const circuits = new Map<string, CircuitGraphV4>();
   if (!Array.isArray(document.circuits) || document.circuits.length < 1 || document.circuits.length > 64) push(issues, "EXECUTION_LIMIT", "circuits", "Documents require 1 through 64 circuits");
   else document.circuits.forEach((graph, graphIndex) => {
     const path = `circuits.${graphIndex}`;
@@ -436,7 +436,7 @@ export function validateCircuitV2(inputDocument: CircuitDocumentV2): CircuitCont
     const circuitId = safeId(issues, graph.id, `${path}.id`) ? graph.id : undefined;
     if (circuitId) {
       if (circuits.has(circuitId)) push(issues, "DUPLICATE_ID", `${path}.id`, "Duplicate circuit ID", { circuitId });
-      else circuits.set(circuitId, graph as unknown as CircuitGraphV2);
+      else circuits.set(circuitId, graph as unknown as CircuitGraphV4);
     }
     safeString(issues, graph.title, `${path}.title`, true);
     const total = (Array.isArray(graph.components) ? graph.components.length : 0) + (Array.isArray(graph.wires) ? graph.wires.length : 0) + (Array.isArray(graph.probes) ? graph.probes.length : 0);
@@ -465,7 +465,7 @@ export function validateCircuitV2(inputDocument: CircuitDocumentV2): CircuitCont
     }
     if (Array.isArray(graph.components)) {
       for (const [index, component] of graph.components.entries()) {
-        try { componentPinPointsV2(component as CircuitComponentV2, [...definitions.values()]); }
+        try { componentPinPointsV4(component as CircuitComponentV4, [...definitions.values()]); }
         catch (error) { push(issues, "INVALID_REFERENCE", `${path}.components.${index}`, error instanceof Error ? error.message : String(error), { ...(circuitId ? { circuitId } : {}) }); }
       }
     }
@@ -485,7 +485,7 @@ export function validateCircuitV2(inputDocument: CircuitDocumentV2): CircuitCont
             if (typeof pin !== "string" || !block?.pins.some((entry) => entry.id === pin)) push(issues, "INVALID_REFERENCE", `${path}.probes.${index}.target.componentPin.1`, "Design-block probe must reference a stable pin ID", { ...(circuitId ? { circuitId } : {}) });
           } else {
             try {
-              const count = componentPinPointsV2(component as unknown as CircuitComponentV2, [...definitions.values()]).length;
+              const count = componentPinPointsV4(component as unknown as CircuitComponentV4, [...definitions.values()]).length;
               if (!Number.isInteger(pin) || (pin as number) < 0 || (pin as number) >= count) push(issues, "INVALID_REFERENCE", `${path}.probes.${index}.target.componentPin.1`, "Primitive pin index is out of range", { ...(circuitId ? { circuitId } : {}) });
             } catch { /* component issue already recorded */ }
           }
@@ -514,21 +514,21 @@ export function validateCircuitV2(inputDocument: CircuitDocumentV2): CircuitCont
   return issues;
 }
 
-export function assertValidCircuitV2(document: CircuitDocumentV2): void {
-  const issue = validateCircuitV2(document)[0];
+export function assertValidCircuitV4(document: CircuitDocumentV4): void {
+  const issue = validateCircuitV4(document)[0];
   if (issue) throw new CircuitNetlistError(issue);
 }
 
-export function deserializeCircuitV2(source: string): CircuitDocumentV2 {
-  const parsed = JSON.parse(source) as CircuitDocumentV2;
-  assertValidCircuitV2(parsed);
+export function deserializeCircuitV4(source: string): CircuitDocumentV4 {
+  const parsed = JSON.parse(source) as CircuitDocumentV4;
+  assertValidCircuitV4(parsed);
   return parsed;
 }
 
 export function deserializeAnyCircuit(source: string): AnyCircuitDocument {
   const parsed = JSON.parse(source) as { version?: unknown };
-  if (parsed?.version === 1) return deserializeCircuit(source);
-  if (parsed?.version === 2) return deserializeCircuitV2(source);
+  if (parsed?.version === 1 || parsed?.version === 2 || parsed?.version === 3) return deserializeCircuit(source);
+  if (parsed?.version === 4) return deserializeCircuitV4(source);
   throw new CircuitNetlistError({
     code: "UNSUPPORTED_CIRCUIT_VERSION",
     path: "version",

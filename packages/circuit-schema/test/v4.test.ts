@@ -4,20 +4,18 @@ import {
   calculateDesignBlockContentHash,
   canonicalDesignBlockPayload,
   canonicalizeAnyCircuit,
-  canonicalizeCircuitV2,
-  componentPinPointsV2,
+  canonicalizeCircuitV4,
+  componentPinPointsV4,
   deserializeAnyCircuit,
-  generateNetlist,
   generateScenarioNetlist,
-  upgradeCircuitV1ToV2,
-  validateCircuit,
-  validateCircuitV2,
-  type CircuitDocument,
-  type CircuitDocumentV2,
+  upgradeCircuitV1ToV4,
+  validateCircuitV4,
+  type CircuitDocumentV1,
+  type CircuitDocumentV4,
   type DesignBlockDefinition,
   type TrustedSubcircuitRef,
 } from "../src";
-import { assertNoVerifiedAssetCollision } from "../src/v2-netlist";
+import { assertNoVerifiedAssetCollision } from "../src/v4-netlist";
 
 function definition(
   input: Omit<DesignBlockDefinition, "contentHash">,
@@ -25,7 +23,7 @@ function definition(
   return { ...input, contentHash: calculateDesignBlockContentHash(input) };
 }
 
-function schematicDocument(): CircuitDocumentV2 {
+function schematicDocument(): CircuitDocumentV4 {
   const block = definition({
     id: "selected-control",
     version: "1",
@@ -38,8 +36,8 @@ function schematicDocument(): CircuitDocumentV2 {
   });
   return {
     format: "opencircuit-circuit",
-    version: 2,
-    meta: { title: "V2 fixture" },
+    version: 4,
+    meta: { title: "V4 fixture" },
     designBlocks: [block],
     circuits: [{
       id: "main",
@@ -63,7 +61,7 @@ function modelHash(text: string): `sha256:${string}` {
 }
 
 function trustedDocument(models: Array<{ blockId: string; assetId: string; entrypoint: string; text: string }>): {
-  document: CircuitDocumentV2;
+  document: CircuitDocumentV4;
   assets: Map<string, string>;
 } {
   const assets = new Map<string, string>();
@@ -82,7 +80,7 @@ function trustedDocument(models: Array<{ blockId: string; assetId: string; entry
     assets,
     document: {
       format: "opencircuit-circuit",
-      version: 2,
+      version: 4,
       meta: { title: "Trusted block fixture" },
       designBlocks: blocks,
       circuits: [{
@@ -118,10 +116,10 @@ function registry(assets: Map<string, string>) {
   };
 }
 
-describe("CircuitDocument v2", () => {
+describe("CircuitDocument v4", () => {
   it("keeps schematic-only blocks honest and byte-stable", () => {
     const document = schematicDocument();
-    expect(validateCircuitV2(document)).toEqual([]);
+    expect(validateCircuitV4(document)).toEqual([]);
     const first = generateScenarioNetlist(document, "steady");
     const second = generateScenarioNetlist(structuredClone(document), "steady");
     expect(second).toEqual(first);
@@ -169,8 +167,8 @@ describe("CircuitDocument v2", () => {
     const secondDocument = schematicDocument();
     firstDocument.circuits[0]!.components[2]!.annotations = JSON.parse('{"components":["b","a"],"__proto__":{"marker":"first"}}') as Record<string, never>;
     secondDocument.circuits[0]!.components[2]!.annotations = JSON.parse('{"components":["a","b"],"__proto__":{"marker":"second"}}') as Record<string, never>;
-    const firstCanonical = canonicalizeCircuitV2(firstDocument);
-    const secondCanonical = canonicalizeCircuitV2(secondDocument);
+    const firstCanonical = canonicalizeCircuitV4(firstDocument);
+    const secondCanonical = canonicalizeCircuitV4(secondDocument);
     expect(firstCanonical).toContain('"components":["b","a"]');
     expect(firstCanonical).toContain('"__proto__":{"marker":"first"}');
     expect(secondCanonical).toContain('"components":["a","b"]');
@@ -190,7 +188,7 @@ describe("CircuitDocument v2", () => {
     reordered.circuits[0]!.components.reverse();
     reordered.designBlocks.reverse();
     reordered.scenarios.reverse();
-    expect(canonicalizeCircuitV2(reordered)).toBe(canonicalizeCircuitV2(original));
+    expect(canonicalizeCircuitV4(reordered)).toBe(canonicalizeCircuitV4(original));
     expect(generateScenarioNetlist(reordered, "steady")).toEqual(generateScenarioNetlist(original, "steady"));
   });
 
@@ -202,7 +200,7 @@ describe("CircuitDocument v2", () => {
     if (component.type !== "design_block") throw new Error("bad fixture");
     component.rot = 90;
     component.mirror = true;
-    expect(componentPinPointsV2(component, document.designBlocks)).toEqual([[8, 2], [8, -2]]);
+    expect(componentPinPointsV4(component, document.designBlocks)).toEqual([[8, 2], [8, -2]]);
   });
 
   it("does not collapse distinct component IDs to the v1 digit suffix", () => {
@@ -218,9 +216,9 @@ describe("CircuitDocument v2", () => {
   });
 
   it("emits an exact pulsed current source with injective IDs", () => {
-    const document: CircuitDocumentV2 = {
+    const document: CircuitDocumentV4 = {
       format: "opencircuit-circuit",
-      version: 2,
+      version: 4,
       meta: { title: "Pulse" },
       designBlocks: [],
       circuits: [{
@@ -268,7 +266,7 @@ describe("CircuitDocument v2", () => {
     const nonFinitePot = nonFiniteLiteral.circuits[0]!.components[2]!;
     if (nonFinitePot.type !== "potentiometer") throw new Error("bad fixture");
     nonFinitePot.value = "1e999";
-    expect(validateCircuitV2(nonFiniteLiteral)).toEqual(expect.arrayContaining([
+    expect(validateCircuitV4(nonFiniteLiteral)).toEqual(expect.arrayContaining([
       expect.objectContaining({ code: "UNSAFE_SPICE_TOKEN", path: expect.stringContaining(".value") }),
     ]));
     expect(() => generateScenarioNetlist(nonFiniteLiteral, "steady")).toThrow();
@@ -277,10 +275,10 @@ describe("CircuitDocument v2", () => {
     const boundaryPot = roundedBoundary.circuits[0]!.components[2]!;
     if (boundaryPot.type !== "potentiometer") throw new Error("bad fixture");
     boundaryPot.params.t = 0.9999999999996;
-    expect(validateCircuitV2(roundedBoundary)).toEqual(expect.arrayContaining([
+    expect(validateCircuitV4(roundedBoundary)).toEqual(expect.arrayContaining([
       expect.objectContaining({ code: "INVALID_SIM_CONFIG", path: "circuits.0.components.2.params.t" }),
     ]));
-    expect(() => deserializeAnyCircuit(canonicalizeCircuitV2(roundedBoundary))).toThrow(expect.objectContaining({
+    expect(() => deserializeAnyCircuit(canonicalizeCircuitV4(roundedBoundary))).toThrow(expect.objectContaining({
       issue: expect.objectContaining({ code: "INVALID_SIM_CONFIG", path: "circuits.0.components.1.params.t", componentId: "pot" }),
     }));
   });
@@ -289,21 +287,21 @@ describe("CircuitDocument v2", () => {
     const missingStep = structuredClone(schematicDocument()) as unknown as Record<string, unknown>;
     const scenario = (missingStep.scenarios as Array<Record<string, unknown>>)[0]!;
     scenario.config = { mode: "tran", tran: { tstop: 1, maxstep: 0.1 } };
-    expect(validateCircuitV2(missingStep as unknown as CircuitDocumentV2)).toEqual(expect.arrayContaining([expect.objectContaining({ code: "INVALID_SIM_CONFIG" })]));
+    expect(validateCircuitV4(missingStep as unknown as CircuitDocumentV4)).toEqual(expect.arrayContaining([expect.objectContaining({ code: "INVALID_SIM_CONFIG" })]));
     const unknown = structuredClone(schematicDocument()) as unknown as Record<string, unknown>;
     ((unknown.circuits as Array<Record<string, unknown>>)[0]!.components as Array<Record<string, unknown>>)[0]!.rawNetlist = ".shell touch /tmp/x";
-    expect(validateCircuitV2(unknown as unknown as CircuitDocumentV2)).toEqual(expect.arrayContaining([expect.objectContaining({ code: "UNKNOWN_FIELD" })]));
+    expect(validateCircuitV4(unknown as unknown as CircuitDocumentV4)).toEqual(expect.arrayContaining([expect.objectContaining({ code: "UNKNOWN_FIELD" })]));
     const invalidPot = schematicDocument();
     invalidPot.designBlocks = [];
     invalidPot.circuits[0]!.components[2] = { id: "pot", type: "potentiometer", value: 10000, params: { t: 1 }, pos: [8, 0], rot: 0, mirror: false };
-    expect(validateCircuitV2(invalidPot)).toEqual(expect.arrayContaining([expect.objectContaining({ code: "INVALID_SIM_CONFIG", path: expect.stringContaining("params.t") })]));
+    expect(validateCircuitV4(invalidPot)).toEqual(expect.arrayContaining([expect.objectContaining({ code: "INVALID_SIM_CONFIG", path: expect.stringContaining("params.t") })]));
   });
 
   it("round-trips explicitly union-aware serialization and permits no-scenario documents", () => {
     const document = schematicDocument();
     document.scenarios = [];
     document.defaultScenarioId = null;
-    expect(validateCircuitV2(document)).toEqual([]);
+    expect(validateCircuitV4(document)).toEqual([]);
     const encoded = canonicalizeAnyCircuit(document);
     expect(canonicalizeAnyCircuit(deserializeAnyCircuit(encoded))).toBe(encoded);
   });
@@ -311,10 +309,10 @@ describe("CircuitDocument v2", () => {
   it("reports recursively malformed runtime objects instead of crashing", () => {
     const malformed = structuredClone(schematicDocument()) as unknown as Record<string, unknown>;
     (malformed.circuits as Array<Record<string, unknown>>)[0]!.components = { not: "an array" };
-    expect(() => validateCircuitV2(malformed as unknown as CircuitDocumentV2)).not.toThrow();
-    expect(validateCircuitV2(malformed as unknown as CircuitDocumentV2)).toEqual(expect.arrayContaining([expect.objectContaining({ code: "UNKNOWN_FIELD" })]));
+    expect(() => validateCircuitV4(malformed as unknown as CircuitDocumentV4)).not.toThrow();
+    expect(validateCircuitV4(malformed as unknown as CircuitDocumentV4)).toEqual(expect.arrayContaining([expect.objectContaining({ code: "UNKNOWN_FIELD" })]));
     malformed.scenarios = null;
-    expect(() => validateCircuitV2(malformed as unknown as CircuitDocumentV2)).not.toThrow();
+    expect(() => validateCircuitV4(malformed as unknown as CircuitDocumentV4)).not.toThrow();
   });
 });
 
@@ -444,7 +442,7 @@ describe("trusted design-block assets", () => {
       rot: 0,
       mirror: false,
     });
-    expect(validateCircuitV2(fixture.document)).toEqual([]);
+    expect(validateCircuitV4(fixture.document)).toEqual([]);
     expect(() => generateScenarioNetlist(fixture.document, "op", { registry: registry(fixture.assets) })).toThrow(expect.objectContaining({
       issue: expect.objectContaining({
         code: "TRUSTED_MODEL_PIN_MISMATCH",
@@ -475,7 +473,7 @@ describe("trusted design-block assets", () => {
 });
 
 describe("v1 compatibility and explicit upgrade", () => {
-  const v1: CircuitDocument = {
+  const v1: CircuitDocumentV1 = {
     format: "opencircuit-circuit",
     version: 1,
     meta: { title: "Legacy" },
@@ -490,7 +488,7 @@ describe("v1 compatibility and explicit upgrade", () => {
   };
 
   it("expands every transient/component default and clamps only during upgrade", () => {
-    const upgraded = upgradeCircuitV1ToV2(v1);
+    const upgraded = upgradeCircuitV1ToV4(v1);
     expect(upgraded.scenarios[0]!.config).toEqual({ mode: "tran", tran: { tstop: 0.01, tstep: 0.00002, maxstep: 0.00005 } });
     expect(upgraded.circuits[0]!.components[0]).toEqual(expect.objectContaining({
       type: "vsource_pulse",
@@ -503,40 +501,35 @@ describe("v1 compatibility and explicit upgrade", () => {
   it("rejects invalid legacy potentiometer strings and recognized SPICE injection", () => {
     const badPot = structuredClone(v1);
     badPot.components[1]!.params!.t = "1k";
-    expect(() => upgradeCircuitV1ToV2(badPot)).toThrow();
+    expect(() => upgradeCircuitV1ToV4(badPot)).toThrow();
     const injected = structuredClone(v1);
     injected.components[0]!.params!.v1 = "0\n.shell touch /tmp/x";
-    expect(validateCircuit(injected)[0]?.message).toMatch(/safe ASCII/i);
-    expect(() => generateNetlist(injected)).toThrow();
+    expect(() => upgradeCircuitV1ToV4(injected)).toThrow(/unsafe recognized SPICE value/i);
     const nonFiniteLiteral = structuredClone(v1);
     nonFiniteLiteral.components[0]!.params!.v1 = "1e999";
-    expect(validateCircuit(nonFiniteLiteral)).toEqual(expect.arrayContaining([expect.objectContaining({ path: expect.stringContaining("params.v1") })]));
-    expect(() => generateNetlist(nonFiniteLiteral)).toThrow();
+    expect(() => upgradeCircuitV1ToV4(nonFiniteLiteral)).toThrow(/unsafe recognized SPICE value/i);
   });
 
   it("rejects legacy component IDs that could escape generated line comments", () => {
     const injected = structuredClone(v1);
     injected.components[0]!.id = "source\n.end";
-    expect(validateCircuit(injected)).toEqual(expect.arrayContaining([
-      expect.objectContaining({ path: expect.stringContaining(".id") }),
-    ]));
-    expect(() => generateNetlist(injected)).toThrow();
-    expect(generateNetlist(v1).netlist).toContain("$ component:v1");
+    expect(() => upgradeCircuitV1ToV4(injected)).toThrow();
+    expect(generateScenarioNetlist(upgradeCircuitV1ToV4(v1), "default").netlist).toContain("$ component:v1");
     const safePunctuation = structuredClone(v1);
-    safePunctuation.components[0]!.id = "source $ Ω !";
-    const first = generateNetlist(safePunctuation).netlist;
-    expect(first).toContain("$ component:source $ Ω !");
-    expect(generateNetlist(structuredClone(safePunctuation)).netlist).toBe(first);
+    safePunctuation.components[0]!.id = "source.safe:1";
+    const first = generateScenarioNetlist(upgradeCircuitV1ToV4(safePunctuation), "default").netlist;
+    expect(first).toContain("$ component:source.safe:1");
+    expect(generateScenarioNetlist(upgradeCircuitV1ToV4(structuredClone(safePunctuation)), "default").netlist).toBe(first);
   });
 
   it("preserves own __proto__ annotation keys during legacy upgrade without prototype pollution", () => {
     const withOwnProto = structuredClone(v1);
     withOwnProto.components[0]!.params = JSON.parse('{"v1":0,"__proto__":{"marker":"preserved"}}') as Record<string, never>;
-    const upgraded = upgradeCircuitV1ToV2(withOwnProto);
+    const upgraded = upgradeCircuitV1ToV4(withOwnProto);
     const component = upgraded.circuits[0]!.components[0]!;
     expect(Object.prototype.hasOwnProperty.call(component.annotations, "__proto__")).toBe(true);
     expect(component.annotations?.["__proto__"]).toEqual({ marker: "preserved" });
-    expect(canonicalizeCircuitV2(upgraded)).toContain('"__proto__":{"marker":"preserved"}');
+    expect(canonicalizeCircuitV4(upgraded)).toContain('"__proto__":{"marker":"preserved"}');
     expect((Object.prototype as Record<string, unknown>).marker).toBeUndefined();
   });
 });

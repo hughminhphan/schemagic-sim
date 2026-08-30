@@ -1,24 +1,24 @@
 import { emitNamespacedLibrary, parseSpiceLibrary, sanitize } from "@opencircuit/model-import";
 import { fnv1a64 } from "./canonical";
 import { interimModels } from "./netlist";
-import { componentPinPointsV2 } from "./parts";
+import { componentPinPointsV4 } from "./parts";
 import { engineeringValueNumber, hasUnpairedSurrogate } from "./spice-token";
 import {
   canonicalCircuitNumber,
-  canonicalizeV2SimulationProjection,
-  circuitV2SerializationHash,
-  compareCircuitV2Tokens,
-  detachedCircuitV2Snapshot,
+  canonicalizeV4SimulationProjection,
+  circuitV4SerializationHash,
+  compareCircuitV4Tokens,
+  detachedCircuitV4Snapshot,
   sha256Hex,
-} from "./v2-canonical";
-import { assertValidCircuitV2 } from "./v2-validation";
+} from "./v4-canonical";
+import { assertValidCircuitV4 } from "./v4-validation";
 import type {
-  CircuitComponentV2,
+  CircuitComponentV4,
   CircuitContractFailureCode,
   CircuitContractIssue,
-  CircuitDocumentV2,
-  CircuitGraphV2,
-  CircuitProbeV2,
+  CircuitDocumentV4,
+  CircuitGraphV4,
+  CircuitProbeV4,
   DesignBlockDefinition,
   EngineeringValue,
   GeneratedScenarioNetlist,
@@ -26,7 +26,7 @@ import type {
   NetlistOmission,
   Point,
   ScenarioNetlistOptions,
-  SimulationScenarioV2,
+  SimulationScenarioV4,
   TrustedSubcircuitRef,
 } from "./types";
 import { CircuitNetlistError } from "./types";
@@ -208,7 +208,7 @@ function componentHexId(id: string): string {
   return [...new TextEncoder().encode(id)].map((byte) => byte.toString(16).padStart(2, "0")).join("");
 }
 
-function elementPrefix(type: CircuitComponentV2["type"]): string | undefined {
+function elementPrefix(type: CircuitComponentV4["type"]): string | undefined {
   if (type === "ground") return undefined;
   if (["resistor", "switch_spst", "potentiometer"].includes(type)) return "R";
   if (type === "capacitor") return "C";
@@ -221,7 +221,7 @@ function elementPrefix(type: CircuitComponentV2["type"]): string | undefined {
   return "X";
 }
 
-function baseElementName(component: CircuitComponentV2): string | undefined {
+function baseElementName(component: CircuitComponentV4): string | undefined {
   const prefix = elementPrefix(component.type);
   return prefix ? `${prefix}oc_${componentHexId(component.id)}` : undefined;
 }
@@ -257,7 +257,7 @@ function add(lines: string[], lineMap: NetlistLine[], text: string, entry: Omit<
   }
 }
 
-function probeNode(probe: CircuitProbeV2, componentNodes: Record<string, string[]>, componentPinNodes: Record<string, Record<string, string>>, wireNodes: Record<string, string>): string | undefined {
+function probeNode(probe: CircuitProbeV4, componentNodes: Record<string, string[]>, componentPinNodes: Record<string, Record<string, string>>, wireNodes: Record<string, string>): string | undefined {
   if ("wire" in probe.target) return wireNodes[probe.target.wire];
   if ("componentPin" in probe.target) {
     const [componentId, pin] = probe.target.componentPin;
@@ -266,7 +266,7 @@ function probeNode(probe: CircuitProbeV2, componentNodes: Record<string, string[
   return probe.target.node;
 }
 
-function simulationComponent(component: CircuitComponentV2): Record<string, unknown> {
+function simulationComponent(component: CircuitComponentV4): Record<string, unknown> {
   const result: Record<string, unknown> = {
     id: component.id,
     type: component.type,
@@ -282,8 +282,8 @@ function simulationComponent(component: CircuitComponentV2): Record<string, unkn
 }
 
 function scenarioProjection(
-  scenario: SimulationScenarioV2,
-  graph: CircuitGraphV2,
+  scenario: SimulationScenarioV4,
+  graph: CircuitGraphV4,
   definitions: DesignBlockDefinition[],
   assets: VerifiedAsset[],
 ): string {
@@ -309,10 +309,10 @@ function scenarioProjection(
       pinCount: asset.pinCount,
     })),
   };
-  return canonicalizeV2SimulationProjection(projection);
+  return canonicalizeV4SimulationProjection(projection);
 }
 
-function builtInModels(components: CircuitComponentV2[]): string[] {
+function builtInModels(components: CircuitComponentV4[]): string[] {
   const used = new Set<string>();
   for (const component of components) {
     if (component.type === "diode") used.add("diode");
@@ -323,28 +323,28 @@ function builtInModels(components: CircuitComponentV2[]): string[] {
     if (component.type === "pmos") used.add("pmos");
     if (component.type === "opamp_ideal") used.add("opamp");
   }
-  return [...used].sort(compareCircuitV2Tokens).map((name) => name === "2n3904" ? interimModels.OC_2N3904 : interimModels[name as keyof typeof interimModels]);
+  return [...used].sort(compareCircuitV4Tokens).map((name) => name === "2n3904" ? interimModels.OC_2N3904 : interimModels[name as keyof typeof interimModels]);
 }
 
 export function generateScenarioNetlist(
-  inputDocument: CircuitDocumentV2,
+  inputDocument: CircuitDocumentV4,
   scenarioId: string,
   options: ScenarioNetlistOptions = {},
 ): GeneratedScenarioNetlist {
-  let document: CircuitDocumentV2;
+  let document: CircuitDocumentV4;
   try {
-    document = detachedCircuitV2Snapshot(inputDocument);
+    document = detachedCircuitV4Snapshot(inputDocument);
   } catch {
     fail("UNKNOWN_FIELD", "", "Circuit document could not be detached into canonical JSON");
   }
-  assertValidCircuitV2(document);
+  assertValidCircuitV4(document);
   const scenario = document.scenarios.find((entry) => entry.id === scenarioId);
   if (!scenario) fail("SCENARIO_NOT_FOUND", "scenarioId", `Scenario ${scenarioId} was not found`, { scenarioId });
   const graph = document.circuits.find((entry) => entry.id === scenario.circuitId)!;
   const resolver = captureResolver(options, { scenarioId, circuitId: graph.id });
   const definitions = new Map(document.designBlocks.map((definition) => [definitionKey(definition), definition]));
-  const sortedComponents = [...graph.components].sort((a, b) => compareCircuitV2Tokens(a.id, b.id));
-  const sortedWires = [...graph.wires].sort((a, b) => compareCircuitV2Tokens(a.id, b.id));
+  const sortedComponents = [...graph.components].sort((a, b) => compareCircuitV4Tokens(a.id, b.id));
+  const sortedWires = [...graph.wires].sort((a, b) => compareCircuitV4Tokens(a.id, b.id));
 
   const verifiedByRef = new Map<string, VerifiedAsset>();
   const verifiedByHash = new Map<string, VerifiedAsset>();
@@ -381,7 +381,7 @@ export function generateScenarioNetlist(
     }
     verifiedByRef.set(key, existing ?? verified);
   }
-  const verifiedAssets = [...verifiedByHash.values()].sort((a, b) => compareCircuitV2Tokens(a.ref.contentHash, b.ref.contentHash));
+  const verifiedAssets = [...verifiedByHash.values()].sort((a, b) => compareCircuitV4Tokens(a.ref.contentHash, b.ref.contentHash));
 
   const reservedNames = new Set<string>();
   for (const asset of verifiedAssets) for (const name of asset.introducedNames) reservedNames.add(name.toLowerCase());
@@ -403,7 +403,7 @@ export function generateScenarioNetlist(
     for (const wirePoint of wire.points.slice(1)) uf.union(first, pointKey(wirePoint));
   }
   for (const component of sortedComponents) {
-    const points = componentPinPointsV2(component, document.designBlocks);
+    const points = componentPinPointsV4(component, document.designBlocks);
     pinPoints.set(component.id, points);
     for (const pinPoint of points) uf.add(pointKey(pinPoint));
   }
@@ -437,7 +437,7 @@ export function generateScenarioNetlist(
   const wireNodes = Object.fromEntries(sortedWires.map((wire) => [wire.id, nodeAt(wire.points[0]!) ]));
 
   const scenarioHash = fnv1a64(scenarioProjection(scenario, graph, document.designBlocks, verifiedAssets));
-  const serializationHash = circuitV2SerializationHash(document);
+  const serializationHash = circuitV4SerializationHash(document);
   const lines: string[] = [];
   const lineMap: NetlistLine[] = [];
   const componentCurrents: Record<string, string> = {};

@@ -1,3 +1,5 @@
+import type { SerializedSignalProbe } from "@opencircuit/signal-workbench";
+
 export type AnalysisMode = "live" | "op" | "dc-sweep" | "tran" | "ac" | "noise";
 export type Rotation = 0 | 90 | 180 | 270;
 export type Point = [number, number];
@@ -12,13 +14,26 @@ export interface CircuitComponent {
   id: string; type: ComponentType; mpn?: string; value?: number | string;
   params?: Record<string, unknown>; pos: Point; rot: Rotation; mirror: boolean; label?: ComponentLabel;
 }
-export interface CircuitWire { id: string; points: Point[] }
-export interface CircuitProbe {
+export interface CircuitWire { id: string; points: Point[]; netLabel?: string }
+
+export interface LegacyCircuitProbe {
   id: string; kind: "voltage" | "current" | "diff";
   target: { node?: string; componentPin?: [string, number]; wire?: string }; color?: string;
+  label?: string;
 }
+export type CircuitProbe = SerializedSignalProbe;
+
 export interface DCSweepRange { sourceId: string; start: number; stop: number; step: number }
 export interface DCSweepConfig extends DCSweepRange { secondary?: DCSweepRange }
+export interface TransientConfig { tstop: number; tstep?: number; maxstep?: number }
+export interface ACStimulusConfig { sourceId: string; magnitude: number; phaseDeg: number }
+export interface ACConfig {
+  fstart: number;
+  fstop: number;
+  pointsPerDecade: number;
+  sweep: "dec";
+  stimulus?: ACStimulusConfig;
+}
 export interface NoiseConfig {
   outputProbeId: string;
   inputSourceId: string;
@@ -30,20 +45,71 @@ export interface NoiseConfig {
 }
 export interface SimConfig {
   mode: AnalysisMode;
-  tran?: { tstop: number; tstep?: number; maxstep?: number };
-  ac?: { fstart: number; fstop: number; pointsPerDecade: number; sweep: "dec" };
+  tran?: TransientConfig;
+  ac?: ACConfig;
   dcSweep?: DCSweepConfig;
   noise?: NoiseConfig;
 }
-export interface CircuitDocument {
-  format: "opencircuit-circuit"; version: 1; meta: CircuitMeta;
-  components: CircuitComponent[]; wires: CircuitWire[]; probes: CircuitProbe[]; sim: SimConfig;
+export type ImportedDefinitionKind = "model" | "subckt";
+export interface ImportedDefinitionSelector {
+  kind: ImportedDefinitionKind;
+  name: string;
+  scopePath: string[];
+  librarySection?: string;
+}
+export interface ImportedPinMapping { symbolPinIndex: number; modelPinIndex: number }
+export interface ImportedAnalysisLimitation {
+  modes: AnalysisMode[];
+  message: string;
+}
+export interface ImportedAnalysisValidity {
+  version: 1;
+  supportedModes: AnalysisMode[];
+  limitations?: ImportedAnalysisLimitation[];
+}
+export interface ImportedModelPart {
+  id: string;
+  sourceName: string;
+  sourceText: string;
+  definition: ImportedDefinitionSelector;
+  baseType: ComponentType;
+  pinMapping: ImportedPinMapping[];
+  analysisValidity: ImportedAnalysisValidity;
+}
+export interface ImportedModelLibrary {
+  format: "opencircuit-imported-models";
+  version: 1;
+  parts: ImportedModelPart[];
+}
+
+interface CircuitDocumentBase<TProbe> {
+  format: "opencircuit-circuit";
+  meta: CircuitMeta;
+  components: CircuitComponent[];
+  wires: CircuitWire[];
+  probes: TProbe[];
+  sim: SimConfig;
   view?: CircuitView;
 }
+
 export interface CircuitView { pan: Point; zoom: number }
-export type CircuitDocumentV1 = CircuitDocument;
+
+export interface CircuitDocument extends CircuitDocumentBase<CircuitProbe> {
+  version: 3;
+  modelImports?: ImportedModelLibrary;
+}
+export interface CircuitDocumentV2 extends CircuitDocumentBase<LegacyCircuitProbe> {
+  version: 2;
+  /** Legacy web-only field. v2 -> v3 migration never trusts its derived emitted fields. */
+  importedParts?: unknown;
+}
+export interface CircuitDocumentV1 extends CircuitDocumentBase<LegacyCircuitProbe> {
+  version: 1;
+  importedParts?: unknown;
+}
+
 export type CircuitComponentV1 = CircuitComponent;
-export type CircuitProbeV1 = CircuitProbe;
+export type CircuitProbeV1 = LegacyCircuitProbe;
 export type SimConfigV1 = SimConfig;
 
 export type Sha256ContentHash = `sha256:${string}`;
@@ -66,7 +132,7 @@ export interface DesignBlockDefinition {
   netlist: DesignBlockNetlistBehavior;
 }
 
-export interface CircuitComponentBaseV2 {
+export interface CircuitComponentBaseV4 {
   id: string;
   type: string;
   pos: Point;
@@ -76,22 +142,22 @@ export interface CircuitComponentBaseV2 {
   label?: ComponentLabel;
   annotations?: { [key: string]: JsonAnnotation };
 }
-export interface PassiveComponentV2 extends CircuitComponentBaseV2 {
+export interface PassiveComponentV4 extends CircuitComponentBaseV4 {
   type: "resistor" | "capacitor" | "inductor";
   value: EngineeringValue;
   params?: never;
 }
-export interface DcVoltageSourceComponentV2 extends CircuitComponentBaseV2 {
+export interface DcVoltageSourceComponentV4 extends CircuitComponentBaseV4 {
   type: "vsource";
   value: EngineeringValue;
   params?: { ac?: EngineeringValue };
 }
-export interface DcCurrentSourceComponentV2 extends CircuitComponentBaseV2 {
+export interface DcCurrentSourceComponentV4 extends CircuitComponentBaseV4 {
   type: "isource";
   value: EngineeringValue;
   params?: never;
 }
-export interface PulsedVoltageSourceComponentV2 extends CircuitComponentBaseV2 {
+export interface PulsedVoltageSourceComponentV4 extends CircuitComponentBaseV4 {
   type: "vsource_pulse";
   params: {
     v1: EngineeringValue;
@@ -103,12 +169,12 @@ export interface PulsedVoltageSourceComponentV2 extends CircuitComponentBaseV2 {
     period: EngineeringValue;
   };
 }
-export interface SineVoltageSourceComponentV2 extends CircuitComponentBaseV2 {
+export interface SineVoltageSourceComponentV4 extends CircuitComponentBaseV4 {
   type: "vsource_sine";
   value: EngineeringValue;
   params: { offset: EngineeringValue; frequency: EngineeringValue; ac?: EngineeringValue };
 }
-export interface PulsedCurrentParams {
+export interface PulsedCurrentParamsV4 {
   i1: number;
   i2: number;
   delay: number;
@@ -117,75 +183,75 @@ export interface PulsedCurrentParams {
   width: number;
   period: number;
 }
-export interface PulsedCurrentSourceComponent extends CircuitComponentBaseV2 {
+export interface PulsedCurrentSourceComponentV4 extends CircuitComponentBaseV4 {
   type: "isource_pulse";
-  params: PulsedCurrentParams;
+  params: PulsedCurrentParamsV4;
 }
-export interface SwitchComponentV2 extends CircuitComponentBaseV2 {
+export interface SwitchComponentV4 extends CircuitComponentBaseV4 {
   type: "switch_spst";
   params: { closed: boolean };
 }
-export interface PotentiometerComponentV2 extends CircuitComponentBaseV2 {
+export interface PotentiometerComponentV4 extends CircuitComponentBaseV4 {
   type: "potentiometer";
   value: EngineeringValue;
   params: { t: number };
 }
-export interface FixedModelComponentV2 extends CircuitComponentBaseV2 {
+export interface FixedModelComponentV4 extends CircuitComponentBaseV4 {
   type: "diode" | "led" | "bjt_npn" | "bjt_pnp" | "nmos" | "pmos" | "opamp_ideal" | "ground";
   params?: never;
 }
-export interface DesignBlockComponent extends CircuitComponentBaseV2 {
+export interface DesignBlockComponentV4 extends CircuitComponentBaseV4 {
   type: "design_block";
   block: DesignBlockRef;
 }
-export type CircuitComponentV2 =
-  | PassiveComponentV2
-  | DcVoltageSourceComponentV2
-  | DcCurrentSourceComponentV2
-  | PulsedVoltageSourceComponentV2
-  | SineVoltageSourceComponentV2
-  | PulsedCurrentSourceComponent
-  | SwitchComponentV2
-  | PotentiometerComponentV2
-  | FixedModelComponentV2
-  | DesignBlockComponent;
+export type CircuitComponentV4 =
+  | PassiveComponentV4
+  | DcVoltageSourceComponentV4
+  | DcCurrentSourceComponentV4
+  | PulsedVoltageSourceComponentV4
+  | SineVoltageSourceComponentV4
+  | PulsedCurrentSourceComponentV4
+  | SwitchComponentV4
+  | PotentiometerComponentV4
+  | FixedModelComponentV4
+  | DesignBlockComponentV4;
 
-export type CircuitProbeTargetV2 =
+export type CircuitProbeTargetV4 =
   | { node: string; wire?: never; componentPin?: never }
   | { wire: string; node?: never; componentPin?: never }
   | { componentPin: [componentId: string, pin: number | string]; node?: never; wire?: never };
-export interface CircuitProbeV2 {
+export interface CircuitProbeV4 {
   id: string;
   kind: "voltage" | "current" | "diff";
-  target: CircuitProbeTargetV2;
+  target: CircuitProbeTargetV4;
   color?: string;
 }
-export interface CircuitGraphV2 {
+export interface CircuitGraphV4 {
   id: string;
   title: string;
-  components: CircuitComponentV2[];
+  components: CircuitComponentV4[];
   wires: CircuitWire[];
-  probes: CircuitProbeV2[];
+  probes: CircuitProbeV4[];
   view?: CircuitView;
 }
-export type ExecutableSimConfigV2 =
+export type ExecutableSimConfigV4 =
   | { mode: "op" }
   | { mode: "tran"; tran: { tstop: number; tstep: number; maxstep: number } }
   | { mode: "ac"; ac: { fstart: number; fstop: number; pointsPerDecade: number; sweep: "dec" } }
   | { mode: "dc-sweep"; dcSweep: DCSweepConfig }
   | { mode: "noise"; noise: NoiseConfig };
-export interface SimulationScenarioV2 { id: string; title: string; circuitId: string; config: ExecutableSimConfigV2 }
-export interface CircuitDocumentV2 {
+export interface SimulationScenarioV4 { id: string; title: string; circuitId: string; config: ExecutableSimConfigV4 }
+export interface CircuitDocumentV4 {
   format: "opencircuit-circuit";
-  version: 2;
+  version: 4;
   meta: CircuitMeta;
   designBlocks: DesignBlockDefinition[];
-  circuits: CircuitGraphV2[];
-  scenarios: SimulationScenarioV2[];
+  circuits: CircuitGraphV4[];
+  scenarios: SimulationScenarioV4[];
   defaultCircuitId: string;
   defaultScenarioId: string | null;
 }
-export type AnyCircuitDocument = CircuitDocumentV1 | CircuitDocumentV2;
+export type AnyCircuitDocument = CircuitDocumentV1 | CircuitDocumentV2 | CircuitDocument | CircuitDocumentV4;
 
 export interface NetlistLine { line: number; componentId?: string; stage: "component" | "model" | "analysis" | "header" }
 export interface GeneratedNetlist {

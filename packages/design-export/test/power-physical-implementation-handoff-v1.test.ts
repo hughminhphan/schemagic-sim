@@ -187,7 +187,7 @@ describe("frozen integrated-Power physical implementation handoff V1 successor b
       import.meta.url,
     ));
     expect(createHash("sha256").update(source).digest("hex"))
-      .toBe("49bc49977dc05f03ba4efe44b5ef1a1bca1f3010485be1fd567ec2f470d84dcc");
+      .toBe("90522aff9c8b309c95071948c0ff1db8e283c2e0eac6b591ba1b1159916fbaa9");
   });
 
   it("rejects the installed quantity-two 3.4.6 successor instead of silently reinterpreting V1", () => {

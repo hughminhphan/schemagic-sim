@@ -14,7 +14,7 @@ const CONDITIONAL_EXPRESSION = "${{ steps.native-version.outputs.major != '46' }
 const EXECUTABLE_EVIDENCE_HASHES = {
   identityTest: "sha256:1345107849bc4684bce0e42e907b50710af2ed6101b2a2e506e8015520a24c68",
   reportTest: "sha256:5dfecf3c77792cceeb011c9dbab63e1f84feedb4887fecdef14204d41d2ef711",
-  runner: "sha256:0ea4f3e13d3268580da949f48998f50a304c9b5ced992c5569ed28eefd0428d9",
+  runner: "sha256:5b360aa72d7f409b05cf39c858891a2b3b78f5d796a059e10ccb6184d24d1380",
 } as const;
 
 const NATIVE_DETECTION_STEP = [
@@ -111,8 +111,8 @@ const WORKFLOW = [
 const HARNESS_PACKAGE = JSON.stringify({
   scripts: {
     test: "node --test test/*.test.mjs && node suite.mjs && npm run test:application-golden && npm run test:selected-passive-application-golden && npm run test:selected-semiconductor-application-golden && npm run test:selected-semiconductor-rdson-projection",
-    "test:selected-semiconductor-application-golden": "npm --prefix ../.. exec --workspace=@opencircuit/sim-engine -- vitest run test/selected-semiconductor-application-golden.test.ts && if [ -f selected-semiconductor-application-golden/contract.json ] && [ -f selected-semiconductor-application-golden/execution-report.json ]; then npm --prefix ../.. run build --workspace=@opencircuit/sim-engine && node selected-semiconductor-application-golden.mjs --verify-persisted-report; else echo 'Selected-semiconductor device-model golden unavailable: current external-Motor structural identities exist, but no approved model package, dedicated device-model contract, or execution report is present.'; fi",
-    "test:selected-semiconductor-rdson-projection": "npm --prefix ../.. exec --workspace=@opencircuit/sim-engine -- vitest run test/selected-semiconductor-rdson-projection.test.ts && node --test test/selected-semiconductor-rdson-projection-report.test.mjs && npm --prefix ../.. run build --workspace=@opencircuit/sim-engine && node selected-semiconductor-rdson-projection.mjs --verify-persisted-report",
+    "test:selected-semiconductor-application-golden": "npm --prefix ../.. run test --workspace=@opencircuit/sim-engine -- test/selected-semiconductor-application-golden.test.ts && if [ -f selected-semiconductor-application-golden/contract.json ] && [ -f selected-semiconductor-application-golden/execution-report.json ]; then npm --prefix ../.. run build --workspace=@opencircuit/sim-engine && node selected-semiconductor-application-golden.mjs --verify-persisted-report; else echo 'Selected-semiconductor device-model golden unavailable: current external-Motor structural identities exist, but no approved model package, dedicated device-model contract, or execution report is present.'; fi",
+    "test:selected-semiconductor-rdson-projection": "npm --prefix ../.. run test --workspace=@opencircuit/sim-engine -- test/selected-semiconductor-rdson-projection.test.ts && node --test test/selected-semiconductor-rdson-projection-report.test.mjs && npm --prefix ../.. run build --workspace=@opencircuit/sim-engine && node selected-semiconductor-rdson-projection.mjs --verify-persisted-report",
   },
 });
 

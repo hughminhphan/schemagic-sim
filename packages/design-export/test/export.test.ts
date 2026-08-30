@@ -112,7 +112,7 @@ const candidate: DesignCandidate = {
   simulationCoverage: [],
   circuit: {
     format: "opencircuit-circuit",
-    version: 1,
+    version: 3,
     meta: { title: "Synthetic candidate" },
     components: [],
     wires: [],
@@ -133,7 +133,7 @@ const spiceCandidate: DesignCandidate = {
   ],
   circuit: {
     format: "opencircuit-circuit",
-    version: 1,
+    version: 3,
     meta: { title: "Golden candidate" },
     components: [
       { id: "c1", type: "vsource", value: 5, pos: [0, 2], rot: 0, mirror: false },
@@ -269,7 +269,15 @@ describe("scheMAGIC design export", () => {
   it("rejects explicit probe nodes outside the conservative SPICE token allowlist", () => {
     for (const node of ["n1)\n.control", "n1)"]) {
       const unsafeNoise = structuredClone(spiceCandidate);
-      unsafeNoise.circuit.probes = [{ id: "output", kind: "voltage", target: { node } }];
+      unsafeNoise.circuit.probes = [{
+        id: "output",
+        expressionVersion: 1,
+        expression: {
+          kind: "voltage",
+          positive: { kind: "runtime-node", name: node },
+          negative: { kind: "runtime-node", name: "0" },
+        },
+      }];
       unsafeNoise.circuit.sim = {
         mode: "noise",
         noise: {
@@ -288,7 +296,7 @@ describe("scheMAGIC design export", () => {
         throw new Error("Expected explicit probe node export to fail");
       } catch (error) {
         expect(error).toMatchObject({ code: "unsafe_spice_scalar" });
-        expect((error as Error).message).toContain("probes.output.target.node");
+        expect((error as Error).message).toContain("probes.output.expression.positive.name");
         expect((error as Error).message).toContain("allowlisted SPICE node token");
       }
     }
@@ -307,11 +315,11 @@ describe("scheMAGIC design export", () => {
         expect((error as Error).message).toContain("component ID");
       }
     }
-    const safeId = structuredClone(spiceCandidate);
-    safeId.circuit.components[0]!.id = "source $ Ω !";
-    const first = exportCandidateSpiceNetlist(safeId);
-    expect(first).toContain("$ component:source $ Ω !");
-    expect(exportCandidateSpiceNetlist(structuredClone(safeId))).toBe(first);
+    const invalidPrintableId = structuredClone(spiceCandidate);
+    invalidPrintableId.circuit.components[0]!.id = "source $ Ω !";
+    expect(() => exportCandidateSpiceNetlist(invalidPrintableId)).toThrowError(expect.objectContaining({
+      code: "invalid_circuit",
+    }));
   });
 
   it("rejects unsafe transient and AC scalars before public netlist generation", () => {

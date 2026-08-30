@@ -125,7 +125,7 @@ function fixture() {
     'new Worker(new URL("/assets/app.js",import.meta.url),{type:"module",name:"opencircuit-sim"});',
     "new Worker(ch2[id] || (ch2[id] = URL.createObjectURL(new Blob([workerCode]))));",
     'const wasmUrl="/assets/ngspice.wasm";fetch(wasmUrl,{credentials:"same-origin"});new XMLHttpRequest();',
-    'const rel="modulepreload",deps=["assets/chunk.js"];function preload(e){const t={};t.credentials="same-origin";document.createElement("link");return"/"+e,fetch(e.href,t)}',
+    'const deps=["assets/chunk.js"],rel=document.createElement("link").relList;function polyfill(e){const t={};t.credentials="same-origin";fetch(e.href,t)}function base(e){return"/"+e}function preload(e){e=base(e);const n=document.createElement("link");n.rel="modulepreload";n.href=e;return e.endsWith(".css")}',
     `const provenance="${MODEL_SOURCE_URL}";`,
     "//# sourceMappingURL=app.js.map",
   ].join("\n");
@@ -523,9 +523,9 @@ const SYNTHETIC_MOTOR_DRV8262_COMPANION_GATE_HASH = artifactHash(
   withMotorDrv8262CompanionGateEvidence(fixture()),
   "assets/motor-drv8262-gate.js",
 );
-const PRODUCTION_MOTOR_TVS_RECIPE_HASH = "sha256:41ea8282f2d1060775a7fa521dea379bd2485cf3eb9e5aee9e40de22f2fa57b5";
-const PRODUCTION_MOTOR_TVS_REVIEWED_HASH = "sha256:69545140c7752d208487c436ca8e1cae34481ac6c8b33695f9061ae42b1a6013";
-const PRODUCTION_MOTOR_DRV8262_COMPANION_GATE_HASH = "sha256:41ea8282f2d1060775a7fa521dea379bd2485cf3eb9e5aee9e40de22f2fa57b5";
+const PRODUCTION_MOTOR_TVS_RECIPE_HASH = "sha256:ac41688a59153ad04f1da08f82e859cfa112bff597417b0497781884820c6737";
+const PRODUCTION_MOTOR_TVS_REVIEWED_HASH = "sha256:20a413e5544e573fb49646087da46738868edad4e5f6d78488400cab7171da8d";
+const PRODUCTION_MOTOR_DRV8262_COMPANION_GATE_HASH = "sha256:ac41688a59153ad04f1da08f82e859cfa112bff597417b0497781884820c6737";
 const auditModuleSource = readFileSync(new URL("./static-offline-audit.mjs", import.meta.url), "utf8");
 assert.equal(auditModuleSource.split(PRODUCTION_MOTOR_TVS_RECIPE_HASH).length, 3);
 assert.equal(auditModuleSource.split(PRODUCTION_MOTOR_TVS_REVIEWED_HASH).length, 2);
@@ -573,6 +573,25 @@ describe("static offline/network production audit", () => {
     assert.equal(Object.isFrozen(first), true);
     assert.equal(Object.isFrozen(first.evidence), true);
     assert.equal(Object.isFrozen(first.limitations), true);
+  });
+
+  it("accounts for Vite's split same-origin preload helper without authorizing external preload targets", () => {
+    const helper = 'const p="modulepreload",v=function(e){return"/"+e};function preload(e){e=v(e);const n=document.createElement("link");n.rel=p;n.href=e;return e.endsWith(".css")}';
+    const acceptedFiles = fixture();
+    acceptedFiles.push(file("assets/preload-helper.js", `${helper}\n//# sourceMappingURL=preload-helper.js.map`));
+    acceptedFiles.push(file("assets/preload-helper.js.map", mapFile([])));
+    const accepted = auditStaticOfflineNetworkFiles(acceptedFiles);
+
+    const changed = auditStaticOfflineNetworkFiles(replace(
+      acceptedFiles,
+      "assets/preload-helper.js",
+      (source) => source.replace('return"/"+e', 'return"https://cdn.example/"+e'),
+    ));
+
+    assert.equal(accepted.status, "pass", JSON.stringify(accepted.findings, null, 2));
+    assert.equal(changed.status, "blocked");
+    assert.ok(codes(changed).includes("emitted_network_capability_unaccounted"));
+    assert.ok(codes(changed).includes("runtime_external_endpoint_unapproved"));
   });
 
   it("blocks active external and network-relative HTML/CSS resources", () => {

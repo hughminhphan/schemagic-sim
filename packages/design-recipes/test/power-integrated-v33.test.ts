@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
 import {
   calculateDesignBlockContentHash,
-  componentPinPointsV2,
+  componentPinPointsV4,
   generateScenarioNetlist,
-  validateCircuitV2,
-  type CircuitDocumentV2,
+  validateCircuitV4,
+  type CircuitDocumentV4,
   type Point,
 } from "@opencircuit/circuit-schema";
 import { parseElectricalDesignRequestV2, type BuckDesignRequestV2 } from "@opencircuit/design-schema";
@@ -215,7 +215,7 @@ function candidate(
   };
 }
 
-function circuitConnectivity(document: CircuitDocumentV2) {
+function circuitConnectivity(document: CircuitDocumentV4) {
   const graph = document.circuits[0]!;
   const parent = new Map<string, string>();
   const key = ([x, y]: Point): string => `${x},${y}`;
@@ -243,7 +243,7 @@ function circuitConnectivity(document: CircuitDocumentV2) {
   const pin = (componentId: string, index: number): Point => {
     const component = graph.components.find((entry) => entry.id === componentId);
     if (!component) throw new Error(`Missing component ${componentId}`);
-    const point = componentPinPointsV2(component, document.designBlocks)[index];
+    const point = componentPinPointsV4(component, document.designBlocks)[index];
     if (!point) throw new Error(`Missing pin ${componentId}:${index}`);
     return point;
   };
@@ -598,7 +598,7 @@ describe("facts V3.3 integrated synchronous-buck native recipe", () => {
     const selectedCandidate = candidate(env);
     const materialized = POWER_NATIVE_INTEGRATED_SYNCHRONOUS_BUCK_RECIPE_FACTS_V33.materialize(selectedCandidate, env);
     expect(POWER_NATIVE_INTEGRATED_SYNCHRONOUS_BUCK_RECIPE_FACTS_V33.materialize(selectedCandidate, env)).toEqual(materialized);
-    expect(validateCircuitV2(materialized.circuit)).toEqual([]);
+    expect(validateCircuitV4(materialized.circuit)).toEqual([]);
     expect(materialized.circuit.scenarios).toEqual([]);
     expect(materialized.circuit.defaultScenarioId).toBeNull();
     expect(materialized.circuit.circuits[0]!.wires.length).toBeGreaterThan(0);
@@ -644,7 +644,7 @@ describe("facts V3.3 integrated synchronous-buck native recipe", () => {
 
     const connectivity = circuitConnectivity(materialized.circuit);
     for (const component of graph.components) {
-      for (const point of componentPinPointsV2(component, materialized.circuit.designBlocks)) {
+      for (const point of componentPinPointsV4(component, materialized.circuit.designBlocks)) {
         expect(connectivity.wiredPoints.has(`${point[0]},${point[1]}`), `${component.id} pin ${point.join(",")} is unwired`).toBe(true);
       }
     }
@@ -713,7 +713,7 @@ describe("facts V3.4 integrated synchronous-buck behavioral scenario release", (
     const v33Materialized = POWER_NATIVE_INTEGRATED_SYNCHRONOUS_BUCK_RECIPE_FACTS_V33.materialize(v33Candidate, env);
 
     expect(POWER_NATIVE_INTEGRATED_SYNCHRONOUS_BUCK_RECIPE_FACTS_V34.materialize(selectedCandidate, env)).toEqual(materialized);
-    expect(validateCircuitV2(materialized.circuit)).toEqual([]);
+    expect(validateCircuitV4(materialized.circuit)).toEqual([]);
     expect(materialized.circuit.defaultCircuitId).toBe("assembly");
     expect(materialized.circuit.defaultScenarioId).toBe("ideal_pwm_output_stage_transient");
     expect(materialized.circuit.circuits.find((entry) => entry.id === "assembly")).toEqual(v33Materialized.circuit.circuits[0]);
@@ -1015,7 +1015,7 @@ describe("facts V3.4 exact-inductor-qualified integrated synchronous-buck succes
       expect(selectedCandidate.constraints.find((entry) => entry.ruleId === ruleId)?.status, ruleId).toBe("unknown");
     }
     const materialized = recipe.materialize(selectedCandidate, env);
-    expect(validateCircuitV2(materialized.circuit)).toEqual([]);
+    expect(validateCircuitV4(materialized.circuit)).toEqual([]);
     expect(materialized.circuit.defaultScenarioId).toBe("ideal_pwm_output_stage_transient");
     expect(materialized.circuit.circuits.find((entry) => entry.id === "ideal_pwm_output_stage")?.components.find((entry) => entry.id === "power-inductor")).toMatchObject({
       mpn: "F1F2-0804-2R2M",
@@ -1099,7 +1099,7 @@ describe("facts V3.4.5 exact reference-passive integrated synchronous-buck succe
     const recipe = POWER_NATIVE_INTEGRATED_SYNCHRONOUS_BUCK_RECIPE_FACTS_V34_REFERENCE_PASSIVES;
     const selectedCandidate = candidate(env, recipe);
     const materialized = recipe.materialize(selectedCandidate, env);
-    expect(validateCircuitV2(materialized.circuit)).toEqual([]);
+    expect(validateCircuitV4(materialized.circuit)).toEqual([]);
     for (const circuitId of ["assembly", "ideal_pwm_output_stage"] as const) {
       const graph = materialized.circuit.circuits.find((entry) => entry.id === circuitId)!;
       expect(graph.components.filter((entry) => entry.id.startsWith("output-capacitor-"))).toEqual([

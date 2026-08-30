@@ -694,7 +694,7 @@ export class DesignerRoute {
         ? 3
         : 2;
     const stepItem = (number: number, label: string) => `<li${activeStep === number ? " aria-current=\"step\"" : ""}${activeStep > number ? " data-complete=\"true\"" : ""}><span>${String(number).padStart(2, "0")}</span><strong>${label}</strong></li>`;
-    this.#root.innerHTML = `<main class="designer-shell"><header class="designer-chrome"><a class="designer-wordmark" href="/?designer">scheMAGIC <span>Designer</span></a><nav aria-label="Product"><a aria-current="page" href="/?designer">Designer</a><a href="${escapeHtml(simulatorPath)}">Simulator</a></nav><span class="designer-local-state"><i></i>LOCAL WORKBENCH</span></header><div class="designer-frame"><nav class="designer-flow-rail" aria-label="Design progress"><ol>${stepItem(1, "Requirements")}${stepItem(2, "Solutions")}${stepItem(3, "Design")}</ol></nav><div class="designer-route">${content}</div></div></main>`;
+    this.#root.innerHTML = `<main class="designer-shell"><header class="designer-chrome"><a class="designer-wordmark" href="/designer">scheMAGIC <span>Designer</span></a><nav aria-label="Product"><a aria-current="page" href="/designer">Designer</a><a href="${escapeHtml(simulatorPath)}">Simulator</a></nav><span class="designer-local-state"><i></i>RELEASE CANDIDATE</span></header><div class="designer-frame"><nav class="designer-flow-rail" aria-label="Design progress"><ol>${stepItem(1, "Requirements")}${stepItem(2, "Solutions")}${stepItem(3, "Design")}</ol></nav><div class="designer-route">${content}</div></div></main>`;
     this.#bind();
     this.#mountDesignerSimulation();
     void this.#ensureProductionSchematicPreview();

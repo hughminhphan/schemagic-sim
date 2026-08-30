@@ -5,6 +5,15 @@
   "description": "Interactive schematic editor for scheMAGIC Designer and Simulator",
   "type": "module",
   "exports": { ".": "./src/index.ts" },
-  "scripts": { "build": "tsc -p tsconfig.json", "typecheck": "tsc -p tsconfig.json --noEmit" },
-  "dependencies": { "@opencircuit/circuit-schema": "*" }
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "generate:symbols": "node scripts/generate-symbols.mjs",
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": { "@opencircuit/circuit-schema": "*" },
+  "devDependencies": {
+    "@types/node": "24.3.0",
+    "vitest": "3.2.7"
+  }
 }

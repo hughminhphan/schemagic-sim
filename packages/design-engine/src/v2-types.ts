@@ -1,4 +1,4 @@
-import type { CircuitDocumentV2, Sha256ContentHash, TrustedSubcircuitRegistry } from "@opencircuit/circuit-schema";
+import type { CircuitDocumentV4, Sha256ContentHash, TrustedSubcircuitRegistry } from "@opencircuit/circuit-schema";
 import type {
   DesignLibraryDocuments, DesignProfileCodec, DesignProfileEnvelope, DesignProfileFor,
   DesignProfileForCodec, PartClassId, VersionedDesignProfileCodec,
@@ -100,7 +100,7 @@ export interface CandidateForMaterializationV2 {
 }
 export interface CandidateEstimateV2 { metrics: CandidateMetricV2[]; warnings: string[] }
 export interface CandidateMaterializationV2 {
-  circuit: CircuitDocumentV2;
+  circuit: CircuitDocumentV4;
   circuitInstanceClassifications: CircuitInstanceClassificationV2[];
   circuitBomNonRepresentations: CircuitBomNonRepresentationV2[];
 }

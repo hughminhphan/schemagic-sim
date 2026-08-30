@@ -208,7 +208,7 @@ describe("Motor Designer V2 compatibility release", () => {
     }).toEqual({
       strictResult: "sha256:b0bf69fc7bac1accbaf0232204f14ae243bb59d6401b979b370e2b40b1e65a77",
       strictExecution: "sha256:a776a7eea754a7a7724d4df2663693f11eaeb3485784b7d2e7e9e0b7107590da",
-      permissiveResult: "sha256:01b56be6e6dfc3ca46bb36550f6999571d19bd109e73e99d29d308a69a7733b3",
+      permissiveResult: "sha256:8594f24adad54036b6e8df4d94a97798ee31c6ca8acdec2169a13966ebe287c0",
       permissiveExecution: "sha256:5b45a733cea233ab9c9c36603747e623e2cb6031dfbb4b22c1020cff86af1fce",
       candidateIds: [
         "candidate:v2:sha256:a118ec185d3bbdd54360c94dc6a45476dfdae4f1d6ffb2ac0f6695e485a30152",

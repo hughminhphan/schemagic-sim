@@ -10,6 +10,9 @@ async function bootEntry(): Promise<void> {
   const root = document.querySelector<HTMLElement>("#app");
   if (!root) throw new Error("Application root is missing");
   document.title = "scheMAGIC Designer";
+  document
+    .querySelector<HTMLMetaElement>('meta[name="description"]')
+    ?.setAttribute("content", "scheMAGIC Designer release candidate turns declared electrical requirements into inspectable circuit candidates.");
   const [{ mountDesignerRoute }, { designerApplications }] = await Promise.all([
     import("./features/designer/DesignerRoute"),
     import("./features/designer/applications"),

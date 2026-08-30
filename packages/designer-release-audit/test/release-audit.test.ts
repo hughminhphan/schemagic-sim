@@ -208,11 +208,11 @@ describe("Designer V1 release readiness audit", () => {
           exactProductionObservationIdentity: true,
           generatedProductionIdentityTest: true,
         },
-        contractContentHash: "sha256:5088a3a938bdbc0b8a2a4ea21f9dfba0b3e7e45d61fbca48f94d5ab4e28365ff",
+        contractContentHash: "sha256:759ed0914f8dc8034064c4890329c4edc34b32ee6dd0eb3f03c2a3f2ea6e92f8",
         caseId: "power.production.integrated-12v-low-current.ideal-nominal-selected-passives",
         candidateId: "candidate:v2:sha256:e6a4681fa38e5b47f8f59963924e9cd99b749932ba8052f68e34d96cef68035a",
         requestHash: "sha256:f21a643aba1a3c8cb75d42ff2e69b4f12a25168becdb68fbf54f720649821cd4",
-        resultContentHash: "sha256:78bc0f7ad6dc3c641903b1b3168c1a9a926ea78f69ebe1f2a77102d3d4b2608e",
+        resultContentHash: "sha256:8c95de1232f9bab1a133712379287b322f76f199461581a358eecf0666dd386a",
         strictGeneration: {
           requestHash: "sha256:30b8c0fac110f71ce3e71c9347afe725f2a1ad29aa4fdb6bfde8bc87cc73771c",
           resultContentHash: "sha256:d3b7fed4eb2d5f5e862ed8dfafb629771f813b967fd166902c4bd51bc6aabef2",
@@ -239,7 +239,7 @@ describe("Designer V1 release readiness audit", () => {
           id: "production_strict_v1",
           contentHash: "sha256:fdef96d5e34b8acea673b9df199430c5be56d64c5cb5e58481a20d89d4df57f6",
         },
-        constraintDecisionContentHash: "sha256:97248bdb723e2a02bb3347c46c434ff2b7d9d95099d3ccdb69ad581d305bd409",
+        constraintDecisionContentHash: "sha256:91bc09b720b1bf152c69fa53fd015494ed6cd6d7430fcd909fb72734bd5d5a37",
         observationCounts: {
           recipes: 4,
           supportedRecipes: 3,
@@ -271,7 +271,7 @@ describe("Designer V1 release readiness audit", () => {
         scenario: {
           id: "ideal_pwm_output_stage_transient",
           hash: "a09afbbb72d487c1",
-          serializationHash: "550f2daffe407ca3",
+          serializationHash: "550831affe3a64c1",
         },
         netlistContentHash: "sha256:7d0a83af5d553344adaedbd6ab9d2ad86a70630313ab56045e46304c9eaeac97",
         selectedPassiveProfiles: [
@@ -372,7 +372,7 @@ describe("Designer V1 release readiness audit", () => {
           nonmatchingNativeVersionFailureAuthority: "informational_soft_fail",
         },
         executionArtifact: {
-          contentHash: "sha256:556176f71e09dc5dfdd24ae62ec446bc17cccc6060ed51fcf9a0dd1b292e493c",
+          contentHash: "sha256:70e821f80e7f16ce75992f152fb9bc3cf2aed48e9de4a0acd9aefc9ec4bb984c",
           byteLength: 11674,
           sampleContentHash: "sha256:8f54e9c2e62ddfefaaa6b33b16dc781677d0b97a1e513590899c40160bb6215d",
           browserReceiptContentHash: "sha256:656edd7163ab6b003b9b481aba170f93992366c03513e2c846b90a2ebc6a51a3",
@@ -397,13 +397,13 @@ describe("Designer V1 release readiness audit", () => {
           explicitBoundedClaimExclusions: true,
           conditionalContinuousIntegrationWiring: true,
         },
-        contractContentHash: "sha256:cfa78576f707a62126c38648428c75e7e3b6ec3d78d516e13818a56449dca7ae",
+        contractContentHash: "sha256:7ce9e9b453f35e668271b4ce3d00971b669a36de466b57d73dd30b04f73187c9",
         executionResultAttached: true,
         executionArtifactAttested: false,
         currentIdentity: {
           requestHash: "sha256:3eb6902cfb864b7e6977388fee7fa76535f9388b905b10e943849bb3207ab94f",
-          resultContentHash: "sha256:6e3986d02348a5415bbc0c56d85c1899450551c0635fac258bd575b010be1be7",
-          constraintDecisionContentHash: "sha256:ff525983f903d423d8cdb782176bf591d9990c9ffcf0fac4e404fbefb4f3ed59",
+          resultContentHash: "sha256:0ea210d5fdd7f9fa5fd29a0815b94bb80d5deef79b022631cf43b6afdf50c176",
+          constraintDecisionContentHash: "sha256:f797708f3ebbd0ef2eec06f189cbd02f642f9292f2501368e62a44a7feaf7b3e",
           candidateId: "candidate:v2:sha256:6b16171207d7e5afdb3284ad6d566cf2ccf9d565fbfea6a353c6d183b6b45bed",
           candidateIndex: 0,
           candidateEligible: false,
@@ -441,7 +441,7 @@ describe("Designer V1 release readiness audit", () => {
           conditionalProjectionRerun: true,
         },
         executionArtifact: {
-          contentHash: "sha256:789996602667d3d28bdfbec0ecfad25e48ba80ea32f4087390aa59c7a920b3f2",
+          contentHash: "sha256:310bc587ab5a54c9f58a725a70201bdb5d9fff7e6ca53e7a4e193ee3b01083b0",
           byteLength: 6743,
           sampleContentHash: "sha256:ce0385f811496395e5cd0bcccb7fa161c88703f195cdf3f554837cb0eee36ca7",
           browserReceiptContentHash: "sha256:7c3387826241f56bb54cb363dbe74300273f1c4d143297e214952dc053b608a5",
@@ -459,66 +459,30 @@ describe("Designer V1 release readiness audit", () => {
     expect(byId.get("simulation.production-selected-semiconductor-dc-golden-contract")).toMatchObject({
       status: "blocked",
       blockers: expect.arrayContaining([
+        "selected_semiconductor_application_golden_contract_missing:canonicalExecutionArtifact",
+        "selected_semiconductor_application_golden_contract_missing:closedReviewedF1OperatingPointContract",
+        "selected_semiconductor_application_golden_contract_missing:exactFourIndependentInstanceFixture",
         "selected_semiconductor_application_golden_contract_missing:exactProductionObservationIdentity",
-        "selected_semiconductor_application_golden_contract_missing:generatedProductionIdentityTest",
+        "selected_semiconductor_application_golden_contract_missing:exactReviewedOperatingPoint",
+        "selected_semiconductor_application_golden_contract_missing:exactSelectedQuantityAndReviewedProfile",
+        "selected_semiconductor_application_golden_contract_missing:exactStrictReviewedModelPackage",
+        "selected_semiconductor_application_golden_contract_missing:explicitBoundedClaimExclusions",
       ]),
       evidence: {
         implemented: {
+          canonicalExecutionArtifact: false,
+          closedReviewedF1OperatingPointContract: false,
+          exactFourIndependentInstanceFixture: false,
           exactProductionObservationIdentity: false,
-          generatedProductionIdentityTest: false,
+          exactReviewedOperatingPoint: false,
+          exactSelectedQuantityAndReviewedProfile: false,
+          exactStrictReviewedModelPackage: false,
+          explicitBoundedClaimExclusions: false,
+          generatedProductionIdentityTest: true,
         },
         currentProductionIdentity: false,
         currentProductionIdentityAuthority: "unverified",
-        installedExternalLane: {
-          recipe: {
-            id: "motor.native.external-nmos-h-bridge.facts-v3-1-role-qualified",
-            version: "3.1.7",
-            contentHash: "sha256:e526bba9ce25114b505264e7d281607ee223c10de19e795780a64f04617c0947",
-          },
-          contextManifestContentHash: "sha256:06a4ef8b8141852bf9506c6f4f632a7b349b0947c449f85172313380dc195d38",
-          catalogContentHash: "sha256:0c56438b69da824a08963f5492096a9387eacfc84ac72c572103a7a3239b8890",
-          sourceReleaseContentHash: "sha256:a72bfec6700904360882893a96db5a9420efccfb46ad78f1e3826301abe1f29e",
-          exactDriverApplicationSourceContentHash: "sha256:68f16441b44a35a2e768799e649bd832842727fd7d7f57a4cf80e193d6737135",
-          browserStrictResultContentHash: "sha256:e89dcf5512270699df5f7886772a7ae2dcdaead9eea5e53133320420c6d9b435",
-          browserStrictRetainedCandidateCount: 0,
-          browserStrictRejectionCount: 54,
-          browserPermissiveResultContentHash: "sha256:6e3986d02348a5415bbc0c56d85c1899450551c0635fac258bd575b010be1be7",
-          browserPermissiveDecisionContentHash: "sha256:ff525983f903d423d8cdb782176bf591d9990c9ffcf0fac4e404fbefb4f3ed59",
-          browserCandidateIds: [
-            "candidate:v2:sha256:6b16171207d7e5afdb3284ad6d566cf2ccf9d565fbfea6a353c6d183b6b45bed",
-            "candidate:v2:sha256:d0c2ae8814e0ec945608bf4998e571b0884059f000e29590785960ebaccbca70",
-          ],
-          packageObservationResultContentHash: "sha256:01b56be6e6dfc3ca46bb36550f6999571d19bd109e73e99d29d308a69a7733b3",
-          packageObservationExecutionContentHash: "sha256:5b45a733cea233ab9c9c36603747e623e2cb6031dfbb4b22c1020cff86af1fce",
-          packageObservationDecisionContentHash: "sha256:f7dafa7fd6397b7a3fcfe43f12a93e0b05017faa0f91d25ae846584c5afe0604",
-          packageStrictResultContentHash: "sha256:b0bf69fc7bac1accbaf0232204f14ae243bb59d6401b979b370e2b40b1e65a77",
-          packageStrictExecutionContentHash: "sha256:a776a7eea754a7a7724d4df2663693f11eaeb3485784b7d2e7e9e0b7107590da",
-          packageCandidateIds: [
-            "candidate:v2:sha256:a118ec185d3bbdd54360c94dc6a45476dfdae4f1d6ffb2ac0f6695e485a30152",
-            "candidate:v2:sha256:fce7b8a1f83bd1e305e12392a16d8f337e06106c66482640338cf03acdc12382",
-          ],
-          retainedCandidateCount: 2,
-          decisionCandidateCount: 2,
-          materializedCandidateCount: 54,
-          rejectionCount: 52,
-          eligibleCandidateCount: 0,
-          satisfiedRuleCountPerCandidate: 9,
-          blockedRuleCountPerCandidate: 21,
-          gateResistorBomLineCount: 0,
-          capacitorRoleBindings: {
-            profileContentHashes: [
-              "sha256:8169f8d3935539ae0d5725266cef8d18726340facc59f372a85f4d0df341a992",
-              "sha256:a182dcfcbf2383bbb1820e3c9577915ba2d7ef1981a1f4f57d05cbb621856c99",
-              "sha256:5c644b5acd334650b9d79dc0158a102d3d99144c43e2385718d789b69bffd6dd",
-            ],
-            bootstrap: { dataKey: "bootstrapProfileId", quantityPerAssembly: 2, nominalRuleTruth: "pass" },
-            local: { dataKey: "localProfileId", quantityPerAssembly: 1, nominalRuleTruth: "pass" },
-            applicationAdequacy: "unknown",
-          },
-          gateNetworkDisposition: "blocked_unknown",
-          currentProductionIdentity: true,
-          currentProductionIdentityAuthority: "verified_structural_observation_ineligible",
-        },
+        installedExternalLane: "unverified",
       },
     });
     expect(byId.get("catalog.reviewed-release")).toMatchObject({
@@ -1104,7 +1068,7 @@ describe("Designer V1 release readiness audit", () => {
     ].join("\n");
     const harnessPackage = JSON.stringify({
       scripts: {
-        "test:selected-passive-application-golden": "npm --prefix ../.. exec --workspace=@opencircuit/sim-engine -- vitest run test/selected-passive-application-golden.test.ts && npm --prefix ../.. run build --workspace=@opencircuit/sim-engine && node selected-passive-application-golden.mjs --verify-persisted-report",
+        "test:selected-passive-application-golden": "npm --prefix ../.. run test --workspace=@opencircuit/sim-engine -- test/selected-passive-application-golden.test.ts && npm --prefix ../.. run build --workspace=@opencircuit/sim-engine && node selected-passive-application-golden.mjs --verify-persisted-report",
       },
     });
 

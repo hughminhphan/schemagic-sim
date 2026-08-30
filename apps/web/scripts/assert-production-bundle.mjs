@@ -694,7 +694,7 @@ if (
 }
 for (const requiredSource of [
   ...expectedCustomizedTargetArtifactRuntimeDesignExportSources,
-  "packages/circuit-schema/src/v2-netlist.ts",
+  "packages/circuit-schema/src/v4-netlist.ts",
   "packages/design-engine/src/v2-context.ts",
   "packages/design-engine/src/v2-generate.ts",
   "packages/design-engine/src/v2-types.ts",

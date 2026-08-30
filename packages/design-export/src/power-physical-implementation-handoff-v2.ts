@@ -1,7 +1,7 @@
 import {
-  componentPinPointsV2,
-  type CircuitComponentV2,
-  type CircuitGraphV2,
+  componentPinPointsV4,
+  type CircuitComponentV4,
+  type CircuitGraphV4,
   type Point,
 } from "@opencircuit/circuit-schema";
 import {
@@ -145,7 +145,7 @@ const HERO_LINE_EXPECTATIONS = Object.freeze({
   instances: readonly Readonly<{
     componentId: string;
     refdes: string;
-    componentType: CircuitComponentV2["type"];
+    componentType: CircuitComponentV4["type"];
   }>[];
 }>>);
 
@@ -220,7 +220,7 @@ export interface PowerPhysicalStructuralInstanceV2 {
   refdes: string;
   circuitId: typeof HERO_CIRCUIT_ID;
   componentId: string;
-  componentType: CircuitComponentV2["type"];
+  componentType: CircuitComponentV4["type"];
   symbol: {
     kind: "project_authored_structural";
     contentHash: `sha256:${string}`;
@@ -540,7 +540,7 @@ function pointKey(point: Readonly<Point>): string {
 
 function netLabels(
   candidate: Readonly<DesignCandidateV2>,
-  circuit: Readonly<CircuitGraphV2>,
+  circuit: Readonly<CircuitGraphV4>,
 ): ReadonlyMap<string, readonly string[]> {
   const union = new UnionFind();
   const componentPoints = new Map<string, Point[]>();
@@ -550,7 +550,7 @@ function netLabels(
     for (const point of wire.points.slice(1)) union.union(first, pointKey(point));
   }
   for (const component of circuit.components) {
-    const points = componentPinPointsV2(component, candidate.circuit.designBlocks);
+    const points = componentPinPointsV4(component, candidate.circuit.designBlocks);
     componentPoints.set(component.id, points);
     for (const point of points) union.add(pointKey(point));
   }
@@ -571,7 +571,7 @@ function netLabels(
 
 function structuralPinNames(
   candidate: Readonly<DesignCandidateV2>,
-  component: Readonly<CircuitComponentV2>,
+  component: Readonly<CircuitComponentV4>,
   count: number,
 ): string[] {
   if (component.type !== "design_block") {
@@ -588,7 +588,7 @@ function structuralPinNames(
 
 function structuralSymbolHash(
   candidate: Readonly<DesignCandidateV2>,
-  component: Readonly<CircuitComponentV2>,
+  component: Readonly<CircuitComponentV4>,
   points: readonly Readonly<Point>[],
   names: readonly string[],
 ): `sha256:${string}` {
@@ -647,7 +647,7 @@ function exactHeroCandidate(
   engineeringContext: Readonly<GenerateElectricalContextV2>,
 ): {
   candidate: DesignCandidateV2;
-  circuit: CircuitGraphV2;
+  circuit: CircuitGraphV4;
   recipe: GenerateElectricalContextV2["manifest"]["recipes"][number] & Readonly<HeroRecipeIdentityV2>;
 } {
   const candidate = result.candidates.find((entry) => entry.id === candidateId);
@@ -734,7 +734,7 @@ function admissionIdentity(
 
 function buildLine(
   candidate: Readonly<DesignCandidateV2>,
-  circuit: Readonly<CircuitGraphV2>,
+  circuit: Readonly<CircuitGraphV4>,
   lineId: HeroLineIdV2,
   engineeringContext: Readonly<GenerateElectricalContextV2>,
   labels: ReadonlyMap<string, readonly string[]>,
@@ -778,7 +778,7 @@ function buildLine(
   if (sources.length === 0) throw new PowerPhysicalImplementationHandoffErrorV2("catalog_identity_unverified");
   const structuralInstances = expected.instances.map((expectedInstance): PowerPhysicalStructuralInstanceV2 => {
     const component = circuit.components.find((entry) => entry.id === expectedInstance.componentId)!;
-    const points = componentPinPointsV2(component, candidate.circuit.designBlocks);
+    const points = componentPinPointsV4(component, candidate.circuit.designBlocks);
     const names = structuralPinNames(candidate, component, points.length);
     const componentLabels = labels.get(component.id);
     if (points.length === 0 || componentLabels === undefined || componentLabels.length !== points.length) {
@@ -1016,7 +1016,7 @@ function validateAdmission(
 
 function validateStructuralInstance(
   value: unknown,
-  expected: Readonly<{ componentId: string; refdes: string; componentType: CircuitComponentV2["type"] }>,
+  expected: Readonly<{ componentId: string; refdes: string; componentType: CircuitComponentV4["type"] }>,
 ): value is PowerPhysicalStructuralInstanceV2 {
   const instance = record(value);
   const symbol = record(instance?.symbol);

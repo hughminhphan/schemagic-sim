@@ -1,11 +1,11 @@
 import {
-  componentPinPointsV2,
-  type CircuitComponentV2,
-  type CircuitGraphV2,
+  componentPinPointsV4,
+  type CircuitComponentV4,
+  type CircuitGraphV4,
   type DesignBlockDefinition,
   type NetlistOmission,
   type Point,
-  type SimulationScenarioV2,
+  type SimulationScenarioV4,
 } from "@opencircuit/circuit-schema";
 import {
   canonicalDesignV2Payload,
@@ -25,7 +25,7 @@ import {
   type ElectricalDesignContextManifestV2,
   type GenerateElectricalContextV2,
 } from "@opencircuit/design-engine/v2-export-runtime";
-import { generateScenarioNetlist } from "@opencircuit/sim-engine";
+import { generateScenarioNetlist } from "@opencircuit/circuit-schema/v4-netlist";
 
 export type CandidateKicadSchematicExportErrorCodeV2 =
   | "invalid_result"
@@ -53,7 +53,7 @@ export class CandidateKicadSchematicExportErrorV2 extends Error {
 }
 
 export interface CandidateKicadSchematicScenarioV2 {
-  scenario: SimulationScenarioV2;
+  scenario: SimulationScenarioV4;
   coverage: SimulationCoverageV2;
   execution: {
     scenarioHash: string;
@@ -123,7 +123,7 @@ export interface CandidateKicadSchematicMetadataV2 {
     | "verified_against_persisted_coverage"
     | "not_applicable_no_authored_scenarios";
   candidateRef: { id: CandidateIdV2; recipeId: string };
-  circuit: CircuitGraphV2;
+  circuit: CircuitGraphV4;
   designBlocks: DesignBlockDefinition[];
   scenarios: CandidateKicadSchematicScenarioV2[];
   components: CandidateKicadSchematicComponentV2[];
@@ -212,8 +212,8 @@ interface ConnectivityProjection {
 }
 
 function connectivityProjection(
-  circuit: Readonly<CircuitGraphV2>,
-  components: readonly Readonly<CircuitComponentV2>[],
+  circuit: Readonly<CircuitGraphV4>,
+  components: readonly Readonly<CircuitComponentV4>[],
   blocks: readonly Readonly<DesignBlockDefinition>[],
 ): ConnectivityProjection {
   const union = new UnionFind();
@@ -224,7 +224,7 @@ function connectivityProjection(
     for (const point of wire.points.slice(1)) union.union(first, pointKey(point));
   }
   for (const component of components) {
-    const points = componentPinPointsV2(component, blocks);
+    const points = componentPinPointsV4(component, blocks);
     pins.set(component.id, points);
     for (const point of points) union.add(pointKey(point));
   }
@@ -256,7 +256,7 @@ function connectivityProjection(
 
 function referencedBlocks(
   candidate: Readonly<DesignCandidateV2>,
-  circuit: Readonly<CircuitGraphV2>,
+  circuit: Readonly<CircuitGraphV4>,
 ): DesignBlockDefinition[] {
   const refs = new Set(circuit.components.flatMap((component) => component.type === "design_block"
     ? [`${component.block.id}\u0000${component.block.version}\u0000${component.block.contentHash}`]
@@ -266,7 +266,7 @@ function referencedBlocks(
     .map((block) => structuredClone(block));
 }
 
-function referencePrefix(type: CircuitComponentV2["type"]): string {
+function referencePrefix(type: CircuitComponentV4["type"]): string {
   if (type === "resistor") return "R";
   if (type === "capacitor") return "C";
   if (type === "inductor") return "L";
@@ -280,7 +280,7 @@ function referencePrefix(type: CircuitComponentV2["type"]): string {
   return "U";
 }
 
-function componentValue(component: Readonly<CircuitComponentV2>): string {
+function componentValue(component: Readonly<CircuitComponentV4>): string {
   if ("value" in component && component.value !== undefined) return String(component.value);
   if ("params" in component && component.params !== undefined) {
     return `${component.type} ${canonicalDesignV2Payload(component.params)}`;
@@ -291,7 +291,7 @@ function componentValue(component: Readonly<CircuitComponentV2>): string {
 }
 
 function componentPinNames(
-  component: Readonly<CircuitComponentV2>,
+  component: Readonly<CircuitComponentV4>,
   blocks: readonly Readonly<DesignBlockDefinition>[],
   count: number,
 ): string[] {
@@ -305,7 +305,7 @@ function componentPinNames(
 
 function componentMetadata(
   candidate: Readonly<DesignCandidateV2>,
-  circuit: Readonly<CircuitGraphV2>,
+  circuit: Readonly<CircuitGraphV4>,
   blocks: readonly Readonly<DesignBlockDefinition>[],
 ): CandidateKicadSchematicComponentV2[] {
   const sorted = [...circuit.components].sort((left, right) => compareText(left.id, right.id));
@@ -325,7 +325,7 @@ function componentMetadata(
     if (classification.kind !== "non_bom" && selected === undefined) {
       throw new TypeError("KiCad component classification has no selected component");
     }
-    const points = componentPinPointsV2(component, blocks);
+    const points = componentPinPointsV4(component, blocks);
     const names = componentPinNames(component, blocks, points.length);
     const netLabels = connectivity.pinLabels.get(component.id);
     if (netLabels === undefined || netLabels.length !== points.length) {
@@ -382,7 +382,7 @@ function scenarioMetadata(
 function visibleNotices(
   result: Readonly<DesignResultV2>,
   candidate: Readonly<DesignCandidateV2>,
-  circuit: Readonly<CircuitGraphV2>,
+  circuit: Readonly<CircuitGraphV4>,
   manifest: Readonly<ElectricalDesignContextManifestV2>,
   scenarios: readonly Readonly<CandidateKicadSchematicScenarioV2>[],
 ): string[] {
@@ -420,7 +420,7 @@ function visibleNotices(
 function metadataFor(
   result: Readonly<DesignResultV2>,
   candidate: Readonly<DesignCandidateV2>,
-  circuit: Readonly<CircuitGraphV2>,
+  circuit: Readonly<CircuitGraphV4>,
   manifest: Readonly<ElectricalDesignContextManifestV2>,
   executionContext: Readonly<DesignResultExecutionContextV2>,
 ): CandidateKicadSchematicMetadataV2 {
@@ -544,7 +544,7 @@ function property(
 function componentById(
   metadata: Readonly<CandidateKicadSchematicMetadataV2>,
   id: string,
-): CircuitComponentV2 {
+): CircuitComponentV4 {
   const component = metadata.circuit.components.find((entry) => entry.id === id);
   if (component === undefined) throw new TypeError("KiCad component metadata is unresolved");
   return component;
@@ -552,7 +552,7 @@ function componentById(
 
 function componentBodyBounds(
   exported: Readonly<CandidateKicadSchematicComponentV2>,
-  component: Readonly<CircuitComponentV2>,
+  component: Readonly<CircuitComponentV4>,
 ): { minX: number; minY: number; maxX: number; maxY: number } {
   const offsets = exported.pins.map((pin) => [
     (pin.point[0] - component.pos[0]) * GRID_MM,
@@ -750,7 +750,7 @@ export function _renderCandidateKicadSchematicV2ForTest(
 export function _renderCandidateKicadSchematicV2PayloadFromProjection(
   result: Readonly<DesignResultV2>,
   candidate: Readonly<DesignCandidateV2>,
-  circuit: Readonly<CircuitGraphV2>,
+  circuit: Readonly<CircuitGraphV4>,
   manifest: Readonly<ElectricalDesignContextManifestV2>,
   executionContext: Readonly<DesignResultExecutionContextV2>,
 ): string {
@@ -761,7 +761,7 @@ export function _renderCandidateKicadSchematicV2PayloadFromProjection(
 export function _renderCandidateKicadSchematicV2FromProjection(
   result: Readonly<DesignResultV2>,
   candidate: Readonly<DesignCandidateV2>,
-  circuit: Readonly<CircuitGraphV2>,
+  circuit: Readonly<CircuitGraphV4>,
   manifest: Readonly<ElectricalDesignContextManifestV2>,
   executionContext: Readonly<DesignResultExecutionContextV2>,
   extension: Readonly<{

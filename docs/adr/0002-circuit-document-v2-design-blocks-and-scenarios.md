@@ -1,5 +1,7 @@
 # ADR-0002: CircuitDocument v2 design blocks and executable scenarios
 
+> Superseded for persisted-format versioning by [ADR-0013](0013-separate-simulator-v3-and-designer-v4-circuit-formats.md). The unpublished multi-circuit draft described here is released as Designer V4 so Simulator's legacy flat V2 remains unambiguous.
+
 - Status: Accepted; core schema, validation, netlist, and test-registry boundary implemented
 - Date: 2026-08-23
 - Scope: `@opencircuit/circuit-schema`, `@opencircuit/sim-engine`, the future `@opencircuit/design-schema` version seam, scheMAGIC Designer materializers, and simulation consumers

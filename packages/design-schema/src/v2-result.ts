@@ -1,4 +1,4 @@
-import { canonicalizeCircuitV2, validateCircuit, validateCircuitV2, type CircuitDocumentV2 } from "@opencircuit/circuit-schema";
+import { canonicalizeCircuitV4, migrateCircuit, validateCircuit, validateCircuitV4, type CircuitDocumentV4 } from "@opencircuit/circuit-schema";
 import { parseCandidateSourcingMetrics } from "@opencircuit/sourcing-schema";
 import { assertValidDesignRequest } from "./validation";
 import { designRequestHash } from "./migration";
@@ -131,7 +131,7 @@ function validateSelectedComponents(values: unknown[], path: string): Map<string
   return selected;
 }
 
-function validateCoverage(candidate: Record<string, unknown>, circuit: CircuitDocumentV2, path: string): void {
+function validateCoverage(candidate: Record<string, unknown>, circuit: CircuitDocumentV4, path: string): void {
   const coverage = array(candidate.simulationCoverage, `${path}/simulationCoverage`, DESIGN_V2_MAX_COVERAGE_PER_CANDIDATE);
   requireSortedBy(coverage, `${path}/simulationCoverage`, (entry) => [controlFree(entry.scenarioId, `${path}/simulationCoverage/scenarioId`)]);
   const byId = new Map<string, Record<string, unknown>>();
@@ -166,7 +166,7 @@ function validateCoverage(candidate: Record<string, unknown>, circuit: CircuitDo
 
 function pairKey(circuitId: string, componentId: string): string { return JSON.stringify([circuitId, componentId]); }
 
-function validateBindings(candidate: Record<string, unknown>, circuit: CircuitDocumentV2, selected: Map<string, Record<string, unknown>>, path: string): void {
+function validateBindings(candidate: Record<string, unknown>, circuit: CircuitDocumentV4, selected: Map<string, Record<string, unknown>>, path: string): void {
   const classifications = array(candidate.circuitInstanceClassifications, `${path}/circuitInstanceClassifications`, DESIGN_V2_MAX_CIRCUIT_INSTANCE_CLASSIFICATIONS);
   const nonRepresentations = array(candidate.circuitBomNonRepresentations, `${path}/circuitBomNonRepresentations`, DESIGN_V2_MAX_CIRCUIT_BOM_NON_REPRESENTATIONS);
   requireSortedBy(classifications, `${path}/circuitInstanceClassifications`, (entry) => [controlFree(entry.circuitId, ""), controlFree(entry.componentId, "")]);
@@ -246,11 +246,11 @@ function validateCandidate(raw: unknown, index: number, requestHash: string, lib
   const unknownCount = constraints.filter((entry) => (entry as Record<string, unknown>).status === "unknown").length + metricValues.filter((entry) => (entry as Record<string, unknown>).state === "unknown").length;
   if (metrics.warningCount !== warningCount || metrics.estimateCount !== estimateCount || metrics.unknownCount !== unknownCount) fail(`${path}/metrics`, "invalid_value");
   const warnings = array(candidate.warnings, `${path}/warnings`, DESIGN_V2_MAX_WARNINGS_PER_CANDIDATE); requireSortedUniqueStrings(warnings, `${path}/warnings`);
-  let normalizedCircuit: CircuitDocumentV2;
+  let normalizedCircuit: CircuitDocumentV4;
   assertSafeCircuitResultStrings(candidate.circuit, `${path}/circuit`);
-  try { normalizedCircuit = JSON.parse(canonicalizeCircuitV2(candidate.circuit as CircuitDocumentV2, true)) as CircuitDocumentV2; }
+  try { normalizedCircuit = JSON.parse(canonicalizeCircuitV4(candidate.circuit as CircuitDocumentV4, true)) as CircuitDocumentV4; }
   catch { return fail(`${path}/circuit`, "invalid_value"); }
-  if (validateCircuitV2(normalizedCircuit).length > 0) fail(`${path}/circuit`, "invalid_value");
+  if (validateCircuitV4(normalizedCircuit).length > 0) fail(`${path}/circuit`, "invalid_value");
   candidate.circuit = normalizedCircuit;
   validateCoverage(candidate, normalizedCircuit, path); validateBindings(candidate, normalizedCircuit, selected, path);
   return candidate as unknown as DesignCandidateV2;
@@ -314,7 +314,16 @@ function validateV1Constraints(value:unknown,path:string):void{if(!Array.isArray
 function validateV1Metrics(value:unknown,path:string):void{const metrics=object(value,path,"persisted_design_result");exactKeys(metrics,["values","warningCount","estimateCount","unknownCount"],path,undefined,"persisted_design_result");if(!Array.isArray(metrics.values))fail(`${path}/values`,`invalid_type`,`persisted_design_result`);metrics.values.forEach((raw,index)=>{const itemPath=`${path}/values/${index}`;const metric=object(raw,itemPath,"persisted_design_result");exactKeys(metric,["id","value","state","explanation","evidence"],itemPath,undefined,"persisted_design_result");controlFree(metric.id,`${itemPath}/id`,`persisted_design_result`);if(!["authored_rule","calculated","estimated","reviewed","unknown","simulated"].includes(metric.state as string))fail(`${itemPath}/state`,`invalid_value`,`persisted_design_result`);if(metric.value!==null)validateQuantity(metric.value,`${itemPath}/value`,`persisted_design_result`);if(metric.state==="unknown"&&metric.value!==null)fail(`${itemPath}/value`,`invalid_value`,`persisted_design_result`);controlFree(metric.explanation,`${itemPath}/explanation`,`persisted_design_result`);validateEvidenceList(metric.evidence,`${itemPath}/evidence`,`persisted_design_result`);});for(const key of ["warningCount","estimateCount","unknownCount"] as const)if(!Number.isSafeInteger(metrics[key])||(metrics[key] as number)<0)fail(`${path}/${key}`,"invalid_value","persisted_design_result");}
 function validateV1Coverage(value:unknown,path:string):void{if(!Array.isArray(value))fail(path,"invalid_type","persisted_design_result");value.forEach((raw,index)=>{const itemPath=`${path}/${index}`;const entry=object(raw,itemPath,"persisted_design_result");exactKeys(entry,["scenarioId","modelTier","limitations"],itemPath,undefined,"persisted_design_result");controlFree(entry.scenarioId,`${itemPath}/scenarioId`,`persisted_design_result`);if(!["behavioral","reviewed","unavailable","user_imported"].includes(entry.modelTier as string))fail(`${itemPath}/modelTier`,`invalid_value`,`persisted_design_result`);if(!Array.isArray(entry.limitations))fail(`${itemPath}/limitations`,`invalid_type`,`persisted_design_result`);entry.limitations.forEach((limitation,limitationIndex)=>controlFree(limitation,`${itemPath}/limitations/${limitationIndex}`,"persisted_design_result"));});}
 function validateV1RejectedCandidates(value:unknown,path:string):void{if(!Array.isArray(value))fail(path,"invalid_type","persisted_design_result");value.forEach((raw,index)=>{const itemPath=`${path}/${index}`;const rejection=object(raw,itemPath,"persisted_design_result");exactKeys(rejection,["recipeId","componentProfileIds","constraints"],itemPath,undefined,"persisted_design_result");controlFree(rejection.recipeId,`${itemPath}/recipeId`,`persisted_design_result`);if(!Array.isArray(rejection.componentProfileIds))fail(`${itemPath}/componentProfileIds`,`invalid_type`,`persisted_design_result`);rejection.componentProfileIds.forEach((profileId,profileIndex)=>controlFree(profileId,`${itemPath}/componentProfileIds/${profileIndex}`,"persisted_design_result"));validateV1Constraints(rejection.constraints,`${itemPath}/constraints`);});}
-function validateV1Candidate(raw:unknown,index:number,result:Record<string,unknown>):void{const path=`/candidates/${index}`;const candidate=object(raw,path,"persisted_design_result");exactKeys(candidate,["schemaVersion","id","requestHash","recipeId","libraryVersion","components","derivedValues","constraints","metrics","sourcing","simulationCoverage","circuit","warnings"],path,["schemaVersion","id","requestHash","recipeId","libraryVersion","components","derivedValues","constraints","metrics","simulationCoverage","circuit","warnings"],"persisted_design_result");if(candidate.schemaVersion!==1)fail(`${path}/schemaVersion`,`invalid_value`,`persisted_design_result`);for(const key of ["id","requestHash","recipeId","libraryVersion"] as const)controlFree(candidate[key],`${path}/${key}`,"persisted_design_result");if(candidate.requestHash!==result.requestHash||candidate.libraryVersion!==result.libraryVersion)fail(path,"invalid_reference","persisted_design_result");validateV1SelectedComponents(candidate.components,`${path}/components`);validateV1DerivedValues(candidate.derivedValues,`${path}/derivedValues`);validateV1Constraints(candidate.constraints,`${path}/constraints`);validateV1Metrics(candidate.metrics,`${path}/metrics`);if(candidate.sourcing!==undefined){try{parseCandidateSourcingMetrics(candidate.sourcing);}catch{fail(`${path}/sourcing`,`invalid_value`,`persisted_design_result`);}}validateV1Coverage(candidate.simulationCoverage,`${path}/simulationCoverage`);if(!candidate.circuit||(candidate.circuit as {version?:unknown}).version!==1||validateCircuit(candidate.circuit as never).length>0)fail(`${path}/circuit`,`invalid_value`,`persisted_design_result`);if(!Array.isArray(candidate.warnings))fail(`${path}/warnings`,`invalid_type`,`persisted_design_result`);candidate.warnings.forEach((warning,warningIndex)=>controlFree(warning,`${path}/warnings/${warningIndex}`,"persisted_design_result"));}
+function validateV1CandidateCircuit(value: unknown, path: string): void {
+  try {
+    const current = migrateCircuit(value);
+    if (validateCircuit(current).length > 0) fail(path, "invalid_value", "persisted_design_result");
+  } catch (error) {
+    if (error instanceof DesignParseErrorV2) throw error;
+    fail(path, "invalid_value", "persisted_design_result");
+  }
+}
+function validateV1Candidate(raw:unknown,index:number,result:Record<string,unknown>):void{const path=`/candidates/${index}`;const candidate=object(raw,path,"persisted_design_result");exactKeys(candidate,["schemaVersion","id","requestHash","recipeId","libraryVersion","components","derivedValues","constraints","metrics","sourcing","simulationCoverage","circuit","warnings"],path,["schemaVersion","id","requestHash","recipeId","libraryVersion","components","derivedValues","constraints","metrics","simulationCoverage","circuit","warnings"],"persisted_design_result");if(candidate.schemaVersion!==1)fail(`${path}/schemaVersion`,`invalid_value`,`persisted_design_result`);for(const key of ["id","requestHash","recipeId","libraryVersion"] as const)controlFree(candidate[key],`${path}/${key}`,"persisted_design_result");if(candidate.requestHash!==result.requestHash||candidate.libraryVersion!==result.libraryVersion)fail(path,"invalid_reference","persisted_design_result");validateV1SelectedComponents(candidate.components,`${path}/components`);validateV1DerivedValues(candidate.derivedValues,`${path}/derivedValues`);validateV1Constraints(candidate.constraints,`${path}/constraints`);validateV1Metrics(candidate.metrics,`${path}/metrics`);if(candidate.sourcing!==undefined){try{parseCandidateSourcingMetrics(candidate.sourcing);}catch{fail(`${path}/sourcing`,`invalid_value`,`persisted_design_result`);}}validateV1Coverage(candidate.simulationCoverage,`${path}/simulationCoverage`);validateV1CandidateCircuit(candidate.circuit,`${path}/circuit`);if(!Array.isArray(candidate.warnings))fail(`${path}/warnings`,`invalid_type`,`persisted_design_result`);candidate.warnings.forEach((warning,warningIndex)=>controlFree(warning,`${path}/warnings/${warningIndex}`,"persisted_design_result"));}
 
 const V1_PIPELINE=["normalize","enumerate","solve","match","check","estimate","dedupe","pareto","rank","materialize"] as const;
 const V1_COUNT_KEYS=["recipes","enumerated","solved","matched","checked","estimated","sourced","deduped","pareto","materialized","rejected"] as const;

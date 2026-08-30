@@ -1,7 +1,7 @@
 import {
   calculateDesignBlockContentHash,
-  type CircuitComponentV2,
-  type CircuitDocumentV2,
+  type CircuitComponentV4,
+  type CircuitDocumentV4,
   type CircuitWire,
   type DesignBlockDefinition,
 } from "@opencircuit/circuit-schema";
@@ -70,7 +70,7 @@ function exactPassive(
   type: "capacitor" | "inductor" | "resistor",
   pos: [number, number],
   rot: 0 | 90,
-): CircuitComponentV2 {
+): CircuitComponentV4 {
   const component = exactComponent(candidate, id);
   if (component.value === undefined) {
     throw new TypeError(`External-FET facts-V3 structural materialization requires an exact value for ${id}`);
@@ -142,7 +142,7 @@ function materializeExternalStructuralBom(candidate: Readonly<NativeCandidateV2>
     version: block.version,
     contentHash: block.contentHash,
   });
-  const components: CircuitComponentV2[] = [
+  const components: CircuitComponentV4[] = [
     exactPassive(candidate, "current-sense-resistor", "resistor", [36, 32], 90),
     exactPassive(candidate, "feedback-lower", "resistor", [72, 24], 90),
     exactPassive(candidate, "feedback-upper", "resistor", [72, 16], 90),
@@ -201,9 +201,9 @@ function materializeExternalStructuralBom(candidate: Readonly<NativeCandidateV2>
     { id: "net-switch-high-side", points: [[36, 4], [36, 8], [46, 8]] },
     { id: "net-switch-low-side", points: [[36, 12], [36, 8]] },
   ];
-  const circuit: CircuitDocumentV2 = {
+  const circuit: CircuitDocumentV4 = {
     format: "opencircuit-circuit",
-    version: 2,
+    version: 4,
     meta: {
       title: "Catalog-native mixed facts-V2/V3 external-FET synchronous buck structural schematic",
       description: "Connected exact-BOM structure only; it provides no regulation, simulation, performance, package-pin, or selected-part fidelity claim.",

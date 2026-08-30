@@ -1,4 +1,4 @@
-import type { CircuitDocumentV2 } from "@opencircuit/circuit-schema";
+import type { CircuitDocumentV4 } from "@opencircuit/circuit-schema";
 import {
   canonicalProfileNumberV2,
   designProfileId,
@@ -198,9 +198,9 @@ function materialize(candidate: Readonly<NativeCandidateV2>): NativeMaterializat
   if (bulk === undefined || local === undefined || primary === undefined || bulk.value === undefined || local.value === undefined) {
     throw new TypeError("Motor facts-V2 materialization requires the exact three-component BOM");
   }
-  const circuit: CircuitDocumentV2 = {
+  const circuit: CircuitDocumentV4 = {
     format: "opencircuit-circuit",
-    version: 2,
+    version: 4,
     meta: {
       title: "Facts-V2 catalog-native integrated motor bridge",
       description: "Exact passive BOM bindings; the selected bridge remains explicitly unrepresented without a reviewed executable model.",

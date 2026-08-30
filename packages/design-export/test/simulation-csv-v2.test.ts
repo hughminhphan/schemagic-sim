@@ -1,5 +1,5 @@
 import { readFileSync } from "node:fs";
-import { generateScenarioNetlist } from "@opencircuit/sim-engine";
+import { createRunProvenance, effectiveSimulationLimits, generateScenarioNetlist } from "@opencircuit/sim-engine";
 import { _createSimulationExecutionReceiptV1 } from "@opencircuit/sim-engine/provenance-testing";
 import {
   canonicalDesignResultV2ContentHash,
@@ -52,7 +52,7 @@ function scenarioResult(): DesignResultV2 {
     }],
     circuit: {
       format: "opencircuit-circuit",
-      version: 2,
+      version: 4,
       meta: { title: "Behavioral receipt fixture" },
       designBlocks: [],
       circuits: [{
@@ -116,7 +116,24 @@ async function simulationResult(
     data,
     rawfileBytes: 512,
   });
-  return { vectors, data, elapsedMs: 8.25, rawfileBytes: 512, receipt };
+  const requestType = "runTransient" as const;
+  const limits = effectiveSimulationLimits(requestType);
+  const provenance = await createRunProvenance({
+    type: requestType,
+    netlist: netlistOverride ?? generated.netlist,
+    limits,
+  });
+  return {
+    provenance,
+    vectors,
+    data,
+    elapsedMs: 8.25,
+    engineMs: 6.5,
+    parseMs: 1.25,
+    queueMs: 0.5,
+    rawfileBytes: 512,
+    receipt,
+  };
 }
 
 const contexts = {
@@ -182,9 +199,13 @@ describe("Designer V2 behavioral simulation CSV", () => {
       },
       scenarioRef: { id: "load-step", circuitId: "main", analysisMode: "tran" },
       coverage: { modelTier: "behavioral" },
+      runProvenance: samples.provenance,
+      timing: { elapsedMs: 8.25, engineMs: 6.5, parseMs: 1.25, queueMs: 0.5 },
     });
     expect(provenance.executionReceipt.engine.buildVersion).toBe("ngspice-46-opencircuit-wasm1");
     expect(parsed.provenance).toEqual(provenance);
+    expect(parsed.provenance.runProvenance).toEqual(samples.provenance);
+    expect(parsed.provenance.timing).toEqual({ elapsedMs: 8.25, engineMs: 6.5, parseMs: 1.25, queueMs: 0.5 });
     expect([...parsed.data.get("time")!]).toEqual([0, 1e-6, 2e-6]);
     expect(Object.is(parsed.data.get("v(out)")![0], -0)).toBe(true);
     expect([...parsed.data.get("v(out)")!.slice(1)]).toEqual([1 / 3, 1]);

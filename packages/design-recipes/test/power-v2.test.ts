@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { componentPinPointsV2, validateCircuitV2 } from "@opencircuit/circuit-schema";
+import { componentPinPointsV4, validateCircuitV4 } from "@opencircuit/circuit-schema";
 import {
   DESIGN_PROFILE_SCHEMA_VERSION,
   FACTS_SCHEMA_VERSION_V2,
@@ -630,7 +630,7 @@ describe("additive facts-V2 native Power recipe", () => {
     const materialized = POWER_NATIVE_EXTERNAL_FET_SYNCHRONOUS_BUCK_RECIPE_FACTS_V3.materialize(candidate, mixedEnvironment);
     expect(POWER_NATIVE_EXTERNAL_FET_SYNCHRONOUS_BUCK_RECIPE_FACTS_V3.materialize(candidate, mixedEnvironment)).toEqual(materialized);
     expect(POWER_NATIVE_EXTERNAL_FET_SYNCHRONOUS_BUCK_RECIPE_FACTS_V3.materialize(candidate, withInvalidIntegratedPrimary)).toEqual(materialized);
-    expect(validateCircuitV2(materialized.circuit)).toEqual([]);
+    expect(validateCircuitV4(materialized.circuit)).toEqual([]);
     expect(materialized.circuit.defaultCircuitId).toBe("assembly");
     expect(materialized.circuit.defaultScenarioId).toBeNull();
     expect(materialized.circuit.scenarios).toEqual([]);
@@ -648,7 +648,7 @@ describe("additive facts-V2 native Power recipe", () => {
         || (start[1] === end[1] && point[1] === start[1] && point[0] >= Math.min(start[0], end[0]) && point[0] <= Math.max(start[0], end[0]));
     }));
     for (const component of assembly.components) {
-      for (const point of componentPinPointsV2(component, materialized.circuit.designBlocks)) {
+      for (const point of componentPinPointsV4(component, materialized.circuit.designBlocks)) {
         expect(pinIsWired(point), `${component.id} pin ${point.join(",")} is unwired`).toBe(true);
       }
     }

@@ -329,7 +329,7 @@ describe.runIf(!CURRENT_GOLDEN_PRESENT)("current selected-semiconductor producti
     ))).toBe(true);
     expect(permissive.result).toMatchObject({
       requestHash: "sha256:3eb6902cfb864b7e6977388fee7fa76535f9388b905b10e943849bb3207ab94f",
-      contentHash: "sha256:6e3986d02348a5415bbc0c56d85c1899450551c0635fac258bd575b010be1be7",
+      contentHash: "sha256:0ea210d5fdd7f9fa5fd29a0815b94bb80d5deef79b022631cf43b6afdf50c176",
     });
     expect(permissive.result.candidates.map((candidate) => candidate.id)).toEqual([
       "candidate:v2:sha256:6b16171207d7e5afdb3284ad6d566cf2ccf9d565fbfea6a353c6d183b6b45bed",
@@ -360,7 +360,7 @@ describe.runIf(!CURRENT_GOLDEN_PRESENT)("current selected-semiconductor producti
       throw new Error("Expected the installed external-Motor V3 constraint decision");
     }
     expect(permissive.constraintDecision).toMatchObject({
-      contentHash: "sha256:ff525983f903d423d8cdb782176bf591d9990c9ffcf0fac4e404fbefb4f3ed59",
+      contentHash: "sha256:f797708f3ebbd0ef2eec06f189cbd02f642f9292f2501368e62a44a7feaf7b3e",
       eligibleCandidateIds: [],
     });
     expect(permissive.constraintDecision.candidates).toHaveLength(2);

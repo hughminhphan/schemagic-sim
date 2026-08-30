@@ -1,7 +1,7 @@
 import {
   calculateDesignBlockContentHash,
-  type CircuitComponentV2,
-  type CircuitDocumentV2,
+  type CircuitComponentV4,
+  type CircuitDocumentV4,
   type DesignBlockDefinition,
 } from "@opencircuit/circuit-schema";
 import {
@@ -493,7 +493,7 @@ function materialize(
     ...blockPayload,
     contentHash: calculateDesignBlockContentHash(blockPayload),
   };
-  const components: CircuitComponentV2[] = [
+  const components: CircuitComponentV4[] = [
     { id: "bulk-capacitor", type: "capacitor", value: bulk.value.value, mpn: bulk.part.manufacturerPartNumber, pos: [16, 16], rot: 90, mirror: false },
     { id: "ground", type: "ground", pos: [16, 32], rot: 0, mirror: false },
     { id: "local-decoupling", type: "capacitor", value: local.value.value, mpn: local.part.manufacturerPartNumber, pos: [24, 16], rot: 90, mirror: false },
@@ -508,7 +508,7 @@ function materialize(
     },
   ];
   const companion = buildMotorOperatingPointCompanionV2(request, candidate.components);
-  const assembly: CircuitDocumentV2["circuits"][number] = {
+  const assembly: CircuitDocumentV4["circuits"][number] = {
     id: "assembly",
     title: "Integrated H-bridge structural assembly",
     components,
@@ -532,9 +532,9 @@ function materialize(
     { circuitId: "assembly", componentId: "local-decoupling", kind: "physical" as const, selectedComponentId: "local-decoupling", representedQuantityPerAssembly: local.quantityPerAssembly },
     { circuitId: "assembly", componentId: "primary", kind: "physical" as const, selectedComponentId: "primary", representedQuantityPerAssembly: primary.quantityPerAssembly },
   ];
-  const circuit: CircuitDocumentV2 = {
+  const circuit: CircuitDocumentV4 = {
     format: "opencircuit-circuit",
-    version: 2,
+    version: 4,
     meta: {
       title: "Catalog-native facts-V3.2 integrated motor bridge",
       description: "The exact-BOM assembly remains structural and schematic-only. A separate request-derived averaged operating-point graph contains no selected-part model and makes no package-pin, switching, performance, or fidelity claim.",

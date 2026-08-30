@@ -1,6 +1,12 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import type { CircuitDocumentV2 } from "@opencircuit/circuit-schema";
+import type {
+  CircuitDocument,
+  CircuitDocumentV1,
+  CircuitDocumentV4,
+  CircuitProbe,
+  LegacyCircuitProbe,
+} from "@opencircuit/circuit-schema";
 import { generateMotorDesign } from "@opencircuit/motor-designer";
 import { M1_COMPACT_REQUEST, M2_POWER_REQUEST } from "@opencircuit/motor-designer/fixtures";
 import {
@@ -12,7 +18,7 @@ import {
 import {
   calculateSimulationNetlistContentHashV1,
   generateScenarioNetlist,
-  upgradeCircuitV1ToV2,
+  upgradeCircuitV1ToV4,
 } from "../src";
 
 interface GoldenCase {
@@ -104,9 +110,62 @@ function componentParamNumber(testCase: GoldenCase, componentId: string, paramet
   return value;
 }
 
-function scenarioDocument(testCase: GoldenCase): CircuitDocumentV2 {
+function legacyProbe(probe: Readonly<CircuitProbe>): LegacyCircuitProbe {
+  const presentation = {
+    id: probe.id,
+    ...(probe.label === undefined ? {} : { label: probe.label }),
+    ...(probe.color === undefined ? {} : { color: probe.color }),
+  };
+  if (probe.expression.kind === "voltage") {
+    if (probe.expression.negative.kind !== "runtime-node" || probe.expression.negative.name !== "0") {
+      throw new Error(`Cannot adapt differential probe ${probe.id} to Designer V4`);
+    }
+    const positive = probe.expression.positive;
+    const target = positive.kind === "schematic-wire"
+      ? { wire: positive.wireId }
+      : positive.kind === "schematic-pin"
+        ? { componentPin: [positive.componentId, positive.pin] as [string, number] }
+        : { node: positive.name };
+    return { ...presentation, kind: "voltage", target };
+  }
+  if (probe.expression.kind === "current"
+    && probe.expression.component.kind === "schematic-component"
+    && (probe.expression.terminal === undefined || typeof probe.expression.terminal === "number")) {
+    return {
+      ...presentation,
+      kind: "current",
+      target: {
+        componentPin: [probe.expression.component.componentId, probe.expression.terminal ?? 0],
+      },
+    };
+  }
+  throw new Error(`Cannot adapt probe ${probe.id} to Designer V4`);
+}
+
+function simulatorCircuitToDesignerV4(input: Readonly<CircuitDocument>): CircuitDocumentV4 {
+  if (input.modelImports?.parts.length) throw new Error("Golden Simulator circuit cannot contain imported models");
+  return upgradeCircuitV1ToV4({
+    format: "opencircuit-circuit",
+    version: 1,
+    meta: structuredClone(input.meta),
+    components: structuredClone(input.components),
+    wires: structuredClone(input.wires),
+    probes: input.probes.map(legacyProbe),
+    sim: structuredClone(input.sim),
+    ...(input.view === undefined ? {} : { view: structuredClone(input.view) }),
+  });
+}
+
+function scenarioDocument(testCase: GoldenCase): CircuitDocumentV4 {
   const candidate = candidateFor(testCase);
-  const document = upgradeCircuitV1ToV2(candidate.circuit);
+  const circuit = candidate.circuit as unknown as CircuitDocumentV1 | CircuitDocument | CircuitDocumentV4;
+  const document = circuit.version === 1
+    ? upgradeCircuitV1ToV4(circuit)
+    : circuit.version === 3
+      ? simulatorCircuitToDesignerV4(circuit)
+    : circuit.version === 4
+      ? structuredClone(circuit)
+      : (() => { throw new Error(`Expected V1, V3, or V4 circuit for ${testCase.id}`); })();
   const source = document.scenarios[0];
   if (!source) throw new Error(`Missing upgraded scenario for ${testCase.id}`);
   return {
@@ -116,7 +175,7 @@ function scenarioDocument(testCase: GoldenCase): CircuitDocumentV2 {
   };
 }
 
-function reordered(document: CircuitDocumentV2): CircuitDocumentV2 {
+function reordered(document: CircuitDocumentV4): CircuitDocumentV4 {
   return {
     ...structuredClone(document),
     designBlocks: [...document.designBlocks].reverse(),
@@ -253,11 +312,17 @@ describe("application-specific Motor + Power golden identity", () => {
       const fixture = readFileSync(fixtureUrl, "utf8");
       expect(generated.omissions).toEqual([]);
       expect(generated.scenarioId).toBe(testCase.scenarioId);
-      expect(generated.scenarioHash).toBe(testCase.scenarioHash);
-      expect(generated.documentHash).toBe(testCase.scenarioHash);
-      expect(generated.serializationHash).toBe(testCase.serializationHash);
-      expect(generated.netlist).toBe(fixture);
-      await expect(calculateSimulationNetlistContentHashV1(generated.netlist)).resolves.toBe(testCase.netlistContentHash);
+      expect.soft(
+        generated.scenarioHash,
+        `${testCase.id}: ${JSON.stringify(document.scenarios.find((entry) => entry.id === testCase.scenarioId)?.config)}`,
+      ).toBe(testCase.scenarioHash);
+      expect.soft(generated.documentHash, `${testCase.id} document hash`).toBe(testCase.scenarioHash);
+      expect.soft(generated.serializationHash, `${testCase.id} serialization hash`).toBe(testCase.serializationHash);
+      expect.soft(generated.netlist, `${testCase.id} netlist`).toBe(fixture);
+      expect.soft(
+        await calculateSimulationNetlistContentHashV1(generated.netlist),
+        `${testCase.id} netlist content hash`,
+      ).toBe(testCase.netlistContentHash);
 
       const shuffled = generateScenarioNetlist(reordered(document), testCase.scenarioId);
       expect(shuffled.netlist).toBe(generated.netlist);

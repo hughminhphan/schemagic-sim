@@ -1,4 +1,4 @@
-import { generateScenarioNetlist, validateCircuitV2 } from "@opencircuit/circuit-schema";
+import { generateScenarioNetlist, validateCircuitV4 } from "@opencircuit/circuit-schema";
 import type {
   DesignGenerationV2,
   GenerateElectricalContextV2,
@@ -118,7 +118,7 @@ function expectReferenceFlow(
     context.manifest.recipes.find((entry) => entry.id === candidate.recipeId)?.contentHash,
   );
 
-  expect(validateCircuitV2(candidate.circuit)).toEqual([]);
+  expect(validateCircuitV4(candidate.circuit)).toEqual([]);
   const assembly = candidate.circuit.circuits.find((entry) => entry.id === "assembly");
   expect(assembly?.components.length).toBeGreaterThan(0);
   expect(assembly?.wires.length).toBeGreaterThan(0);

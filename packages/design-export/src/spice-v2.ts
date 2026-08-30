@@ -12,7 +12,7 @@ import {
   type DesignResultExecutionContextV2,
   type GenerateElectricalContextV2,
 } from "@opencircuit/design-engine/v2-export-runtime";
-import { generateScenarioNetlist } from "@opencircuit/circuit-schema";
+import { generateScenarioNetlist } from "@opencircuit/circuit-schema/v4-netlist";
 
 export type CandidateScenarioSpiceExportErrorCodeV2 =
   | "invalid_result"

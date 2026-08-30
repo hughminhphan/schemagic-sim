@@ -4,7 +4,7 @@ import { resolve } from "node:path";
 import { brotliCompressSync, constants, gzipSync } from "node:zlib";
 import { defineConfig, type Plugin } from "vite";
 
-const DESIGNER_EXAMPLE_MANIFEST_HASH = "552798dcc0e084654c1b64ea20370d0008ef69d62d06d2a2ef1809aa9da19692";
+const DESIGNER_EXAMPLE_MANIFEST_HASH = "a4b615ad869aa55627d6295df7e130a3e6a82cf5b017d22367f956ca08c7563c";
 const DESIGNER_EXAMPLE_IDS = ["m1-compact", "m2-power", "p1-compact", "p2-high-voltage"] as const;
 
 function sha256(bytes: Uint8Array): string {

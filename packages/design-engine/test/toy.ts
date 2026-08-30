@@ -157,7 +157,7 @@ function metricsFor(option: MatchedOption): CandidateMetric[] {
 function circuit(label: string): CircuitDocument {
   return {
     format: "opencircuit-circuit",
-    version: 1,
+    version: 3,
     meta: { title: label },
     components: [{ id: "gnd", type: "ground", pos: [0, 0], rot: 0, mirror: false }],
     wires: [],

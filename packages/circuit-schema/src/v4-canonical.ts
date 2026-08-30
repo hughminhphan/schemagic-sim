@@ -1,7 +1,7 @@
-import { canonicalizeCircuit, fnv1a64 } from "./canonical";
+import { canonicalizeCircuit, deserializeCircuit, fnv1a64 } from "./canonical";
 import type {
   AnyCircuitDocument,
-  CircuitDocumentV2,
+  CircuitDocumentV4,
   DesignBlockDefinition,
   Sha256ContentHash,
 } from "./types";
@@ -10,7 +10,7 @@ type JsonPrimitive = boolean | number | string | null;
 export type CanonicalJsonValue = JsonPrimitive | CanonicalJsonValue[] | { [key: string]: CanonicalJsonValue };
 type CanonicalContext = "generic" | "circuit" | "scenario" | "design-block";
 
-export function compareCircuitV2Tokens(left: string, right: string): number {
+export function compareCircuitV4Tokens(left: string, right: string): number {
   return left === right ? 0 : left < right ? -1 : 1;
 }
 
@@ -23,13 +23,13 @@ function compareSetMembers(left: CanonicalJsonValue, right: CanonicalJsonValue, 
   const a = left as { id?: string; version?: string; contentHash?: string };
   const b = right as { id?: string; version?: string; contentHash?: string };
   if (key === "trustedAssets") {
-    const hashOrder = compareCircuitV2Tokens(a.contentHash ?? "", b.contentHash ?? "");
-    return hashOrder !== 0 ? hashOrder : compareCircuitV2Tokens(JSON.stringify(left), JSON.stringify(right));
+    const hashOrder = compareCircuitV4Tokens(a.contentHash ?? "", b.contentHash ?? "");
+    return hashOrder !== 0 ? hashOrder : compareCircuitV4Tokens(JSON.stringify(left), JSON.stringify(right));
   }
-  const idOrder = compareCircuitV2Tokens(a.id ?? "", b.id ?? "");
+  const idOrder = compareCircuitV4Tokens(a.id ?? "", b.id ?? "");
   if (idOrder !== 0 || key !== "designBlocks") return idOrder;
-  const versionOrder = compareCircuitV2Tokens(a.version ?? "", b.version ?? "");
-  return versionOrder !== 0 ? versionOrder : compareCircuitV2Tokens(a.contentHash ?? "", b.contentHash ?? "");
+  const versionOrder = compareCircuitV4Tokens(a.version ?? "", b.version ?? "");
+  return versionOrder !== 0 ? versionOrder : compareCircuitV4Tokens(a.contentHash ?? "", b.contentHash ?? "");
 }
 
 function createJsonObject(): { [key: string]: CanonicalJsonValue } {
@@ -72,7 +72,7 @@ function canonicalizeValue(
   }
   if (value && typeof value === "object") {
     const result = createJsonObject();
-    for (const objectKey of Object.keys(value).sort(compareCircuitV2Tokens)) {
+    for (const objectKey of Object.keys(value).sort(compareCircuitV4Tokens)) {
       if (omitKey(path, objectKey, context, includeView)) continue;
       const nested = (value as Record<string, unknown>)[objectKey];
       if (nested !== undefined) setOwn(result, objectKey, canonicalizeValue(nested, [...path, objectKey], context, includeView));
@@ -82,22 +82,22 @@ function canonicalizeValue(
   throw new Error(`Circuit documents cannot contain ${typeof value}`);
 }
 
-export function canonicalizeV2Value(value: unknown): CanonicalJsonValue {
+export function canonicalizeV4Value(value: unknown): CanonicalJsonValue {
   return canonicalizeValue(value, [], "generic", true);
 }
 
-export function canonicalizeCircuitV2(document: CircuitDocumentV2, includeView = true): string {
+export function canonicalizeCircuitV4(document: CircuitDocumentV4, includeView = true): string {
   return JSON.stringify(canonicalizeValue(document, [], "circuit", includeView));
 }
 
-export function canonicalizeV2SimulationProjection(value: unknown): string {
+export function canonicalizeV4SimulationProjection(value: unknown): string {
   return JSON.stringify(canonicalizeValue(value, [], "scenario", true));
 }
 
 export function canonicalizeAnyCircuit(document: AnyCircuitDocument, includeView = true): string {
-  return document.version === 2
-    ? canonicalizeCircuitV2(document, includeView)
-    : canonicalizeCircuit(document, includeView);
+  return document.version === 4
+    ? canonicalizeCircuitV4(document, includeView)
+    : canonicalizeCircuit(document.version === 3 ? document : deserializeCircuit(JSON.stringify(document)), includeView);
 }
 
 export function canonicalDesignBlockPayload(
@@ -125,8 +125,8 @@ function freezeValue(value: unknown): void {
   Object.freeze(value);
 }
 
-export function detachedCircuitV2Snapshot(document: CircuitDocumentV2): CircuitDocumentV2 {
-  const snapshot = detachValue(document) as CircuitDocumentV2;
+export function detachedCircuitV4Snapshot(document: CircuitDocumentV4): CircuitDocumentV4 {
+  const snapshot = detachValue(document) as CircuitDocumentV4;
   freezeValue(snapshot);
   return snapshot;
 }
@@ -201,6 +201,6 @@ export function calculateDesignBlockContentHash(
   return `sha256:${sha256Hex(canonicalDesignBlockPayload(definition))}`;
 }
 
-export function circuitV2SerializationHash(document: CircuitDocumentV2): string {
-  return fnv1a64(canonicalizeCircuitV2(document, false));
+export function circuitV4SerializationHash(document: CircuitDocumentV4): string {
+  return fnv1a64(canonicalizeCircuitV4(document, false));
 }

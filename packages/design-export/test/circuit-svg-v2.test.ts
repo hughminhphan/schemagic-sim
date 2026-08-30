@@ -8,7 +8,7 @@ import {
   type DesignProfileV1,
 } from "@opencircuit/design-library";
 import { createSyntheticReviewedLibraryFixture } from "@opencircuit/design-library/fixtures";
-import { componentPinPointsV2 } from "@opencircuit/circuit-schema";
+import { componentPinPointsV4 } from "@opencircuit/circuit-schema";
 import {
   buildReviewedProfileCatalogV2,
   calculateElectricalDesignContextManifestV2ContentHash,
@@ -658,7 +658,7 @@ describe("verified Designer V2 structural KiCad schematic", () => {
     for (const exported of parsed.components) {
       const component = circuit.components.find((entry) => entry.id === exported.componentId)!;
       expect(exported.footprint).toBe("");
-      expect(exported.pins.map((pin) => pin.point)).toEqual(componentPinPointsV2(component, candidate.circuit.designBlocks));
+      expect(exported.pins.map((pin) => pin.point)).toEqual(componentPinPointsV4(component, candidate.circuit.designBlocks));
       expect(exported.pins.every((pin) => /^(?:GND|SM_NET_[0-9]{3})$/u.test(pin.netLabel))).toBe(true);
       expect(first).toContain(`(lib_id ${JSON.stringify(exported.libraryId)})`);
       expect(first).toContain(`(property "Reference" ${JSON.stringify(exported.reference)}`);

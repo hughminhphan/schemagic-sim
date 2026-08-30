@@ -5,17 +5,26 @@ export { decimateMinMax, type DecimatedPoint } from "./decimate";
 export { complexToBode, type BodeData } from "./ac";
 export { snapCursorIndex } from "./cursor";
 export { columnsToCSV, type CSVColumn } from "./csv";
+export { orderedXYPoints, type XYPoint } from "./xy";
 export type {
   AnalysisKind,
   AnnotationPoint,
   AnnotationStyle,
   AxisRange,
+  ComparisonRole,
+  CursorName,
+  CursorPosition,
   CursorSnapshot,
   CursorState,
+  PlotLayoutMode,
+  PlotScale,
   SetDataOptions,
   TraceDefinition,
+  TraceValueKind,
   VectorCollection,
+  ViewerDiagnostic,
   ViewerOptions,
+  ViewerState,
   WaveformAnnotation,
   WaveformData,
   WaveformViewer,

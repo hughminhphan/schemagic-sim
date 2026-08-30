@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { generateScenarioNetlist, validateCircuitV2 } from "@opencircuit/circuit-schema";
+import { generateScenarioNetlist, validateCircuitV4 } from "@opencircuit/circuit-schema";
 import { canonicalDesignExecutionReportV2Payload } from "@opencircuit/design-engine";
 import { exportProductionDesignArtifactV2 } from "@opencircuit/design-export/production-artifact-v2";
 import {
@@ -92,10 +92,10 @@ describe("Motor Designer V3 production constraint observation", () => {
       candidateIds: first.observation.result.candidates.map((candidate) => candidate.id),
       decision: first.decision.contentHash,
     }).toEqual({
-      result: "sha256:5d3073a4e68e71f60f2d9eeaabb2ca90da213a3794c6a6779ad83eeefd703044",
+      result: "sha256:487cfeca28ed0a67d27df858b87925deca3896a8f9fc4ac19c9de75647cacdb2",
       execution: "sha256:34a59924931a3d6200594670374c5e6d57f07e4722b9d7a92736a0001adc79e4",
       candidateIds: ["candidate:v2:sha256:3f9953a5582e56cd999070367f1b3c4830bfad4d4e9df55e2ce91891fb5cb16e"],
-      decision: "sha256:27aabbc0fc3d812752e803d3ce15d40457572b2faa1f81def3a8f52ff6d05276",
+      decision: "sha256:093fab8cc210268d42e0af901b9fe72be506268c69d74ceb733bd01f807f70b2",
     });
     expect(first.observation.result.candidates[0]!.constraints).toEqual(expect.arrayContaining([
       expect.objectContaining({ ruleId: "motor.integrated.local-capacitance-nominal", status: "unknown" }),
@@ -121,7 +121,7 @@ describe("Motor Designer V3 production constraint observation", () => {
       ))
     ))).toBe(true);
     const candidate = first.observation.result.candidates[0]!;
-    expect(validateCircuitV2(candidate.circuit)).toEqual([]);
+    expect(validateCircuitV4(candidate.circuit)).toEqual([]);
     expect(candidate.components.length).toBeGreaterThan(0);
     expect(candidate.metrics.values.every((metric) => (
       metric.state === "calculated" && metric.value !== null && Number.isFinite(metric.value.value)
@@ -142,7 +142,7 @@ describe("Motor Designer V3 production constraint observation", () => {
     );
     const artifact = exportBom();
     expect(designSha256ContentHash(artifact.content)).toBe(
-      "sha256:416eb0c844a7f18a3feff15e543f3bb7405018910407189d4460ef271ee6f2db",
+      "sha256:50cac47c797affeebd6d2bba32c404315d2242cd9e5de68ea70c85a6085d7be9",
     );
     expect(artifact.content).toContain("observation_only,ineligible");
     for (const component of candidate.components) {
@@ -164,12 +164,12 @@ describe("Motor Designer V3 production constraint observation", () => {
       candidateIds: generation.observation.result.candidates.map((candidate) => candidate.id),
       decision: generation.decision.contentHash,
     }).toEqual({
-      result: "sha256:01b56be6e6dfc3ca46bb36550f6999571d19bd109e73e99d29d308a69a7733b3",
+      result: "sha256:8594f24adad54036b6e8df4d94a97798ee31c6ca8acdec2169a13966ebe287c0",
       candidateIds: [
         "candidate:v2:sha256:a118ec185d3bbdd54360c94dc6a45476dfdae4f1d6ffb2ac0f6695e485a30152",
         "candidate:v2:sha256:fce7b8a1f83bd1e305e12392a16d8f337e06106c66482640338cf03acdc12382",
       ],
-      decision: "sha256:f7dafa7fd6397b7a3fcfe43f12a93e0b05017faa0f91d25ae846584c5afe0604",
+      decision: "sha256:96a51723912ee42c1a1837c1ce388bef95fd6ecb0d328ca618a24e2380b4a9d4",
     });
     expect(generation.observation.result.candidates).toHaveLength(2);
     expect(generation.decision.candidates).toHaveLength(2);

@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import { generateScenarioNetlist, validateCircuitV2 } from "@opencircuit/circuit-schema";
+import { generateScenarioNetlist, validateCircuitV4 } from "@opencircuit/circuit-schema";
 import {
   DESIGN_PROFILE_SCHEMA_VERSION,
   FACTS_SCHEMA_VERSION_V2,
@@ -708,7 +708,7 @@ describe("installed facts-V3.2 integrated H-bridge recipe", () => {
     };
     const materialized = MOTOR_NATIVE_INTEGRATED_H_BRIDGE_RECIPE_FACTS_V32.materialize(candidate, exact);
     expect(MOTOR_NATIVE_INTEGRATED_H_BRIDGE_RECIPE_FACTS_V32.materialize(candidate, exact)).toEqual(materialized);
-    expect(validateCircuitV2(materialized.circuit)).toEqual([]);
+    expect(validateCircuitV4(materialized.circuit)).toEqual([]);
     expect(materialized.circuit.circuits.map((circuit) => circuit.id)).toEqual(["assembly", "behavioral-operating-point"]);
     expect(materialized.circuit.defaultCircuitId).toBe("assembly");
     expect(materialized.circuit.scenarios).toEqual([

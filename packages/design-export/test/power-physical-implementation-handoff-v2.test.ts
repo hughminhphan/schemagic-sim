@@ -290,7 +290,7 @@ describe("exact integrated-Power physical implementation handoff V2", () => {
       },
     });
     expect(first.contentHash).toBe(
-      "sha256:2009c6b162838424343601bc8d0aa6da7188543f29a8f20b4fe6004b1d55b5d9",
+      "sha256:1cde50595ebed875cb5f77e8c7a449bd3e1be2355a9dcbc150dbe6e972d28af8",
     );
 
     const priorImmutableRecipeArtifact = structuredClone(first) as PowerPhysicalImplementationHandoffV2;

@@ -63,8 +63,8 @@ export class DesignerDemonstrationLoadError extends Error {
 const MANIFEST = Object.freeze({
   url: "/designer-examples/manifest.json",
   byteLength: 7_062,
-  byteContentHash: "sha256:552798dcc0e084654c1b64ea20370d0008ef69d62d06d2a2ef1809aa9da19692",
-  contentHash: "sha256:4b4d6183e83948f9370da067fea6e6df6495cdff733a73152e0ed64f179cbb30",
+  byteContentHash: "sha256:a4b615ad869aa55627d6295df7e130a3e6a82cf5b017d22367f956ca08c7563c",
+  contentHash: "sha256:44c37c4e9edcf1af50ed80e78e37283b64c5c33efe5c03f31b4d4b9f22b304f2",
   boundariesContentHash: "sha256:93acd15f54f0a1f005064a549b8f57d1c98081dfc92066e2b959ef312cbba904",
 });
 
@@ -79,8 +79,8 @@ export const DESIGNER_DEMONSTRATIONS: readonly DesignerDemonstrationSummary[] = 
     recipeId: "motor.brushed-dc.integrated-h-bridge.v1",
     artifact: {
       path: "artifacts/m1-compact.json",
-      byteLength: 211_284,
-      contentHash: "sha256:60b872807462648a517f820da7c3383aaa2f3d4126f4d6c5b7c4e24a334e7674",
+      byteLength: 212_648,
+      contentHash: "sha256:53bd5bc2b12d99f5bf296091d8ee82cc493fba5b8911bf3b7397e3678e0f5f2d",
     },
   },
   {
@@ -93,8 +93,8 @@ export const DESIGNER_DEMONSTRATIONS: readonly DesignerDemonstrationSummary[] = 
     recipeId: "motor.brushed-dc.external-nmos-h-bridge.v1",
     artifact: {
       path: "artifacts/m2-power.json",
-      byteLength: 845_563,
-      contentHash: "sha256:14b2b4f71a7b1b8704d6c3f7c5cdf775718229ceae50a9c93fead0e34aed6284",
+      byteLength: 848_291,
+      contentHash: "sha256:86471e4d8cf6d1938f85f6fbe53fb0ce99556fac83ac5c60ed4e6ee0c177de42",
     },
   },
   {
@@ -107,8 +107,8 @@ export const DESIGNER_DEMONSTRATIONS: readonly DesignerDemonstrationSummary[] = 
     recipeId: "schemagic.power.buck.integrated-synchronous.v1",
     artifact: {
       path: "artifacts/p1-compact.json",
-      byteLength: 372_144,
-      contentHash: "sha256:3a1fb56086ccba3af1ec1816f87318ced7076b1b56a6c8ca1ea5daef09f9ba1a",
+      byteLength: 379_068,
+      contentHash: "sha256:a204952c17f98f5d8999f85d9b57d3566929d6c01a25e1a9a2107437c246b06e",
     },
   },
   {
@@ -121,8 +121,8 @@ export const DESIGNER_DEMONSTRATIONS: readonly DesignerDemonstrationSummary[] = 
     recipeId: "schemagic.power.buck.controller-external-nmos.v1",
     artifact: {
       path: "artifacts/p2-high-voltage.json",
-      byteLength: 292_365,
-      contentHash: "sha256:7c6c83f0f5339ec56ed14a67ef152bd37f13b5c37a40a76e6a050b299f754554",
+      byteLength: 296_981,
+      contentHash: "sha256:2064138ad31abd614485fdd9af8738a3911ecf25acfc140174b33e12720018ab",
     },
   },
 ]);

@@ -21,6 +21,7 @@ import {
   type SimulationExecutionReceiptV1,
   type SimulationRequestType,
   type SimulationResult,
+  type SimulationRunProvenance,
   type VectorMeta,
 } from "@opencircuit/sim-engine";
 import { escapeBomTextCellV2 } from "./bom-v2";
@@ -85,6 +86,13 @@ export interface DesignScenarioSimulationProvenanceV2 {
     modelTier: "behavioral";
     limitations: string[];
   };
+  runProvenance: SimulationRunProvenance;
+  timing: {
+    elapsedMs: number;
+    engineMs: number;
+    parseMs: number;
+    queueMs: number;
+  };
   executionReceipt: SimulationExecutionReceiptV1;
   vectors: VectorMeta[];
   columns: DesignScenarioSimulationCsvColumnV2[];
@@ -101,6 +109,7 @@ export interface ParsedDesignScenarioSimulationCsvV2 {
 
 const MAX_CSV_BYTES = 128 * 1024 * 1024;
 const HASH = /^sha256:[0-9a-f]{64}$/u;
+const RUN_KEY = /^[0-9a-f]{64}$/u;
 
 function rfc4180(value: string): string {
   return /[",\r\n]/u.test(value) ? `"${value.replaceAll('"', '""')}"` : value;
@@ -203,14 +212,47 @@ interface BoundScenarioV2 {
 
 function snapshotSimulationResult(result: Readonly<SimulationResult>): SimulationResult {
   return {
+    provenance: structuredClone(result.provenance),
     vectors: result.vectors.map((vector) => ({ ...vector })),
     data: new Map([...result.data].map(([name, values]) => [name, values.slice()])),
     elapsedMs: result.elapsedMs,
+    engineMs: result.engineMs,
+    parseMs: result.parseMs,
+    queueMs: result.queueMs,
     rawfileBytes: result.rawfileBytes,
     receipt: structuredClone(result.receipt),
     ...(result.sweep === undefined ? {} : { sweep: structuredClone(result.sweep) }),
     ...(result.noise === undefined ? {} : { noise: structuredClone(result.noise) }),
   };
+}
+
+function validFiniteDuration(value: unknown): value is number {
+  return typeof value === "number" && Number.isFinite(value) && value >= 0;
+}
+
+function validRunProvenance(value: unknown): value is SimulationRunProvenance {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return false;
+  const provenance = value as Partial<SimulationRunProvenance>;
+  const limits = provenance.limits as Partial<SimulationRunProvenance["limits"]> | undefined;
+  return Object.keys(value).length === 5
+    && typeof provenance.runKey === "string" && RUN_KEY.test(provenance.runKey)
+    && provenance.identityVersion === 1
+    && provenance.engine === "ngspice-46-opencircuit-wasm1"
+    && ["runOpPoint", "runDCSweep", "runTransient", "runAC", "runNoise"].includes(provenance.requestType ?? "")
+    && !!limits && Object.keys(limits).length === 3
+    && Number.isSafeInteger(limits.timeoutMs) && (limits.timeoutMs ?? 0) > 0
+    && Number.isSafeInteger(limits.maxRawfileBytes) && (limits.maxRawfileBytes ?? 0) > 0
+    && Number.isSafeInteger(limits.maxSamples) && (limits.maxSamples ?? 0) > 0;
+}
+
+function validTiming(value: unknown): value is DesignScenarioSimulationProvenanceV2["timing"] {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return false;
+  const timing = value as Partial<DesignScenarioSimulationProvenanceV2["timing"]>;
+  return Object.keys(value).length === 4
+    && validFiniteDuration(timing.elapsedMs)
+    && validFiniteDuration(timing.engineMs)
+    && validFiniteDuration(timing.parseMs)
+    && validFiniteDuration(timing.queueMs);
 }
 
 function closedSimulationSnapshot(result: Readonly<SimulationResult>): SimulationResult {
@@ -261,6 +303,17 @@ async function createSimulationProvenanceFromSnapshotV2(
 ): Promise<Readonly<DesignScenarioSimulationProvenanceV2>> {
   const receiptIssues = await verifySimulationExecutionReceiptV1(simulationResult);
   if (receiptIssues.length > 0) throw new DesignScenarioSimulationCsvErrorV2("simulation_receipt_invalid");
+  if (!validRunProvenance(simulationResult.provenance)
+    || simulationResult.provenance.requestType !== simulationResult.receipt.requestType
+    || simulationResult.provenance.engine !== simulationResult.receipt.engine.buildVersion
+    || !validTiming({
+      elapsedMs: simulationResult.elapsedMs,
+      engineMs: simulationResult.engineMs,
+      parseMs: simulationResult.parseMs,
+      queueMs: simulationResult.queueMs,
+    })) {
+    throw new DesignScenarioSimulationCsvErrorV2("simulation_receipt_invalid");
+  }
   const mode = bound.scenario.config.mode;
   if (simulationResult.receipt.requestType !== expectedRequestType(mode)) {
     throw new DesignScenarioSimulationCsvErrorV2("analysis_mismatch");
@@ -296,6 +349,13 @@ async function createSimulationProvenanceFromSnapshotV2(
       serializationHash: bound.generated.serializationHash,
     },
     coverage: { modelTier: "behavioral", limitations: [...bound.coverage.limitations] },
+    runProvenance: structuredClone(simulationResult.provenance),
+    timing: {
+      elapsedMs: simulationResult.elapsedMs,
+      engineMs: simulationResult.engineMs,
+      parseMs: simulationResult.parseMs,
+      queueMs: simulationResult.queueMs,
+    },
     executionReceipt: structuredClone(simulationResult.receipt),
     vectors: simulationResult.vectors.map((vector) => ({ ...vector })),
     columns: columnsFor(simulationResult),
@@ -436,6 +496,8 @@ function basicProvenance(value: unknown): value is DesignScenarioSimulationProve
     && typeof provenance.engineeringContextRef.manifestContentHash === "string" && HASH.test(provenance.engineeringContextRef.manifestContentHash)
     && !!provenance.candidateRef && typeof provenance.candidateRef.id === "string"
     && !!provenance.scenarioRef && typeof provenance.scenarioRef.id === "string"
+    && validRunProvenance(provenance.runProvenance)
+    && validTiming(provenance.timing)
     && Array.isArray(provenance.vectors) && Array.isArray(provenance.columns)
     && Number.isSafeInteger(provenance.rowCount) && (provenance.rowCount ?? 0) > 0
     && !!provenance.executionReceipt;
@@ -522,9 +584,13 @@ export async function parseDesignResultScenarioSimulationCsvV2(
     throw new DesignScenarioSimulationCsvErrorV2("invalid_csv");
   }
   const simulationResult: SimulationResult = {
+    provenance: provenance.runProvenance,
     vectors: provenance.vectors,
     data,
-    elapsedMs: 0,
+    elapsedMs: provenance.timing.elapsedMs,
+    engineMs: provenance.timing.engineMs,
+    parseMs: provenance.timing.parseMs,
+    queueMs: provenance.timing.queueMs,
     rawfileBytes: provenance.rawfileBytes,
     receipt: provenance.executionReceipt,
     ...(provenance.sweep === undefined ? {} : { sweep: provenance.sweep }),

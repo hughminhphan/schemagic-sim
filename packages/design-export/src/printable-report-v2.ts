@@ -1,4 +1,4 @@
-import type { SimulationScenarioV2 } from "@opencircuit/circuit-schema";
+import type { SimulationScenarioV4 } from "@opencircuit/circuit-schema";
 import {
   canonicalDesignV2Payload,
   parseDesignResultV2,
@@ -47,7 +47,7 @@ export class CandidatePrintableReportExportErrorV2 extends Error {
 
 export interface CandidatePrintableReportScenarioV2 {
   scenarioId: string;
-  scenario: SimulationScenarioV2 | null;
+  scenario: SimulationScenarioV4 | null;
   circuitTitle: string | null;
   coverage: SimulationCoverageV2 | null;
 }

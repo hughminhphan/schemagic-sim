@@ -2,6 +2,7 @@ import {
   validateCircuit,
   type AnalysisMode,
   type CircuitComponent,
+  type CircuitDocument,
   type ValidationIssue,
 } from "@opencircuit/circuit-schema";
 import type { DesignCandidate } from "@opencircuit/design-schema";
@@ -115,12 +116,52 @@ function assertSafeSimulationScalars(candidate: Readonly<DesignCandidate>): void
   }
 }
 
+type ProbeExpression = CircuitDocument["probes"][number]["expression"];
+
+function assertSafeProbeExpression(
+  candidateId: string,
+  probeId: string,
+  expression: Readonly<ProbeExpression>,
+  path = "expression",
+): void {
+  const assertNode = (
+    reference: Extract<ProbeExpression, { kind: "voltage" }>["positive"],
+    referencePath: string,
+  ): void => {
+    if (reference.kind === "runtime-node" && !SAFE_NODE_TOKEN.test(reference.name)) {
+      throwUnsafeCircuitValue(
+        candidateId,
+        `probes.${singleLine(probeId)}.${referencePath}.name`,
+        "explicit probe node must be one allowlisted SPICE node token",
+      );
+    }
+  };
+
+  switch (expression.kind) {
+    case "voltage":
+      assertNode(expression.positive, `${path}.positive`);
+      assertNode(expression.negative, `${path}.negative`);
+      return;
+    case "unary":
+      assertSafeProbeExpression(candidateId, probeId, expression.operand, `${path}.operand`);
+      return;
+    case "binary":
+      assertSafeProbeExpression(candidateId, probeId, expression.left, `${path}.left`);
+      assertSafeProbeExpression(candidateId, probeId, expression.right, `${path}.right`);
+      return;
+    case "call":
+      expression.arguments.forEach((argument, index) => {
+        assertSafeProbeExpression(candidateId, probeId, argument, `${path}.arguments.${index}`);
+      });
+      return;
+    default:
+      return;
+  }
+}
+
 function assertSafeCircuitScalars(candidate: Readonly<DesignCandidate>): void {
   for (const probe of candidate.circuit.probes) {
-    const node = probe.target.node;
-    if (node !== undefined && (typeof node !== "string" || !SAFE_NODE_TOKEN.test(node))) {
-      throwUnsafeCircuitValue(candidate.id, `probes.${singleLine(probe.id)}.target.node`, "explicit probe node must be one allowlisted SPICE node token");
-    }
+    assertSafeProbeExpression(candidate.id, probe.id, probe.expression);
   }
   for (const component of candidate.circuit.components) {
     if (typeof component.id !== "string" || CONTROL_CHARACTERS.test(component.id)) {

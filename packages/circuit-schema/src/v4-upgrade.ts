@@ -1,14 +1,14 @@
 import { defaultDCSweepConfig } from "./dc-sweep";
-import { defaultNoiseConfig } from "./noise";
+import { DEFAULT_NOISE_TEMPERATURE_C } from "./noise";
 import { isSafeDecimalValue, isSafeEngineeringValue } from "./spice-token";
-import { assertValidCircuitV2 } from "./v2-validation";
+import { assertValidCircuitV4 } from "./v4-validation";
 import type {
   CircuitComponent,
-  CircuitComponentV2,
+  CircuitComponentV4,
   CircuitDocumentV1,
-  CircuitDocumentV2,
+  CircuitDocumentV4,
   EngineeringValue,
-  ExecutableSimConfigV2,
+  ExecutableSimConfigV4,
   JsonAnnotation,
 } from "./types";
 import { CircuitNetlistError } from "./types";
@@ -59,7 +59,7 @@ function annotations(component: CircuitComponent, recognized: readonly string[])
   return Object.keys(result).length > 0 ? result : undefined;
 }
 
-function base(component: CircuitComponent, inert?: { [key: string]: JsonAnnotation }): Pick<CircuitComponentV2, "id" | "pos" | "rot" | "mirror" | "mpn" | "label" | "annotations"> {
+function base(component: CircuitComponent, inert?: { [key: string]: JsonAnnotation }): Pick<CircuitComponentV4, "id" | "pos" | "rot" | "mirror" | "mpn" | "label" | "annotations"> {
   return {
     id: component.id,
     pos: [...component.pos],
@@ -71,7 +71,7 @@ function base(component: CircuitComponent, inert?: { [key: string]: JsonAnnotati
   };
 }
 
-function upgradeComponent(component: CircuitComponent): CircuitComponentV2 {
+function upgradeComponent(component: CircuitComponent): CircuitComponentV4 {
   const path = `components.${component.id}`;
   switch (component.type) {
     case "resistor": return { ...base(component, annotations(component, [])), type: "resistor", value: engineering(component.value, 1000, `${path}.value`) };
@@ -136,7 +136,7 @@ function finite(value: unknown, path: string): number {
   return value;
 }
 
-function upgradeConfig(input: CircuitDocumentV1): ExecutableSimConfigV2 {
+function upgradeConfig(input: CircuitDocumentV1): ExecutableSimConfigV4 {
   const sim = input.sim;
   if (sim.mode === "live" || sim.mode === "op") return { mode: "op" };
   if (sim.mode === "tran") return {
@@ -161,12 +161,22 @@ function upgradeConfig(input: CircuitDocumentV1): ExecutableSimConfigV2 {
     if (!config) fail("sim.dcSweep", "Cannot infer a DC sweep without an independent source");
     return { mode: "dc-sweep", dcSweep: structuredClone(config) };
   }
-  const config = sim.noise ?? defaultNoiseConfig(input);
+  const output = input.probes.find((probe) => probe.kind === "voltage");
+  const source = input.components.find((component) => component.type === "vsource" || component.type === "vsource_pulse" || component.type === "vsource_sine" || component.type === "isource");
+  const config = sim.noise ?? (output && source ? {
+    outputProbeId: output.id,
+    inputSourceId: source.id,
+    fstart: 10,
+    fstop: 1_000_000,
+    pointsPerDecade: 30,
+    sweep: "dec" as const,
+    temperatureC: DEFAULT_NOISE_TEMPERATURE_C,
+  } : undefined);
   if (!config) fail("sim.noise", "Cannot infer noise settings without a voltage probe and independent source");
   return { mode: "noise", noise: structuredClone(config) };
 }
 
-export function upgradeCircuitV1ToV2(input: CircuitDocumentV1): CircuitDocumentV2 {
+export function upgradeCircuitV1ToV4(input: CircuitDocumentV1): CircuitDocumentV4 {
   const config = upgradeConfig(input);
   const upgradedComponents = input.components.map(upgradeComponent);
   if (config.mode === "ac") {
@@ -175,9 +185,9 @@ export function upgradeCircuitV1ToV2(input: CircuitDocumentV1): CircuitDocumentV
       if (component.type === "vsource") upgradedComponents[index] = { ...component, params: { ac: component.params?.ac ?? 1 } };
     }
   }
-  const document: CircuitDocumentV2 = {
+  const document: CircuitDocumentV4 = {
     format: "opencircuit-circuit",
-    version: 2,
+    version: 4,
     meta: { ...input.meta },
     designBlocks: [],
     circuits: [{
@@ -201,6 +211,6 @@ export function upgradeCircuitV1ToV2(input: CircuitDocumentV1): CircuitDocumentV
     defaultCircuitId: "main",
     defaultScenarioId: "default",
   };
-  assertValidCircuitV2(document);
+  assertValidCircuitV4(document);
   return document;
 }

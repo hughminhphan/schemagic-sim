@@ -1,4 +1,4 @@
-import type { CircuitDocumentV2, Sha256ContentHash } from "@opencircuit/circuit-schema";
+import type { CircuitDocumentV4, Sha256ContentHash } from "@opencircuit/circuit-schema";
 import type { DesignProfileEnvelope } from "@opencircuit/design-library/v2-runtime";
 import type {
   CandidateIdV2, CandidateMetricV2, CandidateMetricsV2, CircuitBomNonRepresentationV2,
@@ -44,7 +44,7 @@ export interface NativeCandidateV2 {
   warnings: string[];
 }
 export interface NativeMaterializationV2 {
-  circuit: CircuitDocumentV2;
+  circuit: CircuitDocumentV4;
   circuitInstanceClassifications: CircuitInstanceClassificationV2[];
   circuitBomNonRepresentations: CircuitBomNonRepresentationV2[];
 }

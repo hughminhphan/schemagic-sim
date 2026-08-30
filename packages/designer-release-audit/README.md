@@ -11,7 +11,7 @@ KiCad and self-contained printable-report contracts. It also recognizes the
 immutable Power physical-handoff V1 predecessor
 `sha256:dc8671f69b6588e6d11fd65fa9b954951ccc0dc28d208a6e3c877e8cbf24e068`
 and additive quantity-aware V2 successor
-`sha256:2009c6b162838424343601bc8d0aa6da7188543f29a8f20b4fe6004b1d55b5d9`.
+`sha256:1cde50595ebed875cb5f77e8c7a449bd3e1be2355a9dcbc150dbe6e972d28af8`.
 V2 binds the quantity-two output-capacitor BOM line to explicit
 `output-capacitor-1`/`C3` and `output-capacitor-2`/`C4` structural instances and
 the 10 µH inductor. Both versions fail closed without footprint identity or
@@ -135,9 +135,9 @@ the other six as blockers. This additive reconciliation does not rewrite facts
 V2 or promote an MPN-only match.
 
 The production selected-passive gate recognizes the schema-V2 canonical contract
-at `sha256:5088a3a938bdbc0b8a2a4ea21f9dfba0b3e7e45d61fbca48f94d5ab4e28365ff`
+at `sha256:759ed0914f8dc8034064c4890329c4edc34b32ee6dd0eb3f03c2a3f2ea6e92f8`
 and its 11,674-byte local execution report at
-`sha256:556176f71e09dc5dfdd24ae62ec446bc17cccc6060ed51fcf9a0dd1b292e493c`.
+`sha256:70e821f80e7f16ce75992f152fb9bc3cf2aed48e9de4a0acd9aefc9ec4bb984c`.
 The native/WASM harness strictly parses it and reruns the exact identity-bound
 case in CI. It binds the current TPS54302DDCR observation with one Bel
 `F1F2-0804-100M` 10 µH inductor and one Murata `GRM32ER71E226KE15L` 22 µF BOM
@@ -172,9 +172,9 @@ A separate `selected-semiconductor-ideal-rdson-projection-golden` pass binds the
 current external-Motor permissive request, result, installed V3 decision, first
 ineligible candidate, 3.1.7 recipe, context, catalog, reviewed CSD18540Q5B profile,
 and exact manufacturer evidence. Its canonical contract is
-`sha256:cfa78576f707a62126c38648428c75e7e3b6ec3d78d516e13818a56449dca7ae`;
+`sha256:7ce9e9b453f35e668271b4ce3d00971b669a36de466b57d73dd30b04f73187c9`;
 its 6,743-byte unattested execution report is
-`sha256:789996602667d3d28bdfbec0ecfad25e48ba80ea32f4087390aa59c7a920b3f2`.
+`sha256:310bc587ab5a54c9f58a725a70201bdb5d9fff7e6ca53e7a4e193ee3b01083b0`.
 The fixture uses only four independent ideal 2.2 mOhm resistors and four 28 A DC
 injections, so native ngspice-46 and browser-WASM must each produce exactly
 61.6 mV per instance. The resistance value is source-bound to the reviewed 25 C,

@@ -1,4 +1,4 @@
-import { generateScenarioNetlist } from "@opencircuit/circuit-schema";
+import { generateScenarioNetlist } from "@opencircuit/circuit-schema/v4-netlist";
 import {
   parseElectricalDesignContextManifestV2,
   validateDesignResultExecutionContextV2,

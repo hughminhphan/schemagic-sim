@@ -42,7 +42,7 @@
       "schemaVersion": 1
     },
     "result": {
-      "canonicalContentHash": "sha256:d5d4c192b3845e1012a01c36782cf0c524a9896eda238c07e5df5033e274c5ef",
+      "canonicalContentHash": "sha256:633d8211ca19a49dbe338088343619e0ee14bec6eee40141ec8ff9d43f2154e5",
       "format": "schemagic-design-result",
       "schemaVersion": 1
     }
@@ -475,57 +475,93 @@
           "probes": [
             {
               "color": "#8b5cf6",
-              "id": "vin-voltage",
-              "kind": "voltage",
-              "target": {
-                "wire": "vin-rail"
-              }
+              "expression": {
+                "kind": "voltage",
+                "negative": {
+                  "kind": "runtime-node",
+                  "name": "0"
+                },
+                "positive": {
+                  "kind": "schematic-wire",
+                  "wireId": "vin-rail"
+                }
+              },
+              "expressionVersion": 1,
+              "id": "vin-voltage"
             },
             {
               "color": "#f59e0b",
-              "id": "input-current",
-              "kind": "current",
-              "target": {
-                "componentPin": [
-                  "input-source",
-                  0
-                ]
-              }
+              "expression": {
+                "component": {
+                  "componentId": "input-source",
+                  "kind": "schematic-component"
+                },
+                "kind": "current",
+                "terminal": 0
+              },
+              "expressionVersion": 1,
+              "id": "input-current"
             },
             {
               "color": "#ef4444",
-              "id": "switch-node-voltage",
-              "kind": "voltage",
-              "target": {
-                "wire": "switch-node"
-              }
+              "expression": {
+                "kind": "voltage",
+                "negative": {
+                  "kind": "runtime-node",
+                  "name": "0"
+                },
+                "positive": {
+                  "kind": "schematic-wire",
+                  "wireId": "switch-node"
+                }
+              },
+              "expressionVersion": 1,
+              "id": "switch-node-voltage"
             },
             {
               "color": "#10b981",
-              "id": "inductor-current",
-              "kind": "current",
-              "target": {
-                "componentPin": [
-                  "power-inductor",
-                  0
-                ]
-              }
+              "expression": {
+                "component": {
+                  "componentId": "power-inductor",
+                  "kind": "schematic-component"
+                },
+                "kind": "current",
+                "terminal": 0
+              },
+              "expressionVersion": 1,
+              "id": "inductor-current"
             },
             {
               "color": "#3b82f6",
-              "id": "output-voltage",
-              "kind": "voltage",
-              "target": {
-                "wire": "output-rail"
-              }
+              "expression": {
+                "kind": "voltage",
+                "negative": {
+                  "kind": "runtime-node",
+                  "name": "0"
+                },
+                "positive": {
+                  "kind": "schematic-wire",
+                  "wireId": "output-rail"
+                }
+              },
+              "expressionVersion": 1,
+              "id": "output-voltage"
             },
             {
               "color": "#ec4899",
-              "id": "feedback-voltage",
-              "kind": "voltage",
-              "target": {
-                "wire": "feedback-node"
-              }
+              "expression": {
+                "kind": "voltage",
+                "negative": {
+                  "kind": "runtime-node",
+                  "name": "0"
+                },
+                "positive": {
+                  "kind": "schematic-wire",
+                  "wireId": "feedback-node"
+                }
+              },
+              "expressionVersion": 1,
+              "id": "feedback-voltage"
             }
           ],
           "sim": {
@@ -536,7 +572,7 @@
               "tstop": 0.000014
             }
           },
-          "version": 1,
+          "version": 3,
           "view": {
             "pan": [
               0,
@@ -555,6 +591,19 @@
                 [
                   4,
                   8
+                ],
+                [
+                  24,
+                  8
+                ]
+              ]
+            },
+            {
+              "id": "high-side-drain-pin",
+              "points": [
+                [
+                  24,
+                  9
                 ],
                 [
                   24,
@@ -627,6 +676,32 @@
                 ],
                 [
                   30,
+                  16
+                ]
+              ]
+            },
+            {
+              "id": "high-side-source-pin",
+              "points": [
+                [
+                  24,
+                  15
+                ],
+                [
+                  24,
+                  16
+                ]
+              ]
+            },
+            {
+              "id": "low-side-drain-pin",
+              "points": [
+                [
+                  24,
+                  17
+                ],
+                [
+                  24,
                   16
                 ]
               ]
@@ -763,6 +838,19 @@
                 ],
                 [
                   52,
+                  24
+                ]
+              ]
+            },
+            {
+              "id": "low-side-source-pin",
+              "points": [
+                [
+                  24,
+                  23
+                ],
+                [
+                  24,
                   24
                 ]
               ]
@@ -2174,14 +2262,14 @@
         "simulationCoverage": [
           {
             "limitations": [
-              "Unavailable: frozen CircuitDocument v1 stores one SimConfig and cannot attach an alternate line-step source/config to this candidate."
+              "Unavailable: this Simulator V3 circuit stores one SimConfig and cannot attach an alternate line-step source/config to this candidate."
             ],
             "modelTier": "unavailable",
             "scenarioId": "line_step"
           },
           {
             "limitations": [
-              "Unavailable: frozen CircuitDocument v1 has no pulsed current or load-step stimulus and no per-scenario document/config reference."
+              "Unavailable: this Simulator V3 circuit has no pulsed current or load-step stimulus and no per-scenario document/config reference."
             ],
             "modelTier": "unavailable",
             "scenarioId": "load_step"
@@ -2189,14 +2277,14 @@
           {
             "limitations": [
               "Startup covers delayed behavioral gate enable and passive output rise only; soft-start, UVLO, current-limit, and control-loop dynamics are unavailable.",
-              "The selected regulator/controller is not modeled as a physical IC because frozen CircuitDocument v1 has no IC or subcircuit component."
+              "The selected regulator/controller is not modeled as a physical IC by this behavioral Simulator V3 circuit."
             ],
             "modelTier": "behavioral",
             "scenarioId": "startup"
           },
           {
             "limitations": [
-              "The selected regulator/controller is not modeled as a physical IC because frozen CircuitDocument v1 has no IC or subcircuit component.",
+              "The selected regulator/controller is not modeled as a physical IC by this behavioral Simulator V3 circuit.",
               "Generic level-1 MOSFETs and authored complementary gate pulses approximate the switching power stage; analytic estimates remain authoritative."
             ],
             "modelTier": "behavioral",
@@ -2514,57 +2602,93 @@
           "probes": [
             {
               "color": "#8b5cf6",
-              "id": "vin-voltage",
-              "kind": "voltage",
-              "target": {
-                "wire": "vin-rail"
-              }
+              "expression": {
+                "kind": "voltage",
+                "negative": {
+                  "kind": "runtime-node",
+                  "name": "0"
+                },
+                "positive": {
+                  "kind": "schematic-wire",
+                  "wireId": "vin-rail"
+                }
+              },
+              "expressionVersion": 1,
+              "id": "vin-voltage"
             },
             {
               "color": "#f59e0b",
-              "id": "input-current",
-              "kind": "current",
-              "target": {
-                "componentPin": [
-                  "input-source",
-                  0
-                ]
-              }
+              "expression": {
+                "component": {
+                  "componentId": "input-source",
+                  "kind": "schematic-component"
+                },
+                "kind": "current",
+                "terminal": 0
+              },
+              "expressionVersion": 1,
+              "id": "input-current"
             },
             {
               "color": "#ef4444",
-              "id": "switch-node-voltage",
-              "kind": "voltage",
-              "target": {
-                "wire": "switch-node"
-              }
+              "expression": {
+                "kind": "voltage",
+                "negative": {
+                  "kind": "runtime-node",
+                  "name": "0"
+                },
+                "positive": {
+                  "kind": "schematic-wire",
+                  "wireId": "switch-node"
+                }
+              },
+              "expressionVersion": 1,
+              "id": "switch-node-voltage"
             },
             {
               "color": "#10b981",
-              "id": "inductor-current",
-              "kind": "current",
-              "target": {
-                "componentPin": [
-                  "power-inductor",
-                  0
-                ]
-              }
+              "expression": {
+                "component": {
+                  "componentId": "power-inductor",
+                  "kind": "schematic-component"
+                },
+                "kind": "current",
+                "terminal": 0
+              },
+              "expressionVersion": 1,
+              "id": "inductor-current"
             },
             {
               "color": "#3b82f6",
-              "id": "output-voltage",
-              "kind": "voltage",
-              "target": {
-                "wire": "output-rail"
-              }
+              "expression": {
+                "kind": "voltage",
+                "negative": {
+                  "kind": "runtime-node",
+                  "name": "0"
+                },
+                "positive": {
+                  "kind": "schematic-wire",
+                  "wireId": "output-rail"
+                }
+              },
+              "expressionVersion": 1,
+              "id": "output-voltage"
             },
             {
               "color": "#ec4899",
-              "id": "feedback-voltage",
-              "kind": "voltage",
-              "target": {
-                "wire": "feedback-node"
-              }
+              "expression": {
+                "kind": "voltage",
+                "negative": {
+                  "kind": "runtime-node",
+                  "name": "0"
+                },
+                "positive": {
+                  "kind": "schematic-wire",
+                  "wireId": "feedback-node"
+                }
+              },
+              "expressionVersion": 1,
+              "id": "feedback-voltage"
             }
           ],
           "sim": {
@@ -2575,7 +2699,7 @@
               "tstop": 0.0000186666666667
             }
           },
-          "version": 1,
+          "version": 3,
           "view": {
             "pan": [
               0,
@@ -2594,6 +2718,19 @@
                 [
                   4,
                   8
+                ],
+                [
+                  24,
+                  8
+                ]
+              ]
+            },
+            {
+              "id": "high-side-drain-pin",
+              "points": [
+                [
+                  24,
+                  9
                 ],
                 [
                   24,
@@ -2666,6 +2803,32 @@
                 ],
                 [
                   30,
+                  16
+                ]
+              ]
+            },
+            {
+              "id": "high-side-source-pin",
+              "points": [
+                [
+                  24,
+                  15
+                ],
+                [
+                  24,
+                  16
+                ]
+              ]
+            },
+            {
+              "id": "low-side-drain-pin",
+              "points": [
+                [
+                  24,
+                  17
+                ],
+                [
+                  24,
                   16
                 ]
               ]
@@ -2802,6 +2965,19 @@
                 ],
                 [
                   52,
+                  24
+                ]
+              ]
+            },
+            {
+              "id": "low-side-source-pin",
+              "points": [
+                [
+                  24,
+                  23
+                ],
+                [
+                  24,
                   24
                 ]
               ]
@@ -4213,14 +4389,14 @@
         "simulationCoverage": [
           {
             "limitations": [
-              "Unavailable: frozen CircuitDocument v1 stores one SimConfig and cannot attach an alternate line-step source/config to this candidate."
+              "Unavailable: this Simulator V3 circuit stores one SimConfig and cannot attach an alternate line-step source/config to this candidate."
             ],
             "modelTier": "unavailable",
             "scenarioId": "line_step"
           },
           {
             "limitations": [
-              "Unavailable: frozen CircuitDocument v1 has no pulsed current or load-step stimulus and no per-scenario document/config reference."
+              "Unavailable: this Simulator V3 circuit has no pulsed current or load-step stimulus and no per-scenario document/config reference."
             ],
             "modelTier": "unavailable",
             "scenarioId": "load_step"
@@ -4228,14 +4404,14 @@
           {
             "limitations": [
               "Startup covers delayed behavioral gate enable and passive output rise only; soft-start, UVLO, current-limit, and control-loop dynamics are unavailable.",
-              "The selected regulator/controller is not modeled as a physical IC because frozen CircuitDocument v1 has no IC or subcircuit component."
+              "The selected regulator/controller is not modeled as a physical IC by this behavioral Simulator V3 circuit."
             ],
             "modelTier": "behavioral",
             "scenarioId": "startup"
           },
           {
             "limitations": [
-              "The selected regulator/controller is not modeled as a physical IC because frozen CircuitDocument v1 has no IC or subcircuit component.",
+              "The selected regulator/controller is not modeled as a physical IC by this behavioral Simulator V3 circuit.",
               "Generic level-1 MOSFETs and authored complementary gate pulses approximate the switching power stage; analytic estimates remain authoritative."
             ],
             "modelTier": "behavioral",
@@ -4552,57 +4728,93 @@
           "probes": [
             {
               "color": "#8b5cf6",
-              "id": "vin-voltage",
-              "kind": "voltage",
-              "target": {
-                "wire": "vin-rail"
-              }
+              "expression": {
+                "kind": "voltage",
+                "negative": {
+                  "kind": "runtime-node",
+                  "name": "0"
+                },
+                "positive": {
+                  "kind": "schematic-wire",
+                  "wireId": "vin-rail"
+                }
+              },
+              "expressionVersion": 1,
+              "id": "vin-voltage"
             },
             {
               "color": "#f59e0b",
-              "id": "input-current",
-              "kind": "current",
-              "target": {
-                "componentPin": [
-                  "input-source",
-                  0
-                ]
-              }
+              "expression": {
+                "component": {
+                  "componentId": "input-source",
+                  "kind": "schematic-component"
+                },
+                "kind": "current",
+                "terminal": 0
+              },
+              "expressionVersion": 1,
+              "id": "input-current"
             },
             {
               "color": "#ef4444",
-              "id": "switch-node-voltage",
-              "kind": "voltage",
-              "target": {
-                "wire": "switch-node"
-              }
+              "expression": {
+                "kind": "voltage",
+                "negative": {
+                  "kind": "runtime-node",
+                  "name": "0"
+                },
+                "positive": {
+                  "kind": "schematic-wire",
+                  "wireId": "switch-node"
+                }
+              },
+              "expressionVersion": 1,
+              "id": "switch-node-voltage"
             },
             {
               "color": "#10b981",
-              "id": "inductor-current",
-              "kind": "current",
-              "target": {
-                "componentPin": [
-                  "power-inductor",
-                  0
-                ]
-              }
+              "expression": {
+                "component": {
+                  "componentId": "power-inductor",
+                  "kind": "schematic-component"
+                },
+                "kind": "current",
+                "terminal": 0
+              },
+              "expressionVersion": 1,
+              "id": "inductor-current"
             },
             {
               "color": "#3b82f6",
-              "id": "output-voltage",
-              "kind": "voltage",
-              "target": {
-                "wire": "output-rail"
-              }
+              "expression": {
+                "kind": "voltage",
+                "negative": {
+                  "kind": "runtime-node",
+                  "name": "0"
+                },
+                "positive": {
+                  "kind": "schematic-wire",
+                  "wireId": "output-rail"
+                }
+              },
+              "expressionVersion": 1,
+              "id": "output-voltage"
             },
             {
               "color": "#ec4899",
-              "id": "feedback-voltage",
-              "kind": "voltage",
-              "target": {
-                "wire": "feedback-node"
-              }
+              "expression": {
+                "kind": "voltage",
+                "negative": {
+                  "kind": "runtime-node",
+                  "name": "0"
+                },
+                "positive": {
+                  "kind": "schematic-wire",
+                  "wireId": "feedback-node"
+                }
+              },
+              "expressionVersion": 1,
+              "id": "feedback-voltage"
             }
           ],
           "sim": {
@@ -4613,7 +4825,7 @@
               "tstop": 0.000028
             }
           },
-          "version": 1,
+          "version": 3,
           "view": {
             "pan": [
               0,
@@ -4632,6 +4844,19 @@
                 [
                   4,
                   8
+                ],
+                [
+                  24,
+                  8
+                ]
+              ]
+            },
+            {
+              "id": "high-side-drain-pin",
+              "points": [
+                [
+                  24,
+                  9
                 ],
                 [
                   24,
@@ -4704,6 +4929,32 @@
                 ],
                 [
                   30,
+                  16
+                ]
+              ]
+            },
+            {
+              "id": "high-side-source-pin",
+              "points": [
+                [
+                  24,
+                  15
+                ],
+                [
+                  24,
+                  16
+                ]
+              ]
+            },
+            {
+              "id": "low-side-drain-pin",
+              "points": [
+                [
+                  24,
+                  17
+                ],
+                [
+                  24,
                   16
                 ]
               ]
@@ -4840,6 +5091,19 @@
                 ],
                 [
                   52,
+                  24
+                ]
+              ]
+            },
+            {
+              "id": "low-side-source-pin",
+              "points": [
+                [
+                  24,
+                  23
+                ],
+                [
+                  24,
                   24
                 ]
               ]
@@ -6251,14 +6515,14 @@
         "simulationCoverage": [
           {
             "limitations": [
-              "Unavailable: frozen CircuitDocument v1 stores one SimConfig and cannot attach an alternate line-step source/config to this candidate."
+              "Unavailable: this Simulator V3 circuit stores one SimConfig and cannot attach an alternate line-step source/config to this candidate."
             ],
             "modelTier": "unavailable",
             "scenarioId": "line_step"
           },
           {
             "limitations": [
-              "Unavailable: frozen CircuitDocument v1 has no pulsed current or load-step stimulus and no per-scenario document/config reference."
+              "Unavailable: this Simulator V3 circuit has no pulsed current or load-step stimulus and no per-scenario document/config reference."
             ],
             "modelTier": "unavailable",
             "scenarioId": "load_step"
@@ -6266,14 +6530,14 @@
           {
             "limitations": [
               "Startup covers delayed behavioral gate enable and passive output rise only; soft-start, UVLO, current-limit, and control-loop dynamics are unavailable.",
-              "The selected regulator/controller is not modeled as a physical IC because frozen CircuitDocument v1 has no IC or subcircuit component."
+              "The selected regulator/controller is not modeled as a physical IC by this behavioral Simulator V3 circuit."
             ],
             "modelTier": "behavioral",
             "scenarioId": "startup"
           },
           {
             "limitations": [
-              "The selected regulator/controller is not modeled as a physical IC because frozen CircuitDocument v1 has no IC or subcircuit component.",
+              "The selected regulator/controller is not modeled as a physical IC by this behavioral Simulator V3 circuit.",
               "Generic level-1 MOSFETs and authored complementary gate pulses approximate the switching power stage; analytic estimates remain authoritative."
             ],
             "modelTier": "behavioral",

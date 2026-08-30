@@ -8,7 +8,7 @@ import {
   calculateDesignBlockContentHash,
   DESIGN_BLOCK_MODEL_VERIFICATION,
   generateScenarioNetlist,
-  type CircuitDocumentV2,
+  type CircuitDocumentV4,
   type DesignBlockDefinition,
   type TrustedSubcircuitRef,
 } from "@opencircuit/circuit-schema";
@@ -48,7 +48,7 @@ function validationResults(packageId: string): {
   return JSON.parse(readFileSync(join(modelsRoot, ...packageId.split("/"), "validation-results.json"), "utf8"));
 }
 
-function executableDocument(packageId: string): CircuitDocumentV2 {
+function executableDocument(packageId: string): CircuitDocumentV4 {
   const descriptor = trustedSubcircuitDescriptor(packageId);
   if (descriptor === undefined) throw new Error(`missing descriptor ${packageId}`);
   const pins = descriptor.symbolPinOrder.map((symbolPin, index) => ({
@@ -70,7 +70,7 @@ function executableDocument(packageId: string): CircuitDocumentV2 {
   const block = { ...blockPayload, contentHash: calculateDesignBlockContentHash(blockPayload) };
   return {
     format: "opencircuit-circuit",
-    version: 2,
+    version: 4,
     meta: { title: packageId },
     designBlocks: [block],
     circuits: [{
@@ -181,9 +181,9 @@ describe("production trusted subcircuit registry", () => {
     expect(hashes.size).toBe(47);
 
     const documents = TRUSTED_SUBCIRCUIT_PACKAGE_IDS.map(executableDocument);
-    const aggregate: CircuitDocumentV2 = {
+    const aggregate: CircuitDocumentV4 = {
       format: "opencircuit-circuit",
-      version: 2,
+      version: 4,
       meta: { title: "All trusted subcircuits" },
       designBlocks: documents.flatMap((document) => document.designBlocks),
       circuits: [{

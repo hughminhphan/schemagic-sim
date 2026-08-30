@@ -47,10 +47,10 @@ const MOTOR_TVS_REVIEWED_PROFILE_PATH_COUNT = 4;
 const MOTOR_TVS_REVIEWED_PROFILE_HASH_COUNT = 2;
 const MOTOR_TVS_REVIEWED_CATALOG_VERSION = "2026-08-27.2";
 const MOTOR_TVS_REVIEWED_CATALOG_HASH = "sha256:a72bfec6700904360882893a96db5a9420efccfb46ad78f1e3826301abe1f29e";
-const MOTOR_TVS_RECIPE_EMITTED_ARTIFACT_HASH = "sha256:41ea8282f2d1060775a7fa521dea379bd2485cf3eb9e5aee9e40de22f2fa57b5";
-const MOTOR_TVS_REVIEWED_EMITTED_ARTIFACT_HASH = "sha256:69545140c7752d208487c436ca8e1cae34481ac6c8b33695f9061ae42b1a6013";
-const MOTOR_DRV8262_COMPANION_GATE_EMITTED_ARTIFACT_HASH = "sha256:41ea8282f2d1060775a7fa521dea379bd2485cf3eb9e5aee9e40de22f2fa57b5";
-const PRODUCTION_ARTIFACT_SET_HASH = "sha256:f6b0e9fd72a997a1846d780828fb35642066d7a9dbb59c1482093e37ff2c99a3";
+const MOTOR_TVS_RECIPE_EMITTED_ARTIFACT_HASH = "sha256:ac41688a59153ad04f1da08f82e859cfa112bff597417b0497781884820c6737";
+const MOTOR_TVS_REVIEWED_EMITTED_ARTIFACT_HASH = "sha256:20a413e5544e573fb49646087da46738868edad4e5f6d78488400cab7171da8d";
+const MOTOR_DRV8262_COMPANION_GATE_EMITTED_ARTIFACT_HASH = "sha256:ac41688a59153ad04f1da08f82e859cfa112bff597417b0497781884820c6737";
+const PRODUCTION_ARTIFACT_SET_HASH = "sha256:472945506f655eef6f56ac1038701ce7e26d0ad016a0476950320ec6b9026b6a";
 const MOTOR_CAPACITOR_ROLE_PROFILE_HASHES = Object.freeze([
   "sha256:8169f8d3935539ae0d5725266cef8d18726340facc59f372a85f4d0df341a992",
   "sha256:a182dcfcbf2383bbb1820e3c9577915ba2d7ef1981a1f4f57d05cbb621856c99",
@@ -739,15 +739,33 @@ function allowedSourceCapability(sourcePath, source, capability) {
   return false;
 }
 
-function viteBootstrapIsLocal(source) {
-  if (!source.includes("modulepreload")) return false;
+function viteCapabilityAllowances(source, sourceMap) {
+  const allowances = new Map();
+  if (!source.includes("modulepreload")) return allowances;
   const dependencies = [...source.matchAll(/["']assets\/[^"']+["']/gu)].map((match) => match[0].slice(1, -1));
-  return dependencies.length > 0
-    && dependencies.every((entry) => /^assets\/[A-Za-z0-9_.-]+\.(?:css|js)$/u.test(entry))
-    && /return["']\/["']\+\w+/u.test(source)
-    && /fetch\s*\([^,]+,[^)]+\)/u.test(source)
-    && /credentials\s*=\s*["']same-origin["']/u.test(source)
-    && /createElement\s*\(\s*["']link["']\s*\)/u.test(source);
+  const dependenciesAreLocal = dependencies.length > 0
+    && dependencies.every((entry) => /^assets\/[A-Za-z0-9_.-]+\.(?:css|js)$/u.test(entry));
+  const hasLocalPolyfill = dependenciesAreLocal
+    && /createElement\s*\(\s*["']link["']\s*\)\.relList/u.test(source)
+    && /fetch\s*\(\s*\w+\.href\s*,\s*\w+\s*\)/u.test(source)
+    && /credentials\s*=\s*["']same-origin["']/u.test(source);
+  if (hasLocalPolyfill) {
+    allowances.set("fetch", 1);
+    allowances.set("dynamic_link_element", 1);
+  }
+
+  const hasLocalPreloadHelper = /return["']\/["']\+\w+/u.test(source)
+    && /\.endsWith\(\s*["']\.css["']\s*\)/u.test(source)
+    && /createElement\s*\(\s*["']link["']\s*\)/u.test(source)
+    && /\.href\s*=\s*\w+/u.test(source)
+    && (dependenciesAreLocal || sourceMap.sources.length === 0);
+  if (hasLocalPreloadHelper) {
+    allowances.set(
+      "dynamic_link_element",
+      (allowances.get("dynamic_link_element") ?? 0) + 1,
+    );
+  }
+  return allowances;
 }
 
 function serviceWorkerFindings(path, source) {
@@ -1120,12 +1138,10 @@ export function auditStaticOfflineNetworkFiles(fileInputs, { expectedArtifactSet
     }
 
     const generatedCapabilities = capabilitiesIn(source);
-    const viteLocal = viteBootstrapIsLocal(source);
+    const viteAllowances = viteCapabilityAllowances(source, map);
     for (const capability of generatedCapabilities) {
       emittedCapabilities.set(capability.id, (emittedCapabilities.get(capability.id) ?? 0) + capability.count);
-      const viteAllowance = viteLocal
-        ? capability.id === "fetch" ? 1 : capability.id === "dynamic_link_element" ? 2 : 0
-        : 0;
+      const viteAllowance = viteAllowances.get(capability.id) ?? 0;
       const accountedCount = (mapAllowedCapabilities.get(capability.id) ?? 0) + viteAllowance;
       if (capability.count > accountedCount) {
         findings.push(finding(

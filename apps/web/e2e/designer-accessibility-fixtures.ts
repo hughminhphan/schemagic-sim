@@ -99,7 +99,7 @@ function scenarioV2Result(): Record<string, unknown> {
     ],
     circuit: {
       format: "opencircuit-circuit",
-      version: 2,
+      version: 4,
       meta: { title: "Scenario inspection fixture" },
       designBlocks: [],
       circuits: [{
