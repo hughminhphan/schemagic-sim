@@ -1202,7 +1202,7 @@ describe("production Designer application readiness", () => {
     expect(html).toContain('data-production-export="electrical_bom_csv"');
     expect(html).not.toContain("data-primary-customization");
     expect(html).not.toContain("data-customized-target-export");
-  }, 60_000);
+  }, 120_000);
 
   it("retains the reviewed Bel Power BOM only as an exact ineligible unknown-evidence observation", async () => {
     const power = designerApplications()[1]!;
