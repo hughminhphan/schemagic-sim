@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "vite --host 127.0.0.1",
     "build": "tsc -p tsconfig.json --noEmit && vite build && node scripts/assert-production-bundle.mjs && node scripts/audit-static-offline.mjs",
-    "test": "vitest run && node --test scripts/static-offline-audit.test.mjs",
+    "test": "vitest run --maxWorkers=1 && node --test scripts/static-offline-audit.test.mjs",
     "audit:static-offline": "node scripts/audit-static-offline.mjs",
     "audit:designer-runtime": "playwright test --config playwright.runtime.config.ts",
     "test:static-offline": "node --test scripts/static-offline-audit.test.mjs",

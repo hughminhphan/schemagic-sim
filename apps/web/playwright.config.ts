@@ -6,6 +6,7 @@ const chromiumChannel = process.env.PLAYWRIGHT_CHANNEL;
 
 export default defineConfig({
   testDir:"./e2e",testIgnore:"**/designer-runtime.spec.ts",outputDir:"test-results",timeout:90_000,fullyParallel:false,workers:1,reporter:"line",
+  expect:{timeout:15_000},
   projects:[
     {name:"chromium",use:{...devices["Desktop Chrome"],...(chromiumChannel?{channel:chromiumChannel}:{}),viewport:{width:1440,height:900}}},
     {name:"firefox",use:{...devices["Desktop Firefox"],viewport:{width:1440,height:900}}},
