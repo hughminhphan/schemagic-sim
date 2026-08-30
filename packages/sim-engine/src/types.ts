@@ -39,8 +39,35 @@ export interface NoiseResultMetadata {
 export interface SimulationDiagnostic { stage: "parse" | "solve" | "limit" | "engine" | "settings"; message: string; netLine?: number; componentId?: string }
 export type SimulationErrorCode = "PARSE" | "CONVERGENCE" | "LIMIT" | "ENGINE" | "CANCELLED";
 export interface SimulationProtocolError { code: SimulationErrorCode; message: string; diagnostics: SimulationDiagnostic[] }
-export interface WorkerReadyResponse { id: number; type: "ready"; engine: string; initMs: number }
-export interface WorkerResultResponse { id: number; type: "result"; vectors: VectorMeta[]; buffers: ArrayBuffer[]; elapsedMs: number; rawfileBytes: number; sweep?: DCSweepResultMetadata; noise?: NoiseResultMetadata }
+export interface SimulationEngineIdentityV1 {
+  id: "@opencircuit/ngspice-wasm";
+  buildVersion: "ngspice-46-opencircuit-wasm1";
+  simulatorVersion: "ngspice-46";
+  solver: "KLU";
+  numericFormat: "ieee754-binary64";
+}
+export interface SimulationExecutionReceiptV1 {
+  format: "opencircuit-simulation-execution-receipt";
+  schemaVersion: 1;
+  engine: SimulationEngineIdentityV1;
+  executionHost: "local_worker";
+  attestation: "none";
+  requestType: SimulationRequestType;
+  netlistContentHash: `sha256:${string}`;
+  sampleContentHash: `sha256:${string}`;
+  vectorCount: number;
+  scalarSampleCount: number;
+  rawfileBytes: number;
+  contentHash: `sha256:${string}`;
+}
+export type SimulationExecutionReceiptIssueCodeV1 =
+  | "invalid_receipt"
+  | "engine_identity_mismatch"
+  | "vector_contract_invalid"
+  | "sample_hash_mismatch"
+  | "receipt_hash_mismatch";
+export interface WorkerReadyResponse { id: number; type: "ready"; engine: string; engineIdentity: SimulationEngineIdentityV1; initMs: number }
+export interface WorkerResultResponse { id: number; type: "result"; vectors: VectorMeta[]; buffers: ArrayBuffer[]; elapsedMs: number; rawfileBytes: number; receipt: SimulationExecutionReceiptV1; sweep?: DCSweepResultMetadata; noise?: NoiseResultMetadata }
 export interface WorkerErrorResponse { id: number; type: "error"; error: SimulationProtocolError }
 export type SimulationResponse = WorkerReadyResponse | WorkerResultResponse | WorkerErrorResponse;
-export interface SimulationResult { vectors: VectorMeta[]; data: Map<string, Float64Array>; elapsedMs: number; rawfileBytes: number; sweep?: DCSweepResultMetadata; noise?: NoiseResultMetadata }
+export interface SimulationResult { vectors: VectorMeta[]; data: Map<string, Float64Array>; elapsedMs: number; rawfileBytes: number; receipt: SimulationExecutionReceiptV1; sweep?: DCSweepResultMetadata; noise?: NoiseResultMetadata }

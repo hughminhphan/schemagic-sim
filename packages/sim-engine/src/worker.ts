@@ -1,7 +1,8 @@
 /// <reference lib="webworker" />
 
-import { createNgspiceEngine, NGSPICE_VERSION } from "../../../tools/ngspice-wasm-build/dist-loader/index.mjs";
+import { createNgspiceEngine, ENGINE_VERSION, NGSPICE_VERSION } from "../../../tools/ngspice-wasm-build/dist-loader/index.mjs";
 import { classifyEngineError, parseEngineDiagnostics } from "./diagnostics";
+import { _createSimulationExecutionReceiptV1, SIMULATION_ENGINE_IDENTITY_V1 } from "./provenance";
 import { parseBinaryRawfile, parseDCSweepRawfile, parseNoiseRawfiles } from "./rawfile";
 import type {
   SimulationProtocolError,
@@ -52,9 +53,13 @@ async function initialize(): Promise<void> {
   const started = performance.now();
   simulator = await createNgspiceEngine() as NgspiceEngine;
   const init = simulator.getInitInfo();
-  const hasKlu = /klu|suitesparse/i.test(init) || NGSPICE_VERSION === "ngspice-46";
+  const hasKlu = /klu|suitesparse/i.test(init);
+  if (ENGINE_VERSION !== SIMULATION_ENGINE_IDENTITY_V1.buildVersion
+    || NGSPICE_VERSION !== SIMULATION_ENGINE_IDENTITY_V1.simulatorVersion || !hasKlu) {
+    throw new Error("Installed simulation engine identity does not match the provenance contract");
+  }
   const engine = `${NGSPICE_VERSION}${hasKlu ? " + KLU" : ""}`;
-  post({ id: 0, type: "ready", engine, initMs: performance.now() - started });
+  post({ id: 0, type: "ready", engine, engineIdentity: { ...SIMULATION_ENGINE_IDENTITY_V1 }, initMs: performance.now() - started });
 }
 
 async function run(request: SimulationRequest): Promise<void> {
@@ -92,6 +97,20 @@ async function run(request: SimulationRequest): Promise<void> {
       : request.type === "runNoise"
         ? parseNoiseRawfiles(runResult.rawfile, runResult.integratedRawfile ?? (() => { throw new Error("Noise analysis did not produce integrated totals"); })(), request.noise, rawfileLimits)
         : parseBinaryRawfile(runResult.rawfile, rawfileLimits);
+    const data = new Map(parsed.vectors.map((vector) => {
+      const buffer = parsed.buffers[vector.bufferIndex];
+      if (buffer === undefined) throw new Error("Parsed simulation vector has no transfer buffer");
+      return [vector.name, new Float64Array(buffer)] as const;
+    }));
+    const receipt = await _createSimulationExecutionReceiptV1({
+      requestType: request.type,
+      netlist: request.netlist,
+      vectors: parsed.vectors,
+      data,
+      rawfileBytes: parsed.bytes,
+      ...(request.type === "runDCSweep" && "sweep" in parsed ? { sweep: parsed.sweep as import("./types").DCSweepResultMetadata } : {}),
+      ...(request.type === "runNoise" && "noise" in parsed ? { noise: parsed.noise as import("./types").NoiseResultMetadata } : {}),
+    });
     const response: SimulationResponse = {
       id: request.id,
       type: "result",
@@ -99,6 +118,7 @@ async function run(request: SimulationRequest): Promise<void> {
       buffers: parsed.buffers,
       elapsedMs: performance.now() - started,
       rawfileBytes: parsed.bytes,
+      receipt,
       ...(request.type === "runDCSweep" && "sweep" in parsed ? { sweep: parsed.sweep as import("./types").DCSweepResultMetadata } : {}),
       ...(request.type === "runNoise" && "noise" in parsed ? { noise: parsed.noise as import("./types").NoiseResultMetadata } : {}),
     };

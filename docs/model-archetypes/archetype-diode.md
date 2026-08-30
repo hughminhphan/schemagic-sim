@@ -16,7 +16,7 @@ Covers three variants that share one card and differ only in which parameters ar
 **Node order is `anode cathode`.** `D1 anode cathode MODELNAME`. This is fixed by ngspice and is not negotiable.
 
 ```spice
-* OpenCircuit original-from-facts model
+* scheMAGIC original-from-facts model
 * <MPN> (<manufacturer>), datasheet rev <rev>, fitted <YYYY-MM-DD>
 * Archetype: archetype-diode.md, variant <S|K|Z|L>. Fit run: <run-id>
 * Node order: D<ref> anode cathode OC_<MPN>

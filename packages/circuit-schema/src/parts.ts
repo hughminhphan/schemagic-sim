@@ -1,4 +1,4 @@
-import type { CircuitComponent, ComponentType, Point } from "./types";
+import type { CircuitComponent, CircuitComponentV2, ComponentType, DesignBlockDefinition, Point } from "./types";
 
 export interface PartDefinition { type: ComponentType; name: string; prefix: string; pins: Point[]; defaultValue?: number | string; note?: string }
 export const PARTS: readonly PartDefinition[] = [
@@ -25,12 +25,24 @@ export const partByType = (type: ComponentType): PartDefinition => {
   if (!part) throw new Error(`Unsupported component type ${type}`);
   return part;
 };
-function transform([inputX,inputY]: Point, component: CircuitComponent): Point {
+function transform([inputX,inputY]: Point, component: Pick<CircuitComponent, "mirror" | "rot">): Point {
   const x = component.mirror ? -inputX : inputX;
   switch (component.rot) { case 0:return [x,inputY]; case 90:return [-inputY,x]; case 180:return [-x,-inputY]; case 270:return [inputY,-x]; }
 }
 export function componentPinPoints(component: CircuitComponent): Point[] {
   return partByType(component.type).pins.map((offset) => { const [x,y] = transform(offset, component); return [component.pos[0]+x, component.pos[1]+y]; });
+}
+export function componentPinPointsV2(component: CircuitComponentV2, designBlocks: readonly DesignBlockDefinition[]): Point[] {
+  const offsets = component.type === "design_block"
+    ? designBlocks.find((block) => block.id === component.block.id && block.version === component.block.version && block.contentHash === component.block.contentHash)?.pins.map((pin) => pin.offset)
+    : component.type === "isource_pulse"
+      ? partByType("isource").pins
+      : partByType(component.type).pins;
+  if (!offsets) throw new Error(`Unresolved design block ${component.type === "design_block" ? component.block.id : component.id}`);
+  return offsets.map((offset) => {
+    const [x, y] = transform(offset, component);
+    return [component.pos[0] + x, component.pos[1] + y];
+  });
 }
 export function parseEngineering(value: number | string | undefined, fallback = 0): number {
   if (typeof value === "number") return value;

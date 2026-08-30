@@ -4,7 +4,7 @@ import os from "node:os";
 import path from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
-import { assertCardParameterTable, assertEmittedParametersMatchFitted, assertFiniteNumbers, assertMosfetConditionIdentityContract, expressionValue, identityHash, normalizeMosfetConditionIdentity, normalizeMosfetCurve, renderParameterTable, stageTestgen } from "../factory.mjs";
+import { assertCardParameterTable, assertEmittedParametersMatchFitted, assertFiniteNumbers, assertMosfetConditionIdentityContract, evaluateCheckAcrossEngines, expressionValue, identityHash, normalizeMosfetConditionIdentity, normalizeMosfetCurve, renderParameterTable, stageTestgen } from "../factory.mjs";
 import { PARTS, getPart } from "../lib/parts.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -63,6 +63,40 @@ test("generate postcondition accepts emitted fitted parameters", () => {
     ".model DUT NPN(IS=1.0000000000e-14 BF=2.1765731916e2 TF=5.3449580951e-10)\n",
     { parameters: { IS: 1e-14, BF: 217.6573191599617, TF: 5.344958095051651e-10 } }
   ));
+});
+
+test("strict expectation evaluation records native and browser-WASM independently and fails closed", () => {
+  const result = (value) => ({
+    vectors: [{ name: "v(out)", type: "voltage", values: [value] }],
+  });
+  const scalar = {
+    name: "scalar",
+    expression_source: { kind: "raw_variable", expression: "last(v(out))" },
+    expected_value: 1,
+    tolerance: { absolute: 0.01, relative: 0 },
+  };
+  const scalarEvaluation = evaluateCheckAcrossEngines(scalar, result(1.005), result(1.02));
+  assert.equal(scalarEvaluation.native.pass, true);
+  assert.equal(scalarEvaluation.browser_wasm.pass, false);
+  assert.equal(scalarEvaluation.pass, false);
+  assert.equal(scalarEvaluation.native.value, 1.005);
+  assert.equal(scalarEvaluation.browser_wasm.value, 1.02);
+
+  const hard = {
+    name: "hard",
+    expression_source: { kind: "raw_variable", expression: "last(v(out))" },
+    minimum: 0.5,
+    maximum: 1.5,
+  };
+  const hardEvaluation = evaluateCheckAcrossEngines(hard, result(1), result(1.5000001));
+  assert.equal(hardEvaluation.native.pass, true);
+  assert.equal(hardEvaluation.browser_wasm.pass, false);
+  assert.equal(hardEvaluation.pass, false);
+  assert.throws(
+    () => evaluateCheckAcrossEngines(scalar, result(1), { vectors: [] }),
+    /Expectation vector not found/,
+    "missing browser-WASM evidence must abort instead of falling back to native",
+  );
 });
 
 test("generate postcondition enforces negative PMOS VTO magnitude and preserves NMOS equality", () => {

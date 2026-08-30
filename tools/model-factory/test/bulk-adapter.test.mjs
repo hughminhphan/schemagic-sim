@@ -4,7 +4,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
-import { applyConditionAdjudicationSupplement, fitBulkPart, libraryCollisionReason, libraryDuplicateDieReason, normalizedIdentity, normalizeBulkManifest, pinPackageBenchTemperature, repairKnownEvidenceDefects, runBulkManifest, stageBulkPart, validateBulkCandidateEvidence, validateMosfetCandidateEvidence } from "../lib/bulk-adapter.mjs";
+import { applyConditionAdjudicationSupplement, fitBulkPart, libraryCollisionReason, libraryDuplicateDieReason, normalizedIdentity, normalizeBulkManifest, normalizePackageVariants, pinPackageBenchTemperature, repairKnownEvidenceDefects, runBulkManifest, stageBulkPart, validateBulkCandidateEvidence, validateMosfetCandidateEvidence } from "../lib/bulk-adapter.mjs";
 import { validatePackage } from "../../../packages/component-schema/lib.mjs";
 
 const quantity = (value, unit) => ({ value, unit, conditions: "TA = 25 C; test mode = DC", page_reference: "p. 2, Electrical Characteristics table", source_kind: "typical" });
@@ -166,7 +166,7 @@ function intervalAdjudication(extraction, { thresholdMode = "not_stated", disclo
   };
   const rdsonElectrical = {
     vgs: { kind: "fixed", value_v: 5 },
-    vds: { kind: "relation", relation: "saturation_region" },
+    vds: { kind: "relation", relation: "vds_not_stated" },
     id: { kind: "fixed", value_a: 0.2 },
   };
   return adjudicationSupplement(extraction, [
@@ -230,7 +230,7 @@ function productionCurveExtraction({ xQuantity = "V_GS", yQuantity = "I_D", fixe
   } });
   const rdsonCondition = semanticCondition({ polarity: "n", magnitude: "absolute", electrical: {
     vgs: { kind: "fixed", value_v: 4.5 },
-    vds: { kind: "relation", relation: "saturation_region" },
+    vds: { kind: "relation", relation: "vds_not_stated" },
     id: { kind: "fixed", value_a: 2 },
   } });
   for (const threshold of [value.specs.threshold_min, value.specs.threshold_typ, value.specs.threshold_max]) {
@@ -400,7 +400,7 @@ test("direct MOSFET conditions admit opaque source prose while explicit contradi
   }
   assert.throws(
     () => validateMosfetCandidateEvidence({ ...mosfetPart("unused.pdf"), subcategory: "N-Channel MOSFET" }, fixedRdsonVds),
-    /saturation-region relation disagrees with fixed VDS/,
+    /VDS-not-stated relation disagrees with fixed VDS/,
   );
   const rawPulsed = productionCurveExtraction();
   rawPulsed.curves[0].test_conditions = "VDS = 10 V, TJ = 25 °C; pulsed";
@@ -651,7 +651,7 @@ test("MOSFET pure preflight uses the fitter's interval route when only RDS(on) m
 });
 
 test("the conveyor MOSFET critical fixture crosses the producer-consumer boundary", () => {
-  const extraction = JSON.parse(fs.readFileSync(
+  const staleExtraction = JSON.parse(fs.readFileSync(
     new URL("../../conveyor/test/fixtures/mosfet-critical.json", import.meta.url),
     "utf8",
   ));
@@ -662,6 +662,17 @@ test("the conveyor MOSFET critical fixture crosses the producer-consumer boundar
     manufacturer: "Fixture",
     subcategory: "N-Channel MOSFET",
   };
+  assert.throws(
+    () => validateBulkCandidateEvidence(part, staleExtraction),
+    /must preserve that VDS was not stated/,
+    "the consumer must reject the producer's obsolete saturation-region fiction",
+  );
+  const extraction = structuredClone(staleExtraction);
+  for (const point of extraction.specs.rdson_points) {
+    for (const field of ["vgs", "current", "resistance"]) {
+      point[field].condition.electrical.vds = { kind: "relation", relation: "vds_not_stated" };
+    }
+  }
   assert.equal(validateBulkCandidateEvidence(part, extraction).route, "curve-fitted");
   const fit = fitBulkPart(part, extraction, {
     fitRunner: (payload) => { fitterPayload = payload; return acceptedF2Attempt(); },
@@ -789,6 +800,12 @@ test("bulk manifest accepts external datasheet and seed paths and stages pending
     assert.equal(component.reviewer.tool_or_agent, "pending-independent-package-review");
     assert.equal(component.test_results.status, "complete");
     assert.ok(component.test_results.total_count > 0);
+    const modelText = fs.readFileSync(path.join(result[0].package_path, "model.cir"), "utf8");
+    const licenseText = fs.readFileSync(path.join(result[0].package_path, "LICENSE"), "utf8");
+    assert.match(modelText, /^\* scheMAGIC Model Factory v0\.1\.0 bulk adapter$/m);
+    assert.doesNotMatch(modelText, /OpenCircuit/);
+    assert.match(licenseText, /^Copyright \(c\) 2026 scheMAGIC contributors$/m);
+    assert.doesNotMatch(licenseText, /OpenCircuit/);
     const expectations = JSON.parse(fs.readFileSync(path.join(result[0].package_path, "tests", "expectations.json"), "utf8"));
     assert.ok(expectations.tests.length > 0);
     assert.ok(expectations.tests.some((entry) => entry.analysis_type === "transient"));
@@ -1002,6 +1019,48 @@ test("manifest staging preserves the original extraction while using validated s
     assert.deepEqual(facts.extraction, extraction);
     assert.ok(!JSON.stringify(facts.extraction).includes("condition_semantics"));
     assert.ok(facts.threshold.minimum.condition_identity.qualifiers.some((item) => item.key === "source_test_mode" && item.value === "not_stated"));
+    assert.equal(facts.rdson_points[0].resistance.condition_identity.electrical.vds.relation, "vds_not_stated");
+    const component = JSON.parse(fs.readFileSync(path.join(result.package_path, "component.json"), "utf8"));
+    const expectations = JSON.parse(fs.readFileSync(path.join(result.package_path, "tests", "expectations.json"), "utf8"));
+    assert.ok(expectations.evidence_cohorts.length > 0);
+    assert.ok(expectations.evidence_cohorts.every((cohort) => cohort.fidelity_tier === component.fidelity_tier));
+    assert.deepEqual(component.supported_analyses, ["operating_point"]);
+    assert.ok(component.supported_operating_region.numeric_bounds.every((bound) => bound.kind === "enumerated"));
+    assert.ok(component.supported_operating_region.numeric_bounds.every((bound) => (
+      bound.minimum === bound.values[0] && bound.maximum === bound.values.at(-1)
+      && /confer no range or interpolation authority/.test(bound.conditions)
+    )));
+    assert.deepEqual(component.supported_operating_region.numeric_bounds.find((bound) => bound.quantity === "vgs").values, [5]);
+    assert.deepEqual(component.supported_operating_region.numeric_bounds.find((bound) => bound.quantity === "id").values, [250e-6, 0.2]);
+    assert.equal(component.supported_operating_region.numeric_bounds.some((bound) => bound.quantity === "vds"), false);
+    assert.match(component.supported_operating_region.summary, /coupled cited condition-ID tuples/);
+    assert.match(component.supported_operating_region.summary, /not Cartesian ranges/);
+    assert.match(component.known_omissions.join("\n"), /interpolation and DC sweeps are excluded/);
+    assert.match(component.known_omissions.join("\n"), /non-claim numerical auxiliaries/);
+    assert.match(component.known_omissions.join("\n"), /do not state VDS/);
+    assert.match(component.known_omissions.join("\n"), /Off-state behavior/);
+    assert.match(component.known_omissions.join("\n"), /Body-diode forward behavior/);
+    assert.match(component.known_omissions.join("\n"), /Breakdown, avalanche energy/);
+    assert.match(component.known_omissions.join("\n"), /Gate charge, Miller behavior/);
+    assert.match(component.known_omissions.join("\n"), /Temperature scaling, self-heating/);
+    const validation = JSON.parse(fs.readFileSync(path.join(result.package_path, "validation-results.json"), "utf8"));
+    assert.equal(validation.strict_dual_engine_expectations, true);
+    assert.match(validation.engines.native.version, /ngspice/i);
+    assert.ok(validation.engines.browser_wasm.version);
+    assert.ok(validation.engines.browser_wasm.ngspice_version);
+    assert.match(validation.artifact_hashes.model_cir, /^sha256:[0-9a-f]{64}$/);
+    assert.deepEqual(Object.keys(validation.artifact_hashes.benches).sort(), validation.benches.map((bench) => bench.test_netlist).sort());
+    for (const bench of validation.benches) {
+      assert.equal(bench.bench_sha256, validation.artifact_hashes.benches[bench.test_netlist]);
+      assert.match(bench.bench_sha256, /^sha256:[0-9a-f]{64}$/);
+      for (const check of bench.checks) {
+        assert.equal(typeof check.native.value, "number");
+        assert.equal(typeof check.native.pass, "boolean");
+        assert.equal(typeof check.browser_wasm.value, "number");
+        assert.equal(typeof check.browser_wasm.pass, "boolean");
+        assert.equal(check.pass, check.native.pass && check.browser_wasm.pass);
+      }
+    }
     assert.deepEqual(validatePackage(result.package_path, { requireEvidenceContract: true }).errors, []);
   } finally {
     fs.rmSync(root, { recursive: true, force: true });
@@ -1415,4 +1474,59 @@ test("known bare-page evidence is repaired to an explicit page and figure citati
 
 test("bulk manifest validation is strict while legacy registry remains independent", () => {
   assert.throws(() => normalizeBulkManifest({ schema_version: "1.0.0", kind: "wrong", parts: [] }), /Unsupported conveyor bulk manifest/);
+});
+
+test("exact package variants support repeated electrical nodes across real multi-pin packages and reject ambiguous maps", () => {
+  const pinInfo = {
+    pins: [
+      { name: "G", number: "1", role: "gate", node: "gate" },
+      { name: "D", number: "2", role: "drain", node: "drain" },
+      { name: "S", number: "3", role: "source", node: "source" },
+    ],
+  };
+  const variant = {
+    name: "VSON-CLIP (D2PAK-compatible pin semantics)",
+    standard: "TI SON 5 mm x 6 mm",
+    pin_count: 8,
+    pin_map: [
+      { package_pin: "1", symbol_pin_number: "3" },
+      { package_pin: "2", symbol_pin_number: "3" },
+      { package_pin: "3", symbol_pin_number: "3" },
+      { package_pin: "4", symbol_pin_number: "1" },
+      { package_pin: "5", symbol_pin_number: "2" },
+      { package_pin: "6", symbol_pin_number: "2" },
+      { package_pin: "7", symbol_pin_number: "2" },
+      { package_pin: "8", symbol_pin_number: "2" },
+    ],
+  };
+  assert.deepEqual(normalizePackageVariants([variant], pinInfo), [variant]);
+
+  const mutate = (change) => {
+    const candidate = structuredClone(variant);
+    change(candidate);
+    return candidate;
+  };
+  assert.throws(
+    () => normalizePackageVariants([mutate((candidate) => { candidate.pin_map[1].package_pin = "1"; })], pinInfo),
+    /duplicates package pin 1/,
+  );
+  assert.throws(
+    () => normalizePackageVariants([mutate((candidate) => { candidate.pin_map[1].symbol_pin_number = "9"; })], pinInfo),
+    /unknown symbol pin 9/,
+  );
+  assert.throws(
+    () => normalizePackageVariants([mutate((candidate) => { candidate.pin_count = 7; })], pinInfo),
+    /pin_map count must exactly match pin_count 7/,
+  );
+  assert.throws(
+    () => normalizePackageVariants([variant, structuredClone(variant)], pinInfo),
+    /duplicates a package variant name and standard/,
+  );
+  assert.throws(
+    () => normalizePackageVariants([mutate((candidate) => {
+      candidate.pin_map = candidate.pin_map.filter((mapping) => mapping.symbol_pin_number !== "1");
+      candidate.pin_count = candidate.pin_map.length;
+    })], pinInfo),
+    /omits electrical symbol pin 1/,
+  );
 });

@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.schemagic.design/design-library/v1/profile.facts-v3-2.schema.json",
+  "title": "scheMAGIC closed design profile with facts schema 3.2.0",
+  "allOf": [
+    {
+      "$ref": "profile-envelope.facts-v3-2.schema.json"
+    },
+    {
+      "type": "object",
+      "required": [
+        "partClass",
+        "facts"
+      ],
+      "properties": {
+        "partClass": {
+          "const": "motor.integrated-h-bridge"
+        },
+        "facts": {
+          "$ref": "facts/motor.integrated-h-bridge.v3-2.schema.json"
+        }
+      }
+    }
+  ]
+}

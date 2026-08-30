@@ -13,7 +13,7 @@ Verified against native ngspice-46: the astable configuration `R1 = 10k`, `R2 = 
 **Node order is `GND TRIG OUT RESET CONT THRES DISCH VCC`**, which is the physical DIP-8 pin order 1 through 8. This is deliberate: it makes `spice_pin_mapping` an identity mapping against `symbol_pins`, and it is the order every 555 datasheet prints.
 
 ```spice
-* OpenCircuit original-from-facts model
+* scheMAGIC original-from-facts model
 * <MPN> (<manufacturer>), datasheet rev <rev>, fitted <YYYY-MM-DD>
 * Archetype: archetype-timer555.md. Fit run: <run-id>
 * Node order: X<ref> gnd trig out reset cont thres disch vcc OC_<MPN>

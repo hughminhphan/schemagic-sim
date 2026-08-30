@@ -1,0 +1,27 @@
+{
+  "name": "@opencircuit/design-recipes",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Catalog-driven native recipe implementations installed by design-engine",
+  "type": "module",
+  "exports": {
+    "./constraint-policies-engine-internal": "./src/production-constraint-policies-v3.ts",
+    "./engine-internal": "./src/index.ts",
+    "./motor-constraint-policy-engine-internal": "./src/motor-constraint-policy-engine-internal.ts",
+    "./motor-engine-internal": "./src/motor-engine-internal.ts",
+    "./power-constraint-policy-engine-internal": "./src/power-constraint-policy-engine-internal.ts",
+    "./power-reference-design-evidence": "./src/power-reference-design-evidence.ts",
+    "./power-engine-internal": "./src/power-engine-internal.ts"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@opencircuit/circuit-schema": "*",
+    "@opencircuit/design-library": "*",
+    "@opencircuit/design-schema": "*"
+  },
+  "devDependencies": { "vitest": "3.2.7" }
+}

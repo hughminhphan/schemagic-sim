@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.schemagic.design/design-library/v1/profile.facts-v3.schema.json",
+  "title": "scheMAGIC closed design profile with facts schema V3",
+  "allOf": [
+    {
+      "$ref": "profile-envelope.facts-v3.schema.json"
+    },
+    {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "partClass",
+            "facts"
+          ],
+          "properties": {
+            "partClass": {
+              "const": "shared.n-channel-power-mosfet"
+            },
+            "facts": {
+              "$ref": "facts/shared.n-channel-power-mosfet.v3.schema.json"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "partClass",
+            "facts"
+          ],
+          "properties": {
+            "partClass": {
+              "const": "motor.supply-tvs-diode"
+            },
+            "facts": {
+              "$ref": "facts/motor.supply-tvs-diode.v3.schema.json"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

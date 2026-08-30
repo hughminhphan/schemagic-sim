@@ -2,10 +2,27 @@
   "name": "@opencircuit/model-library",
   "version": "0.1.0",
   "private": true,
-  "description": "Datasheet-fitted component model packages for OpenCircuit",
+  "description": "Datasheet-fitted component model packages for the scheMAGIC Component Library",
   "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
   "scripts": {
-    "test": "node --test test/*.test.mjs"
+    "generate:trusted-registry": "vite-node scripts/generate-trusted-subcircuits.ts --write",
+    "check:trusted-registry": "vite-node scripts/generate-trusted-subcircuits.ts --check",
+    "test": "node --test test/*.test.mjs && vitest run",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "build": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@opencircuit/circuit-schema": "*"
+  },
+  "devDependencies": {
+    "@opencircuit/model-import": "*",
+    "@types/node": "24.3.0",
+    "vite-node": "3.2.4",
+    "vite": "7.3.6",
+    "vitest": "3.2.7"
   },
   "license": "MIT"
 }

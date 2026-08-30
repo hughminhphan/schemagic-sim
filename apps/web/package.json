@@ -2,25 +2,37 @@
   "name": "@opencircuit/web",
   "version": "0.0.1",
   "private": true,
+  "description": "Browser application for scheMAGIC Designer and scheMAGIC Simulator",
   "type": "module",
   "scripts": {
     "dev": "vite --host 127.0.0.1",
-    "build": "tsc -p tsconfig.json --noEmit && vite build",
-    "test": "vitest run",
+    "build": "tsc -p tsconfig.json --noEmit && vite build && node scripts/assert-production-bundle.mjs && node scripts/audit-static-offline.mjs",
+    "test": "vitest run && node --test scripts/static-offline-audit.test.mjs",
+    "audit:static-offline": "node scripts/audit-static-offline.mjs",
+    "audit:designer-runtime": "playwright test --config playwright.runtime.config.ts",
+    "test:static-offline": "node --test scripts/static-offline-audit.test.mjs",
+    "test:a11y": "playwright test e2e/designer-accessibility.spec.ts",
+    "test:offline": "playwright test e2e/designer-offline.spec.ts",
     "test:e2e": "playwright test",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
     "@opencircuit/circuit-schema": "*",
+    "@opencircuit/design-export": "*",
+    "@opencircuit/design-schema": "*",
     "@opencircuit/model-import": "*",
+    "@opencircuit/motor-designer": "*",
+    "@opencircuit/power-designer": "*",
     "@opencircuit/schematic-editor": "*",
     "@opencircuit/sim-engine": "*",
+    "@opencircuit/sourcing-schema": "*",
     "@opencircuit/waveform-viewer": "*",
     "fflate": "0.8.2"
   },
   "devDependencies": {
-    "@playwright/test": "1.55.0",
-    "vite": "7.1.3",
-    "vitest": "3.2.4"
+    "@axe-core/playwright": "4.13.0",
+    "@playwright/test": "1.62.1",
+    "vite": "7.3.6",
+    "vitest": "3.2.7"
   }
 }

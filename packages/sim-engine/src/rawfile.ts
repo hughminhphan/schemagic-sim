@@ -53,7 +53,10 @@ export function parseBinaryRawfile(bytes: Uint8Array, limits: RawfileLimits = {}
   const markerAt = indexOfBytes(bytes, marker);
   if (markerAt < 0) throw new Error("Rawfile has no Binary: marker");
   let dataAt = markerAt + marker.length;
-  while (dataAt < bytes.length && (bytes[dataAt] === 10 || bytes[dataAt] === 13 || bytes[dataAt] === 32 || bytes[dataAt] === 9)) dataAt += 1;
+  while (bytes[dataAt] === 32 || bytes[dataAt] === 9) dataAt += 1;
+  if (bytes[dataAt] === 13 && bytes[dataAt + 1] === 10) dataAt += 2;
+  else if (bytes[dataAt] === 10) dataAt += 1;
+  else throw new Error("Rawfile Binary: marker has no line ending");
 
   const header = new TextDecoder().decode(bytes.subarray(0, markerAt));
   const lines = header.split(/\r?\n/);
@@ -86,6 +89,7 @@ export function parseBinaryRawfile(bytes: Uint8Array, limits: RawfileLimits = {}
   const expectedBytes = samples * Float64Array.BYTES_PER_ELEMENT;
   const availableBytes = bytes.byteLength - dataAt;
   if (availableBytes < expectedBytes) throw new Error(`Rawfile is truncated: expected ${expectedBytes} data bytes, got ${availableBytes}`);
+  if (availableBytes > expectedBytes) throw new Error(`Rawfile has trailing data: expected ${expectedBytes} data bytes, got ${availableBytes}`);
 
   const source = new DataView(bytes.buffer, bytes.byteOffset + dataAt, expectedBytes);
   const valuesPerPoint = complex ? 2 : 1;

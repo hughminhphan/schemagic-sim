@@ -295,6 +295,11 @@ for (const name of ["IRLML5203TRPBF", "IRF740PBF", "FDN360P"]) {
     assert.ok(fit.calibration.constraints.every((constraint) => constraint.inclusive && constraint.satisfied));
     assert.ok(fit.calibration.constraints.every((constraint) => constraint.temperature_c === 25));
     assert.equal(fit.optimizer.residual_target_count, 0, "bound constraints never enter a residual-target vector");
+    assert.equal(fit.optimizer.threshold_interior_guard_policy.applied_to_adjustable_projection, true);
+    assert.equal(fit.optimizer.threshold_interior_guard_policy.absolute_floor_v, 1e-7);
+    assert.equal(fit.optimizer.threshold_interior_guard_policy.relative_interval_span_factor, 1e-6);
+    assert.equal(fit.optimizer.threshold_interior_guard_policy.maximum_interval_fraction, 0.25);
+    assert.ok(fit.optimizer.threshold_interior_guard_policy.constraints.length >= 1);
     assert.equal(fit.calibration.residual_target_count, 0, "interval-constrained calibration has no residual targets");
     assert.ok(fit.calibration.seeds.every((seed) => seed.scored_as_residual === false));
     assert.equal(fit.residuals?.length ?? 0, 0, "bound constraints are not emitted as equality residuals");
@@ -302,6 +307,10 @@ for (const name of ["IRLML5203TRPBF", "IRF740PBF", "FDN360P"]) {
       if (constraint.kind === "threshold_interval") {
         assert.ok(constraint.predicted_value >= constraint.minimum_v);
         assert.ok(constraint.predicted_value <= constraint.maximum_v);
+        const guard = fit.optimizer.threshold_interior_guard_policy.constraints.find((row) => row.constraint_id === constraint.id);
+        assert.ok(guard.response_guard_v > 0);
+        assert.ok(guard.guarded_minimum_v > guard.source_minimum_v);
+        assert.ok(guard.guarded_maximum_v < guard.source_maximum_v);
       } else {
         assert.equal(Object.hasOwn(constraint, "minimum_ohm"), false, "RDS maximum stays one-sided");
         assert.ok(constraint.predicted_value <= constraint.maximum_ohm);
@@ -410,6 +419,86 @@ print(json.dumps(captured))
   const [netlist] = JSON.parse(result.stdout);
   assert.equal(netlist.match(/^\.temp 75$/gm)?.length, 1, netlist);
   assert.equal(netlist.match(/^\.temp 25$/gm)?.length ?? 0, 0, netlist);
+});
+
+test("final inclusive verification accepts native threshold boundary noise but rejects a material violation", { skip: skipNative, timeout: 300_000 }, () => {
+  const program = String.raw`
+import json
+import fit_mosfet_f1_constraints as subject
+
+fixed = {"CGS": 1e-9, "CGDMAX": 1e-10, "CGDMIN": 1e-10, "CJO": 1e-10}
+params = subject.model_parameters(1.0, 0.1, fixed)
+probe_constraint = {
+    "id": "threshold", "kind": "threshold_interval",
+    "minimum_v": 0.5, "maximum_v": 2.5,
+    "current_a": 250e-6, "temperature_c": 25,
+}
+measured = subject.probe(params, [probe_constraint], "n")
+predicted = measured["threshold"]
+probe_tolerance = subject.inclusive_bound_tolerance(
+    predicted, subject.THRESHOLD_BOUND_ABSOLUTE_TOLERANCE)
+within_constraint = {
+    **probe_constraint,
+    "minimum_v": predicted + 0.5 * probe_tolerance,
+    "maximum_v": predicted + 1.0,
+}
+material_constraint = {
+    **probe_constraint,
+    "minimum_v": predicted + 1e-6,
+    "maximum_v": predicted + 1.0,
+}
+within = subject.constraint_results([within_constraint], measured)[0]
+material = subject.constraint_results([material_constraint], measured)[0]
+print(json.dumps({
+    "predicted": predicted,
+    "probe_tolerance": probe_tolerance,
+    "within_minimum": within_constraint["minimum_v"],
+    "within_satisfied": within["satisfied"],
+    "within_verification_tolerance": within["verification_tolerance"],
+    "material_minimum": material_constraint["minimum_v"],
+    "material_satisfied": material["satisfied"],
+}))
+`;
+  const result = spawnSync(venvPython, ["-c", program], { cwd: pythonDir, encoding: "utf8" });
+  assert.equal(result.status, 0, result.stderr);
+  const observation = JSON.parse(result.stdout);
+  assert.ok(observation.predicted < observation.within_minimum, "raw comparison must be just outside the inclusive boundary");
+  assert.equal(observation.within_satisfied, true, "native-probe boundary noise must pass final verification");
+  assert.ok(observation.probe_tolerance < 1e-8, "verification tolerance must remain numerical, not material");
+  assert.deepEqual(observation.within_verification_tolerance, {
+    relative_factor: 1e-9,
+    absolute_floor: 1e-10,
+    minimum: Math.max(1e-10, Math.abs(observation.within_minimum) * 1e-9),
+    maximum: Math.max(1e-10, Math.abs(observation.predicted + 1.0) * 1e-9),
+    unit: "V",
+  });
+  assert.ok(observation.material_minimum - observation.predicted > 100 * observation.probe_tolerance);
+  assert.equal(observation.material_satisfied, false, "a material source-bound violation must remain fail-closed");
+});
+
+test("CSD-like threshold intervals receive a deterministic material interior guard without widening evidence", { skip: skipNative }, () => {
+  const program = String.raw`
+import json
+import fit_mosfet_f1_constraints as subject
+
+guard = subject.threshold_interior_guard(1.5, 2.3)
+narrow_guard = subject.threshold_interior_guard(1.5, 1.50000001)
+print(json.dumps({
+    "guard": guard,
+    "narrow_guard": narrow_guard,
+    "minimum": 1.5 + guard,
+    "maximum": 2.3 - guard,
+    "numerical_tolerance": subject.inclusive_bound_tolerance(
+        1.5, subject.THRESHOLD_BOUND_ABSOLUTE_TOLERANCE),
+}))
+`;
+  const result = spawnSync(venvPython, ["-c", program], { cwd: pythonDir, encoding: "utf8" });
+  assert.equal(result.status, 0, result.stderr);
+  const policy = JSON.parse(result.stdout);
+  assert.ok(Math.abs(policy.guard - 8e-7) < 1e-15);
+  assert.ok(policy.guard > 100 * policy.numerical_tolerance, "guard must be materially larger than solver-noise tolerance");
+  assert.ok(policy.minimum > 1.5 && policy.maximum < 2.3, "guarded targets stay strictly within source evidence");
+  assert.ok(policy.narrow_guard > 0 && policy.narrow_guard <= 2.5e-9, "narrow intervals retain a non-empty evidence-bounded interior");
 });
 
 test("native constraint runner fails an empty feasible threshold set instead of relaxing it", { skip: skipNative, timeout: 300_000 }, () => {

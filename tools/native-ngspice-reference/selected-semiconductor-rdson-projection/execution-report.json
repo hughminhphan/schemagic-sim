@@ -1,0 +1,168 @@
+{
+  "format": "opencircuit-selected-semiconductor-rdson-projection-report",
+  "schemaVersion": 1,
+  "contractContentHash": "sha256:cfa78576f707a62126c38648428c75e7e3b6ec3d78d516e13818a56449dca7ae",
+  "evidenceBoundary": {
+    "projectionKind": "ideal_reviewed_maximum_rdson_resistors",
+    "attestation": "none",
+    "productionProfileUsed": true,
+    "currentProductionObservationIdentity": true,
+    "selectedPartDeviceEquationUsed": false,
+    "physicalFidelityProved": false,
+    "productionRequestConditionsEvaluated": false,
+    "productionConstraintEligibility": false,
+    "rankingAuthority": false,
+    "fullBomCoverage": false,
+    "claim": "An ideal reviewed-RDS(on) projection binds four selected CSD18540Q5B identities to four independent 2.2 mOhm resistors at the reviewed 25 C, 10 V gate-condition, 28 A table point.",
+    "purpose": "Deterministic current-production identity, exact reviewed resistance evidence, ideal-resistor netlist, execution-receipt, and native/browser-WASM 61.6 mV voltage-drop parity only.",
+    "doesNotProve": [
+      "transistor-equation or selected-part SPICE fidelity",
+      "switching, transient, gate charge, Miller, reverse recovery, body-diode, avalanche, SOA, thermal, self-heating, package, or parasitic behavior",
+      "the 40 C, 5 A load, 20 A stall, 18-30 V, 20 kHz, 80%-duty production request",
+      "gate-driver, TVS, motor, capacitor, shunt, pull-down, bulk, local-decoupling, bootstrap, or full-BOM behavior",
+      "candidate eligibility, ranking, safety, provider approval, commercial availability, or release readiness"
+    ]
+  },
+  "case": {
+    "id": "motor.production.external-24v.csd18540q5b.ideal-reviewed-rdson-projection",
+    "application": "motor.brushed-dc",
+    "presetId": "motor.external-24v",
+    "observationKind": "production_constraint_observation",
+    "currentIdentity": {
+      "requestHash": "sha256:3eb6902cfb864b7e6977388fee7fa76535f9388b905b10e943849bb3207ab94f",
+      "resultContentHash": "sha256:6e3986d02348a5415bbc0c56d85c1899450551c0635fac258bd575b010be1be7",
+      "constraintDecisionContentHash": "sha256:ff525983f903d423d8cdb782176bf591d9990c9ffcf0fac4e404fbefb4f3ed59",
+      "candidateId": "candidate:v2:sha256:6b16171207d7e5afdb3284ad6d566cf2ccf9d565fbfea6a353c6d183b6b45bed",
+      "candidateIndex": 0,
+      "candidateEligible": false,
+      "recipe": {
+        "id": "motor.native.external-nmos-h-bridge.facts-v3-1-role-qualified",
+        "version": "3.1.7",
+        "contentHash": "sha256:e526bba9ce25114b505264e7d281607ee223c10de19e795780a64f04617c0947"
+      },
+      "library": {
+        "version": "2026-08-27.2",
+        "contextManifestContentHash": "sha256:06a4ef8b8141852bf9506c6f4f632a7b349b0947c449f85172313380dc195d38",
+        "catalogReleaseContentHash": "sha256:a72bfec6700904360882893a96db5a9420efccfb46ad78f1e3826301abe1f29e"
+      }
+    },
+    "selectedBinding": {
+      "selectedComponentId": "mosfet",
+      "role": "bridge-n-channel-power-mosfet",
+      "profileId": "packages/design-library/parts/shared.n-channel-power-mosfet/texas-instruments/CSD18540Q5B.json",
+      "profileContentHash": "sha256:551796851f2c60f698c3ca054e338cdac0ec8fe034e4d7217ee6a758a7ab86e8",
+      "manufacturerId": "texas-instruments",
+      "manufacturerPartNumber": "CSD18540Q5B",
+      "quantityPerAssembly": 4,
+      "catalogAdmissionState": "reviewed"
+    },
+    "sourceBinding": {
+      "kind": "manufacturer_datasheet",
+      "url": "https://www.ti.com/lit/ds/symlink/csd18540q5b.pdf",
+      "revision": "SLPS488B, revised April 2017; Package Option Addendum dated 10-Nov-2025",
+      "contentHash": "sha256:2e43c4a2ac82af8a089be0a9e413282326f8d7857254ac07390b458deca854e0",
+      "locator": "page 3, Electrical Characteristics at TA = 25 deg C: RDS(on) maximum = 2.2 mOhm for VGS = 10 V and ID = 28 A"
+    },
+    "analysis": "op",
+    "projectionKind": "ideal_reviewed_maximum_rdson_resistors",
+    "attestation": "none",
+    "engineIdentity": {
+      "id": "@opencircuit/ngspice-wasm",
+      "buildVersion": "ngspice-46-opencircuit-wasm1",
+      "simulatorVersion": "ngspice-46",
+      "solver": "KLU",
+      "numericFormat": "ieee754-binary64"
+    },
+    "netlistContentHash": "sha256:5ce0b7c5825f1b2a38c40be1a61b632c34a0e36456f00a56afbd33bc70fb715b",
+    "sampleContentHash": "sha256:ce0385f811496395e5cd0bcccb7fa161c88703f195cdf3f554837cb0eee36ca7",
+    "receiptContentHash": "sha256:7c3387826241f56bb54cb363dbe74300273f1c4d143297e214952dc053b608a5",
+    "repeatableBrowserReceipt": true,
+    "selectedVectors": [
+      {
+        "name": "v(d1)",
+        "metric": "point-relative",
+        "maxAbsError": 0,
+        "maxRelativeError": 0,
+        "nativeValue": 0.0616,
+        "browserWasmValue": 0.0616
+      },
+      {
+        "name": "v(d2)",
+        "metric": "point-relative",
+        "maxAbsError": 0,
+        "maxRelativeError": 0,
+        "nativeValue": 0.0616,
+        "browserWasmValue": 0.0616
+      },
+      {
+        "name": "v(d3)",
+        "metric": "point-relative",
+        "maxAbsError": 0,
+        "maxRelativeError": 0,
+        "nativeValue": 0.0616,
+        "browserWasmValue": 0.0616
+      },
+      {
+        "name": "v(d4)",
+        "metric": "point-relative",
+        "maxAbsError": 0,
+        "maxRelativeError": 0,
+        "nativeValue": 0.0616,
+        "browserWasmValue": 0.0616
+      }
+    ],
+    "fullVectorComparisonPass": true,
+    "fullVectorComparisonIsReleaseGate": false,
+    "native": {
+      "sampleCount": 1,
+      "instanceCount": 4,
+      "voltageDropsV": [
+        0.0616,
+        0.0616,
+        0.0616,
+        0.0616
+      ],
+      "apparentResistanceOhm": [
+        0.0022,
+        0.0022,
+        0.0022,
+        0.0022
+      ],
+      "maximumVoltageDropAbsoluteErrorV": 0,
+      "maximumInstanceSpreadV": 0,
+      "conditionsBoundToReviewedProfile": true,
+      "selectedPartDeviceEquationUsed": false,
+      "physicalFidelityProved": false
+    },
+    "browserWasm": {
+      "sampleCount": 1,
+      "instanceCount": 4,
+      "voltageDropsV": [
+        0.0616,
+        0.0616,
+        0.0616,
+        0.0616
+      ],
+      "apparentResistanceOhm": [
+        0.0022,
+        0.0022,
+        0.0022,
+        0.0022
+      ],
+      "maximumVoltageDropAbsoluteErrorV": 0,
+      "maximumInstanceSpreadV": 0,
+      "conditionsBoundToReviewedProfile": true,
+      "selectedPartDeviceEquationUsed": false,
+      "physicalFidelityProved": false
+    },
+    "maximumCrossEngineVoltageDropRelativeDifference": 0,
+    "selectedPartDeviceEquationUsed": false,
+    "physicalFidelityProved": false,
+    "productionRequestConditionsEvaluated": false,
+    "productionConstraintEligibility": false,
+    "rankingAuthority": false,
+    "fullBomCoverage": false,
+    "pass": true
+  },
+  "pass": true
+}

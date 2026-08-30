@@ -2,7 +2,7 @@ import type { SimulationDiagnostic, SimulationErrorCode } from "./types";
 
 export function embeddedComponentAtLine(netlist: string, line: number): string | undefined {
   const sourceLine = netlist.split(/\r?\n/)[line - 1];
-  return sourceLine?.match(/\$\s*component:([a-z0-9_-]+)/i)?.[1];
+  return sourceLine?.match(/\$\s*component:(.*)$/u)?.[1];
 }
 
 export function classifyEngineError(message: string): SimulationErrorCode {
@@ -26,7 +26,7 @@ export function parseEngineDiagnostics(netlist: string, output: string): Simulat
     const stage = classifyEngineError(message) === "CONVERGENCE" ? "solve" as const : "parse" as const;
     return {
       stage,
-      message: message.replace(/\$\s*component:[a-z0-9_-]+/gi, "").trim(),
+      message: message.replace(/\$\s*component:[^\r\n]*/gu, "").trim(),
       ...(netLine ? { netLine } : {}),
       ...(componentId ? { componentId } : {}),
     };

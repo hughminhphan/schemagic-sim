@@ -1,0 +1,1248 @@
+{
+  "format": "schemagic-design-profile",
+  "schemaVersion": "1.0.0",
+  "partClass": "motor.integrated-h-bridge",
+  "part": {
+    "manufacturerId": "texas-instruments",
+    "manufacturerPartNumber": "DRV8262DDVR"
+  },
+  "factsSchemaVersion": "3.2.0",
+  "commonFacts": {
+    "packageName": {
+      "value": "HTSSOP (DDV), 44-pin PowerPAD with top thermal pad, 1.2 mm maximum height",
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-drv8262-slvsfv5c",
+          "locator": "physical PDF page 1, Device Information: exact DRV8262DDVR orderable part uses HTSSOP-44 with top thermal pad; physical PDF page 53, DDV0044E Package Outline: PowerPAD TSSOP, 1.2 mm maximum height",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-25T20:30:52Z",
+          "contentHash": "sha256:f07b6126ffab94c7b13a46ce0b758c85e6fa58068bf407480f7a0b954ddc32a7",
+          "url": "https://www.ti.com/lit/ds/symlink/drv8262.pdf",
+          "revision": "SLVSFV5C, July 2023 - revised July 2025",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "The exact DRV8262DDVR ordering identity selects TI package code DDV, a 44-pin HTSSOP PowerPAD package whose exposed thermal pad is on top for heat-sink attachment."
+    },
+    "boardArea": {
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "Facts schema 3.2.0 represents mounted board area only through facts.mountedGeometry."
+    },
+    "maximumHeight": {
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "Facts schema 3.2.0 represents mounted maximum height only through facts.mountedGeometry."
+    }
+  },
+  "facts": {
+    "bridgeTopology": {
+      "value": "full_bridge",
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-drv8262-slvsfv5c",
+          "locator": "physical PDF pages 1 and 15, Description and section 6.1 Overview: two integrated H-bridges can be paralleled to drive one brushed-DC motor as a single H-bridge",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-25T20:30:52Z",
+          "contentHash": "sha256:f07b6126ffab94c7b13a46ce0b758c85e6fa58068bf407480f7a0b954ddc32a7",
+          "url": "https://www.ti.com/lit/ds/symlink/drv8262.pdf",
+          "revision": "SLVSFV5C, July 2023 - revised July 2025",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "This exact profile represents the documented single-H-bridge configuration formed by paralleling the device's two full bridges."
+    },
+    "powerStage": {
+      "value": "integrated_fet",
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-drv8262-slvsfv5c",
+          "locator": "physical PDF page 15, section 6.1 Overview: the device integrates two H-bridge output power stages and high-side N-channel MOSFET drive",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-25T20:30:52Z",
+          "contentHash": "sha256:f07b6126ffab94c7b13a46ce0b758c85e6fa58068bf407480f7a0b954ddc32a7",
+          "url": "https://www.ti.com/lit/ds/symlink/drv8262.pdf",
+          "revision": "SLVSFV5C, July 2023 - revised July 2025",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "The bridge power MOSFETs are integrated in the IC."
+    },
+    "bridgeOutputArchitecture": {
+      "value": "dual_full_bridge_parallel_capable",
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-drv8262-slvsfv5c",
+          "locator": "physical PDF pages 5, 15, and 19-20, Table 4-1 and sections 6.1 and 6.4: two full H-bridges support a latched single-H-bridge mode when MODE1 is high, with OUT1/OUT3 and OUT2/OUT4 acting as the paralleled output pairs; Table 4-1 requires the IPROPI and VREF pin pairs tied and IN3/IN4 unconnected in single-H-bridge mode",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-25T20:30:52Z",
+          "contentHash": "sha256:f07b6126ffab94c7b13a46ce0b758c85e6fa58068bf407480f7a0b954ddc32a7",
+          "url": "https://www.ti.com/lit/ds/symlink/drv8262.pdf",
+          "revision": "SLVSFV5C, July 2023 - revised July 2025",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "MODE1 must be high when mode is latched at power-up or nSLEEP enable. In single-H-bridge mode the two IPROPI pins and the two VREF pins are tied in their documented pairs, while IN3 and IN4 are reserved and left unconnected."
+    },
+    "highSideDriveArchitecture": {
+      "value": "n_channel_charge_pump",
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-drv8262-slvsfv5c",
+          "locator": "physical PDF pages 15 and 26, sections 6.1 Overview and 6.6 Charge Pump: integrated charge pump supplies the high-side N-channel MOSFET gate-drive voltage",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-25T20:30:52Z",
+          "contentHash": "sha256:f07b6126ffab94c7b13a46ce0b758c85e6fa58068bf407480f7a0b954ddc32a7",
+          "url": "https://www.ti.com/lit/ds/symlink/drv8262.pdf",
+          "revision": "SLVSFV5C, July 2023 - revised July 2025",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "An integrated charge pump drives the integrated high-side N-channel MOSFETs."
+    },
+    "continuousHighSideOnSupported": {
+      "value": true,
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-drv8262-slvsfv5c",
+          "locator": "physical PDF pages 15 and 19, sections 6.1 and 6.4: the charge pump supports 100% duty cycle and static INx input levels",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-25T20:30:52Z",
+          "contentHash": "sha256:f07b6126ffab94c7b13a46ce0b758c85e6fa58068bf407480f7a0b954ddc32a7",
+          "url": "https://www.ti.com/lit/ds/symlink/drv8262.pdf",
+          "revision": "SLVSFV5C, July 2023 - revised July 2025",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "Static 100% bridge drive is architecturally supported; this does not guarantee thermal feasibility at any requested current."
+    },
+    "supplyVoltageOperatingMinimum": {
+      "value": { "value": 4.5, "unit": "V", "displayUnit": "4.5 V" },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-drv8262-slvsfv5c",
+          "locator": "physical PDF page 8, section 5.3 Recommended Operating Conditions: VVM normal DC operation minimum 4.5 V",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-25T20:30:52Z",
+          "contentHash": "sha256:f07b6126ffab94c7b13a46ce0b758c85e6fa58068bf407480f7a0b954ddc32a7",
+          "url": "https://www.ti.com/lit/ds/symlink/drv8262.pdf",
+          "revision": "SLVSFV5C, July 2023 - revised July 2025",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "Lower bound of TI's recommended VM range for normal DC operation."
+    },
+    "supplyVoltageOperatingMaximum": {
+      "value": { "value": 60, "unit": "V", "displayUnit": "60 V" },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-drv8262-slvsfv5c",
+          "locator": "physical PDF page 1, simplified schematic: 4.5 V to 65 V; physical PDF page 8, section 5.3 Recommended Operating Conditions: VVM normal DC operation maximum 60 V",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-25T20:30:52Z",
+          "contentHash": "sha256:f07b6126ffab94c7b13a46ce0b758c85e6fa58068bf407480f7a0b954ddc32a7",
+          "url": "https://www.ti.com/lit/ds/symlink/drv8262.pdf",
+          "revision": "SLVSFV5C, July 2023 - revised July 2025",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "The machine operating maximum is 60 V from the recommended-operating table. The simplified schematic's 65 V label is not promoted over that table."
+    },
+    "supplyVoltageAbsoluteMaximum": {
+      "value": { "value": 70, "unit": "V", "displayUnit": "70 V absolute maximum" },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-drv8262-slvsfv5c",
+          "locator": "physical PDF page 7, section 5.1 Absolute Maximum Ratings: VM maximum 70 V; note 1 explicitly excludes functional operation beyond Recommended Operating Conditions",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-25T20:30:52Z",
+          "contentHash": "sha256:f07b6126ffab94c7b13a46ce0b758c85e6fa58068bf407480f7a0b954ddc32a7",
+          "url": "https://www.ti.com/lit/ds/symlink/drv8262.pdf",
+          "revision": "SLVSFV5C, July 2023 - revised July 2025",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "Absolute VM stress limit only; it is not an operating limit."
+    },
+    "logicHighThresholdMaximum": {
+      "value": { "value": 1.5, "unit": "V", "displayUnit": "VIH minimum = 1.5 V" },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-drv8262-slvsfv5c",
+          "locator": "physical PDF page 9, section 5.5 Electrical Characteristics, logic-level inputs: VIH input-logic-high minimum 1.5 V over recommended operating conditions",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-25T20:30:52Z",
+          "contentHash": "sha256:f07b6126ffab94c7b13a46ce0b758c85e6fa58068bf407480f7a0b954ddc32a7",
+          "url": "https://www.ti.com/lit/ds/symlink/drv8262.pdf",
+          "revision": "SLVSFV5C, July 2023 - revised July 2025",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "ambientTemperature",
+          "minimum": { "value": 233.15, "unit": "K", "displayUnit": "-40 deg C" },
+          "maximum": { "value": 398.15, "unit": "K", "displayUnit": "125 deg C" },
+          "evidence": [
+            {
+              "sourceId": "ti-drv8262-slvsfv5c",
+              "locator": "physical PDF pages 8-9, sections 5.3 and 5.5: Electrical Characteristics limits apply over recommended operating conditions, whose TA range is -40 deg C to 125 deg C",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-25T20:30:52Z",
+              "contentHash": "sha256:f07b6126ffab94c7b13a46ce0b758c85e6fa58068bf407480f7a0b954ddc32a7",
+              "url": "https://www.ti.com/lit/ds/symlink/drv8262.pdf",
+              "revision": "SLVSFV5C, July 2023 - revised July 2025",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "junctionTemperature",
+          "minimum": { "value": 233.15, "unit": "K", "displayUnit": "-40 deg C" },
+          "maximum": { "value": 423.15, "unit": "K", "displayUnit": "150 deg C" },
+          "evidence": [
+            {
+              "sourceId": "ti-drv8262-slvsfv5c",
+              "locator": "physical PDF pages 8-9, sections 5.3 and 5.5: Electrical Characteristics limits apply over recommended operating conditions, whose TJ range is -40 deg C to 150 deg C",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-25T20:30:52Z",
+              "contentHash": "sha256:f07b6126ffab94c7b13a46ce0b758c85e6fa58068bf407480f7a0b954ddc32a7",
+              "url": "https://www.ti.com/lit/ds/symlink/drv8262.pdf",
+              "revision": "SLVSFV5C, July 2023 - revised July 2025",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "supplyVoltage",
+          "minimum": { "value": 4.5, "unit": "V", "displayUnit": "4.5 V" },
+          "maximum": { "value": 60, "unit": "V", "displayUnit": "60 V" },
+          "evidence": [
+            {
+              "sourceId": "ti-drv8262-slvsfv5c",
+              "locator": "physical PDF pages 8-9, sections 5.3 and 5.5: Electrical Characteristics limits apply over recommended operating conditions, whose VVM range is 4.5 V to 60 V",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-25T20:30:52Z",
+              "contentHash": "sha256:f07b6126ffab94c7b13a46ce0b758c85e6fa58068bf407480f7a0b954ddc32a7",
+              "url": "https://www.ti.com/lit/ds/symlink/drv8262.pdf",
+              "revision": "SLVSFV5C, July 2023 - revised July 2025",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "The controller-facing contract stores TI's VIH(min) as the threshold a controller must meet to guarantee a logic high."
+    },
+    "continuousOutputCurrent": {
+      "value": { "value": 20, "unit": "A", "displayUnit": "20 A RMS, DDV single-H-bridge mode" },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-drv8262-slvsfv5c",
+          "locator": "physical PDF page 8, section 5.3 Recommended Operating Conditions: IRMS,SINGLE,DDV maximum 20 A; physical PDF page 15 states actual deliverable current depends on ambient temperature, supply voltage, and PCB thermal design",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-25T20:30:52Z",
+          "contentHash": "sha256:f07b6126ffab94c7b13a46ce0b758c85e6fa58068bf407480f7a0b954ddc32a7",
+          "url": "https://www.ti.com/lit/ds/symlink/drv8262.pdf",
+          "revision": "SLVSFV5C, July 2023 - revised July 2025",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "ambientTemperature",
+          "minimum": { "value": 233.15, "unit": "K", "displayUnit": "-40 deg C" },
+          "maximum": { "value": 398.15, "unit": "K", "displayUnit": "125 deg C" },
+          "evidence": [
+            {
+              "sourceId": "ti-drv8262-slvsfv5c",
+              "locator": "physical PDF page 8, section 5.3 Recommended Operating Conditions: TA operating range -40 deg C to 125 deg C",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-25T20:30:52Z",
+              "contentHash": "sha256:f07b6126ffab94c7b13a46ce0b758c85e6fa58068bf407480f7a0b954ddc32a7",
+              "url": "https://www.ti.com/lit/ds/symlink/drv8262.pdf",
+              "revision": "SLVSFV5C, July 2023 - revised July 2025",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "junctionTemperature",
+          "minimum": { "value": 233.15, "unit": "K", "displayUnit": "-40 deg C" },
+          "maximum": { "value": 423.15, "unit": "K", "displayUnit": "150 deg C" },
+          "evidence": [
+            {
+              "sourceId": "ti-drv8262-slvsfv5c",
+              "locator": "physical PDF page 8, section 5.3 Recommended Operating Conditions: TJ operating range -40 deg C to 150 deg C",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-25T20:30:52Z",
+              "contentHash": "sha256:f07b6126ffab94c7b13a46ce0b758c85e6fa58068bf407480f7a0b954ddc32a7",
+              "url": "https://www.ti.com/lit/ds/symlink/drv8262.pdf",
+              "revision": "SLVSFV5C, July 2023 - revised July 2025",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "supplyVoltage",
+          "minimum": { "value": 4.5, "unit": "V", "displayUnit": "4.5 V" },
+          "maximum": { "value": 60, "unit": "V", "displayUnit": "60 V" },
+          "evidence": [
+            {
+              "sourceId": "ti-drv8262-slvsfv5c",
+              "locator": "physical PDF page 8, section 5.3 Recommended Operating Conditions: VVM normal-DC operating range 4.5 V to 60 V",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-25T20:30:52Z",
+              "contentHash": "sha256:f07b6126ffab94c7b13a46ce0b758c85e6fa58068bf407480f7a0b954ddc32a7",
+              "url": "https://www.ti.com/lit/ds/symlink/drv8262.pdf",
+              "revision": "SLVSFV5C, July 2023 - revised July 2025",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "Recommended-operating RMS ceiling for the exact top-pad DDV package with the two bridges paralleled in single-H-bridge mode. It is not a proof that an arbitrary board can sustain 20 A: TIM, heat sink, ambient, supply, switching loss, PCB copper, and junction-temperature closure remain system responsibilities."
+    },
+    "continuousOutputCurrentRole": {
+      "value": "guaranteed_operating_limit",
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-drv8262-slvsfv5c",
+          "locator": "physical PDF page 8, section 5.3 Recommended Operating Conditions: IRMS,SINGLE,DDV maximum 20 A; physical PDF page 15 states actual deliverable current depends on ambient temperature, supply voltage, and PCB thermal design",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-25T20:30:52Z",
+          "contentHash": "sha256:f07b6126ffab94c7b13a46ce0b758c85e6fa58068bf407480f7a0b954ddc32a7",
+          "url": "https://www.ti.com/lit/ds/symlink/drv8262.pdf",
+          "revision": "SLVSFV5C, July 2023 - revised July 2025",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "ambientTemperature",
+          "minimum": { "value": 233.15, "unit": "K", "displayUnit": "-40 deg C" },
+          "maximum": { "value": 398.15, "unit": "K", "displayUnit": "125 deg C" },
+          "evidence": [
+            {
+              "sourceId": "ti-drv8262-slvsfv5c",
+              "locator": "physical PDF page 8, section 5.3 Recommended Operating Conditions: TA operating range -40 deg C to 125 deg C",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-25T20:30:52Z",
+              "contentHash": "sha256:f07b6126ffab94c7b13a46ce0b758c85e6fa58068bf407480f7a0b954ddc32a7",
+              "url": "https://www.ti.com/lit/ds/symlink/drv8262.pdf",
+              "revision": "SLVSFV5C, July 2023 - revised July 2025",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "junctionTemperature",
+          "minimum": { "value": 233.15, "unit": "K", "displayUnit": "-40 deg C" },
+          "maximum": { "value": 423.15, "unit": "K", "displayUnit": "150 deg C" },
+          "evidence": [
+            {
+              "sourceId": "ti-drv8262-slvsfv5c",
+              "locator": "physical PDF page 8, section 5.3 Recommended Operating Conditions: TJ operating range -40 deg C to 150 deg C",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-25T20:30:52Z",
+              "contentHash": "sha256:f07b6126ffab94c7b13a46ce0b758c85e6fa58068bf407480f7a0b954ddc32a7",
+              "url": "https://www.ti.com/lit/ds/symlink/drv8262.pdf",
+              "revision": "SLVSFV5C, July 2023 - revised July 2025",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "supplyVoltage",
+          "minimum": { "value": 4.5, "unit": "V", "displayUnit": "4.5 V" },
+          "maximum": { "value": 60, "unit": "V", "displayUnit": "60 V" },
+          "evidence": [
+            {
+              "sourceId": "ti-drv8262-slvsfv5c",
+              "locator": "physical PDF page 8, section 5.3 Recommended Operating Conditions: VVM normal-DC operating range 4.5 V to 60 V",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-25T20:30:52Z",
+              "contentHash": "sha256:f07b6126ffab94c7b13a46ce0b758c85e6fa58068bf407480f7a0b954ddc32a7",
+              "url": "https://www.ti.com/lit/ds/symlink/drv8262.pdf",
+              "revision": "SLVSFV5C, July 2023 - revised July 2025",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "This role identifies a recommended operating limit, not an independently closed application thermal design."
+    },
+    "peakOutputCurrent": {
+      "value": { "value": 32, "unit": "A", "displayUnit": "32 A OCP threshold minimum" },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-drv8262-slvsfv5c",
+          "locator": "physical PDF page 11, section 5.5 Protection Circuits: IOCP minimum 32 A through any FET for DDV single-H-bridge mode; the continued Electrical Characteristics table states all limits apply over recommended operating conditions unless otherwise noted",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-25T20:30:52Z",
+          "contentHash": "sha256:f07b6126ffab94c7b13a46ce0b758c85e6fa58068bf407480f7a0b954ddc32a7",
+          "url": "https://www.ti.com/lit/ds/symlink/drv8262.pdf",
+          "revision": "SLVSFV5C, July 2023 - revised July 2025",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "ambientTemperature",
+          "minimum": { "value": 233.15, "unit": "K", "displayUnit": "-40 deg C" },
+          "maximum": { "value": 398.15, "unit": "K", "displayUnit": "125 deg C" },
+          "evidence": [
+            {
+              "sourceId": "ti-drv8262-slvsfv5c",
+              "locator": "physical PDF pages 8-11, sections 5.3 and 5.5: the IOCP limit applies over recommended operating conditions, whose TA range is -40 deg C to 125 deg C",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-25T20:30:52Z",
+              "contentHash": "sha256:f07b6126ffab94c7b13a46ce0b758c85e6fa58068bf407480f7a0b954ddc32a7",
+              "url": "https://www.ti.com/lit/ds/symlink/drv8262.pdf",
+              "revision": "SLVSFV5C, July 2023 - revised July 2025",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "junctionTemperature",
+          "minimum": { "value": 233.15, "unit": "K", "displayUnit": "-40 deg C" },
+          "maximum": { "value": 423.15, "unit": "K", "displayUnit": "150 deg C" },
+          "evidence": [
+            {
+              "sourceId": "ti-drv8262-slvsfv5c",
+              "locator": "physical PDF pages 8-11, sections 5.3 and 5.5: the IOCP limit applies over recommended operating conditions, whose TJ range is -40 deg C to 150 deg C",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-25T20:30:52Z",
+              "contentHash": "sha256:f07b6126ffab94c7b13a46ce0b758c85e6fa58068bf407480f7a0b954ddc32a7",
+              "url": "https://www.ti.com/lit/ds/symlink/drv8262.pdf",
+              "revision": "SLVSFV5C, July 2023 - revised July 2025",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "supplyVoltage",
+          "minimum": { "value": 4.5, "unit": "V", "displayUnit": "4.5 V" },
+          "maximum": { "value": 60, "unit": "V", "displayUnit": "60 V" },
+          "evidence": [
+            {
+              "sourceId": "ti-drv8262-slvsfv5c",
+              "locator": "physical PDF pages 8-11, sections 5.3 and 5.5: the IOCP limit applies over recommended operating conditions, whose VVM range is 4.5 V to 60 V",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-25T20:30:52Z",
+              "contentHash": "sha256:f07b6126ffab94c7b13a46ce0b758c85e6fa58068bf407480f7a0b954ddc32a7",
+              "url": "https://www.ti.com/lit/ds/symlink/drv8262.pdf",
+              "revision": "SLVSFV5C, July 2023 - revised July 2025",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "The normalized number is the minimum overcurrent-protection threshold from the protection table. It supplies no pulse duration, repetition rate, SOA, or thermal assembly and therefore is not a normal peak or stall-current guarantee."
+    },
+    "peakOutputCurrentRole": {
+      "value": "protection_threshold",
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-drv8262-slvsfv5c",
+          "locator": "physical PDF page 11, section 5.5 Protection Circuits: IOCP minimum 32 A through any FET for DDV single-H-bridge mode; the continued Electrical Characteristics table states all limits apply over recommended operating conditions unless otherwise noted",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-25T20:30:52Z",
+          "contentHash": "sha256:f07b6126ffab94c7b13a46ce0b758c85e6fa58068bf407480f7a0b954ddc32a7",
+          "url": "https://www.ti.com/lit/ds/symlink/drv8262.pdf",
+          "revision": "SLVSFV5C, July 2023 - revised July 2025",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "ambientTemperature",
+          "minimum": { "value": 233.15, "unit": "K", "displayUnit": "-40 deg C" },
+          "maximum": { "value": 398.15, "unit": "K", "displayUnit": "125 deg C" },
+          "evidence": [
+            {
+              "sourceId": "ti-drv8262-slvsfv5c",
+              "locator": "physical PDF pages 8-11, sections 5.3 and 5.5: the IOCP limit applies over recommended operating conditions, whose TA range is -40 deg C to 125 deg C",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-25T20:30:52Z",
+              "contentHash": "sha256:f07b6126ffab94c7b13a46ce0b758c85e6fa58068bf407480f7a0b954ddc32a7",
+              "url": "https://www.ti.com/lit/ds/symlink/drv8262.pdf",
+              "revision": "SLVSFV5C, July 2023 - revised July 2025",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "junctionTemperature",
+          "minimum": { "value": 233.15, "unit": "K", "displayUnit": "-40 deg C" },
+          "maximum": { "value": 423.15, "unit": "K", "displayUnit": "150 deg C" },
+          "evidence": [
+            {
+              "sourceId": "ti-drv8262-slvsfv5c",
+              "locator": "physical PDF pages 8-11, sections 5.3 and 5.5: the IOCP limit applies over recommended operating conditions, whose TJ range is -40 deg C to 150 deg C",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-25T20:30:52Z",
+              "contentHash": "sha256:f07b6126ffab94c7b13a46ce0b758c85e6fa58068bf407480f7a0b954ddc32a7",
+              "url": "https://www.ti.com/lit/ds/symlink/drv8262.pdf",
+              "revision": "SLVSFV5C, July 2023 - revised July 2025",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "supplyVoltage",
+          "minimum": { "value": 4.5, "unit": "V", "displayUnit": "4.5 V" },
+          "maximum": { "value": 60, "unit": "V", "displayUnit": "60 V" },
+          "evidence": [
+            {
+              "sourceId": "ti-drv8262-slvsfv5c",
+              "locator": "physical PDF pages 8-11, sections 5.3 and 5.5: the IOCP limit applies over recommended operating conditions, whose VVM range is 4.5 V to 60 V",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-25T20:30:52Z",
+              "contentHash": "sha256:f07b6126ffab94c7b13a46ce0b758c85e6fa58068bf407480f7a0b954ddc32a7",
+              "url": "https://www.ti.com/lit/ds/symlink/drv8262.pdf",
+              "revision": "SLVSFV5C, July 2023 - revised July 2025",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "Protection thresholds cannot satisfy ordinary peak-current, stall-current, or continuous-current requests."
+    },
+    "currentRegulationInterface": {
+      "value": "integrated_current_mirror_output",
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-drv8262-slvsfv5c",
+          "locator": "physical PDF pages 21-22, sections 6.5.1 and 6.5.2: IPROPI current-mirror output is proportional to high-side FET current and VREF with RIPROPI configures the current-regulation trip point",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-25T20:30:52Z",
+          "contentHash": "sha256:f07b6126ffab94c7b13a46ce0b758c85e6fa58068bf407480f7a0b954ddc32a7",
+          "url": "https://www.ti.com/lit/ds/symlink/drv8262.pdf",
+          "revision": "SLVSFV5C, July 2023 - revised July 2025",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "The discriminator records the interface only. It does not derive a configured current limit from VREF, RIPROPI, mirror gain, tolerances, pin state, or BOM choices."
+    },
+    "pwmMaximum": {
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "No normalized PWM-frequency bound is published. The 200 kHz statement on physical PDF page 40 is TEC application guidance coupled to power-loss and ambient-temperature evaluation, not a guaranteed electrical limit."
+    },
+    "pwmMaximumRole": {
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "No reviewed normalized PWM-frequency quantity is available, so its evidence role remains exact unknown."
+    },
+    "minimumInputPulseWidth": {
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "No guaranteed minimum ordinary INx PWM pulse width is published. nSLEEP reset widths and propagation delay are different quantities and are not substituted."
+    },
+    "minimumInputPulseWidthRole": {
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "No reviewed ordinary input-pulse quantity is available, so its evidence role remains exact unknown."
+    },
+    "pathResistance": {
+      "value": { "value": 0.104, "unit": "ohm", "displayUnit": "104 milliohm maximum HS + LS at Tj = 150 deg C" },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-drv8262-slvsfv5c",
+          "locator": "physical PDF page 10, section 5.5 Electrical Characteristics: single-H-bridge high-side maximum 54 milliohm and low-side maximum 50 milliohm at TJ = 150 deg C and |IO| = 5 A",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-25T20:30:52Z",
+          "contentHash": "sha256:f07b6126ffab94c7b13a46ce0b758c85e6fa58068bf407480f7a0b954ddc32a7",
+          "url": "https://www.ti.com/lit/ds/symlink/drv8262.pdf",
+          "revision": "SLVSFV5C, July 2023 - revised July 2025",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "ambientTemperature",
+          "minimum": { "value": 233.15, "unit": "K", "displayUnit": "-40 deg C" },
+          "maximum": { "value": 398.15, "unit": "K", "displayUnit": "125 deg C" },
+          "evidence": [
+            {
+              "sourceId": "ti-drv8262-slvsfv5c",
+              "locator": "physical PDF pages 8-10, sections 5.3 and 5.5: the RDS(ON) maximum rows apply over recommended operating conditions, whose TA range is -40 deg C to 125 deg C",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-25T20:30:52Z",
+              "contentHash": "sha256:f07b6126ffab94c7b13a46ce0b758c85e6fa58068bf407480f7a0b954ddc32a7",
+              "url": "https://www.ti.com/lit/ds/symlink/drv8262.pdf",
+              "revision": "SLVSFV5C, July 2023 - revised July 2025",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "junctionTemperature",
+          "minimum": { "value": 423.15, "unit": "K", "displayUnit": "150 deg C" },
+          "maximum": { "value": 423.15, "unit": "K", "displayUnit": "150 deg C" },
+          "evidence": [
+            {
+              "sourceId": "ti-drv8262-slvsfv5c",
+              "locator": "physical PDF page 10, single-H-bridge RDS(ONH) and RDS(ONL) maximum rows: TJ = 150 deg C",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-25T20:30:52Z",
+              "contentHash": "sha256:f07b6126ffab94c7b13a46ce0b758c85e6fa58068bf407480f7a0b954ddc32a7",
+              "url": "https://www.ti.com/lit/ds/symlink/drv8262.pdf",
+              "revision": "SLVSFV5C, July 2023 - revised July 2025",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "supplyVoltage",
+          "minimum": { "value": 4.5, "unit": "V", "displayUnit": "4.5 V" },
+          "maximum": { "value": 60, "unit": "V", "displayUnit": "60 V" },
+          "evidence": [
+            {
+              "sourceId": "ti-drv8262-slvsfv5c",
+              "locator": "physical PDF pages 8-10, sections 5.3 and 5.5: the RDS(ON) maximum rows apply over recommended operating conditions, whose VVM range is 4.5 V to 60 V",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-25T20:30:52Z",
+              "contentHash": "sha256:f07b6126ffab94c7b13a46ce0b758c85e6fa58068bf407480f7a0b954ddc32a7",
+              "url": "https://www.ti.com/lit/ds/symlink/drv8262.pdf",
+              "revision": "SLVSFV5C, July 2023 - revised July 2025",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "testCurrent",
+          "minimum": { "value": 5, "unit": "A", "displayUnit": "|IO| = 5 A" },
+          "maximum": { "value": 5, "unit": "A", "displayUnit": "|IO| = 5 A" },
+          "evidence": [
+            {
+              "sourceId": "ti-drv8262-slvsfv5c",
+              "locator": "physical PDF page 10, single-H-bridge RDS(ONH) IO = -5 A and RDS(ONL) IO = 5 A conditions, represented as |IO| = 5 A",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-25T20:30:52Z",
+              "contentHash": "sha256:f07b6126ffab94c7b13a46ce0b758c85e6fa58068bf407480f7a0b954ddc32a7",
+              "url": "https://www.ti.com/lit/ds/symlink/drv8262.pdf",
+              "revision": "SLVSFV5C, July 2023 - revised July 2025",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "Conservative single-H-bridge path maximum: 54 milliohm high-side plus 50 milliohm low-side at the hot 150 deg C endpoint."
+    },
+    "pathResistanceRole": {
+      "value": "guaranteed_maximum",
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-drv8262-slvsfv5c",
+          "locator": "physical PDF page 10, section 5.5 Electrical Characteristics: single-H-bridge high-side maximum 54 milliohm and low-side maximum 50 milliohm at TJ = 150 deg C and |IO| = 5 A",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-25T20:30:52Z",
+          "contentHash": "sha256:f07b6126ffab94c7b13a46ce0b758c85e6fa58068bf407480f7a0b954ddc32a7",
+          "url": "https://www.ti.com/lit/ds/symlink/drv8262.pdf",
+          "revision": "SLVSFV5C, July 2023 - revised July 2025",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "ambientTemperature",
+          "minimum": { "value": 233.15, "unit": "K", "displayUnit": "-40 deg C" },
+          "maximum": { "value": 398.15, "unit": "K", "displayUnit": "125 deg C" },
+          "evidence": [
+            {
+              "sourceId": "ti-drv8262-slvsfv5c",
+              "locator": "physical PDF pages 8-10, sections 5.3 and 5.5: the RDS(ON) maximum rows apply over recommended operating conditions, whose TA range is -40 deg C to 125 deg C",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-25T20:30:52Z",
+              "contentHash": "sha256:f07b6126ffab94c7b13a46ce0b758c85e6fa58068bf407480f7a0b954ddc32a7",
+              "url": "https://www.ti.com/lit/ds/symlink/drv8262.pdf",
+              "revision": "SLVSFV5C, July 2023 - revised July 2025",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "junctionTemperature",
+          "minimum": { "value": 423.15, "unit": "K", "displayUnit": "150 deg C" },
+          "maximum": { "value": 423.15, "unit": "K", "displayUnit": "150 deg C" },
+          "evidence": [
+            {
+              "sourceId": "ti-drv8262-slvsfv5c",
+              "locator": "physical PDF page 10, single-H-bridge RDS(ONH) and RDS(ONL) maximum rows: TJ = 150 deg C",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-25T20:30:52Z",
+              "contentHash": "sha256:f07b6126ffab94c7b13a46ce0b758c85e6fa58068bf407480f7a0b954ddc32a7",
+              "url": "https://www.ti.com/lit/ds/symlink/drv8262.pdf",
+              "revision": "SLVSFV5C, July 2023 - revised July 2025",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "supplyVoltage",
+          "minimum": { "value": 4.5, "unit": "V", "displayUnit": "4.5 V" },
+          "maximum": { "value": 60, "unit": "V", "displayUnit": "60 V" },
+          "evidence": [
+            {
+              "sourceId": "ti-drv8262-slvsfv5c",
+              "locator": "physical PDF pages 8-10, sections 5.3 and 5.5: the RDS(ON) maximum rows apply over recommended operating conditions, whose VVM range is 4.5 V to 60 V",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-25T20:30:52Z",
+              "contentHash": "sha256:f07b6126ffab94c7b13a46ce0b758c85e6fa58068bf407480f7a0b954ddc32a7",
+              "url": "https://www.ti.com/lit/ds/symlink/drv8262.pdf",
+              "revision": "SLVSFV5C, July 2023 - revised July 2025",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "testCurrent",
+          "minimum": { "value": 5, "unit": "A", "displayUnit": "|IO| = 5 A" },
+          "maximum": { "value": 5, "unit": "A", "displayUnit": "|IO| = 5 A" },
+          "evidence": [
+            {
+              "sourceId": "ti-drv8262-slvsfv5c",
+              "locator": "physical PDF page 10, single-H-bridge RDS(ONH) IO = -5 A and RDS(ONL) IO = 5 A conditions, represented as |IO| = 5 A",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-25T20:30:52Z",
+              "contentHash": "sha256:f07b6126ffab94c7b13a46ce0b758c85e6fa58068bf407480f7a0b954ddc32a7",
+              "url": "https://www.ti.com/lit/ds/symlink/drv8262.pdf",
+              "revision": "SLVSFV5C, July 2023 - revised July 2025",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "The stored path is the sum of manufacturer maximum high-side and low-side values at the same documented conditions."
+    },
+    "switchingTransitionTime": {
+      "value": { "value": 1.1e-7, "unit": "s", "displayUnit": "110 ns typical" },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-drv8262-slvsfv5c",
+          "locator": "physical PDF page 10, section 5.5 Electrical Characteristics: tRF output rise/fall time typical 110 ns at IO = 5 A, measured between 10% and 90%",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-25T20:30:52Z",
+          "contentHash": "sha256:f07b6126ffab94c7b13a46ce0b758c85e6fa58068bf407480f7a0b954ddc32a7",
+          "url": "https://www.ti.com/lit/ds/symlink/drv8262.pdf",
+          "revision": "SLVSFV5C, July 2023 - revised July 2025",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "ambientTemperature",
+          "minimum": { "value": 298.15, "unit": "K", "displayUnit": "25 deg C" },
+          "maximum": { "value": 298.15, "unit": "K", "displayUnit": "25 deg C" },
+          "evidence": [
+            {
+              "sourceId": "ti-drv8262-slvsfv5c",
+              "locator": "physical PDF page 9, section 5.5 Electrical Characteristics table header: typical values are at TA = 25 deg C",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-25T20:30:52Z",
+              "contentHash": "sha256:f07b6126ffab94c7b13a46ce0b758c85e6fa58068bf407480f7a0b954ddc32a7",
+              "url": "https://www.ti.com/lit/ds/symlink/drv8262.pdf",
+              "revision": "SLVSFV5C, July 2023 - revised July 2025",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "testCurrent",
+          "minimum": { "value": 5, "unit": "A", "displayUnit": "IO = 5 A" },
+          "maximum": { "value": 5, "unit": "A", "displayUnit": "IO = 5 A" },
+          "evidence": [
+            {
+              "sourceId": "ti-drv8262-slvsfv5c",
+              "locator": "physical PDF page 10, tRF output rise/fall test condition: IO = 5 A",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-25T20:30:52Z",
+              "contentHash": "sha256:f07b6126ffab94c7b13a46ce0b758c85e6fa58068bf407480f7a0b954ddc32a7",
+              "url": "https://www.ti.com/lit/ds/symlink/drv8262.pdf",
+              "revision": "SLVSFV5C, July 2023 - revised July 2025",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "Typical 10%-to-90% output transition observation; it is not a maximum timing guarantee."
+    },
+    "switchingTransitionTimeRole": {
+      "value": "typical_observation",
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-drv8262-slvsfv5c",
+          "locator": "physical PDF page 10, section 5.5 Electrical Characteristics: tRF output rise/fall time typical 110 ns at IO = 5 A, measured between 10% and 90%",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-25T20:30:52Z",
+          "contentHash": "sha256:f07b6126ffab94c7b13a46ce0b758c85e6fa58068bf407480f7a0b954ddc32a7",
+          "url": "https://www.ti.com/lit/ds/symlink/drv8262.pdf",
+          "revision": "SLVSFV5C, July 2023 - revised July 2025",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "ambientTemperature",
+          "minimum": { "value": 298.15, "unit": "K", "displayUnit": "25 deg C" },
+          "maximum": { "value": 298.15, "unit": "K", "displayUnit": "25 deg C" },
+          "evidence": [
+            {
+              "sourceId": "ti-drv8262-slvsfv5c",
+              "locator": "physical PDF page 9, section 5.5 Electrical Characteristics table header: typical values are at TA = 25 deg C",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-25T20:30:52Z",
+              "contentHash": "sha256:f07b6126ffab94c7b13a46ce0b758c85e6fa58068bf407480f7a0b954ddc32a7",
+              "url": "https://www.ti.com/lit/ds/symlink/drv8262.pdf",
+              "revision": "SLVSFV5C, July 2023 - revised July 2025",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "testCurrent",
+          "minimum": { "value": 5, "unit": "A", "displayUnit": "IO = 5 A" },
+          "maximum": { "value": 5, "unit": "A", "displayUnit": "IO = 5 A" },
+          "evidence": [
+            {
+              "sourceId": "ti-drv8262-slvsfv5c",
+              "locator": "physical PDF page 10, tRF output rise/fall test condition: IO = 5 A",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-25T20:30:52Z",
+              "contentHash": "sha256:f07b6126ffab94c7b13a46ce0b758c85e6fa58068bf407480f7a0b954ddc32a7",
+              "url": "https://www.ti.com/lit/ds/symlink/drv8262.pdf",
+              "revision": "SLVSFV5C, July 2023 - revised July 2025",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "The table supplies a typical observation only."
+    },
+    "activeSupplyCurrent": {
+      "value": { "value": 0.013, "unit": "A", "displayUnit": "13 mA maximum" },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-drv8262-slvsfv5c",
+          "locator": "physical PDF page 9, section 5.5 Electrical Characteristics: IVM maximum 13 mA with nSLEEP = 1, no motor load, and VCC = DVDD",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-25T20:30:52Z",
+          "contentHash": "sha256:f07b6126ffab94c7b13a46ce0b758c85e6fa58068bf407480f7a0b954ddc32a7",
+          "url": "https://www.ti.com/lit/ds/symlink/drv8262.pdf",
+          "revision": "SLVSFV5C, July 2023 - revised July 2025",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "ambientTemperature",
+          "minimum": { "value": 233.15, "unit": "K", "displayUnit": "-40 deg C" },
+          "maximum": { "value": 398.15, "unit": "K", "displayUnit": "125 deg C" },
+          "evidence": [
+            {
+              "sourceId": "ti-drv8262-slvsfv5c",
+              "locator": "physical PDF pages 8-9, sections 5.3 and 5.5: the IVM maximum applies over recommended operating conditions, whose TA range is -40 deg C to 125 deg C",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-25T20:30:52Z",
+              "contentHash": "sha256:f07b6126ffab94c7b13a46ce0b758c85e6fa58068bf407480f7a0b954ddc32a7",
+              "url": "https://www.ti.com/lit/ds/symlink/drv8262.pdf",
+              "revision": "SLVSFV5C, July 2023 - revised July 2025",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "junctionTemperature",
+          "minimum": { "value": 233.15, "unit": "K", "displayUnit": "-40 deg C" },
+          "maximum": { "value": 423.15, "unit": "K", "displayUnit": "150 deg C" },
+          "evidence": [
+            {
+              "sourceId": "ti-drv8262-slvsfv5c",
+              "locator": "physical PDF pages 8-9, sections 5.3 and 5.5: the IVM maximum applies over recommended operating conditions, whose TJ range is -40 deg C to 150 deg C",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-25T20:30:52Z",
+              "contentHash": "sha256:f07b6126ffab94c7b13a46ce0b758c85e6fa58068bf407480f7a0b954ddc32a7",
+              "url": "https://www.ti.com/lit/ds/symlink/drv8262.pdf",
+              "revision": "SLVSFV5C, July 2023 - revised July 2025",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "supplyVoltage",
+          "minimum": { "value": 4.5, "unit": "V", "displayUnit": "4.5 V" },
+          "maximum": { "value": 60, "unit": "V", "displayUnit": "60 V" },
+          "evidence": [
+            {
+              "sourceId": "ti-drv8262-slvsfv5c",
+              "locator": "physical PDF pages 8-9, sections 5.3 and 5.5: the IVM maximum applies over recommended operating conditions, whose VVM range is 4.5 V to 60 V",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-25T20:30:52Z",
+              "contentHash": "sha256:f07b6126ffab94c7b13a46ce0b758c85e6fa58068bf407480f7a0b954ddc32a7",
+              "url": "https://www.ti.com/lit/ds/symlink/drv8262.pdf",
+              "revision": "SLVSFV5C, July 2023 - revised July 2025",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "Conservative maximum for the single-supply VCC=DVDD condition with nSLEEP high and no motor load. Those row-specific pin and load conditions are not representable in validFor and remain explicit here and in the evidence locator; the quantity does not include motor current."
+    },
+    "activeSupplyCurrentRole": {
+      "value": "guaranteed_maximum",
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-drv8262-slvsfv5c",
+          "locator": "physical PDF page 9, section 5.5 Electrical Characteristics: IVM maximum 13 mA with nSLEEP = 1, no motor load, and VCC = DVDD",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-25T20:30:52Z",
+          "contentHash": "sha256:f07b6126ffab94c7b13a46ce0b758c85e6fa58068bf407480f7a0b954ddc32a7",
+          "url": "https://www.ti.com/lit/ds/symlink/drv8262.pdf",
+          "revision": "SLVSFV5C, July 2023 - revised July 2025",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "ambientTemperature",
+          "minimum": { "value": 233.15, "unit": "K", "displayUnit": "-40 deg C" },
+          "maximum": { "value": 398.15, "unit": "K", "displayUnit": "125 deg C" },
+          "evidence": [
+            {
+              "sourceId": "ti-drv8262-slvsfv5c",
+              "locator": "physical PDF pages 8-9, sections 5.3 and 5.5: the IVM maximum applies over recommended operating conditions, whose TA range is -40 deg C to 125 deg C",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-25T20:30:52Z",
+              "contentHash": "sha256:f07b6126ffab94c7b13a46ce0b758c85e6fa58068bf407480f7a0b954ddc32a7",
+              "url": "https://www.ti.com/lit/ds/symlink/drv8262.pdf",
+              "revision": "SLVSFV5C, July 2023 - revised July 2025",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "junctionTemperature",
+          "minimum": { "value": 233.15, "unit": "K", "displayUnit": "-40 deg C" },
+          "maximum": { "value": 423.15, "unit": "K", "displayUnit": "150 deg C" },
+          "evidence": [
+            {
+              "sourceId": "ti-drv8262-slvsfv5c",
+              "locator": "physical PDF pages 8-9, sections 5.3 and 5.5: the IVM maximum applies over recommended operating conditions, whose TJ range is -40 deg C to 150 deg C",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-25T20:30:52Z",
+              "contentHash": "sha256:f07b6126ffab94c7b13a46ce0b758c85e6fa58068bf407480f7a0b954ddc32a7",
+              "url": "https://www.ti.com/lit/ds/symlink/drv8262.pdf",
+              "revision": "SLVSFV5C, July 2023 - revised July 2025",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "supplyVoltage",
+          "minimum": { "value": 4.5, "unit": "V", "displayUnit": "4.5 V" },
+          "maximum": { "value": 60, "unit": "V", "displayUnit": "60 V" },
+          "evidence": [
+            {
+              "sourceId": "ti-drv8262-slvsfv5c",
+              "locator": "physical PDF pages 8-9, sections 5.3 and 5.5: the IVM maximum applies over recommended operating conditions, whose VVM range is 4.5 V to 60 V",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-25T20:30:52Z",
+              "contentHash": "sha256:f07b6126ffab94c7b13a46ce0b758c85e6fa58068bf407480f7a0b954ddc32a7",
+              "url": "https://www.ti.com/lit/ds/symlink/drv8262.pdf",
+              "revision": "SLVSFV5C, July 2023 - revised July 2025",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "Maximum active VM supply-current bound at the stated nSLEEP-high, no-motor-load, VCC=DVDD conditions. Those row-specific conditions are unrepresentable in validFor and remain explicit here and in the evidence locator."
+    },
+    "junctionToAmbientThermalResistance": {
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "No assembly-applicable junction-to-ambient thermal resistance is normalized. TI's package thermal metric and heat-sink example depend on PCB, copper, via, interface-material, and heat-sink identities that this condition vocabulary cannot represent."
+    },
+    "maximumJunctionTemperature": {
+      "value": { "value": 423.15, "unit": "K", "displayUnit": "150 deg C" },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-drv8262-slvsfv5c",
+          "locator": "physical PDF page 8, section 5.3 Recommended Operating Conditions: TJ maximum 150 deg C",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-25T20:30:52Z",
+          "contentHash": "sha256:f07b6126ffab94c7b13a46ce0b758c85e6fa58068bf407480f7a0b954ddc32a7",
+          "url": "https://www.ti.com/lit/ds/symlink/drv8262.pdf",
+          "revision": "SLVSFV5C, July 2023 - revised July 2025",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "Recommended maximum operating junction temperature converted to kelvin."
+    },
+    "localSupplyDecouplingCapacitance": {
+      "value": { "value": 1e-8, "unit": "F", "displayUnit": "10 nF per VM bypass position" },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-drv8262-slvsfv5c",
+          "locator": "physical PDF page 18, Table 6-1 External Components: CVM1 and CVM2 are each recommended as X7R 0.01 uF VM-rated ceramic capacitors from VM to PGND12 and PGND34",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-25T20:30:52Z",
+          "contentHash": "sha256:f07b6126ffab94c7b13a46ce0b758c85e6fa58068bf407480f7a0b954ddc32a7",
+          "url": "https://www.ti.com/lit/ds/symlink/drv8262.pdf",
+          "revision": "SLVSFV5C, July 2023 - revised July 2025",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "Recommended value per each of two distinct VM bypass positions, not a required minimum. This scalar schema cannot encode quantity two or the separate 0.1 uF flying, 1 uF VCP, 1 uF DVDD, and conditional 0.1 uF VCC capacitors. The current recipe's one-local-capacitor materialization is therefore incomplete for this exact MPN."
+    },
+    "localSupplyDecouplingRequirement": {
+      "value": "recommended_value",
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-drv8262-slvsfv5c",
+          "locator": "physical PDF page 18, Table 6-1 External Components: CVM1 and CVM2 are each recommended as X7R 0.01 uF VM-rated ceramic capacitors from VM to PGND12 and PGND34",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-25T20:30:52Z",
+          "contentHash": "sha256:f07b6126ffab94c7b13a46ce0b758c85e6fa58068bf407480f7a0b954ddc32a7",
+          "url": "https://www.ti.com/lit/ds/symlink/drv8262.pdf",
+          "revision": "SLVSFV5C, July 2023 - revised July 2025",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "TI labels the two 10 nF values recommended, so they cannot produce a hard required-minimum pass and cannot be collapsed into one BOM line."
+    },
+    "bulkCapacitance": {
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "TI requires VM bulk capacitance but does not publish a universal numeric value; system-level testing must determine it."
+    },
+    "bulkCapacitanceRequirement": {
+      "value": "application_dependent",
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-drv8262-slvsfv5c",
+          "locator": "physical PDF pages 40-41, section 7.2 Power Supply Recommendations: a bulk capacitor must be included on VM, while system-level testing determines the appropriate size from supply impedance, motor profile, braking method, and system voltage tolerance",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-25T20:30:52Z",
+          "contentHash": "sha256:f07b6126ffab94c7b13a46ce0b758c85e6fa58068bf407480f7a0b954ddc32a7",
+          "url": "https://www.ti.com/lit/ds/symlink/drv8262.pdf",
+          "revision": "SLVSFV5C, July 2023 - revised July 2025",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "A bulk component is required, but its capacitance is application-dependent and cannot be generated from a universal scalar minimum."
+    },
+    "mountedGeometry": {
+      "boardArea": {
+        "value": {
+          "area": { "value": 0.000129123381013, "unit": "m2", "displayUnit": "129.123381013 mm2" },
+          "basis": "manufacturer_recommended_land_pattern_bounding_box",
+          "calculation": "maximum_x_span_times_maximum_y_span",
+          "sourceDimensions": [
+            {
+              "axis": "x",
+              "dimensionId": "ddv0044e-ipc-a-top-copper-x-span",
+              "multiplier": 1,
+              "maximum": { "value": 0.00940620166, "unit": "m", "displayUnit": "9.406201660 mm source-resolution span" },
+              "evidence": [
+                {
+                  "sourceId": "ti-drv8262-webench-bxl",
+                  "locator": "decoded exact-part Component DRV8262DDVR, Most/Density-A Pattern DDV0044E-IPC_A, TOP-copper x envelope: extreme unrotated R10770150000000A pad centers +/-146.6687 mil plus x half-extent 38.49275 mil give bounds +/-185.16145 mil and span 370.32290 mil = 9.406201660 mm",
+                  "licenseNote": "Manufacturer-hosted public factual CAD data referenced by URL; only derived scalar facts, the URL, hash, and locators are retained. The BXL source is not redistributed.",
+                  "kind": "manufacturer_product_page",
+                  "retrievedAt": "2026-08-26T08:17:24+10:00",
+                  "contentHash": "sha256:932f211c9de4d7628b9483dfd8b5d8162cfbf2c7a0d6271cd2acda89e93827d3",
+                  "url": "https://webench.ti.com/cad/TI_BXL/DRV8262_DDV_44.bxl",
+                  "revision": "TI WEBENCH exact-part BXL, 47416 bytes; decoded footprint DDV0044E-IPC_A (Most/Density A)",
+                  "publicationBasis": "public_facts"
+                }
+              ]
+            },
+            {
+              "axis": "y",
+              "dimensionId": "ddv0044e-ipc-a-top-copper-y-span",
+              "multiplier": 1,
+              "maximum": { "value": 0.01372747318, "unit": "m", "displayUnit": "13.727473180 mm source-resolution span" },
+              "evidence": [
+                {
+                  "sourceId": "ti-drv8262-webench-bxl",
+                  "locator": "decoded exact-part Component DRV8262DDVR, Most/Density-A Pattern DDV0044E-IPC_A, TOP-copper y envelope: extreme unrotated R10770150000000A pad centers +/-262.5 mil plus y half-extent 7.72585 mil give bounds +/-270.22585 mil and span 540.45170 mil = 13.727473180 mm",
+                  "licenseNote": "Manufacturer-hosted public factual CAD data referenced by URL; only derived scalar facts, the URL, hash, and locators are retained. The BXL source is not redistributed.",
+                  "kind": "manufacturer_product_page",
+                  "retrievedAt": "2026-08-26T08:17:24+10:00",
+                  "contentHash": "sha256:932f211c9de4d7628b9483dfd8b5d8162cfbf2c7a0d6271cd2acda89e93827d3",
+                  "url": "https://webench.ti.com/cad/TI_BXL/DRV8262_DDV_44.bxl",
+                  "revision": "TI WEBENCH exact-part BXL, 47416 bytes; decoded footprint DDV0044E-IPC_A (Most/Density A)",
+                  "publicationBasis": "public_facts"
+                }
+              ]
+            }
+          ]
+        },
+        "state": "calculated",
+        "evidence": [
+          {
+            "sourceId": "ti-drv8262-webench-bxl",
+            "locator": "decoded exact-part Component DRV8262DDVR, Most/Density-A Pattern DDV0044E-IPC_A, TOP-copper x envelope: extreme unrotated R10770150000000A pad centers +/-146.6687 mil plus x half-extent 38.49275 mil give bounds +/-185.16145 mil and span 370.32290 mil = 9.406201660 mm",
+            "licenseNote": "Manufacturer-hosted public factual CAD data referenced by URL; only derived scalar facts, the URL, hash, and locators are retained. The BXL source is not redistributed.",
+            "kind": "manufacturer_product_page",
+            "retrievedAt": "2026-08-26T08:17:24+10:00",
+            "contentHash": "sha256:932f211c9de4d7628b9483dfd8b5d8162cfbf2c7a0d6271cd2acda89e93827d3",
+            "url": "https://webench.ti.com/cad/TI_BXL/DRV8262_DDV_44.bxl",
+            "revision": "TI WEBENCH exact-part BXL, 47416 bytes; decoded footprint DDV0044E-IPC_A (Most/Density A)",
+            "publicationBasis": "public_facts"
+          },
+          {
+            "sourceId": "ti-drv8262-webench-bxl",
+            "locator": "decoded exact-part Component DRV8262DDVR, Most/Density-A Pattern DDV0044E-IPC_A, TOP-copper y envelope: extreme unrotated R10770150000000A pad centers +/-262.5 mil plus y half-extent 7.72585 mil give bounds +/-270.22585 mil and span 540.45170 mil = 13.727473180 mm",
+            "licenseNote": "Manufacturer-hosted public factual CAD data referenced by URL; only derived scalar facts, the URL, hash, and locators are retained. The BXL source is not redistributed.",
+            "kind": "manufacturer_product_page",
+            "retrievedAt": "2026-08-26T08:17:24+10:00",
+            "contentHash": "sha256:932f211c9de4d7628b9483dfd8b5d8162cfbf2c7a0d6271cd2acda89e93827d3",
+            "url": "https://webench.ti.com/cad/TI_BXL/DRV8262_DDV_44.bxl",
+            "revision": "TI WEBENCH exact-part BXL, 47416 bytes; decoded footprint DDV0044E-IPC_A (Most/Density A)",
+            "publicationBasis": "public_facts"
+          }
+        ],
+        "validFor": [],
+        "explanation": "Canonical source-resolution bounding rectangle of the exact-part TI WEBENCH IPC-7351 Most/Density-A TOP-copper footprint DDV0044E-IPC_A: 9.406201660 mm x 13.727473180 mm = 129.123381013 mm2. This is a deterministic ranking proxy, not a placement, heat-sink, or routing proof."
+      },
+      "maximumHeight": {
+        "value": {
+          "height": { "value": 0.0012, "unit": "m", "displayUnit": "1.2 mm maximum" },
+          "basis": "manufacturer_package_maximum_in_surface_mount_orientation"
+        },
+        "state": "reviewed",
+        "evidence": [
+          {
+            "sourceId": "ti-drv8262-slvsfv5c",
+            "locator": "physical PDF page 53, DDV0044E Package Outline: PowerPAD TSSOP package height 1.2 mm maximum above the seating plane",
+            "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+            "kind": "manufacturer_datasheet",
+            "retrievedAt": "2026-08-25T20:30:52Z",
+            "contentHash": "sha256:f07b6126ffab94c7b13a46ce0b758c85e6fa58068bf407480f7a0b954ddc32a7",
+            "url": "https://www.ti.com/lit/ds/symlink/drv8262.pdf",
+            "revision": "SLVSFV5C, July 2023 - revised July 2025",
+            "publicationBasis": "public_facts"
+          }
+        ],
+        "validFor": [],
+        "explanation": "Current DDV0044E manufacturer package-outline maximum height in surface-mount orientation."
+      }
+    }
+  }
+}

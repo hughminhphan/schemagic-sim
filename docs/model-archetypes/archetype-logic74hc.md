@@ -62,7 +62,7 @@ The behavioral resistor gives the asymmetric sink and source impedance that `VOL
 ### 2.1 Inverter (74HC04), and the pattern for every single-input gate
 
 ```spice
-* OpenCircuit original-from-facts model
+* scheMAGIC original-from-facts model
 * 74HC04 (<manufacturer>), datasheet rev <rev>, fitted <YYYY-MM-DD>
 * Archetype: archetype-logic74hc.md. Fit run: <run-id>
 * Node order per gate: X<ref> a y vcc gnd OC_74HC04_GATE

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""OpenCircuit bulk part feeder command line interface."""
+"""scheMAGIC Part Feeder command line interface."""
 
 from __future__ import annotations
 
@@ -24,7 +24,7 @@ DEFAULT_LIBRARY = REPO_ROOT / "packages" / "model-library" / "models"
 
 
 def parser() -> argparse.ArgumentParser:
-    command = argparse.ArgumentParser(prog="feeder", description="Feed local catalog facts and datasheets to the OpenCircuit model factory")
+    command = argparse.ArgumentParser(prog="feeder", description="Feed local catalog facts and datasheets to the scheMAGIC Model Factory")
     command.add_argument("--data-dir", type=Path, default=DEFAULT_DATA, help="gitignored local data directory")
     subcommands = command.add_subparsers(dest="command", required=True)
 

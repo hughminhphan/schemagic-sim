@@ -61,10 +61,21 @@ describe("parseBinaryRawfile", () => {
     expect([...new Float64Array(parsed.buffers[1]!)]).toEqual([1, 2, 3]);
   });
 
-  it("rejects truncated and over-limit fixtures before allocation", () => {
+  it("rejects truncated, trailing, and over-limit fixtures before allocation", () => {
     const bytes = new Uint8Array(readFileSync(fixturePath));
     expect(() => parseBinaryRawfile(bytes.subarray(0, bytes.length - 8))).toThrow(/truncated/i);
+    const trailing = new Uint8Array(bytes.length + 1);
+    trailing.set(bytes);
+    expect(() => parseBinaryRawfile(trailing)).toThrow(/trailing data/i);
     expect(() => parseBinaryRawfile(bytes, { maxSamples: 5 })).toThrow(/sample limit/i);
+  });
+
+  it("does not consume binary sample bytes that happen to equal ASCII whitespace", () => {
+    const bytes = dcRawfile([[1, 2]]);
+    bytes[bytes.length - 16] = 0x20;
+    const parsed = parseBinaryRawfile(bytes);
+    expect(new Float64Array(parsed.buffers[0]!)[0]).toBeGreaterThan(1);
+    expect(new Float64Array(parsed.buffers[1]!)[0]).toBe(2);
   });
 
   it("parses a one-source DC sweep with an explicit sweep axis", () => {

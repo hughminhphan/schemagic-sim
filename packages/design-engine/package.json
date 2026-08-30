@@ -1,0 +1,32 @@
+{
+  "name": "@opencircuit/design-engine",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Deterministic application-neutral compiler for scheMAGIC Designer",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./v2-export-runtime": "./src/v2-export-runtime.ts",
+    "./v2-motor-runtime": "./src/v2-motor-runtime.ts",
+    "./v2-power-runtime": "./src/v2-power-runtime.ts",
+    "./v2-testing": "./src/v2-testing.ts",
+    "./v3-motor-runtime": "./src/v3-motor-runtime.ts",
+    "./v3-power-runtime": "./src/v3-power-runtime.ts"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@opencircuit/circuit-schema": "*",
+    "@opencircuit/design-library": "*",
+    "@opencircuit/design-recipes": "*",
+    "@opencircuit/design-schema": "*",
+    "@opencircuit/sourcing-schema": "*"
+  },
+  "devDependencies": {
+    "@types/node": "24.3.0",
+    "vitest": "3.2.7"
+  }
+}

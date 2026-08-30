@@ -1,0 +1,31 @@
+{
+  "name": "@opencircuit/design-library",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Neutral persisted engineering profiles for the scheMAGIC Component Library",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./bundled-reviewed-release": "./src/bundled-reviewed-release.ts",
+    "./fixtures": "./src/fixtures.ts",
+    "./power-reference-design-v1": "./src/power-reference-design-v1.ts",
+    "./v2-runtime": "./src/v2-runtime.ts"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "schema:generate": "vite-node scripts/generate-schemas.ts && vite-node scripts/generate-facts-v3-schemas.ts && vite-node scripts/generate-facts-v32-schemas.ts && vite-node scripts/generate-facts-v33-schemas.ts && vite-node scripts/generate-facts-v34-schemas.ts",
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "validate": "npm run build && vite-node validate-library.mjs"
+  },
+  "dependencies": {
+    "@opencircuit/design-schema": "*",
+    "@opencircuit/sourcing-schema": "*"
+  },
+  "devDependencies": {
+    "@types/node": "24.3.0",
+    "ajv": "8.20.0",
+    "ajv-formats": "3.0.1",
+    "vitest": "3.2.7"
+  }
+}

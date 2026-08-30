@@ -1017,7 +1017,7 @@ function syntaxCheckModel(packageDir) {
   const escaped = modelPath.replaceAll("\\", "/").replaceAll('"', '\\"');
   fs.writeFileSync(
     wrapperPath,
-    `OpenCircuit model syntax check\n.include "${escaped}"\nVsyntax syntax_node 0 0\nRsyntax syntax_node 0 1G\n.op\n.end\n`
+    `scheMAGIC model syntax check\n.include "${escaped}"\nVsyntax syntax_node 0 0\nRsyntax syntax_node 0 1G\n.op\n.end\n`
   );
   const ngspiceBin = process.env.NGSPICE_BIN
     ?? ["/opt/homebrew/bin/ngspice", "/usr/bin/ngspice", "/usr/local/bin/ngspice"].find(p => fs.existsSync(p))
@@ -1120,7 +1120,12 @@ export function validatePackage(packageDir, options = {}) {
   if (fs.existsSync(path.join(absoluteDir, "model.cir"))) {
     const text = fs.readFileSync(path.join(absoluteDir, "model.cir"), "utf8");
     const lowerText = text.toLowerCase();
-    for (const phrase of ["opencircuit model factory", "original work", "public factual specifications"]) {
+    const hasSchemagicFactory = /^\s*\*\s*schemagic model factory(?:\s|$)/mi.test(text);
+    const hasLegacyFactory = /^\s*\*\s*opencircuit model factory(?:\s|$)/mi.test(text);
+    if (Number(hasSchemagicFactory) + Number(hasLegacyFactory) !== 1) {
+      errors.push("model.cir header must contain exactly one recognized factory provenance line: scheMAGIC Model Factory or legacy OpenCircuit Model Factory");
+    }
+    for (const phrase of ["original work", "public factual specifications"]) {
       if (!lowerText.includes(phrase)) errors.push(`model.cir header is missing required phrase: ${phrase}`);
     }
     const syntaxError = syntaxCheckModel(absoluteDir);

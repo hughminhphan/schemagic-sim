@@ -1,0 +1,45 @@
+{
+  "format": "schemagic-designer-runtime-contract",
+  "schemaVersion": 1,
+  "version": "2026-08-26.3",
+  "scope": "local_headless_chromium_production_build",
+  "workloads": [
+    {
+      "application": "motor.brushed-dc",
+      "presetId": "motor.integrated-12v",
+      "completionPoint": "exact_result_and_decoded_structural_svg_preview_and_customization_target_discovery_settled"
+    },
+    {
+      "application": "power.buck",
+      "presetId": "power.integrated-12v-low-current",
+      "completionPoint": "exact_ineligible_observation_and_decoded_structural_svg_preview_and_customization_target_discovery_settled"
+    }
+  ],
+  "iterationsPerApplication": 3,
+  "runner": {
+    "browser": "chromium",
+    "headless": true,
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "cachePolicy": "browser_default",
+    "serviceWorkerPolicy": "production_default"
+  },
+  "budgets": {
+    "routeInteractiveUs": 3000000,
+    "generationAndPreviewP95Us": 5000000,
+    "maximumJsHeapBytes": 134217728,
+    "retainedJsHeapGrowthBytes": 33554432,
+    "longTasksPerApplication": 25
+  },
+  "boundaries": {
+    "environment": "Results are bound to the local headless Chromium version and host recorded by the test runner; they are not deterministic across machines.",
+    "deployment": "This contract does not measure a deployed origin, CDN, response headers, cache persistence, or end-user network conditions.",
+    "memory": "Chromium JSHeapUsedSize after an explicit DevTools garbage collection is a bounded regression signal, not whole-process or device memory proof. generationAndPreviewUs measures click-to-declared-completion timing; both workloads complete only after an exact retained observation, decoded structural SVG preview, and primary-part customization target discovery have settled with aria-busy=false. Motor completion requires the settled enabled selector to contain two options; Power completion requires the settled disabled selector to contain one placeholder option and display its zero-compatible/no-alternate state.",
+    "providers": "Commercial sourcing providers remain disabled and are not contacted.",
+    "simulation": "No simulation is executed and no selected-part simulation-fidelity claim is made.",
+    "attestation": "none"
+  },
+  "contentHash": "sha256:0b9602bf26211a38e301e830a95dc9e7f7ee7e0c2778beb8c6e8834a8f257928"
+}

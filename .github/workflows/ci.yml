@@ -68,10 +68,16 @@ jobs:
           cache: npm
           cache-dependency-path: tools/native-ngspice-reference/package-lock.json
 
+      - name: Install locked workspace dependencies
+        shell: bash
+        run: npm ci
+
       - name: Install comparison harness dependencies
+        shell: bash
         run: npm ci --prefix tools/native-ngspice-reference
 
       - name: Install Ubuntu ngspice
+        shell: bash
         run: |
           sudo apt-get update
           sudo apt-get install -y ngspice
@@ -93,13 +99,52 @@ jobs:
       # ngspice 46 is the release reference. Ubuntu's apt repository may expose
       # another major version. A non-46 comparison still provides useful drift
       # information, but it must not replace the deterministic hard gates above.
-      - name: Run native and WASM comparison suite
+      - name: Run native and WASM comparison and behavioral application-golden suites
         id: comparison
+        shell: bash
         continue-on-error: ${{ steps.native-version.outputs.major != '46' }}
         working-directory: tools/native-ngspice-reference
         env:
           OPEN_CIRCUIT_NGSPICE_ENGINE_MODULE: ${{ github.workspace }}/tools/ngspice-wasm-build/dist-loader/index.mjs
-        run: node suite.mjs
+        run: node --test test/*.test.mjs && node suite.mjs && npm run test:application-golden
+
+      # Canonical parsing and the current-production identity assertion do
+      # not depend on which native ngspice package Ubuntu happens to provide.
+      - name: Validate selected-passive persisted artifact and current-production identity
+        id: selected-passive-detachment
+        if: always()
+        shell: bash
+        working-directory: tools/native-ngspice-reference
+        run: node --test test/selected-passive-execution-report.test.mjs && npm --prefix ../.. exec --workspace=@opencircuit/sim-engine -- vitest run test/selected-passive-application-golden.test.ts
+
+      # The numerical rerun still requires the exact native reference. It is a
+      # hard gate on ngspice 46 and informational on another Ubuntu major.
+      - name: Rerun selected-passive native and WASM artifact
+        id: selected-passive-rerun
+        if: always()
+        shell: bash
+        continue-on-error: ${{ steps.native-version.outputs.major != '46' }}
+        working-directory: tools/native-ngspice-reference
+        env:
+          OPEN_CIRCUIT_NGSPICE_ENGINE_MODULE: ${{ github.workspace }}/tools/ngspice-wasm-build/dist-loader/index.mjs
+        run: npm run test:selected-passive-application-golden
+
+      - name: Validate selected-semiconductor persisted artifact and production identity
+        id: selected-semiconductor-identity
+        if: always()
+        shell: bash
+        working-directory: tools/native-ngspice-reference
+        run: node --test test/selected-semiconductor-execution-report.test.mjs && npm --prefix ../.. exec --workspace=@opencircuit/sim-engine -- vitest run test/selected-semiconductor-application-golden.test.ts
+
+      - name: Rerun selected-semiconductor native and WASM artifact
+        id: selected-semiconductor-rerun
+        if: always()
+        shell: bash
+        continue-on-error: ${{ steps.native-version.outputs.major != '46' }}
+        working-directory: tools/native-ngspice-reference
+        env:
+          OPEN_CIRCUIT_NGSPICE_ENGINE_MODULE: ${{ github.workspace }}/tools/ngspice-wasm-build/dist-loader/index.mjs
+        run: npm run test:selected-semiconductor-application-golden
 
       - name: Record comparison authority
         if: always()
@@ -114,3 +159,55 @@ jobs:
             echo "The suite ran for drift visibility with soft-fail handling. Workspace tests, model validation, and the production build remain the hard gates." >> "$GITHUB_STEP_SUMMARY"
             echo "::notice::Native ngspice is not version 46; comparison results are informational."
           fi
+
+      # These identity and report-tamper checks do not execute ngspice. Keep
+      # them hard even when Ubuntu supplies a native major other than 46.
+      - name: Validate ideal reviewed-RDS(on) projection identity and persisted report
+        id: selected-semiconductor-rdson-projection-identity
+        if: always()
+        shell: bash
+        working-directory: tools/native-ngspice-reference
+        run: npm --prefix ../.. exec --workspace=@opencircuit/sim-engine -- vitest run test/selected-semiconductor-rdson-projection.test.ts && node --test test/selected-semiconductor-rdson-projection-report.test.mjs
+
+      # Only the fresh native/browser-WASM numerical rerun depends on the
+      # exact native reference major and may be informational off ngspice 46.
+      - name: Rerun ideal reviewed-RDS(on) projection
+        id: selected-semiconductor-rdson-projection
+        if: always()
+        shell: bash
+        continue-on-error: ${{ steps.native-version.outputs.major != '46' }}
+        working-directory: tools/native-ngspice-reference
+        env:
+          OPEN_CIRCUIT_NGSPICE_ENGINE_MODULE: ${{ github.workspace }}/tools/ngspice-wasm-build/dist-loader/index.mjs
+        run: npm --prefix ../.. run build --workspace=@opencircuit/sim-engine && node selected-semiconductor-rdson-projection.mjs --verify-persisted-report
+
+  designer-runtime-audit:
+    name: Designer Chromium runtime and retained heap
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Install pinned Chromium runtime
+        run: npx playwright install --with-deps chromium
+
+      - name: Run bounded Designer runtime audit
+        run: npm run audit:designer-runtime --workspace=@opencircuit/web
+
+      - name: Upload environment-bound runtime report and failure traces
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: designer-runtime-audit-${{ github.run_id }}-${{ github.run_attempt }}
+          path: apps/web/test-results/designer-runtime
+          if-no-files-found: error
+          retention-days: 30

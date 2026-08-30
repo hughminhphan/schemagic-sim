@@ -1,0 +1,1955 @@
+{
+  "format": "schemagic-design-profile",
+  "schemaVersion": "1.0.0",
+  "partClass": "power.integrated-synchronous-buck-regulator",
+  "part": {
+    "manufacturerId": "texas-instruments",
+    "manufacturerPartNumber": "TPS54302DDCR"
+  },
+  "factsSchemaVersion": "3.3.0",
+  "commonFacts": {
+    "packageName": {
+      "value": "SOT-23-THIN (DDC), 6-pin",
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-tps54302-datasheet",
+          "locator": "physical PDF page 25, Package Option Addendum: exact active-production TPS54302DDCR row uses SOT-23-THIN package code DDC with 6 pins; physical PDF page 29, DDC0006A package outline",
+          "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T02:16:17+10:00",
+          "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+          "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+          "revision": "SLVSDG6C, May 2016 – revised March 2026",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "The exact orderable TPS54302DDCR identity is bound to TI package code DDC, a 6-pin SOT-23-THIN package."
+    },
+    "boardArea": {
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "Facts schema 3.3.0 represents mounted board area only through facts.mountedGeometry."
+    },
+    "maximumHeight": {
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "Facts schema 3.3.0 represents mounted maximum height only through facts.mountedGeometry."
+    }
+  },
+  "facts": {
+    "converterTopology": {
+      "value": "synchronous_buck",
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-tps54302-datasheet",
+          "locator": "physical PDF pages 1 and 8, Description and section 6.1 Overview: TPS54302 is a synchronous step-down buck converter",
+          "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T02:16:17+10:00",
+          "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+          "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+          "revision": "SLVSDG6C, May 2016 – revised March 2026",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "The device is a synchronous step-down converter."
+    },
+    "powerStage": {
+      "value": "integrated_fet",
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-tps54302-datasheet",
+          "locator": "physical PDF pages 1 and 8, Description and section 6.1 Overview: two integrated switching N-channel FETs",
+          "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T02:16:17+10:00",
+          "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+          "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+          "revision": "SLVSDG6C, May 2016 – revised March 2026",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "Both switching power MOSFETs are integrated in the regulator."
+    },
+    "compensationArchitecture": {
+      "value": "internal",
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-tps54302-datasheet",
+          "locator": "physical PDF pages 1, 8, and 10, Features, section 6.1 Overview, and section 6.3.3 Error Amplifier: optimized internal compensation network",
+          "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T02:16:17+10:00",
+          "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+          "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+          "revision": "SLVSDG6C, May 2016 – revised March 2026",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "The compensation is internal. This label does not establish loop crossover, phase margin, transient response, or stability for a selected inductor and capacitor network."
+    },
+    "inputVoltageOperatingMinimum": {
+      "value": {
+        "value": 4.5,
+        "unit": "V",
+        "displayUnit": "4.5 V"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-tps54302-datasheet",
+          "locator": "physical PDF page 4, section 5.3 Recommended Operating Conditions: VIN input-voltage minimum 4.5 V",
+          "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T02:16:17+10:00",
+          "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+          "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+          "revision": "SLVSDG6C, May 2016 – revised March 2026",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "Lower bound of the recommended VIN operating range."
+    },
+    "inputVoltageOperatingMaximum": {
+      "value": {
+        "value": 28,
+        "unit": "V",
+        "displayUnit": "28 V"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-tps54302-datasheet",
+          "locator": "physical PDF page 4, section 5.3 Recommended Operating Conditions: VIN input-voltage maximum 28 V",
+          "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T02:16:17+10:00",
+          "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+          "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+          "revision": "SLVSDG6C, May 2016 – revised March 2026",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "Upper bound of the recommended VIN operating range."
+    },
+    "inputVoltageAbsoluteMaximum": {
+      "value": {
+        "value": 30,
+        "unit": "V",
+        "displayUnit": "30 V"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-tps54302-datasheet",
+          "locator": "physical PDF page 4, section 5.1 Absolute Maximum Ratings: VIN maximum 30 V; note states absolute ratings do not imply functional operation",
+          "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T02:16:17+10:00",
+          "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+          "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+          "revision": "SLVSDG6C, May 2016 – revised March 2026",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "Absolute VIN damage boundary only; it is not an operating recommendation."
+    },
+    "outputVoltageOperatingMinimum": {
+      "value": {
+        "value": 0.6,
+        "unit": "V",
+        "displayUnit": "0.6 V"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-tps54302-product",
+          "locator": "captured TI TPS54302 product-page parametric table: Vout (min) = 0.6 V",
+          "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+          "kind": "manufacturer_product_page",
+          "retrievedAt": "2026-08-24T11:13:12+10:00",
+          "contentHash": "sha256:ea48851586f05be8121ec68a1ad7f237f16ca3a230d9bec6d8290e02251838a0",
+          "url": "https://www.ti.com/product/TPS54302",
+          "revision": "retrieved product page, 2026-08-24",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "Published product-range lower endpoint. It does not prove regulation, stability, duty-cycle feasibility, or passive suitability for an arbitrary selected design."
+    },
+    "outputVoltageOperatingMaximum": {
+      "value": {
+        "value": 26,
+        "unit": "V",
+        "displayUnit": "26 V"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-tps54302-product",
+          "locator": "captured TI TPS54302 product-page parametric table: Vout (max) = 26 V",
+          "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+          "kind": "manufacturer_product_page",
+          "retrievedAt": "2026-08-24T11:13:12+10:00",
+          "contentHash": "sha256:ea48851586f05be8121ec68a1ad7f237f16ca3a230d9bec6d8290e02251838a0",
+          "url": "https://www.ti.com/product/TPS54302",
+          "revision": "retrieved product page, 2026-08-24",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "Published product-range upper endpoint. It does not prove regulation, stability, duty-cycle feasibility, or passive suitability for an arbitrary selected design."
+    },
+    "outputCurrent": {
+      "value": {
+        "value": 3,
+        "unit": "A",
+        "displayUnit": "3 A continuous output capability"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-tps54302-datasheet",
+          "locator": "physical PDF pages 1 and 8, sections 1 Features, 3 Description, and 6.1 Overview: integrated MOSFETs support continuous output currents up to 3 A",
+          "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T02:16:17+10:00",
+          "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+          "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+          "revision": "SLVSDG6C, May 2016 – revised March 2026",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "Manufacturer continuous-output capability statement. It does not prove that an arbitrary selected inductor, PCB, ambient, switching condition, capacitor network, or thermal solution can deliver 3 A."
+    },
+    "outputCurrentRole": {
+      "value": "continuous_capability_statement",
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-tps54302-datasheet",
+          "locator": "physical PDF pages 1 and 8, sections 1 Features, 3 Description, and 6.1 Overview: integrated MOSFETs support continuous output currents up to 3 A",
+          "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T02:16:17+10:00",
+          "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+          "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+          "revision": "SLVSDG6C, May 2016 – revised March 2026",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "The source presents 3 A as a device capability statement, not a condition-covering guaranteed operating limit for an arbitrary converter design."
+    },
+    "switchingFrequencyArchitecture": {
+      "value": "fixed_oscillator",
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-tps54302-datasheet",
+          "locator": "physical PDF pages 1, 8, and 9, Features, section 6.1 Overview, and section 6.3.1 Fixed-Frequency PWM Control: fixed 400 kHz center switching frequency",
+          "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T02:16:17+10:00",
+          "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+          "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+          "revision": "SLVSDG6C, May 2016 – revised March 2026",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "The regulator uses a fixed center-frequency oscillator; it is neither resistor-programmed nor externally synchronized."
+    },
+    "switchingFrequencyMinimum": {
+      "value": {
+        "value": 290000,
+        "unit": "Hz",
+        "displayUnit": "290 kHz minimum"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-tps54302-datasheet",
+          "locator": "physical PDF page 5, section 5.5 Oscillator: center switching-frequency minimum 290 kHz, typical 400 kHz, and maximum 510 kHz",
+          "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T02:16:17+10:00",
+          "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+          "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+          "revision": "SLVSDG6C, May 2016 – revised March 2026",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "junctionTemperature",
+          "minimum": {
+            "value": 233.15,
+            "unit": "K",
+            "displayUnit": "-40 deg C"
+          },
+          "maximum": {
+            "value": 398.15,
+            "unit": "K",
+            "displayUnit": "125 deg C"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-tps54302-datasheet",
+              "locator": "physical PDF page 5, section 5.5 Electrical Characteristics table-wide condition: TJ = -40 deg C to 125 deg C",
+              "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T02:16:17+10:00",
+              "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+              "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+              "revision": "SLVSDG6C, May 2016 – revised March 2026",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "supplyVoltage",
+          "minimum": {
+            "value": 4.5,
+            "unit": "V",
+            "displayUnit": "4.5 V"
+          },
+          "maximum": {
+            "value": 28,
+            "unit": "V",
+            "displayUnit": "28 V"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-tps54302-datasheet",
+              "locator": "physical PDF page 5, section 5.5 Electrical Characteristics table-wide condition: VIN = 4.5 V to 28 V",
+              "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T02:16:17+10:00",
+              "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+              "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+              "revision": "SLVSDG6C, May 2016 – revised March 2026",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "Minimum endpoint of the published fixed-oscillator center-frequency production spread."
+    },
+    "switchingFrequencyNominal": {
+      "value": {
+        "value": 400000,
+        "unit": "Hz",
+        "displayUnit": "400 kHz typical"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-tps54302-datasheet",
+          "locator": "physical PDF page 5, section 5.5 Oscillator: center switching-frequency minimum 290 kHz, typical 400 kHz, and maximum 510 kHz",
+          "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T02:16:17+10:00",
+          "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+          "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+          "revision": "SLVSDG6C, May 2016 – revised March 2026",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "junctionTemperature",
+          "minimum": {
+            "value": 233.15,
+            "unit": "K",
+            "displayUnit": "-40 deg C"
+          },
+          "maximum": {
+            "value": 398.15,
+            "unit": "K",
+            "displayUnit": "125 deg C"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-tps54302-datasheet",
+              "locator": "physical PDF page 5, section 5.5 Electrical Characteristics table-wide condition: TJ = -40 deg C to 125 deg C",
+              "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T02:16:17+10:00",
+              "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+              "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+              "revision": "SLVSDG6C, May 2016 – revised March 2026",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "supplyVoltage",
+          "minimum": {
+            "value": 4.5,
+            "unit": "V",
+            "displayUnit": "4.5 V"
+          },
+          "maximum": {
+            "value": 28,
+            "unit": "V",
+            "displayUnit": "28 V"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-tps54302-datasheet",
+              "locator": "physical PDF page 5, section 5.5 Electrical Characteristics table-wide condition: VIN = 4.5 V to 28 V",
+              "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T02:16:17+10:00",
+              "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+              "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+              "revision": "SLVSDG6C, May 2016 – revised March 2026",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "Typical center of the published fixed-oscillator frequency spread; it is not a configurable recommendation."
+    },
+    "switchingFrequencyMaximum": {
+      "value": {
+        "value": 510000,
+        "unit": "Hz",
+        "displayUnit": "510 kHz maximum"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-tps54302-datasheet",
+          "locator": "physical PDF page 5, section 5.5 Oscillator: center switching-frequency minimum 290 kHz, typical 400 kHz, and maximum 510 kHz",
+          "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T02:16:17+10:00",
+          "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+          "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+          "revision": "SLVSDG6C, May 2016 – revised March 2026",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "junctionTemperature",
+          "minimum": {
+            "value": 233.15,
+            "unit": "K",
+            "displayUnit": "-40 deg C"
+          },
+          "maximum": {
+            "value": 398.15,
+            "unit": "K",
+            "displayUnit": "125 deg C"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-tps54302-datasheet",
+              "locator": "physical PDF page 5, section 5.5 Electrical Characteristics table-wide condition: TJ = -40 deg C to 125 deg C",
+              "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T02:16:17+10:00",
+              "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+              "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+              "revision": "SLVSDG6C, May 2016 – revised March 2026",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "supplyVoltage",
+          "minimum": {
+            "value": 4.5,
+            "unit": "V",
+            "displayUnit": "4.5 V"
+          },
+          "maximum": {
+            "value": 28,
+            "unit": "V",
+            "displayUnit": "28 V"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-tps54302-datasheet",
+              "locator": "physical PDF page 5, section 5.5 Electrical Characteristics table-wide condition: VIN = 4.5 V to 28 V",
+              "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T02:16:17+10:00",
+              "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+              "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+              "revision": "SLVSDG6C, May 2016 – revised March 2026",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "Maximum endpoint of the published fixed-oscillator center-frequency production spread."
+    },
+    "switchingFrequencyRole": {
+      "value": "production_spread",
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-tps54302-datasheet",
+          "locator": "physical PDF page 5, section 5.5 Oscillator: center switching-frequency minimum 290 kHz, typical 400 kHz, and maximum 510 kHz",
+          "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T02:16:17+10:00",
+          "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+          "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+          "revision": "SLVSDG6C, May 2016 – revised March 2026",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "junctionTemperature",
+          "minimum": {
+            "value": 233.15,
+            "unit": "K",
+            "displayUnit": "-40 deg C"
+          },
+          "maximum": {
+            "value": 398.15,
+            "unit": "K",
+            "displayUnit": "125 deg C"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-tps54302-datasheet",
+              "locator": "physical PDF page 5, section 5.5 Electrical Characteristics table-wide condition: TJ = -40 deg C to 125 deg C",
+              "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T02:16:17+10:00",
+              "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+              "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+              "revision": "SLVSDG6C, May 2016 – revised March 2026",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "supplyVoltage",
+          "minimum": {
+            "value": 4.5,
+            "unit": "V",
+            "displayUnit": "4.5 V"
+          },
+          "maximum": {
+            "value": 28,
+            "unit": "V",
+            "displayUnit": "28 V"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-tps54302-datasheet",
+              "locator": "physical PDF page 5, section 5.5 Electrical Characteristics table-wide condition: VIN = 4.5 V to 28 V",
+              "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T02:16:17+10:00",
+              "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+              "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+              "revision": "SLVSDG6C, May 2016 – revised March 2026",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "The three values are one published production spread for the fixed center oscillator. Spread-spectrum modulation is not converted into an adjustable-frequency claim."
+    },
+    "feedbackReferenceMinimum": {
+      "value": {
+        "value": 0.581,
+        "unit": "V",
+        "displayUnit": "0.581 V minimum"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-tps54302-datasheet",
+          "locator": "physical PDF page 5, section 5.5 Feedback and Error Amplifier: VFB minimum 0.581 V, typical 0.596 V, and maximum 0.611 V at VIN = 12 V",
+          "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T02:16:17+10:00",
+          "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+          "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+          "revision": "SLVSDG6C, May 2016 – revised March 2026",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "junctionTemperature",
+          "minimum": {
+            "value": 233.15,
+            "unit": "K",
+            "displayUnit": "-40 deg C"
+          },
+          "maximum": {
+            "value": 398.15,
+            "unit": "K",
+            "displayUnit": "125 deg C"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-tps54302-datasheet",
+              "locator": "physical PDF page 5, section 5.5 Electrical Characteristics table-wide condition: TJ = -40 deg C to 125 deg C",
+              "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T02:16:17+10:00",
+              "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+              "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+              "revision": "SLVSDG6C, May 2016 – revised March 2026",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "supplyVoltage",
+          "minimum": {
+            "value": 12,
+            "unit": "V",
+            "displayUnit": "12 V"
+          },
+          "maximum": {
+            "value": 12,
+            "unit": "V",
+            "displayUnit": "12 V"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-tps54302-datasheet",
+              "locator": "physical PDF page 5, section 5.5 Feedback and Error Amplifier: VFB production spread is specified at VIN = 12 V",
+              "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T02:16:17+10:00",
+              "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+              "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+              "revision": "SLVSDG6C, May 2016 – revised March 2026",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "Minimum endpoint of the published feedback-reference production spread."
+    },
+    "feedbackReferenceTypical": {
+      "value": {
+        "value": 0.596,
+        "unit": "V",
+        "displayUnit": "0.596 V typical"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-tps54302-datasheet",
+          "locator": "physical PDF page 5, section 5.5 Feedback and Error Amplifier: VFB minimum 0.581 V, typical 0.596 V, and maximum 0.611 V at VIN = 12 V",
+          "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T02:16:17+10:00",
+          "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+          "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+          "revision": "SLVSDG6C, May 2016 – revised March 2026",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "junctionTemperature",
+          "minimum": {
+            "value": 233.15,
+            "unit": "K",
+            "displayUnit": "-40 deg C"
+          },
+          "maximum": {
+            "value": 398.15,
+            "unit": "K",
+            "displayUnit": "125 deg C"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-tps54302-datasheet",
+              "locator": "physical PDF page 5, section 5.5 Electrical Characteristics table-wide condition: TJ = -40 deg C to 125 deg C",
+              "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T02:16:17+10:00",
+              "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+              "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+              "revision": "SLVSDG6C, May 2016 – revised March 2026",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "supplyVoltage",
+          "minimum": {
+            "value": 12,
+            "unit": "V",
+            "displayUnit": "12 V"
+          },
+          "maximum": {
+            "value": 12,
+            "unit": "V",
+            "displayUnit": "12 V"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-tps54302-datasheet",
+              "locator": "physical PDF page 5, section 5.5 Feedback and Error Amplifier: VFB production spread is specified at VIN = 12 V",
+              "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T02:16:17+10:00",
+              "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+              "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+              "revision": "SLVSDG6C, May 2016 – revised March 2026",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "Typical feedback-reference value within the published production spread."
+    },
+    "feedbackReferenceMaximum": {
+      "value": {
+        "value": 0.611,
+        "unit": "V",
+        "displayUnit": "0.611 V maximum"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-tps54302-datasheet",
+          "locator": "physical PDF page 5, section 5.5 Feedback and Error Amplifier: VFB minimum 0.581 V, typical 0.596 V, and maximum 0.611 V at VIN = 12 V",
+          "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T02:16:17+10:00",
+          "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+          "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+          "revision": "SLVSDG6C, May 2016 – revised March 2026",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "junctionTemperature",
+          "minimum": {
+            "value": 233.15,
+            "unit": "K",
+            "displayUnit": "-40 deg C"
+          },
+          "maximum": {
+            "value": 398.15,
+            "unit": "K",
+            "displayUnit": "125 deg C"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-tps54302-datasheet",
+              "locator": "physical PDF page 5, section 5.5 Electrical Characteristics table-wide condition: TJ = -40 deg C to 125 deg C",
+              "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T02:16:17+10:00",
+              "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+              "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+              "revision": "SLVSDG6C, May 2016 – revised March 2026",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "supplyVoltage",
+          "minimum": {
+            "value": 12,
+            "unit": "V",
+            "displayUnit": "12 V"
+          },
+          "maximum": {
+            "value": 12,
+            "unit": "V",
+            "displayUnit": "12 V"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-tps54302-datasheet",
+              "locator": "physical PDF page 5, section 5.5 Feedback and Error Amplifier: VFB production spread is specified at VIN = 12 V",
+              "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T02:16:17+10:00",
+              "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+              "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+              "revision": "SLVSDG6C, May 2016 – revised March 2026",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "Maximum endpoint of the published feedback-reference production spread."
+    },
+    "feedbackReferenceRole": {
+      "value": "production_spread",
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-tps54302-datasheet",
+          "locator": "physical PDF page 5, section 5.5 Feedback and Error Amplifier: VFB minimum 0.581 V, typical 0.596 V, and maximum 0.611 V at VIN = 12 V",
+          "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T02:16:17+10:00",
+          "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+          "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+          "revision": "SLVSDG6C, May 2016 – revised March 2026",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "junctionTemperature",
+          "minimum": {
+            "value": 233.15,
+            "unit": "K",
+            "displayUnit": "-40 deg C"
+          },
+          "maximum": {
+            "value": 398.15,
+            "unit": "K",
+            "displayUnit": "125 deg C"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-tps54302-datasheet",
+              "locator": "physical PDF page 5, section 5.5 Electrical Characteristics table-wide condition: TJ = -40 deg C to 125 deg C",
+              "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T02:16:17+10:00",
+              "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+              "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+              "revision": "SLVSDG6C, May 2016 – revised March 2026",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "supplyVoltage",
+          "minimum": {
+            "value": 12,
+            "unit": "V",
+            "displayUnit": "12 V"
+          },
+          "maximum": {
+            "value": 12,
+            "unit": "V",
+            "displayUnit": "12 V"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-tps54302-datasheet",
+              "locator": "physical PDF page 5, section 5.5 Feedback and Error Amplifier: VFB production spread is specified at VIN = 12 V",
+              "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T02:16:17+10:00",
+              "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+              "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+              "revision": "SLVSDG6C, May 2016 – revised March 2026",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "All three endpoints are retained as a production spread at the exact stated conditions; this alone does not certify output accuracy for a selected divider or layout."
+    },
+    "currentLimitMinimum": {
+      "value": {
+        "value": 4,
+        "unit": "A",
+        "displayUnit": "4 A minimum threshold"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-tps54302-datasheet",
+          "locator": "physical PDF page 5, section 5.5 Current Limit: high-side maximum-inductor-peak-current limit I(LIM_HS) minimum 4 A, typical 5 A, and maximum 6 A",
+          "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T02:16:17+10:00",
+          "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+          "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+          "revision": "SLVSDG6C, May 2016 – revised March 2026",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "junctionTemperature",
+          "minimum": {
+            "value": 233.15,
+            "unit": "K",
+            "displayUnit": "-40 deg C"
+          },
+          "maximum": {
+            "value": 398.15,
+            "unit": "K",
+            "displayUnit": "125 deg C"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-tps54302-datasheet",
+              "locator": "physical PDF page 5, section 5.5 Electrical Characteristics table-wide condition: TJ = -40 deg C to 125 deg C",
+              "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T02:16:17+10:00",
+              "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+              "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+              "revision": "SLVSDG6C, May 2016 – revised March 2026",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "supplyVoltage",
+          "minimum": {
+            "value": 4.5,
+            "unit": "V",
+            "displayUnit": "4.5 V"
+          },
+          "maximum": {
+            "value": 28,
+            "unit": "V",
+            "displayUnit": "28 V"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-tps54302-datasheet",
+              "locator": "physical PDF page 5, section 5.5 Electrical Characteristics table-wide condition: VIN = 4.5 V to 28 V",
+              "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T02:16:17+10:00",
+              "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+              "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+              "revision": "SLVSDG6C, May 2016 – revised March 2026",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "Minimum endpoint of the high-side cycle-by-cycle protection threshold."
+    },
+    "currentLimitTypical": {
+      "value": {
+        "value": 5,
+        "unit": "A",
+        "displayUnit": "5 A typical threshold"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-tps54302-datasheet",
+          "locator": "physical PDF page 5, section 5.5 Current Limit: high-side maximum-inductor-peak-current limit I(LIM_HS) minimum 4 A, typical 5 A, and maximum 6 A",
+          "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T02:16:17+10:00",
+          "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+          "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+          "revision": "SLVSDG6C, May 2016 – revised March 2026",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "junctionTemperature",
+          "minimum": {
+            "value": 233.15,
+            "unit": "K",
+            "displayUnit": "-40 deg C"
+          },
+          "maximum": {
+            "value": 398.15,
+            "unit": "K",
+            "displayUnit": "125 deg C"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-tps54302-datasheet",
+              "locator": "physical PDF page 5, section 5.5 Electrical Characteristics table-wide condition: TJ = -40 deg C to 125 deg C",
+              "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T02:16:17+10:00",
+              "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+              "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+              "revision": "SLVSDG6C, May 2016 – revised March 2026",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "supplyVoltage",
+          "minimum": {
+            "value": 4.5,
+            "unit": "V",
+            "displayUnit": "4.5 V"
+          },
+          "maximum": {
+            "value": 28,
+            "unit": "V",
+            "displayUnit": "28 V"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-tps54302-datasheet",
+              "locator": "physical PDF page 5, section 5.5 Electrical Characteristics table-wide condition: VIN = 4.5 V to 28 V",
+              "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T02:16:17+10:00",
+              "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+              "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+              "revision": "SLVSDG6C, May 2016 – revised March 2026",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "Typical high-side cycle-by-cycle protection threshold."
+    },
+    "currentLimitMaximum": {
+      "value": {
+        "value": 6,
+        "unit": "A",
+        "displayUnit": "6 A maximum threshold"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-tps54302-datasheet",
+          "locator": "physical PDF page 5, section 5.5 Current Limit: high-side maximum-inductor-peak-current limit I(LIM_HS) minimum 4 A, typical 5 A, and maximum 6 A",
+          "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T02:16:17+10:00",
+          "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+          "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+          "revision": "SLVSDG6C, May 2016 – revised March 2026",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "junctionTemperature",
+          "minimum": {
+            "value": 233.15,
+            "unit": "K",
+            "displayUnit": "-40 deg C"
+          },
+          "maximum": {
+            "value": 398.15,
+            "unit": "K",
+            "displayUnit": "125 deg C"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-tps54302-datasheet",
+              "locator": "physical PDF page 5, section 5.5 Electrical Characteristics table-wide condition: TJ = -40 deg C to 125 deg C",
+              "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T02:16:17+10:00",
+              "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+              "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+              "revision": "SLVSDG6C, May 2016 – revised March 2026",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "supplyVoltage",
+          "minimum": {
+            "value": 4.5,
+            "unit": "V",
+            "displayUnit": "4.5 V"
+          },
+          "maximum": {
+            "value": 28,
+            "unit": "V",
+            "displayUnit": "28 V"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-tps54302-datasheet",
+              "locator": "physical PDF page 5, section 5.5 Electrical Characteristics table-wide condition: VIN = 4.5 V to 28 V",
+              "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T02:16:17+10:00",
+              "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+              "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+              "revision": "SLVSDG6C, May 2016 – revised March 2026",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "Maximum endpoint of the high-side cycle-by-cycle protection threshold."
+    },
+    "currentLimitRole": {
+      "value": "protection_threshold",
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-tps54302-datasheet",
+          "locator": "physical PDF page 5, section 5.5 Current Limit: high-side maximum-inductor-peak-current limit I(LIM_HS) minimum 4 A, typical 5 A, and maximum 6 A",
+          "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T02:16:17+10:00",
+          "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+          "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+          "revision": "SLVSDG6C, May 2016 – revised March 2026",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "junctionTemperature",
+          "minimum": {
+            "value": 233.15,
+            "unit": "K",
+            "displayUnit": "-40 deg C"
+          },
+          "maximum": {
+            "value": 398.15,
+            "unit": "K",
+            "displayUnit": "125 deg C"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-tps54302-datasheet",
+              "locator": "physical PDF page 5, section 5.5 Electrical Characteristics table-wide condition: TJ = -40 deg C to 125 deg C",
+              "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T02:16:17+10:00",
+              "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+              "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+              "revision": "SLVSDG6C, May 2016 – revised March 2026",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "supplyVoltage",
+          "minimum": {
+            "value": 4.5,
+            "unit": "V",
+            "displayUnit": "4.5 V"
+          },
+          "maximum": {
+            "value": 28,
+            "unit": "V",
+            "displayUnit": "28 V"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-tps54302-datasheet",
+              "locator": "physical PDF page 5, section 5.5 Electrical Characteristics table-wide condition: VIN = 4.5 V to 28 V",
+              "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T02:16:17+10:00",
+              "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+              "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+              "revision": "SLVSDG6C, May 2016 – revised March 2026",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "I(LIM_HS) is an overcurrent-protection threshold for maximum inductor peak current, not normal output-current capability or a standalone inductor-sizing pass."
+    },
+    "minimumOnTime": {
+      "value": {
+        "value": 1.1e-7,
+        "unit": "s",
+        "displayUnit": "110 ns nominal"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-tps54302-datasheet",
+          "locator": "physical PDF page 5, section 5.6 Timing Requirements: tMIN_ON nominal 110 ns, measured at 90%-to-90% with 1 A loading; footnote states not production tested",
+          "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T02:16:17+10:00",
+          "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+          "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+          "revision": "SLVSDG6C, May 2016 – revised March 2026",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "testCurrent",
+          "minimum": {
+            "value": 1,
+            "unit": "A",
+            "displayUnit": "1 A"
+          },
+          "maximum": {
+            "value": 1,
+            "unit": "A",
+            "displayUnit": "1 A"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-tps54302-datasheet",
+              "locator": "physical PDF page 5, section 5.6 Timing Requirements: tMIN_ON is measured at 90%-to-90% with 1 A loading",
+              "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T02:16:17+10:00",
+              "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+              "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+              "revision": "SLVSDG6C, May 2016 – revised March 2026",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "Nominal minimum-on-time observation at 1 A. The source explicitly marks it not production tested, so it is not a guaranteed duty-cycle bound."
+    },
+    "minimumOnTimeRole": {
+      "value": "typical_observation",
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-tps54302-datasheet",
+          "locator": "physical PDF page 5, section 5.6 Timing Requirements: tMIN_ON nominal 110 ns, measured at 90%-to-90% with 1 A loading; footnote states not production tested",
+          "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T02:16:17+10:00",
+          "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+          "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+          "revision": "SLVSDG6C, May 2016 – revised March 2026",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "testCurrent",
+          "minimum": {
+            "value": 1,
+            "unit": "A",
+            "displayUnit": "1 A"
+          },
+          "maximum": {
+            "value": 1,
+            "unit": "A",
+            "displayUnit": "1 A"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-tps54302-datasheet",
+              "locator": "physical PDF page 5, section 5.6 Timing Requirements: tMIN_ON is measured at 90%-to-90% with 1 A loading",
+              "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T02:16:17+10:00",
+              "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+              "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+              "revision": "SLVSDG6C, May 2016 – revised March 2026",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "A nominal, not-production-tested timing observation is retained only as typical_observation."
+    },
+    "minimumOffTime": {
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "No minimum controllable off-time specification was located in the exact reviewed TI artifacts."
+    },
+    "minimumOffTimeRole": {
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "No reviewed minimum-off-time quantity is available, so its evidence role is exact unknown."
+    },
+    "highSideOnResistance": {
+      "value": {
+        "value": 0.085,
+        "unit": "ohm",
+        "displayUnit": "85 milliohm typical"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-tps54302-datasheet",
+          "locator": "physical PDF page 5, section 5.5 Power Stage: R(HSD) typical 85 milliohm at TA = 25 deg C and VBST - VSW = 5 V",
+          "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T02:16:17+10:00",
+          "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+          "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+          "revision": "SLVSDG6C, May 2016 – revised March 2026",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "ambientTemperature",
+          "minimum": {
+            "value": 298.15,
+            "unit": "K",
+            "displayUnit": "25 deg C"
+          },
+          "maximum": {
+            "value": 298.15,
+            "unit": "K",
+            "displayUnit": "25 deg C"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-tps54302-datasheet",
+              "locator": "physical PDF page 5, section 5.5 Power Stage: R(HSD) test condition TA = 25 deg C",
+              "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T02:16:17+10:00",
+              "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+              "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+              "revision": "SLVSDG6C, May 2016 – revised March 2026",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "testVoltage",
+          "minimum": {
+            "value": 5,
+            "unit": "V",
+            "displayUnit": "VBST - VSW = 5 V"
+          },
+          "maximum": {
+            "value": 5,
+            "unit": "V",
+            "displayUnit": "VBST - VSW = 5 V"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-tps54302-datasheet",
+              "locator": "physical PDF page 5, section 5.5 Power Stage: R(HSD) test condition VBST - VSW = 5 V",
+              "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T02:16:17+10:00",
+              "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+              "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+              "revision": "SLVSDG6C, May 2016 – revised March 2026",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "Typical high-side FET on-resistance at the exact stated test point. It is not a guaranteed maximum or a complete switching-loss model."
+    },
+    "highSideOnResistanceRole": {
+      "value": "typical_observation",
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-tps54302-datasheet",
+          "locator": "physical PDF page 5, section 5.5 Power Stage: R(HSD) typical 85 milliohm at TA = 25 deg C and VBST - VSW = 5 V",
+          "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T02:16:17+10:00",
+          "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+          "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+          "revision": "SLVSDG6C, May 2016 – revised March 2026",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "ambientTemperature",
+          "minimum": {
+            "value": 298.15,
+            "unit": "K",
+            "displayUnit": "25 deg C"
+          },
+          "maximum": {
+            "value": 298.15,
+            "unit": "K",
+            "displayUnit": "25 deg C"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-tps54302-datasheet",
+              "locator": "physical PDF page 5, section 5.5 Power Stage: R(HSD) test condition TA = 25 deg C",
+              "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T02:16:17+10:00",
+              "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+              "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+              "revision": "SLVSDG6C, May 2016 – revised March 2026",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "testVoltage",
+          "minimum": {
+            "value": 5,
+            "unit": "V",
+            "displayUnit": "VBST - VSW = 5 V"
+          },
+          "maximum": {
+            "value": 5,
+            "unit": "V",
+            "displayUnit": "VBST - VSW = 5 V"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-tps54302-datasheet",
+              "locator": "physical PDF page 5, section 5.5 Power Stage: R(HSD) test condition VBST - VSW = 5 V",
+              "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T02:16:17+10:00",
+              "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+              "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+              "revision": "SLVSDG6C, May 2016 – revised March 2026",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "The value appears only in the TYP column, so it is a typical observation rather than a hard resistance bound."
+    },
+    "lowSideOnResistance": {
+      "value": {
+        "value": 0.04,
+        "unit": "ohm",
+        "displayUnit": "40 milliohm typical"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-tps54302-datasheet",
+          "locator": "physical PDF page 5, section 5.5 Power Stage: R(LSD) typical 40 milliohm at TA = 25 deg C and VIN = 12 V",
+          "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T02:16:17+10:00",
+          "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+          "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+          "revision": "SLVSDG6C, May 2016 – revised March 2026",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "ambientTemperature",
+          "minimum": {
+            "value": 298.15,
+            "unit": "K",
+            "displayUnit": "25 deg C"
+          },
+          "maximum": {
+            "value": 298.15,
+            "unit": "K",
+            "displayUnit": "25 deg C"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-tps54302-datasheet",
+              "locator": "physical PDF page 5, section 5.5 Power Stage: R(LSD) test condition TA = 25 deg C",
+              "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T02:16:17+10:00",
+              "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+              "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+              "revision": "SLVSDG6C, May 2016 – revised March 2026",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "supplyVoltage",
+          "minimum": {
+            "value": 12,
+            "unit": "V",
+            "displayUnit": "12 V"
+          },
+          "maximum": {
+            "value": 12,
+            "unit": "V",
+            "displayUnit": "12 V"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-tps54302-datasheet",
+              "locator": "physical PDF page 5, section 5.5 Power Stage: R(LSD) test condition VIN = 12 V",
+              "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T02:16:17+10:00",
+              "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+              "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+              "revision": "SLVSDG6C, May 2016 – revised March 2026",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "Typical low-side FET on-resistance at the exact stated test point. It is not a guaranteed maximum or a complete conduction-loss model."
+    },
+    "lowSideOnResistanceRole": {
+      "value": "typical_observation",
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-tps54302-datasheet",
+          "locator": "physical PDF page 5, section 5.5 Power Stage: R(LSD) typical 40 milliohm at TA = 25 deg C and VIN = 12 V",
+          "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T02:16:17+10:00",
+          "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+          "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+          "revision": "SLVSDG6C, May 2016 – revised March 2026",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "ambientTemperature",
+          "minimum": {
+            "value": 298.15,
+            "unit": "K",
+            "displayUnit": "25 deg C"
+          },
+          "maximum": {
+            "value": 298.15,
+            "unit": "K",
+            "displayUnit": "25 deg C"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-tps54302-datasheet",
+              "locator": "physical PDF page 5, section 5.5 Power Stage: R(LSD) test condition TA = 25 deg C",
+              "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T02:16:17+10:00",
+              "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+              "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+              "revision": "SLVSDG6C, May 2016 – revised March 2026",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "supplyVoltage",
+          "minimum": {
+            "value": 12,
+            "unit": "V",
+            "displayUnit": "12 V"
+          },
+          "maximum": {
+            "value": 12,
+            "unit": "V",
+            "displayUnit": "12 V"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-tps54302-datasheet",
+              "locator": "physical PDF page 5, section 5.5 Power Stage: R(LSD) test condition VIN = 12 V",
+              "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T02:16:17+10:00",
+              "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+              "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+              "revision": "SLVSDG6C, May 2016 – revised March 2026",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "The value appears only in the TYP column, so it is a typical observation rather than a hard resistance bound."
+    },
+    "nonSwitchingSupplyCurrent": {
+      "value": {
+        "value": 0.000045,
+        "unit": "A",
+        "displayUnit": "45 uA typical"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-tps54302-datasheet",
+          "locator": "physical PDF page 5, section 5.5 Input Supply: IQ non-switching quiescent current typical 45 uA with EN = 5 V and VFB = 1 V",
+          "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T02:16:17+10:00",
+          "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+          "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+          "revision": "SLVSDG6C, May 2016 – revised March 2026",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "junctionTemperature",
+          "minimum": {
+            "value": 233.15,
+            "unit": "K",
+            "displayUnit": "-40 deg C"
+          },
+          "maximum": {
+            "value": 398.15,
+            "unit": "K",
+            "displayUnit": "125 deg C"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-tps54302-datasheet",
+              "locator": "physical PDF page 5, section 5.5 Electrical Characteristics table-wide condition: TJ = -40 deg C to 125 deg C",
+              "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T02:16:17+10:00",
+              "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+              "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+              "revision": "SLVSDG6C, May 2016 – revised March 2026",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "supplyVoltage",
+          "minimum": {
+            "value": 4.5,
+            "unit": "V",
+            "displayUnit": "4.5 V"
+          },
+          "maximum": {
+            "value": 28,
+            "unit": "V",
+            "displayUnit": "28 V"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-tps54302-datasheet",
+              "locator": "physical PDF page 5, section 5.5 Electrical Characteristics table-wide condition: VIN = 4.5 V to 28 V",
+              "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T02:16:17+10:00",
+              "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+              "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+              "revision": "SLVSDG6C, May 2016 – revised March 2026",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "Typical non-switching supply current. EN = 5 V and VFB = 1 V are retained here because the numeric range vocabulary cannot identify those pins; this is not a switching or full-load loss model."
+    },
+    "nonSwitchingSupplyCurrentRole": {
+      "value": "typical_observation",
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-tps54302-datasheet",
+          "locator": "physical PDF page 5, section 5.5 Input Supply: IQ non-switching quiescent current typical 45 uA with EN = 5 V and VFB = 1 V",
+          "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T02:16:17+10:00",
+          "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+          "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+          "revision": "SLVSDG6C, May 2016 – revised March 2026",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "junctionTemperature",
+          "minimum": {
+            "value": 233.15,
+            "unit": "K",
+            "displayUnit": "-40 deg C"
+          },
+          "maximum": {
+            "value": 398.15,
+            "unit": "K",
+            "displayUnit": "125 deg C"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-tps54302-datasheet",
+              "locator": "physical PDF page 5, section 5.5 Electrical Characteristics table-wide condition: TJ = -40 deg C to 125 deg C",
+              "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T02:16:17+10:00",
+              "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+              "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+              "revision": "SLVSDG6C, May 2016 – revised March 2026",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "supplyVoltage",
+          "minimum": {
+            "value": 4.5,
+            "unit": "V",
+            "displayUnit": "4.5 V"
+          },
+          "maximum": {
+            "value": 28,
+            "unit": "V",
+            "displayUnit": "28 V"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-tps54302-datasheet",
+              "locator": "physical PDF page 5, section 5.5 Electrical Characteristics table-wide condition: VIN = 4.5 V to 28 V",
+              "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T02:16:17+10:00",
+              "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+              "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+              "revision": "SLVSDG6C, May 2016 – revised March 2026",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "The source publishes only a typical IQ value at the stated non-switching conditions."
+    },
+    "junctionToAmbientThermalResistance": {
+      "value": {
+        "value": 118.9,
+        "unit": "K/W",
+        "displayUnit": "118.9 deg C/W"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-tps54302-datasheet",
+          "locator": "physical PDF page 4, section 5.4 Thermal Information: DDC 6-pin RthetaJA junction-to-ambient thermal resistance 118.9 deg C/W",
+          "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T02:16:17+10:00",
+          "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+          "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+          "revision": "SLVSDG6C, May 2016 – revised March 2026",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "Package thermal-characterization metric. It is board and layout dependent, is not a guaranteed application thermal resistance, and does not predict junction temperature for a selected converter."
+    },
+    "junctionToAmbientThermalResistanceRole": {
+      "value": "test_characteristic",
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-tps54302-datasheet",
+          "locator": "physical PDF page 4, section 5.4 Thermal Information: DDC 6-pin RthetaJA junction-to-ambient thermal resistance 118.9 deg C/W",
+          "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T02:16:17+10:00",
+          "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+          "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+          "revision": "SLVSDG6C, May 2016 – revised March 2026",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "The thermal-information table reports a standardized package characteristic, not a guaranteed maximum for an arbitrary PCB."
+    },
+    "maximumJunctionTemperature": {
+      "value": {
+        "value": 423.15,
+        "unit": "K",
+        "displayUnit": "150 deg C"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-tps54302-datasheet",
+          "locator": "physical PDF page 4, section 5.1 Absolute Maximum Ratings: operating-junction-temperature maximum 150 deg C",
+          "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T02:16:17+10:00",
+          "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+          "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+          "revision": "SLVSDG6C, May 2016 – revised March 2026",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "Absolute maximum junction-temperature ceiling converted from 150 deg C to 423.15 K. It does not prove actual junction temperature or thermal feasibility."
+    },
+    "bootstrapCapacitance": {
+      "value": {
+        "value": 1e-7,
+        "unit": "F",
+        "displayUnit": "0.1 uF nominal"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-tps54302-datasheet",
+          "locator": "physical PDF page 12, section 6.3.10 Bootstrap Voltage, and physical PDF page 15, section 7.2.3.2 Bootstrap Capacitor Selection: a 0.1 uF ceramic capacitor must be connected between BOOT and SW",
+          "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T02:16:17+10:00",
+          "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+          "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+          "revision": "SLVSDG6C, May 2016 – revised March 2026",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "Manufacturer-directed nominal bootstrap value. It is not a minimum effective-capacitance guarantee; tolerance, voltage rating, DC bias, dielectric, and operating applicability remain separate checks."
+    },
+    "bootstrapCapacitanceRequirement": {
+      "value": "required_nominal_value",
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-tps54302-datasheet",
+          "locator": "physical PDF page 12, section 6.3.10 Bootstrap Voltage, and physical PDF page 15, section 7.2.3.2 Bootstrap Capacitor Selection: a 0.1 uF ceramic capacitor must be connected between BOOT and SW",
+          "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T02:16:17+10:00",
+          "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+          "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+          "revision": "SLVSDG6C, May 2016 – revised March 2026",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "The source directs the application to connect a nominal 0.1 uF ceramic capacitor, so this is required_nominal_value rather than a minimum-capacitance claim."
+    },
+    "mountedGeometry": {
+      "boardArea": {
+        "value": {
+          "area": {
+            "value": 0.000010582498183,
+            "unit": "m2",
+            "displayUnit": "10.582498183 mm2"
+          },
+          "basis": "manufacturer_recommended_land_pattern_bounding_box",
+          "calculation": "maximum_x_span_times_maximum_y_span",
+          "sourceDimensions": [
+            {
+              "axis": "x",
+              "dimensionId": "ddc0006a-m-top-copper-x-span",
+              "multiplier": 1,
+              "maximum": {
+                "value": 0.00414999932,
+                "unit": "m",
+                "displayUnit": "4.149999320 mm source-resolution span"
+              },
+              "evidence": [
+                {
+                  "sourceId": "ti-tps54302-webench-bxl",
+                  "locator": "decoded exact-part Component TPS54302DDCR, Most Pattern DDC0006A_M, TOP-copper x envelope: extreme R10260470000200A pad centers -58.0709 mil and +58.0708 mil plus rotated x half-extent 23.62205 mil give bounds -81.69295 mil to +81.69285 mil and span 163.38580 mil = 4.149999320 mm",
+                  "licenseNote": "Manufacturer-hosted public factual CAD data referenced by URL; only derived scalar facts, the URL, hash, and locators are retained. The BXL source is not redistributed.",
+                  "kind": "manufacturer_product_page",
+                  "retrievedAt": "2026-08-26T08:17:22+10:00",
+                  "contentHash": "sha256:d877128565f6d15699b3079795906ec814f5722ccc3a9a5515bd5ee2919d8f1c",
+                  "url": "https://webench.ti.com/cad/TI_BXL/TPS54302_DDC_6.bxl",
+                  "revision": "TI WEBENCH exact-part BXL, 48946 bytes; decoded footprint DDC0006A_M (Most)",
+                  "publicationBasis": "public_facts"
+                }
+              ]
+            },
+            {
+              "axis": "y",
+              "dimensionId": "ddc0006a-m-top-copper-y-span",
+              "multiplier": 1,
+              "maximum": {
+                "value": 0.00254999998,
+                "unit": "m",
+                "displayUnit": "2.549999980 mm source-resolution span"
+              },
+              "evidence": [
+                {
+                  "sourceId": "ti-tps54302-webench-bxl",
+                  "locator": "decoded exact-part Component TPS54302DDCR, Most Pattern DDC0006A_M, TOP-copper y envelope: extreme R10260470000200A pad centers -37.4015 mil and +37.4016 mil plus y half-extent 12.7953 mil give bounds -50.1968 mil to +50.1969 mil and span 100.3937 mil = 2.549999980 mm",
+                  "licenseNote": "Manufacturer-hosted public factual CAD data referenced by URL; only derived scalar facts, the URL, hash, and locators are retained. The BXL source is not redistributed.",
+                  "kind": "manufacturer_product_page",
+                  "retrievedAt": "2026-08-26T08:17:22+10:00",
+                  "contentHash": "sha256:d877128565f6d15699b3079795906ec814f5722ccc3a9a5515bd5ee2919d8f1c",
+                  "url": "https://webench.ti.com/cad/TI_BXL/TPS54302_DDC_6.bxl",
+                  "revision": "TI WEBENCH exact-part BXL, 48946 bytes; decoded footprint DDC0006A_M (Most)",
+                  "publicationBasis": "public_facts"
+                }
+              ]
+            }
+          ]
+        },
+        "state": "calculated",
+        "evidence": [
+          {
+            "sourceId": "ti-tps54302-webench-bxl",
+            "locator": "decoded exact-part Component TPS54302DDCR, Most Pattern DDC0006A_M, TOP-copper x envelope: extreme R10260470000200A pad centers -58.0709 mil and +58.0708 mil plus rotated x half-extent 23.62205 mil give bounds -81.69295 mil to +81.69285 mil and span 163.38580 mil = 4.149999320 mm",
+            "licenseNote": "Manufacturer-hosted public factual CAD data referenced by URL; only derived scalar facts, the URL, hash, and locators are retained. The BXL source is not redistributed.",
+            "kind": "manufacturer_product_page",
+            "retrievedAt": "2026-08-26T08:17:22+10:00",
+            "contentHash": "sha256:d877128565f6d15699b3079795906ec814f5722ccc3a9a5515bd5ee2919d8f1c",
+            "url": "https://webench.ti.com/cad/TI_BXL/TPS54302_DDC_6.bxl",
+            "revision": "TI WEBENCH exact-part BXL, 48946 bytes; decoded footprint DDC0006A_M (Most)",
+            "publicationBasis": "public_facts"
+          },
+          {
+            "sourceId": "ti-tps54302-webench-bxl",
+            "locator": "decoded exact-part Component TPS54302DDCR, Most Pattern DDC0006A_M, TOP-copper y envelope: extreme R10260470000200A pad centers -37.4015 mil and +37.4016 mil plus y half-extent 12.7953 mil give bounds -50.1968 mil to +50.1969 mil and span 100.3937 mil = 2.549999980 mm",
+            "licenseNote": "Manufacturer-hosted public factual CAD data referenced by URL; only derived scalar facts, the URL, hash, and locators are retained. The BXL source is not redistributed.",
+            "kind": "manufacturer_product_page",
+            "retrievedAt": "2026-08-26T08:17:22+10:00",
+            "contentHash": "sha256:d877128565f6d15699b3079795906ec814f5722ccc3a9a5515bd5ee2919d8f1c",
+            "url": "https://webench.ti.com/cad/TI_BXL/TPS54302_DDC_6.bxl",
+            "revision": "TI WEBENCH exact-part BXL, 48946 bytes; decoded footprint DDC0006A_M (Most)",
+            "publicationBasis": "public_facts"
+          }
+        ],
+        "validFor": [],
+        "explanation": "Canonical source-resolution bounding rectangle of the exact-part TI WEBENCH IPC-7351 Most TOP-copper footprint DDC0006A_M: 4.149999320 mm x 2.549999980 mm = 10.582498183 mm2. This is a deterministic ranking proxy, not a placement or routing proof."
+      },
+      "maximumHeight": {
+        "value": {
+          "height": {
+            "value": 0.0011,
+            "unit": "m",
+            "displayUnit": "1.1 mm maximum"
+          },
+          "basis": "manufacturer_package_maximum_in_surface_mount_orientation"
+        },
+        "state": "reviewed",
+        "evidence": [
+          {
+            "sourceId": "ti-tps54302-datasheet",
+            "locator": "physical PDF page 29, DDC0006A Package Outline: SOT-23 package maximum height 1.1 mm",
+            "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+            "kind": "manufacturer_datasheet",
+            "retrievedAt": "2026-08-24T02:16:17+10:00",
+            "contentHash": "sha256:1632b388d1ba3a46c8e8f090ddfec2114c0f538cfb8364ddcda583fee3fdbdc5",
+            "url": "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
+            "revision": "SLVSDG6C, May 2016 – revised March 2026",
+            "publicationBasis": "public_facts"
+          }
+        ],
+        "validFor": [],
+        "explanation": "Manufacturer package-outline maximum height in the surface-mount orientation."
+      }
+    }
+  }
+}

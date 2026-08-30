@@ -11,7 +11,7 @@ The level-1 SPICE JFET is a two-parameter square law. A JFET datasheet publishes
 **Node order is `drain gate source`.** `J1 d g s MODELNAME`.
 
 ```spice
-* OpenCircuit original-from-facts model
+* scheMAGIC original-from-facts model
 * <MPN> (<manufacturer>), datasheet rev <rev>, fitted <YYYY-MM-DD>
 * Archetype: archetype-jfet.md. Fit run: <run-id>
 * Node order: J<ref> drain gate source OC_<MPN>

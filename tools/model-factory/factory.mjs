@@ -666,7 +666,7 @@ function assertVoltageCondition(raw, trail) {
     assertFinite(raw.value_v, `${trail}.value_v`);
   } else if (raw.kind === "relation") {
     assertExactKeys(raw, ["kind", "relation"], [], trail);
-    if (!["vds_equals_vgs", "saturation_region"].includes(raw.relation)) throw new Error(`${trail}.relation is invalid`);
+    if (!["vds_equals_vgs", "vds_not_stated"].includes(raw.relation)) throw new Error(`${trail}.relation is invalid`);
   } else if (raw.kind === "range") {
     assertExactKeys(raw, ["kind", "lower_v", "upper_v"], [], trail);
     const lower = assertFinite(raw.lower_v, `${trail}.lower_v`);
@@ -1554,7 +1554,7 @@ export function stageTestgen(ctx) {
     const linkedChecks = tests.flatMap((entry) => [...(entry.scalar_checks ?? []), ...(entry.hard_bounds_checks ?? [])]).filter((check) => check.evidence_id);
     const evidenceCohorts = [...new Map(linkedChecks.map((check) => [check.cohort_id, {
       cohort_id: check.cohort_id,
-      fidelity_tier: "F2",
+      fidelity_tier: ctx.part.component.fidelity_tier ?? "F2",
       evidence_ids: linkedChecks.filter((candidate) => candidate.cohort_id === check.cohort_id).map((candidate) => candidate.evidence_id).filter((value, index, values) => values.indexOf(value) === index),
     }])).values()];
     writeJson(path.join(ctx.packageDir, "tests", "expectations.json"), {
@@ -1868,6 +1868,20 @@ function evaluateCheck(value, check) {
   };
 }
 
+export function evaluateCheckAcrossEngines(check, nativeResult, browserWasmResult) {
+  if (!check?.expression_source?.expression) throw new Error("Dual-engine expectation requires an expression");
+  const expression = check.expression_source.expression;
+  const native = evaluateCheck(expressionValue(nativeResult, expression), check);
+  const browserWasm = evaluateCheck(expressionValue(browserWasmResult, expression), check);
+  return {
+    name: check.name,
+    ...native,
+    pass: native.pass && browserWasm.pass,
+    native,
+    browser_wasm: browserWasm,
+  };
+}
+
 export function stageValidate(ctx) {
   assertNoTrackedPdfs();
   if (ctx.part.pipeline === "vdmos") {
@@ -1883,6 +1897,8 @@ export function stageValidate(ctx) {
     assertMosfetConditionIdentityContract({ ...ctx, part: { ...ctx.part, component: { ...ctx.part.component, supported_operating_region: emittedComponent.supported_operating_region } } }, facts, fitted);
   }
   const expectations = JSON.parse(fs.readFileSync(path.join(ctx.packageDir, "tests", "expectations.json"), "utf8"));
+  const fitted = JSON.parse(fs.readFileSync(path.join(ctx.packageDir, "fitted.json"), "utf8"));
+  const strictMosfet = ctx.part.pipeline === "vdmos" && expectations.evidence_contract_version === "1.0.0";
   const results = [];
   let passCount = 0;
   let failCount = 0;
@@ -1890,9 +1906,14 @@ export function stageValidate(ctx) {
   let worstEngineAbsoluteDelta = 0;
   let worstExpectationRelativeError = 0;
   let worstExpectationQuantity = "package expectation";
+  let engineVersions = null;
+  const modelHash = `sha256:${sha256(path.join(ctx.packageDir, "model.cir"))}`;
+  const benchHashes = {};
 
   for (const test of expectations.tests) {
     const benchPath = path.join(ctx.packageDir, "tests", test.test_netlist);
+    const benchHash = `sha256:${sha256(benchPath)}`;
+    benchHashes[test.test_netlist] = benchHash;
     const analysis = test.analysis_type === "ac_small_signal" ? "ac" : test.analysis_type === "transient" ? "tran" : "op";
     const reportPath = path.join(ctx.workDir, `${test.test_netlist}.compare.json`);
     run("node", [compareCli, benchPath, "--analysis", analysis, "--json", reportPath], { timeout: 120_000 });
@@ -1900,34 +1921,58 @@ export function stageValidate(ctx) {
     const nativeResultPath = path.join(ctx.workDir, `${test.test_netlist}.native.json`);
     run("node", [path.join(here, "lib", "read-native.mjs"), benchPath, nativeResultPath]);
     const nativeResult = JSON.parse(fs.readFileSync(nativeResultPath, "utf8"));
+    let browserWasmResult = null;
+    if (strictMosfet) {
+      const browserWasmResultPath = path.join(ctx.workDir, `${test.test_netlist}.browser-wasm.json`);
+      run("node", [path.join(here, "lib", "read-wasm.mjs"), benchPath, browserWasmResultPath], { timeout: 120_000 });
+      browserWasmResult = JSON.parse(fs.readFileSync(browserWasmResultPath, "utf8"));
+      const currentVersions = {
+        native: { version: nativeResult.version },
+        browser_wasm: { version: browserWasmResult.version, ngspice_version: browserWasmResult.ngspiceVersion },
+      };
+      if (nativeResult.version !== report.engines.native.version
+          || browserWasmResult.version !== report.engines.wasm.version
+          || browserWasmResult.ngspiceVersion !== report.engines.wasm.ngspiceVersion) {
+        throw new Error(`${test.test_netlist} engine identity drifted between comparison and expectation evaluation`);
+      }
+      if (engineVersions && JSON.stringify(engineVersions) !== JSON.stringify(currentVersions)) {
+        throw new Error(`${test.test_netlist} engine version drifted within strict MOSFET validation`);
+      }
+      engineVersions = currentVersions;
+    }
     for (const vector of report.vectors) {
       if (Number.isFinite(vector.maxRelativeError)) worstEngineRelativeDelta = Math.max(worstEngineRelativeDelta, vector.maxRelativeError);
       if (Number.isFinite(vector.maxAbsError)) worstEngineAbsoluteDelta = Math.max(worstEngineAbsoluteDelta, vector.maxAbsError);
     }
     const checks = [];
     for (const check of [...test.scalar_checks, ...test.hard_bounds_checks]) {
-      const value = expressionValue(nativeResult, check.expression_source.expression);
-      const evaluation = evaluateCheck(value, check);
+      const evaluation = strictMosfet
+        ? evaluateCheckAcrossEngines(check, nativeResult, browserWasmResult)
+        : { name: check.name, ...evaluateCheck(expressionValue(nativeResult, check.expression_source.expression), check) };
       if (evaluation.pass) passCount += 1;
       else failCount += 1;
       if (Object.hasOwn(check, "expected_value")) {
-        const relativeError = evaluation.error / Math.max(Math.abs(check.expected_value), Number.EPSILON);
+        const relativeError = Math.max(
+          evaluation.native?.error ?? evaluation.error,
+          evaluation.browser_wasm?.error ?? evaluation.error,
+        ) / Math.max(Math.abs(check.expected_value), Number.EPSILON);
         if (relativeError >= worstExpectationRelativeError) {
           worstExpectationRelativeError = relativeError;
           worstExpectationQuantity = check.name;
         }
       }
-      checks.push({ name: check.name, ...evaluation });
+      checks.push(evaluation);
     }
     results.push({
       test_netlist: test.test_netlist,
+      bench_sha256: benchHash,
       analysis,
       native_wasm_pass: report.pass,
+      ...(strictMosfet ? { engines: engineVersions } : {}),
       checks
     });
   }
 
-  const fitted = JSON.parse(fs.readFileSync(path.join(ctx.packageDir, "fitted.json"), "utf8"));
   const validation = {
     schema_version: "1.0.0",
     validation_date: today(),
@@ -1937,6 +1982,11 @@ export function stageValidate(ctx) {
     expectation_fail_count: failCount,
     worst_native_wasm_relative_delta: worstEngineRelativeDelta,
     worst_native_wasm_absolute_delta: worstEngineAbsoluteDelta,
+    ...(strictMosfet ? {
+      strict_dual_engine_expectations: true,
+      engines: engineVersions,
+      artifact_hashes: { model_cir: modelHash, benches: benchHashes },
+    } : {}),
     benches: results
   };
   writeJson(path.join(ctx.packageDir, "validation-results.json"), validation);
@@ -1997,7 +2047,10 @@ export function stageCard(ctx) {
     ? `Worst fitting error: ${(100 * fitted.worst_relative_error.value).toFixed(3)}% for ${fitted.worst_relative_error.quantity}.`
     : "F1 parameters are transcribed or derived from cited headline targets; no multi-point F2 residual claim is made.";
   const fittedRows = rows || "| No F2 residual claim | n/a | n/a | n/a | n/a | See cited package expectations |";
-  const card = `# ${ctx.part.identity.canonical_mpn} model card\n\n## Identity\n\n- Manufacturer: ${ctx.part.identity.manufacturer}\n- Description: ${ctx.part.identity.description}\n- Electrical family: ${ctx.part.identity.electrical_family}\n- Fidelity tier: ${ctx.part.component.fidelity_tier ?? "F2"}, datasheet-constrained\n- Independent reviewer: pending-review\n\n## Provenance\n\n- Datasheet: ${source.url}\n- Revision: ${source.revision}\n- Accessed: ${source.accessed_date}\n- Referenced pages: ${source.pages_referenced.join(", ")}\n- SHA-256: \`${source.sha256}\`\n- Basis: original model generated from public factual specifications\n- Vendor SPICE models used: none\n\n## Domain coverage\n\n| Domain | Coverage |\n| --- | --- |\n${coverageTable(ctx.part.component.domain_coverage)}\n\n## Model parameters\n\n| Parameter | Value | Status |\n| --- | ---: | --- |\n${parameterRows}\n${heldDefaultsSection}\n## Fitted versus datasheet\n\n| Quantity | Datasheet | Fitted | Unit | Relative error | Citation |\n| --- | ---: | ---: | --- | ---: | --- |\n${fittedRows}\n\n${fitSummary}\n\nNative and WASM agreement: all ${validation.benches.length} benches passed. Worst reported relative delta was ${validation.worst_native_wasm_relative_delta.toExponential(3)} and worst absolute delta was ${validation.worst_native_wasm_absolute_delta.toExponential(3)}.\n\n## Known omissions\n\n${omissions}\n\n## Licence\n\nMIT. See \`LICENSE\`. The model is original work generated from public factual specifications and is not copied or adapted from a vendor SPICE model.\n`;
+  const validationSummary = validation.strict_dual_engine_expectations
+    ? `Native and browser-WASM each passed every scalar and hard-bound expectation across ${validation.benches.length} benches; their vector comparison also passed. Worst reported relative delta was ${validation.worst_native_wasm_relative_delta.toExponential(3)} and worst absolute delta was ${validation.worst_native_wasm_absolute_delta.toExponential(3)}.`
+    : `Native and WASM agreement: all ${validation.benches.length} benches passed. Worst reported relative delta was ${validation.worst_native_wasm_relative_delta.toExponential(3)} and worst absolute delta was ${validation.worst_native_wasm_absolute_delta.toExponential(3)}.`;
+  const card = `# ${ctx.part.identity.canonical_mpn} model card\n\n## Identity\n\n- Manufacturer: ${ctx.part.identity.manufacturer}\n- Description: ${ctx.part.identity.description}\n- Electrical family: ${ctx.part.identity.electrical_family}\n- Fidelity tier: ${ctx.part.component.fidelity_tier ?? "F2"}, datasheet-constrained\n- Independent reviewer: pending-review\n\n## Provenance\n\n- Datasheet: ${source.url}\n- Revision: ${source.revision}\n- Accessed: ${source.accessed_date}\n- Referenced pages: ${source.pages_referenced.join(", ")}\n- SHA-256: \`${source.sha256}\`\n- Basis: original model generated from public factual specifications\n- Vendor SPICE models used: none\n\n## Domain coverage\n\n| Domain | Coverage |\n| --- | --- |\n${coverageTable(ctx.part.component.domain_coverage)}\n\n## Model parameters\n\n| Parameter | Value | Status |\n| --- | ---: | --- |\n${parameterRows}\n${heldDefaultsSection}\n## Fitted versus datasheet\n\n| Quantity | Datasheet | Fitted | Unit | Relative error | Citation |\n| --- | ---: | ---: | --- | ---: | --- |\n${fittedRows}\n\n${fitSummary}\n\n${validationSummary}\n\n## Known omissions\n\n${omissions}\n\n## Licence\n\nMIT. See \`LICENSE\`. The model is original work generated from public factual specifications and is not copied or adapted from a vendor SPICE model.\n`;
   assertCardParameterTable(card, fitted);
   fs.writeFileSync(path.join(ctx.packageDir, "MODEL_CARD.md"), card);
   run("node", [packageValidator, ...(ctx.part.pipeline === "vdmos" ? ["--require-evidence-contract"] : []), ctx.packageDir]);

@@ -1,4 +1,5 @@
 declare module "*.mjs" {
+  export const ENGINE_VERSION: "ngspice-46-opencircuit-wasm1";
   export const NGSPICE_VERSION: "ngspice-46";
   export interface NgspiceRunResult {
     rawfile: Uint8Array;

@@ -833,7 +833,7 @@ function validateRdsonPoint(rawPoint, index, sourceKind, context) {
     if (semantic) assertStructuredTestModeCompatibility(semantic.testMode, legacyTestMode, fieldLabel, semantic.sourceTestMode);
     const electrical = semantic?.electrical ?? {
       vgs: { kind: "fixed", value_v: parsedVgs },
-      vds: { kind: "relation", relation: "saturation_region" },
+      vds: { kind: "relation", relation: "vds_not_stated" },
       id: { kind: "fixed", value_a: parsedCurrent },
     };
     if (semantic) {
@@ -842,10 +842,10 @@ function validateRdsonPoint(rawPoint, index, sourceKind, context) {
       }
       if (parsedVgs != null) assertFixedSemanticValue(electrical.vgs, parsedVgs, fieldLabel, "value_v");
       if (parsedCurrent != null) assertFixedSemanticValue(electrical.id, parsedCurrent, fieldLabel, "value_a");
-      if (electrical.vds?.kind !== "relation" || electrical.vds.relation !== "saturation_region") {
-        throw new Error(`${fieldLabel} typed RDS(on) semantics must preserve the saturation-region relation`);
+      if (electrical.vds?.kind !== "relation" || electrical.vds.relation !== "vds_not_stated") {
+        throw new Error(`${fieldLabel} typed RDS(on) semantics must preserve that VDS was not stated`);
       }
-      if (parsedVds != null) throw new Error(`${fieldLabel} typed RDS(on) saturation-region relation disagrees with fixed VDS in the immutable extraction`);
+      if (parsedVds != null) throw new Error(`${fieldLabel} typed RDS(on) VDS-not-stated relation disagrees with fixed VDS in the immutable extraction`);
       if (parsedTemperature && (semantic.temperature.kind !== parsedTemperature.kind || !nearlyEqual(semantic.temperature.value_c, parsedTemperature.value_c))) {
         throw new Error(`${fieldLabel} typed temperature disagrees with the immutable extraction`);
       }
@@ -1693,7 +1693,7 @@ export function defaultNgspiceRunner(modelText) {
   const directory = fs.mkdtempSync(path.join(localTmpRoot, "run-"));
   try {
     const netlist = path.join(directory, "syntax.cir");
-    fs.writeFileSync(netlist, `OpenCircuit conveyor syntax gate\n${modelText}V1 n 0 0\n.op\n.end\n`);
+    fs.writeFileSync(netlist, `scheMAGIC Model Conveyor syntax gate\n${modelText}V1 n 0 0\n.op\n.end\n`);
     const result = spawnSync("ngspice", ["-b", netlist], { encoding: "utf8", timeout: 30_000 });
     if (result.error) throw result.error;
     if (result.status !== 0 || /unknown parameter|unrecognized parameter|fatal error/i.test(`${result.stdout}\n${result.stderr}`)) {
@@ -1825,6 +1825,44 @@ function pinsFor(family, polarity) {
   if (family === "diode") return { pins: [{ name: "A", number: "1", role: "anode", node: "anode" }, { name: "K", number: "2", role: "cathode", node: "cathode" }], order: ["1", "2"], electrical: "diode" };
   if (family === "bjt") return { pins: [{ name: "B", number: "1", role: "base", node: "base" }, { name: "C", number: "2", role: "collector", node: "collector" }, { name: "E", number: "3", role: "emitter", node: "emitter" }], order: ["2", "1", "3"], electrical: polarity === "p" ? "bjt_pnp" : "bjt_npn" };
   return { pins: [{ name: "G", number: "1", role: "gate", node: "gate" }, { name: "D", number: "2", role: "drain", node: "drain" }, { name: "S", number: "3", role: "source", node: "source" }], order: ["2", "1", "3"], electrical: polarity === "p" ? "pmos" : "nmos" };
+}
+
+export function normalizePackageVariants(packageVariants, pinInfo, label = "package_variants") {
+  if (packageVariants == null) return null;
+  if (!Array.isArray(packageVariants) || packageVariants.length === 0) {
+    throw new Error(`${label} must be a non-empty array when supplied`);
+  }
+  const symbolPins = new Set(pinInfo.pins.map((pin) => pin.number));
+  const variantIdentities = new Set();
+  return packageVariants.map((variant, variantIndex) => {
+    const variantLabel = `${label}[${variantIndex}]`;
+    requireExactObjectKeys(variant, ["name", "standard", "pin_count", "pin_map"], [], variantLabel);
+    if (typeof variant.name !== "string" || !variant.name.trim()) throw new Error(`${variantLabel}.name must be a non-empty string`);
+    if (typeof variant.standard !== "string" || !variant.standard.trim()) throw new Error(`${variantLabel}.standard must be a non-empty string`);
+    if (!Number.isInteger(variant.pin_count) || variant.pin_count < 1) throw new Error(`${variantLabel}.pin_count must be a positive integer`);
+    if (!Array.isArray(variant.pin_map) || variant.pin_map.length !== variant.pin_count) {
+      throw new Error(`${variantLabel}.pin_map count must exactly match pin_count ${variant.pin_count}`);
+    }
+    const variantIdentity = `${variant.name}\0${variant.standard}`;
+    if (variantIdentities.has(variantIdentity)) throw new Error(`${variantLabel} duplicates a package variant name and standard`);
+    variantIdentities.add(variantIdentity);
+    const packagePins = new Set();
+    const representedSymbols = new Set();
+    const pinMap = variant.pin_map.map((mapping, mappingIndex) => {
+      const mappingLabel = `${variantLabel}.pin_map[${mappingIndex}]`;
+      requireExactObjectKeys(mapping, ["package_pin", "symbol_pin_number"], [], mappingLabel);
+      if (typeof mapping.package_pin !== "string" || !mapping.package_pin.trim()) throw new Error(`${mappingLabel}.package_pin must be a non-empty string`);
+      if (typeof mapping.symbol_pin_number !== "string" || !mapping.symbol_pin_number.trim()) throw new Error(`${mappingLabel}.symbol_pin_number must be a non-empty string`);
+      if (packagePins.has(mapping.package_pin)) throw new Error(`${variantLabel} duplicates package pin ${mapping.package_pin}`);
+      if (!symbolPins.has(mapping.symbol_pin_number)) throw new Error(`${mappingLabel} references unknown symbol pin ${mapping.symbol_pin_number}`);
+      packagePins.add(mapping.package_pin);
+      representedSymbols.add(mapping.symbol_pin_number);
+      return { package_pin: mapping.package_pin, symbol_pin_number: mapping.symbol_pin_number };
+    });
+    const missingSymbols = [...symbolPins].filter((number) => !representedSymbols.has(number));
+    if (missingSymbols.length) throw new Error(`${variantLabel} omits electrical symbol pin${missingSymbols.length === 1 ? "" : "s"} ${missingSymbols.join(", ")}`);
+    return { name: variant.name, standard: variant.standard, pin_count: variant.pin_count, pin_map: pinMap };
+  });
 }
 
 export function normalizedIdentity(part, extraction = null) {
@@ -2461,19 +2499,60 @@ function strictMosfetBound(quantityName, rows, unit, { temperatureKind = null } 
   return { bound_id: identityHash("sha256", material), ...material, conditions: "Direct cited MOSFET evidence union", placeholder: false };
 }
 
-function strictMosfetOperatingRegion(facts) {
+function strictMosfetCoordinateBound(quantityName, rows, unit, { temperatureKind = null } = {}) {
+  const selected = rows.filter((row) => conditionValuesForRegion(row.condition, quantityName, temperatureKind).length);
+  if (!selected.length) return null;
+  const values = [...new Set(selected.flatMap((row) => conditionValuesForRegion(row.condition, quantityName, temperatureKind)).map(Number))]
+    .filter(Number.isFinite)
+    .sort((left, right) => left - right);
+  if (!values.length) return null;
+  const refs = [...new Map(selected.map((row) => [row.evidence.evidence_id, evidenceRef(row)])).values()];
+  const material = {
+    quantity: quantityName,
+    kind: "enumerated",
+    values,
+    // component.schema.json currently requires one extremum even for an enumerated
+    // bound. These duplicated extrema are compatibility indexes only; kind and values
+    // remain the complete authority and must never be interpreted as a continuous range.
+    minimum: values[0],
+    maximum: values.at(-1),
+    unit,
+    evidence_refs: refs,
+    condition_ids: [...new Set(refs.map((ref) => ref.condition_id))].sort(),
+    citation_ids: [...new Set(refs.map((ref) => ref.citation_id))].sort(),
+    derivation: "direct_evidence_union",
+    ...(temperatureKind ? { temperature_kind: temperatureKind } : {}),
+  };
+  return {
+    bound_id: identityHash("sha256", material),
+    ...material,
+    conditions: "Exact cited operating-point coordinates only; compatibility extrema confer no range or interpolation authority",
+    placeholder: false,
+  };
+}
+
+function strictMosfetOperatingRegion(facts, { coordinateOnly = false } = {}) {
   const rows = strictMosfetEvidenceRows(facts);
+  const bound = coordinateOnly ? strictMosfetCoordinateBound : strictMosfetBound;
   const bounds = [
-    strictMosfetBound("vgs", rows, "V"),
-    strictMosfetBound("vds", rows, "V"),
-    strictMosfetBound("id", rows, "A"),
-    ...["junction", "ambient", "case"].map((kind) => strictMosfetBound("temperature", rows, "degC", { temperatureKind: kind })),
+    bound("vgs", rows, "V"),
+    bound("vds", rows, "V"),
+    bound("id", rows, "A"),
+    ...["junction", "ambient", "case"].map((kind) => bound("temperature", rows, "degC", { temperatureKind: kind })),
   ].filter(Boolean);
   if (!bounds.some((bound) => bound.quantity === "vgs") || !bounds.some((bound) => bound.quantity === "id") || !bounds.some((bound) => bound.quantity === "temperature")) {
     throw new Error("MOSFET supported operating region lacks validated VGS, ID, or temperature evidence");
   }
-  const summary = bounds.map((bound) => `${bound.quantity}${bound.temperature_kind ? `(${bound.temperature_kind})` : ""} ${bound.minimum} to ${bound.maximum} ${bound.unit}`).join("; ");
-  return { contract_version: "1.0.0", summary: `Supported only over the direct cited evidence union: ${summary}.`, numeric_bounds: bounds };
+  const summary = coordinateOnly
+    ? bounds.map((item) => `${item.quantity}${item.temperature_kind ? `(${item.temperature_kind})` : ""} in {${item.values.join(", ")}} ${item.unit}`).join("; ")
+    : bounds.map((item) => `${item.quantity}${item.temperature_kind ? `(${item.temperature_kind})` : ""} ${item.minimum} to ${item.maximum} ${item.unit}`).join("; ");
+  return {
+    contract_version: "1.0.0",
+    summary: coordinateOnly
+      ? `Operating-point support is limited to coupled cited condition-ID tuples projected onto these exact coordinate enumerations: ${summary}. The coordinate sets are not Cartesian ranges and confer no interpolation or DC-sweep authority.`
+      : `Supported only over the direct cited evidence union: ${summary}.`,
+    numeric_bounds: bounds,
+  };
 }
 
 function strictDiodeEvidenceRows(facts) {
@@ -2534,8 +2613,10 @@ function strictDiodeOperatingRegion(facts) {
   return { contract_version: "1.0.0", summary: `Supported only over the direct cited diode forward-evidence union: ${summary}.`, numeric_bounds };
 }
 
-function operatingRegion(part, facts) {
-  if (part.conveyor_family === "mosfet" && facts.evidence_contract_version === "1.0.0") return strictMosfetOperatingRegion(facts);
+function operatingRegion(part, facts, fit) {
+  if (part.conveyor_family === "mosfet" && facts.evidence_contract_version === "1.0.0") {
+    return strictMosfetOperatingRegion(facts, { coordinateOnly: fit?.fidelity === "F1" && fit?.evidence_mode === "interval-constrained" });
+  }
   if (part.conveyor_family === "diode" && facts.evidence_contract_version === "1.0.0") return strictDiodeOperatingRegion(facts);
   const bounds = [];
   if (part.conveyor_family === "diode") {
@@ -2604,7 +2685,7 @@ function bulkContext(part, fit, identity, pinInfo, source, omissions, operating,
   };
 }
 
-const MIT_LICENSE = `MIT License\n\nCopyright (c) 2026 OpenCircuit contributors\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n`;
+const MIT_LICENSE = `MIT License\n\nCopyright (c) 2026 scheMAGIC contributors\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n`;
 
 export function pinPackageBenchTemperature(packageDir) {
   const testsDir = path.join(packageDir, "tests");
@@ -2640,10 +2721,28 @@ export function stageBulkPart(part, rawExtraction, fit, stagingRoot, { demotionR
   const buildDir = `${packageDir}.building-${process.pid}-${Date.now()}`;
   fs.rmSync(buildDir, { recursive: true, force: true });
   const pinInfo = pinsFor(part.conveyor_family, fit.polarity);
+  const packageVariants = normalizePackageVariants(part.package_variants, pinInfo)
+    ?? [{
+      name: part.package || "catalog package",
+      standard: part.package || "catalog package",
+      pin_count: pinInfo.pins.length,
+      pin_map: pinInfo.pins.map((pin) => ({ package_pin: pin.number, symbol_pin_number: pin.number })),
+    }];
+  const strictIntervalMosfet = part.conveyor_family === "mosfet" && fit.fidelity === "F1" && fit.evidence_mode === "interval-constrained";
   const omissions = [
     "AC, transient, noise, thermal, and package-parasitic behavior are outside this DC-only conveyor package.",
     "Temperature dependence and self-heating are not modelled; each electrical claim is limited to its exact cited bench temperature.",
     "Catalog parametrics may be recorded only as optimizer seeds; they are not evidence, constraints, residual targets, or datasheet citations.",
+    ...(strictIntervalMosfet ? [
+      "Support is operating-point-only at coupled cited condition-ID tuples. Per-axis coordinate enumerations are projections, not Cartesian ranges; interpolation and DC sweeps are excluded.",
+      "CGS, CGDMAX, CGDMIN, and CJO are non-claim numerical auxiliaries only; no input, output, reverse-transfer, or voltage-dependent capacitance claim is made.",
+      "No output-characteristic or VDS-domain behavior is claimed because the admitted RDS(on) rows do not state VDS.",
+      "Off-state behavior, drain leakage, and gate leakage are not claimed.",
+      "Body-diode forward behavior, reverse conduction, and reverse-recovery behavior are not claimed.",
+      "Breakdown, avalanche energy, and safe-operating-area behavior are not claimed.",
+      "Gate charge, Miller behavior, and switching waveforms or timing are not claimed.",
+      "Temperature scaling, self-heating, switching or conduction loss, junction temperature, and thermal behavior are not claimed.",
+    ] : []),
     ...(demotionReason ? [`F2 evidence did not qualify; staged as F1: ${demotionReason}`] : []),
     ...(extraction?.omission_reason ? [extraction.omission_reason] : []),
     ...(part.conveyor_family === "diode" && fit.fidelity === "F1" && extraction?.specs?.reverse_current
@@ -2668,7 +2767,7 @@ export function stageBulkPart(part, rawExtraction, fit, stagingRoot, { demotionR
   };
   if (!source.pages_referenced.length) throw new Error(`${part.mpn} has no cited datasheet pages`);
   const facts = bulkFactoryFacts(part, extraction, fit, identity, source, sourceExtraction);
-  const operating = operatingRegion(part, facts);
+  const operating = operatingRegion(part, facts, fit);
   const component = {
     schema_version: "1.0.0",
     ...(["mosfet", "diode"].includes(part.conveyor_family) ? { evidence_contract_version: "1.0.0" } : {}),
@@ -2678,13 +2777,13 @@ export function stageBulkPart(part, rawExtraction, fit, stagingRoot, { demotionR
     electrical_family: pinInfo.electrical,
     symbol_pins: pinInfo.pins.map(({ name, number, role }) => ({ name, number, role })),
     spice_pin_mapping: pinInfo.order.map((number, index) => ({ symbol_pin_number: number, subckt_node: pinInfo.pins.find((pin) => pin.number === number).node, order: index + 1 })),
-    package_variants: [{ name: part.package || "catalog package", standard: part.package || "catalog package", pin_count: pinInfo.pins.length, pin_map: pinInfo.pins.map((pin) => ({ package_pin: pin.number, symbol_pin_number: pin.number })) }],
+    package_variants: packageVariants,
     ordering_code_aliases: identity.aliases,
     datasheet: { url: part.datasheet_url, revision: source.revision },
     model_type: "dot_model",
     fidelity_tier: fit.fidelity,
     domain_coverage: { dc: fit.fidelity === "F2" ? "fitted" : "approx", ac: "none", transient: "none", noise: "none", thermal: "none", digital: "none" },
-    supported_analyses: ["operating_point", "dc_sweep"],
+    supported_analyses: strictIntervalMosfet ? ["operating_point"] : ["operating_point", "dc_sweep"],
     supported_operating_region: operating,
     known_omissions: omissions,
     licence: { spdx_id: "MIT", provenance_basis: "original_from_facts" },
@@ -2725,7 +2824,7 @@ export function stageBulkPart(part, rawExtraction, fit, stagingRoot, { demotionR
     write(path.join(buildDir, "facts.json"), json(facts));
     write(path.join(buildDir, "fitted.json"), json(fitted));
     write(path.join(buildDir, "sources.json"), json([source]));
-    write(path.join(buildDir, "model.cir"), `* OpenCircuit Model Factory v0.1.0 bulk adapter\n* Original work generated from public factual specifications.\n* This model is not copied or adapted from any vendor SPICE model.\n* Source: ${source.url}\n* Revision: ${source.revision}\n${fit.model.text}`);
+    write(path.join(buildDir, "model.cir"), `* scheMAGIC Model Factory v0.1.0 bulk adapter\n* Original work generated from public factual specifications.\n* This model is not copied or adapted from any vendor SPICE model.\n* Source: ${source.url}\n* Revision: ${source.revision}\n${fit.model.text}`);
     write(path.join(buildDir, "MODEL_CARD.md"), `# ${identity.canonical} model card\n\nPending factory bench generation and native/WASM validation.\n`);
     write(path.join(buildDir, "LICENSE"), MIT_LICENSE);
     if (part.conveyor_family === "diode") enrichDiodeEvidenceContract(buildDir, extraction, fit, source);
@@ -2775,11 +2874,18 @@ export function normalizeBulkManifest(manifest) {
   if (manifest?.kind !== "opencircuit-conveyor-batch" || manifest.schema_version !== "1.0.0" || !Array.isArray(manifest.parts)) throw new Error("Unsupported conveyor bulk manifest");
   return manifest.parts.map((part, index) => {
     for (const field of ["mpn", "manufacturer", "conveyor_family", "datasheet_path", "datasheet_url"]) if (!part[field]) throw new Error(`Bulk part ${index} missing ${field}`);
+    if (!["diode", "bjt", "mosfet"].includes(part.conveyor_family)) throw new Error(`Bulk part ${index} has unsupported conveyor_family ${part.conveyor_family}`);
     if (!fs.existsSync(part.datasheet_path)) throw new Error(`Bulk part ${index} datasheet not found: ${part.datasheet_path}`);
     if (part.adjudication_supplement_path && !fs.existsSync(part.adjudication_supplement_path)) {
       throw new Error(`Bulk part ${index} adjudication supplement not found: ${part.adjudication_supplement_path}`);
     }
-    return { ...part, seed_hints: Array.isArray(part.seed_hints) ? part.seed_hints : [] };
+    const pinInfo = pinsFor(part.conveyor_family, "n");
+    const packageVariants = normalizePackageVariants(part.package_variants, pinInfo, `Bulk part ${index} package_variants`);
+    return {
+      ...part,
+      ...(packageVariants ? { package_variants: packageVariants } : {}),
+      seed_hints: Array.isArray(part.seed_hints) ? part.seed_hints : [],
+    };
   });
 }
 

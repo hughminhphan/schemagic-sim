@@ -1,6 +1,8 @@
-# @opencircuit/waveform-viewer
+# scheMAGIC Waveform Viewer
 
-Canvas 2D transient, operating-point sweep, and AC Bode viewer with no runtime dependencies.
+Canvas 2D transient, operating-point sweep, and AC Bode viewer with no runtime
+dependencies. The implementation remains available through the internal
+`@opencircuit/waveform-viewer` compatibility import.
 
 ```ts
 import { mount } from "@opencircuit/waveform-viewer";

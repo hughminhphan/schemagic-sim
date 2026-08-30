@@ -1,0 +1,24 @@
+{
+  "name": "@opencircuit/sourcing-core",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Provider-neutral BOM evaluation and provider policy for scheMAGIC Sourcing",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./provider-policies": "./src/provider-policies/index.ts"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@opencircuit/sourcing-schema": "*"
+  },
+  "devDependencies": {
+    "@opencircuit/design-engine": "*",
+    "@types/node": "24.3.0",
+    "vitest": "3.2.7"
+  }
+}

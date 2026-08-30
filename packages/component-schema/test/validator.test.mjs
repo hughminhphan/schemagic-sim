@@ -168,6 +168,33 @@ test("correct canonical evidence-contract package validates", () => {
   }
 });
 
+test("model provenance reads one legacy or scheMAGIC factory header and rejects ambiguous lookalikes", () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "component-factory-brand-"));
+  try {
+    writeContractPackage(root);
+    const modelPath = path.join(root, "model.cir");
+    const body = "* Original work\n* Public factual specifications\n.model DUT VDMOS(VTO=2)\n";
+
+    fs.writeFileSync(modelPath, `* scheMAGIC Model Factory v0.1.0\n${body}`);
+    assert.deepEqual(validatePackage(root, { requireEvidenceContract: true }).errors, []);
+
+    for (const header of [
+      "* Unrelated Model Factory",
+      "* scheMAGIC Model Factoryish",
+      "* scheMAGIC Model Factory\n* OpenCircuit Model Factory",
+    ]) {
+      fs.writeFileSync(modelPath, `${header}\n${body}`);
+      const errors = validatePackage(root, { requireEvidenceContract: true }).errors;
+      assert.ok(
+        errors.some((error) => error.includes("exactly one recognized factory provenance line")),
+        `${header}: ${errors.join("\n")}`,
+      );
+    }
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+});
+
 test("contract detection fails closed when any authoritative marker or linkage set is removed or downgraded", () => {
   const cases = [
     ["component marker removal", (f) => { delete f.component.evidence_contract_version; }, "component evidence_contract_version"],

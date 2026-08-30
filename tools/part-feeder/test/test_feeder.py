@@ -5,6 +5,7 @@ import os
 import shutil
 import sqlite3
 import subprocess
+import sys
 import tempfile
 import unittest
 import urllib.request
@@ -16,6 +17,7 @@ from feederlib import (
     FeederError,
     HttpClient,
     RateLimiter,
+    USER_AGENT,
     download_datasheets,
     query_manifest,
     reassemble_split_zip,
@@ -143,9 +145,14 @@ class ReviewedSnapshotTest(unittest.TestCase):
 class Scale2kFreezeTest(unittest.TestCase):
     feeder_root = Path(__file__).resolve().parents[1]
     repo_root = Path(__file__).resolve().parents[3]
-    common_git_dir = Path(subprocess.check_output(
+    reported_common_git_dir = Path(subprocess.check_output(
         ["git", "rev-parse", "--git-common-dir"], cwd=repo_root, text=True
-    ).strip()).resolve()
+    ).strip())
+    common_git_dir = (
+        reported_common_git_dir
+        if reported_common_git_dir.is_absolute()
+        else repo_root / reported_common_git_dir
+    ).resolve()
     catalog_root = common_git_dir.parent / "tools" / "part-feeder" / "data"
     db = catalog_root / "jlcparts.sqlite3"
     dump_state = catalog_root / "dump.json"
@@ -243,6 +250,24 @@ class RateLimiterTest(unittest.TestCase):
         limiter.wait()
         limiter.wait()
         self.assertEqual(sleeps, [0.5, 0.5])
+
+
+class BrandingTest(unittest.TestCase):
+    def test_future_http_and_cli_copy_use_schemagic_brand(self) -> None:
+        self.assertEqual(
+            USER_AGENT,
+            "scheMAGIC-Part-Feeder/1.0 (+https://github.com/yaqwsx/jlcparts)",
+        )
+        feeder = Path(__file__).resolve().parents[1] / "feeder"
+        result = subprocess.run(
+            [sys.executable, str(feeder), "--help"],
+            capture_output=True,
+            check=False,
+            text=True,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("scheMAGIC Model Factory", result.stdout)
+        self.assertNotIn("OpenCircuit", result.stdout)
 
 
 class PdfValidationTest(unittest.TestCase):

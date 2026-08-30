@@ -1,0 +1,424 @@
+{
+  "format": "schemagic-design-profile",
+  "schemaVersion": "1.0.0",
+  "partClass": "power.power-inductor",
+  "part": {
+    "manufacturerId": "murata-manufacturing",
+    "manufacturerPartNumber": "LQM18PN2R2MGHD"
+  },
+  "factsSchemaVersion": "2.0.0",
+  "commonFacts": {
+    "packageName": {
+      "value": "LQM18PN, 1.6 mm × 0.8 mm × 0.9 mm nominal, D paper-tape packaging",
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "murata-lqm18pn-jelf243b-0047h",
+          "locator": "page 1, section 2 part numbering maps D to taping; page 2, section 5 gives 1.6 ±0.2 mm length, 0.8 ±0.2 mm width, and 0.9 ±0.1 mm height; page 4, section 10 identifies 8 mm paper tape",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the official PDF is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T09:30:00Z",
+          "contentHash": "sha256:45772af46c96008eb257628096f3210548bc0642c7157e5ca782a024d849c5f0",
+          "url": "https://pim.murata.com/asset/pim4/inductor/JELF243B-0047_PDF_INDUCTOR?lastModifiedDatetime=20260706104530",
+          "revision": "JELF243B_0047H-01; official PIM asset last modified 2026-07-06",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "The exact MPN selects the 2.2 µH LQM18PN body, M tolerance, GH construction, and D paper-tape packaging."
+    },
+    "boardArea": {
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "Facts schema 2.0.0 represents mounted board area only through facts.mountedGeometry."
+    },
+    "maximumHeight": {
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "Facts schema 2.0.0 represents mounted maximum height only through facts.mountedGeometry."
+    }
+  },
+  "facts": {
+    "inductance": {
+      "value": {
+        "value": 0.0000022,
+        "unit": "H",
+        "displayUnit": "2.2 µH"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "murata-lqm18pn-jelf243b-0047h",
+          "locator": "page 1, section 3 LQM18PN2R2MGHD row: nominal inductance 2.2 µH ±20%; page 2, section 7.1: Keysight 4294A or equivalent, 1 mA, 1 MHz",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the official PDF is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T09:30:00Z",
+          "contentHash": "sha256:45772af46c96008eb257628096f3210548bc0642c7157e5ca782a024d849c5f0",
+          "url": "https://pim.murata.com/asset/pim4/inductor/JELF243B-0047_PDF_INDUCTOR?lastModifiedDatetime=20260706104530",
+          "revision": "JELF243B_0047H-01; official PIM asset last modified 2026-07-06",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "switchingFrequency",
+          "minimum": {
+            "value": 1000000,
+            "unit": "Hz",
+            "displayUnit": "1 MHz"
+          },
+          "maximum": {
+            "value": 1000000,
+            "unit": "Hz",
+            "displayUnit": "1 MHz"
+          },
+          "evidence": [
+            {
+              "sourceId": "murata-lqm18pn-jelf243b-0047h",
+              "locator": "page 2, section 7.1: inductance measuring frequency 1 MHz",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the official PDF is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T09:30:00Z",
+              "contentHash": "sha256:45772af46c96008eb257628096f3210548bc0642c7157e5ca782a024d849c5f0",
+              "url": "https://pim.murata.com/asset/pim4/inductor/JELF243B-0047_PDF_INDUCTOR?lastModifiedDatetime=20260706104530",
+              "revision": "JELF243B_0047H-01; official PIM asset last modified 2026-07-06",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "testCurrent",
+          "minimum": {
+            "value": 0.001,
+            "unit": "A",
+            "displayUnit": "1 mA"
+          },
+          "maximum": {
+            "value": 0.001,
+            "unit": "A",
+            "displayUnit": "1 mA"
+          },
+          "evidence": [
+            {
+              "sourceId": "murata-lqm18pn-jelf243b-0047h",
+              "locator": "page 2, section 7.1: inductance measuring equipment test current 1 mA",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the official PDF is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T09:30:00Z",
+              "contentHash": "sha256:45772af46c96008eb257628096f3210548bc0642c7157e5ca782a024d849c5f0",
+              "url": "https://pim.murata.com/asset/pim4/inductor/JELF243B-0047_PDF_INDUCTOR?lastModifiedDatetime=20260706104530",
+              "revision": "JELF243B_0047H-01; official PIM asset last modified 2026-07-06",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "Exact-MPN nominal inductance, retained only at the manufacturer's stated 1 MHz and 1 mA measurement point; the ±20% tolerance is preserved in the evidence locator."
+    },
+    "saturationCurrent": {
+      "value": {
+        "value": 0.25,
+        "unit": "A",
+        "displayUnit": "0.25 A max"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "murata-lqm18pn-jelf243b-0047h",
+          "locator": "page 1, section 3 LQM18PN2R2MGHD row: rated current based on inductance change, maximum 0.25 A; footnote 1: inductance change within ±30% of initial value",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the official PDF is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T09:30:00Z",
+          "contentHash": "sha256:45772af46c96008eb257628096f3210548bc0642c7157e5ca782a024d849c5f0",
+          "url": "https://pim.murata.com/asset/pim4/inductor/JELF243B-0047_PDF_INDUCTOR?lastModifiedDatetime=20260706104530",
+          "revision": "JELF243B_0047H-01; official PIM asset last modified 2026-07-06",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "ambientTemperature",
+          "minimum": {
+            "value": 288.15,
+            "unit": "K",
+            "displayUnit": "15 °C"
+          },
+          "maximum": {
+            "value": 308.15,
+            "unit": "K",
+            "displayUnit": "35 °C"
+          },
+          "evidence": [
+            {
+              "sourceId": "murata-lqm18pn-jelf243b-0047h",
+              "locator": "page 2, section 4: unless otherwise specified, ordinary test temperature 15 °C to 35 °C",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the official PDF is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T09:30:00Z",
+              "contentHash": "sha256:45772af46c96008eb257628096f3210548bc0642c7157e5ca782a024d849c5f0",
+              "url": "https://pim.murata.com/asset/pim4/inductor/JELF243B-0047_PDF_INDUCTOR?lastModifiedDatetime=20260706104530",
+              "revision": "JELF243B_0047H-01; official PIM asset last modified 2026-07-06",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "Guaranteed maximum rated current for the manufacturer's ±30% inductance-change criterion. The 0.35 A typical value is deliberately not promoted into the limit field."
+    },
+    "rmsCurrent": {
+      "value": {
+        "value": 1.05,
+        "unit": "A",
+        "displayUnit": "1.05 A max"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "murata-lqm18pn-jelf243b-0047h",
+          "locator": "page 1, section 3 LQM18PN2R2MGHD row: rated current based on temperature rise, maximum 1.05 A; footnote 2: self-heating temperature rise limited to 40 °C maximum",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the official PDF is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T09:30:00Z",
+          "contentHash": "sha256:45772af46c96008eb257628096f3210548bc0642c7157e5ca782a024d849c5f0",
+          "url": "https://pim.murata.com/asset/pim4/inductor/JELF243B-0047_PDF_INDUCTOR?lastModifiedDatetime=20260706104530",
+          "revision": "JELF243B_0047H-01; official PIM asset last modified 2026-07-06",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "ambientTemperature",
+          "minimum": {
+            "value": 288.15,
+            "unit": "K",
+            "displayUnit": "15 °C"
+          },
+          "maximum": {
+            "value": 308.15,
+            "unit": "K",
+            "displayUnit": "35 °C"
+          },
+          "evidence": [
+            {
+              "sourceId": "murata-lqm18pn-jelf243b-0047h",
+              "locator": "page 2, section 4: unless otherwise specified, ordinary test temperature 15 °C to 35 °C",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the official PDF is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T09:30:00Z",
+              "contentHash": "sha256:45772af46c96008eb257628096f3210548bc0642c7157e5ca782a024d849c5f0",
+              "url": "https://pim.murata.com/asset/pim4/inductor/JELF243B-0047_PDF_INDUCTOR?lastModifiedDatetime=20260706104530",
+              "revision": "JELF243B_0047H-01; official PIM asset last modified 2026-07-06",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "Guaranteed maximum rated current for the manufacturer's 40 °C maximum self-heating-rise criterion. The 1.15 A typical value is deliberately not promoted into the limit field."
+    },
+    "dcResistance": {
+      "value": {
+        "value": 0.25,
+        "unit": "ohm",
+        "displayUnit": "250 mΩ max"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "murata-lqm18pn-jelf243b-0047h",
+          "locator": "page 1, section 3 LQM18PN2R2MGHD row: DC resistance 200 mΩ typical, 250 mΩ maximum; page 2, section 7.2: digital-multimeter measurement",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the official PDF is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T09:30:00Z",
+          "contentHash": "sha256:45772af46c96008eb257628096f3210548bc0642c7157e5ca782a024d849c5f0",
+          "url": "https://pim.murata.com/asset/pim4/inductor/JELF243B-0047_PDF_INDUCTOR?lastModifiedDatetime=20260706104530",
+          "revision": "JELF243B_0047H-01; official PIM asset last modified 2026-07-06",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "ambientTemperature",
+          "minimum": {
+            "value": 288.15,
+            "unit": "K",
+            "displayUnit": "15 °C"
+          },
+          "maximum": {
+            "value": 308.15,
+            "unit": "K",
+            "displayUnit": "35 °C"
+          },
+          "evidence": [
+            {
+              "sourceId": "murata-lqm18pn-jelf243b-0047h",
+              "locator": "page 2, section 4: unless otherwise specified, ordinary test temperature 15 °C to 35 °C",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the official PDF is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T09:30:00Z",
+              "contentHash": "sha256:45772af46c96008eb257628096f3210548bc0642c7157e5ca782a024d849c5f0",
+              "url": "https://pim.murata.com/asset/pim4/inductor/JELF243B-0047_PDF_INDUCTOR?lastModifiedDatetime=20260706104530",
+              "revision": "JELF243B_0047H-01; official PIM asset last modified 2026-07-06",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "Guaranteed maximum exact-MPN DC resistance; the 200 mΩ typical value is deliberately not used."
+    },
+    "coreLoss": {
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "The exact source provides no guaranteed core-loss power at a fully specified operating point."
+    },
+    "coreLossTestFrequency": {
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "No core-loss claim is admitted, so there is no corresponding core-loss test frequency."
+    },
+    "maximumOperatingTemperature": {
+      "value": {
+        "value": 398.15,
+        "unit": "K",
+        "displayUnit": "125 °C"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "murata-lqm18pn-jelf243b-0047h",
+          "locator": "page 1, section 3 footnote 3: keep temperature, defined as ambient temperature plus self-generation of heat, under 125 °C",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the official PDF is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T09:30:00Z",
+          "contentHash": "sha256:45772af46c96008eb257628096f3210548bc0642c7157e5ca782a024d849c5f0",
+          "url": "https://pim.murata.com/asset/pim4/inductor/JELF243B-0047_PDF_INDUCTOR?lastModifiedDatetime=20260706104530",
+          "revision": "JELF243B_0047H-01; official PIM asset last modified 2026-07-06",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "Manufacturer part-temperature ceiling, explicitly defined as ambient temperature plus self-heating; the source requires the part to remain below 125 °C rather than treating 125 °C as an allowed operating point."
+    },
+    "mountedGeometry": {
+      "boardArea": {
+        "value": {
+          "area": {
+            "value": 0.0000024,
+            "unit": "m2",
+            "displayUnit": "2.40 mm²"
+          },
+          "basis": "manufacturer_recommended_land_pattern_bounding_box",
+          "calculation": "maximum_x_span_times_maximum_y_span",
+          "sourceDimensions": [
+            {
+              "axis": "x",
+              "dimensionId": "recommended-pattern-total-width-b",
+              "multiplier": 1,
+              "maximum": {
+                "value": 0.002,
+                "unit": "m",
+                "displayUnit": "2.00 mm"
+              },
+              "evidence": [
+                {
+                  "sourceId": "murata-lqm18pn-jelf243b-0047h",
+                  "locator": "page 6, section 12.1 land-dimensions diagram identifies b as the total horizontal pattern span; the 0.7 A to 1.15 A row specifies b = 2.0 mm",
+                  "licenseNote": "Manufacturer-published factual data referenced by URL; the official PDF is not redistributed.",
+                  "kind": "manufacturer_datasheet",
+                  "retrievedAt": "2026-08-24T09:30:00Z",
+                  "contentHash": "sha256:45772af46c96008eb257628096f3210548bc0642c7157e5ca782a024d849c5f0",
+                  "url": "https://pim.murata.com/asset/pim4/inductor/JELF243B-0047_PDF_INDUCTOR?lastModifiedDatetime=20260706104530",
+                  "revision": "JELF243B_0047H-01; official PIM asset last modified 2026-07-06",
+                  "publicationBasis": "public_facts"
+                }
+              ]
+            },
+            {
+              "axis": "y",
+              "dimensionId": "recommended-pattern-height-d",
+              "multiplier": 1,
+              "maximum": {
+                "value": 0.0012,
+                "unit": "m",
+                "displayUnit": "1.20 mm"
+              },
+              "evidence": [
+                {
+                  "sourceId": "murata-lqm18pn-jelf243b-0047h",
+                  "locator": "page 6, section 12.1 land-dimensions diagram identifies d as pattern height; the 0.7 A to 1.15 A row gives 1.2 mm for 18 µm copper and 0.7 mm for 35 µm or 70 µm copper, so 1.2 mm is the conservative maximum",
+                  "licenseNote": "Manufacturer-published factual data referenced by URL; the official PDF is not redistributed.",
+                  "kind": "manufacturer_datasheet",
+                  "retrievedAt": "2026-08-24T09:30:00Z",
+                  "contentHash": "sha256:45772af46c96008eb257628096f3210548bc0642c7157e5ca782a024d849c5f0",
+                  "url": "https://pim.murata.com/asset/pim4/inductor/JELF243B-0047_PDF_INDUCTOR?lastModifiedDatetime=20260706104530",
+                  "revision": "JELF243B_0047H-01; official PIM asset last modified 2026-07-06",
+                  "publicationBasis": "public_facts"
+                }
+              ]
+            }
+          ]
+        },
+        "state": "calculated",
+        "evidence": [
+          {
+            "sourceId": "murata-lqm18pn-jelf243b-0047h",
+            "locator": "page 6, section 12.1 land-dimensions diagram identifies b as the total horizontal pattern span; the 0.7 A to 1.15 A row specifies b = 2.0 mm",
+            "licenseNote": "Manufacturer-published factual data referenced by URL; the official PDF is not redistributed.",
+            "kind": "manufacturer_datasheet",
+            "retrievedAt": "2026-08-24T09:30:00Z",
+            "contentHash": "sha256:45772af46c96008eb257628096f3210548bc0642c7157e5ca782a024d849c5f0",
+            "url": "https://pim.murata.com/asset/pim4/inductor/JELF243B-0047_PDF_INDUCTOR?lastModifiedDatetime=20260706104530",
+            "revision": "JELF243B_0047H-01; official PIM asset last modified 2026-07-06",
+            "publicationBasis": "public_facts"
+          },
+          {
+            "sourceId": "murata-lqm18pn-jelf243b-0047h",
+            "locator": "page 6, section 12.1 land-dimensions diagram identifies d as pattern height; the 0.7 A to 1.15 A row gives 1.2 mm for 18 µm copper and 0.7 mm for 35 µm or 70 µm copper, so 1.2 mm is the conservative maximum",
+            "licenseNote": "Manufacturer-published factual data referenced by URL; the official PDF is not redistributed.",
+            "kind": "manufacturer_datasheet",
+            "retrievedAt": "2026-08-24T09:30:00Z",
+            "contentHash": "sha256:45772af46c96008eb257628096f3210548bc0642c7157e5ca782a024d849c5f0",
+            "url": "https://pim.murata.com/asset/pim4/inductor/JELF243B-0047_PDF_INDUCTOR?lastModifiedDatetime=20260706104530",
+            "revision": "JELF243B_0047H-01; official PIM asset last modified 2026-07-06",
+            "publicationBasis": "public_facts"
+          }
+        ],
+        "validFor": [],
+        "explanation": "Conservative manufacturer-recommended land-pattern envelope for the exact part's 1.05 A maximum temperature-rise rating: 2.00 mm total span b × maximum 1.20 mm pattern height d = 2.40 mm²."
+      },
+      "maximumHeight": {
+        "value": {
+          "height": {
+            "value": 0.001,
+            "unit": "m",
+            "displayUnit": "1.00 mm"
+          },
+          "basis": "manufacturer_package_maximum_in_surface_mount_orientation"
+        },
+        "state": "reviewed",
+        "evidence": [
+          {
+            "sourceId": "murata-lqm18pn-jelf243b-0047h",
+            "locator": "page 2, section 5 package drawing: mounted height 0.9 ±0.1 mm, giving a 1.0 mm maximum",
+            "licenseNote": "Manufacturer-published factual data referenced by URL; the official PDF is not redistributed.",
+            "kind": "manufacturer_datasheet",
+            "retrievedAt": "2026-08-24T09:30:00Z",
+            "contentHash": "sha256:45772af46c96008eb257628096f3210548bc0642c7157e5ca782a024d849c5f0",
+            "url": "https://pim.murata.com/asset/pim4/inductor/JELF243B-0047_PDF_INDUCTOR?lastModifiedDatetime=20260706104530",
+            "revision": "JELF243B_0047H-01; official PIM asset last modified 2026-07-06",
+            "publicationBasis": "public_facts"
+          }
+        ],
+        "validFor": [],
+        "explanation": "Maximum body height in the manufacturer-defined surface-mount orientation: 0.9 mm nominal plus 0.1 mm upper tolerance."
+      }
+    }
+  }
+}

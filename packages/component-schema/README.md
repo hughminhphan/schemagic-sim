@@ -1,4 +1,4 @@
-# OpenCircuit component schema
+# scheMAGIC Component Schema
 
 This workspace package promotes the component model package contract from `spikes/component-schema/` without changing the historical spike.
 

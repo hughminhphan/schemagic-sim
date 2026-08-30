@@ -1,0 +1,262 @@
+{
+  "format": "opencircuit-selected-passive-application-golden-report",
+  "schemaVersion": 2,
+  "contractContentHash": "sha256:5088a3a938bdbc0b8a2a4ea21f9dfba0b3e7e45d61fbca48f94d5ab4e28365ff",
+  "evidenceBoundary": {
+    "modelTier": "behavioral",
+    "attestation": "none",
+    "productionProfilesUsed": true,
+    "primitiveValueBasis": "reviewed_nominal_only",
+    "productionConstraintEligibility": false,
+    "currentProductionIdentity": true,
+    "selectedSemiconductorModelsUsed": false,
+    "claim": "Current production observation identity and two explicit parallel per-part ideal nominal capacitor primitives plus one ideal nominal inductor primitive only; the exact retained candidate is ineligible under the installed production policy.",
+    "operatingConditionsWithinReviewedEvidence": false,
+    "authority": {
+      "switchingBehavior": "unavailable",
+      "effectiveCapacitance": "unavailable",
+      "capacitorEsr": "unavailable",
+      "capacitorRippleCurrent": "unavailable",
+      "passiveCurrent": "unavailable",
+      "loss": "unavailable",
+      "physicalPassiveModel": "unavailable",
+      "fullBomModel": "unavailable",
+      "selectedSemiconductorModel": "unavailable",
+      "constraintEligibility": "unavailable",
+      "candidateRanking": "unavailable",
+      "safety": "unavailable"
+    },
+    "purpose": "Deterministic current production observation-to-generated-netlist, execution-receipt, selected-vector parity, and ideal nominal output-node relation evidence for two explicit parallel capacitor instances and one inductor instance in one policy-ineligible candidate.",
+    "doesNotProve": [
+      "TPS54302DDCR control, timing, current-limit, protection, package, semiconductor, or selected-part model fidelity",
+      "capacitor tolerance, effective capacitance under bias, ESR, ripple-current, current sharing, parasitic, temperature, or physical waveform fidelity",
+      "inductor tolerance, inductance away from the exact 100 kHz / 0.25 V RMS characterization, DCR, saturation-current, RMS-current, core-loss, parasitic, temperature, or physical waveform fidelity",
+      "safe passive operating conditions, regulation, loop stability, loss, efficiency, thermal behavior, EMI, or PCB behavior",
+      "candidate constraint eligibility, ranking, provider approval, commercial availability, or release readiness",
+      "full selected-part or full-vector native/browser-WASM equivalence outside the declared observations"
+    ]
+  },
+  "case": {
+    "id": "power.production.integrated-12v-low-current.ideal-nominal-selected-passives",
+    "application": "power.buck",
+    "presetId": "power.integrated-12v-low-current",
+    "candidateId": "candidate:v2:sha256:e6a4681fa38e5b47f8f59963924e9cd99b749932ba8052f68e34d96cef68035a",
+    "recipe": {
+      "id": "power.native.integrated-synchronous-buck.facts-v3-4-inductor-qualified",
+      "version": "3.4.6",
+      "contentHash": "sha256:c36cdcd96b25808fb913f152e211a6c08ac7f0bf675274f393bd00b31b2d3b1c"
+    },
+    "requestHash": "sha256:f21a643aba1a3c8cb75d42ff2e69b4f12a25168becdb68fbf54f720649821cd4",
+    "resultContentHash": "sha256:78bc0f7ad6dc3c641903b1b3168c1a9a926ea78f69ebe1f2a77102d3d4b2608e",
+    "strictGeneration": {
+      "requestHash": "sha256:30b8c0fac110f71ce3e71c9347afe725f2a1ad29aa4fdb6bfde8bc87cc73771c",
+      "resultContentHash": "sha256:d3b7fed4eb2d5f5e862ed8dfafb629771f813b967fd166902c4bd51bc6aabef2",
+      "retainedCandidateCount": 0,
+      "rejectedCandidateId": "candidate:v2:sha256:88b7d52b012cd7edfda6ba8f5ef0611c7d2ffeff870614ccf9d0dea6f1ca679d",
+      "rejectionReasonCode": "unknown_constraint_disallowed",
+      "counts": {
+        "recipes": 4,
+        "supportedRecipes": 3,
+        "enumerated": 1,
+        "solved": 1,
+        "matchOutcomes": 1,
+        "matched": 1,
+        "checked": 1,
+        "estimated": 0,
+        "deduped": 0,
+        "pareto": 0,
+        "materialized": 0,
+        "coverageValidated": 0,
+        "rejected": 1
+      }
+    },
+    "constraintPolicy": {
+      "id": "production_strict_v1",
+      "contentHash": "sha256:fdef96d5e34b8acea673b9df199430c5be56d64c5cb5e58481a20d89d4df57f6"
+    },
+    "constraintDecisionContentHash": "sha256:97248bdb723e2a02bb3347c46c434ff2b7d9d95099d3ccdb69ad581d305bd409",
+    "observationCounts": {
+      "recipes": 4,
+      "supportedRecipes": 3,
+      "enumerated": 1,
+      "solved": 1,
+      "matchOutcomes": 1,
+      "matched": 1,
+      "checked": 1,
+      "estimated": 1,
+      "deduped": 1,
+      "pareto": 1,
+      "materialized": 1,
+      "coverageValidated": 1,
+      "rejected": 0
+    },
+    "observationCandidateCount": 1,
+    "eligibleCandidateCount": 0,
+    "library": {
+      "version": "2026-08-27.2",
+      "contextManifestContentHash": "sha256:7ef5a9f9f7e1724e253e81850adc64673154fcfd9668b9b476d4d15125dfcbd3",
+      "catalogContentHash": "sha256:0c56438b69da824a08963f5492096a9387eacfc84ac72c572103a7a3239b8890",
+      "sourceReleaseContentHash": "sha256:a72bfec6700904360882893a96db5a9420efccfb46ad78f1e3826301abe1f29e"
+    },
+    "scenarioId": "ideal_pwm_output_stage_transient",
+    "scenarioHash": "a09afbbb72d487c1",
+    "serializationHash": "550f2daffe407ca3",
+    "analysis": "tran",
+    "modelTier": "behavioral",
+    "attestation": "none",
+    "productionProfileBindings": [
+      {
+        "selectedComponentId": "output-capacitor",
+        "assemblyComponentId": "output-capacitor-1",
+        "circuitComponentId": "output-capacitor-1",
+        "physicalInstanceOrdinal": 1,
+        "selectedLineQuantityPerAssembly": 2,
+        "representedQuantityPerAssembly": 1,
+        "classification": "physical",
+        "profileId": "packages/design-library/parts/shared.mlcc-capacitor/murata-manufacturing/GRM32ER71E226KE15L.json",
+        "profileContentHash": "sha256:ba45d2aae55200c43cb69718e5d31f5e34f5995e049a60945072f6eac05fc5da",
+        "manufacturerId": "murata-manufacturing",
+        "manufacturerPartNumber": "GRM32ER71E226KE15L",
+        "nominalValue": {
+          "value": 0.000022,
+          "unit": "F"
+        },
+        "nominalEvidenceContentHash": "sha256:31eff98e0e2198e8199f7fb5e6ef8a6e731fc6b62dd7540693cd30ed2a92f873",
+        "representation": "ideal_nominal_capacitor",
+        "reviewedOperatingConditionStatus": "outside_or_unproved"
+      },
+      {
+        "selectedComponentId": "output-capacitor",
+        "assemblyComponentId": "output-capacitor-2",
+        "circuitComponentId": "output-capacitor-2",
+        "physicalInstanceOrdinal": 2,
+        "selectedLineQuantityPerAssembly": 2,
+        "representedQuantityPerAssembly": 1,
+        "classification": "physical",
+        "profileId": "packages/design-library/parts/shared.mlcc-capacitor/murata-manufacturing/GRM32ER71E226KE15L.json",
+        "profileContentHash": "sha256:ba45d2aae55200c43cb69718e5d31f5e34f5995e049a60945072f6eac05fc5da",
+        "manufacturerId": "murata-manufacturing",
+        "manufacturerPartNumber": "GRM32ER71E226KE15L",
+        "nominalValue": {
+          "value": 0.000022,
+          "unit": "F"
+        },
+        "nominalEvidenceContentHash": "sha256:31eff98e0e2198e8199f7fb5e6ef8a6e731fc6b62dd7540693cd30ed2a92f873",
+        "representation": "ideal_nominal_capacitor",
+        "reviewedOperatingConditionStatus": "outside_or_unproved"
+      },
+      {
+        "selectedComponentId": "power-inductor",
+        "assemblyComponentId": "power-inductor",
+        "circuitComponentId": "power-inductor",
+        "physicalInstanceOrdinal": 1,
+        "selectedLineQuantityPerAssembly": 1,
+        "representedQuantityPerAssembly": 1,
+        "classification": "physical",
+        "profileId": "packages/design-library/parts/power.power-inductor/bel-fuse/F1F2-0804-100M.json",
+        "profileContentHash": "sha256:992fbb33e9d98f313c3d19fa3e7387e84651be786e44ed7b7e1e45edb9d7019b",
+        "manufacturerId": "bel-fuse",
+        "manufacturerPartNumber": "F1F2-0804-100M",
+        "nominalValue": {
+          "value": 0.00001,
+          "unit": "H"
+        },
+        "nominalEvidenceContentHash": "sha256:c3523b58c262a6d39716711a5a05a5b6e5a60081eb15818bf35ba4b93e7a828f",
+        "representation": "ideal_nominal_inductor",
+        "reviewedOperatingConditionStatus": "outside"
+      }
+    ],
+    "primaryBinding": {
+      "selectedComponentId": "primary",
+      "circuitComponentId": "ideal-pwm-primary",
+      "manufacturerPartNumber": "TPS54302DDCR",
+      "classification": "behavioral",
+      "executableSelectedPartModel": false
+    },
+    "engineIdentity": {
+      "id": "@opencircuit/ngspice-wasm",
+      "buildVersion": "ngspice-46-opencircuit-wasm1",
+      "simulatorVersion": "ngspice-46",
+      "solver": "KLU",
+      "numericFormat": "ieee754-binary64"
+    },
+    "netlistContentHash": "sha256:7d0a83af5d553344adaedbd6ab9d2ad86a70630313ab56045e46304c9eaeac97",
+    "sampleContentHash": "sha256:8f54e9c2e62ddfefaaa6b33b16dc781677d0b97a1e513590899c40160bb6215d",
+    "receiptContentHash": "sha256:656edd7163ab6b003b9b481aba170f93992366c03513e2c846b90a2ebc6a51a3",
+    "repeatableBrowserReceipt": true,
+    "selectedVectors": [
+      {
+        "name": "i(@coc_6f75747075742d636170616369746f722d31[i])",
+        "metric": "full-scale",
+        "maxAbsError": 1.446816000338913e-10,
+        "maxRelativeError": 2.7002188247680306e-11
+      },
+      {
+        "name": "i(@coc_6f75747075742d636170616369746f722d32[i])",
+        "metric": "full-scale",
+        "maxAbsError": 1.446816000338913e-10,
+        "maxRelativeError": 2.7002188247680306e-11
+      },
+      {
+        "name": "i(@loc_706f7765722d696e647563746f72[i])",
+        "metric": "full-scale",
+        "maxAbsError": 1.1368683772161603e-13,
+        "maxRelativeError": 1.041916506557889e-14
+      },
+      {
+        "name": "i(@roc_6e6f6d696e616c2d6c6f6164[i])",
+        "metric": "full-scale",
+        "maxAbsError": 2.0539125955565396e-15,
+        "maxRelativeError": 6.230389912301845e-15
+      },
+      {
+        "name": "v(n1)",
+        "metric": "full-scale",
+        "maxAbsError": 0,
+        "maxRelativeError": 0
+      },
+      {
+        "name": "v(n2)",
+        "metric": "full-scale",
+        "maxAbsError": 5.062616992290714e-14,
+        "maxRelativeError": 6.142827675696522e-15
+      }
+    ],
+    "fullVectorComparisonPass": true,
+    "fullVectorComparisonIsReleaseGate": false,
+    "relation": "Iinductor=Icapacitor1+Icapacitor2+Iload and Iload=Voutput/Rload for two parallel per-part ideal nominal capacitor primitives",
+    "native": {
+      "sampleCount": 4371,
+      "inputSpanV": 12,
+      "outputSpanV": 8.241509056684835,
+      "maximumAbsoluteInductorCurrentA": 10.911319381741608,
+      "maximumAbsoluteCapacitorCurrentsA": [
+        5.3581435218058875,
+        5.3581435218058875
+      ],
+      "maximumOutputNodeKclResidualA": 3.2319247278422836e-10,
+      "maximumLoadRelationResidualA": 5.551115123125783e-17,
+      "operatingConditionsWithinReviewedEvidence": false,
+      "physicalWaveformFidelityProved": false
+    },
+    "browserWasm": {
+      "sampleCount": 4371,
+      "inputSpanV": 12,
+      "outputSpanV": 8.241509056684832,
+      "maximumAbsoluteInductorCurrentA": 10.911319381741539,
+      "maximumAbsoluteCapacitorCurrentsA": [
+        5.358143521830053,
+        5.358143521830053
+      ],
+      "maximumOutputNodeKclResidualA": 3.004381743387796e-10,
+      "maximumLoadRelationResidualA": 5.551115123125783e-17,
+      "operatingConditionsWithinReviewedEvidence": false,
+      "physicalWaveformFidelityProved": false
+    },
+    "crossEngineAbsoluteInductorCurrentRelativeDifference": 6.349178711837137e-15,
+    "operatingConditionsWithinReviewedEvidence": false,
+    "physicalWaveformFidelityProved": false,
+    "pass": true
+  },
+  "pass": true
+}

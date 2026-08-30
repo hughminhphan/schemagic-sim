@@ -1,0 +1,102 @@
+import { createInstalledMotorRecipeSet } from "./motor-engine-internal";
+import { createInstalledPowerRecipeSet } from "./power-engine-internal";
+import type { NativeRecipeV2 } from "./types";
+
+export {
+  POWER_FEEDBACK_DIVIDER_V2_MAX_PAIR_EVALUATIONS,
+  POWER_OUTPUT_VOLTAGE_TOLERANCE_V2,
+  selectPowerFeedbackDividerV2,
+  type PowerFeedbackDividerInputV2,
+  type PowerFeedbackDividerPointV2,
+  type PowerFeedbackDividerPrimaryClassV2,
+  type PowerFeedbackDividerSelectionV2,
+  type SelectedPowerFeedbackDividerV2,
+} from "./power-feedback-divider-v2";
+export {
+  powerPassiveCapacitorCandidateFromReviewedProfileV1,
+  powerPassiveInductorCandidateFromReviewedProfileV1,
+  selectPowerIntegratedBuckPassivesV1,
+  type PowerBuckConductionModeV1,
+  type PowerIntegratedBuckOperatingEnvelopeV1,
+  type PowerPassiveCalculationAuthorityV1,
+  type PowerPassiveCapacitorCandidateV1,
+  type PowerPassiveCombinationV1,
+  type PowerPassiveDiagnosticStatusV1,
+  type PowerPassiveDiagnosticV1,
+  type PowerPassiveEvidenceAuthorityV1,
+  type PowerPassiveEvidenceNumberV1,
+  type PowerPassiveInductorCandidateV1,
+  type PowerPassiveOperatingPointV1,
+  type PowerPassiveRankV1,
+  type PowerPassiveSelectionInputV1,
+  type PowerPassiveSelectionResultV1,
+  type PowerPassiveWorstCaseV1,
+} from "./power-passive-selection-v1";
+export { MOTOR_NATIVE_INTEGRATED_H_BRIDGE_RECIPE_FACTS_V32 } from "./motor-integrated-v32";
+export {
+  MOTOR_INTEGRATED_V32_MODE_QUALIFIED_DRV8876_PROFILE_CONTENT_HASH,
+  MOTOR_INTEGRATED_V32_MODE_QUALIFIED_DRV8876_SOURCE_CONTENT_HASH,
+  MOTOR_NATIVE_INTEGRATED_H_BRIDGE_RECIPE_FACTS_V32_MODE_QUALIFIED,
+} from "./motor-integrated-v32-mode-qualified";
+export {
+  MOTOR_INTEGRATED_V32_MODE_QUALIFIED_REFRESHED_DRV8876_PROFILE_CONTENT_HASH,
+  MOTOR_INTEGRATED_V32_MODE_QUALIFIED_REFRESHED_DRV8876_SOURCE_CONTENT_HASH,
+  MOTOR_NATIVE_INTEGRATED_H_BRIDGE_RECIPE_FACTS_V32_MODE_QUALIFIED_BINDING_REFRESHED,
+} from "./motor-integrated-v32-mode-qualified-binding-refreshed";
+export {
+  MOTOR_INTEGRATED_V32_LOCAL_NOMINAL_C1608_PROFILE_CONTENT_HASH,
+  MOTOR_INTEGRATED_V32_LOCAL_NOMINAL_C1608_SOURCE_CONTENT_HASH,
+  MOTOR_INTEGRATED_V32_LOCAL_NOMINAL_DRV8876_PROFILE_CONTENT_HASH,
+  MOTOR_INTEGRATED_V32_LOCAL_NOMINAL_DRV8876_SOURCE_CONTENT_HASH,
+  MOTOR_NATIVE_INTEGRATED_H_BRIDGE_RECIPE_FACTS_V32_LOCAL_CAPACITANCE_RECOMMENDATION_QUALIFIED,
+} from "./motor-integrated-v32-local-capacitance-recommendation-qualified";
+export {
+  MOTOR_INTEGRATED_V32_COMPANION_NETWORK_DRV8262_PROFILE_CONTENT_HASH,
+  MOTOR_INTEGRATED_V32_COMPANION_NETWORK_DRV8262_PROFILE_ID,
+  MOTOR_INTEGRATED_V32_COMPANION_NETWORK_DRV8262_SOURCE_CONTENT_HASH,
+  MOTOR_INTEGRATED_V32_COMPANION_NETWORK_RULE_ID,
+  MOTOR_NATIVE_INTEGRATED_H_BRIDGE_RECIPE_FACTS_V32_COMPANION_NETWORK_GATED,
+} from "./motor-integrated-v32-companion-network-gated";
+export {
+  MOTOR_EXTERNAL_V31_DIRECT_GATE_MIC4606_PROFILE_CONTENT_HASH,
+  MOTOR_EXTERNAL_V31_DIRECT_GATE_MIC4606_SOURCE_CONTENT_HASH,
+  MOTOR_EXTERNAL_V31_DIRECT_GATE_MIC4606_SOURCE_URL,
+  MOTOR_EXTERNAL_V31_TVS_PROFILE_CONTENT_HASH,
+  MOTOR_EXTERNAL_V31_TVS_SOURCE_CONTENT_HASH,
+  MOTOR_EXTERNAL_V31_TVS_SOURCE_URL,
+  MOTOR_NATIVE_EXTERNAL_NMOS_RECIPE_FACTS_V31_DIRECT_GATE,
+  MOTOR_NATIVE_EXTERNAL_NMOS_RECIPE_FACTS_V31_DIRECT_GATE_CAPACITOR_ROLE_QUALIFIED,
+  MOTOR_NATIVE_EXTERNAL_NMOS_RECIPE_FACTS_V31_INTERFACE_QUALIFIED,
+  MOTOR_NATIVE_EXTERNAL_NMOS_RECIPE_FACTS_V31_TVS_VOLTAGE_QUALIFIED,
+  MOTOR_NATIVE_EXTERNAL_NMOS_RECIPE_FACTS_V31_ROLE_QUALIFIED,
+  MOTOR_NATIVE_EXTERNAL_NMOS_RECIPE_FACTS_V31_ROLE_QUALIFIED_BINDING_REFRESHED,
+} from "./motor-external-v2";
+export { POWER_NATIVE_INTEGRATED_SYNCHRONOUS_BUCK_RECIPE_FACTS_V33 } from "./power-integrated-v33";
+export { POWER_NATIVE_INTEGRATED_SYNCHRONOUS_BUCK_RECIPE_FACTS_V34 } from "./power-integrated-v34";
+export {
+  POWER_INTEGRATED_V34_QUALIFIED_INDUCTOR_PROFILE_CONTENT_HASH,
+  POWER_INTEGRATED_V345_REFERENCE_INDUCTOR_PROFILE_CONTENT_HASH,
+  POWER_INTEGRATED_V345_REFERENCE_OUTPUT_CAPACITOR_PROFILE_CONTENT_HASH,
+  POWER_INTEGRATED_V345_REFERENCE_OUTPUT_CAPACITOR_QUANTITY,
+  POWER_NATIVE_INTEGRATED_SYNCHRONOUS_BUCK_RECIPE_FACTS_V34_INDUCTOR_QUALIFIED,
+  POWER_NATIVE_INTEGRATED_SYNCHRONOUS_BUCK_RECIPE_FACTS_V34_INDUCTOR_QUALIFIED_DC_REGULATION,
+  POWER_NATIVE_INTEGRATED_SYNCHRONOUS_BUCK_RECIPE_FACTS_V34_INDUCTOR_QUALIFIED_REQUEST_CONDITIONAL,
+  POWER_NATIVE_INTEGRATED_SYNCHRONOUS_BUCK_RECIPE_FACTS_V34_REFERENCE_PASSIVE_OBSERVATIONS,
+  POWER_NATIVE_INTEGRATED_SYNCHRONOUS_BUCK_RECIPE_FACTS_V34_REFERENCE_PASSIVES,
+} from "./power-integrated-v34-inductor-qualified";
+export {
+  MOTOR_PRODUCTION_CONSTRAINT_POLICY_CATALOG_V3,
+  POWER_PRODUCTION_CONSTRAINT_POLICY_CATALOG_V3,
+  PRODUCTION_CONSTRAINT_POLICY_CATALOG_V3_SCOPE_BOUNDARY,
+} from "./production-constraint-policies-v3";
+
+/** Engine-internal leaf factory. Every call returns independent recursively frozen records. */
+export function createInstalledNativeRecipeSets(): Readonly<Record<"motor.brushed-dc" | "power.buck", readonly NativeRecipeV2[]>> {
+  return Object.freeze({
+    "motor.brushed-dc": createInstalledMotorRecipeSet(),
+    "power.buck": createInstalledPowerRecipeSet(),
+  });
+}
+Object.freeze(createInstalledNativeRecipeSets);
+
+export type { NativeRecipeRefV2, NativeRecipeV2 } from "./types";

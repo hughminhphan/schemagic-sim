@@ -1,0 +1,732 @@
+{
+  "schema_version": "1.0.0",
+  "manifest_id": "schemagic-designer-v1-data",
+  "status": "milestone-0-planning-baseline",
+  "updated_at": "2026-08-27",
+  "authority": "docs/DESIGNER_V1_HANDOFF.md",
+  "product": {
+    "umbrella": "scheMAGIC Designer",
+    "applications": {
+      "motor": "scheMAGIC Motor Designer",
+      "power": "scheMAGIC Power Designer"
+    },
+    "component_library": "scheMAGIC Component Library",
+    "sourcing": "scheMAGIC Sourcing",
+    "internal_package_scope": "@opencircuit/*",
+    "package_scope_note": "Internal compatibility namespace only; public product terminology remains scheMAGIC."
+  },
+  "review_states": [
+    "planned",
+    "researching",
+    "authored",
+    "in_independent_review",
+    "reviewed",
+    "blocked"
+  ],
+  "ownership_tracks": [
+    "motor",
+    "power",
+    "integration-data-review"
+  ],
+  "requirement_levels": [
+    "no",
+    "baseline",
+    "recipe_conditional"
+  ],
+  "rules": {
+    "part_identity": "Every catalog and sourcing join uses ManufacturerPartIdentity { manufacturerId, manufacturerPartNumber }; a manufacturer part number alone is never treated as globally unique.",
+    "manufacturer_id": "A stable normalized ManufacturerId is the machine key. Manufacturer display names and distributor spellings are aliases and never replace it.",
+    "profile_granularity": "one stable manufacturer ID plus exact manufacturer part number per profile",
+    "single_writer": "Every manufacturer-ID and exact-MPN pair must have one owning track before its profile is created.",
+    "independent_review": "The review track must differ from the owning track before a profile can become reviewed.",
+    "shared_profile_owner": "integration-data-review",
+    "reviewed_definition": "Schema-valid engineering facts with primary-source locators, compatible publication rights, declared valid ranges, completed independent review, and all required deterministic checks passing.",
+    "simulation_separation": "A reviewed design profile does not imply that a redistributable SPICE model exists or has been reviewed.",
+    "manufacturer_neutrality": "Manufacturer identity is display and filter metadata and cannot influence admission or ranking.",
+    "unknown_data": "Missing facts remain unknown and cannot improve feasibility, confidence, or score.",
+    "target_counting": "A reviewed profile may count toward each application target whose required envelope and evidence it satisfies; application target counts are not added together.",
+    "coverage_gate": "Profile and manufacturer minimums are necessary but not sufficient; the declared coverage requirements and all four golden design fixtures must also pass.",
+    "closed_contracts": "Persisted profile and manifest validators reject unknown keys recursively; new fields require an explicit schema-version change and migration policy.",
+    "profile_path_template": "packages/design-library/parts/<part-class>/<manufacturer-id>/<mpn>.json"
+  },
+  "summary": {
+    "part_class_count": 12,
+    "planned_part_classes": 12,
+    "reviewed_part_classes": 11,
+    "reviewed_profile_count": 24,
+    "note": "Counts describe design profiles, not packages already present in the scheMAGIC Simulator model library."
+  },
+  "part_classes": [
+    {
+      "id": "motor.integrated-h-bridge",
+      "display_name": "Integrated brushed-DC H-bridge driver",
+      "ownership_track": "motor",
+      "required_for": {
+        "motor": true,
+        "power": false
+      },
+      "requirement_level": {
+        "motor": "baseline",
+        "power": "no"
+      },
+      "minimum_targets": {
+        "motor": {
+          "profiles": 8,
+          "manufacturers": 3
+        }
+      },
+      "coverage_requirements": [
+        "4.5 V to 60 V Motor V1 envelope in overlapping device ranges",
+        "0.1 A to 10 A continuous-current design envelope",
+        "up to 30 A stall or peak requirements where supported",
+        "3.3 V and 5 V logic compatibility",
+        "1 kHz to 100 kHz PWM range subject to device limits"
+      ],
+      "review_state": "reviewed",
+      "current_reviewed_profiles": 3,
+      "current_reviewed_manufacturers": 2
+    },
+    {
+      "id": "motor.full-bridge-gate-driver",
+      "display_name": "External-FET full-bridge gate driver",
+      "ownership_track": "motor",
+      "required_for": {
+        "motor": true,
+        "power": false
+      },
+      "requirement_level": {
+        "motor": "baseline",
+        "power": "no"
+      },
+      "minimum_targets": {
+        "motor": {
+          "profiles": 6,
+          "manufacturers": 3
+        }
+      },
+      "coverage_requirements": [
+        "4.5 V to 60 V Motor V1 envelope in overlapping device ranges",
+        "3.3 V and 5 V input logic",
+        "documented source and sink current",
+        "documented dead-time or shoot-through behavior",
+        "documented bootstrap or charge-pump limits"
+      ],
+      "review_state": "reviewed",
+      "current_reviewed_profiles": 1,
+      "current_reviewed_manufacturers": 1
+    },
+    {
+      "id": "power.integrated-synchronous-buck-regulator",
+      "display_name": "Integrated-FET synchronous buck regulator",
+      "ownership_track": "power",
+      "required_for": {
+        "motor": false,
+        "power": true
+      },
+      "requirement_level": {
+        "motor": "no",
+        "power": "baseline"
+      },
+      "minimum_targets": {
+        "power": {
+          "profiles": 12,
+          "manufacturers": 3
+        }
+      },
+      "coverage_requirements": [
+        "5 V to 60 V input Power V1 envelope in overlapping device ranges",
+        "0.8 V to 24 V output range",
+        "0.1 A to 10 A output-current design envelope",
+        "documented switching-frequency and minimum on or off time",
+        "documented thermal and current-limit behavior"
+      ],
+      "review_state": "reviewed",
+      "current_reviewed_profiles": 1,
+      "current_reviewed_manufacturers": 1
+    },
+    {
+      "id": "power.external-fet-synchronous-buck-controller",
+      "display_name": "External-FET synchronous buck controller",
+      "ownership_track": "power",
+      "required_for": {
+        "motor": false,
+        "power": true
+      },
+      "requirement_level": {
+        "motor": "no",
+        "power": "baseline"
+      },
+      "minimum_targets": {
+        "power": {
+          "profiles": 6,
+          "manufacturers": 3
+        }
+      },
+      "coverage_requirements": [
+        "5 V to 60 V input Power V1 envelope in overlapping device ranges",
+        "0.8 V to 24 V output range",
+        "documented gate-drive limits",
+        "documented current-limit or current-sense behavior",
+        "control-model evidence sufficient for every claimed stability metric"
+      ],
+      "review_state": "planned",
+      "current_reviewed_profiles": 0,
+      "current_reviewed_manufacturers": 0
+    },
+    {
+      "id": "shared.n-channel-power-mosfet",
+      "display_name": "N-channel power MOSFET",
+      "ownership_track": "integration-data-review",
+      "required_for": {
+        "motor": true,
+        "power": true
+      },
+      "requirement_level": {
+        "motor": "baseline",
+        "power": "baseline"
+      },
+      "minimum_targets": {
+        "motor": {
+          "profiles": 15,
+          "manufacturers": 3
+        },
+        "power": {
+          "profiles": 12,
+          "manufacturers": 3
+        }
+      },
+      "coverage_requirements": [
+        "Voltage classes spanning both V1 envelopes with declared transient margin assumptions",
+        "RDS(on) at the actual supported gate voltage",
+        "total gate charge and switching evidence",
+        "continuous and pulsed current limits",
+        "package thermal data and declared board assumptions"
+      ],
+      "review_state": "reviewed",
+      "current_reviewed_profiles": 1,
+      "current_reviewed_manufacturers": 1
+    },
+    {
+      "id": "shared.current-sense-resistor",
+      "display_name": "Current-sense shunt resistor",
+      "ownership_track": "integration-data-review",
+      "required_for": {
+        "motor": true,
+        "power": true
+      },
+      "requirement_level": {
+        "motor": "recipe_conditional",
+        "power": "recipe_conditional"
+      },
+      "minimum_targets": {
+        "motor": {
+          "profiles": 6,
+          "manufacturers": 3
+        },
+        "power": {
+          "profiles": 6,
+          "manufacturers": 3
+        }
+      },
+      "coverage_requirements": [
+        "Resistance tolerance and temperature coefficient",
+        "continuous and pulse power ratings",
+        "package thermal limits",
+        "Kelvin connection metadata where applicable"
+      ],
+      "review_state": "reviewed",
+      "current_reviewed_profiles": 1,
+      "current_reviewed_manufacturers": 1
+    },
+    {
+      "id": "shared.general-purpose-resistor",
+      "display_name": "General-purpose resistor",
+      "ownership_track": "integration-data-review",
+      "required_for": {
+        "motor": true,
+        "power": true
+      },
+      "requirement_level": {
+        "motor": "baseline",
+        "power": "baseline"
+      },
+      "minimum_targets": {
+        "motor": {
+          "profiles": 12,
+          "manufacturers": 3
+        },
+        "power": {
+          "profiles": 18,
+          "manufacturers": 3
+        }
+      },
+      "coverage_requirements": [
+        "Gate, pull-down, and sense-filter values used by Motor V1 recipes",
+        "Feedback, compensation, UVLO, current-sense, and snubber values used by Power V1 recipes",
+        "tolerance and temperature coefficient",
+        "working-voltage, continuous-power, and pulse-power limits where applicable",
+        "package and assembly metadata"
+      ],
+      "review_state": "reviewed",
+      "current_reviewed_profiles": 4,
+      "current_reviewed_manufacturers": 3
+    },
+    {
+      "id": "shared.switching-diode",
+      "display_name": "Bootstrap and switching diode",
+      "ownership_track": "integration-data-review",
+      "required_for": {
+        "motor": true,
+        "power": true
+      },
+      "requirement_level": {
+        "motor": "recipe_conditional",
+        "power": "recipe_conditional"
+      },
+      "minimum_targets": {
+        "motor": {
+          "profiles": 6,
+          "manufacturers": 3
+        },
+        "power": {
+          "profiles": 6,
+          "manufacturers": 3
+        }
+      },
+      "coverage_requirements": [
+        "Reverse-voltage margin",
+        "forward-voltage and current rating",
+        "reverse-recovery behavior where switching estimates depend on it"
+      ],
+      "review_state": "reviewed",
+      "current_reviewed_profiles": 1,
+      "current_reviewed_manufacturers": 1
+    },
+    {
+      "id": "shared.mlcc-capacitor",
+      "display_name": "Multilayer ceramic capacitor",
+      "ownership_track": "integration-data-review",
+      "required_for": {
+        "motor": true,
+        "power": true
+      },
+      "requirement_level": {
+        "motor": "baseline",
+        "power": "baseline"
+      },
+      "minimum_targets": {
+        "motor": {
+          "profiles": 18,
+          "manufacturers": 3
+        },
+        "power": {
+          "profiles": 24,
+          "manufacturers": 3
+        }
+      },
+      "coverage_requirements": [
+        "Motor local decoupling, bootstrap, and sense-filter roles",
+        "Power input, output, bootstrap, compensation, soft-start, and snubber roles",
+        "capacitance and voltage classes spanning both V1 envelopes",
+        "effective capacitance at bias when available",
+        "temperature characteristic and ESR or impedance evidence where required"
+      ],
+      "review_state": "reviewed",
+      "current_reviewed_profiles": 5,
+      "current_reviewed_manufacturers": 3
+    },
+    {
+      "id": "shared.bulk-capacitor",
+      "display_name": "Bulk aluminum or polymer capacitor",
+      "ownership_track": "integration-data-review",
+      "required_for": {
+        "motor": true,
+        "power": true
+      },
+      "requirement_level": {
+        "motor": "baseline",
+        "power": "recipe_conditional"
+      },
+      "minimum_targets": {
+        "motor": {
+          "profiles": 8,
+          "manufacturers": 3
+        },
+        "power": {
+          "profiles": 8,
+          "manufacturers": 3
+        }
+      },
+      "coverage_requirements": [
+        "Capacitance and voltage classes spanning both V1 envelopes",
+        "ESR and ripple-current rating",
+        "temperature and lifetime rating",
+        "declared transient-energy assumptions for motor use"
+      ],
+      "review_state": "reviewed",
+      "current_reviewed_profiles": 2,
+      "current_reviewed_manufacturers": 2
+    },
+    {
+      "id": "motor.supply-tvs-diode",
+      "display_name": "Motor supply transient-voltage suppressor diode",
+      "ownership_track": "integration-data-review",
+      "required_for": {
+        "motor": true,
+        "power": false
+      },
+      "requirement_level": {
+        "motor": "recipe_conditional",
+        "power": "no"
+      },
+      "minimum_targets": {
+        "motor": {
+          "profiles": 6,
+          "manufacturers": 3
+        }
+      },
+      "coverage_requirements": [
+        "Stand-off and breakdown voltage",
+        "clamping voltage at a stated current",
+        "pulse-power test waveform",
+        "explicit statement that system transient suitability remains an engineering check"
+      ],
+      "review_state": "reviewed",
+      "current_reviewed_profiles": 2,
+      "current_reviewed_manufacturers": 2
+    },
+    {
+      "id": "power.power-inductor",
+      "display_name": "Buck power inductor",
+      "ownership_track": "integration-data-review",
+      "required_for": {
+        "motor": false,
+        "power": true
+      },
+      "requirement_level": {
+        "motor": "no",
+        "power": "baseline"
+      },
+      "minimum_targets": {
+        "power": {
+          "profiles": 18,
+          "manufacturers": 3
+        }
+      },
+      "coverage_requirements": [
+        "Inductance values required by both Power V1 fixtures",
+        "saturation and RMS current ratings with test conditions",
+        "DCR and temperature behavior",
+        "core-loss evidence where a loss metric is claimed"
+      ],
+      "review_state": "reviewed",
+      "current_reviewed_profiles": 3,
+      "current_reviewed_manufacturers": 2
+    }
+  ],
+  "exact_mpn_ownership": [
+    {
+      "part": { "manufacturerId": "allegro-microsystems", "manufacturerPartNumber": "A3941KLPTR-T" },
+      "part_class_id": "motor.full-bridge-gate-driver",
+      "profile_path": "packages/design-library/parts/motor.full-bridge-gate-driver/allegro-microsystems/A3941KLPTR-T.json",
+      "owning_track": "motor",
+      "review_track": "integration-data-review",
+      "review_state": "researching"
+    },
+    {
+      "part": { "manufacturerId": "microchip-technology", "manufacturerPartNumber": "MIC4606-2YML-T5" },
+      "part_class_id": "motor.full-bridge-gate-driver",
+      "profile_path": "packages/design-library/parts/motor.full-bridge-gate-driver/microchip-technology/MIC4606-2YML-T5.json",
+      "owning_track": "motor",
+      "review_track": "integration-data-review",
+      "review_state": "reviewed"
+    },
+    {
+      "part": { "manufacturerId": "renesas-electronics", "manufacturerPartNumber": "HIP4081AIBZ" },
+      "part_class_id": "motor.full-bridge-gate-driver",
+      "profile_path": "packages/design-library/parts/motor.full-bridge-gate-driver/renesas-electronics/HIP4081AIBZ.json",
+      "owning_track": "motor",
+      "review_track": "integration-data-review",
+      "review_state": "researching"
+    },
+    {
+      "part": { "manufacturerId": "texas-instruments", "manufacturerPartNumber": "DRV8701ERGER" },
+      "part_class_id": "motor.full-bridge-gate-driver",
+      "profile_path": "packages/design-library/parts/motor.full-bridge-gate-driver/texas-instruments/DRV8701ERGER.json",
+      "owning_track": "motor",
+      "review_track": "integration-data-review",
+      "review_state": "researching"
+    },
+    {
+      "part": { "manufacturerId": "stmicroelectronics", "manufacturerPartNumber": "STSPIN840" },
+      "part_class_id": "motor.integrated-h-bridge",
+      "profile_path": "packages/design-library/parts/motor.integrated-h-bridge/stmicroelectronics/STSPIN840.json",
+      "owning_track": "motor",
+      "review_track": "integration-data-review",
+      "review_state": "reviewed"
+    },
+    {
+      "part": { "manufacturerId": "texas-instruments", "manufacturerPartNumber": "DRV8262DDVR" },
+      "part_class_id": "motor.integrated-h-bridge",
+      "profile_path": "packages/design-library/parts/motor.integrated-h-bridge/texas-instruments/DRV8262DDVR.json",
+      "owning_track": "motor",
+      "review_track": "integration-data-review",
+      "review_state": "reviewed"
+    },
+    {
+      "part": { "manufacturerId": "texas-instruments", "manufacturerPartNumber": "DRV8876PWPR" },
+      "part_class_id": "motor.integrated-h-bridge",
+      "profile_path": "packages/design-library/parts/motor.integrated-h-bridge/texas-instruments/DRV8876PWPR.json",
+      "owning_track": "motor",
+      "review_track": "integration-data-review",
+      "review_state": "reviewed"
+    },
+    {
+      "part": { "manufacturerId": "toshiba-semiconductor-storage", "manufacturerPartNumber": "TB67H450AFNG(O,EL)" },
+      "part_class_id": "motor.integrated-h-bridge",
+      "profile_path": "packages/design-library/parts/motor.integrated-h-bridge/toshiba-semiconductor-storage/TB67H450AFNG%28O%2CEL%29.json",
+      "owning_track": "motor",
+      "review_track": "integration-data-review",
+      "review_state": "researching"
+    },
+    {
+      "part": { "manufacturerId": "bourns", "manufacturerPartNumber": "PTVS10-058C-SH" },
+      "part_class_id": "motor.supply-tvs-diode",
+      "profile_path": "packages/design-library/parts/motor.supply-tvs-diode/bourns/PTVS10-058C-SH.json",
+      "owning_track": "integration-data-review",
+      "review_track": "motor",
+      "review_state": "reviewed"
+    },
+    {
+      "part": { "manufacturerId": "diodes-incorporated", "manufacturerPartNumber": "3.0SMCJ33CAQ" },
+      "part_class_id": "motor.supply-tvs-diode",
+      "profile_path": "packages/design-library/parts/motor.supply-tvs-diode/diodes-incorporated/3%2E0SMCJ33CAQ.json",
+      "owning_track": "integration-data-review",
+      "review_track": "motor",
+      "review_state": "reviewed"
+    },
+    {
+      "part": { "manufacturerId": "analog-devices", "manufacturerPartNumber": "LTC3891EFE#PBF" },
+      "part_class_id": "power.external-fet-synchronous-buck-controller",
+      "profile_path": "packages/design-library/parts/power.external-fet-synchronous-buck-controller/analog-devices/LTC3891EFE%23PBF.json",
+      "owning_track": "power",
+      "review_track": "integration-data-review",
+      "review_state": "researching"
+    },
+    {
+      "part": { "manufacturerId": "analog-devices", "manufacturerPartNumber": "LTC3895EFE#PBF" },
+      "part_class_id": "power.external-fet-synchronous-buck-controller",
+      "profile_path": "packages/design-library/parts/power.external-fet-synchronous-buck-controller/analog-devices/LTC3895EFE%23PBF.json",
+      "owning_track": "power",
+      "review_track": "integration-data-review",
+      "review_state": "researching"
+    },
+    {
+      "part": { "manufacturerId": "texas-instruments", "manufacturerPartNumber": "LM5145RGYR" },
+      "part_class_id": "power.external-fet-synchronous-buck-controller",
+      "profile_path": "packages/design-library/parts/power.external-fet-synchronous-buck-controller/texas-instruments/LM5145RGYR.json",
+      "owning_track": "power",
+      "review_track": "integration-data-review",
+      "review_state": "researching"
+    },
+    {
+      "part": { "manufacturerId": "analog-devices", "manufacturerPartNumber": "LT8640SIV#PBF" },
+      "part_class_id": "power.integrated-synchronous-buck-regulator",
+      "profile_path": "packages/design-library/parts/power.integrated-synchronous-buck-regulator/analog-devices/LT8640SIV%23PBF.json",
+      "owning_track": "power",
+      "review_track": "integration-data-review",
+      "review_state": "researching"
+    },
+    {
+      "part": { "manufacturerId": "onsemi", "manufacturerPartNumber": "NCP1599MNTWG" },
+      "part_class_id": "power.integrated-synchronous-buck-regulator",
+      "profile_path": "packages/design-library/parts/power.integrated-synchronous-buck-regulator/onsemi/NCP1599MNTWG.json",
+      "owning_track": "power",
+      "review_track": "integration-data-review",
+      "review_state": "authored"
+    },
+    {
+      "part": { "manufacturerId": "texas-instruments", "manufacturerPartNumber": "LM70880RRXR" },
+      "part_class_id": "power.integrated-synchronous-buck-regulator",
+      "profile_path": "packages/design-library/parts/power.integrated-synchronous-buck-regulator/texas-instruments/LM70880RRXR.json",
+      "owning_track": "power",
+      "review_track": "integration-data-review",
+      "review_state": "researching"
+    },
+    {
+      "part": { "manufacturerId": "texas-instruments", "manufacturerPartNumber": "TPS54302DDCR" },
+      "part_class_id": "power.integrated-synchronous-buck-regulator",
+      "profile_path": "packages/design-library/parts/power.integrated-synchronous-buck-regulator/texas-instruments/TPS54302DDCR.json",
+      "owning_track": "power",
+      "review_track": "integration-data-review",
+      "review_state": "reviewed"
+    },
+    {
+      "part": { "manufacturerId": "bel-fuse", "manufacturerPartNumber": "F1F2-0804-100M" },
+      "part_class_id": "power.power-inductor",
+      "profile_path": "packages/design-library/parts/power.power-inductor/bel-fuse/F1F2-0804-100M.json",
+      "owning_track": "integration-data-review",
+      "review_track": "power",
+      "review_state": "reviewed"
+    },
+    {
+      "part": { "manufacturerId": "bel-fuse", "manufacturerPartNumber": "F1F2-0804-2R2M" },
+      "part_class_id": "power.power-inductor",
+      "profile_path": "packages/design-library/parts/power.power-inductor/bel-fuse/F1F2-0804-2R2M.json",
+      "owning_track": "integration-data-review",
+      "review_track": "power",
+      "review_state": "reviewed"
+    },
+    {
+      "part": { "manufacturerId": "coilcraft", "manufacturerPartNumber": "XAL7030-472MEC" },
+      "part_class_id": "power.power-inductor",
+      "profile_path": "packages/design-library/parts/power.power-inductor/coilcraft/XAL7030-472MEC.json",
+      "owning_track": "integration-data-review",
+      "review_track": "power",
+      "review_state": "authored"
+    },
+    {
+      "part": { "manufacturerId": "murata-manufacturing", "manufacturerPartNumber": "LQM18PN2R2MGHD" },
+      "part_class_id": "power.power-inductor",
+      "profile_path": "packages/design-library/parts/power.power-inductor/murata-manufacturing/LQM18PN2R2MGHD.json",
+      "owning_track": "integration-data-review",
+      "review_track": "power",
+      "review_state": "reviewed"
+    },
+    {
+      "part": { "manufacturerId": "nichicon", "manufacturerPartNumber": "UCM1V331MNS1GS" },
+      "part_class_id": "shared.bulk-capacitor",
+      "profile_path": "packages/design-library/parts/shared.bulk-capacitor/nichicon/UCM1V331MNS1GS.json",
+      "owning_track": "integration-data-review",
+      "review_track": "motor",
+      "review_state": "reviewed"
+    },
+    {
+      "part": { "manufacturerId": "panasonic-industry", "manufacturerPartNumber": "EEHZS1V331V" },
+      "part_class_id": "shared.bulk-capacitor",
+      "profile_path": "packages/design-library/parts/shared.bulk-capacitor/panasonic-industry/EEHZS1V331V.json",
+      "owning_track": "integration-data-review",
+      "review_track": "motor",
+      "review_state": "reviewed"
+    },
+    {
+      "part": { "manufacturerId": "bourns", "manufacturerPartNumber": "CRA2512-FZ-R020ELF" },
+      "part_class_id": "shared.current-sense-resistor",
+      "profile_path": "packages/design-library/parts/shared.current-sense-resistor/bourns/CRA2512-FZ-R020ELF.json",
+      "owning_track": "integration-data-review",
+      "review_track": "power",
+      "review_state": "reviewed"
+    },
+    {
+      "part": { "manufacturerId": "bourns", "manufacturerPartNumber": "CR0603-FX-1003ELF" },
+      "part_class_id": "shared.general-purpose-resistor",
+      "profile_path": "packages/design-library/parts/shared.general-purpose-resistor/bourns/CR0603-FX-1003ELF.json",
+      "owning_track": "integration-data-review",
+      "review_track": "power",
+      "review_state": "reviewed"
+    },
+    {
+      "part": { "manufacturerId": "panasonic-industry", "manufacturerPartNumber": "ERJ3EKF1003V" },
+      "part_class_id": "shared.general-purpose-resistor",
+      "profile_path": "packages/design-library/parts/shared.general-purpose-resistor/panasonic-industry/ERJ3EKF1003V.json",
+      "owning_track": "integration-data-review",
+      "review_track": "power",
+      "review_state": "reviewed"
+    },
+    {
+      "part": { "manufacturerId": "vishay-intertechnology", "manufacturerPartNumber": "CRCW0603100KFKEA" },
+      "part_class_id": "shared.general-purpose-resistor",
+      "profile_path": "packages/design-library/parts/shared.general-purpose-resistor/vishay-intertechnology/CRCW0603100KFKEA.json",
+      "owning_track": "integration-data-review",
+      "review_track": "power",
+      "review_state": "reviewed"
+    },
+    {
+      "part": { "manufacturerId": "vishay-intertechnology", "manufacturerPartNumber": "CRCW0603732KFKEA" },
+      "part_class_id": "shared.general-purpose-resistor",
+      "profile_path": "packages/design-library/parts/shared.general-purpose-resistor/vishay-intertechnology/CRCW0603732KFKEA.json",
+      "owning_track": "integration-data-review",
+      "review_track": "power",
+      "review_state": "reviewed"
+    },
+    {
+      "part": { "manufacturerId": "murata-manufacturing", "manufacturerPartNumber": "GRM31CR61H106KA12L" },
+      "part_class_id": "shared.mlcc-capacitor",
+      "profile_path": "packages/design-library/parts/shared.mlcc-capacitor/murata-manufacturing/GRM31CR61H106KA12L.json",
+      "owning_track": "integration-data-review",
+      "review_track": "motor",
+      "review_state": "reviewed"
+    },
+    {
+      "part": { "manufacturerId": "murata-manufacturing", "manufacturerPartNumber": "GRM32ER71E226KE15L" },
+      "part_class_id": "shared.mlcc-capacitor",
+      "profile_path": "packages/design-library/parts/shared.mlcc-capacitor/murata-manufacturing/GRM32ER71E226KE15L.json",
+      "owning_track": "integration-data-review",
+      "review_track": "power",
+      "review_state": "reviewed"
+    },
+    {
+      "part": { "manufacturerId": "samsung-electro-mechanics", "manufacturerPartNumber": "CL31A106KBHNNNE" },
+      "part_class_id": "shared.mlcc-capacitor",
+      "profile_path": "packages/design-library/parts/shared.mlcc-capacitor/samsung-electro-mechanics/CL31A106KBHNNNE.json",
+      "owning_track": "integration-data-review",
+      "review_track": "power",
+      "review_state": "reviewed"
+    },
+    {
+      "part": { "manufacturerId": "tdk-corporation", "manufacturerPartNumber": "C1608X7R1H104K080AA" },
+      "part_class_id": "shared.mlcc-capacitor",
+      "profile_path": "packages/design-library/parts/shared.mlcc-capacitor/tdk-corporation/C1608X7R1H104K080AA.json",
+      "owning_track": "integration-data-review",
+      "review_track": "motor",
+      "review_state": "reviewed"
+    },
+    {
+      "part": { "manufacturerId": "tdk-corporation", "manufacturerPartNumber": "C3216X7R1H106K160AC" },
+      "part_class_id": "shared.mlcc-capacitor",
+      "profile_path": "packages/design-library/parts/shared.mlcc-capacitor/tdk-corporation/C3216X7R1H106K160AC.json",
+      "owning_track": "integration-data-review",
+      "review_track": "power",
+      "review_state": "reviewed"
+    },
+    {
+      "part": { "manufacturerId": "texas-instruments", "manufacturerPartNumber": "CSD18540Q5B" },
+      "part_class_id": "shared.n-channel-power-mosfet",
+      "profile_path": "packages/design-library/parts/shared.n-channel-power-mosfet/texas-instruments/CSD18540Q5B.json",
+      "owning_track": "integration-data-review",
+      "review_track": "motor",
+      "review_state": "reviewed"
+    },
+    {
+      "part": { "manufacturerId": "diodes-incorporated", "manufacturerPartNumber": "1N4148W-7-F" },
+      "part_class_id": "shared.switching-diode",
+      "profile_path": "packages/design-library/parts/shared.switching-diode/diodes-incorporated/1N4148W-7-F.json",
+      "owning_track": "integration-data-review",
+      "review_track": "motor",
+      "review_state": "reviewed"
+    },
+    {
+      "part": { "manufacturerId": "vishay-intertechnology", "manufacturerPartNumber": "1N4148-TAP" },
+      "part_class_id": "shared.switching-diode",
+      "profile_path": "packages/design-library/parts/shared.switching-diode/vishay-intertechnology/1N4148-TAP.json",
+      "owning_track": "integration-data-review",
+      "review_track": "motor",
+      "review_state": "authored"
+    }
+  ],
+  "exact_mpn_ownership_entry_contract": {
+    "required_fields": [
+      "part",
+      "part_class_id",
+      "profile_path",
+      "owning_track",
+      "review_track",
+      "review_state"
+    ],
+    "part_fields": [
+      "manufacturerId",
+      "manufacturerPartNumber"
+    ],
+    "constraint": "The ManufacturerPartIdentity pair in part must be unique; owning_track and review_track must differ; part_class_id must reference part_classes[].id."
+  }
+}

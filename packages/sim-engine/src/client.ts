@@ -188,6 +188,7 @@ export class SimulationClient {
         data,
         elapsedMs: response.elapsedMs,
         rawfileBytes: response.rawfileBytes,
+        receipt: response.receipt,
         ...(response.sweep ? { sweep: response.sweep } : {}),
         ...(response.noise ? { noise: response.noise } : {}),
       });

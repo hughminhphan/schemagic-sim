@@ -19,10 +19,31 @@ from fit_conveyor import (IDENTITY_VERSION, Unfittable, canonical_hash, citation
 
 PROBE_OPTIONS = ".options reltol=1e-6 abstol=1e-15 vntol=1e-9 itl1=500"
 BISECTION_STEPS = 48
+BOUND_RELATIVE_TOLERANCE = 1e-9
+THRESHOLD_BOUND_ABSOLUTE_TOLERANCE = 1e-10
+RDSON_BOUND_ABSOLUTE_TOLERANCE = 1e-12
+THRESHOLD_INTERIOR_GUARD_ABSOLUTE_V = 1e-7
+THRESHOLD_INTERIOR_GUARD_RELATIVE_SPAN = 1e-6
+THRESHOLD_INTERIOR_GUARD_MAXIMUM_FRACTION = 0.25
 
 
 class Infeasible(Exception):
     """No model in the declared F1 search domain satisfies every constraint."""
+
+
+def inclusive_bound_tolerance(bound, absolute_floor):
+    """Absorb only native-probe floating-point noise at an inclusive source bound."""
+    return max(absolute_floor, abs(float(bound)) * BOUND_RELATIVE_TOLERANCE)
+
+
+def threshold_interior_guard(minimum_v, maximum_v):
+    """Return a deterministic response-space margin that remains inside cited bounds."""
+    span = float(maximum_v) - float(minimum_v)
+    if not span > 0:
+        raise Infeasible(f"threshold interval is degenerate or reversed: {minimum_v} to {maximum_v} V")
+    requested = max(THRESHOLD_INTERIOR_GUARD_ABSOLUTE_V,
+                    span * THRESHOLD_INTERIOR_GUARD_RELATIVE_SPAN)
+    return min(requested, span * THRESHOLD_INTERIOR_GUARD_MAXIMUM_FRACTION)
 
 
 def evidence_hash(characteristic, role, quantity, value_si, unit_si, condition_id, citation_id):
@@ -114,6 +135,8 @@ def validate_constraint_evidence(payload):
         else:
             if electrical["vgs"].get("kind") != "fixed" or electrical["id"].get("kind") != "fixed":
                 raise ValueError(f"{label} RDS condition requires exact VGS and ID")
+            if electrical["vds"] != {"kind": "relation", "relation": "vds_not_stated"}:
+                raise ValueError(f"{label} RDS condition must preserve that VDS was not stated")
             if abs(abs(electrical["vgs"]["value_v"]) - abs(float(constraint["vgs_v"]))) > 1e-15 \
                     or abs(abs(electrical["id"]["value_a"]) - abs(float(constraint["current_a"]))) > 1e-15:
                 raise ValueError(f"{label} probe values do not match RDS condition identity")
@@ -197,7 +220,7 @@ def probe(params, constraints, polarity):
 def bisect_increasing(target, low, high, evaluate):
     low_value = evaluate(low)
     high_value = evaluate(high)
-    tolerance = max(1e-10, abs(target) * 1e-9)
+    tolerance = inclusive_bound_tolerance(target, THRESHOLD_BOUND_ABSOLUTE_TOLERANCE)
     if target < low_value - tolerance or target > high_value + tolerance:
         raise Infeasible(
             f"constraint boundary {target:.12g} lies outside model response "
@@ -216,20 +239,32 @@ def bisect_increasing(target, low, high, evaluate):
     return 0.5 * (low + high)
 
 
-def threshold_domain(rdson, fixed, threshold_constraints, polarity, bounds):
+def threshold_domain(rdson, fixed, threshold_constraints, polarity, bounds, apply_interior_guard=False):
     lower, upper = bounds
+    guard_records = []
     for constraint in threshold_constraints:
         def evaluate(candidate):
             params = model_parameters(candidate, rdson, fixed)
             return probe(params, [constraint], polarity)[constraint["id"]]
 
-        permitted_low = bisect_increasing(constraint["minimum_v"], bounds[0], bounds[1], evaluate)
-        permitted_high = bisect_increasing(constraint["maximum_v"], bounds[0], bounds[1], evaluate)
+        guard = threshold_interior_guard(constraint["minimum_v"], constraint["maximum_v"]) if apply_interior_guard else 0.0
+        guarded_minimum = constraint["minimum_v"] + guard
+        guarded_maximum = constraint["maximum_v"] - guard
+        permitted_low = bisect_increasing(guarded_minimum, bounds[0], bounds[1], evaluate)
+        permitted_high = bisect_increasing(guarded_maximum, bounds[0], bounds[1], evaluate)
         lower = max(lower, permitted_low)
         upper = min(upper, permitted_high)
+        guard_records.append({
+            "constraint_id": constraint["id"],
+            "source_minimum_v": constraint["minimum_v"],
+            "source_maximum_v": constraint["maximum_v"],
+            "response_guard_v": guard,
+            "guarded_minimum_v": guarded_minimum,
+            "guarded_maximum_v": guarded_maximum,
+        })
     if lower > upper + 1e-10:
         raise Infeasible(f"threshold intervals have an empty feasible VTO intersection [{lower:.12g}, {upper:.12g}]")
-    return lower, upper
+    return lower, upper, guard_records
 
 
 def rdson_domain(vto, rdson_constraints, fixed, polarity, bounds):
@@ -240,7 +275,7 @@ def rdson_domain(vto, rdson_constraints, fixed, polarity, bounds):
             return probe(params, [constraint], polarity)[constraint["id"]]
 
         low_value = evaluate(bounds[0])
-        tolerance = max(1e-12, constraint["maximum_ohm"] * 1e-9)
+        tolerance = inclusive_bound_tolerance(constraint["maximum_ohm"], RDSON_BOUND_ABSOLUTE_TOLERANCE)
         if low_value > constraint["maximum_ohm"] + tolerance:
             raise Infeasible(
                 f"{constraint['id']} remains {low_value:.12g} ohm at the minimum resistance seed, "
@@ -262,12 +297,34 @@ def constraint_results(constraints, measured):
     for constraint in constraints:
         value = measured[constraint["id"]]
         if constraint["kind"] == "threshold_interval":
-            satisfied = constraint["minimum_v"] <= value <= constraint["maximum_v"]
+            minimum_tolerance = inclusive_bound_tolerance(
+                constraint["minimum_v"], THRESHOLD_BOUND_ABSOLUTE_TOLERANCE)
+            maximum_tolerance = inclusive_bound_tolerance(
+                constraint["maximum_v"], THRESHOLD_BOUND_ABSOLUTE_TOLERANCE)
+            satisfied = (constraint["minimum_v"] - minimum_tolerance
+                         <= value
+                         <= constraint["maximum_v"] + maximum_tolerance)
             bounds = {"minimum": constraint["minimum_v"], "maximum": constraint["maximum_v"], "unit": "V"}
+            verification_tolerance = {
+                "relative_factor": BOUND_RELATIVE_TOLERANCE,
+                "absolute_floor": THRESHOLD_BOUND_ABSOLUTE_TOLERANCE,
+                "minimum": minimum_tolerance,
+                "maximum": maximum_tolerance,
+                "unit": "V",
+            }
         else:
-            satisfied = value <= constraint["maximum_ohm"]
+            tolerance = inclusive_bound_tolerance(
+                constraint["maximum_ohm"], RDSON_BOUND_ABSOLUTE_TOLERANCE)
+            satisfied = value <= constraint["maximum_ohm"] + tolerance
             bounds = {"maximum": constraint["maximum_ohm"], "unit": "ohm"}
-        results.append({**constraint, "predicted_value": value, "inclusive": True, "satisfied": satisfied, **bounds})
+            verification_tolerance = {
+                "relative_factor": BOUND_RELATIVE_TOLERANCE,
+                "absolute_floor": RDSON_BOUND_ABSOLUTE_TOLERANCE,
+                "maximum": tolerance,
+                "unit": "ohm",
+            }
+        results.append({**constraint, "predicted_value": value, "inclusive": True,
+                        "satisfied": satisfied, "verification_tolerance": verification_tolerance, **bounds})
     return results
 
 
@@ -291,10 +348,13 @@ def fit(payload):
     rdson_bounds = (1e-6, max(10.0, seed_rdson * 10.0, max_rdson * 10.0))
 
     vto, rdson = seed_vto, seed_rdson
+    threshold_guard_records = []
     for _ in range(4):
         old = (vto, rdson)
         if threshold_constraints:
-            feasible_low, feasible_high = threshold_domain(rdson, fixed, threshold_constraints, polarity, vto_bounds)
+            feasible_low, feasible_high, threshold_guard_records = threshold_domain(
+                rdson, fixed, threshold_constraints, polarity, vto_bounds,
+                apply_interior_guard=adjust_vto)
             if adjust_vto:
                 vto = min(max(seed_vto, feasible_low), feasible_high)
             elif not (feasible_low - 1e-9 <= vto <= feasible_high + 1e-9):
@@ -331,6 +391,13 @@ def fit(payload):
             "objective": "minimum lexicographic displacement from VTO and resistance seeds",
             "search_bounds": {"vto": list(vto_bounds), "rdson_seed": list(rdson_bounds)},
             "final_seed_coordinates": {"vto": vto, "rdson": rdson},
+            "threshold_interior_guard_policy": {
+                "applied_to_adjustable_projection": adjust_vto and bool(threshold_constraints),
+                "absolute_floor_v": THRESHOLD_INTERIOR_GUARD_ABSOLUTE_V,
+                "relative_interval_span_factor": THRESHOLD_INTERIOR_GUARD_RELATIVE_SPAN,
+                "maximum_interval_fraction": THRESHOLD_INTERIOR_GUARD_MAXIMUM_FRACTION,
+                "constraints": threshold_guard_records,
+            },
             "residual_target_count": 0,
         },
     }
