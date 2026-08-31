@@ -28,7 +28,9 @@ CONTEXT_PACK = HERE / "context-packs" / "mosfet.json"
 TRANSLATOR = HERE / "conveyorlib.py"
 ADAPTER = REPO_ROOT / "tools" / "model-factory" / "lib" / "bulk-adapter.mjs"
 PREFLIGHT = REPO_ROOT / "tools" / "model-factory" / "preflight-candidate.mjs"
-AUTHORITY = REPO_ROOT / "docs" / "batch-23-terra-mosfet-continuation-authorization.md"
+DEFAULT_AUTHORITY = REPO_ROOT / "docs" / "batch-23-terra-mosfet-continuation-authorization.md"
+# Backward-compatible import for existing callers and Batch 23 records.
+AUTHORITY = DEFAULT_AUTHORITY
 ENVELOPE_AUTHORITY = REPO_ROOT / "docs" / "batch-22-terra-mosfet-evidence-envelope-recovery.md"
 
 
@@ -54,7 +56,7 @@ def load_json(path: Path) -> dict:
     return value
 
 
-def binding_hashes() -> dict[str, str]:
+def binding_hashes(batch_authority: Path = DEFAULT_AUTHORITY) -> dict[str, str]:
     paths = {
         "envelope_schema": ENVELOPE_SCHEMA,
         "output_schema": MOSFET_SCHEMA,
@@ -62,7 +64,7 @@ def binding_hashes() -> dict[str, str]:
         "translator": TRANSLATOR,
         "factory_adapter": ADAPTER,
         "factory_preflight": PREFLIGHT,
-        "batch_authority": AUTHORITY,
+        "batch_authority": batch_authority,
         "envelope_authority": ENVELOPE_AUTHORITY,
     }
     missing = [str(path) for path in paths.values() if not path.is_file()]
@@ -98,8 +100,16 @@ Use apply_patch to create only {job['response_path']}. Return after the file is 
 def jobs_command(args: argparse.Namespace) -> int:
     manifest_path = args.manifest.resolve()
     topology_path = args.topology.resolve()
+    authority_path = getattr(args, "authority", DEFAULT_AUTHORITY).resolve()
     manifest = load_json(manifest_path)
     topology = load_json(topology_path)
+    topology_authority = topology.get("authority")
+    if topology_authority:
+        declared_authority = Path(topology_authority)
+        if not declared_authority.is_absolute():
+            declared_authority = REPO_ROOT / declared_authority
+        if declared_authority.resolve() != authority_path:
+            raise ConveyorError("Explicit batch authority does not match topology authority")
     parts = {part["lcsc_id"]: part for part in manifest.get("parts", [])}
     dispositions = topology.get("dispositions", [])
     if len(parts) != topology.get("denominator"):
@@ -115,7 +125,7 @@ def jobs_command(args: argparse.Namespace) -> int:
     translated = staging / "translated-extractions"
     part_inputs = staging / "preflight-parts"
     verdicts = staging / "preflight-verdicts"
-    bindings = binding_hashes()
+    bindings = binding_hashes(authority_path)
     topology_hash = sha256_file(topology_path)
     jobs = []
     for disposition in dispositions:
@@ -149,6 +159,7 @@ def jobs_command(args: argparse.Namespace) -> int:
             "verdict_path": str(verdict_path.resolve()),
             "topology_record": str(topology_path),
             "topology_record_sha256": topology_hash,
+            "batch_authority": str(authority_path),
             "bindings": bindings,
         }
         job["prompt"] = prompt_for(job)
@@ -164,6 +175,8 @@ def jobs_command(args: argparse.Namespace) -> int:
         "kind": "opencircuit-terra-mosfet-envelope-job-index",
         "manifest": str(manifest_path),
         "topology": str(topology_path),
+        "batch_authority": str(authority_path),
+        "batch_authority_sha256": bindings["batch_authority"],
         "job_count": len(jobs),
         "one_pdf_per_turn": True,
         "max_concurrency": 3,
@@ -305,6 +318,7 @@ def parser() -> argparse.ArgumentParser:
     jobs = commands.add_parser("jobs")
     jobs.add_argument("--manifest", type=Path, required=True)
     jobs.add_argument("--topology", type=Path, required=True)
+    jobs.add_argument("--authority", type=Path, default=DEFAULT_AUTHORITY)
     jobs.add_argument("--data-dir", type=Path, required=True)
     dispatch = commands.add_parser("dispatch")
     dispatch.add_argument("--job", type=Path, required=True)

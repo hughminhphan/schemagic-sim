@@ -39,6 +39,64 @@ class TerraEnvelopeOrchestrationTest(unittest.TestCase):
             job = json.loads(Path(index["jobs"][0]["job_path"]).read_text())
             self.assertEqual(job["datasheet_sha256"], digest)
             self.assertIn(str(pdf.resolve()), job["prompt"])
+            self.assertEqual(job["batch_authority"], str(terra_envelope.DEFAULT_AUTHORITY.resolve()))
+            self.assertEqual(
+                job["bindings"]["batch_authority"],
+                terra_envelope.sha256_file(terra_envelope.DEFAULT_AUTHORITY),
+            )
+
+    def test_jobs_bind_explicit_batch_authority(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            data = root / "data"
+            staging = data / "staging" / "tranche"
+            datasheets = staging / "datasheets"
+            datasheets.mkdir(parents=True)
+            pdf = datasheets / "C1__M1.pdf"
+            pdf.write_bytes(b"%PDF-1.4\nfixture\n")
+            digest = hashlib.sha256(pdf.read_bytes()).hexdigest()
+            authority = root / "batch-24-authority.md"
+            authority.write_text("batch 24 authority\n")
+            manifest = root / "tranche.json"
+            manifest.write_text(json.dumps({"parts": [
+                {"lcsc_id": "C1", "mpn": "M1", "manufacturer": "Fixture", "conveyor_family": "mosfet", "frozen_campaign_order": 1},
+            ]}))
+            topology = root / "topology.json"
+            topology.write_text(json.dumps({
+                "authority": str(authority),
+                "denominator": 1,
+                "eligible_for_terra_envelope": 1,
+                "dispositions": [
+                    {"lcsc_id": "C1", "disposition": "eligible_for_terra_envelope", "datasheet_path": "datasheets/C1__M1.pdf", "source_sha256": digest},
+                ],
+            }))
+            args = type("Args", (), {
+                "manifest": manifest, "topology": topology, "data_dir": data, "authority": authority,
+            })
+            self.assertEqual(terra_envelope.jobs_command(args), 0)
+            index = json.loads((staging / "terra-envelope-jobs.json").read_text())
+            job = json.loads(Path(index["jobs"][0]["job_path"]).read_text())
+            self.assertEqual(index["batch_authority"], str(authority.resolve()))
+            self.assertEqual(job["batch_authority"], str(authority.resolve()))
+            self.assertEqual(job["bindings"]["batch_authority"], hashlib.sha256(authority.read_bytes()).hexdigest())
+
+    def test_jobs_reject_authority_mismatch_with_topology(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            manifest = root / "tranche.json"
+            manifest.write_text(json.dumps({"parts": []}))
+            topology = root / "topology.json"
+            topology.write_text(json.dumps({
+                "authority": str(root / "declared.md"),
+                "denominator": 0, "eligible_for_terra_envelope": 0, "dispositions": [],
+            }))
+            authority = root / "explicit.md"
+            authority.write_text("explicit\n")
+            args = type("Args", (), {
+                "manifest": manifest, "topology": topology, "data_dir": root / "data", "authority": authority,
+            })
+            with self.assertRaisesRegex(terra_envelope.ConveyorError, "does not match topology authority"):
+                terra_envelope.jobs_command(args)
 
     def test_dispatch_is_append_only_and_single_use(self):
         with tempfile.TemporaryDirectory() as temporary:
