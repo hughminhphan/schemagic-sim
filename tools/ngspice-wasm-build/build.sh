@@ -4,7 +4,7 @@ set -euo pipefail
 ROOT=$(cd "$(dirname "$0")" && pwd)
 BUILD_DIR="$ROOT/build"
 DIST_DIR="$ROOT/dist"
-SOURCE_URL="https://downloads.sourceforge.net/project/ngspice/ng-spice-rework/46/ngspice-46.tar.gz"
+SOURCE_URL="https://downloads.sourceforge.net/project/ngspice/ng-spice-rework/old-releases/46/ngspice-46.tar.gz"
 SOURCE_SHA256="a0d1699af1940b06649276dcd6ff5a566c8c0cad01b2f7b5e99dedbb4d64c19b"
 EMSDK_VERSION="5.0.7"
 EMSDK_DIR="$BUILD_DIR/emsdk"

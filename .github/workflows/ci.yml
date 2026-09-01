@@ -25,10 +25,33 @@ jobs:
           node-version: 22
           cache: npm
 
-      - name: Install Ubuntu ngspice
+      - name: Restore pinned native ngspice 46
+        id: ngspice46-cache
+        uses: actions/cache@v6
+        with:
+          path: ${{ runner.tool_cache }}/ngspice-46-headless-klu
+          key: ngspice-46-linux-x64-a0d1699a-${{ hashFiles('tools/native-ngspice-reference/build-ngspice-46-linux.sh') }}
+
+      - name: Build pinned native ngspice 46
+        if: steps.ngspice46-cache.outputs.cache-hit != 'true'
+        env:
+          NGSPICE_PREFIX: ${{ runner.tool_cache }}/ngspice-46-headless-klu
         run: |
           sudo apt-get update
-          sudo apt-get install -y ngspice
+          sudo apt-get install -y build-essential bison flex
+          tools/native-ngspice-reference/build-ngspice-46-linux.sh
+
+      - name: Expose pinned native ngspice 46
+        env:
+          NGSPICE_PREFIX: ${{ runner.tool_cache }}/ngspice-46-headless-klu
+        run: |
+          echo "$NGSPICE_PREFIX/bin" >> "$GITHUB_PATH"
+          sudo mkdir -p /opt/homebrew/bin
+          sudo ln -sf "$NGSPICE_PREFIX/bin/ngspice" /opt/homebrew/bin/ngspice
+          version_output="$(/opt/homebrew/bin/ngspice --version 2>&1)"
+          printf '%s\n' "$version_output"
+          grep -q 'ngspice-46' <<< "$version_output"
+          grep -q 'Compiled with KLU Direct Linear Solver' <<< "$version_output"
 
       - name: Install locked dependencies
         run: npm ci
