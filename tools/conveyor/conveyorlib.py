@@ -241,13 +241,41 @@ def choose_balanced(parts: Sequence[Mapping[str, Any]], quotas: Mapping[str, int
     return selected
 
 
-def validate_schema(instance: Any, schema: Mapping[str, Any], trail: str = "$") -> None:
+def validate_schema(
+    instance: Any,
+    schema: Mapping[str, Any],
+    trail: str = "$",
+    root_schema: Mapping[str, Any] | None = None,
+    ref_stack: tuple[str, ...] = (),
+) -> None:
     """Small strict validator for the checked-in schema vocabulary."""
+    if not isinstance(schema, Mapping):
+        raise ConveyorError(f"{trail} uses a non-object schema")
+    if root_schema is None:
+        root_schema = schema
+    if "$ref" in schema:
+        reference = schema["$ref"]
+        if set(schema) != {"$ref"}:
+            raise ConveyorError(f"{trail} uses unsupported sibling keywords beside $ref")
+        if not isinstance(reference, str) or not reference.startswith("#/"):
+            raise ConveyorError(f"{trail} uses unsupported schema reference {reference!r}")
+        if reference in ref_stack:
+            raise ConveyorError(f"{trail} uses circular schema reference {reference!r}")
+        target: Any = root_schema
+        for token in reference[2:].split("/"):
+            key = token.replace("~1", "/").replace("~0", "~")
+            if not isinstance(target, Mapping) or key not in target:
+                raise ConveyorError(f"{trail} uses unresolved schema reference {reference!r}")
+            target = target[key]
+        if not isinstance(target, Mapping):
+            raise ConveyorError(f"{trail} schema reference {reference!r} does not resolve to an object")
+        validate_schema(instance, target, trail, root_schema, (*ref_stack, reference))
+        return
     if "anyOf" in schema:
         errors = []
         for candidate in schema["anyOf"]:
             try:
-                validate_schema(instance, candidate, trail)
+                validate_schema(instance, candidate, trail, root_schema, ref_stack)
                 return
             except ConveyorError as error:
                 errors.append(str(error))
@@ -258,7 +286,7 @@ def validate_schema(instance: Any, schema: Mapping[str, Any], trail: str = "$") 
             return
         candidates = [item for item in expected if item != "null"]
         if candidates:
-            validate_schema(instance, {**schema, "type": candidates[0]}, trail)
+            validate_schema(instance, {**schema, "type": candidates[0]}, trail, root_schema, ref_stack)
             return
     elif expected == "object" and not isinstance(instance, dict):
         raise ConveyorError(f"{trail} must be an object")
@@ -268,6 +296,8 @@ def validate_schema(instance: Any, schema: Mapping[str, Any], trail: str = "$") 
         raise ConveyorError(f"{trail} must be a string")
     elif expected == "number" and (not isinstance(instance, (int, float)) or isinstance(instance, bool) or not math.isfinite(instance)):
         raise ConveyorError(f"{trail} must be a finite number")
+    elif expected == "integer" and (not isinstance(instance, int) or isinstance(instance, bool)):
+        raise ConveyorError(f"{trail} must be an integer")
     elif expected == "boolean" and not isinstance(instance, bool):
         raise ConveyorError(f"{trail} must be a boolean")
     elif expected == "null" and instance is not None:
@@ -278,11 +308,16 @@ def validate_schema(instance: Any, schema: Mapping[str, Any], trail: str = "$") 
         raise ConveyorError(f"{trail} must be one of {schema['enum']!r}")
     if isinstance(instance, str) and len(instance) < schema.get("minLength", 0):
         raise ConveyorError(f"{trail} is too short")
+    if isinstance(instance, (int, float)) and not isinstance(instance, bool):
+        if "minimum" in schema and instance < schema["minimum"]:
+            raise ConveyorError(f"{trail} must be at least {schema['minimum']}")
+        if "maximum" in schema and instance > schema["maximum"]:
+            raise ConveyorError(f"{trail} must be at most {schema['maximum']}")
     if isinstance(instance, list):
         if len(instance) < schema.get("minItems", 0):
             raise ConveyorError(f"{trail} has too few items")
         for index, item in enumerate(instance):
-            validate_schema(item, schema.get("items", {}), f"{trail}[{index}]")
+            validate_schema(item, schema.get("items", {}), f"{trail}[{index}]", root_schema, ref_stack)
     if isinstance(instance, dict):
         required = set(schema.get("required", []))
         missing = required - set(instance)
@@ -295,7 +330,7 @@ def validate_schema(instance: Any, schema: Mapping[str, Any], trail: str = "$") 
                 raise ConveyorError(f"{trail} has unknown keys: {', '.join(sorted(extra))}")
         for key, value in instance.items():
             if key in properties:
-                validate_schema(value, properties[key], f"{trail}.{key}")
+                validate_schema(value, properties[key], f"{trail}.{key}", root_schema, ref_stack)
 
 
 _QUANTITY_UNIT_FACTORS = {
@@ -380,6 +415,416 @@ def normalize_extraction_payload(raw: Mapping[str, Any]) -> dict[str, Any]:
     return payload
 
 
+_MOSFET_BIAS_QUANTITIES = {
+    "vgs": "vgs", "v_gs": "vgs",
+    "vds": "vds", "v_ds": "vds",
+    "id": "id", "i_d": "id",
+}
+_MOSFET_TEMPERATURE_KINDS = {"ambient", "case", "junction"}
+_MOSFET_TEMPERATURE_PROVENANCE = {
+    "inline_condition", "table_heading", "figure_label", "footnote", "section_scope",
+}
+_MOSFET_TEST_MODES = {"dc", "continuous", "pulsed", "single_pulse", "not_stated"}
+_MOSFET_MAGNITUDE_CONVENTIONS = {"signed", "absolute"}
+
+
+def _require_exact_keys(value: Any, required: set[str], optional: set[str], trail: str) -> None:
+    if not isinstance(value, dict):
+        raise ConveyorError(f"{trail} must be an object")
+    actual = set(value)
+    missing = required - actual
+    extra = actual - required - optional
+    if missing or extra:
+        detail = []
+        if missing:
+            detail.append(f"missing {', '.join(sorted(missing))}")
+        if extra:
+            detail.append(f"unknown {', '.join(sorted(extra))}")
+        raise ConveyorError(f"{trail} is incomplete: {'; '.join(detail)}")
+
+
+def _finite_number(value: Any, trail: str) -> float:
+    if not isinstance(value, (int, float)) or isinstance(value, bool) or not math.isfinite(value):
+        raise ConveyorError(f"{trail} must be a finite number")
+    return float(value)
+
+
+def _validate_voltage_condition(value: Any, trail: str) -> None:
+    _require_exact_keys(value, {"kind"}, {"value_v", "relation", "lower_v", "upper_v"}, trail)
+    if value["kind"] == "fixed":
+        _require_exact_keys(value, {"kind", "value_v"}, set(), trail)
+        _finite_number(value["value_v"], f"{trail}.value_v")
+    elif value["kind"] == "relation":
+        _require_exact_keys(value, {"kind", "relation"}, set(), trail)
+        if not isinstance(value["relation"], str) or not value["relation"].strip():
+            raise ConveyorError(f"{trail}.relation must be a non-empty string")
+    elif value["kind"] == "range":
+        _require_exact_keys(value, {"kind", "lower_v", "upper_v"}, set(), trail)
+        if not _finite_number(value["lower_v"], f"{trail}.lower_v") < _finite_number(value["upper_v"], f"{trail}.upper_v"):
+            raise ConveyorError(f"{trail} range must be increasing")
+    else:
+        raise ConveyorError(f"{trail}.kind is unknown")
+
+
+def _validate_current_condition(value: Any, trail: str) -> None:
+    _require_exact_keys(value, {"kind"}, {"value_a", "lower_a", "upper_a"}, trail)
+    if value["kind"] == "fixed":
+        _require_exact_keys(value, {"kind", "value_a"}, set(), trail)
+        _finite_number(value["value_a"], f"{trail}.value_a")
+    elif value["kind"] == "range":
+        _require_exact_keys(value, {"kind", "lower_a", "upper_a"}, set(), trail)
+        if not _finite_number(value["lower_a"], f"{trail}.lower_a") < _finite_number(value["upper_a"], f"{trail}.upper_a"):
+            raise ConveyorError(f"{trail} range must be increasing")
+    else:
+        raise ConveyorError(f"{trail}.kind is unknown")
+
+
+def _validate_typed_test_mode(value: Any, trail: str, *, allow_not_stated: bool) -> None:
+    _require_exact_keys(
+        value,
+        {"kind"},
+        {"pulse_width_s", "duty_cycle", "repetition_period_s", "repetition_frequency_hz"},
+        trail,
+    )
+    mode = value["kind"]
+    if mode not in _MOSFET_TEST_MODES or (mode == "not_stated" and not allow_not_stated):
+        raise ConveyorError(f"{trail}.kind must explicitly state dc, continuous, pulsed, or single_pulse")
+    pulse_fields = {"pulse_width_s", "duty_cycle", "repetition_period_s", "repetition_frequency_hz"} & set(value)
+    if mode in {"pulsed", "single_pulse"}:
+        if _finite_number(value.get("pulse_width_s"), f"{trail}.pulse_width_s") <= 0:
+            raise ConveyorError(f"{trail}.pulse_width_s must be a positive finite number for {mode}")
+    elif pulse_fields:
+        raise ConveyorError(f"{trail} cannot attach pulse timing to {mode} data")
+    for field in sorted(pulse_fields - {"pulse_width_s"}):
+        numeric = _finite_number(value[field], f"{trail}.{field}")
+        if numeric <= 0 or (field == "duty_cycle" and numeric > 1):
+            raise ConveyorError(f"{trail}.{field} is outside its physical range")
+
+
+def _validate_direct_scalar_condition(
+    value: Any,
+    trail: str,
+    *,
+    polarity: str,
+    characteristic: str,
+) -> None:
+    _require_exact_keys(value, {"polarity", "magnitude_convention", "temperature", "electrical", "test_mode"}, set(), trail)
+    if value["polarity"] != polarity:
+        raise ConveyorError(f"{trail}.polarity must match $.specs.polarity")
+    if value["magnitude_convention"] not in _MOSFET_MAGNITUDE_CONVENTIONS:
+        raise ConveyorError(f"{trail}.magnitude_convention must be signed or absolute")
+
+    temperature = value["temperature"]
+    _require_exact_keys(temperature, {"status", "kind", "value_c", "provenance"}, set(), f"{trail}.temperature")
+    if temperature["status"] != "stated":
+        raise ConveyorError(f"{trail}.temperature.status must be stated")
+    if temperature["kind"] not in _MOSFET_TEMPERATURE_KINDS:
+        raise ConveyorError(f"{trail}.temperature.kind must state ambient, case, or junction")
+    _finite_number(temperature["value_c"], f"{trail}.temperature.value_c")
+    if temperature["provenance"] not in _MOSFET_TEMPERATURE_PROVENANCE:
+        raise ConveyorError(f"{trail}.temperature.provenance must use a canonical source location")
+
+    electrical = value["electrical"]
+    _require_exact_keys(electrical, {"vgs", "vds", "id"}, set(), f"{trail}.electrical")
+    _validate_voltage_condition(electrical["vgs"], f"{trail}.electrical.vgs")
+    _validate_voltage_condition(electrical["vds"], f"{trail}.electrical.vds")
+    _validate_current_condition(electrical["id"], f"{trail}.electrical.id")
+    _validate_typed_test_mode(value["test_mode"], f"{trail}.test_mode", allow_not_stated=characteristic == "gate_threshold")
+
+    if characteristic == "gate_threshold":
+        for quantity in ("vgs", "vds"):
+            coordinate = electrical[quantity]
+            if coordinate.get("kind") != "relation" or coordinate.get("relation") != "vds_equals_vgs":
+                raise ConveyorError(f"{trail}.electrical.{quantity} must preserve vds_equals_vgs")
+        if electrical["id"].get("kind") != "fixed":
+            raise ConveyorError(f"{trail}.electrical.id must be fixed for gate threshold evidence")
+        if _finite_number(electrical["id"]["value_a"], f"{trail}.electrical.id.value_a") <= 0:
+            raise ConveyorError(f"{trail}.electrical.id.value_a must be a positive canonical magnitude")
+    else:
+        if electrical["vgs"].get("kind") != "fixed" or electrical["id"].get("kind") != "fixed":
+            raise ConveyorError(f"{trail}.electrical must use fixed VGS and ID for RDS(on) evidence")
+        if electrical["vds"].get("kind") != "relation" or electrical["vds"].get("relation") != "saturation_region":
+            raise ConveyorError(f"{trail}.electrical.vds must preserve saturation_region for RDS(on) evidence")
+        if _finite_number(electrical["vgs"]["value_v"], f"{trail}.electrical.vgs.value_v") <= 0:
+            raise ConveyorError(f"{trail}.electrical.vgs.value_v must be a positive canonical magnitude")
+        if _finite_number(electrical["id"]["value_a"], f"{trail}.electrical.id.value_a") <= 0:
+            raise ConveyorError(f"{trail}.electrical.id.value_a must be a positive canonical magnitude")
+
+
+def _mosfet_axis_quantity(value: Any) -> str | None:
+    return _MOSFET_BIAS_QUANTITIES.get(str(value).casefold())
+
+
+def _require_locator(value: Any, fields: set[str], trail: str) -> None:
+    if not isinstance(value, dict):
+        raise ConveyorError(f"{trail} must be an object")
+    if set(value) != fields:
+        missing = fields - set(value)
+        extra = set(value) - fields
+        detail = []
+        if missing:
+            detail.append(f"missing {', '.join(sorted(missing))}")
+        if extra:
+            detail.append(f"unknown {', '.join(sorted(extra))}")
+        raise ConveyorError(f"{trail} is incomplete: {'; '.join(detail)}")
+    page = value["page"]
+    if not isinstance(page, int) or isinstance(page, bool) or page < 1:
+        raise ConveyorError(f"{trail}.page must be a positive integer")
+    for field in sorted(fields - {"page"}):
+        if not isinstance(value[field], str) or not value[field].strip():
+            raise ConveyorError(f"{trail}.{field} must be a non-empty string")
+
+
+def _validate_mosfet_critical_provenance(payload: Mapping[str, Any]) -> None:
+    """Fail closed on fresh MOSFET evidence before any fitting can begin."""
+    scalar_fields = (
+        "threshold_min", "threshold_typ", "threshold_max", "ciss", "coss", "crss",
+        "breakdown_voltage", "body_diode",
+    )
+    specs = payload["specs"]
+    polarity = specs["polarity"]
+    for field in scalar_fields:
+        quantity = specs[field]
+        if quantity is not None:
+            _require_locator(quantity.get("locator"), {"page", "table", "row"}, f"$.specs.{field}.locator")
+    for field in ("threshold_min", "threshold_typ", "threshold_max"):
+        quantity = specs[field]
+        if quantity is not None:
+            _validate_direct_scalar_condition(
+                quantity.get("condition"),
+                f"$.specs.{field}.condition",
+                polarity=polarity,
+                characteristic="gate_threshold",
+            )
+            if _finite_number(quantity.get("value"), f"$.specs.{field}.value") < 0 and quantity["condition"]["magnitude_convention"] == "absolute":
+                raise ConveyorError(f"$.specs.{field}.value is signed but its direct condition declares absolute magnitude")
+    for index, point in enumerate(specs["rdson_points"]):
+        direct_conditions = []
+        for field in ("vgs", "current", "resistance"):
+            _require_locator(
+                point[field].get("locator"),
+                {"page", "table", "row"},
+                f"$.specs.rdson_points[{index}].{field}.locator",
+            )
+            direct_condition = point[field].get("condition")
+            _validate_direct_scalar_condition(
+                direct_condition,
+                f"$.specs.rdson_points[{index}].{field}.condition",
+                polarity=polarity,
+                characteristic="rds_on",
+            )
+            direct_conditions.append(direct_condition)
+        if not all(condition == direct_conditions[0] for condition in direct_conditions[1:]):
+            raise ConveyorError(f"$.specs.rdson_points[{index}] must carry one identical direct condition for VGS, ID, and resistance")
+        condition_electrical = direct_conditions[0]["electrical"]
+        raw_vgs = _finite_number(point["vgs"].get("value"), f"$.specs.rdson_points[{index}].vgs.value")
+        raw_current = _finite_number(point["current"].get("value"), f"$.specs.rdson_points[{index}].current.value")
+        if (raw_vgs < 0 or raw_current < 0) and direct_conditions[0]["magnitude_convention"] == "absolute":
+            raise ConveyorError(f"$.specs.rdson_points[{index}] has signed VGS or ID values but its direct condition declares absolute magnitude")
+        if not math.isclose(abs(raw_vgs), abs(condition_electrical["vgs"]["value_v"]), rel_tol=1e-9, abs_tol=1e-12):
+            raise ConveyorError(f"$.specs.rdson_points[{index}].vgs.value contradicts its direct condition")
+        if not math.isclose(abs(raw_current), abs(condition_electrical["id"]["value_a"]), rel_tol=1e-9, abs_tol=1e-12):
+            raise ConveyorError(f"$.specs.rdson_points[{index}].current.value contradicts its direct condition")
+
+    for index, curve in enumerate(payload["curves"]):
+        trail = f"$.curves[{index}]"
+        _require_locator(curve.get("locator"), {"page", "figure", "curve_or_trace"}, f"{trail}.locator")
+        if curve.get("magnitude_convention") not in _MOSFET_MAGNITUDE_CONVENTIONS:
+            raise ConveyorError(f"{trail}.magnitude_convention must be signed or absolute")
+
+        temperature = curve.get("temperature")
+        if not isinstance(temperature, dict):
+            raise ConveyorError(f"{trail}.temperature must be an object")
+        kind = temperature.get("kind")
+        value = temperature.get("value")
+        provenance = temperature.get("provenance")
+        if kind not in _MOSFET_TEMPERATURE_KINDS:
+            raise ConveyorError(f"{trail}.temperature.kind must state ambient, case, or junction")
+        if not isinstance(value, (int, float)) or isinstance(value, bool) or not math.isfinite(value):
+            raise ConveyorError(f"{trail}.temperature.value must be a finite Celsius value")
+        if provenance not in _MOSFET_TEMPERATURE_PROVENANCE:
+            raise ConveyorError(f"{trail}.temperature.provenance must use a canonical source location")
+
+        electrical_bias = curve.get("electrical_bias")
+        if not isinstance(electrical_bias, list) or not electrical_bias:
+            raise ConveyorError(f"{trail}.electrical_bias must state at least one fixed electrical bias")
+        seen_biases: set[str] = set()
+        for bias_index, bias in enumerate(electrical_bias):
+            bias_trail = f"{trail}.electrical_bias[{bias_index}]"
+            quantity = bias.get("quantity") if isinstance(bias, dict) else None
+            canonical = _MOSFET_BIAS_QUANTITIES.get(str(quantity).casefold())
+            if canonical is None:
+                raise ConveyorError(f"{bias_trail}.quantity must be VGS, V_GS, VDS, V_DS, ID, or I_D")
+            if canonical in seen_biases:
+                raise ConveyorError(f"{trail}.electrical_bias has duplicate or conflicting {canonical} entries")
+            seen_biases.add(canonical)
+            bias_value = bias.get("value")
+            if not isinstance(bias_value, (int, float)) or isinstance(bias_value, bool) or not math.isfinite(bias_value):
+                raise ConveyorError(f"{bias_trail}.value must be a finite number")
+            if bias_value == 0:
+                raise ConveyorError(f"{bias_trail}.value must be non-zero")
+            if bias_value < 0 and curve["magnitude_convention"] == "absolute":
+                raise ConveyorError(f"{bias_trail}.value is signed but the curve declares absolute magnitude")
+            if not isinstance(bias.get("unit"), str) or not bias["unit"].strip():
+                raise ConveyorError(f"{bias_trail}.unit must be a non-empty string")
+
+        x_axis = curve.get("x_axis", {}).get("quantity")
+        y_axis = curve.get("y_axis", {}).get("quantity")
+        for axis, label in ((x_axis, "x_axis"), (y_axis, "y_axis")):
+            if re.fullmatch(r"(?:V_?(?:GS|DS)|I_?D)\s+magnitude", str(axis).strip(), re.I):
+                raise ConveyorError(f"{trail}.{label}.quantity must use canonical VGS, VDS, or ID without a magnitude suffix")
+            axis_words = str(axis).casefold()
+            if (
+                all(word in axis_words for word in ("gate", "source", "voltage"))
+                or all(word in axis_words for word in ("drain", "source", "voltage"))
+                or all(word in axis_words for word in ("drain", "current"))
+            ):
+                raise ConveyorError(f"{trail}.{label}.quantity must use an exact VGS, V_GS, VDS, V_DS, ID, or I_D alias")
+        x_quantity = _mosfet_axis_quantity(x_axis)
+        y_quantity = _mosfet_axis_quantity(y_axis)
+        required_bias = "vds" if (x_quantity, y_quantity) == ("vgs", "id") else (
+            "vgs" if (x_quantity, y_quantity) == ("vds", "id") else None
+        )
+        if required_bias is None and (x_quantity is not None or y_quantity is not None):
+            raise ConveyorError(f"{trail} has an unsupported MOSFET electrical axis pairing")
+        if required_bias is not None and seen_biases != {required_bias}:
+            raise ConveyorError(f"{trail}.electrical_bias must contain exactly one fixed {required_bias.upper()} record")
+
+        _validate_typed_test_mode(curve.get("test_mode"), f"{trail}.test_mode", allow_not_stated=False)
+        if curve["magnitude_convention"] == "absolute" and any(
+            point.get(axis, 0) < 0
+            for point in curve.get("points", []) if isinstance(point, dict)
+            for axis in ("x", "y")
+        ):
+            raise ConveyorError(f"{trail}.magnitude_convention absolute contradicts signed curve coordinates")
+
+
+def load_and_translate_mosfet_evidence_envelope(
+    path: Path,
+    schema_path: Path,
+    output_schema_path: Path,
+) -> dict[str, Any]:
+    """Expand a flat, source-reviewed MOSFET envelope into the strict extraction contract."""
+    try:
+        envelope = json.loads(path.read_text(encoding="utf-8"))
+        schema = json.loads(schema_path.read_text(encoding="utf-8"))
+        output_schema = json.loads(output_schema_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as error:
+        raise ConveyorError(f"Invalid MOSFET evidence envelope {path}: {error}") from error
+    if not isinstance(envelope, dict):
+        raise ConveyorError(f"Invalid MOSFET evidence envelope {path}: root must be an object")
+    validate_schema(envelope, schema)
+
+    polarity = envelope["polarity"]
+
+    def direct_condition(record: Mapping[str, Any], *, characteristic: str) -> dict[str, Any]:
+        temperature = record["temperature"]
+        if characteristic == "gate_threshold":
+            electrical = {
+                "vgs": {"kind": "relation", "relation": "vds_equals_vgs"},
+                "vds": {"kind": "relation", "relation": "vds_equals_vgs"},
+                "id": {"kind": "fixed", "value_a": abs(record["id_a"])},
+            }
+        else:
+            electrical = {
+                "vgs": {"kind": "fixed", "value_v": abs(record["vgs_v"])},
+                "vds": {"kind": "relation", "relation": "saturation_region"},
+                "id": {"kind": "fixed", "value_a": abs(record["id_a"])},
+            }
+        return {
+            "polarity": polarity,
+            "magnitude_convention": record["magnitude_convention"],
+            "temperature": {
+                "status": "stated",
+                "kind": temperature["kind"],
+                "value_c": temperature["value_c"],
+                "provenance": temperature["provenance"],
+            },
+            "electrical": electrical,
+            "test_mode": dict(record["test_mode"]),
+        }
+
+    def scalar_datum(
+        record: Mapping[str, Any],
+        *,
+        value: float,
+        unit: str,
+        source_kind: str,
+        condition: Mapping[str, Any],
+    ) -> dict[str, Any]:
+        return {
+            "value": value,
+            "unit": unit,
+            "conditions": record["conditions"],
+            "page_reference": record["page_reference"],
+            "locator": dict(record["locator"]),
+            "condition": dict(condition),
+            "source_kind": source_kind,
+        }
+
+    threshold_fields = {"minimum_v": "minimum", "typical_v": "typical", "maximum_v": "maximum"}
+    threshold_output: dict[str, Any] = {
+        "threshold_min": None,
+        "threshold_typ": None,
+        "threshold_max": None,
+    }
+    threshold = envelope["threshold"]
+    if threshold is not None:
+        present = [field for field in threshold_fields if threshold[field] is not None]
+        if not present:
+            raise ConveyorError("MOSFET evidence envelope threshold must contain at least one source value")
+        condition = direct_condition(threshold, characteristic="gate_threshold")
+        output_names = {"minimum_v": "threshold_min", "typical_v": "threshold_typ", "maximum_v": "threshold_max"}
+        for field in present:
+            threshold_output[output_names[field]] = scalar_datum(
+                threshold,
+                value=threshold[field],
+                unit="V",
+                source_kind=threshold_fields[field],
+                condition=condition,
+            )
+
+    rdson_output = []
+    for index, record in enumerate(envelope["rdson_points"]):
+        resistance_fields = {"typical_ohm": "typical", "maximum_ohm": "maximum"}
+        present = [field for field in resistance_fields if record[field] is not None]
+        if not present:
+            raise ConveyorError(f"MOSFET evidence envelope rdson_points[{index}] must contain a typical or maximum resistance")
+        condition = direct_condition(record, characteristic="rds_on")
+        for field in present:
+            source_kind = resistance_fields[field]
+            rdson_output.append({
+                "vgs": scalar_datum(record, value=record["vgs_v"], unit="V", source_kind=source_kind, condition=condition),
+                "current": scalar_datum(record, value=record["id_a"], unit="A", source_kind=source_kind, condition=condition),
+                "resistance": scalar_datum(record, value=record[field], unit="ohm", source_kind=source_kind, condition=condition),
+            })
+
+    payload = {
+        "schema_version": "1.0.0",
+        "mpn": envelope["mpn"],
+        "manufacturer": envelope["manufacturer"],
+        "family": "mosfet",
+        "datasheet_identity": dict(envelope["datasheet_identity"]),
+        "usable_curves": False,
+        "curves": [],
+        "specs": {
+            "polarity": polarity,
+            **threshold_output,
+            "rdson_points": rdson_output,
+            "ciss": None,
+            "coss": None,
+            "crss": None,
+            "breakdown_voltage": None,
+            "body_diode": None,
+        },
+        "extraction_notes": list(envelope["extraction_notes"]),
+        "omission_reason": envelope["omission_reason"],
+    }
+    validate_schema(payload, output_schema)
+    _validate_mosfet_critical_provenance(payload)
+    return payload
+
+
 def load_and_validate_extraction(path: Path, schema_path: Path, expected: Mapping[str, str]) -> dict[str, Any]:
     try:
         raw_payload = json.loads(path.read_text(encoding="utf-8"))
@@ -390,6 +835,8 @@ def load_and_validate_extraction(path: Path, schema_path: Path, expected: Mappin
     payload = normalize_extraction_payload(raw_payload)
     schema = json.loads(schema_path.read_text(encoding="utf-8"))
     validate_schema(payload, schema)
+    if payload.get("family") == "mosfet":
+        _validate_mosfet_critical_provenance(payload)
     for key in ("mpn", "manufacturer", "family"):
         if str(payload[key]).casefold() != str(expected[key]).casefold():
             raise ConveyorError(f"Extraction {key} mismatch: {payload[key]!r} != {expected[key]!r}")

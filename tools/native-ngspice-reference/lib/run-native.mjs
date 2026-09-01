@@ -124,9 +124,11 @@ export async function runNative(options) {
       throw new Error(`Native ngspice failed with exit code ${child.code}${child.signal ? ` (${child.signal})` : ""}\n${child.stdout}\n${child.stderr}`);
     }
 
-    const rawfile = parseRawfile(await readFile(rawPath));
+    const rawfileBuffer = await readFile(rawPath);
+    const rawfile = parseRawfile(rawfileBuffer);
     return {
       rawfile,
+      rawfileBytes: rawfileBuffer.byteLength,
       vectors: rawfile.vectors,
       stderr: child.stderr,
       stdout: child.stdout,

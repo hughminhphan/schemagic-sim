@@ -1,0 +1,188 @@
+{
+  "schema_version": "1.0.0",
+  "evidence_contract_version": "1.0.0",
+  "canonical_mpn": "DSK26W",
+  "manufacturer": "FOSAN",
+  "description": "diode from FOSAN",
+  "electrical_family": "diode",
+  "symbol_pins": [
+    {
+      "name": "A",
+      "number": "1",
+      "role": "anode"
+    },
+    {
+      "name": "K",
+      "number": "2",
+      "role": "cathode"
+    }
+  ],
+  "spice_pin_mapping": [
+    {
+      "symbol_pin_number": "1",
+      "subckt_node": "anode",
+      "order": 1
+    },
+    {
+      "symbol_pin_number": "2",
+      "subckt_node": "cathode",
+      "order": 2
+    }
+  ],
+  "package_variants": [
+    {
+      "name": "SOD-123FL",
+      "standard": "SOD-123FL",
+      "pin_count": 2,
+      "pin_map": [
+        {
+          "package_pin": "1",
+          "symbol_pin_number": "1"
+        },
+        {
+          "package_pin": "2",
+          "symbol_pin_number": "2"
+        }
+      ]
+    }
+  ],
+  "ordering_code_aliases": [],
+  "datasheet": {
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8603026755682639872",
+    "revision": "revision not stated in source"
+  },
+  "model_type": "dot_model",
+  "fidelity_tier": "F1",
+  "domain_coverage": {
+    "dc": "approx",
+    "ac": "none",
+    "transient": "none",
+    "noise": "none",
+    "thermal": "none",
+    "digital": "none"
+  },
+  "supported_analyses": [
+    "operating_point",
+    "dc_sweep"
+  ],
+  "supported_operating_region": {
+    "contract_version": "1.0.0",
+    "summary": "Supported only over the direct cited diode forward-evidence union: forward_current 2 to 2 A; forward_voltage 0.7 to 0.7 V; temperature 25 to 25 degC.",
+    "numeric_bounds": [
+      {
+        "bound_id": "sha256:5083b753c5f17bb1496714147de737840de8d4ee0c2e12f7b6c46627ac50fbc4",
+        "quantity": "forward_current",
+        "kind": "range",
+        "unit": "A",
+        "minimum": 2,
+        "maximum": 2,
+        "evidence_refs": [
+          {
+            "evidence_id": "sha256:9252cc203b615985f2d47092e0958175baea3a7552d6f4d726aeaf45f32a78ef",
+            "condition_id": "sha256:79e3ff1c63a76b515910e31ee0bf1281e14c251a42af50e4bfc5b2a575338083",
+            "citation_id": "sha256:4a74a7063ac43c6b5164d3a4ff9e6cb35afce3f4afd1e84229674413844d2364",
+            "cohort_id": "sha256:46fc32a48cf7b9cb40342d9c88d36e2441ad77a392fc66905f5882f577f0c15c"
+          }
+        ],
+        "condition_ids": [
+          "sha256:79e3ff1c63a76b515910e31ee0bf1281e14c251a42af50e4bfc5b2a575338083"
+        ],
+        "citation_ids": [
+          "sha256:4a74a7063ac43c6b5164d3a4ff9e6cb35afce3f4afd1e84229674413844d2364"
+        ],
+        "derivation": "direct_evidence_union",
+        "conditions": "Direct cited diode forward-evidence union",
+        "placeholder": false
+      },
+      {
+        "bound_id": "sha256:4a60011b931a3a46df0d213e6b01d3324677ce5e5d0653ee1343f97357abab09",
+        "quantity": "forward_voltage",
+        "kind": "range",
+        "unit": "V",
+        "minimum": 0.7,
+        "maximum": 0.7,
+        "evidence_refs": [
+          {
+            "evidence_id": "sha256:73d5fe6bc27ee5ca1aa39146793c0ca3819a90ae10b9ad3888208bd4160b10c8",
+            "condition_id": "sha256:86f8ce10182320bdfd7239fc775e1c4b74e7b78106c088d30470ed314a7073ce",
+            "citation_id": "sha256:3fe808aa6bcb4d7985f1dfce06c3a0a5e6f3324ecb507ccf399f48a6208ddadc",
+            "cohort_id": "sha256:0b2caba9a1d6cf811baa85df37ba825578aff9703f6f6ba25b659b5889262083"
+          }
+        ],
+        "condition_ids": [
+          "sha256:86f8ce10182320bdfd7239fc775e1c4b74e7b78106c088d30470ed314a7073ce"
+        ],
+        "citation_ids": [
+          "sha256:3fe808aa6bcb4d7985f1dfce06c3a0a5e6f3324ecb507ccf399f48a6208ddadc"
+        ],
+        "derivation": "direct_evidence_union",
+        "conditions": "Direct cited diode forward-evidence union",
+        "placeholder": false
+      },
+      {
+        "bound_id": "sha256:f17579c5fd9f690a58c46968782499445ce37c427dfcfa908ba71756fb2a17a4",
+        "quantity": "temperature",
+        "kind": "range",
+        "unit": "degC",
+        "minimum": 25,
+        "maximum": 25,
+        "evidence_refs": [
+          {
+            "evidence_id": "sha256:9252cc203b615985f2d47092e0958175baea3a7552d6f4d726aeaf45f32a78ef",
+            "condition_id": "sha256:79e3ff1c63a76b515910e31ee0bf1281e14c251a42af50e4bfc5b2a575338083",
+            "citation_id": "sha256:4a74a7063ac43c6b5164d3a4ff9e6cb35afce3f4afd1e84229674413844d2364",
+            "cohort_id": "sha256:46fc32a48cf7b9cb40342d9c88d36e2441ad77a392fc66905f5882f577f0c15c"
+          },
+          {
+            "evidence_id": "sha256:73d5fe6bc27ee5ca1aa39146793c0ca3819a90ae10b9ad3888208bd4160b10c8",
+            "condition_id": "sha256:86f8ce10182320bdfd7239fc775e1c4b74e7b78106c088d30470ed314a7073ce",
+            "citation_id": "sha256:3fe808aa6bcb4d7985f1dfce06c3a0a5e6f3324ecb507ccf399f48a6208ddadc",
+            "cohort_id": "sha256:0b2caba9a1d6cf811baa85df37ba825578aff9703f6f6ba25b659b5889262083"
+          }
+        ],
+        "condition_ids": [
+          "sha256:79e3ff1c63a76b515910e31ee0bf1281e14c251a42af50e4bfc5b2a575338083",
+          "sha256:86f8ce10182320bdfd7239fc775e1c4b74e7b78106c088d30470ed314a7073ce"
+        ],
+        "citation_ids": [
+          "sha256:3fe808aa6bcb4d7985f1dfce06c3a0a5e6f3324ecb507ccf399f48a6208ddadc",
+          "sha256:4a74a7063ac43c6b5164d3a4ff9e6cb35afce3f4afd1e84229674413844d2364"
+        ],
+        "derivation": "direct_evidence_union",
+        "temperature_kind": "ambient",
+        "conditions": "Direct cited diode forward-evidence union",
+        "placeholder": false
+      }
+    ]
+  },
+  "known_omissions": [
+    "AC, transient, noise, thermal, and package-parasitic behavior are outside this DC-only conveyor package.",
+    "Temperature dependence and self-heating are not modelled; each electrical claim is limited to its exact cited bench temperature.",
+    "Catalog parametrics may be recorded only as optimizer seeds; they are not evidence, constraints, residual targets, or datasheet citations.",
+    "F2 evidence did not qualify; staged as F1: Table-only extraction.",
+    "Table-only extraction."
+  ],
+  "licence": {
+    "spdx_id": "MIT",
+    "provenance_basis": "original_from_facts"
+  },
+  "generator": {
+    "tool_or_agent": "opencircuit-model-factory-v0.1.0 bulk-adapter evidence-contract-1.0.0",
+    "date": "2026-08-23"
+  },
+  "reviewer": {
+    "tool_or_agent": "gpt-5.6-terra independent package reviewer",
+    "date": "2026-08-23"
+  },
+  "test_results": {
+    "status": "complete",
+    "pass_count": 1,
+    "fail_count": 0,
+    "total_count": 1,
+    "worst_observed_relative_fitting_error": {
+      "value": 0,
+      "quantity": "package expectation"
+    }
+  },
+  "validation_date": "2026-08-23"
+}

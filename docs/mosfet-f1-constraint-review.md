@@ -74,4 +74,19 @@ The independent re-review found remaining fail-open candidate paths:
 3. F1 RDS(on) validation compared parsed VGS, ID, temperature, and citation context but did not reject incompatible additional qualifiers such as different pulse durations.
 4. MOSFET operating-region metadata retained a silent `25 °C` fallback in a conveyor candidate path.
 
-The second BLOCK exhausts the one remediation cycle authorized by `docs/scale-2k-campaign-authorization.md`. Candidate fitting and the campaign remain stopped. The blocked remediation is preserved on branch `batch-15-blocked-remediation`; approved main was restored to `6f526f8`. No reviewed package or production code was changed.
+The second BLOCK exhausted the original one-remediation cycle authorized by `docs/scale-2k-campaign-authorization.md`. The blocked remediation was preserved on branch `batch-15-blocked-remediation`; approved main was restored to `6f526f8`. No reviewed package or production code was changed.
+
+## Superseding integrated review under standing authorization
+
+- Date: 2026-08-14
+- Standing authorization: `docs/mosfet-hardening-standing-authorization.md`
+- Cumulative correction range: `4814648..1b68647`
+- Approval record: `docs/mosfet-hardening-cycle-4-review.md`
+- Reviewer: fresh independent read-only cumulative gate lane, after separate policy and bench-grammar approvals
+- Verdict: **APPROVE**
+
+The later standing authorization permitted narrow consequence-driven correction cycles after the original bounded Batch 15 remediation stopped. Those cycles closed the complete F1 and F2 evidence identity, package-chain, residual, admission-lifecycle, and generated-bench mutation gaps without relaxing electrical, evidence, provenance, collision, or fit gates.
+
+Exact-commit validation passed: model-factory 88/88, component-schema 43/43, model-library 7/7 including all 710 reviewed packages, standalone policy-aware library validation, conveyor 16/16 plus Python compilation, workspace tests/typechecks/build, native versus WASM 6/6, and `git diff --check`.
+
+This superseding APPROVE satisfied the Batch 15 code barrier. It authorized only immutable-job and ledger reverification followed by the one already-authorized fit pass. It granted no package promotion, reviewed-library mutation, deployment, or publication approval.

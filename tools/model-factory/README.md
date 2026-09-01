@@ -1,6 +1,12 @@
-# OpenCircuit model factory
+# scheMAGIC Model Factory
 
 The factory turns public datasheet facts into original generated SPICE models. It never downloads vendor `.lib` or `.cir` files, and datasheet PDFs remain only under the ignored `tmp/` directory.
+
+Newly generated model headers and attribution use the scheMAGIC brand. Existing
+reviewed packages retain their admitted bytes, historical licence attribution,
+content hashes, and `opencircuit-*` provenance identifiers. The internal
+`@opencircuit/model-factory` package and `opencircuit-model-factory` CLI names
+also remain stable compatibility identifiers.
 
 ## Environment
 

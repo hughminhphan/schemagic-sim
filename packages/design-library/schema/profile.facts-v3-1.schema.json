@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.schemagic.design/design-library/v1/profile.facts-v3-1.schema.json",
+  "title": "scheMAGIC closed design profile with facts schema 3.1.0",
+  "allOf": [
+    {
+      "$ref": "profile-envelope.facts-v3-1.schema.json"
+    },
+    {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "partClass",
+            "facts"
+          ],
+          "properties": {
+            "partClass": {
+              "const": "motor.full-bridge-gate-driver"
+            },
+            "facts": {
+              "$ref": "facts/motor.full-bridge-gate-driver.v3-1.schema.json"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

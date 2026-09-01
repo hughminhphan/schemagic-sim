@@ -1,0 +1,499 @@
+{
+  "schema_version": "1.0.0",
+  "evidence_contract_version": "1.0.0",
+  "evidence_cohorts": [
+    {
+      "cohort_id": "sha256:8026e67739dffa8d016ddb504453dc933c0f0e4023920a87c43f5a0b6a436ab0",
+      "fidelity_tier": "F2",
+      "evidence_ids": [
+        "sha256:ba1a40e2ea377aea039ac3e65a679d43ea9404ce3419e7870f3f98b46f3cfa90",
+        "sha256:f9d2c247c0ad19491c2ef504e919d0c7bbfd40323299ddfaabec5fe042de5fa9",
+        "sha256:bb99761d8497d46baf2ceddc985964c781948554a4bfcd95a15ad12c8a4ed86b",
+        "sha256:ba2a79af22c1a08162c1e776718a7fa5746c031a9532ffbf80f0071998f74302",
+        "sha256:8db21f53bbb6d86fb67e13b70f62dd204f718faaeec99563efa4fd2c2a15c9dd",
+        "sha256:353d7d123bed265bfea1e9cc4f6f362adf8980f64ef7d4d316cb0ef3c384586b",
+        "sha256:ff859515f2fd8938da0f775bbee9cd60a974f9bfaeb6a0c133ed793223914981",
+        "sha256:5140af924ad292b6bc60e0b165216d625e4a6f42187dec756c7d5c4eb20d5469",
+        "sha256:f1b982e1aa32cc5ab3fc6c32417069ebe1db2f701a598ef944416fe740351d99",
+        "sha256:a5018e043069582e19200a118af77e6caa348f3b469680c9083fa67ba1a31fe1"
+      ]
+    },
+    {
+      "cohort_id": "sha256:ee46fef26b8aa8a9bbc87a2d3014c2c8ff33190f67d93e9a492d72a6e445305a",
+      "fidelity_tier": "F2",
+      "evidence_ids": [
+        "sha256:570d895d79e5e92358d3a126c3f93c341c5e83ab3bfcbf1852445e8815ccbb1f"
+      ]
+    }
+  ],
+  "tests": [
+    {
+      "test_netlist": "forward_01.cir",
+      "analysis_type": "transient",
+      "scalar_checks": [
+        {
+          "name": "forward_voltage_at_0.01_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "at(v(anode),4.5030000000e-4)"
+          },
+          "expected_value": 0.68,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.05
+          },
+          "datasheet_citation": "p. 3, Figure 3, Typical instantaneous forward characteristics at T_J = 25 degC",
+          "evidence_id": "sha256:ba1a40e2ea377aea039ac3e65a679d43ea9404ce3419e7870f3f98b46f3cfa90",
+          "condition_id": "sha256:7d4c817a47eb38f94d17f085de60df88010974eb4c434449a7d9fcdea387acf5",
+          "citation_id": "sha256:a2613346debd1835351b36f047a0192e2d68bd2342cf6a6e83f08bb7c462e900",
+          "cohort_id": "sha256:8026e67739dffa8d016ddb504453dc933c0f0e4023920a87c43f5a0b6a436ab0",
+          "bench_condition_id": "sha256:7d4c817a47eb38f94d17f085de60df88010974eb4c434449a7d9fcdea387acf5",
+          "evidence_role": "curve_point",
+          "citation_locator": {
+            "page": 3,
+            "figure": "3",
+            "curve": "Typical instantaneous forward characteristics at T_J = 25 degC"
+          },
+          "evidence_qualification": {
+            "test_mode": "pulsed",
+            "pulse_width_s": 0.0003,
+            "duty_cycle": 0.01
+          },
+          "bench_qualification": {
+            "test_mode": "pulsed",
+            "pulse_width_s": 0.0003,
+            "duty_cycle": 0.01
+          },
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "forward_02.cir",
+      "analysis_type": "transient",
+      "scalar_checks": [
+        {
+          "name": "forward_voltage_at_0.02_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "at(v(anode),4.5030000000e-4)"
+          },
+          "expected_value": 0.71,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.05
+          },
+          "datasheet_citation": "p. 3, Figure 3, Typical instantaneous forward characteristics at T_J = 25 degC",
+          "evidence_id": "sha256:f9d2c247c0ad19491c2ef504e919d0c7bbfd40323299ddfaabec5fe042de5fa9",
+          "condition_id": "sha256:7d4c817a47eb38f94d17f085de60df88010974eb4c434449a7d9fcdea387acf5",
+          "citation_id": "sha256:a2613346debd1835351b36f047a0192e2d68bd2342cf6a6e83f08bb7c462e900",
+          "cohort_id": "sha256:8026e67739dffa8d016ddb504453dc933c0f0e4023920a87c43f5a0b6a436ab0",
+          "bench_condition_id": "sha256:7d4c817a47eb38f94d17f085de60df88010974eb4c434449a7d9fcdea387acf5",
+          "evidence_role": "curve_point",
+          "citation_locator": {
+            "page": 3,
+            "figure": "3",
+            "curve": "Typical instantaneous forward characteristics at T_J = 25 degC"
+          },
+          "evidence_qualification": {
+            "test_mode": "pulsed",
+            "pulse_width_s": 0.0003,
+            "duty_cycle": 0.01
+          },
+          "bench_qualification": {
+            "test_mode": "pulsed",
+            "pulse_width_s": 0.0003,
+            "duty_cycle": 0.01
+          },
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "forward_03.cir",
+      "analysis_type": "transient",
+      "scalar_checks": [
+        {
+          "name": "forward_voltage_at_0.05_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "at(v(anode),4.5030000000e-4)"
+          },
+          "expected_value": 0.75,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.05
+          },
+          "datasheet_citation": "p. 3, Figure 3, Typical instantaneous forward characteristics at T_J = 25 degC",
+          "evidence_id": "sha256:bb99761d8497d46baf2ceddc985964c781948554a4bfcd95a15ad12c8a4ed86b",
+          "condition_id": "sha256:7d4c817a47eb38f94d17f085de60df88010974eb4c434449a7d9fcdea387acf5",
+          "citation_id": "sha256:a2613346debd1835351b36f047a0192e2d68bd2342cf6a6e83f08bb7c462e900",
+          "cohort_id": "sha256:8026e67739dffa8d016ddb504453dc933c0f0e4023920a87c43f5a0b6a436ab0",
+          "bench_condition_id": "sha256:7d4c817a47eb38f94d17f085de60df88010974eb4c434449a7d9fcdea387acf5",
+          "evidence_role": "curve_point",
+          "citation_locator": {
+            "page": 3,
+            "figure": "3",
+            "curve": "Typical instantaneous forward characteristics at T_J = 25 degC"
+          },
+          "evidence_qualification": {
+            "test_mode": "pulsed",
+            "pulse_width_s": 0.0003,
+            "duty_cycle": 0.01
+          },
+          "bench_qualification": {
+            "test_mode": "pulsed",
+            "pulse_width_s": 0.0003,
+            "duty_cycle": 0.01
+          },
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "forward_04.cir",
+      "analysis_type": "transient",
+      "scalar_checks": [
+        {
+          "name": "forward_voltage_at_0.1_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "at(v(anode),4.5030000000e-4)"
+          },
+          "expected_value": 0.79,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.05
+          },
+          "datasheet_citation": "p. 3, Figure 3, Typical instantaneous forward characteristics at T_J = 25 degC",
+          "evidence_id": "sha256:ba2a79af22c1a08162c1e776718a7fa5746c031a9532ffbf80f0071998f74302",
+          "condition_id": "sha256:7d4c817a47eb38f94d17f085de60df88010974eb4c434449a7d9fcdea387acf5",
+          "citation_id": "sha256:a2613346debd1835351b36f047a0192e2d68bd2342cf6a6e83f08bb7c462e900",
+          "cohort_id": "sha256:8026e67739dffa8d016ddb504453dc933c0f0e4023920a87c43f5a0b6a436ab0",
+          "bench_condition_id": "sha256:7d4c817a47eb38f94d17f085de60df88010974eb4c434449a7d9fcdea387acf5",
+          "evidence_role": "curve_point",
+          "citation_locator": {
+            "page": 3,
+            "figure": "3",
+            "curve": "Typical instantaneous forward characteristics at T_J = 25 degC"
+          },
+          "evidence_qualification": {
+            "test_mode": "pulsed",
+            "pulse_width_s": 0.0003,
+            "duty_cycle": 0.01
+          },
+          "bench_qualification": {
+            "test_mode": "pulsed",
+            "pulse_width_s": 0.0003,
+            "duty_cycle": 0.01
+          },
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "forward_05.cir",
+      "analysis_type": "transient",
+      "scalar_checks": [
+        {
+          "name": "forward_voltage_at_0.2_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "at(v(anode),4.5030000000e-4)"
+          },
+          "expected_value": 0.84,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.05
+          },
+          "datasheet_citation": "p. 3, Figure 3, Typical instantaneous forward characteristics at T_J = 25 degC",
+          "evidence_id": "sha256:8db21f53bbb6d86fb67e13b70f62dd204f718faaeec99563efa4fd2c2a15c9dd",
+          "condition_id": "sha256:7d4c817a47eb38f94d17f085de60df88010974eb4c434449a7d9fcdea387acf5",
+          "citation_id": "sha256:a2613346debd1835351b36f047a0192e2d68bd2342cf6a6e83f08bb7c462e900",
+          "cohort_id": "sha256:8026e67739dffa8d016ddb504453dc933c0f0e4023920a87c43f5a0b6a436ab0",
+          "bench_condition_id": "sha256:7d4c817a47eb38f94d17f085de60df88010974eb4c434449a7d9fcdea387acf5",
+          "evidence_role": "curve_point",
+          "citation_locator": {
+            "page": 3,
+            "figure": "3",
+            "curve": "Typical instantaneous forward characteristics at T_J = 25 degC"
+          },
+          "evidence_qualification": {
+            "test_mode": "pulsed",
+            "pulse_width_s": 0.0003,
+            "duty_cycle": 0.01
+          },
+          "bench_qualification": {
+            "test_mode": "pulsed",
+            "pulse_width_s": 0.0003,
+            "duty_cycle": 0.01
+          },
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "forward_06.cir",
+      "analysis_type": "transient",
+      "scalar_checks": [
+        {
+          "name": "forward_voltage_at_0.5_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "at(v(anode),4.5030000000e-4)"
+          },
+          "expected_value": 0.91,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.05
+          },
+          "datasheet_citation": "p. 3, Figure 3, Typical instantaneous forward characteristics at T_J = 25 degC",
+          "evidence_id": "sha256:353d7d123bed265bfea1e9cc4f6f362adf8980f64ef7d4d316cb0ef3c384586b",
+          "condition_id": "sha256:7d4c817a47eb38f94d17f085de60df88010974eb4c434449a7d9fcdea387acf5",
+          "citation_id": "sha256:a2613346debd1835351b36f047a0192e2d68bd2342cf6a6e83f08bb7c462e900",
+          "cohort_id": "sha256:8026e67739dffa8d016ddb504453dc933c0f0e4023920a87c43f5a0b6a436ab0",
+          "bench_condition_id": "sha256:7d4c817a47eb38f94d17f085de60df88010974eb4c434449a7d9fcdea387acf5",
+          "evidence_role": "curve_point",
+          "citation_locator": {
+            "page": 3,
+            "figure": "3",
+            "curve": "Typical instantaneous forward characteristics at T_J = 25 degC"
+          },
+          "evidence_qualification": {
+            "test_mode": "pulsed",
+            "pulse_width_s": 0.0003,
+            "duty_cycle": 0.01
+          },
+          "bench_qualification": {
+            "test_mode": "pulsed",
+            "pulse_width_s": 0.0003,
+            "duty_cycle": 0.01
+          },
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "forward_07.cir",
+      "analysis_type": "transient",
+      "scalar_checks": [
+        {
+          "name": "forward_voltage_at_1_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "at(v(anode),4.5030000000e-4)"
+          },
+          "expected_value": 1,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.05
+          },
+          "datasheet_citation": "p. 3, Figure 3, Typical instantaneous forward characteristics at T_J = 25 degC",
+          "evidence_id": "sha256:ff859515f2fd8938da0f775bbee9cd60a974f9bfaeb6a0c133ed793223914981",
+          "condition_id": "sha256:7d4c817a47eb38f94d17f085de60df88010974eb4c434449a7d9fcdea387acf5",
+          "citation_id": "sha256:a2613346debd1835351b36f047a0192e2d68bd2342cf6a6e83f08bb7c462e900",
+          "cohort_id": "sha256:8026e67739dffa8d016ddb504453dc933c0f0e4023920a87c43f5a0b6a436ab0",
+          "bench_condition_id": "sha256:7d4c817a47eb38f94d17f085de60df88010974eb4c434449a7d9fcdea387acf5",
+          "evidence_role": "curve_point",
+          "citation_locator": {
+            "page": 3,
+            "figure": "3",
+            "curve": "Typical instantaneous forward characteristics at T_J = 25 degC"
+          },
+          "evidence_qualification": {
+            "test_mode": "pulsed",
+            "pulse_width_s": 0.0003,
+            "duty_cycle": 0.01
+          },
+          "bench_qualification": {
+            "test_mode": "pulsed",
+            "pulse_width_s": 0.0003,
+            "duty_cycle": 0.01
+          },
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "forward_08.cir",
+      "analysis_type": "transient",
+      "scalar_checks": [
+        {
+          "name": "forward_voltage_at_2_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "at(v(anode),4.5030000000e-4)"
+          },
+          "expected_value": 1.09,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.05
+          },
+          "datasheet_citation": "p. 3, Figure 3, Typical instantaneous forward characteristics at T_J = 25 degC",
+          "evidence_id": "sha256:5140af924ad292b6bc60e0b165216d625e4a6f42187dec756c7d5c4eb20d5469",
+          "condition_id": "sha256:7d4c817a47eb38f94d17f085de60df88010974eb4c434449a7d9fcdea387acf5",
+          "citation_id": "sha256:a2613346debd1835351b36f047a0192e2d68bd2342cf6a6e83f08bb7c462e900",
+          "cohort_id": "sha256:8026e67739dffa8d016ddb504453dc933c0f0e4023920a87c43f5a0b6a436ab0",
+          "bench_condition_id": "sha256:7d4c817a47eb38f94d17f085de60df88010974eb4c434449a7d9fcdea387acf5",
+          "evidence_role": "curve_point",
+          "citation_locator": {
+            "page": 3,
+            "figure": "3",
+            "curve": "Typical instantaneous forward characteristics at T_J = 25 degC"
+          },
+          "evidence_qualification": {
+            "test_mode": "pulsed",
+            "pulse_width_s": 0.0003,
+            "duty_cycle": 0.01
+          },
+          "bench_qualification": {
+            "test_mode": "pulsed",
+            "pulse_width_s": 0.0003,
+            "duty_cycle": 0.01
+          },
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "forward_09.cir",
+      "analysis_type": "transient",
+      "scalar_checks": [
+        {
+          "name": "forward_voltage_at_5_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "at(v(anode),4.5030000000e-4)"
+          },
+          "expected_value": 1.22,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.05
+          },
+          "datasheet_citation": "p. 3, Figure 3, Typical instantaneous forward characteristics at T_J = 25 degC",
+          "evidence_id": "sha256:f1b982e1aa32cc5ab3fc6c32417069ebe1db2f701a598ef944416fe740351d99",
+          "condition_id": "sha256:7d4c817a47eb38f94d17f085de60df88010974eb4c434449a7d9fcdea387acf5",
+          "citation_id": "sha256:a2613346debd1835351b36f047a0192e2d68bd2342cf6a6e83f08bb7c462e900",
+          "cohort_id": "sha256:8026e67739dffa8d016ddb504453dc933c0f0e4023920a87c43f5a0b6a436ab0",
+          "bench_condition_id": "sha256:7d4c817a47eb38f94d17f085de60df88010974eb4c434449a7d9fcdea387acf5",
+          "evidence_role": "curve_point",
+          "citation_locator": {
+            "page": 3,
+            "figure": "3",
+            "curve": "Typical instantaneous forward characteristics at T_J = 25 degC"
+          },
+          "evidence_qualification": {
+            "test_mode": "pulsed",
+            "pulse_width_s": 0.0003,
+            "duty_cycle": 0.01
+          },
+          "bench_qualification": {
+            "test_mode": "pulsed",
+            "pulse_width_s": 0.0003,
+            "duty_cycle": 0.01
+          },
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "forward_10.cir",
+      "analysis_type": "transient",
+      "scalar_checks": [
+        {
+          "name": "forward_voltage_at_10_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "at(v(anode),4.5030000000e-4)"
+          },
+          "expected_value": 1.4,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.05
+          },
+          "datasheet_citation": "p. 3, Figure 3, Typical instantaneous forward characteristics at T_J = 25 degC",
+          "evidence_id": "sha256:a5018e043069582e19200a118af77e6caa348f3b469680c9083fa67ba1a31fe1",
+          "condition_id": "sha256:7d4c817a47eb38f94d17f085de60df88010974eb4c434449a7d9fcdea387acf5",
+          "citation_id": "sha256:a2613346debd1835351b36f047a0192e2d68bd2342cf6a6e83f08bb7c462e900",
+          "cohort_id": "sha256:8026e67739dffa8d016ddb504453dc933c0f0e4023920a87c43f5a0b6a436ab0",
+          "bench_condition_id": "sha256:7d4c817a47eb38f94d17f085de60df88010974eb4c434449a7d9fcdea387acf5",
+          "evidence_role": "curve_point",
+          "citation_locator": {
+            "page": 3,
+            "figure": "3",
+            "curve": "Typical instantaneous forward characteristics at T_J = 25 degC"
+          },
+          "evidence_qualification": {
+            "test_mode": "pulsed",
+            "pulse_width_s": 0.0003,
+            "duty_cycle": 0.01
+          },
+          "bench_qualification": {
+            "test_mode": "pulsed",
+            "pulse_width_s": 0.0003,
+            "duty_cycle": 0.01
+          },
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "forward_11.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "forward_voltage_maximum_at_1_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "minimum": 0,
+          "maximum": 1.1,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 2, Electrical Characteristics",
+          "evidence_id": "sha256:570d895d79e5e92358d3a126c3f93c341c5e83ab3bfcbf1852445e8815ccbb1f",
+          "condition_id": "sha256:c7bc950f521c1618043f6c48ee7f52890635fe75ec97085d300d96c329dfba6b",
+          "citation_id": "sha256:6c3e919b748282fa652ac9374d534a01f90df7cff4fd7f5f5a0f29d00f241be4",
+          "cohort_id": "sha256:ee46fef26b8aa8a9bbc87a2d3014c2c8ff33190f67d93e9a492d72a6e445305a",
+          "bench_condition_id": "sha256:c7bc950f521c1618043f6c48ee7f52890635fe75ec97085d300d96c329dfba6b",
+          "evidence_role": "inclusive_maximum",
+          "citation_locator": {
+            "page": 2,
+            "table": "Electrical Characteristics",
+            "row": "Forward Voltage"
+          },
+          "evidence_qualification": {
+            "test_mode": "not_stated"
+          },
+          "bench_qualification": {
+            "test_mode": "continuous_dc"
+          },
+          "bench_equivalence_policy": "isothermal_diode_forward_projection",
+          "placeholder": false
+        }
+      ]
+    }
+  ]
+}

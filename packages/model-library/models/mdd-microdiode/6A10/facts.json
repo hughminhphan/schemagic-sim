@@ -1,0 +1,899 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [
+      {
+        "name": "typical_instantaneous_forward_characteristics",
+        "page_reference": "p. 2, Fig. 3 Typical Instantaneous Forward Characteristics",
+        "points": [
+          {
+            "x": 0.7,
+            "y": 0.3
+          },
+          {
+            "x": 0.8,
+            "y": 2
+          },
+          {
+            "x": 0.9,
+            "y": 8
+          },
+          {
+            "x": 1,
+            "y": 20
+          },
+          {
+            "x": 1.1,
+            "y": 45
+          },
+          {
+            "x": 1.2,
+            "y": 85
+          },
+          {
+            "x": 1.3,
+            "y": 140
+          },
+          {
+            "x": 1.4,
+            "y": 200
+          }
+        ],
+        "test_conditions": "TJ = 25 degC; pulse width = 300 us; 1% duty cycle",
+        "x_axis": {
+          "quantity": "instantaneous forward voltage",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "instantaneous forward current",
+          "scale": "log",
+          "unit": "A"
+        }
+      },
+      {
+        "name": "typical_junction_capacitance",
+        "page_reference": "p. 2, Fig. 5 Typical Junction Capacitance",
+        "points": [
+          {
+            "x": 0.1,
+            "y": 300
+          },
+          {
+            "x": 0.3,
+            "y": 250
+          },
+          {
+            "x": 1,
+            "y": 190
+          },
+          {
+            "x": 3,
+            "y": 145
+          },
+          {
+            "x": 10,
+            "y": 100
+          },
+          {
+            "x": 30,
+            "y": 70
+          },
+          {
+            "x": 100,
+            "y": 35
+          }
+        ],
+        "test_conditions": "TJ = 25 degC",
+        "x_axis": {
+          "quantity": "reverse voltage",
+          "scale": "log",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "junction capacitance",
+          "scale": "log",
+          "unit": "pF"
+        }
+      }
+    ],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p. 1",
+        "p. 2"
+      ],
+      "revision": "Rev:2024A2",
+      "title": "6A05 THRU 6A10 — General Purpose Silicon Rectifier"
+    },
+    "extraction_notes": [
+      "Forward-current and capacitance curve points are visually digitized from the drawn traces on p. 2; their values are approximate readings, not separately tabulated values.",
+      "For 6A10, the p. 1 maximum ratings table specifies VRRM = 1000 V, VDC = 1000 V, I(AV) = 6.0 A at TA = 60 degC and 0.375 in lead length, and IFSM = 200 A for an 8.3 ms single half sine-wave superimposed on rated load.",
+      "The p. 1 table separately publishes 100 uA maximum reverse current at rated DC blocking voltage and TA = 100 degC; it is not used as the reported 25 degC reverse-current value."
+    ],
+    "family": "diode",
+    "manufacturer": "MDD Microdiode Semiconductor",
+    "mpn": "6A10",
+    "omission_reason": "Reverse-recovery time is not published. No breakdown voltage or breakdown-current test point is published; the 1000 V entries are maximum blocking-voltage ratings, not measured breakdown-characteristic values.",
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": null,
+      "breakdown_voltage": null,
+      "capacitance": {
+        "conditions": "VR = 4.0 V DC, f = 1 MHz, TA = 25 degC",
+        "page_reference": "p. 1, Typical junction capacitance and note 1",
+        "source_kind": "typical",
+        "unit": "F",
+        "value": 1.5e-10
+      },
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "TJ = 25 degC; pulse width = 300 us; 1% duty cycle",
+            "page_reference": "p. 2, Fig. 3 Typical Instantaneous Forward Characteristics",
+            "source_kind": "digitized_typical_curve",
+            "unit": "A",
+            "value": 0.3
+          },
+          "voltage": {
+            "conditions": "IF = 0.3 A; TJ = 25 degC; pulse width = 300 us; 1% duty cycle",
+            "page_reference": "p. 2, Fig. 3 Typical Instantaneous Forward Characteristics",
+            "source_kind": "digitized_typical_curve",
+            "unit": "V",
+            "value": 0.7
+          }
+        },
+        {
+          "current": {
+            "conditions": "TJ = 25 degC; pulse width = 300 us; 1% duty cycle",
+            "page_reference": "p. 2, Fig. 3 Typical Instantaneous Forward Characteristics",
+            "source_kind": "digitized_typical_curve",
+            "unit": "A",
+            "value": 2
+          },
+          "voltage": {
+            "conditions": "IF = 2 A; TJ = 25 degC; pulse width = 300 us; 1% duty cycle",
+            "page_reference": "p. 2, Fig. 3 Typical Instantaneous Forward Characteristics",
+            "source_kind": "digitized_typical_curve",
+            "unit": "V",
+            "value": 0.8
+          }
+        },
+        {
+          "current": {
+            "conditions": "TJ = 25 degC; pulse width = 300 us; 1% duty cycle",
+            "page_reference": "p. 2, Fig. 3 Typical Instantaneous Forward Characteristics",
+            "source_kind": "digitized_typical_curve",
+            "unit": "A",
+            "value": 8
+          },
+          "voltage": {
+            "conditions": "IF = 8 A; TJ = 25 degC; pulse width = 300 us; 1% duty cycle",
+            "page_reference": "p. 2, Fig. 3 Typical Instantaneous Forward Characteristics",
+            "source_kind": "digitized_typical_curve",
+            "unit": "V",
+            "value": 0.9
+          }
+        },
+        {
+          "current": {
+            "conditions": "TJ = 25 degC; pulse width = 300 us; 1% duty cycle",
+            "page_reference": "p. 2, Fig. 3 Typical Instantaneous Forward Characteristics",
+            "source_kind": "digitized_typical_curve",
+            "unit": "A",
+            "value": 20
+          },
+          "voltage": {
+            "conditions": "IF = 20 A; TJ = 25 degC; pulse width = 300 us; 1% duty cycle",
+            "page_reference": "p. 2, Fig. 3 Typical Instantaneous Forward Characteristics",
+            "source_kind": "digitized_typical_curve",
+            "unit": "V",
+            "value": 1
+          }
+        },
+        {
+          "current": {
+            "conditions": "TJ = 25 degC; pulse width = 300 us; 1% duty cycle",
+            "page_reference": "p. 2, Fig. 3 Typical Instantaneous Forward Characteristics",
+            "source_kind": "digitized_typical_curve",
+            "unit": "A",
+            "value": 45
+          },
+          "voltage": {
+            "conditions": "IF = 45 A; TJ = 25 degC; pulse width = 300 us; 1% duty cycle",
+            "page_reference": "p. 2, Fig. 3 Typical Instantaneous Forward Characteristics",
+            "source_kind": "digitized_typical_curve",
+            "unit": "V",
+            "value": 1.1
+          }
+        },
+        {
+          "current": {
+            "conditions": "TJ = 25 degC; pulse width = 300 us; 1% duty cycle",
+            "page_reference": "p. 2, Fig. 3 Typical Instantaneous Forward Characteristics",
+            "source_kind": "digitized_typical_curve",
+            "unit": "A",
+            "value": 85
+          },
+          "voltage": {
+            "conditions": "IF = 85 A; TJ = 25 degC; pulse width = 300 us; 1% duty cycle",
+            "page_reference": "p. 2, Fig. 3 Typical Instantaneous Forward Characteristics",
+            "source_kind": "digitized_typical_curve",
+            "unit": "V",
+            "value": 1.2
+          }
+        },
+        {
+          "current": {
+            "conditions": "TJ = 25 degC; pulse width = 300 us; 1% duty cycle",
+            "page_reference": "p. 2, Fig. 3 Typical Instantaneous Forward Characteristics",
+            "source_kind": "digitized_typical_curve",
+            "unit": "A",
+            "value": 140
+          },
+          "voltage": {
+            "conditions": "IF = 140 A; TJ = 25 degC; pulse width = 300 us; 1% duty cycle",
+            "page_reference": "p. 2, Fig. 3 Typical Instantaneous Forward Characteristics",
+            "source_kind": "digitized_typical_curve",
+            "unit": "V",
+            "value": 1.3
+          }
+        },
+        {
+          "current": {
+            "conditions": "TJ = 25 degC; pulse width = 300 us; 1% duty cycle",
+            "page_reference": "p. 2, Fig. 3 Typical Instantaneous Forward Characteristics",
+            "source_kind": "digitized_typical_curve",
+            "unit": "A",
+            "value": 200
+          },
+          "voltage": {
+            "conditions": "IF = 200 A; TJ = 25 degC; pulse width = 300 us; 1% duty cycle",
+            "page_reference": "p. 2, Fig. 3 Typical Instantaneous Forward Characteristics",
+            "source_kind": "digitized_typical_curve",
+            "unit": "V",
+            "value": 1.4
+          }
+        },
+        {
+          "current": {
+            "conditions": "TA = 25 degC",
+            "page_reference": "p. 1, Maximum Ratings And Electrical Characteristics",
+            "source_kind": "maximum",
+            "unit": "A",
+            "value": 6
+          },
+          "voltage": {
+            "conditions": "IF = 6.0 A, TA = 25 degC",
+            "page_reference": "p. 1, Maximum Ratings And Electrical Characteristics",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 1
+          }
+        }
+      ],
+      "reverse_current": {
+        "conditions": "VR = 1000 V rated DC blocking voltage, TA = 25 degC",
+        "page_reference": "p. 1, Maximum Ratings And Electrical Characteristics, 6A10 column",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.00001
+      },
+      "reverse_recovery": null,
+      "variant": "rectifier"
+    },
+    "usable_curves": true
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "Forward Voltage (Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "1V@6A",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Voltage - Forward(Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "1V@6A",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "6A10",
+    "manufacturer": "MDD Microdiode Semiconductor",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8588887223840215041",
+    "revision": "Rev:2024A2",
+    "sha256": "01a97e017eb02640b54bf3e4f2e6a0a8c558872cb70db6edbc484d6b8def3d82",
+    "accessed_date": "2026-08-23",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2"
+    ],
+    "placeholder": false
+  },
+  "evidence_contract_version": "1.0.0",
+  "fit_points": [
+    {
+      "current": {
+        "value": 0.3,
+        "unit": "A",
+        "conditions": "TJ = 25 degC; pulse width = 300 us; 1% duty cycle",
+        "page_reference": "p. 2, Fig. 3 Typical Instantaneous Forward Characteristics",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 0.7,
+        "unit": "V",
+        "conditions": "TJ = 25 degC; pulse width = 300 us; 1% duty cycle",
+        "page_reference": "p. 2, Fig. 3 Typical Instantaneous Forward Characteristics",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 2,
+        "unit": "A",
+        "conditions": "TJ = 25 degC; pulse width = 300 us; 1% duty cycle",
+        "page_reference": "p. 2, Fig. 3 Typical Instantaneous Forward Characteristics",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 0.8,
+        "unit": "V",
+        "conditions": "TJ = 25 degC; pulse width = 300 us; 1% duty cycle",
+        "page_reference": "p. 2, Fig. 3 Typical Instantaneous Forward Characteristics",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 8,
+        "unit": "A",
+        "conditions": "TJ = 25 degC; pulse width = 300 us; 1% duty cycle",
+        "page_reference": "p. 2, Fig. 3 Typical Instantaneous Forward Characteristics",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 0.9,
+        "unit": "V",
+        "conditions": "TJ = 25 degC; pulse width = 300 us; 1% duty cycle",
+        "page_reference": "p. 2, Fig. 3 Typical Instantaneous Forward Characteristics",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 20,
+        "unit": "A",
+        "conditions": "TJ = 25 degC; pulse width = 300 us; 1% duty cycle",
+        "page_reference": "p. 2, Fig. 3 Typical Instantaneous Forward Characteristics",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 1,
+        "unit": "V",
+        "conditions": "TJ = 25 degC; pulse width = 300 us; 1% duty cycle",
+        "page_reference": "p. 2, Fig. 3 Typical Instantaneous Forward Characteristics",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 45,
+        "unit": "A",
+        "conditions": "TJ = 25 degC; pulse width = 300 us; 1% duty cycle",
+        "page_reference": "p. 2, Fig. 3 Typical Instantaneous Forward Characteristics",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 1.1,
+        "unit": "V",
+        "conditions": "TJ = 25 degC; pulse width = 300 us; 1% duty cycle",
+        "page_reference": "p. 2, Fig. 3 Typical Instantaneous Forward Characteristics",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 85,
+        "unit": "A",
+        "conditions": "TJ = 25 degC; pulse width = 300 us; 1% duty cycle",
+        "page_reference": "p. 2, Fig. 3 Typical Instantaneous Forward Characteristics",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 1.2,
+        "unit": "V",
+        "conditions": "TJ = 25 degC; pulse width = 300 us; 1% duty cycle",
+        "page_reference": "p. 2, Fig. 3 Typical Instantaneous Forward Characteristics",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 140,
+        "unit": "A",
+        "conditions": "TJ = 25 degC; pulse width = 300 us; 1% duty cycle",
+        "page_reference": "p. 2, Fig. 3 Typical Instantaneous Forward Characteristics",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 1.3,
+        "unit": "V",
+        "conditions": "TJ = 25 degC; pulse width = 300 us; 1% duty cycle",
+        "page_reference": "p. 2, Fig. 3 Typical Instantaneous Forward Characteristics",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 200,
+        "unit": "A",
+        "conditions": "TJ = 25 degC; pulse width = 300 us; 1% duty cycle",
+        "page_reference": "p. 2, Fig. 3 Typical Instantaneous Forward Characteristics",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 1.4,
+        "unit": "V",
+        "conditions": "TJ = 25 degC; pulse width = 300 us; 1% duty cycle",
+        "page_reference": "p. 2, Fig. 3 Typical Instantaneous Forward Characteristics",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "conditions": "TJ = 25 degC; pulse width = 300 us; 1% duty cycle",
+        "page_reference": "p. 2, Fig. 3 Typical Instantaneous Forward Characteristics",
+        "source_kind": "digitized_typical_curve",
+        "unit": "A",
+        "value": 0.3
+      },
+      "voltage": {
+        "conditions": "IF = 0.3 A; TJ = 25 degC; pulse width = 300 us; 1% duty cycle",
+        "page_reference": "p. 2, Fig. 3 Typical Instantaneous Forward Characteristics",
+        "source_kind": "digitized_typical_curve",
+        "unit": "V",
+        "value": 0.7
+      }
+    },
+    {
+      "current": {
+        "conditions": "TJ = 25 degC; pulse width = 300 us; 1% duty cycle",
+        "page_reference": "p. 2, Fig. 3 Typical Instantaneous Forward Characteristics",
+        "source_kind": "digitized_typical_curve",
+        "unit": "A",
+        "value": 2
+      },
+      "voltage": {
+        "conditions": "IF = 2 A; TJ = 25 degC; pulse width = 300 us; 1% duty cycle",
+        "page_reference": "p. 2, Fig. 3 Typical Instantaneous Forward Characteristics",
+        "source_kind": "digitized_typical_curve",
+        "unit": "V",
+        "value": 0.8
+      }
+    },
+    {
+      "current": {
+        "conditions": "TJ = 25 degC; pulse width = 300 us; 1% duty cycle",
+        "page_reference": "p. 2, Fig. 3 Typical Instantaneous Forward Characteristics",
+        "source_kind": "digitized_typical_curve",
+        "unit": "A",
+        "value": 8
+      },
+      "voltage": {
+        "conditions": "IF = 8 A; TJ = 25 degC; pulse width = 300 us; 1% duty cycle",
+        "page_reference": "p. 2, Fig. 3 Typical Instantaneous Forward Characteristics",
+        "source_kind": "digitized_typical_curve",
+        "unit": "V",
+        "value": 0.9
+      }
+    },
+    {
+      "current": {
+        "conditions": "TJ = 25 degC; pulse width = 300 us; 1% duty cycle",
+        "page_reference": "p. 2, Fig. 3 Typical Instantaneous Forward Characteristics",
+        "source_kind": "digitized_typical_curve",
+        "unit": "A",
+        "value": 20
+      },
+      "voltage": {
+        "conditions": "IF = 20 A; TJ = 25 degC; pulse width = 300 us; 1% duty cycle",
+        "page_reference": "p. 2, Fig. 3 Typical Instantaneous Forward Characteristics",
+        "source_kind": "digitized_typical_curve",
+        "unit": "V",
+        "value": 1
+      }
+    },
+    {
+      "current": {
+        "conditions": "TJ = 25 degC; pulse width = 300 us; 1% duty cycle",
+        "page_reference": "p. 2, Fig. 3 Typical Instantaneous Forward Characteristics",
+        "source_kind": "digitized_typical_curve",
+        "unit": "A",
+        "value": 45
+      },
+      "voltage": {
+        "conditions": "IF = 45 A; TJ = 25 degC; pulse width = 300 us; 1% duty cycle",
+        "page_reference": "p. 2, Fig. 3 Typical Instantaneous Forward Characteristics",
+        "source_kind": "digitized_typical_curve",
+        "unit": "V",
+        "value": 1.1
+      }
+    },
+    {
+      "current": {
+        "conditions": "TJ = 25 degC; pulse width = 300 us; 1% duty cycle",
+        "page_reference": "p. 2, Fig. 3 Typical Instantaneous Forward Characteristics",
+        "source_kind": "digitized_typical_curve",
+        "unit": "A",
+        "value": 85
+      },
+      "voltage": {
+        "conditions": "IF = 85 A; TJ = 25 degC; pulse width = 300 us; 1% duty cycle",
+        "page_reference": "p. 2, Fig. 3 Typical Instantaneous Forward Characteristics",
+        "source_kind": "digitized_typical_curve",
+        "unit": "V",
+        "value": 1.2
+      }
+    },
+    {
+      "current": {
+        "conditions": "TJ = 25 degC; pulse width = 300 us; 1% duty cycle",
+        "page_reference": "p. 2, Fig. 3 Typical Instantaneous Forward Characteristics",
+        "source_kind": "digitized_typical_curve",
+        "unit": "A",
+        "value": 140
+      },
+      "voltage": {
+        "conditions": "IF = 140 A; TJ = 25 degC; pulse width = 300 us; 1% duty cycle",
+        "page_reference": "p. 2, Fig. 3 Typical Instantaneous Forward Characteristics",
+        "source_kind": "digitized_typical_curve",
+        "unit": "V",
+        "value": 1.3
+      }
+    },
+    {
+      "current": {
+        "conditions": "TJ = 25 degC; pulse width = 300 us; 1% duty cycle",
+        "page_reference": "p. 2, Fig. 3 Typical Instantaneous Forward Characteristics",
+        "source_kind": "digitized_typical_curve",
+        "unit": "A",
+        "value": 200
+      },
+      "voltage": {
+        "conditions": "IF = 200 A; TJ = 25 degC; pulse width = 300 us; 1% duty cycle",
+        "page_reference": "p. 2, Fig. 3 Typical Instantaneous Forward Characteristics",
+        "source_kind": "digitized_typical_curve",
+        "unit": "V",
+        "value": 1.4
+      }
+    },
+    {
+      "current": {
+        "conditions": "TA = 25 degC",
+        "page_reference": "p. 1, Maximum Ratings And Electrical Characteristics",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 6
+      },
+      "voltage": {
+        "conditions": "IF = 6.0 A, TA = 25 degC",
+        "page_reference": "p. 1, Maximum Ratings And Electrical Characteristics",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 1
+      }
+    }
+  ],
+  "forward_voltage_points": [
+    {
+      "current": {
+        "conditions": "TA = 25 degC",
+        "page_reference": "p. 1, Maximum Ratings And Electrical Characteristics",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 6,
+        "quantity": "forward_current",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "ambient",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 6
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 1
+            }
+          },
+          "test_mode": {
+            "kind": "not_stated"
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "TA = 25 degC"
+            }
+          ],
+          "condition_id": "sha256:410eb8e9101b80ebd9e76cb223f19f346b2cb703bde64633c581d56bfa3c2acd"
+        },
+        "citation_identity": {
+          "source_sha256": "01a97e017eb02640b54bf3e4f2e6a0a8c558872cb70db6edbc484d6b8def3d82",
+          "source_revision": "Rev:2024A2",
+          "page": 1,
+          "table": "Maximum Ratings And Electrical Characteristics",
+          "row": "Forward Current",
+          "citation_id": "sha256:781a2cf99022b7e77ce59582069fdd22797eb193d6ad0a396c2039d720e3e767"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:c263bbe5e6574625828af4983746043edc5f5ad55bd8bb67321f21372b0494fb",
+          "cohort_id": "sha256:47b98b76d689d0e55d4a961919dafe9d0b96f424cda247959ddb1619f24c67af",
+          "role": "maximum",
+          "condition_id": "sha256:410eb8e9101b80ebd9e76cb223f19f346b2cb703bde64633c581d56bfa3c2acd",
+          "citation_id": "sha256:781a2cf99022b7e77ce59582069fdd22797eb193d6ad0a396c2039d720e3e767"
+        }
+      },
+      "voltage": {
+        "conditions": "IF = 6.0 A, TA = 25 degC",
+        "page_reference": "p. 1, Maximum Ratings And Electrical Characteristics",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 1,
+        "quantity": "forward_voltage",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "ambient",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 6
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 1
+            }
+          },
+          "test_mode": {
+            "kind": "not_stated"
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "IF = 6.0 A, TA = 25 degC"
+            }
+          ],
+          "condition_id": "sha256:d61a78fd04b3b686e09c1004172c688f7b42d44fe6882223f5cec4e968a4635a"
+        },
+        "citation_identity": {
+          "source_sha256": "01a97e017eb02640b54bf3e4f2e6a0a8c558872cb70db6edbc484d6b8def3d82",
+          "source_revision": "Rev:2024A2",
+          "page": 1,
+          "table": "Maximum Ratings And Electrical Characteristics",
+          "row": "Forward Voltage",
+          "citation_id": "sha256:0e038fda74a04d4caec7c6953fc1384504b840ff025d1807e6e59936777fd315"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:c1d55af48808d4ecd6ba3a1bcbbaac0666557d55db1d6723e294288a0174e73d",
+          "cohort_id": "sha256:e804c10382ac94fe08b1b1509e6eead2ef62590523890771ca3fee57821b5917",
+          "role": "maximum",
+          "condition_id": "sha256:d61a78fd04b3b686e09c1004172c688f7b42d44fe6882223f5cec4e968a4635a",
+          "citation_id": "sha256:0e038fda74a04d4caec7c6953fc1384504b840ff025d1807e6e59936777fd315"
+        }
+      }
+    }
+  ],
+  "curves": [
+    {
+      "curve_id": "sha256:ce91ea1effbeda52d8998a0475b564a8fe7710a04cdee5d124f2b3dc588fdf28",
+      "characteristic": "forward_voltage",
+      "x_axis": {
+        "quantity": "forward_current",
+        "unit": "A"
+      },
+      "y_axis": {
+        "quantity": "forward_voltage",
+        "unit": "V"
+      },
+      "condition_identity": {
+        "schema_version": "1.0.0",
+        "characteristic": "forward_voltage",
+        "polarity": "n",
+        "magnitude_convention": "absolute",
+        "temperature": {
+          "kind": "junction",
+          "value_c": 25
+        },
+        "electrical": {
+          "forward_current": {
+            "kind": "enumerated",
+            "values": [
+              0.3,
+              2,
+              8,
+              20,
+              45,
+              85,
+              140,
+              200
+            ]
+          },
+          "forward_voltage": {
+            "kind": "enumerated",
+            "values": [
+              0.7,
+              0.8,
+              0.9,
+              1,
+              1.1,
+              1.2,
+              1.3,
+              1.4
+            ]
+          }
+        },
+        "test_mode": {
+          "kind": "pulsed_limit",
+          "maximum_pulse_width_s": 0.0003
+        },
+        "qualifiers": [
+          {
+            "key": "source_conditions",
+            "value": "TJ = 25 degC; pulse width = 300 us; 1% duty cycle"
+          }
+        ],
+        "condition_id": "sha256:4024d7b51e4af09fff1ead0288309bd2d8c49cc82608e9ee4cef6d183fcb3b91"
+      },
+      "citation_identity": {
+        "source_sha256": "01a97e017eb02640b54bf3e4f2e6a0a8c558872cb70db6edbc484d6b8def3d82",
+        "source_revision": "Rev:2024A2",
+        "page": 2,
+        "figure": "3",
+        "curve": "typical_instantaneous_forward_characteristics",
+        "citation_id": "sha256:9787d2cbcfa71fa7b6f219b2e4fcdf88e8f94525c7a19aa97783cde0320a1c98"
+      },
+      "points": [
+        {
+          "x_si": 0.3,
+          "y_si": 0.7,
+          "point_index": 0,
+          "evidence_identity": {
+            "role": "digitized_typical_curve",
+            "condition_id": "sha256:4024d7b51e4af09fff1ead0288309bd2d8c49cc82608e9ee4cef6d183fcb3b91",
+            "citation_id": "sha256:9787d2cbcfa71fa7b6f219b2e4fcdf88e8f94525c7a19aa97783cde0320a1c98",
+            "cohort_id": "sha256:b2734b0b6422ea0104af548699b1d73802cbda4bca4790beca3744d9528aa85c",
+            "curve_id": "sha256:ce91ea1effbeda52d8998a0475b564a8fe7710a04cdee5d124f2b3dc588fdf28",
+            "point_index": 0,
+            "evidence_id": "sha256:53e9a48601c23b3312904a116544c9a44a78fcb47bb978e37038ef2392b86287"
+          }
+        },
+        {
+          "x_si": 2,
+          "y_si": 0.8,
+          "point_index": 1,
+          "evidence_identity": {
+            "role": "digitized_typical_curve",
+            "condition_id": "sha256:4024d7b51e4af09fff1ead0288309bd2d8c49cc82608e9ee4cef6d183fcb3b91",
+            "citation_id": "sha256:9787d2cbcfa71fa7b6f219b2e4fcdf88e8f94525c7a19aa97783cde0320a1c98",
+            "cohort_id": "sha256:b2734b0b6422ea0104af548699b1d73802cbda4bca4790beca3744d9528aa85c",
+            "curve_id": "sha256:ce91ea1effbeda52d8998a0475b564a8fe7710a04cdee5d124f2b3dc588fdf28",
+            "point_index": 1,
+            "evidence_id": "sha256:78b5e42db15a21dc75c1ef411d7b33497883f5d955d52c17e6e7a8010f59d385"
+          }
+        },
+        {
+          "x_si": 8,
+          "y_si": 0.9,
+          "point_index": 2,
+          "evidence_identity": {
+            "role": "digitized_typical_curve",
+            "condition_id": "sha256:4024d7b51e4af09fff1ead0288309bd2d8c49cc82608e9ee4cef6d183fcb3b91",
+            "citation_id": "sha256:9787d2cbcfa71fa7b6f219b2e4fcdf88e8f94525c7a19aa97783cde0320a1c98",
+            "cohort_id": "sha256:b2734b0b6422ea0104af548699b1d73802cbda4bca4790beca3744d9528aa85c",
+            "curve_id": "sha256:ce91ea1effbeda52d8998a0475b564a8fe7710a04cdee5d124f2b3dc588fdf28",
+            "point_index": 2,
+            "evidence_id": "sha256:b6a4ca97c506ede06e4b97a72a86b71d6dbe96b1b48b53d4d2fd1e9a58c6ca51"
+          }
+        },
+        {
+          "x_si": 20,
+          "y_si": 1,
+          "point_index": 3,
+          "evidence_identity": {
+            "role": "digitized_typical_curve",
+            "condition_id": "sha256:4024d7b51e4af09fff1ead0288309bd2d8c49cc82608e9ee4cef6d183fcb3b91",
+            "citation_id": "sha256:9787d2cbcfa71fa7b6f219b2e4fcdf88e8f94525c7a19aa97783cde0320a1c98",
+            "cohort_id": "sha256:b2734b0b6422ea0104af548699b1d73802cbda4bca4790beca3744d9528aa85c",
+            "curve_id": "sha256:ce91ea1effbeda52d8998a0475b564a8fe7710a04cdee5d124f2b3dc588fdf28",
+            "point_index": 3,
+            "evidence_id": "sha256:76ba21576620f7b21773d9b4e8d08b660e8bec7df23dbdfa32679b319ec98822"
+          }
+        },
+        {
+          "x_si": 45,
+          "y_si": 1.1,
+          "point_index": 4,
+          "evidence_identity": {
+            "role": "digitized_typical_curve",
+            "condition_id": "sha256:4024d7b51e4af09fff1ead0288309bd2d8c49cc82608e9ee4cef6d183fcb3b91",
+            "citation_id": "sha256:9787d2cbcfa71fa7b6f219b2e4fcdf88e8f94525c7a19aa97783cde0320a1c98",
+            "cohort_id": "sha256:b2734b0b6422ea0104af548699b1d73802cbda4bca4790beca3744d9528aa85c",
+            "curve_id": "sha256:ce91ea1effbeda52d8998a0475b564a8fe7710a04cdee5d124f2b3dc588fdf28",
+            "point_index": 4,
+            "evidence_id": "sha256:b29a8f895031d1df7dd6920e05d473a9d088682d5ccbc5087548bf97b853d11d"
+          }
+        },
+        {
+          "x_si": 85,
+          "y_si": 1.2,
+          "point_index": 5,
+          "evidence_identity": {
+            "role": "digitized_typical_curve",
+            "condition_id": "sha256:4024d7b51e4af09fff1ead0288309bd2d8c49cc82608e9ee4cef6d183fcb3b91",
+            "citation_id": "sha256:9787d2cbcfa71fa7b6f219b2e4fcdf88e8f94525c7a19aa97783cde0320a1c98",
+            "cohort_id": "sha256:b2734b0b6422ea0104af548699b1d73802cbda4bca4790beca3744d9528aa85c",
+            "curve_id": "sha256:ce91ea1effbeda52d8998a0475b564a8fe7710a04cdee5d124f2b3dc588fdf28",
+            "point_index": 5,
+            "evidence_id": "sha256:994f5d6b4a10662edfdf70d7ff7437e49cdd850cd542f7faefb109a6f129d716"
+          }
+        },
+        {
+          "x_si": 140,
+          "y_si": 1.3,
+          "point_index": 6,
+          "evidence_identity": {
+            "role": "digitized_typical_curve",
+            "condition_id": "sha256:4024d7b51e4af09fff1ead0288309bd2d8c49cc82608e9ee4cef6d183fcb3b91",
+            "citation_id": "sha256:9787d2cbcfa71fa7b6f219b2e4fcdf88e8f94525c7a19aa97783cde0320a1c98",
+            "cohort_id": "sha256:b2734b0b6422ea0104af548699b1d73802cbda4bca4790beca3744d9528aa85c",
+            "curve_id": "sha256:ce91ea1effbeda52d8998a0475b564a8fe7710a04cdee5d124f2b3dc588fdf28",
+            "point_index": 6,
+            "evidence_id": "sha256:ed991b59157df733be9e80c9521377ebe4b86fba2e8c0fd4f44491365581e8ba"
+          }
+        },
+        {
+          "x_si": 200,
+          "y_si": 1.4,
+          "point_index": 7,
+          "evidence_identity": {
+            "role": "digitized_typical_curve",
+            "condition_id": "sha256:4024d7b51e4af09fff1ead0288309bd2d8c49cc82608e9ee4cef6d183fcb3b91",
+            "citation_id": "sha256:9787d2cbcfa71fa7b6f219b2e4fcdf88e8f94525c7a19aa97783cde0320a1c98",
+            "cohort_id": "sha256:b2734b0b6422ea0104af548699b1d73802cbda4bca4790beca3744d9528aa85c",
+            "curve_id": "sha256:ce91ea1effbeda52d8998a0475b564a8fe7710a04cdee5d124f2b3dc588fdf28",
+            "point_index": 7,
+            "evidence_id": "sha256:e03e52a9e9142810142ce719f91e0d6bc50a9a65438ef83a5207af55958d07b4"
+          }
+        }
+      ]
+    }
+  ],
+  "electrical_limits": {
+    "reverse_current_1000v": {
+      "conditions": "VR = 1000 V rated DC blocking voltage, TA = 25 degC",
+      "page_reference": "p. 1, Maximum Ratings And Electrical Characteristics, 6A10 column",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 0.00001
+    }
+  },
+  "derived_model_inputs": {}
+}

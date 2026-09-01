@@ -1,17 +1,17 @@
 import { expect, test } from "@playwright/test";
-import { mkdirSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { resolve } from "node:path";
 
-const shots = resolve(import.meta.dirname, "../../../spikes/p6-screenshots");
-const examples = [
-  ["transistor-led-bench", "NPN LED bench"],
-  ["rc-filter-bode", "RC low-pass Bode plot"],
-  ["common-emitter-amp", "2N3904 common-emitter amplifier"],
-  ["mosfet-led-switch", "IRLZ44N logic-level LED switch"],
-  ["opamp-noninverting", "TL072 non-inverting amplifier"],
-] as const;
+const examplesDirectory = resolve(import.meta.dirname, "../../../examples");
+const examples = readdirSync(examplesDirectory)
+  .filter((name) => name.endsWith(".json"))
+  .sort()
+  .map((name) => {
+    const id = name.replace(/\.json$/, "");
+    const document = JSON.parse(readFileSync(resolve(examplesDirectory, name), "utf8")) as { meta: { title: string } };
+    return [id, document.meta.title] as const;
+  });
 
-test.beforeAll(() => mkdirSync(shots, { recursive: true }));
 test.beforeEach(async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== "chromium", "P6 acceptance and screenshots run once in Chromium");
   await page.goto("/");
@@ -30,34 +30,50 @@ test.beforeEach(async ({ page }, testInfo) => {
   await expect(page.getByTestId("engine-ready")).toBeVisible({ timeout: 45_000 });
 });
 
-test("loads all bundled examples and solves", async ({ page }) => {
+test("loads all bundled examples and solves", async ({ page }, testInfo) => {
   for (const [id, title] of examples) {
+    const banner = page.locator("#engine-banner");
+    const completedBefore = Number(await banner.getAttribute("data-solve-completed") ?? 0);
     await page.getByRole("button", { name: "Examples" }).click();
     const dialog = page.getByRole("dialog", { name: "Example circuits" });
     await dialog.locator(`[data-example="${id}"]`).click();
     await expect(page.locator("#workspace-button")).toHaveText(title);
     await expect(page).toHaveURL(new RegExp(`#example=${id}$`));
+    await expect.poll(async () => Number(await banner.getAttribute("data-solve-started")), { message: `${id} should start a fresh solve` }).toBeGreaterThan(completedBefore);
+    const started = await banner.getAttribute("data-solve-started");
+    await expect(banner, `${id} should complete the solve it started`).toHaveAttribute("data-solve-completed", started!);
     await expect(page.getByTestId("engine-ready")).toBeVisible({ timeout: 45_000 });
     await expect(page.locator(".error-toast")).toHaveCount(0);
     if (id === "rc-filter-bode" || id === "mosfet-led-switch") {
       await expect(page.locator(".oc-waveform-viewer__trace")).toHaveCount(2, { timeout: 45_000 });
       await page.waitForTimeout(100);
-      await page.screenshot({ path: resolve(shots, id === "rc-filter-bode" ? "example-rc-filter-bode.png" : "example-mosfet-led-switch.png"), fullPage: true });
+      await page.screenshot({ path: testInfo.outputPath(id === "rc-filter-bode" ? "example-rc-filter-bode.png" : "example-mosfet-led-switch.png"), fullPage: true });
     }
   }
 });
 
-test("catalog renders model detail and places real 2N3904 model", async ({ page }) => {
+test("opamp example keeps its generated background outline", async ({ page }) => {
+  await page.goto("/#example=opamp-noninverting");
+  await page.reload();
+  await expect(page.locator("#workspace-button")).toHaveText("TL072 non-inverting amplifier");
+  await expect(page.getByTestId("engine-ready")).toBeVisible({ timeout: 45_000 });
+
+  const body = page.locator('[data-component-id="c4"] .sym-bg');
+  await expect(body).toHaveCount(1);
+  expect(await body.evaluate((element) => getComputedStyle(element).stroke)).not.toBe("none");
+});
+
+test("catalog renders model detail and places real 2N3904 model", async ({ page }, testInfo) => {
   await page.getByRole("button", { name: "Catalog" }).click();
   const dialog = page.getByRole("dialog", { name: "Component catalog" });
   await expect(dialog).toBeVisible();
   expect(await dialog.locator("[data-catalog-part]").count()).toBeGreaterThanOrEqual(5);
-  await page.screenshot({ path: resolve(shots, "catalog-view.png"), fullPage: true });
+  await page.screenshot({ path: testInfo.outputPath("catalog-view.png"), fullPage: true });
 
   await dialog.locator('[data-catalog-part="onsemi/2N3904"]').click();
   await expect(dialog.getByTestId("model-card")).toContainText("2N3904 model card");
   await expect(dialog.getByRole("link", { name: "View model source and tests on GitHub" })).toHaveAttribute("href", /packages\/model-library\/models\/onsemi\/2N3904$/);
-  await page.screenshot({ path: resolve(shots, "catalog-2n3904-model-card.png"), fullPage: true });
+  await page.screenshot({ path: testInfo.outputPath("catalog-2n3904-model-card.png"), fullPage: true });
 
   await dialog.getByRole("button", { name: "Place 2N3904" }).click();
   const box = await page.locator("#editor-host").boundingBox();

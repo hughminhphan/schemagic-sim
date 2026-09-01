@@ -1,0 +1,109 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$defs": {
+    "locator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["page", "table", "row"],
+      "properties": {
+        "page": {"type": "integer", "minimum": 1},
+        "table": {"type": "string", "minLength": 1},
+        "row": {"type": "string", "minLength": 1}
+      }
+    },
+    "temperature": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "value_c", "provenance"],
+      "properties": {
+        "kind": {"enum": ["ambient", "case", "junction"]},
+        "value_c": {"type": "number"},
+        "provenance": {"enum": ["inline_condition", "table_heading", "figure_label", "footnote", "section_scope"]}
+      }
+    },
+    "test_mode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind"],
+      "properties": {
+        "kind": {"enum": ["dc", "continuous", "pulsed", "single_pulse", "not_stated"]},
+        "pulse_width_s": {"type": "number"},
+        "duty_cycle": {"type": "number"},
+        "repetition_period_s": {"type": "number"},
+        "repetition_frequency_hz": {"type": "number"}
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["conditions", "page_reference", "locator", "magnitude_convention", "temperature", "id_a", "test_mode"],
+      "properties": {
+        "conditions": {"type": "string", "minLength": 1},
+        "page_reference": {"type": "string", "minLength": 1},
+        "locator": {"$ref": "#/$defs/locator"},
+        "magnitude_convention": {"enum": ["signed", "absolute"]},
+        "temperature": {"$ref": "#/$defs/temperature"},
+        "id_a": {"type": "number"},
+        "test_mode": {"$ref": "#/$defs/test_mode"}
+      }
+    },
+    "threshold": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["minimum_v", "typical_v", "maximum_v", "conditions", "page_reference", "locator", "magnitude_convention", "temperature", "id_a", "test_mode"],
+      "properties": {
+        "minimum_v": {"type": ["number", "null"]},
+        "typical_v": {"type": ["number", "null"]},
+        "maximum_v": {"type": ["number", "null"]},
+        "conditions": {"type": "string", "minLength": 1},
+        "page_reference": {"type": "string", "minLength": 1},
+        "locator": {"$ref": "#/$defs/locator"},
+        "magnitude_convention": {"enum": ["signed", "absolute"]},
+        "temperature": {"$ref": "#/$defs/temperature"},
+        "id_a": {"type": "number"},
+        "test_mode": {"$ref": "#/$defs/test_mode"}
+      }
+    },
+    "rdson": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["vgs_v", "id_a", "typical_ohm", "maximum_ohm", "conditions", "page_reference", "locator", "magnitude_convention", "temperature", "test_mode"],
+      "properties": {
+        "vgs_v": {"type": "number"},
+        "id_a": {"type": "number"},
+        "typical_ohm": {"type": ["number", "null"]},
+        "maximum_ohm": {"type": ["number", "null"]},
+        "conditions": {"type": "string", "minLength": 1},
+        "page_reference": {"type": "string", "minLength": 1},
+        "locator": {"$ref": "#/$defs/locator"},
+        "magnitude_convention": {"enum": ["signed", "absolute"]},
+        "temperature": {"$ref": "#/$defs/temperature"},
+        "test_mode": {"$ref": "#/$defs/test_mode"}
+      }
+    }
+  },
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "mpn", "manufacturer", "family", "datasheet_identity", "polarity", "threshold", "rdson_points", "extraction_notes", "omission_reason"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "mpn": {"type": "string", "minLength": 1},
+    "manufacturer": {"type": "string", "minLength": 1},
+    "family": {"const": "mosfet"},
+    "datasheet_identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["title", "revision", "pages_examined"],
+      "properties": {
+        "title": {"type": "string", "minLength": 1},
+        "revision": {"type": "string", "minLength": 1},
+        "pages_examined": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}
+      }
+    },
+    "polarity": {"enum": ["n", "p"]},
+    "threshold": {"$ref": "#/$defs/threshold"},
+    "rdson_points": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/rdson"}},
+    "extraction_notes": {"type": "array", "items": {"type": "string"}},
+    "omission_reason": {"type": ["string", "null"]}
+  }
+}

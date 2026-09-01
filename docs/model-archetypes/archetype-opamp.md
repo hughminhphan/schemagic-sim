@@ -13,7 +13,7 @@ Every element below was validated as a single unit against native ngspice-46. Me
 **Node order is `INP INN VCC VEE OUT`.** This order is fixed for every opamp package in the library so that `spice_pin_mapping` is uniform.
 
 ```spice
-* OpenCircuit original-from-facts model
+* scheMAGIC original-from-facts model
 * <MPN> (<manufacturer>), datasheet rev <rev>, fitted <YYYY-MM-DD>
 * Archetype: archetype-opamp.md. Fit run: <run-id>
 * Node order: X<ref> inp inn vcc vee out OC_<MPN>

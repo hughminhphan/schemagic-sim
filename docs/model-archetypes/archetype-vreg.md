@@ -19,7 +19,7 @@ The regulator is the archetype where naive behavioral modelling breaks the DC so
 ### Variant FIXED, node order `IN OUT GND`
 
 ```spice
-* OpenCircuit original-from-facts model
+* scheMAGIC original-from-facts model
 * <MPN> (<manufacturer>), datasheet rev <rev>, fitted <YYYY-MM-DD>
 * Archetype: archetype-vreg.md, variant FIXED. Fit run: <run-id>
 * Node order: X<ref> in out gnd OC_<MPN>

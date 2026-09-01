@@ -1,12 +1,18 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://opencircuit.dev/schemas/expectations.schema.json",
-  "title": "OpenCircuit Model Test Expectations",
+  "title": "scheMAGIC Model Test Expectations",
   "type": "object",
   "additionalProperties": false,
   "required": ["schema_version", "tests"],
   "properties": {
     "schema_version": { "const": "1.0.0" },
+    "evidence_contract_version": { "const": "1.0.0" },
+    "evidence_cohorts": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/evidenceCohort" }
+    },
     "tests": {
       "type": "array",
       "minItems": 1,
@@ -48,7 +54,154 @@
       }
     }
   },
+  "dependentRequired": {
+    "evidence_contract_version": ["evidence_cohorts"],
+    "evidence_cohorts": ["evidence_contract_version"]
+  },
+  "allOf": [
+    {
+      "if": { "required": ["evidence_contract_version"] },
+      "then": {
+        "properties": {
+          "tests": {
+            "contains": {
+              "anyOf": [
+                { "properties": { "scalar_checks": { "contains": { "required": ["cohort_id"] } } } },
+                { "properties": { "hard_bounds_checks": { "contains": { "required": ["cohort_id"] } } } }
+              ]
+            }
+          }
+        }
+      }
+    }
+  ],
   "$defs": {
+    "contentAddressedId": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-fA-F]{64}$"
+    },
+    "evidenceId": { "$ref": "#/$defs/contentAddressedId" },
+    "conditionId": { "$ref": "#/$defs/contentAddressedId" },
+    "citationId": { "$ref": "#/$defs/contentAddressedId" },
+    "cohortId": { "$ref": "#/$defs/contentAddressedId" },
+    "benchConditionId": { "$ref": "#/$defs/contentAddressedId" },
+    "evidenceRole": {
+      "enum": [
+        "typical_observation",
+        "inclusive_minimum",
+        "inclusive_maximum",
+        "inequality_constraint",
+        "curve_point"
+      ]
+    },
+    "conditionQualification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["test_mode"],
+      "properties": {
+        "test_mode": { "enum": ["continuous_dc", "pulsed", "single_pulse", "pulsed_limit", "not_stated"] },
+        "pulse_width_s": { "type": "number", "exclusiveMinimum": 0 },
+        "duty_cycle": { "type": "number", "exclusiveMinimum": 0, "maximum": 1 },
+        "maximum_pulse_width_s": { "type": "number", "exclusiveMinimum": 0 },
+        "maximum_duty_cycle": { "type": "number", "exclusiveMinimum": 0, "maximum": 1 }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "test_mode": { "const": "pulsed" } }, "required": ["test_mode"] },
+          "then": {
+            "required": ["pulse_width_s", "duty_cycle"],
+            "not": { "anyOf": [{ "required": ["maximum_pulse_width_s"] }, { "required": ["maximum_duty_cycle"] }] }
+          },
+          "else": {
+            "if": { "properties": { "test_mode": { "const": "single_pulse" } }, "required": ["test_mode"] },
+            "then": {
+              "required": ["pulse_width_s"],
+              "not": { "anyOf": [{ "required": ["duty_cycle"] }, { "required": ["maximum_pulse_width_s"] }, { "required": ["maximum_duty_cycle"] }] }
+            },
+            "else": {
+              "if": { "properties": { "test_mode": { "const": "pulsed_limit" } }, "required": ["test_mode"] },
+              "then": {
+                "anyOf": [{ "required": ["maximum_pulse_width_s"] }, { "required": ["maximum_duty_cycle"] }],
+                "not": { "anyOf": [{ "required": ["pulse_width_s"] }, { "required": ["duty_cycle"] }] }
+              },
+              "else": {
+                "not": { "anyOf": [{ "required": ["pulse_width_s"] }, { "required": ["duty_cycle"] }, { "required": ["maximum_pulse_width_s"] }, { "required": ["maximum_duty_cycle"] }] }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "citationLocator": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["page", "table", "row"],
+          "properties": {
+            "page": { "type": "integer", "minimum": 1 },
+            "table": { "type": "string", "minLength": 1, "pattern": "\\S" },
+            "row": { "type": "string", "minLength": 1, "pattern": "\\S" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["page", "figure"],
+          "properties": {
+            "page": { "type": "integer", "minimum": 1 },
+            "figure": { "type": "string", "minLength": 1, "pattern": "\\S" },
+            "curve": { "type": "string", "minLength": 1, "pattern": "\\S" },
+            "trace": { "type": "string", "minLength": 1, "pattern": "\\S" }
+          },
+          "oneOf": [
+            { "required": ["curve"] },
+            { "required": ["trace"] }
+          ]
+        }
+      ]
+    },
+    "evidenceCohort": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["cohort_id", "fidelity_tier", "evidence_ids"],
+      "properties": {
+        "cohort_id": { "$ref": "#/$defs/cohortId" },
+        "fidelity_tier": { "enum": ["F1", "F2"] },
+        "evidence_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/evidenceId" }
+        }
+      }
+    },
+    "evidenceLinkageProperties": {
+      "properties": {
+        "evidence_id": { "$ref": "#/$defs/evidenceId" },
+        "condition_id": { "$ref": "#/$defs/conditionId" },
+        "citation_id": { "$ref": "#/$defs/citationId" },
+        "cohort_id": { "$ref": "#/$defs/cohortId" },
+        "bench_condition_id": { "$ref": "#/$defs/benchConditionId" },
+        "evidence_role": { "$ref": "#/$defs/evidenceRole" },
+        "citation_locator": { "$ref": "#/$defs/citationLocator" },
+        "evidence_qualification": { "$ref": "#/$defs/conditionQualification" },
+        "bench_qualification": { "$ref": "#/$defs/conditionQualification" },
+        "bench_equivalence_policy": { "const": "isothermal_diode_forward_projection" }
+      },
+      "dependentRequired": {
+        "evidence_id": ["condition_id", "citation_id", "cohort_id", "bench_condition_id", "evidence_role", "citation_locator", "evidence_qualification", "bench_qualification"],
+        "condition_id": ["evidence_id", "citation_id", "cohort_id", "bench_condition_id", "evidence_role", "citation_locator", "evidence_qualification", "bench_qualification"],
+        "citation_id": ["evidence_id", "condition_id", "cohort_id", "bench_condition_id", "evidence_role", "citation_locator", "evidence_qualification", "bench_qualification"],
+        "cohort_id": ["evidence_id", "condition_id", "citation_id", "bench_condition_id", "evidence_role", "citation_locator", "evidence_qualification", "bench_qualification"],
+        "bench_condition_id": ["evidence_id", "condition_id", "citation_id", "cohort_id", "evidence_role", "citation_locator", "evidence_qualification", "bench_qualification"],
+        "evidence_role": ["evidence_id", "condition_id", "citation_id", "cohort_id", "bench_condition_id", "citation_locator", "evidence_qualification", "bench_qualification"],
+        "citation_locator": ["evidence_id", "condition_id", "citation_id", "cohort_id", "bench_condition_id", "evidence_role", "evidence_qualification", "bench_qualification"],
+        "evidence_qualification": ["evidence_id", "condition_id", "citation_id", "cohort_id", "bench_condition_id", "evidence_role", "citation_locator", "bench_qualification"],
+        "bench_qualification": ["evidence_id", "condition_id", "citation_id", "cohort_id", "bench_condition_id", "evidence_role", "citation_locator", "evidence_qualification"],
+        "bench_equivalence_policy": ["evidence_id", "condition_id", "citation_id", "cohort_id", "bench_condition_id", "evidence_role", "citation_locator", "evidence_qualification", "bench_qualification"]
+      }
+    },
     "expressionSource": {
       "type": "object",
       "additionalProperties": false,
@@ -89,8 +242,19 @@
           "minLength": 1,
           "pattern": "\\S+"
         },
-        "placeholder": { "type": "boolean" }
-      }
+        "placeholder": { "type": "boolean" },
+        "evidence_id": { "$ref": "#/$defs/evidenceId" },
+        "condition_id": { "$ref": "#/$defs/conditionId" },
+        "citation_id": { "$ref": "#/$defs/citationId" },
+        "cohort_id": { "$ref": "#/$defs/cohortId" },
+        "bench_condition_id": { "$ref": "#/$defs/benchConditionId" },
+        "evidence_role": { "$ref": "#/$defs/evidenceRole" },
+        "citation_locator": { "$ref": "#/$defs/citationLocator" },
+        "evidence_qualification": { "$ref": "#/$defs/conditionQualification" },
+        "bench_qualification": { "$ref": "#/$defs/conditionQualification" },
+        "bench_equivalence_policy": { "const": "isothermal_diode_forward_projection" }
+      },
+      "allOf": [{ "$ref": "#/$defs/evidenceLinkageProperties" }]
     },
     "hardBoundsCheck": {
       "type": "object",
@@ -111,8 +275,19 @@
         "unit": { "type": "string", "minLength": 1 },
         "inclusive": { "type": "boolean" },
         "datasheet_citation": { "type": "string", "minLength": 1 },
-        "placeholder": { "type": "boolean" }
+        "placeholder": { "type": "boolean" },
+        "evidence_id": { "$ref": "#/$defs/evidenceId" },
+        "condition_id": { "$ref": "#/$defs/conditionId" },
+        "citation_id": { "$ref": "#/$defs/citationId" },
+        "cohort_id": { "$ref": "#/$defs/cohortId" },
+        "bench_condition_id": { "$ref": "#/$defs/benchConditionId" },
+        "evidence_role": { "$ref": "#/$defs/evidenceRole" },
+        "citation_locator": { "$ref": "#/$defs/citationLocator" },
+        "evidence_qualification": { "$ref": "#/$defs/conditionQualification" },
+        "bench_qualification": { "$ref": "#/$defs/conditionQualification" },
+        "bench_equivalence_policy": { "const": "isothermal_diode_forward_projection" }
       },
+      "allOf": [{ "$ref": "#/$defs/evidenceLinkageProperties" }],
       "anyOf": [
         { "required": ["minimum"] },
         { "required": ["maximum"] }

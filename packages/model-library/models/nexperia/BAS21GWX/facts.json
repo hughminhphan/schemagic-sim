@@ -1,0 +1,236 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3",
+        "p. 4",
+        "p. 5",
+        "p. 6",
+        "p. 7",
+        "p. 8",
+        "p. 9",
+        "p. 10",
+        "p. 11"
+      ],
+      "revision": "datasheet as supplied",
+      "title": "BAS21GWX high-voltage switching diode"
+    },
+    "extraction_notes": [
+      "Full rendered datasheet inspected; plot traces were not discretely digitized."
+    ],
+    "family": "diode",
+    "manufacturer": "Nexperia",
+    "mpn": "BAS21GWX",
+    "omission_reason": "No non-invented curve coordinates or cited forward-voltage/current pair were available.",
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": null,
+      "breakdown_voltage": null,
+      "capacitance": null,
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "IF = 200 mA; tp <= 300 us; delta <= 0.02; Tj = 25 degC",
+            "page_reference": "p. 1 Table 1 quick reference data",
+            "source_kind": "maximum",
+            "unit": "A",
+            "value": 0.2
+          },
+          "voltage": {
+            "conditions": "IF = 200 mA; tp <= 300 us; delta <= 0.02; Tj = 25 degC",
+            "page_reference": "p. 1 Table 1 quick reference data",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 1.25
+          }
+        }
+      ],
+      "reverse_current": null,
+      "reverse_recovery": null,
+      "variant": "signal"
+    },
+    "usable_curves": false
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "Forward Voltage (Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "1.25V@200mA",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Voltage - Forward(Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "1.25V@200mA",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "BAS21GWX",
+    "manufacturer": "Nexperia",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8588912961364627456",
+    "revision": "datasheet as supplied",
+    "sha256": "f114c08e71134bf744d736cb4e7c35321da038d59476340cc1246f35ba58432e",
+    "accessed_date": "2026-08-23",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4",
+      "p. 5",
+      "p. 6",
+      "p. 7",
+      "p. 8",
+      "p. 9",
+      "p. 10",
+      "p. 11"
+    ],
+    "placeholder": false
+  },
+  "evidence_contract_version": "1.0.0",
+  "fit_points": [
+    {
+      "current": {
+        "conditions": "IF = 200 mA; tp <= 300 us; delta <= 0.02; Tj = 25 degC",
+        "page_reference": "p. 1 Table 1 quick reference data",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.2
+      },
+      "voltage": {
+        "conditions": "IF = 200 mA; tp <= 300 us; delta <= 0.02; Tj = 25 degC",
+        "page_reference": "p. 1 Table 1 quick reference data",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 1.25
+      }
+    }
+  ],
+  "forward_voltage_points": [
+    {
+      "current": {
+        "conditions": "IF = 200 mA; tp <= 300 us; delta <= 0.02; Tj = 25 degC",
+        "page_reference": "p. 1 Table 1 quick reference data",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.2,
+        "quantity": "forward_current",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "junction",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 0.2
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 1.25
+            }
+          },
+          "test_mode": {
+            "kind": "pulsed_limit",
+            "maximum_pulse_width_s": 0.0003,
+            "maximum_duty_cycle": 0.02
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "IF = 200 mA; tp <= 300 us; delta <= 0.02; Tj = 25 degC"
+            }
+          ],
+          "condition_id": "sha256:dcd796bb6523ca6036c0d8b29cf06597ea51b6cc3c62e0cefdf15a563555e74d"
+        },
+        "citation_identity": {
+          "source_sha256": "f114c08e71134bf744d736cb4e7c35321da038d59476340cc1246f35ba58432e",
+          "source_revision": "datasheet as supplied",
+          "page": 1,
+          "table": "p. 1 Table 1 quick reference data",
+          "row": "Forward Current",
+          "citation_id": "sha256:408aec314de36dfc147a1feed316bfd0a16560844d75b63d24d7b300b7fe1235"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:910b806765708878cdaa6e85540ee5de74718ccdd973a2acf9c2fcad9a7c0773",
+          "cohort_id": "sha256:8040b78f297e59a9d527a81e421bac39e718ab2b2bb6b107061c71bdfcb907c9",
+          "role": "maximum",
+          "condition_id": "sha256:dcd796bb6523ca6036c0d8b29cf06597ea51b6cc3c62e0cefdf15a563555e74d",
+          "citation_id": "sha256:408aec314de36dfc147a1feed316bfd0a16560844d75b63d24d7b300b7fe1235"
+        }
+      },
+      "voltage": {
+        "conditions": "IF = 200 mA; tp <= 300 us; delta <= 0.02; Tj = 25 degC",
+        "page_reference": "p. 1 Table 1 quick reference data",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 1.25,
+        "quantity": "forward_voltage",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "junction",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 0.2
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 1.25
+            }
+          },
+          "test_mode": {
+            "kind": "pulsed_limit",
+            "maximum_pulse_width_s": 0.0003,
+            "maximum_duty_cycle": 0.02
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "IF = 200 mA; tp <= 300 us; delta <= 0.02; Tj = 25 degC"
+            }
+          ],
+          "condition_id": "sha256:dcd796bb6523ca6036c0d8b29cf06597ea51b6cc3c62e0cefdf15a563555e74d"
+        },
+        "citation_identity": {
+          "source_sha256": "f114c08e71134bf744d736cb4e7c35321da038d59476340cc1246f35ba58432e",
+          "source_revision": "datasheet as supplied",
+          "page": 1,
+          "table": "p. 1 Table 1 quick reference data",
+          "row": "Forward Voltage",
+          "citation_id": "sha256:6382c230bdc1cb8c2dd9ab9ca114fe3d5def797f93021468188e2a74ab2a4436"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:dff35bf70f0ef402ed4f99f9f09b2ed6736392e10db8a2e612f0697322c47a73",
+          "cohort_id": "sha256:60e653bd239c5ae63e1b9337b1c69b7b83ad635052623efdbdb99bd1ca6533ed",
+          "role": "maximum",
+          "condition_id": "sha256:dcd796bb6523ca6036c0d8b29cf06597ea51b6cc3c62e0cefdf15a563555e74d",
+          "citation_id": "sha256:6382c230bdc1cb8c2dd9ab9ca114fe3d5def797f93021468188e2a74ab2a4436"
+        }
+      }
+    }
+  ],
+  "curves": [],
+  "electrical_limits": {},
+  "derived_model_inputs": {}
+}

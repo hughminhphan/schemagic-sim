@@ -121,3 +121,11 @@ Permission is hereby granted, free of charge, to any person obtaining a copy of 
 The licence becomes null and void if these conditions are not met.
 
 THE FONT SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT OF COPYRIGHT, PATENT, TRADEMARK, OR OTHER RIGHT. IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY, INCLUDING GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL DAMAGES, WHETHER IN AN ACTION OF CONTRACT, TORT, OR OTHERWISE, ARISING FROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM OTHER DEALINGS IN THE FONT SOFTWARE.
+
+## KiCad symbol artwork
+
+The schematic editor includes converted artwork from the official KiCad symbol libraries, pinned to commit `f0811ce7f108212a1305fce0dc1d164749cdf8c4` from <https://gitlab.com/kicad/libraries/kicad-symbols> and fetched on 2026-08-13.
+
+The selected source symbols are distributed under the Creative Commons Attribution-ShareAlike 4.0 International licence (CC-BY-SA 4.0), with KiCad's exception for electronic designs and generated files. The exact source files, checksums, attribution, complete upstream licence notice, and exception are preserved under `packages/schematic-editor/vendor/kicad-symbols/`.
+
+The KiCad libraries are compiled by the KiCad community and provided without warranty of any kind, express or implied.

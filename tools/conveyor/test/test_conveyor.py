@@ -12,8 +12,9 @@ HERE = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(HERE))
 
 from conveyorlib import (ConveyorError, StateStore, cross_check, filter_library_collisions,
+                         load_and_translate_mosfet_evidence_envelope,
                          load_and_validate_extraction, normalize_extraction_payload,
-                         run_extraction_batch, should_park_family)
+                         run_extraction_batch, should_park_family, validate_schema)
 
 
 def q(value, unit="V"):
@@ -144,6 +145,400 @@ class SchemaValidationTest(unittest.TestCase):
         self.assertEqual(normalized["specs"]["rdson"]["value"], 0.052)
         self.assertEqual(normalized["specs"]["rdson"]["unit"], "ohm")
         self.assertNotRegex("\n".join(normalized["extraction_notes"]), "explicit mOhm")
+
+
+class MosfetCriticalProvenanceTest(unittest.TestCase):
+    def load_fixture(self):
+        return json.loads((HERE / "test/fixtures/mosfet-critical.json").read_text(encoding="utf-8"))
+
+    def validate(self, payload):
+        with tempfile.TemporaryDirectory() as temporary:
+            path = Path(temporary) / "result.json"
+            path.write_text(json.dumps(payload), encoding="utf-8")
+            return load_and_validate_extraction(
+                path,
+                HERE / "schemas/mosfet.schema.json",
+                {"mpn": "M1", "manufacturer": "Fixture", "family": "mosfet"},
+            )
+
+    def test_accepts_complete_scalar_and_curve_locators_with_production_axis_tokens(self):
+        result = self.validate(self.load_fixture())
+        curve = result["curves"][0]
+        self.assertEqual(curve["x_axis"]["quantity"], "VGS")
+        self.assertEqual(curve["y_axis"]["quantity"], "ID")
+        self.assertEqual(curve["electrical_bias"][0]["quantity"], "V_DS")
+        self.assertEqual(curve["locator"]["curve_or_trace"], "VDS = 10 V transfer trace")
+        self.assertEqual(result["specs"]["threshold_typ"]["condition"]["test_mode"]["kind"], "not_stated")
+        self.assertNotIn("test mode", result["specs"]["threshold_typ"]["conditions"].lower())
+
+    def test_published_schema_requires_the_runtime_direct_condition_and_locator_shapes(self):
+        schema = json.loads((HERE / "schemas/mosfet.schema.json").read_text(encoding="utf-8"))
+        validate_schema(self.load_fixture(), schema)
+
+        payload = self.load_fixture()
+        payload["specs"]["threshold_typ"]["condition"] = {
+            "temperature": "TJ=25 C",
+            "electrical_bias": "VDS=VGS, ID=25 uA",
+            "test_mode": "not stated",
+        }
+        with self.assertRaisesRegex(ConveyorError, r"condition.*(?:missing required keys|unknown keys)"):
+            validate_schema(payload, schema)
+
+        payload = self.load_fixture()
+        payload["specs"]["threshold_typ"]["locator"] = {"page": 2}
+        with self.assertRaisesRegex(ConveyorError, r"locator.*missing required keys.*(?:row|table)"):
+            validate_schema(payload, schema)
+
+    def test_local_schema_references_fail_closed(self):
+        with self.assertRaisesRegex(ConveyorError, "circular schema reference"):
+            validate_schema(
+                {},
+                {"$ref": "#/$defs/loop"},
+                root_schema={"$defs": {"loop": {"$ref": "#/$defs/loop"}}},
+            )
+        with self.assertRaisesRegex(ConveyorError, "does not resolve to an object"):
+            validate_schema(
+                {},
+                {"$ref": "#/$defs/value"},
+                root_schema={"$defs": {"value": "not-a-schema"}},
+            )
+        with self.assertRaisesRegex(ConveyorError, "unsupported sibling keywords"):
+            validate_schema(
+                {},
+                {"$ref": "#/$defs/value", "type": "object"},
+                root_schema={"$defs": {"value": {"type": "object"}}},
+            )
+
+    def test_flat_evidence_envelope_expands_to_the_strict_production_contract(self):
+        envelope = {
+            "schema_version": "1.0.0",
+            "mpn": "M1",
+            "manufacturer": "Fixture",
+            "family": "mosfet",
+            "datasheet_identity": {"title": "M1 datasheet", "revision": "A", "pages_examined": ["p. 2"]},
+            "polarity": "n",
+            "threshold": {
+                "minimum_v": 1.0,
+                "typical_v": 1.5,
+                "maximum_v": 2.0,
+                "conditions": "VDS = VGS, ID = 250 uA, TJ = 25 C",
+                "page_reference": "p. 2, Electrical Characteristics, Gate threshold voltage row",
+                "locator": {"page": 2, "table": "Electrical Characteristics", "row": "Gate threshold voltage"},
+                "magnitude_convention": "absolute",
+                "temperature": {"kind": "junction", "value_c": 25, "provenance": "table_heading"},
+                "id_a": 0.00025,
+                "test_mode": {"kind": "not_stated"},
+            },
+            "rdson_points": [{
+                "vgs_v": 4.5,
+                "id_a": 5.0,
+                "typical_ohm": 0.0215,
+                "maximum_ohm": 0.03,
+                "conditions": "VGS = 4.5 V, ID = 5 A, TJ = 25 C; test mode = DC",
+                "page_reference": "p. 2, Electrical Characteristics, RDS(on) row",
+                "locator": {"page": 2, "table": "Electrical Characteristics", "row": "RDS(on), VGS = 4.5 V"},
+                "magnitude_convention": "absolute",
+                "temperature": {"kind": "junction", "value_c": 25, "provenance": "table_heading"},
+                "test_mode": {"kind": "dc"},
+            }],
+            "extraction_notes": ["Direct table evidence only."],
+            "omission_reason": "No curve coordinates extracted.",
+        }
+        with tempfile.TemporaryDirectory() as temporary:
+            envelope_path = Path(temporary) / "envelope.json"
+            envelope_path.write_text(json.dumps(envelope), encoding="utf-8")
+            payload = load_and_translate_mosfet_evidence_envelope(
+                envelope_path,
+                HERE / "schemas/mosfet-evidence-envelope.schema.json",
+                HERE / "schemas/mosfet.schema.json",
+            )
+            self.assertEqual(payload["specs"]["threshold_min"]["source_kind"], "minimum")
+            self.assertEqual(payload["specs"]["threshold_typ"]["value"], 1.5)
+            self.assertEqual(payload["specs"]["threshold_max"]["source_kind"], "maximum")
+            self.assertEqual([point["resistance"]["source_kind"] for point in payload["specs"]["rdson_points"]], ["typical", "maximum"])
+            strict_path = Path(temporary) / "strict.json"
+            strict_path.write_text(json.dumps(payload), encoding="utf-8")
+            validated = load_and_validate_extraction(
+                strict_path,
+                HERE / "schemas/mosfet.schema.json",
+                {"mpn": "M1", "manufacturer": "Fixture", "family": "mosfet"},
+            )
+            self.assertEqual(validated["specs"]["threshold_min"]["condition"]["electrical"]["vds"]["relation"], "vds_equals_vgs")
+
+            envelope["threshold"]["minimum_v"] = None
+            envelope["threshold"]["typical_v"] = None
+            envelope["threshold"]["maximum_v"] = None
+            envelope_path.write_text(json.dumps(envelope), encoding="utf-8")
+            with self.assertRaisesRegex(ConveyorError, "at least one source value"):
+                load_and_translate_mosfet_evidence_envelope(
+                    envelope_path,
+                    HERE / "schemas/mosfet-evidence-envelope.schema.json",
+                    HERE / "schemas/mosfet.schema.json",
+                )
+
+            envelope["threshold"] = None
+            envelope_path.write_text(json.dumps(envelope), encoding="utf-8")
+            with self.assertRaisesRegex(ConveyorError, r"threshold.*must be an object"):
+                load_and_translate_mosfet_evidence_envelope(
+                    envelope_path,
+                    HERE / "schemas/mosfet-evidence-envelope.schema.json",
+                    HERE / "schemas/mosfet.schema.json",
+                )
+
+    def test_flat_evidence_envelope_preserves_signed_p_channel_source_values(self):
+        envelope = {
+            "schema_version": "1.0.0",
+            "mpn": "P1",
+            "manufacturer": "Fixture",
+            "family": "mosfet",
+            "datasheet_identity": {"title": "P1 datasheet", "revision": "A", "pages_examined": ["p. 2"]},
+            "polarity": "p",
+            "threshold": {
+                "minimum_v": -1.0,
+                "typical_v": -1.5,
+                "maximum_v": -2.0,
+                "conditions": "VDS = VGS, ID = -250 uA, TJ = 25 C",
+                "page_reference": "p. 2, Electrical Characteristics, Gate threshold voltage row",
+                "locator": {"page": 2, "table": "Electrical Characteristics", "row": "Gate threshold voltage"},
+                "magnitude_convention": "signed",
+                "temperature": {"kind": "junction", "value_c": 25, "provenance": "table_heading"},
+                "id_a": -0.00025,
+                "test_mode": {"kind": "not_stated"},
+            },
+            "rdson_points": [{
+                "vgs_v": -4.5,
+                "id_a": -5.0,
+                "typical_ohm": 0.0215,
+                "maximum_ohm": 0.03,
+                "conditions": "VGS = -4.5 V, ID = -5 A, TJ = 25 C; test mode = DC",
+                "page_reference": "p. 2, Electrical Characteristics, RDS(on) row",
+                "locator": {"page": 2, "table": "Electrical Characteristics", "row": "RDS(on), VGS = -4.5 V"},
+                "magnitude_convention": "signed",
+                "temperature": {"kind": "junction", "value_c": 25, "provenance": "table_heading"},
+                "test_mode": {"kind": "dc"},
+            }],
+            "extraction_notes": ["Signed direct table evidence only."],
+            "omission_reason": "No curve coordinates extracted.",
+        }
+        with tempfile.TemporaryDirectory() as temporary:
+            envelope_path = Path(temporary) / "envelope.json"
+            envelope_path.write_text(json.dumps(envelope), encoding="utf-8")
+            payload = load_and_translate_mosfet_evidence_envelope(
+                envelope_path,
+                HERE / "schemas/mosfet-evidence-envelope.schema.json",
+                HERE / "schemas/mosfet.schema.json",
+            )
+            self.assertEqual(payload["specs"]["threshold_min"]["value"], -1.0)
+            self.assertEqual(payload["specs"]["threshold_min"]["condition"]["electrical"]["id"]["value_a"], 0.00025)
+            self.assertEqual(payload["specs"]["rdson_points"][0]["vgs"]["value"], -4.5)
+            self.assertEqual(payload["specs"]["rdson_points"][0]["vgs"]["condition"]["electrical"]["vgs"]["value_v"], 4.5)
+
+            envelope["rdson_points"] = []
+            envelope_path.write_text(json.dumps(envelope), encoding="utf-8")
+            with self.assertRaisesRegex(ConveyorError, r"rdson_points.*too few items"):
+                load_and_translate_mosfet_evidence_envelope(
+                    envelope_path,
+                    HERE / "schemas/mosfet-evidence-envelope.schema.json",
+                    HERE / "schemas/mosfet.schema.json",
+                )
+
+    def test_rejects_missing_or_malformed_direct_scalar_conditions(self):
+        payload = self.load_fixture()
+        del payload["specs"]["threshold_typ"]["condition"]
+        with self.assertRaisesRegex(ConveyorError, r"threshold_typ.*condition"):
+            self.validate(payload)
+
+        payload = self.load_fixture()
+        payload["specs"]["threshold_typ"]["condition"]["temperature"] = {"status": "not_stated"}
+        with self.assertRaisesRegex(ConveyorError, r"temperature.*(?:stated|missing)"):
+            self.validate(payload)
+
+        payload = self.load_fixture()
+        payload["specs"]["rdson_points"][0]["vgs"]["condition"]["test_mode"] = {"kind": "not_stated"}
+        with self.assertRaisesRegex(ConveyorError, r"RDS\(on\).*test_mode|test_mode.kind"):
+            self.validate(payload)
+
+    def test_rejects_direct_scalar_condition_contradictions(self):
+        payload = self.load_fixture()
+        payload["specs"]["rdson_points"][0]["current"]["condition"]["electrical"]["id"]["value_a"] = 4
+        with self.assertRaisesRegex(ConveyorError, r"one identical direct condition"):
+            self.validate(payload)
+
+        payload = self.load_fixture()
+        for field in ("vgs", "current", "resistance"):
+            payload["specs"]["rdson_points"][0][field]["condition"]["polarity"] = "p"
+        with self.assertRaisesRegex(ConveyorError, r"polarity must match"):
+            self.validate(payload)
+
+        payload = self.load_fixture()
+        for field in ("vgs", "current", "resistance"):
+            payload["specs"]["rdson_points"][0][field]["condition"]["electrical"]["id"]["value_a"] = 4
+        with self.assertRaisesRegex(ConveyorError, r"current.value contradicts"):
+            self.validate(payload)
+
+    def test_rejects_signed_scalar_values_with_absolute_or_nonpositive_canonical_magnitudes(self):
+        payload = self.load_fixture()
+        payload["specs"]["threshold_typ"]["value"] = -1.5
+        with self.assertRaisesRegex(ConveyorError, r"signed but its direct condition declares absolute"):
+            self.validate(payload)
+
+        payload = self.load_fixture()
+        payload["specs"]["rdson_points"][0]["vgs"]["value"] = -4.5
+        with self.assertRaisesRegex(ConveyorError, r"signed VGS or ID values but its direct condition declares absolute"):
+            self.validate(payload)
+
+        payload = self.load_fixture()
+        payload["specs"]["threshold_typ"]["condition"]["electrical"]["id"]["value_a"] = 0
+        with self.assertRaisesRegex(ConveyorError, r"positive canonical magnitude"):
+            self.validate(payload)
+
+        payload = self.load_fixture()
+        for field in ("vgs", "current", "resistance"):
+            payload["specs"]["rdson_points"][0][field]["condition"]["electrical"]["vgs"]["value_v"] = 0
+        with self.assertRaisesRegex(ConveyorError, r"positive canonical magnitude"):
+            self.validate(payload)
+
+    def test_rejects_scalar_locator_without_page_table_and_row(self):
+        payload = self.load_fixture()
+        del payload["specs"]["threshold_typ"]["locator"]["row"]
+        with self.assertRaisesRegex(ConveyorError, r"threshold_typ\.locator.*missing (?:required keys: )?row"):
+            self.validate(payload)
+
+    def test_rejects_curve_locator_without_page_figure_and_curve_or_trace(self):
+        payload = self.load_fixture()
+        del payload["curves"][0]["locator"]["curve_or_trace"]
+        with self.assertRaisesRegex(ConveyorError, "curve_or_trace"):
+            self.validate(payload)
+
+    def test_rejects_non_integer_locator_page(self):
+        payload = self.load_fixture()
+        payload["curves"][0]["locator"]["page"] = "p. 5"
+        with self.assertRaisesRegex(ConveyorError, r"locator\.page must be (?:a positive|an) integer|not of type 'integer'"):
+            self.validate(payload)
+
+    def test_rejects_missing_or_not_stated_temperature(self):
+        payload = self.load_fixture()
+        del payload["curves"][0]["temperature"]
+        with self.assertRaisesRegex(ConveyorError, "temperature"):
+            self.validate(payload)
+
+        payload = self.load_fixture()
+        payload["curves"][0]["temperature"]["kind"] = "not_stated"
+        with self.assertRaisesRegex(ConveyorError, "temperature.kind"):
+            self.validate(payload)
+
+    def test_rejects_missing_unknown_or_duplicate_fixed_bias(self):
+        payload = self.load_fixture()
+        payload["curves"][0]["electrical_bias"] = []
+        with self.assertRaisesRegex(ConveyorError, "electrical_bias"):
+            self.validate(payload)
+
+        payload = self.load_fixture()
+        payload["curves"][0]["electrical_bias"][0]["quantity"] = "VGD"
+        with self.assertRaisesRegex(ConveyorError, "electrical_bias"):
+            self.validate(payload)
+
+        payload = self.load_fixture()
+        payload["curves"][0]["electrical_bias"].append(
+            {"quantity": "VDS", "value": 10.0, "unit": "V"}
+        )
+        with self.assertRaisesRegex(ConveyorError, "duplicate or conflicting vds"):
+            self.validate(payload)
+
+        payload = self.load_fixture()
+        payload["curves"][0]["electrical_bias"][0]["quantity"] = "VGS"
+        with self.assertRaisesRegex(ConveyorError, "exactly one fixed VDS"):
+            self.validate(payload)
+
+        payload = self.load_fixture()
+        payload["curves"][0]["electrical_bias"][0]["value"] = -10
+        with self.assertRaisesRegex(ConveyorError, r"signed.*absolute magnitude"):
+            self.validate(payload)
+
+        payload["curves"][0]["magnitude_convention"] = "signed"
+        self.assertEqual(self.validate(payload)["curves"][0]["electrical_bias"][0]["value"], -10)
+
+    def test_rejects_noncanonical_temperature_provenance(self):
+        payload = self.load_fixture()
+        payload["curves"][0]["temperature"]["provenance"] = "TA = 25 C"
+        with self.assertRaisesRegex(ConveyorError, "temperature.provenance"):
+            self.validate(payload)
+
+    def test_rejects_inverted_standard_electrical_axes(self):
+        payload = self.load_fixture()
+        payload["curves"][0]["x_axis"]["quantity"] = "ID"
+        payload["curves"][0]["y_axis"]["quantity"] = "VGS"
+        with self.assertRaisesRegex(ConveyorError, "unsupported MOSFET electrical axis pairing"):
+            self.validate(payload)
+
+    def test_rejects_magnitude_axis_suffix_or_signed_absolute_curve(self):
+        payload = self.load_fixture()
+        payload["curves"][0]["x_axis"]["quantity"] = "VDS magnitude"
+        with self.assertRaisesRegex(ConveyorError, r"without a magnitude suffix"):
+            self.validate(payload)
+
+        payload = self.load_fixture()
+        payload["curves"][0]["points"][0]["y"] = -1
+        with self.assertRaisesRegex(ConveyorError, r"absolute contradicts signed"):
+            self.validate(payload)
+
+    def test_rejects_inverted_or_partial_descriptive_electrical_axes(self):
+        payload = self.load_fixture()
+        payload["curves"][0]["x_axis"]["quantity"] = "gate-source voltage"
+        payload["curves"][0]["y_axis"]["quantity"] = "drain current"
+        with self.assertRaisesRegex(ConveyorError, "exact VGS"):
+            self.validate(payload)
+
+        payload = self.load_fixture()
+        payload["curves"][0]["x_axis"]["quantity"] = "drain current"
+        payload["curves"][0]["y_axis"]["quantity"] = "gate source voltage"
+        with self.assertRaisesRegex(ConveyorError, "exact VGS"):
+            self.validate(payload)
+
+        payload = self.load_fixture()
+        payload["curves"][0]["x_axis"]["quantity"] = "drain current"
+        payload["curves"][0]["y_axis"]["quantity"] = "capacitance"
+        with self.assertRaisesRegex(ConveyorError, "exact VGS"):
+            self.validate(payload)
+
+    def test_rejects_untyped_or_incomplete_test_mode(self):
+        payload = self.load_fixture()
+        payload["curves"][0]["test_mode"] = "pulsed"
+        with self.assertRaisesRegex(ConveyorError, "test_mode"):
+            self.validate(payload)
+
+        payload = self.load_fixture()
+        payload["curves"][0]["test_mode"] = {"kind": "not_stated"}
+        with self.assertRaisesRegex(ConveyorError, "test_mode.kind"):
+            self.validate(payload)
+
+        payload = self.load_fixture()
+        payload["curves"][0]["test_mode"] = {"kind": "pulsed"}
+        with self.assertRaisesRegex(ConveyorError, "pulse_width_s"):
+            self.validate(payload)
+
+    def test_rejects_pulse_metadata_on_continuous_curve(self):
+        payload = self.load_fixture()
+        payload["curves"][0]["test_mode"] = {"kind": "continuous", "pulse_width_s": 1e-6}
+        with self.assertRaisesRegex(ConveyorError, "cannot attach pulse timing"):
+            self.validate(payload)
+
+    def test_accepts_only_the_canonical_repetition_frequency_field(self):
+        payload = self.load_fixture()
+        payload["curves"][0]["test_mode"] = {
+            "kind": "pulsed", "pulse_width_s": 1e-6, "repetition_frequency_hz": 100,
+        }
+        self.assertEqual(
+            self.validate(payload)["curves"][0]["test_mode"]["repetition_frequency_hz"],
+            100,
+        )
+
+        payload = self.load_fixture()
+        payload["curves"][0]["test_mode"] = {
+            "kind": "pulsed", "pulse_width_s": 1e-6, "repetition_hz": 100,
+        }
+        with self.assertRaisesRegex(ConveyorError, "repetition_hz"):
+            self.validate(payload)
 
 
 class LibraryCollisionTest(unittest.TestCase):

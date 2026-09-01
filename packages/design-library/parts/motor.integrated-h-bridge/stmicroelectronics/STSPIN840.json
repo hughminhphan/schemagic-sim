@@ -1,0 +1,973 @@
+{
+  "format": "schemagic-design-profile",
+  "schemaVersion": "1.0.0",
+  "partClass": "motor.integrated-h-bridge",
+  "part": {
+    "manufacturerId": "stmicroelectronics",
+    "manufacturerPartNumber": "STSPIN840"
+  },
+  "factsSchemaVersion": "3.2.0",
+  "commonFacts": {
+    "packageName": {
+      "value": "TFQFPN 4 x 4 x 1.05 - 24 L",
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "st-stspin840-docid031835-rev1",
+          "locator": "physical PDF page 27, Table 11 Device summary: exact order code STSPIN840 uses package TFQFPN 4 x 4 x 1.05 - 24 L",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T02:35:30.683Z",
+          "contentHash": "sha256:d2e0f820b7faf997987de18df0fe89bf83b7dc8c35a6a18856a961f8682e06ef",
+          "url": "https://st.com/resource/en/datasheet/stspin840.pdf",
+          "revision": "DocID031835 Rev 1, May 2018",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "The ordering table binds the exact STSPIN840 order code to the 24-lead TFQFPN package."
+    },
+    "boardArea": {
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "Facts schema 3.2.0 represents mounted board area only through facts.mountedGeometry."
+    },
+    "maximumHeight": {
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "Facts schema 3.2.0 represents mounted maximum height only through facts.mountedGeometry."
+    }
+  },
+  "facts": {
+    "bridgeTopology": {
+      "value": "full_bridge",
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "st-stspin840-docid031835-rev1",
+          "locator": "physical PDF page 1, Features and Description: dual full-bridge motor driver; PARALLEL mode drives a brushed DC motor by operating the two bridges in parallel",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T02:35:30.683Z",
+          "contentHash": "sha256:d2e0f820b7faf997987de18df0fe89bf83b7dc8c35a6a18856a961f8682e06ef",
+          "url": "https://st.com/resource/en/datasheet/stspin840.pdf",
+          "revision": "DocID031835 Rev 1, May 2018",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "The device contains two full bridges and can use them together as one brushed-DC full-bridge output."
+    },
+    "powerStage": {
+      "value": "integrated_fet",
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "st-stspin840-docid031835-rev1",
+          "locator": "physical PDF pages 1 and 5, Description and Figure 1 block diagram: dual full-bridge power MOSFET stage is integrated",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T02:35:30.683Z",
+          "contentHash": "sha256:d2e0f820b7faf997987de18df0fe89bf83b7dc8c35a6a18856a961f8682e06ef",
+          "url": "https://st.com/resource/en/datasheet/stspin840.pdf",
+          "revision": "DocID031835 Rev 1, May 2018",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "Both full-bridge power stages are integrated in the IC."
+    },
+    "bridgeOutputArchitecture": {
+      "value": "dual_full_bridge_parallel_capable",
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "st-stspin840-docid031835-rev1",
+          "locator": "physical PDF pages 1 and 14-15, Features and section 5.2 PARALLEL mode: two full bridges can be connected and operated in parallel",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T02:35:30.683Z",
+          "contentHash": "sha256:d2e0f820b7faf997987de18df0fe89bf83b7dc8c35a6a18856a961f8682e06ef",
+          "url": "https://st.com/resource/en/datasheet/stspin840.pdf",
+          "revision": "DocID031835 Rev 1, May 2018",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "The IC integrates two full bridges with a manufacturer-defined parallel operating mode."
+    },
+    "highSideDriveArchitecture": {
+      "value": "p_channel_direct",
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "st-stspin840-docid031835-rev1",
+          "locator": "physical PDF page 5, Figure 1 block diagram: each bridge shows integrated P-channel high-side MOSFETs driven directly by the internal control logic and N-channel low-side MOSFETs, with no bootstrap or charge-pump block",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T02:35:30.683Z",
+          "contentHash": "sha256:d2e0f820b7faf997987de18df0fe89bf83b7dc8c35a6a18856a961f8682e06ef",
+          "url": "https://st.com/resource/en/datasheet/stspin840.pdf",
+          "revision": "DocID031835 Rev 1, May 2018",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "The block diagram identifies P-channel high-side devices directly driven by the internal logic; no charge-pump or bootstrap high-side supply is shown."
+    },
+    "continuousHighSideOnSupported": {
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "The reviewed source pass does not publish a closed, guaranteed static high-side-on or 100%-duty capability statement suitable for this field."
+    },
+    "supplyVoltageOperatingMinimum": {
+      "value": {
+        "value": 7,
+        "unit": "V",
+        "displayUnit": "7 V"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "st-stspin840-docid031835-rev1",
+          "locator": "physical PDF page 6, Table 2 Recommended operating conditions: VS supply-voltage minimum 7 V",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T02:35:30.683Z",
+          "contentHash": "sha256:d2e0f820b7faf997987de18df0fe89bf83b7dc8c35a6a18856a961f8682e06ef",
+          "url": "https://st.com/resource/en/datasheet/stspin840.pdf",
+          "revision": "DocID031835 Rev 1, May 2018",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "Lower bound of the recommended VS operating range."
+    },
+    "supplyVoltageOperatingMaximum": {
+      "value": {
+        "value": 45,
+        "unit": "V",
+        "displayUnit": "45 V"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "st-stspin840-docid031835-rev1",
+          "locator": "physical PDF page 6, Table 2 Recommended operating conditions: VS supply-voltage maximum 45 V",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T02:35:30.683Z",
+          "contentHash": "sha256:d2e0f820b7faf997987de18df0fe89bf83b7dc8c35a6a18856a961f8682e06ef",
+          "url": "https://st.com/resource/en/datasheet/stspin840.pdf",
+          "revision": "DocID031835 Rev 1, May 2018",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "Upper bound of the recommended VS operating range."
+    },
+    "supplyVoltageAbsoluteMaximum": {
+      "value": {
+        "value": 48,
+        "unit": "V",
+        "displayUnit": "48 V"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "st-stspin840-docid031835-rev1",
+          "locator": "physical PDF page 6, Table 1 Absolute maximum ratings: VS supply-voltage maximum 48 V",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T02:35:30.683Z",
+          "contentHash": "sha256:d2e0f820b7faf997987de18df0fe89bf83b7dc8c35a6a18856a961f8682e06ef",
+          "url": "https://st.com/resource/en/datasheet/stspin840.pdf",
+          "revision": "DocID031835 Rev 1, May 2018",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "Absolute VS stress limit only; it is not an operating limit."
+    },
+    "logicHighThresholdMaximum": {
+      "value": {
+        "value": 2,
+        "unit": "V",
+        "displayUnit": "VIH minimum = 2 V"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "st-stspin840-docid031835-rev1",
+          "locator": "physical PDF page 8, Table 5 Logic IO: VIH high logic level input voltage minimum 2 V under the table-wide VS = 36 V and Tj = 25 deg C conditions",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T02:35:30.683Z",
+          "contentHash": "sha256:d2e0f820b7faf997987de18df0fe89bf83b7dc8c35a6a18856a961f8682e06ef",
+          "url": "https://st.com/resource/en/datasheet/stspin840.pdf",
+          "revision": "DocID031835 Rev 1, May 2018",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "junctionTemperature",
+          "minimum": {
+            "value": 298.15,
+            "unit": "K",
+            "displayUnit": "25 deg C"
+          },
+          "maximum": {
+            "value": 298.15,
+            "unit": "K",
+            "displayUnit": "25 deg C"
+          },
+          "evidence": [
+            {
+              "sourceId": "st-stspin840-docid031835-rev1",
+              "locator": "physical PDF page 8, section 3 Electrical characteristics: table-wide testing condition Tj = 25 deg C unless otherwise specified",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T02:35:30.683Z",
+              "contentHash": "sha256:d2e0f820b7faf997987de18df0fe89bf83b7dc8c35a6a18856a961f8682e06ef",
+              "url": "https://st.com/resource/en/datasheet/stspin840.pdf",
+              "revision": "DocID031835 Rev 1, May 2018",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "supplyVoltage",
+          "minimum": {
+            "value": 36,
+            "unit": "V",
+            "displayUnit": "36 V"
+          },
+          "maximum": {
+            "value": 36,
+            "unit": "V",
+            "displayUnit": "36 V"
+          },
+          "evidence": [
+            {
+              "sourceId": "st-stspin840-docid031835-rev1",
+              "locator": "physical PDF page 8, section 3 Electrical characteristics: table-wide testing condition VS = 36 V unless otherwise specified",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T02:35:30.683Z",
+              "contentHash": "sha256:d2e0f820b7faf997987de18df0fe89bf83b7dc8c35a6a18856a961f8682e06ef",
+              "url": "https://st.com/resource/en/datasheet/stspin840.pdf",
+              "revision": "DocID031835 Rev 1, May 2018",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "The contract is controller-facing: ST publishes 2 V as VIH(min), so a controller must drive at least 2 V to guarantee a logic high at the stated table conditions."
+    },
+    "continuousOutputCurrent": {
+      "value": {
+        "value": 1.5,
+        "unit": "A",
+        "displayUnit": "1.5 Arms per full bridge"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "st-stspin840-docid031835-rev1",
+          "locator": "physical PDF page 6, Table 1 Absolute maximum ratings: IOUT,RMS continuous power-stage output current for each full bridge is 1.5 Arms",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T02:35:30.683Z",
+          "contentHash": "sha256:d2e0f820b7faf997987de18df0fe89bf83b7dc8c35a6a18856a961f8682e06ef",
+          "url": "https://st.com/resource/en/datasheet/stspin840.pdf",
+          "revision": "DocID031835 Rev 1, May 2018",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "Absolute-maximum continuous current for each individual full bridge. It is a stress rating, not a guaranteed operating or thermally sustainable current, and the separate 3 Arms parallel-mode headline is not substituted here."
+    },
+    "continuousOutputCurrentRole": {
+      "value": "absolute_rating",
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "st-stspin840-docid031835-rev1",
+          "locator": "physical PDF page 6, Table 1 Absolute maximum ratings: IOUT,RMS continuous power-stage output current for each full bridge is 1.5 Arms",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T02:35:30.683Z",
+          "contentHash": "sha256:d2e0f820b7faf997987de18df0fe89bf83b7dc8c35a6a18856a961f8682e06ef",
+          "url": "https://st.com/resource/en/datasheet/stspin840.pdf",
+          "revision": "DocID031835 Rev 1, May 2018",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "The source publishes 1.5 Arms in the Absolute maximum ratings table, so the role is absolute_rating and must not hard-pass a continuous operating-current requirement."
+    },
+    "peakOutputCurrent": {
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "No normal-operation peak output-current rating was established; overcurrent-protection thresholds and the 3 Arms parallel-mode absolute headline are not substituted."
+    },
+    "peakOutputCurrentRole": {
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "No reviewed peak-output-current quantity is available, so its evidence role is exact unknown."
+    },
+    "currentRegulationInterface": {
+      "value": "external_reference_and_sense",
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "st-stspin840-docid031835-rev1",
+          "locator": "physical PDF pages 15-16, section 5.3 PWM current control: external sense resistor develops VSNSX and external VREFX sets the target using VREF = RSENSE x ILOAD,peak",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T02:35:30.683Z",
+          "contentHash": "sha256:d2e0f820b7faf997987de18df0fe89bf83b7dc8c35a6a18856a961f8682e06ef",
+          "url": "https://st.com/resource/en/datasheet/stspin840.pdf",
+          "revision": "DocID031835 Rev 1, May 2018",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "The integrated PWM controllers regulate from an external reference voltage and external current-sense resistor; this classification does not calculate a current-limit value."
+    },
+    "pwmMaximum": {
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "No guaranteed maximum PWM input frequency was established from the reviewed source."
+    },
+    "pwmMaximumRole": {
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "No reviewed PWM-maximum quantity is available, so its evidence role is exact unknown."
+    },
+    "minimumInputPulseWidth": {
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "No guaranteed minimum input pulse width was established; typical propagation and blanking times are not substituted."
+    },
+    "minimumInputPulseWidthRole": {
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "No reviewed minimum-pulse-width quantity is available, so its evidence role is exact unknown."
+    },
+    "pathResistance": {
+      "value": {
+        "value": 1.6,
+        "unit": "ohm",
+        "displayUnit": "1.6 ohm maximum"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "st-stspin840-docid031835-rev1",
+          "locator": "physical PDF page 8, Table 5 Power stage: total HS + LS on-resistance maximum 1.6 ohm at VS = 21 V, IOUT = 1 A, Tj = 150 deg C",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T02:35:30.683Z",
+          "contentHash": "sha256:d2e0f820b7faf997987de18df0fe89bf83b7dc8c35a6a18856a961f8682e06ef",
+          "url": "https://st.com/resource/en/datasheet/stspin840.pdf",
+          "revision": "DocID031835 Rev 1, May 2018",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "junctionTemperature",
+          "minimum": {
+            "value": 423.15,
+            "unit": "K",
+            "displayUnit": "150 deg C"
+          },
+          "maximum": {
+            "value": 423.15,
+            "unit": "K",
+            "displayUnit": "150 deg C"
+          },
+          "evidence": [
+            {
+              "sourceId": "st-stspin840-docid031835-rev1",
+              "locator": "physical PDF page 8, Table 5 RDSon HS+LS maximum row: Tj = 150 deg C",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T02:35:30.683Z",
+              "contentHash": "sha256:d2e0f820b7faf997987de18df0fe89bf83b7dc8c35a6a18856a961f8682e06ef",
+              "url": "https://st.com/resource/en/datasheet/stspin840.pdf",
+              "revision": "DocID031835 Rev 1, May 2018",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "supplyVoltage",
+          "minimum": {
+            "value": 21,
+            "unit": "V",
+            "displayUnit": "21 V"
+          },
+          "maximum": {
+            "value": 21,
+            "unit": "V",
+            "displayUnit": "21 V"
+          },
+          "evidence": [
+            {
+              "sourceId": "st-stspin840-docid031835-rev1",
+              "locator": "physical PDF page 8, Table 5 RDSon HS+LS maximum row: VS = 21 V",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T02:35:30.683Z",
+              "contentHash": "sha256:d2e0f820b7faf997987de18df0fe89bf83b7dc8c35a6a18856a961f8682e06ef",
+              "url": "https://st.com/resource/en/datasheet/stspin840.pdf",
+              "revision": "DocID031835 Rev 1, May 2018",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "testCurrent",
+          "minimum": {
+            "value": 1,
+            "unit": "A",
+            "displayUnit": "1 A"
+          },
+          "maximum": {
+            "value": 1,
+            "unit": "A",
+            "displayUnit": "1 A"
+          },
+          "evidence": [
+            {
+              "sourceId": "st-stspin840-docid031835-rev1",
+              "locator": "physical PDF page 8, Table 5 RDSon HS+LS maximum row: IOUT = 1 A",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T02:35:30.683Z",
+              "contentHash": "sha256:d2e0f820b7faf997987de18df0fe89bf83b7dc8c35a6a18856a961f8682e06ef",
+              "url": "https://st.com/resource/en/datasheet/stspin840.pdf",
+              "revision": "DocID031835 Rev 1, May 2018",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "Guaranteed maximum series path resistance for one high-side-plus-low-side conduction path at the exact hot-junction test point. It is not the 500-milliohm typical parallel-mode headline."
+    },
+    "pathResistanceRole": {
+      "value": "guaranteed_maximum",
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "st-stspin840-docid031835-rev1",
+          "locator": "physical PDF page 8, Table 5 Power stage: total HS + LS on-resistance maximum 1.6 ohm at VS = 21 V, IOUT = 1 A, Tj = 150 deg C",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T02:35:30.683Z",
+          "contentHash": "sha256:d2e0f820b7faf997987de18df0fe89bf83b7dc8c35a6a18856a961f8682e06ef",
+          "url": "https://st.com/resource/en/datasheet/stspin840.pdf",
+          "revision": "DocID031835 Rev 1, May 2018",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "junctionTemperature",
+          "minimum": {
+            "value": 423.15,
+            "unit": "K",
+            "displayUnit": "150 deg C"
+          },
+          "maximum": {
+            "value": 423.15,
+            "unit": "K",
+            "displayUnit": "150 deg C"
+          },
+          "evidence": [
+            {
+              "sourceId": "st-stspin840-docid031835-rev1",
+              "locator": "physical PDF page 8, Table 5 RDSon HS+LS maximum row: Tj = 150 deg C",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T02:35:30.683Z",
+              "contentHash": "sha256:d2e0f820b7faf997987de18df0fe89bf83b7dc8c35a6a18856a961f8682e06ef",
+              "url": "https://st.com/resource/en/datasheet/stspin840.pdf",
+              "revision": "DocID031835 Rev 1, May 2018",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "supplyVoltage",
+          "minimum": {
+            "value": 21,
+            "unit": "V",
+            "displayUnit": "21 V"
+          },
+          "maximum": {
+            "value": 21,
+            "unit": "V",
+            "displayUnit": "21 V"
+          },
+          "evidence": [
+            {
+              "sourceId": "st-stspin840-docid031835-rev1",
+              "locator": "physical PDF page 8, Table 5 RDSon HS+LS maximum row: VS = 21 V",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T02:35:30.683Z",
+              "contentHash": "sha256:d2e0f820b7faf997987de18df0fe89bf83b7dc8c35a6a18856a961f8682e06ef",
+              "url": "https://st.com/resource/en/datasheet/stspin840.pdf",
+              "revision": "DocID031835 Rev 1, May 2018",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "testCurrent",
+          "minimum": {
+            "value": 1,
+            "unit": "A",
+            "displayUnit": "1 A"
+          },
+          "maximum": {
+            "value": 1,
+            "unit": "A",
+            "displayUnit": "1 A"
+          },
+          "evidence": [
+            {
+              "sourceId": "st-stspin840-docid031835-rev1",
+              "locator": "physical PDF page 8, Table 5 RDSon HS+LS maximum row: IOUT = 1 A",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T02:35:30.683Z",
+              "contentHash": "sha256:d2e0f820b7faf997987de18df0fe89bf83b7dc8c35a6a18856a961f8682e06ef",
+              "url": "https://st.com/resource/en/datasheet/stspin840.pdf",
+              "revision": "DocID031835 Rev 1, May 2018",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "The value is in the MAX column at the exact stated conditions, so the evidence role is guaranteed maximum."
+    },
+    "switchingTransitionTime": {
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "The published 120 ns rise and 60 ns fall values are typical observations only and are intentionally not promoted to a closed switching-transition capability."
+    },
+    "switchingTransitionTimeRole": {
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "No reviewed switching-transition quantity is selected, so its evidence role is exact unknown."
+    },
+    "activeSupplyCurrent": {
+      "value": {
+        "value": 0.003,
+        "unit": "A",
+        "displayUnit": "3 mA maximum"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "st-stspin840-docid031835-rev1",
+          "locator": "physical PDF page 8, Table 5 General: VS supply current maximum 3 mA with no commutations, ENx = '1', and RTOFF = 10 kohm",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T02:35:30.683Z",
+          "contentHash": "sha256:d2e0f820b7faf997987de18df0fe89bf83b7dc8c35a6a18856a961f8682e06ef",
+          "url": "https://st.com/resource/en/datasheet/stspin840.pdf",
+          "revision": "DocID031835 Rev 1, May 2018",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "junctionTemperature",
+          "minimum": {
+            "value": 298.15,
+            "unit": "K",
+            "displayUnit": "25 deg C"
+          },
+          "maximum": {
+            "value": 298.15,
+            "unit": "K",
+            "displayUnit": "25 deg C"
+          },
+          "evidence": [
+            {
+              "sourceId": "st-stspin840-docid031835-rev1",
+              "locator": "physical PDF page 8, section 3 Electrical characteristics: table-wide testing condition Tj = 25 deg C unless otherwise specified",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T02:35:30.683Z",
+              "contentHash": "sha256:d2e0f820b7faf997987de18df0fe89bf83b7dc8c35a6a18856a961f8682e06ef",
+              "url": "https://st.com/resource/en/datasheet/stspin840.pdf",
+              "revision": "DocID031835 Rev 1, May 2018",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "supplyVoltage",
+          "minimum": {
+            "value": 36,
+            "unit": "V",
+            "displayUnit": "36 V"
+          },
+          "maximum": {
+            "value": 36,
+            "unit": "V",
+            "displayUnit": "36 V"
+          },
+          "evidence": [
+            {
+              "sourceId": "st-stspin840-docid031835-rev1",
+              "locator": "physical PDF page 8, section 3 Electrical characteristics: table-wide testing condition VS = 36 V unless otherwise specified",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T02:35:30.683Z",
+              "contentHash": "sha256:d2e0f820b7faf997987de18df0fe89bf83b7dc8c35a6a18856a961f8682e06ef",
+              "url": "https://st.com/resource/en/datasheet/stspin840.pdf",
+              "revision": "DocID031835 Rev 1, May 2018",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "Maximum VS supply current at the exact static test point. The no-commutations, ENx = '1', and RTOFF = 10 kohm conditions are retained here because the numeric operating-range vocabulary cannot encode those states; this is not a switching-current model."
+    },
+    "activeSupplyCurrentRole": {
+      "value": "guaranteed_maximum",
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "st-stspin840-docid031835-rev1",
+          "locator": "physical PDF page 8, Table 5 General: VS supply current maximum 3 mA with no commutations, ENx = '1', and RTOFF = 10 kohm",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T02:35:30.683Z",
+          "contentHash": "sha256:d2e0f820b7faf997987de18df0fe89bf83b7dc8c35a6a18856a961f8682e06ef",
+          "url": "https://st.com/resource/en/datasheet/stspin840.pdf",
+          "revision": "DocID031835 Rev 1, May 2018",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "junctionTemperature",
+          "minimum": {
+            "value": 298.15,
+            "unit": "K",
+            "displayUnit": "25 deg C"
+          },
+          "maximum": {
+            "value": 298.15,
+            "unit": "K",
+            "displayUnit": "25 deg C"
+          },
+          "evidence": [
+            {
+              "sourceId": "st-stspin840-docid031835-rev1",
+              "locator": "physical PDF page 8, section 3 Electrical characteristics: table-wide testing condition Tj = 25 deg C unless otherwise specified",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T02:35:30.683Z",
+              "contentHash": "sha256:d2e0f820b7faf997987de18df0fe89bf83b7dc8c35a6a18856a961f8682e06ef",
+              "url": "https://st.com/resource/en/datasheet/stspin840.pdf",
+              "revision": "DocID031835 Rev 1, May 2018",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "supplyVoltage",
+          "minimum": {
+            "value": 36,
+            "unit": "V",
+            "displayUnit": "36 V"
+          },
+          "maximum": {
+            "value": 36,
+            "unit": "V",
+            "displayUnit": "36 V"
+          },
+          "evidence": [
+            {
+              "sourceId": "st-stspin840-docid031835-rev1",
+              "locator": "physical PDF page 8, section 3 Electrical characteristics: table-wide testing condition VS = 36 V unless otherwise specified",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T02:35:30.683Z",
+              "contentHash": "sha256:d2e0f820b7faf997987de18df0fe89bf83b7dc8c35a6a18856a961f8682e06ef",
+              "url": "https://st.com/resource/en/datasheet/stspin840.pdf",
+              "revision": "DocID031835 Rev 1, May 2018",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "The value is in the MAX column of Table 5, so its role is guaranteed maximum at the exact stated conditions."
+    },
+    "junctionToAmbientThermalResistance": {
+      "value": {
+        "value": 36.5,
+        "unit": "K/W",
+        "displayUnit": "36.5 deg C/W"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "st-stspin840-docid031835-rev1",
+          "locator": "physical PDF page 7, Table 3 Thermal data and note 1: RthJA 36.5 deg C/W in natural convection per JESD51-2a, simulated on a 76.2 x 114.3 x 1.6 mm 2s2p JEDEC board with vias underneath",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T02:35:30.683Z",
+          "contentHash": "sha256:d2e0f820b7faf997987de18df0fe89bf83b7dc8c35a6a18856a961f8682e06ef",
+          "url": "https://st.com/resource/en/datasheet/stspin840.pdf",
+          "revision": "DocID031835 Rev 1, May 2018",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "Board-specific thermal-characterization metric under the exact published JEDEC simulation assumptions; it is not an application thermal prediction."
+    },
+    "maximumJunctionTemperature": {
+      "value": {
+        "value": 423.15,
+        "unit": "K",
+        "displayUnit": "150 deg C"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "st-stspin840-docid031835-rev1",
+          "locator": "physical PDF page 6, Table 1 Absolute maximum ratings: junction-temperature maximum 150 deg C",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T02:35:30.683Z",
+          "contentHash": "sha256:d2e0f820b7faf997987de18df0fe89bf83b7dc8c35a6a18856a961f8682e06ef",
+          "url": "https://st.com/resource/en/datasheet/stspin840.pdf",
+          "revision": "DocID031835 Rev 1, May 2018",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "Absolute maximum junction-temperature stress limit converted from 150 deg C to 423.15 K; it is not a recommended operating limit."
+    },
+    "localSupplyDecouplingCapacitance": {
+      "value": {
+        "value": 3.3e-7,
+        "unit": "F",
+        "displayUnit": "330 nF typical"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "st-stspin840-docid031835-rev1",
+          "locator": "physical PDF page 24, section 7 Layout recommendations: VS ceramic bypass capacitor is typically 330 nF and must be placed on the same side close to VS",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T02:35:30.683Z",
+          "contentHash": "sha256:d2e0f820b7faf997987de18df0fe89bf83b7dc8c35a6a18856a961f8682e06ef",
+          "url": "https://st.com/resource/en/datasheet/stspin840.pdf",
+          "revision": "DocID031835 Rev 1, May 2018",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "Typical local VS bypass value observed in layout guidance. It is not promoted to a required or recommended minimum."
+    },
+    "localSupplyDecouplingRequirement": {
+      "value": "typical_observation",
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "st-stspin840-docid031835-rev1",
+          "locator": "physical PDF page 24, section 7 Layout recommendations: VS ceramic bypass capacitor is typically 330 nF and must be placed on the same side close to VS",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T02:35:30.683Z",
+          "contentHash": "sha256:d2e0f820b7faf997987de18df0fe89bf83b7dc8c35a6a18856a961f8682e06ef",
+          "url": "https://st.com/resource/en/datasheet/stspin840.pdf",
+          "revision": "DocID031835 Rev 1, May 2018",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "The manufacturer says 'typically 330 nF'; therefore the requirement role is only typical_observation."
+    },
+    "bulkCapacitance": {
+      "value": {
+        "value": 0.000033,
+        "unit": "F",
+        "displayUnit": "33 uF typical"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "st-stspin840-docid031835-rev1",
+          "locator": "physical PDF page 24, section 7 Layout recommendations: a bulk capacitor could also be required, typically 33 uF",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T02:35:30.683Z",
+          "contentHash": "sha256:d2e0f820b7faf997987de18df0fe89bf83b7dc8c35a6a18856a961f8682e06ef",
+          "url": "https://st.com/resource/en/datasheet/stspin840.pdf",
+          "revision": "DocID031835 Rev 1, May 2018",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "Typical bulk-capacitor observation in application-dependent layout guidance. The phrase 'could also be required' does not establish a universal requirement or minimum."
+    },
+    "bulkCapacitanceRequirement": {
+      "value": "typical_observation",
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "st-stspin840-docid031835-rev1",
+          "locator": "physical PDF page 24, section 7 Layout recommendations: a bulk capacitor could also be required, typically 33 uF",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T02:35:30.683Z",
+          "contentHash": "sha256:d2e0f820b7faf997987de18df0fe89bf83b7dc8c35a6a18856a961f8682e06ef",
+          "url": "https://st.com/resource/en/datasheet/stspin840.pdf",
+          "revision": "DocID031835 Rev 1, May 2018",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "The only scalar is explicitly typical, so the requirement role is typical_observation rather than a universal required or recommended value."
+    },
+    "mountedGeometry": {
+      "boardArea": {
+        "value": {
+          "area": {
+            "value": 0.0000216225,
+            "unit": "m2",
+            "displayUnit": "21.6225 mm2"
+          },
+          "basis": "manufacturer_recommended_land_pattern_bounding_box",
+          "calculation": "maximum_x_span_times_maximum_y_span",
+          "sourceDimensions": [
+            {
+              "axis": "x",
+              "dimensionId": "stspin840-land-pattern-horizontal-span",
+              "multiplier": 1,
+              "maximum": {
+                "value": 0.00465,
+                "unit": "m",
+                "displayUnit": "4.65 mm"
+              },
+              "evidence": [
+                {
+                  "sourceId": "st-stspin840-docid031835-rev1",
+                  "locator": "physical PDF page 26, Figure 17 TFQFPN 4 x 4 x 1.05 - 24 L suggested footprint: overall horizontal and vertical land-pattern spans are each 4.65 mm",
+                  "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+                  "kind": "manufacturer_datasheet",
+                  "retrievedAt": "2026-08-24T02:35:30.683Z",
+                  "contentHash": "sha256:d2e0f820b7faf997987de18df0fe89bf83b7dc8c35a6a18856a961f8682e06ef",
+                  "url": "https://st.com/resource/en/datasheet/stspin840.pdf",
+                  "revision": "DocID031835 Rev 1, May 2018",
+                  "publicationBasis": "public_facts"
+                }
+              ]
+            },
+            {
+              "axis": "y",
+              "dimensionId": "stspin840-land-pattern-vertical-span",
+              "multiplier": 1,
+              "maximum": {
+                "value": 0.00465,
+                "unit": "m",
+                "displayUnit": "4.65 mm"
+              },
+              "evidence": [
+                {
+                  "sourceId": "st-stspin840-docid031835-rev1",
+                  "locator": "physical PDF page 26, Figure 17 TFQFPN 4 x 4 x 1.05 - 24 L suggested footprint: overall horizontal and vertical land-pattern spans are each 4.65 mm",
+                  "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+                  "kind": "manufacturer_datasheet",
+                  "retrievedAt": "2026-08-24T02:35:30.683Z",
+                  "contentHash": "sha256:d2e0f820b7faf997987de18df0fe89bf83b7dc8c35a6a18856a961f8682e06ef",
+                  "url": "https://st.com/resource/en/datasheet/stspin840.pdf",
+                  "revision": "DocID031835 Rev 1, May 2018",
+                  "publicationBasis": "public_facts"
+                }
+              ]
+            }
+          ]
+        },
+        "state": "calculated",
+        "evidence": [
+          {
+            "sourceId": "st-stspin840-docid031835-rev1",
+            "locator": "physical PDF page 26, Figure 17 TFQFPN 4 x 4 x 1.05 - 24 L suggested footprint: overall horizontal and vertical land-pattern spans are each 4.65 mm",
+            "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+            "kind": "manufacturer_datasheet",
+            "retrievedAt": "2026-08-24T02:35:30.683Z",
+            "contentHash": "sha256:d2e0f820b7faf997987de18df0fe89bf83b7dc8c35a6a18856a961f8682e06ef",
+            "url": "https://st.com/resource/en/datasheet/stspin840.pdf",
+            "revision": "DocID031835 Rev 1, May 2018",
+            "publicationBasis": "public_facts"
+          }
+        ],
+        "validFor": [],
+        "explanation": "Canonical bounding rectangle of the manufacturer suggested footprint: 4.65 mm x 4.65 mm = 21.6225 mm2. This is a deterministic ranking proxy, not a placement or routing proof."
+      },
+      "maximumHeight": {
+        "value": {
+          "height": {
+            "value": 0.0011,
+            "unit": "m",
+            "displayUnit": "1.10 mm maximum"
+          },
+          "basis": "manufacturer_package_maximum_in_surface_mount_orientation"
+        },
+        "state": "reviewed",
+        "evidence": [
+          {
+            "sourceId": "st-stspin840-docid031835-rev1",
+            "locator": "physical PDF page 26, Table 10 TFQFPN package mechanical data: package height A maximum 1.10 mm",
+            "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+            "kind": "manufacturer_datasheet",
+            "retrievedAt": "2026-08-24T02:35:30.683Z",
+            "contentHash": "sha256:d2e0f820b7faf997987de18df0fe89bf83b7dc8c35a6a18856a961f8682e06ef",
+            "url": "https://st.com/resource/en/datasheet/stspin840.pdf",
+            "revision": "DocID031835 Rev 1, May 2018",
+            "publicationBasis": "public_facts"
+          }
+        ],
+        "validFor": [],
+        "explanation": "Manufacturer package-mechanical maximum height in the surface-mount orientation."
+      }
+    }
+  }
+}

@@ -1,0 +1,73 @@
+name: Designer runtime release evidence
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+  attestations: write
+  artifact-metadata: write
+
+env:
+  DESIGNER_RUNTIME_ARTIFACT_NAME: designer-runtime-release-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+  DESIGNER_RUNTIME_REPORT_OUTPUT: ${{ github.workspace }}/apps/web/release-evidence/designer-runtime-report.json
+  DESIGNER_RUNTIME_RECEIPT_OUTPUT: ${{ github.workspace }}/apps/web/release-evidence/designer-runtime-release-receipt.json
+  DESIGNER_RELEASE_READINESS_OUTPUT: ${{ github.workspace }}/apps/web/release-evidence/designer-release-readiness.json
+
+jobs:
+  release-evidence:
+    name: Produce bounded runtime release evidence
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the dispatched revision
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+
+      - name: Verify the exact dispatched revision
+        shell: bash
+        run: test "$(git rev-parse HEAD)" = "${GITHUB_SHA}"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Install pinned Chromium runtime
+        run: npx playwright install --with-deps chromium
+
+      - name: Produce stable runtime report and release receipt
+        run: npm run audit:designer-runtime --workspace=@opencircuit/web
+
+      - name: Evaluate release readiness against the exact runtime evidence
+        run: >-
+          npm run report --workspace=@opencircuit/designer-release-audit --
+          --runtime-report "${DESIGNER_RUNTIME_REPORT_OUTPUT}"
+          --runtime-receipt "${DESIGNER_RUNTIME_RECEIPT_OUTPUT}"
+          --github-context-from-env
+          --output "${DESIGNER_RELEASE_READINESS_OUTPUT}"
+
+      - name: Attest the exact release-evidence files
+        uses: actions/attest@v4
+        with:
+          subject-path: |
+            ${{ env.DESIGNER_RUNTIME_REPORT_OUTPUT }}
+            ${{ env.DESIGNER_RUNTIME_RECEIPT_OUTPUT }}
+            ${{ env.DESIGNER_RELEASE_READINESS_OUTPUT }}
+
+      - name: Upload the exact report, receipt, and readiness decision
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.DESIGNER_RUNTIME_ARTIFACT_NAME }}
+          path: |
+            ${{ env.DESIGNER_RUNTIME_REPORT_OUTPUT }}
+            ${{ env.DESIGNER_RUNTIME_RECEIPT_OUTPUT }}
+            ${{ env.DESIGNER_RELEASE_READINESS_OUTPUT }}
+          if-no-files-found: error
+          retention-days: 30

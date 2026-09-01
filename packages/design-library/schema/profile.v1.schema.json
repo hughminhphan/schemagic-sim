@@ -1,0 +1,194 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.schemagic.design/design-library/v1/profile.v1.schema.json",
+  "title": "scheMAGIC closed design profile V1",
+  "allOf": [
+    {
+      "$ref": "profile-envelope.v1.schema.json"
+    },
+    {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "partClass",
+            "facts"
+          ],
+          "properties": {
+            "partClass": {
+              "const": "motor.integrated-h-bridge"
+            },
+            "facts": {
+              "$ref": "facts/motor.integrated-h-bridge.v1.schema.json"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "partClass",
+            "facts"
+          ],
+          "properties": {
+            "partClass": {
+              "const": "motor.full-bridge-gate-driver"
+            },
+            "facts": {
+              "$ref": "facts/motor.full-bridge-gate-driver.v1.schema.json"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "partClass",
+            "facts"
+          ],
+          "properties": {
+            "partClass": {
+              "const": "power.integrated-synchronous-buck-regulator"
+            },
+            "facts": {
+              "$ref": "facts/power.integrated-synchronous-buck-regulator.v1.schema.json"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "partClass",
+            "facts"
+          ],
+          "properties": {
+            "partClass": {
+              "const": "power.external-fet-synchronous-buck-controller"
+            },
+            "facts": {
+              "$ref": "facts/power.external-fet-synchronous-buck-controller.v1.schema.json"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "partClass",
+            "facts"
+          ],
+          "properties": {
+            "partClass": {
+              "const": "shared.n-channel-power-mosfet"
+            },
+            "facts": {
+              "$ref": "facts/shared.n-channel-power-mosfet.v1.schema.json"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "partClass",
+            "facts"
+          ],
+          "properties": {
+            "partClass": {
+              "const": "shared.current-sense-resistor"
+            },
+            "facts": {
+              "$ref": "facts/shared.current-sense-resistor.v1.schema.json"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "partClass",
+            "facts"
+          ],
+          "properties": {
+            "partClass": {
+              "const": "shared.general-purpose-resistor"
+            },
+            "facts": {
+              "$ref": "facts/shared.general-purpose-resistor.v1.schema.json"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "partClass",
+            "facts"
+          ],
+          "properties": {
+            "partClass": {
+              "const": "shared.switching-diode"
+            },
+            "facts": {
+              "$ref": "facts/shared.switching-diode.v1.schema.json"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "partClass",
+            "facts"
+          ],
+          "properties": {
+            "partClass": {
+              "const": "shared.mlcc-capacitor"
+            },
+            "facts": {
+              "$ref": "facts/shared.mlcc-capacitor.v1.schema.json"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "partClass",
+            "facts"
+          ],
+          "properties": {
+            "partClass": {
+              "const": "shared.bulk-capacitor"
+            },
+            "facts": {
+              "$ref": "facts/shared.bulk-capacitor.v1.schema.json"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "partClass",
+            "facts"
+          ],
+          "properties": {
+            "partClass": {
+              "const": "motor.supply-tvs-diode"
+            },
+            "facts": {
+              "$ref": "facts/motor.supply-tvs-diode.v1.schema.json"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "partClass",
+            "facts"
+          ],
+          "properties": {
+            "partClass": {
+              "const": "power.power-inductor"
+            },
+            "facts": {
+              "$ref": "facts/power.power-inductor.v1.schema.json"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

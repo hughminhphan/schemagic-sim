@@ -1,0 +1,242 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3",
+        "p. 4",
+        "p. 5",
+        "p. 6",
+        "p. 7"
+      ],
+      "revision": "2015.12 - Rev.A",
+      "title": "RFU02VSM6S Data Sheet"
+    },
+    "extraction_notes": [
+      "Curves were visually inspected but not digitized."
+    ],
+    "family": "diode",
+    "manufacturer": "ROHM Semicon",
+    "mpn": "RFU02VSM6STR",
+    "omission_reason": "No curve samples were transcribed.",
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": null,
+      "breakdown_voltage": null,
+      "capacitance": {
+        "conditions": "VR = 0 V, f = 1 MHz, Tj = 25 C",
+        "page_reference": "p. 1 electrical characteristics",
+        "source_kind": "typical",
+        "unit": "F",
+        "value": 5e-12
+      },
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "Tj = 25 C",
+            "page_reference": "p. 1 electrical characteristics",
+            "source_kind": "typical",
+            "unit": "A",
+            "value": 0.2
+          },
+          "voltage": {
+            "conditions": "IF = 0.2 A, Tj = 25 C",
+            "page_reference": "p. 1 electrical characteristics",
+            "source_kind": "typical",
+            "unit": "V",
+            "value": 1.5
+          }
+        }
+      ],
+      "reverse_current": {
+        "conditions": "VR = 600 V, Tj = 25 C",
+        "page_reference": "p. 1 electrical characteristics",
+        "source_kind": "typical",
+        "unit": "A",
+        "value": 1e-8
+      },
+      "reverse_recovery": {
+        "conditions": "IF = 0.1 A, IR = 0.1 A, Irr = 0.1 x IR, Tj = 25 C",
+        "page_reference": "p. 1 electrical characteristics",
+        "source_kind": "typical",
+        "unit": "s",
+        "value": 2.4e-8
+      },
+      "variant": "rectifier"
+    },
+    "usable_curves": false
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "Forward Voltage (Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "1.5V@200mA",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Voltage - Forward(Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "1.5V@200mA",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "RFU02VSM6STR",
+    "manufacturer": "ROHM Semicon",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8589839471958401024",
+    "revision": "2015.12 - Rev.A",
+    "sha256": "ba616b734eaa795221faa52199d61fc72b1989eef9d5b4f9315fafc6edac2901",
+    "accessed_date": "2026-08-23",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4",
+      "p. 5",
+      "p. 6",
+      "p. 7"
+    ],
+    "placeholder": false
+  },
+  "evidence_contract_version": "1.0.0",
+  "fit_points": [
+    {
+      "current": {
+        "conditions": "Tj = 25 C",
+        "page_reference": "p. 1 electrical characteristics",
+        "source_kind": "typical",
+        "unit": "A",
+        "value": 0.2
+      },
+      "voltage": {
+        "conditions": "IF = 0.2 A, Tj = 25 C",
+        "page_reference": "p. 1 electrical characteristics",
+        "source_kind": "typical",
+        "unit": "V",
+        "value": 1.5
+      }
+    }
+  ],
+  "forward_voltage_points": [
+    {
+      "current": {
+        "conditions": "Tj = 25 C",
+        "page_reference": "p. 1 electrical characteristics",
+        "source_kind": "typical",
+        "unit": "A",
+        "value": 0.2,
+        "quantity": "forward_current",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "junction",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 0.2
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 1.5
+            }
+          },
+          "test_mode": {
+            "kind": "not_stated"
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "Tj = 25 C"
+            }
+          ],
+          "condition_id": "sha256:063bcc0712be2541d0d86f0a8b8b174e7cd6773e7c423bcd3e0b71ebb263fd51"
+        },
+        "citation_identity": {
+          "source_sha256": "ba616b734eaa795221faa52199d61fc72b1989eef9d5b4f9315fafc6edac2901",
+          "source_revision": "2015.12 - Rev.A",
+          "page": 1,
+          "table": "electrical characteristics",
+          "row": "Forward Current",
+          "citation_id": "sha256:ffffedfbd8ab427af44169206ff41bc8abd7c94c82bf015f50d29a1b1671a1a9"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:8d11e48f392580bec1c298830f75b682afacfaee2415fa14631323d0c43545a7",
+          "cohort_id": "sha256:65f31994cd2011d1bc0e2a12d89f49c4969984b0ca4cc60490da9f86b71cef14",
+          "role": "typical",
+          "condition_id": "sha256:063bcc0712be2541d0d86f0a8b8b174e7cd6773e7c423bcd3e0b71ebb263fd51",
+          "citation_id": "sha256:ffffedfbd8ab427af44169206ff41bc8abd7c94c82bf015f50d29a1b1671a1a9"
+        }
+      },
+      "voltage": {
+        "conditions": "IF = 0.2 A, Tj = 25 C",
+        "page_reference": "p. 1 electrical characteristics",
+        "source_kind": "typical",
+        "unit": "V",
+        "value": 1.5,
+        "quantity": "forward_voltage",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "junction",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 0.2
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 1.5
+            }
+          },
+          "test_mode": {
+            "kind": "not_stated"
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "IF = 0.2 A, Tj = 25 C"
+            }
+          ],
+          "condition_id": "sha256:ef370d3dc475a230cbf90fcda78fabc5311a2d533a067de0f96b8d1eb78ebbeb"
+        },
+        "citation_identity": {
+          "source_sha256": "ba616b734eaa795221faa52199d61fc72b1989eef9d5b4f9315fafc6edac2901",
+          "source_revision": "2015.12 - Rev.A",
+          "page": 1,
+          "table": "electrical characteristics",
+          "row": "Forward Voltage",
+          "citation_id": "sha256:b24047c2a228c7517c8951a46921c707bf5bc133f452686483f75af44fc8c102"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:12202fccaecce5aa6205d7ad99d90442e3bdd665efbe90f4fb91b085e2326239",
+          "cohort_id": "sha256:ec5d3655d37867827f05255e1c91401b6d405cb64019c95ace0b9755892fa9d3",
+          "role": "typical",
+          "condition_id": "sha256:ef370d3dc475a230cbf90fcda78fabc5311a2d533a067de0f96b8d1eb78ebbeb",
+          "citation_id": "sha256:b24047c2a228c7517c8951a46921c707bf5bc133f452686483f75af44fc8c102"
+        }
+      }
+    }
+  ],
+  "curves": [],
+  "electrical_limits": {},
+  "derived_model_inputs": {}
+}

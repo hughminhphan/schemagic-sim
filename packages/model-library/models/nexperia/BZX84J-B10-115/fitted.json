@@ -1,0 +1,183 @@
+{
+  "schema_version": "1.0.0",
+  "fidelity_tier": "F1",
+  "evidence_mode": "bound-constrained",
+  "parameters": {
+    "IS": 6.01915575792262e-11,
+    "N": 1.8,
+    "RS": 0.0001,
+    "BV": 9.8,
+    "IBV": 0.005,
+    "NBV": 1
+  },
+  "parameter_metadata": {
+    "IS": {
+      "status": "derived from cited maximum bound",
+      "evidence_mode": "bound-constrained"
+    },
+    "N": {
+      "status": "declared fixed F1 policy constant",
+      "evidence_mode": "bound-constrained"
+    },
+    "RS": {
+      "status": "declared fixed F1 policy constant",
+      "evidence_mode": "bound-constrained"
+    }
+  },
+  "calibration": {
+    "evidence_mode": "bound-constrained",
+    "observations": [],
+    "residual_target_count": 0,
+    "constraints": [
+      {
+        "kind": "forward_voltage_maximum",
+        "inclusive": true,
+        "source": {
+          "voltage": "p. 3, Table 7 Characteristics",
+          "current": "p. 3, Table 7 Characteristics",
+          "conditions": "IF = 10 mA; Tj = 25 degC; pulse test tp <= 300 us, duty cycle <= 0.02",
+          "source_kind": "maximum"
+        },
+        "maximum_voltage_v": 0.9,
+        "current_a": 0.01,
+        "quantity": "forward voltage",
+        "gate_quantity": "forward_voltage",
+        "datasheet_value": 0.9,
+        "unit": "V",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "junction",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 0.01
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 0.9
+            }
+          },
+          "test_mode": {
+            "kind": "pulsed_limit",
+            "maximum_pulse_width_s": 0.0003,
+            "maximum_duty_cycle": 0.02
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "IF = 10 mA; Tj = 25 degC; pulse test tp <= 300 us, duty cycle <= 0.02"
+            }
+          ],
+          "condition_id": "sha256:5e72a8637c5999a9065a95e41fcdd8f710ee945a6c47ac7da55b7984f51c0f35"
+        },
+        "citation_identity": {
+          "source_sha256": "fcfb79c5f982558df517267c0329dbd1f481f387c2710184c8537c9c1ba22f2f",
+          "source_revision": "BZX84J_SER v.2; Rev. 2 — 1 August 2011",
+          "page": 3,
+          "table": "Table 7 Characteristics",
+          "row": "Forward Voltage",
+          "citation_id": "sha256:7487c09cb8526a4c2db791e903dc90250ddf3e0fac2ea29850255a92955fefef"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:e754e95112785ac0141f09c6636acdbead951a8ddf2fa49ffc0c40a824eb6b62",
+          "cohort_id": "sha256:1cafa37f6e9286bc1264d2a83c556d16dc718e76c1f5891653414f028e592e3c",
+          "role": "maximum",
+          "condition_id": "sha256:5e72a8637c5999a9065a95e41fcdd8f710ee945a6c47ac7da55b7984f51c0f35",
+          "citation_id": "sha256:7487c09cb8526a4c2db791e903dc90250ddf3e0fac2ea29850255a92955fefef"
+        },
+        "evidence_role": "inequality_constraint"
+      },
+      {
+        "kind": "forward_voltage_maximum",
+        "inclusive": true,
+        "source": {
+          "voltage": "p. 3, Table 7 Characteristics",
+          "current": "p. 3, Table 7 Characteristics",
+          "conditions": "IF = 100 mA; Tj = 25 degC; pulse test tp <= 300 us, duty cycle <= 0.02",
+          "source_kind": "maximum"
+        },
+        "maximum_voltage_v": 1.1,
+        "current_a": 0.1,
+        "quantity": "forward voltage",
+        "gate_quantity": "forward_voltage",
+        "datasheet_value": 1.1,
+        "unit": "V",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "junction",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 0.1
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 1.1
+            }
+          },
+          "test_mode": {
+            "kind": "pulsed_limit",
+            "maximum_pulse_width_s": 0.0003,
+            "maximum_duty_cycle": 0.02
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "IF = 100 mA; Tj = 25 degC; pulse test tp <= 300 us, duty cycle <= 0.02"
+            }
+          ],
+          "condition_id": "sha256:8c4ae4637ac6c1ff07622aa1f493016fbda7a4eab1a5d4e14c62b740db4be721"
+        },
+        "citation_identity": {
+          "source_sha256": "fcfb79c5f982558df517267c0329dbd1f481f387c2710184c8537c9c1ba22f2f",
+          "source_revision": "BZX84J_SER v.2; Rev. 2 — 1 August 2011",
+          "page": 3,
+          "table": "Table 7 Characteristics",
+          "row": "Forward Voltage",
+          "citation_id": "sha256:7487c09cb8526a4c2db791e903dc90250ddf3e0fac2ea29850255a92955fefef"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:3c0b1a9683d1968a2df5bd365e8deb48eeee719481a1ee7cc4f4aae0dcd73280",
+          "cohort_id": "sha256:1b2fb822b208f959640bfbdb4a71eacfa50035b2f72db98e0767940af0c743ff",
+          "role": "maximum",
+          "condition_id": "sha256:8c4ae4637ac6c1ff07622aa1f493016fbda7a4eab1a5d4e14c62b740db4be721",
+          "citation_id": "sha256:7487c09cb8526a4c2db791e903dc90250ddf3e0fac2ea29850255a92955fefef"
+        },
+        "evidence_role": "inequality_constraint"
+      }
+    ],
+    "seeds": [
+      {
+        "parameter_coordinate": "IS",
+        "evidence_role": "maximum_bound_interior_feasibility_seed_only",
+        "value": 6.01915575792262e-11,
+        "unit": "A",
+        "policy": "derive from 0.95 times cited maximum current and 0.97 times cited maximum voltage",
+        "current_factor": 0.95,
+        "voltage_factor": 0.97
+      }
+    ]
+  },
+  "fitter": "cited-maximum diode F1 interior-feasibility projection",
+  "optimizer": null,
+  "held_defaults": [],
+  "curves_used": [],
+  "evidence_contract_version": "1.0.0",
+  "evidence_curves": [],
+  "curves_rejected": [],
+  "residuals": [],
+  "rms_relative_error": null,
+  "worst_relative_error": null
+}

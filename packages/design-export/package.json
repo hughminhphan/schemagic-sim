@@ -1,0 +1,40 @@
+{
+  "name": "@opencircuit/design-export",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Deterministic export formats for scheMAGIC Designer results",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./circuit-svg-v2": "./src/circuit-svg-v2-public.ts",
+    "./kicad-schematic-v2": "./src/kicad-schematic-v2-public.ts",
+    "./external-kicad-fixtures": "./src/external-kicad-fixtures.ts",
+    "./external-kicad-qa": "./src/external-kicad-qa.ts",
+    "./printable-report-v2": "./src/printable-report-v2-public.ts",
+    "./primary-part-customized-artifact-v1": "./src/primary-part-customized-artifact-v1-public.ts",
+    "./power-physical-implementation-handoff-v1": "./src/power-physical-implementation-handoff-v1.ts",
+    "./power-physical-implementation-handoff-v2": "./src/power-physical-implementation-handoff-v2.ts",
+    "./production-artifact-v2": "./src/production-artifact-v2.ts",
+    "./simulation-csv-v2": "./src/simulation-csv-v2.ts",
+    "./scenario-plan-v2": "./src/scenario-plan-v2.ts"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest run --maxWorkers=1",
+    "qa:kicad-external": "vite-node scripts/verify-kicad-external.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@opencircuit/circuit-schema": "*",
+    "@opencircuit/design-engine": "*",
+    "@opencircuit/design-library": "*",
+    "@opencircuit/sim-engine": "*",
+    "@opencircuit/design-schema": "*",
+    "@opencircuit/sourcing-schema": "*"
+  },
+  "devDependencies": {
+    "@types/node": "24.3.0",
+    "vite-node": "3.2.4",
+    "vitest": "3.2.7"
+  }
+}

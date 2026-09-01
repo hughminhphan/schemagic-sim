@@ -7,7 +7,12 @@
   "instructions": [
     "Inspect only the supplied datasheet and the bundled archetype and gold example.",
     "Attempt transfer, output, and capacitance curve extraction before falling back to tables.",
-    "Use SI units, preserve axes and test conditions, and fit p-channel values as magnitudes.",
+    "Use SI units, preserve axes and test conditions. Keep MOSFET electrical axes canonical VGS, VDS, or ID (including the underscore aliases V_GS, V_DS, and I_D); represent p-channel sign handling only through magnitude_convention, never by adding 'magnitude' to an axis name.",
+    "For every non-null critical scalar, preserve page_reference and add locator with an exact positive-integer page plus non-empty table and row strings. Every threshold datum and every VGS/current/resistance datum in an RDS(on) point must also carry a direct condition object: polarity; magnitude_convention signed or absolute; temperature {status: stated, kind: ambient/case/junction, value_c, provenance}; electrical {vgs, vds, id}; and test_mode. Use exact typed coordinates: fixed has value_v/value_a, relation has relation, range has increasing lower/upper values. Thresholds require vgs and vds relation vds_equals_vgs plus fixed id; RDS(on) requires fixed vgs/id plus vds relation saturation_region. Repeat the identical direct condition on all three RDS(on) datum objects. Only threshold test_mode may be not_stated when the source truly omits it; RDS(on) must state a canonical mode.",
+    "For every curve, preserve page_reference and add locator with an exact positive-integer page plus non-empty figure and curve_or_trace strings.",
+    "For every curve, provide at least four ordered digitized points and add temperature as kind (ambient, case, or junction), numeric Celsius value, and canonical provenance inline_condition, table_heading, figure_label, footnote, or section_scope; omit the curve when temperature is not stated.",
+    "For transfer curves, electrical_bias must contain exactly one fixed VDS or V_DS record; for output curves it must contain exactly one fixed VGS or V_GS record. For other curves, record each explicitly fixed VGS, V_GS, VDS, V_DS, ID, or I_D bias with an exact numeric value and unit; omit the curve when no fixed electrical bias is stated.",
+    "For every curve, add magnitude_convention signed or absolute alongside temperature, electrical_bias, and test_mode. Add test_mode with canonical kind dc, continuous, pulsed, or single_pulse. Pulsed and single_pulse data also require pulse_width_s; include duty_cycle, repetition_period_s, or repetition_frequency_hz only when explicitly stated, and omit the curve when test mode is not stated.",
     "Return one JSON object only, with no markdown fences or commentary."
   ]
 }

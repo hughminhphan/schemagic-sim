@@ -1,0 +1,33 @@
+{
+  "name": "@opencircuit/designer-examples",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Content-addressed synthetic reference examples for scheMAGIC Designer",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./generator": "./src/generate.ts",
+    "./manifest": "./artifacts/manifest.json",
+    "./artifacts/m1-compact": "./artifacts/m1-compact.json",
+    "./artifacts/m2-power": "./artifacts/m2-power.json",
+    "./artifacts/p1-compact": "./artifacts/p1-compact.json",
+    "./artifacts/p2-high-voltage": "./artifacts/p2-high-voltage.json"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "regenerate": "vite-node scripts/regenerate.ts",
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@opencircuit/design-engine": "*",
+    "@opencircuit/design-schema": "*",
+    "@opencircuit/motor-designer": "*",
+    "@opencircuit/power-designer": "*"
+  },
+  "devDependencies": {
+    "@types/node": "24.3.0",
+    "vite-node": "3.2.4",
+    "vitest": "3.2.7"
+  }
+}

@@ -1,0 +1,220 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p. 1",
+        "p. 2"
+      ],
+      "revision": "revision not stated in source",
+      "title": "RB520S-30 Schottky barrier diode"
+    },
+    "extraction_notes": [
+      "No curves were digitized."
+    ],
+    "family": "diode",
+    "manufacturer": "TECH PUBLIC",
+    "mpn": "RB520S-30",
+    "omission_reason": "Table-only extraction.",
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": null,
+      "breakdown_voltage": null,
+      "capacitance": null,
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "TA = 25 C",
+            "page_reference": "p. 1 electrical characteristics",
+            "source_kind": "maximum",
+            "unit": "A",
+            "value": 0.2
+          },
+          "voltage": {
+            "conditions": "IF = 200 mA, TA = 25 C",
+            "page_reference": "p. 1 electrical characteristics",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 0.6
+          }
+        }
+      ],
+      "reverse_current": {
+        "conditions": "VR = 10 V, TA = 25 C",
+        "page_reference": "p. 1 electrical characteristics",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.000001
+      },
+      "reverse_recovery": null,
+      "variant": "schottky"
+    },
+    "usable_curves": false
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "Forward Voltage (Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "600mV@200mA",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Voltage - Forward(Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "600mV@200mA",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "RB520S-30",
+    "manufacturer": "TECH PUBLIC",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8588915348216799232",
+    "revision": "revision not stated in source",
+    "sha256": "b6cab92b65c1f2043f95b0a0fb8a111b2d9357ec51dac6d0257a7c829e5ee8bb",
+    "accessed_date": "2026-08-23",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2"
+    ],
+    "placeholder": false
+  },
+  "evidence_contract_version": "1.0.0",
+  "fit_points": [
+    {
+      "current": {
+        "conditions": "TA = 25 C",
+        "page_reference": "p. 1 electrical characteristics",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.2
+      },
+      "voltage": {
+        "conditions": "IF = 200 mA, TA = 25 C",
+        "page_reference": "p. 1 electrical characteristics",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 0.6
+      }
+    }
+  ],
+  "forward_voltage_points": [
+    {
+      "current": {
+        "conditions": "TA = 25 C",
+        "page_reference": "p. 1 electrical characteristics",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.2,
+        "quantity": "forward_current",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "ambient",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 0.2
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 0.6
+            }
+          },
+          "test_mode": {
+            "kind": "not_stated"
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "TA = 25 C"
+            }
+          ],
+          "condition_id": "sha256:db22bbc20eb0953acf6c2f72a93bce9f95e6a215a811838a1eaea73736cd0a83"
+        },
+        "citation_identity": {
+          "source_sha256": "b6cab92b65c1f2043f95b0a0fb8a111b2d9357ec51dac6d0257a7c829e5ee8bb",
+          "source_revision": "revision not stated in source",
+          "page": 1,
+          "table": "electrical characteristics",
+          "row": "Forward Current",
+          "citation_id": "sha256:408ec9aa945e75075aa7d890fd0b76be0918c6d1cf41004e8175b810eeb0eff6"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:efbf38b2766bbac8ecada5e889e60ee08bb71e3a0d53c699b5d584a08977e153",
+          "cohort_id": "sha256:08d7be66e1ede52e82e4c2414e884c905c86ef2c3d47aa539c399f3fcac2e639",
+          "role": "maximum",
+          "condition_id": "sha256:db22bbc20eb0953acf6c2f72a93bce9f95e6a215a811838a1eaea73736cd0a83",
+          "citation_id": "sha256:408ec9aa945e75075aa7d890fd0b76be0918c6d1cf41004e8175b810eeb0eff6"
+        }
+      },
+      "voltage": {
+        "conditions": "IF = 200 mA, TA = 25 C",
+        "page_reference": "p. 1 electrical characteristics",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 0.6,
+        "quantity": "forward_voltage",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "ambient",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 0.2
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 0.6
+            }
+          },
+          "test_mode": {
+            "kind": "not_stated"
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "IF = 200 mA, TA = 25 C"
+            }
+          ],
+          "condition_id": "sha256:9a69fa9b7f81c4395f303c3606b3cb9c578676ebc45896e57931b47484ae9423"
+        },
+        "citation_identity": {
+          "source_sha256": "b6cab92b65c1f2043f95b0a0fb8a111b2d9357ec51dac6d0257a7c829e5ee8bb",
+          "source_revision": "revision not stated in source",
+          "page": 1,
+          "table": "electrical characteristics",
+          "row": "Forward Voltage",
+          "citation_id": "sha256:3aa22ea9f543e2e0b20ca21dafe5a71c1de1d3c7d02922af49bff4dba51f31ad"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:243d5ca97b7e950a6a17c6d8cdc835846fdbd27d8f5303cd235aab1d5690720b",
+          "cohort_id": "sha256:17ecf7da6a076ea37e91596d1ca3acd2c052b21d8eefd9f02b093d5f1d289f2d",
+          "role": "maximum",
+          "condition_id": "sha256:9a69fa9b7f81c4395f303c3606b3cb9c578676ebc45896e57931b47484ae9423",
+          "citation_id": "sha256:3aa22ea9f543e2e0b20ca21dafe5a71c1de1d3c7d02922af49bff4dba51f31ad"
+        }
+      }
+    }
+  ],
+  "curves": [],
+  "electrical_limits": {},
+  "derived_model_inputs": {}
+}

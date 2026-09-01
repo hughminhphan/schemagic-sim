@@ -1,0 +1,163 @@
+{
+  "schema_version": "1.0.0",
+  "fidelity_tier": "F1",
+  "evidence_mode": "typ-point",
+  "parameters": {
+    "IS": 5.94498966105149e-11,
+    "N": 1.8,
+    "RS": 0.0001,
+    "BV": 16,
+    "IBV": 0.005,
+    "NBV": 1
+  },
+  "parameter_metadata": {},
+  "calibration": {
+    "evidence_mode": "typ-point",
+    "observations": [
+      {
+        "kind": "forward_voltage",
+        "source": {
+          "voltage": "PDF p. 4, Forward characteristics",
+          "current": "PDF p. 4, Forward characteristics",
+          "conditions": "Tj = 25 degC; digitized forward-characteristics trace.",
+          "source_kind": "digitized_typical_curve"
+        },
+        "value_v": 0.45,
+        "current_a": 0.000001,
+        "quantity": "forward voltage",
+        "gate_quantity": "forward_voltage",
+        "datasheet_value": 0.45,
+        "unit": "V",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "junction",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 0.000001
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 0.45
+            }
+          },
+          "test_mode": {
+            "kind": "not_stated"
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "Tj = 25 degC; digitized forward-characteristics trace."
+            }
+          ],
+          "condition_id": "sha256:c231141514790073b6e6880b431c8638dfb703ed2d162d59e14b37bebe1ea4f0"
+        },
+        "citation_identity": {
+          "source_sha256": "91977160db425cc1729032e8b6b013b1949d882e6bb376e1f27772eaedc5ba5f",
+          "source_revision": "Not stated",
+          "page": 4,
+          "table": "Forward characteristics",
+          "row": "Forward Voltage",
+          "citation_id": "sha256:8bf3253d9c0b67a285a278efc0543098039a77adde9acc713d948d622f02226a"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:0e4263d1d85d1040f382996fd9f1b95f67e1a56889be50c97d8cf5c2b7fc3add",
+          "cohort_id": "sha256:e7a64c0ebc77c881755e7233745114a13abc571e565fe6426fa7704099ae674e",
+          "role": "digitized_typical_curve",
+          "condition_id": "sha256:c231141514790073b6e6880b431c8638dfb703ed2d162d59e14b37bebe1ea4f0",
+          "citation_id": "sha256:8bf3253d9c0b67a285a278efc0543098039a77adde9acc713d948d622f02226a"
+        },
+        "evidence_role": "typical_observation"
+      }
+    ],
+    "constraints": [
+      {
+        "kind": "forward_voltage_maximum",
+        "inclusive": true,
+        "source": {
+          "voltage": "PDF p. 1, Characteristics",
+          "current": "PDF p. 1, Characteristics",
+          "conditions": "TA = 25 degC; IF = 100 mA; electrodes kept at ambient temperature.",
+          "source_kind": "maximum"
+        },
+        "maximum_voltage_v": 1,
+        "current_a": 0.1,
+        "quantity": "forward voltage",
+        "gate_quantity": "forward_voltage",
+        "datasheet_value": 1,
+        "unit": "V",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "ambient",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 0.1
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 1
+            }
+          },
+          "test_mode": {
+            "kind": "not_stated"
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "TA = 25 degC; IF = 100 mA; electrodes kept at ambient temperature."
+            }
+          ],
+          "condition_id": "sha256:925aa96314e0cf0314b9830fd71a8173bcb7e455609cab4a73cde72fb9ecd83a"
+        },
+        "citation_identity": {
+          "source_sha256": "91977160db425cc1729032e8b6b013b1949d882e6bb376e1f27772eaedc5ba5f",
+          "source_revision": "Not stated",
+          "page": 1,
+          "table": "Characteristics",
+          "row": "Forward Voltage",
+          "citation_id": "sha256:1fd731c716f9ddf7730ee9b4eff376015b47c1012688c1f29a4d56da9e8c3eb4"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:f5f32673175f4fea463d3904109925df4cf9c15659cc3c417010572348b66147",
+          "cohort_id": "sha256:7f76ce2becf57ee2b044bc8883efff35a22695f2f3fda198f0ecd9b9942dce88",
+          "role": "maximum",
+          "condition_id": "sha256:925aa96314e0cf0314b9830fd71a8173bcb7e455609cab4a73cde72fb9ecd83a",
+          "citation_id": "sha256:1fd731c716f9ddf7730ee9b4eff376015b47c1012688c1f29a4d56da9e8c3eb4"
+        },
+        "evidence_role": "inequality_constraint"
+      }
+    ],
+    "residual_target_count": 1,
+    "seeds": [
+      {
+        "parameter_coordinate": "IS",
+        "evidence_role": "typical_observation_seed",
+        "value": 5.94498966105149e-11,
+        "unit": "A"
+      }
+    ]
+  },
+  "fitter": "datasheet typical-point diode F1 formula",
+  "optimizer": null,
+  "held_defaults": [],
+  "curves_used": [],
+  "evidence_contract_version": "1.0.0",
+  "evidence_curves": [],
+  "curves_rejected": [],
+  "residuals": [],
+  "rms_relative_error": null,
+  "worst_relative_error": null
+}

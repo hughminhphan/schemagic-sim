@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://opencircuit.dev/schemas/component.schema.json",
-  "title": "OpenCircuit Component Metadata",
+  "title": "scheMAGIC Component Metadata",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -29,6 +29,9 @@
   ],
   "properties": {
     "schema_version": {
+      "const": "1.0.0"
+    },
+    "evidence_contract_version": {
       "const": "1.0.0"
     },
     "canonical_mpn": {
@@ -167,6 +170,7 @@
       "additionalProperties": false,
       "required": ["summary", "numeric_bounds"],
       "properties": {
+        "contract_version": { "const": "1.0.0" },
         "summary": { "type": "string", "minLength": 1 },
         "numeric_bounds": {
           "type": "array",
@@ -271,6 +275,10 @@
     }
   ],
   "$defs": {
+    "contentAddressedId": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
     "coverageRating": {
       "enum": ["none", "approx", "fitted", "validated"]
     },
@@ -290,10 +298,32 @@
       "additionalProperties": false,
       "required": ["quantity", "unit", "placeholder"],
       "properties": {
+        "bound_id": { "$ref": "#/$defs/contentAddressedId" },
         "quantity": { "type": "string", "minLength": 1 },
+        "kind": { "enum": ["minimum", "maximum", "range", "enumerated"] },
         "minimum": { "type": "number" },
         "maximum": { "type": "number" },
+        "values": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "number" } },
         "unit": { "type": "string", "minLength": 1 },
+        "evidence_refs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["evidence_id", "condition_id", "citation_id", "cohort_id"],
+            "properties": {
+              "evidence_id": { "$ref": "#/$defs/contentAddressedId" },
+              "condition_id": { "$ref": "#/$defs/contentAddressedId" },
+              "citation_id": { "$ref": "#/$defs/contentAddressedId" },
+              "cohort_id": { "$ref": "#/$defs/contentAddressedId" }
+            }
+          }
+        },
+        "condition_ids": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/contentAddressedId" } },
+        "citation_ids": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/contentAddressedId" } },
+        "derivation": { "enum": ["direct_evidence_union", "direct_evidence_intersection"] },
+        "temperature_kind": { "enum": ["junction", "ambient", "case"] },
         "conditions": { "type": "string", "minLength": 1 },
         "placeholder": { "type": "boolean" }
       },

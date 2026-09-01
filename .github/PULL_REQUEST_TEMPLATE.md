@@ -21,7 +21,8 @@ List the commands run and their results.
 
 Complete this section for changes under `packages/model-library/models/`. Otherwise, mark it not applicable.
 
-- [ ] I ran `node packages/component-schema/validate-package.mjs <model-directory>` and it printed `PASS`.
+- [ ] I registered new packages under `strict_evidence_contract_packages` in `packages/model-library/admission-policy.json`.
+- [ ] I ran `node packages/model-library/validate-library.mjs` and it printed `PASS`.
 - [ ] The package contains `component.json`, `model.cir`, `sources.json`, `MODEL_CARD.md`, `LICENSE`, and `tests/`.
 - [ ] Every expectation has a page-level or measurement citation and complete operating conditions.
 - [ ] No datasheet PDF or vendor-authored SPICE model is included.

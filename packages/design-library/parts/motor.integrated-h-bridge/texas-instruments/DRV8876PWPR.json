@@ -1,0 +1,1354 @@
+{
+  "format": "schemagic-design-profile",
+  "schemaVersion": "1.0.0",
+  "partClass": "motor.integrated-h-bridge",
+  "part": {
+    "manufacturerId": "texas-instruments",
+    "manufacturerPartNumber": "DRV8876PWPR"
+  },
+  "factsSchemaVersion": "3.2.0",
+  "commonFacts": {
+    "packageName": {
+      "value": "HTSSOP (PWP), 16-pin PowerPAD, 1.2 mm maximum height",
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-drv8876-slvsds7b",
+          "locator": "physical PDF page 36, Package Option Addendum, exact DRV8876PWPR orderable-part row: HTSSOP (PWP), 16 pins; physical PDF page 41, PWP0016A Package Outline: PowerPAD HTSSOP, 1.2 mm max height",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T10:44:40Z",
+          "contentHash": "sha256:b3deb54e918251d4583c0f12f96b780a7f4f4818fd213c65b6cbacac3e2bc032",
+          "url": "https://www.ti.com/lit/ds/symlink/drv8876.pdf",
+          "revision": "SLVSDS7B, August 2019 – revised November 2019",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "The exact DRV8876PWPR ordering row selects TI package code PWP, a 16-pin PowerPAD HTSSOP; the appended PWP0016A drawing supplies the maximum mounted height."
+    },
+    "boardArea": {
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "Facts schema 3.2.0 represents mounted board area only through facts.mountedGeometry."
+    },
+    "maximumHeight": {
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "Facts schema 3.2.0 represents mounted maximum height only through facts.mountedGeometry."
+    }
+  },
+  "facts": {
+    "bridgeTopology": {
+      "value": "full_bridge",
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-drv8876-slvsds7b",
+          "locator": "physical PDF page 1, sections 1 and 3: N-channel H-bridge motor driver integrating an N-channel H-bridge output stage",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T10:44:40Z",
+          "contentHash": "sha256:b3deb54e918251d4583c0f12f96b780a7f4f4818fd213c65b6cbacac3e2bc032",
+          "url": "https://www.ti.com/lit/ds/symlink/drv8876.pdf",
+          "revision": "SLVSDS7B, August 2019 – revised November 2019",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "The device contains one full H-bridge for a bidirectional brushed-DC motor."
+    },
+    "powerStage": {
+      "value": "integrated_fet",
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-drv8876-slvsds7b",
+          "locator": "physical PDF page 9, section 7.1 Overview: the device integrates an H-bridge output power stage",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T10:44:40Z",
+          "contentHash": "sha256:b3deb54e918251d4583c0f12f96b780a7f4f4818fd213c65b6cbacac3e2bc032",
+          "url": "https://www.ti.com/lit/ds/symlink/drv8876.pdf",
+          "revision": "SLVSDS7B, August 2019 – revised November 2019",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "The four bridge power MOSFETs are integrated in the IC."
+    },
+    "bridgeOutputArchitecture": {
+      "value": "single_full_bridge",
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-drv8876-slvsds7b",
+          "locator": "physical PDF pages 9-10, functional block diagram and Figure 10 H-Bridge States: one OUT1/OUT2 H-bridge; independent-half-bridge control reuses those two halves rather than adding a second full bridge",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T10:44:40Z",
+          "contentHash": "sha256:b3deb54e918251d4583c0f12f96b780a7f4f4818fd213c65b6cbacac3e2bc032",
+          "url": "https://www.ti.com/lit/ds/symlink/drv8876.pdf",
+          "revision": "SLVSDS7B, August 2019 – revised November 2019",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "OUT1 and OUT2 form one full bridge; the selectable independent-half-bridge mode does not make this a dual-full-bridge device."
+    },
+    "highSideDriveArchitecture": {
+      "value": "n_channel_charge_pump",
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-drv8876-slvsds7b",
+          "locator": "physical PDF pages 1 and 9, Description and section 7.1 Overview: integrated charge-pump regulator drives efficient high-side N-channel MOSFETs",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T10:44:40Z",
+          "contentHash": "sha256:b3deb54e918251d4583c0f12f96b780a7f4f4818fd213c65b6cbacac3e2bc032",
+          "url": "https://www.ti.com/lit/ds/symlink/drv8876.pdf",
+          "revision": "SLVSDS7B, August 2019 – revised November 2019",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "The integrated high-side devices are N-channel MOSFETs supported by an internal charge pump."
+    },
+    "continuousHighSideOnSupported": {
+      "value": true,
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-drv8876-slvsds7b",
+          "locator": "physical PDF pages 1 and 9, Description and section 7.1 Overview: charge pump provides 100% duty-cycle support; physical PDF page 11 states static inputs support 100% drive",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T10:44:40Z",
+          "contentHash": "sha256:b3deb54e918251d4583c0f12f96b780a7f4f4818fd213c65b6cbacac3e2bc032",
+          "url": "https://www.ti.com/lit/ds/symlink/drv8876.pdf",
+          "revision": "SLVSDS7B, August 2019 – revised November 2019",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "The charge-pump architecture explicitly supports static, 100% duty-cycle bridge drive. This is architectural support, not a thermal current guarantee."
+    },
+    "supplyVoltageOperatingMinimum": {
+      "value": {
+        "value": 4.5,
+        "unit": "V",
+        "displayUnit": "4.5 V"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-drv8876-slvsds7b",
+          "locator": "physical PDF page 4, section 6.3 Recommended Operating Conditions: VVM power-supply voltage minimum 4.5 V",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T10:44:40Z",
+          "contentHash": "sha256:b3deb54e918251d4583c0f12f96b780a7f4f4818fd213c65b6cbacac3e2bc032",
+          "url": "https://www.ti.com/lit/ds/symlink/drv8876.pdf",
+          "revision": "SLVSDS7B, August 2019 – revised November 2019",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "Guaranteed lower bound of the recommended VM operating range."
+    },
+    "supplyVoltageOperatingMaximum": {
+      "value": {
+        "value": 37,
+        "unit": "V",
+        "displayUnit": "37 V"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-drv8876-slvsds7b",
+          "locator": "physical PDF page 4, section 6.3 Recommended Operating Conditions: VVM power-supply voltage maximum 37 V",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T10:44:40Z",
+          "contentHash": "sha256:b3deb54e918251d4583c0f12f96b780a7f4f4818fd213c65b6cbacac3e2bc032",
+          "url": "https://www.ti.com/lit/ds/symlink/drv8876.pdf",
+          "revision": "SLVSDS7B, August 2019 – revised November 2019",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "Guaranteed upper bound of the recommended VM operating range."
+    },
+    "supplyVoltageAbsoluteMaximum": {
+      "value": {
+        "value": 40,
+        "unit": "V",
+        "displayUnit": "40 V"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-drv8876-slvsds7b",
+          "locator": "physical PDF page 4, section 6.1 Absolute Maximum Ratings: VM power-supply-pin maximum 40 V; note 1 states absolute ratings do not imply functional operation",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T10:44:40Z",
+          "contentHash": "sha256:b3deb54e918251d4583c0f12f96b780a7f4f4818fd213c65b6cbacac3e2bc032",
+          "url": "https://www.ti.com/lit/ds/symlink/drv8876.pdf",
+          "revision": "SLVSDS7B, August 2019 – revised November 2019",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "Absolute VM stress limit only; it is not an operating limit."
+    },
+    "logicHighThresholdMaximum": {
+      "value": {
+        "value": 1.5,
+        "unit": "V",
+        "displayUnit": "VIH minimum = 1.5 V"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-drv8876-slvsds7b",
+          "locator": "physical PDF page 5, section 6.5 Electrical Characteristics, logic-level inputs: VIH input-logic-high minimum 1.5 V under the table-wide 4.5 V <= VVM <= 37 V and -40 deg C <= TJ <= 150 deg C conditions",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T10:44:40Z",
+          "contentHash": "sha256:b3deb54e918251d4583c0f12f96b780a7f4f4818fd213c65b6cbacac3e2bc032",
+          "url": "https://www.ti.com/lit/ds/symlink/drv8876.pdf",
+          "revision": "SLVSDS7B, August 2019 – revised November 2019",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "junctionTemperature",
+          "minimum": {
+            "value": 233.15,
+            "unit": "K",
+            "displayUnit": "-40 deg C"
+          },
+          "maximum": {
+            "value": 423.15,
+            "unit": "K",
+            "displayUnit": "150 deg C"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-drv8876-slvsds7b",
+              "locator": "physical PDF page 5, section 6.5 Electrical Characteristics table-wide condition: -40 deg C <= TJ <= 150 deg C",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T10:44:40Z",
+              "contentHash": "sha256:b3deb54e918251d4583c0f12f96b780a7f4f4818fd213c65b6cbacac3e2bc032",
+              "url": "https://www.ti.com/lit/ds/symlink/drv8876.pdf",
+              "revision": "SLVSDS7B, August 2019 – revised November 2019",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "supplyVoltage",
+          "minimum": {
+            "value": 4.5,
+            "unit": "V",
+            "displayUnit": "4.5 V"
+          },
+          "maximum": {
+            "value": 37,
+            "unit": "V",
+            "displayUnit": "37 V"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-drv8876-slvsds7b",
+              "locator": "physical PDF page 5, section 6.5 Electrical Characteristics table-wide condition: 4.5 V <= VVM <= 37 V",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T10:44:40Z",
+              "contentHash": "sha256:b3deb54e918251d4583c0f12f96b780a7f4f4818fd213c65b6cbacac3e2bc032",
+              "url": "https://www.ti.com/lit/ds/symlink/drv8876.pdf",
+              "revision": "SLVSDS7B, August 2019 – revised November 2019",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "The contract name is controller-facing: TI publishes 1.5 V as VIH(min), so a controller must drive at least 1.5 V to guarantee a logic high. It is stored as the maximum logic-high threshold that the controller must meet, not as a device input maximum."
+    },
+    "continuousOutputCurrent": {
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "The data sheet does not publish a package-independent guaranteed continuous-output-current limit. Thermal examples and evaluation-board observations are not promoted to a device capability."
+    },
+    "continuousOutputCurrentRole": {
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "No reviewed continuous-output-current quantity is available, so its evidence role is exact unknown."
+    },
+    "peakOutputCurrent": {
+      "value": {
+        "value": 3.5,
+        "unit": "A",
+        "displayUnit": "3.5 A peak"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-drv8876-slvsds7b",
+          "locator": "physical PDF page 4, section 6.3 Recommended Operating Conditions: IOUT peak output current maximum 3.5 A; footnote 1 requires observing power-dissipation and thermal limits",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T10:44:40Z",
+          "contentHash": "sha256:b3deb54e918251d4583c0f12f96b780a7f4f4818fd213c65b6cbacac3e2bc032",
+          "url": "https://www.ti.com/lit/ds/symlink/drv8876.pdf",
+          "revision": "SLVSDS7B, August 2019 – revised November 2019",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "ambientTemperature",
+          "minimum": {
+            "value": 233.15,
+            "unit": "K",
+            "displayUnit": "-40 deg C"
+          },
+          "maximum": {
+            "value": 398.15,
+            "unit": "K",
+            "displayUnit": "125 deg C"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-drv8876-slvsds7b",
+              "locator": "physical PDF page 4, section 6.3 Recommended Operating Conditions: TA operating range -40 deg C to 125 deg C",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T10:44:40Z",
+              "contentHash": "sha256:b3deb54e918251d4583c0f12f96b780a7f4f4818fd213c65b6cbacac3e2bc032",
+              "url": "https://www.ti.com/lit/ds/symlink/drv8876.pdf",
+              "revision": "SLVSDS7B, August 2019 – revised November 2019",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "junctionTemperature",
+          "minimum": {
+            "value": 233.15,
+            "unit": "K",
+            "displayUnit": "-40 deg C"
+          },
+          "maximum": {
+            "value": 423.15,
+            "unit": "K",
+            "displayUnit": "150 deg C"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-drv8876-slvsds7b",
+              "locator": "physical PDF page 4, section 6.3 Recommended Operating Conditions: TJ operating range -40 deg C to 150 deg C",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T10:44:40Z",
+              "contentHash": "sha256:b3deb54e918251d4583c0f12f96b780a7f4f4818fd213c65b6cbacac3e2bc032",
+              "url": "https://www.ti.com/lit/ds/symlink/drv8876.pdf",
+              "revision": "SLVSDS7B, August 2019 – revised November 2019",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "Reviewed recommended-operating peak limit. TI explicitly requires power-dissipation and thermal limits to be observed; this is not a continuous-current or stall-current proof."
+    },
+    "peakOutputCurrentRole": {
+      "value": "guaranteed_operating_limit",
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-drv8876-slvsds7b",
+          "locator": "physical PDF page 4, section 6.3 Recommended Operating Conditions: IOUT peak output current maximum 3.5 A; footnote 1 requires observing power-dissipation and thermal limits",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T10:44:40Z",
+          "contentHash": "sha256:b3deb54e918251d4583c0f12f96b780a7f4f4818fd213c65b6cbacac3e2bc032",
+          "url": "https://www.ti.com/lit/ds/symlink/drv8876.pdf",
+          "revision": "SLVSDS7B, August 2019 – revised November 2019",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "ambientTemperature",
+          "minimum": {
+            "value": 233.15,
+            "unit": "K",
+            "displayUnit": "-40 deg C"
+          },
+          "maximum": {
+            "value": 398.15,
+            "unit": "K",
+            "displayUnit": "125 deg C"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-drv8876-slvsds7b",
+              "locator": "physical PDF page 4, section 6.3 Recommended Operating Conditions: TA operating range -40 deg C to 125 deg C",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T10:44:40Z",
+              "contentHash": "sha256:b3deb54e918251d4583c0f12f96b780a7f4f4818fd213c65b6cbacac3e2bc032",
+              "url": "https://www.ti.com/lit/ds/symlink/drv8876.pdf",
+              "revision": "SLVSDS7B, August 2019 – revised November 2019",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "junctionTemperature",
+          "minimum": {
+            "value": 233.15,
+            "unit": "K",
+            "displayUnit": "-40 deg C"
+          },
+          "maximum": {
+            "value": 423.15,
+            "unit": "K",
+            "displayUnit": "150 deg C"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-drv8876-slvsds7b",
+              "locator": "physical PDF page 4, section 6.3 Recommended Operating Conditions: TJ operating range -40 deg C to 150 deg C",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T10:44:40Z",
+              "contentHash": "sha256:b3deb54e918251d4583c0f12f96b780a7f4f4818fd213c65b6cbacac3e2bc032",
+              "url": "https://www.ti.com/lit/ds/symlink/drv8876.pdf",
+              "revision": "SLVSDS7B, August 2019 – revised November 2019",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "The 3.5 A value is a maximum in TI's Recommended Operating Conditions, so its role is a guaranteed operating limit, subject to the stated thermal caveat and applicable temperatures."
+    },
+    "currentRegulationInterface": {
+      "value": "integrated_current_mirror_output",
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-drv8876-slvsds7b",
+          "locator": "physical PDF pages 12-13, sections 7.3.3.1 and 7.3.3.2: internal current-mirror sensing drives IPROPI; VREF and external RIPROPI configure current regulation",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T10:44:40Z",
+          "contentHash": "sha256:b3deb54e918251d4583c0f12f96b780a7f4f4818fd213c65b6cbacac3e2bc032",
+          "url": "https://www.ti.com/lit/ds/symlink/drv8876.pdf",
+          "revision": "SLVSDS7B, August 2019 – revised November 2019",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "The device exposes IPROPI from an integrated current mirror. VREF and RIPROPI configure a circuit-specific trip current; this profile intentionally does not calculate or assert that configured limit."
+    },
+    "pwmMaximum": {
+      "value": {
+        "value": 100000,
+        "unit": "Hz",
+        "displayUnit": "100 kHz"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-drv8876-slvsds7b",
+          "locator": "physical PDF page 4, section 6.3 Recommended Operating Conditions: fPWM maximum 100 kHz at EN/IN1 and PH/IN2",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T10:44:40Z",
+          "contentHash": "sha256:b3deb54e918251d4583c0f12f96b780a7f4f4818fd213c65b6cbacac3e2bc032",
+          "url": "https://www.ti.com/lit/ds/symlink/drv8876.pdf",
+          "revision": "SLVSDS7B, August 2019 – revised November 2019",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "ambientTemperature",
+          "minimum": {
+            "value": 233.15,
+            "unit": "K",
+            "displayUnit": "-40 deg C"
+          },
+          "maximum": {
+            "value": 398.15,
+            "unit": "K",
+            "displayUnit": "125 deg C"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-drv8876-slvsds7b",
+              "locator": "physical PDF page 4, section 6.3 Recommended Operating Conditions: TA operating range -40 deg C to 125 deg C",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T10:44:40Z",
+              "contentHash": "sha256:b3deb54e918251d4583c0f12f96b780a7f4f4818fd213c65b6cbacac3e2bc032",
+              "url": "https://www.ti.com/lit/ds/symlink/drv8876.pdf",
+              "revision": "SLVSDS7B, August 2019 – revised November 2019",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "junctionTemperature",
+          "minimum": {
+            "value": 233.15,
+            "unit": "K",
+            "displayUnit": "-40 deg C"
+          },
+          "maximum": {
+            "value": 423.15,
+            "unit": "K",
+            "displayUnit": "150 deg C"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-drv8876-slvsds7b",
+              "locator": "physical PDF page 4, section 6.3 Recommended Operating Conditions: TJ operating range -40 deg C to 150 deg C",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T10:44:40Z",
+              "contentHash": "sha256:b3deb54e918251d4583c0f12f96b780a7f4f4818fd213c65b6cbacac3e2bc032",
+              "url": "https://www.ti.com/lit/ds/symlink/drv8876.pdf",
+              "revision": "SLVSDS7B, August 2019 – revised November 2019",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "Maximum PWM frequency in the recommended operating table."
+    },
+    "pwmMaximumRole": {
+      "value": "guaranteed_bound",
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-drv8876-slvsds7b",
+          "locator": "physical PDF page 4, section 6.3 Recommended Operating Conditions: fPWM maximum 100 kHz at EN/IN1 and PH/IN2",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T10:44:40Z",
+          "contentHash": "sha256:b3deb54e918251d4583c0f12f96b780a7f4f4818fd213c65b6cbacac3e2bc032",
+          "url": "https://www.ti.com/lit/ds/symlink/drv8876.pdf",
+          "revision": "SLVSDS7B, August 2019 – revised November 2019",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "ambientTemperature",
+          "minimum": {
+            "value": 233.15,
+            "unit": "K",
+            "displayUnit": "-40 deg C"
+          },
+          "maximum": {
+            "value": 398.15,
+            "unit": "K",
+            "displayUnit": "125 deg C"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-drv8876-slvsds7b",
+              "locator": "physical PDF page 4, section 6.3 Recommended Operating Conditions: TA operating range -40 deg C to 125 deg C",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T10:44:40Z",
+              "contentHash": "sha256:b3deb54e918251d4583c0f12f96b780a7f4f4818fd213c65b6cbacac3e2bc032",
+              "url": "https://www.ti.com/lit/ds/symlink/drv8876.pdf",
+              "revision": "SLVSDS7B, August 2019 – revised November 2019",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "junctionTemperature",
+          "minimum": {
+            "value": 233.15,
+            "unit": "K",
+            "displayUnit": "-40 deg C"
+          },
+          "maximum": {
+            "value": 423.15,
+            "unit": "K",
+            "displayUnit": "150 deg C"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-drv8876-slvsds7b",
+              "locator": "physical PDF page 4, section 6.3 Recommended Operating Conditions: TJ operating range -40 deg C to 150 deg C",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T10:44:40Z",
+              "contentHash": "sha256:b3deb54e918251d4583c0f12f96b780a7f4f4818fd213c65b6cbacac3e2bc032",
+              "url": "https://www.ti.com/lit/ds/symlink/drv8876.pdf",
+              "revision": "SLVSDS7B, August 2019 – revised November 2019",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "The published maximum occurs in Recommended Operating Conditions, so it is a guaranteed bound rather than a typical observation."
+    },
+    "minimumInputPulseWidth": {
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "The data sheet does not specify a guaranteed minimum accepted PWM input pulse width. Switching transition and propagation times are not substituted."
+    },
+    "minimumInputPulseWidthRole": {
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "No reviewed minimum-input-pulse-width quantity is available, so its evidence role is exact unknown."
+    },
+    "pathResistance": {
+      "value": {
+        "value": 0.84,
+        "unit": "ohm",
+        "displayUnit": "0.84 ohm maximum path (0.42 + 0.42 ohm)"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-drv8876-slvsds7b",
+          "locator": "physical PDF page 6, section 6.5 Electrical Characteristics, Driver Outputs: RDS(on)_HS maximum 420 mohm and RDS(on)_LS maximum 420 mohm at VVM = 24 V, |IO| = 1 A, TJ = 25 deg C",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T10:44:40Z",
+          "contentHash": "sha256:b3deb54e918251d4583c0f12f96b780a7f4f4818fd213c65b6cbacac3e2bc032",
+          "url": "https://www.ti.com/lit/ds/symlink/drv8876.pdf",
+          "revision": "SLVSDS7B, August 2019 – revised November 2019",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "junctionTemperature",
+          "minimum": {
+            "value": 298.15,
+            "unit": "K",
+            "displayUnit": "25 deg C"
+          },
+          "maximum": {
+            "value": 298.15,
+            "unit": "K",
+            "displayUnit": "25 deg C"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-drv8876-slvsds7b",
+              "locator": "physical PDF page 6, RDS(on)_HS and RDS(on)_LS test condition: TJ = 25 deg C",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T10:44:40Z",
+              "contentHash": "sha256:b3deb54e918251d4583c0f12f96b780a7f4f4818fd213c65b6cbacac3e2bc032",
+              "url": "https://www.ti.com/lit/ds/symlink/drv8876.pdf",
+              "revision": "SLVSDS7B, August 2019 – revised November 2019",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "supplyVoltage",
+          "minimum": {
+            "value": 24,
+            "unit": "V",
+            "displayUnit": "24 V"
+          },
+          "maximum": {
+            "value": 24,
+            "unit": "V",
+            "displayUnit": "24 V"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-drv8876-slvsds7b",
+              "locator": "physical PDF page 6, RDS(on)_HS and RDS(on)_LS test condition: VVM = 24 V",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T10:44:40Z",
+              "contentHash": "sha256:b3deb54e918251d4583c0f12f96b780a7f4f4818fd213c65b6cbacac3e2bc032",
+              "url": "https://www.ti.com/lit/ds/symlink/drv8876.pdf",
+              "revision": "SLVSDS7B, August 2019 – revised November 2019",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "testCurrent",
+          "minimum": {
+            "value": 1,
+            "unit": "A",
+            "displayUnit": "|IO| = 1 A"
+          },
+          "maximum": {
+            "value": 1,
+            "unit": "A",
+            "displayUnit": "|IO| = 1 A"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-drv8876-slvsds7b",
+              "locator": "physical PDF page 6, RDS(on)_HS IO = +1 A and RDS(on)_LS IO = -1 A test conditions, represented conservatively as |IO| = 1 A",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T10:44:40Z",
+              "contentHash": "sha256:b3deb54e918251d4583c0f12f96b780a7f4f4818fd213c65b6cbacac3e2bc032",
+              "url": "https://www.ti.com/lit/ds/symlink/drv8876.pdf",
+              "revision": "SLVSDS7B, August 2019 – revised November 2019",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "Maximum pin-to-pin conduction path resistance is the sum of the guaranteed maximum high-side and low-side values: 0.42 + 0.42 = 0.84 ohm, only at the exact published voltage, current magnitude, and junction temperature. The 0.70 ohm typical sum is not used."
+    },
+    "pathResistanceRole": {
+      "value": "guaranteed_maximum",
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-drv8876-slvsds7b",
+          "locator": "physical PDF page 6, section 6.5 Electrical Characteristics, Driver Outputs: RDS(on)_HS maximum 420 mohm and RDS(on)_LS maximum 420 mohm at VVM = 24 V, |IO| = 1 A, TJ = 25 deg C",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T10:44:40Z",
+          "contentHash": "sha256:b3deb54e918251d4583c0f12f96b780a7f4f4818fd213c65b6cbacac3e2bc032",
+          "url": "https://www.ti.com/lit/ds/symlink/drv8876.pdf",
+          "revision": "SLVSDS7B, August 2019 – revised November 2019",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "junctionTemperature",
+          "minimum": {
+            "value": 298.15,
+            "unit": "K",
+            "displayUnit": "25 deg C"
+          },
+          "maximum": {
+            "value": 298.15,
+            "unit": "K",
+            "displayUnit": "25 deg C"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-drv8876-slvsds7b",
+              "locator": "physical PDF page 6, RDS(on)_HS and RDS(on)_LS test condition: TJ = 25 deg C",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T10:44:40Z",
+              "contentHash": "sha256:b3deb54e918251d4583c0f12f96b780a7f4f4818fd213c65b6cbacac3e2bc032",
+              "url": "https://www.ti.com/lit/ds/symlink/drv8876.pdf",
+              "revision": "SLVSDS7B, August 2019 – revised November 2019",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "supplyVoltage",
+          "minimum": {
+            "value": 24,
+            "unit": "V",
+            "displayUnit": "24 V"
+          },
+          "maximum": {
+            "value": 24,
+            "unit": "V",
+            "displayUnit": "24 V"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-drv8876-slvsds7b",
+              "locator": "physical PDF page 6, RDS(on)_HS and RDS(on)_LS test condition: VVM = 24 V",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T10:44:40Z",
+              "contentHash": "sha256:b3deb54e918251d4583c0f12f96b780a7f4f4818fd213c65b6cbacac3e2bc032",
+              "url": "https://www.ti.com/lit/ds/symlink/drv8876.pdf",
+              "revision": "SLVSDS7B, August 2019 – revised November 2019",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "testCurrent",
+          "minimum": {
+            "value": 1,
+            "unit": "A",
+            "displayUnit": "|IO| = 1 A"
+          },
+          "maximum": {
+            "value": 1,
+            "unit": "A",
+            "displayUnit": "|IO| = 1 A"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-drv8876-slvsds7b",
+              "locator": "physical PDF page 6, RDS(on)_HS IO = +1 A and RDS(on)_LS IO = -1 A test conditions, represented conservatively as |IO| = 1 A",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T10:44:40Z",
+              "contentHash": "sha256:b3deb54e918251d4583c0f12f96b780a7f4f4818fd213c65b6cbacac3e2bc032",
+              "url": "https://www.ti.com/lit/ds/symlink/drv8876.pdf",
+              "revision": "SLVSDS7B, August 2019 – revised November 2019",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "Both series devices have published guaranteed maxima at the same exact test point; the summed path therefore remains a guaranteed maximum only at that point."
+    },
+    "switchingTransitionTime": {
+      "value": {
+        "value": 1.5e-7,
+        "unit": "s",
+        "displayUnit": "150 ns typical per rise or fall transition"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-drv8876-slvsds7b",
+          "locator": "physical PDF page 6, section 6.5 Electrical Characteristics, Driver Outputs: tRISE typical 150 ns (OUTx 10% to 90%) and tFALL typical 150 ns (OUTx 90% to 10%), both at VVM = 24 V",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T10:44:40Z",
+          "contentHash": "sha256:b3deb54e918251d4583c0f12f96b780a7f4f4818fd213c65b6cbacac3e2bc032",
+          "url": "https://www.ti.com/lit/ds/symlink/drv8876.pdf",
+          "revision": "SLVSDS7B, August 2019 – revised November 2019",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "junctionTemperature",
+          "minimum": {
+            "value": 233.15,
+            "unit": "K",
+            "displayUnit": "-40 deg C"
+          },
+          "maximum": {
+            "value": 423.15,
+            "unit": "K",
+            "displayUnit": "150 deg C"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-drv8876-slvsds7b",
+              "locator": "physical PDF page 6, section 6.5 Electrical Characteristics table-wide condition: -40 deg C <= TJ <= 150 deg C",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T10:44:40Z",
+              "contentHash": "sha256:b3deb54e918251d4583c0f12f96b780a7f4f4818fd213c65b6cbacac3e2bc032",
+              "url": "https://www.ti.com/lit/ds/symlink/drv8876.pdf",
+              "revision": "SLVSDS7B, August 2019 – revised November 2019",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "supplyVoltage",
+          "minimum": {
+            "value": 24,
+            "unit": "V",
+            "displayUnit": "24 V"
+          },
+          "maximum": {
+            "value": 24,
+            "unit": "V",
+            "displayUnit": "24 V"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-drv8876-slvsds7b",
+              "locator": "physical PDF page 6, tRISE and tFALL test condition: VVM = 24 V",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T10:44:40Z",
+              "contentHash": "sha256:b3deb54e918251d4583c0f12f96b780a7f4f4818fd213c65b6cbacac3e2bc032",
+              "url": "https://www.ti.com/lit/ds/symlink/drv8876.pdf",
+              "revision": "SLVSDS7B, August 2019 – revised November 2019",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "TI reports the same 150 ns typical observation separately for a rise and for a fall. This scalar is per transition, not their sum and not a guaranteed maximum."
+    },
+    "switchingTransitionTimeRole": {
+      "value": "typical_observation",
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-drv8876-slvsds7b",
+          "locator": "physical PDF page 6, section 6.5 Electrical Characteristics, Driver Outputs: tRISE typical 150 ns (OUTx 10% to 90%) and tFALL typical 150 ns (OUTx 90% to 10%), both at VVM = 24 V",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T10:44:40Z",
+          "contentHash": "sha256:b3deb54e918251d4583c0f12f96b780a7f4f4818fd213c65b6cbacac3e2bc032",
+          "url": "https://www.ti.com/lit/ds/symlink/drv8876.pdf",
+          "revision": "SLVSDS7B, August 2019 – revised November 2019",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "junctionTemperature",
+          "minimum": {
+            "value": 233.15,
+            "unit": "K",
+            "displayUnit": "-40 deg C"
+          },
+          "maximum": {
+            "value": 423.15,
+            "unit": "K",
+            "displayUnit": "150 deg C"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-drv8876-slvsds7b",
+              "locator": "physical PDF page 6, section 6.5 Electrical Characteristics table-wide condition: -40 deg C <= TJ <= 150 deg C",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T10:44:40Z",
+              "contentHash": "sha256:b3deb54e918251d4583c0f12f96b780a7f4f4818fd213c65b6cbacac3e2bc032",
+              "url": "https://www.ti.com/lit/ds/symlink/drv8876.pdf",
+              "revision": "SLVSDS7B, August 2019 – revised November 2019",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "supplyVoltage",
+          "minimum": {
+            "value": 24,
+            "unit": "V",
+            "displayUnit": "24 V"
+          },
+          "maximum": {
+            "value": 24,
+            "unit": "V",
+            "displayUnit": "24 V"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-drv8876-slvsds7b",
+              "locator": "physical PDF page 6, tRISE and tFALL test condition: VVM = 24 V",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T10:44:40Z",
+              "contentHash": "sha256:b3deb54e918251d4583c0f12f96b780a7f4f4818fd213c65b6cbacac3e2bc032",
+              "url": "https://www.ti.com/lit/ds/symlink/drv8876.pdf",
+              "revision": "SLVSDS7B, August 2019 – revised November 2019",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "Both rise and fall times appear only in the TYP column, so the evidence role is typical observation."
+    },
+    "activeSupplyCurrent": {
+      "value": {
+        "value": 0.007,
+        "unit": "A",
+        "displayUnit": "7 mA maximum"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-drv8876-slvsds7b",
+          "locator": "physical PDF page 5, section 6.5 Electrical Characteristics, IVM active-mode current: 7 mA maximum at VVM = 24 V, nSLEEP = 5 V, EN/IN1 = PH/IN2 = 0 V",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T10:44:40Z",
+          "contentHash": "sha256:b3deb54e918251d4583c0f12f96b780a7f4f4818fd213c65b6cbacac3e2bc032",
+          "url": "https://www.ti.com/lit/ds/symlink/drv8876.pdf",
+          "revision": "SLVSDS7B, August 2019 – revised November 2019",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "junctionTemperature",
+          "minimum": {
+            "value": 233.15,
+            "unit": "K",
+            "displayUnit": "-40 deg C"
+          },
+          "maximum": {
+            "value": 423.15,
+            "unit": "K",
+            "displayUnit": "150 deg C"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-drv8876-slvsds7b",
+              "locator": "physical PDF page 5, section 6.5 Electrical Characteristics table-wide condition: -40 deg C <= TJ <= 150 deg C",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T10:44:40Z",
+              "contentHash": "sha256:b3deb54e918251d4583c0f12f96b780a7f4f4818fd213c65b6cbacac3e2bc032",
+              "url": "https://www.ti.com/lit/ds/symlink/drv8876.pdf",
+              "revision": "SLVSDS7B, August 2019 – revised November 2019",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "supplyVoltage",
+          "minimum": {
+            "value": 24,
+            "unit": "V",
+            "displayUnit": "24 V"
+          },
+          "maximum": {
+            "value": 24,
+            "unit": "V",
+            "displayUnit": "24 V"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-drv8876-slvsds7b",
+              "locator": "physical PDF page 5, IVM active-mode-current test condition: VVM = 24 V",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T10:44:40Z",
+              "contentHash": "sha256:b3deb54e918251d4583c0f12f96b780a7f4f4818fd213c65b6cbacac3e2bc032",
+              "url": "https://www.ti.com/lit/ds/symlink/drv8876.pdf",
+              "revision": "SLVSDS7B, August 2019 – revised November 2019",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "Maximum active VM supply current at the stated 24 V test point. The additional nSLEEP = 5 V and EN/IN1 = PH/IN2 = 0 V pin states are preserved here because the numeric operating-range vocabulary cannot identify those individual pins without fabricating a condition."
+    },
+    "activeSupplyCurrentRole": {
+      "value": "guaranteed_maximum",
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-drv8876-slvsds7b",
+          "locator": "physical PDF page 5, section 6.5 Electrical Characteristics, IVM active-mode current: 7 mA maximum at VVM = 24 V, nSLEEP = 5 V, EN/IN1 = PH/IN2 = 0 V",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T10:44:40Z",
+          "contentHash": "sha256:b3deb54e918251d4583c0f12f96b780a7f4f4818fd213c65b6cbacac3e2bc032",
+          "url": "https://www.ti.com/lit/ds/symlink/drv8876.pdf",
+          "revision": "SLVSDS7B, August 2019 – revised November 2019",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "junctionTemperature",
+          "minimum": {
+            "value": 233.15,
+            "unit": "K",
+            "displayUnit": "-40 deg C"
+          },
+          "maximum": {
+            "value": 423.15,
+            "unit": "K",
+            "displayUnit": "150 deg C"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-drv8876-slvsds7b",
+              "locator": "physical PDF page 5, section 6.5 Electrical Characteristics table-wide condition: -40 deg C <= TJ <= 150 deg C",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T10:44:40Z",
+              "contentHash": "sha256:b3deb54e918251d4583c0f12f96b780a7f4f4818fd213c65b6cbacac3e2bc032",
+              "url": "https://www.ti.com/lit/ds/symlink/drv8876.pdf",
+              "revision": "SLVSDS7B, August 2019 – revised November 2019",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "supplyVoltage",
+          "minimum": {
+            "value": 24,
+            "unit": "V",
+            "displayUnit": "24 V"
+          },
+          "maximum": {
+            "value": 24,
+            "unit": "V",
+            "displayUnit": "24 V"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-drv8876-slvsds7b",
+              "locator": "physical PDF page 5, IVM active-mode-current test condition: VVM = 24 V",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T10:44:40Z",
+              "contentHash": "sha256:b3deb54e918251d4583c0f12f96b780a7f4f4818fd213c65b6cbacac3e2bc032",
+              "url": "https://www.ti.com/lit/ds/symlink/drv8876.pdf",
+              "revision": "SLVSDS7B, August 2019 – revised November 2019",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "The value is in the MAX column of the electrical-characteristics table, so its role is guaranteed maximum at the exact stated conditions."
+    },
+    "junctionToAmbientThermalResistance": {
+      "value": {
+        "value": 44.3,
+        "unit": "K/W",
+        "displayUnit": "44.3 deg C/W (PWP)"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-drv8876-slvsds7b",
+          "locator": "physical PDF page 5, section 6.4 Thermal Information: RthetaJA 44.3 deg C/W for DRV8876 PWP (HTSSOP), 16 pins; footnote identifies it as a thermal metric",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T10:44:40Z",
+          "contentHash": "sha256:b3deb54e918251d4583c0f12f96b780a7f4f4818fd213c65b6cbacac3e2bc032",
+          "url": "https://www.ti.com/lit/ds/symlink/drv8876.pdf",
+          "revision": "SLVSDS7B, August 2019 – revised November 2019",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "Package-specific thermal-characterization metric for PWP. RthetaJA is board and layout dependent and is not a guaranteed application thermal resistance."
+    },
+    "maximumJunctionTemperature": {
+      "value": {
+        "value": 423.15,
+        "unit": "K",
+        "displayUnit": "150 deg C"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-drv8876-slvsds7b",
+          "locator": "physical PDF page 4, section 6.3 Recommended Operating Conditions: TJ operating-junction-temperature maximum 150 deg C",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T10:44:40Z",
+          "contentHash": "sha256:b3deb54e918251d4583c0f12f96b780a7f4f4818fd213c65b6cbacac3e2bc032",
+          "url": "https://www.ti.com/lit/ds/symlink/drv8876.pdf",
+          "revision": "SLVSDS7B, August 2019 – revised November 2019",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "Upper recommended operating junction temperature, converted from 150 deg C to 423.15 K; thermal shutdown is not substituted."
+    },
+    "localSupplyDecouplingCapacitance": {
+      "value": {
+        "value": 1e-7,
+        "unit": "F",
+        "displayUnit": "0.1 uF"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-drv8876-slvsds7b",
+          "locator": "physical PDF page 10, section 7.3.1 Table 1 Recommended External Components: CVM1 from VM to GND is a recommended 0.1-uF low-ESR ceramic capacitor rated for VM",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T10:44:40Z",
+          "contentHash": "sha256:b3deb54e918251d4583c0f12f96b780a7f4f4818fd213c65b6cbacac3e2bc032",
+          "url": "https://www.ti.com/lit/ds/symlink/drv8876.pdf",
+          "revision": "SLVSDS7B, August 2019 – revised November 2019",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "Manufacturer-recommended local VM ceramic value. It is not promoted to a guaranteed required minimum."
+    },
+    "localSupplyDecouplingRequirement": {
+      "value": "recommended_value",
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-drv8876-slvsds7b",
+          "locator": "physical PDF page 10, section 7.3.1 Table 1 Recommended External Components: CVM1 from VM to GND is a recommended 0.1-uF low-ESR ceramic capacitor rated for VM",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T10:44:40Z",
+          "contentHash": "sha256:b3deb54e918251d4583c0f12f96b780a7f4f4818fd213c65b6cbacac3e2bc032",
+          "url": "https://www.ti.com/lit/ds/symlink/drv8876.pdf",
+          "revision": "SLVSDS7B, August 2019 – revised November 2019",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "Table 1 labels the external-component set recommended, and the source does not express 0.1 uF as a required minimum."
+    },
+    "bulkCapacitance": {
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "TI does not specify one universal bulk-capacitance quantity for DRV8876; the appropriate value depends on the motor, supply, interconnect inductance, ripple allowance, and braking method."
+    },
+    "bulkCapacitanceRequirement": {
+      "value": "application_dependent",
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-drv8876-slvsds7b",
+          "locator": "physical PDF page 10, Table 1: CVM2 is only identified as VM-rated bulk capacitance; physical PDF page 31, section 9.1 Bulk Capacitance: required local bulk depends on motor current, supply capacitance and capability, parasitic inductance, allowed ripple, and braking, and requires system-level testing",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T10:44:40Z",
+          "contentHash": "sha256:b3deb54e918251d4583c0f12f96b780a7f4f4818fd213c65b6cbacac3e2bc032",
+          "url": "https://www.ti.com/lit/ds/symlink/drv8876.pdf",
+          "revision": "SLVSDS7B, August 2019 – revised November 2019",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "The manufacturer explicitly makes bulk sizing a system-level determination, so no scalar is selected."
+    },
+    "mountedGeometry": {
+      "boardArea": {
+        "value": {
+          "area": {
+            "value": 0.000038500010211,
+            "unit": "m2",
+            "displayUnit": "38.500010211 mm2"
+          },
+          "basis": "manufacturer_recommended_land_pattern_bounding_box",
+          "calculation": "maximum_x_span_times_maximum_y_span",
+          "sourceDimensions": [
+            {
+              "axis": "x",
+              "dimensionId": "pwp0016j-m-top-copper-x-span",
+              "multiplier": 1,
+              "maximum": {
+                "value": 0.00769999984,
+                "unit": "m",
+                "displayUnit": "7.699999840 mm source-resolution span"
+              },
+              "evidence": [
+                {
+                  "sourceId": "ti-drv8876-webench-bxl",
+                  "locator": "decoded exact-part Component DRV8876PWPR, Most Pattern PWP0016J_M, TOP-copper x envelope: extreme signal-pad centers -120.0787 mil and +120.0788 mil plus rotated R10180630000000A x half-extent 31.49605 mil give bounds -151.57475 mil to +151.57485 mil and span 303.14960 mil = 7.699999840 mm; outer signal pads dominate the envelope",
+                  "licenseNote": "Manufacturer-hosted public factual CAD data referenced by URL; only derived scalar facts, the URL, hash, and locators are retained. The BXL source is not redistributed.",
+                  "kind": "manufacturer_product_page",
+                  "retrievedAt": "2026-08-26T08:15:07+10:00",
+                  "contentHash": "sha256:d70487e2803882279c0fc0a967275b77d381c1d557403f65d5b905dd5f9279a3",
+                  "url": "https://webench.ti.com/cad/TI_BXL/DRV8876_PWP_16.bxl",
+                  "revision": "TI WEBENCH exact-part BXL, 135116 bytes; decoded footprint PWP0016J_M (Most)",
+                  "publicationBasis": "public_facts"
+                }
+              ]
+            },
+            {
+              "axis": "y",
+              "dimensionId": "pwp0016j-m-top-copper-y-span",
+              "multiplier": 1,
+              "maximum": {
+                "value": 0.00500000143,
+                "unit": "m",
+                "displayUnit": "5.000001430 mm source-resolution span"
+              },
+              "evidence": [
+                {
+                  "sourceId": "ti-drv8876-webench-bxl",
+                  "locator": "decoded exact-part Component DRV8876PWPR, Most Pattern PWP0016J_M, TOP-copper y envelope: bottom signal-pad center -89.567 mil minus R10180630000000A y half-extent 8.85825 mil gives -98.42525 mil; exposed TOP pad half-height gives +98.4252 mil; span 196.85045 mil = 5.000001430 mm",
+                  "licenseNote": "Manufacturer-hosted public factual CAD data referenced by URL; only derived scalar facts, the URL, hash, and locators are retained. The BXL source is not redistributed.",
+                  "kind": "manufacturer_product_page",
+                  "retrievedAt": "2026-08-26T08:15:07+10:00",
+                  "contentHash": "sha256:d70487e2803882279c0fc0a967275b77d381c1d557403f65d5b905dd5f9279a3",
+                  "url": "https://webench.ti.com/cad/TI_BXL/DRV8876_PWP_16.bxl",
+                  "revision": "TI WEBENCH exact-part BXL, 135116 bytes; decoded footprint PWP0016J_M (Most)",
+                  "publicationBasis": "public_facts"
+                }
+              ]
+            }
+          ]
+        },
+        "state": "calculated",
+        "evidence": [
+          {
+            "sourceId": "ti-drv8876-webench-bxl",
+            "locator": "decoded exact-part Component DRV8876PWPR, Most Pattern PWP0016J_M, TOP-copper x envelope: extreme signal-pad centers -120.0787 mil and +120.0788 mil plus rotated R10180630000000A x half-extent 31.49605 mil give bounds -151.57475 mil to +151.57485 mil and span 303.14960 mil = 7.699999840 mm; outer signal pads dominate the envelope",
+            "licenseNote": "Manufacturer-hosted public factual CAD data referenced by URL; only derived scalar facts, the URL, hash, and locators are retained. The BXL source is not redistributed.",
+            "kind": "manufacturer_product_page",
+            "retrievedAt": "2026-08-26T08:15:07+10:00",
+            "contentHash": "sha256:d70487e2803882279c0fc0a967275b77d381c1d557403f65d5b905dd5f9279a3",
+            "url": "https://webench.ti.com/cad/TI_BXL/DRV8876_PWP_16.bxl",
+            "revision": "TI WEBENCH exact-part BXL, 135116 bytes; decoded footprint PWP0016J_M (Most)",
+            "publicationBasis": "public_facts"
+          },
+          {
+            "sourceId": "ti-drv8876-webench-bxl",
+            "locator": "decoded exact-part Component DRV8876PWPR, Most Pattern PWP0016J_M, TOP-copper y envelope: bottom signal-pad center -89.567 mil minus R10180630000000A y half-extent 8.85825 mil gives -98.42525 mil; exposed TOP pad half-height gives +98.4252 mil; span 196.85045 mil = 5.000001430 mm",
+            "licenseNote": "Manufacturer-hosted public factual CAD data referenced by URL; only derived scalar facts, the URL, hash, and locators are retained. The BXL source is not redistributed.",
+            "kind": "manufacturer_product_page",
+            "retrievedAt": "2026-08-26T08:15:07+10:00",
+            "contentHash": "sha256:d70487e2803882279c0fc0a967275b77d381c1d557403f65d5b905dd5f9279a3",
+            "url": "https://webench.ti.com/cad/TI_BXL/DRV8876_PWP_16.bxl",
+            "revision": "TI WEBENCH exact-part BXL, 135116 bytes; decoded footprint PWP0016J_M (Most)",
+            "publicationBasis": "public_facts"
+          }
+        ],
+        "validFor": [],
+        "explanation": "Canonical source-resolution bounding rectangle of the exact-part TI WEBENCH IPC-7351 Most TOP-copper footprint PWP0016J_M: 7.699999840 mm x 5.000001430 mm = 38.500010211 mm2. The BXL's J identifier is separate exact-part CAD evidence and does not assert PWP0016A/PWP0016J equivalence; outer signal pads dominate this overall envelope. This is a deterministic ranking proxy, not a placement, thermal-pad, or routing proof."
+      },
+      "maximumHeight": {
+        "value": {
+          "height": {
+            "value": 0.0012,
+            "unit": "m",
+            "displayUnit": "1.2 mm maximum"
+          },
+          "basis": "manufacturer_package_maximum_in_surface_mount_orientation"
+        },
+        "state": "reviewed",
+        "evidence": [
+          {
+            "sourceId": "ti-drv8876-slvsds7b",
+            "locator": "physical PDF page 41, PWP0016A Package Outline: HTSSOP 1.2 mm max height and side-view 1.2 MAX above the seating plane",
+            "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+            "kind": "manufacturer_datasheet",
+            "retrievedAt": "2026-08-24T10:44:40Z",
+            "contentHash": "sha256:b3deb54e918251d4583c0f12f96b780a7f4f4818fd213c65b6cbacac3e2bc032",
+            "url": "https://www.ti.com/lit/ds/symlink/drv8876.pdf",
+            "revision": "SLVSDS7B, August 2019 – revised November 2019",
+            "publicationBasis": "public_facts"
+          }
+        ],
+        "validFor": [],
+        "explanation": "Manufacturer package-outline maximum height in the surface-mount orientation."
+      }
+    }
+  }
+}

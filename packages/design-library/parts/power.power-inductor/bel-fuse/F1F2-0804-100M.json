@@ -1,0 +1,413 @@
+{
+  "format": "schemagic-design-profile",
+  "schemaVersion": "1.0.0",
+  "partClass": "power.power-inductor",
+  "part": {
+    "manufacturerId": "bel-fuse",
+    "manufacturerPartNumber": "F1F2-0804-100M"
+  },
+  "factsSchemaVersion": "3.4.0",
+  "commonFacts": {
+    "packageName": {
+      "value": "F1F2-0804 shielded SMT inductor, 8.60 mm × 8.0 mm × 3.80 mm nominal, 1000-piece reel",
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "bel-f1f2-0804-rev-a-datasheet",
+          "locator": "page 1 exact F1F2-0804-100M row and part-number key; page 2 mechanical dimensions; page 5 quantity per package",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the supplied source PDF is not redistributed by this staging package.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-26T01:27:04+10:00",
+          "contentHash": "sha256:c3523b58c262a6d39716711a5a05a5b6e5a60081eb15818bf35ba4b93e7a828f",
+          "url": "https://www.belfuse.com/media/datasheets/products/chokes-coils-inductors/ds-ST-F1F2-0804-series.pdf",
+          "revision": "Revision A, dated 07/17/2026",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "The exact MPN selects the F1F2-0804 series, 10 µH inductance code, and M ±20% tolerance; the manufacturer supplies the series in 1000-piece reels."
+    },
+    "boardArea": {
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "Facts schema 3.4.0 represents mounted board area only through facts.mountedGeometry."
+    },
+    "maximumHeight": {
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "Facts schema 3.4.0 represents mounted maximum height only through facts.mountedGeometry."
+    }
+  },
+  "facts": {
+    "inductance": {
+      "value": {
+        "value": 0.00001,
+        "unit": "H",
+        "displayUnit": "10 µH typ"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "bel-f1f2-0804-rev-a-datasheet",
+          "locator": "page 1 F1F2-0804-100M row: Lo 10.0 µH typical, tolerance ±20%; note 2: test condition 100 kHz, 0.25 Vrms",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the supplied source PDF is not redistributed by this staging package.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-26T01:27:04+10:00",
+          "contentHash": "sha256:c3523b58c262a6d39716711a5a05a5b6e5a60081eb15818bf35ba4b93e7a828f",
+          "url": "https://www.belfuse.com/media/datasheets/products/chokes-coils-inductors/ds-ST-F1F2-0804-series.pdf",
+          "revision": "Revision A, dated 07/17/2026",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "switchingFrequency",
+          "minimum": {
+            "value": 100000,
+            "unit": "Hz",
+            "displayUnit": "100 kHz"
+          },
+          "maximum": {
+            "value": 100000,
+            "unit": "Hz",
+            "displayUnit": "100 kHz"
+          },
+          "evidence": [
+            {
+              "sourceId": "bel-f1f2-0804-rev-a-datasheet",
+              "locator": "page 1 note 2: inductance test condition 100 kHz, 0.25 Vrms",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the supplied source PDF is not redistributed by this staging package.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-26T01:27:04+10:00",
+              "contentHash": "sha256:c3523b58c262a6d39716711a5a05a5b6e5a60081eb15818bf35ba4b93e7a828f",
+              "url": "https://www.belfuse.com/media/datasheets/products/chokes-coils-inductors/ds-ST-F1F2-0804-series.pdf",
+              "revision": "Revision A, dated 07/17/2026",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "testVoltage",
+          "minimum": {
+            "value": 0.25,
+            "unit": "V",
+            "displayUnit": "0.25 V RMS"
+          },
+          "maximum": {
+            "value": 0.25,
+            "unit": "V",
+            "displayUnit": "0.25 V RMS"
+          },
+          "evidence": [
+            {
+              "sourceId": "bel-f1f2-0804-rev-a-datasheet",
+              "locator": "page 1 note 2: inductance test condition 100 kHz, 0.25 Vrms",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the supplied source PDF is not redistributed by this staging package.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-26T01:27:04+10:00",
+              "contentHash": "sha256:c3523b58c262a6d39716711a5a05a5b6e5a60081eb15818bf35ba4b93e7a828f",
+              "url": "https://www.belfuse.com/media/datasheets/products/chokes-coils-inductors/ds-ST-F1F2-0804-series.pdf",
+              "revision": "Revision A, dated 07/17/2026",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "Exact-MPN nominal inductance, retained only at the manufacturer's stated 100 kHz and 0.25 V RMS test point. This is a typical nominal with ±20% tolerance, not a minimum inductance bound."
+    },
+    "saturationCurrent": {
+      "value": {
+        "value": 6,
+        "unit": "A",
+        "displayUnit": "6.0 A min, 30% ΔL criterion"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "bel-f1f2-0804-rev-a-datasheet",
+          "locator": "page 1 F1F2-0804-100M row: Isat minimum 6.0 A; note 3: minimum Isat is DC current that causes L0 to drop 30% maximum; note 1: referenced ambient 25 °C",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the supplied source PDF is not redistributed by this staging package.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-26T01:27:04+10:00",
+          "contentHash": "sha256:c3523b58c262a6d39716711a5a05a5b6e5a60081eb15818bf35ba4b93e7a828f",
+          "url": "https://www.belfuse.com/media/datasheets/products/chokes-coils-inductors/ds-ST-F1F2-0804-series.pdf",
+          "revision": "Revision A, dated 07/17/2026",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "ambientTemperature",
+          "minimum": {
+            "value": 298.15,
+            "unit": "K",
+            "displayUnit": "25 °C"
+          },
+          "maximum": {
+            "value": 298.15,
+            "unit": "K",
+            "displayUnit": "25 °C"
+          },
+          "evidence": [
+            {
+              "sourceId": "bel-f1f2-0804-rev-a-datasheet",
+              "locator": "page 1 note 1: referenced ambient temperature 25 °C",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the supplied source PDF is not redistributed by this staging package.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-26T01:27:04+10:00",
+              "contentHash": "sha256:c3523b58c262a6d39716711a5a05a5b6e5a60081eb15818bf35ba4b93e7a828f",
+              "url": "https://www.belfuse.com/media/datasheets/products/chokes-coils-inductors/ds-ST-F1F2-0804-series.pdf",
+              "revision": "Revision A, dated 07/17/2026",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "Conservative exact-MPN minimum Isat endpoint for the manufacturer's 30% maximum inductance-drop criterion at the referenced 25 °C ambient. The 7.0 A typical value is not used."
+    },
+    "rmsCurrent": {
+      "value": {
+        "value": 5,
+        "unit": "A",
+        "displayUnit": "5.0 A min, 40 °C rise criterion"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "bel-f1f2-0804-rev-a-datasheet",
+          "locator": "page 1 F1F2-0804-100M row: Irms minimum 5.0 A; note 3: minimum Irms is DC current that causes an approximate ΔT of 40 °C maximum; note 1: referenced ambient 25 °C",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the supplied source PDF is not redistributed by this staging package.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-26T01:27:04+10:00",
+          "contentHash": "sha256:c3523b58c262a6d39716711a5a05a5b6e5a60081eb15818bf35ba4b93e7a828f",
+          "url": "https://www.belfuse.com/media/datasheets/products/chokes-coils-inductors/ds-ST-F1F2-0804-series.pdf",
+          "revision": "Revision A, dated 07/17/2026",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "ambientTemperature",
+          "minimum": {
+            "value": 298.15,
+            "unit": "K",
+            "displayUnit": "25 °C"
+          },
+          "maximum": {
+            "value": 298.15,
+            "unit": "K",
+            "displayUnit": "25 °C"
+          },
+          "evidence": [
+            {
+              "sourceId": "bel-f1f2-0804-rev-a-datasheet",
+              "locator": "page 1 note 1: referenced ambient temperature 25 °C",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the supplied source PDF is not redistributed by this staging package.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-26T01:27:04+10:00",
+              "contentHash": "sha256:c3523b58c262a6d39716711a5a05a5b6e5a60081eb15818bf35ba4b93e7a828f",
+              "url": "https://www.belfuse.com/media/datasheets/products/chokes-coils-inductors/ds-ST-F1F2-0804-series.pdf",
+              "revision": "Revision A, dated 07/17/2026",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "Conservative exact-MPN minimum temperature-rise-current endpoint for the manufacturer's approximate 40 °C maximum self-heating criterion at the referenced 25 °C ambient. The 5.4 A typical value is not used."
+    },
+    "dcResistance": {
+      "value": {
+        "value": 0.0518,
+        "unit": "ohm",
+        "displayUnit": "51.8 mΩ max"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "bel-f1f2-0804-rev-a-datasheet",
+          "locator": "page 1 F1F2-0804-100M row: DC resistance maximum 51.8 mΩ; note 1: referenced ambient 25 °C",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the supplied source PDF is not redistributed by this staging package.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-26T01:27:04+10:00",
+          "contentHash": "sha256:c3523b58c262a6d39716711a5a05a5b6e5a60081eb15818bf35ba4b93e7a828f",
+          "url": "https://www.belfuse.com/media/datasheets/products/chokes-coils-inductors/ds-ST-F1F2-0804-series.pdf",
+          "revision": "Revision A, dated 07/17/2026",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "ambientTemperature",
+          "minimum": {
+            "value": 298.15,
+            "unit": "K",
+            "displayUnit": "25 °C"
+          },
+          "maximum": {
+            "value": 298.15,
+            "unit": "K",
+            "displayUnit": "25 °C"
+          },
+          "evidence": [
+            {
+              "sourceId": "bel-f1f2-0804-rev-a-datasheet",
+              "locator": "page 1 note 1: referenced ambient temperature 25 °C",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the supplied source PDF is not redistributed by this staging package.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-26T01:27:04+10:00",
+              "contentHash": "sha256:c3523b58c262a6d39716711a5a05a5b6e5a60081eb15818bf35ba4b93e7a828f",
+              "url": "https://www.belfuse.com/media/datasheets/products/chokes-coils-inductors/ds-ST-F1F2-0804-series.pdf",
+              "revision": "Revision A, dated 07/17/2026",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "Guaranteed maximum DC resistance for the exact MPN at the datasheet's referenced 25 °C ambient."
+    },
+    "coreLoss": {
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "The source provides performance curves but no exact-MPN guaranteed core-loss power at a fully specified operating point."
+    },
+    "coreLossTestFrequency": {
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "No core-loss claim is encoded, so there is no corresponding core-loss test frequency."
+    },
+    "maximumOperatingTemperature": {
+      "value": {
+        "value": 428.15,
+        "unit": "K",
+        "displayUnit": "155 °C"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "bel-f1f2-0804-rev-a-datasheet",
+          "locator": "page 1 feature and page 2 environmental table: operating temperature maximum 155 °C, including coil self-temperature rise",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the supplied source PDF is not redistributed by this staging package.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-26T01:27:04+10:00",
+          "contentHash": "sha256:c3523b58c262a6d39716711a5a05a5b6e5a60081eb15818bf35ba4b93e7a828f",
+          "url": "https://www.belfuse.com/media/datasheets/products/chokes-coils-inductors/ds-ST-F1F2-0804-series.pdf",
+          "revision": "Revision A, dated 07/17/2026",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "Manufacturer operating-temperature ceiling, explicitly including self-temperature rise."
+    },
+    "mountedGeometry": {
+      "boardArea": {
+        "value": {
+          "area": {
+            "value": 0.00004028,
+            "unit": "m2",
+            "displayUnit": "40.28 mm²"
+          },
+          "basis": "manufacturer_recommended_land_pattern_bounding_box",
+          "calculation": "maximum_x_span_times_maximum_y_span",
+          "sourceDimensions": [
+            {
+              "axis": "x",
+              "dimensionId": "recommended-pattern-total-span-l",
+              "multiplier": 1,
+              "maximum": {
+                "value": 0.0106,
+                "unit": "m",
+                "displayUnit": "10.6 mm"
+              },
+              "evidence": [
+                {
+                  "sourceId": "bel-f1f2-0804-rev-a-datasheet",
+                  "locator": "page 2 mechanical-dimensions table and pad-layout drawing: L is total horizontal pad-pattern span 10.6 mm; H is pad-pattern height 3.80 mm",
+                  "licenseNote": "Manufacturer-published factual data referenced by URL; the supplied source PDF is not redistributed by this staging package.",
+                  "kind": "manufacturer_datasheet",
+                  "retrievedAt": "2026-08-26T01:27:04+10:00",
+                  "contentHash": "sha256:c3523b58c262a6d39716711a5a05a5b6e5a60081eb15818bf35ba4b93e7a828f",
+                  "url": "https://www.belfuse.com/media/datasheets/products/chokes-coils-inductors/ds-ST-F1F2-0804-series.pdf",
+                  "revision": "Revision A, dated 07/17/2026",
+                  "publicationBasis": "public_facts"
+                }
+              ]
+            },
+            {
+              "axis": "y",
+              "dimensionId": "recommended-pad-height-h",
+              "multiplier": 1,
+              "maximum": {
+                "value": 0.0038,
+                "unit": "m",
+                "displayUnit": "3.80 mm"
+              },
+              "evidence": [
+                {
+                  "sourceId": "bel-f1f2-0804-rev-a-datasheet",
+                  "locator": "page 2 mechanical-dimensions table and pad-layout drawing: L is total horizontal pad-pattern span 10.6 mm; H is pad-pattern height 3.80 mm",
+                  "licenseNote": "Manufacturer-published factual data referenced by URL; the supplied source PDF is not redistributed by this staging package.",
+                  "kind": "manufacturer_datasheet",
+                  "retrievedAt": "2026-08-26T01:27:04+10:00",
+                  "contentHash": "sha256:c3523b58c262a6d39716711a5a05a5b6e5a60081eb15818bf35ba4b93e7a828f",
+                  "url": "https://www.belfuse.com/media/datasheets/products/chokes-coils-inductors/ds-ST-F1F2-0804-series.pdf",
+                  "revision": "Revision A, dated 07/17/2026",
+                  "publicationBasis": "public_facts"
+                }
+              ]
+            }
+          ]
+        },
+        "state": "calculated",
+        "evidence": [
+          {
+            "sourceId": "bel-f1f2-0804-rev-a-datasheet",
+            "locator": "page 2 mechanical-dimensions table and pad-layout drawing: L is total horizontal pad-pattern span 10.6 mm; H is pad-pattern height 3.80 mm",
+            "licenseNote": "Manufacturer-published factual data referenced by URL; the supplied source PDF is not redistributed by this staging package.",
+            "kind": "manufacturer_datasheet",
+            "retrievedAt": "2026-08-26T01:27:04+10:00",
+            "contentHash": "sha256:c3523b58c262a6d39716711a5a05a5b6e5a60081eb15818bf35ba4b93e7a828f",
+            "url": "https://www.belfuse.com/media/datasheets/products/chokes-coils-inductors/ds-ST-F1F2-0804-series.pdf",
+            "revision": "Revision A, dated 07/17/2026",
+            "publicationBasis": "public_facts"
+          }
+        ],
+        "validFor": [],
+        "explanation": "Conservative manufacturer pad-layout bounding rectangle: 10.6 mm total span L × 3.80 mm pad height H = 40.28 mm²."
+      },
+      "maximumHeight": {
+        "value": {
+          "height": {
+            "value": 0.004,
+            "unit": "m",
+            "displayUnit": "4.00 mm"
+          },
+          "basis": "manufacturer_package_maximum_in_surface_mount_orientation"
+        },
+        "state": "reviewed",
+        "evidence": [
+          {
+            "sourceId": "bel-f1f2-0804-rev-a-datasheet",
+            "locator": "page 2 mechanical-dimensions table and drawing: mounted height C = 3.80 ±0.20 mm, giving a 4.00 mm maximum",
+            "licenseNote": "Manufacturer-published factual data referenced by URL; the supplied source PDF is not redistributed by this staging package.",
+            "kind": "manufacturer_datasheet",
+            "retrievedAt": "2026-08-26T01:27:04+10:00",
+            "contentHash": "sha256:c3523b58c262a6d39716711a5a05a5b6e5a60081eb15818bf35ba4b93e7a828f",
+            "url": "https://www.belfuse.com/media/datasheets/products/chokes-coils-inductors/ds-ST-F1F2-0804-series.pdf",
+            "revision": "Revision A, dated 07/17/2026",
+            "publicationBasis": "public_facts"
+          }
+        ],
+        "validFor": [],
+        "explanation": "Maximum body height in the manufacturer-defined surface-mount orientation: 3.80 mm nominal plus 0.20 mm upper tolerance."
+      }
+    }
+  }
+}

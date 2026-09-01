@@ -1,14 +1,19 @@
-# OpenCircuit part feeder
+# scheMAGIC Part Feeder
 
 The part feeder turns the public jlcparts/LCSC catalog into local tranche manifests and a resumable datasheet staging tree. It supplies raw factual material to `tools/model-factory`; it does not create reviewed model-library entries.
+
+New CLI help and outbound User-Agent text use the scheMAGIC brand. The internal
+`@opencircuit/part-feeder` package name, existing `opencircuit-*` manifest kinds,
+and frozen reviewed-model provenance remain stable compatibility or historical
+identifiers.
 
 ## Licensing and data boundary
 
 The repository commits only feeder code, tests, documentation, and small test fixtures. The jlcparts SQLite dump, split archives, manifests, caches, staging records, and datasheet PDFs stay under ignored `tools/part-feeder/data/`.
 
-LCSC and jlcparts data is consumed locally as factory input and is not redistributed by this repository. Datasheet copyright remains with each publisher. Generated OpenCircuit models must continue to cite their factual sources as described in [`docs/LICENSING.md`](../../docs/LICENSING.md).
+LCSC and jlcparts data is consumed locally as factory input and is not redistributed by this repository. Datasheet copyright remains with each publisher. Generated scheMAGIC models must continue to cite their factual sources as described in [`docs/LICENSING.md`](../../docs/LICENSING.md).
 
-**Vendor SPICE files are prohibited input.** Do not extend this tool to download, parse, convert, or bulk-import `.lib`, `.cir`, vendor model packs, LTspice standard libraries, or equivalent third-party SPICE content. This feeder accepts catalog parametrics and datasheet PDFs only. OpenCircuit fits its own models from public facts.
+**Vendor SPICE files are prohibited input.** Do not extend this tool to download, parse, convert, or bulk-import `.lib`, `.cir`, vendor model packs, LTspice standard libraries, or equivalent third-party SPICE content. This feeder accepts catalog parametrics and datasheet PDFs only. scheMAGIC fits its own models from public facts.
 
 ## Requirements
 

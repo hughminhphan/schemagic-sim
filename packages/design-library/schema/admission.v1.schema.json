@@ -1,0 +1,5534 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.schemagic.design/design-library/v1/admission.v1.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format",
+    "schemaVersion",
+    "entries"
+  ],
+  "properties": {
+    "format": {
+      "const": "schemagic-design-profile-admission"
+    },
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "entries": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "partClass",
+              "part",
+              "profilePath",
+              "ownerTrack",
+              "reviewerTrack",
+              "state",
+              "authoredBy",
+              "authoredAt",
+              "reviewedBy",
+              "reviewedAt",
+              "profileContentHash",
+              "checks"
+            ],
+            "properties": {
+              "partClass": {
+                "const": "motor.integrated-h-bridge"
+              },
+              "part": {
+                "$ref": "profile-envelope.v1.schema.json#/$defs/part"
+              },
+              "profilePath": {
+                "type": "string",
+                "pattern": "^packages/design-library/parts/"
+              },
+              "ownerTrack": {
+                "const": "motor"
+              },
+              "reviewerTrack": {
+                "enum": [
+                  "motor",
+                  "power",
+                  "integration-data-review"
+                ],
+                "not": {
+                  "const": "motor"
+                }
+              },
+              "state": {
+                "enum": [
+                  "planned",
+                  "researching",
+                  "authored",
+                  "in_independent_review",
+                  "reviewed",
+                  "blocked"
+                ]
+              },
+              "authoredBy": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "authoredAt": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "date-time",
+                    "pattern": "^\\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,9})?(?:Z|[+-](?:[01]\\d|2[0-3]):[0-5]\\d)$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "reviewedBy": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "reviewedAt": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "date-time",
+                    "pattern": "^\\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,9})?(?:Z|[+-](?:[01]\\d|2[0-3]):[0-5]\\d)$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "profileContentHash": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^sha256:[0-9a-f]{64}$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "checks": {
+                "type": "array",
+                "minItems": 8,
+                "maxItems": 8,
+                "prefixItems": [
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "class.motor.integrated-h-bridge.facts_semantics"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "contract.closed_profile"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "contract.commercial_boundary"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "contract.identity_path"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "contract.profile_content_hash"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "evidence.primary"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "facts.reviewed_and_conditioned"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "review.independent"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  }
+                ],
+                "items": false
+              }
+            },
+            "allOf": [
+              {
+                "if": {
+                  "type": "object",
+                  "required": [
+                    "state"
+                  ],
+                  "properties": {
+                    "state": {
+                      "const": "reviewed"
+                    }
+                  }
+                },
+                "then": {
+                  "type": "object",
+                  "properties": {
+                    "authoredBy": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": ".*\\S.*"
+                    },
+                    "authoredAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^\\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,9})?(?:Z|[+-](?:[01]\\d|2[0-3]):[0-5]\\d)$"
+                    },
+                    "reviewedBy": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": ".*\\S.*"
+                    },
+                    "reviewedAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^\\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,9})?(?:Z|[+-](?:[01]\\d|2[0-3]):[0-5]\\d)$"
+                    },
+                    "profileContentHash": {
+                      "type": "string",
+                      "pattern": "^sha256:[0-9a-f]{64}$"
+                    },
+                    "checks": {
+                      "type": "array",
+                      "minItems": 8,
+                      "maxItems": 8,
+                      "prefixItems": [
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "class.motor.integrated-h-bridge.facts_semantics"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "contract.closed_profile"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "contract.commercial_boundary"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "contract.identity_path"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "contract.profile_content_hash"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "evidence.primary"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "facts.reviewed_and_conditioned"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "review.independent"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        }
+                      ],
+                      "items": false
+                    }
+                  }
+                },
+                "else": {
+                  "type": "object",
+                  "properties": {
+                    "reviewedBy": {
+                      "type": "null"
+                    },
+                    "reviewedAt": {
+                      "type": "null"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "partClass",
+              "part",
+              "profilePath",
+              "ownerTrack",
+              "reviewerTrack",
+              "state",
+              "authoredBy",
+              "authoredAt",
+              "reviewedBy",
+              "reviewedAt",
+              "profileContentHash",
+              "checks"
+            ],
+            "properties": {
+              "partClass": {
+                "const": "motor.full-bridge-gate-driver"
+              },
+              "part": {
+                "$ref": "profile-envelope.v1.schema.json#/$defs/part"
+              },
+              "profilePath": {
+                "type": "string",
+                "pattern": "^packages/design-library/parts/"
+              },
+              "ownerTrack": {
+                "const": "motor"
+              },
+              "reviewerTrack": {
+                "enum": [
+                  "motor",
+                  "power",
+                  "integration-data-review"
+                ],
+                "not": {
+                  "const": "motor"
+                }
+              },
+              "state": {
+                "enum": [
+                  "planned",
+                  "researching",
+                  "authored",
+                  "in_independent_review",
+                  "reviewed",
+                  "blocked"
+                ]
+              },
+              "authoredBy": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "authoredAt": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "date-time",
+                    "pattern": "^\\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,9})?(?:Z|[+-](?:[01]\\d|2[0-3]):[0-5]\\d)$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "reviewedBy": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "reviewedAt": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "date-time",
+                    "pattern": "^\\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,9})?(?:Z|[+-](?:[01]\\d|2[0-3]):[0-5]\\d)$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "profileContentHash": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^sha256:[0-9a-f]{64}$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "checks": {
+                "type": "array",
+                "minItems": 8,
+                "maxItems": 8,
+                "prefixItems": [
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "class.motor.full-bridge-gate-driver.facts_semantics"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "contract.closed_profile"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "contract.commercial_boundary"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "contract.identity_path"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "contract.profile_content_hash"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "evidence.primary"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "facts.reviewed_and_conditioned"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "review.independent"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  }
+                ],
+                "items": false
+              }
+            },
+            "allOf": [
+              {
+                "if": {
+                  "type": "object",
+                  "required": [
+                    "state"
+                  ],
+                  "properties": {
+                    "state": {
+                      "const": "reviewed"
+                    }
+                  }
+                },
+                "then": {
+                  "type": "object",
+                  "properties": {
+                    "authoredBy": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": ".*\\S.*"
+                    },
+                    "authoredAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^\\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,9})?(?:Z|[+-](?:[01]\\d|2[0-3]):[0-5]\\d)$"
+                    },
+                    "reviewedBy": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": ".*\\S.*"
+                    },
+                    "reviewedAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^\\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,9})?(?:Z|[+-](?:[01]\\d|2[0-3]):[0-5]\\d)$"
+                    },
+                    "profileContentHash": {
+                      "type": "string",
+                      "pattern": "^sha256:[0-9a-f]{64}$"
+                    },
+                    "checks": {
+                      "type": "array",
+                      "minItems": 8,
+                      "maxItems": 8,
+                      "prefixItems": [
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "class.motor.full-bridge-gate-driver.facts_semantics"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "contract.closed_profile"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "contract.commercial_boundary"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "contract.identity_path"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "contract.profile_content_hash"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "evidence.primary"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "facts.reviewed_and_conditioned"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "review.independent"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        }
+                      ],
+                      "items": false
+                    }
+                  }
+                },
+                "else": {
+                  "type": "object",
+                  "properties": {
+                    "reviewedBy": {
+                      "type": "null"
+                    },
+                    "reviewedAt": {
+                      "type": "null"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "partClass",
+              "part",
+              "profilePath",
+              "ownerTrack",
+              "reviewerTrack",
+              "state",
+              "authoredBy",
+              "authoredAt",
+              "reviewedBy",
+              "reviewedAt",
+              "profileContentHash",
+              "checks"
+            ],
+            "properties": {
+              "partClass": {
+                "const": "power.integrated-synchronous-buck-regulator"
+              },
+              "part": {
+                "$ref": "profile-envelope.v1.schema.json#/$defs/part"
+              },
+              "profilePath": {
+                "type": "string",
+                "pattern": "^packages/design-library/parts/"
+              },
+              "ownerTrack": {
+                "const": "power"
+              },
+              "reviewerTrack": {
+                "enum": [
+                  "motor",
+                  "power",
+                  "integration-data-review"
+                ],
+                "not": {
+                  "const": "power"
+                }
+              },
+              "state": {
+                "enum": [
+                  "planned",
+                  "researching",
+                  "authored",
+                  "in_independent_review",
+                  "reviewed",
+                  "blocked"
+                ]
+              },
+              "authoredBy": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "authoredAt": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "date-time",
+                    "pattern": "^\\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,9})?(?:Z|[+-](?:[01]\\d|2[0-3]):[0-5]\\d)$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "reviewedBy": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "reviewedAt": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "date-time",
+                    "pattern": "^\\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,9})?(?:Z|[+-](?:[01]\\d|2[0-3]):[0-5]\\d)$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "profileContentHash": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^sha256:[0-9a-f]{64}$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "checks": {
+                "type": "array",
+                "minItems": 8,
+                "maxItems": 8,
+                "prefixItems": [
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "class.power.integrated-synchronous-buck-regulator.facts_semantics"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "contract.closed_profile"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "contract.commercial_boundary"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "contract.identity_path"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "contract.profile_content_hash"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "evidence.primary"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "facts.reviewed_and_conditioned"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "review.independent"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  }
+                ],
+                "items": false
+              }
+            },
+            "allOf": [
+              {
+                "if": {
+                  "type": "object",
+                  "required": [
+                    "state"
+                  ],
+                  "properties": {
+                    "state": {
+                      "const": "reviewed"
+                    }
+                  }
+                },
+                "then": {
+                  "type": "object",
+                  "properties": {
+                    "authoredBy": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": ".*\\S.*"
+                    },
+                    "authoredAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^\\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,9})?(?:Z|[+-](?:[01]\\d|2[0-3]):[0-5]\\d)$"
+                    },
+                    "reviewedBy": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": ".*\\S.*"
+                    },
+                    "reviewedAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^\\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,9})?(?:Z|[+-](?:[01]\\d|2[0-3]):[0-5]\\d)$"
+                    },
+                    "profileContentHash": {
+                      "type": "string",
+                      "pattern": "^sha256:[0-9a-f]{64}$"
+                    },
+                    "checks": {
+                      "type": "array",
+                      "minItems": 8,
+                      "maxItems": 8,
+                      "prefixItems": [
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "class.power.integrated-synchronous-buck-regulator.facts_semantics"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "contract.closed_profile"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "contract.commercial_boundary"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "contract.identity_path"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "contract.profile_content_hash"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "evidence.primary"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "facts.reviewed_and_conditioned"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "review.independent"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        }
+                      ],
+                      "items": false
+                    }
+                  }
+                },
+                "else": {
+                  "type": "object",
+                  "properties": {
+                    "reviewedBy": {
+                      "type": "null"
+                    },
+                    "reviewedAt": {
+                      "type": "null"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "partClass",
+              "part",
+              "profilePath",
+              "ownerTrack",
+              "reviewerTrack",
+              "state",
+              "authoredBy",
+              "authoredAt",
+              "reviewedBy",
+              "reviewedAt",
+              "profileContentHash",
+              "checks"
+            ],
+            "properties": {
+              "partClass": {
+                "const": "power.external-fet-synchronous-buck-controller"
+              },
+              "part": {
+                "$ref": "profile-envelope.v1.schema.json#/$defs/part"
+              },
+              "profilePath": {
+                "type": "string",
+                "pattern": "^packages/design-library/parts/"
+              },
+              "ownerTrack": {
+                "const": "power"
+              },
+              "reviewerTrack": {
+                "enum": [
+                  "motor",
+                  "power",
+                  "integration-data-review"
+                ],
+                "not": {
+                  "const": "power"
+                }
+              },
+              "state": {
+                "enum": [
+                  "planned",
+                  "researching",
+                  "authored",
+                  "in_independent_review",
+                  "reviewed",
+                  "blocked"
+                ]
+              },
+              "authoredBy": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "authoredAt": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "date-time",
+                    "pattern": "^\\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,9})?(?:Z|[+-](?:[01]\\d|2[0-3]):[0-5]\\d)$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "reviewedBy": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "reviewedAt": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "date-time",
+                    "pattern": "^\\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,9})?(?:Z|[+-](?:[01]\\d|2[0-3]):[0-5]\\d)$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "profileContentHash": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^sha256:[0-9a-f]{64}$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "checks": {
+                "type": "array",
+                "minItems": 8,
+                "maxItems": 8,
+                "prefixItems": [
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "class.power.external-fet-synchronous-buck-controller.facts_semantics"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "contract.closed_profile"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "contract.commercial_boundary"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "contract.identity_path"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "contract.profile_content_hash"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "evidence.primary"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "facts.reviewed_and_conditioned"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "review.independent"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  }
+                ],
+                "items": false
+              }
+            },
+            "allOf": [
+              {
+                "if": {
+                  "type": "object",
+                  "required": [
+                    "state"
+                  ],
+                  "properties": {
+                    "state": {
+                      "const": "reviewed"
+                    }
+                  }
+                },
+                "then": {
+                  "type": "object",
+                  "properties": {
+                    "authoredBy": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": ".*\\S.*"
+                    },
+                    "authoredAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^\\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,9})?(?:Z|[+-](?:[01]\\d|2[0-3]):[0-5]\\d)$"
+                    },
+                    "reviewedBy": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": ".*\\S.*"
+                    },
+                    "reviewedAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^\\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,9})?(?:Z|[+-](?:[01]\\d|2[0-3]):[0-5]\\d)$"
+                    },
+                    "profileContentHash": {
+                      "type": "string",
+                      "pattern": "^sha256:[0-9a-f]{64}$"
+                    },
+                    "checks": {
+                      "type": "array",
+                      "minItems": 8,
+                      "maxItems": 8,
+                      "prefixItems": [
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "class.power.external-fet-synchronous-buck-controller.facts_semantics"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "contract.closed_profile"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "contract.commercial_boundary"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "contract.identity_path"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "contract.profile_content_hash"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "evidence.primary"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "facts.reviewed_and_conditioned"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "review.independent"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        }
+                      ],
+                      "items": false
+                    }
+                  }
+                },
+                "else": {
+                  "type": "object",
+                  "properties": {
+                    "reviewedBy": {
+                      "type": "null"
+                    },
+                    "reviewedAt": {
+                      "type": "null"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "partClass",
+              "part",
+              "profilePath",
+              "ownerTrack",
+              "reviewerTrack",
+              "state",
+              "authoredBy",
+              "authoredAt",
+              "reviewedBy",
+              "reviewedAt",
+              "profileContentHash",
+              "checks"
+            ],
+            "properties": {
+              "partClass": {
+                "const": "shared.n-channel-power-mosfet"
+              },
+              "part": {
+                "$ref": "profile-envelope.v1.schema.json#/$defs/part"
+              },
+              "profilePath": {
+                "type": "string",
+                "pattern": "^packages/design-library/parts/"
+              },
+              "ownerTrack": {
+                "const": "integration-data-review"
+              },
+              "reviewerTrack": {
+                "enum": [
+                  "motor",
+                  "power",
+                  "integration-data-review"
+                ],
+                "not": {
+                  "const": "integration-data-review"
+                }
+              },
+              "state": {
+                "enum": [
+                  "planned",
+                  "researching",
+                  "authored",
+                  "in_independent_review",
+                  "reviewed",
+                  "blocked"
+                ]
+              },
+              "authoredBy": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "authoredAt": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "date-time",
+                    "pattern": "^\\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,9})?(?:Z|[+-](?:[01]\\d|2[0-3]):[0-5]\\d)$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "reviewedBy": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "reviewedAt": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "date-time",
+                    "pattern": "^\\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,9})?(?:Z|[+-](?:[01]\\d|2[0-3]):[0-5]\\d)$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "profileContentHash": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^sha256:[0-9a-f]{64}$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "checks": {
+                "type": "array",
+                "minItems": 8,
+                "maxItems": 8,
+                "prefixItems": [
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "class.shared.n-channel-power-mosfet.facts_semantics"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "contract.closed_profile"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "contract.commercial_boundary"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "contract.identity_path"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "contract.profile_content_hash"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "evidence.primary"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "facts.reviewed_and_conditioned"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "review.independent"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  }
+                ],
+                "items": false
+              }
+            },
+            "allOf": [
+              {
+                "if": {
+                  "type": "object",
+                  "required": [
+                    "state"
+                  ],
+                  "properties": {
+                    "state": {
+                      "const": "reviewed"
+                    }
+                  }
+                },
+                "then": {
+                  "type": "object",
+                  "properties": {
+                    "authoredBy": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": ".*\\S.*"
+                    },
+                    "authoredAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^\\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,9})?(?:Z|[+-](?:[01]\\d|2[0-3]):[0-5]\\d)$"
+                    },
+                    "reviewedBy": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": ".*\\S.*"
+                    },
+                    "reviewedAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^\\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,9})?(?:Z|[+-](?:[01]\\d|2[0-3]):[0-5]\\d)$"
+                    },
+                    "profileContentHash": {
+                      "type": "string",
+                      "pattern": "^sha256:[0-9a-f]{64}$"
+                    },
+                    "checks": {
+                      "type": "array",
+                      "minItems": 8,
+                      "maxItems": 8,
+                      "prefixItems": [
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "class.shared.n-channel-power-mosfet.facts_semantics"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "contract.closed_profile"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "contract.commercial_boundary"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "contract.identity_path"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "contract.profile_content_hash"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "evidence.primary"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "facts.reviewed_and_conditioned"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "review.independent"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        }
+                      ],
+                      "items": false
+                    }
+                  }
+                },
+                "else": {
+                  "type": "object",
+                  "properties": {
+                    "reviewedBy": {
+                      "type": "null"
+                    },
+                    "reviewedAt": {
+                      "type": "null"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "partClass",
+              "part",
+              "profilePath",
+              "ownerTrack",
+              "reviewerTrack",
+              "state",
+              "authoredBy",
+              "authoredAt",
+              "reviewedBy",
+              "reviewedAt",
+              "profileContentHash",
+              "checks"
+            ],
+            "properties": {
+              "partClass": {
+                "const": "shared.current-sense-resistor"
+              },
+              "part": {
+                "$ref": "profile-envelope.v1.schema.json#/$defs/part"
+              },
+              "profilePath": {
+                "type": "string",
+                "pattern": "^packages/design-library/parts/"
+              },
+              "ownerTrack": {
+                "const": "integration-data-review"
+              },
+              "reviewerTrack": {
+                "enum": [
+                  "motor",
+                  "power",
+                  "integration-data-review"
+                ],
+                "not": {
+                  "const": "integration-data-review"
+                }
+              },
+              "state": {
+                "enum": [
+                  "planned",
+                  "researching",
+                  "authored",
+                  "in_independent_review",
+                  "reviewed",
+                  "blocked"
+                ]
+              },
+              "authoredBy": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "authoredAt": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "date-time",
+                    "pattern": "^\\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,9})?(?:Z|[+-](?:[01]\\d|2[0-3]):[0-5]\\d)$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "reviewedBy": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "reviewedAt": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "date-time",
+                    "pattern": "^\\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,9})?(?:Z|[+-](?:[01]\\d|2[0-3]):[0-5]\\d)$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "profileContentHash": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^sha256:[0-9a-f]{64}$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "checks": {
+                "type": "array",
+                "minItems": 8,
+                "maxItems": 8,
+                "prefixItems": [
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "class.shared.current-sense-resistor.facts_semantics"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "contract.closed_profile"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "contract.commercial_boundary"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "contract.identity_path"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "contract.profile_content_hash"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "evidence.primary"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "facts.reviewed_and_conditioned"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "review.independent"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  }
+                ],
+                "items": false
+              }
+            },
+            "allOf": [
+              {
+                "if": {
+                  "type": "object",
+                  "required": [
+                    "state"
+                  ],
+                  "properties": {
+                    "state": {
+                      "const": "reviewed"
+                    }
+                  }
+                },
+                "then": {
+                  "type": "object",
+                  "properties": {
+                    "authoredBy": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": ".*\\S.*"
+                    },
+                    "authoredAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^\\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,9})?(?:Z|[+-](?:[01]\\d|2[0-3]):[0-5]\\d)$"
+                    },
+                    "reviewedBy": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": ".*\\S.*"
+                    },
+                    "reviewedAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^\\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,9})?(?:Z|[+-](?:[01]\\d|2[0-3]):[0-5]\\d)$"
+                    },
+                    "profileContentHash": {
+                      "type": "string",
+                      "pattern": "^sha256:[0-9a-f]{64}$"
+                    },
+                    "checks": {
+                      "type": "array",
+                      "minItems": 8,
+                      "maxItems": 8,
+                      "prefixItems": [
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "class.shared.current-sense-resistor.facts_semantics"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "contract.closed_profile"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "contract.commercial_boundary"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "contract.identity_path"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "contract.profile_content_hash"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "evidence.primary"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "facts.reviewed_and_conditioned"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "review.independent"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        }
+                      ],
+                      "items": false
+                    }
+                  }
+                },
+                "else": {
+                  "type": "object",
+                  "properties": {
+                    "reviewedBy": {
+                      "type": "null"
+                    },
+                    "reviewedAt": {
+                      "type": "null"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "partClass",
+              "part",
+              "profilePath",
+              "ownerTrack",
+              "reviewerTrack",
+              "state",
+              "authoredBy",
+              "authoredAt",
+              "reviewedBy",
+              "reviewedAt",
+              "profileContentHash",
+              "checks"
+            ],
+            "properties": {
+              "partClass": {
+                "const": "shared.general-purpose-resistor"
+              },
+              "part": {
+                "$ref": "profile-envelope.v1.schema.json#/$defs/part"
+              },
+              "profilePath": {
+                "type": "string",
+                "pattern": "^packages/design-library/parts/"
+              },
+              "ownerTrack": {
+                "const": "integration-data-review"
+              },
+              "reviewerTrack": {
+                "enum": [
+                  "motor",
+                  "power",
+                  "integration-data-review"
+                ],
+                "not": {
+                  "const": "integration-data-review"
+                }
+              },
+              "state": {
+                "enum": [
+                  "planned",
+                  "researching",
+                  "authored",
+                  "in_independent_review",
+                  "reviewed",
+                  "blocked"
+                ]
+              },
+              "authoredBy": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "authoredAt": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "date-time",
+                    "pattern": "^\\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,9})?(?:Z|[+-](?:[01]\\d|2[0-3]):[0-5]\\d)$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "reviewedBy": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "reviewedAt": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "date-time",
+                    "pattern": "^\\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,9})?(?:Z|[+-](?:[01]\\d|2[0-3]):[0-5]\\d)$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "profileContentHash": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^sha256:[0-9a-f]{64}$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "checks": {
+                "type": "array",
+                "minItems": 8,
+                "maxItems": 8,
+                "prefixItems": [
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "class.shared.general-purpose-resistor.facts_semantics"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "contract.closed_profile"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "contract.commercial_boundary"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "contract.identity_path"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "contract.profile_content_hash"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "evidence.primary"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "facts.reviewed_and_conditioned"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "review.independent"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  }
+                ],
+                "items": false
+              }
+            },
+            "allOf": [
+              {
+                "if": {
+                  "type": "object",
+                  "required": [
+                    "state"
+                  ],
+                  "properties": {
+                    "state": {
+                      "const": "reviewed"
+                    }
+                  }
+                },
+                "then": {
+                  "type": "object",
+                  "properties": {
+                    "authoredBy": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": ".*\\S.*"
+                    },
+                    "authoredAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^\\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,9})?(?:Z|[+-](?:[01]\\d|2[0-3]):[0-5]\\d)$"
+                    },
+                    "reviewedBy": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": ".*\\S.*"
+                    },
+                    "reviewedAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^\\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,9})?(?:Z|[+-](?:[01]\\d|2[0-3]):[0-5]\\d)$"
+                    },
+                    "profileContentHash": {
+                      "type": "string",
+                      "pattern": "^sha256:[0-9a-f]{64}$"
+                    },
+                    "checks": {
+                      "type": "array",
+                      "minItems": 8,
+                      "maxItems": 8,
+                      "prefixItems": [
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "class.shared.general-purpose-resistor.facts_semantics"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "contract.closed_profile"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "contract.commercial_boundary"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "contract.identity_path"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "contract.profile_content_hash"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "evidence.primary"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "facts.reviewed_and_conditioned"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "review.independent"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        }
+                      ],
+                      "items": false
+                    }
+                  }
+                },
+                "else": {
+                  "type": "object",
+                  "properties": {
+                    "reviewedBy": {
+                      "type": "null"
+                    },
+                    "reviewedAt": {
+                      "type": "null"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "partClass",
+              "part",
+              "profilePath",
+              "ownerTrack",
+              "reviewerTrack",
+              "state",
+              "authoredBy",
+              "authoredAt",
+              "reviewedBy",
+              "reviewedAt",
+              "profileContentHash",
+              "checks"
+            ],
+            "properties": {
+              "partClass": {
+                "const": "shared.switching-diode"
+              },
+              "part": {
+                "$ref": "profile-envelope.v1.schema.json#/$defs/part"
+              },
+              "profilePath": {
+                "type": "string",
+                "pattern": "^packages/design-library/parts/"
+              },
+              "ownerTrack": {
+                "const": "integration-data-review"
+              },
+              "reviewerTrack": {
+                "enum": [
+                  "motor",
+                  "power",
+                  "integration-data-review"
+                ],
+                "not": {
+                  "const": "integration-data-review"
+                }
+              },
+              "state": {
+                "enum": [
+                  "planned",
+                  "researching",
+                  "authored",
+                  "in_independent_review",
+                  "reviewed",
+                  "blocked"
+                ]
+              },
+              "authoredBy": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "authoredAt": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "date-time",
+                    "pattern": "^\\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,9})?(?:Z|[+-](?:[01]\\d|2[0-3]):[0-5]\\d)$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "reviewedBy": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "reviewedAt": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "date-time",
+                    "pattern": "^\\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,9})?(?:Z|[+-](?:[01]\\d|2[0-3]):[0-5]\\d)$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "profileContentHash": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^sha256:[0-9a-f]{64}$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "checks": {
+                "type": "array",
+                "minItems": 8,
+                "maxItems": 8,
+                "prefixItems": [
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "class.shared.switching-diode.facts_semantics"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "contract.closed_profile"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "contract.commercial_boundary"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "contract.identity_path"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "contract.profile_content_hash"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "evidence.primary"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "facts.reviewed_and_conditioned"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "review.independent"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  }
+                ],
+                "items": false
+              }
+            },
+            "allOf": [
+              {
+                "if": {
+                  "type": "object",
+                  "required": [
+                    "state"
+                  ],
+                  "properties": {
+                    "state": {
+                      "const": "reviewed"
+                    }
+                  }
+                },
+                "then": {
+                  "type": "object",
+                  "properties": {
+                    "authoredBy": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": ".*\\S.*"
+                    },
+                    "authoredAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^\\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,9})?(?:Z|[+-](?:[01]\\d|2[0-3]):[0-5]\\d)$"
+                    },
+                    "reviewedBy": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": ".*\\S.*"
+                    },
+                    "reviewedAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^\\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,9})?(?:Z|[+-](?:[01]\\d|2[0-3]):[0-5]\\d)$"
+                    },
+                    "profileContentHash": {
+                      "type": "string",
+                      "pattern": "^sha256:[0-9a-f]{64}$"
+                    },
+                    "checks": {
+                      "type": "array",
+                      "minItems": 8,
+                      "maxItems": 8,
+                      "prefixItems": [
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "class.shared.switching-diode.facts_semantics"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "contract.closed_profile"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "contract.commercial_boundary"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "contract.identity_path"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "contract.profile_content_hash"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "evidence.primary"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "facts.reviewed_and_conditioned"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "review.independent"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        }
+                      ],
+                      "items": false
+                    }
+                  }
+                },
+                "else": {
+                  "type": "object",
+                  "properties": {
+                    "reviewedBy": {
+                      "type": "null"
+                    },
+                    "reviewedAt": {
+                      "type": "null"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "partClass",
+              "part",
+              "profilePath",
+              "ownerTrack",
+              "reviewerTrack",
+              "state",
+              "authoredBy",
+              "authoredAt",
+              "reviewedBy",
+              "reviewedAt",
+              "profileContentHash",
+              "checks"
+            ],
+            "properties": {
+              "partClass": {
+                "const": "shared.mlcc-capacitor"
+              },
+              "part": {
+                "$ref": "profile-envelope.v1.schema.json#/$defs/part"
+              },
+              "profilePath": {
+                "type": "string",
+                "pattern": "^packages/design-library/parts/"
+              },
+              "ownerTrack": {
+                "const": "integration-data-review"
+              },
+              "reviewerTrack": {
+                "enum": [
+                  "motor",
+                  "power",
+                  "integration-data-review"
+                ],
+                "not": {
+                  "const": "integration-data-review"
+                }
+              },
+              "state": {
+                "enum": [
+                  "planned",
+                  "researching",
+                  "authored",
+                  "in_independent_review",
+                  "reviewed",
+                  "blocked"
+                ]
+              },
+              "authoredBy": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "authoredAt": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "date-time",
+                    "pattern": "^\\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,9})?(?:Z|[+-](?:[01]\\d|2[0-3]):[0-5]\\d)$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "reviewedBy": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "reviewedAt": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "date-time",
+                    "pattern": "^\\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,9})?(?:Z|[+-](?:[01]\\d|2[0-3]):[0-5]\\d)$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "profileContentHash": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^sha256:[0-9a-f]{64}$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "checks": {
+                "type": "array",
+                "minItems": 8,
+                "maxItems": 8,
+                "prefixItems": [
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "class.shared.mlcc-capacitor.facts_semantics"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "contract.closed_profile"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "contract.commercial_boundary"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "contract.identity_path"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "contract.profile_content_hash"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "evidence.primary"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "facts.reviewed_and_conditioned"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "review.independent"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  }
+                ],
+                "items": false
+              }
+            },
+            "allOf": [
+              {
+                "if": {
+                  "type": "object",
+                  "required": [
+                    "state"
+                  ],
+                  "properties": {
+                    "state": {
+                      "const": "reviewed"
+                    }
+                  }
+                },
+                "then": {
+                  "type": "object",
+                  "properties": {
+                    "authoredBy": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": ".*\\S.*"
+                    },
+                    "authoredAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^\\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,9})?(?:Z|[+-](?:[01]\\d|2[0-3]):[0-5]\\d)$"
+                    },
+                    "reviewedBy": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": ".*\\S.*"
+                    },
+                    "reviewedAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^\\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,9})?(?:Z|[+-](?:[01]\\d|2[0-3]):[0-5]\\d)$"
+                    },
+                    "profileContentHash": {
+                      "type": "string",
+                      "pattern": "^sha256:[0-9a-f]{64}$"
+                    },
+                    "checks": {
+                      "type": "array",
+                      "minItems": 8,
+                      "maxItems": 8,
+                      "prefixItems": [
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "class.shared.mlcc-capacitor.facts_semantics"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "contract.closed_profile"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "contract.commercial_boundary"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "contract.identity_path"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "contract.profile_content_hash"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "evidence.primary"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "facts.reviewed_and_conditioned"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "review.independent"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        }
+                      ],
+                      "items": false
+                    }
+                  }
+                },
+                "else": {
+                  "type": "object",
+                  "properties": {
+                    "reviewedBy": {
+                      "type": "null"
+                    },
+                    "reviewedAt": {
+                      "type": "null"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "partClass",
+              "part",
+              "profilePath",
+              "ownerTrack",
+              "reviewerTrack",
+              "state",
+              "authoredBy",
+              "authoredAt",
+              "reviewedBy",
+              "reviewedAt",
+              "profileContentHash",
+              "checks"
+            ],
+            "properties": {
+              "partClass": {
+                "const": "shared.bulk-capacitor"
+              },
+              "part": {
+                "$ref": "profile-envelope.v1.schema.json#/$defs/part"
+              },
+              "profilePath": {
+                "type": "string",
+                "pattern": "^packages/design-library/parts/"
+              },
+              "ownerTrack": {
+                "const": "integration-data-review"
+              },
+              "reviewerTrack": {
+                "enum": [
+                  "motor",
+                  "power",
+                  "integration-data-review"
+                ],
+                "not": {
+                  "const": "integration-data-review"
+                }
+              },
+              "state": {
+                "enum": [
+                  "planned",
+                  "researching",
+                  "authored",
+                  "in_independent_review",
+                  "reviewed",
+                  "blocked"
+                ]
+              },
+              "authoredBy": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "authoredAt": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "date-time",
+                    "pattern": "^\\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,9})?(?:Z|[+-](?:[01]\\d|2[0-3]):[0-5]\\d)$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "reviewedBy": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "reviewedAt": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "date-time",
+                    "pattern": "^\\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,9})?(?:Z|[+-](?:[01]\\d|2[0-3]):[0-5]\\d)$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "profileContentHash": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^sha256:[0-9a-f]{64}$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "checks": {
+                "type": "array",
+                "minItems": 8,
+                "maxItems": 8,
+                "prefixItems": [
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "class.shared.bulk-capacitor.facts_semantics"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "contract.closed_profile"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "contract.commercial_boundary"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "contract.identity_path"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "contract.profile_content_hash"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "evidence.primary"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "facts.reviewed_and_conditioned"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "review.independent"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  }
+                ],
+                "items": false
+              }
+            },
+            "allOf": [
+              {
+                "if": {
+                  "type": "object",
+                  "required": [
+                    "state"
+                  ],
+                  "properties": {
+                    "state": {
+                      "const": "reviewed"
+                    }
+                  }
+                },
+                "then": {
+                  "type": "object",
+                  "properties": {
+                    "authoredBy": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": ".*\\S.*"
+                    },
+                    "authoredAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^\\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,9})?(?:Z|[+-](?:[01]\\d|2[0-3]):[0-5]\\d)$"
+                    },
+                    "reviewedBy": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": ".*\\S.*"
+                    },
+                    "reviewedAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^\\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,9})?(?:Z|[+-](?:[01]\\d|2[0-3]):[0-5]\\d)$"
+                    },
+                    "profileContentHash": {
+                      "type": "string",
+                      "pattern": "^sha256:[0-9a-f]{64}$"
+                    },
+                    "checks": {
+                      "type": "array",
+                      "minItems": 8,
+                      "maxItems": 8,
+                      "prefixItems": [
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "class.shared.bulk-capacitor.facts_semantics"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "contract.closed_profile"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "contract.commercial_boundary"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "contract.identity_path"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "contract.profile_content_hash"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "evidence.primary"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "facts.reviewed_and_conditioned"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "review.independent"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        }
+                      ],
+                      "items": false
+                    }
+                  }
+                },
+                "else": {
+                  "type": "object",
+                  "properties": {
+                    "reviewedBy": {
+                      "type": "null"
+                    },
+                    "reviewedAt": {
+                      "type": "null"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "partClass",
+              "part",
+              "profilePath",
+              "ownerTrack",
+              "reviewerTrack",
+              "state",
+              "authoredBy",
+              "authoredAt",
+              "reviewedBy",
+              "reviewedAt",
+              "profileContentHash",
+              "checks"
+            ],
+            "properties": {
+              "partClass": {
+                "const": "motor.supply-tvs-diode"
+              },
+              "part": {
+                "$ref": "profile-envelope.v1.schema.json#/$defs/part"
+              },
+              "profilePath": {
+                "type": "string",
+                "pattern": "^packages/design-library/parts/"
+              },
+              "ownerTrack": {
+                "const": "integration-data-review"
+              },
+              "reviewerTrack": {
+                "enum": [
+                  "motor",
+                  "power",
+                  "integration-data-review"
+                ],
+                "not": {
+                  "const": "integration-data-review"
+                }
+              },
+              "state": {
+                "enum": [
+                  "planned",
+                  "researching",
+                  "authored",
+                  "in_independent_review",
+                  "reviewed",
+                  "blocked"
+                ]
+              },
+              "authoredBy": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "authoredAt": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "date-time",
+                    "pattern": "^\\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,9})?(?:Z|[+-](?:[01]\\d|2[0-3]):[0-5]\\d)$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "reviewedBy": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "reviewedAt": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "date-time",
+                    "pattern": "^\\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,9})?(?:Z|[+-](?:[01]\\d|2[0-3]):[0-5]\\d)$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "profileContentHash": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^sha256:[0-9a-f]{64}$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "checks": {
+                "type": "array",
+                "minItems": 8,
+                "maxItems": 8,
+                "prefixItems": [
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "class.motor.supply-tvs-diode.facts_semantics"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "contract.closed_profile"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "contract.commercial_boundary"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "contract.identity_path"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "contract.profile_content_hash"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "evidence.primary"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "facts.reviewed_and_conditioned"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "review.independent"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  }
+                ],
+                "items": false
+              }
+            },
+            "allOf": [
+              {
+                "if": {
+                  "type": "object",
+                  "required": [
+                    "state"
+                  ],
+                  "properties": {
+                    "state": {
+                      "const": "reviewed"
+                    }
+                  }
+                },
+                "then": {
+                  "type": "object",
+                  "properties": {
+                    "authoredBy": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": ".*\\S.*"
+                    },
+                    "authoredAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^\\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,9})?(?:Z|[+-](?:[01]\\d|2[0-3]):[0-5]\\d)$"
+                    },
+                    "reviewedBy": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": ".*\\S.*"
+                    },
+                    "reviewedAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^\\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,9})?(?:Z|[+-](?:[01]\\d|2[0-3]):[0-5]\\d)$"
+                    },
+                    "profileContentHash": {
+                      "type": "string",
+                      "pattern": "^sha256:[0-9a-f]{64}$"
+                    },
+                    "checks": {
+                      "type": "array",
+                      "minItems": 8,
+                      "maxItems": 8,
+                      "prefixItems": [
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "class.motor.supply-tvs-diode.facts_semantics"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "contract.closed_profile"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "contract.commercial_boundary"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "contract.identity_path"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "contract.profile_content_hash"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "evidence.primary"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "facts.reviewed_and_conditioned"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "review.independent"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        }
+                      ],
+                      "items": false
+                    }
+                  }
+                },
+                "else": {
+                  "type": "object",
+                  "properties": {
+                    "reviewedBy": {
+                      "type": "null"
+                    },
+                    "reviewedAt": {
+                      "type": "null"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "partClass",
+              "part",
+              "profilePath",
+              "ownerTrack",
+              "reviewerTrack",
+              "state",
+              "authoredBy",
+              "authoredAt",
+              "reviewedBy",
+              "reviewedAt",
+              "profileContentHash",
+              "checks"
+            ],
+            "properties": {
+              "partClass": {
+                "const": "power.power-inductor"
+              },
+              "part": {
+                "$ref": "profile-envelope.v1.schema.json#/$defs/part"
+              },
+              "profilePath": {
+                "type": "string",
+                "pattern": "^packages/design-library/parts/"
+              },
+              "ownerTrack": {
+                "const": "integration-data-review"
+              },
+              "reviewerTrack": {
+                "enum": [
+                  "motor",
+                  "power",
+                  "integration-data-review"
+                ],
+                "not": {
+                  "const": "integration-data-review"
+                }
+              },
+              "state": {
+                "enum": [
+                  "planned",
+                  "researching",
+                  "authored",
+                  "in_independent_review",
+                  "reviewed",
+                  "blocked"
+                ]
+              },
+              "authoredBy": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "authoredAt": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "date-time",
+                    "pattern": "^\\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,9})?(?:Z|[+-](?:[01]\\d|2[0-3]):[0-5]\\d)$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "reviewedBy": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "reviewedAt": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "date-time",
+                    "pattern": "^\\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,9})?(?:Z|[+-](?:[01]\\d|2[0-3]):[0-5]\\d)$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "profileContentHash": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^sha256:[0-9a-f]{64}$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "checks": {
+                "type": "array",
+                "minItems": 8,
+                "maxItems": 8,
+                "prefixItems": [
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "class.power.power-inductor.facts_semantics"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "contract.closed_profile"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "contract.commercial_boundary"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "contract.identity_path"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "contract.profile_content_hash"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "evidence.primary"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "facts.reviewed_and_conditioned"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "checkId",
+                      "status"
+                    ],
+                    "properties": {
+                      "checkId": {
+                        "const": "review.independent"
+                      },
+                      "status": {
+                        "enum": [
+                          "pass",
+                          "fail",
+                          "not_run"
+                        ]
+                      }
+                    }
+                  }
+                ],
+                "items": false
+              }
+            },
+            "allOf": [
+              {
+                "if": {
+                  "type": "object",
+                  "required": [
+                    "state"
+                  ],
+                  "properties": {
+                    "state": {
+                      "const": "reviewed"
+                    }
+                  }
+                },
+                "then": {
+                  "type": "object",
+                  "properties": {
+                    "authoredBy": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": ".*\\S.*"
+                    },
+                    "authoredAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^\\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,9})?(?:Z|[+-](?:[01]\\d|2[0-3]):[0-5]\\d)$"
+                    },
+                    "reviewedBy": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": ".*\\S.*"
+                    },
+                    "reviewedAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^\\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,9})?(?:Z|[+-](?:[01]\\d|2[0-3]):[0-5]\\d)$"
+                    },
+                    "profileContentHash": {
+                      "type": "string",
+                      "pattern": "^sha256:[0-9a-f]{64}$"
+                    },
+                    "checks": {
+                      "type": "array",
+                      "minItems": 8,
+                      "maxItems": 8,
+                      "prefixItems": [
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "class.power.power-inductor.facts_semantics"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "contract.closed_profile"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "contract.commercial_boundary"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "contract.identity_path"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "contract.profile_content_hash"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "evidence.primary"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "facts.reviewed_and_conditioned"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "checkId",
+                            "status"
+                          ],
+                          "properties": {
+                            "checkId": {
+                              "const": "review.independent"
+                            },
+                            "status": {
+                              "const": "pass"
+                            }
+                          }
+                        }
+                      ],
+                      "items": false
+                    }
+                  }
+                },
+                "else": {
+                  "type": "object",
+                  "properties": {
+                    "reviewedBy": {
+                      "type": "null"
+                    },
+                    "reviewedAt": {
+                      "type": "null"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

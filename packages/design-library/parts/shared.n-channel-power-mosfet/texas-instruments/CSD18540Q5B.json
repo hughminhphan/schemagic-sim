@@ -1,0 +1,683 @@
+{
+  "format": "schemagic-design-profile",
+  "schemaVersion": "1.0.0",
+  "partClass": "shared.n-channel-power-mosfet",
+  "part": {
+    "manufacturerId": "texas-instruments",
+    "manufacturerPartNumber": "CSD18540Q5B"
+  },
+  "factsSchemaVersion": "3.0.0",
+  "commonFacts": {
+    "packageName": {
+      "value": "SON 5-mm x 6-mm plastic package (Q5B)",
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-csd18540q5b-datasheet",
+          "locator": "page 1, Device Information: CSD18540Q5B uses a SON 5.00-mm x 6.00-mm plastic package; package drawing section identifies Q5B",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T07:41:52Z",
+          "contentHash": "sha256:2e43c4a2ac82af8a089be0a9e413282326f8d7857254ac07390b458deca854e0",
+          "url": "https://www.ti.com/lit/ds/symlink/csd18540q5b.pdf",
+          "revision": "SLPS488B, revised April 2017; Package Option Addendum dated 10-Nov-2025",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "The exact CSD18540Q5B device row identifies TI's Q5B SON 5-mm x 6-mm package."
+    },
+    "boardArea": {
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "Facts schema 3.0.0 represents mounted board area only through facts.mountedGeometry."
+    },
+    "maximumHeight": {
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "Facts schema 3.0.0 represents mounted maximum height only through facts.mountedGeometry."
+    }
+  },
+  "facts": {
+    "drainSourceVoltage": {
+      "value": {
+        "value": 60,
+        "unit": "V",
+        "displayUnit": "60 V"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-csd18540q5b-datasheet",
+          "locator": "page 1, Absolute Maximum Ratings at TA = 25 deg C: VDS drain-to-source voltage = 60 V",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T07:41:52Z",
+          "contentHash": "sha256:2e43c4a2ac82af8a089be0a9e413282326f8d7857254ac07390b458deca854e0",
+          "url": "https://www.ti.com/lit/ds/symlink/csd18540q5b.pdf",
+          "revision": "SLPS488B, revised April 2017; Package Option Addendum dated 10-Nov-2025",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "Manufacturer absolute-maximum drain-to-source voltage; this is a rating, not a recommended operating point."
+    },
+    "continuousDrainCurrent": {
+      "value": {
+        "value": 29,
+        "unit": "A",
+        "displayUnit": "29 A"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-csd18540q5b-datasheet",
+          "locator": "page 1, Absolute Maximum Ratings: unqualified continuous drain-current row = 29 A; footnote 1 gives the board thermal assumption",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T07:41:52Z",
+          "contentHash": "sha256:2e43c4a2ac82af8a089be0a9e413282326f8d7857254ac07390b458deca854e0",
+          "url": "https://www.ti.com/lit/ds/symlink/csd18540q5b.pdf",
+          "revision": "SLPS488B, revised April 2017; Package Option Addendum dated 10-Nov-2025",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "ambientTemperature",
+          "minimum": {
+            "value": 298.15,
+            "unit": "K",
+            "displayUnit": "25 deg C"
+          },
+          "maximum": {
+            "value": 298.15,
+            "unit": "K",
+            "displayUnit": "25 deg C"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-csd18540q5b-datasheet",
+              "locator": "page 1, Absolute Maximum Ratings table heading: TA = 25 deg C",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T07:41:52Z",
+              "contentHash": "sha256:2e43c4a2ac82af8a089be0a9e413282326f8d7857254ac07390b458deca854e0",
+              "url": "https://www.ti.com/lit/ds/symlink/csd18540q5b.pdf",
+              "revision": "SLPS488B, revised April 2017; Package Option Addendum dated 10-Nov-2025",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "Ambient-qualified absolute-maximum current. The 29 A value depends on the source's 1-in2, 2-oz-copper FR4 board assumption and is not the separate 100 A package-limited or 205 A TC-qualified rating."
+    },
+    "pulsedDrainCurrent": {
+      "value": {
+        "value": 400,
+        "unit": "A",
+        "displayUnit": "400 A"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-csd18540q5b-datasheet",
+          "locator": "page 1, Absolute Maximum Ratings: IDM pulsed drain current at TA = 25 deg C = 400 A; footnote 2 limits pulse duration to 100 us and duty cycle to 1%",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T07:41:52Z",
+          "contentHash": "sha256:2e43c4a2ac82af8a089be0a9e413282326f8d7857254ac07390b458deca854e0",
+          "url": "https://www.ti.com/lit/ds/symlink/csd18540q5b.pdf",
+          "revision": "SLPS488B, revised April 2017; Package Option Addendum dated 10-Nov-2025",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "dutyCycle",
+          "minimum": null,
+          "maximum": {
+            "value": 0.01,
+            "unit": "1",
+            "displayUnit": "1 % maximum"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-csd18540q5b-datasheet",
+              "locator": "page 1, Absolute Maximum Ratings footnote 2: duty cycle <= 1%",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T07:41:52Z",
+              "contentHash": "sha256:2e43c4a2ac82af8a089be0a9e413282326f8d7857254ac07390b458deca854e0",
+              "url": "https://www.ti.com/lit/ds/symlink/csd18540q5b.pdf",
+              "revision": "SLPS488B, revised April 2017; Package Option Addendum dated 10-Nov-2025",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "pulseDuration",
+          "minimum": null,
+          "maximum": {
+            "value": 0.0001,
+            "unit": "s",
+            "displayUnit": "100 us maximum"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-csd18540q5b-datasheet",
+              "locator": "page 1, Absolute Maximum Ratings footnote 2: pulse duration <= 100 us",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T07:41:52Z",
+              "contentHash": "sha256:2e43c4a2ac82af8a089be0a9e413282326f8d7857254ac07390b458deca854e0",
+              "url": "https://www.ti.com/lit/ds/symlink/csd18540q5b.pdf",
+              "revision": "SLPS488B, revised April 2017; Package Option Addendum dated 10-Nov-2025",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "Absolute-maximum pulsed current, retained only with the manufacturer's numeric upper bounds of 100 us pulse duration and 1% duty cycle; this is not a repetitive SOA guarantee."
+    },
+    "onResistance": {
+      "value": {
+        "value": 0.0022,
+        "unit": "ohm",
+        "displayUnit": "2.2 mOhm maximum"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-csd18540q5b-datasheet",
+          "locator": "page 3, Electrical Characteristics at TA = 25 deg C: RDS(on) maximum = 2.2 mOhm for VGS = 10 V and ID = 28 A",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T07:41:52Z",
+          "contentHash": "sha256:2e43c4a2ac82af8a089be0a9e413282326f8d7857254ac07390b458deca854e0",
+          "url": "https://www.ti.com/lit/ds/symlink/csd18540q5b.pdf",
+          "revision": "SLPS488B, revised April 2017; Package Option Addendum dated 10-Nov-2025",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "ambientTemperature",
+          "minimum": {
+            "value": 298.15,
+            "unit": "K",
+            "displayUnit": "25 deg C"
+          },
+          "maximum": {
+            "value": 298.15,
+            "unit": "K",
+            "displayUnit": "25 deg C"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-csd18540q5b-datasheet",
+              "locator": "page 3, Electrical Characteristics table heading: TA = 25 deg C unless otherwise stated",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T07:41:52Z",
+              "contentHash": "sha256:2e43c4a2ac82af8a089be0a9e413282326f8d7857254ac07390b458deca854e0",
+              "url": "https://www.ti.com/lit/ds/symlink/csd18540q5b.pdf",
+              "revision": "SLPS488B, revised April 2017; Package Option Addendum dated 10-Nov-2025",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "drainCurrent",
+          "minimum": {
+            "value": 28,
+            "unit": "A",
+            "displayUnit": "28 A"
+          },
+          "maximum": {
+            "value": 28,
+            "unit": "A",
+            "displayUnit": "28 A"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-csd18540q5b-datasheet",
+              "locator": "page 3, Electrical Characteristics RDS(on) row: ID = 28 A",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T07:41:52Z",
+              "contentHash": "sha256:2e43c4a2ac82af8a089be0a9e413282326f8d7857254ac07390b458deca854e0",
+              "url": "https://www.ti.com/lit/ds/symlink/csd18540q5b.pdf",
+              "revision": "SLPS488B, revised April 2017; Package Option Addendum dated 10-Nov-2025",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "gateVoltage",
+          "minimum": {
+            "value": 10,
+            "unit": "V",
+            "displayUnit": "10 V"
+          },
+          "maximum": {
+            "value": 10,
+            "unit": "V",
+            "displayUnit": "10 V"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-csd18540q5b-datasheet",
+              "locator": "page 3, Electrical Characteristics RDS(on) row: VGS = 10 V",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T07:41:52Z",
+              "contentHash": "sha256:2e43c4a2ac82af8a089be0a9e413282326f8d7857254ac07390b458deca854e0",
+              "url": "https://www.ti.com/lit/ds/symlink/csd18540q5b.pdf",
+              "revision": "SLPS488B, revised April 2017; Package Option Addendum dated 10-Nov-2025",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "Guaranteed maximum RDS(on), not the 1.8 mOhm typical value; exact TA, gate-voltage, and drain-current conditions are retained."
+    },
+    "totalGateCharge": {
+      "value": {
+        "value": 5.3E-8,
+        "unit": "C",
+        "displayUnit": "53 nC maximum"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-csd18540q5b-datasheet",
+          "locator": "page 3, Electrical Characteristics: Qg gate charge total (10 V), maximum = 53 nC under VDS = 30 V and IDD = 28 A",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T07:41:52Z",
+          "contentHash": "sha256:2e43c4a2ac82af8a089be0a9e413282326f8d7857254ac07390b458deca854e0",
+          "url": "https://www.ti.com/lit/ds/symlink/csd18540q5b.pdf",
+          "revision": "SLPS488B, revised April 2017; Package Option Addendum dated 10-Nov-2025",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "gateVoltage",
+          "minimum": {
+            "value": 10,
+            "unit": "V",
+            "displayUnit": "10 V"
+          },
+          "maximum": {
+            "value": 10,
+            "unit": "V",
+            "displayUnit": "10 V"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-csd18540q5b-datasheet",
+              "locator": "page 3, Electrical Characteristics: Qg gate charge total (10 V)",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T07:41:52Z",
+              "contentHash": "sha256:2e43c4a2ac82af8a089be0a9e413282326f8d7857254ac07390b458deca854e0",
+              "url": "https://www.ti.com/lit/ds/symlink/csd18540q5b.pdf",
+              "revision": "SLPS488B, revised April 2017; Package Option Addendum dated 10-Nov-2025",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "testCurrent",
+          "minimum": {
+            "value": 28,
+            "unit": "A",
+            "displayUnit": "28 A"
+          },
+          "maximum": {
+            "value": 28,
+            "unit": "A",
+            "displayUnit": "28 A"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-csd18540q5b-datasheet",
+              "locator": "page 3, Electrical Characteristics dynamic-characteristics test conditions: IDD = 28 A",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T07:41:52Z",
+              "contentHash": "sha256:2e43c4a2ac82af8a089be0a9e413282326f8d7857254ac07390b458deca854e0",
+              "url": "https://www.ti.com/lit/ds/symlink/csd18540q5b.pdf",
+              "revision": "SLPS488B, revised April 2017; Package Option Addendum dated 10-Nov-2025",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "testVoltage",
+          "minimum": {
+            "value": 30,
+            "unit": "V",
+            "displayUnit": "30 V"
+          },
+          "maximum": {
+            "value": 30,
+            "unit": "V",
+            "displayUnit": "30 V"
+          },
+          "evidence": [
+            {
+              "sourceId": "ti-csd18540q5b-datasheet",
+              "locator": "page 3, Electrical Characteristics dynamic-characteristics test conditions: VDS = 30 V",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T07:41:52Z",
+              "contentHash": "sha256:2e43c4a2ac82af8a089be0a9e413282326f8d7857254ac07390b458deca854e0",
+              "url": "https://www.ti.com/lit/ds/symlink/csd18540q5b.pdf",
+              "revision": "SLPS488B, revised April 2017; Package Option Addendum dated 10-Nov-2025",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "Guaranteed maximum total gate charge at the manufacturer's 10 V gate-drive, 30 V drain-source, and 28 A drain-current test point."
+    },
+    "riseTime": {
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "The source publishes a typical rise time with an RG = 0 ohm condition that the closed facts-V3 operating-range vocabulary cannot represent, so no partially qualified value is claimed."
+    },
+    "fallTime": {
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "The source publishes a typical fall time with an RG = 0 ohm condition that the closed facts-V3 operating-range vocabulary cannot represent, so no partially qualified value is claimed."
+    },
+    "reverseRecoveryCharge": {
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "The source publishes typical reverse-recovery charge with a di/dt condition that the closed facts-V3 operating-range vocabulary cannot represent, so no partially qualified value is claimed."
+    },
+    "maximumJunctionTemperature": {
+      "value": {
+        "value": 448.15,
+        "unit": "K",
+        "displayUnit": "175 deg C"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-csd18540q5b-datasheet",
+          "locator": "page 1, Absolute Maximum Ratings: operating junction temperature maximum = 175 deg C",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T07:41:52Z",
+          "contentHash": "sha256:2e43c4a2ac82af8a089be0a9e413282326f8d7857254ac07390b458deca854e0",
+          "url": "https://www.ti.com/lit/ds/symlink/csd18540q5b.pdf",
+          "revision": "SLPS488B, revised April 2017; Package Option Addendum dated 10-Nov-2025",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "Manufacturer absolute-maximum operating junction temperature."
+    },
+    "junctionToAmbientThermalResistance": {
+      "value": {
+        "value": 50,
+        "unit": "K/W",
+        "displayUnit": "50 deg C/W maximum"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-csd18540q5b-datasheet",
+          "locator": "page 3, Thermal Information: RthetaJA junction-to-ambient thermal resistance maximum = 50 deg C/W; footnote 2 gives the FR4 and copper construction",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T07:41:52Z",
+          "contentHash": "sha256:2e43c4a2ac82af8a089be0a9e413282326f8d7857254ac07390b458deca854e0",
+          "url": "https://www.ti.com/lit/ds/symlink/csd18540q5b.pdf",
+          "revision": "SLPS488B, revised April 2017; Package Option Addendum dated 10-Nov-2025",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "Maximum source value for the documented 1-in2, 2-oz-copper FR4 mounting construction; actual board design controls junction-to-ambient behavior."
+    },
+    "thermalBoardAssumption": {
+      "value": "Device mounted on FR4 with a 1-in2 (6.45-cm2), 2-oz (0.071-mm) copper pad; RthetaJC test board is 1.5 in x 1.5 in and 0.06 in (1.52 mm) thick",
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-csd18540q5b-datasheet",
+          "locator": "page 3, Thermal Information footnotes 1 and 2: device mounted on 1-in2, 2-oz copper pad on 1.5-in x 1.5-in, 0.06-in-thick FR4; RthetaJA is design-dependent",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T07:41:52Z",
+          "contentHash": "sha256:2e43c4a2ac82af8a089be0a9e413282326f8d7857254ac07390b458deca854e0",
+          "url": "https://www.ti.com/lit/ds/symlink/csd18540q5b.pdf",
+          "revision": "SLPS488B, revised April 2017; Package Option Addendum dated 10-Nov-2025",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "The manufacturer's thermal test-board construction is retained verbatim in substance so current and RthetaJA ratings are not treated as package-only constants."
+    },
+    "packageBodyArea": {
+      "value": {
+        "value": 0.00003,
+        "unit": "m2",
+        "displayUnit": "30 mm2 nominal"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "ti-csd18540q5b-datasheet",
+          "locator": "page 1, Features and Device Information: SON 5-mm x 6-mm plastic package",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T07:41:52Z",
+          "contentHash": "sha256:2e43c4a2ac82af8a089be0a9e413282326f8d7857254ac07390b458deca854e0",
+          "url": "https://www.ti.com/lit/ds/symlink/csd18540q5b.pdf",
+          "revision": "SLPS488B, revised April 2017; Package Option Addendum dated 10-Nov-2025",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "Nominal rectangular package-body area represented by the manufacturer's direct 5-mm x 6-mm package designation; mounted board area uses the separate recommended-pattern projection."
+    },
+    "mountedGeometry": {
+      "boardArea": {
+        "value": {
+          "area": {
+            "value": 0.00003124224,
+            "unit": "m2",
+            "displayUnit": "31.24224 mm2"
+          },
+          "basis": "manufacturer_recommended_land_pattern_bounding_box",
+          "calculation": "maximum_x_span_times_maximum_y_span",
+          "sourceDimensions": [
+            {
+              "axis": "x",
+              "dimensionId": "recommended-center-pad-span",
+              "multiplier": 1,
+              "maximum": {
+                "value": 0.00444,
+                "unit": "m",
+                "displayUnit": "4.440 mm"
+              },
+              "evidence": [
+                {
+                  "sourceId": "ti-csd18540q5b-datasheet",
+                  "locator": "page 9, Recommended PCB Pattern: horizontal span across the center pad = 4.440 mm",
+                  "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+                  "kind": "manufacturer_datasheet",
+                  "retrievedAt": "2026-08-24T07:41:52Z",
+                  "contentHash": "sha256:2e43c4a2ac82af8a089be0a9e413282326f8d7857254ac07390b458deca854e0",
+                  "url": "https://www.ti.com/lit/ds/symlink/csd18540q5b.pdf",
+                  "revision": "SLPS488B, revised April 2017; Package Option Addendum dated 10-Nov-2025",
+                  "publicationBasis": "public_facts"
+                }
+              ]
+            },
+            {
+              "axis": "x",
+              "dimensionId": "recommended-center-pad-to-right-row-gap",
+              "multiplier": 1,
+              "maximum": {
+                "value": 0.0011,
+                "unit": "m",
+                "displayUnit": "1.100 mm"
+              },
+              "evidence": [
+                {
+                  "sourceId": "ti-csd18540q5b-datasheet",
+                  "locator": "page 9, Recommended PCB Pattern: horizontal gap from the center-pad right edge to the right pad row = 1.100 mm; the separate 0.710-mm callout is the vertical pad height",
+                  "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+                  "kind": "manufacturer_datasheet",
+                  "retrievedAt": "2026-08-24T07:41:52Z",
+                  "contentHash": "sha256:2e43c4a2ac82af8a089be0a9e413282326f8d7857254ac07390b458deca854e0",
+                  "url": "https://www.ti.com/lit/ds/symlink/csd18540q5b.pdf",
+                  "revision": "SLPS488B, revised April 2017; Package Option Addendum dated 10-Nov-2025",
+                  "publicationBasis": "public_facts"
+                }
+              ]
+            },
+            {
+              "axis": "x",
+              "dimensionId": "recommended-right-row-pad-width",
+              "multiplier": 1,
+              "maximum": {
+                "value": 0.001372,
+                "unit": "m",
+                "displayUnit": "1.372 mm"
+              },
+              "evidence": [
+                {
+                  "sourceId": "ti-csd18540q5b-datasheet",
+                  "locator": "page 9, Recommended PCB Pattern: right pad-row width = 1.372 mm",
+                  "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+                  "kind": "manufacturer_datasheet",
+                  "retrievedAt": "2026-08-24T07:41:52Z",
+                  "contentHash": "sha256:2e43c4a2ac82af8a089be0a9e413282326f8d7857254ac07390b458deca854e0",
+                  "url": "https://www.ti.com/lit/ds/symlink/csd18540q5b.pdf",
+                  "revision": "SLPS488B, revised April 2017; Package Option Addendum dated 10-Nov-2025",
+                  "publicationBasis": "public_facts"
+                }
+              ]
+            },
+            {
+              "axis": "y",
+              "dimensionId": "recommended-pattern-height",
+              "multiplier": 1,
+              "maximum": {
+                "value": 0.00452,
+                "unit": "m",
+                "displayUnit": "4.520 mm"
+              },
+              "evidence": [
+                {
+                  "sourceId": "ti-csd18540q5b-datasheet",
+                  "locator": "page 9, Recommended PCB Pattern: full vertical pattern span = 4.520 mm",
+                  "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+                  "kind": "manufacturer_datasheet",
+                  "retrievedAt": "2026-08-24T07:41:52Z",
+                  "contentHash": "sha256:2e43c4a2ac82af8a089be0a9e413282326f8d7857254ac07390b458deca854e0",
+                  "url": "https://www.ti.com/lit/ds/symlink/csd18540q5b.pdf",
+                  "revision": "SLPS488B, revised April 2017; Package Option Addendum dated 10-Nov-2025",
+                  "publicationBasis": "public_facts"
+                }
+              ]
+            }
+          ]
+        },
+        "state": "calculated",
+        "evidence": [
+          {
+            "sourceId": "ti-csd18540q5b-datasheet",
+            "locator": "page 9, Recommended PCB Pattern: full vertical pattern span = 4.520 mm",
+            "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+            "kind": "manufacturer_datasheet",
+            "retrievedAt": "2026-08-24T07:41:52Z",
+            "contentHash": "sha256:2e43c4a2ac82af8a089be0a9e413282326f8d7857254ac07390b458deca854e0",
+            "url": "https://www.ti.com/lit/ds/symlink/csd18540q5b.pdf",
+            "revision": "SLPS488B, revised April 2017; Package Option Addendum dated 10-Nov-2025",
+            "publicationBasis": "public_facts"
+          },
+          {
+            "sourceId": "ti-csd18540q5b-datasheet",
+            "locator": "page 9, Recommended PCB Pattern: horizontal gap from the center-pad right edge to the right pad row = 1.100 mm; the separate 0.710-mm callout is the vertical pad height",
+            "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+            "kind": "manufacturer_datasheet",
+            "retrievedAt": "2026-08-24T07:41:52Z",
+            "contentHash": "sha256:2e43c4a2ac82af8a089be0a9e413282326f8d7857254ac07390b458deca854e0",
+            "url": "https://www.ti.com/lit/ds/symlink/csd18540q5b.pdf",
+            "revision": "SLPS488B, revised April 2017; Package Option Addendum dated 10-Nov-2025",
+            "publicationBasis": "public_facts"
+          },
+          {
+            "sourceId": "ti-csd18540q5b-datasheet",
+            "locator": "page 9, Recommended PCB Pattern: horizontal span across the center pad = 4.440 mm",
+            "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+            "kind": "manufacturer_datasheet",
+            "retrievedAt": "2026-08-24T07:41:52Z",
+            "contentHash": "sha256:2e43c4a2ac82af8a089be0a9e413282326f8d7857254ac07390b458deca854e0",
+            "url": "https://www.ti.com/lit/ds/symlink/csd18540q5b.pdf",
+            "revision": "SLPS488B, revised April 2017; Package Option Addendum dated 10-Nov-2025",
+            "publicationBasis": "public_facts"
+          },
+          {
+            "sourceId": "ti-csd18540q5b-datasheet",
+            "locator": "page 9, Recommended PCB Pattern: right pad-row width = 1.372 mm",
+            "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+            "kind": "manufacturer_datasheet",
+            "retrievedAt": "2026-08-24T07:41:52Z",
+            "contentHash": "sha256:2e43c4a2ac82af8a089be0a9e413282326f8d7857254ac07390b458deca854e0",
+            "url": "https://www.ti.com/lit/ds/symlink/csd18540q5b.pdf",
+            "revision": "SLPS488B, revised April 2017; Package Option Addendum dated 10-Nov-2025",
+            "publicationBasis": "public_facts"
+          }
+        ],
+        "validFor": [],
+        "explanation": "Manufacturer-recommended land-pattern bounding rectangle: x = 4.440 mm center-pad span + 1.100 mm horizontal gap + 1.372 mm right-row pad width = 6.912 mm; y = 4.520 mm; area = 31.24224 mm2. The separate 0.710-mm drawing callout is vertical pad height and is not part of the x span."
+      },
+      "maximumHeight": {
+        "value": {
+          "height": {
+            "value": 0.00105,
+            "unit": "m",
+            "displayUnit": "1.05 mm maximum"
+          },
+          "basis": "manufacturer_package_maximum_in_surface_mount_orientation"
+        },
+        "state": "reviewed",
+        "evidence": [
+          {
+            "sourceId": "ti-csd18540q5b-datasheet",
+            "locator": "page 8, Q5B Package Dimensions: dimension A maximum = 1.05 mm",
+            "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+            "kind": "manufacturer_datasheet",
+            "retrievedAt": "2026-08-24T07:41:52Z",
+            "contentHash": "sha256:2e43c4a2ac82af8a089be0a9e413282326f8d7857254ac07390b458deca854e0",
+            "url": "https://www.ti.com/lit/ds/symlink/csd18540q5b.pdf",
+            "revision": "SLPS488B, revised April 2017; Package Option Addendum dated 10-Nov-2025",
+            "publicationBasis": "public_facts"
+          }
+        ],
+        "validFor": [],
+        "explanation": "Maximum Q5B package height in the surface-mount orientation."
+      }
+    }
+  }
+}

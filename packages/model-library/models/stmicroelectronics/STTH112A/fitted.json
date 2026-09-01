@@ -1,0 +1,97 @@
+{
+  "schema_version": "1.0.0",
+  "fidelity_tier": "F1",
+  "evidence_mode": "typ-point",
+  "parameters": {
+    "IS": 1.031964656721227e-11,
+    "N": 1.8,
+    "RS": 0.0001
+  },
+  "parameter_metadata": {},
+  "calibration": {
+    "evidence_mode": "typ-point",
+    "observations": [
+      {
+        "kind": "forward_voltage",
+        "source": {
+          "voltage": "p. 3 table 3",
+          "current": "p. 3 table 3",
+          "conditions": "IF = 1 A, Tj = 125 C",
+          "source_kind": "typical"
+        },
+        "value_v": 1.17,
+        "current_a": 1,
+        "quantity": "forward voltage",
+        "gate_quantity": "forward_voltage",
+        "datasheet_value": 1.17,
+        "unit": "V",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "junction",
+            "value_c": 125
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 1
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 1.17
+            }
+          },
+          "test_mode": {
+            "kind": "not_stated"
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "IF = 1 A, Tj = 125 C"
+            }
+          ],
+          "condition_id": "sha256:9b932a8483cfc0ac299d26a16449572baa3ff6fa6ebee8b0d30e1b25505ab49e"
+        },
+        "citation_identity": {
+          "source_sha256": "a0f63569ec40e53e964518a392da8999c05a52ad4673c2b7823fac707e0cb6e7",
+          "source_revision": "revision not stated in source",
+          "page": 3,
+          "table": "p. 3 table 3",
+          "row": "Forward Voltage",
+          "citation_id": "sha256:87e2a5f916f756056d495013211e5ee52bb0429d28bd8855abfeba184fc2b02a"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:45bf31b36410c0082d27dc29691d8d1b483f221d07eed36757d8c081f4481606",
+          "cohort_id": "sha256:90728e74cd5530edb21008d66ed2e068f7f1a1326c07215c144e60748b4a7b4a",
+          "role": "typical",
+          "condition_id": "sha256:9b932a8483cfc0ac299d26a16449572baa3ff6fa6ebee8b0d30e1b25505ab49e",
+          "citation_id": "sha256:87e2a5f916f756056d495013211e5ee52bb0429d28bd8855abfeba184fc2b02a"
+        },
+        "evidence_role": "typical_observation"
+      }
+    ],
+    "constraints": [],
+    "residual_target_count": 1,
+    "seeds": [
+      {
+        "parameter_coordinate": "IS",
+        "evidence_role": "typical_observation_seed",
+        "value": 1.031964656721227e-11,
+        "unit": "A"
+      }
+    ]
+  },
+  "fitter": "datasheet typical-point diode F1 formula",
+  "optimizer": null,
+  "held_defaults": [],
+  "curves_used": [],
+  "evidence_contract_version": "1.0.0",
+  "evidence_curves": [],
+  "curves_rejected": [],
+  "residuals": [],
+  "rms_relative_error": null,
+  "worst_relative_error": null
+}

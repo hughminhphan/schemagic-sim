@@ -1,0 +1,176 @@
+{
+  "schema_version": "1.0.0",
+  "fidelity_tier": "F1",
+  "evidence_mode": "bound-constrained",
+  "parameters": {
+    "IS": 9.407008985862528e-8,
+    "N": 1.1,
+    "RS": 0.0001
+  },
+  "parameter_metadata": {
+    "IS": {
+      "status": "derived from cited maximum bound",
+      "evidence_mode": "bound-constrained"
+    },
+    "N": {
+      "status": "declared fixed F1 policy constant",
+      "evidence_mode": "bound-constrained"
+    },
+    "RS": {
+      "status": "declared fixed F1 policy constant",
+      "evidence_mode": "bound-constrained"
+    }
+  },
+  "calibration": {
+    "evidence_mode": "bound-constrained",
+    "observations": [],
+    "residual_target_count": 0,
+    "constraints": [
+      {
+        "kind": "forward_voltage_maximum",
+        "inclusive": true,
+        "source": {
+          "voltage": "PDF p. 2, Electrical Characteristics",
+          "current": "PDF p. 2, Electrical Characteristics",
+          "conditions": "TA = 25 degC; IF = 1 A.",
+          "source_kind": "maximum"
+        },
+        "maximum_voltage_v": 0.47,
+        "current_a": 1,
+        "quantity": "forward voltage",
+        "gate_quantity": "forward_voltage",
+        "datasheet_value": 0.47,
+        "unit": "V",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "ambient",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 1
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 0.47
+            }
+          },
+          "test_mode": {
+            "kind": "not_stated"
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "TA = 25 degC; IF = 1 A."
+            }
+          ],
+          "condition_id": "sha256:ec94ad716bd4c7035bb2c4a4948f9dd9c80ffbf4b88035466fd9529dc21b8d6d"
+        },
+        "citation_identity": {
+          "source_sha256": "7df26a09e38402fd50e69f68130dbb5eb959df0181fac93b3f80c95d81ab71b5",
+          "source_revision": "Not stated",
+          "page": 2,
+          "table": "Electrical Characteristics",
+          "row": "Forward Voltage",
+          "citation_id": "sha256:466afc9afc210805c41a80d0da8b43aaae5d7df63bc3073a4dec183613287477"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:2debe78dae29fd74b2070b8f6ab767580fff37b818d2ad93934062888fecab0f",
+          "cohort_id": "sha256:91b8710ee9513c324b38b333a5e3db30763778aeb65b2f07c93a81e8777a2c90",
+          "role": "maximum",
+          "condition_id": "sha256:ec94ad716bd4c7035bb2c4a4948f9dd9c80ffbf4b88035466fd9529dc21b8d6d",
+          "citation_id": "sha256:466afc9afc210805c41a80d0da8b43aaae5d7df63bc3073a4dec183613287477"
+        },
+        "evidence_role": "inequality_constraint"
+      },
+      {
+        "kind": "forward_voltage_maximum",
+        "inclusive": true,
+        "source": {
+          "voltage": "PDF p. 2, Electrical Characteristics",
+          "current": "PDF p. 2, Electrical Characteristics",
+          "conditions": "TA = 25 degC; IF = 2 A.",
+          "source_kind": "maximum"
+        },
+        "maximum_voltage_v": 0.55,
+        "current_a": 2,
+        "quantity": "forward voltage",
+        "gate_quantity": "forward_voltage",
+        "datasheet_value": 0.55,
+        "unit": "V",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "ambient",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 2
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 0.55
+            }
+          },
+          "test_mode": {
+            "kind": "not_stated"
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "TA = 25 degC; IF = 2 A."
+            }
+          ],
+          "condition_id": "sha256:4dd32512f05a18d1ff0f2ed62afec56cbded9a49c158285ffd600acefc372a75"
+        },
+        "citation_identity": {
+          "source_sha256": "7df26a09e38402fd50e69f68130dbb5eb959df0181fac93b3f80c95d81ab71b5",
+          "source_revision": "Not stated",
+          "page": 2,
+          "table": "Electrical Characteristics",
+          "row": "Forward Voltage",
+          "citation_id": "sha256:466afc9afc210805c41a80d0da8b43aaae5d7df63bc3073a4dec183613287477"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:bedf6a1b75f5b2532a0af07090abc566f901dc53e9b3eb9cdbf87fc61e8d40d9",
+          "cohort_id": "sha256:f3757a15d9a56d45d4a16c3d0ff721a2eb549cf5456257bc51af8ce697343d5c",
+          "role": "maximum",
+          "condition_id": "sha256:4dd32512f05a18d1ff0f2ed62afec56cbded9a49c158285ffd600acefc372a75",
+          "citation_id": "sha256:466afc9afc210805c41a80d0da8b43aaae5d7df63bc3073a4dec183613287477"
+        },
+        "evidence_role": "inequality_constraint"
+      }
+    ],
+    "seeds": [
+      {
+        "parameter_coordinate": "IS",
+        "evidence_role": "maximum_bound_interior_feasibility_seed_only",
+        "value": 9.407008985862528e-8,
+        "unit": "A",
+        "policy": "derive from 0.95 times cited maximum current and 0.97 times cited maximum voltage",
+        "current_factor": 0.95,
+        "voltage_factor": 0.97
+      }
+    ]
+  },
+  "fitter": "cited-maximum diode F1 interior-feasibility projection",
+  "optimizer": null,
+  "held_defaults": [],
+  "curves_used": [],
+  "evidence_contract_version": "1.0.0",
+  "evidence_curves": [],
+  "curves_rejected": [],
+  "residuals": [],
+  "rms_relative_error": null,
+  "worst_relative_error": null
+}

@@ -1,1 +1,1 @@
-export { componentPinPoints, generateNetlist, interimModels } from "@opencircuit/circuit-schema";
+export { CIRCUIT_CONTRACT_FAILURE_CODES, CircuitNetlistError, DESIGN_BLOCK_MODEL_VERIFICATION, componentPinPoints, componentPinPointsV4, generateNetlist, generateScenarioNetlist, interimModels } from "@opencircuit/circuit-schema";

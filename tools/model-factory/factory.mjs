@@ -4,6 +4,19 @@ import fs from "node:fs";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
+import {
+  activeVdmosModelCard,
+  citationCohortMaterial,
+  curveCohortMaterial,
+  curveIdentityMaterial,
+  directEvidenceIntersectionErrors,
+  directEvidenceUnionErrors,
+  identityHash as canonicalIdentityHash,
+  pointEvidenceMaterial,
+  scalarEvidenceMaterial,
+  stableIdentityValue,
+  summarizeMosfetResiduals
+} from "../../packages/component-schema/evidence-identity.mjs";
 import { getPart } from "./lib/parts.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -238,18 +251,30 @@ function emittedParameterValues(model) {
   return values;
 }
 
-export function assertEmittedParametersMatchFitted(model, fitted) {
-  const emitted = emittedParameterValues(model);
+export function assertEmittedParametersMatchFitted(model, fitted, electricalFamily = null, modelName = null) {
+  let emitted;
   const mismatches = [];
+  if (["nmos", "pmos"].includes(electricalFamily)) {
+    const card = activeVdmosModelCard(model, modelName);
+    emitted = card.parameters;
+    if (electricalFamily === "pmos" && !card.pchan) mismatches.push("channel: PMOS active DUT VDMOS card must declare pchan");
+    if (electricalFamily === "nmos" && card.pchan) mismatches.push("channel: NMOS active DUT VDMOS card must not declare pchan");
+  } else emitted = emittedParameterValues(model);
   for (const [name, expected] of Object.entries(fitted.parameters ?? {})) {
-    if (!Number.isFinite(Number(expected))) continue;
+    const expectedValue = Number(expected);
+    if (!Number.isFinite(expectedValue)) continue;
     if (!emitted.has(name)) {
       mismatches.push(`${name}: missing from emitted model`);
       continue;
     }
     const actual = emitted.get(name);
-    const scale = Math.max(1, Math.abs(Number(expected)));
-    if (Math.abs(actual - Number(expected)) > 5e-10 * scale) {
+    const scale = Math.max(1, Math.abs(expectedValue));
+    if (electricalFamily === "nmos" && name === "VTO" && !(expectedValue > 0)) {
+      mismatches.push(`VTO: NMOS fitted ${expectedValue}, expected a positive threshold`);
+    } else if (electricalFamily === "pmos" && name === "VTO") {
+      if (!(actual < 0)) mismatches.push(`VTO: PMOS emitted ${actual}, expected a negative threshold`);
+      else if (Math.abs(Math.abs(actual) - Math.abs(expectedValue)) > 5e-10 * scale) mismatches.push(`VTO: emitted magnitude ${Math.abs(actual)}, fitted ${expected}`);
+    } else if (Math.abs(actual - expectedValue) > 5e-10 * scale) {
       mismatches.push(`${name}: emitted ${actual}, fitted ${expected}`);
     }
   }
@@ -281,7 +306,9 @@ function modelText(ctx, fitted) {
   }
   if (ctx.part.pipeline === "vdmos") {
     const names = ["VTO", "KP", "THETA", "LAMBDA", "RD", "RS", "RG", "CGS", "CGDMAX", "CGDMIN", "A", "CJO", "IS", "N", "RB", "TT", "BV", "IBV", "RTHJC", "RTHCA"];
-    return `${header}* Fit: native ngspice-46 in scipy.optimize.least_squares, diff_step=1e-4\n.model ${ctx.part.component.modelName} VDMOS(${names.map((name) => `${name}=${formatSpice(p[name])}`).join(" ")} RDS=1e9 VJ=0.8 M=0.5 FC=0.5 NBV=1 TNOM=27)\n`;
+    const pChannel = ctx.part.identity.electrical_family === "pmos";
+    const parameter = (name) => name === "VTO" && pChannel ? -Math.abs(p[name]) : p[name];
+    return `${header}* Fit: native ngspice-46 in scipy.optimize.least_squares, diff_step=1e-4\n.model ${ctx.part.component.modelName} VDMOS(${pChannel ? "pchan " : ""}${names.map((name) => `${name}=${formatSpice(parameter(name))}`).join(" ")} RDS=1e9 VJ=0.8 M=0.5 FC=0.5 NBV=1 TNOM=27)\n`;
   }
   if (ctx.part.pipeline === "opamp") {
     return `${header}* Fit: exactly three native ngspice-46 fixed-point calibration iterations\n* Node order: INP INN VCC VEE OUT\n.subckt ${ctx.part.component.modelName} INP INN VCC VEE OUT\n.param AOL=${formatSpice(p.AOL)} GBW=${formatSpice(p.GBW)} SR=${formatSpice(p.SR)} IBIAS=${formatSpice(p.IBIAS)} IOS=${formatSpice(p.IOS)} VOS=${formatSpice(p.VOS)}\n.param ROUT=${formatSpice(p.ROUT)} ILIM=${formatSpice(p.ILIM)} VDRP_H=${formatSpice(p.VDRP_H)} VDRP_L=${formatSpice(p.VDRP_L)} CC=30p FP2=${formatSpice(p.FP2)}\n.param CMRR=${formatSpice(p.CMRR)} PSRR=${formatSpice(p.PSRR)} VSUP_NOM=${formatSpice(p.VSUP_NOM)} IQ=${formatSpice(p.IQ)} EN=${formatSpice(p.EN)}\nIBP 0 INP DC {IBIAS+IOS/2}\nIBN 0 INN DC {IBIAS-IOS/2}\nCDIF INP INN 1p\nBERR e 0 V = v(INP,INN) + VOS + v(nz) + 0.5*(v(INP)+v(INN))/CMRR + (v(VCC,VEE)-VSUP_NOM)/PSRR\nRE e 0 1meg\nRNZ nz 0 {EN*EN/(4*1.380649e-23*300.15)}\nBGM 0 p I = {SR*CC}*tanh({6.283185307*GBW/SR}*v(e))\nCP p 0 {CC}\nRP p 0 {AOL/(6.283185307*GBW*CC)}\nRP2 p p2 {1/(6.283185307*FP2*1p)}\nCP2 p2 0 1p\nBCLMP q 0 V = min(max(v(p2), v(VEE)+min(VDRP_L,0.49*v(VCC,VEE))), v(VCC)-min(VDRP_H,0.49*v(VCC,VEE)))\nRQ q 0 1meg\nBOUT 0 OUT I = ILIM*tanh((v(q)-v(OUT))/(ROUT*ILIM))\nIQVCC VCC VEE DC {IQ}\n.ends ${ctx.part.component.modelName}\n`;
@@ -321,6 +348,7 @@ function baseComponent(ctx, fitted) {
   const packageInfo = identity.package;
   return {
     schema_version: "1.0.0",
+    ...(ctx.part.component.evidence_contract_version ? { evidence_contract_version: ctx.part.component.evidence_contract_version } : {}),
     canonical_mpn: identity.canonical_mpn,
     manufacturer: identity.manufacturer,
     description: identity.description,
@@ -351,7 +379,7 @@ function baseComponent(ctx, fitted) {
     fidelity_tier: ctx.part.component.fidelity_tier ?? "F2",
     domain_coverage: ctx.part.component.domain_coverage,
     supported_analyses: ctx.part.component.supported_analyses,
-    supported_operating_region: {
+    supported_operating_region: ctx.part.component.supported_operating_region ?? {
       summary: ctx.part.component.operating_summary,
       numeric_bounds: ctx.part.component.numeric_bounds
     },
@@ -374,8 +402,12 @@ function stageGenerate(ctx) {
   const fittedPath = path.join(ctx.packageDir, "fitted.json");
   requireFile(fittedPath, "generate");
   const fitted = JSON.parse(fs.readFileSync(fittedPath, "utf8"));
+  if (ctx.part.pipeline === "vdmos") {
+    const factsPath = path.join(ctx.packageDir, "facts.json");
+    if (fs.existsSync(factsPath)) assertMosfetConditionIdentityContract(ctx, JSON.parse(fs.readFileSync(factsPath, "utf8")), fitted);
+  }
   const model = modelText(ctx, fitted);
-  if (ctx.part.pipeline !== "darlington") assertEmittedParametersMatchFitted(model, fitted);
+  if (ctx.part.pipeline !== "darlington") assertEmittedParametersMatchFitted(model, fitted, ctx.part.identity.electrical_family, ctx.part.component.modelName);
   fs.writeFileSync(path.join(ctx.packageDir, "model.cir"), model);
   writeJson(path.join(ctx.packageDir, "component.json"), baseComponent(ctx, fitted));
   console.log(`generate ${ctx.part.slug}: ${ctx.part.component.modelName}`);
@@ -383,6 +415,67 @@ function stageGenerate(ctx) {
 
 function opBench(model, modelName, name, current) {
   return `OpenCircuit factory test: ${name}\n${model}\nItest 0 anode DC ${formatSpice(current)}\nVanchor anchor 0 DC 0\nRanchor anchor 0 1G\nDdut anode 0 ${modelName}\n.op\n.end\n`;
+}
+
+function strictDiodeForwardBench(model, modelName, name, current, condition) {
+  const temperature = Number(condition.temperature.value_c);
+  if (["dc", "continuous", "not_stated", "pulsed_limit"].includes(condition.test_mode.kind)) return {
+    text: `OpenCircuit factory test: ${name}\n${model}\n.temp ${formatSpice(temperature)}\nItest 0 anode DC ${formatSpice(current)}\nVanchor anchor 0 DC 0\nRanchor anchor 0 1G\nDdut anode 0 ${modelName}\n.op\n.end\n`,
+    analysisType: "operating_point",
+    expression: "last(v(anode))",
+  };
+  const width = Number(condition.test_mode.pulse_width_s);
+  const duty = condition.test_mode.kind === "pulsed" ? Number(condition.test_mode.duty_cycle) : null;
+  if (!(width > 0) || (condition.test_mode.kind === "pulsed" && !(duty > 0 && duty < 1))) {
+    throw new Error(`${name} has an invalid diode pulse qualification`);
+  }
+  const delay = width;
+  const edge = width / 1000;
+  const period = duty == null ? width * 4 : width / duty;
+  const sample = delay + edge + width / 2;
+  const stop = delay + edge + width * 0.75;
+  const step = width / 40;
+  return {
+    text: `OpenCircuit factory test: ${name}\n${model}\n.temp ${formatSpice(temperature)}\nItest 0 anode PULSE(${formatSpice(0)} ${formatSpice(current)} ${formatSpice(delay)} ${formatSpice(edge)} ${formatSpice(edge)} ${formatSpice(width)} ${formatSpice(period)})\nVanchor anchor 0 DC 0\nRanchor anchor 0 1G\nDdut anode 0 ${modelName}\n.tran ${formatSpice(step)} ${formatSpice(stop)}\n.end\n`,
+    analysisType: "transient",
+    expression: `at(v(anode),${formatSpice(sample)})`,
+  };
+}
+
+function diodeCitationText(citation, fallback) {
+  if (!citation) return fallback;
+  if (citation.table) return `p. ${citation.page}, Table ${citation.table}, row ${citation.row}`;
+  return `p. ${citation.page}, Figure ${citation.figure}, ${citation.curve ?? citation.trace}`;
+}
+
+function strictDiodeForwardRows(facts, fidelityTier) {
+  const rows = [];
+  for (const curve of facts.curves ?? []) if (curve.characteristic === "forward_voltage") {
+    for (const point of curve.points ?? []) rows.push({
+      current: point.x_si,
+      voltage: point.y_si,
+      role: point.evidence_identity.role,
+      condition: curve.condition_identity,
+      citation: curve.citation_identity,
+      evidence: point.evidence_identity,
+      pageReference: diodeCitationText(curve.citation_identity, "forward-voltage curve"),
+    });
+  }
+  for (const point of facts.forward_voltage_points ?? []) {
+    const voltage = point.voltage;
+    if (!voltage?.evidence_identity) continue;
+    if (fidelityTier === "F2" && !["minimum", "maximum"].includes(voltage.evidence_identity.role)) continue;
+    rows.push({
+      current: point.current.value,
+      voltage: voltage.value,
+      role: voltage.evidence_identity.role,
+      condition: voltage.condition_identity,
+      citation: voltage.citation_identity,
+      evidence: voltage.evidence_identity,
+      pageReference: voltage.page_reference,
+    });
+  }
+  return rows;
 }
 
 function reverseBench(model, modelName, voltage) {
@@ -397,7 +490,7 @@ function reverseRecoveryBench(model, modelName) {
   return `OpenCircuit factory test: reverse recovery\n${model}\nVdrive src 0 PULSE(1.7 -6 20n 0.1n 0.1n 20n 50n)\nRload src anode 100\nDdut anode 0 ${modelName}\n.tran 0.05n 50n\n.end\n`;
 }
 
-function expectation(name, expression, expectedValue, unit, absolute, relative, citation) {
+function expectation(name, expression, expectedValue, unit, absolute, relative, citation, identityLinks = null) {
   return {
     name,
     expression_source: { kind: "raw_variable", expression },
@@ -405,11 +498,12 @@ function expectation(name, expression, expectedValue, unit, absolute, relative, 
     unit,
     tolerance: { absolute, relative },
     datasheet_citation: citation,
+    ...(identityLinks ?? {}),
     placeholder: false
   };
 }
 
-function hardBound(name, expression, unit, bounds, citation) {
+function hardBound(name, expression, unit, bounds, citation, identityLinks = null) {
   return {
     name,
     expression_source: { kind: "raw_variable", expression },
@@ -417,6 +511,7 @@ function hardBound(name, expression, unit, bounds, citation) {
     unit,
     inclusive: true,
     datasheet_citation: citation,
+    ...(identityLinks ?? {}),
     placeholder: false
   };
 }
@@ -516,18 +611,548 @@ function bjtTestgen(ctx, model, facts) {
   return tests;
 }
 
+const MOSFET_CRITICAL_PARAMETERS = new Set(["VTO", "KP", "RD", "RS", "RB"]);
+const PLACEHOLDER_CITATION = /^(?:n\/?a|none|unknown|tbd|todo|fixture|placeholder|catalog|datasheet|source|not stated|model-factory)(?:\b|$)/i;
+const SHA256_ID = /^sha256:[0-9a-f]{64}$/;
+const SHA256_HEX = /^[0-9a-f]{64}$/;
+
+function closeEnough(left, right) {
+  const a = Number(left);
+  const b = Number(right);
+  return Number.isFinite(a) && Number.isFinite(b) && Math.abs(a - b) <= 1e-9 * Math.max(1, Math.abs(a), Math.abs(b));
+}
+
+function realDatasheetCitation(citation, trail) {
+  if (typeof citation !== "string" || !citation.trim() || PLACEHOLDER_CITATION.test(citation.trim())) {
+    throw new Error(`${trail} must carry a real datasheet citation`);
+  }
+  const text = citation.trim();
+  if (!/(?:\bp\.?\s*\d+|\bpage\s+\d+)/i.test(text)
+      || !/(?:table|fig(?:ure)?|curve|characteristics|section|heading|source-drain|electrical)/i.test(text)) {
+    throw new Error(`${trail} citation must identify a datasheet page and table, figure, curve, or section: ${text}`);
+  }
+  return text;
+}
+
+function assertExactKeys(raw, required, optional, trail) {
+  const keys = Object.keys(raw);
+  for (const key of required) if (!Object.hasOwn(raw, key)) throw new Error(`${trail}.${key} is required`);
+  const allowed = new Set([...required, ...optional]);
+  for (const key of keys) if (!allowed.has(key)) throw new Error(`${trail}.${key} is not part of the frozen contract`);
+}
+
+function assertFinite(value, trail) {
+  const number = Number(value);
+  if (!Number.isFinite(number)) throw new Error(`${trail} must be finite`);
+  return number;
+}
+
+export function identityHash(value) {
+  return canonicalIdentityHash(value);
+}
+
+function assertIdentityHash(raw, idField, trail, projection = null) {
+  const claimed = raw[idField];
+  if (!SHA256_ID.test(claimed)) throw new Error(`${trail}.${idField} must be sha256:<64 lowercase hex>`);
+  const payload = projection ? projection(raw) : Object.fromEntries(Object.entries(raw).filter(([key]) => key !== idField));
+  const expected = identityHash(payload);
+  if (claimed !== expected) throw new Error(`${trail}.${idField} does not match canonical content`);
+}
+
+function assertVoltageCondition(raw, trail) {
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) throw new Error(`${trail} is required`);
+  if (raw.kind === "fixed") {
+    assertExactKeys(raw, ["kind", "value_v"], [], trail);
+    assertFinite(raw.value_v, `${trail}.value_v`);
+  } else if (raw.kind === "relation") {
+    assertExactKeys(raw, ["kind", "relation"], [], trail);
+    if (!["vds_equals_vgs", "vds_not_stated"].includes(raw.relation)) throw new Error(`${trail}.relation is invalid`);
+  } else if (raw.kind === "range") {
+    assertExactKeys(raw, ["kind", "lower_v", "upper_v"], [], trail);
+    const lower = assertFinite(raw.lower_v, `${trail}.lower_v`);
+    const upper = assertFinite(raw.upper_v, `${trail}.upper_v`);
+    if (lower > upper) throw new Error(`${trail} range is reversed`);
+  } else throw new Error(`${trail}.kind is invalid`);
+  return structuredClone(raw);
+}
+
+function assertCurrentCondition(raw, trail) {
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) throw new Error(`${trail} is required`);
+  if (raw.kind === "fixed") {
+    assertExactKeys(raw, ["kind", "value_a"], [], trail);
+    if (!(assertFinite(raw.value_a, `${trail}.value_a`) > 0)) throw new Error(`${trail}.value_a must be positive`);
+  } else if (raw.kind === "range") {
+    assertExactKeys(raw, ["kind", "lower_a", "upper_a"], [], trail);
+    const lower = assertFinite(raw.lower_a, `${trail}.lower_a`);
+    const upper = assertFinite(raw.upper_a, `${trail}.upper_a`);
+    if (!(lower > 0) || lower > upper) throw new Error(`${trail} range must be positive and ordered`);
+  } else throw new Error(`${trail}.kind is invalid`);
+  return structuredClone(raw);
+}
+
+function assertAbsoluteCondition(condition, trail) {
+  const numeric = Object.entries(condition).filter(([key]) => /^(?:value|lower|upper)_[va]$/.test(key));
+  if (numeric.some(([, value]) => value < 0)) throw new Error(`${trail} must be nonnegative under absolute magnitude convention`);
+}
+
+export function normalizeMosfetConditionIdentity(raw, trail = "condition_identity") {
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) throw new Error(`${trail} is required`);
+  assertExactKeys(raw, ["schema_version", "characteristic", "polarity", "magnitude_convention", "temperature", "electrical", "test_mode", "qualifiers", "condition_id"], [], trail);
+  if (raw.schema_version !== "1.0.0") throw new Error(`${trail}.schema_version must be 1.0.0`);
+  if (!["gate_threshold", "rds_on", "transfer_current", "output_current"].includes(raw.characteristic)) throw new Error(`${trail}.characteristic is invalid`);
+  if (!["n", "p"].includes(raw.polarity)) throw new Error(`${trail}.polarity is invalid`);
+  if (!["signed", "absolute"].includes(raw.magnitude_convention)) throw new Error(`${trail}.magnitude_convention is invalid`);
+  assertIdentityHash(raw, "condition_id", trail);
+  assertExactKeys(raw.temperature ?? {}, ["kind", "value_c"], [], `${trail}.temperature`);
+  if (!["junction", "ambient", "case"].includes(raw.temperature.kind)) throw new Error(`${trail}.temperature.kind is invalid`);
+  assertFinite(raw.temperature.value_c, `${trail}.temperature.value_c`);
+  assertExactKeys(raw.electrical ?? {}, ["vgs", "vds", "id"], [], `${trail}.electrical`);
+  const vgs = assertVoltageCondition(raw.electrical.vgs, `${trail}.electrical.vgs`);
+  const vds = assertVoltageCondition(raw.electrical.vds, `${trail}.electrical.vds`);
+  const id = assertCurrentCondition(raw.electrical.id, `${trail}.electrical.id`);
+  if (raw.magnitude_convention === "absolute") {
+    assertAbsoluteCondition(vgs, `${trail}.electrical.vgs`);
+    assertAbsoluteCondition(vds, `${trail}.electrical.vds`);
+    assertAbsoluteCondition(id, `${trail}.electrical.id`);
+  }
+  if (raw.characteristic === "transfer_current" && vds.kind !== "fixed") throw new Error(`${trail} transfer_current requires fixed VDS`);
+  assertExactKeys(raw.test_mode ?? {}, ["kind"], ["pulse_width_s", "duty_cycle", "repetition_period_s", "repetition_frequency_hz"], `${trail}.test_mode`);
+  if (!["dc", "continuous", "pulsed", "single_pulse"].includes(raw.test_mode.kind)) throw new Error(`${trail}.test_mode.kind is invalid`);
+  for (const field of ["pulse_width_s", "duty_cycle", "repetition_period_s", "repetition_frequency_hz"]) {
+    if (Object.hasOwn(raw.test_mode, field) && !(assertFinite(raw.test_mode[field], `${trail}.test_mode.${field}`) > 0)) throw new Error(`${trail}.test_mode.${field} must be positive`);
+  }
+  if (!Array.isArray(raw.qualifiers)) throw new Error(`${trail}.qualifiers must be an array`);
+  const qualifierKeys = raw.qualifiers.map((qualifier, index) => {
+    assertExactKeys(qualifier ?? {}, ["key", "value"], [], `${trail}.qualifiers[${index}]`);
+    if (typeof qualifier.key !== "string" || !qualifier.key || typeof qualifier.value !== "string" || !qualifier.value) throw new Error(`${trail}.qualifiers[${index}] must contain non-empty strings`);
+    return `${qualifier.key} ${qualifier.value}`;
+  });
+  if (new Set(qualifierKeys).size !== qualifierKeys.length || qualifierKeys.some((value, index) => index && value < qualifierKeys[index - 1])) {
+    throw new Error(`${trail}.qualifiers must be sorted by key/value with no duplicate pairs`);
+  }
+  return { ...structuredClone(raw), electrical: { vgs, vds, id } };
+}
+
+export function normalizeMosfetCitationIdentity(raw, trail = "citation_identity") {
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) throw new Error(`${trail} is required`);
+  const optional = ["source_revision", "section", "table", "row", "column", "figure", "curve", "trace"];
+  assertExactKeys(raw, ["source_sha256", "page", "citation_id"], optional, trail);
+  if (!SHA256_HEX.test(raw.source_sha256)) throw new Error(`${trail}.source_sha256 must be 64 lowercase hex`);
+  if (!Number.isInteger(raw.page) || raw.page <= 0) throw new Error(`${trail}.page must be a positive integer`);
+  assertIdentityHash(raw, "citation_id", trail);
+  for (const field of optional) if (Object.hasOwn(raw, field) && (typeof raw[field] !== "string" || !raw[field].trim() || PLACEHOLDER_CITATION.test(raw[field].trim()))) throw new Error(`${trail}.${field} is invalid`);
+  if (!(raw.table && raw.row) && !(raw.figure && (raw.curve || raw.trace))) throw new Error(`${trail} requires table+row or figure+(curve|trace)`);
+  return structuredClone(raw);
+}
+
+export function normalizeMosfetEvidenceIdentity(raw, condition, citation, trail = "evidence_identity", { curve = false, characteristic = condition?.characteristic, quantity = null, valueSi = null, unitSi = null, point = null } = {}) {
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) throw new Error(`${trail} is required`);
+  assertExactKeys(raw, ["evidence_id", "cohort_id", "role", "condition_id", "citation_id"], curve ? ["curve_id", "point_index"] : [], trail);
+  if (!SHA256_ID.test(raw.cohort_id)) throw new Error(`${trail}.cohort_id must be sha256:<64 lowercase hex>`);
+  if (!SHA256_ID.test(raw.evidence_id)) throw new Error(`${trail}.evidence_id must be sha256:<64 lowercase hex>`);
+  if (!["minimum", "typical", "maximum", "digitized_typical_curve", "seed_only"].includes(raw.role)) throw new Error(`${trail}.role is invalid`);
+  if (raw.condition_id !== condition.condition_id || raw.citation_id !== citation.citation_id) throw new Error(`${trail} contains hybrid condition or citation IDs`);
+  if (curve) {
+    if (!SHA256_ID.test(raw.curve_id)) throw new Error(`${trail}.curve_id must be sha256:<64 lowercase hex>`);
+    if (!Number.isInteger(raw.point_index) || raw.point_index < 0) throw new Error(`${trail}.point_index must be a nonnegative integer`);
+    const expectedCohort = identityHash(curveCohortMaterial(characteristic, condition.condition_id, citation.citation_id, raw.curve_id));
+    if (raw.cohort_id !== expectedCohort) throw new Error(`${trail}.cohort_id does not match canonical curve membership`);
+    if (point && raw.evidence_id !== identityHash(pointEvidenceMaterial(characteristic, point, raw))) throw new Error(`${trail}.evidence_id does not match canonical point content`);
+  } else if (quantity != null) {
+    const expectedCohort = identityHash(citationCohortMaterial(characteristic, condition.condition_id, citation));
+    if (raw.cohort_id !== expectedCohort) throw new Error(`${trail}.cohort_id does not match canonical citation cohort`);
+    if (raw.evidence_id !== identityHash(scalarEvidenceMaterial(characteristic, raw, quantity, valueSi, unitSi))) throw new Error(`${trail}.evidence_id does not match canonical scalar content`);
+  }
+  return structuredClone(raw);
+}
+
+function evidenceLinks(evidence, condition, citation = null) {
+  const diodeProjection = condition.characteristic === "forward_voltage" && ["not_stated", "pulsed_limit"].includes(condition.test_mode.kind);
+  const qualification = condition.test_mode.kind === "pulsed" || condition.test_mode.kind === "single_pulse"
+    ? { test_mode: condition.test_mode.kind, pulse_width_s: condition.test_mode.pulse_width_s, ...(condition.test_mode.duty_cycle == null ? {} : { duty_cycle: condition.test_mode.duty_cycle }) }
+    : diodeProjection && condition.test_mode.kind === "pulsed_limit"
+      ? { test_mode: "pulsed_limit", ...(condition.test_mode.maximum_pulse_width_s == null ? {} : { maximum_pulse_width_s: condition.test_mode.maximum_pulse_width_s }), ...(condition.test_mode.maximum_duty_cycle == null ? {} : { maximum_duty_cycle: condition.test_mode.maximum_duty_cycle }) }
+      : diodeProjection && condition.test_mode.kind === "not_stated"
+        ? { test_mode: "not_stated" }
+    : { test_mode: "continuous_dc" };
+  const projected = diodeProjection;
+  const locator = citation?.table
+    ? { page: citation.page, table: citation.table, row: citation.row }
+    : citation?.figure
+      ? { page: citation.page, figure: citation.figure, ...(citation.curve ? { curve: citation.curve } : { trace: citation.trace }) }
+      : null;
+  return {
+    evidence_id: evidence.evidence_id,
+    condition_id: evidence.condition_id,
+    citation_id: evidence.citation_id,
+    cohort_id: evidence.cohort_id,
+    bench_condition_id: condition.condition_id,
+    evidence_role: evidence.role === "minimum" ? "inclusive_minimum" : evidence.role === "maximum" ? "inclusive_maximum" : evidence.role === "digitized_typical_curve" ? "curve_point" : "typical_observation",
+    citation_locator: locator,
+    evidence_qualification: qualification,
+    bench_qualification: projected ? { test_mode: "continuous_dc" } : qualification,
+    ...(projected ? { bench_equivalence_policy: "isothermal_diode_forward_projection" } : {}),
+  };
+}
+
+export function normalizeMosfetCurve(raw, trail = "curve") {
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) throw new Error(`${trail} is required`);
+  assertExactKeys(raw, ["curve_id", "characteristic", "x_axis", "y_axis", "condition_identity", "citation_identity", "points"], [], trail);
+  if (!["transfer_current", "output_current"].includes(raw.characteristic)) throw new Error(`${trail}.characteristic is invalid`);
+  assertExactKeys(raw.x_axis ?? {}, ["quantity", "unit"], [], `${trail}.x_axis`);
+  const requiredX = raw.characteristic === "transfer_current" ? "vgs" : "vds";
+  if (raw.x_axis.quantity !== requiredX || raw.x_axis.unit !== "V") throw new Error(`${trail}.x_axis must be ${requiredX} in V`);
+  assertExactKeys(raw.y_axis ?? {}, ["quantity", "unit"], [], `${trail}.y_axis`);
+  if (raw.y_axis.quantity !== "id" || raw.y_axis.unit !== "A") throw new Error(`${trail}.y_axis must be id in A`);
+  const condition = normalizeMosfetConditionIdentity(raw.condition_identity, `${trail}.condition_identity`);
+  const citation = normalizeMosfetCitationIdentity(raw.citation_identity, `${trail}.citation_identity`);
+  if (condition.characteristic !== raw.characteristic) throw new Error(`${trail} characteristic disagrees with condition identity`);
+  if (!Array.isArray(raw.points) || !raw.points.length) throw new Error(`${trail}.points must be non-empty`);
+  const points = raw.points.map((point, index) => {
+    assertExactKeys(point ?? {}, ["x_si", "y_si", "point_index", "evidence_identity"], [], `${trail}.points[${index}]`);
+    const xSi = assertFinite(point.x_si, `${trail}.points[${index}].x_si`);
+    const ySi = assertFinite(point.y_si, `${trail}.points[${index}].y_si`);
+    if (point.point_index !== index) throw new Error(`${trail}.points must be ordered with contiguous point_index values`);
+    if (point.evidence_identity?.curve_id !== raw.curve_id || point.evidence_identity?.point_index !== point.point_index) throw new Error(`${trail}.points[${index}] has hybrid curve identity`);
+    if (point.evidence_identity?.role !== "digitized_typical_curve") throw new Error(`${trail}.points[${index}].evidence_identity.role must be digitized_typical_curve`);
+    const evidence = normalizeMosfetEvidenceIdentity(point.evidence_identity, condition, citation, `${trail}.points[${index}].evidence_identity`, {
+      curve: true,
+      characteristic: raw.characteristic,
+      point: { x_si: xSi, y_si: ySi, point_index: point.point_index }
+    });
+    return { x_si: xSi, y_si: ySi, point_index: point.point_index, evidence_identity: evidence };
+  });
+  assertIdentityHash(raw, "curve_id", trail, (curve) => curveIdentityMaterial(curve, condition.condition_id, citation.citation_id));
+  return { ...structuredClone(raw), condition_identity: condition, citation_identity: citation, points };
+}
+
+function assertQuantityIdentity(quantity, trail, expected = {}) {
+  if (!quantity || typeof quantity !== "object") throw new Error(`${trail} is required`);
+  const condition = normalizeMosfetConditionIdentity(quantity.condition_identity, `${trail}.condition_identity`);
+  const citation = normalizeMosfetCitationIdentity(quantity.citation_identity, `${trail}.citation_identity`);
+  const evidence = normalizeMosfetEvidenceIdentity(quantity.evidence_identity, condition, citation, `${trail}.evidence_identity`, {
+    characteristic: condition.characteristic,
+    quantity: quantity.quantity,
+    valueSi: quantity.value,
+    unitSi: quantity.unit
+  });
+  realDatasheetCitation(quantity.page_reference, `${trail}.page_reference`);
+  if (typeof quantity.quantity !== "string" || quantity.quantity !== expected.quantityLabel) throw new Error(`${trail}.quantity must be ${expected.quantityLabel}`);
+  if (expected.characteristic && condition.characteristic !== expected.characteristic) throw new Error(`${trail} has the wrong characteristic`);
+  if (expected.role && evidence.role !== expected.role) throw new Error(`${trail} has the wrong evidence role`);
+  if (expected.vgs != null && (condition.electrical.vgs.kind !== "fixed" || !closeEnough(Math.abs(condition.electrical.vgs.value_v), expected.vgs))) throw new Error(`${trail} has hybrid VGS metadata`);
+  if (expected.current != null && (condition.electrical.id.kind !== "fixed" || !closeEnough(Math.abs(condition.electrical.id.value_a), expected.current))) throw new Error(`${trail} has hybrid ID metadata`);
+  if (expected.vds != null && (condition.electrical.vds.kind !== "fixed" || !closeEnough(Math.abs(condition.electrical.vds.value_v), expected.vds))) throw new Error(`${trail} has hybrid VDS metadata`);
+  return { condition, citation, evidence, kind: "scalar", characteristic: condition.characteristic, quantity: quantity.quantity, valueSi: quantity.value, unitSi: quantity.unit };
+}
+
+function assertSamePointIdentity(identities, trail) {
+  for (const identity of identities.slice(1)) {
+    const sameCitationCohort = identity.evidence.cohort_id === identities[0].evidence.cohort_id;
+    if (identity.condition.condition_id !== identities[0].condition.condition_id || !sameCitationCohort) {
+      throw new Error(`${trail} contains hybrid condition, citation, or cohort metadata`);
+    }
+  }
+  return identities[0];
+}
+
+function assertDcConditionIdentity(identity, trail) {
+  if (!["dc", "continuous"].includes(identity.test_mode.kind)) {
+    throw new Error(`${trail} is ${identity.test_mode.kind}-qualified and cannot be emitted as a continuous operating-point bench`);
+  }
+}
+
 function evidenceTemperatureC(...values) {
   const text = values.filter(Boolean).map((value) => value?.conditions ?? value).join(" ");
   const temperatures = [...text.matchAll(/(-?\d+(?:\.\d+)?)\s*(?:deg\s*c|degc|°c|\bc\b)/gi)]
     .map((match) => Number(match[1])).filter(Number.isFinite);
-  if (!temperatures.length) return 25;
+  if (!temperatures.length) return null;
   const first = temperatures[0];
   if (temperatures.some((value) => Math.abs(value - first) > 1e-9)) throw new Error(`Conflicting cited temperatures in MOSFET bench evidence: ${text}`);
   return first;
 }
 
-function vdmosTestgen(ctx, model, facts) {
+function conditionCurrentA(...values) {
+  const text = values.filter(Boolean).map((value) => value?.conditions ?? value).join(" ").replaceAll("_", "");
+  const currents = [...text.matchAll(/(?:I[D]|drain current)\|?\s*=\s*([0-9.eE+-]+)\s*(u|µ|μ|m)?A/gi)]
+    .map((match) => Math.abs(Number(match[1])) * ({ u: 1e-6, "µ": 1e-6, "μ": 1e-6, m: 1e-3 }[match[2]?.toLowerCase()] ?? 1))
+    .filter(Number.isFinite);
+  if (!currents.length) return null;
+  const first = currents[0];
+  if (currents.some((value) => !closeEnough(value, first))) throw new Error(`Conflicting cited MOSFET currents: ${text}`);
+  return first;
+}
+
+function conditionVoltageV(symbol, ...values) {
+  const text = values.filter(Boolean).map((value) => value?.conditions ?? value).join(" ").replaceAll("_", "");
+  const voltages = [...text.matchAll(new RegExp(`${symbol}\\s*=\\s*([0-9.eE+-]+)\\s*V`, "gi"))]
+    .map((match) => Math.abs(Number(match[1]))).filter(Number.isFinite);
+  if (!voltages.length) return null;
+  const first = voltages[0];
+  if (voltages.some((value) => !closeEnough(value, first))) throw new Error(`Conflicting cited MOSFET ${symbol} values: ${text}`);
+  return first;
+}
+
+function legacyMosfetTemperature(facts, trail, ...values) {
+  const cited = evidenceTemperatureC(...values);
+  if (cited != null) return cited;
+  const declared = facts.fit_conditions?.temperature;
+  if (declared && Number.isFinite(Number(declared.value)) && declared.unit === "degC") return Number(declared.value);
+  throw new Error(`${trail} requires an exact cited temperature; no 25 degC default is permitted`);
+}
+
+function criticalMosfetEvidence(facts) {
+  const rows = [];
+  for (const [index, point] of (facts.rdson_points ?? []).entries()) {
+    const expectedLabels = {
+      vgs: "vgs",
+      current: "drain_current",
+      resistance: point.resistance?.source_kind === "minimum" ? "rds_on_minimum" : point.resistance?.source_kind === "maximum" ? "rds_on_maximum" : "rds_on_typical"
+    };
+    rows.push(...["vgs", "current", "resistance"].map((field) => assertQuantityIdentity(point[field], `facts.rdson_points[${index}].${field}`, { characteristic: "rds_on", quantityLabel: expectedLabels[field] })));
+  }
+  for (const field of ["minimum", "typical", "maximum"]) {
+    if (facts.threshold?.[field]) rows.push(assertQuantityIdentity(facts.threshold[field], `facts.threshold.${field}`, { characteristic: "gate_threshold", role: field, quantityLabel: `threshold_${field}` }));
+  }
+  const curves = (facts.curves ?? []).map((curve, index) => normalizeMosfetCurve(curve, `facts.curves[${index}]`));
+  for (const curve of curves) {
+    for (const point of curve.points) rows.push({ condition: curve.condition_identity, citation: curve.citation_identity, evidence: point.evidence_identity, kind: "point", characteristic: curve.characteristic, curve, point });
+  }
+  return { rows, curves };
+}
+
+function assertHeldDefaults(fitted) {
+  const held = fitted.held_defaults ?? fitted.optimizer?.held_defaults ?? [];
+  if (!Array.isArray(held)) throw new Error("fitted.held_defaults must be an array");
+  const byParameter = new Map();
+  for (const [index, item] of held.entries()) {
+    const trail = `fitted.held_defaults[${index}]`;
+    if (!item || typeof item !== "object") throw new Error(`${trail} must be an object`);
+    const parameter = String(item.parameter ?? "").trim();
+    if (!parameter || MOSFET_CRITICAL_PARAMETERS.has(parameter) || /(?:temp|threshold|drain.?current|vds)/i.test(parameter)) {
+      throw new Error(`${trail} cannot hold a critical MOSFET condition or parameter default`);
+    }
+    if (!Number.isFinite(Number(item.value)) || typeof item.unit !== "string" || !item.unit.trim()
+        || typeof item.reason !== "string" || !item.reason.trim() || PLACEHOLDER_CITATION.test(item.reason.trim())) {
+      throw new Error(`${trail} must truthfully record parameter, finite value, unit, and reason`);
+    }
+    if (Object.hasOwn(fitted.parameters ?? {}, parameter) && !closeEnough(fitted.parameters[parameter], item.value)) {
+      throw new Error(`${trail}.value disagrees with fitted.parameters.${parameter}`);
+    }
+    byParameter.set(parameter, item);
+  }
+  for (const [parameter, metadata] of Object.entries(fitted.parameter_metadata ?? {})) {
+    if (/held(?:\s|_|-)*(?:default|constant)|physical default|catalog seed/i.test(String(metadata?.status ?? "")) && !byParameter.has(parameter)) {
+      throw new Error(`fitted.parameter_metadata.${parameter} declares a held default without truthful held_defaults metadata`);
+    }
+  }
+}
+
+function assertCriticalFittedProvenance(fitted, packageEvidence) {
+  const byEvidenceId = new Map(packageEvidence.map((row) => [row.evidence.evidence_id, row]));
+  const observations = fitted.calibration?.observations ?? [];
+  const constraints = fitted.calibration?.constraints ?? [];
+  const residuals = fitted.residuals ?? [];
+  const calibrationRecords = [...observations, ...constraints];
+  const residualTargetCount = fitted.calibration?.residual_target_count;
+  const sameCalibrationRecord = (left, right) =>
+    left?.evidence_identity?.evidence_id === right?.evidence_identity?.evidence_id
+    && left?.evidence_role === right?.evidence_role;
+  if (!Number.isInteger(residualTargetCount) || residualTargetCount < 0) throw new Error("fitted.calibration.residual_target_count must be a non-negative integer");
+  if (fitted.fidelity_tier === "F2") {
+    const observationResidualCount = residuals.filter((residual) => observations.some((observation) => sameCalibrationRecord(observation, residual))).length;
+    if (residualTargetCount !== observations.length) throw new Error("fitted.calibration.residual_target_count must equal the calibration observation count");
+    if (residualTargetCount !== observationResidualCount) throw new Error("fitted.calibration.residual_target_count must equal the observation-linked residual row count");
+  }
+  for (const [index, residual] of residuals.entries()) {
+    const trail = `fitted.residuals[${index}]`;
+    const matches = calibrationRecords.filter((record) => sameCalibrationRecord(record, residual));
+    if (matches.length !== 1) throw new Error(`${trail} must resolve exactly once to a declared calibration record`);
+    const record = matches[0];
+    for (const field of ["quantity", "gate_quantity", "datasheet_value", "unit", "evidence_role"]) {
+      if (record[field] !== residual[field]) throw new Error(`${trail}.${field} disagrees with its declared calibration record`);
+    }
+    for (const [field, nested] of [["condition_identity", "condition_id"], ["citation_identity", "citation_id"], ["evidence_identity", "evidence_id"]]) {
+      if (record[field]?.[nested] !== residual[field]?.[nested]) throw new Error(`${trail}.${field}.${nested} disagrees with its declared calibration record`);
+    }
+  }
+  if (fitted.fidelity_tier === "F2") for (const [index, observation] of observations.entries()) {
+    const matches = residuals.filter((residual) => sameCalibrationRecord(residual, observation));
+    if (matches.length !== 1) throw new Error(`fitted.calibration.observations[${index}] must resolve exactly once to a residual row`);
+  }
+  const groups = [
+    ["calibration.observations", fitted.calibration?.observations ?? []],
+    ["calibration.constraints", fitted.calibration?.constraints ?? []],
+    ["residuals", fitted.residuals ?? []]
+  ];
+  for (const [group, rows] of groups) for (const [index, row] of rows.entries()) {
+    const trail = `fitted.${group}[${index}]`;
+    const text = `${row.quantity ?? ""} ${row.kind ?? ""} ${row.parameter_coordinate ?? ""}`;
+    if (!/(?:threshold|gate_threshold|rds|rdson|transfer current|output current|\bVTO\b)/i.test(text)) throw new Error(`${trail} uses a non-canonical critical MOSFET quantity label`);
+    const linked = Array.isArray(row.evidence) && row.evidence.length ? row.evidence
+      : Array.isArray(row.evidence_identities) && Array.isArray(row.citation_identities)
+        ? row.evidence_identities.map((evidence_identity, evidenceIndex) => ({ condition_identity: row.condition_identity, citation_identity: row.citation_identities[evidenceIndex], evidence_identity }))
+        : [{ condition_identity: row.condition_identity, citation_identity: row.citation_identity, evidence_identity: row.evidence_identity }];
+    for (const [evidenceIndex, item] of linked.entries()) {
+      const itemTrail = linked.length === 1 ? trail : `${trail}.evidence[${evidenceIndex}]`;
+      const condition = normalizeMosfetConditionIdentity(item.condition_identity, `${itemTrail}.condition_identity`);
+      const citation = normalizeMosfetCitationIdentity(item.citation_identity, `${itemTrail}.citation_identity`);
+      const evidence = normalizeMosfetEvidenceIdentity(item.evidence_identity, condition, citation, `${itemTrail}.evidence_identity`, { curve: Object.hasOwn(item.evidence_identity ?? {}, "curve_id") });
+      const packageRow = byEvidenceId.get(evidence.evidence_id);
+      if (!packageRow || packageRow.condition.condition_id !== condition.condition_id || packageRow.citation.citation_id !== citation.citation_id) {
+        throw new Error(`${itemTrail} does not resolve to package evidence`);
+      }
+      const expectedValue = packageRow.kind === "point" ? packageRow.point.y_si : packageRow.valueSi;
+      const expectedUnit = packageRow.kind === "point" ? packageRow.curve.y_axis.unit : packageRow.unitSi;
+      const expectedQuantity = packageRow.kind === "point" ? packageRow.curve.y_axis.quantity : packageRow.quantity;
+      const itemValue = Object.hasOwn(item, "value_si") ? item.value_si : Object.hasOwn(item, "datasheet_value") ? item.datasheet_value : Object.hasOwn(item, "value") ? item.value : undefined;
+      if (item.quantity != null && item.quantity !== expectedQuantity) throw new Error(`${itemTrail}.quantity disagrees with referenced evidence`);
+      if (itemValue != null && !closeEnough(itemValue, expectedValue)) throw new Error(`${itemTrail}.datasheet value disagrees with referenced evidence`);
+      if ((item.unit_si ?? item.unit) != null && (item.unit_si ?? item.unit) !== expectedUnit) throw new Error(`${itemTrail}.unit disagrees with referenced evidence`);
+      const primary = item.evidence_identity?.evidence_id === row.evidence_identity?.evidence_id;
+      if (primary) {
+        const expectedGate = packageRow.characteristic === "rds_on" ? "rds_on"
+          : ["transfer_current", "output_current"].includes(packageRow.characteristic) ? "drain_current"
+            : packageRow.characteristic;
+        if (row.datasheet_value != null && !closeEnough(row.datasheet_value, expectedValue)) throw new Error(`${trail}.datasheet_value disagrees with referenced evidence`);
+        if (row.value != null && !closeEnough(row.value, expectedValue)) throw new Error(`${trail}.value disagrees with referenced evidence`);
+        if (row.unit != null && row.unit !== expectedUnit) throw new Error(`${trail}.unit disagrees with referenced evidence`);
+        if (row.gate_quantity != null && row.gate_quantity !== expectedGate) throw new Error(`${trail}.gate_quantity disagrees with referenced evidence quantity`);
+        if (group === "residuals" && !Number.isFinite(Number(row.fitted_value))) throw new Error(`${trail}.fitted_value must declare the calibrated model observation`);
+      }
+    }
+  }
+}
+
+function conditionDomain(condition, quantity, temperatureKind = null) {
+  if (quantity === "temperature") return condition.temperature.kind === temperatureKind
+    ? { minimum: condition.temperature.value_c, maximum: condition.temperature.value_c }
+    : null;
+  const electrical = condition.electrical[quantity];
+  if (electrical.kind === "fixed") {
+    const value = electrical[`value_${quantity === "id" ? "a" : "v"}`];
+    return { minimum: value, maximum: value };
+  }
+  if (electrical.kind === "range") return {
+    minimum: electrical[`lower_${quantity === "id" ? "a" : "v"}`],
+    maximum: electrical[`upper_${quantity === "id" ? "a" : "v"}`]
+  };
+  if (electrical.kind === "enumerated") return { values: electrical.values };
+  return null;
+}
+
+function conditionValues(condition, quantity, temperatureKind = null) {
+  const domain = conditionDomain(condition, quantity, temperatureKind);
+  if (!domain) return [];
+  return domain.values ?? [domain.minimum, domain.maximum];
+}
+
+function assertMosfetRegionContract(region, packageEvidence) {
+  if (!region || region.contract_version !== "1.0.0" || !Array.isArray(region.numeric_bounds) || !region.numeric_bounds.length) {
+    throw new Error("MOSFET supported_operating_region must use contract_version 1.0.0 with numeric bounds");
+  }
+  const byEvidenceId = new Map(packageEvidence.map((row) => [row.evidence.evidence_id, row]));
+  const representedQuantities = new Set();
+  for (const [index, bound] of region.numeric_bounds.entries()) {
+    representedQuantities.add(bound.quantity);
+    const trail = `supported_operating_region.numeric_bounds[${index}]`;
+    assertExactKeys(bound, ["bound_id", "quantity", "kind", "unit", "evidence_refs", "condition_ids", "citation_ids", "derivation"], ["minimum", "maximum", "values", "temperature_kind", "conditions", "placeholder"], trail);
+    if (!["vgs", "vds", "id", "temperature"].includes(bound.quantity)) throw new Error(`${trail}.quantity is invalid`);
+    if (!["minimum", "maximum", "range", "enumerated"].includes(bound.kind)) throw new Error(`${trail}.kind is invalid`);
+    const expectedUnit = bound.quantity === "id" ? "A" : bound.quantity === "temperature" ? "degC" : "V";
+    if (bound.unit !== expectedUnit) throw new Error(`${trail}.unit must be ${expectedUnit}`);
+    if (!["direct_evidence_union", "direct_evidence_intersection"].includes(bound.derivation)) throw new Error(`${trail}.derivation is invalid`);
+    if (bound.quantity === "temperature" && !["junction", "ambient", "case"].includes(bound.temperature_kind)) throw new Error(`${trail}.temperature_kind is required`);
+    if (bound.kind === "enumerated") {
+      if (!Array.isArray(bound.values) || !bound.values.length || bound.values.some((value) => !Number.isFinite(Number(value)))) throw new Error(`${trail}.values must be finite and non-empty`);
+    } else {
+      if (["minimum", "range"].includes(bound.kind)) assertFinite(bound.minimum, `${trail}.minimum`);
+      if (["maximum", "range"].includes(bound.kind)) assertFinite(bound.maximum, `${trail}.maximum`);
+      if (bound.kind === "range" && bound.minimum > bound.maximum) throw new Error(`${trail} range is reversed`);
+    }
+    if (!Array.isArray(bound.evidence_refs) || !bound.evidence_refs.length) throw new Error(`${trail}.evidence_refs must be non-empty`);
+    const referenced = bound.evidence_refs.map((ref, refIndex) => {
+      assertExactKeys(ref ?? {}, ["evidence_id", "condition_id", "citation_id", "cohort_id"], [], `${trail}.evidence_refs[${refIndex}]`);
+      const resolved = byEvidenceId.get(ref.evidence_id);
+      if (!resolved || resolved.condition.condition_id !== ref.condition_id || resolved.citation.citation_id !== ref.citation_id || resolved.evidence.cohort_id !== ref.cohort_id) {
+        throw new Error(`${trail}.evidence_refs[${refIndex}] does not resolve to package evidence`);
+      }
+      return resolved;
+    });
+    const conditionIds = [...new Set(referenced.map((row) => row.condition.condition_id))].sort();
+    const citationIds = [...new Set(referenced.map((row) => row.citation.citation_id))].sort();
+    if (JSON.stringify(bound.condition_ids) !== JSON.stringify(conditionIds) || JSON.stringify(bound.citation_ids) !== JSON.stringify(citationIds)) throw new Error(`${trail} identity sets disagree with evidence_refs`);
+    const evidenceDomains = referenced.map((row) => conditionDomain(row.condition, bound.quantity, bound.temperature_kind));
+    const evidenceValues = evidenceDomains.filter(Boolean).flatMap((domain) => domain.values ?? [domain.minimum, domain.maximum]);
+    const covers = (value) => bound.kind === "enumerated" ? bound.values.some((candidate) => closeEnough(candidate, value))
+      : (bound.minimum == null || value >= bound.minimum - 1e-12) && (bound.maximum == null || value <= bound.maximum + 1e-12);
+    if (bound.derivation === "direct_evidence_union" && evidenceValues.some((value) => !covers(value))) throw new Error(`${trail} omits referenced evidence values`);
+    const unionErrors = directEvidenceUnionErrors(bound, evidenceValues, trail);
+    if (unionErrors.length) throw new Error(unionErrors[0]);
+    const intersectionErrors = directEvidenceIntersectionErrors(bound, evidenceDomains, trail);
+    if (intersectionErrors.length) throw new Error(intersectionErrors[0]);
+    assertIdentityHash(bound, "bound_id", trail, (value) => Object.fromEntries(Object.entries(value).filter(([key]) => !["bound_id", "conditions", "placeholder"].includes(key))));
+  }
+  const required = new Set(["vgs", "id", "temperature"]);
+  if (packageEvidence.some((row) => conditionValues(row.condition, "vds").length)) required.add("vds");
+  for (const quantity of required) if (!representedQuantities.has(quantity)) throw new Error(`MOSFET supported region is missing ${quantity} evidence coverage`);
+}
+
+export function assertMosfetConditionIdentityContract(ctx, facts, fitted) {
+  const strict = ctx.part.pipeline === "vdmos" && facts?.evidence_contract_version === "1.0.0";
+  if (!strict) return { strict: false, rows: [], curves: [] };
+  const componentTier = ctx.part.component?.fidelity_tier;
+  if (fitted?.fidelity_tier !== componentTier) throw new Error("MOSFET fitted.fidelity_tier must exactly equal component.fidelity_tier");
+  const source = facts.source;
+  if (!source || source.placeholder !== false || !SHA256_HEX.test(source.sha256) || !Array.isArray(source.pages_referenced) || !source.pages_referenced.length) {
+    throw new Error("MOSFET package provenance requires a non-placeholder datasheet source with SHA-256 and cited pages");
+  }
+  assertHeldDefaults(fitted);
+  let datasheet = source;
+  if (ctx.packageDir) {
+    const sourcesPath = path.join(ctx.packageDir, "sources.json");
+    const componentPath = path.join(ctx.packageDir, "component.json");
+    if (fs.existsSync(sourcesPath) && fs.existsSync(componentPath)) {
+      const sources = JSON.parse(fs.readFileSync(sourcesPath, "utf8"));
+      const component = JSON.parse(fs.readFileSync(componentPath, "utf8"));
+      const componentUrl = component.datasheet?.url;
+      const datasheets = sources.filter((candidate) => candidate.kind === "datasheet" && candidate.url === componentUrl);
+      if (datasheets.length !== 1) throw new Error("MOSFET component datasheet URL must resolve exactly once in sources.json");
+      datasheet = datasheets[0];
+      if (component.datasheet?.revision !== datasheet.revision) throw new Error("MOSFET component datasheet revision disagrees with sources.json");
+      if (source.url !== datasheet.url || source.sha256 !== datasheet.sha256 || source.revision !== datasheet.revision) {
+        throw new Error("MOSFET facts.source URL, SHA-256, and revision must exactly match the selected sources.json datasheet");
+      }
+    }
+  }
+  const evidence = criticalMosfetEvidence(facts);
+  if (!evidence.rows.length) throw new Error(`${ctx.part.slug} has no critical MOSFET condition identities`);
+  if (evidence.rows.some((row) => row.citation.source_sha256 !== datasheet.sha256 || (row.citation.source_revision != null && row.citation.source_revision !== datasheet.revision))) {
+    throw new Error("MOSFET citation identity must resolve to the same sources.json datasheet");
+  }
+  assertCriticalFittedProvenance(fitted, evidence.rows);
+  if (fitted.fidelity_tier === "F2") {
+    const summary = summarizeMosfetResiduals(fitted.residuals);
+    if (!summary.worst || !Number.isFinite(summary.rms)) throw new Error("MOSFET F2 residual summary requires finite residuals");
+    for (const [index, item] of summary.rows.entries()) if (!closeEnough(fitted.residuals[index].relative_error, item.relativeError)) throw new Error(`fitted.residuals[${index}].relative_error disagrees with recomputed residual`);
+    if (!closeEnough(fitted.rms_relative_error ?? fitted.rms, summary.rms)) throw new Error("MOSFET F2 RMS disagrees with recomputed residuals");
+    const declaredWorst = fitted.worst_relative_error ?? fitted.worst;
+    if (!closeEnough(declaredWorst?.value, summary.worst.relativeError) || declaredWorst?.quantity !== summary.worst.row.quantity) throw new Error("MOSFET F2 worst quantity or value disagrees with recomputed residuals");
+    const declaredGate = fitted.gate?.pass ?? fitted.f2_gate_pass;
+    if (typeof declaredGate !== "boolean" || declaredGate !== summary.gatePass) throw new Error("MOSFET F2 declared gate result disagrees with recomputed 0.20 worst and 0.12 RMS gates");
+    if (!summary.gatePass) throw new Error("MOSFET F2 residuals fail the 0.20 worst and 0.12 RMS gates");
+  }
+  assertMosfetRegionContract(ctx.part.component.supported_operating_region ?? {
+    contract_version: ctx.part.component.operating_contract_version,
+    numeric_bounds: ctx.part.component.numeric_bounds
+  }, evidence.rows);
+  return { strict: true, ...evidence };
+}
+
+function vdmosTestgen(ctx, model, facts, fitted) {
   const tests = [];
+  const contract = assertMosfetConditionIdentityContract(ctx, facts, fitted);
+  const strict = contract.strict;
   const pChannel = ctx.part.identity.electrical_family === "pmos";
   const signed = (value) => (pChannel ? -1 : 1) * Number(value);
   const currentSource = (name, node, current) => pChannel
@@ -536,10 +1161,21 @@ function vdmosTestgen(ctx, model, facts) {
 
   if (facts.rdson_points?.length) {
     const groups = new Map();
-    for (const point of facts.rdson_points) {
-      const temperature = evidenceTemperatureC(point.vgs, point.current, point.resistance);
+    for (const [index, point] of facts.rdson_points.entries()) {
+      let identity = null;
+      const temperature = strict
+        ? (() => {
+          const vgsIdentity = assertQuantityIdentity(point.vgs, `facts.rdson_points[${index}].vgs`, { characteristic: "rds_on", quantityLabel: "vgs", vgs: point.vgs.value, current: point.current.value });
+          const currentIdentity = assertQuantityIdentity(point.current, `facts.rdson_points[${index}].current`, { characteristic: "rds_on", quantityLabel: "drain_current", vgs: point.vgs.value, current: point.current.value });
+          const resistanceIdentity = assertQuantityIdentity(point.resistance, `facts.rdson_points[${index}].resistance`, { characteristic: "rds_on", quantityLabel: point.resistance.source_kind === "minimum" ? "rds_on_minimum" : point.resistance.source_kind === "maximum" ? "rds_on_maximum" : "rds_on_typical", vgs: point.vgs.value, current: point.current.value });
+          assertSamePointIdentity([vgsIdentity, currentIdentity, resistanceIdentity], `facts.rdson_points[${index}]`);
+          identity = resistanceIdentity;
+          assertDcConditionIdentity(identity.condition, `facts.rdson_points[${index}]`);
+          return identity.condition.temperature.value_c;
+        })()
+        : legacyMosfetTemperature(facts, `facts.rdson_points[${index}]`, point.vgs, point.current, point.resistance);
       const group = groups.get(temperature) ?? [];
-      group.push(point);
+      group.push({ point, identity });
       groups.set(temperature, group);
     }
     [...groups.entries()].forEach(([temperature, points], groupIndex) => {
@@ -547,7 +1183,7 @@ function vdmosTestgen(ctx, model, facts) {
       const rdLines = [`OpenCircuit factory test: ${ctx.part.slug} RDS(on)`, model, `.temp ${Number(temperature)}`];
       const rdChecks = [];
       const rdHardChecks = [];
-      points.forEach((point, index) => {
+      points.forEach(({ point, identity }, index) => {
         const id = index + 1;
         rdLines.push(
           `M${id} d${id} g${id} 0 ${ctx.part.component.modelName}`,
@@ -555,12 +1191,13 @@ function vdmosTestgen(ctx, model, facts) {
           `VG${id} g${id} 0 DC ${formatSpice(signed(point.vgs.value))}`
         );
         const expression = `scale_abs:last(v(d${id}),${1 / point.current.value})`;
+        const links = strict ? evidenceLinks(identity.evidence, identity.condition, identity.citation) : null;
         if (point.resistance.source_kind === "maximum") {
-          rdHardChecks.push(hardBound(`rdson_maximum_${groupIndex + 1}_${id}`, expression, "ohm", { minimum: 0, maximum: point.resistance.value }, point.resistance.page_reference));
+          rdHardChecks.push(hardBound(`rdson_maximum_${groupIndex + 1}_${id}`, expression, "ohm", { minimum: 0, maximum: point.resistance.value }, point.resistance.page_reference, links));
         } else if (point.resistance.source_kind === "minimum") {
-          rdHardChecks.push(hardBound(`rdson_minimum_${groupIndex + 1}_${id}`, expression, "ohm", { minimum: point.resistance.value }, point.resistance.page_reference));
+          rdHardChecks.push(hardBound(`rdson_minimum_${groupIndex + 1}_${id}`, expression, "ohm", { minimum: point.resistance.value }, point.resistance.page_reference, links));
         } else {
-          rdChecks.push(expectation(`rdson_${groupIndex + 1}_${id}`, expression, point.resistance.value, "ohm", 0, ctx.part.component.test_tolerances?.rds_on ?? 0.15, point.resistance.page_reference));
+          rdChecks.push(expectation(`rdson_${groupIndex + 1}_${id}`, expression, point.resistance.value, "ohm", 0, ctx.part.component.test_tolerances?.rds_on ?? 0.15, point.resistance.page_reference, links));
         }
       });
       rdLines.push(".op", ".end", "");
@@ -571,8 +1208,30 @@ function vdmosTestgen(ctx, model, facts) {
 
   if (facts.threshold) {
     const threshold = facts.threshold;
-    const current = threshold.test_current?.value ?? 250e-6;
-    const temperature = evidenceTemperatureC(threshold.minimum, threshold.typical, threshold.maximum, threshold.test_current);
+    const thresholdValues = [threshold.minimum, threshold.typical, threshold.maximum].filter(Boolean);
+    if (!thresholdValues.length) throw new Error("MOSFET threshold has no cited values");
+    let identity = null;
+    let current;
+    let temperature;
+    if (strict) {
+      const identities = thresholdValues.map((value, index) => assertQuantityIdentity(value, `facts.threshold.value[${index}]`, { characteristic: "gate_threshold", quantityLabel: `threshold_${value.source_kind}` }));
+      identity = identities[0];
+      if (identities.some((entry) => entry.condition.condition_id !== identity.condition.condition_id
+          || entry.citation.citation_id !== identity.citation.citation_id
+          || entry.evidence.cohort_id !== identity.evidence.cohort_id)) {
+        throw new Error("facts.threshold contains hybrid condition, citation, or cohort metadata");
+      }
+      assertDcConditionIdentity(identity.condition, "facts.threshold");
+      if (identity.condition.electrical.id.kind !== "fixed") throw new Error("MOSFET threshold bench requires exact fixed ID");
+      if (identity.condition.electrical.vds.kind !== "relation" || identity.condition.electrical.vds.relation !== "vds_equals_vgs") throw new Error("MOSFET threshold bench requires VDS = VGS");
+      current = identity.condition.electrical.id.value_a;
+      temperature = identity.condition.temperature.value_c;
+    } else {
+      current = Number(threshold.test_current?.value);
+      if (!(current > 0)) current = conditionCurrentA(...thresholdValues, threshold.test_current);
+      if (!(current > 0)) throw new Error("MOSFET threshold bench requires cited test current; no 250 uA default is permitted");
+      temperature = legacyMosfetTemperature(facts, "facts.threshold", ...thresholdValues, threshold.test_current);
+    }
     const lines = [
       `OpenCircuit factory test: ${ctx.part.slug} threshold bounds`,
       model,
@@ -586,27 +1245,56 @@ function vdmosTestgen(ctx, model, facts) {
     const scalarChecks = [];
     const hardChecks = [];
     const expression = "abs:last(v(d))";
-    if (threshold.typical) scalarChecks.push(expectation("gate_threshold_typical", expression, threshold.typical.value, "V", 0, ctx.part.component.test_tolerances?.threshold ?? 0.35, threshold.typical.page_reference));
-    if (threshold.minimum || threshold.maximum) hardChecks.push(hardBound(
-      "gate_threshold_bounds",
-      expression,
-      "V",
-      {
-        ...(threshold.minimum ? { minimum: threshold.minimum.value } : {}),
-        ...(threshold.maximum ? { maximum: threshold.maximum.value } : {})
-      },
-      [threshold.minimum?.page_reference, threshold.maximum?.page_reference].filter(Boolean).join("; ")
-    ));
+    if (threshold.typical) {
+      const typicalIdentity = strict ? assertQuantityIdentity(threshold.typical, "facts.threshold.typical", { characteristic: "gate_threshold", role: "typical", quantityLabel: "threshold_typical" }) : null;
+      scalarChecks.push(expectation("gate_threshold_typical", expression, threshold.typical.value, "V", 0, ctx.part.component.test_tolerances?.threshold ?? 0.35, threshold.typical.page_reference, strict ? evidenceLinks(typicalIdentity.evidence, typicalIdentity.condition, typicalIdentity.citation) : null));
+    }
+    if (threshold.minimum) {
+      const minimumIdentity = strict ? assertQuantityIdentity(threshold.minimum, "facts.threshold.minimum", { characteristic: "gate_threshold", role: "minimum", quantityLabel: "threshold_minimum" }) : null;
+      hardChecks.push(hardBound("gate_threshold_minimum", expression, "V", { minimum: threshold.minimum.value }, threshold.minimum.page_reference, strict ? evidenceLinks(minimumIdentity.evidence, minimumIdentity.condition, minimumIdentity.citation) : null));
+    }
+    if (threshold.maximum) {
+      const maximumIdentity = strict ? assertQuantityIdentity(threshold.maximum, "facts.threshold.maximum", { characteristic: "gate_threshold", role: "maximum", quantityLabel: "threshold_maximum" }) : null;
+      hardChecks.push(hardBound("gate_threshold_maximum", expression, "V", { maximum: threshold.maximum.value }, threshold.maximum.page_reference, strict ? evidenceLinks(maximumIdentity.evidence, maximumIdentity.condition, maximumIdentity.citation) : null));
+    }
     writeBench(ctx, "threshold.cir", lines.join("\n"));
     tests.push(testRecord("threshold.cir", "operating_point", scalarChecks, hardChecks));
   }
 
-  if (facts.transfer_points?.length) {
+  const transferCurves = strict ? contract.curves.filter((curve) => curve.characteristic === "transfer_current") : [];
+  if (strict && facts.transfer_points?.length) throw new Error("New-contract MOSFET transfer evidence must remain a validated curve object, not reconstructed point quantities");
+  if (strict && facts.output_points?.length) throw new Error("New-contract MOSFET output evidence must remain a validated curve object, not reconstructed point quantities");
+  if (transferCurves.length) {
+    transferCurves.forEach((curve, curveIndex) => {
+      const condition = curve.condition_identity;
+      assertDcConditionIdentity(condition, `facts.curves transfer ${curveIndex}`);
+      if (condition.electrical.vds.kind !== "fixed") throw new Error("Transfer curve bench requires exact fixed VDS");
+      const vds = condition.electrical.vds.value_v;
+      const transferLines = [`OpenCircuit factory test: ${ctx.part.slug} transfer curve ${curveIndex + 1}`, model, `.temp ${formatSpice(condition.temperature.value_c)}`];
+      const transferChecks = [];
+      curve.points.forEach((point, index) => {
+        const id = index + 1;
+        transferLines.push(
+          `MT${id} dt${id} gt${id} 0 ${ctx.part.component.modelName}`,
+          `VDT${id} dt${id} 0 DC ${formatSpice(signed(vds))}`,
+          `VGT${id} gt${id} 0 DC ${formatSpice(signed(point.x_si))}`
+        );
+        transferChecks.push(expectation(`transfer_curve_${curveIndex + 1}_point_${point.point_index}`, `abs:last(i(vdt${id}))`, point.y_si, "A", 0, ctx.part.component.test_tolerances?.drain_current ?? 0.33, curve.citation_identity.figure ? `p. ${curve.citation_identity.page}, Figure ${curve.citation_identity.figure}, ${curve.citation_identity.curve ?? curve.citation_identity.trace}` : `p. ${curve.citation_identity.page}`, evidenceLinks(point.evidence_identity, condition, curve.citation_identity)));
+      });
+      transferLines.push(".op", ".end", "");
+      const file = transferCurves.length === 1 ? "transfer_curve.cir" : `transfer_curve-${curveIndex + 1}.cir`;
+      writeBench(ctx, file, transferLines.join("\n"));
+      tests.push(testRecord(file, "operating_point", transferChecks));
+    });
+  } else if (facts.transfer_points?.length) {
     const transferLines = [`OpenCircuit factory test: ${ctx.part.slug} transfer`, model];
     const transferChecks = [];
+    const temperatures = new Set();
     facts.transfer_points.forEach((point, index) => {
       const id = index + 1;
-      const vds = point.vds?.value ?? facts.transfer_vds?.value ?? 25;
+      const vds = Number(point.vds?.value ?? facts.transfer_vds?.value ?? conditionVoltageV("VDS", point.vgs, point.current));
+      if (!(vds > 0)) throw new Error(`MOSFET transfer point ${index + 1} requires cited VDS; no 25 V default is permitted`);
+      temperatures.add(legacyMosfetTemperature(facts, `facts.transfer_points[${index}]`, point.vgs, point.current, point.vds, facts.transfer_vds));
       transferLines.push(
         `MT${id} dt${id} gt${id} 0 ${ctx.part.component.modelName}`,
         `VDT${id} dt${id} 0 DC ${formatSpice(signed(vds))}`,
@@ -614,12 +1302,36 @@ function vdmosTestgen(ctx, model, facts) {
       );
       transferChecks.push(expectation(`transfer_${point.vgs.value}_v`, `abs:last(i(vdt${id}))`, point.current.value, "A", 0, ctx.part.component.test_tolerances?.drain_current ?? 0.33, point.current.page_reference));
     });
+    if (temperatures.size !== 1) throw new Error("MOSFET transfer points with different temperatures require separate condition-identity curves");
+    transferLines.splice(2, 0, `.temp ${formatSpice([...temperatures][0])}`);
     transferLines.push(".op", ".end", "");
     writeBench(ctx, "transfer_curve.cir", transferLines.join("\n"));
     tests.push(testRecord("transfer_curve.cir", "operating_point", transferChecks));
   }
 
-  if (facts.output_points?.length) {
+  const outputCurves = strict ? contract.curves.filter((curve) => curve.characteristic === "output_current") : [];
+  if (outputCurves.length) {
+    outputCurves.forEach((curve, curveIndex) => {
+      const condition = curve.condition_identity;
+      assertDcConditionIdentity(condition, `facts.curves output ${curveIndex}`);
+      if (condition.electrical.vgs.kind !== "fixed") throw new Error("Output curve bench requires exact fixed VGS");
+      const outputLines = [`OpenCircuit factory test: ${ctx.part.slug} output curve ${curveIndex + 1}`, model, `.temp ${formatSpice(condition.temperature.value_c)}`];
+      const outputChecks = [];
+      curve.points.forEach((point, index) => {
+        const id = index + 1;
+        outputLines.push(
+          `MO${id} do${id} go${id} 0 ${ctx.part.component.modelName}`,
+          `VDO${id} do${id} 0 DC ${formatSpice(signed(point.x_si))}`,
+          `VGO${id} go${id} 0 DC ${formatSpice(signed(condition.electrical.vgs.value_v))}`
+        );
+        outputChecks.push(expectation(`output_curve_${curveIndex + 1}_point_${point.point_index}`, `abs:last(i(vdo${id}))`, point.y_si, "A", 0, ctx.part.component.test_tolerances?.drain_current ?? 0.33, `p. ${curve.citation_identity.page}, Figure ${curve.citation_identity.figure}, ${curve.citation_identity.curve ?? curve.citation_identity.trace}`, evidenceLinks(point.evidence_identity, condition, curve.citation_identity)));
+      });
+      outputLines.push(".op", ".end", "");
+      const file = outputCurves.length === 1 ? "output_curve.cir" : `output_curve-${curveIndex + 1}.cir`;
+      writeBench(ctx, file, outputLines.join("\n"));
+      tests.push(testRecord(file, "operating_point", outputChecks));
+    });
+  } else if (facts.output_points?.length) {
     const outputLines = [`OpenCircuit factory test: ${ctx.part.slug} output`, model];
     facts.output_points.forEach((point, index) => {
       const id = index + 1;
@@ -829,37 +1541,66 @@ export function stageTestgen(ctx) {
   ensureDirectory(path.join(ctx.packageDir, "tests"));
 
   if (["bjt", "darlington", "sibling_alias"].includes(ctx.part.pipeline)) tests = bjtTestgen(ctx, model, facts);
-  else if (ctx.part.pipeline === "vdmos") tests = vdmosTestgen(ctx, model, facts);
+  else if (ctx.part.pipeline === "vdmos") {
+    const fittedPath = path.join(ctx.packageDir, "fitted.json");
+    requireFile(fittedPath, "testgen VDMOS provenance");
+    tests = vdmosTestgen(ctx, model, facts, JSON.parse(fs.readFileSync(fittedPath, "utf8")));
+  }
   else if (ctx.part.pipeline === "opamp") tests = opampTestgen(ctx, model, facts);
   else if (ctx.part.pipeline === "specialty_analog") tests = specialtyTestgen(ctx, model, facts);
   else if (ctx.part.pipeline === "sensor_behavioral") tests = sensorTestgen(ctx, model, facts);
   if (ctx.part.pipeline) {
-    writeJson(path.join(ctx.packageDir, "tests", "expectations.json"), { schema_version: "1.0.0", tests });
+    const strictEvidence = ctx.part.pipeline === "vdmos" && facts.evidence_contract_version === "1.0.0";
+    const linkedChecks = tests.flatMap((entry) => [...(entry.scalar_checks ?? []), ...(entry.hard_bounds_checks ?? [])]).filter((check) => check.evidence_id);
+    const evidenceCohorts = [...new Map(linkedChecks.map((check) => [check.cohort_id, {
+      cohort_id: check.cohort_id,
+      fidelity_tier: ctx.part.component.fidelity_tier ?? "F2",
+      evidence_ids: linkedChecks.filter((candidate) => candidate.cohort_id === check.cohort_id).map((candidate) => candidate.evidence_id).filter((value, index, values) => values.indexOf(value) === index),
+    }])).values()];
+    writeJson(path.join(ctx.packageDir, "tests", "expectations.json"), {
+      schema_version: "1.0.0",
+      ...(strictEvidence ? { evidence_contract_version: "1.0.0", evidence_cohorts: evidenceCohorts } : {}),
+      tests,
+    });
     console.log(`testgen ${ctx.part.slug}: ${tests.length} benches`);
     return;
   }
 
-  facts.fit_points.forEach((point, index) => {
+  const strictDiodeEvidence = facts.evidence_contract_version === "1.0.0" && Array.isArray(facts.forward_voltage_points);
+  const forwardRows = strictDiodeEvidence
+    ? strictDiodeForwardRows(facts, ctx.part.component.fidelity_tier)
+    : facts.fit_points.map((point) => ({
+      current: point.current.value,
+      voltage: point.voltage.value,
+      role: point.voltage.source_kind,
+      pageReference: point.voltage.page_reference,
+    }));
+  forwardRows.forEach((row, index) => {
     const file = `forward_${String(index + 1).padStart(2, "0")}.cir`;
-    fs.writeFileSync(path.join(ctx.packageDir, "tests", file), opBench(model, ctx.part.component.modelName, file, point.current.value));
-    const maximumBound = point.voltage.source_kind.includes("maximum");
-    const minimumBound = point.voltage.source_kind.includes("minimum");
+    const bench = strictDiodeEvidence
+      ? strictDiodeForwardBench(model, ctx.part.component.modelName, file, row.current, row.condition)
+      : { text: opBench(model, ctx.part.component.modelName, file, row.current), analysisType: "operating_point", expression: "last(v(anode))" };
+    fs.writeFileSync(path.join(ctx.packageDir, "tests", file), bench.text);
+    const maximumBound = row.role.includes("maximum");
+    const minimumBound = row.role.includes("minimum");
+    const links = strictDiodeEvidence ? evidenceLinks(row.evidence, row.condition, row.citation) : null;
     tests.push({
       test_netlist: file,
-      analysis_type: "operating_point",
+      analysis_type: bench.analysisType,
       scalar_checks: maximumBound || minimumBound ? [] : [expectation(
-        `forward_voltage_at_${point.current.value}_a`,
-        "last(v(anode))",
-        point.voltage.value,
+        `forward_voltage_at_${row.current}_a`,
+        bench.expression,
+        row.voltage,
         "V",
         0.02,
         ctx.part.component.test_tolerances?.forward_voltage ?? 0.04,
-        point.voltage.page_reference
+        row.pageReference,
+        links
       )],
       hard_bounds_checks: maximumBound
-        ? [hardBound(`forward_voltage_maximum_at_${point.current.value}_a`, "last(v(anode))", "V", { minimum: 0, maximum: point.voltage.value }, point.voltage.page_reference)]
+        ? [hardBound(`forward_voltage_maximum_at_${row.current}_a`, bench.expression, "V", { minimum: 0, maximum: row.voltage }, row.pageReference, links)]
         : minimumBound
-          ? [hardBound(`forward_voltage_minimum_at_${point.current.value}_a`, "last(v(anode))", "V", { minimum: point.voltage.value }, point.voltage.page_reference)]
+          ? [hardBound(`forward_voltage_minimum_at_${row.current}_a`, bench.expression, "V", { minimum: row.voltage }, row.pageReference, links)]
           : []
     });
   });
@@ -927,7 +1668,17 @@ export function stageTestgen(ctx) {
     });
   }
 
-  writeJson(path.join(ctx.packageDir, "tests", "expectations.json"), { schema_version: "1.0.0", tests });
+  const linkedChecks = tests.flatMap((entry) => [...(entry.scalar_checks ?? []), ...(entry.hard_bounds_checks ?? [])]).filter((check) => check.evidence_id);
+  const evidenceCohorts = [...new Map(linkedChecks.map((check) => [check.cohort_id, {
+    cohort_id: check.cohort_id,
+    fidelity_tier: ctx.part.component.fidelity_tier,
+    evidence_ids: linkedChecks.filter((candidate) => candidate.cohort_id === check.cohort_id).map((candidate) => candidate.evidence_id).filter((value, index, values) => values.indexOf(value) === index),
+  }])).values()];
+  writeJson(path.join(ctx.packageDir, "tests", "expectations.json"), {
+    schema_version: "1.0.0",
+    ...(strictDiodeEvidence ? { evidence_contract_version: "1.0.0", evidence_cohorts: evidenceCohorts } : {}),
+    tests,
+  });
   console.log(`testgen ${ctx.part.slug}: ${tests.length} benches`);
 }
 
@@ -1117,10 +1868,37 @@ function evaluateCheck(value, check) {
   };
 }
 
+export function evaluateCheckAcrossEngines(check, nativeResult, browserWasmResult) {
+  if (!check?.expression_source?.expression) throw new Error("Dual-engine expectation requires an expression");
+  const expression = check.expression_source.expression;
+  const native = evaluateCheck(expressionValue(nativeResult, expression), check);
+  const browserWasm = evaluateCheck(expressionValue(browserWasmResult, expression), check);
+  return {
+    name: check.name,
+    ...native,
+    pass: native.pass && browserWasm.pass,
+    native,
+    browser_wasm: browserWasm,
+  };
+}
+
 export function stageValidate(ctx) {
   assertNoTrackedPdfs();
-  run("node", [packageValidator, ctx.packageDir]);
+  if (ctx.part.pipeline === "vdmos") {
+    const facts = JSON.parse(fs.readFileSync(path.join(ctx.packageDir, "facts.json"), "utf8"));
+    const fitted = JSON.parse(fs.readFileSync(path.join(ctx.packageDir, "fitted.json"), "utf8"));
+    assertMosfetConditionIdentityContract(ctx, facts, fitted);
+  }
+  run("node", [packageValidator, ...(ctx.part.pipeline === "vdmos" ? ["--require-evidence-contract"] : []), ctx.packageDir]);
+  if (ctx.part.pipeline === "vdmos") {
+    const emittedComponent = JSON.parse(fs.readFileSync(path.join(ctx.packageDir, "component.json"), "utf8"));
+    const facts = JSON.parse(fs.readFileSync(path.join(ctx.packageDir, "facts.json"), "utf8"));
+    const fitted = JSON.parse(fs.readFileSync(path.join(ctx.packageDir, "fitted.json"), "utf8"));
+    assertMosfetConditionIdentityContract({ ...ctx, part: { ...ctx.part, component: { ...ctx.part.component, supported_operating_region: emittedComponent.supported_operating_region } } }, facts, fitted);
+  }
   const expectations = JSON.parse(fs.readFileSync(path.join(ctx.packageDir, "tests", "expectations.json"), "utf8"));
+  const fitted = JSON.parse(fs.readFileSync(path.join(ctx.packageDir, "fitted.json"), "utf8"));
+  const strictMosfet = ctx.part.pipeline === "vdmos" && expectations.evidence_contract_version === "1.0.0";
   const results = [];
   let passCount = 0;
   let failCount = 0;
@@ -1128,9 +1906,14 @@ export function stageValidate(ctx) {
   let worstEngineAbsoluteDelta = 0;
   let worstExpectationRelativeError = 0;
   let worstExpectationQuantity = "package expectation";
+  let engineVersions = null;
+  const modelHash = `sha256:${sha256(path.join(ctx.packageDir, "model.cir"))}`;
+  const benchHashes = {};
 
   for (const test of expectations.tests) {
     const benchPath = path.join(ctx.packageDir, "tests", test.test_netlist);
+    const benchHash = `sha256:${sha256(benchPath)}`;
+    benchHashes[test.test_netlist] = benchHash;
     const analysis = test.analysis_type === "ac_small_signal" ? "ac" : test.analysis_type === "transient" ? "tran" : "op";
     const reportPath = path.join(ctx.workDir, `${test.test_netlist}.compare.json`);
     run("node", [compareCli, benchPath, "--analysis", analysis, "--json", reportPath], { timeout: 120_000 });
@@ -1138,34 +1921,58 @@ export function stageValidate(ctx) {
     const nativeResultPath = path.join(ctx.workDir, `${test.test_netlist}.native.json`);
     run("node", [path.join(here, "lib", "read-native.mjs"), benchPath, nativeResultPath]);
     const nativeResult = JSON.parse(fs.readFileSync(nativeResultPath, "utf8"));
+    let browserWasmResult = null;
+    if (strictMosfet) {
+      const browserWasmResultPath = path.join(ctx.workDir, `${test.test_netlist}.browser-wasm.json`);
+      run("node", [path.join(here, "lib", "read-wasm.mjs"), benchPath, browserWasmResultPath], { timeout: 120_000 });
+      browserWasmResult = JSON.parse(fs.readFileSync(browserWasmResultPath, "utf8"));
+      const currentVersions = {
+        native: { version: nativeResult.version },
+        browser_wasm: { version: browserWasmResult.version, ngspice_version: browserWasmResult.ngspiceVersion },
+      };
+      if (nativeResult.version !== report.engines.native.version
+          || browserWasmResult.version !== report.engines.wasm.version
+          || browserWasmResult.ngspiceVersion !== report.engines.wasm.ngspiceVersion) {
+        throw new Error(`${test.test_netlist} engine identity drifted between comparison and expectation evaluation`);
+      }
+      if (engineVersions && JSON.stringify(engineVersions) !== JSON.stringify(currentVersions)) {
+        throw new Error(`${test.test_netlist} engine version drifted within strict MOSFET validation`);
+      }
+      engineVersions = currentVersions;
+    }
     for (const vector of report.vectors) {
       if (Number.isFinite(vector.maxRelativeError)) worstEngineRelativeDelta = Math.max(worstEngineRelativeDelta, vector.maxRelativeError);
       if (Number.isFinite(vector.maxAbsError)) worstEngineAbsoluteDelta = Math.max(worstEngineAbsoluteDelta, vector.maxAbsError);
     }
     const checks = [];
     for (const check of [...test.scalar_checks, ...test.hard_bounds_checks]) {
-      const value = expressionValue(nativeResult, check.expression_source.expression);
-      const evaluation = evaluateCheck(value, check);
+      const evaluation = strictMosfet
+        ? evaluateCheckAcrossEngines(check, nativeResult, browserWasmResult)
+        : { name: check.name, ...evaluateCheck(expressionValue(nativeResult, check.expression_source.expression), check) };
       if (evaluation.pass) passCount += 1;
       else failCount += 1;
       if (Object.hasOwn(check, "expected_value")) {
-        const relativeError = evaluation.error / Math.max(Math.abs(check.expected_value), Number.EPSILON);
+        const relativeError = Math.max(
+          evaluation.native?.error ?? evaluation.error,
+          evaluation.browser_wasm?.error ?? evaluation.error,
+        ) / Math.max(Math.abs(check.expected_value), Number.EPSILON);
         if (relativeError >= worstExpectationRelativeError) {
           worstExpectationRelativeError = relativeError;
           worstExpectationQuantity = check.name;
         }
       }
-      checks.push({ name: check.name, ...evaluation });
+      checks.push(evaluation);
     }
     results.push({
       test_netlist: test.test_netlist,
+      bench_sha256: benchHash,
       analysis,
       native_wasm_pass: report.pass,
+      ...(strictMosfet ? { engines: engineVersions } : {}),
       checks
     });
   }
 
-  const fitted = JSON.parse(fs.readFileSync(path.join(ctx.packageDir, "fitted.json"), "utf8"));
   const validation = {
     schema_version: "1.0.0",
     validation_date: today(),
@@ -1175,6 +1982,11 @@ export function stageValidate(ctx) {
     expectation_fail_count: failCount,
     worst_native_wasm_relative_delta: worstEngineRelativeDelta,
     worst_native_wasm_absolute_delta: worstEngineAbsoluteDelta,
+    ...(strictMosfet ? {
+      strict_dual_engine_expectations: true,
+      engines: engineVersions,
+      artifact_hashes: { model_cir: modelHash, benches: benchHashes },
+    } : {}),
     benches: results
   };
   writeJson(path.join(ctx.packageDir, "validation-results.json"), validation);
@@ -1193,7 +2005,7 @@ export function stageValidate(ctx) {
   };
   component.validation_date = today();
   writeJson(componentPath, component);
-  run("node", [packageValidator, ctx.packageDir]);
+  run("node", [packageValidator, ...(ctx.part.pipeline === "vdmos" ? ["--require-evidence-contract"] : []), ctx.packageDir]);
   console.log(`validate ${ctx.part.slug}: ${passCount} checks, engine max rel ${worstEngineRelativeDelta.toExponential(3)}`);
 }
 
@@ -1235,10 +2047,13 @@ export function stageCard(ctx) {
     ? `Worst fitting error: ${(100 * fitted.worst_relative_error.value).toFixed(3)}% for ${fitted.worst_relative_error.quantity}.`
     : "F1 parameters are transcribed or derived from cited headline targets; no multi-point F2 residual claim is made.";
   const fittedRows = rows || "| No F2 residual claim | n/a | n/a | n/a | n/a | See cited package expectations |";
-  const card = `# ${ctx.part.identity.canonical_mpn} model card\n\n## Identity\n\n- Manufacturer: ${ctx.part.identity.manufacturer}\n- Description: ${ctx.part.identity.description}\n- Electrical family: ${ctx.part.identity.electrical_family}\n- Fidelity tier: ${ctx.part.component.fidelity_tier ?? "F2"}, datasheet-constrained\n- Independent reviewer: pending-review\n\n## Provenance\n\n- Datasheet: ${source.url}\n- Revision: ${source.revision}\n- Accessed: ${source.accessed_date}\n- Referenced pages: ${source.pages_referenced.join(", ")}\n- SHA-256: \`${source.sha256}\`\n- Basis: original model generated from public factual specifications\n- Vendor SPICE models used: none\n\n## Domain coverage\n\n| Domain | Coverage |\n| --- | --- |\n${coverageTable(ctx.part.component.domain_coverage)}\n\n## Model parameters\n\n| Parameter | Value | Status |\n| --- | ---: | --- |\n${parameterRows}\n${heldDefaultsSection}\n## Fitted versus datasheet\n\n| Quantity | Datasheet | Fitted | Unit | Relative error | Citation |\n| --- | ---: | ---: | --- | ---: | --- |\n${fittedRows}\n\n${fitSummary}\n\nNative and WASM agreement: all ${validation.benches.length} benches passed. Worst reported relative delta was ${validation.worst_native_wasm_relative_delta.toExponential(3)} and worst absolute delta was ${validation.worst_native_wasm_absolute_delta.toExponential(3)}.\n\n## Known omissions\n\n${omissions}\n\n## Licence\n\nMIT. See \`LICENSE\`. The model is original work generated from public factual specifications and is not copied or adapted from a vendor SPICE model.\n`;
+  const validationSummary = validation.strict_dual_engine_expectations
+    ? `Native and browser-WASM each passed every scalar and hard-bound expectation across ${validation.benches.length} benches; their vector comparison also passed. Worst reported relative delta was ${validation.worst_native_wasm_relative_delta.toExponential(3)} and worst absolute delta was ${validation.worst_native_wasm_absolute_delta.toExponential(3)}.`
+    : `Native and WASM agreement: all ${validation.benches.length} benches passed. Worst reported relative delta was ${validation.worst_native_wasm_relative_delta.toExponential(3)} and worst absolute delta was ${validation.worst_native_wasm_absolute_delta.toExponential(3)}.`;
+  const card = `# ${ctx.part.identity.canonical_mpn} model card\n\n## Identity\n\n- Manufacturer: ${ctx.part.identity.manufacturer}\n- Description: ${ctx.part.identity.description}\n- Electrical family: ${ctx.part.identity.electrical_family}\n- Fidelity tier: ${ctx.part.component.fidelity_tier ?? "F2"}, datasheet-constrained\n- Independent reviewer: pending-review\n\n## Provenance\n\n- Datasheet: ${source.url}\n- Revision: ${source.revision}\n- Accessed: ${source.accessed_date}\n- Referenced pages: ${source.pages_referenced.join(", ")}\n- SHA-256: \`${source.sha256}\`\n- Basis: original model generated from public factual specifications\n- Vendor SPICE models used: none\n\n## Domain coverage\n\n| Domain | Coverage |\n| --- | --- |\n${coverageTable(ctx.part.component.domain_coverage)}\n\n## Model parameters\n\n| Parameter | Value | Status |\n| --- | ---: | --- |\n${parameterRows}\n${heldDefaultsSection}\n## Fitted versus datasheet\n\n| Quantity | Datasheet | Fitted | Unit | Relative error | Citation |\n| --- | ---: | ---: | --- | ---: | --- |\n${fittedRows}\n\n${fitSummary}\n\n${validationSummary}\n\n## Known omissions\n\n${omissions}\n\n## Licence\n\nMIT. See \`LICENSE\`. The model is original work generated from public factual specifications and is not copied or adapted from a vendor SPICE model.\n`;
   assertCardParameterTable(card, fitted);
   fs.writeFileSync(path.join(ctx.packageDir, "MODEL_CARD.md"), card);
-  run("node", [packageValidator, ctx.packageDir]);
+  run("node", [packageValidator, ...(ctx.part.pipeline === "vdmos" ? ["--require-evidence-contract"] : []), ctx.packageDir]);
   console.log(`card ${ctx.part.slug}: MODEL_CARD.md`);
 }
 

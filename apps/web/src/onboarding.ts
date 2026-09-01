@@ -32,8 +32,8 @@ const steps: TourStep[] = [
     target: ".symbol-rail",
     eyebrow: "BUILD",
     title: "Place parts and draw wires.",
-    body: "Choose a component, then click the canvas to place it. Use Wire for orthogonal connections and Select to move, inspect or box-select parts.",
-    tip: "Press R to rotate, X to mirror and Delete to remove a selection.",
+    body: "Choose a component, then click the canvas to place it. Start a wire at a pin, click to add right-angle corners, then end on a pin or wire.",
+    tip: "Press W to wire, G to drag with connections, M to move without them, R to rotate counterclockwise, Shift+R to rotate clockwise and X or Y to mirror.",
     placement: "right",
   },
   {
@@ -41,7 +41,7 @@ const steps: TourStep[] = [
     eyebrow: "LIVING SCHEMATIC",
     title: "Read the circuit while it runs.",
     body: "Wire colour shows voltage and moving marks show current direction. Drag the potentiometer or toggle a switch to see the solve update live.",
-    tip: "Drag empty space to pan, use the wheel to zoom and press F to fit.",
+    tip: "Space-, middle- or right-drag to pan, use the wheel to zoom and press F to fit.",
     placement: "center",
   },
   {
@@ -113,12 +113,12 @@ const guideMarkup = `
           </section>
 
           <article class="guide-section" id="guide-start">
-            <div class="guide-copy"><span class="guide-number">01</span><h2>Start with a circuit</h2><p>Open <strong>Examples</strong> for complete, verified circuits. Use <strong>Catalog</strong> when you need a reviewed manufacturer model, or <strong>Import models</strong> to add a SPICE <code>.subckt</code> from a vendor.</p><p class="guide-note">Imported source stays browser-local. Download JSON when you need to move that project.</p></div>
+            <div class="guide-copy"><span class="guide-number">01</span><h2>Start with a circuit</h2><p>Open <strong>Examples</strong> for complete, verified circuits. Use <strong>Catalog</strong> when you need a reviewed manufacturer model, or <strong>Import models</strong> to add a SPICE <code>.subckt</code> from a vendor.</p><p class="guide-note">Imported source stays browser-local until you copy a Share URL or export the project; both carry it explicitly.</p></div>
             <figure class="guide-ui-visual guide-ui-chrome" data-ui-clone=".chrome-actions"><figcaption>LIVE UI · TOP BAR</figcaption></figure>
           </article>
 
           <article class="guide-section" id="guide-build">
-            <div class="guide-copy"><span class="guide-number">02</span><h2>Build and edit</h2><p>Pick a part from the left rail and click to place it. Wire connects pins with right-angle runs. Select a component to move it or edit its value in the inspector.</p><ol><li><strong>Parts rail</strong> — choose Select, Wire or a component.</li><li><strong>Canvas</strong> — place, connect, pan and zoom.</li><li><strong>Inspector</strong> — edit values and read measurements.</li></ol></div>
+            <div class="guide-copy"><span class="guide-number">02</span><h2>Build and edit</h2><p>Pick a part from the left rail and click to place it. Start wires at pins, click to add right-angle corners, then finish on another pin or wire. Select a component to move it or edit its value in the inspector.</p><ol><li><strong>Parts rail</strong> — choose Select, Wire or a component.</li><li><strong>Canvas</strong> — place, connect, pan and zoom.</li><li><strong>Inspector</strong> — edit values and read measurements.</li></ol></div>
             <figure class="guide-ui-visual guide-ui-workbench" data-ui-clone=".workbench"><figcaption>LIVE UI · BUILD AREA</figcaption></figure>
           </article>
 
@@ -133,12 +133,12 @@ const guideMarkup = `
           </article>
 
           <article class="guide-section" id="guide-share">
-            <div class="guide-copy"><span class="guide-number">05</span><h2>Save and share</h2><p>Your current workspace saves automatically in this browser. Click its name at top left to create, rename, duplicate or switch projects.</p><ul><li><strong>Share URL</strong> — copies a circuit link.</li><li><strong>Download JSON</strong> — keeps the full editable project.</li><li><strong>Netlist / SVG</strong> — exports for SPICE or documentation.</li></ul></div>
+            <div class="guide-copy"><span class="guide-number">05</span><h2>Save and share</h2><p>Your current workspace saves automatically in this browser. Click its name at top left to create, rename, duplicate or switch projects.</p><ul><li><strong>Share URL</strong> — copies the circuit, imported models and instrument setup.</li><li><strong>Export project</strong> — keeps the full editable workspace and saved captures.</li><li><strong>Netlist / SVG</strong> — exports for SPICE or documentation.</li></ul></div>
             <figure class="guide-ui-visual guide-ui-chrome" data-ui-clone=".chrome-actions"><figcaption>LIVE UI · SHARE + EXPORTS</figcaption></figure>
           </article>
 
           <article class="guide-section" id="guide-shortcuts">
-            <div class="guide-copy"><span class="guide-number">06</span><h2>Move quickly</h2><div class="guide-key-grid"><kbd>R</kbd><span>Rotate selection</span><kbd>X</kbd><span>Mirror selection</span><kbd>F</kbd><span>Fit circuit</span><kbd>⌘ / Ctrl Z</kbd><span>Undo</span><kbd>Space + drag</kbd><span>Pan</span><kbd>Wheel</kbd><span>Zoom to cursor</span><kbd>?</kbd><span>Full shortcut sheet</span></div></div>
+            <div class="guide-copy"><span class="guide-number">06</span><h2>Move quickly</h2><div class="guide-key-grid"><kbd>W</kbd><span>Start a wire from the pointer</span><kbd>G</kbd><span>Drag selection with connected wires</span><kbd>M</kbd><span>Move selection without connected wires</span><kbd>R / Shift+R</kbd><span>Rotate counterclockwise / clockwise</span><kbd>X / Y</kbd><span>Mirror left/right or top/bottom</span><kbd>J</kbd><span>Join wires at the crossing under the pointer</span><kbd>/</kbd><span>Toggle wire bend direction</span><kbd>Backspace</kbd><span>Remove the last wire corner</span><kbd>Enter / double-click</kbd><span>End wire mid-air</span><kbd>Right click</kbd><span>Open context actions; right-drag pans</span><kbd>Esc</kbd><span>Close or cancel; press again to clear selection</span><kbd>Home / F</kbd><span>Fit circuit</span><kbd>⌘ / Ctrl Z</kbd><span>Undo</span><kbd>Space / middle / right drag</kbd><span>Pan without changing the circuit</span><kbd>Wheel</kbd><span>Zoom to cursor</span><kbd>?</kbd><span>Full shortcut sheet</span></div></div>
           </article>
         </div>
       </div>

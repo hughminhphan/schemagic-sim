@@ -1,0 +1,162 @@
+{
+  "schema_version": "1.0.0",
+  "fidelity_tier": "F1",
+  "evidence_mode": "typ-point",
+  "parameters": {
+    "IS": 0.000041651893586892054,
+    "N": 1.1,
+    "RS": 0.0001
+  },
+  "parameter_metadata": {},
+  "calibration": {
+    "evidence_mode": "typ-point",
+    "observations": [
+      {
+        "kind": "forward_voltage",
+        "source": {
+          "voltage": "PDF p. 2, Fig. 3 Typical Forward Voltage",
+          "current": "PDF p. 2, Fig. 3 Typical Forward Voltage",
+          "conditions": "IF = 0.1 A; TJ = 25 °C; pulse width = 300 µs; duty cycle = 1 %; SSL510B dotted curve",
+          "source_kind": "digitized_typical_curve"
+        },
+        "value_v": 0.22,
+        "current_a": 0.1,
+        "quantity": "forward voltage",
+        "gate_quantity": "forward_voltage",
+        "datasheet_value": 0.22,
+        "unit": "V",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "junction",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 0.1
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 0.22
+            }
+          },
+          "test_mode": {
+            "kind": "pulsed",
+            "pulse_width_s": 0.0003,
+            "duty_cycle": 0.01
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "IF = 0.1 A; TJ = 25 °C; pulse width = 300 µs; duty cycle = 1 %; SSL510B dotted curve"
+            }
+          ],
+          "condition_id": "sha256:cd2017b26a4b9d474975d8fa36b073ea63937c840f1d334ecf704739533dbd3c"
+        },
+        "citation_identity": {
+          "source_sha256": "26638c7d5ba7e7f1fb8a8a3d714afe99e832c290d3a6077e5ffbbefb7eec84ed",
+          "source_revision": "Rev:1.0",
+          "page": 2,
+          "figure": "3",
+          "curve": "Forward Voltage: IF = 0.1 A; TJ = 25 °C; pulse width = 300 µs; duty cycle = 1 %; SSL510B dotted curve",
+          "citation_id": "sha256:989a0dba05cd0f50a77e2b2c9fa969862fd652871d63c9c891e208566d596edf"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:149a245c3b3741ed66e68bf647408bf59102c7f5289850d946a53795203d40fc",
+          "cohort_id": "sha256:49247d9cda12d69f0af74b46aabcbb139ac4a695809434444d9375f6369466a4",
+          "role": "digitized_typical_curve",
+          "condition_id": "sha256:cd2017b26a4b9d474975d8fa36b073ea63937c840f1d334ecf704739533dbd3c",
+          "citation_id": "sha256:989a0dba05cd0f50a77e2b2c9fa969862fd652871d63c9c891e208566d596edf"
+        },
+        "evidence_role": "typical_observation"
+      }
+    ],
+    "constraints": [
+      {
+        "kind": "forward_voltage_maximum",
+        "inclusive": true,
+        "source": {
+          "voltage": "PDF p. 2, Electrical Characteristics",
+          "current": "PDF p. 2, Electrical Characteristics",
+          "conditions": "IF = 5.0 A; TA = 25 °C; SSL510B",
+          "source_kind": "maximum"
+        },
+        "maximum_voltage_v": 0.6,
+        "current_a": 5,
+        "quantity": "forward voltage",
+        "gate_quantity": "forward_voltage",
+        "datasheet_value": 0.6,
+        "unit": "V",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "ambient",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 5
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 0.6
+            }
+          },
+          "test_mode": {
+            "kind": "not_stated"
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "IF = 5.0 A; TA = 25 °C; SSL510B"
+            }
+          ],
+          "condition_id": "sha256:7c86ab921afebc2791defdc4657b1991016ccb02a250dcc5bd1e11b6554f6776"
+        },
+        "citation_identity": {
+          "source_sha256": "26638c7d5ba7e7f1fb8a8a3d714afe99e832c290d3a6077e5ffbbefb7eec84ed",
+          "source_revision": "Rev:1.0",
+          "page": 2,
+          "table": "Electrical Characteristics",
+          "row": "Forward Voltage",
+          "citation_id": "sha256:cd8a90947473bc2f6dbc178df01c53adb5ce598029360f56d4df56e68defec4a"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:b7e26f622445fbf4448002a52120cdfd18a149ce32980c3d33fb773ef4601169",
+          "cohort_id": "sha256:052346ced591b102093ce931926a312d9e3dc62894c768de7d3de8936d0c31b1",
+          "role": "maximum",
+          "condition_id": "sha256:7c86ab921afebc2791defdc4657b1991016ccb02a250dcc5bd1e11b6554f6776",
+          "citation_id": "sha256:cd8a90947473bc2f6dbc178df01c53adb5ce598029360f56d4df56e68defec4a"
+        },
+        "evidence_role": "inequality_constraint"
+      }
+    ],
+    "residual_target_count": 1,
+    "seeds": [
+      {
+        "parameter_coordinate": "IS",
+        "evidence_role": "typical_observation_seed",
+        "value": 0.000041651893586892054,
+        "unit": "A"
+      }
+    ]
+  },
+  "fitter": "datasheet typical-point diode F1 formula",
+  "optimizer": null,
+  "held_defaults": [],
+  "curves_used": [],
+  "evidence_contract_version": "1.0.0",
+  "evidence_curves": [],
+  "curves_rejected": [],
+  "residuals": [],
+  "rms_relative_error": null,
+  "worst_relative_error": null
+}

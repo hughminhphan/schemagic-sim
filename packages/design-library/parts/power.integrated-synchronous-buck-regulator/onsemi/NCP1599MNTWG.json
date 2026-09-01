@@ -1,0 +1,858 @@
+{
+  "format": "schemagic-design-profile",
+  "schemaVersion": "1.0.0",
+  "partClass": "power.integrated-synchronous-buck-regulator",
+  "part": {
+    "manufacturerId": "onsemi",
+    "manufacturerPartNumber": "NCP1599MNTWG"
+  },
+  "factsSchemaVersion": "2.0.0",
+  "commonFacts": {
+    "packageName": {
+      "value": "DFN6 3 mm x 3 mm, 0.95 mm pitch (CASE 506AH)",
+      "state": "estimated",
+      "evidence": [
+        {
+          "sourceId": "onsemi-ncp1599-datasheet",
+          "locator": "Ordering Information, NCP1599MNTWG DFN6 row, page 1; Mechanical Case Outline 98AON19891D, DFN6 3 mm x 3 mm CASE 506AH, page 15",
+          "retrievedAt": "2026-08-24T02:16:17+10:00",
+          "contentHash": "sha256:40e0c29696d6adb4b35e8f331fc404d5c4efab35a15f8b449223c97931fc5650",
+          "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+          "kind": "manufacturer_datasheet",
+          "url": "https://www.onsemi.com/download/data-sheet/pdf/ncp1599-d.pdf",
+          "revision": "Rev. 2",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "Exact-byte MPN-to-package extraction; authored only and pending independent review."
+    },
+    "boardArea": {
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "Facts-V2 mounted geometry replaces the legacy scalar board-area field."
+    },
+    "maximumHeight": {
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "Facts-V2 mounted geometry replaces the legacy scalar maximum-height field."
+    }
+  },
+  "facts": {
+    "inputVoltageMinimum": {
+      "claimKind": "guaranteed_minimum",
+      "basis": "operating_range",
+      "value": {
+        "value": 3,
+        "unit": "V",
+        "displayUnit": "V"
+      },
+      "state": "estimated",
+      "evidence": [
+        {
+          "sourceId": "onsemi-ncp1599-datasheet",
+          "locator": "Electrical Characteristics, VIN Input Voltage Range, page 5",
+          "retrievedAt": "2026-08-24T02:16:17+10:00",
+          "contentHash": "sha256:40e0c29696d6adb4b35e8f331fc404d5c4efab35a15f8b449223c97931fc5650",
+          "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+          "kind": "manufacturer_datasheet",
+          "url": "https://www.onsemi.com/download/data-sheet/pdf/ncp1599-d.pdf",
+          "revision": "Rev. 2",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "Exact-byte primary-source extraction with complete source applicability; authored only and pending independent review."
+    },
+    "inputVoltageMaximum": {
+      "claimKind": "guaranteed_maximum",
+      "basis": "operating_range",
+      "value": {
+        "value": 5.5,
+        "unit": "V",
+        "displayUnit": "V"
+      },
+      "state": "estimated",
+      "evidence": [
+        {
+          "sourceId": "onsemi-ncp1599-datasheet",
+          "locator": "Electrical Characteristics, VIN Input Voltage Range, page 5",
+          "retrievedAt": "2026-08-24T02:16:17+10:00",
+          "contentHash": "sha256:40e0c29696d6adb4b35e8f331fc404d5c4efab35a15f8b449223c97931fc5650",
+          "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+          "kind": "manufacturer_datasheet",
+          "url": "https://www.onsemi.com/download/data-sheet/pdf/ncp1599-d.pdf",
+          "revision": "Rev. 2",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "Exact-byte primary-source extraction with complete source applicability; authored only and pending independent review."
+    },
+    "outputVoltageMinimum": {
+      "claimKind": "guaranteed_minimum",
+      "basis": "operating_range",
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "Explicit non-admitted unknown: The scalar extraction does not encode every required facts-V2 applicability condition and has not been independently reviewed."
+    },
+    "outputVoltageMaximum": {
+      "claimKind": "guaranteed_maximum",
+      "basis": "operating_range",
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "Explicit non-admitted unknown: The source extraction does not contain the required maximum value."
+    },
+    "outputCurrentCapabilityMinimum": {
+      "claimKind": "guaranteed_minimum",
+      "basis": "normal_operation_rating",
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "Explicit non-admitted unknown: A published maximum-output-current headline cannot be relabeled as a guaranteed minimum usable capability without semantic review."
+    },
+    "currentLimitMinimum": {
+      "claimKind": "guaranteed_minimum",
+      "basis": "production_spread",
+      "value": {
+        "value": 3.83,
+        "unit": "A",
+        "displayUnit": "A"
+      },
+      "state": "estimated",
+      "evidence": [
+        {
+          "sourceId": "onsemi-ncp1599-datasheet",
+          "locator": "Electrical Characteristics, Pulse-by-Pulse Current Limit ILIM at VIN = 4.0 V to 5.5 V, VOUT = 1.2 V, TJ = 25 C, normal operation, page 5",
+          "retrievedAt": "2026-08-24T02:16:17+10:00",
+          "contentHash": "sha256:40e0c29696d6adb4b35e8f331fc404d5c4efab35a15f8b449223c97931fc5650",
+          "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+          "kind": "manufacturer_datasheet",
+          "url": "https://www.onsemi.com/download/data-sheet/pdf/ncp1599-d.pdf",
+          "revision": "Rev. 2",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "input-voltage",
+          "kind": "quantity_range",
+          "minimum": {
+            "value": 4,
+            "unit": "V",
+            "displayUnit": "V"
+          },
+          "maximum": {
+            "value": 5.5,
+            "unit": "V",
+            "displayUnit": "V"
+          },
+          "evidence": [
+            {
+              "sourceId": "onsemi-ncp1599-datasheet",
+              "locator": "Electrical Characteristics, Pulse-by-Pulse Current Limit ILIM at VIN = 4.0 V to 5.5 V, VOUT = 1.2 V, TJ = 25 C, normal operation, page 5",
+              "retrievedAt": "2026-08-24T02:16:17+10:00",
+              "contentHash": "sha256:40e0c29696d6adb4b35e8f331fc404d5c4efab35a15f8b449223c97931fc5650",
+              "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+              "kind": "manufacturer_datasheet",
+              "url": "https://www.onsemi.com/download/data-sheet/pdf/ncp1599-d.pdf",
+              "revision": "Rev. 2",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "junction-temperature",
+          "kind": "quantity_range",
+          "minimum": {
+            "value": 298.15,
+            "unit": "K",
+            "displayUnit": "K"
+          },
+          "maximum": {
+            "value": 298.15,
+            "unit": "K",
+            "displayUnit": "K"
+          },
+          "evidence": [
+            {
+              "sourceId": "onsemi-ncp1599-datasheet",
+              "locator": "Electrical Characteristics, Pulse-by-Pulse Current Limit ILIM at VIN = 4.0 V to 5.5 V, VOUT = 1.2 V, TJ = 25 C, normal operation, page 5",
+              "retrievedAt": "2026-08-24T02:16:17+10:00",
+              "contentHash": "sha256:40e0c29696d6adb4b35e8f331fc404d5c4efab35a15f8b449223c97931fc5650",
+              "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+              "kind": "manufacturer_datasheet",
+              "url": "https://www.onsemi.com/download/data-sheet/pdf/ncp1599-d.pdf",
+              "revision": "Rev. 2",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "operating-mode",
+          "kind": "token_equals",
+          "value": "normal-regulation",
+          "evidence": [
+            {
+              "sourceId": "onsemi-ncp1599-datasheet",
+              "locator": "Electrical Characteristics, Pulse-by-Pulse Current Limit ILIM at VIN = 4.0 V to 5.5 V, VOUT = 1.2 V, TJ = 25 C, normal operation, page 5",
+              "retrievedAt": "2026-08-24T02:16:17+10:00",
+              "contentHash": "sha256:40e0c29696d6adb4b35e8f331fc404d5c4efab35a15f8b449223c97931fc5650",
+              "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+              "kind": "manufacturer_datasheet",
+              "url": "https://www.onsemi.com/download/data-sheet/pdf/ncp1599-d.pdf",
+              "revision": "Rev. 2",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "output-voltage",
+          "kind": "quantity_range",
+          "minimum": {
+            "value": 1.2,
+            "unit": "V",
+            "displayUnit": "V"
+          },
+          "maximum": {
+            "value": 1.2,
+            "unit": "V",
+            "displayUnit": "V"
+          },
+          "evidence": [
+            {
+              "sourceId": "onsemi-ncp1599-datasheet",
+              "locator": "Electrical Characteristics, Pulse-by-Pulse Current Limit ILIM at VIN = 4.0 V to 5.5 V, VOUT = 1.2 V, TJ = 25 C, normal operation, page 5",
+              "retrievedAt": "2026-08-24T02:16:17+10:00",
+              "contentHash": "sha256:40e0c29696d6adb4b35e8f331fc404d5c4efab35a15f8b449223c97931fc5650",
+              "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+              "kind": "manufacturer_datasheet",
+              "url": "https://www.onsemi.com/download/data-sheet/pdf/ncp1599-d.pdf",
+              "revision": "Rev. 2",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "Exact-byte primary-source extraction with complete source applicability; authored only and pending independent review."
+    },
+    "currentLimitTypical": {
+      "claimKind": "typical",
+      "basis": "production_spread",
+      "value": {
+        "value": 4.18,
+        "unit": "A",
+        "displayUnit": "A"
+      },
+      "state": "estimated",
+      "evidence": [
+        {
+          "sourceId": "onsemi-ncp1599-datasheet",
+          "locator": "Electrical Characteristics, Pulse-by-Pulse Current Limit ILIM at VIN = 4.0 V to 5.5 V, VOUT = 1.2 V, TJ = 25 C, normal operation, page 5",
+          "retrievedAt": "2026-08-24T02:16:17+10:00",
+          "contentHash": "sha256:40e0c29696d6adb4b35e8f331fc404d5c4efab35a15f8b449223c97931fc5650",
+          "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+          "kind": "manufacturer_datasheet",
+          "url": "https://www.onsemi.com/download/data-sheet/pdf/ncp1599-d.pdf",
+          "revision": "Rev. 2",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "input-voltage",
+          "kind": "quantity_range",
+          "minimum": {
+            "value": 4,
+            "unit": "V",
+            "displayUnit": "V"
+          },
+          "maximum": {
+            "value": 5.5,
+            "unit": "V",
+            "displayUnit": "V"
+          },
+          "evidence": [
+            {
+              "sourceId": "onsemi-ncp1599-datasheet",
+              "locator": "Electrical Characteristics, Pulse-by-Pulse Current Limit ILIM at VIN = 4.0 V to 5.5 V, VOUT = 1.2 V, TJ = 25 C, normal operation, page 5",
+              "retrievedAt": "2026-08-24T02:16:17+10:00",
+              "contentHash": "sha256:40e0c29696d6adb4b35e8f331fc404d5c4efab35a15f8b449223c97931fc5650",
+              "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+              "kind": "manufacturer_datasheet",
+              "url": "https://www.onsemi.com/download/data-sheet/pdf/ncp1599-d.pdf",
+              "revision": "Rev. 2",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "junction-temperature",
+          "kind": "quantity_range",
+          "minimum": {
+            "value": 298.15,
+            "unit": "K",
+            "displayUnit": "K"
+          },
+          "maximum": {
+            "value": 298.15,
+            "unit": "K",
+            "displayUnit": "K"
+          },
+          "evidence": [
+            {
+              "sourceId": "onsemi-ncp1599-datasheet",
+              "locator": "Electrical Characteristics, Pulse-by-Pulse Current Limit ILIM at VIN = 4.0 V to 5.5 V, VOUT = 1.2 V, TJ = 25 C, normal operation, page 5",
+              "retrievedAt": "2026-08-24T02:16:17+10:00",
+              "contentHash": "sha256:40e0c29696d6adb4b35e8f331fc404d5c4efab35a15f8b449223c97931fc5650",
+              "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+              "kind": "manufacturer_datasheet",
+              "url": "https://www.onsemi.com/download/data-sheet/pdf/ncp1599-d.pdf",
+              "revision": "Rev. 2",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "operating-mode",
+          "kind": "token_equals",
+          "value": "normal-regulation",
+          "evidence": [
+            {
+              "sourceId": "onsemi-ncp1599-datasheet",
+              "locator": "Electrical Characteristics, Pulse-by-Pulse Current Limit ILIM at VIN = 4.0 V to 5.5 V, VOUT = 1.2 V, TJ = 25 C, normal operation, page 5",
+              "retrievedAt": "2026-08-24T02:16:17+10:00",
+              "contentHash": "sha256:40e0c29696d6adb4b35e8f331fc404d5c4efab35a15f8b449223c97931fc5650",
+              "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+              "kind": "manufacturer_datasheet",
+              "url": "https://www.onsemi.com/download/data-sheet/pdf/ncp1599-d.pdf",
+              "revision": "Rev. 2",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "output-voltage",
+          "kind": "quantity_range",
+          "minimum": {
+            "value": 1.2,
+            "unit": "V",
+            "displayUnit": "V"
+          },
+          "maximum": {
+            "value": 1.2,
+            "unit": "V",
+            "displayUnit": "V"
+          },
+          "evidence": [
+            {
+              "sourceId": "onsemi-ncp1599-datasheet",
+              "locator": "Electrical Characteristics, Pulse-by-Pulse Current Limit ILIM at VIN = 4.0 V to 5.5 V, VOUT = 1.2 V, TJ = 25 C, normal operation, page 5",
+              "retrievedAt": "2026-08-24T02:16:17+10:00",
+              "contentHash": "sha256:40e0c29696d6adb4b35e8f331fc404d5c4efab35a15f8b449223c97931fc5650",
+              "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+              "kind": "manufacturer_datasheet",
+              "url": "https://www.onsemi.com/download/data-sheet/pdf/ncp1599-d.pdf",
+              "revision": "Rev. 2",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "Exact-byte primary-source extraction with complete source applicability; authored only and pending independent review."
+    },
+    "currentLimitMaximum": {
+      "claimKind": "guaranteed_maximum",
+      "basis": "production_spread",
+      "value": {
+        "value": 4.54,
+        "unit": "A",
+        "displayUnit": "A"
+      },
+      "state": "estimated",
+      "evidence": [
+        {
+          "sourceId": "onsemi-ncp1599-datasheet",
+          "locator": "Electrical Characteristics, Pulse-by-Pulse Current Limit ILIM at VIN = 4.0 V to 5.5 V, VOUT = 1.2 V, TJ = 25 C, normal operation, page 5",
+          "retrievedAt": "2026-08-24T02:16:17+10:00",
+          "contentHash": "sha256:40e0c29696d6adb4b35e8f331fc404d5c4efab35a15f8b449223c97931fc5650",
+          "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+          "kind": "manufacturer_datasheet",
+          "url": "https://www.onsemi.com/download/data-sheet/pdf/ncp1599-d.pdf",
+          "revision": "Rev. 2",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "input-voltage",
+          "kind": "quantity_range",
+          "minimum": {
+            "value": 4,
+            "unit": "V",
+            "displayUnit": "V"
+          },
+          "maximum": {
+            "value": 5.5,
+            "unit": "V",
+            "displayUnit": "V"
+          },
+          "evidence": [
+            {
+              "sourceId": "onsemi-ncp1599-datasheet",
+              "locator": "Electrical Characteristics, Pulse-by-Pulse Current Limit ILIM at VIN = 4.0 V to 5.5 V, VOUT = 1.2 V, TJ = 25 C, normal operation, page 5",
+              "retrievedAt": "2026-08-24T02:16:17+10:00",
+              "contentHash": "sha256:40e0c29696d6adb4b35e8f331fc404d5c4efab35a15f8b449223c97931fc5650",
+              "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+              "kind": "manufacturer_datasheet",
+              "url": "https://www.onsemi.com/download/data-sheet/pdf/ncp1599-d.pdf",
+              "revision": "Rev. 2",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "junction-temperature",
+          "kind": "quantity_range",
+          "minimum": {
+            "value": 298.15,
+            "unit": "K",
+            "displayUnit": "K"
+          },
+          "maximum": {
+            "value": 298.15,
+            "unit": "K",
+            "displayUnit": "K"
+          },
+          "evidence": [
+            {
+              "sourceId": "onsemi-ncp1599-datasheet",
+              "locator": "Electrical Characteristics, Pulse-by-Pulse Current Limit ILIM at VIN = 4.0 V to 5.5 V, VOUT = 1.2 V, TJ = 25 C, normal operation, page 5",
+              "retrievedAt": "2026-08-24T02:16:17+10:00",
+              "contentHash": "sha256:40e0c29696d6adb4b35e8f331fc404d5c4efab35a15f8b449223c97931fc5650",
+              "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+              "kind": "manufacturer_datasheet",
+              "url": "https://www.onsemi.com/download/data-sheet/pdf/ncp1599-d.pdf",
+              "revision": "Rev. 2",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "operating-mode",
+          "kind": "token_equals",
+          "value": "normal-regulation",
+          "evidence": [
+            {
+              "sourceId": "onsemi-ncp1599-datasheet",
+              "locator": "Electrical Characteristics, Pulse-by-Pulse Current Limit ILIM at VIN = 4.0 V to 5.5 V, VOUT = 1.2 V, TJ = 25 C, normal operation, page 5",
+              "retrievedAt": "2026-08-24T02:16:17+10:00",
+              "contentHash": "sha256:40e0c29696d6adb4b35e8f331fc404d5c4efab35a15f8b449223c97931fc5650",
+              "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+              "kind": "manufacturer_datasheet",
+              "url": "https://www.onsemi.com/download/data-sheet/pdf/ncp1599-d.pdf",
+              "revision": "Rev. 2",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "output-voltage",
+          "kind": "quantity_range",
+          "minimum": {
+            "value": 1.2,
+            "unit": "V",
+            "displayUnit": "V"
+          },
+          "maximum": {
+            "value": 1.2,
+            "unit": "V",
+            "displayUnit": "V"
+          },
+          "evidence": [
+            {
+              "sourceId": "onsemi-ncp1599-datasheet",
+              "locator": "Electrical Characteristics, Pulse-by-Pulse Current Limit ILIM at VIN = 4.0 V to 5.5 V, VOUT = 1.2 V, TJ = 25 C, normal operation, page 5",
+              "retrievedAt": "2026-08-24T02:16:17+10:00",
+              "contentHash": "sha256:40e0c29696d6adb4b35e8f331fc404d5c4efab35a15f8b449223c97931fc5650",
+              "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+              "kind": "manufacturer_datasheet",
+              "url": "https://www.onsemi.com/download/data-sheet/pdf/ncp1599-d.pdf",
+              "revision": "Rev. 2",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "Exact-byte primary-source extraction with complete source applicability; authored only and pending independent review."
+    },
+    "switchingFrequencyMinimum": {
+      "claimKind": "guaranteed_minimum",
+      "basis": "operating_range",
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "Explicit non-admitted unknown: The scalar extraction does not encode every required facts-V2 applicability condition and has not been independently reviewed."
+    },
+    "switchingFrequencyRecommended": {
+      "claimKind": "recommended",
+      "basis": "recommended_setting",
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "Explicit non-admitted unknown: A typical oscillator value is not automatically a recommended configurable setting."
+    },
+    "switchingFrequencyMaximum": {
+      "claimKind": "guaranteed_maximum",
+      "basis": "operating_range",
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "Explicit non-admitted unknown: The scalar extraction does not encode every required facts-V2 applicability condition and has not been independently reviewed."
+    },
+    "minimumOnTimeMaximum": {
+      "claimKind": "guaranteed_maximum",
+      "basis": "production_spread",
+      "value": {
+        "value": 5e-8,
+        "unit": "s",
+        "displayUnit": "s"
+      },
+      "state": "estimated",
+      "evidence": [
+        {
+          "sourceId": "onsemi-ncp1599-datasheet",
+          "locator": "Electrical Characteristics, PWM Minimum Controllable ON Time at VIN = 3.0 V to 5.5 V, VOUT = 1.2 V, TJ = 25 C, page 5",
+          "retrievedAt": "2026-08-24T02:16:17+10:00",
+          "contentHash": "sha256:40e0c29696d6adb4b35e8f331fc404d5c4efab35a15f8b449223c97931fc5650",
+          "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+          "kind": "manufacturer_datasheet",
+          "url": "https://www.onsemi.com/download/data-sheet/pdf/ncp1599-d.pdf",
+          "revision": "Rev. 2",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "input-voltage",
+          "kind": "quantity_range",
+          "minimum": {
+            "value": 3,
+            "unit": "V",
+            "displayUnit": "V"
+          },
+          "maximum": {
+            "value": 5.5,
+            "unit": "V",
+            "displayUnit": "V"
+          },
+          "evidence": [
+            {
+              "sourceId": "onsemi-ncp1599-datasheet",
+              "locator": "Electrical Characteristics, PWM Minimum Controllable ON Time at VIN = 3.0 V to 5.5 V, VOUT = 1.2 V, TJ = 25 C, page 5",
+              "retrievedAt": "2026-08-24T02:16:17+10:00",
+              "contentHash": "sha256:40e0c29696d6adb4b35e8f331fc404d5c4efab35a15f8b449223c97931fc5650",
+              "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+              "kind": "manufacturer_datasheet",
+              "url": "https://www.onsemi.com/download/data-sheet/pdf/ncp1599-d.pdf",
+              "revision": "Rev. 2",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "junction-temperature",
+          "kind": "quantity_range",
+          "minimum": {
+            "value": 298.15,
+            "unit": "K",
+            "displayUnit": "K"
+          },
+          "maximum": {
+            "value": 298.15,
+            "unit": "K",
+            "displayUnit": "K"
+          },
+          "evidence": [
+            {
+              "sourceId": "onsemi-ncp1599-datasheet",
+              "locator": "Electrical Characteristics, PWM Minimum Controllable ON Time at VIN = 3.0 V to 5.5 V, VOUT = 1.2 V, TJ = 25 C, page 5",
+              "retrievedAt": "2026-08-24T02:16:17+10:00",
+              "contentHash": "sha256:40e0c29696d6adb4b35e8f331fc404d5c4efab35a15f8b449223c97931fc5650",
+              "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+              "kind": "manufacturer_datasheet",
+              "url": "https://www.onsemi.com/download/data-sheet/pdf/ncp1599-d.pdf",
+              "revision": "Rev. 2",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "output-voltage",
+          "kind": "quantity_range",
+          "minimum": {
+            "value": 1.2,
+            "unit": "V",
+            "displayUnit": "V"
+          },
+          "maximum": {
+            "value": 1.2,
+            "unit": "V",
+            "displayUnit": "V"
+          },
+          "evidence": [
+            {
+              "sourceId": "onsemi-ncp1599-datasheet",
+              "locator": "Electrical Characteristics, PWM Minimum Controllable ON Time at VIN = 3.0 V to 5.5 V, VOUT = 1.2 V, TJ = 25 C, page 5",
+              "retrievedAt": "2026-08-24T02:16:17+10:00",
+              "contentHash": "sha256:40e0c29696d6adb4b35e8f331fc404d5c4efab35a15f8b449223c97931fc5650",
+              "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+              "kind": "manufacturer_datasheet",
+              "url": "https://www.onsemi.com/download/data-sheet/pdf/ncp1599-d.pdf",
+              "revision": "Rev. 2",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "Exact-byte primary-source extraction with complete source applicability; authored only and pending independent review."
+    },
+    "minimumOffTimeMaximum": {
+      "claimKind": "guaranteed_maximum",
+      "basis": "production_spread",
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "Explicit non-admitted unknown: The source extraction does not contain the required maximum value."
+    },
+    "feedbackReferenceMinimum": {
+      "claimKind": "guaranteed_minimum",
+      "basis": "production_spread",
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "Explicit non-admitted unknown: The complete source-stated applicability includes at least one condition outside the closed facts-V2 Power condition grammar."
+    },
+    "feedbackReferenceTypical": {
+      "claimKind": "typical",
+      "basis": "production_spread",
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "Explicit non-admitted unknown: The complete source-stated applicability includes at least one condition outside the closed facts-V2 Power condition grammar."
+    },
+    "feedbackReferenceMaximum": {
+      "claimKind": "guaranteed_maximum",
+      "basis": "production_spread",
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "Explicit non-admitted unknown: The complete source-stated applicability includes at least one condition outside the closed facts-V2 Power condition grammar."
+    },
+    "quiescentCurrentMaximum": {
+      "claimKind": "guaranteed_maximum",
+      "basis": "production_spread",
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "Explicit non-admitted unknown: The authored real-catalog extraction has no source fact for this facts-V2 claim."
+    },
+    "junctionToAmbientThermalResistanceMaximum": {
+      "claimKind": "guaranteed_maximum",
+      "basis": "test_characteristic",
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "Explicit non-admitted unknown: The authored real-catalog extraction has no source fact for this facts-V2 claim."
+    },
+    "maximumJunctionTemperature": {
+      "claimKind": "absolute_maximum",
+      "basis": "absolute_rating",
+      "value": {
+        "value": 423.15,
+        "unit": "K",
+        "displayUnit": "K"
+      },
+      "state": "estimated",
+      "evidence": [
+        {
+          "sourceId": "onsemi-ncp1599-datasheet",
+          "locator": "Absolute Maximum Ratings, Junction Temperature TJ maximum 150 C, page 3",
+          "retrievedAt": "2026-08-24T02:16:17+10:00",
+          "contentHash": "sha256:40e0c29696d6adb4b35e8f331fc404d5c4efab35a15f8b449223c97931fc5650",
+          "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+          "kind": "manufacturer_datasheet",
+          "url": "https://www.onsemi.com/download/data-sheet/pdf/ncp1599-d.pdf",
+          "revision": "Rev. 2",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "Exact-byte primary-source extraction with complete source applicability; authored only and pending independent review."
+    },
+    "highSideOnResistanceMaximum": {
+      "claimKind": "guaranteed_maximum",
+      "basis": "test_characteristic",
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "Explicit non-admitted unknown: The complete source-stated applicability includes at least one condition outside the closed facts-V2 Power condition grammar."
+    },
+    "lowSideOnResistanceMaximum": {
+      "claimKind": "guaranteed_maximum",
+      "basis": "test_characteristic",
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "Explicit non-admitted unknown: The complete source-stated applicability includes at least one condition outside the closed facts-V2 Power condition grammar."
+    },
+    "riseTimeMaximum": {
+      "claimKind": "guaranteed_maximum",
+      "basis": "test_characteristic",
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "Explicit non-admitted unknown: The exact source extraction does not establish this optional facts-V2 claim with complete applicability."
+    },
+    "fallTimeMaximum": {
+      "claimKind": "guaranteed_maximum",
+      "basis": "test_characteristic",
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "Explicit non-admitted unknown: The exact source extraction does not establish this optional facts-V2 claim with complete applicability."
+    },
+    "controlEvidenceBasis": {
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "No bounded configured control or loop-stability evidence has been independently reviewed."
+    },
+    "mountedGeometry": {
+      "boardArea": {
+        "value": {
+          "area": {
+            "value": 0.000008606,
+            "unit": "m2",
+            "displayUnit": "mm2"
+          },
+          "basis": "manufacturer_recommended_land_pattern_bounding_box",
+          "calculation": "maximum_x_span_times_maximum_y_span",
+          "sourceDimensions": [
+            {
+              "axis": "x",
+              "dimensionId": "land-pattern-x-span",
+              "multiplier": 1,
+              "maximum": {
+                "value": 0.0026,
+                "unit": "m",
+                "displayUnit": "mm"
+              },
+              "evidence": [
+                {
+                  "sourceId": "onsemi-ncp1599-datasheet",
+                  "locator": "Mechanical Case Outline 98AON19891D, Soldering Footprint, 2.60 mm x 3.31 mm exposed-metal bounding span, page 15",
+                  "retrievedAt": "2026-08-24T02:16:17+10:00",
+                  "contentHash": "sha256:40e0c29696d6adb4b35e8f331fc404d5c4efab35a15f8b449223c97931fc5650",
+                  "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+                  "kind": "manufacturer_datasheet",
+                  "url": "https://www.onsemi.com/download/data-sheet/pdf/ncp1599-d.pdf",
+                  "revision": "Rev. 2",
+                  "publicationBasis": "public_facts"
+                }
+              ]
+            },
+            {
+              "axis": "y",
+              "dimensionId": "land-pattern-y-span",
+              "multiplier": 1,
+              "maximum": {
+                "value": 0.00331,
+                "unit": "m",
+                "displayUnit": "mm"
+              },
+              "evidence": [
+                {
+                  "sourceId": "onsemi-ncp1599-datasheet",
+                  "locator": "Mechanical Case Outline 98AON19891D, Soldering Footprint, 2.60 mm x 3.31 mm exposed-metal bounding span, page 15",
+                  "retrievedAt": "2026-08-24T02:16:17+10:00",
+                  "contentHash": "sha256:40e0c29696d6adb4b35e8f331fc404d5c4efab35a15f8b449223c97931fc5650",
+                  "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+                  "kind": "manufacturer_datasheet",
+                  "url": "https://www.onsemi.com/download/data-sheet/pdf/ncp1599-d.pdf",
+                  "revision": "Rev. 2",
+                  "publicationBasis": "public_facts"
+                }
+              ]
+            }
+          ]
+        },
+        "state": "calculated",
+        "evidence": [
+          {
+            "sourceId": "onsemi-ncp1599-datasheet",
+            "locator": "Mechanical Case Outline 98AON19891D, Soldering Footprint, 2.60 mm x 3.31 mm exposed-metal bounding span, page 15",
+            "retrievedAt": "2026-08-24T02:16:17+10:00",
+            "contentHash": "sha256:40e0c29696d6adb4b35e8f331fc404d5c4efab35a15f8b449223c97931fc5650",
+            "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+            "kind": "manufacturer_datasheet",
+            "url": "https://www.onsemi.com/download/data-sheet/pdf/ncp1599-d.pdf",
+            "revision": "Rev. 2",
+            "publicationBasis": "public_facts"
+          }
+        ],
+        "validFor": [],
+        "explanation": "Canonical land-pattern bounding-box calculation from exact-byte manufacturer dimensions; profile review remains pending."
+      },
+      "maximumHeight": {
+        "value": {
+          "height": {
+            "value": 0.001,
+            "unit": "m",
+            "displayUnit": "mm"
+          },
+          "basis": "manufacturer_package_maximum_in_surface_mount_orientation"
+        },
+        "state": "reviewed",
+        "evidence": [
+          {
+            "sourceId": "onsemi-ncp1599-datasheet",
+            "locator": "Mechanical Case Outline 98AON19891D, Package Dimensions, dimension A maximum 1.00 mm, page 15",
+            "retrievedAt": "2026-08-24T02:16:17+10:00",
+            "contentHash": "sha256:40e0c29696d6adb4b35e8f331fc404d5c4efab35a15f8b449223c97931fc5650",
+            "licenseNote": "Manufacturer-published reference material used for factual extraction; only the URL and locators are retained. No PDF or model is redistributed.",
+            "kind": "manufacturer_datasheet",
+            "url": "https://www.onsemi.com/download/data-sheet/pdf/ncp1599-d.pdf",
+            "revision": "Rev. 2",
+            "publicationBasis": "public_facts"
+          }
+        ],
+        "validFor": [],
+        "explanation": "Exact manufacturer package maximum retained for schema-valid geometry; profile-level independent review and admission remain pending."
+      }
+    }
+  }
+}

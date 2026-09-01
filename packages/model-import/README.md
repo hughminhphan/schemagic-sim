@@ -1,6 +1,7 @@
-# @opencircuit/model-import
+# scheMAGIC SPICE Model Importer
 
-Safe ingestion for untrusted SPICE model libraries.
+Safe ingestion for untrusted SPICE model libraries. The implementation remains
+available through the internal `@opencircuit/model-import` compatibility import.
 
 ## Public API
 

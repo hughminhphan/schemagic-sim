@@ -1,0 +1,34 @@
+{
+  "name": "@opencircuit/motor-designer",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Application recipes for scheMAGIC Motor Designer",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./fixtures": "./src/fixtures.ts",
+    "./reviewed-real": "./src/reviewed-real/index.ts",
+    "./v2": "./src/v2.ts",
+    "./v2-status": "./src/v2-status.ts",
+    "./v2-testing": "./src/v2-testing.ts",
+    "./v3": "./src/v3.ts",
+    "./v3-status": "./src/v3-status.ts"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "evidence:capture": "node scripts/capture-reviewed-real-evidence.mjs",
+    "test": "vitest run --maxWorkers=1",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@opencircuit/circuit-schema": "*",
+    "@opencircuit/design-engine": "*",
+    "@opencircuit/design-library": "*",
+    "@opencircuit/design-schema": "*",
+    "@opencircuit/sourcing-schema": "*"
+  },
+  "devDependencies": {
+    "@types/node": "24.3.0",
+    "vitest": "3.2.7"
+  }
+}

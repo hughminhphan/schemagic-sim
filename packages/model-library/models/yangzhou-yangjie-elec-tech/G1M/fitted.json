@@ -1,0 +1,114 @@
+{
+  "schema_version": "1.0.0",
+  "fidelity_tier": "F1",
+  "evidence_mode": "bound-constrained",
+  "parameters": {
+    "IS": 9.090698261882064e-11,
+    "N": 1.8,
+    "RS": 0.0001
+  },
+  "parameter_metadata": {
+    "IS": {
+      "status": "derived from cited maximum bound",
+      "evidence_mode": "bound-constrained"
+    },
+    "N": {
+      "status": "declared fixed F1 policy constant",
+      "evidence_mode": "bound-constrained"
+    },
+    "RS": {
+      "status": "declared fixed F1 policy constant",
+      "evidence_mode": "bound-constrained"
+    }
+  },
+  "calibration": {
+    "evidence_mode": "bound-constrained",
+    "observations": [],
+    "residual_target_count": 0,
+    "constraints": [
+      {
+        "kind": "forward_voltage_maximum",
+        "inclusive": true,
+        "source": {
+          "voltage": "p. 1, Electrical Characteristics",
+          "current": "p. 1, Electrical Characteristics",
+          "conditions": "Maximum instantaneous forward voltage drop per diode at IFM = 1.0 A; Ta = 25 degC unless otherwise specified",
+          "source_kind": "maximum"
+        },
+        "maximum_voltage_v": 1.1,
+        "current_a": 1,
+        "quantity": "forward voltage",
+        "gate_quantity": "forward_voltage",
+        "datasheet_value": 1.1,
+        "unit": "V",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "ambient",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 1
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 1.1
+            }
+          },
+          "test_mode": {
+            "kind": "not_stated"
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "Maximum instantaneous forward voltage drop per diode at IFM = 1.0 A; Ta = 25 degC unless otherwise specified"
+            }
+          ],
+          "condition_id": "sha256:2fc71310928fed15fb7553d7ef4ba621333db7f32afbb1002eb1514beb1e46df"
+        },
+        "citation_identity": {
+          "source_sha256": "1469ce7fc01cba62a91a63b242c703317e2a06d0c149f9919809714854be4632",
+          "source_revision": "S-S036 Rev. 2.4, 23-Apr-19",
+          "page": 1,
+          "table": "Electrical Characteristics",
+          "row": "Forward Voltage",
+          "citation_id": "sha256:81e7f4d43c882afa3cf174ba00e3d6ee10ba503c2f354d5f46d6cdc9e2f93e08"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:d7de6f34a89e506fbfa150f79a9b80702a5baa1fe9e1aee0e85c1cc037fd96f0",
+          "cohort_id": "sha256:400febb055f5fd4ec8f4bafd6c1c41a412105905b4e7b99b1192180728d1b92b",
+          "role": "maximum",
+          "condition_id": "sha256:2fc71310928fed15fb7553d7ef4ba621333db7f32afbb1002eb1514beb1e46df",
+          "citation_id": "sha256:81e7f4d43c882afa3cf174ba00e3d6ee10ba503c2f354d5f46d6cdc9e2f93e08"
+        },
+        "evidence_role": "inequality_constraint"
+      }
+    ],
+    "seeds": [
+      {
+        "parameter_coordinate": "IS",
+        "evidence_role": "maximum_bound_interior_feasibility_seed_only",
+        "value": 9.090698261882064e-11,
+        "unit": "A",
+        "policy": "derive from 0.95 times cited maximum current and 0.97 times cited maximum voltage",
+        "current_factor": 0.95,
+        "voltage_factor": 0.97
+      }
+    ]
+  },
+  "fitter": "cited-maximum diode F1 interior-feasibility projection",
+  "optimizer": null,
+  "held_defaults": [],
+  "curves_used": [],
+  "evidence_contract_version": "1.0.0",
+  "evidence_curves": [],
+  "curves_rejected": [],
+  "residuals": [],
+  "rms_relative_error": null,
+  "worst_relative_error": null
+}

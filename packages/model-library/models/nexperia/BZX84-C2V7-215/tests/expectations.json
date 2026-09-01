@@ -1,0 +1,54 @@
+{
+  "schema_version": "1.0.0",
+  "evidence_contract_version": "1.0.0",
+  "evidence_cohorts": [
+    {
+      "cohort_id": "sha256:f304f2d1a64006c02d2be7eee5185cbb62c5395583c6ffa2202d60465abd5cf3",
+      "fidelity_tier": "F1",
+      "evidence_ids": [
+        "sha256:569b85a9bf7273580952443e5907d273fddb9011358dabf858225bd4cf55f361"
+      ]
+    }
+  ],
+  "tests": [
+    {
+      "test_netlist": "forward_01.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "forward_voltage_maximum_at_0.01_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "minimum": 0,
+          "maximum": 0.9,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "PDF p. 4, Table 7 Characteristics",
+          "evidence_id": "sha256:569b85a9bf7273580952443e5907d273fddb9011358dabf858225bd4cf55f361",
+          "condition_id": "sha256:f18d40b2773055365f39994d052d04b77d8b84cb105c84a1384a24ded995fcc1",
+          "citation_id": "sha256:4282675592ca3887e434222450d7ed1b954432c2c857e59ac90946ebb3b9996b",
+          "cohort_id": "sha256:f304f2d1a64006c02d2be7eee5185cbb62c5395583c6ffa2202d60465abd5cf3",
+          "bench_condition_id": "sha256:f18d40b2773055365f39994d052d04b77d8b84cb105c84a1384a24ded995fcc1",
+          "evidence_role": "inclusive_maximum",
+          "citation_locator": {
+            "page": 4,
+            "table": "Table 7 Characteristics",
+            "row": "Forward Voltage"
+          },
+          "evidence_qualification": {
+            "test_mode": "pulsed_limit",
+            "maximum_pulse_width_s": 0.00009999999999999999
+          },
+          "bench_qualification": {
+            "test_mode": "continuous_dc"
+          },
+          "bench_equivalence_policy": "isothermal_diode_forward_projection",
+          "placeholder": false
+        }
+      ]
+    }
+  ]
+}

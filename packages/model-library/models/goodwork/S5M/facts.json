@@ -1,0 +1,230 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3",
+        "p. 4"
+      ],
+      "revision": "revision not stated in source",
+      "title": "S1M THRU S7M General Purpose Rectifiers"
+    },
+    "extraction_notes": [
+      "No curve points were digitized."
+    ],
+    "family": "diode",
+    "manufacturer": "GOODWORK",
+    "mpn": "S5M",
+    "omission_reason": "Table-only extraction.",
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": null,
+      "breakdown_voltage": null,
+      "capacitance": {
+        "conditions": "VR = 4 V, f = 1 MHz",
+        "page_reference": "p. 1 note 1",
+        "source_kind": "typical",
+        "unit": "F",
+        "value": 6e-11
+      },
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "TA = 25 C",
+            "page_reference": "p. 1 maximum ratings and electrical characteristics",
+            "source_kind": "maximum",
+            "unit": "A",
+            "value": 5
+          },
+          "voltage": {
+            "conditions": "IF = 5.0 A, TA = 25 C",
+            "page_reference": "p. 1 maximum ratings and electrical characteristics",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 1.1
+          }
+        }
+      ],
+      "reverse_current": {
+        "conditions": "rated DC blocking voltage, TA = 25 C",
+        "page_reference": "p. 1 maximum ratings and electrical characteristics",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.000005
+      },
+      "reverse_recovery": null,
+      "variant": "rectifier"
+    },
+    "usable_curves": false
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "Forward Voltage (Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "1.1V@5A",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Voltage - Forward(Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "1.1V@5A",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "S5M",
+    "manufacturer": "GOODWORK",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8757771037301841920",
+    "revision": "revision not stated in source",
+    "sha256": "c223360cd3202ceeb5a05c3467035bb2e919dc6838ad04139c649522ec7e7b7c",
+    "accessed_date": "2026-08-23",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "placeholder": false
+  },
+  "evidence_contract_version": "1.0.0",
+  "fit_points": [
+    {
+      "current": {
+        "conditions": "TA = 25 C",
+        "page_reference": "p. 1 maximum ratings and electrical characteristics",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 5
+      },
+      "voltage": {
+        "conditions": "IF = 5.0 A, TA = 25 C",
+        "page_reference": "p. 1 maximum ratings and electrical characteristics",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 1.1
+      }
+    }
+  ],
+  "forward_voltage_points": [
+    {
+      "current": {
+        "conditions": "TA = 25 C",
+        "page_reference": "p. 1 maximum ratings and electrical characteristics",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 5,
+        "quantity": "forward_current",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "ambient",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 5
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 1.1
+            }
+          },
+          "test_mode": {
+            "kind": "not_stated"
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "TA = 25 C"
+            }
+          ],
+          "condition_id": "sha256:f88725c31a94c8f625d08e05998219d0c042e5e0b5f55732aa80970fa353ab43"
+        },
+        "citation_identity": {
+          "source_sha256": "c223360cd3202ceeb5a05c3467035bb2e919dc6838ad04139c649522ec7e7b7c",
+          "source_revision": "revision not stated in source",
+          "page": 1,
+          "table": "maximum ratings and electrical characteristics",
+          "row": "Forward Current",
+          "citation_id": "sha256:f5077723039c846c21dabafa65561d02daf4f277580622a272386c5cc95e317e"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:6ae736727083969ad4c8173bb1a7c4d74839ee97b38316ecf3fbfe54299804a8",
+          "cohort_id": "sha256:a978665be16a7b17a8866be160507111c3b6983229291ffdeddabd41fca4cefc",
+          "role": "maximum",
+          "condition_id": "sha256:f88725c31a94c8f625d08e05998219d0c042e5e0b5f55732aa80970fa353ab43",
+          "citation_id": "sha256:f5077723039c846c21dabafa65561d02daf4f277580622a272386c5cc95e317e"
+        }
+      },
+      "voltage": {
+        "conditions": "IF = 5.0 A, TA = 25 C",
+        "page_reference": "p. 1 maximum ratings and electrical characteristics",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 1.1,
+        "quantity": "forward_voltage",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "ambient",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 5
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 1.1
+            }
+          },
+          "test_mode": {
+            "kind": "not_stated"
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "IF = 5.0 A, TA = 25 C"
+            }
+          ],
+          "condition_id": "sha256:7154479fb160efed04a6bf05e7c18c8066cf55cf3261f71a3d8ab75f85ff3118"
+        },
+        "citation_identity": {
+          "source_sha256": "c223360cd3202ceeb5a05c3467035bb2e919dc6838ad04139c649522ec7e7b7c",
+          "source_revision": "revision not stated in source",
+          "page": 1,
+          "table": "maximum ratings and electrical characteristics",
+          "row": "Forward Voltage",
+          "citation_id": "sha256:f165e60d5f002e58f63f2ae56b36657a7344da1859e6395195b2b1a1edec7d8c"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:3779061f43c91d5b1e078e3d3de0687599239e1c0582385f985b1170139dc527",
+          "cohort_id": "sha256:be85287622b7357a1988b8987abec75c0784ae83392a0e87cda1c3c8ccc57042",
+          "role": "maximum",
+          "condition_id": "sha256:7154479fb160efed04a6bf05e7c18c8066cf55cf3261f71a3d8ab75f85ff3118",
+          "citation_id": "sha256:f165e60d5f002e58f63f2ae56b36657a7344da1859e6395195b2b1a1edec7d8c"
+        }
+      }
+    }
+  ],
+  "curves": [],
+  "electrical_limits": {},
+  "derived_model_inputs": {}
+}

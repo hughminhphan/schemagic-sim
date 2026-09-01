@@ -1,0 +1,332 @@
+{
+  "format": "schemagic-design-profile",
+  "schemaVersion": "1.0.0",
+  "partClass": "shared.switching-diode",
+  "part": {
+    "manufacturerId": "vishay-intertechnology",
+    "manufacturerPartNumber": "1N4148-TAP"
+  },
+  "factsSchemaVersion": "1.0.0",
+  "commonFacts": {
+    "packageName": {
+      "value": "DO-35 (DO-204AH), TAP ammopack",
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "vishay-1n4148-datasheet-81857",
+          "locator": "page 1, Mechanical Data and Parts Table",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-06T00:00:00Z",
+          "contentHash": "sha256:aefe85400a427ed886a4e1c88205ceabb9f9b38044b29c6acee4bb00146a44b7",
+          "url": "https://www.vishay.com/docs/81857/1n4148.pdf",
+          "revision": "Rev. 1.6, 07-Nov-2024",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "The exact 1N4148-TAP ordering code is supplied in the DO-35 axial package using ammopack tape."
+    },
+    "boardArea": {
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "The datasheet specifies body and lead dimensions but no mounted lead pitch or reviewed board-area contribution; package-body area is not relabeled as board area."
+    },
+    "maximumHeight": {
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "Mounted height depends on axial lead forming and orientation, neither of which is fixed by the datasheet."
+    }
+  },
+  "facts": {
+    "reverseVoltage": {
+      "value": {
+        "value": 75,
+        "unit": "V",
+        "displayUnit": "V"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "vishay-1n4148-datasheet-81857",
+          "locator": "page 1, Absolute Maximum Ratings, Reverse voltage VR",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-06T00:00:00Z",
+          "contentHash": "sha256:aefe85400a427ed886a4e1c88205ceabb9f9b38044b29c6acee4bb00146a44b7",
+          "url": "https://www.vishay.com/docs/81857/1n4148.pdf",
+          "revision": "Rev. 1.6, 07-Nov-2024",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "ambientTemperature",
+          "minimum": {
+            "value": 298.15,
+            "unit": "K",
+            "displayUnit": "25 °C"
+          },
+          "maximum": {
+            "value": 298.15,
+            "unit": "K",
+            "displayUnit": "25 °C"
+          },
+          "evidence": [
+            {
+              "sourceId": "vishay-1n4148-datasheet-81857",
+              "locator": "page 1, Absolute Maximum Ratings heading, Tamb = 25 °C unless otherwise specified",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-06T00:00:00Z",
+              "contentHash": "sha256:aefe85400a427ed886a4e1c88205ceabb9f9b38044b29c6acee4bb00146a44b7",
+              "url": "https://www.vishay.com/docs/81857/1n4148.pdf",
+              "revision": "Rev. 1.6, 07-Nov-2024",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "Maximum continuous reverse-voltage rating at the datasheet's stated ambient condition; this is not the 100 V repetitive peak rating."
+    },
+    "continuousForwardCurrent": {
+      "value": {
+        "value": 0.3,
+        "unit": "A",
+        "displayUnit": "300 mA"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "vishay-1n4148-datasheet-81857",
+          "locator": "page 1, Absolute Maximum Ratings, Forward continuous current IF",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-06T00:00:00Z",
+          "contentHash": "sha256:aefe85400a427ed886a4e1c88205ceabb9f9b38044b29c6acee4bb00146a44b7",
+          "url": "https://www.vishay.com/docs/81857/1n4148.pdf",
+          "revision": "Rev. 1.6, 07-Nov-2024",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "ambientTemperature",
+          "minimum": {
+            "value": 298.15,
+            "unit": "K",
+            "displayUnit": "25 °C"
+          },
+          "maximum": {
+            "value": 298.15,
+            "unit": "K",
+            "displayUnit": "25 °C"
+          },
+          "evidence": [
+            {
+              "sourceId": "vishay-1n4148-datasheet-81857",
+              "locator": "page 1, Absolute Maximum Ratings heading, Tamb = 25 °C unless otherwise specified",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-06T00:00:00Z",
+              "contentHash": "sha256:aefe85400a427ed886a4e1c88205ceabb9f9b38044b29c6acee4bb00146a44b7",
+              "url": "https://www.vishay.com/docs/81857/1n4148.pdf",
+              "revision": "Rev. 1.6, 07-Nov-2024",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "Forward continuous-current absolute maximum at 25 °C ambient."
+    },
+    "forwardVoltage": {
+      "value": {
+        "value": 1,
+        "unit": "V",
+        "displayUnit": "V"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "vishay-1n4148-datasheet-81857",
+          "locator": "page 2, Electrical Characteristics, Forward voltage VF at IF = 10 mA",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-06T00:00:00Z",
+          "contentHash": "sha256:aefe85400a427ed886a4e1c88205ceabb9f9b38044b29c6acee4bb00146a44b7",
+          "url": "https://www.vishay.com/docs/81857/1n4148.pdf",
+          "revision": "Rev. 1.6, 07-Nov-2024",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "testCurrent",
+          "minimum": {
+            "value": 0.01,
+            "unit": "A",
+            "displayUnit": "10 mA"
+          },
+          "maximum": {
+            "value": 0.01,
+            "unit": "A",
+            "displayUnit": "10 mA"
+          },
+          "evidence": [
+            {
+              "sourceId": "vishay-1n4148-datasheet-81857",
+              "locator": "page 2, Electrical Characteristics, Forward voltage test condition IF = 10 mA",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-06T00:00:00Z",
+              "contentHash": "sha256:aefe85400a427ed886a4e1c88205ceabb9f9b38044b29c6acee4bb00146a44b7",
+              "url": "https://www.vishay.com/docs/81857/1n4148.pdf",
+              "revision": "Rev. 1.6, 07-Nov-2024",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "ambientTemperature",
+          "minimum": {
+            "value": 298.15,
+            "unit": "K",
+            "displayUnit": "25 °C"
+          },
+          "maximum": {
+            "value": 298.15,
+            "unit": "K",
+            "displayUnit": "25 °C"
+          },
+          "evidence": [
+            {
+              "sourceId": "vishay-1n4148-datasheet-81857",
+              "locator": "page 2, Electrical Characteristics heading, Tamb = 25 °C unless otherwise specified",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-06T00:00:00Z",
+              "contentHash": "sha256:aefe85400a427ed886a4e1c88205ceabb9f9b38044b29c6acee4bb00146a44b7",
+              "url": "https://www.vishay.com/docs/81857/1n4148.pdf",
+              "revision": "Rev. 1.6, 07-Nov-2024",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "Guaranteed maximum forward voltage at 10 mA and 25 °C ambient."
+    },
+    "reverseRecoveryTime": {
+      "value": {
+        "value": 4e-9,
+        "unit": "s",
+        "displayUnit": "4 ns"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "vishay-1n4148-datasheet-81857",
+          "locator": "page 2, Electrical Characteristics, Reverse recovery time trr, IF = 10 mA, VR = 6 V, iR = 0.1 × IR, RL = 100 ohm",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-06T00:00:00Z",
+          "contentHash": "sha256:aefe85400a427ed886a4e1c88205ceabb9f9b38044b29c6acee4bb00146a44b7",
+          "url": "https://www.vishay.com/docs/81857/1n4148.pdf",
+          "revision": "Rev. 1.6, 07-Nov-2024",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "testCurrent",
+          "minimum": {
+            "value": 0.01,
+            "unit": "A",
+            "displayUnit": "10 mA"
+          },
+          "maximum": {
+            "value": 0.01,
+            "unit": "A",
+            "displayUnit": "10 mA"
+          },
+          "evidence": [
+            {
+              "sourceId": "vishay-1n4148-datasheet-81857",
+              "locator": "page 2, Electrical Characteristics, reverse-recovery forward-current condition IF = 10 mA",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-06T00:00:00Z",
+              "contentHash": "sha256:aefe85400a427ed886a4e1c88205ceabb9f9b38044b29c6acee4bb00146a44b7",
+              "url": "https://www.vishay.com/docs/81857/1n4148.pdf",
+              "revision": "Rev. 1.6, 07-Nov-2024",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "testVoltage",
+          "minimum": {
+            "value": 6,
+            "unit": "V",
+            "displayUnit": "V"
+          },
+          "maximum": {
+            "value": 6,
+            "unit": "V",
+            "displayUnit": "V"
+          },
+          "evidence": [
+            {
+              "sourceId": "vishay-1n4148-datasheet-81857",
+              "locator": "page 2, Electrical Characteristics, reverse-recovery reverse-voltage condition VR = 6 V",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-06T00:00:00Z",
+              "contentHash": "sha256:aefe85400a427ed886a4e1c88205ceabb9f9b38044b29c6acee4bb00146a44b7",
+              "url": "https://www.vishay.com/docs/81857/1n4148.pdf",
+              "revision": "Rev. 1.6, 07-Nov-2024",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "ambientTemperature",
+          "minimum": {
+            "value": 298.15,
+            "unit": "K",
+            "displayUnit": "25 °C"
+          },
+          "maximum": {
+            "value": 298.15,
+            "unit": "K",
+            "displayUnit": "25 °C"
+          },
+          "evidence": [
+            {
+              "sourceId": "vishay-1n4148-datasheet-81857",
+              "locator": "page 2, Electrical Characteristics heading, Tamb = 25 °C unless otherwise specified",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-06T00:00:00Z",
+              "contentHash": "sha256:aefe85400a427ed886a4e1c88205ceabb9f9b38044b29c6acee4bb00146a44b7",
+              "url": "https://www.vishay.com/docs/81857/1n4148.pdf",
+              "revision": "Rev. 1.6, 07-Nov-2024",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "Guaranteed maximum reverse-recovery time for the datasheet's stated 10 mA forward, 6 V reverse, 0.1 recovery-current ratio, and 100 ohm load test."
+    },
+    "reverseRecoveryCharge": {
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "The reviewed datasheet does not specify reverse-recovery charge."
+    }
+  }
+}

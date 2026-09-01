@@ -1,0 +1,4045 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.schemagic.design/design-library/v1/facts/power.integrated-synchronous-buck-regulator.v3-3.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "converterTopology",
+    "powerStage",
+    "compensationArchitecture",
+    "inputVoltageOperatingMinimum",
+    "inputVoltageOperatingMaximum",
+    "inputVoltageAbsoluteMaximum",
+    "outputVoltageOperatingMinimum",
+    "outputVoltageOperatingMaximum",
+    "outputCurrent",
+    "outputCurrentRole",
+    "switchingFrequencyArchitecture",
+    "switchingFrequencyMinimum",
+    "switchingFrequencyNominal",
+    "switchingFrequencyMaximum",
+    "switchingFrequencyRole",
+    "feedbackReferenceMinimum",
+    "feedbackReferenceTypical",
+    "feedbackReferenceMaximum",
+    "feedbackReferenceRole",
+    "currentLimitMinimum",
+    "currentLimitTypical",
+    "currentLimitMaximum",
+    "currentLimitRole",
+    "minimumOnTime",
+    "minimumOnTimeRole",
+    "minimumOffTime",
+    "minimumOffTimeRole",
+    "highSideOnResistance",
+    "highSideOnResistanceRole",
+    "lowSideOnResistance",
+    "lowSideOnResistanceRole",
+    "nonSwitchingSupplyCurrent",
+    "nonSwitchingSupplyCurrentRole",
+    "junctionToAmbientThermalResistance",
+    "junctionToAmbientThermalResistanceRole",
+    "maximumJunctionTemperature",
+    "bootstrapCapacitance",
+    "bootstrapCapacitanceRequirement",
+    "mountedGeometry"
+  ],
+  "properties": {
+    "converterTopology": {
+      "allOf": [
+        {
+          "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/profileFact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "value": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "synchronous_buck"
+                  ]
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "validFor": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/operatingRange"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "powerStage": {
+      "allOf": [
+        {
+          "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/profileFact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "value": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "integrated_fet"
+                  ]
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "validFor": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/operatingRange"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "compensationArchitecture": {
+      "allOf": [
+        {
+          "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/profileFact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "value": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "internal",
+                    "external",
+                    "application_dependent"
+                  ]
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "validFor": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/operatingRange"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "inputVoltageOperatingMinimum": {
+      "allOf": [
+        {
+          "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/profileFact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "value": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "value",
+                    "unit",
+                    "displayUnit"
+                  ],
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "exclusiveMinimum": 0
+                    },
+                    "unit": {
+                      "const": "V"
+                    },
+                    "displayUnit": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": ".*\\S.*"
+                    }
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "validFor": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/operatingRange"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "inputVoltageOperatingMaximum": {
+      "allOf": [
+        {
+          "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/profileFact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "value": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "value",
+                    "unit",
+                    "displayUnit"
+                  ],
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "exclusiveMinimum": 0
+                    },
+                    "unit": {
+                      "const": "V"
+                    },
+                    "displayUnit": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": ".*\\S.*"
+                    }
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "validFor": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/operatingRange"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "inputVoltageAbsoluteMaximum": {
+      "allOf": [
+        {
+          "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/profileFact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "value": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "value",
+                    "unit",
+                    "displayUnit"
+                  ],
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "exclusiveMinimum": 0
+                    },
+                    "unit": {
+                      "const": "V"
+                    },
+                    "displayUnit": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": ".*\\S.*"
+                    }
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "validFor": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/operatingRange"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "outputVoltageOperatingMinimum": {
+      "allOf": [
+        {
+          "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/profileFact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "value": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "value",
+                    "unit",
+                    "displayUnit"
+                  ],
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "exclusiveMinimum": 0
+                    },
+                    "unit": {
+                      "const": "V"
+                    },
+                    "displayUnit": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": ".*\\S.*"
+                    }
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "validFor": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/operatingRange"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "outputVoltageOperatingMaximum": {
+      "allOf": [
+        {
+          "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/profileFact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "value": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "value",
+                    "unit",
+                    "displayUnit"
+                  ],
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "exclusiveMinimum": 0
+                    },
+                    "unit": {
+                      "const": "V"
+                    },
+                    "displayUnit": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": ".*\\S.*"
+                    }
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "validFor": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/operatingRange"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "outputCurrent": {
+      "allOf": [
+        {
+          "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/profileFact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "value": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "value",
+                    "unit",
+                    "displayUnit"
+                  ],
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "exclusiveMinimum": 0
+                    },
+                    "unit": {
+                      "const": "A"
+                    },
+                    "displayUnit": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": ".*\\S.*"
+                    }
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "validFor": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/operatingRange"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "outputCurrentRole": {
+      "allOf": [
+        {
+          "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/profileFact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "value": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "guaranteed_operating_limit",
+                    "continuous_capability_statement",
+                    "typical_observation",
+                    "board_specific_observation",
+                    "absolute_rating",
+                    "protection_threshold"
+                  ]
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "validFor": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/operatingRange"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "switchingFrequencyArchitecture": {
+      "allOf": [
+        {
+          "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/profileFact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "value": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "fixed_oscillator",
+                    "resistor_programmed",
+                    "externally_synchronized",
+                    "fixed_or_synchronized"
+                  ]
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "validFor": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/operatingRange"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "switchingFrequencyMinimum": {
+      "allOf": [
+        {
+          "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/profileFact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "value": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "value",
+                    "unit",
+                    "displayUnit"
+                  ],
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "exclusiveMinimum": 0
+                    },
+                    "unit": {
+                      "const": "Hz"
+                    },
+                    "displayUnit": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": ".*\\S.*"
+                    }
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "validFor": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/operatingRange"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "switchingFrequencyNominal": {
+      "allOf": [
+        {
+          "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/profileFact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "value": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "value",
+                    "unit",
+                    "displayUnit"
+                  ],
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "exclusiveMinimum": 0
+                    },
+                    "unit": {
+                      "const": "Hz"
+                    },
+                    "displayUnit": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": ".*\\S.*"
+                    }
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "validFor": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/operatingRange"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "switchingFrequencyMaximum": {
+      "allOf": [
+        {
+          "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/profileFact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "value": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "value",
+                    "unit",
+                    "displayUnit"
+                  ],
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "exclusiveMinimum": 0
+                    },
+                    "unit": {
+                      "const": "Hz"
+                    },
+                    "displayUnit": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": ".*\\S.*"
+                    }
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "validFor": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/operatingRange"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "switchingFrequencyRole": {
+      "allOf": [
+        {
+          "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/profileFact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "value": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "production_spread",
+                    "guaranteed_adjustment_range",
+                    "recommended_setting",
+                    "typical_observation"
+                  ]
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "validFor": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/operatingRange"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "feedbackReferenceMinimum": {
+      "allOf": [
+        {
+          "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/profileFact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "value": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "value",
+                    "unit",
+                    "displayUnit"
+                  ],
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "exclusiveMinimum": 0
+                    },
+                    "unit": {
+                      "const": "V"
+                    },
+                    "displayUnit": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": ".*\\S.*"
+                    }
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "validFor": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/operatingRange"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "feedbackReferenceTypical": {
+      "allOf": [
+        {
+          "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/profileFact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "value": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "value",
+                    "unit",
+                    "displayUnit"
+                  ],
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "exclusiveMinimum": 0
+                    },
+                    "unit": {
+                      "const": "V"
+                    },
+                    "displayUnit": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": ".*\\S.*"
+                    }
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "validFor": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/operatingRange"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "feedbackReferenceMaximum": {
+      "allOf": [
+        {
+          "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/profileFact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "value": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "value",
+                    "unit",
+                    "displayUnit"
+                  ],
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "exclusiveMinimum": 0
+                    },
+                    "unit": {
+                      "const": "V"
+                    },
+                    "displayUnit": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": ".*\\S.*"
+                    }
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "validFor": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/operatingRange"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "feedbackReferenceRole": {
+      "allOf": [
+        {
+          "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/profileFact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "value": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "production_spread",
+                    "typical_observation"
+                  ]
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "validFor": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/operatingRange"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "currentLimitMinimum": {
+      "allOf": [
+        {
+          "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/profileFact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "value": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "value",
+                    "unit",
+                    "displayUnit"
+                  ],
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "exclusiveMinimum": 0
+                    },
+                    "unit": {
+                      "const": "A"
+                    },
+                    "displayUnit": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": ".*\\S.*"
+                    }
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "validFor": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/operatingRange"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "currentLimitTypical": {
+      "allOf": [
+        {
+          "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/profileFact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "value": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "value",
+                    "unit",
+                    "displayUnit"
+                  ],
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "exclusiveMinimum": 0
+                    },
+                    "unit": {
+                      "const": "A"
+                    },
+                    "displayUnit": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": ".*\\S.*"
+                    }
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "validFor": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/operatingRange"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "currentLimitMaximum": {
+      "allOf": [
+        {
+          "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/profileFact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "value": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "value",
+                    "unit",
+                    "displayUnit"
+                  ],
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "exclusiveMinimum": 0
+                    },
+                    "unit": {
+                      "const": "A"
+                    },
+                    "displayUnit": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": ".*\\S.*"
+                    }
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "validFor": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/operatingRange"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "currentLimitRole": {
+      "allOf": [
+        {
+          "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/profileFact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "value": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "protection_threshold",
+                    "guaranteed_operating_limit",
+                    "typical_observation"
+                  ]
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "validFor": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/operatingRange"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "minimumOnTime": {
+      "allOf": [
+        {
+          "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/profileFact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "value": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "value",
+                    "unit",
+                    "displayUnit"
+                  ],
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "exclusiveMinimum": 0
+                    },
+                    "unit": {
+                      "const": "s"
+                    },
+                    "displayUnit": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": ".*\\S.*"
+                    }
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "validFor": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/operatingRange"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "minimumOnTimeRole": {
+      "allOf": [
+        {
+          "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/profileFact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "value": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "guaranteed_bound",
+                    "typical_observation"
+                  ]
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "validFor": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/operatingRange"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "minimumOffTime": {
+      "allOf": [
+        {
+          "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/profileFact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "value": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "value",
+                    "unit",
+                    "displayUnit"
+                  ],
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "exclusiveMinimum": 0
+                    },
+                    "unit": {
+                      "const": "s"
+                    },
+                    "displayUnit": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": ".*\\S.*"
+                    }
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "validFor": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/operatingRange"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "minimumOffTimeRole": {
+      "allOf": [
+        {
+          "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/profileFact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "value": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "guaranteed_bound",
+                    "typical_observation"
+                  ]
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "validFor": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/operatingRange"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "highSideOnResistance": {
+      "allOf": [
+        {
+          "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/profileFact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "value": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "value",
+                    "unit",
+                    "displayUnit"
+                  ],
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "exclusiveMinimum": 0
+                    },
+                    "unit": {
+                      "const": "ohm"
+                    },
+                    "displayUnit": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": ".*\\S.*"
+                    }
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "validFor": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/operatingRange"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "highSideOnResistanceRole": {
+      "allOf": [
+        {
+          "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/profileFact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "value": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "guaranteed_maximum",
+                    "typical_observation"
+                  ]
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "validFor": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/operatingRange"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "lowSideOnResistance": {
+      "allOf": [
+        {
+          "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/profileFact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "value": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "value",
+                    "unit",
+                    "displayUnit"
+                  ],
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "exclusiveMinimum": 0
+                    },
+                    "unit": {
+                      "const": "ohm"
+                    },
+                    "displayUnit": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": ".*\\S.*"
+                    }
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "validFor": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/operatingRange"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "lowSideOnResistanceRole": {
+      "allOf": [
+        {
+          "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/profileFact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "value": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "guaranteed_maximum",
+                    "typical_observation"
+                  ]
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "validFor": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/operatingRange"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "nonSwitchingSupplyCurrent": {
+      "allOf": [
+        {
+          "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/profileFact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "value": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "value",
+                    "unit",
+                    "displayUnit"
+                  ],
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    "unit": {
+                      "const": "A"
+                    },
+                    "displayUnit": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": ".*\\S.*"
+                    }
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "validFor": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/operatingRange"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "nonSwitchingSupplyCurrentRole": {
+      "allOf": [
+        {
+          "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/profileFact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "value": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "guaranteed_maximum",
+                    "typical_observation"
+                  ]
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "validFor": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/operatingRange"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "junctionToAmbientThermalResistance": {
+      "allOf": [
+        {
+          "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/profileFact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "value": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "value",
+                    "unit",
+                    "displayUnit"
+                  ],
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "exclusiveMinimum": 0
+                    },
+                    "unit": {
+                      "const": "K/W"
+                    },
+                    "displayUnit": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": ".*\\S.*"
+                    }
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "validFor": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/operatingRange"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "junctionToAmbientThermalResistanceRole": {
+      "allOf": [
+        {
+          "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/profileFact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "value": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "guaranteed_maximum",
+                    "test_characteristic",
+                    "board_specific_observation",
+                    "typical_observation"
+                  ]
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "validFor": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/operatingRange"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "maximumJunctionTemperature": {
+      "allOf": [
+        {
+          "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/profileFact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "value": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "value",
+                    "unit",
+                    "displayUnit"
+                  ],
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "exclusiveMinimum": 0
+                    },
+                    "unit": {
+                      "const": "K"
+                    },
+                    "displayUnit": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": ".*\\S.*"
+                    }
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "validFor": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/operatingRange"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "bootstrapCapacitance": {
+      "allOf": [
+        {
+          "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/profileFact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "value": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "value",
+                    "unit",
+                    "displayUnit"
+                  ],
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "exclusiveMinimum": 0
+                    },
+                    "unit": {
+                      "const": "F"
+                    },
+                    "displayUnit": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": ".*\\S.*"
+                    }
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "validFor": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/operatingRange"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "bootstrapCapacitanceRequirement": {
+      "allOf": [
+        {
+          "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/profileFact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "value": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "required_nominal_value",
+                    "recommended_value",
+                    "typical_observation",
+                    "application_dependent",
+                    "not_specified"
+                  ]
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "validFor": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/operatingRange"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "mountedGeometry": {
+      "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.facts-v3-3.schema.json#/$defs/mountedGeometry"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "required": [
+          "outputCurrent"
+        ],
+        "properties": {
+          "outputCurrent": {
+            "type": "object",
+            "required": [
+              "state"
+            ],
+            "properties": {
+              "state": {
+                "const": "unknown"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "outputCurrentRole": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "value",
+              "state",
+              "evidence",
+              "validFor",
+              "explanation"
+            ],
+            "properties": {
+              "value": {
+                "type": "null"
+              },
+              "state": {
+                "const": "unknown"
+              },
+              "evidence": {
+                "type": "array",
+                "maxItems": 0
+              },
+              "validFor": {
+                "type": "array",
+                "maxItems": 0
+              },
+              "explanation": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": ".*\\S.*"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "required": [
+          "outputCurrent"
+        ],
+        "properties": {
+          "outputCurrent": {
+            "type": "object",
+            "required": [
+              "state"
+            ],
+            "properties": {
+              "state": {
+                "const": "reviewed"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "outputCurrentRole": {
+            "type": "object",
+            "required": [
+              "state"
+            ],
+            "properties": {
+              "state": {
+                "const": "reviewed"
+              }
+            }
+          }
+        }
+      },
+      "$comment": "Runtime validation additionally requires identical canonical validFor arrays and evidence sets."
+    },
+    {
+      "if": {
+        "required": [
+          "minimumOnTime"
+        ],
+        "properties": {
+          "minimumOnTime": {
+            "type": "object",
+            "required": [
+              "state"
+            ],
+            "properties": {
+              "state": {
+                "const": "unknown"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "minimumOnTimeRole": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "value",
+              "state",
+              "evidence",
+              "validFor",
+              "explanation"
+            ],
+            "properties": {
+              "value": {
+                "type": "null"
+              },
+              "state": {
+                "const": "unknown"
+              },
+              "evidence": {
+                "type": "array",
+                "maxItems": 0
+              },
+              "validFor": {
+                "type": "array",
+                "maxItems": 0
+              },
+              "explanation": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": ".*\\S.*"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "required": [
+          "minimumOnTime"
+        ],
+        "properties": {
+          "minimumOnTime": {
+            "type": "object",
+            "required": [
+              "state"
+            ],
+            "properties": {
+              "state": {
+                "const": "reviewed"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "minimumOnTimeRole": {
+            "type": "object",
+            "required": [
+              "state"
+            ],
+            "properties": {
+              "state": {
+                "const": "reviewed"
+              }
+            }
+          }
+        }
+      },
+      "$comment": "Runtime validation additionally requires identical canonical validFor arrays and evidence sets."
+    },
+    {
+      "if": {
+        "required": [
+          "minimumOffTime"
+        ],
+        "properties": {
+          "minimumOffTime": {
+            "type": "object",
+            "required": [
+              "state"
+            ],
+            "properties": {
+              "state": {
+                "const": "unknown"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "minimumOffTimeRole": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "value",
+              "state",
+              "evidence",
+              "validFor",
+              "explanation"
+            ],
+            "properties": {
+              "value": {
+                "type": "null"
+              },
+              "state": {
+                "const": "unknown"
+              },
+              "evidence": {
+                "type": "array",
+                "maxItems": 0
+              },
+              "validFor": {
+                "type": "array",
+                "maxItems": 0
+              },
+              "explanation": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": ".*\\S.*"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "required": [
+          "minimumOffTime"
+        ],
+        "properties": {
+          "minimumOffTime": {
+            "type": "object",
+            "required": [
+              "state"
+            ],
+            "properties": {
+              "state": {
+                "const": "reviewed"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "minimumOffTimeRole": {
+            "type": "object",
+            "required": [
+              "state"
+            ],
+            "properties": {
+              "state": {
+                "const": "reviewed"
+              }
+            }
+          }
+        }
+      },
+      "$comment": "Runtime validation additionally requires identical canonical validFor arrays and evidence sets."
+    },
+    {
+      "if": {
+        "required": [
+          "highSideOnResistance"
+        ],
+        "properties": {
+          "highSideOnResistance": {
+            "type": "object",
+            "required": [
+              "state"
+            ],
+            "properties": {
+              "state": {
+                "const": "unknown"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "highSideOnResistanceRole": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "value",
+              "state",
+              "evidence",
+              "validFor",
+              "explanation"
+            ],
+            "properties": {
+              "value": {
+                "type": "null"
+              },
+              "state": {
+                "const": "unknown"
+              },
+              "evidence": {
+                "type": "array",
+                "maxItems": 0
+              },
+              "validFor": {
+                "type": "array",
+                "maxItems": 0
+              },
+              "explanation": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": ".*\\S.*"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "required": [
+          "highSideOnResistance"
+        ],
+        "properties": {
+          "highSideOnResistance": {
+            "type": "object",
+            "required": [
+              "state"
+            ],
+            "properties": {
+              "state": {
+                "const": "reviewed"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "highSideOnResistanceRole": {
+            "type": "object",
+            "required": [
+              "state"
+            ],
+            "properties": {
+              "state": {
+                "const": "reviewed"
+              }
+            }
+          }
+        }
+      },
+      "$comment": "Runtime validation additionally requires identical canonical validFor arrays and evidence sets."
+    },
+    {
+      "if": {
+        "required": [
+          "lowSideOnResistance"
+        ],
+        "properties": {
+          "lowSideOnResistance": {
+            "type": "object",
+            "required": [
+              "state"
+            ],
+            "properties": {
+              "state": {
+                "const": "unknown"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "lowSideOnResistanceRole": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "value",
+              "state",
+              "evidence",
+              "validFor",
+              "explanation"
+            ],
+            "properties": {
+              "value": {
+                "type": "null"
+              },
+              "state": {
+                "const": "unknown"
+              },
+              "evidence": {
+                "type": "array",
+                "maxItems": 0
+              },
+              "validFor": {
+                "type": "array",
+                "maxItems": 0
+              },
+              "explanation": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": ".*\\S.*"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "required": [
+          "lowSideOnResistance"
+        ],
+        "properties": {
+          "lowSideOnResistance": {
+            "type": "object",
+            "required": [
+              "state"
+            ],
+            "properties": {
+              "state": {
+                "const": "reviewed"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "lowSideOnResistanceRole": {
+            "type": "object",
+            "required": [
+              "state"
+            ],
+            "properties": {
+              "state": {
+                "const": "reviewed"
+              }
+            }
+          }
+        }
+      },
+      "$comment": "Runtime validation additionally requires identical canonical validFor arrays and evidence sets."
+    },
+    {
+      "if": {
+        "required": [
+          "nonSwitchingSupplyCurrent"
+        ],
+        "properties": {
+          "nonSwitchingSupplyCurrent": {
+            "type": "object",
+            "required": [
+              "state"
+            ],
+            "properties": {
+              "state": {
+                "const": "unknown"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "nonSwitchingSupplyCurrentRole": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "value",
+              "state",
+              "evidence",
+              "validFor",
+              "explanation"
+            ],
+            "properties": {
+              "value": {
+                "type": "null"
+              },
+              "state": {
+                "const": "unknown"
+              },
+              "evidence": {
+                "type": "array",
+                "maxItems": 0
+              },
+              "validFor": {
+                "type": "array",
+                "maxItems": 0
+              },
+              "explanation": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": ".*\\S.*"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "required": [
+          "nonSwitchingSupplyCurrent"
+        ],
+        "properties": {
+          "nonSwitchingSupplyCurrent": {
+            "type": "object",
+            "required": [
+              "state"
+            ],
+            "properties": {
+              "state": {
+                "const": "reviewed"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "nonSwitchingSupplyCurrentRole": {
+            "type": "object",
+            "required": [
+              "state"
+            ],
+            "properties": {
+              "state": {
+                "const": "reviewed"
+              }
+            }
+          }
+        }
+      },
+      "$comment": "Runtime validation additionally requires identical canonical validFor arrays and evidence sets."
+    },
+    {
+      "if": {
+        "required": [
+          "junctionToAmbientThermalResistance"
+        ],
+        "properties": {
+          "junctionToAmbientThermalResistance": {
+            "type": "object",
+            "required": [
+              "state"
+            ],
+            "properties": {
+              "state": {
+                "const": "unknown"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "junctionToAmbientThermalResistanceRole": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "value",
+              "state",
+              "evidence",
+              "validFor",
+              "explanation"
+            ],
+            "properties": {
+              "value": {
+                "type": "null"
+              },
+              "state": {
+                "const": "unknown"
+              },
+              "evidence": {
+                "type": "array",
+                "maxItems": 0
+              },
+              "validFor": {
+                "type": "array",
+                "maxItems": 0
+              },
+              "explanation": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": ".*\\S.*"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "required": [
+          "junctionToAmbientThermalResistance"
+        ],
+        "properties": {
+          "junctionToAmbientThermalResistance": {
+            "type": "object",
+            "required": [
+              "state"
+            ],
+            "properties": {
+              "state": {
+                "const": "reviewed"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "junctionToAmbientThermalResistanceRole": {
+            "type": "object",
+            "required": [
+              "state"
+            ],
+            "properties": {
+              "state": {
+                "const": "reviewed"
+              }
+            }
+          }
+        }
+      },
+      "$comment": "Runtime validation additionally requires identical canonical validFor arrays and evidence sets."
+    },
+    {
+      "if": {
+        "allOf": [
+          {
+            "required": [
+              "switchingFrequencyMinimum"
+            ],
+            "properties": {
+              "switchingFrequencyMinimum": {
+                "type": "object",
+                "required": [
+                  "state"
+                ],
+                "properties": {
+                  "state": {
+                    "const": "unknown"
+                  }
+                }
+              }
+            }
+          },
+          {
+            "required": [
+              "switchingFrequencyNominal"
+            ],
+            "properties": {
+              "switchingFrequencyNominal": {
+                "type": "object",
+                "required": [
+                  "state"
+                ],
+                "properties": {
+                  "state": {
+                    "const": "unknown"
+                  }
+                }
+              }
+            }
+          },
+          {
+            "required": [
+              "switchingFrequencyMaximum"
+            ],
+            "properties": {
+              "switchingFrequencyMaximum": {
+                "type": "object",
+                "required": [
+                  "state"
+                ],
+                "properties": {
+                  "state": {
+                    "const": "unknown"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      "then": {
+        "properties": {
+          "switchingFrequencyRole": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "value",
+              "state",
+              "evidence",
+              "validFor",
+              "explanation"
+            ],
+            "properties": {
+              "value": {
+                "type": "null"
+              },
+              "state": {
+                "const": "unknown"
+              },
+              "evidence": {
+                "type": "array",
+                "maxItems": 0
+              },
+              "validFor": {
+                "type": "array",
+                "maxItems": 0
+              },
+              "explanation": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": ".*\\S.*"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "required": [
+          "switchingFrequencyMinimum"
+        ],
+        "properties": {
+          "switchingFrequencyMinimum": {
+            "type": "object",
+            "required": [
+              "state"
+            ],
+            "properties": {
+              "state": {
+                "const": "reviewed"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "switchingFrequencyRole": {
+            "type": "object",
+            "required": [
+              "state"
+            ],
+            "properties": {
+              "state": {
+                "const": "reviewed"
+              }
+            }
+          }
+        }
+      },
+      "$comment": "Runtime validation additionally requires identical canonical validFor arrays and evidence sets."
+    },
+    {
+      "if": {
+        "required": [
+          "switchingFrequencyNominal"
+        ],
+        "properties": {
+          "switchingFrequencyNominal": {
+            "type": "object",
+            "required": [
+              "state"
+            ],
+            "properties": {
+              "state": {
+                "const": "reviewed"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "switchingFrequencyRole": {
+            "type": "object",
+            "required": [
+              "state"
+            ],
+            "properties": {
+              "state": {
+                "const": "reviewed"
+              }
+            }
+          }
+        }
+      },
+      "$comment": "Runtime validation additionally requires identical canonical validFor arrays and evidence sets."
+    },
+    {
+      "if": {
+        "required": [
+          "switchingFrequencyMaximum"
+        ],
+        "properties": {
+          "switchingFrequencyMaximum": {
+            "type": "object",
+            "required": [
+              "state"
+            ],
+            "properties": {
+              "state": {
+                "const": "reviewed"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "switchingFrequencyRole": {
+            "type": "object",
+            "required": [
+              "state"
+            ],
+            "properties": {
+              "state": {
+                "const": "reviewed"
+              }
+            }
+          }
+        }
+      },
+      "$comment": "Runtime validation additionally requires identical canonical validFor arrays and evidence sets."
+    },
+    {
+      "if": {
+        "required": [
+          "switchingFrequencyRole"
+        ],
+        "properties": {
+          "switchingFrequencyRole": {
+            "type": "object",
+            "required": [
+              "value"
+            ],
+            "properties": {
+              "value": {
+                "enum": [
+                  "production_spread"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "switchingFrequencyMinimum": {
+            "type": "object",
+            "required": [
+              "state"
+            ],
+            "properties": {
+              "state": {
+                "const": "reviewed"
+              }
+            }
+          },
+          "switchingFrequencyNominal": {
+            "type": "object",
+            "required": [
+              "state"
+            ],
+            "properties": {
+              "state": {
+                "const": "reviewed"
+              }
+            }
+          },
+          "switchingFrequencyMaximum": {
+            "type": "object",
+            "required": [
+              "state"
+            ],
+            "properties": {
+              "state": {
+                "const": "reviewed"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "required": [
+          "switchingFrequencyRole"
+        ],
+        "properties": {
+          "switchingFrequencyRole": {
+            "type": "object",
+            "required": [
+              "value"
+            ],
+            "properties": {
+              "value": {
+                "enum": [
+                  "guaranteed_adjustment_range"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "switchingFrequencyMinimum": {
+            "type": "object",
+            "required": [
+              "state"
+            ],
+            "properties": {
+              "state": {
+                "const": "reviewed"
+              }
+            }
+          },
+          "switchingFrequencyMaximum": {
+            "type": "object",
+            "required": [
+              "state"
+            ],
+            "properties": {
+              "state": {
+                "const": "reviewed"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "required": [
+          "switchingFrequencyRole"
+        ],
+        "properties": {
+          "switchingFrequencyRole": {
+            "type": "object",
+            "required": [
+              "value"
+            ],
+            "properties": {
+              "value": {
+                "enum": [
+                  "recommended_setting"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "switchingFrequencyNominal": {
+            "type": "object",
+            "required": [
+              "state"
+            ],
+            "properties": {
+              "state": {
+                "const": "reviewed"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "required": [
+          "switchingFrequencyRole"
+        ],
+        "properties": {
+          "switchingFrequencyRole": {
+            "type": "object",
+            "required": [
+              "value"
+            ],
+            "properties": {
+              "value": {
+                "enum": [
+                  "typical_observation"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "switchingFrequencyNominal": {
+            "type": "object",
+            "required": [
+              "state"
+            ],
+            "properties": {
+              "state": {
+                "const": "reviewed"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "allOf": [
+          {
+            "required": [
+              "feedbackReferenceMinimum"
+            ],
+            "properties": {
+              "feedbackReferenceMinimum": {
+                "type": "object",
+                "required": [
+                  "state"
+                ],
+                "properties": {
+                  "state": {
+                    "const": "unknown"
+                  }
+                }
+              }
+            }
+          },
+          {
+            "required": [
+              "feedbackReferenceTypical"
+            ],
+            "properties": {
+              "feedbackReferenceTypical": {
+                "type": "object",
+                "required": [
+                  "state"
+                ],
+                "properties": {
+                  "state": {
+                    "const": "unknown"
+                  }
+                }
+              }
+            }
+          },
+          {
+            "required": [
+              "feedbackReferenceMaximum"
+            ],
+            "properties": {
+              "feedbackReferenceMaximum": {
+                "type": "object",
+                "required": [
+                  "state"
+                ],
+                "properties": {
+                  "state": {
+                    "const": "unknown"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      "then": {
+        "properties": {
+          "feedbackReferenceRole": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "value",
+              "state",
+              "evidence",
+              "validFor",
+              "explanation"
+            ],
+            "properties": {
+              "value": {
+                "type": "null"
+              },
+              "state": {
+                "const": "unknown"
+              },
+              "evidence": {
+                "type": "array",
+                "maxItems": 0
+              },
+              "validFor": {
+                "type": "array",
+                "maxItems": 0
+              },
+              "explanation": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": ".*\\S.*"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "required": [
+          "feedbackReferenceMinimum"
+        ],
+        "properties": {
+          "feedbackReferenceMinimum": {
+            "type": "object",
+            "required": [
+              "state"
+            ],
+            "properties": {
+              "state": {
+                "const": "reviewed"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "feedbackReferenceRole": {
+            "type": "object",
+            "required": [
+              "state"
+            ],
+            "properties": {
+              "state": {
+                "const": "reviewed"
+              }
+            }
+          }
+        }
+      },
+      "$comment": "Runtime validation additionally requires identical canonical validFor arrays and evidence sets."
+    },
+    {
+      "if": {
+        "required": [
+          "feedbackReferenceTypical"
+        ],
+        "properties": {
+          "feedbackReferenceTypical": {
+            "type": "object",
+            "required": [
+              "state"
+            ],
+            "properties": {
+              "state": {
+                "const": "reviewed"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "feedbackReferenceRole": {
+            "type": "object",
+            "required": [
+              "state"
+            ],
+            "properties": {
+              "state": {
+                "const": "reviewed"
+              }
+            }
+          }
+        }
+      },
+      "$comment": "Runtime validation additionally requires identical canonical validFor arrays and evidence sets."
+    },
+    {
+      "if": {
+        "required": [
+          "feedbackReferenceMaximum"
+        ],
+        "properties": {
+          "feedbackReferenceMaximum": {
+            "type": "object",
+            "required": [
+              "state"
+            ],
+            "properties": {
+              "state": {
+                "const": "reviewed"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "feedbackReferenceRole": {
+            "type": "object",
+            "required": [
+              "state"
+            ],
+            "properties": {
+              "state": {
+                "const": "reviewed"
+              }
+            }
+          }
+        }
+      },
+      "$comment": "Runtime validation additionally requires identical canonical validFor arrays and evidence sets."
+    },
+    {
+      "if": {
+        "required": [
+          "feedbackReferenceRole"
+        ],
+        "properties": {
+          "feedbackReferenceRole": {
+            "type": "object",
+            "required": [
+              "value"
+            ],
+            "properties": {
+              "value": {
+                "enum": [
+                  "production_spread"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "feedbackReferenceMinimum": {
+            "type": "object",
+            "required": [
+              "state"
+            ],
+            "properties": {
+              "state": {
+                "const": "reviewed"
+              }
+            }
+          },
+          "feedbackReferenceTypical": {
+            "type": "object",
+            "required": [
+              "state"
+            ],
+            "properties": {
+              "state": {
+                "const": "reviewed"
+              }
+            }
+          },
+          "feedbackReferenceMaximum": {
+            "type": "object",
+            "required": [
+              "state"
+            ],
+            "properties": {
+              "state": {
+                "const": "reviewed"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "required": [
+          "feedbackReferenceRole"
+        ],
+        "properties": {
+          "feedbackReferenceRole": {
+            "type": "object",
+            "required": [
+              "value"
+            ],
+            "properties": {
+              "value": {
+                "enum": [
+                  "typical_observation"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "feedbackReferenceTypical": {
+            "type": "object",
+            "required": [
+              "state"
+            ],
+            "properties": {
+              "state": {
+                "const": "reviewed"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "allOf": [
+          {
+            "required": [
+              "currentLimitMinimum"
+            ],
+            "properties": {
+              "currentLimitMinimum": {
+                "type": "object",
+                "required": [
+                  "state"
+                ],
+                "properties": {
+                  "state": {
+                    "const": "unknown"
+                  }
+                }
+              }
+            }
+          },
+          {
+            "required": [
+              "currentLimitTypical"
+            ],
+            "properties": {
+              "currentLimitTypical": {
+                "type": "object",
+                "required": [
+                  "state"
+                ],
+                "properties": {
+                  "state": {
+                    "const": "unknown"
+                  }
+                }
+              }
+            }
+          },
+          {
+            "required": [
+              "currentLimitMaximum"
+            ],
+            "properties": {
+              "currentLimitMaximum": {
+                "type": "object",
+                "required": [
+                  "state"
+                ],
+                "properties": {
+                  "state": {
+                    "const": "unknown"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      "then": {
+        "properties": {
+          "currentLimitRole": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "value",
+              "state",
+              "evidence",
+              "validFor",
+              "explanation"
+            ],
+            "properties": {
+              "value": {
+                "type": "null"
+              },
+              "state": {
+                "const": "unknown"
+              },
+              "evidence": {
+                "type": "array",
+                "maxItems": 0
+              },
+              "validFor": {
+                "type": "array",
+                "maxItems": 0
+              },
+              "explanation": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": ".*\\S.*"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "required": [
+          "currentLimitMinimum"
+        ],
+        "properties": {
+          "currentLimitMinimum": {
+            "type": "object",
+            "required": [
+              "state"
+            ],
+            "properties": {
+              "state": {
+                "const": "reviewed"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "currentLimitRole": {
+            "type": "object",
+            "required": [
+              "state"
+            ],
+            "properties": {
+              "state": {
+                "const": "reviewed"
+              }
+            }
+          }
+        }
+      },
+      "$comment": "Runtime validation additionally requires identical canonical validFor arrays and evidence sets."
+    },
+    {
+      "if": {
+        "required": [
+          "currentLimitTypical"
+        ],
+        "properties": {
+          "currentLimitTypical": {
+            "type": "object",
+            "required": [
+              "state"
+            ],
+            "properties": {
+              "state": {
+                "const": "reviewed"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "currentLimitRole": {
+            "type": "object",
+            "required": [
+              "state"
+            ],
+            "properties": {
+              "state": {
+                "const": "reviewed"
+              }
+            }
+          }
+        }
+      },
+      "$comment": "Runtime validation additionally requires identical canonical validFor arrays and evidence sets."
+    },
+    {
+      "if": {
+        "required": [
+          "currentLimitMaximum"
+        ],
+        "properties": {
+          "currentLimitMaximum": {
+            "type": "object",
+            "required": [
+              "state"
+            ],
+            "properties": {
+              "state": {
+                "const": "reviewed"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "currentLimitRole": {
+            "type": "object",
+            "required": [
+              "state"
+            ],
+            "properties": {
+              "state": {
+                "const": "reviewed"
+              }
+            }
+          }
+        }
+      },
+      "$comment": "Runtime validation additionally requires identical canonical validFor arrays and evidence sets."
+    },
+    {
+      "if": {
+        "required": [
+          "currentLimitRole"
+        ],
+        "properties": {
+          "currentLimitRole": {
+            "type": "object",
+            "required": [
+              "value"
+            ],
+            "properties": {
+              "value": {
+                "enum": [
+                  "typical_observation"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "currentLimitTypical": {
+            "type": "object",
+            "required": [
+              "state"
+            ],
+            "properties": {
+              "state": {
+                "const": "reviewed"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "required": [
+          "bootstrapCapacitanceRequirement"
+        ],
+        "properties": {
+          "bootstrapCapacitanceRequirement": {
+            "type": "object",
+            "required": [
+              "state"
+            ],
+            "properties": {
+              "state": {
+                "const": "unknown"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "bootstrapCapacitance": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "value",
+              "state",
+              "evidence",
+              "validFor",
+              "explanation"
+            ],
+            "properties": {
+              "value": {
+                "type": "null"
+              },
+              "state": {
+                "const": "unknown"
+              },
+              "evidence": {
+                "type": "array",
+                "maxItems": 0
+              },
+              "validFor": {
+                "type": "array",
+                "maxItems": 0
+              },
+              "explanation": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": ".*\\S.*"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "required": [
+          "bootstrapCapacitanceRequirement"
+        ],
+        "properties": {
+          "bootstrapCapacitanceRequirement": {
+            "type": "object",
+            "required": [
+              "value"
+            ],
+            "properties": {
+              "value": {
+                "enum": [
+                  "application_dependent",
+                  "not_specified"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "bootstrapCapacitance": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "value",
+              "state",
+              "evidence",
+              "validFor",
+              "explanation"
+            ],
+            "properties": {
+              "value": {
+                "type": "null"
+              },
+              "state": {
+                "const": "unknown"
+              },
+              "evidence": {
+                "type": "array",
+                "maxItems": 0
+              },
+              "validFor": {
+                "type": "array",
+                "maxItems": 0
+              },
+              "explanation": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": ".*\\S.*"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "required": [
+          "bootstrapCapacitanceRequirement"
+        ],
+        "properties": {
+          "bootstrapCapacitanceRequirement": {
+            "type": "object",
+            "required": [
+              "value"
+            ],
+            "properties": {
+              "value": {
+                "enum": [
+                  "required_nominal_value",
+                  "recommended_value",
+                  "typical_observation"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "bootstrapCapacitance": {
+            "type": "object",
+            "required": [
+              "state"
+            ],
+            "properties": {
+              "state": {
+                "const": "reviewed"
+              }
+            }
+          }
+        }
+      },
+      "$comment": "Runtime validation additionally requires identical canonical validFor arrays and evidence sets."
+    }
+  ],
+  "$comment": "Cross-value ordering and canonical evidence/condition equality are enforced by runtime validation.",
+  "$defs": {
+    "operatingRange": {
+      "oneOf": [
+        {
+          "allOf": [
+            {
+              "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/operatingRange"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "parameterId": {
+                  "const": "ambientTemperature"
+                },
+                "minimum": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "value",
+                        "unit",
+                        "displayUnit"
+                      ],
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "unit": {
+                          "const": "K"
+                        },
+                        "displayUnit": {
+                          "type": "string",
+                          "minLength": 1,
+                          "pattern": ".*\\S.*"
+                        }
+                      }
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "maximum": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "value",
+                        "unit",
+                        "displayUnit"
+                      ],
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "unit": {
+                          "const": "K"
+                        },
+                        "displayUnit": {
+                          "type": "string",
+                          "minLength": 1,
+                          "pattern": ".*\\S.*"
+                        }
+                      }
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {
+              "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/operatingRange"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "parameterId": {
+                  "const": "junctionTemperature"
+                },
+                "minimum": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "value",
+                        "unit",
+                        "displayUnit"
+                      ],
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "unit": {
+                          "const": "K"
+                        },
+                        "displayUnit": {
+                          "type": "string",
+                          "minLength": 1,
+                          "pattern": ".*\\S.*"
+                        }
+                      }
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "maximum": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "value",
+                        "unit",
+                        "displayUnit"
+                      ],
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "unit": {
+                          "const": "K"
+                        },
+                        "displayUnit": {
+                          "type": "string",
+                          "minLength": 1,
+                          "pattern": ".*\\S.*"
+                        }
+                      }
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {
+              "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/operatingRange"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "parameterId": {
+                  "const": "supplyVoltage"
+                },
+                "minimum": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "value",
+                        "unit",
+                        "displayUnit"
+                      ],
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "unit": {
+                          "const": "V"
+                        },
+                        "displayUnit": {
+                          "type": "string",
+                          "minLength": 1,
+                          "pattern": ".*\\S.*"
+                        }
+                      }
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "maximum": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "value",
+                        "unit",
+                        "displayUnit"
+                      ],
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "unit": {
+                          "const": "V"
+                        },
+                        "displayUnit": {
+                          "type": "string",
+                          "minLength": 1,
+                          "pattern": ".*\\S.*"
+                        }
+                      }
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {
+              "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/operatingRange"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "parameterId": {
+                  "const": "testCurrent"
+                },
+                "minimum": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "value",
+                        "unit",
+                        "displayUnit"
+                      ],
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "unit": {
+                          "const": "A"
+                        },
+                        "displayUnit": {
+                          "type": "string",
+                          "minLength": 1,
+                          "pattern": ".*\\S.*"
+                        }
+                      }
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "maximum": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "value",
+                        "unit",
+                        "displayUnit"
+                      ],
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "unit": {
+                          "const": "A"
+                        },
+                        "displayUnit": {
+                          "type": "string",
+                          "minLength": 1,
+                          "pattern": ".*\\S.*"
+                        }
+                      }
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {
+              "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/operatingRange"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "parameterId": {
+                  "const": "testVoltage"
+                },
+                "minimum": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "value",
+                        "unit",
+                        "displayUnit"
+                      ],
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "unit": {
+                          "const": "V"
+                        },
+                        "displayUnit": {
+                          "type": "string",
+                          "minLength": 1,
+                          "pattern": ".*\\S.*"
+                        }
+                      }
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "maximum": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "value",
+                        "unit",
+                        "displayUnit"
+                      ],
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "unit": {
+                          "const": "V"
+                        },
+                        "displayUnit": {
+                          "type": "string",
+                          "minLength": 1,
+                          "pattern": ".*\\S.*"
+                        }
+                      }
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {
+              "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/operatingRange"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "parameterId": {
+                  "const": "switchingFrequency"
+                },
+                "minimum": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "value",
+                        "unit",
+                        "displayUnit"
+                      ],
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "unit": {
+                          "const": "Hz"
+                        },
+                        "displayUnit": {
+                          "type": "string",
+                          "minLength": 1,
+                          "pattern": ".*\\S.*"
+                        }
+                      }
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "maximum": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "value",
+                        "unit",
+                        "displayUnit"
+                      ],
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "unit": {
+                          "const": "Hz"
+                        },
+                        "displayUnit": {
+                          "type": "string",
+                          "minLength": 1,
+                          "pattern": ".*\\S.*"
+                        }
+                      }
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {
+              "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/operatingRange"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "parameterId": {
+                  "const": "pulseDuration"
+                },
+                "minimum": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "value",
+                        "unit",
+                        "displayUnit"
+                      ],
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "unit": {
+                          "const": "s"
+                        },
+                        "displayUnit": {
+                          "type": "string",
+                          "minLength": 1,
+                          "pattern": ".*\\S.*"
+                        }
+                      }
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "maximum": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "value",
+                        "unit",
+                        "displayUnit"
+                      ],
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "unit": {
+                          "const": "s"
+                        },
+                        "displayUnit": {
+                          "type": "string",
+                          "minLength": 1,
+                          "pattern": ".*\\S.*"
+                        }
+                      }
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {
+              "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/operatingRange"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "parameterId": {
+                  "const": "dutyCycle"
+                },
+                "minimum": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "value",
+                        "unit",
+                        "displayUnit"
+                      ],
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
+                        },
+                        "unit": {
+                          "const": "1"
+                        },
+                        "displayUnit": {
+                          "type": "string",
+                          "minLength": 1,
+                          "pattern": ".*\\S.*"
+                        }
+                      }
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "maximum": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "value",
+                        "unit",
+                        "displayUnit"
+                      ],
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
+                        },
+                        "unit": {
+                          "const": "1"
+                        },
+                        "displayUnit": {
+                          "type": "string",
+                          "minLength": 1,
+                          "pattern": ".*\\S.*"
+                        }
+                      }
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {
+              "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/operatingRange"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "parameterId": {
+                  "const": "boardCopperArea"
+                },
+                "minimum": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "value",
+                        "unit",
+                        "displayUnit"
+                      ],
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "unit": {
+                          "const": "m2"
+                        },
+                        "displayUnit": {
+                          "type": "string",
+                          "minLength": 1,
+                          "pattern": ".*\\S.*"
+                        }
+                      }
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "maximum": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "value",
+                        "unit",
+                        "displayUnit"
+                      ],
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "unit": {
+                          "const": "m2"
+                        },
+                        "displayUnit": {
+                          "type": "string",
+                          "minLength": 1,
+                          "pattern": ".*\\S.*"
+                        }
+                      }
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

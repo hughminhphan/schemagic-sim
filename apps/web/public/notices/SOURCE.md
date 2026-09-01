@@ -4,7 +4,7 @@
 
 - ngspice release: `ngspice-46`
 - official tag commit: `ebdaf58ec76a06ffaac7e0f138360dd1cf5ee4b6`
-- official source archive: <https://downloads.sourceforge.net/project/ngspice/ng-spice-rework/46/ngspice-46.tar.gz>
+- official source archive: <https://downloads.sourceforge.net/project/ngspice/ng-spice-rework/old-releases/46/ngspice-46.tar.gz>
 - SHA-256: `a0d1699af1940b06649276dcd6ff5a566c8c0cad01b2f7b5e99dedbb4d64c19b`
 - release Emscripten SDK: `5.0.7`, emcc commit `263db4cffa6f9fc2ec514a70abac81362ea41849`
 - Emscripten SDK source: <https://github.com/emscripten-core/emsdk/tree/5.0.7>
@@ -12,7 +12,7 @@
 
 The upstream tarball is not stored in this repository. `build.sh` downloads it into the ignored `build/` directory and rejects any archive whose SHA-256 does not match the value above.
 
-## OpenCircuit modifications
+## scheMAGIC modifications
 
 The complete modification set is:
 

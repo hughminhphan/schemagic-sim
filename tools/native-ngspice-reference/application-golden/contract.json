@@ -1,0 +1,248 @@
+{
+  "format": "opencircuit-application-golden-contract",
+  "schemaVersion": 1,
+  "engines": {
+    "native": {
+      "version": "ngspice-46",
+      "solver": "KLU"
+    },
+    "browserWasm": {
+      "module": "../../ngspice-wasm-build/dist-loader/index.mjs",
+      "engineVersion": "ngspice-46-opencircuit-wasm1",
+      "simulatorVersion": "ngspice-46",
+      "solver": "KLU"
+    }
+  },
+  "evidenceBoundary": {
+    "modelTier": "behavioral",
+    "attestation": "none",
+    "productionProfilesUsed": false,
+    "purpose": "Deterministic application-circuit, netlist, execution-receipt, and selected numeric-regression evidence.",
+    "doesNotProve": [
+      "selected-part or production-profile simulation fidelity",
+      "control-loop stability, switching loss, protection, thermal, EMI, or PCB-parasitic behavior",
+      "candidate ranking or analytic-estimate correctness beyond the selected behavioral circuit relations declared by this contract",
+      "provider approval, component admission, or release readiness",
+      "full-vector native/browser-WASM equivalence outside the selected observations"
+    ]
+  },
+  "cases": [
+    {
+      "id": "motor.m1.pwm-loaded-steady-state.behavioral",
+      "application": "motor.brushed-dc",
+      "topology": "motor.hbridge.integrated",
+      "contextExport": "@opencircuit/motor-designer/fixtures#M1_COMPACT_REQUEST",
+      "candidateId": "fnv1a64:abfc8bee6411aad0",
+      "recipeId": "motor.brushed-dc.integrated-h-bridge.v1",
+      "scenarioId": "pwm_loaded_steady_state",
+      "scenarioHash": "e9689ef8811e8aac",
+      "serializationHash": "defadd7432080f28",
+      "analysis": "op",
+      "fixture": "fixtures/motor-pwm-loaded-steady-state.cir",
+      "netlistContentHash": "sha256:cfcf5c474910446a771f62a04c9e1dd8316b2ae34cfb5b53b57dc7233656b81e",
+      "selectedVectors": [
+        "i(@roc_722d6d6f746f722d77696e64696e67[i])",
+        "v(n1)",
+        "v(n2)",
+        "v(n3)",
+        "v(n4)"
+      ],
+      "measurementContract": {
+        "kind": "motor-averaged-operating-point",
+        "windingCurrentVector": "i(@roc_722d6d6f746f722d77696e64696e67[i])",
+        "minimumCurrentA": 1.49,
+        "maximumCurrentA": 1.51,
+        "maximumCrossEngineRelativeDifference": 0.001
+      },
+      "analyticTrendContract": {
+        "kind": "motor-authored-closure-with-represented-series-resistance",
+        "windingCurrentVector": "i(@roc_722d6d6f746f722d77696e64696e67[i])",
+        "averageBridgeVoltageV": 9.6,
+        "operatingBackEmfV": 6,
+        "windingResistanceOhm": 2.4,
+        "representedClosedSwitchResistanceOhm": 0.001,
+        "representedClosedSwitchCount": 2,
+        "representedShuntResistanceOhm": 0,
+        "authoredLoadCurrentA": 1.5,
+        "maximumAuthoredClosureAbsoluteErrorV": 1e-12,
+        "maximumAnalyticCurrentRelativeDifference": 1e-8
+      },
+      "unavailableScenarios": [
+        "fast_decay_brake",
+        "stall_or_current_limit",
+        "startup"
+      ]
+    },
+    {
+      "id": "motor.m2.external-nmos.pwm-loaded-steady-state.behavioral",
+      "application": "motor.brushed-dc",
+      "topology": "motor.hbridge.external-nmos",
+      "contextExport": "@opencircuit/motor-designer/fixtures#M2_POWER_REQUEST",
+      "candidateId": "fnv1a64:30bd818584dc605d",
+      "recipeId": "motor.brushed-dc.external-nmos-h-bridge.v1",
+      "scenarioId": "pwm_loaded_steady_state",
+      "scenarioHash": "474c284d0a2d8bc7",
+      "serializationHash": "eedfaba3881e950c",
+      "analysis": "op",
+      "fixture": "fixtures/motor-m2-external-nmos-pwm-loaded-steady-state.cir",
+      "netlistContentHash": "sha256:472eff491a576c369ed51acfe9120565734a999d3e91457654ff916f820ce71d",
+      "selectedVectors": [
+        "i(@roc_722d63757272656e742d7368756e74[i])",
+        "i(@roc_722d6d6f746f722d77696e64696e67[i])",
+        "v(n1)",
+        "v(n2)",
+        "v(n3)",
+        "v(n4)",
+        "v(n5)"
+      ],
+      "measurementContract": {
+        "kind": "motor-external-averaged-operating-point",
+        "windingCurrentVector": "i(@roc_722d6d6f746f722d77696e64696e67[i])",
+        "shuntCurrentVector": "i(@roc_722d63757272656e742d7368756e74[i])",
+        "shuntNodeVector": "v(n2)",
+        "shuntResistanceOhm": 0.01,
+        "minimumCurrentA": 4.94,
+        "maximumCurrentA": 4.96,
+        "maximumCrossEngineRelativeDifference": 0.001,
+        "maximumSeriesCurrentMismatchA": 1e-6,
+        "maximumShuntRelationAbsoluteErrorV": 1e-8
+      },
+      "analyticTrendContract": {
+        "kind": "motor-authored-closure-with-represented-series-resistance",
+        "windingCurrentVector": "i(@roc_722d6d6f746f722d77696e64696e67[i])",
+        "averageBridgeVoltageV": 19.2,
+        "operatingBackEmfV": 13.2,
+        "windingResistanceOhm": 1.2,
+        "representedClosedSwitchResistanceOhm": 0.001,
+        "representedClosedSwitchCount": 2,
+        "representedShuntResistanceOhm": 0.01,
+        "authoredLoadCurrentA": 5,
+        "maximumAuthoredClosureAbsoluteErrorV": 1e-12,
+        "maximumAnalyticCurrentRelativeDifference": 1e-8
+      },
+      "unavailableScenarios": [
+        "fast_decay_brake",
+        "stall_or_current_limit",
+        "startup"
+      ]
+    },
+    {
+      "id": "power.p1.startup.behavioral",
+      "application": "power.buck",
+      "topology": "power.buck.integrated-synchronous",
+      "contextExport": "@opencircuit/power-designer/fixtures#generateP1CompactFixture",
+      "candidateId": "fnv1a64:71f89467ace793a5",
+      "recipeId": "schemagic.power.buck.integrated-synchronous.v1",
+      "scenarioId": "startup",
+      "scenarioHash": "80b64416639cc007",
+      "serializationHash": "575202e16c6d4fb5",
+      "analysis": "tran",
+      "fixture": "fixtures/power-startup.cir",
+      "netlistContentHash": "sha256:2d639bbe81c6301595fee244fc621c8132d28fb83ce7471437cd6e327c4e6092",
+      "selectedVectors": [
+        "i(@roc_6265686176696f72616c2d6c6f6164[i])",
+        "i(@roc_666565646261636b2d6c6f776572[i])",
+        "i(@roc_666565646261636b2d7570706572[i])",
+        "v(n1)",
+        "v(n2)"
+      ],
+      "measurementContract": {
+        "kind": "power-passive-startup-rise",
+        "outputVector": "v(n1)",
+        "feedbackVector": "v(n2)",
+        "loadCurrentVector": "i(@roc_6265686176696f72616c2d6c6f6164[i])",
+        "enableTimeS": 0.000002,
+        "finalWindowStartS": 0.000013,
+        "maximumPreEnableAbsoluteOutputV": 1e-8,
+        "minimumFinalWindowMeanOutputV": 0.04,
+        "maximumFinalWindowMeanOutputV": 0.055,
+        "maximumCrossEngineRelativeDifference": 0.015,
+        "feedbackDividerRatio": 0.16051364366,
+        "maximumFeedbackRatioAbsoluteError": 1e-9,
+        "loadConductanceAperV": 0.6,
+        "maximumLoadRelationAbsoluteErrorA": 1e-9,
+        "requestedOutputV": 5,
+        "maximumObservedOutputVForNonFidelityBoundary": 0.1
+      },
+      "analyticTrendContract": {
+        "kind": "power-passive-connectivity-positive-slopes",
+        "outputVector": "v(n1)",
+        "feedbackVector": "v(n2)",
+        "loadCurrentVector": "i(@roc_6265686176696f72616c2d6c6f6164[i])",
+        "postEnableStartS": 0.000002,
+        "behavioralLoadResistanceOhm": 1.6666666666666667,
+        "feedbackUpperResistanceOhm": 52300,
+        "feedbackLowerResistanceOhm": 10000,
+        "minimumObservedOutputSpanV": 0.04,
+        "maximumFeedbackRelationAbsoluteErrorV": 1e-9,
+        "maximumLoadRelationAbsoluteErrorA": 1e-9,
+        "maximumFeedbackSlopeAbsoluteError": 1e-9,
+        "maximumLoadSlopeAbsoluteErrorAperV": 1e-9,
+        "maximumCrossEngineOutputSpanRelativeDifference": 0.015
+      },
+      "unavailableScenarios": [
+        "line_step",
+        "load_step"
+      ]
+    },
+    {
+      "id": "power.p2.external-fet.startup.behavioral",
+      "application": "power.buck",
+      "topology": "power.buck.controller-external-nmos",
+      "contextExport": "@opencircuit/power-designer/fixtures#generateP2HighVoltageFixture",
+      "candidateId": "fnv1a64:f89d0d017dc70dbd",
+      "recipeId": "schemagic.power.buck.controller-external-nmos.v1",
+      "scenarioId": "startup",
+      "scenarioHash": "c9acaa5066c059b9",
+      "serializationHash": "df60819d0e78cabb",
+      "analysis": "tran",
+      "fixture": "fixtures/power-p2-external-fet-startup.cir",
+      "netlistContentHash": "sha256:ee68420be2ee1bbebf3230c7ab48815d3035210477cc170376c2ad663eefeddb",
+      "selectedVectors": [
+        "i(@roc_6265686176696f72616c2d6c6f6164[i])",
+        "i(@roc_666565646261636b2d6c6f776572[i])",
+        "i(@roc_666565646261636b2d7570706572[i])",
+        "v(n1)",
+        "v(n2)"
+      ],
+      "measurementContract": {
+        "kind": "power-passive-startup-rise",
+        "outputVector": "v(n1)",
+        "feedbackVector": "v(n2)",
+        "loadCurrentVector": "i(@roc_6265686176696f72616c2d6c6f6164[i])",
+        "enableTimeS": 0.00001,
+        "finalWindowStartS": 0.000065,
+        "maximumPreEnableAbsoluteOutputV": 1e-8,
+        "minimumFinalWindowMeanOutputV": 0.8,
+        "maximumFinalWindowMeanOutputV": 0.86,
+        "maximumCrossEngineRelativeDifference": 0.001,
+        "feedbackDividerRatio": 0.09910802775024777,
+        "maximumFeedbackRatioAbsoluteError": 1e-9,
+        "loadConductanceAperV": 0.4166666666666667,
+        "maximumLoadRelationAbsoluteErrorA": 1e-9,
+        "requestedOutputV": 12,
+        "maximumObservedOutputVForNonFidelityBoundary": 1
+      },
+      "analyticTrendContract": {
+        "kind": "power-passive-connectivity-positive-slopes",
+        "outputVector": "v(n1)",
+        "feedbackVector": "v(n2)",
+        "loadCurrentVector": "i(@roc_6265686176696f72616c2d6c6f6164[i])",
+        "postEnableStartS": 0.00001,
+        "behavioralLoadResistanceOhm": 2.4,
+        "feedbackUpperResistanceOhm": 90900,
+        "feedbackLowerResistanceOhm": 10000,
+        "minimumObservedOutputSpanV": 0.8,
+        "maximumFeedbackRelationAbsoluteErrorV": 1e-9,
+        "maximumLoadRelationAbsoluteErrorA": 1e-9,
+        "maximumFeedbackSlopeAbsoluteError": 1e-9,
+        "maximumLoadSlopeAbsoluteErrorAperV": 1e-9,
+        "maximumCrossEngineOutputSpanRelativeDifference": 0.001
+      },
+      "unavailableScenarios": [
+        "line_step",
+        "load_step"
+      ]
+    }
+  ]
+}

@@ -21,10 +21,11 @@ function deferred() {
 
 async function nodeWasmBinary() {
   if (typeof process === "undefined" || !process.versions?.node) return undefined;
-  const dynamicImport = new Function("specifier", "return import(specifier)");
+  const nodeFsPromises = "node:fs/promises";
+  const nodeUrl = "node:url";
   const [{ readFile }, { fileURLToPath }] = await Promise.all([
-    dynamicImport("node:fs/promises"),
-    dynamicImport("node:url"),
+    import(/* @vite-ignore */ nodeFsPromises),
+    import(/* @vite-ignore */ nodeUrl),
   ]);
   return readFile(fileURLToPath(new URL("../dist/ngspice.wasm", import.meta.url)));
 }

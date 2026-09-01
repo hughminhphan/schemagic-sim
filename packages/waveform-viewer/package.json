@@ -2,6 +2,7 @@
   "name": "@opencircuit/waveform-viewer",
   "version": "0.0.1",
   "private": true,
+  "description": "Interactive waveform and Bode viewer for scheMAGIC Simulator",
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
@@ -13,11 +14,14 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run --config vitest.config.ts"
   },
+  "dependencies": {
+    "@opencircuit/signal-workbench": "*"
+  },
   "devDependencies": {
     "@types/node": "24.3.0",
-    "playwright": "1.55.0",
+    "playwright": "1.62.1",
     "typescript": "5.9.2",
-    "vite": "7.1.3",
-    "vitest": "3.2.4"
+    "vite": "7.3.6",
+    "vitest": "3.2.7"
   }
 }

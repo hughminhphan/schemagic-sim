@@ -1,0 +1,1146 @@
+{
+  "format": "schemagic-design-profile",
+  "schemaVersion": "1.0.0",
+  "partClass": "motor.full-bridge-gate-driver",
+  "part": {
+    "manufacturerId": "microchip-technology",
+    "manufacturerPartNumber": "MIC4606-2YML-T5"
+  },
+  "factsSchemaVersion": "3.1.0",
+  "commonFacts": {
+    "packageName": {
+      "value": "16-lead QFN, 4 mm x 4 mm (ML)",
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "microchip-mic4606-ds20005604d",
+          "locator": "page 37, Product Identification System and ordering-description item f: MIC4606-2YML-T5 uses the 16-pin QFN ML package; page 32 identifies the 4 mm x 4 mm 16-lead QFN drawing",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T10:16:48Z",
+          "contentHash": "sha256:7dcc8f38545bd09168bbbd460ca0b4b5e662647d000ea708ad307b91e2c6aa8e",
+          "url": "https://ww1.microchip.com/downloads/aemDocuments/documents/APID/ProductDocuments/DataSheets/MIC4606-Data-Sheet-DS20005604D.pdf",
+          "revision": "DS20005604D, 2017-2019",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "The exact MIC4606-2YML-T5 ordering row binds the ML 16-lead QFN package and the package drawing gives its 4 mm x 4 mm body designation."
+    },
+    "boardArea": {
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "Facts schema 3.1.0 represents mounted board area only through facts.mountedGeometry."
+    },
+    "maximumHeight": {
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "Facts schema 3.1.0 represents mounted maximum height only through facts.mountedGeometry."
+    }
+  },
+  "facts": {
+    "bridgeTopology": {
+      "value": "full_bridge",
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "microchip-mic4606-ds20005604d",
+          "locator": "page 19, section 6.0 Functional Description: MIC4606 is a full-bridge MOSFET driver for all four MOSFETs in the bridge",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T10:16:48Z",
+          "contentHash": "sha256:7dcc8f38545bd09168bbbd460ca0b4b5e662647d000ea708ad307b91e2c6aa8e",
+          "url": "https://ww1.microchip.com/downloads/aemDocuments/documents/APID/ProductDocuments/DataSheets/MIC4606-Data-Sheet-DS20005604D.pdf",
+          "revision": "DS20005604D, 2017-2019",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "Manufacturer functional description identifies one full-bridge driver."
+    },
+    "powerStage": {
+      "value": "external_n_channel_mosfet",
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "microchip-mic4606-ds20005604d",
+          "locator": "page 19, section 6.0 Functional Description: independently drives all four N-channel MOSFETs; sections 6.4 and 6.5 identify external low-side and floating high-side N-channel MOSFETs",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T10:16:48Z",
+          "contentHash": "sha256:7dcc8f38545bd09168bbbd460ca0b4b5e662647d000ea708ad307b91e2c6aa8e",
+          "url": "https://ww1.microchip.com/downloads/aemDocuments/documents/APID/ProductDocuments/DataSheets/MIC4606-Data-Sheet-DS20005604D.pdf",
+          "revision": "DS20005604D, 2017-2019",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "The IC is a gate driver for four external N-channel bridge MOSFETs, not an integrated power stage."
+    },
+    "bridgeVoltageInterface": {
+      "value": "switch_node_only",
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "microchip-mic4606-ds20005604d",
+          "locator": "pages 13-14, MIC4606-2 QFN pin table: AHS and BHS are high-side drive reference connections to external MOSFET source terminals; no motor-bus supply pin is present",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T10:16:48Z",
+          "contentHash": "sha256:7dcc8f38545bd09168bbbd460ca0b4b5e662647d000ea708ad307b91e2c6aa8e",
+          "url": "https://ww1.microchip.com/downloads/aemDocuments/documents/APID/ProductDocuments/DataSheets/MIC4606-Data-Sheet-DS20005604D.pdf",
+          "revision": "DS20005604D, 2017-2019",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "The bridge-voltage exposure is through the floating AHS/BHS switch-node reference pins rather than a motor-bus supply pin."
+    },
+    "bridgeVoltageOperatingMinimum": {
+      "value": {
+        "value": -0.3,
+        "unit": "V",
+        "displayUnit": "-0.3 V"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "microchip-mic4606-ds20005604d",
+          "locator": "page 3, Operating Ratings: voltage on xHS = -0.3 V to +85 V",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T10:16:48Z",
+          "contentHash": "sha256:7dcc8f38545bd09168bbbd460ca0b4b5e662647d000ea708ad307b91e2c6aa8e",
+          "url": "https://ww1.microchip.com/downloads/aemDocuments/documents/APID/ProductDocuments/DataSheets/MIC4606-Data-Sheet-DS20005604D.pdf",
+          "revision": "DS20005604D, 2017-2019",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "Reviewed lower operating rating of either xHS floating switch-node input."
+    },
+    "bridgeVoltageOperatingMaximum": {
+      "value": {
+        "value": 85,
+        "unit": "V",
+        "displayUnit": "85 V"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "microchip-mic4606-ds20005604d",
+          "locator": "page 3, Operating Ratings: voltage on xHS = -0.3 V to +85 V",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T10:16:48Z",
+          "contentHash": "sha256:7dcc8f38545bd09168bbbd460ca0b4b5e662647d000ea708ad307b91e2c6aa8e",
+          "url": "https://ww1.microchip.com/downloads/aemDocuments/documents/APID/ProductDocuments/DataSheets/MIC4606-Data-Sheet-DS20005604D.pdf",
+          "revision": "DS20005604D, 2017-2019",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "Reviewed upper operating rating of either xHS floating switch-node input."
+    },
+    "bridgeVoltageAbsoluteMaximum": {
+      "value": {
+        "value": 90,
+        "unit": "V",
+        "displayUnit": "90 V"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "microchip-mic4606-ds20005604d",
+          "locator": "page 3, Absolute Maximum Ratings: continuous voltage on xHS = -0.3 V to 90 V",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T10:16:48Z",
+          "contentHash": "sha256:7dcc8f38545bd09168bbbd460ca0b4b5e662647d000ea708ad307b91e2c6aa8e",
+          "url": "https://ww1.microchip.com/downloads/aemDocuments/documents/APID/ProductDocuments/DataSheets/MIC4606-Data-Sheet-DS20005604D.pdf",
+          "revision": "DS20005604D, 2017-2019",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "Absolute continuous xHS maximum; this is a damage limit rather than a recommended operating point."
+    },
+    "driverBiasSource": {
+      "value": "external_supply",
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "microchip-mic4606-ds20005604d",
+          "locator": "page 14, MIC4606-2 QFN pin table: VDD is the input supply for the gate drivers; page 20 states gate-to-source drive voltage equals VDD",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T10:16:48Z",
+          "contentHash": "sha256:7dcc8f38545bd09168bbbd460ca0b4b5e662647d000ea708ad307b91e2c6aa8e",
+          "url": "https://ww1.microchip.com/downloads/aemDocuments/documents/APID/ProductDocuments/DataSheets/MIC4606-Data-Sheet-DS20005604D.pdf",
+          "revision": "DS20005604D, 2017-2019",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "Gate-drive bias is supplied externally at VDD; the IC does not provide an internal regulated gate-bias output."
+    },
+    "driverBiasInputMinimum": {
+      "value": {
+        "value": 5.5,
+        "unit": "V",
+        "displayUnit": "5.5 V"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "microchip-mic4606-ds20005604d",
+          "locator": "page 3, Operating Ratings: VDD with increasing VDD = +5.5 V to +16 V; page 1 states a 5.5 V to 16 V gate-drive operating supply range",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T10:16:48Z",
+          "contentHash": "sha256:7dcc8f38545bd09168bbbd460ca0b4b5e662647d000ea708ad307b91e2c6aa8e",
+          "url": "https://ww1.microchip.com/downloads/aemDocuments/documents/APID/ProductDocuments/DataSheets/MIC4606-Data-Sheet-DS20005604D.pdf",
+          "revision": "DS20005604D, 2017-2019",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "The conservative start-up operating minimum is the published 5.5 V increasing-VDD bound. The separate 5.25 V decreasing-VDD bound is not collapsed into this fact."
+    },
+    "driverBiasInputMaximum": {
+      "value": {
+        "value": 16,
+        "unit": "V",
+        "displayUnit": "16 V"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "microchip-mic4606-ds20005604d",
+          "locator": "page 3, Operating Ratings: both increasing- and decreasing-VDD ranges have an upper bound of +16 V",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T10:16:48Z",
+          "contentHash": "sha256:7dcc8f38545bd09168bbbd460ca0b4b5e662647d000ea708ad307b91e2c6aa8e",
+          "url": "https://ww1.microchip.com/downloads/aemDocuments/documents/APID/ProductDocuments/DataSheets/MIC4606-Data-Sheet-DS20005604D.pdf",
+          "revision": "DS20005604D, 2017-2019",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "Reviewed maximum external VDD operating rating."
+    },
+    "driverBiasOutputMinimum": {
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "The external-supply architecture has no internal regulated driver-bias output minimum."
+    },
+    "driverBiasOutputMaximum": {
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "The external-supply architecture has no internal regulated driver-bias output maximum."
+    },
+    "logicHighThresholdMaximum": {
+      "value": {
+        "value": 2.2,
+        "unit": "V",
+        "displayUnit": "2.2 V"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "microchip-mic4606-ds20005604d",
+          "locator": "page 4, Electrical Characteristics, Input: VIH minimum high-level input voltage = 2.2 V; note 3 defines VIH(MIN) as the minimum voltage accepted as logic high; bold value covers -40 deg C <= TJ <= +125 deg C",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T10:16:48Z",
+          "contentHash": "sha256:7dcc8f38545bd09168bbbd460ca0b4b5e662647d000ea708ad307b91e2c6aa8e",
+          "url": "https://ww1.microchip.com/downloads/aemDocuments/documents/APID/ProductDocuments/DataSheets/MIC4606-Data-Sheet-DS20005604D.pdf",
+          "revision": "DS20005604D, 2017-2019",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "bridgeVoltage",
+          "minimum": {
+            "value": 0,
+            "unit": "V",
+            "displayUnit": "xHS = 0 V"
+          },
+          "maximum": {
+            "value": 0,
+            "unit": "V",
+            "displayUnit": "xHS = 0 V"
+          },
+          "evidence": [
+            {
+              "sourceId": "microchip-mic4606-ds20005604d",
+              "locator": "page 4, Electrical Characteristics table heading: VSS = VxHS = 0 V",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T10:16:48Z",
+              "contentHash": "sha256:7dcc8f38545bd09168bbbd460ca0b4b5e662647d000ea708ad307b91e2c6aa8e",
+              "url": "https://ww1.microchip.com/downloads/aemDocuments/documents/APID/ProductDocuments/DataSheets/MIC4606-Data-Sheet-DS20005604D.pdf",
+              "revision": "DS20005604D, 2017-2019",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "driverBiasVoltage",
+          "minimum": {
+            "value": 12,
+            "unit": "V",
+            "displayUnit": "VDD = VxHB = 12 V"
+          },
+          "maximum": {
+            "value": 12,
+            "unit": "V",
+            "displayUnit": "VDD = VxHB = 12 V"
+          },
+          "evidence": [
+            {
+              "sourceId": "microchip-mic4606-ds20005604d",
+              "locator": "page 4, Electrical Characteristics table heading: VDD = VxHB = 12 V",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T10:16:48Z",
+              "contentHash": "sha256:7dcc8f38545bd09168bbbd460ca0b4b5e662647d000ea708ad307b91e2c6aa8e",
+              "url": "https://ww1.microchip.com/downloads/aemDocuments/documents/APID/ProductDocuments/DataSheets/MIC4606-Data-Sheet-DS20005604D.pdf",
+              "revision": "DS20005604D, 2017-2019",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "junctionTemperature",
+          "minimum": {
+            "value": 233.15,
+            "unit": "K",
+            "displayUnit": "-40 deg C"
+          },
+          "maximum": {
+            "value": 398.15,
+            "unit": "K",
+            "displayUnit": "+125 deg C"
+          },
+          "evidence": [
+            {
+              "sourceId": "microchip-mic4606-ds20005604d",
+              "locator": "page 4, Electrical Characteristics table heading: bold values indicate -40 deg C <= TJ <= +125 deg C; VIH = 2.2 V is bold",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T10:16:48Z",
+              "contentHash": "sha256:7dcc8f38545bd09168bbbd460ca0b4b5e662647d000ea708ad307b91e2c6aa8e",
+              "url": "https://ww1.microchip.com/downloads/aemDocuments/documents/APID/ProductDocuments/DataSheets/MIC4606-Data-Sheet-DS20005604D.pdf",
+              "revision": "DS20005604D, 2017-2019",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "The datasheet's guaranteed logic-high input level is retained as the maximum logic level a controller must meet, with the published bias, switch-node, and junction-temperature conditions."
+    },
+    "pwmMaximum": {
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "The manufacturer does not publish an independent guaranteed maximum PWM frequency."
+    },
+    "pwmMaximumRole": {
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "The maximum PWM frequency is unknown, so no guaranteed-bound or typical-observation role is asserted."
+    },
+    "minimumPulseWidth": {
+      "value": {
+        "value": 5e-8,
+        "unit": "s",
+        "displayUnit": "50 ns typical"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "microchip-mic4606-ds20005604d",
+          "locator": "page 5, Electrical Characteristics: minimum input pulse width that changes the output, tPW = 50 ns in the Typ. column; this is not a guaranteed maximum pulse-width requirement",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T10:16:48Z",
+          "contentHash": "sha256:7dcc8f38545bd09168bbbd460ca0b4b5e662647d000ea708ad307b91e2c6aa8e",
+          "url": "https://ww1.microchip.com/downloads/aemDocuments/documents/APID/ProductDocuments/DataSheets/MIC4606-Data-Sheet-DS20005604D.pdf",
+          "revision": "DS20005604D, 2017-2019",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "ambientTemperature",
+          "minimum": {
+            "value": 298.15,
+            "unit": "K",
+            "displayUnit": "+25 deg C"
+          },
+          "maximum": {
+            "value": 298.15,
+            "unit": "K",
+            "displayUnit": "+25 deg C"
+          },
+          "evidence": [
+            {
+              "sourceId": "microchip-mic4606-ds20005604d",
+              "locator": "page 5, Electrical Characteristics table heading: TA = +25 deg C for non-bold values; tPW = 50 ns is not bold",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T10:16:48Z",
+              "contentHash": "sha256:7dcc8f38545bd09168bbbd460ca0b4b5e662647d000ea708ad307b91e2c6aa8e",
+              "url": "https://ww1.microchip.com/downloads/aemDocuments/documents/APID/ProductDocuments/DataSheets/MIC4606-Data-Sheet-DS20005604D.pdf",
+              "revision": "DS20005604D, 2017-2019",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "bridgeVoltage",
+          "minimum": {
+            "value": 0,
+            "unit": "V",
+            "displayUnit": "xHS = 0 V"
+          },
+          "maximum": {
+            "value": 0,
+            "unit": "V",
+            "displayUnit": "xHS = 0 V"
+          },
+          "evidence": [
+            {
+              "sourceId": "microchip-mic4606-ds20005604d",
+              "locator": "page 5, Electrical Characteristics table heading: VSS = VxHS = 0 V",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T10:16:48Z",
+              "contentHash": "sha256:7dcc8f38545bd09168bbbd460ca0b4b5e662647d000ea708ad307b91e2c6aa8e",
+              "url": "https://ww1.microchip.com/downloads/aemDocuments/documents/APID/ProductDocuments/DataSheets/MIC4606-Data-Sheet-DS20005604D.pdf",
+              "revision": "DS20005604D, 2017-2019",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "driverBiasVoltage",
+          "minimum": {
+            "value": 12,
+            "unit": "V",
+            "displayUnit": "VDD = VxHB = 12 V"
+          },
+          "maximum": {
+            "value": 12,
+            "unit": "V",
+            "displayUnit": "VDD = VxHB = 12 V"
+          },
+          "evidence": [
+            {
+              "sourceId": "microchip-mic4606-ds20005604d",
+              "locator": "page 5, Electrical Characteristics table heading: VDD = VxHB = 12 V",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T10:16:48Z",
+              "contentHash": "sha256:7dcc8f38545bd09168bbbd460ca0b4b5e662647d000ea708ad307b91e2c6aa8e",
+              "url": "https://ww1.microchip.com/downloads/aemDocuments/documents/APID/ProductDocuments/DataSheets/MIC4606-Data-Sheet-DS20005604D.pdf",
+              "revision": "DS20005604D, 2017-2019",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "Manufacturer-published typical 50 ns input pulse that changes the output, preserved at its stated table conditions; it is not promoted to a guaranteed timing bound."
+    },
+    "minimumPulseWidthRole": {
+      "value": "typical_observation",
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "microchip-mic4606-ds20005604d",
+          "locator": "page 5, Electrical Characteristics: minimum input pulse width that changes the output, tPW = 50 ns in the Typ. column; this is not a guaranteed maximum pulse-width requirement",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T10:16:48Z",
+          "contentHash": "sha256:7dcc8f38545bd09168bbbd460ca0b4b5e662647d000ea708ad307b91e2c6aa8e",
+          "url": "https://ww1.microchip.com/downloads/aemDocuments/documents/APID/ProductDocuments/DataSheets/MIC4606-Data-Sheet-DS20005604D.pdf",
+          "revision": "DS20005604D, 2017-2019",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "ambientTemperature",
+          "minimum": {
+            "value": 298.15,
+            "unit": "K",
+            "displayUnit": "+25 deg C"
+          },
+          "maximum": {
+            "value": 298.15,
+            "unit": "K",
+            "displayUnit": "+25 deg C"
+          },
+          "evidence": [
+            {
+              "sourceId": "microchip-mic4606-ds20005604d",
+              "locator": "page 5, Electrical Characteristics table heading: TA = +25 deg C for non-bold values; tPW = 50 ns is not bold",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T10:16:48Z",
+              "contentHash": "sha256:7dcc8f38545bd09168bbbd460ca0b4b5e662647d000ea708ad307b91e2c6aa8e",
+              "url": "https://ww1.microchip.com/downloads/aemDocuments/documents/APID/ProductDocuments/DataSheets/MIC4606-Data-Sheet-DS20005604D.pdf",
+              "revision": "DS20005604D, 2017-2019",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "bridgeVoltage",
+          "minimum": {
+            "value": 0,
+            "unit": "V",
+            "displayUnit": "xHS = 0 V"
+          },
+          "maximum": {
+            "value": 0,
+            "unit": "V",
+            "displayUnit": "xHS = 0 V"
+          },
+          "evidence": [
+            {
+              "sourceId": "microchip-mic4606-ds20005604d",
+              "locator": "page 5, Electrical Characteristics table heading: VSS = VxHS = 0 V",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T10:16:48Z",
+              "contentHash": "sha256:7dcc8f38545bd09168bbbd460ca0b4b5e662647d000ea708ad307b91e2c6aa8e",
+              "url": "https://ww1.microchip.com/downloads/aemDocuments/documents/APID/ProductDocuments/DataSheets/MIC4606-Data-Sheet-DS20005604D.pdf",
+              "revision": "DS20005604D, 2017-2019",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "driverBiasVoltage",
+          "minimum": {
+            "value": 12,
+            "unit": "V",
+            "displayUnit": "VDD = VxHB = 12 V"
+          },
+          "maximum": {
+            "value": 12,
+            "unit": "V",
+            "displayUnit": "VDD = VxHB = 12 V"
+          },
+          "evidence": [
+            {
+              "sourceId": "microchip-mic4606-ds20005604d",
+              "locator": "page 5, Electrical Characteristics table heading: VDD = VxHB = 12 V",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T10:16:48Z",
+              "contentHash": "sha256:7dcc8f38545bd09168bbbd460ca0b4b5e662647d000ea708ad307b91e2c6aa8e",
+              "url": "https://ww1.microchip.com/downloads/aemDocuments/documents/APID/ProductDocuments/DataSheets/MIC4606-Data-Sheet-DS20005604D.pdf",
+              "revision": "DS20005604D, 2017-2019",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "The manufacturer presents the 50 ns pulse figure in the Typ. column, so its semantic role is a typical observation rather than a guaranteed timing bound."
+    },
+    "sourceCurrent": {
+      "value": {
+        "value": 1,
+        "unit": "A",
+        "displayUnit": "1 A peak typical"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "microchip-mic4606-ds20005604d",
+          "locator": "page 4, Electrical Characteristics, LO and HO Gate Driver: peak source current = 1 A in the Typ. column; the table does not publish a guaranteed minimum",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T10:16:48Z",
+          "contentHash": "sha256:7dcc8f38545bd09168bbbd460ca0b4b5e662647d000ea708ad307b91e2c6aa8e",
+          "url": "https://ww1.microchip.com/downloads/aemDocuments/documents/APID/ProductDocuments/DataSheets/MIC4606-Data-Sheet-DS20005604D.pdf",
+          "revision": "DS20005604D, 2017-2019",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "ambientTemperature",
+          "minimum": { "value": 298.15, "unit": "K", "displayUnit": "+25 deg C" },
+          "maximum": { "value": 298.15, "unit": "K", "displayUnit": "+25 deg C" },
+          "evidence": [
+            {
+              "sourceId": "microchip-mic4606-ds20005604d",
+              "locator": "page 4, Electrical Characteristics table heading: TA = +25 deg C for non-bold values; peak source-current values are not bold",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T10:16:48Z",
+              "contentHash": "sha256:7dcc8f38545bd09168bbbd460ca0b4b5e662647d000ea708ad307b91e2c6aa8e",
+              "url": "https://ww1.microchip.com/downloads/aemDocuments/documents/APID/ProductDocuments/DataSheets/MIC4606-Data-Sheet-DS20005604D.pdf",
+              "revision": "DS20005604D, 2017-2019",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "bridgeVoltage",
+          "minimum": { "value": 0, "unit": "V", "displayUnit": "xHS = 0 V" },
+          "maximum": { "value": 0, "unit": "V", "displayUnit": "xHS = 0 V" },
+          "evidence": [
+            {
+              "sourceId": "microchip-mic4606-ds20005604d",
+              "locator": "page 4, Electrical Characteristics table heading: VSS = VxHS = 0 V",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T10:16:48Z",
+              "contentHash": "sha256:7dcc8f38545bd09168bbbd460ca0b4b5e662647d000ea708ad307b91e2c6aa8e",
+              "url": "https://ww1.microchip.com/downloads/aemDocuments/documents/APID/ProductDocuments/DataSheets/MIC4606-Data-Sheet-DS20005604D.pdf",
+              "revision": "DS20005604D, 2017-2019",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "driverBiasVoltage",
+          "minimum": { "value": 12, "unit": "V", "displayUnit": "VDD = VxHB = 12 V" },
+          "maximum": { "value": 12, "unit": "V", "displayUnit": "VDD = VxHB = 12 V" },
+          "evidence": [
+            {
+              "sourceId": "microchip-mic4606-ds20005604d",
+              "locator": "page 4, Electrical Characteristics table heading: VDD = VxHB = 12 V",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T10:16:48Z",
+              "contentHash": "sha256:7dcc8f38545bd09168bbbd460ca0b4b5e662647d000ea708ad307b91e2c6aa8e",
+              "url": "https://ww1.microchip.com/downloads/aemDocuments/documents/APID/ProductDocuments/DataSheets/MIC4606-Data-Sheet-DS20005604D.pdf",
+              "revision": "DS20005604D, 2017-2019",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "testVoltage",
+          "minimum": { "value": 12, "unit": "V", "displayUnit": "source-output test node = 12 V" },
+          "maximum": { "value": 12, "unit": "V", "displayUnit": "source-output test node = 12 V" },
+          "evidence": [
+            {
+              "sourceId": "microchip-mic4606-ds20005604d",
+              "locator": "page 4, peak source-current row condition: VxLO = 12 V; the HO row repeats VxLO = 12 V in the source document",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T10:16:48Z",
+              "contentHash": "sha256:7dcc8f38545bd09168bbbd460ca0b4b5e662647d000ea708ad307b91e2c6aa8e",
+              "url": "https://ww1.microchip.com/downloads/aemDocuments/documents/APID/ProductDocuments/DataSheets/MIC4606-Data-Sheet-DS20005604D.pdf",
+              "revision": "DS20005604D, 2017-2019",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "Typical peak source current published for both output-driver sections, retained with the source's table and row conditions; this is not a guaranteed minimum current."
+    },
+    "sinkCurrent": {
+      "value": {
+        "value": 1,
+        "unit": "A",
+        "displayUnit": "1 A peak typical"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "microchip-mic4606-ds20005604d",
+          "locator": "page 4, Electrical Characteristics, LO and HO Gate Driver: peak sink current = 1 A in the Typ. column; the table does not publish a guaranteed minimum",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T10:16:48Z",
+          "contentHash": "sha256:7dcc8f38545bd09168bbbd460ca0b4b5e662647d000ea708ad307b91e2c6aa8e",
+          "url": "https://ww1.microchip.com/downloads/aemDocuments/documents/APID/ProductDocuments/DataSheets/MIC4606-Data-Sheet-DS20005604D.pdf",
+          "revision": "DS20005604D, 2017-2019",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "ambientTemperature",
+          "minimum": { "value": 298.15, "unit": "K", "displayUnit": "+25 deg C" },
+          "maximum": { "value": 298.15, "unit": "K", "displayUnit": "+25 deg C" },
+          "evidence": [
+            {
+              "sourceId": "microchip-mic4606-ds20005604d",
+              "locator": "page 4, Electrical Characteristics table heading: TA = +25 deg C for non-bold values; peak sink-current values are not bold",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T10:16:48Z",
+              "contentHash": "sha256:7dcc8f38545bd09168bbbd460ca0b4b5e662647d000ea708ad307b91e2c6aa8e",
+              "url": "https://ww1.microchip.com/downloads/aemDocuments/documents/APID/ProductDocuments/DataSheets/MIC4606-Data-Sheet-DS20005604D.pdf",
+              "revision": "DS20005604D, 2017-2019",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "bridgeVoltage",
+          "minimum": { "value": 0, "unit": "V", "displayUnit": "xHS = 0 V" },
+          "maximum": { "value": 0, "unit": "V", "displayUnit": "xHS = 0 V" },
+          "evidence": [
+            {
+              "sourceId": "microchip-mic4606-ds20005604d",
+              "locator": "page 4, Electrical Characteristics table heading: VSS = VxHS = 0 V",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T10:16:48Z",
+              "contentHash": "sha256:7dcc8f38545bd09168bbbd460ca0b4b5e662647d000ea708ad307b91e2c6aa8e",
+              "url": "https://ww1.microchip.com/downloads/aemDocuments/documents/APID/ProductDocuments/DataSheets/MIC4606-Data-Sheet-DS20005604D.pdf",
+              "revision": "DS20005604D, 2017-2019",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "driverBiasVoltage",
+          "minimum": { "value": 12, "unit": "V", "displayUnit": "VDD = VxHB = 12 V" },
+          "maximum": { "value": 12, "unit": "V", "displayUnit": "VDD = VxHB = 12 V" },
+          "evidence": [
+            {
+              "sourceId": "microchip-mic4606-ds20005604d",
+              "locator": "page 4, Electrical Characteristics table heading: VDD = VxHB = 12 V",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T10:16:48Z",
+              "contentHash": "sha256:7dcc8f38545bd09168bbbd460ca0b4b5e662647d000ea708ad307b91e2c6aa8e",
+              "url": "https://ww1.microchip.com/downloads/aemDocuments/documents/APID/ProductDocuments/DataSheets/MIC4606-Data-Sheet-DS20005604D.pdf",
+              "revision": "DS20005604D, 2017-2019",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "testVoltage",
+          "minimum": { "value": 0, "unit": "V", "displayUnit": "sink-output test node = 0 V" },
+          "maximum": { "value": 0, "unit": "V", "displayUnit": "sink-output test node = 0 V" },
+          "evidence": [
+            {
+              "sourceId": "microchip-mic4606-ds20005604d",
+              "locator": "page 4, peak sink-current row conditions: VxLO = 0 V and VxHO = 0 V",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T10:16:48Z",
+              "contentHash": "sha256:7dcc8f38545bd09168bbbd460ca0b4b5e662647d000ea708ad307b91e2c6aa8e",
+              "url": "https://ww1.microchip.com/downloads/aemDocuments/documents/APID/ProductDocuments/DataSheets/MIC4606-Data-Sheet-DS20005604D.pdf",
+              "revision": "DS20005604D, 2017-2019",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "Typical peak sink current published for both output-driver sections, retained with the source's table and row conditions; this is not a guaranteed minimum current."
+    },
+    "gatePullupResistance": {
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "The manufacturer publishes peak source current but no gate-driver pull-up resistance bound."
+    },
+    "gatePulldownResistance": {
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "The manufacturer publishes peak sink current but no gate-driver pull-down resistance bound."
+    },
+    "deadTimeControl": {
+      "value": "adaptive",
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "microchip-mic4606-ds20005604d",
+          "locator": "pages 21-22, section 7.1 Adaptive Dead Time: output and switch-node voltages are actively monitored to control transitions",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T10:16:48Z",
+          "contentHash": "sha256:7dcc8f38545bd09168bbbd460ca0b4b5e662647d000ea708ad307b91e2c6aa8e",
+          "url": "https://ww1.microchip.com/downloads/aemDocuments/documents/APID/ProductDocuments/DataSheets/MIC4606-Data-Sheet-DS20005604D.pdf",
+          "revision": "DS20005604D, 2017-2019",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "The device controls dead time adaptively from observed driver-output and switch-node thresholds."
+    },
+    "deadTime": {
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "Adaptive dead time is not a fixed scalar; the less-than-20-ns scope example on page 22 is not a guaranteed limit."
+    },
+    "highSideSupply": {
+      "value": "bootstrap",
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "microchip-mic4606-ds20005604d",
+          "locator": "pages 19-20, section 6.5 and Figure 6-2: the floating high-side driver is supplied by external bootstrap capacitor CB through an internal bootstrap diode",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T10:16:48Z",
+          "contentHash": "sha256:7dcc8f38545bd09168bbbd460ca0b4b5e662647d000ea708ad307b91e2c6aa8e",
+          "url": "https://ww1.microchip.com/downloads/aemDocuments/documents/APID/ProductDocuments/DataSheets/MIC4606-Data-Sheet-DS20005604D.pdf",
+          "revision": "DS20005604D, 2017-2019",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "Each high-side channel uses an external bootstrap capacitor and the IC's internal bootstrap diode; no charge-pump supply is documented."
+    },
+    "continuousHighSideOnSupported": {
+      "value": false,
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "microchip-mic4606-ds20005604d",
+          "locator": "page 22, section 7.1: maximum high-side duty cycle is determined by CB charge time and adequate off-time must be allowed before the high-side driver turns on again",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T10:16:48Z",
+          "contentHash": "sha256:7dcc8f38545bd09168bbbd460ca0b4b5e662647d000ea708ad307b91e2c6aa8e",
+          "url": "https://ww1.microchip.com/downloads/aemDocuments/documents/APID/ProductDocuments/DataSheets/MIC4606-Data-Sheet-DS20005604D.pdf",
+          "revision": "DS20005604D, 2017-2019",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "The bootstrap supply requires recurring off-time for recharge, so uninterrupted high-side on-time is not supported."
+    },
+    "bootstrapMaximumDutyCycle": {
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "The datasheet states that maximum duty depends on bootstrap recharge time but publishes no numeric maximum duty cycle."
+    },
+    "highSideBiasCurrentMaximum": {
+      "value": {
+        "value": 0.0004,
+        "unit": "A",
+        "displayUnit": "400 uA maximum"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "microchip-mic4606-ds20005604d",
+          "locator": "page 3, Electrical Characteristics, Supply Current: total xHB operating current IHBO maximum = 400 uA at fS = 20 kHz; bold maximum covers -40 deg C <= TJ <= +125 deg C",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T10:16:48Z",
+          "contentHash": "sha256:7dcc8f38545bd09168bbbd460ca0b4b5e662647d000ea708ad307b91e2c6aa8e",
+          "url": "https://ww1.microchip.com/downloads/aemDocuments/documents/APID/ProductDocuments/DataSheets/MIC4606-Data-Sheet-DS20005604D.pdf",
+          "revision": "DS20005604D, 2017-2019",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "bridgeVoltage",
+          "minimum": { "value": 0, "unit": "V", "displayUnit": "xHS = 0 V" },
+          "maximum": { "value": 0, "unit": "V", "displayUnit": "xHS = 0 V" },
+          "evidence": [
+            {
+              "sourceId": "microchip-mic4606-ds20005604d",
+              "locator": "page 3, Electrical Characteristics table heading: VSS = VxHS = 0 V",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T10:16:48Z",
+              "contentHash": "sha256:7dcc8f38545bd09168bbbd460ca0b4b5e662647d000ea708ad307b91e2c6aa8e",
+              "url": "https://ww1.microchip.com/downloads/aemDocuments/documents/APID/ProductDocuments/DataSheets/MIC4606-Data-Sheet-DS20005604D.pdf",
+              "revision": "DS20005604D, 2017-2019",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "driverBiasVoltage",
+          "minimum": { "value": 12, "unit": "V", "displayUnit": "VDD = VxHB = 12 V" },
+          "maximum": { "value": 12, "unit": "V", "displayUnit": "VDD = VxHB = 12 V" },
+          "evidence": [
+            {
+              "sourceId": "microchip-mic4606-ds20005604d",
+              "locator": "page 3, Electrical Characteristics table heading: VDD = VxHB = 12 V",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T10:16:48Z",
+              "contentHash": "sha256:7dcc8f38545bd09168bbbd460ca0b4b5e662647d000ea708ad307b91e2c6aa8e",
+              "url": "https://ww1.microchip.com/downloads/aemDocuments/documents/APID/ProductDocuments/DataSheets/MIC4606-Data-Sheet-DS20005604D.pdf",
+              "revision": "DS20005604D, 2017-2019",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "junctionTemperature",
+          "minimum": { "value": 233.15, "unit": "K", "displayUnit": "-40 deg C" },
+          "maximum": { "value": 398.15, "unit": "K", "displayUnit": "+125 deg C" },
+          "evidence": [
+            {
+              "sourceId": "microchip-mic4606-ds20005604d",
+              "locator": "page 3, Electrical Characteristics table heading: bold values indicate -40 deg C <= TJ <= +125 deg C; IHBO maximum 400 uA is bold",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T10:16:48Z",
+              "contentHash": "sha256:7dcc8f38545bd09168bbbd460ca0b4b5e662647d000ea708ad307b91e2c6aa8e",
+              "url": "https://ww1.microchip.com/downloads/aemDocuments/documents/APID/ProductDocuments/DataSheets/MIC4606-Data-Sheet-DS20005604D.pdf",
+              "revision": "DS20005604D, 2017-2019",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        },
+        {
+          "parameterId": "switchingFrequency",
+          "minimum": { "value": 20000, "unit": "Hz", "displayUnit": "20 kHz" },
+          "maximum": { "value": 20000, "unit": "Hz", "displayUnit": "20 kHz" },
+          "evidence": [
+            {
+              "sourceId": "microchip-mic4606-ds20005604d",
+              "locator": "page 3, total xHB operating-current row condition: fS = 20 kHz",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T10:16:48Z",
+              "contentHash": "sha256:7dcc8f38545bd09168bbbd460ca0b4b5e662647d000ea708ad307b91e2c6aa8e",
+              "url": "https://ww1.microchip.com/downloads/aemDocuments/documents/APID/ProductDocuments/DataSheets/MIC4606-Data-Sheet-DS20005604D.pdf",
+              "revision": "DS20005604D, 2017-2019",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "Maximum total xHB operating current at the exact published 20 kHz bias and temperature conditions; it is not converted into a bootstrap charge."
+    },
+    "quiescentCurrent": {
+      "value": {
+        "value": 0.000235,
+        "unit": "A",
+        "displayUnit": "235 uA total typical"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "microchip-mic4606-ds20005604d",
+          "locator": "page 1, Features: low power consumption, 235 uA total quiescent current; page 3 separately publishes 200 uA typical VDD plus 35 uA typical total xHB quiescent currents",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T10:16:48Z",
+          "contentHash": "sha256:7dcc8f38545bd09168bbbd460ca0b4b5e662647d000ea708ad307b91e2c6aa8e",
+          "url": "https://ww1.microchip.com/downloads/aemDocuments/documents/APID/ProductDocuments/DataSheets/MIC4606-Data-Sheet-DS20005604D.pdf",
+          "revision": "DS20005604D, 2017-2019",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "Manufacturer-published typical total quiescent current; this profile does not promote it to a guaranteed maximum."
+    },
+    "junctionToAmbientThermalResistance": {
+      "value": {
+        "value": 51,
+        "unit": "K/W",
+        "displayUnit": "51 deg C/W typical"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "microchip-mic4606-ds20005604d",
+          "locator": "page 6, Temperature Specifications: thermal resistance, 16-lead QFN, thetaJA typical = 51 deg C/W",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T10:16:48Z",
+          "contentHash": "sha256:7dcc8f38545bd09168bbbd460ca0b4b5e662647d000ea708ad307b91e2c6aa8e",
+          "url": "https://ww1.microchip.com/downloads/aemDocuments/documents/APID/ProductDocuments/DataSheets/MIC4606-Data-Sheet-DS20005604D.pdf",
+          "revision": "DS20005604D, 2017-2019",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "Package-specific manufacturer test characteristic without a published board stack or copper-area condition; it is not an application thermal prediction."
+    },
+    "maximumJunctionTemperature": {
+      "value": {
+        "value": 398.15,
+        "unit": "K",
+        "displayUnit": "+125 deg C"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "microchip-mic4606-ds20005604d",
+          "locator": "page 6, Temperature Specifications: junction operating temperature range = -40 deg C to +125 deg C",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T10:16:48Z",
+          "contentHash": "sha256:7dcc8f38545bd09168bbbd460ca0b4b5e662647d000ea708ad307b91e2c6aa8e",
+          "url": "https://ww1.microchip.com/downloads/aemDocuments/documents/APID/ProductDocuments/DataSheets/MIC4606-Data-Sheet-DS20005604D.pdf",
+          "revision": "DS20005604D, 2017-2019",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "Upper bound of the manufacturer-specified operating junction-temperature range."
+    },
+    "currentSenseInterface": {
+      "value": "none",
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "microchip-mic4606-ds20005604d",
+          "locator": "pages 13-14, Table 4-2 MIC4606-2 QFN Pin Function Table: the complete 16-pin interface contains PWM, enable, gate outputs, switch-node/bootstrap, VDD, VSS, NC and exposed-pad connections, with no current-sense input",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T10:16:48Z",
+          "contentHash": "sha256:7dcc8f38545bd09168bbbd460ca0b4b5e662647d000ea708ad307b91e2c6aa8e",
+          "url": "https://ww1.microchip.com/downloads/aemDocuments/documents/APID/ProductDocuments/DataSheets/MIC4606-Data-Sheet-DS20005604D.pdf",
+          "revision": "DS20005604D, 2017-2019",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "The exact MIC4606-2 QFN pinout has no integrated current-sense amplifier or comparator input."
+    },
+    "senseMaximumVoltage": {
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "The device has no integrated current-sense input, so a sense-input voltage limit is inapplicable."
+    },
+    "localDecouplingMinimum": {
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "The source requires a capacitor greater than 1.0 uF at VDD. The scalar minimum contract cannot preserve that strict open bound without incorrectly admitting exactly 1.0 uF."
+    },
+    "mountedGeometry": {
+      "boardArea": {
+        "value": {
+          "area": {
+            "value": 0.0000180625,
+            "unit": "m2",
+            "displayUnit": "18.0625 mm2"
+          },
+          "basis": "manufacturer_recommended_land_pattern_bounding_box",
+          "calculation": "maximum_x_span_times_maximum_y_span",
+          "sourceDimensions": [
+            {
+              "axis": "x",
+              "dimensionId": "recommended-overall-x-span",
+              "multiplier": 1,
+              "maximum": {
+                "value": 0.00425,
+                "unit": "m",
+                "displayUnit": "4.20 +/- 0.05 mm maximum = 4.25 mm"
+              },
+              "evidence": [
+                {
+                  "sourceId": "microchip-mic4606-ds20005604d",
+                  "locator": "page 32, QFN44-16LD-PL-2 Recommended Land Pattern: symmetric four-sided land pattern with 4.20 +/- 0.05 mm overall pad span on each axis",
+                  "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+                  "kind": "manufacturer_datasheet",
+                  "retrievedAt": "2026-08-24T10:16:48Z",
+                  "contentHash": "sha256:7dcc8f38545bd09168bbbd460ca0b4b5e662647d000ea708ad307b91e2c6aa8e",
+                  "url": "https://ww1.microchip.com/downloads/aemDocuments/documents/APID/ProductDocuments/DataSheets/MIC4606-Data-Sheet-DS20005604D.pdf",
+                  "revision": "DS20005604D, 2017-2019",
+                  "publicationBasis": "public_facts"
+                }
+              ]
+            },
+            {
+              "axis": "y",
+              "dimensionId": "recommended-overall-y-span",
+              "multiplier": 1,
+              "maximum": {
+                "value": 0.00425,
+                "unit": "m",
+                "displayUnit": "4.20 +/- 0.05 mm maximum = 4.25 mm"
+              },
+              "evidence": [
+                {
+                  "sourceId": "microchip-mic4606-ds20005604d",
+                  "locator": "page 32, QFN44-16LD-PL-2 Recommended Land Pattern: symmetric four-sided land pattern with 4.20 +/- 0.05 mm overall pad span on each axis",
+                  "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+                  "kind": "manufacturer_datasheet",
+                  "retrievedAt": "2026-08-24T10:16:48Z",
+                  "contentHash": "sha256:7dcc8f38545bd09168bbbd460ca0b4b5e662647d000ea708ad307b91e2c6aa8e",
+                  "url": "https://ww1.microchip.com/downloads/aemDocuments/documents/APID/ProductDocuments/DataSheets/MIC4606-Data-Sheet-DS20005604D.pdf",
+                  "revision": "DS20005604D, 2017-2019",
+                  "publicationBasis": "public_facts"
+                }
+              ]
+            }
+          ]
+        },
+        "state": "calculated",
+        "evidence": [
+          {
+            "sourceId": "microchip-mic4606-ds20005604d",
+            "locator": "page 32, QFN44-16LD-PL-2 Recommended Land Pattern: symmetric four-sided land pattern with 4.20 +/- 0.05 mm overall pad span on each axis",
+            "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+            "kind": "manufacturer_datasheet",
+            "retrievedAt": "2026-08-24T10:16:48Z",
+            "contentHash": "sha256:7dcc8f38545bd09168bbbd460ca0b4b5e662647d000ea708ad307b91e2c6aa8e",
+            "url": "https://ww1.microchip.com/downloads/aemDocuments/documents/APID/ProductDocuments/DataSheets/MIC4606-Data-Sheet-DS20005604D.pdf",
+            "revision": "DS20005604D, 2017-2019",
+            "publicationBasis": "public_facts"
+          }
+        ],
+        "validFor": [],
+        "explanation": "Canonical maximum bounding rectangle of the manufacturer-recommended QFN land pattern: 4.25 mm by 4.25 mm. This is a ranking proxy, not a placement or routing proof."
+      },
+      "maximumHeight": {
+        "value": {
+          "height": {
+            "value": 0.0009,
+            "unit": "m",
+            "displayUnit": "0.850 +/- 0.050 mm maximum = 0.900 mm"
+          },
+          "basis": "manufacturer_package_maximum_in_surface_mount_orientation"
+        },
+        "state": "reviewed",
+        "evidence": [
+          {
+            "sourceId": "microchip-mic4606-ds20005604d",
+            "locator": "page 32, QFN44-16LD-PL-2 package side view: overall mounted package height = 0.850 +/- 0.050 mm, giving 0.900 mm maximum",
+            "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+            "kind": "manufacturer_datasheet",
+            "retrievedAt": "2026-08-24T10:16:48Z",
+            "contentHash": "sha256:7dcc8f38545bd09168bbbd460ca0b4b5e662647d000ea708ad307b91e2c6aa8e",
+            "url": "https://ww1.microchip.com/downloads/aemDocuments/documents/APID/ProductDocuments/DataSheets/MIC4606-Data-Sheet-DS20005604D.pdf",
+            "revision": "DS20005604D, 2017-2019",
+            "publicationBasis": "public_facts"
+          }
+        ],
+        "validFor": [],
+        "explanation": "Maximum package height from the exact QFN side-view tolerance in surface-mount orientation."
+      }
+    }
+  }
+}

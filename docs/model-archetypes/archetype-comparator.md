@@ -20,7 +20,7 @@ Two output variants, selected by the datasheet:
 ### Variant OC
 
 ```spice
-* OpenCircuit original-from-facts model
+* scheMAGIC original-from-facts model
 * <MPN> (<manufacturer>), datasheet rev <rev>, fitted <YYYY-MM-DD>
 * Archetype: archetype-comparator.md, variant OC. Fit run: <run-id>
 * Node order: X<ref> inp inn out vcc gnd OC_<MPN>

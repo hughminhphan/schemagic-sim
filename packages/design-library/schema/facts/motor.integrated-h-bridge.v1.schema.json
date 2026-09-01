@@ -1,0 +1,1671 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.schemagic.design/design-library/v1/facts/motor.integrated-h-bridge.v1.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "bridgeTopology",
+    "powerStage",
+    "supplyMinimum",
+    "supplyMaximum",
+    "absoluteMaximum",
+    "continuousCurrent",
+    "peakCurrent",
+    "currentLimitMinimum",
+    "currentLimitMaximum",
+    "logicHighThresholdMaximum",
+    "pwmMaximum",
+    "minimumPulseWidth",
+    "pathResistance",
+    "switchingTransitionTime",
+    "quiescentCurrent",
+    "junctionToAmbientThermalResistance",
+    "maximumJunctionTemperature",
+    "highSideSupply",
+    "maximumHighSideDutyCycle",
+    "localDecouplingMinimum",
+    "bulkCapacitanceMinimum"
+  ],
+  "properties": {
+    "bridgeTopology": {
+      "allOf": [
+        {
+          "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/profileFact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "value": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "full_bridge"
+                  ]
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "validFor": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/operatingRange"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "powerStage": {
+      "allOf": [
+        {
+          "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/profileFact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "value": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "integrated_fet"
+                  ]
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "validFor": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/operatingRange"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "supplyMinimum": {
+      "allOf": [
+        {
+          "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/profileFact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "value": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "value",
+                    "unit",
+                    "displayUnit"
+                  ],
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "exclusiveMinimum": 0
+                    },
+                    "unit": {
+                      "const": "V"
+                    },
+                    "displayUnit": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": ".*\\S.*"
+                    }
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "validFor": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/operatingRange"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "supplyMaximum": {
+      "allOf": [
+        {
+          "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/profileFact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "value": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "value",
+                    "unit",
+                    "displayUnit"
+                  ],
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "exclusiveMinimum": 0
+                    },
+                    "unit": {
+                      "const": "V"
+                    },
+                    "displayUnit": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": ".*\\S.*"
+                    }
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "validFor": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/operatingRange"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "absoluteMaximum": {
+      "allOf": [
+        {
+          "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/profileFact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "value": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "value",
+                    "unit",
+                    "displayUnit"
+                  ],
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "exclusiveMinimum": 0
+                    },
+                    "unit": {
+                      "const": "V"
+                    },
+                    "displayUnit": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": ".*\\S.*"
+                    }
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "validFor": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/operatingRange"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "continuousCurrent": {
+      "allOf": [
+        {
+          "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/profileFact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "value": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "value",
+                    "unit",
+                    "displayUnit"
+                  ],
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "exclusiveMinimum": 0
+                    },
+                    "unit": {
+                      "const": "A"
+                    },
+                    "displayUnit": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": ".*\\S.*"
+                    }
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "validFor": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/operatingRange"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "peakCurrent": {
+      "allOf": [
+        {
+          "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/profileFact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "value": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "value",
+                    "unit",
+                    "displayUnit"
+                  ],
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "exclusiveMinimum": 0
+                    },
+                    "unit": {
+                      "const": "A"
+                    },
+                    "displayUnit": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": ".*\\S.*"
+                    }
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "validFor": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/operatingRange"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "currentLimitMinimum": {
+      "allOf": [
+        {
+          "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/profileFact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "value": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "value",
+                    "unit",
+                    "displayUnit"
+                  ],
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "exclusiveMinimum": 0
+                    },
+                    "unit": {
+                      "const": "A"
+                    },
+                    "displayUnit": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": ".*\\S.*"
+                    }
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "validFor": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/operatingRange"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "currentLimitMaximum": {
+      "allOf": [
+        {
+          "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/profileFact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "value": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "value",
+                    "unit",
+                    "displayUnit"
+                  ],
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "exclusiveMinimum": 0
+                    },
+                    "unit": {
+                      "const": "A"
+                    },
+                    "displayUnit": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": ".*\\S.*"
+                    }
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "validFor": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/operatingRange"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "logicHighThresholdMaximum": {
+      "allOf": [
+        {
+          "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/profileFact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "value": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "value",
+                    "unit",
+                    "displayUnit"
+                  ],
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "exclusiveMinimum": 0
+                    },
+                    "unit": {
+                      "const": "V"
+                    },
+                    "displayUnit": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": ".*\\S.*"
+                    }
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "validFor": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/operatingRange"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "pwmMaximum": {
+      "allOf": [
+        {
+          "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/profileFact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "value": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "value",
+                    "unit",
+                    "displayUnit"
+                  ],
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "exclusiveMinimum": 0
+                    },
+                    "unit": {
+                      "const": "Hz"
+                    },
+                    "displayUnit": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": ".*\\S.*"
+                    }
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "validFor": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/operatingRange"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "minimumPulseWidth": {
+      "allOf": [
+        {
+          "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/profileFact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "value": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "value",
+                    "unit",
+                    "displayUnit"
+                  ],
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "exclusiveMinimum": 0
+                    },
+                    "unit": {
+                      "const": "s"
+                    },
+                    "displayUnit": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": ".*\\S.*"
+                    }
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "validFor": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/operatingRange"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "pathResistance": {
+      "allOf": [
+        {
+          "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/profileFact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "value": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "value",
+                    "unit",
+                    "displayUnit"
+                  ],
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "exclusiveMinimum": 0
+                    },
+                    "unit": {
+                      "const": "ohm"
+                    },
+                    "displayUnit": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": ".*\\S.*"
+                    }
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "validFor": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/operatingRange"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "switchingTransitionTime": {
+      "allOf": [
+        {
+          "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/profileFact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "value": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "value",
+                    "unit",
+                    "displayUnit"
+                  ],
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "exclusiveMinimum": 0
+                    },
+                    "unit": {
+                      "const": "s"
+                    },
+                    "displayUnit": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": ".*\\S.*"
+                    }
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "validFor": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/operatingRange"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "quiescentCurrent": {
+      "allOf": [
+        {
+          "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/profileFact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "value": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "value",
+                    "unit",
+                    "displayUnit"
+                  ],
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "exclusiveMinimum": 0
+                    },
+                    "unit": {
+                      "const": "A"
+                    },
+                    "displayUnit": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": ".*\\S.*"
+                    }
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "validFor": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/operatingRange"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "junctionToAmbientThermalResistance": {
+      "allOf": [
+        {
+          "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/profileFact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "value": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "value",
+                    "unit",
+                    "displayUnit"
+                  ],
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "exclusiveMinimum": 0
+                    },
+                    "unit": {
+                      "const": "K/W"
+                    },
+                    "displayUnit": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": ".*\\S.*"
+                    }
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "validFor": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/operatingRange"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "maximumJunctionTemperature": {
+      "allOf": [
+        {
+          "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/profileFact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "value": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "value",
+                    "unit",
+                    "displayUnit"
+                  ],
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "exclusiveMinimum": 0
+                    },
+                    "unit": {
+                      "const": "K"
+                    },
+                    "displayUnit": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": ".*\\S.*"
+                    }
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "validFor": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/operatingRange"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "highSideSupply": {
+      "allOf": [
+        {
+          "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/profileFact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "value": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "charge_pump",
+                    "bootstrap_with_charge_pump",
+                    "bootstrap_with_top_off_charge_pump"
+                  ]
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "validFor": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/operatingRange"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "maximumHighSideDutyCycle": {
+      "allOf": [
+        {
+          "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/profileFact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "value": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "value",
+                    "unit",
+                    "displayUnit"
+                  ],
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1
+                    },
+                    "unit": {
+                      "const": "1"
+                    },
+                    "displayUnit": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": ".*\\S.*"
+                    }
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "validFor": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/operatingRange"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "localDecouplingMinimum": {
+      "allOf": [
+        {
+          "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/profileFact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "value": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "value",
+                    "unit",
+                    "displayUnit"
+                  ],
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "exclusiveMinimum": 0
+                    },
+                    "unit": {
+                      "const": "F"
+                    },
+                    "displayUnit": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": ".*\\S.*"
+                    }
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "validFor": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/operatingRange"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "bulkCapacitanceMinimum": {
+      "allOf": [
+        {
+          "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/profileFact"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "value": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "value",
+                    "unit",
+                    "displayUnit"
+                  ],
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "exclusiveMinimum": 0
+                    },
+                    "unit": {
+                      "const": "F"
+                    },
+                    "displayUnit": {
+                      "type": "string",
+                      "minLength": 1,
+                      "pattern": ".*\\S.*"
+                    }
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "validFor": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/operatingRange"
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "$defs": {
+    "operatingRange": {
+      "oneOf": [
+        {
+          "allOf": [
+            {
+              "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/operatingRange"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "parameterId": {
+                  "const": "ambientTemperature"
+                },
+                "minimum": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "value",
+                        "unit",
+                        "displayUnit"
+                      ],
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "unit": {
+                          "const": "K"
+                        },
+                        "displayUnit": {
+                          "type": "string",
+                          "minLength": 1,
+                          "pattern": ".*\\S.*"
+                        }
+                      }
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "maximum": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "value",
+                        "unit",
+                        "displayUnit"
+                      ],
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "unit": {
+                          "const": "K"
+                        },
+                        "displayUnit": {
+                          "type": "string",
+                          "minLength": 1,
+                          "pattern": ".*\\S.*"
+                        }
+                      }
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {
+              "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/operatingRange"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "parameterId": {
+                  "const": "junctionTemperature"
+                },
+                "minimum": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "value",
+                        "unit",
+                        "displayUnit"
+                      ],
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "unit": {
+                          "const": "K"
+                        },
+                        "displayUnit": {
+                          "type": "string",
+                          "minLength": 1,
+                          "pattern": ".*\\S.*"
+                        }
+                      }
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "maximum": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "value",
+                        "unit",
+                        "displayUnit"
+                      ],
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "unit": {
+                          "const": "K"
+                        },
+                        "displayUnit": {
+                          "type": "string",
+                          "minLength": 1,
+                          "pattern": ".*\\S.*"
+                        }
+                      }
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {
+              "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/operatingRange"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "parameterId": {
+                  "const": "supplyVoltage"
+                },
+                "minimum": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "value",
+                        "unit",
+                        "displayUnit"
+                      ],
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "unit": {
+                          "const": "V"
+                        },
+                        "displayUnit": {
+                          "type": "string",
+                          "minLength": 1,
+                          "pattern": ".*\\S.*"
+                        }
+                      }
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "maximum": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "value",
+                        "unit",
+                        "displayUnit"
+                      ],
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "unit": {
+                          "const": "V"
+                        },
+                        "displayUnit": {
+                          "type": "string",
+                          "minLength": 1,
+                          "pattern": ".*\\S.*"
+                        }
+                      }
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {
+              "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/operatingRange"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "parameterId": {
+                  "const": "testCurrent"
+                },
+                "minimum": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "value",
+                        "unit",
+                        "displayUnit"
+                      ],
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "unit": {
+                          "const": "A"
+                        },
+                        "displayUnit": {
+                          "type": "string",
+                          "minLength": 1,
+                          "pattern": ".*\\S.*"
+                        }
+                      }
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "maximum": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "value",
+                        "unit",
+                        "displayUnit"
+                      ],
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "unit": {
+                          "const": "A"
+                        },
+                        "displayUnit": {
+                          "type": "string",
+                          "minLength": 1,
+                          "pattern": ".*\\S.*"
+                        }
+                      }
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {
+              "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/operatingRange"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "parameterId": {
+                  "const": "testVoltage"
+                },
+                "minimum": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "value",
+                        "unit",
+                        "displayUnit"
+                      ],
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "unit": {
+                          "const": "V"
+                        },
+                        "displayUnit": {
+                          "type": "string",
+                          "minLength": 1,
+                          "pattern": ".*\\S.*"
+                        }
+                      }
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "maximum": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "value",
+                        "unit",
+                        "displayUnit"
+                      ],
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "unit": {
+                          "const": "V"
+                        },
+                        "displayUnit": {
+                          "type": "string",
+                          "minLength": 1,
+                          "pattern": ".*\\S.*"
+                        }
+                      }
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {
+              "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/operatingRange"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "parameterId": {
+                  "const": "switchingFrequency"
+                },
+                "minimum": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "value",
+                        "unit",
+                        "displayUnit"
+                      ],
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "unit": {
+                          "const": "Hz"
+                        },
+                        "displayUnit": {
+                          "type": "string",
+                          "minLength": 1,
+                          "pattern": ".*\\S.*"
+                        }
+                      }
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "maximum": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "value",
+                        "unit",
+                        "displayUnit"
+                      ],
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "unit": {
+                          "const": "Hz"
+                        },
+                        "displayUnit": {
+                          "type": "string",
+                          "minLength": 1,
+                          "pattern": ".*\\S.*"
+                        }
+                      }
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {
+              "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/operatingRange"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "parameterId": {
+                  "const": "pulseDuration"
+                },
+                "minimum": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "value",
+                        "unit",
+                        "displayUnit"
+                      ],
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "unit": {
+                          "const": "s"
+                        },
+                        "displayUnit": {
+                          "type": "string",
+                          "minLength": 1,
+                          "pattern": ".*\\S.*"
+                        }
+                      }
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "maximum": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "value",
+                        "unit",
+                        "displayUnit"
+                      ],
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "unit": {
+                          "const": "s"
+                        },
+                        "displayUnit": {
+                          "type": "string",
+                          "minLength": 1,
+                          "pattern": ".*\\S.*"
+                        }
+                      }
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {
+              "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/operatingRange"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "parameterId": {
+                  "const": "dutyCycle"
+                },
+                "minimum": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "value",
+                        "unit",
+                        "displayUnit"
+                      ],
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
+                        },
+                        "unit": {
+                          "const": "1"
+                        },
+                        "displayUnit": {
+                          "type": "string",
+                          "minLength": 1,
+                          "pattern": ".*\\S.*"
+                        }
+                      }
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "maximum": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "value",
+                        "unit",
+                        "displayUnit"
+                      ],
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
+                        },
+                        "unit": {
+                          "const": "1"
+                        },
+                        "displayUnit": {
+                          "type": "string",
+                          "minLength": 1,
+                          "pattern": ".*\\S.*"
+                        }
+                      }
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {
+              "$ref": "https://schemas.schemagic.design/design-library/v1/profile-envelope.v1.schema.json#/$defs/operatingRange"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "parameterId": {
+                  "const": "boardCopperArea"
+                },
+                "minimum": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "value",
+                        "unit",
+                        "displayUnit"
+                      ],
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "unit": {
+                          "const": "m2"
+                        },
+                        "displayUnit": {
+                          "type": "string",
+                          "minLength": 1,
+                          "pattern": ".*\\S.*"
+                        }
+                      }
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "maximum": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "value",
+                        "unit",
+                        "displayUnit"
+                      ],
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "unit": {
+                          "const": "m2"
+                        },
+                        "displayUnit": {
+                          "type": "string",
+                          "minLength": 1,
+                          "pattern": ".*\\S.*"
+                        }
+                      }
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

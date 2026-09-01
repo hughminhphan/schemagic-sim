@@ -11,6 +11,143 @@ const fitPoint = (current, voltage, citation, sourceKind = "digitized_typical_cu
   voltage: quantity(voltage, "V", `IF = ${current} A, TA = 25 degC`, citation, sourceKind)
 });
 
+const vdmosCitation = (pageReference, kind, label) => ({
+  page_reference: pageReference,
+  locator: { kind, label }
+});
+
+const vdmosQualifiers = ({ testMode, pulseWidthMaximum, dutyCycleMaximum, pageReference }) => ({
+  test_mode: testMode,
+  tokens: [
+    testMode,
+    ...(pulseWidthMaximum === undefined ? [] : [`pulse_width_maximum=${pulseWidthMaximum}s`]),
+    ...(dutyCycleMaximum === undefined ? [] : [`duty_cycle_maximum=${dutyCycleMaximum}`])
+  ],
+  ...(pulseWidthMaximum === undefined ? {} : { pulse_width_maximum: quantity(pulseWidthMaximum, "s", "published pulse-width qualifier", pageReference, "condition_identity") }),
+  ...(dutyCycleMaximum === undefined ? {} : { duty_cycle_maximum: quantity(dutyCycleMaximum, "1", "published duty-cycle qualifier", pageReference, "condition_identity") })
+});
+
+const vdmosIdentityCoordinate = (coordinate, name, citation) => Object.hasOwn(coordinate, "value") ? {
+  ...coordinate,
+  conditions: `${name} in canonical condition identity`,
+  page_reference: citation.page_reference,
+  source_kind: "condition_identity"
+} : coordinate;
+
+const vdmosIdentity = ({ temperatureKind = "junction", temperature = 25, vgs, current, vds, qualifiers, citation, evidenceRole }) => ({
+  temperature: {
+    kind: temperatureKind,
+    ...quantity(temperature, "degC", "temperature in canonical condition identity", citation.page_reference, "condition_identity")
+  },
+  gate_source_voltage: vdmosIdentityCoordinate(vgs, "VGS", citation),
+  drain_current: vdmosIdentityCoordinate(current, "ID", citation),
+  drain_source_voltage: vdmosIdentityCoordinate(vds, "VDS", citation),
+  qualifiers,
+  citation,
+  evidence_role: evidenceRole
+});
+
+const vdmosDatum = (value, unit, conditions, pageReference, sourceKind, identity) => ({
+  ...quantity(value, unit, conditions, pageReference, sourceKind),
+  identity
+});
+
+const vdmosThreshold = ({ minimum, maximum, pageReference = "p. 2 electrical characteristics" }) => {
+  const citation = vdmosCitation(pageReference, "table_row", "VGS(th), gate threshold voltage");
+  const base = {
+    vgs: { kind: "swept" },
+    current: { kind: "fixed", value: 250e-6, unit: "A" },
+    vds: { kind: "equal_to_gate_source_voltage" },
+    qualifiers: vdmosQualifiers({ testMode: "electrical_characteristic", pageReference }),
+    citation
+  };
+  return {
+    minimum: vdmosDatum(minimum, "V", "VDS = VGS, ID = 250 uA", pageReference, "minimum", vdmosIdentity({ ...base, evidenceRole: "inclusive_minimum" })),
+    maximum: vdmosDatum(maximum, "V", "VDS = VGS, ID = 250 uA", pageReference, "maximum", vdmosIdentity({ ...base, evidenceRole: "inclusive_maximum" }))
+  };
+};
+
+const vdmosRdsonPoint = ({ vgs, current, resistance, pulseWidthMaximum, dutyCycleMaximum, pageReference, resistancePageReference = pageReference }) => {
+  const identity = vdmosIdentity({
+    vgs: { kind: "fixed", value: vgs, unit: "V" },
+    current: { kind: "fixed", value: current, unit: "A" },
+    vds: { kind: "measured_result" },
+    qualifiers: vdmosQualifiers({ testMode: "pulse", pulseWidthMaximum, dutyCycleMaximum, pageReference: resistancePageReference }),
+    citation: vdmosCitation(resistancePageReference, "table_row", "RDS(on), static drain-source on-resistance"),
+    evidenceRole: "inclusive_maximum"
+  });
+  return {
+    vgs: vdmosDatum(vgs, "V", `ID = ${current} A`, pageReference, "typical", identity),
+    current: vdmosDatum(current, "A", `VGS = ${vgs} V`, pageReference, "typical", identity),
+    resistance: vdmosDatum(resistance, "ohm", `VGS = ${vgs} V, ID = ${current} A`, resistancePageReference, "maximum", identity)
+  };
+};
+
+const vdmosTransferCurve = ({ curveId, points, vds, pulseWidthMaximum, pageReference, currentPageReference = pageReference }) => {
+  const citationIdentity = vdmosCitation(pageReference, "figure", "Fig. 3, typical transfer characteristics");
+  const conditionIdentity = vdmosIdentity({
+    vgs: { kind: "range", minimum: Math.min(...points.map(([vgs]) => vgs)), maximum: Math.max(...points.map(([vgs]) => vgs)), unit: "V" },
+    current: { kind: "range", minimum: Math.min(...points.map(([, current]) => current)), maximum: Math.max(...points.map(([, current]) => current)), unit: "A" },
+    vds: { kind: "fixed", value: vds, unit: "V" },
+    qualifiers: vdmosQualifiers({ testMode: "pulse", pulseWidthMaximum, pageReference }),
+    citation: citationIdentity,
+    evidenceRole: "curve_cohort"
+  });
+  return {
+    curve_id: curveId,
+    characteristic: "transfer",
+    x_axis: { quantity: "vgs", unit: "V" },
+    y_axis: { quantity: "id", unit: "A" },
+    condition_identity: conditionIdentity,
+    citation_identity: citationIdentity,
+    points: points.map(([vgs, current], pointIndex) => ({
+      x_si: vgs,
+      y_si: current,
+      point_index: pointIndex,
+      evidence_identity: {
+        curve_id: curveId,
+        condition_identity: conditionIdentity,
+        citation_identity: { ...citationIdentity, page_reference: currentPageReference },
+        evidence_role: "curve_point",
+        source_kind: "digitized_typical_curve"
+      }
+    }))
+  };
+};
+
+const vdmosOutputCurves = ({ curveIdPrefix, points, pulseWidthMaximum, pageReference, currentPageReference = pageReference }) => points.map(([vgs, vds, current]) => {
+  const curveId = `${curveIdPrefix}.vgs-${String(vgs).replace(".", "p")}`;
+  const citationIdentity = vdmosCitation(pageReference, "figure", "Fig. 1, typical output characteristics");
+  const conditionIdentity = vdmosIdentity({
+    vgs: { kind: "fixed", value: vgs, unit: "V" },
+    current: { kind: "range", minimum: 0, maximum: current, unit: "A" },
+    vds: { kind: "range", minimum: 0, maximum: vds, unit: "V" },
+    qualifiers: vdmosQualifiers({ testMode: "pulse", pulseWidthMaximum, pageReference }),
+    citation: citationIdentity,
+    evidenceRole: "curve_cohort"
+  });
+  return {
+    curve_id: curveId,
+    characteristic: "output",
+    x_axis: { quantity: "vds", unit: "V" },
+    y_axis: { quantity: "id", unit: "A" },
+    condition_identity: conditionIdentity,
+    citation_identity: citationIdentity,
+    points: [{
+      x_si: vds,
+      y_si: current,
+      point_index: 0,
+      evidence_identity: {
+        curve_id: curveId,
+        condition_identity: conditionIdentity,
+        citation_identity: { ...citationIdentity, page_reference: currentPageReference },
+        evidence_role: "curve_point",
+        source_kind: "digitized_typical_curve"
+      }
+    }]
+  };
+});
+
 export const PARTS = {
   "1N4148": {
     slug: "1N4148",
@@ -237,28 +374,27 @@ export const PARTS = {
       schema_version: "1.0.0",
       extraction_method: "pdftotext plus manual structuring and curve digitization",
       fit_conditions: { temperature: quantity(25, "degC", "Electrical characteristics unless stated", "p. 2 heading") },
-      threshold: {
-        minimum: quantity(1.0, "V", "VDS = VGS, ID = 250 uA", "p. 2 electrical characteristics", "minimum"),
-        maximum: quantity(2.0, "V", "VDS = VGS, ID = 250 uA", "p. 2 electrical characteristics", "maximum")
-      },
-      transfer_points: [
-        { vgs: quantity(2.5, "V", "VDS = 25 V, TJ = 25 degC", "p. 3 fig. 3"), current: quantity(5, "A", "VGS = 2.5 V, VDS = 25 V", "p. 3 fig. 3, digitized", "digitized_typical_curve") },
-        { vgs: quantity(3.0, "V", "VDS = 25 V, TJ = 25 degC", "p. 3 fig. 3"), current: quantity(20, "A", "VGS = 3.0 V, VDS = 25 V", "p. 3 fig. 3, digitized", "digitized_typical_curve") },
-        { vgs: quantity(3.5, "V", "VDS = 25 V, TJ = 25 degC", "p. 3 fig. 3"), current: quantity(40, "A", "VGS = 3.5 V, VDS = 25 V", "p. 3 fig. 3, digitized", "digitized_typical_curve") },
-        { vgs: quantity(4.0, "V", "VDS = 25 V, TJ = 25 degC", "p. 3 fig. 3"), current: quantity(60, "A", "VGS = 4.0 V, VDS = 25 V", "p. 3 fig. 3, digitized", "digitized_typical_curve") },
-        { vgs: quantity(5.0, "V", "VDS = 25 V, TJ = 25 degC", "p. 3 fig. 3"), current: quantity(95, "A", "VGS = 5.0 V, VDS = 25 V", "p. 3 fig. 3, digitized", "digitized_typical_curve") },
-        { vgs: quantity(6.0, "V", "VDS = 25 V, TJ = 25 degC", "p. 3 fig. 3"), current: quantity(125, "A", "VGS = 6.0 V, VDS = 25 V", "p. 3 fig. 3, digitized", "digitized_typical_curve") }
-      ],
+      threshold: vdmosThreshold({ minimum: 1.0, maximum: 2.0 }),
+      transfer_curves: [vdmosTransferCurve({
+        curveId: "irlz44n.transfer.tj25-vds25",
+        vds: 25,
+        pulseWidthMaximum: 20e-6,
+        pageReference: "p. 3 fig. 3",
+        currentPageReference: "p. 3 fig. 3, digitized",
+        points: [[2.5, 5], [3.0, 20], [3.5, 40], [4.0, 60], [5.0, 95], [6.0, 125]]
+      })],
       rdson_points: [
-        { vgs: quantity(10, "V", "ID = 25 A", "p. 2 electrical characteristics"), current: quantity(25, "A", "VGS = 10 V", "p. 2 electrical characteristics"), resistance: quantity(0.022, "ohm", "VGS = 10 V, ID = 25 A", "p. 2 electrical characteristics", "maximum") },
-        { vgs: quantity(5, "V", "ID = 25 A", "p. 2 electrical characteristics"), current: quantity(25, "A", "VGS = 5 V", "p. 2 electrical characteristics"), resistance: quantity(0.025, "ohm", "VGS = 5 V, ID = 25 A", "p. 2 electrical characteristics", "maximum") },
-        { vgs: quantity(4, "V", "ID = 21 A", "p. 2 electrical characteristics"), current: quantity(21, "A", "VGS = 4 V", "p. 2 electrical characteristics"), resistance: quantity(0.035, "ohm", "VGS = 4 V, ID = 21 A", "p. 2 electrical characteristics", "maximum") }
+        vdmosRdsonPoint({ vgs: 10, current: 25, resistance: 0.022, pulseWidthMaximum: 300e-6, dutyCycleMaximum: 0.02, pageReference: "p. 2 electrical characteristics" }),
+        vdmosRdsonPoint({ vgs: 5, current: 25, resistance: 0.025, pulseWidthMaximum: 300e-6, dutyCycleMaximum: 0.02, pageReference: "p. 2 electrical characteristics" }),
+        vdmosRdsonPoint({ vgs: 4, current: 21, resistance: 0.035, pulseWidthMaximum: 300e-6, dutyCycleMaximum: 0.02, pageReference: "p. 2 electrical characteristics" })
       ],
-      output_points: [
-        { vgs: quantity(2.5, "V", "TJ = 25 degC", "p. 3 fig. 1"), vds: quantity(10, "V", "VGS = 2.5 V", "p. 3 fig. 1"), current: quantity(5, "A", "VGS = 2.5 V, VDS = 10 V", "p. 3 fig. 1, digitized", "digitized_typical_curve") },
-        { vgs: quantity(3.0, "V", "TJ = 25 degC", "p. 3 fig. 1"), vds: quantity(10, "V", "VGS = 3 V", "p. 3 fig. 1"), current: quantity(20, "A", "VGS = 3 V, VDS = 10 V", "p. 3 fig. 1, digitized", "digitized_typical_curve") },
-        { vgs: quantity(4.0, "V", "TJ = 25 degC", "p. 3 fig. 1"), vds: quantity(10, "V", "VGS = 4 V", "p. 3 fig. 1"), current: quantity(60, "A", "VGS = 4 V, VDS = 10 V", "p. 3 fig. 1, digitized", "digitized_typical_curve") }
-      ],
+      output_curves: vdmosOutputCurves({
+        curveIdPrefix: "irlz44n.output.tj25",
+        pulseWidthMaximum: 20e-6,
+        pageReference: "p. 3 fig. 1",
+        currentPageReference: "p. 3 fig. 1, digitized",
+        points: [[2.5, 10, 5], [3.0, 10, 20], [4.0, 10, 60]]
+      }),
       capacitances: {
         ciss: quantity(1700e-12, "F", "VDS = 25 V, VGS = 0, f = 1 MHz", "p. 2 electrical characteristics", "typical"),
         coss: quantity(400e-12, "F", "VDS = 25 V, VGS = 0, f = 1 MHz", "p. 2 electrical characteristics", "typical"),
@@ -2649,10 +2785,31 @@ const p5Vdmos = ({ mpn, sourceUrl, revision, rdson, ratedCurrent, transfer, ciss
   facts: {
     schema_version: "1.0.0", extraction_method: "pdftotext -layout plus manual typical-curve digitization and MIN/TYP/MAX table transcription",
     fit_conditions: { temperature: quantity(25, "degC", "Electrical characteristics unless stated", "p. 2 heading", "typical") },
-    threshold: { minimum: quantity(2, "V", "VDS = VGS, ID = 250 uA", "p. 2 electrical characteristics", "minimum"), maximum: quantity(4, "V", "VDS = VGS, ID = 250 uA", "p. 2 electrical characteristics", "maximum") },
-    transfer_points: transfer.map(([vgs, current]) => ({ vgs: quantity(vgs, "V", "VDS = 25 V, TJ = 25 degC", "p. 3 fig. 3", "typical"), current: quantity(current, "A", `VGS = ${vgs} V, VDS = 25 V`, "p. 3 fig. 3, manually digitized 25 degC curve", "digitized_typical_curve") })),
-    rdson_points: [{ vgs: quantity(10, "V", `ID = ${ratedCurrent} A`, "p. 2 electrical characteristics", "typical"), current: quantity(ratedCurrent, "A", "VGS = 10 V", "p. 2 electrical characteristics", "typical"), resistance: quantity(rdson, "ohm", `VGS = 10 V, ID = ${ratedCurrent} A`, "p. 2 RDS(on) MAX", "maximum") }],
-    output_points: transfer.slice(0, 5).map(([vgs, current]) => ({ vgs: quantity(vgs, "V", "TJ = 25 degC", "p. 3 fig. 1", "typical"), vds: quantity(10, "V", `VGS = ${vgs} V`, "p. 3 fig. 1", "typical"), current: quantity(current, "A", `VGS = ${vgs} V, VDS = 10 V`, "p. 3 fig. 1, manually digitized 25 degC curve", "digitized_typical_curve") })),
+    threshold: vdmosThreshold({ minimum: 2, maximum: 4 }),
+    transfer_curves: [vdmosTransferCurve({
+      curveId: `${mpn.toLowerCase()}.transfer.tj25-vds25`,
+      vds: 25,
+      pulseWidthMaximum: 20e-6,
+      pageReference: "p. 3 fig. 3",
+      currentPageReference: "p. 3 fig. 3, manually digitized 25 degC curve",
+      points: transfer
+    })],
+    rdson_points: [vdmosRdsonPoint({
+      vgs: 10,
+      current: ratedCurrent,
+      resistance: rdson,
+      pulseWidthMaximum: 400e-6,
+      dutyCycleMaximum: 0.02,
+      pageReference: "p. 2 electrical characteristics",
+      resistancePageReference: "p. 2 RDS(on) MAX"
+    })],
+    output_curves: vdmosOutputCurves({
+      curveIdPrefix: `${mpn.toLowerCase()}.output.tj25`,
+      pulseWidthMaximum: 20e-6,
+      pageReference: "p. 3 fig. 1",
+      currentPageReference: "p. 3 fig. 1, manually digitized 25 degC curve",
+      points: transfer.slice(0, 5).map(([vgs, current]) => [vgs, 10, current])
+    }),
     capacitances: {
       ciss: quantity(ciss, "F", "VDS = 25 V, VGS = 0, f = 1 MHz", "p. 2 electrical characteristics", "typical"), coss: quantity(coss, "F", "VDS = 25 V, VGS = 0, f = 1 MHz", "p. 2 electrical characteristics", "typical"), crss: quantity(crss, "F", "VDS = 25 V, VGS = 0, f = 1 MHz", "p. 2 electrical characteristics", "typical"), vds_test: quantity(25, "V", "capacitance test bias", "p. 2 electrical characteristics", "typical"),
       crss_curve: crssCurve.map(([vds, value]) => ({ vds: quantity(vds, "V", "VGS = 0, f = 1 MHz", "p. 4 fig. 5", "typical"), crss: quantity(value, "F", `VDS = ${vds} V`, "p. 4 fig. 5, manually digitized", "digitized_typical_curve") }))

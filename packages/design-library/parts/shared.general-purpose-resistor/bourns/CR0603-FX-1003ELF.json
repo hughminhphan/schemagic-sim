@@ -1,0 +1,310 @@
+{
+  "format": "schemagic-design-profile",
+  "schemaVersion": "1.0.0",
+  "partClass": "shared.general-purpose-resistor",
+  "part": {
+    "manufacturerId": "bourns",
+    "manufacturerPartNumber": "CR0603-FX-1003ELF"
+  },
+  "factsSchemaVersion": "2.0.0",
+  "commonFacts": {
+    "packageName": {
+      "value": "CR0603 thick-film chip resistor, 5,000-piece paper tape on 7-inch plastic reel, tin-plated termination",
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "bourns-cr-series-datasheet",
+          "locator": "page 5, How to Order: CR = chip resistor, 0603 = 0603 size, F = ±1 %, X = ±100 ppm/°C, 1003 is the 1 % four-digit resistance code, E = paper tape (5,000 pcs.) on 7-inch plastic reel for CR0603, and LF = tin-plated (RoHS compliant)",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T06:50:27Z",
+          "contentHash": "sha256:97eac911e95cfefa618eedfbd990c5f2cd0104a1528ddb27eb46fbc79ac919bb",
+          "url": "https://www.bourns.com/docs/product-datasheets/CRxxxxx.pdf",
+          "revision": "REV. 03/21",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "The complete official ordering-code grammar closes the exact CR0603-FX-1003ELF identity and packaging."
+    },
+    "boardArea": {
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "Facts schema 2.0.0 represents mounted board area only through facts.mountedGeometry."
+    },
+    "maximumHeight": {
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "Facts schema 2.0.0 represents mounted maximum height only through facts.mountedGeometry."
+    }
+  },
+  "facts": {
+    "resistance": {
+      "value": {
+        "value": 100000,
+        "unit": "ohm",
+        "displayUnit": "100 kΩ"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "bourns-cr-series-datasheet",
+          "locator": "page 5, How to Order, Resistance Value for 1 % tolerance: at or above 100 Ω, the first three digits are significant and the fourth digit is the number of zeros; exact MPN field 1003 therefore decodes to 100,000 Ω",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T06:50:27Z",
+          "contentHash": "sha256:97eac911e95cfefa618eedfbd990c5f2cd0104a1528ddb27eb46fbc79ac919bb",
+          "url": "https://www.bourns.com/docs/product-datasheets/CRxxxxx.pdf",
+          "revision": "REV. 03/21",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "The exact MPN resistance field 1003 decodes to 100 kΩ."
+    },
+    "tolerance": {
+      "value": {
+        "value": 0.01,
+        "unit": "1",
+        "displayUnit": "±1 %"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "bourns-cr-series-datasheet",
+          "locator": "page 5, How to Order, Resistance Tolerance: F = ±1 %; exact MPN tolerance field F",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T06:50:27Z",
+          "contentHash": "sha256:97eac911e95cfefa618eedfbd990c5f2cd0104a1528ddb27eb46fbc79ac919bb",
+          "url": "https://www.bourns.com/docs/product-datasheets/CRxxxxx.pdf",
+          "revision": "REV. 03/21",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "The exact MPN tolerance field F specifies ±1 %."
+    },
+    "temperatureCoefficient": {
+      "value": {
+        "value": 0.0001,
+        "unit": "1/K",
+        "displayUnit": "±100 ppm/K"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "bourns-cr-series-datasheet",
+          "locator": "page 5, How to Order, TCR: X = ±100 ppm/°C; exact MPN TCR field X; page 1, Electrical Characteristics, CR0603 ±1 % row confirms ±100 ppm/°C for 10 Ω ≤ R ≤ 1 MΩ, which includes 100 kΩ",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T06:50:27Z",
+          "contentHash": "sha256:97eac911e95cfefa618eedfbd990c5f2cd0104a1528ddb27eb46fbc79ac919bb",
+          "url": "https://www.bourns.com/docs/product-datasheets/CRxxxxx.pdf",
+          "revision": "REV. 03/21",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "The exact MPN TCR field X specifies a maximum absolute temperature coefficient of 100 ppm/K; the stored positive value is the magnitude."
+    },
+    "continuousPower": {
+      "value": {
+        "value": 0.1,
+        "unit": "W",
+        "displayUnit": "100 mW"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "bourns-cr-series-datasheet",
+          "locator": "page 1, Electrical Characteristics, CR0603 column: Power Rating @ 70 °C = 1/10 W; page 3, Derating Curve: the CR0402 through CR2512 100 % power-ratio plateau includes 25 °C through 70 °C ambient",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T06:50:27Z",
+          "contentHash": "sha256:97eac911e95cfefa618eedfbd990c5f2cd0104a1528ddb27eb46fbc79ac919bb",
+          "url": "https://www.bourns.com/docs/product-datasheets/CRxxxxx.pdf",
+          "revision": "REV. 03/21",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [
+        {
+          "parameterId": "ambientTemperature",
+          "minimum": {
+            "value": 298.15,
+            "unit": "K",
+            "displayUnit": "25 °C"
+          },
+          "maximum": {
+            "value": 343.15,
+            "unit": "K",
+            "displayUnit": "70 °C"
+          },
+          "evidence": [
+            {
+              "sourceId": "bourns-cr-series-datasheet",
+              "locator": "page 1, Electrical Characteristics, CR0603 column: Power Rating @ 70 °C = 1/10 W; page 3, Derating Curve: the CR0402 through CR2512 100 % power-ratio segment is flat from -55 °C through 70 °C ambient, conservatively scoped here to 25 °C through 70 °C",
+              "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+              "kind": "manufacturer_datasheet",
+              "retrievedAt": "2026-08-24T06:50:27Z",
+              "contentHash": "sha256:97eac911e95cfefa618eedfbd990c5f2cd0104a1528ddb27eb46fbc79ac919bb",
+              "url": "https://www.bourns.com/docs/product-datasheets/CRxxxxx.pdf",
+              "revision": "REV. 03/21",
+              "publicationBasis": "public_facts"
+            }
+          ]
+        }
+      ],
+      "explanation": "Conservative 0.10 W interval from 25 °C through 70 °C ambient, a subset of the manufacturer's flat 100 % power-ratio derating segment; no continuous power beyond 70 °C is claimed."
+    },
+    "pulsePower": {
+      "value": null,
+      "state": "unknown",
+      "evidence": [],
+      "validFor": [],
+      "explanation": "The datasheet supplies overload qualification conditions but no directly usable exact-MPN pulse-power rating, so no pulse capability is claimed."
+    },
+    "workingVoltage": {
+      "value": {
+        "value": 75,
+        "unit": "V",
+        "displayUnit": "75 V"
+      },
+      "state": "reviewed",
+      "evidence": [
+        {
+          "sourceId": "bourns-cr-series-datasheet",
+          "locator": "page 1, Electrical Characteristics, CR0603 column: Max. Working Voltage = 75 V",
+          "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+          "kind": "manufacturer_datasheet",
+          "retrievedAt": "2026-08-24T06:50:27Z",
+          "contentHash": "sha256:97eac911e95cfefa618eedfbd990c5f2cd0104a1528ddb27eb46fbc79ac919bb",
+          "url": "https://www.bourns.com/docs/product-datasheets/CRxxxxx.pdf",
+          "revision": "REV. 03/21",
+          "publicationBasis": "public_facts"
+        }
+      ],
+      "validFor": [],
+      "explanation": "The manufacturer-stated maximum working voltage for CR0603 is 75 V; applied voltage also remains constrained by rated power."
+    },
+    "mountedGeometry": {
+      "boardArea": {
+        "value": {
+          "area": {
+            "value": 0.0000022,
+            "unit": "m2",
+            "displayUnit": "2.20 mm²"
+          },
+          "basis": "manufacturer_recommended_land_pattern_bounding_box",
+          "calculation": "maximum_x_span_times_maximum_y_span",
+          "sourceDimensions": [
+            {
+              "axis": "x",
+              "dimensionId": "recommended-total-span-b",
+              "multiplier": 1,
+              "maximum": {
+                "value": 0.0022,
+                "unit": "m",
+                "displayUnit": "2.20 mm"
+              },
+              "evidence": [
+                {
+                  "sourceId": "bourns-cr-series-datasheet",
+                  "locator": "page 2, Recommended Pad Layout diagram and CR0603 row: maximum overall horizontal span b = 2.20 mm",
+                  "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+                  "kind": "manufacturer_datasheet",
+                  "retrievedAt": "2026-08-24T06:50:27Z",
+                  "contentHash": "sha256:97eac911e95cfefa618eedfbd990c5f2cd0104a1528ddb27eb46fbc79ac919bb",
+                  "url": "https://www.bourns.com/docs/product-datasheets/CRxxxxx.pdf",
+                  "revision": "REV. 03/21",
+                  "publicationBasis": "public_facts"
+                }
+              ]
+            },
+            {
+              "axis": "y",
+              "dimensionId": "recommended-pad-width-c",
+              "multiplier": 1,
+              "maximum": {
+                "value": 0.001,
+                "unit": "m",
+                "displayUnit": "1.00 mm"
+              },
+              "evidence": [
+                {
+                  "sourceId": "bourns-cr-series-datasheet",
+                  "locator": "page 2, Recommended Pad Layout diagram and CR0603 row: maximum pad width c = 1.00 mm",
+                  "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+                  "kind": "manufacturer_datasheet",
+                  "retrievedAt": "2026-08-24T06:50:27Z",
+                  "contentHash": "sha256:97eac911e95cfefa618eedfbd990c5f2cd0104a1528ddb27eb46fbc79ac919bb",
+                  "url": "https://www.bourns.com/docs/product-datasheets/CRxxxxx.pdf",
+                  "revision": "REV. 03/21",
+                  "publicationBasis": "public_facts"
+                }
+              ]
+            }
+          ]
+        },
+        "state": "calculated",
+        "evidence": [
+          {
+            "sourceId": "bourns-cr-series-datasheet",
+            "locator": "page 2, Recommended Pad Layout diagram and CR0603 row: maximum overall horizontal span b = 2.20 mm",
+            "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+            "kind": "manufacturer_datasheet",
+            "retrievedAt": "2026-08-24T06:50:27Z",
+            "contentHash": "sha256:97eac911e95cfefa618eedfbd990c5f2cd0104a1528ddb27eb46fbc79ac919bb",
+            "url": "https://www.bourns.com/docs/product-datasheets/CRxxxxx.pdf",
+            "revision": "REV. 03/21",
+            "publicationBasis": "public_facts"
+          },
+          {
+            "sourceId": "bourns-cr-series-datasheet",
+            "locator": "page 2, Recommended Pad Layout diagram and CR0603 row: maximum pad width c = 1.00 mm",
+            "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+            "kind": "manufacturer_datasheet",
+            "retrievedAt": "2026-08-24T06:50:27Z",
+            "contentHash": "sha256:97eac911e95cfefa618eedfbd990c5f2cd0104a1528ddb27eb46fbc79ac919bb",
+            "url": "https://www.bourns.com/docs/product-datasheets/CRxxxxx.pdf",
+            "revision": "REV. 03/21",
+            "publicationBasis": "public_facts"
+          }
+        ],
+        "validFor": [],
+        "explanation": "Conservative rectangular manufacturer-recommended land-pattern envelope: maximum total span b 2.20 mm × maximum pad width c 1.00 mm = 2.20 mm²."
+      },
+      "maximumHeight": {
+        "value": {
+          "height": {
+            "value": 0.00055,
+            "unit": "m",
+            "displayUnit": "0.55 mm"
+          },
+          "basis": "manufacturer_package_maximum_in_surface_mount_orientation"
+        },
+        "state": "reviewed",
+        "evidence": [
+          {
+            "sourceId": "bourns-cr-series-datasheet",
+            "locator": "page 2, Product Dimensions, CR0603 row: package thickness T = 0.45 ± 0.10 mm, giving maximum 0.55 mm in the illustrated surface-mount orientation",
+            "licenseNote": "Manufacturer-published factual data referenced by URL; the source document is not redistributed.",
+            "kind": "manufacturer_datasheet",
+            "retrievedAt": "2026-08-24T06:50:27Z",
+            "contentHash": "sha256:97eac911e95cfefa618eedfbd990c5f2cd0104a1528ddb27eb46fbc79ac919bb",
+            "url": "https://www.bourns.com/docs/product-datasheets/CRxxxxx.pdf",
+            "revision": "REV. 03/21",
+            "publicationBasis": "public_facts"
+          }
+        ],
+        "validFor": [],
+        "explanation": "Maximum body height in the manufacturer-defined surface-mount orientation: 0.45 mm nominal plus 0.10 mm upper tolerance = 0.55 mm."
+      }
+    }
+  }
+}

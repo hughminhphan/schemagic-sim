@@ -1,0 +1,232 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3",
+        "p. 4",
+        "p. 5",
+        "p. 6",
+        "p. 7",
+        "p. 8"
+      ],
+      "revision": "revision not stated in source",
+      "title": "RB168MM-40 Data Sheet"
+    },
+    "extraction_notes": [
+      "No curve points were digitized."
+    ],
+    "family": "diode",
+    "manufacturer": "ROHM Semicon",
+    "mpn": "RB168MM-40TR",
+    "omission_reason": "Table-only extraction.",
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": null,
+      "breakdown_voltage": null,
+      "capacitance": null,
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "Tc = 25 C",
+            "page_reference": "p. 1 electrical characteristics",
+            "source_kind": "typical",
+            "unit": "A",
+            "value": 1
+          },
+          "voltage": {
+            "conditions": "IF = 1 A, Tc = 25 C",
+            "page_reference": "p. 1 electrical characteristics",
+            "source_kind": "typical",
+            "unit": "V",
+            "value": 0.6
+          }
+        }
+      ],
+      "reverse_current": {
+        "conditions": "VR = 40 V, Tc = 25 C",
+        "page_reference": "p. 1 electrical characteristics",
+        "source_kind": "typical",
+        "unit": "A",
+        "value": 5e-8
+      },
+      "reverse_recovery": null,
+      "variant": "schottky"
+    },
+    "usable_curves": false
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "Forward Voltage (Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "600mV@1A",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Voltage - Forward(Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "600mV@1A",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "RB168MM-40TR",
+    "manufacturer": "ROHM Semicon",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8588912978515406848",
+    "revision": "revision not stated in source",
+    "sha256": "1dcb707c08149815679a1422e235f229abc32e22c4845fe3e21e1db86487d668",
+    "accessed_date": "2026-08-23",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4",
+      "p. 5",
+      "p. 6",
+      "p. 7",
+      "p. 8"
+    ],
+    "placeholder": false
+  },
+  "evidence_contract_version": "1.0.0",
+  "fit_points": [
+    {
+      "current": {
+        "conditions": "Tc = 25 C",
+        "page_reference": "p. 1 electrical characteristics",
+        "source_kind": "typical",
+        "unit": "A",
+        "value": 1
+      },
+      "voltage": {
+        "conditions": "IF = 1 A, Tc = 25 C",
+        "page_reference": "p. 1 electrical characteristics",
+        "source_kind": "typical",
+        "unit": "V",
+        "value": 0.6
+      }
+    }
+  ],
+  "forward_voltage_points": [
+    {
+      "current": {
+        "conditions": "Tc = 25 C",
+        "page_reference": "p. 1 electrical characteristics",
+        "source_kind": "typical",
+        "unit": "A",
+        "value": 1,
+        "quantity": "forward_current",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "junction",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 1
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 0.6
+            }
+          },
+          "test_mode": {
+            "kind": "not_stated"
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "Tc = 25 C"
+            }
+          ],
+          "condition_id": "sha256:9022d1550c91696f5906fef1da1f6884202ed0e84c033dd0af2ff885b0679fc2"
+        },
+        "citation_identity": {
+          "source_sha256": "1dcb707c08149815679a1422e235f229abc32e22c4845fe3e21e1db86487d668",
+          "source_revision": "revision not stated in source",
+          "page": 1,
+          "table": "electrical characteristics",
+          "row": "Forward Current",
+          "citation_id": "sha256:8ce2a47bddcbc41cc7db277082a0550f38258696280259643dd1780680edb38d"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:a9208de51365061023d2b080154055c125ffdfd20aaf1490fd9db466cb70ca78",
+          "cohort_id": "sha256:db9d0159f917d9bad9abfda439044f24f7227e51c74c81cdc7c0f0ec3d615a85",
+          "role": "typical",
+          "condition_id": "sha256:9022d1550c91696f5906fef1da1f6884202ed0e84c033dd0af2ff885b0679fc2",
+          "citation_id": "sha256:8ce2a47bddcbc41cc7db277082a0550f38258696280259643dd1780680edb38d"
+        }
+      },
+      "voltage": {
+        "conditions": "IF = 1 A, Tc = 25 C",
+        "page_reference": "p. 1 electrical characteristics",
+        "source_kind": "typical",
+        "unit": "V",
+        "value": 0.6,
+        "quantity": "forward_voltage",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "junction",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 1
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 0.6
+            }
+          },
+          "test_mode": {
+            "kind": "not_stated"
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "IF = 1 A, Tc = 25 C"
+            }
+          ],
+          "condition_id": "sha256:9b389cd7b14e810e5a4c12adf30702da28ba05e189243a10b60ea4e3f1e80945"
+        },
+        "citation_identity": {
+          "source_sha256": "1dcb707c08149815679a1422e235f229abc32e22c4845fe3e21e1db86487d668",
+          "source_revision": "revision not stated in source",
+          "page": 1,
+          "table": "electrical characteristics",
+          "row": "Forward Voltage",
+          "citation_id": "sha256:88ed11b40f8315175bb8114a9764bcfb1a73d1d87a21850be395d37db07f151b"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:5d926789596890595a026900a82e70c23fbec94026443c40fa0e3b1b26e1e98f",
+          "cohort_id": "sha256:0d5537db67797d8d1f291f82734b4e8393c9eae636f28c8b0abae7fecf7679ab",
+          "role": "typical",
+          "condition_id": "sha256:9b389cd7b14e810e5a4c12adf30702da28ba05e189243a10b60ea4e3f1e80945",
+          "citation_id": "sha256:88ed11b40f8315175bb8114a9764bcfb1a73d1d87a21850be395d37db07f151b"
+        }
+      }
+    }
+  ],
+  "curves": [],
+  "electrical_limits": {},
+  "derived_model_inputs": {}
+}

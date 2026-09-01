@@ -1,0 +1,114 @@
+{
+  "schema_version": "1.0.0",
+  "fidelity_tier": "F1",
+  "evidence_mode": "bound-constrained",
+  "parameters": {
+    "IS": 1.6063731464952553e-23,
+    "N": 1.8,
+    "RS": 0.0001
+  },
+  "parameter_metadata": {
+    "IS": {
+      "status": "derived from cited maximum bound",
+      "evidence_mode": "bound-constrained"
+    },
+    "N": {
+      "status": "declared fixed F1 policy constant",
+      "evidence_mode": "bound-constrained"
+    },
+    "RS": {
+      "status": "declared fixed F1 policy constant",
+      "evidence_mode": "bound-constrained"
+    }
+  },
+  "calibration": {
+    "evidence_mode": "bound-constrained",
+    "observations": [],
+    "residual_target_count": 0,
+    "constraints": [
+      {
+        "kind": "forward_voltage_maximum",
+        "inclusive": true,
+        "source": {
+          "voltage": "p. 2 electrical characteristics",
+          "current": "p. 2 electrical characteristics",
+          "conditions": "IF = 1.0 A, TJ = 25 C",
+          "source_kind": "maximum"
+        },
+        "maximum_voltage_v": 2.5,
+        "current_a": 1,
+        "quantity": "forward voltage",
+        "gate_quantity": "forward_voltage",
+        "datasheet_value": 2.5,
+        "unit": "V",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "junction",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 1
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 2.5
+            }
+          },
+          "test_mode": {
+            "kind": "not_stated"
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "IF = 1.0 A, TJ = 25 C"
+            }
+          ],
+          "condition_id": "sha256:9302b7ad2d2f4909ea430f39e3c8b6c62e7e8061050f0ca272124852793023b7"
+        },
+        "citation_identity": {
+          "source_sha256": "f8971841392ed00dbe533ce4086bdd30bb14c49b1cbef17463e14cacc71ad6ff",
+          "source_revision": "revision not stated in source",
+          "page": 2,
+          "table": "electrical characteristics",
+          "row": "Forward Voltage",
+          "citation_id": "sha256:916445cae5e9a1eaee70990dd58bfd01b3f62281f20f8e47282390fae50e300c"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:e281ce9c6fee41820d5a95260ce3846186b25944b513f49f31c1cffa27af8a4e",
+          "cohort_id": "sha256:14b660ad3f4c532e21e5963299ae2acde5086399f02f9200188c2acc91a3de8d",
+          "role": "maximum",
+          "condition_id": "sha256:9302b7ad2d2f4909ea430f39e3c8b6c62e7e8061050f0ca272124852793023b7",
+          "citation_id": "sha256:916445cae5e9a1eaee70990dd58bfd01b3f62281f20f8e47282390fae50e300c"
+        },
+        "evidence_role": "inequality_constraint"
+      }
+    ],
+    "seeds": [
+      {
+        "parameter_coordinate": "IS",
+        "evidence_role": "maximum_bound_interior_feasibility_seed_only",
+        "value": 1.6063731464952553e-23,
+        "unit": "A",
+        "policy": "derive from 0.95 times cited maximum current and 0.97 times cited maximum voltage",
+        "current_factor": 0.95,
+        "voltage_factor": 0.97
+      }
+    ]
+  },
+  "fitter": "cited-maximum diode F1 interior-feasibility projection",
+  "optimizer": null,
+  "held_defaults": [],
+  "curves_used": [],
+  "evidence_contract_version": "1.0.0",
+  "evidence_curves": [],
+  "curves_rejected": [],
+  "residuals": [],
+  "rms_relative_error": null,
+  "worst_relative_error": null
+}

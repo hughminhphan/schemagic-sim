@@ -1,4 +1,4 @@
-"""Local-only LCSC catalog feeder for the OpenCircuit model factory."""
+"""Local-only LCSC catalog feeder for the scheMAGIC Model Factory."""
 
 from __future__ import annotations
 
@@ -23,7 +23,7 @@ from typing import Any, Callable, Iterable, Mapping, Sequence
 
 DATA_URL = "https://yaqwsx.github.io/jlcparts/data"
 SCHEMA_VERSION = "1.0.0"
-USER_AGENT = "OpenCircuit-part-feeder/1.0 (+https://github.com/yaqwsx/jlcparts)"
+USER_AGENT = "scheMAGIC-Part-Feeder/1.0 (+https://github.com/yaqwsx/jlcparts)"
 REQUIRED_TABLES = {"jlc_components", "lcsc_components", "meta"}
 
 

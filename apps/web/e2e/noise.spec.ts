@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 const resistorDividerNoise = {
   format: "opencircuit-circuit",
-  version: 1,
+  version: 3,
   meta: { title: "Resistor divider noise" },
   components: [
     { id: "c1", type: "vsource", value: 1, pos: [8, 12], rot: 0, mirror: false, label: { text: "VIN", offset: [-4, 0] } },
@@ -15,7 +15,16 @@ const resistorDividerNoise = {
     { id: "w1", points: [[8, 10], [12, 10]] },
     { id: "w2", points: [[16, 10], [18, 10], [18, 12]] },
   ],
-  probes: [{ id: "p1", kind: "voltage", target: { wire: "w2" }, color: "#3FD983" }],
+  probes: [{
+    id: "p1",
+    expressionVersion: 1,
+    expression: {
+      kind: "voltage",
+      positive: { kind: "schematic-wire", wireId: "w2" },
+      negative: { kind: "runtime-node", name: "0" },
+    },
+    color: "#3FD983",
+  }],
   sim: {
     mode: "noise",
     noise: {

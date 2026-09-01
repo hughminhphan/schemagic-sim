@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.schemagic.design/design-library/v1/catalog-release.v1.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format",
+    "schemaVersion",
+    "version",
+    "releasedAt",
+    "manufacturerRegistryContentHash",
+    "admissionContentHash",
+    "profiles",
+    "contentHash"
+  ],
+  "properties": {
+    "format": {
+      "const": "schemagic-design-catalog-release"
+    },
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "version": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": ".*\\S.*"
+    },
+    "releasedAt": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^\\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,9})?(?:Z|[+-](?:[01]\\d|2[0-3]):[0-5]\\d)$"
+    },
+    "manufacturerRegistryContentHash": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "admissionContentHash": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "profiles": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "profileId",
+          "profilePath",
+          "partClass",
+          "part",
+          "profileContentHash"
+        ],
+        "properties": {
+          "profileId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "profilePath": {
+            "type": "string",
+            "pattern": "^packages/design-library/parts/"
+          },
+          "partClass": {
+            "enum": [
+              "motor.integrated-h-bridge",
+              "motor.full-bridge-gate-driver",
+              "power.integrated-synchronous-buck-regulator",
+              "power.external-fet-synchronous-buck-controller",
+              "shared.n-channel-power-mosfet",
+              "shared.current-sense-resistor",
+              "shared.general-purpose-resistor",
+              "shared.switching-diode",
+              "shared.mlcc-capacitor",
+              "shared.bulk-capacitor",
+              "motor.supply-tvs-diode",
+              "power.power-inductor"
+            ]
+          },
+          "part": {
+            "$ref": "profile-envelope.v1.schema.json#/$defs/part"
+          },
+          "profileContentHash": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$"
+          }
+        }
+      }
+    },
+    "contentHash": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    }
+  }
+}

@@ -1,18 +1,37 @@
 import {
   derivePinMappingSpec,
-  emitNamespacedLibrary,
+  importedBaseType,
+  importedPartFromModel,
+  importedPartFromSubckt,
+  materializeImportedModelLibrary,
+  materializeImportedModelPart,
   parseSpiceLibrary,
   sanitize,
   validatePinMapping,
   type ImportedLibrary,
   type ImportedModel,
   type ImportedSubckt,
+  type MaterializedImportedModelPart,
   type PinMappingSpec,
   type SuggestedSymbol,
 } from "@opencircuit/model-import";
-import { generateNetlist, partByType, type AnalysisMode, type CircuitComponent, type CircuitDocument, type ComponentType, type GeneratedNetlist, type NetlistLine } from "@opencircuit/circuit-schema";
+import {
+  IMPORTED_MODEL_LIBRARY_FORMAT,
+  IMPORTED_MODEL_LIBRARY_VERSION,
+  generateNetlist,
+  normalizedImportedModelLibrary,
+  partByType,
+  type AnalysisMode,
+  type CircuitComponent,
+  type CircuitDocument,
+  type ComponentType,
+  type GeneratedNetlist,
+  type ImportedModelPart,
+  type ImportedPinMapping,
+  type NetlistLine,
+} from "@opencircuit/circuit-schema";
 
-export interface ImportedPartDefinition {
+export interface ImportedPartDefinition extends MaterializedImportedModelPart {
   id: string;
   name: string;
   sourceName: string;
@@ -29,19 +48,70 @@ export interface ImportedPartDefinition {
   blockedItems: string[];
 }
 
-export interface CircuitWithImports extends CircuitDocument {
-  importedParts?: ImportedPartDefinition[];
+export interface ImportedModelRuntimeIssue {
+  code: "UNSUPPORTED_ANALYSIS";
+  componentId: string;
+  partId: string;
+  analysisMode: AnalysisMode;
+  message: string;
+}
+
+export class ImportedModelRuntimeError extends Error {
+  constructor(readonly issue: ImportedModelRuntimeIssue) {
+    super(issue.message);
+    this.name = "ImportedModelRuntimeError";
+  }
 }
 
 const esc = (value: string) => value.replace(/[&<>"']/g, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[character]!);
 const safeId = (value: string) => value.replace(/[^a-z0-9]+/gi, "_").replace(/^_+|_+$/g, "").toLowerCase() || "model";
 
-export function importedParts(document: CircuitDocument): ImportedPartDefinition[] {
-  return ((document as CircuitWithImports).importedParts ?? []).map((part) => structuredClone(part));
+const semanticPinLabels: Partial<Record<ComponentType, readonly string[]>> = {
+  diode: ["A", "K"], led: ["A", "K"], bjt_npn: ["C", "B", "E"], bjt_pnp: ["C", "B", "E"],
+  nmos: ["D", "G", "S"], pmos: ["D", "G", "S"], opamp_ideal: ["IN+", "IN-", "OUT"],
+};
+
+function definitionView(materialized: MaterializedImportedModelPart): ImportedPartDefinition {
+  const { record } = materialized;
+  const labels = semanticPinLabels[record.baseType] ?? partByType(record.baseType).pins.map((_, index) => `PIN${index + 1}`);
+  return {
+    ...materialized,
+    id: record.id,
+    name: record.definition.name,
+    sourceName: record.sourceName,
+    sourceText: record.sourceText,
+    definitionKind: record.definition.kind,
+    baseType: record.baseType,
+    userMapping: Object.fromEntries(record.pinMapping.map((mapping) => [labels[mapping.symbolPinIndex] ?? `PIN${mapping.symbolPinIndex + 1}`, mapping.modelPinIndex])),
+    blockedItems: [],
+  };
 }
 
-export function setImportedParts(document: CircuitDocument, parts: ImportedPartDefinition[]): void {
-  (document as CircuitWithImports).importedParts = parts.map((part) => structuredClone(part));
+export function importedModelRecords(document: CircuitDocument): ImportedModelPart[] {
+  return document.modelImports?.parts.map((part) => structuredClone(part)) ?? [];
+}
+
+export function importedParts(document: CircuitDocument): ImportedPartDefinition[] {
+  return materializeImportedModelLibrary(document.modelImports).map(definitionView);
+}
+
+export function setImportedModelRecords(document: CircuitDocument, records: readonly ImportedModelPart[]): void {
+  if (records.length === 0) {
+    delete document.modelImports;
+    return;
+  }
+  const library = normalizedImportedModelLibrary({
+    format: IMPORTED_MODEL_LIBRARY_FORMAT,
+    version: IMPORTED_MODEL_LIBRARY_VERSION,
+    parts: records.map((record) => structuredClone(record)),
+  });
+  materializeImportedModelLibrary(library);
+  document.modelImports = library;
+}
+
+/** Compatibility adapter for the current palette; only each definition's raw, typed record is persisted. */
+export function setImportedParts(document: CircuitDocument, parts: readonly ImportedPartDefinition[]): void {
+  setImportedModelRecords(document, parts.map((part) => part.record));
 }
 
 function modelSymbol(model: ImportedModel): SuggestedSymbol {
@@ -52,87 +122,51 @@ function modelSymbol(model: ImportedModel): SuggestedSymbol {
   return "generic";
 }
 
-function baseType(symbol: SuggestedSymbol, source?: ImportedModel): ComponentType {
-  if (symbol === "diode" || symbol === "two-terminal") return "diode";
-  if (symbol === "bjt") return source?.type.toLowerCase().includes("pnp") ? "bjt_pnp" : "bjt_npn";
-  if (symbol === "mosfet") return source?.type.toLowerCase().includes("pmos") ? "pmos" : "nmos";
-  if (symbol === "opamp") return "opamp_ideal";
-  if (symbol === "regulator" || symbol === "three-terminal") return "bjt_npn";
-  return "resistor";
-}
-
 function symbolPreview(symbol: SuggestedSymbol): string {
   const label = symbol === "opamp" ? "OP" : symbol === "mosfet" ? "MOS" : symbol === "bjt" ? "BJT" : symbol === "diode" ? "D" : symbol === "regulator" ? "REG" : "SUB";
   return `<svg class="import-symbol-preview" viewBox="0 0 80 48" role="img" aria-label="Suggested ${esc(symbol)} symbol"><rect x="8" y="8" width="64" height="32"/><path d="M0 24h8m64 0h8"/><text x="40" y="28" text-anchor="middle">${label}</text></svg>`;
 }
 
 function supportsPlacement(symbol: SuggestedSymbol, pinCount: number): boolean {
-  return partByType(baseType(symbol)).pins.length === pinCount;
+  return partByType(importedBaseType(symbol)).pins.length === pinCount;
 }
 
-function resolveEmittedName(values: Record<string, string>, original: string): string {
-  const exact = Object.entries(values).find(([key]) => key.split(":").at(-1)?.split("/").at(-1)?.toLowerCase() === original.toLowerCase());
-  return exact?.[1] ?? Object.values(values)[0] ?? original;
-}
-
-function definitionFromModel(library: ImportedLibrary, model: ImportedModel, sourceName: string, sourceText: string, ordinal: number): ImportedPartDefinition {
-  const namespace = `ocimp_${safeId(model.name)}_${ordinal}`;
-  const emitted = emitNamespacedLibrary(library, namespace);
+function definitionFromModel(model: ImportedModel, sourceName: string, sourceText: string): ImportedPartDefinition {
   const suggestedSymbol = modelSymbol(model);
-  return {
-    id: crypto.randomUUID(),
-    name: model.name,
+  return definitionView(materializeImportedModelPart(importedPartFromModel(model, {
     sourceName,
     sourceText,
-    namespace,
-    emittedText: emitted.text,
-    emittedName: resolveEmittedName(emitted.modelNames, model.name),
-    definitionKind: "model",
-    suggestedSymbol,
-    baseType: baseType(suggestedSymbol, model),
-    modelPins: [],
-    userMapping: {},
-    warnings: library.warnings.map((warning) => `${warning.file}:${warning.line} ${warning.message}`),
-    blockedItems: emitted.blockedReasons.map((reason) => `${reason.file}:${reason.line} ${reason.message}`),
-  };
+    baseType: importedBaseType(suggestedSymbol, model),
+  })));
 }
 
-function definitionFromSubckt(library: ImportedLibrary, subckt: ImportedSubckt, spec: PinMappingSpec, sourceName: string, sourceText: string, ordinal: number): ImportedPartDefinition {
-  const namespace = `ocimp_${safeId(subckt.name)}_${ordinal}`;
-  const emitted = emitNamespacedLibrary(library, namespace);
-  return {
-    id: crypto.randomUUID(),
-    name: subckt.name,
+function definitionFromSubckt(subckt: ImportedSubckt, spec: PinMappingSpec, sourceName: string, sourceText: string): ImportedPartDefinition {
+  const pinMapping: ImportedPinMapping[] = Object.values(spec.userMapping).map((modelPinIndex, symbolPinIndex) => ({
+    symbolPinIndex,
+    modelPinIndex,
+  }));
+  return definitionView(materializeImportedModelPart(importedPartFromSubckt(subckt, {
     sourceName,
     sourceText,
-    namespace,
-    emittedText: emitted.text,
-    emittedName: resolveEmittedName(emitted.subcktNames, subckt.name),
-    definitionKind: "subckt",
-    suggestedSymbol: spec.suggestedSymbol,
-    baseType: baseType(spec.suggestedSymbol),
-    modelPins: [...spec.modelPins],
-    userMapping: { ...spec.userMapping },
-    warnings: library.warnings.map((warning) => `${warning.file}:${warning.line} ${warning.message}`),
-    blockedItems: emitted.blockedReasons.map((reason) => `${reason.file}:${reason.line} ${reason.message}`),
-  };
+    baseType: importedBaseType(spec.suggestedSymbol),
+    pinMapping,
+  })));
 }
 
 export function importedPaletteMarkup(parts: ImportedPartDefinition[]): string {
   if (parts.length === 0) return "";
-  return `<div class="imported-rail-heading">IMPORTED</div>${parts.map((part) => `<button class="symbol-tool imported-symbol-tool" data-imported-part="${esc(part.id)}" aria-label="Place imported ${esc(part.name)}"><span class="part-abbr">IMP</span><span class="rail-flyout"><strong>${esc(part.name)}</strong>${esc(part.suggestedSymbol)} symbol<br><span class="unverified-tag">imported, unverified</span></span></button>`).join("")}`;
+  return `<div class="imported-rail-heading">IMPORTED</div>${parts.map((part) => {
+    const modes = part.record.analysisValidity.supportedModes.filter((mode) => mode !== "live").map(analysisModeLabel).join(" · ");
+    return `<button class="symbol-tool imported-symbol-tool" data-imported-part="${esc(part.id)}" aria-label="Place imported ${esc(part.name)}"><span class="part-abbr">IMP</span><span class="rail-flyout"><strong>${esc(part.name)}</strong>${esc(part.suggestedSymbol)} symbol<br><span class="unverified-tag">imported, unverified</span><br><span>Declared modes: ${esc(modes)}</span></span></button>`;
+  }).join("")}`;
 }
 
 function importedLine(component: CircuitComponent, definition: ImportedPartDefinition, generated: GeneratedNetlist): string | undefined {
   const nodes = generated.componentNodes[component.id] ?? [];
   const suffix = component.id.replace(/\D/g, "") || safeId(component.id);
   if (definition.definitionKind === "subckt") {
-    const symbolPins = Object.keys(definition.userMapping);
     const ordered = Array.from({ length: definition.modelPins.length }, () => "0");
-    symbolPins.forEach((symbolPin, symbolIndex) => {
-      const modelIndex = definition.userMapping[symbolPin];
-      if (modelIndex !== undefined) ordered[modelIndex] = nodes[symbolIndex] ?? "0";
-    });
+    for (const mapping of definition.record.pinMapping) ordered[mapping.modelPinIndex] = nodes[mapping.symbolPinIndex] ?? "0";
     return `X${suffix} ${ordered.join(" ")} ${definition.emittedName} $ component:${component.id}`;
   }
   switch (component.type) {
@@ -146,9 +180,43 @@ function importedLine(component: CircuitComponent, definition: ImportedPartDefin
   }
 }
 
+function analysisModeLabel(mode: AnalysisMode): string {
+  return mode === "live" || mode === "op" ? "operating-point" : mode === "dc-sweep" ? "DC sweep" : mode === "tran" ? "transient" : mode.toUpperCase();
+}
+
+function assertImportedAnalysisSupport(
+  document: CircuitDocument,
+  mode: AnalysisMode,
+  definitions: readonly ImportedPartDefinition[],
+): void {
+  const byId = new Map(definitions.map((definition) => [definition.id, definition]));
+  for (const component of document.components) {
+    const importedId = component.params?.importedPartId;
+    const definition = typeof importedId === "string" ? byId.get(importedId) : undefined;
+    if (!definition || definition.record.analysisValidity.supportedModes.includes(mode)) continue;
+    const limitation = definition.record.analysisValidity.limitations?.find((candidate) => candidate.modes.includes(mode));
+    const available = definition.record.analysisValidity.supportedModes
+      .filter((candidate) => candidate !== "live")
+      .map(analysisModeLabel)
+      .join(", ");
+    const nextStep = `Choose one of its declared modes (${available || "none"}) or import a model with declared ${analysisModeLabel(mode)} support.`;
+    const action = limitation ? `${limitation.message} ${nextStep}` : nextStep;
+    throw new ImportedModelRuntimeError({
+      code: "UNSUPPORTED_ANALYSIS",
+      componentId: component.id,
+      partId: definition.id,
+      analysisMode: mode,
+      message: `Component ${component.id} (${definition.name}) does not declare ${analysisModeLabel(mode)} support. ${action}`,
+    });
+  }
+}
+
 export function generateNetlistWithImports(document: CircuitDocument, mode?: AnalysisMode): GeneratedNetlist {
-  const generated = generateNetlist(document, mode);
   const definitions = importedParts(document);
+  const selectedMode = mode ?? document.sim.mode;
+  assertImportedAnalysisSupport(document, selectedMode, definitions);
+  const baseGenerated = generateNetlist(document, mode);
+  const generated = { ...baseGenerated, componentCurrents: { ...baseGenerated.componentCurrents } };
   if (definitions.length === 0) return generated;
   const byId = new Map(definitions.map((definition) => [definition.id, definition]));
   const components = new Map(document.components.map((component) => [component.id, component]));
@@ -159,10 +227,22 @@ export function generateNetlistWithImports(document: CircuitDocument, mode?: Ana
     const importedId = component?.params?.importedPartId;
     const definition = typeof importedId === "string" ? byId.get(importedId) : undefined;
     const replacement = component && definition ? importedLine(component, definition, generated) : undefined;
-    if (replacement) lines[index] = replacement;
+    if (component && typeof importedId === "string" && !definition) throw new Error(`Component ${component.id} references missing imported model ${importedId}`);
+    if (component && definition && !replacement) throw new Error(`Imported model ${definition.name} cannot be applied to component ${component.id}`);
+    if (replacement) {
+      lines[index] = replacement;
+      if (definition?.definitionKind === "subckt") {
+        const staleCurrent = generated.componentCurrents[component!.id];
+        if (staleCurrent) {
+          const saveIndex = lines.findIndex((line) => line.startsWith(".save "));
+          if (saveIndex >= 0) lines[saveIndex] = lines[saveIndex]!.replace(` ${staleCurrent}`, "");
+          delete generated.componentCurrents[component!.id];
+        }
+      }
+    }
   }
   const usedIds = new Set(document.components.map((component) => component.params?.importedPartId).filter((value): value is string => typeof value === "string"));
-  const libraryLines = definitions.filter((definition) => usedIds.has(definition.id)).flatMap((definition) => [
+  const libraryLines = definitions.filter((definition) => usedIds.has(definition.id)).sort((left, right) => left.id.localeCompare(right.id)).flatMap((definition) => [
     `* imported, unverified: ${definition.name}`,
     ...definition.emittedText.trimEnd().split("\n"),
   ]);
@@ -187,6 +267,7 @@ export class ModelImportDialog {
   private readonly results: HTMLDivElement;
   private library: ImportedLibrary | undefined;
   private sourceName = "pasted-model.lib";
+  private blocked = false;
 
   constructor(private readonly options: DialogOptions) {
     this.overlay = document.createElement("div");
@@ -241,6 +322,7 @@ export class ModelImportDialog {
     try {
       this.library = parseSpiceLibrary(text, { filename: this.sourceName });
       const sanitized = sanitize(this.library);
+      this.blocked = sanitized.blockedReasons.length > 0;
       const warnings = [
         ...this.library.warnings.map((warning) => `<li>${esc(`${warning.file}:${warning.line} ${warning.message}`)}</li>`),
         ...sanitized.removed.map((item) => `<li>${esc(`${item.file}:${item.line} Removed: ${item.reason}`)}</li>`),
@@ -261,7 +343,7 @@ export class ModelImportDialog {
     const suggested = modelSymbol(model);
     const supported = suggested !== "generic";
     const status = supported ? "No subcircuit pin mapping is required." : "This model type has no compatible schematic symbol yet.";
-    return `<article class="import-definition" data-model-index="${index}">${symbolPreview(suggested)}<div><strong>${esc(model.name)}</strong><span>.model ${esc(model.type)}</span><p>${status}</p></div><button class="primary-button" data-import-model="${index}" ${supported ? "" : "disabled"}>Add imported part</button></article>`;
+    return `<article class="import-definition" data-model-index="${index}">${symbolPreview(suggested)}<div><strong>${esc(model.name)}</strong><span>.model ${esc(model.type)}</span><p>${this.blocked ? "Remove the blocked source statements before importing." : status}</p></div><button class="primary-button" data-import-model="${index}" ${supported && !this.blocked ? "" : "disabled"}>Add imported part</button></article>`;
   }
 
   private subcktCard(subckt: ImportedSubckt, index: number): string {
@@ -269,15 +351,15 @@ export class ModelImportDialog {
     const supported = supportsPlacement(spec.suggestedSymbol, subckt.pins.length);
     const selects = Object.entries(spec.userMapping).map(([symbolPin, selected]) => `<label>${esc(symbolPin)}<select data-map-pin="${esc(symbolPin)}">${subckt.pins.map((pin, nodeIndex) => `<option value="${nodeIndex}" ${nodeIndex === selected ? "selected" : ""}>${esc(pin)}</option>`).join("")}</select></label>`).join("");
     const status = supported ? "Mapping is complete and bijective." : `No placeable ${subckt.pins.length}-pin symbol is available yet.`;
-    return `<article class="import-definition subckt-definition" data-subckt-index="${index}">${symbolPreview(spec.suggestedSymbol)}<div><strong>${esc(subckt.name)}</strong><span>${esc(spec.suggestedSymbol)} suggestion</span><div class="pin-map-grid">${selects}</div><p class="mapping-status${supported ? "" : " invalid"}" data-mapping-status>${status}</p></div><button class="primary-button" data-import-subckt="${index}" ${supported ? "" : "disabled"}>Add imported part</button></article>`;
+    return `<article class="import-definition subckt-definition" data-subckt-index="${index}">${symbolPreview(spec.suggestedSymbol)}<div><strong>${esc(subckt.name)}</strong><span>${esc(spec.suggestedSymbol)} suggestion</span><div class="pin-map-grid">${selects}</div><p class="mapping-status${supported && !this.blocked ? "" : " invalid"}" data-mapping-status>${this.blocked ? "Remove the blocked source statements before importing." : status}</p></div><button class="primary-button" data-import-subckt="${index}" ${supported && !this.blocked ? "" : "disabled"}>Add imported part</button></article>`;
   }
 
   private bindDefinitionActions(sourceText: string): void {
     this.results.querySelectorAll<HTMLButtonElement>("[data-import-model]").forEach((button) => button.addEventListener("click", () => {
       const model = this.library?.models[Number(button.dataset.importModel)];
-      if (!this.library || !model) return;
+      if (!this.library || !model || this.blocked) return;
       const parts = this.options.getParts();
-      parts.push(definitionFromModel(this.library, model, this.sourceName, sourceText, parts.length + 1));
+      parts.push(definitionFromModel(model, this.sourceName, sourceText));
       this.options.onPartsChange(parts);
       button.textContent = "Added";
       button.disabled = true;
@@ -290,9 +372,9 @@ export class ModelImportDialog {
         card.querySelectorAll<HTMLSelectElement>("[data-map-pin]").forEach((select) => { spec.userMapping[select.dataset.mapPin!] = Number(select.value); });
         const validation = validatePinMapping(spec);
         const supported = supportsPlacement(spec.suggestedSymbol, subckt.pins.length);
-        const valid = validation.valid && supported;
+        const valid = validation.valid && supported && !this.blocked;
         const status = card.querySelector<HTMLElement>("[data-mapping-status]")!;
-        status.textContent = !supported ? `No placeable ${subckt.pins.length}-pin symbol is available yet.` : validation.valid ? "Mapping is complete and bijective." : validation.errors.join(" ");
+        status.textContent = this.blocked ? "Remove the blocked source statements before importing." : !supported ? `No placeable ${subckt.pins.length}-pin symbol is available yet.` : validation.valid ? "Mapping is complete and bijective." : validation.errors.join(" ");
         status.classList.toggle("invalid", !valid);
         const button = card.querySelector<HTMLButtonElement>("[data-import-subckt]")!;
         button.disabled = !valid;
@@ -302,7 +384,7 @@ export class ModelImportDialog {
       card.querySelector<HTMLButtonElement>("[data-import-subckt]")?.addEventListener("click", (event) => {
         if (!validate()) return;
         const parts = this.options.getParts();
-        parts.push(definitionFromSubckt(this.library!, subckt, spec, this.sourceName, sourceText, parts.length + 1));
+        parts.push(definitionFromSubckt(subckt, spec, this.sourceName, sourceText));
         this.options.onPartsChange(parts);
         const button = event.currentTarget as HTMLButtonElement;
         button.textContent = "Added";

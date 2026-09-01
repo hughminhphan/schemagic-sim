@@ -11,7 +11,7 @@ Darlingtons (TIP120, TIP125) are **not** a single Gummel-Poon device. See sectio
 **Node order is `collector base emitter [substrate]`.** `Q1 c b e MODELNAME`. The substrate node is omitted for discrete parts.
 
 ```spice
-* OpenCircuit original-from-facts model
+* scheMAGIC original-from-facts model
 * <MPN> (<manufacturer>), datasheet rev <rev>, fitted <YYYY-MM-DD>
 * Archetype: archetype-bjt.md. Fit run: <run-id>
 * Node order: Q<ref> collector base emitter OC_<MPN>

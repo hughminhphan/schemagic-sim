@@ -1,0 +1,543 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [
+      {
+        "name": "typical_forward_characteristic",
+        "page_reference": "PDF p. 2, Typical Forward Characteristic",
+        "points": [
+          {
+            "x": 1.04,
+            "y": 0.01
+          },
+          {
+            "x": 1.08,
+            "y": 0.1
+          },
+          {
+            "x": 1.17,
+            "y": 1
+          },
+          {
+            "x": 1.2,
+            "y": 2
+          },
+          {
+            "x": 1.31,
+            "y": 8
+          }
+        ],
+        "test_conditions": "Tj = 25 °C",
+        "x_axis": {
+          "quantity": "instantaneous_forward_voltage",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "instantaneous_forward_current",
+          "scale": "log",
+          "unit": "A"
+        }
+      },
+      {
+        "name": "forward_current_derating_curve",
+        "page_reference": "PDF p. 2, Forward Current Derating Curve",
+        "points": [
+          {
+            "x": 0,
+            "y": 1
+          },
+          {
+            "x": 60,
+            "y": 1
+          },
+          {
+            "x": 150,
+            "y": 0
+          }
+        ],
+        "test_conditions": "Typical Performance Characteristics; Tj = 25 °C unless otherwise noted",
+        "x_axis": {
+          "quantity": "ambient_temperature",
+          "scale": "linear",
+          "unit": "°C"
+        },
+        "y_axis": {
+          "quantity": "average_forward_rectified_current",
+          "scale": "linear",
+          "unit": "A"
+        }
+      },
+      {
+        "name": "maximum_non_repetitive_peak_forward_surge_current",
+        "page_reference": "PDF p. 2, Maximum Non Repetitive Peak Forward Surge Current",
+        "points": [
+          {
+            "x": 1,
+            "y": 30
+          },
+          {
+            "x": 2.1,
+            "y": 20
+          },
+          {
+            "x": 7.5,
+            "y": 10
+          }
+        ],
+        "test_conditions": "Typical Performance Characteristics; number of cycles at 60 Hz",
+        "x_axis": {
+          "quantity": "number_of_cycles_at_60_hz",
+          "scale": "log",
+          "unit": "cycles"
+        },
+        "y_axis": {
+          "quantity": "peak_forward_surge_current",
+          "scale": "linear",
+          "unit": "A"
+        }
+      }
+    ],
+    "datasheet_identity": {
+      "pages_examined": [
+        "PDF p. 1",
+        "PDF p. 2",
+        "PDF p. 3",
+        "PDF p. 4"
+      ],
+      "revision": "Revision 2018",
+      "title": "F1M Fast Recovery Rectifier Diode"
+    },
+    "extraction_notes": [
+      "The p. 1 electrical-characteristics heading states TA = 25 °C unless otherwise noted.",
+      "The reverse-current table also lists 5 µA maximum at TA = 25 °C; the singular schema field retains the higher, separately conditioned 100 µA maximum at TA = 100 °C.",
+      "VRRM and VDC are maximum reverse/blocking voltage ratings, not a reverse-breakdown test pair, so breakdown_voltage and breakdown_current are null.",
+      "Forward-characteristic and surge-current points were digitized directly from their p. 2 plotted traces at visible horizontal grid crossings; no values were interpolated."
+    ],
+    "family": "diode",
+    "manufacturer": "BORN",
+    "mpn": "F1M",
+    "omission_reason": null,
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": null,
+      "breakdown_voltage": null,
+      "capacitance": {
+        "conditions": "VR = 4.0 V; f = 1 MHz; TA = 25 °C",
+        "page_reference": "PDF p. 1, Electrical Characteristics",
+        "source_kind": "typical",
+        "unit": "F",
+        "value": 1.5e-11
+      },
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "TA = 25 °C",
+            "page_reference": "PDF p. 1, Electrical Characteristics",
+            "source_kind": "maximum",
+            "unit": "A",
+            "value": 1
+          },
+          "voltage": {
+            "conditions": "TA = 25 °C",
+            "page_reference": "PDF p. 1, Electrical Characteristics",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 1.3
+          }
+        }
+      ],
+      "reverse_current": {
+        "conditions": "VDC; TA = 100 °C",
+        "page_reference": "PDF p. 1, Electrical Characteristics",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.00009999999999999999
+      },
+      "reverse_recovery": {
+        "conditions": "IF = 0.5 A; IR = 1.0 A; IRR = 0.25 A; TA = 25 °C",
+        "page_reference": "PDF p. 1, Electrical Characteristics",
+        "source_kind": "maximum",
+        "unit": "s",
+        "value": 5.000000000000001e-7
+      },
+      "variant": "rectifier"
+    },
+    "usable_curves": true
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "Voltage - Forward(Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "1.3V@1A",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "F1M",
+    "manufacturer": "BORN",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8603356969197985792",
+    "revision": "Revision 2018",
+    "sha256": "50adaf79fe73b4bc4c63438de9ccfd0c84d0baf9c27da080bfb71b0715424abd",
+    "accessed_date": "2026-08-23",
+    "pages_referenced": [
+      "PDF p. 1",
+      "PDF p. 2",
+      "PDF p. 3",
+      "PDF p. 4"
+    ],
+    "placeholder": false
+  },
+  "evidence_contract_version": "1.0.0",
+  "fit_points": [
+    {
+      "current": {
+        "value": 0.01,
+        "unit": "A",
+        "conditions": "Tj = 25 °C",
+        "page_reference": "PDF p. 2, Typical Forward Characteristic",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 1.04,
+        "unit": "V",
+        "conditions": "Tj = 25 °C",
+        "page_reference": "PDF p. 2, Typical Forward Characteristic",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 0.1,
+        "unit": "A",
+        "conditions": "Tj = 25 °C",
+        "page_reference": "PDF p. 2, Typical Forward Characteristic",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 1.08,
+        "unit": "V",
+        "conditions": "Tj = 25 °C",
+        "page_reference": "PDF p. 2, Typical Forward Characteristic",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 1,
+        "unit": "A",
+        "conditions": "Tj = 25 °C",
+        "page_reference": "PDF p. 2, Typical Forward Characteristic",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 1.17,
+        "unit": "V",
+        "conditions": "Tj = 25 °C",
+        "page_reference": "PDF p. 2, Typical Forward Characteristic",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 2,
+        "unit": "A",
+        "conditions": "Tj = 25 °C",
+        "page_reference": "PDF p. 2, Typical Forward Characteristic",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 1.2,
+        "unit": "V",
+        "conditions": "Tj = 25 °C",
+        "page_reference": "PDF p. 2, Typical Forward Characteristic",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 8,
+        "unit": "A",
+        "conditions": "Tj = 25 °C",
+        "page_reference": "PDF p. 2, Typical Forward Characteristic",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 1.31,
+        "unit": "V",
+        "conditions": "Tj = 25 °C",
+        "page_reference": "PDF p. 2, Typical Forward Characteristic",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "conditions": "TA = 25 °C",
+        "page_reference": "PDF p. 1, Electrical Characteristics",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 1
+      },
+      "voltage": {
+        "conditions": "TA = 25 °C",
+        "page_reference": "PDF p. 1, Electrical Characteristics",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 1.3
+      }
+    }
+  ],
+  "forward_voltage_points": [
+    {
+      "current": {
+        "conditions": "TA = 25 °C",
+        "page_reference": "PDF p. 1, Electrical Characteristics",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 1,
+        "quantity": "forward_current",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "ambient",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 1
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 1.3
+            }
+          },
+          "test_mode": {
+            "kind": "not_stated"
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "TA = 25 °C"
+            }
+          ],
+          "condition_id": "sha256:73f3a89de6610e54bc55865055950f4ce0bb0a0f42e127cd6b72f726f29e724c"
+        },
+        "citation_identity": {
+          "source_sha256": "50adaf79fe73b4bc4c63438de9ccfd0c84d0baf9c27da080bfb71b0715424abd",
+          "source_revision": "Revision 2018",
+          "page": 1,
+          "table": "Electrical Characteristics",
+          "row": "Forward Current",
+          "citation_id": "sha256:fef761007d0d7e8a51a88e3a4671c648a753576855171e450f42dbeac4c4b98b"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:eddb10d832004db63ad4c4cdcfcf94496dece9348502da00ac47f540dcf62a8b",
+          "cohort_id": "sha256:0b34680ded67235cf2795da24c24615828ce856c7b7262de29c4b7a4992eadad",
+          "role": "maximum",
+          "condition_id": "sha256:73f3a89de6610e54bc55865055950f4ce0bb0a0f42e127cd6b72f726f29e724c",
+          "citation_id": "sha256:fef761007d0d7e8a51a88e3a4671c648a753576855171e450f42dbeac4c4b98b"
+        }
+      },
+      "voltage": {
+        "conditions": "TA = 25 °C",
+        "page_reference": "PDF p. 1, Electrical Characteristics",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 1.3,
+        "quantity": "forward_voltage",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "ambient",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 1
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 1.3
+            }
+          },
+          "test_mode": {
+            "kind": "not_stated"
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "TA = 25 °C"
+            }
+          ],
+          "condition_id": "sha256:73f3a89de6610e54bc55865055950f4ce0bb0a0f42e127cd6b72f726f29e724c"
+        },
+        "citation_identity": {
+          "source_sha256": "50adaf79fe73b4bc4c63438de9ccfd0c84d0baf9c27da080bfb71b0715424abd",
+          "source_revision": "Revision 2018",
+          "page": 1,
+          "table": "Electrical Characteristics",
+          "row": "Forward Voltage",
+          "citation_id": "sha256:d04fac0e7d9ea43202457d62b045de2ed04455b77d54eda558959b3d20ce3bd2"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:5fc29c9ed9c875e3bc09b36b823ca7554f5979a1b718c5ca49c61740d341af5d",
+          "cohort_id": "sha256:ddd9a5a674742bed816ad33e72b47c1149184a64738f54f67f9bd4991b89724a",
+          "role": "maximum",
+          "condition_id": "sha256:73f3a89de6610e54bc55865055950f4ce0bb0a0f42e127cd6b72f726f29e724c",
+          "citation_id": "sha256:d04fac0e7d9ea43202457d62b045de2ed04455b77d54eda558959b3d20ce3bd2"
+        }
+      }
+    }
+  ],
+  "curves": [
+    {
+      "curve_id": "sha256:fcc3f6a4ddfe676ad7a2382887c84c4b11ba61633568d1d72de77e79c2ac030d",
+      "characteristic": "forward_voltage",
+      "x_axis": {
+        "quantity": "forward_current",
+        "unit": "A"
+      },
+      "y_axis": {
+        "quantity": "forward_voltage",
+        "unit": "V"
+      },
+      "condition_identity": {
+        "schema_version": "1.0.0",
+        "characteristic": "forward_voltage",
+        "polarity": "n",
+        "magnitude_convention": "absolute",
+        "temperature": {
+          "kind": "junction",
+          "value_c": 25
+        },
+        "electrical": {
+          "forward_current": {
+            "kind": "enumerated",
+            "values": [
+              0.01,
+              0.1,
+              1,
+              2,
+              8
+            ]
+          },
+          "forward_voltage": {
+            "kind": "enumerated",
+            "values": [
+              1.04,
+              1.08,
+              1.17,
+              1.2,
+              1.31
+            ]
+          }
+        },
+        "test_mode": {
+          "kind": "not_stated"
+        },
+        "qualifiers": [
+          {
+            "key": "source_conditions",
+            "value": "Tj = 25 °C"
+          }
+        ],
+        "condition_id": "sha256:e20b53fca407689eecc6076e1c0f9d1b72a090f2c73fbad6f0126378c287875e"
+      },
+      "citation_identity": {
+        "source_sha256": "50adaf79fe73b4bc4c63438de9ccfd0c84d0baf9c27da080bfb71b0715424abd",
+        "source_revision": "Revision 2018",
+        "page": 2,
+        "figure": "typical_forward_characteristic",
+        "curve": "typical_forward_characteristic",
+        "citation_id": "sha256:e7065288345e201829d837101b60f3d701a8350af90a77c5cc5dc86dc6e8f070"
+      },
+      "points": [
+        {
+          "x_si": 0.01,
+          "y_si": 1.04,
+          "point_index": 0,
+          "evidence_identity": {
+            "role": "digitized_typical_curve",
+            "condition_id": "sha256:e20b53fca407689eecc6076e1c0f9d1b72a090f2c73fbad6f0126378c287875e",
+            "citation_id": "sha256:e7065288345e201829d837101b60f3d701a8350af90a77c5cc5dc86dc6e8f070",
+            "cohort_id": "sha256:805bb164f1a73bc1626f9c3699f490aa7b7a9abdebb2c460ea69d6257064531d",
+            "curve_id": "sha256:fcc3f6a4ddfe676ad7a2382887c84c4b11ba61633568d1d72de77e79c2ac030d",
+            "point_index": 0,
+            "evidence_id": "sha256:d65b16abd848c8812ad1cfdf8bb6abfabfc026342a83b94ac10241430b71e978"
+          }
+        },
+        {
+          "x_si": 0.1,
+          "y_si": 1.08,
+          "point_index": 1,
+          "evidence_identity": {
+            "role": "digitized_typical_curve",
+            "condition_id": "sha256:e20b53fca407689eecc6076e1c0f9d1b72a090f2c73fbad6f0126378c287875e",
+            "citation_id": "sha256:e7065288345e201829d837101b60f3d701a8350af90a77c5cc5dc86dc6e8f070",
+            "cohort_id": "sha256:805bb164f1a73bc1626f9c3699f490aa7b7a9abdebb2c460ea69d6257064531d",
+            "curve_id": "sha256:fcc3f6a4ddfe676ad7a2382887c84c4b11ba61633568d1d72de77e79c2ac030d",
+            "point_index": 1,
+            "evidence_id": "sha256:360339cff9789463afadfa136ed0145a3c4f718d4ebc307099c52c8ce3ff25b8"
+          }
+        },
+        {
+          "x_si": 1,
+          "y_si": 1.17,
+          "point_index": 2,
+          "evidence_identity": {
+            "role": "digitized_typical_curve",
+            "condition_id": "sha256:e20b53fca407689eecc6076e1c0f9d1b72a090f2c73fbad6f0126378c287875e",
+            "citation_id": "sha256:e7065288345e201829d837101b60f3d701a8350af90a77c5cc5dc86dc6e8f070",
+            "cohort_id": "sha256:805bb164f1a73bc1626f9c3699f490aa7b7a9abdebb2c460ea69d6257064531d",
+            "curve_id": "sha256:fcc3f6a4ddfe676ad7a2382887c84c4b11ba61633568d1d72de77e79c2ac030d",
+            "point_index": 2,
+            "evidence_id": "sha256:65380a6891d3bd44086e33e12b1d978bdd11eabbb7027631602efe3e86f0eeda"
+          }
+        },
+        {
+          "x_si": 2,
+          "y_si": 1.2,
+          "point_index": 3,
+          "evidence_identity": {
+            "role": "digitized_typical_curve",
+            "condition_id": "sha256:e20b53fca407689eecc6076e1c0f9d1b72a090f2c73fbad6f0126378c287875e",
+            "citation_id": "sha256:e7065288345e201829d837101b60f3d701a8350af90a77c5cc5dc86dc6e8f070",
+            "cohort_id": "sha256:805bb164f1a73bc1626f9c3699f490aa7b7a9abdebb2c460ea69d6257064531d",
+            "curve_id": "sha256:fcc3f6a4ddfe676ad7a2382887c84c4b11ba61633568d1d72de77e79c2ac030d",
+            "point_index": 3,
+            "evidence_id": "sha256:5c07dddf658bc9982b4a845df21b51a018ad762b68cfd364e6ea7ef424087c50"
+          }
+        },
+        {
+          "x_si": 8,
+          "y_si": 1.31,
+          "point_index": 4,
+          "evidence_identity": {
+            "role": "digitized_typical_curve",
+            "condition_id": "sha256:e20b53fca407689eecc6076e1c0f9d1b72a090f2c73fbad6f0126378c287875e",
+            "citation_id": "sha256:e7065288345e201829d837101b60f3d701a8350af90a77c5cc5dc86dc6e8f070",
+            "cohort_id": "sha256:805bb164f1a73bc1626f9c3699f490aa7b7a9abdebb2c460ea69d6257064531d",
+            "curve_id": "sha256:fcc3f6a4ddfe676ad7a2382887c84c4b11ba61633568d1d72de77e79c2ac030d",
+            "point_index": 4,
+            "evidence_id": "sha256:58837359cc9bc85411b297c5fd24610b6b64212f13d00eab92b16f9ec4e6f9ac"
+          }
+        }
+      ]
+    }
+  ],
+  "electrical_limits": {},
+  "derived_model_inputs": {}
+}

@@ -1,0 +1,36 @@
+{
+  "name": "@opencircuit/designer-release-audit",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Deterministic, fail-closed scheMAGIC Designer V1 release readiness audit",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./clean-checkout-audit": "./src/clean-checkout-audit.ts",
+    "./clean-checkout-runner": "./src/clean-checkout-runner.ts",
+    "./runtime-audit": "./src/designer-runtime-audit.ts",
+    "./runtime-release-receipt": "./src/designer-runtime-release-receipt.ts"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "report": "vite-node src/cli.ts",
+    "report:clean-checkout": "vite-node src/clean-checkout-runner-cli.ts",
+    "scan:release": "vite-node src/repository-scan-cli.ts",
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@opencircuit/design-export": "*",
+    "@opencircuit/design-library": "*",
+    "@opencircuit/motor-designer": "*",
+    "@opencircuit/power-designer": "*",
+    "@opencircuit/sim-engine": "*",
+    "@opencircuit/sourcing-core": "*",
+    "@opencircuit/sourcing-service": "*"
+  },
+  "devDependencies": {
+    "@types/node": "24.3.0",
+    "typescript": "5.9.2",
+    "vitest": "3.2.7"
+  }
+}

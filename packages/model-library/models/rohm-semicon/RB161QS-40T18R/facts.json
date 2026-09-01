@@ -1,0 +1,594 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [
+      {
+        "name": "Forward voltage-current characteristics, Tj = 25 degC",
+        "page_reference": "PDF p. 2, VF-IF Characteristics",
+        "points": [
+          {
+            "x": 0.22,
+            "y": 0.001
+          },
+          {
+            "x": 0.28,
+            "y": 0.01
+          },
+          {
+            "x": 0.35,
+            "y": 0.1
+          },
+          {
+            "x": 0.48,
+            "y": 1
+          }
+        ],
+        "test_conditions": "Tj = 25 degC trace in VF-IF characteristics.",
+        "x_axis": {
+          "quantity": "Forward voltage",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "Forward current",
+          "scale": "log",
+          "unit": "A"
+        }
+      },
+      {
+        "name": "Capacitance between terminals versus reverse voltage",
+        "page_reference": "PDF p. 3, VR-Ct Characteristics",
+        "points": [
+          {
+            "x": 0,
+            "y": 60
+          },
+          {
+            "x": 5,
+            "y": 30
+          },
+          {
+            "x": 10,
+            "y": 25
+          },
+          {
+            "x": 20,
+            "y": 21
+          },
+          {
+            "x": 40,
+            "y": 18
+          }
+        ],
+        "test_conditions": "Tj = 25 degC; f = 1 MHz.",
+        "x_axis": {
+          "quantity": "Reverse voltage",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "Capacitance between terminals",
+          "scale": "log",
+          "unit": "pF"
+        }
+      }
+    ],
+    "datasheet_identity": {
+      "pages_examined": [
+        "PDF p. 1",
+        "PDF p. 2",
+        "PDF p. 3",
+        "PDF p. 4",
+        "PDF p. 5",
+        "PDF p. 6"
+      ],
+      "revision": "2016.02 - Rev.001",
+      "title": "RB161QS-40 Schottky Barrier Diode"
+    },
+    "extraction_notes": [
+      "The p. 1 electrical-characteristics table provides the maximum 600 mV forward-voltage value at IF = 1 A and maximum 100 uA reverse-current value at VR = 10 V.",
+      "The p. 2 Tj = 25 degC VF-IF trace and p. 3 Tj = 25 degC, f = 1 MHz VR-Ct trace were visually digitized. The p. 2 derating/power plots and p. 3 surge/thermal plots were excluded from electrical fit evidence.",
+      "No reverse-recovery-time value or breakdown-voltage/current test pair is published; the 40 V VRM/VR entries are ratings rather than a breakdown characterization."
+    ],
+    "family": "diode",
+    "manufacturer": "ROHM Semicon",
+    "mpn": "RB161QS-40T18R",
+    "omission_reason": null,
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": null,
+      "breakdown_voltage": null,
+      "capacitance": {
+        "conditions": "Tj = 25 degC; f = 1 MHz; VR = 10 V; digitized VR-Ct trace.",
+        "page_reference": "PDF p. 3, VR-Ct Characteristics",
+        "source_kind": "digitized_typical_curve",
+        "unit": "F",
+        "value": 2.5e-11
+      },
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "Tj = 25 degC; IF = 1 A.",
+            "page_reference": "PDF p. 1, Electrical Characteristics",
+            "source_kind": "maximum",
+            "unit": "A",
+            "value": 1
+          },
+          "voltage": {
+            "conditions": "Tj = 25 degC; IF = 1 A.",
+            "page_reference": "PDF p. 1, Electrical Characteristics",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 0.6
+          }
+        },
+        {
+          "current": {
+            "conditions": "Tj = 25 degC; digitized VF-IF trace.",
+            "page_reference": "PDF p. 2, VF-IF Characteristics",
+            "source_kind": "digitized_typical_curve",
+            "unit": "A",
+            "value": 0.001
+          },
+          "voltage": {
+            "conditions": "Tj = 25 degC; digitized VF-IF trace.",
+            "page_reference": "PDF p. 2, VF-IF Characteristics",
+            "source_kind": "digitized_typical_curve",
+            "unit": "V",
+            "value": 0.22
+          }
+        },
+        {
+          "current": {
+            "conditions": "Tj = 25 degC; digitized VF-IF trace.",
+            "page_reference": "PDF p. 2, VF-IF Characteristics",
+            "source_kind": "digitized_typical_curve",
+            "unit": "A",
+            "value": 0.01
+          },
+          "voltage": {
+            "conditions": "Tj = 25 degC; digitized VF-IF trace.",
+            "page_reference": "PDF p. 2, VF-IF Characteristics",
+            "source_kind": "digitized_typical_curve",
+            "unit": "V",
+            "value": 0.28
+          }
+        },
+        {
+          "current": {
+            "conditions": "Tj = 25 degC; digitized VF-IF trace.",
+            "page_reference": "PDF p. 2, VF-IF Characteristics",
+            "source_kind": "digitized_typical_curve",
+            "unit": "A",
+            "value": 0.1
+          },
+          "voltage": {
+            "conditions": "Tj = 25 degC; digitized VF-IF trace.",
+            "page_reference": "PDF p. 2, VF-IF Characteristics",
+            "source_kind": "digitized_typical_curve",
+            "unit": "V",
+            "value": 0.35
+          }
+        }
+      ],
+      "reverse_current": {
+        "conditions": "Tj = 25 degC; VR = 10 V.",
+        "page_reference": "PDF p. 1, Electrical Characteristics",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.0001
+      },
+      "reverse_recovery": null,
+      "variant": "schottky"
+    },
+    "usable_curves": true
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "Forward Voltage (Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "600mV@1A",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Voltage - Forward(Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "600mV@1A",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "RB161QS-40T18R",
+    "manufacturer": "ROHM Semicon",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8589042142308683776",
+    "revision": "2016.02 - Rev.001",
+    "sha256": "9e23cfa8d67137836a0331a09366ba66f3624e0b03d6e1412e757a57305cdac8",
+    "accessed_date": "2026-08-23",
+    "pages_referenced": [
+      "PDF p. 1",
+      "PDF p. 2",
+      "PDF p. 3",
+      "PDF p. 4",
+      "PDF p. 5",
+      "PDF p. 6"
+    ],
+    "placeholder": false
+  },
+  "evidence_contract_version": "1.0.0",
+  "fit_points": [
+    {
+      "current": {
+        "value": 0.001,
+        "unit": "A",
+        "conditions": "Tj = 25 degC trace in VF-IF characteristics.",
+        "page_reference": "PDF p. 2, VF-IF Characteristics",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 0.22,
+        "unit": "V",
+        "conditions": "Tj = 25 degC trace in VF-IF characteristics.",
+        "page_reference": "PDF p. 2, VF-IF Characteristics",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 0.01,
+        "unit": "A",
+        "conditions": "Tj = 25 degC trace in VF-IF characteristics.",
+        "page_reference": "PDF p. 2, VF-IF Characteristics",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 0.28,
+        "unit": "V",
+        "conditions": "Tj = 25 degC trace in VF-IF characteristics.",
+        "page_reference": "PDF p. 2, VF-IF Characteristics",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 0.1,
+        "unit": "A",
+        "conditions": "Tj = 25 degC trace in VF-IF characteristics.",
+        "page_reference": "PDF p. 2, VF-IF Characteristics",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 0.35,
+        "unit": "V",
+        "conditions": "Tj = 25 degC trace in VF-IF characteristics.",
+        "page_reference": "PDF p. 2, VF-IF Characteristics",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "value": 1,
+        "unit": "A",
+        "conditions": "Tj = 25 degC trace in VF-IF characteristics.",
+        "page_reference": "PDF p. 2, VF-IF Characteristics",
+        "source_kind": "digitized_typical_curve"
+      },
+      "voltage": {
+        "value": 0.48,
+        "unit": "V",
+        "conditions": "Tj = 25 degC trace in VF-IF characteristics.",
+        "page_reference": "PDF p. 2, VF-IF Characteristics",
+        "source_kind": "digitized_typical_curve"
+      }
+    },
+    {
+      "current": {
+        "conditions": "Tj = 25 degC; IF = 1 A.",
+        "page_reference": "PDF p. 1, Electrical Characteristics",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 1
+      },
+      "voltage": {
+        "conditions": "Tj = 25 degC; IF = 1 A.",
+        "page_reference": "PDF p. 1, Electrical Characteristics",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 0.6
+      }
+    },
+    {
+      "current": {
+        "conditions": "Tj = 25 degC; digitized VF-IF trace.",
+        "page_reference": "PDF p. 2, VF-IF Characteristics",
+        "source_kind": "digitized_typical_curve",
+        "unit": "A",
+        "value": 0.001
+      },
+      "voltage": {
+        "conditions": "Tj = 25 degC; digitized VF-IF trace.",
+        "page_reference": "PDF p. 2, VF-IF Characteristics",
+        "source_kind": "digitized_typical_curve",
+        "unit": "V",
+        "value": 0.22
+      }
+    },
+    {
+      "current": {
+        "conditions": "Tj = 25 degC; digitized VF-IF trace.",
+        "page_reference": "PDF p. 2, VF-IF Characteristics",
+        "source_kind": "digitized_typical_curve",
+        "unit": "A",
+        "value": 0.01
+      },
+      "voltage": {
+        "conditions": "Tj = 25 degC; digitized VF-IF trace.",
+        "page_reference": "PDF p. 2, VF-IF Characteristics",
+        "source_kind": "digitized_typical_curve",
+        "unit": "V",
+        "value": 0.28
+      }
+    },
+    {
+      "current": {
+        "conditions": "Tj = 25 degC; digitized VF-IF trace.",
+        "page_reference": "PDF p. 2, VF-IF Characteristics",
+        "source_kind": "digitized_typical_curve",
+        "unit": "A",
+        "value": 0.1
+      },
+      "voltage": {
+        "conditions": "Tj = 25 degC; digitized VF-IF trace.",
+        "page_reference": "PDF p. 2, VF-IF Characteristics",
+        "source_kind": "digitized_typical_curve",
+        "unit": "V",
+        "value": 0.35
+      }
+    }
+  ],
+  "forward_voltage_points": [
+    {
+      "current": {
+        "conditions": "Tj = 25 degC; IF = 1 A.",
+        "page_reference": "PDF p. 1, Electrical Characteristics",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 1,
+        "quantity": "forward_current",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "junction",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 1
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 0.6
+            }
+          },
+          "test_mode": {
+            "kind": "not_stated"
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "Tj = 25 degC; IF = 1 A."
+            }
+          ],
+          "condition_id": "sha256:392c56eb439428233d1def5e7ec4001af44933b8f940024ca851a1da88bc36f9"
+        },
+        "citation_identity": {
+          "source_sha256": "9e23cfa8d67137836a0331a09366ba66f3624e0b03d6e1412e757a57305cdac8",
+          "source_revision": "2016.02 - Rev.001",
+          "page": 1,
+          "table": "Electrical Characteristics",
+          "row": "Forward Current",
+          "citation_id": "sha256:0100518d571cd728d5e19cbb31779a19236a77ea87a418b663b1951fb0fc4d6e"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:2e7e1821420ba6771f387fb0d1ce2ad845f02bbc213dc81aab2acf04fa5a3ad5",
+          "cohort_id": "sha256:5d251f2a0705940133a4b64a8d069ba5df922558bd991f05728d1aa1feeea09a",
+          "role": "maximum",
+          "condition_id": "sha256:392c56eb439428233d1def5e7ec4001af44933b8f940024ca851a1da88bc36f9",
+          "citation_id": "sha256:0100518d571cd728d5e19cbb31779a19236a77ea87a418b663b1951fb0fc4d6e"
+        }
+      },
+      "voltage": {
+        "conditions": "Tj = 25 degC; IF = 1 A.",
+        "page_reference": "PDF p. 1, Electrical Characteristics",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 0.6,
+        "quantity": "forward_voltage",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "junction",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 1
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 0.6
+            }
+          },
+          "test_mode": {
+            "kind": "not_stated"
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "Tj = 25 degC; IF = 1 A."
+            }
+          ],
+          "condition_id": "sha256:392c56eb439428233d1def5e7ec4001af44933b8f940024ca851a1da88bc36f9"
+        },
+        "citation_identity": {
+          "source_sha256": "9e23cfa8d67137836a0331a09366ba66f3624e0b03d6e1412e757a57305cdac8",
+          "source_revision": "2016.02 - Rev.001",
+          "page": 1,
+          "table": "Electrical Characteristics",
+          "row": "Forward Voltage",
+          "citation_id": "sha256:9fc717d82d1b69944e372677b471e75066f90556a05730fbf217f5961662de76"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:444a93de5bf30a87e3c7c019c63b4838d9cf21fffaffa65355508aee6800a42e",
+          "cohort_id": "sha256:17d98572ea1e2eed00f1930ca50c478316bc1638bacdb8250dba30d26e6253f3",
+          "role": "maximum",
+          "condition_id": "sha256:392c56eb439428233d1def5e7ec4001af44933b8f940024ca851a1da88bc36f9",
+          "citation_id": "sha256:9fc717d82d1b69944e372677b471e75066f90556a05730fbf217f5961662de76"
+        }
+      }
+    }
+  ],
+  "curves": [
+    {
+      "curve_id": "sha256:8dfdfb0914bfb90ff513d1a89a4b4d699210e8098c6bbef9d0abd0b9346732e7",
+      "characteristic": "forward_voltage",
+      "x_axis": {
+        "quantity": "forward_current",
+        "unit": "A"
+      },
+      "y_axis": {
+        "quantity": "forward_voltage",
+        "unit": "V"
+      },
+      "condition_identity": {
+        "schema_version": "1.0.0",
+        "characteristic": "forward_voltage",
+        "polarity": "n",
+        "magnitude_convention": "absolute",
+        "temperature": {
+          "kind": "junction",
+          "value_c": 25
+        },
+        "electrical": {
+          "forward_current": {
+            "kind": "enumerated",
+            "values": [
+              0.001,
+              0.01,
+              0.1,
+              1
+            ]
+          },
+          "forward_voltage": {
+            "kind": "enumerated",
+            "values": [
+              0.22,
+              0.28,
+              0.35,
+              0.48
+            ]
+          }
+        },
+        "test_mode": {
+          "kind": "not_stated"
+        },
+        "qualifiers": [
+          {
+            "key": "source_conditions",
+            "value": "Tj = 25 degC trace in VF-IF characteristics."
+          }
+        ],
+        "condition_id": "sha256:1bf41e8f24eab05c408d28cdeb81317a0ff85b1e4d6af152996fe835eb60d4a1"
+      },
+      "citation_identity": {
+        "source_sha256": "9e23cfa8d67137836a0331a09366ba66f3624e0b03d6e1412e757a57305cdac8",
+        "source_revision": "2016.02 - Rev.001",
+        "page": 2,
+        "figure": "Forward voltage-current characteristics, Tj = 25 degC",
+        "curve": "Forward voltage-current characteristics, Tj = 25 degC",
+        "citation_id": "sha256:9dd2c64f99f21d20acbdfc5a8b4e8299a9944405e96b18b069369283f6d0f28c"
+      },
+      "points": [
+        {
+          "x_si": 0.001,
+          "y_si": 0.22,
+          "point_index": 0,
+          "evidence_identity": {
+            "role": "digitized_typical_curve",
+            "condition_id": "sha256:1bf41e8f24eab05c408d28cdeb81317a0ff85b1e4d6af152996fe835eb60d4a1",
+            "citation_id": "sha256:9dd2c64f99f21d20acbdfc5a8b4e8299a9944405e96b18b069369283f6d0f28c",
+            "cohort_id": "sha256:5b5860ec67dfb017540f8bb16b5ce237bd4672e1c6f35ef383b2fce76df2b1d7",
+            "curve_id": "sha256:8dfdfb0914bfb90ff513d1a89a4b4d699210e8098c6bbef9d0abd0b9346732e7",
+            "point_index": 0,
+            "evidence_id": "sha256:73a289c075a80fa01b94cb8ad158eeaaa12797fbed7f28f22441752ee57a06ce"
+          }
+        },
+        {
+          "x_si": 0.01,
+          "y_si": 0.28,
+          "point_index": 1,
+          "evidence_identity": {
+            "role": "digitized_typical_curve",
+            "condition_id": "sha256:1bf41e8f24eab05c408d28cdeb81317a0ff85b1e4d6af152996fe835eb60d4a1",
+            "citation_id": "sha256:9dd2c64f99f21d20acbdfc5a8b4e8299a9944405e96b18b069369283f6d0f28c",
+            "cohort_id": "sha256:5b5860ec67dfb017540f8bb16b5ce237bd4672e1c6f35ef383b2fce76df2b1d7",
+            "curve_id": "sha256:8dfdfb0914bfb90ff513d1a89a4b4d699210e8098c6bbef9d0abd0b9346732e7",
+            "point_index": 1,
+            "evidence_id": "sha256:3df0700f576de682d16cb20420e5e868e9ed62b478a82a6b99c46f98d1dc9377"
+          }
+        },
+        {
+          "x_si": 0.1,
+          "y_si": 0.35,
+          "point_index": 2,
+          "evidence_identity": {
+            "role": "digitized_typical_curve",
+            "condition_id": "sha256:1bf41e8f24eab05c408d28cdeb81317a0ff85b1e4d6af152996fe835eb60d4a1",
+            "citation_id": "sha256:9dd2c64f99f21d20acbdfc5a8b4e8299a9944405e96b18b069369283f6d0f28c",
+            "cohort_id": "sha256:5b5860ec67dfb017540f8bb16b5ce237bd4672e1c6f35ef383b2fce76df2b1d7",
+            "curve_id": "sha256:8dfdfb0914bfb90ff513d1a89a4b4d699210e8098c6bbef9d0abd0b9346732e7",
+            "point_index": 2,
+            "evidence_id": "sha256:807724795313491c413e0968a6e7d6e64f18144d70da5de87f0fbcb48c4691e6"
+          }
+        },
+        {
+          "x_si": 1,
+          "y_si": 0.48,
+          "point_index": 3,
+          "evidence_identity": {
+            "role": "digitized_typical_curve",
+            "condition_id": "sha256:1bf41e8f24eab05c408d28cdeb81317a0ff85b1e4d6af152996fe835eb60d4a1",
+            "citation_id": "sha256:9dd2c64f99f21d20acbdfc5a8b4e8299a9944405e96b18b069369283f6d0f28c",
+            "cohort_id": "sha256:5b5860ec67dfb017540f8bb16b5ce237bd4672e1c6f35ef383b2fce76df2b1d7",
+            "curve_id": "sha256:8dfdfb0914bfb90ff513d1a89a4b4d699210e8098c6bbef9d0abd0b9346732e7",
+            "point_index": 3,
+            "evidence_id": "sha256:f3e595efa6e7890b46d9d3c64d2fb808d9d92ce0ed4ef74f77f4f89f1deda3be"
+          }
+        }
+      ]
+    }
+  ],
+  "electrical_limits": {
+    "reverse_current_10v": {
+      "conditions": "Tj = 25 degC; VR = 10 V.",
+      "page_reference": "PDF p. 1, Electrical Characteristics",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 0.0001
+    }
+  },
+  "derived_model_inputs": {}
+}

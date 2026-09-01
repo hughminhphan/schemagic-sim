@@ -1,6 +1,6 @@
 # Architecture
 
-scheMAGIC Simulator is a browser-first circuit editor and simulator. It is an npm-workspaces monorepo built with TypeScript, Vite, Vitest, and Playwright. The deployed application is a static Cloudflare Pages site at `schemagic.pages.dev`, with `sim.schemagic.design` planned as the public domain.
+scheMAGIC is a browser-first electronics design and simulation suite. It is an npm-workspaces monorepo built with TypeScript, Vite, Vitest, and Playwright. The deployed application is a static Cloudflare Pages site at `schemagic.pages.dev`; the Simulator/Measurement surface is `/` and the Motor/Power Designer is `/designer`.
 
 ## System overview
 
@@ -9,6 +9,10 @@ User interaction
       |
       v
 apps/web
+      |
+      +--> /designer --> packages/motor-designer + packages/power-designer
+      |                       |
+      |                       +--> packages/design-engine + packages/design-export
       |
       +--> packages/schematic-editor
       |          |
@@ -39,13 +43,13 @@ tools/ngspice-wasm-build --> ngspice.mjs + ngspice.wasm + notices
 
 ### Web application
 
-`apps/web` composes the editor, simulator, waveform viewer, workspace persistence, share links, model import flow, and static licence notices. Vite produces a static `apps/web/dist` directory suitable for Cloudflare Pages.
+`apps/web` composes the Designer route and the Simulator/Measurement route, including the editor, waveform viewer, workspace persistence, share links, model import flow, and static licence notices. Vite produces a static `apps/web/dist` directory suitable for Cloudflare Pages.
 
 Circuit workspaces are browser-side data. Sharing serializes a circuit into a URL. The application does not require a server-side simulation API for its normal solve path.
 
 ### Circuit document and netlist generation
 
-`packages/circuit-schema` owns the canonical circuit document, migrations, validation, component definitions, stable serialization, and deterministic netlist generation. The editor and simulator exchange this typed representation instead of passing arbitrary DOM state.
+`packages/circuit-schema` owns canonical circuit documents, migrations, validation, component definitions, stable serialization, and deterministic netlist generation. Simulator V1 and legacy flat V2 migrate to current Simulator V3. Designer multi-circuit/scenario documents use V4, avoiding the historical collision between two incompatible draft V2 formats. The editor, simulator and Designer exchange typed representations instead of passing arbitrary DOM state.
 
 Deterministic serialization supports reproducible tests, stable share links, and meaningful comparisons between native and WebAssembly simulation paths.
 
@@ -55,7 +59,7 @@ Deterministic serialization supports reproducible tests, stable share links, and
 
 ### Simulation engine
 
-`packages/sim-engine` owns the browser simulation boundary. The main thread sends generated netlists to a Web Worker. The worker runs the pinned ngspice-46 WebAssembly module, reads binary rawfile output from the engine's in-memory filesystem, parses vectors, and returns typed results and diagnostics.
+`packages/sim-engine` owns the browser simulation boundary. The main thread sends generated netlists to a Web Worker. The worker runs the pinned ngspice-46 WebAssembly module, reads binary rawfile output from the engine's in-memory filesystem, parses vectors, and returns typed results and diagnostics. Results retain both Measurement run identity/scheduling provenance and Designer execution receipts.
 
 The pinned engine artifact is built under `tools/ngspice-wasm-build`. The browser application does not fetch a moving simulator build from a CDN.
 

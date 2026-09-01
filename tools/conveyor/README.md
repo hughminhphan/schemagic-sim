@@ -1,4 +1,4 @@
-# OpenCircuit model conveyor
+# scheMAGIC Model Conveyor
 
 CONVEYOR turns a SQL-selected tranche of catalog parts into unreviewed, local model packages. It reuses `tools/part-feeder` for manifest generation and datasheet acquisition, then hands validated extraction JSON to the bulk adapter in `tools/model-factory`.
 

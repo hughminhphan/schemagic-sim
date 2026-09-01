@@ -8,7 +8,7 @@ import { parseRawfile } from "./rawfile.mjs";
 export const EECIRCUIT_ENGINE_VERSION = "1.7.0";
 export const ENGINE_MODULE_ENV = "OPEN_CIRCUIT_NGSPICE_ENGINE_MODULE";
 
-let overrideEnginePromise;
+const overrideEnginePromises = new Map();
 
 async function loadOverrideEngine(specifier) {
   const moduleUrl = /^(?:file:|data:|https?:)/.test(specifier)
@@ -41,6 +41,7 @@ export async function runWasm(options) {
     netlist,
     timeoutMs = 30_000,
     simulation = null,
+    engineModule = null,
   } = typeof options === "string" ? { netlistPath: options } : options;
 
   if ((netlistPath ? 1 : 0) + (netlist ? 1 : 0) !== 1) {
@@ -49,9 +50,16 @@ export async function runWasm(options) {
   if (!Number.isFinite(timeoutMs) || timeoutMs <= 0) throw new Error("timeoutMs must be positive");
 
   const source = netlist ?? await readFile(netlistPath, "utf8");
-  const overrideSpecifier = process.env[ENGINE_MODULE_ENV];
+  const overrideSpecifier = engineModule ?? process.env[ENGINE_MODULE_ENV];
   if (overrideSpecifier) {
-    overrideEnginePromise ??= loadOverrideEngine(overrideSpecifier);
+    if (typeof overrideSpecifier !== "string" || overrideSpecifier.length === 0) {
+      throw new Error("engineModule must be a non-empty module specifier");
+    }
+    let overrideEnginePromise = overrideEnginePromises.get(overrideSpecifier);
+    if (!overrideEnginePromise) {
+      overrideEnginePromise = loadOverrideEngine(overrideSpecifier);
+      overrideEnginePromises.set(overrideSpecifier, overrideEnginePromise);
+    }
     const { engine, engineModule, initTimingMs } = await withTimeout(
       overrideEnginePromise,
       timeoutMs,
@@ -64,6 +72,7 @@ export async function runWasm(options) {
     const engineVersion = engineModule.ENGINE_VERSION ?? "external ngspice engine";
     return {
       rawfile,
+      rawfileBytes: result.rawfile.byteLength,
       vectors: rawfile.vectors,
       stderr: result.stderr ?? "",
       timingMs: performance.now() - runStarted,
@@ -93,6 +102,7 @@ export async function runWasm(options) {
 
   return {
     rawfile,
+    rawfileBytes: bytes.byteLength,
     vectors: rawfile.vectors,
     stderr: Array.isArray(errors) ? errors.join("\n") : String(errors ?? ""),
     timingMs,

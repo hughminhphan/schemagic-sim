@@ -1,0 +1,15 @@
+scheMAGIC Simulator scenario 474c284d0a2d8bc7
+* scenario-hash 474c284d0a2d8bc7
+Coc_632d62756c6b n1 n2 0.001 $ component:c-bulk
+Coc_632d6c6f63616c n1 n2 0.000001 $ component:c-local
+Roc_722d63757272656e742d7368756e74 0 n2 0.01 $ component:r-current-shunt
+Roc_722d6d6f746f722d77696e64696e67 n3 n4 1.2 $ component:r-motor-winding
+Roc_732d686967682d6c656674 n1 n3 1m $ component:s-high-left
+Roc_732d686967682d7269676874 n1 n5 1G $ component:s-high-right
+Roc_732d6c6f772d6c656674 n3 n2 1G $ component:s-low-left
+Roc_732d6c6f772d7269676874 n5 n2 1m $ component:s-low-right
+Voc_762d6272696467652d61766572616765 n1 0 DC 19.2 $ component:v-bridge-average
+Voc_762d6d6f746f722d6261636b2d656d66 n4 n5 DC 13.2 $ component:v-motor-back-emf
+.save all @coc_632d62756c6b[i] @coc_632d6c6f63616c[i] @roc_722d63757272656e742d7368756e74[i] @roc_722d6d6f746f722d77696e64696e67[i] @roc_732d686967682d6c656674[i] @roc_732d686967682d7269676874[i] @roc_732d6c6f772d6c656674[i] @roc_732d6c6f772d7269676874[i] voc_762d6272696467652d61766572616765#branch voc_762d6d6f746f722d6261636b2d656d66#branch
+.op
+.end

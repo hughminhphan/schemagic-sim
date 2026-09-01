@@ -1,4 +1,5 @@
 import { dcSweepSourceUnit, isIndependentSource } from "./dc-sweep";
+import { simpleVoltageExpression } from "./probes";
 import type { CircuitDocument, CircuitProbe, NoiseConfig } from "./types";
 
 export const NOISE_MAX_POINTS = 200_000;
@@ -16,15 +17,8 @@ export interface NoiseShape {
 }
 
 function voltageProbe(document: Pick<CircuitDocument, "components" | "wires" | "probes">, probeId: string): CircuitProbe | undefined {
-  const probe = document.probes.find((candidate) => candidate.id === probeId && candidate.kind === "voltage");
-  if (!probe) return undefined;
-  if (probe.target.wire && !document.wires.some((wire) => wire.id === probe.target.wire)) return undefined;
-  if (probe.target.componentPin) {
-    const [componentId, pinIndex] = probe.target.componentPin;
-    if (!document.components.some((component) => component.id === componentId) || !Number.isInteger(pinIndex) || pinIndex < 0) return undefined;
-  }
-  if (!probe.target.wire && !probe.target.componentPin && !probe.target.node?.trim()) return undefined;
-  return probe;
+  const probe = document.probes.find((candidate) => candidate.id === probeId);
+  return probe && simpleVoltageExpression(probe) ? probe : undefined;
 }
 
 export function noisePointCount(config: Pick<NoiseConfig, "fstart" | "fstop" | "pointsPerDecade">): number {
@@ -61,7 +55,7 @@ export function inspectNoiseConfig(
 }
 
 export function defaultNoiseConfig(document: Pick<CircuitDocument, "components" | "wires" | "probes">): NoiseConfig | undefined {
-  const output = document.probes.find((probe) => probe.kind === "voltage");
+  const output = document.probes.find((probe) => simpleVoltageExpression(probe));
   const input = document.components.find(isIndependentSource);
   if (!output || !input) return undefined;
   return {

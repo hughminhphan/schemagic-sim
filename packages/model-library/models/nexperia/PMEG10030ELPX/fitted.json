@@ -1,0 +1,99 @@
+{
+  "schema_version": "1.0.0",
+  "fidelity_tier": "F1",
+  "evidence_mode": "typ-point",
+  "parameters": {
+    "IS": 3.726414198207719e-11,
+    "N": 1.1,
+    "RS": 0.0001
+  },
+  "parameter_metadata": {},
+  "calibration": {
+    "evidence_mode": "typ-point",
+    "observations": [
+      {
+        "kind": "forward_voltage",
+        "source": {
+          "voltage": "p. 1 electrical characteristics",
+          "current": "p. 1 electrical characteristics",
+          "conditions": "IF = 3 A; tp <= 300 us; delta <= 0.02; TA = 25 C",
+          "source_kind": "typical"
+        },
+        "value_v": 0.71,
+        "current_a": 3,
+        "quantity": "forward voltage",
+        "gate_quantity": "forward_voltage",
+        "datasheet_value": 0.71,
+        "unit": "V",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "ambient",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 3
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 0.71
+            }
+          },
+          "test_mode": {
+            "kind": "pulsed_limit",
+            "maximum_pulse_width_s": 0.0003,
+            "maximum_duty_cycle": 0.02
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "IF = 3 A; tp <= 300 us; delta <= 0.02; TA = 25 C"
+            }
+          ],
+          "condition_id": "sha256:b96297f1229e754e3b27871ec80aec7af32c5309ddd5d07f44227e90b02e7480"
+        },
+        "citation_identity": {
+          "source_sha256": "3f2d11b2a8cb15e1e777a6a463dc0992090e0ba46e7c685288e50559983a4502",
+          "source_revision": "revision not stated in source",
+          "page": 1,
+          "table": "electrical characteristics",
+          "row": "Forward Voltage",
+          "citation_id": "sha256:4c09186f3df63d345037a0e25bed491155e43460253de03a6b1d6b97e8293931"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:f397c7f786e03f3e86eea5b8ae8dd4fab76eda35d9039b49ed353f342e51e925",
+          "cohort_id": "sha256:ce58666f971b2e5de870e76cc5780f9508d433915b6def92a49a552744087b7d",
+          "role": "typical",
+          "condition_id": "sha256:b96297f1229e754e3b27871ec80aec7af32c5309ddd5d07f44227e90b02e7480",
+          "citation_id": "sha256:4c09186f3df63d345037a0e25bed491155e43460253de03a6b1d6b97e8293931"
+        },
+        "evidence_role": "typical_observation"
+      }
+    ],
+    "constraints": [],
+    "residual_target_count": 1,
+    "seeds": [
+      {
+        "parameter_coordinate": "IS",
+        "evidence_role": "typical_observation_seed",
+        "value": 3.726414198207719e-11,
+        "unit": "A"
+      }
+    ]
+  },
+  "fitter": "datasheet typical-point diode F1 formula",
+  "optimizer": null,
+  "held_defaults": [],
+  "curves_used": [],
+  "evidence_contract_version": "1.0.0",
+  "evidence_curves": [],
+  "curves_rejected": [],
+  "residuals": [],
+  "rms_relative_error": null,
+  "worst_relative_error": null
+}

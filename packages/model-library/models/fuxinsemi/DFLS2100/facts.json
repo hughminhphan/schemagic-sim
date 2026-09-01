@@ -1,0 +1,645 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [
+      {
+        "name": "typical_instantaneous_forward_characteristics",
+        "page_reference": "PDF p. 2, Fig. 3 Typical Instantaneous Forward Characteristics",
+        "points": [
+          {
+            "x": 0.4,
+            "y": 0.01
+          },
+          {
+            "x": 0.5,
+            "y": 0.1
+          },
+          {
+            "x": 0.65,
+            "y": 0.5
+          },
+          {
+            "x": 0.8,
+            "y": 1.3
+          },
+          {
+            "x": 1,
+            "y": 4
+          },
+          {
+            "x": 1.2,
+            "y": 8
+          }
+        ],
+        "test_conditions": "TJ = 25 °C",
+        "x_axis": {
+          "quantity": "instantaneous_forward_voltage",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "instantaneous_forward_current",
+          "scale": "log",
+          "unit": "A"
+        }
+      },
+      {
+        "name": "forward_current_derating_curve",
+        "page_reference": "PDF p. 2, Fig. 1 Forward Current Derating Curve",
+        "points": [
+          {
+            "x": 0,
+            "y": 2
+          },
+          {
+            "x": 130,
+            "y": 2
+          },
+          {
+            "x": 170,
+            "y": 0
+          }
+        ],
+        "test_conditions": "Single phase half-wave, 60 Hz, resistive or inductive load",
+        "x_axis": {
+          "quantity": "lead_temperature",
+          "scale": "linear",
+          "unit": "°C"
+        },
+        "y_axis": {
+          "quantity": "average_forward_rectified_current",
+          "scale": "linear",
+          "unit": "A"
+        }
+      },
+      {
+        "name": "maximum_non_repetitive_peak_forward_surge_current",
+        "page_reference": "PDF p. 2, Fig. 2 Maximum Non-Repetitive Peak Forward Surge Current",
+        "points": [
+          {
+            "x": 1,
+            "y": 50
+          },
+          {
+            "x": 10,
+            "y": 27
+          },
+          {
+            "x": 100,
+            "y": 11
+          }
+        ],
+        "test_conditions": "8.3 ms single half-sine-wave (JEDEC Method)",
+        "x_axis": {
+          "quantity": "number_of_cycles_at_60_hz",
+          "scale": "log",
+          "unit": "cycles"
+        },
+        "y_axis": {
+          "quantity": "peak_forward_surge_current",
+          "scale": "linear",
+          "unit": "A"
+        }
+      }
+    ],
+    "datasheet_identity": {
+      "pages_examined": [
+        "PDF p. 1",
+        "PDF p. 2",
+        "PDF p. 3",
+        "PDF p. 4"
+      ],
+      "revision": "Ver2.1",
+      "title": "DFLS2100 2.0A Surface Mount Schottky Barrier Rectifiers -100V"
+    },
+    "extraction_notes": [
+      "The p. 1 electrical-characteristics heading states TA = 25 °C unless otherwise noted.",
+      "The table also gives 0.35 mA maximum reverse current at rated DC blocking voltage and TA = 100 °C; the singular reverse_current field retains the normal-temperature 1 µA maximum.",
+      "Fig. 2 surge and Fig. 3 forward points were digitized directly from plotted traces at labelled axis positions; no interpolated data points were added.",
+      "The datasheet publishes no reverse-recovery measurement. VRRM and VDC are operating ratings, not a paired reverse-breakdown test, so reverse_recovery, breakdown_voltage, and breakdown_current are null."
+    ],
+    "family": "diode",
+    "manufacturer": "FUXINSEMI",
+    "mpn": "DFLS2100",
+    "omission_reason": null,
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": null,
+      "breakdown_voltage": null,
+      "capacitance": {
+        "conditions": "Applied reverse voltage = 4.0 V DC; f = 1 MHz; TA = 25 °C",
+        "page_reference": "PDF p. 1, Maximum ratings and Electrical Characteristics, Note 1",
+        "source_kind": "typical",
+        "unit": "F",
+        "value": 2.2e-10
+      },
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "TA = 25 °C",
+            "page_reference": "PDF p. 1, Maximum ratings and Electrical Characteristics",
+            "source_kind": "maximum",
+            "unit": "A",
+            "value": 1
+          },
+          "voltage": {
+            "conditions": "IF = 1.0 A; TA = 25 °C",
+            "page_reference": "PDF p. 1, Maximum ratings and Electrical Characteristics",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 0.77
+          }
+        },
+        {
+          "current": {
+            "conditions": "TA = 25 °C",
+            "page_reference": "PDF p. 1, Maximum ratings and Electrical Characteristics",
+            "source_kind": "maximum",
+            "unit": "A",
+            "value": 2
+          },
+          "voltage": {
+            "conditions": "IF = 2.0 A; TA = 25 °C",
+            "page_reference": "PDF p. 1, Maximum ratings and Electrical Characteristics",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 0.85
+          }
+        },
+        {
+          "current": {
+            "conditions": "TJ = 25 °C",
+            "page_reference": "PDF p. 2, Fig. 3 Typical Instantaneous Forward Characteristics",
+            "source_kind": "digitized_typical_curve",
+            "unit": "A",
+            "value": 0.1
+          },
+          "voltage": {
+            "conditions": "IF = 0.1 A; TJ = 25 °C",
+            "page_reference": "PDF p. 2, Fig. 3 Typical Instantaneous Forward Characteristics",
+            "source_kind": "digitized_typical_curve",
+            "unit": "V",
+            "value": 0.5
+          }
+        },
+        {
+          "current": {
+            "conditions": "TJ = 25 °C",
+            "page_reference": "PDF p. 2, Fig. 3 Typical Instantaneous Forward Characteristics",
+            "source_kind": "digitized_typical_curve",
+            "unit": "A",
+            "value": 1.3
+          },
+          "voltage": {
+            "conditions": "IF = 1.3 A; TJ = 25 °C",
+            "page_reference": "PDF p. 2, Fig. 3 Typical Instantaneous Forward Characteristics",
+            "source_kind": "digitized_typical_curve",
+            "unit": "V",
+            "value": 0.8
+          }
+        },
+        {
+          "current": {
+            "conditions": "TJ = 25 °C",
+            "page_reference": "PDF p. 2, Fig. 3 Typical Instantaneous Forward Characteristics",
+            "source_kind": "digitized_typical_curve",
+            "unit": "A",
+            "value": 8
+          },
+          "voltage": {
+            "conditions": "IF = 8 A; TJ = 25 °C",
+            "page_reference": "PDF p. 2, Fig. 3 Typical Instantaneous Forward Characteristics",
+            "source_kind": "digitized_typical_curve",
+            "unit": "V",
+            "value": 1.2
+          }
+        }
+      ],
+      "reverse_current": {
+        "conditions": "Rated DC blocking voltage = 100 V; TA = 25 °C",
+        "page_reference": "PDF p. 1, Maximum ratings and Electrical Characteristics",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.000001
+      },
+      "reverse_recovery": null,
+      "variant": "schottky"
+    },
+    "usable_curves": true
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "Forward Voltage (Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "850mV@2A",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Voltage - Forward(Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "850mV@2A",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "DFLS2100",
+    "manufacturer": "FUXINSEMI",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8590233066871283712",
+    "revision": "Ver2.1",
+    "sha256": "32fd8f8182f0a55184d12d2c282c3c2fa3893d6c35fc3265f0a328cef6ab21da",
+    "accessed_date": "2026-08-23",
+    "pages_referenced": [
+      "PDF p. 1",
+      "PDF p. 2",
+      "PDF p. 3",
+      "PDF p. 4"
+    ],
+    "placeholder": false
+  },
+  "evidence_contract_version": "1.0.0",
+  "fit_points": [
+    {
+      "current": {
+        "conditions": "TJ = 25 °C",
+        "page_reference": "PDF p. 2, Fig. 3 Typical Instantaneous Forward Characteristics",
+        "source_kind": "digitized_typical_curve",
+        "unit": "A",
+        "value": 0.1
+      },
+      "voltage": {
+        "conditions": "IF = 0.1 A; TJ = 25 °C",
+        "page_reference": "PDF p. 2, Fig. 3 Typical Instantaneous Forward Characteristics",
+        "source_kind": "digitized_typical_curve",
+        "unit": "V",
+        "value": 0.5
+      }
+    },
+    {
+      "current": {
+        "conditions": "TA = 25 °C",
+        "page_reference": "PDF p. 1, Maximum ratings and Electrical Characteristics",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 2
+      },
+      "voltage": {
+        "conditions": "IF = 2.0 A; TA = 25 °C",
+        "page_reference": "PDF p. 1, Maximum ratings and Electrical Characteristics",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 0.85
+      }
+    },
+    {
+      "current": {
+        "conditions": "TA = 25 °C",
+        "page_reference": "PDF p. 1, Maximum ratings and Electrical Characteristics",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 1
+      },
+      "voltage": {
+        "conditions": "IF = 1.0 A; TA = 25 °C",
+        "page_reference": "PDF p. 1, Maximum ratings and Electrical Characteristics",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 0.77
+      }
+    }
+  ],
+  "forward_voltage_points": [
+    {
+      "current": {
+        "conditions": "TA = 25 °C",
+        "page_reference": "PDF p. 1, Maximum ratings and Electrical Characteristics",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 1,
+        "quantity": "forward_current",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "ambient",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 1
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 0.77
+            }
+          },
+          "test_mode": {
+            "kind": "not_stated"
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "TA = 25 °C"
+            }
+          ],
+          "condition_id": "sha256:1d5629430db2c037d8313cc66d21907e677764a822e61a6ddadb1878ba5fb1cf"
+        },
+        "citation_identity": {
+          "source_sha256": "32fd8f8182f0a55184d12d2c282c3c2fa3893d6c35fc3265f0a328cef6ab21da",
+          "source_revision": "Ver2.1",
+          "page": 1,
+          "table": "Maximum ratings and Electrical Characteristics",
+          "row": "Forward Current",
+          "citation_id": "sha256:042d6fa894816fb4c98aa49929210d554ed75fde2d5710342b6a16556fa16465"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:03466fbd1f163ad112b5b4bff8b0d2544101bd77a55fe9881296ef4f4d766a04",
+          "cohort_id": "sha256:ac57fe6e19dd7ac55e773f357b6b3330e34d984284b32a85236f1cca779ec559",
+          "role": "maximum",
+          "condition_id": "sha256:1d5629430db2c037d8313cc66d21907e677764a822e61a6ddadb1878ba5fb1cf",
+          "citation_id": "sha256:042d6fa894816fb4c98aa49929210d554ed75fde2d5710342b6a16556fa16465"
+        }
+      },
+      "voltage": {
+        "conditions": "IF = 1.0 A; TA = 25 °C",
+        "page_reference": "PDF p. 1, Maximum ratings and Electrical Characteristics",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 0.77,
+        "quantity": "forward_voltage",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "ambient",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 1
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 0.77
+            }
+          },
+          "test_mode": {
+            "kind": "not_stated"
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "IF = 1.0 A; TA = 25 °C"
+            }
+          ],
+          "condition_id": "sha256:7bc35ba70bd625932b8f4360add75375b88e3460eb537552bd2f46179121bfb5"
+        },
+        "citation_identity": {
+          "source_sha256": "32fd8f8182f0a55184d12d2c282c3c2fa3893d6c35fc3265f0a328cef6ab21da",
+          "source_revision": "Ver2.1",
+          "page": 1,
+          "table": "Maximum ratings and Electrical Characteristics",
+          "row": "Forward Voltage",
+          "citation_id": "sha256:88fadc6fad9786ef4723f11fb56e1d074070858bde775a9b9c9100fa0cd6b5ef"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:2832ea77912a311547020652f54b414afa96813ec3a5fced0f6d8ee1f2a9b4e0",
+          "cohort_id": "sha256:9e6a6a73cfa03a1b403cdede8f9571cfb34dcb5ed70f5496315759b21754367a",
+          "role": "maximum",
+          "condition_id": "sha256:7bc35ba70bd625932b8f4360add75375b88e3460eb537552bd2f46179121bfb5",
+          "citation_id": "sha256:88fadc6fad9786ef4723f11fb56e1d074070858bde775a9b9c9100fa0cd6b5ef"
+        }
+      }
+    },
+    {
+      "current": {
+        "conditions": "TA = 25 °C",
+        "page_reference": "PDF p. 1, Maximum ratings and Electrical Characteristics",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 2,
+        "quantity": "forward_current",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "ambient",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 2
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 0.85
+            }
+          },
+          "test_mode": {
+            "kind": "not_stated"
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "TA = 25 °C"
+            }
+          ],
+          "condition_id": "sha256:af893cb5bde135367f1d3ac85130b63d625f525a2a3ff0d2d528316f45a34057"
+        },
+        "citation_identity": {
+          "source_sha256": "32fd8f8182f0a55184d12d2c282c3c2fa3893d6c35fc3265f0a328cef6ab21da",
+          "source_revision": "Ver2.1",
+          "page": 1,
+          "table": "Maximum ratings and Electrical Characteristics",
+          "row": "Forward Current",
+          "citation_id": "sha256:042d6fa894816fb4c98aa49929210d554ed75fde2d5710342b6a16556fa16465"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:e8e8f6b9badcb709b6ccb4980b747b205828e76d65c11558f6a37f2ac2ce131d",
+          "cohort_id": "sha256:ca0e23a1ea339467e3179740e06e1f425607c2e84fb5736ae2bb403f482d3de7",
+          "role": "maximum",
+          "condition_id": "sha256:af893cb5bde135367f1d3ac85130b63d625f525a2a3ff0d2d528316f45a34057",
+          "citation_id": "sha256:042d6fa894816fb4c98aa49929210d554ed75fde2d5710342b6a16556fa16465"
+        }
+      },
+      "voltage": {
+        "conditions": "IF = 2.0 A; TA = 25 °C",
+        "page_reference": "PDF p. 1, Maximum ratings and Electrical Characteristics",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 0.85,
+        "quantity": "forward_voltage",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "ambient",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 2
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 0.85
+            }
+          },
+          "test_mode": {
+            "kind": "not_stated"
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "IF = 2.0 A; TA = 25 °C"
+            }
+          ],
+          "condition_id": "sha256:6a2fae54938c607401c6c81b9279a9b123749ebc8e31539b6d3aa7b235f7dc9e"
+        },
+        "citation_identity": {
+          "source_sha256": "32fd8f8182f0a55184d12d2c282c3c2fa3893d6c35fc3265f0a328cef6ab21da",
+          "source_revision": "Ver2.1",
+          "page": 1,
+          "table": "Maximum ratings and Electrical Characteristics",
+          "row": "Forward Voltage",
+          "citation_id": "sha256:88fadc6fad9786ef4723f11fb56e1d074070858bde775a9b9c9100fa0cd6b5ef"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:72095d30da150aae30cde41ac63be3d1e18f79aeb85c9d88fdbabd7eefb37581",
+          "cohort_id": "sha256:657ef315d020a79c4372fa82bac69e56ad582b05cb55b6441fd48d55a3c1d2a9",
+          "role": "maximum",
+          "condition_id": "sha256:6a2fae54938c607401c6c81b9279a9b123749ebc8e31539b6d3aa7b235f7dc9e",
+          "citation_id": "sha256:88fadc6fad9786ef4723f11fb56e1d074070858bde775a9b9c9100fa0cd6b5ef"
+        }
+      }
+    },
+    {
+      "current": {
+        "conditions": "TJ = 25 °C",
+        "page_reference": "PDF p. 2, Fig. 3 Typical Instantaneous Forward Characteristics",
+        "source_kind": "digitized_typical_curve",
+        "unit": "A",
+        "value": 0.1,
+        "quantity": "forward_current",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "junction",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 0.1
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 0.5
+            }
+          },
+          "test_mode": {
+            "kind": "not_stated"
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "TJ = 25 °C"
+            }
+          ],
+          "condition_id": "sha256:b2df6da8c523f3d052b9b8c52947cc7c76473d60bfaf74db51c1d9c3634f25dc"
+        },
+        "citation_identity": {
+          "source_sha256": "32fd8f8182f0a55184d12d2c282c3c2fa3893d6c35fc3265f0a328cef6ab21da",
+          "source_revision": "Ver2.1",
+          "page": 2,
+          "figure": "3",
+          "curve": "Forward Current: TJ = 25 °C",
+          "citation_id": "sha256:8e623b2f17ab204b60eb4aa2344896b5d6323ed3e1f4fac9df474dd69c0a5eac"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:2378fa55e1c707ddccd8a4c3dfbc51269b5d5b15775438dd338e0cb2ab3aba9b",
+          "cohort_id": "sha256:2e72271e2e6141629d019fd9f004d8c14d2c37caa5204cf680bf814a2d1c10cf",
+          "role": "digitized_typical_curve",
+          "condition_id": "sha256:b2df6da8c523f3d052b9b8c52947cc7c76473d60bfaf74db51c1d9c3634f25dc",
+          "citation_id": "sha256:8e623b2f17ab204b60eb4aa2344896b5d6323ed3e1f4fac9df474dd69c0a5eac"
+        }
+      },
+      "voltage": {
+        "conditions": "IF = 0.1 A; TJ = 25 °C",
+        "page_reference": "PDF p. 2, Fig. 3 Typical Instantaneous Forward Characteristics",
+        "source_kind": "digitized_typical_curve",
+        "unit": "V",
+        "value": 0.5,
+        "quantity": "forward_voltage",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "junction",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 0.1
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 0.5
+            }
+          },
+          "test_mode": {
+            "kind": "not_stated"
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "IF = 0.1 A; TJ = 25 °C"
+            }
+          ],
+          "condition_id": "sha256:2895f0fb960ba78e723ad627223689b50f3665fdac0acbae224572a17cc8e828"
+        },
+        "citation_identity": {
+          "source_sha256": "32fd8f8182f0a55184d12d2c282c3c2fa3893d6c35fc3265f0a328cef6ab21da",
+          "source_revision": "Ver2.1",
+          "page": 2,
+          "figure": "3",
+          "curve": "Forward Voltage: IF = 0.1 A; TJ = 25 °C",
+          "citation_id": "sha256:5ca329776fed691151495c02520575b80e1a1867a19b3ff4ff87f238a8a87f29"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:0c503040798fd3b59841994b68eddd0a0d37230b44f92d52253e0a251db19ee8",
+          "cohort_id": "sha256:cd9c922e4bae5b0ff6b8f5cec69ce528b99b324002729d59f190388c8ef6f707",
+          "role": "digitized_typical_curve",
+          "condition_id": "sha256:2895f0fb960ba78e723ad627223689b50f3665fdac0acbae224572a17cc8e828",
+          "citation_id": "sha256:5ca329776fed691151495c02520575b80e1a1867a19b3ff4ff87f238a8a87f29"
+        }
+      }
+    }
+  ],
+  "curves": [],
+  "electrical_limits": {},
+  "derived_model_inputs": {}
+}

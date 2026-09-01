@@ -1,0 +1,188 @@
+{
+  "schema_version": "1.0.0",
+  "evidence_contract_version": "1.0.0",
+  "canonical_mpn": "G1M",
+  "manufacturer": "Yangzhou Yangjie Elec Tech",
+  "description": "-55℃~+150℃ 1.1V@1A 1A 1kV 30A 5uA@1kV Independent SOD-123 Diodes - General Purpose ROHS",
+  "electrical_family": "diode",
+  "symbol_pins": [
+    {
+      "name": "A",
+      "number": "1",
+      "role": "anode"
+    },
+    {
+      "name": "K",
+      "number": "2",
+      "role": "cathode"
+    }
+  ],
+  "spice_pin_mapping": [
+    {
+      "symbol_pin_number": "1",
+      "subckt_node": "anode",
+      "order": 1
+    },
+    {
+      "symbol_pin_number": "2",
+      "subckt_node": "cathode",
+      "order": 2
+    }
+  ],
+  "package_variants": [
+    {
+      "name": "SOD-123",
+      "standard": "SOD-123",
+      "pin_count": 2,
+      "pin_map": [
+        {
+          "package_pin": "1",
+          "symbol_pin_number": "1"
+        },
+        {
+          "package_pin": "2",
+          "symbol_pin_number": "2"
+        }
+      ]
+    }
+  ],
+  "ordering_code_aliases": [],
+  "datasheet": {
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8588918623443935232",
+    "revision": "S-S036 Rev. 2.4, 23-Apr-19"
+  },
+  "model_type": "dot_model",
+  "fidelity_tier": "F1",
+  "domain_coverage": {
+    "dc": "approx",
+    "ac": "none",
+    "transient": "none",
+    "noise": "none",
+    "thermal": "none",
+    "digital": "none"
+  },
+  "supported_analyses": [
+    "operating_point",
+    "dc_sweep"
+  ],
+  "supported_operating_region": {
+    "contract_version": "1.0.0",
+    "summary": "Supported only over the direct cited diode forward-evidence union: forward_current 1 to 1 A; forward_voltage 1.1 to 1.1 V; temperature 25 to 25 degC.",
+    "numeric_bounds": [
+      {
+        "bound_id": "sha256:04b2c1aec8959e438da70c666a89cc65293c1364cb0221e17ac9a247013c73c9",
+        "quantity": "forward_current",
+        "kind": "range",
+        "unit": "A",
+        "minimum": 1,
+        "maximum": 1,
+        "evidence_refs": [
+          {
+            "evidence_id": "sha256:cc2f53bc1d91644736d22ce446bd4b337a107f1cc2a0d87873dad914b6174f77",
+            "condition_id": "sha256:c40978c11757118ccc0eb0be716fe20441adc0313d3f004868400670df55849e",
+            "citation_id": "sha256:2c2b764a2432c7a1660c2c32ec576eea092079bea79d77ade2af26290fa6af80",
+            "cohort_id": "sha256:c708882a1960908ccfb91a164d3d4d2b3f1a6bfc58be91314b2677ea985c7bbb"
+          }
+        ],
+        "condition_ids": [
+          "sha256:c40978c11757118ccc0eb0be716fe20441adc0313d3f004868400670df55849e"
+        ],
+        "citation_ids": [
+          "sha256:2c2b764a2432c7a1660c2c32ec576eea092079bea79d77ade2af26290fa6af80"
+        ],
+        "derivation": "direct_evidence_union",
+        "conditions": "Direct cited diode forward-evidence union",
+        "placeholder": false
+      },
+      {
+        "bound_id": "sha256:c988da6ee9e81692963a6771682027f04e6e15221aea129d18a385af407a362f",
+        "quantity": "forward_voltage",
+        "kind": "range",
+        "unit": "V",
+        "minimum": 1.1,
+        "maximum": 1.1,
+        "evidence_refs": [
+          {
+            "evidence_id": "sha256:d7de6f34a89e506fbfa150f79a9b80702a5baa1fe9e1aee0e85c1cc037fd96f0",
+            "condition_id": "sha256:2fc71310928fed15fb7553d7ef4ba621333db7f32afbb1002eb1514beb1e46df",
+            "citation_id": "sha256:81e7f4d43c882afa3cf174ba00e3d6ee10ba503c2f354d5f46d6cdc9e2f93e08",
+            "cohort_id": "sha256:400febb055f5fd4ec8f4bafd6c1c41a412105905b4e7b99b1192180728d1b92b"
+          }
+        ],
+        "condition_ids": [
+          "sha256:2fc71310928fed15fb7553d7ef4ba621333db7f32afbb1002eb1514beb1e46df"
+        ],
+        "citation_ids": [
+          "sha256:81e7f4d43c882afa3cf174ba00e3d6ee10ba503c2f354d5f46d6cdc9e2f93e08"
+        ],
+        "derivation": "direct_evidence_union",
+        "conditions": "Direct cited diode forward-evidence union",
+        "placeholder": false
+      },
+      {
+        "bound_id": "sha256:16b717da6b26183ddf04a326e157b8e8dd2287910f22e8f9da2cbaf205108968",
+        "quantity": "temperature",
+        "kind": "range",
+        "unit": "degC",
+        "minimum": 25,
+        "maximum": 25,
+        "evidence_refs": [
+          {
+            "evidence_id": "sha256:cc2f53bc1d91644736d22ce446bd4b337a107f1cc2a0d87873dad914b6174f77",
+            "condition_id": "sha256:c40978c11757118ccc0eb0be716fe20441adc0313d3f004868400670df55849e",
+            "citation_id": "sha256:2c2b764a2432c7a1660c2c32ec576eea092079bea79d77ade2af26290fa6af80",
+            "cohort_id": "sha256:c708882a1960908ccfb91a164d3d4d2b3f1a6bfc58be91314b2677ea985c7bbb"
+          },
+          {
+            "evidence_id": "sha256:d7de6f34a89e506fbfa150f79a9b80702a5baa1fe9e1aee0e85c1cc037fd96f0",
+            "condition_id": "sha256:2fc71310928fed15fb7553d7ef4ba621333db7f32afbb1002eb1514beb1e46df",
+            "citation_id": "sha256:81e7f4d43c882afa3cf174ba00e3d6ee10ba503c2f354d5f46d6cdc9e2f93e08",
+            "cohort_id": "sha256:400febb055f5fd4ec8f4bafd6c1c41a412105905b4e7b99b1192180728d1b92b"
+          }
+        ],
+        "condition_ids": [
+          "sha256:2fc71310928fed15fb7553d7ef4ba621333db7f32afbb1002eb1514beb1e46df",
+          "sha256:c40978c11757118ccc0eb0be716fe20441adc0313d3f004868400670df55849e"
+        ],
+        "citation_ids": [
+          "sha256:2c2b764a2432c7a1660c2c32ec576eea092079bea79d77ade2af26290fa6af80",
+          "sha256:81e7f4d43c882afa3cf174ba00e3d6ee10ba503c2f354d5f46d6cdc9e2f93e08"
+        ],
+        "derivation": "direct_evidence_union",
+        "temperature_kind": "ambient",
+        "conditions": "Direct cited diode forward-evidence union",
+        "placeholder": false
+      }
+    ]
+  },
+  "known_omissions": [
+    "AC, transient, noise, thermal, and package-parasitic behavior are outside this DC-only conveyor package.",
+    "Temperature dependence and self-heating are not modelled; each electrical claim is limited to its exact cited bench temperature.",
+    "Catalog parametrics may be recorded only as optimizer seeds; they are not evidence, constraints, residual targets, or datasheet citations.",
+    "The datasheet publishes no junction-capacitance value, reverse-recovery-time value, or paired breakdown-voltage/current measurement; those fields are null.",
+    "Reverse-bias leakage is not covered by this F1 package because the approximation is supported only over cited forward-bias targets."
+  ],
+  "licence": {
+    "spdx_id": "MIT",
+    "provenance_basis": "original_from_facts"
+  },
+  "generator": {
+    "tool_or_agent": "opencircuit-model-factory-v0.1.0 bulk-adapter evidence-contract-1.0.0",
+    "date": "2026-08-23"
+  },
+  "reviewer": {
+    "tool_or_agent": "gpt-5.6-terra independent package reviewer",
+    "date": "2026-08-23"
+  },
+  "test_results": {
+    "status": "complete",
+    "pass_count": 1,
+    "fail_count": 0,
+    "total_count": 1,
+    "worst_observed_relative_fitting_error": {
+      "value": 0,
+      "quantity": "package expectation"
+    }
+  },
+  "validation_date": "2026-08-23"
+}

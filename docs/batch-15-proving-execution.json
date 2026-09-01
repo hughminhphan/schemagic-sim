@@ -1,8 +1,8 @@
 {
   "schema_version": "1.0.0",
-  "date": "2026-08-12",
+  "date": "2026-08-14",
   "campaign": "scheMAGIC scale-2k Batch 15 MOSFET F1 constraint proving execution",
-  "status": "terminal-stop-before-fit-second-code-review-block",
+  "status": "terminal-proving-gate-fail-after-single-fit-pass",
   "base_and_freeze": {
     "required_base": "ec7a8b7",
     "selection_record_commit": "6f526f8",
@@ -34,38 +34,81 @@
     "completion_ledger_entries": 8,
     "completion_ledger_unique_keys": 8,
     "immutable_job_count": 10,
-    "immutable_job_hash_drift": 0
+    "immutable_job_hash_drift": 0,
+    "response_hashes_reverified": 8
   },
   "fit_and_staging": {
-    "fit_blocked_pending_code_approval": true,
-    "parts_entering_fit": 0,
-    "fit_passes": 0,
+    "fit_blocked_pending_code_approval": false,
+    "code_approval_record": "docs/mosfet-hardening-cycle-4-review.md",
+    "approved_correction_commit": "1b686477432e58ac25293299570b2eb6a669352d",
+    "parts_entering_fit": 8,
+    "fit_passes": 1,
     "packages_staged": 0,
+    "interval_constrained_packages_staged": 0,
     "packages_validated": 0,
     "packages_reviewed": 0,
-    "packages_promoted": 0
+    "packages_promoted": 0,
+    "fit_failure_summary": [
+      {
+        "lcsc_id": "C353086",
+        "mpn": "AP2N7002",
+        "reason": "F2 and F1 both failed because threshold minimum evidence did not state its exact test mode."
+      },
+      {
+        "lcsc_id": "C485687",
+        "mpn": "AOD66923",
+        "reason": "F2 output-curve evidence retained an unknown temperature qualifier; F1 threshold minimum lacked an exact test mode."
+      },
+      {
+        "lcsc_id": "C353072",
+        "mpn": "AP4438",
+        "reason": "F2 output-curve evidence retained an unknown typical-figure qualifier; F1 threshold minimum lacked an exact test mode."
+      },
+      {
+        "lcsc_id": "C518789",
+        "mpn": "FDN338P",
+        "reason": "F2 output-curve evidence lacked an exact test mode; F1 threshold evidence retained an unknown P-channel magnitude qualifier."
+      },
+      {
+        "lcsc_id": "C238629",
+        "mpn": "SE30150B",
+        "reason": "F2 output-curve evidence retained unknown figure and temperature qualifiers; F1 threshold minimum lacked an exact test mode."
+      },
+      {
+        "lcsc_id": "C260863",
+        "mpn": "ZVN3320FTA",
+        "reason": "F2 output-curve evidence retained an unknown figure qualifier; F1 threshold minimum lacked one exact typed temperature."
+      },
+      {
+        "lcsc_id": "C154721",
+        "mpn": "ZXMN2A01FTA",
+        "reason": "F2 threshold minimum lacked an exact test mode; F1 threshold evidence lacked the complete two-sided interval."
+      },
+      {
+        "lcsc_id": "C3021112",
+        "mpn": "SI2309CDS",
+        "reason": "F2 output-curve evidence retained unknown figure, magnitude, and temperature qualifiers; F1 threshold evidence retained unknown source-value and P-channel magnitude qualifiers."
+      }
+    ]
   },
   "code_review": {
-    "initial_verdict": "BLOCK",
-    "bounded_remediation_commit": "46f64c395091ab48b35bb03b46e14dd6e1c613d6",
-    "re_review_verdict": "BLOCK",
-    "remediation_cycle_limit": 1,
-    "remediation_cycle_consumed": true,
+    "original_initial_verdict": "BLOCK",
+    "original_bounded_remediation_commit": "46f64c395091ab48b35bb03b46e14dd6e1c613d6",
+    "original_re_review_verdict": "BLOCK",
     "blocked_remediation_preserved_branch": "batch-15-blocked-remediation",
-    "approved_main_restored_to": "6f526f8",
-    "remaining_blockers": [
-      "F2 RDS(on) evidence can enter residuals or constraints without one exact validated condition identity",
-      "F2 threshold evidence can influence seeds and bounds without complete independent conditions and citations",
-      "F1 RDS(on) condition matching does not reject incompatible additional qualifiers such as pulse duration",
-      "a silent 25 degree Celsius operating-region metadata fallback remains"
-    ]
+    "standing_authorization_record": "docs/mosfet-hardening-standing-authorization.md",
+    "superseding_cumulative_range": "4814648..1b68647",
+    "superseding_verdict": "APPROVE",
+    "superseding_review_record": "docs/mosfet-hardening-cycle-4-review.md"
   },
   "proving_gate": {
     "minimum_provenance_clean_staged": 6,
     "minimum_interval_constrained_staged": 3,
-    "evaluated": false,
-    "decision": "STOP",
-    "reason": "The second independent code-review BLOCK stopped the campaign before the single fit pass."
+    "actual_provenance_clean_staged": 0,
+    "actual_interval_constrained_staged": 0,
+    "evaluated": true,
+    "decision": "FAIL",
+    "reason": "The single authorized fit pass staged 0 of 10 packages, below both fixed thresholds: 0 < 6 provenance-clean and 0 < 3 interval-constrained."
   },
   "guardrails": {
     "reviewed_models_changed": false,
@@ -75,11 +118,27 @@
     "vendor_spice_used": false,
     "fit_gates_relaxed": false,
     "hard_bounds_relaxed": false,
-    "part_specific_bypasses_added": 0
+    "part_specific_bypasses_added": 0,
+    "fit_retries_run": 0
+  },
+  "final_release_control_audit": {
+    "date": "2026-08-14",
+    "verdict": "APPROVE",
+    "audited_head": "4c3318d",
+    "scope": "terminal record, Batch 15 integrity evidence, single fit-pass outcome, reviewed-library immutability, and campaign stop conditions",
+    "confirmed": [
+      "the cumulative code APPROVE preceded the fit pass",
+      "all 10 immutable jobs retained their recorded hashes and read-only modes",
+      "the completion ledger contained exactly 8 unique accepted keys with matching response hashes",
+      "exactly one fit pass transitioned all 8 eligible rows from extracted to failed_fitted",
+      "zero packages were staged and both fixed proving thresholds failed",
+      "no retry, promotion, reviewed-library mutation, deployment, or authorized continuation occurred"
+    ],
+    "authorization_effect": "record verification only; the campaign remains stopped and this audit authorizes no push, deployment, promotion, or continuation"
   },
   "terminal_result": {
-    "decision": "STOP_AND_ESCALATE",
-    "summary": "Batch 15 completed fresh extraction for eight eligible MOSFETs and parked two gate-protected rows. No candidate fit ran. The one bounded constrained-F1 remediation passed its author tests but failed the authorized independent re-review because incomplete or hybrid evidence remained admissible in F2 and one F1 condition-identity path. The reviewed library remains 710.",
+    "decision": "STOP_CAMPAIGN_GATE_FAIL",
+    "summary": "After a fresh cumulative APPROVE of the integrated evidence-admission code, all ten immutable job hashes and eight unique accepted completion-ledger entries were reverified. Orders 980 and 988 remained parked. The one authorized fit pass ran over the eight accepted extractions and staged zero packages because every candidate failed the strict F1 and F2 evidence contracts. The Batch 15 proving gate therefore failed without retries or relaxed constraints. The reviewed library remains 710.",
     "new_remediation_authorized_by_this_record": false,
     "new_candidate_execution_authorized_by_this_record": false,
     "continuation_into_order_990_or_later_authorized": false

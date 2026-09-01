@@ -1,0 +1,260 @@
+{
+  "schema_version": "1.0.0",
+  "evidence_contract_version": "1.0.0",
+  "evidence_cohorts": [
+    {
+      "cohort_id": "sha256:19ab4aab67bc633d4ac80d96d1f7374df356031f51cbf27f65c8bf1f9a133b3d",
+      "fidelity_tier": "F2",
+      "evidence_ids": [
+        "sha256:4936645de7fbf947a9e477f0fac17ac88cd3c56e2d4266ce6ec773d44e2d63de",
+        "sha256:727499dea7bab3dff728ff8cc88aef437e72481220682e9a608640c9a6ae169a",
+        "sha256:8c622c39f795e8d699df23a3a2a7a576e4209a1327fc1283fa42fa438bb0bfa4",
+        "sha256:c8fd9a1861490193c0753c16962032b42ef428ff2a853bf219743d6c542c8348",
+        "sha256:9f6c625706d60476eab68e08bda77fe628851b4fccabb03ecb5ea20fc9dffc79",
+        "sha256:1d0ed1cff280ad3a13deb584cfac59498c65582dfdadc3bc0f92009349d5e120"
+      ]
+    }
+  ],
+  "tests": [
+    {
+      "test_netlist": "forward_01.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "forward_voltage_at_0.000001_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "expected_value": 0.45,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.05
+          },
+          "datasheet_citation": "p. 4, Figure Forward characteristics at T_J = 25 degC, Forward characteristics at T_J = 25 degC",
+          "evidence_id": "sha256:4936645de7fbf947a9e477f0fac17ac88cd3c56e2d4266ce6ec773d44e2d63de",
+          "condition_id": "sha256:33be2070f8abd03fd64fc3f0e5f04149419d886ca85b86e8ebbb31da5529f10c",
+          "citation_id": "sha256:e3ad0d96c1230377a28e6dff77fa66fa08b039e578f68b23adf62cb4d8fb40fb",
+          "cohort_id": "sha256:19ab4aab67bc633d4ac80d96d1f7374df356031f51cbf27f65c8bf1f9a133b3d",
+          "bench_condition_id": "sha256:33be2070f8abd03fd64fc3f0e5f04149419d886ca85b86e8ebbb31da5529f10c",
+          "evidence_role": "curve_point",
+          "citation_locator": {
+            "page": 4,
+            "figure": "Forward characteristics at T_J = 25 degC",
+            "curve": "Forward characteristics at T_J = 25 degC"
+          },
+          "evidence_qualification": {
+            "test_mode": "not_stated"
+          },
+          "bench_qualification": {
+            "test_mode": "continuous_dc"
+          },
+          "bench_equivalence_policy": "isothermal_diode_forward_projection",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "forward_02.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "forward_voltage_at_0.00001_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "expected_value": 0.5,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.05
+          },
+          "datasheet_citation": "p. 4, Figure Forward characteristics at T_J = 25 degC, Forward characteristics at T_J = 25 degC",
+          "evidence_id": "sha256:727499dea7bab3dff728ff8cc88aef437e72481220682e9a608640c9a6ae169a",
+          "condition_id": "sha256:33be2070f8abd03fd64fc3f0e5f04149419d886ca85b86e8ebbb31da5529f10c",
+          "citation_id": "sha256:e3ad0d96c1230377a28e6dff77fa66fa08b039e578f68b23adf62cb4d8fb40fb",
+          "cohort_id": "sha256:19ab4aab67bc633d4ac80d96d1f7374df356031f51cbf27f65c8bf1f9a133b3d",
+          "bench_condition_id": "sha256:33be2070f8abd03fd64fc3f0e5f04149419d886ca85b86e8ebbb31da5529f10c",
+          "evidence_role": "curve_point",
+          "citation_locator": {
+            "page": 4,
+            "figure": "Forward characteristics at T_J = 25 degC",
+            "curve": "Forward characteristics at T_J = 25 degC"
+          },
+          "evidence_qualification": {
+            "test_mode": "not_stated"
+          },
+          "bench_qualification": {
+            "test_mode": "continuous_dc"
+          },
+          "bench_equivalence_policy": "isothermal_diode_forward_projection",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "forward_03.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "forward_voltage_at_0.0001_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "expected_value": 0.56,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.05
+          },
+          "datasheet_citation": "p. 4, Figure Forward characteristics at T_J = 25 degC, Forward characteristics at T_J = 25 degC",
+          "evidence_id": "sha256:8c622c39f795e8d699df23a3a2a7a576e4209a1327fc1283fa42fa438bb0bfa4",
+          "condition_id": "sha256:33be2070f8abd03fd64fc3f0e5f04149419d886ca85b86e8ebbb31da5529f10c",
+          "citation_id": "sha256:e3ad0d96c1230377a28e6dff77fa66fa08b039e578f68b23adf62cb4d8fb40fb",
+          "cohort_id": "sha256:19ab4aab67bc633d4ac80d96d1f7374df356031f51cbf27f65c8bf1f9a133b3d",
+          "bench_condition_id": "sha256:33be2070f8abd03fd64fc3f0e5f04149419d886ca85b86e8ebbb31da5529f10c",
+          "evidence_role": "curve_point",
+          "citation_locator": {
+            "page": 4,
+            "figure": "Forward characteristics at T_J = 25 degC",
+            "curve": "Forward characteristics at T_J = 25 degC"
+          },
+          "evidence_qualification": {
+            "test_mode": "not_stated"
+          },
+          "bench_qualification": {
+            "test_mode": "continuous_dc"
+          },
+          "bench_equivalence_policy": "isothermal_diode_forward_projection",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "forward_04.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "forward_voltage_at_0.001_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "expected_value": 0.63,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.05
+          },
+          "datasheet_citation": "p. 4, Figure Forward characteristics at T_J = 25 degC, Forward characteristics at T_J = 25 degC",
+          "evidence_id": "sha256:c8fd9a1861490193c0753c16962032b42ef428ff2a853bf219743d6c542c8348",
+          "condition_id": "sha256:33be2070f8abd03fd64fc3f0e5f04149419d886ca85b86e8ebbb31da5529f10c",
+          "citation_id": "sha256:e3ad0d96c1230377a28e6dff77fa66fa08b039e578f68b23adf62cb4d8fb40fb",
+          "cohort_id": "sha256:19ab4aab67bc633d4ac80d96d1f7374df356031f51cbf27f65c8bf1f9a133b3d",
+          "bench_condition_id": "sha256:33be2070f8abd03fd64fc3f0e5f04149419d886ca85b86e8ebbb31da5529f10c",
+          "evidence_role": "curve_point",
+          "citation_locator": {
+            "page": 4,
+            "figure": "Forward characteristics at T_J = 25 degC",
+            "curve": "Forward characteristics at T_J = 25 degC"
+          },
+          "evidence_qualification": {
+            "test_mode": "not_stated"
+          },
+          "bench_qualification": {
+            "test_mode": "continuous_dc"
+          },
+          "bench_equivalence_policy": "isothermal_diode_forward_projection",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "forward_05.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "forward_voltage_at_0.01_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "expected_value": 0.72,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.05
+          },
+          "datasheet_citation": "p. 4, Figure Forward characteristics at T_J = 25 degC, Forward characteristics at T_J = 25 degC",
+          "evidence_id": "sha256:9f6c625706d60476eab68e08bda77fe628851b4fccabb03ecb5ea20fc9dffc79",
+          "condition_id": "sha256:33be2070f8abd03fd64fc3f0e5f04149419d886ca85b86e8ebbb31da5529f10c",
+          "citation_id": "sha256:e3ad0d96c1230377a28e6dff77fa66fa08b039e578f68b23adf62cb4d8fb40fb",
+          "cohort_id": "sha256:19ab4aab67bc633d4ac80d96d1f7374df356031f51cbf27f65c8bf1f9a133b3d",
+          "bench_condition_id": "sha256:33be2070f8abd03fd64fc3f0e5f04149419d886ca85b86e8ebbb31da5529f10c",
+          "evidence_role": "curve_point",
+          "citation_locator": {
+            "page": 4,
+            "figure": "Forward characteristics at T_J = 25 degC",
+            "curve": "Forward characteristics at T_J = 25 degC"
+          },
+          "evidence_qualification": {
+            "test_mode": "not_stated"
+          },
+          "bench_qualification": {
+            "test_mode": "continuous_dc"
+          },
+          "bench_equivalence_policy": "isothermal_diode_forward_projection",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "forward_06.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [
+        {
+          "name": "forward_voltage_at_0.1_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "expected_value": 0.88,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.05
+          },
+          "datasheet_citation": "p. 4, Figure Forward characteristics at T_J = 25 degC, Forward characteristics at T_J = 25 degC",
+          "evidence_id": "sha256:1d0ed1cff280ad3a13deb584cfac59498c65582dfdadc3bc0f92009349d5e120",
+          "condition_id": "sha256:33be2070f8abd03fd64fc3f0e5f04149419d886ca85b86e8ebbb31da5529f10c",
+          "citation_id": "sha256:e3ad0d96c1230377a28e6dff77fa66fa08b039e578f68b23adf62cb4d8fb40fb",
+          "cohort_id": "sha256:19ab4aab67bc633d4ac80d96d1f7374df356031f51cbf27f65c8bf1f9a133b3d",
+          "bench_condition_id": "sha256:33be2070f8abd03fd64fc3f0e5f04149419d886ca85b86e8ebbb31da5529f10c",
+          "evidence_role": "curve_point",
+          "citation_locator": {
+            "page": 4,
+            "figure": "Forward characteristics at T_J = 25 degC",
+            "curve": "Forward characteristics at T_J = 25 degC"
+          },
+          "evidence_qualification": {
+            "test_mode": "not_stated"
+          },
+          "bench_qualification": {
+            "test_mode": "continuous_dc"
+          },
+          "bench_equivalence_policy": "isothermal_diode_forward_projection",
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    }
+  ]
+}

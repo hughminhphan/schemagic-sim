@@ -1,5 +1,242 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$defs": {
+    "scalar_locator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "page",
+        "table",
+        "row"
+      ],
+      "properties": {
+        "page": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "table": {
+          "type": "string",
+          "minLength": 1
+        },
+        "row": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "voltage_coordinate": {
+      "anyOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "value_v"
+          ],
+          "properties": {
+            "kind": {
+              "const": "fixed"
+            },
+            "value_v": {
+              "type": "number"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "relation"
+          ],
+          "properties": {
+            "kind": {
+              "const": "relation"
+            },
+            "relation": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "lower_v",
+            "upper_v"
+          ],
+          "properties": {
+            "kind": {
+              "const": "range"
+            },
+            "lower_v": {
+              "type": "number"
+            },
+            "upper_v": {
+              "type": "number"
+            }
+          }
+        }
+      ]
+    },
+    "current_coordinate": {
+      "anyOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "value_a"
+          ],
+          "properties": {
+            "kind": {
+              "const": "fixed"
+            },
+            "value_a": {
+              "type": "number"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "lower_a",
+            "upper_a"
+          ],
+          "properties": {
+            "kind": {
+              "const": "range"
+            },
+            "lower_a": {
+              "type": "number"
+            },
+            "upper_a": {
+              "type": "number"
+            }
+          }
+        }
+      ]
+    },
+    "condition_temperature": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "kind",
+        "value_c",
+        "provenance"
+      ],
+      "properties": {
+        "status": {
+          "const": "stated"
+        },
+        "kind": {
+          "enum": [
+            "ambient",
+            "case",
+            "junction"
+          ]
+        },
+        "value_c": {
+          "type": "number"
+        },
+        "provenance": {
+          "enum": [
+            "inline_condition",
+            "table_heading",
+            "figure_label",
+            "footnote",
+            "section_scope"
+          ]
+        }
+      }
+    },
+    "condition_test_mode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "dc",
+            "continuous",
+            "pulsed",
+            "single_pulse",
+            "not_stated"
+          ]
+        },
+        "pulse_width_s": {
+          "type": "number"
+        },
+        "duty_cycle": {
+          "type": "number"
+        },
+        "repetition_period_s": {
+          "type": "number"
+        },
+        "repetition_frequency_hz": {
+          "type": "number"
+        }
+      }
+    },
+    "direct_condition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "polarity",
+        "magnitude_convention",
+        "temperature",
+        "electrical",
+        "test_mode"
+      ],
+      "properties": {
+        "polarity": {
+          "enum": [
+            "n",
+            "p"
+          ]
+        },
+        "magnitude_convention": {
+          "enum": [
+            "signed",
+            "absolute"
+          ]
+        },
+        "temperature": {
+          "$ref": "#/$defs/condition_temperature"
+        },
+        "electrical": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "vgs",
+            "vds",
+            "id"
+          ],
+          "properties": {
+            "vgs": {
+              "$ref": "#/$defs/voltage_coordinate"
+            },
+            "vds": {
+              "$ref": "#/$defs/voltage_coordinate"
+            },
+            "id": {
+              "$ref": "#/$defs/current_coordinate"
+            }
+          }
+        },
+        "test_mode": {
+          "$ref": "#/$defs/condition_test_mode"
+        }
+      }
+    }
+  },
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -70,6 +307,11 @@
           "y_axis",
           "test_conditions",
           "page_reference",
+          "locator",
+          "temperature",
+          "electrical_bias",
+          "test_mode",
+          "magnitude_convention",
           "points"
         ],
         "properties": {
@@ -135,9 +377,136 @@
             "type": "string",
             "minLength": 1
           },
+          "locator": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "page",
+              "figure",
+              "curve_or_trace"
+            ],
+            "properties": {
+              "page": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "figure": {
+                "type": "string",
+                "minLength": 1
+              },
+              "curve_or_trace": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "temperature": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "kind",
+              "value",
+              "provenance"
+            ],
+            "properties": {
+              "kind": {
+                "enum": [
+                  "ambient",
+                  "case",
+                  "junction"
+                ]
+              },
+              "value": {
+                "type": "number"
+              },
+              "provenance": {
+                "enum": [
+                  "inline_condition",
+                  "table_heading",
+                  "figure_label",
+                  "footnote",
+                  "section_scope"
+                ]
+              }
+            }
+          },
+          "electrical_bias": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "quantity",
+                "value",
+                "unit"
+              ],
+              "properties": {
+                "quantity": {
+                  "enum": [
+                    "VGS",
+                    "V_GS",
+                    "VDS",
+                    "V_DS",
+                    "ID",
+                    "I_D",
+                    "vgs",
+                    "v_gs",
+                    "vds",
+                    "v_ds",
+                    "id",
+                    "i_d"
+                  ]
+                },
+                "value": {
+                  "type": "number"
+                },
+                "unit": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          },
+          "test_mode": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "kind"
+            ],
+            "properties": {
+              "kind": {
+                "enum": [
+                  "dc",
+                  "continuous",
+                  "pulsed",
+                  "single_pulse",
+                  "not_stated"
+                ]
+              },
+              "pulse_width_s": {
+                "type": "number"
+              },
+              "duty_cycle": {
+                "type": "number"
+              },
+              "repetition_period_s": {
+                "type": "number"
+              },
+              "repetition_frequency_hz": {
+                "type": "number"
+              }
+            }
+          },
+          "magnitude_convention": {
+            "enum": [
+              "signed",
+              "absolute"
+            ]
+          },
           "points": {
             "type": "array",
-            "minItems": 3,
+            "minItems": 4,
             "items": {
               "type": "object",
               "additionalProperties": false,
@@ -190,6 +559,8 @@
                 "unit",
                 "conditions",
                 "page_reference",
+                "locator",
+                "condition",
                 "source_kind"
               ],
               "properties": {
@@ -207,6 +578,12 @@
                 "page_reference": {
                   "type": "string",
                   "minLength": 1
+                },
+                "locator": {
+                  "$ref": "#/$defs/scalar_locator"
+                },
+                "condition": {
+                  "$ref": "#/$defs/direct_condition"
                 },
                 "source_kind": {
                   "enum": [
@@ -233,6 +610,8 @@
                 "unit",
                 "conditions",
                 "page_reference",
+                "locator",
+                "condition",
                 "source_kind"
               ],
               "properties": {
@@ -250,6 +629,12 @@
                 "page_reference": {
                   "type": "string",
                   "minLength": 1
+                },
+                "locator": {
+                  "$ref": "#/$defs/scalar_locator"
+                },
+                "condition": {
+                  "$ref": "#/$defs/direct_condition"
                 },
                 "source_kind": {
                   "enum": [
@@ -276,6 +661,8 @@
                 "unit",
                 "conditions",
                 "page_reference",
+                "locator",
+                "condition",
                 "source_kind"
               ],
               "properties": {
@@ -293,6 +680,12 @@
                 "page_reference": {
                   "type": "string",
                   "minLength": 1
+                },
+                "locator": {
+                  "$ref": "#/$defs/scalar_locator"
+                },
+                "condition": {
+                  "$ref": "#/$defs/direct_condition"
                 },
                 "source_kind": {
                   "enum": [
@@ -328,6 +721,8 @@
                   "unit",
                   "conditions",
                   "page_reference",
+                  "locator",
+                  "condition",
                   "source_kind"
                 ],
                 "properties": {
@@ -345,6 +740,12 @@
                   "page_reference": {
                     "type": "string",
                     "minLength": 1
+                  },
+                  "locator": {
+                    "$ref": "#/$defs/scalar_locator"
+                  },
+                  "condition": {
+                    "$ref": "#/$defs/direct_condition"
                   },
                   "source_kind": {
                     "enum": [
@@ -364,6 +765,8 @@
                   "unit",
                   "conditions",
                   "page_reference",
+                  "locator",
+                  "condition",
                   "source_kind"
                 ],
                 "properties": {
@@ -381,6 +784,12 @@
                   "page_reference": {
                     "type": "string",
                     "minLength": 1
+                  },
+                  "locator": {
+                    "$ref": "#/$defs/scalar_locator"
+                  },
+                  "condition": {
+                    "$ref": "#/$defs/direct_condition"
                   },
                   "source_kind": {
                     "enum": [
@@ -400,6 +809,8 @@
                   "unit",
                   "conditions",
                   "page_reference",
+                  "locator",
+                  "condition",
                   "source_kind"
                 ],
                 "properties": {
@@ -417,6 +828,12 @@
                   "page_reference": {
                     "type": "string",
                     "minLength": 1
+                  },
+                  "locator": {
+                    "$ref": "#/$defs/scalar_locator"
+                  },
+                  "condition": {
+                    "$ref": "#/$defs/direct_condition"
                   },
                   "source_kind": {
                     "enum": [
@@ -441,6 +858,7 @@
                 "unit",
                 "conditions",
                 "page_reference",
+                "locator",
                 "source_kind"
               ],
               "properties": {
@@ -458,6 +876,9 @@
                 "page_reference": {
                   "type": "string",
                   "minLength": 1
+                },
+                "locator": {
+                  "$ref": "#/$defs/scalar_locator"
                 },
                 "source_kind": {
                   "enum": [
@@ -484,6 +905,7 @@
                 "unit",
                 "conditions",
                 "page_reference",
+                "locator",
                 "source_kind"
               ],
               "properties": {
@@ -501,6 +923,9 @@
                 "page_reference": {
                   "type": "string",
                   "minLength": 1
+                },
+                "locator": {
+                  "$ref": "#/$defs/scalar_locator"
                 },
                 "source_kind": {
                   "enum": [
@@ -527,6 +952,7 @@
                 "unit",
                 "conditions",
                 "page_reference",
+                "locator",
                 "source_kind"
               ],
               "properties": {
@@ -544,6 +970,9 @@
                 "page_reference": {
                   "type": "string",
                   "minLength": 1
+                },
+                "locator": {
+                  "$ref": "#/$defs/scalar_locator"
                 },
                 "source_kind": {
                   "enum": [
@@ -570,6 +999,7 @@
                 "unit",
                 "conditions",
                 "page_reference",
+                "locator",
                 "source_kind"
               ],
               "properties": {
@@ -587,6 +1017,9 @@
                 "page_reference": {
                   "type": "string",
                   "minLength": 1
+                },
+                "locator": {
+                  "$ref": "#/$defs/scalar_locator"
                 },
                 "source_kind": {
                   "enum": [
@@ -613,6 +1046,7 @@
                 "unit",
                 "conditions",
                 "page_reference",
+                "locator",
                 "source_kind"
               ],
               "properties": {
@@ -630,6 +1064,9 @@
                 "page_reference": {
                   "type": "string",
                   "minLength": 1
+                },
+                "locator": {
+                  "$ref": "#/$defs/scalar_locator"
                 },
                 "source_kind": {
                   "enum": [

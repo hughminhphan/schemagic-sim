@@ -1,0 +1,264 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [
+      {
+        "name": "Forward characteristics — 25 °C",
+        "page_reference": "p. 2, Forward Characteristics",
+        "points": [
+          {
+            "x": 0.4,
+            "y": 0.00001
+          },
+          {
+            "x": 0.5,
+            "y": 0.0001
+          },
+          {
+            "x": 0.6,
+            "y": 0.001
+          }
+        ],
+        "test_conditions": "Ta = 25 °C; typical curve.",
+        "x_axis": {
+          "quantity": "forward_voltage",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "forward_current",
+          "scale": "log",
+          "unit": "A"
+        }
+      }
+    ],
+    "datasheet_identity": {
+      "pages_examined": [
+        "p. 1",
+        "p. 2",
+        "p. 3"
+      ],
+      "revision": "Revision F, 2016/10/28",
+      "title": "1N4148WX — High Speed Switching Diode"
+    },
+    "extraction_notes": [
+      "Forward-curve points were digitized directly from the Ta = 25 °C trace at labelled decade current grid lines, rounded only to the graph's readable voltage resolution."
+    ],
+    "family": "diode",
+    "manufacturer": "MCC Micro Commercial Components",
+    "mpn": "1N4148WX-TP",
+    "omission_reason": "No zener breakdown-voltage or breakdown-current specification applies to this switching diode.",
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": null,
+      "breakdown_voltage": null,
+      "capacitance": {
+        "conditions": "Typical junction capacitance at VF = VR = 0 V.",
+        "page_reference": "p. 1, Electrical Characteristics",
+        "source_kind": "typical",
+        "unit": "F",
+        "value": 4e-12
+      },
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "IF = 50 mA; TJ = 25 °C (Note 1).",
+            "page_reference": "p. 1, Electrical Characteristics",
+            "source_kind": "maximum",
+            "unit": "A",
+            "value": 0.05
+          },
+          "voltage": {
+            "conditions": "VF maximum at IF = 50 mA; TJ = 25 °C (Note 1).",
+            "page_reference": "p. 1, Electrical Characteristics",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 1
+          }
+        }
+      ],
+      "reverse_current": {
+        "conditions": "IR maximum at VR = 20 V and TJ = 25 °C.",
+        "page_reference": "p. 1, Electrical Characteristics",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 2.5e-8
+      },
+      "reverse_recovery": {
+        "conditions": "Maximum trr at IF = 50 mA, IRR = 0.1 IR, and RL = 100 Ω.",
+        "page_reference": "p. 1, Electrical Characteristics",
+        "source_kind": "maximum",
+        "unit": "s",
+        "value": 4e-9
+      },
+      "variant": "signal"
+    },
+    "usable_curves": true
+  },
+  "catalog_seed_hints": [
+    {
+      "attribute": "Forward Voltage (Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "1V@50mA",
+      "role": "initial_guess_only"
+    },
+    {
+      "attribute": "Voltage - Forward(Vf@If)",
+      "evidence": "catalog_parametric_not_datasheet_citation",
+      "factory_target": "diode.forward_voltage",
+      "raw_value": "1V@50mA",
+      "role": "initial_guess_only"
+    }
+  ],
+  "identity": {
+    "canonical_mpn": "1N4148WX-TP",
+    "manufacturer": "MCC Micro Commercial Components",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8588883963851255808",
+    "revision": "Revision F, 2016/10/28",
+    "sha256": "46e1f154a94694b20fab7c08100b801e2216a1f11601f17fe339ed8353831d17",
+    "accessed_date": "2026-08-23",
+    "pages_referenced": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ],
+    "placeholder": false
+  },
+  "evidence_contract_version": "1.0.0",
+  "fit_points": [
+    {
+      "current": {
+        "conditions": "IF = 50 mA; TJ = 25 °C (Note 1).",
+        "page_reference": "p. 1, Electrical Characteristics",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.05
+      },
+      "voltage": {
+        "conditions": "VF maximum at IF = 50 mA; TJ = 25 °C (Note 1).",
+        "page_reference": "p. 1, Electrical Characteristics",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 1
+      }
+    }
+  ],
+  "forward_voltage_points": [
+    {
+      "current": {
+        "conditions": "IF = 50 mA; TJ = 25 °C (Note 1).",
+        "page_reference": "p. 1, Electrical Characteristics",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.05,
+        "quantity": "forward_current",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "junction",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 0.05
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 1
+            }
+          },
+          "test_mode": {
+            "kind": "not_stated"
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "IF = 50 mA; TJ = 25 °C (Note 1)."
+            }
+          ],
+          "condition_id": "sha256:c746e0af2a23eca1b5963ed7446f9ffe01787dbadd5bc7c2f5c994ae03aa409c"
+        },
+        "citation_identity": {
+          "source_sha256": "46e1f154a94694b20fab7c08100b801e2216a1f11601f17fe339ed8353831d17",
+          "source_revision": "Revision F, 2016/10/28",
+          "page": 1,
+          "table": "Electrical Characteristics",
+          "row": "Forward Current",
+          "citation_id": "sha256:68431ba9fd1268aa75bbad58b81c216168e63de257ddfb6c51adc239250d7899"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:4a785fee36d3a53208a6692a4ce8cd9e19561adee582b14ffd6b33e2999ce24d",
+          "cohort_id": "sha256:de882ac95354cdb328008ce5ba935a7547703512252ee131ae7debcec769bb37",
+          "role": "maximum",
+          "condition_id": "sha256:c746e0af2a23eca1b5963ed7446f9ffe01787dbadd5bc7c2f5c994ae03aa409c",
+          "citation_id": "sha256:68431ba9fd1268aa75bbad58b81c216168e63de257ddfb6c51adc239250d7899"
+        }
+      },
+      "voltage": {
+        "conditions": "VF maximum at IF = 50 mA; TJ = 25 °C (Note 1).",
+        "page_reference": "p. 1, Electrical Characteristics",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 1,
+        "quantity": "forward_voltage",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "junction",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 0.05
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 1
+            }
+          },
+          "test_mode": {
+            "kind": "not_stated"
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "VF maximum at IF = 50 mA; TJ = 25 °C (Note 1)."
+            }
+          ],
+          "condition_id": "sha256:d696979091cf4f9a00a58aff9fcc5ea7f1335d4b7a2528e830100c6a8db91273"
+        },
+        "citation_identity": {
+          "source_sha256": "46e1f154a94694b20fab7c08100b801e2216a1f11601f17fe339ed8353831d17",
+          "source_revision": "Revision F, 2016/10/28",
+          "page": 1,
+          "table": "Electrical Characteristics",
+          "row": "Forward Voltage",
+          "citation_id": "sha256:c4acd24b50778738b490b0946b1c4d4ce81a47fcbe1bb6a5aa75e964a122a071"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:90423c2fe262a59eb19599d2a0b3fc783c0159540eb2b212229fb8d414604402",
+          "cohort_id": "sha256:ddbae491aab980f96a29c572481aefb997d18e9fb411d4f31074280405e175e0",
+          "role": "maximum",
+          "condition_id": "sha256:d696979091cf4f9a00a58aff9fcc5ea7f1335d4b7a2528e830100c6a8db91273",
+          "citation_id": "sha256:c4acd24b50778738b490b0946b1c4d4ce81a47fcbe1bb6a5aa75e964a122a071"
+        }
+      }
+    }
+  ],
+  "curves": [],
+  "electrical_limits": {},
+  "derived_model_inputs": {}
+}

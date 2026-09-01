@@ -13,7 +13,7 @@ VDMOS is ngspice's native vertical-DMOS model. It carries its own body diode, it
 **Five-terminal electrothermal order is `drain gate source tj tcase`** with a trailing `thermal` keyword: `M1 d g s tj tc MODELNAME thermal`. Verified working; `tj` settles to a real junction temperature in degrees C.
 
 ```spice
-* OpenCircuit original-from-facts model
+* scheMAGIC original-from-facts model
 * <MPN> (<manufacturer>), datasheet rev <rev>, fitted <YYYY-MM-DD>
 * Archetype: archetype-vdmos.md. Fit run: <run-id>
 * Node order: M<ref> drain gate source OC_<MPN>

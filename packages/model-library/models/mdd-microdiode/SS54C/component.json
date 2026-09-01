@@ -1,0 +1,188 @@
+{
+  "schema_version": "1.0.0",
+  "evidence_contract_version": "1.0.0",
+  "canonical_mpn": "SS54C",
+  "manufacturer": "MDD Microdiode Semiconductor",
+  "description": "-55℃~+150℃ 175A 1mA@40V 40V 550mV@5A 5A Independent SMC(DO-214AB) Schottky Diodes ROHS",
+  "electrical_family": "diode",
+  "symbol_pins": [
+    {
+      "name": "A",
+      "number": "1",
+      "role": "anode"
+    },
+    {
+      "name": "K",
+      "number": "2",
+      "role": "cathode"
+    }
+  ],
+  "spice_pin_mapping": [
+    {
+      "symbol_pin_number": "1",
+      "subckt_node": "anode",
+      "order": 1
+    },
+    {
+      "symbol_pin_number": "2",
+      "subckt_node": "cathode",
+      "order": 2
+    }
+  ],
+  "package_variants": [
+    {
+      "name": "SMC(DO-214AB)",
+      "standard": "SMC(DO-214AB)",
+      "pin_count": 2,
+      "pin_map": [
+        {
+          "package_pin": "1",
+          "symbol_pin_number": "1"
+        },
+        {
+          "package_pin": "2",
+          "symbol_pin_number": "2"
+        }
+      ]
+    }
+  ],
+  "ordering_code_aliases": [],
+  "datasheet": {
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8586172488225337344",
+    "revision": "datasheet as supplied"
+  },
+  "model_type": "dot_model",
+  "fidelity_tier": "F1",
+  "domain_coverage": {
+    "dc": "approx",
+    "ac": "none",
+    "transient": "none",
+    "noise": "none",
+    "thermal": "none",
+    "digital": "none"
+  },
+  "supported_analyses": [
+    "operating_point",
+    "dc_sweep"
+  ],
+  "supported_operating_region": {
+    "contract_version": "1.0.0",
+    "summary": "Supported only over the direct cited diode forward-evidence union: forward_current 5 to 5 A; forward_voltage 0.55 to 0.55 V; temperature 25 to 25 degC.",
+    "numeric_bounds": [
+      {
+        "bound_id": "sha256:d41dd8ee2764e53bff1a05b7f71f197821bd872aa9e24af44d170d5110320409",
+        "quantity": "forward_current",
+        "kind": "range",
+        "unit": "A",
+        "minimum": 5,
+        "maximum": 5,
+        "evidence_refs": [
+          {
+            "evidence_id": "sha256:771ee4ea6939bc9387a4922dc033516caad96d89102554a732b6ff11e020692f",
+            "condition_id": "sha256:71d73be4c0c950d2bc4081dd27118aabfa1d1929f63c9fcdf31bc5563cdbb479",
+            "citation_id": "sha256:b76be929c17064dbff941f93c02f9a699f0155a839221b9ae9eaaa2e0e5b862b",
+            "cohort_id": "sha256:b1071f26c96570901e1bc1e9714dd296ff7c91fa08e3c3420e24194f272808c3"
+          }
+        ],
+        "condition_ids": [
+          "sha256:71d73be4c0c950d2bc4081dd27118aabfa1d1929f63c9fcdf31bc5563cdbb479"
+        ],
+        "citation_ids": [
+          "sha256:b76be929c17064dbff941f93c02f9a699f0155a839221b9ae9eaaa2e0e5b862b"
+        ],
+        "derivation": "direct_evidence_union",
+        "conditions": "Direct cited diode forward-evidence union",
+        "placeholder": false
+      },
+      {
+        "bound_id": "sha256:dfba3dc8a7e4d41aaa819cdf45b2299774c6ac6128660acbf4cf90d5e8a6aca5",
+        "quantity": "forward_voltage",
+        "kind": "range",
+        "unit": "V",
+        "minimum": 0.55,
+        "maximum": 0.55,
+        "evidence_refs": [
+          {
+            "evidence_id": "sha256:8a297fbae3aa44151ef8f1338c08b8336e11009a1a0307b34e5262fffc247a65",
+            "condition_id": "sha256:807fb020ec59dfa7ac8d05c10b588e44292935845a976cbacf908a047ca92b99",
+            "citation_id": "sha256:e6dac72dccf717eeb9d556960ca1e2d02bbc878f94614f30c38d070ece048b5f",
+            "cohort_id": "sha256:ff558435be5855426257c956cbf0fb04625c833dbbd90cdf981d6ebeff8ca9b2"
+          }
+        ],
+        "condition_ids": [
+          "sha256:807fb020ec59dfa7ac8d05c10b588e44292935845a976cbacf908a047ca92b99"
+        ],
+        "citation_ids": [
+          "sha256:e6dac72dccf717eeb9d556960ca1e2d02bbc878f94614f30c38d070ece048b5f"
+        ],
+        "derivation": "direct_evidence_union",
+        "conditions": "Direct cited diode forward-evidence union",
+        "placeholder": false
+      },
+      {
+        "bound_id": "sha256:89c423737298c5c300b08f44420ab36f2e10431a01c1a0885dd5f0f59bcd1455",
+        "quantity": "temperature",
+        "kind": "range",
+        "unit": "degC",
+        "minimum": 25,
+        "maximum": 25,
+        "evidence_refs": [
+          {
+            "evidence_id": "sha256:771ee4ea6939bc9387a4922dc033516caad96d89102554a732b6ff11e020692f",
+            "condition_id": "sha256:71d73be4c0c950d2bc4081dd27118aabfa1d1929f63c9fcdf31bc5563cdbb479",
+            "citation_id": "sha256:b76be929c17064dbff941f93c02f9a699f0155a839221b9ae9eaaa2e0e5b862b",
+            "cohort_id": "sha256:b1071f26c96570901e1bc1e9714dd296ff7c91fa08e3c3420e24194f272808c3"
+          },
+          {
+            "evidence_id": "sha256:8a297fbae3aa44151ef8f1338c08b8336e11009a1a0307b34e5262fffc247a65",
+            "condition_id": "sha256:807fb020ec59dfa7ac8d05c10b588e44292935845a976cbacf908a047ca92b99",
+            "citation_id": "sha256:e6dac72dccf717eeb9d556960ca1e2d02bbc878f94614f30c38d070ece048b5f",
+            "cohort_id": "sha256:ff558435be5855426257c956cbf0fb04625c833dbbd90cdf981d6ebeff8ca9b2"
+          }
+        ],
+        "condition_ids": [
+          "sha256:71d73be4c0c950d2bc4081dd27118aabfa1d1929f63c9fcdf31bc5563cdbb479",
+          "sha256:807fb020ec59dfa7ac8d05c10b588e44292935845a976cbacf908a047ca92b99"
+        ],
+        "citation_ids": [
+          "sha256:b76be929c17064dbff941f93c02f9a699f0155a839221b9ae9eaaa2e0e5b862b",
+          "sha256:e6dac72dccf717eeb9d556960ca1e2d02bbc878f94614f30c38d070ece048b5f"
+        ],
+        "derivation": "direct_evidence_union",
+        "temperature_kind": "ambient",
+        "conditions": "Direct cited diode forward-evidence union",
+        "placeholder": false
+      }
+    ]
+  },
+  "known_omissions": [
+    "AC, transient, noise, thermal, and package-parasitic behavior are outside this DC-only conveyor package.",
+    "Temperature dependence and self-heating are not modelled; each electrical claim is limited to its exact cited bench temperature.",
+    "Catalog parametrics may be recorded only as optimizer seeds; they are not evidence, constraints, residual targets, or datasheet citations.",
+    "F2 evidence did not qualify; staged as F1: No non-invented curve coordinates were extracted; the cited table forward-voltage limit is retained.",
+    "No non-invented curve coordinates were extracted; the cited table forward-voltage limit is retained."
+  ],
+  "licence": {
+    "spdx_id": "MIT",
+    "provenance_basis": "original_from_facts"
+  },
+  "generator": {
+    "tool_or_agent": "opencircuit-model-factory-v0.1.0 bulk-adapter evidence-contract-1.0.0",
+    "date": "2026-08-23"
+  },
+  "reviewer": {
+    "tool_or_agent": "gpt-5.6-terra independent package reviewer",
+    "date": "2026-08-23"
+  },
+  "test_results": {
+    "status": "complete",
+    "pass_count": 1,
+    "fail_count": 0,
+    "total_count": 1,
+    "worst_observed_relative_fitting_error": {
+      "value": 0,
+      "quantity": "package expectation"
+    }
+  },
+  "validation_date": "2026-08-23"
+}

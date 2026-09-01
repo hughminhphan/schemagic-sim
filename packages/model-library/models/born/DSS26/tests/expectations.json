@@ -1,0 +1,367 @@
+{
+  "schema_version": "1.0.0",
+  "evidence_contract_version": "1.0.0",
+  "evidence_cohorts": [
+    {
+      "cohort_id": "sha256:9e9b3723289a499b32332f7d5cffc396b7fe043483c73ef7327bd88ba4d8ac5f",
+      "fidelity_tier": "F2",
+      "evidence_ids": [
+        "sha256:f09d83176202595508ddd9a7a45f85678f00e268d1f0591624bdfc8528b9ab69",
+        "sha256:961903e27145fa32c81436de8533f290b7681fef205b40ba2c639d644fe57bdb",
+        "sha256:3d24dc580d828a71f0b8637e1065f2d3601c2fbde40a0c208cd33d6e09733401",
+        "sha256:55e0c5d5bc5eb909cd1ebaf44fa3092f8090d3d9869e93eb28ef406c32a3c7cb",
+        "sha256:e53b91a73d700eafababeff793ea5624f60566bdc28a09cd849c794f67c9e100",
+        "sha256:f1a8adf6e56a9e3222e63bd6c809eec744aaa55f096989d86948d128388f87a1",
+        "sha256:c5320d5b8b36203372fbee87f33f3c032226d97a79cf605ef0cbe0165544b18e"
+      ]
+    },
+    {
+      "cohort_id": "sha256:bc6875fe9949aca9b5abc8d8e38e15e7e3297252a8fa008d0ba162f1a1927099",
+      "fidelity_tier": "F2",
+      "evidence_ids": [
+        "sha256:95768adc8cdd8fbbb7f96f1a02443951cc6afa56ffb5aed193c3eed6e26a94cb"
+      ]
+    }
+  ],
+  "tests": [
+    {
+      "test_netlist": "forward_01.cir",
+      "analysis_type": "transient",
+      "scalar_checks": [
+        {
+          "name": "forward_voltage_at_0.01_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "at(v(anode),4.5030000000e-4)"
+          },
+          "expected_value": 0.3,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.05
+          },
+          "datasheet_citation": "p. 2, Figure 3, Typical instantaneous forward characteristics, DSS25-DSS26 trace",
+          "evidence_id": "sha256:f09d83176202595508ddd9a7a45f85678f00e268d1f0591624bdfc8528b9ab69",
+          "condition_id": "sha256:75aa74ee03f7f0ac3e296606b8eae093e09fda4209be06f3fbe7043459a9f5a3",
+          "citation_id": "sha256:54135fadcfa19fab908987698d310167325b1c27416cf2dbb19818cb3910e059",
+          "cohort_id": "sha256:9e9b3723289a499b32332f7d5cffc396b7fe043483c73ef7327bd88ba4d8ac5f",
+          "bench_condition_id": "sha256:75aa74ee03f7f0ac3e296606b8eae093e09fda4209be06f3fbe7043459a9f5a3",
+          "evidence_role": "curve_point",
+          "citation_locator": {
+            "page": 2,
+            "figure": "3",
+            "curve": "Typical instantaneous forward characteristics, DSS25-DSS26 trace"
+          },
+          "evidence_qualification": {
+            "test_mode": "pulsed",
+            "pulse_width_s": 0.0003,
+            "duty_cycle": 0.01
+          },
+          "bench_qualification": {
+            "test_mode": "pulsed",
+            "pulse_width_s": 0.0003,
+            "duty_cycle": 0.01
+          },
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "forward_02.cir",
+      "analysis_type": "transient",
+      "scalar_checks": [
+        {
+          "name": "forward_voltage_at_0.1_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "at(v(anode),4.5030000000e-4)"
+          },
+          "expected_value": 0.4,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.05
+          },
+          "datasheet_citation": "p. 2, Figure 3, Typical instantaneous forward characteristics, DSS25-DSS26 trace",
+          "evidence_id": "sha256:961903e27145fa32c81436de8533f290b7681fef205b40ba2c639d644fe57bdb",
+          "condition_id": "sha256:75aa74ee03f7f0ac3e296606b8eae093e09fda4209be06f3fbe7043459a9f5a3",
+          "citation_id": "sha256:54135fadcfa19fab908987698d310167325b1c27416cf2dbb19818cb3910e059",
+          "cohort_id": "sha256:9e9b3723289a499b32332f7d5cffc396b7fe043483c73ef7327bd88ba4d8ac5f",
+          "bench_condition_id": "sha256:75aa74ee03f7f0ac3e296606b8eae093e09fda4209be06f3fbe7043459a9f5a3",
+          "evidence_role": "curve_point",
+          "citation_locator": {
+            "page": 2,
+            "figure": "3",
+            "curve": "Typical instantaneous forward characteristics, DSS25-DSS26 trace"
+          },
+          "evidence_qualification": {
+            "test_mode": "pulsed",
+            "pulse_width_s": 0.0003,
+            "duty_cycle": 0.01
+          },
+          "bench_qualification": {
+            "test_mode": "pulsed",
+            "pulse_width_s": 0.0003,
+            "duty_cycle": 0.01
+          },
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "forward_03.cir",
+      "analysis_type": "transient",
+      "scalar_checks": [
+        {
+          "name": "forward_voltage_at_1_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "at(v(anode),4.5030000000e-4)"
+          },
+          "expected_value": 0.5,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.05
+          },
+          "datasheet_citation": "p. 2, Figure 3, Typical instantaneous forward characteristics, DSS25-DSS26 trace",
+          "evidence_id": "sha256:3d24dc580d828a71f0b8637e1065f2d3601c2fbde40a0c208cd33d6e09733401",
+          "condition_id": "sha256:75aa74ee03f7f0ac3e296606b8eae093e09fda4209be06f3fbe7043459a9f5a3",
+          "citation_id": "sha256:54135fadcfa19fab908987698d310167325b1c27416cf2dbb19818cb3910e059",
+          "cohort_id": "sha256:9e9b3723289a499b32332f7d5cffc396b7fe043483c73ef7327bd88ba4d8ac5f",
+          "bench_condition_id": "sha256:75aa74ee03f7f0ac3e296606b8eae093e09fda4209be06f3fbe7043459a9f5a3",
+          "evidence_role": "curve_point",
+          "citation_locator": {
+            "page": 2,
+            "figure": "3",
+            "curve": "Typical instantaneous forward characteristics, DSS25-DSS26 trace"
+          },
+          "evidence_qualification": {
+            "test_mode": "pulsed",
+            "pulse_width_s": 0.0003,
+            "duty_cycle": 0.01
+          },
+          "bench_qualification": {
+            "test_mode": "pulsed",
+            "pulse_width_s": 0.0003,
+            "duty_cycle": 0.01
+          },
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "forward_04.cir",
+      "analysis_type": "transient",
+      "scalar_checks": [
+        {
+          "name": "forward_voltage_at_2_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "at(v(anode),4.5030000000e-4)"
+          },
+          "expected_value": 0.55,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.05
+          },
+          "datasheet_citation": "p. 2, Figure 3, Typical instantaneous forward characteristics, DSS25-DSS26 trace",
+          "evidence_id": "sha256:55e0c5d5bc5eb909cd1ebaf44fa3092f8090d3d9869e93eb28ef406c32a3c7cb",
+          "condition_id": "sha256:75aa74ee03f7f0ac3e296606b8eae093e09fda4209be06f3fbe7043459a9f5a3",
+          "citation_id": "sha256:54135fadcfa19fab908987698d310167325b1c27416cf2dbb19818cb3910e059",
+          "cohort_id": "sha256:9e9b3723289a499b32332f7d5cffc396b7fe043483c73ef7327bd88ba4d8ac5f",
+          "bench_condition_id": "sha256:75aa74ee03f7f0ac3e296606b8eae093e09fda4209be06f3fbe7043459a9f5a3",
+          "evidence_role": "curve_point",
+          "citation_locator": {
+            "page": 2,
+            "figure": "3",
+            "curve": "Typical instantaneous forward characteristics, DSS25-DSS26 trace"
+          },
+          "evidence_qualification": {
+            "test_mode": "pulsed",
+            "pulse_width_s": 0.0003,
+            "duty_cycle": 0.01
+          },
+          "bench_qualification": {
+            "test_mode": "pulsed",
+            "pulse_width_s": 0.0003,
+            "duty_cycle": 0.01
+          },
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "forward_05.cir",
+      "analysis_type": "transient",
+      "scalar_checks": [
+        {
+          "name": "forward_voltage_at_5_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "at(v(anode),4.5030000000e-4)"
+          },
+          "expected_value": 0.65,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.05
+          },
+          "datasheet_citation": "p. 2, Figure 3, Typical instantaneous forward characteristics, DSS25-DSS26 trace",
+          "evidence_id": "sha256:e53b91a73d700eafababeff793ea5624f60566bdc28a09cd849c794f67c9e100",
+          "condition_id": "sha256:75aa74ee03f7f0ac3e296606b8eae093e09fda4209be06f3fbe7043459a9f5a3",
+          "citation_id": "sha256:54135fadcfa19fab908987698d310167325b1c27416cf2dbb19818cb3910e059",
+          "cohort_id": "sha256:9e9b3723289a499b32332f7d5cffc396b7fe043483c73ef7327bd88ba4d8ac5f",
+          "bench_condition_id": "sha256:75aa74ee03f7f0ac3e296606b8eae093e09fda4209be06f3fbe7043459a9f5a3",
+          "evidence_role": "curve_point",
+          "citation_locator": {
+            "page": 2,
+            "figure": "3",
+            "curve": "Typical instantaneous forward characteristics, DSS25-DSS26 trace"
+          },
+          "evidence_qualification": {
+            "test_mode": "pulsed",
+            "pulse_width_s": 0.0003,
+            "duty_cycle": 0.01
+          },
+          "bench_qualification": {
+            "test_mode": "pulsed",
+            "pulse_width_s": 0.0003,
+            "duty_cycle": 0.01
+          },
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "forward_06.cir",
+      "analysis_type": "transient",
+      "scalar_checks": [
+        {
+          "name": "forward_voltage_at_10_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "at(v(anode),4.5030000000e-4)"
+          },
+          "expected_value": 0.78,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.05
+          },
+          "datasheet_citation": "p. 2, Figure 3, Typical instantaneous forward characteristics, DSS25-DSS26 trace",
+          "evidence_id": "sha256:f1a8adf6e56a9e3222e63bd6c809eec744aaa55f096989d86948d128388f87a1",
+          "condition_id": "sha256:75aa74ee03f7f0ac3e296606b8eae093e09fda4209be06f3fbe7043459a9f5a3",
+          "citation_id": "sha256:54135fadcfa19fab908987698d310167325b1c27416cf2dbb19818cb3910e059",
+          "cohort_id": "sha256:9e9b3723289a499b32332f7d5cffc396b7fe043483c73ef7327bd88ba4d8ac5f",
+          "bench_condition_id": "sha256:75aa74ee03f7f0ac3e296606b8eae093e09fda4209be06f3fbe7043459a9f5a3",
+          "evidence_role": "curve_point",
+          "citation_locator": {
+            "page": 2,
+            "figure": "3",
+            "curve": "Typical instantaneous forward characteristics, DSS25-DSS26 trace"
+          },
+          "evidence_qualification": {
+            "test_mode": "pulsed",
+            "pulse_width_s": 0.0003,
+            "duty_cycle": 0.01
+          },
+          "bench_qualification": {
+            "test_mode": "pulsed",
+            "pulse_width_s": 0.0003,
+            "duty_cycle": 0.01
+          },
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "forward_07.cir",
+      "analysis_type": "transient",
+      "scalar_checks": [
+        {
+          "name": "forward_voltage_at_20_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "at(v(anode),4.5030000000e-4)"
+          },
+          "expected_value": 0.95,
+          "unit": "V",
+          "tolerance": {
+            "absolute": 0.02,
+            "relative": 0.05
+          },
+          "datasheet_citation": "p. 2, Figure 3, Typical instantaneous forward characteristics, DSS25-DSS26 trace",
+          "evidence_id": "sha256:c5320d5b8b36203372fbee87f33f3c032226d97a79cf605ef0cbe0165544b18e",
+          "condition_id": "sha256:75aa74ee03f7f0ac3e296606b8eae093e09fda4209be06f3fbe7043459a9f5a3",
+          "citation_id": "sha256:54135fadcfa19fab908987698d310167325b1c27416cf2dbb19818cb3910e059",
+          "cohort_id": "sha256:9e9b3723289a499b32332f7d5cffc396b7fe043483c73ef7327bd88ba4d8ac5f",
+          "bench_condition_id": "sha256:75aa74ee03f7f0ac3e296606b8eae093e09fda4209be06f3fbe7043459a9f5a3",
+          "evidence_role": "curve_point",
+          "citation_locator": {
+            "page": 2,
+            "figure": "3",
+            "curve": "Typical instantaneous forward characteristics, DSS25-DSS26 trace"
+          },
+          "evidence_qualification": {
+            "test_mode": "pulsed",
+            "pulse_width_s": 0.0003,
+            "duty_cycle": 0.01
+          },
+          "bench_qualification": {
+            "test_mode": "pulsed",
+            "pulse_width_s": 0.0003,
+            "duty_cycle": 0.01
+          },
+          "placeholder": false
+        }
+      ],
+      "hard_bounds_checks": []
+    },
+    {
+      "test_netlist": "forward_08.cir",
+      "analysis_type": "operating_point",
+      "scalar_checks": [],
+      "hard_bounds_checks": [
+        {
+          "name": "forward_voltage_maximum_at_2_a",
+          "expression_source": {
+            "kind": "raw_variable",
+            "expression": "last(v(anode))"
+          },
+          "minimum": 0,
+          "maximum": 0.7,
+          "unit": "V",
+          "inclusive": true,
+          "datasheet_citation": "p. 1, Maximum Ratings & Thermal Characteristics",
+          "evidence_id": "sha256:95768adc8cdd8fbbb7f96f1a02443951cc6afa56ffb5aed193c3eed6e26a94cb",
+          "condition_id": "sha256:be984b255b2ed6e03de5c53162fc0586369b5e0c4a215c252b84d06365d7626b",
+          "citation_id": "sha256:9d857045fb345eb70304c2e49b6f50050be158bcde9d993c54817853f433e21b",
+          "cohort_id": "sha256:bc6875fe9949aca9b5abc8d8e38e15e7e3297252a8fa008d0ba162f1a1927099",
+          "bench_condition_id": "sha256:be984b255b2ed6e03de5c53162fc0586369b5e0c4a215c252b84d06365d7626b",
+          "evidence_role": "inclusive_maximum",
+          "citation_locator": {
+            "page": 1,
+            "table": "Maximum Ratings & Thermal Characteristics",
+            "row": "Forward Voltage"
+          },
+          "evidence_qualification": {
+            "test_mode": "not_stated"
+          },
+          "bench_qualification": {
+            "test_mode": "continuous_dc"
+          },
+          "bench_equivalence_policy": "isothermal_diode_forward_projection",
+          "placeholder": false
+        }
+      ]
+    }
+  ]
+}

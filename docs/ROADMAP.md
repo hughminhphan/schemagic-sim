@@ -4,11 +4,15 @@ Everything on this page is subject to change. Priorities may move as numerical i
 
 If a roadmap item matters to your work, or if a missing item should be considered, please open a GitHub issue with the circuit, use case, and evidence behind the request.
 
+## v0.2.0 release-candidate baseline
+
+The Simulator now includes focused DC-sweep and noise interfaces, a Measurement Workbench, KiCad-derived editor interactions, typed probes and cancellable run provenance. The same web release also exposes the Motor/Power Designer and validates 771 evidence-bearing model packages. The remaining work below starts from that integrated baseline.
+
 ## Near
 
-- **Grow the reviewed model library.** Expand the manufacturer-part catalog beyond the v0.1 inventory while preserving provenance, fidelity labels, native-versus-WebAssembly gates, and independent review.
-- **Noise analysis.** Add an ngspice noise-analysis path, result schema, worker protocol support, and a viewer that makes input and output noise assumptions explicit.
-- **DC sweep UI.** Add a focused interface for sweeping sources or parameters without requiring users to edit a netlist.
+- **Close the release-evidence loop.** Add authenticated runtime/KiCad attachments plus recorded manual assistive-technology and deployed-offline checks without weakening fail-closed audit gates.
+- **Replay every model bench.** Add one bounded release command that freshly replays electrical benches across all model packages and reports the three inherited comparator exceptions explicitly.
+- **Grow the reviewed model library.** Continue beyond the 771-package v0.2 release-candidate inventory while preserving provenance, fidelity labels, native-versus-WebAssembly gates, and independent review.
 - **Documentation internationalization.** Establish an i18n structure for user and contributor documentation, then translate high-value getting-started and model-contribution pages.
 
 ## Mid

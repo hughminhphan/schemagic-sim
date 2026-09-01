@@ -1,6 +1,6 @@
-# OpenCircuit modelling archetypes
+# scheMAGIC Modelling Archetypes
 
-Authoritative, mechanical specifications for every model package OpenCircuit ships. One archetype per file. A Phase 3/4 model-author agent picks the archetype from the decision table below, then follows that file literally.
+Authoritative, mechanical specifications for every model package scheMAGIC ships. One archetype per file. A Phase 3/4 model-author agent picks the archetype from the decision table below, then follows that file literally.
 
 Every ngspice construct in this directory was verified by execution against the pinned native reference (`/opt/homebrew/bin/ngspice`, ngspice-46 with KLU) on 2026-08-06. Where a construct is banned, the ban is an observed failure, not a style preference.
 
@@ -98,7 +98,7 @@ models/<manufacturer>/<mpn>/
 `model.cir` opens with a provenance header and never contains a vendor-supplied card:
 
 ```spice
-* OpenCircuit original-from-facts model
+* scheMAGIC original-from-facts model
 * <MPN> (<manufacturer>), datasheet rev <rev>, fitted <YYYY-MM-DD>
 * Archetype: <archetype-file>. Fitting run: <tools/model-factory run id>
 * Node order: <stated explicitly>

@@ -1,0 +1,468 @@
+{
+  "schema_version": "1.0.0",
+  "extraction": {
+    "curves": [
+      {
+        "name": "Forward characteristics, Tj = 25 degC",
+        "page_reference": "PDF p. 4, Forward characteristics",
+        "points": [
+          {
+            "x": 0.45,
+            "y": 0.000001
+          },
+          {
+            "x": 0.49,
+            "y": 0.00001
+          },
+          {
+            "x": 0.53,
+            "y": 0.0001
+          },
+          {
+            "x": 0.58,
+            "y": 0.001
+          },
+          {
+            "x": 0.64,
+            "y": 0.01
+          },
+          {
+            "x": 0.73,
+            "y": 0.1
+          }
+        ],
+        "test_conditions": "Tj = 25 degC trace in the forward-characteristics figure.",
+        "x_axis": {
+          "quantity": "Forward voltage",
+          "scale": "linear",
+          "unit": "V"
+        },
+        "y_axis": {
+          "quantity": "Forward current",
+          "scale": "log",
+          "unit": "A"
+        }
+      }
+    ],
+    "datasheet_identity": {
+      "pages_examined": [
+        "PDF p. 1",
+        "PDF p. 2",
+        "PDF p. 3",
+        "PDF p. 4",
+        "PDF p. 5",
+        "PDF p. 6",
+        "PDF p. 7",
+        "PDF p. 8"
+      ],
+      "revision": "Not stated",
+      "title": "ZMM1V0 THRU ZMM75 Silicon Epitaxial Planar Zener Diodes"
+    },
+    "extraction_notes": [
+      "For ZMM16, the p. 2 table gives VZnom = 16 V with VZT range 15.3 to 17.1 V at IZT = 5 mA; the schema has no nominal source kind, so the nominal paired value is recorded as typical.",
+      "The same ZMM16 row gives ZZT = 40 ohm maximum, ZZK = 170 ohm maximum at IZK = 1 mA, and reverse leakage = 0.1 uA maximum at VR = 12 V; dynamic-resistance fields are outside this extraction schema.",
+      "The electrically fit-relevant Tj = 25 degC forward-characteristics curve on p. 4 was digitized. Thermal, power-dissipation, and surge/thermal-resistance plots were excluded from fit evidence.",
+      "No tabulated ZMM16V capacitance test point or reverse-recovery-time value is published; the generic capacitance plot was not used as a device-specific scalar capacitance value."
+    ],
+    "family": "diode",
+    "manufacturer": "YONGYUTAI",
+    "mpn": "ZMM16V",
+    "omission_reason": null,
+    "schema_version": "1.0.0",
+    "specs": {
+      "breakdown_current": {
+        "conditions": "TA = 25 degC; VZnom = 16 V; pulse width tp = 20 ms.",
+        "page_reference": "PDF p. 2, Characteristics, ZMM16 row",
+        "source_kind": "typical",
+        "unit": "A",
+        "value": 0.005
+      },
+      "breakdown_voltage": {
+        "conditions": "TA = 25 degC; IZT = 5 mA; pulse width tp = 20 ms; VZnom.",
+        "page_reference": "PDF p. 2, Characteristics, ZMM16 row",
+        "source_kind": "typical",
+        "unit": "V",
+        "value": 16
+      },
+      "capacitance": null,
+      "forward_voltage_points": [
+        {
+          "current": {
+            "conditions": "TA = 25 degC; IF = 100 mA; electrodes kept at ambient temperature.",
+            "page_reference": "PDF p. 1, Characteristics",
+            "source_kind": "maximum",
+            "unit": "A",
+            "value": 0.1
+          },
+          "voltage": {
+            "conditions": "TA = 25 degC; IF = 100 mA; electrodes kept at ambient temperature.",
+            "page_reference": "PDF p. 1, Characteristics",
+            "source_kind": "maximum",
+            "unit": "V",
+            "value": 1
+          }
+        },
+        {
+          "current": {
+            "conditions": "Tj = 25 degC; digitized forward-characteristics trace.",
+            "page_reference": "PDF p. 4, Forward characteristics",
+            "source_kind": "digitized_typical_curve",
+            "unit": "A",
+            "value": 0.000001
+          },
+          "voltage": {
+            "conditions": "Tj = 25 degC; digitized forward-characteristics trace.",
+            "page_reference": "PDF p. 4, Forward characteristics",
+            "source_kind": "digitized_typical_curve",
+            "unit": "V",
+            "value": 0.45
+          }
+        },
+        {
+          "current": {
+            "conditions": "Tj = 25 degC; digitized forward-characteristics trace.",
+            "page_reference": "PDF p. 4, Forward characteristics",
+            "source_kind": "digitized_typical_curve",
+            "unit": "A",
+            "value": 0.0001
+          },
+          "voltage": {
+            "conditions": "Tj = 25 degC; digitized forward-characteristics trace.",
+            "page_reference": "PDF p. 4, Forward characteristics",
+            "source_kind": "digitized_typical_curve",
+            "unit": "V",
+            "value": 0.53
+          }
+        },
+        {
+          "current": {
+            "conditions": "Tj = 25 degC; digitized forward-characteristics trace.",
+            "page_reference": "PDF p. 4, Forward characteristics",
+            "source_kind": "digitized_typical_curve",
+            "unit": "A",
+            "value": 0.01
+          },
+          "voltage": {
+            "conditions": "Tj = 25 degC; digitized forward-characteristics trace.",
+            "page_reference": "PDF p. 4, Forward characteristics",
+            "source_kind": "digitized_typical_curve",
+            "unit": "V",
+            "value": 0.64
+          }
+        }
+      ],
+      "reverse_current": {
+        "conditions": "TA = 25 degC; VR = 12 V; pulse width tp = 20 ms.",
+        "page_reference": "PDF p. 2, Characteristics, ZMM16 row",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 1e-7
+      },
+      "reverse_recovery": null,
+      "variant": "zener"
+    },
+    "usable_curves": true
+  },
+  "catalog_seed_hints": [],
+  "identity": {
+    "canonical_mpn": "ZMM16V",
+    "manufacturer": "YONGYUTAI",
+    "aliases": []
+  },
+  "source": {
+    "kind": "datasheet",
+    "url": "https://jlcpcb.com/api/file/downloadByFileSystemAccessId/8590197001180131328",
+    "revision": "Not stated",
+    "sha256": "91977160db425cc1729032e8b6b013b1949d882e6bb376e1f27772eaedc5ba5f",
+    "accessed_date": "2026-08-23",
+    "pages_referenced": [
+      "PDF p. 1",
+      "PDF p. 2",
+      "PDF p. 3",
+      "PDF p. 4",
+      "PDF p. 5",
+      "PDF p. 6",
+      "PDF p. 7",
+      "PDF p. 8"
+    ],
+    "placeholder": false
+  },
+  "evidence_contract_version": "1.0.0",
+  "fit_points": [
+    {
+      "current": {
+        "conditions": "Tj = 25 degC; digitized forward-characteristics trace.",
+        "page_reference": "PDF p. 4, Forward characteristics",
+        "source_kind": "digitized_typical_curve",
+        "unit": "A",
+        "value": 0.000001
+      },
+      "voltage": {
+        "conditions": "Tj = 25 degC; digitized forward-characteristics trace.",
+        "page_reference": "PDF p. 4, Forward characteristics",
+        "source_kind": "digitized_typical_curve",
+        "unit": "V",
+        "value": 0.45
+      }
+    },
+    {
+      "current": {
+        "conditions": "TA = 25 degC; IF = 100 mA; electrodes kept at ambient temperature.",
+        "page_reference": "PDF p. 1, Characteristics",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.1
+      },
+      "voltage": {
+        "conditions": "TA = 25 degC; IF = 100 mA; electrodes kept at ambient temperature.",
+        "page_reference": "PDF p. 1, Characteristics",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 1
+      }
+    }
+  ],
+  "forward_voltage_points": [
+    {
+      "current": {
+        "conditions": "TA = 25 degC; IF = 100 mA; electrodes kept at ambient temperature.",
+        "page_reference": "PDF p. 1, Characteristics",
+        "source_kind": "maximum",
+        "unit": "A",
+        "value": 0.1,
+        "quantity": "forward_current",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "ambient",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 0.1
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 1
+            }
+          },
+          "test_mode": {
+            "kind": "not_stated"
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "TA = 25 degC; IF = 100 mA; electrodes kept at ambient temperature."
+            }
+          ],
+          "condition_id": "sha256:925aa96314e0cf0314b9830fd71a8173bcb7e455609cab4a73cde72fb9ecd83a"
+        },
+        "citation_identity": {
+          "source_sha256": "91977160db425cc1729032e8b6b013b1949d882e6bb376e1f27772eaedc5ba5f",
+          "source_revision": "Not stated",
+          "page": 1,
+          "table": "Characteristics",
+          "row": "Forward Current",
+          "citation_id": "sha256:bd93faa65b31f509ccb60a69646733c5282454fe0abb47367789793f2fd5e57c"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:be4e51526f56607833cfabbc91f807dc38a3250f291c465de661bf8fc45647f5",
+          "cohort_id": "sha256:1828af42fd8ca41dff84c0d7cf09ef38cac09cef809e56f960aadf4367cf19b1",
+          "role": "maximum",
+          "condition_id": "sha256:925aa96314e0cf0314b9830fd71a8173bcb7e455609cab4a73cde72fb9ecd83a",
+          "citation_id": "sha256:bd93faa65b31f509ccb60a69646733c5282454fe0abb47367789793f2fd5e57c"
+        }
+      },
+      "voltage": {
+        "conditions": "TA = 25 degC; IF = 100 mA; electrodes kept at ambient temperature.",
+        "page_reference": "PDF p. 1, Characteristics",
+        "source_kind": "maximum",
+        "unit": "V",
+        "value": 1,
+        "quantity": "forward_voltage",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "ambient",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 0.1
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 1
+            }
+          },
+          "test_mode": {
+            "kind": "not_stated"
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "TA = 25 degC; IF = 100 mA; electrodes kept at ambient temperature."
+            }
+          ],
+          "condition_id": "sha256:925aa96314e0cf0314b9830fd71a8173bcb7e455609cab4a73cde72fb9ecd83a"
+        },
+        "citation_identity": {
+          "source_sha256": "91977160db425cc1729032e8b6b013b1949d882e6bb376e1f27772eaedc5ba5f",
+          "source_revision": "Not stated",
+          "page": 1,
+          "table": "Characteristics",
+          "row": "Forward Voltage",
+          "citation_id": "sha256:1fd731c716f9ddf7730ee9b4eff376015b47c1012688c1f29a4d56da9e8c3eb4"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:f5f32673175f4fea463d3904109925df4cf9c15659cc3c417010572348b66147",
+          "cohort_id": "sha256:7f76ce2becf57ee2b044bc8883efff35a22695f2f3fda198f0ecd9b9942dce88",
+          "role": "maximum",
+          "condition_id": "sha256:925aa96314e0cf0314b9830fd71a8173bcb7e455609cab4a73cde72fb9ecd83a",
+          "citation_id": "sha256:1fd731c716f9ddf7730ee9b4eff376015b47c1012688c1f29a4d56da9e8c3eb4"
+        }
+      }
+    },
+    {
+      "current": {
+        "conditions": "Tj = 25 degC; digitized forward-characteristics trace.",
+        "page_reference": "PDF p. 4, Forward characteristics",
+        "source_kind": "digitized_typical_curve",
+        "unit": "A",
+        "value": 0.000001,
+        "quantity": "forward_current",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "junction",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 0.000001
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 0.45
+            }
+          },
+          "test_mode": {
+            "kind": "not_stated"
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "Tj = 25 degC; digitized forward-characteristics trace."
+            }
+          ],
+          "condition_id": "sha256:c231141514790073b6e6880b431c8638dfb703ed2d162d59e14b37bebe1ea4f0"
+        },
+        "citation_identity": {
+          "source_sha256": "91977160db425cc1729032e8b6b013b1949d882e6bb376e1f27772eaedc5ba5f",
+          "source_revision": "Not stated",
+          "page": 4,
+          "table": "Forward characteristics",
+          "row": "Forward Current",
+          "citation_id": "sha256:d100986d0ec696ea0e4d349ea0cb5890ec2ac5fa8832459d6a0bf0e10e71746b"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:c437ce15d712d9e54aee285fab63295ef4e3317b9056e9ea7284429bceab024b",
+          "cohort_id": "sha256:184ce629ef54788d91583e1b395ad8ded6117c0ad5d4176f9ca0b3a809a85f03",
+          "role": "digitized_typical_curve",
+          "condition_id": "sha256:c231141514790073b6e6880b431c8638dfb703ed2d162d59e14b37bebe1ea4f0",
+          "citation_id": "sha256:d100986d0ec696ea0e4d349ea0cb5890ec2ac5fa8832459d6a0bf0e10e71746b"
+        }
+      },
+      "voltage": {
+        "conditions": "Tj = 25 degC; digitized forward-characteristics trace.",
+        "page_reference": "PDF p. 4, Forward characteristics",
+        "source_kind": "digitized_typical_curve",
+        "unit": "V",
+        "value": 0.45,
+        "quantity": "forward_voltage",
+        "condition_identity": {
+          "schema_version": "1.0.0",
+          "characteristic": "forward_voltage",
+          "polarity": "n",
+          "magnitude_convention": "absolute",
+          "temperature": {
+            "kind": "junction",
+            "value_c": 25
+          },
+          "electrical": {
+            "forward_current": {
+              "kind": "fixed",
+              "value_a": 0.000001
+            },
+            "forward_voltage": {
+              "kind": "fixed",
+              "value_v": 0.45
+            }
+          },
+          "test_mode": {
+            "kind": "not_stated"
+          },
+          "qualifiers": [
+            {
+              "key": "source_conditions",
+              "value": "Tj = 25 degC; digitized forward-characteristics trace."
+            }
+          ],
+          "condition_id": "sha256:c231141514790073b6e6880b431c8638dfb703ed2d162d59e14b37bebe1ea4f0"
+        },
+        "citation_identity": {
+          "source_sha256": "91977160db425cc1729032e8b6b013b1949d882e6bb376e1f27772eaedc5ba5f",
+          "source_revision": "Not stated",
+          "page": 4,
+          "table": "Forward characteristics",
+          "row": "Forward Voltage",
+          "citation_id": "sha256:8bf3253d9c0b67a285a278efc0543098039a77adde9acc713d948d622f02226a"
+        },
+        "evidence_identity": {
+          "evidence_id": "sha256:0e4263d1d85d1040f382996fd9f1b95f67e1a56889be50c97d8cf5c2b7fc3add",
+          "cohort_id": "sha256:e7a64c0ebc77c881755e7233745114a13abc571e565fe6426fa7704099ae674e",
+          "role": "digitized_typical_curve",
+          "condition_id": "sha256:c231141514790073b6e6880b431c8638dfb703ed2d162d59e14b37bebe1ea4f0",
+          "citation_id": "sha256:8bf3253d9c0b67a285a278efc0543098039a77adde9acc713d948d622f02226a"
+        }
+      }
+    }
+  ],
+  "curves": [],
+  "electrical_limits": {},
+  "derived_model_inputs": {
+    "BV": {
+      "conditions": "TA = 25 degC; IZT = 5 mA; pulse width tp = 20 ms; VZnom.",
+      "page_reference": "PDF p. 2, Characteristics, ZMM16 row",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 16
+    },
+    "IBV": {
+      "conditions": "TA = 25 degC; VZnom = 16 V; pulse width tp = 20 ms.",
+      "page_reference": "PDF p. 2, Characteristics, ZMM16 row",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.005
+    },
+    "NBV": {
+      "value": 1,
+      "unit": "1",
+      "conditions": "First-order avalanche-knee default; no multi-point reverse-knee trace was available",
+      "page_reference": "model-factory Zener F1 policy",
+      "source_kind": "held_default"
+    }
+  }
+}
