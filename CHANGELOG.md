@@ -2,7 +2,7 @@
 
 All notable scheMAGIC releases are documented here. The project uses semantic versioning; pre-1.0 release candidates may still change persisted or package-level contracts.
 
-## [0.2.0-rc.1] - 2026-08-30
+## [0.2.0-rc.1] - 2026-09-01
 
 ### Added
 
@@ -18,10 +18,11 @@ All notable scheMAGIC releases are documented here. The project uses semantic ve
 - Simulation results combine Measurement run provenance with Designer execution receipts.
 - The web release is versioned and tested as one product instead of separate preview branches.
 - The Designer runtime contract is versioned at `2026-08-30.1` with a 10-second cold shared-runner p95 ceiling; local and CI reports remain explicitly environment-bound.
+- CI now builds and asserts the pinned official native ngspice-46 + KLU reference and runs model-authoring tests from a locked repository-local Python environment.
 
 ### Known limitations
 
-- This is a release candidate. Manual assistive-technology review, exact-deployment offline/network review, authenticated runtime evidence and KiCad GUI open/save/reopen evidence remain external release gates.
+- This is a release candidate. Production offline/cache behavior is verified; manual assistive-technology review, authenticated runtime evidence, external KiCad verification, and KiCad GUI open/save/reopen evidence remain external gates.
 - Three inherited TI comparator packages (`LM311`, `LM393`, and `TLV3702`) retain recorded native/WebAssembly `supply_current` parity failures. The 61 newly promoted packages pass all 147 recorded parity benches and expectations.
 - DigiKey and Mouser adapters remain disabled pending credentials, written approval and terms review.
 - Motor and Power outputs are inspectable engineering candidates, not PCB-ready, safety-certified or selected-part/full-BOM simulation proof.
