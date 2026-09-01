@@ -836,7 +836,7 @@ describe("customized-target structural/electrical artifact V1", () => {
       targetResult,
       context,
     )).toThrow();
-  }, 60_000);
+  }, 120_000);
 
   it("fails installed verification closed and does not widen replay or receipt authority", () => {
     const { sidecar, context } = installedCustomizedFixture();

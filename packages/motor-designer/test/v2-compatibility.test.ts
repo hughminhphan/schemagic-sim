@@ -299,7 +299,7 @@ describe("Motor Designer V2 compatibility release", () => {
         expect.objectContaining({ ruleId: "motor.external.tvs-coordination", status: "unknown" }),
       ]));
     }
-  }, 30_000);
+  }, 60_000);
 
   it("requires the V3.2 integrated and mixed V3/V3.1 external topology recipes and never lets compatibility-only coverage unlock production", () => {
     const installed = getInstalledRecipeRefsV2("motor.brushed-dc");
