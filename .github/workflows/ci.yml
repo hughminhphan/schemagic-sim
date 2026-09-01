@@ -43,6 +43,11 @@ jobs:
 
       # The authoring tools live outside the root workspace glob and therefore
       # need explicit release gates.
+      - name: Install locked model-authoring dependencies
+        run: |
+          python3 -m pip install --requirement tools/model-factory/requirements.txt
+          npm ci --prefix tools/native-ngspice-reference
+
       - name: Run model-authoring tool tests
         run: |
           npm test --prefix tools/model-factory
