@@ -68,7 +68,8 @@ jobs:
       # need explicit release gates.
       - name: Install locked model-authoring dependencies
         run: |
-          python3 -m pip install --requirement tools/model-factory/requirements.txt
+          python3 -m venv tools/model-factory/.venv
+          tools/model-factory/.venv/bin/python -m pip install --requirement tools/model-factory/requirements.txt
           npm ci --prefix tools/native-ngspice-reference
 
       - name: Run model-authoring tool tests
