@@ -6,8 +6,8 @@ import {
   type AnalysisMode,
   type CircuitComponent,
   type CircuitDocument,
-  type GeneratedNetlist,
   type ComponentType,
+  type GeneratedNetlist,
   type NetlistLine,
   partByType,
 } from "@opencircuit/circuit-schema";
@@ -82,7 +82,6 @@ interface ResolvedCatalogComponent {
   part: CatalogRuntimePart;
   supplyBindings: Partial<Record<CatalogSupplyRole, CatalogVirtualConnection>>;
 }
-
 
 export const CATALOG_ANALYSIS_BY_MODE: Readonly<Record<AnalysisMode, string>> = Object.freeze({
   live: "operating_point",
