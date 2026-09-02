@@ -1,9 +1,9 @@
 import { existsSync } from "node:fs";
-import { componentPinPoints, isCatalogOnlyType, partByType, type CircuitComponent, type CircuitDocument, type CircuitWire, type Point } from "@opencircuit/circuit-schema";
+import { componentPinPoints, isCatalogOnlyType, validateCircuit, type CircuitDocument, type Point } from "@opencircuit/circuit-schema";
 import { beforeAll, describe, expect, it } from "vitest";
-import { CATALOG_PARTS, preloadCatalogPart, type CatalogPart } from "./catalog";
+import { CATALOG_PARTS, preloadCatalogPart } from "./catalog";
+import { catalogBenchDocument, ne555AstableDocument } from "./catalog-bench";
 import { generateNetlistWithCatalog } from "./catalog-netlist";
-import { declaredPinNames } from "./catalog-truth";
 // The native reference harness already owns process spawning, timeouts and
 // rawfile parsing for ngspice, so the smoke bench reuses it instead of shelling
 // out again with different semantics.
@@ -15,94 +15,6 @@ const HAS_NGSPICE = existsSync(NGSPICE);
 
 /** Every part that only became placeable once catalog-only symbols existed. */
 const NEWLY_PLACEABLE = CATALOG_PARTS.filter((part) => part.baseType && isCatalogOnlyType(part.baseType));
-
-const VCC_ROLES = /^(positive_supply|supply|input)$/;
-const GND_ROLES = /^(ground|negative_supply)$/;
-
-type Rail = "vcc" | "gnd" | "load";
-
-/** Supplies go to the rail they name; every other pin gets a 10k/10k bias so the node has a DC path. */
-function railForPin(part: CatalogPart, index: number): Rail {
-  const names = declaredPinNames(part.manifest);
-  const roles = [...(part.manifest.spice_pin_mapping ?? [])]
-    .sort((left, right) => left.order - right.order)
-    .map((entry) => (part.manifest.symbol_pins ?? []).find((pin) => pin.number === entry.symbol_pin_number)?.role ?? "");
-  const role = roles[index] ?? "";
-  const name = (names[index] ?? "").toUpperCase();
-  if (GND_ROLES.test(role) || name === "GND" || name === "VSS" || name === "V-") return "gnd";
-  if (VCC_ROLES.test(role) || name === "VCC" || name === "VDD" || name === "V+") return "vcc";
-  return "load";
-}
-
-const VCC_BUS_X = -200;
-const GND_BUS_X = 200;
-const LOAD_X = 60;
-
-/**
- * Builds a real schematic: the part is placed, every pin is routed with wires,
- * supply pins reach a 5 V source and the rest sit on a resistive divider.
- * Wires may cross because only shared vertices join nets.
- */
-function benchDocument(part: CatalogPart): CircuitDocument {
-  const type = part.baseType!;
-  const component: CircuitComponent = {
-    id: "c1", type, pos: [0, 0], rot: 0, mirror: false,
-    mpn: part.manifest.canonical_mpn,
-    params: { catalogPartId: part.id },
-  };
-  const components: CircuitComponent[] = [component];
-  const wires: CircuitWire[] = [];
-  const vccBus: Point[] = [];
-  const gndBus: Point[] = [];
-  const pins = componentPinPoints(component);
-  const offsets = partByType(type).pins;
-
-  pins.forEach((pin, index) => {
-    const lane = -40 - 2 * index;
-    const [offsetX, offsetY] = offsets[index]!;
-    const stub: Point = Math.abs(offsetX) >= Math.abs(offsetY)
-      ? [pin[0] + Math.sign(offsetX || 1) * 4, pin[1]]
-      : [pin[0], pin[1] + Math.sign(offsetY || 1) * 4];
-    const spine: Point[] = [pin, stub, [stub[0], lane]];
-    const rail = railForPin(part, index);
-    if (rail === "vcc") {
-      wires.push({ id: `wv${index}`, points: [...spine, [VCC_BUS_X, lane]] });
-      vccBus.push([VCC_BUS_X, lane]);
-      return;
-    }
-    if (rail === "gnd") {
-      wires.push({ id: `wg${index}`, points: [...spine, [GND_BUS_X, lane]] });
-      gndBus.push([GND_BUS_X, lane]);
-      return;
-    }
-    wires.push({ id: `wl${index}`, points: [...spine, [LOAD_X, lane]] });
-    // Pull-up shares the load node, pull-down carries it on to the ground bus.
-    components.push({ id: `r${100 + index}`, type: "resistor", pos: [LOAD_X - 2, lane], rot: 0, mirror: false, value: "10k" });
-    components.push({ id: `r${200 + index}`, type: "resistor", pos: [LOAD_X + 2, lane], rot: 0, mirror: false, value: "10k" });
-    wires.push({ id: `wu${index}`, points: [[LOAD_X - 4, lane], [VCC_BUS_X, lane]] });
-    wires.push({ id: `wd${index}`, points: [[LOAD_X + 4, lane], [GND_BUS_X, lane]] });
-    vccBus.push([VCC_BUS_X, lane]);
-    gndBus.push([GND_BUS_X, lane]);
-  });
-
-  components.push({ id: "v900", type: "vsource", pos: [VCC_BUS_X, 300], rot: 0, mirror: false, value: 5 });
-  components.push({ id: "g901", type: "ground", pos: [GND_BUS_X, 400], rot: 0, mirror: false });
-  vccBus.push([VCC_BUS_X, 298]);
-  wires.push({ id: "wreturn", points: [[VCC_BUS_X, 302], [GND_BUS_X, 302]] });
-  gndBus.push([GND_BUS_X, 302], [GND_BUS_X, 400]);
-
-  const bus = (x: number, points: Point[], id: string): CircuitWire => ({
-    id,
-    points: [...new Set(points.map(([, y]) => y))].sort((left, right) => left - right).map((y) => [x, y] as Point),
-  });
-  wires.push(bus(VCC_BUS_X, vccBus, "wbusv"), bus(GND_BUS_X, gndBus, "wbusg"));
-
-  return {
-    format: "opencircuit-circuit", version: 3,
-    meta: { title: `${part.manifest.canonical_mpn} smoke bench` },
-    components, wires, probes: [], sim: { mode: "op" },
-  };
-}
 
 describe.skipIf(!HAS_NGSPICE)("newly placeable catalog parts solve an operating point in native ngspice", () => {
   beforeAll(async () => {
@@ -116,7 +28,7 @@ describe.skipIf(!HAS_NGSPICE)("newly placeable catalog parts solve an operating 
   for (const part of NEWLY_PLACEABLE) {
     it(`runs .op for ${part.id}`, async () => {
       if (!part.placeable) return;
-      const generated = generateNetlistWithCatalog(benchDocument(part), "op", [part]);
+      const generated = generateNetlistWithCatalog(catalogBenchDocument(part), "op", [part]);
       expect(generated.netlist).toMatch(/^\.op$/m);
       const run = await runNative({ netlist: generated.netlist, ngspicePath: NGSPICE, timeoutMs: 60_000 });
       expect(run.stderr, `${part.id} ngspice stderr:\n${run.stderr}`).not.toMatch(/error|singular|aborted/i);
@@ -124,3 +36,47 @@ describe.skipIf(!HAS_NGSPICE)("newly placeable catalog parts solve an operating 
     }, 90_000);
   }
 });
+
+/** No wire may run over a pin that is not one of its own vertices, or the schematic reads as a short. */
+function pinsCoveredByForeignWires(document: CircuitDocument): string[] {
+  const pins = document.components.flatMap((component) => componentPinPoints(component).map((point) => ({ component: component.id, point })));
+  const covered: string[] = [];
+  for (const wire of document.wires) {
+    const vertices = new Set(wire.points.map(([x, y]) => `${x},${y}`));
+    for (let index = 1; index < wire.points.length; index += 1) {
+      const [ax, ay] = wire.points[index - 1] as Point;
+      const [bx, by] = wire.points[index] as Point;
+      for (const pin of pins) {
+        const [px, py] = pin.point;
+        if (vertices.has(`${px},${py}`)) continue;
+        const onSegment = ax === bx
+          ? px === ax && py > Math.min(ay, by) && py < Math.max(ay, by)
+          : py === ay && px > Math.min(ax, bx) && px < Math.max(ax, bx);
+        if (onSegment) covered.push(`${wire.id} runs over ${pin.component} pin at ${px},${py}`);
+      }
+    }
+  }
+  return covered;
+}
+
+describe.skipIf(!HAS_NGSPICE)("the NE555 astable capture bench", () => {
+  const part = CATALOG_PARTS.find((candidate) => candidate.manifest.canonical_mpn === "NE555")!;
+  beforeAll(async () => { await preloadCatalogPart(part.id); }, 60_000);
+
+  it("is a valid schematic with no wire crossing a foreign pin", () => {
+    const document = ne555AstableDocument(part);
+    expect(validateCircuit(document)).toEqual([]);
+    expect(pinsCoveredByForeignWires(document)).toEqual([]);
+  });
+
+  it("oscillates in native ngspice", async () => {
+    const generated = generateNetlistWithCatalog(ne555AstableDocument(part), "tran", [part]);
+    const run = await runNative({ netlist: generated.netlist, ngspicePath: NGSPICE, timeoutMs: 90_000 });
+    expect(run.stderr, run.stderr).not.toMatch(/error|singular|aborted/i);
+    const swings = Object.values(run.vectors as Record<string, unknown>)
+      .map((vector) => (Array.isArray(vector) ? vector : (vector as { values?: number[] }).values) ?? [])
+      .filter((values) => values.length > 10 && Math.max(...values) - Math.min(...values) > 1);
+    expect(swings.length, "no node swings by more than a volt, so the timer never ran").toBeGreaterThan(0);
+  }, 120_000);
+});
+
