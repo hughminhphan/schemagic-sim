@@ -137,7 +137,7 @@ describe("Designer runtime audit V1", () => {
         contractVersion: "2026-08-30.1",
         contractContentHash: "sha256:201eac547ff0617270a8540ed5aa5b1de3c1d9f3b3df4eebba0fd15dada14779",
         implemented: {
-          exactMotorPowerWorkloads: true,
+          exactApplicationWorkloadCoverage: true,
           exactProductionIdentities: true,
           browserSideTimingAndRetainedHeap: true,
           boundedClaims: true,

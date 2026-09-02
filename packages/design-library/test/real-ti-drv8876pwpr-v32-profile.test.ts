@@ -87,7 +87,7 @@ describe("exact TI DRV8876PWPR facts 3.2.0 author profile", () => {
       manufacturerPartNumber: "DRV8876PWPR",
     });
     expect(profile.factsSchemaVersion).toBe("3.2.0");
-  }, 20_000);
+  });
 
   it("preserves the conservative electrical and evidence-role boundaries", () => {
     expect(profile.facts.bridgeTopology.value).toBe("full_bridge");

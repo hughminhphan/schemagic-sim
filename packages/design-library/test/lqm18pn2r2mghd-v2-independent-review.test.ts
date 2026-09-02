@@ -69,7 +69,7 @@ describe("independent Murata LQM18PN2R2MGHD facts-V2 evidence review", () => {
     if (validate === undefined) throw new Error(`Missing AJV schema ${schemaId}`);
 
     expect(validate(profileJson), JSON.stringify(validate.errors)).toBe(true);
-  }, 20_000);
+  });
 
   it("pins every factual claim to the exact official H-revision source bytes", () => {
     const references = evidenceReferences(profileJson);

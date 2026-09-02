@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.schemagic.design/design-library/v1/profile.facts-v3-5.schema.json",
+  "title": "scheMAGIC closed design profile with facts schema 3.5.0",
+  "allOf": [
+    {
+      "$ref": "profile-envelope.facts-v3-5.schema.json"
+    },
+    {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "partClass",
+            "facts"
+          ],
+          "properties": {
+            "partClass": {
+              "const": "power.integrated-synchronous-buck-regulator"
+            },
+            "facts": {
+              "$ref": "facts/power.integrated-synchronous-buck-regulator.v3-5.schema.json"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "partClass",
+            "facts"
+          ],
+          "properties": {
+            "partClass": {
+              "const": "power.power-inductor"
+            },
+            "facts": {
+              "$ref": "facts/power.power-inductor.v3-5.schema.json"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "partClass",
+            "facts"
+          ],
+          "properties": {
+            "partClass": {
+              "const": "shared.mlcc-capacitor"
+            },
+            "facts": {
+              "$ref": "facts/shared.mlcc-capacitor.v3-5.schema.json"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

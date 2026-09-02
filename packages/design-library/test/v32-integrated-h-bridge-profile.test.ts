@@ -188,7 +188,7 @@ describe("Motor integrated H-bridge facts 3.2.0 contract", () => {
       /factsSchemaVersion \[codec_mismatch\]: Expected 3\.2\.0/,
     );
     expect(() => getDesignProfileCodecForVersion("motor.full-bridge-gate-driver", FACTS_SCHEMA_VERSION_V32 as never)).toThrow(/unknown_codec_version/);
-  }, 20_000);
+  });
 
   it("couples unknown and reviewed quantity roles in runtime and JSON Schema", () => {
     const validate = schemaValidator();
@@ -204,7 +204,7 @@ describe("Motor integrated H-bridge facts 3.2.0 contract", () => {
     missingRole.facts.minimumInputPulseWidthRole = unknown("A reviewed timing quantity cannot omit its evidence role.");
     expect(validateDesignProfileV32(missingRole, SYNTHETIC_MANUFACTURER_REGISTRY)).toContainEqual(expect.objectContaining({ code: "evidence_role_mismatch" }));
     expect(validate(missingRole)).toBe(false);
-  }, 20_000);
+  });
 
   it("requires canonical condition arrays and evidence sets on reviewed pairs", () => {
     const matching = profile();
@@ -223,7 +223,7 @@ describe("Motor integrated H-bridge facts 3.2.0 contract", () => {
     sources.facts.minimumInputPulseWidthRole.evidence = evidence("Synthetic integrated H-bridge facts 3.2.0 fixture, table 2");
     expect(validateDesignProfileV32(sources, SYNTHETIC_MANUFACTURER_REGISTRY)).toContainEqual(expect.objectContaining({ code: "paired_evidence_mismatch" }));
     expect(schemaValidator()(sources)).toBe(true);
-  }, 20_000);
+  });
 
   it("enforces explicit capacitance branches without inventing application-dependent values", () => {
     const validate = schemaValidator();
@@ -236,7 +236,7 @@ describe("Motor integrated H-bridge facts 3.2.0 contract", () => {
     omitted.facts.localSupplyDecouplingCapacitance = unknown("A required minimum cannot omit the reviewed quantity.");
     expect(validateDesignProfileV32(omitted, SYNTHETIC_MANUFACTURER_REGISTRY)).toContainEqual(expect.objectContaining({ code: "capacitance_requirement_mismatch" }));
     expect(validate(omitted)).toBe(false);
-  }, 20_000);
+  });
 
   it("enforces strict supply ordering and one reviewed output-current capability", () => {
     const inverted = profile();
@@ -261,5 +261,5 @@ describe("Motor integrated H-bridge facts 3.2.0 contract", () => {
     const wrongClass = { ...input, partClass: "motor.full-bridge-gate-driver" };
     expect(validateDesignProfileV32(wrongClass, SYNTHETIC_MANUFACTURER_REGISTRY)).toContainEqual(expect.objectContaining({ code: "invalid_part_class" }));
     expect(validate(wrongClass)).toBe(false);
-  }, 20_000);
+  });
 });

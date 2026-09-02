@@ -115,7 +115,7 @@ describe("exact TI DRV8262DDVR facts 3.2.0 profile", () => {
       manufacturerPartNumber: "DRV8262DDVR",
     });
     expect(profile.factsSchemaVersion).toBe("3.2.0");
-  }, 20_000);
+  });
 
   it("keeps 20 A as the operating limit and 32 A as protection-only evidence", () => {
     expect(profile.facts.bridgeTopology.value).toBe("full_bridge");

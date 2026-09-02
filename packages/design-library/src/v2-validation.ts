@@ -49,6 +49,8 @@ import { FACTS_SCHEMA_VERSION_V33 } from "./v33-types";
 import { validateDesignProfileV33 } from "./v33-validation";
 import { FACTS_SCHEMA_VERSION_V34 } from "./v34-types";
 import { validateDesignProfileV34 } from "./v34-validation";
+import { FACTS_SCHEMA_VERSION_V35 } from "./v35-types";
+import { validateDesignProfileV35 } from "./v35-validation";
 
 type JsonRecord = Record<string, unknown>;
 
@@ -474,6 +476,7 @@ export function validateDesignProfileEnvelope(input: unknown, registry?: Manufac
   if (profile?.factsSchemaVersion === FACTS_SCHEMA_VERSION_V32) return validateDesignProfileV32(profile, registry);
   if (profile?.factsSchemaVersion === FACTS_SCHEMA_VERSION_V33) return validateDesignProfileV33(profile, registry);
   if (profile?.factsSchemaVersion === FACTS_SCHEMA_VERSION_V34) return validateDesignProfileV34(profile, registry);
+  if (profile?.factsSchemaVersion === FACTS_SCHEMA_VERSION_V35) return validateDesignProfileV35(profile, registry);
   return [issue("factsSchemaVersion", "invalid_facts_version", "Unknown facts schema version")];
 }
 

@@ -64,6 +64,7 @@ import {
   validateProfileAdmissionRulesV33,
 } from "./v33-validation";
 import type { V34PartClassId } from "./v34-specs";
+import type { V35PartClassId } from "./v35-specs";
 import {
   FACTS_SCHEMA_VERSION_V34,
   type DesignProfileV34,
@@ -74,6 +75,16 @@ import {
   validateDesignProfileV34,
   validateProfileAdmissionRulesV34,
 } from "./v34-validation";
+import {
+  FACTS_SCHEMA_VERSION_V35,
+  type DesignProfileV35,
+  type FactsV35For,
+} from "./v35-types";
+import {
+  parseDesignProfileV35,
+  validateDesignProfileV35,
+  validateProfileAdmissionRulesV35,
+} from "./v35-validation";
 
 export interface DesignProfileFactsCodecV2<ClassId extends PartClassId> {
   partClass: ClassId;
@@ -123,6 +134,14 @@ export interface DesignProfileFactsCodecV34<ClassId extends V34PartClassId> {
   validateAdmission(profile: DesignProfileV34<ClassId>): ValidationIssue[];
 }
 
+export interface DesignProfileFactsCodecV35<ClassId extends V35PartClassId> {
+  partClass: ClassId;
+  factsSchemaVersion: typeof FACTS_SCHEMA_VERSION_V35;
+  validateFacts(input: unknown, manufacturer?: ManufacturerRegistryEntryV1): ValidationIssue[];
+  parseFacts(input: unknown, manufacturer?: ManufacturerRegistryEntryV1): FactsV35For<ClassId>;
+  validateAdmission(profile: DesignProfileV35<ClassId>): ValidationIssue[];
+}
+
 export type VersionedDesignProfileCodec<ClassId extends PartClassId> =
   | DesignProfileCodec<ClassId>
   | DesignProfileFactsCodecV2<ClassId>
@@ -130,7 +149,8 @@ export type VersionedDesignProfileCodec<ClassId extends PartClassId> =
   | (ClassId extends V31PartClassId ? DesignProfileFactsCodecV31<ClassId> : never)
   | (ClassId extends V32PartClassId ? DesignProfileFactsCodecV32<ClassId> : never)
   | (ClassId extends V33PartClassId ? DesignProfileFactsCodecV33<ClassId> : never)
-  | (ClassId extends V34PartClassId ? DesignProfileFactsCodecV34<ClassId> : never);
+  | (ClassId extends V34PartClassId ? DesignProfileFactsCodecV34<ClassId> : never)
+  | (ClassId extends V35PartClassId ? DesignProfileFactsCodecV35<ClassId> : never);
 
 export type DesignProfileForCodec<
   Codec extends VersionedDesignProfileCodec<PartClassId>,
@@ -146,6 +166,8 @@ export type DesignProfileForCodec<
     ? DesignProfileV33<ClassId>
   : Codec extends DesignProfileFactsCodecV34<infer ClassId>
     ? DesignProfileV34<ClassId>
+  : Codec extends DesignProfileFactsCodecV35<infer ClassId>
+    ? DesignProfileV35<ClassId>
   : Codec extends DesignProfileCodec<infer ClassId>
     ? DesignProfileFor<ClassId>
     : never;
@@ -306,6 +328,29 @@ function factsEnvelopeV34<ClassId extends V34PartClassId>(
   };
 }
 
+function factsEnvelopeV35<ClassId extends V35PartClassId>(
+  partClass: ClassId,
+  facts: unknown,
+  manufacturer?: ManufacturerRegistryEntryV1,
+): unknown {
+  return {
+    format: DESIGN_PROFILE_FORMAT,
+    schemaVersion: DESIGN_PROFILE_SCHEMA_VERSION,
+    partClass,
+    part: {
+      manufacturerId: manufacturer?.manufacturerId ?? "schemagic-codec-validation",
+      manufacturerPartNumber: "FACTS-V35-CODEC",
+    },
+    factsSchemaVersion: FACTS_SCHEMA_VERSION_V35,
+    commonFacts: {
+      packageName: unknownCommonFact("Facts-only codec validation does not supply a package name."),
+      boardArea: unknownCommonFact("Facts 3.5.0 carries mounted board area inside class facts."),
+      maximumHeight: unknownCommonFact("Facts 3.5.0 carries mounted maximum height inside class facts."),
+    },
+    facts,
+  };
+}
+
 function codecForV2<ClassId extends PartClassId>(partClass: ClassId): DesignProfileFactsCodecV2<ClassId> {
   return Object.freeze({
     partClass,
@@ -438,6 +483,28 @@ function codecForV34<ClassId extends V34PartClassId>(partClass: ClassId): Design
   });
 }
 
+function codecForV35<ClassId extends V35PartClassId>(partClass: ClassId): DesignProfileFactsCodecV35<ClassId> {
+  return Object.freeze({
+    partClass,
+    factsSchemaVersion: FACTS_SCHEMA_VERSION_V35,
+    validateFacts: (input: unknown, manufacturer?: ManufacturerRegistryEntryV1) => validateDesignProfileV35(
+      factsEnvelopeV35(partClass, input, manufacturer),
+      registryFor(manufacturer),
+    ),
+    parseFacts: (input: unknown, manufacturer?: ManufacturerRegistryEntryV1) => {
+      const profile = parseDesignProfileV35(
+        factsEnvelopeV35(partClass, input, manufacturer),
+        registryFor(manufacturer),
+      );
+      if (profile.partClass !== partClass) {
+        throw new Error(`facts [codec_mismatch]: Expected ${partClass} facts ${FACTS_SCHEMA_VERSION_V35}`);
+      }
+      return profile.facts as FactsV35For<ClassId>;
+    },
+    validateAdmission: (profile: DesignProfileV35<ClassId>) => validateProfileAdmissionRulesV35(profile),
+  });
+}
+
 /** Closed code-owned facts-V2 registry. There is no runtime registration surface. */
 export const DESIGN_PROFILE_FACTS_CODECS_V2 = deepFreeze({
   "motor.integrated-h-bridge": codecForV2("motor.integrated-h-bridge"),
@@ -475,6 +542,12 @@ export const DESIGN_PROFILE_FACTS_CODECS_V34 = deepFreeze({
   "power.power-inductor": codecForV34("power.power-inductor"),
 } satisfies { [ClassId in V34PartClassId]: DesignProfileFactsCodecV34<ClassId> });
 
+export const DESIGN_PROFILE_FACTS_CODECS_V35 = deepFreeze({
+  "power.integrated-synchronous-buck-regulator": codecForV35("power.integrated-synchronous-buck-regulator"),
+  "power.power-inductor": codecForV35("power.power-inductor"),
+  "shared.mlcc-capacitor": codecForV35("shared.mlcc-capacitor"),
+} satisfies { [ClassId in V35PartClassId]: DesignProfileFactsCodecV35<ClassId> });
+
 export function getDesignProfileCodecForVersion<ClassId extends PartClassId>(
   partClass: ClassId,
   factsSchemaVersion: typeof FACTS_SCHEMA_VERSION,
@@ -503,9 +576,13 @@ export function getDesignProfileCodecForVersion<ClassId extends V34PartClassId>(
   partClass: ClassId,
   factsSchemaVersion: typeof FACTS_SCHEMA_VERSION_V34,
 ): DesignProfileFactsCodecV34<ClassId>;
+export function getDesignProfileCodecForVersion<ClassId extends V35PartClassId>(
+  partClass: ClassId,
+  factsSchemaVersion: typeof FACTS_SCHEMA_VERSION_V35,
+): DesignProfileFactsCodecV35<ClassId>;
 export function getDesignProfileCodecForVersion<ClassId extends PartClassId>(
   partClass: ClassId,
-  factsSchemaVersion: typeof FACTS_SCHEMA_VERSION | typeof FACTS_SCHEMA_VERSION_V2 | typeof FACTS_SCHEMA_VERSION_V3 | typeof FACTS_SCHEMA_VERSION_V31 | typeof FACTS_SCHEMA_VERSION_V32 | typeof FACTS_SCHEMA_VERSION_V33 | typeof FACTS_SCHEMA_VERSION_V34,
+  factsSchemaVersion: typeof FACTS_SCHEMA_VERSION | typeof FACTS_SCHEMA_VERSION_V2 | typeof FACTS_SCHEMA_VERSION_V3 | typeof FACTS_SCHEMA_VERSION_V31 | typeof FACTS_SCHEMA_VERSION_V32 | typeof FACTS_SCHEMA_VERSION_V33 | typeof FACTS_SCHEMA_VERSION_V34 | typeof FACTS_SCHEMA_VERSION_V35,
 ): VersionedDesignProfileCodec<ClassId> {
   if (factsSchemaVersion === FACTS_SCHEMA_VERSION) return getDesignProfileCodec(partClass);
   if (factsSchemaVersion === FACTS_SCHEMA_VERSION_V2 && Object.prototype.hasOwnProperty.call(DESIGN_PROFILE_FACTS_CODECS_V2, partClass)) {
@@ -525,6 +602,9 @@ export function getDesignProfileCodecForVersion<ClassId extends PartClassId>(
   }
   if (factsSchemaVersion === FACTS_SCHEMA_VERSION_V34 && Object.prototype.hasOwnProperty.call(DESIGN_PROFILE_FACTS_CODECS_V34, partClass)) {
     return DESIGN_PROFILE_FACTS_CODECS_V34[partClass as V34PartClassId] as VersionedDesignProfileCodec<ClassId>;
+  }
+  if (factsSchemaVersion === FACTS_SCHEMA_VERSION_V35 && Object.prototype.hasOwnProperty.call(DESIGN_PROFILE_FACTS_CODECS_V35, partClass)) {
+    return DESIGN_PROFILE_FACTS_CODECS_V35[partClass as V35PartClassId] as VersionedDesignProfileCodec<ClassId>;
   }
   throw new TypeError(`factsSchemaVersion [unknown_codec_version]: ${String(factsSchemaVersion)}`);
 }
@@ -596,6 +676,21 @@ export function parseDesignProfileForV34<ClassId extends V34PartClassId>(
     throw new Error(`partClass [codec_mismatch]: Expected ${codec.partClass}`);
   }
   return profile as DesignProfileV34<ClassId>;
+}
+
+export function parseDesignProfileForV35<ClassId extends V35PartClassId>(
+  codec: DesignProfileFactsCodecV35<ClassId>,
+  input: unknown,
+  registry?: ManufacturerRegistryV1,
+): DesignProfileV35<ClassId> {
+  if (codec.factsSchemaVersion !== FACTS_SCHEMA_VERSION_V35) {
+    throw new Error(`factsSchemaVersion [codec_mismatch]: Expected ${FACTS_SCHEMA_VERSION_V35}`);
+  }
+  const profile = parseDesignProfileV35(input, registry);
+  if (profile.partClass !== codec.partClass) {
+    throw new Error(`partClass [codec_mismatch]: Expected ${codec.partClass}`);
+  }
+  return profile as DesignProfileV35<ClassId>;
 }
 
 export function parseDesignProfileForV2<ClassId extends PartClassId>(

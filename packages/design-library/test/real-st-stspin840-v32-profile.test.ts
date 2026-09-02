@@ -75,7 +75,7 @@ describe("exact STMicroelectronics STSPIN840 facts 3.2.0 author profile", () => 
       manufacturerPartNumber: "STSPIN840",
     });
     expect(profile.factsSchemaVersion).toBe("3.2.0");
-  }, 20_000);
+  });
 
   it("preserves conservative architecture, rating, and timing boundaries", () => {
     expect(profile.facts.bridgeTopology.value).toBe("full_bridge");
