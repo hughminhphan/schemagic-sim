@@ -86,9 +86,9 @@ function validUrl(value) {
 async function buildUrlIndexes(options) {
   const byLcsc = new Map();
   const bySha = new Map();
-  const jsonFiles = [
-    ...(await walkFiles(options.partFeederDataRoot)).filter((path) => path.endsWith(".json")),
-    ...(await walkFiles(options.conveyorDataRoot)).filter((path) => path.endsWith(".json")),
+  const recordFiles = [
+    ...(await walkFiles(options.partFeederDataRoot)).filter((path) => path.endsWith(".json") || path.endsWith(".jsonl")),
+    ...(await walkFiles(options.conveyorDataRoot)).filter((path) => path.endsWith(".json") || path.endsWith(".jsonl")),
   ];
 
   function inspect(value) {
@@ -104,7 +104,16 @@ async function buildUrlIndexes(options) {
     for (const child of Object.values(value)) inspect(child);
   }
 
-  for (const path of jsonFiles) inspect(await readJson(path));
+  for (const path of recordFiles) {
+    if (path.endsWith(".jsonl")) {
+      const lines = (await readFile(path, "utf8")).split(/\r?\n/).filter(Boolean);
+      for (const line of lines) {
+        try { inspect(JSON.parse(line)); } catch { /* An unreadable ledger line cannot authorize deletion. */ }
+      }
+    } else {
+      inspect(await readJson(path));
+    }
+  }
 
   for (const manufacturer of await readdir(options.libraryRoot, { withFileTypes: true })) {
     if (!manufacturer.isDirectory()) continue;
