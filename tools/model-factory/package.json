@@ -8,7 +8,9 @@
     "opencircuit-model-factory": "./factory.mjs"
   },
   "scripts": {
-    "test": "node --test test/*.test.mjs"
+    "test": "node --test test/*.test.mjs",
+    "test:python": "./.venv/bin/python -m unittest discover -s test/python -t test/python -v",
+    "bench:fit": "./.venv/bin/python test/bench_persistent_fit.py"
   },
   "engines": {
     "node": ">=20"

@@ -209,6 +209,58 @@ function stageExtract(ctx) {
   console.log(`extract ${ctx.part.slug}: ${pointCount} primary factual targets`);
 }
 
+/**
+ * Every registry pipeline maps to exactly one fitter script.
+ *
+ * This used to end in `?? "fit_diode.py"`. That default was not a fallback, it was a
+ * silent mis-dispatch: the only "njf" part in the registry (BF256B) would have been
+ * handed to the diode fitter, which reads facts.fit_points and emits an IS/N/RS diode
+ * card. Nothing downstream would have noticed a JFET described by diode parameters, so
+ * an unmapped archetype now fails by name instead of picking a plausible-looking fitter.
+ */
+export const FITTER_SCRIPTS = Object.freeze({
+  diode: "fit_diode.py",
+  bjt: "fit_bjt.py",
+  darlington: "fit_darlington.py",
+  vdmos: "fit_vdmos.py",
+  opamp: "fit_opamp.py",
+  sensor_behavioral: "fit_sensor.py",
+  specialty_analog: "fit_specialty.py"
+});
+
+/**
+ * Archetypes that are deliberately not fittable today, with the reason a reviewer needs.
+ * Listing them is the point: an unfittable archetype must be a written decision, not an
+ * absent map entry that some future `??` quietly papers over again.
+ */
+export const UNFITTABLE_PIPELINES = Object.freeze({
+  njf: "JFET packages have no automated fitter. A square-law NJF card derived from an "
+    + "IDSS/VGS(off) bin window is a bound-centred declaration, not a fit: there is no "
+    + "typical transfer curve to produce residuals against, so no fit could be gated. "
+    + "The reviewed BF256B package was produced by a documented manual F1 path and "
+    + "records that in its own fitted.json. Reproduce that path by hand and review it, "
+    + "or add a fitter that consumes a digitised transfer family."
+});
+
+export class UnmappedArchetypeError extends Error {
+  constructor(pipeline, reason = null) {
+    const known = Object.keys(FITTER_SCRIPTS).sort().join(", ");
+    super(reason
+      ? `Archetype "${pipeline}" has no fitter: ${reason}`
+      : `Archetype "${pipeline}" has no fitter script mapped. Mapped archetypes: ${known}. `
+        + "Add an entry to FITTER_SCRIPTS, or record the archetype in UNFITTABLE_PIPELINES with its reason.");
+    this.name = "UnmappedArchetypeError";
+    this.pipeline = pipeline;
+    this.unfittable = reason !== null;
+  }
+}
+
+export function fitterScriptFor(pipeline) {
+  if (Object.hasOwn(FITTER_SCRIPTS, pipeline)) return FITTER_SCRIPTS[pipeline];
+  if (Object.hasOwn(UNFITTABLE_PIPELINES, pipeline)) throw new UnmappedArchetypeError(pipeline, UNFITTABLE_PIPELINES[pipeline]);
+  throw new UnmappedArchetypeError(pipeline);
+}
+
 function stageFit(ctx) {
   const factsPath = path.join(ctx.packageDir, "facts.json");
   requireFile(factsPath, "fit");
@@ -224,14 +276,7 @@ function stageFit(ctx) {
   }
   const python = path.join(here, ".venv", "bin", "python");
   requireFile(python, "fit");
-  const script = {
-    bjt: "fit_bjt.py",
-    darlington: "fit_darlington.py",
-    vdmos: "fit_vdmos.py",
-    opamp: "fit_opamp.py",
-    sensor_behavioral: "fit_sensor.py",
-    specialty_analog: "fit_specialty.py"
-  }[ctx.part.pipeline] ?? "fit_diode.py";
+  const script = fitterScriptFor(ctx.part.pipeline);
   run(python, [path.join(here, "python", script), factsPath, output], { timeout: 600_000 });
   const fitted = JSON.parse(fs.readFileSync(output, "utf8"));
   console.log(`fit ${ctx.part.slug}: worst relative error ${(100 * fitted.worst_relative_error.value).toFixed(3)}%`);
@@ -1549,7 +1594,9 @@ export function stageTestgen(ctx) {
   else if (ctx.part.pipeline === "opamp") tests = opampTestgen(ctx, model, facts);
   else if (ctx.part.pipeline === "specialty_analog") tests = specialtyTestgen(ctx, model, facts);
   else if (ctx.part.pipeline === "sensor_behavioral") tests = sensorTestgen(ctx, model, facts);
-  if (ctx.part.pipeline) {
+  // The diode archetype falls through to the forward-bench generator below. Every
+  // other archetype has already produced its benches above.
+  if (ctx.part.pipeline && ctx.part.pipeline !== "diode") {
     const strictEvidence = ctx.part.pipeline === "vdmos" && facts.evidence_contract_version === "1.0.0";
     const linkedChecks = tests.flatMap((entry) => [...(entry.scalar_checks ?? []), ...(entry.hard_bounds_checks ?? [])]).filter((check) => check.evidence_id);
     const evidenceCohorts = [...new Map(linkedChecks.map((check) => [check.cohort_id, {
