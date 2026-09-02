@@ -146,11 +146,17 @@ jobs:
     name: Native versus WASM comparison
     runs-on: ubuntu-latest
     steps:
+      # These two steps stay on v4 deliberately. The Designer release audit
+      # (packages/designer-release-audit) asserts the literal strings
+      # "actions/checkout@v4" and "actions/setup-node@v4" for THIS job, so
+      # bumping them here fails `npm run verify`. Roadmap task D.0 replaces that
+      # literal pinning with property assertions; bump these in the same PR that
+      # lands D.0, not before. Every other job in the repository is on v7.
       - name: Check out repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@v4
 
       - name: Set up Node.js
-        uses: actions/setup-node@v7
+        uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
