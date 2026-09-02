@@ -8,6 +8,7 @@ import {
   declaredPinNames,
   isPositionalCatalogType,
   rankCatalogParts,
+  selectModelDefinition,
   symbolPinCountFor,
   type CatalogAnalysis,
   type CatalogFilters,
@@ -70,9 +71,6 @@ const parse = <T>(value: string | undefined, fallback: T): T => {
   try { return JSON.parse(value) as T; } catch { return fallback; }
 };
 const sibling = (componentPath: string, name: string) => componentPath.replace(/component\.json$/, name);
-const modelName = (source: string, modelType: string): string => modelType === "subckt"
-  ? source.match(/^\s*\.subckt\s+(\S+)/im)?.[1] ?? ""
-  : source.match(/^\s*\.model\s+(\S+)/im)?.[1] ?? "";
 
 /**
  * Packages whose own validation-results.json records a native/WASM disagreement.
@@ -189,8 +187,13 @@ export function preloadCatalogPart(idOrMpn: string): Promise<CatalogPart> {
   ]).then(([modelSource, modelCard, sourcesRaw, validationRaw]) => {
     const validation = parse<ValidationResults>(validationRaw, {});
     const runtimeReasons: string[] = [];
-    const emittedName = modelName(modelSource, part.manifest.model_type);
-    if (!modelSource.trim() || !emittedName) runtimeReasons.push("Model source has no .model or .subckt definition");
+    const definition = selectModelDefinition(modelSource, part.manifest.model_type);
+    const emittedName = definition?.name ?? "";
+    if (!modelSource.trim() || !emittedName) runtimeReasons.push("Model source has no single unambiguous .model or .subckt entry point");
+    const declaredNodes = part.manifest.spice_pin_mapping?.length ?? 0;
+    if (definition && part.manifest.model_type === "subckt" && definition.ports.length !== declaredNodes) {
+      runtimeReasons.push(`Subcircuit ${definition.name} takes ${definition.ports.length} nodes but the package declares ${declaredNodes}`);
+    }
     if (validation.native_wasm_all_pass !== true || validation.expectations_all_pass !== true || validation.expectation_fail_count !== 0) runtimeReasons.push("Native/WASM or expectation validation is not all-pass");
     part.modelSource = modelSource;
     part.modelName = emittedName;

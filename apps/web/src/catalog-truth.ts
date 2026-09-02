@@ -174,3 +174,43 @@ export function rankCatalogParts<T extends CatalogSearchable>(parts: readonly T[
       || left.part.manifest.canonical_mpn.localeCompare(right.part.manifest.canonical_mpn, undefined, { numeric: true }))
     .map((entry) => entry.part);
 }
+
+export interface ModelDefinitionSelection { name: string; ports: readonly string[] }
+
+/**
+ * Picks the entry point of a model file. Multi-stage logic packages define
+ * helper subcircuits alongside the part, so taking the first .subckt would
+ * instantiate an output buffer instead of the device. The entry point is the
+ * definition nothing else instantiates.
+ */
+export function selectModelDefinition(source: string, modelType: string): ModelDefinitionSelection | undefined {
+  const folded = source.replace(/\r/g, "").replace(/\n\s*\+\s*/g, " ");
+  if (modelType !== "subckt") {
+    const name = folded.match(/^\s*\.model\s+(\S+)/im)?.[1];
+    return name ? { name, ports: [] } : undefined;
+  }
+  const definitions = new Map<string, string[]>();
+  for (const match of folded.matchAll(/^[ \t]*\.subckt[ \t]+(\S+)([^\n]*)$/gim)) {
+    const ports: string[] = [];
+    for (const token of match[2]!.trim().split(/\s+/)) {
+      if (!token || /^params:/i.test(token) || token.includes("=")) break;
+      ports.push(token);
+    }
+    definitions.set(match[1]!, ports);
+  }
+  if (definitions.size === 0) return undefined;
+  if (definitions.size === 1) {
+    const [name, ports] = [...definitions][0]!;
+    return { name, ports };
+  }
+  const instantiated = new Set<string>();
+  for (const line of folded.split("\n")) {
+    if (!/^[ \t]*x/i.test(line)) continue;
+    for (const token of line.trim().split(/\s+/).slice(1)) {
+      for (const name of definitions.keys()) if (token.toLowerCase() === name.toLowerCase()) instantiated.add(name);
+    }
+  }
+  const roots = [...definitions.keys()].filter((name) => !instantiated.has(name));
+  const chosen = roots.length === 1 ? roots[0]! : undefined;
+  return chosen ? { name: chosen, ports: definitions.get(chosen)! } : undefined;
+}
