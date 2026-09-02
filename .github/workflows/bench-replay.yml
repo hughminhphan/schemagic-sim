@@ -1,0 +1,92 @@
+name: Weekly bounded bench replay
+
+# Advisory by construction: no pull_request trigger and the replay job is
+# allowed to report failures without becoming a required check.
+
+on:
+  schedule:
+    - cron: "17 3 * * 0"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: bench-replay-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  replay:
+    name: Bounded fresh native versus WASM replay
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    timeout-minutes: 105
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            tools/native-ngspice-reference/package-lock.json
+
+      - name: Install locked workspace dependencies
+        run: npm ci
+
+      - name: Install comparison harness dependencies
+        run: npm ci --prefix tools/native-ngspice-reference
+
+      - name: Install Ubuntu ngspice
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ngspice
+          sudo mkdir -p /opt/homebrew/bin
+          sudo ln -sf "$(command -v ngspice)" /opt/homebrew/bin/ngspice
+          ngspice --version
+
+      - name: Replay every reviewed package from source benches
+        id: replay
+        continue-on-error: true
+        env:
+          OPEN_CIRCUIT_NGSPICE_ENGINE_MODULE: ${{ github.workspace }}/tools/ngspice-wasm-build/dist-loader/index.mjs
+        run: npm run replay:benches -- --allow-incomplete
+
+      - name: Summarize replay outcome
+        if: always()
+        shell: bash
+        run: |
+          node <<'NODE'
+          const fs = require("node:fs");
+          const path = "tools/native-ngspice-reference/output/replay/replay-summary.json";
+          const lines = ["### Bounded fresh bench replay", "", "Step outcome: ${{ steps.replay.outcome }}"];
+          if (fs.existsSync(path)) {
+            const report = JSON.parse(fs.readFileSync(path, "utf8"));
+            const counts = report.summary.benchCounts;
+            lines.push(
+              `Complete: ${report.complete ? "yes" : "no"}`,
+              `Passing: ${report.pass ? "yes" : "no"}`,
+              `Benches: ${counts.pass} pass, ${counts.fail} fail, ${counts.skipped} skipped`,
+              `Failing packages: ${report.summary.failingPackageIds.join(", ") || "none"}`,
+            );
+          } else {
+            lines.push("Complete: no", "Replay summary was not produced.");
+          }
+          fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, `${lines.join("\n")}\n`);
+          NODE
+
+      - name: Upload replay summary
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: bench-replay-summary
+          path: |
+            tools/native-ngspice-reference/output/replay/replay-summary.json
+            tools/native-ngspice-reference/output/replay/replay-summary.md
+          if-no-files-found: warn
+          retention-days: 30

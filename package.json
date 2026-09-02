@@ -20,7 +20,8 @@
     "require:ngspice": "node scripts/require-ngspice.mjs",
     "verify": "npm run require:ngspice && npm run typecheck && npm test && npm run validate:library && npm run build",
     "audit:performance-budget": "npm exec --workspace=@opencircuit/web -- playwright test --config playwright.budgets.config.ts",
-    "audit:designer-runtime": "npm run audit:designer-runtime --workspace=@opencircuit/web"
+    "audit:designer-runtime": "npm run audit:designer-runtime --workspace=@opencircuit/web",
+    "replay:benches": "npm --prefix tools/native-ngspice-reference run replay --"
   },
   "devDependencies": {
     "@fontsource-variable/archivo": "5.2.8",
