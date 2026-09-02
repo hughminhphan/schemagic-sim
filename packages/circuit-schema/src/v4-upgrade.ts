@@ -128,6 +128,10 @@ function upgradeComponent(component: CircuitComponent): CircuitComponentV4 {
     }
     case "diode": case "led": case "bjt_npn": case "bjt_pnp": case "nmos": case "pmos": case "opamp_ideal": case "ground":
       return { ...base(component, annotations(component, [])), type: component.type };
+    default:
+      // Catalog-only simulator symbols have no Designer V4 counterpart yet: V4
+      // resolves device models through trusted design blocks, not the catalog.
+      return fail(`${path}.type`, `Cannot upgrade catalog-only component type ${component.type} to a v4 document`);
   }
 }
 

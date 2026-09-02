@@ -129,3 +129,5 @@ The schematic editor includes converted artwork from the official KiCad symbol l
 The selected source symbols are distributed under the Creative Commons Attribution-ShareAlike 4.0 International licence (CC-BY-SA 4.0), with KiCad's exception for electronic designs and generated files. The exact source files, checksums, attribution, complete upstream licence notice, and exception are preserved under `packages/schematic-editor/vendor/kicad-symbols/`.
 
 The KiCad libraries are compiled by the KiCad community and provided without warranty of any kind, express or implied.
+
+The catalog-only symbols (`timer_555`, `vreg_linear_3`, `comparator`, `jfet_n`, `optocoupler_led` and the `ic_block_*` labelled blocks) are original OpenCircuit artwork authored in `packages/schematic-editor/scripts/generate-symbols.mjs`. No KiCad source symbol exists for them, so they are not covered by this notice.

@@ -78,6 +78,7 @@ export function generateNetlist(document:CircuitDocument,requestedMode?:Analysis
       case "nmos": line=`M${s} ${n[0]} ${n[1]} ${n[2]} ${n[2]} OC_GENERIC_NMOS`;current=mode==="ac"?"":`@m${s.toLowerCase()}[id]`;used.add("nmos");break;
       case "pmos": line=`M${s} ${n[0]} ${n[1]} ${n[2]} ${n[2]} OC_GENERIC_PMOS`;current=mode==="ac"?"":`@m${s.toLowerCase()}[id]`;used.add("pmos");break;
       case "opamp_ideal": line=`X${s} ${n[0]} ${n[1]} ${n[2]} OC_IDEAL_OPAMP`;used.add("opamp");break;
+      default: line=`* catalog-only ${c.type} ${s} awaiting its catalog package model`;break;
     }
     add(lines,lineMap,line,{stage:"component",componentId:c.id});if(current)componentCurrents[c.id]=current;
   }

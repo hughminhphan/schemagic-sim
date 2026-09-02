@@ -44,6 +44,20 @@ const GOLDENS = {
   nmos: { pins: [[2, -3], [-2, 0], [2, 3]], bodyBbox: [-0.6667, -1.65, 3, 1.65], bbox: [-2, -3, 3, 3], refdesAnchor: [3.3333, -0.75], valueAnchor: [3.3333, 0.75] },
   pmos: { pins: [[2, -3], [-2, 0], [2, 3]], bodyBbox: [-0.6667, -1.65, 3, 1.65], bbox: [-2, -3, 3, 3], refdesAnchor: [3.3333, -0.75], valueAnchor: [3.3333, 0.75] },
   opamp_ideal: { pins: [[-4, -2], [-4, 2], [4, 0]], bodyBbox: [-2.6667, -4, 2.6667, 4], bbox: [-4, -4, 4, 4], refdesAnchor: [2, -2.5], valueAnchor: [2, 2.5] },
+  timer_555: { pins: [[-6, -3], [-6, -1], [-6, 1], [-6, 3], [6, 3], [6, 1], [6, -1], [6, -3]], bodyBbox: [-4, -4, 4, 4], bbox: [-6, -4, 6, 4], refdesAnchor: [0, -5.3333], valueAnchor: [0, 5.3333] },
+  vreg_linear_3: { pins: [[-4, 0], [4, 0], [0, 3]], bodyBbox: [-3, -2, 3, 2], bbox: [-4, -2, 4, 3], refdesAnchor: [0, -3.3333], valueAnchor: [0, 4.3333] },
+  comparator: { pins: [[-6, -2], [-6, 2], [6, 0], [0, -5], [0, 5]], bodyBbox: [-4, -4, 4, 4], bbox: [-6, -5, 6, 5], refdesAnchor: [-2, -5.3333], valueAnchor: [-2, 5.3333] },
+  jfet_n: { pins: [[2, -3], [-2, 0], [2, 3]], bodyBbox: [-1, -1.8, 2.6, 1.8], bbox: [-2, -3, 2.6, 3], refdesAnchor: [3.3333, -0.75], valueAnchor: [3.3333, 0.75] },
+  optocoupler_led: { pins: [[0, -2], [0, 2]], bodyBbox: [-1.7333, -1.7333, 1.7333, 1.7333], bbox: [-1.7333, -2, 1.7333, 2], refdesAnchor: [-2.6667, 0], valueAnchor: [2.6667, 0] },
+  ic_block_2: { pins: [[-6, 0], [6, 0]], bodyBbox: [-4, -1, 4, 1], bbox: [-6, -1, 6, 1], refdesAnchor: [0, -2.3333], valueAnchor: [0, 2.3333] },
+  ic_block_3: { pins: [[-6, -1], [-6, 1], [6, -1]], bodyBbox: [-4, -2, 4, 2], bbox: [-6, -2, 6, 2], refdesAnchor: [0, -3.3333], valueAnchor: [0, 3.3333] },
+  ic_block_4: { pins: [[-6, -1], [-6, 1], [6, 1], [6, -1]], bodyBbox: [-4, -2, 4, 2], bbox: [-6, -2, 6, 2], refdesAnchor: [0, -3.3333], valueAnchor: [0, 3.3333] },
+  ic_block_5: { pins: [[-6, -2], [-6, 0], [-6, 2], [6, 0], [6, -2]], bodyBbox: [-4, -3, 4, 3], bbox: [-6, -3, 6, 3], refdesAnchor: [0, -4.3333], valueAnchor: [0, 4.3333] },
+  ic_block_6: { pins: [[-6, -2], [-6, 0], [-6, 2], [6, 2], [6, 0], [6, -2]], bodyBbox: [-4, -3, 4, 3], bbox: [-6, -3, 6, 3], refdesAnchor: [0, -4.3333], valueAnchor: [0, 4.3333] },
+  ic_block_8: { pins: [[-6, -3], [-6, -1], [-6, 1], [-6, 3], [6, 3], [6, 1], [6, -1], [6, -3]], bodyBbox: [-4, -4, 4, 4], bbox: [-6, -4, 6, 4], refdesAnchor: [0, -5.3333], valueAnchor: [0, 5.3333] },
+  ic_block_9: { pins: [[-6, -4], [-6, -2], [-6, 0], [-6, 2], [-6, 4], [6, 2], [6, 0], [6, -2], [6, -4]], bodyBbox: [-4, -5, 4, 5], bbox: [-6, -5, 6, 5], refdesAnchor: [0, -6.3333], valueAnchor: [0, 6.3333] },
+  ic_block_14: { pins: [[-6, -6], [-6, -4], [-6, -2], [-6, 0], [-6, 2], [-6, 4], [-6, 6], [6, 6], [6, 4], [6, 2], [6, 0], [6, -2], [6, -4], [6, -6]], bodyBbox: [-4, -7, 4, 7], bbox: [-6, -7, 6, 7], refdesAnchor: [0, -8.3333], valueAnchor: [0, 8.3333] },
+  ic_block_16: { pins: [[-6, -7], [-6, -5], [-6, -3], [-6, -1], [-6, 1], [-6, 3], [-6, 5], [-6, 7], [6, 7], [6, 5], [6, 3], [6, 1], [6, -1], [6, -3], [6, -5], [6, -7]], bodyBbox: [-4, -8, 4, 8], bbox: [-6, -8, 6, 8], refdesAnchor: [0, -9.3333], valueAnchor: [0, 9.3333] },
 } as const satisfies Record<ComponentType, SymbolGolden>;
 
 const numberPattern = "-?(?:\\d+(?:\\.\\d*)?|\\.\\d+)";

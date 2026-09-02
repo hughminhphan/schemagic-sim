@@ -587,6 +587,173 @@ function generateSymbol(type, sourcePath, symbolName, targets, definitions) {
   return { result, transform };
 }
 
+// ---------------------------------------------------------------------------
+// Catalog-only symbols.
+//
+// These are original OpenCircuit artwork, not KiCad-derived: the CC-BY-SA
+// vendor libraries carry no matching symbol for a generic labelled IC block,
+// so nothing here is covered by the vendor notice.
+// ---------------------------------------------------------------------------
+
+const BLOCK_TYPES = [
+  "timer_555",
+  "ic_block_2", "ic_block_3", "ic_block_4", "ic_block_5", "ic_block_6",
+  "ic_block_8", "ic_block_9", "ic_block_14", "ic_block_16",
+];
+
+function rect(minX, minY, maxX, maxY, classes = "") {
+  const attribute = classes ? ` class="${classes}"` : "";
+  return `<path${attribute} d="M${fmt(minX)} ${fmt(minY)} L${fmt(maxX)} ${fmt(minY)} L${fmt(maxX)} ${fmt(maxY)} L${fmt(minX)} ${fmt(maxY)} Z"/>`;
+}
+
+function lead(inner, outer) {
+  return `<path class="pin-lead" d="M${fmt(inner[0])} ${fmt(inner[1])} L${fmt(outer[0])} ${fmt(outer[1])}"/>`;
+}
+
+function blockSymbol(type, targets) {
+  const bodyHalfWidth = 4;
+  for (const [x, y] of targets) {
+    if (Math.abs(x) !== 6 || !Number.isInteger(y)) fail(`${type}: catalog block pins must sit on the x = +/-6 lead columns`);
+  }
+  const ys = targets.map(([, y]) => y);
+  const bodyMinY = Math.min(...ys) - 1;
+  const bodyMaxY = Math.max(...ys) + 1;
+  const body = [rect(-bodyHalfWidth, bodyMinY, bodyHalfWidth, bodyMaxY, "sym-bg")];
+  const bodyBounds = [[-bodyHalfWidth, bodyMinY], [bodyHalfWidth, bodyMaxY]];
+  if (type === "timer_555") {
+    // DIP orientation notch, kept inside the body so it cannot widen the bounds.
+    body.push(`<path d="M-0.6667 ${fmt(bodyMinY)} A0.666667 0.666667 0 0 0 0.6667 ${fmt(bodyMinY)}"/>`);
+  }
+  const leads = targets.map(([x, y]) => lead([Math.sign(x) * bodyHalfWidth, y], [x, y]));
+  const allBounds = [...bodyBounds, ...targets.map((point) => [...point])];
+  const xs = allBounds.map((point) => point[0]);
+  const boundsYs = allBounds.map((point) => point[1]);
+  return {
+    type,
+    markup: [...body, ...leads].join(""),
+    refdesAnchor: [0, bodyMinY - 1.3333],
+    valueAnchor: [0, bodyMaxY + 1.3333],
+    bodyBbox: [-bodyHalfWidth, bodyMinY, bodyHalfWidth, bodyMaxY],
+    bbox: [Math.min(...xs), Math.min(...boundsYs), Math.max(...xs), Math.max(...boundsYs)],
+    pins: targets.map((point) => [...point]),
+  };
+}
+
+function regulatorSymbol(targets) {
+  const expected = [[-4, 0], [4, 0], [0, 3]];
+  assertTargets("vreg_linear_3", targets, expected);
+  return {
+    type: "vreg_linear_3",
+    markup: [
+      rect(-3, -2, 3, 2, "sym-bg"),
+      lead([-3, 0], [-4, 0]),
+      lead([3, 0], [4, 0]),
+      lead([0, 2], [0, 3]),
+    ].join(""),
+    refdesAnchor: [0, -3.3333],
+    valueAnchor: [0, 4.3333],
+    bodyBbox: [-3, -2, 3, 2],
+    bbox: [-4, -2, 4, 3],
+    pins: targets.map((point) => [...point]),
+  };
+}
+
+function comparatorSymbol(targets) {
+  const expected = [[-6, -2], [-6, 2], [6, 0], [0, -5], [0, 5]];
+  assertTargets("comparator", targets, expected);
+  return {
+    type: "comparator",
+    markup: [
+      `<path class="sym-bg" d="M4 0 L-4 -4 L-4 4 Z"/>`,
+      `<path d="M-3.8 -2 L-3.2 -2 M-3.5 -2.3 L-3.5 -1.7"/>`,
+      `<path d="M-3.8 2 L-3.2 2"/>`,
+      lead([-4, -2], [-6, -2]),
+      lead([-4, 2], [-6, 2]),
+      lead([4, 0], [6, 0]),
+      lead([0, -2], [0, -5]),
+      lead([0, 2], [0, 5]),
+    ].join(""),
+    refdesAnchor: [-2, -5.3333],
+    valueAnchor: [-2, 5.3333],
+    bodyBbox: [-4, -4, 4, 4],
+    bbox: [-6, -5, 6, 5],
+    pins: targets.map((point) => [...point]),
+  };
+}
+
+function jfetSymbol(targets) {
+  const expected = [[2, -3], [-2, 0], [2, 3]];
+  assertTargets("jfet_n", targets, expected);
+  return {
+    type: "jfet_n",
+    markup: [
+      `<circle cx="0.8" cy="0" r="1.8"/>`,
+      `<path class="sym-bold" d="M0.8 -1.5 L0.8 1.5"/>`,
+      `<path d="M0.8 -1.5 L2 -1.5"/>`,
+      `<path d="M0.8 1.5 L2 1.5"/>`,
+      `<path d="M-0.6667 0 L0.8 0"/>`,
+      `<path class="sym-solid" d="M0.2 0 L-0.3 -0.25 L-0.3 0.25 Z"/>`,
+      lead([2, -1.5], [2, -3]),
+      lead([-0.6667, 0], [-2, 0]),
+      lead([2, 1.5], [2, 3]),
+    ].join(""),
+    refdesAnchor: [3.3333, -0.75],
+    valueAnchor: [3.3333, 0.75],
+    bodyBbox: [-1, -1.8, 2.6, 1.8],
+    bbox: [-2, -3, 2.6, 3],
+    pins: targets.map((point) => [...point]),
+  };
+}
+
+function optocouplerSymbol(targets) {
+  const expected = [[0, -2], [0, 2]];
+  assertTargets("optocoupler_led", targets, expected);
+  return {
+    type: "optocoupler_led",
+    markup: [
+      rect(-1.7333, -1.7333, 1.7333, 1.7333, "sym-bg"),
+      `<path d="M-0.6667 0.6667 L0.6667 0.6667"/>`,
+      `<path d="M-0.6667 -0.6667 L0.6667 -0.6667 L0 0.6667 Z"/>`,
+      `<path d="M0 -0.6667 L0 0.6667"/>`,
+      `<path d="M0.8 -0.4 L1.4667 -0.4 L1.2 -0.6 M1.4667 -0.4 L1.2 -0.2"/>`,
+      `<path d="M0.8 0.2667 L1.4667 0.2667 L1.2 0.0667 M1.4667 0.2667 L1.2 0.4667"/>`,
+      lead([0, -0.6667], [0, -2]),
+      lead([0, 0.6667], [0, 2]),
+    ].join(""),
+    refdesAnchor: [-2.6667, 0],
+    valueAnchor: [2.6667, 0],
+    bodyBbox: [-1.7333, -1.7333, 1.7333, 1.7333],
+    bbox: [-1.7333, -2, 1.7333, 2],
+    pins: targets.map((point) => [...point]),
+  };
+}
+
+function assertTargets(type, targets, expected) {
+  if (JSON.stringify(targets) !== JSON.stringify(expected)) {
+    fail(`${type}: PARTS pins ${JSON.stringify(targets)} do not match the authored symbol ${JSON.stringify(expected)}`);
+  }
+}
+
+function generateCatalogSymbols(parts) {
+  const results = [];
+  for (const type of BLOCK_TYPES) {
+    const targets = parts.get(type);
+    if (!targets) fail(`could not read PARTS pins for ${type} from ${partsPath}`);
+    results.push({ result: blockSymbol(type, targets) });
+  }
+  for (const [type, build] of [
+    ["vreg_linear_3", regulatorSymbol],
+    ["comparator", comparatorSymbol],
+    ["jfet_n", jfetSymbol],
+    ["optocoupler_led", optocouplerSymbol],
+  ]) {
+    const targets = parts.get(type);
+    if (!targets) fail(`could not read PARTS pins for ${type} from ${partsPath}`);
+    results.push({ result: build(targets) });
+  }
+  return results;
+}
+
 function formatPoint(point) {
   return `[${fmt(point[0])}, ${fmt(point[1])}]`;
 }
@@ -619,7 +786,10 @@ function outputPathFromArgs(args) {
 
 const parts = parseParts();
 const definitions = loadDefinitions();
-const generated = SYMBOLS.map(([type, sourcePath, symbolName]) => generateSymbol(type, sourcePath, symbolName, parts.get(type), definitions));
+const generated = [
+  ...SYMBOLS.map(([type, sourcePath, symbolName]) => generateSymbol(type, sourcePath, symbolName, parts.get(type), definitions)),
+  ...generateCatalogSymbols(parts),
+];
 const source = `// AUTO-GENERATED by scripts/generate-symbols.mjs — DO NOT EDIT.
 // Artwork derived from the KiCad symbol libraries (CC-BY-SA 4.0), see vendor/kicad-symbols/README.md.
 import type { ComponentType, Point } from "@opencircuit/circuit-schema";
@@ -652,7 +822,11 @@ const outputPath = outputPathFromArgs(process.argv.slice(2));
 writeFileSync(outputPath, source);
 console.log(`wrote ${outputPath}`);
 for (let index = 0; index < generated.length; index += 1) {
-  const [type, sourcePath] = SYMBOLS[index];
   const { result, transform } = generated[index];
+  if (!transform) {
+    console.log(`${result.type}\tauthored\tbbox=[${result.bbox.map(fmt).join(",")}]`);
+    continue;
+  }
+  const [type, sourcePath] = SYMBOLS[index];
   console.log(`${type}\t${sourcePath}\ttheta=${transform.theta}\ta=${fmt(transform.a)}\tb=${fmt(transform.b)}\tc=${fmt(transform.c)}\td=${fmt(transform.d)}\tbbox=[${result.bbox.map(fmt).join(",")}]`);
 }

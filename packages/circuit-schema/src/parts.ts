@@ -19,7 +19,49 @@ export const PARTS: readonly PartDefinition[] = [
   { type: "nmos", name: "NMOS", prefix: "M", pins: [[2,-3],[-2,0],[2,3]], note: "Generic level-1 device. No manufacturer part is implied." },
   { type: "pmos", name: "PMOS", prefix: "M", pins: [[2,-3],[-2,0],[2,3]], note: "Generic level-1 device. No manufacturer part is implied." },
   { type: "opamp_ideal", name: "Ideal opamp", prefix: "U", pins: [[-4,-2],[-4,2],[4,0]], note: "Simple high-gain VCVS model, not a real opamp." },
+  // Catalog-only symbols. Pin index i is subcircuit node i of the selected
+  // package, so the emitted node order is the package's declared order.
+  { type: "timer_555", name: "555 timer", prefix: "U", pins: [[-6,-3],[-6,-1],[-6,1],[-6,3],[6,3],[6,1],[6,-1],[6,-3]], note: "Catalog-only symbol. Choose a reviewed 555 package from the catalog." },
+  { type: "vreg_linear_3", name: "3-terminal regulator", prefix: "U", pins: [[-4,0],[4,0],[0,3]], note: "Catalog-only symbol. Pin order follows the package: IN, OUT, then GND or ADJ." },
+  { type: "comparator", name: "Comparator", prefix: "U", pins: [[-6,-2],[-6,2],[6,0],[0,-5],[0,5]], note: "Catalog-only symbol. Pin order is IN+, IN-, OUT, VCC, GND." },
+  { type: "jfet_n", name: "N-channel JFET", prefix: "J", pins: [[2,-3],[-2,0],[2,3]], note: "Catalog-only symbol. Pin order is D, G, S." },
+  { type: "optocoupler_led", name: "Optocoupler input LED", prefix: "OK", pins: [[0,-2],[0,2]], note: "Catalog-only symbol. Only the input LED is modelled; the output phototransistor is not." },
+  { type: "ic_block_2", name: "2-pin IC block", prefix: "U", pins: [[-6,0],[6,0]], note: "Catalog-only labelled block. Pins follow the package subcircuit order." },
+  { type: "ic_block_3", name: "3-pin IC block", prefix: "U", pins: [[-6,-1],[-6,1],[6,-1]], note: "Catalog-only labelled block. Pins follow the package subcircuit order." },
+  { type: "ic_block_4", name: "4-pin IC block", prefix: "U", pins: [[-6,-1],[-6,1],[6,1],[6,-1]], note: "Catalog-only labelled block. Pins follow the package subcircuit order." },
+  { type: "ic_block_5", name: "5-pin IC block", prefix: "U", pins: [[-6,-2],[-6,0],[-6,2],[6,0],[6,-2]], note: "Catalog-only labelled block. Pins follow the package subcircuit order." },
+  { type: "ic_block_6", name: "6-pin IC block", prefix: "U", pins: [[-6,-2],[-6,0],[-6,2],[6,2],[6,0],[6,-2]], note: "Catalog-only labelled block. Pins follow the package subcircuit order." },
+  { type: "ic_block_8", name: "8-pin IC block", prefix: "U", pins: [[-6,-3],[-6,-1],[-6,1],[-6,3],[6,3],[6,1],[6,-1],[6,-3]], note: "Catalog-only labelled block. Pins follow the package subcircuit order." },
+  { type: "ic_block_9", name: "9-pin IC block", prefix: "U", pins: [[-6,-4],[-6,-2],[-6,0],[-6,2],[-6,4],[6,2],[6,0],[6,-2],[6,-4]], note: "Catalog-only labelled block. Pins follow the package subcircuit order." },
+  { type: "ic_block_14", name: "14-pin IC block", prefix: "U", pins: [[-6,-6],[-6,-4],[-6,-2],[-6,0],[-6,2],[-6,4],[-6,6],[6,6],[6,4],[6,2],[6,0],[6,-2],[6,-4],[6,-6]], note: "Catalog-only labelled block. Pins follow the package subcircuit order." },
+  { type: "ic_block_16", name: "16-pin IC block", prefix: "U", pins: [[-6,-7],[-6,-5],[-6,-3],[-6,-1],[-6,1],[-6,3],[-6,5],[-6,7],[6,7],[6,5],[6,3],[6,1],[6,-1],[6,-3],[6,-5],[6,-7]], note: "Catalog-only labelled block. Pins follow the package subcircuit order." },
 ];
+
+/**
+ * Catalog-only symbols carry no generic device model. Netlist emission for one
+ * of these is a positional subcircuit or primitive call whose node order is the
+ * symbol's pin order, so the catalog package supplies every electrical fact.
+ */
+export const CATALOG_ONLY_TYPES: ReadonlySet<ComponentType> = new Set<ComponentType>([
+  "timer_555", "vreg_linear_3", "comparator", "jfet_n", "optocoupler_led",
+  "ic_block_2", "ic_block_3", "ic_block_4", "ic_block_5", "ic_block_6",
+  "ic_block_8", "ic_block_9", "ic_block_14", "ic_block_16",
+]);
+
+/** SPICE element letter used when a catalog-only symbol emits a primitive .model call. */
+export const CATALOG_ONLY_PRIMITIVE_PREFIX: Readonly<Partial<Record<ComponentType, string>>> = Object.freeze({
+  jfet_n: "J",
+  optocoupler_led: "D",
+});
+
+export const isCatalogOnlyType = (type: ComponentType): boolean => CATALOG_ONLY_TYPES.has(type);
+
+/**
+ * Devices whose pins may legitimately share one net, so a covered pin is
+ * connectivity rather than a two-terminal body lying across a conductor.
+ */
+export const isMultiTerminalDevice = (type: ComponentType): boolean =>
+  type === "opamp_ideal" || (CATALOG_ONLY_TYPES.has(type) && type !== "jfet_n" && type !== "optocoupler_led");
 export const partByType = (type: ComponentType): PartDefinition => {
   const part = PARTS.find((entry) => entry.type === type);
   if (!part) throw new Error(`Unsupported component type ${type}`);

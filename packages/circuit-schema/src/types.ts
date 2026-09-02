@@ -6,7 +6,19 @@ export type Point = [number, number];
 export type ComponentType =
   | "resistor" | "capacitor" | "inductor" | "vsource" | "vsource_pulse" | "vsource_sine"
   | "isource" | "ground" | "switch_spst" | "potentiometer" | "diode" | "led"
-  | "bjt_npn" | "bjt_pnp" | "nmos" | "pmos" | "opamp_ideal";
+  | "bjt_npn" | "bjt_pnp" | "nmos" | "pmos" | "opamp_ideal"
+  | CatalogOnlyComponentType;
+
+/**
+ * Symbols that exist only to host a reviewed catalog package. They carry no
+ * generic device model, so a document is invalid unless the component names a
+ * catalog package. Pin index i is the i-th node of the package subcircuit, so
+ * the emitted node order is the package's declared order by construction.
+ */
+export type CatalogOnlyComponentType =
+  | "timer_555" | "vreg_linear_3" | "comparator" | "jfet_n" | "optocoupler_led"
+  | "ic_block_2" | "ic_block_3" | "ic_block_4" | "ic_block_5" | "ic_block_6"
+  | "ic_block_8" | "ic_block_9" | "ic_block_14" | "ic_block_16";
 
 export interface CircuitMeta { title: string; description?: string }
 export interface ComponentLabel { text: string; offset: Point }
