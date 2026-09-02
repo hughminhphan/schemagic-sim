@@ -17,6 +17,7 @@ export { PARTS } from "@opencircuit/circuit-schema";
 
 const NS = "http://www.w3.org/2000/svg";
 const GRID = 8;
+const CLIPBOARD_STORAGE_KEY = "schemagic.clipboard";
 const SNAP_RADIUS_PX = 10;
 const PIN_HIT_RADIUS_PX = 5;
 const POT_HIT_RADIUS_PX = 6;
@@ -658,21 +659,60 @@ function pointOnWire(point: Point, points: Point[]): boolean {
   return points.slice(1).some((current, index) => pointOnSegment(point, points[index]!, current));
 }
 
-/** Wires wholly connecting two or more selected symbols travel with the block. */
-export function connectingWireIds(document: CircuitDocument, selectedComponentIds: Iterable<string>): Set<string> {
+function wireEndpoints(wire: CircuitDocument["wires"][number]): Point[] {
+  return wire.points.length ? [wire.points[0]!, wire.points.at(-1)!] : [];
+}
+
+function wiresConnect(a: CircuitDocument["wires"][number], b: CircuitDocument["wires"][number]): boolean {
+  return wireEndpoints(a).some((point) => pointOnWire(point, b.points))
+    || wireEndpoints(b).some((point) => pointOnWire(point, a.points));
+}
+
+function closedWireIds(
+  document: CircuitDocument,
+  selectedComponentIds: Iterable<string>,
+  selectedWireIds: Iterable<string> = [],
+): Set<string> {
   const selected = new Set(selectedComponentIds);
-  if (selected.size < 2) return new Set();
+  const requested = new Set(selectedWireIds);
   const pins = document.components.flatMap((component) => componentPinPoints(component).map((point) => ({ componentId: component.id, point })));
-  return new Set(document.wires.flatMap((wire) => {
-    const selectedOwners = new Set<string>();
-    let fixed = false;
-    for (const pin of pins) {
-      if (!pointOnWire(pin.point, wire.points)) continue;
-      if (selected.has(pin.componentId)) selectedOwners.add(pin.componentId);
-      else fixed = true;
+  const selectedPins = pins.filter((pin) => selected.has(pin.componentId)).map((pin) => pin.point);
+  const eligible = document.wires.filter((wire) => !pins.some((pin) => !selected.has(pin.componentId) && pointOnWire(pin.point, wire.points)));
+  const carried = new Set(eligible
+    .filter((wire) => requested.has(wire.id) || selectedPins.some((point) => pointOnWire(point, wire.points)))
+    .map((wire) => wire.id));
+
+  let changed = true;
+  while (changed) {
+    changed = false;
+    for (const wire of eligible) {
+      if (carried.has(wire.id)) continue;
+      if (eligible.some((other) => carried.has(other.id) && wiresConnect(wire, other))) {
+        carried.add(wire.id);
+        changed = true;
+      }
     }
-    return !fixed && selectedOwners.size >= 2 ? [wire.id] : [];
-  }));
+  }
+
+  changed = true;
+  while (changed) {
+    changed = false;
+    for (const wire of eligible) {
+      if (!carried.has(wire.id)) continue;
+      const closed = wireEndpoints(wire).every((point) => selectedPins.some((pin) => samePoint(pin, point))
+        || eligible.some((other) => other.id !== wire.id && carried.has(other.id) && pointOnWire(point, other.points)));
+      if (!closed) {
+        carried.delete(wire.id);
+        changed = true;
+      }
+    }
+  }
+  return carried;
+}
+
+/** Wires forming a closed network between selected symbols travel with the block. */
+export function connectingWireIds(document: CircuitDocument, selectedComponentIds: Iterable<string>): Set<string> {
+  return closedWireIds(document, selectedComponentIds);
 }
 
 function clipboardAnchor(components: readonly CircuitComponent[], wires: CircuitDocument["wires"]): Point {
@@ -680,7 +720,7 @@ function clipboardAnchor(components: readonly CircuitComponent[], wires: Circuit
   if (!points.length) return [0, 0];
   const xs = points.map((point) => point[0]);
   const ys = points.map((point) => point[1]);
-  return [(Math.min(...xs) + Math.max(...xs)) / 2, (Math.min(...ys) + Math.max(...ys)) / 2];
+  return [Math.round((Math.min(...xs) + Math.max(...xs)) / 2), Math.round((Math.min(...ys) + Math.max(...ys)) / 2)];
 }
 
 export function createSchematicClipboard(
@@ -689,7 +729,7 @@ export function createSchematicClipboard(
   selectedWireIds: Iterable<string>,
 ): SchematicClipboard {
   const componentIds = new Set(selectedComponentIds);
-  const wireIds = new Set([...selectedWireIds, ...connectingWireIds(document, componentIds)]);
+  const wireIds = closedWireIds(document, componentIds, selectedWireIds);
   const components = document.components.filter((component) => componentIds.has(component.id)).map((component) => structuredClone(component));
   const wires = document.wires.filter((wire) => wireIds.has(wire.id)).map((wire) => structuredClone(wire));
   return { format: "opencircuit-schematic-selection", version: 1, components, wires, anchor: clipboardAnchor(components, wires) };
@@ -708,6 +748,21 @@ function parseSchematicClipboard(raw: string): SchematicClipboard | undefined {
   } catch {
     return undefined;
   }
+}
+
+function readSessionClipboard(): SchematicClipboard | undefined {
+  try {
+    const value = globalThis.sessionStorage?.getItem(CLIPBOARD_STORAGE_KEY);
+    return value ? parseSchematicClipboard(value) : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+function writeSessionClipboard(clipboard: SchematicClipboard): string {
+  const value = JSON.stringify(clipboard);
+  try { globalThis.sessionStorage?.setItem(CLIPBOARD_STORAGE_KEY, value); } catch {}
+  return value;
 }
 
 function nextReference(prefix: string, used: Map<string, Set<number>>): string {
@@ -743,8 +798,10 @@ export function pasteSchematicClipboard(
     component.id = `c${++componentIndex}`;
     component.pos = movedPoint(component.pos, delta);
     const prefix = partByType(component.type).prefix;
+    const referencePattern = new RegExp(`^${prefix.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\d+$`);
+    const reference = nextReference(prefix, usedReferences);
     component.label = {
-      text: nextReference(prefix, usedReferences),
+      text: component.label && !referencePattern.test(component.label.text) ? component.label.text : reference,
       offset: component.label?.offset ? clonePoint(component.label.offset) : transformedOffset(component, EDITOR_SYMBOLS[component.type].refdesAnchor),
     };
     document.components.push(component);
@@ -1320,8 +1377,9 @@ export class SchematicEditor {
   deleteSelected(): void { this.change(() => { removeReferencesToDeletedSelection(this.doc, this.selectedComponents, this.selectedWires); this.doc.components = this.doc.components.filter((component) => !this.selectedComponents.has(component.id)); this.doc.wires = this.doc.wires.filter((wire) => !this.selectedWires.has(wire.id)); normalizeJunctions(this.doc); this.clearSelection(); }); }
   copy(): string { return JSON.stringify(createSchematicClipboard(this.doc, this.selectedComponents, this.selectedWires)); }
   paste(source?: string): void {
-    const clipboard = source === undefined ? this.clipboard : parseSchematicClipboard(source);
+    const clipboard = source === undefined ? this.clipboard ?? readSessionClipboard() : parseSchematicClipboard(source);
     if (!clipboard || (!clipboard.components.length && !clipboard.wires.length)) return;
+    if (source === undefined) this.clipboard = clipboard;
     const target = this.pointerWorld ? this.pointerSnap(this.pointerWorld, { metaKey: false, ctrlKey: false }) : this.canvasCenter();
     this.change(() => {
       const pasted = pasteSchematicClipboard(this.doc, clipboard, target);
@@ -1332,6 +1390,8 @@ export class SchematicEditor {
   duplicate(): void {
     const clipboard = createSchematicClipboard(this.doc, this.selectedComponents, this.selectedWires);
     if (!clipboard.components.length && !clipboard.wires.length) return;
+    this.clipboard = clipboard;
+    writeSessionClipboard(clipboard);
     const target: Point = [clipboard.anchor[0] + 1, clipboard.anchor[1] + 1];
     this.change(() => {
       const pasted = pasteSchematicClipboard(this.doc, clipboard, target);
@@ -1343,7 +1403,7 @@ export class SchematicEditor {
     const clipboard = createSchematicClipboard(this.doc, this.selectedComponents, this.selectedWires);
     if (!clipboard.components.length && !clipboard.wires.length) return;
     this.clipboard = clipboard;
-    const value = JSON.stringify(clipboard);
+    const value = writeSessionClipboard(clipboard);
     try { void navigator.clipboard?.writeText(value).catch(() => undefined); } catch {}
   }
   fit(): void {

@@ -144,7 +144,7 @@ test.describe("KiCad parity interaction audit", () => {
     expect(await componentState(page, "c11")).toEqual({ x: 32, y: 36, rotation: 0, mirror: false });
     expect(await componentState(page, "c12")).toEqual({ x: 44, y: 36, rotation: 0, mirror: false });
     await expect(page.locator('[data-label-component-id="c10"][data-property="reference"]')).toHaveText("P2");
-    await expect(page.locator('[data-label-component-id="c11"][data-property="reference"]')).toHaveText("R1");
+    await expect(page.locator('[data-label-component-id="c11"][data-property="reference"]')).toHaveText("RB");
     await expect(page.locator('[data-label-component-id="c12"][data-property="reference"]')).toHaveText("Q2");
     await expect(page.locator('path.editor-wire[data-wire-id="w10"]')).toHaveAttribute("d", "M20 36 L30 36");
     await expect(page.locator('path.editor-wire[data-wire-id="w11"]')).toHaveAttribute("d", "M34 36 L42 36");
