@@ -195,14 +195,29 @@ export async function runReplay(options, dependencies = {}) {
           })),
         });
       } catch (error) {
-        benches.push({
-          name: bench.name,
-          analysisType: bench.analysisType,
-          comparisonAnalysis: bench.analysis,
-          status: "fail",
-          reason: error.message,
-          durationMs: now() - benchStarted,
-        });
+        const durationMs = now() - benchStarted;
+        const totalAfter = now() - replayStarted;
+        const packageAfter = now() - packageStarted;
+        if (totalAfter >= options.totalTimeoutMs) {
+          benches.push({
+            ...skippedBench(bench, `total budget exhausted after ${Math.round(totalAfter)} ms`),
+            durationMs,
+          });
+        } else if (packageAfter >= options.packageTimeoutMs) {
+          benches.push({
+            ...skippedBench(bench, `package budget exhausted after ${Math.round(packageAfter)} ms`),
+            durationMs,
+          });
+        } else {
+          benches.push({
+            name: bench.name,
+            analysisType: bench.analysisType,
+            comparisonAnalysis: bench.analysis,
+            status: "fail",
+            reason: error.message,
+            durationMs,
+          });
+        }
       }
     }
     const status = packageStatus(benches);

@@ -81,3 +81,29 @@ test("runReplay reports every remaining bench when the total budget is exhausted
   assert.deepEqual(report.summary.packageCounts, { pass: 0, fail: 0, skipped: 2 });
   assert.deepEqual(report.summary.benchCounts, { pass: 0, fail: 0, skipped: 2 });
 });
+
+test("runReplay treats a total-budget timeout as a bounded skip", async () => {
+  let now = 0;
+  const packages = [{
+    id: "maker/slow",
+    benches: [{ name: "slow.cir", netlistPath: "/slow.cir", analysisType: "transient", analysis: "tran" }],
+  }];
+  const report = await runReplay({
+    libraryRoot: "/models",
+    outputDir: "/output",
+    packageTimeoutMs: 500,
+    totalTimeoutMs: 100,
+    benchTimeoutMs: 500,
+  }, {
+    packages,
+    compare: async () => {
+      now = 100;
+      throw new Error("WASM ngspice simulation timed out after 100 ms");
+    },
+    now: () => now,
+    wallNow: () => "2026-09-03T00:00:00.000Z",
+  });
+  assert.deepEqual(report.summary.benchCounts, { pass: 0, fail: 0, skipped: 1 });
+  assert.match(report.packages[0].benches[0].reason, /total budget exhausted/);
+  assert.equal(report.pass, true);
+});
