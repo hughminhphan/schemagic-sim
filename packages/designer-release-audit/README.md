@@ -281,3 +281,57 @@ attachment does not verify reported output/PDF bytes, rerun KiCad, authenticate
 the execution host or context, prove visual quality or interactive open/save,
 verify footprints, admit production profiles, or establish selected-part
 simulation fidelity.
+
+## Property assertions and the rule-disposition baseline
+
+Where the audit used to duplicate identity literals it now reads them from the
+sources that own them, so admitting a reviewed profile does not require editing
+this package.
+
+- `catalog.reviewed-release` validates every profile the catalog release admits
+  against its own class contract and recomputes its content hash from the
+  checked-in bytes, instead of pinning per-profile hashes here. Adding a
+  reviewed profile changes the counts the data manifest declares, not this code.
+- `simulation.selected-semiconductor-ideal-rdson-projection-golden` binds the
+  ideal-RDS(on) golden to the selected CSD18540Q5B profile bytes, the installed
+  recipe identity read from the Motor context manifest, and the frozen reviewed
+  conditions and four-ideal-resistor netlist fixture. The netlist fixture keeps
+  an exact hash: it is the one small frozen golden for this application. The
+  whole-catalog and context-manifest identities the golden's document records
+  are reported as `declaredCatalogReleaseIdentityCurrent` and
+  `declaredContextManifestIdentityCurrent` drift in evidence rather than gated
+  on, because admitting an unrelated profile changes them without changing this
+  projection. That narrowing is visible, not silent.
+  `assessSelectedSemiconductorRdsonProjectionIdentityBindingV1` is the exported
+  pure form of that binding, so the property can be exercised directly.
+- `apps/web/designer-runtime-contract.json` accepts N workloads. The parser
+  requires at least one, refuses a duplicate `(application, presetId)` pair,
+  requires a deterministic order, and the audit requires every Designer
+  application in `DESIGNER_RUNTIME_REQUIRED_APPLICATIONS_V1` to be covered. No
+  exact workload count or motor-then-power order is pinned.
+
+`rule-disposition-baseline.json` is the committed record of what every
+constraint rule currently decides, per fixture, for the M1 compact Motor, M2
+power external Motor, and browser-preset P1 compact Power requests. It records
+per-rule `sourceStatus` and `disposition`, the retained observation's own
+constraint statuses, and the candidate and eligible-candidate counts, keyed by
+`<recipeId>#<ordinal>` so candidate identities may change.
+
+The `eligibility.rule-disposition-baseline` gate checks the cheap properties:
+the baseline is self-consistent, was generated against the installed catalog
+release, context manifests, and recipes, and every fixture still records at
+least one candidate carrying rules. The live comparison, which regenerates all
+three fixtures and fails when any rule regresses from `satisfied` to a blocked
+disposition or from `pass` to `unknown`/`fail`, runs in
+`test/rule-disposition-baseline.test.ts` where the multi-minute generation cost
+belongs.
+
+Regenerate the baseline deliberately, and review the diff, with:
+
+```sh
+npm run baseline:rule-dispositions --workspace=@opencircuit/designer-release-audit -- --write
+```
+
+Without `--write` the command prints the assessment and exits non-zero on any
+staleness or regression. The baseline proves no candidate eligible, no
+simulation fidelity, and no physical suitability.

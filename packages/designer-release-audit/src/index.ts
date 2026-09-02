@@ -30,11 +30,14 @@ import {
   type ExternalKicadQaReportV1,
 } from "@opencircuit/design-export/external-kicad-qa";
 import {
+  designProfileEnvelopeContentHash,
   getBundledDesignLibraryDocuments,
+  validateDesignProfileEnvelope,
   type CatalogProfileRefV1,
   type DesignCatalogReleaseV1,
   type DesignProfileAdmissionLedgerV1,
 } from "@opencircuit/design-library";
+import { getMotorDesignContextManifestV2 } from "@opencircuit/motor-designer/v2";
 import { MOTOR_DESIGN_V2_PRODUCTION_STATUS } from "@opencircuit/motor-designer/v2-status";
 import { REVIEWED_REAL_MOTOR_CATALOG_REPORT } from "@opencircuit/motor-designer/reviewed-real";
 import { POWER_DESIGN_V2_PRODUCTION_STATUS } from "@opencircuit/power-designer/v2-status";
@@ -65,6 +68,10 @@ import {
   type DesignerCleanCheckoutAttachmentAssessmentV1,
 } from "./clean-checkout-audit";
 import { scanDesignerReleaseRepositoryV1 } from "./repository-scan";
+import {
+  calculateRuleDispositionBaselineContentHashV1,
+  loadDesignerRuleDispositionBaselineV1,
+} from "./rule-disposition-baseline";
 
 export type DesignerReleaseGateStatus = "pass" | "blocked" | "unverified";
 
@@ -1214,9 +1221,31 @@ function manifestGate(
 function catalogGate(
   manifest: DesignerDataManifest | null,
   release: DesignCatalogReleaseV1,
+  profiles: Readonly<Record<string, unknown>>,
+  registry: unknown,
 ): DesignerReleaseGateV1 {
   const refs = release.profiles as CatalogProfileRefV1[];
   const blockers: string[] = [];
+  // Property, not a pinned hash: every admitted profile must still be present,
+  // validate against its own class contract, and hash to what the release
+  // records. Admitting a new reviewed profile is expected to change identities
+  // and must not require editing this audit.
+  let validatedProfileCount = 0;
+  for (const ref of refs) {
+    const profile = profiles[ref.profileId];
+    if (profile === undefined) {
+      blockers.push(`admitted_profile_not_bundled:${ref.profileId}`);
+      continue;
+    }
+    const issues = validateDesignProfileEnvelope(profile as never, registry as never);
+    for (const issue of issues.slice(0, 3)) {
+      blockers.push(`admitted_profile_invalid:${ref.profileId}:${issue.path || "profile"}:${issue.code}`);
+    }
+    if (designProfileEnvelopeContentHash(profile as never) !== ref.profileContentHash) {
+      blockers.push(`admitted_profile_content_hash_drift:${ref.profileId}`);
+    }
+    if (issues.length === 0) validatedProfileCount += 1;
+  }
   const reviewedPartClassCount = new Set(refs.map((ref) => ref.partClass)).size;
   if (manifest !== null) {
     if (manifest.summary.reviewed_profile_count !== refs.length) {
@@ -1251,6 +1280,8 @@ function catalogGate(
     admittedProfileCount: refs.length,
     admittedManufacturerCount: new Set(refs.map((ref) => ref.part.manufacturerId)).size,
     admittedPartClassCount: reviewedPartClassCount,
+    schemaValidatedProfileCount: validatedProfileCount,
+    everyAdmittedProfileValidatesAgainstItsClassContract: validatedProfileCount === refs.length,
     manifestCountsMatchCatalogRelease: blockers.every((blocker) => !blocker.startsWith("manifest_")),
   });
 }
@@ -2479,6 +2510,16 @@ interface SelectedSemiconductorExecutionReportDocument {
   };
 }
 
+/**
+ * The Designer applications a runtime contract must cover. The contract may
+ * declare more workloads; it may not drop one of these.
+ */
+const DESIGNER_RUNTIME_REQUIRED_APPLICATIONS_V1 = ["motor.brushed-dc", "power.buck"] as const;
+
+/** Shape assertions used in place of pinned identity literals. */
+const SHA256_IDENTITY_PATTERN = /^sha256:[0-9a-f]{64}$/u;
+const CANDIDATE_IDENTITY_PATTERN = /^candidate:v2:sha256:[0-9a-f]{64}$/u;
+
 function parseOptionalJson<T>(text: string): T | null {
   try {
     return JSON.parse(text) as T;
@@ -2672,7 +2713,7 @@ export function assessSelectedSemiconductorExpectationCohortsV1(
   };
 }
 
-interface RdsonProjectionIdentityDocument {
+export interface RdsonProjectionIdentityDocument {
   requestHash?: string;
   resultContentHash?: string;
   constraintDecisionContentHash?: string;
@@ -2683,7 +2724,7 @@ interface RdsonProjectionIdentityDocument {
   library?: { version?: string; contextManifestContentHash?: string; catalogReleaseContentHash?: string };
 }
 
-interface RdsonProjectionBindingDocument {
+export interface RdsonProjectionBindingDocument {
   selectedComponentId?: string;
   role?: string;
   profileId?: string;
@@ -2694,7 +2735,7 @@ interface RdsonProjectionBindingDocument {
   catalogAdmissionState?: string;
 }
 
-interface RdsonProjectionSourceDocument {
+export interface RdsonProjectionSourceDocument {
   kind?: string;
   url?: string;
   revision?: string;
@@ -2811,6 +2852,107 @@ interface RdsonProjectionReportDocument {
   pass?: boolean;
 }
 
+export interface SelectedSemiconductorRdsonIdentityBindingInputV1 {
+  caseId?: string | undefined;
+  application?: string | undefined;
+  presetId?: string | undefined;
+  observationKind?: string | undefined;
+  identity?: RdsonProjectionIdentityDocument | undefined;
+  selectedBinding?: RdsonProjectionBindingDocument | undefined;
+  sourceBinding?: RdsonProjectionSourceDocument | undefined;
+  profilePath: string;
+  profileManufacturerId?: string | undefined;
+  profileManufacturerPartNumber?: string | undefined;
+  onResistanceState?: string | undefined;
+  onResistanceValue?: number | undefined;
+  onResistanceUnit?: string | undefined;
+  onResistanceDisplayUnit?: string | undefined;
+  onResistanceEvidence?: ReadonlyArray<{ contentHash?: string; url?: string; revision?: string; locator?: string }> | undefined;
+  releaseVersion: string;
+  catalogProfileContentHash?: string | undefined;
+  admissionState?: string | undefined;
+  admissionProfileContentHash?: string | undefined;
+  admissionReviewedBy?: unknown | undefined;
+  installedRecipe?: { id: string; version: string; contentHash: string } | undefined;
+  /** Recomputed from the checked-in profile bytes, never a pinned literal. */
+  selectedProfileContentHash: string | null;
+  exactProfileConditions: boolean;
+}
+
+export interface SelectedSemiconductorRdsonIdentityBindingAssessmentV1 {
+  exactCurrentProductionObservationIdentity: boolean;
+  exactReviewedProfileAndSource: boolean;
+}
+
+/**
+ * The identity half of the ideal-RDS(on) golden, as a pure function so it can be
+ * exercised directly.
+ *
+ * It binds the golden to what actually determines it: the selected profile's
+ * bytes, the installed recipe identity from the context manifest, and the frozen
+ * reviewed conditions. It deliberately does not pin the whole-catalog or
+ * context-manifest hash, because admitting an unrelated profile changes those
+ * without changing this projection; the gate reports that as visible drift.
+ */
+export function assessSelectedSemiconductorRdsonProjectionIdentityBindingV1(
+  input: Readonly<SelectedSemiconductorRdsonIdentityBindingInputV1>,
+): SelectedSemiconductorRdsonIdentityBindingAssessmentV1 {
+  const { identity, selectedBinding, sourceBinding, installedRecipe, selectedProfileContentHash } = input;
+  const exactCurrentProductionObservationIdentity =
+    input.caseId === "motor.production.external-24v.csd18540q5b.ideal-reviewed-rdson-projection"
+    && input.application === "motor.brushed-dc"
+    && input.presetId === "motor.external-24v"
+    && input.observationKind === "production_constraint_observation"
+    && SHA256_IDENTITY_PATTERN.test(identity?.requestHash ?? "")
+    && SHA256_IDENTITY_PATTERN.test(identity?.resultContentHash ?? "")
+    && SHA256_IDENTITY_PATTERN.test(identity?.constraintDecisionContentHash ?? "")
+    && CANDIDATE_IDENTITY_PATTERN.test(identity?.candidateId ?? "")
+    && identity?.candidateIndex === 0
+    && identity.candidateEligible === false
+    && installedRecipe !== undefined
+    && identity.recipe?.id === installedRecipe.id
+    && identity.recipe.version === installedRecipe.version
+    && identity.recipe.contentHash === installedRecipe.contentHash
+    && identity.library?.version === input.releaseVersion
+    && SHA256_IDENTITY_PATTERN.test(identity.library.contextManifestContentHash ?? "")
+    && SHA256_IDENTITY_PATTERN.test(identity.library.catalogReleaseContentHash ?? "");
+
+  const exactReviewedProfileAndSource = selectedBinding?.selectedComponentId === "mosfet"
+    && selectedBinding.role === "bridge-n-channel-power-mosfet"
+    && selectedBinding.profileId === input.profilePath
+    && selectedBinding.manufacturerId === "texas-instruments"
+    && selectedBinding.manufacturerPartNumber === "CSD18540Q5B"
+    && selectedBinding.quantityPerAssembly === 4
+    && selectedBinding.catalogAdmissionState === "reviewed"
+    && identity?.library?.version === input.releaseVersion
+    && selectedProfileContentHash !== null
+    && SHA256_IDENTITY_PATTERN.test(selectedProfileContentHash)
+    && selectedBinding.profileContentHash === selectedProfileContentHash
+    && input.catalogProfileContentHash === selectedProfileContentHash
+    && input.admissionState === "reviewed"
+    && input.admissionProfileContentHash === selectedProfileContentHash
+    && typeof input.admissionReviewedBy === "string"
+    && input.profileManufacturerId === selectedBinding.manufacturerId
+    && input.profileManufacturerPartNumber === selectedBinding.manufacturerPartNumber
+    && input.onResistanceState === "reviewed"
+    && input.onResistanceValue === 0.0022
+    && input.onResistanceUnit === "ohm"
+    && input.onResistanceDisplayUnit === "2.2 mOhm maximum"
+    && (input.onResistanceEvidence ?? []).some((entry) => (
+      sourceBinding !== undefined
+      && SHA256_IDENTITY_PATTERN.test(entry.contentHash ?? "")
+      && entry.contentHash === sourceBinding.contentHash
+      && entry.url === sourceBinding.url
+      && entry.revision === sourceBinding.revision
+      && entry.locator === sourceBinding.locator
+    )) === true
+    && sourceBinding?.kind === "manufacturer_datasheet"
+    && sourceBinding.url === "https://www.ti.com/lit/ds/symlink/csd18540q5b.pdf"
+    && input.exactProfileConditions;
+
+  return { exactCurrentProductionObservationIdentity, exactReviewedProfileAndSource };
+}
+
 function selectedSemiconductorRdsonProjectionGate(
   release: DesignCatalogReleaseV1,
   admission: DesignProfileAdmissionLedgerV1,
@@ -2856,6 +2998,18 @@ function selectedSemiconductorRdsonProjectionGate(
     reportTest,
     runner,
   );
+  const motorContextManifest = getMotorDesignContextManifestV2();
+  const installedProjectionRecipe = motorContextManifest.recipes
+    .find((entry) => entry.id === identity?.recipe?.id);
+  const selectedProfileContentHash = profile === null
+    ? null
+    : designProfileEnvelopeContentHash(profile as never);
+  // The golden is bound to the selected part, its recipe, and its reviewed
+  // conditions. The whole-catalog and context-manifest identities the document
+  // records are reported as drift rather than gated on, because admitting an
+  // unrelated profile changes them without changing this projection.
+  const declaredCatalogReleaseIdentityCurrent = identity?.library?.catalogReleaseContentHash === release.contentHash;
+  const declaredContextManifestIdentityCurrent = identity?.library?.contextManifestContentHash === motorContextManifest.contentHash;
   const hashText = (value: string): `sha256:${string}` => `sha256:${createHash("sha256").update(value, "utf8").digest("hex")}`;
   const contractContentHash = contractText.length > 0 ? hashText(contractText) : null;
   const executionArtifactContentHash = executionReportText.length > 0 ? hashText(executionReportText) : null;
@@ -2899,6 +3053,35 @@ function selectedSemiconductorRdsonProjectionGate(
     && value.conditionsBoundToReviewedProfile === true
     && value.selectedPartDeviceEquationUsed === false
     && value.physicalFidelityProved === false;
+  const identityBinding = assessSelectedSemiconductorRdsonProjectionIdentityBindingV1({
+    caseId: testCase?.id,
+    application: testCase?.application,
+    presetId: testCase?.presetId,
+    observationKind: testCase?.observationKind,
+    identity,
+    selectedBinding,
+    sourceBinding,
+    profilePath,
+    profileManufacturerId: profile?.part?.manufacturerId,
+    profileManufacturerPartNumber: profile?.part?.manufacturerPartNumber,
+    onResistanceState: profile?.facts?.onResistance?.state,
+    onResistanceValue: profile?.facts?.onResistance?.value?.value,
+    onResistanceUnit: profile?.facts?.onResistance?.value?.unit,
+    onResistanceDisplayUnit: profile?.facts?.onResistance?.value?.displayUnit,
+    onResistanceEvidence: profile?.facts?.onResistance?.evidence,
+    releaseVersion: release.version,
+    catalogProfileContentHash: catalogProfile?.profileContentHash,
+    admissionState: admissionEntry?.state,
+    admissionProfileContentHash: admissionEntry?.profileContentHash ?? undefined,
+    admissionReviewedBy: admissionEntry?.reviewedBy,
+    installedRecipe: installedProjectionRecipe === undefined ? undefined : {
+      id: installedProjectionRecipe.id,
+      version: installedProjectionRecipe.version,
+      contentHash: installedProjectionRecipe.contentHash,
+    },
+    selectedProfileContentHash,
+    exactProfileConditions,
+  });
   const exclusions = Array.isArray(contract?.evidenceBoundary?.doesNotProve)
     ? contract.evidenceBoundary.doesNotProve.filter((entry): entry is string => typeof entry === "string").join("\n")
     : "";
@@ -2922,55 +3105,8 @@ function selectedSemiconductorRdsonProjectionGate(
       && contract.evidenceBoundary.productionConstraintEligibility === false
       && contract.evidenceBoundary.rankingAuthority === false
       && contract.evidenceBoundary.fullBomCoverage === false,
-    exactCurrentProductionObservationIdentity: testCase?.id === "motor.production.external-24v.csd18540q5b.ideal-reviewed-rdson-projection"
-      && testCase.application === "motor.brushed-dc"
-      && testCase.presetId === "motor.external-24v"
-      && testCase.observationKind === "production_constraint_observation"
-      && identity?.requestHash === "sha256:3eb6902cfb864b7e6977388fee7fa76535f9388b905b10e943849bb3207ab94f"
-      && identity.resultContentHash === "sha256:0ea210d5fdd7f9fa5fd29a0815b94bb80d5deef79b022631cf43b6afdf50c176"
-      && identity.constraintDecisionContentHash === "sha256:f797708f3ebbd0ef2eec06f189cbd02f642f9292f2501368e62a44a7feaf7b3e"
-      && identity.candidateId === "candidate:v2:sha256:6b16171207d7e5afdb3284ad6d566cf2ccf9d565fbfea6a353c6d183b6b45bed"
-      && identity.candidateIndex === 0
-      && identity.candidateEligible === false
-      && identity.recipe?.id === "motor.native.external-nmos-h-bridge.facts-v3-1-role-qualified"
-      && identity.recipe.version === "3.1.7"
-      && identity.recipe.contentHash === "sha256:e526bba9ce25114b505264e7d281607ee223c10de19e795780a64f04617c0947"
-      && identity.library?.version === "2026-08-27.2"
-      && identity.library.contextManifestContentHash === "sha256:06a4ef8b8141852bf9506c6f4f632a7b349b0947c449f85172313380dc195d38"
-      && identity.library.catalogReleaseContentHash === "sha256:a72bfec6700904360882893a96db5a9420efccfb46ad78f1e3826301abe1f29e"
-      && release.version === identity.library.version
-      && release.contentHash === identity.library.catalogReleaseContentHash,
-    exactReviewedProfileAndSource: selectedBinding?.selectedComponentId === "mosfet"
-      && selectedBinding.role === "bridge-n-channel-power-mosfet"
-      && selectedBinding.profileId === profilePath
-      && selectedBinding.profileContentHash === "sha256:551796851f2c60f698c3ca054e338cdac0ec8fe034e4d7217ee6a758a7ab86e8"
-      && selectedBinding.manufacturerId === "texas-instruments"
-      && selectedBinding.manufacturerPartNumber === "CSD18540Q5B"
-      && selectedBinding.quantityPerAssembly === 4
-      && selectedBinding.catalogAdmissionState === "reviewed"
-      && release.version === identity?.library?.version
-      && release.contentHash === identity?.library?.catalogReleaseContentHash
-      && catalogProfile?.profileContentHash === selectedBinding.profileContentHash
-      && admissionEntry?.state === "reviewed"
-      && admissionEntry.profileContentHash === selectedBinding.profileContentHash
-      && typeof admissionEntry.reviewedBy === "string"
-      && profile?.part?.manufacturerId === selectedBinding.manufacturerId
-      && profile.part.manufacturerPartNumber === selectedBinding.manufacturerPartNumber
-      && profile.facts?.onResistance?.state === "reviewed"
-      && profile.facts.onResistance.value?.value === 0.0022
-      && profile.facts.onResistance.value.unit === "ohm"
-      && profile.facts.onResistance.value.displayUnit === "2.2 mOhm maximum"
-      && profile.facts.onResistance.evidence?.some((entry) => (
-        entry.contentHash === "sha256:2e43c4a2ac82af8a089be0a9e413282326f8d7857254ac07390b458deca854e0"
-        && entry.contentHash === sourceBinding?.contentHash
-        && entry.url === sourceBinding.url
-        && entry.revision === sourceBinding.revision
-        && entry.locator === sourceBinding.locator
-      )) === true
-      && sourceBinding?.kind === "manufacturer_datasheet"
-      && sourceBinding.url === "https://www.ti.com/lit/ds/symlink/csd18540q5b.pdf"
-      && sourceBinding.contentHash === "sha256:2e43c4a2ac82af8a089be0a9e413282326f8d7857254ac07390b458deca854e0"
-      && exactProfileConditions,
+    exactCurrentProductionObservationIdentity: identityBinding.exactCurrentProductionObservationIdentity,
+    exactReviewedProfileAndSource: identityBinding.exactReviewedProfileAndSource,
     exactFourIdealResistorFixture: testCase?.analysis === "op"
       && testCase.fixture === "fixtures/csd18540q5b-four-ideal-rdson-resistors.cir"
       && fixtureText === expectedFixture
@@ -3096,7 +3232,20 @@ function selectedSemiconductorRdsonProjectionGate(
       persistedProjectionCatalogRelease: {
         version: identity?.library?.version ?? null,
         contentHash: identity?.library?.catalogReleaseContentHash ?? null,
+        contextManifestContentHash: identity?.library?.contextManifestContentHash ?? null,
       },
+      currentContextManifestContentHash: motorContextManifest.contentHash,
+      installedProjectionRecipe: installedProjectionRecipe === undefined ? null : {
+        id: installedProjectionRecipe.id,
+        version: installedProjectionRecipe.version,
+        contentHash: installedProjectionRecipe.contentHash,
+      },
+      selectedProfileContentHashRecomputedFromBytes: selectedProfileContentHash,
+      // Visible drift, not a silent pass: these say whether the document's
+      // whole-catalog and context-manifest identities are still current.
+      declaredCatalogReleaseIdentityCurrent,
+      declaredContextManifestIdentityCurrent,
+      identityBinding: "selected_profile_bytes_recipe_manifest_and_reviewed_conditions",
       selectedBinding: selectedBinding ?? null,
       sourceBinding: sourceBinding ?? null,
       projectionContract: projection ?? null,
@@ -3117,7 +3266,7 @@ function selectedSemiconductorRdsonProjectionGate(
       productionConstraintEligibility: false,
       rankingAuthority: false,
       fullBomCoverage: false,
-      claimBoundary: "A pass proves only that the exact current ineligible external-Motor candidate's four reviewed CSD18540Q5B selections are identity-bound to four independent ideal 2.2 mOhm resistors, each producing the expected 61.6 mV drop at a 28 A DC injection on native ngspice 46 and browser-WASM. The resistance value is bound to the reviewed 25 C, VGS 10 V, ID 28 A table condition. It is not transistor-equation or physical selected-part fidelity and does not evaluate the production request, switching, transient, gate charge, Miller, recovery, body diode, avalanche, SOA, thermal, parasitic, full-BOM, eligibility, ranking, safety, provider, commercial, or release behavior.",
+      claimBoundary: "The projection is bound to the selected CSD18540Q5B profile bytes recomputed from the checked-in library, the installed recipe identity read from the Motor context manifest, and the frozen reviewed conditions and netlist fixture; the whole-catalog and context-manifest identities the document records are reported as drift because admitting an unrelated profile changes them without changing this projection. A pass proves only that the exact current ineligible external-Motor candidate's four reviewed CSD18540Q5B selections are identity-bound to four independent ideal 2.2 mOhm resistors, each producing the expected 61.6 mV drop at a 28 A DC injection on native ngspice 46 and browser-WASM. The resistance value is bound to the reviewed 25 C, VGS 10 V, ID 28 A table condition. It is not transistor-equation or physical selected-part fidelity and does not evaluate the production request, switching, transient, gate charge, Miller, recovery, body diode, avalanche, SOA, thermal, parasitic, full-BOM, eligibility, ranking, safety, provider, commercial, or release behavior.",
     },
   );
 }
@@ -5683,23 +5832,19 @@ function runtimePerformanceMemoryContractGate(): DesignerReleaseGateV1 {
   const runtimeTimingOrder = assessDesignerRuntimeTimingOrderV1(runtimeSpec);
   const implemented = {
     contentAddressedContract: contract !== undefined,
-    exactMotorPowerWorkloads: contract?.workloads.map((entry) => [
-      entry.application,
-      entry.presetId,
-      entry.completionPoint,
-    ])
-      .every((entry, index) => JSON.stringify(entry) === JSON.stringify([
-        [
-          "motor.brushed-dc",
-          "motor.integrated-12v",
-          "exact_result_and_decoded_structural_svg_preview_and_customization_target_discovery_settled",
-        ],
-        [
-          "power.buck",
-          "power.integrated-12v-low-current",
-          "exact_ineligible_observation_and_decoded_structural_svg_preview_and_customization_target_discovery_settled",
-        ],
-      ][index])) ?? false,
+    // N workloads: every declared application must be covered exactly once by a
+    // named preset and a named completion point, and the Designer's Motor and
+    // Power applications must both be present. The count and order are not
+    // pinned, so a contract may add workloads without editing this audit.
+    exactApplicationWorkloadCoverage: (() => {
+      const workloads = contract?.workloads ?? [];
+      if (workloads.length < 1) return false;
+      const applications = workloads.map((entry) => entry.application);
+      const covered = new Set(applications);
+      return DESIGNER_RUNTIME_REQUIRED_APPLICATIONS_V1.every((application) => covered.has(application))
+        && workloads.every((entry) => entry.presetId.startsWith(`${entry.application.split(".")[0]}.`))
+        && workloads.every((entry) => entry.completionPoint.startsWith("exact_"));
+    })(),
     strictEnvironmentReport: runtimeModule.includes("parseDesignerRuntimeReportV1")
       && runtimeModule.includes("productionArtifactSetHash")
       && runtimeModule.includes("content_hash_mismatch")
@@ -6191,6 +6336,78 @@ function externalVerificationGate(
   });
 }
 
+/**
+ * Property gate over the committed rule-disposition baseline.
+ *
+ * It asserts what a release actually needs: the baseline is self-consistent,
+ * it was generated against the currently installed catalog and context
+ * manifests, and every fixture still materializes at least the number of
+ * candidates it recorded. Live regeneration and the "no rule regressed"
+ * comparison run in the package's own test, which is where the multi-minute
+ * generation cost belongs.
+ */
+function ruleDispositionBaselineGate(release: DesignCatalogReleaseV1): DesignerReleaseGateV1 {
+  const baseline = loadDesignerRuleDispositionBaselineV1();
+  const blockers: string[] = [];
+  if (baseline === null) {
+    return gate("eligibility.rule-disposition-baseline", "blocked", ["rule_disposition_baseline_missing"], {
+      baselinePresent: false,
+      claimBoundary: "A missing baseline cannot prove that eligibility rules have not regressed.",
+    });
+  }
+  const expectedHash = calculateRuleDispositionBaselineContentHashV1({
+    format: baseline.format,
+    schemaVersion: baseline.schemaVersion,
+    generatedAgainst: baseline.generatedAgainst,
+    fixtures: baseline.fixtures,
+  });
+  if (expectedHash !== baseline.contentHash) blockers.push("rule_disposition_baseline_self_hash_mismatch");
+  const motorManifest = getMotorDesignContextManifestV2();
+  const powerManifest = getPowerDesignContextManifestV2();
+  if (baseline.generatedAgainst.motorContextVersion !== motorManifest.version) {
+    blockers.push(`rule_disposition_baseline_stale:motor_context_version:${baseline.generatedAgainst.motorContextVersion}/${motorManifest.version}`);
+  }
+  if (baseline.generatedAgainst.powerContextVersion !== powerManifest.version) {
+    blockers.push(`rule_disposition_baseline_stale:power_context_version:${baseline.generatedAgainst.powerContextVersion}/${powerManifest.version}`);
+  }
+  if (baseline.generatedAgainst.motorContextVersion !== release.version) {
+    blockers.push(`rule_disposition_baseline_stale:catalog_version:${baseline.generatedAgainst.motorContextVersion}/${release.version}`);
+  }
+  const installedMotorRecipeIds = new Set(motorManifest.recipes.map((entry) => entry.id));
+  const installedPowerRecipeIds = new Set(powerManifest.recipes.map((entry) => entry.id));
+  for (const recipeId of baseline.generatedAgainst.motorRecipeIds) {
+    if (!installedMotorRecipeIds.has(recipeId)) blockers.push(`rule_disposition_baseline_recipe_uninstalled:${recipeId}`);
+  }
+  for (const recipeId of baseline.generatedAgainst.powerRecipeIds) {
+    if (!installedPowerRecipeIds.has(recipeId)) blockers.push(`rule_disposition_baseline_recipe_uninstalled:${recipeId}`);
+  }
+  for (const fixture of baseline.fixtures) {
+    if (fixture.candidates.length !== fixture.candidateCount) {
+      blockers.push(`rule_disposition_baseline_candidate_count_inconsistent:${fixture.fixtureId}`);
+    }
+    if (fixture.candidateCount < 1) {
+      blockers.push(`rule_disposition_baseline_no_candidate:${fixture.fixtureId}`);
+    }
+    if (fixture.candidates.some((candidate) => candidate.rules.length === 0)) {
+      blockers.push(`rule_disposition_baseline_candidate_without_rules:${fixture.fixtureId}`);
+    }
+  }
+  return gate("eligibility.rule-disposition-baseline", blockers.length === 0 ? "pass" : "blocked", blockers, {
+    baselinePresent: true,
+    baselineContentHash: baseline.contentHash,
+    generatedAgainst: baseline.generatedAgainst,
+    fixtures: baseline.fixtures.map((fixture) => ({
+      fixtureId: fixture.fixtureId,
+      application: fixture.application,
+      candidateCount: fixture.candidateCount,
+      eligibleCandidateCount: fixture.eligibleCandidateCount,
+      constraintStatusCounts: fixture.constraintStatusCounts,
+      dispositionCounts: fixture.dispositionCounts,
+    })),
+    claimBoundary: "A pass proves only that the committed rule-disposition baseline is self-consistent, was generated against the installed catalog release, context manifests, and recipes, and records at least one candidate carrying rules per fixture. It does not itself re-run generation; the live no-regression comparison is the package's rule-disposition-baseline test. It proves no candidate eligible, no simulation fidelity, and no physical suitability.",
+  });
+}
+
 export function buildDesignerReleaseReadinessReportV1(
   options: DesignerReleaseReadinessOptionsV1 = {},
 ): DeepReadonly<DesignerReleaseReadinessReportV1> {
@@ -6216,7 +6433,8 @@ export function buildDesignerReleaseReadinessReportV1(
     manifestGate(loadedManifest.manifest, loadedManifest.issues, admission),
     constraintDecisionSidecarV3Gate(),
     primaryPartCustomizationObservationV1Gate(),
-    catalogGate(loadedManifest.manifest, release),
+    catalogGate(loadedManifest.manifest, release, documents.profiles, documents.manufacturerRegistry),
+    ruleDispositionBaselineGate(release),
     productionContextGate("motor.production-context-v2", MOTOR_DESIGN_V2_PRODUCTION_STATUS),
     motorEvidenceGate(),
     productionContextGate("power.production-context-v2", POWER_DESIGN_V2_PRODUCTION_STATUS),

@@ -211,7 +211,10 @@ export function parseDesignerRuntimeContractV1(input: unknown): DesignerRuntimeC
   literal(value.schemaVersion, 1, "contract/schemaVersion");
   const version = string(value.version, "contract/version");
   const scope = literal(value.scope, "local_headless_chromium_production_build", "contract/scope");
-  if (!Array.isArray(value.workloads) || value.workloads.length !== 2) throw new TypeError("contract/workloads:invalid_length");
+  // N workloads. The contract declares how many it covers; the audit requires
+  // at least one and refuses duplicate (application, presetId) pairs instead of
+  // pinning an exact count or a motor-then-power order.
+  if (!Array.isArray(value.workloads) || value.workloads.length < 1) throw new TypeError("contract/workloads:invalid_length");
   const workloads = value.workloads.map((entry, index) => {
     const workload = object(entry, `contract/workloads/${index}`);
     exactKeys(workload, ["application", "presetId", "completionPoint"], `contract/workloads/${index}`);
@@ -240,7 +243,9 @@ export function parseDesignerRuntimeContractV1(input: unknown): DesignerRuntimeC
       completionPoint,
     };
   });
-  if (workloads[0]?.application !== "motor.brushed-dc" || workloads[1]?.application !== "power.buck") {
+  const workloadKeys = workloads.map((workload) => `${workload.application}\u0000${workload.presetId}`);
+  if (new Set(workloadKeys).size !== workloadKeys.length) throw new TypeError("contract/workloads:duplicate_workload");
+  if ([...workloadKeys].sort().join("\u0001") !== workloadKeys.join("\u0001")) {
     throw new TypeError("contract/workloads:invalid_order");
   }
   const iterationsPerApplication = integer(value.iterationsPerApplication, "contract/iterationsPerApplication", true);

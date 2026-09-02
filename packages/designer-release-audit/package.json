@@ -9,7 +9,8 @@
     "./clean-checkout-audit": "./src/clean-checkout-audit.ts",
     "./clean-checkout-runner": "./src/clean-checkout-runner.ts",
     "./runtime-audit": "./src/designer-runtime-audit.ts",
-    "./runtime-release-receipt": "./src/designer-runtime-release-receipt.ts"
+    "./runtime-release-receipt": "./src/designer-runtime-release-receipt.ts",
+    "./rule-disposition-baseline": "./src/rule-disposition-baseline.ts"
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
@@ -17,7 +18,8 @@
     "report:clean-checkout": "vite-node src/clean-checkout-runner-cli.ts",
     "scan:release": "vite-node src/repository-scan-cli.ts",
     "test": "vitest run",
-    "typecheck": "tsc -p tsconfig.json --noEmit"
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "baseline:rule-dispositions": "vite-node src/rule-disposition-baseline-cli.ts"
   },
   "dependencies": {
     "@opencircuit/design-export": "*",
