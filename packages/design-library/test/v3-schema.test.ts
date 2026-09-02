@@ -154,7 +154,7 @@ describe("selected facts-V3 JSON schemas", () => {
     const unsupported: any = structuredClone(createSyntheticReviewedProfile("shared.switching-diode"));
     unsupported.factsSchemaVersion = "3.0.0";
     expectInvalid(validate, unsupported);
-  }, 20_000);
+  });
 
   it("preserves both frozen facts-V2 root byte hashes and its mounted-geometry shape", () => {
     const expected = {
@@ -211,7 +211,7 @@ describe("selected facts-V3 JSON schemas", () => {
     missingDutyCycle.facts.pulsedDrainCurrent.validFor = missingDutyCycle.facts.pulsedDrainCurrent.validFor
       .filter((entry: any) => entry.parameterId !== "dutyCycle");
     expectInvalid(validate, missingDutyCycle);
-  }, 20_000);
+  });
 
   it("closes TVS behavior, conditioned pulse claims, and explicit unknown energy", () => {
     const { validate } = validator();
@@ -265,5 +265,5 @@ describe("selected facts-V3 JSON schemas", () => {
     const unknownWithValue = structuredClone(unknownEnergy);
     unknownWithValue.facts.pulseEnergy.value = { value: 1, unit: "J", displayUnit: "J" };
     expectInvalid(validate, unknownWithValue);
-  }, 20_000);
+  });
 });

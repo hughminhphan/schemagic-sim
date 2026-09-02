@@ -39,10 +39,17 @@ function schemaFiles(directory: string): string[] {
     : entry.name.endsWith(".json") ? [join(directory, entry.name)] : []);
 }
 
+/**
+ * Compiling every checked-in schema is the dominant cost in this suite, so the
+ * instance is built once per test file instead of once per test.
+ */
+let ajvInstance: Ajv2020 | undefined;
 function ajv() {
+  if (ajvInstance) return ajvInstance;
   const instance = new Ajv2020({ allErrors: true, strict: true });
   addFormats(instance);
   for (const path of schemaFiles(schemaRoot.pathname)) instance.addSchema(JSON.parse(readFileSync(path, "utf8")));
+  ajvInstance = instance;
   return instance;
 }
 
@@ -139,7 +146,7 @@ describe("power.power-inductor facts 3.4.0 contract", () => {
       expect(validateDesignProfileV34(changed, SYNTHETIC_MANUFACTURER_REGISTRY).length).toBeGreaterThan(0);
       expect(validateSchema(changed)).toBe(false);
     }
-  }, 20_000);
+  });
 
   it("matches runtime and AJV for current-only, voltage-only, both, missing, duplicate, unit, and unknown-state cases", () => {
     const validateSchema = ajv().getSchema(v34ProfileSchemaId)!;
@@ -193,7 +200,7 @@ describe("power.power-inductor facts 3.4.0 contract", () => {
       expect(schemaValid, `${testCase.label}: ${JSON.stringify(validateSchema.errors)}`).toBe(testCase.valid);
       expect(runtimeValid, `${testCase.label}: bidirectional parity`).toBe(schemaValid);
     }
-  }, 20_000);
+  });
 
   it("dispatches, parses, hashes, and admits exact 3.4.0 facts without widening other classes", () => {
     const input = v34Profile("both");
@@ -268,5 +275,5 @@ describe("power.power-inductor facts 3.4.0 contract", () => {
     const v2 = { ...v34Profile("voltage"), factsSchemaVersion: "2.0.0" };
     expect(validateDesignProfileEnvelope(v2, SYNTHETIC_MANUFACTURER_REGISTRY)).toContainEqual(expect.objectContaining({ code: "missing_required_range" }));
     expect(schemas.getSchema("https://schemas.schemagic.design/design-library/v1/profile.facts-v2.schema.json")!(v2)).toBe(false);
-  }, 20_000);
+  });
 });

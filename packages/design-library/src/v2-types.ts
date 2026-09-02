@@ -13,6 +13,7 @@ import type { DesignProfileV31 } from "./v31-types";
 import type { DesignProfileV32 } from "./v32-types";
 import type { DesignProfileV33 } from "./v33-types";
 import type { DesignProfileV34 } from "./v34-types";
+import type { DesignProfileV35 } from "./v35-types";
 
 export const FACTS_SCHEMA_VERSION_V2 = "2.0.0" as const;
 
@@ -66,7 +67,8 @@ export type DesignProfileEnvelope =
   | DesignProfileV31
   | DesignProfileV32
   | DesignProfileV33
-  | DesignProfileV34;
+  | DesignProfileV34
+  | DesignProfileV35;
 
 export interface ReviewedDesignLibraryEnvelope {
   version: string;

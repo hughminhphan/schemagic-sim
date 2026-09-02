@@ -94,7 +94,7 @@ describe("exact TI TPS54302DDCR facts 3.3.0 author profile", () => {
       manufacturerPartNumber: "TPS54302DDCR",
     });
     expect(profile.factsSchemaVersion).toBe("3.3.0");
-  }, 20_000);
+  });
 
   it("retains architecture, operating-range, current, frequency, and feedback evidence roles", () => {
     expect(profile.facts.converterTopology.value).toBe("synchronous_buck");

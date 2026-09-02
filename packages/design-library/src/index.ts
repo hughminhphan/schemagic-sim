@@ -27,5 +27,8 @@ export * from "./v33-validation";
 export * from "./v34-specs";
 export * from "./v34-types";
 export * from "./v34-validation";
+export * from "./v35-specs";
+export * from "./v35-types";
+export * from "./v35-validation";
 export * from "./adapters";
 export * from "./bundled-release";

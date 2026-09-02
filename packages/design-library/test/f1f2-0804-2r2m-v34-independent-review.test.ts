@@ -68,7 +68,7 @@ describe("independent Bel Fuse F1F2-0804-2R2M facts 3.4.0 review", () => {
     const validate = ajv.getSchema("https://schemas.schemagic.design/design-library/v1/profile.facts-v3-4.schema.json");
     if (validate === undefined) throw new Error("Missing facts 3.4 profile schema");
     expect(validate(profileJson), JSON.stringify(validate.errors)).toBe(true);
-  }, 20_000);
+  });
 
   it("binds every factual claim to the exact official Bel Fuse source bytes", () => {
     const refs = evidenceRefs(profile);

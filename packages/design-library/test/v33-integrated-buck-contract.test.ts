@@ -194,7 +194,7 @@ describe("Power integrated synchronous buck facts 3.3.0 contract", () => {
     expect(parsed.factsSchemaVersion).toBe("3.3.0");
     expect(Object.isFrozen(parsed)).toBe(true);
     expect(designProfileContentHashV33(parsed)).toMatch(/^sha256:[0-9a-f]{64}$/);
-  }, 20_000);
+  });
 
   it("retains a continuous-capability statement without promoting it to a guaranteed limit", () => {
     const input = profile();
@@ -228,7 +228,7 @@ describe("Power integrated synchronous buck facts 3.3.0 contract", () => {
       code: "incomplete_evidence_role_group",
     }));
     expect(validate(incompleteSpread)).toBe(false);
-  }, 20_000);
+  });
 
   it("enforces operating ordering and bootstrap requirement semantics", () => {
     const inverted = profile();
@@ -244,7 +244,7 @@ describe("Power integrated synchronous buck facts 3.3.0 contract", () => {
       code: "paired_unknown_mismatch",
     }));
     expect(schemaValidator()(invented)).toBe(false);
-  }, 20_000);
+  });
 
   it("rejects unsupported class/version tuples in runtime and JSON Schema", () => {
     const validate = schemaValidator();
@@ -255,5 +255,5 @@ describe("Power integrated synchronous buck facts 3.3.0 contract", () => {
     const wrongClass = { ...input, partClass: "power.external-fet-synchronous-buck-controller" };
     expect(validateDesignProfileV33(wrongClass, SYNTHETIC_MANUFACTURER_REGISTRY)).toContainEqual(expect.objectContaining({ code: "invalid_part_class" }));
     expect(validate(wrongClass)).toBe(false);
-  }, 20_000);
+  });
 });

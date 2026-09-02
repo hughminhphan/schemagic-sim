@@ -1,4 +1,4 @@
-import { contentHash } from "./canonical";
+import { compareAscii, contentHash } from "./canonical";
 import { designProfileId, designProfilePath } from "./path";
 import { PART_CLASS_SPECS, type FactSpec, type PartClassSpec } from "./specs";
 import {
@@ -27,6 +27,8 @@ import {
   type ProfileQuantity,
   type ProfileUnit,
 } from "./types";
+import { V35_PART_CLASS_SPECS, type V35PartClassId } from "./v35-specs";
+import { FACTS_SCHEMA_VERSION_V35, type DesignProfileV35 } from "./v35-types";
 
 export const SYNTHETIC_MANUFACTURER_ID = "schemagic-synthetic-components";
 export const SYNTHETIC_MANUFACTURER_HOST = "synthetic-components.example.invalid";
@@ -152,4 +154,96 @@ export function createSyntheticReviewedLibraryFixture(classes: readonly PartClas
     catalogRelease: release,
     profiles: Object.fromEntries(profiles.map((profile) => [designProfilePath(profile.partClass, profile.part), profile])),
   };
+}
+
+const SYNTHETIC_V35_GEOMETRY_BASIS = "manufacturer_recommended_land_pattern_bounding_box" as const;
+
+function syntheticMountedGeometryV35(partClass: V35PartClassId) {
+  const geometryEvidence = evidence(partClass as PartClassId, "mountedGeometry");
+  return {
+    boardArea: {
+      value: {
+        area: quantity(2e-6, "m2"),
+        basis: SYNTHETIC_V35_GEOMETRY_BASIS,
+        calculation: "maximum_x_span_times_maximum_y_span" as const,
+        sourceDimensions: [
+          { axis: "x" as const, dimensionId: "land-x", multiplier: 1, maximum: quantity(1e-3, "m"), evidence: [geometryEvidence] },
+          { axis: "y" as const, dimensionId: "land-y", multiplier: 1, maximum: quantity(2e-3, "m"), evidence: [geometryEvidence] },
+        ],
+      },
+      state: "calculated" as const,
+      evidence: [geometryEvidence],
+      validFor: [],
+      explanation: "Synthetic manufacturer land-pattern rectangle.",
+    },
+    maximumHeight: {
+      value: { height: quantity(1e-3, "m"), basis: "manufacturer_package_maximum_in_surface_mount_orientation" as const },
+      state: "reviewed" as const,
+      evidence: [geometryEvidence],
+      validFor: [],
+      explanation: "Synthetic reviewed maximum mounted height.",
+    },
+  };
+}
+
+function unknownCommonFactV35(explanation: string): ProfileFact<null> {
+  return { value: null, state: "unknown", evidence: [], validFor: [], explanation };
+}
+
+function fixtureFactV35(partClass: V35PartClassId, factId: string, spec: FactSpec): ProfileFact<unknown> {
+  const value = spec.kind === "quantity"
+    ? quantity(numericFixtureValue(factId, spec.unit), spec.unit)
+    : spec.kind === "boolean"
+      ? true
+      : spec.values?.[0] ?? "Synthetic normalized engineering value";
+  // One source for the whole profile keeps paired quantity/role evidence sets identical.
+  const factEvidence = evidence(partClass as PartClassId, "facts-v3-5");
+  const validFor = [...(spec.requiredRangeParameters ?? [])]
+    .sort(compareAscii)
+    .map((parameterId) => {
+      const rangeSpec = (V35_PART_CLASS_SPECS[partClass] as PartClassSpec).operatingRanges[parameterId]!;
+      const exact = quantity(numericFixtureValue(parameterId, rangeSpec.unit), rangeSpec.unit);
+      return { parameterId, minimum: exact, maximum: exact, evidence: [factEvidence] };
+    });
+  return {
+    value,
+    state: "reviewed",
+    evidence: [factEvidence],
+    validFor,
+    explanation: "Synthetic value used only to exercise the closed facts 3.5.0 bound-typed contract.",
+  };
+}
+
+/**
+ * A reviewed facts-3.5.0 profile with every bound-typed field populated. Used to
+ * exercise the additive contract; it makes no manufacturer claim.
+ */
+export function createSyntheticReviewedProfileV35(partClass: V35PartClassId, sequence = 1): DesignProfileV35 {
+  const commonEvidence = evidence(partClass as PartClassId, "common");
+  const facts: Record<string, unknown> = Object.fromEntries(
+    Object.entries(V35_PART_CLASS_SPECS[partClass].facts)
+      .map(([factId, spec]) => [factId, fixtureFactV35(partClass, factId, spec as FactSpec)]),
+  );
+  if (partClass === "power.power-inductor") {
+    // Facts 3.4.0 onward requires reviewed inductance to name one excitation
+    // condition beside its switching frequency.
+    const inductance = facts.inductance as ProfileFact<unknown> & { validFor: unknown[] };
+    const factEvidence = evidence(partClass as PartClassId, "facts-v3-5");
+    const current = quantity(numericFixtureValue("testCurrent", "A"), "A");
+    inductance.validFor = [...inductance.validFor, { parameterId: "testCurrent", minimum: current, maximum: current, evidence: [factEvidence] }];
+  }
+  facts.mountedGeometry = syntheticMountedGeometryV35(partClass);
+  return {
+    format: DESIGN_PROFILE_FORMAT,
+    schemaVersion: DESIGN_PROFILE_SCHEMA_VERSION,
+    partClass,
+    part: { manufacturerId: SYNTHETIC_MANUFACTURER_ID, manufacturerPartNumber: `SYN35-${sequence}-${partClass.toUpperCase()}` },
+    factsSchemaVersion: FACTS_SCHEMA_VERSION_V35,
+    commonFacts: {
+      packageName: { value: "SYNTHETIC-PACKAGE", state: "reviewed", evidence: [commonEvidence], validFor: [], explanation: "Synthetic package name." },
+      boardArea: unknownCommonFactV35("Facts 3.5.0 carries mounted board area inside class facts."),
+      maximumHeight: unknownCommonFactV35("Facts 3.5.0 carries mounted maximum height inside class facts."),
+    },
+    facts,
+  } as unknown as DesignProfileV35;
 }

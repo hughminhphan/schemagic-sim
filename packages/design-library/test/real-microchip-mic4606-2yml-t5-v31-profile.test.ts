@@ -125,5 +125,5 @@ describe("exact Microchip MIC4606-2YML-T5 facts 3.1.0 profile", () => {
     const refs = evidenceRefs(profile);
     expect(refs.length).toBeGreaterThan(0);
     for (const ref of refs) expect(ref).toMatchObject(source);
-  }, 20_000);
+  });
 });

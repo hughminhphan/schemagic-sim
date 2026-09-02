@@ -45,6 +45,8 @@ import { FACTS_SCHEMA_VERSION_V31, type DesignProfileV31 } from "./v31-types";
 import { FACTS_SCHEMA_VERSION_V32, type DesignProfileV32 } from "./v32-types";
 import { FACTS_SCHEMA_VERSION_V33, type DesignProfileV33 } from "./v33-types";
 import { FACTS_SCHEMA_VERSION_V34, type DesignProfileV34 } from "./v34-types";
+import { FACTS_SCHEMA_VERSION_V35, type DesignProfileV35 } from "./v35-types";
+import { validateProfileAdmissionRulesV35, validateProfileSemanticsV35 } from "./v35-validation";
 import {
   validateProfileAdmissionRulesV3,
   validateProfileAdmissionRulesV31,
@@ -93,7 +95,7 @@ function profileEvidence(profile: DesignProfileV1): Array<{ path: string; eviden
 }
 
 function profileEnvelopeEvidence(profile: DesignProfileEnvelope): Array<{ path: string; evidence: ProfileEvidenceRef }> {
-  if (profile.factsSchemaVersion !== FACTS_SCHEMA_VERSION_V2 && profile.factsSchemaVersion !== FACTS_SCHEMA_VERSION_V3 && profile.factsSchemaVersion !== FACTS_SCHEMA_VERSION_V31 && profile.factsSchemaVersion !== FACTS_SCHEMA_VERSION_V32 && profile.factsSchemaVersion !== FACTS_SCHEMA_VERSION_V33 && profile.factsSchemaVersion !== FACTS_SCHEMA_VERSION_V34) return profileEvidence(profile);
+  if (profile.factsSchemaVersion !== FACTS_SCHEMA_VERSION_V2 && profile.factsSchemaVersion !== FACTS_SCHEMA_VERSION_V3 && profile.factsSchemaVersion !== FACTS_SCHEMA_VERSION_V31 && profile.factsSchemaVersion !== FACTS_SCHEMA_VERSION_V32 && profile.factsSchemaVersion !== FACTS_SCHEMA_VERSION_V33 && profile.factsSchemaVersion !== FACTS_SCHEMA_VERSION_V34 && profile.factsSchemaVersion !== FACTS_SCHEMA_VERSION_V35) return profileEvidence(profile);
   const result: Array<{ path: string; evidence: ProfileEvidenceRef }> = [];
   const collect = (value: unknown, path: string): void => {
     if (Array.isArray(value)) {
@@ -119,6 +121,7 @@ function validateEnvelopeAdmissionRules(profile: DesignProfileEnvelope): Validat
   if (profile.factsSchemaVersion === FACTS_SCHEMA_VERSION_V32) return validateProfileAdmissionRulesV32(profile);
   if (profile.factsSchemaVersion === FACTS_SCHEMA_VERSION_V33) return validateProfileAdmissionRulesV33(profile);
   if (profile.factsSchemaVersion === FACTS_SCHEMA_VERSION_V34) return validateProfileAdmissionRulesV34(profile);
+  if (profile.factsSchemaVersion === FACTS_SCHEMA_VERSION_V35) return validateProfileAdmissionRulesV35(profile as DesignProfileV35);
   return validateProfileAdmissionRules(profile);
 }
 
@@ -132,6 +135,7 @@ function validateEnvelopeClassSemantics(
   if (profile.factsSchemaVersion === FACTS_SCHEMA_VERSION_V32) return validateProfileSemanticsV32(profile as DesignProfileV32);
   if (profile.factsSchemaVersion === FACTS_SCHEMA_VERSION_V33) return validateProfileSemanticsV33(profile as DesignProfileV33);
   if (profile.factsSchemaVersion === FACTS_SCHEMA_VERSION_V34) return validateProfileSemanticsV34(profile as DesignProfileV34);
+  if (profile.factsSchemaVersion === FACTS_SCHEMA_VERSION_V35) return validateProfileSemanticsV35(profile as DesignProfileV35);
   return validateFactsForCodec(profile.facts, profile.partClass, manufacturer);
 }
 

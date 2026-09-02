@@ -87,7 +87,7 @@ describe("independent TI DRV8876PWPR facts 3.2.0 review", () => {
       factsSchemaVersion: "3.2.0",
     });
     expect(profile.commonFacts.packageName.value).toContain("HTSSOP (PWP), 16-pin PowerPAD");
-  }, 20_000);
+  });
 
   it("keeps guaranteed, typical, unknown, and application-dependent claims distinct", () => {
     const facts = profile.facts;

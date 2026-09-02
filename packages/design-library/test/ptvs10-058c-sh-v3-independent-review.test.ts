@@ -46,7 +46,7 @@ describe("independent Bourns PTVS10-058C-SH facts-V3 review", () => {
     if (validate === undefined) throw new Error(`Missing AJV schema ${schemaId}`);
 
     expect(validate(profileJson), JSON.stringify(validate.errors)).toBe(true);
-  }, 20_000);
+  });
 
   it("pins the reviewed manufacturer source and datasheet-derived footprint arithmetic", () => {
     const references = evidenceReferences(profileJson);

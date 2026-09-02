@@ -58,13 +58,40 @@ function jsonFiles(directory: string): string[] {
     : entry.name.endsWith(".json") ? [join(directory, entry.name)] : []);
 }
 
+/**
+ * Reads the facts-schema version a schema file belongs to from its own name
+ * rather than pinning the successor list. `…v3-4…` is 3.4, `…v3…` is 3.0, and a
+ * file with no facts-version marker predates the versioned facts contracts.
+ */
+export function factsSchemaVersionForPath(path: string): { major: number; minor: number } | null {
+  const match = /(?:^|[./-])v(\d+)(?:-(\d+))?(?=[./-])/.exec(path);
+  if (!match) return null;
+  const major = Number(match[1]);
+  if (major < 3) return null;
+  return { major, minor: match[2] === undefined ? 0 : Number(match[2]) };
+}
+
+function atOrAfter(path: string, major: number, minor: number): boolean {
+  const version = factsSchemaVersionForPath(path);
+  if (!version) return false;
+  return version.major > major || (version.major === major && version.minor >= minor);
+}
+
 describe("facts 3.4.0 additive schema boundary", () => {
   it("keeps every pre-3.4 checked-in schema byte frozen", () => {
     const actual = Object.fromEntries(jsonFiles(schemaRoot)
       .map((path) => relative(schemaRoot, path))
-      .filter((path) => !path.includes("v3-4"))
+      .filter((path) => !atOrAfter(path, 3, 4))
       .sort()
       .map((path) => [path, createHash("sha256").update(readFileSync(join(schemaRoot, path))).digest("hex")]));
     expect(actual).toEqual(PRIOR_SCHEMA_SHA256);
+  });
+
+  it("classifies each checked-in schema path by its own declared facts version", () => {
+    expect(factsSchemaVersionForPath("profile.v1.schema.json")).toBeNull();
+    expect(factsSchemaVersionForPath("facts/shared.mlcc-capacitor.v2.schema.json")).toBeNull();
+    expect(factsSchemaVersionForPath("profile-envelope.facts-v3.schema.json")).toEqual({ major: 3, minor: 0 });
+    expect(factsSchemaVersionForPath("facts/power.power-inductor.v3-4.schema.json")).toEqual({ major: 3, minor: 4 });
+    expect(factsSchemaVersionForPath("facts/shared.mlcc-capacitor.v3-5.schema.json")).toEqual({ major: 3, minor: 5 });
   });
 });

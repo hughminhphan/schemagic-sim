@@ -151,5 +151,5 @@ describe("independent Microchip MIC4606-2YML-T5 facts 3.1.0 review", () => {
       expect(ref).toMatchObject(source);
       expect(new URL((ref as { url: string }).url).hostname).toBe("ww1.microchip.com");
     }
-  }, 20_000);
+  });
 });

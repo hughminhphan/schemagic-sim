@@ -46,7 +46,7 @@ describe("independent Diodes Incorporated 3.0SMCJ33CAQ facts-V3 review", () => {
     if (validate === undefined) throw new Error(`Missing AJV schema ${schemaId}`);
 
     expect(validate(profileJson), JSON.stringify(validate.errors)).toBe(true);
-  }, 20_000);
+  });
 
   it("independently pins the official source, ordering form, matched pulse conditions, and geometry arithmetic", () => {
     const references = evidenceReferences(profileJson);

@@ -29,7 +29,7 @@ describe("independent TI CSD18540Q5B facts-V3 evidence review", () => {
     const validate = ajv.getSchema("https://schemas.schemagic.design/design-library/v1/profile.facts-v3.schema.json");
     expect(validate).toBeTypeOf("function");
     expect(validate?.(profile), JSON.stringify(validate?.errors)).toBe(true);
-  }, 20_000);
+  });
 
   it("identifies the exact hashed TI source revision", () => {
     expect(profile).toMatchObject({

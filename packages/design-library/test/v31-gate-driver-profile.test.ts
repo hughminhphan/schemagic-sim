@@ -157,7 +157,7 @@ describe("Motor gate-driver facts 3.1.0 contract", () => {
     expect(parsed.factsSchemaVersion).toBe("3.1.0");
     expect(Object.isFrozen(parsed)).toBe(true);
     expect(designProfileContentHashV31(parsed)).toMatch(/^sha256:[0-9a-f]{64}$/);
-  }, 20_000);
+  });
 
   it("enforces exact-unknown inactive bias and sense branches in runtime and JSON Schema", () => {
     const validate = schemaValidator();
@@ -170,7 +170,7 @@ describe("Motor gate-driver facts 3.1.0 contract", () => {
     sense.facts.senseMaximumVoltage = structuredClone(sense.facts.logicHighThresholdMaximum);
     expect(validateDesignProfileV31(sense, SYNTHETIC_MANUFACTURER_REGISTRY)).toContainEqual(expect.objectContaining({ code: "inactive_branch_must_be_unknown" }));
     expect(validate(sense)).toBe(false);
-  }, 20_000);
+  });
 
   it("requires timing and source/sink capability alternatives without promoting unknowns", () => {
     const timing = profile();

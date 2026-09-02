@@ -70,7 +70,7 @@ describe("AJV 2020 runtime parity", () => {
     for (const schema of schemas) ajv.addSchema(schema);
     for (const schema of schemas) expect(ajv.getSchema(schema.$id), schema.$id).toBeTypeOf("function");
     expect(() => ajv.compile({ $ref: "https://schemas.schemagic.design/design-library/v1/profile.v1.schema.json" })).not.toThrow();
-  }, 20_000);
+  });
 
   it("matches runtime rejection for state/value/evidence, vocabularies, numeric domains, and ranges", () => {
     const validateSchema = ajvProfileValidator();
@@ -166,7 +166,7 @@ describe("AJV 2020 runtime parity", () => {
       expect(schemaValid, `${testCase.label}: ${JSON.stringify(validateSchema.errors)}`).toBe(testCase.valid);
       expect(runtimeValid, `${testCase.label}: bidirectional parity`).toBe(schemaValid);
     }
-  }, 20_000);
+  });
 
   it("matches runtime bidirectionally for exact hostnames and raw canonical HTTPS URLs", () => {
     const ajv = new Ajv2020({ allErrors: true, strict: true });
