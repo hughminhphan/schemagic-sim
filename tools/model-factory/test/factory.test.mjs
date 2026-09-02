@@ -4,7 +4,7 @@ import os from "node:os";
 import path from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
-import { assertCardParameterTable, assertEmittedParametersMatchFitted, assertFiniteNumbers, assertMosfetConditionIdentityContract, evaluateCheckAcrossEngines, expressionValue, identityHash, normalizeMosfetConditionIdentity, normalizeMosfetCurve, renderParameterTable, stageTestgen } from "../factory.mjs";
+import { assertCardParameterTable, assertEmittedParametersMatchFitted, assertFiniteNumbers, assertMosfetConditionIdentityContract, evaluateCheckAcrossEngines, expressionValue, identityHash, normalizeMosfetConditionIdentity, normalizeMosfetCurve, renderParameterTable, modelCardOmissions, stageTestgen } from "../factory.mjs";
 import { PARTS, getPart } from "../lib/parts.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -391,4 +391,11 @@ test("pulse-qualified MOSFET curve evidence is rejected from continuous operatin
   } finally {
     fs.rmSync(root, { recursive: true, force: true });
   }
+});
+
+test("model cards merge fitter omissions with component omissions", () => {
+  assert.deepEqual(
+    modelCardOmissions(["component limitation", "shared limitation"], ["fitter absence", "shared limitation"]),
+    ["component limitation", "shared limitation", "fitter absence"],
+  );
 });

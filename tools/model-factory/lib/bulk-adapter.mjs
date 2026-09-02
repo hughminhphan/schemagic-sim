@@ -2093,8 +2093,18 @@ export function fitBulkPart(part, extraction, { ngspiceRunner = defaultNgspiceRu
     }
     const constraintRows = attemptRows.filter((row) => row.evidence_role === "inequality_constraint");
     const observationRows = attemptRows.filter((row) => row.evidence_role !== "inequality_constraint");
+    const derivedOutputFamilyOmitted = part.conveyor_family === "mosfet"
+      && !(fitExtraction.curves ?? []).some((curve) => curve.characteristic === "output_current");
+    const derivedPolicyTier = derivedOutputFamilyOmitted ? "F2-DC" : "F2";
+    if (part.conveyor_family === "mosfet"
+        && (attempt.policy_tier !== derivedPolicyTier || attempt.output_family_omitted !== derivedOutputFamilyOmitted)) {
+      throw new Error(`MOSFET fitter policy mismatch: fitter policy_tier=${String(attempt.policy_tier)}, output_family_omitted=${String(attempt.output_family_omitted)}; extraction-derived policy_tier=${derivedPolicyTier}, output_family_omitted=${derivedOutputFamilyOmitted}`);
+    }
+    const outputFamilyOmitted = part.conveyor_family === "mosfet" ? attempt.output_family_omitted : false;
+    const policyTier = part.conveyor_family === "mosfet" ? attempt.policy_tier : "F2";
     fit = {
-      fidelity: "F2", parameters, worst: attempt.worst?.value ?? null,
+      fidelity: "F2", policy_tier: policyTier, output_family_omitted: outputFamilyOmitted,
+      parameters, worst: attempt.worst?.value ?? null,
       worst_quantity: attempt.worst?.quantity ?? null, rms: attempt.rms ?? null, gate_pass: attempt.gate_pass,
       residuals: attemptRows, curves_used: attempt.curves_used ?? [],
       curves_rejected: attempt.curves_rejected ?? [], optimizer: attempt.optimizer ?? null,
@@ -2103,6 +2113,7 @@ export function fitBulkPart(part, extraction, { ngspiceRunner = defaultNgspiceRu
       evidence_curves: part.conveyor_family === "mosfet" ? fitExtraction.curves.filter((curve) => curve.characteristic) : [],
       parameter_metadata: Object.fromEntries(Object.keys(parameters).map((name) => {
         const held = (attempt.optimizer?.held_defaults ?? []).find((item) => item.parameter === name);
+        if (outputFamilyOmitted && name === "RD") return [name, { status: "fit jointly to transfer plus RDS(on); not independently identified without an output family", evidence_mode: "curve-fitted" }];
         return [name, held ? { status: `held default: ${held.reason}` } : { status: "evidence-derived (curve-fitted)", evidence_mode: "curve-fitted" }];
       })),
       calibration: { evidence_mode: "curve-fitted", observations: observationRows, constraints: constraintRows, seeds: [], residual_target_count: observationRows.length },
@@ -2975,6 +2986,7 @@ function bulkContext(part, fit, identity, pinInfo, source, omissions, operating,
         modelName: fit.model.name,
         ...(part.conveyor_family === "mosfet" ? { supported_operating_region: operating } : {}),
         fidelity_tier: fit.fidelity,
+        model_card_fidelity_tier: fit.policy_tier ?? fit.fidelity,
         domain_coverage: { dc: fit.fidelity === "F2" ? "fitted" : "approx", ac: "none", transient: "none", noise: "none", thermal: "none", digital: "none" },
         omissions,
         numeric_bounds: operating.numeric_bounds,
@@ -3034,6 +3046,10 @@ export function stageBulkPart(part, rawExtraction, fit, stagingRoot, { demotionR
     "AC, transient, noise, thermal, and package-parasitic behavior are outside this DC-only conveyor package.",
     "Temperature dependence and self-heating are not modelled; each electrical claim is limited to its exact cited bench temperature.",
     "Catalog parametrics may be recorded only as optimizer seeds; they are not evidence, constraints, residual targets, or datasheet citations.",
+    ...(part.conveyor_family === "mosfet" && fit.policy_tier === "F2-DC" ? [
+      "F2-DC small-signal MOSFET policy: the transfer characteristic, threshold interval, and RDS(on) are fitted, but the output-characteristic family is deliberately omitted because one VDMOS square law cannot represent it across the full family.",
+      "Drain-current accuracy outside the cited transfer-curve VDS and RDS(on) condition tuples is not claimed; LAMBDA is held at the family default rather than fitted to an omitted output family.",
+    ] : []),
     ...(strictIntervalMosfet ? [
       "Support is operating-point-only at coupled cited condition-ID tuples. Per-axis coordinate enumerations are projections, not Cartesian ranges; interpolation and DC sweeps are excluded.",
       "CGS, CGDMAX, CGDMIN, and CJO are non-claim numerical auxiliaries only; no input, output, reverse-transfer, or voltage-dependent capacitance claim is made.",
@@ -3232,7 +3248,9 @@ export function runBulkManifest(manifestPath, stagingRoot, options = {}) {
     }
     const packagePath = stageBulkPart(part, extraction, fit, stagingRoot, { demotionReason, sourceExtraction });
     const resultIndex = results.length;
-    results.push({ ...identity(part), status: "staged", fidelity: fit.fidelity, ...(demotionReason ? { demotion_reason: demotionReason } : {}), package_path: packagePath });
+    results.push({ ...identity(part), status: "staged", fidelity: fit.fidelity,
+      ...(fit.policy_tier ? { policy_tier: fit.policy_tier } : {}),
+      ...(demotionReason ? { demotion_reason: demotionReason } : {}), package_path: packagePath });
     batchVectors.set(vectorKey, { resultIndex, packagePath, mpn: part.mpn, identity: identity(part) });
     return true;
   };

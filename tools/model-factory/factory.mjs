@@ -222,6 +222,7 @@ export const FITTER_SCRIPTS = Object.freeze({
   diode: "fit_diode.py",
   bjt: "fit_bjt.py",
   darlington: "fit_darlington.py",
+  njf: "fit_jfet.py",
   vdmos: "fit_vdmos.py",
   opamp: "fit_opamp.py",
   sensor_behavioral: "fit_sensor.py",
@@ -233,14 +234,7 @@ export const FITTER_SCRIPTS = Object.freeze({
  * Listing them is the point: an unfittable archetype must be a written decision, not an
  * absent map entry that some future `??` quietly papers over again.
  */
-export const UNFITTABLE_PIPELINES = Object.freeze({
-  njf: "JFET packages have no automated fitter. A square-law NJF card derived from an "
-    + "IDSS/VGS(off) bin window is a bound-centred declaration, not a fit: there is no "
-    + "typical transfer curve to produce residuals against, so no fit could be gated. "
-    + "The reviewed BF256B package was produced by a documented manual F1 path and "
-    + "records that in its own fitted.json. Reproduce that path by hand and review it, "
-    + "or add a fitter that consumes a digitised transfer family."
-});
+export const UNFITTABLE_PIPELINES = Object.freeze({});
 
 export class UnmappedArchetypeError extends Error {
   constructor(pipeline, reason = null) {
@@ -966,7 +960,7 @@ function criticalMosfetEvidence(facts) {
   return { rows, curves };
 }
 
-function assertHeldDefaults(fitted) {
+function assertHeldDefaults(fitted, { allowF2DcHeldParameters = false } = {}) {
   const held = fitted.held_defaults ?? fitted.optimizer?.held_defaults ?? [];
   if (!Array.isArray(held)) throw new Error("fitted.held_defaults must be an array");
   const byParameter = new Map();
@@ -974,7 +968,12 @@ function assertHeldDefaults(fitted) {
     const trail = `fitted.held_defaults[${index}]`;
     if (!item || typeof item !== "object") throw new Error(`${trail} must be an object`);
     const parameter = String(item.parameter ?? "").trim();
-    if (!parameter || MOSFET_CRITICAL_PARAMETERS.has(parameter) || /(?:temp|threshold|drain.?current|vds)/i.test(parameter)) {
+    const allowedF2DcHeldParameter = allowF2DcHeldParameters
+      && /F2-DC.*output-characteristic family/i.test(String(item.reason ?? ""))
+      && ((parameter === "LAMBDA" && closeEnough(item.value, 0.003))
+        || (parameter === "RD" && closeEnough(item.value, 1e-6)));
+    if (!parameter || (MOSFET_CRITICAL_PARAMETERS.has(parameter) && !allowedF2DcHeldParameter)
+        || /(?:temp|threshold|drain.?current|vds)/i.test(parameter)) {
       throw new Error(`${trail} cannot hold a critical MOSFET condition or parameter default`);
     }
     if (!Number.isFinite(Number(item.value)) || typeof item.unit !== "string" || !item.unit.trim()
@@ -1152,7 +1151,7 @@ export function assertMosfetConditionIdentityContract(ctx, facts, fitted) {
   if (!source || source.placeholder !== false || !SHA256_HEX.test(source.sha256) || !Array.isArray(source.pages_referenced) || !source.pages_referenced.length) {
     throw new Error("MOSFET package provenance requires a non-placeholder datasheet source with SHA-256 and cited pages");
   }
-  assertHeldDefaults(fitted);
+  assertHeldDefaults(fitted, { allowF2DcHeldParameters: ctx.part.component?.model_card_fidelity_tier === "F2-DC" });
   let datasheet = source;
   if (ctx.packageDir) {
     const sourcesPath = path.join(ctx.packageDir, "sources.json");
@@ -2078,6 +2077,12 @@ export function assertCardParameterTable(card, fitted) {
   }
 }
 
+export function modelCardOmissions(componentOmissions, fittedOmissions) {
+  if (!Array.isArray(componentOmissions)) throw new Error("component omissions must be an array");
+  if (fittedOmissions != null && !Array.isArray(fittedOmissions)) throw new Error("fitted known_omissions must be an array when present");
+  return [...new Set([...componentOmissions, ...(fittedOmissions ?? [])])];
+}
+
 export function stageCard(ctx) {
   const fitted = JSON.parse(fs.readFileSync(path.join(ctx.packageDir, "fitted.json"), "utf8"));
   const validation = JSON.parse(fs.readFileSync(path.join(ctx.packageDir, "validation-results.json"), "utf8"));
@@ -2089,7 +2094,7 @@ export function stageCard(ctx) {
   const parameterRows = renderParameterTable(fitted);
   const heldDefaults = (fitted.held_defaults ?? []).map((item) => `| ${item.parameter} | ${Number(item.value).toExponential(8)} | ${item.unit} | ${item.reason} |`).join("\n");
   const heldDefaultsSection = heldDefaults ? `\n## Held defaults\n\n| Parameter | Value | Unit | Status |\n| --- | ---: | --- | --- |\n${heldDefaults}\n` : "";
-  const omissions = ctx.part.component.omissions.map((item) => `- ${item}`).join("\n");
+  const omissions = modelCardOmissions(ctx.part.component.omissions, fitted.known_omissions).map((item) => `- ${item}`).join("\n");
   const fitSummary = fitted.worst_relative_error
     ? `Worst fitting error: ${(100 * fitted.worst_relative_error.value).toFixed(3)}% for ${fitted.worst_relative_error.quantity}.`
     : "F1 parameters are transcribed or derived from cited headline targets; no multi-point F2 residual claim is made.";
@@ -2097,7 +2102,7 @@ export function stageCard(ctx) {
   const validationSummary = validation.strict_dual_engine_expectations
     ? `Native and browser-WASM each passed every scalar and hard-bound expectation across ${validation.benches.length} benches; their vector comparison also passed. Worst reported relative delta was ${validation.worst_native_wasm_relative_delta.toExponential(3)} and worst absolute delta was ${validation.worst_native_wasm_absolute_delta.toExponential(3)}.`
     : `Native and WASM agreement: all ${validation.benches.length} benches passed. Worst reported relative delta was ${validation.worst_native_wasm_relative_delta.toExponential(3)} and worst absolute delta was ${validation.worst_native_wasm_absolute_delta.toExponential(3)}.`;
-  const card = `# ${ctx.part.identity.canonical_mpn} model card\n\n## Identity\n\n- Manufacturer: ${ctx.part.identity.manufacturer}\n- Description: ${ctx.part.identity.description}\n- Electrical family: ${ctx.part.identity.electrical_family}\n- Fidelity tier: ${ctx.part.component.fidelity_tier ?? "F2"}, datasheet-constrained\n- Independent reviewer: pending-review\n\n## Provenance\n\n- Datasheet: ${source.url}\n- Revision: ${source.revision}\n- Accessed: ${source.accessed_date}\n- Referenced pages: ${source.pages_referenced.join(", ")}\n- SHA-256: \`${source.sha256}\`\n- Basis: original model generated from public factual specifications\n- Vendor SPICE models used: none\n\n## Domain coverage\n\n| Domain | Coverage |\n| --- | --- |\n${coverageTable(ctx.part.component.domain_coverage)}\n\n## Model parameters\n\n| Parameter | Value | Status |\n| --- | ---: | --- |\n${parameterRows}\n${heldDefaultsSection}\n## Fitted versus datasheet\n\n| Quantity | Datasheet | Fitted | Unit | Relative error | Citation |\n| --- | ---: | ---: | --- | ---: | --- |\n${fittedRows}\n\n${fitSummary}\n\n${validationSummary}\n\n## Known omissions\n\n${omissions}\n\n## Licence\n\nMIT. See \`LICENSE\`. The model is original work generated from public factual specifications and is not copied or adapted from a vendor SPICE model.\n`;
+  const card = `# ${ctx.part.identity.canonical_mpn} model card\n\n## Identity\n\n- Manufacturer: ${ctx.part.identity.manufacturer}\n- Description: ${ctx.part.identity.description}\n- Electrical family: ${ctx.part.identity.electrical_family}\n- Fidelity tier: ${ctx.part.component.model_card_fidelity_tier ?? ctx.part.component.fidelity_tier ?? "F2"}, datasheet-constrained\n- Independent reviewer: pending-review\n\n## Provenance\n\n- Datasheet: ${source.url}\n- Revision: ${source.revision}\n- Accessed: ${source.accessed_date}\n- Referenced pages: ${source.pages_referenced.join(", ")}\n- SHA-256: \`${source.sha256}\`\n- Basis: original model generated from public factual specifications\n- Vendor SPICE models used: none\n\n## Domain coverage\n\n| Domain | Coverage |\n| --- | --- |\n${coverageTable(ctx.part.component.domain_coverage)}\n\n## Model parameters\n\n| Parameter | Value | Status |\n| --- | ---: | --- |\n${parameterRows}\n${heldDefaultsSection}\n## Fitted versus datasheet\n\n| Quantity | Datasheet | Fitted | Unit | Relative error | Citation |\n| --- | ---: | ---: | --- | ---: | --- |\n${fittedRows}\n\n${fitSummary}\n\n${validationSummary}\n\n## Known omissions\n\n${omissions}\n\n## Licence\n\nMIT. See \`LICENSE\`. The model is original work generated from public factual specifications and is not copied or adapted from a vendor SPICE model.\n`;
   assertCardParameterTable(card, fitted);
   fs.writeFileSync(path.join(ctx.packageDir, "MODEL_CARD.md"), card);
   run("node", [packageValidator, ...(ctx.part.pipeline === "vdmos" ? ["--require-evidence-contract"] : []), ctx.packageDir]);

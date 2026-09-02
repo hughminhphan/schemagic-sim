@@ -1,0 +1,307 @@
+{
+  "schema_version": "1.0.0",
+  "mpn": "2N7000",
+  "manufacturer": "onsemi",
+  "family": "mosfet",
+  "source_sha256": "REPLACED_BY_TEST_WITH_FIXTURE_PDF_HASH",
+  "datasheet_identity": {
+    "title": "2N7000 Small Signal MOSFET",
+    "revision": "2N7000/D Rev. 2, January 2024",
+    "pages_examined": [
+      "p. 2",
+      "p. 3"
+    ]
+  },
+  "usable_curves": true,
+  "curves": [
+    {
+      "name": "Figure 2 transfer characteristics, 25 C",
+      "x_axis": {
+        "quantity": "VGS",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "ID",
+        "unit": "A",
+        "scale": "linear"
+      },
+      "test_conditions": "VDS = 10 V, TJ = 25 degC; test mode = DC",
+      "page_reference": "p. 3, Figure 2, 25 C trace",
+      "locator": {
+        "page": 3,
+        "figure": "2",
+        "curve_or_trace": "25 C"
+      },
+      "temperature": {
+        "kind": "junction",
+        "value": 25,
+        "provenance": "figure_label"
+      },
+      "electrical_bias": [
+        {
+          "quantity": "VDS",
+          "value": 10,
+          "unit": "V"
+        }
+      ],
+      "test_mode": {
+        "kind": "dc"
+      },
+      "magnitude_convention": "absolute",
+      "points": [
+        {
+          "x": 4.0,
+          "y": 0.2
+        },
+        {
+          "x": 4.5,
+          "y": 0.285
+        },
+        {
+          "x": 5.0,
+          "y": 0.37
+        },
+        {
+          "x": 6.0,
+          "y": 0.55
+        },
+        {
+          "x": 7.0,
+          "y": 0.73
+        },
+        {
+          "x": 8.0,
+          "y": 0.91
+        }
+      ]
+    }
+  ],
+  "specs": {
+    "polarity": "n",
+    "threshold_min": {
+      "value": 0.8,
+      "unit": "V",
+      "conditions": "VDS = VGS, ID = 1 mA, TJ = 25 degC; test mode = DC",
+      "page_reference": "p. 2, ON characteristics, Gate Threshold Voltage MIN",
+      "source_kind": "minimum",
+      "locator": {
+        "page": 2,
+        "table": "ON characteristics",
+        "row": "Gate Threshold Voltage"
+      },
+      "condition": {
+        "polarity": "n",
+        "magnitude_convention": "absolute",
+        "temperature": {
+          "status": "stated",
+          "kind": "junction",
+          "value_c": 25,
+          "provenance": "table_heading"
+        },
+        "electrical": {
+          "vgs": {
+            "kind": "relation",
+            "relation": "vds_equals_vgs"
+          },
+          "vds": {
+            "kind": "relation",
+            "relation": "vds_equals_vgs"
+          },
+          "id": {
+            "kind": "fixed",
+            "value_a": 0.001
+          }
+        },
+        "test_mode": {
+          "kind": "dc"
+        }
+      }
+    },
+    "threshold_max": {
+      "value": 3.0,
+      "unit": "V",
+      "conditions": "VDS = VGS, ID = 1 mA, TJ = 25 degC; test mode = DC",
+      "page_reference": "p. 2, ON characteristics, Gate Threshold Voltage MAX",
+      "source_kind": "maximum",
+      "locator": {
+        "page": 2,
+        "table": "ON characteristics",
+        "row": "Gate Threshold Voltage"
+      },
+      "condition": {
+        "polarity": "n",
+        "magnitude_convention": "absolute",
+        "temperature": {
+          "status": "stated",
+          "kind": "junction",
+          "value_c": 25,
+          "provenance": "table_heading"
+        },
+        "electrical": {
+          "vgs": {
+            "kind": "relation",
+            "relation": "vds_equals_vgs"
+          },
+          "vds": {
+            "kind": "relation",
+            "relation": "vds_equals_vgs"
+          },
+          "id": {
+            "kind": "fixed",
+            "value_a": 0.001
+          }
+        },
+        "test_mode": {
+          "kind": "dc"
+        }
+      }
+    },
+    "rdson_points": [
+      {
+        "vgs": {
+          "value": 10,
+          "unit": "V",
+          "conditions": "VGS = 10 V, ID = 0.2 A, TJ = 25 degC; test mode = DC",
+          "page_reference": "p. 3, Figure 1, digitized local slope",
+          "source_kind": "typical",
+          "locator": {
+            "page": 3,
+            "figure": "1",
+            "curve_or_trace": "VGS 10 V local slope"
+          },
+          "condition": {
+            "polarity": "n",
+            "magnitude_convention": "absolute",
+            "temperature": {
+              "status": "stated",
+              "kind": "junction",
+              "value_c": 25,
+              "provenance": "figure_label"
+            },
+            "electrical": {
+              "vgs": {
+                "kind": "fixed",
+                "value_v": 10
+              },
+              "vds": {
+                "kind": "relation",
+                "relation": "vds_not_stated"
+              },
+              "id": {
+                "kind": "fixed",
+                "value_a": 0.2
+              }
+            },
+            "test_mode": {
+              "kind": "dc"
+            }
+          }
+        },
+        "current": {
+          "value": 0.2,
+          "unit": "A",
+          "conditions": "VGS = 10 V, ID = 0.2 A, TJ = 25 degC; test mode = DC",
+          "page_reference": "p. 3, Figure 1, digitized local slope",
+          "source_kind": "typical",
+          "locator": {
+            "page": 3,
+            "figure": "1",
+            "curve_or_trace": "VGS 10 V local slope"
+          },
+          "condition": {
+            "polarity": "n",
+            "magnitude_convention": "absolute",
+            "temperature": {
+              "status": "stated",
+              "kind": "junction",
+              "value_c": 25,
+              "provenance": "figure_label"
+            },
+            "electrical": {
+              "vgs": {
+                "kind": "fixed",
+                "value_v": 10
+              },
+              "vds": {
+                "kind": "relation",
+                "relation": "vds_not_stated"
+              },
+              "id": {
+                "kind": "fixed",
+                "value_a": 0.2
+              }
+            },
+            "test_mode": {
+              "kind": "dc"
+            }
+          }
+        },
+        "resistance": {
+          "value": 2.5,
+          "unit": "ohm",
+          "conditions": "VGS = 10 V, ID = 0.2 A, TJ = 25 degC; test mode = DC",
+          "page_reference": "p. 3, Figure 1, digitized local slope",
+          "source_kind": "typical",
+          "locator": {
+            "page": 3,
+            "figure": "1",
+            "curve_or_trace": "VGS 10 V local slope"
+          },
+          "condition": {
+            "polarity": "n",
+            "magnitude_convention": "absolute",
+            "temperature": {
+              "status": "stated",
+              "kind": "junction",
+              "value_c": 25,
+              "provenance": "figure_label"
+            },
+            "electrical": {
+              "vgs": {
+                "kind": "fixed",
+                "value_v": 10
+              },
+              "vds": {
+                "kind": "relation",
+                "relation": "vds_not_stated"
+              },
+              "id": {
+                "kind": "fixed",
+                "value_a": 0.2
+              }
+            },
+            "test_mode": {
+              "kind": "dc"
+            }
+          }
+        }
+      }
+    ],
+    "ciss": {
+      "value": 6e-11,
+      "unit": "F",
+      "conditions": "VDS = 25 V, VGS = 0, f = 1 MHz",
+      "page_reference": "p. 2 DYNAMIC characteristics",
+      "source_kind": "maximum"
+    },
+    "coss": {
+      "value": 2.5e-11,
+      "unit": "F",
+      "conditions": "VDS = 25 V, VGS = 0, f = 1 MHz",
+      "page_reference": "p. 2 DYNAMIC characteristics",
+      "source_kind": "maximum"
+    },
+    "crss": {
+      "value": 5e-12,
+      "unit": "F",
+      "conditions": "VDS = 25 V, VGS = 0, f = 1 MHz",
+      "page_reference": "p. 2 DYNAMIC characteristics",
+      "source_kind": "maximum"
+    }
+  },
+  "extraction_notes": [
+    "Output-characteristic family intentionally excluded by the F2-DC small-signal MOSFET policy."
+  ],
+  "omission_reason": null
+}

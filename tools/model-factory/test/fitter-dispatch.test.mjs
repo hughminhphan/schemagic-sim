@@ -14,15 +14,12 @@ function caught(pipeline) {
 }
 
 // The dispatch used to end in `?? "fit_diode.py"`. BF256B declares pipeline "njf", so the
-// only JFET in the registry would have been handed to the diode fitter and, had its facts
-// carried a fit_points array, would have shipped a diode card describing a JFET.
-test("an archetype with no mapped fitter fails by name instead of defaulting to the diode fitter", () => {
-  const error = caught("njf");
-  assert.ok(error instanceof UnmappedArchetypeError);
-  assert.equal(error.pipeline, "njf");
-  assert.equal(error.unfittable, true);
-  assert.doesNotMatch(error.message, /fit_diode\.py/);
-  assert.match(error.message, /JFET/);
+// only JFET in the registry could silently reach a diode model. The explicit NJF route is
+// the regression boundary: it must never equal or alias the diode fitter.
+test("a JFET job routes to the NJF fitter and never reaches the diode fitter", () => {
+  assert.equal(fitterScriptFor("njf"), "fit_jfet.py");
+  assert.notEqual(fitterScriptFor("njf"), fitterScriptFor("diode"));
+  assert.equal(PARTS.BF256B.pipeline, "njf");
 });
 
 test("an entirely unknown archetype names the archetypes that do have fitters", () => {

@@ -1,0 +1,89 @@
+{
+  "schema_version": "1.0.0",
+  "extraction_method": "official Nexperia HTML specification table fallback; MIN/MAX bin semantics preserved",
+  "fit_conditions": {
+    "temperature": {
+      "value": 25,
+      "unit": "degC",
+      "conditions": "electrical characteristics",
+      "page_reference": "official HTML specification table",
+      "source_kind": "typical"
+    }
+  },
+  "bin": "BF256B",
+  "electrical": {
+    "idss_min": {
+      "value": 0.006,
+      "unit": "A",
+      "conditions": "VDS=15 V VGS=0",
+      "page_reference": "official HTML specification table MIN column",
+      "source_kind": "minimum"
+    },
+    "idss_max": {
+      "value": 0.015,
+      "unit": "A",
+      "conditions": "VDS=15 V VGS=0",
+      "page_reference": "official HTML specification table MAX column",
+      "source_kind": "maximum"
+    },
+    "vgsoff_near": {
+      "value": -0.5,
+      "unit": "V",
+      "conditions": "VDS=15 V ID=10 uA",
+      "page_reference": "official HTML specification table near-zero magnitude limit",
+      "source_kind": "minimum"
+    },
+    "vgsoff_far": {
+      "value": -8,
+      "unit": "V",
+      "conditions": "VDS=15 V ID=10 uA",
+      "page_reference": "official HTML specification table maximum magnitude",
+      "source_kind": "maximum"
+    },
+    "igss_max": {
+      "value": 1e-09,
+      "unit": "A",
+      "conditions": "VGS=-20 V VDS=0",
+      "page_reference": "official HTML specification table MAX column",
+      "source_kind": "maximum"
+    },
+    "ciss": {
+      "value": 4e-12,
+      "unit": "F",
+      "conditions": "VDS=15 V VGS=0 f=1 MHz",
+      "page_reference": "official HTML specification table TYP column",
+      "source_kind": "typical"
+    },
+    "crss": {
+      "value": 1.5e-12,
+      "unit": "F",
+      "conditions": "VDS=15 V VGS=0 f=1 MHz",
+      "page_reference": "official HTML specification table TYP column",
+      "source_kind": "typical"
+    },
+    "noise_voltage": {
+      "value": 2e-09,
+      "unit": "V/sqrt(Hz)",
+      "conditions": "f=1 kHz",
+      "page_reference": "official HTML specification table TYP column",
+      "source_kind": "typical"
+    }
+  },
+  "identity": {
+    "canonical_mpn": "BF256B",
+    "manufacturer": "Nexperia",
+    "aliases": []
+  },
+  "source": {
+    "kind": "spec_page",
+    "url": "https://www.nexperia.com/product/BF256B",
+    "revision": "Official Nexperia HTML product/specification table; accessed 2026-08-07",
+    "sha256": "2ac2a29d67800d5de2828c2124e6767efea31e7217365e6d45b7417236581813",
+    "accessed_date": "2026-08-07",
+    "pages_referenced": [
+      "official HTML specification table"
+    ],
+    "placeholder": false,
+    "note": "The PDF and direct HTML response are challenge-gated. F1 values are limited to the official product specification table and legacy Nexperia bin definitions; no typical curve fit is claimed."
+  }
+}

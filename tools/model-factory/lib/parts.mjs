@@ -2411,7 +2411,23 @@ Object.assign(PARTS, {
       pins: [{ name: "D", number: "1", role: "drain", node: "drain" }, { name: "S", number: "2", role: "source", node: "source" }, { name: "G", number: "3", role: "gate", node: "gate" }], spice_order: ["1", "3", "2"]
     },
     source: { url: "https://www.nexperia.com/product/BF256B", revision: "Official Nexperia HTML product/specification table; accessed 2026-08-07", pages: ["spec table"] },
-    facts: { schema_version: "1.0.0", extraction_method: "official Nexperia HTML specification table fallback; PDF challenge-gated" },
+    facts: {
+      schema_version: "1.0.0",
+      extraction_method: "official Nexperia HTML specification table fallback; PDF challenge-gated",
+      fit_conditions: { temperature: quantity(25, "degC", "electrical characteristics", "official HTML specification table") },
+      bin: "BF256B",
+      electrical: {
+        idss_min: quantity(0.006, "A", "VDS=15 V VGS=0", "official HTML specification table MIN column", "minimum"),
+        idss_max: quantity(0.015, "A", "VDS=15 V VGS=0", "official HTML specification table MAX column", "maximum"),
+        vgsoff_near: quantity(-0.5, "V", "VDS=15 V ID=10 uA", "official HTML specification table near-zero magnitude limit", "minimum"),
+        vgsoff_far: quantity(-8, "V", "VDS=15 V ID=10 uA", "official HTML specification table maximum magnitude", "maximum"),
+        vgsoff_test_current: quantity(10e-6, "A", "VDS=15 V; VGS(off) test condition", "official HTML specification table VGS(off) row", "condition_identity"),
+        igss_max: quantity(1e-9, "A", "VGS=-20 V VDS=0", "official HTML specification table MAX column", "maximum"),
+        ciss: quantity(4e-12, "F", "VDS=15 V VGS=0 f=1 MHz", "official HTML specification table TYP column"),
+        crss: quantity(1.5e-12, "F", "VDS=15 V VGS=0 f=1 MHz", "official HTML specification table TYP column"),
+        noise_voltage: quantity(2e-9, "V/sqrt(Hz)", "f=1 kHz", "official HTML specification table TYP column")
+      }
+    },
     component: {
       modelName: "OC_NEXPERIA_BF256B", fidelity_tier: "F1",
       domain_coverage: { dc: "approx", ac: "approx", transient: "approx", noise: "none", thermal: "none", digital: "none" },

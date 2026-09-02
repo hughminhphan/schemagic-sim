@@ -1,6 +1,6 @@
 # Archetype: power MOSFET (ngspice native `.model VDMOS`)
 
-Families: `nmos`, `pmos`. Model type: `dot_model`. Fidelity ceiling **F2** (small-signal parts with no published curve family: **F1**, see section 9).
+Families: `nmos`, `pmos`. Model type: `dot_model`. Fidelity ceiling **F2**. Small-signal parts with transfer, threshold-interval, and RDS(on) evidence use the **F2-DC** policy described in section 9.
 
 Parts: 2N7000, BS250P, AO3400A, AO3401A, IRLZ44N, IRLB8721PBF, IRF540N, IRF9540N, FQP30N06L, SI2302.
 
@@ -122,7 +122,9 @@ THETA0  = 0.05
 LAMBDA0 = 0.003
 ```
 
-**Targets:** the digitised transfer curve, every published `RDS(on)` row, and 3 or more points off the output-curve family in saturation.
+**Targets for full F2:** the digitised transfer curve, every published `RDS(on)` row, and 3 or more points off the output-curve family in saturation.
+
+**Targets for F2-DC:** the digitised transfer curve and every published `RDS(on)` row, with `VTO` bounded by the admitted threshold interval. The output-characteristic family is deliberately excluded from the residual, `LAMBDA` is held at `0.003`, and the omission must be visible in `known_omissions` and `MODEL_CARD.md`.
 
 **Residual:**
 
@@ -328,6 +330,7 @@ Check `abs(v(d))` against `VSD`, relative 0.10, absolute 0.05 V.
 - `"Flicker noise is not modelled: KF and AF are at defaults."`
 
 **Conditional:**
+- F2-DC policy: `"F2-DC small-signal MOSFET policy: the transfer characteristic, threshold interval, and RDS(on) are fitted, but the output-characteristic family is deliberately omitted because one VDMOS square law cannot represent it across the full family."`
 - No capacitance-vs-VDS figure: `"Gate-drain capacitance is constant (CGDMAX = CGDMIN): no capacitance-versus-VDS figure was available, so the Crss collapse during the Miller plateau is not modelled."`
 - No transfer figure: `"Transfer characteristics are not fitted: KP is derived from the RDS(on) rows alone and mobility degradation (THETA) is disabled."`
 - No `trr`: `"Body-diode reverse recovery is not modelled: the datasheet publishes no trr."`
@@ -367,13 +370,17 @@ Check `abs(v(d))` against `VSD`, relative 0.10, absolute 0.05 V.
 
 This is not a modelling difference; it is a fitting-input difference. **Fit against every published `RDS(on)` row.** A logic-level part fitted only at 10 V will be wrong at 5 V, which is exactly the case a beginner's Arduino circuit exercises. If a logic-level part publishes only one `RDS(on)` row, record `"RDS(on) fitted at a single VGS; on-resistance at other gate drives is an extrapolation of the fitted channel model."`
 
-## 9. Small-signal parts with no curve family
+## 9. Small-signal F2-DC policy
 
-`2N7000` and `BS250P` datasheets sometimes publish only `VGS(th)`, `RDS(on)`, and `IDSS`, with no transfer or capacitance figures. These are legitimately **F1**, not F2:
+Small-signal MOSFETs such as `2N7000` and `BS170` use **F2-DC** when the admitted evidence includes a transfer characteristic, a non-degenerate `VGS(th)` interval, and at least one `RDS(on)` row. This is a policy label expressed through existing model-card and limitations fields. The frozen component schema continues to store `fidelity_tier: "F2"`; no schema enum or evidence-contract version changes.
 
-- Fit `VTO` inside the threshold window and `KP` from the single `RDS(on)` row.
-- Freeze `THETA = 0`, `LAMBDA = 0.003`, `CGDMAX = CGDMIN = Crss` if any `Crss` exists, otherwise omit all capacitances.
-- Set `fidelity_tier` to `F1`, `domain_coverage.dc` to `approx`, and `ac`/`transient` to `none` if no capacitance exists.
-- Record `"F1: fitted from tabulated rows only. No transfer, output, or capacitance figure was published for this part."`
+The output-characteristic family is deliberately not fitted under F2-DC. A single VDMOS square law is not expected to represent every curve across that family well enough to justify the broader claim.
 
-Do not label such a part F2 because the archetype's ceiling is F2. The ceiling is a maximum.
+- Fit `VTO`, `KP`, `THETA`, and `RD` jointly to the transfer points and `RDS(on)` rows.
+- Bound `VTO` by the admitted threshold minimum and maximum.
+- Hold `LAMBDA = 0.003` because output curves are outside the policy target.
+- Set `domain_coverage.dc` to `fitted`; AC and transient coverage still depend on their own admitted capacitance and diode evidence.
+- Render `Fidelity tier: F2-DC, datasheet-constrained` in `MODEL_CARD.md` while retaining schema-facing F2.
+- Record the required omission: `"F2-DC small-signal MOSFET policy: the transfer characteristic, threshold interval, and RDS(on) are fitted, but the output-characteristic family is deliberately omitted because one VDMOS square law cannot represent it across the full family."`
+
+If the transfer curve or a valid threshold interval is absent, F2-DC is not supported. Demote to F1 and name the missing evidence instead of inferring a broader fit from tabulated `RDS(on)` alone.

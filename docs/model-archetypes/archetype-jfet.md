@@ -156,7 +156,11 @@ IS = max(IS, 1e-20)
 
 In practice `IGSS` is measured at a reverse bias of many volts, so the exponential is saturated and `IS` collapses to `abs(IGSS)`. Use the floor. Record: `"Gate leakage is set from the tabulated IGSS maximum, not fitted. Gate current is a constant reverse saturation and does not follow the datasheet's temperature curve."`
 
-### 3.5 Not fitted, ever, under this archetype
+### 3.5 BF256B evidence status
+
+The currently admitted BF256B evidence supports only an F1 bound-centred projection. Native ngspice verifies the resulting NJF card, but the evidence set has no transfer-characteristic curve, no output-characteristic curve family, and no `gfs` row. Those three absences must remain explicit in the model card. BF256B must not be promoted to F2 until curve-backed evidence is admitted; capacitance rows and bin limits alone do not support that claim.
+
+### 3.6 Not fitted, ever, under this archetype
 
 `KF`, `AF`, `VTOTC`, `BETATCE`, `XTI`, `EG`, `N`, `FC`.
 
