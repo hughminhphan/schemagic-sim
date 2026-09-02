@@ -1,13 +1,15 @@
-scheMAGIC Simulator document 6ec45e2c8261b41c
-* document-hash 6ec45e2c8261b41c
+scheMAGIC Simulator document 828edd2cd28344e4
+* document-hash 828edd2cd28344e4
 V1 vin 0 SIN(0 500m 1k) $ component:c1
 R2 vin inv 10k $ component:c2
 R3 inv vout 100k $ component:c3
 X4 0 inv vout OC_IDEAL_OPAMP $ component:c4
-R5 vout 0 10k $ component:c5
+V5 n1 0 DC 15 $ component:c5
+V6 n2 0 DC -15 $ component:c6
+R7 vout 0 10k $ component:c7
 .subckt OC_IDEAL_OPAMP INP INN OUT
 EGAIN OUT 0 INP INN 1000000
 .ends OC_IDEAL_OPAMP
-.save all v1#branch @r2[i] @r3[i] @r5[i]
+.save all v1#branch @r2[i] @r3[i] v5#branch v6#branch @r7[i]
 .tran 0.000002 0.005 0 0.000005
 .end

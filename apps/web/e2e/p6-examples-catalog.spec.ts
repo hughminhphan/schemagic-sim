@@ -100,12 +100,21 @@ test("opens all twelve classic teaching circuits from share URLs with a non-zero
       return {
         samples: values.length,
         finite: values.every(Number.isFinite),
+        min: values.reduce((minimum, value) => Math.min(minimum, value), Number.POSITIVE_INFINITY),
+        max: values.reduce((maximum, value) => Math.max(maximum, value), Number.NEGATIVE_INFINITY),
         maxAbs: values.reduce((maximum, value) => Math.max(maximum, Math.abs(value)), 0),
       };
     }, defaultProbeId);
     expect(trace.samples, `${id} default trace should contain samples`).toBeGreaterThan(1);
     expect(trace.finite, `${id} default trace should contain finite samples`).toBe(true);
     expect(trace.maxAbs, `${id} default trace must not be flat zero`).toBeGreaterThan(1e-9);
+    if (id === "555-astable") {
+      expect(trace.max - trace.min, "555 output should oscillate over time").toBeGreaterThan(1);
+    }
+    if (id === "h-bridge") {
+      expect(trace.max, "H-bridge load current should flow forward").toBeGreaterThan(0.1);
+      expect(trace.min, "H-bridge load current should reverse").toBeLessThan(-0.1);
+    }
 
     if (screenshotDirectory && NEW_SCREENSHOT_IDS.has(id)) {
       await page.screenshot({ path: resolve(screenshotDirectory, `example-${id}.png`), fullPage: true });

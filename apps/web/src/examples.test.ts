@@ -120,9 +120,17 @@ describe("example circuits", () => {
 
   it("makes the teaching-relevant trace the default for the four additions", () => {
     const firstProbe = (id: string) => EXAMPLES.find((example) => example.id === id)?.document.probes[0];
-    expect(firstProbe("555-astable")?.expression.kind).toBe("voltage");
-    expect(firstProbe("h-bridge")?.expression.kind).toBe("current");
-    expect(firstProbe("inverting-opamp")?.expression.kind).toBe("voltage");
-    expect(firstProbe("zener-regulator")?.expression.kind).toBe("voltage");
+    expect(firstProbe("555-astable")).toMatchObject({
+      expression: { kind: "voltage", positive: { kind: "schematic-wire", wireId: "w18" } },
+    });
+    expect(firstProbe("h-bridge")).toMatchObject({
+      expression: { kind: "current", component: { kind: "schematic-component", componentId: "c8" }, terminal: 0 },
+    });
+    expect(firstProbe("inverting-opamp")).toMatchObject({
+      expression: { kind: "voltage", positive: { kind: "schematic-wire", wireId: "w4" } },
+    });
+    expect(firstProbe("zener-regulator")).toMatchObject({
+      expression: { kind: "voltage", positive: { kind: "schematic-wire", wireId: "w2" } },
+    });
   });
 });

@@ -8,6 +8,7 @@ import { demoCircuit } from "../../apps/web/src/demo.ts";
 // output path is resolved from the workspace root the launcher runs it in.
 const projectRoot = process.cwd();
 const root = resolve(projectRoot, "examples");
+const appFixtures = resolve(projectRoot, "apps/web/src/fixtures");
 const repositoryGoldens = resolve(root, "golden");
 const encodeCircuit = (document) => {
   const bytes = deflateSync(strToU8(canonicalizeCircuit(document)), { level: 9 });
@@ -333,18 +334,32 @@ examples.set("opamp-noninverting", base(
   { tran: { tstop: 0.0005, tstep: 0.0000001, maxstep: 0.0000005 }, ac: { fstart: 10, fstop: 10_000_000, pointsPerDecade: 40, sweep: "dec" } },
 ));
 
-/** New example golden netlists stay under examples/ so this generator does not rewrite app-owned fixtures. */
+/**
+ * Existing app fixtures remain generator-owned. New task 0.12 goldens also
+ * live under examples/ so the four additions have lane-owned parity fixtures.
+ */
+const APP_OWNED_GOLDENS = new Set([
+  "transistor-led-bench", "rc-filter-bode", "mosfet-led-switch", "opamp-noninverting",
+  "resistive-divider", "led-current-limit", "rlc-resonance", "halfwave-rectifier",
+  "bridge-rectifier", "inverting-opamp",
+]);
 const REPOSITORY_GOLDENS = new Set(["555-astable", "h-bridge", "inverting-opamp", "zener-regulator"]);
 
+await mkdir(appFixtures, { recursive: true });
 await mkdir(repositoryGoldens, { recursive: true });
 for (const [id, document] of examples) {
   await writeFile(resolve(root, `${id}.json`), `${canonicalizeCircuit(document)}\n`);
-  if (!REPOSITORY_GOLDENS.has(id)) continue;
   const migrated = migrateCircuit(structuredClone(document));
-  await writeFile(resolve(repositoryGoldens, `example-${id}.netlist`), generateNetlist(migrated).netlist);
+  if (APP_OWNED_GOLDENS.has(id)) {
+    await writeFile(resolve(appFixtures, `example-${id}.netlist`), generateNetlist(migrated).netlist);
+  }
+  if (REPOSITORY_GOLDENS.has(id)) {
+    await writeFile(resolve(repositoryGoldens, `example-${id}.netlist`), generateNetlist(migrated).netlist);
+  }
 }
+await writeFile(resolve(appFixtures, "demo.netlist"), generateNetlist(structuredClone(demoCircuit)).netlist);
 
 const urls = ["# Example share URLs", "", "These URLs use the simulator's deterministic compressed project payload.", ""];
 for (const [id, document] of examples) urls.push(`- ${id}: http://127.0.0.1:4173/#c=${encodeCircuit(document)}`);
 await writeFile(resolve(root, "URLS.md"), `${urls.join("\n")}\n`);
-console.log(`Wrote ${examples.size} canonical examples, ${REPOSITORY_GOLDENS.size} golden netlists and URLS.md`);
+console.log(`Wrote ${examples.size} canonical examples, ${APP_OWNED_GOLDENS.size + REPOSITORY_GOLDENS.size + 1} golden netlists and URLS.md`);
