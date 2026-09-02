@@ -91,13 +91,14 @@ The new entries below have disjoint file ownership across lanes. The nightly wra
 
 ### F.1 Show pin names on authored block symbols
 
+- **Status** `blocked-until: 1.8 merges`
 - **Goal** Authored block symbols show their pin names on the canvas, with the generated-symbol no-text rule lifted only for those symbols.
 - **Lane** A
 - **Files owned** `packages/schematic-editor/scripts/generate-symbols.mjs`, `packages/schematic-editor/src/symbols.generated.ts`, `packages/schematic-editor/src/symbols.test.ts`
 - **Verify** `npm run verify && npm exec --workspace=@opencircuit/schematic-editor -- vitest run src/symbols.test.ts`
 - **Out of scope** PARTS pin geometry, KiCad-derived symbol geometry, the editor DOM contract, circuit-schema pin ordering.
 - **Done when** Comparator, timer, regulator, logic, JFET and optocoupler block symbols render readable pin names without adding text to KiCad-derived symbols.
-- **Labels** `agent-ready` `size:S` `lane:A`
+- **Labels** `needs-human` (sequencing after 1.8) `size:S` `lane:A`
 
 ### F.2 Refit the three held comparator packages
 
@@ -112,12 +113,12 @@ The new entries below have disjoint file ownership across lanes. The nightly wra
 ### F.3 Stabilise unit wall-clock budgets under parallel load
 
 - **Goal** The motor Designer unit suites use realistic wall-clock budgets and explicitly serial execution so shared-machine load does not create false failures.
-- **Lane** D
+- **Lane** B
 - **Files owned** `packages/motor-designer/package.json`, `packages/motor-designer/vitest.config.ts`, `packages/motor-designer/test/reviewed-real-catalog.test.ts`, `packages/motor-designer/test/v3-constraint-observation.test.ts`
 - **Verify** `npm run test --workspace=@opencircuit/motor-designer && npm run verify`
 - **Out of scope** Production code, numerical assertions, Designer runtime budgets, performance claims.
 - **Done when** The two previously flaky files pass three serial runs under ordinary parallel machine load without weakening a numerical assertion.
-- **Labels** `agent-ready` `size:S` `lane:D`
+- **Labels** `agent-ready` `size:S` `lane:B`
 
 ### F.4 Refit 1N5822 away from the parked Schottky bound
 
@@ -179,9 +180,8 @@ Target 2026-09-15. Everything here is small. Tasks 0.1 through 0.8 gate the laun
 - **Done when** The default trace label reads as a net or label name in the browser suite, and the first frame after engine-ready shows a non-zero LED current.
 - **Labels** `agent-ready` `size:S` `lane:A`
 
-### 0.5 Honest Designer empty state - DONE ([PR #21](https://github.com/hughminhphan/schemagic-sim/pull/21))
+### 0.5 Honest Designer empty state
 
-- **Status** DONE in [PR #21](https://github.com/hughminhphan/schemagic-sim/pull/21), merged 2026-09-02.
 - **Goal** `/designer` stays live but its empty state is one honest line about strict results being in progress, with the inspection path one click away.
 - **Lane** B
 - **Files owned** `apps/web/src/features/designer/**`, `apps/web/e2e/designer.spec.ts`

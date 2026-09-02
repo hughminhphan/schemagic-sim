@@ -12,7 +12,7 @@ All notable Robonyx releases are documented here. The project uses semantic vers
 - [PR #25](https://github.com/hughminhphan/schemagic-sim/pull/25) made model fitting reuse ngspice work, added Zener and Schottky behavior, adopted incremental evidence, and drafted the first review rubric.
 - [PR #24](https://github.com/hughminhphan/schemagic-sim/pull/24) changed Robonyx Designer release checks from broad literal pins to property assertions and added bound-typed facts for design calculations.
 - [PR #23](https://github.com/hughminhphan/schemagic-sim/pull/23) made 40 of 43 reviewed catalog parts placeable in Robonyx Simulator and added ranked search with practical filters.
-- [PR #21](https://github.com/hughminhphan/schemagic-sim/pull/21) replaced the welcome modal with a coach mark, opened Robonyx Simulator on a useful named trace, added teaching examples, and clarified the Robonyx Designer empty state.
+- [PR #21](https://github.com/hughminhphan/schemagic-sim/pull/21) replaced the welcome modal with a coach mark, opened Robonyx Simulator on a useful named trace, and added teaching examples.
 
 ## [0.2.0-rc.1] - 2026-09-01
 
