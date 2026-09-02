@@ -1,14 +1,16 @@
 import {
   CATALOG_ONLY_PRIMITIVE_PREFIX,
+  CATALOG_ONLY_TYPES,
   componentPinPoints,
   generateNetlist,
   type AnalysisMode,
   type CircuitComponent,
   type CircuitDocument,
   type GeneratedNetlist,
+  type ComponentType,
   type NetlistLine,
+  partByType,
 } from "@opencircuit/circuit-schema";
-import { baseTypeForManifest, isPositionalCatalogType, symbolPinCountFor } from "./catalog-truth";
 
 export interface CatalogSymbolPin { name?: string; number: string; role: string }
 export interface CatalogSpicePinMapping { symbol_pin_number: string; subckt_node: string; order: number }
@@ -25,6 +27,8 @@ export interface CatalogModelManifest {
 export interface CatalogRuntimePart {
   id: string;
   manifest: CatalogModelManifest;
+  /** Symbol the catalog resolved for this package; a component must name the same type. */
+  baseType: ComponentType | undefined;
   modelSource?: string;
   modelName?: string;
   manifestValid?: boolean;
@@ -51,6 +55,13 @@ export class CatalogRuntimeError extends Error {
     this.name = "CatalogRuntimeError";
   }
 }
+
+/**
+ * A catalog-only symbol addresses its package positionally: schematic pin i is
+ * subcircuit node i. Legacy symbols keep their role-matched mapping.
+ */
+const isPositionalCatalogType = (type: ComponentType): boolean => CATALOG_ONLY_TYPES.has(type);
+const symbolPinCountFor = (type: ComponentType): number => partByType(type).pins.length;
 
 type CatalogSupplyRole = "vcc" | "vee";
 
@@ -120,7 +131,7 @@ function identity(component: CircuitComponent, index: CatalogIndex): { part?: Ca
 function resolveCatalogComponent(component: CircuitComponent, index: CatalogIndex): ResolvedCatalogComponent | undefined {
   const found = identity(component, index);
   const part = found.part;
-  if (!part || baseTypeForManifest(part.manifest) !== component.type) return undefined;
+  if (!part || part.baseType !== component.type) return undefined;
   const rawBindings = component.type === "opamp_ideal" ? component.params?.catalogSupplyBindings : undefined;
   const vcc = supplyBinding(rawBindings, "vcc", index.components);
   const vee = supplyBinding(rawBindings, "vee", index.components);
@@ -265,7 +276,7 @@ export function inspectCatalogModels(document: CircuitDocument, mode: AnalysisMo
     const part = found.part;
     if (!part) continue;
     const label = `Component ${component.id} (${part.manifest.canonical_mpn})`;
-    if (baseTypeForManifest(part.manifest) !== component.type) {
+    if (part.baseType !== component.type) {
       issues.push({ code: "FAMILY_MISMATCH", componentId: component.id, partId: part.id, message: `${label} is a ${part.manifest.electrical_family} package and cannot drive a ${component.type} symbol` });
       continue;
     }

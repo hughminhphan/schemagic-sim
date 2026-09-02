@@ -33,6 +33,7 @@ const opampPart: CatalogRuntimePart = {
   },
   modelSource: ".subckt CAT_OP INP INN VCC VEE OUT\nEGAIN OUT 0 INP INN 100000\n.ends CAT_OP",
   modelName: "CAT_OP",
+  baseType: "opamp_ideal",
   manifestValid: true,
   reviewed: true,
   placeable: true,
@@ -108,7 +109,7 @@ describe("catalog truth and package pin mapping", () => {
     const missing = circuit({}, "missing/CAT-OP");
     expect(() => modeled(missing)).toThrow(/not bundled/i);
 
-    const wrongFamily = { ...opampPart, manifest: { ...opampPart.manifest, electrical_family: "diode" } };
+    const wrongFamily: CatalogRuntimePart = { ...opampPart, baseType: "diode", manifest: { ...opampPart.manifest, electrical_family: "diode" } };
     expect(() => modeled(circuit({}), [wrongFamily])).toThrow(/cannot drive/i);
 
     const { spice_pin_mapping: _mapping, ...manifestWithoutMap } = opampPart.manifest;
@@ -136,7 +137,7 @@ describe("catalog truth and package pin mapping", () => {
           { symbol_pin_number: "3", subckt_node: "source", order: 3 },
         ],
       },
-      modelSource: ".model CAT_MOS NMOS(VTO=1)", modelName: "CAT_MOS",
+      modelSource: ".model CAT_MOS NMOS(VTO=1)", modelName: "CAT_MOS", baseType: "nmos",
       manifestValid: true, reviewed: true, placeable: true, detailState: "loaded",
     };
     const generated = modeled(document, [part]);
