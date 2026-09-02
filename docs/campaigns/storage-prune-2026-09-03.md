@@ -2,7 +2,7 @@
 
 ## Scope and result
 
-This bounded prune removed only two regenerable classes: jlcparts split-download intermediates, and PDFs from closed staged tranches whose bytes matched a recorded SHA-256 and whose source URL remained in a catalog, ledger, or reviewed package record. It did not touch extraction JSON, ledgers, state databases, the live catalog, or any file below `tools/conveyor/data/staging`.
+The original bounded prune removed jlcparts split-download intermediates and PDFs whose bytes matched a recorded SHA-256 and whose source URL remained recorded. Its first implementation protected only the top-level `tools/conveyor/data/staging` tree and did not index campaign citations, so it incorrectly deleted protected nested-staging and campaign-cited PDFs. It did not touch extraction JSON, ledgers, state databases, or the live catalog. The defect, affected cohorts, and restoration status are recorded below.
 
 | Measure | Result |
 | --- | ---: |
@@ -20,6 +20,37 @@ Breakdown:
 | closed-tranche PDF with verified SHA-256 and recorded source URL | 1,234 | 1,525,842,928 (1455.16 MiB) |
 | regenerable jlcparts download intermediate | 13 | 657,439,529 (626.98 MiB) |
 
+## Safeguard correction and restoration
+
+Independent review found two overlapping protected cohorts among the deleted PDFs:
+
+| Affected cohort | Files | Recorded bytes |
+| --- | ---: | ---: |
+| PDFs below a batch-local `staging` path segment | 207 | 389,406,903 (371.37 MiB) |
+| PDFs cited by the five affected campaign selection records | 510 | 513,338,282 (489.56 MiB) |
+| Overlap between those cohorts | 40 | 34,143,860 (32.56 MiB) |
+
+The nested-staging cohort was below the 400 MB restoration ceiling, so all 207 files were selected for immediate restoration. The restore completed all 207 files and 389,406,903 bytes from their recorded URLs with SHA-256 and size verification, with zero failures and zero files already present.
+
+The 510-file campaign-cited cohort was not restored as a separate cohort tonight. Forty of those files overlap the required nested-staging restoration; the remaining 470 campaign-cited files total 479,194,422 bytes and remain deleted but restorable. Across the complete PDF deletion list, 1,027 PDFs totaling 1,136,436,025 bytes remain absent and restorable.
+
+`docs/campaigns/storage-prune-2026-09-03-deletion-list.json` records all 1,234 restorable PDFs with their logical path, recorded size, source URL, and SHA-256. The restore mode fetches each missing file, verifies its SHA-256 and recorded size, and writes it atomically. Existing matching files are left in place; mismatches are failures and are never overwritten.
+
+A corrected post-restoration dry run scanned 22,905 files, kept all 22,905, and reported zero deletion candidates. All 207 restored nested-staging PDFs were classified as kept by the staging-segment rule; 67 other existing files were kept because campaign JSON or Markdown cited them.
+
+To restore every PDF still absent, run this single command from the repository root:
+
+```sh
+node tools/part-feeder/scripts/prune-intermediates.mjs --allow-external-root --part-feeder-data-root /Users/hughp/Documents/opencircuit/tools/part-feeder/data --conveyor-data-root /Users/hughp/Documents/opencircuit/tools/conveyor/data --library-root packages/model-library/models --restore docs/campaigns/storage-prune-2026-09-03-deletion-list.json --report /Users/hughp/Documents/opencircuit/tools/part-feeder/data/storage-prune-restore-report.json
+```
+
+Restore disk check:
+
+```text
+before: /dev/disk3s5   460Gi   410Gi   2.5Gi   100%    3.3M   27M   11%   /System/Volumes/Data
+after:  /dev/disk3s5   460Gi   410Gi   2.9Gi   100%    3.2M   30M   10%   /System/Volumes/Data
+```
+
 ## Disk before and after
 
 ```text
@@ -33,22 +64,24 @@ The filesystem available-space figure rose from 1.2 GiB to 3.0 GiB. APFS account
 
 - Default mode is `--dry-run`. Deletion requires `--apply`.
 - Every regular file under the part-feeder and conveyor data roots is classified as keep or delete with a reason.
+- Keep rules run before deletion rules. Any path segment named `staging` under either tool data root and any logical path cited by JSON or Markdown below `docs/campaigns` are kept.
 - Download deletion is limited to recognized split archives and partial or temporary files under `tools/part-feeder/data/downloads`.
-- PDF deletion requires a complete staged-tranche manifest, a byte-for-byte SHA-256 match, and a recorded HTTP or HTTPS source URL.
-- All files below `tools/conveyor/data/staging` are forced to keep before any PDF rule is considered.
+- PDF deletion is restricted to `.pdf` files and requires a complete staged-tranche manifest, a byte-for-byte SHA-256 match, and a recorded HTTP or HTTPS source URL.
+- Data-root overrides must remain inside this checkout unless the operator passes `--allow-external-root`.
+- The original implementation protected only the top-level `tools/conveyor/data/staging` tree. It failed to protect batch-local `staging` path segments and campaign-cited evidence. The corrected implementation now applies both keep rules before any deletion rule.
 - Extraction JSON, ledgers, and SQLite state files are kept by explicit rules.
 - The 5.3 GB `jlcparts.sqlite3` catalog is kept.
 
 Command used for the dry run:
 
 ```sh
-node tools/part-feeder/scripts/prune-intermediates.mjs --dry-run --part-feeder-data-root /Users/hughp/Documents/opencircuit/tools/part-feeder/data --conveyor-data-root /Users/hughp/Documents/opencircuit/tools/conveyor/data --library-root packages/model-library/models --report "$REPORT_PATH"
+node tools/part-feeder/scripts/prune-intermediates.mjs --dry-run --allow-external-root --part-feeder-data-root /Users/hughp/Documents/opencircuit/tools/part-feeder/data --conveyor-data-root /Users/hughp/Documents/opencircuit/tools/conveyor/data --library-root packages/model-library/models --report "$REPORT_PATH"
 ```
 
 Command used for deletion:
 
 ```sh
-node tools/part-feeder/scripts/prune-intermediates.mjs --apply --part-feeder-data-root /Users/hughp/Documents/opencircuit/tools/part-feeder/data --conveyor-data-root /Users/hughp/Documents/opencircuit/tools/conveyor/data --library-root packages/model-library/models --report "$REPORT_PATH"
+node tools/part-feeder/scripts/prune-intermediates.mjs --apply --allow-external-root --part-feeder-data-root /Users/hughp/Documents/opencircuit/tools/part-feeder/data --conveyor-data-root /Users/hughp/Documents/opencircuit/tools/conveyor/data --library-root packages/model-library/models --report "$REPORT_PATH"
 ```
 
 ## Random sanity check

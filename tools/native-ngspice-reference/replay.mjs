@@ -27,9 +27,14 @@ export function parseArgs(argv) {
     packageTimeoutMs: DEFAULT_PACKAGE_TIMEOUT_MS,
     totalTimeoutMs: DEFAULT_TOTAL_TIMEOUT_MS,
     benchTimeoutMs: DEFAULT_BENCH_TIMEOUT_MS,
+    allowIncomplete: false,
   };
   for (let index = 0; index < argv.length; index += 1) {
     const flag = argv[index];
+    if (flag === "--allow-incomplete") {
+      options.allowIncomplete = true;
+      continue;
+    }
     const value = argv[++index];
     if (value === undefined) throw new Error(`${flag} requires a value`);
     if (flag === "--library-root") options.libraryRoot = resolve(value);
@@ -195,29 +200,14 @@ export async function runReplay(options, dependencies = {}) {
           })),
         });
       } catch (error) {
-        const durationMs = now() - benchStarted;
-        const totalAfter = now() - replayStarted;
-        const packageAfter = now() - packageStarted;
-        if (totalAfter >= options.totalTimeoutMs) {
-          benches.push({
-            ...skippedBench(bench, `total budget exhausted after ${Math.round(totalAfter)} ms`),
-            durationMs,
-          });
-        } else if (packageAfter >= options.packageTimeoutMs) {
-          benches.push({
-            ...skippedBench(bench, `package budget exhausted after ${Math.round(packageAfter)} ms`),
-            durationMs,
-          });
-        } else {
-          benches.push({
-            name: bench.name,
-            analysisType: bench.analysisType,
-            comparisonAnalysis: bench.analysis,
-            status: "fail",
-            reason: error.message,
-            durationMs,
-          });
-        }
+        benches.push({
+          name: bench.name,
+          analysisType: bench.analysisType,
+          comparisonAnalysis: bench.analysis,
+          status: "fail",
+          reason: error.message,
+          durationMs: now() - benchStarted,
+        });
       }
     }
     const status = packageStatus(benches);
@@ -249,7 +239,7 @@ export async function runReplay(options, dependencies = {}) {
     },
     summary,
     complete: summary.benchCounts.skipped === 0,
-    pass: summary.benchCounts.fail === 0,
+    pass: summary.benchCounts.skipped === 0 && summary.benchCounts.fail === 0,
     packages,
   };
 }
@@ -265,6 +255,8 @@ export function renderMarkdown(report) {
     `Started: ${report.startedAt}`,
     `Finished: ${report.finishedAt}`,
     `Duration: ${(report.durationMs / 1000).toFixed(1)} s`,
+    `Complete: ${report.complete ? "yes" : "no"}`,
+    `Passing: ${report.pass ? "yes" : "no"}`,
     "",
     "| Scope | Total | Pass | Fail | Skipped |",
     "| --- | ---: | ---: | ---: | ---: |",
@@ -279,6 +271,10 @@ export function renderMarkdown(report) {
   }
   lines.push("");
   return lines.join("\n");
+}
+
+export function replayExitCode(report, allowIncomplete = false) {
+  return report.summary.benchCounts.fail > 0 || (!report.complete && !allowIncomplete) ? 1 : 0;
 }
 
 async function writeOutputs(report, outputDir) {
@@ -299,15 +295,19 @@ async function main() {
   const counts = report.summary.benchCounts;
   console.log(`Replay: ${report.inventory.packages} packages, ${report.inventory.benches} benches`);
   console.log(`Benches: ${counts.pass} pass, ${counts.fail} fail, ${counts.skipped} skipped`);
+  console.log(`Complete: ${report.complete ? "yes" : "no"}`);
   console.log(`Summary JSON: ${relative(process.cwd(), outputs.jsonPath)}`);
   console.log(`Summary Markdown: ${relative(process.cwd(), outputs.markdownPath)}`);
-  if (!report.pass) process.exitCode = 1;
+  return replayExitCode(report, options.allowIncomplete);
 }
 
 const isMain = process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url);
 if (isMain) {
-  main().catch((error) => {
-    console.error(`ERROR: ${error.message}`);
-    process.exitCode = 2;
-  });
+  main().then(
+    (exitCode) => { process.exit(exitCode); },
+    (error) => {
+      console.error(`ERROR: ${error.message}`);
+      process.exit(2);
+    },
+  );
 }

@@ -7,6 +7,7 @@ import {
   DEFAULT_TOTAL_TIMEOUT_MS,
   parseArgs,
   renderMarkdown,
+  replayExitCode,
   runReplay,
 } from "../replay.mjs";
 
@@ -15,10 +16,11 @@ test("parseArgs provides bounded defaults and accepts overrides", () => {
   assert.equal(defaults.packageTimeoutMs, DEFAULT_PACKAGE_TIMEOUT_MS);
   assert.equal(defaults.totalTimeoutMs, DEFAULT_TOTAL_TIMEOUT_MS);
   assert.equal(defaults.benchTimeoutMs, DEFAULT_BENCH_TIMEOUT_MS);
-  const overridden = parseArgs(["--package-timeout-ms", "100", "--total-timeout-ms", "200", "--bench-timeout-ms", "50"]);
+  const overridden = parseArgs(["--allow-incomplete", "--package-timeout-ms", "100", "--total-timeout-ms", "200", "--bench-timeout-ms", "50"]);
   assert.equal(overridden.packageTimeoutMs, 100);
   assert.equal(overridden.totalTimeoutMs, 200);
   assert.equal(overridden.benchTimeoutMs, 50);
+  assert.equal(overridden.allowIncomplete, true);
   assert.throws(() => parseArgs(["--total-timeout-ms", "0"]), /positive number/);
 });
 
@@ -80,9 +82,13 @@ test("runReplay reports every remaining bench when the total budget is exhausted
   }, { packages, compare: async () => assert.fail("comparison should not run"), now: clock, wallNow: () => "2026-09-03T00:00:00.000Z" });
   assert.deepEqual(report.summary.packageCounts, { pass: 0, fail: 0, skipped: 2 });
   assert.deepEqual(report.summary.benchCounts, { pass: 0, fail: 0, skipped: 2 });
+  assert.equal(report.complete, false);
+  assert.equal(report.pass, false);
+  assert.equal(replayExitCode(report), 1);
+  assert.equal(replayExitCode(report, true), 0);
 });
 
-test("runReplay treats a total-budget timeout as a bounded skip", async () => {
+test("runReplay never relabels a comparison error as budget exhaustion", async () => {
   let now = 0;
   const packages = [{
     id: "maker/slow",
@@ -103,7 +109,9 @@ test("runReplay treats a total-budget timeout as a bounded skip", async () => {
     now: () => now,
     wallNow: () => "2026-09-03T00:00:00.000Z",
   });
-  assert.deepEqual(report.summary.benchCounts, { pass: 0, fail: 0, skipped: 1 });
-  assert.match(report.packages[0].benches[0].reason, /total budget exhausted/);
-  assert.equal(report.pass, true);
+  assert.deepEqual(report.summary.benchCounts, { pass: 0, fail: 1, skipped: 0 });
+  assert.match(report.packages[0].benches[0].reason, /WASM ngspice simulation timed out/);
+  assert.equal(report.complete, true);
+  assert.equal(report.pass, false);
+  assert.equal(replayExitCode(report, true), 1);
 });

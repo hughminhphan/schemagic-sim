@@ -51,10 +51,34 @@ jobs:
           ngspice --version
 
       - name: Replay every reviewed package from source benches
+        id: replay
         continue-on-error: true
         env:
           OPEN_CIRCUIT_NGSPICE_ENGINE_MODULE: ${{ github.workspace }}/tools/ngspice-wasm-build/dist-loader/index.mjs
-        run: npm run replay:benches
+        run: npm run replay:benches -- --allow-incomplete
+
+      - name: Summarize replay outcome
+        if: always()
+        shell: bash
+        run: |
+          node <<'NODE'
+          const fs = require("node:fs");
+          const path = "tools/native-ngspice-reference/output/replay/replay-summary.json";
+          const lines = ["### Bounded fresh bench replay", "", "Step outcome: ${{ steps.replay.outcome }}"];
+          if (fs.existsSync(path)) {
+            const report = JSON.parse(fs.readFileSync(path, "utf8"));
+            const counts = report.summary.benchCounts;
+            lines.push(
+              `Complete: ${report.complete ? "yes" : "no"}`,
+              `Passing: ${report.pass ? "yes" : "no"}`,
+              `Benches: ${counts.pass} pass, ${counts.fail} fail, ${counts.skipped} skipped`,
+              `Failing packages: ${report.summary.failingPackageIds.join(", ") || "none"}`,
+            );
+          } else {
+            lines.push("Complete: no", "Replay summary was not produced.");
+          }
+          fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, `${lines.join("\n")}\n`);
+          NODE
 
       - name: Upload replay summary
         if: always()

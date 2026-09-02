@@ -190,7 +190,7 @@ The command discovers every reviewed package below `packages/model-library/model
 - `tools/native-ngspice-reference/output/replay/replay-summary.json`
 - `tools/native-ngspice-reference/output/replay/replay-summary.md`
 
-The output directory is gitignored. Noise benches are reported as skipped because the comparison harness does not support noise rawfiles. A native-versus-WASM disagreement is reported as a failure and makes the command exit nonzero. Budget exhaustion is reported as skipped with a reason, so the command always stops within its declared bound.
+The output directory is gitignored. Noise benches are reported as skipped because the comparison harness does not support noise rawfiles. A native-versus-WASM disagreement or comparison error is reported as a failure. The command exits nonzero if any bench fails or if the report is incomplete because any bench was skipped. Budget exhaustion is reported as skipped with a reason, so the command always stops within its declared bound. Advisory callers may pass `--allow-incomplete` to permit an incomplete report to exit zero, but failures still exit nonzero.
 
 Defaults are 60 seconds per package, 30 seconds per bench engine run, and 90 minutes total. Override them when needed:
 
@@ -201,3 +201,5 @@ npm run replay:benches -- \
   --total-timeout-ms 5400000 \
   --output-dir tools/native-ngspice-reference/output/replay
 ```
+
+For the weekly advisory workflow, append `--allow-incomplete`; this changes only the exit status for skipped benches and never masks a failed comparison.
