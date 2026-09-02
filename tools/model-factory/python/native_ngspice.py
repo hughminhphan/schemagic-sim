@@ -124,6 +124,59 @@ def run_ngspice(netlist, timeout=30):
         return _parse_raw(raw)
 
 
+# When a sourced deck fails to parse or to converge, ngspice does not skip the
+# following `write`: it writes whatever the current plot is, which after `destroy all`
+# is its built-in table of physical constants. A rawfile therefore proves nothing on
+# its own, and a constants plot must be reported as a failed deck rather than handed
+# to a caller that would then look for a vector that is not there.
+def _is_failed_plot(result):
+    return result is not None and result.get("plot_name", "").strip().lower() == "constants"
+
+
+def run_ngspice_batch(netlists, timeout=600):
+    """Run several INDEPENDENT decks in one ngspice process.
+
+    Each netlist is written unchanged and sourced by a control-block driver, so every
+    deck gets its own circuit and its own matrix. That is the whole point: the numbers
+    are bit-identical to running each deck in its own process, because ngspice sees
+    exactly the same netlist and solves exactly the same system. Merging the decks into
+    one netlist instead would share a convergence test between unrelated blocks and move
+    results by ~1e-5 relative, which is enough to steer a fit somewhere else.
+
+    Returns a list the same length as `netlists`; an entry is None when that deck
+    produced no rawfile, so the caller can fall back to a single run and get the same
+    error the unbatched path would have raised.
+    """
+    netlists = list(netlists)
+    if not netlists:
+        return []
+    if len(netlists) == 1:
+        return [run_ngspice(netlists[0], timeout=timeout)]
+    FACTORY_TMP.mkdir(parents=True, exist_ok=True)
+    with tempfile.TemporaryDirectory(prefix="batch-", dir=FACTORY_TMP) as directory:
+        root = Path(directory)
+        driver = ["* OpenCircuit batched probe driver", ".control"]
+        for index, netlist in enumerate(netlists):
+            deck = root / f"deck{index}.cir"
+            deck.write_text(netlist)
+            driver += [f"source {deck}", "run", f"write {root / f'out{index}.raw'}", "destroy all"]
+        driver += [".endc", ".end"]
+        driver_path = root / "driver.cir"
+        driver_path.write_text("\n".join(driver) + "\n")
+        try:
+            subprocess.run(
+                [cached_ngspice(), "-b", str(driver_path)],
+                cwd=directory, capture_output=True, text=True, timeout=timeout,
+            )
+        except subprocess.TimeoutExpired:
+            return [None] * len(netlists)
+        results = []
+        for index in range(len(netlists)):
+            raw = root / f"out{index}.raw"
+            results.append(_parse_raw(raw) if raw.exists() else None)
+        return [None if _is_failed_plot(result) else result for result in results]
+
+
 def vector(result, *names):
     for name in names:
         key = name.lower()

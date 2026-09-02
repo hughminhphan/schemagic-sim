@@ -19,6 +19,7 @@ ngspice-46, never by re-evaluating the fitter's own algebra.
 """
 import argparse
 import hashlib
+import sys
 import json
 import math
 import re
@@ -27,13 +28,22 @@ from pathlib import Path
 import numpy as np
 from scipy.optimize import least_squares
 
-from native_ngspice import run_ngspice, vector
+from native_ngspice import run_ngspice, run_ngspice_batch, vector
+from batched_jacobian import least_squares_batched, resolve_cap
 
 GATES = json.loads((Path(__file__).resolve().parents[1] / "lib" / "fit-gates.json").read_text())
 VT = 1.380649e-23 * 298.15 / 1.602176634e-19
 
 SI = {"y": 1e-24, "z": 1e-21, "a": 1e-18, "f": 1e-15, "p": 1e-12, "n": 1e-9,
       "u": 1e-6, "µ": 1e-6, "μ": 1e-6, "m": 1e-3, "k": 1e3, "K": 1e3, "M": 1e6, "G": 1e9}
+
+
+# Iteration caps. Each default is the number the reviewed packages were fitted with;
+# the environment variables exist so a stubborn part can be given more room without
+# editing the fitter, and so the benchmark can pin them while comparing paths.
+DIODE_MAX_NFEV = resolve_cap("OC_FIT_DIODE_MAX_NFEV", 3000)
+BJT_MAX_NFEV = resolve_cap("OC_FIT_BJT_MAX_NFEV", 400)
+MOSFET_MAX_NFEV = resolve_cap("OC_FIT_MOSFET_MAX_NFEV", 3000)
 
 
 class Unfittable(Exception):
@@ -570,6 +580,21 @@ def select_mosfet_curves(extraction, rejected):
     return transfer, outputs
 
 
+def report_batching(family, stats, fit):
+    """Batching evidence goes to stderr, never into fitted.json.
+
+    The recorded artefact must be identical whichever evaluation path produced it,
+    otherwise the provenance hash of a package would depend on how fast the machine
+    that fitted it happened to be.
+    """
+    if not stats.get("batched"):
+        print(f"[fit:{family}] unbatched: {int(fit.nfev)} ngspice invocations", file=sys.stderr)
+        return
+    print(f"[fit:{family}] batched: {stats['batches']} ngspice invocations for "
+          f"{stats['evaluations']} residual evaluations "
+          f"({stats.get('cache_misses_in_jacobian', 0)} Jacobian cache misses)", file=sys.stderr)
+
+
 # ------------------------------------------------------------------- ngspice benches
 
 # ngspice defaults to reltol=1e-3. A finite-difference Jacobian taken with a 1e-4
@@ -593,7 +618,7 @@ def diode_bench(params, currents):
     return [float(vector(result, f"v(a{i})", f"a{i}")[0]) for i in range(1, len(currents) + 1)]
 
 
-def bjt_bench(params, targets, vce, polarity):
+def bjt_netlist(params, targets, vce, polarity):
     """targets: [(ic_target, hfe_target)]. Force IB = IC/hFE, hold VCE, measure IC.
 
     Extractions record p-type quantities as magnitudes, so a PNP bench must negate the
@@ -612,31 +637,57 @@ def bjt_bench(params, targets, vce, polarity):
         drive = f"IB{i} b{i} 0 DC {ib:.12e}" if pnp else f"IB{i} 0 b{i} DC {ib:.12e}"
         lines += [f"Q{i} c{i} b{i} 0 QFIT", f"VC{i} c{i} 0 DC {supply:.12g}", drive]
     lines += [".op", ".end"]
-    result = run_ngspice("\n".join(lines) + "\n")
+    return "\n".join(lines) + "\n"
+
+
+def bjt_collect(result, targets):
     return [abs(float(vector(result, f"vc{i}#branch", f"i(vc{i})")[0])) for i in range(1, len(targets) + 1)]
 
 
-def vdmos_bench(dc, fixed, transfer, outputs, rdson, polarity="n"):
-    """Probe each evidence row at its exact validated temperature and bias."""
+def bjt_bench(params, targets, vce, polarity):
+    return bjt_collect(run_ngspice(bjt_netlist(params, targets, vce, polarity)), targets)
+
+
+def bjt_bench_batch(param_sets, targets, vce, polarity):
+    """Evaluate several parameter sets in ONE ngspice process.
+
+    Each set keeps its own unchanged deck, so every set is solved exactly as it would
+    have been on its own. Only the process is shared. Entries whose deck produced no
+    rawfile come back as None, and the caller re-runs those singly.
+    """
+    netlists = [bjt_netlist(params, targets, vce, polarity) for params in param_sets]
+    return [None if result is None else bjt_collect(result, targets)
+            for result in run_ngspice_batch(netlists)]
+
+
+def vdmos_card(dc, fixed, p_channel):
     vto, kp, theta, lam, rd = dc
-    p_channel = polarity == "p"
     channel = "pchan " if p_channel else ""
     emitted_vto = -abs(vto) if p_channel else abs(vto)
-    card = (f".model MFIT VDMOS({channel}VTO={emitted_vto:.12g} KP={kp:.12g} THETA={theta:.12g} LAMBDA={lam:.12g} "
+    return (f".model MFIT VDMOS({channel}VTO={emitted_vto:.12g} KP={kp:.12g} THETA={theta:.12g} LAMBDA={lam:.12g} "
             f"RD={rd:.12g} RS={fixed['RS']:.12g} RG=1e-4 RDS=1e9 "
             f"CGS={fixed['CGS']:.12e} CGDMAX={fixed['CGDMAX']:.12e} CGDMIN={fixed['CGDMIN']:.12e} "
             f"CJO={fixed['CJO']:.12e} IS=1e-12 N=1.5 RB={fixed['RB']:.12g} TNOM=27)")
-    values = {"transfer": [None] * len(transfer), "output": [None] * len(outputs), "rdson": [None] * len(rdson)}
+
+
+def vdmos_plan(dc, fixed, transfer, outputs, rdson, p_channel):
+    """One deck per distinct cited temperature: probe each evidence row at its exact
+    validated temperature and bias.
+
+    Returns [(netlist, [(group, row_index, probe_index, row)])].
+    """
+    card = vdmos_card(dc, fixed, p_channel)
+    sign = -1 if p_channel else 1
     grouped = {}
     for group, rows in (("transfer", transfer), ("output", outputs), ("rdson", rdson)):
         for index, row in enumerate(rows):
             grouped.setdefault(float(row[-1]), []).append((group, index, row))
+    plan = []
     for temperature, rows in grouped.items():
         lines = ["Conveyor VDMOS DC probe", PROBE_OPTIONS, card, f".temp {temperature:.12g}"]
         names = []
         for probe_index, (group, row_index, row) in enumerate(rows, 1):
             names.append((group, row_index, probe_index, row))
-            sign = -1 if p_channel else 1
             if group == "transfer":
                 vgs, vds, _, _ = row
                 lines += [f"MT{probe_index} d{probe_index} g{probe_index} 0 MFIT",
@@ -654,7 +705,15 @@ def vdmos_bench(dc, fixed, transfer, outputs, rdson, polarity="n"):
                           current_drive,
                           f"VG{probe_index} g{probe_index} 0 DC {sign * vgs:.12g}"]
         lines += [".op", ".end"]
-        result = run_ngspice("\n".join(lines) + "\n")
+        plan.append(("\n".join(lines) + "\n", names))
+    return plan
+
+
+def vdmos_collect(plan, results, transfer, outputs, rdson):
+    values = {"transfer": [None] * len(transfer), "output": [None] * len(outputs), "rdson": [None] * len(rdson)}
+    for (_, names), result in zip(plan, results):
+        if result is None:
+            return None
         for group, row_index, probe_index, row in names:
             if group in {"transfer", "output"}:
                 value = abs(float(vector(result, f"vd{probe_index}#branch", f"i(vd{probe_index})")[0]))
@@ -662,6 +721,23 @@ def vdmos_bench(dc, fixed, transfer, outputs, rdson, polarity="n"):
                 value = abs(float(vector(result, f"v(d{probe_index})", f"d{probe_index}")[0])) / row[1]
             values[group][row_index] = value
     return values["transfer"], values["output"], values["rdson"]
+
+
+def vdmos_bench(dc, fixed, transfer, outputs, rdson, polarity="n"):
+    plan = vdmos_plan(dc, fixed, transfer, outputs, rdson, polarity == "p")
+    return vdmos_collect(plan, [run_ngspice(netlist) for netlist, _ in plan], transfer, outputs, rdson)
+
+
+def vdmos_bench_batch(dc_sets, fixed, transfer, outputs, rdson, polarity="n"):
+    """Several parameter sets in ONE ngspice process, each keeping its own decks."""
+    plans = [vdmos_plan(dc, fixed, transfer, outputs, rdson, polarity == "p") for dc in dc_sets]
+    results = run_ngspice_batch([netlist for plan in plans for netlist, _ in plan])
+    collected = []
+    cursor = 0
+    for plan in plans:
+        collected.append(vdmos_collect(plan, results[cursor:cursor + len(plan)], transfer, outputs, rdson))
+        cursor += len(plan)
+    return collected
 
 
 # ------------------------------------------------------------------------ gate logic
@@ -721,8 +797,17 @@ def fit_diode(payload, rejected):
         return (model(p) - V) / np.maximum(V, 0.1)
 
     x0 = np.clip(np.array([math.log(1e-12), 1.8, 0.5]), lo, hi)
-    fit = least_squares(residual, x0=x0, bounds=(lo, hi), method="trf", x_scale="jac",
-                        ftol=1e-14, xtol=1e-14, gtol=1e-14, max_nfev=100000)
+    # This residual is closed-form: three parameters, no simulator in the loop. scipy's
+    # own default cap for a problem this size is 100 * n = 300, and the observed run on
+    # every fixture and every shipped diode terminates on ftol in well under 100
+    # evaluations. The old cap of 100000 was two and a half orders of magnitude above
+    # anything that has ever been reached, so it could not stop a diverging fit any
+    # sooner than a wall clock could; 3000 is ten times scipy's default and still an
+    # order of magnitude above the worst observed run, so it cannot change a result that
+    # converges while turning a pathological one into a bounded failure.
+    fit, _ = least_squares_batched(
+        residual, None, x0=x0, bounds=(lo, hi), method="trf", x_scale="jac",
+        ftol=1e-14, xtol=1e-14, gtol=1e-14, max_nfev=DIODE_MAX_NFEV)
     # ngspice gives a diode with RS > 0 an internal series node whose conductance is
     # 1/RS. A fitted RS of 1e-25 ohm therefore stamps ~1e25 S into the matrix and the
     # operating point goes singular. Sub-micro-ohm bulk resistance is unmeasurable
@@ -842,15 +927,29 @@ def fit_bjt(payload, rejected):
         hi = np.array([ranges[name][1] for name in active])
         x0 = np.clip(np.array([seeds[name] for name in active]), lo, hi)
 
+        def rows(measured):
+            return np.array([math.log(max(a, 1e-15)) - math.log(t) for (t, _), a in zip(targets, measured)])
+
         def residual(p, _active=tuple(active)):
             try:
                 measured = bjt_bench(build(p), targets, vce, polarity)
             except Exception:
                 return np.full(len(targets), 1e3)
-            return np.array([math.log(max(a, 1e-15)) - math.log(t) for (t, _), a in zip(targets, measured)])
+            return rows(measured)
 
-        fit = least_squares(residual, x0=x0, bounds=(lo, hi), method="trf", x_scale="jac",
-                            diff_step=1e-3, ftol=1e-10, xtol=1e-10, max_nfev=400)
+        def batch_residual(points):
+            try:
+                measured_sets = bjt_bench_batch([build(p) for p in points], targets, vce, polarity)
+            except Exception:
+                return [residual(p) for p in points]
+            # A deck that produced no rawfile is re-run on its own, so it raises exactly
+            # the error the unbatched path would have raised and lands on the same 1e3.
+            return [residual(point) if measured is None else rows(measured)
+                    for point, measured in zip(points, measured_sets)]
+
+        fit, batch_stats = least_squares_batched(
+            residual, batch_residual, x0=x0, bounds=(lo, hi), method="trf", x_scale="jac",
+            diff_step=1e-3, ftol=1e-10, xtol=1e-10, max_nfev=BJT_MAX_NFEV)
         retire = None
         for index, name in enumerate(active):
             if name == "BF" or not bound_saturated(float(fit.x[index]), lo[index], hi[index]):
@@ -880,6 +979,7 @@ def fit_bjt(payload, rejected):
         "relative_error": relative_error(a, t),
         "citation": curve.get("page_reference") or "pending review",
     } for (t, h), a in zip(targets, measured)]
+    report_batching("bjt", batch_stats, fit)
     return params, residuals, used, notes, {"optimizer_nfev": int(fit.nfev), "optimizer_status": int(fit.status),
                                             "vce": vce, "held_defaults": held}
 
@@ -1008,11 +1108,8 @@ def fit_mosfet(payload, rejected):
     hi = np.array([hi_vth, 1e3, 1.0, 0.2, max(3.0 * rd_seed, 1e-3)])
     x0 = np.clip(np.array([seed_vth, kp0, 0.05, 0.003, 0.55 * rd_seed]), lo, hi)
 
-    def residual(p):
-        try:
-            t, o, d = vdmos_bench(p, fixed, transfer, out_points, rdson, payload.get("polarity", "n"))
-        except Exception:
-            return np.full(len(transfer) + len(out_points) + len(rdson), 1e3)
+    def measured_rows(measured):
+        t, o, d = measured
         rows = []
         for (_, _, target, _), actual in zip(transfer, t):
             rows.append(math.log(max(actual, 1e-12)) - math.log(target))
@@ -1024,8 +1121,26 @@ def fit_mosfet(payload, rejected):
             rows.append(20.0 * max(norm, 0.0) + 0.05 * min(norm, 0.0) if kind == "maximum" else norm)
         return np.asarray(rows)
 
-    fit = least_squares(residual, x0=x0, bounds=(lo, hi), method="trf", x_scale="jac",
-                        diff_step=1e-3, ftol=1e-12, xtol=1e-12, max_nfev=3000)
+    def residual(p):
+        try:
+            measured = vdmos_bench(p, fixed, transfer, out_points, rdson, payload.get("polarity", "n"))
+        except Exception:
+            return np.full(len(transfer) + len(out_points) + len(rdson), 1e3)
+        return measured_rows(measured)
+
+    def batch_residual(points):
+        try:
+            measured_sets = vdmos_bench_batch(list(points), fixed, transfer, out_points, rdson,
+                                              payload.get("polarity", "n"))
+        except Exception:
+            return [residual(p) for p in points]
+        # See the BJT batch: an incomplete set is re-run on its own.
+        return [residual(point) if measured is None else measured_rows(measured)
+                for point, measured in zip(points, measured_sets)]
+
+    fit, batch_stats = least_squares_batched(
+        residual, batch_residual, x0=x0, bounds=(lo, hi), method="trf", x_scale="jac",
+        diff_step=1e-3, ftol=1e-12, xtol=1e-12, max_nfev=MOSFET_MAX_NFEV)
     vto, kp, theta, lam, rd = [float(v) for v in fit.x]
     params = {"VTO": vto, "KP": kp, "THETA": theta, "LAMBDA": lam, "RD": rd,
               "RS": fixed["RS"], "RG": 1e-4, "CGS": fixed["CGS"], "CGDMAX": fixed["CGDMAX"],
@@ -1099,6 +1214,7 @@ def fit_mosfet(payload, rejected):
         "VTO": next((row for key, row in threshold.items() if abs(row["value"]) == seed_vth), None),
         "rdson": rd_seed_provenance,
     }
+    report_batching("mosfet", batch_stats, fit)
     return params, residuals, used, notes, {"optimizer_nfev": int(fit.nfev), "optimizer_status": int(fit.status),
                                             "held_defaults": held, "threshold_evidence": threshold_provenance,
                                             "seed_provenance": seed_provenance}
