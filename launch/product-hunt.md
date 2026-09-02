@@ -1,12 +1,12 @@
 # Product Hunt draft
 
-Draft only. Product Hunt is optional, and Hugh decides whether scheMAGIC Sim is submitted.
+Draft only. Product Hunt is optional, and Hugh decides whether Robonyx is submitted.
 
 ## Name
 
-**scheMAGIC Simulator**
+**Robonyx Simulator**
 
-Short form: **scheMAGIC Sim**
+Short form: **Robonyx**
 
 ## Tagline options
 
@@ -16,7 +16,7 @@ Short form: **scheMAGIC Sim**
 
 ## First comment
 
-I built scheMAGIC Sim to make browser circuit simulation more transparent at two levels: what the solver is doing, and what each manufacturer-part model can honestly claim.
+I built Robonyx to make browser circuit simulation more transparent at two levels: what the solver is doing, and what each manufacturer-part model can honestly claim.
 
 The simulator runs a pinned ngspice-46 WebAssembly build locally in a dedicated Worker. Voltage changes wire colour, current is animated, interactive controls trigger new solves, and the scope supports operating-point, transient, and AC results. There is no account, projects stay in the browser, the app works offline after caching, and share links carry the circuit in the URL.
 

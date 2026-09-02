@@ -1,4 +1,4 @@
-# scheMAGIC Designer release audit
+# Robonyx Designer release audit
 
 This package derives a deterministic, fail-closed V1 release-readiness report
 from the checked-in data manifest, admitted catalog, production Motor/Power

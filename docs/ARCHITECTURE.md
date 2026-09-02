@@ -1,6 +1,6 @@
 # Architecture
 
-scheMAGIC is a browser-first electronics design and simulation suite. It is an npm-workspaces monorepo built with TypeScript, Vite, Vitest, and Playwright. The deployed application is a static Cloudflare Pages site at `schemagic.pages.dev`; the Simulator/Measurement surface is `/` and the Motor/Power Designer is `/designer`.
+Robonyx is a browser-first electronics design and simulation suite. It is an npm-workspaces monorepo built with TypeScript, Vite, Vitest, and Playwright. The deployed application is a static Cloudflare Pages site at `schemagic.pages.dev`; the Simulator/Measurement surface is `/` and the Motor/Power Designer is `/designer`.
 
 ## System overview
 

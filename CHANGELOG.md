@@ -1,6 +1,12 @@
 # Changelog
 
-All notable scheMAGIC releases are documented here. The project uses semantic versioning; pre-1.0 release candidates may still change persisted or package-level contracts.
+All notable Robonyx releases are documented here. The project uses semantic versioning; pre-1.0 release candidates may still change persisted or package-level contracts.
+
+## [Unreleased]
+
+### Changed
+
+- Renamed the product family to Robonyx (formerly scheMAGIC Simulator). This covers Robonyx Simulator, Robonyx Designer, Robonyx Motor Designer, Robonyx Power Designer, and the Robonyx Component Library. Persisted identifiers are unchanged: the `@opencircuit/*` package scope, the `opencircuit-circuit` document format, `schemagic-*` format and storage identifiers, and existing share URLs all keep working. The GitHub repository, the Cloudflare Pages project and the deployment domain still carry the old name and will be renamed separately.
 
 ## [0.2.0-rc.1] - 2026-09-01
 
@@ -31,7 +37,7 @@ Full release and recovery details are in [`docs/releases/v0.2.0-rc.1.md`](docs/r
 
 ## [0.1.0] - 2026-08-14
 
-- First public scheMAGIC Simulator release with a 710-package component-model library.
+- First public release, published under the former name scheMAGIC Simulator, with a 710-package component-model library.
 
 [0.2.0-rc.1]: https://github.com/hughminhphan/schemagic-sim/compare/v0.1.0...v0.2.0-rc.1
 [0.1.0]: https://github.com/hughminhphan/schemagic-sim/releases/tag/v0.1.0

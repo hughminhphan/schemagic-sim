@@ -1,4 +1,4 @@
-# scheMAGIC Designer V1 — Product Scope and Implementation Handoff
+# Robonyx Designer V1 — Product Scope and Implementation Handoff
 
 **Status:** implementation in progress; reviewed Motor and Power generation available, broader release gates pending
 **Prepared:** 2026-08-26
@@ -14,7 +14,7 @@ Build one deterministic design platform with two parallel V1 application modules
 
 Both modules must use the same compiler, evidence model, candidate ranking, circuit generation, simulation, comparison UI, and export pipeline. Do not build them as separate applications.
 
-The primary open-source advantage is the component catalog: any manufacturer's part is eligible under the same public schema, evidence rules, tests, and ranking algorithm. Proprietary vendor tools have a structural reason to keep users inside their own portfolios; scheMAGIC must have no preferred manufacturer and no paid path to better ranking or competitor exclusion.
+The primary open-source advantage is the component catalog: any manufacturer's part is eligible under the same public schema, evidence rules, tests, and ranking algorithm. Proprietary vendor tools have a structural reason to keep users inside their own portfolios; Robonyx must have no preferred manufacturer and no paid path to better ranking or competitor exclusion.
 
 Motor drivers are the clearest product differentiation: TI deprecated the old WEBENCH motor-driver flow, while the surviving motor tools are closed and vendor-specific. Buck converters are the smallest credible test of direct WEBENCH parity. These are parallel product tracks, not a sequence: after a short shared schema/compiler contract is frozen, neither track waits for the other.
 
@@ -26,18 +26,18 @@ The central product rule is:
 
 No LLM belongs in the electrical decision path.
 
-### scheMAGIC product umbrella
+### Robonyx product umbrella
 
 Use these public names consistently:
 
-- **scheMAGIC Simulator** — the existing editor, ngspice engine and waveform experience.
-- **scheMAGIC Designer** — the requirements-to-circuit platform and shared workflow.
-- **scheMAGIC Motor Designer** — the motor-driver application module.
-- **scheMAGIC Power Designer** — the power-converter application module.
-- **scheMAGIC Sourcing** — distributor policies, offers and buildability analysis.
-- **scheMAGIC Component Library** — reviewed multi-manufacturer engineering profiles and simulation models.
+- **Robonyx Simulator** — the existing editor, ngspice engine and waveform experience.
+- **Robonyx Designer** — the requirements-to-circuit platform and shared workflow.
+- **Robonyx Motor Designer** — the motor-driver application module.
+- **Robonyx Power Designer** — the power-converter application module.
+- **Robonyx Sourcing** — distributor policies, offers and buildability analysis.
+- **Robonyx Component Library** — reviewed multi-manufacturer engineering profiles and simulation models.
 
-`OpenCircuit` is not a public product name. Existing `@opencircuit/*` npm scopes, `opencircuit-circuit` document identifiers and `opencircuit.dev` schema IDs are compatibility identifiers until a separate versioned migration is designed. New user-facing titles, descriptions, reports and documentation use scheMAGIC; do not silently change stable identifiers or break old saved circuits merely for branding.
+Neither `OpenCircuit` nor `scheMAGIC` is a public product name any more. Existing `@opencircuit/*` npm scopes, `opencircuit-circuit` document identifiers, `opencircuit.dev` schema IDs and `schemagic-*` format, storage and filename identifiers are compatibility identifiers until a separate versioned migration is designed. New user-facing titles, descriptions, reports and documentation use Robonyx; do not silently change stable identifiers or break old saved circuits merely for branding. See the naming section in the [root README](../README.md) for the single explanation of this split.
 
 ## Current implementation state — 2026-08-26
 
@@ -149,13 +149,13 @@ The useful projects are pieces of that system:
 
 ### Market conclusion
 
-The gap is real, but it is narrower than “no engineering calculators exist.” The missing product is an **open, vendor-neutral, evidence-backed design compiler connected to a real circuit simulator and EDA exports**. onsemi's own description says its tool selects the optimum [onsemi products](https://www.onsemi.com/PowerSolutions/content.do?id=20248), while PowerEsim's [FAQ](https://www.poweresim.com/about/faq.jsp) says sponsors can exclude competitor parts. Open source makes a different governance model possible: universal eligibility, public evidence, and inspectable ranking. scheMAGIC already supplies the simulator, typed circuit document, reviewed model-package pattern, waveform viewer, URL sharing, and local-first browser application. The new work is the design-automation layer and its open catalog.
+The gap is real, but it is narrower than “no engineering calculators exist.” The missing product is an **open, vendor-neutral, evidence-backed design compiler connected to a real circuit simulator and EDA exports**. onsemi's own description says its tool selects the optimum [onsemi products](https://www.onsemi.com/PowerSolutions/content.do?id=20248), while PowerEsim's [FAQ](https://www.poweresim.com/about/faq.jsp) says sponsors can exclude competitor parts. Open source makes a different governance model possible: universal eligibility, public evidence, and inspectable ranking. Robonyx already supplies the simulator, typed circuit document, reviewed model-package pattern, waveform viewer, URL sharing, and local-first browser application. The new work is the design-automation layer and its open catalog.
 
 ## 4. Product V1 definition
 
 ### V1 user promise
 
-A user opens the website without a scheMAGIC account, chooses **Motor Driver** or **Buck Converter**, enters electrical and sourcing requirements, and receives multiple complete circuit candidates. They can constrain the BOM to supported live distributors, reject obsolete/out-of-stock/long-lead-time parts, see why each candidate passed, compare tradeoffs, customize compatible parts, simulate named operating scenarios, and export the result. V1 targets DigiKey and Mouser for live sourcing and provides LCSC MPN search links; live LCSC sourcing is deferred until the product has traction and can apply for a partnership with evidence.
+A user opens the website without a Robonyx account, chooses **Motor Driver** or **Buck Converter**, enters electrical and sourcing requirements, and receives multiple complete circuit candidates. They can constrain the BOM to supported live distributors, reject obsolete/out-of-stock/long-lead-time parts, see why each candidate passed, compare tradeoffs, customize compatible parts, simulate named operating scenarios, and export the result. V1 targets DigiKey and Mouser for live sourcing and provides LCSC MPN search links; live LCSC sourcing is deferred until the product has traction and can apply for a partnership with evidence.
 
 ### V1 common workflow
 
@@ -167,7 +167,7 @@ A user opens the website without a scheMAGIC account, chooses **Motor Driver** o
 6. **Inspect** — schematic, BOM, operating values, loss breakdown, constraint margins, warnings, assumptions, source evidence, stock, lifecycle, lead time, price breaks, and retrieval time.
 7. **Customize** — replace only components proven electrically and commercially compatible under the active policy, then recalculate.
 8. **Simulate** — run named ngspice scenarios on the selected design in the existing Web Worker/WASM engine.
-9. **Export/share** — scheMAGIC design JSON and URL, BOM CSV, SPICE netlist, simulation CSV, SVG schematic, printable report, and KiCad schematic.
+9. **Export/share** — Robonyx design JSON and URL, BOM CSV, SPICE netlist, simulation CSV, SVG schematic, printable report, and KiCad schematic.
 
 ### Explicit V1 non-goals
 
@@ -175,7 +175,7 @@ A user opens the website without a scheMAGIC account, chooses **Motor Driver** o
 - Stepper motor drivers.
 - Boost, buck-boost, SEPIC, flyback, LLC, PFC, multi-rail supplies, or isolated magnetics.
 - Automated PCB routing or guaranteed EMC/functional-safety compliance.
-- Checkout, order placement, scheMAGIC accounts, cloud projects, or collaboration. The deterministic electrical engine remains local; live sourcing uses an optional open-source service because distributor credentials cannot be shipped to the browser.
+- Checkout, order placement, Robonyx accounts, cloud projects, or collaboration. The deterministic electrical engine remains local; live sourcing uses an optional open-source service because distributor credentials cannot be shipped to the browser.
 - Scraping vendor/distributor websites.
 - Redistributing vendor PDFs, vendor-owned SPICE models, or copied CAD assets without compatible permission.
 - AI-generated formulas, constraints, component facts, or circuit approvals.
@@ -211,7 +211,7 @@ The initial reviewed design library must contain enough data to make both famili
 - At least 15 suitable power-MOSFET profiles across at least 3 manufacturers and the required voltage/current classes.
 - Reviewed passive families for shunts, gate resistors, bootstrap parts, decoupling, bulk capacitance, and protection.
 
-These are **design profiles**, not necessarily redistributed vendor SPICE models. A profile holds only the sourced facts and equations needed for constraint checking and analytic estimates. Simulation may use an independently authored behavioral macro-model, an already admitted scheMAGIC model, or an explicitly imported local vendor model.
+These are **design profiles**, not necessarily redistributed vendor SPICE models. A profile holds only the sourced facts and equations needed for constraint checking and analytic estimates. Simulation may use an independently authored behavioral macro-model, an already admitted Robonyx model, or an explicitly imported local vendor model.
 
 ### Required inputs
 
@@ -687,7 +687,7 @@ Therefore:
 
 - Never embed provider credentials in the browser or repository.
 - Ship `apps/sourcing-service` as open-source optional infrastructure with server-side credentials, provider-specific rate limiting and an auditable cache policy.
-- The hosted scheMAGIC deployment enables a provider only after obtaining credentials and confirming that the intended display, caching and user access comply with that provider's terms.
+- The hosted Robonyx deployment enables a provider only after obtaining credentials and confirming that the intended display, caching and user access comply with that provider's terms.
 - Do not scrape distributor sites or build repository catalog dumps from these APIs.
 - Normalize only the fields needed for the active design/BOM request and retain them only for the provider-permitted lifetime.
 - Provider rules live in a versioned policy manifest: authentication mode, rate limit, cache TTL, display attribution, persistence, share/export permission and deletion behavior.

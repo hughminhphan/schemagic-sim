@@ -1,4 +1,4 @@
-# scheMAGIC Designer examples
+# Robonyx Designer examples
 
 This package is the deterministic, content-addressed gallery contract for the four
 frozen Designer reference fixtures:

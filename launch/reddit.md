@@ -14,7 +14,7 @@ Reddit rules and moderator practices change. Check each community's current self
 
 **Draft:**
 
-I built scheMAGIC Sim, a free open-source circuit simulator that runs ngspice-46 locally in a browser Worker.
+I built Robonyx, a free open-source circuit simulator that runs ngspice-46 locally in a browser Worker.
 
 The part I wanted was a schematic that responds directly to the solve. Wires change colour with node voltage, current is animated, and dragging a potentiometer updates the LED brightness and measured values. It supports operating point, transient, and AC views, works offline after caching, and shares circuits in the URL without an account.
 
@@ -38,7 +38,7 @@ Source: https://github.com/hughminhphan/schemagic-sim
 
 **Draft:**
 
-I have been building scheMAGIC Sim, an Apache-2.0 browser circuit editor around a pinned ngspice-46 WebAssembly engine. The normal solve path is entirely local and runs in a dedicated Worker.
+I have been building Robonyx, an Apache-2.0 browser circuit editor around a pinned ngspice-46 WebAssembly engine. The normal solve path is entirely local and runs in a dedicated Worker.
 
 The engine uses a small Asyncify patch at the frontend command boundary, KLU, a 64 MiB initial heap with a 256 MiB maximum, and binary rawfiles in MEMFS. Real vectors and interleaved complex vectors are parsed in the Worker and transferred as `Float64` buffers. Cancellation terminates the Worker and replaces it with a warm spare.
 
@@ -60,7 +60,7 @@ Live simulator: https://sim.schemagic.design
 
 **Comment-style answer draft:**
 
-If you want a browser option, Falstad is still useful for quick visual intuition. Another option is scheMAGIC Sim, which I built, so treat this as a disclosed self-reference rather than an independent recommendation.
+If you want a browser option, Falstad is still useful for quick visual intuition. Another option is Robonyx, which I built, so treat this as a disclosed self-reference rather than an independent recommendation.
 
 It runs ngspice-46 locally in a browser Worker and supports operating point, transient, and AC analysis. The schematic shows voltage by wire colour and current by motion, and interactive controls such as a potentiometer trigger new solves. It does not require an account, works offline after its assets are cached, and can share a circuit in the URL.
 
@@ -78,11 +78,11 @@ For a design decision, I would still prototype the circuit and check the specifi
 
 **Suggested title:**
 
-> scheMAGIC Sim: Apache-2.0 browser circuit simulator with a reproducible ngspice-46 WASM build
+> Robonyx: Apache-2.0 browser circuit simulator with a reproducible ngspice-46 WASM build
 
 **Draft:**
 
-I am releasing scheMAGIC Simulator, a free open-source browser circuit simulator.
+I am releasing Robonyx Simulator, a free open-source browser circuit simulator.
 
 The application code and documentation are Apache-2.0. Original generated component model packages carry MIT licences. The ngspice-46 WebAssembly engine is handled as a separate distribution layer with its upstream modified BSD and LGPL obligations, plus Emscripten terms. The repository includes source pins, patches, build scripts, licence texts, corresponding-source information, and rebuild and relink instructions.
 

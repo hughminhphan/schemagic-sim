@@ -1,6 +1,6 @@
 # Licensing
 
-scheMAGIC Simulator has three licensing layers. The layer matters because the application code, generated component models, and simulation engine come from different sources and carry different obligations.
+Robonyx Simulator has three licensing layers. The layer matters because the application code, generated component models, and simulation engine come from different sources and carry different obligations.
 
 This document is a practical overview, not legal advice. The licence texts and notices control if this summary conflicts with them.
 
@@ -30,13 +30,13 @@ The pinned simulation artifact is ngspice-46 compiled to WebAssembly with Emscri
 
 See [`THIRD_PARTY_NOTICES.md`](../THIRD_PARTY_NOTICES.md) for the distribution-level summary. The authoritative engine notice bundle, complete ngspice `COPYING` file, LGPL text, corresponding-source information, local patch, and rebuild instructions are under `tools/ngspice-wasm-build/notices/`, `tools/ngspice-wasm-build/patches/`, and `tools/ngspice-wasm-build/build.sh`.
 
-The engine terms do not replace the Apache-2.0 licence for scheMAGIC Simulator's original application code. Distributors of the engine artifact must also satisfy the applicable upstream terms, including the LGPL notice, source, modification, reverse-engineering, and relinking requirements.
+The engine terms do not replace the Apache-2.0 licence for Robonyx Simulator's original application code. Distributors of the engine artifact must also satisfy the applicable upstream terms, including the LGPL notice, source, modification, reverse-engineering, and relinking requirements.
 
 ## What you may do
 
 Subject to the applicable terms for each layer, you may:
 
-- use scheMAGIC Simulator privately or publicly;
+- use Robonyx Simulator privately or publicly;
 - fork and modify the code and models;
 - sell a product or service that includes the simulator;
 - embed the simulator or its model packages in another application;
@@ -55,7 +55,7 @@ A commercial product is allowed. Commercial use does not remove attribution, not
 
 ## Production npm dependency audit
 
-Audit basis: `package-lock.json`, `npm ls --omit=dev --all`, and installed package metadata, reviewed on 2026-08-06. Internal `@opencircuit/*` links are workspace code, not third-party npm distributions.
+Audit basis: `package-lock.json`, `npm ls --omit=dev --all`, and installed package metadata, reviewed on 2026-08-06. Internal `@opencircuit/*` links are workspace code, not third-party npm distributions. That scope is a frozen internal namespace and not the product name, which is Robonyx; see the naming section in the [root README](../README.md).
 
 | Package | Version | Relationship | Licence | Shipped surface |
 | --- | ---: | --- | --- | --- |

@@ -18,6 +18,8 @@ Engineering component facts change on a reviewed catalog cadence. Distributor st
 
 The public product name is scheMAGIC. Existing npm packages use the `@opencircuit/*` scope. That scope is an internal compatibility namespace in this decision, not the product brand, and is not renamed during the V1 foundation work.
 
+> **Naming update, 2026-09-02.** The public product family was renamed to Robonyx. Everything this ADR calls scheMAGIC is now Robonyx: Robonyx Simulator, Robonyx Designer, Robonyx Motor Designer, Robonyx Power Designer, Robonyx Sourcing, and the Robonyx Component Library. The technical decisions below are unchanged, and no persisted identifier moves: the `@opencircuit/*` scope, the `opencircuit-circuit` document format and the `schemagic-*` format and storage identifiers stay exactly as recorded. See the naming section in the [root README](../../README.md).
+
 ## Decision
 
 ### 1. Use one application-neutral design compiler

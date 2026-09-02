@@ -55,7 +55,7 @@ const [schematic, archivo, plexSans, plexMono] = await Promise.all([
 ]);
 await rm(sourcePath, { force: true });
 const data = (mime, buffer) => `data:${mime};base64,${buffer.toString("base64")}`;
-const html = `<title>scheMAGIC Simulator social preview</title>
+const html = `<title>Robonyx Simulator social preview</title>
 <style>
 @font-face{font-family:"Archivo Expanded";src:url("${data("font/woff2", archivo)}") format("woff2");font-weight:600}
 @font-face{font-family:"IBM Plex Sans";src:url("${data("font/woff2", plexSans)}") format("woff2");font-weight:500}
@@ -73,7 +73,7 @@ html,body{width:1280px;height:640px;margin:0;overflow:hidden;background:#F1EEE8;
 <div class="preview">
   <div class="schematic"><img alt="Live NPN LED bench" src="${data("image/png", schematic)}"></div>
   <section class="copy" aria-label="Product summary">
-    <div class="wordmark">scheMAGIC Simulator</div>
+    <div class="wordmark">Robonyx Simulator</div>
     <p class="thesis">Real ngspice in your browser. The schematic shows what the circuit is doing.</p>
     <p class="engine">ngspice-46 · local WASM Worker</p>
   </section>
