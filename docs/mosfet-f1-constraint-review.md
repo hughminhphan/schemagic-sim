@@ -74,14 +74,14 @@ The independent re-review found remaining fail-open candidate paths:
 3. F1 RDS(on) validation compared parsed VGS, ID, temperature, and citation context but did not reject incompatible additional qualifiers such as different pulse durations.
 4. MOSFET operating-region metadata retained a silent `25 °C` fallback in a conveyor candidate path.
 
-The second BLOCK exhausted the original one-remediation cycle authorized by `docs/scale-2k-campaign-authorization.md`. The blocked remediation was preserved on branch `batch-15-blocked-remediation`; approved main was restored to `6f526f8`. No reviewed package or production code was changed.
+The second BLOCK exhausted the original one-remediation cycle authorized by `docs/campaigns/scale-2k-campaign-authorization.md`. The blocked remediation was preserved on branch `batch-15-blocked-remediation`; approved main was restored to `6f526f8`. No reviewed package or production code was changed.
 
 ## Superseding integrated review under standing authorization
 
 - Date: 2026-08-14
-- Standing authorization: `docs/mosfet-hardening-standing-authorization.md`
+- Standing authorization: `docs/campaigns/mosfet-hardening-standing-authorization.md`
 - Cumulative correction range: `4814648..1b68647`
-- Approval record: `docs/mosfet-hardening-cycle-4-review.md`
+- Approval record: `docs/campaigns/mosfet-hardening-cycle-4-review.md`
 - Reviewer: fresh independent read-only cumulative gate lane, after separate policy and bench-grammar approvals
 - Verdict: **APPROVE**
 

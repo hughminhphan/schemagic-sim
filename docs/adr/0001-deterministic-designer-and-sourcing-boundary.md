@@ -112,7 +112,7 @@ Milestone 0 contract sources are:
 
 `@opencircuit/design-schema` may import the public `SourcingPolicy` and `CandidateSourcingMetrics` types from `@opencircuit/sourcing-schema`. The sourcing package has no reverse dependency on design contracts, application code, a provider API, the sourcing service, or UI code.
 
-After the contracts freeze, the planned implementation units are `packages/design-engine` for the generic compiler, `packages/design-library` for reviewed recipes and engineering profiles, `packages/sourcing-engine` for provider-neutral sourcing evaluation, and `apps/sourcing-service` for optional credentialed provider access. These units do not exist as part of this ADR change set and must not be folded into either application track.
+After the contracts freeze, the planned implementation units are `packages/design-engine` for the generic compiler, `packages/design-library` for reviewed recipes and engineering profiles, `packages/sourcing-core` for provider-neutral sourcing evaluation, and `apps/sourcing-service` for optional credentialed provider access. These units do not exist as part of this ADR change set and must not be folded into either application track.
 
 Motor and Power implementation may fan out only against these versioned contracts and the data manifest. A shared contract change requires a schema-version change where serialized data changes, migration support where old persisted data would otherwise break, and contract tests for both application fixture families.
 

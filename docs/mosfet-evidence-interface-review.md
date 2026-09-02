@@ -4,7 +4,7 @@ Date: 2026-08-14
 
 ## Scope and authority
 
-Hugh's direction, "pull in a fable advisor to make a better plan then keep going", is recorded in `docs/batch-15-recovery-authorization.md`. It authorized one bounded typed evidence-interface correction, one independent review, and at most one remediation. A second `BLOCK` ends the recovery.
+Hugh's direction, "pull in a fable advisor to make a better plan then keep going", is recorded in `docs/campaigns/batch-15-recovery-authorization.md`. It authorized one bounded typed evidence-interface correction, one independent review, and at most one remediation. A second `BLOCK` ends the recovery.
 
 The correction was limited to:
 
@@ -80,9 +80,9 @@ The reviewer confirmed that the three first-review defects and trusted fact reco
 
 ## Superseded process stop
 
-The second review `BLOCK` initially triggered the one-remediation stop in `docs/batch-15-recovery-authorization.md`. The active branch recorded that stop before any Batch 15 evidence access, adjudication, fit, staging, or reviewed-library mutation.
+The second review `BLOCK` initially triggered the one-remediation stop in `docs/campaigns/batch-15-recovery-authorization.md`. The active branch recorded that stop before any Batch 15 evidence access, adjudication, fit, staging, or reviewed-library mutation.
 
-Hugh then said, "why do you keep stoppig mate". Together with the standing direction to keep driving toward 1,000, this superseded the process-only remediation cap through `docs/batch-15-recovery-continuation.md`. Concrete review findings became inputs to further narrow correction rather than campaign stop commands. Every electrical, provenance, simulation, collision, package, independent-review, promotion, deployment, and publishing gate remained unchanged.
+Hugh then said, "why do you keep stoppig mate". Together with the standing direction to keep driving toward 1,000, this superseded the process-only remediation cap through `docs/campaigns/batch-15-recovery-continuation.md`. Concrete review findings became inputs to further narrow correction rather than campaign stop commands. Every electrical, provenance, simulation, collision, package, independent-review, promotion, deployment, and publishing gate remained unchanged.
 
 ## Continued remediation
 
