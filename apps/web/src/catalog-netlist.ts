@@ -1,13 +1,14 @@
 import {
+  CATALOG_ONLY_PRIMITIVE_PREFIX,
   componentPinPoints,
   generateNetlist,
   type AnalysisMode,
   type CircuitComponent,
   type CircuitDocument,
-  type ComponentType,
   type GeneratedNetlist,
   type NetlistLine,
 } from "@opencircuit/circuit-schema";
+import { baseTypeForManifest, isPositionalCatalogType, symbolPinCountFor } from "./catalog-truth";
 
 export interface CatalogSymbolPin { name?: string; number: string; role: string }
 export interface CatalogSpicePinMapping { symbol_pin_number: string; subckt_node: string; order: number }
@@ -71,10 +72,6 @@ interface ResolvedCatalogComponent {
   supplyBindings: Partial<Record<CatalogSupplyRole, CatalogVirtualConnection>>;
 }
 
-const catalogFamilyByType: Partial<Record<ComponentType, string>> = {
-  diode: "diode", led: "led", bjt_npn: "bjt_npn", bjt_pnp: "bjt_pnp",
-  nmos: "nmos", pmos: "pmos", opamp_ideal: "opamp",
-};
 
 export const CATALOG_ANALYSIS_BY_MODE: Readonly<Record<AnalysisMode, string>> = Object.freeze({
   live: "operating_point",
@@ -123,7 +120,7 @@ function identity(component: CircuitComponent, index: CatalogIndex): { part?: Ca
 function resolveCatalogComponent(component: CircuitComponent, index: CatalogIndex): ResolvedCatalogComponent | undefined {
   const found = identity(component, index);
   const part = found.part;
-  if (!part || catalogFamilyByType[component.type] !== part.manifest.electrical_family) return undefined;
+  if (!part || baseTypeForManifest(part.manifest) !== component.type) return undefined;
   const rawBindings = component.type === "opamp_ideal" ? component.params?.catalogSupplyBindings : undefined;
   const vcc = supplyBinding(rawBindings, "vcc", index.components);
   const vee = supplyBinding(rawBindings, "vee", index.components);
@@ -183,6 +180,13 @@ function mappedNodes(resolved: ResolvedCatalogComponent, generated: GeneratedNet
   const byNumber = new Map(symbolPins.map((pin) => [pin.number, pin]));
   if (byNumber.size !== symbolPins.length) return issue("declares duplicate symbol pin numbers");
   const ordered = [...mapping].sort((left, right) => left.order - right.order);
+  if (isPositionalCatalogType(component.type)) {
+    const positional = positionalShapeIssue(component, part);
+    if (positional) return positional;
+    // Schematic pin i is subcircuit node i, so the emitted order is the
+    // package's declared order with nothing to reinterpret.
+    return (generated.componentNodes[component.id] ?? []).slice(0, ordered.length);
+  }
   const seenPins = new Set<string>();
   const nodes: string[] = [];
   for (let index = 0; index < ordered.length; index += 1) {
@@ -209,6 +213,28 @@ function analysisMode(generated: GeneratedNetlist): AnalysisMode {
   return "op";
 }
 
+/**
+ * A catalog-only symbol addresses its package positionally, so the only shape
+ * that matters is a contiguous one-based bijection whose length is the symbol's
+ * pin count. Getting that wrong would silently rewire the device.
+ */
+function positionalShapeIssue(component: CircuitComponent, part: CatalogRuntimePart): CatalogRuntimeIssue | undefined {
+  const symbolPins = part.manifest.symbol_pins ?? [];
+  const mapping = part.manifest.spice_pin_mapping ?? [];
+  const issue = (message: string): CatalogRuntimeIssue => ({ code: "PIN_MAPPING", componentId: component.id, partId: part.id, message: `Component ${component.id} (${part.manifest.canonical_mpn}) ${message}` });
+  const expected = symbolPinCountFor(component.type);
+  if (mapping.length !== expected) return issue(`declares ${mapping.length} subcircuit nodes but the ${component.type} symbol has ${expected} pins`);
+  const numbers = new Set(symbolPins.map((pin) => pin.number));
+  const seen = new Set<string>();
+  for (const [index, entry] of [...mapping].sort((left, right) => left.order - right.order).entries()) {
+    if (entry.order !== index + 1) return issue("must use contiguous one-based mapping.order values");
+    if (!numbers.has(entry.symbol_pin_number)) return issue(`SPICE mapping references missing symbol pin ${entry.symbol_pin_number}`);
+    if (seen.has(entry.symbol_pin_number)) return issue(`maps symbol pin ${entry.symbol_pin_number} more than once`);
+    seen.add(entry.symbol_pin_number);
+  }
+  return undefined;
+}
+
 function mappingShapeIssue(component: CircuitComponent, part: CatalogRuntimePart): CatalogRuntimeIssue | undefined {
   const symbolPins = part.manifest.symbol_pins;
   const mapping = part.manifest.spice_pin_mapping;
@@ -218,6 +244,7 @@ function mappingShapeIssue(component: CircuitComponent, part: CatalogRuntimePart
   if (mapping.length !== symbolPins.length) return issue("does not have a complete symbol-to-SPICE pin mapping");
   const byNumber = new Map(symbolPins.map((pin) => [pin.number, pin]));
   if (byNumber.size !== symbolPins.length) return issue("declares duplicate symbol pin numbers");
+  if (isPositionalCatalogType(component.type)) return positionalShapeIssue(component, part);
   const seenPins = new Set<string>();
   for (const [index, entry] of [...mapping].sort((left, right) => left.order - right.order).entries()) {
     const pin = byNumber.get(entry.symbol_pin_number);
@@ -238,8 +265,7 @@ export function inspectCatalogModels(document: CircuitDocument, mode: AnalysisMo
     const part = found.part;
     if (!part) continue;
     const label = `Component ${component.id} (${part.manifest.canonical_mpn})`;
-    const expectedFamily = catalogFamilyByType[component.type];
-    if (!expectedFamily || expectedFamily !== part.manifest.electrical_family) {
+    if (baseTypeForManifest(part.manifest) !== component.type) {
       issues.push({ code: "FAMILY_MISMATCH", componentId: component.id, partId: part.id, message: `${label} is a ${part.manifest.electrical_family} package and cannot drive a ${component.type} symbol` });
       continue;
     }
@@ -278,6 +304,8 @@ function catalogLine(resolved: ResolvedCatalogComponent, generated: GeneratedNet
   if (!Array.isArray(nodes)) return nodes;
   const suffix = safeSuffix(component.id);
   if (part.manifest.model_type === "subckt") return { line: `X${suffix} ${nodes.join(" ")} ${part.modelName} $ component:${component.id}`, supportLines };
+  const catalogOnlyPrefix = CATALOG_ONLY_PRIMITIVE_PREFIX[component.type];
+  if (catalogOnlyPrefix) return { line: `${catalogOnlyPrefix}${suffix} ${nodes.join(" ")} ${part.modelName} $ component:${component.id}`, supportLines };
   switch (component.type) {
     case "diode":
     case "led": return { line: `D${suffix} ${nodes.join(" ")} ${part.modelName} $ component:${component.id}`, supportLines };
