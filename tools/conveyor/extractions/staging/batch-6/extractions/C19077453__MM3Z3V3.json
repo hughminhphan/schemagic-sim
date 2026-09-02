@@ -1,0 +1,72 @@
+{
+  "curves": [],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4",
+      "p. 5"
+    ],
+    "revision": "Rev 1.1",
+    "title": "MM3Z2V0 THRU MM3Z75 SURFACE MOUNT ZENER DIODES"
+  },
+  "extraction_notes": [
+    "Zener-voltage range is 3.1 V minimum, 3.3 V nominal, and 3.5 V maximum at IZT = 5 mA and TA = 25 degC; the schema records the nominal typical value as breakdown_voltage.",
+    "Maximum zener impedance is 95 ohm at IZT = 5 mA; maximum knee impedance is 1000 ohm at IZK = 0.5 mA, both from p. 2.",
+    "The datasheet publishes no reverse-recovery-time value.",
+    "The p. 3 zener, forward-voltage, and leakage plots are family-characteristic figures without a legend or unambiguous MM3Z3V3-specific trace; no target-specific curve points were recorded.",
+    "The p. 4 capacitance plot begins at nominal zener voltage 4 V, so it does not provide a usable MM3Z3V3 point at nominal 3.3 V.",
+    "Temperature coefficient for MM3Z3V3 is -3.5 to 0 mV/degC at IZTC = 5 mA, p. 2; this field is not represented by the strict schema."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "MM3Z3V3",
+  "omission_reason": "No target-specific usable curve points were recorded: the datasheet plots are family-wide characteristic figures with no legend identifying the MM3Z3V3 trace, and the capacitance plot starts at nominal VZ = 4 V, above this part's 3.3 V nominal voltage.",
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": {
+      "conditions": "IZT = 5 mA, TA = 25 degC; zener-voltage test current",
+      "page_reference": "p. 2, Electrical Characteristics, MM3Z3V3 row, IZT",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.005
+    },
+    "breakdown_voltage": {
+      "conditions": "IZT = 5 mA, TA = 25 degC; nominal zener voltage",
+      "page_reference": "p. 2, Electrical Characteristics, MM3Z3V3 row, VZ@IZT Nom.",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 3.3
+    },
+    "capacitance": null,
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 10 mA, TA = 25 degC; maximum forward voltage rating",
+          "page_reference": "p. 1, Maximum Ratings, Forward Voltage @ IF=10mA",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.01
+        },
+        "voltage": {
+          "conditions": "IF = 10 mA, TA = 25 degC; maximum forward voltage rating",
+          "page_reference": "p. 1, Maximum Ratings, Forward Voltage @ IF=10mA",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.9
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = 1.0 V, TA = 25 degC; maximum reverse leakage current",
+      "page_reference": "p. 2, Electrical Characteristics, MM3Z3V3 row, IR@VR",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 5e-06
+    },
+    "reverse_recovery": null,
+    "variant": "zener"
+  },
+  "usable_curves": false
+}

@@ -1,0 +1,265 @@
+{
+  "curves": [
+    {
+      "name": "P-channel transfer characteristics, 25 degC",
+      "page_reference": "p. 3, Figure 2 Transfer Characteristics",
+      "points": [
+        {
+          "x": 1.0,
+          "y": 0.2
+        },
+        {
+          "x": 1.5,
+          "y": 1.5
+        },
+        {
+          "x": 2.0,
+          "y": 3.5
+        },
+        {
+          "x": 2.5,
+          "y": 5.8
+        },
+        {
+          "x": 3.0,
+          "y": 7.2
+        },
+        {
+          "x": 3.5,
+          "y": 8.0
+        }
+      ],
+      "test_conditions": "|VDS| = 5 V, TJ = 25 degC, pulsed static characteristic; plotted P-channel magnitudes",
+      "x_axis": {
+        "quantity": "magnitude of gate-source voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "magnitude of drain current",
+        "scale": "linear",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "P-channel on-region characteristics, |VGS| = 2.5 V",
+      "page_reference": "p. 3, Fig. 1 On-Region Characteristics",
+      "points": [
+        {
+          "x": 0.5,
+          "y": 2.3
+        },
+        {
+          "x": 1.0,
+          "y": 3.0
+        },
+        {
+          "x": 3.0,
+          "y": 3.3
+        },
+        {
+          "x": 5.0,
+          "y": 3.5
+        }
+      ],
+      "test_conditions": "|VGS| = 2.5 V, TJ = 25 degC, pulsed static characteristic; plotted P-channel magnitudes",
+      "x_axis": {
+        "quantity": "magnitude of drain-source voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "magnitude of drain current",
+        "scale": "linear",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "P-channel reverse-transfer capacitance",
+      "page_reference": "p. 4, Figure 8 Capacitance Characteristics",
+      "points": [
+        {
+          "x": 0.0,
+          "y": 32.0
+        },
+        {
+          "x": 5.0,
+          "y": 22.0
+        },
+        {
+          "x": 15.0,
+          "y": 17.0
+        },
+        {
+          "x": 30.0,
+          "y": 13.0
+        }
+      ],
+      "test_conditions": "VGS = 0 V, f = 1 MHz, typical Crss trace; plotted P-channel magnitudes",
+      "x_axis": {
+        "quantity": "magnitude of drain-source voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "reverse-transfer capacitance",
+        "scale": "linear",
+        "unit": "pF"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4",
+      "p. 5"
+    ],
+    "revision": "Rev 10, Jan. 2011",
+    "title": "AO3403 30V P-Channel Enhancement Mode Field Effect Transistor"
+  },
+  "extraction_notes": [
+    "The datasheet specifies a P-channel device and prints drain, gate, source, and diode quantities with negative signs. Per the bundled VDMOS archetype, this extraction records magnitudes and polarity = p.",
+    "Transfer, on-region, and reverse-transfer-capacitance curves were manually digitized from the typical plots on p. 3-p. 4 using magnitudes.",
+    "The electrical table also publishes IDSS, IGSS, transconductance, gate charge, switching times, reverse-recovery time, reverse-recovery charge, and gate resistance; this extraction schema has no fields for those quantities.",
+    "The table also provides maximum RDS(on) values of 0.115 ohm at |VGS|=10 V, 0.150 ohm at |VGS|=4.5 V, and 0.200 ohm at |VGS|=2.5 V, while the schema resistance fields retain the corresponding typical values.",
+    "Ciss is 260 pF typical (2.6e-10 F) and 315 pF maximum under the shared dynamic-parameter bias VGS=0 V, VDS=-15 V, f=1 MHz; the schema field retains the typical value."
+  ],
+  "family": "mosfet",
+  "manufacturer": "Alpha Omega Semicon",
+  "mpn": "AO3403",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "body_diode": {
+      "conditions": "|IS| = 1 A, VGS = 0 V, TJ = 25 degC; magnitude of specified negative diode voltage",
+      "page_reference": "p. 2, Electrical Characteristics, VSD, TYP",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 0.78
+    },
+    "breakdown_voltage": {
+      "conditions": "VGS = 0 V, |ID| = 250 uA, TJ = 25 degC; magnitude of specified negative breakdown voltage",
+      "page_reference": "p. 2, Electrical Characteristics, BVDSS, MIN",
+      "source_kind": "minimum",
+      "unit": "V",
+      "value": 30.0
+    },
+    "ciss": {
+      "conditions": "VGS = 0 V, VDS = -15 V, f = 1 MHz, TJ = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, Ciss, TYP",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 2.6e-10
+    },
+    "coss": {
+      "conditions": "VGS = 0 V, VDS = -15 V, f = 1 MHz, TJ = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, Coss, TYP",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 3.7e-08
+    },
+    "crss": {
+      "conditions": "VGS = 0 V, VDS = -15 V, f = 1 MHz, TJ = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, Crss, TYP",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 2e-08
+    },
+    "polarity": "p",
+    "rdson_points": [
+      {
+        "current": {
+          "conditions": "|VGS| = 10 V, TJ = 25 degC; magnitude of specified negative current",
+          "page_reference": "p. 2, Electrical Characteristics, RDS(ON) condition",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 2.6
+        },
+        "resistance": {
+          "conditions": "|VGS| = 10 V, |ID| = 2.6 A, TJ = 25 degC",
+          "page_reference": "p. 2, Electrical Characteristics, RDS(ON), TYP",
+          "source_kind": "typical",
+          "unit": "ohm",
+          "value": 0.088
+        },
+        "vgs": {
+          "conditions": "|VGS| = 10 V, |ID| = 2.6 A, TJ = 25 degC; magnitude of specified negative bias",
+          "page_reference": "p. 2, Electrical Characteristics, RDS(ON) condition",
+          "source_kind": "typical",
+          "unit": "V",
+          "value": 10.0
+        }
+      },
+      {
+        "current": {
+          "conditions": "|VGS| = 4.5 V, TJ = 25 degC; magnitude of specified negative current",
+          "page_reference": "p. 2, Electrical Characteristics, RDS(ON) condition",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 2.0
+        },
+        "resistance": {
+          "conditions": "|VGS| = 4.5 V, |ID| = 2 A, TJ = 25 degC",
+          "page_reference": "p. 2, Electrical Characteristics, RDS(ON), TYP",
+          "source_kind": "typical",
+          "unit": "ohm",
+          "value": 0.103
+        },
+        "vgs": {
+          "conditions": "|VGS| = 4.5 V, |ID| = 2 A, TJ = 25 degC; magnitude of specified negative bias",
+          "page_reference": "p. 2, Electrical Characteristics, RDS(ON) condition",
+          "source_kind": "typical",
+          "unit": "V",
+          "value": 4.5
+        }
+      },
+      {
+        "current": {
+          "conditions": "|VGS| = 2.5 V, TJ = 25 degC; magnitude of specified negative current",
+          "page_reference": "p. 2, Electrical Characteristics, RDS(ON) condition",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 1.0
+        },
+        "resistance": {
+          "conditions": "|VGS| = 2.5 V, |ID| = 1 A, TJ = 25 degC",
+          "page_reference": "p. 2, Electrical Characteristics, RDS(ON), TYP",
+          "source_kind": "typical",
+          "unit": "ohm",
+          "value": 0.139
+        },
+        "vgs": {
+          "conditions": "|VGS| = 2.5 V, |ID| = 1 A, TJ = 25 degC; magnitude of specified negative bias",
+          "page_reference": "p. 2, Electrical Characteristics, RDS(ON) condition",
+          "source_kind": "typical",
+          "unit": "V",
+          "value": 2.5
+        }
+      }
+    ],
+    "threshold_max": {
+      "conditions": "|VDS| = |VGS|, |ID| = 250 uA, TJ = 25 degC; magnitude of specified negative threshold",
+      "page_reference": "p. 2, Electrical Characteristics, VGS(th), MAX",
+      "source_kind": "maximum",
+      "unit": "V",
+      "value": 1.4
+    },
+    "threshold_min": {
+      "conditions": "|VDS| = |VGS|, |ID| = 250 uA, TJ = 25 degC; magnitude of specified negative threshold",
+      "page_reference": "p. 2, Electrical Characteristics, VGS(th), MIN",
+      "source_kind": "minimum",
+      "unit": "V",
+      "value": 0.6
+    },
+    "threshold_typ": {
+      "conditions": "|VDS| = |VGS|, |ID| = 250 uA, TJ = 25 degC; magnitude of specified negative threshold",
+      "page_reference": "p. 2, Electrical Characteristics, VGS(th), TYP",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 1.0
+    }
+  },
+  "usable_curves": true
+}

@@ -1,0 +1,109 @@
+{
+  "curves": [
+    {
+      "name": "BZX84C33 zener characteristics",
+      "page_reference": "p. 3, Fig. 2, Zener Characteristics (11V to 43V)",
+      "points": [
+        {
+          "x": 32.819,
+          "y": 0.0005
+        },
+        {
+          "x": 32.841,
+          "y": 0.001
+        },
+        {
+          "x": 32.949,
+          "y": 0.002
+        },
+        {
+          "x": 33.318,
+          "y": 0.005
+        },
+        {
+          "x": 33.86,
+          "y": 0.009
+        }
+      ],
+      "test_conditions": "TA = 25 degC, pulsed; BZX84C33 curve in the BZX84C series, PD = 300 mW characteristic envelope",
+      "x_axis": {
+        "quantity": "zener voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "zener current",
+        "scale": "log",
+        "unit": "A"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "revision": "Rev. 1.0",
+    "title": "BZX84C2V4 THRU BZX84C75 SURFACE MOUNT SILICON ZENER DIODES"
+  },
+  "extraction_notes": [
+    "PDF SHA-256 verified as 39b6ea9e2fb90c0f556434867115de516305a365515113676b906ff1ade79e83.",
+    "The Fig. 2 points are digitized from the labeled BZX84C33 curve; x is zener voltage and y is zener current, with the plotted y-axis logarithmic.",
+    "The BZX84C33 table row gives VZ minimum 31 V, nominal 33 V, and maximum 35 V at IZT = 2 mA; the nominal value is recorded as the breakdown-voltage target and IZT is paired as the breakdown-current target.",
+    "Reverse leakage is a maximum rating of 0.1 uA at VR = 23.1 V and TA = 25 degC, not a typical value.",
+    "The datasheet publishes no reverse-recovery time. It shows family-level typical capacitance curves in Fig. 5 versus nominal zener voltage, but no unambiguous device-specific capacitance-versus-reverse-bias point for BZX84C33; capacitance is therefore omitted.",
+    "The forward-voltage datum is a maximum-rated VF of 0.9 V at IF = 10 mA, not a typical value."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "BZX84C33",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": {
+      "conditions": "IZT = 0.002 A, TA = 25 degC",
+      "page_reference": "p. 2, electrical characteristics, BZX84C33 row, IZT",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.002
+    },
+    "breakdown_voltage": {
+      "conditions": "IZT = 0.002 A, TA = 25 degC; nominal zener voltage",
+      "page_reference": "p. 2, electrical characteristics, BZX84C33 row, VZ @ IZT",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 33.0
+    },
+    "capacitance": null,
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 0.01 A, TA = 25 degC",
+          "page_reference": "p. 1, maximum ratings, Forward Voltage @ IF = 10 mA",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.01
+        },
+        "voltage": {
+          "conditions": "IF = 0.01 A, TA = 25 degC",
+          "page_reference": "p. 1, maximum ratings, Forward Voltage @ IF = 10 mA",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.9
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = 23.1 V, TA = 25 degC",
+      "page_reference": "p. 2, electrical characteristics, BZX84C33 row, IR @ VR",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 1e-07
+    },
+    "reverse_recovery": null,
+    "variant": "zener"
+  },
+  "usable_curves": true
+}

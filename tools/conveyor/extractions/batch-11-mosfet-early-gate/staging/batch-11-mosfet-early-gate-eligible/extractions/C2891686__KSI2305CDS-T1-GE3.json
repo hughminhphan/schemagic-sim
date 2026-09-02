@@ -1,0 +1,285 @@
+{
+  "curves": [
+    {
+      "name": "transfer characteristics magnitude",
+      "page_reference": "p. 3 Transfer Characteristics",
+      "points": [
+        {
+          "x": 1.0,
+          "y": 0
+        },
+        {
+          "x": 1.5,
+          "y": 0.2
+        },
+        {
+          "x": 2.0,
+          "y": 4
+        },
+        {
+          "x": 2.5,
+          "y": 11
+        },
+        {
+          "x": 3.0,
+          "y": 18
+        },
+        {
+          "x": 3.4,
+          "y": 20
+        }
+      ],
+      "test_conditions": "TC = -55, 25, 125 degC",
+      "x_axis": {
+        "quantity": "VGS magnitude",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "ID magnitude",
+        "scale": "linear",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "capacitance",
+      "page_reference": "p. 3 Capacitance",
+      "points": [
+        {
+          "x": 0,
+          "y": 1150
+        },
+        {
+          "x": 2,
+          "y": 850
+        },
+        {
+          "x": 5,
+          "y": 700
+        },
+        {
+          "x": 10,
+          "y": 650
+        },
+        {
+          "x": 20,
+          "y": 620
+        }
+      ],
+      "test_conditions": "VGS = 0 V, f = 1 MHz",
+      "x_axis": {
+        "quantity": "VDS magnitude",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "capacitance",
+        "scale": "linear",
+        "unit": "pF"
+      }
+    },
+    {
+      "name": "on-resistance",
+      "page_reference": "p. 3 On-Resistance vs Drain Current",
+      "points": [
+        {
+          "x": 1,
+          "y": 0.06
+        },
+        {
+          "x": 4,
+          "y": 0.065
+        },
+        {
+          "x": 8,
+          "y": 0.07
+        },
+        {
+          "x": 12,
+          "y": 0.09
+        },
+        {
+          "x": 16,
+          "y": 0.2
+        }
+      ],
+      "test_conditions": "VGS magnitude = 2.5, 2.7, 4.5 V",
+      "x_axis": {
+        "quantity": "ID magnitude",
+        "scale": "linear",
+        "unit": "A"
+      },
+      "y_axis": {
+        "quantity": "RDS(on)",
+        "scale": "linear",
+        "unit": "ohm"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "1",
+      "2",
+      "3",
+      "4"
+    ],
+    "revision": "undated",
+    "title": "KSI2305CDS-T1-GE3 P-Channel 20-V MOSFET"
+  },
+  "extraction_notes": [
+    "P-channel source axes are negative; curve coordinates are stored as positive magnitudes for fitting."
+  ],
+  "family": "mosfet",
+  "manufacturer": "KUU",
+  "mpn": "KSI2305CDS-T1-GE3",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "body_diode": {
+      "conditions": "IS = -1.25 A, VGS = 0 V",
+      "page_reference": "p. 2 VSD, MAX",
+      "source_kind": "maximum",
+      "unit": "V",
+      "value": 1.3
+    },
+    "breakdown_voltage": {
+      "conditions": "VGS = 0 V, ID = -250 uA",
+      "page_reference": "p. 2 V(BR)DSS",
+      "source_kind": "minimum",
+      "unit": "V",
+      "value": 20.0
+    },
+    "ciss": {
+      "conditions": "VDS = -10 V, VGS = 0 V, f = 1 MHz",
+      "page_reference": "p. 2 Ciss",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 4.15e-10
+    },
+    "coss": {
+      "conditions": "VDS = -10 V, VGS = 0 V, f = 1 MHz",
+      "page_reference": "p. 2 Coss",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 2.23e-10
+    },
+    "crss": {
+      "conditions": "VDS = -10 V, VGS = 0 V, f = 1 MHz",
+      "page_reference": "p. 2 Crss",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 8.7e-11
+    },
+    "polarity": "p",
+    "rdson_points": [
+      {
+        "current": {
+          "conditions": "VGS = -4.5 V, ID = -3.2 A",
+          "page_reference": "p. 2 RDS(on), TYP",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 3.2
+        },
+        "resistance": {
+          "conditions": "VGS = -4.5 V, ID = -3.2 A",
+          "page_reference": "p. 2 RDS(on), TYP",
+          "source_kind": "typical",
+          "unit": "ohm",
+          "value": 0.044
+        },
+        "vgs": {
+          "conditions": "VGS = -4.5 V, ID = -3.2 A",
+          "page_reference": "p. 2 RDS(on), TYP",
+          "source_kind": "typical",
+          "unit": "V",
+          "value": 4.5
+        }
+      },
+      {
+        "current": {
+          "conditions": "VGS = -4.5 V, ID = -3.2 A",
+          "page_reference": "p. 2 RDS(on), MAX",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 3.2
+        },
+        "resistance": {
+          "conditions": "VGS = -4.5 V, ID = -3.2 A",
+          "page_reference": "p. 2 RDS(on), MAX",
+          "source_kind": "maximum",
+          "unit": "ohm",
+          "value": 0.065
+        },
+        "vgs": {
+          "conditions": "VGS = -4.5 V, ID = -3.2 A",
+          "page_reference": "p. 2 RDS(on), MAX",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 4.5
+        }
+      },
+      {
+        "current": {
+          "conditions": "VGS = -2.5 V, ID = -2 A",
+          "page_reference": "p. 2 RDS(on), TYP",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 2.0
+        },
+        "resistance": {
+          "conditions": "VGS = -2.5 V, ID = -2 A",
+          "page_reference": "p. 2 RDS(on), TYP",
+          "source_kind": "typical",
+          "unit": "ohm",
+          "value": 0.058
+        },
+        "vgs": {
+          "conditions": "VGS = -2.5 V, ID = -2 A",
+          "page_reference": "p. 2 RDS(on), TYP",
+          "source_kind": "typical",
+          "unit": "V",
+          "value": 2.5
+        }
+      },
+      {
+        "current": {
+          "conditions": "VGS = -2.5 V, ID = -2 A",
+          "page_reference": "p. 2 RDS(on), MAX",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 2.0
+        },
+        "resistance": {
+          "conditions": "VGS = -2.5 V, ID = -2 A",
+          "page_reference": "p. 2 RDS(on), MAX",
+          "source_kind": "maximum",
+          "unit": "ohm",
+          "value": 0.085
+        },
+        "vgs": {
+          "conditions": "VGS = -2.5 V, ID = -2 A",
+          "page_reference": "p. 2 RDS(on), MAX",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 2.5
+        }
+      }
+    ],
+    "threshold_max": {
+      "conditions": "VDS = VGS, ID = -250 uA",
+      "page_reference": "p. 2 VGS(th), MAX",
+      "source_kind": "maximum",
+      "unit": "V",
+      "value": 1.0
+    },
+    "threshold_min": {
+      "conditions": "VDS = VGS, ID = -250 uA",
+      "page_reference": "p. 2 VGS(th), MIN",
+      "source_kind": "minimum",
+      "unit": "V",
+      "value": 0.5
+    },
+    "threshold_typ": null
+  },
+  "usable_curves": true
+}

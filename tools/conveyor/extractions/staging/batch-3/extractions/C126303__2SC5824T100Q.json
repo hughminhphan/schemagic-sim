@@ -1,0 +1,231 @@
+{
+  "schema_version": "1.0.0",
+  "mpn": "2SC5824T100Q",
+  "manufacturer": "ROHM Semicon",
+  "family": "bjt",
+  "datasheet_identity": {
+    "title": "2SC5824 NPN 3.0A 60V Middle Power Transistor Datasheet",
+    "revision": "2013.11 - Rev.E",
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4",
+      "p. 5",
+      "p. 6"
+    ]
+  },
+  "usable_curves": true,
+  "curves": [
+    {
+      "name": "Typical output characteristics, IB = 5 mA",
+      "x_axis": {
+        "quantity": "collector-emitter voltage VCE",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "collector current IC",
+        "unit": "A",
+        "scale": "linear"
+      },
+      "test_conditions": "Ta = 25 degC; pulsed; base current IB = 5 mA",
+      "page_reference": "p. 3, Fig. 2 Typical Output Characteristics",
+      "points": [
+        {"x": 0.0, "y": 0.0},
+        {"x": 0.1, "y": 0.55},
+        {"x": 0.2, "y": 0.75},
+        {"x": 0.5, "y": 0.98},
+        {"x": 1.0, "y": 1.10},
+        {"x": 2.0, "y": 1.18},
+        {"x": 3.0, "y": 1.22},
+        {"x": 5.0, "y": 1.25}
+      ]
+    },
+    {
+      "name": "Gain bandwidth product",
+      "x_axis": {
+        "quantity": "emitter current IE",
+        "unit": "A",
+        "scale": "log"
+      },
+      "y_axis": {
+        "quantity": "transition frequency fT",
+        "unit": "Hz",
+        "scale": "log"
+      },
+      "test_conditions": "Ta = 25 degC; VCE = 10 V; pulsed",
+      "page_reference": "p. 4, Fig. 8 Gain Bandwidth Product vs. Emitter Current",
+      "points": [
+        {"x": -0.01, "y": 45000000},
+        {"x": -0.02, "y": 70000000},
+        {"x": -0.05, "y": 115000000},
+        {"x": -0.1, "y": 160000000},
+        {"x": -0.2, "y": 210000000},
+        {"x": -0.5, "y": 280000000},
+        {"x": -1.0, "y": 300000000},
+        {"x": -2.0, "y": 220000000},
+        {"x": -3.0, "y": 110000000},
+        {"x": -5.0, "y": 45000000},
+        {"x": -8.0, "y": 35000000}
+      ]
+    },
+    {
+      "name": "Collector output capacitance",
+      "x_axis": {
+        "quantity": "collector-base voltage VCB",
+        "unit": "V",
+        "scale": "log"
+      },
+      "y_axis": {
+        "quantity": "collector output capacitance Cob",
+        "unit": "F",
+        "scale": "log"
+      },
+      "test_conditions": "Ta = 25 degC; f = 1 MHz",
+      "page_reference": "p. 5, Fig. 9 Collector Output Capacitance vs. Collector-Base Voltage",
+      "points": [
+        {"x": 0.7, "y": 7.5e-11},
+        {"x": 1.0, "y": 4.5e-11},
+        {"x": 2.0, "y": 3.4e-11},
+        {"x": 5.0, "y": 2.6e-11},
+        {"x": 10.0, "y": 2.1e-11},
+        {"x": 20.0, "y": 1.7e-11},
+        {"x": 30.0, "y": 1.5e-11}
+      ]
+    }
+  ],
+  "specs": {
+    "polarity": "npn",
+    "gain_points": [
+      {
+        "collector_current": {
+          "value": 0.1,
+          "unit": "A",
+          "conditions": "VCE = 2 V, Ta = 25 degC",
+          "page_reference": "p. 2, Electrical Characteristics, DC current gain hFE",
+          "source_kind": "minimum"
+        },
+        "vce": {
+          "value": 2.0,
+          "unit": "V",
+          "conditions": "IC = 100 mA, Ta = 25 degC",
+          "page_reference": "p. 2, Electrical Characteristics, DC current gain hFE",
+          "source_kind": "minimum"
+        },
+        "hfe": {
+          "value": 120,
+          "unit": "1",
+          "conditions": "IC = 100 mA, VCE = 2 V, Ta = 25 degC",
+          "page_reference": "p. 2, Electrical Characteristics, DC current gain hFE",
+          "source_kind": "minimum"
+        }
+      },
+      {
+        "collector_current": {
+          "value": 0.1,
+          "unit": "A",
+          "conditions": "VCE = 2 V, Ta = 25 degC",
+          "page_reference": "p. 2, Electrical Characteristics, DC current gain hFE",
+          "source_kind": "maximum"
+        },
+        "vce": {
+          "value": 2.0,
+          "unit": "V",
+          "conditions": "IC = 100 mA, Ta = 25 degC",
+          "page_reference": "p. 2, Electrical Characteristics, DC current gain hFE",
+          "source_kind": "maximum"
+        },
+        "hfe": {
+          "value": 390,
+          "unit": "1",
+          "conditions": "IC = 100 mA, VCE = 2 V, Ta = 25 degC",
+          "page_reference": "p. 2, Electrical Characteristics, DC current gain hFE",
+          "source_kind": "maximum"
+        }
+      }
+    ],
+    "saturation_points": [
+      {
+        "collector_current": {
+          "value": 2.0,
+          "unit": "A",
+          "conditions": "IB = 200 mA, Ta = 25 degC; pulsed",
+          "page_reference": "p. 2, Electrical Characteristics, Collector-emitter saturation voltage",
+          "source_kind": "typical"
+        },
+        "base_current": {
+          "value": 0.2,
+          "unit": "A",
+          "conditions": "IC = 2 A, Ta = 25 degC; pulsed",
+          "page_reference": "p. 2, Electrical Characteristics, Collector-emitter saturation voltage",
+          "source_kind": "typical"
+        },
+        "vce_sat": {
+          "value": 0.2,
+          "unit": "V",
+          "conditions": "IC = 2 A, IB = 200 mA, Ta = 25 degC; pulsed",
+          "page_reference": "p. 2, Electrical Characteristics, Collector-emitter saturation voltage",
+          "source_kind": "typical"
+        },
+        "vbe_sat": null
+      },
+      {
+        "collector_current": {
+          "value": 2.0,
+          "unit": "A",
+          "conditions": "IB = 200 mA, Ta = 25 degC; pulsed",
+          "page_reference": "p. 2, Electrical Characteristics, Collector-emitter saturation voltage",
+          "source_kind": "maximum"
+        },
+        "base_current": {
+          "value": 0.2,
+          "unit": "A",
+          "conditions": "IC = 2 A, Ta = 25 degC; pulsed",
+          "page_reference": "p. 2, Electrical Characteristics, Collector-emitter saturation voltage",
+          "source_kind": "maximum"
+        },
+        "vce_sat": {
+          "value": 0.5,
+          "unit": "V",
+          "conditions": "IC = 2 A, IB = 200 mA, Ta = 25 degC; pulsed",
+          "page_reference": "p. 2, Electrical Characteristics, Collector-emitter saturation voltage",
+          "source_kind": "maximum"
+        },
+        "vbe_sat": null
+      }
+    ],
+    "ft": {
+      "value": 200000000,
+      "unit": "Hz",
+      "conditions": "VCE = 10 V, IE = -100 mA, f = 10 MHz, Ta = 25 degC; pulsed",
+      "page_reference": "p. 2, Electrical Characteristics, Transition frequency fT",
+      "source_kind": "typical"
+    },
+    "cobo": {
+      "value": 2.0e-11,
+      "unit": "F",
+      "conditions": "VCB = 10 V, IE = 0 A, f = 1 MHz, Ta = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, Output capacitance Cob",
+      "source_kind": "typical"
+    },
+    "cibo": null,
+    "vceo": {
+      "value": 60,
+      "unit": "V",
+      "conditions": "IC = 1 mA, Ta = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, Collector-emitter breakdown voltage BVCEO",
+      "source_kind": "minimum"
+    }
+  },
+  "extraction_notes": [
+    "PDF SHA-256 verified as b4eef31ec079ecc6e368053492f0657bd4ecbe1e29ca00ce716977fc306adbea.",
+    "The supplied PDF identifies the exact device as 2SC5824, an NPN transistor branded ROHM Semiconductor and attributed to ROHM Co., Ltd.; the requested manufacturer identity is ROHM Semicon and the exact MPN includes the T100 ordering suffix.",
+    "The electrical characteristics table is specified at Ta = 25 degC. The hFE row is a guaranteed 120 minimum to 390 maximum at IC = 100 mA and VCE = 2 V; the range is preserved as separate minimum and maximum points.",
+    "The VCE(sat) row provides a typical 0.2 V and maximum 0.5 V at IC = 2 A and IB = 200 mA. The datasheet does not provide a VBE(sat) table row, so vbe_sat is null.",
+    "Curve points are sparse manual readings at visible grid positions from the typical output, gain-bandwidth, and output-capacitance plots. No points were interpolated between sampled observations. Plot quantities were converted to SI units while retaining the plotted negative emitter-current sign in Fig. 8.",
+    "The absolute maximum table also gives VCBO = 60 V, VEBO = 6 V, continuous IC = 3.0 A, pulsed ICP = 6.0 A, PD = 0.5 W or 2.0 W depending on mounting condition, Tj = 150 degC, and Tstg = -55 to +150 degC; the strict BJT extraction schema has no fields for these additional limits.",
+    "The datasheet also publishes switching times, but the strict BJT extraction schema has no fields for ton, storage time, or fall time."
+  ],
+  "omission_reason": "No Cibo/input-capacitance value or VBE(sat) table row is published. VAF/Early voltage is not tabulated. Figures 1, 3, 4, 5, 6, and 7 contain additional overlaid curves, but those traces were not separately digitized here because temperature or bias traces are difficult to isolate unambiguously from the supplied plot raster."
+}

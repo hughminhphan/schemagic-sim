@@ -1,0 +1,237 @@
+{
+  "curves": [
+    {
+      "name": "Typical forward voltage, TJ = 25 degC",
+      "page_reference": "p. 3, Fig. 1",
+      "points": [
+        {
+          "x": 0.3,
+          "y": 0.1
+        },
+        {
+          "x": 0.4,
+          "y": 0.3
+        },
+        {
+          "x": 0.5,
+          "y": 0.7
+        },
+        {
+          "x": 0.6,
+          "y": 1.3
+        },
+        {
+          "x": 0.8,
+          "y": 2.8
+        },
+        {
+          "x": 1.0,
+          "y": 4.0
+        }
+      ],
+      "test_conditions": "TJ = 25 degC",
+      "x_axis": {
+        "quantity": "instantaneous forward voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "instantaneous forward current",
+        "scale": "log",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "Typical reverse current, TJ = 25 degC",
+      "page_reference": "p. 3, Fig. 3",
+      "points": [
+        {
+          "x": 0,
+          "y": 1e-07
+        },
+        {
+          "x": 10,
+          "y": 2e-07
+        },
+        {
+          "x": 20,
+          "y": 4e-07
+        },
+        {
+          "x": 30,
+          "y": 8e-07
+        },
+        {
+          "x": 40,
+          "y": 1.5e-06
+        }
+      ],
+      "test_conditions": "TJ = 25 degC",
+      "x_axis": {
+        "quantity": "reverse voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "reverse current",
+        "scale": "log",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "Typical capacitance",
+      "page_reference": "p. 4, Fig. 7",
+      "points": [
+        {
+          "x": 0,
+          "y": 1e-10
+        },
+        {
+          "x": 2,
+          "y": 6.5e-11
+        },
+        {
+          "x": 5,
+          "y": 4.8e-11
+        },
+        {
+          "x": 10,
+          "y": 3.8e-11
+        },
+        {
+          "x": 20,
+          "y": 3e-11
+        },
+        {
+          "x": 40,
+          "y": 2.2e-11
+        }
+      ],
+      "test_conditions": "TJ = 25 degC",
+      "x_axis": {
+        "quantity": "reverse voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "capacitance",
+        "scale": "log",
+        "unit": "F"
+      }
+    },
+    {
+      "name": "Current derating",
+      "page_reference": "p. 4, Fig. 5",
+      "points": [
+        {
+          "x": 25,
+          "y": 0.8
+        },
+        {
+          "x": 75,
+          "y": 0.8
+        },
+        {
+          "x": 100,
+          "y": 0.6
+        },
+        {
+          "x": 125,
+          "y": 0.2
+        },
+        {
+          "x": 135,
+          "y": 0.0
+        }
+      ],
+      "test_conditions": "DC and square-wave curves; FREQ = 20 kHz",
+      "x_axis": {
+        "quantity": "lead temperature",
+        "scale": "linear",
+        "unit": "degC"
+      },
+      "y_axis": {
+        "quantity": "average forward current",
+        "scale": "linear",
+        "unit": "A"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4",
+      "p. 5"
+    ],
+    "revision": "Rev. 0",
+    "title": "LMBR0540T1G Surface Mount Schottky Power Rectifier"
+  },
+  "extraction_notes": [
+    "The supplied datasheet includes forward, reverse-current, derating, power-dissipation, capacitance, and thermal curves.",
+    "Reverse current is specified as 20 uA at VR = 40 V and TJ = 25 degC; converted to 2e-5 A.",
+    "Capacitance is published as a curve rather than a table value; the zero-bias point is digitized.",
+    "No reverse-recovery or breakdown-voltage/current specification is published."
+  ],
+  "family": "diode",
+  "manufacturer": "LRC",
+  "mpn": "LMBR0540T1G",
+  "omission_reason": "No reverse-recovery-time or breakdown-voltage/current specification is published; capacitance is available from a typical curve.",
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": null,
+    "breakdown_voltage": null,
+    "capacitance": {
+      "conditions": "VR = 0 V; TJ = 25 degC; typical capacitance digitized from Fig. 7",
+      "page_reference": "p. 4, Fig. 7",
+      "source_kind": "digitized_typical_curve",
+      "unit": "F",
+      "value": 1e-10
+    },
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 0.5 A; TJ = 25 degC; maximum instantaneous forward voltage",
+          "page_reference": "p. 2, electrical characteristics",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.5
+        },
+        "voltage": {
+          "conditions": "IF = 0.5 A; TJ = 25 degC; maximum instantaneous forward voltage",
+          "page_reference": "p. 2, electrical characteristics",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.55
+        }
+      },
+      {
+        "current": {
+          "conditions": "IF = 1.0 A; TJ = 25 degC; maximum instantaneous forward voltage",
+          "page_reference": "p. 2, electrical characteristics",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 1.0
+        },
+        "voltage": {
+          "conditions": "IF = 1.0 A; TJ = 25 degC; maximum instantaneous forward voltage",
+          "page_reference": "p. 2, electrical characteristics",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.65
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = 40 V; TJ = 25 degC; maximum instantaneous reverse current",
+      "page_reference": "p. 2, electrical characteristics",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 2e-05
+    },
+    "reverse_recovery": null,
+    "variant": "schottky"
+  },
+  "usable_curves": true
+}

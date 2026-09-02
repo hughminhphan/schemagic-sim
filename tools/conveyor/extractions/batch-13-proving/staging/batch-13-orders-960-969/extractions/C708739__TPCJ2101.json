@@ -1,0 +1,152 @@
+{
+  "curves": [],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "revision": "not stated in supplied datasheet",
+    "title": "TPCJ2101 P-Channel Enhancement-Mode MOS FETs"
+  },
+  "extraction_notes": [
+    "P-channel datasheet values are stored as positive magnitudes; signed datasheet conditions are retained.",
+    "No transfer-characteristics, output-characteristics, or capacitance-versus-VDS figures are present in the supplied four-page datasheet, so no curve points were digitized or interpolated.",
+    "The datasheet also lists IDSS max 1 uA magnitude at VDS = -20 V and VGS = 0 V, and IGSS max 100 nA magnitude at VDS = 0 V and VGS = +/-8 V; these have no dedicated fields in the supplied schema.",
+    "The datasheet lists typical switching values at VGS = -4.5 V, VDD = -4.0 V, ID = -1.0 A, and RG = 6.2 ohm: td(on) = 6.2 ns, tr = 15 ns, td(off) = 26 ns, and tf = 18 ns; these have no dedicated fields in the supplied schema.",
+    "Absolute maximum ratings include VDS = -20 V, VGS = +/-8 V, continuous ID = -1.4 A, pulsed IDM = -3.0 A, PD = 0.29 W, RthetaJA = 431 degC/W, TJ = 150 degC, and storage temperature = -50 to +150 degC; these have no dedicated fields in the supplied schema.",
+    "The supplied datasheet does not state a revision.",
+    "The tabulated capacitance values are used as terminal capacitances only; no capacitance-versus-VDS curve is available for extracting a nonlinear gate-drain capacitance family."
+  ],
+  "family": "mosfet",
+  "manufacturer": "TECH PUBLIC",
+  "mpn": "TPCJ2101",
+  "omission_reason": "No usable transfer, output, or capacitance-versus-VDS curves are present in the supplied datasheet. The four pages contain only a symbol/package drawing, absolute-maximum table, electrical-characteristics tables, and package outline; digitizing curve points would require inventing or interpolating data.",
+  "schema_version": "1.0.0",
+  "specs": {
+    "body_diode": {
+      "conditions": "VGS = 0 V, IS = -0.3 A, TA = 25 degC",
+      "page_reference": "p. 3 Electrical Characteristics, Drain-source body diode characteristics, Forward Diode Voltage, TYP",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 0.62
+    },
+    "breakdown_voltage": {
+      "conditions": "VGS = 0 V, ID = -250 uA, TA = 25 degC",
+      "page_reference": "p. 3 Electrical Characteristics, Drain-source breakdown voltage, MIN",
+      "source_kind": "minimum",
+      "unit": "V",
+      "value": 20.0
+    },
+    "ciss": {
+      "conditions": "VDS = -8.0 V, VGS = 0 V, f = 1 MHz, TA = 25 degC",
+      "page_reference": "p. 3 Electrical Characteristics, Input capacitance, TYP",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 6.4e-10
+    },
+    "coss": {
+      "conditions": "VDS = -8.0 V, VGS = 0 V, f = 1 MHz, TA = 25 degC",
+      "page_reference": "p. 3 Electrical Characteristics, Output capacitance, TYP",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 1.2e-10
+    },
+    "crss": {
+      "conditions": "VDS = -8.0 V, VGS = 0 V, f = 1 MHz, TA = 25 degC",
+      "page_reference": "p. 3 Electrical Characteristics, Reverse transfer capacitance, TYP",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 8.2e-11
+    },
+    "polarity": "p",
+    "rdson_points": [
+      {
+        "current": {
+          "conditions": "VGS = -4.5 V, ID = -1.0 A, TA = 25 degC",
+          "page_reference": "p. 3 Electrical Characteristics, Drain-source on-state resistance",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 1.0
+        },
+        "resistance": {
+          "conditions": "VGS = -4.5 V, ID = -1.0 A, TA = 25 degC",
+          "page_reference": "p. 3 Electrical Characteristics, Drain-source on-state resistance, MAX",
+          "source_kind": "maximum",
+          "unit": "ohm",
+          "value": 0.1
+        },
+        "vgs": {
+          "conditions": "VGS = -4.5 V, ID = -1.0 A, TA = 25 degC",
+          "page_reference": "p. 3 Electrical Characteristics, Drain-source on-state resistance",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 4.5
+        }
+      },
+      {
+        "current": {
+          "conditions": "VGS = -2.5 V, ID = -0.5 A, TA = 25 degC",
+          "page_reference": "p. 3 Electrical Characteristics, Drain-source on-state resistance",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.5
+        },
+        "resistance": {
+          "conditions": "VGS = -2.5 V, ID = -0.5 A, TA = 25 degC",
+          "page_reference": "p. 3 Electrical Characteristics, Drain-source on-state resistance, MAX",
+          "source_kind": "maximum",
+          "unit": "ohm",
+          "value": 0.14
+        },
+        "vgs": {
+          "conditions": "VGS = -2.5 V, ID = -0.5 A, TA = 25 degC",
+          "page_reference": "p. 3 Electrical Characteristics, Drain-source on-state resistance",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 2.5
+        }
+      },
+      {
+        "current": {
+          "conditions": "VGS = -1.8 V, ID = -0.3 A, TA = 25 degC",
+          "page_reference": "p. 3 Electrical Characteristics, Drain-source on-state resistance",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.3
+        },
+        "resistance": {
+          "conditions": "VGS = -1.8 V, ID = -0.3 A, TA = 25 degC",
+          "page_reference": "p. 3 Electrical Characteristics, Drain-source on-state resistance, MAX",
+          "source_kind": "maximum",
+          "unit": "ohm",
+          "value": 0.21
+        },
+        "vgs": {
+          "conditions": "VGS = -1.8 V, ID = -0.3 A, TA = 25 degC",
+          "page_reference": "p. 3 Electrical Characteristics, Drain-source on-state resistance",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 1.8
+        }
+      }
+    ],
+    "threshold_max": null,
+    "threshold_min": {
+      "conditions": "VDS = VGS, ID = -250 uA, TA = 25 degC",
+      "page_reference": "p. 3 Electrical Characteristics, Gate-source threshold voltage, MIN",
+      "source_kind": "minimum",
+      "unit": "V",
+      "value": 0.45
+    },
+    "threshold_typ": {
+      "conditions": "VDS = VGS, ID = -250 uA, TA = 25 degC",
+      "page_reference": "p. 3 Electrical Characteristics, Gate-source threshold voltage, TYP",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 0.7
+    }
+  },
+  "usable_curves": false
+}

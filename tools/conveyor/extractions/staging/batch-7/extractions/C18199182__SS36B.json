@@ -1,0 +1,109 @@
+{
+  "curves": [
+    {
+      "name": "Fig.3 Typical Forward Voltage, SS35B-SS36B curve",
+      "page_reference": "p. 2 Fig.3",
+      "points": [
+        {
+          "x": 0.34,
+          "y": 0.1
+        },
+        {
+          "x": 0.371,
+          "y": 0.2
+        },
+        {
+          "x": 0.426,
+          "y": 0.5
+        },
+        {
+          "x": 0.476,
+          "y": 1.0
+        },
+        {
+          "x": 0.538,
+          "y": 2.0
+        },
+        {
+          "x": 0.644,
+          "y": 5.0
+        },
+        {
+          "x": 0.762,
+          "y": 10.0
+        }
+      ],
+      "test_conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle; legend curve SS35B-SS36B",
+      "x_axis": {
+        "quantity": "instantaneous forward voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "instantaneous forward current",
+        "scale": "log",
+        "unit": "A"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ],
+    "revision": "Rev:1.0",
+    "title": "SS32B THRU SS320B SURFACE MOUNT SCHOTTKY BARRIER RECTIFIER (SMB Surface Mount Schottky Barrier Rectifier)"
+  },
+  "extraction_notes": [
+    "Family datasheet SS32B-SS320B; SS36B is the 60 V member: VRRM = VDC = 60 V and VRMS = 42 V (p. 1). IF(AV) = 3.0 A and IFSM = 80 A at 8.3 ms half-sine are common ratings.",
+    "Table merged cells assign VF maximum 0.70 V at IF = 3.0 A to SS35B-SS36B; IR1 maximum 0.5 mA at VR = VDC, Ta = 25 degC to SS32B-SS36B; CJ typical 300 pF at 4.0 V DC and 1 MHz to SS35B-SS320B (p. 2).",
+    "Fig.3 SS35B-SS36B forward trace was digitized from the printed linear-voltage/log-current grid; plotted values are recorded in SI amperes.",
+    "Fig.1 and Fig.2 are thermal/surge rating curves and were not digitized. Fig.4 is a normalized reverse-characteristics plot and was not used as an absolute-voltage curve.",
+    "No reverse recovery time or measured avalanche/breakdown row is published. VRRM is an absolute maximum rating, not a measured breakdown voltage, so breakdown fields are null."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "SS36B",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": null,
+    "breakdown_voltage": null,
+    "capacitance": {
+      "conditions": "VR = 4.0 V DC, f = 1 MHz, Ta = 25 degC; SS35B-SS320B column group",
+      "page_reference": "p. 2 electrical characteristics",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 3e-10
+    },
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 3.0 A, Ta = 25 degC; maximum instantaneous forward voltage",
+          "page_reference": "p. 2 electrical characteristics",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 3.0
+        },
+        "voltage": {
+          "conditions": "IF = 3.0 A, Ta = 25 degC; SS35B-SS36B column group",
+          "page_reference": "p. 2 electrical characteristics",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.7
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = VDC = 60 V, Ta = 25 degC; SS32B-SS36B column group",
+      "page_reference": "p. 2 electrical characteristics",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 0.0005
+    },
+    "reverse_recovery": null,
+    "variant": "schottky"
+  },
+  "usable_curves": true
+}

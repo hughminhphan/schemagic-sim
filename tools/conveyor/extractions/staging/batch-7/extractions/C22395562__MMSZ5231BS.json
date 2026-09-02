@@ -1,0 +1,142 @@
+{
+  "curves": [
+    {
+      "name": "Typical zener characteristics, 5.1 V curve",
+      "page_reference": "p. 3, Fig. 1",
+      "points": [
+        {
+          "x": 4.85,
+          "y": 0.0005
+        },
+        {
+          "x": 4.95,
+          "y": 0.001
+        },
+        {
+          "x": 5.05,
+          "y": 0.01
+        },
+        {
+          "x": 5.1,
+          "y": 0.02
+        },
+        {
+          "x": 5.2,
+          "y": 0.05
+        }
+      ],
+      "test_conditions": "TA = 25 degC, pulsed, PD = 200 mW; 5.1 V curve labelled in figure",
+      "x_axis": {
+        "quantity": "zener voltage VZ",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "zener current IZ",
+        "scale": "log",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "Typical capacitance versus nominal zener voltage",
+      "page_reference": "p. 3, Fig. 4",
+      "points": [
+        {
+          "x": 5.1,
+          "y": 1.45e-10
+        },
+        {
+          "x": 10.0,
+          "y": 7.5e-11
+        },
+        {
+          "x": 20.0,
+          "y": 3.5e-11
+        },
+        {
+          "x": 40.0,
+          "y": 1.5e-11
+        },
+        {
+          "x": 80.0,
+          "y": 7e-12
+        }
+      ],
+      "test_conditions": "TA = 25 degC, f = 1 MHz; family curves, bias conditions labelled 0 V, 1 V, and 50% of VZ nominal",
+      "x_axis": {
+        "quantity": "nominal zener voltage VZ",
+        "scale": "log",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "capacitance C",
+        "scale": "log",
+        "unit": "F"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "revision": "Rev:1.0",
+    "title": "MMSZ5221BS THRU MMSZ5259BS Surface Mount Zener Diodes"
+  },
+  "extraction_notes": [
+    "The datasheet is a family sheet; the 5.1 V zener curve is labelled in Fig. 1, while Fig. 4 capacitance curves are family curves and are not uniquely identified for MMSZ5231BS.",
+    "Zener voltage uses the nominal VZ at the tabulated IZT, paired with the same IZT as the breakdown current."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "MMSZ5231BS",
+  "omission_reason": "No MMSZ5231BS-specific tabulated capacitance value or reverse-recovery specification is provided; the capacitance plot is a family plot and is retained only as a curve.",
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": {
+      "conditions": "IZT = 20 mA, TA = 25 degC",
+      "page_reference": "p. 2, electrical characteristics, MMSZ5231BS IZT",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.02
+    },
+    "breakdown_voltage": {
+      "conditions": "IZT = 20 mA, TA = 25 degC; nominal VZ",
+      "page_reference": "p. 2, electrical characteristics, MMSZ5231BS VZ at IZT",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 5.1
+    },
+    "capacitance": null,
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 10 mA, TA = 25 degC",
+          "page_reference": "p. 1, maximum ratings, Forward Voltage @ IF=10mA",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.01
+        },
+        "voltage": {
+          "conditions": "IF = 10 mA, TA = 25 degC",
+          "page_reference": "p. 1, maximum ratings, Forward Voltage @ IF=10mA",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.9
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = 2.0 V, TA = 25 degC",
+      "page_reference": "p. 2, electrical characteristics, IR@VR for MMSZ5231BS",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 5e-06
+    },
+    "reverse_recovery": null,
+    "variant": "zener"
+  },
+  "usable_curves": true
+}

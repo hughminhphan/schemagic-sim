@@ -1,0 +1,116 @@
+{
+  "curves": [
+    {
+      "name": "BZX84C4V7 zener characteristic",
+      "page_reference": "p. 3, Fig. 1 (Zener Characteristics, VZ up to 10 V)",
+      "points": [
+        {
+          "x": 3.98,
+          "y": 0.0005
+        },
+        {
+          "x": 4.24,
+          "y": 0.001
+        },
+        {
+          "x": 4.49,
+          "y": 0.002
+        },
+        {
+          "x": 4.76,
+          "y": 0.005
+        },
+        {
+          "x": 4.91,
+          "y": 0.01
+        },
+        {
+          "x": 4.99,
+          "y": 0.02
+        },
+        {
+          "x": 5.06,
+          "y": 0.05
+        }
+      ],
+      "test_conditions": "Ta = 25 degC, pulsed; reverse-bias polarity with cathode positive; BZX84C4V7 trace in the BZX84C2V4 through BZX84C75 series plot",
+      "x_axis": {
+        "quantity": "Zener voltage VZ",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "Zener current IZ",
+        "scale": "log",
+        "unit": "A"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "revision": "Rev.1.0",
+    "title": "BZX84C2V4 THRU BZX84C75 SURFACE MOUNT ZENER DIODES"
+  },
+  "extraction_notes": [
+    "This is a family datasheet; the BZX84C4V7 row was selected from the BZX84C2V4 through BZX84C75 electrical-characteristics table.",
+    "The Fig. 1 BZX84C4V7 trace points are digitized readings from the real plotted trace; source-axis current in mA was converted to A and no intermediate points were interpolated.",
+    "The BZX84C4V7 row gives VZ = 4.4 V minimum, 4.7 V nominal, and 5.0 V maximum at IZT = 5 mA; maximum ZZT is 80 ohm at IZT, maximum ZZK is 500 ohm at IZK = 1 mA, and admissible IZM is 5 mA.",
+    "The datasheet publishes no reverse-recovery specification. Fig. 5 is a series-wide typical capacitance plot without a uniquely identified BZX84C4V7 trace, so capacitance is omitted rather than assigned component-specific points.",
+    "Reverse leakage and Zener breakdown quantities retain the datasheet reverse-bias polarity: cathode positive relative to anode."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "BZX84C4V7",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": {
+      "conditions": "IZT = 5 mA at nominal VZ = 4.7 V, Ta = 25 degC; reverse-bias cathode positive",
+      "page_reference": "p. 2, Electrical Characteristics, BZX84C4V7 IZT row",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.005
+    },
+    "breakdown_voltage": {
+      "conditions": "IZT = 5 mA, Ta = 25 degC; nominal VZ for BZX84C4V7, reverse-bias cathode positive",
+      "page_reference": "p. 2, Electrical Characteristics, BZX84C4V7 VZ row",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 4.7
+    },
+    "capacitance": null,
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 10 mA, Ta = 25 degC",
+          "page_reference": "p. 1, Maximum Ratings",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.01
+        },
+        "voltage": {
+          "conditions": "IF = 10 mA, Ta = 25 degC",
+          "page_reference": "p. 1, Maximum Ratings",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.9
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = 2.0 V, Ta = 25 degC; reverse leakage with cathode positive",
+      "page_reference": "p. 2, Electrical Characteristics, BZX84C4V7 IR@VR row",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 3e-06
+    },
+    "reverse_recovery": null,
+    "variant": "zener"
+  },
+  "usable_curves": true
+}

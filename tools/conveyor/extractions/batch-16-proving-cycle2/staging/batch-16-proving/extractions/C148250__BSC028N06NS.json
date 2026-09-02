@@ -1,0 +1,208 @@
+{
+  "curves": [],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4",
+      "p. 5",
+      "p. 6",
+      "p. 7",
+      "p. 8",
+      "p. 9"
+    ],
+    "revision": "Rev. 2.1, 2013-01-18",
+    "title": "BSC028N06NS OptiMOS Power-Transistor"
+  },
+  "extraction_notes": [
+    "Capacitances were converted from pF to F and resistances from mOhm to ohm. Typical table values are Ciss=2700 pF, Coss=660 pF, and Crss=28 pF at VGS=0 V, VDS=30 V, f=1 MHz; min/max capacitance columns are 2025/3375 pF, 495/825 pF, and 8.5/56 pF respectively.",
+    "RDS(on) maximum table values are 0.0028 ohm at VGS=10 V, ID=50 A and 0.0042 ohm at VGS=6 V, ID=12.5 A.",
+    "IDSS typical/max are 0.5/1 uA at VDS=60 V, VGS=0 V, Tj=25 degC; at Tj=125 degC they are 10/100 uA. Gate charge typical is Qg=37 nC, Qgs=12 nC, Qgd=7 nC, Qg(th)=8 nC, Qsw=12 nC, with VDS=30 V, VGS=0 to 10 V, ID=50 A and Rg,ext=3 ohm for the Qg test.",
+    "Body-diode table values include VSD max=1.2 V at IF=50 A, trr typ=35 ns (min 14 ns, max 56 ns), and Qrr typ=29 nC (min 14 nC, max 58 nC) at VR=30 V, IF=50 A, diF/dt=100 A/us, Tc=25 degC. RthetaJC bottom max=1.5 K/W, top max=20 K/W, and RthetaJA max=50 K/W on the specified 6 cm2 cooling area.",
+    "The output, transfer, capacitance, diode, and gate-charge plots were examined. The output plot (p. 5) states Tj=25 degC but does not state dc/continuous/pulsed mode; the transfer plot has no fixed VDS (only an inequality); the capacitance plot (p. 6) has no stated temperature; and the gate-charge plot has no stated temperature. Under the supplied extraction rules no curve meets all required temperature, fixed-bias, and test-mode conditions, so curves are omitted."
+  ],
+  "family": "mosfet",
+  "manufacturer": "Infineon Technologies",
+  "mpn": "BSC028N06NS",
+  "omission_reason": "No curve was retained: the p. 5 output plot lacks an explicit dc/continuous/pulsed test mode, the transfer plot lacks a single fixed VDS bias, the p. 6 capacitance plot has no stated temperature, and the p. 7 gate-charge plot has no stated temperature. No test mode or temperature was inferred.",
+  "schema_version": "1.0.0",
+  "specs": {
+    "body_diode": {
+      "conditions": "VGS = 0 V, IF = 50 A, Tj = 25 degC",
+      "locator": {
+        "page": 3,
+        "row": "Diode forward voltage (VSD), VGS=0V, IF=50A, Tj=25degC, TYP",
+        "table": "Electrical characteristics, Reverse Diode"
+      },
+      "page_reference": "p. 3, Reverse Diode, Diode forward voltage, TYP",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 0.9
+    },
+    "breakdown_voltage": {
+      "conditions": "VGS = 0 V, ID = 1 mA, Tj = 25 degC",
+      "locator": {
+        "page": 2,
+        "row": "Drain-source breakdown voltage (V(BR)DSS), VGS=0V, ID=1mA, MIN",
+        "table": "Electrical characteristics, Static characteristics"
+      },
+      "page_reference": "p. 2, Electrical characteristics, Drain-source breakdown voltage, MIN",
+      "source_kind": "minimum",
+      "unit": "V",
+      "value": 60.0
+    },
+    "ciss": {
+      "conditions": "VGS = 0 V, VDS = 30 V, f = 1 MHz, Tj = 25 degC",
+      "locator": {
+        "page": 3,
+        "row": "Input capacitance (Ciss), VGS=0V, VDS=30V, f=1MHz, TYP",
+        "table": "Electrical characteristics, Dynamic characteristics"
+      },
+      "page_reference": "p. 3, Dynamic characteristics, Ciss, TYP",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 2.7e-09
+    },
+    "coss": {
+      "conditions": "VGS = 0 V, VDS = 30 V, f = 1 MHz, Tj = 25 degC",
+      "locator": {
+        "page": 3,
+        "row": "Output capacitance (Coss), VGS=0V, VDS=30V, f=1MHz, TYP",
+        "table": "Electrical characteristics, Dynamic characteristics"
+      },
+      "page_reference": "p. 3, Dynamic characteristics, Coss, TYP",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 6.6e-10
+    },
+    "crss": {
+      "conditions": "VGS = 0 V, VDS = 30 V, f = 1 MHz, Tj = 25 degC",
+      "locator": {
+        "page": 3,
+        "row": "Reverse transfer capacitance (Crss), VGS=0V, VDS=30V, f=1MHz, TYP",
+        "table": "Electrical characteristics, Dynamic characteristics"
+      },
+      "page_reference": "p. 3, Dynamic characteristics, Crss, TYP",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 2.8e-11
+    },
+    "polarity": "n",
+    "rdson_points": [
+      {
+        "current": {
+          "conditions": "VGS = 10 V, Tj = 25 degC",
+          "locator": {
+            "page": 2,
+            "row": "Drain-source on-state resistance, VGS=10V, ID=50A",
+            "table": "Electrical characteristics, Static characteristics"
+          },
+          "page_reference": "p. 2, Electrical characteristics, RDS(on) condition",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 50.0
+        },
+        "resistance": {
+          "conditions": "VGS = 10 V, ID = 50 A, Tj = 25 degC",
+          "locator": {
+            "page": 2,
+            "row": "Drain-source on-state resistance, VGS=10V, ID=50A, TYP",
+            "table": "Electrical characteristics, Static characteristics"
+          },
+          "page_reference": "p. 2, Electrical characteristics, RDS(on), TYP",
+          "source_kind": "typical",
+          "unit": "ohm",
+          "value": 0.0025
+        },
+        "vgs": {
+          "conditions": "VGS = 10 V, Tj = 25 degC",
+          "locator": {
+            "page": 2,
+            "row": "Drain-source on-state resistance, VGS=10V, ID=50A",
+            "table": "Electrical characteristics, Static characteristics"
+          },
+          "page_reference": "p. 2, Electrical characteristics, RDS(on)",
+          "source_kind": "typical",
+          "unit": "V",
+          "value": 10.0
+        }
+      },
+      {
+        "current": {
+          "conditions": "VGS = 6 V, Tj = 25 degC",
+          "locator": {
+            "page": 2,
+            "row": "Drain-source on-state resistance, VGS=6V, ID=12.5A",
+            "table": "Electrical characteristics, Static characteristics"
+          },
+          "page_reference": "p. 2, Electrical characteristics, RDS(on) condition",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 12.5
+        },
+        "resistance": {
+          "conditions": "VGS = 6 V, ID = 12.5 A, Tj = 25 degC",
+          "locator": {
+            "page": 2,
+            "row": "Drain-source on-state resistance, VGS=6V, ID=12.5A, TYP",
+            "table": "Electrical characteristics, Static characteristics"
+          },
+          "page_reference": "p. 2, Electrical characteristics, RDS(on), TYP",
+          "source_kind": "typical",
+          "unit": "ohm",
+          "value": 0.0034
+        },
+        "vgs": {
+          "conditions": "VGS = 6 V, Tj = 25 degC",
+          "locator": {
+            "page": 2,
+            "row": "Drain-source on-state resistance, VGS=6V, ID=12.5A",
+            "table": "Electrical characteristics, Static characteristics"
+          },
+          "page_reference": "p. 2, Electrical characteristics, RDS(on)",
+          "source_kind": "typical",
+          "unit": "V",
+          "value": 6.0
+        }
+      }
+    ],
+    "threshold_max": {
+      "conditions": "VDS = VGS, ID = 50 uA, Tj = 25 degC",
+      "locator": {
+        "page": 2,
+        "row": "Gate threshold voltage (VGS(th)), VDS=VGS, ID=50uA, MAX",
+        "table": "Electrical characteristics, Static characteristics"
+      },
+      "page_reference": "p. 2, Electrical characteristics, Gate threshold voltage, MAX",
+      "source_kind": "maximum",
+      "unit": "V",
+      "value": 3.3
+    },
+    "threshold_min": {
+      "conditions": "VDS = VGS, ID = 50 uA, Tj = 25 degC",
+      "locator": {
+        "page": 2,
+        "row": "Gate threshold voltage (VGS(th)), VDS=VGS, ID=50uA, MIN",
+        "table": "Electrical characteristics, Static characteristics"
+      },
+      "page_reference": "p. 2, Electrical characteristics, Gate threshold voltage, MIN",
+      "source_kind": "minimum",
+      "unit": "V",
+      "value": 2.1
+    },
+    "threshold_typ": {
+      "conditions": "VDS = VGS, ID = 50 uA, Tj = 25 degC",
+      "locator": {
+        "page": 2,
+        "row": "Gate threshold voltage (VGS(th)), VDS=VGS, ID=50uA, TYP",
+        "table": "Electrical characteristics, Static characteristics"
+      },
+      "page_reference": "p. 2, Electrical characteristics, Gate threshold voltage, TYP",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 2.8
+    }
+  },
+  "usable_curves": false
+}

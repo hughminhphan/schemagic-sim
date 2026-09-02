@@ -1,0 +1,216 @@
+{
+  "curves": [
+    {
+      "name": "Fig.3 Typical Forward Voltage, US1A-US1D curve",
+      "page_reference": "p. 2 fig. 3",
+      "points": [
+        {
+          "x": 0.584,
+          "y": 0.0103
+        },
+        {
+          "x": 0.613,
+          "y": 0.0202
+        },
+        {
+          "x": 0.667,
+          "y": 0.0504
+        },
+        {
+          "x": 0.718,
+          "y": 0.101
+        },
+        {
+          "x": 0.777,
+          "y": 0.199
+        },
+        {
+          "x": 0.871,
+          "y": 0.507
+        },
+        {
+          "x": 0.951,
+          "y": 0.999
+        },
+        {
+          "x": 1.043,
+          "y": 1.97
+        },
+        {
+          "x": 1.193,
+          "y": 4.95
+        },
+        {
+          "x": 1.34,
+          "y": 9.93
+        },
+        {
+          "x": 1.524,
+          "y": 17.9
+        }
+      ],
+      "test_conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle",
+      "x_axis": {
+        "quantity": "instantaneous forward voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "instantaneous forward current",
+        "scale": "log",
+        "unit": "A"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ],
+    "revision": "Rev:1.1",
+    "title": "US1A THRU US1M Surface Mount High Efficient Rectifier (SMA/DO-214AC)"
+  },
+  "extraction_notes": [
+    "Family datasheet US1A THRU US1M; US1B column: VRRM = 100 V, VRMS = 70 V, VDC = 100 V (p. 1 maximum ratings).",
+    "Absolute maximum ratings for operating-region use only (never fitted): IF(AV) = 1.0 A, IFSM = 30.0 A at 8.3 ms half-sine, Tj = -55 to +150 degC (p. 1).",
+    "Full manufacturer name on the datasheet: Zhuhai Hongjiacheng Technology co., Ltd (www.ichjc.com).",
+    "Fig.3 contains three curves (US1A-US1D solid, US1G long-dash, US1J-US1M short-dash per the in-figure legend); the solid US1A-US1D vector path was digitized for US1B. Axes calibrated against tick labels; x linear 0.2-2.0 V, y log 0.01-20 A.",
+    "VF limit 1.0 V applies to the US1A-US1D group; US1G is 1.4 V and US1J-US1M 1.7 V. Trr limit 50 ns applies to US1A-US1G; US1J-US1M is 75 ns.",
+    "High-temperature reverse leakage row IR2 = 500 uA at VR = VDC, TA = 100 degC (p. 2) transcribed here as a note only; per archetype it must not be fitted.",
+    "Fig.1 (derating), Fig.2 (surge vs cycles) and Fig.4 (reverse current vs percent of rated peak reverse voltage) are present but not digitized: thermal/surge ratings or percent-normalized family curves, not per-part electrical model inputs.",
+    "No measured breakdown row exists; breakdown_voltage and breakdown_current are null.",
+    "source_kind 'typical' on specified test currents means 'exact specified test condition'; the schema enum has no dedicated value for test conditions.",
+    "All values converted to SI base units (uA -> A, pF -> F, ns -> s)."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "US1B",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": null,
+    "breakdown_voltage": null,
+    "capacitance": {
+      "conditions": "VR = 4.0 V DC, f = 1 MHz",
+      "page_reference": "p. 2 electrical characteristics",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 2e-11
+    },
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "specified test current for the VF limit row",
+          "page_reference": "p. 2 electrical characteristics",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 1.0
+        },
+        "voltage": {
+          "conditions": "IF = 1.0 A, Ta = 25 degC, US1A-US1D column",
+          "page_reference": "p. 2 electrical characteristics",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 1.0
+        }
+      },
+      {
+        "current": {
+          "conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle",
+          "page_reference": "p. 2 fig. 3",
+          "source_kind": "digitized_typical_curve",
+          "unit": "A",
+          "value": 0.01
+        },
+        "voltage": {
+          "conditions": "IF = 0.01 A, Tj = 25 degC, pulse width = 300 us, 1% duty cycle",
+          "page_reference": "p. 2 fig. 3",
+          "source_kind": "digitized_typical_curve",
+          "unit": "V",
+          "value": 0.584
+        }
+      },
+      {
+        "current": {
+          "conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle",
+          "page_reference": "p. 2 fig. 3",
+          "source_kind": "digitized_typical_curve",
+          "unit": "A",
+          "value": 0.1
+        },
+        "voltage": {
+          "conditions": "IF = 0.1 A, Tj = 25 degC, pulse width = 300 us, 1% duty cycle",
+          "page_reference": "p. 2 fig. 3",
+          "source_kind": "digitized_typical_curve",
+          "unit": "V",
+          "value": 0.718
+        }
+      },
+      {
+        "current": {
+          "conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle",
+          "page_reference": "p. 2 fig. 3",
+          "source_kind": "digitized_typical_curve",
+          "unit": "A",
+          "value": 1.0
+        },
+        "voltage": {
+          "conditions": "IF = 1.0 A, Tj = 25 degC, pulse width = 300 us, 1% duty cycle",
+          "page_reference": "p. 2 fig. 3",
+          "source_kind": "digitized_typical_curve",
+          "unit": "V",
+          "value": 0.951
+        }
+      },
+      {
+        "current": {
+          "conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle",
+          "page_reference": "p. 2 fig. 3",
+          "source_kind": "digitized_typical_curve",
+          "unit": "A",
+          "value": 5.0
+        },
+        "voltage": {
+          "conditions": "IF = 5.0 A, Tj = 25 degC, pulse width = 300 us, 1% duty cycle",
+          "page_reference": "p. 2 fig. 3",
+          "source_kind": "digitized_typical_curve",
+          "unit": "V",
+          "value": 1.193
+        }
+      },
+      {
+        "current": {
+          "conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle",
+          "page_reference": "p. 2 fig. 3",
+          "source_kind": "digitized_typical_curve",
+          "unit": "A",
+          "value": 10.0
+        },
+        "voltage": {
+          "conditions": "IF = 10.0 A, Tj = 25 degC, pulse width = 300 us, 1% duty cycle",
+          "page_reference": "p. 2 fig. 3",
+          "source_kind": "digitized_typical_curve",
+          "unit": "V",
+          "value": 1.34
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = VDC = 100 V, TA = 25 degC",
+      "page_reference": "p. 2 electrical characteristics",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 5e-06
+    },
+    "reverse_recovery": {
+      "conditions": "IF = 0.5 A, IR = 1.0 A, Irr = 0.25 A; US1A-US1G column",
+      "page_reference": "p. 2 electrical characteristics",
+      "source_kind": "maximum",
+      "unit": "s",
+      "value": 5e-08
+    },
+    "variant": "rectifier"
+  },
+  "usable_curves": true
+}

@@ -1,0 +1,181 @@
+{
+  "curves": [
+    {
+      "name": "Forward current vs forward voltage (Fig. 3; caption says Typical Zener Breakdown Characteristics)",
+      "page_reference": "p. 3 Fig. 3",
+      "points": [
+        {
+          "x": 0.637,
+          "y": 0.01
+        },
+        {
+          "x": 0.693,
+          "y": 0.016
+        },
+        {
+          "x": 0.744,
+          "y": 0.0245
+        },
+        {
+          "x": 0.797,
+          "y": 0.0393
+        },
+        {
+          "x": 0.849,
+          "y": 0.0646
+        },
+        {
+          "x": 0.895,
+          "y": 0.1
+        },
+        {
+          "x": 0.949,
+          "y": 0.168
+        },
+        {
+          "x": 0.999,
+          "y": 0.276
+        },
+        {
+          "x": 1.054,
+          "y": 0.493
+        },
+        {
+          "x": 1.107,
+          "y": 0.844
+        },
+        {
+          "x": 1.158,
+          "y": 1.22
+        },
+        {
+          "x": 1.201,
+          "y": 1.49
+        },
+        {
+          "x": 1.4,
+          "y": 2.96
+        },
+        {
+          "x": 1.602,
+          "y": 5.96
+        }
+      ],
+      "test_conditions": "Tj = 25 degC; pulse width = 300 us; duty cycle = 1%; single typical curve shared by the 1SMA4728A-1SMA4764A series",
+      "x_axis": {
+        "quantity": "forward voltage VF",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "forward current IF",
+        "scale": "log",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "Maximum power dissipation vs lead temperature (Fig. 1)",
+      "page_reference": "p. 3 Fig. 1",
+      "points": [
+        {
+          "x": 25,
+          "y": 1.0
+        },
+        {
+          "x": 75,
+          "y": 1.0
+        },
+        {
+          "x": 100,
+          "y": 0.667
+        },
+        {
+          "x": 125,
+          "y": 0.333
+        },
+        {
+          "x": 150,
+          "y": 0.0
+        }
+      ],
+      "test_conditions": "TA = 25 degC unless otherwise specified; series-wide derating, flat at 1.0 W to 75 degC then linear to zero at 150 degC",
+      "x_axis": {
+        "quantity": "lead temperature",
+        "scale": "linear",
+        "unit": "degC"
+      },
+      "y_axis": {
+        "quantity": "maximum power dissipation PD",
+        "scale": "linear",
+        "unit": "W"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "revision": "Rev1.0",
+    "title": "1SMA4728A THRU 1SMA4764A SURFACE MOUNT ZENER DIODES"
+  },
+  "extraction_notes": [
+    "Target row on p. 2 is 1SMA4737A: VZ minimum 7.12 V, nominal 7.5 V, maximum 7.88 V at IZT = 34 mA; ZZT maximum 4.0 ohm at IZT; IR maximum 10 uA at VR = 5 V; IZM = 127 mA.",
+    "Fig. 3 is captioned Typical Zener Breakdown Characteristics but its axes are IF versus VF, so it was transcribed as the series-wide forward characteristic.",
+    "Fig. 2 publishes ZZT versus IZT curves only for VZ = 25 V, 30 V, 65 V, and 91 V. There is no curve for the 7.5 V target, so no interpolated impedance points were added.",
+    "No junction capacitance or reverse-recovery-time value is published in the supplied datasheet; those fields are null.",
+    "The Fig. 3 curve is pulsed operation and is not a DC thermal or admissible-current guarantee."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "1SMA4737A",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": {
+      "conditions": "IZT, the zener test current at which VZ and ZZT are specified, TA = 25 degC",
+      "page_reference": "p. 2 Electrical Characteristics, 1SMA4737A row",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.034
+    },
+    "breakdown_voltage": {
+      "conditions": "VZ nominal at IZT = 34 mA, TA = 25 degC; minimum 7.12 V and maximum 7.88 V",
+      "page_reference": "p. 2 Electrical Characteristics, 1SMA4737A row",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 7.5
+    },
+    "capacitance": null,
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 200 mA, TA = 25 degC",
+          "page_reference": "p. 1 Maximum Ratings, forward voltage",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.2
+        },
+        "voltage": {
+          "conditions": "IF = 200 mA, TA = 25 degC",
+          "page_reference": "p. 1 Maximum Ratings, forward voltage",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 1.5
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "IR = 10 uA maximum at VR = 5 V, TA = 25 degC",
+      "page_reference": "p. 2 Electrical Characteristics, 1SMA4737A row",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 1e-05
+    },
+    "reverse_recovery": null,
+    "variant": "zener"
+  },
+  "usable_curves": true
+}

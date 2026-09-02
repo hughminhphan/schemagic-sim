@@ -1,0 +1,139 @@
+{
+  "curves": [
+    {
+      "name": "Fig. 3 Typical Forward Voltage, SSL36 trace",
+      "page_reference": "p. 2 electrical characteristics and Fig. 3",
+      "points": [
+        {
+          "x": 0.38,
+          "y": 0.1
+        },
+        {
+          "x": 0.43,
+          "y": 0.3
+        },
+        {
+          "x": 0.48,
+          "y": 1.0
+        },
+        {
+          "x": 0.54,
+          "y": 3.0
+        },
+        {
+          "x": 0.59,
+          "y": 10.0
+        },
+        {
+          "x": 0.66,
+          "y": 20.0
+        }
+      ],
+      "test_conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle; SSL36 trace",
+      "x_axis": {
+        "quantity": "forward voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "forward current",
+        "scale": "log",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "Fig. 4 Typical Reverse Characteristics, 25 degC",
+      "page_reference": "p. 2 electrical characteristics and Fig. 3",
+      "points": [
+        {
+          "x": 0.0,
+          "y": 7e-06
+        },
+        {
+          "x": 20.0,
+          "y": 8e-06
+        },
+        {
+          "x": 40.0,
+          "y": 9e-06
+        },
+        {
+          "x": 60.0,
+          "y": 1.1e-05
+        },
+        {
+          "x": 80.0,
+          "y": 1.4e-05
+        },
+        {
+          "x": 100.0,
+          "y": 3e-05
+        }
+      ],
+      "test_conditions": "Tj = 25 degC; family typical characteristic, target SSL36 rated reverse voltage 60 V",
+      "x_axis": {
+        "quantity": "percent of rated peak reverse voltage",
+        "scale": "linear",
+        "unit": "%"
+      },
+      "y_axis": {
+        "quantity": "reverse current",
+        "scale": "log",
+        "unit": "A"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ],
+    "revision": "Rev:1.0",
+    "title": "SSL32 THRU SSL310"
+  },
+  "extraction_notes": [
+    "For SSL36 the table specifies maximum VF = 0.50 V at IF = 3.0 A, maximum IR = 0.3 mA at rated DC blocking voltage and Ta = 25 degC, and 5.0 mA at Ta = 100 degC.",
+    "Fig. 3 contains separate family traces; the SSL36 solid trace was digitized for the forward curve. Fig. 4 is a family typical reverse characteristic plotted against percent of rated peak reverse voltage.",
+    "The supplied electrical table does not give an unambiguous SSL36 junction-capacitance value; capacitance is left null rather than copied from another variant.",
+    "No reverse-recovery value or breakdown test pair is published."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "SSL36",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": null,
+    "breakdown_voltage": null,
+    "capacitance": null,
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 3.0 A, Ta = 25 degC",
+          "page_reference": "p. 2 electrical characteristics and Fig. 3",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 3.0
+        },
+        "voltage": {
+          "conditions": "IF = 3.0 A, Ta = 25 degC",
+          "page_reference": "p. 2 electrical characteristics and Fig. 3",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.5
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = VDC = 60 V, Ta = 25 degC",
+      "page_reference": "p. 2 electrical characteristics and Fig. 3",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 0.0003
+    },
+    "reverse_recovery": null,
+    "variant": "schottky"
+  },
+  "usable_curves": true
+}

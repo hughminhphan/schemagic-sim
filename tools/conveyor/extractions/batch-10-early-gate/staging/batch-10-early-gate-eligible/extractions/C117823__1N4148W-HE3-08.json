@@ -1,0 +1,171 @@
+{
+  "curves": [
+    {
+      "name": "Typical forward characteristics at Tamb = 25 degC",
+      "page_reference": "p. 2, Fig. 1",
+      "points": [
+        {
+          "x": 0.3,
+          "y": 1e-05
+        },
+        {
+          "x": 0.4,
+          "y": 0.0001
+        },
+        {
+          "x": 0.5,
+          "y": 0.001
+        },
+        {
+          "x": 0.6,
+          "y": 0.01
+        },
+        {
+          "x": 0.78,
+          "y": 0.1
+        },
+        {
+          "x": 1.0,
+          "y": 1.0
+        }
+      ],
+      "test_conditions": "Tamb = 25 degC",
+      "x_axis": {
+        "quantity": "forward voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "forward current",
+        "scale": "log",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "Relative capacitance versus reverse voltage",
+      "page_reference": "p. 2, Fig. 4",
+      "points": [
+        {
+          "x": 0,
+          "y": 1.0
+        },
+        {
+          "x": 1,
+          "y": 0.94
+        },
+        {
+          "x": 2,
+          "y": 0.92
+        },
+        {
+          "x": 4,
+          "y": 0.9
+        },
+        {
+          "x": 6,
+          "y": 0.88
+        },
+        {
+          "x": 8,
+          "y": 0.87
+        },
+        {
+          "x": 10,
+          "y": 0.85
+        }
+      ],
+      "test_conditions": "Tj = 25 degC, f = 1 MHz",
+      "x_axis": {
+        "quantity": "reverse voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "relative capacitance C_D(V_R) / C_D(0 V)",
+        "scale": "linear",
+        "unit": "1"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4",
+      "p. 5"
+    ],
+    "revision": "Rev. 1.7, 08-May-13",
+    "title": "1N4148W Small Signal Fast Switching Diode"
+  },
+  "extraction_notes": [
+    "The datasheet also specifies IR maxima of 5 uA at VR = 75 V, 100 uA at VR = 100 V, and 50 uA at VR = 20 V, TJ = 150 degC; the 25 degC, 20 V row is used for the normal reverse-current input.",
+    "The forward plot is a typical trace at 25 degC; the capacitance plot is relative capacitance, not absolute capacitance."
+  ],
+  "family": "diode",
+  "manufacturer": "Vishay Intertech",
+  "mpn": "1N4148W-HE3-08",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": null,
+    "breakdown_voltage": null,
+    "capacitance": {
+      "conditions": "VF = VR = 0 V",
+      "page_reference": "p. 2, electrical characteristics",
+      "source_kind": "maximum",
+      "unit": "F",
+      "value": 4e-12
+    },
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 10 mA, Tamb = 25 degC",
+          "page_reference": "p. 2, electrical characteristics",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.01
+        },
+        "voltage": {
+          "conditions": "IF = 10 mA, Tamb = 25 degC",
+          "page_reference": "p. 2, electrical characteristics",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 1.0
+        }
+      },
+      {
+        "current": {
+          "conditions": "IF = 100 mA, Tamb = 25 degC",
+          "page_reference": "p. 2, electrical characteristics",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.1
+        },
+        "voltage": {
+          "conditions": "IF = 100 mA, Tamb = 25 degC",
+          "page_reference": "p. 2, electrical characteristics",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 1.2
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = 20 V, Tamb = 25 degC",
+      "page_reference": "p. 2, electrical characteristics",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 2.5e-08
+    },
+    "reverse_recovery": {
+      "conditions": "IF = 10 mA, iR = 1 mA, VR = 6 V, RL = 100 ohm",
+      "page_reference": "p. 2, electrical characteristics",
+      "source_kind": "maximum",
+      "unit": "s",
+      "value": 4e-09
+    },
+    "variant": "signal"
+  },
+  "usable_curves": true
+}

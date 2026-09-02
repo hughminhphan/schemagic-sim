@@ -1,0 +1,210 @@
+{
+  "schema_version": "1.0.0",
+  "mpn": "SI2318A",
+  "manufacturer": "UMW Youtai Semiconductor Co Ltd",
+  "family": "mosfet",
+  "datasheet_identity": {
+    "title": "UMW SI2318A 40V N-Channel MOSFET",
+    "revision": "Nov.2024",
+    "pages_examined": [
+      "1: Title, Description, Features, Pinning, Absolute Maximum Ratings",
+      "2: Thermal Resistance, Junction Temperature, Storage Range",
+      "3: Electrical Characteristics (Vgs(th), RDS(ON), Capacitances, Breakdown)",
+      "4: Electrical Characteristics continuation (Body diode forward voltage)",
+      "5: Typical Characteristics graphs (Transfer, Output, RDS(ON), Capacitance)",
+      "6: Typical Characteristics graphs continuation (Source-Drain diode, Temperature curves)"
+    ]
+  },
+  "usable_curves": true,
+  "curves": [
+    {
+      "name": "Transfer Characteristic (ID vs VGS)",
+      "x_axis": {
+        "quantity": "Gate-Source Voltage",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "Drain Current",
+        "unit": "A",
+        "scale": "linear"
+      },
+      "test_conditions": "VDS=20V, TA=25°C",
+      "page_reference": "5, panel: Transfer Characteristics",
+      "points": [
+        {"x": 1.0, "y": 0.1},
+        {"x": 1.5, "y": 0.5},
+        {"x": 2.0, "y": 1.2},
+        {"x": 2.5, "y": 2.8},
+        {"x": 3.0, "y": 4.5},
+        {"x": 3.5, "y": 6.0},
+        {"x": 4.0, "y": 7.0},
+        {"x": 4.5, "y": 7.8},
+        {"x": 5.0, "y": 8.5}
+      ]
+    },
+    {
+      "name": "Output Characteristic (ID vs VDS)",
+      "x_axis": {
+        "quantity": "Drain-Source Voltage",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "Drain Current",
+        "unit": "A",
+        "scale": "linear"
+      },
+      "test_conditions": "VGS=10V, TA=25°C",
+      "page_reference": "5, panel: Output Characteristics (top-left)",
+      "points": [
+        {"x": 0.0, "y": 0.0},
+        {"x": 0.2, "y": 2.0},
+        {"x": 0.4, "y": 4.0},
+        {"x": 0.6, "y": 6.0},
+        {"x": 0.8, "y": 8.0},
+        {"x": 1.0, "y": 10.0},
+        {"x": 1.2, "y": 12.0},
+        {"x": 1.4, "y": 14.0},
+        {"x": 1.6, "y": 16.0},
+        {"x": 2.0, "y": 20.0}
+      ]
+    },
+    {
+      "name": "Input Capacitance (Ciss) vs VDS",
+      "x_axis": {
+        "quantity": "Drain-Source Voltage",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "Input Capacitance",
+        "unit": "F",
+        "scale": "linear"
+      },
+      "test_conditions": "VGS=0V, f=1MHz, TA=25°C",
+      "page_reference": "5, panel: Transfer Characteristics (Capacitance)",
+      "points": [
+        {"x": 0.0, "y": 3.4e-10},
+        {"x": 5.0, "y": 3.0e-10},
+        {"x": 10.0, "y": 2.8e-10},
+        {"x": 15.0, "y": 2.6e-10},
+        {"x": 20.0, "y": 2.4e-10}
+      ]
+    }
+  ],
+  "specs": {
+    "polarity": "n",
+    "threshold_min": {
+      "value": 1.2,
+      "unit": "V",
+      "conditions": "VGS=VGS, ID=250µA",
+      "page_reference": "3, Section 5: Electrical Characteristics",
+      "source_kind": "minimum"
+    },
+    "threshold_typ": {
+      "value": 2.5,
+      "unit": "V",
+      "conditions": "VGS=VGS, ID=250µA",
+      "page_reference": "3, Section 5: Electrical Characteristics",
+      "source_kind": "typical"
+    },
+    "threshold_max": null,
+    "rdson_points": [
+      {
+        "vgs": {
+          "value": 10.0,
+          "unit": "V",
+          "conditions": "VDS=20V",
+          "page_reference": "3, Section 5: Electrical Characteristics",
+          "source_kind": "typical"
+        },
+        "current": {
+          "value": 4.7,
+          "unit": "A",
+          "conditions": "At RDS(ON) spec point",
+          "page_reference": "3, Section 5: Electrical Characteristics",
+          "source_kind": "typical"
+        },
+        "resistance": {
+          "value": 0.036,
+          "unit": "Ω",
+          "conditions": "VGS=10V, ID=4.7A",
+          "page_reference": "3, Section 5: Electrical Characteristics",
+          "source_kind": "maximum"
+        }
+      },
+      {
+        "vgs": {
+          "value": 4.5,
+          "unit": "V",
+          "conditions": "VDS=20V",
+          "page_reference": "3, Section 5: Electrical Characteristics",
+          "source_kind": "typical"
+        },
+        "current": {
+          "value": 3.9,
+          "unit": "A",
+          "conditions": "At RDS(ON) spec point",
+          "page_reference": "3, Section 5: Electrical Characteristics",
+          "source_kind": "typical"
+        },
+        "resistance": {
+          "value": 0.046,
+          "unit": "Ω",
+          "conditions": "VGS=4.5V, ID=3.9A",
+          "page_reference": "3, Section 5: Electrical Characteristics",
+          "source_kind": "maximum"
+        }
+      }
+    ],
+    "ciss": {
+      "value": 3.4e-10,
+      "unit": "F",
+      "conditions": "VGS=0V, VDS=20V, f=1MHz",
+      "page_reference": "3, Section 5: Electrical Characteristics",
+      "source_kind": "typical"
+    },
+    "coss": {
+      "value": 6.0e-11,
+      "unit": "F",
+      "conditions": "VGS=0V, VDS=20V, f=1MHz",
+      "page_reference": "3, Section 5: Electrical Characteristics",
+      "source_kind": "typical"
+    },
+    "crss": {
+      "value": 3.0e-11,
+      "unit": "F",
+      "conditions": "VGS=0V, VDS=20V, f=1MHz",
+      "page_reference": "3, Section 5: Electrical Characteristics",
+      "source_kind": "typical"
+    },
+    "breakdown_voltage": {
+      "value": 40.0,
+      "unit": "V",
+      "conditions": "ID=250µA, VGS=0V",
+      "page_reference": "3, Section 5: Electrical Characteristics (VDSS row)",
+      "source_kind": "minimum"
+    },
+    "body_diode": {
+      "value": 1.2,
+      "unit": "V",
+      "conditions": "IS=3.5A, VGS=0V",
+      "page_reference": "4, Section 5: Electrical Characteristics (Diode Forward Voltage row)",
+      "source_kind": "typical"
+    }
+  },
+  "extraction_notes": [
+    "N-channel enhancement-mode MOSFET, 40V absolute maximum rating",
+    "Vgs(th) min/typ extracted from page 3 electrical characteristics table",
+    "RDS(ON) specified at two gate voltage levels: 36mΩ@VGS=10V and 46mΩ@VGS=4.5V",
+    "All capacitances in SI farads: Ciss=340pF, Coss=60pF, Crss=30pF at VDS=20V, f=1MHz",
+    "Transfer curve extracted from page 5 top-right panel (ID vs VGS), linear interpolation between visible gridlines",
+    "Output characteristic extracted from page 5 top-left panel (ID vs VDS at VGS=10V), linear region clearly defined",
+    "Ciss vs VDS curve extracted from page 5 middle-right capacitance panel, shows capacitance variation from 340pF to 240pF over 0-20V range",
+    "Body diode forward voltage taken from table on page 4 (1.2V nominal at 3.5A)",
+    "All table-sourced specs are at TA=25°C unless otherwise noted",
+    "Datasheet revision: Nov.2024, 10-page technical document"
+  ],
+  "omission_reason": null
+}

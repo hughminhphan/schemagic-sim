@@ -1,0 +1,100 @@
+{
+  "schema_version": "1.0.0",
+  "mpn": "BZT52C5V1",
+  "manufacturer": "hongjiacheng",
+  "family": "diode",
+  "datasheet_identity": {
+    "title": "BZT52C2V0 THRU BZT52C75 SURFACE MOUNT ZENER DIODES",
+    "revision": "Rev:1.0",
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ]
+  },
+  "usable_curves": true,
+  "curves": [
+    {
+      "name": "Zener characteristics, nominal 5.1 V curve",
+      "x_axis": {
+        "quantity": "Zener voltage VZ",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "Zener current IZ",
+        "unit": "A",
+        "scale": "log"
+      },
+      "test_conditions": "TA = 25 degC, pulsed; curve labeled 5.1 V in Fig. 1 (Zener Characteristics, VZ up to 10 V); the figure also shows a PD = 500 mW envelope and the original y-axis is in mA.",
+      "page_reference": "p. 3, Fig. 1",
+      "points": [
+        {
+          "x": 4.9,
+          "y": 0.0005
+        },
+        {
+          "x": 5.0,
+          "y": 0.001
+        },
+        {
+          "x": 5.13,
+          "y": 0.01
+        }
+      ]
+    }
+  ],
+  "specs": {
+    "variant": "zener",
+    "forward_voltage_points": [
+      {
+        "current": {
+          "value": 0.01,
+          "unit": "A",
+          "conditions": "IF = 10 mA, TA = 25 degC",
+          "page_reference": "p. 1, Maximum Ratings, Forward Voltage @ IF=10mA",
+          "source_kind": "maximum"
+        },
+        "voltage": {
+          "value": 0.9,
+          "unit": "V",
+          "conditions": "IF = 10 mA, TA = 25 degC",
+          "page_reference": "p. 1, Maximum Ratings, Forward Voltage @ IF=10mA",
+          "source_kind": "maximum"
+        }
+      }
+    ],
+    "reverse_current": {
+      "value": 0.000002,
+      "unit": "A",
+      "conditions": "VR = 2.0 V, TA = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, BZT52C5V1 row, IR@VR",
+      "source_kind": "maximum"
+    },
+    "capacitance": null,
+    "reverse_recovery": null,
+    "breakdown_voltage": {
+      "value": 5.1,
+      "unit": "V",
+      "conditions": "IZT = 5 mA, TA = 25 degC; nominal zener voltage",
+      "page_reference": "p. 2, Electrical Characteristics, BZT52C5V1 row, nominal VZ",
+      "source_kind": "typical"
+    },
+    "breakdown_current": {
+      "value": 0.005,
+      "unit": "A",
+      "conditions": "IZT = 5 mA, TA = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, BZT52C5V1 row, IZT",
+      "source_kind": "typical"
+    }
+  },
+  "extraction_notes": [
+    "The BZT52C5V1 row transcribes VZ min/nom/max = 4.85/5.1/5.36 V at IZT = 5 mA, ZZT = 60 ohm at IZT, ZZK = 480 ohm at IZK = 1 mA, IR = 2 microA at VR = 2.0 V, and admissible zener current IZM = 5 mA.",
+    "The characteristic curve points are manual digitizations of the plotted 5.1 V curve at the labeled 0.5 mA, 1 mA, and 10 mA grid levels in Fig. 1; they are approximate readings from the plot and were not interpolated.",
+    "No diode capacitance value or capacitance test table is provided for the individual BZT52C5V1 part; the generic series capacitance plot is not transcribed as a part-specific numeric spec.",
+    "Reverse recovery time is not published in the supplied datasheet.",
+    "The datasheet gives a maximum forward-voltage rating of 0.9 V at IF = 10 mA, rather than a typical forward-voltage characteristic table for this part."
+  ],
+  "omission_reason": null
+}

@@ -1,0 +1,109 @@
+{
+  "curves": [
+    {
+      "name": "MM1Z5V6B zener characteristic",
+      "page_reference": "Public PDF, Zhuhai Hongjiacheng Technology Co., Ltd., Rev.1.0, p.3, Fig. 1 Zener Characteristics, 5V6B trace",
+      "points": [
+        {
+          "x": 5.6631,
+          "y": 0.005
+        },
+        {
+          "x": 5.676,
+          "y": 0.01
+        },
+        {
+          "x": 5.7276,
+          "y": 0.02
+        },
+        {
+          "x": 5.7762,
+          "y": 0.03
+        },
+        {
+          "x": 5.8083,
+          "y": 0.04
+        }
+      ],
+      "test_conditions": "TA = 25 degC, pulsed, PD = 500 mW",
+      "x_axis": {
+        "quantity": "zener voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "zener current",
+        "scale": "linear",
+        "unit": "A"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "1",
+      "2",
+      "3",
+      "4"
+    ],
+    "revision": "Rev.1.0",
+    "title": "MM1Z2V0B THRU MM1Z75B SURFACE MOUNT ZENER DIODES"
+  },
+  "extraction_notes": [
+    "Datasheet SHA-256 verified as 973430b8752739fba1fe918950ff3c00dcfbcc6e940eafdcd01397cb0d5b07d8.",
+    "The 5V6B curve was digitized directly from the vector trace in p.3 Fig. 1 at plotted current levels of 5, 10, 20, 30, and 40 mA; no table interpolation was used.",
+    "The p.2 VZ table provides minimum 5.49 V, nominal 5.6 V, and maximum 5.71 V at IZT = 5 mA. The nominal column is represented as source_kind typical because the strict schema has no nominal enum.",
+    "Reverse-bias quantities use the datasheet zener convention: positive zener voltage and zener current are across the reverse-biased device, with the cathode positive relative to the anode; p.1 states that the cathode line identifies the cathode end.",
+    "The breakdown voltage is the zener voltage at the paired test current IZT, not a separately inferred knee or absolute maximum rating.",
+    "No junction-capacitance value or reverse-recovery time is published in the supplied PDF."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "MM1Z5V6B",
+  "omission_reason": "The PDF publishes no capacitance or reverse-recovery specification, and it provides only one tabulated forward-voltage point; the reverse zener characteristic is available from the p.3 5V6B plot.",
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": {
+      "conditions": "IZT = 5 mA, TA = 25 degC; test current paired with the nominal VZ value",
+      "page_reference": "Public PDF, Rev.1.0, p.2, Electrical Characteristics, MM1Z5V6B row, IZT",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.005
+    },
+    "breakdown_voltage": {
+      "conditions": "IZT = 5 mA, TA = 25 degC; nominal VZ column",
+      "page_reference": "Public PDF, Rev.1.0, p.2, Electrical Characteristics, MM1Z5V6B row, Nominal Zener Voltage VZ",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 5.6
+    },
+    "capacitance": null,
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 10 mA, TA = 25 degC unless otherwise specified",
+          "page_reference": "Public PDF, Rev.1.0, p.1, Maximum Ratings, MM1Z5V6B family row, Forward Voltage",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.01
+        },
+        "voltage": {
+          "conditions": "IF = 10 mA, TA = 25 degC unless otherwise specified",
+          "page_reference": "Public PDF, Rev.1.0, p.1, Maximum Ratings, MM1Z5V6B family row, Forward Voltage",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.9
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = 2.5 V, TA = 25 degC unless otherwise noted; IR is the published leakage-current limit",
+      "page_reference": "Public PDF, Rev.1.0, p.2, Electrical Characteristics, MM1Z5V6B row, IR@VR",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 1e-06
+    },
+    "reverse_recovery": null,
+    "variant": "zener"
+  },
+  "usable_curves": true
+}

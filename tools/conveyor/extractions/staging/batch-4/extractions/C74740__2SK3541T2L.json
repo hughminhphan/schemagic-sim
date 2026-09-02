@@ -1,0 +1,250 @@
+{
+  "schema_version": "1.0.0",
+  "mpn": "2SK3541T2L",
+  "manufacturer": "ROHM Semicon",
+  "family": "mosfet",
+  "datasheet_identity": {
+    "title": "2SK3541 - 2.5V Drive Nch MOS FET",
+    "revision": "Rev.B",
+    "pages_examined": [
+      "1",
+      "2",
+      "3"
+    ]
+  },
+  "usable_curves": true,
+  "curves": [
+    {
+      "name": "Transfer characteristics at 25°C",
+      "x_axis": {
+        "quantity": "gate-source voltage",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "drain current",
+        "unit": "A",
+        "scale": "linear"
+      },
+      "test_conditions": "VDS=3V, Ta=25°C, Pulsed",
+      "page_reference": "Page 2, Fig.2",
+      "points": [
+        {"x": 0.8, "y": 0.0001},
+        {"x": 1.2, "y": 0.0005},
+        {"x": 1.5, "y": 0.001},
+        {"x": 2.0, "y": 0.005},
+        {"x": 2.5, "y": 0.02},
+        {"x": 3.0, "y": 0.06},
+        {"x": 3.5, "y": 0.12},
+        {"x": 4.0, "y": 0.2}
+      ]
+    },
+    {
+      "name": "Output characteristics at VGS=4V",
+      "x_axis": {
+        "quantity": "drain-source voltage",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "drain current",
+        "unit": "A",
+        "scale": "linear"
+      },
+      "test_conditions": "VGS=4V, Ta=25°C, Pulsed",
+      "page_reference": "Page 2, Fig.1",
+      "points": [
+        {"x": 0, "y": 0},
+        {"x": 0.5, "y": 0.05},
+        {"x": 1.0, "y": 0.09},
+        {"x": 1.5, "y": 0.11},
+        {"x": 2.0, "y": 0.12},
+        {"x": 3.0, "y": 0.125},
+        {"x": 4.0, "y": 0.128},
+        {"x": 5.0, "y": 0.13}
+      ]
+    },
+    {
+      "name": "Output characteristics at VGS=2.5V",
+      "x_axis": {
+        "quantity": "drain-source voltage",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "drain current",
+        "unit": "A",
+        "scale": "linear"
+      },
+      "test_conditions": "VGS=2.5V, Ta=25°C, Pulsed",
+      "page_reference": "Page 2, Fig.1",
+      "points": [
+        {"x": 0, "y": 0},
+        {"x": 0.5, "y": 0.01},
+        {"x": 1.0, "y": 0.015},
+        {"x": 2.0, "y": 0.018},
+        {"x": 3.0, "y": 0.02},
+        {"x": 4.0, "y": 0.021},
+        {"x": 5.0, "y": 0.022}
+      ]
+    },
+    {
+      "name": "Capacitance vs drain-source voltage",
+      "x_axis": {
+        "quantity": "drain-source voltage",
+        "unit": "V",
+        "scale": "log"
+      },
+      "y_axis": {
+        "quantity": "capacitance",
+        "unit": "F",
+        "scale": "log"
+      },
+      "test_conditions": "Ta=25°C, f=1MHz, VGS=0V",
+      "page_reference": "Page 3, Fig.11",
+      "points": [
+        {"x": 0.2, "y": 5e-11},
+        {"x": 0.5, "y": 4.5e-11},
+        {"x": 1.0, "y": 2e-11},
+        {"x": 2.0, "y": 1.5e-11},
+        {"x": 5.0, "y": 1.3e-11},
+        {"x": 10.0, "y": 1.1e-11},
+        {"x": 20.0, "y": 1.05e-11},
+        {"x": 50.0, "y": 1e-11}
+      ]
+    },
+    {
+      "name": "RDS(on) vs drain current at VGS=4V",
+      "x_axis": {
+        "quantity": "drain current",
+        "unit": "A",
+        "scale": "log"
+      },
+      "y_axis": {
+        "quantity": "static drain-source on-state resistance",
+        "unit": "Ω",
+        "scale": "log"
+      },
+      "test_conditions": "VGS=4V, Ta=25°C, Pulsed",
+      "page_reference": "Page 2, Fig.4",
+      "points": [
+        {"x": 0.001, "y": 20},
+        {"x": 0.002, "y": 15},
+        {"x": 0.005, "y": 10},
+        {"x": 0.01, "y": 7},
+        {"x": 0.02, "y": 6},
+        {"x": 0.05, "y": 5.5},
+        {"x": 0.1, "y": 5.2},
+        {"x": 0.2, "y": 5.1}
+      ]
+    }
+  ],
+  "specs": {
+    "polarity": "n",
+    "threshold_min": {
+      "value": 0.8,
+      "unit": "V",
+      "conditions": "VDS=3V, ID=100µA",
+      "page_reference": "Page 2, Electrical characteristics table",
+      "source_kind": "minimum"
+    },
+    "threshold_typ": null,
+    "threshold_max": {
+      "value": 1.5,
+      "unit": "V",
+      "conditions": "VDS=3V, ID=100µA",
+      "page_reference": "Page 2, Electrical characteristics table",
+      "source_kind": "maximum"
+    },
+    "rdson_points": [
+      {
+        "vgs": {
+          "value": 4,
+          "unit": "V",
+          "conditions": "Typical operating condition",
+          "page_reference": "Page 2, Electrical characteristics table",
+          "source_kind": "typical"
+        },
+        "current": {
+          "value": 0.01,
+          "unit": "A",
+          "conditions": "ID=10mA",
+          "page_reference": "Page 2, Electrical characteristics table",
+          "source_kind": "typical"
+        },
+        "resistance": {
+          "value": 5,
+          "unit": "Ω",
+          "conditions": "ID=10mA, VGS=4V",
+          "page_reference": "Page 2, Electrical characteristics table",
+          "source_kind": "typical"
+        }
+      },
+      {
+        "vgs": {
+          "value": 2.5,
+          "unit": "V",
+          "conditions": "Low voltage drive mode",
+          "page_reference": "Page 2, Electrical characteristics table",
+          "source_kind": "maximum"
+        },
+        "current": {
+          "value": 0.001,
+          "unit": "A",
+          "conditions": "ID=1mA",
+          "page_reference": "Page 2, Electrical characteristics table",
+          "source_kind": "maximum"
+        },
+        "resistance": {
+          "value": 13,
+          "unit": "Ω",
+          "conditions": "ID=1mA, VGS=2.5V",
+          "page_reference": "Page 2, Electrical characteristics table",
+          "source_kind": "maximum"
+        }
+      }
+    ],
+    "ciss": {
+      "value": 1.3e-11,
+      "unit": "F",
+      "conditions": "VDS=5V, f=1MHz",
+      "page_reference": "Page 2, Electrical characteristics table",
+      "source_kind": "typical"
+    },
+    "coss": {
+      "value": 9e-12,
+      "unit": "F",
+      "conditions": "VGS=0V, f=1MHz",
+      "page_reference": "Page 2, Electrical characteristics table",
+      "source_kind": "typical"
+    },
+    "crss": {
+      "value": 4e-12,
+      "unit": "F",
+      "conditions": "f=1MHz",
+      "page_reference": "Page 2, Electrical characteristics table",
+      "source_kind": "typical"
+    },
+    "breakdown_voltage": {
+      "value": 30,
+      "unit": "V",
+      "conditions": "ID=10µA, VGS=0V",
+      "page_reference": "Page 1, Absolute maximum ratings",
+      "source_kind": "minimum"
+    },
+    "body_diode": null
+  },
+  "extraction_notes": [
+    "Datasheet: ROHM 2SK3541 Rev.B, 3 pages examined",
+    "Device: N-channel MOSFET, 30V rating, optimized for 2.5V gate drive",
+    "All capacitances converted to SI farads (pF to F)",
+    "All resistances in SI ohms",
+    "Transfer and output characteristics extracted from Fig.2 and Fig.1 using log-linear scale readings",
+    "Capacitance curve digitized from Fig.11 (log-log plot)",
+    "RDS(on) curve digitized from Fig.4 showing saturation behavior",
+    "Body diode reverse characteristics visible in Fig.9-10 but no forward drop table value provided",
+    "Typical operating conditions: VGS=4V gives RDS(on)=5Ω nominal at ID=10mA",
+    "Low-voltage mode: VGS=2.5V (specified feature) gives maximum RDS(on)=13Ω at ID=1mA"
+  ],
+  "omission_reason": null
+}

@@ -1,0 +1,200 @@
+{
+  "curves": [
+    {
+      "name": "Forward voltage-current characteristics at Ta = 25 degC",
+      "page_reference": "p. 2, characteristic curves",
+      "points": [
+        {
+          "x": 0.45,
+          "y": 0.01
+        },
+        {
+          "x": 0.5,
+          "y": 0.03
+        },
+        {
+          "x": 0.55,
+          "y": 0.1
+        },
+        {
+          "x": 0.6,
+          "y": 0.3
+        },
+        {
+          "x": 0.65,
+          "y": 1.0
+        },
+        {
+          "x": 0.7,
+          "y": 3.0
+        },
+        {
+          "x": 0.75,
+          "y": 10.0
+        },
+        {
+          "x": 0.8,
+          "y": 30.0
+        },
+        {
+          "x": 0.85,
+          "y": 0.1
+        }
+      ],
+      "test_conditions": "Ta = 25 degC",
+      "x_axis": {
+        "quantity": "forward voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "forward current",
+        "scale": "log",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "Reverse voltage-current characteristics at Ta = 25 degC",
+      "page_reference": "p. 2, characteristic curves",
+      "points": [
+        {
+          "x": 0.0,
+          "y": 5e-09
+        },
+        {
+          "x": 20.0,
+          "y": 7e-09
+        },
+        {
+          "x": 40.0,
+          "y": 8e-09
+        },
+        {
+          "x": 60.0,
+          "y": 9e-09
+        },
+        {
+          "x": 80.0,
+          "y": 1e-08
+        }
+      ],
+      "test_conditions": "Ta = 25 degC",
+      "x_axis": {
+        "quantity": "reverse voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "reverse current",
+        "scale": "log",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "Reverse voltage-capacitance characteristics",
+      "page_reference": "p. 2, characteristic curves",
+      "points": [
+        {
+          "x": 0.0,
+          "y": 5.5e-13
+        },
+        {
+          "x": 1.0,
+          "y": 4.7e-13
+        },
+        {
+          "x": 3.0,
+          "y": 4.2e-13
+        },
+        {
+          "x": 5.0,
+          "y": 4e-13
+        },
+        {
+          "x": 10.0,
+          "y": 4e-13
+        },
+        {
+          "x": 15.0,
+          "y": 3.8e-13
+        }
+      ],
+      "test_conditions": "f = 1 MHz",
+      "x_axis": {
+        "quantity": "reverse voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "capacitance between terminals",
+        "scale": "log",
+        "unit": "F"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "revision": "2020/02/27 Rev.004",
+    "title": "1SS400CM Switching Diode (High speed switching)"
+  },
+  "extraction_notes": [
+    "The PDF title is 1SS400CM; the ordered part is 1SS400CMT2R.",
+    "The supplied characteristic plots are on p. 2 and include Ta = 25 degC forward and reverse traces plus capacitance.",
+    "No breakdown specification is published."
+  ],
+  "family": "diode",
+  "manufacturer": "ROHM Semicon",
+  "mpn": "1SS400CMT2R",
+  "omission_reason": "No reverse-breakdown voltage or breakdown-current specification is published.",
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": null,
+    "breakdown_voltage": null,
+    "capacitance": {
+      "conditions": "VR = 0.5 V, f = 1 MHz, Ta = 25 degC",
+      "page_reference": "p. 1, characteristics, capacitance between terminals",
+      "source_kind": "maximum",
+      "unit": "F",
+      "value": 3e-12
+    },
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "Ta = 25 degC",
+          "page_reference": "p. 1, characteristics, VF",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.1
+        },
+        "voltage": {
+          "conditions": "IF = 100 mA, Ta = 25 degC",
+          "page_reference": "p. 1, characteristics, forward voltage",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 1.2
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = 80 V, Ta = 25 degC",
+      "page_reference": "p. 1, characteristics, reverse current",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 1e-07
+    },
+    "reverse_recovery": {
+      "conditions": "VR = 6.0 V, IF = 10 mA, RL = 100 ohm",
+      "page_reference": "p. 1, characteristics, reverse recovery time",
+      "source_kind": "maximum",
+      "unit": "s",
+      "value": 4e-09
+    },
+    "variant": "signal"
+  },
+  "usable_curves": true
+}

@@ -1,0 +1,134 @@
+{
+  "curves": [
+    {
+      "name": "Fig. 1 Zener Characteristics (Vz Up to 10V), 2.4 V nominal curve",
+      "page_reference": "p. 3 Fig. 1",
+      "points": [
+        {
+          "x": 2.034,
+          "y": 2.0
+        },
+        {
+          "x": 2.206,
+          "y": 3.0
+        },
+        {
+          "x": 2.428,
+          "y": 5.0
+        },
+        {
+          "x": 2.554,
+          "y": 7.0
+        },
+        {
+          "x": 2.715,
+          "y": 10.0
+        },
+        {
+          "x": 2.918,
+          "y": 15.0
+        },
+        {
+          "x": 3.028,
+          "y": 20.0
+        },
+        {
+          "x": 3.267,
+          "y": 30.0
+        },
+        {
+          "x": 3.526,
+          "y": 50.0
+        },
+        {
+          "x": 3.719,
+          "y": 70.0
+        },
+        {
+          "x": 3.906,
+          "y": 90.0
+        }
+      ],
+      "test_conditions": "Ta = 25 degC, pulsed",
+      "x_axis": {
+        "quantity": "zener voltage VZ",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "zener current IZ",
+        "scale": "log",
+        "unit": "mA"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "revision": "Rev:1.0",
+    "title": "BZT52C2V0 THRU BZT52C75 SOD-123 Surface Mount Silicon Zener Diodes"
+  },
+  "extraction_notes": [
+    "Fig. 1 curve identified as the BZT52C2V4 trace by its labelled '2.4' marker and by crossing 2.43 V at the specified IZT = 5 mA (nominal VZ = 2.4 V). Digitized from a 400 dpi raster by continuous trace; estimated read error about +/-0.02 V.",
+    "Trace slope near IZT is about 87 ohm, consistent with the ZZT maximum of 100 ohm at IZT = 5 mA.",
+    "Table values without a schema slot, preserved here: ZZT = 100 ohm max at IZT = 5 mA; ZZK = 600 ohm max at IZK = 1.0 mA; IZM (admissible zener current) = 5 mA; typical temperature coefficient -3.5 to 0 mV/degC at IZTC (p. 2).",
+    "Fig. 3 (capacitance) and Fig. 4 (leakage) on p. 3 are family-level plots versus nominal zener voltage, not part-specific characteristics; they were not digitized for this part.",
+    "In forward_voltage_points the current entry is the exact specified test condition (source_kind 'typical'); the voltage entry is a maximum rating.",
+    "Manufacturer footer full name: Zhuhai Hongjiacheng Technology co., Ltd (www.ichjc.com).",
+    "Additional ratings on p. 1: PD = 350 mW, RthJA = 357 degC/W. Fig. 1's overlaid power-limit locus is drawn for PD = 500 mW, not this part's 350 mW rating."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "BZT52C2V4",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": {
+      "conditions": "IZT, zener test current for the VZ specification",
+      "page_reference": "p. 2 electrical characteristics",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.005
+    },
+    "breakdown_voltage": {
+      "conditions": "VZ nominal at IZT = 5 mA, Ta = 25 degC; datasheet min 2.28 V, max 2.52 V",
+      "page_reference": "p. 2 electrical characteristics",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 2.4
+    },
+    "capacitance": null,
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 10 mA, Ta = 25 degC",
+          "page_reference": "p. 1 maximum ratings",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 0.01
+        },
+        "voltage": {
+          "conditions": "IF = 10 mA, Ta = 25 degC; Maximum Ratings row 'Forward Voltage @ IF=10mA'",
+          "page_reference": "p. 1 maximum ratings",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.9
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = 1.0 V, Ta = 25 degC",
+      "page_reference": "p. 2 electrical characteristics",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 4.9999999999999996e-05
+    },
+    "reverse_recovery": null,
+    "variant": "zener"
+  },
+  "usable_curves": true
+}

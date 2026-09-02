@@ -1,0 +1,115 @@
+{
+  "curves": [
+    {
+      "name": "Typical zener current versus zener voltage for nominal 5.6 V trace",
+      "page_reference": "p. 3 Fig. 1, 5.6 V trace",
+      "points": [
+        {
+          "x": 5.3,
+          "y": 0.0005
+        },
+        {
+          "x": 5.42,
+          "y": 0.001
+        },
+        {
+          "x": 5.5,
+          "y": 0.002
+        },
+        {
+          "x": 5.56,
+          "y": 0.005
+        },
+        {
+          "x": 5.62,
+          "y": 0.01
+        },
+        {
+          "x": 5.7,
+          "y": 0.02
+        },
+        {
+          "x": 5.85,
+          "y": 0.04
+        }
+      ],
+      "test_conditions": "Ta = 25 degC; pulsed; PD = 150 mW",
+      "x_axis": {
+        "quantity": "zener voltage VZ",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "zener current IZ",
+        "scale": "log",
+        "unit": "A"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "revision": "Rev:1.0",
+    "title": "BZX584C2V4 THRU BZX584C43 SURFACE MOUNT ZENER DIODES"
+  },
+  "extraction_notes": [
+    "BZX584C3V6 is identified as BZX584C5V6 in the bundled datasheet family table; nominal VZ is 5.6 V, minimum 5.2 V, and maximum 6.0 V at IZT = 5 mA.",
+    "Maximum zener impedance is ZZT = 40 ohm at IZT = 5 mA; knee impedance is ZZK = 400 ohm at IZK = 1 mA.",
+    "Admissible zener current IZM is 5 mA; typical temperature coefficient range is -2 to +2.5 mV/degC.",
+    "The plotted 5.6 V trace is read from the generic BZX584CXXX pulsed characteristic figure."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "BZX584C3V6",
+  "omission_reason": "No capacitance or reverse-recovery table value was published. The capacitance figure is a generic capacitance-versus-nominal-zener-voltage plot rather than a bias-specific 5.6 V capacitance measurement.",
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": {
+      "conditions": "IZT = 5 mA, Ta = 25 degC",
+      "page_reference": "p. 2 Electrical Characteristics, BZX584C5V6 IZT",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.005
+    },
+    "breakdown_voltage": {
+      "conditions": "IZT = 5 mA, Ta = 25 degC; nominal zener voltage",
+      "page_reference": "p. 2 Electrical Characteristics, BZX584C5V6 VZ nominal",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 5.6
+    },
+    "capacitance": null,
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 10 mA, Ta = 25 degC",
+          "page_reference": "p. 1 Maximum Ratings, Forward Voltage",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.01
+        },
+        "voltage": {
+          "conditions": "IF = 10 mA, Ta = 25 degC",
+          "page_reference": "p. 1 Maximum Ratings, Forward Voltage",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.9
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = 2 V, Ta = 25 degC",
+      "page_reference": "p. 2 Electrical Characteristics, BZX584C5V6 IR at VR",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 1e-06
+    },
+    "reverse_recovery": null,
+    "variant": "zener"
+  },
+  "usable_curves": true
+}

@@ -1,0 +1,123 @@
+{
+  "curves": [
+    {
+      "name": "MM1Z4V7 zener characteristic, 4V7 trace",
+      "page_reference": "p. 3, Fig. 1, Zener Characteristics, trace labelled 4V7",
+      "points": [
+        {
+          "x": 4.21,
+          "y": 0.001
+        },
+        {
+          "x": 4.45,
+          "y": 0.002
+        },
+        {
+          "x": 4.62,
+          "y": 0.003
+        },
+        {
+          "x": 4.72,
+          "y": 0.004
+        },
+        {
+          "x": 4.81,
+          "y": 0.006
+        },
+        {
+          "x": 4.95,
+          "y": 0.01
+        },
+        {
+          "x": 5.1,
+          "y": 0.018
+        },
+        {
+          "x": 5.18,
+          "y": 0.03
+        },
+        {
+          "x": 5.29,
+          "y": 0.04
+        }
+      ],
+      "test_conditions": "Ta = 25 degC, pulsed; reverse-biased zener branch with cathode positive relative to anode; VZ and IZ are plotted as positive magnitudes; PD = 500 mW indicated",
+      "x_axis": {
+        "quantity": "zener voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "zener current",
+        "scale": "linear",
+        "unit": "A"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "revision": "Rev: 1.0",
+    "title": "MM1Z2V0 THRU MM1Z75 Surface Mount Silicon Zener Diodes"
+  },
+  "extraction_notes": [
+    "The supplied PDF SHA-256 matches the expected digest ff4a1051509db45f49817a41e5674adc11a1dea2a91e51ee958ffaed19b1d755.",
+    "The MM1Z4V7 row specifies VZ minimum 4.4 V, nominal 4.7 V, and maximum 5.0 V at IZT = 5 mA, maximum ZZT = 130 ohm, and maximum IR = 2 uA at VR = 1 V, all at Ta = 25 degC unless otherwise noted.",
+    "The zener curve points are manual digitizations of the real 4V7 trace in p. 3 Fig. 1 at plotted current levels; no table interpolation was used.",
+    "The supplied PDF publishes no target-specific capacitance value and no reverse-recovery or switching-time specification."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "MM1Z4V7",
+  "omission_reason": "Capacitance and reverse recovery are not available as required scalar fields because the supplied datasheet publishes neither a capacitance specification nor trr or switching-time data; the target-specific zener characteristic is available from p. 3 Fig. 1.",
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": {
+      "conditions": "IZT = 5 mA at nominal VZ = 4.7 V, Ta = 25 degC; reverse zener current, cathode positive relative to anode",
+      "page_reference": "p. 2, Electrical Characteristics, MM1Z4V7 row, IZT",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.005
+    },
+    "breakdown_voltage": {
+      "conditions": "IZT = 5 mA, Ta = 25 degC; nominal VZ, cathode positive relative to anode",
+      "page_reference": "p. 2, Electrical Characteristics, MM1Z4V7 row, VZ nominal",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 4.7
+    },
+    "capacitance": null,
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 10 mA, Ta = 25 degC",
+          "page_reference": "p. 1, Maximum Ratings, Forward Voltage",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.01
+        },
+        "voltage": {
+          "conditions": "IF = 10 mA, Ta = 25 degC",
+          "page_reference": "p. 1, Maximum Ratings, Forward Voltage",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.9
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = 1 V, Ta = 25 degC; maximum leakage current IR = 2 uA",
+      "page_reference": "p. 2, Electrical Characteristics, MM1Z4V7 row, IR@VR",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 2e-06
+    },
+    "reverse_recovery": null,
+    "variant": "zener"
+  },
+  "usable_curves": true
+}

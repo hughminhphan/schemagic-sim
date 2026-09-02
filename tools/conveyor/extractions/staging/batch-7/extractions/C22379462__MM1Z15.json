@@ -1,0 +1,107 @@
+{
+  "curves": [
+    {
+      "name": "Zener characteristics, MM1Z15 family curve labeled 15 V",
+      "page_reference": "p. 3 Fig. 2",
+      "points": [
+        {
+          "x": 14.5,
+          "y": 0.0005
+        },
+        {
+          "x": 14.8,
+          "y": 0.001
+        },
+        {
+          "x": 15.0,
+          "y": 0.005
+        },
+        {
+          "x": 15.2,
+          "y": 0.015
+        },
+        {
+          "x": 15.5,
+          "y": 0.025
+        }
+      ],
+      "test_conditions": "Ta = 25 degC, pulsed, PD = 500 mW; test current Iz = 5 mA",
+      "x_axis": {
+        "quantity": "zener voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "zener current",
+        "scale": "linear",
+        "unit": "A"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "revision": "Rev:1.0",
+    "title": "MM1Z2V0 THRU MM1Z75 - SURFACE MOUNT ZENER DIODES"
+  },
+  "extraction_notes": [
+    "Forward voltage is a maximum rating at IF = 10 mA.",
+    "The MM1Z15 row supplies nominal/minimum/maximum VZ, IZT, ZZT, leakage, and VR; only schema-supported fields are transcribed.",
+    "The zener plot includes an explicitly labeled 15 V family trace and is digitized as typical current-voltage evidence.",
+    "No capacitance, reverse-recovery-time, or breakdown-knee current beyond IZT is published for this part."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "MM1Z15",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": {
+      "conditions": "Ta = 25 degC; IZT for nominal VZ",
+      "page_reference": "p. 2, Electrical Characteristics, MM1Z15 IZT",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.005
+    },
+    "breakdown_voltage": {
+      "conditions": "Ta = 25 degC, IZT = 5 mA; nominal VZ",
+      "page_reference": "p. 2, Electrical Characteristics, MM1Z15 VZ",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 15.0
+    },
+    "capacitance": null,
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "Ta = 25 degC, IF = 10 mA",
+          "page_reference": "p. 1, Maximum Ratings",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.01
+        },
+        "voltage": {
+          "conditions": "Ta = 25 degC, IF = 10 mA",
+          "page_reference": "p. 1, Maximum Ratings",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.9
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = 11 V, Ta = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, MM1Z15 IR@VR",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 1e-07
+    },
+    "reverse_recovery": null,
+    "variant": "zener"
+  },
+  "usable_curves": true
+}

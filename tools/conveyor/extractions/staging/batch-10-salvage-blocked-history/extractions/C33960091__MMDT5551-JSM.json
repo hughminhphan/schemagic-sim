@@ -1,0 +1,278 @@
+{
+  "curves": [
+    {
+      "name": "DC current gain versus collector current, Ta=25 C",
+      "page_reference": "PDF page 2, upper-right plot",
+      "points": [
+        {
+          "x": 1.0,
+          "y": 180.0
+        },
+        {
+          "x": 10.0,
+          "y": 170.0
+        },
+        {
+          "x": 50.0,
+          "y": 130.0
+        },
+        {
+          "x": 100.0,
+          "y": 90.0
+        },
+        {
+          "x": 200.0,
+          "y": 55.0
+        }
+      ],
+      "test_conditions": "Common emitter, VCE=5 V, Ta=25 C; typical curve.",
+      "x_axis": {
+        "quantity": "collector current Ic",
+        "scale": "log",
+        "unit": "mA"
+      },
+      "y_axis": {
+        "quantity": "DC current gain hFE",
+        "scale": "log",
+        "unit": "1"
+      }
+    },
+    {
+      "name": "Static characteristic at IB=50 uA",
+      "page_reference": "PDF page 2, upper-left plot",
+      "points": [
+        {
+          "x": 0.5,
+          "y": 7.8
+        },
+        {
+          "x": 1.0,
+          "y": 8.8
+        },
+        {
+          "x": 2.0,
+          "y": 9.0
+        },
+        {
+          "x": 6.0,
+          "y": 9.1
+        },
+        {
+          "x": 10.0,
+          "y": 9.1
+        }
+      ],
+      "test_conditions": "Common emitter, Ta=25 C, base-current family; selected IB=50 uA trace.",
+      "x_axis": {
+        "quantity": "collector-emitter voltage VCE",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "collector current Ic",
+        "scale": "linear",
+        "unit": "mA"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "PDF page 1",
+      "PDF page 2",
+      "PDF page 3"
+    ],
+    "revision": "Not stated",
+    "title": "MMDT5551-JSM Dual Transistor (NPN + NPN)"
+  },
+  "extraction_notes": [
+    "Curve points are approximate readings from the labeled typical plots and are not interpolated beyond visible trace positions.",
+    "The datasheet describes a dual NPN device; tabulated limits are reported as printed."
+  ],
+  "family": "bjt",
+  "manufacturer": "JSMSEMI",
+  "mpn": "MMDT5551-JSM",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "cibo": null,
+    "cobo": {
+      "conditions": "VCB=10 V, IE=0, f=1 MHz",
+      "page_reference": "PDF page 1",
+      "source_kind": "maximum",
+      "unit": "F",
+      "value": 6e-12
+    },
+    "ft": {
+      "conditions": "VCE=10 V, Ic=10 mA, f=100 MHz",
+      "page_reference": "PDF page 1",
+      "source_kind": "minimum",
+      "unit": "Hz",
+      "value": 100000000.0
+    },
+    "gain_points": [
+      {
+        "collector_current": {
+          "conditions": "VCE=5 V",
+          "page_reference": "PDF page 1",
+          "source_kind": "minimum",
+          "unit": "A",
+          "value": 0.001
+        },
+        "hfe": {
+          "conditions": "VCE=5 V, Ic=1 mA",
+          "page_reference": "PDF page 1",
+          "source_kind": "minimum",
+          "unit": "1",
+          "value": 80
+        },
+        "vce": {
+          "conditions": "Ic=1 mA",
+          "page_reference": "PDF page 1",
+          "source_kind": "minimum",
+          "unit": "V",
+          "value": 5.0
+        }
+      },
+      {
+        "collector_current": {
+          "conditions": "VCE=5 V",
+          "page_reference": "PDF page 1",
+          "source_kind": "minimum",
+          "unit": "A",
+          "value": 0.01
+        },
+        "hfe": {
+          "conditions": "VCE=5 V, Ic=10 mA",
+          "page_reference": "PDF page 1",
+          "source_kind": "minimum",
+          "unit": "1",
+          "value": 100
+        },
+        "vce": {
+          "conditions": "Ic=10 mA",
+          "page_reference": "PDF page 1",
+          "source_kind": "minimum",
+          "unit": "V",
+          "value": 5.0
+        }
+      },
+      {
+        "collector_current": {
+          "conditions": "VCE=5 V",
+          "page_reference": "PDF page 1",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 0.01
+        },
+        "hfe": {
+          "conditions": "VCE=5 V, Ic=10 mA",
+          "page_reference": "PDF page 1",
+          "source_kind": "typical",
+          "unit": "1",
+          "value": 300
+        },
+        "vce": {
+          "conditions": "Ic=10 mA",
+          "page_reference": "PDF page 1",
+          "source_kind": "typical",
+          "unit": "V",
+          "value": 5.0
+        }
+      },
+      {
+        "collector_current": {
+          "conditions": "VCE=5 V",
+          "page_reference": "PDF page 1",
+          "source_kind": "minimum",
+          "unit": "A",
+          "value": 0.05
+        },
+        "hfe": {
+          "conditions": "VCE=5 V, Ic=50 mA",
+          "page_reference": "PDF page 1",
+          "source_kind": "minimum",
+          "unit": "1",
+          "value": 30
+        },
+        "vce": {
+          "conditions": "Ic=50 mA",
+          "page_reference": "PDF page 1",
+          "source_kind": "minimum",
+          "unit": "V",
+          "value": 5.0
+        }
+      }
+    ],
+    "polarity": "npn",
+    "saturation_points": [
+      {
+        "base_current": {
+          "conditions": "Ic=10 mA",
+          "page_reference": "PDF page 1",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.001
+        },
+        "collector_current": {
+          "conditions": "IB=1 mA",
+          "page_reference": "PDF page 1",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.01
+        },
+        "vbe_sat": {
+          "conditions": "Ic=10 mA, IB=1 mA",
+          "page_reference": "PDF page 1",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 1.0
+        },
+        "vce_sat": {
+          "conditions": "Ic=10 mA, IB=1 mA",
+          "page_reference": "PDF page 1",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.15
+        }
+      },
+      {
+        "base_current": {
+          "conditions": "Ic=50 mA",
+          "page_reference": "PDF page 1",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.005
+        },
+        "collector_current": {
+          "conditions": "IB=5 mA",
+          "page_reference": "PDF page 1",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.05
+        },
+        "vbe_sat": {
+          "conditions": "Ic=50 mA, IB=5 mA",
+          "page_reference": "PDF page 1",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 1.0
+        },
+        "vce_sat": {
+          "conditions": "Ic=50 mA, IB=5 mA",
+          "page_reference": "PDF page 1",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.2
+        }
+      }
+    ],
+    "vceo": {
+      "conditions": "Ic=1 mA, IB=0",
+      "page_reference": "PDF page 1",
+      "source_kind": "minimum",
+      "unit": "V",
+      "value": 160.0
+    }
+  },
+  "usable_curves": true
+}

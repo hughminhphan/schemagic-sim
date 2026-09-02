@@ -1,0 +1,71 @@
+{
+  "curves": [],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "revision": "Rev.1.0",
+    "title": "MM1W3V3 THRU MM1W330 SURFACE MOUNT ZENER DIODES"
+  },
+  "extraction_notes": [
+    "This is a family datasheet; the MM1W18 row was selected from the MM1W3V3 through MM1W330 table.",
+    "The MM1W18 zener row specifies VZ minimum 16.8 V, nominal 18 V, and maximum 19.2 V at IZT = 14 mA; the nominal value is used for the paired breakdown voltage and test-current semantics.",
+    "The MM1W18 row specifies maximum zener impedance ZZT = 20 ohm at IZT = 14 mA and admissible zener current IZM = 52 mA; no ZZK/IZK knee-impedance value is published.",
+    "Zener polarity is preserved from the datasheet: the cathode line marks the cathode, and VZ, IZT, IR, and VR refer to reverse bias with the cathode positive relative to the anode.",
+    "No component-specific usable electrical curve is published. Page 1 contains a generic zener function diagram, while page 3 contains only family-level power-derating and transient thermal-impedance plots, so no plotted diode points were extracted.",
+    "No capacitance or reverse-recovery specification is published in the supplied datasheet."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "MM1W18",
+  "omission_reason": "No usable component-specific diode curve exists in the supplied datasheet: the only relevant drawing is a generic zener function diagram, and the plotted curves are unrelated thermal characteristics.",
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": {
+      "conditions": "IZT = 14 mA at nominal VZ = 18 V, Ta = 25 degC; zener test current",
+      "page_reference": "p. 2, Electrical Characteristics, MM1W18 IZT row",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.014
+    },
+    "breakdown_voltage": {
+      "conditions": "IZT = 14 mA, Ta = 25 degC; nominal zener voltage VZ",
+      "page_reference": "p. 2, Electrical Characteristics, MM1W18 VZ row",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 18.0
+    },
+    "capacitance": null,
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 200 mA, Ta = 25 degC",
+          "page_reference": "p. 1, Maximum Ratings, Forward Voltage @ IF = 200 mA",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.2
+        },
+        "voltage": {
+          "conditions": "IF = 200 mA, Ta = 25 degC",
+          "page_reference": "p. 1, Maximum Ratings, Forward Voltage @ IF = 200 mA",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 1.2
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = 13 V, Ta = 25 degC; reverse leakage current maximum",
+      "page_reference": "p. 2, Electrical Characteristics, MM1W18 IR@VR row",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 5e-06
+    },
+    "reverse_recovery": null,
+    "variant": "zener"
+  },
+  "usable_curves": false
+}

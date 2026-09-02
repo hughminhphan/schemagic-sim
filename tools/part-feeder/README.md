@@ -86,6 +86,30 @@ Datasheet downloads default to 0.5 requests per second, retry four times with ex
 
 Failures are not hidden. `data/staging/<tranche>/failures.json` lists the MPN, LCSC ID, URL, and final error for each part that needs manual retrieval. A non-empty failure list returns exit code 2.
 
+### `prune`
+
+`prune` reports what a prune would delete. It deletes nothing without `--yes`.
+
+```sh
+tools/part-feeder/feeder prune --dry-run \
+  --conveyor-data-dir tools/conveyor/data \
+  --keep-tranche <active-tranche>
+```
+
+Three categories, each independently recoverable:
+
+| Category | What it is | How it comes back |
+| --- | --- | --- |
+| `download_intermediates` | split jlcparts archive segments and partial downloads under `data/downloads/` | `feeder fetch-db --refresh` |
+| `closed_batch_datasheets` | datasheet PDFs of closed tranches, in the feeder staging tree and in every `staging/` under the conveyor data directory | refetch from the URL the staged manifest still records |
+| `stale_state_db_copies` | superseded copies of `conveyor-state.sqlite3` | nothing to recover; the live database is never listed |
+
+A tranche is **closed** only when its staged `manifest.json` records a SHA-256 for every datasheet. The hash is the provenance a promoted model cites, so a tranche whose manifest is missing or whose records are unhashed is reported and never pruned: its PDFs are the only surviving provenance. `--keep-tranche NAME` is repeatable and holds the active tranche back.
+
+Extraction JSON is never a prune candidate in any category. Run `conveyor export-extractions` before pruning anyway, so the irreplaceable output is under version control first.
+
+`--list-files` includes every path in the JSON report; by default the report carries counts and sizes per category. `--dry-run` wins over `--yes`.
+
 ## Local data and staging layout
 
 ```text
@@ -170,4 +194,4 @@ npm --prefix tools/part-feeder test
 npm --prefix tools/part-feeder run typecheck
 ```
 
-The suite covers split archive reassembly, SQL selection and manifest schema, reviewed-MPN exclusion, rate limiting, PDF validation, and resume behavior with mocked network calls. Set `FEEDER_LIVE_SMOKE=1` to enable the small optional HEAD request against the published archive.
+The suite covers split archive reassembly, SQL selection and manifest schema, reviewed-MPN exclusion, rate limiting, PDF validation, prune planning and its refusal to delete without confirmation, and resume behavior with mocked network calls. Set `FEEDER_LIVE_SMOKE=1` to enable the small optional HEAD request against the published archive.

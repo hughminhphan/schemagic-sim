@@ -1,0 +1,106 @@
+{
+  "curves": [
+    {
+      "name": "Typical zener characteristics, BZT52C7V5S",
+      "page_reference": "p. 3 Fig. 1, 7.5 V trace",
+      "points": [
+        {
+          "x": 7.0,
+          "y": 0.0005
+        },
+        {
+          "x": 7.15,
+          "y": 0.001
+        },
+        {
+          "x": 7.5,
+          "y": 0.005
+        },
+        {
+          "x": 7.6,
+          "y": 0.01
+        },
+        {
+          "x": 7.75,
+          "y": 0.02
+        }
+      ],
+      "test_conditions": "TA = 25 degC, pulsed; 7.5 V nominal trace in the family curve",
+      "x_axis": {
+        "quantity": "zener voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "zener current",
+        "scale": "log",
+        "unit": "A"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "revision": "Rev:1.0",
+    "title": "BZT52C2V0S THRU BZT52C75S SURFACE MOUNT ZENER DIODES"
+  },
+  "extraction_notes": [
+    "The datasheet is a family sheet; BZT52C7V5S values were selected from the BZT52C7V5S row.",
+    "The nominal zener voltage curve was digitized from the 7.5 V trace in p. 3 Fig. 1 without interpolating between read locations.",
+    "The BZT52C7V5S row also specifies VZ minimum 7.0 V and maximum 7.9 V at IZT = 5 mA, ZZT maximum 15 ohm at IZT, ZZK maximum 80 ohm at IZK = 1 mA, and temperature coefficient limits 2.5 to 5.3 mV/degC; these fields have no slots in the strict extraction schema."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "BZT52C7V5S",
+  "omission_reason": "No capacitance or reverse-recovery data is published for this zener family; zener impedance and temperature-coefficient columns are preserved in extraction notes because the strict schema has no corresponding fields.",
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": {
+      "conditions": "IZT = 5 mA, TA = 25 degC",
+      "page_reference": "p. 2 Electrical Characteristics, BZT52C7V5S IZT column",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.005
+    },
+    "breakdown_voltage": {
+      "conditions": "IZT = 5 mA, TA = 25 degC; nominal zener voltage",
+      "page_reference": "p. 2 Electrical Characteristics, BZT52C7V5S VZ nominal column",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 7.5
+    },
+    "capacitance": null,
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 10 mA, TA = 25 degC",
+          "page_reference": "p. 1 Maximum Ratings, forward voltage",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.01
+        },
+        "voltage": {
+          "conditions": "IF = 10 mA, TA = 25 degC",
+          "page_reference": "p. 1 Maximum Ratings, forward voltage",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.9
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = 5.0 V, TA = 25 degC",
+      "page_reference": "p. 2 Electrical Characteristics, IR@VR, BZT52C7V5S row",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 1e-06
+    },
+    "reverse_recovery": null,
+    "variant": "zener"
+  },
+  "usable_curves": true
+}

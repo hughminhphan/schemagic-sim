@@ -1,0 +1,163 @@
+{
+  "curves": [
+    {
+      "name": "Typical forward characteristics, DSS22-DSS24 group",
+      "page_reference": "p. 2, Fig. 3",
+      "points": [
+        {
+          "x": 0.25,
+          "y": 0.01
+        },
+        {
+          "x": 0.3,
+          "y": 0.03
+        },
+        {
+          "x": 0.35,
+          "y": 0.08
+        },
+        {
+          "x": 0.4,
+          "y": 0.2
+        },
+        {
+          "x": 0.45,
+          "y": 0.4
+        },
+        {
+          "x": 0.5,
+          "y": 0.8
+        },
+        {
+          "x": 0.6,
+          "y": 2.0
+        },
+        {
+          "x": 0.7,
+          "y": 4.0
+        },
+        {
+          "x": 0.8,
+          "y": 7.0
+        },
+        {
+          "x": 1.0,
+          "y": 15.0
+        },
+        {
+          "x": 1.2,
+          "y": 30.0
+        },
+        {
+          "x": 1.4,
+          "y": 50.0
+        }
+      ],
+      "test_conditions": "TJ = 25 degC, pulse width = 300 us, 1% duty cycle; DSS22-DSS24 grouped curve",
+      "x_axis": {
+        "quantity": "forward voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "forward current",
+        "scale": "log",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "Typical reverse characteristics, DSS22-DSS26 group at Tj = 25 degC",
+      "page_reference": "p. 2, Fig. 4",
+      "points": [
+        {
+          "x": 10.0,
+          "y": 4e-06
+        },
+        {
+          "x": 20.0,
+          "y": 6e-06
+        },
+        {
+          "x": 40.0,
+          "y": 1e-05
+        },
+        {
+          "x": 60.0,
+          "y": 1.2e-05
+        },
+        {
+          "x": 80.0,
+          "y": 2e-05
+        },
+        {
+          "x": 100.0,
+          "y": 5e-05
+        }
+      ],
+      "test_conditions": "TJ = 25 degC; DSS22-DSS26 grouped curve",
+      "x_axis": {
+        "quantity": "percent of rated reverse voltage",
+        "scale": "linear",
+        "unit": "%"
+      },
+      "y_axis": {
+        "quantity": "reverse current",
+        "scale": "log",
+        "unit": "A"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "revision": "Rev. 1.1",
+    "title": "DSS22 THRU DSS210 Schottky Rectifier Diodes"
+  },
+  "extraction_notes": [
+    "The supplied datasheet publishes grouped DSS22-DSS24 typical forward curves; DSS24 uses the grouped trace.",
+    "The reverse-current table also publishes 10 mA maximum at Ta = 100 degC and the typical reverse curve is grouped DSS22-DSS26; the 25 degC table row is recorded.",
+    "No capacitance or reverse-recovery specification is published."
+  ],
+  "family": "diode",
+  "manufacturer": "Jiangsu Changjing Electronics Technology Co Ltd",
+  "mpn": "DSS24",
+  "omission_reason": "No capacitance, reverse-recovery, or breakdown data are published; the typical curves are grouped across device ranges.",
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": null,
+    "breakdown_voltage": null,
+    "capacitance": null,
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IFM = 2.0 A, T = 25 degC",
+          "page_reference": "p. 1, electrical characteristics, DSS22-DSS24 group",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 2.0
+        },
+        "voltage": {
+          "conditions": "IFM = 2.0 A, T = 25 degC; DSS22-DSS24 group",
+          "page_reference": "p. 1, electrical characteristics",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.55
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VRM = VRRM = 40 V, Ta = 25 degC",
+      "page_reference": "p. 1, electrical characteristics, DSS22-DSS26 group",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 0.0005
+    },
+    "reverse_recovery": null,
+    "variant": "schottky"
+  },
+  "usable_curves": true
+}

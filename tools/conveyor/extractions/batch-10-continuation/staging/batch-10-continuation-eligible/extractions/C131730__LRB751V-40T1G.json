@@ -1,0 +1,182 @@
+{
+  "curves": [
+    {
+      "name": "Forward characteristics, TA = 25 degC",
+      "page_reference": "p. 2, Forward Characteristics",
+      "points": [
+        {
+          "x": 0.25,
+          "y": 0.0001
+        },
+        {
+          "x": 0.35,
+          "y": 0.001
+        },
+        {
+          "x": 0.45,
+          "y": 0.005
+        },
+        {
+          "x": 0.55,
+          "y": 0.02
+        },
+        {
+          "x": 0.7,
+          "y": 0.05
+        },
+        {
+          "x": 0.9,
+          "y": 0.08
+        }
+      ],
+      "test_conditions": "TA = 25 degC",
+      "x_axis": {
+        "quantity": "forward voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "forward current",
+        "scale": "log",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "Reverse characteristics, TA = 25 degC",
+      "page_reference": "p. 2, Reverse Characteristics",
+      "points": [
+        {
+          "x": 0,
+          "y": 7e-08
+        },
+        {
+          "x": 10,
+          "y": 1e-07
+        },
+        {
+          "x": 30,
+          "y": 1.6e-07
+        },
+        {
+          "x": 50,
+          "y": 2.5e-07
+        },
+        {
+          "x": 70,
+          "y": 4e-07
+        }
+      ],
+      "test_conditions": "TA = 25 degC",
+      "x_axis": {
+        "quantity": "reverse voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "reverse current",
+        "scale": "log",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "Capacitor characteristics",
+      "page_reference": "p. 2, Capacitor Characteristics",
+      "points": [
+        {
+          "x": 0,
+          "y": 1.15e-12
+        },
+        {
+          "x": 1,
+          "y": 9.5e-13
+        },
+        {
+          "x": 2,
+          "y": 8.5e-13
+        },
+        {
+          "x": 5,
+          "y": 7.5e-13
+        },
+        {
+          "x": 10,
+          "y": 6.8e-13
+        },
+        {
+          "x": 12,
+          "y": 6.6e-13
+        }
+      ],
+      "test_conditions": "f = 1 MHz",
+      "x_axis": {
+        "quantity": "reverse voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "capacitance",
+        "scale": "linear",
+        "unit": "F"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ],
+    "revision": "Rev. B, Feb 2016",
+    "title": "LRB751V-40T1G, S-LRB751V-40T1G Schottky Barrier Diode"
+  },
+  "extraction_notes": [
+    "The supplied datasheet contains forward, reverse, and capacitance plots on page 2 for LRB751V-40T1G and S-LRB751V-40T1G.",
+    "Maximum reverse current is 0.5 uA at VR = 30 V; converted to 5e-7 A.",
+    "No reverse-recovery or breakdown-voltage/current specification is published.",
+    "Curve points are manually digitized from the supplied plots and retain plotted axis scales and stated conditions."
+  ],
+  "family": "diode",
+  "manufacturer": "LRC",
+  "mpn": "LRB751V-40T1G",
+  "omission_reason": "No reverse-recovery-time or breakdown-voltage/current specification is published.",
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": null,
+    "breakdown_voltage": null,
+    "capacitance": {
+      "conditions": "VR = 1 V; f = 1 MHz; typical diode capacitance",
+      "page_reference": "p. 1, electrical characteristics",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 2e-12
+    },
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 1 mA; TA = 25 degC; maximum forward voltage",
+          "page_reference": "p. 1, electrical characteristics",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.001
+        },
+        "voltage": {
+          "conditions": "IF = 1 mA; TA = 25 degC; maximum forward voltage",
+          "page_reference": "p. 1, electrical characteristics",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.37
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = 30 V; TA = 25 degC; maximum reverse current",
+      "page_reference": "p. 1, electrical characteristics",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 5e-07
+    },
+    "reverse_recovery": null,
+    "variant": "schottky"
+  },
+  "usable_curves": true
+}

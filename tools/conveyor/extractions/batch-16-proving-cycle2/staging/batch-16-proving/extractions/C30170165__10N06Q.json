@@ -1,0 +1,204 @@
+{
+  "curves": [],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4",
+      "p. 5",
+      "p. 6"
+    ],
+    "revision": "Version 1.1",
+    "title": "10N06Q N-Channel 60V Fast Switching MOSFET"
+  },
+  "extraction_notes": [
+    "IDSS maximum is 1 uA at VDS=60 V, VGS=0 V. Gate-charge typicals are QG=14 nC, QGS=2.9 nC at VGS=10 V, VDS=30 V, ID=4.5 A, and QGD=5.2 nC.",
+    "Body-diode reverse recovery is trr=35 ns and Qrr=53 nC at Tj=25 degC, IF=15 A, di/dt=100 A/us. Thermal RthetaJC maximum is 63 degC/W; RthetaJA is not specified.",
+    "The p. 3 output and transfer plots have labeled VGS traces and Tj=25/125 degC transfer traces, but the figure-level test mode and transfer fixed-VDS condition required by the supplied context are not stated. The capacitance plot similarly lacks a stated temperature and explicit test mode. No curves were retained rather than inferring conditions.",
+    "The p. 3 note states pulse width <=300 us and duty cycle <=0.5% for pulse tests, but this does not establish the mode for each plotted trace."
+  ],
+  "family": "mosfet",
+  "manufacturer": "HL",
+  "mpn": "10N06Q",
+  "omission_reason": "Plots are present, but no curve satisfies all supplied requirements: output traces lack an explicit temperature/test-mode pairing, the transfer figure lacks a single fixed VDS condition, and the capacitance figure lacks a stated temperature and test mode. No curve conditions were inferred.",
+  "schema_version": "1.0.0",
+  "specs": {
+    "body_diode": {
+      "conditions": "VGS = 0 V, IS = 15 A, Tj = 25 degC",
+      "locator": {
+        "page": 2,
+        "row": "Drain to Source Diode Forward Voltage (VSD), VGS=0V, IS=15A, MAX",
+        "table": "Electrical Characteristics"
+      },
+      "page_reference": "p. 2, Drain to Source Diode Forward Voltage, MAX",
+      "source_kind": "maximum",
+      "unit": "V",
+      "value": 1.2
+    },
+    "breakdown_voltage": {
+      "conditions": "ID = 250 uA, VGS = 0 V, Tj = 25 degC",
+      "locator": {
+        "page": 2,
+        "row": "Drain-Source Breakdown Voltage (BVDSS), ID=250uA,VGS=0V, MIN",
+        "table": "Electrical Characteristics"
+      },
+      "page_reference": "p. 2, Electrical Characteristics, BVDSS, MIN",
+      "source_kind": "minimum",
+      "unit": "V",
+      "value": 60.0
+    },
+    "ciss": {
+      "conditions": "Tj = 25 degC; the CISS row states no separate bias or frequency condition",
+      "locator": {
+        "page": 2,
+        "row": "Input Capacitance (CISS), TYP",
+        "table": "Electrical Characteristics"
+      },
+      "page_reference": "p. 2, Dynamic characteristics, CISS, TYP",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 8.25e-10
+    },
+    "coss": {
+      "conditions": "VDS = 25 V, VGS = 0 V, f = 1 MHz, Tj = 25 degC",
+      "locator": {
+        "page": 2,
+        "row": "Output Capacitance (COSS), VDS=25V, VGS=0V, f=1MHz, TYP",
+        "table": "Electrical Characteristics"
+      },
+      "page_reference": "p. 2, Dynamic characteristics, COSS, TYP",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 4.9e-11
+    },
+    "crss": {
+      "conditions": "Tj = 25 degC; the CRSS row states no separate bias or frequency condition",
+      "locator": {
+        "page": 2,
+        "row": "Reverse Transfer Capacitance (CRSS), TYP",
+        "table": "Electrical Characteristics"
+      },
+      "page_reference": "p. 2, Dynamic characteristics, CRSS, TYP",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 4.1e-11
+    },
+    "polarity": "n",
+    "rdson_points": [
+      {
+        "current": {
+          "conditions": "VGS = 10 V",
+          "locator": {
+            "page": 2,
+            "row": "Static Drain-Source On-Resistance, VGS=10V, ID=15A",
+            "table": "Electrical Characteristics"
+          },
+          "page_reference": "p. 2, Static Drain-Source On-Resistance",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 15.0
+        },
+        "resistance": {
+          "conditions": "VGS = 10 V, ID = 15 A, Tj = 25 degC",
+          "locator": {
+            "page": 2,
+            "row": "Static Drain-Source On-Resistance, VGS=10V, ID=15A, TYP",
+            "table": "Electrical Characteristics"
+          },
+          "page_reference": "p. 2, Static Drain-Source On-Resistance, TYP",
+          "source_kind": "typical",
+          "unit": "ohm",
+          "value": 0.04
+        },
+        "vgs": {
+          "conditions": "VGS = 10 V",
+          "locator": {
+            "page": 2,
+            "row": "Static Drain-Source On-Resistance, VGS=10V, ID=15A",
+            "table": "Electrical Characteristics"
+          },
+          "page_reference": "p. 2, Static Drain-Source On-Resistance",
+          "source_kind": "typical",
+          "unit": "V",
+          "value": 10.0
+        }
+      },
+      {
+        "current": {
+          "conditions": "VGS = 4.5 V",
+          "locator": {
+            "page": 2,
+            "row": "Static Drain-Source On-Resistance, VGS=4.5V, ID=10A",
+            "table": "Electrical Characteristics"
+          },
+          "page_reference": "p. 2, Static Drain-Source On-Resistance",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 10.0
+        },
+        "resistance": {
+          "conditions": "VGS = 4.5 V, ID = 10 A, Tj = 25 degC",
+          "locator": {
+            "page": 2,
+            "row": "Static Drain-Source On-Resistance, VGS=4.5V, ID=10A, TYP",
+            "table": "Electrical Characteristics"
+          },
+          "page_reference": "p. 2, Static Drain-Source On-Resistance, TYP",
+          "source_kind": "typical",
+          "unit": "ohm",
+          "value": 0.045
+        },
+        "vgs": {
+          "conditions": "VGS = 4.5 V",
+          "locator": {
+            "page": 2,
+            "row": "Static Drain-Source On-Resistance, VGS=4.5V, ID=10A",
+            "table": "Electrical Characteristics"
+          },
+          "page_reference": "p. 2, Static Drain-Source On-Resistance",
+          "source_kind": "typical",
+          "unit": "V",
+          "value": 4.5
+        }
+      }
+    ],
+    "threshold_max": {
+      "conditions": "VGS = VDS, ID = 250 uA, Tj = 25 degC",
+      "locator": {
+        "page": 2,
+        "row": "Gate Threshold Voltage (VGS(th)), VGS=VDS, ID=250uA, MAX",
+        "table": "Electrical Characteristics"
+      },
+      "page_reference": "p. 2, Electrical Characteristics, Gate Threshold Voltage, MAX",
+      "source_kind": "maximum",
+      "unit": "V",
+      "value": 2.5
+    },
+    "threshold_min": {
+      "conditions": "VGS = VDS, ID = 250 uA, Tj = 25 degC",
+      "locator": {
+        "page": 2,
+        "row": "Gate Threshold Voltage (VGS(th)), VGS=VDS, ID=250uA, MIN",
+        "table": "Electrical Characteristics"
+      },
+      "page_reference": "p. 2, Electrical Characteristics, Gate Threshold Voltage, MIN",
+      "source_kind": "minimum",
+      "unit": "V",
+      "value": 1.0
+    },
+    "threshold_typ": {
+      "conditions": "VGS = VDS, ID = 250 uA, Tj = 25 degC",
+      "locator": {
+        "page": 2,
+        "row": "Gate Threshold Voltage (VGS(th)), VGS=VDS, ID=250uA, TYP",
+        "table": "Electrical Characteristics"
+      },
+      "page_reference": "p. 2, Electrical Characteristics, Gate Threshold Voltage, TYP",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 1.6
+    }
+  },
+  "usable_curves": false
+}

@@ -1,0 +1,157 @@
+{
+  "curves": [
+    {
+      "name": "Typical forward voltage, US2J-US2M curve",
+      "page_reference": "p. 2, Fig. 3 Typical Forward Voltage",
+      "points": [
+        {
+          "x": 1.1,
+          "y": 0.02
+        },
+        {
+          "x": 1.2,
+          "y": 0.1
+        },
+        {
+          "x": 1.3,
+          "y": 0.45
+        },
+        {
+          "x": 1.4,
+          "y": 1.6
+        },
+        {
+          "x": 1.5,
+          "y": 4.5
+        },
+        {
+          "x": 1.6,
+          "y": 9.0
+        }
+      ],
+      "test_conditions": "Tj = 25 degC; pulse width = 300 us; 1% duty cycle; dotted US2J-US2M curve",
+      "x_axis": {
+        "quantity": "instantaneous forward voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "instantaneous forward current",
+        "scale": "log",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "Typical reverse characteristics, Tj = 25 degC",
+      "page_reference": "p. 2, Fig. 4 Typical Reverse Characteristics",
+      "points": [
+        {
+          "x": 0,
+          "y": 0.04
+        },
+        {
+          "x": 20,
+          "y": 0.06
+        },
+        {
+          "x": 40,
+          "y": 0.08
+        },
+        {
+          "x": 60,
+          "y": 0.1
+        },
+        {
+          "x": 80,
+          "y": 0.14
+        },
+        {
+          "x": 100,
+          "y": 0.19
+        },
+        {
+          "x": 120,
+          "y": 0.32
+        }
+      ],
+      "test_conditions": "Tj = 25 degC; lower curve in Fig. 4; US2M rated peak reverse voltage is 1000 V",
+      "x_axis": {
+        "quantity": "percent of rated peak reverse voltage",
+        "scale": "linear",
+        "unit": "%"
+      },
+      "y_axis": {
+        "quantity": "instantaneous reverse current",
+        "scale": "log",
+        "unit": "uA"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ],
+    "revision": "Rev:1.1",
+    "title": "US2A THRU US2M SURFACE MOUNT HIGH EFFICIENT RECTIFIER"
+  },
+  "extraction_notes": [
+    "Fig. 3 was digitized for the dotted US2J-US2M family curve; the plot is typical and its current axis is logarithmic.",
+    "Fig. 4 was digitized for the Tj = 25 degC lower curve; reverse-voltage x values are percentages of the rated peak reverse voltage, not volts.",
+    "The electrical-characteristics table also specifies IR2 = 200 uA at VR = VDC and TA = 100 degC; the required reverse-current field records the separate TA = 25 degC maximum IR1 value.",
+    "Maximum ratings: VRRM = 1000 V, VRMS = 700 V, VDC = 1000 V, IF(AV) = 2.0 A, IFSM = 50.0 A at 8.3 ms half-sine; Tstg and Tj = -55 to +150 degC.",
+    "No breakdown-voltage or breakdown-current characteristic is specified; the 1000 V VDC/VRRM rating is not treated as a measured breakdown point.",
+    "The single tabulated forward-voltage point is retained without invented intermediate values."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "US2M",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": null,
+    "breakdown_voltage": null,
+    "capacitance": {
+      "conditions": "4.0 V DC, 1 MHz",
+      "page_reference": "p. 2, Electrical Characteristics, typical junction capacitance",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 5e-11
+    },
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 2.0 A, Ta = 25 degC unless otherwise specified",
+          "page_reference": "p. 2, Electrical Characteristics, maximum instantaneous forward voltage",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 2.0
+        },
+        "voltage": {
+          "conditions": "IF = 2.0 A, Ta = 25 degC unless otherwise specified",
+          "page_reference": "p. 2, Electrical Characteristics, maximum instantaneous forward voltage",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 1.7
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = VDC = 1000 V, TA = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, maximum DC reverse current at rated DC blocking voltage, IR1",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 2e-06
+    },
+    "reverse_recovery": {
+      "conditions": "IF = 0.5 A, IR = 1.0 A, Irr = 0.25 A",
+      "page_reference": "p. 2, Electrical Characteristics, maximum reverse recovery time",
+      "source_kind": "maximum",
+      "unit": "s",
+      "value": 7.5e-08
+    },
+    "variant": "rectifier"
+  },
+  "usable_curves": true
+}

@@ -1,0 +1,270 @@
+{
+  "schema_version": "1.0.0",
+  "mpn": "30P06",
+  "manufacturer": "HL",
+  "family": "mosfet",
+  "datasheet_identity": {
+    "title": "P-Ch 30V Fast Switching MOSFETs 30P06",
+    "revision": "Version 1.1",
+    "pages_examined": [
+      "1",
+      "2",
+      "3"
+    ]
+  },
+  "usable_curves": true,
+  "curves": [
+    {
+      "name": "Output Characteristics (I_D vs V_DS)",
+      "x_axis": {
+        "quantity": "Drain-Source Voltage",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "Drain Current",
+        "unit": "A",
+        "scale": "linear"
+      },
+      "test_conditions": "V_DS from 0 to 5V, multiple V_GS values at T=25°C",
+      "page_reference": "3",
+      "points": [
+        {
+          "x": 0.5,
+          "y": 10
+        },
+        {
+          "x": 1.0,
+          "y": 20
+        },
+        {
+          "x": 1.5,
+          "y": 25
+        },
+        {
+          "x": 2.0,
+          "y": 30
+        },
+        {
+          "x": 3.0,
+          "y": 40
+        },
+        {
+          "x": 4.0,
+          "y": 50
+        },
+        {
+          "x": 5.0,
+          "y": 60
+        }
+      ]
+    },
+    {
+      "name": "Transfer Characteristics (I_D vs V_GS)",
+      "x_axis": {
+        "quantity": "Gate-Source Voltage",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "Drain Current",
+        "unit": "A",
+        "scale": "linear"
+      },
+      "test_conditions": "V_DS=-5V, T=25°C, multiple temperature curves shown",
+      "page_reference": "3",
+      "points": [
+        {
+          "x": -1.0,
+          "y": 5
+        },
+        {
+          "x": -1.5,
+          "y": 12
+        },
+        {
+          "x": -2.0,
+          "y": 20
+        },
+        {
+          "x": -2.5,
+          "y": 28
+        },
+        {
+          "x": -3.0,
+          "y": 40
+        },
+        {
+          "x": -4.0,
+          "y": 55
+        },
+        {
+          "x": -5.0,
+          "y": 60
+        }
+      ]
+    }
+  ],
+  "specs": {
+    "polarity": "p",
+    "threshold_min": {
+      "value": -1.0,
+      "unit": "V",
+      "conditions": "V_DS=V_GS, I_D=250µA",
+      "page_reference": "2",
+      "source_kind": "minimum"
+    },
+    "threshold_typ": {
+      "value": -1.8,
+      "unit": "V",
+      "conditions": "V_DS=V_GS, I_D=250µA",
+      "page_reference": "2",
+      "source_kind": "typical"
+    },
+    "threshold_max": {
+      "value": -2.5,
+      "unit": "V",
+      "conditions": "V_DS=V_GS, I_D=250µA",
+      "page_reference": "2",
+      "source_kind": "maximum"
+    },
+    "rdson_points": [
+      {
+        "vgs": {
+          "value": -10.0,
+          "unit": "V",
+          "conditions": "25°C",
+          "page_reference": "2",
+          "source_kind": "typical"
+        },
+        "current": {
+          "value": 10.0,
+          "unit": "A",
+          "conditions": "25°C",
+          "page_reference": "2",
+          "source_kind": "typical"
+        },
+        "resistance": {
+          "value": 0.024,
+          "unit": "ohm",
+          "conditions": "25°C",
+          "page_reference": "2",
+          "source_kind": "typical"
+        }
+      },
+      {
+        "vgs": {
+          "value": -10.0,
+          "unit": "V",
+          "conditions": "25°C",
+          "page_reference": "2",
+          "source_kind": "maximum"
+        },
+        "current": {
+          "value": 10.0,
+          "unit": "A",
+          "conditions": "25°C",
+          "page_reference": "2",
+          "source_kind": "maximum"
+        },
+        "resistance": {
+          "value": 0.029,
+          "unit": "ohm",
+          "conditions": "25°C",
+          "page_reference": "2",
+          "source_kind": "maximum"
+        }
+      },
+      {
+        "vgs": {
+          "value": -4.5,
+          "unit": "V",
+          "conditions": "25°C",
+          "page_reference": "2",
+          "source_kind": "typical"
+        },
+        "current": {
+          "value": 10.0,
+          "unit": "A",
+          "conditions": "25°C",
+          "page_reference": "2",
+          "source_kind": "typical"
+        },
+        "resistance": {
+          "value": 0.0304,
+          "unit": "ohm",
+          "conditions": "25°C",
+          "page_reference": "2",
+          "source_kind": "typical"
+        }
+      },
+      {
+        "vgs": {
+          "value": -4.5,
+          "unit": "V",
+          "conditions": "25°C",
+          "page_reference": "2",
+          "source_kind": "maximum"
+        },
+        "current": {
+          "value": 10.0,
+          "unit": "A",
+          "conditions": "25°C",
+          "page_reference": "2",
+          "source_kind": "maximum"
+        },
+        "resistance": {
+          "value": 0.039,
+          "unit": "ohm",
+          "conditions": "25°C",
+          "page_reference": "2",
+          "source_kind": "maximum"
+        }
+      }
+    ],
+    "ciss": {
+      "value": 4.026e-9,
+      "unit": "F",
+      "conditions": "V_GS=-25V, V_GS=0V, f=1MHz",
+      "page_reference": "2",
+      "source_kind": "typical"
+    },
+    "coss": {
+      "value": 1.34e-10,
+      "unit": "F",
+      "conditions": "V_GS=-25V, V_GS=0V, f=1MHz",
+      "page_reference": "2",
+      "source_kind": "typical"
+    },
+    "crss": {
+      "value": 9.8e-11,
+      "unit": "F",
+      "conditions": "V_GS=-25V, V_GS=0V, f=1MHz",
+      "page_reference": "2",
+      "source_kind": "typical"
+    },
+    "breakdown_voltage": {
+      "value": -60.0,
+      "unit": "V",
+      "conditions": "V_GS=0V, I_D=250µA",
+      "page_reference": "2",
+      "source_kind": "typical"
+    },
+    "body_diode": {
+      "value": -1.2,
+      "unit": "V",
+      "conditions": "V_GS=0V, I_S=-15A",
+      "page_reference": "2",
+      "source_kind": "typical"
+    }
+  },
+  "extraction_notes": [
+    "P-channel MOSFET, 30V rated device",
+    "Super low gate charge, suitable for PWM and switching applications",
+    "RDS(on) typical value 24mΩ at V_GS=-10V, I_D=-30A per title specs",
+    "Both output and transfer characteristics extracted from typical curves",
+    "Threshold voltage polarity consistent with P-channel convention (negative values)",
+    "Capacitance values measured at f=1MHz as noted in electrical characteristics"
+  ],
+  "omission_reason": null
+}

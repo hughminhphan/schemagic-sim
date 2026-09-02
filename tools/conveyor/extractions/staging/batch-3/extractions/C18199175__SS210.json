@@ -1,0 +1,116 @@
+{
+  "schema_version": "1.0.0",
+  "mpn": "SS210",
+  "manufacturer": "hongjiacheng",
+  "family": "diode",
+  "datasheet_identity": {
+    "title": "SS22 THRU SS220 SURFACE MOUNT SCHOTTKY BARRIER RECTIFIER",
+    "revision": "Rev:1.0",
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ]
+  },
+  "usable_curves": true,
+  "curves": [
+    {
+      "name": "Typical forward voltage, SS28-SS210 group",
+      "x_axis": {
+        "quantity": "instantaneous forward voltage",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "instantaneous forward current",
+        "unit": "A",
+        "scale": "log"
+      },
+      "test_conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle; dotted grouped curve SS28-SS210 includes SS210.",
+      "page_reference": "p. 2 Fig. 3, dotted SS28-SS210 curve",
+      "points": [
+        {"x": 0.45, "y": 0.08},
+        {"x": 0.55, "y": 0.36},
+        {"x": 0.65, "y": 1.0},
+        {"x": 0.70, "y": 1.6},
+        {"x": 0.75, "y": 2.4},
+        {"x": 0.85, "y": 4.6},
+        {"x": 0.90, "y": 6.2},
+        {"x": 0.95, "y": 8.4},
+        {"x": 1.10, "y": 16.0},
+        {"x": 1.30, "y": 30.0}
+      ]
+    },
+    {
+      "name": "Typical reverse characteristics, SS28-SS220 group at 25 degC",
+      "x_axis": {
+        "quantity": "percent of rated peak reverse voltage",
+        "unit": "%",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "instantaneous reverse current",
+        "unit": "A",
+        "scale": "log"
+      },
+      "test_conditions": "Tj = 25 degC; dashed grouped curve SS28-SS220 includes SS210; reverse voltage is the stated percentage of the part rated peak reverse voltage.",
+      "page_reference": "p. 2 Fig. 4, dashed SS28-SS220 curve, Tj = 25 degC",
+      "points": [
+        {"x": 10.0, "y": 1.7e-6},
+        {"x": 30.0, "y": 2.9e-6},
+        {"x": 50.0, "y": 3.9e-6},
+        {"x": 70.0, "y": 4.6e-6},
+        {"x": 85.0, "y": 6.0e-6},
+        {"x": 95.0, "y": 7.8e-6},
+        {"x": 100.0, "y": 9.5e-6}
+      ]
+    }
+  ],
+  "specs": {
+    "variant": "schottky",
+    "forward_voltage_points": [
+      {
+        "current": {
+          "value": 2.0,
+          "unit": "A",
+          "conditions": "IF = 2.0 A, Ta = 25 degC",
+          "page_reference": "p. 2 electrical characteristics, maximum instantaneous forward voltage, SS210",
+          "source_kind": "maximum"
+        },
+        "voltage": {
+          "value": 0.85,
+          "unit": "V",
+          "conditions": "IF = 2.0 A, Ta = 25 degC",
+          "page_reference": "p. 2 electrical characteristics, maximum instantaneous forward voltage, SS210",
+          "source_kind": "maximum"
+        }
+      }
+    ],
+    "reverse_current": {
+      "value": 5.0e-5,
+      "unit": "A",
+      "conditions": "VR = VDC = 100 V, Ta = 25 degC",
+      "page_reference": "p. 2 electrical characteristics, maximum DC reverse current at rated DC blocking voltage, SS28-SS220 group including SS210",
+      "source_kind": "maximum"
+    },
+    "capacitance": {
+      "value": 3.0e-10,
+      "unit": "F",
+      "conditions": "4.0 V DC, 1 MHz, Ta = 25 degC",
+      "page_reference": "p. 2 electrical characteristics, typical junction capacitance, SS28-SS220 group including SS210",
+      "source_kind": "typical"
+    },
+    "reverse_recovery": null,
+    "breakdown_voltage": null,
+    "breakdown_current": null
+  },
+  "extraction_notes": [
+    "Verified the supplied PDF SHA-256 as dd6685a75cdccbe3a6a290f916cb29ad27e9252703862dc167c4967c2ff12bf4.",
+    "The forward-voltage plot is a typical grouped curve SS28-SS210 rather than an SS210-only trace; the digitized points retain the plotted axes and conditions.",
+    "The reverse-characteristics plot is a typical grouped curve SS28-SS220; the lower dashed Tj = 25 degC trace was used and the x-axis is percent of rated peak reverse voltage. For SS210, 100% corresponds to 100 V VRRM.",
+    "The electrical table gives SS210 a maximum forward voltage of 0.85 V at IF = 2.0 A and a maximum reverse current of 0.05 mA at rated DC blocking voltage at Ta = 25 degC. The separate 100 degC reverse-current row is 10 mA and is not the primary room-temperature leakage input.",
+    "The typical junction capacitance is 300 pF at 4.0 V DC and 1 MHz for the SS28-SS220 group including SS210.",
+    "The examined datasheet publishes no reverse-recovery-time specification and no breakdown-voltage or breakdown-current specification."
+  ],
+  "omission_reason": "No reverse-recovery-time or breakdown-voltage/current specification is published; no capacitance-versus-reverse-bias curve is provided, only one tabulated capacitance point."
+}

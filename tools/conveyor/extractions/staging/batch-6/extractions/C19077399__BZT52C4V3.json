@@ -1,0 +1,148 @@
+{
+  "curves": [
+    {
+      "name": "Typical zener characteristics for BZT52C4V3, 4.3 V curve",
+      "page_reference": "p. 3 Fig. 1",
+      "points": [
+        {
+          "x": 4.09,
+          "y": 0.0005
+        },
+        {
+          "x": 4.2,
+          "y": 0.001
+        },
+        {
+          "x": 4.3,
+          "y": 0.005
+        },
+        {
+          "x": 4.4,
+          "y": 0.01
+        },
+        {
+          "x": 4.52,
+          "y": 0.1
+        }
+      ],
+      "test_conditions": "TA = 25 degC, pulsed; target 4.3 V trace in family characteristic plot",
+      "x_axis": {
+        "quantity": "zener voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "zener current",
+        "scale": "log",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "Typical leakage current versus nominal zener voltage",
+      "page_reference": "p. 3 Fig. 4",
+      "points": [
+        {
+          "x": 2,
+          "y": 0.0001
+        },
+        {
+          "x": 4.3,
+          "y": 3e-06
+        },
+        {
+          "x": 5.1,
+          "y": 2e-06
+        },
+        {
+          "x": 10,
+          "y": 2e-07
+        },
+        {
+          "x": 20,
+          "y": 1e-07
+        },
+        {
+          "x": 40,
+          "y": 1e-07
+        }
+      ],
+      "test_conditions": "TA = 25 degC, pulsed; TA = 25 degC trace",
+      "x_axis": {
+        "quantity": "nominal zener voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "leakage current",
+        "scale": "log",
+        "unit": "A"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "revision": "Rev 1.0",
+    "title": "BZT52C2V0 THRU BZT52C75"
+  },
+  "extraction_notes": [
+    "The datasheet is a family sheet; the BZT52C4V3 row was used for scalar values.",
+    "The zener and leakage plots contain multiple family traces; points are read from the 4.3 V target trace or the stated 25 degC family trace.",
+    "The maximum-rating page states PD = 350 mW, while a plot annotation states PD = 500 mW; both are preserved in the source context and no derated model parameter is inferred.",
+    "No reverse-recovery or target-specific capacitance table value is published."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "BZT52C4V3",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": {
+      "conditions": "TA = 25 degC; IZT = 5 mA",
+      "page_reference": "p. 2 Electrical Characteristics, BZT52C4V3 row, IZT",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.005
+    },
+    "breakdown_voltage": {
+      "conditions": "TA = 25 degC; IZT = 5 mA",
+      "page_reference": "p. 2 Electrical Characteristics, BZT52C4V3 row, VZ nominal",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 4.3
+    },
+    "capacitance": null,
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "TA = 25 degC; IF = 10 mA",
+          "page_reference": "p. 1 Maximum Ratings",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.01
+        },
+        "voltage": {
+          "conditions": "TA = 25 degC; IF = 10 mA",
+          "page_reference": "p. 1 Maximum Ratings",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.9
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "TA = 25 degC; VR = 1.0 V",
+      "page_reference": "p. 2 Electrical Characteristics, BZT52C4V3 row, IR@VR",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 3e-06
+    },
+    "reverse_recovery": null,
+    "variant": "zener"
+  },
+  "usable_curves": true
+}

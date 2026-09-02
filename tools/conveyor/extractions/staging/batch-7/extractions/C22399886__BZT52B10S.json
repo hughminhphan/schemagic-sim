@@ -1,0 +1,111 @@
+{
+  "curves": [
+    {
+      "name": "Fig. 1 Zener Characteristics, nominal 10 V branch",
+      "page_reference": "p. 3 Fig. 1",
+      "points": [
+        {
+          "x": 9.65,
+          "y": 0.0005
+        },
+        {
+          "x": 9.69,
+          "y": 0.001
+        },
+        {
+          "x": 9.75,
+          "y": 0.003
+        },
+        {
+          "x": 9.8,
+          "y": 0.005
+        },
+        {
+          "x": 9.91,
+          "y": 0.01
+        },
+        {
+          "x": 10.08,
+          "y": 0.02
+        }
+      ],
+      "test_conditions": "Ta = 25 degC, pulsed, PD = 200 mW",
+      "x_axis": {
+        "quantity": "zener voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "zener current",
+        "scale": "log",
+        "unit": "A"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "revision": "Rev:1.0",
+    "title": "BZT52B2V4S THRU BZT52B43S"
+  },
+  "extraction_notes": [
+    "The electrical table gives VZ min 9.80 V, nominal 10.0 V, max 10.20 V at IZT = 5 mA; ZZT maximum 20 ohm at IZT; ZZK maximum 150 ohm at IZK = 1 mA; IR maximum 0.2 microA at VR = 7 V.",
+    "The nominal 10 V trace in Fig. 1 is a family typical characteristic; points were digitized from the supplied plot and are not interpolated from table limits.",
+    "No tabulated capacitance or reverse-recovery value is published for this part.",
+    "Power derating and temperature-coefficient plots were not included as electrical model curves."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "BZT52B10S",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": {
+      "conditions": "IZT = 5 mA, Ta = 25 degC",
+      "page_reference": "p. 2 electrical characteristics, BZT52B10S row",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.005
+    },
+    "breakdown_voltage": {
+      "conditions": "IZT = 5 mA, Ta = 25 degC; nominal VZ",
+      "page_reference": "p. 2 electrical characteristics, BZT52B10S row",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 10.0
+    },
+    "capacitance": null,
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 10 mA, Ta = 25 degC",
+          "page_reference": "p. 1 maximum ratings",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 0.01
+        },
+        "voltage": {
+          "conditions": "IF = 10 mA, Ta = 25 degC",
+          "page_reference": "p. 1 maximum ratings",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.9
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = 7 V, Ta = 25 degC",
+      "page_reference": "p. 2 electrical characteristics, BZT52B10S row",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 2e-07
+    },
+    "reverse_recovery": null,
+    "variant": "zener"
+  },
+  "usable_curves": true
+}

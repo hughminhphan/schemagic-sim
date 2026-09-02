@@ -1,0 +1,109 @@
+{
+  "schema_version": "1.0.0",
+  "mpn": "BZX584C2V4",
+  "manufacturer": "hongjiacheng",
+  "family": "diode",
+  "datasheet_identity": {
+    "title": "BZX584C2V4 THRU BZX584C43 SURFACE MOUNT ZENER DIODES",
+    "revision": "Rev:1.0",
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ]
+  },
+  "usable_curves": true,
+  "curves": [
+    {
+      "name": "BZX584C2V4 zener characteristic",
+      "x_axis": {
+        "quantity": "Zener voltage VZ",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "Zener current IZ",
+        "unit": "A",
+        "scale": "log"
+      },
+      "test_conditions": "TA = 25 degC, pulsed, PD = 150 mW; BZX584C2V4 trace labeled 2.4 in the BZX584C2V4 through BZX584C43 series plot",
+      "page_reference": "p. 3, Fig. 1 (Zener Characteristics, VZ up to 10 V), 2.4 V trace",
+      "points": [
+        {
+          "x": 1.76,
+          "y": 0.0005
+        },
+        {
+          "x": 2.12,
+          "y": 0.001
+        },
+        {
+          "x": 2.16,
+          "y": 0.002
+        },
+        {
+          "x": 2.44,
+          "y": 0.005
+        },
+        {
+          "x": 2.69,
+          "y": 0.01
+        }
+      ]
+    }
+  ],
+  "specs": {
+    "variant": "zener",
+    "forward_voltage_points": [
+      {
+        "current": {
+          "value": 0.01,
+          "unit": "A",
+          "conditions": "IF = 10 mA, TA = 25 degC; maximum forward voltage",
+          "page_reference": "p. 1, Maximum Ratings, Forward Voltage @ IF = 10 mA",
+          "source_kind": "maximum"
+        },
+        "voltage": {
+          "value": 0.9,
+          "unit": "V",
+          "conditions": "IF = 10 mA, TA = 25 degC; maximum forward voltage",
+          "page_reference": "p. 1, Maximum Ratings, Forward Voltage @ IF = 10 mA",
+          "source_kind": "maximum"
+        }
+      }
+    ],
+    "reverse_current": {
+      "value": 0.00005,
+      "unit": "A",
+      "conditions": "IR = 50 microA maximum at VR = 1.0 V, TA = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, BZX584C2V4 row",
+      "source_kind": "maximum"
+    },
+    "capacitance": null,
+    "reverse_recovery": null,
+    "breakdown_voltage": {
+      "value": 2.4,
+      "unit": "V",
+      "conditions": "IZT = 5 mA, TA = 25 degC; nominal zener voltage, with 2.2 V minimum and 2.6 V maximum",
+      "page_reference": "p. 2, Electrical Characteristics, BZX584C2V4 VZ row",
+      "source_kind": "typical"
+    },
+    "breakdown_current": {
+      "value": 0.005,
+      "unit": "A",
+      "conditions": "IZT = 5 mA at nominal VZ = 2.4 V, TA = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, BZX584C2V4 IZT row",
+      "source_kind": "typical"
+    }
+  },
+  "extraction_notes": [
+    "PDF SHA-256 verified as c3bd1e74a20c839f2752124190b102cefde941279aed375a41560e907cd9b4c3.",
+    "This is a family datasheet; the exact BZX584C2V4 row was selected from the BZX584C2V4 through BZX584C43 electrical-characteristics table for manufacturer hongjiacheng.",
+    "The BZX584C2V4 row gives VZ minimum 2.2 V, nominal 2.4 V, and maximum 2.6 V at IZT = 5 mA; the nominal value and paired IZT are used for the zener breakdown fields.",
+    "The exact row gives maximum ZZT = 100 ohm at IZT = 5 mA, maximum ZZK = 600 ohm at IZK = 1 mA, reverse leakage IR = 50 microA at VR = 1.0 V, and admissible IZM = 5 mA. Zener impedance, knee current, temperature coefficient, and admissible-current fields are not represented by the strict schema.",
+    "The forward-voltage maximum is 0.9 V at IF = 10 mA from the p. 1 maximum-ratings table. No component-specific capacitance value or reverse-recovery time is published; the p. 3 capacitance and dynamic-impedance plots are grouped series-level characteristics without a uniquely identified BZX584C2V4 trace.",
+    "The five zener-characteristic points are direct approximate graph-read observations from the visible BZX584C2V4 trace labeled 2.4 in p. 3 Fig. 1 at labeled logarithmic-current grid values; source-axis current in mA was converted to A and no points were interpolated."
+  ],
+  "omission_reason": null
+}

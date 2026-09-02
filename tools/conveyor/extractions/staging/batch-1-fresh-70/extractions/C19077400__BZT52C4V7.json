@@ -1,0 +1,115 @@
+{
+  "schema_version": "1.0.0",
+  "mpn": "BZT52C4V7",
+  "manufacturer": "hongjiacheng",
+  "family": "diode",
+  "datasheet_identity": {
+    "title": "BZT52C2V0 THRU BZT52C75 SURFACE MOUNT ZENER DIODES",
+    "revision": "Rev.1.0",
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ]
+  },
+  "usable_curves": true,
+  "curves": [
+    {
+      "name": "BZT52C4V7 zener characteristic",
+      "x_axis": {
+        "quantity": "Zener voltage VZ",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "Zener current IZ",
+        "unit": "A",
+        "scale": "log"
+      },
+      "test_conditions": "Ta = 25 degC, pulsed; BZT52C4V7 trace in the BZT52C2V0 through BZT52C75 series plot",
+      "page_reference": "p. 3, Fig. 1 (Zener Characteristics, VZ up to 10 V)",
+      "points": [
+        {
+          "x": 3.95,
+          "y": 0.0005
+        },
+        {
+          "x": 4.3,
+          "y": 0.001
+        },
+        {
+          "x": 4.5,
+          "y": 0.002
+        },
+        {
+          "x": 4.7,
+          "y": 0.005
+        },
+        {
+          "x": 4.85,
+          "y": 0.01
+        },
+        {
+          "x": 4.95,
+          "y": 0.02
+        },
+        {
+          "x": 5.0,
+          "y": 0.05
+        }
+      ]
+    }
+  ],
+  "specs": {
+    "variant": "zener",
+    "forward_voltage_points": [
+      {
+        "current": {
+          "value": 0.01,
+          "unit": "A",
+          "conditions": "IF = 10 mA, Ta = 25 degC",
+          "page_reference": "p. 1, Maximum Ratings",
+          "source_kind": "maximum"
+        },
+        "voltage": {
+          "value": 0.9,
+          "unit": "V",
+          "conditions": "IF = 10 mA, Ta = 25 degC",
+          "page_reference": "p. 1, Maximum Ratings",
+          "source_kind": "maximum"
+        }
+      }
+    ],
+    "reverse_current": {
+      "value": 0.000003,
+      "unit": "A",
+      "conditions": "VR = 2.0 V, Ta = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, IR@VR",
+      "source_kind": "maximum"
+    },
+    "capacitance": null,
+    "reverse_recovery": null,
+    "breakdown_voltage": {
+      "value": 4.7,
+      "unit": "V",
+      "conditions": "IZT = 5 mA, Ta = 25 degC; nominal VZ",
+      "page_reference": "p. 2, Electrical Characteristics, BZT52C4V7 VZ row",
+      "source_kind": "typical"
+    },
+    "breakdown_current": {
+      "value": 0.005,
+      "unit": "A",
+      "conditions": "IZT = 5 mA at nominal VZ = 4.7 V, Ta = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, BZT52C4V7 IZT row",
+      "source_kind": "typical"
+    }
+  },
+  "extraction_notes": [
+    "This is a family datasheet; the BZT52C4V7 row was selected from the BZT52C2V0 through BZT52C75 table.",
+    "The Fig. 1 zener characteristic points are digitized readings from the plotted BZT52C4V7 trace; source-axis current in mA was converted to A and no intermediate points were interpolated.",
+    "The BZT52C4V7 electrical-characteristics row gives VZ = 4.47 V minimum, 4.70 V nominal, and 4.94 V maximum at IZT = 5 mA; maximum ZZT is 80 ohm at IZT, maximum ZZK is 500 ohm at IZK = 1 mA, and admissible IZM is 5 mA.",
+    "No capacitance or reverse-recovery specification is published in the supplied datasheet. The remaining page 3 plots are series-wide typical characteristics without a uniquely identified BZT52C4V7 trace and were not assigned component-specific points."
+  ],
+  "omission_reason": null
+}

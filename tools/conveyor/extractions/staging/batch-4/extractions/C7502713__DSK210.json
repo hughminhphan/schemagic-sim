@@ -1,0 +1,146 @@
+{
+  "schema_version": "1.0.0",
+  "mpn": "DSK210",
+  "manufacturer": "hongjiacheng",
+  "family": "diode",
+  "datasheet_identity": {
+    "title": "DSK22 THRU DSK220 - SURFACE MOUNT SCHOTTKY BARRIER RECTIFIER",
+    "revision": "Rev:1.0",
+    "pages_examined": [
+      "p. 1",
+      "p. 2"
+    ]
+  },
+  "usable_curves": true,
+  "curves": [
+    {
+      "name": "Typical Forward Voltage vs Forward Current",
+      "x_axis": {
+        "quantity": "Instantaneous Forward Current",
+        "unit": "A",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "Instantaneous Forward Voltage",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "test_conditions": "Tj = 25°C, Pulse width = 300us, 1% Duty Cycle",
+      "page_reference": "p. 2, Fig.3 (DSK210-DSK215 curve)",
+      "points": [
+        {
+          "x": 0.1,
+          "y": 0.35
+        },
+        {
+          "x": 0.3,
+          "y": 0.55
+        },
+        {
+          "x": 0.5,
+          "y": 0.6
+        },
+        {
+          "x": 1.0,
+          "y": 0.75
+        },
+        {
+          "x": 2.0,
+          "y": 0.85
+        }
+      ]
+    },
+    {
+      "name": "Typical Reverse Characteristics",
+      "x_axis": {
+        "quantity": "Percent of Rated Peak Reverse Voltage",
+        "unit": "%",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "Instantaneous Reverse Current",
+        "unit": "mA",
+        "scale": "log"
+      },
+      "test_conditions": "Tj = 25°C (DSK28-DSK220 curve family)",
+      "page_reference": "p. 2, Fig.4",
+      "points": [
+        {
+          "x": 20,
+          "y": 0.001
+        },
+        {
+          "x": 40,
+          "y": 0.003
+        },
+        {
+          "x": 60,
+          "y": 0.008
+        },
+        {
+          "x": 80,
+          "y": 0.03
+        },
+        {
+          "x": 100,
+          "y": 0.05
+        }
+      ]
+    }
+  ],
+  "specs": {
+    "variant": "schottky",
+    "forward_voltage_points": [
+      {
+        "current": {
+          "value": 2.0,
+          "unit": "A",
+          "conditions": "IF = 2.0A, instantaneous",
+          "page_reference": "p. 2, Electrical Characteristics table",
+          "source_kind": "maximum"
+        },
+        "voltage": {
+          "value": 0.85,
+          "unit": "V",
+          "conditions": "IF = 2.0A, instantaneous",
+          "page_reference": "p. 2, Electrical Characteristics table",
+          "source_kind": "maximum"
+        }
+      }
+    ],
+    "reverse_current": {
+      "value": 0.05,
+      "unit": "mA",
+      "conditions": "VR = VDC = 100V, TA = 25°C",
+      "page_reference": "p. 2, Electrical Characteristics table (IR1)",
+      "source_kind": "maximum"
+    },
+    "capacitance": {
+      "value": 80,
+      "unit": "pF",
+      "conditions": "4.0V DC, 1MHz",
+      "page_reference": "p. 2, Electrical Characteristics table",
+      "source_kind": "typical"
+    },
+    "reverse_recovery": null,
+    "breakdown_voltage": {
+      "value": 100,
+      "unit": "V",
+      "conditions": "Maximum Repetitive Peak Reverse Voltage (VRRM) rating",
+      "page_reference": "p. 1, Maximum Ratings table",
+      "source_kind": "maximum"
+    },
+    "breakdown_current": null
+  },
+  "extraction_notes": [
+    "Schottky barrier rectifier, SOD-123FL package, device marking K210",
+    "Forward voltage: maximum instantaneous at IF = 2.0A per table",
+    "Reverse current: 0.05mA at rated VDC (100V), TA = 25°C from table",
+    "Junction capacitance: 80pF typical at 4.0V DC, 1MHz per table",
+    "Forward voltage curve digitized from Fig.3 DSK210-DSK215 line (Tj=25°C, 300us pulse, 1% duty)",
+    "Reverse characteristics curve digitized from Fig.4 DSK28-DSK220 family at Tj=25°C",
+    "No reverse recovery time specified in datasheet",
+    "No breakdown current limit specified in datasheet"
+  ],
+  "omission_reason": null
+}

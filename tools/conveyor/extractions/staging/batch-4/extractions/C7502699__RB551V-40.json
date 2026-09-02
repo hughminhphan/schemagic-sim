@@ -1,0 +1,167 @@
+{
+  "schema_version": "1.0.0",
+  "mpn": "RB551V-40",
+  "manufacturer": "hongjiacheng",
+  "family": "diode",
+  "datasheet_identity": {
+    "title": "Surface Mount Schottky Barrier Rectifier RB551V-40",
+    "revision": "1.0",
+    "pages_examined": [
+      "p. 1",
+      "p. 2"
+    ]
+  },
+  "usable_curves": true,
+  "curves": [
+    {
+      "name": "Forward Instantaneous Characteristic",
+      "x_axis": {
+        "quantity": "Forward Voltage",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "Forward Current",
+        "unit": "A",
+        "scale": "log"
+      },
+      "test_conditions": "TA = 25 degC",
+      "page_reference": "p. 2, Fig. 1",
+      "points": [
+        {
+          "x": 0.1,
+          "y": 0.0001
+        },
+        {
+          "x": 0.2,
+          "y": 0.001
+        },
+        {
+          "x": 0.3,
+          "y": 0.01
+        },
+        {
+          "x": 0.4,
+          "y": 0.1
+        },
+        {
+          "x": 0.47,
+          "y": 0.5
+        }
+      ]
+    },
+    {
+      "name": "Reverse Characteristics",
+      "x_axis": {
+        "quantity": "Reverse Voltage",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "Reverse Current",
+        "unit": "A",
+        "scale": "log"
+      },
+      "test_conditions": "TA = 25 degC",
+      "page_reference": "p. 2, Fig. 2",
+      "points": [
+        {
+          "x": 5,
+          "y": 1e-06
+        },
+        {
+          "x": 10,
+          "y": 5e-06
+        },
+        {
+          "x": 20,
+          "y": 1e-05
+        },
+        {
+          "x": 40,
+          "y": 0.0001
+        }
+      ]
+    },
+    {
+      "name": "Junction Capacitance",
+      "x_axis": {
+        "quantity": "Reverse Voltage",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "Capacitance",
+        "unit": "F",
+        "scale": "linear"
+      },
+      "test_conditions": "TA = 25 degC, f = 1 MHz",
+      "page_reference": "p. 2, Fig. 3",
+      "points": [
+        {
+          "x": 0,
+          "y": 1.2e-10
+        },
+        {
+          "x": 10,
+          "y": 7e-11
+        },
+        {
+          "x": 20,
+          "y": 4.5e-11
+        },
+        {
+          "x": 30,
+          "y": 3e-11
+        }
+      ]
+    }
+  ],
+  "specs": {
+    "variant": "schottky",
+    "forward_voltage_points": [
+      {
+        "current": {
+          "value": 0.5,
+          "unit": "A",
+          "conditions": "IF = 0.5 A, TA = 25 degC",
+          "page_reference": "p. 2, Electrical Characteristics",
+          "source_kind": "maximum"
+        },
+        "voltage": {
+          "value": 0.47,
+          "unit": "V",
+          "conditions": "IF = 0.5 A, TA = 25 degC",
+          "page_reference": "p. 2, Electrical Characteristics",
+          "source_kind": "maximum"
+        }
+      }
+    ],
+    "reverse_current": {
+      "value": 0.0001,
+      "unit": "A",
+      "conditions": "VR = 40 V, TA = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics",
+      "source_kind": "maximum"
+    },
+    "capacitance": {
+      "value": 1.2e-10,
+      "unit": "F",
+      "conditions": "VR = 0 V, f = 1 MHz",
+      "page_reference": "p. 2, Fig. 3",
+      "source_kind": "typical"
+    },
+    "reverse_recovery": null,
+    "breakdown_voltage": null,
+    "breakdown_current": null
+  },
+  "extraction_notes": [
+    "Schottky barrier rectifier variant: no minority-carrier recovery time",
+    "Forward voltage curve digitized from Fig. 1 at TA = 25 degC",
+    "Reverse current characteristic digitized from Fig. 2",
+    "Junction capacitance digitized from Fig. 3 at f = 1 MHz",
+    "Reverse recovery time not applicable to Schottky diodes",
+    "No breakdown characterization provided in datasheet"
+  ],
+  "omission_reason": null
+}

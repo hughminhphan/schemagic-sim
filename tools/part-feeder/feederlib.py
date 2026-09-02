@@ -644,6 +644,180 @@ def download_datasheets(
     return report
 
 
+def human_bytes(size: int) -> str:
+    value = float(size)
+    for unit in ("B", "KB", "MB", "GB", "TB"):
+        if value < 1024 or unit == "TB":
+            return f"{value:.1f} {unit}" if unit != "B" else f"{int(value)} B"
+        value /= 1024
+    return f"{value:.1f} TB"
+
+
+def _file_entries(paths: Iterable[Path], root: Path) -> list[dict[str, Any]]:
+    entries = []
+    for path in sorted(paths):
+        if not path.is_file():
+            continue
+        try:
+            relative = str(path.relative_to(root))
+        except ValueError:
+            relative = str(path)
+        entries.append({"path": str(path), "relative_path": relative, "bytes": path.stat().st_size})
+    return entries
+
+
+def _closed_tranche_datasheets(staging_root: Path, keep: set[str]) -> tuple[list[Path], list[dict[str, Any]]]:
+    """PDFs of tranches whose staged manifest already records a hash for every datasheet.
+
+    A tranche is only prunable once its manifest carries the SHA-256 of each PDF, because
+    the hash is the provenance a promoted model cites. Deleting a hashed PDF loses a
+    refetchable file; deleting an unhashed one would lose the provenance itself.
+    """
+    prunable: list[Path] = []
+    tranches: list[dict[str, Any]] = []
+    if not staging_root.is_dir():
+        return prunable, tranches
+    for tranche_dir in sorted(path for path in staging_root.iterdir() if path.is_dir()):
+        tranche = tranche_dir.name
+        manifest_path = tranche_dir / "manifest.json"
+        if not manifest_path.is_file():
+            # Reported, never pruned: without a staged manifest there is no recorded hash,
+            # so the PDFs are the only surviving provenance for that tranche.
+            tranches.append({"tranche": tranche, "status": "no staged manifest", "pdf_count": 0, "bytes": 0})
+            continue
+        try:
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            tranches.append({"tranche": tranche, "status": "unreadable manifest", "pdf_count": 0, "bytes": 0})
+            continue
+        records = manifest.get("datasheets")
+        if not isinstance(records, list) or not records:
+            tranches.append({"tranche": tranche, "status": "no datasheet records", "pdf_count": 0, "bytes": 0})
+            continue
+        hashed = {
+            str(record.get("path"))
+            for record in records
+            if isinstance(record, dict) and record.get("sha256") and record.get("path")
+        }
+        unhashed = [record for record in records
+                    if isinstance(record, dict) and record.get("status") in {"downloaded", "cached"}
+                    and not record.get("sha256")]
+        if tranche in keep:
+            status = "kept by request"
+        elif unhashed:
+            status = f"{len(unhashed)} datasheet record(s) carry no sha256"
+        else:
+            status = "closed"
+        pdfs = [manifest_path.parent / relative for relative in sorted(hashed)] if status == "closed" else []
+        pdfs = [path for path in pdfs if path.is_file()]
+        size = sum(path.stat().st_size for path in pdfs)
+        tranches.append({"tranche": tranche, "status": status, "pdf_count": len(pdfs), "bytes": size})
+        prunable.extend(pdfs)
+    return prunable, tranches
+
+
+def plan_prune(
+    data_dir: Path,
+    conveyor_data_dir: Path | None = None,
+    keep_tranches: Iterable[str] = (),
+) -> dict[str, Any]:
+    """Describe exactly what a prune would delete, without touching anything.
+
+    Three categories, each independently reversible in cost terms: archive download
+    intermediates (refetchable with one command), datasheet PDFs of closed tranches whose
+    hashes are already recorded (refetchable from the recorded URL), and superseded copies
+    of the conveyor state database. Extraction JSON is never a prune candidate.
+    """
+    data_dir = Path(data_dir)
+    keep = {str(name) for name in keep_tranches}
+    categories: list[dict[str, Any]] = []
+
+    downloads = data_dir / "downloads"
+    intermediates = []
+    if downloads.is_dir():
+        intermediates = [path for path in downloads.iterdir()
+                         if path.is_file() and re.fullmatch(r"cache\.(z\d+|zip|full\.zip)(\.part)?", path.name)]
+        intermediates += [path for path in downloads.iterdir() if path.is_file() and path.name.endswith(".part")]
+    entries = _file_entries(set(intermediates), data_dir)
+    categories.append({
+        "name": "download_intermediates",
+        "description": "split jlcparts archive segments and partial downloads; refetch with 'feeder fetch-db --refresh'",
+        "count": len(entries),
+        "bytes": sum(entry["bytes"] for entry in entries),
+        "files": entries,
+    })
+
+    pdf_paths: list[Path] = []
+    tranche_report: list[dict[str, Any]] = []
+    staging_roots = [data_dir / "staging"]
+    if conveyor_data_dir is not None:
+        conveyor_data_dir = Path(conveyor_data_dir)
+        staging_roots.extend(sorted({path for path in conveyor_data_dir.glob("**/staging") if path.is_dir()}))
+    for staging_root in staging_roots:
+        found, report = _closed_tranche_datasheets(staging_root, keep)
+        pdf_paths.extend(found)
+        for item in report:
+            tranche_report.append({**item, "staging_root": str(staging_root)})
+    entries = _file_entries(set(pdf_paths), data_dir)
+    categories.append({
+        "name": "closed_batch_datasheets",
+        "description": "datasheet PDFs of closed tranches; the staged manifest keeps every sha256 and source URL",
+        "count": len(entries),
+        "bytes": sum(entry["bytes"] for entry in entries),
+        "files": entries,
+        "tranches": tranche_report,
+    })
+
+    stale: list[Path] = []
+    if conveyor_data_dir is not None and Path(conveyor_data_dir).is_dir():
+        live = {"conveyor-state.sqlite3", "conveyor-state.sqlite3-wal", "conveyor-state.sqlite3-shm"}
+        for path in sorted(Path(conveyor_data_dir).iterdir()):
+            if path.is_file() and path.name.startswith("conveyor-state") and path.name not in live:
+                stale.append(path)
+    entries = _file_entries(set(stale), Path(conveyor_data_dir) if conveyor_data_dir else data_dir)
+    categories.append({
+        "name": "stale_state_db_copies",
+        "description": "superseded copies of the conveyor state database; the live conveyor-state.sqlite3 is never listed",
+        "count": len(entries),
+        "bytes": sum(entry["bytes"] for entry in entries),
+        "files": entries,
+    })
+
+    total_bytes = sum(category["bytes"] for category in categories)
+    total_files = sum(category["count"] for category in categories)
+    return {
+        "schema_version": SCHEMA_VERSION,
+        "kind": "opencircuit-feeder-prune-plan",
+        "data_dir": str(data_dir),
+        "conveyor_data_dir": str(conveyor_data_dir) if conveyor_data_dir else None,
+        "keep_tranches": sorted(keep),
+        "categories": categories,
+        "total_files": total_files,
+        "total_bytes": total_bytes,
+        "total_human": human_bytes(total_bytes),
+    }
+
+
+def execute_prune(plan: Mapping[str, Any], confirm: bool = False) -> dict[str, Any]:
+    """Delete the planned files. Refuses without an explicit confirmation."""
+    if not confirm:
+        raise FeederError("Refusing to delete without --yes")
+    deleted = 0
+    freed = 0
+    failures: list[dict[str, str]] = []
+    for category in plan.get("categories", []):
+        for entry in category.get("files", []):
+            path = Path(entry["path"])
+            try:
+                size = path.stat().st_size if path.is_file() else 0
+                path.unlink()
+                deleted += 1
+                freed += size
+            except OSError as error:
+                failures.append({"path": str(path), "error": str(error)})
+    return {"deleted": deleted, "freed_bytes": freed, "freed_human": human_bytes(freed), "failures": failures}
+
+
 def validate_manifest(manifest: Mapping[str, Any]) -> None:
     if manifest.get("schema_version") != SCHEMA_VERSION or manifest.get("kind") != "opencircuit-part-tranche":
         raise FeederError("Unsupported tranche manifest schema")

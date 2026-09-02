@@ -1,0 +1,301 @@
+{
+  "schema_version": "1.0.0",
+  "mpn": "AO3402",
+  "manufacturer": "GOODWORK",
+  "family": "mosfet",
+  "datasheet_identity": {
+    "title": "AO3402 N-Channel Enhancement Mode MOSFET",
+    "revision": "REV 2.0 2025 JAN",
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4",
+      "p. 5"
+    ]
+  },
+  "usable_curves": true,
+  "curves": [
+    {
+      "name": "Output characteristics, VGS = 1.5 V",
+      "x_axis": {
+        "quantity": "drain-source voltage VDS",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "drain current ID",
+        "unit": "A",
+        "scale": "linear"
+      },
+      "test_conditions": "Ta = 25 °C; output-characteristics plot curve labelled VGS = 1.5 V",
+      "page_reference": "p. 3, Output Characteristics",
+      "points": [
+        {"x": 0.0, "y": 0.0},
+        {"x": 0.25, "y": 0.8},
+        {"x": 0.5, "y": 1.55},
+        {"x": 0.75, "y": 2.15},
+        {"x": 1.0, "y": 2.4},
+        {"x": 1.5, "y": 2.6},
+        {"x": 3.0, "y": 2.7},
+        {"x": 5.0, "y": 2.75}
+      ]
+    },
+    {
+      "name": "Output characteristics, VGS = 2 V",
+      "x_axis": {
+        "quantity": "drain-source voltage VDS",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "drain current ID",
+        "unit": "A",
+        "scale": "linear"
+      },
+      "test_conditions": "Ta = 25 °C; output-characteristics plot curve labelled VGS = 2 V",
+      "page_reference": "p. 3, Output Characteristics",
+      "points": [
+        {"x": 0.0, "y": 0.0},
+        {"x": 0.25, "y": 1.5},
+        {"x": 0.5, "y": 4.0},
+        {"x": 0.75, "y": 7.0},
+        {"x": 1.0, "y": 8.8},
+        {"x": 1.5, "y": 10.2},
+        {"x": 3.0, "y": 10.5},
+        {"x": 5.0, "y": 10.7}
+      ]
+    },
+    {
+      "name": "Transfer characteristics, Ta = 25 °C",
+      "x_axis": {
+        "quantity": "gate-source voltage VGS",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "drain current ID",
+        "unit": "A",
+        "scale": "linear"
+      },
+      "test_conditions": "VDS = 3 V; Ta = 25 °C",
+      "page_reference": "p. 3, Transfer Characteristics",
+      "points": [
+        {"x": 0.7, "y": 0.0},
+        {"x": 0.8, "y": 0.05},
+        {"x": 1.0, "y": 0.25},
+        {"x": 1.2, "y": 0.8},
+        {"x": 1.4, "y": 1.8},
+        {"x": 1.5, "y": 2.6},
+        {"x": 1.6, "y": 3.8},
+        {"x": 1.8, "y": 7.0},
+        {"x": 2.0, "y": 10.3},
+        {"x": 2.2, "y": 14.0}
+      ]
+    },
+    {
+      "name": "Transfer characteristics, Ta = 100 °C",
+      "x_axis": {
+        "quantity": "gate-source voltage VGS",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "drain current ID",
+        "unit": "A",
+        "scale": "linear"
+      },
+      "test_conditions": "VDS = 3 V; Ta = 100 °C",
+      "page_reference": "p. 3, Transfer Characteristics",
+      "points": [
+        {"x": 0.65, "y": 0.0},
+        {"x": 0.8, "y": 0.12},
+        {"x": 1.0, "y": 0.45},
+        {"x": 1.2, "y": 1.2},
+        {"x": 1.4, "y": 2.4},
+        {"x": 1.5, "y": 3.4},
+        {"x": 1.6, "y": 4.6},
+        {"x": 1.8, "y": 7.7},
+        {"x": 2.0, "y": 11.0},
+        {"x": 2.2, "y": 14.0}
+      ]
+    },
+    {
+      "name": "Threshold voltage vs junction temperature",
+      "x_axis": {
+        "quantity": "junction temperature Tj",
+        "unit": "°C",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "threshold voltage VTH",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "test_conditions": "ID = 250 µA",
+      "page_reference": "p. 3, Threshold Voltage",
+      "points": [
+        {"x": 25.0, "y": 0.85},
+        {"x": 50.0, "y": 0.79},
+        {"x": 75.0, "y": 0.72},
+        {"x": 100.0, "y": 0.64},
+        {"x": 125.0, "y": 0.56}
+      ]
+    }
+  ],
+  "specs": {
+    "polarity": "n",
+    "threshold_min": {
+      "value": 0.6,
+      "unit": "V",
+      "conditions": "VDS = VGS, ID = 250 µA; Ta = 25 °C unless otherwise specified; pulse test, pulse width ≤ 80 µs, duty cycle ≤ 0.5%",
+      "page_reference": "p. 2, Static Characteristics, Gate threshold voltage",
+      "source_kind": "minimum"
+    },
+    "threshold_typ": null,
+    "threshold_max": {
+      "value": 1.4,
+      "unit": "V",
+      "conditions": "VDS = VGS, ID = 250 µA; Ta = 25 °C unless otherwise specified; pulse test, pulse width ≤ 80 µs, duty cycle ≤ 0.5%",
+      "page_reference": "p. 2, Static Characteristics, Gate threshold voltage",
+      "source_kind": "maximum"
+    },
+    "rdson_points": [
+      {
+        "vgs": {
+          "value": 10.0,
+          "unit": "V",
+          "conditions": "ID = 4 A; Ta = 25 °C unless otherwise specified; pulse test",
+          "page_reference": "p. 2, Static Characteristics, Drain-source on-resistance",
+          "source_kind": "typical"
+        },
+        "current": {
+          "value": 4.0,
+          "unit": "A",
+          "conditions": "VGS = 10 V; Ta = 25 °C unless otherwise specified; pulse test",
+          "page_reference": "p. 2, Static Characteristics, Drain-source on-resistance",
+          "source_kind": "typical"
+        },
+        "resistance": {
+          "value": 0.036,
+          "unit": "ohm",
+          "conditions": "VGS = 10 V, ID = 4 A; Ta = 25 °C unless otherwise specified; pulse test",
+          "page_reference": "p. 2, Static Characteristics, Drain-source on-resistance",
+          "source_kind": "typical"
+        }
+      },
+      {
+        "vgs": {
+          "value": 10.0,
+          "unit": "V",
+          "conditions": "ID = 4 A; Ta = 25 °C unless otherwise specified; pulse test",
+          "page_reference": "p. 2, Static Characteristics, Drain-source on-resistance",
+          "source_kind": "maximum"
+        },
+        "current": {
+          "value": 4.0,
+          "unit": "A",
+          "conditions": "VGS = 10 V; Ta = 25 °C unless otherwise specified; pulse test",
+          "page_reference": "p. 2, Static Characteristics, Drain-source on-resistance",
+          "source_kind": "maximum"
+        },
+        "resistance": {
+          "value": 0.055,
+          "unit": "ohm",
+          "conditions": "VGS = 10 V, ID = 4 A; Ta = 25 °C unless otherwise specified; pulse test",
+          "page_reference": "p. 2, Static Characteristics, Drain-source on-resistance",
+          "source_kind": "maximum"
+        }
+      },
+      {
+        "vgs": {
+          "value": 4.5,
+          "unit": "V",
+          "conditions": "ID = 3 A; Ta = 25 °C unless otherwise specified; pulse test",
+          "page_reference": "p. 2, Static Characteristics, Drain-source on-resistance",
+          "source_kind": "typical"
+        },
+        "current": {
+          "value": 3.0,
+          "unit": "A",
+          "conditions": "VGS = 4.5 V; Ta = 25 °C unless otherwise specified; pulse test",
+          "page_reference": "p. 2, Static Characteristics, Drain-source on-resistance",
+          "source_kind": "typical"
+        },
+        "resistance": {
+          "value": 0.07,
+          "unit": "ohm",
+          "conditions": "VGS = 4.5 V, ID = 3 A; Ta = 25 °C unless otherwise specified; pulse test",
+          "page_reference": "p. 2, Static Characteristics, Drain-source on-resistance",
+          "source_kind": "typical"
+        }
+      },
+      {
+        "vgs": {
+          "value": 2.5,
+          "unit": "V",
+          "conditions": "ID = 2 A; Ta = 25 °C unless otherwise specified; pulse test",
+          "page_reference": "p. 2, Static Characteristics, Drain-source on-resistance",
+          "source_kind": "maximum"
+        },
+        "current": {
+          "value": 2.0,
+          "unit": "A",
+          "conditions": "VGS = 2.5 V; Ta = 25 °C unless otherwise specified; pulse test",
+          "page_reference": "p. 2, Static Characteristics, Drain-source on-resistance",
+          "source_kind": "maximum"
+        },
+        "resistance": {
+          "value": 0.11,
+          "unit": "ohm",
+          "conditions": "VGS = 2.5 V, ID = 2 A; Ta = 25 °C unless otherwise specified; pulse test",
+          "page_reference": "p. 2, Static Characteristics, Drain-source on-resistance",
+          "source_kind": "maximum"
+        }
+      }
+    ],
+    "ciss": {
+      "value": 3.9e-10,
+      "unit": "F",
+      "conditions": "Dynamic characteristics, note 4; no explicit VDS, VGS, or frequency condition is printed in the Ciss row",
+      "page_reference": "p. 2, Dynamic Characteristics, Input capacitance",
+      "source_kind": "typical"
+    },
+    "coss": {
+      "value": 5.45e-11,
+      "unit": "F",
+      "conditions": "VDS = 15 V, VGS = 0 V, f = 1 MHz; dynamic characteristics, note 4",
+      "page_reference": "p. 2, Dynamic Characteristics, Output capacitance",
+      "source_kind": "typical"
+    },
+    "crss": {
+      "value": 4.1e-11,
+      "unit": "F",
+      "conditions": "Dynamic characteristics, note 4; no explicit VDS, VGS, or frequency condition is printed in the Crss row",
+      "page_reference": "p. 2, Dynamic Characteristics, Reverse transfer capacitance",
+      "source_kind": "typical"
+    },
+    "breakdown_voltage": {
+      "value": 30.0,
+      "unit": "V",
+      "conditions": "VGS = 0 V, ID = 250 µA; Ta = 25 °C unless otherwise specified",
+      "page_reference": "p. 2, Static Characteristics, Drain-source breakdown voltage",
+      "source_kind": "minimum"
+    },
+    "body_diode": {
+      "value": 1.0,
+      "unit": "V",
+      "conditions": "IS = 1 A, VGS = 0 V; Ta = 25 °C unless otherwise specified; pulse test",
+      "page_reference": "p. 2, Static Characteristics, Diode forward voltage",
+      "source_kind": "maximum"
+    }
+  },
+  "extraction_notes": [
+    "PDF SHA-256 verified as a2a8bd54d32f4c4f053a9d8b02f0ce3ffc3c6a7dad7ff8cd8d7f73e34db196c7.",
+    "The supplied datasheet identifies the device as AO3402, an N-channel enhancement-mode MOSFET, from GOODWORK.",
+    "Curve points are manual readings from the plotted traces on page 3 and are approximate digitizations, not interpolated values.",
+    "The output plot also shows VGS = 3 V, 4 V, 5 V, and 10 V traces, but those traces are visually overlapped near the plot's left edge and were not separately digitized.",
+    "The datasheet uses typical values for Ciss, Coss, and Crss and does not print complete test conditions for the Ciss and Crss rows."
+  ],
+  "omission_reason": "No capacitance-versus-VDS characteristic plot is published in the five-page datasheet; only tabulated Ciss, Coss, and Crss values are available. The visually overlapping VGS = 3 V, 4 V, 5 V, and 10 V output traces were not separately digitized."
+}

@@ -1,0 +1,105 @@
+{
+  "curves": [
+    {
+      "name": "Zener characteristic, curve labeled 12 (BZX84C12), Ta = 25 degC pulsed",
+      "page_reference": "p. 3 Fig. 2 Zener Characteristics (11V to 43V)",
+      "points": [
+        {
+          "x": 11.8,
+          "y": 0.001
+        },
+        {
+          "x": 11.8,
+          "y": 0.005
+        },
+        {
+          "x": 11.8,
+          "y": 0.01
+        },
+        {
+          "x": 12.3,
+          "y": 0.015
+        }
+      ],
+      "test_conditions": "Ta = 25 degC, pulsed",
+      "x_axis": {
+        "quantity": "zener voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "zener current",
+        "scale": "log",
+        "unit": "A"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "revision": "Rev:1.0",
+    "title": "BZX84C2V4 THRU BZX84C75 SURFACE MOUNT ZENER DIODES"
+  },
+  "extraction_notes": [
+    "Family datasheet BZX84C2V4 THRU BZX84C75; all table values are from the BZX84C12 row on p. 2.",
+    "Zener voltage limits: VZ min 11.4 V, nom 12 V, max 12.7 V at IZT = 5 mA. breakdown_voltage records the nominal column.",
+    "Maximum zener impedance ZZT = 25 ohm at IZT = 5 mA; knee impedance ZZK = 150 ohm at IZK = 1.0 mA (p. 2, BZX84C12 row). The schema has no impedance fields, so these fitting inputs are recorded here.",
+    "Typical temperature coefficient at IZTC: +6.0 to +10 mV/degC; admissible zener current IZM = 5 mA (p. 2, BZX84C12 row).",
+    "The Fig. 2 curve for the 12 V part is drawn as a near-vertical line at this print resolution; the digitized points reflect that stylized artwork (constant 11.8 V up to about 10 mA with a bend toward 12.3 V near the 300 mW power envelope) and should not be used to infer zener impedance in preference to the tabulated ZZT/ZZK.",
+    "Figs. 3-6 (temperature coefficient, leakage, capacitance, dynamic impedance) plot family-wide values against nominal zener voltage, not per-part characteristics, and were not extracted as curves; no per-part capacitance table value exists, so capacitance is null."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "BZX84C12",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": {
+      "conditions": "Zener test current IZT at which VZ is specified, Ta = 25 degC",
+      "page_reference": "p. 2 Electrical Characteristics, BZX84C12 row, IZT column",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.005
+    },
+    "breakdown_voltage": {
+      "conditions": "IZT = 5 mA, Ta = 25 degC; nominal zener voltage VZ",
+      "page_reference": "p. 2 Electrical Characteristics, BZX84C12 row, VZ Nom. column",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 12.0
+    },
+    "capacitance": null,
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 10 mA, Ta = 25 degC",
+          "page_reference": "p. 1 Maximum Ratings, Forward Voltage @ IF=10mA row",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.01
+        },
+        "voltage": {
+          "conditions": "IF = 10 mA, Ta = 25 degC",
+          "page_reference": "p. 1 Maximum Ratings, Forward Voltage @ IF=10mA row",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.9
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = 8.0 V, Ta = 25 degC",
+      "page_reference": "p. 2 Electrical Characteristics, BZX84C12 row, Leakage Current IR@VR",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 1e-07
+    },
+    "reverse_recovery": null,
+    "variant": "zener"
+  },
+  "usable_curves": true
+}

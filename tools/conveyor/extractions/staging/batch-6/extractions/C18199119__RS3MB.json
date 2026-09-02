@@ -1,0 +1,177 @@
+{
+  "curves": [
+    {
+      "name": "typical_forward_voltage_RS3MB",
+      "page_reference": "p. 2 Fig. 3",
+      "points": [
+        {
+          "x": 0.38,
+          "y": 0.03
+        },
+        {
+          "x": 0.42,
+          "y": 0.06
+        },
+        {
+          "x": 0.48,
+          "y": 0.1
+        },
+        {
+          "x": 0.58,
+          "y": 0.2
+        },
+        {
+          "x": 0.7,
+          "y": 0.4
+        },
+        {
+          "x": 0.8,
+          "y": 1
+        },
+        {
+          "x": 1,
+          "y": 2.8
+        },
+        {
+          "x": 1.2,
+          "y": 6.5
+        },
+        {
+          "x": 1.4,
+          "y": 10
+        }
+      ],
+      "test_conditions": "Tj=25 degC; pulse width=300 us; duty cycle=1%; typical forward-voltage curve",
+      "x_axis": {
+        "quantity": "instantaneous forward voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "instantaneous forward current",
+        "scale": "log",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "typical_reverse_characteristics_Tj25",
+      "page_reference": "p. 2 Fig. 4",
+      "points": [
+        {
+          "x": 0,
+          "y": 0.04
+        },
+        {
+          "x": 20,
+          "y": 0.05
+        },
+        {
+          "x": 40,
+          "y": 0.07
+        },
+        {
+          "x": 60,
+          "y": 0.09
+        },
+        {
+          "x": 80,
+          "y": 0.12
+        },
+        {
+          "x": 100,
+          "y": 0.18
+        },
+        {
+          "x": 120,
+          "y": 0.3
+        },
+        {
+          "x": 125,
+          "y": 0.5
+        },
+        {
+          "x": 128,
+          "y": 4
+        },
+        {
+          "x": 130,
+          "y": 100
+        }
+      ],
+      "test_conditions": "Tj=25 degC; RS3MB rated reverse voltage",
+      "x_axis": {
+        "quantity": "percent of rated peak reverse voltage",
+        "scale": "linear",
+        "unit": "%"
+      },
+      "y_axis": {
+        "quantity": "instantaneous reverse current",
+        "scale": "log",
+        "unit": "uA"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ],
+    "revision": "Rev:1.0",
+    "title": "RS3AB THRU RS3MB Surface Mount Fast Recovery Rectifier"
+  },
+  "extraction_notes": [
+    "The RS3MB electrical table publishes maximum VF, reverse current, and reverse recovery values plus typical junction capacitance.",
+    "The public PDF identifies Zhuhai Hongjiacheng Technology Co., Ltd.; extraction manufacturer is the frozen catalog identity `hongjiacheng`."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "RS3MB",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": null,
+    "breakdown_voltage": null,
+    "capacitance": {
+      "conditions": "VR=4.0 V DC; f=1 MHz; Ta=25 degC",
+      "page_reference": "p. 2 Electrical Characteristics, typical junction capacitance",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 6e-11
+    },
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF=3.0 A; Ta=25 degC",
+          "page_reference": "p. 2 Electrical Characteristics, maximum instantaneous forward voltage",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 3.0
+        },
+        "voltage": {
+          "conditions": "IF=3.0 A; Ta=25 degC",
+          "page_reference": "p. 2 Electrical Characteristics, maximum instantaneous forward voltage",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 1.3
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR=VDC=1000 V; TA=25 degC",
+      "page_reference": "p. 2 Electrical Characteristics, maximum DC reverse current at rated DC blocking voltage",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 2e-06
+    },
+    "reverse_recovery": {
+      "conditions": "IF=0.5 A; IR=1.0 A; Irr=0.25 A; Ta=25 degC",
+      "page_reference": "p. 2 Electrical Characteristics, maximum reverse recovery time",
+      "source_kind": "maximum",
+      "unit": "s",
+      "value": 5e-07
+    },
+    "variant": "rectifier"
+  },
+  "usable_curves": true
+}

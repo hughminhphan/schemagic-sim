@@ -1,0 +1,167 @@
+{
+  "curves": [
+    {
+      "name": "DC current gain versus collector current, TA=25 degC",
+      "page_reference": "p. 2",
+      "points": [
+        {
+          "x": -0.001,
+          "y": 260
+        },
+        {
+          "x": -0.01,
+          "y": 245
+        },
+        {
+          "x": -0.05,
+          "y": 220
+        },
+        {
+          "x": -0.1,
+          "y": 200
+        },
+        {
+          "x": -0.5,
+          "y": 100
+        }
+      ],
+      "test_conditions": "VCE=-1 V; common-emitter typical characteristic; TA=25 degC",
+      "x_axis": {
+        "quantity": "collector current",
+        "scale": "log",
+        "unit": "A"
+      },
+      "y_axis": {
+        "quantity": "DC current gain",
+        "scale": "linear",
+        "unit": "1"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4",
+      "p. 5"
+    ],
+    "revision": "Revision not stated in supplied PDF",
+    "title": "S9012 PNP Plastic-Encapsulate Transistors"
+  },
+  "extraction_notes": [
+    "The datasheet table provides one hFE target range, 120 minimum to 400 maximum at IC=-50 mA and VCE=-1 V; no additional tabulated positive hFE target is available.",
+    "Curve points are digitized from the TA=25 degC hFE trace on p. 2 and retain the negative PNP collector-current axis."
+  ],
+  "family": "bjt",
+  "manufacturer": "HXY MOSFET",
+  "mpn": "S9012",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "cibo": null,
+    "cobo": {
+      "conditions": "VCB=-10 V, IE=0, f=1 MHz, TA=25 degC",
+      "page_reference": "p. 2",
+      "source_kind": "maximum",
+      "unit": "F",
+      "value": 5e-12
+    },
+    "ft": {
+      "conditions": "VCE=-6 V, IC=-20 mA, f=30 MHz, TA=25 degC",
+      "page_reference": "p. 2",
+      "source_kind": "minimum",
+      "unit": "Hz",
+      "value": 150000000.0
+    },
+    "gain_points": [
+      {
+        "collector_current": {
+          "conditions": "VCE=-1 V, IC=-50 mA, TA=25 degC",
+          "page_reference": "p. 2",
+          "source_kind": "minimum",
+          "unit": "A",
+          "value": -0.05
+        },
+        "hfe": {
+          "conditions": "VCE=-1 V, IC=-50 mA, TA=25 degC",
+          "page_reference": "p. 2",
+          "source_kind": "minimum",
+          "unit": "1",
+          "value": 120
+        },
+        "vce": {
+          "conditions": "VCE=-1 V, IC=-50 mA, TA=25 degC",
+          "page_reference": "p. 2",
+          "source_kind": "typical",
+          "unit": "V",
+          "value": -1.0
+        }
+      },
+      {
+        "collector_current": {
+          "conditions": "VCE=-1 V, IC=-50 mA, TA=25 degC",
+          "page_reference": "p. 2",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": -0.05
+        },
+        "hfe": {
+          "conditions": "VCE=-1 V, IC=-50 mA, TA=25 degC",
+          "page_reference": "p. 2",
+          "source_kind": "maximum",
+          "unit": "1",
+          "value": 400
+        },
+        "vce": {
+          "conditions": "VCE=-1 V, IC=-50 mA, TA=25 degC",
+          "page_reference": "p. 2",
+          "source_kind": "typical",
+          "unit": "V",
+          "value": -1.0
+        }
+      }
+    ],
+    "polarity": "pnp",
+    "saturation_points": [
+      {
+        "base_current": {
+          "conditions": "IC=-500 mA, IB=-50 mA, TA=25 degC",
+          "page_reference": "p. 2",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": -0.05
+        },
+        "collector_current": {
+          "conditions": "IC=-500 mA, IB=-50 mA, TA=25 degC",
+          "page_reference": "p. 2",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": -0.5
+        },
+        "vbe_sat": {
+          "conditions": "IC=-500 mA, IB=-50 mA, TA=25 degC",
+          "page_reference": "p. 2",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": -1.2
+        },
+        "vce_sat": {
+          "conditions": "IC=-500 mA, IB=-50 mA, TA=25 degC",
+          "page_reference": "p. 2",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": -0.6
+        }
+      }
+    ],
+    "vceo": {
+      "conditions": "IC=-1 mA, IB=0, TA=25 degC",
+      "page_reference": "p. 2",
+      "source_kind": "minimum",
+      "unit": "V",
+      "value": -25.0
+    }
+  },
+  "usable_curves": true
+}

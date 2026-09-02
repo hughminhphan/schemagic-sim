@@ -1,0 +1,196 @@
+{
+  "curves": [
+    {
+      "name": "Family zener characteristics, representative low-voltage trace",
+      "page_reference": "p. 3 Fig. 1, Zener Characteristics (Vz Up to 12V)",
+      "points": [
+        {
+          "x": 4.8,
+          "y": 1e-05
+        },
+        {
+          "x": 4.95,
+          "y": 0.0001
+        },
+        {
+          "x": 5.05,
+          "y": 0.001
+        },
+        {
+          "x": 5.2,
+          "y": 0.01
+        },
+        {
+          "x": 5.4,
+          "y": 0.02
+        }
+      ],
+      "test_conditions": "Ta = 25 degC; pulsed; family plot for MM3Z2V0 through MM3Z75, VZ up to 12 V; points follow the leftmost approximately 5 V representative trace and are not a dedicated MM3Z3V6 trace",
+      "x_axis": {
+        "quantity": "zener voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "zener current",
+        "scale": "log",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "Typical forward voltage at Ta = 25 degC",
+      "page_reference": "p. 3 Fig. 3, Typical Forward Voltage",
+      "points": [
+        {
+          "x": 0.65,
+          "y": 0.001
+        },
+        {
+          "x": 0.7,
+          "y": 0.003
+        },
+        {
+          "x": 0.74,
+          "y": 0.01
+        },
+        {
+          "x": 0.8,
+          "y": 0.03
+        },
+        {
+          "x": 0.88,
+          "y": 0.1
+        },
+        {
+          "x": 1.0,
+          "y": 0.25
+        },
+        {
+          "x": 1.15,
+          "y": 0.5
+        }
+      ],
+      "test_conditions": "Ta = 25 degC; pulsed; family typical forward-voltage curve; current axis converted from mA to A",
+      "x_axis": {
+        "quantity": "forward voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "forward current",
+        "scale": "log",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "Typical leakage current at Ta = 25 degC",
+      "page_reference": "p. 3 Fig. 4, Typical Leakage Current",
+      "points": [
+        {
+          "x": 0.0,
+          "y": 8e-10
+        },
+        {
+          "x": 10.0,
+          "y": 7e-10
+        },
+        {
+          "x": 20.0,
+          "y": 7e-10
+        },
+        {
+          "x": 40.0,
+          "y": 8e-10
+        },
+        {
+          "x": 60.0,
+          "y": 9e-10
+        },
+        {
+          "x": 70.0,
+          "y": 1e-09
+        }
+      ],
+      "test_conditions": "Ta = 25 degC; pulsed; family typical leakage-current curve versus nominal zener voltage",
+      "x_axis": {
+        "quantity": "nominal zener voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "reverse leakage current",
+        "scale": "log",
+        "unit": "A"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4",
+      "p. 5"
+    ],
+    "revision": "Rev:1.1",
+    "title": "MM3Z2V0 THRU MM3Z75 SURFACE MOUNT ZENER DIODES"
+  },
+  "extraction_notes": [
+    "MM3Z3V6 table row gives VZ minimum 3.4 V, nominal 3.6 V, maximum 3.8 V at IZT = 5 mA and Ta = 25 degC; the schema records the nominal typical value as breakdown_voltage.",
+    "Maximum zener impedance is 90 ohm at IZT = 5 mA; maximum knee impedance is 1000 ohm at IZK = 0.5 mA, both from p. 2. These impedance values have no dedicated fields in the strict schema.",
+    "The p. 3 zener, forward-voltage, and leakage plots are family-characteristic figures without a legend or unambiguous MM3Z3V6-specific trace; retained curve points are labeled with that limitation.",
+    "The p. 4 capacitance plot begins at nominal zener voltage 4 V, so it does not provide a usable MM3Z3V6 point at nominal 3.6 V; specs.capacitance is null.",
+    "The datasheet publishes no reverse-recovery-time value; reverse_recovery is null.",
+    "Temperature coefficient for MM3Z3V6 is -3.5 to 0 mV/degC at IZTC = 5 mA, p. 2; this field is not represented by the strict schema."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "MM3Z3V6",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": {
+      "conditions": "IZT = 5 mA, Ta = 25 degC; zener-voltage test current",
+      "page_reference": "p. 2, Electrical Characteristics, MM3Z3V6 row, IZT",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.005
+    },
+    "breakdown_voltage": {
+      "conditions": "IZT = 5 mA, Ta = 25 degC; nominal zener voltage; specified range 3.4 V minimum to 3.8 V maximum",
+      "page_reference": "p. 2, Electrical Characteristics, MM3Z3V6 row, VZ@IZT Nom.",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 3.6
+    },
+    "capacitance": null,
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 10 mA, Ta = 25 degC; maximum forward voltage rating",
+          "page_reference": "p. 1, Maximum Ratings, Forward Voltage @ IF=10mA",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.01
+        },
+        "voltage": {
+          "conditions": "IF = 10 mA, Ta = 25 degC; maximum forward voltage rating",
+          "page_reference": "p. 1, Maximum Ratings, Forward Voltage @ IF=10mA",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.9
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = 1.0 V, Ta = 25 degC; maximum reverse leakage current",
+      "page_reference": "p. 2, Electrical Characteristics, MM3Z3V6 row, IR@VR",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 5e-06
+    },
+    "reverse_recovery": null,
+    "variant": "zener"
+  },
+  "usable_curves": true
+}

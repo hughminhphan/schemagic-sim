@@ -1,0 +1,291 @@
+{
+  "schema_version": "1.0.0",
+  "mpn": "BCP56-16TX",
+  "manufacturer": "Nexperia",
+  "family": "bjt",
+  "datasheet_identity": {
+    "title": "BCP56T series — 80 V, 1 A NPN medium power transistors",
+    "revision": "Rev. 3 — 1 July 2022",
+    "pages_examined": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15"
+    ]
+  },
+  "usable_curves": true,
+  "curves": [
+    {
+      "name": "DC current gain vs collector current at Vce=2V (Tamb=25°C)",
+      "x_axis": {
+        "quantity": "collector current",
+        "unit": "mA",
+        "scale": "log"
+      },
+      "y_axis": {
+        "quantity": "DC current gain",
+        "unit": "dimensionless",
+        "scale": "linear"
+      },
+      "test_conditions": "Vce = 2 V; Tamb = 25°C",
+      "page_reference": "9 (Fig. 9)",
+      "points": [
+        {"x": 0.5, "y": 140},
+        {"x": 1, "y": 145},
+        {"x": 2, "y": 148},
+        {"x": 5, "y": 130},
+        {"x": 10, "y": 125},
+        {"x": 20, "y": 120},
+        {"x": 50, "y": 90},
+        {"x": 100, "y": 50},
+        {"x": 200, "y": 20},
+        {"x": 500, "y": 5}
+      ]
+    },
+    {
+      "name": "Base-emitter saturation voltage vs collector current at Ic/Ib=10",
+      "x_axis": {
+        "quantity": "collector current",
+        "unit": "mA",
+        "scale": "log"
+      },
+      "y_axis": {
+        "quantity": "base-emitter saturation voltage",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "test_conditions": "Ic/Ib = 10; Tamb = 25°C",
+      "page_reference": "10 (Fig. 12)",
+      "points": [
+        {"x": 1, "y": 0.5},
+        {"x": 2, "y": 0.55},
+        {"x": 5, "y": 0.62},
+        {"x": 10, "y": 0.68},
+        {"x": 20, "y": 0.78},
+        {"x": 50, "y": 0.92},
+        {"x": 100, "y": 1.05},
+        {"x": 200, "y": 1.18},
+        {"x": 500, "y": 1.35}
+      ]
+    },
+    {
+      "name": "Collector-emitter saturation voltage vs collector current at Ic/Ib=10",
+      "x_axis": {
+        "quantity": "collector current",
+        "unit": "mA",
+        "scale": "log"
+      },
+      "y_axis": {
+        "quantity": "collector-emitter saturation voltage",
+        "unit": "V",
+        "scale": "log"
+      },
+      "test_conditions": "Ic/Ib = 10; Tamb = 25°C",
+      "page_reference": "10 (Fig. 14)",
+      "points": [
+        {"x": 1, "y": 0.02},
+        {"x": 2, "y": 0.025},
+        {"x": 5, "y": 0.035},
+        {"x": 10, "y": 0.05},
+        {"x": 20, "y": 0.075},
+        {"x": 50, "y": 0.15},
+        {"x": 100, "y": 0.3},
+        {"x": 200, "y": 0.5},
+        {"x": 500, "y": 0.9}
+      ]
+    },
+    {
+      "name": "Collector capacitance vs collector-base voltage at f=1MHz",
+      "x_axis": {
+        "quantity": "collector-base voltage",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "collector capacitance",
+        "unit": "pF",
+        "scale": "linear"
+      },
+      "test_conditions": "Veb = 0 V; Ic = 0 A; f = 1 MHz; Tamb = 25°C",
+      "page_reference": "11 (Fig. 15)",
+      "points": [
+        {"x": 0.5, "y": 14},
+        {"x": 1, "y": 11},
+        {"x": 2, "y": 8},
+        {"x": 3, "y": 6.5},
+        {"x": 5, "y": 5.2},
+        {"x": 10, "y": 4.5},
+        {"x": 20, "y": 4.0},
+        {"x": 40, "y": 3.7},
+        {"x": 80, "y": 3.5}
+      ]
+    }
+  ],
+  "specs": {
+    "polarity": "npn",
+    "gain_points": [
+      {
+        "collector_current": {
+          "value": 5,
+          "unit": "mA",
+          "conditions": "Vce = 2 V",
+          "page_reference": "8 (Table 8)",
+          "source_kind": "typical"
+        },
+        "vce": {
+          "value": 2,
+          "unit": "V",
+          "conditions": "specified condition",
+          "page_reference": "8 (Table 8)",
+          "source_kind": "typical"
+        },
+        "hfe": {
+          "value": 63,
+          "unit": "dimensionless",
+          "conditions": "pulsed, tp <= 300 µs; δ <= 0.02",
+          "page_reference": "8 (Table 8)",
+          "source_kind": "minimum"
+        }
+      },
+      {
+        "collector_current": {
+          "value": 150,
+          "unit": "mA",
+          "conditions": "Vce = 2 V",
+          "page_reference": "8 (Table 8)",
+          "source_kind": "typical"
+        },
+        "vce": {
+          "value": 2,
+          "unit": "V",
+          "conditions": "specified condition",
+          "page_reference": "8 (Table 8)",
+          "source_kind": "typical"
+        },
+        "hfe": {
+          "value": 100,
+          "unit": "dimensionless",
+          "conditions": "pulsed, tp <= 300 µs; δ <= 0.02",
+          "page_reference": "8 (Table 8)",
+          "source_kind": "minimum"
+        }
+      },
+      {
+        "collector_current": {
+          "value": 150,
+          "unit": "mA",
+          "conditions": "Vce = 2 V",
+          "page_reference": "8 (Table 8)",
+          "source_kind": "maximum"
+        },
+        "vce": {
+          "value": 2,
+          "unit": "V",
+          "conditions": "specified condition",
+          "page_reference": "8 (Table 8)",
+          "source_kind": "maximum"
+        },
+        "hfe": {
+          "value": 250,
+          "unit": "dimensionless",
+          "conditions": "pulsed, tp <= 300 µs; δ <= 0.02",
+          "page_reference": "8 (Table 8)",
+          "source_kind": "maximum"
+        }
+      },
+      {
+        "collector_current": {
+          "value": 500,
+          "unit": "mA",
+          "conditions": "Vce = 2 V",
+          "page_reference": "8 (Table 8)",
+          "source_kind": "typical"
+        },
+        "vce": {
+          "value": 2,
+          "unit": "V",
+          "conditions": "specified condition",
+          "page_reference": "8 (Table 8)",
+          "source_kind": "typical"
+        },
+        "hfe": {
+          "value": 40,
+          "unit": "dimensionless",
+          "conditions": "pulsed, tp <= 300 µs; δ <= 0.02",
+          "page_reference": "8 (Table 8)",
+          "source_kind": "minimum"
+        }
+      }
+    ],
+    "saturation_points": [
+      {
+        "collector_current": {
+          "value": 500,
+          "unit": "mA",
+          "conditions": "Ic/Ib = 10 (Ib = 50 mA)",
+          "page_reference": "8 (Table 8)",
+          "source_kind": "typical"
+        },
+        "base_current": {
+          "value": 50,
+          "unit": "mA",
+          "conditions": "Ic/Ib = 10",
+          "page_reference": "8 (Table 8)",
+          "source_kind": "typical"
+        },
+        "vce_sat": {
+          "value": 0.5,
+          "unit": "V",
+          "conditions": "Ic = 500 mA; Ib = 50 mA",
+          "page_reference": "8 (Table 8)",
+          "source_kind": "maximum"
+        },
+        "vbe_sat": null
+      }
+    ],
+    "ft": {
+      "value": 155,
+      "unit": "MHz",
+      "conditions": "Vce = 5 V; Ic = 50 mA; f = 100 MHz; Tamb = 25°C",
+      "page_reference": "8 (Table 8)",
+      "source_kind": "typical"
+    },
+    "cobo": {
+      "value": 4.5,
+      "unit": "pF",
+      "conditions": "Vcb = 10 V; Ie = Ic = 0; f = 1 MHz; Tamb = 25°C",
+      "page_reference": "8 (Table 8)",
+      "source_kind": "typical"
+    },
+    "cibo": null,
+    "vceo": {
+      "value": 80,
+      "unit": "V",
+      "conditions": "Ic = 2 mA; Ib = 0 A",
+      "page_reference": "8 (Table 8)",
+      "source_kind": "minimum"
+    }
+  },
+  "extraction_notes": [
+    "BCP56-16T is a high-gain variant within the BCP56T series with minimum hFE of 100 at Ic=150mA, Vce=2V",
+    "Datasheet covers multiple product variants (BCP56T, BCP56-10T, BCP56-16T); extracted data specific to BCP56-16T suffix variant where noted",
+    "Transition frequency extracted from typical value at Vce=5V, Ic=50mA, f=100MHz",
+    "Collector capacitance Cc treated as Cobo parameter; emitter capacitance Ce not included due to measurement conditions mismatch",
+    "Saturation point Vbe_sat omitted as it is not explicitly tabulated for the specified conditions in Table 8",
+    "Curves digitized from published graphs using linear interpolation; curve reliability high for points within linear operating region",
+    "All table values extracted at Tamb = 25°C unless otherwise specified in source table",
+    "Polarity: NPN; Package: SOT223 (SC-73); Manufacturer: Nexperia B.V."
+  ],
+  "omission_reason": null
+}

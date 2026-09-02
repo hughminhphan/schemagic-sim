@@ -1,0 +1,131 @@
+{
+  "curves": [
+    {
+      "name": "MM1Z3V3 zener characteristic",
+      "page_reference": "p.3, Fig. 1 Zener Characteristics",
+      "points": [
+        {
+          "x": 2.41,
+          "y": 0.001
+        },
+        {
+          "x": 2.855,
+          "y": 0.002
+        },
+        {
+          "x": 3.068,
+          "y": 0.003
+        },
+        {
+          "x": 3.286,
+          "y": 0.005
+        },
+        {
+          "x": 3.485,
+          "y": 0.01
+        },
+        {
+          "x": 3.589,
+          "y": 0.015
+        },
+        {
+          "x": 3.712,
+          "y": 0.022
+        },
+        {
+          "x": 3.864,
+          "y": 0.031
+        },
+        {
+          "x": 4.034,
+          "y": 0.041
+        },
+        {
+          "x": 4.148,
+          "y": 0.048
+        }
+      ],
+      "test_conditions": "T_a = 25 degC, pulsed, P_D = 500 mW; curve labeled 3V3 in the multi-device plot; dashed test-current reference I_Z = 5 mA. Reverse-bias zener current and voltage are plotted as positive magnitudes.",
+      "x_axis": {
+        "quantity": "V_Z, Zener Voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "I_Z, Zener Current",
+        "scale": "linear",
+        "unit": "A"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p.1",
+      "p.2",
+      "p.3",
+      "p.4"
+    ],
+    "revision": "Rev:1.0",
+    "title": "MM1Z2V0 THRU MM1Z75 SURFACE MOUNT ZENER DIODES"
+  },
+  "extraction_notes": [
+    "The supplied public PDF has SHA-256 ff4a1051509db45f49817a41e5674adc11a1dea2a91e51ee958ffaed19b1d755.",
+    "Electrical characteristics are specified at T_a = 25 degC unless otherwise noted. The target row is MM1Z3V3: V_Z minimum 3.1 V, nominal 3.3 V, maximum 3.5 V at I_ZT = 5 mA; the nominal V_Z and paired I_ZT are used for the breakdown inputs.",
+    "The datasheet states that the cathode line denotes the cathode end. Zener quantities are reverse-bias quantities, with cathode positive relative to anode; the plotted I_Z and V_Z are positive magnitudes.",
+    "The MM1Z3V3 row publishes Z_ZT = 130 ohm maximum at I_ZT = 5 mA. No I_ZK or Z_ZK value is published, so knee sharpness cannot be independently extracted into this schema.",
+    "The only forward-voltage datum is V_F = 0.9 V at I_F = 10 mA in the Maximum Ratings table and is treated as a maximum. No forward IV figure is provided.",
+    "No junction-capacitance or reverse-recovery specification is published, so capacitance and reverse recovery are omitted.",
+    "Fig. 1 contains a labeled 3V3 zener characteristic under the stated pulsed conditions. Curve points are digitized from the actual plotted line only and are not interpolated from the electrical-characteristics table.",
+    "The datasheet contains no temperature sweep; all extracted electrical values are at 25 degC."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "MM1Z3V3",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": {
+      "conditions": "I_ZT paired with the nominal V_Z = 3.3 V test point, T_a = 25 degC; reverse zener current with cathode positive relative to anode",
+      "page_reference": "p.2, Electrical Characteristics, MM1Z3V3 row, I_ZT",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.005
+    },
+    "breakdown_voltage": {
+      "conditions": "Reverse zener voltage V_Z at I_ZT = 5 mA, T_a = 25 degC; nominal value, with published limits 3.1 V minimum and 3.5 V maximum",
+      "page_reference": "p.2, Electrical Characteristics, MM1Z3V3 row, nominal V_Z at I_ZT",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 3.3
+    },
+    "capacitance": null,
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "I_F = 10 mA, T_a = 25 degC; test current from the Maximum Ratings table",
+          "page_reference": "p.1, Maximum Ratings, Forward Voltage @ I_F=10mA",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 0.01
+        },
+        "voltage": {
+          "conditions": "I_F = 10 mA, T_a = 25 degC; listed in the Maximum Ratings table and treated as a maximum",
+          "page_reference": "p.1, Maximum Ratings, Forward Voltage @ I_F=10mA",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.9
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "V_R = 1 V, T_a = 25 degC; reverse leakage with cathode positive relative to anode, listed as the leakage-current limit",
+      "page_reference": "p.2, Electrical Characteristics, MM1Z3V3 row, I_R@V_R",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 2e-05
+    },
+    "reverse_recovery": null,
+    "variant": "zener"
+  },
+  "usable_curves": true
+}

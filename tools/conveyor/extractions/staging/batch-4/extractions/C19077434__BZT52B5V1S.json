@@ -1,0 +1,106 @@
+{
+  "schema_version": "1.0.0",
+  "mpn": "BZT52B5V1S",
+  "manufacturer": "hongjiacheng",
+  "family": "diode",
+  "datasheet_identity": {
+    "title": "BZT52B2V4S THRU BZT52B43S Surface Mount Zener Diodes (SOD-323)",
+    "revision": "Rev:1.0",
+    "pages_examined": ["1", "2", "3", "4"]
+  },
+  "usable_curves": true,
+  "curves": [
+    {
+      "name": "Zener characteristic IZ vs VZ, BZT52B5V1S (5.1 V labeled curve of Fig. 1)",
+      "x_axis": {
+        "quantity": "Zener voltage VZ",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "Zener current IZ",
+        "unit": "mA",
+        "scale": "log"
+      },
+      "test_conditions": "Ta = 25 degC, pulsed. 5.1 V curve of Fig. 1 'Zener Characteristics (Vz 5.1V to 20V)'. Curve terminates on the PD = 200 mW envelope near 39 mA; digitization stops at 30 mA to avoid the envelope merge.",
+      "page_reference": "p. 3, Fig. 1",
+      "points": [
+        { "x": 4.87, "y": 0.5 },
+        { "x": 5.01, "y": 0.7 },
+        { "x": 5.01, "y": 1.0 },
+        { "x": 5.02, "y": 1.5 },
+        { "x": 5.03, "y": 2.0 },
+        { "x": 5.05, "y": 3.0 },
+        { "x": 5.09, "y": 5.0 },
+        { "x": 5.1, "y": 7.0 },
+        { "x": 5.1, "y": 10.0 },
+        { "x": 5.1, "y": 15.0 },
+        { "x": 5.1, "y": 20.0 },
+        { "x": 5.11, "y": 30.0 }
+      ]
+    }
+  ],
+  "specs": {
+    "variant": "zener",
+    "forward_voltage_points": [
+      {
+        "current": {
+          "value": 0.01,
+          "unit": "A",
+          "conditions": "Ta = 25 degC, forward voltage test current",
+          "page_reference": "p. 1, maximum ratings table",
+          "source_kind": "maximum"
+        },
+        "voltage": {
+          "value": 0.9,
+          "unit": "V",
+          "conditions": "IF = 10 mA, Ta = 25 degC (maximum limit; no forward IV curve in this datasheet)",
+          "page_reference": "p. 1, maximum ratings table",
+          "source_kind": "maximum"
+        }
+      }
+    ],
+    "reverse_current": {
+      "value": 2e-06,
+      "unit": "A",
+      "conditions": "VR = 2.0 V, Ta = 25 degC (leakage current IR at VR, below the knee)",
+      "page_reference": "p. 2, electrical characteristics, BZT52B5V1S row",
+      "source_kind": "maximum"
+    },
+    "capacitance": {
+      "value": 1.25e-10,
+      "unit": "F",
+      "conditions": "0 V bias, f = 1 MHz, Ta = 25 degC; read from Fig. 4 'Typical Capacitance' series curve at VZ(nom) = 5.1 V (approx. 125 pF at 0 V bias; approx. 90 pF at 1 V bias; approx. 75 pF at 50% of VZ nom bias)",
+      "page_reference": "p. 3, Fig. 4",
+      "source_kind": "digitized_typical_curve"
+    },
+    "reverse_recovery": null,
+    "breakdown_voltage": {
+      "value": 5.1,
+      "unit": "V",
+      "conditions": "Nominal zener voltage VZ at IZT = 5 mA, Ta = 25 degC; datasheet min 5.00 V, max 5.20 V",
+      "page_reference": "p. 2, electrical characteristics, BZT52B5V1S row",
+      "source_kind": "typical"
+    },
+    "breakdown_current": {
+      "value": 0.005,
+      "unit": "A",
+      "conditions": "IZT, the reverse test current at which VZ and ZZT are specified, Ta = 25 degC",
+      "page_reference": "p. 2, electrical characteristics, BZT52B5V1S row",
+      "source_kind": "typical"
+    }
+  },
+  "extraction_notes": [
+    "Multi-variant datasheet (BZT52B2V4S thru BZT52B43S, Zhuhai Hongjiacheng Technology co., Ltd, www.ichjc.com); all row-level values taken strictly from the BZT52B5V1S row (marking 2W8).",
+    "Zener impedance limits from p. 2 table: ZZT = 60 ohm maximum at IZT = 5 mA; ZZK = 480 ohm maximum at IZK = 1.0 mA.",
+    "Temperature coefficient from p. 2 table: -2.7 to +1.2 mV/degC at IZTC = 5 mA. Fig. 2 (p. 3) gives series-typical theta-VZ approx. +2 mV/degC at VZ(nom) = 5.1 V.",
+    "Maximum ratings (p. 1): PD = 200 mW, Tj = Tstg = -55 to +150 degC, RthJA = 625 degC/W (typical), package SOD-323.",
+    "Fig. 1 digitization method: page 3 rendered at 600 dpi; axis calibration from gridlines (1 V per 87.33 px linear X; 604 px per decade log Y, I = 1 mA at row 973); 5.1 V curve center located per row as the thick (~8 px) dark run distinct from 1-2 px gridlines. Estimated uncertainty approx. +/-0.02 V in X and +/-3% in I.",
+    "Digitized curve is consistent with the table: 5.09 V at 5 mA falls inside the 5.00-5.20 V limit band, and the local slope near IZT (~12 ohm) is below the 60 ohm ZZT maximum.",
+    "Fig. 3 (leakage vs nominal VZ) and Fig. 4 (capacitance vs nominal VZ) are series-level curves indexed by nominal zener voltage, not per-device I-V curves, so they are not included in the curves array; the Fig. 4 reading at 5.1 V supplies the typical capacitance spec.",
+    "No reverse recovery specification anywhere in the datasheet; reverse_recovery set to null.",
+    "Forward conduction evidence is limited to the single VF maximum (0.9 V at 10 mA); no forward IV curve exists, so forward-branch fitting inputs are limit-grade only.",
+    "Datasheet SHA-256 verified: 6e717b79af45ed4602059c249fd78996012a68c483b4d885b34d63c33b5fde64."
+  ],
+  "omission_reason": null
+}

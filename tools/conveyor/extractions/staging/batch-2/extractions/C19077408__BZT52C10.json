@@ -1,0 +1,113 @@
+{
+  "schema_version": "1.0.0",
+  "mpn": "BZT52C10",
+  "manufacturer": "hongjiacheng",
+  "family": "diode",
+  "datasheet_identity": {
+    "title": "BZT52C2V0 THRU BZT52C75 SURFACE MOUNT ZENER DIODES",
+    "revision": "Rev:1.0",
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ]
+  },
+  "usable_curves": true,
+  "curves": [
+    {
+      "name": "BZT52C10 zener characteristic",
+      "x_axis": {
+        "quantity": "Zener voltage VZ",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "Zener current IZ",
+        "unit": "A",
+        "scale": "log"
+      },
+      "test_conditions": "Ta = 25 degC, pulsed; BZT52C10 trace labeled 10 in Fig. 1; PD = 500 mW envelope shown in the figure",
+      "page_reference": "p. 3, Fig. 1, Zener Characteristics (VZ Up to 10V), 10 V trace",
+      "points": [
+        {
+          "x": 10.13,
+          "y": 0.0005
+        },
+        {
+          "x": 10.10,
+          "y": 0.001
+        },
+        {
+          "x": 10.09,
+          "y": 0.002
+        },
+        {
+          "x": 10.10,
+          "y": 0.005
+        },
+        {
+          "x": 10.15,
+          "y": 0.01
+        }
+      ]
+    }
+  ],
+  "specs": {
+    "variant": "zener",
+    "forward_voltage_points": [
+      {
+        "current": {
+          "value": 0.01,
+          "unit": "A",
+          "conditions": "IF = 10 mA, Ta = 25 degC",
+          "page_reference": "p. 1, Maximum Ratings, Forward Voltage",
+          "source_kind": "maximum"
+        },
+        "voltage": {
+          "value": 0.9,
+          "unit": "V",
+          "conditions": "IF = 10 mA, Ta = 25 degC",
+          "page_reference": "p. 1, Maximum Ratings, Forward Voltage",
+          "source_kind": "maximum"
+        }
+      }
+    ],
+    "reverse_current": {
+      "value": 2e-7,
+      "unit": "A",
+      "conditions": "IR = 0.2 microA maximum at VR = 7.0 V, Ta = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, BZT52C10 row",
+      "source_kind": "maximum"
+    },
+    "capacitance": null,
+    "reverse_recovery": null,
+    "breakdown_voltage": {
+      "value": 10.0,
+      "unit": "V",
+      "conditions": "VZ nominal at IZT = 5 mA, Ta = 25 degC; inclusive table bounds 9.50 V minimum and 10.50 V maximum",
+      "page_reference": "p. 2, Electrical Characteristics, BZT52C10 row",
+      "source_kind": "typical"
+    },
+    "breakdown_current": {
+      "value": 0.005,
+      "unit": "A",
+      "conditions": "IZT = 5 mA for the stated nominal zener voltage, Ta = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, BZT52C10 row",
+      "source_kind": "typical"
+    }
+  },
+  "extraction_notes": [
+    "Zener semantics preserved: the nominal reverse breakdown voltage VZ = 10.0 V is paired with the tabulated reverse test current IZT = 5 mA, not with the forward-voltage rating.",
+    "The BZT52C10 row gives VZ = 9.50 V minimum, 10.00 V nominal, and 10.50 V maximum at IZT = 5 mA; maximum Zener impedance ZZT = 20 ohm at IZT; maximum knee impedance ZZK = 150 ohm at IZK = 1 mA; and admissible IZM = 5 mA.",
+    "The BZT52C10 row gives maximum reverse leakage IR = 0.2 microA at VR = 7.0 V and temperature-coefficient limits of 4.5 to 8.0 mV/degC at IZTC, all at Ta = 25 degC unless otherwise noted.",
+    "The five zener-characteristic points are direct approximate graph-read observations from the visible BZT52C10 trace labeled 10 in p. 3 Fig. 1 at labeled logarithmic-current grid values from 0.5 mA through 10 mA; source-axis current in mA was converted to A and no points were interpolated.",
+    "The p. 3 plot states Ta = 25 degC, pulsed, and shows a PD = 500 mW envelope. This plotted pulsed envelope is preserved as the curve condition and is not substituted for the p. 1 maximum PD rating of 350 mW.",
+    "Maximum ratings include PD = 350 mW and forward voltage VF = 0.9 V at IF = 10 mA on p. 1; junction and storage temperature limits are -55 to +150 degC and typical RthetaJ-A is 357 degC/W.",
+    "Capacitance is shown only as family-level typical curves in p. 3 Fig. 3 at Ta = 25 degC and f = 1 MHz, with 0 V, 1 V, and 50% of nominal VZ bias curves; no tabulated BZT52C10 capacitance value is provided, so capacitance is null.",
+    "No reverse-recovery-time specification or test circuit is published in the supplied datasheet, so reverse recovery is null.",
+    "The supplied datasheet covers the BZT52C2V0 through BZT52C75 family; this extraction is restricted to the BZT52C10 row and its labeled 10 V curve.",
+    "The supplied PDF SHA-256 was verified as 1e58426ecb363e87dbad0da3e5a12350aadc7203342e2c339877f1de5b2d7631."
+  ],
+  "omission_reason": null
+}

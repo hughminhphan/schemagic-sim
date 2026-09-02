@@ -1,0 +1,113 @@
+{
+  "curves": [
+    {
+      "name": "Zener characteristic for MM1Z12B family curve",
+      "page_reference": "p. 3, Fig. 2 Zener Characteristics",
+      "points": [
+        {
+          "x": 11.3,
+          "y": 0.01
+        },
+        {
+          "x": 11.7,
+          "y": 0.1
+        },
+        {
+          "x": 11.9,
+          "y": 1.0
+        },
+        {
+          "x": 12.0,
+          "y": 5.0
+        },
+        {
+          "x": 12.1,
+          "y": 10.0
+        },
+        {
+          "x": 12.3,
+          "y": 20.0
+        }
+      ],
+      "test_conditions": "Ta = 25 degC, pulsed; 12B curve in the family characteristic plot",
+      "x_axis": {
+        "quantity": "zener voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "zener current",
+        "scale": "linear",
+        "unit": "mA"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "revision": "Rev. 1.0",
+    "title": "MM1Z2V0B THRU MM1Z75B SURFACE MOUNT ZENER DIODES"
+  },
+  "extraction_notes": [
+    "Power dissipation is 500 mW at Ta = 25 degC (p. 1, maximum ratings).",
+    "MM1Z12B row gives VZ min 11.76 V, nominal 12 V, max 12.24 V at IZT = 5 mA (p. 2).",
+    "Maximum zener impedance is 35 ohm at IZT = 5 mA (p. 2).",
+    "No ZZK/IZK knee-impedance value is published for this part row.",
+    "No junction-capacitance value or reverse-recovery time is published.",
+    "The curve is a family typical characteristic, not a part-specific measured trace."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "MM1Z12B",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": {
+      "conditions": "IZT = 5 mA, Ta = 25 degC",
+      "page_reference": "p. 2, electrical characteristics, MM1Z12B row",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.005
+    },
+    "breakdown_voltage": {
+      "conditions": "IZT = 5 mA, Ta = 25 degC; nominal zener voltage",
+      "page_reference": "p. 2, electrical characteristics, MM1Z12B row",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 12.0
+    },
+    "capacitance": null,
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 10 mA, Ta = 25 degC",
+          "page_reference": "p. 1, maximum ratings, forward voltage",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.01
+        },
+        "voltage": {
+          "conditions": "IF = 10 mA, Ta = 25 degC; maximum ratings",
+          "page_reference": "p. 1, maximum ratings, forward voltage",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.9
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = 9.0 V, Ta = 25 degC",
+      "page_reference": "p. 2, electrical characteristics, MM1Z12B row",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 1e-07
+    },
+    "reverse_recovery": null,
+    "variant": "zener"
+  },
+  "usable_curves": true
+}

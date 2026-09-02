@@ -1,0 +1,119 @@
+{
+  "curves": [
+    {
+      "name": "Zener characteristic, curve labeled 15 V nominal",
+      "page_reference": "p. 3 Fig.2",
+      "points": [
+        {
+          "x": 14.05,
+          "y": 0.5
+        },
+        {
+          "x": 14.2,
+          "y": 1.0
+        },
+        {
+          "x": 14.35,
+          "y": 2.0
+        },
+        {
+          "x": 14.55,
+          "y": 5.0
+        },
+        {
+          "x": 14.75,
+          "y": 10.0
+        },
+        {
+          "x": 15.0,
+          "y": 20.0
+        },
+        {
+          "x": 15.45,
+          "y": 50.0
+        },
+        {
+          "x": 16.0,
+          "y": 100.0
+        }
+      ],
+      "test_conditions": "Ta = 25 degC, pulsed, PD = 300 mW limit shown; curve labeled 15",
+      "x_axis": {
+        "quantity": "zener voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "zener current",
+        "scale": "log",
+        "unit": "mA"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "revision": "Rev:1.0",
+    "title": "BZX84C2V4 THRU BZX84C75 SURFACE MOUNT ZENER DIODES (SOT-23 Surface Mount Silicon Zener Diodes)"
+  },
+  "extraction_notes": [
+    "Family datasheet BZX84C2V4 through BZX84C75; BZX84C15 row: VZ min 13.8 V, nominal 15 V, max 15.6 V at IZT = 5 mA; ZZT maximum 30 ohm at IZT; ZZK maximum 200 ohm at IZK = 1.0 mA; typical temperature coefficient 9.2 to 13 mV/degC; admissible IZM = 5 mA (p. 2).",
+    "The 15 V curve in Fig.2 was digitized from the printed linear-voltage/log-current grid on p. 3. The PD = 300 mW limit line and family artwork make the high-current tail approximate; no interpolation was added.",
+    "Fig.5 Typical Capacitance, Fig.6 zener impedance, Fig.3 temperature coefficients, and Fig.4 leakage current are family-level plots against nominal zener voltage and were not extracted as per-part curves; no capacitance value is tabulated for an individual type.",
+    "No reverse-recovery value is published."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "BZX84C15",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": {
+      "conditions": "IZT = 5 mA, Ta = 25 degC",
+      "page_reference": "p. 2 electrical characteristics, BZX84C15 row",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.005
+    },
+    "breakdown_voltage": {
+      "conditions": "IZT = 5 mA, Ta = 25 degC; nominal VZ",
+      "page_reference": "p. 2 electrical characteristics, BZX84C15 row",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 15.0
+    },
+    "capacitance": null,
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 10 mA, Ta = 25 degC",
+          "page_reference": "p. 1 maximum ratings",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 0.01
+        },
+        "voltage": {
+          "conditions": "IF = 10 mA, Ta = 25 degC; maximum forward voltage",
+          "page_reference": "p. 1 maximum ratings",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.9
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = 10.5 V, Ta = 25 degC; maximum leakage current",
+      "page_reference": "p. 2 electrical characteristics, BZX84C15 row",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 1e-07
+    },
+    "reverse_recovery": null,
+    "variant": "zener"
+  },
+  "usable_curves": true
+}

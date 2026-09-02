@@ -1,0 +1,219 @@
+{
+  "curves": [
+    {
+      "name": "Typical Transfer Characteristics at 25 deg C",
+      "page_reference": "p. 3, Fig. 3 Typical Transfer Characteristics",
+      "points": [
+        {
+          "x": 2.25,
+          "y": 12.0
+        },
+        {
+          "x": 2.4,
+          "y": 15.0
+        },
+        {
+          "x": 2.6,
+          "y": 19.0
+        },
+        {
+          "x": 2.8,
+          "y": 24.0
+        },
+        {
+          "x": 3.0,
+          "y": 29.0
+        },
+        {
+          "x": 3.2,
+          "y": 34.0
+        }
+      ],
+      "test_conditions": "VDS = 15 V, 20 us pulse width, TJ = 25 deg C",
+      "x_axis": {
+        "quantity": "gate-source voltage VGS",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "drain current ID",
+        "scale": "log",
+        "unit": "A"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4",
+      "p. 5",
+      "p. 6",
+      "p. 7",
+      "p. 8",
+      "p. 9"
+    ],
+    "revision": "April 24, 2014",
+    "title": "IRLML2502PbF HEXFET Power MOSFET"
+  },
+  "extraction_notes": [
+    "All nine pages of the supplied canonical PDF were examined.",
+    "The 25 deg C transfer curve on page 3 was digitized as approximate points from the published logarithmic plot without interpolation beyond the visible trace.",
+    "Tabulated capacitances were converted from pF to F and tabulated resistances from ohms without changing the published values.",
+    "The datasheet publishes threshold minimum and maximum values but no threshold typical value."
+  ],
+  "family": "mosfet",
+  "manufacturer": "Infineon Technologies",
+  "mpn": "IRLML2502TRPBF",
+  "omission_reason": "Only the nominal 25 deg C transfer characteristic was digitized. Output-characteristic families and other plots were not needed to preserve the constrained scalar evidence, and no points were invented from obscured or ambiguous traces.",
+  "schema_version": "1.0.0",
+  "specs": {
+    "body_diode": {
+      "conditions": "TJ = 25 deg C, IS = 1.3 A, VGS = 0 V",
+      "page_reference": "p. 2, Source-Drain Rating and Characteristics, VSD, MAX column",
+      "source_kind": "maximum",
+      "unit": "V",
+      "value": 1.2
+    },
+    "breakdown_voltage": {
+      "conditions": "VGS = 0 V, ID = 250 uA, TJ = 25 deg C",
+      "page_reference": "p. 2, Electrical Characteristics, V(BR)DSS, MIN column",
+      "source_kind": "minimum",
+      "unit": "V",
+      "value": 20.0
+    },
+    "ciss": {
+      "conditions": "VGS = 0 V, VDS = 15 V, f = 1.0 MHz, TJ = 25 deg C",
+      "page_reference": "p. 2, Electrical Characteristics, Ciss, TYP column",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 7.4e-10
+    },
+    "coss": {
+      "conditions": "VGS = 0 V, VDS = 15 V, f = 1.0 MHz, TJ = 25 deg C",
+      "page_reference": "p. 2, Electrical Characteristics, Coss, TYP column",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 9e-11
+    },
+    "crss": {
+      "conditions": "VGS = 0 V, VDS = 15 V, f = 1.0 MHz, TJ = 25 deg C",
+      "page_reference": "p. 2, Electrical Characteristics, Crss, TYP column",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 6.6e-11
+    },
+    "polarity": "n",
+    "rdson_points": [
+      {
+        "current": {
+          "conditions": "VGS = 4.5 V, TJ = 25 deg C",
+          "page_reference": "p. 2, Electrical Characteristics, RDS(on) condition",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 4.2
+        },
+        "resistance": {
+          "conditions": "VGS = 4.5 V, ID = 4.2 A, TJ = 25 deg C",
+          "page_reference": "p. 2, Electrical Characteristics, RDS(on), TYP column",
+          "source_kind": "typical",
+          "unit": "ohm",
+          "value": 0.035
+        },
+        "vgs": {
+          "conditions": "ID = 4.2 A, TJ = 25 deg C",
+          "page_reference": "p. 2, Electrical Characteristics, RDS(on) condition",
+          "source_kind": "typical",
+          "unit": "V",
+          "value": 4.5
+        }
+      },
+      {
+        "current": {
+          "conditions": "VGS = 4.5 V, TJ = 25 deg C",
+          "page_reference": "p. 2, Electrical Characteristics, RDS(on) condition",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 4.2
+        },
+        "resistance": {
+          "conditions": "VGS = 4.5 V, ID = 4.2 A, TJ = 25 deg C",
+          "page_reference": "p. 2, Electrical Characteristics, RDS(on), MAX column",
+          "source_kind": "maximum",
+          "unit": "ohm",
+          "value": 0.045
+        },
+        "vgs": {
+          "conditions": "ID = 4.2 A, TJ = 25 deg C",
+          "page_reference": "p. 2, Electrical Characteristics, RDS(on) condition",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 4.5
+        }
+      },
+      {
+        "current": {
+          "conditions": "VGS = 2.5 V, TJ = 25 deg C",
+          "page_reference": "p. 2, Electrical Characteristics, RDS(on) condition",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 3.6
+        },
+        "resistance": {
+          "conditions": "VGS = 2.5 V, ID = 3.6 A, TJ = 25 deg C",
+          "page_reference": "p. 2, Electrical Characteristics, RDS(on), TYP column",
+          "source_kind": "typical",
+          "unit": "ohm",
+          "value": 0.05
+        },
+        "vgs": {
+          "conditions": "ID = 3.6 A, TJ = 25 deg C",
+          "page_reference": "p. 2, Electrical Characteristics, RDS(on) condition",
+          "source_kind": "typical",
+          "unit": "V",
+          "value": 2.5
+        }
+      },
+      {
+        "current": {
+          "conditions": "VGS = 2.5 V, TJ = 25 deg C",
+          "page_reference": "p. 2, Electrical Characteristics, RDS(on) condition",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 3.6
+        },
+        "resistance": {
+          "conditions": "VGS = 2.5 V, ID = 3.6 A, TJ = 25 deg C",
+          "page_reference": "p. 2, Electrical Characteristics, RDS(on), MAX column",
+          "source_kind": "maximum",
+          "unit": "ohm",
+          "value": 0.08
+        },
+        "vgs": {
+          "conditions": "ID = 3.6 A, TJ = 25 deg C",
+          "page_reference": "p. 2, Electrical Characteristics, RDS(on) condition",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 2.5
+        }
+      }
+    ],
+    "threshold_max": {
+      "conditions": "VDS = VGS, ID = 250 uA, TJ = 25 deg C",
+      "page_reference": "p. 2, Electrical Characteristics, VGS(th), MAX column",
+      "source_kind": "maximum",
+      "unit": "V",
+      "value": 1.2
+    },
+    "threshold_min": {
+      "conditions": "VDS = VGS, ID = 250 uA, TJ = 25 deg C",
+      "page_reference": "p. 2, Electrical Characteristics, VGS(th), MIN column",
+      "source_kind": "minimum",
+      "unit": "V",
+      "value": 0.6
+    },
+    "threshold_typ": null
+  },
+  "usable_curves": true
+}

@@ -1,0 +1,171 @@
+{
+  "curves": [
+    {
+      "name": "Typical forward voltage, SS58C-SS510C",
+      "page_reference": "p. 2, Fig. 3 Typical Forward Voltage",
+      "points": [
+        {
+          "x": 0.4,
+          "y": 0.1
+        },
+        {
+          "x": 0.45,
+          "y": 0.2
+        },
+        {
+          "x": 0.5,
+          "y": 0.5
+        },
+        {
+          "x": 0.55,
+          "y": 1.2
+        },
+        {
+          "x": 0.6,
+          "y": 2.5
+        },
+        {
+          "x": 0.65,
+          "y": 5.0
+        },
+        {
+          "x": 0.7,
+          "y": 9.0
+        },
+        {
+          "x": 0.75,
+          "y": 13.0
+        },
+        {
+          "x": 0.8,
+          "y": 18.0
+        },
+        {
+          "x": 0.85,
+          "y": 24.0
+        },
+        {
+          "x": 0.9,
+          "y": 30.0
+        },
+        {
+          "x": 0.95,
+          "y": 37.0
+        }
+      ],
+      "test_conditions": "Tj = 25 degC; pulse width = 300 us; 1% duty cycle; SS58C-SS510C dash-dot curve",
+      "x_axis": {
+        "quantity": "instantaneous forward voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "instantaneous forward current",
+        "scale": "log",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "Typical reverse characteristics, SS58C-SS520C at Tj = 25 degC",
+      "page_reference": "p. 2, Fig. 4 Typical Reverse Characteristics",
+      "points": [
+        {
+          "x": 0.0,
+          "y": 0.001
+        },
+        {
+          "x": 20.0,
+          "y": 0.0025
+        },
+        {
+          "x": 40.0,
+          "y": 0.0035
+        },
+        {
+          "x": 60.0,
+          "y": 0.0045
+        },
+        {
+          "x": 80.0,
+          "y": 0.006
+        },
+        {
+          "x": 100.0,
+          "y": 0.009
+        }
+      ],
+      "test_conditions": "Tj = 25 degC; SS58C-SS520C dashed curve; SS510C rated peak reverse voltage is 100 V",
+      "x_axis": {
+        "quantity": "percent of rated peak reverse voltage",
+        "scale": "linear",
+        "unit": "%"
+      },
+      "y_axis": {
+        "quantity": "instantaneous reverse current",
+        "scale": "log",
+        "unit": "mA"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ],
+    "revision": "Rev:1.0",
+    "title": "SS52C THRU SS520C Surface Mount Schottky Barrier Rectifier"
+  },
+  "extraction_notes": [
+    "Forward and reverse characteristic points were digitized from the usable typical curves in Fig. 3 and Fig. 4; the SS510C curve is part of the grouped SS58C-SS510C or SS58C-SS520C family curve.",
+    "The electrical-characteristics table groups SS58C and SS510C at VF = 0.85 V and groups SS58C-SS520C at CJ = 450 pF; values were assigned to SS510C from those grouped columns.",
+    "Reverse recovery time is not published in the supplied datasheet.",
+    "The reverse-current row at TA = 100 degC is 10 mA and was not used as the 25 degC reverse-current input.",
+    "Rated reverse voltage is 100 V and average forward rectified current is 5.0 A from the absolute maximum ratings.",
+    "No zener breakdown voltage or breakdown-current specification is published."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "SS510C",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": null,
+    "breakdown_voltage": null,
+    "capacitance": {
+      "conditions": "4.0 V DC, 1 MHz, TA = 25 degC",
+      "page_reference": "p. 2, electrical characteristics, typical junction capacitance",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 4.5e-10
+    },
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 5.0 A, TA = 25 degC",
+          "page_reference": "p. 2, electrical characteristics, maximum instantaneous forward voltage",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 5.0
+        },
+        "voltage": {
+          "conditions": "IF = 5.0 A, TA = 25 degC",
+          "page_reference": "p. 2, electrical characteristics, maximum instantaneous forward voltage",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.85
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = VDC = 100 V, TA = 25 degC",
+      "page_reference": "p. 2, electrical characteristics, maximum DC reverse current at rated DC blocking voltage",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 5e-05
+    },
+    "reverse_recovery": null,
+    "variant": "schottky"
+  },
+  "usable_curves": true
+}

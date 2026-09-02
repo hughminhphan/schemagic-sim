@@ -1,0 +1,213 @@
+{
+  "schema_version": "1.0.0",
+  "mpn": "NCE2309",
+  "manufacturer": "Wuxi NCE Power Semiconductor",
+  "family": "mosfet",
+  "datasheet_identity": {
+    "title": "NCE P-Channel Enhancement Mode Power MOSFET",
+    "revision": "v2.0",
+    "pages_examined": [
+      "page1",
+      "page2",
+      "page3",
+      "page4",
+      "page5"
+    ]
+  },
+  "usable_curves": true,
+  "curves": [
+    {
+      "name": "Transfer Characteristics",
+      "x_axis": {
+        "quantity": "Gate-Source Voltage (magnitude)",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "Drain Current (magnitude)",
+        "unit": "A",
+        "scale": "linear"
+      },
+      "test_conditions": "VDS=-5V, 25°C",
+      "page_reference": "page4-figure2",
+      "points": [
+        {"x": 2.5, "y": 0.05},
+        {"x": 3.0, "y": 0.25},
+        {"x": 3.5, "y": 0.60},
+        {"x": 4.0, "y": 1.20},
+        {"x": 4.5, "y": 2.40},
+        {"x": 5.0, "y": 4.00},
+        {"x": 5.5, "y": 4.80}
+      ]
+    },
+    {
+      "name": "On-Resistance vs Drain Current",
+      "x_axis": {
+        "quantity": "Drain Current (magnitude)",
+        "unit": "A",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "On-Resistance",
+        "unit": "Ω",
+        "scale": "linear"
+      },
+      "test_conditions": "VGS=-10V, 25°C",
+      "page_reference": "page4-figure3",
+      "points": [
+        {"x": 0.5, "y": 0.140},
+        {"x": 1.0, "y": 0.140},
+        {"x": 1.5, "y": 0.140},
+        {"x": 2.0, "y": 0.142},
+        {"x": 3.0, "y": 0.145},
+        {"x": 4.0, "y": 0.150},
+        {"x": 5.0, "y": 0.155},
+        {"x": 6.0, "y": 0.165},
+        {"x": 7.0, "y": 0.178},
+        {"x": 8.0, "y": 0.190}
+      ]
+    },
+    {
+      "name": "Source-Drain Diode Forward Characteristics",
+      "x_axis": {
+        "quantity": "Source-Drain Voltage (magnitude)",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "Drain Current (magnitude)",
+        "unit": "A",
+        "scale": "log"
+      },
+      "test_conditions": "VGS=0V, 25°C",
+      "page_reference": "page4-figure6",
+      "points": [
+        {"x": 0.2, "y": 0.001},
+        {"x": 0.4, "y": 0.05},
+        {"x": 0.6, "y": 0.80},
+        {"x": 0.8, "y": 10.0}
+      ]
+    }
+  ],
+  "specs": {
+    "polarity": "p",
+    "threshold_min": {
+      "value": 1.4,
+      "unit": "V",
+      "conditions": "VDS=VGS, ID=250µA (magnitude)",
+      "page_reference": "page2",
+      "source_kind": "minimum"
+    },
+    "threshold_typ": {
+      "value": 2.0,
+      "unit": "V",
+      "conditions": "VDS=VGS, ID=250µA (magnitude)",
+      "page_reference": "page2",
+      "source_kind": "typical"
+    },
+    "threshold_max": {
+      "value": 2.6,
+      "unit": "V",
+      "conditions": "VDS=VGS, ID=250µA (magnitude)",
+      "page_reference": "page2",
+      "source_kind": "maximum"
+    },
+    "rdson_points": [
+      {
+        "vgs": {
+          "value": 10.0,
+          "unit": "V",
+          "conditions": "magnitude, VGS=-10V",
+          "page_reference": "page2",
+          "source_kind": "typical"
+        },
+        "current": {
+          "value": 1.5,
+          "unit": "A",
+          "conditions": "magnitude, ID=-1.5A",
+          "page_reference": "page2",
+          "source_kind": "typical"
+        },
+        "resistance": {
+          "value": 0.140,
+          "unit": "Ω",
+          "conditions": "VGS=-10V, ID=-1.5A",
+          "page_reference": "page2",
+          "source_kind": "typical"
+        }
+      },
+      {
+        "vgs": {
+          "value": 10.0,
+          "unit": "V",
+          "conditions": "magnitude, VGS=-10V",
+          "page_reference": "page2",
+          "source_kind": "maximum"
+        },
+        "current": {
+          "value": 1.5,
+          "unit": "A",
+          "conditions": "magnitude, ID=-1.5A",
+          "page_reference": "page2",
+          "source_kind": "maximum"
+        },
+        "resistance": {
+          "value": 0.190,
+          "unit": "Ω",
+          "conditions": "VGS=-10V, ID=-1.5A",
+          "page_reference": "page2",
+          "source_kind": "maximum"
+        }
+      }
+    ],
+    "ciss": {
+      "value": 3.70e-10,
+      "unit": "F",
+      "conditions": "VDS=-30V, VGS=0V, F=1.0MHz",
+      "page_reference": "page2",
+      "source_kind": "typical"
+    },
+    "coss": {
+      "value": 3.15e-11,
+      "unit": "F",
+      "conditions": "VDS=-30V, VGS=0V, F=1.0MHz",
+      "page_reference": "page2",
+      "source_kind": "typical"
+    },
+    "crss": {
+      "value": 5e-12,
+      "unit": "F",
+      "conditions": "VDS=-30V, VGS=0V, F=1.0MHz",
+      "page_reference": "page2",
+      "source_kind": "typical"
+    },
+    "breakdown_voltage": {
+      "value": 60.0,
+      "unit": "V",
+      "conditions": "VGS=0V, ID=250µA (magnitude)",
+      "page_reference": "page1",
+      "source_kind": "minimum"
+    },
+    "body_diode": {
+      "value": 1.2,
+      "unit": "V",
+      "conditions": "VGS=0V, IS=1.5A (magnitude)",
+      "page_reference": "page2",
+      "source_kind": "typical"
+    }
+  },
+  "extraction_notes": [
+    "P-Channel MOSFET: all voltages and currents represented as magnitudes",
+    "VGS(th) extracted from electrical characteristics table, Page 2",
+    "RDS(ON) nominal and maximum from table at VGS=-10V, ID=-1.5A",
+    "Capacitances CISS, COSS, CRSS converted from pF to farads",
+    "CISS=370pF→3.70e-10F, COSS=31.5pF→3.15e-11F, CRSS=5pF→5e-12F",
+    "Transfer curve digitized from Figure 2 (Page 4) at VDS=-5V",
+    "On-resistance curve digitized from Figure 3 (Page 4) at VGS=-10V",
+    "Diode forward curve digitized from Figure 6 (Page 4) at 25°C",
+    "Breakdown voltage BVDSS=-60V from absolute maximum ratings",
+    "Body diode forward voltage VSD=-1.2V from drain-source diode characteristics table",
+    "Test conditions consistently derived from datasheet tables and graph legends"
+  ],
+  "omission_reason": null
+}

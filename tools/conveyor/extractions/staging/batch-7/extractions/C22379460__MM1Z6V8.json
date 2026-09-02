@@ -1,0 +1,110 @@
+{
+  "curves": [
+    {
+      "name": "Zener characteristic, MM1Z6V8 6V8 trace",
+      "page_reference": "p. 3 Fig. 1",
+      "points": [
+        {
+          "x": 6.62,
+          "y": 0.0001
+        },
+        {
+          "x": 6.68,
+          "y": 0.001
+        },
+        {
+          "x": 6.75,
+          "y": 0.005
+        },
+        {
+          "x": 6.78,
+          "y": 0.01
+        },
+        {
+          "x": 6.8,
+          "y": 0.02
+        },
+        {
+          "x": 6.83,
+          "y": 0.04
+        }
+      ],
+      "test_conditions": "Ta = 25 degC, pulsed, PD = 500 mW; 6V8 trace",
+      "x_axis": {
+        "quantity": "Zener voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "Zener current",
+        "scale": "linear",
+        "unit": "A"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "revision": "Rev:1.0",
+    "title": "MM1Z2V0 THRU MM1Z75 SURFACE MOUNT ZENER DIODES (SOD-123 Surface Mount Silicon Zener Diodes)"
+  },
+  "extraction_notes": [
+    "The MM1Z6V8 row gives VZ min/nom/max = 6.4/6.8/7.2 V at IZT = 5 mA; ZZT maximum 30 ohm at IZT; IR maximum 0.5 microA at VR = 3.5 V (p. 2).",
+    "The 6V8 trace is explicitly labeled in p. 3 Fig. 1. Points were digitized from the printed linear-voltage/linear-current grid and converted from mA to A; they are direct curve readings, not interpolated.",
+    "No per-part capacitance or reverse-recovery time is published for this part."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "MM1Z6V8",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": {
+      "conditions": "IZT = 0.005 A, Ta = 25 degC",
+      "page_reference": "p. 2 electrical characteristics, MM1Z6V8 row",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.005
+    },
+    "breakdown_voltage": {
+      "conditions": "IZT = 0.005 A, Ta = 25 degC; nominal VZ",
+      "page_reference": "p. 2 electrical characteristics, MM1Z6V8 row",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 6.8
+    },
+    "capacitance": null,
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 0.01 A, Ta = 25 degC",
+          "page_reference": "p. 1 maximum ratings, Forward Voltage row",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.01
+        },
+        "voltage": {
+          "conditions": "IF = 0.01 A, Ta = 25 degC",
+          "page_reference": "p. 1 maximum ratings, Forward Voltage row",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.9
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = 3.5 V, Ta = 25 degC",
+      "page_reference": "p. 2 electrical characteristics, MM1Z6V8 row",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 5e-07
+    },
+    "reverse_recovery": null,
+    "variant": "zener"
+  },
+  "usable_curves": true
+}

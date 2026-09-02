@@ -1,0 +1,205 @@
+{
+  "curves": [],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4",
+      "p. 5",
+      "p. 6",
+      "p. 7"
+    ],
+    "revision": "Rev. 1.3, 2015-08-25",
+    "title": "WPM3407 Single P-Channel, -30 V, -4.4 A Power MOSFET"
+  },
+  "extraction_notes": [
+    "P-channel values are stored as magnitudes for fitting; original negative signs remain in conditions and figure labels. RDS(on) maximums are 0.046 ohm at VGS=-10 V, ID=-4.4 A and 0.066 ohm at VGS=-4.5 V, ID=-3.0 A.",
+    "IDSS maximum is 1 uA at VDS=-24 V, VGS=0 V, TJ=25 degC and 10 uA at TJ=85 degC. Gate-charge typicals are Qg=18 nC, Qgs=2.5 nC, Qgd=3.8 nC at VGS=-10 V, VDS=-15 V, ID=-5 A.",
+    "Body-diode reverse recovery is trr=25 ns and Qrr=14 nC at IF=-5 A, dI/dt=100 A/us. Thermal resistances are RthetaJA maximum 125 degC/W steady-state (90 degC/W typical) on the specified FR4 board and RthetaJC maximum 80 degC/W (50 degC/W typical).",
+    "The p. 3 typical-performance plots contain output and other traces, and p. 4 contains capacitance traces, but the required explicit temperature/test-mode and fixed-bias conditions are not all stated. No curve was retained rather than inferring conditions."
+  ],
+  "family": "mosfet",
+  "manufacturer": "WILLSEMI Will Semicon",
+  "mpn": "WPM3407-3/TR",
+  "omission_reason": "The datasheet contains typical output and capacitance plots, but the figure-level temperature and test-mode conditions required by the supplied context are not stated, and no transfer plot has a fixed VDS bias. No curves were inferred.",
+  "schema_version": "1.0.0",
+  "specs": {
+    "body_diode": {
+      "conditions": "VGS = 0 V, IS = -1.0 A; magnitude transcribed for p-channel fit",
+      "locator": {
+        "page": 2,
+        "row": "Forward Recovery Voltage (VSD), VGS=0V, IS=-1.0A, TYP",
+        "table": "Electrical Characteristics, Static Parameters"
+      },
+      "page_reference": "p. 2, Static Parameters, VSD, TYP",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 0.79
+    },
+    "breakdown_voltage": {
+      "conditions": "VGS = 0 V, ID = -250 uA; magnitude transcribed for p-channel fit",
+      "locator": {
+        "page": 2,
+        "row": "Drain-Source Breakdown Voltage (BVDSS), VGS=0V, ID=-250uA, MIN",
+        "table": "Electrical Characteristics, Static Parameters"
+      },
+      "page_reference": "p. 2, Static Parameters, BVDSS, MIN",
+      "source_kind": "minimum",
+      "unit": "V",
+      "value": 30.0
+    },
+    "ciss": {
+      "conditions": "Tj = 25 degC; the Ciss row states no separate bias or frequency condition",
+      "locator": {
+        "page": 2,
+        "row": "Input Capacitance (Ciss), TYP",
+        "table": "Electrical Characteristics, Dynamic"
+      },
+      "page_reference": "p. 2, Dynamic, Ciss, TYP",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 9.5e-10
+    },
+    "coss": {
+      "conditions": "VGS = 0 V, f = 1 MHz, VDS = -15 V; magnitude transcribed for p-channel fit",
+      "locator": {
+        "page": 2,
+        "row": "Output Capacitance (Coss), VGS=0V, f=1.0MHz, VDS=-15V, TYP",
+        "table": "Electrical Characteristics, Dynamic"
+      },
+      "page_reference": "p. 2, Dynamic, Coss, TYP",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 1.2e-10
+    },
+    "crss": {
+      "conditions": "Tj = 25 degC; the Crss row states no separate bias or frequency condition",
+      "locator": {
+        "page": 2,
+        "row": "Reverse Transfer Capacitance (Crss), TYP",
+        "table": "Electrical Characteristics, Dynamic"
+      },
+      "page_reference": "p. 2, Dynamic, Crss, TYP",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 1e-10
+    },
+    "polarity": "p",
+    "rdson_points": [
+      {
+        "current": {
+          "conditions": "VGS = -10 V; magnitude transcribed for p-channel fit",
+          "locator": {
+            "page": 2,
+            "row": "Drain-source On-Resistance, VGS=-10V, ID=-4.4A",
+            "table": "Electrical Characteristics, Static Parameters"
+          },
+          "page_reference": "p. 2, Static Parameters, RDS(on)",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 4.4
+        },
+        "resistance": {
+          "conditions": "VGS = -10 V, ID = -4.4 A; magnitude transcribed for p-channel fit",
+          "locator": {
+            "page": 2,
+            "row": "Drain-source On-Resistance, VGS=-10V, ID=-4.4A, TYP",
+            "table": "Electrical Characteristics, Static Parameters"
+          },
+          "page_reference": "p. 2, Static Parameters, RDS(on), TYP",
+          "source_kind": "typical",
+          "unit": "ohm",
+          "value": 0.036
+        },
+        "vgs": {
+          "conditions": "VGS = -10 V; magnitude transcribed for p-channel fit",
+          "locator": {
+            "page": 2,
+            "row": "Drain-source On-Resistance, VGS=-10V, ID=-4.4A",
+            "table": "Electrical Characteristics, Static Parameters"
+          },
+          "page_reference": "p. 2, Static Parameters, RDS(on)",
+          "source_kind": "typical",
+          "unit": "V",
+          "value": 10.0
+        }
+      },
+      {
+        "current": {
+          "conditions": "VGS = -4.5 V; magnitude transcribed for p-channel fit",
+          "locator": {
+            "page": 2,
+            "row": "Drain-source On-Resistance, VGS=-4.5V, ID=-3.0A",
+            "table": "Electrical Characteristics, Static Parameters"
+          },
+          "page_reference": "p. 2, Static Parameters, RDS(on)",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 3.0
+        },
+        "resistance": {
+          "conditions": "VGS = -4.5 V, ID = -3.0 A; magnitude transcribed for p-channel fit",
+          "locator": {
+            "page": 2,
+            "row": "Drain-source On-Resistance, VGS=-4.5V, ID=-3.0A, TYP",
+            "table": "Electrical Characteristics, Static Parameters"
+          },
+          "page_reference": "p. 2, Static Parameters, RDS(on), TYP",
+          "source_kind": "typical",
+          "unit": "ohm",
+          "value": 0.053
+        },
+        "vgs": {
+          "conditions": "VGS = -4.5 V; magnitude transcribed for p-channel fit",
+          "locator": {
+            "page": 2,
+            "row": "Drain-source On-Resistance, VGS=-4.5V, ID=-3.0A",
+            "table": "Electrical Characteristics, Static Parameters"
+          },
+          "page_reference": "p. 2, Static Parameters, RDS(on)",
+          "source_kind": "typical",
+          "unit": "V",
+          "value": 4.5
+        }
+      }
+    ],
+    "threshold_max": {
+      "conditions": "VGS = VDS, ID = -250 uA; magnitude transcribed for p-channel fit",
+      "locator": {
+        "page": 2,
+        "row": "Gate Threshold Voltage (VGS(th)), VGS=VDS, ID=-250uA, MAX",
+        "table": "Electrical Characteristics, Static Parameters"
+      },
+      "page_reference": "p. 2, Static Parameters, VGS(th), MAX",
+      "source_kind": "maximum",
+      "unit": "V",
+      "value": 3.0
+    },
+    "threshold_min": {
+      "conditions": "VGS = VDS, ID = -250 uA; magnitude transcribed for p-channel fit",
+      "locator": {
+        "page": 2,
+        "row": "Gate Threshold Voltage (VGS(th)), VGS=VDS, ID=-250uA, MIN",
+        "table": "Electrical Characteristics, Static Parameters"
+      },
+      "page_reference": "p. 2, Static Parameters, VGS(th), MIN",
+      "source_kind": "minimum",
+      "unit": "V",
+      "value": 1.0
+    },
+    "threshold_typ": {
+      "conditions": "VGS = VDS, ID = -250 uA; magnitude transcribed for p-channel fit",
+      "locator": {
+        "page": 2,
+        "row": "Gate Threshold Voltage (VGS(th)), VGS=VDS, ID=-250uA, TYP",
+        "table": "Electrical Characteristics, Static Parameters"
+      },
+      "page_reference": "p. 2, Static Parameters, VGS(th), TYP",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 2.0
+    }
+  },
+  "usable_curves": false
+}

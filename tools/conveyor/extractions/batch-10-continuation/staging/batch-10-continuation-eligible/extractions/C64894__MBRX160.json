@@ -1,0 +1,216 @@
+{
+  "curves": [
+    {
+      "name": "Typical forward voltage at Ta = 25 degC",
+      "page_reference": "p. 2, Fig. 3",
+      "points": [
+        {
+          "x": 0.2,
+          "y": 0.01
+        },
+        {
+          "x": 0.25,
+          "y": 0.03
+        },
+        {
+          "x": 0.3,
+          "y": 0.1
+        },
+        {
+          "x": 0.35,
+          "y": 0.3
+        },
+        {
+          "x": 0.4,
+          "y": 1.0
+        },
+        {
+          "x": 0.45,
+          "y": 3.0
+        },
+        {
+          "x": 0.5,
+          "y": 10.0
+        },
+        {
+          "x": 0.55,
+          "y": 30.0
+        },
+        {
+          "x": 0.6,
+          "y": 100.0
+        },
+        {
+          "x": 0.65,
+          "y": 300.0
+        },
+        {
+          "x": 0.7,
+          "y": 800.0
+        }
+      ],
+      "test_conditions": "Ta = 25 degC",
+      "x_axis": {
+        "quantity": "instantaneous forward voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "instantaneous forward current",
+        "scale": "log",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "Typical reverse characteristics at Tj = 25 degC",
+      "page_reference": "p. 2, Fig. 2",
+      "points": [
+        {
+          "x": 0.0,
+          "y": 3e-06
+        },
+        {
+          "x": 10.0,
+          "y": 4e-06
+        },
+        {
+          "x": 20.0,
+          "y": 6e-06
+        },
+        {
+          "x": 40.0,
+          "y": 1e-05
+        },
+        {
+          "x": 60.0,
+          "y": 1.8e-05
+        },
+        {
+          "x": 80.0,
+          "y": 4e-05
+        }
+      ],
+      "test_conditions": "Tj = 25 degC",
+      "x_axis": {
+        "quantity": "percent of rated peak reverse voltage",
+        "scale": "linear",
+        "unit": "%"
+      },
+      "y_axis": {
+        "quantity": "instantaneous reverse current",
+        "scale": "log",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "Typical junction capacitance",
+      "page_reference": "p. 2, Fig. 4",
+      "points": [
+        {
+          "x": 0.1,
+          "y": 5e-11
+        },
+        {
+          "x": 0.2,
+          "y": 4.3e-11
+        },
+        {
+          "x": 0.5,
+          "y": 3.5e-11
+        },
+        {
+          "x": 1.0,
+          "y": 3e-11
+        },
+        {
+          "x": 2.0,
+          "y": 2.5e-11
+        },
+        {
+          "x": 5.0,
+          "y": 2e-11
+        },
+        {
+          "x": 10.0,
+          "y": 1.6e-11
+        },
+        {
+          "x": 20.0,
+          "y": 1.3e-11
+        },
+        {
+          "x": 40.0,
+          "y": 1.1e-11
+        }
+      ],
+      "test_conditions": "Ta = 25 degC, f = 1 MHz",
+      "x_axis": {
+        "quantity": "reverse voltage",
+        "scale": "log",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "junction capacitance",
+        "scale": "log",
+        "unit": "F"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ],
+    "revision": "Rev:2024A4",
+    "title": "MBRX160 Surface Mount Schottky Barrier Rectifier"
+  },
+  "extraction_notes": [
+    "MBRX160 is a 60 V Schottky rectifier with a single-device characteristic set.",
+    "No reverse-recovery or breakdown specification is published; curves were digitized from p. 2."
+  ],
+  "family": "diode",
+  "manufacturer": "MDD Microdiode Semiconductor",
+  "mpn": "MBRX160",
+  "omission_reason": "No reverse-recovery or reverse-breakdown voltage/current specification is published.",
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": null,
+    "breakdown_voltage": null,
+    "capacitance": {
+      "conditions": "TA = 25 degC, VR = 4.0 V, f = 1 MHz",
+      "page_reference": "p. 1, typical junction capacitance",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 3e-11
+    },
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "TA = 25 degC",
+          "page_reference": "p. 1, maximum instantaneous forward voltage",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 1.0
+        },
+        "voltage": {
+          "conditions": "IF = 1.0 A, TA = 25 degC",
+          "page_reference": "p. 1, maximum instantaneous forward voltage",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.72
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "TA = 25 degC, VR = 60 V",
+      "page_reference": "p. 1, maximum DC reverse current at rated DC blocking voltage",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 0.0003
+    },
+    "reverse_recovery": null,
+    "variant": "schottky"
+  },
+  "usable_curves": true
+}

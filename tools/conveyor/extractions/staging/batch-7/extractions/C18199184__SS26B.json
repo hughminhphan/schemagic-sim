@@ -1,0 +1,223 @@
+{
+  "curves": [
+    {
+      "name": "Typical forward voltage (Fig.3), curve labeled SS26B",
+      "page_reference": "p. 2 Fig.3",
+      "points": [
+        {
+          "x": 0.34,
+          "y": 0.1
+        },
+        {
+          "x": 0.371,
+          "y": 0.2
+        },
+        {
+          "x": 0.426,
+          "y": 0.5
+        },
+        {
+          "x": 0.476,
+          "y": 1.0
+        },
+        {
+          "x": 0.538,
+          "y": 2.0
+        },
+        {
+          "x": 0.644,
+          "y": 5.0
+        },
+        {
+          "x": 0.762,
+          "y": 10.0
+        }
+      ],
+      "test_conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle; legend curve SS26B (legend groups: SS22B-SS24B, SS26B, SS28B-SS210B, SS215B-SS220B)",
+      "x_axis": {
+        "quantity": "instantaneous forward voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "instantaneous forward current",
+        "scale": "log",
+        "unit": "A"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ],
+    "revision": "Rev:1.0",
+    "title": "SS22B THRU SS220B SURFACE MOUNT SCHOTTKY BARRIER RECTIFIER (SMB Surface Mount Schottky Barrier Rectifier)"
+  },
+  "extraction_notes": [
+    "Multi-part datasheet SS22B-SS220B; SS26B column: VRRM = 60 V, VRMS = 42 V, VDC = 60 V (p. 1 maximum ratings). IF(AV) = 2.0 A and IFSM = 50 A (8.3 ms half sine) are common to all types.",
+    "Merged-cell resolution on p. 2, verified from a 600 dpi raster of the ruled table: VF 0.55 V spans SS22B-SS24B, 0.70 V spans SS25B-SS26B, 0.85 V spans SS28B-SS215B, 0.95 V is SS220B only; IR1 1.0 mA spans SS22B-SS210B; IR2 20 mA spans SS22B-SS26B; CJ 220 pF spans SS22B-SS24B and 180 pF spans SS25B-SS220B.",
+    "High-temperature reverse current IR2 = 20 mA maximum at VR = VDC, Ta = 100 degC (SS22B-SS26B cell, p. 2) transcribed for reference only; the 25 degC row is the leakage input.",
+    "Curve digitization method: page 2 rasterized at 600 dpi; axes calibrated from the printed gridlines (x: 0-1.6 V linear, y: 0.01-100 A log); the SS26B long-dash curve position was measured at decade and half-decade currents by pixel run tracing with gridline columns excluded. Digitized 0.538 V at 2.0 A is consistent with the 0.70 V maximum table limit at the same current.",
+    "Fig.1 (forward current derating vs lead temperature) and Fig.2 (peak forward surge vs cycles) are thermal/surge ratings and were not digitized. Fig.4 (typical reverse characteristics) plots reverse current against percent of rated peak reverse voltage for the SS22B-SS26B group and was not digitized because its abscissa is normalized, not an absolute voltage.",
+    "No reverse recovery time is published anywhere in the datasheet (Schottky rectifier).",
+    "No avalanche/breakdown voltage row is published; VRRM is an absolute maximum rating, not a measured breakdown, so breakdown_voltage and breakdown_current are null."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "SS26B",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": null,
+    "breakdown_voltage": null,
+    "capacitance": {
+      "conditions": "VR = 4.0 V DC, f = 1 MHz; datasheet value 180 pF typical; merged cell spans SS25B-SS220B (220 pF cell covers SS22B-SS24B only; boundary verified on a 600 dpi render)",
+      "page_reference": "p. 2 electrical characteristics",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 1.8e-10
+    },
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 2.0 A, Ta = 25 degC; maximum instantaneous forward voltage; merged table cell spans SS25B-SS26B (cell boundaries verified on a 600 dpi render of the ruled table)",
+          "page_reference": "p. 2 electrical characteristics",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 2.0
+        },
+        "voltage": {
+          "conditions": "IF = 2.0 A, Ta = 25 degC; maximum instantaneous forward voltage; merged table cell spans SS25B-SS26B (cell boundaries verified on a 600 dpi render of the ruled table)",
+          "page_reference": "p. 2 electrical characteristics",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.7
+        }
+      },
+      {
+        "current": {
+          "conditions": "IF = 0.1 A, Tj = 25 degC, pulse width = 300 us, 1% duty cycle; digitized from Fig.3 SS26B curve",
+          "page_reference": "p. 2 Fig.3",
+          "source_kind": "digitized_typical_curve",
+          "unit": "A",
+          "value": 0.1
+        },
+        "voltage": {
+          "conditions": "IF = 0.1 A, Tj = 25 degC, pulse width = 300 us, 1% duty cycle; digitized from Fig.3 SS26B curve",
+          "page_reference": "p. 2 Fig.3",
+          "source_kind": "digitized_typical_curve",
+          "unit": "V",
+          "value": 0.34
+        }
+      },
+      {
+        "current": {
+          "conditions": "IF = 0.2 A, Tj = 25 degC, pulse width = 300 us, 1% duty cycle; digitized from Fig.3 SS26B curve",
+          "page_reference": "p. 2 Fig.3",
+          "source_kind": "digitized_typical_curve",
+          "unit": "A",
+          "value": 0.2
+        },
+        "voltage": {
+          "conditions": "IF = 0.2 A, Tj = 25 degC, pulse width = 300 us, 1% duty cycle; digitized from Fig.3 SS26B curve",
+          "page_reference": "p. 2 Fig.3",
+          "source_kind": "digitized_typical_curve",
+          "unit": "V",
+          "value": 0.371
+        }
+      },
+      {
+        "current": {
+          "conditions": "IF = 0.5 A, Tj = 25 degC, pulse width = 300 us, 1% duty cycle; digitized from Fig.3 SS26B curve",
+          "page_reference": "p. 2 Fig.3",
+          "source_kind": "digitized_typical_curve",
+          "unit": "A",
+          "value": 0.5
+        },
+        "voltage": {
+          "conditions": "IF = 0.5 A, Tj = 25 degC, pulse width = 300 us, 1% duty cycle; digitized from Fig.3 SS26B curve",
+          "page_reference": "p. 2 Fig.3",
+          "source_kind": "digitized_typical_curve",
+          "unit": "V",
+          "value": 0.426
+        }
+      },
+      {
+        "current": {
+          "conditions": "IF = 1 A, Tj = 25 degC, pulse width = 300 us, 1% duty cycle; digitized from Fig.3 SS26B curve",
+          "page_reference": "p. 2 Fig.3",
+          "source_kind": "digitized_typical_curve",
+          "unit": "A",
+          "value": 1.0
+        },
+        "voltage": {
+          "conditions": "IF = 1 A, Tj = 25 degC, pulse width = 300 us, 1% duty cycle; digitized from Fig.3 SS26B curve",
+          "page_reference": "p. 2 Fig.3",
+          "source_kind": "digitized_typical_curve",
+          "unit": "V",
+          "value": 0.476
+        }
+      },
+      {
+        "current": {
+          "conditions": "IF = 2 A, Tj = 25 degC, pulse width = 300 us, 1% duty cycle; digitized from Fig.3 SS26B curve",
+          "page_reference": "p. 2 Fig.3",
+          "source_kind": "digitized_typical_curve",
+          "unit": "A",
+          "value": 2.0
+        },
+        "voltage": {
+          "conditions": "IF = 2 A, Tj = 25 degC, pulse width = 300 us, 1% duty cycle; digitized from Fig.3 SS26B curve",
+          "page_reference": "p. 2 Fig.3",
+          "source_kind": "digitized_typical_curve",
+          "unit": "V",
+          "value": 0.538
+        }
+      },
+      {
+        "current": {
+          "conditions": "IF = 5 A, Tj = 25 degC, pulse width = 300 us, 1% duty cycle; digitized from Fig.3 SS26B curve",
+          "page_reference": "p. 2 Fig.3",
+          "source_kind": "digitized_typical_curve",
+          "unit": "A",
+          "value": 5.0
+        },
+        "voltage": {
+          "conditions": "IF = 5 A, Tj = 25 degC, pulse width = 300 us, 1% duty cycle; digitized from Fig.3 SS26B curve",
+          "page_reference": "p. 2 Fig.3",
+          "source_kind": "digitized_typical_curve",
+          "unit": "V",
+          "value": 0.644
+        }
+      },
+      {
+        "current": {
+          "conditions": "IF = 10 A, Tj = 25 degC, pulse width = 300 us, 1% duty cycle; digitized from Fig.3 SS26B curve",
+          "page_reference": "p. 2 Fig.3",
+          "source_kind": "digitized_typical_curve",
+          "unit": "A",
+          "value": 10.0
+        },
+        "voltage": {
+          "conditions": "IF = 10 A, Tj = 25 degC, pulse width = 300 us, 1% duty cycle; digitized from Fig.3 SS26B curve",
+          "page_reference": "p. 2 Fig.3",
+          "source_kind": "digitized_typical_curve",
+          "unit": "V",
+          "value": 0.762
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = VDC = 60 V, Ta = 25 degC; datasheet value 1.0 mA maximum; merged cell spans SS22B-SS210B",
+      "page_reference": "p. 2 electrical characteristics",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 0.001
+    },
+    "reverse_recovery": null,
+    "variant": "schottky"
+  },
+  "usable_curves": true
+}

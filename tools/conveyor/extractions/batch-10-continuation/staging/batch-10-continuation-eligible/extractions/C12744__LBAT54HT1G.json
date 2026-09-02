@@ -1,0 +1,260 @@
+{
+  "curves": [
+    {
+      "name": "Typical forward voltage, TA = 25 degC",
+      "page_reference": "p. 2, Fig. 2",
+      "points": [
+        {
+          "x": 0.1,
+          "y": 0.0001
+        },
+        {
+          "x": 0.15,
+          "y": 0.0005
+        },
+        {
+          "x": 0.2,
+          "y": 0.002
+        },
+        {
+          "x": 0.25,
+          "y": 0.01
+        },
+        {
+          "x": 0.3,
+          "y": 0.1
+        }
+      ],
+      "test_conditions": "TA = 25 degC",
+      "x_axis": {
+        "quantity": "forward voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "forward current",
+        "scale": "log",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "Typical reverse leakage, TA = 25 degC",
+      "page_reference": "p. 2, Fig. 3",
+      "points": [
+        {
+          "x": 0.0,
+          "y": 1e-07
+        },
+        {
+          "x": 5.0,
+          "y": 1.5e-07
+        },
+        {
+          "x": 15.0,
+          "y": 2.5e-07
+        },
+        {
+          "x": 25.0,
+          "y": 5e-07
+        },
+        {
+          "x": 30.0,
+          "y": 7e-07
+        }
+      ],
+      "test_conditions": "TA = 25 degC",
+      "x_axis": {
+        "quantity": "reverse voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "reverse current",
+        "scale": "log",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "Typical total capacitance",
+      "page_reference": "p. 2, Fig. 4",
+      "points": [
+        {
+          "x": 0.0,
+          "y": 1.2e-11
+        },
+        {
+          "x": 1.0,
+          "y": 7e-12
+        },
+        {
+          "x": 5.0,
+          "y": 4.3e-12
+        },
+        {
+          "x": 10.0,
+          "y": 3.4e-12
+        },
+        {
+          "x": 20.0,
+          "y": 2.7e-12
+        },
+        {
+          "x": 30.0,
+          "y": 2.3e-12
+        }
+      ],
+      "test_conditions": "Typical total capacitance",
+      "x_axis": {
+        "quantity": "reverse voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "total capacitance",
+        "scale": "linear",
+        "unit": "F"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ],
+    "revision": "Rev. A",
+    "title": "Schottky Barrier Diodes LBAT54HT1G"
+  },
+  "extraction_notes": [
+    "The supplied datasheet contains plotted forward-voltage, reverse-leakage, and total-capacitance characteristics on page 2.",
+    "The electrical table reports reverse leakage as 0.5 uA typical and 2.0 uA maximum at VR = 25 V; the maximum is recorded as the fitting target.",
+    "The reverse-recovery test condition is IF = IR = 10 mA, with recovery measured at 1.0 mA.",
+    "Curve points are manually digitized from the supplied plots and retain plotted axis scales and stated conditions."
+  ],
+  "family": "diode",
+  "manufacturer": "LRC",
+  "mpn": "LBAT54HT1G",
+  "omission_reason": "Schottky majority-carrier behavior is not separately characterized by a fitted minority-carrier storage parameter; the published reverse-recovery time is retained as a datasheet specification.",
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": {
+      "conditions": "Reverse breakdown voltage specified at IR = 10 uA",
+      "page_reference": "p. 1, electrical characteristics",
+      "source_kind": "minimum",
+      "unit": "A",
+      "value": 1e-05
+    },
+    "breakdown_voltage": {
+      "conditions": "IR = 10 uA; minimum reverse breakdown voltage",
+      "page_reference": "p. 1, electrical characteristics",
+      "source_kind": "minimum",
+      "unit": "V",
+      "value": 30.0
+    },
+    "capacitance": {
+      "conditions": "VR = 1.0 V; f = 1.0 MHz; maximum total capacitance",
+      "page_reference": "p. 1, electrical characteristics",
+      "source_kind": "maximum",
+      "unit": "F",
+      "value": 1e-11
+    },
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 0.1 mA; TA = 25 degC",
+          "page_reference": "p. 1, electrical characteristics",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.0001
+        },
+        "voltage": {
+          "conditions": "IF = 0.1 mA; TA = 25 degC",
+          "page_reference": "p. 1, electrical characteristics",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.24
+        }
+      },
+      {
+        "current": {
+          "conditions": "IF = 0.15 mA; TA = 25 degC",
+          "page_reference": "p. 1, electrical characteristics",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.00015
+        },
+        "voltage": {
+          "conditions": "IF = 0.15 mA; TA = 25 degC",
+          "page_reference": "p. 1, electrical characteristics",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.26
+        }
+      },
+      {
+        "current": {
+          "conditions": "IF = 1.0 mA; TA = 25 degC",
+          "page_reference": "p. 1, electrical characteristics",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.001
+        },
+        "voltage": {
+          "conditions": "IF = 1.0 mA; TA = 25 degC",
+          "page_reference": "p. 1, electrical characteristics",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.5
+        }
+      },
+      {
+        "current": {
+          "conditions": "IF = 10 mA; TA = 25 degC",
+          "page_reference": "p. 1, electrical characteristics",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.01
+        },
+        "voltage": {
+          "conditions": "IF = 10 mA; TA = 25 degC",
+          "page_reference": "p. 1, electrical characteristics",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.4
+        }
+      },
+      {
+        "current": {
+          "conditions": "IF = 100 mA; TA = 25 degC",
+          "page_reference": "p. 1, electrical characteristics",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.1
+        },
+        "voltage": {
+          "conditions": "IF = 100 mA; TA = 25 degC",
+          "page_reference": "p. 1, electrical characteristics",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 1.0
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = 25 V; TA = 25 degC; maximum reverse leakage current",
+      "page_reference": "p. 1, electrical characteristics",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 2e-06
+    },
+    "reverse_recovery": {
+      "conditions": "IF = IR = 10 mA; IRREC = 1.0 mA; TA = 25 degC; maximum reverse recovery time",
+      "page_reference": "p. 1, electrical characteristics",
+      "source_kind": "maximum",
+      "unit": "s",
+      "value": 5e-09
+    },
+    "variant": "schottky"
+  },
+  "usable_curves": true
+}

@@ -1,0 +1,107 @@
+{
+  "curves": [
+    {
+      "name": "Reverse zener I-V characteristic, BZT52B15 trace",
+      "page_reference": "p. 3, Fig. 1, Zener Characteristics (VZ 5.1 V to 20 V)",
+      "points": [
+        {
+          "x": 14.99,
+          "y": 0.0001
+        },
+        {
+          "x": 14.96,
+          "y": 0.000602
+        },
+        {
+          "x": 15.03,
+          "y": 0.002571
+        },
+        {
+          "x": 15.19,
+          "y": 0.007779
+        },
+        {
+          "x": 15.43,
+          "y": 0.01668
+        }
+      ],
+      "test_conditions": "TA = 25 \u00b0C, pulsed, PD = 500 mW; reverse zener bias; BZT52B15 trace (nominal VZ = 15 V)",
+      "x_axis": {
+        "quantity": "reverse zener voltage magnitude",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "reverse zener current magnitude",
+        "scale": "log",
+        "unit": "A"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ],
+    "revision": "Rev. 1.0",
+    "title": "BZT52B2V4 THRU BZT52B51 SURFACE MOUNT ZENER DIODES"
+  },
+  "extraction_notes": [
+    "Datasheet SHA-256 verified as 12a6f531411e866a8dd2acbad16a6aa069fbc15a48012ac0fe57aa5a00428170.",
+    "BZT52B15 table values at TA = 25 \u00b0C: VZ is 14.70 V minimum, 15.00 V nominal, and 15.30 V maximum at IZT = 5 mA. The nominal value is represented as typical and the min/max bounds are retained here as notes.",
+    "The Fig. 1 target trace was digitized from the plotted vector curve. Its x-axis is reverse-zener-voltage magnitude and its y-axis is reverse-zener-current magnitude on a logarithmic scale; points are not forward-bias points.",
+    "The datasheet gives maximum zener impedances of 30 ohm at IZT = 5 mA and 200 ohm at IZK = 1 mA for BZT52B15, plus admissible zener current IZM = 5 mA. These are not scalar fields in this schema and are not used as fitted curve points.",
+    "Capacitance and dynamic impedance appear only as multi-device characteristic plots on page 3 without an unambiguous target-specific scalar reading, so capacitance is omitted rather than invented. Reverse-recovery time is not specified."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "BZT52B15",
+  "omission_reason": "No numeric zero-bias capacitance or reverse-recovery time is specified for BZT52B15; the page-3 capacitance plot is multi-device and not unambiguous enough for a target scalar.",
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": {
+      "conditions": "VZ = 15 V nominal, TA = 25 \u00b0C, reverse zener bias; IZT",
+      "page_reference": "p. 2, Electrical Characteristics, BZT52B15 row",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.005
+    },
+    "breakdown_voltage": {
+      "conditions": "IZT = 5 mA, TA = 25 \u00b0C, reverse zener bias; nominal VZ",
+      "page_reference": "p. 2, Electrical Characteristics, BZT52B15 row",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 15.0
+    },
+    "capacitance": null,
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 10 mA, TA = 25 \u00b0C, forward bias",
+          "page_reference": "p. 1, Maximum Ratings",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.01
+        },
+        "voltage": {
+          "conditions": "IF = 10 mA, TA = 25 \u00b0C, forward bias",
+          "page_reference": "p. 1, Maximum Ratings",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.9
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = 10.5 V, TA = 25 \u00b0C, reverse bias",
+      "page_reference": "p. 2, Electrical Characteristics, BZT52B15 row",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 1e-07
+    },
+    "reverse_recovery": null,
+    "variant": "zener"
+  },
+  "usable_curves": true
+}

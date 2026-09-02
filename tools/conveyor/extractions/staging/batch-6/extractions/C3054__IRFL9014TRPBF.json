@@ -1,0 +1,279 @@
+{
+  "curves": [
+    {
+      "name": "Typical output characteristics, TC=25 degC, VGS=-4.5 V",
+      "page_reference": "p. 3 Fig. 1, VGS=-4.5 V curve",
+      "points": [
+        {
+          "x": 0.2,
+          "y": 0.1
+        },
+        {
+          "x": 0.5,
+          "y": 0.2
+        },
+        {
+          "x": 1.0,
+          "y": 0.35
+        },
+        {
+          "x": 2.0,
+          "y": 0.5
+        },
+        {
+          "x": 5.0,
+          "y": 0.6
+        },
+        {
+          "x": 10.0,
+          "y": 0.65
+        },
+        {
+          "x": 30.0,
+          "y": 0.7
+        }
+      ],
+      "test_conditions": "TC = 25 degC, 20 us pulse width, VGS = -4.5 V; plotted values are magnitudes",
+      "x_axis": {
+        "quantity": "negative drain-to-source voltage magnitude -VDS",
+        "scale": "log",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "negative drain current magnitude -ID",
+        "scale": "log",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "Typical transfer characteristics, TC=25 degC",
+      "page_reference": "p. 3 Fig. 3, 25 degC curve",
+      "points": [
+        {
+          "x": 4.0,
+          "y": 0.03
+        },
+        {
+          "x": 4.5,
+          "y": 0.1
+        },
+        {
+          "x": 5.0,
+          "y": 0.5
+        },
+        {
+          "x": 6.0,
+          "y": 1.5
+        },
+        {
+          "x": 7.0,
+          "y": 3.5
+        },
+        {
+          "x": 8.0,
+          "y": 6.0
+        },
+        {
+          "x": 10.0,
+          "y": 14.0
+        }
+      ],
+      "test_conditions": "TC = 25 degC, 20 us pulse width, VDS = -25 V; plotted values are magnitudes",
+      "x_axis": {
+        "quantity": "negative gate-to-source voltage magnitude -VGS",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "negative drain current magnitude -ID",
+        "scale": "log",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "Typical capacitance versus drain-to-source voltage, Crss",
+      "page_reference": "p. 3 Fig. 5, Crss trace",
+      "points": [
+        {
+          "x": 1.0,
+          "y": 1.15e-10
+        },
+        {
+          "x": 2.0,
+          "y": 9e-11
+        },
+        {
+          "x": 5.0,
+          "y": 6.5e-11
+        },
+        {
+          "x": 10.0,
+          "y": 4.5e-11
+        },
+        {
+          "x": 20.0,
+          "y": 3e-11
+        },
+        {
+          "x": 40.0,
+          "y": 2e-11
+        }
+      ],
+      "test_conditions": "VGS = 0 V, f = 1 MHz; plotted values are magnitudes",
+      "x_axis": {
+        "quantity": "negative drain-to-source voltage magnitude -VDS",
+        "scale": "log",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "reverse transfer capacitance Crss",
+        "scale": "linear",
+        "unit": "F"
+      }
+    },
+    {
+      "name": "Typical source-drain diode forward voltage, TC=25 degC",
+      "page_reference": "p. 4 Fig. 7, 25 degC curve",
+      "points": [
+        {
+          "x": 1.5,
+          "y": 0.1
+        },
+        {
+          "x": 2.0,
+          "y": 0.3
+        },
+        {
+          "x": 2.5,
+          "y": 0.7
+        },
+        {
+          "x": 3.0,
+          "y": 1.5
+        },
+        {
+          "x": 4.0,
+          "y": 4.0
+        },
+        {
+          "x": 5.0,
+          "y": 9.0
+        }
+      ],
+      "test_conditions": "VGS = 0 V, TC = 25 degC; plotted values are magnitudes",
+      "x_axis": {
+        "quantity": "negative source-to-drain voltage magnitude -VSD",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "negative source-drain current magnitude -ISD",
+        "scale": "log",
+        "unit": "A"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4",
+      "p. 5",
+      "p. 6",
+      "p. 7",
+      "p. 8"
+    ],
+    "revision": "S14-1686-Rev. F, 18-Aug-14",
+    "title": "IRFL9014, SiHFL9014 Power MOSFET"
+  },
+  "extraction_notes": [
+    "Output, transfer, capacitance, and body-diode curves are digitized readings from the supplied PDF figures; no interpolation or vendor SPICE data was used.",
+    "P-channel table values and curve coordinates are represented as positive magnitudes; polarity is recorded explicitly as p.",
+    "The supplied public datasheet is branded Vishay Siliconix."
+  ],
+  "family": "mosfet",
+  "manufacturer": "Vishay Intertech",
+  "mpn": "IRFL9014TRPBF",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "body_diode": {
+      "conditions": "TJ = 25 degC, IS = -1.8 A, VGS = 0 V; magnitude of p-channel values",
+      "page_reference": "p. 2 drain-source body diode characteristics, VSD, MAX",
+      "source_kind": "maximum",
+      "unit": "V",
+      "value": 5.5
+    },
+    "breakdown_voltage": {
+      "conditions": "VGS = 0 V, ID = 250 uA, TJ = 25 degC; magnitude of p-channel voltage",
+      "page_reference": "p. 2 specifications, drain-source breakdown voltage, MIN",
+      "source_kind": "minimum",
+      "unit": "V",
+      "value": 60.0
+    },
+    "ciss": {
+      "conditions": "VGS = 0 V, VDS = 25 V, f = 1 MHz, TJ = 25 degC; magnitude of p-channel VDS",
+      "page_reference": "p. 2 specifications, Ciss, TYP",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 2.7e-10
+    },
+    "coss": {
+      "conditions": "VGS = 0 V, VDS = 25 V, f = 1 MHz, TJ = 25 degC; magnitude of p-channel VDS",
+      "page_reference": "p. 2 specifications, Coss, TYP",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 1.7e-10
+    },
+    "crss": {
+      "conditions": "VGS = 0 V, VDS = 25 V, f = 1 MHz, TJ = 25 degC; magnitude of p-channel VDS",
+      "page_reference": "p. 2 specifications, Crss, TYP",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 3.1e-11
+    },
+    "polarity": "p",
+    "rdson_points": [
+      {
+        "current": {
+          "conditions": "VGS = -10 V, TJ = 25 degC; magnitude of p-channel current",
+          "page_reference": "p. 2 specifications, RDS(on) condition",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 1.1
+        },
+        "resistance": {
+          "conditions": "VGS = -10 V, ID = -1.1 A, TJ = 25 degC",
+          "page_reference": "p. 2 specifications, RDS(on), MAX",
+          "source_kind": "maximum",
+          "unit": "ohm",
+          "value": 0.5
+        },
+        "vgs": {
+          "conditions": "ID = 1.1 A, TJ = 25 degC; magnitude of p-channel voltages",
+          "page_reference": "p. 2 specifications, RDS(on) condition",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 10.0
+        }
+      }
+    ],
+    "threshold_max": {
+      "conditions": "VDS = VGS, ID = 250 uA, TJ = 25 degC; magnitude of p-channel voltages",
+      "page_reference": "p. 2 specifications, VGS(th), MAX",
+      "source_kind": "maximum",
+      "unit": "V",
+      "value": 4.0
+    },
+    "threshold_min": {
+      "conditions": "VDS = VGS, ID = 250 uA, TJ = 25 degC; magnitude of p-channel voltages",
+      "page_reference": "p. 2 specifications, VGS(th), MIN",
+      "source_kind": "minimum",
+      "unit": "V",
+      "value": 2.0
+    },
+    "threshold_typ": null
+  },
+  "usable_curves": true
+}

@@ -1,0 +1,79 @@
+{
+  "schema_version": "1.0.0",
+  "mpn": "BZX584C3V3",
+  "manufacturer": "hongjiacheng",
+  "family": "diode",
+  "datasheet_identity": {
+    "title": "BZX584C2V4 THRU BZX584C43 SURFACE MOUNT ZENER DIODES (SOD-523)",
+    "revision": "Rev:1.0",
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ]
+  },
+  "usable_curves": false,
+  "curves": [],
+  "specs": {
+    "variant": "zener",
+    "forward_voltage_points": [
+      {
+        "current": {
+          "value": 0.01,
+          "unit": "A",
+          "conditions": "Specified test current for the VF limit, Ta = 25 degC",
+          "page_reference": "p. 1 Maximum Ratings, Forward Voltage row",
+          "source_kind": "typical"
+        },
+        "voltage": {
+          "value": 0.9,
+          "unit": "V",
+          "conditions": "IF = 0.01 A, Ta = 25 degC",
+          "page_reference": "p. 1 Maximum Ratings, Forward Voltage row",
+          "source_kind": "maximum"
+        }
+      }
+    ],
+    "reverse_current": {
+      "value": 5e-6,
+      "unit": "A",
+      "conditions": "VR = 1.0 V, Ta = 25 degC (leakage below the knee)",
+      "page_reference": "p. 2 Electrical Characteristics, BZX584C3V3 row",
+      "source_kind": "maximum"
+    },
+    "capacitance": {
+      "value": 1.8e-10,
+      "unit": "F",
+      "conditions": "0 V bias, f = 1 MHz, Ta = 25 degC; single point read from the family typical-capacitance curve at nominal VZ = 3.3 V (approximately 179 pF); gridline-anchored axis calibration at 200 dpi; digitization tolerance approximately +/-15%",
+      "page_reference": "p. 3 Fig.5 Typical Capacitance",
+      "source_kind": "digitized_typical_curve"
+    },
+    "reverse_recovery": null,
+    "breakdown_voltage": {
+      "value": 3.3,
+      "unit": "V",
+      "conditions": "Nominal VZ at IZT = 0.005 A, Ta = 25 degC; table min 3.1 V, max 3.5 V",
+      "page_reference": "p. 2 Electrical Characteristics, BZX584C3V3 row",
+      "source_kind": "typical"
+    },
+    "breakdown_current": {
+      "value": 0.005,
+      "unit": "A",
+      "conditions": "IZT, the specified zener test current for the VZ measurement, Ta = 25 degC",
+      "page_reference": "p. 2 Electrical Characteristics, BZX584C3V3 row",
+      "source_kind": "typical"
+    }
+  },
+  "extraction_notes": [
+    "Family datasheet covering BZX584C2V4 through BZX584C43 (Zhuhai Hongjiacheng Technology Co., Ltd); the BZX584C3V3 row (marking code Z14) was used for all part-specific table values.",
+    "Zener impedance for variant-Z fitting (no dedicated schema field): ZZT = 95 ohm maximum at IZT = 0.005 A; ZZK = 600 ohm maximum at IZK = 0.001 A (p. 2 Electrical Characteristics, BZX584C3V3 row).",
+    "Temperature coefficient at IZTC: -3.5 to 0 mV/degC; admissible zener current IZM listed as 5 mA in the table (p. 2).",
+    "Maximum ratings (p. 1): PD = 150 mW, VF = 0.9 V max at IF = 10 mA, RthJA = 833 degC/W, Tj and Tstg -55 to +150 degC.",
+    "Fig.1 (p. 3, VZ up to 10 V) labels only the 2.4 and 4.7-10 V traces at the low end; the six traces between them (2.7, 3.0, 3.3, 3.6, 3.9, 4.3 V) are unlabeled and mutually crossing in the 2-4 V region, so the 3.3 V trace cannot be attributed with confidence and was not digitized.",
+    "Capacitance is a single digitized read of the 0 V bias family typical-capacitance curve at nominal VZ = 3.3 V (approximately 179 pF; the 1 V bias curve reads approximately 131 pF and the 50%-of-VZ bias curve approximately 118 pF); it is not a swept characteristic of this part. Curve ordering is physically consistent (50% of VZ = 1.65 V reverse bias sits below the 1 V bias curve).",
+    "Fig.5 axis calibration was verified programmatically against the log-decade gridlines (x decade width 261.5 px with log-spaced minor gridlines matching within 1 px; y decade width 154 px across three decades) in a 200 dpi render.",
+    "Forward voltage is a single maximum limit (0.9 V at 10 mA) from the ratings table; the datasheet provides no forward I-V curve, so only one VF point is available."
+  ],
+  "omission_reason": "No part-specific curves were digitized. Fig.1 covers the 2.4-10 V family members but leaves the 2.7-4.3 V traces unlabeled and crossing each other in the 2-4 V region, making attribution of the 3.3 V trace unreliable; Fig.2 covers only the 11-43 V members. Fig.3 (temperature coefficient), Fig.4 (leakage), Fig.5 (capacitance) and Fig.6 (impedance) plot family-level quantities versus nominal zener voltage rather than operating characteristics of this part, so only a single-point capacitance read was taken from Fig.5."
+}

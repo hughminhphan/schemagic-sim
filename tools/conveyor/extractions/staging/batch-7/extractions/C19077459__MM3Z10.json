@@ -1,0 +1,104 @@
+{
+  "curves": [
+    {
+      "name": "Zener characteristics, MM3Z10 trace",
+      "page_reference": "p. 3, Fig. 1, Zener Characteristics (Vz Up to 12V)",
+      "points": [
+        {
+          "x": 9.4,
+          "y": 0.01
+        },
+        {
+          "x": 9.6,
+          "y": 0.1
+        },
+        {
+          "x": 10.0,
+          "y": 5.0
+        },
+        {
+          "x": 10.3,
+          "y": 20.0
+        }
+      ],
+      "test_conditions": "Ta = 25 degC, pulsed; MM3Z10 trace in the family zener-characteristics plot",
+      "x_axis": {
+        "quantity": "zener voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "zener current",
+        "scale": "log",
+        "unit": "mA"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4",
+      "p. 5"
+    ],
+    "revision": "Rev. 1.1",
+    "title": "MM3Z2V0 THRU MM3Z75 SURFACE MOUNT ZENER DIODES"
+  },
+  "extraction_notes": [
+    "The MM3Z10 row was transcribed from the shared electrical-characteristics table; nominal VZ is 10 V at IZT = 5 mA, with VZ min 9.4 V and max 10.6 V.",
+    "The zener curve points are digitized readings from the labeled MM3Z10 trace in the p. 3 family plot; no interpolation was added.",
+    "The datasheet publishes no numeric capacitance or reverse-recovery-time value for MM3Z10.",
+    "Maximum ratings include PD = 200 mW, VF = 0.9 V at IF = 10 mA, Tstg = -55 to +150 degC, and Tj = -55 to +150 degC."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "MM3Z10",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": {
+      "conditions": "IZT = 5 mA, Ta = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, MM3Z10 VZ@IZT",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.005
+    },
+    "breakdown_voltage": {
+      "conditions": "IZT = 5 mA, Ta = 25 degC; nominal zener voltage",
+      "page_reference": "p. 2, Electrical Characteristics, MM3Z10 VZ@IZT",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 10.0
+    },
+    "capacitance": null,
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 10 mA, Ta = 25 degC",
+          "page_reference": "p. 1, Maximum Ratings, Forward Voltage @ IF=10mA",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.01
+        },
+        "voltage": {
+          "conditions": "IF = 10 mA, Ta = 25 degC",
+          "page_reference": "p. 1, Maximum Ratings, Forward Voltage @ IF=10mA",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.9
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = 8 V, Ta = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, MM3Z10 IR@VR",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 1e-07
+    },
+    "reverse_recovery": null,
+    "variant": "zener"
+  },
+  "usable_curves": true
+}

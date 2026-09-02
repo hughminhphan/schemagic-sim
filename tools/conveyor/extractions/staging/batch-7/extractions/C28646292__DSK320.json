@@ -1,0 +1,104 @@
+{
+  "curves": [
+    {
+      "name": "Typical forward voltage for DSK315-DSK320 curve group",
+      "page_reference": "p. 2, Fig. 3 Typical Forward Voltage",
+      "points": [
+        {
+          "x": 0.48,
+          "y": 0.1
+        },
+        {
+          "x": 0.55,
+          "y": 0.3
+        },
+        {
+          "x": 0.63,
+          "y": 1.0
+        },
+        {
+          "x": 0.72,
+          "y": 3.0
+        },
+        {
+          "x": 0.84,
+          "y": 10.0
+        },
+        {
+          "x": 0.98,
+          "y": 20.0
+        }
+      ],
+      "test_conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle; DSK315-DSK320 dash-dot curve group",
+      "x_axis": {
+        "quantity": "instantaneous forward voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "instantaneous forward current",
+        "scale": "log",
+        "unit": "A"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ],
+    "revision": "Rev. 1.0",
+    "title": "DSK32 THRU DSK320 SURFACE MOUNT SCHOTTKY BARRIER RECTIFIER"
+  },
+  "extraction_notes": [
+    "Maximum repetitive peak reverse voltage VRRM is 200 V and maximum average forward rectified current IF(AV) is 3.0 A at Ta = 25 degC (p. 1).",
+    "Non-repetitive peak forward surge current IFSM is 80 A at t = 8.3 ms half-sine wave (p. 1).",
+    "The DSK320 forward curve is in the DSK315-DSK320 family group; the plot does not provide a DSK320-only trace.",
+    "No reverse-recovery time or breakdown characteristic is published."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "DSK320",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": null,
+    "breakdown_voltage": null,
+    "capacitance": {
+      "conditions": "4.0 V DC, 1 MHz, Ta = 25 degC",
+      "page_reference": "p. 2, electrical characteristics, typical junction capacitance",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 1.6e-10
+    },
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 3.0 A, Ta = 25 degC",
+          "page_reference": "p. 2, electrical characteristics, maximum instantaneous forward voltage",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 3.0
+        },
+        "voltage": {
+          "conditions": "IF = 3.0 A, Ta = 25 degC; maximum instantaneous forward voltage",
+          "page_reference": "p. 2, electrical characteristics, maximum instantaneous forward voltage",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.95
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = VDC = 200 V, Ta = 25 degC",
+      "page_reference": "p. 1, maximum ratings; p. 2, electrical characteristics, IR1",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 5e-05
+    },
+    "reverse_recovery": null,
+    "variant": "schottky"
+  },
+  "usable_curves": true
+}

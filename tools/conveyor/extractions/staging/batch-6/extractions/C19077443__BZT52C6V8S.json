@@ -1,0 +1,120 @@
+{
+  "curves": [
+    {
+      "name": "Zener current versus zener voltage, BZT52C6V8S trace",
+      "page_reference": "p. 3 Fig. 1, Zener Characteristics (Vz Up to 10V)",
+      "points": [
+        {
+          "x": 6.65,
+          "y": 0.0005
+        },
+        {
+          "x": 6.67,
+          "y": 0.001
+        },
+        {
+          "x": 6.69,
+          "y": 0.002
+        },
+        {
+          "x": 6.73,
+          "y": 0.005
+        },
+        {
+          "x": 6.78,
+          "y": 0.01
+        },
+        {
+          "x": 6.84,
+          "y": 0.02
+        },
+        {
+          "x": 6.96,
+          "y": 0.05
+        },
+        {
+          "x": 7.12,
+          "y": 0.1
+        }
+      ],
+      "test_conditions": "Ta = 25 degC, pulsed, PD = 200 mW envelope shown; BZT52C6V8S 6.8 V trace read from the up-to-10 V family plot",
+      "x_axis": {
+        "quantity": "zener voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "zener current",
+        "scale": "log",
+        "unit": "A"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "revision": "Rev:1.0",
+    "title": "BZT52C2V0S THRU BZT52C75S Surface Mount Zener Diodes"
+  },
+  "extraction_notes": [
+    "The BZT52C6V8S row specifies VZ min 6.4 V, nominal 6.8 V, and max 7.2 V at IZT = 5 mA; the nominal value is recorded as the typical breakdown point.",
+    "The p. 3 Zener Characteristics plot is a family plot; the 6.8 V trace was read directly without interpolation between datasheet curves.",
+    "The capacitance plot on p. 3 is a generic family characteristic and does not unambiguously identify a BZT52C6V8S trace, so capacitance is omitted.",
+    "Reverse recovery time is not published in the supplied datasheet.",
+    "Dynamic impedance is tabulated as ZZT = 15 ohm at IZT = 5 mA and ZZK = 80 ohm at IZK = 1 mA, but the strict extraction schema has no impedance fields."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "BZT52C6V8S",
+  "omission_reason": "Capacitance and reverse recovery are not represented for this part: the supplied datasheet gives only an unassigned family capacitance plot and publishes no reverse-recovery time.",
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": {
+      "conditions": "IZT = 5 mA, Ta = 25 degC",
+      "page_reference": "p. 2 Electrical Characteristics, BZT52C6V8S IZT row",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.005
+    },
+    "breakdown_voltage": {
+      "conditions": "IZT = 5 mA, Ta = 25 degC; nominal zener voltage",
+      "page_reference": "p. 2 Electrical Characteristics, BZT52C6V8S VZ row",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 6.8
+    },
+    "capacitance": null,
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 10 mA, Ta = 25 degC",
+          "page_reference": "p. 1 Maximum Ratings, Forward Voltage",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.01
+        },
+        "voltage": {
+          "conditions": "IF = 10 mA, Ta = 25 degC",
+          "page_reference": "p. 1 Maximum Ratings, Forward Voltage",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.9
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = 4 V, Ta = 25 degC",
+      "page_reference": "p. 2 Electrical Characteristics, IR@VR row for BZT52C6V8S",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 2e-06
+    },
+    "reverse_recovery": null,
+    "variant": "zener"
+  },
+  "usable_curves": true
+}

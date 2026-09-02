@@ -1,0 +1,197 @@
+{
+  "curves": [
+    {
+      "name": "Typical forward voltage, SS32B-SS34B solid curve",
+      "page_reference": "p. 2, Fig. 3",
+      "points": [
+        {
+          "x": 0.36,
+          "y": 0.479
+        },
+        {
+          "x": 0.39,
+          "y": 0.888
+        },
+        {
+          "x": 0.42,
+          "y": 1.465
+        },
+        {
+          "x": 0.46,
+          "y": 2.545
+        },
+        {
+          "x": 0.5,
+          "y": 4.087
+        },
+        {
+          "x": 0.54,
+          "y": 6.065
+        }
+      ],
+      "test_conditions": "Forward bias (anode positive relative to cathode); Tj = 25 degC; pulse width = 300 us; 1% duty cycle; grouped solid curve SS32B-SS34B includes SS34B",
+      "x_axis": {
+        "quantity": "instantaneous forward voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "instantaneous forward current",
+        "scale": "log",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "Typical reverse characteristics, SS32B-SS36B solid curve, Tj = 25 degC",
+      "page_reference": "p. 2, Fig. 4",
+      "points": [
+        {
+          "x": 10,
+          "y": 6.29e-06
+        },
+        {
+          "x": 30,
+          "y": 1.28e-05
+        },
+        {
+          "x": 50,
+          "y": 1.85e-05
+        },
+        {
+          "x": 70,
+          "y": 2.41e-05
+        },
+        {
+          "x": 90,
+          "y": 3.7e-05
+        },
+        {
+          "x": 95,
+          "y": 4.59e-05
+        }
+      ],
+      "test_conditions": "Reverse bias (cathode positive relative to anode); Tj = 25 degC; VR expressed as percent of rated peak reverse voltage; grouped solid curve SS32B-SS36B includes SS34B",
+      "x_axis": {
+        "quantity": "percent of rated peak reverse voltage",
+        "scale": "linear",
+        "unit": "%"
+      },
+      "y_axis": {
+        "quantity": "instantaneous reverse current",
+        "scale": "log",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "Typical reverse characteristics, SS32B-SS36B solid curve, Tj = 100 degC",
+      "page_reference": "p. 2, Fig. 4",
+      "points": [
+        {
+          "x": 10,
+          "y": 0.00289
+        },
+        {
+          "x": 30,
+          "y": 0.00579
+        },
+        {
+          "x": 50,
+          "y": 0.00833
+        },
+        {
+          "x": 70,
+          "y": 0.0112
+        },
+        {
+          "x": 90,
+          "y": 0.017
+        },
+        {
+          "x": 95,
+          "y": 0.0204
+        }
+      ],
+      "test_conditions": "Reverse bias (cathode positive relative to anode); Tj = 100 degC; VR expressed as percent of rated peak reverse voltage; grouped solid curve SS32B-SS36B includes SS34B",
+      "x_axis": {
+        "quantity": "percent of rated peak reverse voltage",
+        "scale": "linear",
+        "unit": "%"
+      },
+      "y_axis": {
+        "quantity": "instantaneous reverse current",
+        "scale": "log",
+        "unit": "A"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ],
+    "revision": "Rev:1.0",
+    "title": "SS32B THRU SS320B Surface Mount Schottky Barrier Rectifier"
+  },
+  "extraction_notes": [
+    "The datasheet is a family sheet. SS34B is in the SS32B-SS34B solid forward-voltage curve and the SS32B-SS36B solid reverse-characteristics curves.",
+    "Fig. 3 points are real plotted points digitized from the solid SS32B-SS34B typical curve; they are not interpolated table values.",
+    "Fig. 4 points are real plotted points digitized from the solid SS32B-SS36B typical curves at Tj = 25 degC and Tj = 100 degC. Reverse-axis values are percentages of the rated peak reverse voltage; SS34B VRRM is 40 V.",
+    "The tabulated forward-voltage value is a maximum, not a typical value: VF <= 0.55 V at IF = 3.0 A and TA = 25 degC.",
+    "The tabulated reverse-current value is a maximum: IR1 <= 0.5 mA at VR = VDC = 40 V and TA = 25 degC. The separate 50 mA high-temperature row at TA = 100 degC was not used as the primary reverse-current input.",
+    "The tabulated junction capacitance is typical: CJ = 500 pF at 4.0 V DC and 1 MHz.",
+    "No reverse-recovery time is published; Schottky majority-carrier behavior means TT is zero by construction, but no trr-based numeric value is available.",
+    "VRRM = 40 V is a maximum repetitive peak reverse-voltage rating, not a measured breakdown voltage; no breakdown-current test point is published.",
+    "Junction capacitance is represented by one tabulated point only; capacitance versus reverse bias is not plotted.",
+    "No self-heating: junction temperature is fixed at TNOM. Thermal derating from the datasheet is not modelled.",
+    "Package parasitics (lead inductance, package capacitance) are not modelled.",
+    "Fitted at 25 degC only. Temperature coefficients XTI and EG are at physical defaults unless a temperature sweep was fitted.",
+    "Reverse recovery is not modelled: TT is absent, so switching transients recover instantaneously.",
+    "Schottky majority-carrier device: no minority-carrier storage, TT is zero by construction.",
+    "Flicker noise is not modelled: KF and AF are at defaults (no noise data published)."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "SS34B",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": null,
+    "breakdown_voltage": null,
+    "capacitance": {
+      "conditions": "Reverse bias; VR = 4.0 V DC; f = 1 MHz; TA = 25 degC",
+      "page_reference": "p. 2, electrical characteristics, typical junction capacitance",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 5e-10
+    },
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "Forward bias; IF = 3.0 A; TA = 25 degC",
+          "page_reference": "p. 2, electrical characteristics, maximum instantaneous forward voltage",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 3.0
+        },
+        "voltage": {
+          "conditions": "Forward bias; IF = 3.0 A; TA = 25 degC",
+          "page_reference": "p. 2, electrical characteristics, maximum instantaneous forward voltage",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.55
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "Reverse bias; VR = VDC = 40 V; cathode positive relative to anode; TA = 25 degC",
+      "page_reference": "p. 2, electrical characteristics, maximum DC reverse current at rated DC blocking voltage, IR1",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 0.0005
+    },
+    "reverse_recovery": null,
+    "variant": "schottky"
+  },
+  "usable_curves": true
+}

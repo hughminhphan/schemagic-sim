@@ -1,0 +1,154 @@
+{
+  "curves": [
+    {
+      "name": "Typical forward voltage, SS52F-SS54F curve group",
+      "page_reference": "p. 2, Fig. 3 Typical Forward Voltage",
+      "points": [
+        {
+          "x": 0.14,
+          "y": 0.01
+        },
+        {
+          "x": 0.18,
+          "y": 0.1
+        },
+        {
+          "x": 0.23,
+          "y": 0.3
+        },
+        {
+          "x": 0.28,
+          "y": 1.0
+        },
+        {
+          "x": 0.36,
+          "y": 3.0
+        },
+        {
+          "x": 0.46,
+          "y": 10.0
+        },
+        {
+          "x": 0.58,
+          "y": 30.0
+        },
+        {
+          "x": 0.7,
+          "y": 50.0
+        }
+      ],
+      "test_conditions": "TJ = 25 degC, pulse width = 300 us, 1% duty cycle; SS54F is included in the SS52F-SS54F solid-curve group",
+      "x_axis": {
+        "quantity": "instantaneous forward voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "instantaneous forward current",
+        "scale": "log",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "Typical reverse characteristics at TJ = 25 degC, SS52F-SS56F curve group",
+      "page_reference": "p. 2, Fig. 4 Typical Reverse Characteristics",
+      "points": [
+        {
+          "x": 0.0,
+          "y": 0.003
+        },
+        {
+          "x": 20.0,
+          "y": 0.008
+        },
+        {
+          "x": 40.0,
+          "y": 0.012
+        },
+        {
+          "x": 60.0,
+          "y": 0.018
+        },
+        {
+          "x": 80.0,
+          "y": 0.03
+        },
+        {
+          "x": 100.0,
+          "y": 0.06
+        }
+      ],
+      "test_conditions": "TJ = 25 degC, pulsed; SS54F is included in the SS52F-SS56F solid-curve group",
+      "x_axis": {
+        "quantity": "percent of rated peak reverse voltage",
+        "scale": "linear",
+        "unit": "%"
+      },
+      "y_axis": {
+        "quantity": "instantaneous reverse current",
+        "scale": "log",
+        "unit": "A"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ],
+    "revision": "Rev 1.0",
+    "title": "SS52F THRU SS520F SURFACE MOUNT SCHOTTKY BARRIER RECTIFIER"
+  },
+  "extraction_notes": [
+    "Maximum repetitive peak reverse voltage VRRM is 40 V for SS54F and maximum average forward rectified current IF(AV) is 5.0 A at TA = 25 degC, p. 1.",
+    "The 100 degC reverse-current row is 50 mA at VR = VDC = 40 V for SS54F; the required reverse_current field records the separate 25 degC maximum row.",
+    "Typical junction capacitance is 500 pF at 4.0 V DC and 1 MHz for the SS52F-SS54F group, which includes SS54F.",
+    "The datasheet publishes no reverse-recovery-time or breakdown-voltage value.",
+    "Curve points are manual reads from the supplied family-group plots. The forward plot groups SS52F-SS54F, and the 25 degC reverse plot groups SS52F-SS56F; the plotted group membership is preserved in each curve name and test_conditions."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "SS54F",
+  "omission_reason": "No reverse-recovery or breakdown specification is published. The available curves are grouped typical plots rather than an SS54F-only trace, but SS54F is explicitly included in the plotted curve groups.",
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": null,
+    "breakdown_voltage": null,
+    "capacitance": {
+      "conditions": "4.0 V DC bias, f = 1 MHz; typical junction capacitance for SS52F-SS54F group",
+      "page_reference": "p. 2, Electrical Characteristics, SS52F-SS54F group, CJ",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 5e-07
+    },
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 5.0 A, TA = 25 degC; maximum instantaneous forward voltage",
+          "page_reference": "p. 2, Electrical Characteristics, SS54F column, VF",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 5.0
+        },
+        "voltage": {
+          "conditions": "IF = 5.0 A, TA = 25 degC; maximum instantaneous forward voltage",
+          "page_reference": "p. 2, Electrical Characteristics, SS54F column, VF",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.7
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = VDC = 40 V, TA = 25 degC; maximum DC reverse current at rated DC blocking voltage",
+      "page_reference": "p. 2, Electrical Characteristics, SS54F column, IR1",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 0.0005
+    },
+    "reverse_recovery": null,
+    "variant": "schottky"
+  },
+  "usable_curves": true
+}

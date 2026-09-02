@@ -1,0 +1,345 @@
+{
+  "schema_version": "1.0.0",
+  "mpn": "NX2301P,215",
+  "manufacturer": "Nexperia",
+  "family": "mosfet",
+  "datasheet_identity": {
+    "title": "NX2301P 20 V, 2 A P-channel Trench MOSFET",
+    "revision": "Rev. 1, 26 October 2010",
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4",
+      "p. 5",
+      "p. 6",
+      "p. 7",
+      "p. 8",
+      "p. 9",
+      "p. 10",
+      "p. 11",
+      "p. 12",
+      "p. 13",
+      "p. 14",
+      "p. 15",
+      "p. 16"
+    ]
+  },
+  "usable_curves": true,
+  "curves": [
+    {
+      "name": "Typical transfer characteristics, Tamb=25 degC",
+      "x_axis": {
+        "quantity": "abs(VGS)",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "abs(ID)",
+        "unit": "A",
+        "scale": "linear"
+      },
+      "test_conditions": "abs(VDS) > abs(ID) x RDSon, Tamb = 25 degC; source p-channel axes are negative",
+      "page_reference": "p. 8 Fig. 10",
+      "points": [
+        {
+          "x": 0.8,
+          "y": 0.08
+        },
+        {
+          "x": 1,
+          "y": 0.25
+        },
+        {
+          "x": 1.2,
+          "y": 0.65
+        },
+        {
+          "x": 1.4,
+          "y": 1.25
+        },
+        {
+          "x": 1.6,
+          "y": 1.9
+        }
+      ]
+    },
+    {
+      "name": "Typical output characteristics, abs(VGS)=1.8 V",
+      "x_axis": {
+        "quantity": "abs(VDS)",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "abs(ID)",
+        "unit": "A",
+        "scale": "linear"
+      },
+      "test_conditions": "Tamb = 25 degC, abs(VGS) = 1.8 V; source p-channel axes are negative",
+      "page_reference": "p. 7 Fig. 6",
+      "points": [
+        {
+          "x": 0.5,
+          "y": 1.35
+        },
+        {
+          "x": 1,
+          "y": 1.55
+        },
+        {
+          "x": 2,
+          "y": 1.7
+        },
+        {
+          "x": 5,
+          "y": 1.9
+        }
+      ]
+    },
+    {
+      "name": "Typical Ciss versus abs(VDS)",
+      "x_axis": {
+        "quantity": "abs(VDS)",
+        "unit": "V",
+        "scale": "log"
+      },
+      "y_axis": {
+        "quantity": "Ciss",
+        "unit": "F",
+        "scale": "log"
+      },
+      "test_conditions": "VGS = 0 V, f = 1 MHz; source p-channel VDS axis is negative",
+      "page_reference": "p. 8 Fig. 13",
+      "points": [
+        {
+          "x": 0.1,
+          "y": 4e-10
+        },
+        {
+          "x": 1,
+          "y": 3e-10
+        },
+        {
+          "x": 10,
+          "y": 2.2e-10
+        },
+        {
+          "x": 100,
+          "y": 1.5e-10
+        }
+      ]
+    },
+    {
+      "name": "Typical Coss versus abs(VDS)",
+      "x_axis": {
+        "quantity": "abs(VDS)",
+        "unit": "V",
+        "scale": "log"
+      },
+      "y_axis": {
+        "quantity": "Coss",
+        "unit": "F",
+        "scale": "log"
+      },
+      "test_conditions": "VGS = 0 V, f = 1 MHz; source p-channel VDS axis is negative",
+      "page_reference": "p. 8 Fig. 13",
+      "points": [
+        {
+          "x": 0.1,
+          "y": 2e-10
+        },
+        {
+          "x": 1,
+          "y": 1.5e-10
+        },
+        {
+          "x": 10,
+          "y": 1e-10
+        },
+        {
+          "x": 100,
+          "y": 6e-11
+        }
+      ]
+    },
+    {
+      "name": "Typical Crss versus abs(VDS)",
+      "x_axis": {
+        "quantity": "abs(VDS)",
+        "unit": "V",
+        "scale": "log"
+      },
+      "y_axis": {
+        "quantity": "Crss",
+        "unit": "F",
+        "scale": "log"
+      },
+      "test_conditions": "VGS = 0 V, f = 1 MHz; source p-channel VDS axis is negative",
+      "page_reference": "p. 8 Fig. 13",
+      "points": [
+        {
+          "x": 0.1,
+          "y": 1.6e-10
+        },
+        {
+          "x": 1,
+          "y": 1e-10
+        },
+        {
+          "x": 10,
+          "y": 7.5e-11
+        },
+        {
+          "x": 100,
+          "y": 5e-11
+        }
+      ]
+    }
+  ],
+  "specs": {
+    "polarity": "p",
+    "threshold_min": {
+      "value": 0.5,
+      "unit": "V",
+      "conditions": "abs(ID) = 250 uA, abs(VDS) = abs(VGS), Tj = 25 degC; source signs negative",
+      "page_reference": "p. 6 Table 7, VGS(th), MIN",
+      "source_kind": "minimum"
+    },
+    "threshold_typ": {
+      "value": 0.75,
+      "unit": "V",
+      "conditions": "abs(ID) = 250 uA, abs(VDS) = abs(VGS), Tj = 25 degC; source signs negative",
+      "page_reference": "p. 6 Table 7, VGS(th), TYP",
+      "source_kind": "typical"
+    },
+    "threshold_max": {
+      "value": 1.1,
+      "unit": "V",
+      "conditions": "abs(ID) = 250 uA, abs(VDS) = abs(VGS), Tj = 25 degC; source signs negative",
+      "page_reference": "p. 6 Table 7, VGS(th), MAX",
+      "source_kind": "maximum"
+    },
+    "rdson_points": [
+      {
+        "vgs": {
+          "value": 4.5,
+          "unit": "V",
+          "conditions": "abs(VGS) = 4.5 V, abs(ID) = 1 A, Tj = 25 degC; source signs negative",
+          "page_reference": "p. 6 Table 7, RDSon, TYP",
+          "source_kind": "typical"
+        },
+        "current": {
+          "value": 1,
+          "unit": "A",
+          "conditions": "abs(VGS) = 4.5 V, abs(ID) = 1 A, Tj = 25 degC; source signs negative",
+          "page_reference": "p. 6 Table 7, RDSon, TYP",
+          "source_kind": "typical"
+        },
+        "resistance": {
+          "value": 0.1,
+          "unit": "ohm",
+          "conditions": "abs(VGS) = 4.5 V, abs(ID) = 1 A, Tj = 25 degC; source signs negative",
+          "page_reference": "p. 6 Table 7, RDSon, TYP",
+          "source_kind": "typical"
+        }
+      },
+      {
+        "vgs": {
+          "value": 2.5,
+          "unit": "V",
+          "conditions": "abs(VGS) = 2.5 V, abs(ID) = 1 A, Tj = 25 degC; source signs negative",
+          "page_reference": "p. 6 Table 7, RDSon, TYP",
+          "source_kind": "typical"
+        },
+        "current": {
+          "value": 1,
+          "unit": "A",
+          "conditions": "abs(VGS) = 2.5 V, abs(ID) = 1 A, Tj = 25 degC; source signs negative",
+          "page_reference": "p. 6 Table 7, RDSon, TYP",
+          "source_kind": "typical"
+        },
+        "resistance": {
+          "value": 0.155,
+          "unit": "ohm",
+          "conditions": "abs(VGS) = 2.5 V, abs(ID) = 1 A, Tj = 25 degC; source signs negative",
+          "page_reference": "p. 6 Table 7, RDSon, TYP",
+          "source_kind": "typical"
+        }
+      },
+      {
+        "vgs": {
+          "value": 1.8,
+          "unit": "V",
+          "conditions": "abs(VGS) = 1.8 V, abs(ID) = 0.2 A, Tj = 25 degC; source signs negative",
+          "page_reference": "p. 6 Table 7, RDSon, TYP",
+          "source_kind": "typical"
+        },
+        "current": {
+          "value": 0.2,
+          "unit": "A",
+          "conditions": "abs(VGS) = 1.8 V, abs(ID) = 0.2 A, Tj = 25 degC; source signs negative",
+          "page_reference": "p. 6 Table 7, RDSon, TYP",
+          "source_kind": "typical"
+        },
+        "resistance": {
+          "value": 0.21,
+          "unit": "ohm",
+          "conditions": "abs(VGS) = 1.8 V, abs(ID) = 0.2 A, Tj = 25 degC; source signs negative",
+          "page_reference": "p. 6 Table 7, RDSon, TYP",
+          "source_kind": "typical"
+        }
+      }
+    ],
+    "ciss": {
+      "value": 3.8e-10,
+      "unit": "F",
+      "conditions": "VGS = 0 V, abs(VDS) = 6 V, f = 1 MHz, Tj = 25 degC",
+      "page_reference": "p. 6 Table 7, Ciss, TYP",
+      "source_kind": "typical"
+    },
+    "coss": {
+      "value": 1.35e-10,
+      "unit": "F",
+      "conditions": "VGS = 0 V, abs(VDS) = 6 V, f = 1 MHz, Tj = 25 degC",
+      "page_reference": "p. 6 Table 7, Coss, TYP",
+      "source_kind": "typical"
+    },
+    "crss": {
+      "value": 1.15e-10,
+      "unit": "F",
+      "conditions": "VGS = 0 V, abs(VDS) = 6 V, f = 1 MHz, Tj = 25 degC",
+      "page_reference": "p. 6 Table 7, Crss, TYP",
+      "source_kind": "typical"
+    },
+    "breakdown_voltage": {
+      "value": 20,
+      "unit": "V",
+      "conditions": "VGS = 0 V, abs(ID) = 250 uA, Tj = 25 degC; source sign negative",
+      "page_reference": "p. 6 Table 7, V(BR)DSS, MIN",
+      "source_kind": "minimum"
+    },
+    "body_diode": {
+      "value": 0.8,
+      "unit": "V",
+      "conditions": "VGS = 0 V, abs(IS) = 1 A, Tj = 25 degC; source sign negative",
+      "page_reference": "p. 6 Table 7, VSD, TYP",
+      "source_kind": "typical"
+    }
+  },
+  "extraction_notes": [
+    "Avalanche and unclamped inductive switching (UIS/EAS) are not modelled.",
+    "Safe operating area is not enforced.",
+    "No self-heating in the default three-terminal instance.",
+    "Package and lead inductance are not modelled.",
+    "Threshold-voltage spread is not modelled.",
+    "Gate oxide breakdown beyond the rated maximum is not modelled.",
+    "Flicker noise is not modelled.",
+    "P-channel voltages and currents are recorded as magnitudes for fitting; source signs are negative.",
+    "RDSon maximums are 120 mOhm at 4.5 V/1 A, 180 mOhm at 150 degC, 190 mOhm at 2.5 V/1 A, and 270 mOhm at 1.8 V/0.2 A; 25 degC typical values are recorded.",
+    "QG(tot) = 4.5 nC typ / 6 nC max, QGS = 1.1 nC typ, QGD = 0.9 nC typ at abs(ID) = 2.2 A, abs(VDS) = 6 V, abs(VGS) = 4.5 V.",
+    "VSD = 0.8 V typ / 1.0 V max at abs(IS) = 1 A; reverse recovery is not published.",
+    "Thermal resistances are Rth(j-a) = 315 degC/W max in free air, 175 degC/W max on the 6 cm2 drain pad, and Rth(j-sp) = 45 degC/W max."
+  ],
+  "omission_reason": null
+}

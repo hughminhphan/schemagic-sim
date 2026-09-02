@@ -1,0 +1,126 @@
+{
+  "curves": [
+    {
+      "name": "Fig.2 Zener Characteristics, 27 V curve",
+      "page_reference": "p. 3 fig. 2",
+      "points": [
+        {
+          "x": 26.72,
+          "y": 0.0005
+        },
+        {
+          "x": 26.77,
+          "y": 0.00099
+        },
+        {
+          "x": 26.8,
+          "y": 0.00199
+        },
+        {
+          "x": 26.83,
+          "y": 0.00303
+        },
+        {
+          "x": 26.89,
+          "y": 0.00502
+        },
+        {
+          "x": 26.95,
+          "y": 0.00699
+        },
+        {
+          "x": 27.03,
+          "y": 0.00998
+        },
+        {
+          "x": 27.07,
+          "y": 0.012
+        }
+      ],
+      "test_conditions": "Ta = 25 degC, pulsed, PD = 500 mW, test current Iz 5 mA marked",
+      "x_axis": {
+        "quantity": "zener voltage VZ",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "zener current IZ",
+        "scale": "linear",
+        "unit": "A"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "revision": "Rev:1.0",
+    "title": "MM1Z2V0 THRU MM1Z75 SOD-123 Surface Mount Silicon Zener Diodes"
+  },
+  "extraction_notes": [
+    "Family datasheet MM1Z2V0 THRU MM1Z75; MM1Z27 row (type code 5P): VZ min/nom/max = 25.1/27/28.9 V at IZT = 5 mA; ZZT = 70 ohm at IZT; IR = 0.1 uA at VR = 21 V (p. 2).",
+    "ZZT = 70 ohm at IZT = 5 mA has no schema slot and is recorded here verbatim.",
+    "Maximum ratings (never fitted): PD = 500 mW, Tj = -55 to +150 degC, RthJA = 340 degC/W (p. 1).",
+    "Full manufacturer name on the datasheet: Zhuhai Hongjiacheng Technology co., Ltd (www.ichjc.com).",
+    "Fig.2 (p. 3) contains 7 labeled curves (10, 12, 15, 18, 22, 27, 33 V); the 6th path from the left, matching the '27' label position and ordering, was digitized from the PDF vector path. Axes calibrated against tick labels; x linear 0-40 V, y linear 0-30 mA. The plotted 27 V curve knee leaves the voltage axis near 25.85 V and the curve terminates at 12.1 mA / 27.07 V.",
+    "Curve y-values converted from the plotted mA axis to A.",
+    "The p. 2 and p. 3 tables both carry an MM1Z43 row with different values (p. 2: IZT 3.7 mA, ZZT 150 ohm; p. 3: IZT 2.5 mA, ZZT 130 ohm); this source inconsistency does not affect MM1Z27, which appears once.",
+    "No per-part capacitance value is published anywhere in this datasheet; capacitance is null.",
+    "Fig.1 (zener characteristics 2V7-8V2, other parts), Fig.3 (power derating) and Fig.4 (transient thermal impedance) were not digitized: other-part or thermal family curves, not per-part electrical model inputs.",
+    "source_kind 'typical' on specified test currents (IF, IZT) means 'exact specified test condition'; source_kind 'typical' on VZ nominal marks the nominal column, with min/max recorded in the conditions string.",
+    "All values converted to SI base units (uA -> A, mA -> A)."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "MM1Z27",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": {
+      "conditions": "IZT, zener test current at which VZ is specified",
+      "page_reference": "p. 2 electrical characteristics, MM1Z27 row",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.005
+    },
+    "breakdown_voltage": {
+      "conditions": "VZ nominal at IZT = 5 mA, Ta = 25 degC; min 25.1 V, max 28.9 V",
+      "page_reference": "p. 2 electrical characteristics, MM1Z27 row",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 27.0
+    },
+    "capacitance": null,
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "specified forward test current",
+          "page_reference": "p. 1 maximum ratings",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 0.01
+        },
+        "voltage": {
+          "conditions": "IF = 10 mA, Ta = 25 degC",
+          "page_reference": "p. 1 maximum ratings",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.9
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = 21 V, Ta = 25 degC",
+      "page_reference": "p. 2 electrical characteristics, MM1Z27 row",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 1e-07
+    },
+    "reverse_recovery": null,
+    "variant": "zener"
+  },
+  "usable_curves": true
+}

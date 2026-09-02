@@ -1,0 +1,109 @@
+{
+  "curves": [
+    {
+      "name": "BZT52C24 reverse zener characteristic",
+      "page_reference": "p. 3, Fig. 2, Zener Characteristics (11V to 43V), curve labeled 24",
+      "points": [
+        {
+          "x": 22.8,
+          "y": 0.0005
+        },
+        {
+          "x": 23.4,
+          "y": 0.001
+        },
+        {
+          "x": 24.0,
+          "y": 0.005
+        },
+        {
+          "x": 24.5,
+          "y": 0.01
+        },
+        {
+          "x": 25.0,
+          "y": 0.02
+        }
+      ],
+      "test_conditions": "TA = 25 degC, pulsed, reverse zener bias with cathode positive relative to anode; points digitized on the family curve explicitly labeled 24; plot annotation shows PD = 500 mW",
+      "x_axis": {
+        "quantity": "reverse zener voltage magnitude VZ",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "reverse zener current magnitude IZ",
+        "scale": "log",
+        "unit": "A"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "revision": "Rev:1.0",
+    "title": "BZT52C2V0 THRU BZT52C75 SURFACE MOUNT ZENER DIODES"
+  },
+  "extraction_notes": [
+    "The BZT52C24 electrical-characteristics row specifies VZ minimum 22.80 V, nominal 24.0 V, and maximum 25.20 V at IZT = 5 mA and TA = 25 degC; the nominal reverse zener voltage and test current are represented as the typical breakdown pair.",
+    "The same row specifies maximum ZZT = 70 ohm at IZT = 5 mA and maximum ZZK = 250 ohm at IZK = 1 mA; these impedance values are not representable in the strict schema.",
+    "The Fig. 2 points are manual digitizations of visible points on the curve explicitly labeled 24. Voltage and current are reported as positive reverse-bias magnitudes while polarity is stated in the curve conditions; the current axis is logarithmic.",
+    "The maximum-rating page states PD = 350 mW, while the p. 3 plot annotation states PD = 500 mW; both source values are preserved and no derating parameter is inferred.",
+    "The datasheet provides no numeric target-specific capacitance value at a stated bias and test frequency; the p. 3 capacitance plot is a family-level multi-curve figure, so specs.capacitance is null.",
+    "The datasheet publishes no reverse-recovery-time specification; reverse_recovery is null."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "BZT52C24",
+  "omission_reason": "No numeric target-specific capacitance or reverse-recovery value is stated; the family-level capacitance plot was not converted into a single BZT52C24 scalar without a directly attributable tabulated point at specified bias and frequency.",
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": {
+      "conditions": "TA = 25 degC; reverse zener bias with cathode positive relative to anode; test current IZT = 5 mA",
+      "page_reference": "p. 2, Electrical Characteristics table, BZT52C24 row, IZT",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.005
+    },
+    "breakdown_voltage": {
+      "conditions": "TA = 25 degC; reverse zener bias with cathode positive relative to anode; IZT = 5 mA; nominal VZ, specified range 22.80 V minimum to 25.20 V maximum",
+      "page_reference": "p. 2, Electrical Characteristics table, BZT52C24 row, VZ(V)",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 24.0
+    },
+    "capacitance": null,
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "TA = 25 degC; forward bias, IF = 10 mA",
+          "page_reference": "p. 1, Maximum Ratings table, Forward Voltage @ IF=10mA",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.01
+        },
+        "voltage": {
+          "conditions": "TA = 25 degC; forward bias, IF = 10 mA",
+          "page_reference": "p. 1, Maximum Ratings table, Forward Voltage @ IF=10mA",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.9
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "TA = 25 degC; reverse bias with cathode positive relative to anode; VR = 16.8 V; maximum leakage current IR",
+      "page_reference": "p. 2, Electrical Characteristics table, BZT52C24 row, IR@VR",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 1e-07
+    },
+    "reverse_recovery": null,
+    "variant": "zener"
+  },
+  "usable_curves": true
+}

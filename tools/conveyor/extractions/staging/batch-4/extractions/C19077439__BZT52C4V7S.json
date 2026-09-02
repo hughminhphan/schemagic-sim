@@ -1,0 +1,68 @@
+{
+  "schema_version": "1.0.0",
+  "mpn": "BZT52C4V7S",
+  "manufacturer": "hongjiacheng",
+  "family": "diode",
+  "datasheet_identity": {
+    "title": "BZT52C2V0S THRU BZT52C75S Surface Mount Zener Diodes (SOD-323), Zhuhai Hongjiacheng Technology co., Ltd",
+    "revision": "Rev:1.0",
+    "pages_examined": ["p. 1", "p. 2", "p. 3", "p. 4"]
+  },
+  "usable_curves": false,
+  "curves": [],
+  "specs": {
+    "variant": "zener",
+    "forward_voltage_points": [
+      {
+        "current": {
+          "value": 0.01,
+          "unit": "A",
+          "conditions": "Specified forward test current IF = 10 mA, Ta = 25 degC",
+          "page_reference": "p. 1 Maximum Ratings table",
+          "source_kind": "typical"
+        },
+        "voltage": {
+          "value": 0.9,
+          "unit": "V",
+          "conditions": "VF @ IF = 10 mA, Ta = 25 degC",
+          "page_reference": "p. 1 Maximum Ratings table",
+          "source_kind": "maximum"
+        }
+      }
+    ],
+    "reverse_current": {
+      "value": 3e-6,
+      "unit": "A",
+      "conditions": "IR @ VR = 2.0 V, Ta = 25 degC",
+      "page_reference": "p. 2 Electrical Characteristics, BZT52C4V7S row",
+      "source_kind": "maximum"
+    },
+    "capacitance": null,
+    "reverse_recovery": null,
+    "breakdown_voltage": {
+      "value": 4.7,
+      "unit": "V",
+      "conditions": "Nominal zener voltage VZ @ IZT = 5 mA; datasheet limits: min 4.4 V, max 5.0 V; Ta = 25 degC",
+      "page_reference": "p. 2 Electrical Characteristics, BZT52C4V7S row",
+      "source_kind": "typical"
+    },
+    "breakdown_current": {
+      "value": 0.005,
+      "unit": "A",
+      "conditions": "Zener test current IZT at which VZ is specified; admissible zener current IZM = 5 mA as printed in the same row; Ta = 25 degC",
+      "page_reference": "p. 2 Electrical Characteristics, BZT52C4V7S row",
+      "source_kind": "typical"
+    }
+  },
+  "extraction_notes": [
+    "Family datasheet covering BZT52C2V0S through BZT52C75S; target part BZT52C4V7S (marking code W7) taken from its dedicated row on p. 2.",
+    "Zener voltage limits for BZT52C4V7S: min 4.4 V, nom 4.7 V, max 5.0 V at IZT = 5 mA (p. 2).",
+    "Zener impedance: ZZT = 80 ohm @ IZT = 5 mA; ZZK = 500 ohm @ IZK = 1.0 mA (p. 2).",
+    "Typical temperature coefficient @ IZTC: min -3.5 mV/degC, max 0.2 mV/degC (p. 2).",
+    "Package/thermal context: SOD-323, power dissipation 200 mW, typical RthJA = 417 degC/W, Tj and Tstg -55 to +150 degC (p. 1).",
+    "Forward voltage is given only as a single maximum rating (VF = 0.9 V @ IF = 10 mA, p. 1); the forward test current is recorded with source_kind 'typical' because it is the specified forcing condition, not a min/max limit.",
+    "Fig. 1 zener characteristic curves on p. 3 label traces for 2.4, 4.3, 5.1, 5.6, 6.2, 6.8, 7.5, 8.2, 9.1 and 10 V parts; no 4.7 V trace is labeled, and all figures are low-resolution raster family plots, so no part-specific curve digitization was performed.",
+    "Typical capacitance and leakage figures on p. 3 plot generic values versus nominal zener voltage on small log-log axes; reading a reliable value for VZ = 4.7 V was not possible, so capacitance is null and reverse_current comes from the table limit instead."
+  ],
+  "omission_reason": "usable_curves is false because the datasheet's characteristic figures are generic family raster plots (Fig. 1 has no 4.7 V-labeled trace) and cannot be honestly digitized for this specific part; extraction relies on the part-specific electrical table rows and maximum ratings."
+}

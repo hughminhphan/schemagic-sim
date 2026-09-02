@@ -3,20 +3,60 @@ from __future__ import annotations
 
 import copy
 import datetime as dt
+import hashlib
 import json
 import math
+import os
 import re
+import shutil
 import sqlite3
+import subprocess
+import time
 from collections import Counter
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from typing import Any, Callable, Iterable, Mapping, Sequence
 
 SCHEMA_VERSION = "1.0.0"
+# The on-disk state database carries its own version so a migration can be detected
+# independently of the JSON payload contract.
+STATE_SCHEMA_VERSION = "1.1.0"
 LINEAR_STATES = ("selected", "datasheet_fetched", "extracted", "fitted", "staged")
 FAILURE_STATES = tuple(f"failed_{stage}" for stage in LINEAR_STATES[1:])
 ALL_STATES = set(LINEAR_STATES + FAILURE_STATES)
 FAMILY_QUOTAS = {"diode": 18, "bjt": 16, "mosfet": 16}
+SUPPORTED_FAMILIES = ("diode", "bjt", "mosfet")
+
+# A part is claimable while it still has unfinished conveyor work. Terminal buckets
+# (staged, and anything whose reason was recorded as a deliberate skip) are excluded so an
+# unattended nightly loop can never re-lease work that will never complete.
+CLAIMABLE_STATES = (
+    "selected",
+    "datasheet_fetched",
+    "extracted",
+    "fitted",
+    "failed_datasheet_fetched",
+    "failed_extracted",
+    "failed_fitted",
+)
+# Reasons that mark a row as deliberately abandoned rather than retryable. `skipped:` is
+# written by fetch when a gated datasheet has no manual drop; `selection skipped:` is the
+# factory staging guard rejecting a candidate. Neither is worth another night of tokens.
+SKIP_REASON_PREFIXES = ("skipped:", "selection skipped:")
+DEFAULT_MAX_ATTEMPTS = 3
+
+
+def is_skipped_reason(reason: str | None) -> bool:
+    return str(reason or "").startswith(SKIP_REASON_PREFIXES)
+
+_PARTS_COLUMNS_V1_1_0 = (
+    ("claimed_by", "TEXT"),
+    ("claim_expires_at", "TEXT"),
+    ("tokens_in", "INTEGER NOT NULL DEFAULT 0"),
+    ("tokens_out", "INTEGER NOT NULL DEFAULT 0"),
+    ("llm_model", "TEXT"),
+    ("wall_seconds", "REAL NOT NULL DEFAULT 0"),
+)
 
 
 class ConveyorError(RuntimeError):
@@ -25,6 +65,18 @@ class ConveyorError(RuntimeError):
 
 def utc_now() -> str:
     return dt.datetime.now(dt.UTC).replace(microsecond=0).isoformat()
+
+
+def sha256_file(path: Path, block_size: int = 1024 * 1024) -> str:
+    digest = hashlib.sha256()
+    with Path(path).open("rb") as handle:
+        while block := handle.read(block_size):
+            digest.update(block)
+    return digest.hexdigest()
+
+
+def sha256_text(value: str) -> str:
+    return hashlib.sha256(value.encode("utf-8")).hexdigest()
 
 
 def json_dump(path: Path, value: Any) -> None:
@@ -75,6 +127,64 @@ class StateStore:
             );
         """)
         self.connection.commit()
+        self.migration = self._migrate()
+
+    def _migrate(self) -> dict[str, Any]:
+        """Bring an existing database up to STATE_SCHEMA_VERSION in place.
+
+        Every migration is additive. Batches 1 to 9 ran on the 1.0.0 shape, so an old
+        database must keep every existing row, transition and retry count while gaining the
+        lease and cost columns the unattended nightly loop needs.
+        """
+        self.connection.executescript("""
+            CREATE TABLE IF NOT EXISTS meta (
+              key TEXT PRIMARY KEY,
+              value TEXT NOT NULL
+            );
+            CREATE TABLE IF NOT EXISTS cost_events (
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              tranche TEXT NOT NULL,
+              lcsc_id TEXT NOT NULL,
+              stage TEXT NOT NULL,
+              worker_id TEXT,
+              llm_model TEXT,
+              tokens_in INTEGER NOT NULL DEFAULT 0,
+              tokens_out INTEGER NOT NULL DEFAULT 0,
+              wall_seconds REAL NOT NULL DEFAULT 0,
+              created_at TEXT NOT NULL
+            );
+            CREATE INDEX IF NOT EXISTS cost_events_part ON cost_events (tranche, lcsc_id);
+        """)
+        present = {row["name"] for row in self.connection.execute("PRAGMA table_info(parts)")}
+        previous_row = self.connection.execute(
+            "SELECT value FROM meta WHERE key = 'schema_version'"
+        ).fetchone()
+        previous = previous_row["value"] if previous_row else None
+        added: list[str] = []
+        with self.connection:
+            for column, declaration in _PARTS_COLUMNS_V1_1_0:
+                if column not in present:
+                    self.connection.execute(f"ALTER TABLE parts ADD COLUMN {column} {declaration}")
+                    added.append(column)
+            self.connection.execute(
+                "CREATE INDEX IF NOT EXISTS parts_claim ON parts (tranche, state, claimed_by)"
+            )
+            self.connection.execute(
+                "INSERT INTO meta (key, value) VALUES ('schema_version', ?) "
+                "ON CONFLICT(key) DO UPDATE SET value = excluded.value",
+                (STATE_SCHEMA_VERSION,),
+            )
+            if added or previous is None:
+                self.connection.execute(
+                    "INSERT INTO meta (key, value) VALUES ('migrated_at', ?) "
+                    "ON CONFLICT(key) DO UPDATE SET value = excluded.value",
+                    (utc_now(),),
+                )
+        return {
+            "schema_version": STATE_SCHEMA_VERSION,
+            "previous_schema_version": previous,
+            "columns_added": added,
+        }
 
     def close(self) -> None:
         self.connection.close()
@@ -161,6 +271,192 @@ class StateStore:
     def summary(self, tranche: str) -> dict[str, int]:
         counts = Counter(row["state"] for row in self.rows(tranche))
         return dict(sorted(counts.items()))
+
+    # ----------------------------------------------------------------- leases
+
+    def claim(
+        self,
+        tranche: str,
+        worker_id: str,
+        count: int,
+        ttl_seconds: int,
+        *,
+        states: Sequence[str] = CLAIMABLE_STATES,
+        max_attempts: int = DEFAULT_MAX_ATTEMPTS,
+        now: dt.datetime | None = None,
+    ) -> list[dict[str, Any]]:
+        """Atomically lease up to `count` unclaimed parts for one worker.
+
+        The lease is one UPDATE with a bounded subquery, so two workers racing on the same
+        tranche cannot both take the same row: SQLite serializes the write and the loser
+        sees the rows already claimed. An expired lease is reclaimable, which is what makes
+        a killed nightly session recoverable without any human touch.
+        """
+        if not str(worker_id).strip():
+            raise ConveyorError("A claim needs a non-empty worker id")
+        if count < 1:
+            raise ConveyorError("A claim must request at least one part")
+        if ttl_seconds < 1:
+            raise ConveyorError("A claim TTL must be at least one second")
+        unknown = set(states) - ALL_STATES
+        if unknown:
+            raise ConveyorError(f"Unknown claimable states: {', '.join(sorted(unknown))}")
+        moment = (now or dt.datetime.now(dt.UTC)).replace(microsecond=0)
+        stamp = moment.isoformat()
+        expiry = (moment + dt.timedelta(seconds=ttl_seconds)).isoformat()
+        placeholders = ", ".join("?" for _ in states)
+        skip_clause = " ".join("AND COALESCE(reason, '') NOT LIKE ?" for _ in SKIP_REASON_PREFIXES)
+        skip_values = [f"{prefix}%" for prefix in SKIP_REASON_PREFIXES]
+        # RETURNING (SQLite 3.35+) names exactly the rows this statement changed, which is
+        # the only report that stays correct when the same worker claims twice inside one
+        # second: a select-back by worker and expiry cannot tell the two calls apart.
+        statement = f"""UPDATE parts SET claimed_by = ?, claim_expires_at = ?
+                    WHERE rowid IN (
+                      SELECT rowid FROM parts
+                      WHERE tranche = ?
+                        AND state IN ({placeholders})
+                        AND attempts < ?
+                        {skip_clause}
+                        AND (claimed_by IS NULL OR claim_expires_at IS NULL OR claim_expires_at <= ?)
+                      ORDER BY rowid
+                      LIMIT ?)"""
+        values = (worker_id, expiry, tranche, *states, max_attempts, *skip_values, stamp, count)
+        with self.connection:
+            claimed = self.connection.execute(f"{statement} RETURNING rowid, *", values).fetchall()
+        rows = sorted((dict(row) for row in claimed), key=lambda row: row["rowid"])
+        for row in rows:
+            row.pop("rowid", None)
+        return rows
+
+    def held(self, tranche: str, worker_id: str, *, now: dt.datetime | None = None) -> list[dict[str, Any]]:
+        """Rows this worker still holds an unexpired lease on."""
+        stamp = (now or dt.datetime.now(dt.UTC)).replace(microsecond=0).isoformat()
+        return [dict(row) for row in self.connection.execute(
+            "SELECT * FROM parts WHERE tranche = ? AND claimed_by = ? AND claim_expires_at > ? ORDER BY rowid",
+            (tranche, worker_id, stamp),
+        )]
+
+    def release(self, tranche: str, lcsc_id: str) -> None:
+        with self.connection:
+            self.connection.execute(
+                "UPDATE parts SET claimed_by = NULL, claim_expires_at = NULL WHERE tranche = ? AND lcsc_id = ?",
+                (tranche, lcsc_id),
+            )
+
+    def release_worker(self, tranche: str, worker_id: str) -> int:
+        with self.connection:
+            cursor = self.connection.execute(
+                "UPDATE parts SET claimed_by = NULL, claim_expires_at = NULL WHERE tranche = ? AND claimed_by = ?",
+                (tranche, worker_id),
+            )
+        return int(cursor.rowcount or 0)
+
+    def claim_summary(self, tranche: str, *, now: dt.datetime | None = None) -> dict[str, Any]:
+        stamp = (now or dt.datetime.now(dt.UTC)).replace(microsecond=0).isoformat()
+        rows = self.rows(tranche)
+        active = Counter()
+        expired = 0
+        for row in rows:
+            if not row.get("claimed_by"):
+                continue
+            if (row.get("claim_expires_at") or "") > stamp:
+                active[row["claimed_by"]] += 1
+            else:
+                expired += 1
+        return {"active": dict(sorted(active.items())), "expired": expired, "now": stamp}
+
+    # ------------------------------------------------------- cost accounting
+
+    def record_cost(
+        self,
+        tranche: str,
+        lcsc_id: str,
+        stage: str,
+        *,
+        tokens_in: int = 0,
+        tokens_out: int = 0,
+        wall_seconds: float = 0.0,
+        llm_model: str | None = None,
+        worker_id: str | None = None,
+    ) -> None:
+        if stage not in LINEAR_STATES[1:]:
+            raise ConveyorError(f"Invalid cost stage: {stage}")
+        with self.connection:
+            self.connection.execute(
+                """INSERT INTO cost_events
+                   (tranche, lcsc_id, stage, worker_id, llm_model, tokens_in, tokens_out, wall_seconds, created_at)
+                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+                (tranche, lcsc_id, stage, worker_id, llm_model, int(tokens_in), int(tokens_out),
+                 float(wall_seconds), utc_now()),
+            )
+            self.connection.execute(
+                """UPDATE parts
+                   SET tokens_in = COALESCE(tokens_in, 0) + ?,
+                       tokens_out = COALESCE(tokens_out, 0) + ?,
+                       wall_seconds = COALESCE(wall_seconds, 0) + ?,
+                       llm_model = COALESCE(?, llm_model)
+                   WHERE tranche = ? AND lcsc_id = ?""",
+                (int(tokens_in), int(tokens_out), float(wall_seconds), llm_model, tranche, lcsc_id),
+            )
+
+    def cost_summary(self, tranche: str) -> dict[str, Any]:
+        per_stage = {}
+        for row in self.connection.execute(
+            """SELECT stage, count(*) AS events, count(DISTINCT lcsc_id) AS parts,
+                      COALESCE(sum(tokens_in), 0) AS tokens_in,
+                      COALESCE(sum(tokens_out), 0) AS tokens_out,
+                      COALESCE(sum(wall_seconds), 0) AS wall_seconds
+               FROM cost_events WHERE tranche = ? GROUP BY stage ORDER BY stage""",
+            (tranche,),
+        ):
+            per_stage[row["stage"]] = {
+                "events": row["events"],
+                "parts": row["parts"],
+                "tokens_in": row["tokens_in"],
+                "tokens_out": row["tokens_out"],
+                "wall_seconds": round(row["wall_seconds"], 3),
+            }
+        parts = [dict(row) for row in self.connection.execute(
+            """SELECT lcsc_id, mpn, family, state, fidelity, llm_model,
+                      COALESCE(tokens_in, 0) AS tokens_in,
+                      COALESCE(tokens_out, 0) AS tokens_out,
+                      COALESCE(wall_seconds, 0) AS wall_seconds
+               FROM parts WHERE tranche = ? ORDER BY rowid""",
+            (tranche,),
+        )]
+        charged = [row for row in parts if row["tokens_in"] or row["tokens_out"] or row["wall_seconds"]]
+        promoted = [row for row in charged if row["state"] == "staged"]
+        totals = {
+            "tokens_in": sum(row["tokens_in"] for row in charged),
+            "tokens_out": sum(row["tokens_out"] for row in charged),
+            "wall_seconds": round(sum(row["wall_seconds"] for row in charged), 3),
+            "parts_charged": len(charged),
+            "parts_staged": len(promoted),
+        }
+        totals["tokens_total"] = totals["tokens_in"] + totals["tokens_out"]
+        if promoted:
+            totals["tokens_per_staged_part"] = round(totals["tokens_total"] / len(promoted), 1)
+            totals["wall_seconds_per_staged_part"] = round(totals["wall_seconds"] / len(promoted), 1)
+        else:
+            totals["tokens_per_staged_part"] = None
+            totals["wall_seconds_per_staged_part"] = None
+        return {
+            "per_stage": per_stage,
+            "per_staged_part": [
+                {
+                    "lcsc_id": row["lcsc_id"],
+                    "mpn": row["mpn"],
+                    "family": row["family"],
+                    "fidelity": row["fidelity"],
+                    "llm_model": row["llm_model"],
+                    "tokens_in": row["tokens_in"],
+                    "tokens_out": row["tokens_out"],
+                    "wall_seconds": round(row["wall_seconds"], 3),
+                }
+                for row in promoted
+            ],
+            "totals": totals,
+        }
 
 
 def classify_family(part: Mapping[str, Any]) -> str:
@@ -964,11 +1260,364 @@ def run_extraction_batch(
     *,
     max_concurrency: int = 4,
 ) -> list[Any]:
-    """Dispatch extraction jobs through an injected Luna caller with a hard four-call ceiling."""
+    """Dispatch extraction jobs through an injected caller with a hard four-call ceiling.
+
+    The injected callable runs on a worker thread and must not touch the SQLite state
+    store: subprocess work and file writes happen here, and every state transition is
+    applied serially by the caller once the batch returns.
+    """
     if max_concurrency < 1 or max_concurrency > 4:
         raise ConveyorError("Extraction concurrency must be between 1 and 4")
     with ThreadPoolExecutor(max_workers=max_concurrency) as executor:
         return list(executor.map(invoke, jobs))
+
+
+# --------------------------------------------------------------- invoker plumbing
+
+_USAGE_KEYS = {
+    "usage", "tokens_in", "tokens_out", "input_tokens", "output_tokens",
+    "prompt_tokens", "completion_tokens", "total_tokens",
+    "model", "llm_model", "wall_seconds", "cost_usd", "duration_ms",
+    "cache_creation_input_tokens", "cache_read_input_tokens",
+}
+_TOKENS_IN_KEYS = ("tokens_in", "input_tokens", "prompt_tokens")
+_TOKENS_OUT_KEYS = ("tokens_out", "output_tokens", "completion_tokens")
+
+
+def _strip_code_fence(text: str) -> str:
+    stripped = text.strip()
+    if not stripped.startswith("```"):
+        return stripped
+    lines = stripped.splitlines()
+    lines = lines[1:]
+    while lines and lines[-1].strip() != "```":
+        lines.pop()
+    if lines and lines[-1].strip() == "```":
+        lines.pop()
+    return "\n".join(lines).strip()
+
+
+def _normalize_usage(raw: Mapping[str, Any]) -> dict[str, Any]:
+    source = dict(raw)
+    nested = source.get("usage")
+    if isinstance(nested, Mapping):
+        merged = {key: value for key, value in source.items() if key != "usage"}
+        merged.update(nested)
+        source = merged
+    usage = {"tokens_in": 0, "tokens_out": 0, "llm_model": None, "wall_seconds": None}
+    for key in _TOKENS_IN_KEYS:
+        if isinstance(source.get(key), (int, float)) and not isinstance(source.get(key), bool):
+            usage["tokens_in"] = int(source[key])
+            break
+    for key in _TOKENS_OUT_KEYS:
+        if isinstance(source.get(key), (int, float)) and not isinstance(source.get(key), bool):
+            usage["tokens_out"] = int(source[key])
+            break
+    for key in ("llm_model", "model"):
+        if isinstance(source.get(key), str) and source[key].strip():
+            usage["llm_model"] = source[key].strip()
+            break
+    if isinstance(source.get("wall_seconds"), (int, float)) and not isinstance(source.get("wall_seconds"), bool):
+        usage["wall_seconds"] = float(source["wall_seconds"])
+    elif isinstance(source.get("duration_ms"), (int, float)) and not isinstance(source.get("duration_ms"), bool):
+        usage["wall_seconds"] = float(source["duration_ms"]) / 1000.0
+    return usage
+
+
+def parse_invoker_output(text: str) -> tuple[dict[str, Any], dict[str, Any]]:
+    """Split an invoker's stdout into the extraction payload and an optional usage line.
+
+    Subscription CLIs report token counts out of band, so the invoker contract is: the
+    extraction JSON on stdout, optionally followed by ONE final line of JSON whose keys are
+    all usage metadata. A usage line is only consumed when JSON remains after removing it,
+    so a single-line extraction is never mistaken for accounting.
+    """
+    if not text or not text.strip():
+        raise ConveyorError("Invoker produced no output")
+    lines = text.strip().splitlines()
+    usage: dict[str, Any] = {"tokens_in": 0, "tokens_out": 0, "llm_model": None, "wall_seconds": None}
+    body = lines
+    if len(lines) > 1:
+        candidate = lines[-1].strip()
+        if candidate.startswith("{"):
+            try:
+                parsed = json.loads(candidate)
+            except json.JSONDecodeError:
+                parsed = None
+            if isinstance(parsed, dict) and parsed and set(parsed) <= _USAGE_KEYS:
+                usage = _normalize_usage(parsed)
+                body = lines[:-1]
+    payload_text = _strip_code_fence("\n".join(body))
+    try:
+        payload = json.loads(payload_text)
+    except json.JSONDecodeError as error:
+        raise ConveyorError(f"Invoker output is not JSON: {error}") from error
+    if not isinstance(payload, dict):
+        raise ConveyorError("Invoker output must be a JSON object")
+    return payload, usage
+
+
+def build_subprocess_invoker(
+    command: str,
+    *,
+    cwd: Path | None = None,
+    timeout: float = 900.0,
+    model: str | None = None,
+    runner: Callable[..., Any] = subprocess.run,
+) -> Callable[[Mapping[str, Any]], dict[str, Any]]:
+    """Return an invoke callable that pipes a job's prompt file into `command`.
+
+    The command receives the prompt on stdin and must print the extraction JSON on stdout.
+    Job metadata is exported so an invoker template can name the model, the datasheet, or
+    the output file without parsing the prompt. No API key is read or forwarded: the
+    templates run subscription CLIs in print mode.
+    """
+    if not command.strip():
+        raise ConveyorError("An extraction invoker needs a non-empty command")
+
+    def invoke(job: Mapping[str, Any]) -> dict[str, Any]:
+        prompt_path = Path(job["prompt_path"])
+        response_path = Path(job["response_path"])
+        prompt = prompt_path.read_text(encoding="utf-8")
+        environment = dict(os.environ)
+        environment.update({
+            "CONVEYOR_LCSC_ID": str(job.get("lcsc_id", "")),
+            "CONVEYOR_MPN": str(job.get("mpn", "")),
+            "CONVEYOR_FAMILY": str(job.get("family", "")),
+            "CONVEYOR_DATASHEET": str(job.get("datasheet_path", "")),
+            "CONVEYOR_PROMPT_FILE": str(prompt_path),
+            "CONVEYOR_RESPONSE_FILE": str(response_path),
+        })
+        if model:
+            environment["CONVEYOR_MODEL"] = model
+        result: dict[str, Any] = {
+            "lcsc_id": job.get("lcsc_id"),
+            "mpn": job.get("mpn"),
+            "family": job.get("family"),
+            "prompt_path": str(prompt_path),
+            "response_path": str(response_path),
+            "prompt_sha256": sha256_text(prompt),
+            "datasheet_sha256": None,
+            "response_sha256": None,
+            "tokens_in": 0,
+            "tokens_out": 0,
+            "llm_model": model,
+            "wall_seconds": 0.0,
+            "status": "invoke_failed",
+            "returncode": None,
+            "error": None,
+        }
+        datasheet = job.get("datasheet_path")
+        if datasheet and Path(datasheet).is_file():
+            result["datasheet_sha256"] = sha256_file(Path(datasheet))
+        started = time.monotonic()
+        try:
+            completed = runner(
+                command,
+                shell=True,
+                input=prompt,
+                text=True,
+                capture_output=True,
+                cwd=str(cwd) if cwd else None,
+                env=environment,
+                timeout=timeout,
+            )
+        except subprocess.SubprocessError as error:
+            result["wall_seconds"] = round(time.monotonic() - started, 3)
+            result["error"] = f"invoker failed: {error}"
+            return result
+        result["wall_seconds"] = round(time.monotonic() - started, 3)
+        result["returncode"] = completed.returncode
+        if completed.returncode != 0:
+            result["error"] = (completed.stderr or completed.stdout or "invoker exited non-zero").strip()[:2000]
+            return result
+        try:
+            payload, usage = parse_invoker_output(completed.stdout)
+        except ConveyorError as error:
+            result["error"] = str(error)
+            return result
+        result["tokens_in"] = usage["tokens_in"]
+        result["tokens_out"] = usage["tokens_out"]
+        result["llm_model"] = usage["llm_model"] or model
+        if usage.get("wall_seconds"):
+            result["wall_seconds"] = round(float(usage["wall_seconds"]), 3)
+        response_path.parent.mkdir(parents=True, exist_ok=True)
+        response_path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        result["response_sha256"] = sha256_file(response_path)
+        result["status"] = "invoked"
+        return result
+
+    return invoke
+
+
+def dry_run_command_lines(command: str, jobs: Sequence[Mapping[str, Any]], *, model: str | None = None) -> list[str]:
+    """The exact shell lines `extract` would run, in dispatch order."""
+    lines = []
+    for job in jobs:
+        prefix = [
+            f"CONVEYOR_LCSC_ID={job.get('lcsc_id', '')}",
+            f"CONVEYOR_MPN={job.get('mpn', '')}",
+            f"CONVEYOR_FAMILY={job.get('family', '')}",
+            f"CONVEYOR_DATASHEET={job.get('datasheet_path', '')}",
+            f"CONVEYOR_PROMPT_FILE={job.get('prompt_path', '')}",
+            f"CONVEYOR_RESPONSE_FILE={job.get('response_path', '')}",
+        ]
+        if model:
+            prefix.append(f"CONVEYOR_MODEL={model}")
+        lines.append(f"{' '.join(prefix)} {command} < {job.get('prompt_path', '')} > {job.get('response_path', '')}")
+    return lines
+
+
+# ------------------------------------------------------------- relevance lists
+
+
+def parse_relevance_list(text: str) -> list[dict[str, Any]]:
+    """Parse a curated MPN list into ordered selection entries.
+
+    One MPN per line. Optional pipe-separated fields follow it: manufacturer, priority,
+    family. Commas are never separators because ordering codes contain them
+    (`PMBT2222A,215`). Blank lines and `#` comments are ignored, as is an inline `#`
+    comment. Lower priority numbers are selected first; the default is 100 and ties keep
+    file order.
+    """
+    entries: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    for number, raw_line in enumerate(text.splitlines(), start=1):
+        line = raw_line.split("#", 1)[0].strip()
+        if not line:
+            continue
+        fields = [field.strip() for field in line.split("|")]
+        mpn = fields[0]
+        if not mpn:
+            raise ConveyorError(f"Relevance list line {number} has no MPN")
+        manufacturer = fields[1] if len(fields) > 1 and fields[1] else None
+        priority = 100
+        if len(fields) > 2 and fields[2]:
+            try:
+                priority = int(fields[2])
+            except ValueError as error:
+                raise ConveyorError(f"Relevance list line {number} has a non-integer priority: {fields[2]!r}") from error
+        family = fields[3].casefold() if len(fields) > 3 and fields[3] else None
+        if family is not None and family not in SUPPORTED_FAMILIES:
+            raise ConveyorError(
+                f"Relevance list line {number} names unsupported family {family!r}; "
+                f"expected one of {', '.join(SUPPORTED_FAMILIES)}"
+            )
+        if len(fields) > 4:
+            raise ConveyorError(f"Relevance list line {number} has more than four fields")
+        key = mpn.casefold()
+        if key in seen:
+            continue
+        seen.add(key)
+        entries.append({
+            "mpn": mpn,
+            "manufacturer": manufacturer,
+            "priority": priority,
+            "family": family,
+            "line": number,
+        })
+    if not entries:
+        raise ConveyorError("Relevance list contains no entries")
+    return entries
+
+
+def match_relevance_entries(
+    entries: Sequence[Mapping[str, Any]],
+    catalog_rows: Sequence[Mapping[str, Any]],
+) -> tuple[list[dict[str, Any]], list[dict[str, str]]]:
+    """Bind curated MPNs to catalog rows, keeping the best stocked row per entry.
+
+    The curated list is the relevance signal; the catalog only supplies the datasheet URL,
+    package, and parametric seed hints. An entry the catalog cannot supply is reported as a
+    skip with its reason, never silently dropped.
+    """
+    by_mpn: dict[str, list[Mapping[str, Any]]] = {}
+    for row in catalog_rows:
+        by_mpn.setdefault(str(row["mpn"]).casefold(), []).append(row)
+    selected: list[dict[str, Any]] = []
+    skips: list[dict[str, str]] = []
+    ordered = sorted(entries, key=lambda entry: (entry.get("priority", 100), entry.get("line", 0)))
+    for entry in ordered:
+        candidates = list(by_mpn.get(entry["mpn"].casefold(), []))
+        if entry.get("manufacturer"):
+            wanted = entry["manufacturer"].casefold()
+            narrowed = [row for row in candidates if wanted in str(row.get("manufacturer", "")).casefold()]
+            candidates = narrowed or candidates
+        candidates = [row for row in candidates if str(row.get("datasheet_url", "")).strip()]
+        if not candidates:
+            skips.append({
+                "mpn": entry["mpn"],
+                "lcsc_id": "",
+                "reason": "relevance entry has no catalog row with a datasheet URL",
+            })
+            continue
+        best = max(candidates, key=lambda row: (int(row.get("popularity", 0) or 0), int(row.get("stock", 0) or 0)))
+        part = dict(best)
+        family = entry.get("family")
+        if family is None:
+            try:
+                family = classify_family(part)
+            except ConveyorError as error:
+                skips.append({"mpn": entry["mpn"], "lcsc_id": str(part.get("lcsc_id", "")), "reason": str(error)})
+                continue
+        part["conveyor_family"] = family
+        part["relevance"] = {
+            "priority": entry.get("priority", 100),
+            "line": entry.get("line"),
+            "requested_manufacturer": entry.get("manufacturer"),
+        }
+        selected.append(part)
+    return selected, skips
+
+
+# ------------------------------------------------------------ extraction export
+
+
+def export_extractions(data_dir: Path, destination: Path) -> dict[str, Any]:
+    """Copy every extraction JSON under `data_dir` into a tracked directory with a manifest.
+
+    Extraction JSON is the only irreplaceable output of the campaign: the datasheets can be
+    refetched and the packages regenerated, but the LLM reading of each PDF cannot be
+    without spending the tokens again. Relative paths are preserved so two tranches cannot
+    collide on a file name, and every copy records its content hash.
+    """
+    data_dir = Path(data_dir)
+    destination = Path(destination)
+    if not data_dir.is_dir():
+        raise ConveyorError(f"No conveyor data directory at {data_dir}")
+    sources = sorted(path for path in data_dir.glob("**/extractions/*.json") if path.is_file())
+    destination.mkdir(parents=True, exist_ok=True)
+    files: list[dict[str, Any]] = []
+    copied = 0
+    total_bytes = 0
+    for source in sources:
+        relative = source.relative_to(data_dir)
+        target = destination / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        digest = sha256_file(source)
+        if not target.is_file() or sha256_file(target) != digest:
+            shutil.copy2(source, target)
+            copied += 1
+        size = target.stat().st_size
+        total_bytes += size
+        files.append({"path": str(relative), "sha256": digest, "bytes": size})
+    manifest = {
+        "schema_version": SCHEMA_VERSION,
+        "kind": "opencircuit-conveyor-extraction-export",
+        "source_data_dir": str(data_dir),
+        "exported_at": utc_now(),
+        "file_count": len(files),
+        "total_bytes": total_bytes,
+        "files": files,
+    }
+    json_dump(destination / "manifest.json", manifest)
+    return {
+        "destination": str(destination),
+        "file_count": len(files),
+        "copied": copied,
+        "total_bytes": total_bytes,
+        "total_megabytes": round(total_bytes / (1024 * 1024), 2),
+    }
 
 
 def top_failure_reasons(rows: Iterable[Mapping[str, Any]], limit: int = 3) -> list[tuple[str, int]]:

@@ -1,0 +1,266 @@
+{
+  "curves": [
+    {
+      "name": "Typical forward voltage, TJ = 25 degC",
+      "page_reference": "p. 2, Fig. 1",
+      "points": [
+        {
+          "x": 0.6,
+          "y": 0.01
+        },
+        {
+          "x": 0.7,
+          "y": 0.05
+        },
+        {
+          "x": 0.8,
+          "y": 0.2
+        },
+        {
+          "x": 0.9,
+          "y": 0.6
+        },
+        {
+          "x": 1.0,
+          "y": 1.0
+        },
+        {
+          "x": 1.1,
+          "y": 1.8
+        }
+      ],
+      "test_conditions": "TJ = 25 degC",
+      "x_axis": {
+        "quantity": "instantaneous forward voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "instantaneous forward current",
+        "scale": "log",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "Typical reverse current, TJ = 25 degC",
+      "page_reference": "p. 2, Fig. 2",
+      "points": [
+        {
+          "x": 0,
+          "y": 1e-09
+        },
+        {
+          "x": 50,
+          "y": 2e-09
+        },
+        {
+          "x": 100,
+          "y": 3e-09
+        },
+        {
+          "x": 200,
+          "y": 5e-09
+        },
+        {
+          "x": 400,
+          "y": 1e-08
+        }
+      ],
+      "test_conditions": "TJ = 25 degC",
+      "x_axis": {
+        "quantity": "reverse voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "reverse current",
+        "scale": "log",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "Typical capacitance, TJ = 25 degC",
+      "page_reference": "p. 3, Fig. 5",
+      "points": [
+        {
+          "x": 0,
+          "y": 1.2e-11
+        },
+        {
+          "x": 5,
+          "y": 7e-12
+        },
+        {
+          "x": 20,
+          "y": 5.5e-12
+        },
+        {
+          "x": 50,
+          "y": 4.8e-12
+        },
+        {
+          "x": 100,
+          "y": 4.3e-12
+        },
+        {
+          "x": 200,
+          "y": 3.8e-12
+        }
+      ],
+      "test_conditions": "TJ = 25 degC",
+      "x_axis": {
+        "quantity": "reverse voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "capacitance",
+        "scale": "log",
+        "unit": "F"
+      }
+    },
+    {
+      "name": "Current derating per leg",
+      "page_reference": "p. 3, Fig. 3",
+      "points": [
+        {
+          "x": 25,
+          "y": 1.6
+        },
+        {
+          "x": 100,
+          "y": 1.6
+        },
+        {
+          "x": 125,
+          "y": 1.6
+        },
+        {
+          "x": 150,
+          "y": 1.0
+        }
+      ],
+      "test_conditions": "FREQ = 20 kHz; square-wave and DC reference curves",
+      "x_axis": {
+        "quantity": "lead temperature",
+        "scale": "linear",
+        "unit": "degC"
+      },
+      "y_axis": {
+        "quantity": "average forward current",
+        "scale": "linear",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "Forward power dissipation per leg",
+      "page_reference": "p. 3, Fig. 4",
+      "points": [
+        {
+          "x": 0.2,
+          "y": 0.2
+        },
+        {
+          "x": 0.5,
+          "y": 0.55
+        },
+        {
+          "x": 1.0,
+          "y": 1.0
+        },
+        {
+          "x": 1.5,
+          "y": 1.6
+        }
+      ],
+      "test_conditions": "Square wave and DC curves",
+      "x_axis": {
+        "quantity": "average forward current",
+        "scale": "linear",
+        "unit": "A"
+      },
+      "y_axis": {
+        "quantity": "average power dissipation",
+        "scale": "linear",
+        "unit": "W"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4",
+      "p. 5"
+    ],
+    "revision": "August 2012, Rev. 9",
+    "title": "MRA4003T3G Series, NRVA4003T3G Series Surface Mount Standard Recovery Power Rectifier"
+  },
+  "extraction_notes": [
+    "MRA4007T3G is the 1000 V member of the MRA4003T3G-MRA4007T3G family.",
+    "The datasheet publishes no reverse-recovery-time specification; the series is described as standard recovery.",
+    "Capacitance is available as a typical plot rather than an electrical-characteristics table value; the zero-bias point is digitized.",
+    "Curve points are manually digitized from the supplied plots and retain plotted axis scales and stated conditions."
+  ],
+  "family": "diode",
+  "manufacturer": "onsemi",
+  "mpn": "MRA4007T3G",
+  "omission_reason": "No reverse-recovery-time or breakdown-voltage/current specification is published; capacitance is available only from a typical curve.",
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": null,
+    "breakdown_voltage": null,
+    "capacitance": {
+      "conditions": "VR = 0 V; TJ = 25 degC; typical capacitance digitized from Fig. 5",
+      "page_reference": "p. 3, Fig. 5",
+      "source_kind": "digitized_typical_curve",
+      "unit": "F",
+      "value": 1.2e-11
+    },
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 1 A; TJ = 25 degC; maximum instantaneous forward voltage",
+          "page_reference": "p. 2, electrical characteristics",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 1.0
+        },
+        "voltage": {
+          "conditions": "IF = 1 A; TJ = 25 degC; maximum instantaneous forward voltage",
+          "page_reference": "p. 2, electrical characteristics",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 1.1
+        }
+      },
+      {
+        "current": {
+          "conditions": "IF = 2 A; TJ = 25 degC; maximum instantaneous forward voltage",
+          "page_reference": "p. 2, electrical characteristics",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 2.0
+        },
+        "voltage": {
+          "conditions": "IF = 2 A; TJ = 25 degC; maximum instantaneous forward voltage",
+          "page_reference": "p. 2, electrical characteristics",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 1.18
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "At rated DC voltage VR = 1000 V; TJ = 25 degC; maximum instantaneous reverse current",
+      "page_reference": "p. 2, electrical characteristics",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 1e-05
+    },
+    "reverse_recovery": null,
+    "variant": "rectifier"
+  },
+  "usable_curves": true
+}

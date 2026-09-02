@@ -1,0 +1,123 @@
+{
+  "curves": [
+    {
+      "name": "Typical forward current versus forward voltage",
+      "page_reference": "p. 3 Fig. 3, generic series forward characteristic",
+      "points": [
+        {
+          "x": 0.65,
+          "y": 0.01
+        },
+        {
+          "x": 0.72,
+          "y": 0.02
+        },
+        {
+          "x": 0.8,
+          "y": 0.04
+        },
+        {
+          "x": 0.9,
+          "y": 0.1
+        },
+        {
+          "x": 1.0,
+          "y": 0.25
+        },
+        {
+          "x": 1.1,
+          "y": 0.8
+        },
+        {
+          "x": 1.2,
+          "y": 1.3
+        },
+        {
+          "x": 1.4,
+          "y": 2.4
+        },
+        {
+          "x": 1.6,
+          "y": 5.5
+        }
+      ],
+      "test_conditions": "Tj = 25 degC; pulse width = 300 us; duty cycle = 1%",
+      "x_axis": {
+        "quantity": "forward voltage VF",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "forward current IF",
+        "scale": "log",
+        "unit": "A"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "revision": "Rev1.0",
+    "title": "1SMA4728A THRU 1SMA4764A SURFACE MOUNT ZENER DIODES"
+  },
+  "extraction_notes": [
+    "1SMA4734A zener voltage range is 5.32 V minimum, 5.60 V nominal, and 5.92 V maximum at IZT = 45 mA and Ta = 25 degC.",
+    "Maximum zener impedance is 5 ohm at IZT = 45 mA; the datasheet gives no ZZK/IZK row.",
+    "Admissible zener current IZM is 170 mA at Ta = 25 degC.",
+    "The forward plot is a generic series characteristic rather than a trace labelled specifically for 1SMA4734A."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "1SMA4734A",
+  "omission_reason": "No capacitance or reverse-recovery data were published. The generic reverse zener-impedance plot contains curves only for VZ = 25 V, 30 V, 65 V, and 91 V, not the 5.6 V 1SMA4734A trace.",
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": {
+      "conditions": "IZT = 45 mA, Ta = 25 degC",
+      "page_reference": "p. 2 Electrical Characteristics, 1SMA4734A IZT",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.045
+    },
+    "breakdown_voltage": {
+      "conditions": "IZT = 45 mA, Ta = 25 degC; nominal zener voltage",
+      "page_reference": "p. 2 Electrical Characteristics, 1SMA4734A VZ nominal",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 5.6
+    },
+    "capacitance": null,
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 200 mA, Ta = 25 degC",
+          "page_reference": "p. 1 Maximum Ratings, Forward Voltage",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.2
+        },
+        "voltage": {
+          "conditions": "IF = 200 mA, Ta = 25 degC",
+          "page_reference": "p. 1 Maximum Ratings, Forward Voltage",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 1.5
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = 2 V, Ta = 25 degC",
+      "page_reference": "p. 2 Electrical Characteristics, IR at VR",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 1e-05
+    },
+    "reverse_recovery": null,
+    "variant": "zener"
+  },
+  "usable_curves": true
+}

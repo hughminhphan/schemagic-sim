@@ -1,0 +1,195 @@
+{
+  "schema_version": "1.0.0",
+  "mpn": "AP9926",
+  "manufacturer": "ALLPOWER ShenZhen Quan Li Semiconductor",
+  "family": "mosfet",
+  "datasheet_identity": {
+    "title": "AP9926 N-Channel Power MOSFET Datasheet",
+    "revision": "v1.0",
+    "pages_examined": ["1", "2", "3", "4"]
+  },
+  "usable_curves": true,
+  "curves": [
+    {
+      "name": "ID_vs_VGS",
+      "x_axis": {
+        "quantity": "Gate-Source Voltage",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "Drain Current",
+        "unit": "A",
+        "scale": "linear"
+      },
+      "test_conditions": "VDS varies 1.5V to 4.5V; Ta=25°C",
+      "page_reference": "4",
+      "points": [
+        {"x": 0.5, "y": 1},
+        {"x": 1.5, "y": 5},
+        {"x": 3.5, "y": 15},
+        {"x": 4.5, "y": 20}
+      ]
+    },
+    {
+      "name": "RDSon_vs_ID",
+      "x_axis": {
+        "quantity": "Drain Current",
+        "unit": "A",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "On-Resistance",
+        "unit": "ohm",
+        "scale": "linear"
+      },
+      "test_conditions": "VGS=2.0V to 4.5V; Ta=25°C",
+      "page_reference": "4",
+      "points": [
+        {"x": 1, "y": 2.5},
+        {"x": 5, "y": 1.2},
+        {"x": 10, "y": 0.9},
+        {"x": 15, "y": 0.8}
+      ]
+    }
+  ],
+  "specs": {
+    "polarity": "n",
+    "threshold_min": {
+      "value": 0.5,
+      "unit": "V",
+      "conditions": "VDS=VGS, ID=250µA, Ta=25°C",
+      "page_reference": "2",
+      "source_kind": "minimum"
+    },
+    "threshold_typ": {
+      "value": 1.0,
+      "unit": "V",
+      "conditions": "VDS=VGS, ID=250µA, Ta=25°C",
+      "page_reference": "2",
+      "source_kind": "typical"
+    },
+    "threshold_max": {
+      "value": 1.5,
+      "unit": "V",
+      "conditions": "VDS=VGS, ID=250µA, Ta=25°C",
+      "page_reference": "2",
+      "source_kind": "maximum"
+    },
+    "rdson_points": [
+      {
+        "vgs": {
+          "value": 4.5,
+          "unit": "V",
+          "conditions": "Gate-Source voltage applied",
+          "page_reference": "2",
+          "source_kind": "typical"
+        },
+        "current": {
+          "value": 6.5,
+          "unit": "A",
+          "conditions": "Drain current at test point",
+          "page_reference": "2",
+          "source_kind": "typical"
+        },
+        "resistance": {
+          "value": 21.5,
+          "unit": "ohm",
+          "conditions": "RDSon at Ta=25°C, VGS=4.5V, ID=6.5A; midpoint of 19-24 mOhm range",
+          "page_reference": "2",
+          "source_kind": "typical"
+        }
+      },
+      {
+        "vgs": {
+          "value": 4.5,
+          "unit": "V",
+          "conditions": "Gate-Source voltage applied",
+          "page_reference": "2",
+          "source_kind": "typical"
+        },
+        "current": {
+          "value": 6.5,
+          "unit": "A",
+          "conditions": "Drain current at test point",
+          "page_reference": "2",
+          "source_kind": "typical"
+        },
+        "resistance": {
+          "value": 30.5,
+          "unit": "ohm",
+          "conditions": "RDSon at Ta=125°C, VGS=4.5V, ID=6.5A; midpoint of 27-34 mOhm range",
+          "page_reference": "2",
+          "source_kind": "typical"
+        }
+      },
+      {
+        "vgs": {
+          "value": 2.5,
+          "unit": "V",
+          "conditions": "Gate-Source voltage applied",
+          "page_reference": "2",
+          "source_kind": "typical"
+        },
+        "current": {
+          "value": 5.4,
+          "unit": "A",
+          "conditions": "Drain current at test point",
+          "page_reference": "2",
+          "source_kind": "typical"
+        },
+        "resistance": {
+          "value": 26.5,
+          "unit": "ohm",
+          "conditions": "RDSon at Ta=25°C, VGS=2.5V, ID=5.4A; midpoint of 23-30 mOhm range",
+          "page_reference": "2",
+          "source_kind": "typical"
+        }
+      }
+    ],
+    "ciss": {
+      "value": 700,
+      "unit": "pF",
+      "conditions": "VDS=10V, VGS=0V, f=1.0MHz, Ta=25°C",
+      "page_reference": "3",
+      "source_kind": "typical"
+    },
+    "coss": {
+      "value": 175,
+      "unit": "pF",
+      "conditions": "VDS=10V, VGS=0V, f=1.0MHz, Ta=25°C",
+      "page_reference": "3",
+      "source_kind": "typical"
+    },
+    "crss": {
+      "value": 85,
+      "unit": "pF",
+      "conditions": "VDS=10V, VGS=0V, f=1.0MHz, Ta=25°C",
+      "page_reference": "3",
+      "source_kind": "typical"
+    },
+    "breakdown_voltage": {
+      "value": 20,
+      "unit": "V",
+      "conditions": "VGS=0V, ID=250µA, Ta=25°C",
+      "page_reference": "2",
+      "source_kind": "minimum"
+    },
+    "body_diode": {
+      "value": 1.2,
+      "unit": "V",
+      "conditions": "IS=1.3A, VGS=0V, Ta=25°C (forward voltage); max value from table",
+      "page_reference": "3",
+      "source_kind": "maximum"
+    }
+  },
+  "extraction_notes": [
+    "Polarity: N-Channel definitively established from Page 1 title 'N-Channel Power MOSFET' and equivalent circuit diagram showing NMOS topology",
+    "Threshold voltage range (0.5-1.5V) extracted from Page 2 electrical characteristics table; typical value 1.0V at VDS=VGS, ID=250µA",
+    "RDSon points capture temperature dependence: 21.5 mOhm typical at 25°C vs 30.5 mOhm at 125°C for VGS=4.5V, ID=6.5A",
+    "Capacitance values (Ciss/Coss/Crss) are typical values at standard test conditions from Page 3 table",
+    "Body diode forward voltage range 0.65-1.2V specified at IS=1.3A; maximum 1.2V used for absolute worst-case design",
+    "Curves on Page 4 show ID-VGS transfer characteristic across VDS=1.5V to 4.5V range; digitized representative points at Ta=25°C"
+  ],
+  "omission_reason": null
+}

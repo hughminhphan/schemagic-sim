@@ -8,19 +8,25 @@ import json
 import sys
 from pathlib import Path
 
+HERE = Path(__file__).resolve().parent
+sys.path.insert(0, str(HERE))
+
 from feederlib import (
     CANNED_QUERIES,
     FeederError,
+    execute_prune,
     fetch_database,
+    human_bytes,
     json_dump,
+    plan_prune,
     query_manifest,
     download_datasheets,
 )
 
-HERE = Path(__file__).resolve().parent
 REPO_ROOT = HERE.parent.parent
 DEFAULT_DATA = HERE / "data"
 DEFAULT_LIBRARY = REPO_ROOT / "packages" / "model-library" / "models"
+DEFAULT_CONVEYOR_DATA = HERE.parent / "conveyor" / "data"
 
 
 def parser() -> argparse.ArgumentParser:
@@ -48,6 +54,15 @@ def parser() -> argparse.ArgumentParser:
     datasheets.add_argument("manifest", type=Path)
     datasheets.add_argument("--rate", type=float, default=0.5, help="requests per second, default one request every two seconds")
     datasheets.add_argument("--retries", type=int, default=4)
+
+    prune = subcommands.add_parser("prune", help="report, and only with --yes delete, reclaimable local data")
+    prune.add_argument("--dry-run", action="store_true", help="report only; this is also the default without --yes")
+    prune.add_argument("--yes", action="store_true", help="actually delete the reported files")
+    prune.add_argument("--conveyor-data-dir", type=Path, default=DEFAULT_CONVEYOR_DATA,
+                       help="conveyor data directory scanned for closed tranches and stale state databases")
+    prune.add_argument("--keep-tranche", action="append", default=[],
+                       help="tranche name whose datasheets must be kept; repeatable")
+    prune.add_argument("--list-files", action="store_true", help="include every file path in the JSON report")
 
     return command
 
@@ -100,6 +115,23 @@ def main(argv: list[str] | None = None) -> int:
             )
             print(json.dumps(report, indent=2, sort_keys=True))
             return 0 if report["failed"] == 0 else 2
+        if args.command == "prune":
+            conveyor_data = args.conveyor_data_dir if args.conveyor_data_dir.is_dir() else None
+            plan = plan_prune(args.data_dir, conveyor_data, args.keep_tranche)
+            report = {
+                key: value for key, value in plan.items() if key != "categories"
+            }
+            report["categories"] = [
+                {key: value for key, value in category.items() if key != "files" or args.list_files}
+                | {"human": human_bytes(category["bytes"])}
+                for category in plan["categories"]
+            ]
+            if args.yes and not args.dry_run:
+                report["deletion"] = execute_prune(plan, confirm=True)
+            else:
+                report["deletion"] = {"performed": False, "note": "dry run; pass --yes to delete"}
+            print(json.dumps(report, indent=2, sort_keys=True))
+            return 0
     except (FeederError, OSError, json.JSONDecodeError) as error:
         print(f"feeder: {error}", file=sys.stderr)
         return 1

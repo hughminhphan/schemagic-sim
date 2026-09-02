@@ -1,0 +1,120 @@
+{
+  "curves": [
+    {
+      "name": "Zener characteristics, BZX84C30",
+      "page_reference": "p. 3, Fig. 2 Zener Characteristics (11V to 43V)",
+      "points": [
+        {
+          "x": 28.5,
+          "y": 0.5
+        },
+        {
+          "x": 29.0,
+          "y": 1.0
+        },
+        {
+          "x": 29.3,
+          "y": 2.0
+        },
+        {
+          "x": 29.7,
+          "y": 5.0
+        },
+        {
+          "x": 30.0,
+          "y": 10.0
+        },
+        {
+          "x": 30.4,
+          "y": 20.0
+        },
+        {
+          "x": 30.9,
+          "y": 50.0
+        },
+        {
+          "x": 31.2,
+          "y": 100.0
+        }
+      ],
+      "test_conditions": "TA = 25 degC; pulsed; PD = 300 mW; BZX84C30 curve in the 11 V to 43 V grouped plot",
+      "x_axis": {
+        "quantity": "zener voltage VZ",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "zener current IZ",
+        "scale": "log",
+        "unit": "mA"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "revision": "Rev:1.0",
+    "title": "BZX84C2V4 THRU BZX84C75 Surface Mount Zener Diodes"
+  },
+  "extraction_notes": [
+    "The BZX84C30 zener table row gives VZ min/nom/max = 28/30/32 V at IZT = 2 mA; the nominal 30 V value is used as the breakdown-voltage extraction input and the min/max bin limits are retained here as table semantics.",
+    "The same row gives ZZT maximum 80 ohm at IZT = 2 mA, ZZK maximum 300 ohm at IZK = 0.5 mA, and admissible zener current IZM = 2 mA.",
+    "The zener characteristic points were digitized from the labelled BZX84C30 trace in Fig. 2; the plot is a grouped typical curve, not a guaranteed min/typ/max characteristic.",
+    "The datasheet includes typical capacitance curves in Fig. 5 but does not provide a tabulated BZX84C30 capacitance value or an unambiguous single trace assignment, so capacitance is left null rather than guessed.",
+    "Reverse recovery time is not published in the supplied datasheet."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "BZX84C30",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": {
+      "conditions": "IZT = 2 mA, TA = 25 degC; current at which nominal VZ is specified",
+      "page_reference": "p. 2, electrical characteristics, BZX84C30 IZT",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.002
+    },
+    "breakdown_voltage": {
+      "conditions": "IZT = 2 mA, TA = 25 degC; nominal zener voltage",
+      "page_reference": "p. 2, electrical characteristics, BZX84C30 VZ at IZT",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 30.0
+    },
+    "capacitance": null,
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 10 mA, TA = 25 degC",
+          "page_reference": "p. 1, maximum ratings, forward voltage",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.01
+        },
+        "voltage": {
+          "conditions": "IF = 10 mA, TA = 25 degC",
+          "page_reference": "p. 1, maximum ratings, forward voltage",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.9
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = 21 V, TA = 25 degC",
+      "page_reference": "p. 2, electrical characteristics, BZX84C30 reverse leakage current",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 2e-07
+    },
+    "reverse_recovery": null,
+    "variant": "zener"
+  },
+  "usable_curves": true
+}

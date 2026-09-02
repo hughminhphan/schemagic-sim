@@ -1,0 +1,90 @@
+{
+  "schema_version": "1.0.0",
+  "mpn": "ES2J",
+  "manufacturer": "hongjiacheng",
+  "family": "diode",
+  "datasheet_identity": {
+    "title": "ES2A THRU ES2J SURFACE MOUNT FAST RECOVERY RECTIFIER",
+    "revision": "Rev:1.1",
+    "pages_examined": [
+      "1",
+      "2"
+    ]
+  },
+  "usable_curves": true,
+  "curves": [
+    {
+      "name": "Typical forward voltage, ES2J",
+      "x_axis": {
+        "quantity": "instantaneous forward voltage",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "instantaneous forward current",
+        "unit": "A",
+        "scale": "log"
+      },
+      "test_conditions": "Tj=25 °C; pulse width=300 μs; 1% duty cycle",
+      "page_reference": "PDF p. 2, Fig. 3 (dotted ES2J trace)",
+      "points": [
+        {
+          "x": 0.6,
+          "y": 0.01
+        },
+        {
+          "x": 0.88,
+          "y": 0.1
+        },
+        {
+          "x": 1.38,
+          "y": 1.0
+        },
+        {
+          "x": 2.3,
+          "y": 10.0
+        }
+      ]
+    }
+  ],
+  "specs": {
+    "variant": "rectifier",
+    "forward_voltage_points": [
+      {
+        "current": {
+          "value": 2.0,
+          "unit": "A",
+          "conditions": "IF=2.0 A",
+          "page_reference": "PDF p. 2, Electrical Characteristics",
+          "source_kind": "maximum"
+        },
+        "voltage": {
+          "value": 1.7,
+          "unit": "V",
+          "conditions": "IF=2.0 A",
+          "page_reference": "PDF p. 2, Electrical Characteristics",
+          "source_kind": "maximum"
+        }
+      }
+    ],
+    "reverse_current": {
+      "value": 5.0,
+      "unit": "μA",
+      "conditions": "VR=VDC (rated DC blocking voltage), TA=25 °C",
+      "page_reference": "PDF p. 2, Electrical Characteristics, IR1",
+      "source_kind": "maximum"
+    },
+    "capacitance": null,
+    "reverse_recovery": null,
+    "breakdown_voltage": null,
+    "breakdown_current": null
+  },
+  "extraction_notes": [
+    "Identity confirmed: ES2J is listed as the device marking code and electrical-characteristics column in the ES2A THRU ES2J datasheet; the footer identifies Zhuhai Hongjiacheng Technology co., Ltd., Rev:1.1.",
+    "Maximum DC blocking voltage for ES2J is 600 V at Ta=25 °C unless otherwise specified (PDF p. 1). It is retained as observed DC evidence but is not mapped to breakdown_voltage because the datasheet labels it VDC, not breakdown voltage.",
+    "Maximum DC reverse current is 5 μA at VR=VDC, TA=25 °C and 100 μA at VR=VDC, TA=125 °C (PDF p. 2). The schema permits one reverse-current object, so the 25 °C row is structured and the 125 °C maximum is retained here.",
+    "Curve points are direct readings of the labeled ES2J dotted trace at major decade gridlines in Fig. 3; no interpolation was used.",
+    "DC-only scope omitted reverse-recovery time, junction capacitance, RMS-voltage, surge-current, and thermal evidence. No breakdown-voltage or breakdown-current rating was identified."
+  ],
+  "omission_reason": "DC-only extraction. The datasheet provides no explicitly labeled breakdown-voltage or breakdown-current specification, and non-DC, surge, and thermal characteristics were omitted by scope."
+}

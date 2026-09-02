@@ -1,0 +1,183 @@
+{
+  "curves": [
+    {
+      "name": "Zener characteristics, nominal VZ 5.1 V to 20 V",
+      "page_reference": "p. 3 Fig. 1",
+      "points": [
+        {
+          "x": 8.8,
+          "y": 0.0005
+        },
+        {
+          "x": 9.0,
+          "y": 0.001
+        },
+        {
+          "x": 9.1,
+          "y": 0.005
+        },
+        {
+          "x": 9.3,
+          "y": 0.02
+        },
+        {
+          "x": 9.6,
+          "y": 0.1
+        }
+      ],
+      "test_conditions": "TA = 25 degC, pulsed; family curve including BZT52B9V1S",
+      "x_axis": {
+        "quantity": "zener voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "zener current",
+        "scale": "log",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "Typical leakage current",
+      "page_reference": "p. 3 Fig. 3",
+      "points": [
+        {
+          "x": 4.0,
+          "y": 0.0002
+        },
+        {
+          "x": 9.1,
+          "y": 0.0005
+        },
+        {
+          "x": 15.0,
+          "y": 8e-05
+        },
+        {
+          "x": 20.0,
+          "y": 7e-05
+        }
+      ],
+      "test_conditions": "TA = 25 degC, pulsed; family curve including nominal VZ = 9.1 V",
+      "x_axis": {
+        "quantity": "nominal zener voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "leakage current",
+        "scale": "log",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "Typical capacitance at 0 V bias",
+      "page_reference": "p. 3 Fig. 4",
+      "points": [
+        {
+          "x": 4.0,
+          "y": 3.5e-10
+        },
+        {
+          "x": 6.0,
+          "y": 2.2e-10
+        },
+        {
+          "x": 9.1,
+          "y": 1.1e-10
+        },
+        {
+          "x": 15.0,
+          "y": 6.5e-11
+        },
+        {
+          "x": 20.0,
+          "y": 5e-11
+        }
+      ],
+      "test_conditions": "TA = 25 degC, f = 1 MHz, 0 V bias; family curve including nominal VZ = 9.1 V",
+      "x_axis": {
+        "quantity": "nominal zener voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "capacitance",
+        "scale": "log",
+        "unit": "F"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "revision": "Rev:1.0",
+    "title": "BZT52B2V4S THRU BZT52B43S"
+  },
+  "extraction_notes": [
+    "BZT52B9V1S zener table values at IZT = 5 mA are VZ min = 8.92 V, nominal = 9.1 V, max = 9.28 V; ZZT max = 15 ohm at IZT = 5 mA; ZZK max = 100 ohm at IZK = 1 mA (p. 2 Electrical Characteristics).",
+    "Zener impedance values are published at IZT = 5 mA and IZK = 1 mA; the schema retains the nominal VZ and IZT pair.",
+    "The capacitance value is read from the family typical 0 V-bias curve at nominal VZ = 9.1 V.",
+    "No reverse-recovery time is published."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "BZT52B9V1S",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": {
+      "conditions": "VZ = 9.1 V test point, IZT = 5 mA, TA = 25 degC",
+      "page_reference": "p. 2 Electrical Characteristics",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.005
+    },
+    "breakdown_voltage": {
+      "conditions": "IZT = 5 mA, TA = 25 degC",
+      "page_reference": "p. 2 Electrical Characteristics",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 9.1
+    },
+    "capacitance": {
+      "conditions": "nominal VZ = 9.1 V, 0 V bias, f = 1 MHz, TA = 25 degC",
+      "page_reference": "p. 3 Fig. 4, 0 V bias curve at nominal VZ = 9.1 V",
+      "source_kind": "digitized_typical_curve",
+      "unit": "F",
+      "value": 1.1e-10
+    },
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "TA = 25 degC, IF = 10 mA",
+          "page_reference": "p. 1 Maximum Ratings",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 0.01
+        },
+        "voltage": {
+          "conditions": "TA = 25 degC, IF = 10 mA",
+          "page_reference": "p. 1 Maximum Ratings",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.9
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = 6.0 V, TA = 25 degC",
+      "page_reference": "p. 2 Electrical Characteristics",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 5e-07
+    },
+    "reverse_recovery": null,
+    "variant": "zener"
+  },
+  "usable_curves": true
+}

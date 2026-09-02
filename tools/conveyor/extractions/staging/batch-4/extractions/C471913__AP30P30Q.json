@@ -1,0 +1,312 @@
+{
+  "schema_version": "1.0.0",
+  "mpn": "AP30P30Q",
+  "manufacturer": "ALLPOWER ShenZhen Quan Li Semiconductor",
+  "family": "mosfet",
+  "datasheet_identity": {
+    "title": "AP30P30Q P-Channel Power MOSFET",
+    "revision": "v1.0",
+    "pages_examined": [
+      "1",
+      "2",
+      "3",
+      "4"
+    ]
+  },
+  "usable_curves": true,
+  "curves": [
+    {
+      "name": "Transfer Characteristic",
+      "x_axis": {
+        "quantity": "Gate-Source Voltage",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "Drain Current",
+        "unit": "A",
+        "scale": "linear"
+      },
+      "test_conditions": "Ta = 25°C, VDS = -5V (magnitude)",
+      "page_reference": "3",
+      "points": [
+        {
+          "x": 2.5,
+          "y": 0.5
+        },
+        {
+          "x": 3.0,
+          "y": 5
+        },
+        {
+          "x": 3.5,
+          "y": 15
+        },
+        {
+          "x": 4.0,
+          "y": 20
+        },
+        {
+          "x": 5.0,
+          "y": 80
+        }
+      ]
+    },
+    {
+      "name": "Output Characteristic",
+      "x_axis": {
+        "quantity": "Drain-Source Voltage",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "Drain Current",
+        "unit": "A",
+        "scale": "linear"
+      },
+      "test_conditions": "Ta = 25°C, VGS = -10V (magnitude)",
+      "page_reference": "3",
+      "points": [
+        {
+          "x": 0.1,
+          "y": 1
+        },
+        {
+          "x": 0.5,
+          "y": 10
+        },
+        {
+          "x": 1.0,
+          "y": 20
+        },
+        {
+          "x": 2.0,
+          "y": 40
+        },
+        {
+          "x": 3.0,
+          "y": 60
+        },
+        {
+          "x": 5.0,
+          "y": 78
+        }
+      ]
+    },
+    {
+      "name": "Capacitance vs Drain-Source Voltage",
+      "x_axis": {
+        "quantity": "Drain-Source Voltage",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "Capacitance",
+        "unit": "F",
+        "scale": "linear"
+      },
+      "test_conditions": "f = 1MHz, Ta = 25°C, VGS = 0V",
+      "page_reference": "4",
+      "points": [
+        {
+          "x": 0,
+          "y": 2.4e-09
+        },
+        {
+          "x": 5,
+          "y": 2.1e-09
+        },
+        {
+          "x": 10,
+          "y": 1.8e-09
+        },
+        {
+          "x": 15,
+          "y": 1.7e-09
+        },
+        {
+          "x": 20,
+          "y": 1.5e-09
+        }
+      ]
+    },
+    {
+      "name": "Source-Drain Diode Forward Characteristic",
+      "x_axis": {
+        "quantity": "Source-Drain Voltage",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "Reverse Current",
+        "unit": "A",
+        "scale": "log"
+      },
+      "test_conditions": "Ta = 25°C, body diode conduction",
+      "page_reference": "4",
+      "points": [
+        {
+          "x": 0.2,
+          "y": 0.001
+        },
+        {
+          "x": 0.4,
+          "y": 0.01
+        },
+        {
+          "x": 0.6,
+          "y": 0.1
+        },
+        {
+          "x": 0.8,
+          "y": 1
+        },
+        {
+          "x": 1.0,
+          "y": 10
+        },
+        {
+          "x": 1.2,
+          "y": 100
+        }
+      ]
+    }
+  ],
+  "specs": {
+    "polarity": "p",
+    "threshold_min": {
+      "value": 0.8,
+      "unit": "V",
+      "conditions": "VGS = VDS, ID = -250µA (magnitude)",
+      "page_reference": "2",
+      "source_kind": "minimum"
+    },
+    "threshold_typ": null,
+    "threshold_max": {
+      "value": 2.0,
+      "unit": "V",
+      "conditions": "VGS = VDS, ID = -250µA (magnitude)",
+      "page_reference": "2",
+      "source_kind": "maximum"
+    },
+    "rdson_points": [
+      {
+        "vgs": {
+          "value": 10.0,
+          "unit": "V",
+          "conditions": "Gate voltage magnitude",
+          "page_reference": "2",
+          "source_kind": "typical"
+        },
+        "current": {
+          "value": 15,
+          "unit": "A",
+          "conditions": "Drain current magnitude, ID = -15A",
+          "page_reference": "2",
+          "source_kind": "typical"
+        },
+        "resistance": {
+          "value": 0.010,
+          "unit": "Ω",
+          "conditions": "VGS = -10V, ID = -15A",
+          "page_reference": "2",
+          "source_kind": "typical"
+        }
+      },
+      {
+        "vgs": {
+          "value": 4.5,
+          "unit": "V",
+          "conditions": "Gate voltage magnitude",
+          "page_reference": "2",
+          "source_kind": "typical"
+        },
+        "current": {
+          "value": 8,
+          "unit": "A",
+          "conditions": "Drain current magnitude, ID = -8A",
+          "page_reference": "2",
+          "source_kind": "typical"
+        },
+        "resistance": {
+          "value": 0.010,
+          "unit": "Ω",
+          "conditions": "VGS = -4.5V, ID = -8A",
+          "page_reference": "2",
+          "source_kind": "typical"
+        }
+      },
+      {
+        "vgs": {
+          "value": 4.5,
+          "unit": "V",
+          "conditions": "Gate voltage magnitude at higher current",
+          "page_reference": "2",
+          "source_kind": "maximum"
+        },
+        "current": {
+          "value": 8,
+          "unit": "A",
+          "conditions": "Drain current magnitude, ID = -8A",
+          "page_reference": "2",
+          "source_kind": "maximum"
+        },
+        "resistance": {
+          "value": 0.013,
+          "unit": "Ω",
+          "conditions": "VGS = -4.5V, ID = -8A, maximum RDSon",
+          "page_reference": "2",
+          "source_kind": "maximum"
+        }
+      }
+    ],
+    "ciss": {
+      "value": 2.15e-09,
+      "unit": "F",
+      "conditions": "Input capacitance, gate-source and gate-drain parallel",
+      "page_reference": "2",
+      "source_kind": "typical"
+    },
+    "coss": {
+      "value": 4.30e-10,
+      "unit": "F",
+      "conditions": "Output capacitance at f = 1MHz",
+      "page_reference": "2",
+      "source_kind": "typical"
+    },
+    "crss": {
+      "value": 3.20e-10,
+      "unit": "F",
+      "conditions": "Reverse transfer capacitance, Miller capacitance",
+      "page_reference": "2",
+      "source_kind": "typical"
+    },
+    "breakdown_voltage": {
+      "value": 30,
+      "unit": "V",
+      "conditions": "VGS = 0V, ID = -250µA, drain-source voltage rating",
+      "page_reference": "1",
+      "source_kind": "maximum"
+    },
+    "body_diode": {
+      "value": 0.8,
+      "unit": "V",
+      "conditions": "Source-Drain diode forward voltage at IS = 1A, Ta = 25°C",
+      "page_reference": "4",
+      "source_kind": "typical"
+    }
+  },
+  "extraction_notes": [
+    "P-channel MOSFET, all current and voltage values reported as magnitudes per schema convention",
+    "Threshold voltage range 0.8-2.0V extracted from gate threshold voltage table",
+    "RDSon values from Electronic Characteristics table: 10mΩ typ at VGS=-10V/ID=-15A, 10-13mΩ range at VGS=-4.5V/ID=-8A",
+    "Capacitances extracted from table with units converted to Farads: Ciss=2150pF, Coss=430pF@1MHz, Crss=320pF",
+    "Transfer characteristic curve digitized from Figure 7 at 25°C showing ID vs VGS magnitude",
+    "Output characteristic curve digitized from Figure 5 at 25°C with VGS=-10V showing saturation region",
+    "Capacitance vs Vds curve digitized from Figure 10 showing Ciss dominant capacitance",
+    "Body diode forward characteristic digitized from Figure 12 showing typical forward drop ~0.8V at 1A",
+    "Device identified as ALLPOWER ShenZhen Quan Li Semiconductor AP30P30Q from title page",
+    "Datasheet revision v1.0, All Power Semiconductor co.,Ltd"
+  ],
+  "omission_reason": null
+}

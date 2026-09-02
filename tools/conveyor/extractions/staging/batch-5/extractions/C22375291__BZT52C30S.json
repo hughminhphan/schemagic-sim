@@ -1,0 +1,108 @@
+{
+  "curves": [
+    {
+      "name": "BZT52C30S pulsed zener characteristic",
+      "page_reference": "Datasheet p. 3, Fig. 2, Zener Characteristics (11 V to 43 V)",
+      "points": [
+        {
+          "x": 29.8,
+          "y": 0.5
+        },
+        {
+          "x": 29.8,
+          "y": 1.0
+        },
+        {
+          "x": 30.0,
+          "y": 2.0
+        },
+        {
+          "x": 30.0,
+          "y": 5.0
+        },
+        {
+          "x": 30.2,
+          "y": 6.7
+        }
+      ],
+      "test_conditions": "Ta=25 \u00b0C; pulsed; PD=200 mW envelope shown; target trace labeled 30 in Fig. 2.",
+      "x_axis": {
+        "quantity": "Zener voltage VZ",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "Zener current IZ",
+        "scale": "log",
+        "unit": "mA"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "1",
+      "2",
+      "3",
+      "4"
+    ],
+    "revision": "Rev:1.0",
+    "title": "BZT52C2V0S THRU BZT52C75S SURFACE MOUNT ZENER DIODES"
+  },
+  "extraction_notes": [
+    "The target row is BZT52C30S with marking WQ. Its VZ limits are 28.0 V minimum, 30 V nominal, and 32.0 V maximum at IZT=2 mA.",
+    "The target row specifies ZZT maximum 80 \u03a9 at IZT=2 mA, ZZK maximum 300 \u03a9 at IZK=0.5 mA, IR maximum 0.1 \u00b5A at VR=21 V, temperature coefficient minimum 24.4 mV/\u00b0C and maximum 29.4 mV/\u00b0C, and admissible zener current IZM 2 mA, all at Ta=25 \u00b0C unless otherwise noted.",
+    "Page 1 maximum ratings specify PD maximum 200 mW, VF maximum 0.9 V at IF=10 mA, and storage and junction temperature ranges of -55 \u00b0C to +150 \u00b0C.",
+    "The Fig. 2 points are approximate digitized readings from the trace explicitly labeled 30 for the target. The plotted trace is pulsed at Ta=25 \u00b0C and is bounded by the PD=200 mW envelope.",
+    "The remaining page 3 plots were omitted because they are family-level plots without an unambiguous target-only curve or do not provide at least three unambiguous target points. Reverse recovery is not specified in the datasheet."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "BZT52C30S",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": {
+      "conditions": "IZT test current for the BZT52C30S VZ specification; Ta=25 \u00b0C unless otherwise noted.",
+      "page_reference": "Datasheet p. 2, Electrical Characteristics, BZT52C30S row",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.002
+    },
+    "breakdown_voltage": {
+      "conditions": "Nominal VZ at IZT=2 mA for BZT52C30S; Ta=25 \u00b0C unless otherwise noted. The same row specifies 28.0 V minimum and 32.0 V maximum.",
+      "page_reference": "Datasheet p. 2, Electrical Characteristics, BZT52C30S row",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 30.0
+    },
+    "capacitance": null,
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF=10 mA; maximum rating; Ta=25 \u00b0C unless otherwise specified.",
+          "page_reference": "Datasheet p. 1, Maximum Ratings",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.01
+        },
+        "voltage": {
+          "conditions": "VF at IF=10 mA; maximum rating; Ta=25 \u00b0C unless otherwise specified.",
+          "page_reference": "Datasheet p. 1, Maximum Ratings",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.9
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "IR maximum at VR=21 V for BZT52C30S; Ta=25 \u00b0C unless otherwise noted.",
+      "page_reference": "Datasheet p. 2, Electrical Characteristics, BZT52C30S row",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 1e-07
+    },
+    "reverse_recovery": null,
+    "variant": "zener"
+  },
+  "usable_curves": true
+}

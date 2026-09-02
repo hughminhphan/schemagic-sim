@@ -1,0 +1,148 @@
+{
+  "curves": [
+    {
+      "name": "Typical zener characteristics for MMSZ5243B, 13 V curve",
+      "page_reference": "p. 3 Fig. 2",
+      "points": [
+        {
+          "x": 12.35,
+          "y": 0.0005
+        },
+        {
+          "x": 12.7,
+          "y": 0.001
+        },
+        {
+          "x": 13.0,
+          "y": 0.0095
+        },
+        {
+          "x": 13.2,
+          "y": 0.02
+        },
+        {
+          "x": 13.65,
+          "y": 0.1
+        }
+      ],
+      "test_conditions": "TA = 25 degC, pulsed; target 13 V trace in family characteristic plot",
+      "x_axis": {
+        "quantity": "zener voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "zener current",
+        "scale": "log",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "Typical capacitance versus nominal zener voltage",
+      "page_reference": "p. 4 Fig. 5",
+      "points": [
+        {
+          "x": 2,
+          "y": 2e-10
+        },
+        {
+          "x": 5,
+          "y": 8e-11
+        },
+        {
+          "x": 10,
+          "y": 4e-11
+        },
+        {
+          "x": 13,
+          "y": 3e-11
+        },
+        {
+          "x": 20,
+          "y": 2e-11
+        },
+        {
+          "x": 50,
+          "y": 1e-11
+        }
+      ],
+      "test_conditions": "TA = 25 degC, f = 1 MHz; 0 V bias trace",
+      "x_axis": {
+        "quantity": "nominal zener voltage",
+        "scale": "log",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "capacitance",
+        "scale": "log",
+        "unit": "F"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4",
+      "p. 5"
+    ],
+    "revision": "Rev 1.1",
+    "title": "MMSZ5221B THRU MMSZ5267B"
+  },
+  "extraction_notes": [
+    "The datasheet is a family sheet; the MMSZ5243B row was used for scalar values.",
+    "The zener characteristic and capacitance plots contain multiple family traces; points are read from the 13 V target trace or the stated representative 0 V-bias trace.",
+    "No reverse-recovery or target-specific capacitance table value is published."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "MMSZ5243B",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": {
+      "conditions": "TA = 25 degC; IZT test current for VZ",
+      "page_reference": "p. 2 Electrical Characteristics, MMSZ5243B row, IZT",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.0095
+    },
+    "breakdown_voltage": {
+      "conditions": "TA = 25 degC; IZT = 9.5 mA",
+      "page_reference": "p. 2 Electrical Characteristics, MMSZ5243B row, VZ nominal",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 13.0
+    },
+    "capacitance": null,
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "TA = 25 degC; IF = 10 mA",
+          "page_reference": "p. 1 Maximum Ratings",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.01
+        },
+        "voltage": {
+          "conditions": "TA = 25 degC; IF = 10 mA",
+          "page_reference": "p. 1 Maximum Ratings",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.9
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "TA = 25 degC; VR = 9.9 V",
+      "page_reference": "p. 2 Electrical Characteristics, MMSZ5243B row, IR@VR",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 5e-07
+    },
+    "reverse_recovery": null,
+    "variant": "zener"
+  },
+  "usable_curves": true
+}

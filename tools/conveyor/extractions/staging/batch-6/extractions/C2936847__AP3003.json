@@ -1,0 +1,247 @@
+{
+  "curves": [
+    {
+      "name": "N-channel output characteristics, VGS = 2.5 V",
+      "page_reference": "p. 5, Fig. 1 Output Characteristics",
+      "points": [
+        {
+          "x": 0.5,
+          "y": 3.8
+        },
+        {
+          "x": 1.0,
+          "y": 4.8
+        },
+        {
+          "x": 3.0,
+          "y": 5.4
+        },
+        {
+          "x": 5.0,
+          "y": 5.6
+        }
+      ],
+      "test_conditions": "N-channel, typical curve, VGS = 2.5 V, TA = 25 degC",
+      "x_axis": {
+        "quantity": "drain-source voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "drain current",
+        "scale": "linear",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "N-channel transfer characteristics, 25 degC",
+      "page_reference": "p. 5, Fig. 2 Typical Transfer Characteristics",
+      "points": [
+        {
+          "x": 1.2,
+          "y": 0.2
+        },
+        {
+          "x": 1.4,
+          "y": 2.5
+        },
+        {
+          "x": 1.6,
+          "y": 6.0
+        },
+        {
+          "x": 1.8,
+          "y": 10.0
+        },
+        {
+          "x": 2.0,
+          "y": 16.0
+        },
+        {
+          "x": 2.2,
+          "y": 23.0
+        }
+      ],
+      "test_conditions": "N-channel, VDS = 5 V, TA = 25 degC curve",
+      "x_axis": {
+        "quantity": "gate-source voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "drain current",
+        "scale": "linear",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "N-channel reverse-transfer capacitance",
+      "page_reference": "p. 5, Fig. 6 Capacitance Characteristics",
+      "points": [
+        {
+          "x": 0.0,
+          "y": 9.5e-11
+        },
+        {
+          "x": 5.0,
+          "y": 6.8e-11
+        },
+        {
+          "x": 15.0,
+          "y": 5.6e-11
+        },
+        {
+          "x": 25.0,
+          "y": 5.2e-11
+        }
+      ],
+      "test_conditions": "N-channel, VGS = 0 V, f = 1 MHz, typical Crss trace",
+      "x_axis": {
+        "quantity": "drain-source voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "reverse-transfer capacitance",
+        "scale": "log",
+        "unit": "F"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4",
+      "p. 5",
+      "p. 6",
+      "p. 7",
+      "p. 8",
+      "p. 9",
+      "p. 10",
+      "p. 11"
+    ],
+    "revision": "V1.0, 2023/03/17",
+    "title": "AP3003 N and P-Channel Enhancement Mosfet"
+  },
+  "extraction_notes": [
+    "The supplied datasheet defines both N-channel and P-channel devices under the AP3003 name. This schema instance records the N-channel polarity and N-channel characteristics; the P-channel rows and plots are present on p. 3 and p. 7-p. 9 but cannot be represented in the single-polarity schema object.",
+    "Output, transfer, and capacitance curves were manually digitized from the N-channel typical plots on p. 5.",
+    "The electrical characteristics table publishes gate-charge, switching-time, body-diode-current, IDSS, and IGSS values; this extraction schema has no fields for those quantities.",
+    "Correction retry: p. 2 and Fig. 6 label capacitance in pF; Ciss/Coss/Crss scalars and the Crss curve points are converted to SI F by 1/1000, retaining the stated VGS = 0 V and f = 1 MHz conditions."
+  ],
+  "family": "mosfet",
+  "manufacturer": "ALLPOWER ShenZhen Quan Li Semiconductor",
+  "mpn": "AP3003",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "body_diode": {
+      "conditions": "VGS = 0 V, IS = 5.8 A, TA = 25 degC; pulse test",
+      "page_reference": "p. 2, N-CH Electrical Characteristics, Diode Forward Voltage, MAX",
+      "source_kind": "maximum",
+      "unit": "V",
+      "value": 1.2
+    },
+    "breakdown_voltage": {
+      "conditions": "VGS = 0 V, ID = 250 uA, TA = 25 degC",
+      "page_reference": "p. 2, N-CH Electrical Characteristics, V(BR)DSS, MIN",
+      "source_kind": "minimum",
+      "unit": "V",
+      "value": 30.0
+    },
+    "ciss": {
+      "conditions": "VGS = 0 V, VDS = 15 V, f = 1 MHz, TA = 25 degC",
+      "page_reference": "p. 2, N-CH Electrical Characteristics, Ciss, TYP",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 7e-10
+    },
+    "coss": {
+      "conditions": "VGS = 0 V, VDS = 15 V, f = 1 MHz, TA = 25 degC",
+      "page_reference": "p. 2, N-CH Electrical Characteristics, Coss, TYP",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 6.6e-11
+    },
+    "crss": {
+      "conditions": "VGS = 0 V, VDS = 15 V, f = 1 MHz, TA = 25 degC",
+      "page_reference": "p. 2, N-CH Electrical Characteristics, Crss, TYP",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 5.2e-11
+    },
+    "polarity": "n",
+    "rdson_points": [
+      {
+        "current": {
+          "conditions": "VGS = 4.5 V, TA = 25 degC",
+          "page_reference": "p. 2, N-CH Electrical Characteristics, RDS(on) condition",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 5.0
+        },
+        "resistance": {
+          "conditions": "VGS = 4.5 V, ID = 5 A, TA = 25 degC",
+          "page_reference": "p. 2, N-CH Electrical Characteristics, RDS(on), TYP",
+          "source_kind": "typical",
+          "unit": "ohm",
+          "value": 0.024
+        },
+        "vgs": {
+          "conditions": "VGS = 4.5 V, ID = 5 A, TA = 25 degC",
+          "page_reference": "p. 2, N-CH Electrical Characteristics, RDS(on) condition",
+          "source_kind": "typical",
+          "unit": "V",
+          "value": 4.5
+        }
+      },
+      {
+        "current": {
+          "conditions": "VGS = 2.5 V, TA = 25 degC",
+          "page_reference": "p. 2, N-CH Electrical Characteristics, RDS(on) condition",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 1.0
+        },
+        "resistance": {
+          "conditions": "VGS = 2.5 V, ID = 1 A, TA = 25 degC",
+          "page_reference": "p. 2, N-CH Electrical Characteristics, RDS(on), TYP",
+          "source_kind": "typical",
+          "unit": "ohm",
+          "value": 0.035
+        },
+        "vgs": {
+          "conditions": "VGS = 2.5 V, ID = 1 A, TA = 25 degC",
+          "page_reference": "p. 2, N-CH Electrical Characteristics, RDS(on) condition",
+          "source_kind": "typical",
+          "unit": "V",
+          "value": 2.5
+        }
+      }
+    ],
+    "threshold_max": {
+      "conditions": "VDS = VGS, ID = 250 uA, TA = 25 degC",
+      "page_reference": "p. 2, N-CH Electrical Characteristics, VGS(th), MAX",
+      "source_kind": "maximum",
+      "unit": "V",
+      "value": 1.5
+    },
+    "threshold_min": {
+      "conditions": "VDS = VGS, ID = 250 uA, TA = 25 degC",
+      "page_reference": "p. 2, N-CH Electrical Characteristics, VGS(th), MIN",
+      "source_kind": "minimum",
+      "unit": "V",
+      "value": 0.4
+    },
+    "threshold_typ": {
+      "conditions": "VDS = VGS, ID = 250 uA, TA = 25 degC",
+      "page_reference": "p. 2, N-CH Electrical Characteristics, VGS(th), TYP",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 1.0
+    }
+  },
+  "usable_curves": true
+}

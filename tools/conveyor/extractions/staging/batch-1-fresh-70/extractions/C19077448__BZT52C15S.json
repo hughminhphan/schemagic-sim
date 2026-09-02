@@ -1,0 +1,174 @@
+{
+  "schema_version": "1.0.0",
+  "mpn": "BZT52C15S",
+  "manufacturer": "hongjiacheng",
+  "family": "diode",
+  "datasheet_identity": {
+    "title": "BZT52C2V0S THRU BZT52C75S SURFACE MOUNT ZENER DIODES",
+    "revision": "Rev:1.0",
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ]
+  },
+  "usable_curves": true,
+  "curves": [
+    {
+      "name": "BZT52C15S zener characteristic",
+      "x_axis": {
+        "quantity": "Zener voltage VZ",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "Zener current IZ",
+        "unit": "mA",
+        "scale": "log"
+      },
+      "test_conditions": "TA = 25 degC, pulsed, PD = 200 mW; BZT52C15S trace in the 11 V to 43 V family plot",
+      "page_reference": "p. 3, Fig. 2 Zener Characteristics (11V to 43V)",
+      "points": [
+        {
+          "x": 14.6,
+          "y": 0.5
+        },
+        {
+          "x": 14.7,
+          "y": 1.0
+        },
+        {
+          "x": 15.0,
+          "y": 5.0
+        },
+        {
+          "x": 15.3,
+          "y": 10.0
+        }
+      ]
+    },
+    {
+      "name": "Typical zener temperature coefficient",
+      "x_axis": {
+        "quantity": "Nominal zener voltage VZ",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "Temperature coefficient thetaVZ",
+        "unit": "mV/degC",
+        "scale": "linear"
+      },
+      "test_conditions": "Typical values for the BZT52CXXXXS series; TA = 25 degC unless otherwise specified",
+      "page_reference": "p. 3, Fig. 3 Temperature Coefficients",
+      "points": [
+        {
+          "x": 2.0,
+          "y": -1.5
+        },
+        {
+          "x": 4.0,
+          "y": -3.0
+        },
+        {
+          "x": 5.0,
+          "y": 2.0
+        },
+        {
+          "x": 8.0,
+          "y": 5.0
+        },
+        {
+          "x": 12.0,
+          "y": 8.0
+        },
+        {
+          "x": 16.0,
+          "y": 15.0
+        },
+        {
+          "x": 20.0,
+          "y": 17.0
+        },
+        {
+          "x": 24.0,
+          "y": 22.0
+        },
+        {
+          "x": 28.0,
+          "y": 25.0
+        },
+        {
+          "x": 32.0,
+          "y": 29.0
+        },
+        {
+          "x": 36.0,
+          "y": 32.0
+        },
+        {
+          "x": 40.0,
+          "y": 31.0
+        },
+        {
+          "x": 44.0,
+          "y": 28.0
+        }
+      ]
+    }
+  ],
+  "specs": {
+    "variant": "zener",
+    "forward_voltage_points": [
+      {
+        "current": {
+          "value": 0.01,
+          "unit": "A",
+          "conditions": "IF = 10 mA, TA = 25 degC",
+          "page_reference": "p. 1, Maximum Ratings",
+          "source_kind": "maximum"
+        },
+        "voltage": {
+          "value": 0.9,
+          "unit": "V",
+          "conditions": "IF = 10 mA, TA = 25 degC",
+          "page_reference": "p. 1, Maximum Ratings",
+          "source_kind": "maximum"
+        }
+      }
+    ],
+    "reverse_current": {
+      "value": 1e-7,
+      "unit": "A",
+      "conditions": "VR = 10.5 V, TA = 25 degC; IR is maximum",
+      "page_reference": "p. 2, Electrical Characteristics, BZT52C15S row",
+      "source_kind": "maximum"
+    },
+    "capacitance": null,
+    "reverse_recovery": null,
+    "breakdown_voltage": {
+      "value": 15.0,
+      "unit": "V",
+      "conditions": "IZT = 5 mA, TA = 25 degC; nominal VZ value",
+      "page_reference": "p. 2, Electrical Characteristics, BZT52C15S row",
+      "source_kind": "typical"
+    },
+    "breakdown_current": {
+      "value": 0.005,
+      "unit": "A",
+      "conditions": "IZT = 5 mA, TA = 25 degC; current at which VZ is specified",
+      "page_reference": "p. 2, Electrical Characteristics, BZT52C15S row",
+      "source_kind": "typical"
+    }
+  },
+  "extraction_notes": [
+    "The supplied datasheet is a family datasheet covering BZT52C2V0S through BZT52C75S; the BZT52C15S row was transcribed from page 2.",
+    "For BZT52C15S, the page 2 table gives VZ = 13.8 V minimum, 15.0 V nominal, and 15.6 V maximum at IZT = 5 mA; ZZT = 30 ohm at IZT; ZZK = 200 ohm at IZK = 1 mA; IR maximum = 0.1 uA at VR = 10.5 V; and admissible zener current IZM = 5 mA.",
+    "The page 1 maximum-ratings table gives forward voltage VF = 0.9 V at IF = 10 mA and TA = 25 degC, with power dissipation PD = 200 mW.",
+    "The page 2 temperature-coefficient range for BZT52C15S is 9.2 to 13.0 mV/degC at IZT, TA = 25 degC unless otherwise noted.",
+    "No reverse-recovery-time specification or discrete junction-capacitance table value is provided for BZT52C15S; those fields are null.",
+    "Curve points were digitized from the family plots on page 3. The zener characteristic plot is a typical pulsed family plot, and the temperature-coefficient plot is a typical series-level curve rather than a device-specific table limit."
+  ],
+  "omission_reason": null
+}

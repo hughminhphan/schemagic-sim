@@ -1,0 +1,174 @@
+{
+  "schema_version": "1.0.0",
+  "mpn": "1SMA4740A",
+  "manufacturer": "hongjiacheng",
+  "family": "diode",
+  "datasheet_identity": {
+    "title": "1SMA4728A THRU 1SMA4764A Surface Mount Zener Diodes (SMA Surface Mount Silicon Zener Diodes)",
+    "revision": "Rev1.0",
+    "pages_examined": ["1", "2", "3", "4"]
+  },
+  "usable_curves": true,
+  "curves": [
+    {
+      "name": "Forward current vs forward voltage (Fig.3; caption mislabeled 'Typical Zener Breakdown Characteristics', axes are IF vs VF)",
+      "x_axis": { "quantity": "forward voltage VF", "unit": "V", "scale": "linear" },
+      "y_axis": { "quantity": "forward current IF", "unit": "A", "scale": "log" },
+      "test_conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle; single typical curve shared by the whole 1SMA4728A-1SMA4764A series",
+      "page_reference": "p. 3, Fig.3",
+      "points": [
+        { "x": 0.637, "y": 0.01 },
+        { "x": 0.693, "y": 0.016 },
+        { "x": 0.744, "y": 0.0245 },
+        { "x": 0.797, "y": 0.0393 },
+        { "x": 0.849, "y": 0.0646 },
+        { "x": 0.895, "y": 0.1 },
+        { "x": 0.949, "y": 0.168 },
+        { "x": 0.999, "y": 0.276 },
+        { "x": 1.054, "y": 0.493 },
+        { "x": 1.107, "y": 0.844 },
+        { "x": 1.158, "y": 1.22 },
+        { "x": 1.201, "y": 1.49 },
+        { "x": 1.4, "y": 2.96 },
+        { "x": 1.602, "y": 5.96 }
+      ]
+    },
+    {
+      "name": "Maximum power dissipation vs lead temperature (Fig.1 Power Derating Curve)",
+      "x_axis": { "quantity": "lead temperature", "unit": "degC", "scale": "linear" },
+      "y_axis": { "quantity": "maximum power dissipation PD", "unit": "W", "scale": "linear" },
+      "test_conditions": "Ta = 25 degC unless otherwise specified; series-wide derating, flat at 1.0 W to 75 degC then linear to zero at 150 degC",
+      "page_reference": "p. 3, Fig.1",
+      "points": [
+        { "x": 25, "y": 1.0 },
+        { "x": 75, "y": 1.0 },
+        { "x": 100, "y": 0.667 },
+        { "x": 125, "y": 0.333 },
+        { "x": 150, "y": 0.0 }
+      ]
+    }
+  ],
+  "specs": {
+    "variant": "zener",
+    "forward_voltage_points": [
+      {
+        "current": {
+          "value": 0.2,
+          "unit": "A",
+          "conditions": "Forward Voltage @ IF = 200 mA, Ta = 25 degC",
+          "page_reference": "p. 1, Maximum Ratings",
+          "source_kind": "maximum"
+        },
+        "voltage": {
+          "value": 1.5,
+          "unit": "V",
+          "conditions": "VF max at IF = 200 mA, Ta = 25 degC",
+          "page_reference": "p. 1, Maximum Ratings",
+          "source_kind": "maximum"
+        }
+      },
+      {
+        "current": {
+          "value": 0.01,
+          "unit": "A",
+          "conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle",
+          "page_reference": "p. 3, Fig.3",
+          "source_kind": "digitized_typical_curve"
+        },
+        "voltage": {
+          "value": 0.637,
+          "unit": "V",
+          "conditions": "IF = 10 mA, Tj = 25 degC, pulsed",
+          "page_reference": "p. 3, Fig.3",
+          "source_kind": "digitized_typical_curve"
+        }
+      },
+      {
+        "current": {
+          "value": 0.1,
+          "unit": "A",
+          "conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle",
+          "page_reference": "p. 3, Fig.3",
+          "source_kind": "digitized_typical_curve"
+        },
+        "voltage": {
+          "value": 0.895,
+          "unit": "V",
+          "conditions": "IF = 100 mA, Tj = 25 degC, pulsed",
+          "page_reference": "p. 3, Fig.3",
+          "source_kind": "digitized_typical_curve"
+        }
+      },
+      {
+        "current": {
+          "value": 0.493,
+          "unit": "A",
+          "conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle",
+          "page_reference": "p. 3, Fig.3",
+          "source_kind": "digitized_typical_curve"
+        },
+        "voltage": {
+          "value": 1.054,
+          "unit": "V",
+          "conditions": "IF = 493 mA, Tj = 25 degC, pulsed",
+          "page_reference": "p. 3, Fig.3",
+          "source_kind": "digitized_typical_curve"
+        }
+      },
+      {
+        "current": {
+          "value": 1.49,
+          "unit": "A",
+          "conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle; knee of the curve",
+          "page_reference": "p. 3, Fig.3",
+          "source_kind": "digitized_typical_curve"
+        },
+        "voltage": {
+          "value": 1.201,
+          "unit": "V",
+          "conditions": "IF = 1.49 A, Tj = 25 degC, pulsed",
+          "page_reference": "p. 3, Fig.3",
+          "source_kind": "digitized_typical_curve"
+        }
+      }
+    ],
+    "reverse_current": {
+      "value": 0.00001,
+      "unit": "A",
+      "conditions": "IR max @ VR = 7 V, Ta = 25 degC (leakage below the zener knee)",
+      "page_reference": "p. 2, Electrical Characteristics, 1SMA4740A row",
+      "source_kind": "maximum"
+    },
+    "capacitance": null,
+    "reverse_recovery": null,
+    "breakdown_voltage": {
+      "value": 10,
+      "unit": "V",
+      "conditions": "VZ nominal @ IZT = 25 mA, Ta = 25 degC; min 9.50 V, max 10.5 V",
+      "page_reference": "p. 2, Electrical Characteristics, 1SMA4740A row",
+      "source_kind": "typical"
+    },
+    "breakdown_current": {
+      "value": 0.025,
+      "unit": "A",
+      "conditions": "IZT, the zener test current at which VZ and ZZT are specified, Ta = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, 1SMA4740A row",
+      "source_kind": "typical"
+    }
+  },
+  "extraction_notes": [
+    "Datasheet SHA-256 verified: a66d0e20d37b19b6776d33e5d234d792d89e30813774a7dde79429c97d6773dd.",
+    "Target row confirmed on p. 2: 1SMA4740A (type code 740A): VZ min 9.50 / nom 10 / max 10.5 V at IZT = 25 mA; ZZT max 7.0 ohm at IZT; IR 10 uA max at VR = 7 V; IZM = 95 mA.",
+    "Maximum zener impedance ZZT = 7.0 ohm at IZT = 25 mA (p. 2); the schema has no dedicated slot, recorded here. ZZK at IZK is NOT published, so zener knee sharpness (NBV) cannot be fitted from knee impedance.",
+    "Curves were extracted from the PDF's embedded vector paths (PyMuPDF get_drawings), with axes calibrated against the tick-label text positions; endpoints and bezier samples are exact path coordinates, not pixel estimates.",
+    "Fig.3 is captioned 'Typical Zener Breakdown Characteristics' but its axes are IF(A) vs VF(V); it is the forward characteristic and is extracted as such.",
+    "Fig.3 x-axis tick labels 0, 0.4, 0.6 ... 1.6 V are equally spaced, so the first division (0 to 0.4 V) is compressed; all digitized points lie at VF >= 0.637 V inside the uniformly spaced region, where calibration is unambiguous.",
+    "The Fig.3 point at VF = 1.4 V is an exact point on the final straight path segment (linear in VF vs log IF between 1.201 V / 1.49 A and 1.602 V / 5.96 A), not a bezier sample.",
+    "Fig.2 (ZZT vs IZT) publishes curves only for VZ = 25, 30, 65 and 91 V; there is no curve for the 10 V target, and interpolating between neighboring-voltage curves would invent data, so Fig.2 was not digitized.",
+    "Forward table evidence is a single maximum point (VF = 1.5 V at IF = 200 mA, p. 1); typical forward-fit points come from the series-wide Fig.3 curve.",
+    "Absolute maximum ratings (p. 1): PD = 1000 mW at Tc = 75 degC, RthJA = 250 degC/W, Tj and Tstg -55 to +150 degC. Package DO-214AC (SMA).",
+    "No capacitance and no reverse recovery time are published anywhere in the datasheet; those spec slots are null.",
+    "Fig.3 conditions are pulsed (300 us, 1% duty), so digitized currents above roughly 0.1 A exceed the DC-admissible IZM/PD limits and represent pulsed operation only."
+  ],
+  "omission_reason": null
+}

@@ -1,0 +1,118 @@
+{
+  "curves": [
+    {
+      "name": "BZT52C16S reverse zener characteristic",
+      "page_reference": "Hongjiacheng BZT52C16S Rev. 1.0, p. 3, Fig. 2, Zener Characteristics (11 V to 43 V)",
+      "points": [
+        {
+          "x": 15.3,
+          "y": 0.0005
+        },
+        {
+          "x": 15.6,
+          "y": 0.001
+        },
+        {
+          "x": 16.0,
+          "y": 0.005
+        },
+        {
+          "x": 16.2,
+          "y": 0.01
+        },
+        {
+          "x": 16.5,
+          "y": 0.02
+        },
+        {
+          "x": 16.8,
+          "y": 0.05
+        },
+        {
+          "x": 17.1,
+          "y": 0.1
+        }
+      ],
+      "test_conditions": "TA = 25 \u00b0C, pulsed, PD = 200 mW",
+      "x_axis": {
+        "quantity": "reverse zener voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "reverse zener current",
+        "scale": "log",
+        "unit": "A"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "1",
+      "2",
+      "3",
+      "4"
+    ],
+    "revision": "Rev. 1.0",
+    "title": "BZT52C2V0S THRU BZT52C75S Surface Mount Zener Diodes"
+  },
+  "extraction_notes": [
+    "The supplied PDF SHA-256 matches 8d99c0b95ddbd62581320fd03378a72d97d914bc201c735536cd50e5f6753113.",
+    "The BZT52C16S electrical-characteristics row specifies VZ minimum 15.3 V, nominal 16 V, and maximum 17.1 V at IZT = 5 mA, all at TA = 25 \u00b0C.",
+    "The same row specifies maximum ZZT = 40 ohm at IZT = 5 mA and maximum ZZK = 200 ohm at IZK = 1 mA; these impedance values are not representable in this schema.",
+    "The Figure 2 points are approximate digitizations of the visible curve labeled 16 at grid intersections. No intermediate points were interpolated.",
+    "The capacitance chart is a family-level typical plot with multiple bias curves and no tabulated BZT52C16S capacitance scalar at a stated bias, so capacitance is omitted.",
+    "The datasheet publishes no reverse-recovery-time specification, so reverse recovery is omitted.",
+    "The zener voltage and current use reverse-bias polarity: the cathode is positive relative to the anode."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "BZT52C16S",
+  "omission_reason": "No reverse-recovery specification is published. Capacitance is omitted because the datasheet provides only a family-level multi-curve plot without a tabulated BZT52C16S value at a specified bias and test frequency.",
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": {
+      "conditions": "IZT = 5 mA, TA = 25 \u00b0C, reverse bias with cathode positive relative to anode; test current defining nominal VZ",
+      "page_reference": "Hongjiacheng BZT52C16S Rev. 1.0, p. 2, Electrical Characteristics, BZT52C16S IZT",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.005
+    },
+    "breakdown_voltage": {
+      "conditions": "IZT = 5 mA, TA = 25 \u00b0C, reverse bias with cathode positive relative to anode; nominal zener voltage VZ",
+      "page_reference": "Hongjiacheng BZT52C16S Rev. 1.0, p. 2, Electrical Characteristics, BZT52C16S VZ at IZT",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 16.0
+    },
+    "capacitance": null,
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 10 mA, TA = 25 \u00b0C",
+          "page_reference": "Hongjiacheng BZT52C16S Rev. 1.0, p. 1, Maximum Ratings, Forward Voltage",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.01
+        },
+        "voltage": {
+          "conditions": "IF = 10 mA, TA = 25 \u00b0C",
+          "page_reference": "Hongjiacheng BZT52C16S Rev. 1.0, p. 1, Maximum Ratings, Forward Voltage",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.9
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = 11.2 V, TA = 25 \u00b0C, reverse bias with cathode positive relative to anode",
+      "page_reference": "Hongjiacheng BZT52C16S Rev. 1.0, p. 2, Electrical Characteristics, IR at VR",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 1e-07
+    },
+    "reverse_recovery": null,
+    "variant": "zener"
+  },
+  "usable_curves": true
+}

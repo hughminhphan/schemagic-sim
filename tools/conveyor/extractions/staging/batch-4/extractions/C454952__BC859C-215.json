@@ -1,0 +1,202 @@
+{
+  "schema_version": "1.0.0",
+  "mpn": "BC859C,215",
+  "manufacturer": "Nexperia",
+  "family": "bjt",
+  "datasheet_identity": {
+    "title": "BC859; BC860 PNP general purpose transistors",
+    "revision": "2004 Jan 16",
+    "pages_examined": [
+      "2",
+      "3",
+      "4",
+      "5"
+    ]
+  },
+  "usable_curves": true,
+  "curves": [
+    {
+      "name": "DC current gain vs collector current",
+      "x_axis": {
+        "quantity": "collector current",
+        "unit": "A",
+        "scale": "log"
+      },
+      "y_axis": {
+        "quantity": "hFE",
+        "unit": "dimensionless",
+        "scale": "linear"
+      },
+      "test_conditions": "VCE = -5 V; Tj = 25 °C",
+      "page_reference": "5",
+      "points": [
+        {
+          "x": -0.001,
+          "y": 600
+        },
+        {
+          "x": -0.01,
+          "y": 590
+        },
+        {
+          "x": -0.1,
+          "y": 540
+        },
+        {
+          "x": -1,
+          "y": 480
+        },
+        {
+          "x": -10,
+          "y": 380
+        },
+        {
+          "x": -100,
+          "y": 120
+        }
+      ]
+    }
+  ],
+  "specs": {
+    "polarity": "pnp",
+    "gain_points": [
+      {
+        "collector_current": {
+          "value": -0.002,
+          "unit": "A",
+          "conditions": "VCE = -5 V; Tj = 25 °C",
+          "page_reference": "4",
+          "source_kind": "typical"
+        },
+        "vce": {
+          "value": -5,
+          "unit": "V",
+          "conditions": "test condition",
+          "page_reference": "4",
+          "source_kind": "typical"
+        },
+        "hfe": {
+          "value": 420,
+          "unit": "dimensionless",
+          "conditions": "IC = -2 mA; VCE = -5 V; BC859C minimum",
+          "page_reference": "4",
+          "source_kind": "minimum"
+        }
+      },
+      {
+        "collector_current": {
+          "value": -0.002,
+          "unit": "A",
+          "conditions": "VCE = -5 V; Tj = 25 °C",
+          "page_reference": "4",
+          "source_kind": "typical"
+        },
+        "vce": {
+          "value": -5,
+          "unit": "V",
+          "conditions": "test condition",
+          "page_reference": "4",
+          "source_kind": "typical"
+        },
+        "hfe": {
+          "value": 800,
+          "unit": "dimensionless",
+          "conditions": "IC = -2 mA; VCE = -5 V; BC859C maximum",
+          "page_reference": "4",
+          "source_kind": "maximum"
+        }
+      }
+    ],
+    "saturation_points": [
+      {
+        "collector_current": {
+          "value": -0.01,
+          "unit": "A",
+          "conditions": "IC = -10 mA",
+          "page_reference": "4",
+          "source_kind": "typical"
+        },
+        "base_current": {
+          "value": -0.0005,
+          "unit": "A",
+          "conditions": "IB = -0.5 mA",
+          "page_reference": "4",
+          "source_kind": "typical"
+        },
+        "vce_sat": {
+          "value": -0.075,
+          "unit": "V",
+          "conditions": "IC = -10 mA; IB = -0.5 mA",
+          "page_reference": "4",
+          "source_kind": "typical"
+        },
+        "vbe_sat": {
+          "value": -0.7,
+          "unit": "V",
+          "conditions": "IC = -10 mA; IB = -0.5 mA; note 1",
+          "page_reference": "4",
+          "source_kind": "typical"
+        }
+      },
+      {
+        "collector_current": {
+          "value": -0.1,
+          "unit": "A",
+          "conditions": "IC = -100 mA",
+          "page_reference": "4",
+          "source_kind": "typical"
+        },
+        "base_current": {
+          "value": -0.005,
+          "unit": "A",
+          "conditions": "IB = -5 mA",
+          "page_reference": "4",
+          "source_kind": "typical"
+        },
+        "vce_sat": {
+          "value": -0.25,
+          "unit": "V",
+          "conditions": "IC = -100 mA; IB = -5 mA",
+          "page_reference": "4",
+          "source_kind": "typical"
+        },
+        "vbe_sat": {
+          "value": -0.85,
+          "unit": "V",
+          "conditions": "IC = -100 mA; IB = -5 mA; note 1",
+          "page_reference": "4",
+          "source_kind": "typical"
+        }
+      }
+    ],
+    "ft": {
+      "value": 100,
+      "unit": "Hz",
+      "conditions": "IC = -10 mA; VCE = -5 V; f = 100 MHz",
+      "page_reference": "4",
+      "source_kind": "minimum"
+    },
+    "cobo": null,
+    "cibo": null,
+    "vceo": {
+      "value": -30,
+      "unit": "V",
+      "conditions": "open base; BC859 limiting value",
+      "page_reference": "3",
+      "source_kind": "maximum"
+    }
+  },
+  "extraction_notes": [
+    "BC859C variant: hFE 420-800 at IC=-2mA, VCE=-5V",
+    "hFE vs IC curve digitized from Figure 3 (page 5); BC859C/BC860C variant shown",
+    "Saturation voltages (VCEsat, VBEsat) are typical values from characteristics table",
+    "VCEO = -30V limit applies to BC859 (page 3, limiting values table)",
+    "fT minimum of 100 MHz specified at IC=-10mA, VCE=-5V",
+    "VBEsat note 1: decreases by about -1.7mV/K with increasing temperature",
+    "PNP polarity confirmed by application (input stages, NPN complements BC849/BC850)",
+    "All voltage and current values in SI units (V, A)",
+    "Capacitances (Cc=4.5pF typical, Ce=10pF typical) extracted but not included per F1 scalar priority",
+    "Noise figure maximum 4dB at IC=-200µA, RS=2kΩ, not included per F1 priority"
+  ],
+  "omission_reason": null
+}

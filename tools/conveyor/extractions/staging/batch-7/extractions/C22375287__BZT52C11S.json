@@ -1,0 +1,111 @@
+{
+  "curves": [
+    {
+      "name": "Zener characteristic, BZT52C11S nominal 11 V trace",
+      "page_reference": "p. 3 fig. 2, 11 V nominal trace",
+      "points": [
+        {
+          "x": 10.1,
+          "y": 0.0005
+        },
+        {
+          "x": 10.5,
+          "y": 0.001
+        },
+        {
+          "x": 10.8,
+          "y": 0.003
+        },
+        {
+          "x": 11.0,
+          "y": 0.005
+        },
+        {
+          "x": 11.3,
+          "y": 0.02
+        },
+        {
+          "x": 11.5,
+          "y": 0.1
+        }
+      ],
+      "test_conditions": "TA = 25 degC, pulsed, PD = 200 mW",
+      "x_axis": {
+        "quantity": "Zener voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "Zener current",
+        "scale": "log",
+        "unit": "A"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "revision": "Rev:1.0",
+    "title": "BZT52C2V0S THRU BZT52C75S"
+  },
+  "extraction_notes": [
+    "No self-heating or thermal derating model input is represented in this extraction.",
+    "Package parasitics are not represented in this extraction.",
+    "Electrical table: VZ min 10.4 V, nominal 11 V, max 11.6 V at IZT = 5 mA; ZZT maximum 20 ohm at IZT; ZZK maximum 150 ohm at IZK = 1 mA; IR maximum 0.1 microA at VR = 8 V; admissible IZM = 5 mA.",
+    "The datasheet publishes no capacitance or reverse-recovery value for this part."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "BZT52C11S",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": {
+      "conditions": "IZT = 5 mA, TA = 25 degC",
+      "page_reference": "p. 2 electrical characteristics, BZT52C11S row",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.005
+    },
+    "breakdown_voltage": {
+      "conditions": "IZT = 5 mA, TA = 25 degC; nominal VZ",
+      "page_reference": "p. 2 electrical characteristics, BZT52C11S row",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 11.0
+    },
+    "capacitance": null,
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 10 mA, TA = 25 degC",
+          "page_reference": "p. 1 maximum ratings",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.01
+        },
+        "voltage": {
+          "conditions": "IF = 10 mA, TA = 25 degC",
+          "page_reference": "p. 1 maximum ratings",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.9
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = 8.0 V, TA = 25 degC",
+      "page_reference": "p. 2 electrical characteristics, BZT52C11S row",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 1e-07
+    },
+    "reverse_recovery": null,
+    "variant": "zener"
+  },
+  "usable_curves": true
+}

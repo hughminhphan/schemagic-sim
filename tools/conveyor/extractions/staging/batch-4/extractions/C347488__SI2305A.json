@@ -1,0 +1,166 @@
+{
+  "catalog": {
+    "lcsc_id": "C347488",
+    "mpn": "SI2305A",
+    "manufacturer": "UMW Youtai Semiconductor Co Ltd",
+    "family": "mosfet",
+    "type": "p-channel",
+    "package": "SOT-23",
+    "datasheet_date": "2024-11",
+    "datasheet_sha256": "13309e8e915ad4e1cc83ec4313749df5014a2c484b1fb58be03dad79fb063151"
+  },
+  "identity": {
+    "device_name": "UMW SI2305A",
+    "description": "-20V P-Channel MOSFET with advanced trench technology",
+    "application": "Load switch, PWM applications"
+  },
+  "absolute_maximum_ratings": {
+    "vds_max": -20.0,
+    "vds_max_unit": "V",
+    "vgs_max": 12.0,
+    "vgs_max_unit": "V",
+    "id_continuous_25c": -4.2,
+    "id_continuous_25c_unit": "A",
+    "id_continuous_70c": -3.4,
+    "id_continuous_70c_unit": "A",
+    "id_pulsed": -10.0,
+    "id_pulsed_unit": "A",
+    "pd_25c": 1.38,
+    "pd_25c_unit": "W",
+    "pd_70c": 0.8,
+    "pd_70c_unit": "W",
+    "rth_ja": 90.0,
+    "rth_ja_unit": "C/W",
+    "tj_tsg_min": -55.0,
+    "tj_tsg_max": 150.0,
+    "tj_tsg_unit": "C"
+  },
+  "electrical_characteristics_25c": {
+    "vdss_breakdown": {
+      "value": -20.0,
+      "unit": "V",
+      "condition": "ID=-10µA, VGS=0V"
+    },
+    "vgs_threshold": {
+      "min": -0.5,
+      "unit": "V",
+      "condition": "VDS=VGS, ID=-250µA"
+    },
+    "idss_zero_gate": [
+      {
+        "value": -1.0,
+        "unit": "µA",
+        "condition": "VDS=-20V, VGS=0V"
+      },
+      {
+        "value": -10.0,
+        "unit": "µA",
+        "condition": "VDS=-16V, VGS=0V, TJ=55°C"
+      }
+    ],
+    "igss_gate_leakage": {
+      "value": 100.0,
+      "unit": "nA",
+      "condition": "VDS=0V, VGS=±12V"
+    },
+    "rds_on": [
+      {
+        "value": 40.0,
+        "unit": "mΩ",
+        "condition": "VGS=-4.5V, ID=-4.2A"
+      },
+      {
+        "value": 60.0,
+        "unit": "mΩ",
+        "condition": "VGS=-2.5V, ID=-3.4A"
+      }
+    ],
+    "id_on": [
+      {
+        "value": -6.0,
+        "unit": "A",
+        "condition": "VDS≤-5V, VGS=-4.5V"
+      },
+      {
+        "value": -3.0,
+        "unit": "A",
+        "condition": "VDS≤-5V, VGS=-2.5V"
+      }
+    ],
+    "gfs_transconductance": {
+      "value": 9.0,
+      "unit": "S",
+      "condition": "VGS=-4.5V, ID=-2.8A"
+    },
+    "ciss_input_capacitance": {
+      "value": 740.0,
+      "unit": "pF"
+    },
+    "coss_output_capacitance": {
+      "value": 167.0,
+      "unit": "pF",
+      "condition": "VGS=0V, VDS=-15V, f=1MHz"
+    },
+    "crss_reverse_transfer": {
+      "value": 126.0,
+      "unit": "pF"
+    },
+    "qg_total_gate_charge": {
+      "value": 10.6,
+      "unit": "nC",
+      "condition": "VDS=-16V"
+    },
+    "qgs_gate_source_charge": {
+      "value": 2.32,
+      "unit": "nC",
+      "condition": "VGS=-4.5V"
+    },
+    "qgd_gate_drain_charge": {
+      "value": 3.68,
+      "unit": "nC",
+      "condition": "ID=-4.2A"
+    },
+    "td_on_delay": {
+      "value": 5.9,
+      "unit": "ns",
+      "condition": "VDD=-15V, RL=3.6Ω"
+    },
+    "tr_rise_time": {
+      "value": 3.6,
+      "unit": "ns",
+      "condition": "ID=-4.2A"
+    },
+    "td_off_delay": {
+      "value": 32.4,
+      "unit": "ns",
+      "condition": "VGEN=-10V, RG=6Ω"
+    },
+    "tf_fall_time": {
+      "value": 2.6,
+      "unit": "ns"
+    },
+    "is_source_current": {
+      "value": -1.6,
+      "unit": "A"
+    },
+    "vsd_diode_forward": {
+      "min": -1.2,
+      "typ": -0.8,
+      "unit": "V",
+      "condition": "IS=-1.2A, VGS=0V"
+    }
+  },
+  "pinning": {
+    "pin_1": "G (Gate)",
+    "pin_2": "S (Source)",
+    "pin_3": "D (Drain)"
+  },
+  "validation": {
+    "schema_version": "mosfet_v1",
+    "catalog_verified": true,
+    "identity_verified": true,
+    "datasheet_hash_verified": true,
+    "all_values_si_units": true,
+    "extraction_notes": "P-channel MOSFET -20V rating. All electrical characteristics from Section 5 table, page 2. Pulse test: PW≤300µs, duty cycle≤2%. Readily correct values from typical characteristics included. No vendor model codes. SI units throughout (V, A, Ω, F, Hz, °C, W, ns, nC, S)."
+  }
+}

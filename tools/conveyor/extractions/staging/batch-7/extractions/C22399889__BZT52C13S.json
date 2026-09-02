@@ -1,0 +1,110 @@
+{
+  "curves": [
+    {
+      "name": "Fig.2 Zener Characteristics, 13 V curve",
+      "page_reference": "p. 3 Fig.2",
+      "points": [
+        {
+          "x": 12.46,
+          "y": 0.0005
+        },
+        {
+          "x": 12.57,
+          "y": 0.001
+        },
+        {
+          "x": 12.7,
+          "y": 0.002
+        },
+        {
+          "x": 13.0,
+          "y": 0.005
+        },
+        {
+          "x": 13.35,
+          "y": 0.01
+        },
+        {
+          "x": 13.6,
+          "y": 0.015
+        }
+      ],
+      "test_conditions": "Ta = 25 degC, pulsed, PD = 200 mW; 13 V family trace",
+      "x_axis": {
+        "quantity": "zener voltage VZ",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "zener current IZ",
+        "scale": "linear",
+        "unit": "A"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "revision": "Rev:1.0",
+    "title": "BZT52C2V0S THRU BZT52C75S SURFACE MOUNT ZENER DIODES (SOD-323 Surface Mount Silicon Zener Diodes)"
+  },
+  "extraction_notes": [
+    "BZT52C13S table row gives VZ min/nom/max = 12.4/13.0/14.1 V at IZT = 5 mA; ZZT = 30 ohm at IZT; ZZK = 170 ohm at IZK = 1.0 mA; IR = 0.1 uA at VR = 8.0 V (p. 2).",
+    "Fig.2 11 V to 43 V zener characteristics contains the 13 V family trace; points were digitized from the printed linear-voltage/linear-current grid and plotted mA values were converted to SI amperes.",
+    "No per-part capacitance or reverse-recovery time is published. The 200 mW power-dissipation rating and IZM are limits, not fitted breakdown data."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "BZT52C13S",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": {
+      "conditions": "IZT = 5 mA, zener test current for the VZ specification",
+      "page_reference": "p. 2 electrical characteristics, BZT52C13S row",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.005
+    },
+    "breakdown_voltage": {
+      "conditions": "VZ nominal at IZT = 5 mA, Ta = 25 degC; min 12.4 V, max 14.1 V",
+      "page_reference": "p. 2 electrical characteristics, BZT52C13S row",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 13.0
+    },
+    "capacitance": null,
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 10 mA, Ta = 25 degC; forward voltage maximum-rating row",
+          "page_reference": "p. 1 maximum ratings",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 0.01
+        },
+        "voltage": {
+          "conditions": "IF = 10 mA, Ta = 25 degC; maximum forward voltage",
+          "page_reference": "p. 1 maximum ratings",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.9
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = 8.0 V, Ta = 25 degC; BZT52C13S row",
+      "page_reference": "p. 2 electrical characteristics",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 1e-07
+    },
+    "reverse_recovery": null,
+    "variant": "zener"
+  },
+  "usable_curves": true
+}

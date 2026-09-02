@@ -1,0 +1,206 @@
+{
+  "curves": [
+    {
+      "name": "DC current gain versus collector current",
+      "page_reference": "p. 3 hFE versus IC graph",
+      "points": [
+        {
+          "x": 0.0001,
+          "y": 230
+        },
+        {
+          "x": 0.001,
+          "y": 270
+        },
+        {
+          "x": 0.01,
+          "y": 300
+        },
+        {
+          "x": 0.05,
+          "y": 280
+        },
+        {
+          "x": 0.1,
+          "y": 190
+        }
+      ],
+      "test_conditions": "Common emitter, VCE = 5 V, TA = 25 degC curve",
+      "x_axis": {
+        "quantity": "collector current",
+        "scale": "log",
+        "unit": "A"
+      },
+      "y_axis": {
+        "quantity": "DC current gain hFE",
+        "scale": "log",
+        "unit": "1"
+      }
+    },
+    {
+      "name": "Collector-emitter saturation voltage versus collector current",
+      "page_reference": "p. 4 VCEsat versus IC graph",
+      "points": [
+        {
+          "x": 0.0001,
+          "y": 0.045
+        },
+        {
+          "x": 0.001,
+          "y": 0.04
+        },
+        {
+          "x": 0.01,
+          "y": 0.045
+        },
+        {
+          "x": 0.1,
+          "y": 0.3
+        }
+      ],
+      "test_conditions": "Beta = 20, TA = 25 degC curve",
+      "x_axis": {
+        "quantity": "collector current",
+        "scale": "log",
+        "unit": "A"
+      },
+      "y_axis": {
+        "quantity": "collector-emitter saturation voltage",
+        "scale": "log",
+        "unit": "V"
+      }
+    },
+    {
+      "name": "Base-emitter saturation voltage versus collector current",
+      "page_reference": "p. 4 VBEsat versus IC graph",
+      "points": [
+        {
+          "x": 0.0001,
+          "y": 0.4
+        },
+        {
+          "x": 0.001,
+          "y": 0.45
+        },
+        {
+          "x": 0.01,
+          "y": 0.55
+        },
+        {
+          "x": 0.1,
+          "y": 0.9
+        }
+      ],
+      "test_conditions": "Beta = 20, TA = 25 degC curve",
+      "x_axis": {
+        "quantity": "collector current",
+        "scale": "log",
+        "unit": "A"
+      },
+      "y_axis": {
+        "quantity": "base-emitter saturation voltage",
+        "scale": "log",
+        "unit": "V"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4",
+      "p. 5"
+    ],
+    "revision": "Not stated",
+    "title": "S9014 NPN Plastic-Encapsulate Transistors"
+  },
+  "extraction_notes": [
+    "The datasheet publishes one tabulated hFE point and one saturation pair; additional points were not invented.",
+    "The typical-characteristics plots provide digitized hFE, VCEsat, and VBEsat curves at 25 degC.",
+    "No Cobo or Cibo table value is published in the supplied datasheet.",
+    "The datasheet does not state a document revision."
+  ],
+  "family": "bjt",
+  "manufacturer": "HXY MOSFET",
+  "mpn": "S9014",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "cibo": null,
+    "cobo": null,
+    "ft": {
+      "conditions": "VCE = 5 V, IC = 10 mA, measurement frequency = 30 MHz, TA = 25 degC",
+      "page_reference": "p. 2 electrical characteristics",
+      "source_kind": "minimum",
+      "unit": "Hz",
+      "value": 150000000.0
+    },
+    "gain_points": [
+      {
+        "collector_current": {
+          "conditions": "VCE = 5 V, TA = 25 degC",
+          "page_reference": "p. 2 electrical characteristics",
+          "source_kind": "minimum",
+          "unit": "A",
+          "value": 0.001
+        },
+        "hfe": {
+          "conditions": "VCE = 5 V, IC = 1 mA, TA = 25 degC",
+          "page_reference": "p. 2 electrical characteristics",
+          "source_kind": "minimum",
+          "unit": "1",
+          "value": 200
+        },
+        "vce": {
+          "conditions": "IC = 1 mA, TA = 25 degC",
+          "page_reference": "p. 2 electrical characteristics",
+          "source_kind": "typical",
+          "unit": "V",
+          "value": 5.0
+        }
+      }
+    ],
+    "polarity": "npn",
+    "saturation_points": [
+      {
+        "base_current": {
+          "conditions": "IC = 100 mA, TA = 25 degC",
+          "page_reference": "p. 2 electrical characteristics",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 0.005
+        },
+        "collector_current": {
+          "conditions": "IB = 5 mA, TA = 25 degC",
+          "page_reference": "p. 2 electrical characteristics",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 0.1
+        },
+        "vbe_sat": {
+          "conditions": "IC = 100 mA, IB = 5 mA, TA = 25 degC",
+          "page_reference": "p. 2 electrical characteristics",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 1.0
+        },
+        "vce_sat": {
+          "conditions": "IC = 100 mA, IB = 5 mA, TA = 25 degC",
+          "page_reference": "p. 2 electrical characteristics",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.3
+        }
+      }
+    ],
+    "vceo": {
+      "conditions": "IC = 0.1 mA, IB = 0, TA = 25 degC",
+      "page_reference": "p. 2 electrical characteristics",
+      "source_kind": "minimum",
+      "unit": "V",
+      "value": 45.0
+    }
+  },
+  "usable_curves": true
+}

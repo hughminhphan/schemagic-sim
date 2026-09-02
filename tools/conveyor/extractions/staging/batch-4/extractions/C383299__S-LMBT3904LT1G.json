@@ -1,0 +1,354 @@
+{
+  "schema_version": "1.0.0",
+  "mpn": "S-LMBT3904LT1G",
+  "manufacturer": "LRC",
+  "family": "bjt",
+  "datasheet_identity": {
+    "title": "LMBT3904LT1G / S-LMBT3904LT1G General Purpose Transistors NPN Silicon (Leshan Radio Company, SOT23/TO-236)",
+    "revision": "Rev.B Mar 2016",
+    "pages_examined": [
+      "p. 1, features, device marking/ordering, maximum ratings, thermal characteristics",
+      "p. 2, electrical characteristics tables (off, on, small-signal, switching), Ta = 25 degC",
+      "p. 3, electrical characteristics curves: Capacitance, DC Current Gain, VCE(sat) vs IC, VBE(sat) vs IC",
+      "p. 4, electrical characteristics curves: VBE(on) vs IC, Collector Saturation Region, Rthja",
+      "p. 5, outline and dimensions, soldering footprint"
+    ]
+  },
+  "usable_curves": true,
+  "curves": [
+    {
+      "name": "hFE versus IC, 25 degC typical curve",
+      "x_axis": {
+        "quantity": "collector current IC",
+        "unit": "A",
+        "scale": "log"
+      },
+      "y_axis": {
+        "quantity": "DC current gain hFE",
+        "unit": "1",
+        "scale": "linear"
+      },
+      "test_conditions": "25 degC curve of the DC Current Gain figure (150/25/-55 degC family); bias condition not printed on the figure, table hFE rows use VCE = 1.0 V",
+      "page_reference": "p. 3, figure DC Current Gain",
+      "points": [
+        {"x": 0.0001, "y": 190.0},
+        {"x": 0.0003, "y": 198.0},
+        {"x": 0.001, "y": 205.0},
+        {"x": 0.003, "y": 215.0},
+        {"x": 0.01, "y": 232.0},
+        {"x": 0.03, "y": 225.0},
+        {"x": 0.1, "y": 110.0}
+      ]
+    },
+    {
+      "name": "VCE(sat) versus IC, 25 degC typical curve",
+      "x_axis": {
+        "quantity": "collector current IC",
+        "unit": "A",
+        "scale": "log"
+      },
+      "y_axis": {
+        "quantity": "collector-emitter saturation voltage VCE(sat)",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "test_conditions": "IC/IB = 10, 25 degC curve of the VCE(sat) vs. IC figure (150/25/-55 degC family)",
+      "page_reference": "p. 3, figure VCE(sat) vs. IC",
+      "points": [
+        {"x": 0.001, "y": 0.05},
+        {"x": 0.01, "y": 0.06},
+        {"x": 0.05, "y": 0.09},
+        {"x": 0.1, "y": 0.13},
+        {"x": 0.3, "y": 0.35},
+        {"x": 0.5, "y": 0.9}
+      ]
+    },
+    {
+      "name": "VBE(sat) versus IC, 25 degC typical curve",
+      "x_axis": {
+        "quantity": "collector current IC",
+        "unit": "A",
+        "scale": "log"
+      },
+      "y_axis": {
+        "quantity": "base-emitter saturation voltage VBE(sat)",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "test_conditions": "IC/IB = 10, 25 degC curve of the VBE(sat) vs. IC figure (150/25/-55 degC family)",
+      "page_reference": "p. 3, figure VBE(sat) vs. IC",
+      "points": [
+        {"x": 0.0001, "y": 0.59},
+        {"x": 0.001, "y": 0.65},
+        {"x": 0.01, "y": 0.73},
+        {"x": 0.1, "y": 0.87},
+        {"x": 0.5, "y": 1.2}
+      ]
+    },
+    {
+      "name": "VBE(on) versus IC, 25 degC typical curve",
+      "x_axis": {
+        "quantity": "collector current IC",
+        "unit": "A",
+        "scale": "log"
+      },
+      "y_axis": {
+        "quantity": "base-emitter on voltage VBE(on)",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "test_conditions": "VCE = 1 V, 25 degC curve of the VBE(on) vs. IC figure (150/25/-55 degC family)",
+      "page_reference": "p. 4, figure VBE(on) vs. IC",
+      "points": [
+        {"x": 0.0001, "y": 0.6},
+        {"x": 0.001, "y": 0.66},
+        {"x": 0.01, "y": 0.73},
+        {"x": 0.1, "y": 0.85},
+        {"x": 0.5, "y": 1.15}
+      ]
+    }
+  ],
+  "specs": {
+    "polarity": "npn",
+    "gain_points": [
+      {
+        "collector_current": {
+          "value": 0.0001,
+          "unit": "A",
+          "conditions": "HFE row 1: IC = 0.1 mA, VCE = 1.0 V, Ta = 25 degC, pulse test (PW <= 300 us, duty <= 2.0%).",
+          "page_reference": "p. 2, ON CHARACTERISTICS, DC Current Gain HFE",
+          "source_kind": "minimum"
+        },
+        "vce": {
+          "value": 1.0,
+          "unit": "V",
+          "conditions": "HFE row 1: IC = 0.1 mA, VCE = 1.0 V, Ta = 25 degC, pulse test.",
+          "page_reference": "p. 2, ON CHARACTERISTICS, DC Current Gain HFE",
+          "source_kind": "minimum"
+        },
+        "hfe": {
+          "value": 40,
+          "unit": "1",
+          "conditions": "IC = 0.1 mA, VCE = 1.0 V, Ta = 25 degC; guaranteed minimum, no typical or maximum published.",
+          "page_reference": "p. 2, ON CHARACTERISTICS, DC Current Gain HFE",
+          "source_kind": "minimum"
+        }
+      },
+      {
+        "collector_current": {
+          "value": 0.001,
+          "unit": "A",
+          "conditions": "HFE row 2: IC = 1.0 mA, VCE = 1.0 V, Ta = 25 degC, pulse test.",
+          "page_reference": "p. 2, ON CHARACTERISTICS, DC Current Gain HFE",
+          "source_kind": "minimum"
+        },
+        "vce": {
+          "value": 1.0,
+          "unit": "V",
+          "conditions": "HFE row 2: IC = 1.0 mA, VCE = 1.0 V, Ta = 25 degC, pulse test.",
+          "page_reference": "p. 2, ON CHARACTERISTICS, DC Current Gain HFE",
+          "source_kind": "minimum"
+        },
+        "hfe": {
+          "value": 70,
+          "unit": "1",
+          "conditions": "IC = 1.0 mA, VCE = 1.0 V, Ta = 25 degC; guaranteed minimum, no typical or maximum published.",
+          "page_reference": "p. 2, ON CHARACTERISTICS, DC Current Gain HFE",
+          "source_kind": "minimum"
+        }
+      },
+      {
+        "collector_current": {
+          "value": 0.01,
+          "unit": "A",
+          "conditions": "HFE row 3: IC = 10 mA, VCE = 1.0 V, Ta = 25 degC, pulse test.",
+          "page_reference": "p. 2, ON CHARACTERISTICS, DC Current Gain HFE",
+          "source_kind": "minimum"
+        },
+        "vce": {
+          "value": 1.0,
+          "unit": "V",
+          "conditions": "HFE row 3: IC = 10 mA, VCE = 1.0 V, Ta = 25 degC, pulse test.",
+          "page_reference": "p. 2, ON CHARACTERISTICS, DC Current Gain HFE",
+          "source_kind": "minimum"
+        },
+        "hfe": {
+          "value": 100,
+          "unit": "1",
+          "conditions": "IC = 10 mA, VCE = 1.0 V, Ta = 25 degC; guaranteed minimum of the 100 min / 300 max row.",
+          "page_reference": "p. 2, ON CHARACTERISTICS, DC Current Gain HFE",
+          "source_kind": "minimum"
+        }
+      },
+      {
+        "collector_current": {
+          "value": 0.01,
+          "unit": "A",
+          "conditions": "HFE row 3: IC = 10 mA, VCE = 1.0 V, Ta = 25 degC, pulse test.",
+          "page_reference": "p. 2, ON CHARACTERISTICS, DC Current Gain HFE",
+          "source_kind": "maximum"
+        },
+        "vce": {
+          "value": 1.0,
+          "unit": "V",
+          "conditions": "HFE row 3: IC = 10 mA, VCE = 1.0 V, Ta = 25 degC, pulse test.",
+          "page_reference": "p. 2, ON CHARACTERISTICS, DC Current Gain HFE",
+          "source_kind": "maximum"
+        },
+        "hfe": {
+          "value": 300,
+          "unit": "1",
+          "conditions": "IC = 10 mA, VCE = 1.0 V, Ta = 25 degC; guaranteed maximum of the 100 min / 300 max row.",
+          "page_reference": "p. 2, ON CHARACTERISTICS, DC Current Gain HFE",
+          "source_kind": "maximum"
+        }
+      },
+      {
+        "collector_current": {
+          "value": 0.05,
+          "unit": "A",
+          "conditions": "HFE row 4: IC = 50 mA, VCE = 1.0 V, Ta = 25 degC, pulse test.",
+          "page_reference": "p. 2, ON CHARACTERISTICS, DC Current Gain HFE",
+          "source_kind": "minimum"
+        },
+        "vce": {
+          "value": 1.0,
+          "unit": "V",
+          "conditions": "HFE row 4: IC = 50 mA, VCE = 1.0 V, Ta = 25 degC, pulse test.",
+          "page_reference": "p. 2, ON CHARACTERISTICS, DC Current Gain HFE",
+          "source_kind": "minimum"
+        },
+        "hfe": {
+          "value": 60,
+          "unit": "1",
+          "conditions": "IC = 50 mA, VCE = 1.0 V, Ta = 25 degC; guaranteed minimum, no typical or maximum published.",
+          "page_reference": "p. 2, ON CHARACTERISTICS, DC Current Gain HFE",
+          "source_kind": "minimum"
+        }
+      },
+      {
+        "collector_current": {
+          "value": 0.1,
+          "unit": "A",
+          "conditions": "HFE row 5: IC = 100 mA, VCE = 1.0 V, Ta = 25 degC, pulse test.",
+          "page_reference": "p. 2, ON CHARACTERISTICS, DC Current Gain HFE",
+          "source_kind": "minimum"
+        },
+        "vce": {
+          "value": 1.0,
+          "unit": "V",
+          "conditions": "HFE row 5: IC = 100 mA, VCE = 1.0 V, Ta = 25 degC, pulse test.",
+          "page_reference": "p. 2, ON CHARACTERISTICS, DC Current Gain HFE",
+          "source_kind": "minimum"
+        },
+        "hfe": {
+          "value": 30,
+          "unit": "1",
+          "conditions": "IC = 100 mA, VCE = 1.0 V, Ta = 25 degC; guaranteed minimum, no typical or maximum published.",
+          "page_reference": "p. 2, ON CHARACTERISTICS, DC Current Gain HFE",
+          "source_kind": "minimum"
+        }
+      }
+    ],
+    "saturation_points": [
+      {
+        "collector_current": {
+          "value": 0.01,
+          "unit": "A",
+          "conditions": "Saturation row 1: IC = 10 mA, IB = 1.0 mA, Ta = 25 degC, pulse test.",
+          "page_reference": "p. 2, ON CHARACTERISTICS, VCE(sat) and VBE(sat)",
+          "source_kind": "maximum"
+        },
+        "base_current": {
+          "value": 0.001,
+          "unit": "A",
+          "conditions": "Saturation row 1: IC = 10 mA, IB = 1.0 mA, Ta = 25 degC, pulse test.",
+          "page_reference": "p. 2, ON CHARACTERISTICS, VCE(sat) and VBE(sat)",
+          "source_kind": "maximum"
+        },
+        "vce_sat": {
+          "value": 0.2,
+          "unit": "V",
+          "conditions": "IC = 10 mA, IB = 1.0 mA, Ta = 25 degC; guaranteed maximum, no typical published.",
+          "page_reference": "p. 2, ON CHARACTERISTICS, VCE(sat)",
+          "source_kind": "maximum"
+        },
+        "vbe_sat": {
+          "value": 0.85,
+          "unit": "V",
+          "conditions": "IC = 10 mA, IB = 1.0 mA, Ta = 25 degC; guaranteed maximum, no typical published.",
+          "page_reference": "p. 2, ON CHARACTERISTICS, VBE(sat)",
+          "source_kind": "maximum"
+        }
+      },
+      {
+        "collector_current": {
+          "value": 0.05,
+          "unit": "A",
+          "conditions": "Saturation row 2: IC = 50 mA, IB = 5.0 mA, Ta = 25 degC, pulse test.",
+          "page_reference": "p. 2, ON CHARACTERISTICS, VCE(sat) and VBE(sat)",
+          "source_kind": "maximum"
+        },
+        "base_current": {
+          "value": 0.005,
+          "unit": "A",
+          "conditions": "Saturation row 2: IC = 50 mA, IB = 5.0 mA, Ta = 25 degC, pulse test.",
+          "page_reference": "p. 2, ON CHARACTERISTICS, VCE(sat) and VBE(sat)",
+          "source_kind": "maximum"
+        },
+        "vce_sat": {
+          "value": 0.3,
+          "unit": "V",
+          "conditions": "IC = 50 mA, IB = 5.0 mA, Ta = 25 degC; guaranteed maximum, no typical published.",
+          "page_reference": "p. 2, ON CHARACTERISTICS, VCE(sat)",
+          "source_kind": "maximum"
+        },
+        "vbe_sat": {
+          "value": 0.95,
+          "unit": "V",
+          "conditions": "IC = 50 mA, IB = 5.0 mA, Ta = 25 degC; guaranteed maximum, no typical published.",
+          "page_reference": "p. 2, ON CHARACTERISTICS, VBE(sat)",
+          "source_kind": "maximum"
+        }
+      }
+    ],
+    "ft": {
+      "value": 300000000.0,
+      "unit": "Hz",
+      "conditions": "Current-gain bandwidth product fT: IC = 10 mA, VCE = 20 V, f = 100 MHz, Ta = 25 degC; guaranteed minimum 300 MHz.",
+      "page_reference": "p. 2, SMALL-SIGNAL CHARACTERISTICS, fT",
+      "source_kind": "minimum"
+    },
+    "cobo": {
+      "value": 4e-12,
+      "unit": "F",
+      "conditions": "Output capacitance Cobo: VCB = 5.0 V, IE = 0, f = 1.0 MHz, Ta = 25 degC; guaranteed maximum 4 pF.",
+      "page_reference": "p. 2, SMALL-SIGNAL CHARACTERISTICS, Cobo",
+      "source_kind": "maximum"
+    },
+    "cibo": {
+      "value": 8e-12,
+      "unit": "F",
+      "conditions": "Input capacitance Cibo: VEB = 0.5 V, IC = 0, f = 1.0 MHz, Ta = 25 degC; guaranteed maximum 8 pF.",
+      "page_reference": "p. 2, SMALL-SIGNAL CHARACTERISTICS, Cibo",
+      "source_kind": "maximum"
+    },
+    "vceo": {
+      "value": 40,
+      "unit": "V",
+      "conditions": "Collector-emitter voltage VCEO absolute maximum rating, Ta = 25 degC; consistent with VBR(CEO) 40 V minimum at IC = 1.0 mA, IB = 0 on p. 2.",
+      "page_reference": "p. 1, MAXIMUM RATINGS",
+      "source_kind": "maximum"
+    }
+  },
+  "extraction_notes": [
+    "PDF SHA-256 verified as 129d127186ce1bbdc05e724c2e1ddc3237348daf253b78232afe7719f76468b9.",
+    "Public Leshan Radio Company (LRC) datasheet, Rev.B Mar 2016, 5 pages; covers LMBT3904LT1G and S-LMBT3904LT1G (S- prefix is the AEC-Q101 automotive variant, electrically identical tables). Extracted identity is S-LMBT3904LT1G. SOT23 (TO-236), marking 1AM.",
+    "All table values are guaranteed bounds; the datasheet publishes no typical scalar values, and no bound was converted to a typical. The hFE row at IC = 10 mA carries both a 100 minimum and a 300 maximum and is represented as two gain_points rows.",
+    "SI units used throughout: currents in A, voltages in V, capacitances in F, transition frequency in Hz. Curve points converted from mA axis labels to A.",
+    "Curves on pp. 3-4 were digitized by eye from the typical-characteristics figures at the 25 degC curve only; values are approximate (roughly 5-10% reading uncertainty, worse near steep roll-offs). The DC Current Gain figure does not print its VCE bias; the table hFE conditions use VCE = 1.0 V.",
+    "Curves not digitized: capacitance vs reverse voltage (log-log, sparse axis labels), collector saturation region VCE vs IB, transient Rthja vs time, and the 150 degC / -55 degC temperature branches.",
+    "No vendor SPICE model content was used; extraction is from the public datasheet only."
+  ],
+  "omission_reason": null
+}

@@ -1,0 +1,195 @@
+{
+  "curves": [
+    {
+      "name": "Typical zener characteristics, MM3Z4V7 region",
+      "page_reference": "p. 3, Fig. 1 Zener Characteristics (Vz Up to 12V)",
+      "points": [
+        {
+          "x": 4.4,
+          "y": 1e-05
+        },
+        {
+          "x": 4.5,
+          "y": 0.0001
+        },
+        {
+          "x": 4.62,
+          "y": 0.001
+        },
+        {
+          "x": 4.7,
+          "y": 0.005
+        },
+        {
+          "x": 4.75,
+          "y": 0.01
+        },
+        {
+          "x": 4.78,
+          "y": 0.02
+        }
+      ],
+      "test_conditions": "Ta = 25 degC; pulsed; Fig. 1 family plot for VZ up to 12 V; points digitized on the MM3Z4V7 curve near its nominal voltage",
+      "x_axis": {
+        "quantity": "zener voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "zener current",
+        "scale": "log",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "Typical forward voltage, Ta = 25 degC",
+      "page_reference": "p. 3, Fig. 3 Typical Forward Voltage",
+      "points": [
+        {
+          "x": 0.69,
+          "y": 0.001
+        },
+        {
+          "x": 0.72,
+          "y": 0.003
+        },
+        {
+          "x": 0.76,
+          "y": 0.01
+        },
+        {
+          "x": 0.83,
+          "y": 0.03
+        },
+        {
+          "x": 0.92,
+          "y": 0.1
+        },
+        {
+          "x": 1.05,
+          "y": 0.3
+        }
+      ],
+      "test_conditions": "Ta = 25 degC; family typical forward-voltage curve; current axis converted from mA to A",
+      "x_axis": {
+        "quantity": "forward voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "forward current",
+        "scale": "log",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "Typical capacitance, 0 V bias",
+      "page_reference": "p. 4, Fig. 5 Typical Capacitance",
+      "points": [
+        {
+          "x": 4.0,
+          "y": 2e-10
+        },
+        {
+          "x": 5.0,
+          "y": 1.5e-10
+        },
+        {
+          "x": 10.0,
+          "y": 8e-11
+        },
+        {
+          "x": 20.0,
+          "y": 4.5e-11
+        },
+        {
+          "x": 40.0,
+          "y": 3e-11
+        },
+        {
+          "x": 70.0,
+          "y": 4e-11
+        }
+      ],
+      "test_conditions": "Ta = 25 degC; f = 1 MHz; 0 V bias; capacitance axis converted from pF to F; family typical curve",
+      "x_axis": {
+        "quantity": "nominal zener voltage",
+        "scale": "log",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "capacitance",
+        "scale": "log",
+        "unit": "F"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4",
+      "p. 5"
+    ],
+    "revision": "Rev:1.1",
+    "title": "MM3Z2V0 THRU MM3Z75 SURFACE MOUNT ZENER DIODES"
+  },
+  "extraction_notes": [
+    "MM3Z4V7 zener voltage is specified as minimum 4.4 V, nominal 4.7 V, maximum 5.0 V at IZT = 5 mA; the breakdown-voltage field records nominal and this note preserves the full range.",
+    "The MM3Z4V7 table specifies ZZT = 80 ohm at IZT = 5 mA and ZZK = 800 ohm at IZK = 0.5 mA; these impedance fields are preserved here because the strict extraction schema has no zener-impedance properties.",
+    "The capacitance figure is a family typical curve, not a tabulated MM3Z4V7 point, so specs.capacitance remains null while the digitized family curve is retained.",
+    "No reverse-recovery time is published.",
+    "Maximum ratings include PD = 200 mW, Tstg = -55 to +150 degC, and Tj = -55 to +150 degC at Ta = 25 degC unless otherwise specified."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "MM3Z4V7",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": {
+      "conditions": "IZT = 5 mA, test current for MM3Z4V7 VZ@IZT specification, Ta = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, MM3Z4V7 IZT",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.005
+    },
+    "breakdown_voltage": {
+      "conditions": "IZT = 5 mA, Ta = 25 degC; nominal zener voltage VZ@IZT for MM3Z4V7",
+      "page_reference": "p. 2, Electrical Characteristics, MM3Z4V7 zener voltage range",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 4.7
+    },
+    "capacitance": null,
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 10 mA, Ta = 25 degC unless otherwise specified",
+          "page_reference": "p. 1, Maximum Ratings, forward voltage",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.01
+        },
+        "voltage": {
+          "conditions": "IF = 10 mA, Ta = 25 degC unless otherwise specified",
+          "page_reference": "p. 1, Maximum Ratings, forward voltage",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.9
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = 2.0 V, Ta = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, MM3Z4V7 maximum reverse current IR@VR",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 3e-06
+    },
+    "reverse_recovery": null,
+    "variant": "zener"
+  },
+  "usable_curves": true
+}

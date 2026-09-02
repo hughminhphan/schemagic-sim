@@ -1,0 +1,282 @@
+{
+  "schema_version": "1.0.0",
+  "mpn": "1N4004W",
+  "manufacturer": "hongjiacheng",
+  "family": "diode",
+  "datasheet_identity": {
+    "title": "1N4001W THRU 1N4007W SURFACE MOUNT GENERAL PURPOSE RECTIFIER",
+    "revision": "1.1",
+    "pages_examined": [
+      "1",
+      "2"
+    ]
+  },
+  "usable_curves": true,
+  "curves": [
+    {
+      "name": "Typical Forward Voltage",
+      "x_axis": {
+        "quantity": "Instantaneous Forward Voltage",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "Instantaneous Forward Current",
+        "unit": "A",
+        "scale": "log"
+      },
+      "test_conditions": "Tj=25°C, Pulse width=300us, 1% Duty Cycle",
+      "page_reference": "2 (Fig.3)",
+      "points": [
+        {
+          "x": 0.2,
+          "y": 0.01
+        },
+        {
+          "x": 0.4,
+          "y": 0.02
+        },
+        {
+          "x": 0.6,
+          "y": 0.05
+        },
+        {
+          "x": 0.8,
+          "y": 0.1
+        },
+        {
+          "x": 1.0,
+          "y": 0.5
+        },
+        {
+          "x": 1.2,
+          "y": 2.0
+        },
+        {
+          "x": 1.4,
+          "y": 8.0
+        },
+        {
+          "x": 1.6,
+          "y": 10.0
+        }
+      ]
+    },
+    {
+      "name": "Typical Reverse Characteristics at Tj=25°C",
+      "x_axis": {
+        "quantity": "Percent of Rated Peak Reverse Voltage",
+        "unit": "%",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "Instantaneous Reverse Current",
+        "unit": "μA",
+        "scale": "log"
+      },
+      "test_conditions": "Tj=25°C",
+      "page_reference": "2 (Fig.4)",
+      "points": [
+        {
+          "x": 0,
+          "y": 0.01
+        },
+        {
+          "x": 20,
+          "y": 0.1
+        },
+        {
+          "x": 40,
+          "y": 0.3
+        },
+        {
+          "x": 60,
+          "y": 0.8
+        },
+        {
+          "x": 80,
+          "y": 1.5
+        },
+        {
+          "x": 100,
+          "y": 2.0
+        }
+      ]
+    },
+    {
+      "name": "Typical Reverse Characteristics at Tj=125°C",
+      "x_axis": {
+        "quantity": "Percent of Rated Peak Reverse Voltage",
+        "unit": "%",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "Instantaneous Reverse Current",
+        "unit": "μA",
+        "scale": "log"
+      },
+      "test_conditions": "Tj=125°C",
+      "page_reference": "2 (Fig.4)",
+      "points": [
+        {
+          "x": 0,
+          "y": 0.1
+        },
+        {
+          "x": 20,
+          "y": 1.0
+        },
+        {
+          "x": 40,
+          "y": 5.0
+        },
+        {
+          "x": 60,
+          "y": 20.0
+        },
+        {
+          "x": 80,
+          "y": 80.0
+        },
+        {
+          "x": 100,
+          "y": 200.0
+        }
+      ]
+    },
+    {
+      "name": "Forward Current Derating Curve",
+      "x_axis": {
+        "quantity": "Lead Temperature",
+        "unit": "°C",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "Average Forward Output Current",
+        "unit": "A",
+        "scale": "linear"
+      },
+      "test_conditions": "60Hz sinewave, Resistance load",
+      "page_reference": "2 (Fig.1)",
+      "points": [
+        {
+          "x": 25,
+          "y": 1.0
+        },
+        {
+          "x": 50,
+          "y": 0.8
+        },
+        {
+          "x": 75,
+          "y": 0.6
+        },
+        {
+          "x": 100,
+          "y": 0.4
+        },
+        {
+          "x": 125,
+          "y": 0.2
+        },
+        {
+          "x": 150,
+          "y": 0.1
+        }
+      ]
+    },
+    {
+      "name": "Maximum Non-Repetitive Peak Forward Surge Current",
+      "x_axis": {
+        "quantity": "Number of Cycles",
+        "unit": "cycles",
+        "scale": "log"
+      },
+      "y_axis": {
+        "quantity": "Peak Forward Surge Current",
+        "unit": "A",
+        "scale": "linear"
+      },
+      "test_conditions": "8.3ms Single Half Sine Wave (JEDEC Method)",
+      "page_reference": "2 (Fig.2)",
+      "points": [
+        {
+          "x": 1,
+          "y": 30.0
+        },
+        {
+          "x": 10,
+          "y": 15.0
+        },
+        {
+          "x": 100,
+          "y": 8.0
+        }
+      ]
+    }
+  ],
+  "specs": {
+    "variant": "rectifier",
+    "forward_voltage_points": [
+      {
+        "current": {
+          "value": 1.0,
+          "unit": "A",
+          "conditions": "Instantaneous, Pulse width=300us, 1% Duty Cycle",
+          "page_reference": "1",
+          "source_kind": "maximum"
+        },
+        "voltage": {
+          "value": 1.0,
+          "unit": "V",
+          "conditions": "Tj=25°C",
+          "page_reference": "2",
+          "source_kind": "maximum"
+        }
+      },
+      {
+        "current": {
+          "value": 0.5,
+          "unit": "A",
+          "conditions": "Digitized from typical forward voltage curve",
+          "page_reference": "2 (Fig.3)",
+          "source_kind": "digitized_typical_curve"
+        },
+        "voltage": {
+          "value": 1.0,
+          "unit": "V",
+          "conditions": "Tj=25°C",
+          "page_reference": "2 (Fig.3)",
+          "source_kind": "digitized_typical_curve"
+        }
+      }
+    ],
+    "reverse_current": {
+      "value": 2.0,
+      "unit": "μA",
+      "conditions": "VR=VDC (400V), TA=25°C",
+      "page_reference": "2",
+      "source_kind": "maximum"
+    },
+    "capacitance": {
+      "value": 18.0,
+      "unit": "pF",
+      "conditions": "4.0V DC, 1MHz",
+      "page_reference": "2",
+      "source_kind": "typical"
+    },
+    "reverse_recovery": null,
+    "breakdown_voltage": null,
+    "breakdown_current": null
+  },
+  "extraction_notes": [
+    "1N4004W: 400V rectifier variant from 1N4001W-1N4007W family, SOD-123FL package",
+    "Forward voltage extracted from maximum spec (IF=1.0A, VF=1.0V) and digitized typical curve (Fig.3)",
+    "Reverse current at 25°C: 2.0μA (max); at 125°C: 200μA (max) from electrical characteristics table",
+    "Capacitance typical: 18pF at 4.0V DC, 1MHz",
+    "Four usable curves digitized: forward voltage (Fig.3), reverse characteristics at two temperatures (Fig.4), forward current derating (Fig.1), and surge current (Fig.2)",
+    "No reverse recovery or breakdown parameters specified; these remain null as variant is standard rectifier, not schottky or zener",
+    "Datasheet revision 1.1 from Zhuhai Hongjiacheng Technology co., Ltd"
+  ],
+  "omission_reason": null
+}

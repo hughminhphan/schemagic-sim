@@ -1,0 +1,114 @@
+{
+  "curves": [
+    {
+      "name": "Forward characteristics, Ta = 25 degC",
+      "page_reference": "p. 3, Fig. 1, Forward Characteristics",
+      "points": [
+        {
+          "x": 0.84,
+          "y": 50.0
+        },
+        {
+          "x": 0.9,
+          "y": 100.0
+        },
+        {
+          "x": 0.98,
+          "y": 200.0
+        },
+        {
+          "x": 1.05,
+          "y": 300.0
+        }
+      ],
+      "test_conditions": "Ta = 25 degC; forward-characteristics plot",
+      "x_axis": {
+        "quantity": "forward voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "forward current",
+        "scale": "linear",
+        "unit": "mA"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ],
+    "revision": "Rev. 02, dated 09/12/2021",
+    "title": "LL4148PF Silicon Epitaxial Planar Switching Diode"
+  },
+  "extraction_notes": [
+    "Absolute maximum ratings on p. 1 include VRM = 100 V, VR = 75 V, IF(AV) = 200 mA, IFSM = 0.5 A at 1 s, 1 A at 1 ms, and 4 A at 1 us, Ptot = 500 mW, Tj = 175 degC, and Tstg = -65 to +175 degC.",
+    "The forward curve points are digitized readings from the Ta = 25 degC trace in p. 3 Fig. 1; no interpolation was added.",
+    "The p. 2 leakage table also publishes IR max = 5 uA at VR = 75 V and IR max = 50 uA at VR = 20 V, Tj = 150 degC; the structured reverse-current field records the 25 degC, 20 V row.",
+    "The p. 3 reverse-characteristics, junction-capacitance, and power-derating plots were examined but not added as additional structured curves."
+  ],
+  "family": "diode",
+  "manufacturer": "ST Semtech",
+  "mpn": "LL4148PF",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": {
+      "conditions": "100 uA test pulses for reverse breakdown voltage, Ta = 25 degC",
+      "page_reference": "p. 2, Characteristics, Reverse Breakdown Voltage",
+      "source_kind": "minimum",
+      "unit": "A",
+      "value": 0.0001
+    },
+    "breakdown_voltage": {
+      "conditions": "Tested with 100 uA pulses, Ta = 25 degC",
+      "page_reference": "p. 2, Characteristics, Reverse Breakdown Voltage",
+      "source_kind": "minimum",
+      "unit": "V",
+      "value": 100.0
+    },
+    "capacitance": {
+      "conditions": "VR = 0 V, f = 1 MHz, Ta = 25 degC",
+      "page_reference": "p. 2, Characteristics, Capacitance",
+      "source_kind": "maximum",
+      "unit": "F",
+      "value": 4e-12
+    },
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 10 mA, Ta = 25 degC",
+          "page_reference": "p. 2, Characteristics, Forward Voltage",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.01
+        },
+        "voltage": {
+          "conditions": "IF = 10 mA, Ta = 25 degC",
+          "page_reference": "p. 2, Characteristics, Forward Voltage",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 1.0
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = 20 V, Ta = 25 degC",
+      "page_reference": "p. 2, Characteristics, Leakage Current",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 2.5e-08
+    },
+    "reverse_recovery": {
+      "conditions": "IF = 10 mA, Irr = 0.1 x IR, VR = 6 V, RL = 100 ohm, Ta = 25 degC",
+      "page_reference": "p. 2, Characteristics, Reverse Recovery Time",
+      "source_kind": "maximum",
+      "unit": "s",
+      "value": 4e-09
+    },
+    "variant": "signal"
+  },
+  "usable_curves": true
+}

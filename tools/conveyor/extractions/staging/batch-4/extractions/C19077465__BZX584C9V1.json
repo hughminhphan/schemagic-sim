@@ -1,0 +1,103 @@
+{
+  "schema_version": "1.0.0",
+  "mpn": "BZX584C9V1",
+  "manufacturer": "hongjiacheng",
+  "family": "diode",
+  "datasheet_identity": {
+    "title": "BZX584C2V4 THRU BZX584C43 SURFACE MOUNT ZENER DIODES",
+    "revision": "1.0",
+    "pages_examined": [
+      "1",
+      "2",
+      "3"
+    ]
+  },
+  "usable_curves": true,
+  "curves": [
+    {
+      "name": "Zener Characteristics (VZ up to 10V)",
+      "x_axis": {
+        "quantity": "Zener Voltage",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "Zener Current",
+        "unit": "mA",
+        "scale": "log"
+      },
+      "test_conditions": "Ta=25°C, Pulsed, PD=150mW",
+      "page_reference": "3",
+      "points": [
+        {
+          "x": 8.5,
+          "y": 0.8
+        },
+        {
+          "x": 9.1,
+          "y": 5.0
+        },
+        {
+          "x": 9.6,
+          "y": 30.0
+        }
+      ]
+    }
+  ],
+  "specs": {
+    "variant": "zener",
+    "forward_voltage_points": [
+      {
+        "current": {
+          "value": 10.0,
+          "unit": "mA",
+          "conditions": "VF @ IF=10mA, Ta=25°C",
+          "page_reference": "1",
+          "source_kind": "maximum"
+        },
+        "voltage": {
+          "value": 0.9,
+          "unit": "V",
+          "conditions": "Maximum rating",
+          "page_reference": "1",
+          "source_kind": "maximum"
+        }
+      }
+    ],
+    "reverse_current": {
+      "value": 1.0,
+      "unit": "μA",
+      "conditions": "IR @ VR=6.0V, Ta=25°C, from leakage curve",
+      "page_reference": "2",
+      "source_kind": "typical"
+    },
+    "capacitance": null,
+    "reverse_recovery": null,
+    "breakdown_voltage": {
+      "value": 9.1,
+      "unit": "V",
+      "conditions": "VZ nominal @ IZT=5mA, Ta=25°C",
+      "page_reference": "2",
+      "source_kind": "typical"
+    },
+    "breakdown_current": {
+      "value": 5.0,
+      "unit": "mA",
+      "conditions": "IZT test current for breakdown voltage specification",
+      "page_reference": "2",
+      "source_kind": "typical"
+    }
+  },
+  "extraction_notes": [
+    "Zener voltage: 8.5-9.6V range (nominal 9.1V)",
+    "Zener impedance: ZZT@IZT=5mA: 15-100Ω",
+    "Temperature coefficient: 3.8-7.0 mV/°C (min-max) @ IZTC",
+    "Maximum admissible zener current IZM: 5mA",
+    "Power dissipation: 150mW (Ta=25°C)",
+    "Case: SOD-523 surface mount",
+    "Curve extracted from Fig.1 (Zener Characteristics VZ up to 10V); 9.1V curve digitized at 3 points",
+    "Reverse leakage current IR@VR=6.0V: 3.8-7.0μA range (min-max from table); ~1μA typical at 25°C from Fig.4",
+    "Forward voltage from maximum ratings table (common to all variants in series)"
+  ],
+  "omission_reason": null
+}

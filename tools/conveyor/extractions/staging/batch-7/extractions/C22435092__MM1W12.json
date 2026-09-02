@@ -1,0 +1,70 @@
+{
+  "curves": [],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "revision": "Rev:1.0",
+    "title": "MM1W3V3 THRU MM1W330 SURFACE MOUNT ZENER DIODES (SOD-123 Surface Mount Silicon Zener Diodes)"
+  },
+  "extraction_notes": [
+    "Multi-part datasheet MM1W3V3-MM1W330; MM1W12 row (type code FHW): VZ 11.4/12/12.6 V at IZT = 21 mA; ZZT = 9 ohm maximum at IZT; IR = 5 uA at VR = 9 V; admissible zener current IZM = 79 mA.",
+    "This datasheet publishes no ZZK/IZK knee-impedance column, so zener knee sharpness has no independent input (NBV would be held at its default downstream).",
+    "PD = 1000 mW at Tc = 75 degC, RthJA = 375 degC/W, Tj/Tstg -55 to +150 degC (p. 1 maximum ratings).",
+    "No junction/diode capacitance is published anywhere in the datasheet (table or figure).",
+    "No reverse recovery or switching time is published."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "MM1W12",
+  "omission_reason": "No usable electrical curves: the only figures are Fig.1 power derating vs ambient temperature and Fig.2 typical transient thermal impedance (p. 3), both family-level thermal plots. The datasheet contains no zener IV, forward IV, leakage, or capacitance characteristic curves, so no curve points could be digitized.",
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": {
+      "conditions": "IZT zener test current at which VZ and ZZT are specified; ZZT = 9 ohm maximum at IZT",
+      "page_reference": "p. 2 electrical characteristics, MM1W12 row",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.021
+    },
+    "breakdown_voltage": {
+      "conditions": "VZ nominal at IZT = 21 mA, Ta = 25 degC; VZ min 11.4 V, max 12.6 V on the same row",
+      "page_reference": "p. 2 electrical characteristics, MM1W12 row",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 12.0
+    },
+    "capacitance": null,
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 200 mA, Ta = 25 degC; forward voltage row of the maximum ratings table, common to all MM1W types",
+          "page_reference": "p. 1 maximum ratings",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.2
+        },
+        "voltage": {
+          "conditions": "IF = 200 mA, Ta = 25 degC; forward voltage row of the maximum ratings table, common to all MM1W types",
+          "page_reference": "p. 1 maximum ratings",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 1.2
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = 9 V, Ta = 25 degC; datasheet leakage current 5 uA maximum",
+      "page_reference": "p. 2 electrical characteristics, MM1W12 row",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 4.9999999999999996e-06
+    },
+    "reverse_recovery": null,
+    "variant": "zener"
+  },
+  "usable_curves": false
+}

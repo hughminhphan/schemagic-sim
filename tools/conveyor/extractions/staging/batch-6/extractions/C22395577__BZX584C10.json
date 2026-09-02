@@ -1,0 +1,99 @@
+{
+  "curves": [
+    {
+      "name": "Zener characteristics, BZX584C10 nominal curve",
+      "page_reference": "p. 3, Fig. 1 Zener Characteristics (VZ up to 10 V)",
+      "points": [
+        {
+          "x": 9.5,
+          "y": 0.5
+        },
+        {
+          "x": 10.0,
+          "y": 5.0
+        },
+        {
+          "x": 10.2,
+          "y": 10.0
+        }
+      ],
+      "test_conditions": "TA = 25 degC, pulsed; BZX584C10 curve in the family plot",
+      "x_axis": {
+        "quantity": "zener voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "zener current",
+        "scale": "log",
+        "unit": "mA"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "revision": "Rev:1.0",
+    "title": "BZX584C2V4 THRU BZX584C43 SURFACE MOUNT ZENER DIODES"
+  },
+  "extraction_notes": [
+    "The supplied datasheet covers the BZX584C2V4 through BZX584C43 family; BZX584C10-specific tabulated values were selected from the BZX584C10 row.",
+    "The zener curve is the BZX584C10 family trace manually digitized from Fig. 1; its plotted current is in mA and its y-axis is logarithmic.",
+    "The datasheet includes family plots for capacitance and dynamic impedance but no single numeric capacitance value or capacitance curve uniquely identified for BZX584C10 was transcribed into the schema.",
+    "Reverse recovery time is not published."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "BZX584C10",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": {
+      "conditions": "IZT = 5 mA, TA = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, BZX584C10 IZT",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.005
+    },
+    "breakdown_voltage": {
+      "conditions": "IZT = 5 mA, TA = 25 degC; nominal zener voltage",
+      "page_reference": "p. 2, Electrical Characteristics, BZX584C10 VZ at IZT",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 10.0
+    },
+    "capacitance": null,
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 10 mA, TA = 25 degC",
+          "page_reference": "p. 1, Maximum Ratings, Forward Voltage",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.01
+        },
+        "voltage": {
+          "conditions": "IF = 10 mA, TA = 25 degC",
+          "page_reference": "p. 1, Maximum Ratings, Forward Voltage",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.9
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = 7.0 V, TA = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, BZX584C10 IR@VR",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 2e-07
+    },
+    "reverse_recovery": null,
+    "variant": "zener"
+  },
+  "usable_curves": true
+}

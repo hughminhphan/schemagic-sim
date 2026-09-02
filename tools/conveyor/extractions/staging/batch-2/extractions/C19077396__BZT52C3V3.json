@@ -1,0 +1,73 @@
+{
+  "schema_version": "1.0.0",
+  "mpn": "BZT52C3V3",
+  "manufacturer": "hongjiacheng",
+  "family": "diode",
+  "datasheet_identity": {
+    "title": "BZT52C2V0 THRU BZT52C75 SURFACE MOUNT ZENER DIODES",
+    "revision": "Rev:1.0",
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ]
+  },
+  "usable_curves": false,
+  "curves": [],
+  "specs": {
+    "variant": "zener",
+    "forward_voltage_points": [
+      {
+        "current": {
+          "value": 0.01,
+          "unit": "A",
+          "conditions": "IF = 10 mA, Ta = 25 degC; maximum rating",
+          "page_reference": "p. 1, Maximum Ratings, Forward Voltage",
+          "source_kind": "maximum"
+        },
+        "voltage": {
+          "value": 0.9,
+          "unit": "V",
+          "conditions": "IF = 10 mA, Ta = 25 degC; maximum rating",
+          "page_reference": "p. 1, Maximum Ratings, Forward Voltage",
+          "source_kind": "maximum"
+        }
+      }
+    ],
+    "reverse_current": {
+      "value": 0.000005,
+      "unit": "A",
+      "conditions": "IR = 5 microA maximum at VR = 1.0 V, Ta = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, BZT52C3V3 row",
+      "source_kind": "maximum"
+    },
+    "capacitance": null,
+    "reverse_recovery": null,
+    "breakdown_voltage": {
+      "value": 3.3,
+      "unit": "V",
+      "conditions": "Reverse zener voltage VZ nominal at IZT = 5 mA, Ta = 25 degC; inclusive table bounds 3.14 V minimum and 3.47 V maximum",
+      "page_reference": "p. 2, Electrical Characteristics, BZT52C3V3 row",
+      "source_kind": "typical"
+    },
+    "breakdown_current": {
+      "value": 0.005,
+      "unit": "A",
+      "conditions": "IZT = 5 mA, the reverse current at which nominal VZ is specified, Ta = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, BZT52C3V3 row",
+      "source_kind": "typical"
+    }
+  },
+  "extraction_notes": [
+    "Zener semantics preserved: the nominal reverse breakdown voltage VZ = 3.30 V is paired with the tabulated reverse test current IZT = 5 mA, not with the forward-voltage rating.",
+    "The BZT52C3V3 row gives VZ = 3.14 V minimum, 3.30 V nominal, and 3.47 V maximum at IZT = 5 mA; maximum Zener impedance ZZT = 95 ohm at IZT; maximum knee impedance ZZK = 600 ohm at IZK = 1.0 mA; admissible IZM = 5 mA; and temperature coefficient at IZTC from -3.5 to 0 mV/degC.",
+    "The BZT52C3V3 row gives maximum reverse leakage IR = 5 microA at VR = 1.0 V and Ta = 25 degC. The p. 1 maximum ratings give PD = 350 mW and VF = 0.9 V maximum at IF = 10 mA.",
+    "No usable target-specific DC curve was extracted: p. 3 Fig. 1 is a family zener-characteristics plot whose visible low-voltage traces are not individually identified as BZT52C3V3 or 3.3 V; labels include 2.4 V and 4.7 V but no uniquely identified 3.3 V trace. No points were substituted, interpolated, or synthesized.",
+    "No numeric capacitance value specific to BZT52C3V3 is tabulated, and the p. 3 capacitance plot is a family-level typical plot without a uniquely identified 3.3 V trace; capacitance is null.",
+    "No reverse-recovery-time specification or test circuit is published in the supplied datasheet, so reverse recovery is null.",
+    "The supplied datasheet covers the BZT52C2V0 through BZT52C75 family; this extraction is restricted to the BZT52C3V3 row.",
+    "The supplied PDF SHA-256 was verified as 1e58426ecb363e87dbad0da3e5a12350aadc7203342e2c339877f1de5b2d7631."
+  ],
+  "omission_reason": "No usable target-specific DC curve: p. 3 Fig. 1 does not uniquely identify a BZT52C3V3/3.3 V trace; assigning one of the unlabeled family traces would not be target-specific, so curves are omitted rather than substituted or interpolated."
+}

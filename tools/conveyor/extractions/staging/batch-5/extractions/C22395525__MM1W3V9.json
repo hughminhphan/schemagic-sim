@@ -1,0 +1,119 @@
+{
+  "curves": [
+    {
+      "name": "Fig. 1 Power Derating Curve (family-wide, applies to MM1W3V9)",
+      "page_reference": "3",
+      "points": [
+        {
+          "x": 0,
+          "y": 1.0
+        },
+        {
+          "x": 25,
+          "y": 1.0
+        },
+        {
+          "x": 50,
+          "y": 1.0
+        },
+        {
+          "x": 75,
+          "y": 1.0
+        },
+        {
+          "x": 100,
+          "y": 0.667
+        },
+        {
+          "x": 125,
+          "y": 0.333
+        },
+        {
+          "x": 150,
+          "y": 0.0
+        }
+      ],
+      "test_conditions": "Ratings and characteristics curves stated at Ta = 25 degC unless otherwise specified; curve is drawn flat at 1.0 W from 0 degC to 75 degC ambient, then derates linearly to 0 W at 150 degC. Interior points at 100 degC and 125 degC are read from the drawn straight-line segment (slope -1.0 W / 75 degC).",
+      "x_axis": {
+        "quantity": "Ambient temperature Ta",
+        "scale": "linear",
+        "unit": "degC"
+      },
+      "y_axis": {
+        "quantity": "Power dissipation PD",
+        "scale": "linear",
+        "unit": "W"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "1",
+      "2",
+      "3",
+      "4"
+    ],
+    "revision": "Rev:1.0",
+    "title": "MM1W3V3 THRU MM1W330 Surface Mount Zener Diodes (SOD-123 Surface Mount Silicon Zener Diodes)"
+  },
+  "extraction_notes": [
+    "Family datasheet MM1W3V3 THRU MM1W330; target-specific evidence taken from the MM1W3V9 row (type code FHF) of the Electrical Characteristics table on page 2.",
+    "MM1W3V9 row values (page 2, Ta = 25 degC unless otherwise noted): VZ min 3.70 V / nom 3.9 V / max 4.10 V at IZT = 64 mA; maximum zener impedance ZZT = 9.0 ohm at IZT = 64 mA; leakage IR = 50 uA at VR = 1 V; admissible zener current IZM = 243 mA. ZZT and IZM have no dedicated schema field and are recorded here.",
+    "Family maximum ratings (page 1, Ta = 25 degC unless otherwise specified): power dissipation PD = 1000 mW at Tc = 75 degC; VF = 1.2 V at IF = 200 mA; Tstg and Tj -55 to +150 degC; typical thermal resistance RthJA = 375 degC/W.",
+    "Polarity: cathode line (band) denotes the cathode end; SOD-123 package (page 1). Zener operates in reverse breakdown: VZ is the reverse voltage across cathode-anode at reverse current IZT.",
+    "Note an internal datasheet inconsistency: the Maximum Ratings table states PD = 1000 mW at Tc = 75 degC (case temperature), while Fig. 1 derates PD versus ambient temperature Ta with the knee at 75 degC. The curve is digitized as drawn (ambient temperature axis).",
+    "Fig. 2 'Typical Transient Thermal Impedance' (page 3, family-wide, log-log, 0.01-100 s vs 1-1000 degC/W) was omitted: the plot has no legible intermediate gridline crossings in the rendered PDF to digitize real points with confidence, so extracting it would require inventing values.",
+    "No capacitance and no reverse-recovery specifications appear anywhere in the datasheet; those fields are null.",
+    "source_kind 'typical' on the two test-condition currents (IF = 200 mA, IZT = 64 mA) and on the nominal VZ marks stated datasheet condition/nominal columns; the schema enum has no 'specified condition' or 'nominal' option."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "MM1W3V9",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": {
+      "conditions": "IZT, reverse (zener) test current at which VZ and ZZT are specified for MM1W3V9, Ta = 25 degC unless otherwise noted. Stated test-condition current, not a min/typ/max distribution value.",
+      "page_reference": "2",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.064
+    },
+    "breakdown_voltage": {
+      "conditions": "Nominal reverse zener voltage VZ at IZT = 64 mA, Ta = 25 degC unless otherwise noted; datasheet row MM1W3V9 specifies VZ min = 3.70 V, nom = 3.9 V, max = 4.10 V at the same IZT. Nominal value recorded here; source_kind 'typical' denotes the nominal column.",
+      "page_reference": "2",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 3.9
+    },
+    "capacitance": null,
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "Forward bias test condition for the VF maximum rating; Maximum Ratings table, Ta = 25 degC unless otherwise specified. Stated test-condition current, not a min/typ/max distribution value.",
+          "page_reference": "1",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 0.2
+        },
+        "voltage": {
+          "conditions": "Forward voltage at IF = 200 mA; Maximum Ratings table, Ta = 25 degC unless otherwise specified",
+          "page_reference": "1",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 1.2
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "Reverse leakage current IR at reverse voltage VR = 1 V, Ta = 25 degC unless otherwise noted (Electrical Characteristics row MM1W3V9). Table column 'Leakage Current IR@VR' is not explicitly labeled min/typ/max; treated as the specified upper limit per datasheet convention.",
+      "page_reference": "2",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 4.9999999999999996e-05
+    },
+    "reverse_recovery": null,
+    "variant": "zener"
+  },
+  "usable_curves": true
+}

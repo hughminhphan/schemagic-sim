@@ -1,0 +1,147 @@
+{
+  "curves": [
+    {
+      "name": "Typical forward voltage, family curve ES1F-ES1G",
+      "page_reference": "p. 2 Fig. 3",
+      "points": [
+        {
+          "x": 0.82,
+          "y": 0.01
+        },
+        {
+          "x": 0.91,
+          "y": 0.1
+        },
+        {
+          "x": 1.05,
+          "y": 1.0
+        },
+        {
+          "x": 1.24,
+          "y": 10.0
+        },
+        {
+          "x": 1.4,
+          "y": 20.0
+        }
+      ],
+      "test_conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle; family curve labeled ES1F-ES1G",
+      "x_axis": {
+        "quantity": "instantaneous forward voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "instantaneous forward current",
+        "scale": "log",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "Typical reverse characteristics, ES1 family",
+      "page_reference": "p. 2 Fig. 4",
+      "points": [
+        {
+          "x": 0.0,
+          "y": 4e-08
+        },
+        {
+          "x": 20.0,
+          "y": 6e-08
+        },
+        {
+          "x": 40.0,
+          "y": 9e-08
+        },
+        {
+          "x": 80.0,
+          "y": 1.8e-07
+        },
+        {
+          "x": 100.0,
+          "y": 3e-07
+        },
+        {
+          "x": 120.0,
+          "y": 1e-06
+        }
+      ],
+      "test_conditions": "Ta = 25 degC and 125 degC traces; ES1 family plot, selected 25 degC trace",
+      "x_axis": {
+        "quantity": "percent of rated peak reverse voltage",
+        "scale": "linear",
+        "unit": "%"
+      },
+      "y_axis": {
+        "quantity": "instantaneous reverse current",
+        "scale": "log",
+        "unit": "A"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ],
+    "revision": "Rev:1.1",
+    "title": "ES1A THRU ES1M - SURFACE MOUNT FAST RECOVERY RECTIFIER"
+  },
+  "extraction_notes": [
+    "Forward voltage is the maximum instantaneous VF for the ES1F-ES1G group at IF = 1 A.",
+    "The reverse-current table also gives 200 uA maximum at Ta = 125 degC; the 25 degC row is transcribed as the primary reverse-current input.",
+    "Forward and reverse curves are family-level typical plots; the ES1F-ES1G forward trace includes ES1G.",
+    "Reverse recovery time is a maximum value under the stated IF, IR, and Irr conditions."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "ES1G",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": null,
+    "breakdown_voltage": null,
+    "capacitance": {
+      "conditions": "4.0 V DC, 1 MHz, Ta = 25 degC; typical junction capacitance",
+      "page_reference": "p. 2, Electrical Characteristics, CJ",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 1.8e-11
+    },
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "Ta = 25 degC, IF = 1.0 A; ES1F-ES1G group",
+          "page_reference": "p. 2, Electrical Characteristics",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 1.0
+        },
+        "voltage": {
+          "conditions": "Ta = 25 degC, IF = 1.0 A; ES1F-ES1G group",
+          "page_reference": "p. 2, Electrical Characteristics",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 1.3
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = VDC = 400 V, Ta = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, IR1",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 2e-06
+    },
+    "reverse_recovery": {
+      "conditions": "IF = 0.5 A, IR = 1.0 A, Irr = 0.25 A",
+      "page_reference": "p. 2, Electrical Characteristics, Trr",
+      "source_kind": "maximum",
+      "unit": "s",
+      "value": 3.5e-08
+    },
+    "variant": "rectifier"
+  },
+  "usable_curves": true
+}

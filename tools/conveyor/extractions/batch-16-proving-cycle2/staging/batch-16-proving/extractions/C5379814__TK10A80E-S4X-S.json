@@ -1,0 +1,157 @@
+{
+  "curves": [],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4",
+      "p. 5",
+      "p. 6",
+      "p. 7",
+      "p. 8",
+      "p. 9"
+    ],
+    "revision": "Rev. 3.0, 2014-03-04",
+    "title": "TK10A80E Silicon N-Channel MOS (\u03c0-MOS)"
+  },
+  "extraction_notes": [
+    "IDSS maximum is 10 uA at VDS=640 V, VGS=0 V. Gate charge typicals are Qg=46 nC, Qgs1=13 nC, Qgd=18 nC at VDD approximately 400 V, VGS=10 V, ID=10 A.",
+    "Body-diode typical reverse recovery is trr=1200 ns and Qrr=12 uC at IDR=10 A, VGS=0 V, -dIDR/dt=100 A/us. Thermal resistances are Rth(ch-c)=2.5 degC/W and Rth(ch-a)=62.5 degC/W.",
+    "Figures 8.1, 8.2, 8.3 and 8.9 contain real output, transfer, and capacitance traces with Ta=25 degC and pulse-test labels. They were omitted because the supplied context requires a numeric pulse_width_s for pulsed curves, while the datasheet states no pulse width for these figures. No pulse width was invented."
+  ],
+  "family": "mosfet",
+  "manufacturer": "TOSHIBA",
+  "mpn": "TK10A80E,S4X(S",
+  "omission_reason": "The datasheet has output, transfer, and capacitance plots, but they are labeled pulse test without a numeric pulse width. The supplied extraction rules require pulse_width_s for pulsed curves, so no curve was retained.",
+  "schema_version": "1.0.0",
+  "specs": {
+    "body_diode": {
+      "conditions": "IDR = 10 A, VGS = 0 V, Ta = 25 degC; magnitude of table's -1.7 V",
+      "locator": {
+        "page": 3,
+        "row": "Diode forward voltage (VDSF), IDR=10A, VGS=0V, MAX",
+        "table": "6.4 Source-Drain Characteristics"
+      },
+      "page_reference": "p. 3, Source-Drain Characteristics, VDSF, MAX",
+      "source_kind": "maximum",
+      "unit": "V",
+      "value": 1.7
+    },
+    "breakdown_voltage": {
+      "conditions": "ID = 10 mA, VGS = 0 V, Ta = 25 degC",
+      "locator": {
+        "page": 3,
+        "row": "Drain-source breakdown voltage (V(BR)DSS), ID=10mA, VGS=0V, MIN",
+        "table": "6.1 Static Characteristics"
+      },
+      "page_reference": "p. 3, Static Characteristics, V(BR)DSS, MIN",
+      "source_kind": "minimum",
+      "unit": "V",
+      "value": 800.0
+    },
+    "ciss": {
+      "conditions": "VDS = 25 V, VGS = 0 V, f = 1 MHz, Ta = 25 degC",
+      "locator": {
+        "page": 3,
+        "row": "Input capacitance (Ciss), VDS=25V, VGS=0V, f=1MHz, TYP",
+        "table": "6.2 Dynamic Characteristics"
+      },
+      "page_reference": "p. 3, Dynamic Characteristics, Ciss, TYP",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 2e-09
+    },
+    "coss": {
+      "conditions": "VDS = 25 V, VGS = 0 V, f = 1 MHz, Ta = 25 degC",
+      "locator": {
+        "page": 3,
+        "row": "Output capacitance (Coss), VDS=25V, VGS=0V, f=1MHz, TYP",
+        "table": "6.2 Dynamic Characteristics"
+      },
+      "page_reference": "p. 3, Dynamic Characteristics, Coss, TYP",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 1.5e-10
+    },
+    "crss": {
+      "conditions": "Ta = 25 degC; dynamic-characteristics table does not state a separate bias for Crss",
+      "locator": {
+        "page": 3,
+        "row": "Reverse transfer capacitance (Crss), TYP",
+        "table": "6.2 Dynamic Characteristics"
+      },
+      "page_reference": "p. 3, Dynamic Characteristics, Crss, TYP",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 1.5e-11
+    },
+    "polarity": "n",
+    "rdson_points": [
+      {
+        "current": {
+          "conditions": "VGS = 10 V",
+          "locator": {
+            "page": 3,
+            "row": "Drain-source on-resistance, VGS=10V, ID=5A",
+            "table": "6.1 Static Characteristics"
+          },
+          "page_reference": "p. 3, Static Characteristics, RDS(ON)",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 5.0
+        },
+        "resistance": {
+          "conditions": "VGS = 10 V, ID = 5 A, Ta = 25 degC",
+          "locator": {
+            "page": 3,
+            "row": "Drain-source on-resistance, VGS=10V, ID=5A, TYP",
+            "table": "6.1 Static Characteristics"
+          },
+          "page_reference": "p. 3, Static Characteristics, RDS(ON), TYP",
+          "source_kind": "typical",
+          "unit": "ohm",
+          "value": 0.7
+        },
+        "vgs": {
+          "conditions": "VGS = 10 V",
+          "locator": {
+            "page": 3,
+            "row": "Drain-source on-resistance, VGS=10V, ID=5A",
+            "table": "6.1 Static Characteristics"
+          },
+          "page_reference": "p. 3, Static Characteristics, RDS(ON)",
+          "source_kind": "typical",
+          "unit": "V",
+          "value": 10.0
+        }
+      }
+    ],
+    "threshold_max": {
+      "conditions": "VDS = 10 V, ID = 1 mA, Ta = 25 degC",
+      "locator": {
+        "page": 3,
+        "row": "Gate threshold voltage (Vth), VDS=10V, ID=1mA, MAX",
+        "table": "6.1 Static Characteristics"
+      },
+      "page_reference": "p. 3, Static Characteristics, Gate threshold voltage, MAX",
+      "source_kind": "maximum",
+      "unit": "V",
+      "value": 4.0
+    },
+    "threshold_min": {
+      "conditions": "VDS = 10 V, ID = 1 mA, Ta = 25 degC",
+      "locator": {
+        "page": 3,
+        "row": "Gate threshold voltage (Vth), VDS=10V, ID=1mA, MIN",
+        "table": "6.1 Static Characteristics"
+      },
+      "page_reference": "p. 3, Static Characteristics, Gate threshold voltage, MIN",
+      "source_kind": "minimum",
+      "unit": "V",
+      "value": 2.5
+    },
+    "threshold_typ": null
+  },
+  "usable_curves": false
+}
