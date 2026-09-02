@@ -1,5 +1,22 @@
 name: CI
 
+# BRANCH PROTECTION: main requires exactly these four status checks. The check
+# name is the job's `name:` value, so these strings must not change without
+# updating the branch-protection rule at the same time.
+#
+#   1. Tests, models, and build                                  (job hard-gates)
+#   2. Simulator, Measurement, and Designer browser integration  (job browser-integration)
+#   3. Native versus WASM comparison                             (job native-comparison)
+#   4. Designer Chromium runtime and retained heap               (job designer-runtime-audit)
+#
+# Environment-bound budgets are NOT PR-blocking. The wall-clock performance
+# budgets and the JS-heap retained-growth budgets are measured on one machine
+# and are scheduling noise on a shared runner, so they run nightly in
+# .github/workflows/nightly-budgets.yml and publish reports as artifacts.
+# The designer-runtime-audit job below still builds the app, boots Chromium and
+# executes the audit on every PR; only its environment-bound numeric comparison
+# is advisory here.
+
 on:
   push:
   pull_request:
@@ -17,10 +34,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: npm
@@ -56,6 +73,12 @@ jobs:
       - name: Install locked dependencies
         run: npm ci
 
+      # Exercise the same resolution that `npm run verify` uses locally, so a
+      # missing native binary fails here with the documented message rather
+      # than deep inside a model-package syntax check.
+      - name: Require native ngspice
+        run: npm run require:ngspice
+
       # Root tests run every workspace test script, including deterministic
       # Vitest suites and component package validation.
       - name: Run workspace tests
@@ -87,7 +110,7 @@ jobs:
         run: npm run build
 
       - name: Upload web application
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: schemagic-web-dist
           path: apps/web/dist
@@ -99,10 +122,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: npm
@@ -113,6 +136,9 @@ jobs:
       - name: Install pinned Chromium runtime
         run: npx playwright install --with-deps chromium
 
+      # playwright.config.ts excludes designer-runtime.spec.ts and
+      # performance-budget.spec.ts. Both are environment-bound budget suites and
+      # run in .github/workflows/nightly-budgets.yml instead.
       - name: Run integrated browser suite
         run: npm run test:e2e --workspace=@opencircuit/web -- --project=chromium
 
@@ -121,10 +147,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: npm
@@ -248,10 +274,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: npm
@@ -262,14 +288,37 @@ jobs:
       - name: Install pinned Chromium runtime
         run: npx playwright install --with-deps chromium
 
-      - name: Run bounded Designer runtime audit
+      # Advisory on PRs. The contract in apps/web/designer-runtime-contract.json
+      # binds wall-clock and JS-heap numbers to one machine ("Results are bound
+      # to the local headless Chromium version and host"), so a shared runner
+      # cannot arbitrate them. The nightly workflow enforces the same audit and
+      # keeps its report. A crash, a build break or a missing report still fails
+      # the job through the report-presence check below.
+      - name: Run bounded Designer runtime audit (budgets advisory)
+        id: runtime-audit
+        continue-on-error: true
         run: npm run audit:designer-runtime --workspace=@opencircuit/web
+
+      - name: Report advisory budget outcome
+        if: always()
+        shell: bash
+        run: |
+          if [ "${{ steps.runtime-audit.outcome }}" = "success" ]; then
+            echo "Designer runtime audit met its environment-bound budgets." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "### Advisory Designer runtime budget miss" >> "$GITHUB_STEP_SUMMARY"
+            echo "The environment-bound wall-clock or JS-heap budget was not met on this shared runner." >> "$GITHUB_STEP_SUMMARY"
+            echo "This does not block the pull request. The nightly budgets workflow is the enforcing run." >> "$GITHUB_STEP_SUMMARY"
+            echo "::notice::Designer runtime budgets are advisory on pull requests; see the nightly budgets workflow."
+          fi
 
       - name: Upload environment-bound runtime report and failure traces
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: designer-runtime-audit-${{ github.run_id }}-${{ github.run_attempt }}
-          path: apps/web/test-results/designer-runtime
+          path: |
+            apps/web/test-results/designer-runtime
+            apps/web/playwright-report/designer-runtime
           if-no-files-found: error
           retention-days: 30

@@ -1,6 +1,14 @@
 import { defineConfig, devices } from "@playwright/test";
 
 const externalBaseUrl = process.env.SCHEMAGIC_E2E_BASE_URL;
+const isCI = process.env.CI === "true" || process.env.CI === "1";
+
+// Stable release evidence (the workflow_dispatch path in
+// .github/workflows/designer-runtime-release.yml) writes a persisted report and
+// receipt, so it must observe a single unretried attempt. Every other CI run of
+// this environment-bound suite is a drift signal and may retry.
+const producesStableReleaseEvidence = process.env.DESIGNER_RUNTIME_REPORT_OUTPUT !== undefined;
+const retries = producesStableReleaseEvidence ? 0 : (isCI ? 2 : 0);
 
 export default defineConfig({
   testDir: "./e2e",
@@ -8,9 +16,13 @@ export default defineConfig({
   timeout: 120_000,
   fullyParallel: false,
   workers: 1,
-  retries: 0,
+  retries,
   expect: { timeout: 15_000 },
-  reporter: "line",
+  reporter: producesStableReleaseEvidence ? "line" : [
+    ["line"],
+    ["html", { outputFolder: "playwright-report/designer-runtime", open: "never" }],
+    ["json", { outputFile: "test-results/designer-runtime/report.json" }],
+  ],
   outputDir: "test-results/designer-runtime",
   preserveOutput: "always",
   projects: [{
