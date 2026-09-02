@@ -4,7 +4,7 @@ Date: 2026-08-23
 
 ## Scope
 
-This record narrows the source-inspection recovery in `docs/batch-22-terra-mosfet-extraction-quality-recovery.md`. It adds a structural exemplar and same-turn validation requirement. It does not change the frozen denominator, evidence meanings, one-repair ceiling, prefit or final thresholds, physics rules, or fit-pass limit.
+This record narrows the source-inspection recovery in `docs/campaigns/batch-22-terra-mosfet-extraction-quality-recovery.md`. It adds a structural exemplar and same-turn validation requirement. It does not change the frozen denominator, evidence meanings, one-repair ceiling, prefit or final thresholds, physics rules, or fit-pass limit.
 
 ## Probe result
 

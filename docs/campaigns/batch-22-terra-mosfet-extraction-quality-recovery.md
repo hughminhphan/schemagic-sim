@@ -4,7 +4,7 @@ Date: 2026-08-23
 
 ## Scope
 
-This record narrows Batch 22 execution after the contract correction in `docs/batch-22-terra-mosfet-contract-recovery.md`. It changes extraction scheduling and source-inspection instructions only. The frozen denominator, topology parks, evidence semantics, one-repair ceiling, prefit thresholds, physics rules, and single-pass fit rule are unchanged.
+This record narrows Batch 22 execution after the contract correction in `docs/campaigns/batch-22-terra-mosfet-contract-recovery.md`. It changes extraction scheduling and source-inspection instructions only. The frozen denominator, topology parks, evidence semantics, one-repair ceiling, prefit thresholds, physics rules, and single-pass fit rule are unchanged.
 
 ## Observed stop
 

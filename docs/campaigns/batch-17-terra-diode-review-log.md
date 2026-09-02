@@ -93,4 +93,4 @@ The reviewer initially blocked the fit result because BAS85 had a terminal failu
 
 ## Promotion scope
 
-Promotion is deterministic and survivor-only. The 27 packages named by `docs/batch-17-terra-diode-promotion-manifest.json` are the complete strict release set. `SS5150C` remains a recorded original fit-stage success but is excluded from the reviewed library. No failed, duplicate, preflight-rejected, strict-release-rejected, or topology-parked candidate was copied. No source PDF, extraction response, job, SQLite database, or scratch artifact entered the reviewed library.
+Promotion is deterministic and survivor-only. The 27 packages named by `docs/campaigns/batch-17-terra-diode-promotion-manifest.json` are the complete strict release set. `SS5150C` remains a recorded original fit-stage success but is excluded from the reviewed library. No failed, duplicate, preflight-rejected, strict-release-rejected, or topology-parked candidate was copied. No source PDF, extraction response, job, SQLite database, or scratch artifact entered the reviewed library.

@@ -4,7 +4,7 @@ Date: 2026-08-13
 
 ## Authorization
 
-The scheduler upgrade was authorized by `docs/mosfet-hardening-cycle-2-authorization.md` with one implementation, one bounded remediation, and one independent re-review. Concurrency above four remained disabled until approval.
+The scheduler upgrade was authorized by `docs/campaigns/mosfet-hardening-cycle-2-authorization.md` with one implementation, one bounded remediation, and one independent re-review. Concurrency above four remained disabled until approval.
 
 ## Initial implementation
 

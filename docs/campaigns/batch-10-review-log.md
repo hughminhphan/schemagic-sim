@@ -9,7 +9,7 @@ Reviewer: `gpt-5.6-sol independent reviewer`
 Verdict: **PASS**.
 
 1. Verified the repository tripwire at `/Users/hughp/Documents/opencircuit` with starting HEAD `ed2023283880f8e0e1aaf17f5096b4a64b45db50`.
-2. Reviewed exactly the 49 entries with `outcome: "staged"` in `docs/batch-10-execution.json`, comprising 32 F1 and 17 F2 candidates.
+2. Reviewed exactly the 49 entries with `outcome: "staged"` in `docs/campaigns/batch-10-execution.json`, comprising 32 F1 and 17 F2 candidates.
 3. Approved 7 candidates for promotion eligibility and rejected 42. No candidate was promoted or copied into the reviewed library.
 4. The reviewed library remained exactly 703 packages. Its authoritative aggregate fingerprint remained `72bd954cddef81138d996859a4596808b5a1d017e0b84a55f7388c761eae44ac` before and after review.
 5. No numerical fitted parameter, fit gate, hard bound, collision rule, provenance rule, code, schema, conveyor state, feeder data, or reviewed-library package was changed.

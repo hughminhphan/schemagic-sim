@@ -4,12 +4,12 @@ Date: 2026-08-23.
 
 ## User direction and effect
 
-After Batch 15R reached its tracked terminal proving failure, Hugh directly instructed: “okay lets keep going then”. This is the new post-failure direction required by `docs/batch-15r-proving-execution.json`.
+After Batch 15R reached its tracked terminal proving failure, Hugh directly instructed: “okay lets keep going then”. This is the new post-failure direction required by `docs/campaigns/batch-15r-proving-execution.json`.
 
 This authorization supersedes only:
 
 1. the Batch 15R terminal that withheld any new campaign redirect; and
-2. the `docs/scale-2k-campaign-authorization.md` requirement that Batch 16 may begin only after Batch 15 proving passes.
+2. the `docs/campaigns/scale-2k-campaign-authorization.md` requirement that Batch 16 may begin only after Batch 15 proving passes.
 
 It does not relax any electrical, fit, hard-bound, evidence, citation, provenance, collision, package, independent-review, promotion, deployment, or publishing gate.
 

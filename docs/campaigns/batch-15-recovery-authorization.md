@@ -10,8 +10,8 @@ A Fable 5 advisor independently reviewed the tracked campaign records, approved 
 
 This instruction supersedes only these prior stop clauses:
 
-1. `STOP_CAMPAIGN_GATE_FAIL` and the no-remediation/no-candidate-execution flags in `docs/batch-15-proving-execution.json`.
-2. The proving-gate terminal in section 10 of `docs/scale-2k-campaign-authorization.md`, contingent on the bounded recovery below.
+1. `STOP_CAMPAIGN_GATE_FAIL` and the no-remediation/no-candidate-execution flags in `docs/campaigns/batch-15-proving-execution.json`.
+2. The proving-gate terminal in section 10 of `docs/campaigns/scale-2k-campaign-authorization.md`, contingent on the bounded recovery below.
 3. The prior tracked-code-change limit, extended to one bounded typed evidence-interface correction cycle.
 
 It does not supersede the frozen manifest, fixed proving thresholds, F2 residual gates, published hard bounds, evidence completeness, content-addressed provenance, collision checks, package checks, independent review, reviewed-library admission policy, artifact isolation, or publishing and deployment gates.

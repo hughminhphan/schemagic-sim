@@ -6,7 +6,7 @@ Reviewer: `gpt-5.6-sol independent reviewer (batch-1 scale campaign)`
 
 Branch: `main`
 
-Scope: exactly 82 packages, comprising 31 staged outcomes selected from `docs/batch-1-regeneration.json` and all 51 packages in the fresh batch-1 tranche. This was one bounded independent review pass. Staging evidence remained unchanged. No model was refitted and no fitter or conveyor source was changed.
+Scope: exactly 82 packages, comprising 31 staged outcomes selected from `docs/campaigns/batch-1-regeneration.json` and all 51 packages in the fresh batch-1 tranche. This was one bounded independent review pass. Staging evidence remained unchanged. No model was refitted and no fitter or conveyor source was changed.
 
 ## Final verdict
 

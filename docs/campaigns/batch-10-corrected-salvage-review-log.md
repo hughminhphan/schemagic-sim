@@ -44,10 +44,10 @@ Preserved records and hashes:
 
 | Record | SHA-256 |
 | --- | --- |
-| `docs/batch-10-salvage-review-log.md` | `4a79d5bf62441ba887eeb1d7dcace46bcb98e0810f80e3adf4570f3d55511ea2` |
-| `docs/batch-10-salvage-promotion-manifest.json` | `c2c4ee02d6c3b4d61714ca747d1d079e42d8d290df035419a085e7b919d744f5` |
-| `docs/batch-10-corrected-salvage-selection.json` | `ef709afffdf3d130adfc612dba4b5d4e763680ee1b20b34e548cd773071bd757` |
-| `docs/batch-10-corrected-salvage-execution.json` | `bd2318bdd505abe56e825ea6bebea2caa069a591b50f8253ef6ad212dbb99910` |
+| `docs/campaigns/batch-10-salvage-review-log.md` | `4a79d5bf62441ba887eeb1d7dcace46bcb98e0810f80e3adf4570f3d55511ea2` |
+| `docs/campaigns/batch-10-salvage-promotion-manifest.json` | `c2c4ee02d6c3b4d61714ca747d1d079e42d8d290df035419a085e7b919d744f5` |
+| `docs/campaigns/batch-10-corrected-salvage-selection.json` | `ef709afffdf3d130adfc612dba4b5d4e763680ee1b20b34e548cd773071bd757` |
+| `docs/campaigns/batch-10-corrected-salvage-execution.json` | `bd2318bdd505abe56e825ea6bebea2caa069a591b50f8253ef6ad212dbb99910` |
 
 The original BLOCK records and blocked-history tree remain untouched.
 
