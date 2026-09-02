@@ -817,7 +817,7 @@ function candidateMarkup(
     : "";
   const sourcingSearchColumn = productionSourcingSearchEnabled ? `<th scope="col">External search</th>` : "";
   const sourcingSearchBoundary = productionSourcingSearchEnabled
-    ? `<p id="designer-lcsc-search-boundary" class="designer-lcsc-boundary" data-lcsc-search-boundary><strong>External exact-MPN search only.</strong> scheMAGIC has not queried or verified stock, price, lifecycle, lead time, packaging, or orderability.</p>`
+    ? `<p id="designer-lcsc-search-boundary" class="designer-lcsc-boundary" data-lcsc-search-boundary><strong>External exact-MPN search only.</strong> Robonyx has not queried or verified stock, price, lifecycle, lead time, packaging, or orderability.</p>`
     : "";
   const productionValueLabel = policyCandidate ? "OBSERVED VALUES" : productionContextVerified ? "GENERATED VALUES" : "PERSISTED VALUES";
   const billOfMaterialsLabel = policyCandidate ? "Observed" : productionContextVerified ? "Generated" : "Persisted";

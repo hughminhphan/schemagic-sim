@@ -110,7 +110,7 @@ function result(request: DesignRequest): DesignResult {
 function adapter(request: DesignRequest, name: string): DesignerApplicationAdapter {
   return {
     application: request.application,
-    name: `scheMAGIC ${name}`,
+    name: `Robonyx ${name}`,
     shortName: name,
     description: `${name} shared-shell fixture`,
     status: "ready",
@@ -123,7 +123,7 @@ function adapter(request: DesignRequest, name: string): DesignerApplicationAdapt
   };
 }
 
-describe("scheMAGIC Designer shared UI contract", () => {
+describe("Robonyx Designer shared UI contract", () => {
   it("renders both frozen application families through the same chooser contract", () => {
     const html = applicationChooser([
       adapter(motorRequest, "Motor Designer"),
@@ -168,7 +168,7 @@ describe("scheMAGIC Designer shared UI contract", () => {
     expect(html).toContain("<button disabled>BOM CSV</button>");
     expect(html).toContain("<button disabled>SPICE netlist</button>");
     expect(html).toContain("BOM and SPICE export require the exact production V2 engineering and execution contexts");
-    expect(html).toContain("Open in scheMAGIC Simulator");
+    expect(html).toContain("Open in Robonyx Simulator");
     expect(html).toContain("source:&lt;unsafe&gt;");
     expect(html).not.toContain("source:<unsafe>");
   });
@@ -177,7 +177,7 @@ describe("scheMAGIC Designer shared UI contract", () => {
     for (const fixture of Object.values(SYNTHETIC_SOURCING_FIXTURES)) {
       const html = renderSourcingStatus(fixture.metrics, fixture.snapshots, fixture.policy);
       expect(html).toContain(`data-status="${fixture.metrics.status}"`);
-      expect(html).toContain("scheMAGIC Sourcing");
+      expect(html).toContain("Robonyx Sourcing");
     }
   });
 

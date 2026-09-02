@@ -103,7 +103,7 @@ test("production chooser has an axe-clean critical path and keyboard-visible nam
   await expectNoApplicationDialogs(page);
   await expectReducedMotionContract(page);
 
-  const wordmark = page.getByRole("link", { name: "scheMAGIC Designer" });
+  const wordmark = page.getByRole("link", { name: "Robonyx Designer" });
   const designer = page.getByRole("link", { name: "Designer", exact: true });
   const simulator = page.getByRole("link", { name: "Simulator", exact: true });
   const applicationActions = page.getByRole("button", { name: /^Start (?:Power|Motor) design$/u });

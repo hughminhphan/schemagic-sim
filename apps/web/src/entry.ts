@@ -9,10 +9,10 @@ async function bootEntry(): Promise<void> {
   }
   const root = document.querySelector<HTMLElement>("#app");
   if (!root) throw new Error("Application root is missing");
-  document.title = "scheMAGIC Designer";
+  document.title = "Robonyx Designer";
   document
     .querySelector<HTMLMetaElement>('meta[name="description"]')
-    ?.setAttribute("content", "scheMAGIC Designer release candidate turns declared electrical requirements into inspectable circuit candidates.");
+    ?.setAttribute("content", "Robonyx Designer release candidate turns declared electrical requirements into inspectable circuit candidates.");
   const [{ mountDesignerRoute }, { designerApplications }] = await Promise.all([
     import("./features/designer/DesignerRoute"),
     import("./features/designer/applications"),
@@ -31,7 +31,7 @@ void bootEntry().catch((error: unknown) => {
   if (root) {
     const alert = document.createElement("p");
     alert.setAttribute("role", "alert");
-    alert.textContent = `scheMAGIC failed to load: ${error instanceof Error ? error.message : String(error)}`;
+    alert.textContent = `Robonyx failed to load: ${error instanceof Error ? error.message : String(error)}`;
     root.replaceChildren(alert);
   }
   console.error(error);
