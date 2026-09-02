@@ -4,6 +4,10 @@ Everything on this page is subject to change. Priorities may move as numerical i
 
 If a roadmap item matters to your work, or if a missing item should be considered, please open a GitHub issue with the circuit, use case, and evidence behind the request.
 
+## Execution status (2026-09-03)
+
+Wave 1 is merged, covering the Robonyx rename, CI and documentation hygiene, the model conveyor and factory, Designer audit de-pinning, Simulator parts, and Simulator UX. Robonyx Simulator now places 40 of 43 reviewed parts, ranks and filters catalog search, starts with a coach mark and useful named trace, and includes the first teaching examples. Robonyx Designer now uses property-based release assertions and bound-typed facts, while the model pipeline has extraction dispatch, leases, cost accounting, shared-process fitting, Zener and Schottky support, and incremental evidence. Wave 2 has ten branches in flight for audit-pin hygiene, the remaining examples, sharing and embed work, clipboard editing, Falstad import, two D.2 slices, factory fixes, storage replay, and this documentation sync; current ownership and task mapping are in [BACKLOG.md](BACKLOG.md).
+
 ## v0.2.0 release-candidate baseline
 
 The Simulator now includes focused DC-sweep and noise interfaces, a Measurement Workbench, KiCad-derived editor interactions, typed probes, cancellable run provenance, and validated namespaced user `.model`/`.subckt` imports kept separate from reviewed project models. The same web release also exposes the Motor/Power Designer and validates 771 evidence-bearing model packages. The remaining work below starts from that integrated baseline.

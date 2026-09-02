@@ -2,16 +2,38 @@
 
 Describe the problem and the focused change made to address it.
 
+## Task and branch rules
+
+Name the `agent-ready` BACKLOG task and confirm it was not already in flight when started. Branch from `main`, use one task per branch and one pull request per branch, write only the task's **Files owned**, and stop and explain the need instead of widening the diff. Put the task id in the pull request title. Commits must not contain `Co-Authored-By`, `Generated-by`, or any other AI attribution trailer.
+
 ## Validation
 
-List the commands run and their results.
+Run the single pre-PR command and list its final result:
+
+```sh
+npm run verify
+```
+
+Native ngspice is required; set `NGSPICE_BIN` to its executable or install the Homebrew formula with `brew install ngspice`.
+
+## Planned branch protection
+
+Branch protection is planned and will be enabled by the maintainer; it is not claimed as active here: `main` will be protected and pull-request-only, with these four required check names:
+
+1. `Tests, models, and build`
+2. `Simulator, Measurement, and Designer browser integration`
+3. `Native versus WASM comparison`
+4. `Designer Chromium runtime and retained heap`
+
+The protection settings and check names are read-only for contributors.
 
 ## Checklist
 
 - [ ] My commits include a DCO `Signed-off-by` line created with `git commit -s`.
-- [ ] I have read and followed `CONTRIBUTING.md`.
-- [ ] I ran `npm test`.
-- [ ] I ran `npm run build`.
+- [ ] My commits contain no AI attribution trailer.
+- [ ] I have read and followed `CONTRIBUTING.md` and the task's **Files owned** contract in `docs/BACKLOG.md`.
+- [ ] I branched from `main`, used one task for this branch, and put the task id in the pull request title.
+- [ ] I ran `npm run verify` and it passed.
 - [ ] I added or updated tests for behavior changes.
 - [ ] I updated documentation and notices when public behavior, dependencies, or licensing changed.
 - [ ] I did not commit secrets, downloaded datasheet PDFs, vendor SPICE models, dependency directories, or local build caches.
@@ -19,13 +41,9 @@ List the commands run and their results.
 
 ## Model package checklist
 
-Complete this section for changes under `packages/model-library/models/`. Otherwise, mark it not applicable.
-
-The two model validators check different things and both are required: `validate-package.mjs` checks one package in isolation, and `validate-library.mjs` checks the library as a set and reruns the per-package validator across every registered package. `CONTRIBUTING.md` explains which is which, including the separate design-profile validator at `packages/design-library/validate-library.mjs`.
+Complete this section for changes under `packages/model-library/models/`. Otherwise, mark it not applicable. Focused package validators are useful while authoring, but `npm run verify` remains the only required pre-PR command and includes whole-library validation.
 
 - [ ] I registered new packages under `strict_evidence_contract_packages` in `packages/model-library/admission-policy.json`.
-- [ ] I ran `node packages/component-schema/validate-package.mjs <package-dir>` on each package I touched and it printed `PASS`.
-- [ ] I ran `node packages/model-library/validate-library.mjs` and it printed `PASS`.
 - [ ] The package contains `component.json`, `model.cir`, `sources.json`, `MODEL_CARD.md`, `LICENSE`, and `tests/`.
 - [ ] Every expectation has a page-level or measurement citation and complete operating conditions.
 - [ ] No datasheet PDF or vendor-authored SPICE model is included.

@@ -11,16 +11,16 @@ Requirements:
 - Node.js 22 or newer
 - npm, as bundled with Node.js
 - Git
+- Native ngspice is required; set `NGSPICE_BIN` to its executable or install the Homebrew formula with `brew install ngspice`.
 
 ```sh
 git clone https://github.com/hughminhphan/schemagic-sim.git
 cd schemagic-sim
-npm install
-npm test
-npm run build
+npm ci
+npm run verify
 ```
 
-Use `npm ci` instead of `npm install` when you want a clean install exactly matching `package-lock.json`.
+`npm run verify` is the single pre-PR command; it runs typechecking, workspace tests, model-library validation, and the production build in order.
 
 ## Repository map
 
@@ -40,14 +40,18 @@ See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for the runtime data flow and
 
 ## Before opening a pull request
 
-Run the hard local gates:
+Follow the task rules in [`docs/BACKLOG.md`](docs/BACKLOG.md): pick an `agent-ready` task that is not in flight, branch from `main`, use one task per branch and one pull request per branch, write only the task's **Files owned**, and stop and explain the need rather than widening the diff. Run `npm run verify` locally before opening the pull request, and put the task id in the pull request title. Keep changes focused, add or update tests for behavior changes, and do not commit generated caches, local virtual environments, downloaded datasheets, browser reports, or dependency directories. Commits must not contain `Co-Authored-By`, `Generated-by`, or any other AI attribution trailer.
 
-```sh
-npm test
-npm run build
-```
+### Planned branch protection
 
-Keep changes focused. Add or update tests for behavior changes. Do not commit generated caches, local virtual environments, downloaded datasheets, browser reports, or dependency directories.
+Branch protection is planned and will be enabled by the maintainer; it is not claimed as active here: `main` will be protected and accept changes through pull requests only, with these four required check names:
+
+1. `Tests, models, and build`
+2. `Simulator, Measurement, and Designer browser integration`
+3. `Native versus WASM comparison`
+4. `Designer Chromium runtime and retained heap`
+
+Contributors must treat the protection settings and these check names as read-only; only the maintainer enables or changes them.
 
 ## Adding a component model
 
@@ -85,26 +89,17 @@ Validate one package from the repository root:
 node packages/component-schema/validate-package.mjs packages/model-library/models/<manufacturer-slug>/<MPN>
 ```
 
-The command must print `PASS` before a model pull request is ready.
+This focused command is useful during authoring, but `npm run verify` is the only command required before a model pull request opens.
 
-### The two validators, and which one you need
+### Model validation during authoring
 
-The repository has two validators with similar names. They check different things and neither one replaces the other.
+`npm run verify` is the only required pre-PR command and includes whole-library model validation. During authoring, you may run `node packages/component-schema/validate-package.mjs <package-dir>` for a fast check of one simulation model package, then use the full verify command before opening the pull request. The separate `node packages/design-library/validate-library.mjs` command diagnoses Robonyx Designer engineering profiles and is not a substitute for `npm run verify`.
 
-| Validator | Validates | Run it when |
-| --- | --- | --- |
-| `node packages/component-schema/validate-package.mjs <package-dir>` | One simulation model package under `packages/model-library/models/`: its `component.json`, `sources.json`, `tests/expectations.json`, `model.cir` provenance header, licence file, and internal consistency. Takes a directory argument and prints `PASS <dir>` or `FAIL <dir>` with a reason list. | You added or edited a manufacturer **simulation model** package: anything with a `model.cir`. |
-| `node packages/model-library/validate-library.mjs` | The whole library as a set. It validates `admission-policy.json`, checks that every directory under `models/` is a real registered package, then runs the per-package validator above across every registered package with the strictness that package's admission entry demands. Takes no arguments and prints `PASS: validated N registered model packages`. | You added, removed, renamed, or re-tiered any model package, or edited `packages/model-library/admission-policy.json`. Run it after the per-package validator passes on your own package. |
-
-There is a third validator that model contributors do not normally touch: `node packages/design-library/validate-library.mjs` checks the Designer's **engineering profile** library under `packages/design-library/parts/`, which holds datasheet-derived design profiles rather than SPICE models. Run that one only when changing a design profile, a manufacturer registry entry, or a catalog release.
-
-Add `--require-evidence-contract` to the per-package validator when the package is registered under `strict_evidence_contract_packages`:
+For a package registered under `strict_evidence_contract_packages`, the focused command accepts `--require-evidence-contract`:
 
 ```sh
 node packages/component-schema/validate-package.mjs --require-evidence-contract packages/model-library/models/<manufacturer-slug>/<MPN>
 ```
-
-The pull request template asks for the library-level run; this section is the reference for what each command covers.
 
 ### Provenance hard rules
 
@@ -184,7 +179,7 @@ Create it automatically with:
 git commit -s
 ```
 
-The sign-off certifies that you have the right to submit the contribution under the project's licences. Use your real name and an email address you control. The DCO is not the same as GPG commit signing.
+The sign-off certifies that you have the right to submit the contribution under the project's licences. Use your real name and an email address you control. The DCO is not the same as GPG commit signing, and the commit must not include an AI attribution trailer.
 
 If you need to add a missing sign-off to your latest local commit, amend it before pushing:
 
