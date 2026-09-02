@@ -64,6 +64,7 @@ const expectedPinCounts: Readonly<Record<string, number>> = {
   nmos: 3,
   pmos: 3,
   opamp_ideal: 3,
+  timer_555: 8,
 };
 
 const examplesDirectory = resolve(import.meta.dirname, "../../../examples");

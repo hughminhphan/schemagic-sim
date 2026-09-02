@@ -5,6 +5,7 @@ import { pathToFileURL } from "node:url";
 import { migrateCircuit } from "@opencircuit/circuit-schema";
 import { parseBinaryRawfile } from "@opencircuit/sim-engine";
 import { generateNetlistWithCatalog } from "../../apps/web/src/catalog-netlist.ts";
+import { baseTypeForManifest } from "../../apps/web/src/catalog-truth.ts";
 
 const projectRoot = process.cwd();
 const examplesRoot = resolve(projectRoot, "examples");
@@ -20,7 +21,15 @@ for (const manufacturer of await readdir(modelsRoot, { withFileTypes: true })) {
     try {
       const manifest = JSON.parse(await readFile(resolve(packageRoot, "component.json"), "utf8"));
       const modelSource = await readFile(resolve(packageRoot, "model.cir"), "utf8");
-      parts.push({ id: `${manufacturer.name}/${packageEntry.name}`, manifest, modelSource, modelName: modelName(modelSource) });
+      const baseType = baseTypeForManifest(manifest);
+      const reviewed = manifest.test_results?.status === "complete"
+        && manifest.test_results.fail_count === 0
+        && Boolean(manifest.reviewer?.tool_or_agent && manifest.reviewer.date && manifest.validation_date);
+      parts.push({
+        id: `${manufacturer.name}/${packageEntry.name}`, manifest, modelSource, modelName: modelName(modelSource),
+        baseType, manifestValid: true, reviewed, placeable: reviewed && Boolean(baseType),
+        blockReasons: [], detailState: "loaded",
+      });
     } catch {}
   }
 }
@@ -33,7 +42,10 @@ const intended = {
   "rlc-resonance": ["ac", "tran"],
   "halfwave-rectifier": ["tran"],
   "bridge-rectifier": ["tran"],
+  "555-astable": ["tran"],
+  "h-bridge": ["tran"],
   "inverting-opamp": ["tran", "ac"],
+  "zener-regulator": ["dc-sweep", "op"],
   "common-emitter-amp": ["ac", "tran"],
   "mosfet-led-switch": ["tran"],
   "opamp-noninverting": ["ac", "tran"],

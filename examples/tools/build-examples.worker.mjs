@@ -9,6 +9,7 @@ import { demoCircuit } from "../../apps/web/src/demo.ts";
 const projectRoot = process.cwd();
 const root = resolve(projectRoot, "examples");
 const appFixtures = resolve(projectRoot, "apps/web/src/fixtures");
+const repositoryGoldens = resolve(root, "golden");
 const encodeCircuit = (document) => {
   const bytes = deflateSync(strToU8(canonicalizeCircuit(document)), { level: 9 });
   return Buffer.from(bytes).toString("base64url");
@@ -17,6 +18,7 @@ const component = (id, type, pos, options = {}) => ({ id, type, pos, rot: 0, mir
 const wire = (id, points, netLabel) => (netLabel ? { id, points, netLabel } : { id, points });
 const ground = (id, pos) => component(id, "ground", pos);
 const probe = (id, wireId, color) => ({ id, kind: "voltage", target: { wire: wireId }, color });
+const currentProbe = (id, componentId, terminal, color) => ({ id, kind: "current", target: { componentPin: [componentId, terminal] }, color });
 const TRACE_A = "#3987e5";
 const TRACE_B = "#d95926";
 const base = (title, description, components, wires, probes, mode, sim = {}) => ({
@@ -154,30 +156,105 @@ examples.set("bridge-rectifier", base(
   "tran",
   { tran: { tstop: 0.06, tstep: 0.00002, maxstep: 0.00005 } },
 ));
-examples.set("inverting-opamp", base(
-  "Inverting op-amp",
-  "A 10 kΩ input and 100 kΩ feedback resistor set a gain of -10, so the transient run shows the output inverted and ten times larger than the input.",
+examples.set("555-astable", base(
+  "NE555 astable blinker",
+  "A classic NE555 astable uses 10 kΩ, 330 kΩ and 1 µF to blink an output LED at about 2.1 Hz while the timing capacitor charges and discharges.",
   [
-    component("c1", "vsource_sine", [8, 24], { value: "500m", params: { offset: 0, frequency: "1k", ac: 1 }, label: { text: "VIN", offset: [-5, 0] } }),
-    component("c2", "resistor", [18, 22], { value: "10k", label: { text: "RIN", offset: [0, -3] } }),
-    component("c3", "resistor", [34, 30], { value: "100k", label: { text: "RF", offset: [0, -3] } }),
-    component("c4", "opamp_ideal", [34, 20], { label: { text: "U1", offset: [0, -4] } }),
-    component("c5", "resistor", [48, 24], { value: "10k", rot: 90, label: { text: "RL", offset: [4, 0] } }),
-    ground("c6", [8, 30]), ground("c7", [30, 12]), ground("c8", [48, 30]),
+    component("c1", "timer_555", [0, 0], { mpn: "NE555", params: { catalogPartId: "ti/NE555" }, label: { text: "U1 NE555", offset: [0, -6] } }),
+    component("c2", "vsource", [-30, 1], { value: 9, label: { text: "9 V", offset: [-5, 0] } }),
+    ground("c3", [0, 22]),
+    component("c4", "resistor", [14, -9], { value: "10k", rot: 90, label: { text: "RA", offset: [4, 0] } }),
+    component("c5", "resistor", [18, 6], { value: "330k", label: { text: "RB", offset: [0, -3] } }),
+    component("c6", "capacitor", [26, 10], { value: "1u", rot: 90, label: { text: "CT", offset: [4, 0] } }),
+    component("c7", "capacitor", [34, 10], { value: "10n", rot: 90, label: { text: "CBYP", offset: [5, 0] } }),
+    component("c8", "resistor", [-18, 5], { value: "1k", rot: 90, label: { text: "RLED", offset: [5, 0] } }),
+    component("c9", "led", [-18, 11], { label: { text: "LED1", offset: [5, 0] } }),
   ],
   [
-    wire("w1", [[8, 22], [16, 22]], "vin"),
-    wire("w2", [[20, 22], [26, 22], [30, 22]], "inv"),
-    wire("w3", [[26, 22], [26, 30], [32, 30]]),
-    wire("w4", [[38, 20], [42, 20], [42, 30], [36, 30]], "vout"),
-    wire("w5", [[42, 20], [48, 20], [48, 22]]),
-    wire("w6", [[48, 26], [48, 30]]),
-    wire("w7", [[30, 18], [30, 12]]),
-    wire("w8", [[8, 26], [8, 30]]),
+    wire("w1", [[-30, -14], [-14, -14], [6, -14], [14, -14]], "vcc"),
+    wire("w2", [[-30, 16], [-22, 16], [-18, 16], [0, 16], [26, 16], [34, 16]]),
+    wire("w3", [[-30, -1], [-30, -14]]), wire("w4", [[-30, 3], [-30, 16]]), wire("w5", [[0, 16], [0, 22]]),
+    wire("w6", [[6, -3], [6, -14]]), wire("w7", [[-6, 3], [-14, 3], [-14, -14]]), wire("w8", [[-6, -3], [-22, -3], [-22, 16]]),
+    wire("w9", [[14, -11], [14, -14]]), wire("w10", [[14, -7], [14, -1], [14, 6], [16, 6]], "discharge"),
+    wire("w11", [[6, -1], [14, -1]]), wire("w12", [[20, 6], [22, 6], [22, 1], [6, 1]], "timing"),
+    wire("w13", [[22, 6], [26, 6], [26, 8]]), wire("w14", [[26, 12], [26, 16]]),
+    wire("w15", [[-6, -1], [-10, -1], [-10, 13], [22, 13], [22, 6]]),
+    wire("w16", [[6, 3], [34, 3], [34, 8]]), wire("w17", [[34, 12], [34, 16]]),
+    wire("w18", [[-6, 1], [-18, 1], [-18, 3]], "out"), wire("w19", [[-18, 7], [-18, 9]]), wire("w20", [[-18, 13], [-18, 16]]),
+  ],
+  [probe("p1", "w18", TRACE_A), probe("p2", "w12", TRACE_B)],
+  "tran",
+  { tran: { tstop: 1.5, tstep: 0.0005, maxstep: 0.001 } },
+));
+examples.set("h-bridge", base(
+  "MOSFET H-bridge motor drive",
+  "Four IRLZ44N MOSFETs alternately reverse current through a 20 Ω and 10 mH motor stand-in, so the transient trace shows bidirectional drive.",
+  [
+    component("c1", "vsource", [8, 20], { value: 12, label: { text: "12 V", offset: [-5, 0] } }),
+    component("c2", "vsource_pulse", [12, 40], { value: 18, params: { v1: 0, v2: 18, delay: "1m", rise: "1u", fall: "1u", width: "3.8m", period: "8m" }, label: { text: "DRIVE A", offset: [-6, 0] } }),
+    component("c3", "vsource_pulse", [18, 40], { value: 18, params: { v1: 0, v2: 18, delay: "5m", rise: "1u", fall: "1u", width: "3.8m", period: "8m" }, label: { text: "DRIVE B", offset: [6, 0] } }),
+    component("c4", "nmos", [26, 12], { mpn: "IRLZ44N", params: { catalogPartId: "infineon/IRLZ44N" }, label: { text: "Q1", offset: [5, 0] } }),
+    component("c5", "nmos", [26, 28], { mpn: "IRLZ44N", params: { catalogPartId: "infineon/IRLZ44N" }, label: { text: "Q2", offset: [5, 0] } }),
+    component("c6", "nmos", [50, 12], { mpn: "IRLZ44N", params: { catalogPartId: "infineon/IRLZ44N" }, label: { text: "Q3", offset: [5, 0] } }),
+    component("c7", "nmos", [50, 28], { mpn: "IRLZ44N", params: { catalogPartId: "infineon/IRLZ44N" }, label: { text: "Q4", offset: [5, 0] } }),
+    component("c8", "resistor", [30, 20], { value: 20, label: { text: "RMOTOR", offset: [0, -3] } }),
+    component("c9", "inductor", [36, 20], { value: "10m", label: { text: "LMOTOR", offset: [0, -3] } }),
+    ground("c10", [8, 34]), ground("c11", [12, 44]), ground("c12", [18, 44]),
+  ],
+  [
+    wire("w1", [[8, 18], [8, 9], [28, 9], [52, 9]], "vmotor"),
+    wire("w2", [[8, 22], [8, 31], [28, 31], [52, 31]]), wire("w3", [[8, 31], [8, 34]]),
+    wire("w4", [[28, 15], [28, 20], [28, 25]], "motor_a"), wire("w5", [[32, 20], [34, 20]], "motor_mid"),
+    wire("w6", [[38, 20], [52, 20], [52, 15], [52, 25]], "motor_b"),
+    wire("w7", [[12, 38], [12, 12], [24, 12], [24, 6], [60, 6], [60, 28], [48, 28]], "drive_a"),
+    wire("w9", [[18, 38], [18, 28], [24, 28], [24, 36], [58, 36], [58, 12], [48, 12]], "drive_b"),
+    wire("w11", [[12, 42], [12, 44]]), wire("w12", [[18, 42], [18, 44]]),
+  ],
+  [currentProbe("p1", "c8", 0, TRACE_A), probe("p2", "w4", TRACE_B)],
+  "tran",
+  { tran: { tstop: 0.012, tstep: 0.000002, maxstep: 0.000005 } },
+));
+examples.set("inverting-opamp", base(
+  "TL072 inverting op-amp",
+  "A catalog TL072 with 10 kΩ input and 100 kΩ feedback resistors gives a gain of -10 to a 1 kHz sine input on ±15 V rails.",
+  [
+    component("c1", "vsource_sine", [8, 30], { value: "500m", params: { offset: 0, frequency: "1k", ac: 1 }, label: { text: "VIN", offset: [-5, 0] } }),
+    component("c2", "resistor", [18, 28], { value: "10k", label: { text: "RIN", offset: [0, -3] } }),
+    component("c3", "resistor", [34, 36], { value: "100k", label: { text: "RF", offset: [0, -3] } }),
+    component("c4", "opamp_ideal", [34, 26], { mpn: "TL072", params: { catalogPartId: "ti/TL072" }, label: { text: "U1A", offset: [0, -4] } }),
+    component("c5", "vsource", [8, 10], { value: 15, label: { text: "+15 V", offset: [-5, 0] } }),
+    component("c6", "vsource", [16, 10], { value: -15, label: { text: "-15 V", offset: [5, 0] } }),
+    component("c7", "resistor", [48, 30], { value: "10k", rot: 90, label: { text: "RL", offset: [4, 0] } }),
+    ground("c8", [8, 36]), ground("c9", [8, 14]), ground("c10", [16, 14]), ground("c11", [30, 18]), ground("c12", [48, 36]),
+  ],
+  [
+    wire("w1", [[8, 28], [16, 28]], "vin"), wire("w2", [[20, 28], [26, 28], [30, 28]], "inv"),
+    wire("w3", [[26, 28], [26, 36], [32, 36]]), wire("w4", [[38, 26], [42, 26], [42, 36], [36, 36]], "vout"),
+    wire("w5", [[42, 26], [48, 26], [48, 28]]), wire("w6", [[48, 32], [48, 36]]), wire("w7", [[30, 24], [30, 18]]),
+    wire("w8", [[8, 32], [8, 36]]), wire("w9", [[8, 12], [8, 14]]), wire("w10", [[16, 12], [16, 14]]),
+    wire("w11", [[8, 8], [4, 8]], "vcc"), wire("w12", [[16, 8], [20, 8]], "vee"),
   ],
   [probe("p1", "w4", TRACE_A), probe("p2", "w1", TRACE_B)],
   "tran",
   { tran: { tstop: 0.005, tstep: 0.000002, maxstep: 0.000005 } },
+));
+examples.set("zener-regulator", base(
+  "5.1 V zener regulator",
+  "A 220 Ω series resistor biases a reviewed 1N4733A zener and 1 kΩ load, so the DC sweep shows the output clamp near 5.1 V.",
+  [
+    component("c1", "vsource", [8, 20], { value: 12, label: { text: "VIN", offset: [-5, 0] } }),
+    component("c2", "resistor", [20, 12], { value: 220, label: { text: "RS", offset: [0, -3] } }),
+    component("c3", "diode", [30, 14], { rot: 180, mpn: "1N4733A", params: { catalogPartId: "onsemi/1N4733A" }, label: { text: "DZ1 5V1", offset: [5, 0] } }),
+    component("c4", "resistor", [40, 14], { value: "1k", rot: 90, label: { text: "RL", offset: [4, 0] } }),
+    ground("c5", [8, 28]), ground("c6", [30, 22]), ground("c7", [40, 22]),
+  ],
+  [
+    wire("w1", [[8, 18], [8, 12], [18, 12]], "vin"), wire("w2", [[22, 12], [30, 12], [40, 12]], "vout"),
+    wire("w3", [[30, 16], [30, 22]]), wire("w4", [[40, 16], [40, 22]]), wire("w5", [[8, 22], [8, 28]]),
+  ],
+  [probe("p1", "w2", TRACE_A), probe("p2", "w1", TRACE_B)],
+  "dc-sweep",
+  { dcSweep: { sourceId: "c1", start: 0, stop: 12, step: 0.05 } },
 ));
 examples.set("common-emitter-amp", base(
   "2N3904 common-emitter amplifier",
@@ -259,26 +336,31 @@ examples.set("opamp-noninverting", base(
 ));
 
 /**
- * Goldens for the shipped bench and for every example authored in this
- * repository live beside the app. The `packages/circuit-schema` fixtures stay
- * pinned to their v1 migration inputs and are never rewritten from here.
+ * Existing app fixtures remain generator-owned. New task 0.12 goldens also
+ * live under examples/ so the four additions have lane-owned parity fixtures.
  */
 const APP_OWNED_GOLDENS = new Set([
   "transistor-led-bench", "rc-filter-bode", "mosfet-led-switch", "opamp-noninverting",
   "resistive-divider", "led-current-limit", "rlc-resonance", "halfwave-rectifier",
   "bridge-rectifier", "inverting-opamp",
 ]);
+const REPOSITORY_GOLDENS = new Set(["555-astable", "h-bridge", "inverting-opamp", "zener-regulator"]);
 
 await mkdir(appFixtures, { recursive: true });
+await mkdir(repositoryGoldens, { recursive: true });
 for (const [id, document] of examples) {
   await writeFile(resolve(root, `${id}.json`), `${canonicalizeCircuit(document)}\n`);
-  if (!APP_OWNED_GOLDENS.has(id)) continue;
   const migrated = migrateCircuit(structuredClone(document));
-  await writeFile(resolve(appFixtures, `example-${id}.netlist`), generateNetlist(migrated).netlist);
+  if (APP_OWNED_GOLDENS.has(id)) {
+    await writeFile(resolve(appFixtures, `example-${id}.netlist`), generateNetlist(migrated).netlist);
+  }
+  if (REPOSITORY_GOLDENS.has(id)) {
+    await writeFile(resolve(repositoryGoldens, `example-${id}.netlist`), generateNetlist(migrated).netlist);
+  }
 }
 await writeFile(resolve(appFixtures, "demo.netlist"), generateNetlist(structuredClone(demoCircuit)).netlist);
 
 const urls = ["# Example share URLs", "", "These URLs use the simulator's deterministic compressed project payload.", ""];
 for (const [id, document] of examples) urls.push(`- ${id}: http://127.0.0.1:4173/#c=${encodeCircuit(document)}`);
 await writeFile(resolve(root, "URLS.md"), `${urls.join("\n")}\n`);
-console.log(`Wrote ${examples.size} canonical examples, ${APP_OWNED_GOLDENS.size + 1} golden netlists and URLS.md`);
+console.log(`Wrote ${examples.size} canonical examples, ${APP_OWNED_GOLDENS.size + REPOSITORY_GOLDENS.size + 1} golden netlists and URLS.md`);

@@ -2,18 +2,21 @@ import { migrateCircuit, type CircuitDocument } from "@opencircuit/circuit-schem
 
 export interface CircuitExample { id: string; title: string; description: string; document: CircuitDocument }
 
-/** Gallery order: the shipped bench first, then teaching circuits by rising difficulty. */
+/** Gallery order: shipped bench first, then the approved classic teaching set and additional benches. */
 const GALLERY_ORDER = [
   "transistor-led-bench",
-  "resistive-divider",
-  "led-current-limit",
   "rc-filter-bode",
-  "rlc-resonance",
-  "halfwave-rectifier",
-  "bridge-rectifier",
+  "resistive-divider",
+  "555-astable",
+  "h-bridge",
+  "common-emitter-amp",
   "inverting-opamp",
   "opamp-noninverting",
-  "common-emitter-amp",
+  "halfwave-rectifier",
+  "bridge-rectifier",
+  "zener-regulator",
+  "led-current-limit",
+  "rlc-resonance",
   "mosfet-led-switch",
 ];
 

@@ -1,0 +1,10 @@
+scheMAGIC Simulator document 15f305396d7b4a6d
+* document-hash 15f305396d7b4a6d
+V1 vin 0 DC 12 $ component:c1
+R2 vin vout 220 $ component:c2
+D3 0 vout OC_GENERIC_D $ component:c3
+R4 vout 0 1k $ component:c4
+.model OC_GENERIC_D D(IS=1e-14 N=1 RS=0.1 CJO=2P)
+.save all v1#branch @r2[i] @d3[id] @r4[i]
+.dc V1 0 12 0.05
+.end
