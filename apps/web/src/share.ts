@@ -85,7 +85,9 @@ function writeUnsignedVarInt(output: number[], value: number): void {
 function writeRawString(output: number[], encoder: TextEncoder, value: string): void {
   const bytes = encoder.encode(value);
   writeUnsignedVarInt(output, bytes.byteLength);
-  output.push(...bytes);
+  for (let offset = 0; offset < bytes.byteLength; offset += 8_192) {
+    output.push(...bytes.subarray(offset, offset + 8_192));
+  }
 }
 
 function encodeStructuralValue(value: unknown): Uint8Array {

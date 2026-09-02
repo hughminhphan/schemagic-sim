@@ -118,6 +118,21 @@ describe("share payload", () => {
     expect(shareUrl(document, new URL("https://sim.robonyx.com/") as unknown as Location).length).toBeLessThanOrEqual(8_000);
   });
 
+  it("round-trips a one-megabyte imported model source without exceeding argument limits", () => {
+    const document = structuredClone(demoCircuit);
+    const modelLine = ".model LARGE_MODEL NPN(BF=120)";
+    const sourceText = `${modelLine}\n`.padEnd(1_048_576, "*");
+    const record = importedPartFromModel(parseSpiceLibrary(modelLine).models[0]!, {
+      sourceName: "large-model.lib",
+      sourceText,
+      baseType: "bjt_npn",
+    });
+    document.modelImports = { format: "opencircuit-imported-models", version: 1, parts: [record] };
+
+    expect(Buffer.byteLength(sourceText, "utf8")).toBeGreaterThanOrEqual(1_048_576);
+    expect(decodeCircuit(encodeCircuit(document))).toEqual(document);
+  });
+
   it.each(fixtures)("round-trips fixture $name", ({ document }) => {
     const payload = encodeCircuit(document);
     expect(decodeCircuit(payload)).toEqual(document);
