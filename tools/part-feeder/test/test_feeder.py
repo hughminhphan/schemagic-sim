@@ -19,6 +19,9 @@ from feederlib import (
     RateLimiter,
     USER_AGENT,
     download_datasheets,
+    execute_prune,
+    human_bytes,
+    plan_prune,
     query_manifest,
     reassemble_split_zip,
     sha256_file,
@@ -318,6 +321,85 @@ class DatasheetResumeTest(unittest.TestCase):
             self.assertEqual(second["cached"], 1)
             self.assertEqual(client.calls, 1)
             self.assertEqual(second["failed"], 0)
+
+
+def build_prune_fixture(root: Path) -> tuple[Path, Path]:
+    """A feeder data tree plus a conveyor data tree, in the shape a real campaign leaves."""
+    data = root / "feeder-data"
+    downloads = data / "downloads"
+    downloads.mkdir(parents=True)
+    (downloads / "cache.z01").write_bytes(b"a" * 2048)
+    (downloads / "cache.zip").write_bytes(b"b" * 1024)
+    (downloads / "cache.full.zip").write_bytes(b"c" * 512)
+    (downloads / "cache.z02.part").write_bytes(b"d" * 256)
+    (data / "jlcparts.sqlite3").write_bytes(b"e" * 4096)
+    (data / "dump.json").write_text("{}", encoding="utf-8")
+
+    conveyor = root / "conveyor-data"
+    (conveyor / "staging").mkdir(parents=True)
+    for tranche, hashed in (("batch-closed", True), ("batch-open", False), ("batch-active", True)):
+        staging = conveyor / "staging" / tranche
+        (staging / "datasheets").mkdir(parents=True)
+        (staging / "extractions").mkdir(parents=True)
+        (staging / "extractions" / "C1__D1.json").write_text('{"mpn": "D1"}', encoding="utf-8")
+        pdf = staging / "datasheets" / "C1__D1.pdf"
+        pdf.write_bytes(b"%PDF-" + b"f" * 8192)
+        record = {"mpn": "D1", "lcsc_id": "C1", "path": "datasheets/C1__D1.pdf", "status": "downloaded"}
+        if hashed:
+            record["sha256"] = "0" * 64
+        (staging / "manifest.json").write_text(json.dumps({"datasheets": [record]}), encoding="utf-8")
+    for name in ("conveyor-state.sqlite3", "conveyor-state.sqlite3-wal", "conveyor-state.pre-fix.sqlite3",
+                 "conveyor-state.corrected-v1.sqlite3", "conveyor-state.sqlite3.before-refit"):
+        (conveyor / name).write_bytes(b"g" * 1024)
+    return data, conveyor
+
+
+class PrunePlanTest(unittest.TestCase):
+    def test_reports_each_category_with_sizes_and_never_touches_extractions(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            data, conveyor = build_prune_fixture(Path(temporary))
+            plan = plan_prune(data, conveyor, keep_tranches=["batch-active"])
+            categories = {category["name"]: category for category in plan["categories"]}
+
+            downloads = {Path(entry["path"]).name for entry in categories["download_intermediates"]["files"]}
+            self.assertEqual(downloads, {"cache.z01", "cache.zip", "cache.full.zip", "cache.z02.part"})
+            self.assertEqual(categories["download_intermediates"]["bytes"], 2048 + 1024 + 512 + 256)
+
+            pdfs = categories["closed_batch_datasheets"]
+            self.assertEqual([Path(entry["path"]).parent.parent.name for entry in pdfs["files"]], ["batch-closed"])
+            statuses = {item["tranche"]: item["status"] for item in pdfs["tranches"]}
+            self.assertEqual(statuses["batch-closed"], "closed")
+            self.assertEqual(statuses["batch-active"], "kept by request")
+            self.assertIn("sha256", statuses["batch-open"])
+
+            stale = {Path(entry["path"]).name for entry in categories["stale_state_db_copies"]["files"]}
+            self.assertEqual(stale, {"conveyor-state.pre-fix.sqlite3", "conveyor-state.corrected-v1.sqlite3",
+                                     "conveyor-state.sqlite3.before-refit"})
+
+            every = {entry["path"] for category in plan["categories"] for entry in category["files"]}
+            self.assertFalse(any("extractions" in path for path in every))
+            self.assertFalse(any(path.endswith("jlcparts.sqlite3") for path in every))
+            self.assertEqual(plan["total_files"], 4 + 1 + 3)
+            self.assertEqual(plan["total_bytes"], sum(category["bytes"] for category in plan["categories"]))
+
+    def test_refuses_to_delete_without_confirmation(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            data, conveyor = build_prune_fixture(Path(temporary))
+            plan = plan_prune(data, conveyor)
+            with self.assertRaises(FeederError):
+                execute_prune(plan)
+            self.assertTrue((data / "downloads" / "cache.z01").is_file())
+            report = execute_prune(plan, confirm=True)
+            self.assertEqual(report["deleted"], plan["total_files"])
+            self.assertEqual(report["freed_bytes"], plan["total_bytes"])
+            self.assertFalse((data / "downloads" / "cache.z01").exists())
+            self.assertTrue((data / "jlcparts.sqlite3").is_file())
+            self.assertTrue((conveyor / "staging" / "batch-closed" / "extractions" / "C1__D1.json").is_file())
+
+    def test_human_bytes_reads_as_sizes(self) -> None:
+        self.assertEqual(human_bytes(512), "512 B")
+        self.assertEqual(human_bytes(1536), "1.5 KB")
+        self.assertEqual(human_bytes(5 * 1024 ** 3), "5.0 GB")
 
 
 @unittest.skipUnless(os.environ.get("FEEDER_LIVE_SMOKE") == "1", "set FEEDER_LIVE_SMOKE=1 to enable")

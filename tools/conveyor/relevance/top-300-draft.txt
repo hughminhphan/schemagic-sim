@@ -1,0 +1,354 @@
+# Robonyx model-library relevance list, top 300 (DRAFT, needs Hugh's sign-off)
+#
+# STATUS: DRAFT. Nothing here is authorised. Hugh signs off the composition, and only then
+# does the nightly loop select from it. Rename to top-300.txt on sign-off.
+# 300 is the target size; this draft carries 274 entries, so there is room for whatever
+# sign-off adds. The exact count is printed at the end of the file.
+#
+# WHY: high-stock LCSC ordering (preferred DESC, stock DESC) selects for assembly-house
+# popularity, not for what a person simulating a circuit reaches for. Batches 1 to 9
+# harvested the catalog head and yielded roughly 230 promotable models a day; by the
+# batch-16 cycle the same selection was yielding around 3 a day because the head was gone
+# and the tail is neither relevant nor well documented. This list replaces catalog rank
+# with curated relevance.
+#
+# SOURCES for this draft:
+#   1. parts already in packages/model-library/models, so the list states the target
+#      composition rather than only the gap. Lines marked "in library" are skipped by
+#      select as identity collisions, and the skip report becomes the coverage report.
+#   2. the jellybeans a hobbyist or student actually meets: LTspice standard.dio /
+#      standard.bjt / standard.mos membership, KiCad symbol-library staples, the ngspice
+#      distributed examples, and the Arduino and Falstad ecosystem parts.
+#
+# FORMAT: one MPN per line.
+#
+#   MPN | manufacturer | priority | family
+#
+# Fields after the MPN are optional; separate them with "|" (never a comma, because
+# ordering codes contain commas, as in PMBT2222A,215). Blank manufacturer means "let the
+# catalog pick the best stocked row". Priority is an integer, lower first, default 100:
+#   1 = core teaching part, 2 = common shop part, 3 = long tail.
+# Family is diode, bjt, or mosfet and overrides catalog classification.
+# "#" starts a comment, inline comments allowed.
+#
+# OPEN QUESTIONS FOR SIGN-OFF are recorded at the end of this file.
+
+# --- Small-signal switching diodes (LTspice standard.dio, KiCad Diode_Small, every Arduino kit) ---
+1N4148 |  | 1 | diode  # in library
+1N4148W |  | 1 | diode
+1N4148WS |  | 2 | diode
+LL4148 |  | 2 | diode  # in library
+1N914 |  | 1 | diode  # in library
+1N4448 |  | 2 | diode
+BAS16 |  | 1 | diode  # in library
+BAS16W |  | 2 | diode
+BAS21 |  | 3 | diode
+BAS316 |  | 3 | diode  # in library
+BAV16 |  | 3 | diode
+BAV19 |  | 3 | diode
+BAV20 |  | 3 | diode
+BAV21 |  | 3 | diode
+BAV70 |  | 2 | diode  # in library
+BAV99 |  | 1 | diode  # in library
+BAV99W |  | 2 | diode  # in library
+BAW56 |  | 2 | diode  # in library
+1N3595 |  | 3 | diode
+SD103A |  | 3 | diode
+
+# --- Schottky diodes (rectifier bridges, buck freewheels, OR-ing, Falstad demos) ---
+1N5817 |  | 1 | diode  # in library
+1N5818 |  | 2 | diode
+1N5819 |  | 1 | diode  # in library
+1N5820 |  | 3 | diode
+1N5821 |  | 3 | diode
+1N5822 |  | 2 | diode  # in library
+1N5711 |  | 2 | diode
+BAT41 |  | 3 | diode  # in library
+BAT42 |  | 2 | diode
+BAT43 |  | 2 | diode
+BAT46 |  | 3 | diode
+BAT48 |  | 3 | diode
+BAT54 |  | 1 | diode  # in library
+BAT54A |  | 2 | diode  # in library
+BAT54C |  | 1 | diode  # in library
+BAT54S |  | 2 | diode
+BAT60A |  | 3 | diode
+BAT85 |  | 2 | diode  # in library
+SS12 |  | 2 | diode
+SS14 |  | 1 | diode  # in library
+SS16 |  | 2 | diode
+SS24 |  | 3 | diode  # in library
+SS34 |  | 1 | diode  # in library
+SS36 |  | 2 | diode  # in library
+SS54 |  | 3 | diode  # in library
+SK34 |  | 3 | diode  # in library
+SR160 |  | 3 | diode
+SR360 |  | 3 | diode
+MBR0520L |  | 1 | diode
+MBR0540 |  | 2 | diode
+MBR120 |  | 2 | diode
+MBR130 |  | 2 | diode  # in library
+MBR140 |  | 2 | diode
+MBRS340 |  | 3 | diode
+B340A |  | 2 | diode
+B5819W |  | 2 | diode
+
+# --- Silicon rectifiers (1N400x and 1N540x are the teaching default) ---
+1N4001 |  | 1 | diode  # in library
+1N4002 |  | 2 | diode
+1N4003 |  | 2 | diode
+1N4004 |  | 2 | diode
+1N4005 |  | 2 | diode
+1N4006 |  | 2 | diode
+1N4007 |  | 1 | diode  # in library
+1N5391 |  | 3 | diode
+1N5392 |  | 3 | diode
+1N5395 |  | 3 | diode
+1N5399 |  | 3 | diode
+1N5400 |  | 2 | diode
+1N5401 |  | 2 | diode
+1N5402 |  | 2 | diode
+1N5404 |  | 3 | diode
+1N5406 |  | 3 | diode
+1N5408 |  | 2 | diode  # in library
+M1 |  | 2 | diode
+M4 |  | 2 | diode  # in library
+M7 |  | 1 | diode  # in library
+S1M |  | 2 | diode  # in library
+RS1M |  | 2 | diode  # in library
+GS1M |  | 3 | diode
+LL4007 |  | 2 | diode
+UF4007 |  | 2 | diode
+FR107 |  | 2 | diode
+FR207 |  | 3 | diode
+HER107 |  | 3 | diode
+MUR120 |  | 2 | diode
+MUR160 |  | 3 | diode
+MUR460 |  | 3 | diode  # in library
+1N4933 |  | 3 | diode
+1N4937 |  | 3 | diode
+6A10 |  | 3 | diode  # in library
+
+# --- Zener and voltage-reference diodes ---
+1N4728A |  | 2 | diode  # in library
+1N4733A |  | 1 | diode  # in library
+1N4734A |  | 2 | diode
+1N4735A |  | 2 | diode
+1N4740A |  | 1 | diode
+1N4742A |  | 2 | diode  # in library
+1N4744A |  | 1 | diode
+1N4749A |  | 3 | diode
+1N5226B |  | 3 | diode
+1N5231B |  | 1 | diode
+1N5232B |  | 3 | diode
+1N5234B |  | 3 | diode
+1N5242B |  | 2 | diode
+1N5245B |  | 2 | diode
+BZX55C3V3 |  | 3 | diode
+BZX55C5V1 |  | 2 | diode
+BZX84C3V3 |  | 2 | diode
+BZX84C5V1 |  | 1 | diode  # in library
+BZX84C5V6 |  | 2 | diode
+BZX84C6V2 |  | 2 | diode
+BZX84C10 |  | 2 | diode
+BZX84C12 |  | 2 | diode
+BZX84C15 |  | 3 | diode
+MMSZ4678 |  | 3 | diode
+MMSZ5231B |  | 2 | diode  # in library
+MMSZ5245B |  | 3 | diode  # in library
+
+# --- Small-signal NPN (LTspice standard.bjt, KiCad Q_NPN_*, Arduino switching) ---
+2N2222 |  | 1 | bjt
+2N2222A |  | 1 | bjt
+PN2222A |  | 1 | bjt  # in library
+2N3904 |  | 1 | bjt  # in library
+2N4401 |  | 1 | bjt
+2N5088 |  | 2 | bjt  # in library
+2N5089 |  | 3 | bjt
+2N5551 |  | 1 | bjt  # in library
+BC337 |  | 1 | bjt
+BC337-25 |  | 2 | bjt
+BC337-40 |  | 2 | bjt  # in library
+BC547 |  | 1 | bjt
+BC547B |  | 1 | bjt  # in library
+BC548 |  | 2 | bjt
+BC549 |  | 2 | bjt
+BC550 |  | 3 | bjt
+BC846B |  | 2 | bjt  # in library
+BC847B |  | 1 | bjt  # in library
+BC848B |  | 2 | bjt
+BC849B |  | 3 | bjt
+BC850B |  | 3 | bjt
+MMBT2222A |  | 1 | bjt  # in library
+MMBT3904 |  | 1 | bjt  # in library
+MMBT5551 |  | 2 | bjt  # in library
+S8050 |  | 1 | bjt  # in library
+S9013 |  | 2 | bjt  # in library
+S9014 |  | 2 | bjt  # in library
+S9018 |  | 3 | bjt  # in library
+SS8050 |  | 2 | bjt  # in library
+2SC1815 |  | 1 | bjt
+2SC945 |  | 3 | bjt
+MPSA06 |  | 3 | bjt
+MPSA42 |  | 2 | bjt  # in library
+KSP44 |  | 3 | bjt
+BF199 |  | 3 | bjt
+
+# --- Small-signal PNP ---
+2N2907 |  | 1 | bjt
+2N2907A |  | 1 | bjt
+PN2907A |  | 2 | bjt
+2N3906 |  | 1 | bjt  # in library
+2N4403 |  | 1 | bjt
+2N5087 |  | 3 | bjt
+2N5401 |  | 1 | bjt
+BC327 |  | 1 | bjt
+BC327-40 |  | 2 | bjt  # in library
+BC556 |  | 2 | bjt
+BC557 |  | 1 | bjt
+BC557B |  | 1 | bjt  # in library
+BC558 |  | 3 | bjt
+BC807 |  | 2 | bjt
+BC817 |  | 2 | bjt
+BC856B |  | 2 | bjt  # in library
+BC857B |  | 1 | bjt  # in library
+BC858B |  | 2 | bjt
+MMBT2907A |  | 1 | bjt
+MMBT3906 |  | 1 | bjt  # in library
+MMBT5401 |  | 2 | bjt  # in library
+S8550 |  | 1 | bjt
+S9012 |  | 2 | bjt
+S9015 |  | 3 | bjt
+SS8550 |  | 2 | bjt
+2SA1015 |  | 1 | bjt
+MPSA56 |  | 3 | bjt
+MPSA92 |  | 2 | bjt
+
+# --- Power and driver BJTs (motor drivers, relay drivers, class-AB output stages) ---
+BD135 |  | 2 | bjt
+BD136 |  | 2 | bjt
+BD139 |  | 1 | bjt  # in library
+BD140 |  | 1 | bjt  # in library
+BD911 |  | 3 | bjt
+BD912 |  | 3 | bjt
+TIP31C |  | 1 | bjt  # in library
+TIP32C |  | 1 | bjt  # in library
+TIP41C |  | 1 | bjt  # in library
+TIP42C |  | 1 | bjt  # in library
+TIP120 |  | 1 | bjt  # in library
+TIP122 |  | 1 | bjt
+TIP125 |  | 2 | bjt  # in library
+TIP127 |  | 2 | bjt
+TIP2955 |  | 3 | bjt
+TIP3055 |  | 2 | bjt
+2N3055 |  | 1 | bjt
+MJE13003 |  | 3 | bjt
+MJE3055T |  | 3 | bjt
+2SD882 |  | 3 | bjt
+2SB772 |  | 3 | bjt
+
+# --- Small-signal N-channel MOSFETs (level shifters, logic-level switching) ---
+2N7000 |  | 1 | mosfet  # in library
+2N7002 |  | 1 | mosfet  # in library
+2N7002K |  | 2 | mosfet  # in library
+BSS138 |  | 1 | mosfet  # in library
+BSS123 |  | 2 | mosfet  # in library
+BSS131 |  | 3 | mosfet
+BS170 |  | 1 | mosfet
+MMBF170 |  | 3 | mosfet
+ZVN2110A |  | 3 | mosfet
+AO3400A |  | 1 | mosfet  # in library
+SI2302 |  | 1 | mosfet  # in library
+SI2300 |  | 3 | mosfet  # in library
+AO3402 |  | 2 | mosfet  # in library
+AO3404 |  | 2 | mosfet
+DMN2075U |  | 3 | mosfet
+DMG2302U |  | 3 | mosfet
+BSS806N |  | 3 | mosfet
+2N7002E |  | 3 | mosfet  # in library
+
+# --- Small-signal P-channel MOSFETs (reverse-polarity and high-side load switches) ---
+AO3401A |  | 1 | mosfet  # in library
+AO3407 |  | 2 | mosfet  # in library
+AO3415 |  | 2 | mosfet  # in library
+SI2301 |  | 1 | mosfet  # in library
+SI2305 |  | 2 | mosfet  # in library
+DMG2305UX |  | 2 | mosfet
+BSS84 |  | 1 | mosfet
+BSS84P |  | 3 | mosfet  # in library
+ZVP2110A |  | 3 | mosfet
+IRLML6402 |  | 1 | mosfet  # in library
+IRLML6401 |  | 2 | mosfet  # in library
+IRLML5203 |  | 3 | mosfet
+TP0610K |  | 3 | mosfet
+NDS356AP |  | 3 | mosfet
+
+# --- Logic-level power N-channel MOSFETs (Arduino motor and heater switching) ---
+IRLZ44N |  | 1 | mosfet  # in library
+IRLZ34N |  | 2 | mosfet
+IRL540N |  | 2 | mosfet
+IRLB8721PBF |  | 1 | mosfet  # in library
+IRLB3034PBF |  | 3 | mosfet
+FQP30N06L |  | 1 | mosfet  # in library
+FQP50N06L |  | 2 | mosfet
+STP55NF06L |  | 1 | mosfet
+RFP30N06LE |  | 2 | mosfet
+IRLR7843 |  | 3 | mosfet  # in library
+AOD4184A |  | 2 | mosfet  # in library
+CSD18540Q5B |  | 3 | mosfet
+FDP8878 |  | 3 | mosfet
+
+# --- Standard-gate power N-channel MOSFETs (SMPS, H-bridges, LTspice standard.mos) ---
+IRF540N |  | 1 | mosfet  # in library
+IRF640N |  | 2 | mosfet
+IRF740 |  | 2 | mosfet
+IRF830 |  | 2 | mosfet  # in library
+IRF840 |  | 1 | mosfet
+IRFP250N |  | 2 | mosfet
+IRFP260N |  | 3 | mosfet
+IRF510 |  | 1 | mosfet
+IRF520 |  | 1 | mosfet
+IRF530 |  | 2 | mosfet
+IRF1404 |  | 3 | mosfet
+IRFZ44N |  | 1 | mosfet  # in library
+IRF3205 |  | 1 | mosfet  # in library
+IRF3710 |  | 3 | mosfet
+STP75NF75 |  | 3 | mosfet
+
+# --- Power P-channel MOSFETs (high-side switching and complementary pairs) ---
+IRF9540N |  | 1 | mosfet  # in library
+IRF9530N |  | 2 | mosfet
+IRF4905 |  | 2 | mosfet
+IRF5305 |  | 2 | mosfet
+IRF9640 |  | 3 | mosfet
+FQP27P06 |  | 2 | mosfet
+AOD4185 |  | 3 | mosfet
+SUP75P03-07 |  | 3 | mosfet
+
+# --- Dual and SO-8 MOSFETs (battery paths, load switches, common on hobby boards) ---
+AO4407A |  | 2 | mosfet  # in library
+AO4406 |  | 3 | mosfet
+SI4410DY |  | 2 | mosfet
+IRF7319 |  | 3 | mosfet
+FDS4435 |  | 2 | mosfet
+SI7461DP |  | 3 | mosfet
+
+# ---------------------------------------------------------------------------
+# OPEN QUESTIONS FOR SIGN-OFF
+#
+# 1. Depth versus breadth. This draft spends about a third of its lines on parts already
+#    in the library so the file states the whole target. Say the word and those lines are
+#    dropped, making the list a pure work queue of roughly 200 new parts.
+# 2. Family scope. The conveyor fits diode, bjt and mosfet only. JFETs (J111, 2N5457,
+#    BF245), IGBTs, and voltage references (TL431) are deliberately absent and need new
+#    archetypes before they can be listed.
+# 3. Priority meaning. Priority currently orders selection only. It could also drive the
+#    nightly budget, for example priority 1 parts get the retry and priority 3 parts do not.
+# 4. Manufacturer pinning. Every line leaves the manufacturer blank, so the best stocked
+#    catalog row wins. Generic MPNs (M7, SS14, S8050) resolve to whichever second-source
+#    vendor LCSC stocks best, which may not be the vendor whose datasheet you want cited.
+# 5. Ordering-code variants. 1N4148 versus 1N4148W versus 1N4148WS are genuinely different
+#    packages with different datasheets, and all three are listed. Confirm that is wanted
+#    rather than one entry per die.
+
+# 274 entries; 100 already represented in the reviewed library, 174 would be new work.

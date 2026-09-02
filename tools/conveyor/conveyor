@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
+import shutil
 import subprocess
 import sys
 from collections import Counter
@@ -15,33 +17,87 @@ FEEDER_ROOT = HERE.parent / "part-feeder"
 sys.path.insert(0, str(HERE))
 sys.path.insert(0, str(FEEDER_ROOT))
 
-from conveyorlib import (ConveyorError, StateStore, build_luna_prompt, choose_balanced, cross_check,
-                         filter_library_collisions, json_dump, load_and_validate_extraction, safe_stem,
-                         should_park_family, top_failure_reasons, top_recorded_reasons)
-from feederlib import download_datasheets, query_manifest, reviewed_mpns, validate_manifest
+from conveyorlib import (CLAIMABLE_STATES, DEFAULT_MAX_ATTEMPTS, ConveyorError, StateStore,
+                         build_luna_prompt, build_subprocess_invoker, choose_balanced, cross_check,
+                         dry_run_command_lines, export_extractions, filter_library_collisions,
+                         json_dump, load_and_validate_extraction, match_relevance_entries,
+                         parse_relevance_list, run_extraction_batch, safe_stem,
+                         should_park_family, top_failure_reasons, top_recorded_reasons, utc_now)
+from feederlib import (download_datasheets, json_dump as feeder_json_dump, query_manifest,
+                       reviewed_mpns, sha256_file as feeder_sha256_file, validate_manifest,
+                       validate_pdf)
 
 DEFAULT_DATA = HERE / "data"
-DEFAULT_CATALOG_DATA = Path("/Users/hughp/Documents/opencircuit/tools/part-feeder/data")
+# The catalog dump is a 5 GB gitignored file that never lives in a worktree. It is
+# configured with ROBONYX_CATALOG_DATA so the nightly loop can run from any checkout; the
+# historical absolute path stays as a loud fallback rather than a silent default.
+CATALOG_DATA_ENV = "ROBONYX_CATALOG_DATA"
+LEGACY_CATALOG_DATA = Path("/Users/hughp/Documents/opencircuit/tools/part-feeder/data")
 DEFAULT_QUERY = HERE / "queries" / "proving-50.sql"
+DEFAULT_MANUAL_DROP = REPO_ROOT / "tmp" / "manual-d"
+DEFAULT_RELEVANCE_LIST = HERE / "relevance" / "top-300-draft.txt"
+DEFAULT_EXTRACTION_EXPORT = HERE / "extractions"
 FACTORY = HERE.parent / "model-factory" / "factory.mjs"
+EXTRACTION_STATES = ("datasheet_fetched", "failed_extracted")
+
+
+def resolve_catalog_data(explicit: Path | None) -> Path:
+    """Explicit flag, then ROBONYX_CATALOG_DATA, then the legacy path with a warning."""
+    if explicit is not None:
+        return explicit
+    from_env = os.environ.get(CATALOG_DATA_ENV, "").strip()
+    if from_env:
+        return Path(from_env)
+    print(
+        f"conveyor: {CATALOG_DATA_ENV} is unset; falling back to {LEGACY_CATALOG_DATA}. "
+        f"Set {CATALOG_DATA_ENV} to the jlcparts data directory for this machine.",
+        file=sys.stderr,
+    )
+    return LEGACY_CATALOG_DATA
 
 
 def parser() -> argparse.ArgumentParser:
     root = argparse.ArgumentParser(prog="conveyor", description="Bulk fit SQL-selected discrete tranches into unreviewed staging")
     root.add_argument("--data-dir", type=Path, default=DEFAULT_DATA)
-    root.add_argument("--catalog-data", type=Path, default=DEFAULT_CATALOG_DATA, help="external jlcparts data opened read-only")
+    root.add_argument("--catalog-data", type=Path, default=None,
+                      help=f"external jlcparts data opened read-only; defaults to ${CATALOG_DATA_ENV}")
     commands = root.add_subparsers(dest="command", required=True)
-    select = commands.add_parser("select", help="select a balanced high-stock tranche from read-only SQL")
+    select = commands.add_parser("select", help="select a tranche from read-only SQL or a curated relevance list")
     select.add_argument("--name", default="proving-50")
     select.add_argument("--sql-file", type=Path, default=DEFAULT_QUERY)
     select.add_argument("--stock-min", type=int, default=10000)
+    select.add_argument("--relevance-list", type=Path,
+                        help="curated MPN list; one MPN per line with optional |manufacturer|priority|family")
+    select.add_argument("--limit", type=int, help="cap the selected part count (relevance-list selection only)")
     fetch = commands.add_parser("fetch", help="rate-limited resumable datasheet acquisition")
     fetch.add_argument("manifest", type=Path)
     fetch.add_argument("--rate", type=float, default=0.5)
     fetch.add_argument("--retries", type=int, default=4)
-    jobs = commands.add_parser("jobs", help="write one Luna extraction brief per fetched datasheet")
+    fetch.add_argument("--manual-drop", type=Path, default=DEFAULT_MANUAL_DROP,
+                       help="directory of human-supplied PDFs for gated datasheets")
+    fetch.add_argument("--strict", action="store_true",
+                       help="exit 2 when any datasheet is skipped; the unattended default exits 0")
+    jobs = commands.add_parser("jobs", help="write one extraction brief per fetched datasheet")
     jobs.add_argument("manifest", type=Path)
-    ingest = commands.add_parser("ingest", help="validate and cross-check one Luna JSON response")
+    claim = commands.add_parser("claim", help="atomically lease unclaimed parts for one worker")
+    claim.add_argument("manifest", type=Path)
+    claim.add_argument("--worker", required=True)
+    claim.add_argument("--n", type=int, default=1, help="maximum parts to lease")
+    claim.add_argument("--ttl", type=int, default=3600, help="lease lifetime in seconds")
+    claim.add_argument("--states", nargs="+", default=list(CLAIMABLE_STATES), choices=list(CLAIMABLE_STATES))
+    claim.add_argument("--max-attempts", type=int, default=DEFAULT_MAX_ATTEMPTS)
+    claim.add_argument("--release", action="store_true", help="release this worker's leases instead of taking new ones")
+    extract = commands.add_parser("extract", help="run the extraction batch through a real invoker command")
+    extract.add_argument("manifest", type=Path)
+    extract.add_argument("--worker", required=True)
+    extract.add_argument("--invoke-cmd", help="shell command fed each prompt on stdin, printing extraction JSON on stdout")
+    extract.add_argument("--concurrency", type=int, default=4, help="1 to 4 concurrent invocations")
+    extract.add_argument("--n", type=int, help="maximum parts to lease and extract this run")
+    extract.add_argument("--ttl", type=int, default=3600, help="lease lifetime in seconds")
+    extract.add_argument("--timeout", type=float, default=900.0, help="per-invocation timeout in seconds")
+    extract.add_argument("--model", help="model name recorded with each cost event and exported as CONVEYOR_MODEL")
+    extract.add_argument("--dry-run", action="store_true", help="write prompts and the exact command lines, invoke nothing")
+    ingest = commands.add_parser("ingest", help="validate and cross-check one extraction JSON response")
     ingest.add_argument("manifest", type=Path)
     ingest.add_argument("--lcsc-id", required=True)
     ingest.add_argument("--response", type=Path, required=True)
@@ -52,6 +108,9 @@ def parser() -> argparse.ArgumentParser:
     fit.add_argument("--regenerate-staged", action="store_true", help="rebuild already staged packages from preserved extraction JSON")
     status = commands.add_parser("status", help="show state and fidelity counts")
     status.add_argument("manifest", type=Path)
+    status.add_argument("--costs", action="store_true", help="add token and wall-time accounting per stage and per staged part")
+    export = commands.add_parser("export-extractions", help="copy extraction JSON into a tracked directory with a manifest")
+    export.add_argument("--to", type=Path, default=DEFAULT_EXTRACTION_EXPORT)
     return root
 
 
@@ -76,14 +135,101 @@ def part_by_id(manifest: dict, lcsc_id: str) -> dict:
     raise ConveyorError(f"No manifest part with LCSC ID {lcsc_id}")
 
 
+RELEVANCE_SQL = """
+SELECT j.lcsc, j.mfr, COALESCE(NULLIF(j.manufacturer, ''), l.manufacturer) AS manufacturer,
+       j.category, j.subcategory, j.package, j.stock, j.preferred AS popularity,
+       j.description, j.datasheet, j.attributes, l.attributes AS lcsc_attributes
+FROM jlc_components AS j
+LEFT JOIN lcsc_components AS l ON l.lcsc = j.lcsc
+WHERE j.present = 1
+  AND j.datasheet <> ''
+  AND lower(j.mfr) IN ({placeholders})
+ORDER BY j.preferred DESC, j.stock DESC, j.lcsc ASC
+"""
+
+
+def relevance_catalog_rows(db: Path, entries, source_state, library_root: Path, chunk_size: int = 200) -> list[dict]:
+    """Look the curated MPNs up in the catalog, in chunks that stay inside SQLite's bind limit."""
+    rows: list[dict] = []
+    names = [entry["mpn"] for entry in entries]
+    for start in range(0, len(names), chunk_size):
+        chunk = names[start:start + chunk_size]
+        placeholders = ", ".join(f":mpn{index}" for index in range(len(chunk)))
+        sql = RELEVANCE_SQL.format(placeholders=placeholders)
+        parameters = {f"mpn{index}": value.casefold() for index, value in enumerate(chunk)}
+        result = query_manifest(db, sql, parameters, source_state, library_root,
+                                "relevance-list", limit=None, exclude_reviewed=False)
+        rows.extend(result["parts"])
+    return rows
+
+
+def select_relevance_command(args, db: Path, source_state, library_root: Path) -> int:
+    entries = parse_relevance_list(args.relevance_list.read_text(encoding="utf-8"))
+    catalog_rows = relevance_catalog_rows(db, entries, source_state, library_root)
+    matched, unmatched = match_relevance_entries(entries, catalog_rows)
+    eligible, collision_skips = filter_library_collisions(matched, library_root)
+    if args.limit is not None:
+        eligible = eligible[:args.limit]
+    seen: set[tuple[str, str]] = set()
+    parts: list[dict] = []
+    for part in eligible:
+        identity = (str(part["manufacturer"]).casefold(), str(part["mpn"]).casefold())
+        if identity in seen:
+            continue
+        seen.add(identity)
+        parts.append(part)
+    manifest = {
+        "schema_version": "1.0.0",
+        "kind": "opencircuit-part-tranche",
+        "created_at": utc_now(),
+        "source": {
+            "provider": "jlcparts",
+            "url": source_state.get("source_url"),
+            "dump_date": source_state.get("dump_date"),
+            "archive_id": source_state.get("archive_id"),
+            "local_only": True,
+        },
+        "query": {
+            "name": f"relevance-list:{args.relevance_list.name}",
+            "sql": RELEVANCE_SQL.strip(),
+            "parameters": {"relevance_list": str(args.relevance_list)},
+            "exclude_reviewed": True,
+            "reviewed_mpn_count": len(reviewed_mpns(library_root)),
+            "limit": args.limit,
+            "relevance_entry_count": len(entries),
+        },
+        "part_count": len(parts),
+        "parts": parts,
+        "selection_skips": [*unmatched, *collision_skips],
+    }
+    output = args.data_dir / "tranches" / f"{safe_stem(args.name)}.json"
+    json_dump(output, manifest)
+    store = state_store(args.data_dir)
+    try:
+        store.seed(tranche_name(output), parts)
+    finally:
+        store.close()
+    print(json.dumps({
+        "manifest": str(output),
+        "relevance_entries": len(entries),
+        "part_count": len(parts),
+        "families": dict(Counter(part["conveyor_family"] for part in parts)),
+        "unmatched": len(unmatched),
+        "already_in_library": len(collision_skips),
+    }, indent=2))
+    return 0
+
+
 def select_command(args) -> int:
     db = args.catalog_data / "jlcparts.sqlite3"
     dump = args.catalog_data / "dump.json"
     if not db.is_file() or not dump.is_file():
         raise ConveyorError(f"External catalog data is incomplete: {args.catalog_data}")
-    sql = args.sql_file.read_text(encoding="utf-8")
     source_state = json.loads(dump.read_text(encoding="utf-8"))
     library_root = REPO_ROOT / "packages" / "model-library" / "models"
+    if args.relevance_list is not None:
+        return select_relevance_command(args, db, source_state, library_root)
+    sql = args.sql_file.read_text(encoding="utf-8")
     raw = query_manifest(db, sql, {"stock_min": args.stock_min}, source_state,
                          library_root, f"sql-file:{args.sql_file.name}", limit=None,
                          exclude_reviewed=False)
@@ -104,14 +250,50 @@ def select_command(args) -> int:
     return 0
 
 
+def manual_drop_candidates(manual_drop: Path, part: dict) -> list[Path]:
+    lcsc = safe_stem(part["lcsc_id"])
+    mpn = safe_stem(part["mpn"])
+    return [
+        manual_drop / f"{lcsc}__{mpn}.pdf",
+        manual_drop / f"{mpn}.pdf",
+        manual_drop / f"{lcsc}.pdf",
+    ]
+
+
+def adopt_manual_drop(manual_drop: Path, part: dict, staging: Path) -> tuple[Path, str] | None:
+    """Adopt a human-supplied PDF for a gated datasheet, or return None.
+
+    Some manufacturers gate their PDFs behind a click-through, and batches 10 to 16 stalled
+    waiting for a human to place one. The drop is now purely optional: present means the
+    part continues tonight, absent means the part is skipped with a reason and the loop
+    keeps moving.
+    """
+    for candidate in manual_drop_candidates(manual_drop, part):
+        if not candidate.is_file():
+            continue
+        destination = staging / "datasheets" / f"{safe_stem(part['lcsc_id'])}__{safe_stem(part['mpn'])}.pdf"
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(candidate, destination)
+        try:
+            validate_pdf(destination)
+        except (OSError, RuntimeError) as error:  # feederlib raises FeederError and deletes the copy
+            raise ConveyorError(f"manual drop {candidate} is not a valid PDF: {error}") from error
+        return destination, str(candidate)
+    return None
+
+
 def fetch_command(args) -> int:
     manifest = load_manifest(args.manifest)
     tranche = tranche_name(args.manifest)
+    staging = args.data_dir / "staging" / tranche
     store = state_store(args.data_dir)
     store.seed(tranche, manifest["parts"])
     report = download_datasheets(args.manifest, args.data_dir, requests_per_second=args.rate, retries=args.retries)
-    staged = json.loads((args.data_dir / "staging" / tranche / "manifest.json").read_text(encoding="utf-8"))
+    staged_path = staging / "manifest.json"
+    staged = json.loads(staged_path.read_text(encoding="utf-8"))
     records = {(item["lcsc_id"], item["mpn"]): item for item in staged["datasheets"]}
+    adopted: list[dict[str, str]] = []
+    skipped: list[dict[str, str]] = []
     try:
         for part in manifest["parts"]:
             row = store.get(tranche, part["lcsc_id"])
@@ -120,13 +302,42 @@ def fetch_command(args) -> int:
             record = records[(part["lcsc_id"], part["mpn"])]
             if record["status"] in {"downloaded", "cached"}:
                 store.transition(tranche, part["lcsc_id"], "datasheet_fetched", datasheet_path=record["path"])
-            else:
-                failure = next((item for item in report["failures"] if item["lcsc_id"] == part["lcsc_id"]), None)
-                store.transition(tranche, part["lcsc_id"], "failed_datasheet_fetched", reason=(failure or {}).get("error", "datasheet download failed"))
+                continue
+            failure = next((item for item in report["failures"] if item["lcsc_id"] == part["lcsc_id"]), None)
+            error_text = (failure or {}).get("error", "datasheet download failed")
+            manual = None
+            try:
+                manual = adopt_manual_drop(args.manual_drop, part, staging)
+            except ConveyorError as error:
+                error_text = f"{error_text}; {error}"
+            if manual is not None:
+                destination, source = manual
+                record.update({
+                    "status": "manual_drop",
+                    "path": str(destination.relative_to(staging)),
+                    "sha256": feeder_sha256_file(destination),
+                    "bytes": destination.stat().st_size,
+                    "manual_drop_source": source,
+                })
+                store.transition(tranche, part["lcsc_id"], "datasheet_fetched",
+                                 reason=f"manual datasheet drop: {source}",
+                                 datasheet_path=record["path"])
+                adopted.append({"lcsc_id": part["lcsc_id"], "mpn": part["mpn"], "source": source})
+                continue
+            expected = str(manual_drop_candidates(args.manual_drop, part)[0])
+            reason = f"skipped: {error_text}; no manual datasheet drop at {expected}"
+            store.transition(tranche, part["lcsc_id"], "failed_datasheet_fetched", reason=reason)
+            skipped.append({"lcsc_id": part["lcsc_id"], "mpn": part["mpn"], "reason": reason})
     finally:
         store.close()
+    staged["datasheets"] = list(records.values())
+    feeder_json_dump(staged_path, staged)
+    report = {**report, "manual_drops": adopted, "skipped": skipped, "skipped_count": len(skipped)}
+    json_dump(staging / "failures.json", report)
     print(json.dumps(report, indent=2))
-    return 0 if report["failed"] == 0 else 2
+    if args.strict and skipped:
+        return 2
+    return 0
 
 
 def jobs_command(args) -> int:
@@ -153,43 +364,230 @@ def jobs_command(args) -> int:
     return 0
 
 
-def ingest_command(args) -> int:
-    manifest = load_manifest(args.manifest)
-    tranche = tranche_name(args.manifest)
-    part = part_by_id(manifest, args.lcsc_id)
-    staging = args.data_dir / "staging" / tranche
-    destination = staging / "extractions" / f"{safe_stem(part['lcsc_id'])}__{safe_stem(part['mpn'])}.json"
-    destination.parent.mkdir(parents=True, exist_ok=True)
-    destination.write_bytes(args.response.read_bytes())
-    store = state_store(args.data_dir)
+def extraction_destination(staging: Path, part: dict) -> Path:
+    return staging / "extractions" / f"{safe_stem(part['lcsc_id'])}__{safe_stem(part['mpn'])}.json"
+
+
+def apply_extraction(store: StateStore, tranche: str, staging: Path, part: dict, destination: Path) -> dict:
+    """Run the four ingest gates over one written response and record the outcome.
+
+    Shared by `ingest` (one human-supplied response) and `extract` (a dispatched batch), so
+    an unattended night applies exactly the gates a hand-run batch did.
+    """
     try:
-        row = store.get(tranche, part["lcsc_id"])
         extraction_attempts = store.failure_attempts(tranche, part["lcsc_id"], "extracted")
-        payload = load_and_validate_extraction(destination, HERE / "schemas" / f"{part['conveyor_family']}.schema.json", {"mpn": part["mpn"], "manufacturer": part["manufacturer"], "family": part["conveyor_family"]})
+        payload = load_and_validate_extraction(
+            destination,
+            HERE / "schemas" / f"{part['conveyor_family']}.schema.json",
+            {"mpn": part["mpn"], "manufacturer": part["manufacturer"], "family": part["conveyor_family"]},
+        )
         # Persist the deterministic, audited normalization so the fitter consumes the same
         # schema-valid SI evidence that passed catalog cross-checking.
         json_dump(destination, payload)
         discrepancies = cross_check(payload, part.get("seed_hints", []))
         if discrepancies and extraction_attempts < 1:
             reason = "; ".join(discrepancies)
-            store.transition(tranche, part["lcsc_id"], "failed_extracted", reason=reason, extraction_path=str(destination.relative_to(staging)))
-            print(json.dumps({"status": "retry", "lcsc_id": part["lcsc_id"], "discrepancies": discrepancies}, indent=2))
-            return 2
+            store.transition(tranche, part["lcsc_id"], "failed_extracted", reason=reason,
+                             extraction_path=str(destination.relative_to(staging)))
+            return {"status": "retry", "lcsc_id": part["lcsc_id"], "discrepancies": discrepancies}
         demotion = None
         if discrepancies:
             demotion = "cross-validation failed after one retry: " + "; ".join(discrepancies)
         elif not payload["usable_curves"]:
             demotion = payload.get("omission_reason") or "datasheet lacks usable curves"
-        store.transition(tranche, part["lcsc_id"], "extracted", reason=demotion, extraction_path=str(destination.relative_to(staging)), fidelity="F1" if demotion else None)
-        print(json.dumps({"status": "accepted", "lcsc_id": part["lcsc_id"], "f2_candidate": demotion is None, "demotion_reason": demotion}, indent=2))
-        return 0
+        store.transition(tranche, part["lcsc_id"], "extracted", reason=demotion,
+                         extraction_path=str(destination.relative_to(staging)),
+                         fidelity="F1" if demotion else None)
+        return {"status": "accepted", "lcsc_id": part["lcsc_id"],
+                "f2_candidate": demotion is None, "demotion_reason": demotion}
     except ConveyorError as error:
         extraction_attempts = store.failure_attempts(tranche, part["lcsc_id"], "extracted")
-        store.transition(tranche, part["lcsc_id"], "failed_extracted", reason=str(error), extraction_path=str(destination.relative_to(staging)))
-        print(json.dumps({"status": "retry" if extraction_attempts < 1 else "failed", "error": str(error)}, indent=2))
-        return 2
+        store.transition(tranche, part["lcsc_id"], "failed_extracted", reason=str(error),
+                         extraction_path=str(destination.relative_to(staging)))
+        return {"status": "retry" if extraction_attempts < 1 else "failed",
+                "lcsc_id": part["lcsc_id"], "error": str(error)}
+
+
+def ingest_command(args) -> int:
+    manifest = load_manifest(args.manifest)
+    tranche = tranche_name(args.manifest)
+    part = part_by_id(manifest, args.lcsc_id)
+    staging = args.data_dir / "staging" / tranche
+    destination = extraction_destination(staging, part)
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    destination.write_bytes(args.response.read_bytes())
+    store = state_store(args.data_dir)
+    try:
+        result = apply_extraction(store, tranche, staging, part, destination)
     finally:
         store.close()
+    print(json.dumps(result, indent=2))
+    return 0 if result["status"] == "accepted" else 2
+
+
+def claim_command(args) -> int:
+    tranche = tranche_name(args.manifest)
+    store = state_store(args.data_dir)
+    try:
+        if args.release:
+            released = store.release_worker(tranche, args.worker)
+            payload = {"tranche": tranche, "worker": args.worker, "released": released}
+        else:
+            claimed = store.claim(tranche, args.worker, args.n, args.ttl,
+                                  states=tuple(args.states), max_attempts=args.max_attempts)
+            payload = {
+                "tranche": tranche,
+                "worker": args.worker,
+                "ttl_seconds": args.ttl,
+                "claimed": [
+                    {"lcsc_id": row["lcsc_id"], "mpn": row["mpn"], "family": row["family"],
+                     "state": row["state"], "attempts": row["attempts"],
+                     "claim_expires_at": row["claim_expires_at"]}
+                    for row in claimed
+                ],
+                "claimed_count": len(claimed),
+            }
+        payload["claims"] = store.claim_summary(tranche)
+    finally:
+        store.close()
+    print(json.dumps(payload, indent=2))
+    return 0
+
+
+def extraction_jobs_for(rows, manifest: dict, staging: Path) -> list[dict]:
+    jobs = []
+    for row in rows:
+        if row["state"] not in EXTRACTION_STATES or not row["datasheet_path"]:
+            continue
+        part = part_by_id(manifest, row["lcsc_id"])
+        datasheet = (staging / row["datasheet_path"]).resolve()
+        pack = HERE / "context-packs" / f"{part['conveyor_family']}.json"
+        discrepancies = [row["reason"]] if row["state"] == "failed_extracted" and row["reason"] else []
+        prompt = build_luna_prompt(REPO_ROOT, pack, datasheet, part, discrepancies)
+        prompt_path = staging / "prompts" / f"{safe_stem(part['lcsc_id'])}__{safe_stem(part['mpn'])}.txt"
+        prompt_path.parent.mkdir(parents=True, exist_ok=True)
+        prompt_path.write_text(prompt, encoding="utf-8")
+        jobs.append({
+            "lcsc_id": part["lcsc_id"],
+            "mpn": part["mpn"],
+            "family": part["conveyor_family"],
+            "datasheet_path": str(datasheet),
+            "prompt_path": str(prompt_path),
+            "response_path": str(extraction_destination(staging, part).resolve()),
+            "attempt": int(row["attempts"] or 0) + 1,
+        })
+    return jobs
+
+
+def merge_ledger(path: Path, tranche: str, entries: dict) -> dict:
+    ledger = {"schema_version": "1.0.0", "kind": "opencircuit-conveyor-extraction-ledger",
+              "tranche": tranche, "entries": {}}
+    if path.is_file():
+        try:
+            existing = json.loads(path.read_text(encoding="utf-8"))
+            if isinstance(existing.get("entries"), dict):
+                ledger["entries"] = existing["entries"]
+        except (OSError, json.JSONDecodeError):
+            pass
+    ledger["entries"].update(entries)
+    ledger["updated_at"] = utc_now()
+    ledger["entry_count"] = len(ledger["entries"])
+    json_dump(path, ledger)
+    return ledger
+
+
+def extract_command(args) -> int:
+    if args.concurrency < 1 or args.concurrency > 4:
+        raise ConveyorError("Extraction concurrency must be between 1 and 4")
+    manifest = load_manifest(args.manifest)
+    tranche = tranche_name(args.manifest)
+    staging = args.data_dir / "staging" / tranche
+    store = state_store(args.data_dir)
+    try:
+        if args.dry_run:
+            # A dry run must not disturb leases: it reports what a real run would dispatch.
+            rows = [row for row in store.rows(tranche) if row["state"] in EXTRACTION_STATES]
+            if args.n is not None:
+                rows = rows[:args.n]
+            jobs = extraction_jobs_for(rows, manifest, staging)
+            command = args.invoke_cmd or "<invoke-cmd>"
+            lines = dry_run_command_lines(command, jobs, model=args.model)
+            plan_path = staging / "extraction-dispatch.json"
+            json_dump(plan_path, {"schema_version": "1.0.0", "tranche": tranche, "worker": args.worker,
+                                  "invoke_cmd": command, "max_concurrency": args.concurrency,
+                                  "job_count": len(jobs), "jobs": jobs, "command_lines": lines})
+            script_path = staging / "extraction-dry-run.sh"
+            script_path.parent.mkdir(parents=True, exist_ok=True)
+            script_path.write_text("#!/bin/sh\n# Generated by 'conveyor extract --dry-run'. One line per job.\n"
+                                   + "\n".join(lines) + "\n", encoding="utf-8")
+            print(json.dumps({"status": "dry-run", "job_count": len(jobs), "plan": str(plan_path),
+                              "commands": str(script_path), "command_lines": lines}, indent=2))
+            return 0
+
+        if not args.invoke_cmd:
+            raise ConveyorError("extract needs --invoke-cmd unless --dry-run is given")
+        held = store.held(tranche, args.worker)
+        budget = args.n if args.n is not None else len(manifest["parts"])
+        remaining = max(budget - len(held), 0)
+        claimed = store.claim(tranche, args.worker, remaining, args.ttl, states=EXTRACTION_STATES) if remaining else []
+        rows = held + claimed
+        jobs = extraction_jobs_for(rows, manifest, staging)
+        if not jobs:
+            print(json.dumps({"status": "idle", "reason": "no claimable part is waiting for extraction",
+                              "held": len(held), "claimed": len(claimed)}, indent=2))
+            return 0
+        invoke = build_subprocess_invoker(args.invoke_cmd, cwd=REPO_ROOT, timeout=args.timeout, model=args.model)
+        results = run_extraction_batch(jobs, invoke, max_concurrency=args.concurrency)
+        ledger_entries: dict[str, dict] = {}
+        outcomes: list[dict] = []
+        for job, result in zip(jobs, results):
+            part = part_by_id(manifest, job["lcsc_id"])
+            store.record_cost(tranche, job["lcsc_id"], "extracted",
+                              tokens_in=result["tokens_in"], tokens_out=result["tokens_out"],
+                              wall_seconds=result["wall_seconds"], llm_model=result["llm_model"],
+                              worker_id=args.worker)
+            if result["status"] != "invoked":
+                store.transition(tranche, job["lcsc_id"], "failed_extracted",
+                                 reason=f"extraction invoker failed: {result['error']}")
+                outcome = {"status": "invoke_failed", "lcsc_id": job["lcsc_id"], "error": result["error"]}
+            else:
+                outcome = apply_extraction(store, tranche, staging, part, Path(result["response_path"]))
+            store.release(tranche, job["lcsc_id"])
+            outcomes.append(outcome)
+            ledger_entries[job["lcsc_id"]] = {
+                "mpn": job["mpn"],
+                "family": job["family"],
+                "attempt": job["attempt"],
+                "worker": args.worker,
+                "invoke_cmd": args.invoke_cmd,
+                "llm_model": result["llm_model"],
+                "prompt_sha256": result["prompt_sha256"],
+                "datasheet_sha256": result["datasheet_sha256"],
+                "response_sha256": result["response_sha256"],
+                "tokens_in": result["tokens_in"],
+                "tokens_out": result["tokens_out"],
+                "wall_seconds": result["wall_seconds"],
+                "invoker_status": result["status"],
+                "returncode": result["returncode"],
+                "ingest_status": outcome["status"],
+                "completed_at": utc_now(),
+            }
+        merge_ledger(staging / "extraction-ledger.json", tranche, ledger_entries)
+        summary = {
+            "status": "complete",
+            "worker": args.worker,
+            "job_count": len(jobs),
+            "outcomes": dict(Counter(item["status"] for item in outcomes)),
+            "tokens_in": sum(item["tokens_in"] for item in results),
+            "tokens_out": sum(item["tokens_out"] for item in results),
+            "wall_seconds": round(sum(item["wall_seconds"] for item in results), 3),
+            "ledger": str(staging / "extraction-ledger.json"),
+            "results": outcomes,
+        }
+    finally:
+        store.close()
+    print(json.dumps(summary, indent=2))
+    return 0 if summary["outcomes"].get("accepted") else 2
 
 
 def fit_command(args) -> int:
@@ -304,9 +702,26 @@ def status_command(args) -> int:
     store = state_store(args.data_dir)
     try:
         rows = store.rows(tranche)
+        report = {
+            "tranche": tranche,
+            "state_schema_version": store.migration["schema_version"],
+            "states": dict(Counter(row["state"] for row in rows)),
+            "fidelity": dict(Counter(row["fidelity"] for row in rows if row["fidelity"])),
+            "top_failure_reasons": top_failure_reasons(rows),
+            "top_recorded_reasons": top_recorded_reasons(rows),
+            "claims": store.claim_summary(tranche),
+        }
+        if args.costs:
+            report["costs"] = store.cost_summary(tranche)
     finally:
         store.close()
-    print(json.dumps({"tranche": tranche, "states": dict(Counter(row["state"] for row in rows)), "fidelity": dict(Counter(row["fidelity"] for row in rows if row["fidelity"])), "top_failure_reasons": top_failure_reasons(rows), "top_recorded_reasons": top_recorded_reasons(rows)}, indent=2))
+    print(json.dumps(report, indent=2))
+    return 0
+
+
+def export_extractions_command(args) -> int:
+    report = export_extractions(args.data_dir, args.to)
+    print(json.dumps(report, indent=2))
     return 0
 
 
@@ -315,9 +730,20 @@ def main(argv=None) -> int:
     # Keep staging and package-path comparisons stable when callers pass a
     # repo-relative data directory from inside the worktree.
     args.data_dir = args.data_dir.resolve()
-    args.catalog_data = args.catalog_data.resolve()
+    if args.command in {"select"}:
+        args.catalog_data = resolve_catalog_data(args.catalog_data).resolve()
     try:
-        return {"select": select_command, "fetch": fetch_command, "jobs": jobs_command, "ingest": ingest_command, "fit": fit_command, "status": status_command}[args.command](args)
+        return {
+            "select": select_command,
+            "fetch": fetch_command,
+            "jobs": jobs_command,
+            "claim": claim_command,
+            "extract": extract_command,
+            "ingest": ingest_command,
+            "fit": fit_command,
+            "status": status_command,
+            "export-extractions": export_extractions_command,
+        }[args.command](args)
     except (ConveyorError, OSError, json.JSONDecodeError, subprocess.SubprocessError) as error:
         print(f"conveyor: {error}", file=sys.stderr)
         return 1
