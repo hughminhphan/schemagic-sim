@@ -66,6 +66,25 @@ test.describe("catalog-only parts place and simulate", () => {
     });
   }
 
+  test("places an NE555 from the catalog onto the bench", async ({ page }) => {
+    await page.goto("/");
+    await page.evaluate(() => localStorage.setItem("schemagic.onboarding.v1.completed", "1"));
+    await page.reload();
+    await expect(page.getByTestId("engine-ready")).toBeVisible({ timeout: 45_000 });
+    const before = await page.locator(".editor-component").count();
+    await page.getByRole("button", { name: "Catalog", exact: true }).click();
+    const sheet = page.locator(".catalog-sheet");
+    await sheet.locator("#catalog-search").fill("NE555");
+    await sheet.locator('[data-catalog-part="ti/NE555"]').click();
+    await sheet.getByRole("button", { name: "Place NE555" }).click();
+    const box = await page.locator("#editor-host").boundingBox();
+    if (!box) throw new Error("Editor host is not visible");
+    await page.mouse.click(box.x + 560, box.y + 420);
+    await expect(page.locator(".editor-component")).toHaveCount(before + 1);
+    await expect(page.locator(".inspector .fidelity")).toHaveText("F2");
+    await expect(page.locator(".inspector .measure-label").first()).toHaveText("GND V");
+  });
+
   test("ranks 555 and filters the catalog", async ({ page }) => {
     await page.goto("/");
     await page.evaluate(() => localStorage.setItem("schemagic.onboarding.v1.completed", "1"));
