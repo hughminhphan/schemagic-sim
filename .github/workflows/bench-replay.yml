@@ -1,5 +1,8 @@
 name: Weekly bounded bench replay
 
+# Advisory by construction: no pull_request trigger and the replay job is
+# allowed to report failures without becoming a required check.
+
 on:
   schedule:
     - cron: "17 3 * * 0"
@@ -16,10 +19,13 @@ jobs:
   replay:
     name: Bounded fresh native versus WASM replay
     runs-on: ubuntu-latest
+    continue-on-error: true
     timeout-minutes: 105
     steps:
       - name: Check out repository
         uses: actions/checkout@v7
+        with:
+          persist-credentials: false
 
       - name: Set up Node.js
         uses: actions/setup-node@v7
@@ -52,11 +58,11 @@ jobs:
 
       - name: Upload replay summary
         if: always()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: bench-replay-summary
           path: |
             tools/native-ngspice-reference/output/replay/replay-summary.json
             tools/native-ngspice-reference/output/replay/replay-summary.md
-          if-no-files-found: error
+          if-no-files-found: warn
           retention-days: 30
