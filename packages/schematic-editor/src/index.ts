@@ -3,6 +3,7 @@ import {
   componentPinPoints,
   componentPoint,
   deserializeCircuit,
+  isMultiTerminalDevice,
   partByType,
   type CircuitComponent,
   type CircuitDocument,
@@ -701,7 +702,7 @@ export function trimOverlappingWires(document: CircuitDocument, componentIds: It
   for (const component of components) {
     // Multi-input devices can legitimately place two pins on one bus. That is
     // connectivity, not a two-terminal body covering conductor.
-    if (component.type === "opamp_ideal") continue;
+    if (isMultiTerminalDevice(component.type)) continue;
     const pins = [...new Map(componentPinPoints(component).map((pin) => [pointKey(pin), pin] as const)).values()];
     for (let wirePosition = 0; wirePosition < document.wires.length; wirePosition += 1) {
       const wire = document.wires[wirePosition]!;

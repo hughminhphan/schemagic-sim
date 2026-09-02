@@ -2,9 +2,11 @@ import { describe, expect, it } from "vitest";
 import { generateNetlist } from "@opencircuit/circuit-schema";
 import {
   CATALOG_EAGER_PAYLOAD_CONTRACT,
+  CATALOG_NATIVE_WASM_DISAGREEMENT,
   CATALOG_NONPLACEABLE_BREAKDOWN,
   CATALOG_PARTS,
   CATALOG_PLACEABLE_COUNT,
+  CATALOG_REFERENCE_ONLY_COUNT,
   CATALOG_REVIEWED_COUNT,
   preloadCatalogPart,
   preloadCatalogPartsForDocument,
@@ -16,15 +18,13 @@ describe("catalog release truth", () => {
   it("exposes the reviewed/placeable counts and exact reference-only breakdown", () => {
     expect(CATALOG_PARTS).toHaveLength(771);
     expect(CATALOG_REVIEWED_COUNT).toBe(771);
-    expect(CATALOG_PLACEABLE_COUNT).toBe(728);
-    expect(CATALOG_NONPLACEABLE_BREAKDOWN).toEqual({
-      comparator: 5,
-      jfet_n: 4,
-      logic_74hc: 14,
-      other: 7,
-      timer: 4,
-      vreg_linear: 9,
-    });
+    expect(CATALOG_PLACEABLE_COUNT).toBe(768);
+    expect(CATALOG_REFERENCE_ONLY_COUNT).toBe(3);
+    // Every family now has a symbol. The remainder is three comparator packages
+    // whose recorded validation says native and WASM disagree.
+    expect(CATALOG_NONPLACEABLE_BREAKDOWN).toEqual({ comparator: 3 });
+    expect(CATALOG_PARTS.filter((part) => !part.placeable).map((part) => part.id).sort())
+      .toEqual([...CATALOG_NATIVE_WASM_DISAGREEMENT].sort());
     expect(CATALOG_PARTS.filter((part) => part.placeable).every((part) =>
       part.manifestValid && part.reviewed && part.baseType
       && part.manifest.symbol_pins?.length && part.manifest.spice_pin_mapping?.length,

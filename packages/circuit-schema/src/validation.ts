@@ -9,7 +9,7 @@ import {
   MAX_IMPORTED_MODEL_TOTAL_BYTES,
 } from "./imports";
 import { inspectNoiseConfig } from "./noise";
-import { componentPinPoints, finiteEngineering, partByType } from "./parts";
+import { componentPinPoints, finiteEngineering, isCatalogOnlyType, partByType } from "./parts";
 import { SPICE_NODE_TOKEN_PATTERN, hasForbiddenControl, hasUnpairedSurrogate, isSafeDecimalValue } from "./spice-token";
 import type { CircuitDocument, ImportedModelPart, ValidationIssue } from "./types";
 
@@ -185,6 +185,15 @@ export function validateCircuit(document: CircuitDocument): ValidationIssue[] {
     ids.add(component.id);
     if (!Array.isArray(component.pos) || !Number.isInteger(component.pos[0]) || !Number.isInteger(component.pos[1])) issues.push({ path: `components.${component.id}.pos`, message: "Component position must be on the grid", componentId: component.id });
     try { componentPinPoints(component); } catch (error) { issues.push({ path: `components.${component.id}.type`, message: error instanceof Error ? error.message : String(error), componentId: component.id }); }
+    if (isCatalogOnlyType(component.type)) {
+      const catalogPartId = component.params?.catalogPartId;
+      if (typeof catalogPartId !== "string" || !catalogPartId.trim()) {
+        issues.push({ path: `components.${component.id}.params.catalogPartId`, message: `Component ${component.id} uses a catalog-only ${component.type} symbol, which carries no generic model; select a reviewed catalog package for it`, componentId: component.id });
+      }
+      if (component.value !== undefined) {
+        issues.push({ path: `components.${component.id}.value`, message: `Component ${component.id} uses a catalog-only ${component.type} symbol, whose electrical behaviour comes from its catalog package rather than an editable value`, componentId: component.id });
+      }
+    }
     issues.push(...inspectSourceWaveform(component));
   }
   for (const wire of document.wires) {

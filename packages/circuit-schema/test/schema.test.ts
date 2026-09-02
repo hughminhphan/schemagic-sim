@@ -1,7 +1,7 @@
 import { readFileSync, readdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
-import { DC_SWEEP_MAX_POINTS, PARTS, canonicalizeCircuit, deserializeCircuit, generateNetlist, inspectDCSweepConfig, inspectNoiseConfig, migrateCircuit, pinVoltageProbe, validateCircuit, type CircuitComponent, type CircuitDocument } from "../src";
+import { DC_SWEEP_MAX_POINTS, PARTS, canonicalizeCircuit, isCatalogOnlyType, deserializeCircuit, generateNetlist, inspectDCSweepConfig, inspectNoiseConfig, migrateCircuit, pinVoltageProbe, validateCircuit, type CircuitComponent, type CircuitDocument } from "../src";
 
 const base: CircuitDocument = {
   format: "opencircuit-circuit",
@@ -173,11 +173,30 @@ describe("circuit schema", () => {
         mirror: false,
         ...(part.defaultValue !== undefined ? { value: part.defaultValue } : {}),
         ...(part.type === "switch_spst" ? { params: { closed: true } } : {}),
+        ...(isCatalogOnlyType(part.type) ? { params: { catalogPartId: "ti/NE555" } } : {}),
       };
       const ground: CircuitComponent = { id: "c2", type: "ground", pos: [10 + first[0], 10 + first[1]], rot: 0, mirror: false };
       const document: CircuitDocument = { ...base, components: [device, ground], wires: [] };
       expect(() => generateNetlist(document)).not.toThrow();
       expect(generateNetlist(document).netlist).toContain(".end\n");
+    });
+  }
+
+  for (const part of PARTS.filter((entry) => isCatalogOnlyType(entry.type))) {
+    it(`rejects ${part.type} without a catalog package`, () => {
+      const first = part.pins[0] ?? [0, 0];
+      const device: CircuitComponent = { id: "c1", type: part.type, pos: [10, 10], rot: 0, mirror: false };
+      const ground: CircuitComponent = { id: "c2", type: "ground", pos: [10 + first[0], 10 + first[1]], rot: 0, mirror: false };
+      const document: CircuitDocument = { ...base, components: [device, ground], wires: [] };
+      expect(validateCircuit(document).map((issue) => issue.path)).toContain("components.c1.params.catalogPartId");
+    });
+
+    it(`rejects an editable value on ${part.type}`, () => {
+      const first = part.pins[0] ?? [0, 0];
+      const device: CircuitComponent = { id: "c1", type: part.type, pos: [10, 10], rot: 0, mirror: false, value: "1k", params: { catalogPartId: "ti/NE555" } };
+      const ground: CircuitComponent = { id: "c2", type: "ground", pos: [10 + first[0], 10 + first[1]], rot: 0, mirror: false };
+      const document: CircuitDocument = { ...base, components: [device, ground], wires: [] };
+      expect(validateCircuit(document).map((issue) => issue.path)).toContain("components.c1.value");
     });
   }
 });

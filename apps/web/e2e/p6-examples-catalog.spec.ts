@@ -70,6 +70,9 @@ test("catalog renders model detail and places real 2N3904 model", async ({ page 
   expect(await dialog.locator("[data-catalog-part]").count()).toBeGreaterThanOrEqual(5);
   await page.screenshot({ path: testInfo.outputPath("catalog-view.png"), fullPage: true });
 
+  // The index renders in chunks, so 771 rows never lay out at once. Reach a
+  // package the way a user does, by searching for it.
+  await dialog.locator("#catalog-search").fill("2N3904");
   await dialog.locator('[data-catalog-part="onsemi/2N3904"]').click();
   await expect(dialog.getByTestId("model-card")).toContainText("2N3904 model card");
   await expect(dialog.getByRole("link", { name: "View model source and tests on GitHub" })).toHaveAttribute("href", /packages\/model-library\/models\/onsemi\/2N3904$/);

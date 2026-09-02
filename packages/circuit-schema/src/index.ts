@@ -5,7 +5,7 @@ export { IMPORTED_ANALYSIS_MODES, IMPORTED_ANALYSIS_VALIDITY_VERSION, IMPORTED_M
 export { COMPONENT_CURRENT_VECTOR_POLICY, generateNetlist, interimModels } from "./netlist";
 export { migrateCircuitV1toV2, migrateCircuitV2toV3 } from "./migration";
 export { DEFAULT_NOISE_TEMPERATURE_C, NOISE_MAX_POINTS, defaultNoiseConfig, inspectNoiseConfig, noisePointCount } from "./noise";
-export { PARTS, componentPinPoints, componentPoint, finiteEngineering, parseEngineering, partByType, spiceNumber } from "./parts";
+export { CATALOG_ONLY_PRIMITIVE_PREFIX, CATALOG_ONLY_TYPES, PARTS, componentPinPoints, componentPoint, finiteEngineering, isCatalogOnlyType, isMultiTerminalDevice, parseEngineering, partByType, spiceNumber } from "./parts";
 export { componentCurrentProbe, componentPowerProbe, nodeReferenceLabel, pinVoltageProbe, probeDisplayLabel, removeCircuitProbe, resolveNodeReference, resolveVoltageProbeNodes, simpleVoltageExpression, wireVoltageProbe } from "./probes";
 export { assertValidCircuit, validateCircuit } from "./validation";
 export { componentPinPointsV4 } from "./parts";
