@@ -124,3 +124,19 @@
 .coach-mark[data-placement="right"]::before{left:-5px;top:calc(50% - 4px);transform:rotate(315deg)}
 @media(prefers-reduced-motion:no-preference){.coach-mark{animation:coach-mark-in .22s ease-out both}}
 @keyframes coach-mark-in{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+/* Compact, non-interactive simulator surface for iframe embeds. */
+html[data-embed="1"] .app-shell{grid-template-rows:32px minmax(0,1fr) minmax(120px,32vh)}
+html[data-embed="1"] .chrome{grid-template-columns:minmax(0,1fr) auto;padding-right:0}
+html[data-embed="1"] .product-switch,html[data-embed="1"] .version,html[data-embed="1"] .document-name,html[data-embed="1"] .analysis-tabs,html[data-embed="1"] .chrome-actions>button{display:none}
+html[data-embed="1"] .embed-read-only-label{padding:2px 5px;border:1px solid var(--graphite-500);color:var(--graphite-300);font:600 8px "IBM Plex Mono",monospace;letter-spacing:.08em;white-space:nowrap}
+html[data-embed="1"] .embed-open-link{display:flex;align-items:center;height:32px;padding:0 12px;border-left:1px solid var(--graphite-700);color:var(--vellum);font:500 10px "IBM Plex Sans",sans-serif;text-decoration:none;white-space:nowrap}
+html[data-embed="1"] .embed-open-link:hover{background:var(--graphite-700)}
+html[data-embed="1"] .embed-open-link:focus-visible{outline:2px solid var(--vellum);outline-offset:-3px}
+html[data-embed="1"] .workbench{grid-template-columns:minmax(0,1fr)}
+html[data-embed="1"] .symbol-rail,html[data-embed="1"] .inspector,html[data-embed="1"] .overlay,html[data-embed="1"] .guide-overlay,html[data-embed="1"] .tour-layer{display:none!important}
+html[data-embed="1"] .editor-host{pointer-events:none}
+html[data-embed="1"] .scope-dock{grid-template-rows:24px minmax(0,1fr);overflow:hidden}
+html[data-embed="1"] .scope-toggle,html[data-embed="1"] .instrument-toggle,html[data-embed="1"] .guidance{display:none}
+html[data-embed="1"] .scope-toolbar{padding-left:10px}
+@media(max-width:420px){html[data-embed="1"] .wordmark{font-size:12px}html[data-embed="1"] .embed-open-link{padding:0 8px}}

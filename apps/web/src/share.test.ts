@@ -1,23 +1,47 @@
-import { readFileSync } from "node:fs";
-import { componentCurrentProbe, componentPowerProbe, migrateCircuit, pinVoltageProbe } from "@opencircuit/circuit-schema";
+import { readFileSync, readdirSync } from "node:fs";
+import { join } from "node:path";
+import { fileURLToPath } from "node:url";
+import { componentCurrentProbe, componentPowerProbe, migrateCircuit, pinVoltageProbe, type CircuitDocument } from "@opencircuit/circuit-schema";
 import { importedPartFromModel, parseSpiceLibrary } from "@opencircuit/model-import";
 import { deflateSync, strToU8 } from "fflate";
 import { describe, expect, it } from "vitest";
 import { demoCircuit } from "./demo";
 import { createInitialMeasurementWorkbenchState } from "./measurement-state";
-import { decodeCircuit, decodeWorkspaceShare, encodeCircuit, encodeWorkspaceShare } from "./share";
+import { circuitFromLocation, decodeCircuit, decodeWorkspaceShare, encodeCircuit, encodeWorkspaceShare, shareUrl } from "./share";
+
+const examplesDirectory = fileURLToPath(new URL("../../../examples/", import.meta.url));
+
+function fixturePaths(directory = examplesDirectory): string[] {
+  return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
+    const path = join(directory, entry.name);
+    if (entry.isDirectory()) return fixturePaths(path);
+    return entry.isFile() && entry.name.endsWith(".json") ? [path] : [];
+  }).sort();
+}
+
+function fixtureCircuit(path: string): CircuitDocument {
+  return migrateCircuit(JSON.parse(readFileSync(path, "utf8")) as unknown);
+}
+
+const fixtures = fixturePaths().map((path) => ({
+  name: path.slice(examplesDirectory.length).replace(/\.json$/, ""),
+  path,
+  document: fixtureCircuit(path),
+}));
 
 describe("share payload", () => {
-  it("round-trips canonical circuit JSON through deflate-raw base64url", () => {
+  it("round-trips canonical circuit data through versioned structural binary compression", () => {
     const payload = encodeCircuit(demoCircuit);
-    expect(payload).toMatch(/^[A-Za-z0-9_-]+$/);
+    expect(payload).toMatch(/^v2\.[A-Za-z0-9_-]+$/);
     expect(decodeCircuit(payload)).toEqual(demoCircuit);
   });
 
-  it("migrates a v1 share payload on decode", () => {
+  it("keeps unprefixed and explicitly prefixed v1 JSON payloads readable", () => {
     const source = readFileSync(new URL("../../../packages/circuit-schema/test/fixtures/v1-to-v2/demo.v1.json", import.meta.url), "utf8");
-    const payload = Buffer.from(deflateSync(strToU8(source), { level: 9 })).toString("base64url");
-    expect(decodeCircuit(payload)).toEqual(migrateCircuit(JSON.parse(source)));
+    const legacy = Buffer.from(deflateSync(strToU8(source), { level: 9 })).toString("base64url");
+    const expected = migrateCircuit(JSON.parse(source));
+    expect(decodeCircuit(legacy)).toEqual(expected);
+    expect(decodeCircuit(`v1.${legacy}`)).toEqual(expected);
   });
 
   it("preserves noise settings in share URLs", () => {
@@ -91,9 +115,52 @@ describe("share payload", () => {
     const decoded = decodeCircuit(first);
     expect(encodeCircuit(decoded)).toBe(first);
     expect(decoded).toEqual(document);
+    expect(shareUrl(document, new URL("https://sim.robonyx.com/") as unknown as Location).length).toBeLessThanOrEqual(8_000);
   });
 
-  it("rejects malformed base64url instead of partially loading it", () => {
-    expect(() => decodeCircuit("not+base64")).toThrow(/malformed|valid supported/i);
+  it("round-trips a one-megabyte imported model source without exceeding argument limits", () => {
+    const document = structuredClone(demoCircuit);
+    const modelLine = ".model LARGE_MODEL NPN(BF=120)";
+    const sourceText = `${modelLine}\n`.padEnd(1_048_576, "*");
+    const record = importedPartFromModel(parseSpiceLibrary(modelLine).models[0]!, {
+      sourceName: "large-model.lib",
+      sourceText,
+      baseType: "bjt_npn",
+    });
+    document.modelImports = { format: "opencircuit-imported-models", version: 1, parts: [record] };
+
+    expect(Buffer.byteLength(sourceText, "utf8")).toBeGreaterThanOrEqual(1_048_576);
+    expect(decodeCircuit(encodeCircuit(document))).toEqual(document);
+  });
+
+  it.each(fixtures)("round-trips fixture $name", ({ document }) => {
+    const payload = encodeCircuit(document);
+    expect(decodeCircuit(payload)).toEqual(document);
+    expect(encodeCircuit(decodeCircuit(payload))).toBe(payload);
+  });
+
+  it("keeps the largest fixture URL inside the platform ceiling and target", () => {
+    const urls = fixtures.map(({ name, document }) => ({
+      name,
+      url: shareUrl(document, new URL("https://sim.robonyx.com/") as unknown as Location),
+    }));
+    const largest = urls.sort((left, right) => right.url.length - left.url.length)[0]!;
+    expect(largest.url.length, `${largest.name} share URL`).toBeLessThanOrEqual(8_000);
+    expect(largest.url.length, `${largest.name} share URL`).toBeLessThanOrEqual(2_000);
+  });
+
+  it("decodes every recorded example share URL to its fixture circuit", () => {
+    const recorded = [...readFileSync(join(examplesDirectory, "URLS.md"), "utf8").matchAll(/^- ([^:]+): (https?:\/\/\S+)$/gm)];
+    expect(recorded.length).toBeGreaterThan(0);
+    for (const [, name, url] of recorded) {
+      const fixture = fixtures.find((candidate) => candidate.name === name);
+      expect(fixture, `fixture for recorded URL ${name}`).toBeDefined();
+      expect(circuitFromLocation(new URL(url!).hash), name).toEqual(fixture!.document);
+    }
+  });
+
+  it("rejects malformed or unsupported payloads instead of partially loading them", () => {
+    expect(() => decodeCircuit("not+base64")).toThrow(/valid supported/i);
+    expect(() => decodeCircuit("v9.abc")).toThrow(/valid supported/i);
   });
 });
