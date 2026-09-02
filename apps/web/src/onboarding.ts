@@ -11,6 +11,8 @@ type TourStep = {
 };
 
 const TOUR_STORAGE_KEY = "schemagic.onboarding.v1.completed";
+const COACH_STORAGE_KEY = "schemagic.onboarding.coach-mark.v1.dismissed";
+const COACH_COPY = "Drag the wiper. The LED, wire colours and current respond live.";
 
 const steps: TourStep[] = [
   {
@@ -162,20 +164,65 @@ const tourMarkup = `
     </section>
   </div>`;
 
-function completedTour(): boolean {
+const coachMarkup = `
+  <aside class="coach-mark" id="coach-mark" role="note" aria-live="polite" aria-label="Getting started" hidden>
+    <p class="coach-copy" id="coach-copy">${COACH_COPY}</p>
+    <button class="coach-link" id="coach-guide" type="button">Show me around</button>
+  </aside>`;
+
+function readFlag(key: string): boolean {
   try {
-    return localStorage.getItem(TOUR_STORAGE_KEY) === "1";
+    return localStorage.getItem(key) === "1";
   } catch {
     return false;
   }
 }
 
-function rememberTour(): void {
+function writeFlag(key: string): void {
   try {
-    localStorage.setItem(TOUR_STORAGE_KEY, "1");
+    localStorage.setItem(key, "1");
   } catch {
-    // The walkthrough still works when storage is unavailable.
+    // The walkthrough and the coach mark still work when storage is unavailable.
   }
+}
+
+function completedTour(): boolean {
+  return readFlag(TOUR_STORAGE_KEY);
+}
+
+function rememberTour(): void {
+  writeFlag(TOUR_STORAGE_KEY);
+}
+
+interface Box { left: number; top: number; right: number; bottom: number }
+
+function overlaps(a: Box, b: Box): boolean {
+  return a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom;
+}
+
+/**
+ * Union of the drawn schematic, deliberately excluding `.editor-world` itself:
+ * that group carries a viewport-sized grid rect, so its own box is the whole
+ * canvas and would leave the coach mark nowhere to stand.
+ */
+function schematicBox(): Box | undefined {
+  let box: Box | undefined;
+  for (const node of document.querySelectorAll<SVGGraphicsElement>(".editor-component, path.editor-wire, .editor-label")) {
+    const rect = node.getBoundingClientRect();
+    if (rect.width === 0 && rect.height === 0) continue;
+    box = box
+      ? { left: Math.min(box.left, rect.left), top: Math.min(box.top, rect.top), right: Math.max(box.right, rect.right), bottom: Math.max(box.bottom, rect.bottom) }
+      : { left: rect.left, top: rect.top, right: rect.right, bottom: rect.bottom };
+  }
+  return box;
+}
+
+function potentiometerBox(): Box | undefined {
+  const hit = document.querySelector<SVGGraphicsElement>("[data-pot-hit]");
+  const componentId = hit?.dataset.potHit;
+  const symbol = componentId ? document.querySelector<SVGGraphicsElement>(`[data-component-id="${CSS.escape(componentId)}"] .editor-symbol`) : null;
+  const rect = (symbol ?? hit)?.getBoundingClientRect();
+  return rect && (rect.width > 0 || rect.height > 0) ? { left: rect.left, top: rect.top, right: rect.right, bottom: rect.bottom } : undefined;
 }
 
 function cloneUiReference(host: HTMLElement): void {
@@ -202,6 +249,98 @@ function cloneUiReference(host: HTMLElement): void {
   });
   host.querySelector(".guide-ui-clone")?.remove();
   host.append(clone);
+}
+
+type CoachPlacement = "below" | "above" | "left" | "right" | "detached";
+
+/**
+ * A single non-blocking coach mark anchored to the potentiometer. It never
+ * draws a scrim, never traps focus and is positioned clear of the drawn
+ * schematic, so the first thing a visitor sees is the circuit itself.
+ */
+function mountCoachMark(openGuide: () => void): void {
+  if (completedTour() || readFlag(COACH_STORAGE_KEY)) return;
+  document.body.insertAdjacentHTML("beforeend", coachMarkup);
+  const mark = document.querySelector<HTMLElement>("#coach-mark");
+  const link = document.querySelector<HTMLButtonElement>("#coach-guide");
+  if (!mark || !link) return;
+
+  let attempts = 0;
+  let dismissed = false;
+
+  const position = (): boolean => {
+    const pot = potentiometerBox();
+    const canvas = document.querySelector<HTMLElement>("#canvas-wrap")?.getBoundingClientRect();
+    if (!pot || !canvas || canvas.width === 0) return false;
+    mark.hidden = false;
+    const width = mark.offsetWidth;
+    const height = mark.offsetHeight;
+    if (width === 0 || height === 0) return false;
+    const gap = 14;
+    const margin = 10;
+    const content = schematicBox();
+    const clamp = (left: number, top: number): Box => {
+      const clampedLeft = Math.max(canvas.left + margin, Math.min(canvas.right - width - margin, left));
+      const clampedTop = Math.max(canvas.top + margin, Math.min(canvas.bottom - height - margin, top));
+      return { left: clampedLeft, top: clampedTop, right: clampedLeft + width, bottom: clampedTop + height };
+    };
+    const centerX = (pot.left + pot.right) / 2 - width / 2;
+    const centerY = (pot.top + pot.bottom) / 2 - height / 2;
+    const candidates: Array<[CoachPlacement, Box]> = [
+      ["below", clamp(centerX, pot.bottom + gap)],
+      ["above", clamp(centerX, pot.top - height - gap)],
+      ["left", clamp(pot.left - width - gap, centerY)],
+      ["right", clamp(pot.right + gap, centerY)],
+      ["detached", clamp(centerX, (content?.bottom ?? pot.bottom) + gap)],
+      ["detached", clamp(centerX, (content?.top ?? pot.top) - height - gap)],
+      ["detached", clamp(canvas.left + margin, canvas.bottom - height - margin)],
+    ];
+    const chosen = candidates.find(([, box]) => !content || !overlaps(box, content)) ?? candidates.at(-1)!;
+    mark.dataset.placement = chosen[0];
+    mark.style.left = `${Math.round(chosen[1].left)}px`;
+    mark.style.top = `${Math.round(chosen[1].top)}px`;
+    return true;
+  };
+
+  const settle = () => {
+    if (dismissed) return;
+    if (position() || attempts > 40) return;
+    attempts += 1;
+    requestAnimationFrame(settle);
+  };
+
+  const dismiss = () => {
+    if (dismissed) return;
+    dismissed = true;
+    writeFlag(COACH_STORAGE_KEY);
+    mark.remove();
+    removeListeners();
+  };
+
+  const onPointerDown = (event: PointerEvent) => {
+    if (event.target instanceof Node && mark.contains(event.target)) return;
+    dismiss();
+  };
+  const onKeyDown = (event: KeyboardEvent) => {
+    if (event.key === "Escape") dismiss();
+  };
+  const reposition = () => { if (!dismissed) position(); };
+  const removeListeners = () => {
+    window.removeEventListener("pointerdown", onPointerDown, true);
+    window.removeEventListener("keydown", onKeyDown);
+    window.removeEventListener("resize", reposition);
+    window.removeEventListener("wheel", reposition, true);
+  };
+
+  link.addEventListener("click", () => {
+    dismiss();
+    openGuide();
+  });
+  window.addEventListener("pointerdown", onPointerDown, true);
+  window.addEventListener("keydown", onKeyDown);
+  window.addEventListener("resize", reposition);
+  window.addEventListener("wheel", reposition, true);
+  requestAnimationFrame(settle);
 }
 
 export function initOnboarding(): void {
@@ -361,5 +500,5 @@ export function initOnboarding(): void {
     if (!guide.hidden && event.key === "Escape") closeGuide();
   }, { capture: true });
 
-  if (!completedTour()) window.setTimeout(() => openTour(), 350);
+  mountCoachMark(openGuide);
 }
