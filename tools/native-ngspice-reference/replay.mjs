@@ -7,6 +7,7 @@ import { compareNetlist } from "./compare.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = resolve(HERE, "../..");
+process.env.OPEN_CIRCUIT_NGSPICE_ENGINE_MODULE ??= join(REPO_ROOT, "tools/ngspice-wasm-build/dist-loader/index.mjs");
 export const DEFAULT_LIBRARY_ROOT = join(REPO_ROOT, "packages/model-library/models");
 export const DEFAULT_OUTPUT_DIR = join(HERE, "output/replay");
 export const DEFAULT_PACKAGE_TIMEOUT_MS = 60_000;
