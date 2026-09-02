@@ -121,6 +121,63 @@ test.describe("KiCad parity interaction audit", () => {
     await expectLabelsAttached(page, ["c3", "c10"]);
   });
 
+  test("three connected components copy, paste, duplicate and group-move with their wires", async ({ page }) => {
+    const editor = page.locator(".schematic-editor");
+    const c2 = await componentPoint(page, "c2");
+    const c3 = await componentPoint(page, "c3");
+    const c4 = await componentPoint(page, "c4");
+    await page.mouse.click(c2.x, c2.y);
+    await page.keyboard.down("Shift");
+    await page.mouse.click(c3.x, c3.y);
+    await page.mouse.click(c4.x, c4.y);
+    await page.keyboard.up("Shift");
+    await expect(page.locator(".editor-component.selected")).toHaveCount(3);
+
+    await page.keyboard.press(`${commandKey}+c`);
+    const pasteTarget = await worldPoint(page, [31, 36]);
+    await page.mouse.move(pasteTarget.x, pasteTarget.y);
+    await page.keyboard.press(`${commandKey}+v`);
+
+    await expect(page.locator(".editor-component.selected")).toHaveCount(3);
+    await expect(page.locator(".editor-wire-group.selected")).toHaveCount(2);
+    expect(await componentState(page, "c10")).toEqual({ x: 18, y: 36, rotation: 0, mirror: false });
+    expect(await componentState(page, "c11")).toEqual({ x: 32, y: 36, rotation: 0, mirror: false });
+    expect(await componentState(page, "c12")).toEqual({ x: 44, y: 36, rotation: 0, mirror: false });
+    await expect(page.locator('[data-label-component-id="c10"][data-property="reference"]')).toHaveText("P2");
+    await expect(page.locator('[data-label-component-id="c11"][data-property="reference"]')).toHaveText("RB");
+    await expect(page.locator('[data-label-component-id="c12"][data-property="reference"]')).toHaveText("Q2");
+    await expect(page.locator('path.editor-wire[data-wire-id="w10"]')).toHaveAttribute("d", "M20 36 L30 36");
+    await expect(page.locator('path.editor-wire[data-wire-id="w11"]')).toHaveAttribute("d", "M34 36 L42 36");
+
+    const pastedMiddle = await componentPoint(page, "c11");
+    const moveTarget = await worldPoint(page, [36, 40]);
+    await page.mouse.move(pastedMiddle.x, pastedMiddle.y);
+    await page.mouse.down();
+    await page.mouse.move(moveTarget.x, moveTarget.y, { steps: 4 });
+    await page.mouse.up();
+    expect(await componentState(page, "c10")).toMatchObject({ x: 22, y: 40 });
+    expect(await componentState(page, "c11")).toMatchObject({ x: 36, y: 40 });
+    expect(await componentState(page, "c12")).toMatchObject({ x: 48, y: 40 });
+    await expect(page.locator('path.editor-wire[data-wire-id="w10"]')).toHaveAttribute("d", "M24 40 L34 40");
+    await expect(page.locator('path.editor-wire[data-wire-id="w11"]')).toHaveAttribute("d", "M38 40 L46 40");
+    await expect(page.locator('path.editor-wire[data-wire-id="w5"]')).toHaveAttribute("d", "M20 22 L30 22");
+    await expect(page.locator('path.editor-wire[data-wire-id="w6"]')).toHaveAttribute("d", "M34 22 L42 22");
+
+    await editor.press(`${commandKey}+d`);
+    expect(await componentState(page, "c13")).toMatchObject({ x: 23, y: 41 });
+    expect(await componentState(page, "c14")).toMatchObject({ x: 37, y: 41 });
+    expect(await componentState(page, "c15")).toMatchObject({ x: 49, y: 41 });
+    await expect(page.locator('path.editor-wire[data-wire-id="w12"]')).toHaveAttribute("d", "M25 41 L35 41");
+    await expect(page.locator('path.editor-wire[data-wire-id="w13"]')).toHaveAttribute("d", "M39 41 L47 41");
+
+    await editor.press("Delete");
+    await expect(page.locator('[data-component-id="c13"]')).toHaveCount(0);
+    await expect(page.locator('[data-component-id="c14"]')).toHaveCount(0);
+    await expect(page.locator('[data-component-id="c15"]')).toHaveCount(0);
+    await expect(page.locator('path.editor-wire[data-wire-id="w12"]')).toHaveCount(0);
+    await expect(page.locator('path.editor-wire[data-wire-id="w13"]')).toHaveCount(0);
+  });
+
   test("Cmd/Ctrl+Shift removes selected items by click and marquee", async ({ page }) => {
     const c3 = await componentPoint(page, "c3");
     const c4 = await componentPoint(page, "c4");

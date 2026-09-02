@@ -17,6 +17,7 @@ export { PARTS } from "@opencircuit/circuit-schema";
 
 const NS = "http://www.w3.org/2000/svg";
 const GRID = 8;
+const CLIPBOARD_STORAGE_KEY = "schemagic.clipboard";
 const SNAP_RADIUS_PX = 10;
 const PIN_HIT_RADIUS_PX = 5;
 const POT_HIT_RADIUS_PX = 6;
@@ -142,6 +143,19 @@ export interface ImplicitPinBridgePlan {
   point: Point;
   reference: PinReference;
   existingWireId?: string;
+}
+
+export interface SchematicClipboard {
+  format: "opencircuit-schematic-selection";
+  version: 1;
+  components: CircuitComponent[];
+  wires: CircuitDocument["wires"];
+  anchor: Point;
+}
+
+export interface PastedSchematicSelection {
+  components: string[];
+  wires: string[];
 }
 
 interface WireAttachment {
@@ -641,6 +655,170 @@ function distanceToSegment(point: Point, a: Point, b: Point): number {
   return Math.min(Math.hypot(point[0] - a[0], point[1] - a[1]), Math.hypot(point[0] - b[0], point[1] - b[1]));
 }
 
+function pointOnWire(point: Point, points: Point[]): boolean {
+  return points.slice(1).some((current, index) => pointOnSegment(point, points[index]!, current));
+}
+
+function wireEndpoints(wire: CircuitDocument["wires"][number]): Point[] {
+  return wire.points.length ? [wire.points[0]!, wire.points.at(-1)!] : [];
+}
+
+function wiresConnect(a: CircuitDocument["wires"][number], b: CircuitDocument["wires"][number]): boolean {
+  return wireEndpoints(a).some((point) => pointOnWire(point, b.points))
+    || wireEndpoints(b).some((point) => pointOnWire(point, a.points));
+}
+
+function closedWireIds(
+  document: CircuitDocument,
+  selectedComponentIds: Iterable<string>,
+  selectedWireIds: Iterable<string> = [],
+): Set<string> {
+  const selected = new Set(selectedComponentIds);
+  const requested = new Set(selectedWireIds);
+  const pins = document.components.flatMap((component) => componentPinPoints(component).map((point) => ({ componentId: component.id, point })));
+  const selectedPins = pins.filter((pin) => selected.has(pin.componentId)).map((pin) => pin.point);
+  const eligible = document.wires.filter((wire) => !pins.some((pin) => !selected.has(pin.componentId) && pointOnWire(pin.point, wire.points)));
+  const carried = new Set(eligible
+    .filter((wire) => requested.has(wire.id) || selectedPins.some((point) => pointOnWire(point, wire.points)))
+    .map((wire) => wire.id));
+
+  let changed = true;
+  while (changed) {
+    changed = false;
+    for (const wire of eligible) {
+      if (carried.has(wire.id)) continue;
+      if (eligible.some((other) => carried.has(other.id) && wiresConnect(wire, other))) {
+        carried.add(wire.id);
+        changed = true;
+      }
+    }
+  }
+
+  changed = true;
+  while (changed) {
+    changed = false;
+    for (const wire of eligible) {
+      if (!carried.has(wire.id)) continue;
+      const closed = wireEndpoints(wire).every((point) => selectedPins.some((pin) => samePoint(pin, point))
+        || eligible.some((other) => other.id !== wire.id && carried.has(other.id) && pointOnWire(point, other.points)));
+      if (!closed) {
+        carried.delete(wire.id);
+        changed = true;
+      }
+    }
+  }
+  return carried;
+}
+
+/** Wires forming a closed network between selected symbols travel with the block. */
+export function connectingWireIds(document: CircuitDocument, selectedComponentIds: Iterable<string>): Set<string> {
+  return closedWireIds(document, selectedComponentIds);
+}
+
+function clipboardAnchor(components: readonly CircuitComponent[], wires: CircuitDocument["wires"]): Point {
+  const points = [...components.map((component) => component.pos), ...wires.flatMap((wire) => wire.points)];
+  if (!points.length) return [0, 0];
+  const xs = points.map((point) => point[0]);
+  const ys = points.map((point) => point[1]);
+  return [Math.round((Math.min(...xs) + Math.max(...xs)) / 2), Math.round((Math.min(...ys) + Math.max(...ys)) / 2)];
+}
+
+export function createSchematicClipboard(
+  document: CircuitDocument,
+  selectedComponentIds: Iterable<string>,
+  selectedWireIds: Iterable<string>,
+): SchematicClipboard {
+  const componentIds = new Set(selectedComponentIds);
+  const wireIds = closedWireIds(document, componentIds, selectedWireIds);
+  const components = document.components.filter((component) => componentIds.has(component.id)).map((component) => structuredClone(component));
+  const wires = document.wires.filter((wire) => wireIds.has(wire.id)).map((wire) => structuredClone(wire));
+  return { format: "opencircuit-schematic-selection", version: 1, components, wires, anchor: clipboardAnchor(components, wires) };
+}
+
+function parseSchematicClipboard(raw: string): SchematicClipboard | undefined {
+  try {
+    const parsed = JSON.parse(raw) as Partial<SchematicClipboard>;
+    if (!Array.isArray(parsed.components) || !Array.isArray(parsed.wires)) return undefined;
+    const components = structuredClone(parsed.components) as CircuitComponent[];
+    const wires = structuredClone(parsed.wires) as CircuitDocument["wires"];
+    const anchor = Array.isArray(parsed.anchor) && parsed.anchor.length === 2 && parsed.anchor.every(Number.isFinite)
+      ? [parsed.anchor[0], parsed.anchor[1]] as Point
+      : clipboardAnchor(components, wires);
+    return { format: "opencircuit-schematic-selection", version: 1, components, wires, anchor };
+  } catch {
+    return undefined;
+  }
+}
+
+function readSessionClipboard(): SchematicClipboard | undefined {
+  try {
+    const value = globalThis.sessionStorage?.getItem(CLIPBOARD_STORAGE_KEY);
+    return value ? parseSchematicClipboard(value) : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+function writeSessionClipboard(clipboard: SchematicClipboard): string {
+  const value = JSON.stringify(clipboard);
+  try { globalThis.sessionStorage?.setItem(CLIPBOARD_STORAGE_KEY, value); } catch {}
+  return value;
+}
+
+function nextReference(prefix: string, used: Map<string, Set<number>>): string {
+  const numbers = used.get(prefix) ?? new Set<number>();
+  let index = 1;
+  while (numbers.has(index)) index += 1;
+  numbers.add(index);
+  used.set(prefix, numbers);
+  return `${prefix}${index}`;
+}
+
+export function pasteSchematicClipboard(
+  document: CircuitDocument,
+  clipboard: SchematicClipboard,
+  target: Point,
+): PastedSchematicSelection {
+  if (!clipboard.components.length && !clipboard.wires.length) return { components: [], wires: [] };
+  const delta: Point = [target[0] - clipboard.anchor[0], target[1] - clipboard.anchor[1]];
+  let componentIndex = idMax(document.components, "c");
+  let wireIndex = idMax(document.wires, "w");
+  const usedReferences = new Map<string, Set<number>>();
+  for (const component of document.components) {
+    const prefix = partByType(component.type).prefix;
+    const match = component.label?.text.match(new RegExp(`^${prefix.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(\\d+)$`));
+    if (!match) continue;
+    const numbers = usedReferences.get(prefix) ?? new Set<number>();
+    numbers.add(Number(match[1]));
+    usedReferences.set(prefix, numbers);
+  }
+  const pasted: PastedSchematicSelection = { components: [], wires: [] };
+  for (const original of clipboard.components) {
+    const component = structuredClone(original);
+    component.id = `c${++componentIndex}`;
+    component.pos = movedPoint(component.pos, delta);
+    const prefix = partByType(component.type).prefix;
+    const referencePattern = new RegExp(`^${prefix.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\d+$`);
+    const reference = nextReference(prefix, usedReferences);
+    component.label = {
+      text: component.label && !referencePattern.test(component.label.text) ? component.label.text : reference,
+      offset: component.label?.offset ? clonePoint(component.label.offset) : transformedOffset(component, EDITOR_SYMBOLS[component.type].refdesAnchor),
+    };
+    document.components.push(component);
+    pasted.components.push(component.id);
+  }
+  for (const original of clipboard.wires) {
+    const wire = structuredClone(original);
+    wire.id = `w${++wireIndex}`;
+    wire.points = translateWirePoints(wire.points, delta);
+    document.wires.push(wire);
+    pasted.wires.push(wire.id);
+  }
+  trimOverlappingWires(document, pasted.components);
+  normalizeJunctions(document);
+  return pasted;
+}
+
 export type WireKeyboardMoveMode = "move" | "drag";
 
 export interface WireKeyboardMovePlan {
@@ -1005,6 +1183,7 @@ export class SchematicEditor {
   private tool: EditorTool = "select";
   private selectedComponents = new Set<string>();
   private selectedWires = new Set<string>();
+  private clipboard: SchematicClipboard | undefined;
   private undoStack: string[] = [];
   private redoStack: string[] = [];
   private gestureSnapshot = "";
@@ -1196,39 +1375,36 @@ export class SchematicEditor {
     });
   }
   deleteSelected(): void { this.change(() => { removeReferencesToDeletedSelection(this.doc, this.selectedComponents, this.selectedWires); this.doc.components = this.doc.components.filter((component) => !this.selectedComponents.has(component.id)); this.doc.wires = this.doc.wires.filter((wire) => !this.selectedWires.has(wire.id)); normalizeJunctions(this.doc); this.clearSelection(); }); }
-  copy(): string { return JSON.stringify({ components: this.doc.components.filter((component) => this.selectedComponents.has(component.id)), wires: this.doc.wires.filter((wire) => this.selectedWires.has(wire.id)) }); }
+  copy(): string { return JSON.stringify(createSchematicClipboard(this.doc, this.selectedComponents, this.selectedWires)); }
   paste(source?: string): void {
-    const raw = source ?? sessionStorage.getItem("schemagic.clipboard") ?? "";
-    if (!raw) return;
-    try {
-      const data = JSON.parse(raw) as { components: CircuitComponent[]; wires: CircuitDocument["wires"] };
-      this.change(() => {
-        this.clearSelection();
-        let componentIndex = idMax(this.doc.components, "c");
-        let wireIndex = idMax(this.doc.wires, "w");
-        for (const original of data.components ?? []) {
-          const component = structuredClone(original);
-          component.id = `c${++componentIndex}`;
-          component.pos = [component.pos[0] + 2, component.pos[1] + 2];
-          this.doc.components.push(component);
-          this.selectedComponents.add(component.id);
-        }
-        for (const original of data.wires ?? []) {
-          const wire = structuredClone(original);
-          wire.id = `w${++wireIndex}`;
-          wire.points = wire.points.map(([x, y]) => [x + 2, y + 2]);
-          this.doc.wires.push(wire);
-          this.selectedWires.add(wire.id);
-        }
-        trimOverlappingWires(this.doc, this.selectedComponents);
-        normalizeJunctions(this.doc);
-      });
-    } catch {}
+    const clipboard = source === undefined ? this.clipboard ?? readSessionClipboard() : parseSchematicClipboard(source);
+    if (!clipboard || (!clipboard.components.length && !clipboard.wires.length)) return;
+    if (source === undefined) this.clipboard = clipboard;
+    const target = this.pointerWorld ? this.pointerSnap(this.pointerWorld, { metaKey: false, ctrlKey: false }) : this.canvasCenter();
+    this.change(() => {
+      const pasted = pasteSchematicClipboard(this.doc, clipboard, target);
+      this.selectedComponents = new Set(pasted.components);
+      this.selectedWires = new Set(pasted.wires);
+    });
+  }
+  duplicate(): void {
+    const clipboard = createSchematicClipboard(this.doc, this.selectedComponents, this.selectedWires);
+    if (!clipboard.components.length && !clipboard.wires.length) return;
+    this.clipboard = clipboard;
+    writeSessionClipboard(clipboard);
+    const target: Point = [clipboard.anchor[0] + 1, clipboard.anchor[1] + 1];
+    this.change(() => {
+      const pasted = pasteSchematicClipboard(this.doc, clipboard, target);
+      this.selectedComponents = new Set(pasted.components);
+      this.selectedWires = new Set(pasted.wires);
+    });
   }
   copyToClipboard(): void {
-    const value = this.copy();
-    sessionStorage.setItem("schemagic.clipboard", value);
-    void navigator.clipboard?.writeText(value).catch(() => undefined);
+    const clipboard = createSchematicClipboard(this.doc, this.selectedComponents, this.selectedWires);
+    if (!clipboard.components.length && !clipboard.wires.length) return;
+    this.clipboard = clipboard;
+    const value = writeSessionClipboard(clipboard);
+    try { void navigator.clipboard?.writeText(value).catch(() => undefined); } catch {}
   }
   fit(): void {
     this.closeContextMenu();
@@ -1517,6 +1693,7 @@ export class SchematicEditor {
       else if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "y") { event.preventDefault(); if (!this.drag && !this.wirePoints) this.redo(); }
       else if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "c") { event.preventDefault(); this.copyToClipboard(); }
       else if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "v") { event.preventDefault(); this.paste(); }
+      else if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "d") { event.preventDefault(); this.duplicate(); }
       else if (event.key === "Enter" && this.wirePoints) { event.preventDefault(); event.stopPropagation(); this.finishWire(true); }
       else if (event.key === "/" && this.wirePoints) { event.preventDefault(); this.toggleWireBend(); }
       else if (key === "w" && !event.metaKey && !event.ctrlKey) { event.preventDefault(); this.beginWireFromPointer(event); }

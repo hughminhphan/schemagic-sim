@@ -3,18 +3,22 @@ import { describe, expect, it } from "vitest";
 import {
   compactDocumentWires,
   componentAnchorFromPointer,
+  connectingWireIds,
+  createSchematicClipboard,
   implicitPinBridgePlans,
   insertExplicitJunction,
   isFitShortcut,
   isRightButtonDrag,
   junctionPoints,
   panFromPointerDrag,
+  pasteSchematicClipboard,
   potentiometerWiperLocalPoint,
   propertyLayout,
   rerouteWireSegment,
   removeReferencesToDeletedSelection,
   rotationDeltaForShortcut,
   rubberBandWire,
+  SchematicEditor,
   translateWireSelection,
   translateWirePoints,
   transformComponentSelection,
@@ -22,6 +26,182 @@ import {
   wireBlockDelta,
   wireKeyboardMovePlan,
 } from "./index";
+
+describe("schematic selection clipboard", () => {
+  const baseDocument = (): CircuitDocument => ({
+    format: "opencircuit-circuit",
+    version: 3,
+    meta: { title: "clipboard test" },
+    components: [
+      { id: "c1", type: "resistor", pos: [2, 0], rot: 0, mirror: false, label: { text: "R1", offset: [0, -3] } },
+      { id: "c2", type: "resistor", pos: [10, 0], rot: 0, mirror: false, label: { text: "R3", offset: [0, -3] } },
+      { id: "c3", type: "capacitor", pos: [18, 0], rot: 0, mirror: false, label: { text: "C1", offset: [0, -3] } },
+      { id: "c4", type: "resistor", pos: [26, 0], rot: 0, mirror: false, label: { text: "R4", offset: [0, -3] } },
+      { id: "g1", type: "ground", pos: [0, 4], rot: 0, mirror: false },
+    ] as CircuitComponent[],
+    wires: [
+      { id: "w1", points: [[4, 0], [8, 0]] },
+      { id: "w2", points: [[12, 0], [16, 0]] },
+      { id: "w3", points: [[20, 0], [24, 0]] },
+    ],
+    probes: [],
+    sim: { mode: "live", tran: { tstop: 1, tstep: 0.01, maxstep: 0.01 } },
+  });
+
+  it("includes wires between selected components but not wires to fixed components", () => {
+    const document = baseDocument();
+    expect([...connectingWireIds(document, ["c1", "c2", "c3"])]).toEqual(["w1", "w2"]);
+    expect(createSchematicClipboard(document, ["c1", "c2", "c3"], []).wires.map((wire) => wire.id)).toEqual(["w1", "w2"]);
+  });
+
+  it("carries a selected T-branch whose endpoint lands on another carried wire", () => {
+    const document = baseDocument();
+    document.components = [
+      { id: "c1", type: "resistor", pos: [2, 0], rot: 0, mirror: false },
+      { id: "c2", type: "resistor", pos: [10, 0], rot: 0, mirror: false },
+      { id: "c3", type: "resistor", pos: [6, 6], rot: 90, mirror: false },
+    ];
+    document.wires = [
+      { id: "w1", points: [[4, 0], [8, 0]] },
+      { id: "w2", points: [[6, 0], [6, 4]] },
+    ];
+
+    expect([...connectingWireIds(document, ["c1", "c2", "c3"])]).toEqual(["w1", "w2"]);
+  });
+
+  it("carries a selected connection split across two wire objects", () => {
+    const document = baseDocument();
+    document.components = document.components.slice(0, 2);
+    document.wires = [
+      { id: "wA", points: [[4, 0], [6, 0]] },
+      { id: "wB", points: [[6, 0], [8, 0]] },
+    ];
+
+    expect([...connectingWireIds(document, ["c1", "c2"])]).toEqual(["wA", "wB"]);
+  });
+
+  it("drops an explicitly selected wire attached to an unselected component", () => {
+    const document = baseDocument();
+    const clipboard = createSchematicClipboard(document, ["c1"], ["w1"]);
+
+    expect(clipboard.components.map((component) => component.id)).toEqual(["c1"]);
+    expect(clipboard.wires).toEqual([]);
+  });
+
+  it("snaps a half-integral selection anchor before cursor-relative paste", () => {
+    const document = baseDocument();
+    document.components[1]!.pos = [15, 0];
+    const clipboard = createSchematicClipboard(document, ["c1", "c2"], []);
+
+    expect(clipboard.anchor).toEqual([9, 0]);
+    pasteSchematicClipboard(document, clipboard, [30, 20]);
+    expect(document.components.slice(-2).map((component) => component.pos)).toEqual([[23, 20], [36, 20]]);
+    expect(document.components.slice(-2).flatMap((component) => component.pos).every(Number.isInteger)).toBe(true);
+  });
+
+  it("preserves a canonical MPN label instead of replacing it with a reference", () => {
+    const document = baseDocument();
+    document.components = [{
+      id: "c1",
+      type: "resistor",
+      mpn: "RC0603FR-0710KL",
+      pos: [2, 0],
+      rot: 0,
+      mirror: false,
+      label: { text: "RC0603FR-0710KL", offset: [0, -3] },
+    }];
+    document.wires = [];
+    const clipboard = createSchematicClipboard(document, ["c1"], []);
+
+    pasteSchematicClipboard(document, clipboard, [20, 20]);
+    expect(document.components.at(-1)!.label?.text).toBe("RC0603FR-0710KL");
+  });
+
+  it("persists copy and duplicate selections for paste after an editor reload", () => {
+    const previous = Object.getOwnPropertyDescriptor(globalThis, "sessionStorage");
+    const values = new Map<string, string>();
+    Object.defineProperty(globalThis, "sessionStorage", {
+      configurable: true,
+      value: {
+        getItem: (key: string) => values.get(key) ?? null,
+        setItem: (key: string, value: string) => values.set(key, value),
+      },
+    });
+    const makeEditor = (selected: string[]) => {
+      const editor = Object.create(SchematicEditor.prototype) as SchematicEditor & Record<string, unknown>;
+      Object.assign(editor, {
+        doc: baseDocument(),
+        clipboard: undefined,
+        selectedComponents: new Set(selected),
+        selectedWires: new Set<string>(),
+        undoStack: [],
+        redoStack: [],
+        gestureSnapshot: "",
+        pointerWorld: [30, 20],
+        render: () => undefined,
+        emit: () => undefined,
+        emitSelection: () => undefined,
+      });
+      return editor;
+    };
+
+    try {
+      const source = makeEditor(["c1", "c2", "c3"]);
+      source.copyToClipboard();
+      expect(values.has("schemagic.clipboard")).toBe(true);
+
+      const reloaded = makeEditor([]);
+      reloaded.paste();
+      expect(reloaded.getDocument().components).toHaveLength(8);
+      expect(reloaded.getDocument().wires).toHaveLength(5);
+
+      values.clear();
+      source.duplicate();
+      expect(values.has("schemagic.clipboard")).toBe(true);
+    } finally {
+      if (previous) Object.defineProperty(globalThis, "sessionStorage", previous);
+      else Reflect.deleteProperty(globalThis, "sessionStorage");
+    }
+  });
+
+  it("assigns the next free reference designator while preserving relative geometry", () => {
+    const document = baseDocument();
+    const clipboard = createSchematicClipboard(document, ["c1", "c3"], []);
+    const pasted = pasteSchematicClipboard(document, clipboard, [30, 20]);
+
+    expect(pasted.components).toEqual(["c5", "c6"]);
+    expect(document.components.slice(-2).map((component) => component.label?.text)).toEqual(["R2", "C2"]);
+    expect(document.components.slice(-2).map((component) => component.pos)).toEqual([[22, 20], [38, 20]]);
+    expect(document.components[0]!.label?.text).toBe("R1");
+  });
+
+  it("undoes one paste with one editor history step", () => {
+    const document = baseDocument();
+    const clipboard = createSchematicClipboard(document, ["c1", "c2", "c3"], []);
+    const editor = Object.create(SchematicEditor.prototype) as SchematicEditor & Record<string, unknown>;
+    Object.assign(editor, {
+      doc: structuredClone(document),
+      selectedComponents: new Set<string>(),
+      selectedWires: new Set<string>(),
+      undoStack: [],
+      redoStack: [],
+      gestureSnapshot: "",
+      pointerWorld: [30, 20],
+      render: () => undefined,
+      emit: () => undefined,
+      emitSelection: () => undefined,
+    });
+
+    editor.paste(JSON.stringify(clipboard));
+    expect(editor.getDocument().components).toHaveLength(8);
+    expect(editor.getDocument().wires).toHaveLength(5);
+    expect(editor.canUndo()).toBe(true);
+
+    editor.undo();
+    expect(editor.getDocument()).toEqual(document);
+    expect(editor.canUndo()).toBe(false);
+  });
+});
 
 describe("KiCad rotation shortcuts", () => {
   it("maps R counterclockwise and Shift+R clockwise", () => {
