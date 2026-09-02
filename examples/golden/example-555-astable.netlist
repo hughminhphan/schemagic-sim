@@ -1,0 +1,14 @@
+scheMAGIC Simulator document 83fa2bfef9ceed32
+* document-hash 83fa2bfef9ceed32
+* catalog-only timer_555 1 awaiting its catalog package model $ component:c1
+V2 vcc 0 DC 9 $ component:c2
+R4 vcc discharge 10k $ component:c4
+R5 discharge timing 330k $ component:c5
+C6 timing 0 1u $ component:c6
+C7 n1 0 10n $ component:c7
+R8 out n2 1k $ component:c8
+D9 n2 0 OC_LED_RED $ component:c9
+.model OC_LED_RED D(IS=1e-20 N=2 RS=10 EG=1.8 CJO=30P BV=5 IBV=10U)
+.save all v2#branch @r4[i] @r5[i] @c6[i] @c7[i] @r8[i] @d9[id]
+.tran 0.0005 1.5 0 0.001
+.end

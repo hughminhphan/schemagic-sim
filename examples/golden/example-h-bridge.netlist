@@ -1,0 +1,15 @@
+scheMAGIC Simulator document f2e74b5eedb9d04e
+* document-hash f2e74b5eedb9d04e
+V1 vmotor 0 DC 12 $ component:c1
+V2 drive_a 0 PULSE(0 18 1m 1u 1u 3.8m 8m) $ component:c2
+V3 drive_b 0 PULSE(0 18 5m 1u 1u 3.8m 8m) $ component:c3
+M4 vmotor drive_a motor_a motor_a OC_GENERIC_NMOS $ component:c4
+M5 motor_a drive_b 0 0 OC_GENERIC_NMOS $ component:c5
+M6 vmotor drive_b motor_b motor_b OC_GENERIC_NMOS $ component:c6
+M7 motor_b drive_a 0 0 OC_GENERIC_NMOS $ component:c7
+R8 motor_a motor_mid 20 $ component:c8
+L9 motor_mid motor_b 10m $ component:c9
+.model OC_GENERIC_NMOS NMOS(LEVEL=1 VTO=2 KP=20M LAMBDA=0.02)
+.save all v1#branch v2#branch v3#branch @m4[id] @m5[id] @m6[id] @m7[id] @r8[i] @l9[i]
+.tran 0.000002 0.012 0 0.000005
+.end
