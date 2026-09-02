@@ -152,6 +152,7 @@ export const PARTS = {
   "1N4148": {
     slug: "1N4148",
     manufacturerSlug: "vishay",
+    pipeline: "diode",
     identity: {
       canonical_mpn: "1N4148",
       manufacturer: "Vishay Intertechnology",
@@ -211,6 +212,7 @@ export const PARTS = {
   "WP7113ID": {
     slug: "WP7113ID",
     manufacturerSlug: "kingbright",
+    pipeline: "diode",
     identity: {
       canonical_mpn: "WP7113ID",
       manufacturer: "Kingbright",
@@ -2610,7 +2612,7 @@ const p5DiodeComponent = ({ modelName, summary, currentMax, reverseVoltage, omis
 
 Object.assign(PARTS, {
   SS14: {
-    slug: "SS14", manufacturerSlug: "onsemi",
+    slug: "SS14", manufacturerSlug: "onsemi", pipeline: "diode",
     identity: { canonical_mpn: "SS14", manufacturer: "onsemi", description: "1 A, 40 V surface-mount Schottky rectifier", electrical_family: "diode", aliases: [], package: { name: "SMA", standard: "DO-214AC" } },
     source: { url: "https://components101.com/sites/default/files/component_datasheet/SS14%20Schottky%20Diode.PDF", revision: "SS12/D Rev. 3, July 2005; archived onsemi PDF mirror", pages: ["p. 1", "p. 2", "p. 3"] },
     facts: {
@@ -2623,7 +2625,7 @@ Object.assign(PARTS, {
     component: p5DiodeComponent({ modelName: "OC_ONSEMI_SS14", summary: "F1 single-bound Schottky model at 25 degC. The guaranteed 1 A forward-voltage maximum is a hard bound, not a typical fit target.", currentMax: 1, reverseVoltage: 40, omissions: ["The source supplies one forward-voltage maximum and no complete numeric typical curve table, so N and RS are held physical defaults and fidelity is capped at F1.", "Reverse leakage and zero-bias capacitance are maximum or digitized values; reverse breakdown and temperature dependence are omitted."], ac: "approx" })
   },
   "1N5822": {
-    slug: "1N5822", manufacturerSlug: "onsemi",
+    slug: "1N5822", manufacturerSlug: "onsemi", pipeline: "diode",
     identity: { canonical_mpn: "1N5822", manufacturer: "onsemi", description: "3 A, 40 V axial Schottky rectifier", electrical_family: "diode", aliases: ["1N5822G", "1N5822RL", "1N5822RLG"], package: { name: "axial lead", standard: "CASE 267-05" } },
     source: { url: "https://www.onsemi.com/download/data-sheet/pdf/1n5820-d.pdf", revision: "1N5820/D Rev. 11, November 2023", pages: ["p. 1", "p. 2", "p. 5", "p. 6"] },
     facts: {
@@ -2636,7 +2638,7 @@ Object.assign(PARTS, {
     component: p5DiodeComponent({ modelName: "OC_ONSEMI_1N5822", summary: "F1 bound-constrained Schottky model over 1 A to 9.4 A at 25 degC.", currentMax: 9.4, reverseVoltage: 40, omissions: ["The fitted forward points are guaranteed maxima rather than a typical curve, so validation treats them as upper bounds and fidelity is capped at F1.", "Reverse breakdown, leakage temperature scaling, surge heating, and distributed junction capacitance are omitted."], ac: "approx" })
   },
   BAT85: {
-    slug: "BAT85", manufacturerSlug: "vishay",
+    slug: "BAT85", manufacturerSlug: "vishay", pipeline: "diode",
     identity: { canonical_mpn: "BAT85", manufacturer: "Vishay Semiconductors", description: "Small-signal Schottky diode", electrical_family: "diode", aliases: ["BAT85-TR", "BAT85-TAP"], package: { name: "DO-35", standard: "DO-204AH" } },
     source: { url: "https://datasheet.octopart.com/BAT85-Vishay-datasheet-28185.pdf", revision: "BAT85 Rev. 1.3, 31-Mar-2004; archived Vishay PDF mirror", pages: ["p. 1", "p. 2"] },
     facts: {
@@ -2650,7 +2652,7 @@ Object.assign(PARTS, {
     component: p5DiodeComponent({ modelName: "OC_VISHAY_BAT85", summary: "F1 mixed table model from 0.1 mA to 100 mA at 25 degC.", currentMax: 0.1, reverseVoltage: 30, omissions: ["Only the 30 mA forward-voltage row is typical; the other fitted rows are maxima and remain hard bounds, so fidelity is capped at F1.", "CJO uses a single maximum specification; C-V shape is not fitted. The 5 ns reverse-recovery maximum is retained as metadata but not mapped to TT because the generic charge-storage bench does not represent Schottky recovery.", "Reverse breakdown is not modelled from the 30 V minimum rating."], ac: "approx", transient: "none" })
   },
   BZX84C5V1: {
-    slug: "BZX84C5V1", manufacturerSlug: "onsemi",
+    slug: "BZX84C5V1", manufacturerSlug: "onsemi", pipeline: "diode",
     identity: { canonical_mpn: "BZX84C5V1", manufacturer: "onsemi", description: "5.1 V, 250 mW surface-mount Zener diode", electrical_family: "diode", aliases: ["BZX84C5V1LT1G", "BZX84C5V1LT3G"], package: { name: "SOT-23", standard: "CASE 318", pin_count: 3 }, pins: [{ name: "A", number: "1", role: "anode", node: "anode" }, { name: "K", number: "3", role: "cathode", node: "cathode" }], spice_order: ["1", "3"] },
     source: { url: "https://www.onsemi.com/pdf/datasheet/bzx84c2v4lt1-d.pdf", revision: "BZX84C2V4LT1/D Rev. 23, August 2021", pages: ["p. 1", "p. 2", "p. 5"] },
     facts: {

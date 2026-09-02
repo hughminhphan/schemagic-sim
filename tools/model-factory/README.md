@@ -15,6 +15,50 @@ python3 -m venv .venv
 .venv/bin/python -m pip install -r requirements.txt
 ```
 
+Native ngspice is resolved in this order: `NGSPICE_BIN`, then `ngspice` on `PATH`, then
+`/opt/homebrew/bin/ngspice`. Nothing is guessed: if none of the three yields an
+executable, the fitter fails with the full search order, because a different ngspice
+build would change every fitted number without changing any recorded provenance.
+
+## Tests
+
+```sh
+npm test                # node suite, which also runs the python suite
+npm run test:python     # python suite on its own
+npm run bench:fit       # batched-versus-unbatched fitting benchmark and equivalence check
+```
+
+## Fitting performance
+
+The BJT and MOSFET F2 fitters used to spawn one ngspice process per residual evaluation,
+so an n-parameter fit paid n + 1 process launches per iteration for the finite-difference
+Jacobian alone. `python/batched_jacobian.py` now evaluates a parameter vector together
+with the neighbours scipy is about to ask for, and `native_ngspice.run_ngspice_batch`
+runs them in one ngspice process.
+
+The decks are **not** merged. Each keeps its own netlist and a control-block driver
+sources, runs and writes them one after another, so every deck still gets its own circuit
+and its own matrix and the numbers are bit-identical to separate processes. Merging them
+into a single netlist was tried and rejected: independent blocks then share one global
+convergence test, which moved sub-threshold drain currents by up to 4e-5 relative and
+steered the MOSFET fit to visibly different parameters.
+
+A long-lived interactive ngspice was tried first. On the ngspice-46 builds this factory
+runs against, both `ngspice -p` and `ngspice -i` abort with "no graphics interface"
+before reading a command, and `-p` segfaults.
+
+Iteration caps are named and configurable: `OC_FIT_DIODE_MAX_NFEV` (default 3000),
+`OC_FIT_BJT_MAX_NFEV` (400), `OC_FIT_MOSFET_MAX_NFEV` (3000). Set
+`OC_FIT_BATCHED_JACOBIAN=0` to take the unbatched path.
+
+## Archetype dispatch
+
+Every registry archetype maps to exactly one fitter script, and an unmapped archetype
+raises `UnmappedArchetypeError` by name. There is no default fitter: the dispatch used to
+end in `?? "fit_diode.py"`, which meant the registry's only JFET would have been handed
+the diode fitter. Archetypes that are deliberately not fittable are listed in
+`UNFITTABLE_PIPELINES` with the reason.
+
 ## Pipeline
 
 ```sh
@@ -61,6 +105,31 @@ The manifest contract is:
   ]
 }
 ```
+
+### Evidence contract
+
+The contract is incremental. Each rule reports independently and a package is staged at
+the highest fidelity tier its evidence supports, with every rule that did not pass written
+into the package's own `known_omissions` and therefore into its model card.
+
+The line the contract turns on is **absent versus contradicted**:
+
+- Evidence that is missing or too thin for a tier raises `InsufficientEvidence` and
+  demotes the package. A missing transfer curve is not a wrong claim, it is a smaller
+  claim.
+- Evidence that contradicts the extraction (axes, units, bias, temperature, citation,
+  test mode, polarity) still rejects the whole part. Quietly dropping a contradicted curve
+  would hide a contradiction in the source.
+
+Condition identity is built from typed facts only. Disclosure prose is recorded verbatim
+as a free-text `notes` field beside the identity and never enters it, so how a footnote
+was worded cannot split or merge two measurements. A test mode may be supplied as a typed
+`test_mode` field, spelled in prose through a synonym table, or left `not_stated` for the
+static characteristics; pulsed evidence must still state its pulse width and still cannot
+enter a static DC fit. An unstated temperature is a typed fact that demotes to F1 with a
+recorded reason; F2 still requires a stated temperature.
+
+`docs/model-review-rubric-v1.md` is the checklist a second lane runs before promotion.
 
 The adapter supports diode, BJT, and MOSFET families. It attempts an F2 fit unless `force_f1` is set, runs an ngspice syntax gate, and can demote a failed F2 attempt to F1. SI-prefixed catalog seed hints are normalized before F1 fallback use. Pre-demoted parts retain their extraction JSON and its omissions rather than discarding the datasheet evidence.
 

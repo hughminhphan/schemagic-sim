@@ -4,7 +4,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
-import { applyConditionAdjudicationSupplement, fitBulkPart, libraryCollisionReason, libraryDuplicateDieReason, normalizedIdentity, normalizeBulkManifest, normalizePackageVariants, pinPackageBenchTemperature, repairKnownEvidenceDefects, runBulkManifest, stageBulkPart, validateBulkCandidateEvidence, validateMosfetCandidateEvidence } from "../lib/bulk-adapter.mjs";
+import { applyConditionAdjudicationSupplement, evaluateEvidenceContract, fitBulkPart, libraryCollisionReason, libraryDuplicateDieReason, normalizedIdentity, normalizeBulkManifest, normalizePackageVariants, pinPackageBenchTemperature, repairKnownEvidenceDefects, runBulkManifest, stageBulkPart, validateBulkCandidateEvidence, validateMosfetCandidateEvidence } from "../lib/bulk-adapter.mjs";
 import { validatePackage } from "../../../packages/component-schema/lib.mjs";
 
 const quantity = (value, unit) => ({ value, unit, conditions: "TA = 25 C; test mode = DC", page_reference: "p. 2, Electrical Characteristics table", source_kind: "typical" });
@@ -411,14 +411,20 @@ test("direct MOSFET conditions admit opaque source prose while explicit contradi
 });
 
 test("fit entrypoint cannot bypass MOSFET or diode preflight", () => {
-  const noTransfer = productionCurveExtraction();
-  noTransfer.curves = [];
+  // Evidence that supports NO tier is still terminal. Stripping the scalar calibration as
+  // well as the curves leaves nothing any card could be built from.
+  const nothing = productionCurveExtraction();
+  nothing.curves = [];
+  delete nothing.specs.threshold_min;
+  delete nothing.specs.threshold_typ;
+  delete nothing.specs.threshold_max;
+  delete nothing.specs.rdson_points;
   let mosfetRunnerCalled = false;
   assert.throws(
-    () => fitBulkPart({ ...mosfetPart("unused.pdf"), subcategory: "N-Channel MOSFET" }, noTransfer, {
+    () => fitBulkPart({ ...mosfetPart("unused.pdf"), subcategory: "N-Channel MOSFET" }, nothing, {
       fitRunner: () => { mosfetRunnerCalled = true; return acceptedF2Attempt(); }, ngspiceRunner: () => ({ pass: true }),
     }),
-    /requires at least one normalized static transfer_current curve/,
+    /evidence supports no fidelity tier/,
   );
   assert.equal(mosfetRunnerCalled, false);
   const noDiodeEvidence = extraction();
@@ -433,24 +439,98 @@ test("fit entrypoint cannot bypass MOSFET or diode preflight", () => {
   assert.equal(diodeRunnerCalled, false);
 });
 
-test("bulk manifests record preflight failure without an F1 demotion", () => {
+test("an absent F2 curve demotes to F1 and never reaches the F2 fitter", () => {
+  // The curve evidence is missing, not contradicted, and the scalar calibration is intact.
+  // Rejecting the part would throw away a measurement over evidence that was never
+  // claimed; running the F2 fitter anyway would spend a fit to reach the answer the
+  // contract already gave, and could produce an F2 result from refused evidence.
+  const extractionWithoutCurves = productionCurveExtraction();
+  extractionWithoutCurves.curves = [];
+  const report = evaluateEvidenceContract({ ...mosfetPart("unused.pdf"), subcategory: "N-Channel MOSFET" }, extractionWithoutCurves);
+  assert.equal(report.tier, "F1");
+  const curveRule = report.rules.find((rule) => rule.id === "mosfet_f2_curve_evidence");
+  assert.equal(curveRule.status, "fail");
+  assert.match(curveRule.reason, /requires at least one normalized static transfer_current curve/);
+  assert.equal(report.rules.find((rule) => rule.id === "mosfet_f1_critical_calibration").status, "pass");
+  assert.ok(report.omissions.some((line) => /mosfet_f2_curve_evidence/.test(line)));
+
+  let fitterCalled = false;
+  const fit = fitBulkPart({ ...mosfetPart("unused.pdf"), subcategory: "N-Channel MOSFET" }, extractionWithoutCurves, {
+    fitRunner: () => { fitterCalled = true; return acceptedF2Attempt(); },
+    ngspiceRunner: () => ({ pass: true }),
+    mosfetConstraintRunner: passThroughConstraintRunner,
+  });
+  assert.equal(fitterCalled, false);
+  assert.equal(fit.fidelity, "F1");
+  assert.equal(fit.evidence_contract.tier, "F1");
+});
+
+test("a contradicted curve still rejects the whole part rather than demoting", () => {
+  // The line the incremental contract turns on. Absent evidence demotes; evidence that
+  // contradicts the extraction is a wrong claim, and silently dropping it would hide a
+  // contradiction in the source.
+  const contradictions = [
+    ["axis pairing", (curve) => { curve.x_axis.quantity = "V_GD"; }, /unsupported electrical axis pairing/],
+    ["axis unit", (curve) => { curve.x_axis.unit = "mA"; }, /requires voltage and current axes/],
+    ["temperature", (curve) => { curve.temperature.value = 125; }, /structured temperature disagrees/],
+    ["bias", (curve) => { curve.electrical_bias[0].value = 9; }, /structured electrical bias disagrees/],
+  ];
+  for (const [name, mutate, pattern] of contradictions) {
+    const contradicted = productionCurveExtraction();
+    mutate(contradicted.curves[0]);
+    assert.throws(
+      () => evaluateEvidenceContract({ ...mosfetPart("unused.pdf"), subcategory: "N-Channel MOSFET" }, contradicted),
+      pattern,
+      name,
+    );
+  }
+});
+
+test("bulk manifests stage an F1 package when only the F2 rule fails, and fail terminally when nothing holds", () => {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "factory-preflight-terminal-test-"));
   try {
     const pdf = path.join(root, "datasheet.pdf");
-    const extractionPath = path.join(root, "extraction.json");
-    const manifestPath = path.join(root, "batch.json");
     fs.writeFileSync(pdf, "%PDF-1.7\nfixture\n");
-    const extraction = productionCurveExtraction();
-    extraction.curves = [];
-    fs.writeFileSync(extractionPath, JSON.stringify(extraction));
-    fs.writeFileSync(manifestPath, JSON.stringify({
+
+    const demotable = productionCurveExtraction();
+    demotable.curves = [];
+    const demotablePath = path.join(root, "demotable.json");
+    fs.writeFileSync(demotablePath, JSON.stringify(demotable));
+    const demotableManifest = path.join(root, "demotable-batch.json");
+    fs.writeFileSync(demotableManifest, JSON.stringify({
       schema_version: "1.0.0", kind: "opencircuit-conveyor-batch",
-      parts: [{ ...mosfetPart(pdf), subcategory: "N-Channel MOSFET", extraction_path: extractionPath }],
+      parts: [{ ...mosfetPart(pdf), subcategory: "N-Channel MOSFET", extraction_path: demotablePath }],
     }));
-    const [result] = runBulkManifest(manifestPath, path.join(root, "staging"), { fitRunner: () => { throw new Error("must not fit"); } });
-    assert.equal(result.status, "failed");
-    assert.equal(result.stage, "preflight");
-    assert.match(result.reason, /requires at least one normalized static transfer_current curve/);
+    const [demoted] = runBulkManifest(demotableManifest, path.join(root, "staging-demoted"), {
+      fitRunner: () => { throw new Error("the F2 fitter must not run once the F2 rule has failed"); },
+    });
+    assert.equal(demoted.status, "staged");
+    assert.equal(demoted.fidelity, "F1");
+    const component = JSON.parse(fs.readFileSync(path.join(demoted.package_path, "component.json"), "utf8"));
+    assert.ok(
+      component.known_omissions.some((line) => /mosfet_f2_curve_evidence/.test(line)),
+      `the package must say what it does not claim: ${component.known_omissions.join(" | ")}`,
+    );
+    const card = fs.readFileSync(path.join(demoted.package_path, "MODEL_CARD.md"), "utf8");
+    assert.match(card, /mosfet_f2_curve_evidence/);
+
+    const hopeless = productionCurveExtraction();
+    hopeless.curves = [];
+    delete hopeless.specs.threshold_min;
+    delete hopeless.specs.threshold_typ;
+    delete hopeless.specs.threshold_max;
+    delete hopeless.specs.rdson_points;
+    const hopelessPath = path.join(root, "hopeless.json");
+    fs.writeFileSync(hopelessPath, JSON.stringify(hopeless));
+    const hopelessManifest = path.join(root, "hopeless-batch.json");
+    fs.writeFileSync(hopelessManifest, JSON.stringify({
+      schema_version: "1.0.0", kind: "opencircuit-conveyor-batch",
+      parts: [{ ...mosfetPart(pdf), subcategory: "N-Channel MOSFET", extraction_path: hopelessPath }],
+    }));
+    const [failed] = runBulkManifest(hopelessManifest, path.join(root, "staging-hopeless"), { fitRunner: () => { throw new Error("must not fit"); } });
+    assert.equal(failed.status, "failed");
+    assert.equal(failed.stage, "preflight");
+    assert.match(failed.reason, /evidence supports no fidelity tier/);
   } finally {
     fs.rmSync(root, { recursive: true, force: true });
   }
@@ -1529,4 +1609,268 @@ test("exact package variants support repeated electrical nodes across real multi
     })], pinInfo),
     /omits electrical symbol pin 1/,
   );
+});
+
+// ---------------------------------------------------------------------------------
+// Hard gates, after the ceremony relaxation.
+//
+// The relaxations in this change all loosen how evidence may be SPELLED or how much of
+// it must be present. None of them loosen what a package may CLAIM. Each test below
+// names the concrete wrong electrical claim its gate prevents, and proves the gate still
+// rejects with the relaxed adapter in place.
+// ---------------------------------------------------------------------------------
+
+test("gate: a curve's declared axis units are still applied, so a 1000x ordinate error cannot pass", () => {
+  // Wrong claim prevented: a milliamp ordinate read as amps makes the part look 1000x
+  // stronger than it is, and every current in every circuit built from it is wrong.
+  const wrongUnit = productionCurveExtraction();
+  wrongUnit.curves[0].y_axis.unit = "furlongs";
+  assert.throws(
+    () => evaluateEvidenceContract({ ...mosfetPart("unused.pdf"), subcategory: "N-Channel MOSFET" }, wrongUnit),
+    /requires voltage and current axes with recognized SI units/,
+  );
+
+  // And the units that ARE recognised are converted, never assumed: the same curve
+  // declared in milliamps produces different SI points from one declared in amps.
+  const inAmps = productionCurveExtraction();
+  const inMilliamps = productionCurveExtraction();
+  inMilliamps.curves[0].y_axis.unit = "mA";
+  const points = (value) => {
+    let payload;
+    fitBulkPart({ ...mosfetPart("unused.pdf"), subcategory: "N-Channel MOSFET" }, value, {
+      fitRunner: (received) => { payload = received; return acceptedF2Attempt(); },
+      ngspiceRunner: () => ({ pass: true }),
+    });
+    return payload.extraction.curves[0].points.map((point) => point.y_si);
+  };
+  const amps = points(inAmps);
+  const milliamps = points(inMilliamps);
+  assert.equal(amps.length, milliamps.length);
+  for (const [index, value] of amps.entries()) {
+    assert.ok(Math.abs(milliamps[index] / value - 1e-3) < 1e-9, "a milliamp ordinate must not be read as amps");
+  }
+});
+
+test("gate: a curve's source identity is still bound to its own citation and condition", () => {
+  // Wrong claim prevented: a curve taken from another figure, another trace or another
+  // bias would be fitted as if it described this device at this condition.
+  const cases = [
+    ["missing trace locator", (curve) => { delete curve.locator.curve_or_trace; }, /invalid fields|curve_or_trace/],
+    ["non-integer page", (curve) => { curve.locator.page = "4"; }, /positive integer page/],
+    ["point-level identity override", (curve) => { curve.points[0].condition_identity = { condition_id: "sha256:0" }; }, /may not override shared identities/],
+    ["bias that contradicts the extraction", (curve) => { curve.electrical_bias[0].value = 9; }, /structured electrical bias disagrees/],
+  ];
+  for (const [name, mutate, pattern] of cases) {
+    const value = productionCurveExtraction();
+    mutate(value.curves[0]);
+    assert.throws(
+      () => evaluateEvidenceContract({ ...mosfetPart("unused.pdf"), subcategory: "N-Channel MOSFET" }, value),
+      pattern,
+      name,
+    );
+  }
+});
+
+test("gate: pulsed evidence still cannot enter a static DC fit, and a pulse with no width is still refused", () => {
+  // Wrong claim prevented: a pulsed measurement is taken before the die heats. Read as
+  // DC it claims a lower continuous on-resistance, and a higher continuous current, than
+  // the part actually delivers.
+  const pulsedCurve = productionCurveExtraction();
+  pulsedCurve.curves[0].test_mode = { kind: "pulsed", pulse_width_s: 1e-6, duty_cycle: 0.01 };
+  pulsedCurve.curves[0].test_conditions = "VDS = 10 V, TJ = 25 °C; pulsed; pulse width = 1 us; duty cycle = 1%";
+  assert.throws(
+    () => evaluateEvidenceContract({ ...mosfetPart("unused.pdf"), subcategory: "N-Channel MOSFET" }, pulsedCurve),
+    /pulsed evidence and cannot enter a static DC MOSFET fit/,
+  );
+
+  // The duty cycle is no longer required. The pulse WIDTH still is: without it there is
+  // nothing to check the measurement against the die's self-heating time constant.
+  const widthOnly = productionCurveExtraction();
+  widthOnly.curves[0].test_mode = { kind: "pulsed", pulse_width_s: 1e-6 };
+  widthOnly.curves[0].test_conditions = "VDS = 10 V, TJ = 25 °C; pulsed; pulse width = 1 us";
+  assert.throws(
+    () => evaluateEvidenceContract({ ...mosfetPart("unused.pdf"), subcategory: "N-Channel MOSFET" }, widthOnly),
+    /pulsed evidence and cannot enter a static DC MOSFET fit/,
+  );
+
+  const noWidth = productionCurveExtraction();
+  noWidth.curves[0].test_mode = { kind: "pulsed" };
+  noWidth.curves[0].test_conditions = "VDS = 10 V, TJ = 25 °C; pulse tested";
+  assert.throws(
+    () => evaluateEvidenceContract({ ...mosfetPart("unused.pdf"), subcategory: "N-Channel MOSFET" }, noWidth),
+    /pulsed mode requires pulse_width_s|pulsed evidence must state its pulse width/,
+  );
+});
+
+test("gate: an unstated test mode is still refused for RDS(on), where the datasheet convention is not static", () => {
+  // Wrong claim prevented: RDS(on) is the row datasheets most often pulse-test. Admitting
+  // an unknown mode there as DC understates continuous on-resistance. The relaxation
+  // widens how a mode may be SPELLED and admits not_stated for the static characteristics
+  // (threshold, transfer, output); it does not admit it here.
+  const value = productionCurveExtraction();
+  for (const field of Object.values(value.specs.rdson_points[0])) {
+    delete field.condition;
+    field.conditions = "VGS = 4.5 V, ID = 2 A, TJ = 25 degC";
+  }
+  assert.throws(
+    () => evaluateEvidenceContract({ ...mosfetPart("unused.pdf"), subcategory: "N-Channel MOSFET" }, value),
+    /not_stated is not admitted for rds_on|states no test mode/,
+  );
+
+  // The same row with the mode supplied as a typed field, rather than as prose the old
+  // phrase list had to recognise, is admitted.
+  const typed = productionCurveExtraction();
+  for (const field of Object.values(typed.specs.rdson_points[0])) {
+    delete field.condition;
+    field.conditions = "VGS = 4.5 V, ID = 2 A, TJ = 25 degC";
+    field.test_mode = { kind: "dc" };
+  }
+  const report = evaluateEvidenceContract({ ...mosfetPart("unused.pdf"), subcategory: "N-Channel MOSFET" }, typed);
+  assert.ok(report.candidate, "a typed test mode is evidence even when the prose never spells one");
+});
+
+test("gate: an unstated temperature demotes to F1 and is written into the omissions, and never reaches F2", () => {
+  // Wrong claim prevented: a device characteristic with no stated temperature, presented
+  // at F2, claims curve-grade accuracy at a temperature the source never gave. It is not
+  // discarded: the measurement is real and stays at F1, and the package says so.
+  const value = productionCurveExtraction();
+  value.curves[0].test_conditions = "VDS = 10 V";
+  delete value.curves[0].temperature;
+  delete value.curves[0].magnitude_convention;
+  delete value.curves[0].electrical_bias;
+  delete value.curves[0].test_mode;
+  const report = evaluateEvidenceContract({ ...mosfetPart("unused.pdf"), subcategory: "N-Channel MOSFET" }, value);
+  const temperatureRule = report.rules.find((rule) => rule.id === "stated_temperature");
+  assert.ok(temperatureRule, "the contract must report on the temperature rule");
+  assert.equal(temperatureRule.status, "fail");
+  assert.match(temperatureRule.reason, /no stated temperature/);
+  assert.equal(report.tier, "F1", "an unstated temperature must never reach F2");
+  assert.ok(report.omissions.some((line) => /stated_temperature/.test(line)),
+    `the package must say why it is not F2: ${report.omissions.join(" | ")}`);
+  // The scalar rows still carry their own stated temperatures, so the F1 claim stands.
+  assert.equal(report.rules.find((rule) => rule.id === "mosfet_f1_critical_calibration").status, "pass");
+});
+
+test("relaxation: a test mode the extractor supplies as a typed field no longer has to be spelled in prose", () => {
+  // The old identity was built by exact-phrase matching, so evidence that said "d.c."
+  // rather than the literal token "DC" was rejected. That was a spelling test, not an
+  // electrical one. The kinds themselves stay closed and every rule that depends on the
+  // kind is unchanged.
+  for (const spelling of ["test mode = DC", "d.c.", "steady state"]) {
+    const value = productionCurveExtraction();
+    value.curves[0].test_conditions = `VDS = 10 V, TJ = 25 °C; ${spelling}`;
+    delete value.curves[0].test_mode;
+    delete value.curves[0].magnitude_convention;
+    delete value.curves[0].electrical_bias;
+    delete value.curves[0].temperature;
+    const report = evaluateEvidenceContract({ ...mosfetPart("unused.pdf"), subcategory: "N-Channel MOSFET" }, value);
+    assert.ok(report.candidate, `"${spelling}" must be admitted as a stated test mode`);
+  }
+});
+
+test("relaxation: disclosure prose is recorded as free text and never enters a condition identity", () => {
+  // Two identical measurements whose datasheets word their footnotes differently must
+  // produce the SAME condition ID. The old whitelist made the identity depend on the
+  // wording, which split cohorts that describe one measurement.
+  const identityFor = (prose) => {
+    const value = productionCurveExtraction();
+    for (const field of Object.values(value.specs.rdson_points[0])) {
+      delete field.condition;
+      field.conditions = prose;
+    }
+    value.usable_curves = false;
+    let payload;
+    fitBulkPart({ ...mosfetPart("unused.pdf"), subcategory: "N-Channel MOSFET" }, value, {
+      forceF1: true, ngspiceRunner: () => ({ pass: true }),
+      mosfetConstraintRunner: (received) => { payload = received; return passThroughConstraintRunner(received); },
+    });
+    const row = payload.constraints.concat(payload.observations ?? []).find((item) => item.condition_identity);
+    return row.condition_identity;
+  };
+  const plain = identityFor("VGS = 4.5 V, ID = 2 A, TJ = 25 degC; test mode = DC");
+  const wordy = identityFor("VGS = 4.5 V, ID = 2 A, TJ = 25 degC; test mode = DC; unless otherwise noted; values converted to SI per Note 3");
+  assert.equal(plain.condition_id, wordy.condition_id,
+    "a differently worded footnote must not split one measurement into two conditions");
+  assert.ok(!JSON.stringify(plain.qualifiers).includes("unless_otherwise_noted"));
+});
+
+test("gate: a published saturation maximum is still a bound, never a fitted target", () => {
+  // Wrong claim prevented: reading VCE(sat) MAX or hFE MAX as a typical target makes the
+  // model claim the worst-case part is the ordinary part.
+  const maximumGain = {
+    schema_version: "1.0.0", mpn: "FIXTURE-Q1", manufacturer: "Fixture Semi", family: "bjt", usable_curves: false,
+    specs: { gain_points: [{ hfe: { value: 300, unit: "1", source_kind: "maximum", conditions: "IC = 2 mA", page_reference: "p. 2" } }] },
+  };
+  const fit = fitBulkPart(
+    { mpn: "FIXTURE-Q1", manufacturer: "Fixture Semi", conveyor_family: "bjt", subcategory: "NPN", description: "fixture", seed_hints: [{ factory_target: "bjt.dc_current_gain", raw_value: "100" }] },
+    maximumGain,
+    { ngspiceRunner: () => ({ pass: true }) },
+  );
+  assert.equal(fit.parameters.BF, 100, "a published maximum must fall back to the seed, not become the target");
+});
+
+test("gate: a fitted parameter parked on a physical bound is still declared, not presented as a measurement", () => {
+  // Wrong claim prevented: a value set by a bound is not a measurement of the part, and
+  // presenting one as fitted invents a device characteristic the source never showed.
+  const gates = JSON.parse(fs.readFileSync(path.join(import.meta.dirname, "../lib/fit-gates.json"), "utf8"));
+  assert.ok(gates.parameter_physicality.bound_saturation_tolerance > 0);
+  for (const family of Object.values(gates.families)) {
+    for (const limit of Object.values(family.quantities)) {
+      assert.ok(limit.worst > 0 && limit.rms > 0, "every gate quantity keeps a positive tolerance");
+    }
+  }
+});
+
+test("gate: catalog parametrics are still seeds, never evidence, constraints or citations", () => {
+  // Wrong claim prevented: a distributor's parametric table is not a datasheet. Fitting
+  // to one and citing the datasheet claims a measurement that was never published there.
+  // The seed hint below is a perfectly good forward-voltage number, and it is still not
+  // enough to build a package from.
+  const catalogOnly = extraction();
+  catalogOnly.specs.forward_voltage_points = [];
+  catalogOnly.usable_curves = false;
+  const part = { ...diodePart("unused.pdf"), seed_hints: [{ factory_target: "diode.forward_voltage", raw_value: "0.7V@10mA" }] };
+  const report = evaluateEvidenceContract(part, catalogOnly);
+  assert.equal(report.tier, null, "a catalog hint supports no fidelity tier at all");
+  assert.match(report.rules.find((rule) => rule.id === "diode_forward_evidence").reason, /catalog hints are seeds only/);
+  assert.throws(() => validateBulkCandidateEvidence(part, catalogOnly), /catalog hints are seeds only/);
+});
+
+test("gate: the collision and duplicate-die guards still refuse to restate a reviewed package", () => {
+  // Wrong claim prevented: two packages carrying the same fitted die vector under
+  // different part numbers assert that two distinct parts were independently measured.
+  const reviewedRoot = path.resolve(import.meta.dirname, "../../../packages/model-library/models");
+  const collision = libraryCollisionReason(
+    { mpn: "1N4148", manufacturer: "Vishay", conveyor_family: "diode", subcategory: "Switching Diodes", description: "collision fixture" },
+    reviewedRoot, null,
+  );
+  assert.ok(collision, "a canonical MPN already in the reviewed library must be skipped, not restaged");
+  assert.match(collision, /1N4148/);
+
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "factory-gate-die-test-"));
+  try {
+    const library = path.join(root, "models");
+    const existing = path.join(library, "fixture", "EXISTING-D1");
+    fs.mkdirSync(existing, { recursive: true });
+    const fit = fitBulkPart(diodePart("unused.pdf"), extraction(), { forceF1: true, ngspiceRunner: () => ({ pass: true }) });
+    fs.writeFileSync(path.join(existing, "component.json"), JSON.stringify({ electrical_family: "diode" }));
+    fs.writeFileSync(path.join(existing, "fitted.json"), JSON.stringify({ parameters: fit.parameters }));
+    assert.match(
+      libraryDuplicateDieReason({ ...diodePart("unused.pdf"), mpn: "NOT-THE-SAME-PART" }, fit, library),
+      /duplicate fitted die vector/,
+      "an identical fitted die vector must be refused however the part is named",
+    );
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("gate: the staged package still declares native and WASM engine agreement per bench", () => {
+  // Wrong claim prevented: a card that behaves one way in the reference simulator and
+  // another in the browser engine is two different models wearing one name.
+  const bench = path.resolve(import.meta.dirname, "../../native-ngspice-reference/compare.mjs");
+  assert.ok(fs.existsSync(bench), "the native-versus-WASM comparison harness must stay wired in");
+  const source = fs.readFileSync(bench, "utf8");
+  assert.match(source, /run-wasm/, "the comparison must still run the WASM engine, not only native ngspice");
+  assert.match(source, /run-native/, "the comparison must still run native ngspice");
 });
