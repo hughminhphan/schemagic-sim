@@ -35,3 +35,12 @@ export {
   type SuggestedSymbol,
   type VirtualFileMap,
 } from "./types";
+export { decodeFalstadShare, importFalstadCircuit, isFalstadShareInput } from "./falstad/import";
+export type {
+  FalstadImportIssue,
+  FalstadImportOptions,
+  FalstadImportReport,
+  FalstadImportResult,
+  FalstadImportWarning,
+  FalstadSourceKind,
+} from "./falstad/types";
