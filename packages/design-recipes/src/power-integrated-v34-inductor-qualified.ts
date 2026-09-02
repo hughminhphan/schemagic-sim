@@ -1,6 +1,7 @@
 import {
   FACTS_SCHEMA_VERSION_V2,
   FACTS_SCHEMA_VERSION_V34,
+  FACTS_SCHEMA_VERSION_V35,
 } from "@opencircuit/design-library/v2-runtime";
 import { createPowerIntegratedSynchronousBuckStructuralRecipe } from "./power-integrated-v33";
 import { createPowerIntegratedSynchronousBuckBehavioralRecipe } from "./power-integrated-v34";
@@ -206,4 +207,72 @@ export const POWER_NATIVE_INTEGRATED_SYNCHRONOUS_BUCK_RECIPE_FACTS_V34_REFERENCE
     release: RELEASE_V346,
     optionKeyPrefix: "power-v3-4-reference-passive-observations",
     structuralRecipe: structuralRecipeV346,
+  });
+
+export const POWER_INTEGRATED_V35_REFERENCE_INDUCTOR_PROFILE_ID =
+  "packages/design-library/parts/power.power-inductor/bel-fuse/F1F2-0804-100M.json" as const;
+export const POWER_INTEGRATED_V35_REFERENCE_OUTPUT_CAPACITOR_PROFILE_ID =
+  "packages/design-library/parts/shared.mlcc-capacitor/murata-manufacturing/GRM32ER71E226KE15L.json" as const;
+export const POWER_INTEGRATED_V35_CURRENT_LIMIT_MARGIN_RATIO = 0.2 as const;
+
+const RELEASE_V350 = {
+  ...RELEASE_V346,
+  id: "power.native.integrated-synchronous-buck.facts-v3-5-bound-calculators",
+  version: "3.5.0",
+  equations: [
+    ...RELEASE_V346.equations,
+    "power.integrated-loss-and-junction-temperature.v1",
+    "power.current-limit-minimum-to-peak-margin.v1",
+  ],
+  profileBindings: [
+    {
+      role: "output-capacitor",
+      partClass: "shared.mlcc-capacitor",
+      factsSchemaVersion: FACTS_SCHEMA_VERSION_V35,
+      profileId: POWER_INTEGRATED_V35_REFERENCE_OUTPUT_CAPACITOR_PROFILE_ID,
+      quantityPerAssembly: POWER_INTEGRATED_V345_REFERENCE_OUTPUT_CAPACITOR_QUANTITY,
+    },
+    {
+      role: "power-inductor",
+      partClass: "power.power-inductor",
+      factsSchemaVersion: FACTS_SCHEMA_VERSION_V35,
+      profileId: POWER_INTEGRATED_V35_REFERENCE_INDUCTOR_PROFILE_ID,
+    },
+  ],
+  currentLimitRequiredMarginRatio: POWER_INTEGRATED_V35_CURRENT_LIMIT_MARGIN_RATIO,
+  thermalResistanceBoardQualifier: "declared",
+} as const;
+
+const structuralRecipeV350 = createPowerIntegratedSynchronousBuckStructuralRecipe({
+  release: RELEASE_V350,
+  optionKeyPrefix: "power-v3-5-bound-calculators-structural",
+  primaryFactsSchemaVersion: FACTS_SCHEMA_VERSION_V35,
+  inductorContract: {
+    factsSchemaVersion: FACTS_SCHEMA_VERSION_V35,
+    profileId: POWER_INTEGRATED_V35_REFERENCE_INDUCTOR_PROFILE_ID,
+  },
+  outputCapacitorContract: {
+    factsSchemaVersion: FACTS_SCHEMA_VERSION_V35,
+    profileId: POWER_INTEGRATED_V35_REFERENCE_OUTPUT_CAPACITOR_PROFILE_ID,
+    quantityPerAssembly: POWER_INTEGRATED_V345_REFERENCE_OUTPUT_CAPACITOR_QUANTITY,
+  },
+  evaluatePassiveSelectionV1: true,
+  surfacePassiveOperatingObservationsV1: true,
+  omitLoadTransientConstraintWhenUnrequested: true,
+  evaluateDcOutputVoltageRegulationEnvelope: true,
+  currentLimitRequiredMarginRatio: POWER_INTEGRATED_V35_CURRENT_LIMIT_MARGIN_RATIO,
+  thermalResistanceBoardQualifier: "declared",
+});
+
+/**
+ * Additive facts-V3.5 successor. It emits no candidate while the installed
+ * catalog lacks the exact bound-typed profiles. Once those profiles are
+ * admitted, every calculator remains fail-closed on missing or condition-
+ * mismatched inputs.
+ */
+export const POWER_NATIVE_INTEGRATED_SYNCHRONOUS_BUCK_RECIPE_FACTS_V35_BOUND_CALCULATORS: NativeRecipeV2 =
+  createPowerIntegratedSynchronousBuckBehavioralRecipe({
+    release: RELEASE_V350,
+    optionKeyPrefix: "power-v3-5-bound-calculators",
+    structuralRecipe: structuralRecipeV350,
   });

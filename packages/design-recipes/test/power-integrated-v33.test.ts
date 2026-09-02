@@ -25,6 +25,7 @@ import {
   POWER_NATIVE_INTEGRATED_SYNCHRONOUS_BUCK_RECIPE_FACTS_V34_INDUCTOR_QUALIFIED_REQUEST_CONDITIONAL,
   POWER_NATIVE_INTEGRATED_SYNCHRONOUS_BUCK_RECIPE_FACTS_V34_REFERENCE_PASSIVE_OBSERVATIONS,
   POWER_NATIVE_INTEGRATED_SYNCHRONOUS_BUCK_RECIPE_FACTS_V34_REFERENCE_PASSIVES,
+  POWER_NATIVE_INTEGRATED_SYNCHRONOUS_BUCK_RECIPE_FACTS_V35_BOUND_CALCULATORS,
 } from "../src/power-integrated-v34-inductor-qualified";
 import type { NativeCandidateV2, NativeEnvironmentV2, NativeRecipeV2 } from "../src/types";
 import tps54302 from "../../design-library/parts/power.integrated-synchronous-buck-regulator/texas-instruments/TPS54302DDCR.json";
@@ -1263,5 +1264,139 @@ describe("facts V3.4.6 immutable passive operating-observation successor", () =>
       && entry.value === null
       && entry.explanation.includes("cannot be reproduced")
     ))).toBe(true);
+  });
+});
+
+function v35BoundFact(value: number, unit: string, validFor: any[], source: any): any {
+  return {
+    value: { value, unit, displayUnit: unit },
+    state: "reviewed",
+    evidence: structuredClone(source.evidence),
+    validFor,
+    explanation: "Synthetic condition-covering bound for calculator wiring tests only.",
+  };
+}
+
+function v35Condition(parameterId: string, minimum: number, maximum: number, unit: string, source: any): any {
+  return {
+    parameterId,
+    minimum: { value: minimum, unit, displayUnit: unit },
+    maximum: { value: maximum, unit, displayUnit: unit },
+    evidence: structuredClone(source.evidence),
+  };
+}
+
+function calculatorV35Environment(currentLimitMinimumA = 4): NativeEnvironmentV2 {
+  const primary = structuredClone(tps54302) as any;
+  primary.factsSchemaVersion = "3.5.0";
+  primary.facts.currentLimitMinimum.value.value = currentLimitMinimumA;
+  primary.facts.minimumOnTimeMaximum = v35BoundFact(120e-9, "s", [], primary.facts.minimumOnTime);
+  primary.facts.minimumOffTimeMaximum = v35BoundFact(100e-9, "s", [], primary.facts.minimumOnTime);
+  primary.facts.thermalResistanceJunctionAmbient = v35BoundFact(120, "K/W", [], primary.facts.junctionToAmbientThermalResistance);
+  primary.facts.thermalResistanceJunctionAmbientBoard = {
+    value: "declared",
+    state: "reviewed",
+    evidence: structuredClone(primary.facts.junctionToAmbientThermalResistance.evidence),
+    validFor: [],
+    explanation: "Synthetic declared board qualifier for calculator wiring tests only.",
+  };
+
+  const inductor = structuredClone(belF1F2Reference) as any;
+  inductor.factsSchemaVersion = "3.5.0";
+  inductor.facts.inductanceMinimum = v35BoundFact(8e-6, "H", [
+    v35Condition("ambientTemperature", 273.15, 373.15, "K", inductor.facts.inductance),
+    v35Condition("switchingFrequency", 250_000, 600_000, "Hz", inductor.facts.inductance),
+    v35Condition("testCurrent", 0, 3, "A", inductor.facts.inductance),
+  ], inductor.facts.inductance);
+  inductor.facts.coreLossMaximum = v35BoundFact(0.1, "W", [
+    v35Condition("switchingFrequency", 250_000, 600_000, "Hz", inductor.facts.inductance),
+    v35Condition("testCurrent", 0, 3, "A", inductor.facts.inductance),
+  ], inductor.facts.inductance);
+
+  const outputCapacitor = structuredClone(grm32Reference) as any;
+  outputCapacitor.factsSchemaVersion = "3.5.0";
+  outputCapacitor.facts.effectiveCapacitanceMinimum = v35BoundFact(10e-6, "F", [
+    v35Condition("ambientTemperature", 273.15, 373.15, "K", outputCapacitor.facts.nominalCapacitance),
+    v35Condition("dcBias", 0, 5.5, "V", outputCapacitor.facts.nominalCapacitance),
+  ], outputCapacitor.facts.nominalCapacitance);
+  outputCapacitor.facts.esrMaximum = v35BoundFact(0.01, "ohm", [
+    v35Condition("switchingFrequency", 250_000, 600_000, "Hz", outputCapacitor.facts.nominalCapacitance),
+  ], outputCapacitor.facts.nominalCapacitance);
+
+  const base = qualifiedReviewedDividerEnvironment(request());
+  return {
+    ...base,
+    catalog: {
+      profiles: [
+        ...base.catalog.profiles.filter((profile) => ![
+          "TPS54302DDCR",
+          "F1F2-0804-100M",
+          "GRM32ER71E226KE15L",
+        ].includes(profile.part.manufacturerPartNumber)),
+        primary,
+        inductor,
+        outputCapacitor,
+      ] as NativeEnvironmentV2["catalog"]["profiles"],
+    },
+  };
+}
+
+describe("facts V3.5 calculator-backed integrated buck rules", () => {
+  it("turns current-limit coordination into PASS with all condition-covering facts", () => {
+    const result = candidate(
+      calculatorV35Environment(),
+      POWER_NATIVE_INTEGRATED_SYNCHRONOUS_BUCK_RECIPE_FACTS_V35_BOUND_CALCULATORS,
+    );
+    expect(result.constraints).toContainEqual(expect.objectContaining({
+      ruleId: "power.regulator.current-limit",
+      status: "pass",
+    }));
+  });
+
+  it("turns current-limit coordination into FAIL when the guaranteed minimum misses margin", () => {
+    const result = candidate(
+      calculatorV35Environment(0.3),
+      POWER_NATIVE_INTEGRATED_SYNCHRONOUS_BUCK_RECIPE_FACTS_V35_BOUND_CALCULATORS,
+    );
+    expect(result.constraints).toContainEqual(expect.objectContaining({
+      ruleId: "power.regulator.current-limit",
+      status: "fail",
+    }));
+  });
+
+  it("keeps a condition-mismatched inductance bound as a named current-limit UNKNOWN", () => {
+    const environmentValue = structuredClone(calculatorV35Environment()) as any;
+    const inductor = environmentValue.catalog.profiles.find((profile: any) => (
+      profile.part.manufacturerPartNumber === "F1F2-0804-100M"
+    ));
+    inductor.facts.inductanceMinimum.validFor.find((condition: any) => (
+      condition.parameterId === "ambientTemperature"
+    )).maximum.value = 290;
+    const result = candidate(
+      environmentValue,
+      POWER_NATIVE_INTEGRATED_SYNCHRONOUS_BUCK_RECIPE_FACTS_V35_BOUND_CALCULATORS,
+    );
+    expect(result.constraints).toContainEqual(expect.objectContaining({
+      ruleId: "power.regulator.current-limit",
+      status: "unknown",
+      explanation: expect.stringContaining("inductanceMinimumH"),
+    }));
+  });
+
+  it("names the frozen facts 3.5 transition-bound schema gap in both thermal UNKNOWNs", () => {
+    const result = candidate(
+      calculatorV35Environment(),
+      POWER_NATIVE_INTEGRATED_SYNCHRONOUS_BUCK_RECIPE_FACTS_V35_BOUND_CALCULATORS,
+    );
+    expect(result.constraints).toContainEqual(expect.objectContaining({
+      ruleId: "power.thermal.loss-model",
+      status: "unknown",
+      explanation: expect.stringContaining("facts 3.5 has no switching-transition bound field"),
+    }));
+    expect(result.constraints).toContainEqual(expect.objectContaining({
+      ruleId: "power.thermal.maximum-junction",
+      status: "unknown",
+      explanation: expect.stringContaining("facts 3.5 has no switching-transition bound field"),
+    }));
   });
 });
