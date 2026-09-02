@@ -523,9 +523,9 @@ const SYNTHETIC_MOTOR_DRV8262_COMPANION_GATE_HASH = artifactHash(
   withMotorDrv8262CompanionGateEvidence(fixture()),
   "assets/motor-drv8262-gate.js",
 );
-const PRODUCTION_MOTOR_TVS_RECIPE_HASH = "sha256:ce6cce6d7c71b45526ebba25ebabda298c05d9c3b5efd3693473158da48bba53";
-const PRODUCTION_MOTOR_TVS_REVIEWED_HASH = "sha256:f1345930116d5c430ec35e2f6e61df5f7115158eb90765f30ddb5430e0d57d2c";
-const PRODUCTION_MOTOR_DRV8262_COMPANION_GATE_HASH = "sha256:ce6cce6d7c71b45526ebba25ebabda298c05d9c3b5efd3693473158da48bba53";
+const PRODUCTION_MOTOR_TVS_RECIPE_HASH = "sha256:d59838d4a5ac6c5851ffdc2bc17d3c282df266319214bdc4ae5290049eda2042";
+const PRODUCTION_MOTOR_TVS_REVIEWED_HASH = "sha256:dfb283349e730cf7284f4c94ab6308b470896b30d65ceed356381990330dff05";
+const PRODUCTION_MOTOR_DRV8262_COMPANION_GATE_HASH = "sha256:d59838d4a5ac6c5851ffdc2bc17d3c282df266319214bdc4ae5290049eda2042";
 const auditModuleSource = readFileSync(new URL("./static-offline-audit.mjs", import.meta.url), "utf8");
 assert.equal(auditModuleSource.split(PRODUCTION_MOTOR_TVS_RECIPE_HASH).length, 3);
 assert.equal(auditModuleSource.split(PRODUCTION_MOTOR_TVS_REVIEWED_HASH).length, 2);
