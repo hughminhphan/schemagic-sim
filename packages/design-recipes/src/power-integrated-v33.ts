@@ -8,6 +8,7 @@ import {
   FACTS_SCHEMA_VERSION_V2,
   FACTS_SCHEMA_VERSION_V33,
   FACTS_SCHEMA_VERSION_V34,
+  FACTS_SCHEMA_VERSION_V35,
   canonicalProfileNumberV2,
   designProfileEnvelopeContentHash,
   designProfileContentHashV34,
@@ -16,10 +17,13 @@ import {
   parseDesignProfileForV2,
   parseDesignProfileV33,
   parseDesignProfileV34,
+  parseDesignProfileV35,
   validateProfileAdmissionRulesV33,
   validateProfileAdmissionRulesV34,
+  validateProfileAdmissionRulesV35,
   type DesignProfileV33,
   type DesignProfileV34,
+  type DesignProfileV35,
   type DesignProfileWithFactsV2,
   type FactsV2For,
   type PartClassId,
@@ -40,6 +44,11 @@ import {
   type SelectedComponent,
 } from "@opencircuit/design-schema";
 import { limitConstraint, projectedEvidence, unknownConstraint } from "./common";
+import {
+  calculateIntegratedBuckCurrentLimitV1,
+  calculateIntegratedBuckJunctionTemperatureV1,
+  calculateIntegratedBuckLossV1,
+} from "./power-integrated-calculators-v1";
 import {
   powerPassiveCapacitorCandidateFromReviewedProfileV1,
   powerPassiveInductorCandidateFromReviewedProfileV1,
@@ -83,12 +92,17 @@ const PASSIVE_OPERATING_OBSERVATION_METRICS = [
 type PassiveOperatingObservationMetricId = typeof PASSIVE_OPERATING_OBSERVATION_METRICS[number]["id"];
 
 type IntegratedProfileV33 = DesignProfileV33<"power.integrated-synchronous-buck-regulator">;
+type IntegratedProfileV35 = DesignProfileV35<"power.integrated-synchronous-buck-regulator">;
+type IntegratedProfile = IntegratedProfileV33 | IntegratedProfileV35;
 type CapacitorProfileV2 = DesignProfileWithFactsV2<"shared.mlcc-capacitor", FactsV2For<"shared.mlcc-capacitor">>;
+type CapacitorProfileV35 = DesignProfileV35<"shared.mlcc-capacitor">;
+type CapacitorProfile = CapacitorProfileV2 | CapacitorProfileV35;
 type InductorProfileV2 = DesignProfileWithFactsV2<"power.power-inductor", FactsV2For<"power.power-inductor">>;
 type InductorProfileV34 = DesignProfileV34<"power.power-inductor">;
-type InductorProfile = InductorProfileV2 | InductorProfileV34;
+type InductorProfileV35 = DesignProfileV35<"power.power-inductor">;
+type InductorProfile = InductorProfileV2 | InductorProfileV34 | InductorProfileV35;
 type ResistorProfileV2 = DesignProfileWithFactsV2<"shared.general-purpose-resistor", FactsV2For<"shared.general-purpose-resistor">>;
-type SelectedProfile = IntegratedProfileV33 | CapacitorProfileV2 | InductorProfile | ResistorProfileV2;
+type SelectedProfile = IntegratedProfile | CapacitorProfile | InductorProfile | ResistorProfileV2;
 
 export type PowerIntegratedInductorContract = Readonly<
   | { factsSchemaVersion: typeof FACTS_SCHEMA_VERSION_V2 }
@@ -96,12 +110,26 @@ export type PowerIntegratedInductorContract = Readonly<
       factsSchemaVersion: typeof FACTS_SCHEMA_VERSION_V34;
       exactProfileContentHash: `sha256:${string}`;
     }
+  | {
+      factsSchemaVersion: typeof FACTS_SCHEMA_VERSION_V35;
+      profileId: string;
+    }
 >;
 
-export interface PowerIntegratedOutputCapacitorContract {
-  readonly exactProfileContentHash: `sha256:${string}`;
-  readonly quantityPerAssembly: number;
-}
+export type PowerIntegratedOutputCapacitorContract = Readonly<
+  | {
+      readonly factsSchemaVersion?: typeof FACTS_SCHEMA_VERSION_V2;
+      readonly exactProfileContentHash: `sha256:${string}`;
+      readonly profileId?: never;
+      readonly quantityPerAssembly: number;
+    }
+  | {
+      readonly factsSchemaVersion: typeof FACTS_SCHEMA_VERSION_V35;
+      readonly exactProfileContentHash?: never;
+      readonly profileId: string;
+      readonly quantityPerAssembly: number;
+    }
+>;
 
 export interface PowerIntegratedStructuralRecipeConfig {
   readonly release: Readonly<{
@@ -111,12 +139,15 @@ export interface PowerIntegratedStructuralRecipeConfig {
     profileBindings?: readonly Readonly<Record<string, unknown>>[];
   }>;
   readonly optionKeyPrefix: string;
+  readonly primaryFactsSchemaVersion?: typeof FACTS_SCHEMA_VERSION_V33 | typeof FACTS_SCHEMA_VERSION_V35;
   readonly inductorContract: PowerIntegratedInductorContract;
   readonly outputCapacitorContract?: Readonly<PowerIntegratedOutputCapacitorContract>;
   readonly evaluatePassiveSelectionV1?: boolean;
   readonly surfacePassiveOperatingObservationsV1?: boolean;
   readonly omitLoadTransientConstraintWhenUnrequested?: boolean;
   readonly evaluateDcOutputVoltageRegulationEnvelope?: boolean;
+  readonly currentLimitRequiredMarginRatio?: number;
+  readonly thermalResistanceBoardQualifier?: "jedec_2s2p" | "declared";
 }
 
 interface DividerSelectionV33 {
@@ -181,13 +212,20 @@ function v2Profiles<ClassId extends PartClassId>(
     .sort((left, right) => compareDesignV2Tokens(designProfileId(left.partClass, left.part), designProfileId(right.partClass, right.part)));
 }
 
-function integratedProfiles(catalog: Readonly<NativeCatalogV2>): IntegratedProfileV33[] {
+function integratedProfiles(
+  catalog: Readonly<NativeCatalogV2>,
+  factsSchemaVersion: typeof FACTS_SCHEMA_VERSION_V33 | typeof FACTS_SCHEMA_VERSION_V35,
+): IntegratedProfile[] {
   return catalog.profiles
-    .filter((profile) => profile.partClass === "power.integrated-synchronous-buck-regulator" && profile.factsSchemaVersion === FACTS_SCHEMA_VERSION_V33)
-    .map((profile) => parseDesignProfileV33(profile))
+    .filter((profile) => profile.partClass === "power.integrated-synchronous-buck-regulator" && profile.factsSchemaVersion === factsSchemaVersion)
+    .map((profile) => factsSchemaVersion === FACTS_SCHEMA_VERSION_V35
+      ? parseDesignProfileV35(profile) as IntegratedProfileV35
+      : parseDesignProfileV33(profile) as IntegratedProfileV33)
     .map((profile) => {
-      const issue = validateProfileAdmissionRulesV33(profile)[0];
-      if (issue) throw new TypeError(`Invalid admitted facts-V3.3 integrated regulator profile: ${issue.path}: ${issue.message}`);
+      const issue = profile.factsSchemaVersion === FACTS_SCHEMA_VERSION_V35
+        ? validateProfileAdmissionRulesV35(profile)
+        : validateProfileAdmissionRulesV33(profile);
+      if (issue[0]) throw new TypeError(`Invalid admitted facts-${factsSchemaVersion} integrated regulator profile: ${issue[0].path}: ${issue[0].message}`);
       return profile;
     })
     .sort((left, right) => compareDesignV2Tokens(designProfileId(left.partClass, left.part), designProfileId(right.partClass, right.part)));
@@ -200,11 +238,20 @@ function inductorProfiles(
   if (contract.factsSchemaVersion === FACTS_SCHEMA_VERSION_V2) {
     return v2Profiles(catalog, "power.power-inductor");
   }
+  if (contract.factsSchemaVersion === FACTS_SCHEMA_VERSION_V35) {
+    return catalog.profiles
+      .filter((profile) => profile.partClass === "power.power-inductor" && profile.factsSchemaVersion === FACTS_SCHEMA_VERSION_V35)
+      .map((profile) => parseDesignProfileV35(profile) as InductorProfileV35)
+      .map((profile) => {
+        const issue = validateProfileAdmissionRulesV35(profile)[0];
+        if (issue) throw new TypeError(`Invalid admitted facts-V3.5 power-inductor profile: ${issue.path}: ${issue.message}`);
+        return profile;
+      })
+      .filter((profile) => designProfileId(profile.partClass, profile.part) === contract.profileId)
+      .sort((left, right) => compareDesignV2Tokens(designProfileId(left.partClass, left.part), designProfileId(right.partClass, right.part)));
+  }
   return catalog.profiles
-    .filter((profile) => (
-      profile.partClass === "power.power-inductor"
-      && profile.factsSchemaVersion === FACTS_SCHEMA_VERSION_V34
-    ))
+    .filter((profile) => profile.partClass === "power.power-inductor" && profile.factsSchemaVersion === FACTS_SCHEMA_VERSION_V34)
     .map((profile) => parseDesignProfileV34(profile))
     .map((profile) => {
       const issue = validateProfileAdmissionRulesV34(profile)[0];
@@ -215,18 +262,54 @@ function inductorProfiles(
     .sort((left, right) => compareDesignV2Tokens(designProfileId(left.partClass, left.part), designProfileId(right.partClass, right.part)));
 }
 
+function capacitorProfiles(catalog: Readonly<NativeCatalogV2>): CapacitorProfile[] {
+  const v35 = catalog.profiles
+    .filter((profile) => profile.partClass === "shared.mlcc-capacitor" && profile.factsSchemaVersion === FACTS_SCHEMA_VERSION_V35)
+    .map((profile) => parseDesignProfileV35(profile) as CapacitorProfileV35)
+    .map((profile) => {
+      const issue = validateProfileAdmissionRulesV35(profile)[0];
+      if (issue) throw new TypeError(`Invalid admitted facts-V3.5 MLCC profile: ${issue.path}: ${issue.message}`);
+      return profile;
+    });
+  return [...v2Profiles(catalog, "shared.mlcc-capacitor"), ...v35]
+    .sort((left, right) => compareDesignV2Tokens(
+      `${designProfileId(left.partClass, left.part)}\u0000${left.factsSchemaVersion}`,
+      `${designProfileId(right.partClass, right.part)}\u0000${right.factsSchemaVersion}`,
+    ));
+}
+
 function primaryFromData(
   data: Readonly<Record<string, null | boolean | number | string>>,
   catalog: Readonly<NativeCatalogV2>,
-): IntegratedProfileV33 | undefined {
+  factsSchemaVersion: typeof FACTS_SCHEMA_VERSION_V33 | typeof FACTS_SCHEMA_VERSION_V35,
+): IntegratedProfile | undefined {
   const id = data.primaryProfileId;
   return typeof id === "string"
-    ? integratedProfiles(catalog).find((profile) => designProfileId(profile.partClass, profile.part) === id)
+    ? integratedProfiles(catalog, factsSchemaVersion).find((profile) => designProfileId(profile.partClass, profile.part) === id)
     : undefined;
 }
 
 function factQuantity<Unit extends ProfileQuantity["unit"]>(fact: Readonly<ProfileFact<ProfileQuantity<Unit>>>): ProfileQuantity<Unit> | undefined {
   return fact.state === "reviewed" && fact.value !== null ? fact.value : undefined;
+}
+
+function profileFactById(profile: Readonly<{ facts: object }>, factId: string): Readonly<ProfileFact<unknown>> | undefined {
+  const fact = (profile.facts as Record<string, unknown>)[factId];
+  return typeof fact === "object" && fact !== null ? fact as Readonly<ProfileFact<unknown>> : undefined;
+}
+
+function profileQuantityById<Unit extends ProfileQuantity["unit"]>(
+  profile: Readonly<{ facts: object }>,
+  factId: string,
+): Readonly<ProfileFact<ProfileQuantity<Unit>>> | undefined {
+  return profileFactById(profile, factId) as Readonly<ProfileFact<ProfileQuantity<Unit>>> | undefined;
+}
+
+function profileTextById(
+  profile: Readonly<{ facts: object }>,
+  factId: string,
+): Readonly<ProfileFact<string>> | undefined {
+  return profileFactById(profile, factId) as Readonly<ProfileFact<string>> | undefined;
 }
 
 function conditionRange(condition: Readonly<OperatingRange>): { minimum: number; maximum: number } | undefined {
@@ -265,6 +348,32 @@ function conditionsCover(
   });
 }
 
+function coveredQuantityById<Unit extends ProfileQuantity["unit"]>(
+  profile: Readonly<{ facts: object }>,
+  factId: string,
+  designRequest: Readonly<BuckDesignRequestV2>,
+  selectedSwitchingFrequency: number,
+  selectedTestCurrent?: Readonly<{ minimum: number; maximum: number }>,
+): ProfileQuantity<Unit> | undefined {
+  const fact = profileQuantityById<Unit>(profile, factId);
+  return fact !== undefined && conditionsCover(fact.validFor, designRequest, selectedSwitchingFrequency, selectedTestCurrent)
+    ? factQuantity(fact)
+    : undefined;
+}
+
+function coveredGuaranteedMaximumByRole<Unit extends ProfileQuantity["unit"]>(
+  profile: Readonly<{ facts: object }>,
+  factId: string,
+  roleFactId: string,
+  designRequest: Readonly<BuckDesignRequestV2>,
+  selectedSwitchingFrequency: number,
+): ProfileQuantity<Unit> | undefined {
+  const role = profileTextById(profile, roleFactId);
+  return role?.state === "reviewed" && role.value === "guaranteed_maximum"
+    ? coveredQuantityById<Unit>(profile, factId, designRequest, selectedSwitchingFrequency)
+    : undefined;
+}
+
 function evidence(...facts: ReadonlyArray<Readonly<ProfileFact<unknown>>>): ProfileEvidenceRef[] {
   return facts.flatMap((fact) => fact.evidence);
 }
@@ -293,7 +402,7 @@ function feedbackPoint(reference: number, upper: number, lower: number): number 
 }
 
 function selectDivider(
-  primary: IntegratedProfileV33,
+  primary: IntegratedProfile,
   resistors: readonly ResistorProfileV2[],
   designRequest: Readonly<BuckDesignRequestV2>,
   selectedSwitchingFrequency: number,
@@ -356,12 +465,12 @@ function profileHeight(profile: SelectedProfile): number {
 function selectedProfiles(
   option: Readonly<NativeMatchedOptionV2>,
   environment: Readonly<NativeEnvironmentV2>,
-  inductorContract: PowerIntegratedInductorContract,
+  config: Readonly<PowerIntegratedStructuralRecipeConfig>,
 ): SelectedProfile[] {
   const catalog: SelectedProfile[] = [
-    ...integratedProfiles(environment.catalog),
-    ...v2Profiles(environment.catalog, "shared.mlcc-capacitor"),
-    ...inductorProfiles(environment.catalog, inductorContract),
+    ...integratedProfiles(environment.catalog, config.primaryFactsSchemaVersion ?? FACTS_SCHEMA_VERSION_V33),
+    ...capacitorProfiles(environment.catalog),
+    ...inductorProfiles(environment.catalog, config.inductorContract),
     ...v2Profiles(environment.catalog, "shared.general-purpose-resistor"),
   ];
   return option.components.map((component) => catalog.find((profile) => designProfileId(profile.partClass, profile.part) === component.profileId))
@@ -396,24 +505,36 @@ function selectedValueMatches(
     && component.value.value === value.value;
 }
 
+function outputCapacitorMatchesContract(
+  profile: Readonly<CapacitorProfile>,
+  contract: Readonly<PowerIntegratedOutputCapacitorContract>,
+): boolean {
+  if (contract.exactProfileContentHash !== undefined) {
+    return (contract.factsSchemaVersion === undefined || profile.factsSchemaVersion === contract.factsSchemaVersion)
+      && designProfileEnvelopeContentHash(profile) === contract.exactProfileContentHash;
+  }
+  if (contract.profileId !== undefined) {
+    return profile.factsSchemaVersion === contract.factsSchemaVersion
+      && designProfileId(profile.partClass, profile.part) === contract.profileId;
+  }
+  return false;
+}
+
 function exactOutputCapacitor(
-  profiles: readonly CapacitorProfileV2[],
+  profiles: readonly CapacitorProfile[],
   contract: Readonly<PowerIntegratedOutputCapacitorContract> | undefined,
   minimumRatedVoltage: number,
-): CapacitorProfileV2 | undefined {
+): CapacitorProfile | undefined {
   const voltageQualified = profiles.filter((profile) => (
     (factQuantity(profile.facts.ratedVoltage)?.value ?? -Infinity) >= minimumRatedVoltage
   ));
-  return contract === undefined
-    ? voltageQualified[0]
-    : voltageQualified.find((profile) => (
-        designProfileEnvelopeContentHash(profile) === contract.exactProfileContentHash
-      ));
+  if (contract === undefined) return voltageQualified[0];
+  return voltageQualified.find((profile) => outputCapacitorMatchesContract(profile, contract));
 }
 
 function passiveSelectionEnvelope(
   designRequest: Readonly<BuckDesignRequestV2>,
-  primary: Readonly<IntegratedProfileV33>,
+  primary: Readonly<IntegratedProfile>,
 ) {
   const switchingMinimum = factQuantity(primary.facts.switchingFrequencyMinimum);
   const switchingMaximum = factQuantity(primary.facts.switchingFrequencyMaximum);
@@ -439,9 +560,9 @@ function passiveSelectionEnvelope(
 
 function evaluatedPassiveCombination(
   designRequest: Readonly<BuckDesignRequestV2>,
-  primary: Readonly<IntegratedProfileV33>,
+  primary: Readonly<IntegratedProfile>,
   inductor: Readonly<InductorProfile>,
-  outputCapacitor: Readonly<CapacitorProfileV2>,
+  outputCapacitor: Readonly<CapacitorProfile>,
   outputCapacitorQuantity: number,
 ): PowerPassiveCombinationV1 | undefined {
   const envelope = passiveSelectionEnvelope(designRequest, primary);
@@ -488,9 +609,9 @@ function unknownPassiveOperatingObservationMetrics(
 
 function passiveOperatingObservationMetrics(
   designRequest: Readonly<BuckDesignRequestV2>,
-  primary: Readonly<IntegratedProfileV33>,
+  primary: Readonly<IntegratedProfile>,
   inductor: Readonly<InductorProfile>,
-  outputCapacitor: Readonly<CapacitorProfileV2>,
+  outputCapacitor: Readonly<CapacitorProfile>,
   outputCapacitorQuantity: number,
 ): CandidateMetricV2[] {
   const envelope = passiveSelectionEnvelope(designRequest, primary);
@@ -644,7 +765,7 @@ function mappedPassiveConstraints(combination: Readonly<PowerPassiveCombinationV
 
 function inductorCurrentObservation(
   option: Readonly<NativeMatchedOptionV2>,
-  primary: Readonly<IntegratedProfileV33>,
+  primary: Readonly<IntegratedProfile>,
   inductor: Readonly<InductorProfile>,
   designRequest: Readonly<BuckDesignRequestV2>,
   switchingMinimum: Readonly<Quantity<"Hz">>,
@@ -699,7 +820,7 @@ function inductorCurrentObservation(
 
 function feedbackResistorStressObservation(
   option: Readonly<NativeMatchedOptionV2>,
-  primary: Readonly<IntegratedProfileV33>,
+  primary: Readonly<IntegratedProfile>,
   resistors: readonly ResistorProfileV2[],
   designRequest: Readonly<BuckDesignRequestV2>,
   selectedSwitchingFrequency: number,
@@ -792,7 +913,7 @@ function feedbackResistorStressObservation(
   };
 }
 
-function selectedFrequency(primary: IntegratedProfileV33, designRequest: Readonly<BuckDesignRequestV2>): number | undefined {
+function selectedFrequency(primary: IntegratedProfile, designRequest: Readonly<BuckDesignRequestV2>): number | undefined {
   const nominal = factQuantity(primary.facts.switchingFrequencyNominal);
   if (!nominal || primary.facts.switchingFrequencyArchitecture.value !== "fixed_oscillator") return undefined;
   if (!conditionsCover(primary.facts.switchingFrequencyNominal.validFor, designRequest, nominal.value)) return undefined;
@@ -991,14 +1112,14 @@ export function createPowerIntegratedSynchronousBuckStructuralRecipe(
   },
   enumerate(environment) {
     if (!request(environment).constraints.allowedTopologyFamilies.includes("power.buck.integrated-synchronous")) return [];
-    return integratedProfiles(environment.catalog).map((profile) => {
+    return integratedProfiles(environment.catalog, config.primaryFactsSchemaVersion ?? FACTS_SCHEMA_VERSION_V33).map((profile) => {
       const data = { primaryProfileId: designProfileId(profile.partClass, profile.part) };
       return { optionKey: `${config.optionKeyPrefix}:${designSha256ContentHash(canonicalDesignV2Payload(data))}`, data };
     });
   },
   solve(option, environment) {
     const designRequest = request(environment);
-    const primary = primaryFromData(option.data, environment.catalog);
+    const primary = primaryFromData(option.data, environment.catalog, config.primaryFactsSchemaVersion ?? FACTS_SCHEMA_VERSION_V33);
     if (!primary) return { status: "rejected", reason: "The exact admitted facts-V3.3 integrated-regulator profile is absent from the reviewed catalog." };
     const frequency = selectedFrequency(primary, designRequest);
     const primaryId = designProfileId(primary.partClass, primary.part);
@@ -1026,11 +1147,11 @@ export function createPowerIntegratedSynchronousBuckStructuralRecipe(
   },
   match(option, environment) {
     const designRequest = request(environment);
-    const primary = primaryFromData(option.data, environment.catalog);
+    const primary = primaryFromData(option.data, environment.catalog, config.primaryFactsSchemaVersion ?? FACTS_SCHEMA_VERSION_V33);
     const frequency = typeof option.data.selectedSwitchingFrequency === "number" ? option.data.selectedSwitchingFrequency : undefined;
     if (!primary || frequency === undefined) return [{ status: "rejected", reason: "The solved facts-V3.3 primary selection is unavailable." }];
     const primaryId = designProfileId(primary.partClass, primary.part);
-    const capacitors = v2Profiles(environment.catalog, "shared.mlcc-capacitor");
+    const capacitors = capacitorProfiles(environment.catalog);
     const inputCapacitor = capacitors.find((profile) => (factQuantity(profile.facts.ratedVoltage)?.value ?? -Infinity) >= designRequest.requirements.inputVoltage.maximum.value);
     const outputCapacitor = exactOutputCapacitor(
       capacitors,
@@ -1043,7 +1164,14 @@ export function createPowerIntegratedSynchronousBuckStructuralRecipe(
     ));
     const inductor = inductorProfiles(environment.catalog, config.inductorContract)[0];
     if (!inputCapacitor || !outputCapacitor || !bootstrapCapacitor || !inductor) {
-      const reason = config.outputCapacitorContract !== undefined
+      const reason = config.primaryFactsSchemaVersion === FACTS_SCHEMA_VERSION_V35
+        ? `The facts-V3.5 calculator recipe is missing required exact profiles: ${[
+            inputCapacitor === undefined ? "input-capacitor" : undefined,
+            outputCapacitor === undefined ? "output-capacitor" : undefined,
+            bootstrapCapacitor === undefined ? "bootstrap-capacitor" : undefined,
+            inductor === undefined ? "power-inductor" : undefined,
+          ].filter((entry) => entry !== undefined).join(", ")}.`
+        : config.outputCapacitorContract !== undefined
         ? "No exact reviewed facts-V2 input and bootstrap-capacitor, exact-bound facts-V2 output-capacitor bank, and exact-bound facts-V3.4 inductor set is available."
         : config.inductorContract.factsSchemaVersion === FACTS_SCHEMA_VERSION_V2
           ? "No exact reviewed facts-V2 input, output, bootstrap-capacitor, and inductor set is available."
@@ -1112,7 +1240,7 @@ export function createPowerIntegratedSynchronousBuckStructuralRecipe(
   },
   check(option, environment) {
     const designRequest = request(environment);
-    const primary = primaryFromData(option.data, environment.catalog);
+    const primary = primaryFromData(option.data, environment.catalog, config.primaryFactsSchemaVersion ?? FACTS_SCHEMA_VERSION_V33);
     const frequency = typeof option.data.selectedSwitchingFrequency === "number" ? option.data.selectedSwitchingFrequency : undefined;
     const primaryComponent = matchedComponent(option, "primary");
     const exactFrequency = primary === undefined ? undefined : selectedFrequency(primary, designRequest);
@@ -1125,11 +1253,11 @@ export function createPowerIntegratedSynchronousBuckStructuralRecipe(
       || !selectedPartMatches(primaryComponent, primary)
       || primaryComponent?.role !== "integrated-synchronous-buck-regulator"
     ) return [unknownConstraint("power.profile.primary", "The exact solved facts-V3.3 primary profile and reviewed fixed-frequency selection are unavailable or do not match the selected BOM during constraint evaluation.")];
-    const profiles = selectedProfiles(option, environment, config.inductorContract);
+    const profiles = selectedProfiles(option, environment, config);
     const inductor = profiles.find((profile): profile is InductorProfile => profile.partClass === "power.power-inductor");
     const inductorComponent = matchedComponent(option, "power-inductor");
     const inductance = inductor === undefined ? undefined : factQuantity(inductor.facts.inductance);
-    const capacitors = profiles.filter((profile): profile is CapacitorProfileV2 => profile.partClass === "shared.mlcc-capacitor");
+    const capacitors = profiles.filter((profile): profile is CapacitorProfile => profile.partClass === "shared.mlcc-capacitor");
     const resistors = profiles.filter((profile): profile is ResistorProfileV2 => profile.partClass === "shared.general-purpose-resistor");
     const outputCapacitorComponent = matchedComponent(option, "output-capacitor");
     const outputCapacitor = outputCapacitorComponent === undefined
@@ -1154,7 +1282,7 @@ export function createPowerIntegratedSynchronousBuckStructuralRecipe(
       ))
       && outputCapacitor !== undefined
       && outputCapacitorComponent?.role === "output-capacitor"
-      && designProfileEnvelopeContentHash(outputCapacitor) === config.outputCapacitorContract.exactProfileContentHash
+      && outputCapacitorMatchesContract(outputCapacitor, config.outputCapacitorContract)
       && factQuantity(outputCapacitor.facts.nominalCapacitance) !== undefined
       && selectedValueMatches(
         outputCapacitorComponent,
@@ -1336,6 +1464,16 @@ export function createPowerIntegratedSynchronousBuckStructuralRecipe(
     const currentLimitMinimum = factQuantity(primary.facts.currentLimitMinimum);
     const currentLimitMaximum = factQuantity(primary.facts.currentLimitMaximum);
     const saturationRating = factQuantity(inductor.facts.saturationCurrent);
+    const inductanceMinimumFact = profileQuantityById<"H">(inductor, "inductanceMinimum");
+    const inductanceMinimum = inductanceMinimumFact !== undefined
+      && conditionsCover(
+        inductanceMinimumFact.validFor,
+        designRequest,
+        switchingMinimum.value,
+        { minimum: designRequest.requirements.maximumOutputCurrent.value, maximum: designRequest.requirements.maximumOutputCurrent.value },
+      )
+      ? factQuantity(inductanceMinimumFact)
+      : undefined;
     const currentLimitEvidence = projectedEvidence(evidence(
       primary.facts.currentLimitMinimum,
       primary.facts.currentLimitTypical,
@@ -1344,13 +1482,23 @@ export function createPowerIntegratedSynchronousBuckStructuralRecipe(
       primary.facts.switchingFrequencyMinimum,
       inductor.facts.inductance,
       inductor.facts.saturationCurrent,
+      ...(inductanceMinimumFact === undefined ? [] : [inductanceMinimumFact]),
     ));
     const currentLimitFactsCover = currentLimitMinimum !== undefined
       && currentLimitMaximum !== undefined
       && primary.facts.currentLimitRole.state === "reviewed"
       && primary.facts.currentLimitRole.value === "protection_threshold"
       && [primary.facts.currentLimitMinimum, primary.facts.currentLimitMaximum, primary.facts.currentLimitRole]
-        .every((fact) => conditionsCover(fact.validFor, designRequest, frequency));
+        .every((fact) => conditionsCover(fact.validFor, designRequest, switchingMinimum.value));
+    const currentLimitCalculation = calculateIntegratedBuckCurrentLimitV1({
+      inputVoltageMaximumV: designRequest.requirements.inputVoltage.maximum.value,
+      outputVoltageV: designRequest.requirements.outputVoltage.value,
+      outputCurrentMaximumA: designRequest.requirements.maximumOutputCurrent.value,
+      switchingFrequencyMinimumHz: switchingMinimum.value,
+      inductanceMinimumH: inductanceMinimum?.value ?? null,
+      currentLimitMinimumA: currentLimitFactsCover ? currentLimitMinimum?.value ?? null : null,
+      requiredMarginRatio: config.currentLimitRequiredMarginRatio ?? null,
+    });
     let currentLimitConstraint: ConstraintResult;
     if (
       currentLimitFactsCover
@@ -1365,17 +1513,154 @@ export function createPowerIntegratedSynchronousBuckStructuralRecipe(
         saturationRating,
         "at_most",
         currentLimitEvidence,
-        `${currentObservationSummary} Independently of the nominal ripple projection, the maximum reviewed protection threshold exceeds the selected inductor saturation-current rating, so protection can act too late to preserve the inductor rating.`,
+        config.currentLimitRequiredMarginRatio === undefined
+          ? `${currentObservationSummary} Independently of the nominal ripple projection, the maximum reviewed protection threshold exceeds the selected inductor saturation-current rating, so protection can act too late to preserve the inductor rating.`
+          : `${currentObservationSummary} Independently of the minimum-threshold margin, the maximum reviewed protection threshold exceeds the selected inductor saturation-current rating, so protection can act too late to preserve the inductor rating.`,
       );
-    } else {
+    } else if (currentLimitCalculation.disposition === "unknown") {
       currentLimitConstraint = observedUnknown(
         "power.regulator.current-limit",
-        `${currentObservationSummary} No protection-coordination pass is available: a threshold is not a peak-current clamp, and comparator delay, overshoot, off-time behavior, minimum inductance, feedback corners, and the load-mode envelope are not bounded.${currentObservation?.unsupportedReason ? ` The nominal CCM point is also unsupported because ${currentObservation.unsupportedReason}.` : ""}`,
+        config.currentLimitRequiredMarginRatio === undefined
+          ? `${currentObservationSummary} No protection-coordination pass is available: a threshold is not a peak-current clamp, and comparator delay, overshoot, off-time behavior, minimum inductance, feedback corners, and the load-mode envelope are not bounded.${currentObservation?.unsupportedReason ? ` The nominal CCM point is also unsupported because ${currentObservation.unsupportedReason}.` : ""}`
+          : `Current-limit coordination is unknown because these required condition-covering inputs are missing: ${currentLimitCalculation.missingInputs.join(", ")}. A nominal inductance or typical threshold cannot improve feasibility.`,
         currentLimitEvidence,
         currentObservation?.nominalPointSupported ? q(currentObservation.peakCurrent, "A") : undefined,
         currentObservation?.nominalPointSupported ? currentLimitMinimum : undefined,
       );
+    } else {
+      currentLimitConstraint = {
+        ruleId: "power.regulator.current-limit",
+        status: currentLimitCalculation.disposition,
+        actual: q(currentLimitCalculation.currentLimitMinimumA, "A"),
+        limit: q(currentLimitCalculation.requiredCurrentLimitA, "A"),
+        margin: q(currentLimitCalculation.marginA, "A"),
+        explanation: `Using the condition-covering minimum inductance at maximum input and minimum switching frequency gives ${currentLimitCalculation.rippleCurrentA} A peak-to-peak ripple and ${currentLimitCalculation.peakInductorCurrentA} A peak current. The recipe requires ${(config.currentLimitRequiredMarginRatio! * 100)} percent margin, so the guaranteed minimum current limit must be at least ${currentLimitCalculation.requiredCurrentLimitA} A.`,
+        evidence: currentLimitEvidence,
+      };
     }
+
+    const highSideResistanceFact = profileQuantityById<"ohm">(primary, "highSideOnResistance");
+    const lowSideResistanceFact = profileQuantityById<"ohm">(primary, "lowSideOnResistance");
+    const supplyCurrentFact = profileQuantityById<"A">(primary, "nonSwitchingSupplyCurrent");
+    const thermalResistanceFact = profileQuantityById<"K/W">(primary, "thermalResistanceJunctionAmbient");
+    const thermalBoardFact = profileTextById(primary, "thermalResistanceJunctionAmbientBoard");
+    const lossInductanceMinimum = inductanceMinimumFact !== undefined
+      && conditionsCover(inductanceMinimumFact.validFor, designRequest, switchingMinimum.value, {
+        minimum: designRequest.requirements.maximumOutputCurrent.value,
+        maximum: designRequest.requirements.maximumOutputCurrent.value,
+      })
+      && conditionsCover(inductanceMinimumFact.validFor, designRequest, switchingMaximum.value, {
+        minimum: designRequest.requirements.maximumOutputCurrent.value,
+        maximum: designRequest.requirements.maximumOutputCurrent.value,
+      })
+      ? factQuantity(inductanceMinimumFact)
+      : undefined;
+    const coveredLossMaximum = <Unit extends ProfileQuantity["unit"]>(
+      factId: string,
+      roleFactId: string,
+    ): ProfileQuantity<Unit> | undefined => {
+      const atMinimum = coveredGuaranteedMaximumByRole<Unit>(
+        primary, factId, roleFactId, designRequest, switchingMinimum.value,
+      );
+      const atMaximum = coveredGuaranteedMaximumByRole<Unit>(
+        primary, factId, roleFactId, designRequest, switchingMaximum.value,
+      );
+      return atMinimum !== undefined && atMaximum !== undefined ? atMaximum : undefined;
+    };
+    const lossInputs = {
+      outputVoltageV: designRequest.requirements.outputVoltage.value,
+      outputCurrentA: designRequest.requirements.maximumOutputCurrent.value,
+      inductanceMinimumH: lossInductanceMinimum?.value ?? null,
+      highSideOnResistanceMaximumOhm: coveredLossMaximum<"ohm">(
+        "highSideOnResistance", "highSideOnResistanceRole",
+      )?.value ?? null,
+      lowSideOnResistanceMaximumOhm: coveredLossMaximum<"ohm">(
+        "lowSideOnResistance", "lowSideOnResistanceRole",
+      )?.value ?? null,
+      nonSwitchingSupplyCurrentMaximumA: coveredLossMaximum<"A">(
+        "nonSwitchingSupplyCurrent", "nonSwitchingSupplyCurrentRole",
+      )?.value ?? null,
+      switchingTransitionMaximumS: null,
+    } as const;
+    const lossCorners = [
+      designRequest.requirements.inputVoltage.minimum.value,
+      designRequest.requirements.inputVoltage.maximum.value,
+    ].flatMap((inputVoltageV) => [switchingMinimum.value, switchingMaximum.value].map((switchingFrequencyHz) => (
+      calculateIntegratedBuckLossV1({ ...lossInputs, inputVoltageV, switchingFrequencyHz })
+    )));
+    const unknownLossCorners = lossCorners.filter((corner) => corner.disposition === "unknown");
+    const lossCalculation = unknownLossCorners.length === 0
+      ? lossCorners.reduce((worst, corner) => (
+          corner.disposition === "pass" && worst.disposition === "pass" && corner.totalLossW > worst.totalLossW
+            ? corner
+            : worst
+        ))
+      : {
+          disposition: "unknown" as const,
+          missingInputs: [...new Set(unknownLossCorners.flatMap((corner) => corner.missingInputs))].sort(),
+        };
+    const lossEvidence = projectedEvidence(evidence(
+      ...(inductanceMinimumFact === undefined ? [] : [inductanceMinimumFact]),
+      ...(highSideResistanceFact === undefined ? [] : [highSideResistanceFact]),
+      ...(lowSideResistanceFact === undefined ? [] : [lowSideResistanceFact]),
+      ...(supplyCurrentFact === undefined ? [] : [supplyCurrentFact]),
+    ));
+    const lossConstraint = config.primaryFactsSchemaVersion !== FACTS_SCHEMA_VERSION_V35
+      ? unknownConstraint("power.thermal.loss-model", "Typical on-resistance and supply-current observations do not form a guaranteed full-stage loss model.")
+      : lossCalculation.disposition === "unknown"
+        ? unknownConstraint(
+            "power.thermal.loss-model",
+            `The integrated-stage loss model is unknown because these required condition-covering inputs are missing: ${lossCalculation.missingInputs.join(", ")}. Observed or typical values do not improve feasibility.`,
+            lossEvidence,
+          )
+        : {
+          ruleId: "power.thermal.loss-model",
+          status: "pass" as const,
+          actual: q(lossCalculation.totalLossW, "W"),
+          explanation: `The bounded loss model totals ${lossCalculation.totalLossW} W: ${lossCalculation.conductionLossW} W conduction, ${lossCalculation.switchingLossW} W switching, and ${lossCalculation.quiescentLossW} W quiescent loss.`,
+          evidence: lossEvidence,
+        };
+    const thermalResistance = thermalResistanceFact !== undefined
+      && thermalBoardFact?.state === "reviewed"
+      && thermalBoardFact.value === config.thermalResistanceBoardQualifier
+      && conditionsCover(thermalResistanceFact.validFor, designRequest, switchingMinimum.value)
+      && conditionsCover(thermalResistanceFact.validFor, designRequest, switchingMaximum.value)
+      && conditionsCover(thermalBoardFact.validFor, designRequest, switchingMinimum.value)
+      && conditionsCover(thermalBoardFact.validFor, designRequest, switchingMaximum.value)
+      ? factQuantity(thermalResistanceFact)
+      : undefined;
+    const junctionCalculation = calculateIntegratedBuckJunctionTemperatureV1({
+      totalLossW: lossCalculation.disposition === "pass" ? lossCalculation.totalLossW : null,
+      ambientTemperatureK: designRequest.requirements.ambientTemperature.value,
+      thermalResistanceJunctionAmbientMaximumKPerW: thermalResistance?.value ?? null,
+      datasheetMaximumJunctionTemperatureK: maximumJunction.value,
+      designMaximumJunctionTemperatureK: designRequest.constraints.maximumJunctionTemperature.value,
+    });
+    const junctionEvidence = projectedEvidence(evidence(
+      primary.facts.maximumJunctionTemperature,
+      ...(thermalResistanceFact === undefined ? [] : [thermalResistanceFact]),
+      ...(thermalBoardFact === undefined ? [] : [thermalBoardFact]),
+    ));
+    const junctionConstraint = config.primaryFactsSchemaVersion !== FACTS_SCHEMA_VERSION_V35
+      ? unknownConstraint("power.thermal.maximum-junction", "No reviewed loss, board-layout, and thermal calculation proves actual junction temperature.")
+      : junctionCalculation.disposition === "unknown"
+        ? unknownConstraint(
+            "power.thermal.maximum-junction",
+            `Junction temperature is unknown because these required condition-covering inputs are missing: ${[...new Set([
+              ...junctionCalculation.missingInputs,
+              ...(lossCalculation.disposition === "unknown" ? lossCalculation.missingInputs : []),
+            ])].sort().join(", ")}. The board-qualified thermal bound cannot substitute for a missing loss bound.`,
+            [...lossEvidence, ...junctionEvidence],
+          )
+        : {
+          ruleId: "power.thermal.maximum-junction",
+          status: junctionCalculation.disposition,
+          actual: q(junctionCalculation.junctionTemperatureK, "K"),
+          limit: q(junctionCalculation.limitK, "K"),
+          margin: q(junctionCalculation.marginK, "K"),
+          explanation: `At the declared ${config.thermalResistanceBoardQualifier} board and requested ambient, the bounded total loss projects ${junctionCalculation.junctionTemperatureK} K against the stricter ${junctionCalculation.limitK} K design or datasheet limit.`,
+          evidence: [...lossEvidence, ...junctionEvidence],
+        };
     const loadTransientConstraint = unknownConstraint(
       "power.request.load-transient",
       designRequest.requirements.loadTransientTarget == null
@@ -1395,8 +1680,8 @@ export function createPowerIntegratedSynchronousBuckStructuralRecipe(
         ? []
         : [loadTransientConstraint]),
       unknownConstraint("power.request.output-ripple", "Output ripple has not been calculated from reviewed effective capacitance, ESR, inductance, and switching conditions."),
-      unknownConstraint("power.thermal.loss-model", "Typical on-resistance and supply-current observations do not form a guaranteed full-stage loss model."),
-      unknownConstraint("power.thermal.maximum-junction", "No reviewed loss, board-layout, and thermal calculation proves actual junction temperature."),
+      lossConstraint,
+      junctionConstraint,
     );
     if (designRequest.constraints.allowedPackages.length > 0) {
       constraints.push({
@@ -1428,12 +1713,15 @@ export function createPowerIntegratedSynchronousBuckStructuralRecipe(
         )];
       }
       const replacements = new Map(mappedPassiveConstraints(passive).map((constraint) => [constraint.ruleId, constraint]));
+      if (config.primaryFactsSchemaVersion === FACTS_SCHEMA_VERSION_V35) {
+        replacements.delete("power.thermal.loss-model");
+      }
       return orderedConstraints.map((constraint) => replacements.get(constraint.ruleId) ?? constraint);
     }
     return orderedConstraints;
   },
   estimate(option, _constraints, environment) {
-    const profiles = selectedProfiles(option, environment, config.inductorContract);
+    const profiles = selectedProfiles(option, environment, config);
     const profileById = new Map(profiles.map((profile) => [designProfileId(profile.partClass, profile.part), profile]));
     const area = option.components.reduce((total, component) => {
       const profile = profileById.get(component.profileId);
@@ -1445,13 +1733,13 @@ export function createPowerIntegratedSynchronousBuckStructuralRecipe(
     const hasMultiQuantityLine = option.components.some((component) => component.quantityPerAssembly !== 1);
     let passiveMetrics: CandidateMetricV2[] = [];
     if (config.surfacePassiveOperatingObservationsV1) {
-      const primary = primaryFromData(option.data, environment.catalog);
+      const primary = primaryFromData(option.data, environment.catalog, config.primaryFactsSchemaVersion ?? FACTS_SCHEMA_VERSION_V33);
       const inductorComponent = matchedComponent(option, "power-inductor");
       const outputCapacitorComponent = matchedComponent(option, "output-capacitor");
       const inductor = inductorProfiles(environment.catalog, config.inductorContract).find((profile) => (
         selectedPartMatches(inductorComponent, profile)
       ));
-      const outputCapacitor = v2Profiles(environment.catalog, "shared.mlcc-capacitor").find((profile) => (
+      const outputCapacitor = capacitorProfiles(environment.catalog).find((profile) => (
         selectedPartMatches(outputCapacitorComponent, profile, outputCapacitorQuantity)
       ));
       passiveMetrics = primary === undefined || inductor === undefined || outputCapacitor === undefined

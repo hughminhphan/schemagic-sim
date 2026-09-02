@@ -5,6 +5,19 @@ import { POWER_NATIVE_INTEGRATED_SYNCHRONOUS_BUCK_RECIPE_FACTS_V34_REFERENCE_PAS
 import { POWER_NATIVE_RECIPE_FACTS_V2 } from "./power-v2";
 import type { NativeRecipeV2 } from "./types";
 
+export {
+  calculateIntegratedBuckCurrentLimitV1,
+  calculateIntegratedBuckJunctionTemperatureV1,
+  calculateIntegratedBuckLossV1,
+  type IntegratedBuckCurrentLimitInputsV1,
+  type IntegratedBuckCurrentLimitResultV1,
+  type IntegratedBuckJunctionTemperatureInputsV1,
+  type IntegratedBuckJunctionTemperatureResultV1,
+  type IntegratedBuckLossInputsV1,
+  type IntegratedBuckLossResultV1,
+  type PowerCalculatorUnknownV1,
+} from "./power-integrated-calculators-v1";
+
 /** Power-only engine leaf. It must not import Motor recipes. */
 export function createInstalledPowerRecipeSet(): readonly NativeRecipeV2[] {
   return installedRecipeSet(
