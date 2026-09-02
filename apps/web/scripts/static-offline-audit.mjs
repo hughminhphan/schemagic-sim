@@ -1,3 +1,4 @@
+// Re-pin release bundle hashes by running `ROBONYX_RELEASE_AUDIT=1 npm run audit:static-offline --workspace=@opencircuit/web` and updating each emitted hash constant to its observed value.
 import { createHash } from "node:crypto";
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { posix, relative, resolve } from "node:path";
@@ -59,35 +60,6 @@ const MOTOR_CAPACITOR_ROLE_PROFILE_HASHES = Object.freeze([
 const MOTOR_CAPACITOR_ROLE_EXCLUDED_PROFILE_HASH = "sha256:6681c71a337c93467eacbb7058dd5afaace3d1198c47a9fcc3b30005cdd826d6";
 const MOTOR_DIRECT_GATE_EVIDENCE_RECIPE_SOURCE = "/packages/design-recipes/src/motor-external-v2.ts";
 const BUNDLED_REVIEWED_RELEASE_SOURCE_HASH = "sha256:a8881cf53afb18c75bc9ebdf077a4c563e20fed215adba720488f6072e82c116";
-const REVIEWED_PROFILE_EVIDENCE_URLS = Object.freeze([
-  "https://industrial.panasonic.com/cdbs/www-data/pdf/RDA0000/AOA0000C304.pdf",
-  "https://industrial.panasonic.com/cdbs/www-data/pdf/RDD0000/DMD0000COL4.pdf",
-  "https://industrial.panasonic.com/cdbs/www-data/pdf/RDD0000/RDD0000C1244.pdf",
-  "https://industrial.panasonic.com/cdbs/www-data/pdf/RDM0000/DMM0000COL17.pdf",
-  "https://industrial.panasonic.com/ww/products/pt/general-purpose-chip-resistors/models/ERJ3EKF1003V",
-  "https://pim.murata.com/asset/pim4/inductor/JELF243B-0047_PDF_INDUCTOR?lastModifiedDatetime=20260706104530",
-  "https://pim.murata.com/asset/pim4/ceramicCapacitorSMD/GRM32ER71E226KE15-04CA-EN_PDF_CERAMICCAPACITORSMD?lastModifiedDatetime=20260730173647",
-  "https://product.samsungsem.com/mlcc/CL31A106KBHNNN.do",
-  "https://product.samsungsem.com/resources/file/product-catalog/MLCC_2512.pdf",
-  "https://product.tdk.com/en/search/capacitor/ceramic/mlcc/info/print_pdf",
-  "https://search.murata.co.jp/Ceramy/image/img/A01X/G101/ENG/GRM31CR61H106KA12-01.pdf",
-  "https://st.com/resource/en/datasheet/stspin840.pdf",
-  "https://ww1.microchip.com/downloads/aemDocuments/documents/APID/ProductDocuments/DataSheets/MIC4606-Data-Sheet-DS20005604D.pdf",
-  "https://www.belfuse.com/media/datasheets/products/chokes-coils-inductors/ds-ST-F1F2-0804-series.pdf",
-  "https://www.bourns.com/docs/Product-Datasheets/CRA.pdf",
-  "https://www.bourns.com/docs/product-datasheets/CRxxxxx.pdf",
-  "https://www.bourns.com/docs/product-datasheets/ptvs10-0xxc-sh.pdf",
-  "https://www.diodes.com/datasheet/download/1N4148W.pdf",
-  "https://www.nichicon.com/en-us/part/ucm1v331mns1gs/2539/",
-  "https://www.nichicon.com/getmedia/8caebfb7-5464-4cb6-b2d9-dad04ab4cc75/e-guide_all.pdf",
-  "https://www.nichicon.com/getmedia/f527b3ab-1197-491e-9b2c-7ca4b61e1e20/e-ucm5-11.pdf",
-  "https://www.ti.com/lit/ds/symlink/csd18540q5b.pdf",
-  "https://www.ti.com/lit/ds/symlink/drv8262.pdf",
-  MOTOR_MODE_EVIDENCE_URL,
-  "https://www.ti.com/lit/ds/symlink/tps54302.pdf",
-  "https://www.ti.com/product/TPS54302",
-  "https://www.vishay.com/docs/20035/dcrcwe3.pdf",
-]);
 const REVIEWED_PROFILE_GEOMETRY_EVIDENCE_BINDINGS = Object.freeze([
   Object.freeze({
     url: "https://webench.ti.com/cad/TI_BXL/DRV8262_DDV_44.bxl",
@@ -390,6 +362,43 @@ function networkUrls(source) {
       }
     })
     .filter(Boolean);
+}
+
+function collectReviewedProfileEvidenceUrls(value, path, urls) {
+  if (Array.isArray(value)) {
+    value.forEach((entry, index) => collectReviewedProfileEvidenceUrls(entry, [...path, index], urls));
+    return;
+  }
+  if (value === null || typeof value !== "object") return;
+  for (const [key, entry] of Object.entries(value)) {
+    const nextPath = [...path, key];
+    const normalizedParents = path.filter((part) => typeof part === "string").map((part) => part.toLowerCase());
+    const keyLower = key.toLowerCase();
+    const isEvidenceUrl = keyLower === "url"
+      && normalizedParents.some((part) => ["evidence", "source", "datasheet"].includes(part));
+    const isNamedSourceUrl = /(?:evidence|source|datasheet).*url|url.*(?:evidence|source|datasheet)/u.test(keyLower);
+    if (typeof entry === "string" && (isEvidenceUrl || isNamedSourceUrl)) {
+      for (const url of networkUrls(entry)) urls.add(url);
+    } else {
+      collectReviewedProfileEvidenceUrls(entry, nextPath, urls);
+    }
+  }
+}
+
+export function deriveReviewedProfileEvidenceUrls(profileDirectory) {
+  const absolute = profileDirectory instanceof URL ? fileURLToPath(profileDirectory) : resolve(profileDirectory);
+  if (!statSync(absolute).isDirectory()) throw new TypeError("Reviewed profile path must be a directory");
+  const urls = new Set();
+  for (const profile of walk(absolute).filter((entry) => entry.path.endsWith(".json"))) {
+    let parsed;
+    try {
+      parsed = JSON.parse(profile.bytes.toString("utf8"));
+    } catch (error) {
+      throw new TypeError(`Reviewed profile is not valid JSON: ${profile.path}`, { cause: error });
+    }
+    collectReviewedProfileEvidenceUrls(parsed, [], urls);
+  }
+  return Object.freeze([...urls].sort(compareText));
 }
 
 function originOf(value) {
@@ -828,7 +837,14 @@ function inventoryHash(files) {
   return sha256(Buffer.from(payload));
 }
 
-export function auditStaticOfflineNetworkFiles(fileInputs, { expectedArtifactSetHash } = {}) {
+export function auditStaticOfflineNetworkFiles(
+  fileInputs,
+  {
+    expectedArtifactSetHash,
+    releaseAudit = process.env.ROBONYX_RELEASE_AUDIT === "1",
+    reviewedProfileEvidenceUrls = [],
+  } = {},
+) {
   const files = [...fileInputs].map((file) => {
     if (typeof file.path !== "string") throw new TypeError("Artifact path must be a string");
     return {
@@ -839,6 +855,8 @@ export function auditStaticOfflineNetworkFiles(fileInputs, { expectedArtifactSet
     || compareText(sha256(left.bytes), sha256(right.bytes))
     || left.bytes.byteLength - right.bytes.byteLength);
   const findings = [];
+  const emittedArtifactHashes = [];
+  const derivedReviewedProfileEvidenceUrls = new Set(reviewedProfileEvidenceUrls);
   const rawPathCounts = new Map();
   const normalizedIdentityPaths = new Map();
   for (const file of files) {
@@ -876,7 +894,13 @@ export function auditStaticOfflineNetworkFiles(fileInputs, { expectedArtifactSet
     if (!/^sha256:[a-f0-9]{64}$/u.test(expectedArtifactSetHash)) {
       throw new TypeError("Expected production artifact-set hash must be a sha256 identity");
     }
-    if (artifactSetHash !== expectedArtifactSetHash) {
+    emittedArtifactHashes.push({
+      kind: "production_artifact_set",
+      path: "artifacts",
+      expected: expectedArtifactSetHash,
+      observed: artifactSetHash,
+    });
+    if (releaseAudit && artifactSetHash !== expectedArtifactSetHash) {
       findings.push(finding(
         "artifacts",
         "production_artifact_set_changed",
@@ -944,7 +968,10 @@ export function auditStaticOfflineNetworkFiles(fileInputs, { expectedArtifactSet
         }
       } else if (isModelLibrarySource(sourcePath) || isDesignLibraryProfileSource(sourcePath)) {
         for (const url of networkUrls(sourceContent)) {
-          if (url !== MOTOR_TVS_EVIDENCE_URL
+          const isApprovedProfileEvidenceUrl = !isDesignLibraryProfileSource(sourcePath)
+            || derivedReviewedProfileEvidenceUrls.has(url);
+          if (isApprovedProfileEvidenceUrl
+            && url !== MOTOR_TVS_EVIDENCE_URL
             && !isReviewedProfileGeometryEvidenceUrl(url)) mapAllowedRuntimeUrls.add(url);
         }
       }
@@ -1013,7 +1040,7 @@ export function auditStaticOfflineNetworkFiles(fileInputs, { expectedArtifactSet
       if (sourcePath.endsWith("/packages/design-library/src/bundled-reviewed-release.ts")) {
         if (isReviewedReleaseModule(sourcePath, sourceContent)) {
           pinnedReviewedReleaseModuleCount += 1;
-          for (const url of REVIEWED_PROFILE_EVIDENCE_URLS) mapAllowedReviewedProfileEvidenceUrls.add(url);
+          for (const url of derivedReviewedProfileEvidenceUrls) mapAllowedReviewedProfileEvidenceUrls.add(url);
         }
         else findings.push(finding(mapPath, "reviewed_release_projection_unpinned", sourcePath));
       }
@@ -1057,17 +1084,28 @@ export function auditStaticOfflineNetworkFiles(fileInputs, { expectedArtifactSet
       const emittedArtifactHash = sha256(javascript.bytes);
       const exactSourceBoundary = pinnedMotorDrv8262CompanionGateSourceCount === 1;
       const exactArtifact = emittedArtifactHash === MOTOR_DRV8262_COMPANION_GATE_EMITTED_ARTIFACT_HASH;
+      const inertProjection = isPinnedInertMotorDrv8262CompanionGateProjection(source);
+      emittedArtifactHashes.push({
+        kind: "motor_drv8262_companion_gate",
+        path: javascript.path,
+        expected: MOTOR_DRV8262_COMPANION_GATE_EMITTED_ARTIFACT_HASH,
+        observed: emittedArtifactHash,
+      });
       mapAllowedRuntimeUrls.delete(MOTOR_DRV8262_COMPANION_GATE_EVIDENCE_URL);
-      if (exactSourceBoundary
-        && exactArtifact
-        && isPinnedInertMotorDrv8262CompanionGateProjection(source)) {
-        mapAllowedRuntimeUrls.add(MOTOR_DRV8262_COMPANION_GATE_EVIDENCE_URL);
-      } else {
+      if (!exactSourceBoundary || !inertProjection) {
         findings.push(finding(
           javascript.path,
           "motor_drv8262_companion_gate_projection_boundary_changed",
-          `recipe sources: ${pinnedMotorDrv8262CompanionGateSourceCount}; expected ${MOTOR_DRV8262_COMPANION_GATE_EMITTED_ARTIFACT_HASH}; observed ${emittedArtifactHash}`,
+          `recipe sources: ${pinnedMotorDrv8262CompanionGateSourceCount}`,
         ));
+      } else if (releaseAudit && !exactArtifact) {
+        findings.push(finding(
+          javascript.path,
+          "motor_drv8262_companion_gate_emitted_artifact_hash_changed",
+          `expected ${MOTOR_DRV8262_COMPANION_GATE_EMITTED_ARTIFACT_HASH}; observed ${emittedArtifactHash}`,
+        ));
+      } else {
+        mapAllowedRuntimeUrls.add(MOTOR_DRV8262_COMPANION_GATE_EVIDENCE_URL);
       }
     }
 
@@ -1080,13 +1118,23 @@ export function auditStaticOfflineNetworkFiles(fileInputs, { expectedArtifactSet
       const emittedArtifactHash = sha256(javascript.bytes);
       const emittedArtifactIsPinned = expectedEmittedArtifact !== null
         && emittedArtifactHash === expectedEmittedArtifact.contentHash;
+      const emittedArtifactIsAccepted = expectedEmittedArtifact !== null
+        && (!releaseAudit || emittedArtifactIsPinned);
+      if (expectedEmittedArtifact !== null) {
+        emittedArtifactHashes.push({
+          kind: expectedEmittedArtifact.kind,
+          path: javascript.path,
+          expected: expectedEmittedArtifact.contentHash,
+          observed: emittedArtifactHash,
+        });
+      }
       if (expectedEmittedArtifact === null) {
         findings.push(finding(
           javascript.path,
           "motor_tvs_emitted_artifact_source_boundary_unpinned",
           `recipe sources: ${pinnedMotorTvsRecipeSourceCount}; reviewed release sources: ${pinnedReviewedReleaseModuleCount}`,
         ));
-      } else if (!emittedArtifactIsPinned) {
+      } else if (releaseAudit && !emittedArtifactIsPinned) {
         findings.push(finding(
           javascript.path,
           "motor_tvs_emitted_artifact_hash_changed",
@@ -1096,7 +1144,7 @@ export function auditStaticOfflineNetworkFiles(fileInputs, { expectedArtifactSet
       const hasPinnedRecipeSource = pinnedMotorTvsRecipeSourceCount === 1
         && mapAllowedRuntimeUrls.delete(MOTOR_TVS_EVIDENCE_URL);
       if (hasPinnedRecipeSource) {
-        if (emittedArtifactIsPinned && isPinnedInertMotorTvsRecipeProjection(source)) {
+        if (emittedArtifactIsAccepted && isPinnedInertMotorTvsRecipeProjection(source)) {
           mapAllowedRuntimeUrls.add(MOTOR_TVS_EVIDENCE_URL);
         } else {
           findings.push(finding(
@@ -1107,7 +1155,7 @@ export function auditStaticOfflineNetworkFiles(fileInputs, { expectedArtifactSet
         }
       }
       if (hasPinnedReviewedReleaseModule) {
-        if (emittedArtifactIsPinned && isPinnedInertMotorTvsReviewedReleaseProjection(source)) {
+        if (emittedArtifactIsAccepted && isPinnedInertMotorTvsReviewedReleaseProjection(source)) {
           mapAllowedReviewedProfileEvidenceUrls.add(MOTOR_TVS_EVIDENCE_URL);
         } else {
           findings.push(finding(
@@ -1245,6 +1293,8 @@ export function auditStaticOfflineNetworkFiles(fileInputs, { expectedArtifactSet
       userInitiatedExternalNavigationUrls: [...userInitiatedExternalNavigationUrls].sort(compareText),
       userInitiatedExternalNavigationOrigins,
       documentationUrlCount: documentationUrls.size,
+      emittedArtifactHashes: emittedArtifactHashes
+        .sort((left, right) => compareText(left.kind, right.kind) || compareText(left.path, right.path)),
     },
     limitations: [...STATIC_OFFLINE_AUDIT_LIMITATIONS],
     findings: sortedFindings,
@@ -1263,9 +1313,18 @@ function walk(root, directory = root) {
 
 export function auditStaticOfflineNetworkBuild(
   distDirectory,
-  { expectedArtifactSetHash = PRODUCTION_ARTIFACT_SET_HASH } = {},
+  {
+    expectedArtifactSetHash = PRODUCTION_ARTIFACT_SET_HASH,
+    releaseAudit = process.env.ROBONYX_RELEASE_AUDIT === "1",
+    reviewedProfilesDirectory = new URL("../../../packages/design-library/parts/", import.meta.url),
+  } = {},
 ) {
   const absolute = distDirectory instanceof URL ? fileURLToPath(distDirectory) : resolve(distDirectory);
   if (!statSync(absolute).isDirectory()) throw new TypeError("Production dist path must be a directory");
-  return auditStaticOfflineNetworkFiles(walk(absolute), { expectedArtifactSetHash });
+  const reviewedProfileEvidenceUrls = deriveReviewedProfileEvidenceUrls(reviewedProfilesDirectory);
+  return auditStaticOfflineNetworkFiles(walk(absolute), {
+    expectedArtifactSetHash,
+    releaseAudit,
+    reviewedProfileEvidenceUrls,
+  });
 }

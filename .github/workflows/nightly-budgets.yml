@@ -35,6 +35,8 @@ concurrency:
 
 jobs:
   performance-budget:
+    env:
+      ROBONYX_RELEASE_AUDIT: "1"
     name: Wall-clock startup and payload budgets
     runs-on: ubuntu-latest
     # A budget miss is reported, never fatal to the schedule.
@@ -84,6 +86,8 @@ jobs:
           echo "Download the artifact for the attached startup and rapid-change measurements." >> "$GITHUB_STEP_SUMMARY"
 
   designer-runtime-budget:
+    env:
+      ROBONYX_RELEASE_AUDIT: "1"
     name: Designer JS-heap and runtime budgets
     runs-on: ubuntu-latest
     continue-on-error: true

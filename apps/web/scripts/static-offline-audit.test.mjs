@@ -1,10 +1,14 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
-import { readFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { dirname, join } from "node:path";
 import { describe, it } from "node:test";
 import {
   STATIC_OFFLINE_AUDIT_LIMITATIONS,
+  auditStaticOfflineNetworkBuild,
   auditStaticOfflineNetworkFiles as auditProductionStaticOfflineNetworkFiles,
+  deriveReviewedProfileEvidenceUrls,
 } from "./static-offline-audit.mjs";
 
 const CATALOG_PREFIX = "https://github.com/hughminhphan/schemagic-sim/tree/main/packages/model-library/models/";
@@ -73,6 +77,9 @@ const REVIEWED_RELEASE_SOURCE = readFileSync(
 const MOTOR_TVS_REVIEWED_PROFILE_SOURCE = readFileSync(
   new URL("../../../packages/design-library/parts/motor.supply-tvs-diode/diodes-incorporated/3%252E0SMCJ33CAQ.json", import.meta.url),
   "utf8",
+);
+const COMMITTED_REVIEWED_PROFILE_EVIDENCE_URLS = deriveReviewedProfileEvidenceUrls(
+  new URL("../../../packages/design-library/parts/", import.meta.url),
 );
 
 function file(path, source = "") {
@@ -157,6 +164,18 @@ function replace(files, path, mutate) {
 
 function codes(report) {
   return report.findings.map((entry) => entry.code);
+}
+
+function withReleaseAuditEnvironment(value, run) {
+  const previous = process.env.ROBONYX_RELEASE_AUDIT;
+  if (value === undefined) delete process.env.ROBONYX_RELEASE_AUDIT;
+  else process.env.ROBONYX_RELEASE_AUDIT = value;
+  try {
+    return run();
+  } finally {
+    if (previous === undefined) delete process.env.ROBONYX_RELEASE_AUDIT;
+    else process.env.ROBONYX_RELEASE_AUDIT = previous;
+  }
 }
 
 function withDesignerExampleFetch(files, mutateSource = (source) => source) {
@@ -543,13 +562,17 @@ const { auditStaticOfflineNetworkFiles: auditSyntheticMotorTvsFiles } = await im
   `data:text/javascript;base64,${Buffer.from(syntheticAuditModuleSource).toString("base64")}`
 );
 
-function auditStaticOfflineNetworkFiles(files, options) {
+function auditStaticOfflineNetworkFiles(files, options = {}) {
   const containsSyntheticMotorTvsArtifact = files.some((entry) => entry.path === "assets/motor-recipe.js"
     || entry.path === "assets/reviewed-tvs.js"
     || entry.path === "assets/motor-drv8262-gate.js");
+  const auditOptions = {
+    reviewedProfileEvidenceUrls: COMMITTED_REVIEWED_PROFILE_EVIDENCE_URLS,
+    ...options,
+  };
   return containsSyntheticMotorTvsArtifact
-    ? auditSyntheticMotorTvsFiles(files, options)
-    : auditProductionStaticOfflineNetworkFiles(files, options);
+    ? auditSyntheticMotorTvsFiles(files, auditOptions)
+    : auditProductionStaticOfflineNetworkFiles(files, auditOptions);
 }
 
 describe("static offline/network production audit", () => {
@@ -780,6 +803,51 @@ describe("static offline/network production audit", () => {
     assert.ok(report.findings.some((entry) => entry.path === "assets/other.js"
       && entry.code === "runtime_external_endpoint_unapproved"
       && entry.detail === MODEL_SOURCE_URL));
+  });
+
+  it("derives reviewed-profile evidence URLs from profile files", () => {
+    const temporaryRoot = mkdtempSync(join(tmpdir(), "static-offline-profile-"));
+    const profileDirectory = join(temporaryRoot, "profiles");
+    const distDirectory = join(temporaryRoot, "dist");
+    const evidenceUrl = "https://fixture.example/datasheets/reviewed.pdf";
+    const sourceUrl = "https://fixture.example/sources/reviewed.html";
+    const datasheetUrl = "https://fixture.example/datasheets/reviewed-alt.pdf";
+    const unrelatedUrl = "https://fixture.example/not-evidence";
+    try {
+      const vendorDirectory = join(profileDirectory, "fixture-family", "fixture-vendor");
+      mkdirSync(vendorDirectory, { recursive: true });
+      writeFileSync(join(vendorDirectory, "FIXTURE.json"), JSON.stringify({
+        facts: { rating: { evidence: [{ url: evidenceUrl }] } },
+        source: { url: sourceUrl },
+        datasheetUrl,
+        homepage: unrelatedUrl,
+      }));
+      const derivedUrls = deriveReviewedProfileEvidenceUrls(profileDirectory);
+      assert.deepEqual(derivedUrls, [datasheetUrl, evidenceUrl, sourceUrl]);
+
+      let files = replace(fixture(), "assets/app.js.map", (source) => {
+        const map = JSON.parse(source);
+        map.sources.push("../../../../packages/design-library/src/bundled-reviewed-release.ts");
+        map.sourcesContent.push(REVIEWED_RELEASE_SOURCE);
+        return JSON.stringify(map);
+      });
+      files = replace(files, "assets/app.js", (source) => source.replace(
+        "//# sourceMappingURL=app.js.map",
+        `const evidence="${evidenceUrl}";\n//# sourceMappingURL=app.js.map`,
+      ));
+      for (const artifact of files) {
+        const target = join(distDirectory, artifact.path);
+        mkdirSync(dirname(target), { recursive: true });
+        writeFileSync(target, artifact.bytes);
+      }
+      const report = auditStaticOfflineNetworkBuild(distDirectory, {
+        releaseAudit: false,
+        reviewedProfilesDirectory: profileDirectory,
+      });
+      assert.equal(report.status, "pass", JSON.stringify(report.findings, null, 2));
+    } finally {
+      rmSync(temporaryRoot, { recursive: true, force: true });
+    }
   });
 
   it("inventories inert reviewed-profile evidence literals without authorizing another chunk", () => {
@@ -1225,7 +1293,7 @@ describe("static offline/network production audit", () => {
     cases.push(accountedFetch);
 
     for (const files of cases) {
-      const report = auditStaticOfflineNetworkFiles(files);
+      const report = auditStaticOfflineNetworkFiles(files, { releaseAudit: true });
       assert.equal(report.status, "blocked");
       assert.ok(codes(report).includes("motor_tvs_emitted_artifact_hash_changed"));
     }
@@ -1283,11 +1351,45 @@ describe("static offline/network production audit", () => {
     assert.ok(codes(fetchReport).includes("emitted_network_capability_unaccounted"));
   });
 
+  it("keeps emitted hash drift informational in default mode while blocking a foreign URL", () => {
+    const baseline = fixture();
+    const expectedArtifactSetHash = artifactSetHash(baseline);
+    const foreignUrl = "https://foreign.example/collect";
+    const changed = replace(baseline, "assets/app.js", (source) => source.replace(
+      "//# sourceMappingURL=app.js.map",
+      `const foreign="${foreignUrl}";\n//# sourceMappingURL=app.js.map`,
+    ));
+    const report = withReleaseAuditEnvironment(undefined, () => auditStaticOfflineNetworkFiles(
+      changed,
+      { expectedArtifactSetHash },
+    ));
+
+    assert.equal(report.status, "blocked");
+    assert.ok(!codes(report).includes("production_artifact_set_changed"));
+    assert.ok(report.findings.some((entry) => entry.code === "runtime_external_endpoint_unapproved"
+      && entry.detail === foreignUrl));
+    assert.equal(report.evidence.emittedArtifactHashes[0].observed, report.artifactSetHash);
+    assert.notEqual(report.artifactSetHash, expectedArtifactSetHash);
+  });
+
+  it("enforces emitted hashes when ROBONYX_RELEASE_AUDIT is enabled", () => {
+    const baseline = fixture();
+    const expectedArtifactSetHash = artifactSetHash(baseline);
+    const changed = [...baseline, file("notices/release-drift.txt", "changed")];
+    const report = withReleaseAuditEnvironment("1", () => auditStaticOfflineNetworkFiles(
+      changed,
+      { expectedArtifactSetHash },
+    ));
+
+    assert.equal(report.status, "blocked");
+    assert.ok(codes(report).includes("production_artifact_set_changed"));
+  });
+
   it("pins the aggregate production artifact set against consumer mutation, stale maps, add/remove, and swaps", () => {
     const baseline = withReviewedMotorTvsProfileProjection(withMotorDirectGateEvidence(fixture()));
     const expectedArtifactSetHash = artifactSetHash(baseline);
-    const accepted = auditStaticOfflineNetworkFiles(baseline, { expectedArtifactSetHash });
-    const reordered = auditStaticOfflineNetworkFiles([...baseline].reverse(), { expectedArtifactSetHash });
+    const accepted = auditStaticOfflineNetworkFiles(baseline, { expectedArtifactSetHash, releaseAudit: true });
+    const reordered = auditStaticOfflineNetworkFiles([...baseline].reverse(), { expectedArtifactSetHash, releaseAudit: true });
     assert.equal(accepted.status, "pass", JSON.stringify(accepted.findings, null, 2));
     assert.equal(reordered.status, "pass", JSON.stringify(reordered.findings, null, 2));
     assert.equal(accepted.artifactSetHash, expectedArtifactSetHash);
@@ -1324,13 +1426,13 @@ describe("static offline/network production audit", () => {
       removedArtifact,
       swappedArtifacts,
     ]) {
-      const report = auditStaticOfflineNetworkFiles(files, { expectedArtifactSetHash });
+      const report = auditStaticOfflineNetworkFiles(files, { expectedArtifactSetHash, releaseAudit: true });
       assert.equal(report.status, "blocked");
       assert.ok(codes(report).includes("production_artifact_set_changed"));
     }
-    assert.ok(codes(auditStaticOfflineNetworkFiles(staleRecipeMap, { expectedArtifactSetHash }))
+    assert.ok(codes(auditStaticOfflineNetworkFiles(staleRecipeMap, { expectedArtifactSetHash, releaseAudit: true }))
       .includes("motor_tvs_emitted_artifact_hash_changed"));
-    assert.ok(codes(auditStaticOfflineNetworkFiles(postInitializationProfileMutation, { expectedArtifactSetHash }))
+    assert.ok(codes(auditStaticOfflineNetworkFiles(postInitializationProfileMutation, { expectedArtifactSetHash, releaseAudit: true }))
       .includes("motor_tvs_emitted_artifact_hash_changed"));
     assert.throws(
       () => auditStaticOfflineNetworkFiles(baseline, { expectedArtifactSetHash: "untrusted" }),
@@ -1352,7 +1454,7 @@ describe("static offline/network production audit", () => {
     ];
 
     for (const [from, to] of renamedPaths) {
-      const report = auditStaticOfflineNetworkFiles(renamePath(from, to), { expectedArtifactSetHash });
+      const report = auditStaticOfflineNetworkFiles(renamePath(from, to), { expectedArtifactSetHash, releaseAudit: true });
       assert.equal(report.status, "blocked");
       assert.notEqual(report.artifactSetHash, expectedArtifactSetHash);
       assert.ok(codes(report).includes("artifact_path_noncanonical"));
@@ -1372,7 +1474,7 @@ describe("static offline/network production audit", () => {
       "C:/dist/index.html",
     ];
     for (const path of noncanonicalPaths) {
-      const report = auditStaticOfflineNetworkFiles([...baseline, file(path)], { expectedArtifactSetHash });
+      const report = auditStaticOfflineNetworkFiles([...baseline, file(path)], { expectedArtifactSetHash, releaseAudit: true });
       assert.equal(report.status, "blocked");
       assert.ok(codes(report).includes("artifact_path_noncanonical"));
       assert.ok(codes(report).includes("production_artifact_set_changed"));
@@ -1380,7 +1482,7 @@ describe("static offline/network production audit", () => {
 
     const rawDuplicate = auditStaticOfflineNetworkFiles(
       [...baseline, file("assets/app.css", "duplicate")],
-      { expectedArtifactSetHash },
+      { expectedArtifactSetHash, releaseAudit: true },
     );
     assert.equal(rawDuplicate.status, "blocked");
     assert.ok(codes(rawDuplicate).includes("artifact_path_duplicate"));
@@ -1388,7 +1490,7 @@ describe("static offline/network production audit", () => {
 
     const normalizedDuplicate = auditStaticOfflineNetworkFiles(
       [...baseline, file("assets\\app.css", "duplicate")],
-      { expectedArtifactSetHash },
+      { expectedArtifactSetHash, releaseAudit: true },
     );
     assert.equal(normalizedDuplicate.status, "blocked");
     assert.ok(codes(normalizedDuplicate).includes("artifact_path_noncanonical"));

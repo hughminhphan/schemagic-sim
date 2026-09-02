@@ -13,4 +13,7 @@ console.log(
   + `${report.evidence.externalNavigationUrlCount} inventoried external navigation URLs; `
   + `${report.artifactSetHash}).`,
 );
+for (const hash of report.evidence.emittedArtifactHashes) {
+  console.log(`Observed emitted hash ${hash.kind} (${hash.path}): ${hash.observed}; release pin ${hash.expected}.`);
+}
 console.log(`Static audit limitation: ${report.limitations[0]}`);
