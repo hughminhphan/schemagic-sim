@@ -1,4 +1,4 @@
-import { pinVoltageProbe, type CircuitDocument } from "@opencircuit/circuit-schema";
+import { wireVoltageProbe, type CircuitDocument } from "@opencircuit/circuit-schema";
 
 export const demoCircuit: CircuitDocument = {
   format: "opencircuit-circuit",
@@ -30,7 +30,9 @@ export const demoCircuit: CircuitDocument = {
     { id: "w8", points: [[58, 15], [58, 17]] },
     { id: "w9", points: [[58, 21], [52, 21], [52, 18], [46, 18]] },
   ],
-  probes: [pinVoltageProbe("p1", "c4", 0, { color: "#2E86C8" })],
+  // w8 is the LED anode: the node between RL and D1 swings across the whole
+  // supply as the wiper moves, so the first trace a visitor sees actually moves.
+  probes: [wireVoltageProbe("p1", "w8", { color: "#2E86C8" })],
   sim: {
     mode: "live",
     tran: { tstop: 0.01, tstep: 0.00002, maxstep: 0.00005 },
