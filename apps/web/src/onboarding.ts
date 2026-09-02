@@ -299,6 +299,9 @@ function mountCoachMark(openGuide: () => void): void {
     mark.dataset.placement = chosen[0];
     mark.style.left = `${Math.round(chosen[1].left)}px`;
     mark.style.top = `${Math.round(chosen[1].top)}px`;
+    // Point the notch at the wiper even after the box was clamped sideways.
+    const arrow = Math.max(14, Math.min(width - 22, (pot.left + pot.right) / 2 - chosen[1].left - 4));
+    mark.style.setProperty("--coach-arrow", `${Math.round(arrow)}px`);
     return true;
   };
 
