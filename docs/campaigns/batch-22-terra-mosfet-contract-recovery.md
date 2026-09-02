@@ -4,7 +4,7 @@ Date: 2026-08-23
 
 ## Authority and scope
 
-This record applies the producer/consumer evidence-boundary repair already authorized by `docs/scale-2k-terra-recovery-authorization.md` to Batch 22. It does not change the frozen denominator, topology decisions, evidence standards, prefit thresholds, physics rules, one-repair ceiling, or single-pass fit rule.
+This record applies the producer/consumer evidence-boundary repair already authorized by `docs/campaigns/scale-2k-terra-recovery-authorization.md` to Batch 22. It does not change the frozen denominator, topology decisions, evidence standards, prefit thresholds, physics rules, one-repair ceiling, or single-pass fit rule.
 
 ## Observed stop
 

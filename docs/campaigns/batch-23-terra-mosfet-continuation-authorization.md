@@ -6,7 +6,7 @@ Date: 2026-08-23.
 
 Hugh directed: “so keep going - why is it failing all the time - maybe we can step up to terra instead of luna? maybe there is some issue with he plan - review the plan and the k epepgoing”.
 
-This direct instruction authorizes continued execution toward 1,000 reviewed packages after an honest no-fit Batch 22 result. It supersedes only the sequencing clause in `docs/scale-2k-terra-recovery-authorization.md` that conditioned the next batch on the previous batch passing. It does not relax any evidence, source-mode, threshold relationship, provenance, fit, hard-bound, collision, package, independent-review, promotion, release, deployment, or publishing gate.
+This direct instruction authorizes continued execution toward 1,000 reviewed packages after an honest no-fit Batch 22 result. It supersedes only the sequencing clause in `docs/campaigns/scale-2k-terra-recovery-authorization.md` that conditioned the next batch on the previous batch passing. It does not relax any evidence, source-mode, threshold relationship, provenance, fit, hard-bound, collision, package, independent-review, promotion, release, deployment, or publishing gate.
 
 ## Batch 22 terminal disposition
 

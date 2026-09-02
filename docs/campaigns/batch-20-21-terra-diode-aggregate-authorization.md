@@ -10,7 +10,7 @@ Frozen diode orders 850 through 879 are the final 30 diode rows and are the only
 
 ## One aggregate fallback
 
-If Batch 21 does not independently reach 10 strong candidates, its sealed no-fit cohort may be combined once with Batch 20 under `docs/scale-2k-terra-prefit-cohort-aggregation-addendum.md`.
+If Batch 21 does not independently reach 10 strong candidates, its sealed no-fit cohort may be combined once with Batch 20 under `docs/campaigns/scale-2k-terra-prefit-cohort-aggregation-addendum.md`.
 
 The combined cohort is frozen diode orders 810 through 879, fixed denominator 70. It must retain every row, topology park, evidence failure, job, response, repair count, and content hash from both source cohorts. It permits no additional extraction, repair, substitution, response edit, or route reclassification.
 

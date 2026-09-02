@@ -10,7 +10,7 @@ This direction must be read together with Hugh's standing instructions to keep d
 
 ## Effect
 
-The process-only terminal created by the one-remediation limit in `docs/batch-15-recovery-authorization.md` is superseded. A reproduced independent-review defect now triggers another narrow correction and re-review rather than ending the campaign.
+The process-only terminal created by the one-remediation limit in `docs/campaigns/batch-15-recovery-authorization.md` is superseded. A reproduced independent-review defect now triggers another narrow correction and re-review rather than ending the campaign.
 
 This continuation does not relax or supersede:
 

@@ -6,7 +6,7 @@ Date: 2026-08-23.
 
 The first schema-valid evidence-envelope probe, frozen order 1019 / C23708 / IRF640NSTRLPBF, translated deterministically into the strict MOSFET extraction contract. Its immutable extraction contains a genuine two-sided threshold interval and a cited RDS(on) maximum at VGS = 10 V, ID = 11 A, TJ = 25 °C. The datasheet states a 400 µs maximum pulse width and 2% maximum duty cycle for that RDS(on) measurement.
 
-The pure factory validator rejected the scalar table value as pulsed evidence. This exposed an implementation rule broader than `docs/scale-2k-terra-recovery-authorization.md`, which excludes pulsed and single-pulse **curves** from static F2 fitting but does not exclude pulse-tested scalar RDS(on) table evidence.
+The pure factory validator rejected the scalar table value as pulsed evidence. This exposed an implementation rule broader than `docs/campaigns/scale-2k-terra-recovery-authorization.md`, which excludes pulsed and single-pulse **curves** from static F2 fitting but does not exclude pulse-tested scalar RDS(on) table evidence.
 
 ## Narrow correction
 

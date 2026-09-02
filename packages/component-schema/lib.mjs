@@ -1010,6 +1010,29 @@ function contractVersionErrors(component, facts, fitted, expectations) {
   return errors;
 }
 
+// Well-known native ngspice locations, most specific first. /opt/homebrew/bin
+// is checked first because macOS brew installs there and CI symlinks the
+// pinned ngspice 46 reference build into the same path.
+export const NGSPICE_SEARCH_PATHS = [
+  "/opt/homebrew/bin/ngspice",
+  "/usr/local/bin/ngspice",
+  "/usr/bin/ngspice"
+];
+
+/** One clear, actionable message naming the env var and the brew formula. */
+export function ngspiceUnavailableMessage(attemptedBin, configuredBin, cause) {
+  const reason = cause?.message ? ` (${cause.message})` : "";
+  const origin = configuredBin
+    ? `NGSPICE_BIN is set to "${configuredBin}" but that binary could not be executed${reason}.`
+    : `native ngspice could not be executed as "${attemptedBin}"${reason}.`;
+  return [
+    `model.cir syntax check could not run: ${origin}`,
+    "Native ngspice is required and is never skipped.",
+    `Set NGSPICE_BIN, or install ngspice so one of these exists: ${NGSPICE_SEARCH_PATHS.join(", ")}.`,
+    "macOS: brew install ngspice. Ubuntu: sudo apt-get install -y ngspice."
+  ].join(" ");
+}
+
 function syntaxCheckModel(packageDir) {
   const modelPath = path.join(packageDir, "model.cir");
   const scratch = fs.mkdtempSync(path.join(os.tmpdir(), "opencircuit-model-check-"));
@@ -1019,16 +1042,22 @@ function syntaxCheckModel(packageDir) {
     wrapperPath,
     `scheMAGIC model syntax check\n.include "${escaped}"\nVsyntax syntax_node 0 0\nRsyntax syntax_node 0 1G\n.op\n.end\n`
   );
-  const ngspiceBin = process.env.NGSPICE_BIN
-    ?? ["/opt/homebrew/bin/ngspice", "/usr/bin/ngspice", "/usr/local/bin/ngspice"].find(p => fs.existsSync(p))
-    ?? "ngspice";
+  // Native ngspice is a hard prerequisite, never an optional extra: a syntax
+  // check that cannot run is reported as a failure, not skipped. NGSPICE_BIN
+  // wins when set; otherwise the first existing well-known path is used, with
+  // /opt/homebrew/bin/ngspice first because both macOS brew and CI place the
+  // pinned reference build there.
+  const configuredBin = process.env.NGSPICE_BIN?.trim();
+  const ngspiceBin = configuredBin
+    || NGSPICE_SEARCH_PATHS.find(p => fs.existsSync(p))
+    || "ngspice";
   const result = spawnSync(ngspiceBin, ["-b", wrapperPath], {
     cwd: scratch,
     encoding: "utf8",
     timeout: 30_000
   });
   fs.rmSync(scratch, { recursive: true, force: true });
-  if (result.error) return `ngspice syntax check could not run: ${result.error.message}`;
+  if (result.error) return ngspiceUnavailableMessage(ngspiceBin, configuredBin, result.error);
   if (result.status !== 0) {
     const diagnostic = `${result.stderr || ""}\n${result.stdout || ""}`.trim().split("\n").slice(-8).join(" | ");
     return `model.cir failed ngspice syntax check: ${diagnostic}`;

@@ -1,0 +1,134 @@
+name: Nightly performance and runtime budgets
+
+# NON-BLOCKING BY CONSTRUCTION. This workflow has no `pull_request` trigger, so
+# none of its jobs can ever appear as a required status check on a pull request.
+#
+# It owns the two environment-bound budget suites that used to run inside the
+# PR-blocking CI workflow:
+#
+#   apps/web/e2e/performance-budget.spec.ts  wall-clock startup, solver and payload
+#   apps/web/e2e/designer-runtime.spec.ts    JS-heap maximum and retained growth
+#
+# Both assert numbers measured on one developer machine. On a shared GitHub
+# runner they are a drift signal, not a correctness gate, which is why every job
+# here uploads its report as an artifact rather than gating a merge.
+#
+# The four required checks stay in .github/workflows/ci.yml.
+
+on:
+  schedule:
+    # 02:30 UTC every day, well clear of the working-hours PR traffic.
+    - cron: "30 2 * * *"
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Git ref to measure (defaults to the default branch)
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: nightly-budgets-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  performance-budget:
+    name: Wall-clock startup and payload budgets
+    runs-on: ubuntu-latest
+    # A budget miss is reported, never fatal to the schedule.
+    continue-on-error: true
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ inputs.ref || github.ref }}
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Install pinned Chromium runtime
+        run: npx playwright install --with-deps chromium
+
+      - name: Run wall-clock performance budgets
+        id: budgets
+        continue-on-error: true
+        run: npm run audit:performance-budget
+
+      - name: Upload performance budget report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: performance-budget-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            apps/web/test-results/performance-budget
+            apps/web/playwright-report/performance-budget
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Summarise outcome
+        if: always()
+        shell: bash
+        run: |
+          echo "### Wall-clock performance budgets" >> "$GITHUB_STEP_SUMMARY"
+          echo "Outcome: ${{ steps.budgets.outcome }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Thresholds are environment-bound regression guards measured on one machine." >> "$GITHUB_STEP_SUMMARY"
+          echo "Download the artifact for the attached startup and rapid-change measurements." >> "$GITHUB_STEP_SUMMARY"
+
+  designer-runtime-budget:
+    name: Designer JS-heap and runtime budgets
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ inputs.ref || github.ref }}
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Install pinned Chromium runtime
+        run: npx playwright install --with-deps chromium
+
+      # No DESIGNER_RUNTIME_REPORT_OUTPUT here: this is a drift measurement, not
+      # the attested release evidence produced by designer-runtime-release.yml.
+      - name: Run bounded Designer runtime audit
+        id: runtime
+        continue-on-error: true
+        run: npm run audit:designer-runtime
+
+      - name: Upload Designer runtime report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: designer-runtime-budget-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            apps/web/test-results/designer-runtime
+            apps/web/playwright-report/designer-runtime
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Summarise outcome
+        if: always()
+        shell: bash
+        run: |
+          echo "### Designer JS-heap and runtime budgets" >> "$GITHUB_STEP_SUMMARY"
+          echo "Outcome: ${{ steps.runtime.outcome }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Budgets come from apps/web/designer-runtime-contract.json and are bound to the runner host." >> "$GITHUB_STEP_SUMMARY"
+          echo "Download the artifact for the measured report." >> "$GITHUB_STEP_SUMMARY"

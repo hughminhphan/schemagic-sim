@@ -2,7 +2,7 @@
 
 Schema version 1.0.0. Date 2026-08-12.
 
-Authorized by Hugh's instruction: "okay just keep driving unti u hit the goal". Issued by the Fable release-control judge after reviewing tracked main at `6c03fd5`, the Batch 11 through 14 records, `docs/scale-2k-freeze.json`, `docs/mosfet-f1-constraint-semantics.md`, and the current conveyor and model-factory trees.
+Authorized by Hugh's instruction: "okay just keep driving unti u hit the goal". Issued by the Fable release-control judge after reviewing tracked main at `6c03fd5`, the Batch 11 through 14 records, `docs/campaigns/scale-2k-freeze.json`, `docs/mosfet-f1-constraint-semantics.md`, and the current conveyor and model-factory trees.
 
 ## 1. Campaign goal and terminals
 
@@ -91,8 +91,8 @@ A breach is defined by content access or use, not by path-name visibility. Batch
 
 ## 8. Tracked documents and commit authority
 
-- Campaign authorization: `docs/scale-2k-campaign-authorization.md`.
-- Batch 15: `docs/batch-15-proving-selection.json`, `docs/batch-15-proving-execution.json`, and `docs/mosfet-f1-constraint-review.md`.
+- Campaign authorization: `docs/campaigns/scale-2k-campaign-authorization.md`.
+- Batch 15: `docs/campaigns/batch-15-proving-selection.json`, `docs/campaigns/batch-15-proving-execution.json`, and `docs/mosfet-f1-constraint-review.md`.
 - Scale batch N: `docs/batch-N-selection.json`, `docs/batch-N-execution.json`, `docs/batch-N-review-log.md`, and `docs/batch-N-promotion-manifest.json`.
 - Coordinators may commit and push approved tracked records and deterministic promotions to main.
 - Commits include `Co-Authored-By: Claude <noreply@anthropic.com>`.

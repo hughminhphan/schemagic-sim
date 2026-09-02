@@ -122,7 +122,7 @@ This is an in-place review approval of the already restored package, not an addi
 | Sensor/other NTC | 1 | 0 | 1 | 0 | 0 |
 | **Total** | **51** | **0** | **1** | **0** | **50** |
 
-The machine-readable adjudication is in `docs/promotion-manifest.json`.
+The machine-readable adjudication is in `docs/campaigns/promotion-manifest.json`.
 
 ## Triaged survivors
 
@@ -211,7 +211,7 @@ Final rejection classes:
 - `nexperia/PMST3904-115` and `onsemi/MMBT3904LT1G`: complete F1 numeric vectors still duplicate one another without shared-die inheritance evidence or independent parameterization. The predecessor finding remains open.
 - `nexperia/BAV99-215`, already rejected for bench bias, also collides with the existing `onsemi/BAV99` canonical MPN.
 
-The exact package-by-package reasons are recorded in `docs/promotion-manifest.json`. Rejected packages remain untouched in external staging.
+The exact package-by-package reasons are recorded in `docs/campaigns/promotion-manifest.json`. Rejected packages remain untouched in external staging.
 
 ### Cross-library and layout result
 

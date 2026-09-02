@@ -4,7 +4,7 @@ Date: 2026-08-23
 
 ## Scope
 
-This record follows the stopped structural probe in `docs/batch-22-terra-mosfet-structural-validation-recovery.md`. It removes whole-document serialization from the extraction turn by supplying an evidence-empty response scaffold. No evidence, denominator, repair, gate, physics, or fit rule changes.
+This record follows the stopped structural probe in `docs/campaigns/batch-22-terra-mosfet-structural-validation-recovery.md`. It removes whole-document serialization from the extraction turn by supplying an evidence-empty response scaffold. No evidence, denominator, repair, gate, physics, or fit rule changes.
 
 ## Structural probe result
 

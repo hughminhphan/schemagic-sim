@@ -25,7 +25,7 @@ Final reviewed-library count: **259 packages**, up from 212.
 - Review started at `67fdad3 docs(conveyor): record batch-2 execution` on `main`.
 - The prior reviewed library contained exactly 212 package directories.
 - Staging contained exactly 61 unique package identities.
-- `docs/batch-2-selection.json` and `docs/batch-2-execution.json` reconcile to 120 selected records, 61 staged packages, 30 duplicate fitted-vector skips, and 29 package-validation failures.
+- `docs/campaigns/batch-2-selection.json` and `docs/campaigns/batch-2-execution.json` reconcile to 120 selected records, 61 staged packages, 30 duplicate fitted-vector skips, and 29 package-validation failures.
 - All 30 duplicate-vector skips and all 29 package-validation failures have no staged package path and none was promoted.
 - The only pre-existing untracked roots were `.claude/` and `tools/conveyor/data.pre-hardening/`. Neither root was added, removed, or modified by this review.
 

@@ -2,7 +2,7 @@
 
 Date: 2026-08-23.
 
-Authority: `docs/scale-2k-terra-recovery-authorization.md`.
+Authority: `docs/campaigns/scale-2k-terra-recovery-authorization.md`.
 
 ## Reviewed change
 

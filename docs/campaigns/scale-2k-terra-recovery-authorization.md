@@ -6,7 +6,7 @@ Date: 2026-08-23.
 
 After Batch 16 failed its unchanged proving gate, Hugh directed: “so keep going - why is it failing all the time - maybe we can step up to terra instead of luna? maybe there is some issue with he plan - review the plan and the k epepgoing”.
 
-This is the direct post-failure redirect required by `docs/batch-16-proving-execution.json`. It authorizes a plan correction and continued execution toward 1,000 reviewed packages. It does not relax any electrical, provenance, citation, hard-bound, collision, package, independent-review, promotion, deployment, or publishing gate.
+This is the direct post-failure redirect required by `docs/campaigns/batch-16-proving-execution.json`. It authorizes a plan correction and continued execution toward 1,000 reviewed packages. It does not relax any electrical, provenance, citation, hard-bound, collision, package, independent-review, promotion, deployment, or publishing gate.
 
 ## Why the previous plan could not reach the goal reliably
 

@@ -1,0 +1,94 @@
+# CODEOWNERS
+#
+# One human owner today (@hughminhphan). The value of this file right now is the
+# LANE MAP, not the routing: it is the machine-readable statement of which lane
+# owns which paths, so two agents are never writers on the same file.
+#
+# Lanes (see docs/BACKLOG.md for the full ownership map and the task contract):
+#   A  Simulator core          schematic editor, circuit schema, sim engine, waveforms
+#   B  Designer                design and sourcing packages, the Designer web feature
+#   C  Model content and tools model library, component schema, conveyor and factory
+#   D  Docs, CI, hygiene       docs, workflows, scripts, root configuration
+#
+# Rules that matter more than the owner column:
+#   - A task may only write files inside its own lane's globs.
+#   - Shared files are single-owner: whoever holds the task edits them, alone.
+#   - Frozen contracts are never edited by an agent. They are listed in
+#     docs/BACKLOG.md and repeated at the bottom of this file.
+
+# ---------------------------------------------------------------------------
+# Default
+# ---------------------------------------------------------------------------
+*                                           @hughminhphan
+
+# ---------------------------------------------------------------------------
+# Lane A: Simulator core
+# ---------------------------------------------------------------------------
+/packages/circuit-schema/                   @hughminhphan
+/packages/schematic-editor/                 @hughminhphan
+/packages/sim-engine/                       @hughminhphan
+/packages/waveform-viewer/                  @hughminhphan
+/packages/signal-workbench/                 @hughminhphan
+/packages/model-import/                     @hughminhphan
+# apps/web/src is the shared simulator surface. Single-owner: only the task
+# holding it may edit main.ts, entry.ts, schematic.ts, scope.ts or share.ts.
+/apps/web/src/                              @hughminhphan
+/examples/                                  @hughminhphan
+
+# ---------------------------------------------------------------------------
+# Lane B: Designer
+# ---------------------------------------------------------------------------
+/packages/design-engine/                    @hughminhphan
+/packages/design-export/                    @hughminhphan
+/packages/design-library/                   @hughminhphan
+/packages/design-recipes/                   @hughminhphan
+/packages/design-schema/                    @hughminhphan
+/packages/designer-examples/                @hughminhphan
+/packages/designer-release-audit/           @hughminhphan
+/packages/motor-designer/                   @hughminhphan
+/packages/power-designer/                   @hughminhphan
+/packages/sourcing-core/                    @hughminhphan
+/packages/sourcing-schema/                  @hughminhphan
+/apps/web/src/features/designer/            @hughminhphan
+/apps/web/designer-runtime-contract.json    @hughminhphan
+
+# ---------------------------------------------------------------------------
+# Lane C: Model content and tools
+# ---------------------------------------------------------------------------
+/packages/model-library/                    @hughminhphan
+/packages/component-schema/                 @hughminhphan
+/tools/                                     @hughminhphan
+/spikes/                                    @hughminhphan
+/docs/model-archetypes/                     @hughminhphan
+
+# ---------------------------------------------------------------------------
+# Lane D: Docs, CI, hygiene
+# ---------------------------------------------------------------------------
+/.github/                                   @hughminhphan
+/scripts/                                   @hughminhphan
+/docs/                                      @hughminhphan
+/docs/README.md                             @hughminhphan
+/docs/BACKLOG.md                            @hughminhphan
+/docs/campaigns/                            @hughminhphan
+/README.md                                  @hughminhphan
+/CONTRIBUTING.md                            @hughminhphan
+/CHANGELOG.md                               @hughminhphan
+/GOVERNANCE.md                              @hughminhphan
+/SECURITY.md                                @hughminhphan
+/CODE_OF_CONDUCT.md                         @hughminhphan
+/package.json                               @hughminhphan
+/package-lock.json                          @hughminhphan
+/tsconfig.base.json                         @hughminhphan
+/.nvmrc                                     @hughminhphan
+
+# ---------------------------------------------------------------------------
+# Frozen contracts: no agent edits these without an explicit human instruction
+# ---------------------------------------------------------------------------
+#   PARTS pin and copper-bound geometry        (lane A/B shared)
+#   The editor DOM contract and its data-testid surface
+#   The simulation worker protocol
+#   Component and model package schemas
+#   dist/ngspice.wasm and its loader
+#   Catalog release hashes (release 2026-08-27.2)
+#   V2 design-schema types and canonical hashes
+#   Golden fixtures under packages/*/test and tools/*/test

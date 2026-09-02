@@ -4,7 +4,7 @@ Date: 2026-08-14
 
 ## Scope and authority
 
-Hugh's standing authorization in `docs/mosfet-hardening-standing-authorization.md` permits narrow consequence-driven corrections until the integrated evidence-admission implementation receives independent approval or reaches a material blocker. The reviewed library must remain unchanged until candidate packages pass their separate independent package review.
+Hugh's standing authorization in `docs/campaigns/mosfet-hardening-standing-authorization.md` permits narrow consequence-driven corrections until the integrated evidence-admission implementation receives independent approval or reaches a material blocker. The reviewed library must remain unchanged until candidate packages pass their separate independent package review.
 
 This review covers the cumulative correction range `4814648..1b68647` on branch `mosfet-cycle4-finish`.
 

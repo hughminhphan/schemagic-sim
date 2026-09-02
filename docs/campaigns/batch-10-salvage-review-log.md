@@ -8,7 +8,7 @@ Reviewer: `gpt-5.6-sol independent reviewer`
 
 1. Verified the repository tripwire at `/Users/hughp/Documents/opencircuit`, on `main`, with starting HEAD `7a7ecdc9abab5b879dfe6c5b7679de577b049fc2`.
 2. Confirmed the shipping model library baseline was exactly 703 packages.
-3. Reviewed exactly the nine complete packages named by `docs/batch-10-salvage-selection.json`, `docs/batch-10-salvage-execution.json`, and the final staging package tree.
+3. Reviewed exactly the nine complete packages named by `docs/campaigns/batch-10-salvage-selection.json`, `docs/campaigns/batch-10-salvage-execution.json`, and the final staging package tree.
 4. Promoted zero packages and rejected all nine. The shipping library remains exactly 703 packages.
 5. Promotion is blocked because correction commit `ca9b70cd5b2536f0949b8525a7f2f77d6b840548` contains material reusable F1 BJT parameter-derivation defects. No code was changed in this review lane.
 6. Staging, model parameters, fitted vectors, gates, bounds, and the existing 703 package trees were not modified.

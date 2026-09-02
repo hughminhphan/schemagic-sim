@@ -15,7 +15,12 @@
     "build": "npm run build --workspaces --if-present",
     "test": "npm run test --workspaces --if-present",
     "test:e2e": "npm run test:e2e --workspace=@opencircuit/web",
-    "typecheck": "npm run typecheck --workspaces --if-present"
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "validate:library": "node packages/model-library/validate-library.mjs",
+    "require:ngspice": "node scripts/require-ngspice.mjs",
+    "verify": "npm run require:ngspice && npm run typecheck && npm test && npm run validate:library && npm run build",
+    "audit:performance-budget": "npm exec --workspace=@opencircuit/web -- playwright test --config playwright.budgets.config.ts",
+    "audit:designer-runtime": "npm run audit:designer-runtime --workspace=@opencircuit/web"
   },
   "devDependencies": {
     "@fontsource-variable/archivo": "5.2.8",

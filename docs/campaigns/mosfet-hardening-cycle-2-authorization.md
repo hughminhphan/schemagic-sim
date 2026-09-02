@@ -2,7 +2,7 @@
 
 Date: 2026-08-13. Base: `afd5167`.
 
-Hugh directly authorized a broader MOSFET hardening cycle and increased parallelism. This document amends only the exhausted remediation limit in `docs/scale-2k-campaign-authorization.md`. All electrical gates, evidence rules, collision rules, review gates, and publishing restrictions remain in force.
+Hugh directly authorized a broader MOSFET hardening cycle and increased parallelism. This document amends only the exhausted remediation limit in `docs/campaigns/scale-2k-campaign-authorization.md`. All electrical gates, evidence rules, collision rules, review gates, and publishing restrictions remain in force.
 
 ## Required evidence contract
 

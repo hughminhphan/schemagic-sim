@@ -4,7 +4,7 @@ Date: 2026-08-13
 
 ## Authorization and scope
 
-`docs/mosfet-hardening-cycle-2-authorization.md` authorized one integrated implementation, one bounded remediation, and one independent re-review before any Batch 15 fit. A second `BLOCK` stops the cycle and escalates without relaxing evidence, electrical, provenance, fit, collision, or package gates.
+`docs/campaigns/mosfet-hardening-cycle-2-authorization.md` authorized one integrated implementation, one bounded remediation, and one independent re-review before any Batch 15 fit. A second `BLOCK` stops the cycle and escalates without relaxing evidence, electrical, provenance, fit, collision, or package gates.
 
 The cycle deliberately separates responsibilities:
 
