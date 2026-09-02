@@ -2,6 +2,7 @@ import {
   canonicalProfileNumberV2,
   designProfileId,
   type DesignProfileV34,
+  type DesignProfileV35,
   type DesignProfileWithFactsV2,
   type FactsV2For,
   type OperatingRange,
@@ -179,11 +180,11 @@ export interface PowerPassiveSelectionResultV1 {
 
 type InductorProfile =
   | DesignProfileWithFactsV2<"power.power-inductor", FactsV2For<"power.power-inductor">>
-  | DesignProfileV34<"power.power-inductor">;
-type CapacitorProfile = DesignProfileWithFactsV2<
-  "shared.mlcc-capacitor",
-  FactsV2For<"shared.mlcc-capacitor">
->;
+  | DesignProfileV34<"power.power-inductor">
+  | DesignProfileV35<"power.power-inductor">;
+type CapacitorProfile =
+  | DesignProfileWithFactsV2<"shared.mlcc-capacitor", FactsV2For<"shared.mlcc-capacitor">>
+  | DesignProfileV35<"shared.mlcc-capacitor">;
 
 type BoundFactSemantic = "bound" | "observation";
 
@@ -271,6 +272,22 @@ function reviewedFactNumber(
   };
 }
 
+/**
+ * Reads an optional facts-3.5.0 bound-typed field. It is consumed only when the
+ * profile actually carries it in the reviewed state with a value; a profile on
+ * any predecessor contract simply does not have the key, and every caller falls
+ * back to its unchanged observation path.
+ */
+function boundTypedFact(
+  profile: Readonly<InductorProfile | CapacitorProfile>,
+  factId: string,
+): Readonly<ProfileFact<ProfileQuantity>> | null {
+  const fact = (profile.facts as unknown as Record<string, unknown>)[factId];
+  if (typeof fact !== "object" || fact === null) return null;
+  const candidate = fact as ProfileFact<ProfileQuantity>;
+  return candidate.state === "reviewed" && candidate.value !== null ? candidate : null;
+}
+
 function mountedArea(profile: Readonly<InductorProfile | CapacitorProfile>): number | null {
   const fact = profile.facts.mountedGeometry.boardArea;
   return fact.state === "calculated" && fact.value !== null ? fact.value.area.value : null;
@@ -278,25 +295,36 @@ function mountedArea(profile: Readonly<InductorProfile | CapacitorProfile>): num
 
 /**
  * Projects only structurally reviewed profile fields into the pure kernel.
- * The current facts schemas expose nominal inductance, not a minimum over
- * tolerance, bias, temperature, and frequency, so it remains an observation.
+ *
+ * Facts schemas before 3.5.0 expose nominal inductance and a core-loss point
+ * value, not a minimum over tolerance, bias, temperature, and frequency or a
+ * production maximum, so those remain observations. A profile authored at facts
+ * 3.5.0 may instead carry the bound-typed `inductanceMinimum` and
+ * `coreLossMaximum`; when present and reviewed, each is consumed as a
+ * condition-covering bound.
  */
 export function powerPassiveInductorCandidateFromReviewedProfileV1(
   profile: Readonly<InductorProfile>,
   envelope: Readonly<PowerIntegratedBuckOperatingEnvelopeV1>,
 ): PowerPassiveInductorCandidateV1 {
+  const inductanceMinimum = boundTypedFact(profile, "inductanceMinimum");
+  const coreLossMaximum = boundTypedFact(profile, "coreLossMaximum");
   return detachedFrozenDesignV2Value({
     profileId: designProfileId(profile.partClass, profile.part),
-    inductanceH: reviewedFactNumber(profile.facts.inductance, envelope, "observation"),
+    inductanceH: inductanceMinimum === null
+      ? reviewedFactNumber(profile.facts.inductance, envelope, "observation")
+      : reviewedFactNumber(inductanceMinimum, envelope, "bound"),
     saturationCurrentMinimumA: reviewedFactNumber(profile.facts.saturationCurrent, envelope, "bound"),
     rmsCurrentMinimumA: reviewedFactNumber(profile.facts.rmsCurrent, envelope, "bound"),
     dcResistanceMaximumOhm: reviewedFactNumber(profile.facts.dcResistance, envelope, "bound"),
-    coreLossMaximumW: profile.facts.coreLoss.state === "reviewed" && profile.facts.coreLoss.value !== null
-      ? {
-          ...reviewedFactNumber(profile.facts.coreLoss, envelope, "observation"),
-          explanation: `${profile.facts.coreLoss.explanation} The facts schema does not identify this point value as a production maximum.`,
-        }
-      : unavailable(profile.facts.coreLoss.explanation, profile.facts.coreLoss.evidence),
+    coreLossMaximumW: coreLossMaximum !== null
+      ? reviewedFactNumber(coreLossMaximum, envelope, "bound")
+      : profile.facts.coreLoss.state === "reviewed" && profile.facts.coreLoss.value !== null
+        ? {
+            ...reviewedFactNumber(profile.facts.coreLoss, envelope, "observation"),
+            explanation: `${profile.facts.coreLoss.explanation} The facts schema does not identify this point value as a production maximum.`,
+          }
+        : unavailable(profile.facts.coreLoss.explanation, profile.facts.coreLoss.evidence),
     mountedAreaM2: mountedArea(profile),
   });
 }
@@ -304,27 +332,38 @@ export function powerPassiveInductorCandidateFromReviewedProfileV1(
 /**
  * Projects reviewed capacitor facts without treating nominal/nameplate or
  * point-characterization values as minimum effective capacitance or max ESR.
+ *
+ * A profile authored at facts 3.5.0 may carry the bound-typed
+ * `effectiveCapacitanceMinimum` and `esrMaximum`; when present and reviewed,
+ * each is consumed as a condition-covering bound. Without them the projection is
+ * unchanged: a reviewed point effective capacitance stays an observation, and
+ * nameplate capacitance stays observation-only.
  */
 export function powerPassiveCapacitorCandidateFromReviewedProfileV1(
   profile: Readonly<CapacitorProfile>,
   envelope: Readonly<PowerIntegratedBuckOperatingEnvelopeV1>,
   quantity: number,
 ): PowerPassiveCapacitorCandidateV1 {
+  const effectiveCapacitanceMinimum = boundTypedFact(profile, "effectiveCapacitanceMinimum");
+  const esrMaximum = boundTypedFact(profile, "esrMaximum");
   const effective = profile.facts.effectiveCapacitance;
-  const capacitance = effective.state === "reviewed" && effective.value !== null
-    ? reviewedFactNumber(effective, envelope, "observation")
-    : {
-        ...reviewedFactNumber(profile.facts.nominalCapacitance, envelope, "observation"),
-        explanation: `${profile.facts.nominalCapacitance.explanation} No reviewed minimum effective capacitance is available; nameplate capacitance is observation-only.`,
-      };
+  const capacitance = effectiveCapacitanceMinimum !== null
+    ? reviewedFactNumber(effectiveCapacitanceMinimum, envelope, "bound")
+    : effective.state === "reviewed" && effective.value !== null
+      ? reviewedFactNumber(effective, envelope, "observation")
+      : {
+          ...reviewedFactNumber(profile.facts.nominalCapacitance, envelope, "observation"),
+          explanation: `${profile.facts.nominalCapacitance.explanation} No reviewed minimum effective capacitance is available; nameplate capacitance is observation-only.`,
+        };
   return detachedFrozenDesignV2Value({
     profileId: designProfileId(profile.partClass, profile.part),
     quantity,
     capacitanceF: capacitance,
     ratedVoltageMinimumV: reviewedFactNumber(profile.facts.ratedVoltage, envelope, "bound"),
-    equivalentSeriesResistanceMaximumOhm:
-      profile.facts.equivalentSeriesResistance.state === "reviewed"
-      && profile.facts.equivalentSeriesResistance.value !== null
+    equivalentSeriesResistanceMaximumOhm: esrMaximum !== null
+      ? reviewedFactNumber(esrMaximum, envelope, "bound")
+      : profile.facts.equivalentSeriesResistance.state === "reviewed"
+        && profile.facts.equivalentSeriesResistance.value !== null
         ? {
             ...reviewedFactNumber(profile.facts.equivalentSeriesResistance, envelope, "observation"),
             explanation: `${profile.facts.equivalentSeriesResistance.explanation} The facts schema does not identify this point value as a production maximum.`,
