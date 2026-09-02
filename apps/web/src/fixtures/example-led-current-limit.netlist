@@ -1,0 +1,9 @@
+scheMAGIC Simulator document c462025dccdb8619
+* document-hash c462025dccdb8619
+V1 vsupply 0 DC 5 $ component:c1
+R2 vsupply anode 220 $ component:c2
+D3 anode 0 OC_LED_RED $ component:c3
+.model OC_LED_RED D(IS=1e-20 N=2 RS=10 EG=1.8 CJO=30P BV=5 IBV=10U)
+.save all v1#branch @r2[i] @d3[id]
+.dc V1 0 5 0.02
+.end

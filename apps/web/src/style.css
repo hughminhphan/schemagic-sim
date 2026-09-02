@@ -109,3 +109,18 @@
   .instrument-drawer .instrument-workbench__capture-list{margin-top:4px}
 }
 @media(max-width:760px){.instrument-drawer{width:100vw;top:32px}.instrument-toggle{padding-inline:6px}}
+
+/* First-visit coach mark: non-blocking, anchored to the potentiometer, never over the schematic. */
+.coach-mark{position:fixed;z-index:200;width:min(272px,calc(100vw - 28px));padding:12px 13px;background:var(--vellum);color:var(--graphite-900);border:1px solid var(--graphite-900);box-shadow:5px 5px 0 rgb(21 24 27 / .22)}
+.coach-mark[hidden]{display:none}
+.coach-copy{margin:0;font-size:12px;line-height:1.45}
+.coach-link{display:block;margin-top:9px;padding:0;color:var(--graphite-700);font-size:11px;text-align:left;text-decoration:underline;text-underline-offset:2px}
+.coach-link:hover{color:var(--graphite-900)}
+.coach-mark::before{content:"";position:absolute;width:8px;height:8px;background:var(--vellum);border-left:1px solid var(--graphite-900);border-top:1px solid var(--graphite-900)}
+.coach-mark[data-placement="detached"]::before{display:none}
+.coach-mark[data-placement="below"]::before{left:var(--coach-arrow,24px);top:-5px;transform:rotate(45deg)}
+.coach-mark[data-placement="above"]::before{left:var(--coach-arrow,24px);bottom:-5px;transform:rotate(225deg)}
+.coach-mark[data-placement="left"]::before{right:-5px;top:calc(50% - 4px);transform:rotate(135deg)}
+.coach-mark[data-placement="right"]::before{left:-5px;top:calc(50% - 4px);transform:rotate(315deg)}
+@media(prefers-reduced-motion:no-preference){.coach-mark{animation:coach-mark-in .22s ease-out both}}
+@keyframes coach-mark-in{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}

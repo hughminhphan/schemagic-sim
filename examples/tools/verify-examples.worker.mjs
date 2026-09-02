@@ -27,7 +27,13 @@ for (const manufacturer of await readdir(modelsRoot, { withFileTypes: true })) {
 
 const intended = {
   "transistor-led-bench": ["op"],
+  "resistive-divider": ["dc-sweep", "op"],
+  "led-current-limit": ["dc-sweep", "op"],
   "rc-filter-bode": ["ac"],
+  "rlc-resonance": ["ac", "tran"],
+  "halfwave-rectifier": ["tran"],
+  "bridge-rectifier": ["tran"],
+  "inverting-opamp": ["tran", "ac"],
   "common-emitter-amp": ["ac", "tran"],
   "mosfet-led-switch": ["tran"],
   "opamp-noninverting": ["ac", "tran"],
