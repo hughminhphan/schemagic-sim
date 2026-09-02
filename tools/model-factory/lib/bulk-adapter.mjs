@@ -244,10 +244,44 @@ function conditionDrainCurrent(text, fallback = null) {
   return Math.abs(Number(match[1])) * ({ u: 1e-6, "µ": 1e-6, "μ": 1e-6, m: 1e-3 }[match[2]?.toLowerCase()] ?? 1);
 }
 
+const NOT_STATED_TEMPERATURE = Object.freeze({ status: "not_stated" });
+
+function isStatedTemperature(temperature) {
+  return Boolean(temperature) && temperature.status !== "not_stated";
+}
+
+/**
+ * A typed temperature must agree with the immutable extraction it claims to describe.
+ *
+ * not_stated is admissible only when the source really says nothing. Declaring
+ * not_stated over prose that prints TJ = 25 degC is not a relaxation, it is discarding a
+ * stated fact, and a package built on it would present a 25 degC measurement as
+ * temperature-agnostic.
+ */
+function assertTypedTemperatureMatchesExtraction(parsed, typed, label, description = "typed temperature disagrees with the immutable extraction") {
+  if (!isStatedTemperature(parsed)) return;
+  if (!isStatedTemperature(typed)) {
+    throw new Error(`${label} declares its temperature not_stated but the immutable extraction states one`);
+  }
+  if (typed.kind !== parsed.kind || !nearlyEqual(typed.value_c, parsed.value_c)) {
+    throw new Error(`${label} ${description}`);
+  }
+}
+
+/**
+ * The temperature of one piece of evidence, from prose.
+ *
+ * Two temperatures in one condition is still a hard failure: a row that cites both a
+ * 25 degC and a 125 degC figure describes two measurements, and merging them into one
+ * condition would claim a temperature coefficient of zero. No temperature at all is a
+ * typed not_stated fact, because the honest answer is that the temperature is unknown,
+ * not that the measurement did not happen.
+ */
 function temperatureIdentity(text, label) {
   const conditionText = String(text ?? "").replaceAll("_", "");
   const matches = [...conditionText.matchAll(/\b(TJ|TA|TC|junction(?:\s+temperature)?|ambient(?:\s+temperature)?|case(?:\s+temperature)?)\s*=\s*([+-]?\d+(?:\.\d+)?)\s*(?:deg\s*c|degc|°c|\bc\b)/gi)];
-  if (matches.length !== 1) throw new Error(`${label} must state exactly one temperature with junction, ambient, or case kind`);
+  if (matches.length > 1) throw new Error(`${label} must state exactly one temperature with junction, ambient, or case kind`);
+  if (!matches.length) return { ...NOT_STATED_TEMPERATURE };
   return temperatureFromMatch(matches[0]);
 }
 
@@ -269,18 +303,43 @@ function timeSeconds(value, unit) {
   return Number(value) * ({ s: 1, ms: 1e-3, us: 1e-6, "µs": 1e-6, ns: 1e-9 }[String(unit).toLowerCase()] ?? NaN);
 }
 
-function testModeIdentity(text, label, { curve = false } = {}) {
-  const result = statedTestModeIdentity(text, label, { curve });
-  if (!result) throw new Error(`${label} must state its exact test mode`);
-  if (["pulsed", "single_pulse"].includes(result.mode.kind) && (!Object.hasOwn(result.mode, "pulse_width_s") || !Object.hasOwn(result.mode, "duty_cycle"))) {
-    throw new Error(`${label} pulsed evidence must state pulse width and duty cycle`);
+// Test-mode synonyms. The identity used to be built by exact-phrase matching on raw
+// prose: evidence that said "static characteristics" or "d.c." instead of the literal
+// token "DC" was rejected outright, which is a spelling test, not an electrical one. The
+// kinds themselves stay closed (TEST_MODE_KINDS) and every rule that depends on the kind
+// is unchanged; only the ways a datasheet may spell one are widened.
+// Ordered, first match wins, so "continuous DC" is continuous rather than DC.
+const TEST_MODE_SYNONYMS = [
+  [/\bsingle[-\s]?(?:shot|pulse)\b/i, "single_pulse"],
+  [/\bpuls(?:e|ed|ing)\b|\bpulse[-\s]?test(?:ed)?\b/i, "pulsed"],
+  [/\b(?:test\s*mode\s*=\s*)?continuous\b|\bsteady[-\s]?state\b/i, "continuous"],
+  [/\b(?:test\s*mode\s*=\s*)?(?:dc|d\.\s*c\.)\b/i, "dc"],
+];
+// "static" is deliberately NOT a DC synonym. "Static drain-source on-resistance" is the
+// standard datasheet NAME of the RDS(on) row, not a statement about how it was measured,
+// and a pulse-tested row that only carries that name would then be read as DC: exactly
+// the substitution that understates a part's continuous on-resistance.
+
+const NOT_STATED_TEST_MODE = Object.freeze({ kind: "not_stated" });
+
+function assertPulsedEvidenceIsMeasurable(mode, label) {
+  // A pulsed RDS(on) is measured before the die heats, so reading one as DC claims a
+  // lower continuous on-resistance than the part delivers. Without a stated width there
+  // is nothing to check the measurement against the self-heating time constant.
+  //
+  // The duty cycle is no longer required alongside it. The duty cycle refines a
+  // self-heating estimate; the width is what decides whether the measurement is
+  // thermally static, and requiring both rejected real datasheets that print only the
+  // width. No new claim becomes reachable: pulsed evidence still cannot enter a static
+  // DC fit at all except as the explicitly declared quasi-static RDS snapshot.
+  if (["pulsed", "single_pulse"].includes(mode.kind) && !Object.hasOwn(mode, "pulse_width_s")) {
+    throw new Error(`${label} pulsed evidence must state its pulse width`);
   }
-  return result;
 }
 
 function statedTestModeIdentity(text, label, { curve = false } = {}) {
   const conditionText = String(text ?? "").replaceAll("μ", "µ");
-  const pulse = /\bpuls(?:e|ed)\b/i.test(conditionText);
+  const pulse = TEST_MODE_SYNONYMS.slice(0, 2).some(([pattern]) => pattern.test(conditionText));
   const width = conditionText.match(/pulse\s*width\s*(<=|≤|=|<)\s*([0-9.eE+-]+)\s*(s|ms|us|µs|ns)\b/i);
   const duty = conditionText.match(/duty\s*(?:cycle)?\s*(<=|≤|=|<)\s*([0-9.eE+-]+)\s*%/i);
   const period = conditionText.match(/(?:repetition\s*)?period\s*=\s*([0-9.eE+-]+)\s*(s|ms|us|µs|ns)\b/i);
@@ -291,7 +350,7 @@ function statedTestModeIdentity(text, label, { curve = false } = {}) {
       ...(duty ? [{ key: "duty_cycle_operator", value: duty[1].replace("≤", "<=") }] : []),
     ];
     const mode = {
-      kind: /single\s*pulse/i.test(conditionText) ? "single_pulse" : "pulsed",
+      kind: TEST_MODE_SYNONYMS[0][0].test(conditionText) ? "single_pulse" : "pulsed",
       ...(width ? { pulse_width_s: timeSeconds(width[2], width[3]) } : {}),
       ...(duty ? { duty_cycle: Number(duty[2]) / 100 } : {}),
       ...(period ? { repetition_period_s: timeSeconds(period[1], period[2]) } : {}),
@@ -299,15 +358,62 @@ function statedTestModeIdentity(text, label, { curve = false } = {}) {
     };
     return { mode, qualifiers };
   }
-  if (/\b(?:test\s*mode\s*=\s*)?continuous\b/i.test(conditionText)) return { mode: { kind: "continuous" }, qualifiers: [] };
-  if (/\b(?:test\s*mode\s*=\s*)?dc\b/i.test(conditionText) || curve) return { mode: { kind: "dc" }, qualifiers: [] };
+  for (const [pattern, kind] of TEST_MODE_SYNONYMS) {
+    if (!["pulsed", "single_pulse"].includes(kind) && pattern.test(conditionText)) {
+      return { mode: { kind }, qualifiers: [] };
+    }
+  }
+  if (curve) return { mode: { kind: "dc" }, qualifiers: [] };
   return null;
 }
 
-function normalizedQualifiers(text, testModeQualifiers) {
-  const qualifiers = [...testModeQualifiers];
-  if (/unless\s+otherwise\s+noted/i.test(text)) qualifiers.push({ key: "temperature_scope", value: "unless_otherwise_noted" });
-  if (/electrical[-\s]characteristics\s+heading/i.test(text)) qualifiers.push({ key: "condition_source", value: "electrical_characteristics_heading" });
+// Only typed facts about the measurement reach the identity. A pulse-width operator is
+// one: "pulse width <= 300 us" is a bound and "= 300 us" is an exact value, and the two
+// are different measurements. Prose scope phrases such as "unless otherwise noted" are
+// not: they describe where in the datasheet the condition was printed, which is
+// provenance, not a condition. Those go to notes.
+
+/**
+ * The typed test mode for one piece of evidence.
+ *
+ * Sources, in order:
+ *   1. `evidence.test_mode`, a typed object the extractor supplies directly. This is the
+ *      relaxation that matters: an extractor that already knows the mode no longer has to
+ *      round-trip it through prose that then has to match a phrase list.
+ *   2. the prose, through the synonym table.
+ *   3. `not_stated`, recorded as a typed fact rather than rejected.
+ *
+ * not_stated is still admitted only for the characteristics in
+ * NOT_STATED_MODE_CHARACTERISTICS, so an RDS(on) row whose test mode is unknown cannot
+ * enter a fit as though it were DC.
+ */
+function evidenceTestMode(rawEvidence, conditions, characteristic, label) {
+  const typed = rawEvidence && typeof rawEvidence === "object" ? rawEvidence.test_mode : null;
+  if (typed && typeof typed === "object" && !Array.isArray(typed)) {
+    validateTypedTestMode(typed, characteristic, `${label} typed test_mode`);
+    assertPulsedEvidenceIsMeasurable(typed, label);
+    return { mode: structuredClone(typed), qualifiers: [], source: "typed_extraction_field" };
+  }
+  const parsed = statedTestModeIdentity(conditions, label);
+  if (parsed) {
+    assertPulsedEvidenceIsMeasurable(parsed.mode, label);
+    return { ...parsed, source: "prose_synonym" };
+  }
+  if (!NOT_STATED_MODE_CHARACTERISTICS.has(characteristic)) {
+    throw new Error(`${label} states no test mode, and not_stated is not admitted for ${characteristic}`);
+  }
+  return { mode: { ...NOT_STATED_TEST_MODE }, qualifiers: [], source: "not_stated" };
+}
+
+function normalizedQualifiers(testMode) {
+  const qualifiers = [
+    ...testMode.qualifiers,
+    // How the mode was learned is part of the condition. An unstated mode must never
+    // produce the same condition ID as a mode the datasheet actually printed, or two
+    // measurements one of which might be pulsed would share a cohort.
+    ...(testMode.source && testMode.source !== "prose_synonym"
+      ? [{ key: "test_mode_source", value: testMode.source }] : []),
+  ];
   return qualifiers.sort((left, right) => left.key.localeCompare(right.key) || left.value.localeCompare(right.value));
 }
 
@@ -324,23 +430,20 @@ function assertStructuredTestModeCompatibility(structuredMode, statedMode, label
   }
 }
 
-function rejectUnknownQualifierSegments(text, label) {
-  const segments = String(text ?? "").split(/[;,]/).map((segment) => segment.trim()).filter(Boolean);
-  const recognized = [
-    /\b(?:T_?J|T_?A|T_?C|junction|ambient|case)\b\s*=/i, /\bV_?DS\b\s*=\s*V_?GS/i,
-    /\bV_?GS\b\s*=\s*V_?DS/i, /\bV_?GS\b\s*=/i, /\bV_?DS\b\s*=/i, /\bI_?D\b\s*=/i,
-    /\btest\s*mode\s*=/i, /\bcontinuous\b/i, /\bDC\b/i, /\bpuls(?:e|ed)\b/i,
-    /pulse\s*width/i, /duty\s*(?:cycle)?/i, /repetition\s*(?:period|frequency)/i,
-    /unless\s+otherwise\s+noted/i, /electrical[-\s]characteristics\s+heading/i,
-    /(?:source\s+)?(?:V_?GS|I_?D|RDS\(on\)|V_?GS\(th\)|value).*represented.*magnitude/i,
-    /source\s+(?:V_?GS|I_?D|RDS\(on\)|V_?GS\(th\)|value)\s*=/i,
-    /as\s+printed\s+in\s+figure/i, /associated\s+R_?DS\(on\)\s+test\s+point/i,
-    /(?:T_?J|T_?A|T_?C)\s*=.*\bcurve\b/i, /p-channel\s+quantities\s+are\s+represented\s+as\s+magnitudes/i,
-    /I_?D\s*=\s*f\(V_?GS\)/i, /\|?V_?DS\|?\s*>\s*2\s*\|?I_?D\|?\s*\/\s*R_?DS\(on\)/i, /^max\.?$/i,
-    /converted\s+to/i, /per\s+Note\s+\d+/i,
-  ];
-  const unknown = segments.filter((segment) => !recognized.some((pattern) => pattern.test(segment)));
-  if (unknown.length) throw new Error(`${label} has unknown residual qualifier tokens: ${unknown.join("; ")}`);
+// The extractor's prose used to be held against a whitelist of recognised segments, and
+// anything unlisted failed the part. That whitelist prevented no wrong electrical claim:
+// every electrical fact it stood in front of (temperature, bias, drain current, test mode,
+// polarity) is parsed and required by its own rule below, and a segment like
+// "p-channel quantities are represented as magnitudes" is a disclosure about the
+// transcription, not a claim about the device. What it did do was make the CONDITION
+// IDENTITY depend on how a footnote was worded, so two identical measurements whose
+// datasheets phrased their headings differently produced different condition IDs. That
+// weakened the identity gates rather than strengthening them.
+//
+// Disclosure prose is now recorded verbatim as free text and never enters any identity.
+function conditionNotes(text) {
+  const prose = String(text ?? "").trim();
+  return prose ? [prose] : [];
 }
 
 const ADJUDICATION_KIND = "opencircuit-condition-adjudication-supplement";
@@ -424,8 +527,14 @@ function validateTypedTestMode(mode, characteristic, label) {
 function validateTypedTemperature(temperature, label) {
   requireExactObjectKeys(temperature, ["status"], ["kind", "value_c", "provenance"], label);
   if (temperature.status === "not_stated") {
+    // This used to throw. Failing closed on an unstated temperature discards a real
+    // measurement over a missing label, and the electrical claim it guards is made
+    // elsewhere: an unstated temperature produces its own condition ID, so it can never
+    // join a cohort with a stated one, and F2 still requires a stated temperature (see
+    // TEMPERATURE_RULE in the evidence contract). What an F1 package may then claim is
+    // narrowed accordingly and the reason is written into its omissions.
     requireExactObjectKeys(temperature, ["status"], [], label);
-    throw new Error(`${label} not_stated fails closed`);
+    return { ...NOT_STATED_TEMPERATURE };
   }
   if (temperature.status !== "stated") throw new Error(`${label}.status is unknown`);
   requireExactObjectKeys(temperature, ["status", "kind", "value_c", "provenance"], [], label);
@@ -691,12 +800,34 @@ function evidenceIdentity(role, conditionIdentity, citationIdentityValue, quanti
   };
 }
 
-function evidenceBundle(role, conditionIdentity, citationIdentityValue, quantity, valueSi, unitSi) {
+function evidenceBundle(role, conditionIdentity, citationIdentityValue, quantity, valueSi, unitSi, notes = []) {
   return {
     condition_identity: conditionIdentity,
     citation_identity: citationIdentityValue,
     evidence_identity: evidenceIdentity(role, conditionIdentity, citationIdentityValue, quantity, valueSi, unitSi),
+    // Free text, kept beside the identity and deliberately outside it. Recorded so a
+    // reviewer reads what the datasheet actually said; excluded from the identity so
+    // wording cannot split or merge two measurements.
+    ...(notes.length ? { notes } : {}),
   };
+}
+
+/**
+ * A bench probe needs a number to put on its `.temp` line.
+ *
+ * An unstated temperature is admissible as a typed fact in the condition identity, and
+ * it demotes rather than rejects. It is NOT admissible here: you cannot simulate at an
+ * unknown temperature, and substituting a nominal 25 degC would present a row that might
+ * have been taken at 175 degC as a room-temperature measurement. That is a wrong claim,
+ * not missing ceremony.
+ */
+function benchTemperature(value, label) {
+  // typeof, not Number(): Number(null) is 0, which is finite, and would put a silent
+  // ".temp 0" on the bench for evidence whose temperature was never stated.
+  if (typeof value !== "number" || !Number.isFinite(value)) {
+    throw new Error(`${label} must state exactly one temperature before it can be probed on a bench`);
+  }
+  return Number(value);
 }
 
 function sameIdentity(left, right) {
@@ -715,7 +846,6 @@ function validateThresholdEvidence(rawEvidence, sourceKind, label, context) {
   const direct = directCondition(rawEvidence, "gate_threshold", label, context);
   if (adjudicated && direct) throw new Error(`${label} may not mix direct condition with adjudication semantics`);
   const semantic = adjudicated ?? direct;
-  if (!semantic) rejectUnknownQualifierSegments(evidence.conditions, label);
   const parsedCurrent = conditionDrainCurrent(evidence.conditions, null);
   if (!semantic && !(parsedCurrent > 0)) throw new Error(`${label} must state its own positive threshold drain current`);
   const normalized = evidence.conditions.replaceAll("_", "").replace(/\s+/g, "");
@@ -728,7 +858,9 @@ function validateThresholdEvidence(rawEvidence, sourceKind, label, context) {
     throw new Error(`${label} must independently state the supported VDS = VGS relationship`);
   }
   const parsedTemperature = semantic ? statedTemperatureIdentity(evidence.conditions, label) : temperatureIdentity(evidence.conditions, label);
-  const legacyTestMode = semantic ? statedTestModeIdentity(evidence.conditions, label) : testModeIdentity(evidence.conditions, label);
+  const legacyTestMode = semantic
+    ? statedTestModeIdentity(evidence.conditions, label)
+    : evidenceTestMode(rawEvidence, evidence.conditions, "gate_threshold", label);
   if (semantic) assertStructuredTestModeCompatibility(semantic.testMode, legacyTestMode, label, semantic.sourceTestMode);
   const electrical = semantic?.electrical ?? {
     vgs: { kind: "relation", relation: "vds_equals_vgs" },
@@ -743,9 +875,7 @@ function validateThresholdEvidence(rawEvidence, sourceKind, label, context) {
     const current = Math.abs(Number(electrical.id?.value_a));
     if (!(current > 0)) throw new Error(`${label} typed threshold semantics must state its own positive threshold drain current`);
     if (parsedCurrent != null) assertFixedSemanticValue(electrical.id, parsedCurrent, label, "value_a");
-    if (parsedTemperature && (semantic.temperature.kind !== parsedTemperature.kind || !nearlyEqual(semantic.temperature.value_c, parsedTemperature.value_c))) {
-      throw new Error(`${label} typed temperature disagrees with the immutable extraction`);
-    }
+    assertTypedTemperatureMatchesExtraction(parsedTemperature, semantic.temperature, label);
     if (statedRelationship && (electrical.vgs?.relation !== "vds_equals_vgs" || electrical.vds?.relation !== "vds_equals_vgs")) {
       throw new Error(`${label} typed threshold relationship disagrees with the immutable extraction`);
     }
@@ -763,13 +893,15 @@ function validateThresholdEvidence(rawEvidence, sourceKind, label, context) {
     characteristic: "gate_threshold", polarity: context.polarity, magnitudeConvention, temperature,
     electrical,
     testMode: semantic?.testMode ?? legacyTestMode.mode,
-    qualifiers: semantic?.qualifiers ?? normalizedQualifiers(evidence.conditions, legacyTestMode.qualifiers),
+    qualifiers: semantic?.qualifiers ?? normalizedQualifiers(legacyTestMode),
   });
   const citationIdentityValue = citationIdentity(evidence.locator ?? evidence.page_reference, {
     ...context, label, defaultRow: "gate threshold voltage",
   });
   return {
-    evidence, value, current, temperature: temperature.value_c, relationship: "VDS = VGS", citation: evidence.page_reference,
+    evidence, value, current, temperature: temperature.value_c ?? null,
+    temperature_status: isStatedTemperature(temperature) ? "stated" : "not_stated",
+    relationship: "VDS = VGS", citation: evidence.page_reference,
     ...evidenceBundle(
       sourceKind,
       conditionIdentity,
@@ -777,6 +909,7 @@ function validateThresholdEvidence(rawEvidence, sourceKind, label, context) {
       `threshold_${sourceKind}`,
       value,
       "V",
+      conditionNotes(evidence.conditions),
     ),
   };
 }
@@ -790,7 +923,7 @@ function citedThresholdConstraint(specs, context) {
   if (!sameIdentity(minimum, maximum)) throw new Error("MOSFET F1 threshold bounds must independently resolve to the same condition and citation cohort identity");
   return {
     id: "threshold_interval_1", kind: "threshold_interval", minimum_v: minimum.value, maximum_v: maximum.value,
-    current_a: minimum.current, temperature_c: minimum.temperature, vds_relationship: minimum.relationship, inclusive: true,
+    current_a: minimum.current, temperature_c: benchTemperature(minimum.temperature, "MOSFET F1 threshold interval"), vds_relationship: minimum.relationship, inclusive: true,
     conditions: minimum.evidence.conditions, citations: [minimum.citation, maximum.citation],
     condition_identity: minimum.condition_identity,
     citation_identities: [minimum.citation_identity, maximum.citation_identity],
@@ -823,13 +956,14 @@ function validateRdsonPoint(rawPoint, index, sourceKind, context) {
     const direct = directCondition(rawPoint?.[rawKey], "rds_on", fieldLabel, context);
     if (adjudicated && direct) throw new Error(`${fieldLabel} may not mix direct condition with adjudication semantics`);
     const semantic = adjudicated ?? direct;
-    if (!semantic) rejectUnknownQualifierSegments(evidence.conditions, fieldLabel);
     const parsedVgs = conditionVoltage(evidence.conditions, "VGS", null);
     const parsedVds = conditionVoltage(evidence.conditions, "VDS", null);
     const parsedCurrent = conditionDrainCurrent(evidence.conditions, null);
     if (!semantic && (!(parsedVgs > 0) || !(parsedCurrent > 0))) throw new Error(`${fieldLabel} must state its own exact VGS and ID`);
     const parsedTemperature = semantic ? statedTemperatureIdentity(evidence.conditions, fieldLabel) : temperatureIdentity(evidence.conditions, fieldLabel);
-    const legacyTestMode = semantic ? statedTestModeIdentity(evidence.conditions, fieldLabel) : testModeIdentity(evidence.conditions, fieldLabel);
+    const legacyTestMode = semantic
+      ? statedTestModeIdentity(evidence.conditions, fieldLabel)
+      : evidenceTestMode(rawPoint?.[rawKey], evidence.conditions, "rds_on", fieldLabel);
     if (semantic) assertStructuredTestModeCompatibility(semantic.testMode, legacyTestMode, fieldLabel, semantic.sourceTestMode);
     const electrical = semantic?.electrical ?? {
       vgs: { kind: "fixed", value_v: parsedVgs },
@@ -846,9 +980,7 @@ function validateRdsonPoint(rawPoint, index, sourceKind, context) {
         throw new Error(`${fieldLabel} typed RDS(on) semantics must preserve that VDS was not stated`);
       }
       if (parsedVds != null) throw new Error(`${fieldLabel} typed RDS(on) VDS-not-stated relation disagrees with fixed VDS in the immutable extraction`);
-      if (parsedTemperature && (semantic.temperature.kind !== parsedTemperature.kind || !nearlyEqual(semantic.temperature.value_c, parsedTemperature.value_c))) {
-        throw new Error(`${fieldLabel} typed temperature disagrees with the immutable extraction`);
-      }
+      assertTypedTemperatureMatchesExtraction(parsedTemperature, semantic.temperature, fieldLabel);
       if ((Number(rawPoint?.vgs?.value) < 0 || Number(rawPoint?.current?.value) < 0) && semantic.magnitudeConvention !== "signed") {
         throw new Error(`${fieldLabel} typed magnitude convention contradicts the signed source values`);
       }
@@ -861,7 +993,7 @@ function validateRdsonPoint(rawPoint, index, sourceKind, context) {
       characteristic: "rds_on", polarity: context.polarity, magnitudeConvention, temperature,
       electrical,
       testMode: semantic?.testMode ?? legacyTestMode.mode,
-      qualifiers: semantic?.qualifiers ?? normalizedQualifiers(evidence.conditions, legacyTestMode.qualifiers),
+      qualifiers: semantic?.qualifiers ?? normalizedQualifiers(legacyTestMode),
     });
     const citationIdentityValue = citationIdentity(evidence.locator ?? evidence.page_reference, {
       ...context, label: fieldLabel, defaultRow: `rds_on_${index + 1}`, defaultColumn: field.toLowerCase(),
@@ -869,7 +1001,9 @@ function validateRdsonPoint(rawPoint, index, sourceKind, context) {
     const quantity = field === "VGS" ? "vgs" : field === "ID" ? "drain_current" : `rds_on_${sourceKind}`;
     const valueSi = field === "VGS" ? vgs : field === "ID" ? current : resistance;
     const unitSi = field === "VGS" ? "V" : field === "ID" ? "A" : "ohm";
-    return { parsedVgs: normalizedVgs, parsedCurrent: normalizedCurrent, temperature: temperature.value_c, citation: evidence.page_reference, ...evidenceBundle(role, conditionIdentity, citationIdentityValue, quantity, valueSi, unitSi) };
+    return { parsedVgs: normalizedVgs, parsedCurrent: normalizedCurrent, temperature: temperature.value_c ?? null,
+      temperature_status: isStatedTemperature(temperature) ? "stated" : "not_stated",
+      citation: evidence.page_reference, ...evidenceBundle(role, conditionIdentity, citationIdentityValue, quantity, valueSi, unitSi, conditionNotes(evidence.conditions)) };
   });
   if (!fields.slice(1).every((field) => sameIdentity(fields[0], field))) {
     throw new Error(`${label} VGS, ID, resistance, qualifiers, and citations must independently describe one condition and citation cohort identity`);
@@ -909,7 +1043,7 @@ function citedRdsonEvidence(specs, context) {
 function citedRdsonConstraints(evidence) {
   return evidence.maximum.map((validated) => ({
     id: `rdson_maximum_${validated.index + 1}`, kind: "rdson_maximum", maximum_ohm: validated.resistance,
-    vgs_v: validated.vgs, current_a: validated.current, temperature_c: validated.temperature,
+    vgs_v: validated.vgs, current_a: validated.current, temperature_c: benchTemperature(validated.temperature, `MOSFET F1 RDS(on) constraint ${validated.index + 1}`),
     inclusive: true, conditions: validated.conditions, citations: validated.citations,
     condition_identity: validated.condition_identity, citation_identities: validated.citation_identities,
     evidence_identities: validated.evidence_identities,
@@ -1047,13 +1181,12 @@ function normalizeMosfetCurve(curve, curveIndex, context) {
   }
   const adjudicated = adjudicatedCondition(curve, characteristic, label, context);
   if (hasStructuredFields && adjudicated) throw new Error(`${label} may not mix direct structured conditions with supplement semantics`);
-  if (!adjudicated && !hasStructuredFields) rejectUnknownQualifierSegments(conditions, label);
   const parsedTemperature = (adjudicated || hasStructuredFields)
     ? statedTemperatureIdentity(conditions, label)
     : temperatureIdentity(conditions, label);
   const legacyTestMode = (adjudicated || hasStructuredFields)
     ? statedTestModeIdentity(conditions, label, { curve: false })
-    : testModeIdentity(conditions, label, { curve: false });
+    : evidenceTestMode(curve, conditions, characteristic, label);
   let hasSignedCurveCoordinate = false;
   const rawPoints = curve.points.map((point, pointIndex) => {
     if (point?.condition_identity || point?.citation_identity || point?.evidence_identity) throw new Error(`${label} point ${pointIndex} may not override shared identities`);
@@ -1073,9 +1206,7 @@ function normalizeMosfetCurve(curve, curveIndex, context) {
   if (structured) {
     const legacyFixedValue = characteristic === "transfer_current" ? legacyFixedVds : legacyFixedVgs;
     if (legacyFixedValue != null && !nearlyEqual(structured.fixedValue, legacyFixedValue)) throw new Error(`${label} structured electrical bias disagrees with test_conditions`);
-    if (parsedTemperature && (structured.temperature.kind !== parsedTemperature.kind || !nearlyEqual(structured.temperature.value_c, parsedTemperature.value_c))) {
-      throw new Error(`${label} structured temperature disagrees with test_conditions`);
-    }
+    assertTypedTemperatureMatchesExtraction(parsedTemperature, structured.temperature, label, "structured temperature disagrees with test_conditions");
     assertStructuredTestModeCompatibility(structured.testMode, legacyTestMode, label);
   }
   if (adjudicated) assertStructuredTestModeCompatibility(adjudicated.testMode, legacyTestMode, label, adjudicated.sourceTestMode);
@@ -1101,9 +1232,7 @@ function normalizeMosfetCurve(curve, curveIndex, context) {
       assertRangeSemanticValue(electrical.vds, rawPoints.map((point) => point.x_si), label, "lower_v", "upper_v");
     }
     assertRangeSemanticValue(electrical.id, rawPoints.map((point) => point.y_si), label, "lower_a", "upper_a");
-    if (parsedTemperature && (adjudicated.temperature.kind !== parsedTemperature.kind || !nearlyEqual(adjudicated.temperature.value_c, parsedTemperature.value_c))) {
-      throw new Error(`${label} typed temperature disagrees with the immutable extraction`);
-    }
+    assertTypedTemperatureMatchesExtraction(parsedTemperature, adjudicated.temperature, label);
     if (hasSignedCurveCoordinate && adjudicated.magnitudeConvention !== "signed") {
       throw new Error(`${label} typed magnitude convention contradicts signed curve coordinates`);
     }
@@ -1123,7 +1252,7 @@ function normalizeMosfetCurve(curve, curveIndex, context) {
             { key: "typed_source_test_mode", value: structured.testMode.kind },
             { key: "typed_temperature_provenance", value: structured.temperatureProvenance },
           ]
-        : normalizedQualifiers(conditions, legacyTestMode.qualifiers)),
+        : normalizedQualifiers(legacyTestMode)),
     ],
   });
   const citationIdentityValue = citationIdentity(curve.locator ?? curve.page_reference, { ...context, label, curveName: curve.name });
@@ -1202,14 +1331,21 @@ function normalizeMosfetExtractionForFit(part, extraction) {
 }
 
 export function validateMosfetCandidateEvidence(part, extraction) {
-  if (!extraction?.specs) throw new Error("MOSFET F1 critical calibration requires a datasheet extraction; catalog hints are seeds only");
+  if (!extraction?.specs) throw new InsufficientEvidence("MOSFET F1 critical calibration requires a datasheet extraction; catalog hints are seeds only");
   if (extraction.usable_curves) {
     const normalized = normalizeMosfetExtractionForFit(part, extraction);
     if (!normalized.curves.some((curve) => curve.characteristic === "transfer_current")) {
-      throw new Error("MOSFET F2 candidate evidence requires at least one normalized static transfer_current curve");
+      throw new InsufficientEvidence("MOSFET F2 candidate evidence requires at least one normalized static transfer_current curve");
     }
     return { family: "mosfet", route: "curve-fitted", extraction: normalized };
   }
+  return mosfetF1Candidate(part, extraction);
+}
+
+/** The F1 half of the MOSFET contract, reachable on its own so a failed curve rule
+ *  demotes the part instead of discarding it. */
+function mosfetF1Candidate(part, extraction) {
+  if (!extraction?.specs) throw new InsufficientEvidence("MOSFET F1 critical calibration requires a datasheet extraction; catalog hints are seeds only");
   const context = mosfetEvidenceContext(part, extraction);
   const specs = extraction.specs;
   let thresholdTypical = null;
@@ -1227,10 +1363,10 @@ export function validateMosfetCandidateEvidence(part, extraction) {
   const hasRdsonTypical = Boolean(rdson.typical[0]);
   const hasRdsonConstraint = Boolean(rdson.maximum.length);
   if (!hasThresholdTypical && !thresholdConstraint) {
-    throw new Error(`MOSFET F1 critical threshold calibration has neither an admissible cited typical point nor a valid two-sided interval${thresholdTypicalError ? `: ${thresholdTypicalError.message}` : ""}`);
+    throw new InsufficientEvidence(`MOSFET F1 critical threshold calibration has neither an admissible cited typical point nor a valid two-sided interval${thresholdTypicalError ? `: ${thresholdTypicalError.message}` : ""}`);
   }
   if (!hasRdsonTypical && !hasRdsonConstraint) {
-    throw new Error("MOSFET F1 critical RDS(on) calibration has neither an admissible cited typical point nor an inclusive maximum");
+    throw new InsufficientEvidence("MOSFET F1 critical RDS(on) calibration has neither an admissible cited typical point nor an inclusive maximum");
   }
   return {
     family: "mosfet",
@@ -1252,8 +1388,8 @@ function positiveDiodeForwardEvidence(point) {
 
 function selectDiodeForwardEvidence(extraction) {
   const points = extraction?.specs?.forward_voltage_points;
-  if (!Array.isArray(points)) throw new Error("Diode candidate evidence requires forward_voltage_points from the extraction");
-  if (!points.length) throw new Error("Diode candidate evidence requires a positive cited forward-voltage/current pair; catalog hints are seeds only");
+  if (!Array.isArray(points)) throw new InsufficientEvidence("Diode candidate evidence requires forward_voltage_points from the extraction");
+  if (!points.length) throw new InsufficientEvidence("Diode candidate evidence requires a positive cited forward-voltage/current pair; catalog hints are seeds only");
   const supported = new Set(["typical", "digitized_typical_curve", "maximum"]);
   for (const point of points) {
     const voltageKind = point?.voltage?.source_kind;
@@ -1470,14 +1606,170 @@ function validateDiodeCandidateEvidence(extraction) {
   return { family: "diode", route: selection.route, extraction: structuredClone(extraction) };
 }
 
-export function validateBulkCandidateEvidence(part, extraction) {
-  if (part?.conveyor_family === "mosfet") return validateMosfetCandidateEvidence(part, extraction);
-  if (part?.conveyor_family === "diode") return validateDiodeCandidateEvidence(extraction);
-  if (part?.conveyor_family === "bjt") {
-    if (!extraction?.specs) throw new Error("BJT candidate evidence requires a datasheet extraction");
-    return { family: "bjt", route: "family-specific", extraction: structuredClone(extraction) };
+/**
+ * The evidence contract, rule by rule.
+ *
+ * It used to be all-or-nothing: the preflight threw on the first rule that failed and
+ * the part was dropped, even when the rule that failed was an F2 rule and the part's F1
+ * evidence was intact. A MOSFET with one unusable curve and a perfectly good pair of
+ * cited threshold and RDS(on) rows produced no package at all.
+ *
+ * Each rule now reports independently and a package is staged at the highest tier its
+ * evidence supports. Nothing is loosened: an F2 rule that fails still costs the package
+ * its F2, and every rule that did not pass is written into the package's own omissions,
+ * so what the package does NOT claim is visible in the model card rather than inferable
+ * from an absent file.
+ *
+ * `claim` on each rule names the wrong electrical claim the rule exists to prevent.
+ */
+export const EVIDENCE_CONTRACT_RULES = Object.freeze({
+  mosfet_f2_curve_evidence: {
+    tier: "F2",
+    claim: "A curve whose axes, units, bias, citation or identity cannot be validated would be "
+      + "fitted as if it described this device at this condition, so the package would claim a "
+      + "transfer characteristic taken from something else.",
+  },
+  mosfet_f1_critical_calibration: {
+    tier: "F1",
+    claim: "Without a cited threshold and a cited RDS(on), every parameter in the card would come "
+      + "from a catalog hint, and the package would claim an on-resistance nobody measured.",
+  },
+  diode_forward_evidence: {
+    tier: "F1",
+    claim: "Without a cited positive forward voltage and current in SI units, the card's IS and N "
+      + "would be defaults, and the package would claim a forward drop nobody measured.",
+  },
+  bjt_extraction_present: {
+    tier: "F1",
+    claim: "Without a datasheet extraction the gain would come from a catalog attribute, and the "
+      + "package would claim an hFE nobody measured.",
+  },
+  stated_temperature: {
+    tier: "F2",
+    claim: "A device characteristic with no stated temperature, presented at F2, would claim "
+      + "curve-grade accuracy at a temperature the source never gave. At F1 the package still "
+      + "carries the measurement, and its omissions say the temperature is unknown.",
+  },
+});
+
+/**
+ * Evidence that is ABSENT or too thin for a tier, as distinct from evidence that
+ * CONTRADICTS itself.
+ *
+ * This is the line the incremental contract turns on. A missing transfer curve is not a
+ * wrong claim, it is a smaller claim, and the honest response is to stage the part at the
+ * tier its remaining evidence supports and say so in the omissions. A curve whose axes,
+ * units, bias, temperature, citation or test mode contradict the extraction IS a wrong
+ * claim, and quietly dropping it would hide a contradiction in the source. Only
+ * InsufficientEvidence demotes; everything else still rejects the whole part.
+ */
+export class InsufficientEvidence extends Error {
+  constructor(message) {
+    super(message);
+    this.name = "InsufficientEvidence";
   }
-  throw new Error(`Unsupported conveyor family: ${part?.conveyor_family ?? "missing"}`);
+}
+
+function ruleOutcome(id, run) {
+  const rule = EVIDENCE_CONTRACT_RULES[id];
+  try {
+    return { id, tier: rule.tier, status: "pass", value: run() };
+  } catch (error) {
+    if (!(error instanceof InsufficientEvidence)) throw error;
+    return { id, tier: rule.tier, status: "fail", reason: error.message };
+  }
+}
+
+function notApplicable(id, reason) {
+  return { id, tier: EVIDENCE_CONTRACT_RULES[id].tier, status: "not_applicable", reason };
+}
+
+const NOT_STATED_TEMPERATURE_PATHS = ["condition_identity", "condition_identities"];
+
+/** Every admitted condition whose temperature the source never stated. */
+function unstatedTemperatureConditions(value, trail = "evidence", found = []) {
+  if (!value || typeof value !== "object") return found;
+  if (Array.isArray(value)) {
+    value.forEach((item, index) => unstatedTemperatureConditions(item, `${trail}[${index}]`, found));
+    return found;
+  }
+  for (const key of NOT_STATED_TEMPERATURE_PATHS) {
+    const identity = value[key];
+    for (const candidate of Array.isArray(identity) ? identity : [identity]) {
+      if (candidate?.temperature && !isStatedTemperature(candidate.temperature)) {
+        found.push(`${trail}.${key} (${candidate.characteristic ?? "condition"})`);
+      }
+    }
+  }
+  for (const [key, child] of Object.entries(value)) {
+    if (NOT_STATED_TEMPERATURE_PATHS.includes(key)) continue;
+    unstatedTemperatureConditions(child, `${trail}.${key}`, found);
+  }
+  return found;
+}
+
+export function evaluateEvidenceContract(part, extraction) {
+  const family = part?.conveyor_family;
+  const rules = [];
+  let candidate = null;
+
+  if (family === "mosfet") {
+    const f2 = extraction?.usable_curves
+      ? ruleOutcome("mosfet_f2_curve_evidence", () => {
+        const normalized = normalizeMosfetExtractionForFit(part, extraction);
+        if (!normalized.curves.some((curve) => curve.characteristic === "transfer_current")) {
+          throw new InsufficientEvidence("MOSFET F2 candidate evidence requires at least one normalized static transfer_current curve");
+        }
+        return { family: "mosfet", route: "curve-fitted", extraction: normalized };
+      })
+      : notApplicable("mosfet_f2_curve_evidence", "the extraction declares no usable curves");
+    rules.push(f2);
+    if (f2.status === "pass") {
+      const unstated = unstatedTemperatureConditions(f2.value.extraction);
+      // Absence, not contradiction: the measurement is real, its temperature is unknown.
+      rules.push(unstated.length
+        ? { id: "stated_temperature", tier: "F2", status: "fail", reason: `conditions with no stated temperature: ${[...new Set(unstated)].join(", ")}` }
+        : { id: "stated_temperature", tier: "F2", status: "pass" });
+      if (!unstated.length) candidate = f2.value;
+    }
+    const f1 = ruleOutcome("mosfet_f1_critical_calibration", () => mosfetF1Candidate(part, extraction));
+    rules.push(f1);
+    if (!candidate && f1.status === "pass") candidate = f1.value;
+  } else if (family === "diode") {
+    const f1 = ruleOutcome("diode_forward_evidence", () => validateDiodeCandidateEvidence(extraction));
+    rules.push(f1);
+    if (f1.status === "pass") candidate = f1.value;
+  } else if (family === "bjt") {
+    const f1 = ruleOutcome("bjt_extraction_present", () => {
+      if (!extraction?.specs) throw new InsufficientEvidence("BJT candidate evidence requires a datasheet extraction");
+      return { family: "bjt", route: "family-specific", extraction: structuredClone(extraction) };
+    });
+    rules.push(f1);
+    if (f1.status === "pass") candidate = f1.value;
+  } else {
+    throw new Error(`Unsupported conveyor family: ${family ?? "missing"}`);
+  }
+
+  const reported = rules.map(({ value, ...rest }) => rest);
+  const failures = reported.filter((rule) => rule.status === "fail");
+  return {
+    schema_version: "1.0.0",
+    family,
+    tier: candidate ? (candidate.route === "curve-fitted" ? "F2" : "F1") : null,
+    rules: reported,
+    // What the package does not claim, in the package's own words.
+    omissions: failures.map((rule) => `Evidence rule ${rule.id} did not pass, so this package makes no `
+      + `${rule.tier} claim that depends on it: ${rule.reason}`),
+    candidate,
+  };
+}
+
+export function validateBulkCandidateEvidence(part, extraction) {
+  const report = evaluateEvidenceContract(part, extraction);
+  if (report.candidate) return report.candidate;
+  const failures = report.rules.filter((rule) => rule.status !== "pass");
+  throw new Error(`${report.family} evidence supports no fidelity tier:\n`
+    + failures.map((rule) => `  ${rule.id} (${rule.tier}, ${rule.status}): ${rule.reason}`).join("\n"));
 }
 
 function legacyMosfetParameters(part, specs, threshold, rdson) {
@@ -1546,7 +1838,7 @@ function rdsonConstraintEvidence(validated, quantity, value, unit) {
 
 function mosfetFit(part, extraction, forceF1 = false, constraintRunner = defaultMosfetConstraintRunner) {
   const specs = extraction?.specs;
-  if (!specs) throw new Error("MOSFET F1 critical calibration requires a datasheet extraction; catalog hints are seeds only");
+  if (!specs) throw new InsufficientEvidence("MOSFET F1 critical calibration requires a datasheet extraction; catalog hints are seeds only");
   const context = mosfetEvidenceContext(part, extraction);
   let thresholdTypical = null;
   let thresholdTypicalError = null;
@@ -1564,7 +1856,7 @@ function mosfetFit(part, extraction, forceF1 = false, constraintRunner = default
   const hasThresholdTypical = Boolean(thresholdTypical);
   const hasRdsonTypical = Boolean(rdsonTypical);
   if (!hasThresholdTypical && !thresholdConstraint) {
-    throw new Error(`MOSFET F1 critical threshold calibration has neither an admissible cited typical point nor a valid two-sided interval${thresholdTypicalError ? `: ${thresholdTypicalError.message}` : ""}`);
+    throw new InsufficientEvidence(`MOSFET F1 critical threshold calibration has neither an admissible cited typical point nor a valid two-sided interval${thresholdTypicalError ? `: ${thresholdTypicalError.message}` : ""}`);
   }
   if (!hasRdsonTypical && !rdsonConstraints.length) {
     throw new Error(`MOSFET F1 critical RDS(on) calibration has neither an admissible cited typical point nor an inclusive maximum${rdsonEvidence.typicalErrors[0] ? `: ${rdsonEvidence.typicalErrors[0].message}` : ""}`);
@@ -1583,7 +1875,7 @@ function mosfetFit(part, extraction, forceF1 = false, constraintRunner = default
       quantity: "gate_threshold", value: thresholdSeed, unit: "V", role: "typical_observation",
       citation: thresholdTypical.citation, citations: [thresholdTypical.citation],
       conditions: thresholdTypical.evidence.conditions, current_a: thresholdTypical.current,
-      temperature_c: thresholdTypical.temperature, vds_relationship: thresholdTypical.relationship,
+      temperature_c: benchTemperature(thresholdTypical.temperature, "MOSFET F1 threshold typical"), vds_relationship: thresholdTypical.relationship,
       condition_identity: thresholdTypical.condition_identity,
       citation_identity: thresholdTypical.citation_identity,
       evidence_identity: thresholdTypical.evidence_identity,
@@ -1592,7 +1884,7 @@ function mosfetFit(part, extraction, forceF1 = false, constraintRunner = default
       quantity: "rds_on", value: rdsonSeed, unit: "ohm", role: "typical_observation",
       citation: rdsonTypical.point.resistance.page_reference, citations: rdsonTypical.citations,
       conditions: rdsonTypical.conditions, vgs_v: rdsonTypical.vgs, current_a: rdsonTypical.current,
-      temperature_c: rdsonTypical.temperature, condition_identity: rdsonTypical.condition_identity,
+      temperature_c: benchTemperature(rdsonTypical.temperature, "MOSFET F1 RDS(on) typical"), condition_identity: rdsonTypical.condition_identity,
       citation_identities: rdsonTypical.citation_identities,
       evidence_identities: rdsonTypical.evidence_identities,
       evidence: [
@@ -1770,10 +2062,18 @@ export function defaultMosfetConstraintRunner(payload) {
 }
 
 export function fitBulkPart(part, extraction, { ngspiceRunner = defaultNgspiceRunner, fitRunner = defaultFitRunner, mosfetConstraintRunner = defaultMosfetConstraintRunner, forceF1 = false } = {}) {
+  const contract = ["mosfet", "diode", "bjt"].includes(part?.conveyor_family)
+    ? evaluateEvidenceContract(part, extraction)
+    : null;
   if (["mosfet", "diode"].includes(part?.conveyor_family)) validateBulkCandidateEvidence(part, extraction);
+  // A failed F2 rule costs the part its F2 route. Attempting the curve fit anyway would
+  // spend a fitter run to arrive at the answer the contract already gave, and would let
+  // an F2 result be produced from evidence the contract has already refused.
+  const f2RuleFailed = part?.conveyor_family === "mosfet" && (contract?.rules ?? []).some(
+    (rule) => rule.tier === "F2" && rule.status === "fail");
   const polarity = polarityFor(part, extraction);
   let fit;
-  if (!forceF1 && extraction?.usable_curves) {
+  if (!forceF1 && extraction?.usable_curves && !f2RuleFailed) {
     const fitExtraction = part.conveyor_family === "mosfet" ? normalizeMosfetExtractionForFit(part, extraction) : extraction;
     const attempt = fitRunner({
       ...(part.conveyor_family === "mosfet" ? { evidence_contract_version: "1.0.0" } : {}),
@@ -1816,6 +2116,7 @@ export function fitBulkPart(part, extraction, { ngspiceRunner = defaultNgspiceRu
     const breakdown = zenerInputs(extraction);
     if (breakdown) fit.parameters = { ...fit.parameters, ...breakdown };
   }
+  if (contract) fit.evidence_contract = { schema_version: contract.schema_version, tier: contract.tier, rules: contract.rules };
   const model = modelFor(part, fit);
   ngspiceRunner(model.text, { part, fit });
   return { ...fit, model };
@@ -2472,7 +2773,7 @@ function strictMosfetEvidenceRows(facts) {
 }
 
 function conditionValuesForRegion(condition, quantityName, temperatureKind = null) {
-  if (quantityName === "temperature") return condition.temperature.kind === temperatureKind ? [condition.temperature.value_c] : [];
+  if (quantityName === "temperature") return condition.temperature?.kind === temperatureKind ? [condition.temperature.value_c] : [];
   const field = condition.electrical[quantityName];
   if (field.kind === "fixed") return [field[`value_${quantityName === "id" ? "a" : "v"}`]];
   if (field.kind === "range") return [field[`lower_${quantityName === "id" ? "a" : "v"}`], field[`upper_${quantityName === "id" ? "a" : "v"}`]];
@@ -2744,6 +3045,12 @@ export function stageBulkPart(part, rawExtraction, fit, stagingRoot, { demotionR
       "Temperature scaling, self-heating, switching or conduction loss, junction temperature, and thermal behavior are not claimed.",
     ] : []),
     ...(demotionReason ? [`F2 evidence did not qualify; staged as F1: ${demotionReason}`] : []),
+    // Every evidence rule that did not pass, named in the package's own words, so what
+    // the package does not claim is readable in the model card rather than inferable
+    // from an absent file.
+    ...(fit.evidence_contract?.rules ?? [])
+      .filter((rule) => rule.status === "fail")
+      .map((rule) => `Evidence rule ${rule.id} did not pass, so this package makes no ${rule.tier} claim that depends on it: ${rule.reason}`),
     ...(extraction?.omission_reason ? [extraction.omission_reason] : []),
     ...(part.conveyor_family === "diode" && fit.fidelity === "F1" && extraction?.specs?.reverse_current
       ? ["Reverse-bias leakage is not covered by this F1 package because the approximation is supported only over cited forward-bias targets."]
