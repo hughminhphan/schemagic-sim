@@ -20,7 +20,7 @@ Official sources:
 
 The transport uses the single-product `ProductDetails` shape and a provider
 manufacturer ID. The ID must be injected from DigiKey's Manufacturers method;
-scheMAGIC does not infer it from an internal manufacturer registry key.
+Robonyx does not infer it from an internal manufacturer registry key.
 
 | DigiKey field | Frozen normalized field | Rule |
 | --- | --- | --- |
@@ -49,7 +49,7 @@ provenance value returned by `SearchLocaleUsed.Site`.
 
 DigiKey's agreement requires source attribution and restricts modification,
 aggregation, database creation, downstream display, and unapproved use. Whether
-this normalized representation and scheMAGIC's deployment modes are permitted
+this normalized representation and Robonyx's deployment modes are permitted
 requires written approval; consequently cache TTL, persistence, credentials,
 rate limits, and both execution modes stay disabled in the manifest.
 
