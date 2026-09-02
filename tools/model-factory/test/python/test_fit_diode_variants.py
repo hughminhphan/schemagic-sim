@@ -287,9 +287,18 @@ class ShippedPackageRegressionTest(unittest.TestCase):
     """No shipped package changes in this PR, and refitting must prove it.
 
     Every reviewed diode package is refitted from its own facts.json and must
-    reproduce its shipped parameters exactly. Diagnostics may be added; numbers
-    may not move.
+    reproduce its shipped parameters. Diagnostics may be added; numbers may not
+    move.
+
+    The comparison is a tight relative tolerance rather than bit equality. The
+    optimizer runs through platform math libraries, so the last couple of
+    mantissa bits differ between the authoring machine and CI (observed spread
+    is about 1e-8 relative). REFIT_RELATIVE_TOLERANCE sits far below any drift
+    that would signal a real fitter change and far above that noise, so the
+    regression still fails on a moved number.
     """
+
+    REFIT_RELATIVE_TOLERANCE = 1e-6
 
     SHIPPED = ["vishay/1N4148", "kingbright/WP7113ID", "onsemi/SS14",
                "vishay/BAT85", "onsemi/1N5822", "onsemi/BZX84C5V1"]
@@ -306,7 +315,14 @@ class ShippedPackageRegressionTest(unittest.TestCase):
                 # has always omitted non-positive optional parameters. Compare on the
                 # parameters that are actually claimed.
                 claimed = {name: value for name, value in shipped["parameters"].items() if value}
-                self.assertEqual(claimed, refit["parameters"])
+                self.assertEqual(sorted(claimed), sorted(refit["parameters"]))
+                for name, value in claimed.items():
+                    self.assertTrue(
+                        math.isclose(value, refit["parameters"][name],
+                                     rel_tol=self.REFIT_RELATIVE_TOLERANCE),
+                        f"{slug} {name} moved: shipped {value!r}, refit "
+                        f"{refit['parameters'][name]!r}",
+                    )
 
 
 if __name__ == "__main__":
