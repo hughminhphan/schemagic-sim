@@ -6,8 +6,13 @@ All notable Robonyx releases are documented here. The project uses semantic vers
 
 ### Changed
 
-- Renamed the product family to Robonyx (formerly scheMAGIC Simulator). This covers Robonyx Simulator, Robonyx Designer, Robonyx Motor Designer, Robonyx Power Designer, and the Robonyx Component Library. Persisted identifiers are unchanged: the `@opencircuit/*` package scope, the `opencircuit-circuit` document format, `schemagic-*` format and storage identifiers, and existing share URLs all keep working. The GitHub repository, the Cloudflare Pages project and the deployment domain still carry the old name and will be renamed separately.
-- Re-pinned the production static offline/network audit to the post-rename bundle. Changing visible copy changes bundle bytes, so `PRODUCTION_ARTIFACT_SET_HASH`, `MOTOR_TVS_RECIPE_EMITTED_ARTIFACT_HASH` and `MOTOR_DRV8262_COMPANION_GATE_EMITTED_ARTIFACT_HASH` in `apps/web/scripts/static-offline-audit.mjs` now record the new artifact identity. No boundary, endpoint allowlist or projection rule changed. The `v0.2.0-rc.1` release record keeps the artifact identity that release actually shipped.
+- [PR #22](https://github.com/hughminhphan/schemagic-sim/pull/22) renamed the products to Robonyx Simulator and Robonyx Designer, rewrote the project introduction, removed the obsolete orchestration document, and added guidance for people moving from Multisim Live.
+- [PR #20](https://github.com/hughminhphan/schemagic-sim/pull/20) added one complete verification command, modernised continuous integration, created the agent backlog, and indexed the campaign archive.
+- [PR #19](https://github.com/hughminhphan/schemagic-sim/pull/19) made the model conveyor dispatch extraction work, lease parts safely, account for run cost, and select parts from a relevance list under protocol v2.
+- [PR #25](https://github.com/hughminhphan/schemagic-sim/pull/25) made model fitting reuse ngspice work, added Zener and Schottky behavior, adopted incremental evidence, and drafted the first review rubric.
+- [PR #24](https://github.com/hughminhphan/schemagic-sim/pull/24) changed Robonyx Designer release checks from broad literal pins to property assertions and added bound-typed facts for design calculations.
+- [PR #23](https://github.com/hughminhphan/schemagic-sim/pull/23) made 40 of 43 reviewed catalog parts placeable in Robonyx Simulator and added ranked search with practical filters.
+- [PR #21](https://github.com/hughminhphan/schemagic-sim/pull/21) replaced the welcome modal with a coach mark, opened Robonyx Simulator on a useful named trace, and added teaching examples.
 
 ## [0.2.0-rc.1] - 2026-09-01
 

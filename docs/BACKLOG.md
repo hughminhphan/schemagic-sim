@@ -72,13 +72,63 @@ These tasks already have a branch. Do not start a second branch for them.
 
 | Branch | Tasks |
 | --- | --- |
-| `roadmap/rename` | 0.6 |
-| `roadmap/sim-parts` | 0.1 |
-| `roadmap/sim-ux` | 0.2, 0.3, 0.4, 0.5 |
-| `roadmap/ci-hygiene` | 0.7, 0.9, 0.10 |
-| `roadmap/designer-depin` | D.0 |
-| `roadmap/conveyor` | 2.1 |
-| `roadmap/factory` | 2.2, 2.4 (mapping inferred from the branch name; confirm before starting either) |
+| `roadmap/audit-pin` | Hygiene: make offline-audit emitted-bundle pins release-only |
+| `roadmap/examples-12` | 0.12 |
+| `roadmap/share-embed` | 1.9, 1.5 |
+| `roadmap/editor-clipboard` | 1.8 |
+| `roadmap/falstad-import` | 1.6 |
+| `roadmap/buck-profiles` | D.2 profile slice |
+| `roadmap/buck-calculators` | D.2 engine slice |
+| `roadmap/factory-jfet-mosfet` | 2.11, 2.10 |
+| `roadmap/storage-replay` | 2.5, 2.17 |
+| `roadmap/docs-sync` | Wave 1 completion status, Wave 2 status, and contributor docs |
+
+---
+
+## Follow-ups discovered in Wave 1
+
+The new entries below have disjoint file ownership across lanes. The nightly wrapper with protocol v2 stop conditions remains task [2.16](#216-nightly-one-pr-loop), and the relevance top-300 draft and review rubric v1 draft remain `needs-human` sign-off items under [2.8](#28-curated-relevance-list) and [2.6](#26-review-rubric-v1).
+
+### F.1 Show pin names on authored block symbols
+
+- **Status** `blocked-until: 1.8 merges`
+- **Goal** Authored block symbols show their pin names on the canvas, with the generated-symbol no-text rule lifted only for those symbols.
+- **Lane** A
+- **Files owned** `packages/schematic-editor/scripts/generate-symbols.mjs`, `packages/schematic-editor/src/symbols.generated.ts`, `packages/schematic-editor/src/symbols.test.ts`
+- **Verify** `npm run verify && npm exec --workspace=@opencircuit/schematic-editor -- vitest run src/symbols.test.ts`
+- **Out of scope** PARTS pin geometry, KiCad-derived symbol geometry, the editor DOM contract, circuit-schema pin ordering.
+- **Done when** Comparator, timer, regulator, logic, JFET and optocoupler block symbols render readable pin names without adding text to KiCad-derived symbols.
+- **Labels** `needs-human` (sequencing after 1.8) `size:S` `lane:A`
+
+### F.2 Refit the three held comparator packages
+
+- **Goal** LM311, LM393 and TLV3702 pass their recorded native-versus-WebAssembly benches and become eligible for placement.
+- **Lane** C
+- **Files owned** `packages/model-library/models/ti/LM311/**`, `packages/model-library/models/ti/LM393/**`, `packages/model-library/models/ti/TLV3702/**`
+- **Verify** `npm run verify && node packages/model-library/validate-library.mjs`
+- **Out of scope** PARTS pin geometry, catalog placement logic, fitter infrastructure, every model package outside the three named directories.
+- **Done when** All three packages record native-versus-WebAssembly agreement, library validation passes, and the existing catalog gate no longer holds their ids.
+- **Labels** `agent-ready` `size:S` `lane:C`
+
+### F.3 Stabilise unit wall-clock budgets under parallel load
+
+- **Goal** The motor Designer unit suites use realistic wall-clock budgets and explicitly serial execution so shared-machine load does not create false failures.
+- **Lane** B
+- **Files owned** `packages/motor-designer/package.json`, `packages/motor-designer/vitest.config.ts`, `packages/motor-designer/test/reviewed-real-catalog.test.ts`, `packages/motor-designer/test/v3-constraint-observation.test.ts`
+- **Verify** `npm run test --workspace=@opencircuit/motor-designer && npm run verify`
+- **Out of scope** Production code, numerical assertions, Designer runtime budgets, performance claims.
+- **Done when** The two previously flaky files pass three serial runs under ordinary parallel machine load without weakening a numerical assertion.
+- **Labels** `agent-ready` `size:S` `lane:B`
+
+### F.4 Refit 1N5822 away from the parked Schottky bound
+
+- **Goal** The shipped 1N5822 model no longer parks its ideality parameter at the old 0.8 lower bound and reports an honest fit outcome under the Schottky bounds.
+- **Lane** C
+- **Files owned** `packages/model-library/models/onsemi/1N5822/**`
+- **Verify** `node packages/component-schema/validate-package.mjs packages/model-library/models/onsemi/1N5822 && npm run verify`
+- **Out of scope** Diode-fitter infrastructure, other diode packages, promotion policy, evidence-contract changes.
+- **Done when** The package either fits inside the Schottky bounds or is honestly demoted with the bound-saturation reason, and all recorded native-versus-WebAssembly benches agree.
+- **Labels** `agent-ready` `size:S` `lane:C`
 
 ---
 
@@ -86,18 +136,20 @@ These tasks already have a branch. Do not start a second branch for them.
 
 Target 2026-09-15. Everything here is small. Tasks 0.1 through 0.8 gate the launch sequence.
 
-### 0.1 Map the six orphan symbol families — IN PROGRESS (`roadmap/sim-parts`)
+### 0.1 Map the six orphan symbol families - DONE ([PR #23](https://github.com/hughminhphan/schemagic-sim/pull/23))
 
-- **Goal** The timer, `logic_74hc`, `vreg_linear`, comparator, `jfet_n` and optocoupler families each resolve to a schematic symbol with a complete pin bijection, so 43 reviewed parts including NE555, the 74HC gates, LM317, LM393 and 4N35 become placeable.
+- **Status** DONE in [PR #23](https://github.com/hughminhphan/schemagic-sim/pull/23), merged 2026-09-02.
+- **Goal** The timer, `logic_74hc`, `vreg_linear`, comparator, `jfet_n` and optocoupler families resolve to schematic symbols with complete pin bijections, making 40 of 43 reviewed parts placeable while LM311, LM393 and TLV3702 remain held behind their recorded native-versus-WebAssembly divergence.
 - **Lane** A
 - **Files owned** `packages/schematic-editor/**`, `packages/circuit-schema/src/symbols/**`, `apps/web/src/catalog.ts`, `apps/web/src/catalog-netlist.ts`
 - **Verify** `npm run verify && npm run test:e2e --workspace=@opencircuit/web -- --project=chromium`
 - **Out of scope** PARTS pin geometry, the editor DOM contract, model package contents under `packages/model-library/models/**`, the component schema.
-- **Done when** Every one of the 43 parts places on the canvas, its pins map one-to-one to the model's port order, and a placement test covers one part per family.
+- **Done when** All 40 parity-clean parts place on the canvas, their pins map one-to-one to model port order, a placement test covers one part per family, and a test pins the three held comparator ids to the divergence recorded by the model library.
 - **Labels** `agent-ready` `size:M` `lane:A`
 
-### 0.2 One coach mark instead of the welcome modal
+### 0.2 One coach mark instead of the welcome modal - DONE ([PR #21](https://github.com/hughminhphan/schemagic-sim/pull/21))
 
+- **Status** DONE in [PR #21](https://github.com/hughminhphan/schemagic-sim/pull/21), merged 2026-09-02.
 - **Goal** First-time visitors see a single non-blocking coach mark on the potentiometer instead of the eight-step welcome modal, and reach a live circuit without dismissing anything.
 - **Lane** A
 - **Files owned** `apps/web/src/onboarding.ts`, `apps/web/src/style.css`, `apps/web/e2e/onboarding.spec.ts`
@@ -106,8 +158,9 @@ Target 2026-09-15. Everything here is small. Tasks 0.1 through 0.8 gate the laun
 - **Done when** The modal is gone, the coach mark dismisses on first interaction and never returns, and the onboarding spec asserts the new behaviour.
 - **Labels** `needs-human` (copy) `size:S` `lane:A`
 
-### 0.3 Catalog search relevance and filter chips
+### 0.3 Catalog search relevance and filter chips - DONE ([PR #23](https://github.com/hughminhphan/schemagic-sim/pull/23))
 
+- **Status** DONE in [PR #23](https://github.com/hughminhphan/schemagic-sim/pull/23), merged 2026-09-02.
 - **Goal** Catalog search ranks exact MPN first, then prefix, then substring, and offers filter chips for placeable, fidelity tier and supported analyses.
 - **Lane** A
 - **Files owned** `apps/web/src/catalog.ts`, `apps/web/src/catalog.test.ts`, `apps/web/src/style.css`, `apps/web/e2e/simulator-surface.spec.ts`
@@ -116,8 +169,9 @@ Target 2026-09-15. Everything here is small. Tasks 0.1 through 0.8 gate the laun
 - **Done when** A unit test pins the three-tier ranking on a fixture, and each chip demonstrably narrows the result set in the browser suite.
 - **Labels** `agent-ready` `size:M` `lane:A`
 
-### 0.4 Default scope trace shows something interesting
+### 0.4 Default scope trace shows something interesting - DONE ([PR #21](https://github.com/hughminhphan/schemagic-sim/pull/21))
 
+- **Status** DONE in [PR #21](https://github.com/hughminhphan/schemagic-sim/pull/21), merged 2026-09-02.
 - **Goal** The default scope trace is named by net or label rather than by index, and the shipped default circuit opens showing the LED current.
 - **Lane** A
 - **Files owned** `apps/web/src/scope.ts`, `apps/web/src/demo.ts`, `apps/web/src/demo.test.ts`, `packages/waveform-viewer/**`
@@ -136,8 +190,9 @@ Target 2026-09-15. Everything here is small. Tasks 0.1 through 0.8 gate the laun
 - **Done when** The empty state renders the approved single line plus one inspection link, and the designer spec asserts both.
 - **Labels** `needs-human` (copy) `size:S` `lane:B`
 
-### 0.6 README rewrite and rename cleanup — IN PROGRESS (`roadmap/rename`)
+### 0.6 README rewrite and rename cleanup - DONE ([PR #22](https://github.com/hughminhphan/schemagic-sim/pull/22))
 
+- **Status** DONE in [PR #22](https://github.com/hughminhphan/schemagic-sim/pull/22), merged 2026-09-02.
 - **Goal** The README leads with the product claim in plain language, hashes move into `docs/`, `ORCHESTRATION.md` is untracked, and no `opencircuit` naming leak remains in public documentation.
 - **Lane** D
 - **Files owned** `README.md`, `docs/**`, `ORCHESTRATION.md`, `.gitignore`, `launch/**`
@@ -146,8 +201,9 @@ Target 2026-09-15. Everything here is small. Tasks 0.1 through 0.8 gate the laun
 - **Done when** `git grep -in opencircuit -- README.md docs CONTRIBUTING.md` returns only deliberate historical references, `ORCHESTRATION.md` is untracked, and the link checker passes.
 - **Labels** `needs-human` (copy) `size:S` `lane:D`
 
-### 0.7 Root verify command and CI modernisation — IN PROGRESS (`roadmap/ci-hygiene`)
+### 0.7 Root verify command and CI modernisation - DONE ([PR #20](https://github.com/hughminhphan/schemagic-sim/pull/20))
 
+- **Status** DONE in [PR #20](https://github.com/hughminhphan/schemagic-sim/pull/20), merged 2026-09-02.
 - **Goal** `npm run verify` runs typecheck, tests, model-library validation and build in that order and fails fast, native ngspice is a documented hard prerequisite, browser specs retry twice on CI, and the wall-clock and heap budget suites run in a scheduled non-blocking workflow.
 - **Lane** D
 - **Files owned** `package.json`, `.github/workflows/**`, `apps/web/playwright*.config.ts`, `scripts/**`, `packages/component-schema/lib.mjs` (ngspice resolution only)
@@ -166,8 +222,9 @@ Target 2026-09-15. Everything here is small. Tasks 0.1 through 0.8 gate the laun
 - **Done when** The four contexts are listed, a direct push to `main` is rejected, and the protection settings are written down in `CONTRIBUTING.md`.
 - **Labels** `needs-human` (admin) `size:S` `lane:D`
 
-### 0.9 Agent backlog and labels — IN PROGRESS (`roadmap/ci-hygiene`)
+### 0.9 Agent backlog and labels - DONE ([PR #20](https://github.com/hughminhphan/schemagic-sim/pull/20))
 
+- **Status** DONE in [PR #20](https://github.com/hughminhphan/schemagic-sim/pull/20), merged 2026-09-02.
 - **Goal** `docs/BACKLOG.md` holds every Phase 0, 1, 2 and D task in the six-field contract, with a lane map, the frozen-contract list, and the nine labels created in GitHub.
 - **Lane** D
 - **Files owned** `docs/BACKLOG.md`, `docs/README.md`, `.github/**`
@@ -176,8 +233,9 @@ Target 2026-09-15. Everything here is small. Tasks 0.1 through 0.8 gate the laun
 - **Done when** All nine labels exist, every task has all six fields, and no task's **Files owned** overlaps another lane's paths.
 - **Labels** `agent-ready` `size:M` `lane:D`
 
-### 0.10 Move campaign logs and index them — IN PROGRESS (`roadmap/ci-hygiene`)
+### 0.10 Move campaign logs and index them - DONE ([PR #20](https://github.com/hughminhphan/schemagic-sim/pull/20))
 
+- **Status** DONE in [PR #20](https://github.com/hughminhphan/schemagic-sim/pull/20), merged 2026-09-02.
 - **Goal** The 88 batch records plus the scale-2k, MOSFET hardening, scheduler, P4 to P6 review logs and promotion manifests live under `docs/campaigns/` with a one-line-per-file index, and `docs/` indexes what remains.
 - **Lane** D
 - **Files owned** `docs/campaigns/**`, `docs/README.md`, `.github/CODEOWNERS`, `scripts/**`
@@ -186,8 +244,9 @@ Target 2026-09-15. Everything here is small. Tasks 0.1 through 0.8 gate the laun
 - **Done when** `docs/` lists no `batch-*` file, every moved file is in the index with a date, batch and outcome, and the link checker reports no unresolved reference inside `docs/campaigns/`.
 - **Labels** `agent-ready` `size:S` `lane:D`
 
-### 0.11 Multisim Live alternative section
+### 0.11 Multisim Live alternative section - DONE ([PR #22](https://github.com/hughminhphan/schemagic-sim/pull/22))
 
+- **Status** DONE in [PR #22](https://github.com/hughminhphan/schemagic-sim/pull/22), merged 2026-09-02.
 - **Goal** A "Multisim Live alternative" section states what carries over, what does not, and the Chromebook result.
 - **Lane** D
 - **Files owned** `README.md`, `docs/**`
@@ -358,8 +417,9 @@ September to October. Lane A unless stated.
 
 The nightly token sink. Lane C throughout. Order matters: 2.1 through 2.6 are prerequisites and nothing scales before them.
 
-### 2.1 Real conveyor `extract` command — IN PROGRESS (`roadmap/conveyor`)
+### 2.1 Real conveyor `extract` command - DONE ([PR #19](https://github.com/hughminhphan/schemagic-sim/pull/19))
 
+- **Status** DONE in [PR #19](https://github.com/hughminhphan/schemagic-sim/pull/19), merged 2026-09-02.
 - **Goal** `conveyor extract` dispatches work to the existing batch runner, closing the missing dispatcher.
 - **Lane** C
 - **Files owned** `tools/conveyor/**`
@@ -368,8 +428,9 @@ The nightly token sink. Lane C throughout. Order matters: 2.1 through 2.6 are pr
 - **Done when** The command runs a batch end to end against a fixture, and the state machine transitions are covered by tests.
 - **Labels** `agent-ready` `size:M` `lane:C`
 
-### 2.2 Persistent ngspice process — IN PROGRESS (`roadmap/factory`, mapping unconfirmed)
+### 2.2 Persistent ngspice process - DONE ([PR #25](https://github.com/hughminhphan/schemagic-sim/pull/25))
 
+- **Status** DONE in [PR #25](https://github.com/hughminhphan/schemagic-sim/pull/25), merged 2026-09-02.
 - **Goal** Residual evaluation uses a persistent ngspice process or batched decks instead of one subprocess per residual, under a declared evaluation cap.
 - **Lane** C
 - **Files owned** `tools/model-factory/**`, `tools/native-ngspice-reference/lib/**`
@@ -378,8 +439,9 @@ The nightly token sink. Lane C throughout. Order matters: 2.1 through 2.6 are pr
 - **Done when** A fixture fit produces byte-identical results at materially lower wall-clock cost, and the evaluation cap is enforced and logged.
 - **Labels** `agent-ready` `size:M` `lane:C`
 
-### 2.3 Lease and cost columns on the parts table
+### 2.3 Lease and cost columns on the parts table - DONE ([PR #19](https://github.com/hughminhphan/schemagic-sim/pull/19))
 
+- **Status** DONE in [PR #19](https://github.com/hughminhphan/schemagic-sim/pull/19), merged 2026-09-02.
 - **Goal** The parts table carries `claimed_by` and `lease_expires` plus token and cost columns, and tokens-per-promoted-part is a reported metric.
 - **Lane** C
 - **Files owned** `tools/part-feeder/**`, `tools/conveyor/**`
@@ -388,8 +450,9 @@ The nightly token sink. Lane C throughout. Order matters: 2.1 through 2.6 are pr
 - **Done when** Two concurrent runners cannot claim the same part, an expired lease is reclaimed, and the metric is emitted at the end of a run.
 - **Labels** `agent-ready` `size:S` `lane:C`
 
-### 2.4 Env-configurable catalog dir and ngspice binary — IN PROGRESS (`roadmap/factory`, mapping unconfirmed)
+### 2.4 Env-configurable catalog dir and ngspice binary - DONE ([PR #25](https://github.com/hughminhphan/schemagic-sim/pull/25))
 
+- **Status** DONE in [PR #25](https://github.com/hughminhphan/schemagic-sim/pull/25), merged 2026-09-02.
 - **Goal** The catalog directory and the ngspice binary are environment-configurable, and a part needing a manual PDF drop is skipped rather than stalling the run.
 - **Lane** C
 - **Files owned** `tools/**`, `packages/component-schema/lib.mjs` (ngspice resolution only)
@@ -418,8 +481,9 @@ The nightly token sink. Lane C throughout. Order matters: 2.1 through 2.6 are pr
 - **Done when** The rubric runs against a fixture batch and reproduces the recorded verdicts of a closed campaign.
 - **Labels** `needs-human` (freeze) `size:M` `lane:C`
 
-### 2.7 Relax ceremony, keep rigour
+### 2.7 Relax ceremony, keep rigour - DONE ([PR #25](https://github.com/hughminhphan/schemagic-sim/pull/25))
 
+- **Status** DONE in [PR #25](https://github.com/hughminhphan/schemagic-sim/pull/25), merged 2026-09-02.
 - **Goal** The evidence contract becomes incremental instead of all-or-nothing, exact-phrase test-mode matching and the disclosure whitelist are dropped, a typed not-stated temperature is allowed with an honest F1 demotion, and the evidence-isolation protocol retires in favour of content-addressed provenance.
 - **Lane** C
 - **Files owned** `packages/component-schema/**`, `tools/model-factory/**`, `docs/CONTRACTS.md`
@@ -438,14 +502,15 @@ The nightly token sink. Lane C throughout. Order matters: 2.1 through 2.6 are pr
 - **Done when** The list is committed with its per-source provenance and the selector reads it.
 - **Labels** `needs-human` (sign-off) `size:S` `lane:C`
 
-### 2.9 Zener and Schottky bounds on the diode fitter
+### 2.9 Zener and Schottky bounds on the diode fitter - DONE ([PR #25](https://github.com/hughminhphan/schemagic-sim/pull/25))
 
-- **Goal** The diode fitter fits reverse breakdown and Schottky forward behaviour, upgrading roughly 90 shipped F1 packages to real reverse and forward behaviour.
+- **Status** DONE in [PR #25](https://github.com/hughminhphan/schemagic-sim/pull/25), merged 2026-09-02.
+- **Goal** The diode fitter supports cited reverse-breakdown behavior and Schottky-specific forward bounds without changing shipped package parameters as a side effect.
 - **Lane** C
 - **Files owned** `tools/model-factory/**`, `docs/model-archetypes/**`
 - **Verify** `npm run verify && npm test --prefix tools/model-factory && node packages/model-library/validate-library.mjs`
 - **Out of scope** Promoting the regenerated packages. Fitting and staging only; promotion runs through the rubric.
-- **Done when** A fixture zener and a fixture Schottky fit inside tolerance against native ngspice, and the upgrade path over the 90 packages is a repeatable command.
+- **Done when** Fixture Zener and Schottky cards reproduce their cited behavior in native ngspice, bound saturation is reported, and the reviewed shipped diode refit is repeatable without numerical drift.
 - **Labels** `agent-ready` `size:S` `lane:C`
 
 ### 2.10 Small-signal MOSFET policy
@@ -544,8 +609,9 @@ The nightly token sink. Lane C throughout. Order matters: 2.1 through 2.6 are pr
 
 Lane B throughout. Parity means WEBENCH Power Designer, DC/DC families first, plus the existing Motor Designer. Everything inside lane B is frozen until D.0 lands: the V2 design-schema types and canonical hashes, catalog release `2026-08-27.2`, the PARTS copper-bound geometry, and the golden fixtures.
 
-### D.0 De-pin the release audit — IN PROGRESS (`roadmap/designer-depin`)
+### D.0 De-pin the release audit - DONE ([PR #24](https://github.com/hughminhphan/schemagic-sim/pull/24))
 
+- **Status** DONE in [PR #24](https://github.com/hughminhphan/schemagic-sim/pull/24), merged 2026-09-02.
 - **Goal** The release audit asserts properties (every reviewed profile validates, at least N candidates, no rule regresses from pass to unknown) instead of literal hashes and source substrings, and the runtime contract accepts N workloads.
 - **Lane** B
 - **Files owned** `packages/designer-release-audit/**`, `apps/web/designer-runtime-contract.json`, `apps/web/e2e/designer-runtime.spec.ts`
@@ -554,8 +620,9 @@ Lane B throughout. Parity means WEBENCH Power Designer, DC/DC families first, pl
 - **Done when** Adding one throwaway reviewed profile makes the full audit pass with zero file edits.
 - **Labels** `agent-ready` `size:M` `lane:B`
 
-### D.1 Facts schema v3.5 bound-typed fields
+### D.1 Facts schema v3.5 bound-typed fields - DONE ([PR #24](https://github.com/hughminhphan/schemagic-sim/pull/24))
 
+- **Status** DONE in [PR #24](https://github.com/hughminhphan/schemagic-sim/pull/24), merged 2026-09-02.
 - **Goal** The facts schema carries `inductanceMinimum`, `coreLossMaximum`, MLCC `effectiveCapacitanceMinimum` and `esrMaximum`, regulator `minimumOnTimeMaximum` and `minimumOffTimeMaximum`, and `thermalResistanceJunctionAmbient` with a board qualifier, and the passive candidate builders no longer hardcode observation semantics.
 - **Lane** B
 - **Files owned** `packages/design-schema/**`, `packages/design-library/**`, `packages/power-designer/**`

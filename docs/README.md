@@ -2,6 +2,10 @@
 
 What lives in `docs/` after the campaign records moved to [`campaigns/`](campaigns/README.md) on 2026-09-02.
 
+## Execution status (2026-09-03)
+
+Wave 1 is merged, covering the Robonyx rename, CI and documentation hygiene, the model conveyor and factory, Designer audit de-pinning, Simulator parts, and Simulator UX. Robonyx Simulator now places 40 of 43 reviewed parts, ranks and filters catalog search, starts with a coach mark and useful named trace, and includes the first teaching examples. Robonyx Designer now uses property-based release assertions and bound-typed facts, while the model pipeline has extraction dispatch, leases, cost accounting, shared-process fitting, Zener and Schottky support, and incremental evidence. Wave 2 has ten branches in flight for audit-pin hygiene, the remaining examples, sharing and embed work, clipboard editing, Falstad import, two D.2 slices, factory fixes, storage replay, and this documentation sync; current ownership and task mapping are in [BACKLOG.md](BACKLOG.md).
+
 ## Plans and queues
 
 | File | What it is |
