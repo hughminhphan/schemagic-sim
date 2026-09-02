@@ -41,7 +41,7 @@ function adapter(field: DesignerNumberField): DesignerApplicationAdapter {
   };
   return {
     application: request.application,
-    name: "scheMAGIC Power Designer",
+    name: "Robonyx Power Designer",
     shortName: "Buck converter",
     description: "Requirements form fixture",
     status: "ready",

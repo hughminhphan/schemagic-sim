@@ -1,4 +1,4 @@
-# scheMAGIC Simulator v0.1.0
+# Robonyx Simulator v0.1.0
 
 Draft release notes. Model counts remain placeholders until the release inventory is finalized.
 

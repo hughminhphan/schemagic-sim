@@ -5332,7 +5332,7 @@ function webRegressionContractGate(): DesignerReleaseGateV1 {
       && importedResultView.includes('target="_blank" rel="noopener noreferrer"')
       && importedResultView.includes('aria-describedby="designer-lcsc-search-boundary"')
       && importedResultView.includes("(opens in a new tab)")
-      && importedResultView.includes("scheMAGIC has not queried or verified stock, price, lifecycle, lead time, packaging, or orderability.")
+      && importedResultView.includes("Robonyx has not queried or verified stock, price, lifecycle, lead time, packaging, or orderability.")
       && importedResultView.includes("productionContextVerified && demonstration === undefined")
       && designerSpec.includes("motorLCSCRequests")
       && designerSpec.includes("/^Search LCSC for .+ \\(opens in a new tab\\)$/u")
@@ -5392,7 +5392,7 @@ function webRegressionContractGate(): DesignerReleaseGateV1 {
     performanceClaimBoundary: "A static Designer route byte ceiling is not runtime evidence; the separate environment-bound Chromium contract measures exact local Motor/Power completion and post-GC JS heap without claiming deployed, cross-browser, whole-process, provider, or simulation performance",
     exportClaimBoundary: "Exact-regenerated production results may preview and export context-validated structural SVG plus electrical BOM, engineering HTML, structural KiCad, and a zero-omission Scenario SPICE deck for the separate generic behavioral scenario. The deck is not a selected-part model and cannot affect BOM, constraints, ranking, evidence, receipts, or V3 eligibility. Ordinary imports remain limited to strict result bytes or context-free gate metadata; Simulation CSV, Simulator handoff, commercial data, footprints and external KiCad verification remain unavailable",
     decisionExplorerClaimBoundary: "The pinned comparison and five-class execution ledger expose only the exact regenerated production result and execution report. They do not reinterpret a rejection as a bad part, promote unknown evidence, enable component substitution, or add commercial or simulation authority",
-    exactMpnSearchClaimBoundary: "Production BOM link-outs perform user-initiated exact-MPN LCSC navigation only. scheMAGIC does not query, import, store, rank, export, or attest LCSC stock, price, lifecycle, lead time, packaging, orderability, or provider data",
+    exactMpnSearchClaimBoundary: "Production BOM link-outs perform user-initiated exact-MPN LCSC navigation only. Robonyx does not query, import, store, rank, export, or attest LCSC stock, price, lifecycle, lead time, packaging, orderability, or provider data",
     selectedPartEvidenceDossierClaimBoundary: "The selected-part dossier exposes only exact persisted EvidenceRef fields already bound to the regenerated candidate. It adds no review, admission, model, commercial, provider, or simulation-fidelity authority",
     connectedStructuralCircuitClaimBoundary: "Production retained candidates preserve the exact BOM in connected structural default graphs with content-addressed schematic-only primary blocks. Separate generic request/passive-derived behavioral scenario graphs add no package-pin mapping, selected-part model, regulation/performance proof, ranking input, or V3-eligibility authority",
     exampleGalleryClaimBoundary: "Four examples are explicit-click, content-addressed synthetic result inspections; they are not production-profile, provider, commercial, selected-part-fidelity or generation evidence",

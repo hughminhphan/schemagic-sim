@@ -1,7 +1,7 @@
-# scheMAGIC Power Designer
+# Robonyx Power Designer
 
 This package contains deterministic, non-isolated synchronous-buck recipes for the
-scheMAGIC Designer compiler. The production V2 entry uses only the hash-bound
+Robonyx Designer compiler. The production V2 entry uses only the hash-bound
 reviewed catalog and the installed release-eligible recipe. Separate legacy P1/P2
 fixtures retain synthetic manufacturer IDs and part numbers for tests and UI
 demonstrations; those identities never enter the production generator.

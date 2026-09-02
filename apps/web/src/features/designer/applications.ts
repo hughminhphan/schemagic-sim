@@ -780,7 +780,7 @@ export function motorDesignerAdapter(): DesignerApplicationAdapter {
   );
   return {
     application: "motor.brushed-dc",
-    name: "scheMAGIC Motor Designer",
+    name: "Robonyx Motor Designer",
     shortName: "Brushed-DC motor driver",
     description: "Generate deterministic integrated and external-NMOS structural observations, with unresolved safety evidence kept visible.",
     status: "ready",
@@ -862,7 +862,7 @@ export function powerDesignerAdapter(): DesignerApplicationAdapter {
   );
   return {
     application: "power.buck",
-    name: "scheMAGIC Power Designer",
+    name: "Robonyx Power Designer",
     shortName: "Buck converter",
     description: "Generate deterministic integrated synchronous-buck observations from an exact reviewed BOM, with every unsupported proof kept visible.",
     status: "ready",

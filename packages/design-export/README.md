@@ -1,4 +1,4 @@
-# scheMAGIC Designer exports
+# Robonyx Designer exports
 
 Deterministic, application-neutral exports for frozen `DesignResult` and
 `DesignCandidate` contracts.

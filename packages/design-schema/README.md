@@ -1,6 +1,6 @@
-# scheMAGIC Designer schema
+# Robonyx Designer schema
 
-Versioned, runtime-validated contracts shared by scheMAGIC Motor Designer, scheMAGIC Power Designer, and the generic design engine.
+Versioned, runtime-validated contracts shared by Robonyx Motor Designer, Robonyx Power Designer, and the generic design engine.
 
 All physical values use canonical SI units in `Quantity.value` and `Quantity.unit`; `displayUnit` is presentation metadata only. Requests declare assumptions explicitly and are serialized canonically for reproducible hashing. Persisted request objects are closed: unknown fields are rejected rather than silently retained through migration.
 

@@ -953,7 +953,7 @@ describe("production Designer application readiness", () => {
       expect(exactHtml).toContain(`data-lcsc-search="${mpn}" href="${lcscExactMpnSearchUrl(mpn)}" target="_blank" rel="noopener noreferrer" aria-describedby="designer-lcsc-search-boundary" aria-label="Search LCSC for ${mpn} (opens in a new tab)">Search LCSC for ${mpn}</a>`);
     }
     expect(exactHtml).toContain("data-lcsc-search-boundary");
-    expect(exactHtml).toContain("scheMAGIC has not queried or verified stock, price, lifecycle, lead time, packaging, or orderability.");
+    expect(exactHtml).toContain("Robonyx has not queried or verified stock, price, lifecycle, lead time, packaging, or orderability.");
     expect(exactHtml).toContain('data-production-export="scenario_spice" data-production-scenario="pwm_loaded_steady_state"');
     expect(exactHtml).toContain("Behavioral SPICE projection available");
     expect(exactHtml).toMatch(/<button disabled>Portable Simulation CSV<\/button>/u);

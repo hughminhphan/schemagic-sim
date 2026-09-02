@@ -31,7 +31,7 @@ Monorepo: npm workspaces (no pnpm on this machine). TypeScript strict. Vite buil
 
 ## 2. Circuit document (deterministic serialization)
 
-Top-level JSON, version-stamped:
+Top-level JSON, version-stamped. The `format` value below is a frozen persisted identifier from an early working name. It is not the product name, which is Robonyx; see the naming section in the [root README](../README.md).
 
 {
   "format": "opencircuit-circuit",
@@ -88,7 +88,7 @@ Top-level JSON, version-stamped:
 - Autosave: IndexedDB, keyed workspace, most-recent-first list; also "download project JSON" and "load JSON".
 - The app is a PWA-lite: service worker precaches app shell + WASM for offline after first load; no push, no background sync.
 
-## 7. Agent working rules (repeat of ORCHESTRATION.md)
+## 7. Agent working rules
 
 - One package = one owner at a time. The integration agent (orchestrator-directed) is the only one who edits shared contracts or merges cross-package changes.
 - All copy: no em dashes. All model packages: schema-valid, no PDFs, no restricted vendor models, reviewer ≠ author.

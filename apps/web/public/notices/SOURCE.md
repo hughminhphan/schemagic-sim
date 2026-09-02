@@ -12,7 +12,7 @@
 
 The upstream tarball is not stored in this repository. `build.sh` downloads it into the ignored `build/` directory and rejects any archive whose SHA-256 does not match the value above.
 
-## scheMAGIC modifications
+## Robonyx modifications
 
 The complete modification set is:
 

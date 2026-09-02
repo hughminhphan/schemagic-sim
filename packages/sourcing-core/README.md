@@ -1,6 +1,6 @@
-# scheMAGIC Sourcing core
+# Robonyx Sourcing core
 
-Deterministic, provider-neutral BOM evaluation for scheMAGIC Sourcing. The
+Deterministic, provider-neutral BOM evaluation for Robonyx Sourcing. The
 package applies a frozen `SourcingPolicy` to validated `OfferSnapshot` objects
 and returns frozen-schema `CandidateSourcingMetrics` plus explicit policy
 decisions.

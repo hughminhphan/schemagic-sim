@@ -1,4 +1,4 @@
-# Contributing to scheMAGIC Simulator
+# Contributing to Robonyx Simulator
 
 Thank you for contributing. This project accepts code, documentation, tests, numerical discrepancy reports, and component model packages.
 
@@ -86,6 +86,25 @@ node packages/component-schema/validate-package.mjs packages/model-library/model
 ```
 
 The command must print `PASS` before a model pull request is ready.
+
+### The two validators, and which one you need
+
+The repository has two validators with similar names. They check different things and neither one replaces the other.
+
+| Validator | Validates | Run it when |
+| --- | --- | --- |
+| `node packages/component-schema/validate-package.mjs <package-dir>` | One simulation model package under `packages/model-library/models/`: its `component.json`, `sources.json`, `tests/expectations.json`, `model.cir` provenance header, licence file, and internal consistency. Takes a directory argument and prints `PASS <dir>` or `FAIL <dir>` with a reason list. | You added or edited a manufacturer **simulation model** package: anything with a `model.cir`. |
+| `node packages/model-library/validate-library.mjs` | The whole library as a set. It validates `admission-policy.json`, checks that every directory under `models/` is a real registered package, then runs the per-package validator above across every registered package with the strictness that package's admission entry demands. Takes no arguments and prints `PASS: validated N registered model packages`. | You added, removed, renamed, or re-tiered any model package, or edited `packages/model-library/admission-policy.json`. Run it after the per-package validator passes on your own package. |
+
+There is a third validator that model contributors do not normally touch: `node packages/design-library/validate-library.mjs` checks the Designer's **engineering profile** library under `packages/design-library/parts/`, which holds datasheet-derived design profiles rather than SPICE models. Run that one only when changing a design profile, a manufacturer registry entry, or a catalog release.
+
+Add `--require-evidence-contract` to the per-package validator when the package is registered under `strict_evidence_contract_packages`:
+
+```sh
+node packages/component-schema/validate-package.mjs --require-evidence-contract packages/model-library/models/<manufacturer-slug>/<MPN>
+```
+
+The pull request template asks for the library-level run; this section is the reference for what each command covers.
 
 ### Provenance hard rules
 

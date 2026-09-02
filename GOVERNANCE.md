@@ -2,7 +2,7 @@
 
 ## Current model
 
-scheMAGIC Simulator currently uses a single-maintainer, BDFL-for-now governance model. Hugh Phan is the project lead and final decision maker.
+Robonyx Simulator currently uses a single-maintainer, BDFL-for-now governance model. Hugh Phan is the project lead and final decision maker.
 
 This structure is intended for the project's early stage, when a small decision surface and clear accountability are more useful than a formal voting body. It is not intended to prevent contributors from gaining responsibility.
 

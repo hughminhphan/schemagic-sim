@@ -21,7 +21,10 @@ List the commands run and their results.
 
 Complete this section for changes under `packages/model-library/models/`. Otherwise, mark it not applicable.
 
+The two model validators check different things and both are required: `validate-package.mjs` checks one package in isolation, and `validate-library.mjs` checks the library as a set and reruns the per-package validator across every registered package. `CONTRIBUTING.md` explains which is which, including the separate design-profile validator at `packages/design-library/validate-library.mjs`.
+
 - [ ] I registered new packages under `strict_evidence_contract_packages` in `packages/model-library/admission-policy.json`.
+- [ ] I ran `node packages/component-schema/validate-package.mjs <package-dir>` on each package I touched and it printed `PASS`.
 - [ ] I ran `node packages/model-library/validate-library.mjs` and it printed `PASS`.
 - [ ] The package contains `component.json`, `model.cir`, `sources.json`, `MODEL_CARD.md`, `LICENSE`, and `tests/`.
 - [ ] Every expectation has a page-level or measurement citation and complete operating conditions.

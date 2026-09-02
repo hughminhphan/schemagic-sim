@@ -1,6 +1,6 @@
-# scheMAGIC Motor Designer
+# Robonyx Motor Designer
 
-Deterministic scheMAGIC Motor Designer recipes for one brushed-DC motor and one H-bridge. The public entrypoint is `generateMotorDesign`; the generic pipeline remains owned by the internal `@opencircuit/design-engine` compatibility module.
+Deterministic Robonyx Motor Designer recipes for one brushed-DC motor and one H-bridge. The public entrypoint is `generateMotorDesign`; the generic pipeline remains owned by the internal `@opencircuit/design-engine` compatibility module.
 
 The installed V2/V3 production generator uses bundled reviewed release `2026-08-27.2`: 24 exact profiles, including two reviewed facts-V3 TVSes and three reviewed facts-V3.2 integrated bridges. Nineteen profiles are Motor-relevant and facts-schema-compatible with at least one installed or frozen Motor recipe contract; this readiness count is not candidate materialization, and DRV8262 is excluded by the installed recipe's capacitor-network boundary. The added shared 22 uF MLCC is consequently visible to the generic integrated Cartesian enumeration, increasing the DRV8876 subset from eight to ten options, but exact recommendation gates preserve the same selected-part outcome, DRV8262 contributes no generated options, and the external role-qualified recipe remains at 54 options. The legacy `generateMotorDesign` compatibility path remains shaped by its synthetic M1/M2 fixture catalog; synthetic identities and evidence are never presented as reviewed or orderable manufacturer parts.
 

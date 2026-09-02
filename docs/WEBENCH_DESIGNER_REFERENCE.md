@@ -1,12 +1,12 @@
 # TI WEBENCH Power Designer — functional reference
 
-Checked 27 August 2026 in the public WEBENCH Power Designer using a real browser. This is a functional and visual reference for scheMAGIC Designer, not a cloning specification. It does not reproduce TI code, artwork or circuit assets.
+Checked 27 August 2026 in the public WEBENCH Power Designer using a real browser. This is a functional and visual reference for Robonyx Designer, not a cloning specification. It does not reproduce TI code, artwork or circuit assets.
 
 ## Evidence key and access boundary
 
 - **Observed live** — visible in the current public application at desktop and narrow viewport sizes.
 - **Official supporting evidence** — TI help, articles, videos or training used only where the live path required a myTI login. Some support pages describe older interfaces; contradictions with the live application are called out.
-- **scheMAGIC recommendation** — an implementation inference from those observations, not a claim about TI's current product.
+- **Robonyx recommendation** — an implementation inference from those observations, not a claim about TI's current product.
 
 The current public journey was directly observable from entry through generated solutions and side-by-side comparison. Opening a selected design's `Customize Design` action redirected to myTI authentication, so the selected-design, simulation and export workspace below is reconstructed from official TI material and is not presented as a live 2026 observation.
 
@@ -44,7 +44,7 @@ The official help hierarchy is `Select` → `Design` → `Analyze` → `Export`.
 
 There is no explanatory wall before the choice. Legal links sit in the footer. At 756 px wide the two cards still fit side by side.
 
-**scheMAGIC recommendation.** Map this decisiveness to two equal first-class cards, `Power Designer` and `Motor Designer`, with a short concrete descriptor and a primary `Start Power design` / `Start Motor design` action. Capability, evidence and policy detail should be behind a small secondary disclosure, not interleaved with the first decision.
+**Robonyx recommendation.** Map this decisiveness to two equal first-class cards, `Power Designer` and `Motor Designer`, with a short concrete descriptor and a primary `Start Power design` / `Start Motor design` action. Capability, evidence and policy detail should be behind a small secondary disclosure, not interleaved with the first decision.
 
 ### 2. Requirements: basics first, optimisation second, details on demand
 
@@ -63,7 +63,7 @@ Below the electrical fields, `Design Consideration` asks `I want my design to be
 
 A single inline consent checkbox immediately above that action links to the WEBENCH Notice, site terms and privacy policy. It is a gate, but not a warning page. Advanced engineering constraints and legal detail remain subordinate to the form.
 
-**scheMAGIC recommendation.** Present operating-point inputs before selection policy. Put advanced constraints, sourcing policy, assumptions and strict/reference behaviour in collapsed sections. Keep one short validity/status line next to a high-contrast `Generate design` action. On desktop the basic inputs and Generate action should be available in the first working viewport; on narrow screens the action should remain reachable in a fixed or sticky bottom bar.
+**Robonyx recommendation.** Present operating-point inputs before selection policy. Put advanced constraints, sourcing policy, assumptions and strict/reference behaviour in collapsed sections. Keep one short validity/status line next to a high-contrast `Generate design` action. On desktop the basic inputs and Generate action should be available in the first working viewport; on narrow screens the action should remain reachable in a fixed or sticky bottom bar.
 
 ### 3. Solutions: dense narrowing of complete designs
 
@@ -82,7 +82,7 @@ The result toolbar provides sorting by `Default`, `Highest Efficiency`, `Smalles
 
 Card view leads with the generated schematic, not a generic product image. Each card then exposes the part/title and the decision metrics `Efficiency`, `BOM Cost`, `Footprint`, `BOM Count`, `Topology`, `Frequency` and `IC Cost`, followed by `Customize`, `Simulate` and `Export`. Capability is local: a design that cannot be simulated shows that action disabled rather than adding a page-level warning.
 
-Table view is denser and adds `Select Additional Columns`. Its visible columns included `Compare`, `Part Number`, `Schematic Image`, `Iout(Max) (A)`, `Efficiency (%)`, `BOM Area (mm²)`, `BOM Cost($ | 1ku)`, `BOM Count`, `Description` and `Customize`. This is the stronger model for a professional scheMAGIC default; card view can remain an alternate inspection mode.
+Table view is denser and adds `Select Additional Columns`. Its visible columns included `Compare`, `Part Number`, `Schematic Image`, `Iout(Max) (A)`, `Efficiency (%)`, `BOM Area (mm²)`, `BOM Cost($ | 1ku)`, `BOM Count`, `Description` and `Customize`. This is the stronger model for a professional Robonyx default; card view can remain an alternate inspection mode.
 
 ### 4. Comparison: aligned facts, then selection
 
@@ -90,7 +90,7 @@ Table view is denser and adds `Select Additional Columns`. Its visible columns i
 
 Basic comparison aligned `Design Considerations`, `BOM Area`, `BOM Cost`, `BOM Count`, `Efficiency`, `Frequency` and `Topology`. Advanced added operating and loop data such as `IC Operating Temp`, `Vout peak-to-peak`, `Crossover Frequency`, `Phase Margin`, `Vin Min` and `Vin Max`. The structure makes differences scannable because the metric labels form shared rows rather than independent prose cards.
 
-**scheMAGIC recommendation.** Preserve pinned comparison for two or three candidates. Align Power/Motor metrics in shared rows and keep evidence state concise but visible. `Select design` should be the dominant action in each column.
+**Robonyx recommendation.** Preserve pinned comparison for two or three candidates. Align Power/Motor metrics in shared rows and keep evidence state concise but visible. `Select design` should be the dominant action in each column.
 
 ### 5. Selected design workspace: complete design at the centre
 
@@ -110,7 +110,7 @@ The help documentation adds useful functional detail:
 - The schematic supports component-level alternate selection and is a route into CAD or simulation actions.
 - A complete report can include design inputs, schematic, BOM, performance charts and operating values.
 
-**scheMAGIC recommendation.** The current semantic tabs — `Schematic`, `Operating results`, `BOM / parts`, `Optimize`, `Export` — are a sound base. Make them a compact cockpit:
+**Robonyx recommendation.** The current semantic tabs — `Schematic`, `Operating results`, `BOM / parts`, `Optimize`, `Export` — are a sound base. Make them a compact cockpit:
 
 - narrow persistent left column: requirements summary, configuration and constraints;
 - dominant centre: schematic by default, with pan/zoom and direct component selection where supported;
@@ -128,7 +128,7 @@ The live experience uses three useful levels:
 2. Engineering options are grouped under `Advanced` or `Design Parameters`.
 3. Terms and full notices are linked separately; unsupported capability is indicated beside the affected action.
 
-For scheMAGIC, evidence integrity should follow the same hierarchy:
+For Robonyx, evidence integrity should follow the same hierarchy:
 
 - one short status chip/line on the result or selected design;
 - contextual explanation beside the affected metric or unavailable action;
@@ -141,7 +141,7 @@ Dense does not mean more prose. It means more circuit state, comparable values a
 
 **Observed live.** The landing remains clean at 756 px. The working application is desktop-first and does not reflow safely at phone width: at 390 × 844 the requirements form retained an approximately 823 px working width, and the solution filter rail plus result content extended horizontally beyond the viewport. Header controls also overflowed.
 
-**scheMAGIC recommendation.** Treat that as a behaviour to improve, not copy:
+**Robonyx recommendation.** Treat that as a behaviour to improve, not copy:
 
 - at or below tablet width, stack application cards and requirement sections;
 - move solution filters into a drawer and allow the results table itself to scroll without creating page-level horizontal overflow;
@@ -149,7 +149,7 @@ Dense does not mean more prose. It means more circuit state, comparable values a
 - make workspace tabs horizontally scrollable and the schematic independently pannable/zoomable;
 - hide secondary IDs/hashes behind details on phones.
 
-## Actionable scheMAGIC parity checklist
+## Actionable Robonyx parity checklist
 
 ### P0 — pass the current acceptance failures
 

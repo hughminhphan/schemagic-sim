@@ -29,7 +29,7 @@ You should receive an acknowledgement within seven days. Triage, remediation, di
 
 Imported SPICE is treated as untrusted input.
 
-Before execution, scheMAGIC Simulator parses and sanitizes imported library content. The import path:
+Before execution, Robonyx Simulator parses and sanitizes imported library content. The import path:
 
 - rejects `.control` blocks and command-like content;
 - rejects shell, process, network, host-path, and file I/O references;

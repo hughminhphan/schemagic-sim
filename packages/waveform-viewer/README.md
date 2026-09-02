@@ -1,4 +1,4 @@
-# scheMAGIC Waveform Viewer
+# Robonyx Waveform Viewer
 
 Canvas 2D transient, operating-point sweep, and AC Bode viewer with no runtime
 dependencies. The implementation remains available through the internal

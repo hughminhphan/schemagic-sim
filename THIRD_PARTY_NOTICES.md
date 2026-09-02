@@ -1,8 +1,8 @@
 # Third-party notices
 
-scheMAGIC Simulator includes third-party software and font files. This file records the material distributed with the project and points to the authoritative engine notice bundle.
+Robonyx Simulator includes third-party software and font files. This file records the material distributed with the project and points to the authoritative engine notice bundle.
 
-The scheMAGIC Simulator codebase itself is licensed under Apache-2.0. Component model packages carry their own MIT licences. Those project licences do not replace the third-party terms below.
+The Robonyx Simulator codebase itself is licensed under Apache-2.0. Component model packages carry their own MIT licences. Those project licences do not replace the third-party terms below.
 
 ## ngspice-46 WebAssembly engine
 

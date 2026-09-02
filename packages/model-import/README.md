@@ -1,4 +1,4 @@
-# scheMAGIC SPICE Model Importer
+# Robonyx SPICE Model Importer
 
 Safe ingestion for untrusted SPICE model libraries. The implementation remains
 available through the internal `@opencircuit/model-import` compatibility import.

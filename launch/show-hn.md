@@ -4,13 +4,13 @@ Draft only. Do not post without Hugh's approval.
 
 ## Title candidates
 
-1. **Show HN: scheMAGIC Sim, ngspice-46 in your browser with living schematics**
+1. **Show HN: Robonyx, ngspice-46 in your browser with living schematics**
 2. **Show HN: I compiled ngspice-46 to WASM for a local-first circuit simulator**
-3. **Show HN: scheMAGIC Sim, an open-source browser circuit simulator with reviewed part models**
+3. **Show HN: Robonyx, an open-source browser circuit simulator with reviewed part models**
 
 ## First comment
 
-Hi HN, I built scheMAGIC Sim because I wanted a browser circuit simulator that felt immediate without hiding the actual simulation engine or the limits of its component models.
+Hi HN, I built Robonyx because I wanted a browser circuit simulator that felt immediate without hiding the actual simulation engine or the limits of its component models.
 
 It is a free, open-source schematic editor and simulator. ngspice-46 runs locally in a Web Worker as WebAssembly. The schematic is also the primary result view: wires change colour with node voltage, current is animated, and controls such as a potentiometer update the circuit and LED brightness as new operating-point solves complete. There is no account, normal simulation does not call a server, the app works offline after its assets are cached, and circuits can be shared in the URL.
 

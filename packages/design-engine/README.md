@@ -1,6 +1,6 @@
-# scheMAGIC Designer engine
+# Robonyx Designer engine
 
-The application-neutral deterministic compiler shared by scheMAGIC Motor Designer and scheMAGIC Power Designer.
+The application-neutral deterministic compiler shared by Robonyx Motor Designer and Robonyx Power Designer.
 
 The engine owns the fixed pipeline:
 

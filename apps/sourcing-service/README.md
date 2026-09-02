@@ -1,8 +1,8 @@
-# scheMAGIC Sourcing service
+# Robonyx Sourcing service
 
 Optional server-side infrastructure for bounded exact-MPN distributor lookups.
 The service validates closed requests, applies the provider policy supplied by
-scheMAGIC Sourcing's internal `@opencircuit/sourcing-core` compatibility module,
+Robonyx Sourcing's internal `@opencircuit/sourcing-core` compatibility module,
 rate-limits and times out calls, validates normalized snapshots, and caches only
 for the permitted lifetime.
 Native V2 construction requires an explicit `public_hosted` or `self_hosted`

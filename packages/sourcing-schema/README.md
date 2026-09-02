@@ -1,4 +1,4 @@
-# scheMAGIC Sourcing schema
+# Robonyx Sourcing schema
 
 Provider-neutral TypeScript contracts for sourcing policies, normalized distributor
 offers, immutable offer snapshots, and BOM/candidate sourcing metrics.

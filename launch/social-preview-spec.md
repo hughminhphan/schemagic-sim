@@ -15,7 +15,7 @@ Draft production specification. Do not publish until Hugh approves the launch pa
 
 Use a 56:44 split.
 
-- **Left 56 percent:** a clean crop of the live default NPN LED bench. Show the potentiometer, 2N3904, resistor, LED, and enough connected wire to make the circuit legible. The schematic must be an actual scheMAGIC Sim render, not a redrawn approximation.
+- **Left 56 percent:** a clean crop of the live default NPN LED bench. Show the potentiometer, 2N3904, resistor, LED, and enough connected wire to make the circuit legible. The schematic must be an actual Robonyx render, not a redrawn approximation.
 - **Right 44 percent:** wordmark, thesis, and one small engine label.
 - Do not show browser chrome, menus, competitor interfaces, pricing comparisons, badges, or a call-to-action button.
 
@@ -32,7 +32,7 @@ Use a 56:44 split.
 
 - Background: Vellum `#F1EEE8`.
 - Main text: Graphite 900 `#15181B`.
-- Wordmark: Archivo Expanded 600, rendered exactly as **scheMAGIC Simulator**.
+- Wordmark: Archivo Expanded 600, rendered exactly as **Robonyx Simulator**.
 - Thesis: IBM Plex Sans, medium weight, maximum two lines.
 - Engine label: IBM Plex Mono, uppercase or technical sentence case.
 - No decorative gradients, shadows, blur, rounded cards, or glass effects. Voltage hues in the circuit are data encoding and may remain.
@@ -41,7 +41,7 @@ Use a 56:44 split.
 
 Wordmark:
 
-> scheMAGIC Simulator
+> Robonyx Simulator
 
 One-line thesis:
 

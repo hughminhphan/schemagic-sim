@@ -1,6 +1,6 @@
-# scheMAGIC Component Library design profiles
+# Robonyx Component Library design profiles
 
-The internal `@opencircuit/design-library` compatibility module is the provider-neutral persisted engineering-profile boundary for scheMAGIC Designer. It owns exact-MPN profile, manufacturer-registry, admission-ledger, and catalog-release contracts. It does not contain offers, credentials, provider policy, live sourcing state, SPICE text, or model admission.
+The internal `@opencircuit/design-library` compatibility module is the provider-neutral persisted engineering-profile boundary for Robonyx Designer. It owns exact-MPN profile, manufacturer-registry, admission-ledger, and catalog-release contracts. It does not contain offers, credentials, provider policy, live sourcing state, SPICE text, or model admission.
 
 The package exports browser-safe canonical JSON/SHA-256 helpers, exact reversible profile paths, strict runtime parsers, one closed codec for each of the twelve V1 manifest classes, deterministic reviewed-only loading, and temporary synthetic staged adapters. `schema/profile.v1.schema.json` composes the closed envelope with exactly one class-facts schema for language-neutral consumers; every checked-in `$id` resolves under `https://schemas.schemagic.design/design-library/v1/` and is tested with AJV 2020.
 

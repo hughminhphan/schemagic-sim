@@ -1,6 +1,6 @@
 # Putting ngspice-46 in a Browser Without Hiding the Engineering Tradeoffs
 
-Browser circuit simulators often use a purpose-specific teaching solver or put SPICE behind a hosted service. Both are useful, but I wanted a different combination for scheMAGIC Simulator: real ngspice running locally, a schematic that visibly responds to each solve, and manufacturer-part models that show their evidence and limitations.
+Browser circuit simulators often use a purpose-specific teaching solver or put SPICE behind a hosted service. Both are useful, but I wanted a different combination for Robonyx Simulator: real ngspice running locally, a schematic that visibly responds to each solve, and manufacturer-part models that show their evidence and limitations.
 
 The result is ngspice-46 compiled to WebAssembly, isolated in a Worker, and paired with a model-validation pipeline that treats native-versus-WebAssembly agreement and independent review as release gates.
 
@@ -24,7 +24,7 @@ Asyncify has costs. It increases code size, changes generated control flow, and 
 
 KLU is valuable for sparse circuit matrices, so the build enables the actual ngspice `--enable-klu` configure option and verifies that the expected KLU objects were produced. The smoke test also checks the runtime banner and selected solver rather than assuming a configure flag had the intended effect.
 
-Keeping KLU and numparam creates a licensing responsibility that should not be hidden behind the surrounding application's permissive licence. The original scheMAGIC Sim application code and documentation are Apache-2.0. Original generated model packages use MIT. The engine is a separate distribution layer containing the ngspice core and device models under modified BSD terms, SPARSE under permissive terms, KLU and related SuiteSparse portions under LGPL terms where identified upstream, numparam under LGPL, and Emscripten runtime support under its upstream terms.
+Keeping KLU and numparam creates a licensing responsibility that should not be hidden behind the surrounding application's permissive licence. The original Robonyx application code and documentation are Apache-2.0. Original generated model packages use MIT. The engine is a separate distribution layer containing the ngspice core and device models under modified BSD terms, SPARSE under permissive terms, KLU and related SuiteSparse portions under LGPL terms where identified upstream, numparam under LGPL, and Emscripten runtime support under its upstream terms.
 
 The repository therefore carries the complete ngspice `COPYING` file, the applicable LGPL text, third-party notices, exact source and compiler pins, the local patch, build scripts, corresponding-source information, and rebuild and relink instructions. The application loads the engine as a separate Worker asset and communicates through messages. That boundary is useful architecturally and for distribution clarity, but it does not erase obligations for LGPL code inside the engine.
 
@@ -72,7 +72,7 @@ The wider lesson is that “minimum,” “typical,” and “maximum” are not
 
 A component model cannot be summarized honestly as accurate or inaccurate. Accuracy depends on the behavior domain, operating region, temperature, loading, frequency, process variation, and the question being asked.
 
-scheMAGIC Sim uses fidelity tiers from F0 to F4. F0 is structural. F1 is nominal and functional. F2 requires multiple cited typical targets and applicable hard bounds, plus native and WebAssembly agreement for every included bench. F3 extends coverage across more domains, conditions, or documented corners. F4 is reserved for measurement-calibrated models with documented samples, conditions, uncertainty, and reproducibility.
+Robonyx uses fidelity tiers from F0 to F4. F0 is structural. F1 is nominal and functional. F2 requires multiple cited typical targets and applicable hard bounds, plus native and WebAssembly agreement for every included bench. F3 extends coverage across more domains, conditions, or documented corners. F4 is reserved for measurement-calibrated models with documented samples, conditions, uncertainty, and reproducibility.
 
 The rule is to choose the lowest tier whose complete evidence exists. A long parameter list does not earn a higher label. Neither does passing a test written from the model's own output. Model cards must state operating regions and omissions such as missing noise, temperature, breakdown, thermal, phase-margin, process, or common-mode behavior.
 
