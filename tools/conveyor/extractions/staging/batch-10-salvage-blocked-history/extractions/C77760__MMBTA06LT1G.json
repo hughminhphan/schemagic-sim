@@ -1,0 +1,151 @@
+{
+  "curves": [
+    {
+      "name": "DC current gain versus collector current",
+      "page_reference": "p. 3, Figure 5",
+      "points": [
+        {
+          "x": 0.001,
+          "y": 100
+        },
+        {
+          "x": 0.01,
+          "y": 100
+        },
+        {
+          "x": 0.1,
+          "y": 100
+        },
+        {
+          "x": 0.5,
+          "y": 80
+        }
+      ],
+      "test_conditions": "VCE = 1.0 V; TA = 25 degC curve in Figure 5",
+      "x_axis": {
+        "quantity": "collector current",
+        "scale": "log",
+        "unit": "A"
+      },
+      "y_axis": {
+        "quantity": "hFE",
+        "scale": "log",
+        "unit": "1"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4",
+      "p. 5",
+      "p. 6"
+    ],
+    "revision": "Publication MMBTA05LT1/D, October 2016, Rev. 10",
+    "title": "MMBTA05L, MMBTA06L, Driver Transistors NPN Silicon"
+  },
+  "extraction_notes": [
+    "Curve points are digitized from the TA = 25 degC curve in Figure 5 at labeled decade positions. The datasheet tabulates hFE and VCE(sat), but does not tabulate Cobo/Cibo values."
+  ],
+  "family": "bjt",
+  "manufacturer": "onsemi",
+  "mpn": "MMBTA06LT1G",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "cibo": null,
+    "cobo": null,
+    "ft": {
+      "conditions": "IC = 10 mA, VCE = 2.0 V, f = 100 MHz, TA = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, fT",
+      "source_kind": "minimum",
+      "unit": "Hz",
+      "value": 100000000.0
+    },
+    "gain_points": [
+      {
+        "collector_current": {
+          "conditions": "VCE = 1.0 V, TA = 25 degC",
+          "page_reference": "p. 2, Electrical Characteristics, hFE",
+          "source_kind": "minimum",
+          "unit": "A",
+          "value": 0.01
+        },
+        "hfe": {
+          "conditions": "IC = 10 mA, VCE = 1.0 V, TA = 25 degC",
+          "page_reference": "p. 2, Electrical Characteristics, hFE",
+          "source_kind": "minimum",
+          "unit": "1",
+          "value": 100
+        },
+        "vce": {
+          "conditions": "IC = 10 mA, VCE = 1.0 V, TA = 25 degC",
+          "page_reference": "p. 2, Electrical Characteristics, hFE",
+          "source_kind": "typical",
+          "unit": "V",
+          "value": 1.0
+        }
+      },
+      {
+        "collector_current": {
+          "conditions": "VCE = 1.0 V, TA = 25 degC",
+          "page_reference": "p. 2, Electrical Characteristics, hFE",
+          "source_kind": "minimum",
+          "unit": "A",
+          "value": 0.1
+        },
+        "hfe": {
+          "conditions": "IC = 100 mA, VCE = 1.0 V, TA = 25 degC",
+          "page_reference": "p. 2, Electrical Characteristics, hFE",
+          "source_kind": "minimum",
+          "unit": "1",
+          "value": 100
+        },
+        "vce": {
+          "conditions": "IC = 100 mA, VCE = 1.0 V, TA = 25 degC",
+          "page_reference": "p. 2, Electrical Characteristics, hFE",
+          "source_kind": "typical",
+          "unit": "V",
+          "value": 1.0
+        }
+      }
+    ],
+    "polarity": "npn",
+    "saturation_points": [
+      {
+        "base_current": {
+          "conditions": "IC = 100 mA, TA = 25 degC",
+          "page_reference": "p. 2, Electrical Characteristics, VCE(sat)",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 0.01
+        },
+        "collector_current": {
+          "conditions": "IB = 10 mA, TA = 25 degC",
+          "page_reference": "p. 2, Electrical Characteristics, VCE(sat)",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 0.1
+        },
+        "vbe_sat": null,
+        "vce_sat": {
+          "conditions": "IC = 100 mA, IB = 10 mA, TA = 25 degC",
+          "page_reference": "p. 2, Electrical Characteristics, VCE(sat)",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.25
+        }
+      }
+    ],
+    "vceo": {
+      "conditions": "MMBTA06L, open-base collector-emitter rating",
+      "page_reference": "p. 1, Maximum Ratings, VCEO",
+      "source_kind": "maximum",
+      "unit": "V",
+      "value": 80.0
+    }
+  },
+  "usable_curves": true
+}

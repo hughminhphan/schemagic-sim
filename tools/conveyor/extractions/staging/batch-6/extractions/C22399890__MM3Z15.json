@@ -1,0 +1,143 @@
+{
+  "curves": [
+    {
+      "name": "Zener characteristics for VZ 12 V to 75 V",
+      "page_reference": "p. 3 Fig. 2",
+      "points": [
+        {
+          "x": 14.0,
+          "y": 0.01
+        },
+        {
+          "x": 14.6,
+          "y": 0.1
+        },
+        {
+          "x": 15.0,
+          "y": 1.0
+        },
+        {
+          "x": 15.5,
+          "y": 10.0
+        }
+      ],
+      "test_conditions": "TA = 25 degC, pulsed; family curve including MM3Z15",
+      "x_axis": {
+        "quantity": "zener voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "zener current",
+        "scale": "log",
+        "unit": "mA"
+      }
+    },
+    {
+      "name": "Typical forward voltage",
+      "page_reference": "p. 3 Fig. 3",
+      "points": [
+        {
+          "x": 0.7,
+          "y": 0.001
+        },
+        {
+          "x": 0.76,
+          "y": 0.01
+        },
+        {
+          "x": 0.82,
+          "y": 0.1
+        },
+        {
+          "x": 0.88,
+          "y": 1.0
+        }
+      ],
+      "test_conditions": "TA = 25 degC, family typical curve",
+      "x_axis": {
+        "quantity": "forward voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "forward current",
+        "scale": "log",
+        "unit": "A"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4",
+      "p. 5"
+    ],
+    "revision": "Rev:1.1",
+    "title": "MM3Z2V0 THRU MM3Z75"
+  },
+  "extraction_notes": [
+    "MM3Z15 zener table values at IZT = 5 mA are VZ min = 13.8 V, nominal = 15.0 V, max = 15.6 V; ZZT max = 30 ohm at IZT = 5 mA; ZZK max = 400 ohm at IZK = 0.5 mA (p. 2 Electrical Characteristics).",
+    "Zener voltage min/nominal/max and impedance values are transcribed for MM3Z15; the schema retains the nominal VZ and IZT pair.",
+    "The capacitance value is read from the family typical 0 V-bias curve at nominal VZ = 15 V.",
+    "No reverse-recovery time is published."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "MM3Z15",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": {
+      "conditions": "VZ = 15 V test point, IZT = 5 mA, TA = 25 degC",
+      "page_reference": "p. 2 Electrical Characteristics",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.005
+    },
+    "breakdown_voltage": {
+      "conditions": "IZT = 5 mA, TA = 25 degC",
+      "page_reference": "p. 2 Electrical Characteristics",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 15.0
+    },
+    "capacitance": {
+      "conditions": "nominal VZ = 15 V, 0 V bias, f = 1 MHz, TA = 25 degC",
+      "page_reference": "p. 4 Fig. 5, 0 V bias curve at nominal VZ = 15 V",
+      "source_kind": "digitized_typical_curve",
+      "unit": "F",
+      "value": 5.5e-11
+    },
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "TA = 25 degC, IF = 10 mA",
+          "page_reference": "p. 1 Maximum Ratings",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 0.01
+        },
+        "voltage": {
+          "conditions": "TA = 25 degC, IF = 10 mA",
+          "page_reference": "p. 1 Maximum Ratings",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.9
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = 10.5 V, TA = 25 degC",
+      "page_reference": "p. 2 Electrical Characteristics",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 5e-08
+    },
+    "reverse_recovery": null,
+    "variant": "zener"
+  },
+  "usable_curves": true
+}

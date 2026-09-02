@@ -1,0 +1,118 @@
+{
+  "curves": [
+    {
+      "name": "Zener characteristics, MMSZ5225B nominal 3.0 V curve",
+      "page_reference": "p. 3, Fig. 1, Zener Characteristics (VZ Up to 10V), curve labelled 3.0",
+      "points": [
+        {
+          "x": 1.68,
+          "y": 0.0005
+        },
+        {
+          "x": 1.93,
+          "y": 0.001
+        },
+        {
+          "x": 2.08,
+          "y": 0.002
+        },
+        {
+          "x": 2.39,
+          "y": 0.005
+        },
+        {
+          "x": 2.72,
+          "y": 0.01
+        },
+        {
+          "x": 2.86,
+          "y": 0.02
+        },
+        {
+          "x": 3.23,
+          "y": 0.05
+        }
+      ],
+      "test_conditions": "Ta = 25 degC, pulsed; reverse-biased zener branch with cathode positive relative to anode; VZ and IZ are plotted as positive magnitudes; PD = 500 mW indicated",
+      "x_axis": {
+        "quantity": "Zener voltage (VZ)",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "Zener current (IZ)",
+        "scale": "log",
+        "unit": "A"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4",
+      "p. 5"
+    ],
+    "revision": "Rev: 1.1",
+    "title": "MMSZ5221B THRU MMSZ5267B Surface Mount Silicon Zener Diodes"
+  },
+  "extraction_notes": [
+    "The supplied PDF SHA-256 matches the expected digest fec00843f279bccf78d55a456b749bf49d99676181d710880c28c93d8ee35181.",
+    "The MMSZ5225B row specifies VZ minimum 2.85 V, nominal 3.0 V, and maximum 3.15 V at IZT = 20 mA, maximum ZZT = 30 ohm, maximum IR = 50 uA at VR = 1.0 V, all at Ta = 25 degC unless otherwise noted.",
+    "The zener curve points are manual digitizations of the real curve labelled 3.0 in p. 3 Fig. 1; no interpolated or synthesized points were added.",
+    "The capacitance plot in p. 4 Fig. 5 is a generic family characteristic and does not provide an unambiguous MMSZ5225B-specific scalar capacitance value for the strict schema.",
+    "Reverse recovery is omitted because the datasheet publishes no trr or switching-time specification.",
+    "Zener knee sharpness is not extractable from the supplied table because ZZK at IZK is not published; only maximum ZZT is provided."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "MMSZ5225B",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": {
+      "conditions": "IZT = 20 mA at nominal VZ = 3.0 V, Ta = 25 degC; reverse zener current, cathode positive relative to anode",
+      "page_reference": "p. 2, Electrical Characteristics, MMSZ5225B row, IZT",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.02
+    },
+    "breakdown_voltage": {
+      "conditions": "IZT = 20 mA, Ta = 25 degC; nominal VZ, cathode positive relative to anode",
+      "page_reference": "p. 2, Electrical Characteristics, MMSZ5225B row, VZ nominal",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 3.0
+    },
+    "capacitance": null,
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 10 mA, Ta = 25 degC",
+          "page_reference": "p. 1, Maximum Ratings, Forward Voltage",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.01
+        },
+        "voltage": {
+          "conditions": "IF = 10 mA, Ta = 25 degC",
+          "page_reference": "p. 1, Maximum Ratings, Forward Voltage",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.9
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = 1.0 V, Ta = 25 degC; maximum leakage current IR = 50 uA",
+      "page_reference": "p. 2, Electrical Characteristics, MMSZ5225B row, IR@VR",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 5e-05
+    },
+    "reverse_recovery": null,
+    "variant": "zener"
+  },
+  "usable_curves": true
+}

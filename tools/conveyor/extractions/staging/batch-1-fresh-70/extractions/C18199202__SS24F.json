@@ -1,0 +1,134 @@
+{
+  "schema_version": "1.0.0",
+  "mpn": "SS24F",
+  "manufacturer": "hongjiacheng",
+  "family": "diode",
+  "datasheet_identity": {
+    "title": "SS22F THRU SS220F",
+    "revision": "Rev:1.0",
+    "pages_examined": ["p. 1", "p. 2", "p. 3"]
+  },
+  "usable_curves": true,
+  "curves": [
+    {
+      "name": "Typical forward voltage, SS22F-SS24F curve",
+      "x_axis": {
+        "quantity": "instantaneous forward voltage",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "instantaneous forward current",
+        "unit": "A",
+        "scale": "log"
+      },
+      "test_conditions": "Tj = 25 degC; pulse width = 300 us; 1% duty cycle",
+      "page_reference": "p. 2 Fig. 3, SS22F-SS24F curve",
+      "points": [
+        {"x": 0.255, "y": 0.01},
+        {"x": 0.291, "y": 0.105},
+        {"x": 0.335, "y": 0.327},
+        {"x": 0.408, "y": 1.17},
+        {"x": 0.540, "y": 5.55},
+        {"x": 0.620, "y": 10.7},
+        {"x": 0.707, "y": 18.8},
+        {"x": 0.887, "y": 38.2},
+        {"x": 1.05, "y": 47.9}
+      ]
+    },
+    {
+      "name": "Typical reverse characteristics, SS22F-SS26F curve at Tj = 25 degC",
+      "x_axis": {
+        "quantity": "percent of rated peak reverse voltage",
+        "unit": "%",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "instantaneous reverse current",
+        "unit": "mA",
+        "scale": "log"
+      },
+      "test_conditions": "Tj = 25 degC",
+      "page_reference": "p. 2 Fig. 4, SS22F-SS26F solid curve",
+      "points": [
+        {"x": 6.5, "y": 0.00344},
+        {"x": 23.6, "y": 0.0106},
+        {"x": 29.8, "y": 0.0124},
+        {"x": 71.1, "y": 0.0244},
+        {"x": 78.0, "y": 0.0268},
+        {"x": 98.5, "y": 0.0606}
+      ]
+    },
+    {
+      "name": "Typical reverse characteristics, SS22F-SS26F curve at Tj = 100 degC",
+      "x_axis": {
+        "quantity": "percent of rated peak reverse voltage",
+        "unit": "%",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "instantaneous reverse current",
+        "unit": "mA",
+        "scale": "log"
+      },
+      "test_conditions": "Tj = 100 degC",
+      "page_reference": "p. 2 Fig. 4, SS22F-SS26F solid curve",
+      "points": [
+        {"x": 6.3, "y": 1.60},
+        {"x": 9.4, "y": 2.64},
+        {"x": 24.1, "y": 4.78},
+        {"x": 48.8, "y": 7.87},
+        {"x": 57.7, "y": 8.89},
+        {"x": 82.7, "y": 13.5},
+        {"x": 99.5, "y": 28.1}
+      ]
+    }
+  ],
+  "specs": {
+    "variant": "schottky",
+    "forward_voltage_points": [
+      {
+        "current": {
+          "value": 2.0,
+          "unit": "A",
+          "conditions": "IF = 2.0 A, TA = 25 degC",
+          "page_reference": "p. 2 electrical characteristics, maximum instantaneous forward voltage",
+          "source_kind": "maximum"
+        },
+        "voltage": {
+          "value": 0.55,
+          "unit": "V",
+          "conditions": "IF = 2.0 A, TA = 25 degC",
+          "page_reference": "p. 2 electrical characteristics, maximum instantaneous forward voltage",
+          "source_kind": "maximum"
+        }
+      }
+    ],
+    "reverse_current": {
+      "value": 0.0005,
+      "unit": "A",
+      "conditions": "VR = VDC = 40 V, TA = 25 degC",
+      "page_reference": "p. 2 electrical characteristics, maximum DC reverse current at rated DC blocking voltage, IR1",
+      "source_kind": "maximum"
+    },
+    "capacitance": {
+      "value": 1.6e-10,
+      "unit": "F",
+      "conditions": "4.0 V DC reverse bias, f = 1 MHz, TA = 25 degC",
+      "page_reference": "p. 2 electrical characteristics, typical junction capacitance",
+      "source_kind": "typical"
+    },
+    "reverse_recovery": null,
+    "breakdown_voltage": null,
+    "breakdown_current": null
+  },
+  "extraction_notes": [
+    "The SS24F column is covered by the SS22F-SS24F grouped values in the electrical characteristics table: VF maximum 0.55 V at IF = 2.0 A, IR1 maximum 0.5 mA at rated DC blocking voltage, IR2 maximum 50 mA at 100 degC, and typical CJ 160 pF.",
+    "The SS24F maximum repetitive peak reverse voltage and maximum DC blocking voltage are both 40 V; maximum average forward rectified current is 2.0 A and non-repetitive peak forward surge current is 50 A, all from p. 1 maximum ratings.",
+    "The reverse-current table also publishes IR2 = 50 mA at VR = VDC and TA = 100 degC; the extracted reverse_current input uses the 25 degC IR1 row.",
+    "No reverse recovery time or reverse-recovery test circuit is published, so reverse recovery is not modelled.",
+    "No breakdown-voltage or breakdown-current characteristic is published for this Schottky rectifier; the 40 V blocking rating is not used as a fitted breakdown pair.",
+    "Curve points were digitized from the supplied vector plots without interpolation between absent curves. Fig. 3 provides the SS22F-SS24F forward curve; Fig. 4 provides the SS22F-SS26F solid reverse curves at Tj = 25 degC and Tj = 100 degC."
+  ],
+  "omission_reason": null
+}

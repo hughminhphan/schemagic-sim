@@ -1,0 +1,90 @@
+{
+  "schema_version": "1.0.0",
+  "mpn": "MMSZ5248B",
+  "manufacturer": "hongjiacheng",
+  "family": "diode",
+  "datasheet_identity": {
+    "title": "MMSZ5221B THRU MMSZ5267B SURFACE MOUNT ZENER DIODES",
+    "revision": "1.1",
+    "pages_examined": ["1", "2", "3", "4", "5"]
+  },
+  "usable_curves": true,
+  "curves": [
+    {
+      "name": "Zener I-V Characteristic",
+      "x_axis": {
+        "quantity": "Zener Voltage",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "Zener Current",
+        "unit": "mA",
+        "scale": "log"
+      },
+      "test_conditions": "Ta=25°C, Pulsed, PD=500mW",
+      "page_reference": "3",
+      "points": [
+        {"x": 17.0, "y": 0.5},
+        {"x": 17.5, "y": 2.0},
+        {"x": 18.0, "y": 7.0},
+        {"x": 18.5, "y": 12.0},
+        {"x": 19.0, "y": 18.0}
+      ]
+    }
+  ],
+  "specs": {
+    "variant": "zener",
+    "forward_voltage_points": [
+      {
+        "current": {
+          "value": 10.0,
+          "unit": "mA",
+          "conditions": "Forward bias",
+          "page_reference": "1",
+          "source_kind": "typical"
+        },
+        "voltage": {
+          "value": 0.9,
+          "unit": "V",
+          "conditions": "IF=10mA",
+          "page_reference": "1",
+          "source_kind": "typical"
+        }
+      }
+    ],
+    "reverse_current": {
+      "value": 0.1,
+      "unit": "μA",
+      "conditions": "VR=14.0V, Ta=25°C",
+      "page_reference": "2",
+      "source_kind": "maximum"
+    },
+    "capacitance": null,
+    "reverse_recovery": null,
+    "breakdown_voltage": {
+      "value": 18.0,
+      "unit": "V",
+      "conditions": "Nominal zener voltage at IZT=7.0mA",
+      "page_reference": "2",
+      "source_kind": "typical"
+    },
+    "breakdown_current": {
+      "value": 7.0,
+      "unit": "mA",
+      "conditions": "Test current at nominal VZ",
+      "page_reference": "2",
+      "source_kind": "typical"
+    }
+  },
+  "extraction_notes": [
+    "MMSZ5248B: 18V nominal zener, type code J3, SOD-123 surface mount",
+    "VZ min/max: 17.10V to 18.90V per electrical characteristics table page 2",
+    "Zener impedance ZZT=21Ω measured at IZT=7.0mA",
+    "Leakage current IR=0.1μA at reverse voltage VR=14.0V",
+    "Forward voltage VF=0.9V @ IF=10mA from maximum ratings page 1",
+    "Curve digitized from Fig. 2 (11V to 39V range, page 3)",
+    "500mW power dissipation, pulsed test conditions, Ta=25°C"
+  ],
+  "omission_reason": null
+}

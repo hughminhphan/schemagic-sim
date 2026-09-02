@@ -1,0 +1,69 @@
+{
+  "curves": [],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "revision": "Rev: 1.0",
+    "title": "MM1W3V3 THRU MM1W330 Surface Mount Silicon Zener Diodes"
+  },
+  "extraction_notes": [
+    "The supplied PDF SHA-256 is 58bc7212021acdd0099f74f5574992e2fe4afea33850f27c443c979da297e66c.",
+    "The MM1W24 row specifies VZ minimum 22.8 V, nominal 24 V, and maximum 26.0 V at IZT = 11 mA, maximum ZZT = 25 ohm, maximum IR = 5 uA at VR = 18 V, and admissible IZM = 38 mA, all at Ta = 25 degC unless otherwise noted.",
+    "The supplied PDF contains only power-derating and transient-thermal-impedance plots; it has no MM1W24-specific zener I-V curve or other usable electrical curve.",
+    "The capacitance and reverse-recovery fields are unavailable because the datasheet publishes neither a capacitance specification nor trr or switching-time data."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "MM1W24",
+  "omission_reason": "No usable MM1W24-specific electrical curve is present: the PDF publishes only generic power-derating and transient-thermal-impedance plots. The datasheet also publishes no capacitance or reverse-recovery specification.",
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": {
+      "conditions": "IZT = 11 mA at nominal VZ = 24 V, Ta = 25 degC; reverse zener current, cathode positive relative to anode",
+      "page_reference": "p. 2, Electrical Characteristics, MM1W24 row, IZT",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.011
+    },
+    "breakdown_voltage": {
+      "conditions": "IZT = 11 mA, Ta = 25 degC; nominal VZ, cathode positive relative to anode",
+      "page_reference": "p. 2, Electrical Characteristics, MM1W24 row, VZ nominal",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 24.0
+    },
+    "capacitance": null,
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 200 mA, Ta = 25 degC unless otherwise specified",
+          "page_reference": "p. 1, Maximum Ratings, Forward Voltage",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.2
+        },
+        "voltage": {
+          "conditions": "IF = 200 mA, Ta = 25 degC unless otherwise specified",
+          "page_reference": "p. 1, Maximum Ratings, Forward Voltage",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 1.2
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = 18 V, Ta = 25 degC; maximum leakage current IR = 5 uA",
+      "page_reference": "p. 2, Electrical Characteristics, MM1W24 row, IR@VR",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 5e-06
+    },
+    "reverse_recovery": null,
+    "variant": "zener"
+  },
+  "usable_curves": false
+}

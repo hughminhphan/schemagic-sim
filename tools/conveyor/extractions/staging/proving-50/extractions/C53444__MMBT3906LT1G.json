@@ -1,0 +1,355 @@
+{
+  "schema_version": "1.0.0",
+  "mpn": "MMBT3906LT1G",
+  "manufacturer": "onsemi",
+  "family": "bjt",
+  "datasheet_identity": {
+    "title": "MMBT3906L, SMMBT3906L General Purpose Transistor",
+    "revision": "December 2013, Rev. 11",
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4",
+      "p. 5",
+      "p. 6",
+      "p. 7"
+    ]
+  },
+  "usable_curves": true,
+  "curves": [
+    {
+      "name": "DC current gain at 25 degC",
+      "x_axis": {
+        "quantity": "collector current",
+        "unit": "A",
+        "scale": "log"
+      },
+      "y_axis": {
+        "quantity": "DC current gain hFE",
+        "unit": "1",
+        "scale": "log"
+      },
+      "test_conditions": "VCE = -1 V, TJ = 25 degC; 25 degC curve digitized",
+      "page_reference": "p. 5, fig. 13",
+      "points": [
+        {"x": 0.001, "y": 180},
+        {"x": 0.01, "y": 175},
+        {"x": 0.03, "y": 160},
+        {"x": 0.05, "y": 125},
+        {"x": 0.1, "y": 65}
+      ]
+    },
+    {
+      "name": "Collector-emitter saturation voltage at IC/IB = 10",
+      "x_axis": {
+        "quantity": "collector current",
+        "unit": "A",
+        "scale": "log"
+      },
+      "y_axis": {
+        "quantity": "collector-emitter saturation voltage magnitude VCE(sat)",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "test_conditions": "IC/IB = 10, TJ = 25 degC; voltage magnitude digitized from PNP curve",
+      "page_reference": "p. 6, fig. 15",
+      "points": [
+        {"x": 0.001, "y": 0.045},
+        {"x": 0.01, "y": 0.06},
+        {"x": 0.05, "y": 0.12},
+        {"x": 0.1, "y": 0.18},
+        {"x": 0.2, "y": 0.42}
+      ]
+    },
+    {
+      "name": "Base-emitter saturation voltage at IC/IB = 10",
+      "x_axis": {
+        "quantity": "collector current",
+        "unit": "A",
+        "scale": "log"
+      },
+      "y_axis": {
+        "quantity": "base-emitter saturation voltage magnitude VBE(sat)",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "test_conditions": "IC/IB = 10, TJ = 25 degC; voltage magnitude digitized from PNP curve",
+      "page_reference": "p. 6, fig. 16",
+      "points": [
+        {"x": 0.0001, "y": 0.61},
+        {"x": 0.001, "y": 0.66},
+        {"x": 0.01, "y": 0.75},
+        {"x": 0.1, "y": 0.86},
+        {"x": 0.5, "y": 1.1}
+      ]
+    },
+    {
+      "name": "Base-emitter on voltage at 25 degC",
+      "x_axis": {
+        "quantity": "collector current",
+        "unit": "A",
+        "scale": "log"
+      },
+      "y_axis": {
+        "quantity": "base-emitter on voltage magnitude VBE(on)",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "test_conditions": "VCE = -1 V, TJ = 25 degC; 25 degC curve digitized",
+      "page_reference": "p. 6, fig. 17",
+      "points": [
+        {"x": 0.0001, "y": 0.6},
+        {"x": 0.001, "y": 0.64},
+        {"x": 0.01, "y": 0.7},
+        {"x": 0.1, "y": 0.8},
+        {"x": 0.3, "y": 0.95}
+      ]
+    },
+    {
+      "name": "Current-gain bandwidth product at 25 degC",
+      "x_axis": {
+        "quantity": "collector current",
+        "unit": "A",
+        "scale": "log"
+      },
+      "y_axis": {
+        "quantity": "current-gain bandwidth product fT",
+        "unit": "Hz",
+        "scale": "log"
+      },
+      "test_conditions": "VCE = -2 V, TA = 25 degC; curve digitized",
+      "page_reference": "p. 6, fig. 18",
+      "points": [
+        {"x": 0.001, "y": 180000000},
+        {"x": 0.003, "y": 250000000},
+        {"x": 0.01, "y": 350000000},
+        {"x": 0.02, "y": 380000000},
+        {"x": 0.05, "y": 270000000},
+        {"x": 0.1, "y": 100000000}
+      ]
+    }
+  ],
+  "specs": {
+    "polarity": "pnp",
+    "gain_points": [
+      {
+        "collector_current": {
+          "value": 0.001,
+          "unit": "A",
+          "conditions": "IC = -1 mA, VCE = -1 V, TJ = 25 degC",
+          "page_reference": "p. 5, fig. 13",
+          "source_kind": "digitized_typical_curve"
+        },
+        "vce": {
+          "value": 1,
+          "unit": "V",
+          "conditions": "IC = -1 mA, VCE = -1 V, TJ = 25 degC",
+          "page_reference": "p. 5, fig. 13",
+          "source_kind": "digitized_typical_curve"
+        },
+        "hfe": {
+          "value": 180,
+          "unit": "1",
+          "conditions": "IC = -1 mA, VCE = -1 V, TJ = 25 degC",
+          "page_reference": "p. 5, fig. 13, digitized",
+          "source_kind": "digitized_typical_curve"
+        }
+      },
+      {
+        "collector_current": {
+          "value": 0.01,
+          "unit": "A",
+          "conditions": "IC = -10 mA, VCE = -1 V, TJ = 25 degC",
+          "page_reference": "p. 5, fig. 13",
+          "source_kind": "digitized_typical_curve"
+        },
+        "vce": {
+          "value": 1,
+          "unit": "V",
+          "conditions": "IC = -10 mA, VCE = -1 V, TJ = 25 degC",
+          "page_reference": "p. 5, fig. 13",
+          "source_kind": "digitized_typical_curve"
+        },
+        "hfe": {
+          "value": 175,
+          "unit": "1",
+          "conditions": "IC = -10 mA, VCE = -1 V, TJ = 25 degC",
+          "page_reference": "p. 5, fig. 13, digitized",
+          "source_kind": "digitized_typical_curve"
+        }
+      },
+      {
+        "collector_current": {
+          "value": 0.03,
+          "unit": "A",
+          "conditions": "IC = -30 mA, VCE = -1 V, TJ = 25 degC",
+          "page_reference": "p. 5, fig. 13",
+          "source_kind": "digitized_typical_curve"
+        },
+        "vce": {
+          "value": 1,
+          "unit": "V",
+          "conditions": "IC = -30 mA, VCE = -1 V, TJ = 25 degC",
+          "page_reference": "p. 5, fig. 13",
+          "source_kind": "digitized_typical_curve"
+        },
+        "hfe": {
+          "value": 160,
+          "unit": "1",
+          "conditions": "IC = -30 mA, VCE = -1 V, TJ = 25 degC",
+          "page_reference": "p. 5, fig. 13, digitized",
+          "source_kind": "digitized_typical_curve"
+        }
+      },
+      {
+        "collector_current": {
+          "value": 0.05,
+          "unit": "A",
+          "conditions": "IC = -50 mA, VCE = -1 V, TJ = 25 degC",
+          "page_reference": "p. 5, fig. 13",
+          "source_kind": "digitized_typical_curve"
+        },
+        "vce": {
+          "value": 1,
+          "unit": "V",
+          "conditions": "IC = -50 mA, VCE = -1 V, TJ = 25 degC",
+          "page_reference": "p. 5, fig. 13",
+          "source_kind": "digitized_typical_curve"
+        },
+        "hfe": {
+          "value": 125,
+          "unit": "1",
+          "conditions": "IC = -50 mA, VCE = -1 V, TJ = 25 degC",
+          "page_reference": "p. 5, fig. 13, digitized",
+          "source_kind": "digitized_typical_curve"
+        }
+      },
+      {
+        "collector_current": {
+          "value": 0.1,
+          "unit": "A",
+          "conditions": "IC = -100 mA, VCE = -1 V, TJ = 25 degC",
+          "page_reference": "p. 5, fig. 13",
+          "source_kind": "digitized_typical_curve"
+        },
+        "vce": {
+          "value": 1,
+          "unit": "V",
+          "conditions": "IC = -100 mA, VCE = -1 V, TJ = 25 degC",
+          "page_reference": "p. 5, fig. 13",
+          "source_kind": "digitized_typical_curve"
+        },
+        "hfe": {
+          "value": 65,
+          "unit": "1",
+          "conditions": "IC = -100 mA, VCE = -1 V, TJ = 25 degC",
+          "page_reference": "p. 5, fig. 13, digitized",
+          "source_kind": "digitized_typical_curve"
+        }
+      }
+    ],
+    "saturation_points": [
+      {
+        "collector_current": {
+          "value": 0.01,
+          "unit": "A",
+          "conditions": "IC = -10 mA, IB = -1 mA, TJ = 25 degC",
+          "page_reference": "p. 6, fig. 15 and fig. 16",
+          "source_kind": "digitized_typical_curve"
+        },
+        "base_current": {
+          "value": 0.001,
+          "unit": "A",
+          "conditions": "IC = -10 mA, IB = -1 mA, TJ = 25 degC",
+          "page_reference": "p. 6, fig. 15 and fig. 16",
+          "source_kind": "digitized_typical_curve"
+        },
+        "vce_sat": {
+          "value": 0.08,
+          "unit": "V",
+          "conditions": "IC = -10 mA, IB = -1 mA, TJ = 25 degC; magnitude of VCE(sat)",
+          "page_reference": "p. 6, fig. 15, digitized",
+          "source_kind": "digitized_typical_curve"
+        },
+        "vbe_sat": {
+          "value": 0.75,
+          "unit": "V",
+          "conditions": "IC = -10 mA, IB = -1 mA, TJ = 25 degC; magnitude of VBE(sat)",
+          "page_reference": "p. 6, fig. 16, digitized",
+          "source_kind": "digitized_typical_curve"
+        }
+      },
+      {
+        "collector_current": {
+          "value": 0.05,
+          "unit": "A",
+          "conditions": "IC = -50 mA, IB = -5 mA, TJ = 25 degC",
+          "page_reference": "p. 6, fig. 15 and fig. 16",
+          "source_kind": "digitized_typical_curve"
+        },
+        "base_current": {
+          "value": 0.005,
+          "unit": "A",
+          "conditions": "IC = -50 mA, IB = -5 mA, TJ = 25 degC",
+          "page_reference": "p. 6, fig. 15 and fig. 16",
+          "source_kind": "digitized_typical_curve"
+        },
+        "vce_sat": {
+          "value": 0.12,
+          "unit": "V",
+          "conditions": "IC = -50 mA, IB = -5 mA, TJ = 25 degC; magnitude of VCE(sat)",
+          "page_reference": "p. 6, fig. 15, digitized",
+          "source_kind": "digitized_typical_curve"
+        },
+        "vbe_sat": {
+          "value": 0.86,
+          "unit": "V",
+          "conditions": "IC = -50 mA, IB = -5 mA, TJ = 25 degC; magnitude of VBE(sat)",
+          "page_reference": "p. 6, fig. 16, digitized",
+          "source_kind": "digitized_typical_curve"
+        }
+      }
+    ],
+    "ft": {
+      "value": 250000000,
+      "unit": "Hz",
+      "conditions": "IC = -10 mA, VCE = -20 V, f = 100 MHz, TA = 25 degC",
+      "page_reference": "p. 2, electrical characteristics",
+      "source_kind": "minimum"
+    },
+    "cobo": {
+      "value": 4.5e-12,
+      "unit": "F",
+      "conditions": "VCB = -5 V, IE = 0, f = 1 MHz, TA = 25 degC",
+      "page_reference": "p. 2, electrical characteristics",
+      "source_kind": "maximum"
+    },
+    "cibo": {
+      "value": 1e-11,
+      "unit": "F",
+      "conditions": "VEB = -0.5 V, IC = 0, f = 1 MHz, TA = 25 degC",
+      "page_reference": "p. 2, electrical characteristics",
+      "source_kind": "maximum"
+    },
+    "vceo": {
+      "value": 40,
+      "unit": "V",
+      "conditions": "V(BR)CEO magnitude, IC = -1 mA, IB = 0, TA = 25 degC",
+      "page_reference": "p. 2, electrical characteristics",
+      "source_kind": "minimum"
+    }
+  },
+  "extraction_notes": [
+    "PNP datasheet voltages and currents are represented as positive magnitudes in numeric fields; signed PNP test values are preserved in conditions.",
+    "The datasheet table gives DC current-gain minimums of 60, 80, 100, 60, and 30 at |IC| = 0.1 mA, 1 mA, 10 mA, 50 mA, and 100 mA respectively, with a maximum of 300 at |IC| = 10 mA; the gain_points target the typical 25 degC curve in fig. 13 rather than guaranteed limits.",
+    "The datasheet table gives |VCE(sat)| maximums of 0.25 V at |IC| = 10 mA, |IB| = 1 mA and 0.4 V at |IC| = 50 mA, |IB| = 5 mA. It gives VBE(sat) bounds of 0.65 to 0.85 V at 10 mA/1 mA and a maximum of 0.95 V at 50 mA/5 mA; saturation points use typical 25 degC curves instead of treating limits as typical values.",
+    "The fT table value is a guaranteed minimum of 250 MHz at |IC| = 10 mA and |VCE| = 20 V; fig. 18 is a separate typical curve at |VCE| = 2 V and 25 degC.",
+    "Cobo and Cibo are maximum capacitance limits, not typical values: 4.5 pF at |VCB| = 5 V and 10 pF at |VEB| = 0.5 V, both at 1 MHz.",
+    "Absolute-rating metadata from p. 1 includes |VCEO| = 40 V, |VCBO| = 40 V, |VEBO| = 5 V, continuous |IC| = 0.2 A, peak |ICM| = 0.8 A, and PD = 0.225 W on FR-5 at TA = 25 degC or 0.3 W on alumina at TA = 25 degC.",
+    "No output-characteristics IC-versus-VCE figure is provided, so Early voltage VAF cannot be extracted from this datasheet; any F2 model must hold VAF at a family-typical default and mark output conductance as approximate.",
+    "The capacitance-versus-reverse-bias figure on p. 3 was not digitized because the single tabulated Cobo and Cibo points are the minimum capacitance inputs needed for an honest F2 attempt.",
+    "No temperature-dependent fit was attempted; the curves at -55 degC and 150 degC are not used in the 25 degC extraction."
+  ],
+  "omission_reason": "VAF is omitted because the datasheet has no output-characteristics figure from which to extract an Early voltage; temperature-dependent parameters, reverse operation, noise, and full transient-curve digitization are also outside this minimum F2 extraction."
+}

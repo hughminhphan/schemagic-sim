@@ -1,0 +1,72 @@
+{
+  "schema_version": "1.0.0",
+  "mpn": "SMBJ5338B",
+  "manufacturer": "hongjiacheng",
+  "family": "diode",
+  "datasheet_identity": {
+    "title": "SMBJ5333B THRU SMBJ5388B SURFACE MOUNT ZENER DIODES",
+    "revision": "Rev. 1.0",
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4",
+      "p. 5"
+    ]
+  },
+  "usable_curves": false,
+  "curves": [],
+  "specs": {
+    "variant": "zener",
+    "forward_voltage_points": [
+      {
+        "current": {
+          "value": 0.2,
+          "unit": "A",
+          "conditions": "IF = 200 mA, TA = 25 degC",
+          "page_reference": "p. 1, maximum ratings, Forward Voltage @ IF=200mA",
+          "source_kind": "maximum"
+        },
+        "voltage": {
+          "value": 1.2,
+          "unit": "V",
+          "conditions": "IF = 200 mA, TA = 25 degC",
+          "page_reference": "p. 1, maximum ratings, Forward Voltage @ IF=200mA",
+          "source_kind": "maximum"
+        }
+      }
+    ],
+    "reverse_current": {
+      "value": 0.000001,
+      "unit": "A",
+      "conditions": "IR = 1.0 microA maximum at VR = 1.0 V, TA = 25 degC",
+      "page_reference": "p. 2, electrical characteristics, SMBJ5338B row, IR @ VR",
+      "source_kind": "maximum"
+    },
+    "capacitance": null,
+    "reverse_recovery": null,
+    "breakdown_voltage": {
+      "value": 5.1,
+      "unit": "V",
+      "conditions": "VZ = 5.1 V at IZT = 240 mA, TA = 25 degC; nominal zener voltage",
+      "page_reference": "p. 2, electrical characteristics, SMBJ5338B row, VZ @ IZT",
+      "source_kind": "typical"
+    },
+    "breakdown_current": {
+      "value": 0.24,
+      "unit": "A",
+      "conditions": "IZT = 240 mA test current for VZ, TA = 25 degC",
+      "page_reference": "p. 2, electrical characteristics, SMBJ5338B row, IZT",
+      "source_kind": "typical"
+    }
+  },
+  "extraction_notes": [
+    "The datasheet is a family table; the SMBJ5338B row was used.",
+    "The datasheet note states that the nominal zener voltage has a standard tolerance of plus or minus 5 percent.",
+    "The SMBJ5338B row gives maximum zener impedance ZZT = 1.5 ohm at IZT = 240 mA and ZZK = 400 ohm at IZK = 1.0 mA; the strict diode schema has no impedance fields.",
+    "The SMBJ5338B row gives maximum DC zener current IZM = 0.93 A and maximum surge current IZSM = 14.4 A; the strict diode schema has no dedicated fields for these ratings.",
+    "No capacitance or reverse-recovery specification is published.",
+    "The characteristics page contains thermal, power, temperature-coefficient, and thermal-response plots, but no diode forward-I-V, zener-V-I, capacitance, or reverse-recovery curve usable for this schema."
+  ],
+  "omission_reason": "No usable diode electrical curve is provided. The only plotted characteristics are thermal, power, temperature-coefficient, and thermal-response curves, so no forward-I-V, zener-V-I, capacitance, or reverse-recovery points were digitized."
+}

@@ -1,0 +1,167 @@
+{
+  "curves": [
+    {
+      "name": "Typical forward characteristics",
+      "page_reference": "p. 2, Fig. 1",
+      "points": [
+        {
+          "x": 0.4,
+          "y": 1e-05
+        },
+        {
+          "x": 0.5,
+          "y": 8e-05
+        },
+        {
+          "x": 0.6,
+          "y": 0.0006
+        },
+        {
+          "x": 0.7,
+          "y": 0.004
+        },
+        {
+          "x": 0.8,
+          "y": 0.02
+        },
+        {
+          "x": 0.9,
+          "y": 0.08
+        },
+        {
+          "x": 1.0,
+          "y": 0.22
+        },
+        {
+          "x": 1.1,
+          "y": 0.4
+        },
+        {
+          "x": 1.2,
+          "y": 0.52
+        }
+      ],
+      "test_conditions": "Typical characteristics; no temperature condition is printed on Fig. 1",
+      "x_axis": {
+        "quantity": "instantaneous forward voltage VF",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "instantaneous forward current IF",
+        "scale": "log",
+        "unit": "A"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2"
+    ],
+    "revision": "Revision not stated in supplied PDF",
+    "title": "1N4148W Fast Switching Diodes"
+  },
+  "extraction_notes": [
+    "The datasheet also lists IR = 25 nA at VR = 20 V; the schema has one reverse_current slot, so the 75 V maximum-rated row is retained and the 20 V row is noted here.",
+    "The forward curve is digitized from the supplied typical Fig. 1; plotted temperature is not stated."
+  ],
+  "family": "diode",
+  "manufacturer": "Guangdong Hottech",
+  "mpn": "1N4148W-T4",
+  "omission_reason": "The supplied datasheet publishes no breakdown-voltage or breakdown-current characteristic.",
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": null,
+    "breakdown_voltage": null,
+    "capacitance": {
+      "conditions": "VR = 0 V, f = 1 MHz, Tamb = 25 degC",
+      "page_reference": "p. 1, Electrical characteristics",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 2e-12
+    },
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 1 mA, Tamb = 25 degC",
+          "page_reference": "p. 1, Electrical characteristics",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.001
+        },
+        "voltage": {
+          "conditions": "IF = 1 mA, Tamb = 25 degC",
+          "page_reference": "p. 1, Electrical characteristics",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.715
+        }
+      },
+      {
+        "current": {
+          "conditions": "IF = 10 mA, Tamb = 25 degC",
+          "page_reference": "p. 1, Electrical characteristics",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.01
+        },
+        "voltage": {
+          "conditions": "IF = 10 mA, Tamb = 25 degC",
+          "page_reference": "p. 1, Electrical characteristics",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.855
+        }
+      },
+      {
+        "current": {
+          "conditions": "IF = 50 mA, Tamb = 25 degC",
+          "page_reference": "p. 1, Electrical characteristics",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.05
+        },
+        "voltage": {
+          "conditions": "IF = 50 mA, Tamb = 25 degC",
+          "page_reference": "p. 1, Electrical characteristics",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 1.0
+        }
+      },
+      {
+        "current": {
+          "conditions": "IF = 150 mA, Tamb = 25 degC",
+          "page_reference": "p. 1, Electrical characteristics",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.15
+        },
+        "voltage": {
+          "conditions": "IF = 150 mA, Tamb = 25 degC",
+          "page_reference": "p. 1, Electrical characteristics",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 1.25
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = 75 V, Tamb = 25 degC",
+      "page_reference": "p. 1, Electrical characteristics",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 1e-06
+    },
+    "reverse_recovery": {
+      "conditions": "IF = IR = 10 mA, Irr = 0.1 x IR, RL = 100 ohm, Tamb = 25 degC",
+      "page_reference": "p. 1, Electrical characteristics",
+      "source_kind": "maximum",
+      "unit": "s",
+      "value": 4e-09
+    },
+    "variant": "signal"
+  },
+  "usable_curves": true
+}

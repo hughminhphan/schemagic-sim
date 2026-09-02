@@ -1,0 +1,301 @@
+{
+  "schema_version": "1.0.0",
+  "mpn": "SI2323DS",
+  "manufacturer": "TECH PUBLIC",
+  "family": "mosfet",
+  "datasheet_identity": {
+    "title": "SI2323DS P-Channel Mosfet",
+    "revision": "1",
+    "pages_examined": [
+      "1",
+      "2",
+      "3",
+      "4"
+    ]
+  },
+  "usable_curves": true,
+  "curves": [
+    {
+      "name": "Drain-Source On-Resistance vs Drain Current",
+      "x_axis": {
+        "quantity": "drain current",
+        "unit": "A",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "drain-source on-resistance",
+        "unit": "ohm",
+        "scale": "linear"
+      },
+      "test_conditions": "VGS=-4.5V, TJ=25°C",
+      "page_reference": "3, Figure 6",
+      "points": [
+        {
+          "x": 0,
+          "y": 0.052
+        },
+        {
+          "x": 3,
+          "y": 0.055
+        },
+        {
+          "x": 6,
+          "y": 0.065
+        },
+        {
+          "x": 9,
+          "y": 0.085
+        },
+        {
+          "x": 12,
+          "y": 0.100
+        },
+        {
+          "x": 15,
+          "y": 0.120
+        }
+      ]
+    },
+    {
+      "name": "Output Characteristics",
+      "x_axis": {
+        "quantity": "drain-source voltage",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "drain current",
+        "unit": "A",
+        "scale": "linear"
+      },
+      "test_conditions": "VGS=1V to 2.5V",
+      "page_reference": "3, Figure 5",
+      "points": [
+        {
+          "x": 0,
+          "y": 0
+        },
+        {
+          "x": 1,
+          "y": 1.5
+        },
+        {
+          "x": 2,
+          "y": 4.0
+        },
+        {
+          "x": 3,
+          "y": 6.5
+        },
+        {
+          "x": 4,
+          "y": 8.5
+        },
+        {
+          "x": 5,
+          "y": 10.0
+        }
+      ]
+    },
+    {
+      "name": "Capacitance vs Drain-Source Voltage",
+      "x_axis": {
+        "quantity": "drain-source voltage",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "capacitance",
+        "unit": "F",
+        "scale": "linear"
+      },
+      "test_conditions": "VDS=-4V to 0V, VGS=0V, F=1.0MHz",
+      "page_reference": "4, Figure 10",
+      "points": [
+        {
+          "x": 0,
+          "y": 7.4e-10
+        },
+        {
+          "x": 2,
+          "y": 5.5e-10
+        },
+        {
+          "x": 4,
+          "y": 4.2e-10
+        },
+        {
+          "x": 6,
+          "y": 3.4e-10
+        },
+        {
+          "x": 8,
+          "y": 2.8e-10
+        }
+      ]
+    }
+  ],
+  "specs": {
+    "polarity": "p",
+    "threshold_min": {
+      "value": -0.45,
+      "unit": "V",
+      "conditions": "VDS=VGS, ID=-250µA",
+      "page_reference": "2",
+      "source_kind": "minimum"
+    },
+    "threshold_typ": {
+      "value": -0.7,
+      "unit": "V",
+      "conditions": "VDS=VGS, ID=-250µA",
+      "page_reference": "2",
+      "source_kind": "typical"
+    },
+    "threshold_max": {
+      "value": -1.0,
+      "unit": "V",
+      "conditions": "VDS=VGS, ID=-250µA",
+      "page_reference": "2",
+      "source_kind": "maximum"
+    },
+    "rdson_points": [
+      {
+        "vgs": {
+          "value": -4.5,
+          "unit": "V",
+          "conditions": "at on-state",
+          "page_reference": "2",
+          "source_kind": "typical"
+        },
+        "current": {
+          "value": -4.1,
+          "unit": "A",
+          "conditions": "drain current",
+          "page_reference": "2",
+          "source_kind": "typical"
+        },
+        "resistance": {
+          "value": 0.039,
+          "unit": "ohm",
+          "conditions": "at 25°C",
+          "page_reference": "2",
+          "source_kind": "typical"
+        }
+      },
+      {
+        "vgs": {
+          "value": -4.5,
+          "unit": "V",
+          "conditions": "at on-state",
+          "page_reference": "2",
+          "source_kind": "maximum"
+        },
+        "current": {
+          "value": -4.1,
+          "unit": "A",
+          "conditions": "drain current",
+          "page_reference": "2",
+          "source_kind": "maximum"
+        },
+        "resistance": {
+          "value": 0.052,
+          "unit": "ohm",
+          "conditions": "at 25°C",
+          "page_reference": "2",
+          "source_kind": "maximum"
+        }
+      },
+      {
+        "vgs": {
+          "value": -2.5,
+          "unit": "V",
+          "conditions": "at on-state",
+          "page_reference": "2",
+          "source_kind": "typical"
+        },
+        "current": {
+          "value": -3.0,
+          "unit": "A",
+          "conditions": "drain current",
+          "page_reference": "2",
+          "source_kind": "typical"
+        },
+        "resistance": {
+          "value": 0.058,
+          "unit": "ohm",
+          "conditions": "at 25°C",
+          "page_reference": "2",
+          "source_kind": "typical"
+        }
+      },
+      {
+        "vgs": {
+          "value": -2.5,
+          "unit": "V",
+          "conditions": "at on-state",
+          "page_reference": "2",
+          "source_kind": "maximum"
+        },
+        "current": {
+          "value": -3.0,
+          "unit": "A",
+          "conditions": "drain current",
+          "page_reference": "2",
+          "source_kind": "maximum"
+        },
+        "resistance": {
+          "value": 0.075,
+          "unit": "ohm",
+          "conditions": "at 25°C",
+          "page_reference": "2",
+          "source_kind": "maximum"
+        }
+      }
+    ],
+    "ciss": {
+      "value": 7.4e-10,
+      "unit": "F",
+      "conditions": "VDS=-4V, VGS=0V, F=1.0MHz",
+      "page_reference": "2",
+      "source_kind": "typical"
+    },
+    "coss": {
+      "value": 2.9e-10,
+      "unit": "F",
+      "conditions": "VDS=-4V, VGS=0V, F=1.0MHz",
+      "page_reference": "2",
+      "source_kind": "typical"
+    },
+    "crss": {
+      "value": 1.9e-10,
+      "unit": "F",
+      "conditions": "VDS=-4V, VGS=0V, F=1.0MHz",
+      "page_reference": "2",
+      "source_kind": "typical"
+    },
+    "breakdown_voltage": {
+      "value": -20,
+      "unit": "V",
+      "conditions": "VGS=0V, ID=-250µA",
+      "page_reference": "2",
+      "source_kind": "minimum"
+    },
+    "body_diode": {
+      "value": -1.2,
+      "unit": "V",
+      "conditions": "VGS=0V, IS=-1.6A, diode forward voltage",
+      "page_reference": "2",
+      "source_kind": "typical"
+    }
+  },
+  "extraction_notes": [
+    "P-channel MOSFET with negative polarity conventions throughout",
+    "Threshold voltage values inverted per p-channel convention",
+    "RDS(on) measured at typical gate voltages of -4.5V and -2.5V",
+    "Capacitance values measured at VDS=-4V per dynamic characteristics section",
+    "Body diode forward voltage extracted from Drain-Source Diode Characteristics table",
+    "All electrical specs from Electrical Characteristics table on page 2",
+    "Output characteristics curve (Figure 5) shows typical transfer behavior for different VGS levels"
+  ],
+  "omission_reason": null
+}

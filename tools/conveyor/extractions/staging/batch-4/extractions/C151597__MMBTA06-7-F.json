@@ -1,0 +1,257 @@
+{
+  "schema_version": "1.0.0",
+  "mpn": "MMBTA06-7-F",
+  "manufacturer": "Diodes Incorporated",
+  "family": "bjt",
+  "datasheet_identity": {
+    "title": "MMBTA05 / MMBTA06 NPN MEDIUM POWER TRANSISTOR IN SOT23",
+    "revision": "DS30037 Rev. 16-2 (August 2023)",
+    "pages_examined": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5"
+    ]
+  },
+  "usable_curves": true,
+  "curves": [
+    {
+      "name": "DC Current Gain vs Collector Current",
+      "x_axis": {
+        "quantity": "Collector Current",
+        "unit": "mA",
+        "scale": "log"
+      },
+      "y_axis": {
+        "quantity": "DC Current Gain",
+        "unit": "dimensionless",
+        "scale": "log"
+      },
+      "test_conditions": "VCE = 1.0 V, TA = 25°C",
+      "page_reference": "5",
+      "points": [
+        {
+          "x": 1,
+          "y": 60
+        },
+        {
+          "x": 5,
+          "y": 90
+        },
+        {
+          "x": 10,
+          "y": 100
+        },
+        {
+          "x": 50,
+          "y": 100
+        },
+        {
+          "x": 100,
+          "y": 100
+        },
+        {
+          "x": 500,
+          "y": 75
+        },
+        {
+          "x": 1000,
+          "y": 60
+        }
+      ]
+    },
+    {
+      "name": "Collector-Emitter Saturation Voltage vs Collector Current",
+      "x_axis": {
+        "quantity": "Collector Current",
+        "unit": "mA",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "Collector-Emitter Saturation Voltage",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "test_conditions": "IB/IC = 0.1, TA = 25°C",
+      "page_reference": "5",
+      "points": [
+        {
+          "x": 1,
+          "y": 0.02
+        },
+        {
+          "x": 10,
+          "y": 0.05
+        },
+        {
+          "x": 25,
+          "y": 0.08
+        },
+        {
+          "x": 50,
+          "y": 0.10
+        },
+        {
+          "x": 100,
+          "y": 0.12
+        },
+        {
+          "x": 200,
+          "y": 0.15
+        },
+        {
+          "x": 500,
+          "y": 0.20
+        }
+      ]
+    },
+    {
+      "name": "Base-Emitter Turn-On Voltage vs Collector Current",
+      "x_axis": {
+        "quantity": "Collector Current",
+        "unit": "mA",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "Base-Emitter Voltage",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "test_conditions": "VCE = 1.0 V, TA = 25°C",
+      "page_reference": "5",
+      "points": [
+        {
+          "x": 0.1,
+          "y": 0.50
+        },
+        {
+          "x": 1,
+          "y": 0.55
+        },
+        {
+          "x": 10,
+          "y": 0.67
+        },
+        {
+          "x": 50,
+          "y": 0.78
+        },
+        {
+          "x": 100,
+          "y": 0.85
+        }
+      ]
+    }
+  ],
+  "specs": {
+    "polarity": "npn",
+    "gain_points": [
+      {
+        "collector_current": {
+          "value": 10,
+          "unit": "mA",
+          "conditions": "VCE = 1.0 V",
+          "page_reference": "4",
+          "source_kind": "minimum"
+        },
+        "vce": {
+          "value": 1.0,
+          "unit": "V",
+          "conditions": "DC Current Gain test",
+          "page_reference": "4",
+          "source_kind": "minimum"
+        },
+        "hfe": {
+          "value": 100,
+          "unit": "dimensionless",
+          "conditions": "IC = 10 mA, VCE = 1.0 V",
+          "page_reference": "4",
+          "source_kind": "minimum"
+        }
+      },
+      {
+        "collector_current": {
+          "value": 100,
+          "unit": "mA",
+          "conditions": "VCE = 1.0 V",
+          "page_reference": "4",
+          "source_kind": "minimum"
+        },
+        "vce": {
+          "value": 1.0,
+          "unit": "V",
+          "conditions": "DC Current Gain test",
+          "page_reference": "4",
+          "source_kind": "minimum"
+        },
+        "hfe": {
+          "value": 100,
+          "unit": "dimensionless",
+          "conditions": "IC = 100 mA, VCE = 1.0 V",
+          "page_reference": "4",
+          "source_kind": "minimum"
+        }
+      }
+    ],
+    "saturation_points": [
+      {
+        "collector_current": {
+          "value": 100,
+          "unit": "mA",
+          "conditions": "Saturation region",
+          "page_reference": "4",
+          "source_kind": "maximum"
+        },
+        "base_current": {
+          "value": 10,
+          "unit": "mA",
+          "conditions": "Saturation region",
+          "page_reference": "4",
+          "source_kind": "maximum"
+        },
+        "vce_sat": {
+          "value": 0.25,
+          "unit": "V",
+          "conditions": "IC = 100 mA, IB = 10 mA",
+          "page_reference": "4",
+          "source_kind": "maximum"
+        },
+        "vbe_sat": {
+          "value": 0.65,
+          "unit": "V",
+          "conditions": "IC = 100 mA, IB = 10 mA",
+          "page_reference": "5",
+          "source_kind": "digitized_typical_curve"
+        }
+      }
+    ],
+    "ft": {
+      "value": 100,
+      "unit": "MHz",
+      "conditions": "VCE = 2.0 V, IC = 10 mA, f = 100 MHz",
+      "page_reference": "4",
+      "source_kind": "minimum"
+    },
+    "cobo": null,
+    "cibo": null,
+    "vceo": {
+      "value": 80,
+      "unit": "V",
+      "conditions": "Absolute Maximum Rating",
+      "page_reference": "2",
+      "source_kind": "maximum"
+    }
+  },
+  "extraction_notes": [
+    "MMBTA06 is NPN transistor rated at 80V VCEO (higher than MMBTA05 at 60V)",
+    "Datasheet DS30037 Rev. 16-2 covers both MMBTA05 and MMBTA06; extracted MMBTA06-specific ratings",
+    "DC gain curves (Figure 4) digitized from typical characteristic showing hFE = 100 at IC = 10-100 mA",
+    "VCE(sat) curves (Figure 5) digitized at TA = 25°C with IB/IC = 0.1 condition",
+    "VBE curves (Figure 6) digitized at TA = 25°C showing typical turn-on behavior",
+    "Saturation VBE estimated from Figure 6 and typical curves; exact value not explicitly tabulated",
+    "Cobo and Cibo not specified in datasheet; marked as null",
+    "VCEO rated value 80V from absolute maximum ratings table; typical operating limit ~50V"
+  ],
+  "omission_reason": null
+}

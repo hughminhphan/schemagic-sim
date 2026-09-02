@@ -1,0 +1,287 @@
+{
+  "schema_version": "1.0.0",
+  "mpn": "NCEP40T11G",
+  "manufacturer": "Wuxi NCE Power Semiconductor",
+  "family": "mosfet",
+  "datasheet_identity": {
+    "title": "NCEP40T11G N-Channel Super Trench Power MOSFET",
+    "revision": "V1.0",
+    "pages_examined": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6"
+    ]
+  },
+  "usable_curves": true,
+  "curves": [
+    {
+      "name": "output characteristics",
+      "x_axis": {
+        "quantity": "VDS",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "ID",
+        "unit": "A",
+        "scale": "linear"
+      },
+      "test_conditions": "TJ = 25 degC; VGS = 3, 3.5, 4.5, 10 V",
+      "page_reference": "p. 3 Fig. 1",
+      "points": [
+        {
+          "x": 0,
+          "y": 0
+        },
+        {
+          "x": 0.5,
+          "y": 50
+        },
+        {
+          "x": 1,
+          "y": 85
+        },
+        {
+          "x": 2,
+          "y": 98
+        },
+        {
+          "x": 5,
+          "y": 110
+        }
+      ]
+    },
+    {
+      "name": "transfer characteristics",
+      "x_axis": {
+        "quantity": "VGS",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "ID",
+        "unit": "A",
+        "scale": "linear"
+      },
+      "test_conditions": "VDS = 5 V; TJ = 25 degC",
+      "page_reference": "p. 3 Fig. 2",
+      "points": [
+        {
+          "x": 1.8,
+          "y": 0
+        },
+        {
+          "x": 2.2,
+          "y": 10
+        },
+        {
+          "x": 2.5,
+          "y": 35
+        },
+        {
+          "x": 3.0,
+          "y": 70
+        },
+        {
+          "x": 3.5,
+          "y": 110
+        }
+      ]
+    },
+    {
+      "name": "capacitance",
+      "x_axis": {
+        "quantity": "VDS",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "capacitance",
+        "unit": "pF",
+        "scale": "linear"
+      },
+      "test_conditions": "VGS = 0 V, f = 1 MHz",
+      "page_reference": "p. 4 Fig. 7",
+      "points": [
+        {
+          "x": 0,
+          "y": 3800
+        },
+        {
+          "x": 5,
+          "y": 1800
+        },
+        {
+          "x": 10,
+          "y": 1200
+        },
+        {
+          "x": 20,
+          "y": 860
+        },
+        {
+          "x": 40,
+          "y": 550
+        }
+      ]
+    }
+  ],
+  "specs": {
+    "polarity": "n",
+    "threshold_min": {
+      "value": 1.2,
+      "unit": "V",
+      "conditions": "VDS = VGS, ID = 250 uA",
+      "page_reference": "p. 2 VGS(th), MIN",
+      "source_kind": "minimum"
+    },
+    "threshold_typ": {
+      "value": 1.7,
+      "unit": "V",
+      "conditions": "VDS = VGS, ID = 250 uA",
+      "page_reference": "p. 2 VGS(th), TYP",
+      "source_kind": "typical"
+    },
+    "threshold_max": {
+      "value": 2.2,
+      "unit": "V",
+      "conditions": "VDS = VGS, ID = 250 uA",
+      "page_reference": "p. 2 VGS(th), MAX",
+      "source_kind": "maximum"
+    },
+    "rdson_points": [
+      {
+        "vgs": {
+          "value": 10,
+          "unit": "V",
+          "conditions": "VGS = 10 V, ID = 55 A",
+          "page_reference": "p. 2 RDS(on), TYP",
+          "source_kind": "typical"
+        },
+        "current": {
+          "value": 55,
+          "unit": "A",
+          "conditions": "VGS = 10 V, ID = 55 A",
+          "page_reference": "p. 2 RDS(on), TYP",
+          "source_kind": "typical"
+        },
+        "resistance": {
+          "value": 0.0024,
+          "unit": "ohm",
+          "conditions": "VGS = 10 V, ID = 55 A",
+          "page_reference": "p. 2 RDS(on), TYP",
+          "source_kind": "typical"
+        }
+      },
+      {
+        "vgs": {
+          "value": 10,
+          "unit": "V",
+          "conditions": "VGS = 10 V, ID = 55 A",
+          "page_reference": "p. 2 RDS(on), MAX",
+          "source_kind": "maximum"
+        },
+        "current": {
+          "value": 55,
+          "unit": "A",
+          "conditions": "VGS = 10 V, ID = 55 A",
+          "page_reference": "p. 2 RDS(on), MAX",
+          "source_kind": "maximum"
+        },
+        "resistance": {
+          "value": 0.0028,
+          "unit": "ohm",
+          "conditions": "VGS = 10 V, ID = 55 A",
+          "page_reference": "p. 2 RDS(on), MAX",
+          "source_kind": "maximum"
+        }
+      },
+      {
+        "vgs": {
+          "value": 4.5,
+          "unit": "V",
+          "conditions": "VGS = 4.5 V, ID = 55 A",
+          "page_reference": "p. 2 RDS(on), TYP",
+          "source_kind": "typical"
+        },
+        "current": {
+          "value": 55,
+          "unit": "A",
+          "conditions": "VGS = 4.5 V, ID = 55 A",
+          "page_reference": "p. 2 RDS(on), TYP",
+          "source_kind": "typical"
+        },
+        "resistance": {
+          "value": 0.0033,
+          "unit": "ohm",
+          "conditions": "VGS = 4.5 V, ID = 55 A",
+          "page_reference": "p. 2 RDS(on), TYP",
+          "source_kind": "typical"
+        }
+      },
+      {
+        "vgs": {
+          "value": 4.5,
+          "unit": "V",
+          "conditions": "VGS = 4.5 V, ID = 55 A",
+          "page_reference": "p. 2 RDS(on), MAX",
+          "source_kind": "maximum"
+        },
+        "current": {
+          "value": 55,
+          "unit": "A",
+          "conditions": "VGS = 4.5 V, ID = 55 A",
+          "page_reference": "p. 2 RDS(on), MAX",
+          "source_kind": "maximum"
+        },
+        "resistance": {
+          "value": 0.0039,
+          "unit": "ohm",
+          "conditions": "VGS = 4.5 V, ID = 55 A",
+          "page_reference": "p. 2 RDS(on), MAX",
+          "source_kind": "maximum"
+        }
+      }
+    ],
+    "ciss": {
+      "value": 3510,
+      "unit": "pF",
+      "conditions": "VDS = 20 V, VGS = 0 V, f = 1 MHz",
+      "page_reference": "p. 2 Ciss",
+      "source_kind": "typical"
+    },
+    "coss": {
+      "value": 860,
+      "unit": "pF",
+      "conditions": "VDS = 20 V, VGS = 0 V, f = 1 MHz",
+      "page_reference": "p. 2 Coss",
+      "source_kind": "typical"
+    },
+    "crss": {
+      "value": 60,
+      "unit": "pF",
+      "conditions": "VDS = 20 V, VGS = 0 V, f = 1 MHz",
+      "page_reference": "p. 2 Crss",
+      "source_kind": "typical"
+    },
+    "breakdown_voltage": {
+      "value": 40,
+      "unit": "V",
+      "conditions": "VGS = 0 V, ID = 250 uA",
+      "page_reference": "p. 2 BVDSS, MIN",
+      "source_kind": "minimum"
+    },
+    "body_diode": {
+      "value": 1.2,
+      "unit": "V",
+      "conditions": "VGS = 0 V, IS = 55 A",
+      "page_reference": "p. 2 VSD, MAX",
+      "source_kind": "maximum"
+    }
+  },
+  "extraction_notes": [],
+  "omission_reason": null
+}

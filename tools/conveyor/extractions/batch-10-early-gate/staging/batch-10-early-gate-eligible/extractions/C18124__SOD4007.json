@@ -1,0 +1,152 @@
+{
+  "curves": [
+    {
+      "name": "Typical instantaneous forward characteristic, TJ=25 degC",
+      "page_reference": "p. 2, Fig. 3 Typical Forward Characteristic",
+      "points": [
+        {
+          "x": 0.8,
+          "y": 0.1
+        },
+        {
+          "x": 0.85,
+          "y": 0.2
+        },
+        {
+          "x": 0.9,
+          "y": 0.35
+        },
+        {
+          "x": 0.95,
+          "y": 0.55
+        },
+        {
+          "x": 1.0,
+          "y": 0.72
+        },
+        {
+          "x": 1.05,
+          "y": 0.9
+        },
+        {
+          "x": 1.1,
+          "y": 1.0
+        }
+      ],
+      "test_conditions": "TJ = 25 degC; family SOD4001-SOD4007 typical trace.",
+      "x_axis": {
+        "quantity": "instantaneous forward voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "instantaneous forward current",
+        "scale": "linear",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "Typical junction capacitance, TJ=25 degC",
+      "page_reference": "p. 2, Fig. 4 Typical Junction Capacitance",
+      "points": [
+        {
+          "x": 0.1,
+          "y": 2.2e-11
+        },
+        {
+          "x": 0.3,
+          "y": 1.8e-11
+        },
+        {
+          "x": 1.0,
+          "y": 1.3e-11
+        },
+        {
+          "x": 3.0,
+          "y": 1e-11
+        },
+        {
+          "x": 10.0,
+          "y": 7.5e-12
+        },
+        {
+          "x": 30.0,
+          "y": 5.5e-12
+        },
+        {
+          "x": 100.0,
+          "y": 4e-12
+        }
+      ],
+      "test_conditions": "TJ = 25 degC; measured at 1 MHz and applied reverse voltage of 4 V.",
+      "x_axis": {
+        "quantity": "reverse voltage",
+        "scale": "log",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "junction capacitance",
+        "scale": "log",
+        "unit": "F"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ],
+    "revision": "Rev:2025A4",
+    "title": "SOD4001 THRU SOD4007 SURFACE MOUNT GENERAL PURPOSE SILICON RECTIFIER"
+  },
+  "extraction_notes": [
+    "The forward characteristic is a family-level SOD4001-SOD4007 trace and is not isolated to SOD4007.",
+    "The VRRM = 1000 V rating is a maximum repetitive reverse-voltage rating, not a measured breakdown-voltage datum, so breakdown_voltage and breakdown_current are null.",
+    "The datasheet publishes no reverse-recovery-time specification."
+  ],
+  "family": "diode",
+  "manufacturer": "MDD Microdiode Semiconductor",
+  "mpn": "SOD4007",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": null,
+    "breakdown_voltage": null,
+    "capacitance": {
+      "conditions": "VR = 4 V, f = 1 MHz, TA = 25 degC",
+      "page_reference": "p. 1, note 2, typical junction capacitance CJ",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 8e-12
+    },
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "TA = 25 degC",
+          "page_reference": "p. 1, Maximum Ratings And Electrical Characteristics, maximum instantaneous forward voltage",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 1.0
+        },
+        "voltage": {
+          "conditions": "IF = 1.0 A, TA = 25 degC",
+          "page_reference": "p. 1, Maximum Ratings And Electrical Characteristics, maximum instantaneous forward voltage VF",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 1.1
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = 1000 V, TA = 25 degC",
+      "page_reference": "p. 1, Maximum Ratings And Electrical Characteristics, maximum DC reverse current IR at rated DC blocking voltage",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 5e-06
+    },
+    "reverse_recovery": null,
+    "variant": "rectifier"
+  },
+  "usable_curves": true
+}

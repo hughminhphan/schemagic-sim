@@ -1,0 +1,114 @@
+{
+  "schema_version": "1.0.0",
+  "mpn": "BZT52C5V6S",
+  "manufacturer": "hongjiacheng",
+  "family": "diode",
+  "datasheet_identity": {
+    "title": "BZT52C2V0S THRU BZT52C75S SURFACE MOUNT ZENER DIODES",
+    "revision": "Rev:1.0",
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ]
+  },
+  "usable_curves": true,
+  "curves": [
+    {
+      "name": "BZT52C5V6S zener characteristic",
+      "x_axis": {
+        "quantity": "Zener voltage VZ",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "Zener current IZ",
+        "unit": "A",
+        "scale": "log"
+      },
+      "test_conditions": "Ta = 25 degC, pulsed, PD = 200 mW; BZT52C5V6S trace in the BZT52C2V0S through BZT52C75S series plot",
+      "page_reference": "p. 3, Fig. 1 (Zener Characteristics, VZ up to 10 V), 5.6 V trace",
+      "points": [
+        {
+          "x": 5.61,
+          "y": 0.0005
+        },
+        {
+          "x": 5.61,
+          "y": 0.001
+        },
+        {
+          "x": 5.64,
+          "y": 0.002
+        },
+        {
+          "x": 5.69,
+          "y": 0.005
+        },
+        {
+          "x": 5.68,
+          "y": 0.01
+        },
+        {
+          "x": 5.70,
+          "y": 0.02
+        }
+      ]
+    }
+  ],
+  "specs": {
+    "variant": "zener",
+    "forward_voltage_points": [
+      {
+        "current": {
+          "value": 0.01,
+          "unit": "A",
+          "conditions": "IF = 10 mA, Ta = 25 degC",
+          "page_reference": "p. 1, Maximum Ratings, Forward Voltage",
+          "source_kind": "maximum"
+        },
+        "voltage": {
+          "value": 0.9,
+          "unit": "V",
+          "conditions": "IF = 10 mA, Ta = 25 degC",
+          "page_reference": "p. 1, Maximum Ratings, Forward Voltage",
+          "source_kind": "maximum"
+        }
+      }
+    ],
+    "reverse_current": {
+      "value": 0.000001,
+      "unit": "A",
+      "conditions": "VR = 2.0 V, Ta = 25 degC; IR@VR for BZT52C5V6S",
+      "page_reference": "p. 2, Electrical Characteristics, BZT52C5V6S IR@VR row",
+      "source_kind": "maximum"
+    },
+    "capacitance": null,
+    "reverse_recovery": null,
+    "breakdown_voltage": {
+      "value": 5.6,
+      "unit": "V",
+      "conditions": "IZT = 5 mA, Ta = 25 degC; nominal VZ for BZT52C5V6S",
+      "page_reference": "p. 2, Electrical Characteristics, BZT52C5V6S VZ row",
+      "source_kind": "typical"
+    },
+    "breakdown_current": {
+      "value": 0.005,
+      "unit": "A",
+      "conditions": "IZT = 5 mA at nominal VZ = 5.6 V, Ta = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, BZT52C5V6S IZT row",
+      "source_kind": "typical"
+    }
+  },
+  "extraction_notes": [
+    "This is a family datasheet; the BZT52C5V6S row was selected from the BZT52C2V0S through BZT52C75S table.",
+    "The supplied PDF SHA-256 was verified as 8d99c0b95ddbd62581320fd03378a72d97d914bc201c735536cd50e5f6753113.",
+    "The Fig. 1 zener characteristic points are digitized readings from the plotted BZT52C5V6S trace; source-axis current in mA was converted to A and no intermediate points were interpolated.",
+    "The BZT52C5V6S electrical-characteristics row gives VZ = 5.2 V minimum, 5.6 V nominal, and 6.0 V maximum at IZT = 5 mA; maximum ZZT is 40 ohm at IZT, maximum ZZK is 400 ohm at IZK = 1 mA, and admissible IZM is 5 mA.",
+    "The same row gives maximum IR = 1 microA at VR = 2.0 V and temperature coefficient limits of -2.0 to +2.5 mV/degC at IZTC.",
+    "Maximum ratings include PD = 200 mW and forward voltage VF = 0.9 V at IF = 10 mA, both at Ta = 25 degC; junction and storage temperature limits are -55 to +150 degC and typical RthetaJ-A is 417 degC/W.",
+    "No capacitance or reverse-recovery specification is published in the supplied datasheet. The remaining page 3 plots are series-wide typical characteristics without a uniquely identified BZT52C5V6S trace and were not assigned component-specific points."
+  ],
+  "omission_reason": null
+}

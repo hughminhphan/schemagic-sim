@@ -1,0 +1,199 @@
+{
+  "curves": [
+    {
+      "name": "Typical instantaneous forward characteristics, TJ = 25 degC",
+      "page_reference": "p. 2, Fig. 3",
+      "points": [
+        {
+          "x": 0.6,
+          "y": 0.01
+        },
+        {
+          "x": 0.7,
+          "y": 0.03
+        },
+        {
+          "x": 0.8,
+          "y": 0.1
+        },
+        {
+          "x": 0.9,
+          "y": 0.3
+        },
+        {
+          "x": 1.0,
+          "y": 1.0
+        },
+        {
+          "x": 1.1,
+          "y": 3.0
+        },
+        {
+          "x": 1.2,
+          "y": 5.0
+        },
+        {
+          "x": 1.3,
+          "y": 8.0
+        },
+        {
+          "x": 1.4,
+          "y": 12.0
+        }
+      ],
+      "test_conditions": "TJ = 25 degC, pulse width 300 us, 1% duty cycle",
+      "x_axis": {
+        "quantity": "Instantaneous forward voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "Instantaneous forward current",
+        "scale": "log",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "Typical reverse characteristics, TJ = 25 degC",
+      "page_reference": "p. 2, Fig. 4",
+      "points": [
+        {
+          "x": 5.0,
+          "y": 2e-08
+        },
+        {
+          "x": 20.0,
+          "y": 4e-08
+        },
+        {
+          "x": 40.0,
+          "y": 7e-08
+        },
+        {
+          "x": 60.0,
+          "y": 1.1e-07
+        },
+        {
+          "x": 80.0,
+          "y": 1.5e-07
+        },
+        {
+          "x": 100.0,
+          "y": 2e-07
+        }
+      ],
+      "test_conditions": "TJ = 25 degC, typical curve",
+      "x_axis": {
+        "quantity": "Percent of peak reverse voltage",
+        "scale": "linear",
+        "unit": "%"
+      },
+      "y_axis": {
+        "quantity": "Instantaneous reverse current",
+        "scale": "log",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "Typical junction capacitance",
+      "page_reference": "p. 2, Fig. 5",
+      "points": [
+        {
+          "x": 0.1,
+          "y": 3.5e-11
+        },
+        {
+          "x": 0.3,
+          "y": 3.3e-11
+        },
+        {
+          "x": 1.0,
+          "y": 2.8e-11
+        },
+        {
+          "x": 3.0,
+          "y": 2.2e-11
+        },
+        {
+          "x": 10.0,
+          "y": 1.5e-11
+        },
+        {
+          "x": 30.0,
+          "y": 8e-12
+        },
+        {
+          "x": 100.0,
+          "y": 3e-12
+        }
+      ],
+      "test_conditions": "TJ = 25 degC",
+      "x_axis": {
+        "quantity": "Reverse voltage",
+        "scale": "log",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "Junction capacitance",
+        "scale": "log",
+        "unit": "F"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2"
+    ],
+    "revision": "Rev: 2024A2",
+    "title": "1N4001G THRU 1N4007G - Glass Passivated Rectifier"
+  },
+  "extraction_notes": [
+    "Forward, reverse, and junction-capacitance curves were digitized from the family plots on p. 2; the page states the curves are for reference only.",
+    "The datasheet publishes no reverse-recovery-time value."
+  ],
+  "family": "diode",
+  "manufacturer": "MDD Microdiode Semiconductor",
+  "mpn": "1N4007G",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": null,
+    "breakdown_voltage": null,
+    "capacitance": {
+      "conditions": "VR = 4.0 V DC, f = 1 MHz, typical junction capacitance",
+      "page_reference": "p. 1, note 1 and electrical characteristics",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 1.5e-11
+    },
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 1.0 A, TA = 25 degC",
+          "page_reference": "p. 1, maximum ratings and electrical characteristics",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 1.0
+        },
+        "voltage": {
+          "conditions": "IF = 1.0 A, TA = 25 degC",
+          "page_reference": "p. 1, maximum ratings and electrical characteristics",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 1.1
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = rated DC blocking voltage (1000 V for 1N4007G), TA = 25 degC",
+      "page_reference": "p. 1, maximum ratings and electrical characteristics",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 5e-06
+    },
+    "reverse_recovery": null,
+    "variant": "rectifier"
+  },
+  "usable_curves": true
+}

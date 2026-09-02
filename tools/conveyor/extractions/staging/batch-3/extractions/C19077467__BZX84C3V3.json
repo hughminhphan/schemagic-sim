@@ -1,0 +1,72 @@
+{
+  "schema_version": "1.0.0",
+  "mpn": "BZX84C3V3",
+  "manufacturer": "hongjiacheng",
+  "family": "diode",
+  "datasheet_identity": {
+    "title": "BZX84C2V4 THRU BZX84C75 SURFACE MOUNT ZENER DIODES",
+    "revision": "Rev:1.0",
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ]
+  },
+  "usable_curves": false,
+  "curves": [],
+  "specs": {
+    "variant": "zener",
+    "forward_voltage_points": [
+      {
+        "current": {
+          "value": 0.01,
+          "unit": "A",
+          "conditions": "IF = 10 mA, TA = 25 degC",
+          "page_reference": "p. 1, Maximum Ratings, Forward Voltage @ IF = 10 mA",
+          "source_kind": "maximum"
+        },
+        "voltage": {
+          "value": 0.9,
+          "unit": "V",
+          "conditions": "IF = 10 mA, TA = 25 degC",
+          "page_reference": "p. 1, Maximum Ratings, Forward Voltage @ IF = 10 mA",
+          "source_kind": "maximum"
+        }
+      }
+    ],
+    "reverse_current": {
+      "value": 0.000005,
+      "unit": "A",
+      "conditions": "VR = 1.0 V, TA = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, BZX84C3V3 row, IR@VR",
+      "source_kind": "maximum"
+    },
+    "capacitance": null,
+    "reverse_recovery": null,
+    "breakdown_voltage": {
+      "value": 3.3,
+      "unit": "V",
+      "conditions": "IZT = 5 mA, TA = 25 degC; nominal zener voltage, with 3.1 V minimum and 3.5 V maximum",
+      "page_reference": "p. 2, Electrical Characteristics, BZX84C3V3 row, VZ(V) Nom.",
+      "source_kind": "typical"
+    },
+    "breakdown_current": {
+      "value": 0.005,
+      "unit": "A",
+      "conditions": "IZT = 5 mA, TA = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, BZX84C3V3 row, IZT",
+      "source_kind": "typical"
+    }
+  },
+  "extraction_notes": [
+    "This is a family datasheet; the BZX84C3V3 row was selected from the BZX84C2V4 through BZX84C75 electrical-characteristics table for manufacturer hongjiacheng.",
+    "The supplied PDF identity was verified as LCSC C19077467, MPN BZX84C3V3, manufacturer hongjiacheng, with SHA-256 39b6ea9e2fb90c0f556434867115de516305a365515113676b906ff1ade79e83.",
+    "Zener reverse semantics are preserved: nominal VZ = 3.3 V is paired with the tabulated reverse test current IZT = 5 mA; maximum ZZT = 95 ohm is at IZT and maximum ZZK = 600 ohm is at IZK = 1 mA.",
+    "The BZX84C3V3 electrical-characteristics row gives inclusive VZ bounds of 3.1 V minimum and 3.5 V maximum at IZT = 5 mA, maximum reverse leakage IR = 5 microA at VR = 1.0 V, and admissible IZM = 5 mA, with TA = 25 degC unless otherwise noted.",
+    "The p. 3 Fig. 1 zener-characteristics plot labels traces for selected series voltages including 2.4 V and 4.7 V, but does not provide an individually identified BZX84C3V3 trace; no target-specific curve points were extracted.",
+    "No component-specific capacitance or reverse-recovery-time specification is published in the supplied datasheet. The p. 3 capacitance and dynamic-impedance plots are family-level typical characteristics without a uniquely identified BZX84C3V3 trace and were not assigned component-specific points.",
+    "Maximum ratings include PD = 300 mW and forward voltage VF = 0.9 V at IF = 10 mA on p. 1; junction and storage temperature limits are -55 to +150 degC and typical RthetaJ-A is 417 degC/W."
+  ],
+  "omission_reason": "No target-specific usable curve was extracted: the datasheet plots are shared series-level characteristics, and the BZX84C3V3 trace is not individually identified with unambiguous numeric points. Capacitance is also shown only in a shared typical series plot without a target-specific tabulated value."
+}

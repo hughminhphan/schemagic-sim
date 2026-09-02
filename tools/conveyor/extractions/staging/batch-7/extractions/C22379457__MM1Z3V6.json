@@ -1,0 +1,67 @@
+{
+  "curves": [],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "revision": "Rev:1.0",
+    "title": "MM1Z2V0 THRU MM1Z75"
+  },
+  "extraction_notes": [
+    "The p. 3 zener plot labels 3.3 V and 3.9 V neighboring curves but does not label a 3.6 V curve, so no curve was assigned to MM1Z3V6.",
+    "The datasheet lists no junction capacitance or reverse-recovery specification for this zener."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "MM1Z3V6",
+  "omission_reason": "The datasheet contains zener plots for neighboring voltage bins, but no plotted curve labeled MM1Z3V6 or 3.6 V; no exact-part usable curve was extracted.",
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": {
+      "conditions": "TA = 25 degC; IZT for nominal VZ = 3.6 V",
+      "page_reference": "p. 2, Electrical Characteristics, MM1Z3V6 row, IZT",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.005
+    },
+    "breakdown_voltage": {
+      "conditions": "IZT = 5 mA, TA = 25 degC; nominal VZ",
+      "page_reference": "p. 2, Electrical Characteristics, MM1Z3V6 row, VZ",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 3.6
+    },
+    "capacitance": null,
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 10 mA, TA = 25 degC",
+          "page_reference": "p. 1, Maximum Ratings, Forward Voltage",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.01
+        },
+        "voltage": {
+          "conditions": "IF = 10 mA, TA = 25 degC",
+          "page_reference": "p. 1, Maximum Ratings, Forward Voltage",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.9
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = 1 V, TA = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, MM1Z3V6 row, IR@VR",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 1e-05
+    },
+    "reverse_recovery": null,
+    "variant": "zener"
+  },
+  "usable_curves": false
+}

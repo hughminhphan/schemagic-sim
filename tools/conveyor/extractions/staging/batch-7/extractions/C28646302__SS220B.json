@@ -1,0 +1,110 @@
+{
+  "curves": [
+    {
+      "name": "Fig.3 Typical Forward Voltage, SS215B-SS220B curve",
+      "page_reference": "p. 2 Fig.3",
+      "points": [
+        {
+          "x": 0.1,
+          "y": 0.58
+        },
+        {
+          "x": 0.2,
+          "y": 0.62
+        },
+        {
+          "x": 0.5,
+          "y": 0.68
+        },
+        {
+          "x": 1.0,
+          "y": 0.73
+        },
+        {
+          "x": 2.0,
+          "y": 0.78
+        },
+        {
+          "x": 5.0,
+          "y": 0.88
+        },
+        {
+          "x": 10.0,
+          "y": 0.98
+        }
+      ],
+      "test_conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle; legend curve SS215B-SS220B",
+      "x_axis": {
+        "quantity": "instantaneous forward voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "instantaneous forward current",
+        "scale": "log",
+        "unit": "A"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "revision": "Rev:1.0",
+    "title": "SS22B THRU SS220B SURFACE MOUNT SCHOTTKY BARRIER RECTIFIER (SMB Surface Mount Schottky Barrier Rectifier)"
+  },
+  "extraction_notes": [
+    "Family datasheet SS22B-SS220B; SS220B ratings: VRRM = VDC = 200 V and VRMS = 140 V; IF(AV) = 2.0 A and IFSM = 50 A at 8.3 ms half-sine are common ratings (p. 1).",
+    "Merged-cell resolution on p. 2: VF maximum 0.95 V is SS220B only; IR1 maximum 0.2 mA is SS215B-SS220B; IR2 maximum 2.0 mA is SS215B-SS220B; CJ typical 180 pF spans SS25B-SS220B.",
+    "The SS215B-SS220B forward trace was digitized from the printed linear-voltage/log-current grid on p. 2. Fig.1 and Fig.2 are thermal/surge ratings. Fig.4 is a normalized reverse-characteristics plot against percent of rated reverse voltage and was not used as an absolute-voltage curve.",
+    "No reverse recovery time or measured avalanche/breakdown row is published; VRRM is an absolute maximum rating, not a measured breakdown.",
+    "Curve axis current is preserved as SI amperes; table microamp/milliamp values were converted to amperes in specs."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "SS220B",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": null,
+    "breakdown_voltage": null,
+    "capacitance": {
+      "conditions": "VR = 4.0 V DC, f = 1 MHz, Ta = 25 degC; typical junction capacitance",
+      "page_reference": "p. 2 electrical characteristics, SS25B-SS220B merged cell",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 1.8e-10
+    },
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 2.0 A, Ta = 25 degC; maximum instantaneous forward voltage",
+          "page_reference": "p. 2 electrical characteristics",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 2.0
+        },
+        "voltage": {
+          "conditions": "IF = 2.0 A, Ta = 25 degC; SS220B column",
+          "page_reference": "p. 2 electrical characteristics",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.95
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = VDC = 200 V, Ta = 25 degC; maximum DC reverse current",
+      "page_reference": "p. 2 electrical characteristics, SS220B column",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 0.0002
+    },
+    "reverse_recovery": null,
+    "variant": "schottky"
+  },
+  "usable_curves": true
+}

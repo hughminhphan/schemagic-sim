@@ -1,0 +1,109 @@
+{
+  "schema_version": "1.0.0",
+  "mpn": "MM1Z18",
+  "manufacturer": "hongjiacheng",
+  "family": "diode",
+  "datasheet_identity": {
+    "title": "MM1Z2V0 THRU MM1Z75 SURFACE MOUNT ZENER DIODES",
+    "revision": "Rev:1.0",
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ]
+  },
+  "usable_curves": true,
+  "curves": [
+    {
+      "name": "MM1Z18 zener characteristic",
+      "x_axis": {
+        "quantity": "Zener voltage",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "Zener current",
+        "unit": "A",
+        "scale": "linear"
+      },
+      "test_conditions": "Ta = 25 degC, pulsed, PD = 500 mW; curve labeled 18 in the figure",
+      "page_reference": "p. 3, Fig. 2, curve labeled 18",
+      "points": [
+        {
+          "x": 17.98,
+          "y": 0.001
+        },
+        {
+          "x": 18.05,
+          "y": 0.004
+        },
+        {
+          "x": 18.13,
+          "y": 0.007
+        },
+        {
+          "x": 18.23,
+          "y": 0.012
+        },
+        {
+          "x": 18.33,
+          "y": 0.017
+        }
+      ]
+    }
+  ],
+  "specs": {
+    "variant": "zener",
+    "forward_voltage_points": [
+      {
+        "current": {
+          "value": 0.01,
+          "unit": "A",
+          "conditions": "IF = 10 mA, Ta = 25 degC",
+          "page_reference": "p. 1, Maximum Ratings, Forward Voltage @ IF=10mA",
+          "source_kind": "maximum"
+        },
+        "voltage": {
+          "value": 0.9,
+          "unit": "V",
+          "conditions": "IF = 10 mA, Ta = 25 degC",
+          "page_reference": "p. 1, Maximum Ratings, Forward Voltage @ IF=10mA",
+          "source_kind": "maximum"
+        }
+      }
+    ],
+    "reverse_current": {
+      "value": 1e-7,
+      "unit": "A",
+      "conditions": "VR = 13 V, Ta = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, MM1Z18 row, IR@VR",
+      "source_kind": "maximum"
+    },
+    "capacitance": null,
+    "reverse_recovery": null,
+    "breakdown_voltage": {
+      "value": 18,
+      "unit": "V",
+      "conditions": "IZT = 5 mA, Ta = 25 degC; nominal zener voltage",
+      "page_reference": "p. 2, Electrical Characteristics, MM1Z18 row, Nom. VZ",
+      "source_kind": "typical"
+    },
+    "breakdown_current": {
+      "value": 0.005,
+      "unit": "A",
+      "conditions": "IZT = 5 mA, Ta = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, MM1Z18 row, IZT",
+      "source_kind": "typical"
+    }
+  },
+  "extraction_notes": [
+    "PDF SHA-256 verified as ff4a1051509db45f49817a41e5674adc11a1dea2a91e51ee958ffaed19b1d755.",
+    "MM1Z18 electrical-characteristics row: VZ minimum 16.8 V, nominal 18 V, maximum 19.1 V; IZT = 5 mA; maximum ZZT = 40 ohm at IZT; maximum IR = 0.1 uA at VR = 13 V; Ta = 25 degC unless otherwise noted.",
+    "The schema has no nominal source_kind, so the nominal VZ and its IZT test current are represented as typical while the min/max VZ values are retained in this note.",
+    "Maximum ratings also publish PD = 500 mW, VF maximum 0.9 V at IF = 10 mA, Tj and Tstg = -55 to +150 degC, and typical RthetaJ-A = 340 degC/W.",
+    "The MM1Z18 curve points were digitized from the labeled 18 curve in Fig. 2; the plotted axes are VZ in V and IZ in mA, converted here to SI amperes for the y values.",
+    "No diode capacitance or reverse-recovery specification is published in the supplied datasheet; those schema fields are null."
+  ],
+  "omission_reason": null
+}

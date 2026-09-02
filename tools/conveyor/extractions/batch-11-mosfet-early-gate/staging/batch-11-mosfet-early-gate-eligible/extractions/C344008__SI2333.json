@@ -1,0 +1,326 @@
+{
+  "curves": [
+    {
+      "name": "output characteristics magnitude",
+      "page_reference": "p. 3 Output Characteristics",
+      "points": [
+        {
+          "x": 0,
+          "y": 0
+        },
+        {
+          "x": 0.25,
+          "y": 4
+        },
+        {
+          "x": 0.5,
+          "y": 9
+        },
+        {
+          "x": 1.0,
+          "y": 16
+        },
+        {
+          "x": 2.0,
+          "y": 20
+        }
+      ],
+      "test_conditions": "TJ = 25 degC; VGS magnitude = 1, 1.5, 2, 2.5 to 5 V",
+      "x_axis": {
+        "quantity": "VDS magnitude",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "ID magnitude",
+        "scale": "linear",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "transfer characteristics magnitude",
+      "page_reference": "p. 3 Transfer Characteristics",
+      "points": [
+        {
+          "x": 0.7,
+          "y": 0
+        },
+        {
+          "x": 0.9,
+          "y": 0.1
+        },
+        {
+          "x": 1.0,
+          "y": 0.5
+        },
+        {
+          "x": 1.1,
+          "y": 1.1
+        },
+        {
+          "x": 1.2,
+          "y": 1.8
+        },
+        {
+          "x": 1.3,
+          "y": 2.0
+        }
+      ],
+      "test_conditions": "TC = 25 degC",
+      "x_axis": {
+        "quantity": "VGS magnitude",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "ID magnitude",
+        "scale": "linear",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "capacitance",
+      "page_reference": "p. 3 Capacitance",
+      "points": [
+        {
+          "x": 0,
+          "y": 2000
+        },
+        {
+          "x": 1,
+          "y": 1500
+        },
+        {
+          "x": 3,
+          "y": 1250
+        },
+        {
+          "x": 6,
+          "y": 1150
+        },
+        {
+          "x": 12,
+          "y": 1100
+        }
+      ],
+      "test_conditions": "VGS = 0 V, f = 1 MHz",
+      "x_axis": {
+        "quantity": "VDS magnitude",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "capacitance",
+        "scale": "linear",
+        "unit": "pF"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5"
+    ],
+    "revision": "Revision 2018",
+    "title": "SI2333 P-Channel MOSFET"
+  },
+  "extraction_notes": [
+    "P-channel source axes are negative; curve coordinates are stored as positive magnitudes for fitting."
+  ],
+  "family": "mosfet",
+  "manufacturer": "BORN",
+  "mpn": "SI2333",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "body_diode": {
+      "conditions": "IS = -1 A, VGS = 0 V",
+      "page_reference": "p. 2 VSD, MAX",
+      "source_kind": "maximum",
+      "unit": "V",
+      "value": 1.2
+    },
+    "breakdown_voltage": {
+      "conditions": "ID = -250 uA, VGS = 0 V",
+      "page_reference": "p. 2 BVDSS",
+      "source_kind": "minimum",
+      "unit": "V",
+      "value": 12.0
+    },
+    "ciss": {
+      "conditions": "VGS = 0 V, VDS = -10 V, f = 1 MHz",
+      "page_reference": "p. 2 Ciss",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 9.2e-10
+    },
+    "coss": {
+      "conditions": "VGS = 0 V, VDS = -10 V, f = 1 MHz",
+      "page_reference": "p. 2 Coss",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 2.2e-10
+    },
+    "crss": null,
+    "polarity": "p",
+    "rdson_points": [
+      {
+        "current": {
+          "conditions": "ID = -5.1 A, VGS = -4.5 V",
+          "page_reference": "p. 2 RDS(on), TYP",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 5.1
+        },
+        "resistance": {
+          "conditions": "ID = -5.1 A, VGS = -4.5 V",
+          "page_reference": "p. 2 RDS(on), TYP",
+          "source_kind": "typical",
+          "unit": "ohm",
+          "value": 0.028
+        },
+        "vgs": {
+          "conditions": "ID = -5.1 A, VGS = -4.5 V",
+          "page_reference": "p. 2 RDS(on), TYP",
+          "source_kind": "typical",
+          "unit": "V",
+          "value": 4.5
+        }
+      },
+      {
+        "current": {
+          "conditions": "ID = -5.1 A, VGS = -4.5 V",
+          "page_reference": "p. 2 RDS(on), MAX",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 5.1
+        },
+        "resistance": {
+          "conditions": "ID = -5.1 A, VGS = -4.5 V",
+          "page_reference": "p. 2 RDS(on), MAX",
+          "source_kind": "maximum",
+          "unit": "ohm",
+          "value": 0.035
+        },
+        "vgs": {
+          "conditions": "ID = -5.1 A, VGS = -4.5 V",
+          "page_reference": "p. 2 RDS(on), MAX",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 4.5
+        }
+      },
+      {
+        "current": {
+          "conditions": "ID = -4.5 A, VGS = -2.5 V",
+          "page_reference": "p. 2 RDS(on), TYP",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 4.5
+        },
+        "resistance": {
+          "conditions": "ID = -4.5 A, VGS = -2.5 V",
+          "page_reference": "p. 2 RDS(on), TYP",
+          "source_kind": "typical",
+          "unit": "ohm",
+          "value": 0.038
+        },
+        "vgs": {
+          "conditions": "ID = -4.5 A, VGS = -2.5 V",
+          "page_reference": "p. 2 RDS(on), TYP",
+          "source_kind": "typical",
+          "unit": "V",
+          "value": 2.5
+        }
+      },
+      {
+        "current": {
+          "conditions": "ID = -4.5 A, VGS = -2.5 V",
+          "page_reference": "p. 2 RDS(on), MAX",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 4.5
+        },
+        "resistance": {
+          "conditions": "ID = -4.5 A, VGS = -2.5 V",
+          "page_reference": "p. 2 RDS(on), MAX",
+          "source_kind": "maximum",
+          "unit": "ohm",
+          "value": 0.045
+        },
+        "vgs": {
+          "conditions": "ID = -4.5 A, VGS = -2.5 V",
+          "page_reference": "p. 2 RDS(on), MAX",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 2.5
+        }
+      },
+      {
+        "current": {
+          "conditions": "ID = -2 A, VGS = -1.8 V",
+          "page_reference": "p. 2 RDS(on), TYP",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 2.0
+        },
+        "resistance": {
+          "conditions": "ID = -2 A, VGS = -1.8 V",
+          "page_reference": "p. 2 RDS(on), TYP",
+          "source_kind": "typical",
+          "unit": "ohm",
+          "value": 0.05
+        },
+        "vgs": {
+          "conditions": "ID = -2 A, VGS = -1.8 V",
+          "page_reference": "p. 2 RDS(on), TYP",
+          "source_kind": "typical",
+          "unit": "V",
+          "value": 1.8
+        }
+      },
+      {
+        "current": {
+          "conditions": "ID = -2 A, VGS = -1.8 V",
+          "page_reference": "p. 2 RDS(on), MAX",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 2.0
+        },
+        "resistance": {
+          "conditions": "ID = -2 A, VGS = -1.8 V",
+          "page_reference": "p. 2 RDS(on), MAX",
+          "source_kind": "maximum",
+          "unit": "ohm",
+          "value": 0.059
+        },
+        "vgs": {
+          "conditions": "ID = -2 A, VGS = -1.8 V",
+          "page_reference": "p. 2 RDS(on), MAX",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 1.8
+        }
+      }
+    ],
+    "threshold_max": {
+      "conditions": "ID = -250 uA, VGS = VDS",
+      "page_reference": "p. 2 VGS(th), MAX",
+      "source_kind": "maximum",
+      "unit": "V",
+      "value": 1.0
+    },
+    "threshold_min": {
+      "conditions": "ID = -250 uA, VGS = VDS",
+      "page_reference": "p. 2 VGS(th), MIN",
+      "source_kind": "minimum",
+      "unit": "V",
+      "value": 0.4
+    },
+    "threshold_typ": null
+  },
+  "usable_curves": true
+}

@@ -1,0 +1,126 @@
+{
+  "curves": [],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ],
+    "revision": "Not stated in supplied datasheet",
+    "title": "KIRLML5203TRPBF, P-Channel 30-V(D-S) MOSFET"
+  },
+  "extraction_notes": [
+    "The supplied three-page datasheet was examined in full. Pages 1 and 2 contain ratings and tabulated electrical characteristics; page 3 contains only SOT-23 package outline dimensions.",
+    "No transfer-characteristic, output-characteristic, or capacitance-versus-voltage curve is present, so no curve points were digitized or interpolated.",
+    "P-channel numeric values are recorded as positive magnitudes; signed p-channel test conditions are preserved from the datasheet.",
+    "The datasheet provides no typical threshold-voltage value, so threshold_typ is null.",
+    "Capacitance values were converted from pF to F and resistance values from m\u03a9 to ohm."
+  ],
+  "family": "mosfet",
+  "manufacturer": "KUU",
+  "mpn": "KIRLML5203TRPBF",
+  "omission_reason": "No usable transfer, output, or capacitance-versus-voltage curves are present in the supplied datasheet. Pages 1 and 2 contain only tabulated electrical characteristics, and page 3 contains only package outline dimensions.",
+  "schema_version": "1.0.0",
+  "specs": {
+    "body_diode": {
+      "conditions": "IS = 1 A, VGS = 0 V",
+      "page_reference": "p. 2, Static Electrical Characteristics, VSD, TYP column",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 0.8
+    },
+    "breakdown_voltage": {
+      "conditions": "VGS = 0 V, ID = -250 \u00b5A",
+      "page_reference": "p. 2, Static Electrical Characteristics, V(BR)DSS, MIN column",
+      "source_kind": "minimum",
+      "unit": "V",
+      "value": 30.0
+    },
+    "ciss": {
+      "conditions": "VDS = -15 V, VGS = 0 V, f = 1 MHz",
+      "page_reference": "p. 2, Dynamic Electrical Characteristics, Ciss, TYP column",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 5.1e-10
+    },
+    "coss": {
+      "conditions": "VDS = -15 V, VGS = 0 V, f = 1 MHz",
+      "page_reference": "p. 2, Dynamic Electrical Characteristics, Coss, TYP column",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 7.1e-11
+    },
+    "crss": {
+      "conditions": "VDS = -15 V, VGS = 0 V, f = 1 MHz",
+      "page_reference": "p. 2, Dynamic Electrical Characteristics, Crss, TYP column",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 4.3e-11
+    },
+    "polarity": "p",
+    "rdson_points": [
+      {
+        "current": {
+          "conditions": "VGS = -10 V",
+          "page_reference": "p. 2, Static Electrical Characteristics, RDS(on) condition",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 3.0
+        },
+        "resistance": {
+          "conditions": "VGS = -10 V, ID = -3.0 A, Ta = 25 \u00b0C",
+          "page_reference": "p. 2, Static Electrical Characteristics, RDS(on), MAX column",
+          "source_kind": "maximum",
+          "unit": "ohm",
+          "value": 0.098
+        },
+        "vgs": {
+          "conditions": "ID = -3.0 A",
+          "page_reference": "p. 2, Static Electrical Characteristics, RDS(on) condition",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 10.0
+        }
+      },
+      {
+        "current": {
+          "conditions": "VGS = -4.5 V",
+          "page_reference": "p. 2, Static Electrical Characteristics, RDS(on) condition",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 2.5
+        },
+        "resistance": {
+          "conditions": "VGS = -4.5 V, ID = -2.5 A, Ta = 25 \u00b0C",
+          "page_reference": "p. 2, Static Electrical Characteristics, RDS(on), MAX column",
+          "source_kind": "maximum",
+          "unit": "ohm",
+          "value": 0.165
+        },
+        "vgs": {
+          "conditions": "ID = -2.5 A",
+          "page_reference": "p. 2, Static Electrical Characteristics, RDS(on) condition",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 4.5
+        }
+      }
+    ],
+    "threshold_max": {
+      "conditions": "VDS = VGS, ID = -250 \u00b5A",
+      "page_reference": "p. 2, Static Electrical Characteristics, VGS(th), MAX column",
+      "source_kind": "maximum",
+      "unit": "V",
+      "value": 2.5
+    },
+    "threshold_min": {
+      "conditions": "VDS = VGS, ID = -250 \u00b5A",
+      "page_reference": "p. 2, Static Electrical Characteristics, VGS(th), MIN column",
+      "source_kind": "minimum",
+      "unit": "V",
+      "value": 1.0
+    },
+    "threshold_typ": null
+  },
+  "usable_curves": false
+}

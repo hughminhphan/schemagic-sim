@@ -1,0 +1,296 @@
+{
+  "curves": [
+    {
+      "name": "Typical on-region characteristics, VGS magnitude = 2.5 V",
+      "page_reference": "p. 3 Fig. 2",
+      "points": [
+        {
+          "x": 0.5,
+          "y": 3.0
+        },
+        {
+          "x": 1.0,
+          "y": 7.0
+        },
+        {
+          "x": 2.0,
+          "y": 11.0
+        },
+        {
+          "x": 3.0,
+          "y": 14.0
+        },
+        {
+          "x": 4.0,
+          "y": 16.0
+        },
+        {
+          "x": 5.0,
+          "y": 17.0
+        }
+      ],
+      "test_conditions": "TJ = 25 degC; p-channel axes plotted as positive magnitudes",
+      "x_axis": {
+        "quantity": "drain-source voltage magnitude",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "drain current magnitude",
+        "scale": "linear",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "Typical transfer characteristics, VDS magnitude = 5 V",
+      "page_reference": "p. 3 Fig. 1",
+      "points": [
+        {
+          "x": 1.5,
+          "y": 0.2
+        },
+        {
+          "x": 1.75,
+          "y": 1.2
+        },
+        {
+          "x": 2.0,
+          "y": 4.0
+        },
+        {
+          "x": 2.25,
+          "y": 9.0
+        },
+        {
+          "x": 2.5,
+          "y": 15.0
+        }
+      ],
+      "test_conditions": "TJ = 25 degC; p-channel axes plotted as positive magnitudes",
+      "x_axis": {
+        "quantity": "gate-source voltage magnitude",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "drain current magnitude",
+        "scale": "linear",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "Typical input capacitance Ciss versus drain-source voltage",
+      "page_reference": "p. 4 Fig. 6",
+      "points": [
+        {
+          "x": 0,
+          "y": 1.6e-09
+        },
+        {
+          "x": 1,
+          "y": 1.1e-09
+        },
+        {
+          "x": 2,
+          "y": 9e-10
+        },
+        {
+          "x": 3,
+          "y": 8e-10
+        },
+        {
+          "x": 4,
+          "y": 7.6e-10
+        },
+        {
+          "x": 5,
+          "y": 7.3e-10
+        },
+        {
+          "x": 6,
+          "y": 7.1e-10
+        }
+      ],
+      "test_conditions": "VGS = 0 V, f = 1 MHz, TJ = 25 degC",
+      "x_axis": {
+        "quantity": "drain-source voltage magnitude",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "input capacitance",
+        "scale": "linear",
+        "unit": "F"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4",
+      "p. 5"
+    ],
+    "revision": "Rev. O",
+    "title": "LP2301BLT1G"
+  },
+  "extraction_notes": [
+    "This is a p-channel MOSFET. Datasheet negative VDS, VGS, ID, and IS values are represented as positive magnitudes in the extraction while polarity is preserved as p.",
+    "The source table gives a typical body-diode voltage of 0.8 V and a maximum of 1.2 V; the schema has one body_diode slot, so the guaranteed maximum is stored and the typical is retained here.",
+    "Curve points are digitized from the 25 degC typical plots on pages 3-4."
+  ],
+  "family": "mosfet",
+  "manufacturer": "LRC",
+  "mpn": "LP2301BLT1G",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "body_diode": {
+      "conditions": "IS magnitude = 0.75 A, VGS = 0 V, TJ = 25 degC",
+      "page_reference": "p. 2 Electrical Characteristics, Source-Drain Diode, VSD MAX",
+      "source_kind": "maximum",
+      "unit": "V",
+      "value": 1.2
+    },
+    "breakdown_voltage": {
+      "conditions": "VGS = 0 V, ID magnitude = 250 uA",
+      "page_reference": "p. 2 Electrical Characteristics, BVDSS",
+      "source_kind": "minimum",
+      "unit": "V",
+      "value": 20.0
+    },
+    "ciss": {
+      "conditions": "VDS magnitude = 6 V, VGS = 0 V, f = 1 MHz, TJ = 25 degC",
+      "page_reference": "p. 2 Electrical Characteristics, Ciss",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 8.8251e-10
+    },
+    "coss": {
+      "conditions": "VDS magnitude = 6 V, VGS = 0 V, f = 1 MHz, TJ = 25 degC",
+      "page_reference": "p. 2 Electrical Characteristics, Coss",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 1.4554e-10
+    },
+    "crss": {
+      "conditions": "VDS magnitude = 6 V, VGS = 0 V, f = 1 MHz, TJ = 25 degC",
+      "page_reference": "p. 2 Electrical Characteristics, Crss",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 9.726e-11
+    },
+    "polarity": "p",
+    "rdson_points": [
+      {
+        "current": {
+          "conditions": "VGS magnitude = 4.5 V; TJ = 25 degC",
+          "page_reference": "p. 2 Electrical Characteristics, RDS(on)",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 2.8
+        },
+        "resistance": {
+          "conditions": "VGS magnitude = 4.5 V, ID magnitude = 2.8 A; pulse test",
+          "page_reference": "p. 2 Electrical Characteristics, RDS(on)",
+          "source_kind": "typical",
+          "unit": "ohm",
+          "value": 0.069
+        },
+        "vgs": {
+          "conditions": "TJ = 25 degC; ID magnitude = 2.8 A",
+          "page_reference": "p. 2 Electrical Characteristics, RDS(on)",
+          "source_kind": "typical",
+          "unit": "V",
+          "value": 4.5
+        }
+      },
+      {
+        "current": {
+          "conditions": "VGS magnitude = 4.5 V; TJ = 25 degC",
+          "page_reference": "p. 2 Electrical Characteristics, RDS(on)",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 2.8
+        },
+        "resistance": {
+          "conditions": "VGS magnitude = 4.5 V, ID magnitude = 2.8 A; pulse test",
+          "page_reference": "p. 2 Electrical Characteristics, RDS(on)",
+          "source_kind": "maximum",
+          "unit": "ohm",
+          "value": 0.1
+        },
+        "vgs": {
+          "conditions": "TJ = 25 degC; ID magnitude = 2.8 A",
+          "page_reference": "p. 2 Electrical Characteristics, RDS(on)",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 4.5
+        }
+      },
+      {
+        "current": {
+          "conditions": "VGS magnitude = 2.5 V; TJ = 25 degC",
+          "page_reference": "p. 2 Electrical Characteristics, RDS(on)",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 2.0
+        },
+        "resistance": {
+          "conditions": "VGS magnitude = 2.5 V, ID magnitude = 2.0 A; pulse test",
+          "page_reference": "p. 2 Electrical Characteristics, RDS(on)",
+          "source_kind": "typical",
+          "unit": "ohm",
+          "value": 0.083
+        },
+        "vgs": {
+          "conditions": "TJ = 25 degC; ID magnitude = 2.0 A",
+          "page_reference": "p. 2 Electrical Characteristics, RDS(on)",
+          "source_kind": "typical",
+          "unit": "V",
+          "value": 2.5
+        }
+      },
+      {
+        "current": {
+          "conditions": "VGS magnitude = 2.5 V; TJ = 25 degC",
+          "page_reference": "p. 2 Electrical Characteristics, RDS(on)",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 2.0
+        },
+        "resistance": {
+          "conditions": "VGS magnitude = 2.5 V, ID magnitude = 2.0 A; pulse test",
+          "page_reference": "p. 2 Electrical Characteristics, RDS(on)",
+          "source_kind": "maximum",
+          "unit": "ohm",
+          "value": 0.15
+        },
+        "vgs": {
+          "conditions": "TJ = 25 degC; ID magnitude = 2.0 A",
+          "page_reference": "p. 2 Electrical Characteristics, RDS(on)",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 2.5
+        }
+      }
+    ],
+    "threshold_max": {
+      "conditions": "TJ = 25 degC; VDS magnitude = VGS magnitude; ID magnitude = 250 uA",
+      "page_reference": "p. 2 Electrical Characteristics, VGS(th), MAX",
+      "source_kind": "maximum",
+      "unit": "V",
+      "value": 0.9
+    },
+    "threshold_min": {
+      "conditions": "TJ = 25 degC; VDS magnitude = VGS magnitude; ID magnitude = 250 uA",
+      "page_reference": "p. 2 Electrical Characteristics, VGS(th), MIN",
+      "source_kind": "minimum",
+      "unit": "V",
+      "value": 0.4
+    },
+    "threshold_typ": null
+  },
+  "usable_curves": true
+}

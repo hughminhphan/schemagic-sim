@@ -1,0 +1,110 @@
+{
+  "schema_version": "1.0.0",
+  "mpn": "BZT52C12S",
+  "manufacturer": "hongjiacheng",
+  "family": "diode",
+  "datasheet_identity": {
+    "title": "BZT52C2V0S THRU BZT52C75S SURFACE MOUNT ZENER DIODES",
+    "revision": "Rev:1.0",
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ]
+  },
+  "usable_curves": true,
+  "curves": [
+    {
+      "name": "BZT52C12S zener characteristic",
+      "x_axis": {
+        "quantity": "Zener voltage VZ",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "Zener current IZ",
+        "unit": "A",
+        "scale": "log"
+      },
+      "test_conditions": "TA = 25 degC, pulsed, PD = 200 mW; BZT52C12S trace labeled 12 in the BZT52C2V0S through BZT52C75S series plot",
+      "page_reference": "p. 3, Fig. 2 (Zener Characteristics, 11 V to 43 V), 12 V trace",
+      "points": [
+        {
+          "x": 12.1,
+          "y": 0.0005
+        },
+        {
+          "x": 12.1,
+          "y": 0.001
+        },
+        {
+          "x": 12.1,
+          "y": 0.002
+        },
+        {
+          "x": 12.2,
+          "y": 0.005
+        },
+        {
+          "x": 12.3,
+          "y": 0.01
+        }
+      ]
+    }
+  ],
+  "specs": {
+    "variant": "zener",
+    "forward_voltage_points": [
+      {
+        "current": {
+          "value": 0.01,
+          "unit": "A",
+          "conditions": "IF = 10 mA, TA = 25 degC",
+          "page_reference": "p. 1, Maximum Ratings, Forward Voltage @ IF = 10 mA",
+          "source_kind": "maximum"
+        },
+        "voltage": {
+          "value": 0.9,
+          "unit": "V",
+          "conditions": "IF = 10 mA, TA = 25 degC",
+          "page_reference": "p. 1, Maximum Ratings, Forward Voltage @ IF = 10 mA",
+          "source_kind": "maximum"
+        }
+      }
+    ],
+    "reverse_current": {
+      "value": 1e-07,
+      "unit": "A",
+      "conditions": "IR = 0.1 microA maximum at VR = 8.0 V, TA = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, BZT52C12S row",
+      "source_kind": "maximum"
+    },
+    "capacitance": null,
+    "reverse_recovery": null,
+    "breakdown_voltage": {
+      "value": 12,
+      "unit": "V",
+      "conditions": "IZT = 0.005 A, TA = 25 degC; inclusive primary-table bounds 11.4 V minimum and 12.7 V maximum",
+      "page_reference": "p. 2, Electrical Characteristics, BZT52C12S VZ row",
+      "source_kind": "typical"
+    },
+    "breakdown_current": {
+      "value": 0.005,
+      "unit": "A",
+      "conditions": "IZT = 5 mA at nominal VZ = 12.0 V, TA = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, BZT52C12S IZT row",
+      "source_kind": "typical"
+    }
+  },
+  "extraction_notes": [
+    "This is a family datasheet; the BZT52C12S row was selected from the BZT52C2V0S through BZT52C75S electrical-characteristics table.",
+    "The supplied PDF identity was verified as LCSC C19077447, MPN BZT52C12S, manufacturer hongjiacheng, with SHA-256 8d99c0b95ddbd62581320fd03378a72d97d914bc201c735536cd50e5f6753113.",
+    "Zener reverse semantics are preserved: nominal VZ = 12.0 V is paired with the tabulated reverse test current IZT = 5 mA; maximum ZZT = 25 ohm is at IZT and maximum ZZK = 150 ohm is at IZK = 1 mA.",
+    "The BZT52C12S electrical-characteristics row gives inclusive VZ bounds of 11.4 V minimum and 12.7 V maximum at IZT = 5 mA, maximum reverse leakage IR = 0.1 microA at VR = 8.0 V, and admissible IZM = 5 mA, with TA = 25 degC unless otherwise noted.",
+    "The five zener-characteristic points are direct approximate graph-read observations from the visible BZT52C12S trace labeled 12 in p. 3 Fig. 2 at labeled logarithmic-current grid values; source-axis current in mA was converted to A and no points were interpolated.",
+    "No component-specific capacitance or reverse-recovery-time specification is published in the supplied datasheet. The p. 3 capacitance and dynamic-impedance plots are family-level typical characteristics without a uniquely identified BZT52C12S trace and were not assigned component-specific points.",
+    "Maximum ratings include PD = 200 mW and forward voltage VF = 0.9 V at IF = 10 mA on p. 1; junction and storage temperature limits are -55 to +150 degC and typical RthetaJ-A is 417 degC/W."
+  ],
+  "omission_reason": null
+}

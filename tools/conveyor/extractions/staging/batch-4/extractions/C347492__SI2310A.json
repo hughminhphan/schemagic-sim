@@ -1,0 +1,223 @@
+{
+  "schema_version": "1.0.0",
+  "mpn": "SI2310A",
+  "manufacturer": "UMW Youtai Semiconductor Co Ltd",
+  "family": "mosfet",
+  "datasheet_identity": {
+    "title": "UMW SI2310A 60V N-Channel MOSFET",
+    "revision": "Nov.2024",
+    "pages_examined": [
+      "1",
+      "2",
+      "3",
+      "4"
+    ]
+  },
+  "usable_curves": true,
+  "curves": [
+    {
+      "name": "On-Resistance vs Gate Voltage",
+      "x_axis": {
+        "quantity": "Gate-Source Voltage",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "Static Drain-Source On-Resistance",
+        "unit": "Ω",
+        "scale": "linear"
+      },
+      "test_conditions": "ID=2A, TA=25°C",
+      "page_reference": "3",
+      "points": [
+        {
+          "x": 2.0,
+          "y": 0.150
+        },
+        {
+          "x": 3.0,
+          "y": 0.110
+        },
+        {
+          "x": 4.0,
+          "y": 0.090
+        },
+        {
+          "x": 5.0,
+          "y": 0.080
+        },
+        {
+          "x": 6.0,
+          "y": 0.072
+        },
+        {
+          "x": 8.0,
+          "y": 0.066
+        },
+        {
+          "x": 10.0,
+          "y": 0.067
+        }
+      ]
+    },
+    {
+      "name": "Body Diode Forward Characteristic",
+      "x_axis": {
+        "quantity": "Source-to-Drain Voltage",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "Body Diode Forward Current",
+        "unit": "A",
+        "scale": "linear"
+      },
+      "test_conditions": "TJ=25°C",
+      "page_reference": "3",
+      "points": [
+        {
+          "x": 0.0,
+          "y": 0.0
+        },
+        {
+          "x": 0.3,
+          "y": 0.5
+        },
+        {
+          "x": 0.5,
+          "y": 1.0
+        },
+        {
+          "x": 0.7,
+          "y": 1.8
+        },
+        {
+          "x": 0.9,
+          "y": 2.5
+        },
+        {
+          "x": 1.0,
+          "y": 2.8
+        },
+        {
+          "x": 1.2,
+          "y": 3.0
+        }
+      ]
+    }
+  ],
+  "specs": {
+    "polarity": "n",
+    "threshold_min": {
+      "value": 1.0,
+      "unit": "V",
+      "conditions": "VDS=VGS, ID=250μA",
+      "page_reference": "2",
+      "source_kind": "minimum"
+    },
+    "threshold_typ": null,
+    "threshold_max": {
+      "value": 3.0,
+      "unit": "V",
+      "conditions": "VDS=VGS, ID=250μA",
+      "page_reference": "2",
+      "source_kind": "maximum"
+    },
+    "rdson_points": [
+      {
+        "vgs": {
+          "value": 10.0,
+          "unit": "V",
+          "conditions": "at rated current",
+          "page_reference": "2",
+          "source_kind": "typical"
+        },
+        "current": {
+          "value": 3.0,
+          "unit": "A",
+          "conditions": "continuous drain current",
+          "page_reference": "2",
+          "source_kind": "typical"
+        },
+        "resistance": {
+          "value": 0.067,
+          "unit": "Ω",
+          "conditions": "VGS=10V, ID=3A",
+          "page_reference": "2",
+          "source_kind": "typical"
+        }
+      },
+      {
+        "vgs": {
+          "value": 4.5,
+          "unit": "V",
+          "conditions": "logic-level gate drive",
+          "page_reference": "2",
+          "source_kind": "typical"
+        },
+        "current": {
+          "value": 2.0,
+          "unit": "A",
+          "conditions": "reduced drain current",
+          "page_reference": "2",
+          "source_kind": "typical"
+        },
+        "resistance": {
+          "value": 0.077,
+          "unit": "Ω",
+          "conditions": "VGS=4.5V, ID=2A",
+          "page_reference": "2",
+          "source_kind": "typical"
+        }
+      }
+    ],
+    "ciss": {
+      "value": 490.0e-12,
+      "unit": "F",
+      "conditions": "VDS=VGS, ID=-250μA",
+      "page_reference": "2",
+      "source_kind": "typical"
+    },
+    "coss": {
+      "value": 55.0e-12,
+      "unit": "F",
+      "conditions": "VGS=0V, VDS=25V, f=1MHz",
+      "page_reference": "2",
+      "source_kind": "typical"
+    },
+    "crss": {
+      "value": 40.0e-12,
+      "unit": "F",
+      "conditions": "reverse transfer, VGS=0V",
+      "page_reference": "2",
+      "source_kind": "typical"
+    },
+    "breakdown_voltage": {
+      "value": 60.0,
+      "unit": "V",
+      "conditions": "VGS=0V, ID=250μA",
+      "page_reference": "2",
+      "source_kind": "minimum"
+    },
+    "body_diode": {
+      "value": 1.2,
+      "unit": "V",
+      "conditions": "IS=1.2A, VGS=0V",
+      "page_reference": "2",
+      "source_kind": "typical"
+    }
+  },
+  "extraction_notes": [
+    "SI2310A is a 60V N-channel power MOSFET in SOT-23 package (page 1).",
+    "RDS(ON) specifications: 67mΩ typical at VGS=10V/ID=3A (80mΩ max), 77mΩ typical at VGS=4.5V/ID=2A (95mΩ max).",
+    "Input capacitance Ciss 490pF typical (780pF max), output capacitance Coss 55pF typical, reverse transfer capacitance Crss 40pF typical.",
+    "Gate threshold voltage 1-3V (VDS=VGS, ID=250μA).",
+    "Body diode forward voltage 1.2V typical at IS=1.2A.",
+    "Breakdown voltage 60V minimum (VGS=0V, ID=250μA).",
+    "Continuous drain current 3A at TA=25°C, 2.3A at TA=70°C (page 1).",
+    "Power dissipation 1.38W at TA=25°C with 10°C/W derating factor and 90°C/W junction-to-ambient thermal resistance.",
+    "Digitized curves: Fig 3 (RDS(ON) vs VGS, ID=2A) and Fig 5 (body diode forward characteristic, TJ=25°C) from pages 3-4.",
+    "All numeric resistances in SI ohms (mΩ converted to Ω), capacitances in SI farads (pF converted to F)."
+  ],
+  "omission_reason": null
+}

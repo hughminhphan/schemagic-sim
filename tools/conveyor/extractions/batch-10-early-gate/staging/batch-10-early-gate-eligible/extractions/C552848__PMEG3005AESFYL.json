@@ -1,0 +1,296 @@
+{
+  "curves": [
+    {
+      "name": "Typical forward current as a function of forward voltage at Tj = 25 degC",
+      "page_reference": "p. 5, Fig. 4",
+      "points": [
+        {
+          "x": 0.1,
+          "y": 0.0001
+        },
+        {
+          "x": 0.2,
+          "y": 0.001
+        },
+        {
+          "x": 0.3,
+          "y": 0.03
+        },
+        {
+          "x": 0.4,
+          "y": 0.3
+        },
+        {
+          "x": 0.5,
+          "y": 0.65
+        },
+        {
+          "x": 0.6,
+          "y": 1.0
+        }
+      ],
+      "test_conditions": "Pulsed condition, Tj = 25 degC",
+      "x_axis": {
+        "quantity": "forward voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "forward current",
+        "scale": "log",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "Typical reverse current as a function of reverse voltage at Tj = 25 degC",
+      "page_reference": "p. 5, Fig. 5",
+      "points": [
+        {
+          "x": 0,
+          "y": 1e-08
+        },
+        {
+          "x": 5,
+          "y": 3e-08
+        },
+        {
+          "x": 10,
+          "y": 1e-07
+        },
+        {
+          "x": 15,
+          "y": 2e-07
+        },
+        {
+          "x": 20,
+          "y": 5e-07
+        },
+        {
+          "x": 25,
+          "y": 1e-06
+        },
+        {
+          "x": 30,
+          "y": 2e-05
+        }
+      ],
+      "test_conditions": "Pulsed condition, Tj = 25 degC",
+      "x_axis": {
+        "quantity": "reverse voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "reverse current",
+        "scale": "log",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "Typical diode capacitance as a function of reverse voltage",
+      "page_reference": "p. 6, Fig. 6",
+      "points": [
+        {
+          "x": 0,
+          "y": 32
+        },
+        {
+          "x": 1,
+          "y": 22
+        },
+        {
+          "x": 5,
+          "y": 12
+        },
+        {
+          "x": 10,
+          "y": 8
+        },
+        {
+          "x": 20,
+          "y": 4
+        },
+        {
+          "x": 30,
+          "y": 2
+        }
+      ],
+      "test_conditions": "f = 1 MHz, Tamb = 25 degC",
+      "x_axis": {
+        "quantity": "reverse voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "diode capacitance",
+        "scale": "linear",
+        "unit": "pF"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4",
+      "p. 5",
+      "p. 6",
+      "p. 7",
+      "p. 8",
+      "p. 9",
+      "p. 10",
+      "p. 11",
+      "p. 12",
+      "p. 13"
+    ],
+    "revision": "10 March 2017",
+    "title": "PMEG3005AESF 30 V, 0.5 A low VF MEGA Schottky barrier rectifier"
+  },
+  "extraction_notes": [
+    "The datasheet also gives typical and maximum forward-voltage values for each tabulated current; the typical values are transcribed as the primary fit points and the maxima are retained in the source table only.",
+    "The datasheet also gives IR = 4 uA typical at VR = 10 V and Cd = 22 pF typical at VR = 1 V; the 30 V reverse-current and 10 V capacitance rows are used as the primary inputs."
+  ],
+  "family": "diode",
+  "manufacturer": "Nexperia",
+  "mpn": "PMEG3005AESFYL",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": {
+      "conditions": "At V(BR)R = 30 V, tp = 300 us, delta = 0.02, Tj = 25 degC",
+      "page_reference": "p. 4, Table 7",
+      "source_kind": "minimum",
+      "unit": "A",
+      "value": 0.0001
+    },
+    "breakdown_voltage": {
+      "conditions": "IR = 100 uA, tp = 300 us, delta = 0.02, Tj = 25 degC",
+      "page_reference": "p. 4, Table 7",
+      "source_kind": "minimum",
+      "unit": "V",
+      "value": 30.0
+    },
+    "capacitance": {
+      "conditions": "VR = 10 V, f = 1 MHz, Tj = 25 degC",
+      "page_reference": "p. 5, Table 7",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 8e-12
+    },
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 0.1 mA, tp <= 300 us, delta <= 0.02, Tj = 25 degC",
+          "page_reference": "p. 4, Table 7",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 0.0001
+        },
+        "voltage": {
+          "conditions": "IF = 0.1 mA, tp <= 300 us, delta <= 0.02, Tj = 25 degC",
+          "page_reference": "p. 4, Table 7",
+          "source_kind": "typical",
+          "unit": "V",
+          "value": 0.12
+        }
+      },
+      {
+        "current": {
+          "conditions": "IF = 1 mA, tp <= 300 us, delta <= 0.02, Tj = 25 degC",
+          "page_reference": "p. 4, Table 7",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 0.001
+        },
+        "voltage": {
+          "conditions": "IF = 1 mA, tp <= 300 us, delta <= 0.02, Tj = 25 degC",
+          "page_reference": "p. 4, Table 7",
+          "source_kind": "typical",
+          "unit": "V",
+          "value": 0.18
+        }
+      },
+      {
+        "current": {
+          "conditions": "IF = 10 mA, tp <= 300 us, delta <= 0.02, Tj = 25 degC",
+          "page_reference": "p. 4, Table 7",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 0.01
+        },
+        "voltage": {
+          "conditions": "IF = 10 mA, tp <= 300 us, delta <= 0.02, Tj = 25 degC",
+          "page_reference": "p. 4, Table 7",
+          "source_kind": "typical",
+          "unit": "V",
+          "value": 0.25
+        }
+      },
+      {
+        "current": {
+          "conditions": "IF = 100 mA, tp <= 300 us, delta <= 0.02, Tj = 25 degC",
+          "page_reference": "p. 5, Table 7",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 0.1
+        },
+        "voltage": {
+          "conditions": "IF = 100 mA, tp <= 300 us, delta <= 0.02, Tj = 25 degC",
+          "page_reference": "p. 5, Table 7",
+          "source_kind": "typical",
+          "unit": "V",
+          "value": 0.35
+        }
+      },
+      {
+        "current": {
+          "conditions": "IF = 200 mA, tp <= 300 us, delta <= 0.02, Tj = 25 degC",
+          "page_reference": "p. 5, Table 7",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 0.2
+        },
+        "voltage": {
+          "conditions": "IF = 200 mA, tp <= 300 us, delta <= 0.02, Tj = 25 degC",
+          "page_reference": "p. 5, Table 7",
+          "source_kind": "typical",
+          "unit": "V",
+          "value": 0.405
+        }
+      },
+      {
+        "current": {
+          "conditions": "IF = 500 mA, tp <= 300 us, delta <= 0.02, Tj = 25 degC",
+          "page_reference": "p. 5, Table 7",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 0.5
+        },
+        "voltage": {
+          "conditions": "IF = 500 mA, tp <= 300 us, delta <= 0.02, Tj = 25 degC",
+          "page_reference": "p. 5, Table 7",
+          "source_kind": "typical",
+          "unit": "V",
+          "value": 0.56
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = 30 V, Tj = 25 degC, pulsed",
+      "page_reference": "p. 5, Table 7",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 2e-05
+    },
+    "reverse_recovery": {
+      "conditions": "IF = 500 mA, IR = 500 mA, IR(meas) = 100 mA, Tj = 25 degC",
+      "page_reference": "p. 5, Table 7",
+      "source_kind": "typical",
+      "unit": "s",
+      "value": 1.37e-09
+    },
+    "variant": "schottky"
+  },
+  "usable_curves": true
+}

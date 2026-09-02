@@ -1,0 +1,106 @@
+{
+  "curves": [
+    {
+      "name": "Zener characteristic, 5.1B curve",
+      "page_reference": "p. 3, Fig. 1 Zener Characteristics, up to 10 V panel",
+      "points": [
+        {
+          "x": 4.85,
+          "y": 0.0005
+        },
+        {
+          "x": 4.98,
+          "y": 0.002
+        },
+        {
+          "x": 5.1,
+          "y": 0.005
+        },
+        {
+          "x": 5.25,
+          "y": 0.015
+        },
+        {
+          "x": 5.38,
+          "y": 0.025
+        }
+      ],
+      "test_conditions": "Ta=25 degC, pulsed; 5.1B curve in the plotted zener-characteristics family.",
+      "x_axis": {
+        "quantity": "zener voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "zener current",
+        "scale": "linear",
+        "unit": "A"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "revision": "Rev:1.0",
+    "title": "MM1Z2V0B THRU MM1Z75B SURFACE MOUNT ZENER DIODES"
+  },
+  "extraction_notes": [
+    "Zener curve points are digitized from the plotted 5.1B curve on p. 3; no points were interpolated between plotted readings.",
+    "The datasheet publishes zener impedance but the extraction schema has no zener-impedance field, so it is not represented as a spec field.",
+    "No junction-capacitance or reverse-recovery specification is published for this family."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "MM1Z5V1B",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": {
+      "conditions": "IZT=5 mA, Ta=25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, MM1Z5V1B IZT row",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.005
+    },
+    "breakdown_voltage": {
+      "conditions": "IZT=5 mA, Ta=25 degC; nominal VZ",
+      "page_reference": "p. 2, Electrical Characteristics, MM1Z5V1B VZ row",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 5.1
+    },
+    "capacitance": null,
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF=10 mA, Ta=25 degC",
+          "page_reference": "p. 1, Maximum Ratings, Forward Voltage",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.01
+        },
+        "voltage": {
+          "conditions": "IF=10 mA, Ta=25 degC",
+          "page_reference": "p. 1, Maximum Ratings, Forward Voltage",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.9
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR=1.5 V, Ta=25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, MM1Z5V1B IR@VR",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 2e-06
+    },
+    "reverse_recovery": null,
+    "variant": "zener"
+  },
+  "usable_curves": true
+}

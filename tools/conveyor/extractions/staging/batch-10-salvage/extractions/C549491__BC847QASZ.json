@@ -1,0 +1,210 @@
+{
+  "curves": [
+    {
+      "name": "DC current gain versus collector current, Tamb=25 degC",
+      "page_reference": "p. 6",
+      "points": [
+        {
+          "x": 0.0001,
+          "y": 200
+        },
+        {
+          "x": 0.001,
+          "y": 230
+        },
+        {
+          "x": 0.01,
+          "y": 250
+        },
+        {
+          "x": 0.1,
+          "y": 220
+        },
+        {
+          "x": 0.2,
+          "y": 180
+        }
+      ],
+      "test_conditions": "VCE=5 V; Figure 4; typical 25 degC trace",
+      "x_axis": {
+        "quantity": "collector current",
+        "scale": "log",
+        "unit": "A"
+      },
+      "y_axis": {
+        "quantity": "DC current gain",
+        "scale": "linear",
+        "unit": "1"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4",
+      "p. 5",
+      "p. 6",
+      "p. 7",
+      "p. 8",
+      "p. 9",
+      "p. 10",
+      "p. 11",
+      "p. 12"
+    ],
+    "revision": "10 September 2018",
+    "title": "BC847QAS"
+  },
+  "extraction_notes": [
+    "The datasheet provides one hFE row with a 200 minimum to 450 maximum range at IC=2 mA and VCE=5 V; no additional table hFE target is published.",
+    "Curve points are digitized from the typical Tamb=25 degC trace in Figure 4 on p. 6."
+  ],
+  "family": "bjt",
+  "manufacturer": "Nexperia",
+  "mpn": "BC847QASZ",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "cibo": {
+      "conditions": "VEB=0.5 V, IC=0, f=1 MHz, Tamb=25 degC",
+      "page_reference": "p. 2",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 1.1e-11
+    },
+    "cobo": {
+      "conditions": "VCB=10 V, IE=0, ie=0, f=1 MHz, Tamb=25 degC",
+      "page_reference": "p. 2",
+      "source_kind": "maximum",
+      "unit": "F",
+      "value": 4e-12
+    },
+    "ft": {
+      "conditions": "VCE=5 V, IC=10 mA, f=100 MHz, Tamb=25 degC",
+      "page_reference": "p. 2",
+      "source_kind": "minimum",
+      "unit": "Hz",
+      "value": 100000000.0
+    },
+    "gain_points": [
+      {
+        "collector_current": {
+          "conditions": "VCE=5 V, IC=2 mA, Tamb=25 degC",
+          "page_reference": "p. 2",
+          "source_kind": "minimum",
+          "unit": "A",
+          "value": 0.002
+        },
+        "hfe": {
+          "conditions": "VCE=5 V, IC=2 mA, Tamb=25 degC",
+          "page_reference": "p. 2",
+          "source_kind": "minimum",
+          "unit": "1",
+          "value": 200
+        },
+        "vce": {
+          "conditions": "VCE=5 V, IC=2 mA, Tamb=25 degC",
+          "page_reference": "p. 2",
+          "source_kind": "typical",
+          "unit": "V",
+          "value": 5.0
+        }
+      },
+      {
+        "collector_current": {
+          "conditions": "VCE=5 V, IC=2 mA, Tamb=25 degC",
+          "page_reference": "p. 2",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.002
+        },
+        "hfe": {
+          "conditions": "VCE=5 V, IC=2 mA, Tamb=25 degC",
+          "page_reference": "p. 2",
+          "source_kind": "maximum",
+          "unit": "1",
+          "value": 450
+        },
+        "vce": {
+          "conditions": "VCE=5 V, IC=2 mA, Tamb=25 degC",
+          "page_reference": "p. 2",
+          "source_kind": "typical",
+          "unit": "V",
+          "value": 5.0
+        }
+      }
+    ],
+    "polarity": "npn",
+    "saturation_points": [
+      {
+        "base_current": {
+          "conditions": "IC=10 mA, IB=0.5 mA, Tamb=25 degC",
+          "page_reference": "p. 2",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 0.0005
+        },
+        "collector_current": {
+          "conditions": "IC=10 mA, IB=0.5 mA, Tamb=25 degC",
+          "page_reference": "p. 2",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.01
+        },
+        "vbe_sat": {
+          "conditions": "IC=10 mA, IB=0.5 mA, Tamb=25 degC",
+          "page_reference": "p. 2",
+          "source_kind": "typical",
+          "unit": "V",
+          "value": 0.76
+        },
+        "vce_sat": {
+          "conditions": "IC=10 mA, IB=0.5 mA, Tamb=25 degC",
+          "page_reference": "p. 2",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.1
+        }
+      },
+      {
+        "base_current": {
+          "conditions": "IC=100 mA, IB=5 mA, Tamb=25 degC; pulsed, tp<=300 us, duty cycle<=0.02",
+          "page_reference": "p. 2",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 0.005
+        },
+        "collector_current": {
+          "conditions": "IC=100 mA, IB=5 mA, Tamb=25 degC; pulsed, tp<=300 us, duty cycle<=0.02",
+          "page_reference": "p. 2",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.1
+        },
+        "vbe_sat": {
+          "conditions": "IC=100 mA, IB=5 mA, Tamb=25 degC; pulsed, tp<=300 us, duty cycle<=0.02",
+          "page_reference": "p. 2",
+          "source_kind": "typical",
+          "unit": "V",
+          "value": 0.9
+        },
+        "vce_sat": {
+          "conditions": "IC=100 mA, IB=5 mA, Tamb=25 degC; pulsed, tp<=300 us, duty cycle<=0.02",
+          "page_reference": "p. 2",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.3
+        }
+      }
+    ],
+    "vceo": {
+      "conditions": "open base, Tamb=25 degC",
+      "page_reference": "p. 2",
+      "source_kind": "maximum",
+      "unit": "V",
+      "value": 45.0
+    }
+  },
+  "usable_curves": true
+}

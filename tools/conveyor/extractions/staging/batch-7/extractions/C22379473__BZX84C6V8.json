@@ -1,0 +1,109 @@
+{
+  "curves": [
+    {
+      "name": "Typical zener characteristic, BZX84C6V8 curve",
+      "page_reference": "p. 3, Fig. 1",
+      "points": [
+        {
+          "x": 6.35,
+          "y": 0.0005
+        },
+        {
+          "x": 6.5,
+          "y": 0.001
+        },
+        {
+          "x": 6.65,
+          "y": 0.005
+        },
+        {
+          "x": 6.73,
+          "y": 0.01
+        },
+        {
+          "x": 6.82,
+          "y": 0.02
+        }
+      ],
+      "test_conditions": "Ta = 25 degC; pulsed",
+      "x_axis": {
+        "quantity": "zener voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "zener current",
+        "scale": "log",
+        "unit": "A"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "revision": "Rev:1.0",
+    "title": "BZX84C2V4 THRU BZX84C75"
+  },
+  "extraction_notes": [
+    "The electrical-characteristics row gives VZ min = 6.4 V and max = 7.2 V at IZT = 0.005 A; the nominal VZ is used as the breakdown-voltage input.",
+    "The same row gives ZZT = 15 ohm at IZT and ZZK = 80 ohm at IZK = 1 mA, but the strict schema has no impedance fields.",
+    "The plotted zener curve is a direct digitization of the BZX84C6V8 family curve in Fig. 1; no interpolation was used.",
+    "Temperature-coefficient limits are 1.2 to 4.5 mV/degC at IZTC = 0.005 A and are not represented by the strict schema.",
+    "The datasheet provides capacitance only as a family plot and no tabulated capacitance value for this MPN, so capacitance is null.",
+    "The datasheet publishes no reverse-recovery-time value."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "BZX84C6V8",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": {
+      "conditions": "IZT = 0.005 A, Ta = 25 degC",
+      "page_reference": "p. 2, electrical characteristics, BZX84C6V8 row",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.005
+    },
+    "breakdown_voltage": {
+      "conditions": "IZT = 0.005 A, Ta = 25 degC; nominal VZ",
+      "page_reference": "p. 2, electrical characteristics, BZX84C6V8 row",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 6.8
+    },
+    "capacitance": null,
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 10 mA, Ta = 25 degC",
+          "page_reference": "p. 1, maximum ratings",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.01
+        },
+        "voltage": {
+          "conditions": "IF = 10 mA, Ta = 25 degC",
+          "page_reference": "p. 1, maximum ratings",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.9
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = 4 V, Ta = 25 degC",
+      "page_reference": "p. 2, electrical characteristics, BZX84C6V8 row",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 2e-06
+    },
+    "reverse_recovery": null,
+    "variant": "zener"
+  },
+  "usable_curves": true
+}

@@ -1,0 +1,119 @@
+{
+  "curves": [
+    {
+      "name": "Typical junction capacitance for B0520W-B0540W family",
+      "page_reference": "p. 2, Fig. 3 Typical Junction Capacitance",
+      "points": [
+        {
+          "x": 0.1,
+          "y": 2.2e-10
+        },
+        {
+          "x": 0.3,
+          "y": 2.1e-10
+        },
+        {
+          "x": 1,
+          "y": 1.5e-10
+        },
+        {
+          "x": 3,
+          "y": 9e-11
+        },
+        {
+          "x": 10,
+          "y": 5.5e-11
+        },
+        {
+          "x": 20,
+          "y": 4e-11
+        }
+      ],
+      "test_conditions": "Ta = 25 degC; f = 1 MHz",
+      "x_axis": {
+        "quantity": "Reverse voltage",
+        "scale": "log",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "Capacitance between terminals",
+        "scale": "log",
+        "unit": "F"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ],
+    "revision": "Rev:1.0",
+    "title": "B0520W THRU B0540W"
+  },
+  "extraction_notes": [
+    "The family capacitance curve was digitized from p. 2 Fig. 3; points are direct curve readings and are not interpolated.",
+    "The B0530W table also lists maximum IR = 0.02 mA at VR = 15 V; the schema permits one reverse_current object, so the higher-voltage 30 V row is retained.",
+    "No reverse-recovery time or breakdown characteristic is published in the supplied datasheet."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "B0530W",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": null,
+    "breakdown_voltage": null,
+    "capacitance": {
+      "conditions": "VR = 0 V, f = 1 MHz, Ta = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 1.7e-10
+    },
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 0.1 A, Ta = 25 degC",
+          "page_reference": "p. 2, Electrical Characteristics, B0530W row",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.1
+        },
+        "voltage": {
+          "conditions": "IF = 0.1 A, Ta = 25 degC",
+          "page_reference": "p. 2, Electrical Characteristics, B0530W row",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.375
+        }
+      },
+      {
+        "current": {
+          "conditions": "IF = 0.5 A, Ta = 25 degC",
+          "page_reference": "p. 2, Electrical Characteristics, B0530W row",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.5
+        },
+        "voltage": {
+          "conditions": "IF = 0.5 A, Ta = 25 degC",
+          "page_reference": "p. 2, Electrical Characteristics, B0530W row",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.43
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = 30 V, Ta = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, B0530W row",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 0.00013
+    },
+    "reverse_recovery": null,
+    "variant": "schottky"
+  },
+  "usable_curves": true
+}

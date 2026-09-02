@@ -1,0 +1,146 @@
+{
+  "curves": [
+    {
+      "name": "Typical forward voltage, ES2JB, 25 degC",
+      "page_reference": "p. 2 Fig. 3, ES2JB trace",
+      "points": [
+        {
+          "x": 0.01,
+          "y": 1.23
+        },
+        {
+          "x": 0.1,
+          "y": 1.43
+        },
+        {
+          "x": 1.0,
+          "y": 1.63
+        },
+        {
+          "x": 10.0,
+          "y": 1.82
+        },
+        {
+          "x": 20.0,
+          "y": 1.9
+        }
+      ],
+      "test_conditions": "Tj = 25 degC, pulse width = 300 us, duty cycle = 1%; ES2JB dotted trace",
+      "x_axis": {
+        "quantity": "forward current",
+        "scale": "log",
+        "unit": "A"
+      },
+      "y_axis": {
+        "quantity": "forward voltage",
+        "scale": "linear",
+        "unit": "V"
+      }
+    },
+    {
+      "name": "Typical reverse characteristics, ES2JB, 25 degC",
+      "page_reference": "p. 2 Fig. 4, Tj = 25 degC trace",
+      "points": [
+        {
+          "x": 0.0,
+          "y": 4e-08
+        },
+        {
+          "x": 20.0,
+          "y": 6e-08
+        },
+        {
+          "x": 50.0,
+          "y": 9e-08
+        },
+        {
+          "x": 80.0,
+          "y": 1.3e-07
+        },
+        {
+          "x": 100.0,
+          "y": 1.8e-07
+        },
+        {
+          "x": 120.0,
+          "y": 3.5e-07
+        }
+      ],
+      "test_conditions": "Tj = 25 degC; ES2JB rated peak reverse voltage = 600 V",
+      "x_axis": {
+        "quantity": "percent of rated peak reverse voltage",
+        "scale": "linear",
+        "unit": "%"
+      },
+      "y_axis": {
+        "quantity": "reverse current",
+        "scale": "log",
+        "unit": "A"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ],
+    "revision": "Rev:1.1",
+    "title": "ES2AB THRU ES2JB SURFACE MOUNT FAST RECOVERY RECTIFIER"
+  },
+  "extraction_notes": [
+    "The datasheet is a family sheet; ES2JB values were selected from the ES2JB column.",
+    "Forward and reverse curves were digitized from the ES2JB traces; no points were interpolated between read locations.",
+    "Reverse current at 125 degC is published separately but is not used as the nominal 25 degC leakage input."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "ES2JB",
+  "omission_reason": "Breakdown voltage and breakdown current are not published for this rectifier family.",
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": null,
+    "breakdown_voltage": null,
+    "capacitance": {
+      "conditions": "4.0 V DC, 1 MHz, TA = 25 degC",
+      "page_reference": "p. 2 Electrical Characteristics, typical junction capacitance",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 5.5e-11
+    },
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 2.0 A, TA = 25 degC",
+          "page_reference": "p. 2 Electrical Characteristics, maximum instantaneous forward voltage",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 2.0
+        },
+        "voltage": {
+          "conditions": "IF = 2.0 A, TA = 25 degC",
+          "page_reference": "p. 2 Electrical Characteristics, maximum instantaneous forward voltage",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 1.7
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = VDC = 600 V, TA = 25 degC",
+      "page_reference": "p. 2 Electrical Characteristics, maximum DC reverse current at rated DC blocking voltage",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 2e-06
+    },
+    "reverse_recovery": {
+      "conditions": "IF = 0.5 A, IR = 1.0 A, Irr = 0.25 A, TA = 25 degC",
+      "page_reference": "p. 2 Electrical Characteristics, maximum reverse recovery time",
+      "source_kind": "maximum",
+      "unit": "s",
+      "value": 3.5e-08
+    },
+    "variant": "rectifier"
+  },
+  "usable_curves": true
+}

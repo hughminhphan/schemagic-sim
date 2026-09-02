@@ -1,0 +1,141 @@
+{
+  "curves": [
+    {
+      "name": "Typical forward voltage, family curve SS215-SS220",
+      "page_reference": "p. 2 Fig. 3",
+      "points": [
+        {
+          "x": 0.58,
+          "y": 0.01
+        },
+        {
+          "x": 0.67,
+          "y": 0.1
+        },
+        {
+          "x": 0.8,
+          "y": 1.0
+        },
+        {
+          "x": 0.96,
+          "y": 10.0
+        },
+        {
+          "x": 1.12,
+          "y": 50.0
+        }
+      ],
+      "test_conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle; family curve labeled SS215-SS220",
+      "x_axis": {
+        "quantity": "instantaneous forward voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "instantaneous forward current",
+        "scale": "log",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "Typical reverse characteristics, family curve SS215-SS220 at Tj = 25 degC",
+      "page_reference": "p. 2 Fig. 4",
+      "points": [
+        {
+          "x": 0.0,
+          "y": 1e-06
+        },
+        {
+          "x": 20.0,
+          "y": 2e-06
+        },
+        {
+          "x": 40.0,
+          "y": 3e-06
+        },
+        {
+          "x": 60.0,
+          "y": 4e-06
+        },
+        {
+          "x": 80.0,
+          "y": 5e-06
+        },
+        {
+          "x": 100.0,
+          "y": 1e-05
+        }
+      ],
+      "test_conditions": "Tj = 25 degC; family curve labeled SS215-SS220",
+      "x_axis": {
+        "quantity": "percent of rated peak reverse voltage",
+        "scale": "linear",
+        "unit": "%"
+      },
+      "y_axis": {
+        "quantity": "instantaneous reverse current",
+        "scale": "log",
+        "unit": "A"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ],
+    "revision": "Rev:1.0",
+    "title": "SS22 THRU SS220 - SURFACE MOUNT SCHOTTKY BARRIER RECTIFIER"
+  },
+  "extraction_notes": [
+    "Forward voltage is the maximum instantaneous VF for the SS215-SS220 group at IF = 2 A.",
+    "The forward and reverse plots are family curves explicitly grouped SS215-SS220; points are digitized typical values.",
+    "The reverse-current table also gives 10 mA maximum at Ta = 100 degC; the 25 degC rated-blocking row is transcribed as the primary reverse-current input.",
+    "The Schottky family has no published reverse-recovery-time row."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "SS215",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": null,
+    "breakdown_voltage": null,
+    "capacitance": {
+      "conditions": "4.0 V DC, 1 MHz, Ta = 25 degC; typical junction capacitance for SS28-SS220 group",
+      "page_reference": "p. 2, Electrical Characteristics, CJ",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 3e-10
+    },
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "Ta = 25 degC, IF = 2.0 A",
+          "page_reference": "p. 2, Electrical Characteristics",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 2.0
+        },
+        "voltage": {
+          "conditions": "Ta = 25 degC, IF = 2.0 A",
+          "page_reference": "p. 2, Electrical Characteristics",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.95
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = VDC = 150 V, Ta = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, IR1",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 5e-05
+    },
+    "reverse_recovery": null,
+    "variant": "schottky"
+  },
+  "usable_curves": true
+}

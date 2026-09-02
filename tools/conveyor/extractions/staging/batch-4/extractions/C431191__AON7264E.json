@@ -1,0 +1,310 @@
+{
+  "schema_version": "1.0.0",
+  "mpn": "AON7264E",
+  "manufacturer": "Alpha Omega Semicon",
+  "family": "mosfet",
+  "datasheet_identity": {
+    "title": "60V N-Channel AlphaSGT MOSFET AON7264E",
+    "revision": "2.0",
+    "pages_examined": ["1", "2", "3", "4"]
+  },
+  "usable_curves": true,
+  "curves": [
+    {
+      "name": "On-Resistance vs. Gate-Source Voltage at 25°C",
+      "x_axis": {
+        "quantity": "Gate-Source Voltage",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "On-Resistance",
+        "unit": "Ω",
+        "scale": "linear"
+      },
+      "test_conditions": "VGS sweep, ID=17A, TJ=25°C",
+      "page_reference": "3",
+      "points": [
+        {"x": 2.0, "y": 0.030},
+        {"x": 2.5, "y": 0.023},
+        {"x": 3.0, "y": 0.017},
+        {"x": 3.5, "y": 0.013},
+        {"x": 4.0, "y": 0.0105},
+        {"x": 4.5, "y": 0.009},
+        {"x": 5.0, "y": 0.008},
+        {"x": 6.0, "y": 0.0075},
+        {"x": 8.0, "y": 0.0072},
+        {"x": 10.0, "y": 0.007}
+      ]
+    },
+    {
+      "name": "Body-Diode Forward Characteristics at 25°C",
+      "x_axis": {
+        "quantity": "Diode Forward Voltage",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "Diode Current",
+        "unit": "A",
+        "scale": "log"
+      },
+      "test_conditions": "VGS=0V, diode conduction",
+      "page_reference": "3",
+      "points": [
+        {"x": 0.0, "y": 0.00001},
+        {"x": 0.2, "y": 0.0001},
+        {"x": 0.3, "y": 0.0003},
+        {"x": 0.4, "y": 0.001},
+        {"x": 0.5, "y": 0.003},
+        {"x": 0.6, "y": 0.01},
+        {"x": 0.65, "y": 0.03},
+        {"x": 0.72, "y": 1.0},
+        {"x": 0.8, "y": 3.0},
+        {"x": 1.0, "y": 10.0}
+      ]
+    },
+    {
+      "name": "Capacitance Characteristics - Ciss vs VDS",
+      "x_axis": {
+        "quantity": "Drain-Source Voltage",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "Input Capacitance",
+        "unit": "F",
+        "scale": "linear"
+      },
+      "test_conditions": "VGS=0V, f=1MHz",
+      "page_reference": "4",
+      "points": [
+        {"x": 0, "y": 1.3e-9},
+        {"x": 5, "y": 1.2e-9},
+        {"x": 10, "y": 1.15e-9},
+        {"x": 15, "y": 1.11e-9},
+        {"x": 20, "y": 1.1e-9},
+        {"x": 30, "y": 1.1e-9},
+        {"x": 40, "y": 1.1e-9},
+        {"x": 50, "y": 1.1e-9},
+        {"x": 60, "y": 1.1e-9}
+      ]
+    },
+    {
+      "name": "Capacitance Characteristics - Coss vs VDS",
+      "x_axis": {
+        "quantity": "Drain-Source Voltage",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "Output Capacitance",
+        "unit": "F",
+        "scale": "linear"
+      },
+      "test_conditions": "VGS=0V, f=1MHz",
+      "page_reference": "4",
+      "points": [
+        {"x": 0, "y": 9.0e-10},
+        {"x": 5, "y": 6.0e-10},
+        {"x": 10, "y": 4.5e-10},
+        {"x": 15, "y": 3.5e-10},
+        {"x": 20, "y": 3.2e-10},
+        {"x": 30, "y": 3.0e-10},
+        {"x": 40, "y": 2.9e-10},
+        {"x": 50, "y": 2.85e-10},
+        {"x": 60, "y": 2.8e-10}
+      ]
+    },
+    {
+      "name": "Capacitance Characteristics - Crss vs VDS",
+      "x_axis": {
+        "quantity": "Drain-Source Voltage",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "Reverse Transfer Capacitance",
+        "unit": "F",
+        "scale": "linear"
+      },
+      "test_conditions": "VGS=0V, f=1MHz",
+      "page_reference": "4",
+      "points": [
+        {"x": 0, "y": 5.0e-11},
+        {"x": 5, "y": 4.0e-11},
+        {"x": 10, "y": 2.8e-11},
+        {"x": 15, "y": 2.5e-11},
+        {"x": 20, "y": 2.3e-11},
+        {"x": 30, "y": 2.0e-11},
+        {"x": 40, "y": 1.8e-11},
+        {"x": 50, "y": 1.7e-11},
+        {"x": 60, "y": 1.5e-11}
+      ]
+    }
+  ],
+  "specs": {
+    "polarity": "n",
+    "threshold_min": {
+      "value": 1.4,
+      "unit": "V",
+      "conditions": "VDS=VGS, ID=250µA",
+      "page_reference": "2",
+      "source_kind": "minimum"
+    },
+    "threshold_typ": {
+      "value": 1.8,
+      "unit": "V",
+      "conditions": "VDS=VGS, ID=250µA",
+      "page_reference": "2",
+      "source_kind": "typical"
+    },
+    "threshold_max": {
+      "value": 2.4,
+      "unit": "V",
+      "conditions": "VDS=VGS, ID=250µA",
+      "page_reference": "2",
+      "source_kind": "maximum"
+    },
+    "rdson_points": [
+      {
+        "vgs": {
+          "value": 10.0,
+          "unit": "V",
+          "conditions": "DC measurement",
+          "page_reference": "2",
+          "source_kind": "typical"
+        },
+        "current": {
+          "value": 17.0,
+          "unit": "A",
+          "conditions": "Drain current",
+          "page_reference": "2",
+          "source_kind": "typical"
+        },
+        "resistance": {
+          "value": 0.0077,
+          "unit": "Ω",
+          "conditions": "TJ=25°C",
+          "page_reference": "2",
+          "source_kind": "typical"
+        }
+      },
+      {
+        "vgs": {
+          "value": 10.0,
+          "unit": "V",
+          "conditions": "DC measurement",
+          "page_reference": "2",
+          "source_kind": "maximum"
+        },
+        "current": {
+          "value": 17.0,
+          "unit": "A",
+          "conditions": "Drain current",
+          "page_reference": "2",
+          "source_kind": "maximum"
+        },
+        "resistance": {
+          "value": 0.0095,
+          "unit": "Ω",
+          "conditions": "TJ=25°C",
+          "page_reference": "2",
+          "source_kind": "maximum"
+        }
+      },
+      {
+        "vgs": {
+          "value": 4.5,
+          "unit": "V",
+          "conditions": "DC measurement",
+          "page_reference": "2",
+          "source_kind": "typical"
+        },
+        "current": {
+          "value": 15.0,
+          "unit": "A",
+          "conditions": "Drain current",
+          "page_reference": "2",
+          "source_kind": "typical"
+        },
+        "resistance": {
+          "value": 0.0103,
+          "unit": "Ω",
+          "conditions": "TJ=25°C",
+          "page_reference": "2",
+          "source_kind": "typical"
+        }
+      },
+      {
+        "vgs": {
+          "value": 4.5,
+          "unit": "V",
+          "conditions": "DC measurement",
+          "page_reference": "2",
+          "source_kind": "maximum"
+        },
+        "current": {
+          "value": 15.0,
+          "unit": "A",
+          "conditions": "Drain current",
+          "page_reference": "2",
+          "source_kind": "maximum"
+        },
+        "resistance": {
+          "value": 0.0133,
+          "unit": "Ω",
+          "conditions": "TJ=25°C",
+          "page_reference": "2",
+          "source_kind": "maximum"
+        }
+      }
+    ],
+    "ciss": {
+      "value": 1.1e-9,
+      "unit": "F",
+      "conditions": "VGS=0V, VDS=30V, f=1MHz",
+      "page_reference": "2",
+      "source_kind": "typical"
+    },
+    "coss": {
+      "value": 3.0e-10,
+      "unit": "F",
+      "conditions": "VGS=0V, VDS=30V, f=1MHz",
+      "page_reference": "2",
+      "source_kind": "typical"
+    },
+    "crss": {
+      "value": 2.8e-11,
+      "unit": "F",
+      "conditions": "VGS=0V, VDS=30V, f=1MHz",
+      "page_reference": "2",
+      "source_kind": "typical"
+    },
+    "breakdown_voltage": {
+      "value": 60.0,
+      "unit": "V",
+      "conditions": "ID=250µA, VGS=0V",
+      "page_reference": "2",
+      "source_kind": "minimum"
+    },
+    "body_diode": {
+      "value": 0.72,
+      "unit": "V",
+      "conditions": "IS=1A, VGS=0V",
+      "page_reference": "2",
+      "source_kind": "typical"
+    }
+  },
+  "extraction_notes": [
+    "All values extracted from Rev.2.0 (April 2017) datasheet published by Alpha Omega Semicon",
+    "AON7264E is a 60V N-channel MOSFET in DFN 3x3 EP package with AlphaSGT trench technology",
+    "Curves digitized from Figures 3, 5, 6, 8 on datasheet pages 3-4",
+    "RDS(ON) curve extracted at TJ=25°C, ID=17A from Figure 5",
+    "Body diode curve (IS vs VSD) extracted at 25°C from Figure 6",
+    "Capacitance curves (Ciss, Coss, Crss) extracted from Figure 8 with VGS=0V, f=1MHz",
+    "All values normalized to SI base units: resistance in ohms (Ω), capacitance in farads (F), voltage in volts (V), current in amperes (A)",
+    "No vendor circuit models included as per extraction guidelines"
+  ],
+  "omission_reason": null
+}

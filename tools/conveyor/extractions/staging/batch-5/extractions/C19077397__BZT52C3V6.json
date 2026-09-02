@@ -1,0 +1,176 @@
+{
+  "curves": [
+    {
+      "name": "Zener Characteristics (Vz nominal 3.6V)",
+      "page_reference": "p. 3, Fig. 1",
+      "points": [
+        {
+          "x": 3.4,
+          "y": 0.5
+        },
+        {
+          "x": 3.5,
+          "y": 1.0
+        },
+        {
+          "x": 3.6,
+          "y": 5.0
+        },
+        {
+          "x": 3.7,
+          "y": 10.0
+        }
+      ],
+      "test_conditions": "TA=25\u00b0C, Pulsed, PD=500mW",
+      "x_axis": {
+        "quantity": "Zener Voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "Zener Current",
+        "scale": "log",
+        "unit": "mA"
+      }
+    },
+    {
+      "name": "Temperature Coefficient vs Zener Voltage",
+      "page_reference": "p. 3, Fig. 3 + Electrical Characteristics Table p. 2",
+      "points": [
+        {
+          "x": 2.0,
+          "y": -3.5
+        },
+        {
+          "x": 3.6,
+          "y": -3.5
+        },
+        {
+          "x": 5.1,
+          "y": -0.75
+        },
+        {
+          "x": 6.2,
+          "y": 2.05
+        },
+        {
+          "x": 7.5,
+          "y": 3.9
+        },
+        {
+          "x": 8.2,
+          "y": 4.7
+        },
+        {
+          "x": 10.0,
+          "y": 6.25
+        },
+        {
+          "x": 12.0,
+          "y": 8.0
+        },
+        {
+          "x": 15.0,
+          "y": 11.1
+        },
+        {
+          "x": 20.0,
+          "y": 16.2
+        },
+        {
+          "x": 30.0,
+          "y": 26.9
+        }
+      ],
+      "test_conditions": "TA=25\u00b0C @ IZTC",
+      "x_axis": {
+        "quantity": "Nominal Zener Voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "Temperature Coefficient",
+        "scale": "linear",
+        "unit": "mV/\u00b0C"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ],
+    "revision": "Rev:1.0",
+    "title": "BZT52C2V0 THRU BZT52C75 SURFACE MOUNT ZENER DIODES"
+  },
+  "extraction_notes": [
+    "Zener voltage digitized from Fig. 1 (Zener Characteristics, Vz Up to 10V) using log-scale current axis and linear voltage axis",
+    "Leakage current value extracted from tabulated specifications at VR=1.0V, TA=25\u00b0C",
+    "Forward voltage from typical maximum ratings table, VF @ IF=10mA",
+    "Capacitance estimated from Fig. 5 (Typical Capacitance) at 0V bias, 1MHz test frequency",
+    "Temperature coefficient taken directly from electrical characteristics table: -3.5 mV/\u00b0C",
+    "Part is SOD-123 surface mount package, Hongjiacheng manufacturer",
+    "Marking code: W4",
+    "Zener impedance ZZT@IZT=90\u03a9, ZZK@IZK=600\u03a9 per specification table",
+    "Reverse recovery (TT) not applicable to zener diodes, omitted",
+    "Multiple zener curves visible in Fig. 1; 3.6V nominal extracted via table cross-reference",
+    "Deterministic normalization: omitted $.curves[2] with 1 cited point(s); schema requires at least 3 and no points were invented"
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "BZT52C3V6",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": {
+      "conditions": "Zener test current, TA=25\u00b0C",
+      "page_reference": "p. 2, Electrical Characteristics, IZT for BZT52C3V6",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.005
+    },
+    "breakdown_voltage": {
+      "conditions": "IZT=5mA, TA=25\u00b0C",
+      "page_reference": "p. 2, Electrical Characteristics, VZ (nominal) for BZT52C3V6",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 3.6
+    },
+    "capacitance": {
+      "conditions": "VR=0V, f=1MHz, TA=25\u00b0C",
+      "page_reference": "p. 3, Fig. 5 (Typical Capacitance)",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 1.5e-10
+    },
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF=10mA, TA=25\u00b0C",
+          "page_reference": "p. 1, Maximum Ratings",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 0.01
+        },
+        "voltage": {
+          "conditions": "IF=10mA, TA=25\u00b0C",
+          "page_reference": "p. 1, Maximum Ratings",
+          "source_kind": "typical",
+          "unit": "V",
+          "value": 0.9
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR=1.0V, TA=25\u00b0C",
+      "page_reference": "p. 2, Electrical Characteristics, IR@VR for BZT52C3V6",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 5e-06
+    },
+    "reverse_recovery": null,
+    "variant": "zener"
+  },
+  "usable_curves": true
+}

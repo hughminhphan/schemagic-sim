@@ -1,0 +1,66 @@
+{
+  "schema_version": "1.0.0",
+  "mpn": "MM1W3V6",
+  "manufacturer": "hongjiacheng",
+  "family": "diode",
+  "datasheet_identity": {
+    "title": "MM1W3V3 THRU MM1W330 SURFACE MOUNT ZENER DIODES (SOD-123 Surface Mount Silicon Zener Diodes)",
+    "revision": "Rev:1.0",
+    "pages_examined": ["1", "2", "3", "4"]
+  },
+  "usable_curves": false,
+  "curves": [],
+  "specs": {
+    "variant": "zener",
+    "forward_voltage_points": [
+      {
+        "current": {
+          "value": 0.2,
+          "unit": "A",
+          "conditions": "IF = 200 mA, Ta = 25 C (Maximum Ratings table test condition)",
+          "page_reference": "1",
+          "source_kind": "maximum"
+        },
+        "voltage": {
+          "value": 1.2,
+          "unit": "V",
+          "conditions": "Forward Voltage @ IF = 200 mA, Ta = 25 C",
+          "page_reference": "1",
+          "source_kind": "maximum"
+        }
+      }
+    ],
+    "reverse_current": {
+      "value": 1e-4,
+      "unit": "A",
+      "conditions": "IR max = 100 uA @ VR = 1 V, Ta = 25 C (leakage below the zener knee)",
+      "page_reference": "2",
+      "source_kind": "maximum"
+    },
+    "capacitance": null,
+    "reverse_recovery": null,
+    "breakdown_voltage": {
+      "value": 3.6,
+      "unit": "V",
+      "conditions": "Nominal zener voltage VZ @ IZT = 69 mA, Ta = 25 C; datasheet limits: min 3.40 V, max 3.80 V at the same IZT",
+      "page_reference": "2",
+      "source_kind": "typical"
+    },
+    "breakdown_current": {
+      "value": 0.069,
+      "unit": "A",
+      "conditions": "Zener test current IZT at which VZ and ZZT are specified, Ta = 25 C",
+      "page_reference": "2",
+      "source_kind": "typical"
+    }
+  },
+  "extraction_notes": [
+    "MM1W3V6 is one line item of the multi-part datasheet 'MM1W3V3 THRU MM1W330' by Zhuhai Hongjiacheng Technology co., Ltd (www.ichjc.com); type code FHE, SOD-123 package.",
+    "Electrical Characteristics row for MM1W3V6 (page 2, Ta = 25 C): VZ min 3.40 V / nom 3.6 V / max 3.80 V at IZT = 69 mA; maximum zener impedance ZZT = 10 ohm @ IZT; leakage IR = 100 uA max @ VR = 1 V; admissible zener current IZM = 263 mA.",
+    "Maximum Ratings (page 1): power dissipation PD = 1000 mW at Tc = 75 C; VF = 1.2 V max @ IF = 200 mA; Tj and Tstg -55 to +150 C; typical thermal resistance RthJ-A = 375 C/W.",
+    "The Electrical Parameter section on page 1 defines IZK/ZZK symbols but the per-part table gives no IZK or ZZK@IZK values for this series, so no knee-impedance point is recorded.",
+    "The only graphical figures are Fig.1 Power Derating Curve (PD vs ambient temperature: flat 1.0 W to 75 C, linearly derating to 0 W at 150 C) and Fig.2 Typical Transient Thermal Impedance (page 3). Both are thermal ratings, not electrical I-V or VZ-IZ characteristics, so no model-usable curves were digitized.",
+    "Values taken from the public datasheet PDF only (SHA-256 58bc7212021acdd0099f74f5574992e2fe4afea33850f27c443c979da297e66c); no vendor SPICE or model packs consulted."
+  ],
+  "omission_reason": "No electrical characteristic curves (VF-IF, VZ-IZ, temperature coefficient, or capacitance vs VR) are present in the datasheet; the only figures are a power derating curve and a transient thermal impedance plot, which do not constitute diode electrical model curves. Extraction therefore relies on the tabulated limits: single-point VF maximum, zener voltage window at IZT, ZZT, IR leakage, and IZM."
+}

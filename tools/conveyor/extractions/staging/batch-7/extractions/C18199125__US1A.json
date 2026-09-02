@@ -1,0 +1,106 @@
+{
+  "curves": [
+    {
+      "name": "Typical forward voltage for US1A-US1D curve group",
+      "page_reference": "p. 2, Fig. 3 Typical Forward Voltage",
+      "points": [
+        {
+          "x": 0.6,
+          "y": 0.01
+        },
+        {
+          "x": 0.66,
+          "y": 0.1
+        },
+        {
+          "x": 0.73,
+          "y": 1.0
+        },
+        {
+          "x": 0.8,
+          "y": 3.0
+        },
+        {
+          "x": 0.9,
+          "y": 10.0
+        }
+      ],
+      "test_conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle; US1A-US1D solid curve group",
+      "x_axis": {
+        "quantity": "instantaneous forward voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "instantaneous forward current",
+        "scale": "log",
+        "unit": "A"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ],
+    "revision": "Rev. 1.1",
+    "title": "US1A THRU US1M SURFACE MOUNT HIGH EFFICIENT RECTIFIER"
+  },
+  "extraction_notes": [
+    "Maximum repetitive peak reverse voltage VRRM is 50 V and maximum average forward rectified current IF(AV) is 1.0 A at Ta = 25 degC (p. 1).",
+    "Non-repetitive peak forward surge current IFSM is 30 A at t = 8.3 ms half-sine wave (p. 1).",
+    "The forward curve is a family curve for US1A-US1D, not a US1A-only trace.",
+    "No breakdown characteristic is published for US1A."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "US1A",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": null,
+    "breakdown_voltage": null,
+    "capacitance": {
+      "conditions": "4.0 V DC, 1 MHz, Ta = 25 degC",
+      "page_reference": "p. 2, electrical characteristics, typical junction capacitance",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 2e-11
+    },
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 1.0 A, Ta = 25 degC",
+          "page_reference": "p. 2, electrical characteristics, maximum instantaneous forward voltage",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 1.0
+        },
+        "voltage": {
+          "conditions": "IF = 1.0 A, Ta = 25 degC; maximum instantaneous forward voltage",
+          "page_reference": "p. 2, electrical characteristics, maximum instantaneous forward voltage",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 1.0
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = VDC = 50 V, Ta = 25 degC",
+      "page_reference": "p. 1, maximum ratings; p. 2, electrical characteristics, IR1",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 5e-06
+    },
+    "reverse_recovery": {
+      "conditions": "IF = 0.5 A, IR = 1.0 A, Irr = 0.25 A, Ta = 25 degC",
+      "page_reference": "p. 2, electrical characteristics, maximum reverse recovery time",
+      "source_kind": "maximum",
+      "unit": "s",
+      "value": 5e-08
+    },
+    "variant": "rectifier"
+  },
+  "usable_curves": true
+}

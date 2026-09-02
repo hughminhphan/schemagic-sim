@@ -1,0 +1,159 @@
+{
+  "curves": [
+    {
+      "name": "Typical forward voltage, SS12-SS14 curve",
+      "page_reference": "p. 2, Fig. 3 Typical Forward Voltage",
+      "points": [
+        {
+          "x": 0.25,
+          "y": 0.02
+        },
+        {
+          "x": 0.3,
+          "y": 0.05
+        },
+        {
+          "x": 0.35,
+          "y": 0.15
+        },
+        {
+          "x": 0.4,
+          "y": 0.5
+        },
+        {
+          "x": 0.45,
+          "y": 1.5
+        },
+        {
+          "x": 0.5,
+          "y": 4.0
+        },
+        {
+          "x": 0.55,
+          "y": 10.0
+        },
+        {
+          "x": 0.7,
+          "y": 30.0
+        },
+        {
+          "x": 0.9,
+          "y": 47.0
+        }
+      ],
+      "test_conditions": "Tj = 25 degC; pulse width = 300 us; 1% duty cycle; solid SS12-SS14 curve",
+      "x_axis": {
+        "quantity": "instantaneous forward voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "instantaneous forward current",
+        "scale": "log",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "Typical reverse characteristics, SS12-SS16 at Tj = 25 degC",
+      "page_reference": "p. 2, Fig. 4 Typical Reverse Characteristics",
+      "points": [
+        {
+          "x": 0,
+          "y": 4e-06
+        },
+        {
+          "x": 20,
+          "y": 9e-06
+        },
+        {
+          "x": 40,
+          "y": 1.4e-05
+        },
+        {
+          "x": 60,
+          "y": 2e-05
+        },
+        {
+          "x": 80,
+          "y": 3e-05
+        },
+        {
+          "x": 100,
+          "y": 5e-05
+        }
+      ],
+      "test_conditions": "Tj = 25 degC; solid SS12-SS16 lower curve; reverse-current axis converted from mA to A",
+      "x_axis": {
+        "quantity": "percent of rated peak reverse voltage",
+        "scale": "linear",
+        "unit": "%"
+      },
+      "y_axis": {
+        "quantity": "instantaneous reverse current",
+        "scale": "log",
+        "unit": "A"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ],
+    "revision": "Rev:1.0",
+    "title": "SS12 THRU SS120 SURFACE MOUNT SCHOTTKY BARRIER RECTIFIER"
+  },
+  "extraction_notes": [
+    "Fig. 3 was digitized on the solid SS12-SS14 family curve, which includes SS12; the current axis is logarithmic.",
+    "Fig. 4 was digitized on the solid SS12-SS16 Tj = 25 degC lower curve; x values are percent of rated peak reverse voltage, not volts.",
+    "The high-temperature table row is IR2 = 50 mA at VR = VDC and TA = 100 degC; the reverse-current field records the separate TA = 25 degC IR1 maximum.",
+    "Maximum ratings for SS12: VRRM = 20 V, VRMS = 14 V, VDC = 20 V, IF(AV) = 1.0 A, IFSM = 30 A at 8.3 ms half-sine; Tstg and Tj = -55 to +150 degC.",
+    "Schottky majority-carrier device: no minority-carrier storage, so reverse recovery is not specified and TT is zero by construction.",
+    "No breakdown characteristic is specified."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "SS12",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": null,
+    "breakdown_voltage": null,
+    "capacitance": {
+      "conditions": "4.0 V DC, 1 MHz",
+      "page_reference": "p. 2, Electrical Characteristics, typical junction capacitance",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 1.1e-10
+    },
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 1.0 A, Ta = 25 degC unless otherwise specified",
+          "page_reference": "p. 2, Electrical Characteristics, maximum instantaneous forward voltage",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 1.0
+        },
+        "voltage": {
+          "conditions": "IF = 1.0 A, Ta = 25 degC unless otherwise specified",
+          "page_reference": "p. 2, Electrical Characteristics, maximum instantaneous forward voltage",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.55
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = VDC = 20 V, TA = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, maximum DC reverse current at rated DC blocking voltage, IR1",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 0.0005
+    },
+    "reverse_recovery": null,
+    "variant": "schottky"
+  },
+  "usable_curves": true
+}

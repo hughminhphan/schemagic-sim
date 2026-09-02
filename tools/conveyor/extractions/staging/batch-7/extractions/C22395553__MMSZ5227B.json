@@ -1,0 +1,108 @@
+{
+  "curves": [
+    {
+      "name": "zener_characteristics_3_6V_branch",
+      "page_reference": "p. 3, Fig. 1 Zener Characteristics (Vz Up to 10V)",
+      "points": [
+        {
+          "x": 2.25951,
+          "y": 0.000499369
+        },
+        {
+          "x": 2.63223,
+          "y": 0.001484562
+        },
+        {
+          "x": 3.05224,
+          "y": 0.004615263
+        },
+        {
+          "x": 3.51955,
+          "y": 0.015004329
+        },
+        {
+          "x": 4.03416,
+          "y": 0.05101039
+        }
+      ],
+      "test_conditions": "Ta = 25 degC, pulsed, PD = 500 mW; MMSZ5221B through MMSZ5267B family curve, nominal 3.6 V branch digitized from Fig. 1.",
+      "x_axis": {
+        "quantity": "zener voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "zener current",
+        "scale": "log",
+        "unit": "A"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4",
+      "p. 5"
+    ],
+    "revision": "Rev.1.1",
+    "title": "MMSZ5221B THRU MMSZ5267B - SURFACE MOUNT SILICON ZENER DIODES"
+  },
+  "extraction_notes": [
+    "The forward-voltage row is a maximum rating at IF = 10 mA.",
+    "The nominal zener voltage and IZT are recorded as the nominal test pair; the table also gives VZ min = 3.42 V and max = 3.78 V.",
+    "The electrical characteristic curve is a family plot; the 3.6 V branch was digitized from the vector curve path without interpolation between datasheet table values.",
+    "No capacitance or reverse-recovery value is published for this part in the supplied datasheet."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "MMSZ5227B",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": {
+      "conditions": "IZT = 20 mA, Ta = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, MMSZ5227B IZT",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.02
+    },
+    "breakdown_voltage": {
+      "conditions": "IZT = 20 mA, Ta = 25 degC; nominal VZ",
+      "page_reference": "p. 2, Electrical Characteristics, MMSZ5227B VZ",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 3.6
+    },
+    "capacitance": null,
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 10 mA, Ta = 25 degC",
+          "page_reference": "p. 1, Maximum Ratings, Forward Voltage @ IF=10mA",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.01
+        },
+        "voltage": {
+          "conditions": "IF = 10 mA, Ta = 25 degC",
+          "page_reference": "p. 1, Maximum Ratings, Forward Voltage @ IF=10mA",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.9
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = 1.0 V, Ta = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, MMSZ5227B IR@VR",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 1.5e-05
+    },
+    "reverse_recovery": null,
+    "variant": "zener"
+  },
+  "usable_curves": true
+}

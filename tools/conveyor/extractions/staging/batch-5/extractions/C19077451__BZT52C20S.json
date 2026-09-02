@@ -1,0 +1,109 @@
+{
+  "curves": [
+    {
+      "name": "BZT52C20S zener characteristic",
+      "page_reference": "p. 3, Fig. 2, Zener Characteristics (11V to 43V), curve labelled 20",
+      "points": [
+        {
+          "x": 20.0,
+          "y": 0.0005
+        },
+        {
+          "x": 19.93,
+          "y": 0.001
+        },
+        {
+          "x": 19.95,
+          "y": 0.002
+        },
+        {
+          "x": 20.13,
+          "y": 0.005
+        },
+        {
+          "x": 20.43,
+          "y": 0.01
+        }
+      ],
+      "test_conditions": "TA = 25 degC, pulsed; reverse-biased zener branch with cathode positive relative to anode; VZ and IZ plotted as positive magnitudes; PD = 200 mW envelope shown",
+      "x_axis": {
+        "quantity": "Zener voltage VZ",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "Zener current IZ",
+        "scale": "log",
+        "unit": "A"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "revision": "Rev:1.0",
+    "title": "BZT52C2V0S THRU BZT52C75S SURFACE MOUNT ZENER DIODES"
+  },
+  "extraction_notes": [
+    "This is a family datasheet; the exact BZT52C20S row was selected from the BZT52C2V0S through BZT52C75S electrical-characteristics table for manufacturer hongjiacheng.",
+    "The supplied PDF SHA-256 was verified as 8d99c0b95ddbd62581320fd03378a72d97d914bc201c735536cd50e5f6753113.",
+    "The BZT52C20S row gives VZ minimum 18.8 V, nominal 20 V, and maximum 21.2 V at IZT = 5 mA; maximum ZZT = 55 ohm at IZT; maximum ZZK = 225 ohm at IZK = 1 mA; maximum reverse leakage IR = 0.1 microA at VR = 14 V; and admissible IZM = 5 mA, all at TA = 25 degC unless otherwise noted.",
+    "The five zener-characteristic points are direct approximate readings from the real curve labelled 20 in p. 3 Fig. 2 at plotted logarithmic-current grid values of 0.5, 1, 2, 5, and 10 mA; the plotted current axis was converted from mA to A and no intermediate points were synthesized. Reverse-bias polarity is cathode positive relative to anode.",
+    "The p. 3 typical capacitance graph is a shared series-level plot with bias curves versus nominal zener voltage and no tabulated BZT52C20S capacitance value, so capacitance is omitted rather than assigned a component-specific value.",
+    "No reverse-recovery-time specification or test circuit is published in the supplied datasheet, so reverse recovery is null. The p. 1 maximum ratings also specify PD = 200 mW and VF = 0.9 V maximum at IF = 10 mA."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "BZT52C20S",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": {
+      "conditions": "IZT = 5 mA at nominal VZ = 20 V, TA = 25 degC; reverse zener current with cathode positive relative to anode",
+      "page_reference": "p. 2, Electrical Characteristics, BZT52C20S IZT row",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.005
+    },
+    "breakdown_voltage": {
+      "conditions": "IZT = 5 mA, TA = 25 degC; nominal reverse zener voltage, with 18.8 V minimum and 21.2 V maximum; cathode positive relative to anode",
+      "page_reference": "p. 2, Electrical Characteristics, BZT52C20S VZ row",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 20.0
+    },
+    "capacitance": null,
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 10 mA, TA = 25 degC",
+          "page_reference": "p. 1, Maximum Ratings, Forward Voltage @ IF = 10 mA",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.01
+        },
+        "voltage": {
+          "conditions": "IF = 10 mA, TA = 25 degC",
+          "page_reference": "p. 1, Maximum Ratings, Forward Voltage @ IF = 10 mA",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.9
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "IR = 0.1 microA maximum at VR = 14 V, TA = 25 degC; reverse bias with cathode positive relative to anode",
+      "page_reference": "p. 2, Electrical Characteristics, BZT52C20S row",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 1e-07
+    },
+    "reverse_recovery": null,
+    "variant": "zener"
+  },
+  "usable_curves": true
+}

@@ -1,0 +1,216 @@
+{
+  "curves": [
+    {
+      "name": "Typical forward characteristics, B350A through B360A, TA = 25 degC",
+      "page_reference": "p. 2, Fig. 2",
+      "points": [
+        {
+          "x": 0.25,
+          "y": 0.05
+        },
+        {
+          "x": 0.3,
+          "y": 0.1
+        },
+        {
+          "x": 0.35,
+          "y": 0.3
+        },
+        {
+          "x": 0.4,
+          "y": 0.8
+        },
+        {
+          "x": 0.45,
+          "y": 1.5
+        },
+        {
+          "x": 0.5,
+          "y": 3.0
+        },
+        {
+          "x": 0.6,
+          "y": 5.0
+        },
+        {
+          "x": 0.7,
+          "y": 8.0
+        },
+        {
+          "x": 0.8,
+          "y": 12.0
+        },
+        {
+          "x": 0.9,
+          "y": 18.0
+        }
+      ],
+      "test_conditions": "TA = 25 degC; B350A through B360A grouped curve",
+      "x_axis": {
+        "quantity": "instantaneous forward voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "instantaneous forward current",
+        "scale": "log",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "Typical reverse characteristics, B350A through B360A, TA = 25 degC",
+      "page_reference": "p. 3, Fig. 4",
+      "points": [
+        {
+          "x": 20.0,
+          "y": 3e-06
+        },
+        {
+          "x": 40.0,
+          "y": 5e-06
+        },
+        {
+          "x": 60.0,
+          "y": 8e-06
+        },
+        {
+          "x": 80.0,
+          "y": 1.2e-05
+        },
+        {
+          "x": 100.0,
+          "y": 2e-05
+        }
+      ],
+      "test_conditions": "TA = 25 degC; B350A through B360A grouped curve",
+      "x_axis": {
+        "quantity": "percent of rated reverse voltage",
+        "scale": "linear",
+        "unit": "%"
+      },
+      "y_axis": {
+        "quantity": "instantaneous reverse current",
+        "scale": "log",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "Typical total capacitance versus reverse voltage",
+      "page_reference": "p. 3, Fig. 5",
+      "points": [
+        {
+          "x": 0.0,
+          "y": 4.8e-10
+        },
+        {
+          "x": 0.2,
+          "y": 4e-10
+        },
+        {
+          "x": 0.5,
+          "y": 3e-10
+        },
+        {
+          "x": 1.0,
+          "y": 2.5e-10
+        },
+        {
+          "x": 2.0,
+          "y": 1.9e-10
+        },
+        {
+          "x": 4.0,
+          "y": 1.4e-10
+        },
+        {
+          "x": 10.0,
+          "y": 9e-11
+        },
+        {
+          "x": 20.0,
+          "y": 6.5e-11
+        },
+        {
+          "x": 40.0,
+          "y": 5e-11
+        },
+        {
+          "x": 80.0,
+          "y": 4e-11
+        }
+      ],
+      "test_conditions": "TJ = 25 degC, f = 1 MHz; B320A through B360A grouped curve",
+      "x_axis": {
+        "quantity": "DC reverse voltage",
+        "scale": "log",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "total capacitance",
+        "scale": "linear",
+        "unit": "F"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4",
+      "p. 5",
+      "p. 6"
+    ],
+    "revision": "DS30891 Rev. 17-2, September 2015",
+    "title": "B320A - B360A 3.0A Surface Mount Schottky Barrier Rectifier"
+  },
+  "extraction_notes": [
+    "B360A is covered by grouped B350A through B360A forward and reverse characteristics.",
+    "The table also publishes 20 mA maximum reverse current at rated VR and TA = 100 degC; the 25 degC row is recorded.",
+    "The typical characteristic plots were manually digitized from pages 2 and 3."
+  ],
+  "family": "diode",
+  "manufacturer": "Diodes Incorporated",
+  "mpn": "B360A-13-F",
+  "omission_reason": "No reverse-recovery or breakdown specification is published; the supplied characteristic curves are grouped across the B320A through B360A family.",
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": null,
+    "breakdown_voltage": null,
+    "capacitance": {
+      "conditions": "VR = 4 V, f = 1 MHz, TJ = 25 degC",
+      "page_reference": "p. 2, electrical characteristics",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 2e-10
+    },
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 3.0 A, TA = 25 degC",
+          "page_reference": "p. 2, electrical characteristics, B350A/B360A group",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 3.0
+        },
+        "voltage": {
+          "conditions": "IF = 3.0 A, TA = 25 degC; B350A/B360A group",
+          "page_reference": "p. 2, electrical characteristics",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.7
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = rated VR, TA = 25 degC; B360A VR = 60 V",
+      "page_reference": "p. 2, electrical characteristics",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 0.0005
+    },
+    "reverse_recovery": null,
+    "variant": "schottky"
+  },
+  "usable_curves": true
+}

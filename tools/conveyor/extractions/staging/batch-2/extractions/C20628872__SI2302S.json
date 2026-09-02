@@ -1,0 +1,125 @@
+{
+  "schema_version": "1.0.0",
+  "mpn": "SI2302S",
+  "manufacturer": "FOSAN",
+  "family": "mosfet",
+  "datasheet_identity": {
+    "title": "SI2302S SOT-23 Field Effect Transistors, N-Channel Enhancement-Mode MOS FETs",
+    "revision": "Revision not stated in supplied PDF",
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ]
+  },
+  "usable_curves": false,
+  "curves": [],
+  "specs": {
+    "polarity": "n",
+    "threshold_min": {
+      "value": 0.5,
+      "unit": "V",
+      "conditions": "VDS = VGS, ID = 250 uA, TA = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, VGS(th), MIN",
+      "source_kind": "minimum"
+    },
+    "threshold_typ": null,
+    "threshold_max": {
+      "value": 1.5,
+      "unit": "V",
+      "conditions": "VDS = VGS, ID = 250 uA, TA = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, VGS(th), MAX",
+      "source_kind": "maximum"
+    },
+    "rdson_points": [
+      {
+        "vgs": {
+          "value": 4.5,
+          "unit": "V",
+          "conditions": "ID = 3.6 A, TA = 25 degC; pulse width <= 300 us, duty cycle <= 2.0%",
+          "page_reference": "p. 2, Electrical Characteristics, first RDS(ON) condition",
+          "source_kind": "typical"
+        },
+        "current": {
+          "value": 3.6,
+          "unit": "A",
+          "conditions": "VGS = 4.5 V, TA = 25 degC; pulse width <= 300 us, duty cycle <= 2.0%",
+          "page_reference": "p. 2, Electrical Characteristics, first RDS(ON) condition",
+          "source_kind": "typical"
+        },
+        "resistance": {
+          "value": 0.065,
+          "unit": "ohm",
+          "conditions": "VGS = 4.5 V, ID = 3.6 A, TA = 25 degC; pulse width <= 300 us, duty cycle <= 2.0%",
+          "page_reference": "p. 2, Electrical Characteristics, first RDS(ON), MAX",
+          "source_kind": "maximum"
+        }
+      },
+      {
+        "vgs": {
+          "value": 2.5,
+          "unit": "V",
+          "conditions": "ID = 2 A, TA = 25 degC; pulse width <= 300 us, duty cycle <= 2.0%",
+          "page_reference": "p. 2, Electrical Characteristics, second RDS(ON) condition",
+          "source_kind": "typical"
+        },
+        "current": {
+          "value": 2.0,
+          "unit": "A",
+          "conditions": "VGS = 2.5 V, TA = 25 degC; pulse width <= 300 us, duty cycle <= 2.0%",
+          "page_reference": "p. 2, Electrical Characteristics, second RDS(ON) condition",
+          "source_kind": "typical"
+        },
+        "resistance": {
+          "value": 0.08,
+          "unit": "ohm",
+          "conditions": "VGS = 2.5 V, ID = 2 A, TA = 25 degC; pulse width <= 300 us, duty cycle <= 2.0%",
+          "page_reference": "p. 2, Electrical Characteristics, second RDS(ON), MAX",
+          "source_kind": "maximum"
+        }
+      }
+    ],
+    "ciss": {
+      "value": 6e-10,
+      "unit": "F",
+      "conditions": "VGS = 0 V, VDS = 10 V, f = 1 MHz, TA = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, CISS, TYP",
+      "source_kind": "typical"
+    },
+    "coss": {
+      "value": 1.2e-10,
+      "unit": "F",
+      "conditions": "VGS = 0 V, VDS = 10 V, f = 1 MHz, TA = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, COSS, TYP",
+      "source_kind": "typical"
+    },
+    "crss": null,
+    "breakdown_voltage": {
+      "value": 20.0,
+      "unit": "V",
+      "conditions": "VGS = 0 V, ID = 250 uA, TA = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, BVDSS, MIN",
+      "source_kind": "minimum"
+    },
+    "body_diode": {
+      "value": 1.5,
+      "unit": "V",
+      "conditions": "IS = 0.75 A, VGS = 0 V, TA = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, VSD, MAX",
+      "source_kind": "maximum"
+    }
+  },
+  "extraction_notes": [
+    "Target identity retained exactly: SI2302S, FOSAN, n-channel MOSFET.",
+    "The supplied PDF SHA-256 is 43f860e133b465730d35728840c1ee24c0e910ffd6753ac8de5f8bad1a4140c5.",
+    "The supplied PDF states no revision identifier and contains three pages: maximum ratings and device marking on p. 1, tabulated electrical characteristics on p. 2, and package dimensions on p. 3.",
+    "No transfer, output, body-diode, or capacitance-versus-voltage plot is present in the supplied PDF; usable_curves is false and no curve points were generated.",
+    "The VGS(th) table provides MIN = 0.5 V and MAX = 1.5 V at ID = 250 uA and VGS = VDS; the TYP column is blank and is represented as null.",
+    "RDS(ON) rows are transcribed as inclusive maximum values: 65 mOhm at VGS = 4.5 V and ID = 3.6 A, and 80 mOhm at VGS = 2.5 V and ID = 2 A. The corresponding typical values are 55 mOhm and 65 mOhm. Both rows carry the printed pulse condition of pulse width <= 300 us and duty cycle <= 2.0%.",
+    "On p. 2, the capacitance table labels the rows CISS and COSS and prints typical values CISS = 600 pF and COSS = 120 pF, with VGS = 0 V, VDS = 10 V, and f = 1 MHz. These direct PDF values convert to 6e-10 F and 1.2e-10 F respectively. The catalog hints Ciss = 120 pF and Coss = 30 pF are not used because they conflict with the labeled PDF table; no catalog cross-check fields are included.",
+    "CRSS is not published in the supplied electrical characteristics table and is represented as null.",
+    "BVDSS has MIN = 20 V and TYP = 22 V at ID = 250 uA and VGS = 0 V. The strict schema has one breakdown_voltage field, so the inclusive minimum value is used; the typical value remains noted here without being substituted.",
+    "Additional tabulated fields not represented by the strict schema include maximum ratings, IDSS, IGSS, turn-on time, and turn-off time; they are not mapped into unrelated schema fields."
+  ],
+  "omission_reason": "The supplied three-page PDF contains no usable electrical characteristic plots. Pages 1 and 2 contain ratings and tabulated electrical characteristics only, and page 3 contains package dimensions."
+}

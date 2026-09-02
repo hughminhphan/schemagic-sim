@@ -1,0 +1,201 @@
+{
+  "curves": [
+    {
+      "name": "DC current gain, Ta=25 degC",
+      "page_reference": "p. 2, Fig. 2 DC Current Gain",
+      "points": [
+        {
+          "x": 0.001,
+          "y": 240
+        },
+        {
+          "x": 0.01,
+          "y": 240
+        },
+        {
+          "x": 0.1,
+          "y": 235
+        },
+        {
+          "x": 0.3,
+          "y": 220
+        },
+        {
+          "x": 0.5,
+          "y": 190
+        },
+        {
+          "x": 0.8,
+          "y": 135
+        },
+        {
+          "x": 1.0,
+          "y": 100
+        },
+        {
+          "x": 1.5,
+          "y": 70
+        }
+      ],
+      "test_conditions": "Common-emitter, VCE = 1 V, Ta = 25 degC; 25 degC trace digitized from the plotted curve.",
+      "x_axis": {
+        "quantity": "collector current",
+        "scale": "log",
+        "unit": "A"
+      },
+      "y_axis": {
+        "quantity": "DC current gain hFE",
+        "scale": "log",
+        "unit": "1"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ],
+    "revision": "Rev:1.1",
+    "title": "PXT8050 NPN TRANSISTORS"
+  },
+  "extraction_notes": [
+    "The p. 2 DC gain trace is a digitized typical 25 degC curve; the table provides only minimum/maximum gain bounds.",
+    "The datasheet publishes no Cibo or input-capacitance value.",
+    "The datasheet publishes one VCE(sat) row and one VBE(sat) row, both maximum-rated values."
+  ],
+  "family": "bjt",
+  "manufacturer": "hongjiacheng",
+  "mpn": "PXT8050",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "cibo": null,
+    "cobo": {
+      "conditions": "VCB = 10 V, IE = 0, f = 1 MHz, Ta = 25 degC",
+      "page_reference": "p. 1, Electrical Characteristics, output capacitance Cob",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 1.3e-11
+    },
+    "ft": {
+      "conditions": "IC = 50 mA, VCE = 10 V, Ta = 25 degC",
+      "page_reference": "p. 2, Small-signal Characteristics, transition frequency",
+      "source_kind": "minimum",
+      "unit": "Hz",
+      "value": 100000000.0
+    },
+    "gain_points": [
+      {
+        "collector_current": {
+          "conditions": "VCE = 1.0 V, Ta = 25 degC",
+          "page_reference": "p. 1, Electrical Characteristics, hFE(1)",
+          "source_kind": "minimum",
+          "unit": "A",
+          "value": 0.1
+        },
+        "hfe": {
+          "conditions": "IC = 100 mA, VCE = 1.0 V, Ta = 25 degC",
+          "page_reference": "p. 1, Electrical Characteristics, hFE(1)",
+          "source_kind": "minimum",
+          "unit": "1",
+          "value": 85
+        },
+        "vce": {
+          "conditions": "IC = 100 mA, Ta = 25 degC",
+          "page_reference": "p. 1, Electrical Characteristics, hFE(1)",
+          "source_kind": "typical",
+          "unit": "V",
+          "value": 1.0
+        }
+      },
+      {
+        "collector_current": {
+          "conditions": "VCE = 1.0 V, Ta = 25 degC",
+          "page_reference": "p. 1, Electrical Characteristics, hFE(1)",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.1
+        },
+        "hfe": {
+          "conditions": "IC = 100 mA, VCE = 1.0 V, Ta = 25 degC",
+          "page_reference": "p. 1, Electrical Characteristics, hFE(1)",
+          "source_kind": "maximum",
+          "unit": "1",
+          "value": 400
+        },
+        "vce": {
+          "conditions": "IC = 100 mA, Ta = 25 degC",
+          "page_reference": "p. 1, Electrical Characteristics, hFE(1)",
+          "source_kind": "typical",
+          "unit": "V",
+          "value": 1.0
+        }
+      },
+      {
+        "collector_current": {
+          "conditions": "VCE = 1.0 V, Ta = 25 degC",
+          "page_reference": "p. 1, Electrical Characteristics, hFE(2)",
+          "source_kind": "minimum",
+          "unit": "A",
+          "value": 0.8
+        },
+        "hfe": {
+          "conditions": "IC = 800 mA, VCE = 1.0 V, Ta = 25 degC",
+          "page_reference": "p. 1, Electrical Characteristics, hFE(2)",
+          "source_kind": "minimum",
+          "unit": "1",
+          "value": 40
+        },
+        "vce": {
+          "conditions": "IC = 800 mA, Ta = 25 degC",
+          "page_reference": "p. 1, Electrical Characteristics, hFE(2)",
+          "source_kind": "typical",
+          "unit": "V",
+          "value": 1.0
+        }
+      }
+    ],
+    "polarity": "npn",
+    "saturation_points": [
+      {
+        "base_current": {
+          "conditions": "IC = 800 mA, Ta = 25 degC",
+          "page_reference": "p. 1, Electrical Characteristics, VCE(sat)",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 0.08
+        },
+        "collector_current": {
+          "conditions": "IB = 80 mA, Ta = 25 degC",
+          "page_reference": "p. 1, Electrical Characteristics, VCE(sat)",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 0.8
+        },
+        "vbe_sat": {
+          "conditions": "IC = 800 mA, IB = 50 mA, Ta = 25 degC",
+          "page_reference": "p. 1, Electrical Characteristics, VBE(sat)",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 1.2
+        },
+        "vce_sat": {
+          "conditions": "IC = 800 mA, IB = 80 mA, Ta = 25 degC",
+          "page_reference": "p. 1, Electrical Characteristics, VCE(sat)",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.5
+        }
+      }
+    ],
+    "vceo": {
+      "conditions": "IC = 1.0 mA, IB = 0, Ta = 25 degC",
+      "page_reference": "p. 1, Electrical Characteristics, collector-emitter breakdown voltage V(BR)CEO",
+      "source_kind": "minimum",
+      "unit": "V",
+      "value": 25.0
+    }
+  },
+  "usable_curves": true
+}

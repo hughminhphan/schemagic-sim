@@ -1,0 +1,190 @@
+{
+  "curves": [
+    {
+      "name": "Typical forward voltage (Fig.3), Ta = 25 degC curve",
+      "page_reference": "p. 3 Fig.3",
+      "points": [
+        {
+          "x": 0.72,
+          "y": 5.0
+        },
+        {
+          "x": 0.786,
+          "y": 20.0
+        },
+        {
+          "x": 0.84,
+          "y": 50.0
+        },
+        {
+          "x": 0.892,
+          "y": 100.0
+        },
+        {
+          "x": 0.978,
+          "y": 200.0
+        }
+      ],
+      "test_conditions": "Ta = 25 degC curve of the four-temperature family figure (curves at 0, 25, 75, 150 degC); family-typical forward characteristic for the MM3Z series, not specific to MM3Z6V8",
+      "x_axis": {
+        "quantity": "forward voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "forward current",
+        "scale": "log",
+        "unit": "mA"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4",
+      "p. 5"
+    ],
+    "revision": "Rev:1.1",
+    "title": "MM3Z2V0 THRU MM3Z75 SURFACE MOUNT ZENER DIODES (SOD-323 Surface Mount Silicon Zener Diodes)"
+  },
+  "extraction_notes": [
+    "Multi-part datasheet MM3Z2V0-MM3Z75; MM3Z6V8 row (marking 0F): VZ 6.4/6.8/7.2 V at IZT = 5 mA; ZZT = 15 ohm max at IZT; ZZK = 160 ohm max at IZK = 0.5 mA; IR = 2 uA at VR = 4.0 V; typical temperature coefficient +1.2 to +4.5 mV/degC at IZTC = 5 mA.",
+    "PD = 200 mW, RthJA = 417 degC/W, Tj/Tstg -55 to +150 degC (p. 1 maximum ratings).",
+    "Curve digitization method: page 3 rasterized at 600 dpi; Fig.3 axes calibrated from printed gridlines (x: 0.4-1.2 V linear at 0.05 V per gridline; y: 1-1000 mA log). The Ta = 25 degC curve is the third of four from the left (order 150, 75, 25, 0 degC); assignments cross-checked for monotone consistency across all four curves at every sampled current. Rows where the printed temperature labels or dash gaps obscured the 25 degC curve (1.5, 10, 500 mA) were discarded.",
+    "Fig.1/Fig.2 zener characteristic curves (p. 3) carry no per-part labels, so no curve could be attributed to MM3Z6V8 and none was digitized from them.",
+    "Capacitance is null: no capacitance value is tabulated for an individual type; Fig.5 (p. 4) is a family-level typical capacitance vs nominal zener voltage plot and was not digitized. Fig.4 (leakage), Fig.6 (impedance), Fig.7 (derating) are likewise family-level plots against nominal VZ or temperature.",
+    "No reverse recovery or switching time is published."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "MM3Z6V8",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": {
+      "conditions": "IZT zener test current; ZZT = 15 ohm maximum at IZT = 5 mA; ZZK = 160 ohm maximum at IZK = 0.5 mA on the same row",
+      "page_reference": "p. 2 electrical characteristics, MM3Z6V8 row",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.005
+    },
+    "breakdown_voltage": {
+      "conditions": "VZ nominal at IZT = 5 mA, Ta = 25 degC; VZ min 6.4 V, max 7.2 V on the same row",
+      "page_reference": "p. 2 electrical characteristics, MM3Z6V8 row",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 6.8
+    },
+    "capacitance": null,
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 10 mA, Ta = 25 degC; forward voltage row of the maximum ratings table, common to all MM3Z types",
+          "page_reference": "p. 1 maximum ratings",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.01
+        },
+        "voltage": {
+          "conditions": "IF = 10 mA, Ta = 25 degC; forward voltage row of the maximum ratings table, common to all MM3Z types",
+          "page_reference": "p. 1 maximum ratings",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.9
+        }
+      },
+      {
+        "current": {
+          "conditions": "IF = 5 mA, Ta = 25 degC; digitized from the family-typical Fig.3 forward curve (not part-specific)",
+          "page_reference": "p. 3 Fig.3",
+          "source_kind": "digitized_typical_curve",
+          "unit": "A",
+          "value": 0.005
+        },
+        "voltage": {
+          "conditions": "IF = 5 mA, Ta = 25 degC; digitized from the family-typical Fig.3 forward curve (not part-specific)",
+          "page_reference": "p. 3 Fig.3",
+          "source_kind": "digitized_typical_curve",
+          "unit": "V",
+          "value": 0.72
+        }
+      },
+      {
+        "current": {
+          "conditions": "IF = 20 mA, Ta = 25 degC; digitized from the family-typical Fig.3 forward curve (not part-specific)",
+          "page_reference": "p. 3 Fig.3",
+          "source_kind": "digitized_typical_curve",
+          "unit": "A",
+          "value": 0.02
+        },
+        "voltage": {
+          "conditions": "IF = 20 mA, Ta = 25 degC; digitized from the family-typical Fig.3 forward curve (not part-specific)",
+          "page_reference": "p. 3 Fig.3",
+          "source_kind": "digitized_typical_curve",
+          "unit": "V",
+          "value": 0.786
+        }
+      },
+      {
+        "current": {
+          "conditions": "IF = 50 mA, Ta = 25 degC; digitized from the family-typical Fig.3 forward curve (not part-specific)",
+          "page_reference": "p. 3 Fig.3",
+          "source_kind": "digitized_typical_curve",
+          "unit": "A",
+          "value": 0.05
+        },
+        "voltage": {
+          "conditions": "IF = 50 mA, Ta = 25 degC; digitized from the family-typical Fig.3 forward curve (not part-specific)",
+          "page_reference": "p. 3 Fig.3",
+          "source_kind": "digitized_typical_curve",
+          "unit": "V",
+          "value": 0.84
+        }
+      },
+      {
+        "current": {
+          "conditions": "IF = 100 mA, Ta = 25 degC; digitized from the family-typical Fig.3 forward curve (not part-specific)",
+          "page_reference": "p. 3 Fig.3",
+          "source_kind": "digitized_typical_curve",
+          "unit": "A",
+          "value": 0.1
+        },
+        "voltage": {
+          "conditions": "IF = 100 mA, Ta = 25 degC; digitized from the family-typical Fig.3 forward curve (not part-specific)",
+          "page_reference": "p. 3 Fig.3",
+          "source_kind": "digitized_typical_curve",
+          "unit": "V",
+          "value": 0.892
+        }
+      },
+      {
+        "current": {
+          "conditions": "IF = 200 mA, Ta = 25 degC; digitized from the family-typical Fig.3 forward curve (not part-specific)",
+          "page_reference": "p. 3 Fig.3",
+          "source_kind": "digitized_typical_curve",
+          "unit": "A",
+          "value": 0.2
+        },
+        "voltage": {
+          "conditions": "IF = 200 mA, Ta = 25 degC; digitized from the family-typical Fig.3 forward curve (not part-specific)",
+          "page_reference": "p. 3 Fig.3",
+          "source_kind": "digitized_typical_curve",
+          "unit": "V",
+          "value": 0.978
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = 4.0 V, Ta = 25 degC; datasheet maximum reverse current 2 uA",
+      "page_reference": "p. 2 electrical characteristics, MM3Z6V8 row",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 2e-06
+    },
+    "reverse_recovery": null,
+    "variant": "zener"
+  },
+  "usable_curves": true
+}

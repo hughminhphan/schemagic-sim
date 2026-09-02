@@ -1,0 +1,221 @@
+{
+  "curves": [
+    {
+      "name": "Typical forward characteristic for DSK38/DSK310 group",
+      "page_reference": "p. 2, Fig. 3",
+      "points": [
+        {
+          "x": 0.4,
+          "y": 0.1
+        },
+        {
+          "x": 0.5,
+          "y": 0.3
+        },
+        {
+          "x": 0.6,
+          "y": 0.8
+        },
+        {
+          "x": 0.7,
+          "y": 1.5
+        },
+        {
+          "x": 0.8,
+          "y": 3.0
+        },
+        {
+          "x": 1.0,
+          "y": 6.0
+        },
+        {
+          "x": 1.2,
+          "y": 10.0
+        },
+        {
+          "x": 1.4,
+          "y": 14.0
+        },
+        {
+          "x": 1.6,
+          "y": 18.0
+        }
+      ],
+      "test_conditions": "Typical characteristic; DSK38/DSK310 grouped curve",
+      "x_axis": {
+        "quantity": "instantaneous forward voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "instantaneous forward current",
+        "scale": "log",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "Typical junction capacitance for DSK38/DSK310 group",
+      "page_reference": "p. 2, Fig. 4",
+      "points": [
+        {
+          "x": 0.1,
+          "y": 4.5e-10
+        },
+        {
+          "x": 0.2,
+          "y": 3.6e-10
+        },
+        {
+          "x": 0.5,
+          "y": 2.8e-10
+        },
+        {
+          "x": 1.0,
+          "y": 2.2e-10
+        },
+        {
+          "x": 2.0,
+          "y": 1.9e-10
+        },
+        {
+          "x": 4.0,
+          "y": 1.6e-10
+        },
+        {
+          "x": 10.0,
+          "y": 1.3e-10
+        },
+        {
+          "x": 20.0,
+          "y": 1e-10
+        },
+        {
+          "x": 40.0,
+          "y": 7.5e-11
+        },
+        {
+          "x": 80.0,
+          "y": 5.5e-11
+        }
+      ],
+      "test_conditions": "TJ = 25 degC; DSK38/DSK310 grouped curve",
+      "x_axis": {
+        "quantity": "reverse voltage",
+        "scale": "log",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "junction capacitance",
+        "scale": "log",
+        "unit": "F"
+      }
+    },
+    {
+      "name": "Typical reverse current versus percent of rated peak reverse voltage",
+      "page_reference": "p. 2, Fig. 2",
+      "points": [
+        {
+          "x": 0.0,
+          "y": 1.5e-06
+        },
+        {
+          "x": 20.0,
+          "y": 1.8e-06
+        },
+        {
+          "x": 40.0,
+          "y": 2e-06
+        },
+        {
+          "x": 60.0,
+          "y": 2.5e-06
+        },
+        {
+          "x": 70.0,
+          "y": 3e-06
+        },
+        {
+          "x": 80.0,
+          "y": 4e-06
+        },
+        {
+          "x": 90.0,
+          "y": 8e-06
+        },
+        {
+          "x": 100.0,
+          "y": 2e-05
+        }
+      ],
+      "test_conditions": "TJ = 25 degC; DSK36-DSK320 grouped reverse curve",
+      "x_axis": {
+        "quantity": "percent of rated peak reverse voltage",
+        "scale": "linear",
+        "unit": "%"
+      },
+      "y_axis": {
+        "quantity": "instantaneous reverse current",
+        "scale": "log",
+        "unit": "A"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ],
+    "revision": "2024A4",
+    "title": "DSK32 THRU DSK320 Surface Mount Schottky Barrier Rectifier"
+  },
+  "extraction_notes": [
+    "The datasheet groups DSK310 with DSK38 in the typical forward and junction-capacitance plots; the grouped curves were retained with explicit conditions.",
+    "The table publishes reverse current of 0.5 mA at rated DC blocking voltage for the DSK32-DSK35 group and 0.3 mA for DSK36-DSK320; the DSK310 value is recorded as 0.3 mA at 100 V.",
+    "The reverse characteristic is grouped as DSK36-DSK320 and was not treated as a dedicated DSK310 trace."
+  ],
+  "family": "diode",
+  "manufacturer": "MDD Microdiode Semiconductor",
+  "mpn": "DSK310",
+  "omission_reason": "No reverse-recovery or breakdown specification is published; the characteristic plots are grouped across multiple DSK variants.",
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": null,
+    "breakdown_voltage": null,
+    "capacitance": {
+      "conditions": "VR = 4.0 V, f = 1 MHz, TJ = 25 degC",
+      "page_reference": "p. 1, typical junction capacitance",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 1.6e-10
+    },
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 3.0 A, TA = 25 degC",
+          "page_reference": "p. 1, maximum ratings and electrical characteristics, DSK310 column",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 3.0
+        },
+        "voltage": {
+          "conditions": "IF = 3.0 A, TA = 25 degC; DSK38/DSK310 group",
+          "page_reference": "p. 1, maximum ratings and electrical characteristics",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.85
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = rated DC blocking voltage, DSK310 VR = 100 V, TA = 25 degC",
+      "page_reference": "p. 1, maximum ratings and electrical characteristics",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 0.0005
+    },
+    "reverse_recovery": null,
+    "variant": "schottky"
+  },
+  "usable_curves": true
+}

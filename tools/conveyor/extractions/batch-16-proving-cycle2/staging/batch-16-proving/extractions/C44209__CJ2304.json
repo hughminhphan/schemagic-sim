@@ -1,0 +1,258 @@
+{
+  "curves": [
+    {
+      "electrical_bias": [
+        {
+          "quantity": "VGS",
+          "unit": "V",
+          "value": 4.0
+        }
+      ],
+      "locator": {
+        "curve_or_trace": "VGS=4V",
+        "figure": "Output Characteristics",
+        "page": 3
+      },
+      "name": "output characteristics, VGS 4 V",
+      "page_reference": "p. 3, Output Characteristics",
+      "points": [
+        {
+          "x": 0.5,
+          "y": 5.0
+        },
+        {
+          "x": 1.0,
+          "y": 8.5
+        },
+        {
+          "x": 2.0,
+          "y": 11.5
+        },
+        {
+          "x": 4.0,
+          "y": 13.5
+        },
+        {
+          "x": 8.0,
+          "y": 14.7
+        },
+        {
+          "x": 12.0,
+          "y": 15.0
+        }
+      ],
+      "temperature": {
+        "kind": "ambient",
+        "provenance": "inline_condition",
+        "value": 25
+      },
+      "test_conditions": "Ta = 25 degC, pulsed",
+      "test_mode": {
+        "duty_cycle": 0.02,
+        "kind": "pulsed",
+        "pulse_width_s": 0.0003
+      },
+      "x_axis": {
+        "quantity": "VDS",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "ID",
+        "scale": "linear",
+        "unit": "A"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4",
+      "p. 5"
+    ],
+    "revision": "D, Oct 2014",
+    "title": "CJ2304 N-Channel MOSFET"
+  },
+  "extraction_notes": [
+    "The n-channel values are transcribed in SI units; capacitances were converted from pF to F and resistances from mOhm to ohm.",
+    "The pulsed test_mode pulse_width_s=0.0003 and duty_cycle=0.02 fields record the datasheet note limits (pulse width <=300 us, duty cycle <=2%), not an inferred operating point.",
+    "RDS(on) maximum table values are 0.060 ohm at VGS=10 V, ID=3.2 A and 0.075 ohm at VGS=4.5 V, ID=2.8 A.",
+    "IDSS maximum is 1 uA at VDS=30 V, VGS=0 V. RthetaJA is 357 degC/W (t <= 5 s). Gate resistance is typ 4.4 ohm, max 8.8 ohm.",
+    "The datasheet publishes no capacitance-versus-VDS figure, reverse-recovery specification, or gate-charge specification.",
+    "The transfer plot states Ta=25 degC and pulsed but does not state a fixed VDS, so it was omitted. Output points are manual digitizations of the labeled p. 3 VGS=4 V trace."
+  ],
+  "family": "mosfet",
+  "manufacturer": "Jiangsu Changjing Electronics Technology Co Ltd",
+  "mpn": "CJ2304",
+  "omission_reason": "No capacitance-versus-VDS, reverse-recovery, or gate-charge curve is published; the transfer plot has no stated fixed VDS. The pulsed output trace at VGS=4 V is usable and retained.",
+  "schema_version": "1.0.0",
+  "specs": {
+    "body_diode": {
+      "conditions": "IS = -2.7 A, VGS = 0 V; magnitude transcribed for diode fit",
+      "locator": {
+        "page": 2,
+        "row": "Body diode voltage (VSD), IS=-2.7A, VGS=0V, TYP",
+        "table": "MOSFET Electrical Characteristics"
+      },
+      "page_reference": "p. 2, Drain-source body diode characteristics, VSD, TYP",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 0.8
+    },
+    "breakdown_voltage": {
+      "conditions": "VGS = 0 V, ID = 250 uA",
+      "locator": {
+        "page": 2,
+        "row": "Drain-source breakdown voltage (V(BR)DSS), VGS=0V, ID=250uA, MIN",
+        "table": "MOSFET Electrical Characteristics"
+      },
+      "page_reference": "p. 2, Static characteristics, V(BR)DSS, MIN",
+      "source_kind": "minimum",
+      "unit": "V",
+      "value": 30.0
+    },
+    "ciss": {
+      "conditions": "Ta = 25 degC unless otherwise specified; dynamic characteristics table",
+      "locator": {
+        "page": 2,
+        "row": "Input capacitance (Ciss), TYP",
+        "table": "MOSFET Electrical Characteristics"
+      },
+      "page_reference": "p. 2, Dynamic characteristics, Ciss, TYP",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 2.35e-10
+    },
+    "coss": {
+      "conditions": "VDS = 15 V, VGS = 0 V, f = 1 MHz",
+      "locator": {
+        "page": 2,
+        "row": "Output capacitance (Coss), VDS=15V, VGS=0V, f=1MHz, TYP",
+        "table": "MOSFET Electrical Characteristics"
+      },
+      "page_reference": "p. 2, Dynamic characteristics, Coss, TYP",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 4.5e-11
+    },
+    "crss": {
+      "conditions": "Ta = 25 degC unless otherwise specified; dynamic characteristics table",
+      "locator": {
+        "page": 2,
+        "row": "Reverse transfer capacitance (Crss), TYP",
+        "table": "MOSFET Electrical Characteristics"
+      },
+      "page_reference": "p. 2, Dynamic characteristics, Crss, TYP",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 1.7e-11
+    },
+    "polarity": "n",
+    "rdson_points": [
+      {
+        "current": {
+          "conditions": "VGS = 10 V",
+          "locator": {
+            "page": 2,
+            "row": "Drain-source on-state resistance, VGS=10V, ID=3.2A",
+            "table": "MOSFET Electrical Characteristics"
+          },
+          "page_reference": "p. 2, RDS(on) test condition",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 3.2
+        },
+        "resistance": {
+          "conditions": "VGS = 10 V, ID = 3.2 A",
+          "locator": {
+            "page": 2,
+            "row": "Drain-source on-state resistance, VGS=10V, ID=3.2A, TYP",
+            "table": "MOSFET Electrical Characteristics"
+          },
+          "page_reference": "p. 2, RDS(on), TYP",
+          "source_kind": "typical",
+          "unit": "ohm",
+          "value": 0.049
+        },
+        "vgs": {
+          "conditions": "VGS = 10 V",
+          "locator": {
+            "page": 2,
+            "row": "Drain-source on-state resistance, VGS=10V, ID=3.2A",
+            "table": "MOSFET Electrical Characteristics"
+          },
+          "page_reference": "p. 2, Static characteristics, RDS(on) row",
+          "source_kind": "typical",
+          "unit": "V",
+          "value": 10.0
+        }
+      },
+      {
+        "current": {
+          "conditions": "VGS = 4.5 V",
+          "locator": {
+            "page": 2,
+            "row": "Drain-source on-state resistance, VGS=4.5V, ID=2.8A",
+            "table": "MOSFET Electrical Characteristics"
+          },
+          "page_reference": "p. 2, RDS(on) test condition",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 2.8
+        },
+        "resistance": {
+          "conditions": "VGS = 4.5 V, ID = 2.8 A",
+          "locator": {
+            "page": 2,
+            "row": "Drain-source on-state resistance, VGS=4.5V, ID=2.8A, TYP",
+            "table": "MOSFET Electrical Characteristics"
+          },
+          "page_reference": "p. 2, RDS(on), TYP",
+          "source_kind": "typical",
+          "unit": "ohm",
+          "value": 0.061
+        },
+        "vgs": {
+          "conditions": "VGS = 4.5 V",
+          "locator": {
+            "page": 2,
+            "row": "Drain-source on-state resistance, VGS=4.5V, ID=2.8A",
+            "table": "MOSFET Electrical Characteristics"
+          },
+          "page_reference": "p. 2, Static characteristics, RDS(on) row",
+          "source_kind": "typical",
+          "unit": "V",
+          "value": 4.5
+        }
+      }
+    ],
+    "threshold_max": {
+      "conditions": "VDS = VGS, ID = 250 uA",
+      "locator": {
+        "page": 2,
+        "row": "Gate-source threshold voltage (VGS(th)), MAX",
+        "table": "MOSFET Electrical Characteristics"
+      },
+      "page_reference": "p. 2, Electrical Characteristics, Gate-source threshold voltage, MAX",
+      "source_kind": "maximum",
+      "unit": "V",
+      "value": 2.2
+    },
+    "threshold_min": {
+      "conditions": "VDS = VGS, ID = 250 uA",
+      "locator": {
+        "page": 2,
+        "row": "Gate-source threshold voltage (VGS(th)), MIN",
+        "table": "MOSFET Electrical Characteristics"
+      },
+      "page_reference": "p. 2, Electrical Characteristics, Gate-source threshold voltage, MIN",
+      "source_kind": "minimum",
+      "unit": "V",
+      "value": 1.0
+    },
+    "threshold_typ": null
+  },
+  "usable_curves": true
+}

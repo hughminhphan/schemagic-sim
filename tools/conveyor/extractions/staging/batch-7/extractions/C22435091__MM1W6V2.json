@@ -1,0 +1,140 @@
+{
+  "curves": [
+    {
+      "name": "power_derating",
+      "page_reference": "p. 3, Fig. 1 Power Derating Curve",
+      "points": [
+        {
+          "x": 0.0,
+          "y": 1.0
+        },
+        {
+          "x": 75.0,
+          "y": 1.0
+        },
+        {
+          "x": 112.5,
+          "y": 0.5
+        },
+        {
+          "x": 150.0,
+          "y": 0.0
+        }
+      ],
+      "test_conditions": "Ta = 25 degC unless otherwise specified; power derating family curve from Fig. 1.",
+      "x_axis": {
+        "quantity": "ambient temperature",
+        "scale": "linear",
+        "unit": "degC"
+      },
+      "y_axis": {
+        "quantity": "power dissipation",
+        "scale": "linear",
+        "unit": "W"
+      }
+    },
+    {
+      "name": "transient_thermal_impedance",
+      "page_reference": "p. 3, Fig. 2 Typical Transient Thermal Impedance",
+      "points": [
+        {
+          "x": 0.009981,
+          "y": 3.05615
+        },
+        {
+          "x": 0.106181,
+          "y": 12.140105
+        },
+        {
+          "x": 0.904321,
+          "y": 33.330664
+        },
+        {
+          "x": 6.30273,
+          "y": 49.086492
+        },
+        {
+          "x": 100.121396,
+          "y": 54.518811
+        }
+      ],
+      "test_conditions": "Ta = 25 degC unless otherwise specified; typical transient thermal impedance curve from Fig. 2.",
+      "x_axis": {
+        "quantity": "pulse duration",
+        "scale": "log",
+        "unit": "s"
+      },
+      "y_axis": {
+        "quantity": "transient thermal impedance",
+        "scale": "log",
+        "unit": "K/W"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "revision": "Rev.1.0",
+    "title": "MM1W3V3 THRU MM1W330 - SURFACE MOUNT SILICON ZENER DIODES"
+  },
+  "extraction_notes": [
+    "The forward-voltage row is a maximum rating at IF = 200 mA.",
+    "The nominal zener voltage and IZT are recorded as the nominal test pair; the table also gives VZ min = 5.86 V and max = 6.51 V.",
+    "The supplied datasheet has no electrical zener characteristic plot for the MM1W6V2 branch; the reported curves are the published power-derating and transient-thermal plots.",
+    "No capacitance or reverse-recovery value is published for this part in the supplied datasheet."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "MM1W6V2",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": {
+      "conditions": "IZT = 41 mA, Ta = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, MM1W6V2 IZT",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.041
+    },
+    "breakdown_voltage": {
+      "conditions": "IZT = 41 mA, Ta = 25 degC; nominal VZ",
+      "page_reference": "p. 2, Electrical Characteristics, MM1W6V2 VZ",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 6.2
+    },
+    "capacitance": null,
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 200 mA, Ta = 25 degC",
+          "page_reference": "p. 1, Maximum Ratings, Forward Voltage @ IF=200mA",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.2
+        },
+        "voltage": {
+          "conditions": "IF = 200 mA, Ta = 25 degC",
+          "page_reference": "p. 1, Maximum Ratings, Forward Voltage @ IF=200mA",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 1.2
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = 3 V, Ta = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, MM1W6V2 IR@VR",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 1e-05
+    },
+    "reverse_recovery": null,
+    "variant": "zener"
+  },
+  "usable_curves": true
+}

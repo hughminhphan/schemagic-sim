@@ -1,0 +1,253 @@
+{
+  "curves": [
+    {
+      "name": "Typical forward characteristics",
+      "page_reference": "p. 2, Fig. 2",
+      "points": [
+        {
+          "x": 0.2,
+          "y": 0.01
+        },
+        {
+          "x": 0.3,
+          "y": 0.2
+        },
+        {
+          "x": 0.4,
+          "y": 1.5
+        },
+        {
+          "x": 0.5,
+          "y": 7.0
+        },
+        {
+          "x": 0.6,
+          "y": 20.0
+        },
+        {
+          "x": 0.8,
+          "y": 50.0
+        }
+      ],
+      "test_conditions": "TJ = 25 degC; pulse width 300 us; 1% duty cycle",
+      "x_axis": {
+        "quantity": "forward voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "instantaneous forward current",
+        "scale": "log",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "Typical reverse characteristics, TA = 25 degC",
+      "page_reference": "p. 2, Fig. 3",
+      "points": [
+        {
+          "x": 0,
+          "y": 1e-05
+        },
+        {
+          "x": 40,
+          "y": 1.2e-05
+        },
+        {
+          "x": 80,
+          "y": 2e-05
+        },
+        {
+          "x": 100,
+          "y": 0.00015
+        },
+        {
+          "x": 120,
+          "y": 0.01
+        }
+      ],
+      "test_conditions": "TA = 25 degC; SB1045L rated peak reverse voltage = 45 V",
+      "x_axis": {
+        "quantity": "percentage rated peak reverse voltage",
+        "scale": "linear",
+        "unit": "%"
+      },
+      "y_axis": {
+        "quantity": "reverse leakage current",
+        "scale": "log",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "Typical junction capacitance",
+      "page_reference": "p. 2, Fig. 5",
+      "points": [
+        {
+          "x": 0.01,
+          "y": 1.08e-09
+        },
+        {
+          "x": 0.1,
+          "y": 8.5e-10
+        },
+        {
+          "x": 1,
+          "y": 6.8e-10
+        },
+        {
+          "x": 10,
+          "y": 4.5e-10
+        },
+        {
+          "x": 100,
+          "y": 2.2e-10
+        }
+      ],
+      "test_conditions": "Typical; measured at 1 MHz and applied reverse voltage of 4.0 V DC",
+      "x_axis": {
+        "quantity": "reverse voltage",
+        "scale": "log",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "junction capacitance",
+        "scale": "linear",
+        "unit": "F"
+      }
+    },
+    {
+      "name": "Typical forward current derating",
+      "page_reference": "p. 2, Fig. 1",
+      "points": [
+        {
+          "x": 25,
+          "y": 10
+        },
+        {
+          "x": 100,
+          "y": 10
+        },
+        {
+          "x": 125,
+          "y": 6
+        },
+        {
+          "x": 150,
+          "y": 0
+        }
+      ],
+      "test_conditions": "Typical; single phase half wave, 60 Hz",
+      "x_axis": {
+        "quantity": "case temperature",
+        "scale": "linear",
+        "unit": "degC"
+      },
+      "y_axis": {
+        "quantity": "average forward current",
+        "scale": "linear",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "Maximum non-repetitive forward surge current",
+      "page_reference": "p. 2, Fig. 4",
+      "points": [
+        {
+          "x": 1,
+          "y": 175
+        },
+        {
+          "x": 2,
+          "y": 150
+        },
+        {
+          "x": 5,
+          "y": 100
+        },
+        {
+          "x": 10,
+          "y": 70
+        },
+        {
+          "x": 50,
+          "y": 25
+        },
+        {
+          "x": 100,
+          "y": 15
+        }
+      ],
+      "test_conditions": "TJ = 25 degC; 8.3 ms single half sine wave; JEDEC method",
+      "x_axis": {
+        "quantity": "number of cycles at 60 Hz",
+        "scale": "log",
+        "unit": "cycles"
+      },
+      "y_axis": {
+        "quantity": "peak forward surge current",
+        "scale": "linear",
+        "unit": "A"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "revision": "Rev. 2.0, 2025 JAN",
+    "title": "SB1045L 10.0AMP SURFACE MOUNT SCHOTTKY BARRIER RECTIFIERS"
+  },
+  "extraction_notes": [
+    "The supplied datasheet contains forward, reverse-leakage, derating, surge, and junction-capacitance plots on page 2.",
+    "Reverse current is specified as 0.15 mA maximum at 25 degC at rated DC blocking voltage; converted to 1.5e-4 A.",
+    "No reverse-recovery or breakdown-voltage/current specification is published.",
+    "Curve points are manually digitized from the supplied plots and retain plotted axis scales and stated conditions."
+  ],
+  "family": "diode",
+  "manufacturer": "GOODWORK",
+  "mpn": "SB1045L",
+  "omission_reason": "No reverse-recovery-time or breakdown-voltage/current specification is published.",
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": null,
+    "breakdown_voltage": null,
+    "capacitance": {
+      "conditions": "VR = 4.0 V DC; f = 1 MHz; typical junction capacitance",
+      "page_reference": "p. 1, note 1 and typical junction capacitance row",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 5.7e-10
+    },
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 10.0 A; TA = 25 degC; maximum instantaneous forward voltage",
+          "page_reference": "p. 1, maximum ratings and electrical characteristics",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 10.0
+        },
+        "voltage": {
+          "conditions": "IF = 10.0 A; TA = 25 degC; maximum instantaneous forward voltage",
+          "page_reference": "p. 1, maximum ratings and electrical characteristics",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.53
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = 45 V rated DC blocking voltage; TA = 25 degC; maximum DC reverse current",
+      "page_reference": "p. 1, maximum ratings and electrical characteristics",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 0.00015
+    },
+    "reverse_recovery": null,
+    "variant": "schottky"
+  },
+  "usable_curves": true
+}

@@ -1,0 +1,70 @@
+{
+  "schema_version": "1.0.0",
+  "mpn": "1SMA4733A",
+  "manufacturer": "hongjiacheng",
+  "family": "diode",
+  "datasheet_identity": {
+    "title": "1SMA4728A THRU 1SMA4764A SURFACE MOUNT ZENER DIODES",
+    "revision": "Rev1.0",
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ]
+  },
+  "usable_curves": false,
+  "curves": [],
+  "specs": {
+    "variant": "zener",
+    "forward_voltage_points": [
+      {
+        "current": {
+          "value": 0.2,
+          "unit": "A",
+          "conditions": "IF = 200 mA, TA = 25 degC",
+          "page_reference": "p. 1, Maximum Ratings, Forward Voltage @ IF = 200 mA",
+          "source_kind": "maximum"
+        },
+        "voltage": {
+          "value": 1.5,
+          "unit": "V",
+          "conditions": "IF = 200 mA, TA = 25 degC",
+          "page_reference": "p. 1, Maximum Ratings, Forward Voltage @ IF = 200 mA",
+          "source_kind": "maximum"
+        }
+      }
+    ],
+    "reverse_current": {
+      "value": 0.00001,
+      "unit": "A",
+      "conditions": "IR = 10 microA maximum at VR = 1 V, TA = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, 1SMA4733A row",
+      "source_kind": "maximum"
+    },
+    "capacitance": null,
+    "reverse_recovery": null,
+    "breakdown_voltage": {
+      "value": 5.1,
+      "unit": "V",
+      "conditions": "IZT = 49 mA, TA = 25 degC; nominal zener voltage, with 4.84 V minimum and 5.36 V maximum",
+      "page_reference": "p. 2, Electrical Characteristics, 1SMA4733A VZ row",
+      "source_kind": "typical"
+    },
+    "breakdown_current": {
+      "value": 0.049,
+      "unit": "A",
+      "conditions": "IZT = 49 mA at nominal VZ = 5.1 V, TA = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, 1SMA4733A IZT column",
+      "source_kind": "typical"
+    }
+  },
+  "extraction_notes": [
+    "This is a family datasheet; the 1SMA4733A row was selected from the 1SMA4728A through 1SMA4764A electrical-characteristics table for manufacturer hongjiacheng (Zhuhai Hongjiacheng Technology co., Ltd.).",
+    "The supplied PDF identity was verified as LCSC C19077476, MPN 1SMA4733A, manufacturer hongjiacheng, with SHA-256 a66d0e20d37b19b6776d33e5d234d792d89e30813774a7dde79429c97d6773dd.",
+    "Zener reverse semantics are preserved: nominal VZ = 5.1 V is paired with the tabulated reverse test current IZT = 49 mA; maximum ZZT = 7.0 ohm is at IZT. The row also gives minimum VZ = 4.84 V, maximum VZ = 5.36 V, maximum reverse leakage IR = 10 microA at VR = 1 V, and admissible IZM = 186 mA, all at TA = 25 degC unless otherwise noted.",
+    "No component-specific usable curve was extracted. Page 3 Fig. 2 shows only VZ = 25 V, 30 V, 65 V, and 91 V traces, not the exact 5.1 V target; Fig. 3 is a generic forward characteristic without an exact 1SMA4733A trace. No capacitance or reverse-recovery-time data is published.",
+    "Page 1 maximum ratings also specify PD = 1000 mW at Tc = 75 degC, junction and storage temperature limits of -55 to +150 degC, and typical RthetaJ-A = 250 degC/W."
+  ],
+  "omission_reason": "The supplied PDF contains no component-specific usable curve for 1SMA4733A: page 3 Fig. 2 contains only 25 V, 30 V, 65 V, and 91 V zener traces, while Fig. 3 is a generic forward characteristic without an exact 5.1 V trace; capacitance and reverse-recovery curves are also absent."
+}

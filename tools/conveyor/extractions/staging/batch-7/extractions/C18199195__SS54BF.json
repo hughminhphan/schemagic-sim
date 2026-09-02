@@ -1,0 +1,152 @@
+{
+  "curves": [
+    {
+      "name": "Typical forward voltage, SS52BF-SS545BF trace, Tj = 25 degC pulsed",
+      "page_reference": "p. 2 Fig. 3 Typical Forward Voltage, SS52BF-SS545BF trace",
+      "points": [
+        {
+          "x": 0.23,
+          "y": 0.05
+        },
+        {
+          "x": 0.25,
+          "y": 0.1
+        },
+        {
+          "x": 0.27,
+          "y": 0.2
+        },
+        {
+          "x": 0.32,
+          "y": 0.5
+        },
+        {
+          "x": 0.36,
+          "y": 1.0
+        },
+        {
+          "x": 0.41,
+          "y": 2.0
+        },
+        {
+          "x": 0.49,
+          "y": 5.0
+        },
+        {
+          "x": 0.57,
+          "y": 10.0
+        }
+      ],
+      "test_conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle",
+      "x_axis": {
+        "quantity": "instantaneous forward voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "instantaneous forward current",
+        "scale": "log",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "Typical reverse characteristics, SS52BF-SS56BF trace, Tj = 25 degC",
+      "page_reference": "p. 2 Fig. 4 Typical Reverse Characteristics, SS52BF-SS56BF trace",
+      "points": [
+        {
+          "x": 10.0,
+          "y": 5.6e-06
+        },
+        {
+          "x": 30.0,
+          "y": 1.18e-05
+        },
+        {
+          "x": 50.0,
+          "y": 1.72e-05
+        },
+        {
+          "x": 70.0,
+          "y": 2.31e-05
+        },
+        {
+          "x": 90.0,
+          "y": 3.48e-05
+        }
+      ],
+      "test_conditions": "Tj = 25 degC; for SS54BF 100% corresponds to VRRM = 40 V",
+      "x_axis": {
+        "quantity": "percent of rated peak reverse voltage",
+        "scale": "linear",
+        "unit": "%"
+      },
+      "y_axis": {
+        "quantity": "instantaneous reverse current",
+        "scale": "log",
+        "unit": "A"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ],
+    "revision": "Rev:1.0",
+    "title": "SS52BF THRU SS520BF SURFACE MOUNT SCHOTTKY BARRIER RECTIFIER"
+  },
+  "extraction_notes": [
+    "Family datasheet SS52BF THRU SS520BF; SS54BF is the 40 V member (VRRM = VDC = 40 V, VRMS = 28 V, p. 1 Maximum Ratings).",
+    "Table column groupings verified on p. 2: VF max 0.55 V covers SS52BF-SS545BF; IR1 0.5 mA (25 degC) and IR2 50 mA (100 degC) cover SS52BF-SS58BF; CJ 800 pF covers SS52BF-SS545BF.",
+    "The 100 degC reverse-current row (IR2 = 50 mA max at VR = VDC) and the Fig. 4 Tj = 100 degC traces were not extracted; only 25 degC data is recorded.",
+    "Fig. 4 x-axis is percent of rated peak reverse voltage and is preserved as published; multiply by 0.4 V per percent for SS54BF to obtain volts.",
+    "No reverse recovery time and no measured breakdown row are published; the 40 V VRRM rating is a maximum rating, not a breakdown measurement, so breakdown fields are null.",
+    "Figs. 1-2 (current derating versus lead temperature and surge current versus cycles) are ratings curves and were not extracted.",
+    "Curve y-values were converted from the printed mA axes to SI amperes."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "SS54BF",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": null,
+    "breakdown_voltage": null,
+    "capacitance": {
+      "conditions": "VR = 4.0 V DC, f = 1 MHz, Ta = 25 degC; SS52BF-SS545BF column group",
+      "page_reference": "p. 2 Electrical Characteristics, typical junction capacitance CJ",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 8e-10
+    },
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 5.0 A, Ta = 25 degC",
+          "page_reference": "p. 2 Electrical Characteristics, maximum instantaneous forward voltage row",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 5.0
+        },
+        "voltage": {
+          "conditions": "IF = 5.0 A, Ta = 25 degC; SS52BF-SS545BF column group",
+          "page_reference": "p. 2 Electrical Characteristics, VF, SS52BF-SS545BF cell",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.55
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = VDC = 40 V, TA = 25 degC; SS52BF-SS58BF column group",
+      "page_reference": "p. 2 Electrical Characteristics, IR1, SS52BF-SS58BF cell",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 0.0005
+    },
+    "reverse_recovery": null,
+    "variant": "schottky"
+  },
+  "usable_curves": true
+}

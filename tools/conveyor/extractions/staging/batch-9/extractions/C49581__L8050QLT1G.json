@@ -1,0 +1,189 @@
+{
+  "curves": [
+    {
+      "name": "DC current gain versus collector current",
+      "page_reference": "PDF page 3, Fig. 1",
+      "points": [
+        {
+          "x": 1e-05,
+          "y": 135
+        },
+        {
+          "x": 0.0001,
+          "y": 155
+        },
+        {
+          "x": 0.001,
+          "y": 175
+        },
+        {
+          "x": 0.01,
+          "y": 190
+        },
+        {
+          "x": 0.1,
+          "y": 175
+        },
+        {
+          "x": 0.8,
+          "y": 105
+        }
+      ],
+      "test_conditions": "VCE=1 V; typical curve.",
+      "x_axis": {
+        "quantity": "collector current Ic",
+        "scale": "log",
+        "unit": "A"
+      },
+      "y_axis": {
+        "quantity": "DC current gain hFE",
+        "scale": "log",
+        "unit": "1"
+      }
+    },
+    {
+      "name": "Collector-emitter saturation voltage versus collector current",
+      "page_reference": "PDF page 3, Fig. 2",
+      "points": [
+        {
+          "x": 0.0001,
+          "y": 0.012
+        },
+        {
+          "x": 0.001,
+          "y": 0.012
+        },
+        {
+          "x": 0.01,
+          "y": 0.018
+        },
+        {
+          "x": 0.1,
+          "y": 0.09
+        },
+        {
+          "x": 0.8,
+          "y": 0.45
+        }
+      ],
+      "test_conditions": "VCE(sat) at IC=10IB; typical curve.",
+      "x_axis": {
+        "quantity": "collector current Ic",
+        "scale": "log",
+        "unit": "A"
+      },
+      "y_axis": {
+        "quantity": "collector-emitter saturation voltage VCE(sat)",
+        "scale": "log",
+        "unit": "V"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "PDF page 1",
+      "PDF page 2",
+      "PDF page 3",
+      "PDF page 4"
+    ],
+    "revision": "Rev.O",
+    "title": "L8050PLT1G Series, including L8050QLT1G"
+  },
+  "extraction_notes": [
+    "Curve points are approximate readings from the visible typical traces on the log-log plots; no points were interpolated beyond visible trace positions.",
+    "The datasheet is a family-series document and identifies L8050QLT1G in its ordering table; the electrical limits are series-level values."
+  ],
+  "family": "bjt",
+  "manufacturer": "LRC",
+  "mpn": "L8050QLT1G",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "cibo": null,
+    "cobo": null,
+    "ft": null,
+    "gain_points": [
+      {
+        "collector_current": {
+          "conditions": "VCE=1 V",
+          "page_reference": "PDF page 2",
+          "source_kind": "minimum",
+          "unit": "A",
+          "value": 0.1
+        },
+        "hfe": {
+          "conditions": "Ic=100 mA, VCE=1 V",
+          "page_reference": "PDF page 2",
+          "source_kind": "minimum",
+          "unit": "1",
+          "value": 100
+        },
+        "vce": {
+          "conditions": "Ic=100 mA",
+          "page_reference": "PDF page 2",
+          "source_kind": "minimum",
+          "unit": "V",
+          "value": 1.0
+        }
+      },
+      {
+        "collector_current": {
+          "conditions": "VCE=1 V",
+          "page_reference": "PDF page 2",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.1
+        },
+        "hfe": {
+          "conditions": "Ic=100 mA, VCE=1 V",
+          "page_reference": "PDF page 2",
+          "source_kind": "maximum",
+          "unit": "1",
+          "value": 600
+        },
+        "vce": {
+          "conditions": "Ic=100 mA",
+          "page_reference": "PDF page 2",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 1.0
+        }
+      }
+    ],
+    "polarity": "npn",
+    "saturation_points": [
+      {
+        "base_current": {
+          "conditions": "Ic=800 mA",
+          "page_reference": "PDF page 2",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.08
+        },
+        "collector_current": {
+          "conditions": "IB=80 mA",
+          "page_reference": "PDF page 2",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.8
+        },
+        "vbe_sat": null,
+        "vce_sat": {
+          "conditions": "Ic=800 mA, IB=80 mA",
+          "page_reference": "PDF page 2",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.5
+        }
+      }
+    ],
+    "vceo": {
+      "conditions": "Ic=1.0 mA",
+      "page_reference": "PDF page 2",
+      "source_kind": "minimum",
+      "unit": "V",
+      "value": 25.0
+    }
+  },
+  "usable_curves": true
+}

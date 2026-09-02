@@ -1,0 +1,224 @@
+{
+  "curves": [
+    {
+      "name": "output characteristics",
+      "page_reference": "p. 3 Fig. 1",
+      "points": [
+        {
+          "x": 0.1,
+          "y": 1
+        },
+        {
+          "x": 1,
+          "y": 8
+        },
+        {
+          "x": 5,
+          "y": 35
+        },
+        {
+          "x": 10,
+          "y": 70
+        },
+        {
+          "x": 25,
+          "y": 100
+        }
+      ],
+      "test_conditions": "TJ = 25 degC; VGS = 4.5 to 15 V",
+      "x_axis": {
+        "quantity": "VDS",
+        "scale": "log",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "ID",
+        "scale": "log",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "transfer characteristics",
+      "page_reference": "p. 3 Fig. 3",
+      "points": [
+        {
+          "x": 4,
+          "y": 1
+        },
+        {
+          "x": 5,
+          "y": 4
+        },
+        {
+          "x": 6,
+          "y": 10
+        },
+        {
+          "x": 7,
+          "y": 18
+        },
+        {
+          "x": 8,
+          "y": 30
+        },
+        {
+          "x": 10,
+          "y": 75
+        }
+      ],
+      "test_conditions": "VDS = 50 V, 20 us pulse, TJ = 25 degC",
+      "x_axis": {
+        "quantity": "VGS",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "ID",
+        "scale": "log",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "capacitance",
+      "page_reference": "p. 4 Fig. 5",
+      "points": [
+        {
+          "x": 1,
+          "y": 2500
+        },
+        {
+          "x": 5,
+          "y": 2100
+        },
+        {
+          "x": 10,
+          "y": 1800
+        },
+        {
+          "x": 25,
+          "y": 1500
+        },
+        {
+          "x": 50,
+          "y": 1100
+        },
+        {
+          "x": 100,
+          "y": 700
+        }
+      ],
+      "test_conditions": "VGS = 0 V, f = 1 MHz",
+      "x_axis": {
+        "quantity": "VDS",
+        "scale": "log",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "capacitance",
+        "scale": "linear",
+        "unit": "pF"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "10"
+    ],
+    "revision": "PD-91342B, 07/01/05",
+    "title": "IRF540NS/IRF540NL HEXFET Power MOSFET"
+  },
+  "extraction_notes": [],
+  "family": "mosfet",
+  "manufacturer": "Infineon Technologies",
+  "mpn": "IRF540NSTRLPBF",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "body_diode": {
+      "conditions": "TJ = 25 degC, IS = 16 A, VGS = 0 V",
+      "page_reference": "p. 2 VSD, MAX",
+      "source_kind": "maximum",
+      "unit": "V",
+      "value": 1.2
+    },
+    "breakdown_voltage": {
+      "conditions": "VGS = 0 V, ID = 250 uA",
+      "page_reference": "p. 2 V(BR)DSS",
+      "source_kind": "minimum",
+      "unit": "V",
+      "value": 100.0
+    },
+    "ciss": {
+      "conditions": "VGS = 0 V, VDS = 25 V, f = 1 MHz",
+      "page_reference": "p. 2 Ciss",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 1.96e-09
+    },
+    "coss": {
+      "conditions": "VGS = 0 V, VDS = 25 V, f = 1 MHz",
+      "page_reference": "p. 2 Coss",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 2.5e-10
+    },
+    "crss": {
+      "conditions": "VGS = 0 V, VDS = 25 V, f = 1 MHz",
+      "page_reference": "p. 2 Crss",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 4e-11
+    },
+    "polarity": "n",
+    "rdson_points": [
+      {
+        "current": {
+          "conditions": "VGS = 10 V, ID = 16 A",
+          "page_reference": "p. 2 RDS(on), MAX",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 16.0
+        },
+        "resistance": {
+          "conditions": "VGS = 10 V, ID = 16 A",
+          "page_reference": "p. 2 RDS(on), MAX",
+          "source_kind": "maximum",
+          "unit": "ohm",
+          "value": 0.044
+        },
+        "vgs": {
+          "conditions": "VGS = 10 V, ID = 16 A",
+          "page_reference": "p. 2 RDS(on), MAX",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 10.0
+        }
+      }
+    ],
+    "threshold_max": {
+      "conditions": "VDS = VGS, ID = 250 uA",
+      "page_reference": "p. 2 VGS(th), MAX",
+      "source_kind": "maximum",
+      "unit": "V",
+      "value": 4.0
+    },
+    "threshold_min": {
+      "conditions": "VDS = VGS, ID = 250 uA",
+      "page_reference": "p. 2 VGS(th), MIN",
+      "source_kind": "minimum",
+      "unit": "V",
+      "value": 2.0
+    },
+    "threshold_typ": null
+  },
+  "usable_curves": true
+}

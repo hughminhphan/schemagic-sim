@@ -1,0 +1,104 @@
+{
+  "curves": [
+    {
+      "name": "Typical zener characteristic, BZT52B8V2S trace",
+      "page_reference": "p. 3, Fig. 1",
+      "points": [
+        {
+          "x": 8.0,
+          "y": 0.0005
+        },
+        {
+          "x": 8.1,
+          "y": 0.001
+        },
+        {
+          "x": 8.2,
+          "y": 0.005
+        },
+        {
+          "x": 8.25,
+          "y": 0.01
+        }
+      ],
+      "test_conditions": "Tj = 25 degC; pulsed; BZT52B8V2S trace labelled 8.2",
+      "x_axis": {
+        "quantity": "zener voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "zener current",
+        "scale": "log",
+        "unit": "A"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "revision": "Rev:1.0",
+    "title": "BZT52B2V4S THRU BZT52B43S SURFACE MOUNT ZENER DIODES"
+  },
+  "extraction_notes": [
+    "All values are transcribed from the supplied datasheet; curve points are read directly from plotted traces and are not interpolated.",
+    "The datasheet heading specifies Ta = 25 degC unless otherwise noted.",
+    "The table gives ZZT = 15 ohm at IZT and ZZK = 80 ohm at IZK = 1 mA; impedance fields are not present in the extraction schema.",
+    "The datasheet contains typical capacitance plots but no unambiguous single capacitance value for the BZT52B8V2S row, so capacitance is null.",
+    "No reverse-recovery time is published."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "BZT52B8V2S",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": {
+      "conditions": "VZ is specified at IZT = 5 mA, Ta = 25 degC",
+      "page_reference": "p. 2 electrical characteristics, BZT52B8V2S row",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.005
+    },
+    "breakdown_voltage": {
+      "conditions": "IZT = 5 mA, Ta = 25 degC; nominal VZ for BZT52B8V2S",
+      "page_reference": "p. 2 electrical characteristics, BZT52B8V2S row",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 8.2
+    },
+    "capacitance": null,
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 10 mA, Ta = 25 degC",
+          "page_reference": "p. 1 maximum ratings",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.01
+        },
+        "voltage": {
+          "conditions": "IF = 10 mA, Ta = 25 degC",
+          "page_reference": "p. 1 maximum ratings",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.9
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = 5.0 V, Ta = 25 degC",
+      "page_reference": "p. 2 electrical characteristics, BZT52B8V2S row",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 7e-07
+    },
+    "reverse_recovery": null,
+    "variant": "zener"
+  },
+  "usable_curves": true
+}

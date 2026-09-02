@@ -1,0 +1,88 @@
+{
+  "schema_version": "1.0.0",
+  "mpn": "BZT52B12",
+  "manufacturer": "hongjiacheng",
+  "family": "diode",
+  "datasheet_identity": {
+    "title": "BZT52B2V4 THRU BZT52B51 SURFACE MOUNT ZENER DIODES",
+    "revision": "Rev:1.0",
+    "pages_examined": ["p. 1", "p. 2", "p. 3", "p. 4"]
+  },
+  "usable_curves": true,
+  "curves": [
+    {
+      "name": "Zener characteristics, nominal VZ = 12 V trace",
+      "x_axis": {
+        "quantity": "zener voltage (VZ)",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "zener current (IZ)",
+        "unit": "A",
+        "scale": "log"
+      },
+      "test_conditions": "Ta = 25 degC, pulsed; BZT52BXXX series plot, nominal 12 V trace",
+      "page_reference": "p. 3 Fig. 1, Zener Characteristics (VZ 5.1 V to 20 V)",
+      "points": [
+        {"x": 12.0, "y": 0.0005},
+        {"x": 12.0, "y": 0.001},
+        {"x": 12.1, "y": 0.005},
+        {"x": 12.1, "y": 0.01},
+        {"x": 12.2, "y": 0.02}
+      ]
+    }
+  ],
+  "specs": {
+    "variant": "zener",
+    "forward_voltage_points": [
+      {
+        "current": {
+          "value": 0.01,
+          "unit": "A",
+          "conditions": "IF = 10 mA, Ta = 25 degC",
+          "page_reference": "p. 1, Maximum Ratings, Forward Voltage @ IF = 10 mA",
+          "source_kind": "maximum"
+        },
+        "voltage": {
+          "value": 0.9,
+          "unit": "V",
+          "conditions": "IF = 10 mA, Ta = 25 degC",
+          "page_reference": "p. 1, Maximum Ratings, Forward Voltage @ IF = 10 mA",
+          "source_kind": "maximum"
+        }
+      }
+    ],
+    "reverse_current": {
+      "value": 1e-7,
+      "unit": "A",
+      "conditions": "VR = 8 V, Ta = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, BZT52B12 row, IR @ VR",
+      "source_kind": "maximum"
+    },
+    "capacitance": null,
+    "reverse_recovery": null,
+    "breakdown_voltage": {
+      "value": 12.0,
+      "unit": "V",
+      "conditions": "IZT = 5 mA, Ta = 25 degC; nominal zener voltage",
+      "page_reference": "p. 2, Electrical Characteristics, BZT52B12 row, nominal VZ @ IZT",
+      "source_kind": "typical"
+    },
+    "breakdown_current": {
+      "value": 0.005,
+      "unit": "A",
+      "conditions": "IZT = 5 mA, Ta = 25 degC; current paired with nominal VZ",
+      "page_reference": "p. 2, Electrical Characteristics, BZT52B12 row, IZT",
+      "source_kind": "typical"
+    }
+  },
+  "extraction_notes": [
+    "PDF SHA-256 verified as 12a6f531411e866a8dd2acbad16a6aa069fbc15a48012ac0fe57aa5a00428170.",
+    "The exact BZT52B12 row gives VZ minimum 11.76 V, nominal 12 V, and maximum 12.24 V at IZT = 5 mA; the nominal value and paired IZT are used for the zener breakdown fields.",
+    "The exact BZT52B12 row gives ZZT = 25 ohm at IZT = 5 mA, ZZK = 150 ohm at IZK = 1 mA, IR = 0.1 microA at VR = 8 V, and admissible IZM = 5 mA. Zener impedance and admissible-current fields are not represented by the strict schema.",
+    "The forward-voltage maximum is 0.9 V at IF = 10 mA from the maximum-ratings table. No reverse-recovery or tabulated capacitance value is published for this part.",
+    "The p. 3 Fig. 1 curve points are sparse approximate manual digitizations of the visibly labelled nominal 12 V trace; no points were interpolated between plotted observations. The other p. 3 plots are grouped series-level characteristics and were not attributed to the exact part."
+  ],
+  "omission_reason": null
+}

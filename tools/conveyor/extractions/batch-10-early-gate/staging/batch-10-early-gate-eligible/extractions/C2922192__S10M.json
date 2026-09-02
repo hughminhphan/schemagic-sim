@@ -1,0 +1,201 @@
+{
+  "curves": [
+    {
+      "name": "Typical forward characteristics, TJ = 25 degC",
+      "page_reference": "p. 2, Fig. 2",
+      "points": [
+        {
+          "x": 0.7,
+          "y": 0.01
+        },
+        {
+          "x": 0.75,
+          "y": 0.1
+        },
+        {
+          "x": 0.8,
+          "y": 0.7
+        },
+        {
+          "x": 0.85,
+          "y": 2.0
+        },
+        {
+          "x": 0.9,
+          "y": 4.0
+        },
+        {
+          "x": 0.95,
+          "y": 7.0
+        },
+        {
+          "x": 1.0,
+          "y": 10.0
+        }
+      ],
+      "test_conditions": "TJ = 25 degC, pulse width 300 us, 1% duty cycle",
+      "x_axis": {
+        "quantity": "Forward voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "Instantaneous forward current",
+        "scale": "log",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "Typical reverse characteristics, TJ = 25 degC",
+      "page_reference": "p. 2, Fig. 3",
+      "points": [
+        {
+          "x": 0.0,
+          "y": 2e-08
+        },
+        {
+          "x": 20.0,
+          "y": 5e-08
+        },
+        {
+          "x": 40.0,
+          "y": 1e-07
+        },
+        {
+          "x": 60.0,
+          "y": 1.5e-07
+        },
+        {
+          "x": 80.0,
+          "y": 2e-07
+        },
+        {
+          "x": 100.0,
+          "y": 2.5e-07
+        }
+      ],
+      "test_conditions": "TJ = 25 degC, typical curve; S10M rated VRRM = 1000 V",
+      "x_axis": {
+        "quantity": "Percent of rated peak reverse voltage",
+        "scale": "linear",
+        "unit": "%"
+      },
+      "y_axis": {
+        "quantity": "Reverse leakage current",
+        "scale": "log",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "Typical junction capacitance",
+      "page_reference": "p. 2, Fig. 5",
+      "points": [
+        {
+          "x": 0.01,
+          "y": 1.4e-10
+        },
+        {
+          "x": 0.05,
+          "y": 1.25e-10
+        },
+        {
+          "x": 0.1,
+          "y": 1.15e-10
+        },
+        {
+          "x": 0.5,
+          "y": 1e-10
+        },
+        {
+          "x": 1.0,
+          "y": 9e-11
+        },
+        {
+          "x": 5.0,
+          "y": 6.5e-11
+        },
+        {
+          "x": 10.0,
+          "y": 5.5e-11
+        },
+        {
+          "x": 50.0,
+          "y": 3.5e-11
+        },
+        {
+          "x": 100.0,
+          "y": 3e-11
+        }
+      ],
+      "test_conditions": "Typical curve; VR = 4.0 V DC measurement condition is stated in table note; plot at TJ = 25 degC",
+      "x_axis": {
+        "quantity": "Reverse voltage",
+        "scale": "log",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "Junction capacitance",
+        "scale": "linear",
+        "unit": "F"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "revision": "REV 2.0 2025 JAN",
+    "title": "S10A THRU S10M - 10.0 AMP Surface Mount Rectifiers"
+  },
+  "extraction_notes": [
+    "Forward, reverse, and junction-capacitance curves were digitized from the typical plots on p. 2.",
+    "The datasheet publishes no reverse-recovery-time value."
+  ],
+  "family": "diode",
+  "manufacturer": "GOODWORK",
+  "mpn": "S10M",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": null,
+    "breakdown_voltage": null,
+    "capacitance": {
+      "conditions": "VR = 4.0 V DC, f = 1 MHz, typical junction capacitance",
+      "page_reference": "p. 1, note 1 and electrical characteristics",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 7e-11
+    },
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 10.0 A, TA = 25 degC",
+          "page_reference": "p. 1, maximum ratings and electrical characteristics",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 10.0
+        },
+        "voltage": {
+          "conditions": "IF = 10.0 A, TA = 25 degC",
+          "page_reference": "p. 1, maximum ratings and electrical characteristics",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 1.1
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = rated DC blocking voltage (1000 V for S10M), TA = 25 degC",
+      "page_reference": "p. 1, maximum ratings and electrical characteristics",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 5e-06
+    },
+    "reverse_recovery": null,
+    "variant": "rectifier"
+  },
+  "usable_curves": true
+}

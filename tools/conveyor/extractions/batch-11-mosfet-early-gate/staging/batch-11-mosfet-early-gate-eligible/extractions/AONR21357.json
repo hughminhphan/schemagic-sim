@@ -1,0 +1,293 @@
+{
+  "schema_version": "1.0.0",
+  "mpn": "AONR21357",
+  "manufacturer": "Alpha Omega Semicon",
+  "family": "mosfet",
+  "datasheet_identity": {
+    "title": "AONR21357 30V P-Channel MOSFET",
+    "revision": "Rev.1.0 July 2017",
+    "pages_examined": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6"
+    ]
+  },
+  "usable_curves": true,
+  "curves": [
+    {
+      "name": "on-region magnitude",
+      "x_axis": {
+        "quantity": "VDS magnitude",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "ID magnitude",
+        "unit": "A",
+        "scale": "linear"
+      },
+      "test_conditions": "TJ = 25 degC; curves shown for VGS = -3 to -10 V",
+      "page_reference": "p. 3 Fig. 1",
+      "points": [
+        {
+          "x": 0,
+          "y": 0
+        },
+        {
+          "x": 1,
+          "y": 20
+        },
+        {
+          "x": 2,
+          "y": 45
+        },
+        {
+          "x": 3,
+          "y": 62
+        },
+        {
+          "x": 5,
+          "y": 80
+        }
+      ]
+    },
+    {
+      "name": "transfer magnitude",
+      "x_axis": {
+        "quantity": "VGS magnitude",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "ID magnitude",
+        "unit": "A",
+        "scale": "linear"
+      },
+      "test_conditions": "VDS = -5 V; TJ = 25 degC",
+      "page_reference": "p. 3 Fig. 2",
+      "points": [
+        {
+          "x": 1,
+          "y": 0
+        },
+        {
+          "x": 2,
+          "y": 4
+        },
+        {
+          "x": 2.5,
+          "y": 12
+        },
+        {
+          "x": 3,
+          "y": 24
+        },
+        {
+          "x": 4,
+          "y": 53
+        },
+        {
+          "x": 5,
+          "y": 78
+        }
+      ]
+    },
+    {
+      "name": "capacitance",
+      "x_axis": {
+        "quantity": "VDS magnitude",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "capacitance",
+        "unit": "pF",
+        "scale": "linear"
+      },
+      "test_conditions": "VGS = 0 V, f = 1 MHz",
+      "page_reference": "p. 4 Fig. 8",
+      "points": [
+        {
+          "x": 0,
+          "y": 2830
+        },
+        {
+          "x": 5,
+          "y": 1100
+        },
+        {
+          "x": 10,
+          "y": 700
+        },
+        {
+          "x": 15,
+          "y": 430
+        },
+        {
+          "x": 25,
+          "y": 280
+        }
+      ]
+    }
+  ],
+  "specs": {
+    "polarity": "p",
+    "threshold_min": {
+      "value": 1.3,
+      "unit": "V",
+      "conditions": "VDS = VGS, ID = 250 mA",
+      "page_reference": "p. 2 VGS(th), MIN",
+      "source_kind": "minimum"
+    },
+    "threshold_typ": {
+      "value": 1.7,
+      "unit": "V",
+      "conditions": "VDS = VGS, ID = 250 mA",
+      "page_reference": "p. 2 VGS(th), TYP",
+      "source_kind": "typical"
+    },
+    "threshold_max": {
+      "value": 2.3,
+      "unit": "V",
+      "conditions": "VDS = VGS, ID = 250 mA",
+      "page_reference": "p. 2 VGS(th), MAX",
+      "source_kind": "maximum"
+    },
+    "rdson_points": [
+      {
+        "vgs": {
+          "value": 10,
+          "unit": "V",
+          "conditions": "VGS = -10 V, ID = -20 A",
+          "page_reference": "p. 2 RDS(on), TYP",
+          "source_kind": "typical"
+        },
+        "current": {
+          "value": 20,
+          "unit": "A",
+          "conditions": "VGS = -10 V, ID = -20 A",
+          "page_reference": "p. 2 RDS(on), TYP",
+          "source_kind": "typical"
+        },
+        "resistance": {
+          "value": 0.0063,
+          "unit": "ohm",
+          "conditions": "VGS = -10 V, ID = -20 A",
+          "page_reference": "p. 2 RDS(on), TYP",
+          "source_kind": "typical"
+        }
+      },
+      {
+        "vgs": {
+          "value": 10,
+          "unit": "V",
+          "conditions": "VGS = -10 V, ID = -20 A",
+          "page_reference": "p. 2 RDS(on), MAX",
+          "source_kind": "maximum"
+        },
+        "current": {
+          "value": 20,
+          "unit": "A",
+          "conditions": "VGS = -10 V, ID = -20 A",
+          "page_reference": "p. 2 RDS(on), MAX",
+          "source_kind": "maximum"
+        },
+        "resistance": {
+          "value": 0.0078,
+          "unit": "ohm",
+          "conditions": "VGS = -10 V, ID = -20 A",
+          "page_reference": "p. 2 RDS(on), MAX",
+          "source_kind": "maximum"
+        }
+      },
+      {
+        "vgs": {
+          "value": 4.5,
+          "unit": "V",
+          "conditions": "VGS = -4.5 V, ID = -16 A",
+          "page_reference": "p. 2 RDS(on), TYP",
+          "source_kind": "typical"
+        },
+        "current": {
+          "value": 16,
+          "unit": "A",
+          "conditions": "VGS = -4.5 V, ID = -16 A",
+          "page_reference": "p. 2 RDS(on), TYP",
+          "source_kind": "typical"
+        },
+        "resistance": {
+          "value": 0.0098,
+          "unit": "ohm",
+          "conditions": "VGS = -4.5 V, ID = -16 A",
+          "page_reference": "p. 2 RDS(on), TYP",
+          "source_kind": "typical"
+        }
+      },
+      {
+        "vgs": {
+          "value": 4.5,
+          "unit": "V",
+          "conditions": "VGS = -4.5 V, ID = -16 A",
+          "page_reference": "p. 2 RDS(on), MAX",
+          "source_kind": "maximum"
+        },
+        "current": {
+          "value": 16,
+          "unit": "A",
+          "conditions": "VGS = -4.5 V, ID = -16 A",
+          "page_reference": "p. 2 RDS(on), MAX",
+          "source_kind": "maximum"
+        },
+        "resistance": {
+          "value": 0.0123,
+          "unit": "ohm",
+          "conditions": "VGS = -4.5 V, ID = -16 A",
+          "page_reference": "p. 2 RDS(on), MAX",
+          "source_kind": "maximum"
+        }
+      }
+    ],
+    "ciss": {
+      "value": 2830,
+      "unit": "pF",
+      "conditions": "VGS = 0 V, VDS = -15 V, f = 1 MHz",
+      "page_reference": "p. 2 Dynamic Parameters",
+      "source_kind": "typical"
+    },
+    "coss": {
+      "value": 430,
+      "unit": "pF",
+      "conditions": "VGS = 0 V, VDS = -15 V, f = 1 MHz",
+      "page_reference": "p. 2 Dynamic Parameters",
+      "source_kind": "typical"
+    },
+    "crss": {
+      "value": 365,
+      "unit": "pF",
+      "conditions": "VGS = 0 V, VDS = -15 V, f = 1 MHz",
+      "page_reference": "p. 2 Dynamic Parameters",
+      "source_kind": "typical"
+    },
+    "breakdown_voltage": {
+      "value": 30,
+      "unit": "V",
+      "conditions": "ID = -250 mA, VGS = 0 V",
+      "page_reference": "p. 2 BVDSS",
+      "source_kind": "minimum"
+    },
+    "body_diode": {
+      "value": 1.0,
+      "unit": "V",
+      "conditions": "IS = -1 A, VGS = 0 V",
+      "page_reference": "p. 2 VSD, MAX",
+      "source_kind": "maximum"
+    }
+  },
+  "extraction_notes": [
+    "P-channel source axes are negative; curve coordinates are stored as positive magnitudes for fitting."
+  ],
+  "omission_reason": null
+}

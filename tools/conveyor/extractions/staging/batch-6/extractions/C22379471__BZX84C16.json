@@ -1,0 +1,105 @@
+{
+  "curves": [
+    {
+      "name": "zener_characteristics_BZX84C16",
+      "page_reference": "p. 3 Fig. 2, Zener Characteristics (11 V to 43 V), curve labelled 16",
+      "points": [
+        {
+          "x": 15.6,
+          "y": 0.0005
+        },
+        {
+          "x": 15.7,
+          "y": 0.001
+        },
+        {
+          "x": 16.0,
+          "y": 0.01
+        },
+        {
+          "x": 16.4,
+          "y": 0.1
+        }
+      ],
+      "test_conditions": "Ta = 25 degC, pulsed; BZX84C16 curve in the 11 V to 43 V family plot",
+      "x_axis": {
+        "quantity": "zener voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "zener current",
+        "scale": "log",
+        "unit": "A"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "revision": "Rev. 1.0",
+    "title": "BZX84C2V4 THRU BZX84C75 SURFACE MOUNT ZENER DIODES"
+  },
+  "extraction_notes": [
+    "BZX84C16 is the 16 V nominal zener variant in the BZX84C2V4 THRU BZX84C75 series.",
+    "The electrical-characteristics row gives VZ minimum 15.3 V, nominal 16 V, and maximum 17.1 V at IZT = 5 mA; the retained breakdown voltage is the nominal typical value.",
+    "The row gives maximum zener impedance ZZT = 200 ohm at IZT = 5 mA and ZZK = 200 ohm at IZK = 1 mA; these fields are not represented by the extraction schema.",
+    "The p. 3 zener-characteristics plot is a family graph; the curve points are manual readings of the curve labelled 16 and are not interpolated.",
+    "No tabulated capacitance or reverse-recovery specification is published for BZX84C16. The capacitance family plot is not uniquely attributable to the 16 V variant, so capacitance is null.",
+    "Power dissipation is 300 mW maximum and admissible zener current IZM is 5 mA for BZX84C16, both at Ta = 25 degC unless otherwise specified."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "BZX84C16",
+  "omission_reason": "No reverse-recovery data is published. No uniquely attributable BZX84C16 capacitance value is published; the family capacitance plot does not identify individual variant curves sufficiently for a schema value.",
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": {
+      "conditions": "IZT = 5 mA, Ta = 25 degC; defining current for nominal VZ",
+      "page_reference": "p. 2 Electrical Characteristics, BZX84C16 row, IZT",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.005
+    },
+    "breakdown_voltage": {
+      "conditions": "IZT = 5 mA, Ta = 25 degC; nominal zener voltage for BZX84C16",
+      "page_reference": "p. 2 Electrical Characteristics, BZX84C16 row, VZ nominal at IZT",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 16.0
+    },
+    "capacitance": null,
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 10 mA, Ta = 25 degC",
+          "page_reference": "p. 1 Maximum Ratings, Forward Voltage",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.01
+        },
+        "voltage": {
+          "conditions": "IF = 10 mA, Ta = 25 degC",
+          "page_reference": "p. 1 Maximum Ratings, Forward Voltage",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.9
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = 11.2 V, Ta = 25 degC; IR maximum for BZX84C16",
+      "page_reference": "p. 2 Electrical Characteristics, BZX84C16 row, IR@VR",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 1e-07
+    },
+    "reverse_recovery": null,
+    "variant": "zener"
+  },
+  "usable_curves": true
+}

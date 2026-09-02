@@ -1,0 +1,359 @@
+{
+  "curves": [
+    {
+      "name": "Typical output characteristics, VGS = 5 V",
+      "page_reference": "Datasheet p. 5, Fig. 5",
+      "points": [
+        {
+          "x": 0.0,
+          "y": 0.0
+        },
+        {
+          "x": 0.5,
+          "y": 55.0
+        },
+        {
+          "x": 1.0,
+          "y": 65.0
+        },
+        {
+          "x": 2.0,
+          "y": 70.0
+        },
+        {
+          "x": 3.0,
+          "y": 73.0
+        }
+      ],
+      "test_conditions": "Tj = 25 \u00b0C; parameter VGS = 5 V",
+      "x_axis": {
+        "quantity": "VDS",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "ID",
+        "scale": "linear",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "Typical transfer characteristics, 25 \u00b0C",
+      "page_reference": "Datasheet p. 5, Fig. 7",
+      "points": [
+        {
+          "x": 3.0,
+          "y": 0.0
+        },
+        {
+          "x": 3.5,
+          "y": 1.0
+        },
+        {
+          "x": 4.0,
+          "y": 7.0
+        },
+        {
+          "x": 4.5,
+          "y": 31.0
+        },
+        {
+          "x": 5.0,
+          "y": 83.0
+        },
+        {
+          "x": 5.2,
+          "y": 100.0
+        }
+      ],
+      "test_conditions": "Curve labeled Tj = 25 \u00b0C; |VDS| >> 2ID||RDS(on)max",
+      "x_axis": {
+        "quantity": "VGS",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "ID",
+        "scale": "linear",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "Typical input capacitance, Ciss",
+      "page_reference": "Datasheet p. 6, Fig. 11",
+      "points": [
+        {
+          "x": 1.0,
+          "y": 3.2e-09
+        },
+        {
+          "x": 20.0,
+          "y": 3e-09
+        },
+        {
+          "x": 50.0,
+          "y": 3e-09
+        },
+        {
+          "x": 80.0,
+          "y": 3e-09
+        }
+      ],
+      "test_conditions": "VGS = 0 V; f = 1 MHz; curve temperature not specified",
+      "x_axis": {
+        "quantity": "VDS",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "Ciss",
+        "scale": "log",
+        "unit": "F"
+      }
+    },
+    {
+      "name": "Typical output capacitance, Coss",
+      "page_reference": "Datasheet p. 6, Fig. 11",
+      "points": [
+        {
+          "x": 1.0,
+          "y": 2.2e-09
+        },
+        {
+          "x": 20.0,
+          "y": 9e-10
+        },
+        {
+          "x": 50.0,
+          "y": 5e-10
+        },
+        {
+          "x": 80.0,
+          "y": 3.5e-10
+        }
+      ],
+      "test_conditions": "VGS = 0 V; f = 1 MHz; curve temperature not specified",
+      "x_axis": {
+        "quantity": "VDS",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "Coss",
+        "scale": "log",
+        "unit": "F"
+      }
+    },
+    {
+      "name": "Typical reverse transfer capacitance, Crss",
+      "page_reference": "Datasheet p. 6, Fig. 11",
+      "points": [
+        {
+          "x": 1.0,
+          "y": 3.5e-10
+        },
+        {
+          "x": 20.0,
+          "y": 6e-11
+        },
+        {
+          "x": 50.0,
+          "y": 2.5e-11
+        },
+        {
+          "x": 80.0,
+          "y": 1.3e-11
+        }
+      ],
+      "test_conditions": "VGS = 0 V; f = 1 MHz; curve temperature not specified",
+      "x_axis": {
+        "quantity": "VDS",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "Crss",
+        "scale": "log",
+        "unit": "F"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7"
+    ],
+    "revision": "Rev. 2.1, 2011-03-11",
+    "title": "BSC070N10NS3G G OptiMOS3 Power-Transistor"
+  },
+  "extraction_notes": [
+    "The job identity is confirmed by the assigned filename order 0927 and the supplied MOSFET context pack: order 927, LCSC C501502, MPN BSC070N10NS3G, manufacturer Infineon Technologies, family mosfet.",
+    "The output-characteristics and transfer-characteristics source curves explicitly identify Tj = 25 \u00b0C. The capacitance source curve does not state a curve temperature; its test conditions retain only VGS = 0 V and f = 1 MHz.",
+    "Curve points are approximate digitizations from the target-specific curves in Figures 5, 7, and 11. No curve points were inferred from catalog hints or table defaults.",
+    "The schema provides one value slot for coss and body_diode, so the published typical values are retained; the datasheet also publishes coss maximum 690 pF and body-diode forward-voltage maximum 1.2 V, which are not represented as additional slots."
+  ],
+  "family": "mosfet",
+  "manufacturer": "Infineon Technologies",
+  "mpn": "BSC070N10NS3G",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "body_diode": {
+      "conditions": "VGS = 0 V; IF = 50 A; Tj = 25 \u00b0C",
+      "page_reference": "Datasheet p. 3",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 1.0
+    },
+    "breakdown_voltage": {
+      "conditions": "VGS = 0 V; ID = 1 mA; Tj = 25 \u00b0C",
+      "page_reference": "Datasheet p. 2",
+      "source_kind": "minimum",
+      "unit": "V",
+      "value": 100.0
+    },
+    "ciss": {
+      "conditions": "VGS = 0 V; VDS = 50 V; f = 1 MHz; Tj = 25 \u00b0C electrical-characteristics condition",
+      "page_reference": "Datasheet p. 3",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 3e-09
+    },
+    "coss": {
+      "conditions": "VGS = 0 V; VDS = 50 V; f = 1 MHz; Tj = 25 \u00b0C electrical-characteristics condition",
+      "page_reference": "Datasheet p. 3",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 5.2e-10
+    },
+    "crss": {
+      "conditions": "VGS = 0 V; VDS = 50 V; f = 1 MHz; Tj = 25 \u00b0C electrical-characteristics condition",
+      "page_reference": "Datasheet p. 3",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 2.1e-11
+    },
+    "polarity": "n",
+    "rdson_points": [
+      {
+        "current": {
+          "conditions": "Tj = 25 \u00b0C; VGS = 10 V",
+          "page_reference": "Datasheet p. 2",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 50.0
+        },
+        "resistance": {
+          "conditions": "Tj = 25 \u00b0C; VGS = 10 V; ID = 50 A",
+          "page_reference": "Datasheet p. 2",
+          "source_kind": "typical",
+          "unit": "ohm",
+          "value": 0.0063
+        },
+        "vgs": {
+          "conditions": "Tj = 25 \u00b0C; ID = 50 A",
+          "page_reference": "Datasheet p. 2",
+          "source_kind": "typical",
+          "unit": "V",
+          "value": 10.0
+        }
+      },
+      {
+        "current": {
+          "conditions": "Tj = 25 \u00b0C; VGS = 10 V",
+          "page_reference": "Datasheet p. 2",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 50.0
+        },
+        "resistance": {
+          "conditions": "Tj = 25 \u00b0C; VGS = 10 V; ID = 50 A",
+          "page_reference": "Datasheet p. 2",
+          "source_kind": "maximum",
+          "unit": "ohm",
+          "value": 0.007
+        },
+        "vgs": {
+          "conditions": "Tj = 25 \u00b0C; ID = 50 A",
+          "page_reference": "Datasheet p. 2",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 10.0
+        }
+      },
+      {
+        "current": {
+          "conditions": "Tj = 25 \u00b0C; VGS = 6 V",
+          "page_reference": "Datasheet p. 2",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 25.0
+        },
+        "resistance": {
+          "conditions": "Tj = 25 \u00b0C; VGS = 6 V; ID = 25 A",
+          "page_reference": "Datasheet p. 2",
+          "source_kind": "typical",
+          "unit": "ohm",
+          "value": 0.008
+        },
+        "vgs": {
+          "conditions": "Tj = 25 \u00b0C; ID = 25 A",
+          "page_reference": "Datasheet p. 2",
+          "source_kind": "typical",
+          "unit": "V",
+          "value": 6.0
+        }
+      },
+      {
+        "current": {
+          "conditions": "Tj = 25 \u00b0C; VGS = 6 V",
+          "page_reference": "Datasheet p. 2",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 25.0
+        },
+        "resistance": {
+          "conditions": "Tj = 25 \u00b0C; VGS = 6 V; ID = 25 A",
+          "page_reference": "Datasheet p. 2",
+          "source_kind": "maximum",
+          "unit": "ohm",
+          "value": 0.014
+        },
+        "vgs": {
+          "conditions": "Tj = 25 \u00b0C; ID = 25 A",
+          "page_reference": "Datasheet p. 2",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 6.0
+        }
+      }
+    ],
+    "threshold_max": {
+      "conditions": "VDS = VGS; ID = 75 \u00b5A; Tj = 25 \u00b0C",
+      "page_reference": "Datasheet p. 2",
+      "source_kind": "maximum",
+      "unit": "V",
+      "value": 3.5
+    },
+    "threshold_min": {
+      "conditions": "VDS = VGS; ID = 75 \u00b5A; Tj = 25 \u00b0C",
+      "page_reference": "Datasheet p. 2",
+      "source_kind": "minimum",
+      "unit": "V",
+      "value": 2.0
+    },
+    "threshold_typ": {
+      "conditions": "VDS = VGS; ID = 75 \u00b5A; Tj = 25 \u00b0C",
+      "page_reference": "Datasheet p. 2",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 2.7
+    }
+  },
+  "usable_curves": true
+}

@@ -1,0 +1,98 @@
+{
+  "curves": [
+    {
+      "name": "Typical forward voltage (SK82C-SK84C curve)",
+      "page_reference": "p. 2, Fig. 3",
+      "points": [
+        {
+          "x": 0.3,
+          "y": 0.1
+        },
+        {
+          "x": 0.38,
+          "y": 1.0
+        },
+        {
+          "x": 0.48,
+          "y": 10.0
+        },
+        {
+          "x": 0.64,
+          "y": 100.0
+        },
+        {
+          "x": 0.86,
+          "y": 300.0
+        }
+      ],
+      "test_conditions": "TA = 25 degC, pulse width = 300 us, 1% duty cycle",
+      "x_axis": {
+        "quantity": "forward voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "forward current",
+        "scale": "log",
+        "unit": "A"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ],
+    "revision": "Rev:1.0",
+    "title": "SK82C THRU SK820C"
+  },
+  "extraction_notes": [
+    "The forward curve is digitized from the shared SK82C-SK84C typical curve in Fig. 3.",
+    "The high-temperature reverse-current row is 50 mA at VR = VDC and TA = 100 degC; the schema reverse_current field records the 25 degC row."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "SK84C",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": null,
+    "breakdown_voltage": null,
+    "capacitance": {
+      "conditions": "VR = 4.0 V DC, f = 1 MHz, TA = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, Typical junction capacitance",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 9e-10
+    },
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 8.0 A, TA = 25 degC",
+          "page_reference": "p. 2, Electrical Characteristics, Maximum instantaneous forward voltage",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 8.0
+        },
+        "voltage": {
+          "conditions": "IF = 8.0 A, TA = 25 degC",
+          "page_reference": "p. 2, Electrical Characteristics, Maximum instantaneous forward voltage",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.55
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = VDC = 40 V, TA = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, Maximum DC reverse current",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 0.0005
+    },
+    "reverse_recovery": null,
+    "variant": "schottky"
+  },
+  "usable_curves": true
+}

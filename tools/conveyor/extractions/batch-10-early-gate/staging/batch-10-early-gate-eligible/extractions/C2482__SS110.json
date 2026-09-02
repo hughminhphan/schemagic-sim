@@ -1,0 +1,196 @@
+{
+  "curves": [
+    {
+      "name": "Typical forward characteristic, SS18-SS1120 group",
+      "page_reference": "p. 2, Fig. 3",
+      "points": [
+        {
+          "x": 0.5,
+          "y": 0.1
+        },
+        {
+          "x": 0.6,
+          "y": 0.25
+        },
+        {
+          "x": 0.7,
+          "y": 0.6
+        },
+        {
+          "x": 0.8,
+          "y": 1.2
+        },
+        {
+          "x": 0.9,
+          "y": 2.5
+        },
+        {
+          "x": 1.05,
+          "y": 5.0
+        },
+        {
+          "x": 1.2,
+          "y": 8.0
+        },
+        {
+          "x": 1.4,
+          "y": 12.0
+        }
+      ],
+      "test_conditions": "Tj = 25 degC; SS18-SS1120 curve group",
+      "x_axis": {
+        "quantity": "instantaneous forward voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "instantaneous forward current",
+        "scale": "log",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "Typical reverse characteristic, SS16-SS120 group, Tj = 25 degC",
+      "page_reference": "p. 2, Fig. 2",
+      "points": [
+        {
+          "x": 5.0,
+          "y": 1.1e-06
+        },
+        {
+          "x": 20.0,
+          "y": 1.3e-06
+        },
+        {
+          "x": 40.0,
+          "y": 1.5e-06
+        },
+        {
+          "x": 60.0,
+          "y": 1.8e-06
+        },
+        {
+          "x": 80.0,
+          "y": 2.3e-06
+        },
+        {
+          "x": 100.0,
+          "y": 3.5e-06
+        }
+      ],
+      "test_conditions": "Tj = 25 degC; SS16-SS120 curve group",
+      "x_axis": {
+        "quantity": "percent of rated peak reverse voltage",
+        "scale": "linear",
+        "unit": "%"
+      },
+      "y_axis": {
+        "quantity": "instantaneous reverse current",
+        "scale": "log",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "Typical junction capacitance, SS16-SS1200 group",
+      "page_reference": "p. 2, Fig. 4",
+      "points": [
+        {
+          "x": 0.1,
+          "y": 1.8e-10
+        },
+        {
+          "x": 0.3,
+          "y": 1.5e-10
+        },
+        {
+          "x": 1.0,
+          "y": 1.1e-10
+        },
+        {
+          "x": 3.0,
+          "y": 8e-11
+        },
+        {
+          "x": 10.0,
+          "y": 6e-11
+        },
+        {
+          "x": 30.0,
+          "y": 4.5e-11
+        },
+        {
+          "x": 100.0,
+          "y": 3e-11
+        }
+      ],
+      "test_conditions": "Tj = 25 degC; SS16-SS1200 curve group",
+      "x_axis": {
+        "quantity": "reverse voltage",
+        "scale": "log",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "junction capacitance",
+        "scale": "log",
+        "unit": "F"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ],
+    "revision": "Rev:2024A4",
+    "title": "SS12 THRU SS1200 Surface Mount Schottky Barrier Rectifier"
+  },
+  "extraction_notes": [
+    "Schottky majority-carrier device; no reverse-recovery-time value is published in the supplied datasheet.",
+    "The forward, reverse, and junction-capacitance points are digitized from the supplied typical curves; tabulated values are retained separately."
+  ],
+  "family": "diode",
+  "manufacturer": "MDD Microdiode Semiconductor",
+  "mpn": "SS110",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": null,
+    "breakdown_voltage": null,
+    "capacitance": {
+      "conditions": "VR = 4.0 V DC, f = 1 MHz, TA = 25 degC",
+      "page_reference": "p. 1, note 1 and Typical junction capacitance",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 8e-11
+    },
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 1.0 A, TA = 25 degC",
+          "page_reference": "p. 1, maximum ratings and electrical characteristics, Maximum instantaneous forward voltage",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.85
+        },
+        "voltage": {
+          "conditions": "IF = 1.0 A, TA = 25 degC",
+          "page_reference": "p. 1, maximum ratings and electrical characteristics, Maximum instantaneous forward voltage",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.85
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = rated DC blocking voltage = 100 V, TA = 25 degC",
+      "page_reference": "p. 1, maximum ratings and electrical characteristics, Maximum DC reverse current",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 0.0002
+    },
+    "reverse_recovery": null,
+    "variant": "schottky"
+  },
+  "usable_curves": true
+}

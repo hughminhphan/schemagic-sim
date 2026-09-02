@@ -1,0 +1,342 @@
+{
+  "curves": [
+    {
+      "name": "Typical output characteristics, VGS = 4 V magnitude",
+      "page_reference": "p. 3 Output Characteristics",
+      "points": [
+        {
+          "x": 0.5,
+          "y": 4.8
+        },
+        {
+          "x": 1.0,
+          "y": 6.8
+        },
+        {
+          "x": 2.0,
+          "y": 8.4
+        },
+        {
+          "x": 3.0,
+          "y": 9.2
+        },
+        {
+          "x": 4.0,
+          "y": 9.8
+        },
+        {
+          "x": 5.0,
+          "y": 10.1
+        }
+      ],
+      "test_conditions": "TJ = 25 degC; p-channel axes plotted as positive magnitudes; VGS magnitude = 4 V",
+      "x_axis": {
+        "quantity": "drain-source voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "drain current",
+        "scale": "linear",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "Typical transfer characteristics, TC = 25 degC",
+      "page_reference": "p. 3 Transfer Characteristics",
+      "points": [
+        {
+          "x": 2.5,
+          "y": 0.1
+        },
+        {
+          "x": 2.75,
+          "y": 0.6
+        },
+        {
+          "x": 3.0,
+          "y": 1.6
+        },
+        {
+          "x": 3.25,
+          "y": 3.2
+        },
+        {
+          "x": 3.5,
+          "y": 5.0
+        }
+      ],
+      "test_conditions": "TC = 25 degC; p-channel axes plotted as positive magnitudes",
+      "x_axis": {
+        "quantity": "gate-source voltage magnitude",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "drain current magnitude",
+        "scale": "linear",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "Typical Ciss versus drain-source voltage",
+      "page_reference": "p. 3 Capacitance",
+      "points": [
+        {
+          "x": 1,
+          "y": 7.5e-07
+        },
+        {
+          "x": 5,
+          "y": 6.6e-07
+        },
+        {
+          "x": 10,
+          "y": 6.3e-07
+        },
+        {
+          "x": 20,
+          "y": 6.1e-07
+        },
+        {
+          "x": 30,
+          "y": 6e-07
+        },
+        {
+          "x": 40,
+          "y": 5.9e-07
+        },
+        {
+          "x": 60,
+          "y": 5.8e-07
+        }
+      ],
+      "test_conditions": "VGS = 0 V, f = 1 MHz, TJ = 25 degC",
+      "x_axis": {
+        "quantity": "drain-source voltage magnitude",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "input capacitance",
+        "scale": "linear",
+        "unit": "F"
+      }
+    },
+    {
+      "name": "Typical source-drain diode forward characteristic",
+      "page_reference": "p. 4 Source-Drain Diode Forward Voltage",
+      "points": [
+        {
+          "x": 0.2,
+          "y": 0.1
+        },
+        {
+          "x": 0.4,
+          "y": 0.3
+        },
+        {
+          "x": 0.6,
+          "y": 1.0
+        },
+        {
+          "x": 0.8,
+          "y": 3.0
+        },
+        {
+          "x": 1.0,
+          "y": 10.0
+        },
+        {
+          "x": 1.2,
+          "y": 100.0
+        }
+      ],
+      "test_conditions": "VGS = 0 V; TJ = 25 degC",
+      "x_axis": {
+        "quantity": "source-drain voltage magnitude",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "source current magnitude",
+        "scale": "log",
+        "unit": "A"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4",
+      "p. 5",
+      "p. 6",
+      "p. 7",
+      "p. 8",
+      "p. 9"
+    ],
+    "revision": "S09-0704-Rev. B, 27-Apr-09",
+    "title": "Si9407BDY"
+  },
+  "extraction_notes": [
+    "This is a p-channel MOSFET. Datasheet negative VDS, VGS, ID, and IS values are represented as positive magnitudes in the extraction while polarity is preserved as p.",
+    "The source table gives a typical body-diode voltage of 0.8 V and a maximum of 1.2 V; the schema has one body_diode slot, so the guaranteed maximum is stored and the typical is retained here.",
+    "The capacitance table condition applies to Ciss, Coss, and Crss; the Ciss curve is digitized from the typical characteristic plot.",
+    "Curve axes follow the datasheet figures, which display p-channel quantities as positive magnitudes."
+  ],
+  "family": "mosfet",
+  "manufacturer": "Vishay Intertech",
+  "mpn": "SI9407BDY-T1-GE3",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "body_diode": {
+      "conditions": "IS magnitude = 2 A, VGS = 0 V, TJ = 25 degC",
+      "page_reference": "p. 2 Specifications, Body Diode Voltage, MAX",
+      "source_kind": "maximum",
+      "unit": "V",
+      "value": 1.2
+    },
+    "breakdown_voltage": {
+      "conditions": "VGS = 0 V, ID magnitude = 250 uA",
+      "page_reference": "p. 2 Specifications, Drain-Source Breakdown Voltage",
+      "source_kind": "minimum",
+      "unit": "V",
+      "value": 60.0
+    },
+    "ciss": {
+      "conditions": "VDS magnitude = 30 V, VGS = 0 V, f = 1 MHz, TJ = 25 degC",
+      "page_reference": "p. 2 Specifications, Ciss",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 6e-10
+    },
+    "coss": {
+      "conditions": "VDS magnitude = 30 V, VGS = 0 V, f = 1 MHz, TJ = 25 degC",
+      "page_reference": "p. 2 Specifications, Coss",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 7e-11
+    },
+    "crss": {
+      "conditions": "VDS magnitude = 30 V, VGS = 0 V, f = 1 MHz, TJ = 25 degC",
+      "page_reference": "p. 2 Specifications, Crss",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 5e-11
+    },
+    "polarity": "p",
+    "rdson_points": [
+      {
+        "current": {
+          "conditions": "VGS magnitude = 10 V; TJ = 25 degC",
+          "page_reference": "p. 2 Specifications, RDS(on)",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 3.2
+        },
+        "resistance": {
+          "conditions": "VGS magnitude = 10 V, ID magnitude = 3.2 A; pulse test",
+          "page_reference": "p. 2 Specifications, RDS(on)",
+          "source_kind": "typical",
+          "unit": "ohm",
+          "value": 0.1
+        },
+        "vgs": {
+          "conditions": "TJ = 25 degC; ID magnitude = 3.2 A",
+          "page_reference": "p. 2 Specifications, RDS(on)",
+          "source_kind": "typical",
+          "unit": "V",
+          "value": 10.0
+        }
+      },
+      {
+        "current": {
+          "conditions": "VGS magnitude = 10 V; TJ = 25 degC",
+          "page_reference": "p. 2 Specifications, RDS(on)",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 3.2
+        },
+        "resistance": {
+          "conditions": "VGS magnitude = 10 V, ID magnitude = 3.2 A; pulse test",
+          "page_reference": "p. 2 Specifications, RDS(on)",
+          "source_kind": "maximum",
+          "unit": "ohm",
+          "value": 0.12
+        },
+        "vgs": {
+          "conditions": "TJ = 25 degC; ID magnitude = 3.2 A",
+          "page_reference": "p. 2 Specifications, RDS(on)",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 10.0
+        }
+      },
+      {
+        "current": {
+          "conditions": "VGS magnitude = 4.5 V; TJ = 25 degC",
+          "page_reference": "p. 2 Specifications, RDS(on)",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 2.9
+        },
+        "resistance": {
+          "conditions": "VGS magnitude = 4.5 V, ID magnitude = 2.9 A; pulse test",
+          "page_reference": "p. 2 Specifications, RDS(on)",
+          "source_kind": "typical",
+          "unit": "ohm",
+          "value": 0.126
+        },
+        "vgs": {
+          "conditions": "TJ = 25 degC; ID magnitude = 2.9 A",
+          "page_reference": "p. 2 Specifications, RDS(on)",
+          "source_kind": "typical",
+          "unit": "V",
+          "value": 4.5
+        }
+      },
+      {
+        "current": {
+          "conditions": "VGS magnitude = 4.5 V; TJ = 25 degC",
+          "page_reference": "p. 2 Specifications, RDS(on)",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 2.9
+        },
+        "resistance": {
+          "conditions": "VGS magnitude = 4.5 V, ID magnitude = 2.9 A; pulse test",
+          "page_reference": "p. 2 Specifications, RDS(on)",
+          "source_kind": "maximum",
+          "unit": "ohm",
+          "value": 0.15
+        },
+        "vgs": {
+          "conditions": "TJ = 25 degC; ID magnitude = 2.9 A",
+          "page_reference": "p. 2 Specifications, RDS(on)",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 4.5
+        }
+      }
+    ],
+    "threshold_max": {
+      "conditions": "TJ = 25 degC; VDS magnitude = VGS magnitude; ID magnitude = 250 uA",
+      "page_reference": "p. 2 Specifications, VGS(th), MAX",
+      "source_kind": "maximum",
+      "unit": "V",
+      "value": 3.0
+    },
+    "threshold_min": {
+      "conditions": "TJ = 25 degC; VDS magnitude = VGS magnitude; ID magnitude = 250 uA",
+      "page_reference": "p. 2 Specifications, VGS(th), MIN",
+      "source_kind": "minimum",
+      "unit": "V",
+      "value": 1.0
+    },
+    "threshold_typ": null
+  },
+  "usable_curves": true
+}

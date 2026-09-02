@@ -1,0 +1,206 @@
+{
+  "curves": [
+    {
+      "name": "Typical forward voltage, S2M",
+      "page_reference": "p. 2, Fig. 3 Typical Forward Voltage",
+      "points": [
+        {
+          "x": 0.44,
+          "y": 0.01
+        },
+        {
+          "x": 0.48,
+          "y": 0.02
+        },
+        {
+          "x": 0.52,
+          "y": 0.05
+        },
+        {
+          "x": 0.56,
+          "y": 0.1
+        },
+        {
+          "x": 0.6,
+          "y": 0.15
+        },
+        {
+          "x": 0.65,
+          "y": 0.25
+        },
+        {
+          "x": 0.7,
+          "y": 0.4
+        },
+        {
+          "x": 0.75,
+          "y": 0.65
+        },
+        {
+          "x": 0.8,
+          "y": 0.9
+        },
+        {
+          "x": 0.85,
+          "y": 1.4
+        },
+        {
+          "x": 0.9,
+          "y": 2.0
+        },
+        {
+          "x": 1.0,
+          "y": 3.8
+        },
+        {
+          "x": 1.1,
+          "y": 6.0
+        },
+        {
+          "x": 1.2,
+          "y": 8.5
+        },
+        {
+          "x": 1.28,
+          "y": 10.0
+        }
+      ],
+      "test_conditions": "Tj = 25 degC; pulse width = 300 us; 1% duty cycle",
+      "x_axis": {
+        "quantity": "instantaneous forward voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "instantaneous forward current",
+        "scale": "log",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "Typical reverse characteristics, S2M at Tj = 25 degC",
+      "page_reference": "p. 2, Fig. 4 Typical Reverse Characteristics",
+      "points": [
+        {
+          "x": 0.0,
+          "y": 0.04
+        },
+        {
+          "x": 20.0,
+          "y": 0.055
+        },
+        {
+          "x": 40.0,
+          "y": 0.075
+        },
+        {
+          "x": 60.0,
+          "y": 0.1
+        },
+        {
+          "x": 80.0,
+          "y": 0.14
+        },
+        {
+          "x": 100.0,
+          "y": 0.2
+        },
+        {
+          "x": 110.0,
+          "y": 0.25
+        },
+        {
+          "x": 120.0,
+          "y": 0.35
+        },
+        {
+          "x": 125.0,
+          "y": 0.5
+        },
+        {
+          "x": 130.0,
+          "y": 2.0
+        },
+        {
+          "x": 135.0,
+          "y": 20.0
+        },
+        {
+          "x": 137.0,
+          "y": 100.0
+        }
+      ],
+      "test_conditions": "Tj = 25 degC; S2M curve; rated peak reverse voltage is 1000 V",
+      "x_axis": {
+        "quantity": "percent of rated peak reverse voltage",
+        "scale": "linear",
+        "unit": "%"
+      },
+      "y_axis": {
+        "quantity": "instantaneous reverse current",
+        "scale": "log",
+        "unit": "uA"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ],
+    "revision": "Rev:1.1",
+    "title": "S2A THRU S2M Surface Mount General Purpose Rectifier"
+  },
+  "extraction_notes": [
+    "Forward and reverse characteristic points were digitized from the usable S2M curves in Fig. 3 and Fig. 4.",
+    "The electrical-characteristics table gives VF maximum 1.0 V at IF = 2.0 A, IR maximum 2.0 uA at the 1000 V rated DC blocking voltage, and typical CJ 30 pF at 4.0 V DC and 1 MHz.",
+    "The reverse-current row at TA = 125 degC is 200 uA and was not used as the 25 degC reverse-current input.",
+    "Reverse recovery time is not published in the supplied datasheet.",
+    "No zener breakdown voltage or breakdown-current specification is published."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "S2M",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": null,
+    "breakdown_voltage": null,
+    "capacitance": {
+      "conditions": "4.0 V DC, 1 MHz, TA = 25 degC",
+      "page_reference": "p. 2, electrical characteristics, typical junction capacitance",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 3e-11
+    },
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 2.0 A, TA = 25 degC",
+          "page_reference": "p. 2, electrical characteristics, maximum instantaneous forward voltage",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 2.0
+        },
+        "voltage": {
+          "conditions": "IF = 2.0 A, TA = 25 degC",
+          "page_reference": "p. 2, electrical characteristics, maximum instantaneous forward voltage",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 1.0
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = VDC = 1000 V, TA = 25 degC",
+      "page_reference": "p. 2, electrical characteristics, maximum DC reverse current at rated DC blocking voltage",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 2e-06
+    },
+    "reverse_recovery": null,
+    "variant": "rectifier"
+  },
+  "usable_curves": true
+}

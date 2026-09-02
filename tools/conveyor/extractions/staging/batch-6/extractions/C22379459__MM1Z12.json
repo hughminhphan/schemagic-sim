@@ -1,0 +1,107 @@
+{
+  "curves": [
+    {
+      "name": "Typical zener characteristic, VZ nominal 12 V",
+      "page_reference": "p. 3 Fig. 2, zener characteristic trace labelled 12 V",
+      "points": [
+        {
+          "x": 11.5,
+          "y": 0.001
+        },
+        {
+          "x": 12.0,
+          "y": 0.005
+        },
+        {
+          "x": 12.2,
+          "y": 0.01
+        },
+        {
+          "x": 12.5,
+          "y": 0.02
+        },
+        {
+          "x": 12.9,
+          "y": 0.03
+        }
+      ],
+      "test_conditions": "TA = 25 degC, pulsed, MM1Z12 trace labelled 12",
+      "x_axis": {
+        "quantity": "zener voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "zener current",
+        "scale": "linear",
+        "unit": "A"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "revision": "Rev:1.0",
+    "title": "MM1Z2V0 THRU MM1Z75 SURFACE MOUNT ZENER DIODES"
+  },
+  "extraction_notes": [
+    "Zener-voltage limits are 11.4 V minimum and 12.7 V maximum at IZT = 5 mA and TA = 25 degC; the strict schema records the nominal value as breakdown_voltage.",
+    "Maximum zener impedance is 35 ohm at IZT = 5 mA.",
+    "The datasheet publishes no target-specific tabulated capacitance or reverse-recovery time.",
+    "The zener curve points are direct readings from the labelled 12 V trace in Fig. 2, not interpolated or fitted."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "MM1Z12",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": {
+      "conditions": "IZT = 5 mA, TA = 25 degC; test current defining VZ",
+      "page_reference": "p. 2, Electrical Characteristics, MM1Z12 row, IZT",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.005
+    },
+    "breakdown_voltage": {
+      "conditions": "IZT = 5 mA, TA = 25 degC; nominal zener voltage",
+      "page_reference": "p. 2, Electrical Characteristics, MM1Z12 row, VZ nominal",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 12.0
+    },
+    "capacitance": null,
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 10 mA, TA = 25 degC",
+          "page_reference": "p. 1, Maximum Ratings, Forward Voltage",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.01
+        },
+        "voltage": {
+          "conditions": "IF = 10 mA, TA = 25 degC",
+          "page_reference": "p. 1, Maximum Ratings, Forward Voltage",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.9
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = 9 V, TA = 25 degC; maximum leakage current",
+      "page_reference": "p. 2, Electrical Characteristics, MM1Z12 row, IR@VR",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 1e-07
+    },
+    "reverse_recovery": null,
+    "variant": "zener"
+  },
+  "usable_curves": true
+}

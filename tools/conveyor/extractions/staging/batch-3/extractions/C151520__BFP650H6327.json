@@ -1,0 +1,323 @@
+{
+  "schema_version": "1.0.0",
+  "mpn": "BFP650H6327",
+  "manufacturer": "Infineon Technologies",
+  "family": "bjt",
+  "datasheet_identity": {
+    "title": "BFP650, High Linearity Silicon Germanium Bipolar RF Transistor",
+    "revision": "Revision 1.1, 2012-09-13",
+    "pages_examined": [
+      "p. 1",
+      "p. 9",
+      "p. 11",
+      "p. 17",
+      "p. 18",
+      "p. 21",
+      "p. 27"
+    ]
+  },
+  "usable_curves": true,
+  "curves": [
+    {
+      "name": "DC current gain hFE versus collector current",
+      "x_axis": {
+        "quantity": "collector current",
+        "unit": "mA",
+        "scale": "log"
+      },
+      "y_axis": {
+        "quantity": "DC current gain hFE",
+        "unit": "1",
+        "scale": "linear"
+      },
+      "test_conditions": "VCE = 3 V, TA = 25 °C; typical-device curve",
+      "page_reference": "p. 17, Fig. 5-3",
+      "points": [
+        {"x": 0.1, "y": 99},
+        {"x": 1, "y": 96},
+        {"x": 10, "y": 93},
+        {"x": 30, "y": 90},
+        {"x": 70, "y": 87},
+        {"x": 100, "y": 84},
+        {"x": 150, "y": 80}
+      ]
+    },
+    {
+      "name": "Collector current versus base-emitter voltage",
+      "x_axis": {
+        "quantity": "base-emitter voltage",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "collector current",
+        "unit": "mA",
+        "scale": "log"
+      },
+      "test_conditions": "VCE = 2 V, TA = 25 °C; typical-device curve",
+      "page_reference": "p. 18, Fig. 5-4",
+      "points": [
+        {"x": 0.6, "y": 0.025},
+        {"x": 0.65, "y": 0.18},
+        {"x": 0.7, "y": 1.1},
+        {"x": 0.75, "y": 7},
+        {"x": 0.8, "y": 48},
+        {"x": 0.82, "y": 170}
+      ]
+    },
+    {
+      "name": "Collector-base capacitance versus collector-base voltage",
+      "x_axis": {
+        "quantity": "collector-base voltage",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "collector-base capacitance",
+        "unit": "pF",
+        "scale": "linear"
+      },
+      "test_conditions": "f = 1 MHz, TA = 25 °C",
+      "page_reference": "p. 21, Fig. 5-9",
+      "points": [
+        {"x": 0, "y": 0.38},
+        {"x": 0.5, "y": 0.315},
+        {"x": 1, "y": 0.292},
+        {"x": 2, "y": 0.272},
+        {"x": 3, "y": 0.262},
+        {"x": 4, "y": 0.255}
+      ]
+    }
+  ],
+  "specs": {
+    "polarity": "npn",
+    "gain_points": [
+      {
+        "collector_current": {
+          "value": 0.07,
+          "unit": "A",
+          "conditions": "VCE = 3 V, TA = 25 °C, pulse measured",
+          "page_reference": "p. 11, Table 5-1",
+          "source_kind": "minimum"
+        },
+        "vce": {
+          "value": 3,
+          "unit": "V",
+          "conditions": "IC = 70 mA, TA = 25 °C, pulse measured",
+          "page_reference": "p. 11, Table 5-1",
+          "source_kind": "minimum"
+        },
+        "hfe": {
+          "value": 100,
+          "unit": "1",
+          "conditions": "IC = 70 mA, VCE = 3 V, TA = 25 °C, pulse measured",
+          "page_reference": "p. 11, Table 5-1",
+          "source_kind": "minimum"
+        }
+      },
+      {
+        "collector_current": {
+          "value": 0.07,
+          "unit": "A",
+          "conditions": "VCE = 3 V, TA = 25 °C, pulse measured",
+          "page_reference": "p. 11, Table 5-1",
+          "source_kind": "typical"
+        },
+        "vce": {
+          "value": 3,
+          "unit": "V",
+          "conditions": "IC = 70 mA, TA = 25 °C, pulse measured",
+          "page_reference": "p. 11, Table 5-1",
+          "source_kind": "typical"
+        },
+        "hfe": {
+          "value": 170,
+          "unit": "1",
+          "conditions": "IC = 70 mA, VCE = 3 V, TA = 25 °C, pulse measured",
+          "page_reference": "p. 11, Table 5-1",
+          "source_kind": "typical"
+        }
+      },
+      {
+        "collector_current": {
+          "value": 0.07,
+          "unit": "A",
+          "conditions": "VCE = 3 V, TA = 25 °C, pulse measured",
+          "page_reference": "p. 11, Table 5-1",
+          "source_kind": "maximum"
+        },
+        "vce": {
+          "value": 3,
+          "unit": "V",
+          "conditions": "IC = 70 mA, TA = 25 °C, pulse measured",
+          "page_reference": "p. 11, Table 5-1",
+          "source_kind": "maximum"
+        },
+        "hfe": {
+          "value": 250,
+          "unit": "1",
+          "conditions": "IC = 70 mA, VCE = 3 V, TA = 25 °C, pulse measured",
+          "page_reference": "p. 11, Table 5-1",
+          "source_kind": "maximum"
+        }
+      },
+      {
+        "collector_current": {
+          "value": 0.0001,
+          "unit": "A",
+          "conditions": "VCE = 3 V, TA = 25 °C; typical-device curve",
+          "page_reference": "p. 17, Fig. 5-3",
+          "source_kind": "digitized_typical_curve"
+        },
+        "vce": {
+          "value": 3,
+          "unit": "V",
+          "conditions": "IC = 0.1 mA, TA = 25 °C; typical-device curve",
+          "page_reference": "p. 17, Fig. 5-3",
+          "source_kind": "digitized_typical_curve"
+        },
+        "hfe": {
+          "value": 99,
+          "unit": "1",
+          "conditions": "IC = 0.1 mA, VCE = 3 V, TA = 25 °C; digitized typical curve",
+          "page_reference": "p. 17, Fig. 5-3",
+          "source_kind": "digitized_typical_curve"
+        }
+      },
+      {
+        "collector_current": {
+          "value": 0.001,
+          "unit": "A",
+          "conditions": "VCE = 3 V, TA = 25 °C; typical-device curve",
+          "page_reference": "p. 17, Fig. 5-3",
+          "source_kind": "digitized_typical_curve"
+        },
+        "vce": {
+          "value": 3,
+          "unit": "V",
+          "conditions": "IC = 1 mA, TA = 25 °C; typical-device curve",
+          "page_reference": "p. 17, Fig. 5-3",
+          "source_kind": "digitized_typical_curve"
+        },
+        "hfe": {
+          "value": 96,
+          "unit": "1",
+          "conditions": "IC = 1 mA, VCE = 3 V, TA = 25 °C; digitized typical curve",
+          "page_reference": "p. 17, Fig. 5-3",
+          "source_kind": "digitized_typical_curve"
+        }
+      },
+      {
+        "collector_current": {
+          "value": 0.01,
+          "unit": "A",
+          "conditions": "VCE = 3 V, TA = 25 °C; typical-device curve",
+          "page_reference": "p. 17, Fig. 5-3",
+          "source_kind": "digitized_typical_curve"
+        },
+        "vce": {
+          "value": 3,
+          "unit": "V",
+          "conditions": "IC = 10 mA, TA = 25 °C; typical-device curve",
+          "page_reference": "p. 17, Fig. 5-3",
+          "source_kind": "digitized_typical_curve"
+        },
+        "hfe": {
+          "value": 93,
+          "unit": "1",
+          "conditions": "IC = 10 mA, VCE = 3 V, TA = 25 °C; digitized typical curve",
+          "page_reference": "p. 17, Fig. 5-3",
+          "source_kind": "digitized_typical_curve"
+        }
+      },
+      {
+        "collector_current": {
+          "value": 0.07,
+          "unit": "A",
+          "conditions": "VCE = 3 V, TA = 25 °C; typical-device curve",
+          "page_reference": "p. 17, Fig. 5-3",
+          "source_kind": "digitized_typical_curve"
+        },
+        "vce": {
+          "value": 3,
+          "unit": "V",
+          "conditions": "IC = 70 mA, TA = 25 °C; typical-device curve",
+          "page_reference": "p. 17, Fig. 5-3",
+          "source_kind": "digitized_typical_curve"
+        },
+        "hfe": {
+          "value": 87,
+          "unit": "1",
+          "conditions": "IC = 70 mA, VCE = 3 V, TA = 25 °C; digitized typical curve",
+          "page_reference": "p. 17, Fig. 5-3",
+          "source_kind": "digitized_typical_curve"
+        }
+      },
+      {
+        "collector_current": {
+          "value": 0.15,
+          "unit": "A",
+          "conditions": "VCE = 3 V, TA = 25 °C; typical-device curve",
+          "page_reference": "p. 17, Fig. 5-3",
+          "source_kind": "digitized_typical_curve"
+        },
+        "vce": {
+          "value": 3,
+          "unit": "V",
+          "conditions": "IC = 150 mA, TA = 25 °C; typical-device curve",
+          "page_reference": "p. 17, Fig. 5-3",
+          "source_kind": "digitized_typical_curve"
+        },
+        "hfe": {
+          "value": 80,
+          "unit": "1",
+          "conditions": "IC = 150 mA, VCE = 3 V, TA = 25 °C; digitized typical curve",
+          "page_reference": "p. 17, Fig. 5-3",
+          "source_kind": "digitized_typical_curve"
+        }
+      }
+    ],
+    "saturation_points": [],
+    "ft": {
+      "value": 42000000000,
+      "unit": "Hz",
+      "conditions": "VCE = 3 V, IC = 70 mA, f = 1 GHz, TA = 25 °C",
+      "page_reference": "p. 11, Table 5-2",
+      "source_kind": "typical"
+    },
+    "cobo": {
+      "value": 2.6e-13,
+      "unit": "F",
+      "conditions": "VCB = 3 V, VBE = 0 V, f = 1 MHz, emitter grounded, TA = 25 °C",
+      "page_reference": "p. 11, Table 5-2",
+      "source_kind": "typical"
+    },
+    "cibo": {
+      "value": 1.3e-12,
+      "unit": "F",
+      "conditions": "VEB = 0.5 V, VCB = 0 V, f = 1 MHz, collector grounded, TA = 25 °C",
+      "page_reference": "p. 11, Table 5-2",
+      "source_kind": "typical"
+    },
+    "vceo": {
+      "value": 4,
+      "unit": "V",
+      "conditions": "IC = 3 mA, IB = 0, open base, TA = 25 °C",
+      "page_reference": "p. 11, Table 5-1",
+      "source_kind": "minimum"
+    }
+  },
+  "extraction_notes": [
+    "Exact target identity is BFP650H6327, Infineon Technologies; the supplied datasheet title identifies the die as BFP650.",
+    "The datasheet is for an NPN silicon germanium bipolar RF transistor.",
+    "Table 5-1 gives hFE = 100 minimum, 170 typical, and 250 maximum at IC = 70 mA and VCE = 3 V, TA = 25 °C, pulse measured.",
+    "Table 5-1 gives V(BR)CEO = 4 V minimum and 4.5 V typical at IC = 3 mA, IB = 0, open base; Table 3-1 separately lists the absolute maximum VCEO as 4.0 V at TA = 25 °C.",
+    "Table 5-2 gives fT = 31 GHz minimum and 42 GHz typical at VCE = 3 V, IC = 70 mA, measurement frequency f = 1 GHz.",
+    "Table 5-2 gives CCB = 0.26 pF typical and 0.4 pF maximum at VCB = 3 V, VBE = 0 V, f = 1 MHz, emitter grounded; the CCB versus VCB curve is also shown in Fig. 5-9.",
+    "Table 5-2 gives CCE = 0.45 pF typical at VCE = 3 V, VBE = 0 V, f = 1 MHz, base grounded; CCE has no direct field in the strict BJT extraction schema.",
+    "Table 5-2 gives CEB = 1.3 pF typical at VEB = 0.5 V, VCB = 0 V, f = 1 MHz, collector grounded; CEB is represented in the schema's cibo field.",
+    "No VCE(sat), VBE(sat), or saturation test-point table is published in the supplied datasheet, so saturation_points is empty.",
+    "Digitized curve points are approximate readings from the explicitly labelled typical-device plots and are not interpolated between undisplayed measured points."
+  ],
+  "omission_reason": null
+}

@@ -1,0 +1,144 @@
+{
+  "curves": [
+    {
+      "name": "Zener characteristics, family curve labeled 43 V (not BZT52C75-specific)",
+      "page_reference": "p. 3 Fig. 2",
+      "points": [
+        {
+          "x": 42.6,
+          "y": 0.0005
+        },
+        {
+          "x": 42.8,
+          "y": 0.001
+        },
+        {
+          "x": 43.0,
+          "y": 0.005
+        },
+        {
+          "x": 43.2,
+          "y": 0.01
+        },
+        {
+          "x": 43.7,
+          "y": 0.03
+        }
+      ],
+      "test_conditions": "Ta = 25 degC, pulsed, PD = 500 mW; family plot covers 11 V to 43 V and does not show a 75 V trace",
+      "x_axis": {
+        "quantity": "zener voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "zener current",
+        "scale": "log",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "Typical capacitance, BZT52CXXX family",
+      "page_reference": "p. 3 Fig. 3",
+      "points": [
+        {
+          "x": 2.0,
+          "y": 1.5e-10
+        },
+        {
+          "x": 5.0,
+          "y": 9e-11
+        },
+        {
+          "x": 10.0,
+          "y": 4e-11
+        },
+        {
+          "x": 20.0,
+          "y": 2e-11
+        },
+        {
+          "x": 50.0,
+          "y": 1e-11
+        }
+      ],
+      "test_conditions": "Ta = 25 degC, f = 1 MHz; 0 V bias; generic BZT52CXXX family plot",
+      "x_axis": {
+        "quantity": "nominal zener voltage",
+        "scale": "log",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "capacitance",
+        "scale": "log",
+        "unit": "F"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "revision": "Rev:1.0",
+    "title": "BZT52C2V0 THRU BZT52C75 - SURFACE MOUNT ZENER DIODES"
+  },
+  "extraction_notes": [
+    "Forward voltage is a maximum rating at IF = 10 mA.",
+    "The BZT52C75 row supplies nominal/minimum/maximum VZ, IZT, ZZT, ZZK, IZK, leakage, and temperature coefficient; only schema-supported fields are transcribed.",
+    "The plotted zener curves stop at 43 V, so the retained 43 V trace is explicitly not BZT52C75-specific.",
+    "The capacitance plot is a generic BZT52CXXX family curve; no BZT52C75-specific tabulated capacitance value is published."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "BZT52C75",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": {
+      "conditions": "Ta = 25 degC; IZT for nominal VZ",
+      "page_reference": "p. 2, Electrical Characteristics, BZT52C75 IZT",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.005
+    },
+    "breakdown_voltage": {
+      "conditions": "Ta = 25 degC, IZT = 5 mA; nominal VZ",
+      "page_reference": "p. 2, Electrical Characteristics, BZT52C75 VZ",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 75.0
+    },
+    "capacitance": null,
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "Ta = 25 degC, IF = 10 mA",
+          "page_reference": "p. 1, Maximum Ratings",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.01
+        },
+        "voltage": {
+          "conditions": "Ta = 25 degC, IF = 10 mA",
+          "page_reference": "p. 1, Maximum Ratings",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.9
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = 57 V, Ta = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, BZT52C75 IR@VR",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 2e-07
+    },
+    "reverse_recovery": null,
+    "variant": "zener"
+  },
+  "usable_curves": true
+}

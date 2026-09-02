@@ -1,0 +1,137 @@
+{
+  "curves": [
+    {
+      "name": "Typical forward voltage, SS315-SS320 group",
+      "page_reference": "p. 2 fig. 3, SS315-SS320 dotted curve",
+      "points": [
+        {
+          "x": 0.45,
+          "y": 0.01
+        },
+        {
+          "x": 0.57,
+          "y": 0.1
+        },
+        {
+          "x": 0.7,
+          "y": 1.0
+        },
+        {
+          "x": 0.86,
+          "y": 10.0
+        },
+        {
+          "x": 1.05,
+          "y": 50.0
+        }
+      ],
+      "test_conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle",
+      "x_axis": {
+        "quantity": "Forward voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "Forward current",
+        "scale": "log",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "Typical reverse characteristics, SS315-SS320 group at Tj = 25 degC",
+      "page_reference": "p. 2 fig. 4, SS315-SS320 dashed curve, Tj = 25 degC",
+      "points": [
+        {
+          "x": 0.0,
+          "y": 5e-06
+        },
+        {
+          "x": 25.0,
+          "y": 8e-06
+        },
+        {
+          "x": 50.0,
+          "y": 1.2e-05
+        },
+        {
+          "x": 75.0,
+          "y": 2e-05
+        },
+        {
+          "x": 100.0,
+          "y": 3e-05
+        }
+      ],
+      "test_conditions": "Tj = 25 degC, SS315-SS320 dashed curve",
+      "x_axis": {
+        "quantity": "Percent of rated peak reverse voltage",
+        "scale": "linear",
+        "unit": "%"
+      },
+      "y_axis": {
+        "quantity": "Reverse current",
+        "scale": "log",
+        "unit": "A"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ],
+    "revision": "Rev:1.0",
+    "title": "SS32 THRU SS320"
+  },
+  "extraction_notes": [
+    "No self-heating or thermal derating model input is represented in this extraction.",
+    "Package parasitics are not represented in this extraction.",
+    "Absolute maximum ratings: VRRM = 150 V, VRMS = 105 V, VDC = 150 V, IF(AV) = 3 A, IFSM = 80 A at t = 8.3 ms half-sine wave.",
+    "The electrical table publishes no reverse-recovery time."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "SS315",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": null,
+    "breakdown_voltage": null,
+    "capacitance": {
+      "conditions": "VR = 4.0 V DC, f = 1 MHz, TA = 25 degC",
+      "page_reference": "p. 2 electrical characteristics, typical junction capacitance",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 3e-10
+    },
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 3.0 A, TA = 25 degC",
+          "page_reference": "p. 2 electrical characteristics",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 3.0
+        },
+        "voltage": {
+          "conditions": "IF = 3.0 A, TA = 25 degC",
+          "page_reference": "p. 2 electrical characteristics",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.95
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = VDC = 150 V, TA = 25 degC",
+      "page_reference": "p. 2 electrical characteristics, SS315 column",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 5e-05
+    },
+    "reverse_recovery": null,
+    "variant": "schottky"
+  },
+  "usable_curves": true
+}

@@ -1,0 +1,100 @@
+{
+  "curves": [
+    {
+      "name": "Typical forward voltage, SS515B-SS520B curve",
+      "page_reference": "p. 2, Fig. 3",
+      "points": [
+        {
+          "x": 0.53,
+          "y": 0.01
+        },
+        {
+          "x": 0.64,
+          "y": 0.1
+        },
+        {
+          "x": 0.77,
+          "y": 1.0
+        },
+        {
+          "x": 0.96,
+          "y": 10.0
+        },
+        {
+          "x": 1.2,
+          "y": 40.0
+        }
+      ],
+      "test_conditions": "Tj = 25 degC; pulse width = 300 us; 1% duty cycle",
+      "x_axis": {
+        "quantity": "forward voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "forward current",
+        "scale": "log",
+        "unit": "A"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ],
+    "revision": "Rev:1.0",
+    "title": "SS52B THRU SS520B"
+  },
+  "extraction_notes": [
+    "The datasheet is a family sheet; SS515B-specific ratings were selected from the SS515B column/group.",
+    "The reverse-current value at Ta = 100 degC (5 mA) was transcribed from the table but is not used as the 25 degC reverse-current fitting target.",
+    "The plotted forward curve is a direct digitization of the SS515B-SS520B dotted curve; no interpolation was used.",
+    "Schottky majority-carrier device: no minority-carrier reverse-recovery time is published; reverse recovery is not represented by the strict schema."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "SS515B",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": null,
+    "breakdown_voltage": null,
+    "capacitance": {
+      "conditions": "VR = 4.0 V DC, f = 1 MHz, Ta = 25 degC",
+      "page_reference": "p. 2, electrical characteristics",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 3e-10
+    },
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 5.0 A, Ta = 25 degC",
+          "page_reference": "p. 2, electrical characteristics",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 5.0
+        },
+        "voltage": {
+          "conditions": "IF = 5.0 A, Ta = 25 degC",
+          "page_reference": "p. 2, electrical characteristics",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.95
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = VDC (150 V), Ta = 25 degC",
+      "page_reference": "p. 2, electrical characteristics",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 5e-05
+    },
+    "reverse_recovery": null,
+    "variant": "schottky"
+  },
+  "usable_curves": true
+}

@@ -1,0 +1,132 @@
+{
+  "schema_version": "1.0.0",
+  "mpn": "SS510",
+  "manufacturer": "hongjiacheng",
+  "family": "diode",
+  "datasheet_identity": {
+    "title": "SS52 THRU SS520 SURFACE MOUNT SCHOTTKY BARRIER RECTIFIER",
+    "revision": "1.0",
+    "pages_examined": ["1", "2", "3"]
+  },
+  "usable_curves": true,
+  "curves": [
+    {
+      "name": "Typical Forward Voltage",
+      "x_axis": {
+        "quantity": "instantaneous_forward_voltage",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "instantaneous_forward_current",
+        "unit": "A",
+        "scale": "log"
+      },
+      "test_conditions": "Tj=25°C, Pulsewidth=300us, 1% DutyCycle",
+      "page_reference": "2",
+      "points": [
+        {"x": 0.4, "y": 0.15},
+        {"x": 0.5, "y": 0.3},
+        {"x": 0.6, "y": 0.65},
+        {"x": 0.7, "y": 1.3},
+        {"x": 0.8, "y": 2.8},
+        {"x": 0.9, "y": 6.0},
+        {"x": 1.0, "y": 13.0},
+        {"x": 1.1, "y": 30.0},
+        {"x": 1.2, "y": 70.0}
+      ]
+    },
+    {
+      "name": "Typical Reverse Characteristics at Tj=25°C",
+      "x_axis": {
+        "quantity": "percent_of_rated_peak_reverse_voltage",
+        "unit": "%",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "instantaneous_reverse_current",
+        "unit": "mA",
+        "scale": "log"
+      },
+      "test_conditions": "Tj=25°C",
+      "page_reference": "2",
+      "points": [
+        {"x": 20, "y": 0.0003},
+        {"x": 40, "y": 0.001},
+        {"x": 60, "y": 0.003},
+        {"x": 80, "y": 0.008},
+        {"x": 100, "y": 0.01}
+      ]
+    },
+    {
+      "name": "Typical Reverse Characteristics at Tj=100°C",
+      "x_axis": {
+        "quantity": "percent_of_rated_peak_reverse_voltage",
+        "unit": "%",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "instantaneous_reverse_current",
+        "unit": "mA",
+        "scale": "log"
+      },
+      "test_conditions": "Tj=100°C",
+      "page_reference": "2",
+      "points": [
+        {"x": 20, "y": 0.005},
+        {"x": 40, "y": 0.015},
+        {"x": 60, "y": 0.04},
+        {"x": 80, "y": 0.1},
+        {"x": 100, "y": 0.5}
+      ]
+    }
+  ],
+  "specs": {
+    "variant": "schottky",
+    "forward_voltage_points": [
+      {
+        "current": {
+          "value": 5.0,
+          "unit": "A",
+          "conditions": "IF=5.0A, pulsed",
+          "page_reference": "2",
+          "source_kind": "maximum"
+        },
+        "voltage": {
+          "value": 0.85,
+          "unit": "V",
+          "conditions": "IF=5.0A, pulsed",
+          "page_reference": "2",
+          "source_kind": "maximum"
+        }
+      }
+    ],
+    "reverse_current": {
+      "value": 0.05,
+      "unit": "mA",
+      "conditions": "VR=VDC (100V), TA=25°C",
+      "page_reference": "2",
+      "source_kind": "maximum"
+    },
+    "capacitance": {
+      "value": 200,
+      "unit": "pF",
+      "conditions": "VR=4.0V DC, f=1MHz",
+      "page_reference": "2",
+      "source_kind": "typical"
+    },
+    "reverse_recovery": null,
+    "breakdown_voltage": null,
+    "breakdown_current": null
+  },
+  "extraction_notes": [
+    "SS510 is part of a grouped family (SS52-SS520); forward voltage curve represents SS58-SS510 subgroup per Fig.3 datasheet",
+    "Reverse characteristic curves digitized from Fig.4, representing SS58-SS520 subgroup which includes SS510",
+    "Forward voltage maximum at IF=5.0A from Table, page 2: VF=0.85V",
+    "Reverse current at TA=100°C is 5 mA maximum per electrical characteristics table",
+    "VRRM=100V is maximum repetitive peak reverse voltage rating; no breakdown voltage specification provided in datasheet",
+    "No reverse recovery time specified",
+    "Curves digitized from semi-log plots; representative of group characteristics"
+  ],
+  "omission_reason": null
+}

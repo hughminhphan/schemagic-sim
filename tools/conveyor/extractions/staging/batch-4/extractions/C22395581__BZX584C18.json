@@ -1,0 +1,142 @@
+{
+  "schema_version": "1.0.0",
+  "mpn": "BZX584C18",
+  "manufacturer": "hongjiacheng",
+  "family": "diode",
+  "datasheet_identity": {
+    "title": "BZX584C2V4 THRU BZX584C43 SURFACE MOUNT ZENER DIODES (SOD-523)",
+    "revision": "Rev:1.0",
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ]
+  },
+  "usable_curves": true,
+  "curves": [
+    {
+      "name": "Zener characteristic IZ vs VZ, BZX584C18 trace of Fig.2",
+      "x_axis": {
+        "quantity": "zener voltage VZ",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "zener current IZ",
+        "unit": "A",
+        "scale": "log"
+      },
+      "test_conditions": "Ta = 25 degC, pulsed; typical trace individually labeled 18 in the family figure; digitized at 400 dpi with gridline-anchored axis calibration (x 10-50 V linear, y 0.1-50 mA log); estimated tolerance +/-0.05 V, +/-3% on current",
+      "page_reference": "p. 3 Fig.2 Zener Characteristics ( 11v to 43V )",
+      "points": [
+        {
+          "x": 17.86,
+          "y": 0.000109
+        },
+        {
+          "x": 17.9,
+          "y": 0.000156
+        },
+        {
+          "x": 17.94,
+          "y": 0.000224
+        },
+        {
+          "x": 17.95,
+          "y": 0.000322
+        },
+        {
+          "x": 17.99,
+          "y": 0.000469
+        },
+        {
+          "x": 18.03,
+          "y": 0.000679
+        },
+        {
+          "x": 18.07,
+          "y": 0.000965
+        },
+        {
+          "x": 18.11,
+          "y": 0.001381
+        },
+        {
+          "x": 18.14,
+          "y": 0.001977
+        },
+        {
+          "x": 18.16,
+          "y": 0.002845
+        },
+        {
+          "x": 18.2,
+          "y": 0.004119
+        }
+      ]
+    }
+  ],
+  "specs": {
+    "variant": "zener",
+    "forward_voltage_points": [
+      {
+        "current": {
+          "value": 0.01,
+          "unit": "A",
+          "conditions": "Specified test current for the VF limit, Ta = 25 degC",
+          "page_reference": "p. 1 Maximum Ratings, Forward Voltage row",
+          "source_kind": "typical"
+        },
+        "voltage": {
+          "value": 0.9,
+          "unit": "V",
+          "conditions": "IF = 0.01 A, Ta = 25 degC",
+          "page_reference": "p. 1 Maximum Ratings, Forward Voltage row",
+          "source_kind": "maximum"
+        }
+      }
+    ],
+    "reverse_current": {
+      "value": 1e-7,
+      "unit": "A",
+      "conditions": "VR = 12.6 V, Ta = 25 degC (leakage below the knee)",
+      "page_reference": "p. 2 Electrical Characteristics, BZX584C18 row",
+      "source_kind": "maximum"
+    },
+    "capacitance": {
+      "value": 1.7e-11,
+      "unit": "F",
+      "conditions": "0 V bias, f = 1 MHz, Ta = 25 degC; single point read from the family typical-capacitance curve at nominal VZ = 18 V (approximately 16.6 pF); digitization tolerance approximately +/-15%",
+      "page_reference": "p. 3 Fig.5 Typical Capacitance",
+      "source_kind": "digitized_typical_curve"
+    },
+    "reverse_recovery": null,
+    "breakdown_voltage": {
+      "value": 18,
+      "unit": "V",
+      "conditions": "Nominal VZ at IZT = 0.005 A, Ta = 25 degC; table min 16.8 V, max 19.1 V",
+      "page_reference": "p. 2 Electrical Characteristics, BZX584C18 row",
+      "source_kind": "typical"
+    },
+    "breakdown_current": {
+      "value": 0.005,
+      "unit": "A",
+      "conditions": "IZT, the specified zener test current for the VZ measurement, Ta = 25 degC",
+      "page_reference": "p. 2 Electrical Characteristics, BZX584C18 row",
+      "source_kind": "typical"
+    }
+  },
+  "extraction_notes": [
+    "Family datasheet covering BZX584C2V4 through BZX584C43; the BZX584C18 row (marking code Y6) was used for all part-specific table values.",
+    "Zener impedance for variant-Z fitting (no dedicated schema field): ZZT = 45 ohm maximum at IZT = 0.005 A; ZZK = 225 ohm maximum at IZK = 0.001 A (p. 2 Electrical Characteristics, BZX584C18 row).",
+    "Typical temperature coefficient at IZTC: +12.4 to +16.0 mV/degC; admissible zener current IZM listed as 5 mA in the table (p. 2).",
+    "Maximum ratings (p. 1): PD = 150 mW, VF = 0.9 V max at IF = 10 mA, RthJA = 833 degC/W, Tj and Tstg -55 to +150 degC.",
+    "Fig.2 (p. 3) labels each trace with its nominal voltage; the 18 V trace is well separated from the neighboring 16 V and 20 V traces, so attribution is unambiguous. Digitized VZ spans 17.86-18.20 V, inside the table window 16.8-19.1 V, and the local slope between 1 mA and 4.1 mA is approximately 42 ohm, consistent with the 45 ohm ZZT maximum.",
+    "The drawn 18 V trace terminates against the power-derating envelope at approximately 4.2 mA, slightly below IZT = 5 mA, so the digitized curve tops out there; extrapolation to 5 mA was not performed.",
+    "Axis calibration was verified against eight independent log-decade gridlines (match within 1 px at 400 dpi) and the 2.5 V minor grid on the linear voltage axis.",
+    "Capacitance is a single digitized read of the 0 V bias family typical-capacitance curve at nominal VZ = 18 V (approximately 16.6 pF; the 1 V bias curve reads approximately 12.6 pF and the 50%-of-VZ bias curve approximately 6.8 pF); it is not a swept characteristic of this part.",
+    "Forward voltage is a single maximum limit (0.9 V at 10 mA) from the ratings table; the datasheet provides no forward I-V curve, so only one VF point is available."
+  ],
+  "omission_reason": "Remaining figures omitted: Fig.1 covers only the 2.4-10 V family members, Fig.3 (temperature coefficient), Fig.4 (leakage), Fig.5 (capacitance) and Fig.6 (impedance) plot family-level quantities versus nominal zener voltage rather than operating characteristics of this part, so only single-point reads (capacitance) were taken from them. The Fig.2 trace above approximately 4.2 mA is not drawn (it ends at the power-derating envelope), so no points near or above IZT = 5 mA could be digitized."
+}

@@ -1,0 +1,107 @@
+{
+  "curves": [
+    {
+      "name": "Typical forward voltage, Ta = 25 degC curve",
+      "page_reference": "p. 3 Fig. 3",
+      "points": [
+        {
+          "x": 0.72,
+          "y": 0.005
+        },
+        {
+          "x": 0.786,
+          "y": 0.02
+        },
+        {
+          "x": 0.84,
+          "y": 0.05
+        },
+        {
+          "x": 0.892,
+          "y": 0.1
+        },
+        {
+          "x": 0.978,
+          "y": 0.2
+        }
+      ],
+      "test_conditions": "Ta = 25 degC curve of the four-temperature family figure; family-typical MM3Z-series forward characteristic, not specific to MM3Z9V1",
+      "x_axis": {
+        "quantity": "forward voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "forward current",
+        "scale": "log",
+        "unit": "A"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4",
+      "p. 5"
+    ],
+    "revision": "Rev:1.1",
+    "title": "MM3Z2V0 THRU MM3Z75 SURFACE MOUNT ZENER DIODES (SOD-323 Surface Mount Silicon Zener Diodes)"
+  },
+  "extraction_notes": [
+    "The MM3Z9V1 row gives VZ min/nom/max = 8.5/9.1/9.6 V at IZT = 5 mA; ZZT maximum 15 ohm at IZT; ZZK maximum 160 ohm at IZK = 0.5 mA; IR maximum 0.2 microA at VR = 7.0 V. The typical temperature coefficient is 3.8 to 7.0 mV/degC at IZTC = 5 mA (p. 2).",
+    "The p. 3 zener-characteristic traces are unlabeled and cannot be attributed to MM3Z9V1 without guessing. The Ta = 25 degC forward trace in Fig. 3 was digitized as a family-typical curve and converted from mA to A; it is not part-specific.",
+    "No per-part capacitance or reverse-recovery time is published; the p. 4 capacitance plot is family-level and was not assigned to this part."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "MM3Z9V1",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": {
+      "conditions": "IZT = 0.005 A, Ta = 25 degC",
+      "page_reference": "p. 2 electrical characteristics, MM3Z9V1 row",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.005
+    },
+    "breakdown_voltage": {
+      "conditions": "IZT = 0.005 A, Ta = 25 degC; nominal VZ",
+      "page_reference": "p. 2 electrical characteristics, MM3Z9V1 row",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 9.1
+    },
+    "capacitance": null,
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 0.01 A, Ta = 25 degC",
+          "page_reference": "p. 1 maximum ratings, Forward Voltage row",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.01
+        },
+        "voltage": {
+          "conditions": "IF = 0.01 A, Ta = 25 degC",
+          "page_reference": "p. 1 maximum ratings, Forward Voltage row",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.9
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = 7 V, Ta = 25 degC",
+      "page_reference": "p. 2 electrical characteristics, MM3Z9V1 row",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 2e-07
+    },
+    "reverse_recovery": null,
+    "variant": "zener"
+  },
+  "usable_curves": true
+}

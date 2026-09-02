@@ -1,0 +1,109 @@
+{
+  "schema_version": "1.0.0",
+  "mpn": "BZT52C18S",
+  "manufacturer": "hongjiacheng",
+  "family": "diode",
+  "datasheet_identity": {
+    "title": "BZT52C2V0S THRU BZT52C75S SURFACE MOUNT ZENER DIODES",
+    "revision": "Rev:1.0",
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ]
+  },
+  "usable_curves": true,
+  "curves": [
+    {
+      "name": "BZT52C18S zener characteristic",
+      "x_axis": {
+        "quantity": "Zener voltage VZ",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "Zener current IZ",
+        "unit": "A",
+        "scale": "log"
+      },
+      "test_conditions": "TA = 25 degC, pulsed, PD = 200 mW; BZT52C18S trace labeled 18 in the BZT52C2V0S through BZT52C75S series plot",
+      "page_reference": "p. 3, Fig. 2 (Zener Characteristics, 11 V to 43 V), 18 V trace",
+      "points": [
+        {
+          "x": 18.0,
+          "y": 0.0005
+        },
+        {
+          "x": 18.0,
+          "y": 0.001
+        },
+        {
+          "x": 18.1,
+          "y": 0.002
+        },
+        {
+          "x": 18.3,
+          "y": 0.005
+        },
+        {
+          "x": 18.6,
+          "y": 0.01
+        }
+      ]
+    }
+  ],
+  "specs": {
+    "variant": "zener",
+    "forward_voltage_points": [
+      {
+        "current": {
+          "value": 0.01,
+          "unit": "A",
+          "conditions": "IF = 10 mA, TA = 25 degC",
+          "page_reference": "p. 1, Maximum Ratings, Forward Voltage @ IF = 10 mA",
+          "source_kind": "maximum"
+        },
+        "voltage": {
+          "value": 0.9,
+          "unit": "V",
+          "conditions": "IF = 10 mA, TA = 25 degC",
+          "page_reference": "p. 1, Maximum Ratings, Forward Voltage @ IF = 10 mA",
+          "source_kind": "maximum"
+        }
+      }
+    ],
+    "reverse_current": {
+      "value": 1e-7,
+      "unit": "A",
+      "conditions": "IR = 0.1 microA maximum at VR = 12.6 V, TA = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, BZT52C18S row",
+      "source_kind": "maximum"
+    },
+    "capacitance": null,
+    "reverse_recovery": null,
+    "breakdown_voltage": {
+      "value": 18.0,
+      "unit": "V",
+      "conditions": "IZT = 5 mA, TA = 25 degC; nominal zener voltage, with 16.8 V minimum and 19.1 V maximum",
+      "page_reference": "p. 2, Electrical Characteristics, BZT52C18S VZ row",
+      "source_kind": "typical"
+    },
+    "breakdown_current": {
+      "value": 0.005,
+      "unit": "A",
+      "conditions": "IZT = 5 mA at nominal VZ = 18.0 V, TA = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, BZT52C18S IZT row",
+      "source_kind": "typical"
+    }
+  },
+  "extraction_notes": [
+    "PDF SHA-256 verified as 8d99c0b95ddbd62581320fd03378a72d97d914bc201c735536cd50e5f6753113.",
+    "This is a family datasheet; the exact BZT52C18S row was selected from the BZT52C2V0S through BZT52C75S electrical-characteristics table for manufacturer hongjiacheng.",
+    "The BZT52C18S row gives VZ minimum 16.8 V, nominal 18.0 V, and maximum 19.1 V at IZT = 5 mA; the nominal value and paired IZT are used for the zener breakdown fields.",
+    "The exact row gives maximum ZZT = 45 ohm at IZT = 5 mA, maximum ZZK = 225 ohm at IZK = 1 mA, reverse leakage IR = 0.1 microA at VR = 12.6 V, and admissible IZM = 5 mA. Zener impedance and admissible-current fields are not represented by the strict schema.",
+    "The forward-voltage maximum is 0.9 V at IF = 10 mA from the p. 1 maximum-ratings table. No component-specific capacitance value or reverse-recovery time is published; the p. 3 capacitance plot is a grouped series-level characteristic without a uniquely identified BZT52C18S trace.",
+    "The five zener-characteristic points are direct approximate graph-read observations from the visible BZT52C18S trace labeled 18 in p. 3 Fig. 2 at labeled logarithmic-current grid values; source-axis current in mA was converted to A and no points were interpolated."
+  ],
+  "omission_reason": null
+}

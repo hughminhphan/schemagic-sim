@@ -1,0 +1,240 @@
+{
+  "curves": [
+    {
+      "name": "Typical transfer characteristics, 25 degC",
+      "page_reference": "p. 5, Typical Transfer Characteristics",
+      "points": [
+        {
+          "x": 2.5,
+          "y": 0.001
+        },
+        {
+          "x": 2.7,
+          "y": 0.01
+        },
+        {
+          "x": 3.0,
+          "y": 0.1
+        },
+        {
+          "x": 3.4,
+          "y": 1.0
+        },
+        {
+          "x": 3.8,
+          "y": 4.0
+        },
+        {
+          "x": 4.4,
+          "y": 10.0
+        }
+      ],
+      "test_conditions": "VDS = 10 V, TJ = 25 degC typical curve",
+      "x_axis": {
+        "quantity": "gate-source voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "drain current",
+        "scale": "log",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "Typical output characteristics, VGS = 4.5 V, 25 degC",
+      "page_reference": "p. 5, Typical Characteristics, Output Characteristics, left plot",
+      "points": [
+        {
+          "x": 0.1,
+          "y": 0.6
+        },
+        {
+          "x": 0.3,
+          "y": 2.0
+        },
+        {
+          "x": 1.0,
+          "y": 4.0
+        },
+        {
+          "x": 10.0,
+          "y": 5.0
+        }
+      ],
+      "test_conditions": "VGS = 4.5 V, TJ = 25 degC typical curve",
+      "x_axis": {
+        "quantity": "drain-source voltage",
+        "scale": "log",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "drain current",
+        "scale": "log",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "Typical reverse-transfer capacitance",
+      "page_reference": "p. 6, Capacitance v Drain-Source Voltage",
+      "points": [
+        {
+          "x": 0.1,
+          "y": 2.05e-10
+        },
+        {
+          "x": 1.0,
+          "y": 1.05e-10
+        },
+        {
+          "x": 10.0,
+          "y": 5.2e-11
+        },
+        {
+          "x": 30.0,
+          "y": 3.2e-11
+        }
+      ],
+      "test_conditions": "VGS = 0 V, f = 1 MHz, typical Crss trace",
+      "x_axis": {
+        "quantity": "drain-source voltage",
+        "scale": "log",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "reverse-transfer capacitance",
+        "scale": "linear",
+        "unit": "F"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4",
+      "p. 5",
+      "p. 6",
+      "p. 7",
+      "p. 8",
+      "p. 9"
+    ],
+    "revision": "Document number DS46403 Rev. 1-2, March 2024",
+    "title": "DMN6068SEQ 60V N-CHANNEL ENHANCEMENT MODE MOSFET"
+  },
+  "extraction_notes": [
+    "The supplied PDF identifies the device as DMN6068SEQ; the job MPN DMN6068SE-13 was retained as the requested identity.",
+    "Transfer, output, and reverse-transfer-capacitance curves were manually digitized from the typical plots on p. 5-p. 6.",
+    "The electrical table also publishes IDSS, IGSS, forward transconductance, reverse-recovery time, reverse-recovery charge, gate charge, and switching times; this extraction schema has no fields for those quantities.",
+    "The typical body-diode forward voltage is recorded; the same table also gives a 1.15 V maximum at the same IS condition.",
+    "Corrected Ciss, Coss, and Crss from the pF values published on p. 4 to SI F values; converted the pF-valued Crss curve on p. 6 to SI F while preserving its VGS = 0 V, f = 1 MHz typical conditions."
+  ],
+  "family": "mosfet",
+  "manufacturer": "Diodes Incorporated",
+  "mpn": "DMN6068SE-13",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "body_diode": {
+      "conditions": "IS = 12 A, VGS = 0 V, TA = 25 degC; pulsed measurement",
+      "page_reference": "p. 4, Electrical Characteristics, Diode Forward Voltage, TYP",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 0.98
+    },
+    "breakdown_voltage": {
+      "conditions": "ID = 250 uA, VGS = 0 V, TA = 25 degC",
+      "page_reference": "p. 4, Electrical Characteristics, Drain-Source Breakdown Voltage, MIN",
+      "source_kind": "minimum",
+      "unit": "V",
+      "value": 60.0
+    },
+    "ciss": {
+      "conditions": "VDS = 30 V, VGS = 0 V, f = 1 MHz, TA = 25 degC",
+      "page_reference": "p. 4, Electrical Characteristics, Input Capacitance, Ciss",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 5.02e-10
+    },
+    "coss": {
+      "conditions": "VDS = 30 V, VGS = 0 V, f = 1 MHz, TA = 25 degC",
+      "page_reference": "p. 4, Electrical Characteristics, Output Capacitance, Coss",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 4.57e-11
+    },
+    "crss": {
+      "conditions": "VDS = 30 V, VGS = 0 V, f = 1 MHz, TA = 25 degC",
+      "page_reference": "p. 4, Electrical Characteristics, Reverse Transfer Capacitance, Crss",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 2.71e-11
+    },
+    "polarity": "n",
+    "rdson_points": [
+      {
+        "current": {
+          "conditions": "VGS = 10 V, TA = 25 degC; pulsed measurement",
+          "page_reference": "p. 4, Electrical Characteristics, RDS(ON) condition",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 12.0
+        },
+        "resistance": {
+          "conditions": "VGS = 10 V, ID = 12 A, TA = 25 degC; pulsed measurement",
+          "page_reference": "p. 4, Electrical Characteristics, Static Drain-Source On-Resistance",
+          "source_kind": "typical",
+          "unit": "ohm",
+          "value": 0.068
+        },
+        "vgs": {
+          "conditions": "VGS = 10 V, ID = 12 A, TA = 25 degC; pulsed measurement",
+          "page_reference": "p. 4, Electrical Characteristics, RDS(ON) condition",
+          "source_kind": "typical",
+          "unit": "V",
+          "value": 10.0
+        }
+      },
+      {
+        "current": {
+          "conditions": "VGS = 4.5 V, TA = 25 degC; pulsed measurement",
+          "page_reference": "p. 4, Electrical Characteristics, RDS(ON) condition",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 6.0
+        },
+        "resistance": {
+          "conditions": "VGS = 4.5 V, ID = 6 A, TA = 25 degC; pulsed measurement",
+          "page_reference": "p. 4, Electrical Characteristics, Static Drain-Source On-Resistance",
+          "source_kind": "typical",
+          "unit": "ohm",
+          "value": 0.1
+        },
+        "vgs": {
+          "conditions": "VGS = 4.5 V, ID = 6 A, TA = 25 degC; pulsed measurement",
+          "page_reference": "p. 4, Electrical Characteristics, RDS(ON) condition",
+          "source_kind": "typical",
+          "unit": "V",
+          "value": 4.5
+        }
+      }
+    ],
+    "threshold_max": {
+      "conditions": "ID = 250 uA, VDS = VGS, TA = 25 degC",
+      "page_reference": "p. 4, Electrical Characteristics, Gate Threshold Voltage, MAX",
+      "source_kind": "maximum",
+      "unit": "V",
+      "value": 3.0
+    },
+    "threshold_min": {
+      "conditions": "ID = 250 uA, VDS = VGS, TA = 25 degC",
+      "page_reference": "p. 4, Electrical Characteristics, Gate Threshold Voltage, MIN",
+      "source_kind": "minimum",
+      "unit": "V",
+      "value": 1.0
+    },
+    "threshold_typ": null
+  },
+  "usable_curves": true
+}

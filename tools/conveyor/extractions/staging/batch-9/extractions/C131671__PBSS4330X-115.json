@@ -1,0 +1,398 @@
+{
+  "curves": [
+    {
+      "name": "DC current gain versus collector current",
+      "page_reference": "p. 8 Figure 6",
+      "points": [
+        {
+          "x": 0.1,
+          "y": 300
+        },
+        {
+          "x": 0.5,
+          "y": 320
+        },
+        {
+          "x": 1,
+          "y": 300
+        },
+        {
+          "x": 2,
+          "y": 250
+        },
+        {
+          "x": 3,
+          "y": 200
+        }
+      ],
+      "test_conditions": "VCE = 2 V, TA = 25 degC typical curve",
+      "x_axis": {
+        "quantity": "collector current",
+        "scale": "log",
+        "unit": "A"
+      },
+      "y_axis": {
+        "quantity": "DC current gain hFE",
+        "scale": "linear",
+        "unit": "1"
+      }
+    },
+    {
+      "name": "Collector-emitter saturation voltage versus collector current",
+      "page_reference": "p. 8 Figure 9",
+      "points": [
+        {
+          "x": 0.1,
+          "y": 0.035
+        },
+        {
+          "x": 0.5,
+          "y": 0.06
+        },
+        {
+          "x": 1,
+          "y": 0.11
+        },
+        {
+          "x": 2,
+          "y": 0.22
+        },
+        {
+          "x": 3,
+          "y": 0.3
+        }
+      ],
+      "test_conditions": "TA = 25 degC, IC/IB = 10 typical curve",
+      "x_axis": {
+        "quantity": "collector current",
+        "scale": "log",
+        "unit": "A"
+      },
+      "y_axis": {
+        "quantity": "collector-emitter saturation voltage",
+        "scale": "log",
+        "unit": "V"
+      }
+    },
+    {
+      "name": "Base-emitter voltage versus collector current",
+      "page_reference": "p. 8 Figure 7",
+      "points": [
+        {
+          "x": 0.1,
+          "y": 0.75
+        },
+        {
+          "x": 0.5,
+          "y": 0.84
+        },
+        {
+          "x": 1,
+          "y": 0.9
+        },
+        {
+          "x": 2,
+          "y": 0.98
+        },
+        {
+          "x": 3,
+          "y": 1.04
+        }
+      ],
+      "test_conditions": "VCE = 2 V, TA = 25 degC typical curve",
+      "x_axis": {
+        "quantity": "collector current",
+        "scale": "log",
+        "unit": "A"
+      },
+      "y_axis": {
+        "quantity": "base-emitter voltage",
+        "scale": "linear",
+        "unit": "V"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4",
+      "p. 5",
+      "p. 6",
+      "p. 7",
+      "p. 8",
+      "p. 9",
+      "p. 10",
+      "p. 11",
+      "p. 12",
+      "p. 13"
+    ],
+    "revision": "Product data sheet, 2004 Dec 06, supersedes 2003 Nov 28",
+    "title": "PBSS4330X 30 V, 3 A NPN low VCEsat (BISS) transistor"
+  },
+  "extraction_notes": [
+    "Five hFE rows, four VCEsat rows, and two VBEsat rows were transcribed from the characteristics table.",
+    "Figures 6, 7, and 9 provide usable typical curves; digitized points are recorded without interpolation beyond plotted locations.",
+    "VBEsat is not published for the 0.5 A and 1 A VCEsat conditions and is null for those rows.",
+    "The datasheet publishes collector capacitance Cc, recorded as cobo; no cibo value is supplied."
+  ],
+  "family": "bjt",
+  "manufacturer": "Nexperia",
+  "mpn": "PBSS4330X,115",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "cibo": null,
+    "cobo": {
+      "conditions": "VCB = 10 V, IE = 0, f = 1 MHz, TA = 25 degC",
+      "page_reference": "p. 7 characteristics",
+      "source_kind": "maximum",
+      "unit": "F",
+      "value": 3e-11
+    },
+    "ft": {
+      "conditions": "IC = 100 mA, VCE = 5 V, measurement frequency = 100 MHz, TA = 25 degC",
+      "page_reference": "p. 7 characteristics",
+      "source_kind": "minimum",
+      "unit": "Hz",
+      "value": 100000000.0
+    },
+    "gain_points": [
+      {
+        "collector_current": {
+          "conditions": "VCE = 2 V, TA = 25 degC",
+          "page_reference": "p. 7 characteristics",
+          "source_kind": "minimum",
+          "unit": "A",
+          "value": 0.1
+        },
+        "hfe": {
+          "conditions": "VCE = 2 V, IC = 0.1 A, TA = 25 degC",
+          "page_reference": "p. 7 characteristics",
+          "source_kind": "minimum",
+          "unit": "1",
+          "value": 300
+        },
+        "vce": {
+          "conditions": "IC = 0.1 A, TA = 25 degC",
+          "page_reference": "p. 7 characteristics",
+          "source_kind": "typical",
+          "unit": "V",
+          "value": 2.0
+        }
+      },
+      {
+        "collector_current": {
+          "conditions": "VCE = 2 V, TA = 25 degC",
+          "page_reference": "p. 7 characteristics",
+          "source_kind": "minimum",
+          "unit": "A",
+          "value": 0.5
+        },
+        "hfe": {
+          "conditions": "VCE = 2 V, IC = 0.5 A, TA = 25 degC",
+          "page_reference": "p. 7 characteristics",
+          "source_kind": "minimum",
+          "unit": "1",
+          "value": 300
+        },
+        "vce": {
+          "conditions": "IC = 0.5 A, TA = 25 degC",
+          "page_reference": "p. 7 characteristics",
+          "source_kind": "typical",
+          "unit": "V",
+          "value": 2.0
+        }
+      },
+      {
+        "collector_current": {
+          "conditions": "VCE = 2 V, pulse test as noted, TA = 25 degC",
+          "page_reference": "p. 7 characteristics",
+          "source_kind": "minimum",
+          "unit": "A",
+          "value": 1.0
+        },
+        "hfe": {
+          "conditions": "VCE = 2 V, IC = 1 A, TA = 25 degC, pulse test tp <= 300 us and delta <= 0.02",
+          "page_reference": "p. 7 characteristics",
+          "source_kind": "minimum",
+          "unit": "1",
+          "value": 270
+        },
+        "vce": {
+          "conditions": "IC = 1 A, TA = 25 degC",
+          "page_reference": "p. 7 characteristics",
+          "source_kind": "typical",
+          "unit": "V",
+          "value": 2.0
+        }
+      },
+      {
+        "collector_current": {
+          "conditions": "VCE = 2 V, pulse test as noted, TA = 25 degC",
+          "page_reference": "p. 7 characteristics",
+          "source_kind": "minimum",
+          "unit": "A",
+          "value": 2.0
+        },
+        "hfe": {
+          "conditions": "VCE = 2 V, IC = 2 A, TA = 25 degC, pulse test tp <= 300 us and delta <= 0.02",
+          "page_reference": "p. 7 characteristics",
+          "source_kind": "minimum",
+          "unit": "1",
+          "value": 230
+        },
+        "vce": {
+          "conditions": "IC = 2 A, TA = 25 degC",
+          "page_reference": "p. 7 characteristics",
+          "source_kind": "typical",
+          "unit": "V",
+          "value": 2.0
+        }
+      },
+      {
+        "collector_current": {
+          "conditions": "VCE = 2 V, pulse test as noted, TA = 25 degC",
+          "page_reference": "p. 7 characteristics",
+          "source_kind": "minimum",
+          "unit": "A",
+          "value": 3.0
+        },
+        "hfe": {
+          "conditions": "VCE = 2 V, IC = 3 A, TA = 25 degC, pulse test tp <= 300 us and delta <= 0.02",
+          "page_reference": "p. 7 characteristics",
+          "source_kind": "minimum",
+          "unit": "1",
+          "value": 180
+        },
+        "vce": {
+          "conditions": "IC = 3 A, TA = 25 degC",
+          "page_reference": "p. 7 characteristics",
+          "source_kind": "typical",
+          "unit": "V",
+          "value": 2.0
+        }
+      }
+    ],
+    "polarity": "npn",
+    "saturation_points": [
+      {
+        "base_current": {
+          "conditions": "IC = 0.5 A, TA = 25 degC",
+          "page_reference": "p. 7 characteristics",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 0.05
+        },
+        "collector_current": {
+          "conditions": "IB = 50 mA, TA = 25 degC",
+          "page_reference": "p. 7 characteristics",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 0.5
+        },
+        "vbe_sat": null,
+        "vce_sat": {
+          "conditions": "IC = 0.5 A, IB = 50 mA, TA = 25 degC",
+          "page_reference": "p. 7 characteristics",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.06
+        }
+      },
+      {
+        "base_current": {
+          "conditions": "IC = 1 A, TA = 25 degC",
+          "page_reference": "p. 7 characteristics",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 0.05
+        },
+        "collector_current": {
+          "conditions": "IB = 50 mA, TA = 25 degC",
+          "page_reference": "p. 7 characteristics",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 1.0
+        },
+        "vbe_sat": null,
+        "vce_sat": {
+          "conditions": "IC = 1 A, IB = 50 mA, TA = 25 degC",
+          "page_reference": "p. 7 characteristics",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.11
+        }
+      },
+      {
+        "base_current": {
+          "conditions": "IC = 2 A, TA = 25 degC",
+          "page_reference": "p. 7 characteristics",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 0.1
+        },
+        "collector_current": {
+          "conditions": "IB = 100 mA, TA = 25 degC",
+          "page_reference": "p. 7 characteristics",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 2.0
+        },
+        "vbe_sat": {
+          "conditions": "IC = 2 A, IB = 100 mA, TA = 25 degC",
+          "page_reference": "p. 7 characteristics",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 1.1
+        },
+        "vce_sat": {
+          "conditions": "IC = 2 A, IB = 100 mA, TA = 25 degC",
+          "page_reference": "p. 7 characteristics",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.22
+        }
+      },
+      {
+        "base_current": {
+          "conditions": "IC = 3 A, pulse test tp <= 300 us and delta <= 0.02, TA = 25 degC",
+          "page_reference": "p. 7 characteristics",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 0.3
+        },
+        "collector_current": {
+          "conditions": "IB = 300 mA, pulse test as noted, TA = 25 degC",
+          "page_reference": "p. 7 characteristics",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 3.0
+        },
+        "vbe_sat": {
+          "conditions": "IC = 3 A, IB = 300 mA, pulse test tp <= 300 us and delta <= 0.02, TA = 25 degC",
+          "page_reference": "p. 7 characteristics",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 1.2
+        },
+        "vce_sat": {
+          "conditions": "IC = 3 A, IB = 300 mA, pulse test tp <= 300 us and delta <= 0.02, TA = 25 degC",
+          "page_reference": "p. 7 characteristics",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.3
+        }
+      }
+    ],
+    "vceo": {
+      "conditions": "Open base, TA = 25 degC",
+      "page_reference": "p. 3 limiting values",
+      "source_kind": "maximum",
+      "unit": "V",
+      "value": 30.0
+    }
+  },
+  "usable_curves": true
+}

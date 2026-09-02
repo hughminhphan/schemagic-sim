@@ -1,0 +1,106 @@
+{
+  "curves": [
+    {
+      "name": "Typical junction capacitance, 0 V bias family curve",
+      "page_reference": "p. 3, Fig. 4 Typical Capacitance, 0 V Bias curve",
+      "points": [
+        {
+          "x": 6.0,
+          "y": 180.0
+        },
+        {
+          "x": 10.0,
+          "y": 100.0
+        },
+        {
+          "x": 16.0,
+          "y": 60.0
+        },
+        {
+          "x": 20.0,
+          "y": 45.0
+        },
+        {
+          "x": 40.0,
+          "y": 20.0
+        }
+      ],
+      "test_conditions": "Ta=25 degC, f=1 MHz, 0 V bias; typical family curve.",
+      "x_axis": {
+        "quantity": "nominal zener voltage",
+        "scale": "log",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "capacitance",
+        "scale": "log",
+        "unit": "pF"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "revision": "Rev:1.0",
+    "title": "MMSZ5221BS THRU MMSZ5259BS SURFACE MOUNT ZENER DIODES"
+  },
+  "extraction_notes": [
+    "The capacitance curve is digitized from the plotted 0 V bias family curve on p. 3; it is not a tabulated MMSZ5246BS-only capacitance value.",
+    "The family graph includes typical capacitance curves but the electrical-characteristics table publishes no capacitance value for the individual part, so the capacitance spec field remains null.",
+    "The datasheet publishes zener impedance but the extraction schema has no zener-impedance field."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "MMSZ5246BS",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": {
+      "conditions": "IZT=7.8 mA, Ta=25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, MMSZ5246BS IZT row",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.0078
+    },
+    "breakdown_voltage": {
+      "conditions": "IZT=7.8 mA, Ta=25 degC; nominal VZ",
+      "page_reference": "p. 2, Electrical Characteristics, MMSZ5246BS VZ row",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 16.0
+    },
+    "capacitance": null,
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF=10 mA, Ta=25 degC",
+          "page_reference": "p. 1, Maximum Ratings, Forward Voltage",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.01
+        },
+        "voltage": {
+          "conditions": "IF=10 mA, Ta=25 degC",
+          "page_reference": "p. 1, Maximum Ratings, Forward Voltage",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.9
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR=12 V, Ta=25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, MMSZ5246BS IR@VR",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 1e-07
+    },
+    "reverse_recovery": null,
+    "variant": "zener"
+  },
+  "usable_curves": true
+}

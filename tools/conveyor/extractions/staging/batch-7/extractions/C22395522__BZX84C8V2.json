@@ -1,0 +1,119 @@
+{
+  "curves": [
+    {
+      "name": "Zener characteristics VZ up to 10 V (Fig.1), curve labeled 8.2 (BZX84C8V2)",
+      "page_reference": "p. 3 Fig.1",
+      "points": [
+        {
+          "x": 8.17,
+          "y": 0.7
+        },
+        {
+          "x": 8.17,
+          "y": 1.0
+        },
+        {
+          "x": 8.19,
+          "y": 2.0
+        },
+        {
+          "x": 8.22,
+          "y": 5.0
+        },
+        {
+          "x": 8.26,
+          "y": 10.0
+        },
+        {
+          "x": 8.31,
+          "y": 15.0
+        },
+        {
+          "x": 8.35,
+          "y": 20.0
+        }
+      ],
+      "test_conditions": "Ta = 25 degC, pulsed; PD = 300 mW limit drawn on the same figure; curve identified by its printed 8.2 label (10 labeled curves: 2.4, 4.7, 5.1, 5.6, 6.2, 6.8, 7.5, 8.2, 9.1, 10)",
+      "x_axis": {
+        "quantity": "zener voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "zener current",
+        "scale": "log",
+        "unit": "mA"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "revision": "Rev:1.0",
+    "title": "BZX84C2V4 THRU BZX84C75 SURFACE MOUNT ZENER DIODES (SOT-23 Surface Mount Silicon Zener Diodes)"
+  },
+  "extraction_notes": [
+    "Multi-part datasheet BZX84C2V4-BZX84C75; BZX84C8V2 row (marking Z7): VZ 7.7/8.2/8.7 V at IZT = 5 mA; ZZT = 15 ohm max at IZT; ZZK = 80 ohm max at IZK = 1.0 mA; IR = 0.7 uA at VR = 5.0 V; typical temperature coefficient +3.2 to +6.2 mV/degC at IZTC; admissible zener current column IZM = 5 mA as printed.",
+    "PD = 300 mW, RthJA = 417 degC/W, Tj/Tstg -55 to +150 degC (p. 1 maximum ratings).",
+    "Curve digitization method: page 3 rasterized at 600 dpi; Fig.1 axes calibrated from printed gridlines (x: 1-11 V linear at 0.5 V per gridline; y: 0.5-100 mA log). The 8.2-labeled curve is the third curve from the right (left of the 9.1 and 10 curves); its x-position was measured at fixed currents by pixel run tracing with gridline columns excluded.",
+    "Digitized crosschecks: 8.22 V at IZT = 5 mA versus the 8.2 V nominal table value; incremental slope between 2 mA and 10 mA is about 9 ohm, below the 15 ohm ZZT maximum.",
+    "Points above 20 mA were not digitized because the printed PD = 300 mW limit line and the vertical part-number labels cross the curve region there.",
+    "Capacitance is null: no capacitance value is tabulated for an individual type; Fig.5 (p. 3) is a family-level typical capacitance vs nominal zener voltage plot and was not digitized.",
+    "Fig.3 temperature coefficients, Fig.4 typical leakage vs nominal VZ, and Fig.6 zener impedance vs nominal VZ are family-level plots against nominal zener voltage and were not digitized.",
+    "No reverse recovery or switching time is published."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "BZX84C8V2",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": {
+      "conditions": "IZT zener test current; ZZT = 15 ohm maximum at IZT = 5 mA; ZZK = 80 ohm maximum at IZK = 1.0 mA on the same row",
+      "page_reference": "p. 2 electrical characteristics, BZX84C8V2 row",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.005
+    },
+    "breakdown_voltage": {
+      "conditions": "VZ nominal at IZT = 5 mA, Ta = 25 degC; VZ min 7.7 V, max 8.7 V on the same row",
+      "page_reference": "p. 2 electrical characteristics, BZX84C8V2 row",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 8.2
+    },
+    "capacitance": null,
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 10 mA, Ta = 25 degC; forward voltage row of the maximum ratings table, common to all BZX84C types",
+          "page_reference": "p. 1 maximum ratings",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.01
+        },
+        "voltage": {
+          "conditions": "IF = 10 mA, Ta = 25 degC; forward voltage row of the maximum ratings table, common to all BZX84C types",
+          "page_reference": "p. 1 maximum ratings",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.9
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = 5.0 V, Ta = 25 degC; datasheet leakage current 0.7 uA maximum",
+      "page_reference": "p. 2 electrical characteristics, BZX84C8V2 row",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 7e-07
+    },
+    "reverse_recovery": null,
+    "variant": "zener"
+  },
+  "usable_curves": true
+}

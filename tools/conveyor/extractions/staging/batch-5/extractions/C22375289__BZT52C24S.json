@@ -1,0 +1,115 @@
+{
+  "curves": [
+    {
+      "name": "BZT52C24S zener characteristic",
+      "page_reference": "p. 3, Fig. 2 (Zener Characteristics, 11 V to 43 V)",
+      "points": [
+        {
+          "x": 23.48,
+          "y": 0.00075
+        },
+        {
+          "x": 23.53,
+          "y": 0.0012
+        },
+        {
+          "x": 23.58,
+          "y": 0.0016
+        },
+        {
+          "x": 23.66,
+          "y": 0.0022
+        },
+        {
+          "x": 23.71,
+          "y": 0.0035
+        },
+        {
+          "x": 23.81,
+          "y": 0.0045
+        },
+        {
+          "x": 23.91,
+          "y": 0.006
+        }
+      ],
+      "test_conditions": "Ta = 25 degC, pulsed; BZT52C24S trace in the BZT52C11S through BZT52C43S series plot",
+      "x_axis": {
+        "quantity": "Zener voltage VZ",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "Zener current IZ",
+        "scale": "log",
+        "unit": "A"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ],
+    "revision": "Rev.1.0",
+    "title": "BZT52C2V0S THRU BZT52C75S SURFACE MOUNT ZENER DIODES"
+  },
+  "extraction_notes": [
+    "This is a family datasheet; the BZT52C24S row was selected from the BZT52C2V0S through BZT52C75S electrical-characteristics table.",
+    "The BZT52C24S row gives VZ = 22.8 V minimum, 24.0 V nominal, and 25.6 V maximum at IZT = 5 mA; maximum ZZT is 70 ohm at IZT, maximum ZZK is 250 ohm at IZK = 1 mA, and admissible IZM is 5 mA.",
+    "The Fig. 2 BZT52C24S trace points are digitized readings from the plotted curve; source-axis current in mA was converted to A and no intermediate points were interpolated.",
+    "No capacitance or reverse-recovery specification is published for this part. The remaining page 3 plots are series-wide typical characteristics without a uniquely identified BZT52C24S trace and were not assigned component-specific points."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "BZT52C24S",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": {
+      "conditions": "IZT = 5 mA at nominal VZ = 24.0 V, Ta = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, BZT52C24S IZT row",
+      "source_kind": "typical",
+      "unit": "A",
+      "value": 0.005
+    },
+    "breakdown_voltage": {
+      "conditions": "IZT = 5 mA, Ta = 25 degC; nominal VZ",
+      "page_reference": "p. 2, Electrical Characteristics, BZT52C24S VZ row",
+      "source_kind": "typical",
+      "unit": "V",
+      "value": 24.0
+    },
+    "capacitance": null,
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 10 mA, Ta = 25 degC",
+          "page_reference": "p. 1, Maximum Ratings",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 0.01
+        },
+        "voltage": {
+          "conditions": "IF = 10 mA, Ta = 25 degC",
+          "page_reference": "p. 1, Maximum Ratings",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.9
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = 16.8 V, Ta = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, BZT52C24S IR@VR row",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 1e-07
+    },
+    "reverse_recovery": null,
+    "variant": "zener"
+  },
+  "usable_curves": true
+}

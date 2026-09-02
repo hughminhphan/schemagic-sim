@@ -1,0 +1,587 @@
+{
+  "schema_version": "1.0.0",
+  "mpn": "BCP56(RANGE:100-250)",
+  "manufacturer": "Jiangsu Changjing Electronics Technology Co Ltd",
+  "family": "bjt",
+  "datasheet_identity": {
+    "title": "SOT-223 Plastic-Encapsulate Transistors BCP54,55,56 TRANSISTOR (NPN)",
+    "revision": "G,Jan,2017",
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ]
+  },
+  "usable_curves": true,
+  "curves": [
+    {
+      "name": "DC current gain hFE vs collector current, Ta = 25 degC",
+      "x_axis": {
+        "quantity": "collector_current",
+        "unit": "A",
+        "scale": "log"
+      },
+      "y_axis": {
+        "quantity": "dc_current_gain_hfe",
+        "unit": "1",
+        "scale": "log"
+      },
+      "test_conditions": "Common emitter, VCE = 2 V, Ta = 25 degC; datasheet axis in mA, converted to A",
+      "page_reference": "p. 2, hFE - IC figure, Ta=25 degC curve",
+      "points": [
+        { "x": 0.001, "y": 145 },
+        { "x": 0.003, "y": 155 },
+        { "x": 0.01, "y": 165 },
+        { "x": 0.03, "y": 178 },
+        { "x": 0.1, "y": 190 },
+        { "x": 0.3, "y": 155 },
+        { "x": 0.6, "y": 105 },
+        { "x": 1.0, "y": 57 }
+      ]
+    },
+    {
+      "name": "Collector-emitter saturation voltage VCE(sat) vs collector current, beta = 10, Ta = 25 degC",
+      "x_axis": {
+        "quantity": "collector_current",
+        "unit": "A",
+        "scale": "log"
+      },
+      "y_axis": {
+        "quantity": "vce_sat",
+        "unit": "V",
+        "scale": "log"
+      },
+      "test_conditions": "IC/IB = 10 (beta = 10), Ta = 25 degC; datasheet axes in mA and mV, converted to A and V",
+      "page_reference": "p. 2, VCEsat - IC figure, Ta=25 degC curve",
+      "points": [
+        { "x": 0.001, "y": 0.03 },
+        { "x": 0.01, "y": 0.023 },
+        { "x": 0.03, "y": 0.025 },
+        { "x": 0.1, "y": 0.035 },
+        { "x": 0.3, "y": 0.068 },
+        { "x": 0.5, "y": 0.1 },
+        { "x": 1.0, "y": 0.19 }
+      ]
+    },
+    {
+      "name": "Base-emitter saturation voltage VBE(sat) vs collector current, beta = 10, Ta = 25 degC",
+      "x_axis": {
+        "quantity": "collector_current",
+        "unit": "A",
+        "scale": "log"
+      },
+      "y_axis": {
+        "quantity": "vbe_sat",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "test_conditions": "IC/IB = 10 (beta = 10), Ta = 25 degC; datasheet x axis in mA, converted to A",
+      "page_reference": "p. 2, VBEsat - IC figure, Ta=25 degC curve",
+      "points": [
+        { "x": 0.001, "y": 0.585 },
+        { "x": 0.01, "y": 0.66 },
+        { "x": 0.1, "y": 0.755 },
+        { "x": 0.3, "y": 0.82 },
+        { "x": 1.0, "y": 0.93 }
+      ]
+    },
+    {
+      "name": "Collector current vs base-emitter voltage, VCE = 2 V, Ta = 25 degC",
+      "x_axis": {
+        "quantity": "base_emitter_voltage",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "collector_current",
+        "unit": "A",
+        "scale": "log"
+      },
+      "test_conditions": "Common emitter, VCE = 2 V, Ta = 25 degC; datasheet y axis in mA, converted to A",
+      "page_reference": "p. 2, IC - VBE figure, Ta=25 degC curve",
+      "points": [
+        { "x": 0.575, "y": 0.001 },
+        { "x": 0.655, "y": 0.01 },
+        { "x": 0.7, "y": 0.1 },
+        { "x": 0.76, "y": 0.3 },
+        { "x": 0.87, "y": 1.0 }
+      ]
+    },
+    {
+      "name": "Output capacitance Cob vs collector-base reverse bias voltage",
+      "x_axis": {
+        "quantity": "collector_base_voltage",
+        "unit": "V",
+        "scale": "log"
+      },
+      "y_axis": {
+        "quantity": "cob",
+        "unit": "F",
+        "scale": "log"
+      },
+      "test_conditions": "f = 1 MHz, IE = 0, Ta = 25 degC; datasheet y axis in pF, converted to F",
+      "page_reference": "p. 2, Cob/Cib - VCB/VEB figure, Cob curve",
+      "points": [
+        { "x": 0.1, "y": 2.2e-11 },
+        { "x": 0.3, "y": 1.9e-11 },
+        { "x": 1, "y": 1.5e-11 },
+        { "x": 4, "y": 1e-11 },
+        { "x": 10, "y": 7e-12 },
+        { "x": 20, "y": 5e-12 }
+      ]
+    },
+    {
+      "name": "Input capacitance Cib vs emitter-base reverse bias voltage",
+      "x_axis": {
+        "quantity": "emitter_base_voltage",
+        "unit": "V",
+        "scale": "log"
+      },
+      "y_axis": {
+        "quantity": "cib",
+        "unit": "F",
+        "scale": "log"
+      },
+      "test_conditions": "f = 1 MHz, IC = 0, Ta = 25 degC; datasheet y axis in pF, converted to F",
+      "page_reference": "p. 2, Cob/Cib - VCB/VEB figure, Cib curve",
+      "points": [
+        { "x": 0.1, "y": 1.2e-10 },
+        { "x": 0.3, "y": 1.15e-10 },
+        { "x": 1, "y": 1e-10 },
+        { "x": 3, "y": 8.2e-11 },
+        { "x": 7, "y": 6e-11 }
+      ]
+    },
+    {
+      "name": "Transition frequency fT vs collector current, VCE = 10 V, Ta = 25 degC",
+      "x_axis": {
+        "quantity": "collector_current",
+        "unit": "A",
+        "scale": "log"
+      },
+      "y_axis": {
+        "quantity": "transition_frequency",
+        "unit": "Hz",
+        "scale": "log"
+      },
+      "test_conditions": "Common emitter, VCE = 10 V, Ta = 25 degC; datasheet axes in mA and MHz, converted to A and Hz",
+      "page_reference": "p. 2, fT - IC figure",
+      "points": [
+        { "x": 0.01, "y": 85000000 },
+        { "x": 0.017, "y": 100000000 },
+        { "x": 0.03, "y": 135000000 },
+        { "x": 0.06, "y": 170000000 },
+        { "x": 0.1, "y": 195000000 }
+      ]
+    },
+    {
+      "name": "Static characteristic IC vs VCE at IB = 1.0 mA, Ta = 25 degC",
+      "x_axis": {
+        "quantity": "collector_emitter_voltage",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "collector_current",
+        "unit": "A",
+        "scale": "linear"
+      },
+      "test_conditions": "Common emitter, IB = 1.0 mA, Ta = 25 degC; datasheet y axis in mA, converted to A",
+      "page_reference": "p. 2, Static Characteristic figure, IB=1.0 mA curve",
+      "points": [
+        { "x": 0.5, "y": 0.148 },
+        { "x": 1.0, "y": 0.17 },
+        { "x": 1.5, "y": 0.185 },
+        { "x": 2.2, "y": 0.2 }
+      ]
+    },
+    {
+      "name": "Static characteristic IC vs VCE at IB = 0.5 mA, Ta = 25 degC",
+      "x_axis": {
+        "quantity": "collector_emitter_voltage",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "collector_current",
+        "unit": "A",
+        "scale": "linear"
+      },
+      "test_conditions": "Common emitter, IB = 0.5 mA, Ta = 25 degC; datasheet y axis in mA, converted to A",
+      "page_reference": "p. 2, Static Characteristic figure, IB=0.5 mA curve",
+      "points": [
+        { "x": 0.5, "y": 0.084 },
+        { "x": 1.0, "y": 0.088 },
+        { "x": 2.0, "y": 0.091 },
+        { "x": 3.2, "y": 0.094 }
+      ]
+    },
+    {
+      "name": "Static characteristic IC vs VCE at IB = 0.1 mA, Ta = 25 degC",
+      "x_axis": {
+        "quantity": "collector_emitter_voltage",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "collector_current",
+        "unit": "A",
+        "scale": "linear"
+      },
+      "test_conditions": "Common emitter, IB = 0.1 mA, Ta = 25 degC; datasheet y axis in mA, converted to A",
+      "page_reference": "p. 2, Static Characteristic figure, IB=0.1 mA curve",
+      "points": [
+        { "x": 0.5, "y": 0.015 },
+        { "x": 1.0, "y": 0.016 },
+        { "x": 2.0, "y": 0.016 },
+        { "x": 4.0, "y": 0.017 }
+      ]
+    }
+  ],
+  "specs": {
+    "polarity": "npn",
+    "gain_points": [
+      {
+        "collector_current": {
+          "value": 0.005,
+          "unit": "A",
+          "conditions": "hFE(1) test condition, VCE = 2 V, Ta = 25 degC",
+          "page_reference": "p. 1 electrical characteristics",
+          "source_kind": "typical"
+        },
+        "vce": {
+          "value": 2,
+          "unit": "V",
+          "conditions": "hFE(1) test condition, IC = 5 mA, Ta = 25 degC",
+          "page_reference": "p. 1 electrical characteristics",
+          "source_kind": "typical"
+        },
+        "hfe": {
+          "value": 25,
+          "unit": "1",
+          "conditions": "hFE(1), VCE = 2 V, IC = 5 mA, Ta = 25 degC, guaranteed minimum",
+          "page_reference": "p. 1 electrical characteristics",
+          "source_kind": "minimum"
+        }
+      },
+      {
+        "collector_current": {
+          "value": 0.15,
+          "unit": "A",
+          "conditions": "hFE(2) test condition, VCE = 2 V, Ta = 25 degC",
+          "page_reference": "p. 1 electrical characteristics",
+          "source_kind": "typical"
+        },
+        "vce": {
+          "value": 2,
+          "unit": "V",
+          "conditions": "hFE(2) test condition, IC = 150 mA, Ta = 25 degC",
+          "page_reference": "p. 1 electrical characteristics",
+          "source_kind": "typical"
+        },
+        "hfe": {
+          "value": 100,
+          "unit": "1",
+          "conditions": "hFE(2) rank BCP56-16 (range 100-250), VCE = 2 V, IC = 150 mA, Ta = 25 degC, guaranteed minimum for this rank",
+          "page_reference": "p. 1 classification of hFE(2) table",
+          "source_kind": "minimum"
+        }
+      },
+      {
+        "collector_current": {
+          "value": 0.15,
+          "unit": "A",
+          "conditions": "hFE(2) test condition, VCE = 2 V, Ta = 25 degC",
+          "page_reference": "p. 1 electrical characteristics",
+          "source_kind": "typical"
+        },
+        "vce": {
+          "value": 2,
+          "unit": "V",
+          "conditions": "hFE(2) test condition, IC = 150 mA, Ta = 25 degC",
+          "page_reference": "p. 1 electrical characteristics",
+          "source_kind": "typical"
+        },
+        "hfe": {
+          "value": 250,
+          "unit": "1",
+          "conditions": "hFE(2) rank BCP56-16 (range 100-250), VCE = 2 V, IC = 150 mA, Ta = 25 degC, guaranteed maximum for this rank",
+          "page_reference": "p. 1 classification of hFE(2) table",
+          "source_kind": "maximum"
+        }
+      },
+      {
+        "collector_current": {
+          "value": 0.5,
+          "unit": "A",
+          "conditions": "hFE(3) test condition, VCE = 2 V, Ta = 25 degC",
+          "page_reference": "p. 1 electrical characteristics",
+          "source_kind": "typical"
+        },
+        "vce": {
+          "value": 2,
+          "unit": "V",
+          "conditions": "hFE(3) test condition, IC = 500 mA, Ta = 25 degC",
+          "page_reference": "p. 1 electrical characteristics",
+          "source_kind": "typical"
+        },
+        "hfe": {
+          "value": 25,
+          "unit": "1",
+          "conditions": "hFE(3), VCE = 2 V, IC = 500 mA, Ta = 25 degC, guaranteed minimum",
+          "page_reference": "p. 1 electrical characteristics",
+          "source_kind": "minimum"
+        }
+      },
+      {
+        "collector_current": {
+          "value": 0.001,
+          "unit": "A",
+          "conditions": "VCE = 2 V, Ta = 25 degC",
+          "page_reference": "p. 2, hFE - IC figure",
+          "source_kind": "typical"
+        },
+        "vce": {
+          "value": 2,
+          "unit": "V",
+          "conditions": "IC = 1 mA, Ta = 25 degC",
+          "page_reference": "p. 2, hFE - IC figure",
+          "source_kind": "typical"
+        },
+        "hfe": {
+          "value": 145,
+          "unit": "1",
+          "conditions": "VCE = 2 V, IC = 1 mA, Ta = 25 degC, digitized typical curve shared by BCP54/55/56, not rank-specific",
+          "page_reference": "p. 2, hFE - IC figure, Ta=25 degC curve",
+          "source_kind": "digitized_typical_curve"
+        }
+      },
+      {
+        "collector_current": {
+          "value": 0.01,
+          "unit": "A",
+          "conditions": "VCE = 2 V, Ta = 25 degC",
+          "page_reference": "p. 2, hFE - IC figure",
+          "source_kind": "typical"
+        },
+        "vce": {
+          "value": 2,
+          "unit": "V",
+          "conditions": "IC = 10 mA, Ta = 25 degC",
+          "page_reference": "p. 2, hFE - IC figure",
+          "source_kind": "typical"
+        },
+        "hfe": {
+          "value": 165,
+          "unit": "1",
+          "conditions": "VCE = 2 V, IC = 10 mA, Ta = 25 degC, digitized typical curve shared by BCP54/55/56, not rank-specific",
+          "page_reference": "p. 2, hFE - IC figure, Ta=25 degC curve",
+          "source_kind": "digitized_typical_curve"
+        }
+      },
+      {
+        "collector_current": {
+          "value": 0.1,
+          "unit": "A",
+          "conditions": "VCE = 2 V, Ta = 25 degC",
+          "page_reference": "p. 2, hFE - IC figure",
+          "source_kind": "typical"
+        },
+        "vce": {
+          "value": 2,
+          "unit": "V",
+          "conditions": "IC = 100 mA, Ta = 25 degC",
+          "page_reference": "p. 2, hFE - IC figure",
+          "source_kind": "typical"
+        },
+        "hfe": {
+          "value": 190,
+          "unit": "1",
+          "conditions": "VCE = 2 V, IC = 100 mA, Ta = 25 degC, digitized typical curve shared by BCP54/55/56, not rank-specific",
+          "page_reference": "p. 2, hFE - IC figure, Ta=25 degC curve",
+          "source_kind": "digitized_typical_curve"
+        }
+      },
+      {
+        "collector_current": {
+          "value": 0.5,
+          "unit": "A",
+          "conditions": "VCE = 2 V, Ta = 25 degC",
+          "page_reference": "p. 2, hFE - IC figure",
+          "source_kind": "typical"
+        },
+        "vce": {
+          "value": 2,
+          "unit": "V",
+          "conditions": "IC = 500 mA, Ta = 25 degC",
+          "page_reference": "p. 2, hFE - IC figure",
+          "source_kind": "typical"
+        },
+        "hfe": {
+          "value": 120,
+          "unit": "1",
+          "conditions": "VCE = 2 V, IC = 500 mA, Ta = 25 degC, digitized typical curve shared by BCP54/55/56, not rank-specific",
+          "page_reference": "p. 2, hFE - IC figure, Ta=25 degC curve",
+          "source_kind": "digitized_typical_curve"
+        }
+      }
+    ],
+    "saturation_points": [
+      {
+        "collector_current": {
+          "value": 0.5,
+          "unit": "A",
+          "conditions": "VCE(sat) test condition, IB = 50 mA, Ta = 25 degC",
+          "page_reference": "p. 1 electrical characteristics",
+          "source_kind": "typical"
+        },
+        "base_current": {
+          "value": 0.05,
+          "unit": "A",
+          "conditions": "VCE(sat) test condition, IC = 500 mA, Ta = 25 degC",
+          "page_reference": "p. 1 electrical characteristics",
+          "source_kind": "typical"
+        },
+        "vce_sat": {
+          "value": 0.5,
+          "unit": "V",
+          "conditions": "IC = 500 mA, IB = 50 mA, Ta = 25 degC, guaranteed maximum",
+          "page_reference": "p. 1 electrical characteristics",
+          "source_kind": "maximum"
+        },
+        "vbe_sat": null
+      },
+      {
+        "collector_current": {
+          "value": 0.01,
+          "unit": "A",
+          "conditions": "beta = 10, IB = 1 mA, Ta = 25 degC",
+          "page_reference": "p. 2, VCEsat/VBEsat - IC figures",
+          "source_kind": "typical"
+        },
+        "base_current": {
+          "value": 0.001,
+          "unit": "A",
+          "conditions": "beta = 10, IC = 10 mA, Ta = 25 degC",
+          "page_reference": "p. 2, VCEsat/VBEsat - IC figures",
+          "source_kind": "typical"
+        },
+        "vce_sat": {
+          "value": 0.023,
+          "unit": "V",
+          "conditions": "IC = 10 mA, IB = 1 mA (beta = 10), Ta = 25 degC, digitized",
+          "page_reference": "p. 2, VCEsat - IC figure, Ta=25 degC curve",
+          "source_kind": "digitized_typical_curve"
+        },
+        "vbe_sat": {
+          "value": 0.66,
+          "unit": "V",
+          "conditions": "IC = 10 mA, IB = 1 mA (beta = 10), Ta = 25 degC, digitized",
+          "page_reference": "p. 2, VBEsat - IC figure, Ta=25 degC curve",
+          "source_kind": "digitized_typical_curve"
+        }
+      },
+      {
+        "collector_current": {
+          "value": 0.1,
+          "unit": "A",
+          "conditions": "beta = 10, IB = 10 mA, Ta = 25 degC",
+          "page_reference": "p. 2, VCEsat/VBEsat - IC figures",
+          "source_kind": "typical"
+        },
+        "base_current": {
+          "value": 0.01,
+          "unit": "A",
+          "conditions": "beta = 10, IC = 100 mA, Ta = 25 degC",
+          "page_reference": "p. 2, VCEsat/VBEsat - IC figures",
+          "source_kind": "typical"
+        },
+        "vce_sat": {
+          "value": 0.035,
+          "unit": "V",
+          "conditions": "IC = 100 mA, IB = 10 mA (beta = 10), Ta = 25 degC, digitized",
+          "page_reference": "p. 2, VCEsat - IC figure, Ta=25 degC curve",
+          "source_kind": "digitized_typical_curve"
+        },
+        "vbe_sat": {
+          "value": 0.755,
+          "unit": "V",
+          "conditions": "IC = 100 mA, IB = 10 mA (beta = 10), Ta = 25 degC, digitized",
+          "page_reference": "p. 2, VBEsat - IC figure, Ta=25 degC curve",
+          "source_kind": "digitized_typical_curve"
+        }
+      },
+      {
+        "collector_current": {
+          "value": 0.5,
+          "unit": "A",
+          "conditions": "beta = 10, IB = 50 mA, Ta = 25 degC",
+          "page_reference": "p. 2, VCEsat/VBEsat - IC figures",
+          "source_kind": "typical"
+        },
+        "base_current": {
+          "value": 0.05,
+          "unit": "A",
+          "conditions": "beta = 10, IC = 500 mA, Ta = 25 degC",
+          "page_reference": "p. 2, VCEsat/VBEsat - IC figures",
+          "source_kind": "typical"
+        },
+        "vce_sat": {
+          "value": 0.1,
+          "unit": "V",
+          "conditions": "IC = 500 mA, IB = 50 mA (beta = 10), Ta = 25 degC, digitized",
+          "page_reference": "p. 2, VCEsat - IC figure, Ta=25 degC curve",
+          "source_kind": "digitized_typical_curve"
+        },
+        "vbe_sat": {
+          "value": 0.87,
+          "unit": "V",
+          "conditions": "IC = 500 mA, IB = 50 mA (beta = 10), Ta = 25 degC, digitized",
+          "page_reference": "p. 2, VBEsat - IC figure, Ta=25 degC curve",
+          "source_kind": "digitized_typical_curve"
+        }
+      }
+    ],
+    "ft": {
+      "value": 100000000,
+      "unit": "Hz",
+      "conditions": "VCE = 10 V, IC = 50 mA, f = 100 MHz, Ta = 25 degC, guaranteed minimum",
+      "page_reference": "p. 1 electrical characteristics",
+      "source_kind": "minimum"
+    },
+    "cobo": {
+      "value": 7e-12,
+      "unit": "F",
+      "conditions": "VCB = 10 V, IE = 0, f = 1 MHz, Ta = 25 degC, digitized from Cob curve; not tabulated in electrical characteristics",
+      "page_reference": "p. 2, Cob/Cib - VCB/VEB figure, Cob curve",
+      "source_kind": "digitized_typical_curve"
+    },
+    "cibo": {
+      "value": 1.1e-10,
+      "unit": "F",
+      "conditions": "VEB = 0.5 V, IC = 0, f = 1 MHz, Ta = 25 degC, digitized from Cib curve; not tabulated in electrical characteristics",
+      "page_reference": "p. 2, Cob/Cib - VCB/VEB figure, Cib curve",
+      "source_kind": "digitized_typical_curve"
+    },
+    "vceo": {
+      "value": 80,
+      "unit": "V",
+      "conditions": "V(BR)CEO, BCP56 column, IC = 10 mA, IB = 0, Ta = 25 degC, guaranteed minimum; maximum rating VCEO for BCP56 is also 80 V (p. 1 maximum ratings)",
+      "page_reference": "p. 1 electrical characteristics",
+      "source_kind": "minimum"
+    }
+  },
+  "extraction_notes": [
+    "Source PDF SHA-256 4f8918c4f4f89dcd1cbc54e5e169679738c19d95a6d66d0501f3b713087a9f13 (C95810__BCP56-RANGE-100-250.pdf, 4 pages), publisher JCET, www.cj-elec.com, revision mark G,Jan,2017.",
+    "Identity preserved exactly as briefed: MPN 'BCP56(RANGE:100-250)' is the catalog alias for BCP56 in hFE(2) classification rank '-16' (range 100-250, marking BCP56-16) from the p. 1 'CLASSIFICATION OF hFE(2)' table. The generic electrical-characteristics hFE(2) row (63 min / 250 max) is superseded for this rank by the 100-250 classification bounds.",
+    "Manufacturer preserved as the briefed catalog identity 'Jiangsu Changjing Electronics Technology Co Ltd'; the datasheet header spells it 'JIANGSU CHANGJIANG ELECTRONICS TECHNOLOGY CO., LTD' (JCET). Same company.",
+    "Datasheet covers BCP54/55/56 jointly; BCP56-column values used for V(BR)CBO (100 V min) and V(BR)CEO (80 V min). Shared rows: V(BR)EBO 5 V min (IE = 10 uA), ICBO 100 nA max (VCB = 30 V), VBE 1 V max (VCE = 2 V, IC = 500 mA), IC(continuous) 1 A max, PC 1.5 W, RthJA 83.3 degC/W.",
+    "All values converted to SI units (mA to A, mV to V, MHz to Hz, pF to F); datasheet axis units are noted per curve in test_conditions.",
+    "Typical-characteristic curves on p. 2 are shared across BCP54/55/56 and are not specific to the -16 hFE rank; digitized Ta=25 degC curves only. Manual digitization from 300 dpi page render; estimated reading uncertainty about 5-10 percent (log axes).",
+    "Guaranteed bounds are recorded with source_kind minimum/maximum and were not converted into typical values. Cobo and Cibo have no tabulated limit in this datasheet; only the typical Cob/Cib curve exists, so those spec points are digitized typicals.",
+    "Static Characteristic figure (IC vs VCE per IB step, 0.1-1.0 mA) digitized at IB = 0.1, 0.5 and 1.0 mA for Early-voltage estimation. fT vs IC curve digitized; tabulated fT is a 100 MHz minimum at VCE = 10 V, IC = 50 mA.",
+    "No vendor SPICE models or third-party data used; public JCET datasheet evidence only."
+  ],
+  "omission_reason": null
+}

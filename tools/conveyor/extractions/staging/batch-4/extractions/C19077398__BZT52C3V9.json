@@ -1,0 +1,78 @@
+{
+  "schema_version": "1.0.0",
+  "mpn": "BZT52C3V9",
+  "manufacturer": "hongjiacheng",
+  "family": "diode",
+  "datasheet_identity": {
+    "title": "BZT52C2V0 THRU BZT52C75 SURFACE MOUNT ZENER DIODES (SOD-123)",
+    "revision": "Rev:1.0",
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ]
+  },
+  "usable_curves": false,
+  "curves": [],
+  "specs": {
+    "variant": "zener",
+    "forward_voltage_points": [
+      {
+        "current": {
+          "value": 0.01,
+          "unit": "A",
+          "conditions": "Specified test current for the VF limit, Ta = 25 degC",
+          "page_reference": "p. 1 Maximum Ratings, Forward Voltage row",
+          "source_kind": "typical"
+        },
+        "voltage": {
+          "value": 0.9,
+          "unit": "V",
+          "conditions": "IF = 0.01 A, Ta = 25 degC",
+          "page_reference": "p. 1 Maximum Ratings, Forward Voltage row",
+          "source_kind": "maximum"
+        }
+      }
+    ],
+    "reverse_current": {
+      "value": 3e-6,
+      "unit": "A",
+      "conditions": "VR = 1.0 V, Ta = 25 degC (leakage below the knee)",
+      "page_reference": "p. 2 Electrical Characteristics, BZT52C3V9 row",
+      "source_kind": "maximum"
+    },
+    "capacitance": {
+      "value": 1.8e-10,
+      "unit": "F",
+      "conditions": "0 V bias, f = 1 MHz, Ta = 25 degC; single point read from the family typical-capacitance curve at nominal VZ = 3.9 V; digitization tolerance approximately +/-20%",
+      "page_reference": "p. 3 Fig.3 Typical Capacitance",
+      "source_kind": "digitized_typical_curve"
+    },
+    "reverse_recovery": null,
+    "breakdown_voltage": {
+      "value": 3.9,
+      "unit": "V",
+      "conditions": "Nominal VZ at IZT = 0.005 A, Ta = 25 degC; table min 3.71 V, max 4.10 V",
+      "page_reference": "p. 2 Electrical Characteristics, BZT52C3V9 row",
+      "source_kind": "typical"
+    },
+    "breakdown_current": {
+      "value": 0.005,
+      "unit": "A",
+      "conditions": "IZT, the specified zener test current for the VZ measurement, Ta = 25 degC",
+      "page_reference": "p. 2 Electrical Characteristics, BZT52C3V9 row",
+      "source_kind": "typical"
+    }
+  },
+  "extraction_notes": [
+    "Family datasheet covering BZT52C2V0 through BZT52C75; the BZT52C3V9 row (marking code W5) was used for all part-specific table values.",
+    "Zener impedance for variant-Z fitting (no dedicated schema field): ZZT = 90 ohm maximum at IZT = 0.005 A; ZZK = 600 ohm maximum at IZK = 0.001 A (p. 2 Electrical Characteristics, BZT52C3V9 row).",
+    "Typical temperature coefficient at IZTC: -3.5 to 0 mV/degC; admissible zener current IZM listed as 5 mA in the table (p. 2).",
+    "Maximum ratings (p. 1): PD = 350 mW, RthJA = 357 degC/W, Tj and Tstg -55 to +150 degC. Note the p. 3 curve figures are annotated PD = 500 mW, inconsistent with the 350 mW rating on p. 1; curves were not relied on for limits.",
+    "Fig.1 Zener Characteristics (p. 3): the traces between the labeled 2.4 V and 4.7 V curves form an unlabeled cluster of six crossing curves (2.7, 3.0, 3.3, 3.6, 3.9, 4.3 V by inference); the 3.9 V trace cannot be attributed without guessing, so no I-V curve was digitized.",
+    "Capacitance is a single digitized read of the 0 V bias family typical-capacitance curve at nominal VZ = 3.9 V (approximately 180 pF); it is not a swept characteristic of this part.",
+    "Forward voltage is a single maximum limit (0.9 V at 10 mA) from the ratings table; the datasheet provides no forward I-V curve, so only one VF point is available."
+  ],
+  "omission_reason": "Part-specific curves omitted: the Fig.1 zener I-V traces between 2.4 V and 4.7 V are unlabeled and mutually crossing, so the BZT52C3V9 trace cannot be identified unambiguously, and the remaining figures (temperature coefficient, leakage, capacitance, impedance) plot family-level quantities versus nominal zener voltage rather than operating characteristics of this part. Extraction therefore relies on the electrical characteristics table, supporting F1 fidelity only."
+}

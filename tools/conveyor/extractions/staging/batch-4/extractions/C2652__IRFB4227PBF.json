@@ -1,0 +1,174 @@
+{
+  "schema_version": "1.0.0",
+  "mpn": "IRFB4227PBF",
+  "manufacturer": "Infineon Technologies",
+  "family": "mosfet",
+  "datasheet_identity": {
+    "title": "IRFB4227PbF HEXFET Power MOSFET",
+    "revision": "09/10/07",
+    "pages_examined": ["1", "2", "3", "4", "5"]
+  },
+  "usable_curves": true,
+  "curves": [
+    {
+      "name": "Transfer Characteristics (ID vs VGS)",
+      "x_axis": {
+        "quantity": "Gate-to-Source Voltage",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "Drain Current",
+        "unit": "A",
+        "scale": "log"
+      },
+      "test_conditions": "VDS = 25V, pulse width <= 60µs, TJ = 25°C",
+      "page_reference": "3",
+      "points": [
+        {"x": 3.0, "y": 0.08},
+        {"x": 3.5, "y": 0.4},
+        {"x": 4.0, "y": 1.5},
+        {"x": 4.5, "y": 4.0},
+        {"x": 5.0, "y": 10},
+        {"x": 5.5, "y": 20},
+        {"x": 6.0, "y": 45},
+        {"x": 6.5, "y": 90},
+        {"x": 7.0, "y": 200}
+      ]
+    },
+    {
+      "name": "On-Resistance vs Gate Voltage",
+      "x_axis": {
+        "quantity": "Gate-to-Source Voltage",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "Drain-to-Source On-Resistance",
+        "unit": "Ω",
+        "scale": "linear"
+      },
+      "test_conditions": "ID = 46A, TJ = 25°C, VDS = 25V",
+      "page_reference": "5",
+      "points": [
+        {"x": 5.0, "y": 0.154},
+        {"x": 6.0, "y": 0.078},
+        {"x": 7.0, "y": 0.042},
+        {"x": 8.0, "y": 0.025},
+        {"x": 9.0, "y": 0.019},
+        {"x": 10.0, "y": 0.0197}
+      ]
+    },
+    {
+      "name": "Capacitance vs Drain-to-Source Voltage",
+      "x_axis": {
+        "quantity": "Drain-to-Source Voltage",
+        "unit": "V",
+        "scale": "log"
+      },
+      "y_axis": {
+        "quantity": "Capacitance",
+        "unit": "F",
+        "scale": "log"
+      },
+      "test_conditions": "VGS = 0V, f = 1 MHz, Ciss = Cgs + Cgd, Coss = Cds + Cgd, Crss = Cgd",
+      "page_reference": "4",
+      "points": [
+        {"x": 1, "y": 4.6e-9},
+        {"x": 10, "y": 2.0e-9},
+        {"x": 25, "y": 0.9e-9},
+        {"x": 100, "y": 0.3e-9},
+        {"x": 200, "y": 0.1e-9}
+      ]
+    }
+  ],
+  "specs": {
+    "polarity": "n",
+    "threshold_min": {
+      "value": 3.0,
+      "unit": "V",
+      "conditions": "VDS = VGS, ID = 250µA",
+      "page_reference": "2",
+      "source_kind": "minimum"
+    },
+    "threshold_typ": null,
+    "threshold_max": {
+      "value": 5.0,
+      "unit": "V",
+      "conditions": "VDS = VGS, ID = 250µA",
+      "page_reference": "2",
+      "source_kind": "maximum"
+    },
+    "rdson_points": [
+      {
+        "vgs": {
+          "value": 10.0,
+          "unit": "V",
+          "conditions": "Continuous operation",
+          "page_reference": "2",
+          "source_kind": "typical"
+        },
+        "current": {
+          "value": 46.0,
+          "unit": "A",
+          "conditions": "Continuous drain current at TC = 25°C",
+          "page_reference": "1",
+          "source_kind": "typical"
+        },
+        "resistance": {
+          "value": 0.0197,
+          "unit": "Ω",
+          "conditions": "TJ = 25°C, measured at VGS = 10V",
+          "page_reference": "2",
+          "source_kind": "typical"
+        }
+      }
+    ],
+    "ciss": {
+      "value": 4.6e-9,
+      "unit": "F",
+      "conditions": "VGS = 0V, f = 1.0 MHz, input capacitance",
+      "page_reference": "2",
+      "source_kind": "typical"
+    },
+    "coss": {
+      "value": 4.6e-10,
+      "unit": "F",
+      "conditions": "VDS = 25V, f = 1.0 MHz, output capacitance",
+      "page_reference": "2",
+      "source_kind": "typical"
+    },
+    "crss": {
+      "value": 9.1e-11,
+      "unit": "F",
+      "conditions": "VDS = 25V, f = 1.0 MHz, reverse transfer capacitance",
+      "page_reference": "2",
+      "source_kind": "typical"
+    },
+    "breakdown_voltage": {
+      "value": 200.0,
+      "unit": "V",
+      "conditions": "VGS = 0V, ID = 250µA",
+      "page_reference": "2",
+      "source_kind": "minimum"
+    },
+    "body_diode": {
+      "value": 1.3,
+      "unit": "V",
+      "conditions": "TJ = 25°C, IS = 46A, VGS = 0V, diode forward voltage",
+      "page_reference": "2",
+      "source_kind": "maximum"
+    }
+  },
+  "extraction_notes": [
+    "N-channel HEXFET power MOSFET, TO-220AB package",
+    "Document ID: PD-97035D, Revision 09/10/07",
+    "Optimized for plasma display panel sustain and energy recovery applications",
+    "Transfer characteristics (Fig 3): log scale ID, linear scale VGS at VDS=25V",
+    "RDS(on) vs VGS (Fig 13): extracted at 46A drain current, 25°C junction",
+    "Capacitance curve (Fig 9): Ciss dominates at low VDS, Crss is reverse transfer",
+    "All values in SI units: V, A, Ω, F",
+    "Readily extracted curves from public datasheet, no vendor model data"
+  ],
+  "omission_reason": null
+}

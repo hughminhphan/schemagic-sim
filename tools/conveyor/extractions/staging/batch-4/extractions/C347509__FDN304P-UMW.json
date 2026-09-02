@@ -1,0 +1,218 @@
+{
+  "schema_version": "1.0.0",
+  "mpn": "FDN304P(UMW)",
+  "manufacturer": "UMW(Youtai Semiconductor Co., Ltd.)",
+  "family": "mosfet",
+  "datasheet_identity": {
+    "title": "-20V P-Channel MOSFET UMW FDN304P",
+    "revision": "Nov.2024",
+    "pages_examined": ["1", "2", "4", "5"]
+  },
+  "usable_curves": true,
+  "curves": [
+    {
+      "name": "On-Resistance Variation with Gate-to-Source Voltage (25°C)",
+      "x_axis": {
+        "quantity": "gate-source voltage",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "drain-source on-resistance",
+        "unit": "Ω",
+        "scale": "linear"
+      },
+      "test_conditions": "Ta=25°C, VDS=-10V, RL=3.5Ω",
+      "page_reference": "4, Figure 4",
+      "points": [
+        {"x": -1.8, "y": 0.100},
+        {"x": -2.0, "y": 0.075},
+        {"x": -2.5, "y": 0.065},
+        {"x": -3.0, "y": 0.055},
+        {"x": -4.0, "y": 0.045},
+        {"x": -4.5, "y": 0.040}
+      ]
+    },
+    {
+      "name": "Transfer Characteristics (25°C)",
+      "x_axis": {
+        "quantity": "gate-source voltage",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "drain current",
+        "unit": "A",
+        "scale": "linear"
+      },
+      "test_conditions": "Ta=25°C, VDS=-5V",
+      "page_reference": "4, Figure 5",
+      "points": [
+        {"x": -0.5, "y": 0.0},
+        {"x": -1.0, "y": -1.0},
+        {"x": -1.5, "y": -3.0},
+        {"x": -2.0, "y": -6.0},
+        {"x": -2.5, "y": -9.0},
+        {"x": -3.0, "y": -11.0},
+        {"x": -3.5, "y": -12.0}
+      ]
+    },
+    {
+      "name": "On-Region Characteristics at VGS=-4.5V",
+      "x_axis": {
+        "quantity": "drain-source voltage",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "drain current",
+        "unit": "A",
+        "scale": "linear"
+      },
+      "test_conditions": "Ta=25°C, VGS=-4.5V",
+      "page_reference": "4, Figure 1",
+      "points": [
+        {"x": -0.1, "y": -0.5},
+        {"x": -0.5, "y": -1.8},
+        {"x": -1.0, "y": -2.2},
+        {"x": -1.5, "y": -2.35},
+        {"x": -2.0, "y": -2.4}
+      ]
+    }
+  ],
+  "specs": {
+    "polarity": "p",
+    "threshold_min": {
+      "value": -0.4,
+      "unit": "V",
+      "conditions": "VDS=VGS, ID=-250µA",
+      "page_reference": "2",
+      "source_kind": "minimum"
+    },
+    "threshold_typ": null,
+    "threshold_max": {
+      "value": -1.5,
+      "unit": "V",
+      "conditions": "VDS=VGS, ID=-250µA",
+      "page_reference": "2",
+      "source_kind": "maximum"
+    },
+    "rdson_points": [
+      {
+        "vgs": {
+          "value": -4.5,
+          "unit": "V",
+          "conditions": "gate-source voltage",
+          "page_reference": "2",
+          "source_kind": "typical"
+        },
+        "current": {
+          "value": -2.4,
+          "unit": "A",
+          "conditions": "continuous drain current",
+          "page_reference": "2",
+          "source_kind": "typical"
+        },
+        "resistance": {
+          "value": 0.052,
+          "unit": "Ω",
+          "conditions": "VGS=-4.5V, ID=-2.4A",
+          "page_reference": "2",
+          "source_kind": "typical"
+        }
+      },
+      {
+        "vgs": {
+          "value": -2.5,
+          "unit": "V",
+          "conditions": "gate-source voltage",
+          "page_reference": "2",
+          "source_kind": "typical"
+        },
+        "current": {
+          "value": -2.0,
+          "unit": "A",
+          "conditions": "continuous drain current",
+          "page_reference": "2",
+          "source_kind": "typical"
+        },
+        "resistance": {
+          "value": 0.070,
+          "unit": "Ω",
+          "conditions": "VGS=-2.5V, ID=-2A",
+          "page_reference": "2",
+          "source_kind": "typical"
+        }
+      },
+      {
+        "vgs": {
+          "value": -1.8,
+          "unit": "V",
+          "conditions": "gate-source voltage",
+          "page_reference": "2",
+          "source_kind": "typical"
+        },
+        "current": {
+          "value": -1.8,
+          "unit": "A",
+          "conditions": "continuous drain current",
+          "page_reference": "2",
+          "source_kind": "typical"
+        },
+        "resistance": {
+          "value": 0.100,
+          "unit": "Ω",
+          "conditions": "VGS=-1.8V, ID=-1.8A",
+          "page_reference": "2",
+          "source_kind": "typical"
+        }
+      }
+    ],
+    "ciss": {
+      "value": 1.312e-9,
+      "unit": "F",
+      "conditions": "VDS=-10V, VGS=0V, f=1MHz",
+      "page_reference": "2",
+      "source_kind": "typical"
+    },
+    "coss": {
+      "value": 2.40e-10,
+      "unit": "F",
+      "conditions": "VDS=-10V, VGS=-4.5V, f=1MHz",
+      "page_reference": "2",
+      "source_kind": "typical"
+    },
+    "crss": {
+      "value": 1.06e-10,
+      "unit": "F",
+      "conditions": "VDS=-10V, VGS=0V, f=1MHz",
+      "page_reference": "2",
+      "source_kind": "typical"
+    },
+    "breakdown_voltage": {
+      "value": -20.0,
+      "unit": "V",
+      "conditions": "VGS=0V, ID=-250µA",
+      "page_reference": "2",
+      "source_kind": "minimum"
+    },
+    "body_diode": {
+      "value": -1.2,
+      "unit": "V",
+      "conditions": "IS=-1A, VGS=0V, TC=25°C",
+      "page_reference": "2",
+      "source_kind": "typical"
+    }
+  },
+  "extraction_notes": [
+    "P-Channel MOSFET optimized for battery power management, load switching, battery protection",
+    "Data extracted from UMW FDN304P datasheet revision Nov.2024",
+    "All drain currents negative per P-channel convention (ID flows from source to drain)",
+    "Capacitances converted from pF to Farads per SI standard",
+    "RDS(ON) values converted from mΩ to decimal ohms",
+    "Three RDS(ON) operating points represent typical values at specified VGS conditions",
+    "Curves digitized from figures with ±5% reading confidence",
+    "SOT-23 package, maximum ratings: VDS=-20V, ID=-2.4A continuous, RθJA=250°C/W"
+  ],
+  "omission_reason": null
+}

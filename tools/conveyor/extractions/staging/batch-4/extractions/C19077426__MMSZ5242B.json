@@ -1,0 +1,67 @@
+{
+  "schema_version": "1.0.0",
+  "mpn": "MMSZ5242B",
+  "manufacturer": "hongjiacheng",
+  "family": "diode",
+  "datasheet_identity": {
+    "title": "MMSZ5221B THRU MMSZ5267B SOD-123 Surface Mount Silicon Zener Diodes",
+    "revision": "Rev:1.1",
+    "pages_examined": ["1", "2", "3", "4", "5"]
+  },
+  "usable_curves": false,
+  "curves": [],
+  "specs": {
+    "variant": "zener",
+    "forward_voltage_points": [
+      {
+        "current": {
+          "value": 0.01,
+          "unit": "A",
+          "conditions": "IF = 10 mA, Ta = 25 degC (Maximum Ratings table)",
+          "page_reference": "1",
+          "source_kind": "maximum"
+        },
+        "voltage": {
+          "value": 0.9,
+          "unit": "V",
+          "conditions": "VF max at IF = 10 mA, Ta = 25 degC",
+          "page_reference": "1",
+          "source_kind": "maximum"
+        }
+      }
+    ],
+    "reverse_current": {
+      "value": 1e-06,
+      "unit": "A",
+      "conditions": "IR max at VR = 9.1 V, Ta = 25 degC (Maximum Leakage Current column for MMSZ5242B)",
+      "page_reference": "2",
+      "source_kind": "maximum"
+    },
+    "capacitance": null,
+    "reverse_recovery": null,
+    "breakdown_voltage": {
+      "value": 12.0,
+      "unit": "V",
+      "conditions": "Nominal zener voltage VZ at IZT = 20 mA, Ta = 25 degC; datasheet limits Min 11.40 V / Max 12.60 V",
+      "page_reference": "2",
+      "source_kind": "typical"
+    },
+    "breakdown_current": {
+      "value": 0.02,
+      "unit": "A",
+      "conditions": "IZT zener test current at which VZ is specified, Ta = 25 degC",
+      "page_reference": "2",
+      "source_kind": "typical"
+    }
+  },
+  "extraction_notes": [
+    "Family datasheet MMSZ5221B-MMSZ5267B; the MMSZ5242B row (type code H2) on page 2 supplies the per-part limits: VZ 11.40/12.0/12.60 V at IZT = 20 mA, ZZT(max) 30 ohm, IR(max) 1.0 uA at VR = 9.1 V.",
+    "Nominal VZ is recorded as breakdown_voltage with source_kind 'typical' because the schema has no 'nominal' kind; the min/max limits are preserved in the conditions string.",
+    "Maximum zener impedance ZZT = 30 ohm for MMSZ5242B is stated in a column headed 'ZZT@IZT=0.25mA' (pages 2-3); this header conflicts with industry-standard MMSZ5242B sheets, which specify ZZT = 30 ohm at IZT = 20 mA and ZZK = 600 ohm at 0.25 mA. The value is not schema-mappable and is noted here only.",
+    "Forward voltage 0.9 V at IF = 10 mA comes from the Maximum Ratings table on page 1 and is a maximum limit, not a typical operating point.",
+    "Capacitance is null: Fig. 5 (page 4) is a generic capacitance-vs-nominal-VZ family curve with no tabulated value for the 12 V part; reading a single-part value from the log-log family plot would not be reliable evidence.",
+    "Reverse recovery is null: not specified anywhere in the datasheet (normal for a zener reference/clamp part).",
+    "No SPICE or vendor model content used; all values transcribed from the public datasheet PDF (SHA-256 fec00843f279bccf78d55a456b749bf49d99676181d710880c28c93d8ee35181)."
+  ],
+  "omission_reason": "Curves omitted: Figs 1-2 (zener I-V) plot the whole MMSZ52xxB family as dozens of closely spaced unlabeled-between-gridline traces on log-current axes, and Figs 3-6 are family-level curves indexed by nominal VZ rather than per-part characteristics; the specific 12 V (MMSZ5242B) trace cannot be isolated and digitized to at least 3 trustworthy points from this raster, so no curve points were fabricated."
+}

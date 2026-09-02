@@ -1,0 +1,217 @@
+{
+  "curves": [
+    {
+      "name": "Fig.3 Typical Forward Voltage, ES5AC-ES5DC curve",
+      "page_reference": "p. 2 fig. 3",
+      "points": [
+        {
+          "x": 0.306,
+          "y": 0.0112
+        },
+        {
+          "x": 0.33,
+          "y": 0.0198
+        },
+        {
+          "x": 0.377,
+          "y": 0.0489
+        },
+        {
+          "x": 0.425,
+          "y": 0.101
+        },
+        {
+          "x": 0.475,
+          "y": 0.199
+        },
+        {
+          "x": 0.557,
+          "y": 0.498
+        },
+        {
+          "x": 0.631,
+          "y": 1.01
+        },
+        {
+          "x": 0.713,
+          "y": 1.97
+        },
+        {
+          "x": 0.855,
+          "y": 5.03
+        },
+        {
+          "x": 0.992,
+          "y": 9.89
+        },
+        {
+          "x": 1.158,
+          "y": 17.0
+        }
+      ],
+      "test_conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle",
+      "x_axis": {
+        "quantity": "instantaneous forward voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "instantaneous forward current",
+        "scale": "log",
+        "unit": "A"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ],
+    "revision": "Rev:1.1",
+    "title": "ES5AC THRU ES5JC SMC Surface Mount Fast Recovery Rectifier (DO-214AB)"
+  },
+  "extraction_notes": [
+    "Family datasheet ES5AC THRU ES5JC; ES5DC column: VRRM = 200 V, VRMS = 140 V, VDC = 200 V (p. 1 maximum ratings).",
+    "Absolute maximum ratings for operating-region use only (never fitted): IF(AV) = 5.0 A, IFSM = 150 A at 8.3 ms half-sine, Tj = -55 to +150 degC (p. 1).",
+    "Full manufacturer name on the datasheet: Zhuhai Hongjiacheng Technology co., Ltd (www.ichjc.com).",
+    "Fig.3 contains three curves (ES5AC-ES5DC solid, ES5EC-ES5GC long-dash, ES5JC short-dash per the in-figure legend); the solid ES5AC-ES5DC vector path was digitized for ES5DC. Axes calibrated against tick labels; x linear 0.2-2.0 V, y log 0.01-20 A.",
+    "VF limit 1.0 V applies to the ES5AC-ES5DC group; ES5EC-ES5GC is 1.3 V and ES5JC 1.7 V. Trr limit 35 ns applies to the whole family.",
+    "The digitized typical curve shows unusually low forward voltage at low current (0.31 V at 10 mA); this is transcribed as plotted in the source figure without correction.",
+    "High-temperature reverse leakage row IR2 = 200 uA at VR = VDC, TA = 125 degC (p. 2) transcribed here as a note only; per archetype it must not be fitted.",
+    "Fig.1 (derating), Fig.2 (surge vs cycles) and Fig.4 (reverse current vs percent of rated peak reverse voltage) are present but not digitized: thermal/surge ratings or percent-normalized family curves, not per-part electrical model inputs.",
+    "No measured breakdown row exists; breakdown_voltage and breakdown_current are null.",
+    "source_kind 'typical' on specified test currents means 'exact specified test condition'; the schema enum has no dedicated value for test conditions.",
+    "All values converted to SI base units (uA -> A, pF -> F, ns -> s)."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "ES5DC",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": null,
+    "breakdown_voltage": null,
+    "capacitance": {
+      "conditions": "VR = 4.0 V DC, f = 1 MHz",
+      "page_reference": "p. 2 electrical characteristics",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 7.5e-11
+    },
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "specified test current for the VF limit row",
+          "page_reference": "p. 2 electrical characteristics",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 5.0
+        },
+        "voltage": {
+          "conditions": "IF = 5.0 A, Ta = 25 degC, ES5AC-ES5DC column",
+          "page_reference": "p. 2 electrical characteristics",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 1.0
+        }
+      },
+      {
+        "current": {
+          "conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle",
+          "page_reference": "p. 2 fig. 3",
+          "source_kind": "digitized_typical_curve",
+          "unit": "A",
+          "value": 0.01
+        },
+        "voltage": {
+          "conditions": "IF = 0.01 A, Tj = 25 degC, pulse width = 300 us, 1% duty cycle",
+          "page_reference": "p. 2 fig. 3",
+          "source_kind": "digitized_typical_curve",
+          "unit": "V",
+          "value": 0.306
+        }
+      },
+      {
+        "current": {
+          "conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle",
+          "page_reference": "p. 2 fig. 3",
+          "source_kind": "digitized_typical_curve",
+          "unit": "A",
+          "value": 0.1
+        },
+        "voltage": {
+          "conditions": "IF = 0.1 A, Tj = 25 degC, pulse width = 300 us, 1% duty cycle",
+          "page_reference": "p. 2 fig. 3",
+          "source_kind": "digitized_typical_curve",
+          "unit": "V",
+          "value": 0.425
+        }
+      },
+      {
+        "current": {
+          "conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle",
+          "page_reference": "p. 2 fig. 3",
+          "source_kind": "digitized_typical_curve",
+          "unit": "A",
+          "value": 1.0
+        },
+        "voltage": {
+          "conditions": "IF = 1.0 A, Tj = 25 degC, pulse width = 300 us, 1% duty cycle",
+          "page_reference": "p. 2 fig. 3",
+          "source_kind": "digitized_typical_curve",
+          "unit": "V",
+          "value": 0.631
+        }
+      },
+      {
+        "current": {
+          "conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle",
+          "page_reference": "p. 2 fig. 3",
+          "source_kind": "digitized_typical_curve",
+          "unit": "A",
+          "value": 5.0
+        },
+        "voltage": {
+          "conditions": "IF = 5.0 A, Tj = 25 degC, pulse width = 300 us, 1% duty cycle",
+          "page_reference": "p. 2 fig. 3",
+          "source_kind": "digitized_typical_curve",
+          "unit": "V",
+          "value": 0.855
+        }
+      },
+      {
+        "current": {
+          "conditions": "Tj = 25 degC, pulse width = 300 us, 1% duty cycle",
+          "page_reference": "p. 2 fig. 3",
+          "source_kind": "digitized_typical_curve",
+          "unit": "A",
+          "value": 10.0
+        },
+        "voltage": {
+          "conditions": "IF = 10.0 A, Tj = 25 degC, pulse width = 300 us, 1% duty cycle",
+          "page_reference": "p. 2 fig. 3",
+          "source_kind": "digitized_typical_curve",
+          "unit": "V",
+          "value": 0.992
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = VDC = 200 V, TA = 25 degC",
+      "page_reference": "p. 2 electrical characteristics",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 2e-06
+    },
+    "reverse_recovery": {
+      "conditions": "IF = 0.5 A, IR = 1.0 A, Irr = 0.25 A",
+      "page_reference": "p. 2 electrical characteristics",
+      "source_kind": "maximum",
+      "unit": "s",
+      "value": 3.5e-08
+    },
+    "variant": "rectifier"
+  },
+  "usable_curves": true
+}

@@ -1,0 +1,116 @@
+{
+  "schema_version": "1.0.0",
+  "mpn": "BZX584C5V1",
+  "manufacturer": "hongjiacheng",
+  "family": "diode",
+  "datasheet_identity": {
+    "title": "BZX584C2V4 THRU BZX584C43 SURFACE MOUNT ZENER DIODES",
+    "revision": "Rev:1.0",
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4"
+    ]
+  },
+  "usable_curves": true,
+  "curves": [
+    {
+      "name": "BZX584C5V1 zener characteristic",
+      "x_axis": {
+        "quantity": "Zener voltage VZ",
+        "unit": "V",
+        "scale": "linear"
+      },
+      "y_axis": {
+        "quantity": "Zener current IZ",
+        "unit": "A",
+        "scale": "log"
+      },
+      "test_conditions": "Ta = 25 degC, pulsed; BZX584C5V1 trace labeled 5.1 in Fig. 1; PD = 150 mW envelope shown in the figure",
+      "page_reference": "p. 3, Fig. 1, Zener Characteristics (VZ Up to 10V)",
+      "points": [
+        {
+          "x": 4.91,
+          "y": 0.0005
+        },
+        {
+          "x": 5.02,
+          "y": 0.001
+        },
+        {
+          "x": 5.09,
+          "y": 0.002
+        },
+        {
+          "x": 5.16,
+          "y": 0.005
+        },
+        {
+          "x": 5.15,
+          "y": 0.01
+        },
+        {
+          "x": 5.18,
+          "y": 0.02
+        }
+      ]
+    }
+  ],
+  "specs": {
+    "variant": "zener",
+    "forward_voltage_points": [
+      {
+        "current": {
+          "value": 0.01,
+          "unit": "A",
+          "conditions": "IF = 10 mA, Ta = 25 degC; maximum rating",
+          "page_reference": "p. 1, Maximum Ratings, Forward Voltage",
+          "source_kind": "maximum"
+        },
+        "voltage": {
+          "value": 0.9,
+          "unit": "V",
+          "conditions": "IF = 10 mA, Ta = 25 degC; maximum rating",
+          "page_reference": "p. 1, Maximum Ratings, Forward Voltage",
+          "source_kind": "maximum"
+        }
+      }
+    ],
+    "reverse_current": {
+      "value": 0.000002,
+      "unit": "A",
+      "conditions": "IR = 2 microA maximum at VR = 2.0 V, Ta = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, BZX584C5V1 row",
+      "source_kind": "maximum"
+    },
+    "capacitance": null,
+    "reverse_recovery": null,
+    "breakdown_voltage": {
+      "value": 5.1,
+      "unit": "V",
+      "conditions": "VZ nominal at IZT = 5 mA, Ta = 25 degC; inclusive table bounds 4.8 V minimum and 5.4 V maximum",
+      "page_reference": "p. 2, Electrical Characteristics, BZX584C5V1 row",
+      "source_kind": "typical"
+    },
+    "breakdown_current": {
+      "value": 0.005,
+      "unit": "A",
+      "conditions": "IZT = 5 mA for the stated nominal zener voltage, Ta = 25 degC",
+      "page_reference": "p. 2, Electrical Characteristics, BZX584C5V1 row",
+      "source_kind": "typical"
+    }
+  },
+  "extraction_notes": [
+    "Zener semantics preserved: the nominal reverse breakdown voltage VZ = 5.1 V is paired with the tabulated reverse test current IZT = 5 mA, not with the forward-voltage rating.",
+    "The BZX584C5V1 row gives VZ = 4.8 V minimum, 5.1 V nominal, and 5.4 V maximum at IZT = 5 mA; maximum Zener impedance ZZT = 60 ohm at IZT; maximum knee impedance ZZK = 480 ohm at IZK = 1.0 mA; and admissible Zener current IZM = 5 mA.",
+    "The BZX584C5V1 row gives maximum reverse leakage IR = 2 microA at VR = 2.0 V and Ta = 25 degC. The p. 1 maximum ratings give VF = 0.9 V maximum at IF = 10 mA and power dissipation PD = 150 mW.",
+    "The six zener-characteristic points are direct approximate graph-read observations from the visible BZX584C5V1 trace labeled 5.1 in p. 3 Fig. 1 at labeled logarithmic-current grid values; the plotted mA current axis was converted to A and no points were interpolated or synthesized. The figure states Ta = 25 degC, pulsed, and shows a PD = 150 mW envelope.",
+    "The BZX584C5V1 temperature-coefficient bounds are -2.7 to 1.2 mV/degC at IZTC, as listed on p. 2.",
+    "Capacitance is shown only as family-level typical curves in p. 3 Fig. 5 at Ta = 25 degC and f = 1 MHz, with 0 V, 1 V, and 50% of nominal VZ bias curves; no tabulated BZX584C5V1 capacitance value is provided, so capacitance is null.",
+    "No reverse-recovery-time specification or test circuit is published in the supplied datasheet, so reverse recovery is null.",
+    "The supplied datasheet covers the BZX584C2V4 through BZX584C43 family; this extraction is restricted to the BZX584C5V1 row and its labeled 5.1 V curve.",
+    "The supplied PDF SHA-256 was verified as c3bd1e74a20c839f2752124190b102cefde941279aed375a41560e907cd9b4c3."
+  ],
+  "omission_reason": null
+}

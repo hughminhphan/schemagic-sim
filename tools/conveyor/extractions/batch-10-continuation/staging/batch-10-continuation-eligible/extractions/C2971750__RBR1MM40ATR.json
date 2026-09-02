@@ -1,0 +1,206 @@
+{
+  "curves": [
+    {
+      "name": "Forward characteristics, TJ = 25 degC",
+      "page_reference": "p. 2, forward V-I characteristics",
+      "points": [
+        {
+          "x": 0.2,
+          "y": 0.0001
+        },
+        {
+          "x": 0.3,
+          "y": 0.001
+        },
+        {
+          "x": 0.4,
+          "y": 0.01
+        },
+        {
+          "x": 0.5,
+          "y": 0.08
+        },
+        {
+          "x": 0.6,
+          "y": 0.4
+        },
+        {
+          "x": 0.8,
+          "y": 2.5
+        },
+        {
+          "x": 1.0,
+          "y": 7.0
+        },
+        {
+          "x": 1.2,
+          "y": 12.0
+        }
+      ],
+      "test_conditions": "TJ = 25 degC",
+      "x_axis": {
+        "quantity": "forward voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "forward current",
+        "scale": "log",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "Reverse characteristics, TJ = 25 degC",
+      "page_reference": "p. 2, reverse V-I characteristics",
+      "points": [
+        {
+          "x": 0,
+          "y": 4e-07
+        },
+        {
+          "x": 10,
+          "y": 8e-07
+        },
+        {
+          "x": 20,
+          "y": 1.5e-06
+        },
+        {
+          "x": 30,
+          "y": 3e-06
+        },
+        {
+          "x": 40,
+          "y": 6.5e-06
+        }
+      ],
+      "test_conditions": "TJ = 25 degC",
+      "x_axis": {
+        "quantity": "reverse voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "reverse current",
+        "scale": "log",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "Capacitance between terminals, TJ = 25 degC",
+      "page_reference": "p. 2, reverse voltage-capacitance characteristics",
+      "points": [
+        {
+          "x": 0,
+          "y": 1.8e-10
+        },
+        {
+          "x": 1,
+          "y": 9.5e-11
+        },
+        {
+          "x": 2,
+          "y": 7.5e-11
+        },
+        {
+          "x": 5,
+          "y": 5.5e-11
+        },
+        {
+          "x": 10,
+          "y": 4e-11
+        },
+        {
+          "x": 20,
+          "y": 3e-11
+        },
+        {
+          "x": 30,
+          "y": 2.7e-11
+        },
+        {
+          "x": 40,
+          "y": 2.5e-11
+        }
+      ],
+      "test_conditions": "f = 1 MHz; TJ = 25 degC",
+      "x_axis": {
+        "quantity": "reverse voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "capacitance between terminals",
+        "scale": "log",
+        "unit": "F"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3",
+      "p. 4",
+      "p. 5"
+    ],
+    "revision": "2019/05/28_Rev.002",
+    "title": "RBR1MM40A Schottky Barrier Diode"
+  },
+  "extraction_notes": [
+    "The datasheet publishes forward, reverse, capacitance, and reverse-recovery characteristic plots on page 2; plotted points were manually digitized and converted to SI units.",
+    "The rated repetitive peak reverse voltage and reverse voltage are 40 V; average rectified forward current is 1 A and peak forward surge current is 20 A.",
+    "Reverse recovery is shown as an average of 10.90 ns on a dispersion map under the stated IF, IR, and IRR conditions.",
+    "No breakdown-voltage or breakdown-current specification is published."
+  ],
+  "family": "diode",
+  "manufacturer": "ROHM Semicon",
+  "mpn": "RBR1MM40ATR",
+  "omission_reason": "No breakdown-voltage or breakdown-current specification is published.",
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": null,
+    "breakdown_voltage": null,
+    "capacitance": {
+      "conditions": "VR = 0 V; f = 1 MHz; TJ = 25 degC; typical capacitance digitized from curve",
+      "page_reference": "p. 2, reverse voltage-capacitance characteristics",
+      "source_kind": "digitized_typical_curve",
+      "unit": "F",
+      "value": 1.8e-10
+    },
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 1 A; TJ = 25 degC; maximum forward voltage",
+          "page_reference": "p. 1, characteristics",
+          "source_kind": "maximum",
+          "unit": "A",
+          "value": 1.0
+        },
+        "voltage": {
+          "conditions": "IF = 1 A; TJ = 25 degC; maximum forward voltage",
+          "page_reference": "p. 1, characteristics",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 0.52
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = 40 V; TJ = 25 degC; maximum reverse current",
+      "page_reference": "p. 1, characteristics",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 5e-05
+    },
+    "reverse_recovery": {
+      "conditions": "TJ = 25 degC; IF = 0.1 A; IR = 0.1 A; IRR = 0.01 A; n = 10 pcs; average reverse recovery time",
+      "page_reference": "p. 2, tRR dispersion map",
+      "source_kind": "typical",
+      "unit": "s",
+      "value": 1.09e-08
+    },
+    "variant": "schottky"
+  },
+  "usable_curves": true
+}

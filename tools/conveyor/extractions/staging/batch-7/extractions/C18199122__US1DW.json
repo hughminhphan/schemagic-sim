@@ -1,0 +1,228 @@
+{
+  "curves": [
+    {
+      "name": "Fig.3 Typical Forward Voltage, US1AW-US1DW curve",
+      "page_reference": "p. 2 Fig.3",
+      "points": [
+        {
+          "x": 0.612,
+          "y": 0.02
+        },
+        {
+          "x": 0.665,
+          "y": 0.05
+        },
+        {
+          "x": 0.716,
+          "y": 0.1
+        },
+        {
+          "x": 0.776,
+          "y": 0.2
+        },
+        {
+          "x": 0.868,
+          "y": 0.5
+        },
+        {
+          "x": 0.95,
+          "y": 1.0
+        },
+        {
+          "x": 1.043,
+          "y": 2.0
+        },
+        {
+          "x": 1.186,
+          "y": 5.0
+        },
+        {
+          "x": 1.336,
+          "y": 10.0
+        }
+      ],
+      "test_conditions": "Tj = 25 degC, pulse width = 300 us, 1 percent duty cycle",
+      "x_axis": {
+        "quantity": "instantaneous forward voltage",
+        "scale": "linear",
+        "unit": "V"
+      },
+      "y_axis": {
+        "quantity": "instantaneous forward current",
+        "scale": "log",
+        "unit": "A"
+      }
+    },
+    {
+      "name": "Fig.4 Typical Reverse Characteristics, Tj=25 degC",
+      "page_reference": "p. 2 Fig.4",
+      "points": [
+        {
+          "x": 10.0,
+          "y": 0.045
+        },
+        {
+          "x": 20.0,
+          "y": 0.051
+        },
+        {
+          "x": 40.0,
+          "y": 0.068
+        },
+        {
+          "x": 60.0,
+          "y": 0.092
+        },
+        {
+          "x": 80.0,
+          "y": 0.127
+        },
+        {
+          "x": 100.0,
+          "y": 0.177
+        },
+        {
+          "x": 110.0,
+          "y": 0.221
+        },
+        {
+          "x": 120.0,
+          "y": 0.301
+        }
+      ],
+      "test_conditions": "Tj = 25 degC; rated peak reverse voltage for US1DW is 200 V",
+      "x_axis": {
+        "quantity": "percent of rated peak reverse voltage",
+        "scale": "linear",
+        "unit": "%"
+      },
+      "y_axis": {
+        "quantity": "instantaneous reverse current",
+        "scale": "log",
+        "unit": "uA"
+      }
+    },
+    {
+      "name": "Fig.4 Typical Reverse Characteristics, Tj=125 degC",
+      "page_reference": "p. 2 Fig.4",
+      "points": [
+        {
+          "x": 10.0,
+          "y": 4.08
+        },
+        {
+          "x": 20.0,
+          "y": 4.2
+        },
+        {
+          "x": 40.0,
+          "y": 4.69
+        },
+        {
+          "x": 60.0,
+          "y": 5.5
+        },
+        {
+          "x": 80.0,
+          "y": 7.12
+        },
+        {
+          "x": 100.0,
+          "y": 10.7
+        },
+        {
+          "x": 110.0,
+          "y": 13.6
+        },
+        {
+          "x": 120.0,
+          "y": 20.5
+        },
+        {
+          "x": 125.0,
+          "y": 38.3
+        }
+      ],
+      "test_conditions": "Tj = 125 degC; rated peak reverse voltage for US1DW is 200 V",
+      "x_axis": {
+        "quantity": "percent of rated peak reverse voltage",
+        "scale": "linear",
+        "unit": "%"
+      },
+      "y_axis": {
+        "quantity": "instantaneous reverse current",
+        "scale": "log",
+        "unit": "uA"
+      }
+    }
+  ],
+  "datasheet_identity": {
+    "pages_examined": [
+      "p. 1",
+      "p. 2",
+      "p. 3"
+    ],
+    "revision": "Rev:1.0",
+    "title": "US1AW THRU US1MW SOD-123FL Surface Mount High Efficient Rectifier"
+  },
+  "extraction_notes": [
+    "US1DW uses the solid 'US1AW-US1DW' curve in Fig.3, per the figure legend. Fig.4's temperature curves are drawn once for the whole family.",
+    "Curves digitized from a 400 dpi raster; estimated read error about +/-0.01 V (Fig.3) and +/-10 percent of value (Fig.4).",
+    "Fig.4 x-axis preserved as printed: percent of rated peak reverse voltage; 100 percent corresponds to VRRM = 200 V for US1DW. Both Fig.4 curves rise steeply near 125-130 percent of rated voltage.",
+    "High-temperature table leakage, not to be fitted as 25 degC data: IR = 200 uA max at VR = VDC, Ta = 125 degC (p. 2).",
+    "No breakdown row exists; VRRM = 200 V (p. 1) is an absolute maximum rating, not a measured breakdown, so breakdown fields are null.",
+    "In forward_voltage_points the current entry is the exact specified test condition (source_kind 'typical'); the voltage entry is a datasheet maximum.",
+    "The job manifest left manufacturer blank; 'hongjiacheng' is taken from the datasheet footer 'Zhuhai Hongjiacheng Technology co., Ltd' (www.ichjc.com), the same vendor as the rest of this batch.",
+    "Additional ratings on p. 1 (US1DW column): VRRM = 200 V, VRMS = 140 V, VDC = 200 V, IF(AV) = 1.0 A, IFSM = 30 A @ 8.3 ms half-sine, RthJA = 85 degC/W, RthJL = 30 degC/W."
+  ],
+  "family": "diode",
+  "manufacturer": "hongjiacheng",
+  "mpn": "US1DW",
+  "omission_reason": null,
+  "schema_version": "1.0.0",
+  "specs": {
+    "breakdown_current": null,
+    "breakdown_voltage": null,
+    "capacitance": {
+      "conditions": "VR = 4.0 V DC, f = 1 MHz",
+      "page_reference": "p. 2 electrical characteristics",
+      "source_kind": "typical",
+      "unit": "F",
+      "value": 9e-12
+    },
+    "forward_voltage_points": [
+      {
+        "current": {
+          "conditions": "IF = 1.0 A, Ta = 25 degC",
+          "page_reference": "p. 2 electrical characteristics",
+          "source_kind": "typical",
+          "unit": "A",
+          "value": 1.0
+        },
+        "voltage": {
+          "conditions": "IF = 1.0 A, Ta = 25 degC; US1AW-US1DW column",
+          "page_reference": "p. 2 electrical characteristics",
+          "source_kind": "maximum",
+          "unit": "V",
+          "value": 1.0
+        }
+      }
+    ],
+    "reverse_current": {
+      "conditions": "VR = VDC = 200 V, Ta = 25 degC",
+      "page_reference": "p. 2 electrical characteristics",
+      "source_kind": "maximum",
+      "unit": "A",
+      "value": 2e-06
+    },
+    "reverse_recovery": {
+      "conditions": "IF = 0.5 A, IR = 1.0 A, Irr = 0.25 A; US1AW-US1GW columns",
+      "page_reference": "p. 2 electrical characteristics",
+      "source_kind": "maximum",
+      "unit": "s",
+      "value": 5.0000000000000004e-08
+    },
+    "variant": "rectifier"
+  },
+  "usable_curves": true
+}
