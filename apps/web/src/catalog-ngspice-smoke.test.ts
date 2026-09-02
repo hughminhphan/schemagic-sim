@@ -1,8 +1,8 @@
 import { existsSync } from "node:fs";
 import { componentPinPoints, isCatalogOnlyType, validateCircuit, type CircuitDocument, type Point } from "@opencircuit/circuit-schema";
 import { beforeAll, describe, expect, it } from "vitest";
-import { CATALOG_PARTS, preloadCatalogPart } from "./catalog";
-import { catalogBenchDocument, ne555AstableDocument } from "./catalog-bench";
+import { CATALOG_PARTS, preloadCatalogPart, type CatalogPart } from "./catalog";
+import { catalogBenchDocument, ne555AstableDocument, type CatalogBenchPart } from "./catalog-bench";
 import { generateNetlistWithCatalog } from "./catalog-netlist";
 // The native reference harness already owns process spawning, timeouts and
 // rawfile parsing for ngspice, so the smoke bench reuses it instead of shelling
@@ -15,6 +15,8 @@ const HAS_NGSPICE = existsSync(NGSPICE);
 
 /** Every part that only became placeable once catalog-only symbols existed. */
 const NEWLY_PLACEABLE = CATALOG_PARTS.filter((part) => part.baseType && isCatalogOnlyType(part.baseType));
+/** Narrows a catalog part to the bench slice without losing the live, mutated object identity. */
+const bench = (part: CatalogPart): CatalogBenchPart => ({ id: part.id, baseType: part.baseType!, manifest: part.manifest });
 
 describe.skipIf(!HAS_NGSPICE)("newly placeable catalog parts solve an operating point in native ngspice", () => {
   beforeAll(async () => {
@@ -28,7 +30,7 @@ describe.skipIf(!HAS_NGSPICE)("newly placeable catalog parts solve an operating 
   for (const part of NEWLY_PLACEABLE) {
     it(`runs .op for ${part.id}`, async () => {
       if (!part.placeable) return;
-      const generated = generateNetlistWithCatalog(catalogBenchDocument(part), "op", [part]);
+      const generated = generateNetlistWithCatalog(catalogBenchDocument(bench(part)), "op", [part]);
       expect(generated.netlist).toMatch(/^\.op$/m);
       const run = await runNative({ netlist: generated.netlist, ngspicePath: NGSPICE, timeoutMs: 60_000 });
       expect(run.stderr, `${part.id} ngspice stderr:\n${run.stderr}`).not.toMatch(/error|singular|aborted/i);
@@ -64,13 +66,13 @@ describe.skipIf(!HAS_NGSPICE)("the NE555 astable capture bench", () => {
   beforeAll(async () => { await preloadCatalogPart(part.id); }, 60_000);
 
   it("is a valid schematic with no wire crossing a foreign pin", () => {
-    const document = ne555AstableDocument(part);
+    const document = ne555AstableDocument(bench(part));
     expect(validateCircuit(document)).toEqual([]);
     expect(pinsCoveredByForeignWires(document)).toEqual([]);
   });
 
   it("oscillates in native ngspice", async () => {
-    const generated = generateNetlistWithCatalog(ne555AstableDocument(part), "tran", [part]);
+    const generated = generateNetlistWithCatalog(ne555AstableDocument(bench(part)), "tran", [part]);
     const run = await runNative({ netlist: generated.netlist, ngspicePath: NGSPICE, timeoutMs: 90_000 });
     expect(run.stderr, run.stderr).not.toMatch(/error|singular|aborted/i);
     const swings = Object.values(run.vectors as Record<string, unknown>)

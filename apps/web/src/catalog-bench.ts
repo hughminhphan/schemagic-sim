@@ -1,6 +1,16 @@
-import { componentPinPoints, partByType, type CircuitComponent, type CircuitDocument, type CircuitWire, type Point } from "@opencircuit/circuit-schema";
-import { declaredPinNames } from "./catalog-truth";
-import type { CatalogPart } from "./catalog";
+import { componentPinPoints, partByType, type CircuitComponent, type CircuitDocument, type CircuitWire, type ComponentType, type Point } from "@opencircuit/circuit-schema";
+import { declaredPinNames, type CatalogTruthManifest } from "./catalog-truth";
+
+/**
+ * The slice of a catalog package a bench needs. Kept structural so a Playwright
+ * spec can build one from the library on disk, where the browser catalog's
+ * import.meta.glob is unavailable.
+ */
+export interface CatalogBenchPart {
+  id: string;
+  baseType: ComponentType;
+  manifest: CatalogTruthManifest;
+}
 
 /**
  * Test-support scaffolding, not part of the application bundle. Builds a real
@@ -30,7 +40,7 @@ const SUPPLY_ROLES = /^(positive_supply|supply|input)$/;
 
 export type CatalogBenchRail = "vcc" | "gnd" | "load";
 
-export function benchRailForPin(part: CatalogPart, index: number): CatalogBenchRail {
+export function benchRailForPin(part: CatalogBenchPart, index: number): CatalogBenchRail {
   const name = (declaredPinNames(part.manifest)[index] ?? "").toUpperCase();
   const role = [...(part.manifest.spice_pin_mapping ?? [])]
     .sort((left, right) => left.order - right.order)
@@ -40,8 +50,8 @@ export function benchRailForPin(part: CatalogPart, index: number): CatalogBenchR
   return "load";
 }
 
-export function catalogBenchDocument(part: CatalogPart, layout: CatalogBenchLayout = WIDE_CATALOG_BENCH): CircuitDocument {
-  const type = part.baseType!;
+export function catalogBenchDocument(part: CatalogBenchPart, layout: CatalogBenchLayout = WIDE_CATALOG_BENCH): CircuitDocument {
+  const type = part.baseType;
   const device: CircuitComponent = {
     id: "c1", type, pos: [0, 0], rot: 0, mirror: false,
     mpn: part.manifest.canonical_mpn,
@@ -105,7 +115,7 @@ export function catalogBenchDocument(part: CatalogPart, layout: CatalogBenchLayo
  * bias network. Pin index i is package node i: GND TRIG OUT RESET CONT THRES
  * DISCH VCC, which is what puts OUT on the left and DISCH on the right.
  */
-export function ne555AstableDocument(part: CatalogPart): CircuitDocument {
+export function ne555AstableDocument(part: CatalogBenchPart): CircuitDocument {
   const components: CircuitComponent[] = [
     {
       id: "c1", type: "timer_555", pos: [0, 0], rot: 0, mirror: false,
