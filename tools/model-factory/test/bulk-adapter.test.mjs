@@ -202,9 +202,13 @@ const f2MosfetParameters = {
   CGS: 45e-12, CGDMAX: 5e-12, CGDMIN: 5e-12, CJO: 15e-12, IS: 1e-12, N: 1.5, RB: 0.02,
 };
 
-function acceptedF2Attempt() {
+function acceptedF2Attempt(payload = null) {
+  const outputFamilyOmitted = !(payload?.extraction?.curves ?? []).some(
+    (curve) => curve.characteristic === "output_current",
+  );
   return {
     fidelity: "F2", evidence_contract_version: "1.0.0", parameters: f2MosfetParameters,
+    policy_tier: outputFamilyOmitted ? "F2-DC" : "F2", output_family_omitted: outputFamilyOmitted,
     residuals: [], worst: { value: 0, quantity: "drain_current" }, rms: 0, gate_pass: true,
   };
 }
@@ -285,7 +289,7 @@ test("production MOSFET axis aliases and structured evidence normalize to the ca
     const original = structuredClone(extraction);
     let fitterPayload;
     const fit = fitBulkPart({ ...mosfetPart("unused.pdf"), subcategory: "N-Channel MOSFET" }, extraction, {
-      fitRunner: (payload) => { fitterPayload = payload; return acceptedF2Attempt(); },
+      fitRunner: (payload) => { fitterPayload = payload; return acceptedF2Attempt(payload); },
       ngspiceRunner: () => ({ pass: true }),
     });
     const [normalized] = fitterPayload.extraction.curves;
@@ -755,7 +759,7 @@ test("the conveyor MOSFET critical fixture crosses the producer-consumer boundar
   }
   assert.equal(validateBulkCandidateEvidence(part, extraction).route, "curve-fitted");
   const fit = fitBulkPart(part, extraction, {
-    fitRunner: (payload) => { fitterPayload = payload; return acceptedF2Attempt(); },
+    fitRunner: (payload) => { fitterPayload = payload; return acceptedF2Attempt(payload); },
     ngspiceRunner: () => ({ pass: true }),
   });
   const [curve] = fitterPayload.extraction.curves;
@@ -1638,7 +1642,7 @@ test("gate: a curve's declared axis units are still applied, so a 1000x ordinate
   const points = (value) => {
     let payload;
     fitBulkPart({ ...mosfetPart("unused.pdf"), subcategory: "N-Channel MOSFET" }, value, {
-      fitRunner: (received) => { payload = received; return acceptedF2Attempt(); },
+      fitRunner: (received) => { payload = received; return acceptedF2Attempt(received); },
       ngspiceRunner: () => ({ pass: true }),
     });
     return payload.extraction.curves[0].points.map((point) => point.y_si);

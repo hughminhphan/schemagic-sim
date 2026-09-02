@@ -198,6 +198,7 @@ test("F2 MOSFET payload carries canonical curve identities and rejects saturatio
       }));
       return {
         evidence_contract_version: "1.0.0", fidelity: "F2",
+        policy_tier: "F2-DC", output_family_omitted: true,
         parameters: { VTO: 1, KP: 1, THETA: 0, LAMBDA: 0.003, RD: 0.01, RS: 0.01, RG: 1e-4, CGS: 1e-9, CGDMAX: 1e-10, CGDMIN: 1e-10, CJO: 1e-10, IS: 1e-12, N: 1.5, RB: 0.01 },
         residuals, curves_used: [curve.name], curves_rejected: [], optimizer: { held_defaults: [] },
         worst: { value: 0, quantity: residuals[0].quantity }, rms: 0,

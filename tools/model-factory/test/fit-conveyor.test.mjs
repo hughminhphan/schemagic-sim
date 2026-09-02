@@ -259,7 +259,9 @@ test("canonical MOSFET F2 carries identities and probes exact curve bias and tem
   assert.ok(fitted.residuals.every((row) => row.citation_identity?.citation_id?.startsWith("sha256:")));
   assert.ok(fitted.residuals.every((row) => row.evidence_identity?.evidence_id?.startsWith("sha256:")));
   assert.ok(fitted.residuals.every((row) => row.temperature_c === 75));
-  assert.equal(fitted.optimizer.seed_provenance.VTO.condition_identity.temperature.value_c, 75);
+  assert.equal(fitted.optimizer.seed_provenance.VTO.derivation, "midpoint of published threshold interval");
+  assert.equal(fitted.optimizer.seed_provenance.VTO.minimum.condition_identity.temperature.value_c, 75);
+  assert.equal(fitted.optimizer.seed_provenance.VTO.maximum.condition_identity.temperature.value_c, 75);
   assert.match(fitted.residuals[0].citation, /page 3, figure Figure 1/);
 });
 

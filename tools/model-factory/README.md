@@ -57,7 +57,7 @@ Every registry archetype maps to exactly one fitter script, and an unmapped arch
 raises `UnmappedArchetypeError` by name. There is no default fitter: the dispatch used to
 end in `?? "fit_diode.py"`, which meant the registry's only JFET would have been handed
 the diode fitter. Archetypes that are deliberately not fittable are listed in
-`UNFITTABLE_PIPELINES` with the reason.
+`UNFITTABLE_PIPELINES` with the reason. `njf` now dispatches to `python/fit_jfet.py`, never to the diode fitter.
 
 ## Pipeline
 
@@ -131,8 +131,18 @@ recorded reason; F2 still requires a stated temperature.
 
 `docs/model-review-rubric-v1.md` is the checklist a second lane runs before promotion.
 
-The adapter supports diode, BJT, and MOSFET families. It attempts an F2 fit unless `force_f1` is set, runs an ngspice syntax gate, and can demote a failed F2 attempt to F1. SI-prefixed catalog seed hints are normalized before F1 fallback use. Pre-demoted parts retain their extraction JSON and its omissions rather than discarding the datasheet evidence.
+The factory supports diode, BJT, MOSFET, and registry-backed JFET fitting. The CONVEYOR bulk adapter supports diode, BJT, and MOSFET families. It attempts an F2 fit unless `force_f1` is set, runs an ngspice syntax gate, and can demote a failed F2 attempt to F1. SI-prefixed catalog seed hints are normalized before F1 fallback use. Pre-demoted parts retain their extraction JSON and its omissions rather than discarding the datasheet evidence.
 
 Bulk output is always unreviewed and is written only below `<staging-root>/packages/`. Each package includes `component.json`, `facts.json`, `fitted.json`, `sources.json`, `model.cir`, `MODEL_CARD.md`, `LICENSE`, and `tests/expectations.json`. Reviewer metadata remains `pending-review`, and F1 demotion reasons appear in both `component.json` known omissions and `MODEL_CARD.md`.
 
 The adapter rejects a staging destination inside `packages/model-library`. It never promotes or overwrites reviewed packages. Promotion remains a separate independent review action.
+
+### Small-signal MOSFET F2-DC
+
+A small-signal MOSFET extraction with an admitted transfer characteristic, threshold interval, and RDS(on) evidence uses the F2-DC policy. The fitter jointly fits the transfer and RDS(on) targets while bounding VTO by the threshold interval. It deliberately does not fit the output-characteristic family and holds `LAMBDA=0.003`.
+
+F2-DC is an internal policy and model-card label, not a new component-schema enum. Staged `component.json` and `fitted.json` retain `fidelity_tier: "F2"`; `MODEL_CARD.md` renders `Fidelity tier: F2-DC, datasheet-constrained`, and `known_omissions` names the omitted output family.
+
+### JFET fitting
+
+Registry `jfet_n` jobs run the native-ngspice level-1 NJF fitter. Curve-backed jobs consume admitted transfer and output points to fit the DC channel, while `IS` is derived from the admitted IGSS limit. Evidence-limited jobs are demoted explicitly. The admitted BF256B fixture remains F1 because it lacks a transfer-characteristic curve, an output-characteristic curve family, and a gfs row.

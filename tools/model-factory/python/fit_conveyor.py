@@ -44,6 +44,7 @@ SI = {"y": 1e-24, "z": 1e-21, "a": 1e-18, "f": 1e-15, "p": 1e-12, "n": 1e-9,
 DIODE_MAX_NFEV = resolve_cap("OC_FIT_DIODE_MAX_NFEV", 3000)
 BJT_MAX_NFEV = resolve_cap("OC_FIT_BJT_MAX_NFEV", 400)
 MOSFET_MAX_NFEV = resolve_cap("OC_FIT_MOSFET_MAX_NFEV", 3000)
+TYPICAL_RDSON_RESIDUAL_WEIGHT = 1.5
 
 
 class Unfittable(Exception):
@@ -984,6 +985,20 @@ def fit_bjt(payload, rejected):
                                             "vce": vce, "held_defaults": held}
 
 
+def mosfet_threshold_seed_and_bounds(threshold):
+    vth_min = abs(threshold["threshold_min"]["value"]) if "threshold_min" in threshold else None
+    vth_typ = abs(threshold["threshold_typ"]["value"]) if "threshold_typ" in threshold else None
+    vth_max = abs(threshold["threshold_max"]["value"]) if "threshold_max" in threshold else None
+    if vth_min is None or vth_max is None:
+        missing = [name for name, value in (("minimum", vth_min), ("maximum", vth_max)) if value is None]
+        raise Unfittable("published threshold interval requires both minimum and maximum; "
+                         f"missing {' and '.join(missing)} threshold evidence")
+    if not (vth_min > 0 and vth_max > 0 and vth_min < vth_max):
+        raise Unfittable(f"published threshold interval is degenerate or reversed: {vth_min} to {vth_max} V")
+    seed_vth = vth_typ if vth_typ is not None and vth_typ > 0 else 0.5 * (vth_min + vth_max)
+    return seed_vth, vth_min, vth_max
+
+
 def fit_mosfet(payload, rejected):
     if payload.get("evidence_contract_version") != IDENTITY_VERSION:
         raise Unfittable(f"MOSFET fit requires evidence_contract_version {IDENTITY_VERSION}")
@@ -1046,22 +1061,13 @@ def fit_mosfet(payload, rejected):
         rdson.append((vgs, current, resistance, role, components,
                       condition["temperature"]["value_c"]))
 
-    total = len(transfer) + len(out_points)
-    if total < GATES["families"]["mosfet"]["minimum_points"]:
-        raise Unfittable(f"only {total} usable transfer/output points after validation; "
-                         f"{GATES['families']['mosfet']['minimum_points']} required")
+    minimum_points = GATES["families"]["mosfet"]["minimum_points"]
+    if len(transfer) < minimum_points:
+        raise Unfittable(f"only {len(transfer)} usable transfer points after validation; "
+                         f"{minimum_points} required for the DC channel fit")
+    fit_output_family = bool(out_points)
 
-    vth_min = abs(threshold["threshold_min"]["value"]) if "threshold_min" in threshold else None
-    vth_typ = abs(threshold["threshold_typ"]["value"]) if "threshold_typ" in threshold else None
-    vth_max = abs(threshold["threshold_max"]["value"]) if "threshold_max" in threshold else None
-    independently_complete_thresholds = [value for value in (vth_typ, vth_max, vth_min) if value is not None and value > 0]
-    if not independently_complete_thresholds:
-        raise Unfittable("no independently complete validated threshold identity for VTO seed and bounds")
-    seed_vth = vth_typ if vth_typ is not None else vth_max if vth_max is not None else vth_min
-    lo_vth = vth_min if vth_min is not None else 0.3 * seed_vth
-    hi_vth = vth_max if vth_max is not None else 3.0 * seed_vth
-    if not (lo_vth < hi_vth):
-        raise Unfittable(f"published threshold interval is degenerate or reversed: {lo_vth} to {hi_vth} V")
+    seed_vth, lo_vth, hi_vth = mosfet_threshold_seed_and_bounds(threshold)
 
     typical_rdson = [row for row in rdson if row[3] == "typical"]
     maximum_rdson = [row for row in rdson if row[3] == "maximum"]
@@ -1104,9 +1110,18 @@ def fit_mosfet(payload, rejected):
 
     hi_pt = max(transfer, key=lambda row: row[0])
     kp0 = 2 * hi_pt[2] / max((hi_pt[0] - min(seed_vth, 0.9 * hi_pt[0])) ** 2, 1e-9)
-    lo = np.array([lo_vth, 1e-3, 0.0, 0.0, 1e-6])
-    hi = np.array([hi_vth, 1e3, 1.0, 0.2, max(3.0 * rd_seed, 1e-3)])
-    x0 = np.clip(np.array([seed_vth, kp0, 0.05, 0.003, 0.55 * rd_seed]), lo, hi)
+    parameter_names = ["VTO", "KP"] + (["THETA", "LAMBDA", "RD"] if fit_output_family else [])
+    seed = {"VTO": seed_vth, "KP": kp0, "THETA": 0.05, "LAMBDA": 0.003, "RD": 0.55 * rd_seed}
+    lower_bounds = {"VTO": lo_vth, "KP": 1e-3, "THETA": 0.0, "LAMBDA": 0.0, "RD": 1e-6}
+    upper_bounds = {"VTO": hi_vth, "KP": 1e3, "THETA": 1.0, "LAMBDA": 0.2, "RD": max(3.0 * rd_seed, 1e-3)}
+    lo = np.array([lower_bounds[name] for name in parameter_names])
+    hi = np.array([upper_bounds[name] for name in parameter_names])
+    x0 = np.clip(np.array([seed[name] for name in parameter_names]), lo, hi)
+
+    def full_dc(values):
+        fitted = dict(zip(parameter_names, (float(value) for value in values)))
+        return np.array([fitted["VTO"], fitted["KP"], fitted.get("THETA", 0.0),
+                         fitted.get("LAMBDA", 0.003), fitted.get("RD", 1e-6)])
 
     def measured_rows(measured):
         t, o, d = measured
@@ -1117,20 +1132,23 @@ def fit_mosfet(payload, rejected):
             rows.append(math.log(max(actual, 1e-12)) - math.log(target))
         for (_, _, target, kind, _, _), actual in zip(rdson, d):
             norm = (actual - target) / target
-            # A typical-curve fit may legitimately sit below a MAXIMUM spec.
-            rows.append(20.0 * max(norm, 0.0) + 0.05 * min(norm, 0.0) if kind == "maximum" else norm)
+            # A typical RDS(on) point is a direct DC anchor at its cited VGS and ID.
+            # Weight it above each individual transfer point so platform-level ngspice
+            # differences cannot leave this required F2-DC channel at the gate edge.
+            typical_weight = TYPICAL_RDSON_RESIDUAL_WEIGHT if not fit_output_family else 1.0
+            rows.append(20.0 * max(norm, 0.0) + 0.05 * min(norm, 0.0) if kind == "maximum" else typical_weight * norm)
         return np.asarray(rows)
 
     def residual(p):
         try:
-            measured = vdmos_bench(p, fixed, transfer, out_points, rdson, payload.get("polarity", "n"))
+            measured = vdmos_bench(full_dc(p), fixed, transfer, out_points, rdson, payload.get("polarity", "n"))
         except Exception:
             return np.full(len(transfer) + len(out_points) + len(rdson), 1e3)
         return measured_rows(measured)
 
     def batch_residual(points):
         try:
-            measured_sets = vdmos_bench_batch(list(points), fixed, transfer, out_points, rdson,
+            measured_sets = vdmos_bench_batch([full_dc(point) for point in points], fixed, transfer, out_points, rdson,
                                               payload.get("polarity", "n"))
         except Exception:
             return [residual(p) for p in points]
@@ -1141,7 +1159,8 @@ def fit_mosfet(payload, rejected):
     fit, batch_stats = least_squares_batched(
         residual, batch_residual, x0=x0, bounds=(lo, hi), method="trf", x_scale="jac",
         diff_step=1e-3, ftol=1e-12, xtol=1e-12, max_nfev=MOSFET_MAX_NFEV)
-    vto, kp, theta, lam, rd = [float(v) for v in fit.x]
+    full_fit = full_dc(fit.x)
+    vto, kp, theta, lam, rd = [float(v) for v in full_fit]
     params = {"VTO": vto, "KP": kp, "THETA": theta, "LAMBDA": lam, "RD": rd,
               "RS": fixed["RS"], "RG": 1e-4, "CGS": fixed["CGS"], "CGDMAX": fixed["CGDMAX"],
               "CGDMIN": fixed["CGDMIN"], "CJO": fixed["CJO"], "IS": 1e-12, "N": 1.5, "RB": fixed["RB"]}
@@ -1161,7 +1180,16 @@ def fit_mosfet(payload, rejected):
         "LAMBDA": ("1/V", "no channel-length modulation is resolvable from the digitised output range"),
         "RD": ("ohm", "no drain resistance separable from the source resistance at these bias points"),
     }
-    for index, name in enumerate(["VTO", "KP", "THETA", "LAMBDA", "RD"]):
+    if not fit_output_family:
+        held.extend([
+            {"parameter": "THETA", "value": 0.0, "unit": "1",
+             "reason": "F2-DC small-signal policy: held at zero because mobility degradation is not independently resolved by the admitted DC channels"},
+            {"parameter": "LAMBDA", "value": 0.003, "unit": "1/V",
+             "reason": "F2-DC small-signal policy: held at the family default because the output-characteristic family is deliberately omitted"},
+            {"parameter": "RD", "value": 1e-6, "unit": "ohm",
+             "reason": "F2-DC small-signal policy: held at the numerical floor because drain resistance is not independently identifiable without an output-characteristic family"},
+        ])
+    for index, name in enumerate(parameter_names):
         # VTO resting on a published threshold min/max is the archetype's intent, not saturation.
         if name == "VTO":
             continue
@@ -1175,7 +1203,7 @@ def fit_mosfet(payload, rejected):
         else:
             notes.append(f"{name} saturated its bound at {value:.6g}; the residual is a constraint artefact")
 
-    t, o, d = vdmos_bench(fit.x, fixed, transfer, out_points, rdson, payload.get("polarity", "n"))
+    t, o, d = vdmos_bench(full_fit, fixed, transfer, out_points, rdson, payload.get("polarity", "n"))
     residuals = []
     transfer_citation = transfer_identity["citation_identity"]
     for point, (vgs, vds, target, temperature), actual in zip(tcurve["points"], transfer, t):
@@ -1210,14 +1238,23 @@ def fit_mosfet(payload, rejected):
                           "evidence_role": "inequality_constraint" if kind == "maximum" else "typical_observation",
                           **({"maximum": target, "inclusive": True} if kind == "maximum" else {})})
     threshold_provenance = [{"quantity": key, **row} for key, row in threshold.items()]
+    vto_seed_provenance = next((row for row in threshold.values() if abs(row["value"]) == seed_vth), None)
+    if vto_seed_provenance is None:
+        vto_seed_provenance = {
+            "derivation": "midpoint of published threshold interval",
+            "minimum": threshold["threshold_min"],
+            "maximum": threshold["threshold_max"],
+        }
     seed_provenance = {
-        "VTO": next((row for key, row in threshold.items() if abs(row["value"]) == seed_vth), None),
+        "VTO": vto_seed_provenance,
         "rdson": rd_seed_provenance,
     }
     report_batching("mosfet", batch_stats, fit)
     return params, residuals, used, notes, {"optimizer_nfev": int(fit.nfev), "optimizer_status": int(fit.status),
                                             "held_defaults": held, "threshold_evidence": threshold_provenance,
-                                            "seed_provenance": seed_provenance}
+                                            "seed_provenance": seed_provenance,
+                                            "policy_tier": "F2" if fit_output_family else "F2-DC",
+                                            "output_family_omitted": not fit_output_family}
 
 
 FITTERS = {"diode": fit_diode, "bjt": fit_bjt, "mosfet": fit_mosfet}
@@ -1251,6 +1288,8 @@ def main():
             "rms": rms, "gate_pass": passed,
             "fitter": "scipy.optimize.least_squares with native ngspice-46 evaluations",
             "optimizer": meta,
+            **({"policy_tier": meta["policy_tier"], "output_family_omitted": meta["output_family_omitted"]}
+               if family == "mosfet" else {}),
             "demotion_reason": None if passed else f"{family} F2 gate failed: {reason}",
         })
     except Unfittable as exc:

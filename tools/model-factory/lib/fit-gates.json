@@ -62,14 +62,14 @@
     },
 
     "mosfet": {
-      "model": "ngspice VDMOS, fitting VTO, KP, THETA, LAMBDA and RD to transfer and output curves plus RDS(on) points per archetypes/vdmos.md",
+      "model": "ngspice VDMOS. Full F2 fits VTO, KP, THETA, LAMBDA and RD to transfer and output curves plus RDS(on). Small-signal F2-DC fits VTO, KP, THETA and RD to transfer plus RDS(on), bounds VTO by the threshold interval, and deliberately omits the output family with LAMBDA held at 0.003, per archetype-vdmos.md",
       "minimum_points": 5,
       "quantities": {
         "drain_current": {
           "worst": 0.20,
           "rms": 0.12,
           "measured_in": "amperes",
-          "rationale": "ID is read off transfer and output figures. Log ordinates on these plots span 3 to 4 decades over 70-90 mm, so a 1.0 mm error is 8-13%. Linear-ordinate output plots put the low-VGS traces in the bottom decade of full scale, where a 1.0 mm error on an 80 mm axis exceeds 10% relative. Reviewed precedent bounds this from above: IRLZ44N was accepted as F2 with a 19.2% worst transfer-current error."
+          "rationale": "For full F2, ID is read off transfer and output figures. For small-signal F2-DC, only the transfer figure enters the residual and the omitted output family is disclosed. Log ordinates on transfer plots span 3 to 4 decades over 70-90 mm, so a 1.0 mm error is 8-13%. Reviewed precedent bounds this from above: IRLZ44N was accepted as F2 with a 19.2% worst transfer-current error."
         },
         "rds_on": {
           "worst": 0.20,
