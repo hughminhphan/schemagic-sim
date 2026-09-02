@@ -1,0 +1,12 @@
+scheMAGIC Simulator document 81fb7aae8da609b6
+* document-hash 81fb7aae8da609b6
+V1 b a SIN(0 12 50) $ component:c1
+D2 a vout OC_GENERIC_D $ component:c2
+D3 b vout OC_GENERIC_D $ component:c3
+D4 0 a OC_GENERIC_D $ component:c4
+D5 0 b OC_GENERIC_D $ component:c5
+R6 vout 0 1k $ component:c6
+.model OC_GENERIC_D D(IS=1e-14 N=1 RS=0.1 CJO=2P)
+.save all v1#branch @d2[id] @d3[id] @d4[id] @d5[id] @r6[i]
+.tran 0.00002 0.06 0 0.00005
+.end
