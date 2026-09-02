@@ -11,6 +11,7 @@ This bounded prune removed only two regenerable classes: jlcparts split-download
 | Files deleted | 1,247 |
 | Bytes reclaimed | 2,183,282,457 (2082.14 MiB) |
 | Deletion failures | 0 |
+| Post-apply dry-run candidates | 0 files, 0 bytes |
 
 Breakdown:
 
