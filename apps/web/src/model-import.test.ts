@@ -2,6 +2,7 @@ import { importedPartFromModel, importedPartFromSubckt, parseSpiceLibrary } from
 import { canonicalizeCircuit, type CircuitDocument } from "@opencircuit/circuit-schema";
 import { describe, expect, it } from "vitest";
 import {
+  falstadImportDestination,
   generateNetlistWithImports,
   ImportedModelRuntimeError,
   importedPaletteMarkup,
@@ -104,5 +105,26 @@ describe("imported model netlists", () => {
         }),
       }),
     );
+  });
+});
+
+describe("Falstad web import handoff", () => {
+  it("builds a native share URL while preserving the structured unsupported report", () => {
+    const source = [
+      "$ 1 0.000005 10.2 50 5 50",
+      "v 64 160 64 64 0 0 40 5 0 0 0.5",
+      "r 64 64 128 64 0 1000",
+      "T 128 64 192 64 0 4 1 0 0.999",
+      "g 64 160 64 176 0",
+    ].join("\n");
+    const input = `https://www.falstad.com/circuit/circuitjs.html?cct=${encodeURIComponent(source)}`;
+    const location = { href: "https://sim.example.test/?designer=0" } as Location;
+    const destination = falstadImportDestination(input, location);
+
+    expect(destination.url).toMatch(/^https:\/\/sim\.example\.test\/\?designer=0#c=/);
+    expect(destination.result.document.components.map((component) => component.type)).toEqual(["vsource", "resistor", "ground"]);
+    expect(destination.result.report.unsupported).toEqual([
+      expect.objectContaining({ elementType: "T", mapping: "unsupported", reason: "Transformers are not present in the circuit schema" }),
+    ]);
   });
 });

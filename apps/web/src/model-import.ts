@@ -3,11 +3,14 @@ import {
   importedBaseType,
   importedPartFromModel,
   importedPartFromSubckt,
+  importFalstadCircuit,
+  isFalstadShareInput,
   materializeImportedModelLibrary,
   materializeImportedModelPart,
   parseSpiceLibrary,
   sanitize,
   validatePinMapping,
+  type FalstadImportResult,
   type ImportedLibrary,
   type ImportedModel,
   type ImportedSubckt,
@@ -30,6 +33,17 @@ import {
   type ImportedPinMapping,
   type NetlistLine,
 } from "@opencircuit/circuit-schema";
+import { shareUrl } from "./share";
+
+export interface FalstadImportDestination {
+  result: FalstadImportResult;
+  url: string;
+}
+
+export function falstadImportDestination(input: string, location: Location = window.location): FalstadImportDestination {
+  const result = importFalstadCircuit(input);
+  return { result, url: shareUrl(result.document, location) };
+}
 
 export interface ImportedPartDefinition extends MaterializedImportedModelPart {
   id: string;
@@ -279,7 +293,7 @@ export class ModelImportDialog {
       .import-sheet .file-trigger { flex: none; padding: 6px 9px; border: 1px solid var(--graphite-500); border-radius: 0; color: var(--graphite-900); background: var(--vellum); font: inherit }
       .import-sheet .file-trigger:focus-visible, .import-sheet textarea:focus-visible, .import-sheet select:focus-visible { outline: 2px solid var(--graphite-900); outline-offset: -2px }
       .import-sheet .file-name { min-width: 0; overflow: hidden; color: var(--graphite-500); font: 10px/1.3 "IBM Plex Mono", monospace; text-overflow: ellipsis; white-space: nowrap }
-    </style><section class="import-sheet" role="dialog" aria-modal="true" aria-label="Import models"><header><strong>IMPORT MODELS</strong><button data-close-import>Close</button></header><div class="import-source"><label class="field-label" for="model-files">Model files</label><div class="file-picker"><input class="model-file-input" id="model-files" type="file" multiple accept=".model,.subckt,.lib,.cir,text/plain"/><button class="file-trigger" type="button" aria-controls="model-files">Choose files</button><span class="file-name" aria-live="polite">No files selected</span></div><label class="field-label" for="model-text">Or paste SPICE model text</label><textarea id="model-text" placeholder=".subckt ... or .model ..."></textarea><button class="primary-button" data-parse-models>Parse and review</button></div><div class="import-results" data-import-results><p>Choose files or paste model text. Imported content stays in this browser workspace.</p></div></section>`;
+    </style><section class="import-sheet" role="dialog" aria-modal="true" aria-label="Import models"><header><strong>IMPORT MODELS</strong><button data-close-import>Close</button></header><div class="import-source"><label class="field-label" for="model-files">Model files</label><div class="file-picker"><input class="model-file-input" id="model-files" type="file" multiple accept=".model,.subckt,.lib,.cir,text/plain"/><button class="file-trigger" type="button" aria-controls="model-files">Choose files</button><span class="file-name" aria-live="polite">No files selected</span></div><label class="field-label" for="model-text">Or paste SPICE model text or a Falstad / CircuitJS share URL</label><textarea id="model-text" placeholder=".subckt ... or a Falstad / CircuitJS share URL"></textarea><button class="primary-button" data-parse-models>Parse and review</button></div><div class="import-results" data-import-results><p>Choose files or paste model text. Imported content stays in this browser workspace.</p></div></section>`;
     document.body.append(this.overlay);
     this.source = this.overlay.querySelector<HTMLTextAreaElement>("#model-text")!;
     this.fileInput = this.overlay.querySelector<HTMLInputElement>("#model-files")!;
@@ -320,6 +334,10 @@ export class ModelImportDialog {
       return;
     }
     try {
+      if (isFalstadShareInput(text)) {
+        this.renderFalstadImport(text);
+        return;
+      }
       this.library = parseSpiceLibrary(text, { filename: this.sourceName });
       const sanitized = sanitize(this.library);
       this.blocked = sanitized.blockedReasons.length > 0;
@@ -337,6 +355,17 @@ export class ModelImportDialog {
     } catch (error) {
       this.results.innerHTML = `<p class="import-error">${esc(error instanceof Error ? error.message : String(error))}</p>`;
     }
+  }
+
+  private renderFalstadImport(input: string): void {
+    const destination = falstadImportDestination(input);
+    const { report, document } = destination.result;
+    const issues = report.unsupported.map((issue) => `<li><strong>${esc(`${issue.mapping === "partial" ? "Partial" : "Unsupported"} line ${issue.lineNumber}`)}</strong><br><code>${esc(issue.elementLine)}</code><br><span>Reason: ${esc(issue.reason)}</span></li>`);
+    const warnings = report.warnings.map((warning) => `<li>${esc(warning.message)}</li>`);
+    const componentCount = document.components.length;
+    const probeCount = document.probes.length;
+    this.results.innerHTML = `<section class="import-summary"><strong>Falstad parse results</strong><span>${componentCount} components, ${probeCount} scope trace${probeCount === 1 ? "" : "s"}</span></section><section class="sanitizer-report"><h3>Unsupported and partial mappings</h3>${issues.length ? `<ul class="blocked-list">${issues.join("")}</ul>` : "<p>None.</p>"}<h3>Warnings</h3>${warnings.length ? `<ul>${warnings.join("")}</ul>` : "<p>None.</p>"}</section><button class="primary-button" data-load-falstad>Load imported circuit</button>`;
+    this.results.querySelector<HTMLButtonElement>("[data-load-falstad]")?.addEventListener("click", () => window.location.assign(destination.url));
   }
 
   private modelCard(model: ImportedModel, index: number): string {
