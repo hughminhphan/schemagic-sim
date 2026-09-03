@@ -394,6 +394,13 @@ export function generateScenarioNetlist(
       reservedNames.add(normalized);
     }
   }
+  const privateDeviceName = (preferred: string): string => {
+    let candidate = preferred;
+    let index = 2;
+    while (reservedNames.has(candidate.toLowerCase())) candidate = `${preferred}_${index++}`;
+    reservedNames.add(candidate.toLowerCase());
+    return candidate;
+  };
 
   const uf = new UnionFind();
   const pinPoints = new Map<string, Point[]>();
@@ -435,6 +442,14 @@ export function generateScenarioNetlist(
     } else componentPinNodes[component.id] = Object.fromEntries(nodes.map((node, index) => [String(index), node]));
   }
   const wireNodes = Object.fromEntries(sortedWires.map((wire) => [wire.id, nodeAt(wire.points[0]!) ]));
+  const usedNodeNames = new Set([...rootNames.values()].map((name) => name.toLowerCase()));
+  const privateNodeName = (preferred: string): string => {
+    let candidate = preferred;
+    let index = 2;
+    while (usedNodeNames.has(candidate.toLowerCase())) candidate = `${preferred}_${index++}`;
+    usedNodeNames.add(candidate.toLowerCase());
+    return candidate;
+  };
 
   const scenarioHash = fnv1a64(scenarioProjection(scenario, graph, document.designBlocks, verifiedAssets));
   const serializationHash = circuitV4SerializationHash(document);
@@ -464,7 +479,14 @@ export function generateScenarioNetlist(
       case "vsource_pulse": line = `${name} ${nodes[0]} ${nodes[1]} PULSE(${spice(component.params.v1)} ${spice(component.params.v2)} ${spice(component.params.delay)} ${spice(component.params.rise)} ${spice(component.params.fall)} ${spice(component.params.width)} ${spice(component.params.period)})${noiseReference}`; current = `${lowerName}#branch`; break;
       case "vsource_sine": line = `${name} ${nodes[0]} ${nodes[1]} SIN(${spice(component.params.offset)} ${spice(component.value)} ${spice(component.params.frequency)})${scenario.config.mode === "ac" ? ` AC ${spice(component.params.ac ?? 1)}` : noiseReference}`; current = `${lowerName}#branch`; break;
       case "isource": line = `${name} ${nodes[0]} ${nodes[1]} DC ${spice(component.value)}${noiseReference}`; current = `@${lowerName}[i]`; break;
-      case "isource_pulse": line = `${name} ${nodes[0]} ${nodes[1]} PULSE(${spice(component.params.i1)} ${spice(component.params.i2)} ${spice(component.params.delay)} ${spice(component.params.rise)} ${spice(component.params.fall)} ${spice(component.params.width)} ${spice(component.params.period)})`; current = `@${lowerName}[i]`; break;
+      case "isource_pulse": {
+        const token = componentHexId(component.id);
+        const internal = privateNodeName(`oc_ip_${token}`);
+        const sensor = privateDeviceName(`VOCS_IP_${token}`);
+        line = `${name} ${nodes[0]} ${internal} PULSE(${spice(component.params.i1)} ${spice(component.params.i2)} ${spice(component.params.delay)} ${spice(component.params.rise)} ${spice(component.params.fall)} ${spice(component.params.width)} ${spice(component.params.period)})\n${sensor} ${internal} ${nodes[1]} 0`;
+        current = `${sensor.toLowerCase()}#branch`;
+        break;
+      }
       case "switch_spst": line = `${name} ${nodes[0]} ${nodes[1]} ${component.params.closed ? "1m" : "1G"}`; current = `@${lowerName}[i]`; break;
       case "potentiometer": {
         const total = engineeringValueNumber(component.value);

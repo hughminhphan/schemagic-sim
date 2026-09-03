@@ -2,6 +2,7 @@ import {
   canonicalizeCircuit,
   componentPinPoints,
   componentPoint,
+  defaultComponentParamsV3,
   deserializeCircuit,
   isMultiTerminalDevice,
   partByType,
@@ -23,6 +24,7 @@ const PIN_HIT_RADIUS_PX = 5;
 const POT_HIT_RADIUS_PX = 6;
 const RIGHT_DRAG_THRESHOLD_PX = 4;
 const SWITCH_CLOSED_ANGLE = Math.atan2(0.7, 1.4) * 180 / Math.PI;
+const SWITCH_SPDT_THROW_ANGLE = Math.atan2(0.55, 1.4) * 360 / Math.PI;
 export type EditorTool = "select" | "wire" | "measure" | ComponentType;
 
 export type EditorMeasurementTarget =
@@ -119,6 +121,8 @@ export interface SchematicEditorOptions {
   onMidWire?: (active: boolean) => void;
   onLiveGesture?: (active: boolean, componentId?: string) => void;
   virtualConnections?: (document: Readonly<CircuitDocument>) => readonly { componentId: string; pinIndex: number; role: string }[];
+  /** Actual package pin names for placed symbols. Palette and placement ghosts deliberately never request these. */
+  pinLabels?: (document: Readonly<CircuitDocument>, component: Readonly<CircuitComponent>) => readonly string[];
 }
 
 interface WireStyle {
@@ -132,6 +136,7 @@ interface SymbolLayers {
   background: string[];
   strokes: string[];
   solid: string[];
+  labels: string[];
 }
 
 interface PinReference {
@@ -341,9 +346,10 @@ export function isFitShortcut(key: string): boolean {
 }
 
 function splitSymbolMarkup(markup: string): SymbolLayers {
-  const layers: SymbolLayers = { background: [], strokes: [], solid: [] };
-  for (const tag of markup.match(/<(?:path|circle|rect|ellipse|line|polyline|polygon)\b[^>]*\/>/g) ?? []) {
-    if (/class="[^"]*sym-bg/.test(tag)) layers.background.push(tag);
+  const layers: SymbolLayers = { background: [], strokes: [], solid: [], labels: [] };
+  for (const tag of markup.match(/<(?:path|circle|rect|ellipse|line|polyline|polygon)\b[^>]*\/>|<text\b[^>]*>[^<]*<\/text>/g) ?? []) {
+    if (tag.startsWith("<text")) layers.labels.push(tag);
+    else if (/class="[^"]*sym-bg/.test(tag)) layers.background.push(tag);
     else if (/class="[^"]*sym-solid/.test(tag)) layers.solid.push(tag);
     else layers.strokes.push(tag);
   }
@@ -355,7 +361,30 @@ function wrappedLayer(markup: string[], transformValue: string, className = ""):
   return `<g${className ? ` class="${className}"` : ""} transform="${transformValue}">${markup.join("")}</g>`;
 }
 
-function renderedSymbol(component: CircuitComponent, _interactive = true): string {
+function symbolPinLabelMarkup(component: CircuitComponent, tags: readonly string[], names: readonly string[], screenScale: number, labelKnockout: string): string {
+  const definition = EDITOR_SYMBOLS[component.type];
+  const [minX, minY, maxX, maxY] = definition.bodyBbox;
+  const center: Point = [(minX + maxX) / 2, (minY + maxY) / 2];
+  const attribute = (tag: string, name: string): string | undefined => new RegExp(`\\b${name}="([^"]*)"`).exec(tag)?.[1];
+  return tags.map((tag) => {
+    const index = Number(attribute(tag, "data-pin-label-index"));
+    const x = Number(attribute(tag, "x"));
+    const y = Number(attribute(tag, "y"));
+    if (!Number.isInteger(index) || !Number.isFinite(x) || !Number.isFinite(y) || !definition.pins[index]) return "";
+    const fallback = />([^<]*)<\/text>$/.exec(tag)?.[1] ?? "";
+    const label = names[index]?.trim() || fallback;
+    if (!label) return "";
+    const pinWorld = componentPoint(component, definition.pins[index]!);
+    const centerWorld = componentPoint(component, center);
+    const inwardX = centerWorld[0] - pinWorld[0];
+    const inwardY = centerWorld[1] - pinWorld[1];
+    const anchor = Math.abs(inwardX) > Math.abs(inwardY) ? inwardX > 0 ? "start" : "end" : "middle";
+    const upright = `translate(${x} ${y}) scale(${component.mirror ? -1 : 1} 1) rotate(${-component.rot})`;
+    return `<text class="editor-label sym-pin-label" data-pin-label-component-id="${esc(component.id)}" data-pin-label-index="${index}" transform="${upright}" x="0" y="0" text-anchor="${anchor}" dominant-baseline="middle" style="font-size:${(8 / screenScale).toFixed(4)}px;stroke-width:${labelKnockout}px">${esc(label)}</text>`;
+  }).join("");
+}
+
+function renderedSymbol(component: CircuitComponent, interactive = true, pinLabels: readonly string[] = [], screenScale = GRID, labelKnockout = "0.2"): string {
   const definition = EDITOR_SYMBOLS[component.type];
   const base = splitSymbolMarkup(definition.markup);
   const background = [...base.background];
@@ -375,16 +404,31 @@ function renderedSymbol(component: CircuitComponent, _interactive = true): strin
     }
   }
 
-  if (component.type === "switch_spst" && definition.lever && definition.leverPivot) {
+  if (["switch_spst", "switch_pushbutton", "switch_toggle", "switch_spdt"].includes(component.type) && definition.lever && definition.leverPivot) {
     const lever = splitSymbolMarkup(definition.lever);
     const [pivotX, pivotY] = definition.leverPivot;
-    const rotation = component.params?.closed ? `rotate(${SWITCH_CLOSED_ANGLE} ${pivotX} ${pivotY})` : "rotate(0)";
+    const rotation = component.type === "switch_spdt"
+      ? component.params?.throw === "b" ? `rotate(${SWITCH_SPDT_THROW_ANGLE} ${pivotX} ${pivotY})` : "rotate(0)"
+      : component.params?.closed ? `rotate(${SWITCH_CLOSED_ANGLE} ${pivotX} ${pivotY})` : "rotate(0)";
     background.push(wrappedLayer(lever.background, rotation));
     strokes.push(wrappedLayer(lever.strokes, rotation));
     solid.push(wrappedLayer(lever.solid, rotation));
   }
 
-  return `${background.join("")}${strokes.join("")}${solid.join("")}`;
+  if (component.type === "switch_dpdt") {
+    const throwB = component.params?.throw === "b";
+    strokes.push(throwB
+      ? `<path class="switch-dpdt-levers" d="M-1.6 -2.08 L1.6 -1.45 M-1.6 1.92 L1.6 2.55"/>`
+      : `<path class="switch-dpdt-levers" d="M-1.6 -2.08 L1.6 -2.55 M-1.6 1.92 L1.6 1.45"/>`);
+  }
+
+  const labels = interactive ? symbolPinLabelMarkup(component, base.labels, pinLabels, screenScale, labelKnockout) : "";
+  return `${background.join("")}${strokes.join("")}${solid.join("")}${labels}`;
+}
+
+/** Full placed-component symbol markup; exported for deterministic rendering tests. */
+export function componentSymbolMarkup(component: CircuitComponent, pinLabels: readonly string[] = []): string {
+  return renderedSymbol(component, true, pinLabels);
 }
 
 export function potentiometerWiperLocalPoint(component: CircuitComponent): Point {
@@ -1461,7 +1505,7 @@ export class SchematicEditor {
     const graphite700 = color("--graphite-700", "#2A2F34");
     const graphite500 = color("--graphite-500", "#6E7378");
     const style = document.createElementNS(NS, "style");
-    style.textContent = `.editor-bg{fill:${vellum}}.grid-dot{fill:${graphite500};opacity:.22}.editor-symbol,.editor-symbol *{fill:none;stroke:${graphite900};stroke-width:1.5;stroke-linecap:square;stroke-linejoin:miter;vector-effect:non-scaling-stroke}.editor-symbol .sym-bg{fill:${vellum}}.editor-symbol .sym-solid{fill:${graphite900};stroke:${graphite900};stroke-width:1}.editor-symbol .sym-bold{stroke-width:2.2}.editor-symbol .pin-lead{stroke-width:1.4}.editor-label{fill:${graphite700};stroke:${vellum};paint-order:stroke fill;font-family:sans-serif;font-weight:500;pointer-events:none}.editor-value{fill:${graphite700}}.editor-wire{fill:none;stroke:${graphite500};stroke-width:1.8;stroke-linecap:square;stroke-linejoin:miter;vector-effect:non-scaling-stroke}.connection-node{fill:${graphite700};stroke:${graphite700};stroke-width:1;vector-effect:non-scaling-stroke}.static-chevron{fill:none;stroke:${graphite900};stroke-width:1;stroke-linecap:square;stroke-linejoin:miter;vector-effect:non-scaling-stroke}.editor-led-halo{pointer-events:none}`;
+    style.textContent = `.editor-bg{fill:${vellum}}.grid-dot{fill:${graphite500};opacity:.22}.editor-symbol,.editor-symbol *{fill:none;stroke:${graphite900};stroke-width:1.5;stroke-linecap:square;stroke-linejoin:miter;vector-effect:non-scaling-stroke}.editor-symbol .sym-bg{fill:${vellum}}.editor-symbol .sym-solid{fill:${graphite900};stroke:${graphite900};stroke-width:1}.editor-symbol .sym-bold{stroke-width:2.2}.editor-symbol .pin-lead{stroke-width:1.4}.editor-label,.editor-symbol .sym-pin-label{fill:${graphite700};stroke:${vellum};paint-order:stroke fill;font-family:sans-serif;font-weight:500;pointer-events:none}.editor-value{fill:${graphite700}}.editor-wire{fill:none;stroke:${graphite500};stroke-width:1.8;stroke-linecap:square;stroke-linejoin:miter;vector-effect:non-scaling-stroke}.connection-node{fill:${graphite700};stroke:${graphite700};stroke-width:1;vector-effect:non-scaling-stroke}.static-chevron{fill:none;stroke:${graphite900};stroke-width:1;stroke-linecap:square;stroke-linejoin:miter;vector-effect:non-scaling-stroke}.editor-led-halo{pointer-events:none}`;
     (clone.querySelector("defs") ?? clone).append(style);
     this.applyStaticEncoding(clone, true);
     return `<?xml version="1.0" encoding="UTF-8"?>\n${new XMLSerializer().serializeToString(clone)}`;
@@ -2077,6 +2121,7 @@ export class SchematicEditor {
           mirror: this.pendingMirror,
           ...(part.defaultValue !== undefined ? { value: part.defaultValue } : {}),
           ...(part.type === "potentiometer" ? { params: { t: 0.5 } } : {}),
+          ...(defaultComponentParamsV3(part.type) ? { params: { ...(defaultComponentParamsV3(part.type) ?? {}) } } : {}),
         };
         component.label = { text: `${part.prefix}${id.slice(1)}`, offset: transformedOffset(component, EDITOR_SYMBOLS[part.type].refdesAnchor) };
         this.doc.components.push(component);
@@ -2734,7 +2779,7 @@ export class SchematicEditor {
         value = `<text data-label-component-id="${component.id}" data-property="value" class="editor-label editor-value" style="font-size:${labelSize}px;stroke-width:${labelKnockout}px" x="${layout.value.point[0]}" y="${layout.value.point[1]}" text-anchor="${layout.value.anchor}" dominant-baseline="middle">${esc(display)}</text>`;
       }
       return {
-        symbol: `<g data-component-id="${component.id}" data-measure-target-kind="component" data-measure-target-id="${esc(component.id)}" data-anchor-x="${component.pos[0]}" data-anchor-y="${component.pos[1]}" data-rotation="${component.rot}" data-mirror="${component.mirror}" class="editor-component${this.selectedComponents.has(component.id) ? " selected" : ""}" transform="${transform(component)}"><rect class="editor-component-hit" x="${hitX}" y="${hitY}" width="${hitWidth}" height="${hitHeight}"/>${component.type === "led" ? `<circle data-led-halo="${component.id}" class="editor-led-halo" cx="0" cy="0" r="3" fill="url(#editor-led)" opacity="0"/>` : ""}<g class="editor-symbol">${renderedSymbol(component)}</g><rect class="editor-selection" x="${hitX}" y="${hitY}" width="${hitWidth}" height="${hitHeight}"/></g>`,
+        symbol: `<g data-component-id="${component.id}" data-component-type="${component.type}" data-measure-target-kind="component" data-measure-target-id="${esc(component.id)}" data-anchor-x="${component.pos[0]}" data-anchor-y="${component.pos[1]}" data-rotation="${component.rot}" data-mirror="${component.mirror}" class="editor-component${this.selectedComponents.has(component.id) ? " selected" : ""}" transform="${transform(component)}"><rect class="editor-component-hit" x="${hitX}" y="${hitY}" width="${hitWidth}" height="${hitHeight}"/>${component.type === "led" ? `<circle data-led-halo="${component.id}" class="editor-led-halo" cx="0" cy="0" r="3" fill="url(#editor-led)" opacity="0"/>` : ""}<g class="editor-symbol">${renderedSymbol(component, true, this.options.pinLabels?.(this.doc, component) ?? partByType(component.type).pinNames ?? [], screenScale, labelKnockout)}</g><rect class="editor-selection" x="${hitX}" y="${hitY}" width="${hitWidth}" height="${hitHeight}"/></g>`,
         properties: `${refdes}${value}`,
       };
     });

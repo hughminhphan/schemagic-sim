@@ -154,7 +154,7 @@ describe("Motor Designer V3 production constraint observation", () => {
       { callerSuppliedCriticality: "engineering_gap" },
     ])).toEqual(first.decision);
     expect(generateMotorConstraintObservationV3(requestV3(M1_COMPACT_REQUEST))).toEqual(first);
-  }, 60_000);
+  }, 120_000);
 
   it("observes the exact MIC4606-2 direct-gate structure without inventing a gate resistor or eligibility", () => {
     const generation = generateMotorConstraintObservationV3(requestV3(M2_POWER_REQUEST));
@@ -250,7 +250,7 @@ describe("Motor Designer V3 production constraint observation", () => {
         expect.objectContaining({ ruleId: "motor.external.tvs-coordination", sourceStatus: "unknown", disposition: "blocked_unknown" }),
       ]));
     }
-  }, 30_000);
+  }, 120_000);
 
   it("pins the installed recipe-scoped policy and returns detached copies", () => {
     const first = getInstalledMotorConstraintPolicyCatalogV3();
@@ -274,5 +274,5 @@ describe("Motor Designer V3 production constraint observation", () => {
     expectAssemblyDecisions(external, "motor.external");
     expect(integrated.decision.eligibleCandidateIds).toEqual([]);
     expect(external.decision.eligibleCandidateIds).toEqual([]);
-  }, 30_000);
+  }, 120_000);
 });

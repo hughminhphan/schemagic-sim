@@ -601,6 +601,39 @@ const BLOCK_TYPES = [
   "ic_block_8", "ic_block_9", "ic_block_14", "ic_block_16",
 ];
 
+const STATIC_PIN_LABELS = Object.freeze({
+  timer_555: ["GND", "TRIG", "OUT", "RESET", "CONT", "THRES", "DISCH", "VCC"],
+  vreg_linear_3: ["IN", "OUT", "GND/ADJ"],
+  comparator: ["IN+", "IN−", "OUT", "VCC", "GND"],
+  jfet_n: ["D", "G", "S"],
+  optocoupler_led: ["A", "K"],
+  ...Object.fromEntries(BLOCK_TYPES.filter((type) => type.startsWith("ic_block_"))
+    .map((type) => [type, Array.from({ length: Number(type.slice("ic_block_".length)) }, (_, index) => String(index + 1))])),
+});
+
+const xmlText = (value) => String(value).replace(/[&<>]/g, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" })[character]);
+
+function pinLabelMarkup(type, pins, bodyBbox) {
+  const names = STATIC_PIN_LABELS[type];
+  if (!names || names.length !== pins.length) fail(`${type}: static pin-label count does not match its pins`);
+  const [minX, minY, maxX, maxY] = bodyBbox;
+  const inset = 0.45;
+  return pins.map(([pinX, pinY], index) => {
+    let x = Math.max(minX + inset, Math.min(maxX - inset, pinX));
+    let y = Math.max(minY + inset, Math.min(maxY - inset, pinY));
+    let anchor = "middle";
+    if (pinX < minX) { x = minX + inset; anchor = "start"; }
+    else if (pinX > maxX) { x = maxX - inset; anchor = "end"; }
+    else if (pinY < minY) y = minY + inset;
+    else if (pinY > maxY) y = maxY - inset;
+    return `<text class="sym-pin-label" data-pin-label-index="${index}" x="${fmt(x)}" y="${fmt(y)}" text-anchor="${anchor}" dominant-baseline="middle">${xmlText(names[index])}</text>`;
+  }).join("");
+}
+
+function withPinLabels(result) {
+  return { ...result, markup: `${result.markup}${pinLabelMarkup(result.type, result.pins, result.bodyBbox)}` };
+}
+
 function rect(minX, minY, maxX, maxY, classes = "") {
   const attribute = classes ? ` class="${classes}"` : "";
   return `<path${attribute} d="M${fmt(minX)} ${fmt(minY)} L${fmt(maxX)} ${fmt(minY)} L${fmt(maxX)} ${fmt(maxY)} L${fmt(minX)} ${fmt(maxY)} Z"/>`;
@@ -734,12 +767,89 @@ function assertTargets(type, targets, expected) {
   }
 }
 
+function authoredSymbol(type, targets, expected, specification) {
+  assertTargets(type, targets, expected);
+  return {
+    type,
+    ...specification,
+    pins: targets.map((point) => [...point]),
+  };
+}
+
+function simulatorV3Symbols(parts) {
+  const build = (type, expected, specification) => {
+    const targets = parts.get(type);
+    if (!targets) fail(`could not read PARTS pins for ${type} from ${partsPath}`);
+    return { result: authoredSymbol(type, targets, expected, specification) };
+  };
+  const contact = (x, y) => `<circle cx="${fmt(x)}" cy="${fmt(y)}" r="0.2"/>`;
+  const sourceLeads = [lead([0, -1], [0, -2]), lead([0, 1], [0, 2])].join("");
+  const diamond = `<path class="sym-bg" d="M0 -2 L2 0 L0 2 L-2 0 Z"/>`;
+  const dependentLeads = [lead([0, -2], [0, -3]), lead([0, 2], [0, 3]), lead([-2, -1], [-3, -1]), lead([-2, 1], [-3, 1])].join("");
+  return [
+    build("isource_pulse", [[0, -2], [0, 2]], {
+      markup: `<circle class="sym-bg" cx="0" cy="0" r="1"/><path d="M-0.72 0.35 L-0.48 0.35 L-0.38 -0.35 L0.08 -0.35 L0.18 0.35 L0.62 0.35"/><path d="M-0.12 0.75 L0 0.92 L0.12 0.75 M0 0.92 L0 0.52"/>${sourceLeads}`,
+      refdesAnchor: [1, -1], valueAnchor: [1, 0], bodyBbox: [-1, -1, 1, 1], bbox: [-1, -2, 1, 2],
+    }),
+    build("switch_spdt", [[-2, 0], [2, -1], [2, 1]], {
+      markup: `${contact(-0.8, 0)}${contact(0.8, -0.6)}${contact(0.8, 0.6)}${lead([-1, 0], [-2, 0])}${lead([1, -1], [2, -1])}${lead([1, 1], [2, 1])}`,
+      lever: `<path d="M-0.6 -0.08 L0.6 -0.55"/>`, leverPivot: [-0.8, 0],
+      refdesAnchor: [0, -2], valueAnchor: [0, 2], bodyBbox: [-1, -1, 1, 1], bbox: [-2, -1, 2, 1],
+    }),
+    build("switch_dpdt", [[-3, -2], [3, -3], [3, -1], [-3, 2], [3, 1], [3, 3]], {
+      markup: `${contact(-1.8, -2)}${contact(1.8, -2.6)}${contact(1.8, -1.4)}${contact(-1.8, 2)}${contact(1.8, 1.4)}${contact(1.8, 2.6)}${lead([-2, -2], [-3, -2])}${lead([2, -3], [3, -3])}${lead([2, -1], [3, -1])}${lead([-2, 2], [-3, 2])}${lead([2, 1], [3, 1])}${lead([2, 3], [3, 3])}`,
+      refdesAnchor: [0, -4.3333], valueAnchor: [0, 4.3333], bodyBbox: [-2, -3, 2, 3], bbox: [-3, -3, 3, 3],
+    }),
+    ...["switch_pushbutton", "switch_toggle"].map((type) => build(type, [[-2, 0], [2, 0]], {
+      markup: `${contact(-0.8, 0)}${contact(0.8, 0)}${lead([-1, 0], [-2, 0])}${lead([1, 0], [2, 0])}${type === "switch_pushbutton" ? `<path d="M0 -1.35 L0 -0.65 M-0.45 -1.35 L0.45 -1.35"/>` : `<path d="M-0.8 -0.7 L-0.3 -1.25"/>`}`,
+      lever: `<path d="M-0.6 -0.1 L0.6 -0.7"/>`, leverPivot: [-0.8, 0],
+      refdesAnchor: [0, -2], valueAnchor: [0, 1.4], bodyBbox: [-1, -1.35, 1, 0.2], bbox: [-2, -1.35, 2, 0.2],
+    })),
+    build("switch_vcontrolled", [[-3, -1], [3, -1], [-1, 3], [1, 3]], {
+      markup: `<path class="sym-bg" d="M-1.5 -2 L1.5 -2 L1.5 1 L-1.5 1 Z"/><path d="M-0.8 -1 L0.65 -1.55"/><path d="M-0.55 0.45 L0 0 L0.55 0.45 M0 0 L0 0.8"/>${lead([-1.5, -1], [-3, -1])}${lead([1.5, -1], [3, -1])}${lead([-1, 1], [-1, 3])}${lead([1, 1], [1, 3])}`,
+      refdesAnchor: [0, -3.3333], valueAnchor: [0, 4.3333], bodyBbox: [-1.5, -2, 1.5, 1], bbox: [-3, -2, 3, 3],
+    }),
+    ...[["vcvs", "+", "−"], ["vccs", "↓", ""], ["cccs", "↓", ""], ["ccvs", "+", "−"]].map(([type, upper, lower]) => build(type, [[0, -3], [0, 3], [-3, -1], [-3, 1]], {
+      markup: `${diamond}<path d="M-0.45 -0.35 L0.45 -0.35${upper === "↓" ? " M0 -0.75 L0 0.85 M-0.25 0.55 L0 0.85 L0.25 0.55" : " M0 -0.8 L0 0.1"}${lower ? " M-0.35 0.65 L0.35 0.65" : ""}"/>${dependentLeads}`,
+      refdesAnchor: [2.6, -2], valueAnchor: [2.6, 2], bodyBbox: [-2, -2, 2, 2], bbox: [-3, -3, 2, 3],
+    })),
+    build("behavioral_source", [[0, -2], [0, 2]], {
+      markup: `<circle class="sym-bg" cx="0" cy="0" r="1"/><path d="M-0.45 -0.55 L-0.45 0.55 L0.1 0.55 A0.4 0.4 0 0 0 0.1 -0.25 L-0.45 -0.25 M0.35 -0.55 L0.35 0.55"/>${sourceLeads}`,
+      refdesAnchor: [1, -1], valueAnchor: [1, 0], bodyBbox: [-1, -1, 1, 1], bbox: [-1, -2, 1, 2],
+    }),
+    build("transformer", [[-3, -2], [-3, 2], [3, -2], [3, 2]], {
+      markup: `<path d="M-1.25 -2 A0.5 0.5 0 0 1 -1.25 -1 M-1.25 -1 A0.5 0.5 0 0 1 -1.25 0 M-1.25 0 A0.5 0.5 0 0 1 -1.25 1 M-1.25 1 A0.5 0.5 0 0 1 -1.25 2 M1.25 -2 A0.5 0.5 0 0 0 1.25 -1 M1.25 -1 A0.5 0.5 0 0 0 1.25 0 M1.25 0 A0.5 0.5 0 0 0 1.25 1 M1.25 1 A0.5 0.5 0 0 0 1.25 2 M-0.35 -2 L-0.35 2 M0.35 -2 L0.35 2"/>${lead([-1.25, -2], [-3, -2])}${lead([-1.25, 2], [-3, 2])}${lead([1.25, -2], [3, -2])}${lead([1.25, 2], [3, 2])}`,
+      refdesAnchor: [0, -3.3333], valueAnchor: [0, 3.3333], bodyBbox: [-1.75, -2, 1.75, 2], bbox: [-3, -2, 3, 2],
+    }),
+    build("crystal", [[-2, 0], [2, 0]], {
+      markup: `<path class="sym-bg" d="M-0.7 -0.8 L0.7 -0.8 L0.7 0.8 L-0.7 0.8 Z"/><path d="M-1 -1 L-1 1 M1 -1 L1 1"/>${lead([-1, 0], [-2, 0])}${lead([1, 0], [2, 0])}`,
+      refdesAnchor: [0, -2], valueAnchor: [0, 2], bodyBbox: [-1, -1, 1, 1], bbox: [-2, -1, 2, 1],
+    }),
+    build("transmission_line", [[-3, -1], [-3, 1], [3, -1], [3, 1]], {
+      markup: `<path class="sym-bg" d="M-2 -2 L2 -2 L2 2 L-2 2 Z"/><path d="M-1.5 -1 L1.5 -1 M-1.5 1 L1.5 1 M-1.15 -1.35 L-1.5 -1 L-1.15 -0.65 M1.15 0.65 L1.5 1 L1.15 1.35"/>${lead([-2, -1], [-3, -1])}${lead([-2, 1], [-3, 1])}${lead([2, -1], [3, -1])}${lead([2, 1], [3, 1])}`,
+      refdesAnchor: [0, -3.3333], valueAnchor: [0, 3.3333], bodyBbox: [-2, -2, 2, 2], bbox: [-3, -2, 3, 2],
+    }),
+    build("zener", [[0, -2], [0, 2]], {
+      markup: `<path d="M-0.6667 -0.6667 L0.6667 -0.6667 L0 0.6667 Z M-0.6667 0.6667 L0.6667 0.6667 M-0.6667 0.6667 L-0.9 0.9 M0.6667 0.6667 L0.9 0.4333"/>${lead([0, -0.6667], [0, -2])}${lead([0, 0.6667], [0, 2])}`,
+      refdesAnchor: [-1.3333, 0], valueAnchor: [1.3333, 0], bodyBbox: [-0.9, -0.6667, 0.9, 0.9], bbox: [-0.9, -2, 0.9, 2],
+    }),
+    build("battery", [[0, -2], [0, 2]], {
+      markup: `<path d="M-1 -0.35 L1 -0.35 M-0.55 0.35 L0.55 0.35"/>${lead([0, -0.35], [0, -2])}${lead([0, 0.35], [0, 2])}`,
+      refdesAnchor: [1.3333, -0.7], valueAnchor: [1.3333, 0.7], bodyBbox: [-1, -0.35, 1, 0.35], bbox: [-1, -2, 1, 2],
+    }),
+    build("fuse", [[-2, 0], [2, 0]], {
+      markup: `<path class="sym-bg" d="M-1.2 -0.6 L1.2 -0.6 L1.2 0.6 L-1.2 0.6 Z"/><path d="M-1.2 0 C-0.6 -0.55 0.6 0.55 1.2 0"/>${lead([-1.2, 0], [-2, 0])}${lead([1.2, 0], [2, 0])}`,
+      refdesAnchor: [0, -1.6], valueAnchor: [0, 1.6], bodyBbox: [-1.2, -0.6, 1.2, 0.6], bbox: [-2, -0.6, 2, 0.6],
+    }),
+  ];
+}
+
 function generateCatalogSymbols(parts) {
   const results = [];
   for (const type of BLOCK_TYPES) {
     const targets = parts.get(type);
     if (!targets) fail(`could not read PARTS pins for ${type} from ${partsPath}`);
-    results.push({ result: blockSymbol(type, targets) });
+    results.push({ result: withPinLabels(blockSymbol(type, targets)) });
   }
   for (const [type, build] of [
     ["vreg_linear_3", regulatorSymbol],
@@ -749,8 +859,9 @@ function generateCatalogSymbols(parts) {
   ]) {
     const targets = parts.get(type);
     if (!targets) fail(`could not read PARTS pins for ${type} from ${partsPath}`);
-    results.push({ result: build(targets) });
+    results.push({ result: withPinLabels(build(targets)) });
   }
+  results.push(...simulatorV3Symbols(parts));
   return results;
 }
 

@@ -1,5 +1,6 @@
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 import Ajv2020 from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
 import { describe, expect, it } from "vitest";
@@ -39,7 +40,7 @@ describe("independent Diodes Incorporated 3.0SMCJ33CAQ facts-V3 review", () => {
     const ajv = new Ajv2020({ allErrors: true, strict: true });
     addFormats(ajv);
     const schemaRoot = new URL("../schema/", import.meta.url);
-    for (const path of schemaFiles(schemaRoot.pathname)) {
+    for (const path of schemaFiles(fileURLToPath(schemaRoot))) {
       ajv.addSchema(JSON.parse(readFileSync(path, "utf8")));
     }
     const validate = ajv.getSchema(schemaId);

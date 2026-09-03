@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 import Ajv2020 from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
 import { describe, expect, it } from "vitest";
@@ -64,7 +65,7 @@ describe("independent Bel Fuse F1F2-0804-2R2M facts 3.4.0 review", () => {
   it("passes the generated facts 3.4 JSON Schema", () => {
     const ajv = new Ajv2020({ allErrors: true, strict: true });
     addFormats(ajv);
-    for (const path of schemaFiles(schemaRoot.pathname)) ajv.addSchema(JSON.parse(readFileSync(path, "utf8")));
+    for (const path of schemaFiles(fileURLToPath(schemaRoot))) ajv.addSchema(JSON.parse(readFileSync(path, "utf8")));
     const validate = ajv.getSchema("https://schemas.schemagic.design/design-library/v1/profile.facts-v3-4.schema.json");
     if (validate === undefined) throw new Error("Missing facts 3.4 profile schema");
     expect(validate(profileJson), JSON.stringify(validate.errors)).toBe(true);

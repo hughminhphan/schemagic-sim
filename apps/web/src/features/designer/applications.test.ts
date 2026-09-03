@@ -29,6 +29,18 @@ import { renderPrimaryPartCustomization } from "./PrimaryPartCustomizationView";
 import { renderPowerReferenceEvidence } from "./PowerReferenceEvidenceView";
 import { serializeImportedDesignResult } from "./ResultImport";
 
+const STRICT_EMPTY_COPY = "Strict results are still in progress. Inspect an evidence-limited reference solution; unknown remains unknown.";
+
+function expectSingleStrictInspectionExit(html: string): void {
+  const empty = html.match(/<section class="designer-empty-results"[\s\S]*?<\/section>/)?.[0];
+  expect(empty).toBeDefined();
+  expect(empty).toContain(`<p>${STRICT_EMPTY_COPY}</p>`);
+  expect(empty?.match(/<p\b[^>]*>/g) ?? []).toHaveLength(1);
+  expect(empty).not.toContain("<small");
+  expect(empty?.match(/<(?:button|a)\b/g) ?? []).toHaveLength(1);
+  expect(empty).not.toMatch(/<(?:button|a)[^>]*\bdisabled\b/);
+}
+
 describe("production Designer application readiness", () => {
   it("encodes an exact MPN as the sole LCSC search query", () => {
     expect(lcscExactMpnSearchUrl("AC/DC?rev=2&#<\"'"))
@@ -1101,13 +1113,7 @@ describe("production Designer application readiness", () => {
       execution: strict.execution,
       contextManifestContentHash: strict.contextManifestContentHash,
     }, undefined);
-    expect(strictHtml).toContain("Strict generation enumerated and checked 54 exact MIC4606-2 direct-gate options with separate bootstrap and VDD-local capacitor roles");
-    expect(strictHtml).toContain("No series-gate resistor is selected");
-    expect(strictHtml).toContain("exactly three reviewed 10 µF MLCC profiles while excluding the 100 nF C1608 from both roles");
-    expect(strictHtml).toContain("Three interface-specific xHS rules pass only the nominal 0 V-to-requested-bus excursion");
-    expect(strictHtml).toContain("No VDD driver-bias rail is implemented");
-    expect(strictHtml).toContain("Those nominal passes do not prove effective capacitance, bootstrap charge or refresh, local bias support, bulk adequacy, placement");
-    expect(strictHtml).toContain("motor.external.gate-network, or switching behavior");
+    expectSingleStrictInspectionExit(strictHtml);
     expect(strictHtml).toContain("unknown_constraint_disallowed");
     expect(strictHtml).not.toContain("No external-NMOS candidate was enumerated");
     expect(strictHtml).not.toContain("data-production-export=");
@@ -1316,9 +1322,7 @@ describe("production Designer application readiness", () => {
       contextManifestContentHash: strict.contextManifestContentHash,
     };
     const strictHtml = renderImportedResult(strictImported, undefined);
-    expect(strictHtml).toContain("Strict generation excluded the one exact-BOM Power option");
-    expect(strictHtml).toContain("policy-ineligible structural observation");
-    expect(strictHtml).toContain("no eligibility, selected-part simulation, provider, or sourcing authority");
+    expectSingleStrictInspectionExit(strictHtml);
     expect(strictHtml).toContain("unknown_constraint_disallowed");
     expect(strictHtml).not.toContain("Hard electrical failure");
     expect(strictHtml).not.toContain("data-production-export=");
@@ -1342,6 +1346,7 @@ describe("production Designer application readiness", () => {
     );
     expect(strictHtmlWithAuthorizedAction).toContain("data-power-evidence-inspection");
     expect(strictHtmlWithAuthorizedAction).toContain("Inspect 1 evidence-limited design — unknown ≠ pass.");
+    expectSingleStrictInspectionExit(strictHtmlWithAuthorizedAction);
 
     const estimatesBlockedRequest = structuredClone(request);
     estimatesBlockedRequest.constraints.allowUnknownHardConstraints = true;
@@ -1380,6 +1385,7 @@ describe("production Designer application readiness", () => {
     );
     expect(estimatesBlockedHtml).toContain("data-power-evidence-inspection");
     expect(estimatesBlockedHtml).toContain("Show reference solution");
+    expectSingleStrictInspectionExit(estimatesBlockedHtml);
 
     const permissive = structuredClone(request);
     permissive.constraints.allowUnknownHardConstraints = true;

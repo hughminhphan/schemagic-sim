@@ -2,6 +2,8 @@
 
 > Superseded for persisted-format versioning by [ADR-0013](0013-separate-simulator-v3-and-designer-v4-circuit-formats.md). The unpublished multi-circuit draft described here is released as Designer V4 so Simulator's legacy flat V2 remains unambiguous.
 
+> **2026-09-04 historical clarification:** ADR-0013 supersedes this ADR's version assignment. The multi-circuit document shipped as Designer V4, while flat Simulator V1 and V2 documents migrate to Simulator V3; all V2 API and future-implementation statements below are historical. In particular, the exact single-card `Ioc_<hexId> ... PULSE(...)` and `@ioc_<hexId>[i]` assertions are historical: shipped V3/V4 netlisting inserts a private zero-volt current sensor and reads its branch vector while preserving positive current direction from pin 0 to pin 1.
+
 - Status: Accepted; core schema, validation, netlist, and test-registry boundary implemented
 - Date: 2026-08-23
 - Scope: `@opencircuit/circuit-schema`, `@opencircuit/sim-engine`, the future `@opencircuit/design-schema` version seam, scheMAGIC Designer materializers, and simulation consumers

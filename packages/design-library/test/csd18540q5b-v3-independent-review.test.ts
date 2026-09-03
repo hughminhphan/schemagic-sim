@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 import Ajv2020 from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
 import { describe, expect, it } from "vitest";
@@ -23,7 +24,7 @@ describe("independent TI CSD18540Q5B facts-V3 evidence review", () => {
   it("satisfies the checked-in facts-V3 JSON Schema", () => {
     const ajv = new Ajv2020({ allErrors: true, strict: true });
     addFormats(ajv);
-    for (const path of schemaFiles(schemaRoot.pathname)) {
+    for (const path of schemaFiles(fileURLToPath(schemaRoot))) {
       ajv.addSchema(JSON.parse(readFileSync(path, "utf8")));
     }
     const validate = ajv.getSchema("https://schemas.schemagic.design/design-library/v1/profile.facts-v3.schema.json");

@@ -1,5 +1,6 @@
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 import Ajv2020 from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
 import { describe, expect, it } from "vitest";
@@ -24,7 +25,7 @@ function schemaFiles(directory: string): string[] {
 function ajvProfileValidator() {
   const ajv = new Ajv2020({ allErrors: true, strict: true });
   addFormats(ajv);
-  for (const path of schemaFiles(schemaRoot.pathname)) ajv.addSchema(JSON.parse(readFileSync(path, "utf8")));
+  for (const path of schemaFiles(fileURLToPath(schemaRoot))) ajv.addSchema(JSON.parse(readFileSync(path, "utf8")));
   return ajv.getSchema("https://schemas.schemagic.design/design-library/v1/profile.v1.schema.json")!;
 }
 
@@ -66,7 +67,7 @@ describe("AJV 2020 runtime parity", () => {
   it("resolves every checked-in schema ID and all profile references", () => {
     const ajv = new Ajv2020({ allErrors: true, strict: true });
     addFormats(ajv);
-    const schemas = schemaFiles(schemaRoot.pathname).map((path) => JSON.parse(readFileSync(path, "utf8")));
+    const schemas = schemaFiles(fileURLToPath(schemaRoot)).map((path) => JSON.parse(readFileSync(path, "utf8")));
     for (const schema of schemas) ajv.addSchema(schema);
     for (const schema of schemas) expect(ajv.getSchema(schema.$id), schema.$id).toBeTypeOf("function");
     expect(() => ajv.compile({ $ref: "https://schemas.schemagic.design/design-library/v1/profile.v1.schema.json" })).not.toThrow();
@@ -147,7 +148,7 @@ describe("AJV 2020 runtime parity", () => {
   it("matches runtime structural rejection for the additive facts-V2 envelope", () => {
     const ajv = new Ajv2020({ allErrors: true, strict: true });
     addFormats(ajv);
-    for (const path of schemaFiles(schemaRoot.pathname)) ajv.addSchema(JSON.parse(readFileSync(path, "utf8")));
+    for (const path of schemaFiles(fileURLToPath(schemaRoot))) ajv.addSchema(JSON.parse(readFileSync(path, "utf8")));
     const validateSchema = ajv.getSchema("https://schemas.schemagic.design/design-library/v1/profile.facts-v2.schema.json")!;
     const valid = v2SwitchingDiodeProfile();
     const cases: Array<{ label: string; profile: any; valid: boolean }> = [{ label: "valid", profile: valid, valid: true }];
@@ -171,7 +172,7 @@ describe("AJV 2020 runtime parity", () => {
   it("matches runtime bidirectionally for exact hostnames and raw canonical HTTPS URLs", () => {
     const ajv = new Ajv2020({ allErrors: true, strict: true });
     addFormats(ajv);
-    for (const path of schemaFiles(schemaRoot.pathname)) ajv.addSchema(JSON.parse(readFileSync(path, "utf8")));
+    for (const path of schemaFiles(fileURLToPath(schemaRoot))) ajv.addSchema(JSON.parse(readFileSync(path, "utf8")));
     const validateRegistrySchema = ajv.getSchema("https://schemas.schemagic.design/design-library/v1/manufacturer-registry.v1.schema.json")!;
     const validateProfileSchema = ajv.getSchema("https://schemas.schemagic.design/design-library/v1/profile.v1.schema.json")!;
 
@@ -222,7 +223,7 @@ describe("AJV 2020 runtime parity", () => {
   it("matches admission-state and exact-check rejection", () => {
     const ajv = new Ajv2020({ allErrors: true, strict: true });
     addFormats(ajv);
-    for (const path of schemaFiles(schemaRoot.pathname)) ajv.addSchema(JSON.parse(readFileSync(path, "utf8")));
+    for (const path of schemaFiles(fileURLToPath(schemaRoot))) ajv.addSchema(JSON.parse(readFileSync(path, "utf8")));
     const validateSchema = ajv.getSchema("https://schemas.schemagic.design/design-library/v1/admission.v1.schema.json")!;
     const valid = createSyntheticReviewedLibraryFixture(["shared.general-purpose-resistor"]).admission as any;
     const cases: Array<{ label: string; admission: any; valid: boolean }> = [{ label: "valid", admission: valid, valid: true }];

@@ -100,9 +100,10 @@
   },
   "known_omissions": [
     "The fitted forward points are guaranteed maxima rather than a typical curve, so validation treats them as upper bounds and fidelity is capped at F1.",
+    "The Schottky-constrained fit rests at the physical N = 1 lower bound. N is set by that bound, not measured from the published maximum-only points.",
     "Reverse breakdown, leakage temperature scaling, surge heating, and distributed junction capacitance are omitted.",
     "Self-heating, process spread, package parasitics, ageing, and failure outside ratings are not modelled.",
-    "P5 independent review passed F1: maximum-bound forward points, reverse limit, capacitance point, independent forward probe, and all five native and WASM benches were verified."
+    "F.4 independent model-quality review passed F1 after the 25 C Schottky-bound refit: N's lower-bound status is disclosed, all five native and WASM benches agree, and all five datasheet-anchored checks pass."
   ],
   "licence": {
     "spdx_id": "MIT",
@@ -110,11 +111,11 @@
   },
   "generator": {
     "tool_or_agent": "opencircuit-model-factory-v0.1.0",
-    "date": "2026-08-09"
+    "date": "2026-09-03"
   },
   "reviewer": {
-    "tool_or_agent": "gpt-5.6-sol independent reviewer (P5)",
-    "date": "2026-08-09"
+    "tool_or_agent": "gpt-5.6-sol model-quality reviewer (F.4)",
+    "date": "2026-09-03"
   },
   "test_results": {
     "status": "complete",
@@ -122,9 +123,9 @@
     "fail_count": 0,
     "total_count": 5,
     "worst_observed_relative_fitting_error": {
-      "value": 0.024060784835010195,
+      "value": 0.03108372230022033,
       "quantity": "forward voltage at 1 A"
     }
   },
-  "validation_date": "2026-08-09"
+  "validation_date": "2026-09-03"
 }

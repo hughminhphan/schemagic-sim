@@ -74,14 +74,10 @@ const sibling = (componentPath: string, name: string) => componentPath.replace(/
 
 /**
  * Packages whose own validation-results.json records a native/WASM disagreement.
- * That file is loaded lazily, so the eager header would otherwise advertise them
- * as placeable and then disable the Place button once the detail arrives. The
- * list is asserted against the library on disk in catalog-bijection.test.ts, so
- * it cannot drift once a package is refitted.
+ * That file is loaded lazily, so this eager gate is asserted against the library
+ * on disk in catalog-bijection.test.ts and cannot drift from stored validation.
  */
-export const CATALOG_NATIVE_WASM_DISAGREEMENT: readonly string[] = Object.freeze([
-  "ti/LM311", "ti/LM393", "ti/TLV3702",
-]);
+export const CATALOG_NATIVE_WASM_DISAGREEMENT: readonly string[] = Object.freeze([]);
 
 function manifestTruth(manifest: CatalogManifest, baseType: ComponentType | undefined, id: string): { valid: boolean; reviewed: boolean; placeable: boolean; reasons: string[] } {
   const reasons: string[] = [];

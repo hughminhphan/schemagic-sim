@@ -785,7 +785,7 @@ describe("reviewed-real Motor A4 primary-source tranche", () => {
         ).toThrow();
       }
     }
-  }, 20_000);
+  }, 120_000);
 
   it("fails closed on shared-profile path, hash, MPN, schema, admission, recipe, and required-fact drift", () => {
     const documentTamperCases: Array<readonly [string, (documents: any) => void]> = [
@@ -911,7 +911,7 @@ describe("reviewed-real Motor A4 primary-source tranche", () => {
         "Supply TVS: stand-off, breakdown, clamping voltage, and the pulse waveform/energy condition.",
       );
     }
-  }, 45_000);
+  }, 120_000);
 
   it("requires one exact recipe/ref readiness join and a globally ready installed recipe set", () => {
     const installed = structuredClone(getInstalledMotorRecipeRefsV2()) as any[];

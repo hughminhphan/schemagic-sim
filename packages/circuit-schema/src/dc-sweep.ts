@@ -19,6 +19,7 @@ export function isIndependentSource(component: CircuitComponent): boolean {
   return component.type === "vsource"
     || component.type === "vsource_pulse"
     || component.type === "vsource_sine"
+    || component.type === "battery"
     || component.type === "isource";
 }
 

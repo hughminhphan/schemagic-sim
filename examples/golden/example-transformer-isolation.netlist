@@ -1,0 +1,13 @@
+scheMAGIC Simulator document edf2ebfa4b66569c
+* document-hash edf2ebfa4b66569c
+V1 vin 0 SIN(0 1 1k) AC 1 $ component:c1
+R2 vin oc_ac_c2 10 $ component:c2
+VOCSc2 oc_ac_c2 n1 0 $ component:c2
+L_XFMR_c3_P n1 0 10m $ component:c3
+L_XFMR_c3_S vout 0 2.5m $ component:c3
+K_XFMR_c3 L_XFMR_c3_P L_XFMR_c3_S 0.99 $ component:c3
+R4 vout oc_ac_c4 100 $ component:c4
+VOCSc4 oc_ac_c4 0 0 $ component:c4
+.save all v1#branch vocsc2#branch vocsc4#branch
+.ac dec 30 10 100000
+.end

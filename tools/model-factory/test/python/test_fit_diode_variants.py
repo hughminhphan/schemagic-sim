@@ -143,6 +143,30 @@ class SchottkyTest(unittest.TestCase):
             forward_points(currents=SILICON_CURRENTS, **SILICON), diode_variant="tunnel"))
         self.assertIn("unknown diode_variant", stderr)
 
+    def test_maximum_only_points_are_corrected_deterministically_and_strictly_inside(self):
+        points = [
+            {"current": cite(current, "A", "TL = 25 degC"),
+             "voltage": cite(voltage, "V", "TL = 25 degC", "maximum")}
+            for current, voltage in [(1, 0.39), (3, 0.525), (9.4, 0.95)]
+        ]
+        document = facts_document(points, diode_variant="schottky")
+        first = run_fitter(document)
+        second = run_fitter(document)
+        self.assertEqual(first, second)
+        for row in first["residuals"]:
+            self.assertLess(row["fitted_voltage_v"], row["datasheet_voltage_v"])
+        at_three_amps = next(row for row in first["residuals"] if row["current_a"] == 3)
+        self.assertLess(at_three_amps["fitted_voltage_v"], 0.525)
+
+    def test_a_single_maximum_bound_also_lands_strictly_inside(self):
+        point = {
+            "current": cite(1, "A", "TJ = 25 degC"),
+            "voltage": cite(0.47, "V", "TJ = 25 degC", "maximum"),
+        }
+        fitted = run_fitter(facts_document([point], diode_variant="schottky"))
+        self.assertEqual(fitted["fitter"], "analytic_single_bound_with_held_defaults")
+        self.assertLess(fitted["residuals"][0]["fitted_voltage_v"], 0.47)
+
 
 def zener_facts(vz, izt, zzt=None, points=None, **extra):
     calibration = {"vz": cite(vz, "V", f"IZT = {izt} A", page="synthetic p. 2 VZ"),
@@ -284,11 +308,9 @@ class ReverseLeakageTest(unittest.TestCase):
 
 
 class ShippedPackageRegressionTest(unittest.TestCase):
-    """No shipped package changes in this PR, and refitting must prove it.
+    """Every reviewed diode refits reproducibly from its shipped facts.
 
-    Every reviewed diode package is refitted from its own facts.json and must
-    reproduce its shipped parameters. Diagnostics may be added; numbers may not
-    move.
+    Diagnostics may be added, but committed parameters must remain reproducible.
 
     The comparison is a tight relative tolerance rather than bit equality. The
     optimizer runs through platform math libraries, so the last couple of
@@ -323,6 +345,14 @@ class ShippedPackageRegressionTest(unittest.TestCase):
                         f"{slug} {name} moved: shipped {value!r}, refit "
                         f"{refit['parameters'][name]!r}",
                     )
+
+    @unittest.skipUnless(HAVE_NGSPICE, "requires native ngspice")
+    def test_1n5822_three_amp_maximum_runs_at_25c_and_passes_natively(self):
+        bench = (LIBRARY / "onsemi/1N5822/tests/forward_02.cir").read_text()
+        self.assertRegex(bench, r"(?m)^\.temp 2\.5000000000e1$")
+        result = native_ngspice.run_ngspice(bench)
+        voltage = float(native_ngspice.vector(result, "v(anode)", "anode")[0])
+        self.assertLessEqual(voltage, 0.525)
 
 
 if __name__ == "__main__":

@@ -159,7 +159,11 @@ def run_ngspice_batch(netlists, timeout=600):
         for index, netlist in enumerate(netlists):
             deck = root / f"deck{index}.cir"
             deck.write_text(netlist)
-            driver += [f"source {deck}", "run", f"write {root / f'out{index}.raw'}", "destroy all"]
+            # ngspice 46 does not parse whitespace-bearing absolute arguments in
+            # control commands (and treats quotes literally). The subprocess
+            # already runs in this directory, so controlled basenames are both
+            # portable and unambiguous.
+            driver += [f"source {deck.name}", "run", f"write out{index}.raw", "destroy all"]
         driver += [".endc", ".end"]
         driver_path = root / "driver.cir"
         driver_path.write_text("\n".join(driver) + "\n")

@@ -8,6 +8,7 @@ import type { SerializedNodeReference } from "@opencircuit/signal-workbench";
  */
 const PIN_NAMES: Partial<Record<ComponentType, readonly string[]>> = {
   diode: ["anode", "cathode"],
+  zener: ["anode", "cathode"],
   led: ["anode", "cathode"],
   bjt_npn: ["collector", "base", "emitter"],
   bjt_pnp: ["collector", "base", "emitter"],
@@ -19,12 +20,28 @@ const PIN_NAMES: Partial<Record<ComponentType, readonly string[]>> = {
   vsource_pulse: ["+", "−"],
   vsource_sine: ["+", "−"],
   isource: ["+", "−"],
+  isource_pulse: ["+", "−"],
+  switch_spdt: ["common", "throw A", "throw B"],
+  switch_dpdt: ["common 1", "throw A1", "throw B1", "common 2", "throw A2", "throw B2"],
+  switch_pushbutton: ["contact 1", "contact 2"],
+  switch_toggle: ["contact 1", "contact 2"],
+  switch_vcontrolled: ["out+", "out−", "control+", "control−"],
+  vcvs: ["out+", "out−", "control+", "control−"],
+  vccs: ["out+", "out−", "control+", "control−"],
+  cccs: ["out+", "out−", "sense+", "sense−"],
+  ccvs: ["out+", "out−", "sense+", "sense−"],
+  behavioral_source: ["+", "−"],
+  transformer: ["primary 1", "primary 2", "secondary 1", "secondary 2"],
+  transmission_line: ["in+", "in−", "out+", "out−"],
+  battery: ["+", "−"],
 };
 
 /** Devices whose pin names actually teach something get to name an unlabelled net. */
 const NET_NAMING_PRIORITY: readonly ComponentType[] = [
-  "led", "diode", "opamp_ideal", "bjt_npn", "bjt_pnp", "nmos", "pmos", "potentiometer",
-  "vsource", "vsource_pulse", "vsource_sine", "isource", "switch_spst",
+  "led", "zener", "diode", "opamp_ideal", "bjt_npn", "bjt_pnp", "nmos", "pmos", "potentiometer",
+  "vsource", "vsource_pulse", "vsource_sine", "isource", "isource_pulse", "battery",
+  "switch_spst", "switch_spdt", "switch_dpdt", "switch_pushbutton", "switch_toggle", "switch_vcontrolled",
+  "vcvs", "vccs", "cccs", "ccvs", "behavioral_source", "transformer", "transmission_line",
   "inductor", "capacitor", "resistor",
 ];
 

@@ -127,10 +127,15 @@ function identity(component: CircuitComponent, index: CatalogIndex): { part?: Ca
   return part ? { tagged: true, part } : { tagged: false };
 }
 
+/** Recorded V3 shares placed Zener packages on the legacy diode symbol. */
+function catalogTypeMatches(componentType: ComponentType, packageType: ComponentType | undefined): boolean {
+  return packageType === componentType || (componentType === "diode" && packageType === "zener");
+}
+
 function resolveCatalogComponent(component: CircuitComponent, index: CatalogIndex): ResolvedCatalogComponent | undefined {
   const found = identity(component, index);
   const part = found.part;
-  if (!part || part.baseType !== component.type) return undefined;
+  if (!part || !catalogTypeMatches(component.type, part.baseType)) return undefined;
   const rawBindings = component.type === "opamp_ideal" ? component.params?.catalogSupplyBindings : undefined;
   const vcc = supplyBinding(rawBindings, "vcc", index.components);
   const vee = supplyBinding(rawBindings, "vee", index.components);
@@ -275,7 +280,7 @@ export function inspectCatalogModels(document: CircuitDocument, mode: AnalysisMo
     const part = found.part;
     if (!part) continue;
     const label = `Component ${component.id} (${part.manifest.canonical_mpn})`;
-    if (part.baseType !== component.type) {
+    if (!catalogTypeMatches(component.type, part.baseType)) {
       issues.push({ code: "FAMILY_MISMATCH", componentId: component.id, partId: part.id, message: `${label} is a ${part.manifest.electrical_family} package and cannot drive a ${component.type} symbol` });
       continue;
     }

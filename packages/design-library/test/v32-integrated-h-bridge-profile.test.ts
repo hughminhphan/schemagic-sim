@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 import Ajv2020 from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
 import { describe, expect, it } from "vitest";
@@ -133,7 +134,7 @@ function schemaFiles(directory: string): string[] {
 function schemaValidator(): (input: unknown) => boolean {
   const ajv = new Ajv2020({ allErrors: true, strict: true });
   addFormats(ajv);
-  for (const path of schemaFiles(schemaRoot.pathname)) ajv.addSchema(JSON.parse(readFileSync(path, "utf8")));
+  for (const path of schemaFiles(fileURLToPath(schemaRoot))) ajv.addSchema(JSON.parse(readFileSync(path, "utf8")));
   const validate = ajv.getSchema(profileSchemaId);
   if (!validate) throw new Error(`Missing AJV schema ${profileSchemaId}`);
   return (input: unknown) => Boolean(validate(input));

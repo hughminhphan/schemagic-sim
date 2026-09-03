@@ -4,20 +4,18 @@ Everything on this page is subject to change. Priorities may move as numerical i
 
 If a roadmap item matters to your work, or if a missing item should be considered, please open a GitHub issue with the circuit, use case, and evidence behind the request.
 
-## Execution status (2026-09-03)
+## Execution status (2026-09-04)
 
-Wave 1 is merged, covering the Robonyx rename, CI and documentation hygiene, the model conveyor and factory, Designer audit de-pinning, Simulator parts, and Simulator UX. Robonyx Simulator now places 40 of 43 reviewed parts, ranks and filters catalog search, starts with a coach mark and useful named trace, and includes the first teaching examples. Robonyx Designer now uses property-based release assertions and bound-typed facts, while the model pipeline has extraction dispatch, leases, cost accounting, shared-process fitting, Zener and Schottky support, and incremental evidence. Wave 2 has ten branches in flight for audit-pin hygiene, the remaining examples, sharing and embed work, clipboard editing, Falstad import, two D.2 slices, factory fixes, storage replay, and this documentation sync; current ownership and task mapping are in [BACKLOG.md](BACKLOG.md).
+Wave 1 and nine Wave 2 PRs ([#26](https://github.com/hughminhphan/schemagic-sim/pull/26) through [#34](https://github.com/hughminhphan/schemagic-sim/pull/34)) are merged. The pre-launch integration in [PR #35](https://github.com/hughminhphan/schemagic-sim/pull/35) completes the honest Designer empty state, authored-symbol pin names, comparator admission, Motor timing stabilization, the 1N5822 review, and Simulator tasks 1.1 through 1.3. The Simulator now has 19 built-in teaching circuits and the expanded switch, source, isolation, timing, and protection families; all 771 reviewed manufacturer packages are placeable. Across Phase 0, 1, 2, and D, 28 tasks are done, 3 are partial, and 24 are open; the separate follow-up queue is 4/4 done. Tasks 2.5 and 2.17 remain partial because 470 campaign-cited PDFs are absent but restorable, the 5.3 GB catalog has not moved externally, and noise replay is unsupported. D.2 also remains partial: bound-aware buck calculators landed, but loop stability remains unknown and the installed strict policy still returns no eligible buck candidate. Current task-level status is in [BACKLOG.md](BACKLOG.md).
 
 ## v0.2.0 release-candidate baseline
 
-The Simulator now includes focused DC-sweep and noise interfaces, a Measurement Workbench, KiCad-derived editor interactions, typed probes, cancellable run provenance, and validated namespaced user `.model`/`.subckt` imports kept separate from reviewed project models. The same web release also exposes the Motor/Power Designer and validates 771 evidence-bearing model packages. The remaining work below starts from that integrated baseline.
+The Simulator now includes focused DC-sweep and noise interfaces, a Measurement Workbench, KiCad-derived editor interactions, typed probes, cancellable run provenance, and validated namespaced user `.model`/`.subckt` imports kept separate from reviewed project models. It also includes typed switches, dependent and behavioural sources, transformers, crystals, transmission lines, Zener diodes, batteries, fuses, and pulsed current sources. The same web release exposes the Motor/Power Designer and validates 771 evidence-bearing, placeable model packages. The remaining work below starts from that integrated baseline.
 
 ## Near
 
-- **Close the release-evidence loop.** Add authenticated runtime/KiCad attachments plus recorded manual assistive-technology checks without weakening fail-closed audit gates. Production offline/cache behavior is verified for this RC; the remaining evidence is tracked in [#12](https://github.com/hughminhphan/schemagic-sim/issues/12).
-- **Replay every model bench.** Add one bounded release command that freshly replays electrical benches across all model packages and reports the three inherited comparator exceptions explicitly.
-- **Grow the reviewed model library.** Continue beyond the 771-package v0.2 release-candidate inventory in [#18](https://github.com/hughminhphan/schemagic-sim/issues/18) while preserving provenance, fidelity labels, native-versus-WebAssembly gates, and independent review.
-- **Documentation internationalization.** Establish an i18n structure for user and contributor documentation, then translate high-value getting-started and model-contribution pages.
+- **Close the launch administration gate.** Task 0.8 is the only open Phase 0 task: protect `main`, require a pull request, and require the four named CI checks.
+- **Finish Phase 1.** The remaining Simulator work is `.step` parametric sweep (1.4), mobile canvas and layout (1.7), dependency-cycle cleanup (1.10), coverage floors (1.11), Designer-to-Simulator handoff (1.12), privacy-respecting usage counts (1.13), and solved-transient live animation (1.14).
 
 ## Mid
 

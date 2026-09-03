@@ -1,3 +1,4 @@
+import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import {
   scanDesignerReleaseFileInputsV1,
@@ -45,7 +46,7 @@ describe("Designer release repository safety scan", () => {
   });
 
   it("passes the current tracked plus unignored release-candidate file set", () => {
-    const report = scanDesignerReleaseRepositoryV1(new URL("../../..", import.meta.url).pathname);
+    const report = scanDesignerReleaseRepositoryV1(fileURLToPath(new URL("../../..", import.meta.url)));
     expect(report.status).toBe("pass");
     expect(report.candidateFileCount).toBeGreaterThan(1_000);
     expect(report.findings).toEqual([]);

@@ -32,6 +32,16 @@ export interface PulseWaveform {
   period: number;
 }
 
+export interface CurrentPulseWaveform {
+  i1: number;
+  i2: number;
+  delay: number;
+  rise: number;
+  fall: number;
+  width: number;
+  period: number;
+}
+
 export interface SineWaveform {
   offset: number;
   amplitude: number;
@@ -47,6 +57,18 @@ export function resolvedPulseWaveform(component: CircuitComponent): PulseWavefor
   return {
     v1: engineering(component.params?.v1, 0),
     v2: engineering(component.params?.v2, engineering(component.value, 5)),
+    delay: engineering(component.params?.delay, 0.001),
+    rise: engineering(component.params?.rise, 0.00001),
+    fall: engineering(component.params?.fall, 0.00001),
+    width: engineering(component.params?.width, 0.004),
+    period: engineering(component.params?.period, 0.01),
+  };
+}
+
+export function resolvedCurrentPulseWaveform(component: CircuitComponent): CurrentPulseWaveform {
+  return {
+    i1: engineering(component.params?.i1, 0),
+    i2: engineering(component.params?.i2, 0.001),
     delay: engineering(component.params?.delay, 0.001),
     rise: engineering(component.params?.rise, 0.00001),
     fall: engineering(component.params?.fall, 0.00001),

@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import * as library from "../src";
 import { createSyntheticReviewedLibraryFixture, createSyntheticReviewedProfile } from "../src/fixtures";
@@ -105,7 +106,7 @@ describe("frozen V1 compatibility and dependency inventory", () => {
   });
 
   it("keeps design-library below recipes and engine in the dependency graph", () => {
-    const sourceRoot = new URL("../src/", import.meta.url).pathname;
+    const sourceRoot = fileURLToPath(new URL("../src/", import.meta.url));
     for (const file of sourceFiles(sourceRoot)) {
       const text = readFileSync(file, "utf8");
       expect(text, file).not.toMatch(/@opencircuit\/(?:design-recipes|design-engine)/);

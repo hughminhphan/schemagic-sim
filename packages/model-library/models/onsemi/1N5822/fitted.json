@@ -4,9 +4,9 @@
   "deterministic": true,
   "temperature_c": 25.0,
   "parameters": {
-    "IS": 1.7564033093437277e-07,
-    "N": 0.8000000000000002,
-    "RS": 0.060901381151585665,
+    "IS": 4.1441524790798584e-06,
+    "N": 1.0000000000000002,
+    "RS": 0.05944823976476544,
     "CJO": 7e-10
   },
   "parameter_metadata": {
@@ -31,28 +31,61 @@
     {
       "current_a": 1,
       "datasheet_voltage_v": 0.39,
-      "fitted_voltage_v": 0.38061629391434604,
-      "relative_error": 0.024060784835010195,
+      "fitted_voltage_v": 0.3778773483029141,
+      "relative_error": 0.03108372230022033,
       "citation": "p. 2 maximum instantaneous forward voltage, 1N5822 column"
     },
     {
       "current_a": 3,
       "datasheet_voltage_v": 0.525,
-      "fitted_voltage_v": 0.5250000003307714,
-      "relative_error": 6.300407814511086e-10,
+      "fitted_voltage_v": 0.52499994,
+      "relative_error": 1.1428571422555933e-07,
       "citation": "p. 2 maximum instantaneous forward voltage, 1N5822 column"
     },
     {
       "current_a": 9.4,
       "datasheet_voltage_v": 0.95,
-      "fitted_voltage_v": 0.938243581144884,
-      "relative_error": 0.012375177742227277,
+      "fitted_voltage_v": 0.9348120781593203,
+      "relative_error": 0.015987286148083823,
       "citation": "p. 2 maximum instantaneous forward voltage, 1N5822 column"
     }
   ],
-  "rms_relative_error": 0.015621207710762683,
+  "rms_relative_error": 0.02018077559156229,
   "worst_relative_error": {
-    "value": 0.024060784835010195,
+    "value": 0.03108372230022033,
     "quantity": "forward voltage at 1 A"
-  }
+  },
+  "diode_variant": "schottky",
+  "variant_bounds": {
+    "IS": [
+      1e-09,
+      0.01
+    ],
+    "N": [
+      1.0,
+      2.0
+    ],
+    "RS": [
+      0.0,
+      50.0
+    ]
+  },
+  "bound_saturation": [
+    {
+      "parameter": "N",
+      "value": 1.0000000000000002,
+      "bound": "lower",
+      "reason": "N rests on its lower bound. The value is set by the bound, not by the cited curve, so it is not a measurement of this part."
+    }
+  ],
+  "reverse_leakage_checks": [
+    {
+      "field": "reverse_current_40v",
+      "published_maximum_a": 0.002,
+      "conditions": "rated DC voltage, TL = 25 degC",
+      "citation": "p. 2 electrical characteristics",
+      "model_reverse_current_a": 4.1441524790798584e-06,
+      "within_published_maximum": true
+    }
+  ]
 }

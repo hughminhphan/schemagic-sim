@@ -1,9 +1,10 @@
 import { createHash } from "node:crypto";
 import { readFileSync, readdirSync } from "node:fs";
 import { join, relative } from "node:path";
+import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 
-const schemaRoot = new URL("../schema/", import.meta.url).pathname;
+const schemaRoot = fileURLToPath(new URL("../schema/", import.meta.url));
 
 const PRIOR_SCHEMA_SHA256 = {
   "admission.v1.schema.json": "e65c0f17d26659193cd7d15f4d463f50947fa5a62197acadfac59c4408c94210",

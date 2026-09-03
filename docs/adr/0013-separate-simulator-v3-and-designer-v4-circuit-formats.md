@@ -4,6 +4,8 @@
 - Date: 2026-08-30
 - Supersedes: the circuit-version assignment in ADR-0002 and circuit-version references in ADR-0005
 
+> **2026-09-04 clarification:** This ADR also supersedes ADR-0002's exact current-pulse mechanics. The shipped V3/V4 netlist uses a private zero-volt current sensor and its branch vector, rather than ADR-0002's exact single `Ioc_<hexId>` card and `@ioc_<hexId>[i]` vector, while preserving positive current direction from pin 0 to pin 1.
+
 ## Context
 
 Two feature branches independently assigned `opencircuit-circuit` version 2 to incompatible documents. The Simulator branch used V2 for a flat legacy editor document on its migration path to current V3. The Designer branch used V2 for a multi-circuit document containing design blocks and scenarios. A parser could not select between those contracts from the version alone without guessing from shape.

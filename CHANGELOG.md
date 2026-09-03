@@ -6,6 +6,17 @@ All notable Robonyx releases are documented here. The project uses semantic vers
 
 ### Changed
 
+- [PR #35](https://github.com/hughminhphan/schemagic-sim/pull/35) made the Designer empty state explicitly evidence-limited and added the Simulator's typed switch family, dependent and behavioural sources, transformer, crystal, transmission line, catalog-backed Zener, battery, fuse, and sensed pulsed-current paths, with five new solved examples bringing the built-in gallery to 19.
+- [PR #35](https://github.com/hughminhphan/schemagic-sim/pull/35) added actual package pin names to placed authored block symbols, admitted LM311, LM393, and TLV3702 so all 771 reviewed packages are placeable, stabilized the Motor suite's heavy-test timing without weakening numerical assertions, and recorded the 1N5822's physical-bound saturation with passing datasheet and native-versus-WebAssembly evidence.
+- [PR #34](https://github.com/hughminhphan/schemagic-sim/pull/34) completed the twelve-circuit teaching gallery with share URLs, solve checks, and non-trivial waveform coverage.
+- [PR #33](https://github.com/hughminhphan/schemagic-sim/pull/33) added compact, backward-compatible share payloads and a read-only `?embed=1` view with an open-in-Robonyx link.
+- [PR #32](https://github.com/hughminhphan/schemagic-sim/pull/32) added bounded fresh native-versus-WebAssembly bench replay with explicit unsupported-noise skips and guarded prune/restore tooling; 470 campaign-cited PDFs remain absent but restorable, and external relocation of the 5.3 GB catalog remains pending.
+- [PR #31](https://github.com/hughminhphan/schemagic-sim/pull/31) routed JFETs through a real fitter and added the declared-output-omission small-signal MOSFET F2-DC path.
+- [PR #30](https://github.com/hughminhphan/schemagic-sim/pull/30) added multi-select, copy, paste, duplicate, and group move while preserving the selected wire network.
+- [PR #29](https://github.com/hughminhphan/schemagic-sim/pull/29) added Falstad and CircuitJS share-URL import for the supported element subset, with explicit reports for unsupported elements.
+- [PR #28](https://github.com/hughminhphan/schemagic-sim/pull/28) restricted emitted-bundle audit pins to release workflows and derived the evidence URL allowlist.
+- [PR #27](https://github.com/hughminhphan/schemagic-sim/pull/27) added bound-aware buck loss, junction-temperature, and current-limit calculations while preserving blocking unknowns, including loop stability; it does not make the current buck candidate eligible.
+- [PR #26](https://github.com/hughminhphan/schemagic-sim/pull/26) reconciled Wave 1 documentation, moved stale campaign references, and recorded the Wave 2 execution map.
 - [PR #22](https://github.com/hughminhphan/schemagic-sim/pull/22) renamed the products to Robonyx Simulator and Robonyx Designer, rewrote the project introduction, removed the obsolete orchestration document, and added guidance for people moving from Multisim Live.
 - [PR #20](https://github.com/hughminhphan/schemagic-sim/pull/20) added one complete verification command, modernised continuous integration, created the agent backlog, and indexed the campaign archive.
 - [PR #19](https://github.com/hughminhphan/schemagic-sim/pull/19) made the model conveyor dispatch extraction work, lease parts safely, account for run cost, and select parts from a relevance list under protocol v2.

@@ -13,8 +13,10 @@ sub-threshold currents by ~1e-5 relative, which is enough to steer a fit.
 import os
 import shutil
 import sys
+import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 import numpy as np
 from scipy.optimize import least_squares
@@ -56,6 +58,19 @@ class BatchIdentityTest(unittest.TestCase):
         results = native_ngspice.run_ngspice_batch([DECK.format(saturation=1e-12), broken])
         self.assertIsNotNone(results[0])
         self.assertIsNone(results[1])
+
+    @unittest.skipUnless(HAVE_NGSPICE, "requires native ngspice")
+    def test_batch_control_paths_work_when_the_temp_root_contains_spaces(self):
+        netlists = [DECK.format(saturation=1e-12), DECK.format(saturation=1.001e-12)]
+        with tempfile.TemporaryDirectory(prefix="batch path with spaces ") as directory:
+            with patch.object(native_ngspice, "FACTORY_TMP", Path(directory) / "fit native"):
+                together = native_ngspice.run_ngspice_batch(netlists)
+        self.assertEqual(len(together), len(netlists))
+        for netlist, result in zip(netlists, together):
+            self.assertIsNotNone(result)
+            alone = native_ngspice.run_ngspice(netlist)
+            for name, values in alone["values"].items():
+                self.assertEqual(values, result["values"][name], f"vector {name} moved when batched")
 
     def test_a_single_netlist_takes_the_ordinary_path(self):
         if not HAVE_NGSPICE:

@@ -236,8 +236,10 @@ describe("CircuitDocument v4", () => {
       defaultScenarioId: "load-step",
     };
     const generated = generateScenarioNetlist(document, "load-step");
-    expect(generated.netlist).toContain("Ioc_6c6f61642e737465703a31 n1 0 PULSE(0.3 3 0.002 0.000001 0.000001 0.003 0.008)");
-    expect(generated.componentCurrents["load.step:1"]).toBe("@ioc_6c6f61642e737465703a31[i]");
+    expect(generated.netlist).toContain("Ioc_6c6f61642e737465703a31 n1 oc_ip_6c6f61642e737465703a31 PULSE(0.3 3 0.002 0.000001 0.000001 0.003 0.008)");
+    expect(generated.netlist).toContain("VOCS_IP_6c6f61642e737465703a31 oc_ip_6c6f61642e737465703a31 0 0");
+    expect(generated.componentCurrents["load.step:1"]).toBe("vocs_ip_6c6f61642e737465703a31#branch");
+    expect(generated.netlist).not.toContain("@ioc_6c6f61642e737465703a31[i]");
     expect(generated.netlist).toContain(".tran 0.00001 0.01 0 0.00002");
   });
 
@@ -496,6 +498,38 @@ describe("v1 compatibility and explicit upgrade", () => {
       params: { v1: 0, v2: 12, delay: 0.001, rise: 0.00001, fall: 0.00001, width: 0.004, period: 0.01 },
     }));
     expect(upgraded.circuits[0]!.components[1]).toEqual(expect.objectContaining({ type: "potentiometer", value: 10000, params: { t: 0.995 } }));
+  });
+
+  it("converts Simulator pulsed-current engineering literals to the finite V4 contract", () => {
+    const pulse = structuredClone(v1);
+    pulse.components = [
+      {
+        id: "load.step:1",
+        type: "isource_pulse",
+        params: { i1: "300m", i2: 3, delay: "2m", rise: "1u", fall: "1u", width: "3m", period: "8m", note: "retained" },
+        pos: [0, 2], rot: 0, mirror: false,
+      },
+      { id: "g1", type: "ground", pos: [0, 4], rot: 0, mirror: false },
+    ];
+    pulse.sim = { mode: "tran", tran: { tstop: 0.01, tstep: 0.00001, maxstep: 0.00002 } };
+    const upgraded = upgradeCircuitV1ToV4(pulse);
+    expect(upgraded.circuits[0]!.components[0]).toEqual(expect.objectContaining({
+      type: "isource_pulse",
+      annotations: { note: "retained" },
+      params: { i1: 0.3, i2: 3, delay: 0.002, rise: 0.000001, fall: 0.000001, width: 0.003, period: 0.008 },
+    }));
+    expect(generateScenarioNetlist(upgraded, "default").netlist)
+      .toContain("PULSE(0.3 3 0.002 0.000001 0.000001 0.003 0.008)");
+
+    const badTiming = structuredClone(pulse);
+    badTiming.components[0]!.params!.period = "3m";
+    expect(() => upgradeCircuitV1ToV4(badTiming)).toThrow();
+    const wrongMode = structuredClone(pulse);
+    wrongMode.sim = { mode: "op" };
+    expect(() => upgradeCircuitV1ToV4(wrongMode)).toThrow();
+    const injected = structuredClone(pulse);
+    injected.components[0]!.params!.i2 = "3m\n.end";
+    expect(() => upgradeCircuitV1ToV4(injected)).toThrow(/unsafe recognized SPICE value/i);
   });
 
   it("rejects invalid legacy potentiometer strings and recognized SPICE injection", () => {

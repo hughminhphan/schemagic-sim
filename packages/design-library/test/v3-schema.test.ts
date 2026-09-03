@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 import Ajv2020, { type ValidateFunction } from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
 import { describe, expect, it } from "vitest";
@@ -22,7 +23,7 @@ function json(relative: string): any {
 function validator(): { ajv: Ajv2020; validate: ValidateFunction } {
   const ajv = new Ajv2020({ allErrors: true, strict: true });
   addFormats(ajv);
-  for (const path of schemaFiles(schemaRoot.pathname)) {
+  for (const path of schemaFiles(fileURLToPath(schemaRoot))) {
     ajv.addSchema(JSON.parse(readFileSync(path, "utf8")));
   }
   const validate = ajv.getSchema(v3ProfileId);
@@ -133,7 +134,7 @@ function expectInvalid(validate: ValidateFunction, profile: unknown): void {
 describe("selected facts-V3 JSON schemas", () => {
   it("loads every checked-in schema and exposes only the two selected V3 class schemas", () => {
     const { ajv, validate } = validator();
-    const schemas = schemaFiles(schemaRoot.pathname).map((path) => JSON.parse(readFileSync(path, "utf8")));
+    const schemas = schemaFiles(fileURLToPath(schemaRoot)).map((path) => JSON.parse(readFileSync(path, "utf8")));
     for (const schema of schemas) expect(ajv.getSchema(schema.$id), schema.$id).toBeTypeOf("function");
     expect(validate).toBeTypeOf("function");
 
