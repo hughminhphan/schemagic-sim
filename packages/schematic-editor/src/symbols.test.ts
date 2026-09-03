@@ -330,6 +330,14 @@ describe("generated KiCad editor symbols", () => {
     expect(EDITOR_SYMBOLS.led.markup).toContain("M0.4 0.9333");
   });
 
+  it("points positive current-source arrows from the first pin to the second", () => {
+    expect(EDITOR_SYMBOLS.isource_pulse.markup).toContain("M-0.12 0.75 L0 0.92 L0.12 0.75 M0 0.92 L0 0.52");
+    for (const type of ["vccs", "cccs"] as const) {
+      expect(EDITOR_SYMBOLS[type].markup).toContain("M0 -0.75 L0 0.85 M-0.25 0.55 L0 0.85 L0.25 0.55");
+      expect(EDITOR_SYMBOLS[type].markup).not.toContain("M0 -0.85 L0 0.75 M-0.25 -0.55 L0 -0.85 L0.25 -0.55");
+    }
+  });
+
   it("drops opamp rail pins and keeps exactly three electrical leads", () => {
     expect(countClass(EDITOR_SYMBOLS.opamp_ideal.markup, "pin-lead")).toBe(3);
   });

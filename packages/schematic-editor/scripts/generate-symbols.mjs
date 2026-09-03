@@ -788,7 +788,7 @@ function simulatorV3Symbols(parts) {
   const dependentLeads = [lead([0, -2], [0, -3]), lead([0, 2], [0, 3]), lead([-2, -1], [-3, -1]), lead([-2, 1], [-3, 1])].join("");
   return [
     build("isource_pulse", [[0, -2], [0, 2]], {
-      markup: `<circle class="sym-bg" cx="0" cy="0" r="1"/><path d="M-0.72 0.35 L-0.48 0.35 L-0.38 -0.35 L0.08 -0.35 L0.18 0.35 L0.62 0.35"/><path d="M-0.12 0.75 L0 0.52 L0.12 0.75 M0 0.52 L0 0.92"/>${sourceLeads}`,
+      markup: `<circle class="sym-bg" cx="0" cy="0" r="1"/><path d="M-0.72 0.35 L-0.48 0.35 L-0.38 -0.35 L0.08 -0.35 L0.18 0.35 L0.62 0.35"/><path d="M-0.12 0.75 L0 0.92 L0.12 0.75 M0 0.92 L0 0.52"/>${sourceLeads}`,
       refdesAnchor: [1, -1], valueAnchor: [1, 0], bodyBbox: [-1, -1, 1, 1], bbox: [-1, -2, 1, 2],
     }),
     build("switch_spdt", [[-2, 0], [2, -1], [2, 1]], {
@@ -809,8 +809,8 @@ function simulatorV3Symbols(parts) {
       markup: `<path class="sym-bg" d="M-1.5 -2 L1.5 -2 L1.5 1 L-1.5 1 Z"/><path d="M-0.8 -1 L0.65 -1.55"/><path d="M-0.55 0.45 L0 0 L0.55 0.45 M0 0 L0 0.8"/>${lead([-1.5, -1], [-3, -1])}${lead([1.5, -1], [3, -1])}${lead([-1, 1], [-1, 3])}${lead([1, 1], [1, 3])}`,
       refdesAnchor: [0, -3.3333], valueAnchor: [0, 4.3333], bodyBbox: [-1.5, -2, 1.5, 1], bbox: [-3, -2, 3, 3],
     }),
-    ...[["vcvs", "+", "−"], ["vccs", "↑", ""], ["cccs", "↑", ""], ["ccvs", "+", "−"]].map(([type, upper, lower]) => build(type, [[0, -3], [0, 3], [-3, -1], [-3, 1]], {
-      markup: `${diamond}<path d="M-0.45 -0.35 L0.45 -0.35${upper === "↑" ? " M0 -0.85 L0 0.75 M-0.25 -0.55 L0 -0.85 L0.25 -0.55" : " M0 -0.8 L0 0.1"}${lower ? " M-0.35 0.65 L0.35 0.65" : ""}"/>${dependentLeads}`,
+    ...[["vcvs", "+", "−"], ["vccs", "↓", ""], ["cccs", "↓", ""], ["ccvs", "+", "−"]].map(([type, upper, lower]) => build(type, [[0, -3], [0, 3], [-3, -1], [-3, 1]], {
+      markup: `${diamond}<path d="M-0.45 -0.35 L0.45 -0.35${upper === "↓" ? " M0 -0.75 L0 0.85 M-0.25 0.55 L0 0.85 L0.25 0.55" : " M0 -0.8 L0 0.1"}${lower ? " M-0.35 0.65 L0.35 0.65" : ""}"/>${dependentLeads}`,
       refdesAnchor: [2.6, -2], valueAnchor: [2.6, 2], bodyBbox: [-2, -2, 2, 2], bbox: [-3, -3, 2, 3],
     })),
     build("behavioral_source", [[0, -2], [0, 2]], {

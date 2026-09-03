@@ -309,7 +309,7 @@ export const EDITOR_SYMBOLS: Record<ComponentType, EditorSymbol> = {
   },
   "isource_pulse": {
     type: "isource_pulse",
-    markup: "<circle class=\"sym-bg\" cx=\"0\" cy=\"0\" r=\"1\"/><path d=\"M-0.72 0.35 L-0.48 0.35 L-0.38 -0.35 L0.08 -0.35 L0.18 0.35 L0.62 0.35\"/><path d=\"M-0.12 0.75 L0 0.52 L0.12 0.75 M0 0.52 L0 0.92\"/><path class=\"pin-lead\" d=\"M0 -1 L0 -2\"/><path class=\"pin-lead\" d=\"M0 1 L0 2\"/>",
+    markup: "<circle class=\"sym-bg\" cx=\"0\" cy=\"0\" r=\"1\"/><path d=\"M-0.72 0.35 L-0.48 0.35 L-0.38 -0.35 L0.08 -0.35 L0.18 0.35 L0.62 0.35\"/><path d=\"M-0.12 0.75 L0 0.92 L0.12 0.75 M0 0.92 L0 0.52\"/><path class=\"pin-lead\" d=\"M0 -1 L0 -2\"/><path class=\"pin-lead\" d=\"M0 1 L0 2\"/>",
     refdesAnchor: [1, -1],
     valueAnchor: [1, 0],
     bodyBbox: [-1, -1, 1, 1],
@@ -378,7 +378,7 @@ export const EDITOR_SYMBOLS: Record<ComponentType, EditorSymbol> = {
   },
   "vccs": {
     type: "vccs",
-    markup: "<path class=\"sym-bg\" d=\"M0 -2 L2 0 L0 2 L-2 0 Z\"/><path d=\"M-0.45 -0.35 L0.45 -0.35 M0 -0.85 L0 0.75 M-0.25 -0.55 L0 -0.85 L0.25 -0.55\"/><path class=\"pin-lead\" d=\"M0 -2 L0 -3\"/><path class=\"pin-lead\" d=\"M0 2 L0 3\"/><path class=\"pin-lead\" d=\"M-2 -1 L-3 -1\"/><path class=\"pin-lead\" d=\"M-2 1 L-3 1\"/>",
+    markup: "<path class=\"sym-bg\" d=\"M0 -2 L2 0 L0 2 L-2 0 Z\"/><path d=\"M-0.45 -0.35 L0.45 -0.35 M0 -0.75 L0 0.85 M-0.25 0.55 L0 0.85 L0.25 0.55\"/><path class=\"pin-lead\" d=\"M0 -2 L0 -3\"/><path class=\"pin-lead\" d=\"M0 2 L0 3\"/><path class=\"pin-lead\" d=\"M-2 -1 L-3 -1\"/><path class=\"pin-lead\" d=\"M-2 1 L-3 1\"/>",
     refdesAnchor: [2.6, -2],
     valueAnchor: [2.6, 2],
     bodyBbox: [-2, -2, 2, 2],
@@ -387,7 +387,7 @@ export const EDITOR_SYMBOLS: Record<ComponentType, EditorSymbol> = {
   },
   "cccs": {
     type: "cccs",
-    markup: "<path class=\"sym-bg\" d=\"M0 -2 L2 0 L0 2 L-2 0 Z\"/><path d=\"M-0.45 -0.35 L0.45 -0.35 M0 -0.85 L0 0.75 M-0.25 -0.55 L0 -0.85 L0.25 -0.55\"/><path class=\"pin-lead\" d=\"M0 -2 L0 -3\"/><path class=\"pin-lead\" d=\"M0 2 L0 3\"/><path class=\"pin-lead\" d=\"M-2 -1 L-3 -1\"/><path class=\"pin-lead\" d=\"M-2 1 L-3 1\"/>",
+    markup: "<path class=\"sym-bg\" d=\"M0 -2 L2 0 L0 2 L-2 0 Z\"/><path d=\"M-0.45 -0.35 L0.45 -0.35 M0 -0.75 L0 0.85 M-0.25 0.55 L0 0.85 L0.25 0.55\"/><path class=\"pin-lead\" d=\"M0 -2 L0 -3\"/><path class=\"pin-lead\" d=\"M0 2 L0 3\"/><path class=\"pin-lead\" d=\"M-2 -1 L-3 -1\"/><path class=\"pin-lead\" d=\"M-2 1 L-3 1\"/>",
     refdesAnchor: [2.6, -2],
     valueAnchor: [2.6, 2],
     bodyBbox: [-2, -2, 2, 2],
