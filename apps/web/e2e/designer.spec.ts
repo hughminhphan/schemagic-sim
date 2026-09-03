@@ -366,8 +366,9 @@ test("Motor runs from requirements through deterministic inspection, JSON export
 
   await expect(page.getByRole("heading", { name: "Generated design result" })).toBeVisible({ timeout: 30_000 });
   await expect(page.getByRole("heading", { name: "No retained candidate" })).toBeVisible();
-  await expect(page.locator(".designer-empty-results")).toContainText("The production recipes excluded candidates because unresolved hard-constraint evidence is disallowed.");
-  await expect(page.locator(".designer-empty-results")).toContainText("inspection does not make them eligible");
+  const strictEmpty = page.locator(".designer-empty-results");
+  await expect(strictEmpty.locator(":scope > p")).toHaveText("Strict results are still in progress. Inspect an evidence-limited reference solution; unknown remains unknown.");
+  await expect(strictEmpty.locator("button:enabled, a[href]")).toHaveCount(1);
   await page.getByRole("button", { name: "← Edit requirements" }).click();
   await referenceMode.check();
   await page.getByRole("button", { name: "Generate design" }).click();
@@ -597,11 +598,9 @@ test("external-NMOS Motor exposes only exact direct-gate structural observations
   await expect(page.locator(".designer-error-banner")).toContainText("the 100 nF C1608 is excluded from both roles");
   await expect(page.locator(".designer-error-banner")).toContainText("application adequacy remains unknown");
   await expect(page.locator(".designer-error-banner")).toContainText("no series-gate resistor was selected");
-  await expect(page.locator(".designer-empty-results")).toContainText("Strict generation enumerated and checked 54 exact MIC4606-2 direct-gate options with separate bootstrap and VDD-local capacitor roles");
-  await expect(page.locator(".designer-empty-results")).toContainText("No series-gate resistor is selected");
-  await expect(page.locator(".designer-empty-results")).toContainText("exactly three reviewed 10 µF MLCC profiles while excluding the 100 nF C1608 from both roles");
-  await expect(page.locator(".designer-empty-results")).toContainText("motor.external.gate-network, or switching behavior");
-  await expect(page.locator(".designer-empty-results")).toContainText("policy-ineligible");
+  const strictEmpty = page.locator(".designer-empty-results");
+  await expect(strictEmpty.locator(":scope > p")).toHaveText("Strict results are still in progress. Inspect an evidence-limited reference solution; unknown remains unknown.");
+  await expect(strictEmpty.locator("button:enabled, a[href]")).toHaveCount(1);
   await expect(page.locator("[data-power-evidence-inspection]")).toHaveCount(0);
   await openEvidenceCaveats(page);
   const strictMotorCaveats = page.getByRole("dialog", { name: "Evidence & caveats" });
@@ -757,9 +756,9 @@ test("Power retains the reviewed Bel BOM only as an ineligible exact structural 
   await page.getByRole("button", { name: "Generate design" }).click();
   await expect(page.getByRole("heading", { name: "Generated design result" })).toBeVisible({ timeout: 30_000 });
   await expect(page.getByRole("heading", { name: "No retained candidate" })).toBeVisible();
-  await expect(page.locator(".designer-empty-results")).toContainText("Strict generation excluded the one exact-BOM Power option because unresolved hard constraints are disallowed.");
-  await expect(page.locator(".designer-empty-results")).toContainText("policy-ineligible structural observation");
-  await expect(page.locator(".designer-empty-results")).toContainText("no eligibility, selected-part simulation, provider, or sourcing authority");
+  const strictEmpty = page.locator(".designer-empty-results");
+  await expect(strictEmpty.locator(":scope > p")).toHaveText("Strict results are still in progress. Inspect an evidence-limited reference solution; unknown remains unknown.");
+  await expect(strictEmpty.locator("button:enabled, a[href]")).toHaveCount(1);
   const evidenceInspection = page.getByRole("button", {
     name: "Show reference solution",
     exact: true,

@@ -5,8 +5,12 @@ export type Rotation = 0 | 90 | 180 | 270;
 export type Point = [number, number];
 export type ComponentType =
   | "resistor" | "capacitor" | "inductor" | "vsource" | "vsource_pulse" | "vsource_sine"
-  | "isource" | "ground" | "switch_spst" | "potentiometer" | "diode" | "led"
+  | "isource" | "isource_pulse" | "ground"
+  | "switch_spst" | "switch_spdt" | "switch_dpdt" | "switch_pushbutton" | "switch_toggle" | "switch_vcontrolled"
+  | "potentiometer" | "diode" | "zener" | "led"
   | "bjt_npn" | "bjt_pnp" | "nmos" | "pmos" | "opamp_ideal"
+  | "vcvs" | "vccs" | "cccs" | "ccvs" | "behavioral_source"
+  | "transformer" | "crystal" | "transmission_line" | "battery" | "fuse"
   | CatalogOnlyComponentType;
 
 /**
@@ -22,6 +26,68 @@ export type CatalogOnlyComponentType =
 
 export interface CircuitMeta { title: string; description?: string }
 export interface ComponentLabel { text: string; offset: Point }
+
+/**
+ * Typed Simulator V3 parameter contracts. CircuitComponent.params remains a
+ * record for backwards compatibility with imported/catalog annotations, while
+ * validation enforces these exact shapes for the corresponding new elements.
+ */
+export interface BinarySwitchParamsV3 { closed: boolean }
+export interface ThrowSwitchParamsV3 { throw: "a" | "b" }
+export interface VoltageControlledSwitchParamsV3 {
+  ron: EngineeringValue;
+  roff: EngineeringValue;
+  threshold: EngineeringValue;
+  hysteresis: EngineeringValue;
+}
+export interface LinearDependentSourceParamsV3 { gain: EngineeringValue }
+export type BehavioralNodeReferenceV3 =
+  | { kind: "ground" }
+  | { kind: "wire"; wireId: string }
+  | { kind: "pin"; componentId: string; pin: number };
+export type BehavioralExpressionV3 =
+  | { kind: "constant"; value: EngineeringValue }
+  | { kind: "voltage"; positive: BehavioralNodeReferenceV3; negative?: BehavioralNodeReferenceV3 }
+  | { kind: "unary"; operator: "+" | "-"; operand: BehavioralExpressionV3 }
+  | { kind: "binary"; operator: "+" | "-" | "*" | "/" | "^"; left: BehavioralExpressionV3; right: BehavioralExpressionV3 }
+  | { kind: "function"; name: "abs" | "sqrt" | "exp" | "ln" | "log" | "sin" | "cos" | "tan" | "min" | "max"; arguments: BehavioralExpressionV3[] };
+export interface BehavioralSourceParamsV3 {
+  output: "voltage" | "current";
+  expression: BehavioralExpressionV3;
+}
+export interface TransformerParamsV3 {
+  primaryInductance: EngineeringValue;
+  secondaryInductance: EngineeringValue;
+  coupling: number;
+}
+export interface CrystalParamsV3 {
+  seriesResistance: EngineeringValue;
+  seriesInductance: EngineeringValue;
+  seriesCapacitance: EngineeringValue;
+  parallelCapacitance: EngineeringValue;
+}
+export interface TransmissionLineParamsV3 { impedance: EngineeringValue; delay: EngineeringValue }
+export interface FuseParamsV3 { blown: boolean; blownResistance: EngineeringValue }
+export interface CurrentPulseParamsV3 {
+  i1: EngineeringValue;
+  i2: EngineeringValue;
+  delay: EngineeringValue;
+  rise: EngineeringValue;
+  fall: EngineeringValue;
+  width: EngineeringValue;
+  period: EngineeringValue;
+}
+export type SimulatorComponentParamsV3 =
+  | BinarySwitchParamsV3
+  | ThrowSwitchParamsV3
+  | VoltageControlledSwitchParamsV3
+  | LinearDependentSourceParamsV3
+  | BehavioralSourceParamsV3
+  | TransformerParamsV3
+  | CrystalParamsV3
+  | TransmissionLineParamsV3
+  | FuseParamsV3
+  | CurrentPulseParamsV3;
 export interface CircuitComponent {
   id: string; type: ComponentType; mpn?: string; value?: number | string;
   params?: Record<string, unknown>; pos: Point; rot: Rotation; mirror: boolean; label?: ComponentLabel;

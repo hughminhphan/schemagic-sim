@@ -234,26 +234,6 @@ function executionAwareEmptyResultCopy(
   execution: Readonly<NonNullable<ImportedDesignResult["execution"]>> | undefined,
 ): string | undefined {
   if (result.schemaVersion !== 2 || execution === undefined) return undefined;
-  if (
-    result.request.application === "motor.brushed-dc"
-    && result.request.constraints.allowedTopologyFamilies.length === 1
-    && result.request.constraints.allowedTopologyFamilies[0] === "motor.hbridge.external-nmos"
-    && execution.counts.supportedRecipes > 0
-    && result.candidates.length === 0
-    && execution.counts.checked > 0
-    && execution.rejections.length === execution.counts.checked
-    && execution.rejections.every((rejection) => rejection.reasonCode === "unknown_constraint_disallowed")
-  ) {
-    return `Strict generation enumerated and checked ${execution.counts.checked} exact MIC4606-2 direct-gate options with separate bootstrap and VDD-local capacitor roles, then excluded all because unresolved required safety and requirement constraints are disallowed. No series-gate resistor is selected. Microchip Rev H supports the direct structural connection, preserves the xLO resistor caution, and supplies nominal capacitor floors that admit exactly three reviewed 10 µF MLCC profiles while excluding the 100 nF C1608 from both roles. Three interface-specific xHS rules pass only the nominal 0 V-to-requested-bus excursion; recirculation undershoot, wiring overshoot, parasitics, and TVS coordination remain unproved. No VDD driver-bias rail is implemented, so an actual source inside the reviewed VDD range remains required and unknown. Those nominal passes do not prove effective capacitance, bootstrap charge or refresh, local bias support, bulk adequacy, placement, motor.external.gate-network, or switching behavior. Explicit unresolved-evidence inspection can retain deterministic structural observations only as policy-ineligible.`;
-  }
-  if (
-    result.request.application === "power.buck"
-    && execution.rejections.length === 1
-    && execution.rejections[0]?.reasonCode === "unknown_constraint_disallowed"
-    && execution.rejections[0].recipeId === "power.native.integrated-synchronous-buck.facts-v3-4-inductor-qualified"
-  ) {
-    return "Strict generation excluded the one exact-BOM Power option because unresolved hard constraints are disallowed. Explicit unknown-evidence inspection can retain it only as a policy-ineligible structural observation; it grants no eligibility, selected-part simulation, provider, or sourcing authority.";
-  }
   const hardFailures = execution.rejections.filter((rejection) => rejection.reasonCode === "hard_constraint_failed");
   if (hardFailures.length > 0) {
     const powerCurrentLimit = result.request.application === "power.buck"
@@ -269,11 +249,11 @@ function executionAwareEmptyResultCopy(
       .map((constraint) => constraint.ruleId)))].sort();
     return `Hard electrical failure${failedRuleIds.length === 0 ? "" : `: ${failedRuleIds.join(", ")}`}. The unresolved-evidence inspection opt-in cannot override an explicit failed constraint.`;
   }
-  if (execution.rejections.some((rejection) => rejection.reasonCode === "unknown_constraint_disallowed")) {
-    return "The production recipes excluded candidates because unresolved hard-constraint evidence is disallowed. Edit the request or explicitly opt in to inspect those unresolved candidates; inspection does not make them eligible.";
-  }
-  if (execution.rejections.some((rejection) => rejection.reasonCode === "estimated_values_disallowed")) {
-    return "Estimated candidate outputs were deliberately disallowed by this request, so candidates containing derived estimated values were not retained. Re-enable “Allow estimated candidate outputs” only to inspect them; this does not change installed policy eligibility or hide request-declared estimates.";
+  if (execution.rejections.some((rejection) => (
+    rejection.reasonCode === "unknown_constraint_disallowed"
+    || rejection.reasonCode === "estimated_values_disallowed"
+  ))) {
+    return "Strict results are still in progress. Inspect an evidence-limited reference solution; unknown remains unknown.";
   }
   return undefined;
 }
@@ -426,9 +406,9 @@ function comparisonMarkup(
       && evidenceGateMatchesRequest
       && evidenceGateRejection.constraints.some((constraint) => constraint.status === "unknown")
       && evidenceGateRejection.constraints.every((constraint) => constraint.status !== "fail")
-        ? `<div class="designer-empty-action"><button class="designer-primary-action" data-power-evidence-inspection data-testid="designer-reference-fallback" aria-describedby="designer-power-inspection-boundary"${evidenceLimitedPowerInspectionBusy ? " disabled aria-busy=\"true\"" : ""}>Show reference solution</button><small id="designer-power-inspection-boundary">Inspect 1 evidence-limited design — unknown ≠ pass. Installed policy remains authoritative.</small></div>`
+        ? `<div class="designer-empty-action"><button class="designer-primary-action" data-power-evidence-inspection data-testid="designer-reference-fallback" aria-describedby="designer-power-inspection-boundary"${evidenceLimitedPowerInspectionBusy ? " disabled aria-busy=\"true\"" : ""}>Show reference solution</button><span class="designer-visually-hidden" id="designer-power-inspection-boundary">Inspect 1 evidence-limited design — unknown ≠ pass. Installed policy remains authoritative.</span></div>`
         : referenceFallbackAvailable
-          ? `<div class="designer-empty-action"><button class="designer-primary-action" data-designer-reference-fallback data-testid="designer-reference-fallback">Show reference solutions</button><small>Regenerates with unresolved evidence visible. Reference solutions remain estimated / policy-ineligible unless the installed policy says otherwise.</small></div>`
+          ? `<div class="designer-empty-action"><button class="designer-primary-action" data-designer-reference-fallback data-testid="designer-reference-fallback" aria-describedby="designer-reference-inspection-boundary">Show reference solutions</button><span class="designer-visually-hidden" id="designer-reference-inspection-boundary">Regenerates with unresolved evidence visible. Reference solutions remain estimated or policy-ineligible unless the installed policy says otherwise.</span></div>`
           : "";
     return `<section class="designer-empty-results" aria-labelledby="designer-empty-title"><span class="designer-empty-glyph" aria-hidden="true">∅</span><span class="designer-step-eyebrow">02 · Solutions</span><h2 id="designer-empty-title" tabindex="-1">${title}</h2><p>${escapeHtml(copy)}</p>${exactPowerInspectionAction}</section>`;
   }

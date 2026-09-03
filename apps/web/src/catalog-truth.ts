@@ -10,10 +10,12 @@ export interface CatalogSpicePinRecord { symbol_pin_number: string; subckt_node:
 export interface CatalogTruthManifest {
   canonical_mpn: string;
   manufacturer: string;
+  description?: string;
   electrical_family: string;
   model_type: string;
   symbol_pins?: CatalogSymbolPinRecord[];
   spice_pin_mapping?: CatalogSpicePinRecord[];
+  supported_operating_region?: object;
 }
 
 /** The seven families that shipped with a hand-drawn KiCad symbol. */
@@ -70,6 +72,14 @@ export function declaredPinNames(manifest: CatalogTruthManifest): string[] {
 }
 
 export function baseTypeForManifest(manifest: CatalogTruthManifest): ComponentType | undefined {
+  if (manifest.electrical_family === "diode") {
+    const numericBounds = (manifest.supported_operating_region as { numeric_bounds?: Array<{ quantity?: string }> } | undefined)?.numeric_bounds ?? [];
+    // Only affirmative package facts may select the Zener symbol. Omission text
+    // often says that a switching diode has *no* Zener breakdown behavior.
+    const zenerEvidence = /\bzener\b/i.test(manifest.description ?? "")
+      || numericBounds.some((bound) => /^(?:zener|breakdown)(?:_|$)/i.test(bound.quantity ?? ""));
+    if (zenerEvidence) return "zener";
+  }
   const legacy = LEGACY_TYPE_BY_FAMILY[manifest.electrical_family];
   if (legacy) return legacy;
   const nodes = declaredNodeOrder(manifest);

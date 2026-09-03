@@ -201,8 +201,9 @@ test("Power can deliberately exclude visibly estimated candidates without changi
   await page.getByRole("button", { name: "Generate design" }).click();
 
   await expect(page.getByRole("heading", { name: "No retained candidate" })).toBeVisible({ timeout: 30_000 });
-  await expect(page.locator(".designer-empty-results")).toContainText("Estimated candidate outputs were deliberately disallowed by this request");
-  await expect(page.locator(".designer-empty-results")).toContainText("Re-enable “Allow estimated candidate outputs” only to inspect them; this does not change installed policy eligibility or hide request-declared estimates.");
+  const strictEmpty = page.locator(".designer-empty-results");
+  await expect(strictEmpty.locator(":scope > p")).toHaveText("Strict results are still in progress. Inspect an evidence-limited reference solution; unknown remains unknown.");
+  await expect(strictEmpty.locator("button:enabled, a[href]")).toHaveCount(1);
 
   await page.getByRole("button", { name: "Evidence & caveats", exact: true }).click();
   const evidencePolicyGroup = page.getByRole("dialog", { name: "Evidence & caveats" })

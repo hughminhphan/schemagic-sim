@@ -12,6 +12,7 @@ import {
   type Rotation,
 } from "@opencircuit/circuit-schema";
 import { describe, expect, it } from "vitest";
+import { componentSymbolMarkup, partSymbolMarkup } from "./index";
 import { EDITOR_SYMBOLS } from "./symbols.generated";
 
 const packageRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -34,16 +35,33 @@ const GOLDENS = {
   vsource_pulse: { pins: [[0, -2], [0, 2]], bodyBbox: [-1, -1, 1, 1], bbox: [-1, -2, 1, 2], refdesAnchor: [1, -1], valueAnchor: [1, 0] },
   vsource_sine: { pins: [[0, -2], [0, 2]], bodyBbox: [-1, -1, 1, 1], bbox: [-1, -2, 1, 2], refdesAnchor: [1, -1], valueAnchor: [1, 0] },
   isource: { pins: [[0, -2], [0, 2]], bodyBbox: [-1, -1, 1, 1], bbox: [-1, -2, 1, 2], refdesAnchor: [1, -1], valueAnchor: [1, 0] },
+  isource_pulse: { pins: [[0, -2], [0, 2]], bodyBbox: [-1, -1, 1, 1], bbox: [-1, -2, 1, 2], refdesAnchor: [1, -1], valueAnchor: [1, 0] },
   ground: { pins: [[0, 0]], bodyBbox: [-0.6667, 0, 0.6667, 1.3333], bbox: [-0.6667, 0, 0.6667, 1.3333], refdesAnchor: [0, 3.3333], valueAnchor: [0, 2] },
   switch_spst: { pins: [[-2, 0], [2, 0]], bodyBbox: [-1, -0.7, 1, 0.2], bbox: [-2, -0.7, 2, 0.2], refdesAnchor: [0, -1.25], valueAnchor: [0, 1] },
+  switch_spdt: { pins: [[-2, 0], [2, -1], [2, 1]], bodyBbox: [-1, -1, 1, 1], bbox: [-2, -1, 2, 1], refdesAnchor: [0, -2], valueAnchor: [0, 2] },
+  switch_dpdt: { pins: [[-3, -2], [3, -3], [3, -1], [-3, 2], [3, 1], [3, 3]], bodyBbox: [-2, -3, 2, 3], bbox: [-3, -3, 3, 3], refdesAnchor: [0, -4.3333], valueAnchor: [0, 4.3333] },
+  switch_pushbutton: { pins: [[-2, 0], [2, 0]], bodyBbox: [-1, -1.35, 1, 0.2], bbox: [-2, -1.35, 2, 0.2], refdesAnchor: [0, -2], valueAnchor: [0, 1.4] },
+  switch_toggle: { pins: [[-2, 0], [2, 0]], bodyBbox: [-1, -1.35, 1, 0.2], bbox: [-2, -1.35, 2, 0.2], refdesAnchor: [0, -2], valueAnchor: [0, 1.4] },
+  switch_vcontrolled: { pins: [[-3, -1], [3, -1], [-1, 3], [1, 3]], bodyBbox: [-1.5, -2, 1.5, 1], bbox: [-3, -2, 3, 3], refdesAnchor: [0, -3.3333], valueAnchor: [0, 4.3333] },
   potentiometer: { pins: [[0, -2], [2, 0], [0, 2]], bodyBbox: [-0.5333, -2.2667, 1.3333, 2.2667], bbox: [-0.5333, -2.2667, 2, 2.2667], refdesAnchor: [-2.3333, 0], valueAnchor: [-1.3333, 0] },
   diode: { pins: [[0, -2], [0, 2]], bodyBbox: [-0.6667, -0.6667, 0.6667, 0.6667], bbox: [-0.6667, -2, 0.6667, 2], refdesAnchor: [-1.3333, 0], valueAnchor: [1.3333, 0] },
+  zener: { pins: [[0, -2], [0, 2]], bodyBbox: [-0.9, -0.6667, 0.9, 0.9], bbox: [-0.9, -2, 0.9, 2], refdesAnchor: [-1.3333, 0], valueAnchor: [1.3333, 0] },
   led: { pins: [[0, -2], [0, 2]], bodyBbox: [-0.6667, -0.6667, 1.2, 2.4], bbox: [-0.6667, -2, 1.2, 2.4], refdesAnchor: [-1.3333, 0], valueAnchor: [1.3333, 0] },
   bjt_npn: { pins: [[2, -3], [-2, 0], [2, 3]], bodyBbox: [-0.6667, -1.665, 2.8133, 1.665], bbox: [-2, -3, 2.8133, 3], refdesAnchor: [-0.6667, -4.5], valueAnchor: [-0.6667, -3] },
   bjt_pnp: { pins: [[2, -3], [-2, 0], [2, 3]], bodyBbox: [-0.6667, -1.665, 2.8133, 1.665], bbox: [-2, -3, 2.8133, 3], refdesAnchor: [-0.6667, -4.5], valueAnchor: [-0.6667, -3] },
   nmos: { pins: [[2, -3], [-2, 0], [2, 3]], bodyBbox: [-0.6667, -1.65, 3, 1.65], bbox: [-2, -3, 3, 3], refdesAnchor: [3.3333, -0.75], valueAnchor: [3.3333, 0.75] },
   pmos: { pins: [[2, -3], [-2, 0], [2, 3]], bodyBbox: [-0.6667, -1.65, 3, 1.65], bbox: [-2, -3, 3, 3], refdesAnchor: [3.3333, -0.75], valueAnchor: [3.3333, 0.75] },
   opamp_ideal: { pins: [[-4, -2], [-4, 2], [4, 0]], bodyBbox: [-2.6667, -4, 2.6667, 4], bbox: [-4, -4, 4, 4], refdesAnchor: [2, -2.5], valueAnchor: [2, 2.5] },
+  vcvs: { pins: [[0, -3], [0, 3], [-3, -1], [-3, 1]], bodyBbox: [-2, -2, 2, 2], bbox: [-3, -3, 2, 3], refdesAnchor: [2.6, -2], valueAnchor: [2.6, 2] },
+  vccs: { pins: [[0, -3], [0, 3], [-3, -1], [-3, 1]], bodyBbox: [-2, -2, 2, 2], bbox: [-3, -3, 2, 3], refdesAnchor: [2.6, -2], valueAnchor: [2.6, 2] },
+  cccs: { pins: [[0, -3], [0, 3], [-3, -1], [-3, 1]], bodyBbox: [-2, -2, 2, 2], bbox: [-3, -3, 2, 3], refdesAnchor: [2.6, -2], valueAnchor: [2.6, 2] },
+  ccvs: { pins: [[0, -3], [0, 3], [-3, -1], [-3, 1]], bodyBbox: [-2, -2, 2, 2], bbox: [-3, -3, 2, 3], refdesAnchor: [2.6, -2], valueAnchor: [2.6, 2] },
+  behavioral_source: { pins: [[0, -2], [0, 2]], bodyBbox: [-1, -1, 1, 1], bbox: [-1, -2, 1, 2], refdesAnchor: [1, -1], valueAnchor: [1, 0] },
+  transformer: { pins: [[-3, -2], [-3, 2], [3, -2], [3, 2]], bodyBbox: [-1.75, -2, 1.75, 2], bbox: [-3, -2, 3, 2], refdesAnchor: [0, -3.3333], valueAnchor: [0, 3.3333] },
+  crystal: { pins: [[-2, 0], [2, 0]], bodyBbox: [-1, -1, 1, 1], bbox: [-2, -1, 2, 1], refdesAnchor: [0, -2], valueAnchor: [0, 2] },
+  transmission_line: { pins: [[-3, -1], [-3, 1], [3, -1], [3, 1]], bodyBbox: [-2, -2, 2, 2], bbox: [-3, -2, 3, 2], refdesAnchor: [0, -3.3333], valueAnchor: [0, 3.3333] },
+  battery: { pins: [[0, -2], [0, 2]], bodyBbox: [-1, -0.35, 1, 0.35], bbox: [-1, -2, 1, 2], refdesAnchor: [1.3333, -0.7], valueAnchor: [1.3333, 0.7] },
+  fuse: { pins: [[-2, 0], [2, 0]], bodyBbox: [-1.2, -0.6, 1.2, 0.6], bbox: [-2, -0.6, 2, 0.6], refdesAnchor: [0, -1.6], valueAnchor: [0, 1.6] },
   timer_555: { pins: [[-6, -3], [-6, -1], [-6, 1], [-6, 3], [6, 3], [6, 1], [6, -1], [6, -3]], bodyBbox: [-4, -4, 4, 4], bbox: [-6, -4, 6, 4], refdesAnchor: [0, -5.3333], valueAnchor: [0, 5.3333] },
   vreg_linear_3: { pins: [[-4, 0], [4, 0], [0, 3]], bodyBbox: [-3, -2, 3, 2], bbox: [-4, -2, 4, 3], refdesAnchor: [0, -3.3333], valueAnchor: [0, 4.3333] },
   comparator: { pins: [[-6, -2], [-6, 2], [6, 0], [0, -5], [0, 5]], bodyBbox: [-4, -4, 4, 4], bbox: [-6, -5, 6, 5], refdesAnchor: [-2, -5.3333], valueAnchor: [-2, 5.3333] },
@@ -59,6 +77,12 @@ const GOLDENS = {
   ic_block_14: { pins: [[-6, -6], [-6, -4], [-6, -2], [-6, 0], [-6, 2], [-6, 4], [-6, 6], [6, 6], [6, 4], [6, 2], [6, 0], [6, -2], [6, -4], [6, -6]], bodyBbox: [-4, -7, 4, 7], bbox: [-6, -7, 6, 7], refdesAnchor: [0, -8.3333], valueAnchor: [0, 8.3333] },
   ic_block_16: { pins: [[-6, -7], [-6, -5], [-6, -3], [-6, -1], [-6, 1], [-6, 3], [-6, 5], [-6, 7], [6, 7], [6, 5], [6, 3], [6, 1], [6, -1], [6, -3], [6, -5], [6, -7]], bodyBbox: [-4, -8, 4, 8], bbox: [-6, -8, 6, 8], refdesAnchor: [0, -9.3333], valueAnchor: [0, 9.3333] },
 } as const satisfies Record<ComponentType, SymbolGolden>;
+
+const PIN_LABEL_TYPES = new Set<ComponentType>([
+  "timer_555", "vreg_linear_3", "comparator", "jfet_n", "optocoupler_led",
+  "ic_block_2", "ic_block_3", "ic_block_4", "ic_block_5", "ic_block_6",
+  "ic_block_8", "ic_block_9", "ic_block_14", "ic_block_16",
+]);
 
 const numberPattern = "-?(?:\\d+(?:\\.\\d*)?|\\.\\d+)";
 const pinLeadPattern = new RegExp(`<path class="pin-lead" d="M(${numberPattern}) (${numberPattern}) L(${numberPattern}) (${numberPattern})"\\/>`, "g");
@@ -154,14 +178,28 @@ describe("generated KiCad editor symbols", () => {
       expect(symbol.markup.length).toBeGreaterThan(0);
       const allMarkup = [symbol.markup, symbol.wiper, symbol.lever].filter((value): value is string => value !== undefined).join("");
       expect(allMarkup).not.toMatch(/\b(?:stroke|fill|style)=/);
-      expect(allMarkup).not.toMatch(/<text\b/i);
+      if (PIN_LABEL_TYPES.has(part.type)) {
+        expect(allMarkup.match(/<text\b/g)).toHaveLength(part.pins.length);
+        expect(allMarkup.match(/data-pin-label-index="\d+"/g)).toHaveLength(part.pins.length);
+      } else expect(allMarkup).not.toMatch(/<text\b/i);
       for (const classAttribute of allMarkup.matchAll(/class="([^"]+)"/g)) {
         for (const className of classAttribute[1]!.split(/\s+/)) {
-          expect(["sym-bg", "sym-solid", "sym-bold", "pin-lead"]).toContain(className);
+          expect(["sym-bg", "sym-solid", "sym-bold", "pin-lead", "sym-pin-label"]).toContain(className);
         }
       }
     });
   }
+
+  it("uses actual placed-package pin names while keeping palette markup label-free", () => {
+    const component: CircuitComponent = { id: "u1", type: "timer_555", pos: [10, 20], rot: 90, mirror: true };
+    const names = ["PWR−", "TRIGGER", "OUTPUT", "RESET", "CONTROL", "THRESHOLD", "DISCHARGE", "PWR+"];
+    const placed = componentSymbolMarkup(component, names);
+    expect(placed.match(/class="editor-label sym-pin-label"/g)).toHaveLength(8);
+    for (const name of names) expect(placed).toContain(name);
+    expect(placed).toContain("scale(-1 1) rotate(-90)");
+    expect(partSymbolMarkup("timer_555")).not.toMatch(/<text\b/);
+    expect(partSymbolMarkup("ic_block_16")).not.toMatch(/<text\b/);
+  });
 
   describe("pin endpoint, outward lead, property anchor, bbox, and hitbox transform matrix", () => {
     for (const part of PARTS) {

@@ -1,5 +1,6 @@
 import { defaultDCSweepConfig } from "./dc-sweep";
 import { DEFAULT_NOISE_TEMPERATURE_C } from "./noise";
+import { finiteEngineering } from "./parts";
 import { isSafeDecimalValue, isSafeEngineeringValue } from "./spice-token";
 import { assertValidCircuitV4 } from "./v4-validation";
 import type {
@@ -29,6 +30,12 @@ function engineering(value: unknown, fallback: EngineeringValue, path: string): 
   const selected = value ?? fallback;
   if (!isSafeEngineeringValue(selected)) fail(path, "Cannot upgrade an unsafe recognized SPICE value");
   return selected;
+}
+
+function engineeringNumber(value: unknown, fallback: number, path: string): number {
+  const selected = engineering(value, fallback, path);
+  try { return finiteEngineering(selected, fallback, path); }
+  catch { return fail(path, "Cannot upgrade an unsafe or non-finite recognized SPICE value"); }
 }
 
 function cloneAnnotation(value: unknown, path: string): JsonAnnotation {
@@ -87,6 +94,19 @@ function upgradeComponent(component: CircuitComponent): CircuitComponentV4 {
       };
     }
     case "isource": return { ...base(component, annotations(component, [])), type: "isource", value: engineering(component.value, 0.001, `${path}.value`) };
+    case "isource_pulse": return {
+      ...base(component, annotations(component, ["i1", "i2", "delay", "rise", "fall", "width", "period"])),
+      type: "isource_pulse",
+      params: {
+        i1: engineeringNumber(component.params?.i1, 0, `${path}.params.i1`),
+        i2: engineeringNumber(component.params?.i2, 0.001, `${path}.params.i2`),
+        delay: engineeringNumber(component.params?.delay, 0.001, `${path}.params.delay`),
+        rise: engineeringNumber(component.params?.rise, 0.00001, `${path}.params.rise`),
+        fall: engineeringNumber(component.params?.fall, 0.00001, `${path}.params.fall`),
+        width: engineeringNumber(component.params?.width, 0.004, `${path}.params.width`),
+        period: engineeringNumber(component.params?.period, 0.01, `${path}.params.period`),
+      },
+    };
     case "vsource_pulse": return {
       ...base(component, annotations(component, ["v1", "v2", "delay", "rise", "fall", "width", "period"])),
       type: "vsource_pulse",

@@ -1,5 +1,5 @@
 import { SIGNAL_EXPRESSION_VERSION, type SerializedNodeReference, type SerializedSignalExpression } from "@opencircuit/signal-workbench";
-import { inspectACConfig, inspectSourceWaveform, inspectTransientConfig } from "./analysis";
+import { inspectACConfig, inspectSourceWaveform, inspectTransientConfig, resolvedCurrentPulseWaveform } from "./analysis";
 import { inspectDCSweepConfig } from "./dc-sweep";
 import {
   importedModelPartId,
@@ -11,6 +11,7 @@ import {
 import { inspectNoiseConfig } from "./noise";
 import { componentPinPoints, finiteEngineering, isCatalogOnlyType, partByType } from "./parts";
 import { SPICE_NODE_TOKEN_PATTERN, hasForbiddenControl, hasUnpairedSurrogate, isSafeDecimalValue } from "./spice-token";
+import { inspectSimulatorComponentV3 } from "./v3-components";
 import type { CircuitDocument, ImportedModelPart, ValidationIssue } from "./types";
 
 const idPattern = /^[A-Za-z_][A-Za-z0-9_.:-]*$/;
@@ -136,8 +137,9 @@ function inspectNetlistedTokens(document: CircuitDocument): ValidationIssue[] {
     vsource: ["ac"],
     vsource_pulse: ["v1", "v2", "delay", "rise", "fall", "width", "period"],
     vsource_sine: ["offset", "frequency", "ac"],
+    isource_pulse: ["i1", "i2", "delay", "rise", "fall", "width", "period"],
   };
-  const valueTypes = new Set(["resistor", "capacitor", "inductor", "vsource", "vsource_pulse", "vsource_sine", "isource", "potentiometer"]);
+  const valueTypes = new Set(["resistor", "capacitor", "inductor", "vsource", "vsource_pulse", "vsource_sine", "isource", "battery", "fuse", "potentiometer"]);
   for (const component of document.components) {
     if (typeof component.id !== "string" || hasForbiddenControl(component.id) || /[\u0080-\u009f\u2028\u2029]/u.test(component.id) || hasUnpairedSurrogate(component.id)) {
       unsafe(`components.${String(component.id)}.id`, undefined, "Component IDs in generated comments cannot contain line-breaking, control, or invalid Unicode characters");
@@ -195,6 +197,7 @@ export function validateCircuit(document: CircuitDocument): ValidationIssue[] {
       }
     }
     issues.push(...inspectSourceWaveform(component));
+    issues.push(...inspectSimulatorComponentV3(document, component));
   }
   for (const wire of document.wires) {
     if (!idPattern.test(wire.id)) issues.push({ path: `wires.${wire.id}.id`, message: `Invalid wire id ${wire.id}` });
@@ -240,6 +243,18 @@ export function validateCircuit(document: CircuitDocument): ValidationIssue[] {
     issues.push(...expressionIssues(document, probe.expression, `probes.${index}.expression`));
   }
   if (!document.components.some((component) => component.type === "ground")) issues.push({ path: "components", message: "Add a ground symbol before running the circuit" });
+  const currentPulses = document.components.filter((component) => component.type === "isource_pulse");
+  if (currentPulses.length > 0 && document.sim.mode !== "tran") {
+    issues.push({ path: "sim.mode", message: "Circuits with a pulsed current source require transient analysis", componentId: currentPulses[0]!.id });
+  }
+  if (document.sim.mode === "tran" && Number.isFinite(document.sim.tran?.tstop)) {
+    for (const component of currentPulses) {
+      const delay = resolvedCurrentPulseWaveform(component).delay;
+      if (Number.isFinite(delay) && document.sim.tran!.tstop <= delay) {
+        issues.push({ path: "sim.tran.tstop", message: "Transient stop must be greater than the current pulse delay", componentId: component.id });
+      }
+    }
+  }
   issues.push(...inspectNetlistedTokens(document));
 
   if (document.modelImports) {

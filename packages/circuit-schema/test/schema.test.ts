@@ -1,7 +1,7 @@
 import { readFileSync, readdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
-import { DC_SWEEP_MAX_POINTS, PARTS, canonicalizeCircuit, isCatalogOnlyType, deserializeCircuit, generateNetlist, inspectDCSweepConfig, inspectNoiseConfig, migrateCircuit, pinVoltageProbe, validateCircuit, type CircuitComponent, type CircuitDocument } from "../src";
+import { DC_SWEEP_MAX_POINTS, PARTS, canonicalizeCircuit, defaultComponentParamsV3, isCatalogOnlyType, deserializeCircuit, generateNetlist, inspectDCSweepConfig, inspectNoiseConfig, migrateCircuit, pinVoltageProbe, validateCircuit, type CircuitComponent, type CircuitDocument } from "../src";
 
 const base: CircuitDocument = {
   format: "opencircuit-circuit",
@@ -165,6 +165,7 @@ describe("circuit schema", () => {
   for (const part of PARTS.filter((entry) => entry.type !== "ground")) {
     it(`emits ${part.type}`, () => {
       const first = part.pins[0] ?? [0, 0];
+      const defaultParams = defaultComponentParamsV3(part.type);
       const device: CircuitComponent = {
         id: "c1",
         type: part.type,
@@ -172,11 +173,19 @@ describe("circuit schema", () => {
         rot: 0,
         mirror: false,
         ...(part.defaultValue !== undefined ? { value: part.defaultValue } : {}),
-        ...(part.type === "switch_spst" ? { params: { closed: true } } : {}),
-        ...(isCatalogOnlyType(part.type) ? { params: { catalogPartId: "ti/NE555" } } : {}),
+        ...(defaultParams || part.type === "switch_spst" || isCatalogOnlyType(part.type)
+          ? { params: { ...defaultParams, ...(part.type === "switch_spst" ? { closed: true } : {}), ...(isCatalogOnlyType(part.type) ? { catalogPartId: "ti/NE555" } : {}) } }
+          : {}),
       };
       const ground: CircuitComponent = { id: "c2", type: "ground", pos: [10 + first[0], 10 + first[1]], rot: 0, mirror: false };
-      const document: CircuitDocument = { ...base, components: [device, ground], wires: [] };
+      const document: CircuitDocument = {
+        ...base,
+        components: [device, ground],
+        wires: [],
+        ...(part.type === "isource_pulse"
+          ? { sim: { mode: "tran", tran: { tstop: 0.02, tstep: 0.00002, maxstep: 0.00005 } } as const }
+          : {}),
+      };
       expect(() => generateNetlist(document)).not.toThrow();
       expect(generateNetlist(document).netlist).toContain(".end\n");
     });

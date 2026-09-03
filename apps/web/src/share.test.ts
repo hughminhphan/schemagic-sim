@@ -155,7 +155,21 @@ describe("share payload", () => {
     for (const [, name, url] of recorded) {
       const fixture = fixtures.find((candidate) => candidate.name === name);
       expect(fixture, `fixture for recorded URL ${name}`).toBeDefined();
-      expect(circuitFromLocation(new URL(url!).hash), name).toEqual(fixture!.document);
+      const decoded = circuitFromLocation(new URL(url!).hash);
+      if (!decoded) {
+        throw new Error(`recorded URL ${name} did not decode`);
+      }
+      if (name === "zener-regulator") {
+        // The published URL predates the dedicated Zener visual variant. Keep
+        // its exact legacy diode shape readable; catalog resolution accepts
+        // that one historical binding without rewriting the immutable URL.
+        expect(decoded.components.find((component) => component.id === "c3")?.type).toBe("diode");
+        const visualUpgrade = structuredClone(decoded);
+        visualUpgrade.components.find((component) => component.id === "c3")!.type = "zener";
+        expect(visualUpgrade, name).toEqual(fixture!.document);
+      } else {
+        expect(decoded, name).toEqual(fixture!.document);
+      }
     }
   });
 
