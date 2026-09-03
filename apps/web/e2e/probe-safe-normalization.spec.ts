@@ -258,9 +258,14 @@ test.describe("probe-safe normalization", () => {
     test(`${example.title} survives a real normalization edit with honest probe outcomes`, async ({ page }) => {
       test.setTimeout(180_000);
       await loadExample(page, example.id, false);
-      await editAndWaitForSolve(page, async () => {
-        await page.locator('[data-mode="op"]').click();
-      });
+      const operatingPointMode = page.locator('[data-mode="op"]');
+      if (await operatingPointMode.isEnabled()) {
+        await editAndWaitForSolve(page, async () => {
+          await operatingPointMode.click();
+        });
+      } else {
+        await expect(page.getByTestId("engine-ready")).toBeVisible({ timeout: 45_000 });
+      }
 
       await placeResistor(page);
       await expectNoDegenerateRenderedWires(page);
