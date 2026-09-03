@@ -355,6 +355,57 @@ test("legacy reviewed MOSFET package generation remains backward-compatible", ()
   }
 });
 
+test("legacy diode forward, reverse, and capacitance benches use the fitted temperature", () => {
+  const packageDir = path.join(repoRoot, "packages/model-library/models/onsemi/1N5822");
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "factory-diode-temperature-"));
+  try {
+    fs.cpSync(packageDir, root, { recursive: true });
+    stageTestgen({ packageDir: root, part: PARTS["1N5822"] });
+    for (const file of ["forward_01.cir", "forward_02.cir", "forward_03.cir", "reverse_leakage.cir", "zero_bias_capacitance.cir"]) {
+      const bench = fs.readFileSync(path.join(root, "tests", file), "utf8");
+      assert.match(bench, /^\.temp 2\.5000000000e1$/m, file);
+    }
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("strict diode evidence uses typed point temperature without legacy fit_conditions", () => {
+  const packageDir = path.join(repoRoot, "packages/model-library/models/shikues/MSK4005");
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "factory-diode-strict-temperature-"));
+  try {
+    fs.cpSync(packageDir, root, { recursive: true });
+    const component = JSON.parse(fs.readFileSync(path.join(root, "component.json"), "utf8"));
+    const facts = JSON.parse(fs.readFileSync(path.join(root, "facts.json"), "utf8"));
+    const model = fs.readFileSync(path.join(root, "model.cir"), "utf8");
+    const modelName = /^\.model\s+(\S+)/im.exec(model)?.[1];
+    assert.ok(modelName);
+    assert.equal(facts.fit_conditions, undefined);
+    const ctx = {
+      packageDir: root,
+      part: {
+        slug: "MSK4005",
+        pipeline: null,
+        component: {
+          modelName,
+          fidelity_tier: component.fidelity_tier,
+          test_tolerances: { forward_voltage: 0.35 },
+        },
+      },
+    };
+    assert.doesNotThrow(() => stageTestgen(ctx));
+    const bench = fs.readFileSync(path.join(root, "tests", "forward_01.cir"), "utf8");
+    assert.match(bench, /^\.temp 2\.5000000000e1$/m);
+    assert.equal(bench, fs.readFileSync(path.join(packageDir, "tests", "forward_01.cir"), "utf8"));
+    assert.equal(
+      fs.readFileSync(path.join(root, "tests", "expectations.json"), "utf8"),
+      fs.readFileSync(path.join(packageDir, "tests", "expectations.json"), "utf8"),
+    );
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+});
+
 test("legacy MOSFET benches fail missing threshold current, temperature, and transfer VDS instead of defaulting", () => {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "factory-mosfet-defaults-"));
   try {

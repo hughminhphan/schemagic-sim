@@ -452,8 +452,12 @@ function stageGenerate(ctx) {
   console.log(`generate ${ctx.part.slug}: ${ctx.part.component.modelName}`);
 }
 
-function opBench(model, modelName, name, current) {
-  return `OpenCircuit factory test: ${name}\n${model}\nItest 0 anode DC ${formatSpice(current)}\nVanchor anchor 0 DC 0\nRanchor anchor 0 1G\nDdut anode 0 ${modelName}\n.op\n.end\n`;
+function opBench(model, modelName, name, current, temperature) {
+  return `OpenCircuit factory test: ${name}\n${model}\n.temp ${formatSpice(temperature)}\nItest 0 anode DC ${formatSpice(current)}\nVanchor anchor 0 DC 0\nRanchor anchor 0 1G\nDdut anode 0 ${modelName}\n.op\n.end\n`;
+}
+
+function optionalTemperatureDirective(temperature) {
+  return Number.isFinite(temperature) ? `.temp ${formatSpice(temperature)}\n` : "";
 }
 
 function strictDiodeForwardBench(model, modelName, name, current, condition) {
@@ -517,12 +521,12 @@ function strictDiodeForwardRows(facts, fidelityTier) {
   return rows;
 }
 
-function reverseBench(model, modelName, voltage) {
-  return `OpenCircuit factory test: reverse leakage\n${model}\nVreverse cathode 0 DC ${formatSpice(voltage)}\nDdut 0 cathode ${modelName}\n.op\n.end\n`;
+function reverseBench(model, modelName, voltage, temperature) {
+  return `OpenCircuit factory test: reverse leakage\n${model}\n${optionalTemperatureDirective(temperature)}Vreverse cathode 0 DC ${formatSpice(voltage)}\nDdut 0 cathode ${modelName}\n.op\n.end\n`;
 }
 
-function capacitanceBench(model, modelName) {
-  return `OpenCircuit factory test: zero-bias capacitance\n${model}\nVac anode 0 DC 0 AC 0.05\nDdut anode 0 ${modelName}\n.ac lin 1 1Meg 1Meg\n.end\n`;
+function capacitanceBench(model, modelName, temperature) {
+  return `OpenCircuit factory test: zero-bias capacitance\n${model}\n${optionalTemperatureDirective(temperature)}Vac anode 0 DC 0 AC 0.05\nDdut anode 0 ${modelName}\n.ac lin 1 1Meg 1Meg\n.end\n`;
 }
 
 function reverseRecoveryBench(model, modelName) {
@@ -1613,6 +1617,10 @@ export function stageTestgen(ctx) {
   }
 
   const strictDiodeEvidence = facts.evidence_contract_version === "1.0.0" && Array.isArray(facts.forward_voltage_points);
+  const diodeTemperature = strictDiodeEvidence ? null : Number(facts.fit_conditions?.temperature?.value);
+  if (!strictDiodeEvidence && !Number.isFinite(diodeTemperature)) {
+    throw new Error("Legacy diode benches require a finite fit_conditions.temperature.value");
+  }
   const forwardRows = strictDiodeEvidence
     ? strictDiodeForwardRows(facts, ctx.part.component.fidelity_tier)
     : facts.fit_points.map((point) => ({
@@ -1625,7 +1633,7 @@ export function stageTestgen(ctx) {
     const file = `forward_${String(index + 1).padStart(2, "0")}.cir`;
     const bench = strictDiodeEvidence
       ? strictDiodeForwardBench(model, ctx.part.component.modelName, file, row.current, row.condition)
-      : { text: opBench(model, ctx.part.component.modelName, file, row.current), analysisType: "operating_point", expression: "last(v(anode))" };
+      : { text: opBench(model, ctx.part.component.modelName, file, row.current, diodeTemperature), analysisType: "operating_point", expression: "last(v(anode))" };
     fs.writeFileSync(path.join(ctx.packageDir, "tests", file), bench.text);
     const maximumBound = row.role.includes("maximum");
     const minimumBound = row.role.includes("minimum");
@@ -1655,7 +1663,7 @@ export function stageTestgen(ctx) {
   if (reverseEntry) {
     const [reverseName, reverse] = reverseEntry;
     const reverseVoltage = Number(reverseName.match(/_([0-9.]+)v$/i)[1]);
-    fs.writeFileSync(path.join(ctx.packageDir, "tests", "reverse_leakage.cir"), reverseBench(model, ctx.part.component.modelName, reverseVoltage));
+    fs.writeFileSync(path.join(ctx.packageDir, "tests", "reverse_leakage.cir"), reverseBench(model, ctx.part.component.modelName, reverseVoltage, diodeTemperature));
     tests.push({
       test_netlist: "reverse_leakage.cir",
       analysis_type: "operating_point",
@@ -1680,7 +1688,7 @@ export function stageTestgen(ctx) {
 
   if (facts.derived_model_inputs?.CJO) {
     const cap = facts.derived_model_inputs.CJO;
-    fs.writeFileSync(path.join(ctx.packageDir, "tests", "zero_bias_capacitance.cir"), capacitanceBench(model, ctx.part.component.modelName));
+    fs.writeFileSync(path.join(ctx.packageDir, "tests", "zero_bias_capacitance.cir"), capacitanceBench(model, ctx.part.component.modelName, diodeTemperature));
     tests.push({
       test_netlist: "zero_bias_capacitance.cir",
       analysis_type: "ac_small_signal",

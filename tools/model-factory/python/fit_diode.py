@@ -72,6 +72,17 @@ VARIANT_BOUNDS = {
 # it is a resistor wearing a diode's card. Refuse rather than emit it.
 NBV_MAXIMUM = 100.0
 
+# The generated card serialises parameters to eleven significant figures and the
+# validation engines solve to their own numeric tolerances. Keep maximum-only
+# evidence a tiny, explicit distance inside its limit so those harmless round trips
+# cannot turn a fitted upper bound into a false pass at a different temperature or
+# on a different engine.
+MAXIMUM_BOUND_INTERIOR_MARGIN_V = 1e-8
+# Declared Schottky fits are additionally checked through native/WASM model-card
+# evaluation. Its diode solver can differ from the closed form by tens of nanovolts,
+# so retain enough headroom for that measured round trip without moving legacy cards.
+SCHOTTKY_MAXIMUM_BOUND_INTERIOR_MARGIN_V = 6e-8
+
 
 def thermal_voltage(temperature_c):
     return K_BOLTZMANN * (temperature_c + 273.15) / Q_ELECTRON
@@ -80,6 +91,47 @@ def thermal_voltage(temperature_c):
 def diode_voltage(current, log_is, ideality, resistance, temperature_c):
     saturation_current = math.exp(log_is)
     return ideality * thermal_voltage(temperature_c) * np.log1p(current / saturation_current) + current * resistance
+
+
+def correct_maximum_bound_overshoot(currents, voltages, maximum_mask, log_is,
+                                     ideality, resistance, temperature_c,
+                                     maximum_log_is, interior_margin_v):
+    """Move IS only as far as needed to put every maximum strictly inside.
+
+    Forward voltage decreases monotonically as log(IS) increases. Bisection keeps
+    the correction deterministic, and retaining the passing side of every interval
+    means the final explicit recheck cannot reproduce the old one-step derivative
+    approximation's small overshoot.
+    """
+    if not np.any(maximum_mask):
+        return log_is
+    maximum_currents = currents[maximum_mask]
+    maximum_voltages = voltages[maximum_mask]
+    targets = maximum_voltages - interior_margin_v
+
+    def predictions(candidate):
+        return diode_voltage(maximum_currents, candidate, ideality, resistance, temperature_c)
+
+    if np.all(predictions(log_is) <= targets):
+        return log_is
+    if not np.all(predictions(maximum_log_is) <= targets):
+        raise SystemExit("fit cannot place every maximum forward-voltage bound strictly inside the declared IS window")
+
+    failing = log_is
+    passing = maximum_log_is
+    for _ in range(80):
+        midpoint = failing + (passing - failing) / 2
+        if midpoint == failing or midpoint == passing:
+            break
+        if np.all(predictions(midpoint) <= targets):
+            passing = midpoint
+        else:
+            failing = midpoint
+
+    corrected = passing
+    if not np.all(predictions(corrected) <= targets):
+        raise SystemExit("maximum forward-voltage correction failed its deterministic recheck")
+    return corrected
 
 
 def variant_of(facts):
@@ -280,6 +332,7 @@ def main():
     temperature_c = float(facts["fit_conditions"]["temperature"]["value"])
     variant = variant_of(facts)
     is_low, is_high, n_low, n_high, rs_low, rs_high = VARIANT_BOUNDS[variant]
+    maximum_mask = np.array(["maximum" in point["voltage"]["source_kind"] for point in points], dtype=bool)
 
     held_defaults = []
     saturation_notes = []
@@ -312,14 +365,18 @@ def main():
         )
         if not result.success:
             raise SystemExit(f"fit failed: {result.message}")
-        saturation_notes = bound_notes(result.x, lower, upper, ["IS", "N", "RS"])
         log_is, ideality, resistance = [float(value) for value in result.x]
-        maximum_mask = np.array(["maximum" in point["voltage"]["source_kind"] for point in points], dtype=bool)
-        if np.any(maximum_mask):
-            predicted_bounds = diode_voltage(currents, log_is, ideality, resistance, temperature_c)
-            overshoot = float(np.max(predicted_bounds[maximum_mask] - voltages[maximum_mask]))
-            if overshoot > 0:
-                log_is += overshoot / (ideality * thermal_voltage(temperature_c))
+
+    interior_margin_v = (SCHOTTKY_MAXIMUM_BOUND_INTERIOR_MARGIN_V
+                         if variant == "schottky"
+                         else MAXIMUM_BOUND_INTERIOR_MARGIN_V)
+    log_is = correct_maximum_bound_overshoot(
+        currents, voltages, maximum_mask, log_is, ideality, resistance,
+        temperature_c, math.log(is_high), interior_margin_v)
+    if len(points) > 1:
+        saturation_notes = bound_notes(
+            np.array([log_is, ideality, resistance]), lower, upper,
+            ["IS", "N", "RS"])
     predicted = diode_voltage(currents, log_is, ideality, resistance, temperature_c)
     rows = []
     for point, measured, fitted in zip(points, voltages, predicted):
