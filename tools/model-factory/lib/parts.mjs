@@ -2645,13 +2645,13 @@ Object.assign(PARTS, {
     identity: { canonical_mpn: "1N5822", manufacturer: "onsemi", description: "3 A, 40 V axial Schottky rectifier", electrical_family: "diode", aliases: ["1N5822G", "1N5822RL", "1N5822RLG"], package: { name: "axial lead", standard: "CASE 267-05" } },
     source: { url: "https://www.onsemi.com/download/data-sheet/pdf/1n5820-d.pdf", revision: "1N5820/D Rev. 11, November 2023", pages: ["p. 1", "p. 2", "p. 5", "p. 6"] },
     facts: {
-      schema_version: "1.0.0", extraction_method: "pdftotext -layout plus manual MAX table transcription",
+      schema_version: "1.0.0", extraction_method: "pdftotext -layout plus manual MAX table transcription", diode_variant: "schottky",
       fit_conditions: { temperature: quantity(25, "degC", "TL = 25 degC unless stated", "p. 2 electrical characteristics heading", "typical") },
       fit_points: [[1, 0.390], [3, 0.525], [9.4, 0.950]].map(([current, voltage]) => ({ current: quantity(current, "A", "TL = 25 degC, 300 us pulse, 2% duty cycle", "p. 2 electrical characteristics", "typical"), voltage: quantity(voltage, "V", `IF = ${current} A, TL = 25 degC`, "p. 2 maximum instantaneous forward voltage, 1N5822 column", "maximum") })),
       electrical_limits: { reverse_voltage: quantity(40, "V", "DC blocking voltage", "p. 2 maximum ratings", "maximum"), forward_current: quantity(3, "A", "TL = 95 degC", "p. 2 maximum ratings", "maximum"), reverse_current_40v: quantity(2e-3, "A", "rated DC voltage, TL = 25 degC", "p. 2 electrical characteristics", "maximum") },
       derived_model_inputs: { CJO: quantity(700e-12, "F", "VR = 0 V, TJ = 25 degC, digitized", "p. 6 fig. 10, 1N5822 curve", "digitized_typical_curve") }
     },
-    component: p5DiodeComponent({ modelName: "OC_ONSEMI_1N5822", summary: "F1 bound-constrained Schottky model over 1 A to 9.4 A at 25 degC.", currentMax: 9.4, reverseVoltage: 40, omissions: ["The fitted forward points are guaranteed maxima rather than a typical curve, so validation treats them as upper bounds and fidelity is capped at F1.", "Reverse breakdown, leakage temperature scaling, surge heating, and distributed junction capacitance are omitted."], ac: "approx" })
+    component: p5DiodeComponent({ modelName: "OC_ONSEMI_1N5822", summary: "F1 bound-constrained Schottky model over 1 A to 9.4 A at 25 degC.", currentMax: 9.4, reverseVoltage: 40, omissions: ["The fitted forward points are guaranteed maxima rather than a typical curve, so validation treats them as upper bounds and fidelity is capped at F1.", "The Schottky-constrained fit rests at the physical N = 1 lower bound. N is set by that bound, not measured from the published maximum-only points.", "Reverse breakdown, leakage temperature scaling, surge heating, and distributed junction capacitance are omitted."], ac: "approx" })
   },
   BAT85: {
     slug: "BAT85", manufacturerSlug: "vishay", pipeline: "diode",

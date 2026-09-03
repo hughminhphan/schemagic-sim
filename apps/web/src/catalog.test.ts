@@ -18,11 +18,10 @@ describe("catalog release truth", () => {
   it("exposes the reviewed/placeable counts and exact reference-only breakdown", () => {
     expect(CATALOG_PARTS).toHaveLength(771);
     expect(CATALOG_REVIEWED_COUNT).toBe(771);
-    expect(CATALOG_PLACEABLE_COUNT).toBe(768);
-    expect(CATALOG_REFERENCE_ONLY_COUNT).toBe(3);
-    // Every family now has a symbol. The remainder is three comparator packages
-    // whose recorded validation says native and WASM disagree.
-    expect(CATALOG_NONPLACEABLE_BREAKDOWN).toEqual({ comparator: 3 });
+    expect(CATALOG_PLACEABLE_COUNT).toBe(771);
+    expect(CATALOG_REFERENCE_ONLY_COUNT).toBe(0);
+    // Every reviewed package now has both a symbol and all-pass stored validation.
+    expect(CATALOG_NONPLACEABLE_BREAKDOWN).toEqual({});
     expect(CATALOG_PARTS.filter((part) => !part.placeable).map((part) => part.id).sort())
       .toEqual([...CATALOG_NATIVE_WASM_DISAGREEMENT].sort());
     expect(CATALOG_PARTS.filter((part) => part.placeable).every((part) =>
@@ -34,7 +33,7 @@ describe("catalog release truth", () => {
   it("keeps model bodies, cards, provenance and validation behind lazy loaders", () => {
     expect(CATALOG_EAGER_PAYLOAD_CONTRACT).toEqual({
       manifestCount: 771,
-      eagerManifestBytes: 3_392_073,
+      eagerManifestBytes: 3_392_255,
       eagerDetailCount: 0,
       lazyModelCount: 771,
       lazyModelCardCount: 771,

@@ -98,7 +98,7 @@ describe("catalog symbol to subcircuit bijection", () => {
     expect(orphans).toEqual([]);
   });
 
-  it("counts only recorded native and WASM disagreement as reference-only", () => {
+  it("keeps reference-only catalog state equal to recorded validation failures", () => {
     const recorded = loadLibraryPackageIds()
       .filter((entry) => {
         const validation = JSON.parse(readFileSync(join(entry.directory, "validation-results.json"), "utf8")) as ValidationResults;
@@ -109,7 +109,7 @@ describe("catalog symbol to subcircuit bijection", () => {
     expect([...CATALOG_NATIVE_WASM_DISAGREEMENT].sort()).toEqual(recorded);
     expect(CATALOG_REFERENCE_ONLY_COUNT).toBe(recorded.length);
     expect(CATALOG_PLACEABLE_COUNT).toBe(CATALOG_REVIEWED_COUNT - recorded.length);
-    expect(Object.keys(CATALOG_NONPLACEABLE_BREAKDOWN)).toEqual(["comparator"]);
+    expect(Object.keys(CATALOG_NONPLACEABLE_BREAKDOWN)).toEqual([]);
   });
 
   for (const part of CATALOG_PARTS) {

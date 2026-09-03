@@ -1,22 +1,23 @@
 {
   "schema_version": "1.0.0",
-  "validation_date": "2026-08-09",
+  "validation_date": "2026-09-03",
   "native_wasm_all_pass": true,
   "expectations_all_pass": true,
   "expectation_pass_count": 5,
   "expectation_fail_count": 0,
-  "worst_native_wasm_relative_delta": 1.4811020509774272e-16,
-  "worst_native_wasm_absolute_delta": 1.1102230246251565e-16,
+  "worst_native_wasm_relative_delta": 1.492039473702847e-16,
+  "worst_native_wasm_absolute_delta": 5.551115123125783e-17,
   "benches": [
     {
       "test_netlist": "forward_01.cir",
+      "bench_sha256": "sha256:efb86411ef0ff70df172384dc0e4370b600805cc31d62b900cd29a714894b6f3",
       "analysis": "op",
       "native_wasm_pass": true,
       "checks": [
         {
           "name": "forward_voltage_maximum_at_1_a",
           "pass": true,
-          "value": 0.374796261976845,
+          "value": 0.3720488111048017,
           "minimum": 0,
           "maximum": 0.39
         }
@@ -24,13 +25,14 @@
     },
     {
       "test_netlist": "forward_02.cir",
+      "bench_sha256": "sha256:e8569fb33aa27da9f771f5dbd7fe6727325c4399b096a90c4e23534e35bcb913",
       "analysis": "op",
       "native_wasm_pass": true,
       "checks": [
         {
           "name": "forward_voltage_maximum_at_3_a",
           "pass": true,
-          "value": 0.5193314683939529,
+          "value": 0.5193607608778998,
           "minimum": 0,
           "maximum": 0.525
         }
@@ -38,13 +40,14 @@
     },
     {
       "test_netlist": "forward_03.cir",
+      "bench_sha256": "sha256:7629f729fb60b327fe319f5b199d70ef3fa7b7ac2ee63531e11d3d4ce90ba115",
       "analysis": "op",
       "native_wasm_pass": true,
       "checks": [
         {
           "name": "forward_voltage_maximum_at_9.4_a",
           "pass": true,
-          "value": 0.9327325240763146,
+          "value": 0.9293697381324058,
           "minimum": 0,
           "maximum": 0.95
         }
@@ -52,13 +55,14 @@
     },
     {
       "test_netlist": "reverse_leakage.cir",
+      "bench_sha256": "sha256:52f9b9d81017bf8b1da4bd5de232297472c1fa398b8fa7cd0ec64451d09b1fa3",
       "analysis": "op",
       "native_wasm_pass": true,
       "checks": [
         {
           "name": "reverse_leakage_maximum",
           "pass": true,
-          "value": 2.5814224200198946e-7,
+          "value": 0.000005638604682499198,
           "minimum": 0,
           "maximum": 0.002
         }
@@ -66,14 +70,15 @@
     },
     {
       "test_netlist": "zero_bias_capacitance.cir",
+      "bench_sha256": "sha256:22de91a5480f9f61b4109c8cba518adad0e255e04c6621d5f0b5677ab6e2754c",
       "analysis": "ac",
       "native_wasm_pass": true,
       "checks": [
         {
           "name": "zero_bias_capacitive_current",
           "pass": true,
-          "value": 0.0002202018920006103,
-          "error": 2.904062493248286e-7,
+          "value": 0.00022046793140485178,
+          "error": 5.564456535662955e-7,
           "allowed": 0.000010995574287564275
         }
       ]

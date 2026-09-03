@@ -99,17 +99,17 @@ describe("production trusted subcircuit registry", () => {
     expect(isCompletedActorIdentity("codex independent package reviewer")).toBe(true);
   });
 
-  it("is an exact code-owned 47-package admission list, never automatic discovery", () => {
+  it("is an exact code-owned 50-package admission list, never automatic discovery", () => {
     const packages = inventory();
     const admitted = [...TRUSTED_SUBCIRCUIT_PACKAGE_ALLOWLIST];
     expect(packages).toHaveLength(771);
     expect(packages.filter((entry) => entry.modelType === "dot_model")).toHaveLength(714);
     expect(packages.filter((entry) => entry.modelType === "subckt")).toHaveLength(57);
     expect(TRUSTED_SUBCIRCUIT_PACKAGE_IDS).toEqual(admitted);
-    expect(admitted).toHaveLength(47);
+    expect(admitted).toHaveLength(50);
 
     const unsupported = packages.filter((entry) => !admitted.includes(entry.packageId as never));
-    expect(unsupported).toHaveLength(724);
+    expect(unsupported).toHaveLength(721);
     expect(unsupported.every((entry) => trustedSubcircuitDescriptor(entry.packageId) === undefined)).toBe(true);
     expect(unsupported.filter((entry) => entry.modelType === "subckt").map((entry) => entry.packageId)).toEqual([
       "nexperia/74HC123",
@@ -119,9 +119,6 @@ describe("production trusted subcircuit registry", () => {
       "nexperia/74HC4017",
       "nexperia/74HC595",
       "nexperia/74HC74",
-      "ti/LM311",
-      "ti/LM393",
-      "ti/TLV3702",
     ]);
   });
 
@@ -138,8 +135,8 @@ describe("production trusted subcircuit registry", () => {
       expect(validation.benches.some((bench) => bench.native_wasm_pass === false), packageId).toBe(false);
     }
     for (const packageId of ["ti/LM311", "ti/LM393", "ti/TLV3702"]) {
-      expect(validationResults(packageId).native_wasm_all_pass, packageId).toBe(false);
-      expect(trustedSubcircuitDescriptor(packageId), packageId).toBeUndefined();
+      expect(validationResults(packageId).native_wasm_all_pass, packageId).toBe(true);
+      expect(trustedSubcircuitDescriptor(packageId), packageId).toBeDefined();
     }
   });
 
@@ -173,12 +170,12 @@ describe("production trusted subcircuit registry", () => {
       expect(generated.omissions).toEqual([]);
       expect(generated.netlist).toContain(`ocblk_${descriptor.ref.contentHash.slice("sha256:".length)}`);
     }
-    expect(canonicalBytes).toBe(35_087);
+    expect(canonicalBytes).toBe(36_780);
     expect(maximumCanonicalBytes).toBe(1_631);
-    expect(emittedBytes).toBe(44_226);
+    expect(emittedBytes).toBe(46_345);
     expect(maximumEmittedBytes).toBe(2_198);
     expect(emittedBytes).toBeLessThanOrEqual(1_048_576);
-    expect(hashes.size).toBe(47);
+    expect(hashes.size).toBe(50);
 
     const documents = TRUSTED_SUBCIRCUIT_PACKAGE_IDS.map(executableDocument);
     const aggregate: CircuitDocumentV4 = {
