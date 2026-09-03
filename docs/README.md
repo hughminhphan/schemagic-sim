@@ -2,9 +2,9 @@
 
 What lives in `docs/` after the campaign records moved to [`campaigns/`](campaigns/README.md) on 2026-09-02.
 
-## Execution status (2026-09-03)
+## Execution status (2026-09-04)
 
-Wave 1 and nine Wave 2 PRs ([#26](https://github.com/hughminhphan/schemagic-sim/pull/26) through [#34](https://github.com/hughminhphan/schemagic-sim/pull/34)) are merged. Robonyx Simulator now includes twelve teaching circuits, compact backward-compatible share URLs, read-only embed mode, group clipboard editing, and a Falstad/CircuitJS share importer with explicit unsupported-element reports. The model tools now include real JFET fitting, an honest small-signal MOSFET F2-DC path, guarded storage pruning and restoration, and bounded fresh bench replay with unsupported noise benches reported as skips. The buck-calculator slice of D.2 is merged, but the current buck observation remains strictly ineligible; storage task 2.5 is also partial because 470 campaign-cited PDFs remain absent but restorable and the 5.3 GB catalog has not moved to an external location. Current task-level status is in [BACKLOG.md](BACKLOG.md).
+Wave 1 and nine Wave 2 PRs ([#26](https://github.com/hughminhphan/schemagic-sim/pull/26) through [#34](https://github.com/hughminhphan/schemagic-sim/pull/34)) are merged. The pre-launch integration in [PR #35](https://github.com/hughminhphan/schemagic-sim/pull/35) completes tasks 0.5, F.1 through F.4, and 1.1 through 1.3: Robonyx Simulator now has 19 built-in teaching circuits, the expanded switch/source/isolation/timing/protection families, and 771 reviewed manufacturer packages that are all placeable. Across Phase 0, 1, 2, and D, 28 tasks are done, 3 are partial, and 24 are open; the separate follow-up queue is 4/4 done. Tasks 2.5 and 2.17 remain partial because 470 campaign-cited PDFs remain absent but restorable, the 5.3 GB catalog has not moved externally, and noise replay is unsupported. D.2 also remains partial: the buck calculators are bound-aware, but loop stability remains unknown and the installed strict policy still returns no eligible buck candidate. Current task-level status is in [BACKLOG.md](BACKLOG.md).
 
 ## Plans and queues
 

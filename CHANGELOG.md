@@ -6,6 +6,8 @@ All notable Robonyx releases are documented here. The project uses semantic vers
 
 ### Changed
 
+- [PR #35](https://github.com/hughminhphan/schemagic-sim/pull/35) made the Designer empty state explicitly evidence-limited and added the Simulator's typed switch family, dependent and behavioural sources, transformer, crystal, transmission line, catalog-backed Zener, battery, fuse, and sensed pulsed-current paths, with five new solved examples bringing the built-in gallery to 19.
+- [PR #35](https://github.com/hughminhphan/schemagic-sim/pull/35) added actual package pin names to placed authored block symbols, admitted LM311, LM393, and TLV3702 so all 771 reviewed packages are placeable, stabilized the Motor suite's heavy-test timing without weakening numerical assertions, and recorded the 1N5822's physical-bound saturation with passing datasheet and native-versus-WebAssembly evidence.
 - [PR #34](https://github.com/hughminhphan/schemagic-sim/pull/34) completed the twelve-circuit teaching gallery with share URLs, solve checks, and non-trivial waveform coverage.
 - [PR #33](https://github.com/hughminhphan/schemagic-sim/pull/33) added compact, backward-compatible share payloads and a read-only `?embed=1` view with an open-in-Robonyx link.
 - [PR #32](https://github.com/hughminhphan/schemagic-sim/pull/32) added bounded fresh native-versus-WebAssembly bench replay with explicit unsupported-noise skips and guarded prune/restore tooling; 470 campaign-cited PDFs remain absent but restorable, and external relocation of the 5.3 GB catalog remains pending.

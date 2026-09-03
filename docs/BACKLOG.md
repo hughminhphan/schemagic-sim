@@ -4,6 +4,18 @@ The task queue. Every entry is sized so one agent can implement and self-verify 
 
 Source: the 2026-09-02 audit and roadmap (Phase 0, Phase 1, Phase 2, Phase D). The public feature roadmap is [ROADMAP.md](ROADMAP.md); this file is the queue that implements it.
 
+## Status snapshot (2026-09-04)
+
+| Queue | Done | Partial | Open |
+| --- | ---: | ---: | ---: |
+| Phase 0 | 11 | 0 | 1 |
+| Phase 1 | 7 | 0 | 7 |
+| Phase 2 | 8 | 2 | 8 |
+| Phase D | 2 | 1 | 8 |
+| **Overall** | **28** | **3** | **24** |
+
+The overall row covers the 55 numbered Phase 0, 1, 2, and D tasks. It excludes the separate follow-up queue, which is 4 done, 0 partial, and 0 open.
+
 ## How to take a task
 
 1. Pick a task labelled `agent-ready` that is not marked in progress.
@@ -11,6 +23,8 @@ Source: the 2026-09-02 audit and roadmap (Phase 0, Phase 1, Phase 2, Phase D). T
 3. Write only the paths under **Files owned**. If a change appears to need a file outside them, stop and say so in the PR instead of widening the diff.
 4. Run the task's **Verify** command. It must pass locally before the PR opens.
 5. Open the PR with the task id in the title.
+
+The pre-launch integration in [PR #35](https://github.com/hughminhphan/schemagic-sim/pull/35) is the one explicitly authorized exception to the one-task, one-branch, one-PR rule. It closes tasks 0.5, F.1 through F.4, and 1.1 through 1.3 together against one complete verification matrix.
 
 ## The task contract
 
@@ -82,15 +96,21 @@ Nine Wave 2 PRs are merged. Do not recreate their former branches; use the task 
 | [#33](https://github.com/hughminhphan/schemagic-sim/pull/33) | 1.5 read-only embed and 1.9 compact sharing | Complete |
 | [#34](https://github.com/hughminhphan/schemagic-sim/pull/34) | 0.12 twelve teaching circuits | Complete |
 
+## Pre-launch integration record
+
+| PR | Delivered | Backlog status |
+| --- | --- | --- |
+| [PR #35](https://github.com/hughminhphan/schemagic-sim/pull/35) | 0.5 honest Designer empty state; F.1 through F.4; 1.1 through 1.3 Simulator component expansion | Complete |
+
 ---
 
 ## Follow-ups discovered in Wave 1
 
 The new entries below have disjoint file ownership across lanes. The nightly wrapper with protocol v2 stop conditions remains task [2.16](#216-nightly-one-pr-loop), and the relevance top-300 draft and review rubric v1 draft remain `needs-human` sign-off items under [2.8](#28-curated-relevance-list) and [2.6](#26-review-rubric-v1).
 
-### F.1 Show pin names on authored block symbols
+### F.1 Show pin names on authored block symbols - DONE ([PR #35](https://github.com/hughminhphan/schemagic-sim/pull/35))
 
-- **Status** READY; dependency 1.8 merged in [PR #30](https://github.com/hughminhphan/schemagic-sim/pull/30).
+- **Status** DONE in [PR #35](https://github.com/hughminhphan/schemagic-sim/pull/35), verified 2026-09-04. Placed authored block symbols render their actual package pin names; palette thumbnails and KiCad-derived symbols remain text-free.
 - **Goal** Authored block symbols show their pin names on the canvas, with the generated-symbol no-text rule lifted only for those symbols.
 - **Lane** A
 - **Files owned** `packages/schematic-editor/scripts/generate-symbols.mjs`, `packages/schematic-editor/src/symbols.generated.ts`, `packages/schematic-editor/src/symbols.test.ts`
@@ -99,8 +119,9 @@ The new entries below have disjoint file ownership across lanes. The nightly wra
 - **Done when** Comparator, timer, regulator, logic, JFET and optocoupler block symbols render readable pin names without adding text to KiCad-derived symbols.
 - **Labels** `agent-ready` `size:S` `lane:A`
 
-### F.2 Refit the three held comparator packages
+### F.2 Refit the three held comparator packages - DONE ([PR #35](https://github.com/hughminhphan/schemagic-sim/pull/35))
 
+- **Status** DONE in [PR #35](https://github.com/hughminhphan/schemagic-sim/pull/35), verified 2026-09-04. LM311 and LM393 pass 5/5 recorded benches each, TLV3702 passes 6/6, and the catalog is 771 reviewed packages / 771 placeable packages.
 - **Goal** LM311, LM393 and TLV3702 pass their recorded native-versus-WebAssembly benches and become eligible for placement.
 - **Lane** C
 - **Files owned** `packages/model-library/models/ti/LM311/**`, `packages/model-library/models/ti/LM393/**`, `packages/model-library/models/ti/TLV3702/**`
@@ -109,9 +130,9 @@ The new entries below have disjoint file ownership across lanes. The nightly wra
 - **Done when** All three packages record native-versus-WebAssembly agreement, library validation passes, and the existing catalog gate no longer holds their ids.
 - **Labels** `agent-ready` `size:S` `lane:C`
 
-### F.3 Stabilise unit wall-clock budgets under parallel load - DONE (2026-09-03)
+### F.3 Stabilise unit wall-clock budgets under parallel load - DONE ([PR #35](https://github.com/hughminhphan/schemagic-sim/pull/35))
 
-- **Status** DONE in the 2026-09-03 pre-launch integration. Motor test files and workers run serially, only the five mapped heavy tests have 120-second liveness ceilings, all three dedicated two-file stress runs passed 21/21, and the full Motor workspace suite passed 46/46.
+- **Status** DONE in [PR #35](https://github.com/hughminhphan/schemagic-sim/pull/35), verified 2026-09-03. Motor test files and workers run serially, only the five mapped heavy tests have 120-second liveness ceilings, all three dedicated two-file stress runs passed 21/21, and the full Motor workspace suite passed 46/46.
 - **Goal** The motor Designer unit suites use realistic wall-clock budgets and explicitly serial execution so shared-machine load does not create false failures.
 - **Lane** B
 - **Files owned** `packages/motor-designer/package.json`, `packages/motor-designer/vitest.config.ts`, `packages/motor-designer/test/reviewed-real-catalog.test.ts`, `packages/motor-designer/test/v3-constraint-observation.test.ts`
@@ -120,8 +141,9 @@ The new entries below have disjoint file ownership across lanes. The nightly wra
 - **Done when** The two previously flaky files pass three serial runs under ordinary parallel machine load without weakening a numerical assertion.
 - **Labels** `agent-ready` `size:S` `lane:B`
 
-### F.4 Refit 1N5822 away from the parked Schottky bound
+### F.4 Refit 1N5822 away from the parked Schottky bound - DONE ([PR #35](https://github.com/hughminhphan/schemagic-sim/pull/35))
 
+- **Status** DONE in [PR #35](https://github.com/hughminhphan/schemagic-sim/pull/35), verified 2026-09-04. The 1N5822 fit uses the physical `N = 1` lower bound, discloses that saturation, retains an honest F1 rating, and passes five datasheet expectations plus five native-versus-WebAssembly benches.
 - **Goal** The shipped 1N5822 model no longer parks its ideality parameter at the old 0.8 lower bound and reports an honest fit outcome under the Schottky bounds.
 - **Lane** C
 - **Files owned** `packages/model-library/models/onsemi/1N5822/**`
@@ -180,8 +202,9 @@ Target 2026-09-15. Everything here is small. Tasks 0.1 through 0.8 gate the laun
 - **Done when** The default trace label reads as a net or label name in the browser suite, and the first frame after engine-ready shows a non-zero LED current.
 - **Labels** `agent-ready` `size:S` `lane:A`
 
-### 0.5 Honest Designer empty state
+### 0.5 Honest Designer empty state - DONE ([PR #35](https://github.com/hughminhphan/schemagic-sim/pull/35))
 
+- **Status** DONE in [PR #35](https://github.com/hughminhphan/schemagic-sim/pull/35), verified 2026-09-04. The empty state says exactly `Strict results are still in progress. Inspect an evidence-limited reference solution; unknown remains unknown.` and exposes exactly one inspection action.
 - **Goal** `/designer` stays live but its empty state is one honest line about strict results being in progress, with the inspection path one click away.
 - **Lane** B
 - **Files owned** `apps/web/src/features/designer/**`, `apps/web/e2e/designer.spec.ts`
@@ -272,8 +295,9 @@ Target 2026-09-15. Everything here is small. Tasks 0.1 through 0.8 gate the laun
 
 September to October. Lane A unless stated.
 
-### 1.1 Switch family
+### 1.1 Switch family - DONE ([PR #35](https://github.com/hughminhphan/schemagic-sim/pull/35))
 
+- **Status** DONE in [PR #35](https://github.com/hughminhphan/schemagic-sim/pull/35), verified 2026-09-04. SPDT, DPDT, pushbutton, toggle, and voltage-controlled switches are typed, netlisted, placeable, and covered by solved interaction tests.
 - **Goal** SPDT, DPDT, pushbutton, toggle and voltage-controlled switches place, wire and solve.
 - **Lane** A
 - **Files owned** `packages/circuit-schema/src/elements/**`, `packages/schematic-editor/**`, `packages/sim-engine/src/netlist/**`, `apps/web/e2e/editor.spec.ts`
@@ -282,8 +306,9 @@ September to October. Lane A unless stated.
 - **Done when** Each switch type has a netlist unit test and one browser placement test, and toggling one changes the solved result.
 - **Labels** `agent-ready` `size:S` `lane:A`
 
-### 1.2 Dependent and behavioural sources
+### 1.2 Dependent and behavioural sources - DONE ([PR #35](https://github.com/hughminhphan/schemagic-sim/pull/35))
 
+- **Status** DONE in [PR #35](https://github.com/hughminhphan/schemagic-sim/pull/35), verified 2026-09-04. E, G, F, and H dependent sources plus a typed B-source emit injection-safe cards and pass native fixtures, including current-vector coverage.
 - **Goal** E, G, F and H dependent sources and the B behavioural source place and emit correct ngspice cards.
 - **Lane** A
 - **Files owned** `packages/circuit-schema/src/elements/**`, `packages/sim-engine/src/netlist/**`, `packages/schematic-editor/**`
@@ -292,8 +317,9 @@ September to October. Lane A unless stated.
 - **Done when** Each source type has a netlist unit test, and one circuit per type is verified against native ngspice.
 - **Labels** `agent-ready` `size:S` `lane:A`
 
-### 1.3 Transformer, crystal, transmission line, zener, battery, fuse, current pulse
+### 1.3 Transformer, crystal, transmission line, zener, battery, fuse, current pulse - DONE ([PR #35](https://github.com/hughminhphan/schemagic-sim/pull/35))
 
+- **Status** DONE in [PR #35](https://github.com/hughminhphan/schemagic-sim/pull/35), verified 2026-09-04. Transformer, crystal, transmission line, catalog-backed zener, battery, fuse, and sensed pulsed-current paths are typed, placeable, netlisted, and solved; five new solved examples bring the built-in gallery to 19.
 - **Goal** Coupled inductors, crystal, transmission line, the zener symbol, battery, fuse and the current pulse source are placeable and solve.
 - **Lane** A
 - **Files owned** `packages/circuit-schema/src/elements/**`, `packages/schematic-editor/**`, `packages/sim-engine/src/netlist/**`

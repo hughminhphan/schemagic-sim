@@ -36,7 +36,7 @@ Keep the pointer visible, avoid cuts during the pot drag, and return the final G
 | Sourcing | Evaluates a bill of materials against dated distributor offers without preferring any provider. |
 | Exports | Writes design JSON, BOM CSV, structural SVG and KiCad, printable HTML, and SPICE decks. |
 
-The Simulator is the launch-ready part, with additional component families, parametric sweeps, mobile gestures, and transient replay still on its roadmap. The Designer tools are release candidates: they produce candidates you can inspect, not designs you should build without your own review. Every installed recipe identifier, content hash, constraint policy and unproved claim is recorded in [docs/designer-status.md](docs/designer-status.md).
+The Simulator is launch-ready; parametric sweeps, mobile gestures, and transient replay remain roadmap enhancements. The Designer tools are release candidates: they produce candidates you can inspect, not designs you should build without your own review. Every installed recipe identifier, content hash, constraint policy and unproved claim is recorded in [docs/designer-status.md](docs/designer-status.md).
 
 ### A note on the `@opencircuit` namespace
 
@@ -48,7 +48,7 @@ The npm workspace scope is `@opencircuit/*`, the persisted circuit document carr
 
 ## How many models, honestly
 
-The library ships **771 reviewed manufacturer model packages**. Every one of them supports an operating point, and 767 support a DC sweep. Far fewer are validated beyond DC:
+The library ships **771 reviewed manufacturer model packages, and all 771 are placeable in the Simulator**. Every one supports an operating point, and 767 support a DC sweep. Far fewer are validated beyond DC:
 
 | Analysis | Packages with validated coverage |
 | ---: | --- |
@@ -75,7 +75,8 @@ So the honest summary is that the library is DC-first. If you need a transient o
 - Compact share URLs that still read the legacy format, plus a read-only `?embed=1` view with an open-in-Robonyx link.
 - Group selection, copy, paste, duplicate, and move while preserving wires between selected components.
 - Import of supported components from Falstad and CircuitJS share URLs, with unsupported elements reported instead of silently dropped.
-- Twelve shareable teaching circuits spanning filters, amplifiers, rectifiers, regulators, an H-bridge, a 555 timer, and resonance.
+- Typed switches, dependent and behavioural sources, transformers, crystals, transmission lines, Zener diodes, batteries, fuses, and pulsed current sources.
+- Nineteen built-in teaching circuits spanning filters, amplifiers, rectifiers, regulators, switches, sources, isolation, protection, a 555 timer, and resonance.
 - Reviewed manufacturer models plus sanitized, visibly unverified SPICE model imports.
 
 ## Migrating from Multisim Live
@@ -184,7 +185,7 @@ Simulation stays inside a dedicated Worker so synchronous solver work does not b
 
 ## Roadmap
 
-The feature roadmap lives in [docs/ROADMAP.md](docs/ROADMAP.md), and each item is tracked as a [`roadmap` issue](https://github.com/hughminhphan/schemagic-sim/issues?q=is%3Aissue+label%3Aroadmap). Near-term work is grouped under the [v0.2 milestone](https://github.com/hughminhphan/schemagic-sim/milestone/1). If a roadmap item matters to your work, comment on its issue with the circuit, use case, and evidence behind the request.
+The feature roadmap lives in [docs/ROADMAP.md](docs/ROADMAP.md), with exact task status in [docs/BACKLOG.md](docs/BACKLOG.md). Near-term work is the launch-administration gate in task 0.8 and the seven remaining Phase 1 tasks: parametric sweep, mobile layout, dependency cleanup, coverage floors, Designer handoff, privacy-respecting usage counts, and live transient replay. Larger Library Engine and Designer work remains explicitly queued. If a roadmap item matters to your work, open or comment on a [`roadmap` issue](https://github.com/hughminhphan/schemagic-sim/issues?q=is%3Aissue+label%3Aroadmap) with the circuit, use case, and evidence behind the request.
 
 ## Licence
 
