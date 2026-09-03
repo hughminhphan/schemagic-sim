@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import fs from "node:fs";
 import path from "node:path";
-import { pathToFileURL } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 const [netlistPath, outputPath] = process.argv.slice(2);
 if (!netlistPath || !outputPath) {
@@ -9,7 +9,7 @@ if (!netlistPath || !outputPath) {
   process.exit(2);
 }
 
-const modulePath = path.resolve(path.dirname(new URL(import.meta.url).pathname), "../../native-ngspice-reference/lib/run-wasm.mjs");
+const modulePath = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../native-ngspice-reference/lib/run-wasm.mjs");
 const { runWasm } = await import(pathToFileURL(modulePath));
 const result = await runWasm({ netlistPath: path.resolve(netlistPath), timeoutMs: 30_000 });
 fs.writeFileSync(path.resolve(outputPath), `${JSON.stringify({
