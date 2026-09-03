@@ -332,7 +332,7 @@ def main():
     temperature_c = float(facts["fit_conditions"]["temperature"]["value"])
     variant = variant_of(facts)
     is_low, is_high, n_low, n_high, rs_low, rs_high = VARIANT_BOUNDS[variant]
-    maximum_mask = np.array(["maximum" in point["voltage"]["source_kind"] for point in points], dtype=bool)
+    corrected_bound_contract = "diode_variant" in facts
 
     held_defaults = []
     saturation_notes = []
@@ -366,17 +366,37 @@ def main():
         if not result.success:
             raise SystemExit(f"fit failed: {result.message}")
         log_is, ideality, resistance = [float(value) for value in result.x]
+        if not corrected_bound_contract:
+            # Preserve the reviewed v0.1.0 fitter path for unversioned legacy
+            # packages. Explicit diode_variant facts opt into the corrected
+            # deterministic interior-bound contract below.
+            saturation_notes = bound_notes(result.x, lower, upper, ["IS", "N", "RS"])
+            maximum_mask = np.array(
+                ["maximum" in point["voltage"]["source_kind"] for point in points],
+                dtype=bool)
+            if np.any(maximum_mask):
+                predicted_bounds = diode_voltage(
+                    currents, log_is, ideality, resistance, temperature_c)
+                overshoot = float(np.max(
+                    predicted_bounds[maximum_mask] - voltages[maximum_mask]))
+                if overshoot > 0:
+                    log_is += overshoot / (
+                        ideality * thermal_voltage(temperature_c))
 
-    interior_margin_v = (SCHOTTKY_MAXIMUM_BOUND_INTERIOR_MARGIN_V
-                         if variant == "schottky"
-                         else MAXIMUM_BOUND_INTERIOR_MARGIN_V)
-    log_is = correct_maximum_bound_overshoot(
-        currents, voltages, maximum_mask, log_is, ideality, resistance,
-        temperature_c, math.log(is_high), interior_margin_v)
-    if len(points) > 1:
-        saturation_notes = bound_notes(
-            np.array([log_is, ideality, resistance]), lower, upper,
-            ["IS", "N", "RS"])
+    if corrected_bound_contract:
+        maximum_mask = np.array(
+            ["maximum" in point["voltage"]["source_kind"] for point in points],
+            dtype=bool)
+        interior_margin_v = (SCHOTTKY_MAXIMUM_BOUND_INTERIOR_MARGIN_V
+                             if variant == "schottky"
+                             else MAXIMUM_BOUND_INTERIOR_MARGIN_V)
+        log_is = correct_maximum_bound_overshoot(
+            currents, voltages, maximum_mask, log_is, ideality, resistance,
+            temperature_c, math.log(is_high), interior_margin_v)
+        if len(points) > 1:
+            saturation_notes = bound_notes(
+                np.array([log_is, ideality, resistance]), lower, upper,
+                ["IS", "N", "RS"])
     predicted = diode_voltage(currents, log_is, ideality, resistance, temperature_c)
     rows = []
     for point, measured, fitted in zip(points, voltages, predicted):

@@ -163,7 +163,7 @@ class SchottkyTest(unittest.TestCase):
             "current": cite(1, "A", "TJ = 25 degC"),
             "voltage": cite(0.47, "V", "TJ = 25 degC", "maximum"),
         }
-        fitted = run_fitter(facts_document([point]))
+        fitted = run_fitter(facts_document([point], diode_variant="schottky"))
         self.assertEqual(fitted["fitter"], "analytic_single_bound_with_held_defaults")
         self.assertLess(fitted["residuals"][0]["fitted_voltage_v"], 0.47)
 
@@ -324,6 +324,8 @@ class ShippedPackageRegressionTest(unittest.TestCase):
 
     SHIPPED = ["vishay/1N4148", "kingbright/WP7113ID", "onsemi/SS14",
                "vishay/BAT85", "onsemi/1N5822", "onsemi/BZX84C5V1"]
+    UNVERSIONED = ["vishay/1N4148", "kingbright/WP7113ID", "onsemi/SS14",
+                   "vishay/BAT85", "onsemi/BZX84C5V1"]
 
     def test_every_reviewed_diode_refits_to_its_shipped_parameters(self):
         for slug in self.SHIPPED:
@@ -345,6 +347,15 @@ class ShippedPackageRegressionTest(unittest.TestCase):
                         f"{slug} {name} moved: shipped {value!r}, refit "
                         f"{refit['parameters'][name]!r}",
                     )
+
+    def test_unversioned_reviewed_diodes_retain_exact_fitted_parameters(self):
+        for slug in self.UNVERSIONED:
+            package = LIBRARY / slug
+            with self.subTest(package=slug):
+                shipped = json.loads((package / "fitted.json").read_text())
+                refit = run_fitter(json.loads((package / "facts.json").read_text()))
+                claimed = {name: value for name, value in shipped["parameters"].items() if value}
+                self.assertEqual(claimed, refit["parameters"])
 
     @unittest.skipUnless(HAVE_NGSPICE, "requires native ngspice")
     def test_1n5822_three_amp_maximum_runs_at_25c_and_passes_natively(self):

@@ -452,12 +452,12 @@ function stageGenerate(ctx) {
   console.log(`generate ${ctx.part.slug}: ${ctx.part.component.modelName}`);
 }
 
-function opBench(model, modelName, name, current, temperature) {
-  return `OpenCircuit factory test: ${name}\n${model}\n.temp ${formatSpice(temperature)}\nItest 0 anode DC ${formatSpice(current)}\nVanchor anchor 0 DC 0\nRanchor anchor 0 1G\nDdut anode 0 ${modelName}\n.op\n.end\n`;
-}
-
 function optionalTemperatureDirective(temperature) {
   return Number.isFinite(temperature) ? `.temp ${formatSpice(temperature)}\n` : "";
+}
+
+function opBench(model, modelName, name, current, temperature) {
+  return `OpenCircuit factory test: ${name}\n${model}\n${optionalTemperatureDirective(temperature)}Itest 0 anode DC ${formatSpice(current)}\nVanchor anchor 0 DC 0\nRanchor anchor 0 1G\nDdut anode 0 ${modelName}\n.op\n.end\n`;
 }
 
 function strictDiodeForwardBench(model, modelName, name, current, condition) {
@@ -1617,9 +1617,12 @@ export function stageTestgen(ctx) {
   }
 
   const strictDiodeEvidence = facts.evidence_contract_version === "1.0.0" && Array.isArray(facts.forward_voltage_points);
-  const diodeTemperature = strictDiodeEvidence ? null : Number(facts.fit_conditions?.temperature?.value);
-  if (!strictDiodeEvidence && !Number.isFinite(diodeTemperature)) {
-    throw new Error("Legacy diode benches require a finite fit_conditions.temperature.value");
+  // The explicit variant field opts a legacy package into the corrected fit
+  // contract. Packages without it retain their reviewed v0.1.0 byte output.
+  const correctedLegacyDiodeContract = !strictDiodeEvidence && typeof facts.diode_variant === "string";
+  const diodeTemperature = correctedLegacyDiodeContract ? Number(facts.fit_conditions?.temperature?.value) : null;
+  if (correctedLegacyDiodeContract && !Number.isFinite(diodeTemperature)) {
+    throw new Error("Corrected legacy diode benches require a finite fit_conditions.temperature.value");
   }
   const forwardRows = strictDiodeEvidence
     ? strictDiodeForwardRows(facts, ctx.part.component.fidelity_tier)

@@ -370,6 +370,36 @@ test("legacy diode forward, reverse, and capacitance benches use the fitted temp
   }
 });
 
+test("unversioned legacy diode benches remain byte-for-byte reproducible", () => {
+  const packages = [
+    ["1N4148", "vishay/1N4148"],
+    ["WP7113ID", "kingbright/WP7113ID"],
+    ["SS14", "onsemi/SS14"],
+    ["BAT85", "vishay/BAT85"],
+    ["BZX84C5V1", "onsemi/BZX84C5V1"],
+  ];
+  for (const [partId, slug] of packages) {
+    const packageDir = path.join(repoRoot, "packages/model-library/models", slug);
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), "factory-diode-unversioned-"));
+    try {
+      fs.cpSync(packageDir, root, { recursive: true });
+      stageTestgen({ packageDir: root, part: PARTS[partId] });
+      const expectedFiles = fs.readdirSync(path.join(packageDir, "tests")).sort();
+      const generatedFiles = fs.readdirSync(path.join(root, "tests")).sort();
+      assert.deepEqual(generatedFiles, expectedFiles, `${partId} test file set changed`);
+      for (const file of expectedFiles) {
+        assert.equal(
+          fs.readFileSync(path.join(root, "tests", file), "utf8"),
+          fs.readFileSync(path.join(packageDir, "tests", file), "utf8"),
+          `${partId}/${file} changed`,
+        );
+      }
+    } finally {
+      fs.rmSync(root, { recursive: true, force: true });
+    }
+  }
+});
+
 test("strict diode evidence uses typed point temperature without legacy fit_conditions", () => {
   const packageDir = path.join(repoRoot, "packages/model-library/models/shikues/MSK4005");
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "factory-diode-strict-temperature-"));
