@@ -6,7 +6,7 @@ If a roadmap item matters to your work, or if a missing item should be considere
 
 ## Execution status (2026-09-03)
 
-Wave 1 is merged, covering the Robonyx rename, CI and documentation hygiene, the model conveyor and factory, Designer audit de-pinning, Simulator parts, and Simulator UX. Robonyx Simulator now places 40 of 43 reviewed parts, ranks and filters catalog search, starts with a coach mark and useful named trace, and includes the first teaching examples. Robonyx Designer now uses property-based release assertions and bound-typed facts, while the model pipeline has extraction dispatch, leases, cost accounting, shared-process fitting, Zener and Schottky support, and incremental evidence. Wave 2 has ten branches in flight for audit-pin hygiene, the remaining examples, sharing and embed work, clipboard editing, Falstad import, two D.2 slices, factory fixes, storage replay, and this documentation sync; current ownership and task mapping are in [BACKLOG.md](BACKLOG.md).
+Wave 1 and nine Wave 2 PRs ([#26](https://github.com/hughminhphan/schemagic-sim/pull/26) through [#34](https://github.com/hughminhphan/schemagic-sim/pull/34)) are merged. The Simulator gained twelve teaching circuits, compact backward-compatible sharing, read-only embeds, group clipboard editing, and a Falstad/CircuitJS share importer. The model tools gained real JFET fitting, a small-signal MOSFET F2-DC policy, guarded storage pruning and restoration, and bounded fresh bench replay. D.2 remains partial: bound-aware buck calculators landed, but the installed strict policy still returns no eligible buck candidate. Task 2.5 also remains partial until the 5.3 GB catalog is moved to external storage. Current task-level status is in [BACKLOG.md](BACKLOG.md).
 
 ## v0.2.0 release-candidate baseline
 
@@ -15,7 +15,7 @@ The Simulator now includes focused DC-sweep and noise interfaces, a Measurement 
 ## Near
 
 - **Close the release-evidence loop.** Add authenticated runtime/KiCad attachments plus recorded manual assistive-technology checks without weakening fail-closed audit gates. Production offline/cache behavior is verified for this RC; the remaining evidence is tracked in [#12](https://github.com/hughminhphan/schemagic-sim/issues/12).
-- **Replay every model bench.** Add one bounded release command that freshly replays electrical benches across all model packages and reports the three inherited comparator exceptions explicitly.
+- **Complete fresh replay coverage.** The bounded release command now enumerates the reviewed package benches and reports every pass, failure, skip, and budget stop. Noise replay remains unsupported, and the scheduled run is advisory until it can complete without skipped benches.
 - **Grow the reviewed model library.** Continue beyond the 771-package v0.2 release-candidate inventory in [#18](https://github.com/hughminhphan/schemagic-sim/issues/18) while preserving provenance, fidelity labels, native-versus-WebAssembly gates, and independent review.
 - **Documentation internationalization.** Establish an i18n structure for user and contributor documentation, then translate high-value getting-started and model-contribution pages.
 

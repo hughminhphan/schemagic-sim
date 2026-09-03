@@ -36,7 +36,7 @@ Keep the pointer visible, avoid cuts during the pot drag, and return the final G
 | Sourcing | Evaluates a bill of materials against dated distributor offers without preferring any provider. |
 | Exports | Writes design JSON, BOM CSV, structural SVG and KiCad, printable HTML, and SPICE decks. |
 
-The Simulator is the finished part. The Designer tools are release candidates: they produce candidates you can inspect, not designs you should build without your own review. Every installed recipe identifier, content hash, constraint policy and unproved claim is recorded in [docs/designer-status.md](docs/designer-status.md).
+The Simulator is the launch-ready part, with additional component families, parametric sweeps, mobile gestures, and transient replay still on its roadmap. The Designer tools are release candidates: they produce candidates you can inspect, not designs you should build without your own review. Every installed recipe identifier, content hash, constraint policy and unproved claim is recorded in [docs/designer-status.md](docs/designer-status.md).
 
 ### A note on the `@opencircuit` namespace
 
@@ -72,6 +72,10 @@ So the honest summary is that the library is DC-first. If you need a transient o
 - Optional two-source DC sweeps rendered as stepped curve families with legends and cursors.
 - Output and input-referred noise spectral density with explicit source, temperature, and integrated RMS assumptions.
 - Wire probes, multi-trace scope views, CSV and PNG export, share URLs, and browser autosave.
+- Compact share URLs that still read the legacy format, plus a read-only `?embed=1` view with an open-in-Robonyx link.
+- Group selection, copy, paste, duplicate, and move while preserving wires between selected components.
+- Import of supported components from Falstad and CircuitJS share URLs, with unsupported elements reported instead of silently dropped.
+- Twelve shareable teaching circuits spanning filters, amplifiers, rectifiers, regulators, an H-bridge, a 555 timer, and resonance.
 - Reviewed manufacturer models plus sanitized, visibly unverified SPICE model imports.
 
 ## Migrating from Multisim Live

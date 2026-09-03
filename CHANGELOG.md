@@ -6,6 +6,15 @@ All notable Robonyx releases are documented here. The project uses semantic vers
 
 ### Changed
 
+- [PR #34](https://github.com/hughminhphan/schemagic-sim/pull/34) completed the twelve-circuit teaching gallery with share URLs, solve checks, and non-trivial waveform coverage.
+- [PR #33](https://github.com/hughminhphan/schemagic-sim/pull/33) added compact, backward-compatible share payloads and a read-only `?embed=1` view with an open-in-Robonyx link.
+- [PR #32](https://github.com/hughminhphan/schemagic-sim/pull/32) added bounded fresh native-versus-WebAssembly bench replay and guarded prune/restore tooling; external relocation of the 5.3 GB catalog remains pending.
+- [PR #31](https://github.com/hughminhphan/schemagic-sim/pull/31) routed JFETs through a real fitter and added the declared-output-omission small-signal MOSFET F2-DC path.
+- [PR #30](https://github.com/hughminhphan/schemagic-sim/pull/30) added multi-select, copy, paste, duplicate, and group move while preserving the selected wire network.
+- [PR #29](https://github.com/hughminhphan/schemagic-sim/pull/29) added Falstad and CircuitJS share-URL import for the supported element subset, with explicit reports for unsupported elements.
+- [PR #28](https://github.com/hughminhphan/schemagic-sim/pull/28) restricted emitted-bundle audit pins to release workflows and derived the evidence URL allowlist.
+- [PR #27](https://github.com/hughminhphan/schemagic-sim/pull/27) added bound-aware buck loss, junction-temperature, current-limit, and loop calculations while preserving blocking unknowns; it does not make the current buck candidate eligible.
+- [PR #26](https://github.com/hughminhphan/schemagic-sim/pull/26) reconciled Wave 1 documentation, moved stale campaign references, and recorded the Wave 2 execution map.
 - [PR #22](https://github.com/hughminhphan/schemagic-sim/pull/22) renamed the products to Robonyx Simulator and Robonyx Designer, rewrote the project introduction, removed the obsolete orchestration document, and added guidance for people moving from Multisim Live.
 - [PR #20](https://github.com/hughminhphan/schemagic-sim/pull/20) added one complete verification command, modernised continuous integration, created the agent backlog, and indexed the campaign archive.
 - [PR #19](https://github.com/hughminhphan/schemagic-sim/pull/19) made the model conveyor dispatch extraction work, lease parts safely, account for run cost, and select parts from a relevance list under protocol v2.

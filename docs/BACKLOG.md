@@ -66,22 +66,21 @@ Never edited by an agent without an explicit human instruction, and never edited
 | `size:L` | A week or more. |
 | `lane:A` `lane:B` `lane:C` `lane:D` | The owning lane. |
 
-## In flight
+## Wave 2 merge record
 
-These tasks already have a branch. Do not start a second branch for them.
+Nine Wave 2 PRs are merged. Do not recreate their former branches; use the task statuses below to distinguish complete work from partial slices.
 
-| Branch | Tasks |
-| --- | --- |
-| `roadmap/audit-pin` | Hygiene: make offline-audit emitted-bundle pins release-only |
-| `roadmap/examples-12` | 0.12 |
-| `roadmap/share-embed` | 1.9, 1.5 |
-| `roadmap/editor-clipboard` | 1.8 |
-| `roadmap/falstad-import` | 1.6 |
-| `roadmap/buck-profiles` | D.2 profile slice |
-| `roadmap/buck-calculators` | D.2 engine slice |
-| `roadmap/factory-jfet-mosfet` | 2.11, 2.10 |
-| `roadmap/storage-replay` | 2.5, 2.17 |
-| `roadmap/docs-sync` | Wave 1 completion status, Wave 2 status, and contributor docs |
+| PR | Delivered | Backlog status |
+| --- | --- | --- |
+| [#26](https://github.com/hughminhphan/schemagic-sim/pull/26) | Documentation sync and campaign-reference repair | Complete |
+| [#27](https://github.com/hughminhphan/schemagic-sim/pull/27) | D.2 bound-aware buck calculators | Partial: profiles and first strict eligible buck remain |
+| [#28](https://github.com/hughminhphan/schemagic-sim/pull/28) | Release-only emitted-bundle audit pins | Complete hygiene follow-up |
+| [#29](https://github.com/hughminhphan/schemagic-sim/pull/29) | 1.6 Falstad/CircuitJS share import | Complete |
+| [#30](https://github.com/hughminhphan/schemagic-sim/pull/30) | 1.8 group clipboard editing | Complete |
+| [#31](https://github.com/hughminhphan/schemagic-sim/pull/31) | 2.10 small-signal MOSFET policy and 2.11 JFET fitter | Complete |
+| [#32](https://github.com/hughminhphan/schemagic-sim/pull/32) | 2.5 guarded storage prune/restore and 2.17 bounded replay | 2.5 partial; 2.17 complete |
+| [#33](https://github.com/hughminhphan/schemagic-sim/pull/33) | 1.5 read-only embed and 1.9 compact sharing | Complete |
+| [#34](https://github.com/hughminhphan/schemagic-sim/pull/34) | 0.12 twelve teaching circuits | Complete |
 
 ---
 
@@ -91,14 +90,14 @@ The new entries below have disjoint file ownership across lanes. The nightly wra
 
 ### F.1 Show pin names on authored block symbols
 
-- **Status** `blocked-until: 1.8 merges`
+- **Status** READY; dependency 1.8 merged in [PR #30](https://github.com/hughminhphan/schemagic-sim/pull/30).
 - **Goal** Authored block symbols show their pin names on the canvas, with the generated-symbol no-text rule lifted only for those symbols.
 - **Lane** A
 - **Files owned** `packages/schematic-editor/scripts/generate-symbols.mjs`, `packages/schematic-editor/src/symbols.generated.ts`, `packages/schematic-editor/src/symbols.test.ts`
 - **Verify** `npm run verify && npm exec --workspace=@opencircuit/schematic-editor -- vitest run src/symbols.test.ts`
 - **Out of scope** PARTS pin geometry, KiCad-derived symbol geometry, the editor DOM contract, circuit-schema pin ordering.
 - **Done when** Comparator, timer, regulator, logic, JFET and optocoupler block symbols render readable pin names without adding text to KiCad-derived symbols.
-- **Labels** `needs-human` (sequencing after 1.8) `size:S` `lane:A`
+- **Labels** `agent-ready` `size:S` `lane:A`
 
 ### F.2 Refit the three held comparator packages
 
@@ -110,8 +109,9 @@ The new entries below have disjoint file ownership across lanes. The nightly wra
 - **Done when** All three packages record native-versus-WebAssembly agreement, library validation passes, and the existing catalog gate no longer holds their ids.
 - **Labels** `agent-ready` `size:S` `lane:C`
 
-### F.3 Stabilise unit wall-clock budgets under parallel load
+### F.3 Stabilise unit wall-clock budgets under parallel load - DONE (2026-09-03)
 
+- **Status** DONE in the 2026-09-03 pre-launch integration. Motor test files and workers run serially, only the five mapped heavy tests have 120-second liveness ceilings, all three dedicated two-file stress runs passed 21/21, and the full workspace suite passed 46/46.
 - **Goal** The motor Designer unit suites use realistic wall-clock budgets and explicitly serial execution so shared-machine load does not create false failures.
 - **Lane** B
 - **Files owned** `packages/motor-designer/package.json`, `packages/motor-designer/vitest.config.ts`, `packages/motor-designer/test/reviewed-real-catalog.test.ts`, `packages/motor-designer/test/v3-constraint-observation.test.ts`
@@ -255,8 +255,9 @@ Target 2026-09-15. Everything here is small. Tasks 0.1 through 0.8 gate the laun
 - **Done when** Each carry-over and each gap is a checked claim, not a marketing line, and the Chromebook note records an actual test.
 - **Labels** `needs-human` (copy) `size:S` `lane:D`
 
-### 0.12 Twelve classic teaching circuits as share URLs
+### 0.12 Twelve classic teaching circuits as share URLs - DONE ([PR #34](https://github.com/hughminhphan/schemagic-sim/pull/34))
 
+- **Status** DONE in [PR #34](https://github.com/hughminhphan/schemagic-sim/pull/34), merged 2026-09-02.
 - **Goal** Twelve teaching circuits (RC filter, voltage divider, 555 astable, H-bridge, common-emitter amp, inverting and non-inverting op-amp, half and full-wave rectifier, zener regulator, LED current limit, RLC resonance) open from share URLs and solve.
 - **Lane** A
 - **Files owned** `examples/**`, `apps/web/src/examples.ts`, `apps/web/src/examples.test.ts`, `apps/web/e2e/p6-examples-catalog.spec.ts`
@@ -311,8 +312,9 @@ September to October. Lane A unless stated.
 - **Done when** A stepped sweep renders one trace per step and the values agree with the native reference inside the recorded tolerance.
 - **Labels** `agent-ready` `size:L` `lane:A`
 
-### 1.5 Embed mode
+### 1.5 Embed mode - DONE ([PR #33](https://github.com/hughminhphan/schemagic-sim/pull/33))
 
+- **Status** DONE in [PR #33](https://github.com/hughminhphan/schemagic-sim/pull/33), merged 2026-09-02.
 - **Goal** `?embed=1` renders a read-only iframe-safe view with an "open in Robonyx" link.
 - **Lane** A
 - **Files owned** `apps/web/src/share.ts`, `apps/web/src/entry.ts`, `apps/web/src/style.css`, `apps/web/e2e/vertical-slice.spec.ts`
@@ -321,8 +323,9 @@ September to October. Lane A unless stated.
 - **Done when** An embedded page solves, refuses edits, exposes the open link, and is asserted in the browser suite.
 - **Labels** `agent-ready` `size:M` `lane:A`
 
-### 1.6 Falstad and CircuitJS URL importer
+### 1.6 Falstad and CircuitJS URL importer - DONE ([PR #29](https://github.com/hughminhphan/schemagic-sim/pull/29))
 
+- **Status** DONE in [PR #29](https://github.com/hughminhphan/schemagic-sim/pull/29), merged 2026-09-02.
 - **Goal** A Falstad or CircuitJS share URL imports into an equivalent circuit, with round-trip tests.
 - **Lane** A
 - **Files owned** `packages/model-import/**`, `apps/web/src/model-import.ts`, `apps/web/src/model-import.test.ts`
@@ -341,8 +344,9 @@ September to October. Lane A unless stated.
 - **Done when** A mobile-viewport browser test places a component, pinch-zooms and pans, and the desktop suite is unchanged.
 - **Labels** `needs-human` (layout) `size:M` `lane:A`
 
-### 1.8 Copy, paste, duplicate and multi-select move
+### 1.8 Copy, paste, duplicate and multi-select move - DONE ([PR #30](https://github.com/hughminhphan/schemagic-sim/pull/30))
 
+- **Status** DONE in [PR #30](https://github.com/hughminhphan/schemagic-sim/pull/30), merged 2026-09-02.
 - **Goal** Multi-select, copy, paste and duplicate move components together with their wires.
 - **Lane** A
 - **Files owned** `packages/schematic-editor/**`, `apps/web/e2e/kicad-parity-interactions.spec.ts`
@@ -351,8 +355,9 @@ September to October. Lane A unless stated.
 - **Done when** A selection of three connected components copies, pastes and moves with wires intact, asserted in the parity spec.
 - **Labels** `agent-ready` `size:M` `lane:A`
 
-### 1.9 Share URL compaction
+### 1.9 Share URL compaction - DONE ([PR #33](https://github.com/hughminhphan/schemagic-sim/pull/33))
 
+- **Status** DONE in [PR #33](https://github.com/hughminhphan/schemagic-sim/pull/33), merged 2026-09-02.
 - **Goal** Share URLs binary-encode and compress so a circuit with imported models stays inside platform URL limits.
 - **Lane** A
 - **Files owned** `apps/web/src/share.ts`, `apps/web/src/share.test.ts`, `apps/web/src/persistence.ts`
@@ -461,8 +466,9 @@ The nightly token sink. Lane C throughout. Order matters: 2.1 through 2.6 are pr
 - **Done when** A run completes with both paths set by environment variable, and a manual-drop part is recorded as skipped with its reason.
 - **Labels** `agent-ready` `size:S` `lane:C`
 
-### 2.5 Storage cleanup
+### 2.5 Storage cleanup - PARTIAL ([PR #32](https://github.com/hughminhphan/schemagic-sim/pull/32))
 
+- **Status** PARTIAL in [PR #32](https://github.com/hughminhphan/schemagic-sim/pull/32), merged 2026-09-02. Regenerable downloads were removed and PDF pruning now has citation/staging guards, a deletion ledger, and hash-verified restore mode. The 5.3 GB catalog remains in its original location pending selection of an external mount, so this task is not done.
 - **Goal** The 15 MB of extractions is committed, the 627 MB of download intermediates is deleted, closed-batch PDFs are pruned, and the 5.3 GB catalog moves to external storage behind the configurable path from 2.4.
 - **Lane** C
 - **Files owned** `tools/**`, `.gitignore`, `docs/**`
@@ -513,8 +519,9 @@ The nightly token sink. Lane C throughout. Order matters: 2.1 through 2.6 are pr
 - **Done when** Fixture Zener and Schottky cards reproduce their cited behavior in native ngspice, bound saturation is reported, and the reviewed shipped diode refit is repeatable without numerical drift.
 - **Labels** `agent-ready` `size:S` `lane:C`
 
-### 2.10 Small-signal MOSFET policy
+### 2.10 Small-signal MOSFET policy - DONE ([PR #31](https://github.com/hughminhphan/schemagic-sim/pull/31))
 
+- **Status** DONE in [PR #31](https://github.com/hughminhphan/schemagic-sim/pull/31), merged 2026-09-02.
 - **Goal** Small-signal MOSFETs fit transfer plus RDS(on), declare the output-family omission openly, and ship as honest F2-DC.
 - **Lane** C
 - **Files owned** `tools/model-factory/**`, `packages/component-schema/**`, `docs/model-archetypes/**`
@@ -523,8 +530,9 @@ The nightly token sink. Lane C throughout. Order matters: 2.1 through 2.6 are pr
 - **Done when** A fixture part fits, the omission appears in its model card, and the tier is recorded as F2-DC.
 - **Labels** `agent-ready` `size:M` `lane:C`
 
-### 2.11 Fix the JFET fitter fallthrough
+### 2.11 Fix the JFET fitter fallthrough - DONE ([PR #31](https://github.com/hughminhphan/schemagic-sim/pull/31))
 
+- **Status** DONE in [PR #31](https://github.com/hughminhphan/schemagic-sim/pull/31), merged 2026-09-02.
 - **Goal** The JFET fitter no longer falls through, and BF256B re-verifies.
 - **Lane** C
 - **Files owned** `tools/model-factory/**`
@@ -583,8 +591,9 @@ The nightly token sink. Lane C throughout. Order matters: 2.1 through 2.6 are pr
 - **Done when** One unattended night produces one PR with a complete review record and a posted summary.
 - **Labels** `agent-ready` `size:L` `lane:C`
 
-### 2.17 Bounded fresh replay of all benches
+### 2.17 Bounded fresh replay of all benches - DONE ([PR #32](https://github.com/hughminhphan/schemagic-sim/pull/32))
 
+- **Status** DONE in [PR #32](https://github.com/hughminhphan/schemagic-sim/pull/32), merged 2026-09-02. The command enumerates all reviewed benches, fails on comparison errors or out-of-tolerance results, records unsupported noise benches and budget exhaustion as explicit skips, and is scheduled as an advisory workflow.
 - **Goal** A release command replays every bench from source evidence inside a declared bound.
 - **Lane** C
 - **Files owned** `tools/native-ngspice-reference/**`, `package.json`, `.github/workflows/**`
@@ -631,8 +640,9 @@ Lane B throughout. Parity means WEBENCH Power Designer, DC/DC families first, pl
 - **Done when** Schema, validators and generators land and the existing 24 profiles validate unchanged.
 - **Labels** `agent-ready` (after D.0) `size:M` `lane:B`
 
-### D.2 First strictly eligible buck
+### D.2 First strictly eligible buck - PARTIAL ([PR #27](https://github.com/hughminhphan/schemagic-sim/pull/27))
 
+- **Status** PARTIAL in [PR #27](https://github.com/hughminhphan/schemagic-sim/pull/27), merged 2026-09-02. Bound-aware loss, junction-temperature, current-limit, and loop calculators landed behind honest unknowns. The profile slice did not land, and the installed strict policy still returns zero eligible buck candidates.
 - **Goal** The installed policy returns at least one eligible buck candidate for the fixture with zero blocked required rules.
 - **Lane** B
 - **Files owned** `packages/design-engine/**`, `packages/design-library/**`, `packages/power-designer/**`, `packages/design-recipes/**`
