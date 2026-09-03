@@ -78,7 +78,7 @@ Nine Wave 2 PRs are merged. Do not recreate their former branches; use the task 
 | [#29](https://github.com/hughminhphan/schemagic-sim/pull/29) | 1.6 Falstad/CircuitJS share import | Complete |
 | [#30](https://github.com/hughminhphan/schemagic-sim/pull/30) | 1.8 group clipboard editing | Complete |
 | [#31](https://github.com/hughminhphan/schemagic-sim/pull/31) | 2.10 small-signal MOSFET policy and 2.11 JFET fitter | Complete |
-| [#32](https://github.com/hughminhphan/schemagic-sim/pull/32) | 2.5 guarded storage prune/restore and 2.17 bounded replay | 2.5 partial; 2.17 complete |
+| [#32](https://github.com/hughminhphan/schemagic-sim/pull/32) | 2.5 guarded storage prune/restore and 2.17 bounded replay | Both partial |
 | [#33](https://github.com/hughminhphan/schemagic-sim/pull/33) | 1.5 read-only embed and 1.9 compact sharing | Complete |
 | [#34](https://github.com/hughminhphan/schemagic-sim/pull/34) | 0.12 twelve teaching circuits | Complete |
 
@@ -111,7 +111,7 @@ The new entries below have disjoint file ownership across lanes. The nightly wra
 
 ### F.3 Stabilise unit wall-clock budgets under parallel load - DONE (2026-09-03)
 
-- **Status** DONE in the 2026-09-03 pre-launch integration. Motor test files and workers run serially, only the five mapped heavy tests have 120-second liveness ceilings, all three dedicated two-file stress runs passed 21/21, and the full workspace suite passed 46/46.
+- **Status** DONE in the 2026-09-03 pre-launch integration. Motor test files and workers run serially, only the five mapped heavy tests have 120-second liveness ceilings, all three dedicated two-file stress runs passed 21/21, and the full Motor workspace suite passed 46/46.
 - **Goal** The motor Designer unit suites use realistic wall-clock budgets and explicitly serial execution so shared-machine load does not create false failures.
 - **Lane** B
 - **Files owned** `packages/motor-designer/package.json`, `packages/motor-designer/vitest.config.ts`, `packages/motor-designer/test/reviewed-real-catalog.test.ts`, `packages/motor-designer/test/v3-constraint-observation.test.ts`
@@ -468,7 +468,7 @@ The nightly token sink. Lane C throughout. Order matters: 2.1 through 2.6 are pr
 
 ### 2.5 Storage cleanup - PARTIAL ([PR #32](https://github.com/hughminhphan/schemagic-sim/pull/32))
 
-- **Status** PARTIAL in [PR #32](https://github.com/hughminhphan/schemagic-sim/pull/32), merged 2026-09-02. Regenerable downloads were removed and PDF pruning now has citation/staging guards, a deletion ledger, and hash-verified restore mode. The 5.3 GB catalog remains in its original location pending selection of an external mount, so this task is not done.
+- **Status** PARTIAL in [PR #32](https://github.com/hughminhphan/schemagic-sim/pull/32), merged 2026-09-02. Regenerable downloads were removed and PDF pruning now has citation/staging guards, a deletion ledger, and hash-verified restore mode. However, 470 campaign-cited PDFs totaling 479,194,422 bytes remain absent but restorable, and the 5.3 GB catalog remains in its original location pending selection of an external mount, so this task is not done.
 - **Goal** The 15 MB of extractions is committed, the 627 MB of download intermediates is deleted, closed-batch PDFs are pruned, and the 5.3 GB catalog moves to external storage behind the configurable path from 2.4.
 - **Lane** C
 - **Files owned** `tools/**`, `.gitignore`, `docs/**`
@@ -591,9 +591,9 @@ The nightly token sink. Lane C throughout. Order matters: 2.1 through 2.6 are pr
 - **Done when** One unattended night produces one PR with a complete review record and a posted summary.
 - **Labels** `agent-ready` `size:L` `lane:C`
 
-### 2.17 Bounded fresh replay of all benches - DONE ([PR #32](https://github.com/hughminhphan/schemagic-sim/pull/32))
+### 2.17 Bounded fresh replay of all benches - PARTIAL ([PR #32](https://github.com/hughminhphan/schemagic-sim/pull/32))
 
-- **Status** DONE in [PR #32](https://github.com/hughminhphan/schemagic-sim/pull/32), merged 2026-09-02. The command enumerates all reviewed benches, fails on comparison errors or out-of-tolerance results, records unsupported noise benches and budget exhaustion as explicit skips, and is scheduled as an advisory workflow.
+- **Status** PARTIAL in [PR #32](https://github.com/hughminhphan/schemagic-sim/pull/32), merged 2026-09-02. The command enumerates all reviewed benches, fails on comparison errors or out-of-tolerance results, records unsupported noise benches and budget exhaustion as explicit skips, and is scheduled as an advisory workflow. Two shipped noise benches still skip as unsupported, so the requirement to replay every bench is not yet met.
 - **Goal** A release command replays every bench from source evidence inside a declared bound.
 - **Lane** C
 - **Files owned** `tools/native-ngspice-reference/**`, `package.json`, `.github/workflows/**`
@@ -642,7 +642,7 @@ Lane B throughout. Parity means WEBENCH Power Designer, DC/DC families first, pl
 
 ### D.2 First strictly eligible buck - PARTIAL ([PR #27](https://github.com/hughminhphan/schemagic-sim/pull/27))
 
-- **Status** PARTIAL in [PR #27](https://github.com/hughminhphan/schemagic-sim/pull/27), merged 2026-09-02. Bound-aware loss, junction-temperature, current-limit, and loop calculators landed behind honest unknowns. The profile slice did not land, and the installed strict policy still returns zero eligible buck candidates.
+- **Status** PARTIAL in [PR #27](https://github.com/hughminhphan/schemagic-sim/pull/27), merged 2026-09-02. Bound-aware loss, junction-temperature, and current-limit calculators landed behind honest unknowns; loop stability remains an unconditional unknown. The profile slice did not land, and the installed strict policy still returns zero eligible buck candidates.
 - **Goal** The installed policy returns at least one eligible buck candidate for the fixture with zero blocked required rules.
 - **Lane** B
 - **Files owned** `packages/design-engine/**`, `packages/design-library/**`, `packages/power-designer/**`, `packages/design-recipes/**`
