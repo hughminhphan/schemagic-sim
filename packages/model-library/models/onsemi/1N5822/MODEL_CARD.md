@@ -6,7 +6,7 @@
 - Description: 3 A, 40 V axial Schottky rectifier
 - Electrical family: diode
 - Fidelity tier: F1, datasheet-constrained
-- Independent reviewer: pending-review
+- Independent reviewer: gpt-5.6-sol model-quality reviewer (F.4)
 
 ## Provenance
 
@@ -56,7 +56,7 @@ Native and WASM agreement: all 5 benches passed. Worst reported relative delta w
 - The Schottky-constrained fit rests at the physical N = 1 lower bound. N is set by that bound, not measured from the published maximum-only points.
 - Reverse breakdown, leakage temperature scaling, surge heating, and distributed junction capacitance are omitted.
 - Self-heating, process spread, package parasitics, ageing, and failure outside ratings are not modelled.
-- Independent review remains pending-review.
+- F.4 independent model-quality review passed F1 after the 25 C Schottky-bound refit: N's lower-bound status is disclosed, all five native and WASM benches agree, and all five datasheet-anchored checks pass.
 
 ## Licence
 
