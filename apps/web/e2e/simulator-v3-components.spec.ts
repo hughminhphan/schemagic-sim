@@ -128,6 +128,8 @@ test.describe("Simulator V3 browser controls", () => {
         await expect(page.getByRole("button",{name:"AC",exact:true})).toBeDisabled();
         await expect(page.getByRole("button",{name:"NOISE",exact:true})).toBeDisabled();
         await page.locator('[data-component-id="c1"] .editor-component-hit').click({force:true});
+        await expect(page.locator('[data-source-param="rise"]')).toHaveValue("10u");
+        await expect(page.locator('[data-source-param="fall"]')).toHaveValue("10u");
         await expect(page.getByTestId("branch-current")).not.toHaveText("–");
       }
     }

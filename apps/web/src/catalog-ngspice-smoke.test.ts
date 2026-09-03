@@ -119,12 +119,16 @@ describe.skipIf(!HAS_NGSPICE)("the upgraded V4 pulsed current source", () => {
 describe.skipIf(!HAS_NGSPICE)("the crystal resonance example", () => {
   it("resolves the intended local series-resonance peak", async () => {
     const generated = generateNetlist(exampleById("crystal-resonator")!.document);
-    expect(generated.netlist).toMatch(/^\.ac dec 100000 11200000 11300000$/m);
+    expect(generated.netlist).toMatch(/^\.ac dec 100000 11200000 11270000$/m);
     const run = await runNative({ netlist: generated.netlist, ngspicePath: NGSPICE, timeoutMs: 60_000 });
     expect(`${run.stdout}\n${run.stderr}`).not.toMatch(/error|singular|aborted/i);
     const frequencies = nativeVector(run, "frequency")!.values.map((value) => typeof value === "number" ? value : value.real);
     const output = nativeVector(run, "v(vout)")!.values.map(acMagnitude);
-    expect(frequencies).toHaveLength(430);
+    expect(frequencies).toHaveLength(314);
+    expect(output[0]).toBeGreaterThan(0.33);
+    expect(output[0]).toBeLessThan(0.34);
+    expect(output.at(-1)).toBeGreaterThan(0.07);
+    expect(output.at(-1)).toBeLessThan(0.09);
     const peakIndex = output.reduce((best, value, index) => value > output[best]! ? index : best, 0);
     expect(frequencies[peakIndex]).toBeGreaterThan(11_250_000);
     expect(frequencies[peakIndex]).toBeLessThan(11_260_000);
