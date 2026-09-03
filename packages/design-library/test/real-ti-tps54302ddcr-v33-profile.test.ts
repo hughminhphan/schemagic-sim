@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 import Ajv2020 from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
 import { describe, expect, it } from "vitest";
@@ -82,7 +83,7 @@ describe("exact TI TPS54302DDCR facts 3.3.0 author profile", () => {
 
     const ajv = new Ajv2020({ allErrors: true, strict: true });
     addFormats(ajv);
-    for (const path of schemaFiles(new URL("../schema/", import.meta.url).pathname)) {
+    for (const path of schemaFiles(fileURLToPath(new URL("../schema/", import.meta.url)))) {
       ajv.addSchema(JSON.parse(readFileSync(path, "utf8")));
     }
     const validateSchema = ajv.getSchema("https://schemas.schemagic.design/design-library/v1/profile.facts-v3-3.schema.json");

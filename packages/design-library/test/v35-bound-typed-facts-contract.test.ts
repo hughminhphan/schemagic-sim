@@ -1,5 +1,6 @@
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 import Ajv2020 from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
 import { describe, expect, it } from "vitest";
@@ -45,7 +46,7 @@ function ajv() {
   if (ajvInstance) return ajvInstance;
   const instance = new Ajv2020({ allErrors: true, strict: true });
   addFormats(instance);
-  for (const path of schemaFiles(schemaRoot.pathname)) instance.addSchema(JSON.parse(readFileSync(path, "utf8")));
+  for (const path of schemaFiles(fileURLToPath(schemaRoot))) instance.addSchema(JSON.parse(readFileSync(path, "utf8")));
   ajvInstance = instance;
   return instance;
 }
